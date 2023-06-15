@@ -198,7 +198,7 @@ describe('App interactions flow', () => {
 
   it('should be able to connect to bx test dapp', async () => {
     await delayTime('long');
-    await goToTestApp(URLS.RK_TEST_APP, '_next', driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementByText(driver, 'Connect Wallet');
@@ -257,7 +257,7 @@ describe('App interactions flow', () => {
 
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
-    await goToTestApp(URLS.RK_TEST_APP, '_next', driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
     const expectedNetwork = 'Network: Ethereum - homestead';
     const network = await querySelector(driver, '[id="network"]');
     const actualNetwork = await network.getText();
@@ -270,7 +270,7 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to accept a signing request', async () => {
-    await goToTestApp(URLS.RK_TEST_APP, '_next', driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
 
     const dappHandler = await getWindowHandle({ driver });
     const button = await querySelector(driver, '[id="signTx"]');
@@ -335,7 +335,7 @@ describe('App interactions flow', () => {
 
   it('should be able to accept a transaction request', async () => {
     await delayTime('long');
-    await goToTestApp(URLS.RK_TEST_APP, '_next', driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
 
     const dappHandler = await getWindowHandle({ driver });
 
@@ -369,7 +369,7 @@ describe('App interactions flow', () => {
       id: 'switch-network-menu-disconnect',
       driver,
     });
-    await goToTestApp(URLS.RK_TEST_APP, '_next', driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
     const button = await findElementByText(driver, 'Connect Wallet');
     expect(button).toBeTruthy();
   });

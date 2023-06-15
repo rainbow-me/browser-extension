@@ -16,7 +16,7 @@ import { erc20ABI } from 'wagmi';
 
 // consts
 
-export const waitUntilTime = 20000;
+const waitUntilTime = 20000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
@@ -35,9 +35,14 @@ export const byText = (text: string) =>
 
 // navigators
 
-export async function goToTestApp(url, selector, driver) {
+export async function goToTestApp(url, selector, driver, selectorType = 'id') {
   await driver.get(url);
-  const element = await findElementById({ id: selector, driver });
+
+  const element =
+    selectorType === 'id'
+      ? await findElementById({ id: selector, driver })
+      : await driver.findElement(By.css(`[class="${selector}"]`));
+
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
@@ -52,6 +57,7 @@ export async function goToWelcome(driver, rootURL) {
   const element = await findElementById({ id: 'app', driver });
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
+
 export async function getAllWindowHandles({
   driver,
   popupHandler,
@@ -61,54 +67,62 @@ export async function getAllWindowHandles({
   popupHandler?: string;
   dappHandler?: string;
 }) {
-  await driver.wait(until.elementLocated(By.css('body')), waitUntilTime);
+  try {
+    if (popupHandler === '') {
+      await delayTime('medium');
+    } else {
+      await driver.wait(until.elementLocated(By.css('body')), waitUntilTime);
+    }
+    const handlers = await driver.getAllWindowHandles();
 
-  const handlers = await driver.getAllWindowHandles();
+    const popupHandlerFromHandlers = handlers.find(
+      (handler) => handler !== dappHandler,
+    );
+    const dappHandlerFromHandlers = handlers.find(
+      (handler) => handler !== popupHandler,
+    );
 
-  const popupHandlerFromHandlers =
-    handlers.find((handler) => handler !== dappHandler) || '';
-  const dappHandlerFromHandlers =
-    handlers.find((handler) => handler !== popupHandler) || '';
-
-  return {
-    handlers,
-    popupHandler: popupHandler || popupHandlerFromHandlers,
-    dappHandler: dappHandler || dappHandlerFromHandlers,
-  };
+    return {
+      handlers,
+      popupHandler: popupHandler || popupHandlerFromHandlers,
+      dappHandler: dappHandler || dappHandlerFromHandlers,
+    };
+  } catch (error) {
+    console.error('Error occurred while getting window handles:', error);
+    throw error;
+  }
 }
 
 export async function getWindowHandle({ driver }) {
-  const retryInterval = 2000;
-  const maxRetries = 5;
-
-  let retries = 0;
-  let windowHandle;
-
-  while (retries < maxRetries) {
+  try {
     await driver.wait(until.elementLocated(By.css('body')), waitUntilTime);
+    const windowHandles = await driver.getAllWindowHandles();
+    const handle = windowHandles.find((handle) => handle !== null);
 
-    windowHandle = await driver.getWindowHandle();
-
-    if (windowHandle) {
-      return windowHandle;
+    if (handle !== undefined) {
+      return handle;
     }
 
-    retries += 1;
-    await new Promise((resolve) => setTimeout(resolve, retryInterval));
+    throw new Error('Failed to retrieve a valid window handle.');
+  } catch (error) {
+    console.error('Error occurred while retrieving the window handle:', error);
+    throw error;
   }
-
-  throw new Error(
-    'Failed to retrieve the window handle after multiple attempts.',
-  );
 }
 
-export async function switchWindows(window, driver) {
-  await driver.wait(async () => {
-    const windowHandles = await driver.getAllWindowHandles();
-    return windowHandles.includes(window);
-  }, waitUntilTime);
+export async function switchWindows(window, driver: WebDriver) {
+  try {
+    await delayTime('medium');
+    await driver.wait(async () => {
+      const windowHandles = await driver.getAllWindowHandles();
+      return windowHandles.includes(window);
+    }, waitUntilTime);
 
-  await driver.switchTo().window(window);
+    await driver.switchTo().window(window);
+  } catch (error) {
+    console.error('Error occurred while switching windows:', error);
+    throw error;
+  }
 }
 
 // setup functions
@@ -156,11 +170,10 @@ export async function getExtensionIdByName(driver, extensionName) {
 
 export async function querySelector(driver, selector) {
   const maxRetries = 3;
-  const waitTime = 7000;
 
   for (let retry = 0; retry < maxRetries; retry++) {
     try {
-      await driver.wait(until.elementLocated(By.css(selector)), waitTime);
+      await driver.wait(until.elementLocated(By.css(selector)), 1000);
       const el = await driver.findElement(By.css(selector));
 
       await driver.wait(async () => {
@@ -170,7 +183,7 @@ export async function querySelector(driver, selector) {
         } catch (error) {
           return false;
         }
-      }, waitTime);
+      }, 1000);
 
       return el;
     } catch (error) {
@@ -179,7 +192,7 @@ export async function querySelector(driver, selector) {
           retry + 1
         } to locate element with selector ${selector}. Retrying after a short wait.`,
       );
-      await driver.sleep(waitTime);
+      await delayTime('very-long');
     }
   }
 
@@ -253,9 +266,20 @@ export async function findElementByIdAndClick({ id, driver }) {
 }
 
 export async function waitAndClick(element, driver) {
-  await driver.wait(until.elementIsEnabled(element), waitUntilTime);
-  await driver.wait(until.elementIsVisible(element), waitUntilTime);
-  return element.click();
+  try {
+    await driver.wait(until.elementIsEnabled(element), waitUntilTime);
+    await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    await element.click();
+  } catch (error) {
+    if (error.name === 'ElementClickInterceptedError') {
+      const elementId = await element.getAttribute('id');
+      throw new Error(
+        `Click intercepted while trying to click element ${elementId}`,
+      );
+    } else {
+      throw error;
+    }
+  }
 }
 
 export async function typeOnTextInput({ id, text, driver }) {
@@ -292,6 +316,14 @@ export const untilIsClickable = (locator: Locator) => {
     },
   );
 };
+
+export async function awaitTextChange(id, text, driver) {
+  const element = await findElementById({
+    id: id,
+    driver,
+  });
+  await driver.wait(until.elementTextIs(element, text), waitUntilTime);
+}
 
 // various functions and flows
 
@@ -334,15 +366,6 @@ export async function switchWallet(
   driver: WebDriver,
   ens?: string,
 ) {
-  let address = '';
-  if (ens) {
-    address = await checkEnsResolution(Ethaddress, driver, ens);
-  } else {
-    address = Ethaddress;
-  }
-  // find shortened address
-  const shortenedAddress = shortenAddress(address);
-
   // go to popup
   await goToPopup(driver, rootURL, '#/home');
 
@@ -351,6 +374,15 @@ export async function switchWallet(
     id: 'header-account-name-shuffle',
     driver,
   });
+
+  let address = '';
+  if (ens) {
+    address = await checkEnsResolution(Ethaddress, driver, ens);
+  } else {
+    address = Ethaddress;
+  }
+  // find shortened address
+  const shortenedAddress = shortenAddress(address);
 
   // find wallet you want to switch to and click
   await waitUntilElementByTestIdIsPresent({
