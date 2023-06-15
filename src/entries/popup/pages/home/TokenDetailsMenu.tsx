@@ -93,6 +93,11 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
     [goToSwap, navigate, setSelectedToken, token, viewOnExplorer],
   );
 
+  const onTrigger = useCallback(
+    () => setSelectedToken(token),
+    [setSelectedToken, token],
+  );
+
   useEffect(() => {
     if (!selectedToken) {
       setClosed(true);
@@ -105,7 +110,7 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
 
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
-      <ContextMenuTrigger>
+      <ContextMenuTrigger onTrigger={onTrigger}>
         <Box position="relative">{children}</Box>
       </ContextMenuTrigger>
       <DetailsMenuContentWrapper closed={closed}>
