@@ -94,7 +94,7 @@ export const TokenInput = React.forwardRef<
     }: TokenInputProps,
     forwardedRef,
   ) => {
-    const [dropdownVisible, setDropdownVisible] = useState(!dropdownClosed);
+    const [dropdownVisible, setDropdownVisible] = useState(false);
     const prevDropdownVisible = usePrevious(dropdownVisible);
 
     useImperativeHandle(forwardedRef, () => ({

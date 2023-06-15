@@ -337,7 +337,7 @@ export function Swap() {
       setInputToOpenOnMount('sell');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectAssetToSell]);
+  }, []);
 
   useEffect(() => {
     return () => {
