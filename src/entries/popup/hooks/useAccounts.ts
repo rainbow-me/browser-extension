@@ -4,7 +4,7 @@ import { Address } from 'wagmi';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 
-import { useEnchanceWithEnsNames } from './useEnchanceWithEnsNames';
+import { useEnhanceWithEnsNames } from './useEnhanceWithEnsNames';
 import { AddressAndType, useWallets } from './useWallets';
 
 export type Account = AddressAndType & {
@@ -36,7 +36,7 @@ export const useAccounts = <TSelect = UseAccountsResult>(
     () => accounts.map((a) => ({ ...a, walletName: walletNames[a.address] })),
     [accounts, walletNames],
   );
-  const accountsWithNamesAndEns = useEnchanceWithEnsNames({
+  const accountsWithNamesAndEns = useEnhanceWithEnsNames({
     accounts: accountsWithNames,
   });
 

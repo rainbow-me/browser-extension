@@ -2,7 +2,7 @@ import { Address, useEnsName } from 'wagmi';
 
 import { ContactsStore, useContactsStore } from '~/core/state/contacts';
 
-import { useEnchanceWithEnsNames } from './useEnchanceWithEnsNames';
+import { useEnhanceWithEnsNames } from './useEnhanceWithEnsNames';
 
 export const useContact = ({ address }: { address: Address | undefined }) => {
   const { getContact } = useContactsStore();
@@ -21,6 +21,6 @@ export const useContact = ({ address }: { address: Address | undefined }) => {
 const selectContactsList = (s: ContactsStore) => Object.values(s.contacts);
 export const useContacts = () => {
   const contacts = useContactsStore(selectContactsList);
-  const contactsWithEnsNames = useEnchanceWithEnsNames({ accounts: contacts });
+  const contactsWithEnsNames = useEnhanceWithEnsNames({ accounts: contacts });
   return contactsWithEnsNames;
 };

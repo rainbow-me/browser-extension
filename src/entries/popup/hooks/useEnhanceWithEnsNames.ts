@@ -4,7 +4,7 @@ import { Address, FetchEnsNameResult, fetchEnsName } from '@wagmi/core';
 import { ChainId } from '~/core/types/chains';
 
 // Initially returns the same "accounts" list, and update the list with ensName after fetching
-export const useEnchanceWithEnsNames = <
+export const useEnhanceWithEnsNames = <
   TAccounts extends { address: Address }[],
 >({
   accounts,
