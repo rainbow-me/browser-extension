@@ -118,9 +118,11 @@ export const TokenInput = React.forwardRef<
     }, [inputRef, onDropdownOpen, setAssetFilter]);
 
     const onClose = useCallback(() => {
-      onDropdownAction();
       selectAsset(null);
-    }, [onDropdownAction, selectAsset]);
+      onDropdownOpen(!dropdownVisible);
+      setDropdownVisible(!dropdownVisible);
+      dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
+    }, [dropdownVisible, inputRef, onDropdownOpen, selectAsset]);
 
     const onInputValueChange = useCallback(
       (e: ChangeEvent<HTMLInputElement>) => {
