@@ -1,6 +1,6 @@
 import 'chromedriver';
 import 'geckodriver';
-import { WebDriver } from 'selenium-webdriver';
+import { By, WebDriver, until } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
@@ -8,10 +8,10 @@ import {
   delayTime,
   fillPrivateKey,
   findElementById,
+  findElementByIdAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  findElementByTextAndClick,
   getAllWindowHandles,
   getExtensionIdByName,
   getOnchainBalance,
@@ -106,21 +106,37 @@ describe('App interactions flow', () => {
     });
   });
 
-  it('should be able to connect to mm dapp', async () => {
+  it('should be able to connect to mm dapp on the hardhat network', async () => {
     await goToTestApp(URLS.MM_TEST_APP, 'container-fluid', driver, 'class');
     const dappHandler = await getWindowHandle({ driver });
 
-    const button = await findElementById({ id: 'connectButton', driver });
-    expect(button).toBeTruthy();
-    await waitAndClick(button, driver);
+    await findElementByIdAndClick({ id: 'connectButton', driver });
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await switchWindows(popupHandler, driver);
 
+    await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
+
+    await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
+
+    const txt = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="radix-:rb:"]/div/div/div[2]')),
+    );
+
+    expect(await txt.getText()).toBe('Hardhat');
+
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await switchWindows(dappHandler, driver);
+
+    await driver.navigate().refresh();
+
+    await driver.findElement(By.css(`[class="container-fluid"]`));
+
+    const chain = await findElementById({ id: 'chainId', driver });
+    const chainText = await chain.getText();
+    await expect(chainText).toBe('0x539');
 
     const accounts = await findElementById({ id: 'accounts', driver });
     expect(accounts).toBeTruthy();
@@ -162,6 +178,7 @@ describe('App interactions flow', () => {
 
   it('should be able to sign typed data (v3)', async () => {
     const dappHandler = await getWindowHandle({ driver });
+
     await switchWindows(dappHandler, driver);
 
     const button = await findElementById({ id: 'signTypedDataV3', driver });
@@ -199,6 +216,7 @@ describe('App interactions flow', () => {
 
   it('should be able to sign typed data (v4)', async () => {
     const dappHandler = await getWindowHandle({ driver });
+
     await switchWindows(dappHandler, driver);
 
     const button = await findElementById({ id: 'signTypedDataV4', driver });
@@ -234,34 +252,11 @@ describe('App interactions flow', () => {
     expect(result).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS.toLowerCase());
   });
 
-  it('should be able to switch network to hardhat', async () => {
-    await goToPopup(driver, rootURL, '#/home');
-    await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
-    await findElementByTestIdAndClick({
-      id: 'home-page-header-connected-apps',
-      driver,
-    });
-
-    await findElementByTextAndClick(driver, 'bx-e2e-dapp.vercel.app');
-    await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
-
-    await goToTestApp(URLS.MM_TEST_APP, 'container-fluid', driver, 'class');
-    const dappHandler = await getWindowHandle({ driver });
-
-    await switchWindows(dappHandler, driver);
-
-    const chain = await findElementById({ id: 'chainId', driver });
-    const chainText = await chain.getText();
-    await expect(chainText).toBe('0x539');
-  });
-
   it('should be able to create token', async () => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({ id: 'createToken', driver });
     await waitAndClick(button, driver);
-
-    await delayTime('medium');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
@@ -304,8 +299,6 @@ describe('App interactions flow', () => {
 
     const watchButton = await findElementById({ id: 'transferTokens', driver });
     await waitAndClick(watchButton, driver);
-
-    await delayTime('medium');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
@@ -351,8 +344,6 @@ describe('App interactions flow', () => {
     const watchButton = await findElementById({ id: 'approveTokens', driver });
     await waitAndClick(watchButton, driver);
 
-    await delayTime('medium');
-
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await switchWindows(popupHandler, driver);
@@ -394,8 +385,6 @@ describe('App interactions flow', () => {
       driver,
     });
     await waitAndClick(watchButton, driver);
-
-    await delayTime('medium');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
@@ -444,8 +433,6 @@ describe('App interactions flow', () => {
     });
     await waitAndClick(watchButton, driver);
 
-    await delayTime('medium');
-
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await switchWindows(popupHandler, driver);
@@ -467,8 +454,6 @@ describe('App interactions flow', () => {
     const button = await findElementById({ id: 'sendButton', driver });
     await waitAndClick(button, driver);
 
-    await delayTime('medium');
-
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await switchWindows(popupHandler, driver);
@@ -486,8 +471,6 @@ describe('App interactions flow', () => {
 
     const button = await findElementById({ id: 'sendEIP1559Button', driver });
     await waitAndClick(button, driver);
-
-    await delayTime('medium');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
@@ -510,8 +493,6 @@ describe('App interactions flow', () => {
     });
     await waitAndClick(button, driver);
 
-    await delayTime('medium');
-
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await switchWindows(popupHandler, driver);
@@ -530,29 +511,21 @@ describe('App interactions flow', () => {
   it('should be able to mint a collectible', async () => {
     const dappHandler = await getWindowHandle({ driver });
 
-    const button = await findElementById({
-      id: 'mintButton',
-      driver,
-    });
-    await waitAndClick(button, driver);
-
-    await delayTime('medium');
+    await findElementByIdAndClick({ id: 'mintButton', driver });
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await switchWindows(popupHandler, driver);
 
-    await delayTime('medium');
-
-    // const address = await findElementByText(driver, shortenedAddress);
-    // expect(address).toBeTruthy();
+    const address = await findElementByText(driver, shortenedAddress);
+    expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await switchWindows(dappHandler, driver);
     await delayTime('very-long');
 
-    await awaitTextChange('collectiblesStatus', 'Mint complete', driver);
+    await awaitTextChange('collectiblesStatus', 'Mint completed', driver);
   });
 
   it('should be able to approve a collectible', async () => {
@@ -563,8 +536,6 @@ describe('App interactions flow', () => {
       driver,
     });
     await waitAndClick(button, driver);
-
-    await delayTime('medium');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
@@ -589,8 +560,6 @@ describe('App interactions flow', () => {
       driver,
     });
     await waitAndClick(button, driver);
-
-    await delayTime('medium');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
@@ -620,8 +589,6 @@ describe('App interactions flow', () => {
     });
     await waitAndClick(button, driver);
 
-    await delayTime('medium');
-
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await switchWindows(popupHandler, driver);
@@ -645,8 +612,6 @@ describe('App interactions flow', () => {
       driver,
     });
     await waitAndClick(button, driver);
-
-    await delayTime('medium');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 

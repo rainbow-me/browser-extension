@@ -68,11 +68,10 @@ export async function getAllWindowHandles({
   dappHandler?: string;
 }) {
   try {
-    if (popupHandler === '') {
-      await delayTime('medium');
-    } else {
-      await driver.wait(until.elementLocated(By.css('body')), waitUntilTime);
-    }
+    await (popupHandler === undefined
+      ? delayTime('medium')
+      : driver.wait(until.elementLocated(By.css('body')), waitUntilTime));
+
     const handlers = await driver.getAllWindowHandles();
 
     const popupHandlerFromHandlers = handlers.find(
@@ -84,8 +83,8 @@ export async function getAllWindowHandles({
 
     return {
       handlers,
-      popupHandler: popupHandler || popupHandlerFromHandlers,
-      dappHandler: dappHandler || dappHandlerFromHandlers,
+      popupHandler: popupHandler ?? popupHandlerFromHandlers,
+      dappHandler: dappHandler ?? dappHandlerFromHandlers,
     };
   } catch (error) {
     console.error('Error occurred while getting window handles:', error);
@@ -102,8 +101,6 @@ export async function getWindowHandle({ driver }) {
     if (handle !== undefined) {
       return handle;
     }
-
-    throw new Error('Failed to retrieve a valid window handle.');
   } catch (error) {
     console.error('Error occurred while retrieving the window handle:', error);
     throw error;
@@ -169,34 +166,14 @@ export async function getExtensionIdByName(driver, extensionName) {
 // search functions
 
 export async function querySelector(driver, selector) {
-  const maxRetries = 3;
-
-  for (let retry = 0; retry < maxRetries; retry++) {
-    try {
-      await driver.wait(until.elementLocated(By.css(selector)), 1000);
-      const el = await driver.findElement(By.css(selector));
-
-      await driver.wait(async () => {
-        try {
-          const isVisible = await el.isDisplayed();
-          return isVisible;
-        } catch (error) {
-          return false;
-        }
-      }, 1000);
-
-      return el;
-    } catch (error) {
-      console.error(
-        `Failed attempt ${
-          retry + 1
-        } to locate element with selector ${selector}. Retrying after a short wait.`,
-      );
-      await delayTime('very-long');
-    }
+  try {
+    await driver.wait(until.elementLocated(By.css(selector)), waitUntilTime);
+    const el = await driver.findElement(By.css(selector));
+    await driver.wait(until.elementIsVisible(el), waitUntilTime);
+    return el;
+  } catch (error) {
+    console.error(`Failed to locate element with selector: ${selector}`, error);
   }
-
-  throw new Error(`Failed to locate element with selector: ${selector}`);
 }
 
 export async function querySelectorInverse(driver, selector) {
@@ -273,7 +250,7 @@ export async function waitAndClick(element, driver) {
   } catch (error) {
     if (error.name === 'ElementClickInterceptedError') {
       const elementId = await element.getAttribute('id');
-      throw new Error(
+      console.error(
         `Click intercepted while trying to click element ${elementId}`,
       );
     } else {
@@ -349,7 +326,7 @@ export async function checkEnsResolution(
     });
   } catch (error) {
     hasError = true;
-    throw new Error(
+    console.error(
       `ENS name "${ens}" not resolved. Switching to ETH address if available.`,
     );
   }
