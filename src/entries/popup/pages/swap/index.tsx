@@ -32,6 +32,7 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
+import { SWAP_INPUT_MASK_ID } from '../../components/InputMask/SwapInputMask/SwapInputMask';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import {
@@ -45,12 +46,14 @@ import {
   useSwapValidations,
 } from '../../hooks/swap';
 import { SwapTimeEstimate } from '../../hooks/swap/useSwapActions';
+import { useSwapNativeAmounts } from '../../hooks/swap/useSwapNativeAmounts';
 import {
   SwapPriceImpact,
   SwapPriceImpactType,
   useSwapPriceImpact,
 } from '../../hooks/swap/useSwapPriceImpact';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { getActiveElement, getInputIsFocused } from '../../utils/activeElement';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
@@ -247,13 +250,21 @@ export function Swap() {
     slippage,
   });
 
+  const { assetToSellNativeValue, assetToBuyNativeValue } =
+    useSwapNativeAmounts({
+      assetToBuy,
+      assetToBuyValue,
+      assetToSell,
+      assetToSellValue,
+      isWrapOrUnwrapEth,
+      quote: (quote as QuoteError)?.error
+        ? undefined
+        : (quote as Quote | CrosschainQuote),
+    });
+
   const { priceImpact } = useSwapPriceImpact({
-    assetToBuy,
-    assetToSell,
-    isWrapOrUnwrapEth,
-    quote: (quote as QuoteError)?.error
-      ? undefined
-      : (quote as Quote | CrosschainQuote),
+    assetToSellNativeValue,
+    assetToBuyNativeValue,
   });
 
   const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
@@ -336,8 +347,23 @@ export function Swap() {
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.swap.FLIP_ASSETS.key) {
-        e.preventDefault();
-        flipAssets();
+        const flippingAfterSearch =
+          getInputIsFocused() && getActiveElement()?.id === SWAP_INPUT_MASK_ID;
+        if (flippingAfterSearch || !getInputIsFocused()) {
+          e.preventDefault();
+          flipAssets();
+        }
+      }
+      if (e.key === shortcuts.swap.SET_MAX_AMOUNT.key) {
+        if (assetToSell) {
+          const maxxingAfterSearch =
+            getInputIsFocused() &&
+            getActiveElement()?.id === SWAP_INPUT_MASK_ID;
+          if (maxxingAfterSearch || !getInputIsFocused()) {
+            e.preventDefault();
+            setAssetToSellMaxValue();
+          }
+        }
       }
     },
   });
@@ -429,6 +455,7 @@ export function Swap() {
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'sell'}
+                  assetToSellNativeValue={assetToSellNativeValue}
                 />
               </AccentColorProviderWrapper>
 
@@ -491,6 +518,8 @@ export function Swap() {
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
                   inputDisabled={isCrosschainSwap}
+                  assetToBuyNativeValue={assetToBuyNativeValue}
+                  assetToSellNativeValue={assetToSellNativeValue}
                 />
               </AccentColorProviderWrapper>
               <SwapWarning

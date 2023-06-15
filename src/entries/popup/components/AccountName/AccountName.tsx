@@ -1,9 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
-import { useENSAvatar } from '~/core/resources/metadata/ensAvatar';
 import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { transformScales } from '~/design-system/styles/designTokens';
@@ -12,7 +11,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
-import { Avatar } from '../Avatar/Avatar';
+import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 type AccountNameProps = {
   includeAvatar?: boolean;
@@ -34,7 +33,6 @@ export function AccountName({
 }: AccountNameProps) {
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
-  const { data: ensAvatar } = useENSAvatar({ addressOrName: address });
   const navigate = useRainbowNavigate();
   const [hover, setHover] = useState(false);
 
@@ -66,10 +64,10 @@ export function AccountName({
         {...chevronProps}
       >
         <Columns alignVertical="center" space="4px">
-          {includeAvatar && (
+          {includeAvatar && address && (
             <Column width="content">
               <Box paddingRight="2px">
-                <Avatar imageUrl={ensAvatar || ''} size={16} />
+                <WalletAvatar address={address} size={16} emojiSize="10pt" />
               </Box>
             </Column>
           )}

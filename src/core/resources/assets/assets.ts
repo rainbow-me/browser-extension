@@ -65,8 +65,10 @@ export async function assetsQueryFunction({
       );
     }, ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AssetPricesReceivedMessage) => {
-      clearTimeout(timeout);
-      resolve(parseAssets({ assetAddresses, currency, message }));
+      if (assetAddresses.length === message.meta?.asset_codes?.length) {
+        clearTimeout(timeout);
+        resolve(parseAssets({ assetAddresses, currency, message }));
+      }
     };
     refractionAssetsWs.once(refractionAssetsMessages.ASSETS.RECEIVED, resolver);
   });

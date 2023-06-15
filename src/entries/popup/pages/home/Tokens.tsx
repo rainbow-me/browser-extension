@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -98,7 +98,7 @@ export function Tokens() {
         >
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { index } = virtualItem;
-            const rowData = assets?.[index];
+            const rowData = assets[index];
             return (
               <Box
                 key={index}
