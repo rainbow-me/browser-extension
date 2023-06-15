@@ -173,18 +173,20 @@ export const TokenInput = React.forwardRef<
         }
         centerComponent={
           !asset ? (
-            <Input
-              testId={`${testId}-search-token-input`}
-              value={assetFilter}
-              placeholder={placeholder}
-              onChange={onInputValueChange}
-              height="32px"
-              variant="transparent"
-              style={{ paddingLeft: 0, paddingRight: 0 }}
-              innerRef={inputRef}
-              onFocus={onFocusTokenInput}
-              tabIndex={0}
-            />
+            <Box>
+              <Input
+                testId={`${testId}-search-token-input`}
+                value={assetFilter}
+                placeholder={placeholder}
+                onChange={onInputValueChange}
+                height="32px"
+                variant="transparent"
+                style={{ paddingLeft: 0, paddingRight: 0 }}
+                innerRef={inputRef}
+                onFocus={onFocusTokenInput}
+                tabIndex={0}
+              />
+            </Box>
           ) : (
             <Box>
               <SwapInputMaskWrapper inputDisabled={inputDisabled}>
@@ -215,7 +217,7 @@ export const TokenInput = React.forwardRef<
             onClose={onClose}
             onDropdownAction={onDropdownAction}
             dropdownVisible={dropdownVisible}
-            testId={`${testId}-token-input-remove`}
+            testId={testId}
             asset={asset}
           />
         }
