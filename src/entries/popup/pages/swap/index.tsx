@@ -454,7 +454,7 @@ export function Swap() {
                   assetToSellValue={assetToSellValue}
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
-                  // openDropdownOnMount={inputToOpenOnMount === 'sell'}
+                  openDropdownOnMount={inputToOpenOnMount === 'sell'}
                   assetToSellNativeValue={assetToSellNativeValue}
                 />
               </AccentColorProviderWrapper>
