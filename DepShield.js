@@ -76,8 +76,6 @@ class DepShieldPlugin {
       return false;
     }
 
-    // console.log('currentModule resource', currentModule.resource);
-
     // Iterate over the current modules dependencies
     for (const dependency of currentModule.dependencies) {
       if (
@@ -103,8 +101,6 @@ class DepShieldPlugin {
       if (!depModule.resource) {
         continue;
       }
-
-      // console.log('depmodule resource', depModule.resource);
 
       // the dependency was resolved to the current module due to how webpack internals
       // setup dependencies like CommonJsSelfReferenceDependency and ModuleDecoratorDependency
