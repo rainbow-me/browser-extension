@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Address } from 'wagmi';
 
 import { Contact } from '~/core/state/contacts';
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -7,16 +8,16 @@ import { Account, useAccounts } from '../useAccounts';
 import { useContacts } from '../useContacts';
 
 const filterWallets = (
-  accounts: Partial<Account & Contact>[],
+  accounts: (Partial<Contact & Account> & { address: Address })[],
   _filter: string,
 ) => {
-  const filter = _filter.trim();
+  const filter = _filter.trim().toLowerCase();
   return accounts.filter(
     ({ address, name, ensName, walletName }) =>
-      ensName?.toLowerCase().includes(filter.toLowerCase()) ||
-      address?.toLowerCase().includes(filter.toLowerCase()) ||
-      name?.toLowerCase().includes(filter.toLowerCase()) ||
-      walletName?.toLowerCase().includes(filter.toLowerCase()),
+      ensName?.toLowerCase().includes(filter) ||
+      address?.toLowerCase().includes(filter) ||
+      name?.toLowerCase().includes(filter) ||
+      walletName?.toLowerCase().includes(filter),
   );
 };
 
