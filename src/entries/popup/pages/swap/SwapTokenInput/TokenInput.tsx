@@ -130,14 +130,14 @@ export const TokenInput = React.forwardRef<
     );
 
     useEffect(() => {
-      if (dropdownClosed) {
-        setDropdownVisible(false);
+      if (!dropdownClosed) {
+        setDropdownVisible(true);
       }
     }, [dropdownClosed]);
 
     useEffect(() => {
       if (prevDropdownVisible !== dropdownVisible && dropdownVisible) {
-        setTimeout(() => inputRef?.current?.focus(), 300);
+        setTimeout(() => inputRef?.current?.focus(), 100);
       }
     });
 
@@ -150,7 +150,7 @@ export const TokenInput = React.forwardRef<
         if (openDropdownOnMount) {
           onDropdownAction();
         }
-      }, 300);
+      }, 0);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [openDropdownOnMount]);
 

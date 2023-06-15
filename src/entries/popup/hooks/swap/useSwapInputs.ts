@@ -36,7 +36,7 @@ export const useSwapInputs = ({
   selectedGas: GasFeeParams | GasFeeLegacyParams;
 }) => {
   const [assetToSellDropdownClosed, setAssetToSellDropdownClosed] =
-    useState(true);
+    useState(false);
   const [assetToBuyDropdownClosed, setAssetToBuyDropdownClosed] =
     useState(true);
   const [assetToSellValue, setAssetToSellValue] = useState('');
