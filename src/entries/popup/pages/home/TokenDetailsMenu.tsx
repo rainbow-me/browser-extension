@@ -101,7 +101,7 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
 
   const hasExplorerLink = !isNativeAsset(token?.address, token?.chainId);
 
-  if (!hasExplorerLink && isWatchingWallet) return <>{children}</>;
+  if (isWatchingWallet && !allowSwap) return <>{children}</>;
 
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
