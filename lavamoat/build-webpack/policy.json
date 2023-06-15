@@ -1,5 +1,14 @@
 {
   "resources": {
+    "@testing-library/react>@testing-library/dom>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process.emitWarning": true
+      },
+      "packages": {
+        "lavamoat>@babel/highlight": true
+      }
+    },
     "@vanilla-extract/css": {
       "globals": {
         "process.env.NODE_ENV": true
@@ -476,6 +485,7 @@
         "process": true
       },
       "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": true,
@@ -487,7 +497,6 @@
         "jest>@jest/core>jest-snapshot>@babel/generator": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat-browserify>convert-source-map": true,
-        "lavamoat>@babel/code-frame": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true,
         "lavamoat>lavamoat-tofu>@babel/traverse": true,
         "vitest>debug": true
@@ -560,8 +569,8 @@
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": {
       "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "lavamoat>@babel/code-frame": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true
       }
     },
@@ -1008,15 +1017,6 @@
         "value": true
       }
     },
-    "lavamoat>@babel/code-frame": {
-      "globals": {
-        "console.warn": true,
-        "process.emitWarning": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight": true
-      }
-    },
     "lavamoat>@babel/highlight": {
       "packages": {
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
@@ -1071,9 +1071,9 @@
         "console.trace": true
       },
       "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame": true,
         "jest>@jest/core>jest-snapshot>@babel/generator": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "lavamoat>@babel/code-frame": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": true,
@@ -1097,22 +1097,6 @@
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": {
       "packages": {
         "jest>@jest/core>jest-snapshot>@babel/types": true
-      }
-    },
-    "lavamoat>node-gyp-build": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readdirSync": true,
-        "os.arch": true,
-        "os.platform": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "__non_webpack_require__": true,
-        "__webpack_require__": true,
-        "process": true
       }
     },
     "lint-staged>execa>merge-stream": {
@@ -1233,7 +1217,7 @@
       },
       "native": true,
       "packages": {
-        "lavamoat>node-gyp-build": true
+        "wagmi>@coinbase/wallet-sdk>keccak>node-gyp-build": true
       }
     },
     "selenium-webdriver>ws>utf-8-validate": {
@@ -1242,7 +1226,7 @@
       },
       "native": true,
       "packages": {
-        "lavamoat>node-gyp-build": true
+        "wagmi>@coinbase/wallet-sdk>keccak>node-gyp-build": true
       }
     },
     "semver": {
@@ -1386,6 +1370,22 @@
       },
       "packages": {
         "jest>@jest/core>jest-snapshot>@babel/types": true
+      }
+    },
+    "wagmi>@coinbase/wallet-sdk>keccak>node-gyp-build": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readdirSync": true,
+        "os.arch": true,
+        "os.platform": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "__non_webpack_require__": true,
+        "__webpack_require__": true,
+        "process": true
       }
     },
     "webpack": {
@@ -1789,6 +1789,14 @@
       "packages": {
         "webpack>graceful-fs": true,
         "webpack>tapable": true
+      }
+    },
+    "webpack>es-module-lexer": {
+      "globals": {
+        "Buffer": true,
+        "WebAssembly.compile": true,
+        "WebAssembly.instantiate": true,
+        "atob": true
       }
     },
     "webpack>eslint-scope": {
