@@ -142,9 +142,8 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
         ) : (
           <>
             <Box
-              width="full"
               style={{
-                overflow: 'auto',
+                overflow: 'scroll',
                 height: '454px',
               }}
             >
@@ -156,7 +155,6 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
                 borderWidth={'1px'}
                 width="full"
                 position="relative"
-                height="full"
               >
                 <AccountToImportRows
                   accountsIgnored={accountsIgnored}
@@ -167,6 +165,7 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
                 />
               </Box>
             </Box>
+
             <Box width="full" paddingTop="16px">
               <Button
                 symbol="arrow.uturn.down.circle.fill"

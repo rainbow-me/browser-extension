@@ -1,12 +1,12 @@
 import {
   AnimatePresence,
-  MotionValue,
   motion,
+  useMotionValueEvent,
   useScroll,
   useSpring,
   useTransform,
 } from 'framer-motion';
-import React, { useCallback, useEffect, useState } from 'react';
+import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
@@ -74,22 +74,6 @@ export function Home() {
     setActiveTab(tab);
   }, []);
 
-  const { scrollY } = useScroll();
-  const smoothScrollY = useSpring(scrollY, {
-    damping: 50,
-    stiffness: 350,
-  });
-  const scrollYTransform = useTransform(smoothScrollY, [1, 1000], [0, 200]);
-  const [scrollAtTop, setScrollAtTop] = useState(true);
-
-  useEffect(() => {
-    return scrollY.onChange((position) => {
-      const isAtTop = position === 0;
-      if (isAtTop && !scrollAtTop) setScrollAtTop(true);
-      else if (!isAtTop && scrollAtTop) setScrollAtTop(false);
-    });
-  }, [scrollAtTop, scrollY]);
-
   useEffect(() => {
     analytics.track(event.walletViewed);
   }, []);
@@ -126,7 +110,7 @@ export function Home() {
             <Header />
             <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
             <Separator color="separatorTertiary" strokeWeight="1px" />
-            <Content scrollSpring={scrollYTransform} shouldSpring={scrollAtTop}>
+            <Content>
               {activeTab === 'tokens' && <Tokens />}
               {activeTab === 'activity' && <Activity />}
             </Content>
@@ -139,7 +123,12 @@ export function Home() {
 }
 
 function TopNav() {
-  const { scrollY } = useScroll({ offset: ['0px', '64px'] });
+  const { scrollY } = useScroll({ offset: ['0px', TOP_NAV_HEIGHT] });
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  useMotionValueEvent(scrollY, 'change', () => {
+    if (scrollY.get() === 0) setIsCollapsed(false);
+    if (scrollY.getPrevious() === 0) setIsCollapsed(true);
+  });
 
   return (
     <StickyHeader
@@ -160,7 +149,7 @@ function TopNav() {
         }
         titleComponent={
           <AnimatePresence>
-            {scrollY.get() && (
+            {isCollapsed && (
               <Box
                 key="top-nav-account-name"
                 as={motion.div}
@@ -194,24 +183,23 @@ function TabBar({
   );
 }
 
-function Content({
-  children,
-  scrollSpring,
-  shouldSpring,
-}: {
-  children: React.ReactNode;
-  scrollSpring?: MotionValue<number>;
-  shouldSpring: boolean;
-}) {
-  const y = shouldSpring ? scrollSpring : 0;
+function Content({ children }: PropsWithChildren) {
+  const { scrollY } = useScroll({ axis: 'y' });
+  const smoothScrollY = useSpring(scrollY, { damping: 50, stiffness: 350 });
+  const scrollYTransform = useTransform(
+    smoothScrollY,
+    [0, 1000],
+    [0, COLLAPSED_HEADER_TOP_OFFSET],
+  );
+
+  const [isTop, setIsTop] = useState(!!scrollY.get());
+  useMotionValueEvent(scrollY, 'change', (y) => setIsTop(y < 1));
+  const y = isTop ? scrollYTransform : 0;
+
   return (
     <Box
       background="surfacePrimaryElevated"
-      style={{
-        flex: 1,
-        position: 'relative',
-        contentVisibility: 'auto',
-      }}
+      style={{ flex: 1, position: 'relative', contentVisibility: 'auto' }}
     >
       {/** spring transformY to imitate scroll bounce*/}
       <Box height="full" as={motion.div} style={{ y }}>

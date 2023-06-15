@@ -136,12 +136,11 @@ export function Activity() {
         >
           {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { index, start } = virtualItem;
-            const rowData = listData?.[index];
+            const rowData = listData[index];
             return (
               <Box
                 key={index}
                 data-index={index}
-                ref={activityRowVirtualizer.measureElement}
                 style={{
                   position: 'absolute',
                   top: 0,
