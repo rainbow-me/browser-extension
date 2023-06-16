@@ -454,7 +454,7 @@
   },
   "import_wallet_via_seed": {
     "title": "Import Your Wallet",
-    "explanation": "To add a wallet, enter your 12 or 24 word Secret Recovery Phrase.",
+    "explanation": "To add a wallet, enter or paste your 12 or 24 word Secret Recovery Phrase.",
     "24_words": "I'm using 24 words",
     "12_words": "I'm using 12 words",
     "import_wallet_group": "Import wallet group",

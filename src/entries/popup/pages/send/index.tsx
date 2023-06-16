@@ -321,6 +321,14 @@ export function Send() {
           sendTokenInputRef.current?.focus();
         }
       } else {
+        if (!toAddressInputRef.current?.isFocused?.()) {
+          if (e.key === shortcuts.send.SET_MAX_AMOUNT.key) {
+            setMaxAssetAmount();
+          }
+          if (e.key === shortcuts.send.SWITCH_CURRENCY_LABEL.key) {
+            switchIndependentField();
+          }
+        }
         if (
           e.key === shortcuts.send.OPEN_CONTACT_MENU.key &&
           !valueInputRef.current?.isFocused?.()

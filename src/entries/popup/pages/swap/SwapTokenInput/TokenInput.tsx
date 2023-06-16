@@ -118,9 +118,11 @@ export const TokenInput = React.forwardRef<
     }, [inputRef, onDropdownOpen, setAssetFilter]);
 
     const onClose = useCallback(() => {
-      onDropdownAction();
       selectAsset(null);
-    }, [onDropdownAction, selectAsset]);
+      onDropdownOpen(!dropdownVisible);
+      setDropdownVisible(!dropdownVisible);
+      dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
+    }, [dropdownVisible, inputRef, onDropdownOpen, selectAsset]);
 
     const onInputValueChange = useCallback(
       (e: ChangeEvent<HTMLInputElement>) => {
@@ -137,21 +139,18 @@ export const TokenInput = React.forwardRef<
 
     useEffect(() => {
       if (prevDropdownVisible !== dropdownVisible && dropdownVisible) {
-        setTimeout(() => inputRef?.current?.focus(), 300);
+        setTimeout(() => inputRef?.current?.focus(), 100);
       }
     });
 
     useEffect(() => {
       setOnSelectAsset(onSelectAsset);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [onSelectAsset, setOnSelectAsset]);
 
     useEffect(() => {
-      setTimeout(() => {
-        if (openDropdownOnMount) {
-          onDropdownAction();
-        }
-      }, 300);
+      if (openDropdownOnMount) {
+        onDropdownAction();
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [openDropdownOnMount]);
 
