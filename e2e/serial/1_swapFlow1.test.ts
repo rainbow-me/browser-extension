@@ -276,6 +276,11 @@ it('should be able to open token to sell input and select assets', async () => {
     id: 'swap-flip-button',
     driver,
   });
+
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-token-input-dropdown-toggle',
+    driver,
+  });
   const toBuyInputEthSelected = await findElementByTestId({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
@@ -694,6 +699,10 @@ it('should be able to find exact match on other networks', async () => {
   });
   await findElementByTestIdAndClick({
     id: `token-to-sell-search-token-input`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-token-input-dropdown-toggle',
     driver,
   });
   await findElementByTestIdAndClick({
