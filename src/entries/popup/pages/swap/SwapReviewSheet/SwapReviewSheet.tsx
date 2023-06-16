@@ -10,6 +10,7 @@ import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
@@ -213,6 +214,7 @@ const SwapReviewSheetWithQuote = ({
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
   const { selectedGas } = useGasStore();
+  const { setSwapAssetsToRefresh } = useSwapAssetsToRefreshStore();
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
@@ -273,7 +275,7 @@ const SwapReviewSheetWithQuote = ({
     const flashbots =
       assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false;
     setSendingSwap(true);
-    const { errorMessage } = await wallet.executeRap<typeof type>({
+    const { hash, errorMessage } = await wallet.executeRap<typeof type>({
       rapActionParameters: {
         sellAmount: q.sellAmount?.toString(),
         buyAmount: q.buyAmount?.toString(),
@@ -285,7 +287,6 @@ const SwapReviewSheetWithQuote = ({
       },
       type,
     });
-
     if (errorMessage) {
       setSendingSwap(false);
       alert('Swap failed');
@@ -293,6 +294,7 @@ const SwapReviewSheetWithQuote = ({
         message: errorMessage,
       });
     } else {
+      setSwapAssetsToRefresh({ hash, assetToBuy, assetToSell });
       navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
     }
     isBridge
@@ -328,14 +330,15 @@ const SwapReviewSheetWithQuote = ({
           flashbots,
         });
   }, [
-    assetToBuy,
     assetToSell,
-    connectedToHardhat,
-    sendingSwap,
-    flashbotsEnabled,
-    navigate,
+    assetToBuy,
     quote,
     isBridge,
+    sendingSwap,
+    connectedToHardhat,
+    flashbotsEnabled,
+    setSwapAssetsToRefresh,
+    navigate,
   ]);
 
   const handleSwap = useCallback(() => {
