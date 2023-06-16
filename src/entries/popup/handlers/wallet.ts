@@ -44,6 +44,10 @@ import {
 const messenger = initializeMessenger({ connect: 'background' });
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
 
+interface ExecuteRapResponse extends TransactionResponse {
+  errorMessage?: string;
+}
+
 export const walletAction = async (action: string, payload: unknown) => {
   const { result }: { result: unknown } = await messenger.send(
     'wallet_action',
@@ -168,7 +172,7 @@ export async function executeRap<T extends RapTypes>({
 }: {
   rapActionParameters: RapSwapActionParameters<T>;
   type: RapTypes;
-}): Promise<TransactionResponse> {
+}): Promise<ExecuteRapResponse> {
   const nonce = await getNextNonce({
     address: rapActionParameters.quote.from as Address,
     chainId: rapActionParameters.chainId as number,
@@ -177,7 +181,7 @@ export async function executeRap<T extends RapTypes>({
     rapActionParameters: { ...rapActionParameters, nonce },
     type,
   };
-  return walletAction('execute_rap', params) as unknown as TransactionResponse;
+  return walletAction('execute_rap', params) as unknown as ExecuteRapResponse;
 }
 
 export const personalSign = async (
