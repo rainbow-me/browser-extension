@@ -10,6 +10,7 @@ export interface SwapAssetsToRefreshState {
     assetToSell: ParsedSearchAsset;
     assetToBuy: ParsedSearchAsset;
   }) => void;
+  removeSwapAssetsToRefresh: (assetsToRefresh: { hash: string }) => void;
   swapAssetsToRefresh: { [txHash: string]: ParsedSearchAsset[] };
 }
 
@@ -18,6 +19,11 @@ export const swapAssetsToRefreshStore = createStore<SwapAssetsToRefreshState>(
     setSwapAssetsToRefresh: ({ hash, assetToBuy, assetToSell }) => {
       const swapAssetsToRefresh = get().swapAssetsToRefresh;
       swapAssetsToRefresh[hash] = [assetToSell, assetToBuy];
+      set(swapAssetsToRefresh);
+    },
+    removeSwapAssetsToRefresh: ({ hash }) => {
+      const swapAssetsToRefresh = get().swapAssetsToRefresh;
+      delete swapAssetsToRefresh[hash];
       set(swapAssetsToRefresh);
     },
     swapAssetsToRefresh: {},

@@ -33,6 +33,13 @@ export type UserAssetsArgs = {
   connectedToHardhat: boolean;
 };
 
+type SetUserAssetsArgs = {
+  address?: Address;
+  currency: SupportedCurrencyKey;
+  connectedToHardhat: boolean;
+  userAssets: UserAssetsResult;
+};
+
 // ///////////////////////////////////////////////
 // Query Key
 
@@ -52,11 +59,23 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
+export const userAssetsSetQueryData = ({
+  address,
+  currency,
+  connectedToHardhat,
+  userAssets,
+}: SetUserAssetsArgs) => {
+  queryClient.setQueryData(
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    userAssets,
+  );
+};
+
 async function userAssetsQueryFunctionByChain({
   address,
   currency,
   connectedToHardhat,
-}: UserAssetsArgs): Promise<ParsedAssetsDictByChain> {
+}: UserAssetsArgs) {
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = cache.find(
     userAssetsQueryKey({ address, currency, connectedToHardhat }),
@@ -77,9 +96,12 @@ async function userAssetsQueryFunctionByChain({
   const queries = REFRACTION_SUPPORTED_CHAINS.map((chain) =>
     getResultsForChain(chain),
   );
-
-  const results = await Promise.all(queries);
-  return Object.assign({}, ...results);
+  try {
+    const results = await Promise.all(queries);
+    return Object.assign({}, ...results) as ParsedAssetsDictByChain;
+  } catch (e) {
+    return cachedUserAssets;
+  }
 }
 
 async function userAssetsQueryFunction({
