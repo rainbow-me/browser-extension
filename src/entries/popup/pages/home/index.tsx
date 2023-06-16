@@ -19,6 +19,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
 import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
@@ -76,6 +77,7 @@ export function Home() {
 
   useEffect(() => {
     analytics.track(event.walletViewed);
+    removeImportWalletSecrets();
   }, []);
 
   useKeyboardShortcut({
