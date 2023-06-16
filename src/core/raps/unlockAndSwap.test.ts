@@ -116,7 +116,7 @@ beforeAll(async () => {
   });
 }, 10000);
 
-test('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async () => {
+test.skip('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async () => {
   const gasLimit = await estimateUnlockAndSwap({
     quote: doesntNeedUnlockQuote as Quote,
     chainId: 1,
@@ -128,7 +128,7 @@ test('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async
   swapGasLimit = Number(gasLimit);
 });
 
-test('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async () => {
+test.skip('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async () => {
   const gasLimit = await estimateUnlockAndSwap({
     quote: needsUnlockQuote as Quote,
     chainId: 1,

@@ -39,15 +39,43 @@ export const ETH_MAINNET_ASSET: ParsedAddressAsset = {
   symbol: 'ETH',
   uniqueId: 'eth_1',
 };
-export const USDC_MAINNET_ASSET = {
+export const DAI_MAINNET_ASSET: ParsedAddressAsset = {
+  address: '0x6b175474e89094c44da98b954eedeac495271d0f' as Address,
+  balance: { amount: '0', display: '0 DAI' },
+  chainId: 1,
+  chainName: 'mainnet' as ChainName,
+  colors: { primary: '#808088', fallback: '#E8EAF5' },
+  decimals: 18,
+  icon_url:
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668633496/assets/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png',
+  isNativeAsset: false,
+  mainnetAddress: undefined,
+  name: 'DAI',
+  native: {
+    balance: { amount: '0', display: '$0' },
+    price: { change: '0.15%', amount: 1634.18, display: '$1,634.18' },
+  },
+  price: {
+    value: 1634.18,
+    relative_change_24h: 0.14646492502099484,
+    changed_at: -1,
+  },
+  symbol: 'DAI',
+  uniqueId: '0x6b175474e89094c44da98b954eedeac495271d0f_1',
+};
+export const USDC_MAINNET_ASSET: ParsedAddressAsset = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
+  balance: { amount: '0', display: '0 USDC' },
   chainId: 1,
   chainName: 'mainnet' as ChainName,
   colors: { primary: '#2775CA' },
+  icon_url:
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
   isNativeAsset: false,
   mainnetAddress: undefined,
   name: 'USD Coin',
   native: {
+    balance: { amount: '0', display: '$0' },
     price: {
       amount: 1.000587633346778,
       change: '-1.34%',
