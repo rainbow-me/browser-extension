@@ -24,6 +24,7 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { KeychainWallet } from '~/core/types/keychainTypes';
+import { ExecuteRapResponse } from '~/core/types/transactions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
@@ -43,10 +44,6 @@ import {
 
 const messenger = initializeMessenger({ connect: 'background' });
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
-
-interface ExecuteRapResponse extends TransactionResponse {
-  errorMessage?: string;
-}
 
 export const walletAction = async (action: string, payload: unknown) => {
   const { result }: { result: unknown } = await messenger.send(
