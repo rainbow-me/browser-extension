@@ -27,53 +27,40 @@ export const useSwapRefreshAssets = () => {
   const refreshAssets = useCallback(
     async (hash: string) => {
       const assetsToRefresh = swapAssetsToRefresh[hash];
-      if (!assetsToRefresh || !userAssets) return;
+      if (!assetsToRefresh.length || !userAssets) return;
       const [assetToBuy, assetToSell] = assetsToRefresh;
+
+      const updatedAssets = userAssets;
       const assetToBuyProvider = getProvider({ chainId: assetToBuy?.chainId });
       const assetToSellProvider = getProvider({
         chainId: assetToSell?.chainId,
       });
 
-      const updatedAssetToBuy = await fetchAssetBalanceViaProvider({
-        parsedAsset: assetToBuy,
-        currentAddress,
-        currency: currentCurrency,
-        provider: assetToBuyProvider,
-      });
-      const updatedAssetToSell = await fetchAssetBalanceViaProvider({
-        parsedAsset: assetToSell,
-        currentAddress,
-        currency: currentCurrency,
-        provider: assetToSellProvider,
-      });
+      const [updatedAssetToBuy, updatedAssetToSell] = await Promise.all([
+        fetchAssetBalanceViaProvider({
+          parsedAsset: assetToBuy,
+          currentAddress,
+          currency: currentCurrency,
+          provider: assetToBuyProvider,
+        }),
+        fetchAssetBalanceViaProvider({
+          parsedAsset: assetToSell,
+          currentAddress,
+          currency: currentCurrency,
+          provider: assetToSellProvider,
+        }),
+      ]);
 
-      const assetToBuyChainIdAssets = userAssets[assetToBuy.chainId];
-      const oldAssetToBuy = Object.values(assetToBuyChainIdAssets).find(
-        (userAsset) =>
-          userAsset.address === assetToBuy.address &&
-          userAsset.uniqueId === assetToBuy.uniqueId &&
-          userAsset.chainId === assetToBuy.chainId,
-      );
-
-      if (oldAssetToBuy) {
-        assetToBuyChainIdAssets[oldAssetToBuy.uniqueId] = updatedAssetToBuy;
-      }
-
-      const assetToSellChainIdAssets = userAssets[assetToBuy.chainId];
-      const oldAssetToSell = Object.values(assetToSellChainIdAssets).find(
-        (userAsset) =>
-          userAsset.address === assetToBuy.address &&
-          userAsset.chainId === assetToBuy.chainId,
-      );
-      if (oldAssetToSell) {
-        assetToSellChainIdAssets[oldAssetToSell.uniqueId] = updatedAssetToSell;
-      }
+      updatedAssets[assetToBuy.chainId][updatedAssetToBuy.uniqueId] =
+        updatedAssetToBuy;
+      updatedAssets[assetToSell.chainId][updatedAssetToSell.uniqueId] =
+        updatedAssetToSell;
 
       userAssetsSetQueryData({
         address: currentAddress,
         currency: currentCurrency,
         connectedToHardhat,
-        userAssets,
+        userAssets: updatedAssets,
       });
 
       removeSwapAssetsToRefresh({ hash });

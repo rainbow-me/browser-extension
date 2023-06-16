@@ -98,6 +98,7 @@ async function userAssetsQueryFunctionByChain({
   );
   try {
     const results = await Promise.all(queries);
+    console.log('RETURNINUG FETCH RESPONSEEEE');
     return Object.assign({}, ...results) as ParsedAssetsDictByChain;
   } catch (e) {
     return cachedUserAssets;
