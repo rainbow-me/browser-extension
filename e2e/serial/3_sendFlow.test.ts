@@ -173,7 +173,7 @@ it('should be able to delete contact on send flow', async () => {
   expect(displayNameText).toBe('rainbowwallet.eth');
 });
 
-it.skip('should be able to clear to address input on send flow', async () => {
+it('should be able to clear to address input on send flow', async () => {
   await findElementByTestIdAndClick({
     id: 'input-wrapper-close-to-address-input',
     driver,

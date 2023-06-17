@@ -260,8 +260,19 @@ export async function waitAndClick(element, driver) {
 }
 
 export async function typeOnTextInput({ id, text, driver }) {
-  const element = await findElementByTestId({ id, driver });
-  await element.sendKeys(text);
+  try {
+    const element = await findElementByTestId({ id, driver });
+    if (!element) {
+      throw new Error(`Element with ID '${id}' not found`);
+    }
+    await element.sendKeys(text);
+  } catch (error) {
+    console.error(
+      `Error occurred while typing on input with ID '${id}':`,
+      error,
+    );
+    throw error;
+  }
 }
 
 export async function getTextFromTextInput({ id, driver }) {

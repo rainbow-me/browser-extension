@@ -20,6 +20,7 @@ import {
   shortenAddress,
   switchWallet,
   typeOnTextInput,
+  waitAndClick,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
@@ -50,11 +51,11 @@ describe('Watch wallet then add more and switch between them', () => {
     await findElementByTestIdAndClick({ id: 'import-wallet-button', driver });
     await findElementByTestIdAndClick({ id: 'watch-wallet-option', driver });
 
-    const watchTextArea = await findElementByTestId({
+    await typeOnTextInput({
       id: 'secret-text-area-watch',
+      text: TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
       driver,
     });
-    await watchTextArea.sendKeys(TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS);
 
     await waitUntilElementByTestIdIsPresent({
       id: 'watch-wallets-button-ready',
@@ -66,16 +67,14 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    const passwordInput = await findElementByTestId({
-      id: 'password-input',
-      driver,
-    });
-    await passwordInput.sendKeys('test1234');
-    const confirmPasswordInput = await findElementByTestId({
+    await typeOnTextInput({ id: 'password-input', text: 'test1234', driver });
+
+    await typeOnTextInput({
       id: 'confirm-password-input',
+      text: 'test1234',
       driver,
     });
-    await confirmPasswordInput.sendKeys('test1234');
+
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
 
     await findElementByText(driver, 'Rainbow is ready to use');
@@ -147,14 +146,16 @@ describe('Watch wallet then add more and switch between them', () => {
 
     await typeOnTextInput({
       id: 'secret-text-area-watch',
-      driver,
       text: TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
+      driver,
     });
 
-    await findElementByTestIdAndClick({
+    const button = await findElementByTestId({
       id: 'watch-wallets-button-ready',
       driver,
     });
+
+    await waitAndClick(button, driver);
 
     await delayTime('medium');
 
