@@ -8,7 +8,6 @@ import {
   fillPrivateKey,
   fillSeedPhrase,
   findElementByIdAndClick,
-  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -20,7 +19,6 @@ import {
   shortenAddress,
   switchWallet,
   typeOnTextInput,
-  waitAndClick,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
@@ -58,12 +56,12 @@ describe('Watch wallet then add more and switch between them', () => {
     });
 
     await waitUntilElementByTestIdIsPresent({
-      id: 'watch-wallets-button-ready',
+      id: 'watch-wallets-ready',
       driver,
     });
 
     await findElementByTestIdAndClick({
-      id: 'watch-wallets-button-ready',
+      id: 'watch-wallets-ready',
       driver,
     });
 
@@ -150,14 +148,15 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    const button = await findElementByTestId({
-      id: 'watch-wallets-button-ready',
+    await waitUntilElementByTestIdIsPresent({
+      id: 'watch-wallets-ready',
       driver,
     });
 
-    await waitAndClick(button, driver);
-
-    await delayTime('medium');
+    await findElementByTestIdAndClick({
+      id: 'watch-wallets-ready',
+      driver,
+    });
 
     it('should display watched account name', async () => {
       await goToPopup(driver, rootURL);
