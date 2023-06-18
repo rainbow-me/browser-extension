@@ -29,10 +29,6 @@ const BINARY_PATHS = {
   },
 };
 
-export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
-export const byText = (text: string) =>
-  By.xpath(`//*[contains(text(),"${text}")]`);
-
 // navigators
 
 export async function goToTestApp(url, selector, driver, selectorType = 'id') {
@@ -46,14 +42,20 @@ export async function goToTestApp(url, selector, driver, selectorType = 'id') {
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
-export async function goToPopup(driver, rootURL, route = '') {
-  await driver.get(rootURL + '/popup.html' + route);
-  const element = await findElementById({ id: 'app', driver });
-  await driver.wait(until.elementIsVisible(element), waitUntilTime);
+export async function goToPopup(
+  driver: WebDriver,
+  rootURL: string,
+  route = '',
+) {
+  await goToURL(driver, rootURL + '/popup.html' + route);
 }
 
-export async function goToWelcome(driver, rootURL) {
-  await driver.get(rootURL + '/popup.html#/welcome');
+export async function goToWelcome(driver: WebDriver, rootURL: string) {
+  await goToURL(driver, rootURL + '/popup.html#/welcome');
+}
+
+async function goToURL(driver: WebDriver, url: string) {
+  await driver.get(url);
   const element = await findElementById({ id: 'app', driver });
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
@@ -107,7 +109,7 @@ export async function getWindowHandle({ driver }) {
   }
 }
 
-export async function switchWindows(window, driver: WebDriver) {
+export async function switchWindows(window: string, driver: WebDriver) {
   try {
     await delayTime('medium');
     await driver.wait(async () => {
@@ -165,23 +167,25 @@ export async function getExtensionIdByName(driver, extensionName) {
 
 // search functions
 
-export async function querySelector(driver, selector) {
+export async function querySelector(driver: WebDriver, selector: string) {
   try {
     await driver.wait(until.elementLocated(By.css(selector)), waitUntilTime);
-    const el = await driver.findElement(By.css(selector));
-    await driver.wait(until.elementIsVisible(el), waitUntilTime);
-    return el;
+    const element = await driver.findElement(By.css(selector));
+    await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    return element;
   } catch (error) {
     console.error(`Failed to locate element with selector: ${selector}`, error);
+    throw error;
   }
 }
 
-export async function querySelectorInverse(driver, selector) {
+export async function querySelectorInverse(
+  driver: WebDriver,
+  selector: string,
+) {
   try {
-    await driver.wait(
-      until.stalenessOf(driver.findElement(By.css(selector))),
-      waitUntilTime,
-    );
+    const element = await driver.findElement(By.css(selector));
+    await driver.wait(until.stalenessOf(element), waitUntilTime);
     return true;
   } catch (error) {
     console.error(`Found element with selector: ${selector}`);
@@ -189,31 +193,55 @@ export async function querySelectorInverse(driver, selector) {
   }
 }
 
-export async function findElementByText(driver, text) {
-  const el = await driver.wait(
-    until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
+export async function findElementByText(driver: WebDriver, text: string) {
+  const escapedText = text.replace(/'/g, "\\'");
+  const xpathExpression = `//*[contains(text(), '${escapedText}')]`;
+
+  const element = await driver.wait(
+    until.elementLocated(By.xpath(xpathExpression)),
     waitUntilTime,
   );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  return await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
 export async function findElementByTextAndClick(driver, text) {
-  const element = await findElementByText(driver, text);
-  await waitAndClick(element, driver);
+  try {
+    const element = await findElementByText(driver, text);
+    await waitAndClick(element, driver);
+  } catch (error) {
+    console.error(`Failed to find element by text: ${text}`, error);
+    throw error;
+  }
 }
 
 export async function findElementAndClick({ id, driver }) {
-  const element = await querySelector(driver, `[id="${id}"]`);
-  await waitAndClick(element, driver);
+  try {
+    const element = await querySelector(driver, `[id="${id}"]`);
+    await waitAndClick(element, driver);
+  } catch (error) {
+    console.error(`Failed to find element by id: ${id}`, error);
+    throw error;
+  }
 }
 
 export async function findElementByTestId({ id, driver }) {
-  const element = await querySelector(driver, `[data-testid="${id}"]`);
-  return element;
+  try {
+    const element = await querySelector(driver, `[data-testid="${id}"]`);
+    return element;
+  } catch (error) {
+    console.error(`Failed to find element by test id: ${id}`, error);
+    throw error;
+  }
 }
 
 export async function findElementById({ id, driver }) {
-  return await querySelector(driver, `[id="${id}"]`);
+  try {
+    const element = await querySelector(driver, `[id="${id}"]`);
+    return element;
+  } catch (error) {
+    console.error(`Failed to find element by id: ${id}`, error);
+    throw error;
+  }
 }
 
 export async function doNotFindElementByTestId({ id, driver }) {
@@ -225,21 +253,39 @@ export async function doNotFindElementByTestId({ id, driver }) {
 }
 
 export async function findElementByTestIdAndClick({ id, driver }) {
-  const element = await findElementByTestId({ id, driver });
-  await waitAndClick(element, driver);
+  try {
+    const element = await findElementByTestId({ id, driver });
+    await waitAndClick(element, driver);
+  } catch (error) {
+    console.error(`Failed to find element by test id: ${id}`, error);
+    throw error;
+  }
 }
 
 export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
-  const element = await findElementByTestId({ id, driver });
-  if (element) {
-    return;
+  try {
+    const element = await findElementByTestId({ id, driver });
+    if (element) {
+      return;
+    }
+    return waitUntilElementByTestIdIsPresent({ id, driver });
+  } catch (error) {
+    console.error(
+      `Failed to find element with testId: ${id} after waiting`,
+      error,
+    );
+    throw error;
   }
-  return waitUntilElementByTestIdIsPresent({ id, driver });
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
-  const element = await findElementById({ id, driver });
-  await waitAndClick(element, driver);
+  try {
+    const element = await findElementById({ id, driver });
+    await waitAndClick(element, driver);
+  } catch (error) {
+    console.error(`Failed to find element by id: ${id}`, error);
+    throw error;
+  }
 }
 
 export async function waitAndClick(element, driver) {
@@ -248,46 +294,59 @@ export async function waitAndClick(element, driver) {
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
     await element.click();
   } catch (error) {
-    if (error.name === 'ElementClickInterceptedError') {
-      const elementId = await element.getAttribute('id');
-      console.error(
-        `Click intercepted while trying to click element ${elementId}`,
-      );
-    } else {
-      throw error;
-    }
+    console.error(`unable to click element: ${element}`, error);
   }
 }
 
 export async function typeOnTextInput({ id, text, driver }) {
   try {
     const element = await findElementByTestId({ id, driver });
-    if (!element) {
-      throw new Error(`Element with ID '${id}' not found`);
-    }
     await element.sendKeys(text);
   } catch (error) {
     console.error(
-      `Error occurred while typing on input with ID '${id}':`,
+      `Error occurred while typing on input with testId '${id}':`,
+      error,
+    );
+  }
+}
+
+export async function getTextFromTextInput({ id, driver }) {
+  try {
+    const element = await findElementByTestId({ id, driver });
+    return await element.getAttribute('value');
+  } catch (error) {
+    console.error(
+      `Error occurred while retrieving text from input with testId '${id}':`,
       error,
     );
     throw error;
   }
 }
 
-export async function getTextFromTextInput({ id, driver }) {
-  const element = await findElementByTestId({ id, driver });
-  return await element.getAttribute('value');
-}
-
-export async function getTextFromText({ id, driver }) {
-  const element = await findElementByTestId({ id, driver });
-  return await element.getText();
+export async function getTextFromElement({ id, driver }) {
+  try {
+    const element = await findElementByTestId({ id, driver });
+    return await element.getText();
+  } catch (error) {
+    console.error(
+      `Error occurred while retrieving text from element with testId '${id}':`,
+      error,
+    );
+    throw error;
+  }
 }
 
 export async function getTextFromDappText({ id, driver }) {
-  const element = await findElementById({ id, driver });
-  return await element.getText();
+  try {
+    const element = await findElementById({ id, driver });
+    return await element.getText();
+  } catch (error) {
+    console.error(
+      `Error occurred while retrieving text from Dapp element with id '${id}':`,
+      error,
+    );
+    throw error;
+  }
 }
 
 export const untilIsClickable = (locator: Locator) => {
@@ -305,12 +364,25 @@ export const untilIsClickable = (locator: Locator) => {
   );
 };
 
-export async function awaitTextChange(id, text, driver) {
-  const element = await findElementById({
-    id: id,
-    driver,
-  });
-  await driver.wait(until.elementTextIs(element, text), waitUntilTime);
+export async function awaitTextChange(
+  id: string,
+  text: string,
+  driver: WebDriver,
+) {
+  try {
+    const element = await findElementById({
+      id: id,
+      driver,
+    });
+
+    await driver.wait(until.elementTextIs(element, text), waitUntilTime);
+  } catch (error) {
+    console.error(
+      `Error occurred while awaiting text change for element with ID '${id}':`,
+      error,
+    );
+    throw error;
+  }
 }
 
 // various functions and flows
@@ -338,7 +410,7 @@ export async function checkEnsResolution(
   } catch (error) {
     hasError = true;
     console.error(
-      `ENS name "${ens}" not resolved. Switching to ETH address if available.`,
+      `ENS name "${ens}" not resolved. Switching to ETH address if available`,
     );
   }
 
@@ -350,7 +422,7 @@ export async function checkEnsResolution(
 
 export async function switchWallet(
   Ethaddress: string,
-  rootURL: string | WebDriver,
+  rootURL,
   driver: WebDriver,
   ens?: string,
 ) {
@@ -471,7 +543,7 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
 
 export async function checkWalletName(driver, rootURL, walletAddress) {
   goToPopup(driver, rootURL);
-  const account = await getTextFromText({ id: 'account-name', driver });
+  const account = await getTextFromElement({ id: 'account-name', driver });
   expect(account).toBe(shortenAddress(walletAddress));
 }
 

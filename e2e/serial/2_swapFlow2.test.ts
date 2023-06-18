@@ -18,7 +18,7 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
-  getTextFromText,
+  getTextFromElement,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
@@ -357,13 +357,13 @@ it('should be able to see crosschain swap information in review sheet', async ()
     driver,
   });
 
-  const swapReviewConfirmationText = await getTextFromText({
+  const swapReviewConfirmationText = await getTextFromElement({
     id: 'swap-review-confirmation-text',
     driver,
   });
   expect(swapReviewConfirmationText).toBe('Swap DAI to USDC');
 
-  const swapReviewTitleText = await getTextFromText({
+  const swapReviewTitleText = await getTextFromElement({
     id: 'swap-review-title-text',
     driver,
   });
@@ -539,13 +539,13 @@ it('should be able to see bridge information in review sheet', async () => {
   });
   expect(assetToBuyContractRow).toBeFalsy();
 
-  const swapReviewConfirmationText = await getTextFromText({
+  const swapReviewConfirmationText = await getTextFromElement({
     id: 'swap-review-confirmation-text',
     driver,
   });
   expect(swapReviewConfirmationText).toBe('Bridge ETH');
 
-  const swapReviewTitleText = await getTextFromText({
+  const swapReviewTitleText = await getTextFromElement({
     id: 'swap-review-title-text',
     driver,
   });
