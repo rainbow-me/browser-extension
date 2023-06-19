@@ -97,11 +97,11 @@ export function Tokens() {
           }}
         >
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
-            const { index } = virtualItem;
+            const { key, index } = virtualItem;
             const rowData = assets[index];
             return (
               <Box
-                key={index}
+                key={key}
                 style={{
                   position: 'absolute',
                   top: 0,
