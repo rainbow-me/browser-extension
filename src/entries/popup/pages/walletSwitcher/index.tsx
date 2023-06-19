@@ -248,8 +248,17 @@ export function WalletSwitcher() {
 
   const { saveWalletOrder } = useWalletOrderStore();
 
-  const { filteredAndSortedAccounts, sortedAccounts } =
-    useAccounts(searchQuery);
+  const { filteredAndSortedAccounts, sortedAccounts } = useAccounts(
+    ({ sortedAccounts }) => ({
+      sortedAccounts,
+      filteredAndSortedAccounts: sortedAccounts.filter(
+        ({ address, walletName, ensName }) =>
+          address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          walletName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          ensName?.toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
+    }),
+  );
 
   const displayedAccounts = useMemo(
     () =>
