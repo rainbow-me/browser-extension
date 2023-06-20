@@ -44,9 +44,12 @@ import {
   useSwapReviewDetails,
   useSwapValidations,
 } from '~/entries/popup/hooks/swap';
+import { getNetworkNativeAssetUniqueId } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
+import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../../handlers/wallet';
 
@@ -211,6 +214,11 @@ const SwapReviewSheetWithQuote = ({
   const [sendingSwap, setSendingSwap] = useState(false);
   const { selectedGas } = useGasStore();
 
+  const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
+    chainId: assetToSell?.chainId || ChainId.mainnet,
+  });
+  const nativeAsset = useUserAsset(nativeAssetUniqueId || '');
+
   const { buttonLabel: validationButtonLabel, enoughNativeAssetBalanceForGas } =
     useSwapValidations({
       assetToSell,
@@ -265,7 +273,7 @@ const SwapReviewSheetWithQuote = ({
     const flashbots =
       assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false;
     setSendingSwap(true);
-    const { nonce } = await wallet.executeRap<typeof type>({
+    const { errorMessage } = await wallet.executeRap<typeof type>({
       rapActionParameters: {
         sellAmount: q.sellAmount?.toString(),
         buyAmount: q.buyAmount?.toString(),
@@ -277,10 +285,15 @@ const SwapReviewSheetWithQuote = ({
       },
       type,
     });
-    if (nonce) {
-      navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
-    } else {
+
+    if (errorMessage) {
       setSendingSwap(false);
+      alert('Swap failed');
+      logger.error(new RainbowError('swap: error executing swap'), {
+        message: errorMessage,
+      });
+    } else {
+      navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
     }
     isBridge
       ? analytics.track(event.bridgeSubmitted, {
@@ -326,10 +339,17 @@ const SwapReviewSheetWithQuote = ({
   ]);
 
   const handleSwap = useCallback(() => {
-    if (!enoughNativeAssetBalanceForGas) return;
+    if (!enoughNativeAssetBalanceForGas) {
+      alert(
+        i18n.t('send.button_label.insufficient_native_asset_for_gas', {
+          symbol: nativeAsset?.symbol,
+        }),
+      );
+      return;
+    }
     executeSwap();
     new Audio(SendSound).play();
-  }, [enoughNativeAssetBalanceForGas, executeSwap]);
+  }, [enoughNativeAssetBalanceForGas, executeSwap, nativeAsset?.symbol]);
 
   const goBack = useCallback(() => {
     hideSwapReview();
@@ -658,6 +678,7 @@ const SwapReviewSheetWithQuote = ({
                     height="44px"
                     variant="flat"
                     color={buttonColor}
+                    disabled={sendingSwap}
                     width="full"
                     testId="swap-review-execute"
                   >

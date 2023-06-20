@@ -149,6 +149,7 @@ class KeychainManager {
           default:
             throw new Error('Keychain type not recognized.');
         }
+        await this.overrideReadOnlyKeychains(keychain);
         await this.checkForDuplicateInKeychain(keychain);
         this.state.keychains.push(keychain as Keychain);
         return keychain;
@@ -255,6 +256,22 @@ class KeychainManager {
       // eslint-disable-next-line no-empty
     } catch (e) {}
     return false;
+  }
+
+  async overrideReadOnlyKeychains(incomingKeychain: Keychain) {
+    if (incomingKeychain.type === KeychainType.ReadOnlyKeychain) return;
+    const currentAccounts = await this.getAccounts();
+    const incomingAccounts = await incomingKeychain.getAccounts();
+    const conflictingAccounts = incomingAccounts.filter((acc) =>
+      currentAccounts.includes(acc),
+    );
+    await Promise.all(
+      conflictingAccounts.map(async (acc) => {
+        const wallet = await this.getWallet(acc);
+        const isReadOnly = wallet.type === KeychainType.ReadOnlyKeychain;
+        if (isReadOnly) this.removeAccount(acc);
+      }),
+    );
   }
 
   async checkForDuplicateInKeychain(keychain: Keychain) {

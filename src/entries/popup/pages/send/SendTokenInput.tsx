@@ -222,6 +222,11 @@ export const SendTokenInput = React.forwardRef<
   }, [dropdownClosed]);
 
   const inputVisible = useMemo(() => !asset, [asset]);
+  const onFocusTokenInput = useCallback(() => {
+    if (!dropdownVisible) {
+      onDropdownAction();
+    }
+  }, [dropdownVisible, onDropdownAction]);
 
   return (
     <DropdownInputWrapper
@@ -236,7 +241,7 @@ export const SendTokenInput = React.forwardRef<
       centerComponent={
         <Box width="full">
           {inputVisible ? (
-            <Box as={motion.div} layout="position" onClick={onDropdownAction}>
+            <Box as={motion.div} layout="position">
               <Input
                 testId="token-input"
                 value={inputValue}
@@ -246,6 +251,8 @@ export const SendTokenInput = React.forwardRef<
                 variant="transparent"
                 style={{ paddingLeft: 0, paddingRight: 0 }}
                 innerRef={inputRef}
+                tabIndex={0}
+                onFocus={onFocusTokenInput}
               />
             </Box>
           ) : (

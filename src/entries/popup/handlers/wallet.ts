@@ -24,6 +24,7 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { KeychainWallet } from '~/core/types/keychainTypes';
+import { ExecuteRapResponse } from '~/core/types/transactions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
@@ -168,7 +169,7 @@ export async function executeRap<T extends RapTypes>({
 }: {
   rapActionParameters: RapSwapActionParameters<T>;
   type: RapTypes;
-}): Promise<TransactionResponse> {
+}): Promise<ExecuteRapResponse> {
   const nonce = await getNextNonce({
     address: rapActionParameters.quote.from as Address,
     chainId: rapActionParameters.chainId as number,
@@ -177,7 +178,7 @@ export async function executeRap<T extends RapTypes>({
     rapActionParameters: { ...rapActionParameters, nonce },
     type,
   };
-  return walletAction('execute_rap', params) as unknown as TransactionResponse;
+  return walletAction('execute_rap', params) as unknown as ExecuteRapResponse;
 }
 
 export const personalSign = async (

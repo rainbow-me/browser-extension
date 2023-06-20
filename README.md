@@ -15,7 +15,7 @@
 
 ### 1. Set up Node
 
-Use node v14 or if you use nvm follow the instructions below
+Use node v16 or if you use nvm follow the instructions below
 
 ```bash
 nvm install

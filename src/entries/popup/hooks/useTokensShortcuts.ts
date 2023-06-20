@@ -7,6 +7,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
+import { isNativeAsset } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorerUrl } from '~/core/utils/transactions';
 import { triggerAlert } from '~/design-system/components/Alert/util';
@@ -24,6 +25,10 @@ export function useTokensShortcuts() {
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
+
+  const hasExplorerLink =
+    selectedToken &&
+    !isNativeAsset(selectedToken?.address, selectedToken?.chainId);
 
   const allowSwap = useMemo(
     () =>
@@ -58,12 +63,13 @@ export function useTokensShortcuts() {
           navigate(ROUTES.SEND);
         }
         if (e.key === shortcuts.tokens.VIEW_ASSET.key) {
-          viewOnExplorer();
+          hasExplorerLink && viewOnExplorer();
         }
       }
     },
     [
       allowSwap,
+      hasExplorerLink,
       navigate,
       navigateToSwaps,
       selectedToken,
