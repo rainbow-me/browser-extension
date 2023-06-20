@@ -85,8 +85,8 @@ export async function getAllWindowHandles({
 
     return {
       handlers,
-      popupHandler: popupHandler ?? popupHandlerFromHandlers,
-      dappHandler: dappHandler ?? dappHandlerFromHandlers,
+      popupHandler: popupHandler || popupHandlerFromHandlers,
+      dappHandler: dappHandler || dappHandlerFromHandlers,
     };
   } catch (error) {
     console.error('Error occurred while getting window handles:', error);
@@ -179,20 +179,6 @@ export async function querySelector(driver: WebDriver, selector: string) {
   }
 }
 
-export async function querySelectorInverse(
-  driver: WebDriver,
-  selector: string,
-) {
-  try {
-    const element = await driver.findElement(By.css(selector));
-    await driver.wait(until.stalenessOf(element), waitUntilTime);
-    return true;
-  } catch (error) {
-    console.error(`Found element with selector: ${selector}`);
-    return false;
-  }
-}
-
 export async function findElementByText(driver: WebDriver, text: string) {
   const escapedText = text.replace(/'/g, "\\'");
   const xpathExpression = `//*[contains(text(), '${escapedText}')]`;
@@ -246,7 +232,7 @@ export async function findElementById({ id, driver }) {
 
 export async function doNotFindElementByTestId({ id, driver }) {
   const elementFound = await Promise.race([
-    querySelectorInverse(driver, `[data-testid="${id}"]`),
+    querySelector(driver, `[data-testid="${id}"]`),
     new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
   ]);
   return !!elementFound;
@@ -559,4 +545,18 @@ export async function delayTime(
     case 'very-long':
       return await delay(5000);
   }
+}
+
+export async function waitUntilEnabled(testId, driver) {
+  const element = await driver.findElement(By.css(`[data-testid="${testId}"]`));
+  const checkEnabledValue = async () => {
+    try {
+      await element.getAttribute('disabled');
+    } catch (error) {
+      return 'enabled';
+    }
+    return checkEnabledValue();
+  };
+
+  return await checkEnabledValue();
 }

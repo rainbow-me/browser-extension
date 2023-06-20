@@ -19,7 +19,7 @@ import {
   shortenAddress,
   switchWallet,
   typeOnTextInput,
-  waitUntilElementByTestIdIsPresent,
+  waitUntilEnabled,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -55,13 +55,12 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    await waitUntilElementByTestIdIsPresent({
-      id: 'watch-wallets-ready',
-      driver,
-    });
+    const buttonStatus = await waitUntilEnabled('watch-wallets', driver);
+
+    expect(await buttonStatus).toBe('enabled');
 
     await findElementByTestIdAndClick({
-      id: 'watch-wallets-ready',
+      id: 'watch-wallets',
       driver,
     });
 
@@ -148,13 +147,12 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    await waitUntilElementByTestIdIsPresent({
-      id: 'watch-wallets-ready',
-      driver,
-    });
+    const buttonStatus = await waitUntilEnabled('watch-wallets', driver);
+
+    expect(await buttonStatus).toBe('enabled');
 
     await findElementByTestIdAndClick({
-      id: 'watch-wallets-ready',
+      id: 'watch-wallets',
       driver,
     });
 
