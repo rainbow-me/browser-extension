@@ -16,6 +16,7 @@ import { chainIdFromChainName } from '~/core/utils/chains';
 import { fetchUserAssetsByChain } from './userAssetsByChain';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
+export const USER_ASSETS_STALE_INTERVAL = 30000;
 const REFRACTION_SUPPORTED_CHAINS = [
   ChainName.mainnet,
   ChainName.optimism,
@@ -37,7 +38,14 @@ type SetUserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
   connectedToHardhat: boolean;
-  userAssets: UserAssetsResult;
+  userAssets?: UserAssetsResult;
+};
+
+type SetUserDefaultsArgs = {
+  address?: Address;
+  currency: SupportedCurrencyKey;
+  connectedToHardhat: boolean;
+  staleTime: number;
 };
 
 // ///////////////////////////////////////////////
@@ -58,6 +66,18 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
 // ///////////////////////////////////////////////
 // Query Function
+
+export const userAssetsSetQueryDefaults = ({
+  address,
+  currency,
+  connectedToHardhat,
+  staleTime,
+}: SetUserDefaultsArgs) => {
+  queryClient.setQueryDefaults(
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    { staleTime },
+  );
+};
 
 export const userAssetsSetQueryData = ({
   address,
@@ -81,6 +101,7 @@ async function userAssetsQueryFunctionByChain({
     userAssetsQueryKey({ address, currency, connectedToHardhat }),
   )?.state?.data as ParsedAssetsDictByChain;
   const getResultsForChain = async (chain: ChainName) => {
+    console.log('-- getResultsForChain');
     const results =
       (await fetchUserAssetsByChain(
         { address, chain, currency, connectedToHardhat },
