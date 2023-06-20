@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { i18n } from '~/core/languages';
 import { RAINBOW_WAITLIST_URL } from '~/core/references/links';
 import { postInviteCode } from '~/core/resources/inviteCode';
+import { goToNewTab } from '~/core/utils/tabs';
 import {
   AccentColorProvider,
   Bleed,
@@ -15,6 +16,7 @@ import {
   Text,
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { TextLink } from '~/design-system/components/TextLink/TextLink';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { globalColors } from '~/design-system/styles/designTokens';
 
@@ -65,6 +67,13 @@ export function InviteCodePortal({
       },
       [inviteCodeValidated],
     );
+
+  const goToGetCode = useCallback(() => {
+    goToNewTab({
+      url: RAINBOW_WAITLIST_URL,
+      active: false,
+    });
+  }, []);
 
   useEffect(() => {
     inputRef?.current?.focus();
@@ -176,7 +185,7 @@ export function InviteCodePortal({
           </Box>
         </Box>
 
-        <Box paddingHorizontal="16px">
+        <Box style={{ zIndex: 100 }} paddingHorizontal="16px">
           <Text
             align="center"
             color="labelTertiary"
@@ -185,14 +194,9 @@ export function InviteCodePortal({
           >
             {i18n.t('welcome.invite_code_explanation')}
             &nbsp;
-            <a
-              href={RAINBOW_WAITLIST_URL}
-              target="_blank"
-              style={{ color: accentColorAsHsl }}
-              rel="noreferrer"
-            >
+            <TextLink onClick={goToGetCode} color="blue">
               {i18n.t('welcome.invite_code_explanation_link')}
-            </a>
+            </TextLink>
             {'.'}
           </Text>
         </Box>
