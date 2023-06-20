@@ -1,4 +1,5 @@
 import { BigNumberish } from '@ethersproject/bignumber';
+import { TransactionResponse } from '@ethersproject/providers';
 import { Address } from 'wagmi';
 
 import { ParsedAsset, ZerionAsset } from './assets';
@@ -176,4 +177,8 @@ export enum TransactionDirection {
   in = 'in',
   out = 'out',
   self = 'self',
+}
+
+export interface ExecuteRapResponse extends TransactionResponse {
+  errorMessage?: string;
 }

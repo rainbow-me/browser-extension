@@ -25,7 +25,7 @@ export const SwapInputActionButton = ({
       height="28px"
       variant="flat"
       onClick={onClose}
-      testId={testId}
+      testId={`${testId}-token-input-remove`}
       tabIndex={0}
     >
       <Inline
@@ -47,6 +47,7 @@ export const SwapInputActionButton = ({
       as={motion.div}
       animate={dropdownVisible ? { rotate: 180 } : { rotate: 0 }}
       onClick={onDropdownAction}
+      testId={`${testId}-token-input-dropdown-toggle`}
     >
       <Inline alignVertical="center">
         <Symbol
