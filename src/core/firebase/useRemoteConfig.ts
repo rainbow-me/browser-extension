@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
 
-import config, { RainbowConfig } from '~/core/firebase/remoteConfig';
+import { RainbowConfig, onConfigLoaded } from '~/core/firebase/remoteConfig';
 
 export const useRemoteConfig = () => {
-  const [remoteConfig, setRemoteConfig] = useState<RainbowConfig>(
-    {} as RainbowConfig,
-  );
-  const [ready, setReady] = useState<boolean>(false);
+  const [remoteConfig, setRemoteConfig] = useState({} as RainbowConfig);
 
   useEffect(() => {
-    setTimeout(() => {
-      setRemoteConfig(config);
-      setReady(true);
-    }, 500);
+    const cleanup = onConfigLoaded((config) => setRemoteConfig(config));
+    return () => {
+      cleanup();
+    };
   }, []);
 
-  return { remoteConfig, remoteConfigReady: ready };
+  return { remoteConfig };
 };

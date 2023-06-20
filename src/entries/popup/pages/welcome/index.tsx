@@ -22,7 +22,7 @@ export function Welcome() {
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
     useState(!!pendingRequests.length);
   const headerControls = useAnimationControls();
-  const { remoteConfig, remoteConfigReady } = useRemoteConfig();
+  const { remoteConfig } = useRemoteConfig();
 
   const { inviteCodeValidated, setInviteCodeValidated } = useInviteCodeStore();
   const [screen, setScreen] = useState<'invite_code' | 'welcome' | ''>(
@@ -31,18 +31,14 @@ export function Welcome() {
   const prevScreen = usePrevious(screen);
 
   useEffect(() => {
-    if (remoteConfigReady) {
+    if (Object.keys(remoteConfig).length) {
       setScreen(
         remoteConfig.invite_code_required && !inviteCodeValidated
           ? 'invite_code'
           : 'welcome',
       );
     }
-  }, [
-    inviteCodeValidated,
-    remoteConfig.invite_code_required,
-    remoteConfigReady,
-  ]);
+  }, [inviteCodeValidated, remoteConfig.invite_code_required, remoteConfig]);
 
   useEffect(() => {
     if (prevScreen === 'invite_code' && screen === 'welcome') {
