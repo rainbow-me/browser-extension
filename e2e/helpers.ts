@@ -395,31 +395,6 @@ export function shortenAddress(address: string): string {
     : address;
 }
 
-export async function checkEnsResolution(
-  address: string,
-  driver: WebDriver,
-  ens?,
-): Promise<string> {
-  let hasError = false;
-
-  try {
-    await findElementByTestId({
-      id: `account-item-${ens}`,
-      driver,
-    });
-  } catch (error) {
-    hasError = true;
-    console.error(
-      `ENS name "${ens}" not resolved. Switching to ETH address if available`,
-    );
-  }
-
-  if (!hasError) {
-    return ens; // Return the ens value when no error occurred
-  }
-  return address; // Return the address value when an error occurred
-}
-
 export async function switchWallet(
   Ethaddress: string,
   rootURL,
@@ -435,22 +410,17 @@ export async function switchWallet(
     driver,
   });
 
-  let address = '';
-  if (ens) {
-    address = await checkEnsResolution(Ethaddress, driver, ens);
-  } else {
-    address = Ethaddress;
-  }
+  const address = Ethaddress;
   // find shortened address
   const shortenedAddress = shortenAddress(address);
 
   // find wallet you want to switch to and click
   await waitUntilElementByTestIdIsPresent({
-    id: `account-item-${shortenedAddress}`,
+    id: `account-item-${ens || shortenedAddress}`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `account-item-${shortenedAddress}`,
+    id: `account-item-${ens || shortenedAddress}`,
     driver,
   });
 }
