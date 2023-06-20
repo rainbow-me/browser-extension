@@ -2,6 +2,7 @@ import { Wallet } from '@ethersproject/wallet';
 import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
 import { chain, getProvider } from '@wagmi/core';
 import { beforeAll, expect, test } from 'vitest';
+import { Address } from 'wagmi';
 
 import {
   RAINBOW_WALLET_ADDRESS,
@@ -27,7 +28,7 @@ beforeAll(async () => {
 test('[rap/unlock] :: get raw allowance', async () => {
   const rawAllowance = await getAssetRawAllowance({
     owner: RAINBOW_WALLET_ADDRESS,
-    assetAddress: USDC_MAINNET_ASSET.address,
+    assetAddress: USDC_MAINNET_ASSET.address as Address,
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
   });
@@ -48,7 +49,7 @@ test('[rap/unlock] :: asset needs unlocking', async () => {
 test('[rap/unlock] :: estimate approve', async () => {
   const approveGasLimit = await estimateApprove({
     owner: RAINBOW_WALLET_ADDRESS,
-    tokenAddress: USDC_MAINNET_ASSET.address,
+    tokenAddress: USDC_MAINNET_ASSET.address as Address,
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
   });
@@ -66,7 +67,7 @@ test('[rap/unlock] :: should execute approve', async () => {
       maxPriorityFeePerGas: '2000000000',
     },
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
-    tokenAddress: USDC_MAINNET_ASSET.address,
+    tokenAddress: USDC_MAINNET_ASSET.address as Address,
     wallet,
   });
   expect(approvalTx.hash).toBeDefined();

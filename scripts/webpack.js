@@ -2,6 +2,7 @@
 const webpack = require('webpack');
 
 const config = require('../webpack.config');
+const DepShieldPlugin = require('../DepShield');
 
 // Statically require packages that are loaded dynamically in webpack
 // so we can generate LavaMoat policies for them.
@@ -30,6 +31,10 @@ webpack({ ...config,
   mode: 'production',
   plugins: [
     ...config.plugins,
+    new DepShieldPlugin({
+      failOnError: true,
+      cwd: process.cwd(),
+    }),
     new TerserPlugin({
       terserOptions: {
           format: {
@@ -44,5 +49,9 @@ webpack({ ...config,
  }).run((err, stats) => {
   if (err) throw err;
   console.log(stats.toString());
-  process.exit(0);
+  if(stats.hasErrors()) {
+    process.exit(1);
+  } else {
+    process.exit(0);
+  }
 });

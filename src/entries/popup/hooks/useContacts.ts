@@ -1,6 +1,8 @@
 import { Address, useEnsName } from 'wagmi';
 
-import { useContactsStore } from '~/core/state/contacts';
+import { ContactsStore, useContactsStore } from '~/core/state/contacts';
+
+import { useEnhanceWithEnsNames } from './useEnhanceWithEnsNames';
 
 export const useContact = ({ address }: { address: Address | undefined }) => {
   const { getContact } = useContactsStore();
@@ -14,4 +16,11 @@ export const useContact = ({ address }: { address: Address | undefined }) => {
     ...(contactStore || {}),
     isContact: !!contactStore,
   };
+};
+
+const selectContactsList = (s: ContactsStore) => Object.values(s.contacts);
+export const useContacts = () => {
+  const contacts = useContactsStore(selectContactsList);
+  const contactsWithEnsNames = useEnhanceWithEnsNames({ accounts: contacts });
+  return contactsWithEnsNames;
 };

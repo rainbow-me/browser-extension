@@ -23,7 +23,11 @@ import {
 } from '~/core/utils/assets';
 import { greaterThan } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import { ETH_MAINNET_ASSET } from '~/test/utils';
+import {
+  DAI_MAINNET_ASSET,
+  ETH_MAINNET_ASSET,
+  USDC_MAINNET_ASSET,
+} from '~/test/utils';
 
 const fetchAssetBalanceViaProvider = async ({
   parsedAsset,
@@ -153,6 +157,12 @@ export async function userAssetsByChainQueryFunction({
         // force checking for ETH if connected to hardhat
         parsedUserAssetsByUniqueId[ETH_MAINNET_ASSET.uniqueId] =
           ETH_MAINNET_ASSET;
+        if (process.env.IS_TESTING === 'true') {
+          parsedUserAssetsByUniqueId[USDC_MAINNET_ASSET.uniqueId] =
+            USDC_MAINNET_ASSET;
+          parsedUserAssetsByUniqueId[DAI_MAINNET_ASSET.uniqueId] =
+            DAI_MAINNET_ASSET;
+        }
         const pasePromises = Object.values(parsedUserAssetsByUniqueId).map(
           async (parsedAsset) => {
             if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
