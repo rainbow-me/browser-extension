@@ -12,7 +12,7 @@ export const useRemoteConfig = () => {
     setTimeout(() => {
       setRemoteConfig(config);
       setReady(true);
-    }, 300);
+    }, 500);
   }, []);
 
   return { remoteConfig, remoteConfigReady: ready };

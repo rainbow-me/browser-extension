@@ -26,18 +26,16 @@ export function Welcome() {
 
   const { inviteCodeValidated, setInviteCodeValidated } = useInviteCodeStore();
   const [screen, setScreen] = useState<'invite_code' | 'welcome' | ''>(
-    inviteCodeValidated ? 'welcome' : '',
+    BYPASS_INVITE_CODE || inviteCodeValidated ? 'welcome' : '',
   );
   const prevScreen = usePrevious(screen);
 
   useEffect(() => {
     if (remoteConfigReady) {
       setScreen(
-        BYPASS_INVITE_CODE ||
-          !remoteConfig.invite_code_required ||
-          (remoteConfig.invite_code_required && inviteCodeValidated)
-          ? 'welcome'
-          : 'invite_code',
+        remoteConfig.invite_code_required && !inviteCodeValidated
+          ? 'invite_code'
+          : 'welcome',
       );
     }
   }, [
@@ -108,14 +106,7 @@ export function Welcome() {
             </Box>
           ) : null}
           {screen === 'welcome' ? (
-            <Box
-              as={motion.div}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              key="welcome"
-              width="full"
-            >
+            <Box key="welcome" width="full">
               <ImportOrCreateWallet />
             </Box>
           ) : null}
