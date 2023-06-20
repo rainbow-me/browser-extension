@@ -12,6 +12,7 @@ import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import config from '~/core/firebase/remoteConfig';
 import { shortcuts } from '~/core/references/shortcuts';
 import { usePendingRequestStore } from '~/core/state';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
@@ -64,6 +65,11 @@ export function Home() {
     }
   }, [navigate, pendingRequests, prevPendingRequest?.id]);
 
+  console.log(
+    '--- config.invite_code_required',
+    config.invite_code_required,
+    config,
+  );
   const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
 
   const onSelectTab = useCallback((tab: Tab) => {
