@@ -3,7 +3,11 @@ import { useCallback } from 'react';
 
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
-import { userAssetsSetQueryData } from '~/core/resources/assets/userAssets';
+import {
+  USER_ASSETS_STALE_INTERVAL,
+  userAssetsSetQueryData,
+  userAssetsSetQueryDefaults,
+} from '~/core/resources/assets/userAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
@@ -62,6 +66,21 @@ export const useSwapRefreshAssets = () => {
         connectedToHardhat,
         userAssets: updatedAssets,
       });
+      userAssetsSetQueryDefaults({
+        address: currentAddress,
+        currency: currentCurrency,
+        connectedToHardhat,
+        staleTime: USER_ASSETS_STALE_INTERVAL,
+      });
+
+      setTimeout(() => {
+        userAssetsSetQueryDefaults({
+          address: currentAddress,
+          currency: currentCurrency,
+          connectedToHardhat,
+          staleTime: 0,
+        });
+      }, USER_ASSETS_STALE_INTERVAL);
 
       removeSwapAssetsToRefresh({ hash });
     },
