@@ -23,9 +23,15 @@ import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
 export function Header() {
-  const { scrollYProgress: progress } = useScroll({ offset: ['0px', '64px'] });
-  const scaleValue = useTransform(progress, [0, 1], [1, 0.3]);
-  const opacityValue = useTransform(progress, [0, 1], [1, 0]);
+  const { scrollYProgress: progress } = useScroll({
+    offset: ['0px', '64px', '94px'],
+  });
+  const scaleValue = useTransform(progress, [0, 0.5, 1], [1, 0.3, 0]);
+  const opacityValue = useTransform(progress, [0, 0.5, 1], [1, 0, 0]);
+
+  const nameScaleValue = useTransform(progress, [0, 0.5, 1], [1, 1, 0.8]);
+  const nameOpacityValue = useTransform(progress, [0, 0.9, 1], [1, 1, 0]);
+  const namePaddingLeftValue = useTransform(progress, [0, 0.5, 1], [0, 0, 40]);
 
   return (
     <Box
@@ -54,7 +60,16 @@ export function Header() {
           >
             <AvatarSection />
           </Box>
-          <Box paddingHorizontal="12px">
+          <Box
+            as={motion.div}
+            paddingHorizontal="12px"
+            style={{
+              zIndex: 1,
+              scale: nameScaleValue,
+              opacity: nameOpacityValue,
+              paddingLeft: namePaddingLeftValue,
+            }}
+          >
             <AccountName id="header" />
           </Box>
 

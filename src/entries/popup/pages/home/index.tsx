@@ -1,5 +1,4 @@
 import {
-  AnimatePresence,
   motion,
   useMotionValueEvent,
   useScroll,
@@ -125,12 +124,7 @@ export function Home() {
 }
 
 function TopNav() {
-  const { scrollY } = useScroll({ offset: ['0px', TOP_NAV_HEIGHT] });
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  useMotionValueEvent(scrollY, 'change', () => {
-    if (scrollY.get() === 0) setIsCollapsed(false);
-    if (scrollY.getPrevious() === 0) setIsCollapsed(true);
-  });
+  const { scrollYProgress } = useScroll({ offset: ['90px', '94px'] });
 
   return (
     <StickyHeader
@@ -150,17 +144,14 @@ function TopNav() {
           </MoreMenu>
         }
         titleComponent={
-          <AnimatePresence>
-            {isCollapsed && (
-              <Box
-                key="top-nav-account-name"
-                as={motion.div}
-                paddingHorizontal="60px"
-              >
-                <AccountName id="topNav" includeAvatar size="16pt" />
-              </Box>
-            )}
-          </AnimatePresence>
+          <Box
+            key="top-nav-account-name"
+            as={motion.div}
+            style={{ opacity: scrollYProgress }}
+            paddingHorizontal="60px"
+          >
+            <AccountName id="topNav" includeAvatar size="16pt" />
+          </Box>
         }
       />
     </StickyHeader>
