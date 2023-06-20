@@ -113,6 +113,12 @@ export const init = async () => {
   }
 };
 
-init();
+const loadedListeners = new Set<(config: RainbowConfig) => void>();
+export const onConfigLoaded = (cb: (config: RainbowConfig) => void) => {
+  loadedListeners.add(cb);
+  return () => loadedListeners.delete(cb);
+};
+
+init().then(() => [...loadedListeners].forEach((cb) => cb(config)));
 
 export default config;
