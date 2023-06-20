@@ -15,7 +15,8 @@ import { ImportOrCreateWallet } from './ImportOrCreateWallet';
 import { InviteCodePortal } from './InviteCodePortal';
 import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
 
-const BYPASS_INVITE_CODE = false;
+const BYPASS_INVITE_CODE =
+  process.env.IS_TESTING === 'true' || process.env.IS_DEV === 'true';
 
 export function Welcome() {
   const { pendingRequests } = usePendingRequestStore();
@@ -31,7 +32,7 @@ export function Welcome() {
   const prevScreen = usePrevious(screen);
 
   useEffect(() => {
-    if (Object.keys(remoteConfig).length) {
+    if (Object.keys(remoteConfig).length && !BYPASS_INVITE_CODE) {
       setScreen(
         remoteConfig.invite_code_required && !inviteCodeValidated
           ? 'invite_code'
