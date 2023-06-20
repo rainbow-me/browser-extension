@@ -56,6 +56,16 @@ export function InviteCodePortal({
     }
   }, [onInviteCodeValidated, inviteCode]);
 
+  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> =
+    useCallback(
+      (e) => {
+        if (e.key === 'Enter') {
+          inviteCodeValidated();
+        }
+      },
+      [inviteCodeValidated],
+    );
+
   useEffect(() => {
     inputRef?.current?.focus();
   }, []);
@@ -126,6 +136,7 @@ export function InviteCodePortal({
                 borderColor={'accent'}
                 onChange={onInviteCodeChange}
                 value={inviteCode}
+                onKeyDown={handleKeyDown}
                 style={{
                   paddingRight: 87,
                   paddingTop: 17,
