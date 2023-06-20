@@ -34,7 +34,7 @@ export function WalletAvatar({
         overflow: 'hidden',
       }}
     >
-      {isFetched ? (
+      {isFetched && address ? (
         <>
           {avatar?.imageUrl ? (
             <Avatar.Image mask={mask} size={size} imageUrl={avatar.imageUrl} />

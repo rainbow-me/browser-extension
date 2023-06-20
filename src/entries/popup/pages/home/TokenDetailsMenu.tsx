@@ -93,6 +93,11 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
     [goToSwap, navigate, setSelectedToken, token, viewOnExplorer],
   );
 
+  const onTrigger = useCallback(
+    () => setSelectedToken(token),
+    [setSelectedToken, token],
+  );
+
   useEffect(() => {
     if (!selectedToken) {
       setClosed(true);
@@ -101,11 +106,11 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
 
   const hasExplorerLink = !isNativeAsset(token?.address, token?.chainId);
 
-  if (!hasExplorerLink && isWatchingWallet) return <>{children}</>;
+  if (isWatchingWallet && !allowSwap) return <>{children}</>;
 
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
-      <ContextMenuTrigger>
+      <ContextMenuTrigger onTrigger={onTrigger}>
         <Box position="relative">{children}</Box>
       </ContextMenuTrigger>
       <DetailsMenuContentWrapper closed={closed}>

@@ -29,6 +29,7 @@ import { handleAssetAccentColor } from '~/core/utils/colors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { RainbowError, logger } from '~/logger';
 
 import {
   ExplainerSheet,
@@ -226,6 +227,9 @@ export function Send() {
         }
       } catch (e) {
         alert('Transaction failed');
+        logger.error(new RainbowError('send: error executing send'), {
+          message: (e as Error)?.message,
+        });
         console.log('error sending transaction', e);
       } finally {
         setWaitingForDevice(false);
@@ -321,6 +325,14 @@ export function Send() {
           sendTokenInputRef.current?.focus();
         }
       } else {
+        if (!toAddressInputRef.current?.isFocused?.()) {
+          if (e.key === shortcuts.send.SET_MAX_AMOUNT.key) {
+            setMaxAssetAmount();
+          }
+          if (e.key === shortcuts.send.SWITCH_CURRENCY_LABEL.key) {
+            switchIndependentField();
+          }
+        }
         if (
           e.key === shortcuts.send.OPEN_CONTACT_MENU.key &&
           !valueInputRef.current?.isFocused?.()

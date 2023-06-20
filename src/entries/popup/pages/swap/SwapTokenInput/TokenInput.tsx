@@ -118,9 +118,11 @@ export const TokenInput = React.forwardRef<
     }, [inputRef, onDropdownOpen, setAssetFilter]);
 
     const onClose = useCallback(() => {
-      onDropdownAction();
       selectAsset(null);
-    }, [onDropdownAction, selectAsset]);
+      onDropdownOpen(!dropdownVisible);
+      setDropdownVisible(!dropdownVisible);
+      dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
+    }, [dropdownVisible, inputRef, onDropdownOpen, selectAsset]);
 
     const onInputValueChange = useCallback(
       (e: ChangeEvent<HTMLInputElement>) => {
@@ -137,23 +139,26 @@ export const TokenInput = React.forwardRef<
 
     useEffect(() => {
       if (prevDropdownVisible !== dropdownVisible && dropdownVisible) {
-        setTimeout(() => inputRef?.current?.focus(), 300);
+        setTimeout(() => inputRef?.current?.focus(), 100);
       }
     });
 
     useEffect(() => {
       setOnSelectAsset(onSelectAsset);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [onSelectAsset, setOnSelectAsset]);
 
     useEffect(() => {
-      setTimeout(() => {
-        if (openDropdownOnMount) {
-          onDropdownAction();
-        }
-      }, 300);
+      if (openDropdownOnMount) {
+        onDropdownAction();
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [openDropdownOnMount]);
+
+    const onFocusTokenInput = useCallback(() => {
+      if (!dropdownVisible) {
+        onDropdownAction();
+      }
+    }, [dropdownVisible, onDropdownAction]);
 
     return (
       <DropdownInputWrapper
@@ -167,7 +172,7 @@ export const TokenInput = React.forwardRef<
         }
         centerComponent={
           !asset ? (
-            <Box onClick={onDropdownAction}>
+            <Box>
               <Input
                 testId={`${testId}-search-token-input`}
                 value={assetFilter}
@@ -177,6 +182,8 @@ export const TokenInput = React.forwardRef<
                 variant="transparent"
                 style={{ paddingLeft: 0, paddingRight: 0 }}
                 innerRef={inputRef}
+                onFocus={onFocusTokenInput}
+                tabIndex={0}
               />
             </Box>
           ) : (
@@ -209,7 +216,7 @@ export const TokenInput = React.forwardRef<
             onClose={onClose}
             onDropdownAction={onDropdownAction}
             dropdownVisible={dropdownVisible}
-            testId={`${testId}-token-input-remove`}
+            testId={testId}
             asset={asset}
           />
         }
