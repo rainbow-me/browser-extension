@@ -28,7 +28,7 @@ export const useSwapRefreshAssets = () => {
     { select: selectUserAssetsDictByChain },
   );
 
-  const refreshAssets = useCallback(
+  const swapRefreshAssets = useCallback(
     async (hash: string) => {
       const assetsToRefresh = swapAssetsToRefresh[hash];
       if (!assetsToRefresh.length || !userAssets) return;
@@ -94,5 +94,5 @@ export const useSwapRefreshAssets = () => {
     ],
   );
 
-  return { refreshAssets };
+  return { swapRefreshAssets };
 };

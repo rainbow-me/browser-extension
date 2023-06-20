@@ -48,6 +48,12 @@ type SetUserDefaultsArgs = {
   staleTime: number;
 };
 
+type FetchUserAssetsArgs = {
+  address?: Address;
+  currency: SupportedCurrencyKey;
+  connectedToHardhat: boolean;
+};
+
 // ///////////////////////////////////////////////
 // Query Key
 
@@ -66,6 +72,17 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
 // ///////////////////////////////////////////////
 // Query Function
+
+export const userAssetsFetchQuery = ({
+  address,
+  currency,
+  connectedToHardhat,
+}: FetchUserAssetsArgs) => {
+  queryClient.fetchQuery(
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    userAssetsQueryFunction,
+  );
+};
 
 export const userAssetsSetQueryDefaults = ({
   address,
