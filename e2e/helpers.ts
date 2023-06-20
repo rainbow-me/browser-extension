@@ -549,10 +549,14 @@ export async function delayTime(
 
 export async function waitUntilEnabled(testId, driver) {
   const element = await driver.findElement(By.css(`[data-testid="${testId}"]`));
+  let tries = 1;
   const checkEnabledValue = async () => {
     try {
+      console.error(`cheked button ${tries} time(s); still disabled`);
+      tries += 1;
       await element.getAttribute('disabled');
     } catch (error) {
+      console.error(`after checking ${tries} time(s), its enabled!`);
       return 'enabled';
     }
     return checkEnabledValue();
