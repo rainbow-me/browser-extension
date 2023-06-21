@@ -141,6 +141,8 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
+    await delayTime('long');
+
     await typeOnTextInput({
       id: 'secret-text-area-watch',
       text: TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
