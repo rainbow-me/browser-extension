@@ -79,17 +79,32 @@ export const BottomWallet = React.forwardRef(
     });
     return (
       <Box testId="switch-wallet-menu" ref={triggerRef}>
-        <Inline alignVertical="center" space="4px">
-          <WalletAvatar address={selectedWallet} size={18} emojiSize={'12pt'} />
-          <WalletName color="labelSecondary" address={selectedWallet} />
-          {displaySymbol && (
-            <Symbol
-              color="labelSecondary"
-              size={14}
-              symbol="chevron.down.circle"
-              weight="semibold"
+        <Inline alignVertical="center">
+          <Lens
+            alignItems="center"
+            borderRadius="round"
+            style={{
+              flexDirection: 'row',
+              display: 'flex',
+              gap: 4,
+              padding: 2,
+            }}
+          >
+            <WalletAvatar
+              address={selectedWallet}
+              size={18}
+              emojiSize={'12pt'}
             />
-          )}
+            <WalletName color="labelSecondary" address={selectedWallet} />
+            {displaySymbol && (
+              <Symbol
+                color="labelSecondary"
+                size={14}
+                symbol="chevron.down.circle"
+                weight="semibold"
+              />
+            )}
+          </Lens>
         </Inline>
       </Box>
     );
@@ -156,41 +171,35 @@ export const BottomSwitchWallet = ({
       <Text size="12pt" weight="semibold" color="labelQuaternary">
         {i18n.t('approve_request.wallet')}
       </Text>
-      <Lens
-        onKeyDown={menuTriggerRef.current?.triggerMenu}
-        padding="2px"
-        borderRadius="round"
-      >
-        <SwitchMenu
-          title={i18n.t('approve_request.switch_wallets')}
-          renderMenuTrigger={
-            <BottomWallet
-              selectedWallet={selectedWallet}
-              displaySymbol
-              ref={menuTriggerRef}
-            />
-          }
-          menuItemIndicator={
-            <Symbol symbol="checkmark" size={11} weight="semibold" />
-          }
-          renderMenuItem={(wallet, i) => (
-            <Box testId={`switch-wallet-item-${i}`}>
-              <Inline space="8px" alignVertical="center">
-                <WalletAvatar
-                  address={wallet as Address}
-                  size={18}
-                  emojiSize={'12pt'}
-                />
-                <WalletName color="label" address={wallet as Address} />
-              </Inline>
-            </Box>
-          )}
-          menuItems={sortedAccounts.map((a) => a.address)}
-          selectedValue={selectedWallet}
-          onValueChange={onValueChange}
-          onOpenChange={onOpenChange}
-        />
-      </Lens>
+      <SwitchMenu
+        title={i18n.t('approve_request.switch_wallets')}
+        renderMenuTrigger={
+          <BottomWallet
+            selectedWallet={selectedWallet}
+            displaySymbol
+            ref={menuTriggerRef}
+          />
+        }
+        menuItemIndicator={
+          <Symbol symbol="checkmark" size={11} weight="semibold" />
+        }
+        renderMenuItem={(wallet, i) => (
+          <Box testId={`switch-wallet-item-${i}`}>
+            <Inline space="8px" alignVertical="center">
+              <WalletAvatar
+                address={wallet as Address}
+                size={18}
+                emojiSize={'12pt'}
+              />
+              <WalletName color="label" address={wallet as Address} />
+            </Inline>
+          </Box>
+        )}
+        menuItems={sortedAccounts.map((a) => a.address)}
+        selectedValue={selectedWallet}
+        onValueChange={onValueChange}
+        onOpenChange={onOpenChange}
+      />
     </Stack>
   );
 };
@@ -208,24 +217,35 @@ export const BottomNetwork = ({
 }) => {
   return (
     <Box testId="switch-network-menu">
-      <Inline alignHorizontal="right" alignVertical="center" space="4px">
-        <ChainBadge chainId={selectedChainId} size={'small'} />
-        <Text
-          align="right"
-          size="14pt"
-          weight="semibold"
-          color="labelSecondary"
+      <Inline alignHorizontal="right" alignVertical="center">
+        <Lens
+          alignItems="center"
+          borderRadius="round"
+          style={{
+            flexDirection: 'row',
+            display: 'flex',
+            gap: 4,
+            padding: 2,
+          }}
         >
-          {ChainNameDisplay[selectedChainId]}
-        </Text>
-        {displaySymbol && (
-          <Symbol
-            color="labelSecondary"
-            size={symbolSize || 14}
-            symbol={symbol || 'chevron.down.circle'}
+          <ChainBadge chainId={selectedChainId} size={'small'} />
+          <Text
+            align="right"
+            size="14pt"
             weight="semibold"
-          />
-        )}
+            color="labelSecondary"
+          >
+            {ChainNameDisplay[selectedChainId]}
+          </Text>
+          {displaySymbol && (
+            <Symbol
+              color="labelSecondary"
+              size={symbolSize || 14}
+              symbol={symbol || 'chevron.down.circle'}
+              weight="semibold"
+            />
+          )}
+        </Lens>
       </Inline>
     </Box>
   );
