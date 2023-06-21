@@ -1,15 +1,9 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import React, { ReactNode, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { selectTransactionsByDate } from '~/core/resources/_selectors';
 import { useCurrentCurrencyStore } from '~/core/state';
 import {
   RainbowTransaction,
@@ -36,44 +30,27 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { TransactionDetailsMenu } from './TransactionDetailsMenu';
-
-const ACTIVITY_DEFAULT_LENGTH = 100;
 
 export function Activity() {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { allTransactionsByDate, isInitialLoading } = useAllTransactions({
+  const { allTransactions, isInitialLoading } = useAllTransactions({
     address,
     currency,
   });
-  const [activityLength, setActivityLength] = useState(ACTIVITY_DEFAULT_LENGTH);
-  const listData = useMemo(() => {
-    return Object.keys(allTransactionsByDate).reduce((listData, dateKey) => {
-      return [...listData, dateKey, ...allTransactionsByDate[dateKey]];
-    }, [] as (string | RainbowTransaction)[]);
-  }, [allTransactionsByDate]).slice(0, activityLength);
+
+  const listData = useMemo(
+    () => Object.entries(selectTransactionsByDate(allTransactions)).flat(2),
+    [allTransactions],
+  );
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const activityRowVirtualizer = useVirtualizer({
+  const activityRowVirtualizer = useWindowVirtualizer({
     count: listData.length,
-    getScrollElement: () => containerRef.current,
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
     overscan: 20,
   });
-  const scrollEndListener = useCallback(() => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      setActivityLength(activityLength + ACTIVITY_DEFAULT_LENGTH);
-    }
-  }, [activityLength]);
-
-  useEffect(() => {
-    window.removeEventListener('scroll', scrollEndListener);
-    window.addEventListener('scroll', scrollEndListener);
-    return () => {
-      window.removeEventListener('scroll', scrollEndListener);
-    };
-  }, [scrollEndListener]);
 
   useActivityShortcuts();
 
@@ -135,18 +112,18 @@ export function Activity() {
           }}
         >
           {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
-            const { index, start } = virtualItem;
+            const { index, key, start, size } = virtualItem;
             const rowData = listData[index];
             return (
               <Box
-                key={index}
+                key={key}
                 data-index={index}
                 style={{
                   position: 'absolute',
                   top: 0,
                   left: 0,
                   width: '100%',
-                  height: typeof rowData === 'string' ? 34 : 52,
+                  height: size,
                   transform: `translateY(${start}px)`,
                 }}
               >
