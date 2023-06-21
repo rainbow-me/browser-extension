@@ -5,7 +5,14 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
+import {
+  PropsWithChildren,
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
@@ -26,7 +33,6 @@ import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
-import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
@@ -93,12 +99,19 @@ export function Home() {
   useHomeShortcuts();
   useSwitchWalletShortcuts();
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
         <>
-          <MainLayout
+          <Box
+            ref={scrollRef}
             className={className}
+            display="flex"
+            flexDirection="column"
+            height="full"
+            width="full"
             style={{
               ...style,
               position: 'relative',
@@ -107,15 +120,15 @@ export function Home() {
               ...(isDisplayingSheet ? { overflow: 'hidden' } : {}),
             }}
           >
-            <TopNav />
-            <Header />
+            <TopNav scrollRef={scrollRef} />
+            <Header scrollRef={scrollRef} />
             <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
             <Separator color="separatorTertiary" strokeWeight="1px" />
             <Content>
               {activeTab === 'tokens' && <Tokens />}
               {activeTab === 'activity' && <Activity />}
             </Content>
-          </MainLayout>
+          </Box>
           {currentHomeSheet}
         </>
       )}
@@ -123,8 +136,10 @@ export function Home() {
   );
 }
 
-function TopNav() {
-  const { scrollYProgress } = useScroll({ offset: ['90px', '94px'] });
+function TopNav({ scrollRef }: { scrollRef: RefObject<HTMLDivElement> }) {
+  const { scrollY } = useScroll();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  scrollY.on('change', (value) => setIsCollapsed(value >= 92));
 
   return (
     <StickyHeader
@@ -144,14 +159,15 @@ function TopNav() {
           </MoreMenu>
         }
         titleComponent={
-          <Box
-            key="top-nav-account-name"
-            as={motion.div}
-            style={{ opacity: scrollYProgress }}
-            paddingHorizontal="60px"
-          >
-            <AccountName id="topNav" includeAvatar size="16pt" />
-          </Box>
+          isCollapsed && (
+            <Box
+              key="top-nav-account-name"
+              as={motion.div}
+              paddingHorizontal="60px"
+            >
+              <AccountName id="topNav" includeAvatar size="16pt" />
+            </Box>
+          )
         }
       />
     </StickyHeader>
