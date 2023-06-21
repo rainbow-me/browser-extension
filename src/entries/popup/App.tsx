@@ -2,7 +2,7 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
-import { WagmiConfig, useAccount } from 'wagmi';
+import { WagmiConfig } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -26,7 +26,6 @@ import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { Toast } from './components/Toast/Toast';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
-import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 
@@ -40,10 +39,7 @@ const wagmiClient = createWagmiClient({
 
 export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
-  const { address } = useAccount();
   const { deviceId } = useDeviceIdStore();
-
-  usePendingTransactionWatcher({ address });
 
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
