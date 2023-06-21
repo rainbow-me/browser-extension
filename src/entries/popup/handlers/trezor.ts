@@ -7,7 +7,7 @@ import { getProvider } from '@wagmi/core';
 import { Bytes, UnsignedTransaction, ethers } from 'ethers';
 import { Address } from 'wagmi';
 
-import { addHexPrefix } from '~/core/utils/ethereum';
+import { addHexPrefix } from '~/core/utils/hex';
 
 import { walletAction } from './wallet';
 

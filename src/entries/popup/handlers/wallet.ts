@@ -27,7 +27,7 @@ import { KeychainWallet } from '~/core/types/keychainTypes';
 import { ExecuteRapResponse } from '~/core/types/transactions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
-import { toHex } from '~/core/utils/numbers';
+import { toHex } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
 
 import {
