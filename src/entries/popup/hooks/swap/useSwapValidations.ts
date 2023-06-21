@@ -12,7 +12,10 @@ import {
   lessThan,
 } from '~/core/utils/numbers';
 
-import { getNetworkNativeAssetUniqueId } from '../useNativeAssetForNetwork';
+import {
+  getNetworkNativeAssetUniqueId,
+  useNativeAssetForNetwork,
+} from '../useNativeAssetForNetwork';
 import { useUserAsset } from '../useUserAsset';
 
 export const useSwapValidations = ({
@@ -27,7 +30,7 @@ export const useSwapValidations = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
   });
-  const nativeAsset = useUserAsset(nativeAssetUniqueId || '');
+  const userNativeAsset = useUserAsset(nativeAssetUniqueId || '');
 
   const enoughAssetBalance = useMemo(() => {
     if (assetToSellValue) {
@@ -56,19 +59,23 @@ export const useSwapValidations = ({
     if (assetToSell?.isNativeAsset) {
       return lessOrEqualThan(
         add(toWei(assetToSellValue || '0'), selectedGas?.gasFee?.amount || '0'),
-        toWei(nativeAsset?.balance?.amount || '0'),
+        toWei(userNativeAsset?.balance?.amount || '0'),
       );
     }
     return lessThan(
       selectedGas?.gasFee?.amount || '0',
-      toWei(nativeAsset?.balance?.amount || '0'),
+      toWei(userNativeAsset?.balance?.amount || '0'),
     );
   }, [
     assetToSell?.isNativeAsset,
     assetToSellValue,
-    nativeAsset?.balance?.amount,
+    userNativeAsset?.balance?.amount,
     selectedGas?.gasFee?.amount,
   ]);
+
+  const nativeAsset = useNativeAssetForNetwork({
+    chainId: assetToSell?.chainId || ChainId.mainnet,
+  });
 
   const buttonLabel = useMemo(() => {
     if (!enoughAssetBalance)
