@@ -31,9 +31,8 @@ function Tab({
       display="flex"
       flexDirection="column"
       justifyContent="center"
-      style={{
-        cursor: 'default',
-      }}
+      onClick={onClick}
+      style={{ cursor: 'default' }}
     >
       {/* TODO: Convert to <Row> */}
       <Box
@@ -42,7 +41,6 @@ function Tab({
         alignItems="center"
         style={{ flex: 1, outlineColor: accentColorAsHsl, borderRadius: 6 }}
         className="home-tab-wrapper"
-        onClick={onClick}
         tabIndex={tabIndex}
       >
         <Inset horizontal="2px">
