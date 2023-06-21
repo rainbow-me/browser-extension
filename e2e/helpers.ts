@@ -526,6 +526,20 @@ export async function passSecretQuiz(driver) {
   }
 }
 
+export async function waitUntilEnabled(testId, driver) {
+  const element = await driver.findElement(By.css(`[data-testid="${testId}"]`));
+  const checkEnabledValue = async () => {
+    try {
+      await element.getAttribute('disabled');
+    } catch (error) {
+      return 'enabled';
+    }
+    return checkEnabledValue();
+  };
+
+  return await checkEnabledValue();
+}
+
 // delays
 
 export async function delay(ms) {
@@ -545,22 +559,4 @@ export async function delayTime(
     case 'very-long':
       return await delay(5000);
   }
-}
-
-export async function waitUntilEnabled(testId, driver) {
-  const element = await driver.findElement(By.css(`[data-testid="${testId}"]`));
-  let tries = 1;
-  const checkEnabledValue = async () => {
-    try {
-      console.error(`cheked button ${tries} time(s); still disabled`);
-      tries += 1;
-      await element.getAttribute('disabled');
-    } catch (error) {
-      console.error(`after checking ${tries} time(s), its enabled!`);
-      return 'enabled';
-    }
-    return checkEnabledValue();
-  };
-
-  return await checkEnabledValue();
 }

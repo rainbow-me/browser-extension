@@ -8,6 +8,7 @@ import {
   fillPrivateKey,
   fillSeedPhrase,
   findElementByIdAndClick,
+  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -141,13 +142,14 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    await delayTime('long');
-
-    await typeOnTextInput({
+    const watchTextArea = await findElementByTestId({
       id: 'secret-text-area-watch',
-      text: TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
       driver,
     });
+
+    await watchTextArea.sendKeys(
+      TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
+    );
 
     const buttonStatus = await waitUntilEnabled('watch-wallets', driver);
 
