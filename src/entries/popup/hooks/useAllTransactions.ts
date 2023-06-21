@@ -3,7 +3,6 @@ import { Address, useNetwork } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
-import { selectTransactionsByDate } from '~/core/resources/_selectors';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import {
   currentAddressStore,
@@ -131,24 +130,6 @@ export function useAllTransactions({
   const pendingTransactions: RainbowTransaction[] = getPendingTransactions({
     address,
   });
-  const allTransactions = useMemo(
-    () => [
-      ...pendingTransactions,
-      ...(confirmedTransactions || []),
-      ...(confirmedArbitrumTransactions || []),
-      ...(confirmedBscTransactions || []),
-      ...(confirmedOptimismTransactions || []),
-      ...(confirmedPolygonTransactions || []),
-    ],
-    [
-      confirmedArbitrumTransactions,
-      confirmedBscTransactions,
-      confirmedOptimismTransactions,
-      confirmedPolygonTransactions,
-      confirmedTransactions,
-      pendingTransactions,
-    ],
-  );
 
   const isInitialLoading =
     confirmedInitialLoading ||
@@ -160,11 +141,25 @@ export function useAllTransactions({
 
   return useMemo(
     () => ({
-      allTransactions,
-      allTransactionsByDate: selectTransactionsByDate(allTransactions),
+      allTransactions: [
+        ...pendingTransactions,
+        ...(confirmedTransactions || []),
+        ...(confirmedArbitrumTransactions || []),
+        ...(confirmedBscTransactions || []),
+        ...(confirmedOptimismTransactions || []),
+        ...(confirmedPolygonTransactions || []),
+      ],
       isInitialLoading,
     }),
-    [allTransactions, isInitialLoading],
+    [
+      confirmedArbitrumTransactions,
+      confirmedBscTransactions,
+      confirmedOptimismTransactions,
+      confirmedPolygonTransactions,
+      confirmedTransactions,
+      pendingTransactions,
+      isInitialLoading,
+    ],
   );
 }
 
