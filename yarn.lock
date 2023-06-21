@@ -1822,10 +1822,10 @@
   dependencies:
     "@lukeed/csprng" "^1.0.0"
 
-"@metamask/browser-passworder@4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-4.0.2.tgz#436d7252aad56763baa5e5608e60a170ac9458d7"
-  integrity sha512-fC1EdXCd2nRZXCNcoCUODOV3p7dGkwYfWzZlqocBrckCv0+J6MQw2aIjFPER0laS/+OB86w89QFOtwzPZuuYkw==
+"@metamask/browser-passworder@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-4.1.0.tgz#d515db2ffd69ecab813a688e2b7553f2766c5e79"
+  integrity sha512-FBvah1mPte5HudQdkgqAh2+Zc75T9kYxey+dCtHIj9gKohkHDcIA1bTOPLk0bBH+6PnOzYNPG8devvH04GOmPA==
 
 "@metamask/eth-sig-util@4.0.0":
   version "4.0.0"
