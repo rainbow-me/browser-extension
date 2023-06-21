@@ -1,4 +1,4 @@
-import React from 'react';
+import { motion } from 'framer-motion';
 
 import { Box, Inset } from '~/design-system';
 
@@ -11,6 +11,8 @@ export function TokensSkeleton() {
       {array.map((_, index) => (
         <Box
           key={index}
+          as={motion.div}
+          layoutId={`list-skeleton-${index}`}
           display="flex"
           alignItems="center"
           justifyContent="space-between"
@@ -59,6 +61,9 @@ export function ActivitySkeleton() {
   return (
     <Inset horizontal="20px">
       <Box
+        as={motion.div}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         className={skeletonLine}
         background="fillHorizontal"
         style={{ width: '80px', height: '8px', marginBottom: '16px' }}
@@ -66,6 +71,8 @@ export function ActivitySkeleton() {
       {array.map((_, index) => (
         <Box
           key={index}
+          as={motion.div}
+          layoutId={`list-skeleton-${index}`}
           display="flex"
           alignItems="center"
           justifyContent="space-between"
