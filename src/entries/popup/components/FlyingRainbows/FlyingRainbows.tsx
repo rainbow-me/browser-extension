@@ -24,7 +24,7 @@ export function FlyingRainbows({
   screen = 'welcome',
 }: {
   children: React.ReactNode;
-  screen?: FlyingRainbowsScreen;
+  screen?: FlyingRainbowsScreen | '';
 }) {
   const isFullscreen = useIsFullScreen();
   const rainbowPixelControls = useAnimationControls();
@@ -41,6 +41,12 @@ export function FlyingRainbows({
       rainbowOgControls.start(RAINBOW_POSITION.rainbowOg.welcome);
       rainbowLightControls.start(RAINBOW_POSITION.rainbowLight.welcome);
       rainbowNeonControls.start(RAINBOW_POSITION.rainbowNeon.welcome);
+    } else if (prevScreen === 'welcome' && screen === 'invite_code') {
+      rainbowPixelControls.start(RAINBOW_POSITION.rainbowPixel.invite_code);
+      rainbowWhiteControls.start(RAINBOW_POSITION.rainbowWhite.invite_code);
+      rainbowOgControls.start(RAINBOW_POSITION.rainbowOg.invite_code);
+      rainbowLightControls.start(RAINBOW_POSITION.rainbowLight.invite_code);
+      rainbowNeonControls.start(RAINBOW_POSITION.rainbowNeon.invite_code);
     }
   }, [
     prevScreen,
@@ -51,6 +57,8 @@ export function FlyingRainbows({
     rainbowWhiteControls,
     screen,
   ]);
+
+  const animationScreen = screen === '' ? 'welcome' : screen;
 
   return (
     <Box
@@ -84,7 +92,7 @@ export function FlyingRainbows({
           src={rainbowWhite}
           position="absolute"
           style={RAINBOW_STYLE.rainbowWhite}
-          initial={RAINBOW_POSITION.rainbowWhite[screen]}
+          initial={RAINBOW_POSITION.rainbowWhite[animationScreen]}
           animate={rainbowWhiteControls}
           transition={RAINBOW_TRANSITION}
         />
@@ -93,7 +101,7 @@ export function FlyingRainbows({
           src={rainbowPixel}
           position="absolute"
           style={RAINBOW_STYLE.rainbowPixel}
-          initial={RAINBOW_POSITION.rainbowPixel[screen]}
+          initial={RAINBOW_POSITION.rainbowPixel[animationScreen]}
           animate={rainbowPixelControls}
           transition={RAINBOW_TRANSITION}
         />
@@ -102,7 +110,7 @@ export function FlyingRainbows({
           src={rainbowOg}
           position="absolute"
           style={RAINBOW_STYLE.rainbowOg}
-          initial={RAINBOW_POSITION.rainbowOg[screen]}
+          initial={RAINBOW_POSITION.rainbowOg[animationScreen]}
           animate={rainbowOgControls}
           transition={RAINBOW_TRANSITION}
         />
@@ -111,7 +119,7 @@ export function FlyingRainbows({
           src={rainbowLight}
           position="absolute"
           style={RAINBOW_STYLE.rainbowLight}
-          initial={RAINBOW_POSITION.rainbowLight[screen]}
+          initial={RAINBOW_POSITION.rainbowLight[animationScreen]}
           animate={rainbowLightControls}
           transition={RAINBOW_TRANSITION}
         />
@@ -120,7 +128,7 @@ export function FlyingRainbows({
           src={rainbowNeon}
           position="absolute"
           style={RAINBOW_STYLE.rainbowNeon}
-          initial={RAINBOW_POSITION.rainbowNeon[screen]}
+          initial={RAINBOW_POSITION.rainbowNeon[animationScreen]}
           animate={rainbowNeonControls}
           transition={RAINBOW_TRANSITION}
         />

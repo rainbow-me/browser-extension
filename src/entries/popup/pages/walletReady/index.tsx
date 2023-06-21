@@ -1,12 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 
 import { ReadyShortcut } from './ReadyShortcut';
-
-const isBrave = 'brave' in navigator;
 
 const userSettingsPlaceholder = {} as chrome.action.UserSettings;
 const useChromeUserSettings = () => {
@@ -16,23 +15,51 @@ const useChromeUserSettings = () => {
   return settings.data || userSettingsPlaceholder;
 };
 
+const isBrave = 'brave' in navigator;
+const useBrowser = () => {
+  const [browser, setBrowser] = useState('loading');
+
+  useEffect(() => {
+    if (isBrave) {
+      setBrowser('brave');
+      return;
+    }
+    setTimeout(() => {
+      const isArc = getComputedStyle(document.documentElement).getPropertyValue(
+        '--arc-palette-title',
+      );
+      setBrowser(isArc ? 'arc' : 'chrome');
+    }, 200);
+  }, []);
+
+  return {
+    isLoading: browser === 'loading',
+    isBrave: browser === 'brave',
+    isArc: browser === 'arc',
+  };
+};
+
 const PinToToolbar = () => {
   const { isOnToolbar } = useChromeUserSettings();
-  if (isOnToolbar) return null;
+  const { isLoading, isBrave, isArc } = useBrowser();
+
+  if (isLoading || isOnToolbar) return null;
   return (
     <Box
       as={motion.div}
-      initial={{ top: -50 }}
-      animate={{ top: 0 }}
+      initial={isArc ? { right: -152 } : { top: -50 }}
+      animate={isArc ? { right: 40 } : { top: 0 }}
       transition={{ duration: 0.1, delay: 0.2 }}
       position="fixed"
-      top="0"
       borderRadius="16px"
       style={{
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
+        ...(!isArc && {
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+          right: isBrave ? '144px' : '104px',
+        }),
         maxWidth: '152px',
-        right: isBrave ? '144px' : '104px',
+        top: isArc ? '95px' : '0',
       }}
       paddingHorizontal="12px"
       paddingVertical="16px"
@@ -45,7 +72,12 @@ const PinToToolbar = () => {
       <Text size="14pt" weight="bold">
         {i18n.t('wallet_ready.pin_rainbow_to_your_toolbar')}
       </Text>
-      <Symbol symbol="arrow.up" color="purple" size={18} weight="bold" />
+      <Symbol
+        symbol={isArc ? 'arrow.right' : 'arrow.up'}
+        color="purple"
+        size={18}
+        weight="bold"
+      />
     </Box>
   );
 };
