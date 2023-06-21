@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { motion, useScroll } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -36,8 +36,6 @@ export function AccountName({
   const navigate = useRainbowNavigate();
   const [hover, setHover] = useState(false);
 
-  const { scrollYProgress } = useScroll({ offset: ['90px', '172px'] });
-
   const handleClick = useCallback(() => {
     navigate(ROUTES.WALLET_SWITCHER);
   }, [navigate]);
@@ -70,7 +68,9 @@ export function AccountName({
             <Column width="content">
               <Box
                 as={motion.div}
-                style={{ opacity: scrollYProgress }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
                 paddingRight="2px"
               >
                 <WalletAvatar address={address} size={16} emojiSize="10pt" />

@@ -22,7 +22,7 @@ import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
-export function Header({ scrollRef }) {
+export function Header() {
   const { scrollYProgress: progress } = useScroll({
     offset: ['0px', '64px', '92px'],
   });

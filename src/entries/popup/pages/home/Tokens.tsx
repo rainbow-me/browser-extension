@@ -1,4 +1,5 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -94,18 +95,20 @@ export function Tokens() {
       >
         <Box style={{ overflow: 'auto' }}>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
-            const { key, index } = virtualItem;
+            const { key, index, start, size } = virtualItem;
             const rowData = assets[index];
             return (
               <Box
                 key={key}
+                as={motion.div}
+                layoutId={`list-${index}`}
                 style={{
                   position: 'absolute',
                   top: 0,
                   left: 0,
                   width: '100%',
-                  height: virtualItem.size,
-                  transform: `translateY(${virtualItem.start}px)`,
+                  height: size,
+                  y: start,
                 }}
               >
                 <TokenDetailsMenu token={rowData}>

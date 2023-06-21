@@ -123,7 +123,7 @@ export function Home() {
             }}
           >
             <TopNav />
-            <Header scrollRef={scrollRef} />
+            <Header />
             <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
             <Separator color="separatorTertiary" strokeWeight="1px" />
             <Content>
