@@ -13,7 +13,7 @@ import { Address } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
 
-import { walletAction } from './wallet';
+import { walletAction } from './walletAction';
 
 const getPath = async (address: Address) => {
   return (await walletAction('get_path', address)) as string;

@@ -9,7 +9,7 @@ import { Address } from 'wagmi';
 
 import { addHexPrefix } from '~/core/utils/hex';
 
-import { walletAction } from './wallet';
+import { walletAction } from './walletAction';
 
 export const TREZOR_CONFIG = {
   manifest: {
