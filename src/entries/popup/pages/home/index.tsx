@@ -7,11 +7,11 @@ import {
 } from 'framer-motion';
 import {
   PropsWithChildren,
-  RefObject,
   useCallback,
   useEffect,
   useRef,
   useState,
+  useTransition,
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
@@ -71,13 +71,15 @@ export function Home() {
 
   const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
 
+  const [, startTransition] = useTransition();
+
   const onSelectTab = useCallback((tab: Tab) => {
     // If we are already in a state where the header is collapsed,
     // then ensure we are scrolling to the top when we change tab.
     if (window.scrollY > COLLAPSED_HEADER_TOP_OFFSET) {
       window.scrollTo({ top: COLLAPSED_HEADER_TOP_OFFSET });
     }
-    setActiveTab(tab);
+    startTransition(() => setActiveTab(tab));
   }, []);
 
   useEffect(() => {
@@ -120,7 +122,7 @@ export function Home() {
               ...(isDisplayingSheet ? { overflow: 'hidden' } : {}),
             }}
           >
-            <TopNav scrollRef={scrollRef} />
+            <TopNav />
             <Header scrollRef={scrollRef} />
             <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
             <Separator color="separatorTertiary" strokeWeight="1px" />
@@ -136,7 +138,7 @@ export function Home() {
   );
 }
 
-function TopNav({ scrollRef }: { scrollRef: RefObject<HTMLDivElement> }) {
+function TopNav() {
   const { scrollY } = useScroll();
   const [isCollapsed, setIsCollapsed] = useState(false);
   scrollY.on('change', (value) => setIsCollapsed(value >= 92));
