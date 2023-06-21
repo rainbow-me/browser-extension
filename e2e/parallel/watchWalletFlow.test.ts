@@ -129,6 +129,38 @@ describe('Watch wallet then add more and switch between them', () => {
     });
   });
 
+  it('should be able to add a new wallet via pk', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+
+    await findElementByTestIdAndClick({
+      id: 'import-via-pkey-option',
+      driver,
+    });
+
+    await fillPrivateKey(driver, TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET);
+
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+  });
+
+  it('should display pk account name', async () => {
+    const account = await getTextFromElement({ id: 'account-name', driver });
+    expect(account).toBe(
+      shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
+    );
+  });
+
   it('should be able to add a new wallet via watch', async () => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
@@ -174,38 +206,6 @@ describe('Watch wallet then add more and switch between them', () => {
       ];
       expect(expected.includes(actual)).toEqual(true);
     });
-  });
-
-  it('should be able to add a new wallet via pk', async () => {
-    await goToPopup(driver, rootURL, '#/home');
-    await findElementByIdAndClick({
-      id: 'header-account-name-shuffle',
-      driver,
-    });
-    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
-    await findElementByTestIdAndClick({
-      id: 'import-wallets-button',
-      driver,
-    });
-
-    await findElementByTestIdAndClick({
-      id: 'import-via-pkey-option',
-      driver,
-    });
-
-    await fillPrivateKey(driver, TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET);
-
-    await findElementByTestIdAndClick({
-      id: 'import-wallets-button',
-      driver,
-    });
-  });
-
-  it('should display pk account name', async () => {
-    const account = await getTextFromElement({ id: 'account-name', driver });
-    expect(account).toBe(
-      shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
-    );
   });
 
   it('should be able to switch to the watched wallet', async () => {
