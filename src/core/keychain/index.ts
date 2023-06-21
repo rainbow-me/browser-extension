@@ -18,7 +18,7 @@ import {
   SignTypedDataArguments,
 } from '~/entries/background/handlers/handleWallets';
 
-import { walletExecuteRap } from '../raps/common';
+import { walletExecuteRap } from '../raps/execute';
 import { RapSwapActionParameters, RapTypes } from '../raps/references';
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
