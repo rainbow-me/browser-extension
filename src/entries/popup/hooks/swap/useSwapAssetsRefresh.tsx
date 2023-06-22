@@ -31,9 +31,15 @@ export const useSwapRefreshAssets = () => {
   const timeout = useRef<NodeJS.Timeout>();
 
   const swapRefreshAssets = useCallback(
-    async (hash: string) => {
-      const assetsToRefresh = swapAssetsToRefresh[hash];
-      if (!assetsToRefresh.length || !userAssets) return;
+    async (nonce?: number) => {
+      const assetsToRefresh = swapAssetsToRefresh[nonce || -1];
+      if (
+        !assetsToRefresh ||
+        !assetsToRefresh?.length ||
+        !userAssets ||
+        nonce === undefined
+      )
+        return;
       const [assetToBuy, assetToSell] = assetsToRefresh;
 
       const updatedAssets = userAssets;
@@ -84,7 +90,7 @@ export const useSwapRefreshAssets = () => {
         });
       }, USER_ASSETS_STALE_INTERVAL);
 
-      removeSwapAssetsToRefresh({ hash });
+      removeSwapAssetsToRefresh({ nonce });
     },
     [
       connectedToHardhat,

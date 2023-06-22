@@ -275,7 +275,7 @@ const SwapReviewSheetWithQuote = ({
     const flashbots =
       assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false;
     setSendingSwap(true);
-    const { hash, errorMessage } = await wallet.executeRap<typeof type>({
+    const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
       rapActionParameters: {
         sellAmount: q.sellAmount?.toString(),
         buyAmount: q.buyAmount?.toString(),
@@ -294,7 +294,7 @@ const SwapReviewSheetWithQuote = ({
         message: errorMessage,
       });
     } else {
-      setSwapAssetsToRefresh({ hash, assetToBuy, assetToSell });
+      setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
       navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
     }
     isBridge

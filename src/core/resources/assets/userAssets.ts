@@ -118,7 +118,6 @@ async function userAssetsQueryFunctionByChain({
     userAssetsQueryKey({ address, currency, connectedToHardhat }),
   )?.state?.data as ParsedAssetsDictByChain;
   const getResultsForChain = async (chain: ChainName) => {
-    console.log('-- getResultsForChain');
     const results =
       (await fetchUserAssetsByChain(
         { address, chain, currency, connectedToHardhat },
@@ -136,7 +135,6 @@ async function userAssetsQueryFunctionByChain({
   );
   try {
     const results = await Promise.all(queries);
-    console.log('RETURNINUG FETCH RESPONSEEEE');
     return Object.assign({}, ...results) as ParsedAssetsDictByChain;
   } catch (e) {
     return cachedUserAssets;

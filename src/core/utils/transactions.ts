@@ -621,7 +621,7 @@ export const useWatchPendingTransactions = ({
                 nonceAlreadyIncluded
               ) {
                 if (updatedTransaction.type === TransactionType.trade) {
-                  swapRefreshAssets(txHash);
+                  swapRefreshAssets(tx.nonce);
                 } else {
                   userAssetsFetchQuery({
                     address,

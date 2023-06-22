@@ -6,24 +6,24 @@ import { createStore } from '../internal/createStore';
 
 export interface SwapAssetsToRefreshState {
   setSwapAssetsToRefresh: (assetsToRefresh: {
-    hash: string;
+    nonce: number;
     assetToSell: ParsedSearchAsset;
     assetToBuy: ParsedSearchAsset;
   }) => void;
-  removeSwapAssetsToRefresh: (assetsToRefresh: { hash: string }) => void;
-  swapAssetsToRefresh: { [txHash: string]: ParsedSearchAsset[] };
+  removeSwapAssetsToRefresh: (assetsToRefresh: { nonce: number }) => void;
+  swapAssetsToRefresh: { [nonce: number]: ParsedSearchAsset[] };
 }
 
 export const swapAssetsToRefreshStore = createStore<SwapAssetsToRefreshState>(
   (set, get) => ({
-    setSwapAssetsToRefresh: ({ hash, assetToBuy, assetToSell }) => {
+    setSwapAssetsToRefresh: ({ nonce, assetToBuy, assetToSell }) => {
       const swapAssetsToRefresh = get().swapAssetsToRefresh;
-      swapAssetsToRefresh[hash] = [assetToSell, assetToBuy];
+      swapAssetsToRefresh[nonce] = [assetToSell, assetToBuy];
       set(swapAssetsToRefresh);
     },
-    removeSwapAssetsToRefresh: ({ hash }) => {
+    removeSwapAssetsToRefresh: ({ nonce }) => {
       const swapAssetsToRefresh = get().swapAssetsToRefresh;
-      delete swapAssetsToRefresh[hash];
+      delete swapAssetsToRefresh[nonce];
       set(swapAssetsToRefresh);
     },
     swapAssetsToRefresh: {},
