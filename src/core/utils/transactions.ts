@@ -572,6 +572,21 @@ export function getTransactionHash(tx: RainbowTransaction): string | undefined {
   return tx.hash?.split('-').shift();
 }
 
+const isPendingTransaction = (status: TransactionStatus) => {
+  return (
+    status === TransactionStatus.approving ||
+    status === TransactionStatus.bridging ||
+    status === TransactionStatus.cancelling ||
+    status === TransactionStatus.depositing ||
+    status === TransactionStatus.purchasing ||
+    status === TransactionStatus.receiving ||
+    status === TransactionStatus.sending ||
+    status === TransactionStatus.speeding_up ||
+    status === TransactionStatus.swapping ||
+    status === TransactionStatus.withdrawing
+  );
+};
+
 export const useWatchPendingTransactions = ({
   address,
 }: {
@@ -674,8 +689,8 @@ export const useWatchPendingTransactions = ({
 
     setPendingTransactions({
       address,
-      pendingTransactions: updatedPendingTransactions.filter(
-        (tx) => tx?.status !== TransactionStatus?.unknown,
+      pendingTransactions: updatedPendingTransactions.filter((tx) =>
+        isPendingTransaction(tx?.status as TransactionStatus),
       ),
     });
   }, [
