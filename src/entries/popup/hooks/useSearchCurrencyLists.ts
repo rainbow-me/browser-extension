@@ -11,7 +11,7 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
-import { addHexPrefix } from '~/core/utils/ethereum';
+import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { filterList } from '../utils/search';

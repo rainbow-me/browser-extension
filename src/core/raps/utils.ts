@@ -21,7 +21,8 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '../types/gas';
-import { greaterThan, multiply, toHexNoLeadingZeros } from '../utils/numbers';
+import { toHexNoLeadingZeros } from '../utils/hex';
+import { greaterThan, multiply } from '../utils/numbers';
 
 export const CHAIN_IDS_WITH_TRACE_SUPPORT = [chain.mainnet.id];
 export const SWAP_GAS_PADDING = 1.1;

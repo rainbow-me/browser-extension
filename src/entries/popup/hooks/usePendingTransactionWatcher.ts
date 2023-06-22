@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
-import { watchPendingTransactions } from '~/core/utils/transactions';
+import { watchPendingTransactions } from '~/core/utils/txWatcher';
 
 import { usePoll } from './usePoll';
 

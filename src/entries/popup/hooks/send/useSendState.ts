@@ -6,7 +6,8 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
-import { convertAmountToRawAmount, toHex } from '~/core/utils/numbers';
+import { toHex } from '~/core/utils/hex';
+import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
 import { useEns } from '../useEns';

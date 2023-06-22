@@ -7,12 +7,10 @@ import { HDNode, Mnemonic } from '@ethersproject/hdnode';
 import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
-import { initializeMessenger } from '~/core/messengers';
 import {
   RapSwapActionParameters,
   RapTypes,
@@ -27,7 +25,7 @@ import { KeychainWallet } from '~/core/types/keychainTypes';
 import { ExecuteRapResponse } from '~/core/types/transactions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
-import { toHex } from '~/core/utils/numbers';
+import { toHex } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
 
 import {
@@ -41,21 +39,9 @@ import {
   signMessageByTypeFromTrezor,
   signTransactionFromTrezor,
 } from './trezor';
+import { walletAction } from './walletAction';
 
-const messenger = initializeMessenger({ connect: 'background' });
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
-
-export const walletAction = async (action: string, payload: unknown) => {
-  const { result }: { result: unknown } = await messenger.send(
-    'wallet_action',
-    {
-      action,
-      payload,
-    },
-    { id: uuid4() },
-  );
-  return result;
-};
 
 const signMessageByType = async (
   msgData: string | Bytes,

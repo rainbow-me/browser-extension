@@ -18,15 +18,12 @@ import {
   SignTypedDataArguments,
 } from '~/entries/background/handlers/handleWallets';
 
-import { walletExecuteRap } from '../raps/common';
+import { walletExecuteRap } from '../raps/execute';
 import { RapSwapActionParameters, RapTypes } from '../raps/references';
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
-import {
-  EthereumWalletSeed,
-  addHexPrefix,
-  identifyWalletType,
-} from '../utils/ethereum';
+import { EthereumWalletSeed, identifyWalletType } from '../utils/ethereum';
+import { addHexPrefix } from '../utils/hex';
 
 import { keychainManager } from './KeychainManager';
 
