@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -80,7 +80,7 @@
     "@ethersproject/wallet": "5.7.0",
     "@ledgerhq/hw-app-eth": "6.33.4",
     "@ledgerhq/hw-transport-webhid": "6.27.15",
-    "@metamask/browser-passworder": "4.0.2",
+    "@metamask/browser-passworder": "4.1.0",
     "@metamask/eth-sig-util": "5.0.1",
     "@radix-ui/react-context-menu": "2.1.1",
     "@radix-ui/react-dropdown-menu": "2.0.1",
