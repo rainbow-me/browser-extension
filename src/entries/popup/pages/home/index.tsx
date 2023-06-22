@@ -77,7 +77,7 @@ export function Home() {
     // If we are already in a state where the header is collapsed,
     // then ensure we are scrolling to the top when we change tab.
     if (window.scrollY > COLLAPSED_HEADER_TOP_OFFSET) {
-      window.scrollTo({ top: COLLAPSED_HEADER_TOP_OFFSET });
+      window.scrollTo({ behavior: 'smooth', top: COLLAPSED_HEADER_TOP_OFFSET });
     }
     startTransition(() => setActiveTab(tab));
   }, []);
@@ -140,8 +140,10 @@ export function Home() {
 
 function TopNav() {
   const { scrollY } = useScroll();
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  scrollY.on('change', (value) => setIsCollapsed(value >= 92));
+  const [isCollapsed, setIsCollapsed] = useState(window.scrollY >= 92);
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    setIsCollapsed(y >= 92);
+  });
 
   return (
     <StickyHeader

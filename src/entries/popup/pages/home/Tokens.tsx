@@ -102,9 +102,9 @@ export function Tokens() {
                 key={key}
                 as={motion.div}
                 layoutId={`list-${index}`}
+                layout="position"
                 style={{
                   position: 'absolute',
-                  top: 0,
                   left: 0,
                   width: '100%',
                   height: size,

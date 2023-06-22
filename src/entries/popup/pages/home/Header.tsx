@@ -23,9 +23,11 @@ import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
 export function Header() {
-  const { scrollYProgress: progress } = useScroll({
+  const { scrollY, scrollYProgress: progress } = useScroll({
     offset: ['0px', '64px', '92px'],
   });
+
+  console.log(scrollY.get());
 
   const scaleValue = useTransform(progress, [0, 0.25, 1], [1, 0.3, 0]);
   const opacityValue = useTransform(progress, [0, 0.25], [1, 0]);

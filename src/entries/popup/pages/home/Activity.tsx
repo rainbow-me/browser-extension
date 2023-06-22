@@ -1,5 +1,5 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
-import { LayoutGroup, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { ReactNode, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -114,52 +114,48 @@ export function Activity() {
             position: 'relative',
           }}
         >
-          <LayoutGroup>
-            {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
-              const { index, key, start, size } = virtualItem;
-              const rowData = listData[index];
-              const isLabel = typeof rowData === 'string';
-              if (isLabel) labelsCount += 1;
-              return (
-                <Box
-                  key={key}
-                  data-index={index}
-                  as={motion.div}
-                  layoutId={
-                    !isLabel ? `list-${index - labelsCount}` : undefined
-                  }
-                  initial={{ opacity: isLabel ? 0 : 1 }}
-                  animate={{ opacity: 1 }}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: size,
-                    y: start,
-                  }}
-                >
-                  {typeof rowData === 'string' ? (
-                    <Inset horizontal="20px" top="16px" bottom="8px">
-                      <Box>
-                        <Text
-                          size="14pt"
-                          weight={'semibold'}
-                          color={'labelTertiary'}
-                        >
-                          {rowData}
-                        </Text>
-                      </Box>
-                    </Inset>
-                  ) : (
-                    <TransactionDetailsMenu transaction={rowData}>
-                      <ActivityRow transaction={rowData} />
-                    </TransactionDetailsMenu>
-                  )}
-                </Box>
-              );
-            })}
-          </LayoutGroup>
+          {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
+            const { index, key, start, size } = virtualItem;
+            const rowData = listData[index];
+            const isLabel = typeof rowData === 'string';
+            if (isLabel) labelsCount += 1;
+            return (
+              <Box
+                key={key}
+                data-index={index}
+                as={motion.div}
+                layoutId={!isLabel ? `list-${index - labelsCount}` : undefined}
+                initial={{ opacity: isLabel ? 0 : 1 }}
+                animate={{ opacity: 1 }}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: size,
+                  y: start,
+                }}
+              >
+                {isLabel ? (
+                  <Inset horizontal="20px" top="16px" bottom="8px">
+                    <Box>
+                      <Text
+                        size="14pt"
+                        weight={'semibold'}
+                        color={'labelTertiary'}
+                      >
+                        {rowData}
+                      </Text>
+                    </Box>
+                  </Inset>
+                ) : (
+                  <TransactionDetailsMenu transaction={rowData}>
+                    <ActivityRow transaction={rowData} />
+                  </TransactionDetailsMenu>
+                )}
+              </Box>
+            );
+          })}
         </Box>
       </Box>
     </>
