@@ -28,7 +28,7 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import usePrevious from '../../hooks/usePrevious';
 
-import { AccountIndex } from './walletList';
+import { AccountIndex } from './walletList/AccountIndex';
 
 export const AddByIndexSheet = ({
   show,
