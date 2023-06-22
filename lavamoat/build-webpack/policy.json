@@ -220,6 +220,15 @@
         "util.deprecate": true
       }
     },
+    "circular-dependency-plugin": {
+      "builtin": {
+        "path.relative": true,
+        "util._extend": true
+      },
+      "globals": {
+        "process.cwd": true
+      }
+    },
     "copy-webpack-plugin": {
       "builtin": {
         "crypto.createHash": true,
@@ -492,13 +501,13 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>semver": true,
         "file-loader>loader-utils>json5": true,
         "jest>@jest/core>jest-snapshot>@babel/generator": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat-browserify>convert-source-map": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true,
         "lavamoat>lavamoat-tofu>@babel/traverse": true,
+        "semver": true,
         "vitest>debug": true
       }
     },
@@ -528,14 +537,8 @@
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/compat-data": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/helper-validator-option": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>semver": true,
+        "semver": true,
         "webpack>browserslist": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>semver": {
-      "globals": {
-        "console": true,
-        "process": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": {
@@ -572,12 +575,6 @@
         "@testing-library/react>@testing-library/dom>@babel/code-frame": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>semver": {
-      "globals": {
-        "console": true,
-        "process": true
       }
     },
     "eslint>ajv": {

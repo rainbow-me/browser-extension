@@ -1,29 +1,16 @@
 import { isAddress } from '@ethersproject/address';
-import { isHexString } from '@ethersproject/bytes';
 import { Mnemonic, isValidMnemonic } from '@ethersproject/hdnode';
 import { parseEther } from '@ethersproject/units';
-import { startsWith } from 'lodash';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '../keychain/IKeychain';
 import { ethUnits } from '../references';
 import { EthereumWalletType } from '../types/walletTypes';
 
+import { addHexPrefix, isHexStringIgnorePrefix } from './hex';
 import { divide, multiply } from './numbers';
 
 export type EthereumWalletSeed = PrivateKey | Mnemonic['phrase'];
-
-/**
- * @desc Checks if a hex string, ignoring prefixes and suffixes.
- * @param value The string.
- * @return Whether or not the string is a hex string.
- */
-export const isHexStringIgnorePrefix = (value: string): boolean => {
-  if (!value) return false;
-  const trimmedValue = value.trim();
-  const updatedValue = addHexPrefix(trimmedValue);
-  return isHexString(updatedValue);
-};
 
 const validTLDs = ['eth', 'xyz', 'luxe', 'kred', 'reverse', 'addr', 'test'];
 export const isENSAddressFormat = (name: string) => {
@@ -41,14 +28,6 @@ export const isENSAddressFormat = (name: string) => {
 export const isValidPrivateKey = (value: string): boolean => {
   return isHexStringIgnorePrefix(value) && addHexPrefix(value).length === 66;
 };
-
-/**
- * @desc Adds an "0x" prefix to a string if one is not present.
- * @param value The starting string.
- * @return The prefixed string.
- */
-export const addHexPrefix = (value: string): string =>
-  startsWith(value, '0x') ? value : `0x${value}`;
 
 export const identifyWalletType = (
   walletSeed: EthereumWalletSeed,
