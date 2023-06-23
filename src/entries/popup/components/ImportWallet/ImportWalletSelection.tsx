@@ -161,9 +161,19 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   color="labelTertiary"
                   align="center"
                 >
-                  {i18n.t('import_wallet_selection.description', {
-                    count: hasRecentlyUsedWallet ? accountsToImport.length : 0,
-                  })}
+                  {i18n.t(
+                    // eslint-disable-next-line no-nested-ternary
+                    hasRecentlyUsedWallet
+                      ? accountsToImport.length > 1
+                        ? 'import_wallet_selection.description.other'
+                        : 'import_wallet_selection.description.one'
+                      : 'import_wallet_selection.description.zero',
+                    {
+                      count: hasRecentlyUsedWallet
+                        ? accountsToImport.length
+                        : 0,
+                    },
+                  )}
                 </Text>
               </Box>
             )}
