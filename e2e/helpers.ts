@@ -155,6 +155,7 @@ export async function initDriverWithOptions(opts) {
   return driver;
 }
 
+// use this funciton to see more in depth logs while testing
 export async function retrieveLogs(driver) {
   const logs = await driver.manage().logs().get(logging.Type.BROWSER);
   logs.forEach((log) => {
@@ -573,28 +574,4 @@ export async function delayTime(
     case 'very-long':
       return await delay(5000);
   }
-}
-
-export async function delayCounter() {
-  await console.error('start');
-  await delay(500);
-  await console.error('0.5');
-  await delay(500);
-  await console.error('1');
-  await delay(500);
-  await console.error('1.5');
-  await delay(500);
-  await console.error('2');
-  await delay(500);
-  await console.error('2.5');
-  await delay(500);
-  await console.error('3');
-  await delay(500);
-  await console.error('3.5');
-  await delay(500);
-  await console.error('4');
-  await delay(500);
-  await console.error('4.5');
-  await delay(500);
-  await console.error('5');
 }
