@@ -32,20 +32,19 @@ import {
   GasSpeed,
 } from '../types/gas';
 
-import { addHexPrefix, gweiToWei, weiToGwei } from './ethereum';
+import { gweiToWei, weiToGwei } from './ethereum';
+import { addHexPrefix, convertStringToHex, toHex } from './hex';
 import { fetchJsonLocally } from './localJson';
 import {
   add,
   addBuffer,
   convertAmountAndPriceToNativeDisplayWithThreshold,
   convertRawAmountToBalance,
-  convertStringToHex,
   divide,
   fraction,
   greaterThan,
   lessThan,
   multiply,
-  toHex,
 } from './numbers';
 import { getMinimalTimeUnitStringForMs } from './time';
 
