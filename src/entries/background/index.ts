@@ -3,7 +3,7 @@ import { uuid4 } from '@sentry/utils';
 import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
-import { syncStores } from '~/core/state';
+import { syncStores } from '~/core/state/internal/syncStores';
 import { createWagmiClient } from '~/core/wagmi';
 
 import { handleInstallExtension } from './handlers/handleInstallExtension';

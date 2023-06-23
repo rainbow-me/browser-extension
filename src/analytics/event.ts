@@ -5,6 +5,12 @@
  */
 export const event = {
   /**
+   * Called when the user completes the Swap/Bridge flow and submits a bridge transaction.
+   * This event is only called when the user is bridging a mapped asset, whereas
+   * `swapSubmitted` is called when the user is completing a cross-chain swap.
+   */
+  bridgeSubmitted: 'bridge.submitted',
+  /**
    * Called when the user approves a connection request from the active dApp.
    */
   dappPromptConnectApproved: 'dapp.prompt.connect.approved',
@@ -95,6 +101,10 @@ export const event = {
    */
   popupOpened: 'popup.opened',
   /**
+   * Called when the user completes a Send flow and submits the transaction.
+   */
+  sendSubmitted: 'send.submitted',
+  /**
    * Called when user disables tracking in Settings.
    */
   settingsAnalyticsTrackingDisabled: 'settings.analytics_tracking.disabled',
@@ -121,6 +131,12 @@ export const event = {
   settingsRainbowDefaultProviderEnabled:
     'settings.rainbow_default_provider.enabled',
   /**
+   * Called when the user completes a Swap/Bridge and submits the transaction.
+   * This includes cross-chain swaps, while `bridgeSubmitted` is instead called
+   * for mapped asset bridge transactions where the `mainnetAddress` is equal.
+   */
+  swapSubmitted: 'swap.submitted',
+  /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
    */
@@ -131,6 +147,66 @@ export const event = {
  * Properties corresponding to each event
  */
 export type EventProperties = {
+  [event.bridgeSubmitted]: {
+    /**
+     * Symbol of the input asset being swapped.
+     */
+    inputAssetSymbol: string;
+    /**
+     * Human readable name of the input asset being swapped.
+     */
+    inputAssetName: string;
+    /**
+     * Contract address of the input asset being swapped.
+     */
+    inputAssetAddress: string;
+    /**
+     * `chainId` of the input asset being swapped.
+     */
+    inputAssetChainId: number;
+    /**
+     * Native amount quote of input asset being swapped.
+     */
+    inputAssetAmount: number;
+    /**
+     * The estimated USD value of the input asset being swapped.
+     * TODO: implement USD estimates in the Swap/Bridge flow.
+     */
+    inputAssetAmountUSD?: number;
+    /**
+     * Symbol of the destination asset.
+     */
+    outputAssetSymbol: string;
+    /**
+     * Human readbale name of the destination asset.
+     */
+    outputAssetName: string;
+    /**
+     * Contract address of the destination asset.
+     */
+    outputAssetAddress: string;
+    /**
+     * `chainId` of the destination asset.
+     */
+    outputAssetChainId: number;
+    /**
+     * Native amount quote of destination asset.
+     */
+    outputAssetAmount: number;
+    /**
+     * The estimated USD value of the destination asset.
+     * TODO: implement USD estimates in the Swap/Bridge flow.
+     */
+    outputAssetAmountUSD?: number;
+    /**
+     * Mainnet contract address of the mapped assets.
+     */
+    mainnetAddress: string;
+    /**
+     * Whether Flashbots was used for the swap.
+     */
+    flashbots: boolean;
+  };
   [event.dappPromptConnectApproved]: {
     /**
      * `chainId` of the default network the dApp requested.
@@ -290,8 +366,95 @@ export type EventProperties = {
   };
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;
+  [event.sendSubmitted]: {
+    /**
+     * Native amount of the asset being sent.
+     */
+    assetAmount: string;
+    /**
+     * The estimated USD value of the asset being sent.
+     * TODO: implement USD estimates in the Send flow.
+     */
+    assetAmountUSD?: string;
+    /**
+     * Symbol of the asset being sent.
+     */
+    assetSymbol?: string;
+    /**
+     * Human readable name of the asset being sent.
+     */
+    assetName?: string;
+    /**
+     * Contract address of the asset being sent.
+     */
+    assetAddress?: string;
+    /**
+     * `chainId` of the send transaction.
+     */
+    chainId: number;
+  };
   [event.settingsAnalyticsTrackingEnabled]: undefined;
   [event.settingsRainbowDefaultProviderDisabled]: undefined;
   [event.settingsRainbowDefaultProviderEnabled]: undefined;
+  [event.swapSubmitted]: {
+    /**
+     * Symbol of the input asset being swapped.
+     */
+    inputAssetSymbol: string;
+    /**
+     * Human readable name of the input asset being swapped.
+     */
+    inputAssetName: string;
+    /**
+     * Contract address of the input asset being swapped.
+     */
+    inputAssetAddress: string;
+    /**
+     * `chainId` of the input asset being swapped.
+     */
+    inputAssetChainId: number;
+    /**
+     * Native amount quote of input asset being swapped.
+     */
+    inputAssetAmount: number;
+    /**
+     * The estimated USD value of the input asset being swapped.
+     * TODO: implement USD estimates in the Swap/Bridge flow.
+     */
+    inputAssetAmountUSD?: number;
+    /**
+     * Symbol of the destination asset.
+     */
+    outputAssetSymbol: string;
+    /**
+     * Human readbale name of the destination asset.
+     */
+    outputAssetName: string;
+    /**
+     * Contract address of the destination asset.
+     */
+    outputAssetAddress: string;
+    /**
+     * `chainId` of the destination asset.
+     */
+    outputAssetChainId: number;
+    /**
+     * Native amount quote of destination asset.
+     */
+    outputAssetAmount: number;
+    /**
+     * The estimated USD value of the destination asset.
+     * TODO: implement USD estimates in the Swap/Bridge flow.
+     */
+    outputAssetAmountUSD?: number;
+    /**
+     * Whether the swap was a cross-chain swap.
+     */
+    crosschain: boolean;
+    /**
+     * Whether Flashbots was used for the swap.
+     */
+    flashbots: boolean;
+  };
   [event.walletViewed]: undefined;
 };
