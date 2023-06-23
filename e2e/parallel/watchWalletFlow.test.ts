@@ -16,7 +16,6 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
-  retrieveLogs,
   shortenAddress,
   switchWallet,
   typeOnTextInput,
@@ -265,6 +264,5 @@ describe('Watch wallet then add more and switch between them', () => {
       TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
     ];
     expect(expected.includes(actual)).toEqual(true);
-    await retrieveLogs(driver); // Print the logs at any desired point during the WebDriver session
   });
 });

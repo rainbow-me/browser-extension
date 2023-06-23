@@ -120,16 +120,18 @@ describe('App interactions flow', () => {
 
     await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
 
-    const txt = await driver.wait(
+    const networkLabel = await driver.wait(
       until.elementLocated(By.xpath('//*[@id="radix-:rb:"]/div/div/div[2]')),
     );
 
-    expect(await txt.getText()).toBe('Hardhat');
+    expect(await networkLabel.getText()).toBe('Hardhat');
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await switchWindows(dappHandler, driver);
 
+    // the dapp UI doesn't update the chain ID
+    // on the page unless the page is refreshed
     await driver.navigate().refresh();
 
     await driver.findElement(By.css(`[class="container-fluid"]`));

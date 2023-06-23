@@ -110,9 +110,8 @@ export async function getWindowHandle({ driver }) {
   }
 }
 
-export async function switchWindows(window: string, driver: WebDriver) {
+export async function switchWindows(window, driver: WebDriver) {
   try {
-    await delayTime('medium');
     await driver.wait(async () => {
       const windowHandles = await driver.getAllWindowHandles();
       return windowHandles.includes(window);
@@ -133,8 +132,6 @@ export async function initDriverWithOptions(opts) {
     // '--auto-open-devtools-for-tabs',
     '--log-level=0',
     '--enable-logging',
-    '--v=1', // Increase verbosity level
-    '--vmodule=*/lib/*=2', // Enable detailed logging for specific modules
   ];
 
   const options = new chrome.Options()
@@ -144,18 +141,15 @@ export async function initDriverWithOptions(opts) {
 
   const service = new chrome.ServiceBuilder().setStdio('inherit');
 
-  const driver = await new Builder()
+  return await new Builder()
     .setChromeService(service)
     .forBrowser('chrome')
     .setChromeOptions(options)
     .build();
-
-  await retrieveLogs(driver); // Print the logs after the WebDriver session starts
-
-  return driver;
 }
 
-// use this funciton to see more in depth logs while testing
+// add this funciton to the end of a test
+// to see more in depth logs while testing
 export async function retrieveLogs(driver) {
   const logs = await driver.manage().logs().get(logging.Type.BROWSER);
   logs.forEach((log) => {

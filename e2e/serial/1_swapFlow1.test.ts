@@ -255,15 +255,6 @@ it('should be able to open token to sell input and select assets', async () => {
     driver,
   });
 
-  // const tokenInputField = await findFillableElement(
-  //   driver,
-  //   'token-to-sell-search-token-input',
-  // );
-
-  // await waitAndClick(tokenInputField, driver);
-
-  // await delayTime('medium');
-
   await findElementByTestIdAndClick({
     id: 'token-to-sell-sort-trigger',
     driver,
