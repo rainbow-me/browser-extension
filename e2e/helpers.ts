@@ -8,6 +8,7 @@ import {
   Locator,
   WebDriver,
   WebElementCondition,
+  logging,
   until,
 } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
@@ -132,6 +133,8 @@ export async function initDriverWithOptions(opts) {
     // '--auto-open-devtools-for-tabs',
     '--log-level=0',
     '--enable-logging',
+    '--v=1', // Increase verbosity level
+    '--vmodule=*/lib/*=2', // Enable detailed logging for specific modules
   ];
 
   const options = new chrome.Options()
@@ -141,11 +144,22 @@ export async function initDriverWithOptions(opts) {
 
   const service = new chrome.ServiceBuilder().setStdio('inherit');
 
-  return await new Builder()
+  const driver = await new Builder()
     .setChromeService(service)
     .forBrowser('chrome')
     .setChromeOptions(options)
     .build();
+
+  await retrieveLogs(driver); // Print the logs after the WebDriver session starts
+
+  return driver;
+}
+
+export async function retrieveLogs(driver) {
+  const logs = await driver.manage().logs().get(logging.Type.BROWSER);
+  logs.forEach((log) => {
+    console.log(`[${log.level.name}] ${log.message}`);
+  });
 }
 
 export async function getExtensionIdByName(driver, extensionName) {
@@ -559,4 +573,28 @@ export async function delayTime(
     case 'very-long':
       return await delay(5000);
   }
+}
+
+export async function delayCounter() {
+  await console.error('start');
+  await delay(500);
+  await console.error('0.5');
+  await delay(500);
+  await console.error('1');
+  await delay(500);
+  await console.error('1.5');
+  await delay(500);
+  await console.error('2');
+  await delay(500);
+  await console.error('2.5');
+  await delay(500);
+  await console.error('3');
+  await delay(500);
+  await console.error('3.5');
+  await delay(500);
+  await console.error('4');
+  await delay(500);
+  await console.error('4.5');
+  await delay(500);
+  await console.error('5');
 }

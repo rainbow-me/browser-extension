@@ -4,6 +4,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  delayCounter,
   delayTime,
   fillPrivateKey,
   fillSeedPhrase,
@@ -17,6 +18,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  retrieveLogs,
   shortenAddress,
   switchWallet,
   typeOnTextInput,
@@ -49,6 +51,8 @@ describe('Watch wallet then add more and switch between them', () => {
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'import-wallet-button', driver });
     await findElementByTestIdAndClick({ id: 'watch-wallet-option', driver });
+
+    await delayTime('very-long');
 
     await typeOnTextInput({
       id: 'secret-text-area-watch',
@@ -110,6 +114,8 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
+    await delayTime('very-long');
+
     await fillSeedPhrase(driver, TEST_VARIABLES.EMPTY_WALLET.SECRET);
 
     await findElementByTestIdAndClick({
@@ -146,6 +152,8 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
+    await delayCounter();
+
     await fillPrivateKey(driver, TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET);
 
     await findElementByTestIdAndClick({
@@ -173,6 +181,8 @@ describe('Watch wallet then add more and switch between them', () => {
       id: 'watch-wallets-button',
       driver,
     });
+
+    await delayTime('very-long');
 
     const watchTextArea = await findElementByTestId({
       id: 'secret-text-area-watch',
@@ -271,5 +281,6 @@ describe('Watch wallet then add more and switch between them', () => {
       TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
     ];
     expect(expected.includes(actual)).toEqual(true);
+    await retrieveLogs(driver); // Print the logs at any desired point during the WebDriver session
   });
 });
