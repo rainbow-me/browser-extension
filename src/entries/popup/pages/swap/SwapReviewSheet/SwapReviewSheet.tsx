@@ -4,6 +4,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.mp3';
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
@@ -268,6 +270,8 @@ const SwapReviewSheetWithQuote = ({
     const type =
       assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
     const q = quote as QuoteTypeMap[typeof type];
+    const flashbots =
+      assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false;
     setSendingSwap(true);
     const { errorMessage } = await wallet.executeRap<typeof type>({
       rapActionParameters: {
@@ -277,8 +281,7 @@ const SwapReviewSheetWithQuote = ({
         assetToSell: assetToSell,
         assetToBuy: assetToBuy,
         quote: q,
-        flashbots:
-          assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false,
+        flashbots,
       },
       type,
     });
@@ -292,6 +295,38 @@ const SwapReviewSheetWithQuote = ({
     } else {
       navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
     }
+    isBridge
+      ? analytics.track(event.bridgeSubmitted, {
+          inputAssetSymbol: assetToSell.symbol,
+          inputAssetName: assetToSell.name,
+          inputAssetAddress: assetToSell.address,
+          inputAssetChainId: assetToSell.chainId,
+          inputAssetAmount: q.sellAmount as number,
+          outputAssetSymbol: assetToBuy.symbol,
+          outputAssetName: assetToBuy.name,
+          outputAssetAddress: assetToBuy.address,
+          outputAssetChainId: assetToBuy.chainId,
+          outputAssetAmount: q.buyAmount as number,
+          mainnetAddress:
+            assetToBuy?.chainId === ChainId.mainnet
+              ? 'address'
+              : 'mainnetAddress',
+          flashbots,
+        })
+      : analytics.track(event.swapSubmitted, {
+          inputAssetSymbol: assetToSell.symbol,
+          inputAssetName: assetToSell.name,
+          inputAssetAddress: assetToSell.address,
+          inputAssetChainId: assetToSell.chainId,
+          inputAssetAmount: q.sellAmount as number,
+          outputAssetSymbol: assetToBuy.symbol,
+          outputAssetName: assetToBuy.name,
+          outputAssetAddress: assetToBuy.address,
+          outputAssetChainId: assetToBuy.chainId,
+          outputAssetAmount: q.buyAmount as number,
+          crosschain: assetToSell.chainId !== assetToBuy.chainId,
+          flashbots,
+        });
   }, [
     assetToBuy,
     assetToSell,
@@ -300,6 +335,7 @@ const SwapReviewSheetWithQuote = ({
     flashbotsEnabled,
     navigate,
     quote,
+    isBridge,
   ]);
 
   const handleSwap = useCallback(() => {
