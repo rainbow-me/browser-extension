@@ -109,16 +109,15 @@ export function SendTransaction({
           chainId: txData.chainId as ChainId,
           transaction,
         });
+        approveRequest(result.hash);
+        setWaitingForDevice(false);
+
+        analytics.track(event.dappPromptSendTransactionApproved, {
+          chainId: txData.chainId,
+          dappURL: appHost,
+          dappName: appName,
+        });
       }
-
-      approveRequest(result.hash);
-      setWaitingForDevice(false);
-
-      analytics.track(event.dappPromptSendTransactionApproved, {
-        chainId: txData.chainId,
-        dappURL: appHost,
-        dappName: appName,
-      });
     } finally {
       setWaitingForDevice(false);
       setLoading(false);
