@@ -220,6 +220,15 @@
         "util.deprecate": true
       }
     },
+    "circular-dependency-plugin": {
+      "builtin": {
+        "path.relative": true,
+        "util._extend": true
+      },
+      "globals": {
+        "process.cwd": true
+      }
+    },
     "copy-webpack-plugin": {
       "builtin": {
         "crypto.createHash": true,
