@@ -212,7 +212,7 @@ function Content({ children }: PropsWithChildren) {
   return (
     <Box
       background="surfacePrimaryElevated"
-      style={{ flex: 1, position: 'relative', contentVisibility: 'auto' }}
+      style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
     >
       {/** spring transformY to imitate scroll bounce*/}
       <Box height="full" as={motion.div} style={{ y }}>

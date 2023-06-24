@@ -24,11 +24,8 @@ import {
   TransactionType,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import {
-  greaterThan,
-  handleSignificantDecimals,
-  toHex,
-} from '~/core/utils/numbers';
+import { toHex } from '~/core/utils/hex';
+import { greaterThan, handleSignificantDecimals } from '~/core/utils/numbers';
 import { updateTransaction } from '~/core/utils/transactions';
 import {
   Box,
