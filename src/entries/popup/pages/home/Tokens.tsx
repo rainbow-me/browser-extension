@@ -1,4 +1,4 @@
-import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import { memo, useMemo, useState } from 'react';
 
@@ -20,6 +20,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
@@ -49,8 +50,10 @@ export function Tokens() {
     { select: selectUserAssetsList },
   );
 
-  const assetsRowVirtualizer = useWindowVirtualizer({
+  const containerRef = useContainerRef();
+  const assetsRowVirtualizer = useVirtualizer({
     count: assets?.length || 0,
+    getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
     overscan: 20,
   });
@@ -106,13 +109,9 @@ export function Tokens() {
                 layoutId={`list-${index}`}
                 layoutScroll
                 layout="position"
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  width: '100%',
-                  height: size,
-                  y: start,
-                }}
+                position="absolute"
+                width="full"
+                style={{ height: size, y: start }}
               >
                 <TokenDetailsMenu token={rowData}>
                   <AssetRow

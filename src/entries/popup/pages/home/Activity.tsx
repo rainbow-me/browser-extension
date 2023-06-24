@@ -1,4 +1,4 @@
-import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import React, { ReactNode, useMemo } from 'react';
 import { useAccount } from 'wagmi';
@@ -20,6 +20,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { TextStyles } from '~/design-system/styles/core.css';
@@ -46,8 +47,10 @@ export function Activity() {
     [allTransactions],
   );
 
-  const activityRowVirtualizer = useWindowVirtualizer({
+  const containerRef = useContainerRef();
+  const activityRowVirtualizer = useVirtualizer({
     count: listData.length,
+    getScrollElement: () => containerRef.current,
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
     overscan: 20,
   });
@@ -127,14 +130,9 @@ export function Activity() {
                 layout="position"
                 initial={{ opacity: isLabel ? 0 : 1 }}
                 animate={{ opacity: 1 }}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: size,
-                  y: start,
-                }}
+                position="absolute"
+                width="full"
+                style={{ height: size, y: start }}
               >
                 {isLabel ? (
                   <Inset horizontal="20px" top="16px" bottom="8px">
