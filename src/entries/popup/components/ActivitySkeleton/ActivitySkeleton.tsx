@@ -13,6 +13,8 @@ export function TokensSkeleton() {
           key={index}
           as={motion.div}
           layoutId={`list-skeleton-${index}`}
+          layoutScroll
+          layout="position"
           display="flex"
           alignItems="center"
           justifyContent="space-between"
@@ -73,6 +75,8 @@ export function ActivitySkeleton() {
           key={index}
           as={motion.div}
           layoutId={`list-skeleton-${index}`}
+          layoutScroll
+          layout="position"
           display="flex"
           alignItems="center"
           justifyContent="space-between"

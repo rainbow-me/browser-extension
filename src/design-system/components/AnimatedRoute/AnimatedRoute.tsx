@@ -1,5 +1,12 @@
 import { motion } from 'framer-motion';
-import React, { useEffect, useMemo } from 'react';
+import React, {
+  RefObject,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
@@ -155,10 +162,12 @@ export const animatedRouteValues: Record<
   },
 };
 
-export const AnimatedRoute = React.forwardRef<
-  HTMLDivElement,
-  AnimatedRouteProps
->((props: AnimatedRouteProps, ref) => {
+const containerRefContext = createContext<RefObject<HTMLDivElement>>({
+  current: null,
+});
+export const useContainerRef = () => useContext(containerRefContext);
+
+export const AnimatedRoute = (props: AnimatedRouteProps) => {
   const {
     background,
     children,
@@ -199,35 +208,39 @@ export const AnimatedRoute = React.forwardRef<
     }, 150);
   }, []);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const content = (
     <AccentColorProviderWrapper
       color={accentColor ? avatar?.color : globalColors.blue60}
     >
       <AvatarColorProvider color={avatar?.color || globalColors.blue60}>
-        <Box
-          as={motion.div}
-          ref={ref}
-          display="flex"
-          flexDirection="column"
-          height="full"
-          initial={isBack ? exit : initial}
-          style={{ maxHeight: POPUP_DIMENSIONS.height }}          
-          animate={end}
-          exit={isBack ? initial : exit}
-          transition={transition}
-          background={background}
-          className={animatedRouteStyles}
-        >
-          {navbar && (
-            <Navbar
-              title={title || ''}
-              background={navbarBackground}
-              leftComponent={leftNavbarIcon}
-              rightComponent={rightNavbarComponent}
-            />
-          )}
-          {children}
-        </Box>
+        <containerRefContext.Provider value={containerRef}>
+          <Box
+            as={motion.div}
+            ref={containerRef}
+            display="flex"
+            flexDirection="column"
+            height="full"
+            initial={isBack ? exit : initial}
+            style={{ overflow: 'auto', maxHeight: POPUP_DIMENSIONS.height }}
+            animate={end}
+            exit={isBack ? initial : exit}
+            transition={transition}
+            background={background}
+            className={animatedRouteStyles}
+          >
+            {navbar && (
+              <Navbar
+                title={title || ''}
+                background={navbarBackground}
+                leftComponent={leftNavbarIcon}
+                rightComponent={rightNavbarComponent}
+              />
+            )}
+            {children}
+          </Box>
+        </containerRefContext.Provider>
       </AvatarColorProvider>
     </AccentColorProviderWrapper>
   );
@@ -238,6 +251,6 @@ export const AnimatedRoute = React.forwardRef<
     );
   }
   return content;
-});
+};
 
 AnimatedRoute.displayName = 'AnimatedRoute';

@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useTransform } from 'framer-motion';
 import * as React from 'react';
 import { useAccount } from 'wagmi';
 
@@ -22,19 +22,19 @@ import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
-export function Header() {
-  const { scrollY, scrollYProgress: progress } = useScroll({
+import { useScroll } from '.';
+
+export const Header = React.memo(function Header() {
+  const { scrollYProgress: progress } = useScroll({
     offset: ['0px', '64px', '92px'],
   });
-
-  console.log(scrollY.get());
 
   const scaleValue = useTransform(progress, [0, 0.25, 1], [1, 0.3, 0]);
   const opacityValue = useTransform(progress, [0, 0.25], [1, 0]);
 
   const nameScaleValue = useTransform(progress, [0, 0.25, 1], [1, 1, 0.8]);
   const namePaddingLeftValue = useTransform(progress, [0, 0.25, 1], [0, 0, 40]);
-  const nameOpacityValue = useTransform(progress, [0.9999, 1], [1, 0]);
+  const nameOpacityValue = useTransform(progress, (v) => (v === 1 ? 0 : 1));
 
   return (
     <Box
@@ -82,7 +82,7 @@ export function Header() {
       <Box style={{ minHeight: 32 }} />
     </Box>
   );
-}
+});
 
 export function AvatarSection() {
   const { address } = useAccount();

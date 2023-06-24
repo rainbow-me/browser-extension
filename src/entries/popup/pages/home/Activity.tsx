@@ -1,6 +1,6 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import React, { ReactNode, useMemo, useRef } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -46,7 +46,6 @@ export function Activity() {
     [allTransactions],
   );
 
-  const containerRef = useRef<HTMLDivElement>(null);
   const activityRowVirtualizer = useWindowVirtualizer({
     count: listData.length,
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
@@ -97,7 +96,6 @@ export function Activity() {
   return (
     <>
       <Box
-        ref={containerRef}
         marginTop={'-20px'}
         width="full"
         style={{
@@ -125,6 +123,8 @@ export function Activity() {
                 data-index={index}
                 as={motion.div}
                 layoutId={!isLabel ? `list-${index - labelsCount}` : undefined}
+                layoutScroll
+                layout="position"
                 initial={{ opacity: isLabel ? 0 : 1 }}
                 animate={{ opacity: 1 }}
                 style={{

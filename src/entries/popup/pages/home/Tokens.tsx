@@ -1,6 +1,6 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -39,6 +39,7 @@ export function Tokens() {
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
     useState(false);
+
   const {
     data: assets = [],
     isInitialLoading,
@@ -47,6 +48,7 @@ export function Tokens() {
     { address: currentAddress, currency, connectedToHardhat },
     { select: selectUserAssetsList },
   );
+
   const assetsRowVirtualizer = useWindowVirtualizer({
     count: assets?.length || 0,
     estimateSize: () => 52,
@@ -102,6 +104,7 @@ export function Tokens() {
                 key={key}
                 as={motion.div}
                 layoutId={`list-${index}`}
+                layoutScroll
                 layout="position"
                 style={{
                   position: 'absolute',
@@ -130,7 +133,7 @@ type AssetRowProps = {
   uniqueId: UniqueId;
 };
 
-export function AssetRow({ uniqueId }: AssetRowProps) {
+export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
   const asset = useUserAsset(uniqueId);
   const name = asset?.name;
   const { hideAssetBalances } = useHideAssetBalancesStore();
@@ -216,7 +219,7 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
   );
 
   return <CoinRow asset={asset} topRow={topRow} bottomRow={bottomRow} />;
-}
+});
 
 function TokensEmptyState() {
   return (
