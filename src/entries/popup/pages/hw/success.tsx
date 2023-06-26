@@ -181,7 +181,10 @@ export function SuccessHW() {
                 {i18n.t('hw.connection_successful_description', {
                   vendor:
                     vendor.substring(0, 1).toUpperCase() + vendor.substring(1),
-                  count: accounts.length,
+                  wallet_count: `${accounts.length} wallet${
+                    accounts.length > 1 ? 's' : ''
+                  }`,
+                  wallet_pronoun: `${accounts.length > 1 ? "They're" : "It's"}`,
                 })}
               </Text>
             </Stack>
