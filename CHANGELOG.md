@@ -17,7 +17,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
-## [v1.1.0](https://github.com/rainbow-me/rainbow/releases/tag/v1.1.0)
+## [v1.1.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.12)
+
+### Added
+
+- Version numbers are now available at the bottom of Settings #687
+
+### Changed
+
+- Tailored Onboarding welcome screen "Pin Rainbow to your toolbar" for the Arc browser #674
+- Analytics for Swap, Bridge, and Send submissions #656
+
+### Fixed
+
+- Major performance improvements for Tokens and Activity lists for large wallets #675
+- Fixed crash when a Send transaction fails #685
+- Fixed an issue with how Insufficient Gas errors were displayed for native gas tokens in Swaps #673
+- Fixed missing copy scenario on wallet selection during the Secret Recovery Phrase import flow #684
+- Fixed scenario where the Send wallet selection dropdown would not display any selectable wallets #688
+- Fixed animations of Send token selection dropdown #688
+- Fixed missing token highlight on Send token selection dropdown #688
+- Fixed text line height cutoff on "No activity yet" empty state #653
+- Compressed image and sounds assets for performance #689
+
+### Security
+
+- Added infrastructure and CI errors to further strengthen circular dependency vulnerability protections #680 #683
+
+## [v1.1.5](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.5)
+
+### Changed
+
+- We’ve introduced new wallet recommendations for the “Watch an Ethereum address” step of Onboarding #633
+- Analytics for global Flashbots RPC setting #657
+
+### Fixed
+
+- Wallets with an ENS name are now searchable in the Wallet Switcher #665
+- Resolved incorrect empty state avatar before a wallet was selected on the Send flow #676
+- Resolved a race condition where delays in fetching the Remote Config would mean Onboarding was not properly gated for Invite Codes #677
+
+## [v1.1.0](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.0)
 
 ### Added
 
