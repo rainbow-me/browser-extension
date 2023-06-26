@@ -17,6 +17,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.1.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.12)
+
+### Changed
+
+- Tailored Onboarding welcome screen "Pin Rainbow to your toolbar" for the Arc browser #674
+
+### Fixed
+
+- Major performance improvements for Tokens and Activity lists for large wallets #675
+- Fixed crash when a Send transaction fails #685
+- Fixed an issue with how Insufficient Gas errors were displayed for native gas tokens in Swaps #673
+- Fixed missing copy scenario on wallet selection during the Secret Recovery Phrase import flow #684
+- Fixed text line height cutoff on "No activity yet" empty state #653
+- Compressed image and sounds assets for performance #689
+
+### Security
+
+- Added infrastructure and CI errors to further strengthen circular dependency vulnerability protections #680 #683
+
 ## [v1.1.5](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.5)
 
 ### Changed
