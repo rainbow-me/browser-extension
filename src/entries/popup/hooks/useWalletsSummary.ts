@@ -120,7 +120,7 @@ export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
           nativeAssets,
         });
         return prev;
-      }, {}),
+      }, {}) || [],
     [addresses, currentCurrency, data, nativeAssets],
   );
 
