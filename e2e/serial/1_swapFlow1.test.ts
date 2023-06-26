@@ -21,6 +21,7 @@ import {
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
+  transactionStatus,
   typeOnTextInput,
 } from '../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
@@ -692,6 +693,7 @@ it('should be able to see no route explainer', async () => {
     driver,
   });
   expect(noRouteExplainer).toBeTruthy();
+  await delayTime('medium');
   await findElementByTestIdAndClick({
     id: 'explainer-action-button',
     driver,
@@ -954,10 +956,16 @@ it('should be able to execute swap', async () => {
     ethBalanceBeforeSwap.toString(),
     ethBalanceAfterSwap.toString(),
   );
+  await console.log('before balance:' + ethBalanceBeforeSwap.toString());
+  await console.log('after balance:' + ethBalanceAfterSwap.toString());
   const ethDifferenceAmount = convertRawAmountToDecimalFormat(
     balanceDifference,
     18,
   );
+
+  const txnStatus = await transactionStatus();
+
+  expect(txnStatus).toBe('success');
 
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
 });
