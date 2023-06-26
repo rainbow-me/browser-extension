@@ -843,6 +843,8 @@
     "index_label": "Index",
     "connection_successful_title": "Connected successfully",
     "connection_successful_description": "You’ve successfully added %{wallet_count}. %{wallet_pronoun} easy to identify in your wallet list with the %{vendor} badge. You can add more at any time.",
+    "wallet_pronoun_plural": "They're",
+    "wallet_pronoun_singular": "It's",
     "done": "Done",
     "add_wallet": "Add wallet",
     "add_by_index_title": "Add a wallet by its index",

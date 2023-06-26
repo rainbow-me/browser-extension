@@ -184,7 +184,11 @@ export function SuccessHW() {
                   wallet_count: `${accounts.length} wallet${
                     accounts.length > 1 ? 's' : ''
                   }`,
-                  wallet_pronoun: `${accounts.length > 1 ? "They're" : "It's"}`,
+                  wallet_pronoun: i18n.t(
+                    accounts.length > 1
+                      ? 'hw.wallet_pronoun_plural'
+                      : 'hw.wallet_pronoun_singular',
+                  ),
                 })}
               </Text>
             </Stack>
