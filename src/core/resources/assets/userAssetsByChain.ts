@@ -1,7 +1,6 @@
-import { Contract } from '@ethersproject/contracts';
 import { useQuery } from '@tanstack/react-query';
-import { Provider, getProvider } from '@wagmi/core';
-import { Address, erc20ABI } from 'wagmi';
+import { getProvider } from '@wagmi/core';
+import { Address } from 'wagmi';
 
 import { refractionAddressWs } from '~/core/network';
 import {
@@ -17,9 +16,9 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 import {
+  fetchAssetBalanceViaProvider,
   filterAsset,
   parseAddressAsset,
-  parseParsedAddressAsset,
 } from '~/core/utils/assets';
 import { greaterThan } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
@@ -29,36 +28,6 @@ import {
   USDC_MAINNET_ASSET,
 } from '~/test/utils';
 
-const fetchAssetBalanceViaProvider = async ({
-  parsedAsset,
-  currentAddress,
-  currency,
-  provider,
-}: {
-  parsedAsset: ParsedAddressAsset;
-  currentAddress: Address;
-  currency: SupportedCurrencyKey;
-  provider: Provider;
-}) => {
-  if (parsedAsset.isNativeAsset) {
-    const balance = await provider.getBalance(currentAddress);
-    const updatedAsset = parseParsedAddressAsset({
-      parsedAsset,
-      currency,
-      quantity: balance.toString(),
-    });
-    return updatedAsset;
-  } else {
-    const contract = new Contract(parsedAsset.address, erc20ABI, provider);
-    const balance = await contract.balanceOf(currentAddress);
-    const updatedAsset = parseParsedAddressAsset({
-      parsedAsset,
-      currency,
-      quantity: balance.toString(),
-    });
-    return updatedAsset;
-  }
-};
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
