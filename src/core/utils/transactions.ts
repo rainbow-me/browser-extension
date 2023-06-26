@@ -1,10 +1,8 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getProvider } from '@wagmi/core';
 import { capitalize, isString } from 'lodash';
-import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
-import { useSwapRefreshAssets } from '~/entries/popup/hooks/swap/useSwapAssetsRefresh';
 import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
 import { i18n } from '../languages';
@@ -14,17 +12,12 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
-import { userAssetsFetchQuery } from '../resources/assets/userAssets';
 import { fetchRegistryLookup } from '../resources/transactions/registryLookup';
-import { fetchTransactions } from '../resources/transactions/transactions';
 import {
   currentCurrencyStore,
   nonceStore,
   pendingTransactionsStore,
-  useCurrentCurrencyStore,
-  usePendingTransactionsStore,
 } from '../state';
-import { useConnectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -571,139 +564,6 @@ export async function getTransactionReceiptStatus({
 export function getTransactionHash(tx: RainbowTransaction): string | undefined {
   return tx.hash?.split('-').shift();
 }
-
-const isPendingTransaction = (status: TransactionStatus) => {
-  return (
-    status === TransactionStatus.approving ||
-    status === TransactionStatus.bridging ||
-    status === TransactionStatus.cancelling ||
-    status === TransactionStatus.depositing ||
-    status === TransactionStatus.purchasing ||
-    status === TransactionStatus.receiving ||
-    status === TransactionStatus.sending ||
-    status === TransactionStatus.speeding_up ||
-    status === TransactionStatus.swapping ||
-    status === TransactionStatus.withdrawing
-  );
-};
-
-export const useWatchPendingTransactions = ({
-  address,
-}: {
-  address?: Address;
-}) => {
-  const { swapRefreshAssets } = useSwapRefreshAssets();
-  const { getPendingTransactions, setPendingTransactions } =
-    usePendingTransactionsStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
-
-  const watchPendingTransactions = useCallback(async () => {
-    const pendingTransactions = getPendingTransactions({
-      address,
-    });
-    if (!pendingTransactions?.length || !address) return;
-    const updatedPendingTransactions = await Promise.all(
-      pendingTransactions.map(async (tx) => {
-        let updatedTransaction = { ...tx };
-        const txHash = getTransactionHash(tx);
-        try {
-          const chainId = tx?.chainId;
-          if (chainId) {
-            const provider = getProvider({ chainId });
-            if (txHash) {
-              const currentNonceForChainId = await provider.getTransactionCount(
-                address,
-                'latest',
-              );
-              const transactionResponse = await provider.getTransaction(txHash);
-              const nonceAlreadyIncluded =
-                currentNonceForChainId >
-                (tx?.nonce || transactionResponse?.nonce);
-              const transactionStatus = await getTransactionReceiptStatus({
-                included: nonceAlreadyIncluded,
-                transaction: tx,
-                transactionResponse,
-              });
-              let pendingTransactionData = getPendingTransactionData({
-                transaction: tx,
-                transactionStatus,
-              });
-
-              if (
-                (transactionResponse?.blockNumber &&
-                  transactionResponse?.blockHash) ||
-                nonceAlreadyIncluded
-              ) {
-                if (updatedTransaction.type === TransactionType.trade) {
-                  swapRefreshAssets(tx.nonce);
-                } else {
-                  userAssetsFetchQuery({
-                    address,
-                    currency: currentCurrency,
-                    connectedToHardhat,
-                  });
-                }
-
-                const latestTransactionsConfirmedByBackend =
-                  await fetchTransactions(
-                    {
-                      address,
-                      chainId,
-                      currency: currentCurrency,
-                      transactionsLimit: 1,
-                    },
-                    { cacheTime: 0 },
-                  );
-                const latest = latestTransactionsConfirmedByBackend?.[0];
-                if (latest && getTransactionHash(latest) === tx?.hash) {
-                  updatedTransaction = {
-                    ...updatedTransaction,
-                    ...latest,
-                  };
-                } else {
-                  updatedTransaction = {
-                    ...updatedTransaction,
-                    ...pendingTransactionData,
-                  };
-                }
-              } else if (tx.flashbots) {
-                const flashbotsTxStatus = await getTransactionFlashbotStatus(
-                  updatedTransaction,
-                  txHash,
-                );
-                if (flashbotsTxStatus) {
-                  pendingTransactionData = flashbotsTxStatus;
-                }
-              }
-            }
-          } else {
-            throw new Error('Pending transaction missing chain id');
-          }
-        } catch (e) {
-          console.log('ERROR WATCHING PENDING TX: ', e);
-        }
-        return updatedTransaction;
-      }),
-    );
-
-    setPendingTransactions({
-      address,
-      pendingTransactions: updatedPendingTransactions.filter((tx) =>
-        isPendingTransaction(tx?.status as TransactionStatus),
-      ),
-    });
-  }, [
-    address,
-    connectedToHardhat,
-    currentCurrency,
-    getPendingTransactions,
-    setPendingTransactions,
-    swapRefreshAssets,
-  ]);
-
-  return { watchPendingTransactions };
-};
 
 export async function getCurrentNonce({
   address,
