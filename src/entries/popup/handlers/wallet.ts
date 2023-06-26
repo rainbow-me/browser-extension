@@ -359,6 +359,7 @@ export const importAccountAtIndex = async (
         false,
         false,
       );
+      transport?.close();
 
       address = result.address;
       break;
