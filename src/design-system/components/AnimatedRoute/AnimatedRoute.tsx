@@ -1,6 +1,10 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useMemo } from 'react';
-import { useLocation, useNavigationType } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigationType,
+  useSearchParams,
+} from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -181,14 +185,17 @@ export const AnimatedRoute = React.forwardRef<
 
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
+  const [urlSearchParams] = useSearchParams();
+  const excludeNav = urlSearchParams.get('excludeNav');
 
   const leftNavbarIcon = useMemo(() => {
+    if (excludeNav) return undefined;
     if (navbarIcon === 'arrow') {
       return <Navbar.BackButton />;
     } else if (navbarIcon === 'ex') {
       return <Navbar.CloseButton />;
     } else return undefined;
-  }, [navbarIcon]);
+  }, [excludeNav, navbarIcon]);
 
   useEffect(() => {
     const app = document.getElementById('app');
@@ -211,7 +218,7 @@ export const AnimatedRoute = React.forwardRef<
           flexDirection="column"
           height="full"
           initial={isBack ? exit : initial}
-          style={{ maxHeight: POPUP_DIMENSIONS.height }}          
+          style={{ maxHeight: POPUP_DIMENSIONS.height }}
           animate={end}
           exit={isBack ? initial : exit}
           transition={transition}
