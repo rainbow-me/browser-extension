@@ -11,7 +11,6 @@ export {
 } from './currentSettings';
 export { deviceIdStore, useDeviceIdStore } from './device';
 export { gasStore, useGasStore } from './gas';
-export { syncStores } from './internal/syncStores';
 export { nonceStore, useNonceStore } from './nonce';
 export {
   notificationWindowStore,
