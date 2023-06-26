@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Tailored Onboarding welcome screen "Pin Rainbow to your toolbar" for the Arc browser #674
+- Analytics for Swap, Bridge, and Send submissions #656
 
 ### Fixed
 
