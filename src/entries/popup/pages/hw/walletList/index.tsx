@@ -1,5 +1,4 @@
 import { Address } from '@wagmi/core';
-import clsx from 'clsx';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -32,54 +31,9 @@ import { useWalletsSummary } from '../../../hooks/useWalletsSummary';
 import { ROUTES } from '../../../urls';
 import { AddByIndexSheet } from '../addByIndexSheet';
 
-import {
-  accountIndexHiddenHoverSiblingStyle,
-  accountIndexHiddenHoverStyle,
-  accountIndexHoverContainerStyle,
-} from './walletList.css';
+import { AccountIndex } from './AccountIndex';
 
 type Vendor = 'Ledger' | 'Trezor';
-
-export const AccountIndex = ({ index }: { index: number }) => {
-  return (
-    <Box
-      borderRadius="8px"
-      borderWidth="2px"
-      borderColor={'separatorSecondary'}
-      padding={'6px'}
-      marginTop={'-5px'}
-      className={accountIndexHoverContainerStyle}
-    >
-      <Inline space="2px">
-        <Box
-          className={clsx([
-            accountIndexHiddenHoverStyle,
-            'account-index-hidden',
-          ])}
-        >
-          <Text
-            size="11pt"
-            weight="bold"
-            color={'labelTertiary'}
-            align="center"
-          >
-            {i18n.t('hw.index_label')}
-          </Text>
-        </Box>
-        <Box className={accountIndexHiddenHoverSiblingStyle}>
-          <Text
-            size="11pt"
-            weight="bold"
-            color={'labelTertiary'}
-            align="center"
-          >
-            # {index}
-          </Text>
-        </Box>
-      </Inline>
-    </Box>
-  );
-};
 
 const WalletListHW = () => {
   const [showAddByIndexSheet, setShowAddByIndexSheet] =
