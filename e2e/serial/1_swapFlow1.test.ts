@@ -836,6 +836,7 @@ it('should be able to see swap information in review sheet', async () => {
     id: 'swap-review-rnbw-fee-info-button',
     driver,
   });
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
 
   const moreDetailsHiddendDetailsRow = await findElementByTestId({
