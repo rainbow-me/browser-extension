@@ -1,6 +1,12 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.mp3';
@@ -215,6 +221,7 @@ const SwapReviewSheetWithQuote = ({
   const [sendingSwap, setSendingSwap] = useState(false);
   const { selectedGas } = useGasStore();
   const { setSwapAssetsToRefresh } = useSwapAssetsToRefreshStore();
+  const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
@@ -419,6 +426,10 @@ const SwapReviewSheetWithQuote = ({
     () => (enoughNativeAssetBalanceForGas ? 'accent' : 'fillSecondary'),
     [enoughNativeAssetBalanceForGas],
   );
+
+  useEffect(() => {
+    confirmSwapButtonRef.current?.focus();
+  }, [show]);
 
   return (
     <>
@@ -684,6 +695,8 @@ const SwapReviewSheetWithQuote = ({
                     disabled={sendingSwap}
                     width="full"
                     testId="swap-review-execute"
+                    tabIndex={0}
+                    ref={confirmSwapButtonRef}
                   >
                     {sendingSwap ? (
                       <Box
