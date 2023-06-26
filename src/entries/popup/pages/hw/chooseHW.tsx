@@ -20,7 +20,7 @@ export function ChooseHW() {
   const handleLedgerChoice = useCallback(() => {
     if (!isFullScreen) {
       goToNewTab({
-        url: POPUP_URL + `#${ROUTES.HW_LEDGER}?excludeNav=true`,
+        url: POPUP_URL + `#${ROUTES.HW_LEDGER}?hideBack=true`,
       });
     } else {
       navigate(ROUTES.HW_LEDGER, {

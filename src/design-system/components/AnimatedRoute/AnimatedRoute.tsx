@@ -186,16 +186,16 @@ export const AnimatedRoute = React.forwardRef<
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
   const [urlSearchParams] = useSearchParams();
-  const excludeNav = urlSearchParams.get('excludeNav');
+  const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 
   const leftNavbarIcon = useMemo(() => {
-    if (excludeNav) return undefined;
+    if (hideBackButton) return undefined;
     if (navbarIcon === 'arrow') {
       return <Navbar.BackButton />;
     } else if (navbarIcon === 'ex') {
       return <Navbar.CloseButton />;
     } else return undefined;
-  }, [excludeNav, navbarIcon]);
+  }, [hideBackButton, navbarIcon]);
 
   useEffect(() => {
     const app = document.getElementById('app');
