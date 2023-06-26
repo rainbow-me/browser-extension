@@ -53,12 +53,14 @@ export function ChooseHW() {
       >
         <OnboardMenu>
           <OnboardMenu.Item
+            first
             titleImage={<img src={ledgerLogo} width="90" height="30" />}
             onClick={handleLedgerChoice}
             subtitle={i18n.t('hw.ledger_support')}
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
+            last
             titleImage={<img src={trezorLogo} width="95" height="24 " />}
             onClick={handleTrezorChoice}
             subtitle={i18n.t('hw.trezor_support')}
