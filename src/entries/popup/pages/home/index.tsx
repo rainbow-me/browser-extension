@@ -18,7 +18,8 @@ import { useLocation } from 'react-router-dom';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
