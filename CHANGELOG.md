@@ -17,7 +17,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
-## [v1.1.0](https://github.com/rainbow-me/rainbow/releases/tag/v1.1.0)
+## [v1.1.5](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.5)
+
+### Changed
+
+- We’ve introduced new wallet recommendations for the “Watch an Ethereum address” step of Onboarding #633
+- Analytics for global Flashbots RPC setting #657
+
+### Fixed
+
+- Wallets with an ENS name are now searchable in the Wallet Switcher #665
+- Resolved incorrect empty state avatar before a wallet was selected on the Send flow #676
+- Resolved a race condition where delays in fetching the Remote Config would mean Onboarding was not properly gated for Invite Codes #677
+
+## [v1.1.0](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.0)
 
 ### Added
 
