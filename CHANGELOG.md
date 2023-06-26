@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.1.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.12)
 
+### Added
+
+- Version numbers are now available at the bottom of Settings #687
+
 ### Changed
 
 - Tailored Onboarding welcome screen "Pin Rainbow to your toolbar" for the Arc browser #674
@@ -30,6 +34,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fixed crash when a Send transaction fails #685
 - Fixed an issue with how Insufficient Gas errors were displayed for native gas tokens in Swaps #673
 - Fixed missing copy scenario on wallet selection during the Secret Recovery Phrase import flow #684
+- Fixed scenario where the Send wallet selection dropdown would not display any selectable wallets #688
+- Fixed animations of Send token selection dropdown #688
+- Fixed missing token highlight on Send token selection dropdown #688
 - Fixed text line height cutoff on "No activity yet" empty state #653
 - Compressed image and sounds assets for performance #689
 
