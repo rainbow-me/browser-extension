@@ -331,7 +331,8 @@ export function Settings() {
             onClick={() => window.open(RAINBOW_FEEDBACK_URL, '_blank')}
           />
         </Menu>
-        {process.env.IS_TESTING === 'true' && (
+        {(process.env.IS_TESTING === 'true' ||
+          process.env.IS_DEV === 'true') && (
           <Menu>
             <MenuItem.Description text="Below buttons are for testing only" />
             <MenuItem

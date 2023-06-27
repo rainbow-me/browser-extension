@@ -1,5 +1,7 @@
+import { Contract } from '@ethersproject/contracts';
+import { Provider } from '@ethersproject/providers';
 import isURL from 'validator/lib/isURL';
-import { Address } from 'wagmi';
+import { Address, erc20ABI } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
@@ -211,3 +213,34 @@ export function filterAsset(asset: ZerionAsset) {
   const shouldFilter = nameContainsURL || symbolContainsURL;
   return shouldFilter;
 }
+
+export const fetchAssetBalanceViaProvider = async ({
+  parsedAsset,
+  currentAddress,
+  currency,
+  provider,
+}: {
+  parsedAsset: ParsedAddressAsset;
+  currentAddress: Address;
+  currency: SupportedCurrencyKey;
+  provider: Provider;
+}) => {
+  if (parsedAsset.isNativeAsset) {
+    const balance = await provider.getBalance(currentAddress);
+    const updatedAsset = parseParsedAddressAsset({
+      parsedAsset,
+      currency,
+      quantity: balance.toString(),
+    });
+    return updatedAsset;
+  } else {
+    const contract = new Contract(parsedAsset.address, erc20ABI, provider);
+    const balance = await contract.balanceOf(currentAddress);
+    const updatedAsset = parseParsedAddressAsset({
+      parsedAsset,
+      currency,
+      quantity: balance.toString(),
+    });
+    return updatedAsset;
+  }
+};
