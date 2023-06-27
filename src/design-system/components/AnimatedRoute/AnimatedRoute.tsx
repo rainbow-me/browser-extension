@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import React, {
   RefObject,
   createContext,
+  forwardRef,
   useContext,
   useEffect,
   useMemo,
@@ -24,6 +25,7 @@ import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 import { getInputIsFocused } from '~/entries/popup/utils/activeElement';
+import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
 import {
   AccentColorProviderWrapper,
@@ -167,7 +169,7 @@ const containerRefContext = createContext<RefObject<HTMLDivElement>>({
 });
 export const useContainerRef = () => useContext(containerRefContext);
 
-export const AnimatedRoute = (props: AnimatedRouteProps) => {
+export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
   const {
     background,
     children,
@@ -218,7 +220,7 @@ export const AnimatedRoute = (props: AnimatedRouteProps) => {
         <containerRefContext.Provider value={containerRef}>
           <Box
             as={motion.div}
-            ref={containerRef}
+            ref={mergeRefs(ref, containerRef)}
             display="flex"
             flexDirection="column"
             height="full"
@@ -251,6 +253,6 @@ export const AnimatedRoute = (props: AnimatedRouteProps) => {
     );
   }
   return content;
-};
+});
 
 AnimatedRoute.displayName = 'AnimatedRoute';
