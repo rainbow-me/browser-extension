@@ -68,7 +68,7 @@ export const NewWalletPrompt = ({
   );
 
   return (
-    <Prompt show={show}>
+    <Prompt show={show} handleClose={onClose}>
       <Box padding="12px">
         <Rows space="24px">
           <Row>
