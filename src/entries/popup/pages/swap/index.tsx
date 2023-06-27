@@ -228,6 +228,7 @@ export function Swap() {
     setAssetToSellMaxValue,
     setAssetToSellValue,
     setAssetToSellInputValue,
+    setAssetToSellInputNativeValue,
     setAssetToBuyValue,
     setAssetToBuyInputValue,
   } = useSwapInputs({
@@ -457,16 +458,24 @@ export function Swap() {
                     placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
                     assetToSellMaxValue={assetToSellMaxValue}
                     setAssetToSellMaxValue={setAssetToSellMaxValue}
-                    assetToSellValue={assetToSellValue}
+                    assetToSellValue={
+                      independentField === 'sellNativeField'
+                        ? assetToSellDisplay
+                        : assetToSellValue
+                    }
                     setAssetToSellInputValue={setAssetToSellInputValue}
                     inputRef={assetToSellInputRef}
                     openDropdownOnMount={inputToOpenOnMount === 'sell'}
                     assetToSellNativeValue={assetToSellNativeValue}
+                    setAssetToSellInputNativeValue={
+                      setAssetToSellInputNativeValue
+                    }
                   />
                 </AccentColorProviderWrapper>
               </Box>
 
               <Box
+                // marginVertical="-8px"
                 marginTop="-18px"
                 marginBottom="-20px"
                 style={{ zIndex: assetToSellDropdownClosed ? 3 : 1 }}

@@ -6,6 +6,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
 import {
+  Bleed,
   Box,
   Column,
   Columns,
@@ -24,12 +25,14 @@ export const TokenToSellInfo = ({
   assetToSellMaxValue,
   assetToSellNativeValue,
   setAssetToSellMaxValue,
+  setAssetToSellInputNativeValue,
 }: {
   asset: ParsedSearchAsset | null;
   assetToSellValue: string;
   assetToSellMaxValue: { display: string; amount: string };
   setAssetToSellMaxValue: () => void;
   assetToSellNativeValue: { amount: string; display: string } | null;
+  setAssetToSellInputNativeValue: (value: string) => void;
 }) => {
   const [nativeValue, setNativeValue] = useState('');
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -41,8 +44,9 @@ export const TokenToSellInfo = ({
         decimals: supportedCurrencies[currentCurrency].decimals,
       });
       setNativeValue(maskedValue);
+      setAssetToSellInputNativeValue(maskedValue);
     },
-    [currentCurrency],
+    [currentCurrency, setAssetToSellInputNativeValue],
   );
 
   if (!asset) return null;
@@ -74,30 +78,30 @@ export const TokenToSellInfo = ({
                     currentCurrency,
                   ).display}
               </TextOverflow> */}
-              <Box
-                as="input"
-                type="text"
-                background="green"
-                value={nativeValue}
-                onChange={handleNativeValueOnChange}
-                placeholder={
-                  assetToSellNativeValue?.display ??
-                  convertAmountAndPriceToNativeDisplay(
-                    assetToSellValue || 0,
-                    asset?.price?.value || 0,
-                    currentCurrency,
-                  ).amount
-                }
-                className={[
-                  textStyles({
-                    color: 'labelTertiary',
-                    fontSize: '12pt',
-                    fontWeight: 'semibold',
-                    fontFamily: 'rounded',
-                  }),
-                ]}
-                style={{ height: 8 }}
-              />
+              <Bleed vertical="4px">
+                <Box
+                  as="input"
+                  type="text"
+                  value={nativeValue}
+                  onChange={handleNativeValueOnChange}
+                  placeholder={
+                    assetToSellNativeValue?.display ??
+                    convertAmountAndPriceToNativeDisplay(
+                      assetToSellValue || 0,
+                      asset?.price?.value || 0,
+                      currentCurrency,
+                    ).amount
+                  }
+                  className={[
+                    textStyles({
+                      color: 'labelTertiary',
+                      fontSize: '12pt',
+                      fontWeight: 'semibold',
+                      fontFamily: 'rounded',
+                    }),
+                  ]}
+                />
+              </Bleed>
             </Inline>
           </Column>
         )}

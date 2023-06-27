@@ -29,6 +29,7 @@ interface SwapTokenInputProps {
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputValue: (value: string) => void;
+  setAssetToSellInputNativeValue: (value: string) => void;
 }
 
 export const TokenToSellInput = ({
@@ -51,6 +52,7 @@ export const TokenToSellInput = ({
   setSortMethod,
   setAssetToSellMaxValue,
   setAssetToSellInputValue,
+  setAssetToSellInputNativeValue,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(asset: ParsedSearchAsset) => void>();
   const dropdownRef = useRef<{ openDropdown: () => void }>(null);
@@ -109,6 +111,7 @@ export const TokenToSellInput = ({
             assetToSellMaxValue={assetToSellMaxValue}
             asset={asset}
             setAssetToSellMaxValue={setAssetToSellMaxValue}
+            setAssetToSellInputNativeValue={setAssetToSellInputNativeValue}
           />
         ) : null
       }
