@@ -434,37 +434,41 @@ export function Swap() {
         <Rows alignVertical="justify">
           <Row height="content">
             <Stack space="8px">
-              <AccentColorProviderWrapper
-                color={handleAssetAccentColor(
-                  currentTheme,
-                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback,
-                )}
-              >
-                <TokenToSellInput
-                  dropdownHeight={toSellInputHeight}
-                  asset={assetToSell}
-                  assets={assetsToSell}
-                  selectAsset={selectAssetToSell}
-                  onDropdownOpen={onAssetToSellInputOpen}
-                  dropdownClosed={assetToSellDropdownClosed}
-                  setSortMethod={setSortMethod}
-                  assetFilter={assetToSellFilter}
-                  setAssetFilter={setAssetToSellFilter}
-                  sortMethod={sortMethod}
-                  zIndex={2}
-                  placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
-                  assetToSellMaxValue={assetToSellMaxValue}
-                  setAssetToSellMaxValue={setAssetToSellMaxValue}
-                  assetToSellValue={assetToSellValue}
-                  setAssetToSellInputValue={setAssetToSellInputValue}
-                  inputRef={assetToSellInputRef}
-                  openDropdownOnMount={inputToOpenOnMount === 'sell'}
-                  assetToSellNativeValue={assetToSellNativeValue}
-                />
-              </AccentColorProviderWrapper>
+              <Box>
+                <AccentColorProviderWrapper
+                  color={handleAssetAccentColor(
+                    currentTheme,
+                    assetToSell?.colors?.primary ||
+                      assetToSell?.colors?.fallback,
+                  )}
+                >
+                  <TokenToSellInput
+                    dropdownHeight={toSellInputHeight}
+                    asset={assetToSell}
+                    assets={assetsToSell}
+                    selectAsset={selectAssetToSell}
+                    onDropdownOpen={onAssetToSellInputOpen}
+                    dropdownClosed={assetToSellDropdownClosed}
+                    setSortMethod={setSortMethod}
+                    assetFilter={assetToSellFilter}
+                    setAssetFilter={setAssetToSellFilter}
+                    sortMethod={sortMethod}
+                    zIndex={2}
+                    placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
+                    assetToSellMaxValue={assetToSellMaxValue}
+                    setAssetToSellMaxValue={setAssetToSellMaxValue}
+                    assetToSellValue={assetToSellValue}
+                    setAssetToSellInputValue={setAssetToSellInputValue}
+                    inputRef={assetToSellInputRef}
+                    openDropdownOnMount={inputToOpenOnMount === 'sell'}
+                    assetToSellNativeValue={assetToSellNativeValue}
+                  />
+                </AccentColorProviderWrapper>
+              </Box>
 
               <Box
-                marginVertical="-20px"
+                marginTop="-18px"
+                marginBottom="-20px"
                 style={{ zIndex: assetToSellDropdownClosed ? 3 : 1 }}
               >
                 <Inline alignHorizontal="center">
@@ -499,33 +503,36 @@ export function Swap() {
                 </Inline>
               </Box>
 
-              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
-                <TokenToBuyInput
-                  dropdownHeight={toBuyInputHeight}
-                  assetToBuy={assetToBuy}
-                  assetToSell={assetToSell}
-                  assets={assetsToBuy}
-                  selectAsset={setAssetToBuy}
-                  onDropdownOpen={onAssetToBuyInputOpen}
-                  dropdownClosed={assetToBuyDropdownClosed}
-                  zIndex={1}
-                  placeholder={i18n.t(
-                    'swap.input_token_to_receive_placeholder',
-                  )}
-                  setOutputChainId={setOutputChainId}
-                  outputChainId={outputChainId}
-                  assetFilter={assetToBuyFilter}
-                  setAssetFilter={setAssetToBuyFilter}
-                  assetToBuyValue={assetToBuyValue}
-                  assetToSellValue={assetToSellValue}
-                  setAssetToBuyInputValue={setAssetToBuyInputValue}
-                  inputRef={assetToBuyInputRef}
-                  openDropdownOnMount={inputToOpenOnMount === 'buy'}
-                  inputDisabled={isCrosschainSwap}
-                  assetToBuyNativeValue={assetToBuyNativeValue}
-                  assetToSellNativeValue={assetToSellNativeValue}
-                />
-              </AccentColorProviderWrapper>
+              <Box>
+                <AccentColorProviderWrapper color={assetToBuyAccentColor}>
+                  <TokenToBuyInput
+                    dropdownHeight={toBuyInputHeight}
+                    assetToBuy={assetToBuy}
+                    assetToSell={assetToSell}
+                    assets={assetsToBuy}
+                    selectAsset={setAssetToBuy}
+                    onDropdownOpen={onAssetToBuyInputOpen}
+                    dropdownClosed={assetToBuyDropdownClosed}
+                    zIndex={1}
+                    placeholder={i18n.t(
+                      'swap.input_token_to_receive_placeholder',
+                    )}
+                    setOutputChainId={setOutputChainId}
+                    outputChainId={outputChainId}
+                    assetFilter={assetToBuyFilter}
+                    setAssetFilter={setAssetToBuyFilter}
+                    assetToBuyValue={assetToBuyValue}
+                    assetToSellValue={assetToSellValue}
+                    setAssetToBuyInputValue={setAssetToBuyInputValue}
+                    inputRef={assetToBuyInputRef}
+                    openDropdownOnMount={inputToOpenOnMount === 'buy'}
+                    inputDisabled={isCrosschainSwap}
+                    assetToBuyNativeValue={assetToBuyNativeValue}
+                    assetToSellNativeValue={assetToSellNativeValue}
+                  />
+                </AccentColorProviderWrapper>
+              </Box>
+
               <SwapWarning
                 timeEstimate={timeEstimate}
                 priceImpact={priceImpact}
