@@ -21,6 +21,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  transactionStatus,
   typeOnTextInput,
   waitAndClick,
   waitUntilElementByTestIdIsPresent,
@@ -136,6 +137,11 @@ it('should be able to execute unlock and swap', async () => {
   });
 
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+
+  const txnStatus = await transactionStatus();
+  expect(txnStatus).toBe('success');
+
+  await delayTime('very-long');
 
   const daiBalanceAfterSwap = await getOnchainBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,

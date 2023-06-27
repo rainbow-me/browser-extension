@@ -753,6 +753,7 @@ it('should be able to find exact match on other networks', async () => {
     id: 'token-to-buy-search-token-input',
     driver,
   });
+  await delayTime('medium');
 });
 
 it('should be able to go to review a swap', async () => {
@@ -760,27 +761,33 @@ it('should be able to go to review a swap', async () => {
     id: 'token-to-sell-search-token-input',
     driver,
   });
+  await delayTime('medium');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
+  await delayTime('medium');
   const toSellInputEthSelected = await findElementByTestId({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  await delayTime('medium');
   expect(toSellInputEthSelected).toBeTruthy();
   await findElementByTestIdAndClick({
     id: 'token-to-buy-search-token-input',
     driver,
   });
+  await delayTime('medium');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
+  await delayTime('medium');
   const toBuyInputDaiSelected = await findElementByTestId({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
+  await delayTime('medium');
   expect(toBuyInputDaiSelected).toBeTruthy();
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -851,7 +858,7 @@ it('should be able to see swap information in review sheet', async () => {
     id: 'swap-review-more-details-button',
     driver,
   });
-
+  await delayTime('medium');
   const moreDetailsdSection = await findElementByTestId({
     id: `more-details-section`,
     driver,
@@ -898,7 +905,7 @@ it('should be able to see swap information in review sheet', async () => {
     id: 'asset-to-buy-copy-swap-view-contract-dropdown',
     driver,
   });
-
+  await delayTime('medium');
   const swapReviewConfirmationText = await getTextFromElement({
     id: 'swap-review-confirmation-text',
     driver,
@@ -915,19 +922,19 @@ it('should be able to see swap information in review sheet', async () => {
 it('should be able to execute swap', async () => {
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
-  await delayTime('short');
+  await delayTime('medium');
 
   await findElementByTestIdAndClick({
     id: 'navbar-button-with-back-swap-review',
     driver,
   });
-  await delayTime('short');
+  await delayTime('medium');
 
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
     driver,
   });
-  await delayTime('short');
+  await delayTime('medium');
 
   await typeOnTextInput({
     id: 'slippage-input-mask',
@@ -948,6 +955,9 @@ it('should be able to execute swap', async () => {
   });
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+  const txnStatus = await transactionStatus();
+
+  expect(txnStatus).toBe('success');
   await delayTime('very-long');
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
@@ -962,10 +972,6 @@ it('should be able to execute swap', async () => {
     balanceDifference,
     18,
   );
-
-  const txnStatus = await transactionStatus();
-
-  expect(txnStatus).toBe('success');
 
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
 });
