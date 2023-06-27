@@ -2,7 +2,10 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useEffect } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { convertRawAmountToBalance } from '~/core/utils/numbers';
+import {
+  convertRawAmountToBalance,
+  handleSignificantDecimals,
+} from '~/core/utils/numbers';
 
 import usePrevious from '../usePrevious';
 
@@ -33,29 +36,42 @@ export const useSwapQuoteHandler = ({
         | Quote
         | CrosschainQuote;
 
-      if (independentField === 'sellField' && assetToBuy) {
+      if (
+        (independentField === 'sellField' ||
+          independentField === 'sellNativeField') &&
+        assetToBuy
+      ) {
         setAssetToBuyValue(
           buyAmountDisplay
-            ? convertRawAmountToBalance(
-                buyAmountDisplay?.toString(),
-                assetToBuy,
-              ).amount
+            ? handleSignificantDecimals(
+                convertRawAmountToBalance(
+                  buyAmountDisplay?.toString(),
+                  assetToBuy,
+                ).amount,
+                5,
+              )
             : '',
         );
       } else if (independentField === 'buyField' && assetToSell) {
         setAssetToSellValue(
           sellAmountDisplay
-            ? convertRawAmountToBalance(
-                sellAmountDisplay?.toString(),
-                assetToSell,
-              ).amount
+            ? handleSignificantDecimals(
+                convertRawAmountToBalance(
+                  sellAmountDisplay?.toString(),
+                  assetToSell,
+                ).amount,
+                5,
+              )
             : '',
         );
       }
     } else {
       if (independentField === 'buyField') {
         setAssetToSellValue('');
-      } else if (independentField === 'sellField') {
+      } else if (
+        independentField === 'sellField' ||
+        independentField === 'sellNativeField'
+      ) {
         setAssetToBuyValue('');
       }
     }
