@@ -431,7 +431,7 @@ const SwapReviewSheetWithQuote = ({
     if (show) {
       setTimeout(() => {
         confirmSwapButtonRef.current?.focus();
-      }, 500);
+      }, 301);
     }
   }, [show]);
 
