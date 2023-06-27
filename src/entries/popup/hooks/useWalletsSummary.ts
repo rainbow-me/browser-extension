@@ -112,7 +112,7 @@ export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
 
   const walletsSummary: { [key: Address]: WalletSummary } = useMemo(
     () =>
-      addresses.reduce((prev: { [key: Address]: WalletSummary }, address) => {
+      addresses?.reduce((prev: { [key: Address]: WalletSummary }, address) => {
         prev[address] = parseAddressSummary({
           address,
           addysSummary: data,
@@ -120,7 +120,7 @@ export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
           nativeAssets,
         });
         return prev;
-      }, {}),
+      }, {}) || [],
     [addresses, currentCurrency, data, nativeAssets],
   );
 

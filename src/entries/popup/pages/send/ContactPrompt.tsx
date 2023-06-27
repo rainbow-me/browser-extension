@@ -210,6 +210,7 @@ export const ContactPrompt = ({
   address,
   action,
   onSaveContactAction,
+  handleClose,
 }: {
   show: boolean;
   address: Address;
@@ -220,13 +221,14 @@ export const ContactPrompt = ({
       action: ContactAction;
     }>
   >;
+  handleClose: () => void;
 }) => {
   const { data: ensAvatar } = useENSAvatar({ addressOrName: address });
   const { data: dominantColor } = useDominantColor({
     imageUrl: ensAvatar ?? undefined,
   });
   return (
-    <Prompt show={show}>
+    <Prompt show={show} handleClose={handleClose}>
       <Box padding="12px">
         <AccentColorProvider color={dominantColor || globalColors.blue50}>
           {action === 'save' || action === 'edit' ? (

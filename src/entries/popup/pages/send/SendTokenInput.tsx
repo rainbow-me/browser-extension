@@ -22,11 +22,7 @@ import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
-import {
-  DropdownInputWrapper,
-  dropdownContainerVariant,
-  dropdownItemVariant,
-} from '../../components/DropdownInputWrapper/DropdownInputWrapper';
+import { DropdownInputWrapper } from '../../components/DropdownInputWrapper/DropdownInputWrapper';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,6 +34,7 @@ import { SortMethod } from '../../hooks/send/useSendAsset';
 import { AssetRow } from '../home/Tokens';
 
 import { InputActionButton } from './InputActionButton';
+import { RowHighlightWrapper } from './RowHighlightWrapper';
 
 const TokenSortMenu = ({
   asset,
@@ -316,12 +313,7 @@ export const SendTokenInput = React.forwardRef<
               />
             </Inline>
           </Box>
-          <Box
-            as={motion.div}
-            variants={dropdownContainerVariant}
-            initial="hidden"
-            animate="show"
-          >
+          <Box>
             {!!filteredAssets?.length &&
               filteredAssets?.map((asset, i) => (
                 <Box
@@ -330,13 +322,11 @@ export const SendTokenInput = React.forwardRef<
                   onClick={() => selectAsset(asset.address, asset.chainId)}
                   testId={`token-input-asset-${asset?.uniqueId}`}
                 >
-                  <Box
-                    as={motion.div}
-                    variants={dropdownItemVariant}
-                    marginHorizontal="-8px"
-                  >
-                    <AssetRow uniqueId={asset?.uniqueId} />
-                  </Box>
+                  <RowHighlightWrapper>
+                    <Box marginHorizontal="-8px">
+                      <AssetRow uniqueId={asset?.uniqueId} />
+                    </Box>
+                  </RowHighlightWrapper>
                 </Box>
               ))}
             {!filteredAssets.length && (
