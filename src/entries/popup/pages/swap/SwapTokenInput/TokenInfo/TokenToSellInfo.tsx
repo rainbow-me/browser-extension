@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
@@ -11,9 +12,10 @@ import {
   Inline,
   Symbol,
   Text,
-  TextOverflow,
+  textStyles,
 } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
+import { maskInput } from '~/entries/popup/components/InputMask/utils';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 
 export const TokenToSellInfo = ({
@@ -29,28 +31,74 @@ export const TokenToSellInfo = ({
   setAssetToSellMaxValue: () => void;
   assetToSellNativeValue: { amount: string; display: string } | null;
 }) => {
+  const [nativeValue, setNativeValue] = useState('');
   const { currentCurrency } = useCurrentCurrencyStore();
+
+  const handleNativeValueOnChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const maskedValue = maskInput({
+        inputValue: e.target.value,
+        decimals: supportedCurrencies[currentCurrency].decimals,
+      });
+      setNativeValue(maskedValue);
+    },
+    [currentCurrency],
+  );
 
   if (!asset) return null;
   return (
     <Box width="full">
-      <Columns alignHorizontal="justify">
+      <Columns alignHorizontal="justify" alignVertical="center">
         {asset && (
           <Column>
-            <TextOverflow
-              as="p"
-              size="12pt"
-              weight="semibold"
-              color="labelTertiary"
-              testId="token-to-sell-info-fiat-value"
-            >
-              {assetToSellNativeValue?.display ??
-                convertAmountAndPriceToNativeDisplay(
-                  assetToSellValue || 0,
-                  asset?.price?.value || 0,
-                  currentCurrency,
-                ).display}
-            </TextOverflow>
+            <Inline alignVertical="center">
+              <Text
+                size="12pt"
+                weight="semibold"
+                color="labelTertiary"
+                testId="token-to-sell-info-fiat-value"
+              >
+                {supportedCurrencies[currentCurrency].symbol}
+              </Text>
+              {/* <TextOverflow
+                as="p"
+                size="12pt"
+                weight="semibold"
+                color="labelTertiary"
+                testId="token-to-sell-info-fiat-value"
+              >
+                {assetToSellNativeValue?.display ??
+                  convertAmountAndPriceToNativeDisplay(
+                    assetToSellValue || 0,
+                    asset?.price?.value || 0,
+                    currentCurrency,
+                  ).display}
+              </TextOverflow> */}
+              <Box
+                as="input"
+                type="text"
+                background="green"
+                value={nativeValue}
+                onChange={handleNativeValueOnChange}
+                placeholder={
+                  assetToSellNativeValue?.display ??
+                  convertAmountAndPriceToNativeDisplay(
+                    assetToSellValue || 0,
+                    asset?.price?.value || 0,
+                    currentCurrency,
+                  ).amount
+                }
+                className={[
+                  textStyles({
+                    color: 'labelTertiary',
+                    fontSize: '12pt',
+                    fontWeight: 'semibold',
+                    fontFamily: 'rounded',
+                  }),
+                ]}
+                style={{ height: 8 }}
+              />
+            </Inline>
           </Column>
         )}
         <Column width="content">
