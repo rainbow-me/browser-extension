@@ -59,10 +59,16 @@ export const tintedStyles = styleVariants<
   surfacePrimaryElevatedSecondary: {},
 });
 
-globalStyle('.bx-button-wrapper button:focus-visible', {
-  // transparent by default so we can set
-  // the right color whenever we want to show the outline
-  outline: '1px solid',
-  outlineOffset: '2px',
-  outlineColor: 'transparent',
-});
+// we target focus-visible and focus because certain browsers will not apply
+// focus-visible styles unless the keyboard was used to focus the element and
+// we have certain cases where we want focus buttons programmatically
+globalStyle(
+  '.bx-button-wrapper button:focus-visible, .bx-button-wrapper button:focus',
+  {
+    // transparent by default so we can set
+    // the right color whenever we want to show the outline
+    outline: '1px solid',
+    outlineOffset: '2px',
+    outlineColor: 'transparent',
+  },
+);

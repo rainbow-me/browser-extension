@@ -428,7 +428,9 @@ const SwapReviewSheetWithQuote = ({
   );
 
   useEffect(() => {
-    confirmSwapButtonRef.current?.focus();
+    if (show) {
+      confirmSwapButtonRef.current?.focus();
+    }
   }, [show]);
 
   return (
@@ -449,6 +451,7 @@ const SwapReviewSheetWithQuote = ({
             borderTopLeftRadius: '24px',
             borderTopRightRadius: '24px',
           }}
+          isModal
         >
           <Stack space="12px">
             <Navbar
