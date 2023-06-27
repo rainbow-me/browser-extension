@@ -63,7 +63,7 @@ export const ConfirmPasswordPrompt = ({
   }, []);
 
   return (
-    <Prompt show={show}>
+    <Prompt handleClose={handleClose} show={show}>
       <Box padding="12px">
         <Rows space="24px">
           <Row>

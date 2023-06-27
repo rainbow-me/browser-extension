@@ -1,5 +1,6 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
@@ -162,6 +163,8 @@ export function Swap() {
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const { currentTheme } = useCurrentThemeStore();
+  const [urlSearchParams] = useSearchParams();
+  const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 
   const showSwapReviewSheet = useCallback(() => {
     setShowSwapReview(true);
@@ -383,7 +386,7 @@ export function Swap() {
       <Navbar
         title={i18n.t('swap.title')}
         background={'surfaceSecondary'}
-        leftComponent={<Navbar.CloseButton />}
+        leftComponent={!hideBackButton ? <Navbar.CloseButton /> : undefined}
         rightComponent={
           <ButtonSymbol
             color="surfaceSecondaryElevated"

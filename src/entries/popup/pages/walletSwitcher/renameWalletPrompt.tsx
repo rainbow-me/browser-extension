@@ -101,7 +101,7 @@ export const RenameWalletPrompt = ({
   onClose: () => void;
   account?: Address;
 }) => (
-  <Prompt show={!!account}>
+  <Prompt show={!!account} handleClose={onClose}>
     {account && <RenameWallet account={account} onClose={onClose} />}
   </Prompt>
 );

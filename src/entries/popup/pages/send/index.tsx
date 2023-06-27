@@ -375,6 +375,9 @@ export function Send() {
         show={contactSaveAction?.show}
         action={contactSaveAction?.action}
         onSaveContactAction={setSaveContactAction}
+        handleClose={() =>
+          setSaveContactAction({ show: false, action: 'save' })
+        }
       />
       <AccentColorProviderWrapper color={assetAccentColor}>
         <ReviewSheet
