@@ -187,12 +187,7 @@ const MenuItem = ({
         width="full"
         onClick={onClick}
       >
-        <Box
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          style={{ height: 18 }}
-        >
+        <Box flexDirection="column" alignItems="center" justifyContent="center">
           <Inline
             alignHorizontal="justify"
             alignVertical="center"
