@@ -30,6 +30,7 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 import { logger } from '~/logger';
 
+import packageJson from '../../../../../package.json';
 import { testSandbox } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -330,7 +331,8 @@ export function Settings() {
             onClick={() => window.open(RAINBOW_FEEDBACK_URL, '_blank')}
           />
         </Menu>
-        {process.env.IS_TESTING === 'true' && (
+        {(process.env.IS_TESTING === 'true' ||
+          process.env.IS_DEV === 'true') && (
           <Menu>
             <MenuItem.Description text="Below buttons are for testing only" />
             <MenuItem
@@ -392,18 +394,16 @@ export function Settings() {
             />
           </Menu>
         )}
-        {process.env.IS_TESTING === 'true' && (
-          <Box padding="10px" alignItems="center" justifyContent="center">
-            <Text
-              size="12pt"
-              weight="semibold"
-              color="labelTertiary"
-              align="center"
-            >
-              1.2.34 (56)
-            </Text>
-          </Box>
-        )}
+        <Box padding="10px" alignItems="center" justifyContent="center">
+          <Text
+            size="12pt"
+            weight="semibold"
+            color="labelTertiary"
+            align="center"
+          >
+            {packageJson.version}
+          </Text>
+        </Box>
       </MenuContainer>
     </Box>
   );
