@@ -38,7 +38,7 @@ export const Alert = () => {
   if (!visible) return null;
 
   return (
-    <Prompt zIndex={zIndexes.ALERT} show={visible}>
+    <Prompt zIndex={zIndexes.ALERT} show={visible} handleClose={onClose}>
       <Box padding="20px">
         <Stack space="20px">
           <Box style={{ wordBreak: 'break-all' }}>

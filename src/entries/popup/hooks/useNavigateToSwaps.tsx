@@ -14,7 +14,7 @@ export const useNavigateToSwaps = () => {
 
   return () => {
     return type === KeychainType.HardwareWalletKeychain && !isFullScreen
-      ? goToNewTab({ url: POPUP_URL + `#${ROUTES.SWAP}` })
+      ? goToNewTab({ url: POPUP_URL + `#${ROUTES.SWAP}?hideBack=true` })
       : navigate(ROUTES.SWAP);
   };
 };

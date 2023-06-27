@@ -1,9 +1,7 @@
-import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
-import { watchPendingTransactions } from '~/core/utils/txWatcher';
-
 import { usePoll } from './usePoll';
+import { useWatchPendingTransactions } from './useWatchPendingTransactions';
 
 const PENDING_TRANSACTION_POLLING_INTERVAL = 10000;
 
@@ -12,10 +10,6 @@ export function usePendingTransactionWatcher({
 }: {
   address?: Address;
 }) {
-  const callback = useCallback(() => {
-    if (address) {
-      watchPendingTransactions({ address });
-    }
-  }, [address]);
-  usePoll(callback, PENDING_TRANSACTION_POLLING_INTERVAL);
+  const { watchPendingTransactions } = useWatchPendingTransactions({ address });
+  usePoll(watchPendingTransactions, PENDING_TRANSACTION_POLLING_INTERVAL);
 }
