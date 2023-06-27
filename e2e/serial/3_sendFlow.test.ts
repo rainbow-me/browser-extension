@@ -178,6 +178,7 @@ it('should be able to clear to address input on send flow', async () => {
     id: 'input-wrapper-close-to-address-input',
     driver,
   });
+  await delayTime('long');
   const input = await findElementByTestId({ id: 'to-address-input', driver });
   await input.sendKeys('rainbowwallet.eth');
 });
