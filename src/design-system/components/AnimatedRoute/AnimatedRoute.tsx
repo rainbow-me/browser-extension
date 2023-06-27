@@ -8,7 +8,11 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { useLocation, useNavigationType } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigationType,
+  useSearchParams,
+} from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -192,14 +196,17 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
 
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
+  const [urlSearchParams] = useSearchParams();
+  const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 
   const leftNavbarIcon = useMemo(() => {
+    if (hideBackButton) return undefined;
     if (navbarIcon === 'arrow') {
       return <Navbar.BackButton />;
     } else if (navbarIcon === 'ex') {
       return <Navbar.CloseButton />;
     } else return undefined;
-  }, [navbarIcon]);
+  }, [hideBackButton, navbarIcon]);
 
   useEffect(() => {
     const app = document.getElementById('app');

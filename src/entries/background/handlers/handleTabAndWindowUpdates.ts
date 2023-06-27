@@ -1,6 +1,7 @@
 import { initializeMessenger } from '~/core/messengers';
-import { notificationWindowStore, pendingRequestStore } from '~/core/state';
+import { notificationWindowStore } from '~/core/state';
 import { isDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
+import { pendingRequestStore } from '~/core/state/requests';
 
 const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
 

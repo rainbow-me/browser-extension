@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 
 import { useRemoteConfig } from '~/core/firebase/useRemoteConfig';
 import { i18n } from '~/core/languages';
-import { usePendingRequestStore } from '~/core/state';
 import { useInviteCodeStore } from '~/core/state/inviteCode';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Stack, Text } from '~/design-system';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';

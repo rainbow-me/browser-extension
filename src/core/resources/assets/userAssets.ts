@@ -16,6 +16,7 @@ import { chainIdFromChainName } from '~/core/utils/chains';
 import { fetchUserAssetsByChain } from './userAssetsByChain';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
+export const USER_ASSETS_STALE_INTERVAL = 30000;
 const REFRACTION_SUPPORTED_CHAINS = [
   ChainName.mainnet,
   ChainName.optimism,
@@ -28,6 +29,26 @@ const REFRACTION_SUPPORTED_CHAINS = [
 // Query Types
 
 export type UserAssetsArgs = {
+  address?: Address;
+  currency: SupportedCurrencyKey;
+  connectedToHardhat: boolean;
+};
+
+type SetUserAssetsArgs = {
+  address?: Address;
+  currency: SupportedCurrencyKey;
+  connectedToHardhat: boolean;
+  userAssets?: UserAssetsResult;
+};
+
+type SetUserDefaultsArgs = {
+  address?: Address;
+  currency: SupportedCurrencyKey;
+  connectedToHardhat: boolean;
+  staleTime: number;
+};
+
+type FetchUserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
   connectedToHardhat: boolean;
@@ -52,11 +73,46 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
+export const userAssetsFetchQuery = ({
+  address,
+  currency,
+  connectedToHardhat,
+}: FetchUserAssetsArgs) => {
+  queryClient.fetchQuery(
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    userAssetsQueryFunction,
+  );
+};
+
+export const userAssetsSetQueryDefaults = ({
+  address,
+  currency,
+  connectedToHardhat,
+  staleTime,
+}: SetUserDefaultsArgs) => {
+  queryClient.setQueryDefaults(
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    { staleTime },
+  );
+};
+
+export const userAssetsSetQueryData = ({
+  address,
+  currency,
+  connectedToHardhat,
+  userAssets,
+}: SetUserAssetsArgs) => {
+  queryClient.setQueryData(
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    userAssets,
+  );
+};
+
 async function userAssetsQueryFunctionByChain({
   address,
   currency,
   connectedToHardhat,
-}: UserAssetsArgs): Promise<ParsedAssetsDictByChain> {
+}: UserAssetsArgs) {
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = cache.find(
     userAssetsQueryKey({ address, currency, connectedToHardhat }),
@@ -77,9 +133,12 @@ async function userAssetsQueryFunctionByChain({
   const queries = REFRACTION_SUPPORTED_CHAINS.map((chain) =>
     getResultsForChain(chain),
   );
-
-  const results = await Promise.all(queries);
-  return Object.assign({}, ...results);
+  try {
+    const results = await Promise.all(queries);
+    return Object.assign({}, ...results) as ParsedAssetsDictByChain;
+  } catch (e) {
+    return cachedUserAssets;
+  }
 }
 
 async function userAssetsQueryFunction({

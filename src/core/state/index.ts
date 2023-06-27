@@ -20,4 +20,3 @@ export {
   pendingTransactionsStore,
   usePendingTransactionsStore,
 } from './pendingTransactions';
-export { pendingRequestStore, usePendingRequestStore } from './requests';

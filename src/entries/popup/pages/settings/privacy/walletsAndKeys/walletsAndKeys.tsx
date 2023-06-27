@@ -122,7 +122,7 @@ export function WalletsAndKeys() {
                             : 'lock.square.stack.fill'
                         }
                         weight="medium"
-                        size={18}
+                        size={22}
                         color="labelTertiary"
                       />
                     )

@@ -46,8 +46,14 @@ export function Tokens() {
     isInitialLoading,
     refetch: refetchUserAssets,
   } = useUserAssets(
-    { address: currentAddress, currency, connectedToHardhat },
-    { select: selectUserAssetsList },
+    {
+      address: currentAddress,
+      currency,
+      connectedToHardhat,
+    },
+    {
+      select: selectUserAssetsList,
+    },
   );
 
   const containerRef = useContainerRef();

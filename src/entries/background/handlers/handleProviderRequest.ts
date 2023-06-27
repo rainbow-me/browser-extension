@@ -11,11 +11,8 @@ import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
-import {
-  appSessionsStore,
-  notificationWindowStore,
-  pendingRequestStore,
-} from '~/core/state';
+import { appSessionsStore, notificationWindowStore } from '~/core/state';
+import { pendingRequestStore } from '~/core/state/requests';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
