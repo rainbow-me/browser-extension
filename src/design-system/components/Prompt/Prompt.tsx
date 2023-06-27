@@ -19,6 +19,7 @@ export const Prompt = ({
   scrimBackground,
   backdropFilter,
   zIndex,
+  handleClose,
 }: {
   show: boolean;
   children: ReactNode;
@@ -27,6 +28,7 @@ export const Prompt = ({
   scrimBackground?: boolean;
   backdropFilter?: BackdropFilter;
   zIndex?: number;
+  handleClose?: () => void;
 }) => {
   const emphasizedShort = animatedRouteTransitionConfig['emphasizedShort'];
   const deceleratedShort = animatedRouteTransitionConfig['deceleratedShort'];
@@ -76,6 +78,7 @@ export const Prompt = ({
           backdropFilter={backdropFilter ?? 'blur(12px)'}
           background="scrim"
           padding={padding}
+          onClick={() => handleClose?.()}
         >
           <Rows alignVertical="center">
             <Row height="content">
@@ -86,6 +89,9 @@ export const Prompt = ({
                 }}
               >
                 <Box
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
                   as={motion.div}
                   initial={{ opacity: 0, scale: 1.1 }}
                   animate={{ opacity: 1, scale: 1 }}
