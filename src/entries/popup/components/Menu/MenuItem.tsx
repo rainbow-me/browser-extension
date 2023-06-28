@@ -3,6 +3,8 @@ import { Address } from 'wagmi';
 
 import {
   Box,
+  Column,
+  Columns,
   Inline,
   Stack,
   Symbol,
@@ -164,6 +166,7 @@ const MenuItem = ({
   }, [onClick, onToggle]);
   return (
     <Lens
+      display="flex"
       forwardNav={hasRightArrow}
       onKeyDown={handleKeyDown}
       style={{
@@ -176,6 +179,7 @@ const MenuItem = ({
           borderBottomRightRadius: 15,
           borderBottomLeftRadius: 15,
         }),
+        minHeight: 50,
       }}
       tabIndex={tabIndex}
     >
@@ -186,18 +190,11 @@ const MenuItem = ({
         testId={testId}
         width="full"
         onClick={onClick}
+        flexDirection="column"
+        display="flex"
       >
-        <Box
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          style={{ height: 18 }}
-        >
-          <Inline
-            alignHorizontal="justify"
-            alignVertical="center"
-            height="full"
-          >
+        <Columns>
+          <Column>
             <Inline
               alignVertical="center"
               space="16px"
@@ -214,6 +211,8 @@ const MenuItem = ({
                 {labelComponent}
               </Stack>
             </Inline>
+          </Column>
+          <Column width="content">
             <Inline
               alignVertical="center"
               space="8px"
@@ -238,8 +237,8 @@ const MenuItem = ({
                 />
               )}
             </Inline>
-          </Inline>
-        </Box>
+          </Column>
+        </Columns>
       </Box>
     </Lens>
   );

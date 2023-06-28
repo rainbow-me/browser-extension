@@ -1,10 +1,10 @@
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 
-import config from '~/core/firebase/remoteConfig';
+import { useRemoteConfig } from '~/core/firebase/useRemoteConfig';
 import { i18n } from '~/core/languages';
-import { usePendingRequestStore } from '~/core/state';
 import { useInviteCodeStore } from '~/core/state/inviteCode';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Stack, Text } from '~/design-system';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
@@ -23,16 +23,23 @@ export function Welcome() {
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
     useState(!!pendingRequests.length);
   const headerControls = useAnimationControls();
+  const { remoteConfig } = useRemoteConfig();
 
   const { inviteCodeValidated, setInviteCodeValidated } = useInviteCodeStore();
-  const [screen, setScreen] = useState<'invite_code' | 'welcome'>(
-    BYPASS_INVITE_CODE ||
-      !config.invite_code_required ||
-      (config.invite_code_required && inviteCodeValidated)
-      ? 'welcome'
-      : 'invite_code',
+  const [screen, setScreen] = useState<'invite_code' | 'welcome' | ''>(
+    BYPASS_INVITE_CODE || inviteCodeValidated ? 'welcome' : '',
   );
   const prevScreen = usePrevious(screen);
+
+  useEffect(() => {
+    if (Object.keys(remoteConfig).length && !BYPASS_INVITE_CODE) {
+      setScreen(
+        remoteConfig.invite_code_required && !inviteCodeValidated
+          ? 'invite_code'
+          : 'welcome',
+      );
+    }
+  }, [inviteCodeValidated, remoteConfig.invite_code_required, remoteConfig]);
 
   useEffect(() => {
     if (prevScreen === 'invite_code' && screen === 'welcome') {
@@ -77,7 +84,14 @@ export function Welcome() {
         </Box>
         <AnimatePresence mode="popLayout" initial={false}>
           {screen === 'invite_code' ? (
-            <Box width="full">
+            <Box
+              as={motion.div}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              key="invite-code"
+              width="full"
+            >
               <InviteCodePortal
                 onInviteCodeValidated={(valid: boolean) => {
                   setInviteCodeValidated(valid);
@@ -89,7 +103,7 @@ export function Welcome() {
             </Box>
           ) : null}
           {screen === 'welcome' ? (
-            <Box width="full">
+            <Box key="welcome" width="full">
               <ImportOrCreateWallet />
             </Box>
           ) : null}

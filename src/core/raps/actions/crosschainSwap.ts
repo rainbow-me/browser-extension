@@ -18,7 +18,7 @@ import {
   TransactionLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
-import { toHex } from '../../utils/numbers';
+import { toHex } from '../../utils/hex';
 import { ActionProps } from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,

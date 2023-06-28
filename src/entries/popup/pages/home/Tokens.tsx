@@ -1,3 +1,4 @@
+import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import { useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -28,7 +29,6 @@ import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
-import { useVirtualizedAssets } from '../../hooks/useVirtualizedAssets';
 
 import { TokenDetailsMenu } from './TokenDetailsMenu';
 
@@ -43,11 +43,19 @@ export function Tokens() {
     isInitialLoading,
     refetch: refetchUserAssets,
   } = useUserAssets(
-    { address: currentAddress, currency, connectedToHardhat },
-    { select: selectUserAssetsList },
+    {
+      address: currentAddress,
+      currency,
+      connectedToHardhat,
+    },
+    {
+      select: selectUserAssetsList,
+    },
   );
-  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
-    assets,
+  const assetsRowVirtualizer = useWindowVirtualizer({
+    count: assets?.length || 0,
+    estimateSize: () => 52,
+    overscan: 20,
   });
 
   useKeyboardShortcut({
@@ -73,7 +81,6 @@ export function Tokens() {
 
   return (
     <Box
-      ref={containerRef}
       width="full"
       style={{
         overflow: 'auto',
@@ -91,17 +98,13 @@ export function Tokens() {
           position: 'relative',
         }}
       >
-        <Box
-          style={{
-            overflow: 'auto',
-          }}
-        >
+        <Box style={{ overflow: 'auto' }}>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
-            const { index } = virtualItem;
+            const { key, index } = virtualItem;
             const rowData = assets[index];
             return (
               <Box
-                key={index}
+                key={key}
                 style={{
                   position: 'absolute',
                   top: 0,

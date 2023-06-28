@@ -4,10 +4,13 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.mp3';
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
@@ -211,6 +214,7 @@ const SwapReviewSheetWithQuote = ({
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
   const { selectedGas } = useGasStore();
+  const { setSwapAssetsToRefresh } = useSwapAssetsToRefreshStore();
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
@@ -268,8 +272,10 @@ const SwapReviewSheetWithQuote = ({
     const type =
       assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
     const q = quote as QuoteTypeMap[typeof type];
+    const flashbots =
+      assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false;
     setSendingSwap(true);
-    const { errorMessage } = await wallet.executeRap<typeof type>({
+    const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
       rapActionParameters: {
         sellAmount: q.sellAmount?.toString(),
         buyAmount: q.buyAmount?.toString(),
@@ -277,12 +283,10 @@ const SwapReviewSheetWithQuote = ({
         assetToSell: assetToSell,
         assetToBuy: assetToBuy,
         quote: q,
-        flashbots:
-          assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false,
+        flashbots,
       },
       type,
     });
-
     if (errorMessage) {
       setSendingSwap(false);
       alert('Swap failed');
@@ -290,16 +294,51 @@ const SwapReviewSheetWithQuote = ({
         message: errorMessage,
       });
     } else {
+      setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
       navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
     }
+    isBridge
+      ? analytics.track(event.bridgeSubmitted, {
+          inputAssetSymbol: assetToSell.symbol,
+          inputAssetName: assetToSell.name,
+          inputAssetAddress: assetToSell.address,
+          inputAssetChainId: assetToSell.chainId,
+          inputAssetAmount: q.sellAmount as number,
+          outputAssetSymbol: assetToBuy.symbol,
+          outputAssetName: assetToBuy.name,
+          outputAssetAddress: assetToBuy.address,
+          outputAssetChainId: assetToBuy.chainId,
+          outputAssetAmount: q.buyAmount as number,
+          mainnetAddress:
+            assetToBuy?.chainId === ChainId.mainnet
+              ? 'address'
+              : 'mainnetAddress',
+          flashbots,
+        })
+      : analytics.track(event.swapSubmitted, {
+          inputAssetSymbol: assetToSell.symbol,
+          inputAssetName: assetToSell.name,
+          inputAssetAddress: assetToSell.address,
+          inputAssetChainId: assetToSell.chainId,
+          inputAssetAmount: q.sellAmount as number,
+          outputAssetSymbol: assetToBuy.symbol,
+          outputAssetName: assetToBuy.name,
+          outputAssetAddress: assetToBuy.address,
+          outputAssetChainId: assetToBuy.chainId,
+          outputAssetAmount: q.buyAmount as number,
+          crosschain: assetToSell.chainId !== assetToBuy.chainId,
+          flashbots,
+        });
   }, [
-    assetToBuy,
     assetToSell,
-    connectedToHardhat,
-    sendingSwap,
-    flashbotsEnabled,
-    navigate,
+    assetToBuy,
     quote,
+    isBridge,
+    sendingSwap,
+    connectedToHardhat,
+    flashbotsEnabled,
+    setSwapAssetsToRefresh,
+    navigate,
   ]);
 
   const handleSwap = useCallback(() => {

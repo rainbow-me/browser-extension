@@ -11,18 +11,15 @@ import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
-import {
-  appSessionsStore,
-  notificationWindowStore,
-  pendingRequestStore,
-} from '~/core/state';
+import { appSessionsStore, notificationWindowStore } from '~/core/state';
+import { pendingRequestStore } from '~/core/state/requests';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { toHex } from '~/core/utils/numbers';
+import { toHex } from '~/core/utils/hex';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import { RainbowError, logger } from '~/logger';
 

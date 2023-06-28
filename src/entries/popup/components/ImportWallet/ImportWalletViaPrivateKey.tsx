@@ -7,7 +7,8 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import { addHexPrefix, isValidPrivateKey } from '~/core/utils/ethereum';
+import { isValidPrivateKey } from '~/core/utils/ethereum';
+import { addHexPrefix } from '~/core/utils/hex';
 import {
   Box,
   Button,
