@@ -28,6 +28,7 @@ export const TokenToSellInfo = ({
   independentField,
   setAssetToSellMaxValue,
   setAssetToSellInputNativeValue,
+  setIndependentField,
 }: {
   asset: ParsedSearchAsset | null;
   assetToSellMaxValue: { display: string; amount: string };
@@ -35,6 +36,7 @@ export const TokenToSellInfo = ({
   independentField: IndependentField;
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputNativeValue: (value: string) => void;
+  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
 }) => {
   const [nativeValue, setNativeValue] = useState('');
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -99,6 +101,7 @@ export const TokenToSellInfo = ({
                       fontFamily: 'rounded',
                     }),
                   ]}
+                  onFocus={() => setIndependentField('sellNativeField')}
                 />
               </Bleed>
             </Inline>

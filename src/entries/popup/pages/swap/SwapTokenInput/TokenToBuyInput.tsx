@@ -3,6 +3,7 @@ import React, { useCallback, useRef } from 'react';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
 
@@ -32,6 +33,7 @@ interface TokenToBuyProps {
   selectAsset: (asset: ParsedSearchAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToBuyInputValue: (value: string) => void;
+  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
 }
 
 export const TokenToBuyInput = ({
@@ -56,6 +58,7 @@ export const TokenToBuyInput = ({
   setAssetFilter,
   setOutputChainId,
   setAssetToBuyInputValue,
+  setIndependentField,
 }: TokenToBuyProps) => {
   const onSelectAssetRef =
     useRef<(address: ParsedSearchAsset | null) => void>();
@@ -133,6 +136,7 @@ export const TokenToBuyInput = ({
       openDropdownOnMount={openDropdownOnMount}
       inputDisabled={inputDisabled}
       ref={dropdownRef}
+      onFocus={() => setIndependentField('buyField')}
     />
   );
 };

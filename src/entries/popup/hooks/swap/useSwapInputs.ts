@@ -217,5 +217,6 @@ export const useSwapInputs = ({
     setAssetToSellInputValue,
     setAssetToSellInputNativeValue,
     setAssetToSellMaxValue,
+    setIndependentField,
   };
 };

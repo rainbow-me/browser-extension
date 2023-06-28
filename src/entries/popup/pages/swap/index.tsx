@@ -231,6 +231,7 @@ export function Swap() {
     setAssetToSellInputNativeValue,
     setAssetToBuyValue,
     setAssetToBuyInputValue,
+    setIndependentField,
   } = useSwapInputs({
     assetToSell,
     assetToBuy,
@@ -471,6 +472,7 @@ export function Swap() {
                       setAssetToSellInputNativeValue
                     }
                     independentField={independentField}
+                    setIndependentField={setIndependentField}
                   />
                 </AccentColorProviderWrapper>
               </Box>
@@ -538,6 +540,7 @@ export function Swap() {
                     inputDisabled={isCrosschainSwap}
                     assetToBuyNativeAmount={assetToBuyNativeAmount}
                     assetToSellNativeAmount={assetToSellNativeAmount}
+                    setIndependentField={setIndependentField}
                   />
                 </AccentColorProviderWrapper>
               </Box>

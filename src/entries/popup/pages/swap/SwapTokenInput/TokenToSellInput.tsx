@@ -32,6 +32,7 @@ interface SwapTokenInputProps {
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputValue: (value: string) => void;
   setAssetToSellInputNativeValue: (value: string) => void;
+  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
 }
 
 export const TokenToSellInput = ({
@@ -56,6 +57,7 @@ export const TokenToSellInput = ({
   setAssetToSellMaxValue,
   setAssetToSellInputValue,
   setAssetToSellInputNativeValue,
+  setIndependentField,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(asset: ParsedSearchAsset) => void>();
   const dropdownRef = useRef<{ openDropdown: () => void }>(null);
@@ -115,6 +117,7 @@ export const TokenToSellInput = ({
             setAssetToSellMaxValue={setAssetToSellMaxValue}
             setAssetToSellInputNativeValue={setAssetToSellInputNativeValue}
             independentField={independentField}
+            setIndependentField={setIndependentField}
           />
         ) : null
       }
@@ -130,6 +133,7 @@ export const TokenToSellInput = ({
       setValue={setAssetToSellInputValue}
       openDropdownOnMount={openDropdownOnMount}
       ref={dropdownRef}
+      onFocus={() => setIndependentField('sellField')}
     />
   );
 };
