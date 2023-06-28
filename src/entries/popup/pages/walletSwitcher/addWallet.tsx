@@ -30,6 +30,7 @@ const AddWallet = () => {
       >
         <OnboardMenu>
           <OnboardMenu.Item
+            first
             onClick={handleCreateWallet}
             title={i18n.t('add_wallet.create_wallet')}
             subtitle={i18n.t('add_wallet.create_wallet_description')}
@@ -76,6 +77,7 @@ const AddWallet = () => {
             symbolColor="green"
             symbol="magnifyingglass.circle"
             testId={'watch-wallets-button'}
+            last
           />
         </OnboardMenu>
       </Box>
