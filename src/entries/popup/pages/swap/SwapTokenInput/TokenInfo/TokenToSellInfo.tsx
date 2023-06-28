@@ -87,7 +87,7 @@ export const TokenToSellInfo = ({
                 <Box
                   as="input"
                   type="text"
-                  value={nativeFieldValue}
+                  value={nativeFieldValue || ''}
                   onChange={handleNativeValueOnChange}
                   placeholder={supportedCurrencies[currentCurrency].placeholder}
                   className={[
