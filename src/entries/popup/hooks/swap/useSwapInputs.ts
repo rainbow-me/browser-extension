@@ -181,7 +181,7 @@ export const useSwapInputs = ({
 
   const assetToSellDisplay = useMemo(
     () =>
-      independentField === 'buyField' || independentField === 'sellNativeField'
+      independentField === 'buyField'
         ? assetToSellValue && handleSignificantDecimals(assetToSellValue, 5)
         : assetToSellValue,
     [assetToSellValue, independentField],

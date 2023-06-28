@@ -2,10 +2,7 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useEffect } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
-import {
-  convertRawAmountToBalance,
-  handleSignificantDecimals,
-} from '~/core/utils/numbers';
+import { convertRawAmountToBalance } from '~/core/utils/numbers';
 
 import usePrevious from '../usePrevious';
 
@@ -43,25 +40,19 @@ export const useSwapQuoteHandler = ({
       ) {
         setAssetToBuyValue(
           buyAmountDisplay
-            ? handleSignificantDecimals(
-                convertRawAmountToBalance(
-                  buyAmountDisplay?.toString(),
-                  assetToBuy,
-                ).amount,
-                5,
-              )
+            ? convertRawAmountToBalance(
+                buyAmountDisplay?.toString(),
+                assetToBuy,
+              ).amount
             : '',
         );
       } else if (independentField === 'buyField' && assetToSell) {
         setAssetToSellValue(
           sellAmountDisplay
-            ? handleSignificantDecimals(
-                convertRawAmountToBalance(
-                  sellAmountDisplay?.toString(),
-                  assetToSell,
-                ).amount,
-                5,
-              )
+            ? convertRawAmountToBalance(
+                sellAmountDisplay?.toString(),
+                assetToSell,
+              ).amount
             : '',
         );
       }
