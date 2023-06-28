@@ -17,6 +17,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.1.15](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.15)
+
+### Changed
+
+- You can now dismiss alerts by clicking the blurred background area #698
+
+### Fixed
+
+- Assets are now sticky after a Swap so that you can refresh your asset list before token transfers are indexed onchain #672
+- When using the extension in full screen mode for Hardware Wallet interactions, back buttons are now hidden #693
+- Tweaked Wallet Group cell paddings and layout in the Wallets & Keys Settings #697
+- Improvements to Ledger Hardware Wallet connection management and cleanup upon disconnect #700
+
 ## [v1.1.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.12)
 
 ### Added
