@@ -22,13 +22,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - You can now dismiss alerts by clicking the blurred background area #698
+- Improved keyboard navigation and tab highlighting in the Hardware Wallet connection flows #696
+- Now waiting for users to complete Onboarding before injecting the Rainbow provider into dApps #686
 
 ### Fixed
 
+- Fixed incorrect balances displayed in Wallet Switcher #706
 - Assets are now sticky after a Swap so that you can refresh your asset list before token transfers are indexed onchain #672
 - When using the extension in full screen mode for Hardware Wallet interactions, back buttons are now hidden #693
-- Tweaked Wallet Group cell paddings and layout in the Wallets & Keys Settings #697
+- Fixed white screen failure on Hardware Wallet connection success screen #694 #705
+- Now ignoring invalid calldata when parsing and displaying transactions #710
 - Improvements to Ledger Hardware Wallet connection management and cleanup upon disconnect #700
+- Fixed scenario where the Send flow could break if the extension scripts had not yet been awoken by Chrome #709
+- Fixed icon misalignments in Settings menu items #703
+- Tweaked Wallet Group cell paddings and layout in the Wallets & Keys Settings #697
 
 ## [v1.1.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.12)
 
