@@ -83,6 +83,7 @@ export const BottomWallet = React.forwardRef(
           <Lens
             alignItems="center"
             borderRadius="round"
+            tabIndex={displaySymbol ? 0 : -1}
             style={{
               flexDirection: 'row',
               display: 'flex',
