@@ -35,8 +35,6 @@ export const useSwapNativeAmounts = ({
     chainId: assetToBuy?.chainId || ChainId.mainnet,
   });
 
-  console.log('--- assetToBuyValue', assetToBuyValue);
-
   const assetToSellNativeAmount = useMemo(() => {
     if (isWrapOrUnwrapEth) {
       return !quote?.sellAmount || !assetToSell?.price?.value
