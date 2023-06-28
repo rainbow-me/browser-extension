@@ -26,8 +26,8 @@ interface TokenToBuyProps {
   inputRef: React.RefObject<HTMLInputElement>;
   inputDisabled?: boolean;
   openDropdownOnMount?: boolean;
-  assetToBuyNativeAmount: { amount: string; display: string } | null;
-  assetToSellNativeAmount: { amount: string; display: string } | null;
+  assetToBuyNativeDisplay: { amount: string; display: string } | null;
+  assetToSellNativeDisplay: { amount: string; display: string } | null;
   onDropdownOpen: (open: boolean) => void;
   setOutputChainId: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
@@ -41,8 +41,8 @@ export const TokenToBuyInput = ({
   assetToSell,
   assetFilter,
   assets,
-  assetToBuyNativeAmount,
-  assetToSellNativeAmount,
+  assetToBuyNativeDisplay,
+  assetToSellNativeDisplay,
   dropdownClosed = false,
   dropdownHeight,
   outputChainId,
@@ -114,8 +114,8 @@ export const TokenToBuyInput = ({
       bottomComponent={
         assetToBuy ? (
           <TokenToBuyInfo
-            assetToBuyNativeAmount={assetToBuyNativeAmount}
-            assetToSellNativeAmount={assetToSellNativeAmount}
+            assetToBuyNativeDisplay={assetToBuyNativeDisplay}
+            assetToSellNativeDisplay={assetToSellNativeDisplay}
             assetToBuy={assetToBuy}
             assetToSell={assetToSell}
             assetToBuyValue={assetToBuyValue}

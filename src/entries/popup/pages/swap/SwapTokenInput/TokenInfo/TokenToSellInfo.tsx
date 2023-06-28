@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -24,7 +24,8 @@ import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 export const TokenToSellInfo = ({
   asset,
   assetToSellMaxValue,
-  assetToSellNativeAmount,
+  assetToSellNativeValue,
+  assetToSellNativeDisplay,
   independentField,
   setAssetToSellMaxValue,
   setAssetToSellInputNativeValue,
@@ -32,13 +33,13 @@ export const TokenToSellInfo = ({
 }: {
   asset: ParsedSearchAsset | null;
   assetToSellMaxValue: { display: string; amount: string };
-  assetToSellNativeAmount: { amount: string; display: string } | null;
+  assetToSellNativeValue: string;
+  assetToSellNativeDisplay: { amount: string; display: string } | null;
   independentField: IndependentField;
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputNativeValue: (value: string) => void;
   setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
 }) => {
-  const [nativeValue, setNativeValue] = useState('');
   const { currentCurrency } = useCurrentCurrencyStore();
 
   const handleNativeValueOnChange = useCallback(
@@ -47,7 +48,6 @@ export const TokenToSellInfo = ({
         inputValue: e.target.value,
         decimals: supportedCurrencies[currentCurrency].decimals,
       });
-      setNativeValue(maskedValue);
       setAssetToSellInputNativeValue(maskedValue);
     },
     [currentCurrency, setAssetToSellInputNativeValue],
@@ -55,19 +55,19 @@ export const TokenToSellInfo = ({
 
   const nativeFieldValue = useMemo(() => {
     if (independentField === 'sellNativeField') {
-      return nativeValue;
+      return assetToSellNativeValue;
     }
-    return assetToSellNativeAmount?.amount
+    return assetToSellNativeDisplay?.amount
       ? handleSignificantDecimals(
-          assetToSellNativeAmount?.amount,
+          assetToSellNativeDisplay?.amount,
           supportedCurrencies[currentCurrency].decimals,
         )
       : undefined;
   }, [
-    assetToSellNativeAmount?.amount,
+    assetToSellNativeDisplay?.amount,
     currentCurrency,
     independentField,
-    nativeValue,
+    assetToSellNativeValue,
   ]);
 
   if (!asset) return null;

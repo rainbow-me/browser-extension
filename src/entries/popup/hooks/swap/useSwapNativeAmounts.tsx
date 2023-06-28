@@ -35,7 +35,7 @@ export const useSwapNativeAmounts = ({
     chainId: assetToBuy?.chainId || ChainId.mainnet,
   });
 
-  const assetToSellNativeAmount = useMemo(() => {
+  const assetToSellNativeDisplay = useMemo(() => {
     if (isWrapOrUnwrapEth) {
       return !quote?.sellAmount || !assetToSell?.price?.value
         ? null
@@ -74,7 +74,7 @@ export const useSwapNativeAmounts = ({
     sellNativeAsset?.decimals,
   ]);
 
-  const assetToBuyNativeAmount = useMemo(() => {
+  const assetToBuyNativeDisplay = useMemo(() => {
     if (isWrapOrUnwrapEth) {
       return !quote?.buyAmount || !assetToBuy?.price?.value
         ? null
@@ -114,7 +114,7 @@ export const useSwapNativeAmounts = ({
   ]);
 
   return {
-    assetToSellNativeAmount,
-    assetToBuyNativeAmount,
+    assetToSellNativeDisplay,
+    assetToBuyNativeDisplay,
   };
 };

@@ -218,6 +218,7 @@ export function Swap() {
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
+    assetToSellNativeValue,
     assetToSellDisplay,
     assetToSellDropdownClosed,
     assetToBuyDropdownClosed,
@@ -256,7 +257,7 @@ export function Swap() {
     slippage,
   });
 
-  const { assetToSellNativeAmount, assetToBuyNativeAmount } =
+  const { assetToSellNativeDisplay, assetToBuyNativeDisplay } =
     useSwapNativeAmounts({
       assetToBuy,
       assetToBuyValue,
@@ -269,8 +270,8 @@ export function Swap() {
     });
 
   const { priceImpact } = useSwapPriceImpact({
-    assetToSellNativeValue: assetToSellNativeAmount,
-    assetToBuyNativeValue: assetToBuyNativeAmount,
+    assetToSellNativeValue: assetToSellNativeDisplay,
+    assetToBuyNativeValue: assetToBuyNativeDisplay,
   });
 
   const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
@@ -467,7 +468,8 @@ export function Swap() {
                     setAssetToSellInputValue={setAssetToSellInputValue}
                     inputRef={assetToSellInputRef}
                     openDropdownOnMount={inputToOpenOnMount === 'sell'}
-                    assetToSellNativeAmount={assetToSellNativeAmount}
+                    assetToSellNativeValue={assetToSellNativeValue}
+                    assetToSellNativeDisplay={assetToSellNativeDisplay}
                     setAssetToSellInputNativeValue={
                       setAssetToSellInputNativeValue
                     }
@@ -538,8 +540,8 @@ export function Swap() {
                     inputRef={assetToBuyInputRef}
                     openDropdownOnMount={inputToOpenOnMount === 'buy'}
                     inputDisabled={isCrosschainSwap}
-                    assetToBuyNativeAmount={assetToBuyNativeAmount}
-                    assetToSellNativeAmount={assetToSellNativeAmount}
+                    assetToBuyNativeDisplay={assetToBuyNativeDisplay}
+                    assetToSellNativeDisplay={assetToSellNativeDisplay}
                     setIndependentField={setIndependentField}
                   />
                 </AccentColorProviderWrapper>
