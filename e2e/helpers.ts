@@ -72,7 +72,7 @@ export async function getAllWindowHandles({
 }) {
   try {
     await (popupHandler === undefined
-      ? delayTime('medium')
+      ? await delayTime('medium')
       : driver.wait(until.elementLocated(By.css('body')), waitUntilTime));
 
     const handlers = await driver.getAllWindowHandles();
@@ -116,6 +116,8 @@ export async function switchWindows(window, driver: WebDriver) {
       const windowHandles = await driver.getAllWindowHandles();
       return windowHandles.includes(window);
     }, waitUntilTime);
+
+    await delayTime('medium');
 
     await driver.switchTo().window(window);
   } catch (error) {
