@@ -109,14 +109,7 @@ export const useSwapInputs = ({
   const setAssetToSellMaxValue = useCallback(() => {
     setAssetToSellValue(assetToSellMaxValue.amount);
     setIndependentValue(assetToSellMaxValue.amount);
-    focusOnInput(assetToSellInputRef);
     setIndependentField('sellField');
-    setTimeout(() => {
-      assetToSellInputRef?.current?.setSelectionRange(
-        assetToSellMaxValue.amount.length,
-        assetToSellMaxValue.amount.length,
-      );
-    }, 100);
   }, [assetToSellMaxValue.amount, setAssetToSellValue]);
 
   const flipAssets = useCallback(() => {
