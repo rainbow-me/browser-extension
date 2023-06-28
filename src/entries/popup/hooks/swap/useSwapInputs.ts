@@ -69,7 +69,6 @@ export const useSwapInputs = ({
       setAssetToSellNativeValue(value);
       setIndependentField('sellNativeField');
       setIndependentValue(value);
-
       setAssetToSellValue(
         value
           ? convertAmountFromNativeValue(

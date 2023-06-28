@@ -70,6 +70,11 @@ export const TokenToSellInfo = ({
     assetToSellNativeValue,
   ]);
 
+  const onFocus = useCallback(() => {
+    setAssetToSellInputNativeValue(nativeFieldValue ?? '');
+    setIndependentField('sellNativeField');
+  }, [nativeFieldValue, setAssetToSellInputNativeValue, setIndependentField]);
+
   if (!asset) return null;
   return (
     <Box width="full">
@@ -101,7 +106,7 @@ export const TokenToSellInfo = ({
                       fontFamily: 'rounded',
                     }),
                   ]}
-                  onFocus={() => setIndependentField('sellNativeField')}
+                  onFocus={onFocus}
                   disabled={!asset?.native?.price?.amount}
                 />
               </Bleed>
