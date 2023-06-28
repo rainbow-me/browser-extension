@@ -476,7 +476,6 @@ export function Swap() {
               </Box>
 
               <Box
-                // marginVertical="-8px"
                 marginTop="-18px"
                 marginBottom="-20px"
                 style={{ zIndex: assetToSellDropdownClosed ? 3 : 1 }}
