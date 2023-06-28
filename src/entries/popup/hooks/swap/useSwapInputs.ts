@@ -155,7 +155,11 @@ export const useSwapInputs = ({
       independentField === 'sellNativeField'
     ) {
       setAssetToSellValue('');
-      setAssetToBuyValue(independentValue);
+      setAssetToBuyValue(
+        independentField === 'sellNativeField'
+          ? assetToSellValue
+          : independentValue,
+      );
       setAssetToSellNativeValue('');
       setIndependentField('buyField');
       focusOnInput(assetToBuyInputRef);
@@ -168,6 +172,7 @@ export const useSwapInputs = ({
     assetToBuy,
     assetToBuyValue,
     assetToSell,
+    assetToSellValue,
     independentField,
     independentValue,
     setAssetToBuy,

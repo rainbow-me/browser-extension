@@ -3,6 +3,7 @@ import React, { useCallback, useRef } from 'react';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
+import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { TokenToSellDropdown } from './TokenDropdown/TokenToSellDropdown';
@@ -21,8 +22,9 @@ interface SwapTokenInputProps {
   sortMethod: SortMethod;
   zIndex?: number;
   inputRef: React.RefObject<HTMLInputElement>;
+  independentField: IndependentField;
   openDropdownOnMount?: boolean;
-  assetToSellNativeValue: { amount: string; display: string } | null;
+  assetToSellNativeAmount: { amount: string; display: string } | null;
   onDropdownOpen: (open: boolean) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
@@ -45,7 +47,8 @@ export const TokenToSellInput = ({
   assetToSellValue,
   inputRef,
   openDropdownOnMount,
-  assetToSellNativeValue,
+  independentField,
+  assetToSellNativeAmount,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
@@ -106,12 +109,12 @@ export const TokenToSellInput = ({
       bottomComponent={
         asset ? (
           <TokenToSellInfo
-            assetToSellNativeValue={assetToSellNativeValue}
-            assetToSellValue={assetToSellValue}
+            assetToSellNativeAmount={assetToSellNativeAmount}
             assetToSellMaxValue={assetToSellMaxValue}
             asset={asset}
             setAssetToSellMaxValue={setAssetToSellMaxValue}
             setAssetToSellInputNativeValue={setAssetToSellInputNativeValue}
+            independentField={independentField}
           />
         ) : null
       }

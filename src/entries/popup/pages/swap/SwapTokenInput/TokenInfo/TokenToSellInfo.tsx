@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
+import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -16,22 +16,24 @@ import {
   textStyles,
 } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
+import { placeholderStyle } from '~/design-system/components/Input/Input.css';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
+import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 
 export const TokenToSellInfo = ({
   asset,
-  assetToSellValue,
   assetToSellMaxValue,
-  assetToSellNativeValue,
+  assetToSellNativeAmount,
+  independentField,
   setAssetToSellMaxValue,
   setAssetToSellInputNativeValue,
 }: {
   asset: ParsedSearchAsset | null;
-  assetToSellValue: string;
   assetToSellMaxValue: { display: string; amount: string };
+  assetToSellNativeAmount: { amount: string; display: string } | null;
+  independentField: IndependentField;
   setAssetToSellMaxValue: () => void;
-  assetToSellNativeValue: { amount: string; display: string } | null;
   setAssetToSellInputNativeValue: (value: string) => void;
 }) => {
   const [nativeValue, setNativeValue] = useState('');
@@ -49,6 +51,23 @@ export const TokenToSellInfo = ({
     [currentCurrency, setAssetToSellInputNativeValue],
   );
 
+  const nativeFieldValue = useMemo(() => {
+    if (independentField === 'sellNativeField') {
+      return nativeValue;
+    }
+    return assetToSellNativeAmount?.amount
+      ? handleSignificantDecimals(
+          assetToSellNativeAmount?.amount,
+          supportedCurrencies[currentCurrency].decimals,
+        )
+      : undefined;
+  }, [
+    assetToSellNativeAmount?.amount,
+    currentCurrency,
+    independentField,
+    nativeValue,
+  ]);
+
   if (!asset) return null;
   return (
     <Box width="full">
@@ -64,35 +83,15 @@ export const TokenToSellInfo = ({
               >
                 {supportedCurrencies[currentCurrency].symbol}
               </Text>
-              {/* <TextOverflow
-                as="p"
-                size="12pt"
-                weight="semibold"
-                color="labelTertiary"
-                testId="token-to-sell-info-fiat-value"
-              >
-                {assetToSellNativeValue?.display ??
-                  convertAmountAndPriceToNativeDisplay(
-                    assetToSellValue || 0,
-                    asset?.price?.value || 0,
-                    currentCurrency,
-                  ).display}
-              </TextOverflow> */}
               <Bleed vertical="4px">
                 <Box
                   as="input"
                   type="text"
-                  value={nativeValue}
+                  value={nativeFieldValue}
                   onChange={handleNativeValueOnChange}
-                  placeholder={
-                    assetToSellNativeValue?.display ??
-                    convertAmountAndPriceToNativeDisplay(
-                      assetToSellValue || 0,
-                      asset?.price?.value || 0,
-                      currentCurrency,
-                    ).amount
-                  }
+                  placeholder={supportedCurrencies[currentCurrency].placeholder}
                   className={[
+                    placeholderStyle,
                     textStyles({
                       color: 'labelTertiary',
                       fontSize: '12pt',
