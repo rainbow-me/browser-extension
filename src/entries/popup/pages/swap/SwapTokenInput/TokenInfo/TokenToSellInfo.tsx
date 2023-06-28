@@ -102,6 +102,7 @@ export const TokenToSellInfo = ({
                     }),
                   ]}
                   onFocus={() => setIndependentField('sellNativeField')}
+                  disabled={!asset?.native?.price?.amount}
                 />
               </Bleed>
             </Inline>
