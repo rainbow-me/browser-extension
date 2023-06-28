@@ -70,36 +70,24 @@ export async function getAllWindowHandles({
   popupHandler?: string;
   dappHandler?: string;
 }) {
-  try {
-    await (popupHandler === undefined
-      ? await delayTime('medium')
-      : driver.wait(until.elementLocated(By.css('body')), waitUntilTime));
+  await delayTime('long');
+  const handlers = await driver.getAllWindowHandles();
+  const popupHandlerFromHandlers =
+    handlers.find((handler) => handler !== dappHandler) || '';
 
-    const handlers = await driver.getAllWindowHandles();
+  const dappHandlerFromHandlers =
+    handlers.find((handler) => handler !== popupHandler) || '';
 
-    const popupHandlerFromHandlers = handlers.find(
-      (handler) => handler !== dappHandler,
-    );
-    const dappHandlerFromHandlers = handlers.find(
-      (handler) => handler !== popupHandler,
-    );
-
-    return {
-      handlers,
-      popupHandler: popupHandler || popupHandlerFromHandlers,
-      dappHandler: dappHandler || dappHandlerFromHandlers,
-    };
-  } catch (error) {
-    console.error('Error occurred while getting window handles:', error);
-    throw error;
-  }
+  return {
+    handlers,
+    popupHandler: popupHandler || popupHandlerFromHandlers,
+    dappHandler: dappHandler || dappHandlerFromHandlers,
+  };
 }
 
 export async function getWindowHandle({ driver }) {
   try {
-    await driver.wait(until.elementLocated(By.css('body')), waitUntilTime);
-    const windowHandles = await driver.getAllWindowHandles();
-    const handle = windowHandles.find((handle) => handle !== null);
+    const handle = await driver.getWindowHandle();
 
     if (handle !== undefined) {
       return handle;
@@ -112,11 +100,6 @@ export async function getWindowHandle({ driver }) {
 
 export async function switchWindows(window, driver: WebDriver) {
   try {
-    await driver.wait(async () => {
-      const windowHandles = await driver.getAllWindowHandles();
-      return windowHandles.includes(window);
-    }, waitUntilTime);
-
     await delayTime('medium');
 
     await driver.switchTo().window(window);
