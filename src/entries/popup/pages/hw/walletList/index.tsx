@@ -163,10 +163,10 @@ const WalletListHW = () => {
                     >
                       {selectedAccounts === 1
                         ? i18n.t(
-                            'edit_import_wallet_selection.importing_your_wallet',
+                            'edit_import_wallet_selection.importing_your_wallet.one',
                           )
                         : i18n.t(
-                            'edit_import_wallet_selection.importing_your_wallets',
+                            'edit_import_wallet_selection.importing_your_wallet.other',
                           )}
                     </Text>
                     <Box

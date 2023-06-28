@@ -182,6 +182,16 @@ export function SuccessHW() {
                   vendor:
                     vendor.substring(0, 1).toUpperCase() + vendor.substring(1),
                   count: accounts.length,
+                  wallet_noun: i18n.t(
+                    accounts.length > 1
+                      ? 'hw.wallet_plural'
+                      : 'hw.wallet_singular',
+                  ),
+                  wallet_pronoun: i18n.t(
+                    accounts.length > 1
+                      ? 'hw.wallet_pronoun_plural'
+                      : 'hw.wallet_pronoun_singular',
+                  ),
                 })}
               </Text>
             </Stack>
