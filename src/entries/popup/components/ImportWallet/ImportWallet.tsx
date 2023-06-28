@@ -4,7 +4,6 @@ import { NavigateOptions } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { Box, Separator, Stack, Text } from '~/design-system';
-import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
@@ -63,38 +62,25 @@ export function ImportWallet({ onboarding }: { onboarding?: boolean }) {
         </Box>
         <Box style={{ width: '320px' }}>
           <OnboardMenu>
-            <Lens
-              onKeyDown={onImportWalletViaSeed}
-              borderRadius="16px"
-              marginHorizontal="-20px"
-              paddingHorizontal="20px"
-            >
-              <OnboardMenu.Item
-                onClick={onImportWalletViaSeed}
-                title={i18n.t('import_wallet_via_secret.seed_phrase')}
-                subtitle={i18n.t('import_wallet_via_secret.seed_phrase_desc')}
-                symbol="ellipsis.rectangle"
-                symbolColor="pink"
-                testId="import-via-seed-option"
-              />
-            </Lens>
-
+            <OnboardMenu.Item
+              first
+              onClick={onImportWalletViaSeed}
+              title={i18n.t('import_wallet_via_secret.seed_phrase')}
+              subtitle={i18n.t('import_wallet_via_secret.seed_phrase_desc')}
+              symbol="ellipsis.rectangle"
+              symbolColor="pink"
+              testId="import-via-seed-option"
+            />
             <OnboardMenu.Separator />
-            <Lens
-              onKeyDown={onImportWalletViaPrivateKey}
-              borderRadius="16px"
-              marginHorizontal="-20px"
-              paddingHorizontal="20px"
-            >
-              <OnboardMenu.Item
-                onClick={onImportWalletViaPrivateKey}
-                title={i18n.t('import_wallet_via_secret.private_key')}
-                subtitle={i18n.t('import_wallet_via_secret.private_key_desc')}
-                symbol="key.fill"
-                symbolColor="orange"
-                testId="import-via-pkey-option"
-              />
-            </Lens>
+            <OnboardMenu.Item
+              onClick={onImportWalletViaPrivateKey}
+              title={i18n.t('import_wallet_via_secret.private_key')}
+              subtitle={i18n.t('import_wallet_via_secret.private_key_desc')}
+              symbol="key.fill"
+              symbolColor="orange"
+              testId="import-via-pkey-option"
+              last
+            />
           </OnboardMenu>
         </Box>
       </Stack>
