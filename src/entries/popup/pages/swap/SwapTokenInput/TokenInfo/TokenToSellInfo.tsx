@@ -4,7 +4,6 @@ import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -53,22 +52,17 @@ export const TokenToSellInfo = ({
     [currentCurrency, setAssetToSellInputNativeValue],
   );
 
-  const nativeFieldValue = useMemo(() => {
-    if (independentField === 'sellNativeField') {
-      return assetToSellNativeValue;
-    }
-    return assetToSellNativeDisplay?.amount
-      ? handleSignificantDecimals(
-          assetToSellNativeDisplay?.amount,
-          supportedCurrencies[currentCurrency].decimals,
-        )
-      : undefined;
-  }, [
-    assetToSellNativeDisplay?.amount,
-    currentCurrency,
-    independentField,
-    assetToSellNativeValue,
-  ]);
+  const nativeFieldValue = useMemo(
+    () =>
+      independentField === 'sellNativeField'
+        ? assetToSellNativeValue
+        : assetToSellNativeDisplay?.amount,
+    [
+      assetToSellNativeDisplay?.amount,
+      independentField,
+      assetToSellNativeValue,
+    ],
+  );
 
   const onFocus = useCallback(() => {
     setAssetToSellInputNativeValue(nativeFieldValue ?? '');

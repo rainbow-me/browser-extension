@@ -1,12 +1,14 @@
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { useMemo } from 'react';
 
+import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertRawAmountToNativeDisplay,
+  handleSignificantDecimalsAsNumber,
 } from '~/core/utils/numbers';
 
 import { useNativeAssetForNetwork } from '../useNativeAssetForNetwork';
@@ -36,31 +38,44 @@ export const useSwapNativeAmounts = ({
   });
 
   const assetToSellNativeDisplay = useMemo(() => {
+    let nativeDisplay = null;
     if (isWrapOrUnwrapEth) {
-      return !quote?.sellAmount || !assetToSell?.price?.value
-        ? null
-        : convertRawAmountToNativeDisplay(
-            quote?.sellAmount?.toString(),
-            assetToSell?.decimals || 18,
-            assetToSell?.price?.value,
-            currentCurrency,
-          );
+      nativeDisplay =
+        !quote?.sellAmount || !assetToSell?.price?.value
+          ? null
+          : convertRawAmountToNativeDisplay(
+              quote?.sellAmount?.toString(),
+              assetToSell?.decimals || 18,
+              assetToSell?.price?.value,
+              currentCurrency,
+            );
     } else if (assetToSell?.native?.price?.amount && assetToSellValue) {
-      return convertAmountAndPriceToNativeDisplay(
+      nativeDisplay = convertAmountAndPriceToNativeDisplay(
         assetToSellValue,
         assetToSell?.native?.price?.amount,
         currentCurrency,
       );
     } else {
-      return !quote?.sellAmountInEth || !sellNativeAsset?.price?.value
-        ? null
-        : convertRawAmountToNativeDisplay(
-            quote?.sellAmountInEth.toString(),
-            sellNativeAsset?.decimals || 18,
-            sellNativeAsset?.price?.value,
-            currentCurrency,
-          );
+      nativeDisplay =
+        !quote?.sellAmountInEth || !sellNativeAsset?.price?.value
+          ? null
+          : convertRawAmountToNativeDisplay(
+              quote?.sellAmountInEth.toString(),
+              sellNativeAsset?.decimals || 18,
+              sellNativeAsset?.price?.value,
+              currentCurrency,
+            );
     }
+
+    return nativeDisplay
+      ? {
+          amount: handleSignificantDecimalsAsNumber(
+            nativeDisplay?.amount,
+            supportedCurrencies[currentCurrency].decimals,
+          ),
+          display: nativeDisplay?.display,
+        }
+      : nativeDisplay;
   }, [
     isWrapOrUnwrapEth,
     assetToSell?.native?.price?.amount,
@@ -75,31 +90,43 @@ export const useSwapNativeAmounts = ({
   ]);
 
   const assetToBuyNativeDisplay = useMemo(() => {
+    let nativeDisplay = null;
     if (isWrapOrUnwrapEth) {
-      return !quote?.buyAmount || !assetToBuy?.price?.value
-        ? null
-        : convertRawAmountToNativeDisplay(
-            quote?.buyAmount?.toString(),
-            assetToBuy?.decimals || 18,
-            assetToBuy?.price?.value,
-            currentCurrency,
-          );
+      nativeDisplay =
+        !quote?.buyAmount || !assetToBuy?.price?.value
+          ? null
+          : convertRawAmountToNativeDisplay(
+              quote?.buyAmount?.toString(),
+              assetToBuy?.decimals || 18,
+              assetToBuy?.price?.value,
+              currentCurrency,
+            );
     } else if (assetToBuy?.native?.price?.amount && assetToBuyValue) {
-      return convertAmountAndPriceToNativeDisplay(
+      nativeDisplay = convertAmountAndPriceToNativeDisplay(
         assetToBuyValue,
         assetToBuy?.native?.price?.amount,
         currentCurrency,
       );
     } else {
-      return !quote?.buyAmountInEth || !buyNativeAsset?.price?.value
-        ? null
-        : convertRawAmountToNativeDisplay(
-            quote?.buyAmountInEth.toString(),
-            buyNativeAsset?.decimals || 18,
-            buyNativeAsset?.price?.value,
-            currentCurrency,
-          );
+      nativeDisplay =
+        !quote?.buyAmountInEth || !buyNativeAsset?.price?.value
+          ? null
+          : convertRawAmountToNativeDisplay(
+              quote?.buyAmountInEth.toString(),
+              buyNativeAsset?.decimals || 18,
+              buyNativeAsset?.price?.value,
+              currentCurrency,
+            );
     }
+    return nativeDisplay
+      ? {
+          amount: handleSignificantDecimalsAsNumber(
+            nativeDisplay?.amount,
+            supportedCurrencies[currentCurrency].decimals,
+          ),
+          display: nativeDisplay?.display,
+        }
+      : nativeDisplay;
   }, [
     isWrapOrUnwrapEth,
     assetToBuy?.native?.price?.amount,

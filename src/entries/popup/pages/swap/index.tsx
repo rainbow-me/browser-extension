@@ -270,6 +270,7 @@ export function Swap() {
     });
 
   const { priceImpact } = useSwapPriceImpact({
+    isLoading,
     assetToSellNativeValue: assetToSellNativeDisplay,
     assetToBuyNativeValue: assetToBuyNativeDisplay,
   });
