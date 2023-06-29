@@ -1,12 +1,6 @@
 import { Source } from '@rainbow-me/swaps';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
@@ -295,7 +289,7 @@ export const SwapSettings = ({
         actionButton={explainerSheetParams.actionButton}
         footerLinkText={explainerSheetParams.footerLinkText}
       />
-      <BottomSheet background="scrim" show={show}>
+      <BottomSheet onClickOutside={onDone} background="scrim" show={show}>
         <AccentColorProviderWrapper color={settingsAccentColor}>
           <Box paddingHorizontal="20px" paddingBottom="20px">
             <Stack space="10px">
