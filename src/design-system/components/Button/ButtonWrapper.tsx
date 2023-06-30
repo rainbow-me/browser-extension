@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 import {
   BoxStyles,
@@ -232,90 +232,98 @@ export const stylesForVariant = ({
   },
 });
 
-export function ButtonWrapper({
-  autoFocus,
-  children,
-  cursor = 'default',
-  color,
-  height,
-  onClick,
-  variant,
-  width = 'fit',
-  blur = '',
-  borderRadius,
-  tabIndex,
-  disabled,
-  testId,
-}: ButtonWrapperProps) {
-  const { boxShadow } = stylesForHeightAndVariant({
-    color: color as ButtonColor,
-  })[height][variant];
+export const ButtonWrapper = forwardRef<HTMLButtonElement, ButtonWrapperProps>(
+  (
+    {
+      autoFocus,
+      children,
+      cursor = 'default',
+      color,
+      height,
+      onClick,
+      variant,
+      width = 'fit',
+      blur = '',
+      borderRadius,
+      tabIndex,
+      disabled,
+      testId,
+    }: ButtonWrapperProps,
+    ref,
+  ) => {
+    const { boxShadow } = stylesForHeightAndVariant({
+      color: color as ButtonColor,
+    })[height][variant];
 
-  const { background, borderColor, borderWidth } = stylesForVariant({
-    color: color ?? 'accent',
-  })[variant];
+    const { background, borderColor, borderWidth } = stylesForVariant({
+      color: color ?? 'accent',
+    })[variant];
 
-  let outlineColor = undefined;
-  // Only apply outline to buttons with tabIndex
-  if (tabIndex !== undefined) {
-    outlineColor =
-      color && color !== 'accent'
-        ? foregroundColorVars[color as TextColor] || accentColorAsHsl
-        : accentColorAsHsl;
-  }
-  const styles = {
-    ...((blur && { backdropFilter: `blur(${blur})` }) || {}),
-    outlineColor,
-  };
+    let outlineColor = undefined;
+    // Only apply outline to buttons with tabIndex
+    if (tabIndex !== undefined) {
+      outlineColor =
+        color && color !== 'accent'
+          ? foregroundColorVars[color as TextColor] || accentColorAsHsl
+          : accentColorAsHsl;
+    }
+    const styles = {
+      ...((blur && { backdropFilter: `blur(${blur})` }) || {}),
+      outlineColor,
+    };
 
-  return (
-    <Box
-      as={motion.div}
-      initial={{ zIndex: 0 }}
-      whileHover={{ scale: disabled ? undefined : transformScales['1.04'] }}
-      whileTap={{ scale: disabled ? undefined : transformScales['0.96'] }}
-      transition={transitions.bounce}
-      width={width}
-      className="bx-button-wrapper"
-    >
+    return (
       <Box
-        as="button"
-        alignItems="center"
-        background={
-          variant === 'transparentHover'
-            ? {
-                default: background || 'transparent',
-                hover: 'surfaceSecondaryElevated',
-              }
-            : background
-        }
-        borderRadius={borderRadius ?? 'round'}
-        borderColor={
-          variant === 'transparentHover'
-            ? { default: 'transparent', hover: 'buttonStroke' }
-            : borderColor
-        }
-        borderWidth={variant === 'transparentHover' ? '1px' : borderWidth}
-        boxShadow={boxShadow}
-        className={[
-          heightStyles[height],
-          variant === 'tinted' &&
-            tintedStyles[(color as ButtonColor) || 'accent'],
-        ]}
-        display="flex"
-        onClick={onClick}
-        disabled={disabled}
-        position="relative"
-        justifyContent="center"
+        as={motion.div}
+        initial={{ zIndex: 0 }}
+        whileHover={{ scale: disabled ? undefined : transformScales['1.04'] }}
+        whileTap={{ scale: disabled ? undefined : transformScales['0.96'] }}
+        transition={transitions.bounce}
         width={width}
-        style={styles}
-        tabIndex={tabIndex}
-        testId={testId}
-        cursor={cursor}
-        autoFocus={autoFocus}
+        className="bx-button-wrapper"
       >
-        {children}
+        <Box
+          as="button"
+          alignItems="center"
+          background={
+            variant === 'transparentHover'
+              ? {
+                  default: background || 'transparent',
+                  hover: 'surfaceSecondaryElevated',
+                }
+              : background
+          }
+          borderRadius={borderRadius ?? 'round'}
+          borderColor={
+            variant === 'transparentHover'
+              ? { default: 'transparent', hover: 'buttonStroke' }
+              : borderColor
+          }
+          borderWidth={variant === 'transparentHover' ? '1px' : borderWidth}
+          boxShadow={boxShadow}
+          className={[
+            heightStyles[height],
+            variant === 'tinted' &&
+              tintedStyles[(color as ButtonColor) || 'accent'],
+          ]}
+          display="flex"
+          onClick={onClick}
+          disabled={disabled}
+          position="relative"
+          justifyContent="center"
+          width={width}
+          style={styles}
+          tabIndex={tabIndex}
+          testId={testId}
+          cursor={cursor}
+          ref={ref}
+          autoFocus={autoFocus}
+        >
+          {children}
+        </Box>
       </Box>
-    </Box>
-  );
-}
+    );
+  },
+);
+
+ButtonWrapper.displayName = 'ButtonWrapper';
