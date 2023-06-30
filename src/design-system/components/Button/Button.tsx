@@ -17,6 +17,7 @@ import {
 import { ButtonHeight } from './ButtonWrapper.css';
 
 export type ButtonProps = {
+  autoFocus?: boolean;
   children: string | React.ReactNode;
   height: ButtonHeight;
   onClick?: () => void;
