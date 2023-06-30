@@ -5,11 +5,11 @@ const HARDHAT_CHAIN_ID = 1337;
 
 export const bsc: Chain = {
   id: BSC_CHAIN_ID,
-  name: 'Binance Chain',
+  name: 'BNB Smart Chain',
   network: 'bsc',
   nativeCurrency: {
     decimals: 18,
-    name: 'Binance Chain',
+    name: 'BNB Smart Chain',
     symbol: 'BNB',
   },
   rpcUrls: {
