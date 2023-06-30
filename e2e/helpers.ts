@@ -272,6 +272,7 @@ export async function waitAndClick(element, driver) {
   try {
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    await delayTime('short');
     await element.click();
   } catch (error) {
     console.error(`unable to click element: ${element}`, error);
