@@ -71,6 +71,7 @@ export const SendTransactionActions = ({
           </Row>
           <Row>
             <RejectRequestButton
+              autoFocus
               onClick={onRejectRequest}
               label={i18n.t('common_actions.cancel')}
             />
