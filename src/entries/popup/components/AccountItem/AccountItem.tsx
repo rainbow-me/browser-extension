@@ -2,9 +2,13 @@ import React from 'react';
 import { Address } from 'wagmi';
 
 import { supportedCurrencies } from '~/core/references';
+import { selectUserAssetsBalance } from '~/core/resources/_selectors/assets';
+import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { truncateAddress } from '~/core/utils/address';
+import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   Box,
   Column,
@@ -18,7 +22,6 @@ import {
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
-import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
 import { useWalletName } from '../../hooks/useWalletName';
 import { Asterisks } from '../Asterisks/Asterisks';
 import { MenuItem } from '../Menu/MenuItem';
@@ -46,7 +49,19 @@ export default function AccountItem({
   rowHighlight?: boolean;
 }) {
   const { displayName, showAddress } = useWalletName({ address: account });
-  const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
+
+  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { data: totalAssetsBalance } = useUserAssets(
+    { address: account, currency, connectedToHardhat },
+    { select: selectUserAssetsBalance() },
+  );
+
+  const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
+    totalAssetsBalance || 0,
+    currency,
+  );
+
   const { currentCurrency } = useCurrentCurrencyStore();
   const { hideAssetBalances } = useHideAssetBalancesStore();
 
