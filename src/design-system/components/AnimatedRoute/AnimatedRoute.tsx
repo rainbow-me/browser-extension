@@ -28,7 +28,7 @@ import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
-import { getInputIsFocused } from '~/entries/popup/utils/activeElement';
+import { getActiveElement } from '~/entries/popup/utils/activeElement';
 import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
 import {
@@ -211,7 +211,7 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
   useEffect(() => {
     const app = document.getElementById('app');
     setTimeout(() => {
-      if (!getInputIsFocused()) {
+      if (getActiveElement()?.tagName === 'BODY') {
         app?.focus();
       }
     }, 150);
