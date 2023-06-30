@@ -52,8 +52,8 @@ export function SignMessage({
   const { appSession } = useAppSession({ host: appHost });
   const { watchedWallets } = useWallets();
 
-  const selectedChainId = appSession.chainId ?? ChainId.mainnet;
-  const selectedWallet = appSession.address;
+  const selectedChainId = appSession?.chainId ?? ChainId.mainnet;
+  const selectedWallet = appSession?.address;
 
   const onAcceptRequest = useCallback(async () => {
     const walletAction = getWalletActionMethod(request?.method);
