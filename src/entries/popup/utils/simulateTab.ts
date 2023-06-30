@@ -17,6 +17,7 @@ export const simulateTab = (forwards: boolean) => {
     const customOrderArray: Element[] = [];
     const defaultOrderArray: Element[] = [];
     tabbableArray.forEach((element: Element) => {
+      if (element.attributes?.getNamedItem('disabled')) return;
       const tabIndex = getTabIndexFromElement(element);
       if (tabIndex > 0) {
         customOrderArray.push(element);
