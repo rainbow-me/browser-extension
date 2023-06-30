@@ -148,7 +148,17 @@ export const SwitchMenu = ({
       }}
       open={open}
     >
-      <SelectPrimitive.Trigger asChild>
+      <SelectPrimitive.Trigger
+        onKeyDown={(e) => {
+          if (
+            e.key === shortcuts.global.DOWN.key ||
+            e.key === shortcuts.global.UP.key
+          ) {
+            e.preventDefault();
+          }
+        }}
+        asChild
+      >
         <Box style={{ cursor: 'default' }}>{renderMenuTrigger}</Box>
       </SelectPrimitive.Trigger>
 

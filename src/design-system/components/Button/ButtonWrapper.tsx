@@ -33,6 +33,7 @@ export type ButtonVariantProps =
     };
 
 export type ButtonWrapperProps = {
+  autoFocus?: boolean;
   children: string | React.ReactNode;
   cursor?: BoxStyles['cursor'];
   height: ButtonHeight;
@@ -232,6 +233,7 @@ export const stylesForVariant = ({
 });
 
 export function ButtonWrapper({
+  autoFocus,
   children,
   cursor = 'default',
   color,
@@ -310,6 +312,7 @@ export function ButtonWrapper({
         tabIndex={tabIndex}
         testId={testId}
         cursor={cursor}
+        autoFocus={autoFocus}
       >
         {children}
       </Box>
