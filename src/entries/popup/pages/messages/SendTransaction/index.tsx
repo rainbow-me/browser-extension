@@ -67,7 +67,8 @@ export function SendTransaction({
     setLoading(true);
     try {
       const txRequest = request?.params?.[0] as TransactionRequest;
-      const { type } = await wallet.getWallet(selectedWallet);
+      const txWallet = await wallet.getWallet(selectedWallet);
+      const type = txWallet?.type;
 
       // Change the label while we wait for confirmation
       if (type === 'HardwareWalletKeychain') {
