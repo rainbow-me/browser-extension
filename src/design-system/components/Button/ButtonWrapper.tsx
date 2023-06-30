@@ -280,10 +280,6 @@ export const ButtonWrapper = forwardRef<HTMLButtonElement, ButtonWrapperProps>(
         whileTap={{ scale: disabled ? undefined : transformScales['0.96'] }}
         transition={transitions.bounce}
         width={width}
-        style={styles}
-        tabIndex={tabIndex}
-        testId={testId}
-        cursor={cursor}
         className="bx-button-wrapper"
       >
         <Box
