@@ -16,11 +16,8 @@ import { RainbowError, logger } from '~/logger';
 import { ETH_ADDRESS, gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import { ParsedAsset } from '../../types/assets';
-import {
-  convertAmountToRawAmount,
-  greaterThan,
-  toHex,
-} from '../../utils/numbers';
+import { toHex } from '../../utils/hex';
+import { convertAmountToRawAmount, greaterThan } from '../../utils/numbers';
 import { ActionProps } from '../references';
 
 import { overrideWithFastSpeedIfNeeded } from './../utils';

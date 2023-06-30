@@ -44,7 +44,7 @@ const derivedAccountsFromSecret = async (secret: string) => {
   const accounts = await deriveAccountsFromSecret(secret);
   derivedAccountsStore.set({ ...current, [secret]: accounts });
 
-  return accounts;
+  return accounts || ([] as Address[]);
 };
 
 const useDeriveAccountsFromSecrets = (secrets: string[]) => {
@@ -133,7 +133,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
     });
 
   const isReady =
-    !!accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
+    !!accountsToImport?.length && !isImporting && !walletsSummaryIsLoading;
 
   const hasRecentlyUsedWallet = useMemo(
     () =>
@@ -161,9 +161,21 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   color="labelTertiary"
                   align="center"
                 >
-                  {i18n.t('import_wallet_selection.description', {
-                    count: hasRecentlyUsedWallet ? accountsToImport.length : 0,
-                  })}
+                  {i18n.t(
+                    // eslint-disable-next-line no-nested-ternary
+                    hasRecentlyUsedWallet
+                      ? accountsToImport.length > 1
+                        ? 'import_wallet_selection.description.other'
+                        : 'import_wallet_selection.description.one'
+                      : 'import_wallet_selection.description.zero',
+                    (hasRecentlyUsedWallet &&
+                      accountsToImport.length > 0 && {
+                        count: hasRecentlyUsedWallet
+                          ? accountsToImport.length
+                          : 0,
+                      }) ||
+                      undefined,
+                  )}
                 </Text>
               </Box>
             )}

@@ -10,6 +10,8 @@ import React, {
 } from 'react';
 import { Address } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
@@ -224,6 +226,13 @@ export function Send() {
           });
           callback?.();
           navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+          analytics.track(event.sendSubmitted, {
+            assetSymbol: asset?.symbol,
+            assetName: asset?.name,
+            assetAddress: asset?.address,
+            assetAmount,
+            chainId,
+          });
         }
       } catch (e) {
         alert('Transaction failed');
@@ -366,6 +375,9 @@ export function Send() {
         show={contactSaveAction?.show}
         action={contactSaveAction?.action}
         onSaveContactAction={setSaveContactAction}
+        handleClose={() =>
+          setSaveContactAction({ show: false, action: 'save' })
+        }
       />
       <AccentColorProviderWrapper color={assetAccentColor}>
         <ReviewSheet

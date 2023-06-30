@@ -43,8 +43,14 @@ export function Tokens() {
     isInitialLoading,
     refetch: refetchUserAssets,
   } = useUserAssets(
-    { address: currentAddress, currency, connectedToHardhat },
-    { select: selectUserAssetsList },
+    {
+      address: currentAddress,
+      currency,
+      connectedToHardhat,
+    },
+    {
+      select: selectUserAssetsList,
+    },
   );
   const assetsRowVirtualizer = useWindowVirtualizer({
     count: assets?.length || 0,

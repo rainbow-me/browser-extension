@@ -20,7 +20,7 @@ export function ChooseHW() {
   const handleLedgerChoice = useCallback(() => {
     if (!isFullScreen) {
       goToNewTab({
-        url: POPUP_URL + `#${ROUTES.HW_LEDGER}`,
+        url: POPUP_URL + `#${ROUTES.HW_LEDGER}?hideBack=true`,
       });
     } else {
       navigate(ROUTES.HW_LEDGER, {
@@ -53,12 +53,14 @@ export function ChooseHW() {
       >
         <OnboardMenu>
           <OnboardMenu.Item
+            first
             titleImage={<img src={ledgerLogo} width="90" height="30" />}
             onClick={handleLedgerChoice}
             subtitle={i18n.t('hw.ledger_support')}
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
+            last
             titleImage={<img src={trezorLogo} width="95" height="24 " />}
             onClick={handleTrezorChoice}
             subtitle={i18n.t('hw.trezor_support')}

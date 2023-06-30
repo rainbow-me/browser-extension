@@ -20,6 +20,10 @@ export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
     );
 }
 
+export function selectUserAssetsDictByChain(assets: ParsedAssetsDictByChain) {
+  return assets;
+}
+
 export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
   const assetsByNetwork = [
     assets?.[ChainId.mainnet],

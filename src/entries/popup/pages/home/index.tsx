@@ -14,12 +14,12 @@ import {
   useTransition,
 } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { shortcuts } from '~/core/references/shortcuts';
-import { usePendingRequestStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
@@ -30,6 +30,7 @@ import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
 import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { usePendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
@@ -51,10 +52,12 @@ const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
 export function Home() {
-  const { address } = useAccount();
+  const { currentAddress } = useCurrentAddressStore();
   const { state } = useLocation();
-  const { avatar } = useAvatar({ address });
+  const { avatar } = useAvatar({ address: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
+
+  usePendingTransactionWatcher({ address: currentAddress });
 
   const navigate = useRainbowNavigate();
 
@@ -209,7 +212,7 @@ function Content({ children }: PropsWithChildren) {
   return (
     <Box
       background="surfacePrimaryElevated"
-      style={{ flex: 1, position: 'relative', contentVisibility: 'auto' }}
+      style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
     >
       {/** spring transformY to imitate scroll bounce*/}
       <Box height="full" as={motion.div} style={{ y }}>

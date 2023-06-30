@@ -2,7 +2,6 @@ import { isAddress } from '@ethersproject/address';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   InputHTMLAttributes,
-  ReactNode,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -14,7 +13,6 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -33,36 +31,13 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
-import {
-  DropdownInputWrapper,
-  dropdownContainerVariant,
-  dropdownItemVariant,
-} from '../../components/DropdownInputWrapper/DropdownInputWrapper';
+import { DropdownInputWrapper } from '../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
 import { InputActionButton } from './InputActionButton';
-import {
-  addressToInputHighlightWrapperStyleDark,
-  addressToInputHighlightWrapperStyleLight,
-} from './ToAddressInput.css';
-
-const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
-  const { currentTheme } = useCurrentThemeStore();
-  return (
-    <Box
-      borderRadius="12px"
-      className={
-        currentTheme === 'dark'
-          ? addressToInputHighlightWrapperStyleDark
-          : addressToInputHighlightWrapperStyleLight
-      }
-    >
-      {children}
-    </Box>
-  );
-};
+import { RowHighlightWrapper } from './RowHighlightWrapper';
 
 const WalletSection = ({
   title,
@@ -79,7 +54,7 @@ const WalletSection = ({
 }) => {
   return wallets.length ? (
     <Stack space="8px">
-      <Box as={motion.div} variants={dropdownItemVariant}>
+      <Box>
         <Inline alignVertical="center" space="4px">
           <Symbol
             symbol={symbol}
@@ -130,13 +105,7 @@ const WalletRow = ({
   const name = section === 'contacts' ? contactName : displayName;
 
   return (
-    <Box
-      as={motion.div}
-      variants={dropdownItemVariant}
-      key={wallet}
-      onClick={() => onClick(wallet)}
-      paddingVertical="8px"
-    >
+    <Box key={wallet} onClick={() => onClick(wallet)} paddingVertical="8px">
       <Columns alignVertical="center" space="8px">
         <Column width="content">
           <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
@@ -196,15 +165,7 @@ const DropdownWalletsList = ({
   return (
     <>
       {walletsExist && (
-        <Box
-          as={motion.div}
-          key="input"
-          exit={{ opacity: 0 }}
-          paddingHorizontal="19px"
-          variants={dropdownContainerVariant}
-          initial="hidden"
-          animate="show"
-        >
+        <Box key="input" paddingHorizontal="19px">
           <Stack space="16px">
             <WalletSection
               symbol="lock.square.stack.fill"
@@ -236,7 +197,7 @@ const DropdownWalletsList = ({
           key="input"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          exit={{ opacity: 1 }}
           alignItems="center"
           style={{ paddingTop: 169 }}
         >
@@ -311,7 +272,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const openDropdown = useCallback(() => {
       onDropdownOpen(true);
       setDropdownVisible(true);
-      inputRef?.current?.focus();
+      setTimeout(() => inputRef?.current?.focus(), 300);
     }, [onDropdownOpen]);
 
     const closeDropdown = useCallback(() => {

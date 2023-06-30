@@ -24,7 +24,7 @@ import { gasStore } from '../state';
 import { GasSpeed } from '../types/gas';
 import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
-import { walletExecuteRap } from './common';
+import { walletExecuteRap } from './execute';
 import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
 
 let swapGasLimit = 0;

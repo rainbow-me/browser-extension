@@ -1,6 +1,8 @@
 import { initializeMessenger } from '~/core/messengers';
-import { notificationWindowStore, pendingRequestStore } from '~/core/state';
+import { notificationWindowStore } from '~/core/state';
 import { isDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
+import { useInviteCodeStore } from '~/core/state/inviteCode';
+import { pendingRequestStore } from '~/core/state/requests';
 
 const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
 
@@ -25,7 +27,9 @@ export const handleTabAndWindowUpdates = () => {
 
   chrome.tabs.onActivated.addListener(() => {
     bridgeMessenger.send('rainbow_setDefaultProvider', {
-      rainbowAsDefault: isDefaultWalletStore.getState().isDefaultWallet,
+      rainbowAsDefault:
+        useInviteCodeStore.getState().inviteCodeValidated &&
+        isDefaultWalletStore.getState().isDefaultWallet,
     });
   });
 
