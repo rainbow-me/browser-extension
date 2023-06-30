@@ -9,8 +9,9 @@ import { useContacts } from '../useContacts';
 
 const filterWallets = (
   accounts: (Partial<Contact & Account> & { address: Address })[],
-  _filter: string,
+  _filter?: string,
 ) => {
+  if (!_filter) return accounts;
   const filter = _filter.trim().toLowerCase();
   return accounts.filter(
     ({ address, name, ensName, walletName }) =>
@@ -24,7 +25,7 @@ const filterWallets = (
 const isReadOnly = (a: Account) => a.type === KeychainType.ReadOnlyKeychain;
 const isOwned = (a: Account) => !isReadOnly(a);
 
-export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
+export const useAllFilteredWallets = ({ filter }: { filter?: string }) => {
   const contacts = useContacts();
   const { visibleOwnedWallets, watchedWallets } = useAccounts(
     ({ sortedAccounts }) => ({
