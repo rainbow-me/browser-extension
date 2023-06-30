@@ -119,6 +119,14 @@ const LedgerNeedsExclusivity = () => {
             >
               {i18n.t('hw.exclusivity_ledger_description')}
             </Text>
+            <Text
+              size="12pt"
+              weight="regular"
+              color="labelTertiary"
+              align="center"
+            >
+              {i18n.t('hw.exclusivity_ledger_description_2')}
+            </Text>
           </Stack>
         </Box>
         <Box alignItems="center" width="full" style={{ width: '106px' }}>
@@ -135,13 +143,7 @@ const LedgerNeedsExclusivity = () => {
         paddingLeft="19px"
         marginBottom="-52px"
       >
-        <img src={ledgerDeviceUnlock} width="340" />
-      </Box>
-
-      <Box paddingTop="10px" paddingHorizontal="20px">
-        <Text size="12pt" weight="regular" color="labelTertiary" align="center">
-          {i18n.t('hw.exclusivity_ledger_description_2')}
-        </Text>
+        <img src={ledgerDevice} width="130" />
       </Box>
     </Box>
   );
@@ -252,14 +254,14 @@ export function ConnectLedger() {
             <LedgerNeedsUnlock />
           </Box>
         )}
-        {connectingState === 'needs_exclusivity' && (
-          <Box as={motion.div} key="needs-exclusivity">
-            <LedgerNeedsExclusivity />
-          </Box>
-        )}
         {connectingState === 'needs_connect' && (
           <Box as={motion.div} key="needs-connect">
             <ConnectingToLedger />
+          </Box>
+        )}
+        {connectingState === 'needs_exclusivity' && (
+          <Box as={motion.div} key="needs-exclusivity">
+            <LedgerNeedsExclusivity />
           </Box>
         )}
       </AnimatePresence>
