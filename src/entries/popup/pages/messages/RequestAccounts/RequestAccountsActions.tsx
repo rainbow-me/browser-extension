@@ -51,6 +51,7 @@ export const RequestAccountsActions = ({
         <Rows space="8px">
           <Row>
             <AcceptRequestButton
+              autoFocus
               onClick={onAcceptRequest}
               label={i18n.t('approve_request.connect', { appName })}
               loading={loading}
