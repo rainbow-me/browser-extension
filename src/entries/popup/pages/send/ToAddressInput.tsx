@@ -272,7 +272,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const openDropdown = useCallback(() => {
       onDropdownOpen(true);
       setDropdownVisible(true);
-      inputRef?.current?.focus();
+      setTimeout(() => inputRef?.current?.focus(), 300);
     }, [onDropdownOpen]);
 
     const closeDropdown = useCallback(() => {

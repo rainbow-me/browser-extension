@@ -1,12 +1,14 @@
 import React from 'react';
-import { Address, useBalance } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { supportedCurrencies } from '~/core/references';
+import { selectUserAssetsBalance } from '~/core/resources/_selectors/assets';
+import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
-import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
+import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   Box,
   Column,
@@ -20,7 +22,6 @@ import {
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
-import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { useWalletName } from '../../hooks/useWalletName';
 import { Asterisks } from '../Asterisks/Asterisks';
 import { MenuItem } from '../Menu/MenuItem';
@@ -48,16 +49,21 @@ export default function AccountItem({
   rowHighlight?: boolean;
 }) {
   const { displayName, showAddress } = useWalletName({ address: account });
-  const { data: balance } = useBalance({ addressOrName: account });
-  const nativeAsset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });
+
+  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { data: totalAssetsBalance } = useUserAssets(
+    { address: account, currency, connectedToHardhat },
+    { select: selectUserAssetsBalance() },
+  );
+
+  const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
+    totalAssetsBalance || 0,
+    currency,
+  );
+
   const { currentCurrency } = useCurrentCurrencyStore();
   const { hideAssetBalances } = useHideAssetBalancesStore();
-
-  const nativeDisplay = convertAmountAndPriceToNativeDisplay(
-    balance?.formatted || 0,
-    nativeAsset?.native?.price?.amount || 0,
-    currentCurrency,
-  );
 
   let labelComponent = null;
   if (labelType === LabelOption.address) {
@@ -73,7 +79,7 @@ export default function AccountItem({
         <Asterisks color="labelTertiary" size={10} />
       </Inline>
     ) : (
-      <MenuItem.Label text={`${nativeDisplay?.display}`} />
+      <MenuItem.Label text={`${userAssetsBalanceDisplay}`} />
     );
   }
 
