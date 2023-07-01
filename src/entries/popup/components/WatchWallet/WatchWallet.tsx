@@ -246,7 +246,7 @@ export const WatchWallet = ({
     isLoading,
     isValid: inputIsValid,
     error,
-  } = useValidateInput(input);
+  } = useValidateInput(input.trim());
 
   const addressesToImport = useMemo(
     () => [address, ...Object.keys(selectedAddresses)].filter(Boolean),
@@ -333,7 +333,7 @@ export const WatchWallet = ({
                       placeholder={i18n.t('watch_wallet.placeholder')}
                       value={input}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleWatchWallet();
+                        if (isValid && e.key === 'Enter') handleWatchWallet();
                       }}
                       tabIndex={1}
                       autoFocus
