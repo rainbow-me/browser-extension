@@ -83,7 +83,7 @@ export async function signTransactionFromLedger(
     return serializedTransaction;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    if (e?.name === 'TransportStatusError') {
+    if (e?.name === 'TransportStatusError' || e?.name === 'LockedDeviceError') {
       alert(
         'Please make sure your ledger is unlocked and open the Ethereum app',
       );
