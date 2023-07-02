@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useAccount, useBalance } from 'wagmi';
 
 import { supportedCurrencies } from '~/core/references';
