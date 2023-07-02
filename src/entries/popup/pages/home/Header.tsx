@@ -18,11 +18,10 @@ import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
+import { useScroll } from '../../hooks/useScroll';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
-
-import { useScroll } from '.';
 
 export const Header = React.memo(function Header() {
   const { scrollYProgress: progress } = useScroll({

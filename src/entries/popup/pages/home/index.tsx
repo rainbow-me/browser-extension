@@ -1,7 +1,6 @@
 import {
   motion,
   transform,
-  useScroll as useMotionScroll,
   useMotionValueEvent,
   useSpring,
   useTransform,
@@ -35,6 +34,7 @@ import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { usePendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
@@ -51,11 +51,6 @@ export type Tab = 'tokens' | 'activity';
 const COLLAPSED_HEADER_TOP_OFFSET = 172;
 const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
-
-export const useScroll = (options?: Parameters<typeof useMotionScroll>[0]) => {
-  const container = useContainerRef();
-  return useMotionScroll({ container, layoutEffect: false, ...options });
-};
 
 export function Home() {
   const { currentAddress } = useCurrentAddressStore();
