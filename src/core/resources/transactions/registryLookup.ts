@@ -55,9 +55,10 @@ async function registryLookupQueryFunction({
     dataToLookup = tx.data;
   }
 
-  if (!dataToLookup || dataToLookup === '0x') {
+  if (!dataToLookup || dataToLookup === '0x' || dataToLookup.length < 10) {
     return '';
   }
+
   const methodSignaturePrefix = dataToLookup?.substr(0, 10);
 
   const { name } = await methodRegistryLookupAndParse(

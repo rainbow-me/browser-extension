@@ -9,17 +9,14 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { ChevronRight } from '../ChevronRight';
 
 const OnboardMenu = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Box
-      background="surfaceSecondaryElevated"
-      borderRadius="16px"
-      paddingHorizontal="20px"
-    >
+    <Box background="surfaceSecondaryElevated" borderRadius="16px">
       {children}
     </Box>
   );
@@ -27,6 +24,8 @@ const OnboardMenu = ({ children }: { children: React.ReactNode }) => {
 
 interface OnboardItemProps {
   onClick: () => void;
+  first?: boolean;
+  last?: boolean;
   title?: string;
   titleImage?: React.ReactNode;
   subtitle: string;
@@ -37,6 +36,8 @@ interface OnboardItemProps {
 
 const OnboardItem = ({
   onClick,
+  first,
+  last,
   title,
   titleImage,
   subtitle,
@@ -45,7 +46,24 @@ const OnboardItem = ({
   testId,
 }: OnboardItemProps) => {
   return (
-    <Box width="full" paddingVertical="20px" onClick={onClick} testId={testId}>
+    <Lens
+      width="full"
+      paddingVertical="20px"
+      paddingHorizontal="20px"
+      onClick={onClick}
+      testId={testId}
+      style={{
+        borderRadius: 6,
+        ...(first && {
+          borderTopRightRadius: 15,
+          borderTopLeftRadius: 15,
+        }),
+        ...(last && {
+          borderBottomRightRadius: 15,
+          borderBottomLeftRadius: 15,
+        }),
+      }}
+    >
       <Columns alignHorizontal="center" alignVertical="center">
         <Column>
           {titleImage
@@ -75,7 +93,7 @@ const OnboardItem = ({
           <ChevronRight color="separatorSecondary" />
         </Column>
       </Columns>
-    </Box>
+    </Lens>
   );
 };
 

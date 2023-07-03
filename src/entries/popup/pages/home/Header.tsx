@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useTransform } from 'framer-motion';
 import * as React from 'react';
 import { useAccount } from 'wagmi';
 
@@ -18,14 +18,22 @@ import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
+import { useScroll } from '../../hooks/useScroll';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
-export function Header() {
-  const { scrollYProgress: progress } = useScroll({ offset: ['0px', '64px'] });
-  const scaleValue = useTransform(progress, [0, 1], [1, 0.3]);
-  const opacityValue = useTransform(progress, [0, 1], [1, 0]);
+export const Header = React.memo(function Header() {
+  const { scrollYProgress: progress } = useScroll({
+    offset: ['0px', '64px', '92px'],
+  });
+
+  const scaleValue = useTransform(progress, [0, 0.25, 1], [1, 0.3, 0]);
+  const opacityValue = useTransform(progress, [0, 0.25], [1, 0]);
+
+  const nameScaleValue = useTransform(progress, [0, 0.25, 1], [1, 1, 0.8]);
+  const namePaddingLeftValue = useTransform(progress, [0, 0.25, 1], [0, 0, 40]);
+  const nameOpacityValue = useTransform(progress, (v) => (v === 1 ? 0 : 1));
 
   return (
     <Box
@@ -54,7 +62,16 @@ export function Header() {
           >
             <AvatarSection />
           </Box>
-          <Box paddingHorizontal="12px">
+          <Box
+            as={motion.div}
+            paddingHorizontal="12px"
+            style={{
+              zIndex: 1,
+              scale: nameScaleValue,
+              paddingLeft: namePaddingLeftValue,
+              opacity: nameOpacityValue,
+            }}
+          >
             <AccountName id="header" />
           </Box>
 
@@ -64,7 +81,7 @@ export function Header() {
       <Box style={{ minHeight: 32 }} />
     </Box>
   );
-}
+});
 
 export function AvatarSection() {
   const { address } = useAccount();

@@ -44,7 +44,7 @@ const derivedAccountsFromSecret = async (secret: string) => {
   const accounts = await deriveAccountsFromSecret(secret);
   derivedAccountsStore.set({ ...current, [secret]: accounts });
 
-  return accounts;
+  return accounts || ([] as Address[]);
 };
 
 const useDeriveAccountsFromSecrets = (secrets: string[]) => {
@@ -133,7 +133,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
     });
 
   const isReady =
-    !!accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
+    !!accountsToImport?.length && !isImporting && !walletsSummaryIsLoading;
 
   const hasRecentlyUsedWallet = useMemo(
     () =>
