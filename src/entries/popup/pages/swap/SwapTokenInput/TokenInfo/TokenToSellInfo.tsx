@@ -80,7 +80,7 @@ export const TokenToSellInfo = ({
                 size="12pt"
                 weight="semibold"
                 color="labelTertiary"
-                testId="token-to-sell-info-fiat-value"
+                testId="token-to-sell-info-fiat-value-symbol"
               >
                 {supportedCurrencies[currentCurrency].symbol}
               </Text>
@@ -102,6 +102,7 @@ export const TokenToSellInfo = ({
                   ]}
                   onFocus={onFocus}
                   disabled={!asset?.native?.price?.amount}
+                  testId="token-to-sell-info-fiat-value-input"
                 />
               </Bleed>
             </Inline>

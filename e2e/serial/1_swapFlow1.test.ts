@@ -326,10 +326,10 @@ it('should be able to select same asset than asset to buy as asset to sell and r
 
 it('should be able to open press max on token to sell input', async () => {
   const fiatValueText = await getTextFromText({
-    id: 'token-to-sell-info-fiat-value',
+    id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
-  expect(fiatValueText).toBe('$0.00');
+  expect(fiatValueText).toBe('');
   await findElementByTestIdAndClick({
     id: 'token-to-sell-info-max-button',
     driver,
@@ -340,10 +340,10 @@ it('should be able to open press max on token to sell input', async () => {
   });
   expect(ethValueBeforeGas).toEqual('10000');
   const fiatValueTextAfterMax = await getTextFromText({
-    id: 'token-to-sell-info-fiat-value',
+    id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
-  expect(fiatValueTextAfterMax).not.toEqual('$0.00');
+  expect(fiatValueTextAfterMax).not.toEqual('0.00');
 });
 
 it('should be able to remove token to sell and select it again', async () => {
@@ -388,6 +388,34 @@ it('should be able to open token to buy input and select assets', async () => {
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
+});
+
+it('should be able to open type native amount on sell input', async () => {
+  await typeOnTextInput({
+    id: `token-to-sell-info-fiat-value-input`,
+    text: 1,
+    driver,
+  });
+
+  const fiatValueText = await getTextFromText({
+    id: 'token-to-sell-info-fiat-value-input',
+    driver,
+  });
+  expect(fiatValueText).toBe('1');
+
+  await delayTime('very-long');
+
+  const assetToSellInputText = await getTextFromTextInput({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  expect(assetToSellInputText).not.toBe('');
+
+  const assetToBuyInputText = await getTextFromTextInput({
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  expect(assetToBuyInputText).not.toBe('');
 });
 
 it('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
