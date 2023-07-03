@@ -131,10 +131,8 @@ export const useSwapInputs = ({
   const setAssetToSellMaxValue = useCallback(() => {
     setAssetToSellValue(assetToSellMaxValue.amount);
     setIndependentValue(assetToSellMaxValue.amount);
-    if (independentField === 'sellNativeField') {
-      setIndependentField('sellField');
-    }
-  }, [assetToSellMaxValue.amount, independentField]);
+    setIndependentField('sellField');
+  }, [assetToSellMaxValue.amount]);
 
   const flipAssets = useCallback(() => {
     const isCrosschainSwap =
