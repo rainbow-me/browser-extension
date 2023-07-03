@@ -408,14 +408,12 @@ it('should be able to open type native amount on sell input', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
-  console.log('SELL INPUTTTTT assetToSellInputText', assetToSellInputText);
   expect(assetToSellInputText).not.toBe('');
 
   const assetToBuyInputText = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
-  console.log('SELL INPUTTTTT assetToBuyInputText', assetToBuyInputText);
   expect(assetToBuyInputText).not.toBe('');
 });
 
