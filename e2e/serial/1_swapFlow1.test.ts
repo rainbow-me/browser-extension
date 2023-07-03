@@ -390,7 +390,7 @@ it('should be able to open token to buy input and select assets', async () => {
   expect(toBuyInputDaiSelected).toBeTruthy();
 });
 
-it('should be able to open type native amount on sell input', async () => {
+it('should be able to type native amount on sell input', async () => {
   await typeOnTextInput({
     id: `token-to-sell-info-fiat-value-input`,
     text: 1,
@@ -402,6 +402,7 @@ it('should be able to open type native amount on sell input', async () => {
   });
   expect(fiatValueText).toBe('1');
 
+  await delayTime('very-long');
   await delayTime('very-long');
 
   const assetToSellInputText = await getTextFromTextInput({
