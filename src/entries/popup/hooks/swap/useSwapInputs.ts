@@ -131,7 +131,7 @@ export const useSwapInputs = ({
   const setAssetToSellMaxValue = useCallback(() => {
     setAssetToSellValue(assetToSellMaxValue.amount);
     setIndependentValue(assetToSellMaxValue.amount);
-    if (independentField === 'buyField') {
+    if (independentField === 'sellNativeField') {
       setIndependentField('sellField');
     }
   }, [assetToSellMaxValue.amount, independentField]);
