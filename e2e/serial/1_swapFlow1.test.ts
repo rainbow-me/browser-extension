@@ -325,7 +325,7 @@ it('should be able to select same asset than asset to buy as asset to sell and r
 });
 
 it('should be able to open press max on token to sell input', async () => {
-  const fiatValueText = await getTextFromText({
+  const fiatValueText = await getTextFromTextInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
@@ -339,7 +339,7 @@ it('should be able to open press max on token to sell input', async () => {
     driver,
   });
   expect(ethValueBeforeGas).toEqual('10000');
-  const fiatValueTextAfterMax = await getTextFromText({
+  const fiatValueTextAfterMax = await getTextFromTextInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
@@ -396,8 +396,7 @@ it('should be able to open type native amount on sell input', async () => {
     text: 1,
     driver,
   });
-
-  const fiatValueText = await getTextFromText({
+  const fiatValueText = await getTextFromTextInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
@@ -409,12 +408,14 @@ it('should be able to open type native amount on sell input', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  console.log('SELL INPUTTTTT assetToSellInputText', assetToSellInputText);
   expect(assetToSellInputText).not.toBe('');
 
   const assetToBuyInputText = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
+  console.log('SELL INPUTTTTT assetToBuyInputText', assetToBuyInputText);
   expect(assetToBuyInputText).not.toBe('');
 });
 
