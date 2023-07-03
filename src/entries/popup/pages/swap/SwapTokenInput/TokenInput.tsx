@@ -63,6 +63,7 @@ interface TokenInputProps {
   setOnSelectAsset: (cb: (asset: ParsedSearchAsset | null) => void) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setValue: (value: string) => void;
+  onFocus?: () => void;
 }
 
 export const TokenInput = React.forwardRef<
@@ -91,6 +92,7 @@ export const TokenInput = React.forwardRef<
       setOnSelectAsset,
       setAssetFilter,
       setValue,
+      onFocus,
     }: TokenInputProps,
     forwardedRef,
   ) => {
@@ -158,7 +160,8 @@ export const TokenInput = React.forwardRef<
       if (!dropdownVisible) {
         onDropdownAction();
       }
-    }, [dropdownVisible, onDropdownAction]);
+      onFocus?.();
+    }, [dropdownVisible, onDropdownAction, onFocus]);
 
     return (
       <DropdownInputWrapper
