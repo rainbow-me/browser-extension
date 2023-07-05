@@ -79,7 +79,7 @@ export async function signTransactionFromLedger(
       throw new Error('Transaction was not signed by the right address');
     }
 
-    transport?.close();
+    await transport?.close();
     return serializedTransaction;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
@@ -88,7 +88,7 @@ export async function signTransactionFromLedger(
         'Please make sure your ledger is unlocked and open the Ethereum app',
       );
     }
-    transport?.close();
+    await transport?.close();
     // bubble up the error
     throw e;
   }
@@ -125,7 +125,7 @@ export async function signMessageByTypeFromLedger(
     const sig = await appEth.signPersonalMessage(path, messageHex);
     sig.r = '0x' + sig.r;
     sig.s = '0x' + sig.s;
-    transport?.close();
+    await transport?.close();
     return joinSignature(sig);
     // sign typed data
   } else if (messageType === 'sign_typed_data') {
@@ -136,7 +136,7 @@ export async function signMessageByTypeFromLedger(
       typeof msgData !== 'object' ||
       !(parsedData.types || parsedData.primaryType || parsedData.domain)
     ) {
-      transport?.close();
+      await transport?.close();
       throw new Error('unsupported typed data version');
     }
 
@@ -166,10 +166,10 @@ export async function signMessageByTypeFromLedger(
     );
     sig.r = '0x' + sig.r;
     sig.s = '0x' + sig.s;
-    transport?.close();
+    await transport?.close();
     return joinSignature(sig);
   } else {
-    transport?.close();
+    await transport?.close();
     throw new Error(`Message type ${messageType} not supported`);
   }
 }
