@@ -3,6 +3,7 @@ import React, { useCallback, useRef } from 'react';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
 
@@ -25,13 +26,14 @@ interface TokenToBuyProps {
   inputRef: React.RefObject<HTMLInputElement>;
   inputDisabled?: boolean;
   openDropdownOnMount?: boolean;
-  assetToBuyNativeValue: { amount: string; display: string } | null;
-  assetToSellNativeValue: { amount: string; display: string } | null;
+  assetToBuyNativeDisplay: { amount: string; display: string } | null;
+  assetToSellNativeDisplay: { amount: string; display: string } | null;
   onDropdownOpen: (open: boolean) => void;
   setOutputChainId: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToBuyInputValue: (value: string) => void;
+  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
 }
 
 export const TokenToBuyInput = ({
@@ -39,8 +41,8 @@ export const TokenToBuyInput = ({
   assetToSell,
   assetFilter,
   assets,
-  assetToBuyNativeValue,
-  assetToSellNativeValue,
+  assetToBuyNativeDisplay,
+  assetToSellNativeDisplay,
   dropdownClosed = false,
   dropdownHeight,
   outputChainId,
@@ -56,6 +58,7 @@ export const TokenToBuyInput = ({
   setAssetFilter,
   setOutputChainId,
   setAssetToBuyInputValue,
+  setIndependentField,
 }: TokenToBuyProps) => {
   const onSelectAssetRef =
     useRef<(address: ParsedSearchAsset | null) => void>();
@@ -111,8 +114,8 @@ export const TokenToBuyInput = ({
       bottomComponent={
         assetToBuy ? (
           <TokenToBuyInfo
-            assetToBuyNativeValue={assetToBuyNativeValue}
-            assetToSellNativeValue={assetToSellNativeValue}
+            assetToBuyNativeDisplay={assetToBuyNativeDisplay}
+            assetToSellNativeDisplay={assetToSellNativeDisplay}
             assetToBuy={assetToBuy}
             assetToSell={assetToSell}
             assetToBuyValue={assetToBuyValue}
@@ -133,6 +136,7 @@ export const TokenToBuyInput = ({
       openDropdownOnMount={openDropdownOnMount}
       inputDisabled={inputDisabled}
       ref={dropdownRef}
+      onFocus={() => setIndependentField('buyField')}
     />
   );
 };
