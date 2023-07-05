@@ -218,6 +218,7 @@ export function Swap() {
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
+    assetToSellNativeValue,
     assetToSellDisplay,
     assetToSellDropdownClosed,
     assetToBuyDropdownClosed,
@@ -228,8 +229,10 @@ export function Swap() {
     setAssetToSellMaxValue,
     setAssetToSellValue,
     setAssetToSellInputValue,
+    setAssetToSellInputNativeValue,
     setAssetToBuyValue,
     setAssetToBuyInputValue,
+    setIndependentField,
   } = useSwapInputs({
     assetToSell,
     assetToBuy,
@@ -254,7 +257,7 @@ export function Swap() {
     slippage,
   });
 
-  const { assetToSellNativeValue, assetToBuyNativeValue } =
+  const { assetToSellNativeDisplay, assetToBuyNativeDisplay } =
     useSwapNativeAmounts({
       assetToBuy,
       assetToBuyValue,
@@ -267,8 +270,9 @@ export function Swap() {
     });
 
   const { priceImpact } = useSwapPriceImpact({
-    assetToSellNativeValue,
-    assetToBuyNativeValue,
+    isLoading,
+    assetToSellNativeValue: assetToSellNativeDisplay,
+    assetToBuyNativeValue: assetToBuyNativeDisplay,
   });
 
   const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
@@ -455,16 +459,27 @@ export function Swap() {
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
                   assetToSellMaxValue={assetToSellMaxValue}
                   setAssetToSellMaxValue={setAssetToSellMaxValue}
-                  assetToSellValue={assetToSellValue}
+                  assetToSellValue={
+                    independentField === 'sellNativeField'
+                      ? assetToSellDisplay
+                      : assetToSellValue
+                  }
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'sell'}
                   assetToSellNativeValue={assetToSellNativeValue}
+                  assetToSellNativeDisplay={assetToSellNativeDisplay}
+                  setAssetToSellInputNativeValue={
+                    setAssetToSellInputNativeValue
+                  }
+                  independentField={independentField}
+                  setIndependentField={setIndependentField}
                 />
               </AccentColorProviderWrapper>
 
               <Box
-                marginVertical="-20px"
+                marginTop="-18px"
+                marginBottom="-20px"
                 style={{ zIndex: assetToSellDropdownClosed ? 3 : 1 }}
               >
                 <Inline alignHorizontal="center">
@@ -522,10 +537,12 @@ export function Swap() {
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
                   inputDisabled={isCrosschainSwap}
-                  assetToBuyNativeValue={assetToBuyNativeValue}
-                  assetToSellNativeValue={assetToSellNativeValue}
+                  assetToBuyNativeDisplay={assetToBuyNativeDisplay}
+                  assetToSellNativeDisplay={assetToSellNativeDisplay}
+                  setIndependentField={setIndependentField}
                 />
               </AccentColorProviderWrapper>
+
               <SwapWarning
                 timeEstimate={timeEstimate}
                 priceImpact={priceImpact}

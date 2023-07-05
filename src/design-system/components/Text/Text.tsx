@@ -47,6 +47,7 @@ export function Text({
           background,
           userSelect,
           WebkitBackgroundClip: webkitBackgroundClip,
+          transition: 'color 200ms ease-out',
         }),
         selectionStyle,
       ])}
