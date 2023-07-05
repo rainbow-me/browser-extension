@@ -220,7 +220,7 @@ export const handleProviderRequest = ({
         }
         case 'eth_requestAccounts': {
           if (activeSession) {
-            response = [activeSession.address];
+            response = [activeSession.address?.toLowerCase()];
             break;
           }
           const { address, chainId } = (await messengerProviderRequest(
