@@ -28,6 +28,7 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
+import { CreateWalletPrompt } from '../../../walletSwitcher/createWalletPrompt';
 import { RemoveWalletPrompt } from '../../../walletSwitcher/removeWalletPrompt';
 import { RenameWalletPrompt } from '../../../walletSwitcher/renameWalletPrompt';
 
@@ -114,16 +115,13 @@ export function WalletDetails() {
   const { state } = useLocation();
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
-
   const [wallet, setWallet] = useState<KeychainWallet | null>();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
-
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
   const { visibleWallets } = useWallets();
   const { deleteWalletName } = useWalletNamesStore();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
-  const [creatingWallet, setCreatingWallet] = useState(false);
 
   const handleViewRecoveryPhrase = useCallback(() => {
     navigate(
@@ -170,14 +168,12 @@ export function WalletDetails() {
   }, []);
 
   const handleCreateWalletOnGroup = useCallback(async () => {
-    setCreatingWallet(true);
     const currentWallet = await getSettingWallets();
     setWallet(currentWallet);
     const sibling = currentWallet.accounts[0];
     const address = await add(sibling);
     setCreateWalletAddress(address);
-    setRenameAccount(address);
-  }, [setCreatingWallet]);
+  }, []);
 
   const handleRemoveAccount = async (address: Address) => {
     const walletBeforeDeletion = await getWallet(address);
@@ -213,19 +209,22 @@ export function WalletDetails() {
     }
   };
 
-  const handleRenameWalletClose = () => {
-    setRenameAccount(undefined);
-    if (creatingWallet) {
-      handleRemoveAccount;
-      setCreatingWallet(false);
-    }
+  const onClose = () => {
+    setCreateWalletAddress(undefined);
   };
 
   return (
     <Box>
+      <CreateWalletPrompt
+        show={!!createWalletAddress}
+        onClose={onClose}
+        address={createWalletAddress}
+      />
       <RenameWalletPrompt
         account={renameAccount}
-        onClose={handleRenameWalletClose}
+        onClose={() => {
+          setRenameAccount(undefined);
+        }}
       />
       <RemoveWalletPrompt
         show={!!removeAccount}
