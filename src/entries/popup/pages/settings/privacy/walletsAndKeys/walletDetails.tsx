@@ -167,9 +167,8 @@ export function WalletDetails() {
   }, []);
 
   const handleCreateWalletOnGroup = useCallback(async () => {
-    const currentWallet = await getSettingWallets();
-    setWallet(currentWallet);
-    const sibling = currentWallet.accounts[0];
+    const currentWallets = await getSettingWallets();
+    const sibling = currentWallets.accounts[0];
     const address = await add(sibling);
     setCreateWalletAddress(address);
   }, []);
@@ -208,7 +207,10 @@ export function WalletDetails() {
     }
   };
 
-  const onClose = () => {
+  const onClose = async () => {
+    const currentWallets = await getSettingWallets();
+    const sibling = currentWallets.accounts[0];
+    handleRemoveAccount(sibling);
     setCreateWalletAddress(undefined);
   };
 
