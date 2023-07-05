@@ -120,7 +120,6 @@ export function WalletDetails() {
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
   const { visibleWallets } = useWallets();
   const { deleteWalletName } = useWalletNamesStore();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
 
   const handleViewRecoveryPhrase = useCallback(() => {
