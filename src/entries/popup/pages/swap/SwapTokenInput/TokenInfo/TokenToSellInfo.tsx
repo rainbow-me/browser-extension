@@ -1,56 +1,111 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
+import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
 import {
+  Bleed,
   Box,
   Column,
   Columns,
   Inline,
   Symbol,
   Text,
-  TextOverflow,
+  textStyles,
 } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
+import { placeholderStyle } from '~/design-system/components/Input/Input.css';
+import { maskInput } from '~/entries/popup/components/InputMask/utils';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
+import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 
 export const TokenToSellInfo = ({
   asset,
-  assetToSellValue,
   assetToSellMaxValue,
   assetToSellNativeValue,
+  assetToSellNativeDisplay,
+  independentField,
   setAssetToSellMaxValue,
+  setAssetToSellInputNativeValue,
+  setIndependentField,
 }: {
   asset: ParsedSearchAsset | null;
-  assetToSellValue: string;
   assetToSellMaxValue: { display: string; amount: string };
+  assetToSellNativeValue: string;
+  assetToSellNativeDisplay: { amount: string; display: string } | null;
+  independentField: IndependentField;
   setAssetToSellMaxValue: () => void;
-  assetToSellNativeValue: { amount: string; display: string } | null;
+  setAssetToSellInputNativeValue: (value: string) => void;
+  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+
+  const handleNativeValueOnChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const maskedValue = maskInput({
+        inputValue: e.target.value,
+        decimals: supportedCurrencies[currentCurrency].decimals,
+      });
+      setAssetToSellInputNativeValue(maskedValue);
+    },
+    [currentCurrency, setAssetToSellInputNativeValue],
+  );
+
+  const nativeFieldValue = useMemo(
+    () =>
+      independentField === 'sellNativeField'
+        ? assetToSellNativeValue
+        : assetToSellNativeDisplay?.amount,
+    [
+      assetToSellNativeDisplay?.amount,
+      independentField,
+      assetToSellNativeValue,
+    ],
+  );
+
+  const onFocus = useCallback(() => {
+    setAssetToSellInputNativeValue(nativeFieldValue ?? '');
+    setIndependentField('sellNativeField');
+  }, [nativeFieldValue, setAssetToSellInputNativeValue, setIndependentField]);
 
   if (!asset) return null;
   return (
     <Box width="full">
-      <Columns alignHorizontal="justify">
+      <Columns alignHorizontal="justify" alignVertical="center">
         {asset && (
           <Column>
-            <TextOverflow
-              as="p"
-              size="12pt"
-              weight="semibold"
-              color="labelTertiary"
-              testId="token-to-sell-info-fiat-value"
-            >
-              {assetToSellNativeValue?.display ??
-                convertAmountAndPriceToNativeDisplay(
-                  assetToSellValue || 0,
-                  asset?.price?.value || 0,
-                  currentCurrency,
-                ).display}
-            </TextOverflow>
+            <Inline alignVertical="center">
+              <Text
+                size="12pt"
+                weight="semibold"
+                color="labelTertiary"
+                testId="token-to-sell-info-fiat-value-symbol"
+              >
+                {supportedCurrencies[currentCurrency].symbol}
+              </Text>
+              <Bleed vertical="4px">
+                <Box
+                  as="input"
+                  type="text"
+                  value={nativeFieldValue || ''}
+                  onChange={handleNativeValueOnChange}
+                  placeholder={supportedCurrencies[currentCurrency].placeholder}
+                  className={[
+                    placeholderStyle,
+                    textStyles({
+                      color: 'labelTertiary',
+                      fontSize: '12pt',
+                      fontWeight: 'semibold',
+                      fontFamily: 'rounded',
+                    }),
+                  ]}
+                  onFocus={onFocus}
+                  disabled={!asset?.native?.price?.amount}
+                  testId="token-to-sell-info-fiat-value-input"
+                />
+              </Bleed>
+            </Inline>
           </Column>
         )}
         <Column width="content">
