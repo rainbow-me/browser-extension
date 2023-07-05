@@ -14,7 +14,7 @@ import {
   findElementByText,
   getAllWindowHandles,
   getExtensionIdByName,
-  getTextFromText,
+  getTextFromElement,
   getWindowHandle,
   goToPopup,
   goToTestApp,
@@ -191,7 +191,7 @@ describe('App interactions flow', () => {
     await delayTime('medium');
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('very-long');
-    const wallet = await getTextFromText({ id: 'account-name', driver });
+    const wallet = await getTextFromElement({ id: 'account-name', driver });
     expect(wallet).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 

@@ -8,6 +8,7 @@ import {
   Locator,
   WebDriver,
   WebElementCondition,
+  logging,
   until,
 } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
@@ -29,25 +30,35 @@ const BINARY_PATHS = {
   },
 };
 
-export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
-export const byText = (text: string) =>
-  By.xpath(`//*[contains(text(),"${text}")]`);
-
 // navigators
 
-export async function goToTestApp(driver) {
-  await driver.get('https://bx-test-dapp.vercel.app/');
-  await delay(1000);
+export async function goToTestApp(url, selector, driver, selectorType = 'id') {
+  await driver.get(url);
+
+  const element =
+    selectorType === 'id'
+      ? await findElementById({ id: selector, driver })
+      : await driver.findElement(By.css(`[class="${selector}"]`));
+
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
-export async function goToPopup(driver, rootURL, route = '') {
-  await driver.get(rootURL + '/popup.html' + route);
-  await delay(5000);
+export async function goToPopup(
+  driver: WebDriver,
+  rootURL: string,
+  route = '',
+) {
+  await goToURL(driver, rootURL + '/popup.html' + route);
 }
 
-export async function goToWelcome(driver, rootURL) {
-  await driver.get(rootURL + '/popup.html#/welcome');
-  await delay(1000);
+export async function goToWelcome(driver: WebDriver, rootURL: string) {
+  await goToURL(driver, rootURL + '/popup.html#/welcome');
+}
+
+async function goToURL(driver: WebDriver, url: string) {
+  await driver.get(url);
+  const element = await findElementById({ id: 'app', driver });
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
 export async function getAllWindowHandles({
@@ -75,9 +86,27 @@ export async function getAllWindowHandles({
 }
 
 export async function getWindowHandle({ driver }) {
-  await delayTime('long');
-  const windowHandle = await driver.getWindowHandle();
-  return windowHandle;
+  try {
+    const handle = await driver.getWindowHandle();
+
+    if (handle !== undefined) {
+      return handle;
+    }
+  } catch (error) {
+    console.error('Error occurred while retrieving the window handle:', error);
+    throw error;
+  }
+}
+
+export async function switchWindows(window, driver: WebDriver) {
+  try {
+    await delayTime('medium');
+
+    await driver.switchTo().window(window);
+  } catch (error) {
+    console.error('Error occurred while switching windows:', error);
+    throw error;
+  }
 }
 
 // setup functions
@@ -104,6 +133,15 @@ export async function initDriverWithOptions(opts) {
     .build();
 }
 
+// add this funciton to the end of a test
+// to see more in depth logs while testing
+export async function retrieveLogs(driver) {
+  const logs = await driver.manage().logs().get(logging.Type.BROWSER);
+  logs.forEach((log) => {
+    console.log(`[${log.level.name}] ${log.message}`);
+  });
+}
+
 export async function getExtensionIdByName(driver, extensionName) {
   await driver.get('chrome://extensions');
   return await driver.executeScript(`
@@ -123,41 +161,67 @@ export async function getExtensionIdByName(driver, extensionName) {
 
 // search functions
 
-export async function querySelector(driver, selector) {
-  const el = await driver.wait(
-    until.elementLocated(By.css(selector)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+export async function querySelector(driver: WebDriver, selector: string) {
+  try {
+    await driver.wait(until.elementLocated(By.css(selector)), waitUntilTime);
+    const element = await driver.findElement(By.css(selector));
+    await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    return element;
+  } catch (error) {
+    console.error(`Failed to locate element with selector: ${selector}`, error);
+    throw error;
+  }
 }
 
-export async function findElementByText(driver, text) {
-  const el = await driver.wait(
-    until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
+export async function findElementByText(driver: WebDriver, text: string) {
+  const escapedText = text.replace(/'/g, "\\'");
+  const xpathExpression = `//*[contains(text(), '${escapedText}')]`;
+
+  const element = await driver.wait(
+    until.elementLocated(By.xpath(xpathExpression)),
     waitUntilTime,
   );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  return await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
 export async function findElementByTextAndClick(driver, text) {
-  const element = await findElementByText(driver, text);
-  await waitAndClick(element, driver);
+  try {
+    const element = await findElementByText(driver, text);
+    await waitAndClick(element, driver);
+  } catch (error) {
+    console.error(`Failed to find element by text: ${text}`, error);
+    throw error;
+  }
 }
 
 export async function findElementAndClick({ id, driver }) {
-  await delayTime('short');
-  const element = await driver.findElement({
-    id,
-  });
-  await waitAndClick(element, driver);
+  try {
+    const element = await querySelector(driver, `[id="${id}"]`);
+    await waitAndClick(element, driver);
+  } catch (error) {
+    console.error(`Failed to find element by id: ${id}`, error);
+    throw error;
+  }
 }
 
 export async function findElementByTestId({ id, driver }) {
-  return querySelector(driver, `[data-testid="${id}"]`);
+  try {
+    const element = await querySelector(driver, `[data-testid="${id}"]`);
+    return element;
+  } catch (error) {
+    console.error(`Failed to find element by test id: ${id}`, error);
+    throw error;
+  }
 }
 
 export async function findElementById({ id, driver }) {
-  return querySelector(driver, `[id="${id}"]`);
+  try {
+    const element = await querySelector(driver, `[id="${id}"]`);
+    return element;
+  } catch (error) {
+    console.error(`Failed to find element by id: ${id}`, error);
+    throw error;
+  }
 }
 
 export async function doNotFindElementByTestId({ id, driver }) {
@@ -169,63 +233,142 @@ export async function doNotFindElementByTestId({ id, driver }) {
 }
 
 export async function findElementByTestIdAndClick({ id, driver }) {
-  await delay(200);
-  const element = await findElementByTestId({ id, driver });
-  await waitAndClick(element, driver);
+  try {
+    const element = await findElementByTestId({ id, driver });
+    await waitAndClick(element, driver);
+  } catch (error) {
+    console.error(`Failed to find element by test id: ${id}`, error);
+    throw error;
+  }
 }
 
 export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
-  await delay(500);
-  const element = await findElementByTestId({ id, driver });
-  if (element) {
-    return;
+  try {
+    const element = await findElementByTestId({ id, driver });
+    if (element) {
+      return;
+    }
+    return waitUntilElementByTestIdIsPresent({ id, driver });
+  } catch (error) {
+    console.error(
+      `Failed to find element with testId: ${id} after waiting`,
+      error,
+    );
+    throw error;
   }
-  return waitUntilElementByTestIdIsPresent({ id, driver });
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
-  await delay(200);
-  const element = await findElementById({ id, driver });
-  await waitAndClick(element, driver);
+  try {
+    const element = await findElementById({ id, driver });
+    await waitAndClick(element, driver);
+  } catch (error) {
+    console.error(`Failed to find element by id: ${id}`, error);
+    throw error;
+  }
 }
+
 export async function waitAndClick(element, driver) {
-  await delayTime('short');
-  await driver.wait(until.elementIsVisible(element), waitUntilTime);
-  return element.click();
+  try {
+    await driver.wait(until.elementIsEnabled(element), waitUntilTime);
+    await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    await delayTime('short');
+    await element.click();
+  } catch (error) {
+    console.error(`unable to click element: ${element}`, error);
+  }
 }
 
 export async function typeOnTextInput({ id, text, driver }) {
-  const element = await findElementByTestId({ id, driver });
-  await element.sendKeys(text);
+  try {
+    const element = await findElementByTestId({ id, driver });
+    await element.sendKeys(text);
+  } catch (error) {
+    console.error(
+      `Error occurred while typing on input with testId '${id}':`,
+      error,
+    );
+  }
 }
 
-export async function getTextFromTextInput({ id, driver }) {
-  const element = await findElementByTestId({ id, driver });
-  return await element.getAttribute('value');
+export async function getTextFromElementInput({ id, driver }) {
+  try {
+    const element = await findElementByTestId({ id, driver });
+    return await element.getAttribute('value');
+  } catch (error) {
+    console.error(
+      `Error occurred while retrieving text from input with testId '${id}':`,
+      error,
+    );
+    throw error;
+  }
 }
 
-export async function getTextFromText({ id, driver }) {
-  const element = await findElementByTestId({ id, driver });
-  return await element.getText();
+export async function getTextFromElement({ id, driver }) {
+  try {
+    const element = await findElementByTestId({ id, driver });
+    return await element.getText();
+  } catch (error) {
+    console.error(
+      `Error occurred while retrieving text from element with testId '${id}':`,
+      error,
+    );
+    throw error;
+  }
 }
 
 export async function getTextFromDappText({ id, driver }) {
-  const element = await findElementById({ id, driver });
-  return await element.getText();
+  try {
+    const element = await findElementById({ id, driver });
+    return await element.getText();
+  } catch (error) {
+    console.error(
+      `Error occurred while retrieving text from Dapp element with id '${id}':`,
+      error,
+    );
+    throw error;
+  }
 }
 
-export const untilIsClickable = (locator: Locator) =>
-  new WebElementCondition('until element is clickable', async (driver) => {
-    const element = driver.findElement(locator);
-    const isDisplayed = await element.isDisplayed();
-    const isEnabled = await element.isEnabled();
-    if (isDisplayed && isEnabled) return element;
-    return null;
-  });
+export const untilIsClickable = (locator: Locator) => {
+  const convertedLocator =
+    typeof locator === 'string' ? By.css(locator) : locator;
+  return new WebElementCondition(
+    'until element is clickable',
+    async (driver) => {
+      const element = await driver.findElement(convertedLocator);
+      const isDisplayed = await element.isDisplayed();
+      const isEnabled = await element.isEnabled();
+      if (isDisplayed && isEnabled) return element;
+      return null;
+    },
+  );
+};
+
+export async function awaitTextChange(
+  id: string,
+  text: string,
+  driver: WebDriver,
+) {
+  try {
+    const element = await findElementById({
+      id: id,
+      driver,
+    });
+
+    await driver.wait(until.elementTextIs(element, text), waitUntilTime);
+  } catch (error) {
+    console.error(
+      `Error occurred while awaiting text change for element with ID '${id}':`,
+      error,
+    );
+    throw error;
+  }
+}
 
 // various functions and flows
 
-export function shortenAddress(address) {
+export function shortenAddress(address: string): string {
   // if address is 42 in length and starts with 0x, then shorten it
   // otherwise return the base value. this is so it doesn't break incase an ens, etc is input
   return address.substring(0, 2) === '0x' && address.length === 42
@@ -233,32 +376,34 @@ export function shortenAddress(address) {
     : address;
 }
 
-export async function switchWallet(address, rootURL, driver: WebDriver) {
-  // find shortened address
-  const shortenedAddress = shortenAddress(address);
-
+export async function switchWallet(
+  Ethaddress: string,
+  rootURL,
+  driver: WebDriver,
+  ens?: string,
+) {
   // go to popup
   await goToPopup(driver, rootURL, '#/home');
-  await delayTime('medium');
 
   // find header and click
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
     driver,
   });
-  await delayTime('medium');
+
+  const address = Ethaddress;
+  // find shortened address
+  const shortenedAddress = shortenAddress(address);
 
   // find wallet you want to switch to and click
   await waitUntilElementByTestIdIsPresent({
-    id: `account-item-${shortenedAddress}`,
+    id: `account-item-${ens || shortenedAddress}`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `account-item-${shortenedAddress}`,
+    id: `account-item-${ens || shortenedAddress}`,
     driver,
   });
-
-  await delayTime('long');
 }
 
 export async function getOnchainBalance(addy, contract) {
@@ -337,8 +482,6 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     });
   }
 
-  await delayTime('medium');
-
   await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
   await typeOnTextInput({
     id: 'confirm-password-input',
@@ -346,14 +489,12 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     text: testPassword,
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-  await delayTime('long');
   await findElementByText(driver, 'Rainbow is ready to use');
 }
 
 export async function checkWalletName(driver, rootURL, walletAddress) {
   goToPopup(driver, rootURL);
-  await delayTime('short');
-  const account = await getTextFromText({ id: 'account-name', driver });
+  const account = await getTextFromElement({ id: 'account-name', driver });
   expect(account).toBe(shortenAddress(walletAddress));
 }
 
@@ -375,13 +516,23 @@ export async function passSecretQuiz(driver) {
     driver,
   });
 
-  await delayTime('long');
-
   for (const word of requiredWords) {
     await findElementByTestIdAndClick({ id: `word_${word}`, driver });
   }
+}
 
-  await delayTime('long');
+export async function waitUntilEnabled(testId, driver) {
+  const element = await driver.findElement(By.css(`[data-testid="${testId}"]`));
+  const checkEnabledValue = async () => {
+    try {
+      await element.getAttribute('disabled');
+    } catch (error) {
+      return 'enabled';
+    }
+    return checkEnabledValue();
+  };
+
+  return await checkEnabledValue();
 }
 
 // delays

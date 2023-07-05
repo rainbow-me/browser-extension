@@ -16,8 +16,8 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
-  getTextFromText,
-  getTextFromTextInput,
+  getTextFromElement,
+  getTextFromElementInput,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
@@ -232,7 +232,7 @@ it.skip('should be able to set default values for settings and go back to swap',
     driver,
   });
   expect(routeTriggerAuto).toBeTruthy();
-  const text = await getTextFromTextInput({
+  const text = await getTextFromElementInput({
     id: 'slippage-input-mask',
     driver,
   });
@@ -325,7 +325,7 @@ it('should be able to select same asset than asset to buy as asset to sell and r
 });
 
 it('should be able to open press max on token to sell input', async () => {
-  const fiatValueText = await getTextFromTextInput({
+  const fiatValueText = await getTextFromElementInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
@@ -334,12 +334,12 @@ it('should be able to open press max on token to sell input', async () => {
     id: 'token-to-sell-info-max-button',
     driver,
   });
-  const ethValueBeforeGas = await getTextFromTextInput({
+  const ethValueBeforeGas = await getTextFromElementInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(ethValueBeforeGas).toEqual('10000');
-  const fiatValueTextAfterMax = await getTextFromTextInput({
+  const fiatValueTextAfterMax = await getTextFromElementInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
@@ -361,7 +361,7 @@ it('should be able to remove token to sell and select it again', async () => {
   });
   expect(toSellInputEthSelected).toBeTruthy();
   // should clear input value
-  const ethValueAfterSelection = await getTextFromTextInput({
+  const ethValueAfterSelection = await getTextFromElementInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
@@ -396,7 +396,7 @@ it('should be able to type native amount on sell input', async () => {
     text: 1,
     driver,
   });
-  const fiatValueText = await getTextFromTextInput({
+  const fiatValueText = await getTextFromElementInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
@@ -405,13 +405,13 @@ it('should be able to type native amount on sell input', async () => {
   await delayTime('very-long');
   await delayTime('very-long');
 
-  const assetToSellInputText = await getTextFromTextInput({
+  const assetToSellInputText = await getTextFromElementInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(assetToSellInputText).not.toBe('');
 
-  const assetToBuyInputText = await getTextFromTextInput({
+  const assetToBuyInputText = await getTextFromElementInput({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
@@ -457,12 +457,12 @@ it('should be able to favorite a token and check the info button is present', as
 
 it('should be able to check price and balance of token to buy', async () => {
   await delayTime('medium');
-  const tokenToBuyInfoPrice = await getTextFromText({
+  const tokenToBuyInfoPrice = await getTextFromElement({
     id: 'token-to-buy-info-price',
     driver,
   });
   expect(tokenToBuyInfoPrice).not.toBe('');
-  const tokenToBuyInfoBalance = await getTextFromText({
+  const tokenToBuyInfoBalance = await getTextFromElement({
     id: 'token-to-buy-info-balance',
     driver,
   });
@@ -479,7 +479,7 @@ it('should be able to flip correctly', async () => {
     text: 1,
     driver,
   });
-  const assetToSellInputText = await getTextFromTextInput({
+  const assetToSellInputText = await getTextFromElementInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
@@ -487,7 +487,7 @@ it('should be able to flip correctly', async () => {
 
   await delayTime('very-long');
 
-  const assetToBuyInputText = await getTextFromTextInput({
+  const assetToBuyInputText = await getTextFromElementInput({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
@@ -500,14 +500,14 @@ it('should be able to flip correctly', async () => {
 
   await delayTime('very-long');
 
-  const assetToSellInputTextAfterFlip = await getTextFromTextInput({
+  const assetToSellInputTextAfterFlip = await getTextFromElementInput({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
 
   expect(assetToSellInputTextAfterFlip).not.toEqual('');
 
-  const assetToBuyInputTextAfterFlip = await getTextFromTextInput({
+  const assetToBuyInputTextAfterFlip = await getTextFromElementInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
@@ -515,7 +515,7 @@ it('should be able to flip correctly', async () => {
 });
 
 it('should be able to check insufficient asset for swap', async () => {
-  const confirmButtonText = await getTextFromText({
+  const confirmButtonText = await getTextFromElement({
     id: 'swap-confirmation-button-ready',
     driver,
   });
@@ -534,7 +534,7 @@ it('should be able to check insufficient native asset for gas', async () => {
     driver,
   });
   await delayTime('very-long');
-  const confirmButtonText = await getTextFromText({
+  const confirmButtonText = await getTextFromElement({
     id: 'swap-confirmation-button-ready',
     driver,
   });
@@ -700,7 +700,7 @@ it('should be able to see no route explainer', async () => {
     text: 1,
   });
   await delayTime('long');
-  const confirmButtonText = await getTextFromText({
+  const confirmButtonText = await getTextFromElement({
     id: 'swap-confirmation-button-error',
     driver,
   });
@@ -918,13 +918,13 @@ it('should be able to see swap information in review sheet', async () => {
     driver,
   });
 
-  const swapReviewConfirmationText = await getTextFromText({
+  const swapReviewConfirmationText = await getTextFromElement({
     id: 'swap-review-confirmation-text',
     driver,
   });
   expect(swapReviewConfirmationText).toBe('Swap ETH to DAI');
 
-  const swapReviewTitleText = await getTextFromText({
+  const swapReviewTitleText = await getTextFromElement({
     id: 'swap-review-title-text',
     driver,
   });
