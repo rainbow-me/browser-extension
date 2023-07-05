@@ -191,7 +191,9 @@ const useGas = ({
     | GasFeeLegacyParamsBySpeed
     | null = useMemo(() => {
     const newGasFeeParamsBySpeed =
-      !isLoading && gasData
+      !isLoading &&
+      ((gasData as MeteorologyResponse)?.data?.currentBaseFee ||
+        (gasData as MeteorologyLegacyResponse)?.data?.legacy)
         ? parseGasFeeParamsBySpeed({
             chainId,
             data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
