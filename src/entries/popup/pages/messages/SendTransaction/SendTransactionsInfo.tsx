@@ -31,7 +31,9 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
   });
   const { appSession } = useAppSession({ host: appHost });
   const { flashbotsEnabled } = useFlashbotsEnabledStore();
-  const nativeAsset = useNativeAssetForNetwork({ chainId: appSession.chainId });
+  const nativeAsset = useNativeAssetForNetwork({
+    chainId: appSession?.chainId || ChainId.mainnet,
+  });
   const { currentCurrency } = useCurrentCurrencyStore();
   const flashbotsEnabledGlobally =
     config.flashbots_enabled &&
@@ -42,7 +44,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
   const { data: methodName = '' } = useRegistryLookup({
     data: (txRequest?.data as string) || null,
     to: txRequest?.to || null,
-    chainId: appSession.chainId,
+    chainId: appSession?.chainId || ChainId.mainnet,
     hash: null,
   });
 
@@ -144,7 +146,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                 transactionSpeedClicked:
                   event.dappPromptSendTransactionSpeedClicked,
               }}
-              chainId={appSession.chainId}
+              chainId={appSession?.chainId || ChainId.mainnet}
               transactionRequest={request?.params?.[0] as TransactionRequest}
               plainTriggerBorder
               flashbotsEnabled={flashbotsEnabledGlobally}
