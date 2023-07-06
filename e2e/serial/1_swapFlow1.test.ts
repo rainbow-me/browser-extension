@@ -22,6 +22,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  transactionStatus,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
@@ -967,6 +968,10 @@ it('should be able to execute swap', async () => {
   });
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+
+  const txnStatus = await transactionStatus();
+  expect(txnStatus).toBe('success');
+
   await delayTime('very-long');
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,

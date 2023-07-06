@@ -418,7 +418,7 @@ export const WatchWallet = ({
             disabled={!isValid}
             width="full"
             onClick={handleWatchWallet}
-            testId={`watch-wallets-button${isValid ? '-ready' : ''}`}
+            testId={`watch-wallets`}
             tabIndex={onboarding ? 0 : 2}
           >
             {addressesToImport.length > 1

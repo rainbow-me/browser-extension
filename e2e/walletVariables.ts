@@ -26,7 +26,9 @@ export const TEST_VARIABLES = {
   },
   WATCHED_WALLET: {
     PRIMARY_ADDRESS: 'djweth.eth',
+    PRIMARY_ADDRESS_ETH: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
     SECONDARY_ADDRESS: 'brdy.eth',
+    SECONDARY_ADDRESS_ETH: '0x089ba0BC08DcF2d52D3aa7Edd9A4Ac960FaAbe9E',
   },
   DAPP_RECIPIENT: {
     ADDRESS: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -47,4 +49,9 @@ export const SWAP_VARIABLES = {
   USDC_MAINNET_ID: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1',
   WBTC_MAINNET_ID: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599_1',
   ZEROX_MAINNET_ID: '0xe41d2489571d322189246dafa5ebde1f4699f498_1',
+};
+
+export const URLS = {
+  RK_TEST_APP: 'https://bx-test-dapp.vercel.app/',
+  MM_TEST_APP: 'https://bx-e2e-dapp.vercel.app/',
 };
