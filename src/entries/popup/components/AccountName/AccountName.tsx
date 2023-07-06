@@ -66,7 +66,13 @@ export function AccountName({
         <Columns alignVertical="center" space="4px">
           {includeAvatar && address && (
             <Column width="content">
-              <Box paddingRight="2px">
+              <Box
+                as={motion.div}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                paddingRight="2px"
+              >
                 <WalletAvatar address={address} size={16} emojiSize="10pt" />
               </Box>
             </Column>

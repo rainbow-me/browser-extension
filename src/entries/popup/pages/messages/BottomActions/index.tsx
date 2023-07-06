@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import React, { useCallback, useImperativeHandle, useRef } from 'react';
 import { Address, useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -17,6 +17,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
@@ -54,38 +55,64 @@ export const WalletName = ({
   );
 };
 
-export const BottomWallet = ({
-  selectedWallet,
-  displaySymbol = false,
-}: {
-  selectedWallet: Address;
-  displaySymbol: boolean;
-}) => {
-  const triggerRef = useRef<HTMLDivElement>(null);
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.connect.OPEN_WALLET_SWITCHER.key) {
-        simulateClick(triggerRef?.current);
-      }
+export const BottomWallet = React.forwardRef(
+  (
+    {
+      selectedWallet,
+      displaySymbol = false,
+    }: {
+      selectedWallet: Address;
+      displaySymbol: boolean;
     },
-  });
-  return (
-    <Box testId="switch-wallet-menu" ref={triggerRef}>
-      <Inline alignVertical="center" space="4px">
-        <WalletAvatar address={selectedWallet} size={18} emojiSize={'12pt'} />
-        <WalletName color="labelSecondary" address={selectedWallet} />
-        {displaySymbol && (
-          <Symbol
-            color="labelSecondary"
-            size={14}
-            symbol="chevron.down.circle"
-            weight="semibold"
-          />
-        )}
-      </Inline>
-    </Box>
-  );
-};
+    ref,
+  ) => {
+    const triggerRef = useRef<HTMLDivElement>(null);
+    useImperativeHandle(ref, () => ({
+      triggerMenu: () => simulateClick(triggerRef?.current),
+    }));
+    useKeyboardShortcut({
+      handler: (e: KeyboardEvent) => {
+        if (e.key === shortcuts.connect.OPEN_WALLET_SWITCHER.key) {
+          simulateClick(triggerRef?.current);
+        }
+      },
+    });
+    return (
+      <Box testId="switch-wallet-menu" ref={triggerRef}>
+        <Inline alignVertical="center">
+          <Lens
+            alignItems="center"
+            borderRadius="round"
+            tabIndex={displaySymbol ? 0 : -1}
+            style={{
+              flexDirection: 'row',
+              display: 'flex',
+              gap: 4,
+              padding: 2,
+            }}
+          >
+            <WalletAvatar
+              address={selectedWallet}
+              size={18}
+              emojiSize={'12pt'}
+            />
+            <WalletName color="labelSecondary" address={selectedWallet} />
+            {displaySymbol && (
+              <Symbol
+                color="labelSecondary"
+                size={14}
+                symbol="chevron.down.circle"
+                weight="semibold"
+              />
+            )}
+          </Lens>
+        </Inline>
+      </Box>
+    );
+  },
+);
+
+BottomWallet.displayName = 'BottomWallet';
 
 export const BottomDisplayWallet = ({
   selectedWallet,
@@ -111,6 +138,7 @@ export const BottomSwitchWallet = ({
 }) => {
   const { setCurrentAddress } = useCurrentAddressStore();
   const { sortedAccounts } = useAccounts();
+  const menuTriggerRef = useRef<{ triggerMenu: () => void }>(null);
 
   const onOpenChange = useCallback((isOpen: boolean) => {
     isOpen && analytics.track(event.dappPromptConnectWalletClicked);
@@ -147,7 +175,11 @@ export const BottomSwitchWallet = ({
       <SwitchMenu
         title={i18n.t('approve_request.switch_wallets')}
         renderMenuTrigger={
-          <BottomWallet selectedWallet={selectedWallet} displaySymbol />
+          <BottomWallet
+            selectedWallet={selectedWallet}
+            displaySymbol
+            ref={menuTriggerRef}
+          />
         }
         menuItemIndicator={
           <Symbol symbol="checkmark" size={11} weight="semibold" />
@@ -186,24 +218,35 @@ export const BottomNetwork = ({
 }) => {
   return (
     <Box testId="switch-network-menu">
-      <Inline alignHorizontal="right" alignVertical="center" space="4px">
-        <ChainBadge chainId={selectedChainId} size={'small'} />
-        <Text
-          align="right"
-          size="14pt"
-          weight="semibold"
-          color="labelSecondary"
+      <Inline alignHorizontal="right" alignVertical="center">
+        <Lens
+          alignItems="center"
+          borderRadius="round"
+          style={{
+            flexDirection: 'row',
+            display: 'flex',
+            gap: 4,
+            padding: 2,
+          }}
         >
-          {ChainNameDisplay[selectedChainId]}
-        </Text>
-        {displaySymbol && (
-          <Symbol
-            color="labelSecondary"
-            size={symbolSize || 14}
-            symbol={symbol || 'chevron.down.circle'}
+          <ChainBadge chainId={selectedChainId} size={'small'} />
+          <Text
+            align="right"
+            size="14pt"
             weight="semibold"
-          />
-        )}
+            color="labelSecondary"
+          >
+            {ChainNameDisplay[selectedChainId]}
+          </Text>
+          {displaySymbol && (
+            <Symbol
+              color="labelSecondary"
+              size={symbolSize || 14}
+              symbol={symbol || 'chevron.down.circle'}
+              weight="semibold"
+            />
+          )}
+        </Lens>
       </Inline>
     </Box>
   );
@@ -282,12 +325,14 @@ export const WalletBalance = ({ appHost }: { appHost: string }) => {
 };
 
 export const AcceptRequestButton = ({
+  autoFocus,
   disabled,
   onClick,
   label,
   waitingForDevice,
   loading = false,
 }: {
+  autoFocus?: boolean;
   disabled?: boolean;
   onClick: () => void;
   label: string;
@@ -296,6 +341,7 @@ export const AcceptRequestButton = ({
 }) => {
   return (
     <Button
+      autoFocus={autoFocus}
       emoji={waitingForDevice ? '👀' : undefined}
       color={waitingForDevice ? 'label' : 'accent'}
       height="44px"
@@ -304,6 +350,7 @@ export const AcceptRequestButton = ({
       testId="accept-request-button"
       variant={waitingForDevice || disabled ? 'disabled' : 'flat'}
       disabled={disabled}
+      tabIndex={0}
     >
       <TextOverflow weight="bold" size="16pt" color="label">
         {loading ? <Spinner size={16} color="label" /> : label}
@@ -313,9 +360,11 @@ export const AcceptRequestButton = ({
 };
 
 export const RejectRequestButton = ({
+  autoFocus,
   onClick,
   label,
 }: {
+  autoFocus?: boolean;
   onClick: () => void;
   label: string;
 }) => {
@@ -330,12 +379,14 @@ export const RejectRequestButton = ({
   });
   return (
     <Button
+      autoFocus={autoFocus}
       color={'labelSecondary'}
       height="44px"
       width="full"
       onClick={onClick}
       testId="reject-request-button"
       variant={'transparent'}
+      tabIndex={0}
     >
       {label}
     </Button>
