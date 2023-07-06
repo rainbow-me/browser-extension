@@ -200,6 +200,7 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "@grpc/grpc-js": "1.8.8",
     "semver": "7.5.2",
     "globby": "11.1.0",
     "json5": "2.2.2",
