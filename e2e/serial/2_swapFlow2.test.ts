@@ -4,11 +4,8 @@
 
 import 'chromedriver';
 import 'geckodriver';
-import { Contract } from '@ethersproject/contracts';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
-import { erc20ABI } from 'wagmi';
 
 import {
   delayTime,
@@ -18,11 +15,13 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  getOnchainBalance,
   getTextFromElement,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  transactionStatus,
   typeOnTextInput,
   waitAndClick,
   waitUntilElementByTestIdIsPresent,
@@ -119,20 +118,12 @@ it('should be able to go to review a unlock and swap', async () => {
     text: `\b50`,
     driver,
   });
-  await delayTime('long');
 });
 
 it('should be able to execute unlock and swap', async () => {
-  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
-  await provider.ready;
-  await delayTime('short');
-  const tokenContract = new Contract(
-    SWAP_VARIABLES.DAI_MAINNET_ADDRESS,
-    erc20ABI,
-    provider,
-  );
-  const daiBalanceBeforeSwap = await tokenContract.balanceOf(
+  const daiBalanceBeforeSwap = await getOnchainBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
+    SWAP_VARIABLES.DAI_MAINNET_ADDRESS,
   );
 
   await waitUntilElementByTestIdIsPresent({
@@ -144,11 +135,17 @@ it('should be able to execute unlock and swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
-  await delayTime('long');
+
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  await delayTime('long');
-  const daiBalanceAfterSwap = await tokenContract.balanceOf(
+
+  const txnStatus = await transactionStatus();
+  expect(txnStatus).toBe('success');
+
+  await delayTime('very-long');
+
+  const daiBalanceAfterSwap = await getOnchainBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
+    SWAP_VARIABLES.DAI_MAINNET_ADDRESS,
   );
   const balanceDifference = subtract(
     daiBalanceBeforeSwap.toString(),

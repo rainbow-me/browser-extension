@@ -1,11 +1,10 @@
 /* eslint-disable no-await-in-loop */
 import 'chromedriver';
 import 'geckodriver';
-import { WebDriver } from 'selenium-webdriver';
+import { WebDriver, until } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
-  delayTime,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -15,7 +14,6 @@ import {
   passSecretQuiz,
   querySelector,
   typeOnTextInput,
-  waitAndClick,
 } from '../helpers';
 
 let rootURL = 'chrome-extension://';
@@ -59,7 +57,6 @@ describe('New wallet flow', () => {
     });
 
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-    await delayTime('long');
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
@@ -92,23 +89,22 @@ describe('New wallet flow', () => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
-    const btn = await querySelector(
+    await findElementByTestIdAndClick({
+      id: 'test-sandbox-popup',
       driver,
-      '[data-testid="test-sandbox-popup"]',
-    );
-    await waitAndClick(btn, driver);
+    });
+    await driver.wait(until.alertIsPresent());
     const text = await driver.switchTo().alert().getText();
     expect(text).toBe('Popup sandboxed!');
     await driver.switchTo().alert().accept();
   });
 
   it('should be able to test the sandbox for the background', async () => {
-    const btn = await querySelector(
+    await findElementByTestIdAndClick({
+      id: 'test-sandbox-background',
       driver,
-      '[data-testid="test-sandbox-background"]',
-    );
-    await waitAndClick(btn, driver);
-    await delayTime('long');
+    });
+    await driver.wait(until.alertIsPresent());
     const text = await driver.switchTo().alert().getText();
     expect(text).toBe('Background sandboxed!');
     await driver.switchTo().alert().accept();

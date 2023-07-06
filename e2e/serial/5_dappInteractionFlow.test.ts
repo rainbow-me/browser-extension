@@ -1,30 +1,33 @@
 import 'chromedriver';
 import 'geckodriver';
-import { WebDriver } from 'selenium-webdriver';
+import { By, WebDriver, until } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  awaitTextChange,
   delayTime,
   fillPrivateKey,
   findElementById,
+  findElementByIdAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  findElementByTextAndClick,
   getAllWindowHandles,
   getExtensionIdByName,
   getOnchainBalance,
   getTextFromDappText,
   getWindowHandle,
   goToPopup,
+  goToTestApp,
   goToWelcome,
   initDriverWithOptions,
   shortenAddress,
+  switchWindows,
   transactionStatus,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
+import { TEST_VARIABLES, URLS } from '../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -77,7 +80,6 @@ describe('App interactions flow', () => {
       text: 'test1234',
     });
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-    await delayTime('long');
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
@@ -104,23 +106,39 @@ describe('App interactions flow', () => {
     });
   });
 
-  it('should be able to connect to mm dapp', async () => {
-    await delayTime('long');
-    await driver.get('https://bx-e2e-dapp.vercel.app/');
+  it('should be able to connect to mm dapp on the hardhat network', async () => {
+    await goToTestApp(URLS.MM_TEST_APP, 'container-fluid', driver, 'class');
     const dappHandler = await getWindowHandle({ driver });
 
-    const button = await findElementById({ id: 'connectButton', driver });
-    expect(button).toBeTruthy();
-    await waitAndClick(button, driver);
+    await findElementByIdAndClick({ id: 'connectButton', driver });
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
 
-    await delayTime('long');
+    await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
+
+    await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
+
+    const networkLabel = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="radix-:rb:"]/div/div/div[2]')),
+    );
+
+    expect(await networkLabel.getText()).toBe('Hardhat');
+
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
+
+    // the dapp UI doesn't update the chain ID
+    // on the page unless the page is refreshed
+    await driver.navigate().refresh();
+
+    await driver.findElement(By.css(`[class="container-fluid"]`));
+
+    const chain = await findElementById({ id: 'chainId', driver });
+    const chainText = await chain.getText();
+    await expect(chainText).toBe('0x539');
 
     const accounts = await findElementById({ id: 'accounts', driver });
     expect(accounts).toBeTruthy();
@@ -137,9 +155,8 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
 
-    await delayTime('long');
     const message = await findElementByTestId({
       id: 'sign-message-text',
       driver,
@@ -150,10 +167,8 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
 
     const personalSignResult = await findElementById({
       id: 'personalSignResult',
@@ -165,16 +180,16 @@ describe('App interactions flow', () => {
 
   it('should be able to sign typed data (v3)', async () => {
     const dappHandler = await getWindowHandle({ driver });
-    await driver.switchTo().window(dappHandler);
+
+    await switchWindows(dappHandler, driver);
 
     const button = await findElementById({ id: 'signTypedDataV3', driver });
     await waitAndClick(button, driver);
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
 
-    await delayTime('long');
     const message = await findElementByTestId({
       id: 'sign-message-text',
       driver,
@@ -185,10 +200,8 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
 
     const verifyButton = await findElementById({
       id: 'signTypedDataV3Verify',
@@ -205,16 +218,16 @@ describe('App interactions flow', () => {
 
   it('should be able to sign typed data (v4)', async () => {
     const dappHandler = await getWindowHandle({ driver });
-    await driver.switchTo().window(dappHandler);
+
+    await switchWindows(dappHandler, driver);
 
     const button = await findElementById({ id: 'signTypedDataV4', driver });
     await waitAndClick(button, driver);
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
 
-    await delayTime('long');
     const message = await findElementByTestId({
       id: 'sign-message-text',
       driver,
@@ -225,10 +238,8 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
 
     const verifyButton = await findElementById({
       id: 'signTypedDataV4Verify',
@@ -243,48 +254,22 @@ describe('App interactions flow', () => {
     expect(result).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS.toLowerCase());
   });
 
-  it('should be able to switch network to hardhat', async () => {
-    await goToPopup(driver, rootURL, '#/home');
-    await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
-    await findElementByTestIdAndClick({
-      id: 'home-page-header-connected-apps',
-      driver,
-    });
-
-    await findElementByTextAndClick(driver, 'bx-e2e-dapp.vercel.app');
-    await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
-
-    await driver.get('https://bx-e2e-dapp.vercel.app/');
-    const dappHandler = await getWindowHandle({ driver });
-
-    await driver.switchTo().window(dappHandler);
-
-    const chain = await findElementById({ id: 'chainId', driver });
-    const chainText = await chain.getText();
-    await expect(chainText).toBe('0x539');
-  });
-
   it('should be able to create token', async () => {
     const dappHandler = await getWindowHandle({ driver });
-    await driver.switchTo().window(dappHandler);
 
     const button = await findElementById({ id: 'createToken', driver });
     await waitAndClick(button, driver);
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-
-    await delayTime('long');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
 
     const token = await findElementById({ id: 'tokenAddress', driver });
     const tokenText = await token.getText();
@@ -297,7 +282,7 @@ describe('App interactions flow', () => {
 
   it('should be able to transfer token', async () => {
     // get token contract address
-    await delayTime('medium');
+
     const token = await findElementById({ id: 'tokenAddress', driver });
     const tokenText = await token.getText();
 
@@ -313,24 +298,20 @@ describe('App interactions flow', () => {
     );
 
     const dappHandler = await getWindowHandle({ driver });
-    await driver.switchTo().window(dappHandler);
 
     const watchButton = await findElementById({ id: 'transferTokens', driver });
     await waitAndClick(watchButton, driver);
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-    await delayTime('long');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
 
     // find post-send token address
     const senderPostSendbalance = await getOnchainBalance(
@@ -359,24 +340,22 @@ describe('App interactions flow', () => {
 
   it('should be able to approve tokens', async () => {
     const dappHandler = await getWindowHandle({ driver });
-    await driver.switchTo().window(dappHandler);
+
+    await switchWindows(dappHandler, driver);
 
     const watchButton = await findElementById({ id: 'approveTokens', driver });
     await waitAndClick(watchButton, driver);
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-    await delayTime('medium');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
 
     const txnStatus = await transactionStatus();
     expect(txnStatus).toBe('success');
@@ -384,7 +363,7 @@ describe('App interactions flow', () => {
 
   it('should be able to transfer tokens without gas', async () => {
     // get token contract address
-    await delayTime('medium');
+
     const token = await findElementById({ id: 'tokenAddress', driver });
     const tokenText = await token.getText();
 
@@ -400,7 +379,8 @@ describe('App interactions flow', () => {
     );
 
     const dappHandler = await getWindowHandle({ driver });
-    await driver.switchTo().window(dappHandler);
+
+    await switchWindows(dappHandler, driver);
 
     const watchButton = await findElementById({
       id: 'transferTokensWithoutGas',
@@ -410,17 +390,14 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-    await delayTime('medium');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
 
     // find post-send token address
     const senderPostSendbalance = await getOnchainBalance(
@@ -449,7 +426,8 @@ describe('App interactions flow', () => {
 
   it('should be able to approve token without gas', async () => {
     const dappHandler = await getWindowHandle({ driver });
-    await driver.switchTo().window(dappHandler);
+
+    await switchWindows(dappHandler, driver);
 
     const watchButton = await findElementById({
       id: 'approveTokensWithoutGas',
@@ -459,17 +437,14 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-    await delayTime('medium');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
 
     const txnStatus = await transactionStatus();
     expect(txnStatus).toBe('success');
@@ -483,18 +458,14 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-
-    await delayTime('medium');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
   });
 
   it('should be able to do a EIP 1559 send', async () => {
@@ -505,18 +476,14 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-
-    await delayTime('medium');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
 
-    await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await switchWindows(dappHandler, driver);
   });
 
   it('should be able to deploy a collection', async () => {
@@ -530,57 +497,37 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-
-    await delayTime('long');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
 
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
-      driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Deployed');
+    await awaitTextChange('collectiblesStatus', 'Deployed', driver);
   });
 
   it('should be able to mint a collectible', async () => {
     const dappHandler = await getWindowHandle({ driver });
 
-    const button = await findElementById({
-      id: 'mintButton',
-      driver,
-    });
-    await waitAndClick(button, driver);
+    await findElementByIdAndClick({ id: 'mintButton', driver });
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-
-    await delayTime('long');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
 
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
-      driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Mint completed');
+    await awaitTextChange('collectiblesStatus', 'Mint completed', driver);
   });
 
   it('should be able to approve a collectible', async () => {
@@ -594,25 +541,17 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-
-    await delayTime('long');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
 
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
-      driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Approve completed');
+    await awaitTextChange('collectiblesStatus', 'Approve completed', driver);
   });
 
   it('should be able to set approval for all for a collectible', async () => {
@@ -626,25 +565,21 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-
-    await delayTime('long');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
 
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
+    await awaitTextChange(
+      'collectiblesStatus',
+      'Set Approval For All completed',
       driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Set Approval For All completed');
+    );
   });
 
   it('should be able to revoke approval for a collectible', async () => {
@@ -658,25 +593,17 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-
-    await delayTime('long');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
 
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
-      driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Revoke completed');
+    await awaitTextChange('collectiblesStatus', 'Revoke completed', driver);
   });
 
   it('should be able to transfer a collectible', async () => {
@@ -690,24 +617,20 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
-
-    await delayTime('long');
+    await switchWindows(popupHandler, driver);
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
 
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
+    await awaitTextChange(
+      'collectiblesStatus',
+      'Transfer From completed',
       driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Transfer From completed');
+    );
   });
 });

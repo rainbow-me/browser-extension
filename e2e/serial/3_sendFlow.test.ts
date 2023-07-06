@@ -95,6 +95,7 @@ it('should be able to connect to hardhat and go to send flow', async () => {
 });
 
 it('should be able to save contact on send flow', async () => {
+  await delayTime('long');
   const input = await querySelector(driver, '[data-testid="to-address-input"]');
   await input.sendKeys('rainbowwallet.eth');
   await delayTime('long');

@@ -23,10 +23,11 @@ import {
   querySelector,
   shortenAddress,
   switchWallet,
+  switchWindows,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
+import { TEST_VARIABLES, URLS } from '../walletVariables';
 
 const TYPED_MESSAGE = {
   domain: {
@@ -197,7 +198,7 @@ describe('App interactions flow', () => {
 
   it('should be able to connect to bx test dapp', async () => {
     await delayTime('long');
-    await goToTestApp(driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementByText(driver, 'Connect Wallet');
@@ -218,7 +219,7 @@ describe('App interactions flow', () => {
       dappHandler,
     });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
 
     // switch account
     await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
@@ -227,10 +228,9 @@ describe('App interactions flow', () => {
     await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
-    await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     const topButton = await querySelector(
       driver,
       '[data-testid="rk-account-button"]',
@@ -257,7 +257,7 @@ describe('App interactions flow', () => {
 
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
-    await goToTestApp(driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
     const expectedNetwork = 'Network: Ethereum - homestead';
     const network = await querySelector(driver, '[id="network"]');
     const actualNetwork = await network.getText();
@@ -270,7 +270,7 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to accept a signing request', async () => {
-    await goToTestApp(driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
 
     const dappHandler = await getWindowHandle({ driver });
     const button = await querySelector(driver, '[id="signTx"]');
@@ -279,13 +279,13 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
 
     await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await delayTime('medium');
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     const signatureTextSelector = await querySelector(
       driver,
       '[id="signTxSignature"]',
@@ -309,11 +309,11 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
     await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('medium');
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     const signatureTextSelector = await querySelector(
       driver,
       '[id="signTypedDataSignature"]',
@@ -335,7 +335,7 @@ describe('App interactions flow', () => {
 
   it('should be able to accept a transaction request', async () => {
     await delayTime('long');
-    await goToTestApp(driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
 
     const dappHandler = await getWindowHandle({ driver });
 
@@ -347,11 +347,11 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
     await delayTime('long');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('long');
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
   });
 
   it('should be able to disconnect from connected dapps', async () => {
@@ -369,7 +369,7 @@ describe('App interactions flow', () => {
       id: 'switch-network-menu-disconnect',
       driver,
     });
-    await goToTestApp(driver);
+    await goToTestApp(URLS.RK_TEST_APP, '__next', driver);
     const button = await findElementByText(driver, 'Connect Wallet');
     expect(button).toBeTruthy();
   });
