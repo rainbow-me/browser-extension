@@ -1,5 +1,6 @@
 import 'chromedriver';
 import 'geckodriver';
+import { getAddress } from '@ethersproject/address';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
@@ -126,7 +127,9 @@ describe('App interactions flow', () => {
     expect(accounts).toBeTruthy();
 
     const connectedAddress = await accounts.getText();
-    expect(connectedAddress).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS);
+    expect(getAddress(connectedAddress)).toBe(
+      getAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS),
+    );
   });
 
   it('should be able to complete a personal sign', async () => {
@@ -146,7 +149,10 @@ describe('App interactions flow', () => {
     });
     expect(message).toBeTruthy();
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -181,7 +187,10 @@ describe('App interactions flow', () => {
     });
     expect(message).toBeTruthy();
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -221,7 +230,10 @@ describe('App interactions flow', () => {
     });
     expect(message).toBeTruthy();
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -277,7 +289,10 @@ describe('App interactions flow', () => {
 
     await delayTime('long');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -323,7 +338,10 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
     await delayTime('long');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -369,7 +387,10 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
     await delayTime('medium');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -413,7 +434,10 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
     await delayTime('medium');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -462,7 +486,10 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
     await delayTime('medium');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -487,7 +514,10 @@ describe('App interactions flow', () => {
 
     await delayTime('medium');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -509,7 +539,10 @@ describe('App interactions flow', () => {
 
     await delayTime('medium');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -534,7 +567,10 @@ describe('App interactions flow', () => {
 
     await delayTime('long');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -566,7 +602,10 @@ describe('App interactions flow', () => {
 
     await delayTime('long');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -598,7 +637,10 @@ describe('App interactions flow', () => {
 
     await delayTime('long');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -630,7 +672,10 @@ describe('App interactions flow', () => {
 
     await delayTime('long');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -662,7 +707,10 @@ describe('App interactions flow', () => {
 
     await delayTime('long');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -694,7 +742,10 @@ describe('App interactions flow', () => {
 
     await delayTime('long');
 
-    const address = await findElementByText(driver, shortenedAddress);
+    const address = await findElementByText(
+      driver,
+      shortenedAddress.toLowerCase(),
+    );
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
