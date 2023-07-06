@@ -24,7 +24,7 @@ type NavbarProps = {
   rightComponent?: React.ReactElement;
   title?: string;
   titleTestId?: string;
-  titleComponent?: React.ReactElement;
+  titleComponent?: React.ReactNode;
   background?: BackgroundColor;
 };
 

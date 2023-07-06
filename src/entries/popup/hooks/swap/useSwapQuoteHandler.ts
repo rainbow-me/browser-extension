@@ -33,7 +33,11 @@ export const useSwapQuoteHandler = ({
         | Quote
         | CrosschainQuote;
 
-      if (independentField === 'sellField' && assetToBuy) {
+      if (
+        (independentField === 'sellField' ||
+          independentField === 'sellNativeField') &&
+        assetToBuy
+      ) {
         setAssetToBuyValue(
           buyAmountDisplay
             ? convertRawAmountToBalance(
@@ -55,7 +59,10 @@ export const useSwapQuoteHandler = ({
     } else {
       if (independentField === 'buyField') {
         setAssetToSellValue('');
-      } else if (independentField === 'sellField') {
+      } else if (
+        independentField === 'sellField' ||
+        independentField === 'sellNativeField'
+      ) {
         setAssetToBuyValue('');
       }
     }

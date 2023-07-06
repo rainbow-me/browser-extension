@@ -1,5 +1,6 @@
-import { useWindowVirtualizer } from '@tanstack/react-virtual';
-import { useMemo, useState } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { motion } from 'framer-motion';
+import { memo, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -19,6 +20,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
@@ -38,6 +40,7 @@ export function Tokens() {
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
     useState(false);
+
   const {
     data: assets = [],
     isInitialLoading,
@@ -52,8 +55,11 @@ export function Tokens() {
       select: selectUserAssetsList,
     },
   );
-  const assetsRowVirtualizer = useWindowVirtualizer({
+
+  const containerRef = useContainerRef();
+  const assetsRowVirtualizer = useVirtualizer({
     count: assets?.length || 0,
+    getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
     overscan: 20,
   });
@@ -100,19 +106,18 @@ export function Tokens() {
       >
         <Box style={{ overflow: 'auto' }}>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
-            const { key, index } = virtualItem;
+            const { key, index, start, size } = virtualItem;
             const rowData = assets[index];
             return (
               <Box
                 key={key}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: virtualItem.size,
-                  transform: `translateY(${virtualItem.start}px)`,
-                }}
+                as={motion.div}
+                layoutId={`list-${index}`}
+                layoutScroll
+                layout="position"
+                position="absolute"
+                width="full"
+                style={{ height: size, y: start }}
               >
                 <TokenDetailsMenu token={rowData}>
                   <AssetRow
@@ -133,7 +138,7 @@ type AssetRowProps = {
   uniqueId: UniqueId;
 };
 
-export function AssetRow({ uniqueId }: AssetRowProps) {
+export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
   const asset = useUserAsset(uniqueId);
   const name = asset?.name;
   const { hideAssetBalances } = useHideAssetBalancesStore();
@@ -219,7 +224,7 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
   );
 
   return <CoinRow asset={asset} topRow={topRow} bottomRow={bottomRow} />;
-}
+});
 
 function TokensEmptyState() {
   return (

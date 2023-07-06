@@ -4,6 +4,7 @@ import { ParsedSearchAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
+  convertAmountFromNativeValue,
   convertAmountToRawAmount,
   convertRawAmountToBalance,
   handleSignificantDecimals,
@@ -20,7 +21,7 @@ const focusOnInput = (inputRef: React.RefObject<HTMLInputElement>) => {
   }, 100);
 };
 
-export type IndependentField = 'sellField' | 'buyField';
+export type IndependentField = 'sellField' | 'buyField' | 'sellNativeField';
 
 export const useSwapInputs = ({
   assetToSell,
@@ -44,9 +45,11 @@ export const useSwapInputs = ({
     inputToOpenOnMount !== 'buy',
   );
   const [assetToSellValue, setAssetToSellValue] = useState('');
+  const [assetToSellNativeValue, setAssetToSellNativeValue] = useState('');
   const [assetToBuyValue, setAssetToBuyValue] = useState('');
 
   const assetToSellInputRef = useRef<HTMLInputElement>(null);
+  const assetToSellNativeInputRef = useRef<HTMLInputElement>(null);
   const assetToBuyInputRef = useRef<HTMLInputElement>(null);
 
   const [independentField, setIndependentField] =
@@ -59,6 +62,25 @@ export const useSwapInputs = ({
     setIndependentField('sellField');
     setIndependentValue(value);
   }, []);
+
+  const setAssetToSellInputNativeValue = useCallback(
+    (value: string) => {
+      setAssetToSellDropdownClosed(true);
+      setAssetToSellNativeValue(value);
+      setIndependentField('sellNativeField');
+      setIndependentValue(value);
+      setAssetToSellValue(
+        value
+          ? convertAmountFromNativeValue(
+              value || 0,
+              assetToSell?.price?.value || 0,
+              assetToSell?.decimals,
+            )
+          : '',
+      );
+    },
+    [assetToSell?.decimals, assetToSell?.price?.value],
+  );
 
   const setAssetToBuyInputValue = useCallback((value: string) => {
     setAssetToBuyDropdownClosed(true);
@@ -110,7 +132,7 @@ export const useSwapInputs = ({
     setAssetToSellValue(assetToSellMaxValue.amount);
     setIndependentValue(assetToSellMaxValue.amount);
     setIndependentField('sellField');
-  }, [assetToSellMaxValue.amount, setAssetToSellValue]);
+  }, [assetToSellMaxValue.amount]);
 
   const flipAssets = useCallback(() => {
     const isCrosschainSwap =
@@ -125,9 +147,17 @@ export const useSwapInputs = ({
       setAssetToSellValue(independentValue);
       setIndependentField('sellField');
       focusOnInput(assetToSellInputRef);
-    } else {
+    } else if (
+      independentField === 'sellField' ||
+      independentField === 'sellNativeField'
+    ) {
       setAssetToSellValue('');
-      setAssetToBuyValue(independentValue);
+      setAssetToBuyValue(
+        independentField === 'sellNativeField'
+          ? assetToSellValue
+          : independentValue,
+      );
+      setAssetToSellNativeValue('');
       setIndependentField('buyField');
       focusOnInput(assetToBuyInputRef);
     }
@@ -139,6 +169,7 @@ export const useSwapInputs = ({
     assetToBuy,
     assetToBuyValue,
     assetToSell,
+    assetToSellValue,
     independentField,
     independentValue,
     setAssetToBuy,
@@ -155,7 +186,7 @@ export const useSwapInputs = ({
 
   const assetToBuyDisplay = useMemo(
     () =>
-      independentField === 'sellField'
+      independentField === 'sellField' || independentField === 'sellNativeField'
         ? assetToBuyValue && handleSignificantDecimals(assetToBuyValue, 5)
         : assetToBuyValue,
     [assetToBuyValue, independentField],
@@ -164,8 +195,10 @@ export const useSwapInputs = ({
   return {
     assetToBuyInputRef,
     assetToSellInputRef,
+    assetToSellNativeInputRef,
     assetToSellMaxValue,
     assetToSellValue,
+    assetToSellNativeValue,
     assetToBuyValue,
     assetToSellDisplay,
     assetToBuyDisplay,
@@ -179,6 +212,8 @@ export const useSwapInputs = ({
     setAssetToBuyInputValue,
     setAssetToSellValue,
     setAssetToSellInputValue,
+    setAssetToSellInputNativeValue,
     setAssetToSellMaxValue,
+    setIndependentField,
   };
 };
