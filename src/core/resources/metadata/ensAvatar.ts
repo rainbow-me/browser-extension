@@ -77,7 +77,7 @@ export function useENSAvatar({ addressOrName }: ResolveEnsProfileArgs) {
     ResolveEnsProfileQueryKey({ addressOrName }),
     resolveEnsProfileQueryFunction,
     {
-      cacheTime: 10000,
+      staleTime: 10 * 60 * 1_000, // 10 min
     },
   );
 }
