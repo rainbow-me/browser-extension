@@ -168,13 +168,18 @@ export function WalletDetails() {
 
   const handleCreateWalletOnGroup = useCallback(async () => {
     const currentWallets = await getSettingWallets();
+    console.log('currentWallets:', JSON.stringify(await currentWallets));
     const sibling = currentWallets.accounts[0];
+    console.log(`sibling: ${sibling}`);
     const address = await add(sibling);
-    setCreateWalletAddress(address);
-  }, []);
+    console.log(`address: ${address}`);
+    await setCreateWalletAddress(address);
+    console.log(`createWalletAddress: ${createWalletAddress}`);
+  }, [createWalletAddress]);
 
   const handleRemoveAccount = async (address: Address) => {
     const walletBeforeDeletion = await getWallet(address);
+    console.log(`address: ${address}`);
     unhideWallet({ address });
     await remove(address);
     deleteWalletName({ address });
@@ -207,16 +212,26 @@ export function WalletDetails() {
     }
   };
 
-  const onClose = async () => {
-    const currentWallets = await getSettingWallets();
-    const sibling = currentWallets.accounts[0];
-    handleRemoveAccount(sibling);
+  const handleCancel = async () => {
+    if (createWalletAddress !== undefined) {
+      const currentWallets = await getSettingWallets();
+      console.log('currentWallets:', JSON.stringify(await currentWallets));
+      console.log(`createWalletAddress1: ${createWalletAddress}`);
+      await handleRemoveAccount(createWalletAddress);
+      console.log(`createWalletAddress2: ${createWalletAddress}`);
+    }
+    setCreateWalletAddress(undefined);
+    console.log(`createWalletAddress3: ${createWalletAddress}`);
+  };
+
+  const onClose = () => {
     setCreateWalletAddress(undefined);
   };
 
   return (
     <Box>
       <CreateWalletPrompt
+        onCancel={handleCancel}
         show={!!createWalletAddress}
         onClose={onClose}
         address={createWalletAddress}
