@@ -87,6 +87,8 @@ export async function signTransactionFromLedger(
       alert(
         'Please make sure your ledger is unlocked and open the Ethereum app',
       );
+    } else if (e?.message) {
+      alert(e.message);
     }
     transport?.close();
     // bubble up the error
