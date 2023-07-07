@@ -39,7 +39,9 @@ export function AccountName({
   const [hover, setHover] = useState(false);
 
   const handleClick = useCallback(() => {
-    !disableNav ? navigate(ROUTES.WALLET_SWITCHER) : null;
+    if (!disableNav) {
+      navigate(ROUTES.WALLET_SWITCHER);
+    }
   }, [navigate, disableNav]);
 
   const chevronProps = chevron
