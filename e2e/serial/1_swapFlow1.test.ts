@@ -973,6 +973,7 @@ it('should be able to execute swap', async () => {
   expect(txnStatus).toBe('success');
 
   await delayTime('very-long');
+  await delayTime('very-long');
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );

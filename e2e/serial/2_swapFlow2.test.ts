@@ -187,6 +187,7 @@ it('should be able to go to review a crosschain swap', async () => {
     id: 'switch-network-item-3',
     driver,
   });
+  await delayTime('very-long');
   const daiBridge = await findElementByTestId({
     id: `${SWAP_VARIABLES.DAI_ARBITRUM_ID}-bridge-token-to-buy-row`,
     driver,
@@ -221,7 +222,7 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
 
-  await delayTime('long');
+  await delayTime('very-long');
   const longWaitExplainerFound = await doNotFindElementByTestId({
     id: 'explainer-sheet-swap-long-wait',
     driver,
