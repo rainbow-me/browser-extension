@@ -404,3 +404,24 @@ export async function delayTime(
       return await delay(5000);
   }
 }
+
+export async function awaitTextChange(
+  id: string,
+  text: string,
+  driver: WebDriver,
+) {
+  try {
+    const element = await findElementById({
+      id: id,
+      driver,
+    });
+
+    await driver.wait(until.elementTextIs(element, text), waitUntilTime);
+  } catch (error) {
+    console.error(
+      `Error occurred while awaiting text change for element with ID '${id}':`,
+      error,
+    );
+    throw error;
+  }
+}

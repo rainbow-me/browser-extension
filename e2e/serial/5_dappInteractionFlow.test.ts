@@ -5,6 +5,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  awaitTextChange,
   delayTime,
   fillPrivateKey,
   findElementById,
@@ -546,12 +547,7 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
-      driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Deployed');
+    await awaitTextChange('collectiblesStatus', 'Deployed', driver);
   });
 
   it('should be able to mint a collectible', async () => {
@@ -577,13 +573,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
-
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
-      driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Mint completed');
+    await awaitTextChange('collectiblesStatus', 'Mint completed', driver);
   });
 
   it('should be able to approve a collectible', async () => {
@@ -610,12 +600,7 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
-      driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Approve completed');
+    await awaitTextChange('collectiblesStatus', 'Approve completed', driver);
   });
 
   it('should be able to set approval for all for a collectible', async () => {
@@ -642,12 +627,11 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
+    await awaitTextChange(
+      'collectiblesStatus',
+      'Set Approval For All completed',
       driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Set Approval For All completed');
+    );
   });
 
   it('should be able to revoke approval for a collectible', async () => {
@@ -674,12 +658,7 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
 
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
-      driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Revoke completed');
+    await awaitTextChange('collectiblesStatus', 'Revoke completed', driver);
   });
 
   it('should be able to transfer a collectible', async () => {
@@ -705,12 +684,10 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
-
-    const confirmation = await findElementById({
-      id: 'collectiblesStatus',
+    await awaitTextChange(
+      'collectiblesStatus',
+      'Transfer From completed',
       driver,
-    });
-    const confrimationText = await confirmation.getText();
-    expect(confrimationText).toBe('Transfer From completed');
+    );
   });
 });
