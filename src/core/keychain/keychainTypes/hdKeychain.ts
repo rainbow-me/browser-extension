@@ -82,21 +82,21 @@ export class HdKeychain implements IKeychain {
     };
   }
 
-  async deserialize(opts: SerializedHdKeychain) {
-    if (opts?.hdPath) privates.get(this).hdPath = opts.hdPath;
-    if (opts?.imported) this.imported = opts.imported;
-    if (opts?.accountsEnabled)
-      privates.get(this).accountsEnabled = opts.accountsEnabled;
+  async deserialize(opts?: SerializedHdKeychain) {
+    if (!opts) return;
 
-    if (opts?.mnemonic) {
-      privates.get(this).mnemonic = opts.mnemonic;
-    } else {
-      privates.get(this).mnemonic = Wallet.createRandom().mnemonic
-        .phrase as string;
-    }
+    if (opts.hdPath) privates.get(this).hdPath = opts.hdPath;
+    if (opts.imported) this.imported = opts.imported;
+    if (opts.accountsEnabled)
+      privates.get(this).accountsEnabled = opts.accountsEnabled;
+    if (opts.accountsDeleted?.length)
+      privates.get(this).accountsDeleted = opts.accountsDeleted;
+
+    privates.get(this).mnemonic =
+      opts.mnemonic || Wallet.createRandom().mnemonic.phrase;
 
     // If we didn't explicit add a new account, we need attempt to autodiscover the rest
-    if (opts?.autodiscover) {
+    if (opts.autodiscover) {
       const { accountsEnabled } = await autoDiscoverAccounts({
         deriveWallet: privates.get(this).deriveWallet,
       });
@@ -105,7 +105,7 @@ export class HdKeychain implements IKeychain {
 
     for (let i = 0; i < privates.get(this).accountsEnabled; i++) {
       // Do not re-add deleted accounts
-      if (!opts?.accountsDeleted?.includes(i)) {
+      if (!opts.accountsDeleted?.includes(i)) {
         privates.get(this).addAccount(i);
       }
     }
@@ -140,7 +140,9 @@ export class HdKeychain implements IKeychain {
 
   async removeAccount(address: Address): Promise<void> {
     const accounts = await this.getAccounts();
+    console.log('accounts', accounts);
     const accountToDeleteIndex = accounts.indexOf(address);
+    console.log('i', accountToDeleteIndex);
     if (accountToDeleteIndex === -1) {
       throw new Error('Account not found');
     }
@@ -150,6 +152,8 @@ export class HdKeychain implements IKeychain {
       .wallets.filter(
         (wallet: Wallet) => (wallet as Wallet).address !== address,
       );
+
+    console.log('filtered', filteredList);
 
     privates.get(this).wallets = filteredList;
     privates.get(this).accountsDeleted.push(accountToDeleteIndex);
