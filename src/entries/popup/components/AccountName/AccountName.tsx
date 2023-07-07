@@ -18,7 +18,6 @@ type AccountNameProps = {
   id?: string;
   size?: '16pt' | '20pt';
   chevron?: boolean;
-  navigateToWalletSwitcher?: boolean;
   disableNav?: boolean;
 };
 
@@ -32,7 +31,6 @@ export function AccountName({
   size = '20pt',
   id,
   chevron = true,
-  navigateToWalletSwitcher = true,
   disableNav = false,
 }: AccountNameProps) {
   const { address } = useAccount();
@@ -41,8 +39,8 @@ export function AccountName({
   const [hover, setHover] = useState(false);
 
   const handleClick = useCallback(() => {
-    navigateToWalletSwitcher ? navigate(ROUTES.WALLET_SWITCHER) : null;
-  }, [navigate, navigateToWalletSwitcher]);
+    !disableNav ? navigate(ROUTES.WALLET_SWITCHER) : null;
+  }, [navigate, disableNav]);
 
   const chevronProps = chevron
     ? {
@@ -56,9 +54,7 @@ export function AccountName({
   return (
     <Lens
       tabIndex={
-        includeAvatar && !disableNav
-          ? -1
-          : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
+        includeAvatar || disableNav ? -1 : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
       }
       onKeyDown={handleClick}
       borderRadius="6px"
