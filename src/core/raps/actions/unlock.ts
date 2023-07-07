@@ -18,7 +18,7 @@ import { gasStore } from '../../state';
 import { ParsedAsset } from '../../types/assets';
 import { toHex } from '../../utils/hex';
 import { convertAmountToRawAmount, greaterThan } from '../../utils/numbers';
-import { ActionProps } from '../references';
+import { ActionProps, RapActionResult } from '../references';
 
 import { overrideWithFastSpeedIfNeeded } from './../utils';
 
@@ -134,7 +134,7 @@ export const unlock = async ({
   index,
   parameters,
   wallet,
-}: ActionProps<'unlock'>): Promise<number | undefined> => {
+}: ActionProps<'unlock'>): Promise<RapActionResult> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   const { assetToUnlock, contractAddress, chainId } = parameters;
@@ -208,5 +208,8 @@ export const unlock = async ({
     transaction,
   });
 
-  return approval?.nonce;
+  return {
+    nonce: approval?.nonce,
+    hash: approval?.hash,
+  };
 };
