@@ -230,14 +230,16 @@ export const BottomNetwork = ({
           }}
         >
           <ChainBadge chainId={selectedChainId} size={'small'} />
-          <Text
-            align="right"
-            size="14pt"
-            weight="semibold"
-            color="labelSecondary"
-          >
-            {ChainNameDisplay[selectedChainId]}
-          </Text>
+          <Box testId={'network-label'}>
+            <Text
+              align="right"
+              size="14pt"
+              weight="semibold"
+              color="labelSecondary"
+            >
+              {ChainNameDisplay[selectedChainId]}
+            </Text>
+          </Box>
           {displaySymbol && (
             <Symbol
               color="labelSecondary"

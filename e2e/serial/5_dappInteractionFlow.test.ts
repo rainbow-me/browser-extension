@@ -1,6 +1,6 @@
 import 'chromedriver';
 import 'geckodriver';
-import { By, WebDriver, until } from 'selenium-webdriver';
+import { By, WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
@@ -120,9 +120,10 @@ describe('App interactions flow', () => {
 
     await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
 
-    const networkLabel = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="radix-:rb:"]/div/div/div[2]')),
-    );
+    const networkLabel = await findElementByTestId({
+      id: 'network-label',
+      driver,
+    });
 
     expect(await networkLabel.getText()).toBe('Hardhat');
 
