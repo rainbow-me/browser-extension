@@ -106,17 +106,18 @@ export class HdKeychain implements IKeychain {
   }
 
   async deserialize(opts?: SerializedHdKeychain) {
-    if (!opts) return;
     const _privates = privates.get(this)!;
 
-    if (opts.hdPath) _privates.hdPath = opts.hdPath;
-    this.imported = !!opts.imported;
-    if (opts.accountsEnabled) _privates.accountsEnabled = opts.accountsEnabled;
-    if (opts.accountsDeleted) _privates.accountsDeleted = opts.accountsDeleted;
-    _privates.mnemonic = opts.mnemonic || Wallet.createRandom().mnemonic.phrase;
+    if (opts?.hdPath) _privates.hdPath = opts.hdPath;
+    this.imported = !!opts?.imported;
+    if (opts?.accountsEnabled) _privates.accountsEnabled = opts.accountsEnabled;
+    if (opts?.accountsDeleted) _privates.accountsDeleted = opts.accountsDeleted;
+
+    _privates.mnemonic =
+      opts?.mnemonic || Wallet.createRandom().mnemonic.phrase;
 
     // If we didn't explicit add a new account, we need attempt to autodiscover the rest
-    if (opts.autodiscover) {
+    if (opts?.autodiscover) {
       const { accountsEnabled } = await autoDiscoverAccounts({
         deriveWallet: _privates.deriveWallet,
       });
@@ -125,7 +126,7 @@ export class HdKeychain implements IKeychain {
 
     for (let i = 0; i < _privates.accountsEnabled; i++) {
       // Do not re-add deleted accounts
-      if (!opts.accountsDeleted?.includes(i)) {
+      if (!opts?.accountsDeleted?.includes(i)) {
         _privates.addAccount(i);
       }
     }
