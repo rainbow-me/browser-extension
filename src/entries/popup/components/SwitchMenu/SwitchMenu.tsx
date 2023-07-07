@@ -55,9 +55,9 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     const { currentAddress } = useCurrentAddressStore();
     const { avatar } = useAvatar({ address: currentAddress });
     return (
-      <SelectPrimitive.Portal>
-        <AccentColorProvider color={avatar?.color || globalColors.blue60}>
-          <ThemeProvider theme={currentTheme}>
+      <AccentColorProvider color={avatar?.color || globalColors.blue60}>
+        <ThemeProvider theme={currentTheme}>
+          <SelectPrimitive.Portal>
             <SelectPrimitive.Content
               asChild
               tabIndex={-1}
@@ -94,9 +94,9 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
                 </SelectPrimitive.Viewport>
               </Box>
             </SelectPrimitive.Content>
-          </ThemeProvider>
-        </AccentColorProvider>
-      </SelectPrimitive.Portal>
+          </SelectPrimitive.Portal>
+        </ThemeProvider>
+      </AccentColorProvider>
     );
   },
 );
