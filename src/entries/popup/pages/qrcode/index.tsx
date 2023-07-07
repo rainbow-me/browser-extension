@@ -35,13 +35,12 @@ export const QRCodePage = () => {
         <Box paddingHorizontal="20px" paddingTop="20px">
           <QRCode size={280} value={address as string} />
         </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          style={{ pointerEvents: 'none' }}
-        >
-          <AccountName id="qr-code" chevron={false} />
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <AccountName
+            id="qr-code"
+            navigateToWalletSwitcher={false}
+            chevron={false}
+          />
         </Box>
         <Box display="flex" alignItems="center" justifyContent="center">
           <Text color={'labelTertiary'} size="16pt" weight="bold">
