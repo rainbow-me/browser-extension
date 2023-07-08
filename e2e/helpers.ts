@@ -419,12 +419,16 @@ export async function transactionStatus() {
   const blockData = await provider.getBlock('latest');
   const txn = await provider.getTransaction(blockData.transactions[0]);
   const txnData = txn.wait();
+  console.log(`txnData: ${await txnData}`);
 
   // transactionResponse.wait.status returns '1' if txn is successful
   // it returns '0' if the txn is a failure
   const txnStatus = (await txnData).status === 1 ? 'success' : 'failure';
-
-  return txnStatus;
+  if (txnStatus === 'success') {
+    return txnStatus;
+  } else {
+    transactionStatus();
+  }
 }
 
 export const fillSeedPhrase = async (driver, seedPhrase) => {
