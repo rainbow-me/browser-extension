@@ -1,8 +1,7 @@
 import 'chromedriver';
 import 'geckodriver';
-import { By, WebDriver } from 'selenium-webdriver';
 import { getAddress } from '@ethersproject/address';
-
+import { By, WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {

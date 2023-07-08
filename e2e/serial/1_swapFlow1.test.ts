@@ -9,7 +9,6 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
-  delay,
   delayTime,
   doNotFindElementByTestId,
   fillPrivateKey,
@@ -992,12 +991,10 @@ it('should be able to execute swap', async () => {
     'Balance did not update within the specified time.',
   );
 
-
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
-  console.log('ethBalanceBeforeSwap', ethBalanceBeforeSwap.toString());
-  console.log('ethBalanceAfterSwap', ethBalanceAfterSwap.toString());
+
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
     ethBalanceAfterSwap.toString(),
