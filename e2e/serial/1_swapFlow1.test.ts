@@ -968,6 +968,7 @@ it('should be able to execute swap', async () => {
   });
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+  await delayTime('very-long');
 
   // Wait for the balance to update
   await driver.wait(
