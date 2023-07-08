@@ -190,18 +190,22 @@ const useGas = ({
     | GasFeeParamsBySpeed
     | GasFeeLegacyParamsBySpeed
     | null = useMemo(() => {
-    const newGasFeeParamsBySpeed = !isLoading
-      ? parseGasFeeParamsBySpeed({
-          chainId,
-          data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
-          gasLimit: debouncedEstimatedGasLimit || `${gasUnits.basic_transfer}`,
-          nativeAsset,
-          currency: currentCurrency,
-          optimismL1SecurityFee,
-          flashbotsEnabled,
-          additionalTime,
-        })
-      : null;
+    const newGasFeeParamsBySpeed =
+      !isLoading &&
+      ((gasData as MeteorologyResponse)?.data?.currentBaseFee ||
+        (gasData as MeteorologyLegacyResponse)?.data?.legacy)
+        ? parseGasFeeParamsBySpeed({
+            chainId,
+            data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
+            gasLimit:
+              debouncedEstimatedGasLimit || `${gasUnits.basic_transfer}`,
+            nativeAsset,
+            currency: currentCurrency,
+            optimismL1SecurityFee,
+            flashbotsEnabled,
+            additionalTime,
+          })
+        : null;
 
     if (customGasModified && newGasFeeParamsBySpeed) {
       newGasFeeParamsBySpeed.custom = storeGasFeeParamsBySpeed.custom;
