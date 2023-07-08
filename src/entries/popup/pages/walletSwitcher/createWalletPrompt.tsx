@@ -33,10 +33,12 @@ export const CreateWalletPrompt = ({
   address,
   show,
   onClose,
+  onCancel,
 }: {
   address?: Address;
   show: boolean;
   onClose: () => void;
+  onCancel?: () => void;
 }) => {
   const navigate = useRainbowNavigate();
   const [walletName, setWalletName] = useState('');
@@ -69,6 +71,13 @@ export const CreateWalletPrompt = ({
   useEffect(() => {
     setError(null);
   }, [walletName]);
+
+  const handleCancel = useCallback(() => {
+    if (onCancel !== undefined) {
+      onCancel();
+    }
+    onCancel?.();
+  }, [onCancel]);
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -190,7 +199,7 @@ export const CreateWalletPrompt = ({
                   variant="flat"
                   height="36px"
                   color="fillSecondary"
-                  onClick={handleClose}
+                  onClick={onCancel ? handleCancel : handleClose}
                   width="full"
                   borderRadius="9px"
                   tabIndex={3}

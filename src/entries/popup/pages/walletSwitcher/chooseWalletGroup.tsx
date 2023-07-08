@@ -296,8 +296,8 @@ const ChooseWalletGroup = () => {
   const handleCreateWalletOnGroup = useCallback(
     async (index: number) => {
       const wallet = wallets[index];
-      const silbing = wallet.accounts[0];
-      const address = await add(silbing);
+      const sibling = wallet.accounts[0];
+      const address = await add(sibling);
       setCreateWalletAddress(address);
     },
     [wallets],
