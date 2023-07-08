@@ -76,6 +76,7 @@ export const CreateWalletPrompt = ({
     if (onCancel !== undefined) {
       onCancel();
     }
+    onCancel?.();
   }, [onCancel]);
 
   const onKeyDown = useCallback(
@@ -198,7 +199,7 @@ export const CreateWalletPrompt = ({
                   variant="flat"
                   height="36px"
                   color="fillSecondary"
-                  onClick={onCancel !== undefined ? handleCancel : handleClose}
+                  onClick={onCancel ? handleCancel : handleClose}
                   width="full"
                   borderRadius="9px"
                   tabIndex={3}
