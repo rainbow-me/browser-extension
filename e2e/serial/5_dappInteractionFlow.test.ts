@@ -1,6 +1,8 @@
 import 'chromedriver';
 import 'geckodriver';
 import { By, WebDriver } from 'selenium-webdriver';
+import { getAddress } from '@ethersproject/address';
+
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
@@ -145,7 +147,9 @@ describe('App interactions flow', () => {
     expect(accounts).toBeTruthy();
 
     const connectedAddress = await accounts.getText();
-    expect(connectedAddress).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS);
+    expect(getAddress(connectedAddress)).toBe(
+      getAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS),
+    );
   });
 
   it('should be able to complete a personal sign', async () => {
