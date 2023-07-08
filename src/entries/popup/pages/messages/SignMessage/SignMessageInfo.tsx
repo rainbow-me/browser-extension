@@ -83,6 +83,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
               <Box
                 style={{
                   wordBreak: 'break-all',
+                  whiteSpace: 'pre-wrap',
                 }}
               >
                 <Text
