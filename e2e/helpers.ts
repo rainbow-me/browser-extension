@@ -70,7 +70,7 @@ export async function getAllWindowHandles({
   popupHandler?: string;
   dappHandler?: string;
 }) {
-  await delayTime('long');
+  await delayTime('very-long');
   const handlers = await driver.getAllWindowHandles();
   const popupHandlerFromHandlers =
     handlers.find((handler) => handler !== dappHandler) || '';
@@ -272,6 +272,7 @@ export async function waitAndClick(element, driver) {
   try {
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    // some of our sheets animations require some sort of delay for them to animate in
     await delayTime('short');
     await element.click();
   } catch (error) {
@@ -419,7 +420,7 @@ export async function transactionStatus() {
   const blockData = await provider.getBlock('latest');
   const txn = await provider.getTransaction(blockData.transactions[0]);
   const txnData = txn.wait();
-  console.log(`txnData: ${await txnData}`);
+  console.log(`txnData: ${JSON.stringify(await txnData)}`);
 
   // transactionResponse.wait.status returns '1' if txn is successful
   // it returns '0' if the txn is a failure

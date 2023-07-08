@@ -22,7 +22,6 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
-  transactionStatus,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
@@ -961,6 +960,7 @@ it('should be able to execute swap', async () => {
   const ethBalanceBeforeSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
+
   await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
@@ -969,11 +969,27 @@ it('should be able to execute swap', async () => {
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
-  const txnStatus = await transactionStatus();
-  expect(txnStatus).toBe('success');
+  // Wait for the balance to update
+  await driver.wait(
+    async () => {
+      const ethBalanceAfterSwap = await provider.getBalance(
+        TEST_VARIABLES.SEED_WALLET.ADDRESS,
+      );
+      const balanceDifference = subtract(
+        ethBalanceBeforeSwap.toString(),
+        ethBalanceAfterSwap.toString(),
+      );
+      const ethDifferenceAmount = convertRawAmountToDecimalFormat(
+        balanceDifference,
+        18,
+      );
 
-  await delayTime('very-long');
-  await delayTime('very-long');
+      return Number(ethDifferenceAmount) > 1;
+    },
+    20000,
+    'Balance did not update within the specified time.',
+  );
+
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
