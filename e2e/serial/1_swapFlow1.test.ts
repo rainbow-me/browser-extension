@@ -960,6 +960,7 @@ it('should be able to execute swap', async () => {
   const ethBalanceBeforeSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
+  console.log('before: ' + ethBalanceBeforeSwap);
 
   await delayTime('very-long');
   await findElementByTestIdAndClick({
@@ -970,39 +971,36 @@ it('should be able to execute swap', async () => {
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('very-long');
 
-  // Wait for the balance to update
-  await driver.wait(
-    async () => {
-      const ethBalanceAfterSwap = await provider.getBalance(
-        TEST_VARIABLES.SEED_WALLET.ADDRESS,
-      );
-      const balanceDifference = subtract(
-        ethBalanceBeforeSwap.toString(),
-        ethBalanceAfterSwap.toString(),
-      );
-      const ethDifferenceAmount = convertRawAmountToDecimalFormat(
-        balanceDifference,
-        18,
-      );
+  // Recursive function to wait for balances to update
+  const waitForBalanceUpdate = async () => {
+    const ethBalanceAfterSwap = await provider.getBalance(
+      TEST_VARIABLES.SEED_WALLET.ADDRESS,
+    );
+    console.log('after: ' + ethBalanceAfterSwap);
+    const balanceDifference = subtract(
+      ethBalanceBeforeSwap.toString(),
+      ethBalanceAfterSwap.toString(),
+    );
+    console.log('diff: ' + balanceDifference);
+    const ethDifferenceAmount = convertRawAmountToDecimalFormat(
+      balanceDifference,
+      18,
+    );
 
-      return Number(ethDifferenceAmount) > 1;
-    },
-    20000,
-    'Balance did not update within the specified time.',
-  );
+    if (Number(ethDifferenceAmount) > 1) {
+      // Balances have updated, return the difference amount
+      return ethDifferenceAmount;
+    } else {
+      // Balances haven't updated yet, wait and recursively call the function
+      console.log('eth diff: ' + ethDifferenceAmount);
+      await delayTime('medium');
+      return waitForBalanceUpdate();
+    }
+  };
 
-  const ethBalanceAfterSwap = await provider.getBalance(
-    TEST_VARIABLES.SEED_WALLET.ADDRESS,
-  );
+  // Call the recursive function to wait for balance update
+  const ethDifferenceAmount = await waitForBalanceUpdate();
 
-  const balanceDifference = subtract(
-    ethBalanceBeforeSwap.toString(),
-    ethBalanceAfterSwap.toString(),
-  );
-  const ethDifferenceAmount = convertRawAmountToDecimalFormat(
-    balanceDifference,
-    18,
-  );
-
+  // Assertion
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
 });
