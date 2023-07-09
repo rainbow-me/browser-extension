@@ -1,8 +1,9 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 
 import {
+  accentColorAsHsl,
   semanticColorVars,
-  transparentAccentColorAsHsl,
+  semiTransparentAccentColorAsHsl,
 } from '../../styles/core.css';
 
 export const backgroundStyle = style({
@@ -26,13 +27,18 @@ export const heightStyles = styleVariants(inputHeights, (height) => [
 ]);
 
 export const placeholderStyle = style({
+  caretColor: semanticColorVars.foregroundColors.blue,
   '::placeholder': {
-    color: semanticColorVars.foregroundColors.labelTertiary,
+    color: semanticColorVars.foregroundColors.labelQuaternary,
   },
+});
+
+export const accentCaretStyle = style({
+  caretColor: accentColorAsHsl,
 });
 
 export const accentSelectionStyle = style({
   '::selection': {
-    background: transparentAccentColorAsHsl,
+    background: semiTransparentAccentColorAsHsl,
   },
 });

@@ -177,8 +177,9 @@
       "ZAR": "South African Rand"
     },
     "feature_flags": {
-      "full_watching_wallets": "Allow full access to watching wallets",
-      "hw_wallets_enabled": "Enable Hardware Wallets support"
+      "full_watching_wallets": "Full Access to Watched Wallets",
+      "hw_wallets_enabled": "Enable Hardware Wallet Support",
+      "command_k_shortcuts_enabled": "Enable ⌘K Shortcuts"
     }
   },
   "transactions": {
@@ -186,6 +187,43 @@
     "savings": "Savings",
     "deposited": "Deposited",
     "withdrew": "Withdrew"
+  },
+  "command_k": {
+    "hide_balances_toast": {
+      "description_hidden": "Your balances are obscured",
+      "description_revealed": "Your balances are visible",
+      "title_hidden": "Balances Hidden",
+      "title_revealed": "Balances Revealed"
+    },
+    "no_results": "No results",
+    "section_titles": {
+      "shortcuts": "Shortcuts"
+    },
+    "search_placeholder": "Search or enter command…",
+    "shortcuts": {
+      "names": {
+        "send": "Send",
+        "swap": "Swap",
+        "copy_address": "Copy Address",
+        "view_nfts": "View NFTs",
+        "switch_wallets": "Switch Wallets",
+        "settings": "Settings",
+        "add_wallet": "Add a Wallet",
+        "watch_wallet": "Watch a Wallet",
+        "hide_balances": "Toggle Hidden Balances",
+        "wallets_and_keys": "Wallets & Keys",
+        "view_full_screen": "View Full Screen"
+      },
+      "search_tags": {
+        "swap": "bridge",
+        "view_nfts": "gallery, profile",
+        "settings": "preferences",
+        "add_wallet": "create, import, hardware wallet",
+        "hide_balances_hidden": "show, hide",
+        "hide_balances_revealed": "hide",
+        "wallets_and_keys": "wallets and keys"
+      }
+    }
   },
   "connected_apps": {
     "title": "Connected Apps",

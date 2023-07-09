@@ -147,6 +147,10 @@ const getColorAsHsl = ({ alpha, vars }: { alpha?: number; vars: HslVars }) =>
   ].join(', ')})`;
 
 export const accentColorAsHsl = getColorAsHsl({ vars: accentColorHslVars });
+export const semiTransparentAccentColorAsHsl = getColorAsHsl({
+  alpha: 0.8,
+  vars: accentColorHslVars,
+});
 export const transparentAccentColorAsHsl = getColorAsHsl({
   alpha: 0.1,
   vars: accentColorHslVars,
@@ -390,7 +394,7 @@ const boxBaseProperties = defineProperties({
     marginLeft: negativeSpace,
     marginRight: negativeSpace,
     marginTop: negativeSpace,
-    opacity: ['1', '0.1', '0.2', '0.04', '0.5'],
+    opacity: ['1', '0.04', '0.1', '0.2', '0.5', '0.75'],
     outline: ['none'],
     paddingBottom: space,
     paddingLeft: space,
@@ -530,6 +534,7 @@ const textProperties = defineProperties({
       '26pt': defineType(26, 32, 0.36),
       '32pt': defineType(32, 40, 0.41),
       '44pt': defineType(44, 44, 0.41),
+      '13pt (Non-Standard)': defineType(13, 17, 0.5),
     },
     fontWeight: fontWeights,
     textAlign: ['left', 'center', 'right'],

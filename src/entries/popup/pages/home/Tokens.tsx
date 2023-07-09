@@ -28,6 +28,7 @@ import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { TokensSkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
+import { useCommandKStatus } from '../../components/CommandK/useCommandKStatus';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
@@ -38,6 +39,7 @@ export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { isCommandKVisible } = useCommandKStatus();
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
     useState(false);
 
@@ -72,7 +74,7 @@ export function Tokens() {
         setManuallyRefetchingTokens(false);
       }
     },
-    condition: () => !manuallyRefetchingTokens,
+    condition: () => !manuallyRefetchingTokens && !isCommandKVisible,
   });
 
   useTokensShortcuts();

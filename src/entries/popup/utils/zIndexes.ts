@@ -4,6 +4,7 @@ export const zIndexes = {
   BOTTOM_SHEET: 4,
   CUSTOM_GAS_SHEET: 5,
   EXPLAINER_BOTTOM_SHEET: 6,
-  TOAST: 8,
-  ALERT: 8,
+  COMMAND_K: 8,
+  TOAST: 9,
+  ALERT: 9,
 };

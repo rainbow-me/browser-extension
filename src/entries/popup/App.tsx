@@ -21,6 +21,7 @@ import { Box, ThemeProvider } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 
 import { Routes } from './Routes';
+import { CommandK } from './components/CommandK/CommandK';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { Toast } from './components/Toast/Toast';
@@ -86,6 +87,7 @@ export function App() {
                 >
                   <HashRouter>
                     <Routes>
+                      <CommandK />
                       <Toast />
                       <Alert />
                     </Routes>

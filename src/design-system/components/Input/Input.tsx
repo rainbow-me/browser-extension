@@ -12,6 +12,7 @@ import { Box } from '../Box/Box';
 
 import {
   InputHeight,
+  accentCaretStyle,
   accentSelectionStyle,
   backgroundStyle,
   heightStyles,
@@ -19,7 +20,10 @@ import {
 } from './Input.css';
 
 export type InputProps = {
+  'aria-activedescendant'?: InputHTMLAttributes<HTMLInputElement>['aria-activedescendant'];
   'aria-label'?: InputHTMLAttributes<HTMLInputElement>['aria-label'];
+  'aria-labelledby'?: InputHTMLAttributes<HTMLInputElement>['aria-labelledby'];
+  role?: InputHTMLAttributes<HTMLInputElement>['role'];
   autoFocus?: InputHTMLAttributes<HTMLInputElement>['autoFocus'];
   disabled?: boolean;
   height: InputHeight;
@@ -29,13 +33,23 @@ export type InputProps = {
   onKeyDown?: InputHTMLAttributes<HTMLInputElement>['onKeyDown'];
   placeholder?: string;
   borderColor?: BoxStyles['borderColor'];
+  borderRadius?: BoxStyles['borderRadius'];
+  fontSize?: TextStyles['fontSize'];
   testId?: string;
-  variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
+  variant:
+    | 'surface'
+    | 'surfaceBordered'
+    | 'bordered'
+    | 'transparent'
+    | 'tinted';
   value?: InputHTMLAttributes<HTMLInputElement>['value'];
   type?: InputHTMLAttributes<HTMLInputElement>['type'];
   innerRef?: React.Ref<HTMLInputElement>;
   selectionColor?: BoxStyles['borderColor'];
+  spellCheck?: boolean;
   style?: CSSProperties;
+  enableAccentCaretStyle?: boolean;
+  enableAccentSelectionStyle?: boolean;
   enableTapScale?: boolean;
   textAlign?: TextStyles['textAlign'];
   tabIndex?: number;
@@ -61,9 +75,23 @@ export const stylesForVariant: Record<
     },
     borderColor: {
       default: 'transparent',
-      hover: 'transparent',
-      hoverActive: 'transparent',
+      hover: 'blue',
+      hoverActive: 'blue',
       focus: 'blue',
+      focusVisible: 'blue',
+    },
+    textColor: 'label',
+  },
+  surfaceBordered: {
+    background: {
+      default: 'surfaceSecondaryElevated',
+    },
+    borderColor: {
+      default: 'separator',
+      hover: 'separator',
+      hoverActive: 'separator',
+      focus: 'blue',
+      focusVisible: 'blue',
     },
     textColor: 'label',
   },
@@ -137,13 +165,18 @@ export const stylesForHeight: Record<
 export function Input({
   disabled,
   placeholder,
+  fontSize,
   height,
   variant,
   testId,
   innerRef,
   borderColor,
+  borderRadius,
   textAlign,
+  enableAccentCaretStyle,
+  enableAccentSelectionStyle,
   enableTapScale = true,
+  spellCheck,
   ...inputProps
 }: InputProps) {
   const {
@@ -151,8 +184,12 @@ export function Input({
     borderColor: borderColorFromVariant,
     textColor,
   } = stylesForVariant[variant];
-  const { borderRadius, fontSize, paddingHorizontal, paddingVertical } =
-    stylesForHeight[height];
+  const {
+    borderRadius: defaultBordderRadius,
+    fontSize: defaultFontSize,
+    paddingHorizontal,
+    paddingVertical,
+  } = stylesForHeight[height];
   return (
     <Box
       as={motion.div}
@@ -175,23 +212,27 @@ export function Input({
         background={background}
         borderColor={borderColor ? borderColor : borderColorFromVariant}
         borderWidth="1px"
-        borderRadius={borderRadius}
+        borderRadius={borderRadius ?? defaultBordderRadius}
         className={[
           backgroundStyle,
           heightStyles[height],
           textStyles({
             color: textColor,
-            fontSize,
+            fontSize: fontSize ?? defaultFontSize,
             fontWeight: 'semibold',
             fontFamily: 'rounded',
             textAlign,
           }),
           placeholderStyle,
-          borderColor === 'accent' ? accentSelectionStyle : null,
+          enableAccentCaretStyle ? accentCaretStyle : null,
+          borderColor === 'accent' || enableAccentSelectionStyle
+            ? accentSelectionStyle
+            : null,
         ]}
         paddingHorizontal={paddingHorizontal}
         paddingVertical={paddingVertical}
         placeholder={placeholder}
+        spellCheck={spellCheck}
         testId={testId}
         width="full"
         disabled={disabled}
