@@ -62,8 +62,6 @@ export function FlyingRainbows({
 
   return (
     <Box
-      borderColor="separatorSecondary"
-      borderWidth="1px"
       background="surfaceSecondary"
       display="flex"
       flexDirection="column"

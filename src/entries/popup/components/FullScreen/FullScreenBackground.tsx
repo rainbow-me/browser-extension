@@ -49,7 +49,6 @@ export function FullScreenBackground({
       <Box
         borderRadius="32px"
         background="surfaceSecondary"
-        borderColor="separatorSecondary"
         style={{
           width: POPUP_DIMENSIONS.width,
           height: POPUP_DIMENSIONS.height,

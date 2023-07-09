@@ -25,6 +25,7 @@ import { CommandK } from './components/CommandK/CommandK';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { Toast } from './components/Toast/Toast';
+import { WindowStroke } from './components/WindowStroke/WindowStroke';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { PlaygroundComponents } from './pages/_playgrounds';
@@ -90,6 +91,7 @@ export function App() {
                       <CommandK />
                       <Toast />
                       <Alert />
+                      <WindowStroke />
                     </Routes>
                   </HashRouter>
                 </Box>
