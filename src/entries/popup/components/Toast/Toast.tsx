@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 
-import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 
 import { Box, Inline, Row, Rows, Text } from '~/design-system';
 
@@ -25,60 +26,94 @@ export const triggerToast = ({ title, description }: ToastInfo) => {
 
 export const Toast = () => {
   const [toastInfo, setToastInfo] = useState<ToastInfo | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
     const clearToastListener = toastListener(({ title, description }) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
       setToastInfo({ title, description });
-      timeout = setTimeout(() => {
+
+      timeoutRef.current = setTimeout(() => {
         setToastInfo(null);
       }, 3000);
     });
 
     return () => {
       clearToastListener();
-      clearTimeout(timeout);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, []);
 
-  if (!toastInfo) return null;
   return (
-    <Box
-      width="full"
-      position="sticky"
-      bottom="16px"
-      style={{ zIndex: zIndexes.TOAST }}
-    >
-      <Inline alignHorizontal="center">
+    <AnimatePresence>
+      {toastInfo && (
         <Box
-          borderRadius="26px"
-          background="surfaceMenu"
-          width="fit"
-          backdropFilter="blur(26px)"
+          width="full"
+          position="sticky"
+          bottom="16px"
+          style={{
+            alignSelf: 'center',
+            pointerEvents: 'none',
+            zIndex: zIndexes.TOAST,
+          }}
         >
-          <Box paddingVertical="8px" paddingHorizontal="16px">
-            <Rows space="6px">
-              <Row>
-                <Text color="label" size="12pt" weight="bold" align="center">
-                  {toastInfo.title}
-                </Text>
-              </Row>
-              {toastInfo.description && (
-                <Row>
-                  <Text
-                    color="labelTertiary"
-                    size="11pt"
-                    weight="medium"
-                    align="center"
-                  >
-                    {toastInfo.description}
-                  </Text>
-                </Row>
-              )}
-            </Rows>
-          </Box>
+          <Inline alignHorizontal="center">
+            <Box
+              as={motion.div}
+              backdropFilter="blur(26px)"
+              background="surfaceMenu"
+              borderRadius="26px"
+              boxShadow="24px"
+              initial={{ scale: 0.5, y: 100 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.5, y: 0 }}
+              transition={{
+                type: 'spring',
+                stiffness: 540,
+                damping: 40,
+                mass: 1.2,
+              }}
+              style={{
+                pointerEvents: 'auto',
+                willChange: 'transform',
+              }}
+              width="fit"
+            >
+              <Box paddingVertical="9px" paddingHorizontal="16px">
+                <Rows space="6px">
+                  <Row>
+                    <Text
+                      color="label"
+                      size="12pt"
+                      weight="bold"
+                      align="center"
+                    >
+                      {toastInfo.title}
+                    </Text>
+                  </Row>
+                  {toastInfo.description && (
+                    <Row>
+                      <Text
+                        color="labelTertiary"
+                        size="11pt"
+                        weight="medium"
+                        align="center"
+                      >
+                        {toastInfo.description}
+                      </Text>
+                    </Row>
+                  )}
+                </Rows>
+              </Box>
+            </Box>
+          </Inline>
         </Box>
-      </Inline>
-    </Box>
+      )}
+    </AnimatePresence>
   );
 };
