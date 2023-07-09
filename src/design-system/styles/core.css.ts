@@ -479,7 +479,7 @@ export type SymbolStyles = Parameters<typeof symbolStyles>[0];
     src: `url('${fontPath}') format('woff2')`,
     fontWeight,
     fontStyle: 'normal',
-    fontDisplay: 'auto',
+    fontDisplay: 'block',
   });
 });
 
