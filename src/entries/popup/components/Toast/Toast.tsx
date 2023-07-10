@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Inline, Row, Rows, Text } from '~/design-system';
 
 import { zIndexes } from '../../utils/zIndexes';
@@ -53,11 +54,15 @@ export const Toast = () => {
     <AnimatePresence>
       {toastInfo && (
         <Box
+          display="flex"
+          alignItems="flex-end"
+          bottom="0"
+          justifyContent="center"
+          paddingBottom="16px"
           width="full"
           position="sticky"
-          bottom="16px"
           style={{
-            alignSelf: 'center',
+            height: POPUP_DIMENSIONS.height,
             pointerEvents: 'none',
             zIndex: zIndexes.TOAST,
           }}
