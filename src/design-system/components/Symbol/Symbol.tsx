@@ -6,7 +6,10 @@ import { SymbolStyles, symbolStyles } from '../../styles/core.css';
 import symbols from '../../symbols/generated';
 import { Box } from '../Box/Box';
 
+import { boxedStyle } from './Symbol.css';
+
 export type SymbolProps = {
+  boxed?: boolean;
   color?: SymbolStyles['color'];
   cursor?: SymbolStyles['cursor'];
   symbol: SymbolName;
@@ -18,6 +21,7 @@ export type SymbolProps = {
 export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
   function Symbol(
     {
+      boxed = false,
       color = 'label',
       cursor = 'default',
       symbol: name,
@@ -30,7 +34,10 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
     const symbol = symbols[name as keyof typeof symbols][weight];
 
     return (
-      <Box style={{ height: size, width: size }}>
+      <Box
+        className={boxed && boxedStyle}
+        style={{ ...(boxed ? {} : { height: size, width: size }) }}
+      >
         <Box
           style={{
             transform: 'scale(0.5)',

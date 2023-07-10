@@ -462,6 +462,10 @@ const symbolProperties = defineProperties({
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
     cursor: cursorOpts,
+    opacity: {
+      boxed: 0.76,
+      default: 1,
+    },
   },
 });
 
