@@ -8,7 +8,6 @@ import { injectNotificationIframe } from '../iframe';
 
 declare global {
   interface Window {
-    ethereum: RainbowProvider | Ethereum;
     rainbow: RainbowProvider;
     providers: (RainbowProvider | Ethereum)[];
     walletRouter: {
@@ -57,7 +56,8 @@ if (shouldInjectProvider()) {
           window.walletRouter.currentProvider = window.rainbow;
         } else {
           const nonDefaultProvider =
-            window.walletRouter.lastInjectedProvider ?? window.ethereum;
+            window.walletRouter.lastInjectedProvider ??
+            (window.ethereum as Ethereum);
           window.walletRouter.currentProvider = nonDefaultProvider;
         }
       },
