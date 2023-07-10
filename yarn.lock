@@ -2720,27 +2720,29 @@
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.10.3.tgz#a6477bab9ed1ae4561ca0a59ae06f8c615c692b7"
   integrity sha512-+ME02sUmBfx3Pjd+0XtEthK8/4rVMD2jcxvnW9DSgFONpKtpjzfRzjY4ykzpDw1QEo2eoPvl7NS8J5mNI199aA==
 
-"@tanstack/query-core@4.12.0":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.12.0.tgz#0e96adcfe182efc4ea4c21802f7596d56c6cd60a"
-  integrity sha512-KEiFPNLMFByhNL2s6RBFL6Z5cNdwwQzFpW/II3GY+rEuQ343ZEoVyQ48zlUXXkEkbamQFIFg2onM8Pxf0Yo01A==
+"@tanstack/query-core@4.29.19":
+  version "4.29.19"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.29.19.tgz#49ccbd0606633d1e55baf3b91ab7cc7aef411b1d"
+  integrity sha512-uPe1DukeIpIHpQi6UzIgBcXsjjsDaLnc7hF+zLBKnaUlh7jFE/A+P8t4cU4VzKPMFB/C970n/9SxtpO5hmIRgw==
 
 "@tanstack/query-persist-client-core@4.10.3":
   version "4.10.3"
   resolved "https://registry.yarnpkg.com/@tanstack/query-persist-client-core/-/query-persist-client-core-4.10.3.tgz#c89fc6d6ca680ba505da334ff354ee00adbf3339"
   integrity sha512-KGNnQdUW+eAedIzVM6zugeNpmEcrtJXzX66OQWc9WugpzHvUZE/13ZvUVxStvomUw9zeR+iMAWvBEiXJam4apQ==
 
-"@tanstack/query-persist-client-core@4.12.0":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-persist-client-core/-/query-persist-client-core-4.12.0.tgz#05c2e6658933cf193ce997c3ff281d21e6febebe"
-  integrity sha512-tCfCb3ok1IdtvryXQ2HR90HDXG2iz4ycyZO2TdHGrIwa10ML8yxfLNxrKFhTd0tRksgrSBZkWXR5y17NFIKD+Q==
-
-"@tanstack/query-sync-storage-persister@^4.10.1":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-4.12.0.tgz#b9a79576416d95f7cd15063541a69f13f89afc62"
-  integrity sha512-u55bQRQGPXBHi3Zwe2L/P3Ph4L+Cca045jIp2Rt+kwRRSrlH0Ll9VQ4SZRCCFVjooKuNVEMkr661JC99C5kslg==
+"@tanstack/query-persist-client-core@4.29.19":
+  version "4.29.19"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-persist-client-core/-/query-persist-client-core-4.29.19.tgz#c0cd03eca74d33e5aa40c95cadd5585620ff2320"
+  integrity sha512-rr6p3xwEZCz3cEDZsj3QGePf6PG44WxRUGQVcm2JFPZOq9TkG/0i5+hQ3STiHm1Fj6qwCH8xIi62L8kG0zRj/Q==
   dependencies:
-    "@tanstack/query-persist-client-core" "4.12.0"
+    "@tanstack/query-core" "4.29.19"
+
+"@tanstack/query-sync-storage-persister@^4.14.5":
+  version "4.29.19"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-4.29.19.tgz#292d33cdc9b38b11127f2f07b1935a73039cbba4"
+  integrity sha512-B3wDl3D3YBFTlY2yeXecEh4NEG/8Hr8pqsxnWJijRwBqvOKlqD4bUgk5kl5nbn1mShD2vnQ+yvH900/11X29Zw==
+  dependencies:
+    "@tanstack/query-persist-client-core" "4.29.19"
 
 "@tanstack/react-query-persist-client@4.10.3":
   version "4.10.3"
@@ -2749,12 +2751,12 @@
   dependencies:
     "@tanstack/query-persist-client-core" "4.10.3"
 
-"@tanstack/react-query-persist-client@^4.10.1":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query-persist-client/-/react-query-persist-client-4.12.0.tgz#5c08f9b05e003ae65febe386323077564cd907a3"
-  integrity sha512-ftm12tW7wngpBb0krt4Mf5SnodwG1b7IQIfp7nDYSCTE3NwoEuOu5a9iHSb77y7CYCzNMmP7Qu6W/NOIvM5SQA==
+"@tanstack/react-query-persist-client@^4.14.5":
+  version "4.29.19"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query-persist-client/-/react-query-persist-client-4.29.19.tgz#27b24ec5c8983894d6f23450e2f922d07f47706f"
+  integrity sha512-LfcasTosdnI9K66HTP0Rk72Ypza3tCgrcF9bc2qFlKsBleYOYo8bz7/GiiOHj1SQH4GRQlKB+P4+/it+qlJg4g==
   dependencies:
-    "@tanstack/query-persist-client-core" "4.12.0"
+    "@tanstack/query-persist-client-core" "4.29.19"
 
 "@tanstack/react-query@4.10.3":
   version "4.10.3"
@@ -2764,12 +2766,12 @@
     "@tanstack/query-core" "4.10.3"
     use-sync-external-store "^1.2.0"
 
-"@tanstack/react-query@^4.10.1":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.12.0.tgz#2cb233ef1ccf7537aeed61ca171fc3dcc52d9c57"
-  integrity sha512-prchV1q+CJ0ZVo8Rts2cOF3azDfQizZZySmH6XXsXRcPTbir0sgb9fp0vY/5l5ZkSYjTvWt/OL8WQhAhYMSvrA==
+"@tanstack/react-query@^4.14.5":
+  version "4.29.19"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.29.19.tgz#6ba187f2d0ea36ae83ff1f67068f53c88ce7b228"
+  integrity sha512-XiTIOHHQ5Cw1WUlHaD4fmVUMhoWjuNJlAeJGq7eM4BraI5z7y8WkZO+NR8PSuRnQGblpuVdjClQbDFtwxTtTUw==
   dependencies:
-    "@tanstack/query-core" "4.12.0"
+    "@tanstack/query-core" "4.29.19"
     use-sync-external-store "^1.2.0"
 
 "@tanstack/react-virtual@3.0.0-beta.54":
@@ -3612,14 +3614,14 @@
     debug "^4.3.1"
     loader-utils "^2.0.0"
 
-"@wagmi/core@^0.6.4":
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.6.4.tgz#ff2059a8a1ad2a9a9e6b4324a70af8e8aeb3f3c1"
-  integrity sha512-ihb/U5B69FO4YtPgAuCgTonniCVysLjr8mzNNOWoLjwUOhNEpCdntA8S9Qii4Tj/XcwIKOApOMw9jgc52L5k3A==
+"@wagmi/core@0.7.9":
+  version "0.7.9"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.7.9.tgz#6ba054d8496e81b16b1c36a6faa6942233f4ecfb"
+  integrity sha512-97KCELUP5Q1AagRyE7SmpLh4/v3xdcy/XMbybLvvtQbgmi3y5oEzy4h/wJMY1hEZlmicqyWZAHHm6xIr1tP5HA==
   dependencies:
-    abitype "^0.1.7"
+    abitype "^0.1.8"
     eventemitter3 "^4.0.7"
-    zustand "^4.1.1"
+    zustand "^4.1.4"
 
 "@walletconnect/browser-utils@^1.8.0":
   version "1.8.0"
@@ -3992,6 +3994,11 @@ abitype@^0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/abitype/-/abitype-0.1.7.tgz#8a42b1845629abed715bd4975532aca43e291eda"
   integrity sha512-mNBIrA8xbkR0PrxXSO/7p3irNhyLKO6S4VfU3YrR37cqpJIq1D63Yg8KlovOZkCVAaQ+lJkGDkOhSpv1QmMXIg==
+
+abitype@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/abitype/-/abitype-0.1.8.tgz#f47d397b95d81a445a0d0ef2fdd7827131b3fd74"
+  integrity sha512-2pde0KepTzdfu19ZrzYTYVIWo69+6UbBCY4B1RDiwWgo2XZtFSJhF6C+XThuRXbbZ823J0Rw1Y5cP0NXYVcCdQ==
 
 acorn-import-assertions@^1.7.6:
   version "1.8.0"
@@ -12348,16 +12355,16 @@ vm-browserify@^1.0.0:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-wagmi@0.7.5:
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.7.5.tgz#b38ce836957c68449a55ae0f5e32f0410769a618"
-  integrity sha512-/HRzvunyd68Dt7QKiAsmbf7rO3rOmvr81/yNpig1pkUyadAgOhFop+4PMr6QoxgN0eJRSNOhpM4GgQxr0FTG/Q==
+wagmi@0.8.10:
+  version "0.8.10"
+  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.8.10.tgz#941bebd3cf3f0366e54753040d2f2a141096ce6e"
+  integrity sha512-svS/Debs6maJX3TlPDXNo+UDfZn8VCHzN2xcMMjPjcu2Z9k2iwFwC0TMLxM1itluzrTcw9n8F8E+f6gb+Aw+EQ==
   dependencies:
     "@coinbase/wallet-sdk" "^3.5.3"
-    "@tanstack/query-sync-storage-persister" "^4.10.1"
-    "@tanstack/react-query" "^4.10.1"
-    "@tanstack/react-query-persist-client" "^4.10.1"
-    "@wagmi/core" "^0.6.4"
+    "@tanstack/query-sync-storage-persister" "^4.14.5"
+    "@tanstack/react-query" "^4.14.5"
+    "@tanstack/react-query-persist-client" "^4.14.5"
+    "@wagmi/core" "0.7.9"
     "@walletconnect/ethereum-provider" "^1.8.0"
     abitype "^0.1.7"
     use-sync-external-store "^1.2.0"
@@ -12906,9 +12913,16 @@ zod@^1.11.11:
   resolved "https://registry.yarnpkg.com/zod/-/zod-1.11.17.tgz#2aae9e91fc66128116ae9844e8f416a95f453f8e"
   integrity sha512-UzIwO92D0dSFwIRyyqAfRXICITLjF0IP8tRbEK/un7adirMssWZx8xF/1hZNE7t61knWZ+lhEuUvxlu2MO8qqA==
 
-zustand@4.1.2, zustand@^4.1.1:
+zustand@4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.1.2.tgz#4912b24741662d8a84ed1cb52198471cb369c4b6"
   integrity sha512-gcRaKchcxFPbImrBb/BKgujOhHhik9YhVpIeP87ETT7uokEe2Szu7KkuZ9ghjtD+/KKkcrRNktR2AiLXPIbKIQ==
+  dependencies:
+    use-sync-external-store "1.2.0"
+
+zustand@^4.1.4:
+  version "4.3.9"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.3.9.tgz#a7d4332bbd75dfd25c6848180b3df1407217f2ad"
+  integrity sha512-Tat5r8jOMG1Vcsj8uldMyqYKC5IZvQif8zetmLHs9WoZlntTHmIoNM8TpLRY31ExncuUvUOXehd0kvahkuHjDw==
   dependencies:
     use-sync-external-store "1.2.0"
