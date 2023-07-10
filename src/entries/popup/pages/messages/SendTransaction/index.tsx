@@ -56,7 +56,7 @@ export function SendTransaction({
   });
   const { appSession } = useAppSession({ host: appHost });
   const { selectedGas } = useGasStore();
-  const selectedWallet = appSession.address;
+  const selectedWallet = appSession?.address;
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { watchedWallets } = useWallets();
@@ -64,6 +64,7 @@ export function SendTransaction({
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
+    if (!selectedWallet) return;
     setLoading(true);
     try {
       const txRequest = request?.params?.[0] as TransactionRequest;
@@ -78,7 +79,7 @@ export function SendTransaction({
         to: txRequest?.to ? getAddress(txRequest?.to) : undefined,
         value: txRequest.value || '0x0',
         data: txRequest.data ?? '0x',
-        chainId: connectedToHardhat ? ChainId.hardhat : appSession.chainId,
+        chainId: connectedToHardhat ? ChainId.hardhat : appSession?.chainId,
       };
       const result = await wallet.sendTransaction(txData);
       if (result) {
@@ -125,7 +126,7 @@ export function SendTransaction({
   }, [
     appHost,
     appName,
-    appSession.chainId,
+    appSession?.chainId,
     approveRequest,
     asset,
     connectedToHardhat,
@@ -137,11 +138,11 @@ export function SendTransaction({
   const onRejectRequest = useCallback(() => {
     rejectRequest();
     analytics.track(event.dappPromptSendTransactionRejected, {
-      chainId: appSession.chainId,
+      chainId: appSession?.chainId,
       dappURL: appHost,
       dappName: appName,
     });
-  }, [appHost, appName, appSession.chainId, rejectRequest]);
+  }, [appHost, appName, appSession?.chainId, rejectRequest]);
 
   const isWatchingWallet = useMemo(() => {
     const watchedAddresses = watchedWallets?.map(({ address }) => address);
@@ -160,11 +161,11 @@ export function SendTransaction({
   useEffect(() => {
     selectAssetAddressAndChain(
       NATIVE_ASSETS_PER_CHAIN[
-        connectedToHardhat ? ChainId.hardhat : appSession.chainId
+        connectedToHardhat ? ChainId.hardhat : appSession?.chainId
       ] as Address,
-      connectedToHardhat ? ChainId.hardhat : appSession.chainId,
+      connectedToHardhat ? ChainId.hardhat : appSession?.chainId,
     );
-  }, [appSession.chainId, connectedToHardhat, selectAssetAddressAndChain]);
+  }, [appSession?.chainId, connectedToHardhat, selectAssetAddressAndChain]);
 
   return (
     <Rows alignVertical="justify">
@@ -173,7 +174,7 @@ export function SendTransaction({
       </Row>
       <Row height="content">
         <SendTransactionActions
-          chainId={appSession.chainId}
+          chainId={appSession?.chainId || ChainId.mainnet}
           waitingForDevice={waitingForDevice}
           appHost={appHost}
           selectedWallet={selectedWallet}

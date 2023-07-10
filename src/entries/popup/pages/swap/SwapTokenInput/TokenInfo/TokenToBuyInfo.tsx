@@ -22,15 +22,15 @@ import {
 export const TokenToBuyInfo = ({
   assetToBuy,
   assetToBuyValue,
-  assetToBuyNativeValue,
-  assetToSellNativeValue,
+  assetToBuyNativeDisplay,
+  assetToSellNativeDisplay,
 }: {
   assetToBuy: ParsedSearchAsset | null;
   assetToSell: ParsedSearchAsset | null;
   assetToBuyValue?: string;
   assetToSellValue?: string;
-  assetToBuyNativeValue: { amount: string; display: string } | null;
-  assetToSellNativeValue: { amount: string; display: string } | null;
+  assetToBuyNativeDisplay: { amount: string; display: string } | null;
+  assetToSellNativeDisplay: { amount: string; display: string } | null;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
 
@@ -44,16 +44,19 @@ export const TokenToBuyInfo = ({
   }, [assetToBuy?.native?.price?.amount, currentCurrency, assetToBuyValue]);
 
   const nativeValueDifferenceDisplay = useMemo(() => {
-    if (!assetToSellNativeValue?.amount || !assetToBuyNativeValue?.amount)
+    if (!assetToSellNativeDisplay?.amount || !assetToBuyNativeDisplay?.amount)
       return null;
     const nativeDifference = convertAmountToPercentageDisplay(
       divide(
-        subtract(assetToBuyNativeValue.amount, assetToSellNativeValue.amount),
-        assetToBuyNativeValue.amount,
+        subtract(
+          assetToBuyNativeDisplay.amount,
+          assetToSellNativeDisplay.amount,
+        ),
+        assetToBuyNativeDisplay.amount,
       ),
     );
     return nativeDifference;
-  }, [assetToBuyNativeValue?.amount, assetToSellNativeValue?.amount]);
+  }, [assetToBuyNativeDisplay?.amount, assetToSellNativeDisplay?.amount]);
 
   if (!assetToBuy) return null;
   return (
@@ -69,7 +72,7 @@ export const TokenToBuyInfo = ({
                 weight="semibold"
                 color="labelTertiary"
               >
-                {assetToBuyNativeValue?.display ?? nativeValueDisplay}
+                {assetToBuyNativeDisplay?.display ?? nativeValueDisplay}
               </TextOverflow>
             </Column>
 

@@ -58,21 +58,9 @@ export const AppConnectionMenuHeader = ({
             >
               <Rows space="8px">
                 <Row>
-                  <Columns>
-                    <Column>
-                      <TextOverflow size="14pt" weight="bold" color="label">
-                        {appName ?? appHost}
-                      </TextOverflow>
-                    </Column>
-                    <Column width="content">
-                      <Symbol
-                        size={6}
-                        color={appSession ? 'green' : 'labelQuaternary'}
-                        symbol="circle.fill"
-                        weight="semibold"
-                      />
-                    </Column>
-                  </Columns>
+                  <TextOverflow size="14pt" weight="bold" color="label">
+                    {appName ?? appHost}
+                  </TextOverflow>
                 </Row>
                 <Row>
                   <Text size="11pt" weight="bold">
@@ -83,6 +71,14 @@ export const AppConnectionMenuHeader = ({
                 </Row>
               </Rows>
             </Box>
+          </Column>
+          <Column width="content">
+            <Symbol
+              size={6}
+              color={appSession ? 'green' : 'labelQuaternary'}
+              symbol="circle.fill"
+              weight="semibold"
+            />
           </Column>
         </Columns>
       </Inset>

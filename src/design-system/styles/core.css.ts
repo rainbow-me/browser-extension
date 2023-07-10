@@ -539,6 +539,7 @@ const textProperties = defineProperties({
     textOverflow: ['ellipsis'],
     whiteSpace: ['nowrap'],
     overflow: ['hidden'],
+    transition: ['color 200ms ease-out'],
   },
 });
 

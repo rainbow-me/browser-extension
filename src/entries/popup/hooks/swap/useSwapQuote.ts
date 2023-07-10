@@ -72,7 +72,9 @@ export const useSwapQuote = ({
         ? ETH_ADDRESS
         : assetToBuy.address,
       sellAmount:
-        independentField === 'sellField' && Number(assetToSellValue)
+        (independentField === 'sellField' ||
+          independentField === 'sellNativeField') &&
+        Number(assetToSellValue)
           ? convertAmountToRawAmount(
               assetToSellValue || '0',
               assetToSell.decimals,

@@ -25,9 +25,11 @@ export interface SwapPriceImpact {
 export const useSwapPriceImpact = ({
   assetToSellNativeValue,
   assetToBuyNativeValue,
+  isLoading,
 }: {
   assetToSellNativeValue: { amount: string; display: string } | null;
   assetToBuyNativeValue: { amount: string; display: string } | null;
+  isLoading: boolean;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
 
@@ -51,14 +53,20 @@ export const useSwapPriceImpact = ({
     return { impactDisplay, priceImpact };
   }, [assetToBuyNativeValue, currentCurrency, assetToSellNativeValue]);
 
-  if (greaterThanOrEqualTo(priceImpact, severePriceImpactThreshold)) {
+  if (
+    !isLoading &&
+    greaterThanOrEqualTo(priceImpact, severePriceImpactThreshold)
+  ) {
     return {
       priceImpact: {
         type: SwapPriceImpactType.severe,
         impactDisplay,
       },
     };
-  } else if (greaterThanOrEqualTo(priceImpact, highPriceImpactThreshold)) {
+  } else if (
+    !isLoading &&
+    greaterThanOrEqualTo(priceImpact, highPriceImpactThreshold)
+  ) {
     return {
       priceImpact: {
         type: SwapPriceImpactType.high,
