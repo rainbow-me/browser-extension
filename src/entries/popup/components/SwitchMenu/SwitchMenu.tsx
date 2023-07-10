@@ -55,19 +55,15 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     const { currentAddress } = useCurrentAddressStore();
     const { avatar } = useAvatar({ address: currentAddress });
     return (
-      <AccentColorProvider color={avatar?.color || globalColors.blue60}>
-        <ThemeProvider theme={currentTheme}>
-          <SelectPrimitive.Portal>
-            <SelectPrimitive.Content
-              asChild
-              tabIndex={-1}
-              ref={ref}
-              position="popper"
-              align={align}
-              sideOffset={16}
-              style={{ overflowY: 'scroll', width: '204px' }}
-              hideWhenDetached
-            >
+      <SelectPrimitive.Portal>
+        <SelectPrimitive.Content
+          position="popper"
+          align={align}
+          sideOffset={16}
+          hideWhenDetached
+        >
+          <AccentColorProvider color={avatar?.color || globalColors.blue60}>
+            <ThemeProvider theme={currentTheme}>
               <Box
                 alignItems="center"
                 justifyContent="center"
@@ -79,6 +75,9 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
                 borderColor="separatorTertiary"
                 borderWidth="1px"
                 borderRadius="16px"
+                tabIndex={-1}
+                style={{ overflowY: 'scroll', width: '204px' }}
+                ref={ref}
               >
                 <SelectPrimitive.Viewport asChild>
                   <Box
@@ -93,10 +92,10 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
                   </Box>
                 </SelectPrimitive.Viewport>
               </Box>
-            </SelectPrimitive.Content>
-          </SelectPrimitive.Portal>
-        </ThemeProvider>
-      </AccentColorProvider>
+            </ThemeProvider>
+          </AccentColorProvider>
+        </SelectPrimitive.Content>
+      </SelectPrimitive.Portal>
     );
   },
 );
