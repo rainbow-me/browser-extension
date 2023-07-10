@@ -338,8 +338,8 @@ export function Wallets() {
   }, [updateState]);
 
   const addAccount = useCallback(async () => {
-    const silbing = accounts[0];
-    const address = await wallet.add(silbing);
+    const sibling = accounts[0];
+    const address = await wallet.add(sibling);
     setCurrentAddress(address);
     await updateState();
     return address;
