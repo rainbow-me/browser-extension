@@ -129,7 +129,9 @@ export const handleProviderRequest = ({
           break;
         }
         case 'eth_accounts': {
-          response = activeSession ? [activeSession.address] : [];
+          response = activeSession
+            ? [activeSession.address?.toLowerCase()]
+            : [];
           break;
         }
         case 'eth_sendTransaction':
@@ -220,7 +222,7 @@ export const handleProviderRequest = ({
         }
         case 'eth_requestAccounts': {
           if (activeSession) {
-            response = [activeSession.address];
+            response = [activeSession.address?.toLowerCase()];
             break;
           }
           const { address, chainId } = (await messengerProviderRequest(
@@ -238,7 +240,7 @@ export const handleProviderRequest = ({
             chainId,
             url,
           });
-          response = [address];
+          response = [address?.toLowerCase()];
           break;
         }
         case 'eth_blockNumber': {
