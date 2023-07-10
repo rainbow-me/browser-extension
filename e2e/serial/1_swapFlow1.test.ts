@@ -960,8 +960,6 @@ it('should be able to execute swap', async () => {
   const ethBalanceBeforeSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
-  console.log('before: ' + ethBalanceBeforeSwap);
-
   await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
@@ -976,12 +974,10 @@ it('should be able to execute swap', async () => {
     const ethBalanceAfterSwap = await provider.getBalance(
       TEST_VARIABLES.SEED_WALLET.ADDRESS,
     );
-    console.log('after: ' + ethBalanceAfterSwap);
     const balanceDifference = subtract(
       ethBalanceBeforeSwap.toString(),
       ethBalanceAfterSwap.toString(),
     );
-    console.log('diff: ' + balanceDifference);
     const ethDifferenceAmount = convertRawAmountToDecimalFormat(
       balanceDifference,
       18,
@@ -992,7 +988,6 @@ it('should be able to execute swap', async () => {
       return ethDifferenceAmount;
     } else {
       // Balances haven't updated yet, wait and recursively call the function
-      console.log('eth diff: ' + ethDifferenceAmount);
       await delayTime('medium');
       return waitForBalanceUpdate();
     }
