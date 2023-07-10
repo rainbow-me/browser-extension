@@ -187,7 +187,6 @@ it('should be able to go to review a crosschain swap', async () => {
     id: 'switch-network-item-3',
     driver,
   });
-  await delayTime('very-long');
   const daiBridge = await findElementByTestId({
     id: `${SWAP_VARIABLES.DAI_ARBITRUM_ID}-bridge-token-to-buy-row`,
     driver,
@@ -199,12 +198,10 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
     text: 'USDC',
   });
-  await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-favorites-token-to-buy-row`,
     driver,
   });
-  await delayTime('very-long');
   const toBuyInputUsdcSelected = await findElementByTestId({
     id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
@@ -219,7 +216,6 @@ it('should be able to go to review a crosschain swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
-  await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,

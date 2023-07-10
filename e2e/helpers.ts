@@ -174,14 +174,19 @@ export async function querySelector(driver: WebDriver, selector: string) {
 }
 
 export async function findElementByText(driver: WebDriver, text: string) {
-  const escapedText = text.replace(/'/g, "\\'");
-  const xpathExpression = `//*[contains(text(), '${escapedText}')]`;
+  try {
+    const escapedText = text.replace(/'/g, "\\'");
+    const xpathExpression = `//*[contains(text(), '${escapedText}')]`;
 
-  const element = await driver.wait(
-    until.elementLocated(By.xpath(xpathExpression)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    const element = await driver.wait(
+      until.elementLocated(By.xpath(xpathExpression)),
+      waitUntilTime,
+    );
+    return await driver.wait(until.elementIsVisible(element), waitUntilTime);
+  } catch (error) {
+    console.error(`Failed to locate element with text: ${text}`, error);
+    throw error;
+  }
 }
 
 export async function findElementByTextAndClick(driver, text) {
@@ -189,7 +194,7 @@ export async function findElementByTextAndClick(driver, text) {
     const element = await findElementByText(driver, text);
     await waitAndClick(element, driver);
   } catch (error) {
-    console.error(`Failed to find element by text: ${text}`, error);
+    console.error(`Failed to find element by text and click: ${text}`, error);
     throw error;
   }
 }
@@ -199,7 +204,7 @@ export async function findElementAndClick({ id, driver }) {
     const element = await querySelector(driver, `[id="${id}"]`);
     await waitAndClick(element, driver);
   } catch (error) {
-    console.error(`Failed to find element by id: ${id}`, error);
+    console.error(`Failed to find element by id and click: ${id}`, error);
     throw error;
   }
 }
@@ -225,11 +230,16 @@ export async function findElementById({ id, driver }) {
 }
 
 export async function doNotFindElementByTestId({ id, driver }) {
-  const elementFound = await Promise.race([
-    querySelector(driver, `[data-testid="${id}"]`),
-    new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
-  ]);
-  return !!elementFound;
+  try {
+    const elementFound = await Promise.race([
+      querySelector(driver, `[data-testid="${id}"]`),
+      new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
+    ]);
+    return !!elementFound;
+  } catch (error) {
+    console.error(`Element with: ${id} was found`, error);
+    throw error;
+  }
 }
 
 export async function findElementByTestIdAndClick({ id, driver }) {
@@ -237,7 +247,7 @@ export async function findElementByTestIdAndClick({ id, driver }) {
     const element = await findElementByTestId({ id, driver });
     await waitAndClick(element, driver);
   } catch (error) {
-    console.error(`Failed to find element by test id: ${id}`, error);
+    console.error(`Failed to find element by test id and click: ${id}`, error);
     throw error;
   }
 }
@@ -263,7 +273,7 @@ export async function findElementByIdAndClick({ id, driver }) {
     const element = await findElementById({ id, driver });
     await waitAndClick(element, driver);
   } catch (error) {
-    console.error(`Failed to find element by id: ${id}`, error);
+    console.error(`Failed to find element by id and click: ${id}`, error);
     throw error;
   }
 }
@@ -276,7 +286,10 @@ export async function waitAndClick(element, driver) {
     await delayTime('short');
     await element.click();
   } catch (error) {
-    console.error(`unable to click element: ${element}`, error);
+    console.error(
+      `Error occured while trying to click element: ${element}`,
+      error,
+    );
   }
 }
 
@@ -360,7 +373,7 @@ export async function awaitTextChange(
     await driver.wait(until.elementTextIs(element, text), waitUntilTime);
   } catch (error) {
     console.error(
-      `Error occurred while awaiting text change for element with ID '${id}':`,
+      `Error occurred while awaiting text change for an element with ID '${id}':`,
       error,
     );
     throw error;
@@ -378,25 +391,19 @@ export function shortenAddress(address: string): string {
 }
 
 export async function switchWallet(
-  Ethaddress: string,
+  ethAddress: string,
   rootURL,
   driver: WebDriver,
   ens?: string,
 ) {
-  // go to popup
   await goToPopup(driver, rootURL, '#/home');
 
-  // find header and click
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
     driver,
   });
+  const shortenedAddress = shortenAddress(ethAddress);
 
-  const address = Ethaddress;
-  // find shortened address
-  const shortenedAddress = shortenAddress(address);
-
-  // find wallet you want to switch to and click
   await waitUntilElementByTestIdIsPresent({
     id: `account-item-${ens || shortenedAddress}`,
     driver,

@@ -135,7 +135,7 @@ describe('App interactions flow', () => {
     // the dapp UI doesn't update the chain ID
     // on the page unless the page is refreshed
     await driver.navigate().refresh();
-
+    // make sure the page has finished loading
     await driver.findElement(By.css(`[class="container-fluid"]`));
 
     const chain = await findElementById({ id: 'chainId', driver });
