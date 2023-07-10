@@ -36,7 +36,7 @@ export const QRCodePage = () => {
           <QRCode size={280} value={address as string} />
         </Box>
         <Box display="flex" alignItems="center" justifyContent="center">
-          <AccountName id="qr-code" chevron={false} />
+          <AccountName id="qr-code" disableNav={true} chevron={false} />
         </Box>
         <Box display="flex" alignItems="center" justifyContent="center">
           <Text color={'labelTertiary'} size="16pt" weight="bold">
