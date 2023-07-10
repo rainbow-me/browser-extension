@@ -64,6 +64,7 @@ export function SendTransaction({
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
+    if (!selectedWallet) return;
     setLoading(true);
     try {
       const txRequest = request?.params?.[0] as TransactionRequest;
