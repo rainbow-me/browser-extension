@@ -129,11 +129,12 @@ export async function userAssetsByChainQueryFunction({
         },
       );
       const newParsedUserAssetsByUniqueId = await Promise.all(parsePromises);
-      const a: Record<string, ParsedAddressAsset> = {};
-      newParsedUserAssetsByUniqueId.forEach(
-        (parseAsset) => (a[parseAsset.uniqueId] = parseAsset),
-      );
-      return a;
+      return newParsedUserAssetsByUniqueId.reduce<
+        Record<string, ParsedAddressAsset>
+      >((acc, parsedAsset) => {
+        acc[parsedAsset.uniqueId] = parsedAsset;
+        return acc;
+      }, {});
     } else {
       if (isLowerCaseMatch(data?.meta?.address, address)) {
         return parsedUserAssetsByUniqueId;
