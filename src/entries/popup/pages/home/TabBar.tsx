@@ -23,7 +23,7 @@ export function TabBar({
 }) {
   const { address } = useAccount();
   const { hideAssetBalances } = useHideAssetBalancesStore();
-  const { data: balance, isLoading } = useBalance({ addressOrName: address });
+  const { data: balance, isLoading } = useBalance({ address });
   const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
 
