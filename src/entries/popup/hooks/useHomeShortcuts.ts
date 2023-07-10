@@ -10,7 +10,6 @@ import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { truncateAddress } from '~/core/utils/address';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 
-import { useCommandKStatus } from '../components/CommandK/useCommandKStatus';
 import { triggerToast } from '../components/Toast/Toast';
 import * as wallet from '../handlers/wallet';
 import { ROUTES } from '../urls';
@@ -26,18 +25,12 @@ export function useHomeShortcuts() {
   const { data: ensName } = useEnsName({ address });
   const { selectedToken } = useSelectedTokenStore();
   const { selectedTransaction } = useSelectedTransactionStore();
-  const { isCommandKVisible } = useCommandKStatus();
   const { sheet } = useCurrentHomeSheetStore();
   const navigateToSwaps = useNavigateToSwaps();
 
   const getHomeShortcutsAreActive = useCallback(() => {
-    return (
-      sheet === 'none' &&
-      !selectedTransaction &&
-      !selectedToken &&
-      !isCommandKVisible
-    );
-  }, [isCommandKVisible, sheet, selectedToken, selectedTransaction]);
+    return sheet === 'none' && !selectedTransaction && !selectedToken;
+  }, [sheet, selectedToken, selectedTransaction]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(address as string);

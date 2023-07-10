@@ -82,6 +82,7 @@ export function useCommandKShortcuts() {
       }
     },
     condition: getCommandKTriggerIsActive,
+    enableWithinCommandK: true,
     modifierKey: 'command',
   });
 
@@ -97,5 +98,6 @@ export function useCommandKShortcuts() {
 
   useKeyboardShortcut({
     handler: closeCommandKHandler,
+    enableWithinCommandK: true,
   });
 }

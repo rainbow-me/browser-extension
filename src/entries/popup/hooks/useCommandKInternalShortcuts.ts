@@ -40,6 +40,7 @@ export function useCommandKInternalShortcuts(
       }
     },
     condition: getCommandKShortcutsAreEnabled,
+    enableWithinCommandK: true,
     modifierKey: 'command',
   });
 }

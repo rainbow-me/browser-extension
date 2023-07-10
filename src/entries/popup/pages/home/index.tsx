@@ -25,7 +25,6 @@ import { useContainerRef } from '~/design-system/components/AnimatedRoute/Animat
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
-import { useCommandKStatus } from '../../components/CommandK/useCommandKStatus';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAvatar } from '../../hooks/useAvatar';
@@ -57,7 +56,6 @@ export function Home() {
   const { currentAddress } = useCurrentAddressStore();
   const { state } = useLocation();
   const { avatar } = useAvatar({ address: currentAddress });
-  const { isCommandKVisible } = useCommandKStatus();
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
 
   usePendingTransactionWatcher({ address: currentAddress });
@@ -110,7 +108,6 @@ export function Home() {
         onSelectTab('activity');
       }
     },
-    condition: () => !isCommandKVisible,
   });
 
   useHomeShortcuts();

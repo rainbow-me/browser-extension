@@ -16,7 +16,6 @@ import {
   NAVBAR_LEFT_COMPONENT_ID,
   NAVBAR_RIGHT_COMPONENT_ID,
 } from '../../utils/clickHeader';
-import { useCommandKStatus } from '../CommandK/useCommandKStatus';
 
 export const NAVBAR_HEIGHT = 65;
 
@@ -173,7 +172,6 @@ function NavbarButtonWithBack({
   symbolSize?: SymbolProps['size'];
   testId?: string;
 }) {
-  const { isCommandKVisible } = useCommandKStatus();
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
 
@@ -188,7 +186,6 @@ function NavbarButtonWithBack({
         click();
       }
     },
-    condition: () => !isCommandKVisible,
   });
 
   const click = React.useCallback(() => {

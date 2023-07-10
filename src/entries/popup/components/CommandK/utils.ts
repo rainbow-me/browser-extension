@@ -262,6 +262,7 @@ export function useKeyboardNavigation(
 
   useKeyboardShortcut({
     handler: handleKeyboardNavigation,
+    enableWithinCommandK: true,
   });
 
   // Clean up scroll timer on unmount

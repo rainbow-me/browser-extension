@@ -1,22 +1,29 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
+import { useCommandKStatus } from '../components/CommandK/useCommandKStatus';
+
 type ModifierKey = 'ctrlKey' | 'altKey' | 'shiftKey' | 'command';
 
 interface KeyboardShortcutConfig {
   condition?: () => boolean;
+  enableWithinCommandK?: boolean;
   handler: (e: KeyboardEvent) => void;
   modifierKey?: ModifierKey;
 }
 
 export function useKeyboardShortcut({
   condition,
+  enableWithinCommandK,
   handler,
   modifierKey,
 }: KeyboardShortcutConfig) {
-  const shouldListen = useMemo(
-    () => condition?.() || condition === undefined,
-    [condition],
-  );
+  const { isCommandKVisible } = useCommandKStatus();
+
+  const shouldListen = useMemo(() => {
+    if (!isCommandKVisible || enableWithinCommandK) {
+      return condition?.() || condition === undefined;
+    } else return false;
+  }, [condition, enableWithinCommandK, isCommandKVisible]);
 
   const systemSpecificModifierKey = useMemo(() => {
     if (modifierKey === 'command') {
