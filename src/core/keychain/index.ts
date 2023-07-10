@@ -179,9 +179,9 @@ export const importWallet = async (
 };
 
 export const addNewAccount = async (
-  silbingAddress: Address,
+  siblingAddress: Address,
 ): Promise<Address> => {
-  const keychain = await keychainManager.getKeychain(silbingAddress);
+  const keychain = await keychainManager.getKeychain(siblingAddress);
   const newAccount = await keychainManager.addNewAccount(keychain);
   return newAccount;
 };
@@ -263,11 +263,11 @@ export const getPath = async (address: Address) => {
 };
 
 export const addAccountAtIndex = async (
-  silbingAddress: Address,
+  siblingAddress: Address,
   index: number,
   address: Address,
 ) => {
-  const keychain = await keychainManager.getKeychain(silbingAddress);
+  const keychain = await keychainManager.getKeychain(siblingAddress);
   const newAccount = await keychainManager.addAccountAtIndex(
     keychain,
     index,

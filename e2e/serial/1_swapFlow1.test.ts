@@ -9,6 +9,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
+  delay,
   delayTime,
   doNotFindElementByTestId,
   fillPrivateKey,
@@ -968,9 +969,13 @@ it('should be able to execute swap', async () => {
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('very-long');
+  // Adding delay to make sure the provider gets the balance after the swap
+  // Because CI is slow so this triggers a race condition most of the time.
+  await delay(5000);
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
+
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
     ethBalanceAfterSwap.toString(),
