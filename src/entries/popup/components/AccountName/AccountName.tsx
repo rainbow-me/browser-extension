@@ -69,7 +69,7 @@ export function AccountName({
         {...chevronProps}
       >
         <Columns alignVertical="center" space="4px">
-          {avatar && address && <Column width="content">{avatar}</Column>}
+          {avatar && <Column width="content">{avatar}</Column>}
           <Column>
             <Box id={`${id ?? ''}-account-name-shuffle`}>
               <TextOverflow

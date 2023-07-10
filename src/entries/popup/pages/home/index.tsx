@@ -152,8 +152,8 @@ const TopNav = memo(function TopNav() {
   const { address } = useAccount();
 
   const { scrollY } = useScroll();
-  const [isCollapsed, setIsCollapsed] = useState(scrollY.get() > 90);
-  useMotionValueEvent(scrollY, 'change', (y) => setIsCollapsed(y > 90));
+  const [isCollapsed, setIsCollapsed] = useState(scrollY.get() > 91);
+  useMotionValueEvent(scrollY, 'change', (y) => setIsCollapsed(y > 91));
 
   return (
     <StickyHeader
@@ -183,13 +183,7 @@ const TopNav = memo(function TopNav() {
                 id="topNav"
                 avatar={
                   address && (
-                    <Box
-                      as={motion.div}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                      paddingRight="2px"
-                    >
+                    <Box paddingRight="2px">
                       <WalletAvatar
                         address={address}
                         size={16}

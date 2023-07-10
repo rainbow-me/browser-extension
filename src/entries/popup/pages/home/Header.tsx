@@ -33,13 +33,9 @@ export const Header = React.memo(function Header() {
   const opacityValue = useTransform(progress, [0, 0.25], [1, 0]);
 
   const nameScaleValue = useTransform(progress, [0, 0.25, 1], [1, 1, 0.8]);
-  const namePaddingLeftValue = useTransform(
-    progress,
-    [0, 0.25, 1],
-    [40, 40, 0],
-  );
   const nameOpacityValue = useTransform(progress, (v) => (v === 1 ? 0 : 1));
 
+  const x = useTransform(progress, [0, 0.25, 1], [-12, -12, 0]);
   const avatarOpacityValue = useTransform(progress, [0, 0.25, 1], [0, 0, 1]);
 
   const { address } = useAccount();
@@ -78,7 +74,7 @@ export const Header = React.memo(function Header() {
               zIndex: 1,
               scale: nameScaleValue,
               opacity: nameOpacityValue,
-              paddingRight: namePaddingLeftValue,
+              x,
             }}
           >
             <AccountName
@@ -86,13 +82,13 @@ export const Header = React.memo(function Header() {
                 address && (
                   <Box
                     as={motion.div}
-                    style={{ opacity: avatarOpacityValue, scale: 1.2 }}
+                    style={{ opacity: avatarOpacityValue }}
                     paddingRight="2px"
                   >
                     <WalletAvatar
                       address={address}
-                      size={16}
-                      emojiSize="10pt"
+                      size={20}
+                      emojiSize="14pt"
                     />
                   </Box>
                 )
