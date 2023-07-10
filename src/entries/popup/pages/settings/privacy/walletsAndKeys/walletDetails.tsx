@@ -225,6 +225,7 @@ export function WalletDetails() {
         show={!!createWalletAddress}
         onClose={onClose}
         address={createWalletAddress}
+        settingsNavigate={true}
       />
       <RenameWalletPrompt
         account={renameAccount}
