@@ -97,8 +97,8 @@ export async function userAssetsByChainQueryFunction({
     const { currentAddress } = currentAddressStore.getState();
     const chainId = chainIdFromChainName(chain);
     const url = `/${chainId}/${address}/assets/?currency=${currency.toLowerCase()}`;
-    const response = await addysHttp.get(url);
-    const data = response.data as AddressAssetsReceivedMessage;
+    const response = await addysHttp.get<AddressAssetsReceivedMessage>(url);
+    const data = response.data;
     const parsedUserAssetsByUniqueId = parseUserAssetsByChain(data, currency);
 
     if (connectedToHardhat && chain === ChainName.mainnet) {
