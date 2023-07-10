@@ -8,7 +8,6 @@ globalStyle('html, body', {
   textRendering: 'optimizeLegibility',
   MozOsxFontSmoothing: 'grayscale',
   WebkitFontSmoothing: 'antialiased',
-  WebkitTextSizeAdjust: '100%',
 });
 
 globalStyle('html, body, #main', {
