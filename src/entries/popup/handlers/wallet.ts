@@ -311,8 +311,8 @@ export const importWithSecret = async (seed: string) => {
 export const remove = async (address: Address) => {
   return walletAction('remove', address);
 };
-export const add = async (silbing: Address) => {
-  return (await walletAction('add', silbing)) as Address;
+export const add = async (sibling: Address) => {
+  return (await walletAction('add', sibling)) as Address;
 };
 
 export const exportWallet = async (address: Address, password: string) => {
