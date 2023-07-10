@@ -16,6 +16,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
 import { useScroll } from '../../hooks/useScroll';
@@ -32,8 +33,16 @@ export const Header = React.memo(function Header() {
   const opacityValue = useTransform(progress, [0, 0.25], [1, 0]);
 
   const nameScaleValue = useTransform(progress, [0, 0.25, 1], [1, 1, 0.8]);
-  const namePaddingLeftValue = useTransform(progress, [0, 0.25, 1], [0, 0, 40]);
+  const namePaddingLeftValue = useTransform(
+    progress,
+    [0, 0.25, 1],
+    [40, 40, 0],
+  );
   const nameOpacityValue = useTransform(progress, (v) => (v === 1 ? 0 : 1));
+
+  const avatarOpacityValue = useTransform(progress, [0, 0.25, 1], [0, 0, 1]);
+
+  const { address } = useAccount();
 
   return (
     <Box
@@ -68,11 +77,28 @@ export const Header = React.memo(function Header() {
             style={{
               zIndex: 1,
               scale: nameScaleValue,
-              paddingLeft: namePaddingLeftValue,
               opacity: nameOpacityValue,
+              paddingRight: namePaddingLeftValue,
             }}
           >
-            <AccountName id="header" />
+            <AccountName
+              avatar={
+                address && (
+                  <Box
+                    as={motion.div}
+                    style={{ opacity: avatarOpacityValue, scale: 1.2 }}
+                    paddingRight="2px"
+                  >
+                    <WalletAvatar
+                      address={address}
+                      size={16}
+                      emojiSize="10pt"
+                    />
+                  </Box>
+                )
+              }
+              id="header"
+            />
           </Box>
 
           <ActionButtonsSection />

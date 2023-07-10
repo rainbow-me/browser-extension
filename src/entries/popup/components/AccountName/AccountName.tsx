@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
@@ -11,10 +11,9 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
-import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 type AccountNameProps = {
-  includeAvatar?: boolean;
+  avatar?: ReactNode;
   id?: string;
   size?: '16pt' | '20pt';
   chevron?: boolean;
@@ -27,7 +26,7 @@ const chevronDownSizes = {
 } as const;
 
 export function AccountName({
-  includeAvatar = false,
+  avatar,
   size = '20pt',
   id,
   chevron = true,
@@ -56,11 +55,11 @@ export function AccountName({
   return (
     <Lens
       tabIndex={
-        includeAvatar || disableNav ? -1 : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
+        avatar || disableNav ? -1 : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
       }
       onKeyDown={handleClick}
       borderRadius="6px"
-      style={{ padding: includeAvatar ? 0 : 2 }}
+      style={{ padding: avatar ? 0 : 2 }}
     >
       <Box
         as={motion.div}
@@ -70,19 +69,7 @@ export function AccountName({
         {...chevronProps}
       >
         <Columns alignVertical="center" space="4px">
-          {includeAvatar && address && (
-            <Column width="content">
-              <Box
-                as={motion.div}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4 }}
-                paddingRight="2px"
-              >
-                <WalletAvatar address={address} size={16} emojiSize="10pt" />
-              </Box>
-            </Column>
-          )}
+          {avatar && address && <Column width="content">{avatar}</Column>}
           <Column>
             <Box id={`${id ?? ''}-account-name-shuffle`}>
               <TextOverflow

@@ -14,6 +14,7 @@ import {
   useTransition,
 } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -26,6 +27,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
@@ -147,6 +149,8 @@ export function Home() {
 }
 
 const TopNav = memo(function TopNav() {
+  const { address } = useAccount();
+
   const { scrollY } = useScroll();
   const [isCollapsed, setIsCollapsed] = useState(scrollY.get() > 90);
   useMotionValueEvent(scrollY, 'change', (y) => setIsCollapsed(y > 90));
@@ -175,7 +179,27 @@ const TopNav = memo(function TopNav() {
               as={motion.div}
               paddingHorizontal="60px"
             >
-              <AccountName id="topNav" includeAvatar size="16pt" />
+              <AccountName
+                id="topNav"
+                avatar={
+                  address && (
+                    <Box
+                      as={motion.div}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                      paddingRight="2px"
+                    >
+                      <WalletAvatar
+                        address={address}
+                        size={16}
+                        emojiSize="10pt"
+                      />
+                    </Box>
+                  )
+                }
+                size="16pt"
+              />
             </Box>
           )
         }
