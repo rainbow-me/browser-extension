@@ -2,16 +2,15 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import {
   Chain,
   CreateClientConfig,
-  chain,
   configureChains,
   createClient,
   createStorage,
 } from 'wagmi';
+import { arbitrum, bsc, mainnet, optimism, polygon } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { queryClient } from '../react-query';
 import { Storage } from '../storage';
-import { bsc } from '../types/chains';
 
 const noopStorage = {
   getItem: () => '',
@@ -20,7 +19,7 @@ const noopStorage = {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [chain.mainnet, chain.optimism, chain.polygon, chain.arbitrum, bsc],
+  [mainnet, optimism, polygon, arbitrum, bsc],
   [
     jsonRpcProvider({
       rpc: () => {

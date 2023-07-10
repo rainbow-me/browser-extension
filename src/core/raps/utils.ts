@@ -9,7 +9,8 @@ import {
   RAINBOW_ROUTER_CONTRACT_ADDRESS,
   getQuoteExecutionDetails,
 } from '@rainbow-me/swaps';
-import { Chain, chain, erc20ABI } from 'wagmi';
+import { Chain, erc20ABI } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
 
 import { gasUnits } from '../references';
 import { ChainId } from '../types/chains';
@@ -24,7 +25,7 @@ import {
 import { toHexNoLeadingZeros } from '../utils/hex';
 import { greaterThan, multiply } from '../utils/numbers';
 
-export const CHAIN_IDS_WITH_TRACE_SUPPORT = [chain.mainnet.id];
+export const CHAIN_IDS_WITH_TRACE_SUPPORT = [mainnet.id];
 export const SWAP_GAS_PADDING = 1.1;
 
 const GAS_LIMIT_INCREMENT = 50000;
@@ -206,7 +207,7 @@ export const getDefaultGasLimitForTrade = (
   chainId: Chain['id'],
 ): string => {
   const allowsPermit =
-    chainId === chain.mainnet.id &&
+    chainId === mainnet.id &&
     ALLOWS_PERMIT[quote?.sellTokenAddress?.toLowerCase()];
 
   let defaultGasLimit = quote?.defaultGasLimit;

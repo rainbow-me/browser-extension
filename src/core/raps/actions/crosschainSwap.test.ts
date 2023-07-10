@@ -6,8 +6,9 @@ import {
   SwapType,
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
-import { chain, getProvider } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { beforeAll, expect, test } from 'vitest';
+import { mainnet } from 'wagmi/chains';
 
 import { ChainId } from '~/core/types/chains';
 import {
@@ -44,7 +45,7 @@ beforeAll(async () => {
 
 test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async () => {
   const swapGasLimit = await estimateCrosschainSwapGasLimit({
-    chainId: chain.mainnet.id,
+    chainId: mainnet.id,
     requiresApprove: false,
     quote: crosschainQuote as CrosschainQuote,
   });
@@ -52,7 +53,7 @@ test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async 
 });
 
 test('[rap/crosschainSwap] :: should execute crosschain swap', async () => {
-  const provider = getProvider({ chainId: chain.mainnet.id });
+  const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_3, provider);
 
   const swapTx = await executeCrosschainSwap({

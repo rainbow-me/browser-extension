@@ -1,25 +1,7 @@
-import { Chain, chain } from 'wagmi';
+import type { Chain } from 'wagmi';
+import * as chain from 'wagmi/chains';
 
-const BSC_CHAIN_ID = 56;
 const HARDHAT_CHAIN_ID = 1337;
-
-export const bsc: Chain = {
-  id: BSC_CHAIN_ID,
-  name: 'BNB Smart Chain',
-  network: 'bsc',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'BNB Smart Chain',
-    symbol: 'BNB',
-  },
-  rpcUrls: {
-    default: process.env.BSC_MAINNET_RPC as string,
-  },
-  blockExplorers: {
-    default: { name: '', url: 'https://www.bscscan.com/' },
-  },
-  testnet: false,
-};
 
 export const hardhat: Chain = {
   id: HARDHAT_CHAIN_ID,
@@ -48,7 +30,7 @@ export enum ChainName {
 
 export enum ChainId {
   arbitrum = chain.arbitrum.id,
-  bsc = BSC_CHAIN_ID,
+  bsc = chain.bsc.id,
   goerli = chain.goerli.id,
   optimism = chain.optimism.id,
   mainnet = chain.mainnet.id,
