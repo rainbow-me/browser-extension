@@ -289,7 +289,7 @@ export const SwapSettings = ({
         actionButton={explainerSheetParams.actionButton}
         footerLinkText={explainerSheetParams.footerLinkText}
       />
-      <BottomSheet onClickOutside={onDone} background="scrim" show={show}>
+      <BottomSheet onClickOutside={done} background="scrim" show={show}>
         <AccentColorProviderWrapper color={settingsAccentColor}>
           <Box paddingHorizontal="20px" paddingBottom="20px">
             <Stack space="10px">
