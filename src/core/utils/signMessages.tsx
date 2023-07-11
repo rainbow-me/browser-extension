@@ -15,11 +15,7 @@ export const getSigningRequestDisplayDetails = (
     case 'eth_sign': {
       const message = payload?.params?.[1] as string;
       const address = payload?.params?.[0] as Address;
-      return {
-        message,
-        msgData: message,
-        address: getAddress(address) as Address,
-      };
+      return { message, msgData: message, address: getAddress(address) };
     }
     case 'personal_sign': {
       let message = payload?.params?.[0] as string;
@@ -41,11 +37,7 @@ export const getSigningRequestDisplayDetails = (
       } catch (error) {
         // TODO error handling
       }
-      return {
-        message,
-        msgData: message,
-        address: getAddress(address) as Address,
-      };
+      return { message, msgData: message, address: getAddress(address) };
     }
     default: {
       // There's a lot of inconsistency in the parameter order for this method
@@ -68,7 +60,7 @@ export const getSigningRequestDisplayDetails = (
           return {
             message: JSON.stringify(msgData, null, 2),
             msgData,
-            address: getAddress(address) as Address,
+            address: getAddress(address),
             typedData: true,
           };
         }
