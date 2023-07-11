@@ -1,6 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
-import { Address, getPublicClient } from '@wagmi/core';
+import { Address, getProvider } from '@wagmi/core';
 
 import { gasUnits } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
@@ -40,7 +40,7 @@ export const estimateCrosschainSwapGasLimit = async ({
   requiresApprove?: boolean;
   quote: CrosschainQuote;
 }): Promise<string> => {
-  const provider = getPublicClient({ chainId });
+  const provider = getProvider({ chainId });
   if (!provider || !quote) {
     return gasUnits.basic_swap[chainId];
   }

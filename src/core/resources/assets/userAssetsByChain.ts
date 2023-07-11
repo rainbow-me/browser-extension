@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getPublicClient } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
 import { refractionAddressWs } from '~/core/network';
@@ -122,7 +122,7 @@ export async function userAssetsByChainQueryFunction({
         currency,
       );
       if (connectedToHardhat && chain === ChainName.mainnet) {
-        const provider = getPublicClient({ chainId: ChainId.hardhat });
+        const provider = getProvider({ chainId: ChainId.hardhat });
         // force checking for ETH if connected to hardhat
         parsedUserAssetsByUniqueId[ETH_MAINNET_ASSET.uniqueId] =
           ETH_MAINNET_ASSET;

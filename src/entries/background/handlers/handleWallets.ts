@@ -5,7 +5,7 @@ import {
 } from '@ethersproject/abstract-signer';
 import { Bytes } from '@ethersproject/bytes';
 import { ChainId } from '@rainbow-me/swaps';
-import { getPublicClient } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
 import {
@@ -183,7 +183,7 @@ export const handleWallets = () =>
             ) {
               provider = getFlashbotsProvider();
             } else {
-              provider = getPublicClient({
+              provider = getProvider({
                 chainId: (payload as TransactionRequest).chainId,
               });
             }
@@ -202,7 +202,7 @@ export const handleWallets = () =>
             ) {
               provider = getFlashbotsProvider();
             } else {
-              provider = getPublicClient({
+              provider = getProvider({
                 chainId: p.rapActionParameters.chainId,
               });
             }

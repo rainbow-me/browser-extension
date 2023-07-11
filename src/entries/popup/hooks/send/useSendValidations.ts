@@ -1,4 +1,4 @@
-import { getPublicClient } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { isValidAddress } from 'ethereumjs-util';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
@@ -95,7 +95,7 @@ export const useSendValidations = ({
         setToAddressIsSmartContract(false);
       } else {
         setToAddressIsSmartContract(false);
-        const provider = getPublicClient({
+        const provider = getProvider({
           chainId: asset?.chainId || ChainId.mainnet,
         });
         const code = await provider.getCode(toAddress);

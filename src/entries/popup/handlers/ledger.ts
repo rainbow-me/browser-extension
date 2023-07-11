@@ -7,7 +7,7 @@ import { UnsignedTransaction, serialize } from '@ethersproject/transactions';
 import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
-import { getPublicClient } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { Address } from 'wagmi';
 
@@ -98,7 +98,7 @@ export async function sendTransactionFromLedger(
   transaction: TransactionRequest,
 ): Promise<TransactionResponse> {
   const serializedTransaction = await signTransactionFromLedger(transaction);
-  const provider = getPublicClient({
+  const provider = getProvider({
     chainId: transaction.chainId,
   });
 

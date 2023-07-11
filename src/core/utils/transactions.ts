@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { getPublicClient } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { capitalize, isString } from 'lodash';
 import { Address } from 'wagmi';
 
@@ -575,7 +575,7 @@ export async function getCurrentNonce({
   const { getNonce } = nonceStore.getState();
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce;
-  const provider = getPublicClient({ chainId });
+  const provider = getProvider({ chainId });
 
   const nonceIncludingPending = await provider.getTransactionCount(
     address,
@@ -598,7 +598,7 @@ export async function getNextNonce({
   const { getNonce } = nonceStore.getState();
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || 0;
-  const provider = getPublicClient({ chainId });
+  const provider = getProvider({ chainId });
 
   const txCountIncludingPending = await provider.getTransactionCount(
     address,

@@ -6,7 +6,7 @@ import {
   SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
-import { getPublicClient } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { beforeAll, expect, test } from 'vitest';
 import { mainnet } from 'wagmi/chains';
 
@@ -45,7 +45,7 @@ test('[rap/swap] :: should estimate swap gas limit', async () => {
 });
 
 test('[rap/swap] :: should execute swap', async () => {
-  const provider = getPublicClient({ chainId: mainnet.id });
+  const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_2, provider);
   const swapTx = await executeSwap({
     chainId: mainnet.id,

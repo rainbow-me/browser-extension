@@ -13,7 +13,7 @@ import {
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
-import { Address, getPublicClient } from '@wagmi/core';
+import { Address, getProvider } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
@@ -50,7 +50,7 @@ export const estimateSwapGasLimit = async ({
   requiresApprove?: boolean;
   quote: Quote;
 }): Promise<string> => {
-  const provider = getPublicClient({ chainId });
+  const provider = getProvider({ chainId });
   if (!provider || !quote) {
     return gasUnits.basic_swap[chainId];
   }

@@ -7,7 +7,7 @@ import { HDNode, Mnemonic } from '@ethersproject/hdnode';
 import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import { getPublicClient } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
@@ -59,7 +59,7 @@ export const signTransactionFromHW = async (
   vendor: string,
 ): Promise<string | undefined> => {
   const { selectedGas } = gasStore.getState();
-  const provider = getPublicClient({
+  const provider = getProvider({
     chainId: transactionRequest.chainId,
   });
   const gasLimit = await estimateGasWithPadding({
@@ -94,7 +94,7 @@ export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
   const { selectedGas } = gasStore.getState();
-  const provider = getPublicClient({
+  const provider = getProvider({
     chainId: transactionRequest.chainId,
   });
   const gasLimit = await estimateGasWithPadding({

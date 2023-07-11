@@ -1,4 +1,4 @@
-import { getPublicClient } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
 import { fetchTransactions } from '../resources/transactions/transactions';
@@ -33,7 +33,7 @@ export async function watchPendingTransactions({
       try {
         const chainId = tx?.chainId;
         if (chainId) {
-          const provider = getPublicClient({ chainId });
+          const provider = getProvider({ chainId });
           if (txHash) {
             const currentNonceForChainId = await provider.getTransactionCount(
               address,
