@@ -1,6 +1,10 @@
 import { getAddress } from '@ethersproject/address';
-import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
-import { Address, Chain, Connector } from 'wagmi';
+import {
+  ExternalProvider,
+  JsonRpcSigner,
+  Web3Provider,
+} from '@ethersproject/providers';
+import { Chain, Connector } from 'wagmi';
 
 import { ChainIdHex, RainbowProvider } from '~/core/providers';
 import { currentAddressStore, currentChainIdStore } from '~/core/state';
@@ -13,7 +17,8 @@ function normalizeChainId(chainId: ChainIdHex | number | bigint) {
 
 export class RainbowConnector extends Connector<
   RainbowProvider,
-  Record<string, unknown>
+  Record<string, unknown>,
+  JsonRpcSigner
 > {
   readonly id: string;
   readonly name: string;
@@ -97,10 +102,7 @@ export class RainbowConnector extends Connector<
 
   protected onAccountsChanged = (accounts: string[]) => {
     if (accounts.length === 0) this.emit('disconnect');
-    else
-      this.emit('change', {
-        account: getAddress(<string>accounts[0]) as Address,
-      });
+    else this.emit('change', { account: getAddress(<string>accounts[0]) });
   };
 
   protected onChainChanged = (chainId: number | ChainIdHex) => {
