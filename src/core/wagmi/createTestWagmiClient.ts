@@ -19,7 +19,7 @@ const noopStorage = {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, optimism, polygon, arbitrum, bsc],
+  [mainnet, optimism, polygon, arbitrum, bsc] as Chain[],
   [
     jsonRpcProvider({
       rpc: () => {

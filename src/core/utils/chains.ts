@@ -1,4 +1,4 @@
-import type { Address } from 'wagmi';
+import type { Address, Chain } from 'wagmi';
 import { arbitrum, bsc, mainnet, optimism, polygon } from 'wagmi/chains';
 
 import { ETH_ADDRESS, NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
@@ -6,7 +6,7 @@ import { ChainId, ChainName } from '~/core/types/chains';
 
 import { isLowerCaseMatch } from './strings';
 
-export const SUPPORTED_CHAINS = [
+export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
   polygon,
   optimism,
