@@ -84,7 +84,7 @@ export class RainbowConnector extends Connector<
     return this.#provider;
   }
 
-  async getSigner({ chainId }: { chainId?: number } = {}) {
+  async getWalletClient({ chainId }: { chainId?: number } = {}) {
     const [provider, account] = await Promise.all([
       this.getProvider(),
       this.getAccount(),
