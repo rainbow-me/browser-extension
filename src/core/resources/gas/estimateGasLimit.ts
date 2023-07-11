@@ -1,7 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { ChainId } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from '@wagmi/core';
 import { Chain } from 'wagmi';
 
 import {
@@ -47,7 +47,7 @@ type EstimateGasLimitQueryKey = ReturnType<typeof estimateGasLimitQueryKey>;
 async function estimateGasLimitQueryFunction({
   queryKey: [{ chainId, transactionRequest }],
 }: QueryFunctionArgs<typeof estimateGasLimitQueryKey>) {
-  const provider = getProvider({ chainId });
+  const provider = getPublicClient({ chainId });
   const gasLimit = await estimateGas({
     transactionRequest,
     provider,

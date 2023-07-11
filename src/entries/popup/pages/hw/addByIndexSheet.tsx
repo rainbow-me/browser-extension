@@ -1,4 +1,4 @@
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from '@wagmi/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Address } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
@@ -100,7 +100,7 @@ export const AddByIndexSheet = ({
         Number(newIndex),
       )) as Address;
       if (newAddress) {
-        const provider = getProvider({ chainId: mainnet.id });
+        const provider = getPublicClient({ chainId: mainnet.id });
         const balance = await provider.getBalance(newAddress);
 
         const nativeCurrencyAmount = convertRawAmountToNativeDisplay(

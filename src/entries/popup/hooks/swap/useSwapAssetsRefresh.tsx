@@ -1,4 +1,4 @@
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from '@wagmi/core';
 import { useCallback, useEffect, useRef } from 'react';
 
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
@@ -43,8 +43,10 @@ export const useSwapRefreshAssets = () => {
       const [assetToBuy, assetToSell] = assetsToRefresh;
 
       const updatedAssets = userAssets;
-      const assetToBuyProvider = getProvider({ chainId: assetToBuy?.chainId });
-      const assetToSellProvider = getProvider({
+      const assetToBuyProvider = getPublicClient({
+        chainId: assetToBuy?.chainId,
+      });
+      const assetToSellProvider = getPublicClient({
         chainId: assetToSell?.chainId,
       });
 

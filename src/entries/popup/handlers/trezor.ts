@@ -3,7 +3,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from '@wagmi/core';
 import { Bytes, UnsignedTransaction, ethers } from 'ethers';
 import { Address } from 'wagmi';
 
@@ -29,7 +29,7 @@ export async function signTransactionFromTrezor(
   try {
     window.TrezorConnect.init(TREZOR_CONFIG);
     const { from: address } = transaction;
-    const provider = getProvider({
+    const provider = getPublicClient({
       chainId: transaction.chainId,
     });
 
@@ -99,7 +99,7 @@ export async function sendTransactionFromTrezor(
   transaction: ethers.providers.TransactionRequest,
 ): Promise<TransactionResponse> {
   const serializedTransaction = await signTransactionFromTrezor(transaction);
-  const provider = getProvider({
+  const provider = getPublicClient({
     chainId: transaction.chainId,
   });
   return provider.sendTransaction(serializedTransaction);

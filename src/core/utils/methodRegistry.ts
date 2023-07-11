@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Contract, ContractInterface } from '@ethersproject/contracts';
-import { Address, getProvider } from '@wagmi/core';
+import { Address, getPublicClient } from '@wagmi/core';
 
 import { metadataClient } from '~/core/graphql';
 
@@ -42,7 +42,7 @@ export const methodRegistryLookupAndParse = async (
     const methodRegistryABI = (await fetchJsonLocally(
       'abis/method-registry-abi.json',
     )) as ContractInterface;
-    const provider = getProvider({ chainId: 1 });
+    const provider = getPublicClient({ chainId: 1 });
 
     const registry = new Contract(
       METHOD_REGISTRY_ADDRESS,

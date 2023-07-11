@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address, getProvider } from '@wagmi/core';
+import { Address, getPublicClient } from '@wagmi/core';
 
 import { i18n } from '~/core/languages';
 import {
@@ -50,7 +50,7 @@ async function registryLookupQueryFunction({
     return i18n.t('approve_request.contract_deployment');
   }
   if ((!data || data === '0x') && hash) {
-    const provider = getProvider({ chainId });
+    const provider = getPublicClient({ chainId });
     const tx = await provider.getTransaction(hash);
     dataToLookup = tx.data;
   }

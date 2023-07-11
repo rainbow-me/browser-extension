@@ -1,6 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Wallet } from '@ethersproject/wallet';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from '@wagmi/core';
 import { Address } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
 
@@ -69,7 +69,7 @@ export class HardwareWalletKeychain implements IKeychain {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getSigner(address: Address): Signer {
-    const provider = getProvider({ chainId: mainnet.id });
+    const provider = getPublicClient({ chainId: mainnet.id });
     return new HWSigner(
       provider,
       this.getPath(address),

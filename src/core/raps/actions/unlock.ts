@@ -2,7 +2,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { formatEther } from '@ethersproject/units';
-import { Address, erc20ABI, getProvider } from '@wagmi/core';
+import { Address, erc20ABI, getPublicClient } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
 import {
@@ -34,7 +34,7 @@ export const getAssetRawAllowance = async ({
   chainId: ChainId;
 }) => {
   try {
-    const provider = await getProvider({ chainId });
+    const provider = await getPublicClient({ chainId });
     const tokenContract = new Contract(assetAddress, erc20ABI, provider);
     const allowance = await tokenContract.allowance(owner, spender);
     return allowance.toString();
@@ -86,7 +86,7 @@ export const estimateApprove = async ({
   chainId: ChainId;
 }): Promise<string> => {
   try {
-    const provider = getProvider({ chainId });
+    const provider = getPublicClient({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
     const gasLimit = await tokenContract.estimateGas.approve(
       spender,

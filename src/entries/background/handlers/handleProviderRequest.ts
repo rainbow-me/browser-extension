@@ -4,7 +4,7 @@ import { isAddress } from '@ethersproject/address';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
 import { event } from '~/analytics/event';
@@ -244,45 +244,45 @@ export const handleProviderRequest = ({
           break;
         }
         case 'eth_blockNumber': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
+          const provider = getPublicClient({ chainId: activeSession?.chainId });
           const blockNumber = await provider.getBlockNumber();
           response = toHex(String(blockNumber));
           break;
         }
         case 'eth_getBlockByNumber': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
+          const provider = getPublicClient({ chainId: activeSession?.chainId });
           response = await provider.getBlock(params?.[0] as string);
           break;
         }
         case 'eth_getBalance': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
+          const provider = getPublicClient({ chainId: activeSession?.chainId });
           response = await provider.getBalance(params?.[0] as string);
           break;
         }
         case 'eth_getTransactionByHash': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
+          const provider = getPublicClient({ chainId: activeSession?.chainId });
           response = await provider.getTransaction(params?.[0] as string);
           break;
         }
         case 'eth_call': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
+          const provider = getPublicClient({ chainId: activeSession?.chainId });
           response = await provider.call(params?.[0] as TransactionRequest);
           break;
         }
         case 'eth_estimateGas': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
+          const provider = getPublicClient({ chainId: activeSession?.chainId });
           response = await provider.estimateGas(
             params?.[0] as TransactionRequest,
           );
           break;
         }
         case 'eth_gasPrice': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
+          const provider = getPublicClient({ chainId: activeSession?.chainId });
           response = await provider.getGasPrice();
           break;
         }
         case 'eth_getCode': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
+          const provider = getPublicClient({ chainId: activeSession?.chainId });
           response = await provider.getCode(
             params?.[0] as string,
             params?.[1] as string,
@@ -304,7 +304,7 @@ export const handleProviderRequest = ({
               throw new Error('next');
             }
             // Let's try to fwd the request to the provider
-            const provider = getProvider({
+            const provider = getPublicClient({
               chainId: activeSession?.chainId,
             }) as StaticJsonRpcProvider;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
