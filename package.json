@@ -129,7 +129,7 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "wagmi": "0.10.13",
+    "wagmi": "0.11.7",
     "zustand": "4.1.2"
   },
   "devDependencies": {
@@ -258,7 +258,10 @@
       "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false,
       "firebase>@firebase/firestore>@grpc/grpc-js>@grpc/proto-loader>protobufjs": false,
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@ledgerhq/hw-app-eth>@ledgerhq/domain-service>eip55>keccak": false
+      "@ledgerhq/hw-app-eth>@ledgerhq/domain-service>eip55>keccak": false,
+      "@rainbow-me/swaps>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@rainbow-me/swaps>ethereumjs-util>ethereum-cryptography>secp256k1": false,
+      "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>@solana/web3.js>bigint-buffer": false
     }
   },
   "lint-staged": {
