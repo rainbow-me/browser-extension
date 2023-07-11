@@ -13,6 +13,7 @@ export const hardhat: Chain = {
     symbol: 'eth',
   },
   rpcUrls: {
+    public: { http: ['http://127.0.0.1:8545'] },
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
