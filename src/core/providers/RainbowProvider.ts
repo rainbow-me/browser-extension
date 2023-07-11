@@ -1,4 +1,4 @@
-import { Ethereum } from '@wagmi/core';
+import { WindowProvider as Ethereum } from '@wagmi/core';
 import { EventEmitter } from 'eventemitter3';
 
 import { Messenger } from '../messengers';

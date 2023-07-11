@@ -1,4 +1,4 @@
-import { Ethereum } from '@wagmi/core';
+import { WindowProvider as Ethereum } from '@wagmi/core';
 
 import { initializeMessenger } from '~/core/messengers';
 import { RainbowProvider } from '~/core/providers';
