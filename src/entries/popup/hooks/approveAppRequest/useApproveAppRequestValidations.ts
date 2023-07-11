@@ -1,5 +1,5 @@
+import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
 import { useMemo } from 'react';
-import { arbitrum, bsc, mainnet, optimism, polygon } from 'wagmi/chains';
 
 import { i18n } from '~/core/languages';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';

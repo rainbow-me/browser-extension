@@ -1,4 +1,5 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
 import {
   Chain,
   CreateClientConfig,
@@ -6,7 +7,6 @@ import {
   createClient,
   createStorage,
 } from 'wagmi';
-import { arbitrum, bsc, mainnet, optimism, polygon } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { queryClient } from '../react-query';

@@ -6,9 +6,9 @@ import {
   SwapType,
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
+import { mainnet } from '@wagmi/chains';
 import { getProvider } from '@wagmi/core';
 import { beforeAll, expect, test } from 'vitest';
-import { mainnet } from 'wagmi/chains';
 
 import { ChainId } from '~/core/types/chains';
 import {

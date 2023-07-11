@@ -1,9 +1,9 @@
 import { Wallet } from '@ethersproject/wallet';
 import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
+import { mainnet } from '@wagmi/chains';
 import { getProvider } from '@wagmi/core';
 import { beforeAll, expect, test } from 'vitest';
 import { Address } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
 
 import {
   RAINBOW_WALLET_ADDRESS,

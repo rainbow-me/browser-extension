@@ -6,9 +6,9 @@ import {
   SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
+import { mainnet } from '@wagmi/chains';
 import { getProvider } from '@wagmi/core';
 import { beforeAll, expect, test } from 'vitest';
-import { mainnet } from 'wagmi/chains';
 
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
 

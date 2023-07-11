@@ -1,7 +1,7 @@
+import { mainnet } from '@wagmi/chains';
 import { getProvider } from '@wagmi/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Address } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
 
 import { i18n } from '~/core/languages';
 import { useCurrentCurrencyStore } from '~/core/state';
