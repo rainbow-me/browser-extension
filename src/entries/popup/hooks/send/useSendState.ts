@@ -79,7 +79,7 @@ export const useSendState = ({
     chainId,
     data,
     fromAddress,
-    toAddress,
+    toAddress: toAddress as Address,
     toEnsName,
     txToAddress,
     value,
