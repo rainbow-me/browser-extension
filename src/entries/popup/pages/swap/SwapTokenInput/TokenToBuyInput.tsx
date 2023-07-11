@@ -58,7 +58,6 @@ export const TokenToBuyInput = ({
   setAssetFilter,
   setOutputChainId,
   setAssetToBuyInputValue,
-  setIndependentField,
 }: TokenToBuyProps) => {
   const onSelectAssetRef =
     useRef<(address: ParsedSearchAsset | null) => void>();
@@ -136,7 +135,7 @@ export const TokenToBuyInput = ({
       openDropdownOnMount={openDropdownOnMount}
       inputDisabled={inputDisabled}
       ref={dropdownRef}
-      onFocus={() => setIndependentField('buyField')}
+      // onFocus={() => setIndependentField('buyField')}
     />
   );
 };
