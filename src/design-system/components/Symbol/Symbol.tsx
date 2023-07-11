@@ -15,41 +15,47 @@ export type SymbolProps = {
   gradient?: React.ReactNode;
 };
 
-export function Symbol({
-  color = 'label',
-  cursor = 'default',
-  symbol: name,
-  weight,
-  size,
-  gradient,
-}: SymbolProps) {
-  const symbol = symbols[name as keyof typeof symbols][weight];
+export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
+  function Symbol(
+    {
+      color = 'label',
+      cursor = 'default',
+      symbol: name,
+      weight,
+      size,
+      gradient,
+    },
+    ref,
+  ) {
+    const symbol = symbols[name as keyof typeof symbols][weight];
 
-  return (
-    <Box style={{ height: size, width: size }}>
-      <Box
-        style={{
-          transform: 'scale(0.5)',
-          transformOrigin: 'top left',
-          willChange: 'transform',
-        }}
-      >
-        <svg
-          cursor={cursor}
-          viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
-          fill="none"
-          className={symbolStyles({ color })}
-          style={{ width: size * 2, height: size * 2 }}
-          xmlns="http://www.w3.org/2000/svg"
+    return (
+      <Box style={{ height: size, width: size }}>
+        <Box
+          style={{
+            transform: 'scale(0.5)',
+            transformOrigin: 'top left',
+            willChange: 'transform',
+          }}
         >
-          {gradient ? <defs>{gradient}</defs> : null}
-          <path
-            d={symbol.path}
-            fill={gradient ? 'url(#gradient)' : 'currentColor'}
-            shapeRendering="geometricPrecision"
-          />
-        </svg>
+          <svg
+            cursor={cursor}
+            viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
+            fill="none"
+            className={symbolStyles({ color })}
+            ref={ref}
+            style={{ width: size * 2, height: size * 2 }}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {gradient ? <defs>{gradient}</defs> : null}
+            <path
+              d={symbol.path}
+              fill={gradient ? 'url(#gradient)' : 'currentColor'}
+              shapeRendering="geometricPrecision"
+            />
+          </svg>
+        </Box>
       </Box>
-    </Box>
-  );
-}
+    );
+  },
+);
