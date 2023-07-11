@@ -23,6 +23,7 @@ const ASSET_SOURCE = {
   [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
   [ChainId.polygon]: 'assets/badges/polygonBadge.png',
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
+  [ChainId.zora]: 'assets/badges/optimismBadge.png',
 };
 
 export const Notification = ({

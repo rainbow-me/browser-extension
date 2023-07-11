@@ -1,4 +1,4 @@
-import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
+import { arbitrum, bsc, mainnet, optimism, polygon, zora } from '@wagmi/chains';
 import type { Address, Chain } from 'wagmi';
 
 import { ETH_ADDRESS, NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
@@ -12,6 +12,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
   optimism,
   { ...arbitrum, name: 'Arbitrum' },
   bsc,
+  zora,
 ];
 
 /**
@@ -25,10 +26,12 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
     case ChainName.bsc:
     case ChainName.optimism:
     case ChainName.polygon:
+    case ChainName.zora:
     case ChainId.arbitrum:
     case ChainId.bsc:
     case ChainId.optimism:
     case ChainId.polygon:
+    case ChainId.zora:
       return true;
     default:
       return false;

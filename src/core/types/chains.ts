@@ -25,6 +25,7 @@ export enum ChainName {
   goerli = 'goerli',
   optimism = 'optimism',
   polygon = 'polygon',
+  zora = 'zora',
   mainnet = 'mainnet',
   hardhat = 'hardhat',
 }
@@ -36,6 +37,7 @@ export enum ChainId {
   optimism = chain.optimism.id,
   mainnet = chain.mainnet.id,
   polygon = chain.polygon.id,
+  zora = chain.zora.id,
   hardhat = HARDHAT_CHAIN_ID,
 }
 
@@ -44,6 +46,7 @@ export const ChainNameDisplay = {
   [ChainId.bsc]: 'Binance Chain',
   [ChainId.optimism]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
+  [ChainId.zora]: 'Zora',
   [ChainId.mainnet]: 'Ethereum',
   [ChainId.hardhat]: 'Hardhat',
 };

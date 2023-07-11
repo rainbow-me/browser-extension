@@ -39,6 +39,7 @@ const networkBadges = {
   [ChainId.optimism]: OptimismBadge,
   [ChainId.arbitrum]: ArbitrumBadge,
   [ChainId.bsc]: BscBadge,
+  [ChainId.zora]: OptimismBadge,
   [ChainId.hardhat]: HardhatBadge,
 };
 

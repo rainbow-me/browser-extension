@@ -483,7 +483,8 @@ export type ForegroundColor =
   | 'arbitrum'
   | 'optimism'
   | 'polygon'
-  | 'bsc';
+  | 'bsc'
+  | 'zora';
 
 export const foregroundColors: Record<
   ForegroundColor,
@@ -567,6 +568,10 @@ export const foregroundColors: Record<
     light: '#EBAF09',
     dark: '#EBAF09',
   },
+  zora: {
+    light: '#FF4040',
+    dark: '#FF8A8A',
+  },
 };
 
 function selectForegroundColors<
@@ -617,6 +622,7 @@ export const textColors = selectForegroundColors(
   'optimism',
   'polygon',
   'bsc',
+  'zora',
   ...genericColors,
 );
 export type TextColor = typeof textColors[number];

@@ -39,6 +39,8 @@ const { chains, provider, webSocketProvider } = configureChains(
             return { http: process.env.POLYGON_MAINNET_RPC as string };
           case ChainId.bsc:
             return { http: process.env.BSC_MAINNET_RPC as string };
+          case ChainId.zora:
+            return { http: process.env.OPTIMISM_MAINNET_RPC as string };
           default:
             return null;
         }

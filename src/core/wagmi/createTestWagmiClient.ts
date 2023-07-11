@@ -1,5 +1,5 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
+import { arbitrum, bsc, mainnet, optimism, polygon, zora } from '@wagmi/chains';
 import {
   Chain,
   CreateClientConfig,
@@ -19,7 +19,7 @@ const noopStorage = {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, optimism, polygon, arbitrum, bsc] as Chain[],
+  [mainnet, optimism, polygon, arbitrum, bsc, zora] as Chain[],
   [
     jsonRpcProvider({
       rpc: () => {
