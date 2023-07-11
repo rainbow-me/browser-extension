@@ -1,9 +1,9 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import {
   Chain,
-  CreateConfigParameters,
+  CreateClientConfig,
   configureChains,
-  createConfig,
+  createClient,
   createStorage,
 } from 'wagmi';
 import { arbitrum, bsc, mainnet, optimism, polygon } from 'wagmi/chains';
@@ -18,7 +18,7 @@ const noopStorage = {
   removeItem: () => null,
 };
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
+const { chains, provider, webSocketProvider } = configureChains(
   [mainnet, optimism, polygon, arbitrum, bsc] as Chain[],
   [
     jsonRpcProvider({
@@ -43,22 +43,20 @@ export function createTestWagmiClient({
   connectors,
   persist,
 }: {
-  autoConnect?: CreateConfigParameters['autoConnect'];
-  connectors?: (opts: {
-    chains: Chain[];
-  }) => CreateConfigParameters['connectors'];
+  autoConnect?: CreateClientConfig['autoConnect'];
+  connectors?: (opts: { chains: Chain[] }) => CreateClientConfig['connectors'];
   persist?: boolean;
 } = {}) {
-  return createConfig({
+  return createClient({
     autoConnect,
     connectors: connectors ? connectors({ chains }) : undefined,
     persister: persist ? asyncStoragePersister : undefined,
-    publicClient,
+    provider,
     // Passing `undefined` will use wagmi's default storage (window.localStorage).
     // If `persist` is falsy, we want to pass through a noopStorage.
     storage: persist ? undefined : createStorage({ storage: noopStorage }),
     // @ts-expect-error – TODO: fix this
     queryClient,
-    webSocketPublicClient,
+    webSocketProvider,
   });
 }
