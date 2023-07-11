@@ -73,7 +73,6 @@ export function createWagmiClient({
     // Passing `undefined` will use wagmi's default storage (window.localStorage).
     // If `persist` is falsy, we want to pass through a noopStorage.
     storage: persist ? undefined : createStorage({ storage: noopStorage }),
-    // @ts-expect-error – TODO: fix this
     queryClient,
     webSocketProvider,
   });
