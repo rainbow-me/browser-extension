@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - The native currency values are now editable in the Swap flow so that you can i.e. swap $100 USD of ETH to a different token, without manually estimating token amounts #702
 - You can now confirm a Swap with the keyboard `return` key, and navigate around with `tab` and arrow keys to adjust Swap Settings
 - Improved lengthy token amount display behavior in the Swap flow when using the Max feature #711
-- The destination Wallet Selection in Send is now collapsible by clicking the drop-down cell #712
+- The destination Wallet Selection in Send is now collapsible by clicking the drop-down cell #712 #758
 - Improved header scroll animation and feel #691
 - Renamed to `Binance Chain` chain to `BNB Smart Chain` #716
 - Renamed `Polygon (Matic)` chain to `Polygon` #737
@@ -34,9 +34,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Improvements for `eth_requestAccounts` and `eth_accounts` RPC calls to mirror MetaMask, as well as param order inversion support #730
 - Ledger connection fixes, including “device is already open” scenario and waiting for the transport to closed #720
+- Improvements to dApp provider responsiveness, including network and account changes sent from a dApp #722
 - Improved Token right-click Send flow to correctly highlight wallet selection instead of token selection #714
 - Fixed a scenario where you could inadvertently create a new wallet after canceling the create process during the naming step #726
 - Fixed spacing on the green/red dApp connection indicator #721
+- Fixed My QR Code styling to mirror the Rainbow App and RainbowKit #734
+- Fixed an issue where clicking the wallet name on the My QR Code screen opened the Wallet Switcher #734
 - Settings style fixes & tweaks #719
 - Fixed Watched Wallet alert when Swap keyboard shortcuts are used #723
 - Trimming whitespace when entering an ENS or public address to watch #681
@@ -48,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Resolved problem area when fetching from localstorage APIs to anticipate undefined when they’re still booting #728
 - Network caching improvements for ENS Profile avatars #704
 - Fixed React implementation issue with symbols that caused some console warnings in Settings #736
+- Improvements to network caching for errors and bad requests #745
 
 ## [v1.1.17](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.17)
 
