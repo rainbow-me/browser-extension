@@ -58,9 +58,6 @@ export const useSwapInputs = ({
 
   const setIndependentFieldIfOccupied = useCallback(
     (field: IndependentField) => {
-      console.log('attempting to set independent field: ', field);
-      console.log('asset to buy: ', assetToBuy);
-      console.log('asset to sell: ', assetToSell);
       if (['sellField', 'sellNativeField'].includes(field) && !assetToSell) {
         return;
       }
