@@ -14,30 +14,36 @@ export type SymbolProps = {
   gradient?: React.ReactNode;
 };
 
-export function Symbol({
-  color = 'label',
-  cursor = 'default',
-  symbol: name,
-  weight,
-  size,
-  gradient,
-}: SymbolProps) {
-  const symbol = symbols[name as keyof typeof symbols][weight];
+export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
+  function Symbol(
+    {
+      color = 'label',
+      cursor = 'default',
+      symbol: name,
+      weight,
+      size,
+      gradient,
+    },
+    ref,
+  ) {
+    const symbol = symbols[name as keyof typeof symbols][weight];
 
-  return (
-    <svg
-      cursor={cursor}
-      viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
-      fill="none"
-      className={symbolStyles({ color })}
-      style={{ width: size, height: size }}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {gradient ? <defs>{gradient}</defs> : null}
-      <path
-        d={symbol.path}
-        fill={gradient ? 'url(#gradient)' : 'currentColor'}
-      />
-    </svg>
-  );
-}
+    return (
+      <svg
+        ref={ref}
+        cursor={cursor}
+        viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
+        fill="none"
+        className={symbolStyles({ color })}
+        style={{ width: size, height: size }}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {gradient ? <defs>{gradient}</defs> : null}
+        <path
+          d={symbol.path}
+          fill={gradient ? 'url(#gradient)' : 'currentColor'}
+        />
+      </svg>
+    );
+  },
+);

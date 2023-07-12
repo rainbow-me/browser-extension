@@ -97,13 +97,16 @@ export class HardwareWalletKeychain implements IKeychain {
     };
   }
 
-  async deserialize(opts: SerializedHardwareWalletKeychain) {
-    if (opts?.hdPath) privates.get(this).hdPath = opts.hdPath;
-    if (opts?.deviceId) privates.get(this).deviceId = opts.deviceId;
-    if (opts?.wallets) privates.get(this).wallets = opts.wallets;
-    if (opts?.vendor) this.vendor = opts.vendor;
-    if (opts?.accountsEnabled)
+  async deserialize(opts?: SerializedHardwareWalletKeychain) {
+    if (!opts) return;
+    if (opts.hdPath) privates.get(this).hdPath = opts.hdPath;
+    if (opts.deviceId) privates.get(this).deviceId = opts.deviceId;
+    if (opts.wallets) privates.get(this).wallets = opts.wallets;
+    if (opts.vendor) this.vendor = opts.vendor;
+    if (opts.accountsEnabled)
       privates.get(this).accountsEnabled = opts.accountsEnabled;
+    if (opts.accountsDeleted?.length)
+      privates.get(this).accountsDeleted = opts.accountsDeleted;
   }
 
   getAccounts(): Promise<Array<Address>> {
