@@ -151,6 +151,8 @@ it('should be able to edit contact on send flow', async () => {
 });
 
 it('should be able to delete contact on send flow', async () => {
+  await delayTime('medium');
+
   await findElementByTestIdAndClick({
     id: 'navbar-contact-button-edit',
     driver,
