@@ -253,6 +253,17 @@ export const handleSignificantDecimals = (
     : resultBN.toFormat();
 };
 
+export const handleSignificantDecimalsAsNumber = (
+  value: BigNumberish,
+  decimals: number,
+): string => {
+  return new BigNumber(
+    new BigNumber(multiply(value, new BigNumber(10).pow(decimals))).toFixed(0),
+  )
+    .dividedBy(new BigNumber(10).pow(decimals))
+    .toFixed();
+};
+
 /**
  * @desc convert from asset BigNumber amount to native price BigNumber amount
  */

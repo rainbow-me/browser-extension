@@ -19,11 +19,19 @@ export const getSigningRequestDisplayDetails = (
     }
     case 'personal_sign': {
       let message = payload?.params?.[0] as string;
-      const address = payload?.params?.[1] as Address;
+      let address = payload?.params?.[1] as Address;
+      // While this is technically incorrect
+      // we'll support anyways for compatibility purposes
+      // since other wallets do it
+      if (isAddress(message)) {
+        message = payload?.params?.[1] as string;
+        address = payload?.params?.[0] as Address;
+      }
+
       try {
         const strippedMessage = isHexString(message)
           ? message.slice(2)
-          : message;
+          : `${Buffer.from(message, 'utf8').toString('hex')}`; // Some dapps send the message as a utf8 string
         const buffer = Buffer.from(strippedMessage, 'hex');
         message = buffer.length === 32 ? message : buffer.toString('utf8');
       } catch (error) {

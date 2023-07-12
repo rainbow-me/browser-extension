@@ -102,6 +102,52 @@ const LedgerNeedsUnlock = () => {
     </Box>
   );
 };
+const LedgerNeedsExclusivity = () => {
+  return (
+    <Box>
+      <Stack space="24px" alignHorizontal="center">
+        <Box alignItems="center" paddingHorizontal="48px">
+          <Stack space="12px">
+            <Text size="16pt" weight="bold" color="label" align="center">
+              {i18n.t('hw.exclusivity_ledger_title')}
+            </Text>
+            <Text
+              size="12pt"
+              weight="regular"
+              color="labelTertiary"
+              align="center"
+            >
+              {i18n.t('hw.exclusivity_ledger_description')}
+            </Text>
+            <Text
+              size="12pt"
+              weight="regular"
+              color="labelTertiary"
+              align="center"
+            >
+              {i18n.t('hw.exclusivity_ledger_description_2')}
+            </Text>
+          </Stack>
+        </Box>
+        <Box alignItems="center" width="full" style={{ width: '106px' }}>
+          <Separator color="separatorTertiary" strokeWeight="1px" />
+        </Box>
+      </Stack>
+
+      <Box
+        alignItems="center"
+        justifyContent="center"
+        display="flex"
+        style={{ zIndex: 1 }}
+        paddingTop="8px"
+        paddingLeft="19px"
+        marginBottom="-52px"
+      >
+        <img src={ledgerDevice} width="130" />
+      </Box>
+    </Box>
+  );
+};
 
 const LedgerNeedsAppOpened = () => {
   return (
@@ -151,7 +197,7 @@ const LedgerNeedsAppOpened = () => {
 
 export function ConnectLedger() {
   const [connectingState, setConnectingState] = useState<
-    'needs_connect' | 'needs_unlock' | 'needs_app'
+    'needs_connect' | 'needs_unlock' | 'needs_app' | 'needs_exclusivity'
   >('needs_connect');
 
   const navigate = useRainbowNavigate();
@@ -171,7 +217,11 @@ export function ConnectLedger() {
       });
     } else if (res.error) {
       setConnectingState(
-        res.error as 'needs_connect' | 'needs_unlock' | 'needs_app',
+        res.error as
+          | 'needs_connect'
+          | 'needs_unlock'
+          | 'needs_app'
+          | 'needs_exclusivity',
       );
       clearTimeout(timer.current);
       timer.current = setTimeout(() => {
@@ -207,6 +257,11 @@ export function ConnectLedger() {
         {connectingState === 'needs_connect' && (
           <Box as={motion.div} key="needs-connect">
             <ConnectingToLedger />
+          </Box>
+        )}
+        {connectingState === 'needs_exclusivity' && (
+          <Box as={motion.div} key="needs-exclusivity">
+            <LedgerNeedsExclusivity />
           </Box>
         )}
       </AnimatePresence>

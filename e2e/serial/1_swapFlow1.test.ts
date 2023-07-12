@@ -9,6 +9,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
+  delay,
   delayTime,
   doNotFindElementByTestId,
   fillPrivateKey,
@@ -325,11 +326,11 @@ it('should be able to select same asset than asset to buy as asset to sell and r
 });
 
 it('should be able to open press max on token to sell input', async () => {
-  const fiatValueText = await getTextFromText({
-    id: 'token-to-sell-info-fiat-value',
+  const fiatValueText = await getTextFromTextInput({
+    id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
-  expect(fiatValueText).toBe('$0.00');
+  expect(fiatValueText).toBe('');
   await findElementByTestIdAndClick({
     id: 'token-to-sell-info-max-button',
     driver,
@@ -339,11 +340,11 @@ it('should be able to open press max on token to sell input', async () => {
     driver,
   });
   expect(ethValueBeforeGas).toEqual('10000');
-  const fiatValueTextAfterMax = await getTextFromText({
-    id: 'token-to-sell-info-fiat-value',
+  const fiatValueTextAfterMax = await getTextFromTextInput({
+    id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
-  expect(fiatValueTextAfterMax).not.toEqual('$0.00');
+  expect(fiatValueTextAfterMax).not.toEqual('0.00');
 });
 
 it('should be able to remove token to sell and select it again', async () => {
@@ -388,6 +389,34 @@ it('should be able to open token to buy input and select assets', async () => {
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
+});
+
+it('should be able to type native amount on sell input', async () => {
+  await typeOnTextInput({
+    id: `token-to-sell-info-fiat-value-input`,
+    text: 1,
+    driver,
+  });
+  const fiatValueText = await getTextFromTextInput({
+    id: 'token-to-sell-info-fiat-value-input',
+    driver,
+  });
+  expect(fiatValueText).toBe('1');
+
+  await delayTime('very-long');
+  await delayTime('very-long');
+
+  const assetToSellInputText = await getTextFromTextInput({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  expect(assetToSellInputText).not.toBe('');
+
+  const assetToBuyInputText = await getTextFromTextInput({
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  expect(assetToBuyInputText).not.toBe('');
 });
 
 it('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
@@ -940,9 +969,13 @@ it('should be able to execute swap', async () => {
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('very-long');
+  // Adding delay to make sure the provider gets the balance after the swap
+  // Because CI is slow so this triggers a race condition most of the time.
+  await delay(5000);
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
+
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
     ethBalanceAfterSwap.toString(),

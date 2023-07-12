@@ -111,7 +111,7 @@ export function Settings() {
   );
 
   return (
-    <Box paddingHorizontal="20px">
+    <Box paddingHorizontal="20px" background="surfaceSecondary">
       <MenuContainer testId="settings-menu-container">
         <Menu>
           <MenuItem
@@ -194,7 +194,11 @@ export function Settings() {
             }
           />
           <Lens
-            borderRadius="6px"
+            style={{
+              borderRadius: 6,
+              borderBottomLeftRadius: 15,
+              borderBottomRightRadius: 15,
+            }}
             onKeyDown={() => setThemeDropdownOpen(true)}
             onClick={() => setThemeDropdownOpen(true)}
           >

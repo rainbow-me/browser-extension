@@ -3,6 +3,7 @@ import React, { useCallback, useRef } from 'react';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
+import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { TokenToSellDropdown } from './TokenDropdown/TokenToSellDropdown';
@@ -21,14 +22,18 @@ interface SwapTokenInputProps {
   sortMethod: SortMethod;
   zIndex?: number;
   inputRef: React.RefObject<HTMLInputElement>;
+  independentField: IndependentField;
   openDropdownOnMount?: boolean;
-  assetToSellNativeValue: { amount: string; display: string } | null;
+  assetToSellNativeDisplay: { amount: string; display: string } | null;
+  assetToSellNativeValue: string;
   onDropdownOpen: (open: boolean) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputValue: (value: string) => void;
+  setAssetToSellInputNativeValue: (value: string) => void;
+  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
 }
 
 export const TokenToSellInput = ({
@@ -44,6 +49,8 @@ export const TokenToSellInput = ({
   assetToSellValue,
   inputRef,
   openDropdownOnMount,
+  independentField,
+  assetToSellNativeDisplay,
   assetToSellNativeValue,
   onDropdownOpen,
   selectAsset,
@@ -51,6 +58,8 @@ export const TokenToSellInput = ({
   setSortMethod,
   setAssetToSellMaxValue,
   setAssetToSellInputValue,
+  setAssetToSellInputNativeValue,
+  setIndependentField,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(asset: ParsedSearchAsset) => void>();
   const dropdownRef = useRef<{ openDropdown: () => void }>(null);
@@ -104,11 +113,14 @@ export const TokenToSellInput = ({
       bottomComponent={
         asset ? (
           <TokenToSellInfo
+            assetToSellNativeDisplay={assetToSellNativeDisplay}
             assetToSellNativeValue={assetToSellNativeValue}
-            assetToSellValue={assetToSellValue}
             assetToSellMaxValue={assetToSellMaxValue}
             asset={asset}
             setAssetToSellMaxValue={setAssetToSellMaxValue}
+            setAssetToSellInputNativeValue={setAssetToSellInputNativeValue}
+            independentField={independentField}
+            setIndependentField={setIndependentField}
           />
         ) : null
       }
@@ -124,6 +136,7 @@ export const TokenToSellInput = ({
       setValue={setAssetToSellInputValue}
       openDropdownOnMount={openDropdownOnMount}
       ref={dropdownRef}
+      onFocus={() => setIndependentField('sellField')}
     />
   );
 };

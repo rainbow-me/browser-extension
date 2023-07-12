@@ -18,6 +18,7 @@ type AccountNameProps = {
   id?: string;
   size?: '16pt' | '20pt';
   chevron?: boolean;
+  disableNav?: boolean;
 };
 
 const chevronDownSizes = {
@@ -30,6 +31,7 @@ export function AccountName({
   size = '20pt',
   id,
   chevron = true,
+  disableNav = false,
 }: AccountNameProps) {
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
@@ -37,8 +39,10 @@ export function AccountName({
   const [hover, setHover] = useState(false);
 
   const handleClick = useCallback(() => {
-    navigate(ROUTES.WALLET_SWITCHER);
-  }, [navigate]);
+    if (!disableNav) {
+      navigate(ROUTES.WALLET_SWITCHER);
+    }
+  }, [navigate, disableNav]);
 
   const chevronProps = chevron
     ? {
@@ -51,7 +55,9 @@ export function AccountName({
 
   return (
     <Lens
-      tabIndex={includeAvatar ? -1 : tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
+      tabIndex={
+        includeAvatar || disableNav ? -1 : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
+      }
       onKeyDown={handleClick}
       borderRadius="6px"
       style={{ padding: includeAvatar ? 0 : 2 }}
