@@ -33,7 +33,7 @@ interface TokenToBuyProps {
   selectAsset: (asset: ParsedSearchAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToBuyInputValue: (value: string) => void;
-  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
+  setIndependentField: (field: IndependentField) => void;
 }
 
 export const TokenToBuyInput = ({
@@ -58,6 +58,7 @@ export const TokenToBuyInput = ({
   setAssetFilter,
   setOutputChainId,
   setAssetToBuyInputValue,
+  setIndependentField,
 }: TokenToBuyProps) => {
   const onSelectAssetRef =
     useRef<(address: ParsedSearchAsset | null) => void>();
@@ -135,7 +136,7 @@ export const TokenToBuyInput = ({
       openDropdownOnMount={openDropdownOnMount}
       inputDisabled={inputDisabled}
       ref={dropdownRef}
-      // onFocus={() => setIndependentField('buyField')}
+      onFocus={() => setIndependentField('buyField')}
     />
   );
 };
