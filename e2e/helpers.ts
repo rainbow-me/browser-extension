@@ -5,7 +5,6 @@ import { ethers } from 'ethers';
 import {
   Builder,
   By,
-  Locator,
   WebDriver,
   WebElementCondition,
   logging,
@@ -344,7 +343,7 @@ export async function getTextFromDappText({ id, driver }) {
   }
 }
 
-export const untilIsClickable = (locator: Locator) => {
+export const untilIsClickable = (locator) => {
   const convertedLocator =
     typeof locator === 'string' ? By.css(locator) : locator;
   return new WebElementCondition(

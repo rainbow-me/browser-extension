@@ -198,6 +198,7 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
     text: 'USDC',
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-favorites-token-to-buy-row`,
     driver,
