@@ -99,7 +99,7 @@ export const ShortcutRow = React.memo(
               </Text>
               <Column width="content">
                 <Inline space="4px">
-                  {featureFlags.command_k_shortcuts_enabled &&
+                  {featureFlags.command_k_internal_shortcuts_enabled &&
                     display &&
                     !selected && (
                       <Box

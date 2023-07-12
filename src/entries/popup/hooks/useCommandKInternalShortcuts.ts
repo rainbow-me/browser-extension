@@ -28,8 +28,10 @@ export function useCommandKInternalShortcuts(
   }, [shortcutList]);
 
   const getCommandKShortcutsAreEnabled = React.useCallback(() => {
-    return isCommandKVisible && featureFlags.command_k_shortcuts_enabled;
-  }, [isCommandKVisible, featureFlags.command_k_shortcuts_enabled]);
+    return (
+      isCommandKVisible && featureFlags.command_k_internal_shortcuts_enabled
+    );
+  }, [isCommandKVisible, featureFlags.command_k_internal_shortcuts_enabled]);
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {

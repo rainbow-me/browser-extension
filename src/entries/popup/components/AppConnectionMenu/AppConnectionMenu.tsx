@@ -140,10 +140,8 @@ export const AppConnectionMenu = ({
   }, [subMenuOpen]);
 
   useLayoutEffect(() => {
-    if (isCommandKVisible) {
-      if (menuOpen) {
-        setMenuOpen(false);
-      }
+    if (isCommandKVisible && menuOpen) {
+      setMenuOpen(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCommandKVisible]);

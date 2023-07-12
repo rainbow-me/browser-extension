@@ -31,20 +31,6 @@ export const shortcuts = {
       key: 'e',
     },
   },
-  commandK: {
-    ADD_WALLET: {
-      display: 'N',
-      key: 'n',
-    },
-    HIDE_ASSET_BALANCES: {
-      display: 'B',
-      key: 'b',
-    },
-    WATCH_WALLET: {
-      display: 'E',
-      key: 'e',
-    },
-  },
   connect: {
     CANCEL: {
       display: 'Esc',

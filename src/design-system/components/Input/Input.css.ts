@@ -27,10 +27,13 @@ export const heightStyles = styleVariants(inputHeights, (height) => [
 ]);
 
 export const placeholderStyle = style({
-  caretColor: semanticColorVars.foregroundColors.blue,
   '::placeholder': {
     color: semanticColorVars.foregroundColors.labelQuaternary,
   },
+});
+
+export const defaultCaretStyle = style({
+  caretColor: semanticColorVars.foregroundColors.blue,
 });
 
 export const accentCaretStyle = style({

@@ -15,6 +15,7 @@ import {
   accentCaretStyle,
   accentSelectionStyle,
   backgroundStyle,
+  defaultCaretStyle,
   heightStyles,
   placeholderStyle,
 } from './Input.css';
@@ -185,7 +186,7 @@ export function Input({
     textColor,
   } = stylesForVariant[variant];
   const {
-    borderRadius: defaultBordderRadius,
+    borderRadius: defaultBorderRadius,
     fontSize: defaultFontSize,
     paddingHorizontal,
     paddingVertical,
@@ -212,7 +213,7 @@ export function Input({
         background={background}
         borderColor={borderColor ? borderColor : borderColorFromVariant}
         borderWidth="1px"
-        borderRadius={borderRadius ?? defaultBordderRadius}
+        borderRadius={borderRadius ?? defaultBorderRadius}
         className={[
           backgroundStyle,
           heightStyles[height],
@@ -224,7 +225,7 @@ export function Input({
             textAlign,
           }),
           placeholderStyle,
-          enableAccentCaretStyle ? accentCaretStyle : null,
+          enableAccentCaretStyle ? accentCaretStyle : defaultCaretStyle,
           borderColor === 'accent' || enableAccentSelectionStyle
             ? accentSelectionStyle
             : null,
