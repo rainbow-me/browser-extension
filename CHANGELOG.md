@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.1.17](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.17)
+
+### Fixed
+
+- Resolved an issue with wallet balances in the Wallet Switcher list #717
+
 ## [v1.1.15](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.15)
 
 ### Changed
