@@ -15,25 +15,97 @@ interface ShortcutCommandWithRelevance extends ShortcutCommand {
   relevance: number;
 }
 
+interface CacheItem {
+  [name: string]: number;
+}
+
+const calculateCommandRelevance = (
+  command: ShortcutCommand,
+  query: string,
+): number => {
+  if (query === '') {
+    return 0;
+  } else {
+    const normalizedQuery = query.toLowerCase().trim();
+    const queryWords = normalizedQuery.split(' ').filter(Boolean);
+
+    const normalizedCommandName = command.name.toLowerCase();
+    const commandNameWords = normalizedCommandName.split(' ');
+
+    // High relevance: Command name starts with query
+    if (
+      !command.downrank &&
+      normalizedCommandName.startsWith(normalizedQuery)
+    ) {
+      return 4;
+    }
+
+    // Medium relevance: Non-leading word in command name starts with query
+    if (
+      commandNameWords.some(
+        (word, index) => index !== 0 && word.startsWith(normalizedQuery),
+      )
+    ) {
+      return 3;
+    }
+
+    // Low-medium relevance: A search tag begins with the query
+    const normalizedTags = command.searchTags
+      ? command.searchTags.map((tag) => tag.toLowerCase())
+      : [];
+    if (normalizedTags.some((tag) => tag.startsWith(normalizedQuery))) {
+      return 2;
+    }
+
+    // Low relevance: Command name or search tags contain the query
+    const checkSet = new Set([...commandNameWords, ...normalizedTags]);
+    if (
+      queryWords.every((word) => {
+        for (const item of checkSet) {
+          if (item.includes(word)) {
+            checkSet.delete(item);
+            return true;
+          }
+        }
+        return false;
+      })
+    ) {
+      return 1;
+    }
+
+    return 0;
+  }
+};
+
 const memoize = (
   search: (
     query: string,
     shortcutList: ShortcutCommand[],
   ) => ShortcutCommandWithRelevance[],
 ) => {
-  const resultsCache = new Map<string, ShortcutCommandWithRelevance[]>();
+  const resultsCache = new Map<string, CacheItem>();
 
-  return (query: string, shortcutList: ShortcutCommand[]) => {
+  return (
+    query: string,
+    shortcutList: ShortcutCommand[],
+  ): ShortcutCommandWithRelevance[] => {
     if (query === '') {
-      return search(query, shortcutList);
+      return shortcutList.map((sc) => ({ ...sc, relevance: 0 }));
     }
-    if (resultsCache.has(query)) {
-      return resultsCache.get(query);
-    }
-    const result = search(query, shortcutList);
-    resultsCache.set(query, result);
 
-    return result;
+    if (!resultsCache.has(query)) {
+      const result = search(query, shortcutList);
+      const cacheItem: CacheItem = {};
+      result.forEach((item) => (cacheItem[item.name] = item.relevance));
+      resultsCache.set(query, cacheItem);
+    }
+
+    const cachedItem = resultsCache.get(query) as CacheItem;
+
+    return shortcutList
+      .map((sc) => ({ ...sc, relevance: cachedItem[sc.name] || 0 }))
+      .filter((sc) => sc.relevance > 0)
+      .sort((a, b) => b.relevance - a.relevance);
   };
 };
 
@@ -42,68 +114,17 @@ export const filterAndSortShortcuts = memoize(
     query: string,
     shortcutList: ShortcutCommand[],
   ): ShortcutCommandWithRelevance[] => {
-    if (query === '') {
-      return shortcutList.map((sc) => ({ ...sc, relevance: 0 }));
-    }
+    const shortcutWithRelevance: ShortcutCommandWithRelevance[] = [];
 
-    const normalizedQuery = query.toLowerCase();
-    const queryWords = normalizedQuery.trim().split(' ').filter(Boolean);
-    const matchedCommands: ShortcutCommandWithRelevance[] = [];
+    for (const command of shortcutList) {
+      const relevance = calculateCommandRelevance(command, query);
 
-    commandLoop: for (const command of shortcutList) {
-      const normalizedCommandName = command.name.toLowerCase();
-      const commandNameWords = normalizedCommandName.split(' ');
-
-      // High relevance: Command name starts with query
-      if (
-        !command.downrank &&
-        normalizedCommandName.startsWith(normalizedQuery)
-      ) {
-        matchedCommands.push({ ...command, relevance: 4 });
-        continue commandLoop;
-      }
-
-      // Medium relevance: Non-leading word in command name starts with query
-      for (let i = 1; i < commandNameWords.length; i++) {
-        if (commandNameWords[i].startsWith(normalizedQuery)) {
-          matchedCommands.push({ ...command, relevance: 3 });
-          continue commandLoop;
-        }
-      }
-
-      // Low-medium relevance: A search tag begins with the query
-      const normalizedTags = command.searchTags
-        ? command.searchTags.map((tag) => tag.toLowerCase())
-        : [];
-
-      if (normalizedTags.length) {
-        for (const tag of normalizedTags) {
-          if (tag.startsWith(normalizedQuery)) {
-            matchedCommands.push({ ...command, relevance: 2 });
-            continue commandLoop;
-          }
-        }
-      }
-
-      // Low relevance: Command name or search tags contain the query
-      const checkSet = new Set([...commandNameWords, ...normalizedTags]);
-      let totalMatchesFound = 0;
-
-      for (const queryWord of queryWords) {
-        const matchedWord = [...checkSet].find((w) => w.startsWith(queryWord));
-
-        if (matchedWord) {
-          checkSet.delete(matchedWord);
-          totalMatchesFound += 1;
-        }
-      }
-
-      if (totalMatchesFound === queryWords.length) {
-        matchedCommands.push({ ...command, relevance: 1 });
+      if (relevance > 0) {
+        shortcutWithRelevance.push({ ...command, relevance });
       }
     }
 
-    return matchedCommands.sort((a, b) => b.relevance - a.relevance) || [];
+    return shortcutWithRelevance.sort((a, b) => b.relevance - a.relevance);
   },
 );
 
