@@ -1,3 +1,12 @@
+export const isValidUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
 export const getDappHost = (url: string) => {
   const host = new URL(url).host;
   if (host.indexOf('www.') === 0) {
