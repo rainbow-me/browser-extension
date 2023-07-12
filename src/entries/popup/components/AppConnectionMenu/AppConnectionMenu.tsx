@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion';
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
@@ -64,7 +63,7 @@ export const AppConnectionMenu = ({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentAddress } = useCurrentAddressStore();
-  const { appHost, appLogo, appName, appColor } = useAppMetadata({ url });
+  const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
 
   const {
@@ -209,25 +208,21 @@ export const AppConnectionMenu = ({
                             appSession ? changeChainId : connectToApp
                           }
                         >
-                          <AccentColorProviderWrapper
-                            color={appColor || undefined}
-                          >
-                            <SwitchNetworkMenuSelector
-                              type="dropdown"
-                              highlightAccentColor
-                              selectedValue={`${appSession?.chainId}`}
-                              onNetworkSelect={(e) => {
-                                e?.preventDefault();
-                                toggleSubMenu(false);
-                                setMenuOpen(false);
-                              }}
-                              onShortcutPress={
-                                appSession ? changeChainId : connectToApp
-                              }
-                              showDisconnect={!!appSession}
-                              disconnect={disconnect}
-                            />
-                          </AccentColorProviderWrapper>
+                          <SwitchNetworkMenuSelector
+                            type="dropdown"
+                            highlightAccentColor
+                            selectedValue={`${appSession?.chainId}`}
+                            onNetworkSelect={(e) => {
+                              e?.preventDefault();
+                              toggleSubMenu(false);
+                              setMenuOpen(false);
+                            }}
+                            onShortcutPress={
+                              appSession ? changeChainId : connectToApp
+                            }
+                            showDisconnect={!!appSession}
+                            disconnect={disconnect}
+                          />
                         </DropdownMenuRadioGroup>
                       </Stack>
                     </Box>

@@ -5,7 +5,7 @@ import {
   getPublicAppIcon,
 } from '~/core/utils/connectedApps';
 
-import { useDominantColor } from './useDominantColor';
+// import { useDominantColor } from './useDominantColor';
 
 interface AppMetadata {
   url?: string;
@@ -19,15 +19,15 @@ export function useAppMetadata({ url, title }: AppMetadata) {
   const appName = url
     ? getHardcodedDappInformation(appHostName)?.name || title
     : '';
-  const { data: appColor } = useDominantColor({
-    imageUrl: appLogo ?? undefined,
-  });
+  // const { data: appColor } = useDominantColor({
+  //   imageUrl: appLogo ?? undefined,
+  // });
 
   return {
     appHost,
     appHostName,
     appName,
     appLogo,
-    appColor,
+    // appColor,
   };
 }
