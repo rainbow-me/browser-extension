@@ -69,8 +69,8 @@ export function Privacy() {
               rightComponent={
                 <Toggle
                   tabIndex={-1}
-                  checked={analyticsDisabled}
-                  handleChange={setAnalyticsDisabled}
+                  checked={!analyticsDisabled}
+                  handleChange={() => setAnalyticsDisabled(!analyticsDisabled)}
                 />
               }
               titleComponent={
