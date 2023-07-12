@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
-import { refractionAddressWs } from '~/core/network';
+import { addysHttp } from '~/core/network/addys';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -12,7 +12,10 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { currentAddressStore } from '~/core/state';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import {
+  ParsedAddressAsset,
+  ParsedAssetsDictByChain,
+} from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 import {
@@ -20,15 +23,18 @@ import {
   filterAsset,
   parseAddressAsset,
 } from '~/core/utils/assets';
+import { chainIdFromChainName } from '~/core/utils/chains';
 import { greaterThan } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { RainbowError, logger } from '~/logger';
 import {
   DAI_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
   USDC_MAINNET_ASSET,
 } from '~/test/utils';
 
-const USER_ASSETS_TIMEOUT_DURATION = 10000;
+import { userAssetsQueryKey } from './userAssets';
+
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
@@ -87,83 +93,69 @@ export async function userAssetsByChainQueryFunction({
 }: QueryFunctionArgs<typeof userAssetsByChainQueryKey>): Promise<
   Record<string, ParsedAddressAsset>
 > {
-  const { currentAddress } = currentAddressStore.getState();
+  try {
+    const { currentAddress } = currentAddressStore.getState();
+    const chainId = chainIdFromChainName(chain);
+    const url = `/${chainId}/${address}/assets/?currency=${currency.toLowerCase()}`;
+    const response = await addysHttp.get<AddressAssetsReceivedMessage>(url);
+    const data = response.data;
+    const parsedUserAssetsByUniqueId = parseUserAssetsByChain(data, currency);
 
-  const isMainnet = chain === ChainName.mainnet;
-  const scope = [`${isMainnet ? '' : chain + '-'}assets`];
-  const event = `received address ${scope[0]}`;
-
-  refractionAddressWs.emit('get', {
-    payload: {
-      address,
-      currency: currency?.toLowerCase(),
-    },
-    scope,
-  });
-
-  return new Promise((resolve) => {
-    const timeout = setTimeout(() => {
-      resolve(
-        queryClient.getQueryData(
-          userAssetsByChainQueryKey({
-            address,
-            chain,
-            currency,
-            connectedToHardhat,
-          }),
-        ) || {},
-      );
-    }, USER_ASSETS_TIMEOUT_DURATION);
-
-    const resolver = async (message: AddressAssetsReceivedMessage) => {
-      clearTimeout(timeout);
-      const parsedUserAssetsByUniqueId = parseUserAssetsByChain(
-        message,
-        currency,
-      );
-      if (connectedToHardhat && chain === ChainName.mainnet) {
-        const provider = getProvider({ chainId: ChainId.hardhat });
-        // force checking for ETH if connected to hardhat
-        parsedUserAssetsByUniqueId[ETH_MAINNET_ASSET.uniqueId] =
-          ETH_MAINNET_ASSET;
-        if (process.env.IS_TESTING === 'true') {
-          parsedUserAssetsByUniqueId[USDC_MAINNET_ASSET.uniqueId] =
-            USDC_MAINNET_ASSET;
-          parsedUserAssetsByUniqueId[DAI_MAINNET_ASSET.uniqueId] =
-            DAI_MAINNET_ASSET;
-        }
-        const pasePromises = Object.values(parsedUserAssetsByUniqueId).map(
-          async (parsedAsset) => {
-            if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
-            try {
-              const pa = await fetchAssetBalanceViaProvider({
-                parsedAsset,
-                currentAddress,
-                currency,
-                provider,
-              });
-              return pa;
-            } catch (e) {
-              return parsedAsset;
-            }
-          },
-        );
-        const newParsedUserAssetsByUniqueId = await Promise.all(pasePromises);
-        const a: Record<string, ParsedAddressAsset> = {};
-        newParsedUserAssetsByUniqueId.forEach(
-          (parseAsset) => (a[parseAsset.uniqueId] = parseAsset),
-        );
-        resolve(a);
-      } else {
-        if (isLowerCaseMatch(address, message.meta?.address)) {
-          resolve(parsedUserAssetsByUniqueId);
-        } else {
-          resolve({});
-        }
+    if (connectedToHardhat && chain === ChainName.mainnet) {
+      const provider = getProvider({ chainId: ChainId.hardhat });
+      // force checking for ETH if connected to hardhat
+      parsedUserAssetsByUniqueId[ETH_MAINNET_ASSET.uniqueId] =
+        ETH_MAINNET_ASSET;
+      if (process.env.IS_TESTING === 'true') {
+        parsedUserAssetsByUniqueId[USDC_MAINNET_ASSET.uniqueId] =
+          USDC_MAINNET_ASSET;
+        parsedUserAssetsByUniqueId[DAI_MAINNET_ASSET.uniqueId] =
+          DAI_MAINNET_ASSET;
       }
-    };
-    refractionAddressWs.once(event, resolver);
-  });
+      const parsePromises = Object.values(parsedUserAssetsByUniqueId).map(
+        async (parsedAsset) => {
+          if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
+          try {
+            const _parsedAsset = await fetchAssetBalanceViaProvider({
+              parsedAsset,
+              currentAddress,
+              currency,
+              provider,
+            });
+            return _parsedAsset;
+          } catch (e) {
+            return parsedAsset;
+          }
+        },
+      );
+      const newParsedUserAssetsByUniqueId = await Promise.all(parsePromises);
+      return newParsedUserAssetsByUniqueId.reduce<
+        Record<string, ParsedAddressAsset>
+      >((acc, parsedAsset) => {
+        acc[parsedAsset.uniqueId] = parsedAsset;
+        return acc;
+      }, {});
+    } else {
+      if (isLowerCaseMatch(data?.meta?.address, address)) {
+        return parsedUserAssetsByUniqueId;
+      } else {
+        return {};
+      }
+    }
+  } catch (e) {
+    logger.error(
+      new RainbowError(`userAssetsByChainQueryFunction - chain = ${chain}: `),
+      {
+        message: (e as Error)?.message,
+      },
+    );
+    const cache = queryClient.getQueryCache();
+    const cachedUserAssets = cache.find(
+      userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    )?.state?.data as ParsedAssetsDictByChain;
+    const cachedDataForChain = cachedUserAssets[chainIdFromChainName(chain)];
+    return cachedDataForChain as Record<string, ParsedAddressAsset>;
+  }
 }
 
 type UserAssetsByChainResult = QueryFunctionResult<
