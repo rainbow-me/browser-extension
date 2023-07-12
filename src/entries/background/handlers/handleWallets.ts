@@ -130,13 +130,13 @@ export const handleWallets = () =>
             response = await addNewAccount(payload as Address);
             break;
           case 'add_account_at_index': {
-            const { silbingAddress, index, address } = payload as {
-              silbingAddress: Address;
+            const { siblingAddress, index, address } = payload as {
+              siblingAddress: Address;
               index: number;
               address: Address;
             };
 
-            response = await addAccountAtIndex(silbingAddress, index, address);
+            response = await addAccountAtIndex(siblingAddress, index, address);
             break;
           }
           case 'remove':

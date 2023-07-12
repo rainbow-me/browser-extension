@@ -272,7 +272,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const openDropdown = useCallback(() => {
       onDropdownOpen(true);
       setDropdownVisible(true);
-      inputRef?.current?.focus();
+      setTimeout(() => inputRef?.current?.focus(), 300);
     }, [onDropdownOpen]);
 
     const closeDropdown = useCallback(() => {
@@ -296,8 +296,10 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const onInputClick = useCallback(() => {
       if (!dropdownVisible) {
         openDropdown();
+      } else {
+        closeDropdown();
       }
-    }, [dropdownVisible, openDropdown]);
+    }, [closeDropdown, dropdownVisible, openDropdown]);
 
     const onActionClose = useCallback(() => {
       onDropdownAction();
@@ -316,7 +318,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       address: toAddress,
     });
     const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
-      filter: toAddressOrName,
+      filter: toAddress ? undefined : toAddressOrName,
     });
     const { currentAddress } = useCurrentAddressStore();
     const selectableWallets = wallets.filter((a) => a !== currentAddress);

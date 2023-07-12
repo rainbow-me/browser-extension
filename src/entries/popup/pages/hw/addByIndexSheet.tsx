@@ -139,7 +139,10 @@ export const AddByIndexSheet = ({
     <BottomSheet background="scrim" show={show}>
       <Navbar
         leftComponent={
-          <Navbar.CloseButton testId="swap-review" onClick={handleAddWallet} />
+          <Navbar.CloseButton
+            onClick={() => onDone({})}
+            testId="close-add-by-index-modal-button"
+          />
         }
       />
       <Box paddingHorizontal="20px" marginTop="-19px">

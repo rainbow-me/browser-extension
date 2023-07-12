@@ -1,5 +1,6 @@
-import { useWindowVirtualizer } from '@tanstack/react-virtual';
-import React, { ReactNode, useMemo, useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { motion } from 'framer-motion';
+import React, { ReactNode, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -19,6 +20,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { TextStyles } from '~/design-system/styles/core.css';
@@ -45,9 +47,10 @@ export function Activity() {
     [allTransactions],
   );
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const activityRowVirtualizer = useWindowVirtualizer({
+  const containerRef = useContainerRef();
+  const activityRowVirtualizer = useVirtualizer({
     count: listData.length,
+    getScrollElement: () => containerRef.current,
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
     overscan: 20,
   });
@@ -91,10 +94,11 @@ export function Activity() {
     );
   }
 
+  let labelsCount = 0;
+
   return (
     <>
       <Box
-        ref={containerRef}
         marginTop={'-20px'}
         width="full"
         style={{
@@ -114,20 +118,23 @@ export function Activity() {
           {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { index, key, start, size } = virtualItem;
             const rowData = listData[index];
+            const isLabel = typeof rowData === 'string';
+            if (isLabel) labelsCount += 1;
             return (
               <Box
                 key={key}
                 data-index={index}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: size,
-                  transform: `translateY(${start}px)`,
-                }}
+                as={motion.div}
+                layoutId={!isLabel ? `list-${index - labelsCount}` : undefined}
+                layoutScroll
+                layout="position"
+                initial={{ opacity: isLabel ? 0 : 1 }}
+                animate={{ opacity: 1 }}
+                position="absolute"
+                width="full"
+                style={{ height: size, y: start }}
               >
-                {typeof rowData === 'string' ? (
+                {isLabel ? (
                   <Inset horizontal="20px" top="16px" bottom="8px">
                     <Box>
                       <Text

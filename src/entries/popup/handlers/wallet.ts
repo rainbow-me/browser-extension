@@ -311,8 +311,8 @@ export const importWithSecret = async (seed: string) => {
 export const remove = async (address: Address) => {
   return walletAction('remove', address);
 };
-export const add = async (silbing: Address) => {
-  return (await walletAction('add', silbing)) as Address;
+export const add = async (sibling: Address) => {
+  return (await walletAction('add', sibling)) as Address;
 };
 
 export const exportWallet = async (address: Address, password: string) => {
@@ -359,7 +359,7 @@ export const importAccountAtIndex = async (
         false,
         false,
       );
-      transport?.close();
+      await transport?.close();
 
       address = result.address;
       break;
@@ -500,7 +500,7 @@ export const connectLedger = async () => {
     }
 
     const deviceId = keccak256(accountsToImport[0].address);
-    transport?.close();
+    await transport?.close();
 
     return { accountsToImport, deviceId, accountsEnabled };
 
@@ -514,11 +514,14 @@ export const connectLedger = async () => {
       case 'TransportStatusError':
         error = 'needs_app';
         break;
+      case 'InvalidStateError':
+        error = 'needs_exclusivity';
+        break;
       case 'TransportOpenUserCancelled':
       default:
         error = 'needs_connect';
     }
-    transport?.close();
+    await transport?.close();
     return { error };
   }
 };

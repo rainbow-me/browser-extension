@@ -1,13 +1,13 @@
 import {
-  AnimatePresence,
   motion,
+  transform,
   useMotionValueEvent,
-  useScroll,
   useSpring,
   useTransform,
 } from 'framer-motion';
 import {
   PropsWithChildren,
+  memo,
   useCallback,
   useEffect,
   useState,
@@ -21,6 +21,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
@@ -33,8 +34,8 @@ import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { usePendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
-import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
@@ -73,23 +74,30 @@ export function Home() {
     }
   }, [navigate, pendingRequests, prevPendingRequest?.id]);
 
-  const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
-
-  const [, startTransition] = useTransition();
-
-  const onSelectTab = useCallback((tab: Tab) => {
-    // If we are already in a state where the header is collapsed,
-    // then ensure we are scrolling to the top when we change tab.
-    if (window.scrollY > COLLAPSED_HEADER_TOP_OFFSET) {
-      window.scrollTo({ top: COLLAPSED_HEADER_TOP_OFFSET });
-    }
-    startTransition(() => setActiveTab(tab));
-  }, []);
-
   useEffect(() => {
     analytics.track(event.walletViewed);
     removeImportWalletSecrets();
   }, []);
+
+  const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
+
+  const [, startTransition] = useTransition();
+
+  const containerRef = useContainerRef();
+  const onSelectTab = useCallback(
+    (tab: Tab) => {
+      // If we are already in a state where the header is collapsed,
+      // then ensure we are scrolling to the top when we change tab.
+      const container = containerRef.current;
+      if (container && container.scrollTop > COLLAPSED_HEADER_TOP_OFFSET) {
+        container.scrollTo({ top: COLLAPSED_HEADER_TOP_OFFSET });
+      }
+      startTransition(() => {
+        setActiveTab(tab);
+      });
+    },
+    [containerRef],
+  );
 
   useKeyboardShortcut({
     handler: (e) => {
@@ -109,11 +117,14 @@ export function Home() {
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
         <>
-          <MainLayout
+          <motion.div
             className={className}
             style={{
               ...style,
               position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              width: 'full',
               overscrollBehavior: 'none',
               height: 'auto',
               ...(isDisplayingSheet ? { overflow: 'hidden' } : {}),
@@ -127,7 +138,7 @@ export function Home() {
               {activeTab === 'tokens' && <Tokens />}
               {activeTab === 'activity' && <Activity />}
             </Content>
-          </MainLayout>
+          </motion.div>
           {currentHomeSheet}
         </>
       )}
@@ -135,13 +146,10 @@ export function Home() {
   );
 }
 
-function TopNav() {
-  const { scrollY } = useScroll({ offset: ['0px', TOP_NAV_HEIGHT] });
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  useMotionValueEvent(scrollY, 'change', () => {
-    if (scrollY.get() === 0) setIsCollapsed(false);
-    if (scrollY.getPrevious() === 0) setIsCollapsed(true);
-  });
+const TopNav = memo(function TopNav() {
+  const { scrollY } = useScroll();
+  const [isCollapsed, setIsCollapsed] = useState(scrollY.get() > 90);
+  useMotionValueEvent(scrollY, 'change', (y) => setIsCollapsed(y > 90));
 
   return (
     <StickyHeader
@@ -161,22 +169,20 @@ function TopNav() {
           </MoreMenu>
         }
         titleComponent={
-          <AnimatePresence>
-            {isCollapsed && (
-              <Box
-                key="top-nav-account-name"
-                as={motion.div}
-                paddingHorizontal="60px"
-              >
-                <AccountName id="topNav" includeAvatar size="16pt" />
-              </Box>
-            )}
-          </AnimatePresence>
+          isCollapsed && (
+            <Box
+              key="top-nav-account-name"
+              as={motion.div}
+              paddingHorizontal="60px"
+            >
+              <AccountName id="topNav" includeAvatar size="16pt" />
+            </Box>
+          )
         }
       />
     </StickyHeader>
   );
-}
+});
 
 function TabBar({
   activeTab,
@@ -196,18 +202,14 @@ function TabBar({
   );
 }
 
+const transformListScrollBounce = (y: number) =>
+  transform(y, [0, 1000], [0, COLLAPSED_HEADER_TOP_OFFSET]);
 function Content({ children }: PropsWithChildren) {
-  const { scrollY } = useScroll({ axis: 'y' });
+  const { scrollY } = useScroll();
   const smoothScrollY = useSpring(scrollY, { damping: 50, stiffness: 350 });
-  const scrollYTransform = useTransform(
-    smoothScrollY,
-    [0, 1000],
-    [0, COLLAPSED_HEADER_TOP_OFFSET],
+  const y = useTransform(smoothScrollY, (springY) =>
+    scrollY.get() < 1 ? transformListScrollBounce(springY) : 0,
   );
-
-  const [isTop, setIsTop] = useState(!!scrollY.get());
-  useMotionValueEvent(scrollY, 'change', (y) => setIsTop(y < 1));
-  const y = isTop ? scrollYTransform : 0;
 
   return (
     <Box
