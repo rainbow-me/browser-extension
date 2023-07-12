@@ -144,9 +144,7 @@ export async function userAssetsByChainQueryFunction({
     }
   } catch (e) {
     logger.error(
-      new RainbowError(
-        `userAssetsByChain.ts - chain: ${chain} - address: ${address}`,
-      ),
+      new RainbowError(`userAssetsByChainQueryFunction - chain = ${chain}: `),
       {
         message: (e as Error)?.message,
       },
