@@ -4,6 +4,7 @@ import { EventEmitter } from 'eventemitter3';
 import { Messenger } from '../messengers';
 import { providerRequestTransport } from '../transports';
 import { RPCMethod } from '../types/rpcMethods';
+import { getDappHost, isValidUrl } from '../utils/connectedApps';
 import { toHex } from '../utils/hex';
 
 export type ChainIdHex = `0x${string}`;
@@ -55,26 +56,31 @@ export class RainbowProvider extends EventEmitter {
 
   constructor({ messenger }: { messenger?: Messenger } = {}) {
     super();
-    const host = window.location.host;
-    messenger?.reply(`accountsChanged:${host}`, async (address) => {
-      this.emit('accountsChanged', [address]);
-    });
-    messenger?.reply(`chainChanged:${host}`, async (chainId: number) => {
-      this.emit('chainChanged', toHex(String(chainId)));
-    });
-    messenger?.reply(`disconnect:${host}`, async () => {
-      this.emit('disconnect');
-      this.emit('accountsChanged', []);
-    });
-    messenger?.reply(`connect:${host}`, async (connectionInfo) => {
-      this.emit('connect', connectionInfo);
-    });
-    messenger?.reply(
-      'rainbow_setDefaultProvider',
-      async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
-        this.rainbowIsDefaultProvider = rainbowAsDefault;
-      },
-    );
+
+    // RainbowProvider is also used in popup via RainbowConnector
+    // here we don't need to listen to anything so we don't need these listeners
+    if (isValidUrl(window.location.href)) {
+      const host = getDappHost(window.location.href);
+      messenger?.reply(`accountsChanged:${host}`, async (address) => {
+        this.emit('accountsChanged', [address]);
+      });
+      messenger?.reply(`chainChanged:${host}`, async (chainId: number) => {
+        this.emit('chainChanged', toHex(String(chainId)));
+      });
+      messenger?.reply(`disconnect:${host}`, async () => {
+        this.emit('disconnect');
+        this.emit('accountsChanged', []);
+      });
+      messenger?.reply(`connect:${host}`, async (connectionInfo) => {
+        this.emit('connect', connectionInfo);
+      });
+      messenger?.reply(
+        'rainbow_setDefaultProvider',
+        async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
+          this.rainbowIsDefaultProvider = rainbowAsDefault;
+        },
+      );
+    }
   }
 
   /**

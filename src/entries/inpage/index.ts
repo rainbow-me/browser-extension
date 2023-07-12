@@ -3,6 +3,7 @@ import { Ethereum } from '@wagmi/core';
 import { initializeMessenger } from '~/core/messengers';
 import { RainbowProvider } from '~/core/providers';
 import { ChainId } from '~/core/types/chains';
+import { getDappHost } from '~/core/utils/connectedApps';
 
 import { injectNotificationIframe } from '../iframe';
 
@@ -142,7 +143,7 @@ backgroundMessenger.reply(
     extensionUrl: string;
     host: string;
   }) => {
-    if (window.location.hostname === host) {
+    if (getDappHost(window.location.href) === host) {
       injectNotificationIframe({ chainId, status, extensionUrl });
     }
   },
