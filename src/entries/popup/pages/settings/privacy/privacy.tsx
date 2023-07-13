@@ -70,7 +70,7 @@ export function Privacy() {
                 <Toggle
                   tabIndex={-1}
                   checked={!analyticsDisabled}
-                  handleChange={setAnalyticsDisabled}
+                  handleChange={() => setAnalyticsDisabled(!analyticsDisabled)}
                 />
               }
               titleComponent={
