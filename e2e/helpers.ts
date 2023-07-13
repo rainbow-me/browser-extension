@@ -165,6 +165,8 @@ export async function querySelector(driver: WebDriver, selector: string) {
     await driver.wait(until.elementLocated(By.css(selector)), waitUntilTime);
     const element = await driver.findElement(By.css(selector));
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    // some of our sheets animations require some sort of delay for them to animate in
+    await delayTime('short');
     return element;
   } catch (error) {
     console.error(`Failed to locate element with selector: ${selector}`, error);
