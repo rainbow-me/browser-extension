@@ -3,13 +3,13 @@ import create from 'zustand';
 import { createStore } from '~/core/state/internal/createStore';
 
 export interface AnalyticsDisabledState {
-  analyticsDisabled: undefined | boolean;
+  analyticsDisabled: boolean;
   setAnalyticsDisabled: (analyticsDisabled: boolean) => void;
 }
 
 export const analyticsDisabledStore = createStore<AnalyticsDisabledState>(
   (set) => ({
-    analyticsDisabled: undefined,
+    analyticsDisabled: false,
     setAnalyticsDisabled: (newanalyticsDisabled) =>
       set({ analyticsDisabled: newanalyticsDisabled }),
   }),

@@ -57,7 +57,7 @@ type FetchUserAssetsArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-const userAssetsQueryKey = ({
+export const userAssetsQueryKey = ({
   address,
   currency,
   connectedToHardhat,

@@ -386,7 +386,12 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
                 </Box>
                 <AnimatePresence>
                   {!inputVisible && isNameDefined && (
-                    <Box as={motion.div} key="wallet" layout="position">
+                    <Box
+                      as={motion.div}
+                      key="wallet"
+                      layout="position"
+                      onClick={onDropdownAction}
+                    >
                       <Text weight="semibold" size="12pt" color="labelTertiary">
                         {truncateAddress(toAddress)}
                       </Text>
