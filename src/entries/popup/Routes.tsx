@@ -86,6 +86,7 @@ const ROUTE_DATA = [
         <ApproveAppRequest />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.CONNECTED,
