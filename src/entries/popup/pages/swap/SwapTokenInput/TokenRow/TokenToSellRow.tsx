@@ -32,12 +32,20 @@ export function TokenToSellRow({ uniqueId }: TokenToSellRowProps) {
   const { currentCurrency } = useCurrentCurrencyStore();
 
   const balanceDisplay = useMemo(
-    () => (
-      <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
-        {asset?.balance?.display}
-      </TextOverflow>
-    ),
-    [asset?.balance?.display],
+    () =>
+      hideAssetBalances ? (
+        <Inline space="4px">
+          <Asterisks color="labelTertiary" size={8} />
+          <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
+            {asset?.symbol}
+          </TextOverflow>
+        </Inline>
+      ) : (
+        <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
+          {asset?.balance?.display}
+        </TextOverflow>
+      ),
+    [asset?.balance?.display, asset?.symbol, hideAssetBalances],
   );
 
   const nativeBalanceDisplay = useMemo(
