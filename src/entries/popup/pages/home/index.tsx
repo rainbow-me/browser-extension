@@ -8,8 +8,9 @@ import {
 import {
   PropsWithChildren,
   memo,
-  useCallback,
   useEffect,
+  useLayoutEffect,
+  useRef,
   useState,
   useTransition,
 } from 'react';
@@ -54,9 +55,62 @@ const COLLAPSED_HEADER_TOP_OFFSET = 172;
 const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
+function Tabs() {
+  const { state } = useLocation();
+  const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
+
+  const [, startTransition] = useTransition();
+
+  const containerRef = useContainerRef();
+  const prevScrollPosition = useRef<number | undefined>(undefined);
+  const onSelectTab = (tab: Tab) => {
+    prevScrollPosition.current = containerRef.current?.scrollTop;
+    startTransition(() => {
+      setActiveTab(tab);
+    });
+  };
+
+  // If we are already in a state where the header is collapsed,
+  // then ensure we are scrolling to the top when we change tab.
+  // It's a useLayoutEffect because we want to set the scroll position
+  // right before the DOM is repainted with the new tab,
+  // so we don't have any flicker
+  useLayoutEffect(() => {
+    const top = prevScrollPosition.current;
+    if (!top || !containerRef.current) return;
+    containerRef.current.scrollTo({
+      top:
+        top > COLLAPSED_HEADER_TOP_OFFSET
+          ? COLLAPSED_HEADER_TOP_OFFSET + 4 // don't know why, but +4 solves a shift :)
+          : top,
+    });
+  }, [containerRef, activeTab]);
+
+  useKeyboardShortcut({
+    handler: (e) => {
+      if (e.key === shortcuts.global.BACK.key) {
+        onSelectTab('tokens');
+      }
+      if (e.key === shortcuts.global.FORWARD.key) {
+        onSelectTab('activity');
+      }
+    },
+  });
+
+  return (
+    <>
+      <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
+      <Separator color="separatorTertiary" strokeWeight="1px" />
+      <Content>
+        {activeTab === 'tokens' && <Tokens />}
+        {activeTab === 'activity' && <Activity />}
+      </Content>
+    </>
+  );
+}
+
 export function Home() {
   const { currentAddress } = useCurrentAddressStore();
-  const { state } = useLocation();
   const { avatar } = useAvatar({ address: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
 
@@ -81,37 +135,6 @@ export function Home() {
     removeImportWalletSecrets();
   }, []);
 
-  const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
-
-  const [, startTransition] = useTransition();
-
-  const containerRef = useContainerRef();
-  const onSelectTab = useCallback(
-    (tab: Tab) => {
-      // If we are already in a state where the header is collapsed,
-      // then ensure we are scrolling to the top when we change tab.
-      const container = containerRef.current;
-      if (container && container.scrollTop > COLLAPSED_HEADER_TOP_OFFSET) {
-        container.scrollTo({ top: COLLAPSED_HEADER_TOP_OFFSET });
-      }
-      startTransition(() => {
-        setActiveTab(tab);
-      });
-    },
-    [containerRef],
-  );
-
-  useKeyboardShortcut({
-    handler: (e) => {
-      if (e.key === shortcuts.global.BACK.key) {
-        onSelectTab('tokens');
-      }
-      if (e.key === shortcuts.global.FORWARD.key) {
-        onSelectTab('activity');
-      }
-    },
-  });
-
   useHomeShortcuts();
   useSwitchWalletShortcuts();
 
@@ -134,12 +157,7 @@ export function Home() {
           >
             <TopNav />
             <Header />
-            <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-            <Separator color="separatorTertiary" strokeWeight="1px" />
-            <Content>
-              {activeTab === 'tokens' && <Tokens />}
-              {activeTab === 'activity' && <Activity />}
-            </Content>
+            <Tabs />
           </motion.div>
           {currentHomeSheet}
         </>
