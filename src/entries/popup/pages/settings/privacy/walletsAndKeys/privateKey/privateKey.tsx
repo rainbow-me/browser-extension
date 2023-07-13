@@ -14,10 +14,13 @@ export function PrivateKey() {
 
   const [privKey, setPrivKey] = useState('');
 
-  const handleSavedTheseWords = useCallback(
-    () => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS),
-    [navigate],
-  );
+  const handleSavedTheseWords = useCallback(() => {
+    if (state?.fromChooseGroup) {
+      navigate(-3);
+    } else {
+      navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
+    }
+  }, [navigate, state.fromChooseGroup]);
 
   const handleCopy = useCallback(
     () => navigator.clipboard.writeText(privKey as string),

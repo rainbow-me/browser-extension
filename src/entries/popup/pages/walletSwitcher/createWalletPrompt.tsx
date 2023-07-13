@@ -78,6 +78,7 @@ export const CreateWalletPrompt = ({
                 newWallet,
                 account,
                 password: state?.password,
+                fromChooseGroup: true,
               },
             },
           );
