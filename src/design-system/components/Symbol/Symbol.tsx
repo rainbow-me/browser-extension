@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { Box } from '~/design-system';
 import { FontWeight, SymbolName } from '~/design-system/styles/designTokens';
 
 import { SymbolStyles, symbolStyles } from '../../styles/core.css';
 import symbols from '../../symbols/generated';
+import { Box } from '../Box/Box';
 
 export type SymbolProps = {
   color?: SymbolStyles['color'];
