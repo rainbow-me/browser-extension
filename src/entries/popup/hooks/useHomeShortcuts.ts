@@ -13,6 +13,7 @@ import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { triggerToast } from '../components/Toast/Toast';
 import * as wallet from '../handlers/wallet';
 import { ROUTES } from '../urls';
+import { getInputIsFocused } from '../utils/activeElement';
 import { clickHeaderRight } from '../utils/clickHeader';
 
 import { useKeyboardShortcut } from './useKeyboardShortcut';
@@ -51,6 +52,8 @@ export function useHomeShortcuts() {
   const handleHomeShortcuts = useCallback(
     (e: KeyboardEvent) => {
       const { key } = e;
+      const inputIsFocused = getInputIsFocused();
+      if (inputIsFocused) return;
       switch (key) {
         case shortcuts.home.COPY_ADDRESS.key:
           handleCopy();

@@ -82,6 +82,10 @@ export const shortcuts = {
       display: '\u2991',
       key: 'ArrowUp',
     },
+    COMMAND_K: {
+      display: 'K',
+      key: 'k',
+    },
   },
   home: {
     COPY_ADDRESS: {
@@ -132,6 +136,7 @@ export const shortcuts = {
   wallets: {
     CHOOSE_WALLET_GROUP_NEW: {
       display: 'N',
+      key: 'n',
     },
   },
   send: {
