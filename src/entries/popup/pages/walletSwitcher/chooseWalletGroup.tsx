@@ -1,5 +1,4 @@
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -17,7 +16,12 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { add, create, getWallets } from '~/entries/popup/handlers/wallet';
+import {
+  add,
+  create,
+  getWallets,
+  remove,
+} from '~/entries/popup/handlers/wallet';
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
@@ -250,7 +254,7 @@ const WalletGroups = ({
 const ChooseWalletGroup = () => {
   const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
-  const { state } = useLocation();
+  const [fromChooseGroup, setFromChooseGroup] = useState(false);
 
   useEffect(() => {
     const fetchWallets = async () => {
@@ -300,20 +304,10 @@ const ChooseWalletGroup = () => {
       const wallet = wallets[index];
       const sibling = wallet.accounts[0];
       const address = await add(sibling);
-      navigate(
-        ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
-        {
-          state: {
-            wallet,
-            account: address,
-            password: state?.password,
-            fromChooseGroup: true,
-          },
-        },
-      );
-      setCreateWalletAddress(address);
+      await setCreateWalletAddress(address);
+      setFromChooseGroup(true);
     },
-    [navigate, state?.password, wallets],
+    [wallets],
   );
 
   const handleGroupShortcuts = useCallback(
@@ -343,14 +337,24 @@ const ChooseWalletGroup = () => {
 
   const onClose = () => {
     setCreateWalletAddress(undefined);
+    setFromChooseGroup(false);
+  };
+
+  const handleCancel = async () => {
+    if (createWalletAddress !== undefined) {
+      await remove(createWalletAddress);
+    }
+    setCreateWalletAddress(undefined);
   };
 
   return (
     <Box height="full">
       <CreateWalletPrompt
+        onCancel={handleCancel}
         show={!!createWalletAddress}
         onClose={onClose}
         address={createWalletAddress}
+        fromChooseGroup={fromChooseGroup}
       />
       <Box paddingHorizontal="20px" height="full">
         <Stack space="24px" alignHorizontal="center">
