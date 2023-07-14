@@ -75,7 +75,9 @@ function getBody(response: Response) {
 }
 
 function createParams(params: RainbowFetchRequestOpts['params']) {
-  return params ? `?${new URLSearchParams(params)}` : '';
+  return params && Object.keys(params).length
+    ? `?${new URLSearchParams(params)}`
+    : '';
 }
 
 interface RainbowFetchError extends Error {
