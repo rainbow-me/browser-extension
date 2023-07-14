@@ -97,6 +97,7 @@ export const TokenToSellInput = ({
     <TokenInput
       testId={`${asset ? `${asset.uniqueId}-` : ''}token-to-sell`}
       inputRef={inputRef}
+      accentCaretColor
       asset={asset}
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
