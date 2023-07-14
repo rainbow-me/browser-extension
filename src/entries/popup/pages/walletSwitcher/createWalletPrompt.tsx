@@ -37,13 +37,13 @@ export const CreateWalletPrompt = ({
   show,
   onClose,
   onCancel,
-  settingsNavigate = false,
+  fromChooseGroup = false,
 }: {
   address?: Address;
   show: boolean;
   onClose: () => void;
   onCancel?: () => void;
-  settingsNavigate?: boolean;
+  fromChooseGroup?: boolean;
 }) => {
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
@@ -68,15 +68,14 @@ export const CreateWalletPrompt = ({
         address,
       });
       setCurrentAddress(address);
-      const account = address;
-      !settingsNavigate
+      !fromChooseGroup
         ? navigate(ROUTES.HOME, { state: { isBack: true } })
         : navigate(
             ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
             {
               state: {
                 newWallet,
-                account,
+                account: address,
                 password: state?.password,
                 fromChooseGroup: true,
               },
@@ -90,7 +89,7 @@ export const CreateWalletPrompt = ({
     navigate,
     saveWalletName,
     setCurrentAddress,
-    settingsNavigate,
+    fromChooseGroup,
     state?.password,
     walletName,
     newWallet,
