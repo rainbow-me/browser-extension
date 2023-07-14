@@ -345,6 +345,7 @@ const ChooseWalletGroup = () => {
       await remove(createWalletAddress);
     }
     setCreateWalletAddress(undefined);
+    setFromChooseGroup(false);
   };
 
   return (
