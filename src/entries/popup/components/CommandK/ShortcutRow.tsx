@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import React from 'react';
 
@@ -55,23 +56,13 @@ export const ShortcutRow = React.memo(
           <Box
             aria-label={name}
             borderRadius="12px"
-            className={`${
-              selected && currentTheme === 'dark'
-                ? commandKRowSelectedStyleDark
-                : ''
-            } ${
-              selected && currentTheme !== 'dark'
-                ? commandKRowSelectedStyle
-                : ''
-            }
-            ${
-              !selected && currentTheme === 'dark'
-                ? commandKRowHoverStyleDark
-                : ''
-            }
-            ${
-              !selected && currentTheme !== 'dark' ? commandKRowHoverStyle : ''
-            }`}
+            className={clsx({
+              [commandKRowSelectedStyleDark]:
+                selected && currentTheme === 'dark',
+              [commandKRowSelectedStyle]: selected && currentTheme !== 'dark',
+              [commandKRowHoverStyleDark]: !selected && currentTheme === 'dark',
+              [commandKRowHoverStyle]: !selected && currentTheme !== 'dark',
+            })}
             id={id}
             onClick={handleClick}
             padding="10px"
