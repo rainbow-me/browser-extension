@@ -20,7 +20,6 @@ import {
   Text,
 } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
-import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { useWalletName } from '../../hooks/useWalletName';
 import { Asterisks } from '../Asterisks/Asterisks';
@@ -38,7 +37,6 @@ export default function AccountItem({
   onClick,
   labelType,
   isSelected,
-  rowHighlight,
 }: {
   account: Address;
   rightComponent?: React.ReactNode;
@@ -46,7 +44,6 @@ export default function AccountItem({
   isSelected?: boolean;
   labelType?: LabelOption;
   searchTerm?: string;
-  rowHighlight?: boolean;
 }) {
   const { displayName, showAddress } = useWalletName({ address: account });
 
@@ -85,7 +82,6 @@ export default function AccountItem({
 
   return (
     <Lens
-      className={rowHighlight ? rowTransparentAccentHighlight : undefined}
       handleOpenMenu={onClick}
       key={account}
       onClick={onClick}
