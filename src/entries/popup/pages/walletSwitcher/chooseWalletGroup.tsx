@@ -1,4 +1,5 @@
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -249,6 +250,7 @@ const WalletGroups = ({
 const ChooseWalletGroup = () => {
   const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
+  const { state } = useLocation();
 
   useEffect(() => {
     const fetchWallets = async () => {
@@ -298,9 +300,20 @@ const ChooseWalletGroup = () => {
       const wallet = wallets[index];
       const sibling = wallet.accounts[0];
       const address = await add(sibling);
+      navigate(
+        ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
+        {
+          state: {
+            wallet,
+            account: address,
+            password: state?.password,
+            fromChooseGroup: true,
+          },
+        },
+      );
       setCreateWalletAddress(address);
     },
-    [wallets],
+    [navigate, state?.password, wallets],
   );
 
   const handleGroupShortcuts = useCallback(
