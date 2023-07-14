@@ -17,7 +17,6 @@ import {
   Stack,
   Symbol,
   Text,
-  TextOverflow,
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
@@ -217,18 +216,15 @@ const ConnectedApp = ({
                 <Column>
                   <Box>
                     <Stack space="8px">
-                      <Box
-                        style={{ wordBreak: 'break-all' }}
-                        paddingRight="40px"
-                      >
-                        <TextOverflow
+                      <Box style={{ wordBreak: 'break-all' }}>
+                        <Text
                           align="left"
                           size="14pt"
                           weight="semibold"
                           color="label"
                         >
                           {appName || appHost}
-                        </TextOverflow>
+                        </Text>
                       </Box>
                       <Inline space="4px" alignVertical="center">
                         <Box
