@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { Box } from '~/design-system';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
@@ -10,6 +10,7 @@ interface BottomSheetProps {
   children: ReactNode;
   show: boolean;
   zIndex?: number;
+  onClickOutside?: VoidFunction;
 }
 
 export const BottomSheet = ({
@@ -17,6 +18,7 @@ export const BottomSheet = ({
   show,
   children,
   zIndex,
+  onClickOutside,
 }: BottomSheetProps) => {
   return (
     <Box as={motion.div} key="bottom-sheet" layout isModal={show}>
@@ -24,6 +26,7 @@ export const BottomSheet = ({
         {show && (
           <Box
             position="fixed"
+            onClick={onClickOutside}
             bottom="0"
             left="0"
             right="0"
