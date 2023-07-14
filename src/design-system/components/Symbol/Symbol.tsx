@@ -35,14 +35,31 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
 
     return (
       <Box
+        style={{
+          ...(boxed
+            ? {
+                justifyContent: 'center',
+                alignItems: 'center',
+                display: 'flex',
+              }
+            : { height: size, width: size }),
+        }}
         className={boxed && boxedStyle}
-        style={{ ...(boxed ? {} : { height: size, width: size }) }}
       >
         <Box
           style={{
-            transform: 'scale(0.5)',
-            transformOrigin: 'top left',
-            willChange: 'transform',
+            ...(boxed
+              ? {
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  display: 'flex',
+                  transform: 'scale(0.5)',
+                }
+              : {
+                  transform: 'scale(0.5)',
+                  transformOrigin: 'top left',
+                  willChange: 'transform',
+                }),
           }}
         >
           <svg
