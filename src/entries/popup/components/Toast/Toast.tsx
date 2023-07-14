@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Inline, Row, Rows, Text } from '~/design-system';
