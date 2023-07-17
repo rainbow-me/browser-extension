@@ -169,12 +169,13 @@ export const useSwapInputs = ({
       independentField === 'sellField' ||
       independentField === 'sellNativeField'
     ) {
-      setAssetToSellValue('');
-      setAssetToBuyValue(
+      const tokenValue =
         independentField === 'sellNativeField'
           ? assetToSellValue
-          : independentValue,
-      );
+          : independentValue;
+      setAssetToSellValue('');
+      setAssetToBuyValue(tokenValue);
+      setIndependentValue(tokenValue);
       setAssetToSellNativeValue('');
       setIndependentFieldIfOccupied('buyField');
       focusOnInput(assetToBuyInputRef);
