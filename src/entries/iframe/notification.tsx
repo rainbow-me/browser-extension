@@ -22,8 +22,8 @@ const ASSET_SOURCE = {
   [ChainId.optimism]: 'assets/badges/optimismBadge.png',
   [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
   [ChainId.polygon]: 'assets/badges/polygonBadge.png',
-  [ChainId.base]: 'assets/badges/optimismBadge.png',
-  [ChainId.zora]: 'assets/badges/optimismBadge.png',
+  [ChainId.base]: 'assets/badges/baseBadge.png',
+  [ChainId.zora]: 'assets/badges/zoraBadge.png',
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
 };
 

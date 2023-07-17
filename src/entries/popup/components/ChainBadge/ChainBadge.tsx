@@ -1,11 +1,13 @@
 import React from 'react';
 
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
+import BaseBadge from 'static/assets/badges/baseBadge.png';
 import BscBadge from 'static/assets/badges/bscBadge.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge.png';
 import HardhatBadge from 'static/assets/badges/hardhatBadge.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge.png';
+import ZoraBadge from 'static/assets/badges/zoraBadge.png';
 import { ChainId } from '~/core/types/chains';
 import { Box } from '~/design-system';
 
@@ -38,8 +40,8 @@ const networkBadges = {
   [ChainId.polygon]: PolygonBadge,
   [ChainId.optimism]: OptimismBadge,
   [ChainId.arbitrum]: ArbitrumBadge,
-  [ChainId.base]: OptimismBadge,
-  [ChainId.zora]: OptimismBadge,
+  [ChainId.base]: BaseBadge,
+  [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
   [ChainId.hardhat]: HardhatBadge,
 };
