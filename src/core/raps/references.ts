@@ -102,6 +102,12 @@ export type RapTypes = keyof typeof rapTypes;
 export interface RapActionResponse {
   baseNonce?: number | null;
   errorMessage: string | null;
+  hash?: string | null;
+}
+
+export interface RapActionResult {
+  nonce?: number | undefined;
+  hash?: string | undefined;
 }
 
 export interface ActionProps<T extends RapActionTypes> {

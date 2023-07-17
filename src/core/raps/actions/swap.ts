@@ -30,7 +30,7 @@ import {
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
-import { ActionProps } from '../references';
+import { ActionProps, RapActionResult } from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
@@ -192,7 +192,7 @@ export const swap = async ({
   index,
   parameters,
   baseNonce,
-}: ActionProps<'swap'>): Promise<number | undefined> => {
+}: ActionProps<'swap'>): Promise<RapActionResult> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   const { quote, permit, chainId, requiresApprove } = parameters;
@@ -267,5 +267,8 @@ export const swap = async ({
     transaction,
   });
 
-  return swap?.nonce;
+  return {
+    nonce: swap?.nonce,
+    hash: swap?.hash,
+  };
 };
