@@ -170,7 +170,7 @@ export function WalletDetails() {
     const currentWallets = await getSettingWallets();
     const sibling = currentWallets.accounts[0];
     const address = await add(sibling);
-    await setCreateWalletAddress(address);
+    setCreateWalletAddress(address);
   }, []);
 
   const handleRemoveAccount = async (address: Address) => {

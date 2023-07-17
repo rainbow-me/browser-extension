@@ -304,7 +304,7 @@ const ChooseWalletGroup = () => {
       const wallet = wallets[index];
       const sibling = wallet.accounts[0];
       const address = await add(sibling);
-      await setCreateWalletAddress(address);
+      setCreateWalletAddress(address);
       setFromChooseGroup(true);
     },
     [wallets],
