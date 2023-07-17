@@ -22,6 +22,8 @@ const getNetworkNativeMainnetAssetAddress = ({
     case ChainId.mainnet:
     case ChainId.optimism:
       return ETH_ADDRESS as Address;
+    case ChainId.base:
+      return ETH_ADDRESS as Address;
     case ChainId.zora:
       return ETH_ADDRESS as Address;
     case ChainId.bsc:

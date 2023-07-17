@@ -1,4 +1,12 @@
-import { arbitrum, bsc, mainnet, optimism, polygon, zora } from '@wagmi/chains';
+import {
+  arbitrum,
+  base,
+  bsc,
+  mainnet,
+  optimism,
+  polygon,
+  zora,
+} from '@wagmi/chains';
 import { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -14,6 +22,7 @@ import { useUserAsset } from '../useUserAsset';
 const DEFAULT_NATIVE_ASSET_SYMBOL = {
   [ChainId.mainnet]: mainnet.nativeCurrency?.symbol,
   [ChainId.optimism]: optimism.nativeCurrency?.symbol,
+  [ChainId.base]: base.nativeCurrency?.symbol,
   [ChainId.zora]: zora.nativeCurrency?.symbol,
   [ChainId.arbitrum]: arbitrum.nativeCurrency?.symbol,
   [ChainId.polygon]: polygon.nativeCurrency?.symbol,

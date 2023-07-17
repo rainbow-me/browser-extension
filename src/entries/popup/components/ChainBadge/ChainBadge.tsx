@@ -38,8 +38,9 @@ const networkBadges = {
   [ChainId.polygon]: PolygonBadge,
   [ChainId.optimism]: OptimismBadge,
   [ChainId.arbitrum]: ArbitrumBadge,
-  [ChainId.bsc]: BscBadge,
+  [ChainId.base]: OptimismBadge,
   [ChainId.zora]: OptimismBadge,
+  [ChainId.bsc]: BscBadge,
   [ChainId.hardhat]: HardhatBadge,
 };
 

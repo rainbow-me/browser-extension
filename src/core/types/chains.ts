@@ -21,6 +21,7 @@ export const hardhat: Chain = {
 
 export enum ChainName {
   arbitrum = 'arbitrum',
+  base = 'base',
   bsc = 'bsc',
   goerli = 'goerli',
   optimism = 'optimism',
@@ -32,6 +33,7 @@ export enum ChainName {
 
 export enum ChainId {
   arbitrum = chain.arbitrum.id,
+  base = chain.base.id,
   bsc = chain.bsc.id,
   goerli = chain.goerli.id,
   optimism = chain.optimism.id,
@@ -43,6 +45,7 @@ export enum ChainId {
 
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
+  [ChainId.base]: 'Base',
   [ChainId.bsc]: 'Binance Chain',
   [ChainId.optimism]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
