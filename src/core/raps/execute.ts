@@ -1,3 +1,6 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-async-promise-executor */
+/* eslint-disable no-promise-executor-return */
 import { Signer } from 'ethers';
 
 import { RainbowError, logger } from '~/logger';
@@ -9,6 +12,7 @@ import {
   Rap,
   RapAction,
   RapActionResponse,
+  RapActionResult,
   RapActionTypes,
   RapSwapActionParameters,
   RapTypes,
@@ -66,7 +70,6 @@ export async function executeAction<T extends RapActionTypes>({
   flashbots?: boolean;
 }): Promise<RapActionResponse> {
   const { type, parameters } = action;
-  let nonce;
   try {
     const actionProps = {
       wallet,
@@ -75,8 +78,11 @@ export async function executeAction<T extends RapActionTypes>({
       parameters: { ...parameters, flashbots },
       baseNonce,
     };
-    nonce = await typeAction<T>(type, actionProps)();
-    return { baseNonce: nonce, errorMessage: null };
+    const { nonce, hash } = (await typeAction<T>(
+      type,
+      actionProps,
+    )()) as RapActionResult;
+    return { baseNonce: nonce, errorMessage: null, hash };
   } catch (error) {
     logger.error(new RainbowError(`rap: ${rapName} - error execute action`), {
       message: (error as Error)?.message,
@@ -92,6 +98,28 @@ function getRapFullName<T extends RapActionTypes>(actions: RapAction<T>[]) {
   const actionTypes = actions.map((action) => action.type);
   return actionTypes.join(' + ');
 }
+
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+const waitForNodeAck = async (
+  hash: string,
+  provider: Signer['provider'],
+): Promise<void> => {
+  return new Promise(async (resolve) => {
+    const tx = await provider?.getTransaction(hash);
+    // This means the node is aware of the tx, we're good to go
+    if (
+      (tx && tx.blockNumber === null) ||
+      (tx && tx?.blockNumber && tx?.blockNumber > 0)
+    ) {
+      resolve();
+    } else {
+      // Wait for 1 second and try again
+      await delay(1000);
+      return waitForNodeAck(hash, provider);
+    }
+  });
+};
 
 export const walletExecuteRap = async (
   wallet: Signer,
@@ -116,11 +144,16 @@ export const walletExecuteRap = async (
       flashbots: parameters?.flashbots,
     };
 
-    const { baseNonce, errorMessage: error } = await executeAction(
-      actionParams,
-    );
+    const {
+      baseNonce,
+      errorMessage: error,
+      hash,
+    } = await executeAction(actionParams);
 
     if (typeof baseNonce === 'number') {
+      actions.length > 1 &&
+        hash &&
+        (await waitForNodeAck(hash, wallet.provider));
       for (let index = 1; index < actions.length; index++) {
         const action = actions[index];
         const actionParams = {
@@ -132,8 +165,8 @@ export const walletExecuteRap = async (
           rapName,
           flashbots: parameters?.flashbots,
         };
-        // eslint-disable-next-line no-await-in-loop
-        await executeAction(actionParams);
+        const { hash } = await executeAction(actionParams);
+        hash && (await waitForNodeAck(hash, wallet.provider));
       }
       nonce = baseNonce + actions.length - 1;
     } else {
