@@ -19,34 +19,34 @@ import { Box } from '~/design-system';
 
 import { activeTransitions, inactiveTransitions } from './pressTransitions.css';
 
-const isWindows = navigator.userAgent.indexOf('Win') !== -1;
-const OptionPressed = isWindows ? OptionPressedWindows : OptionPressedMacOS;
+const isMac = navigator.userAgent.indexOf('Mac') !== -1;
+const OptionPressed = isMac ? OptionPressedMacOS : OptionPressedWindows;
 
-const OptionPressedBottom = isWindows
-  ? OptionPressedBottomWindows
-  : OptionPressedBottomMacOS;
+const OptionPressedBottom = isMac
+  ? OptionPressedBottomMacOS
+  : OptionPressedBottomWindows;
 
-const OptionInactive = isWindows ? OptionInactiveWindows : OptionInactiveMacOS;
+const OptionInactive = isMac ? OptionInactiveMacOS : OptionInactiveWindows;
 
-const OptionInactiveBottom = isWindows
-  ? OptionInactiveBottomWindows
-  : OptionInactiveBottomMacOS;
+const OptionInactiveBottom = isMac
+  ? OptionInactiveBottomMacOS
+  : OptionInactiveBottomWindows;
 
-const OptionPressedLight = isWindows
-  ? OptionPressedWindowsLight
-  : OptionPressedMacOSLight;
+const OptionPressedLight = isMac
+  ? OptionPressedMacOSLight
+  : OptionPressedWindowsLight;
 
-const OptionPressedBottomLight = isWindows
-  ? OptionPressedBottomWindowsLight
-  : OptionPressedBottomMacOSLight;
+const OptionPressedBottomLight = isMac
+  ? OptionPressedBottomMacOSLight
+  : OptionPressedBottomWindowsLight;
 
-const OptionInactiveLight = isWindows
-  ? OptionInactiveWindowsLight
-  : OptionInactiveMacOSLight;
+const OptionInactiveLight = isMac
+  ? OptionInactiveMacOSLight
+  : OptionInactiveWindowsLight;
 
-const OptionInactiveBottomLight = isWindows
-  ? OptionInactiveBottomWindowsLight
-  : OptionInactiveBottomMacOSLight;
+const OptionInactiveBottomLight = isMac
+  ? OptionInactiveBottomMacOSLight
+  : OptionInactiveBottomWindowsLight;
 
 export function OptionAltPress({
   isOptionPressed,

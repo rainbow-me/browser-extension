@@ -975,8 +975,7 @@ it('should be able to execute swap', async () => {
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
-  console.log('ethBalanceBeforeSwap', ethBalanceBeforeSwap.toString());
-  console.log('ethBalanceAfterSwap', ethBalanceAfterSwap.toString());
+
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
     ethBalanceAfterSwap.toString(),

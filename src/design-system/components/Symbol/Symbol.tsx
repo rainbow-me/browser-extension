@@ -4,8 +4,12 @@ import { FontWeight, SymbolName } from '~/design-system/styles/designTokens';
 
 import { SymbolStyles, symbolStyles } from '../../styles/core.css';
 import symbols from '../../symbols/generated';
+import { Box } from '../Box/Box';
+
+import { boxedStyle } from './Symbol.css';
 
 export type SymbolProps = {
+  boxed?: boolean;
   color?: SymbolStyles['color'];
   cursor?: SymbolStyles['cursor'];
   symbol: SymbolName;
@@ -14,30 +18,68 @@ export type SymbolProps = {
   gradient?: React.ReactNode;
 };
 
-export function Symbol({
-  color = 'label',
-  cursor = 'default',
-  symbol: name,
-  weight,
-  size,
-  gradient,
-}: SymbolProps) {
-  const symbol = symbols[name as keyof typeof symbols][weight];
+export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
+  function Symbol(
+    {
+      boxed = false,
+      color = 'label',
+      cursor = 'default',
+      symbol: name,
+      weight,
+      size,
+      gradient,
+    },
+    ref,
+  ) {
+    const symbol = symbols[name as keyof typeof symbols][weight];
 
-  return (
-    <svg
-      cursor={cursor}
-      viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
-      fill="none"
-      className={symbolStyles({ color })}
-      style={{ width: size, height: size }}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {gradient ? <defs>{gradient}</defs> : null}
-      <path
-        d={symbol.path}
-        fill={gradient ? 'url(#gradient)' : 'currentColor'}
-      />
-    </svg>
-  );
-}
+    return (
+      <Box
+        style={{
+          ...(boxed
+            ? {
+                justifyContent: 'center',
+                alignItems: 'center',
+                display: 'flex',
+              }
+            : { height: size, width: size }),
+        }}
+        className={boxed && boxedStyle}
+      >
+        <Box
+          style={{
+            ...(boxed
+              ? {
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  display: 'flex',
+                  transform: 'scale(0.5)',
+                }
+              : {
+                  transform: 'scale(0.5)',
+                  transformOrigin: 'top left',
+                  willChange: 'transform',
+                }),
+          }}
+        >
+          <svg
+            cursor={cursor}
+            viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
+            fill="none"
+            className={symbolStyles({ color })}
+            ref={ref}
+            style={{ width: size * 2, height: size * 2 }}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {gradient ? <defs>{gradient}</defs> : null}
+            <path
+              d={symbol.path}
+              fill={gradient ? 'url(#gradient)' : 'currentColor'}
+              shapeRendering="geometricPrecision"
+            />
+          </svg>
+        </Box>
+      </Box>
+    );
+  },
+);
