@@ -151,7 +151,9 @@ export const walletExecuteRap = async (
     } = await executeAction(actionParams);
 
     if (typeof baseNonce === 'number') {
-      hash && (await waitForNodeAck(hash, wallet.provider));
+      actions.length > 1 &&
+        hash &&
+        (await waitForNodeAck(hash, wallet.provider));
       for (let index = 1; index < actions.length; index++) {
         const action = actions[index];
         const actionParams = {
