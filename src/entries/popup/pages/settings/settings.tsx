@@ -392,7 +392,7 @@ export function Settings() {
               />
             ))}
             <MenuItem
-              titleComponent={<MenuItem.Title text="Generate FCM token" />}
+              titleComponent={<MenuItem.Title text="Generate FCM Token" />}
               onClick={generateFCMToken}
               testId="generate-fcm-token"
             />

@@ -112,6 +112,7 @@ export function Tokens() {
               <Box
                 key={key}
                 as={motion.div}
+                whileTap={{ scale: 0.98 }}
                 layoutId={`list-${index}`}
                 layoutScroll
                 layout="position"

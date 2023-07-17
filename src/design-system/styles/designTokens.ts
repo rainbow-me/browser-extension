@@ -845,6 +845,7 @@ export const symbolNames = selectSymbolNames(
   'arrow.right',
   'eye',
   'eye.slash.fill',
+  'eyes',
   'eyes.inverse',
   'exclamationmark.triangle.fill',
   'exclamationmark.triangle',
@@ -861,6 +862,7 @@ export const symbolNames = selectSymbolNames(
   'checkmark.seal.fill',
   'lock.rotation',
   'doc.text.magnifyingglass',
+  'magnifyingglass',
   'magnifyingglass.circle',
   'arrow.uturn.down.circle.fill',
   'lifepreserver',
@@ -897,11 +899,15 @@ export const symbolNames = selectSymbolNames(
   'message.fill',
   'ellipsis.rectangle',
   'eye.fill',
+  'person.crop.rectangle.stack.fill',
+  'plus.app.fill',
+  'arrow.up.left.and.arrow.down.right',
 );
 export type SymbolName = typeof symbolNames[number];
 
 export const radii = {
   round: 9999,
+  '0': 0,
   '2px': 2,
   '3px': 3,
   '5px': 5,
