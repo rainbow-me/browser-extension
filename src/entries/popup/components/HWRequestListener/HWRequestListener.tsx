@@ -35,32 +35,36 @@ export const HWRequestListener = () => {
   }
 
   const processHwSigningRequest = async (data: HWSigningRequest) => {
-    let response;
-    switch (data.action) {
-      case 'signTransaction':
-        response = await signTransactionFromHW(
-          data.payload as TransactionRequest,
-          data.vendor,
-        );
-        break;
-      case 'signMessage':
-        if (isMessagePayload(data.payload)) {
-          response = await personalSign(
-            data.payload.message,
-            data.payload.address as Address,
+    try {
+      let response;
+      switch (data.action) {
+        case 'signTransaction':
+          response = await signTransactionFromHW(
+            data.payload as TransactionRequest,
+            data.vendor,
           );
-        }
-        break;
-      case 'signTypedData':
-        if (isTypedDataPayload(data.payload)) {
-          response = await signTypedData(
-            data.payload.data,
-            data.payload.address as Address,
-          );
-        }
-        break;
+          break;
+        case 'signMessage':
+          if (isMessagePayload(data.payload)) {
+            response = await personalSign(
+              data.payload.message,
+              data.payload.address as Address,
+            );
+          }
+          break;
+        case 'signTypedData':
+          if (isTypedDataPayload(data.payload)) {
+            response = await signTypedData(
+              data.payload.data,
+              data.payload.address as Address,
+            );
+          }
+          break;
+      }
+      return response;
+    } catch (e: any) {
+      return { error: e?.name || e, nonce: 0 };
     }
-    return response;
   };
 
   bgMessenger.reply('hwRequest', async (data: HWSigningRequest) => {

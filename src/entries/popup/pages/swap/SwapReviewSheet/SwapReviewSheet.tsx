@@ -296,10 +296,12 @@ const SwapReviewSheetWithQuote = ({
     });
     if (errorMessage) {
       setSendingSwap(false);
-      alert('Swap failed');
-      logger.error(new RainbowError('swap: error executing swap'), {
-        message: errorMessage,
-      });
+      if (errorMessage !== 'handled') {
+        alert('Swap failed');
+        logger.error(new RainbowError('swap: error executing swap'), {
+          message: errorMessage,
+        });
+      }
     } else {
       setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
       navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });

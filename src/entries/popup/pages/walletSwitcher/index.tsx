@@ -4,6 +4,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
+  DraggableStateSnapshot,
   DraggingStyle,
   DropResult,
   Droppable,
@@ -53,6 +54,7 @@ import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
+import { accountItem } from './accountItem.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
 
@@ -69,12 +71,17 @@ const reorder = (
 };
 
 const getItemStyle = (
-  isDragging: boolean,
-  draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
-) => ({
-  ...draggableStyle,
-  cursor: isDragging ? 'grabbing' : 'default',
-});
+  style: DraggingStyle | NotDraggingStyle | undefined,
+  { dropAnimation }: Pick<DraggableStateSnapshot, 'dropAnimation'>,
+) => {
+  if (!dropAnimation) return style;
+  const { moveTo, curve } = dropAnimation;
+  return {
+    ...style,
+    transform: `translate(${moveTo.x}px, ${moveTo.y}px) scale(1)`,
+    transition: `all ${curve} .5s`,
+  };
+};
 
 const infoButtonOptions = ({
   account,
@@ -259,7 +266,6 @@ export function WalletSwitcher() {
       ),
     }),
   );
-
   const displayedAccounts = useMemo(
     () =>
       filteredAndSortedAccounts.map((account, index) => (
@@ -269,47 +275,55 @@ export function WalletSwitcher() {
           index={index}
           isDragDisabled={isSearching}
         >
-          {({ innerRef, draggableProps, dragHandleProps }, { isDragging }) => (
+          {(
+            { innerRef, draggableProps, dragHandleProps },
+            { dropAnimation, isDragging },
+          ) => (
             <Box
               ref={innerRef}
               {...draggableProps}
               {...dragHandleProps}
-              style={getItemStyle(isDragging, draggableProps.style)}
-              background={isDragging ? 'surfaceSecondary' : undefined}
-              borderRadius="12px"
+              style={getItemStyle(draggableProps.style, { dropAnimation })}
               tabIndex={-1}
             >
-              <AccountItem
-                rowHighlight
-                key={account.address}
-                onClick={() => handleSelectAddress(account.address)}
-                account={account.address}
-                rightComponent={
-                  <Inline alignVertical="center" space="6px">
-                    {account.type === KeychainType.ReadOnlyKeychain && (
-                      <LabelPill label={i18n.t('wallet_switcher.watching')} />
-                    )}
-                    {account.type === KeychainType.HardwareWalletKeychain && (
-                      <LabelPill
-                        dot
-                        label={i18n.t(
-                          `wallet_switcher.${account.vendor?.toLowerCase()}`,
-                        )}
-                      />
-                    )}
-                    <MoreInfoButton
-                      options={infoButtonOptions({
-                        account,
-                        setRenameAccount,
-                        setRemoveAccount,
-                        isLastWallet,
-                      })}
-                    />
-                  </Inline>
+              <Box
+                className={
+                  accountItem[
+                    isDragging && !dropAnimation ? 'dragging' : 'idle'
+                  ]
                 }
-                labelType={LabelOption.balance}
-                isSelected={account.address === currentAddress}
-              />
+              >
+                <AccountItem
+                  key={account.address}
+                  onClick={() => handleSelectAddress(account.address)}
+                  account={account.address}
+                  rightComponent={
+                    <Inline alignVertical="center" space="6px">
+                      {account.type === KeychainType.ReadOnlyKeychain && (
+                        <LabelPill label={i18n.t('wallet_switcher.watching')} />
+                      )}
+                      {account.type === KeychainType.HardwareWalletKeychain && (
+                        <LabelPill
+                          dot
+                          label={i18n.t(
+                            `wallet_switcher.${account.vendor?.toLowerCase()}`,
+                          )}
+                        />
+                      )}
+                      <MoreInfoButton
+                        options={infoButtonOptions({
+                          account,
+                          setRenameAccount,
+                          setRemoveAccount,
+                          isLastWallet,
+                        })}
+                      />
+                    </Inline>
+                  }
+                  labelType={LabelOption.balance}
+                  isSelected={account.address === currentAddress}
+                />
+              </Box>
             </Box>
           )}
         </Draggable>

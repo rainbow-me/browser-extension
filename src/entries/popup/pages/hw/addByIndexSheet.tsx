@@ -365,6 +365,7 @@ export const AddByIndexSheet = ({
               disabled={!newAccount}
               onClick={handleAddWallet}
               testId="hw-add-by-index-done"
+              enterCta
             >
               {i18n.t('hw.add_wallet')}
             </Button>
