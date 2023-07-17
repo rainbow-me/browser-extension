@@ -81,7 +81,7 @@ export async function signTransactionFromTrezor(
 
       return serializedTransaction;
     } else {
-      console.log('trezor error', response, baseTx);
+      console.log('trezor error', JSON.stringify(response, null, 2), baseTx);
       alert('error signing transaction with trezor');
       throw new Error('error signing transaction with trezor');
     }
