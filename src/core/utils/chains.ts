@@ -9,7 +9,7 @@ import { isLowerCaseMatch } from './strings';
 export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
   polygon,
-  optimism,
+  { ...optimism, name: 'Optimism' },
   { ...arbitrum, name: 'Arbitrum' },
   bsc,
   zora,
