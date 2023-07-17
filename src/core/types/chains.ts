@@ -58,7 +58,7 @@ export enum ChainId {
 
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
-  [ChainId.bsc]: 'Binance Chain',
+  [ChainId.bsc]: 'BSC',
   [ChainId.optimism]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
   [ChainId.mainnet]: 'Ethereum',
