@@ -346,6 +346,10 @@ export const importAccountAtIndex = async (
         });
 
         if (!result.success) {
+          console.log(
+            'window.TrezorConnect.getAddress failed',
+            JSON.stringify(result),
+          );
           throw new Error('window.TrezorConnect.getAddress failed');
         }
         address = result.payload.address;
@@ -398,6 +402,10 @@ export const connectTrezor = async () => {
     });
 
     if (!result.success) {
+      console.log(
+        'window.TrezorConnect.ethereumGetPublicKey failed',
+        JSON.stringify(result),
+      );
       throw new Error('window.TrezorConnect.ethereumGetPublicKey failed');
     }
 
