@@ -27,6 +27,7 @@ import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
+import { logger } from '~/logger';
 
 import {
   sendTransactionFromLedger,
@@ -346,10 +347,9 @@ export const importAccountAtIndex = async (
         });
 
         if (!result.success) {
-          console.log(
-            'window.TrezorConnect.getAddress failed',
-            JSON.stringify(result),
-          );
+          logger.info('window.TrezorConnect.getAddress failed', {
+            result: JSON.stringify(result, null, 2),
+          });
           throw new Error('window.TrezorConnect.getAddress failed');
         }
         address = result.payload.address;
@@ -402,10 +402,9 @@ export const connectTrezor = async () => {
     });
 
     if (!result.success) {
-      console.log(
-        'window.TrezorConnect.ethereumGetPublicKey failed',
-        JSON.stringify(result),
-      );
+      logger.info('window.TrezorConnect.ethereumGetPublicKey failed', {
+        result: JSON.stringify(result, null, 2),
+      });
       throw new Error('window.TrezorConnect.ethereumGetPublicKey failed');
     }
 
