@@ -104,7 +104,7 @@
     "buffer": "6.0.3",
     "check-password-strength": "2.0.7",
     "chroma-js": "2.4.2",
-    "chromedriver": "113",
+    "chromedriver": "114.0.3",
     "clsx": "1.2.1",
     "currency.js": "2.0.4",
     "date-fns": "2.29.3",
