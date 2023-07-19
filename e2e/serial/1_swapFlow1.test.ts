@@ -615,6 +615,7 @@ it('should be able to filter assets to buy by network', async () => {
     text: 'gmx',
   });
   await delayTime('long');
+  await driver.sleep(90000);
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
     driver,

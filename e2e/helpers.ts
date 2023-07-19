@@ -283,6 +283,7 @@ export async function waitAndClick(element, driver) {
   try {
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    await driver.wait(untilIsClickable(element), waitUntilTime);
     // some of our sheets animations require some sort of delay for them to animate in
     await delayTime('short');
     await element.click();
@@ -345,19 +346,13 @@ export async function getTextFromDappText({ id, driver }) {
   }
 }
 
-export const untilIsClickable = (locator) => {
-  const convertedLocator =
-    typeof locator === 'string' ? By.css(locator) : locator;
-  return new WebElementCondition(
-    'until element is clickable',
-    async (driver) => {
-      const element = await driver.findElement(convertedLocator);
-      const isDisplayed = await element.isDisplayed();
-      const isEnabled = await element.isEnabled();
-      if (isDisplayed && isEnabled) return element;
-      return null;
-    },
-  );
+export const untilIsClickable = (element) => {
+  return new WebElementCondition('until element is clickable', async () => {
+    const isDisplayed = await element.isDisplayed();
+    const isEnabled = await element.isEnabled();
+    if (isDisplayed && isEnabled) return element;
+    return null;
+  });
 };
 
 export async function awaitTextChange(
