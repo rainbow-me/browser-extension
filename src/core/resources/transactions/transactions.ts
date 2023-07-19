@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { refractionAddressWs } from '~/core/network';
+import { addysHttp } from '~/core/network/addys';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -12,13 +12,10 @@ import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
-import {
-  chainIdFromChainName,
-  chainNameFromChainId,
-} from '~/core/utils/chains';
+import { chainIdFromChainName } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
+import { RainbowError, logger } from '~/logger';
 
-const TRANSACTIONS_TIMEOUT_DURATION = 35000;
 const TRANSACTIONS_REFETCH_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
@@ -75,39 +72,27 @@ async function transactionsQueryFunction({
 }: QueryFunctionArgs<typeof transactionsQueryKey>): Promise<
   RainbowTransaction[]
 > {
-  const isMainnet = chainId === ChainId.mainnet;
-  const scope = [
-    `${isMainnet ? '' : chainNameFromChainId(chainId) + '-'}transactions`,
-  ];
-  const event = `received address ${scope[0]}`;
-  refractionAddressWs.emit('get', {
-    payload: {
-      address,
-      currency: currency.toLowerCase(),
-      transactions_limit: transactionsLimit ?? 250,
-    },
-    scope,
-  });
-  return new Promise((resolve) => {
-    const timeout = setTimeout(() => {
-      resolve(
-        queryClient.getQueryData(
-          transactionsQueryKey({
-            address,
-            chainId,
-            currency,
-            transactionsLimit,
-          }),
-        ) || [],
-      );
-    }, TRANSACTIONS_TIMEOUT_DURATION);
-    const resolver = async (message: TransactionsReceivedMessage) => {
-      clearTimeout(timeout);
-      const transactions = await parseTransactions(message, currency);
-      resolve(transactions);
-    };
-    refractionAddressWs.once(event, resolver);
-  });
+  try {
+    const response = await addysHttp.get<TransactionsReceivedMessage>(
+      `/${chainId}/${address}/transactions`,
+      {
+        params: {
+          currency: currency.toLowerCase(),
+          limit: transactionsLimit?.toString() || '100',
+        },
+      },
+    );
+    return parseTransactions(response?.data, currency);
+  } catch (e) {
+    const cache = queryClient.getQueryCache();
+    const cachedTransactions = cache.find(
+      transactionsQueryKey({ address, chainId, currency, transactionsLimit }),
+    )?.state?.data as RainbowTransaction[];
+    logger.error(new RainbowError('transactionsQueryFunction: '), {
+      message: (e as Error)?.message,
+    });
+    return cachedTransactions;
+  }
 }
 
 type TransactionsResult = QueryFunctionResult<typeof transactionsQueryFunction>;
