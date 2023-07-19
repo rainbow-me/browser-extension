@@ -284,8 +284,6 @@ export async function waitAndClick(element, driver) {
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
     await driver.wait(untilIsClickable(element), waitUntilTime);
-    // some of our sheets animations require some sort of delay for them to animate in
-    await delayTime('short');
     await element.click();
   } catch (error) {
     console.error(
@@ -548,9 +546,11 @@ export async function delay(ms) {
 }
 
 export async function delayTime(
-  time: 'short' | 'medium' | 'long' | 'very-long',
+  time: 'very-short' | 'short' | 'medium' | 'long' | 'very-long',
 ) {
   switch (time) {
+    case 'very-short':
+      return await delay(100);
     case 'short':
       return await delay(200);
     case 'medium':

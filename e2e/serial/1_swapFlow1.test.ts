@@ -122,6 +122,7 @@ it('should be able to go to swap settings and check rows are visible', async () 
 
 it('should be able to go to settings and turn on flashbots', async () => {
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
   await findElementByTestIdAndClick({ id: 'settings-transactions', driver });
@@ -158,6 +159,7 @@ it('should be able to interact with route settings', async () => {
     id: 'swap-settings-route-label',
     driver,
   });
+  await delayTime('short');
   await findElementByTestIdAndClick({
     id: 'explainer-action-button',
     driver,
@@ -177,6 +179,7 @@ it('should be able to interact with flashbots settings', async () => {
     id: 'swap-settings-flashbots-label',
     driver,
   });
+  await delayTime('short');
   await findElementByTestIdAndClick({
     id: 'explainer-action-button',
     driver,
@@ -196,6 +199,7 @@ it('should be able to interact with slippage settings', async () => {
     id: 'swap-settings-slippage-label',
     driver,
   });
+  await delayTime('short');
   await findElementByTestIdAndClick({
     id: 'explainer-action-button',
     driver,

@@ -116,6 +116,7 @@ it('should be able to save contact on send flow', async () => {
     id: 'to-address-input-display',
     driver,
   });
+  await delayTime('medium');
   const displayNameText = await displayName.getText();
   expect(displayNameText).toBe('rainbowwallet.eth');
 });
@@ -226,6 +227,7 @@ it('should be able to interact with destination menu on review on send flow', as
     id: 'send-review-edit-contact-trigger',
     driver,
   });
+  await delayTime('medium');
   const viewContactItem = await findElementByTestId({
     id: 'send-review-edit-contact-view',
     driver,
