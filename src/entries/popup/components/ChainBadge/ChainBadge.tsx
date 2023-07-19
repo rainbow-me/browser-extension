@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
 import BscBadge from 'static/assets/badges/bscBadge.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge.png';
@@ -22,6 +20,9 @@ const sizeConfigs = {
   extraSmall: {
     iconSize: 16,
   },
+  '14px': {
+    iconSize: 14,
+  },
   micro: {
     iconSize: 8,
   },
@@ -30,7 +31,7 @@ const sizeConfigs = {
 interface ChainIconProps {
   chainId: ChainId;
   shadow?: boolean;
-  size: 'large' | 'medium' | 'small' | 'extraSmall' | 'micro';
+  size: keyof typeof sizeConfigs;
 }
 
 const networkBadges = {

@@ -787,7 +787,7 @@ export const strokeWeights = {
 };
 export type StrokeWeight = keyof typeof strokeWeights;
 
-function selectSymbolNames<SymbolName extends readonly SFSymbolName[]>(
+function selectSymbolNames<SymbolName extends SFSymbolName[]>(
   ...symbolNames: SymbolName
 ): SymbolName {
   return symbolNames;
@@ -868,6 +868,7 @@ export const symbolNames = selectSymbolNames(
   'command',
   'asterisk',
   'info.circle.fill',
+  'info.circle',
   'info',
   'app.connected.to.app.below.fill',
   'trash.fill',
@@ -891,6 +892,13 @@ export const symbolNames = selectSymbolNames(
   'message.fill',
   'ellipsis.rectangle',
   'eye.fill',
+  'dollarsign.square',
+  'clock.arrow.circlepath',
+  'chart.line.uptrend.xyaxis',
+  'chart.pie',
+  'chart.bar',
+  'person',
+  'point.3.filled.connected.trianglepath.dotted',
 );
 export type SymbolName = typeof symbolNames[number];
 

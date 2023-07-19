@@ -30,9 +30,8 @@ import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
-
-import { TokenDetailsMenu } from './TokenDetailsMenu';
 
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
@@ -76,6 +75,7 @@ export function Tokens() {
   });
 
   useTokensShortcuts();
+  const navigate = useRainbowNavigate();
 
   if (isInitialLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
@@ -111,6 +111,11 @@ export function Tokens() {
             return (
               <Box
                 key={key}
+                onClick={() =>
+                  navigate('token-details', {
+                    state: { uniqueId: rowData.uniqueId },
+                  })
+                }
                 as={motion.div}
                 layoutId={`list-${index}`}
                 layoutScroll
@@ -119,12 +124,12 @@ export function Tokens() {
                 width="full"
                 style={{ height: size, y: start }}
               >
-                <TokenDetailsMenu token={rowData}>
-                  <AssetRow
-                    key={`${rowData?.uniqueId}-${index}`}
-                    uniqueId={rowData?.uniqueId}
-                  />
-                </TokenDetailsMenu>
+                {/* <TokenDetailsMenu token={rowData}> */}
+                <AssetRow
+                  key={`${rowData?.uniqueId}-${index}`}
+                  uniqueId={rowData?.uniqueId}
+                />
+                {/* </TokenDetailsMenu> */}
               </Box>
             );
           })}
