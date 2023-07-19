@@ -1,10 +1,17 @@
-import { Chain, chain } from 'wagmi';
+import { Chain } from 'wagmi';
 
-const BSC_CHAIN_ID = 56;
-const HARDHAT_CHAIN_ID = 1337;
+export const enum ChainId {
+  arbitrum = 42161,
+  bsc = 56,
+  goerli = 5,
+  optimism = 10,
+  mainnet = 1,
+  polygon = 137,
+  hardhat = 1337,
+}
 
 export const bsc: Chain = {
-  id: BSC_CHAIN_ID,
+  id: ChainId.bsc,
   name: 'BNB Smart Chain',
   network: 'bsc',
   nativeCurrency: {
@@ -22,7 +29,7 @@ export const bsc: Chain = {
 };
 
 export const hardhat: Chain = {
-  id: HARDHAT_CHAIN_ID,
+  id: ChainId.hardhat,
   name: 'Hardhat',
   network: 'hardhat',
   nativeCurrency: {
@@ -36,7 +43,7 @@ export const hardhat: Chain = {
   testnet: true,
 };
 
-export enum ChainName {
+export const enum ChainName {
   arbitrum = 'arbitrum',
   bsc = 'bsc',
   goerli = 'goerli',
@@ -46,21 +53,12 @@ export enum ChainName {
   hardhat = 'hardhat',
 }
 
-export enum ChainId {
-  arbitrum = chain.arbitrum.id,
-  bsc = BSC_CHAIN_ID,
-  goerli = chain.goerli.id,
-  optimism = chain.optimism.id,
-  mainnet = chain.mainnet.id,
-  polygon = chain.polygon.id,
-  hardhat = HARDHAT_CHAIN_ID,
-}
-
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
   [ChainId.bsc]: 'Binance Chain',
   [ChainId.optimism]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
   [ChainId.mainnet]: 'Ethereum',
+  [ChainId.goerli]: 'Goerli',
   [ChainId.hardhat]: 'Hardhat',
 };
