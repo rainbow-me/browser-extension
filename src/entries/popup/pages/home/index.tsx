@@ -129,7 +129,6 @@ export function Home() {
   }, [navigate, pendingRequests, prevPendingRequest?.id]);
 
   useEffect(() => {
-    analytics.screen(screen.wallet);
     removeImportWalletSecrets();
   }, []);
 
