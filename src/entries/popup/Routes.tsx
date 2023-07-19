@@ -1,18 +1,25 @@
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
-import { matchRoutes, useLocation } from 'react-router-dom';
+import {
+  RouterProvider,
+  createHashRouter,
+  useLocation,
+  useOutlet,
+} from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { Box } from '~/design-system';
+import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
+import { CommandK } from './components/CommandK/CommandK';
 import { useCommandKStatus } from './components/CommandK/useCommandKStatus';
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalletSelectionEdit';
 import { ImportWalletViaPrivateKey } from './components/ImportWallet/ImportWalletViaPrivateKey';
 import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSeed';
+import { Toast } from './components/Toast/Toast';
+import { WindowStroke } from './components/WindowStroke/WindowStroke';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
@@ -74,12 +81,12 @@ const ROUTE_DATA = [
   },
   {
     path: ROUTES.HOME,
+    index: true,
     element: (
       <AnimatedRoute direction="base" protectedRoute>
         <Home />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.APPROVE_APP_REQUEST,
@@ -103,7 +110,6 @@ const ROUTE_DATA = [
         <ConnectedApps />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.WELCOME,
@@ -116,7 +122,6 @@ const ROUTE_DATA = [
         <Welcome />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.READY,
@@ -129,7 +134,6 @@ const ROUTE_DATA = [
         <WalletReady />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.IMPORT_OR_CONNECT,
@@ -144,7 +148,6 @@ const ROUTE_DATA = [
         <ImportOrConnect />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.IMPORT,
@@ -159,7 +162,6 @@ const ROUTE_DATA = [
         <ImportWallet />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.IMPORT__SEED,
@@ -174,7 +176,6 @@ const ROUTE_DATA = [
         <ImportWalletViaSeed />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.IMPORT__PRIVATE_KEY,
@@ -189,7 +190,6 @@ const ROUTE_DATA = [
         <ImportWalletViaPrivateKey />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.HW_CHOOSE,
@@ -205,7 +205,6 @@ const ROUTE_DATA = [
         <ChooseHW />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.HW_LEDGER,
@@ -220,7 +219,6 @@ const ROUTE_DATA = [
         <ConnectLedger />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.HW_TREZOR,
@@ -234,7 +232,6 @@ const ROUTE_DATA = [
         <ConnectTrezor />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.HW_WALLET_LIST,
@@ -250,7 +247,6 @@ const ROUTE_DATA = [
         <WalletListHW />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.HW_SUCCESS,
@@ -263,7 +259,6 @@ const ROUTE_DATA = [
         <SuccessHW />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.WATCH,
@@ -278,7 +273,6 @@ const ROUTE_DATA = [
         <WatchWallet />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.IMPORT,
@@ -293,7 +287,6 @@ const ROUTE_DATA = [
         <ImportWallet />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.IMPORT__SELECT,
@@ -306,7 +299,6 @@ const ROUTE_DATA = [
         <ImportWalletSelection />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.IMPORT__EDIT,
@@ -320,7 +312,6 @@ const ROUTE_DATA = [
         <ImportWalletSelectionEdit onboarding />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.UNLOCK,
@@ -329,7 +320,6 @@ const ROUTE_DATA = [
         <Unlock />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SEED_BACKUP_PROMPT,
@@ -344,7 +334,6 @@ const ROUTE_DATA = [
         <SeedBackupPrompt />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SEED_REVEAL,
@@ -358,7 +347,6 @@ const ROUTE_DATA = [
         <SeedReveal />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SEED_VERIFY,
@@ -372,7 +360,6 @@ const ROUTE_DATA = [
         <SeedVerify />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.CREATE_PASSWORD,
@@ -387,7 +374,6 @@ const ROUTE_DATA = [
         <CreatePassword />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.QR_CODE,
@@ -402,7 +388,6 @@ const ROUTE_DATA = [
         <QRCodePage />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS,
@@ -418,7 +403,6 @@ const ROUTE_DATA = [
         <Settings />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY,
@@ -434,7 +418,6 @@ const ROUTE_DATA = [
         <Privacy />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__AUTOLOCK,
@@ -450,7 +433,6 @@ const ROUTE_DATA = [
         <AutoLockTimer />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD,
@@ -463,7 +445,6 @@ const ROUTE_DATA = [
         <ChangePassword />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS,
@@ -479,7 +460,6 @@ const ROUTE_DATA = [
         <WalletsAndKeys />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
@@ -497,7 +477,6 @@ const ROUTE_DATA = [
         <WalletDetails />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
@@ -512,7 +491,6 @@ const ROUTE_DATA = [
         <PrivateKeyWarning />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY,
@@ -527,7 +505,6 @@ const ROUTE_DATA = [
         <PrivateKey />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
@@ -542,7 +519,6 @@ const ROUTE_DATA = [
         <RecoveryPhraseWarning />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
@@ -557,7 +533,6 @@ const ROUTE_DATA = [
         <RecoveryPhrase />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY,
@@ -572,7 +547,6 @@ const ROUTE_DATA = [
         <RecoveryPhraseVerify />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__TRANSACTIONS,
@@ -588,7 +562,6 @@ const ROUTE_DATA = [
         <Transactions />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__CURRENCY,
@@ -604,7 +577,6 @@ const ROUTE_DATA = [
         <Currency />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SEND,
@@ -613,7 +585,6 @@ const ROUTE_DATA = [
         <Send />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.SWAP,
@@ -622,8 +593,6 @@ const ROUTE_DATA = [
         <Swap />
       </AnimatedRoute>
     ),
-    background:
-      process.env.IS_TESTING === 'true' ? undefined : FullScreenBackground,
   },
   {
     path: ROUTES.SIGN,
@@ -652,7 +621,6 @@ const ROUTE_DATA = [
         <Wallets />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.WALLET_SWITCHER,
@@ -668,7 +636,6 @@ const ROUTE_DATA = [
         <WalletSwitcher />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.ADD_WALLET,
@@ -684,7 +651,6 @@ const ROUTE_DATA = [
         <AddWallet />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.CHOOSE_WALLET_GROUP,
@@ -699,7 +665,6 @@ const ROUTE_DATA = [
         <ChooseWalletGroup />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.NEW_WATCH_WALLET,
@@ -714,7 +679,6 @@ const ROUTE_DATA = [
         <NewWatchWallet />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.NEW_IMPORT_WALLET,
@@ -729,7 +693,6 @@ const ROUTE_DATA = [
         <NewImportWallet />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.NEW_IMPORT_WALLET_SELECTION,
@@ -744,7 +707,6 @@ const ROUTE_DATA = [
         <NewImportWalletSelection />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT,
@@ -757,70 +719,41 @@ const ROUTE_DATA = [
         <ImportWalletSelectionEdit />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
 ];
 
-const matchingRoute = (pathName: string) => {
-  const routeMatch = matchRoutes(ROUTE_DATA, pathName);
-  const match = routeMatch?.[0].route;
-  return match;
+const ScrollToTopOnRouteChange = () => {
+  const location = useLocation();
+  React.useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  return null;
 };
 
-export function Routes({ children }: React.PropsWithChildren) {
-  const location = useLocation();
-  React.useEffect(() => {
-    // need to wait a tick for the page to render
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 0);
-  }, [location.pathname]);
-  const match = matchingRoute(location.pathname);
-  const background = match?.background;
-  const RoutesContainer = background ?? React.Fragment;
-  const { innerHeight: windowHeight } = window;
-  return (
-    <Box
-      style={{
-        maxWidth:
-          windowHeight === POPUP_DIMENSIONS.height
-            ? POPUP_DIMENSIONS.width
-            : undefined,
-      }}
-    >
-      <RoutesContainer>
-        <CurrentRoute pathname={location.pathname} />
-        {children}
-      </RoutesContainer>
-    </Box>
-  );
-}
-
-function CurrentRoute(props: { pathname: string }) {
-  const match = matchingRoute(props.pathname);
-  const { state } = useLocation();
-  const element = match?.element;
-  const currentDirection = state?.direction ?? element?.props.direction;
-
-  useCommandKShortcuts();
+const Outlet = () => useOutlet();
+const RootContainer = () => {
   useGlobalShortcuts();
-
-  if (!element) {
-    // error UI here probably
-    return null;
-  }
-  const direction = currentDirection;
-  const navbarIcon = state?.navbarIcon ?? element?.props.navbarIcon;
-
+  useCommandKShortcuts();
   return (
-    <AnimatePresence key={props.pathname} mode="popLayout">
-      {React.cloneElement(element, {
-        key: props.pathname,
-        direction,
-        navbarIcon,
-      })}
-    </AnimatePresence>
+    <FullScreenBackground>
+      <AnimatePresence>
+        <Outlet key={location.pathname} />
+        <ScrollToTopOnRouteChange />
+        <CommandK />
+        <Toast />
+        <Alert />
+        <WindowStroke />
+      </AnimatePresence>
+    </FullScreenBackground>
   );
+};
+
+const router = createHashRouter([
+  { element: <RootContainer />, children: ROUTE_DATA },
+]);
+
+export function Routes() {
+  return <RouterProvider router={router} />;
 }
 
 const useGlobalShortcuts = () => {
