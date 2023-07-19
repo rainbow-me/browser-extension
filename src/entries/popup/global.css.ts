@@ -5,6 +5,9 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 globalStyle('html, body', {
   margin: 0,
   padding: 0,
+  textRendering: 'optimizeLegibility',
+  MozOsxFontSmoothing: 'grayscale',
+  WebkitFontSmoothing: 'antialiased',
 });
 
 globalStyle('html, body, #main', {

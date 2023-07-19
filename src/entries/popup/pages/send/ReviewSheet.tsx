@@ -1,5 +1,11 @@
 import { motion } from 'framer-motion';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.mp3';
@@ -254,6 +260,7 @@ export const ReviewSheet = ({
   const [sendingOnL2Checks, setSendingOnL2Checks] = useState([false, false]);
   const prevShow = usePrevious(show);
   const [sending, setSending] = useState(false);
+  const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
 
   const { displayName: walletDisplayName } = useWalletInfo({
     address: toAddress,
@@ -329,6 +336,15 @@ export const ReviewSheet = ({
       setSendingOnL2Checks([false, false]);
     }
   }, [prevShow, show]);
+
+  useEffect(() => {
+    if (show) {
+      // using autoFocus breaks the sheet's animation, so we wait for it to finish then focus
+      setTimeout(() => {
+        confirmSendButtonRef.current?.focus();
+      }, 500);
+    }
+  }, [show]);
 
   return (
     <>
@@ -623,6 +639,8 @@ export const ReviewSheet = ({
                 width="full"
                 onClick={(!waitingForDevice && handleSend) || undefined}
                 testId="review-confirm-button"
+                tabIndex={0}
+                ref={confirmSendButtonRef}
               >
                 {sendEnabled ? (
                   <Box>
@@ -662,6 +680,8 @@ export const ReviewSheet = ({
                   height="44px"
                   variant="tinted"
                   onClick={onCancel}
+                  tabIndex={0}
+                  width="full"
                 >
                   <Text weight="bold" size="16pt" color="labelSecondary">
                     {i18n.t('send.review.cancel')}
