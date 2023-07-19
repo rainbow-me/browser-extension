@@ -338,7 +338,11 @@ export const importAccountAtIndex = async (
   switch (type) {
     case 'Trezor':
       {
-        window.TrezorConnect.init(TREZOR_CONFIG);
+        try {
+          window.TrezorConnect.init(TREZOR_CONFIG);
+        } catch (e) {
+          // ignore already initialized error
+        }
         const path = `m/${DEFAULT_HD_PATH}/${index}`;
         const result = await window.TrezorConnect.ethereumGetAddress({
           path,
@@ -392,7 +396,11 @@ export const connectTrezor = async () => {
   //   accountsEnabled: 2,
   // };
   try {
-    window.TrezorConnect.init(TREZOR_CONFIG);
+    try {
+      window.TrezorConnect.init(TREZOR_CONFIG);
+    } catch (e) {
+      // ignore already initialized error
+    }
     const path = `m/${DEFAULT_HD_PATH}`;
 
     const result = await window.TrezorConnect.ethereumGetPublicKey({
