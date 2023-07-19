@@ -100,7 +100,7 @@ jobs:
       - name: Install chrome
         uses: browser-actions/setup-chrome@latest
         with:
-              chrome-version: 'stable'
+              chrome-version: '113'
       - name: Install Anvil
         uses: foundry-rs/foundry-toolchain@v1
         with:
