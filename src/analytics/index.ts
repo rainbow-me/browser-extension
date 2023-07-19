@@ -5,8 +5,16 @@ import { UserProperties } from '~/analytics/userProperties';
 import { analyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
 import { RainbowError, logger } from '~/logger';
 
+import { version } from '../../package.json';
+
 const IS_DEV = process.env.IS_DEV === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
+
+/**
+ * Information about the current application, including
+ * the version number. This comes for free in the mobile SDKs.
+ */
+const context = { app: { version } };
 
 export class Analytics {
   client?: AnalyticsNode;
@@ -58,7 +66,7 @@ export class Analytics {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const traits = { ...userProperties, ...metadata };
-    this.client?.identify({ userId: this.deviceId, traits });
+    this.client?.identify({ userId: this.deviceId, traits, context });
     logger.info('analytics.identify()', {
       userId: this.deviceId,
       userProperties,
@@ -72,7 +80,7 @@ export class Analytics {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const properties = { ...params, ...metadata };
-    this.client?.screen({ userId: this.deviceId, name, properties });
+    this.client?.screen({ userId: this.deviceId, name, properties, context });
     logger.info('analytics.screen()', {
       userId: this.deviceId,
       name,
@@ -92,7 +100,7 @@ export class Analytics {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const properties = Object.assign(metadata, params);
-    this.client?.track({ userId: this.deviceId, event, properties });
+    this.client?.track({ userId: this.deviceId, event, properties, context });
     logger.info('analytics.track()', {
       userId: this.deviceId,
       event,
