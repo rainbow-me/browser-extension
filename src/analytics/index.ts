@@ -11,10 +11,24 @@ const IS_DEV = process.env.IS_DEV === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 /**
- * Information about the current application, including
- * the version number. This comes for free in the mobile SDKs.
+ * Metadata about the current application and browser/device.
+ * `context` doesn't come for free in @segment/analytics-node
  */
-const context = { app: { version } };
+const context = {
+  direct: true /* collect ip address for geoip */,
+  app: { version },
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  locale: window?.navigator?.language,
+  screen: {
+    width: window?.screen.width,
+    height: window?.screen.height,
+    density: window?.devicePixelRatio,
+  },
+  userAgent: window?.navigator?.userAgent,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - userAgentData is experimental and supported in Chrome
+  userAgentData: window?.navigator?.userAgentData,
+};
 
 export class Analytics {
   client?: AnalyticsNode;
