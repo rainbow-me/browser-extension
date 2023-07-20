@@ -48,6 +48,8 @@ export async function rainbowFetch<TData>(
 
   const responseBody = (await getBody(response)) as TData;
 
+  console.log('URL: ', url, 'RESPONSE BODY: ', responseBody);
+
   if (response.ok) {
     const { headers, status } = response;
     return { data: responseBody, headers, status };

@@ -5,6 +5,7 @@ import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { selectTransactionsByDate } from '~/core/resources/_selectors';
+import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentCurrencyStore } from '~/core/state';
 import {
   RainbowTransaction,
@@ -41,6 +42,8 @@ export function Activity() {
     address,
     currency,
   });
+
+  useConsolidatedTransactions({ address, currency });
 
   const listData = useMemo(
     () => Object.entries(selectTransactionsByDate(allTransactions)).flat(2),

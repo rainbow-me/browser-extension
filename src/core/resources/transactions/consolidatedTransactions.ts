@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { addysHttp } from '~/core/network/addys';
+import { addysHttpV3 } from '~/core/network/addys';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -87,7 +87,7 @@ async function consolidatedTransactionsQueryFunction({
   RainbowTransaction[]
 > {
   try {
-    const response = await addysHttp.get<TransactionsReceivedMessage>(
+    const response = await addysHttpV3.get<TransactionsReceivedMessage>(
       `/${SUPPORTED_CHAIN_IDS.join(',')}/${address}/transactions`,
       {
         params: {
