@@ -51,11 +51,11 @@ export function Default() {
     currency: currentCurrency,
   });
   const { data: mainnetBalance } = useBalance({
-    addressOrName: address,
+    address,
     chainId: ChainId.mainnet,
   });
   const { data: polygonBalance } = useBalance({
-    addressOrName: address,
+    address,
     chainId: ChainId.polygon,
   });
   const { data: firstTransactionTimestamp } = useFirstTransactionTimestamp({

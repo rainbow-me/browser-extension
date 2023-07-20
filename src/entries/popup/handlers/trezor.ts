@@ -27,7 +27,11 @@ export async function signTransactionFromTrezor(
   transaction: ethers.providers.TransactionRequest,
 ): Promise<string> {
   try {
-    window.TrezorConnect.init(TREZOR_CONFIG);
+    try {
+      window.TrezorConnect.init(TREZOR_CONFIG);
+    } catch (e) {
+      // ignore already initialized error
+    }
     const { from: address } = transaction;
     const provider = getProvider({
       chainId: transaction.chainId,
@@ -110,7 +114,11 @@ export async function signMessageByTypeFromTrezor(
   address: Address,
   messageType: string,
 ): Promise<string> {
-  window.TrezorConnect.init(TREZOR_CONFIG);
+  try {
+    window.TrezorConnect.init(TREZOR_CONFIG);
+  } catch (e) {
+    // ignore already initialized error
+  }
   const path = await getPath(address);
   // Personal sign
   if (messageType === 'personal_sign') {
