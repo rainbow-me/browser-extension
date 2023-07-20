@@ -9,6 +9,8 @@ import { injectNotificationIframe } from '../iframe';
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore - clashes with Wagmi's Window type https://github.com/wagmi-dev/wagmi/blob/a25ddf534781b2da81ee6aba307b93750efc5595/packages/core/src/types/index.ts#L77
     ethereum: RainbowProvider | Ethereum;
     rainbow: RainbowProvider;
     providers: (RainbowProvider | Ethereum)[];
@@ -58,7 +60,8 @@ if (shouldInjectProvider()) {
           window.walletRouter.currentProvider = window.rainbow;
         } else {
           const nonDefaultProvider =
-            window.walletRouter.lastInjectedProvider ?? window.ethereum;
+            window.walletRouter.lastInjectedProvider ??
+            (window.ethereum as Ethereum);
           window.walletRouter.currentProvider = nonDefaultProvider;
         }
       },

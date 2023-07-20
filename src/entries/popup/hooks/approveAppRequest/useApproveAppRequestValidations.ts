@@ -1,9 +1,9 @@
+import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
 import { useMemo } from 'react';
-import { chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { ChainId, bsc } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { toWei } from '~/core/utils/ethereum';
 import { lessThan } from '~/core/utils/numbers';
@@ -12,10 +12,10 @@ import { getNetworkNativeAssetUniqueId } from '../useNativeAssetForNetwork';
 import { useUserAsset } from '../useUserAsset';
 
 const DEFAULT_NATIVE_ASSET_SYMBOL = {
-  [ChainId.mainnet]: chain.mainnet.nativeCurrency?.symbol,
-  [ChainId.optimism]: chain.optimism.nativeCurrency?.symbol,
-  [ChainId.arbitrum]: chain.arbitrum.nativeCurrency?.symbol,
-  [ChainId.polygon]: chain.polygon.nativeCurrency?.symbol,
+  [ChainId.mainnet]: mainnet.nativeCurrency?.symbol,
+  [ChainId.optimism]: optimism.nativeCurrency?.symbol,
+  [ChainId.arbitrum]: arbitrum.nativeCurrency?.symbol,
+  [ChainId.polygon]: polygon.nativeCurrency?.symbol,
   [ChainId.bsc]: bsc.nativeCurrency?.symbol,
 };
 export const useApproveAppRequestValidations = ({
