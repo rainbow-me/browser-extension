@@ -107,4 +107,4 @@ export interface RainbowPrices {
   [id: string]: RainbowPrice;
 }
 
-export type UniqueId = `${Address}_${ChainId}`;
+export type UniqueId = `${Address | typeof ETH_ADDRESS}_${ChainId}`;

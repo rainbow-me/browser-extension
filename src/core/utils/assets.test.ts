@@ -208,10 +208,10 @@ const OPTIMISM_USD_FROM_SEARCH: SearchAsset = {
       address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
       decimals: 6,
     },
-    '43114': {
-      address: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
-      decimals: 6,
-    },
+    // '43114': {
+    //   address: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
+    //   decimals: 6,
+    // },
   },
   address: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
   chainId: 10,

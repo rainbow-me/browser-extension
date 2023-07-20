@@ -17,6 +17,7 @@ const DEFAULT_NATIVE_ASSET_SYMBOL = {
   [ChainId.arbitrum]: chain.arbitrum.nativeCurrency?.symbol,
   [ChainId.polygon]: chain.polygon.nativeCurrency?.symbol,
   [ChainId.bsc]: bsc.nativeCurrency?.symbol,
+  [ChainId.hardhat]: chain.hardhat.nativeCurrency?.symbol,
 };
 export const useApproveAppRequestValidations = ({
   chainId,

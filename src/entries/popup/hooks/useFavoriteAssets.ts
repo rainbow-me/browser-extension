@@ -25,9 +25,9 @@ export function useFavoriteAssets() {
   );
 
   const setFavoriteAssetsData = useCallback(async () => {
-    const chainIds = Object.keys(favorites)
-      .filter((k) => favorites?.[parseInt(k)])
-      .map((c) => +c);
+    const chainIds = Object.entries(favorites)
+      .filter(([, favs]) => !!favs)
+      .map(([k]) => +k as ChainId);
     const searches: Promise<void>[] = [];
     const newSearchData = {} as Record<ChainId, SearchAsset[]>;
     for (const chain of chainIds) {

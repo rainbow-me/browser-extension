@@ -44,24 +44,18 @@ type AssetsQueryKey = ReturnType<typeof assetsQueryKey>;
 
 export async function assetsQueryFunction({
   queryKey: [{ assetAddresses, currency }],
-}: QueryFunctionArgs<typeof assetsQueryKey>): Promise<{
-  [key: UniqueId]: ParsedAsset;
-}> {
+}: QueryFunctionArgs<typeof assetsQueryKey>): Promise<
+  Record<UniqueId, ParsedAsset>
+> {
   const assetCodes = assetAddresses;
-  if (!assetCodes || !assetCodes.length) return {};
-  refractionAssetsWs.emit('get', {
-    payload: {
-      asset_codes: assetCodes,
-      currency: currency?.toLowerCase(),
-    },
-    scope: ['prices'],
-  });
+  if (!assetCodes || !assetCodes.length)
+    return {} as Record<UniqueId, ParsedAsset>;
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
       resolve(
         queryClient.getQueryData(
           assetsQueryKey({ assetAddresses, currency }),
-        ) || {},
+        ) || ({} as Record<UniqueId, ParsedAsset>),
       );
     }, ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AssetPricesReceivedMessage) => {
@@ -131,12 +125,12 @@ function parseAssets({
         };
       }
       return info;
-    }, {} as { [key: UniqueId]: ParsedAsset });
+    }, {} as Record<UniqueId, ParsedAsset>);
     return {
       ...dict,
       ...assetInfoByChain,
     };
-  }, {} as { [key: UniqueId]: ParsedAsset });
+  }, {} as Record<UniqueId, ParsedAsset>);
   return parsed;
 }
 

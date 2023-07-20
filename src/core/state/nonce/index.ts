@@ -41,7 +41,7 @@ export const nonceStore = createStore<CurrentNonceState>(
             latestConfirmedNonce:
               latestConfirmedNonce ?? staleData?.latestConfirmedNonce,
           },
-        },
+        } as Record<ChainId, NonceData>,
       });
     },
     getNonce: ({ address, chainId }) => {

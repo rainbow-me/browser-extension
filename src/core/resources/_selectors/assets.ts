@@ -1,3 +1,6 @@
+import { Address } from 'wagmi';
+
+import { ETH_ADDRESS } from '~/core/references';
 import {
   ParsedAddressAsset,
   ParsedAssetsDict,
@@ -9,8 +12,8 @@ import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
 import { add } from '~/core/utils/numbers';
 
 // selectors
-export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
-  return Object.values(assets)
+export function selectUserAssetsList(assets?: ParsedAssetsDictByChain) {
+  return Object.values(assets || {})
     .map((chainAssets) => Object.values(chainAssets))
     .flat()
     .sort(
@@ -44,17 +47,16 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
 }
 
 export function selectUserAssetAddressMapByChainId(
-  assets: ParsedAssetsDictByChain,
+  assets?: ParsedAssetsDictByChain,
 ) {
   const mapAddresses = (list: ParsedAssetsDict) =>
     Object.values(list || {}).map((i) => i?.address);
-  return {
-    [ChainId.mainnet]: mapAddresses(assets?.[ChainId.mainnet]) || [],
-    [ChainId.optimism]: mapAddresses(assets?.[ChainId.optimism]) || [],
-    [ChainId.bsc]: mapAddresses(assets?.[ChainId.bsc]) || [],
-    [ChainId.polygon]: mapAddresses(assets?.[ChainId.polygon]) || [],
-    [ChainId.arbitrum]: mapAddresses(assets?.[ChainId.arbitrum]) || [],
-  };
+
+  return Object.values(ChainId).reduce((result, chainId) => {
+    const key = chainId as ChainId;
+    result[key] = assets ? mapAddresses(assets[key]) : [];
+    return result;
+  }, {} as Record<ChainId, (Address | typeof ETH_ADDRESS)[]>);
 }
 
 // selector generators

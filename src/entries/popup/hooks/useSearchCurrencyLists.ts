@@ -202,6 +202,10 @@ export function useSearchCurrencyLists({
         assets: arbitrumVerifiedAssets,
         loading: arbitrumVerifiedAssetsLoading,
       },
+      [ChainId.hardhat]: {
+        assets: [],
+        loading: [],
+      },
     }),
     [
       mainnetVerifiedAssets,
@@ -266,6 +270,7 @@ export function useSearchCurrencyLists({
       [ChainId.bsc]: getCuratedAssets(ChainId.bsc),
       [ChainId.polygon]: getCuratedAssets(ChainId.polygon),
       [ChainId.arbitrum]: getCuratedAssets(ChainId.arbitrum),
+      [ChainId.hardhat]: getCuratedAssets(ChainId.hardhat),
     }),
     [getCuratedAssets],
   );

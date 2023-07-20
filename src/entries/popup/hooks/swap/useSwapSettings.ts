@@ -14,6 +14,7 @@ export const DEFAULT_SLIPPAGE_BIPS = {
   [ChainId.bsc]: 200,
   [ChainId.optimism]: 200,
   [ChainId.arbitrum]: 200,
+  [ChainId.hardhat]: 200,
 };
 
 export const DEFAULT_SLIPPAGE = {
@@ -22,6 +23,7 @@ export const DEFAULT_SLIPPAGE = {
   [ChainId.bsc]: '2',
   [ChainId.optimism]: '2',
   [ChainId.arbitrum]: '2',
+  [ChainId.hardhat]: '2',
 };
 
 const slippageInBipsToString = (slippageInBips: number) =>

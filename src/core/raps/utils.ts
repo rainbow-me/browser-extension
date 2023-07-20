@@ -9,7 +9,7 @@ import {
   RAINBOW_ROUTER_CONTRACT_ADDRESS,
   getQuoteExecutionDetails,
 } from '@rainbow-me/swaps';
-import { Chain, chain, erc20ABI } from 'wagmi';
+import { chain, erc20ABI } from 'wagmi';
 
 import { gasUnits } from '../references';
 import { ChainId } from '../types/chains';
@@ -203,7 +203,7 @@ const getClosestGasEstimate = async (
 
 export const getDefaultGasLimitForTrade = (
   quote: Quote,
-  chainId: Chain['id'],
+  chainId: ChainId,
 ): string => {
   const allowsPermit =
     chainId === chain.mainnet.id &&

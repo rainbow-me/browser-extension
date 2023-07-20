@@ -23,9 +23,9 @@ export function useSwappableAssets(toChainId?: ChainId) {
     connectedToHardhat,
   });
 
-  const fullUserAssetList = selectUserAssetsList(userAssets || {});
+  const fullUserAssetList = selectUserAssetsList(userAssets);
 
-  const assetAddressMap = selectUserAssetAddressMapByChainId(userAssets || {});
+  const assetAddressMap = selectUserAssetAddressMapByChainId(userAssets);
 
   const {
     data: swappableMainnetAddresses,
@@ -93,6 +93,10 @@ export function useSwappableAssets(toChainId?: ChainId) {
       [ChainId.arbitrum]: {
         addresses: swappableArbitrumAddresses,
         loading: swappableArbitrumAddressesAreLoading,
+      },
+      [ChainId.hardhat]: {
+        addresses: [],
+        loading: [],
       },
     }),
     [

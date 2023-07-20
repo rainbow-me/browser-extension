@@ -1,9 +1,9 @@
 import { Chain } from 'wagmi';
 
-export const enum ChainId {
+export enum ChainId {
   arbitrum = 42161,
   bsc = 56,
-  goerli = 5,
+  // goerli = 5,
   optimism = 10,
   mainnet = 1,
   polygon = 137,
@@ -43,10 +43,10 @@ export const hardhat: Chain = {
   testnet: true,
 };
 
-export const enum ChainName {
+export enum ChainName {
   arbitrum = 'arbitrum',
   bsc = 'bsc',
-  goerli = 'goerli',
+  // goerli = 'goerli',
   optimism = 'optimism',
   polygon = 'polygon',
   mainnet = 'mainnet',
@@ -59,6 +59,6 @@ export const ChainNameDisplay = {
   [ChainId.optimism]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
   [ChainId.mainnet]: 'Ethereum',
-  [ChainId.goerli]: 'Goerli',
+  // [ChainId.goerli]: 'Goerli',
   [ChainId.hardhat]: 'Hardhat',
 };

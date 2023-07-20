@@ -74,6 +74,7 @@ export const favoritesStore = createStore<FavoritesState>(
         USDC_OPTIMISM_ADDRESS,
         WBTC_OPTIMISM_ADDRESS,
       ],
+      [ChainId.hardhat]: [],
     },
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();

@@ -16,6 +16,7 @@ import {
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
 } from '~/core/references';
+import { UniqueId } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -88,10 +89,13 @@ async function tokenSearchQueryFunction({
   }
 }
 
-function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
+function parseTokenSearch(
+  assets: SearchAsset[],
+  chainId: ChainId,
+): SearchAsset[] {
   return assets.map((a) => ({
     ...a,
-    address: a.networks[chainId]?.address,
+    address: a.networks[chainId]?.address as Address,
     chainId,
     isNativeAsset: [
       `${ETH_ADDRESS}_${ChainId.mainnet}`,
@@ -101,7 +105,7 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
       `${MATIC_MAINNET_ADDRESS}_${ChainId.polygon}`,
     ].includes(`${a.uniqueId}_${chainId}`),
     mainnetAddress: a.uniqueId as Address,
-    uniqueId: `${a.uniqueId}_${chainId}`,
+    uniqueId: `${a.uniqueId}_${chainId}` as UniqueId,
   }));
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
@@ -23,6 +23,7 @@ const ASSET_SOURCE = {
   [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
   [ChainId.polygon]: 'assets/badges/polygonBadge.png',
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
+  [ChainId.hardhat]: 'assets/badges/hardhatBadge.png',
 };
 
 export const Notification = ({

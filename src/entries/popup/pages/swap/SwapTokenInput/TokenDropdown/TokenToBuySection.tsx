@@ -76,6 +76,7 @@ const bridgeSectionsColorsByChain = {
   [ChainId.optimism]: 'optimism' as TextStyles['color'],
   [ChainId.polygon]: 'polygon' as TextStyles['color'],
   [ChainId.bsc]: 'bsc' as TextStyles['color'],
+  [ChainId.hardhat]: 'mainnet' as TextStyles['color'],
 };
 
 const VerifiedWrappedTooltip = ({

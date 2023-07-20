@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
 import BscBadge from 'static/assets/badges/bscBadge.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge.png';

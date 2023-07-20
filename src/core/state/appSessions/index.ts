@@ -1,11 +1,13 @@
 import { Address } from 'wagmi';
 import create from 'zustand';
 
+import { ChainId } from '~/core/types/chains';
+
 import { createStore } from '../internal/createStore';
 
 export interface AppSession {
   host: string;
-  chainId: number;
+  chainId: ChainId;
   address: Address;
   url: string;
 }
