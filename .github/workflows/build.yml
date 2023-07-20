@@ -87,6 +87,8 @@ jobs:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzvf node_modules.tar.gz
+      - name: Install latest chromedriver
+        run: yarn upgrade chromedriver --latest --chromedriver_version=LATEST && yarn setup
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
