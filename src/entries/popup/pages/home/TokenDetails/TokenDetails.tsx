@@ -337,7 +337,7 @@ function About({ token }: { token: ParsedAddressAsset }) {
     >
       <Box display="flex" flexDirection="column" gap="20px">
         <AccordionItem value="about">
-          <AccordionTrigger>About {usdc.name}</AccordionTrigger>
+          <AccordionTrigger>About {token.name}</AccordionTrigger>
           <AccordionContent gap="20px">
             <div />
             <InfoRow
