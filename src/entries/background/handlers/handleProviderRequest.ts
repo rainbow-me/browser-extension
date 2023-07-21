@@ -23,6 +23,9 @@ import { toHex } from '~/core/utils/hex';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import { RainbowError, logger } from '~/logger';
 
+const MAX_REQUEST_PER_SECOND = 10;
+const MAX_REQUEST_PER_MINUTE = 90;
+
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
@@ -100,6 +103,80 @@ const messengerProviderRequest = async (
   return payload;
 };
 
+const resetRateLimit = async (host: string, second: boolean) => {
+  const { rateLimits } = await chrome.storage.session.get('rateLimits');
+  if (second) {
+    rateLimits[host].perSecond = 0;
+  } else {
+    rateLimits[host].perMinute = 0;
+  }
+  return chrome.storage.session.set({ rateLimits });
+};
+
+const checkRateLimit = async (host: string) => {
+  try {
+    // Read from session
+    let { rateLimits } = await chrome.storage.session.get('rateLimits');
+
+    // Initialize if needed
+    if (rateLimits === undefined) {
+      rateLimits = {
+        [host]: {
+          perSecond: 0,
+          perMinute: 0,
+        },
+      };
+    }
+
+    if (rateLimits[host] === undefined) {
+      rateLimits[host] = {
+        perSecond: 1,
+        perMinute: 1,
+      };
+    } else {
+      rateLimits[host] = {
+        perSecond: rateLimits[host].perSecond + 1,
+        perMinute: rateLimits[host].perMinute + 1,
+      };
+    }
+
+    // Clear after 1 sec
+    setTimeout(async () => {
+      resetRateLimit(host, true);
+    }, 1000);
+
+    // Clear after 1 min
+    setTimeout(async () => {
+      resetRateLimit(host, false);
+    }, 60000);
+
+    // Write to session
+    chrome.storage.session.set({ rateLimits });
+
+    // Check rate limits
+    if (rateLimits[host].perSecond > MAX_REQUEST_PER_SECOND) {
+      queueEventTracking(event.dappProviderRateLimit, {
+        dappURL: host,
+        typeOfLimitHit: 'perSecond',
+        requests: rateLimits[host].perSecond,
+      });
+      return true;
+    }
+
+    if (rateLimits[host].perMinute > MAX_REQUEST_PER_MINUTE) {
+      queueEventTracking(event.dappProviderRateLimit, {
+        dappURL: host,
+        typeOfLimitHit: 'perMinute',
+        requests: rateLimits[host].perMinute,
+      });
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+};
+
 /**
  * Handles RPC requests from the provider.
  */
@@ -117,6 +194,11 @@ export const handleProviderRequest = ({
     const host = getDappHost(url);
     const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
+
+    const rateLimited = await checkRateLimit(host);
+    if (rateLimited) {
+      return { id, error: <Error>new Error('Rate Limit Exceeded') };
+    }
 
     try {
       let response = null;
