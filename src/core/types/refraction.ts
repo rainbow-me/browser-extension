@@ -11,6 +11,7 @@ export interface MessageMeta {
   status?: string;
   chain_id?: ChainName; // L2
   asset_codes?: string;
+  next_page_cursor?: string;
 }
 
 /**

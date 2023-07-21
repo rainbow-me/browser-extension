@@ -1,6 +1,6 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -43,7 +43,33 @@ export function Activity() {
     currency,
   });
 
-  useConsolidatedTransactions({ address, currency });
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useConsolidatedTransactions({ address, currency });
+  const pages = data?.pages;
+
+  useEffect(() => {
+    if (pages?.[pages?.length - 1]?.nextPage) {
+      console.log('FETCHING NEXT PAGE');
+      fetchNextPage();
+    }
+  }, [fetchNextPage, pages]);
+
+  console.log({
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  });
 
   const listData = useMemo(
     () => Object.entries(selectTransactionsByDate(allTransactions)).flat(2),

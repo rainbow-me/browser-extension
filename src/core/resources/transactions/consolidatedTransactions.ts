@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { InfiniteQueryConfig } from 'wagmi/dist/declarations/src/types';
 
 import { addysHttpV3 } from '~/core/network/addys';
 import {
@@ -16,7 +17,7 @@ import { SUPPORTED_CHAIN_IDS, chainIdFromChainName } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
-const TRANSACTIONS_REFETCH_INTERVAL = 60000;
+const CONSOLIDATED_TRANSACTIONS_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -24,7 +25,6 @@ const TRANSACTIONS_REFETCH_INTERVAL = 60000;
 export type ConsolidatedTransactionsArgs = {
   address?: string;
   currency: SupportedCurrencyKey;
-  cursor?: string;
   transactionsLimit?: number;
 };
 
@@ -34,12 +34,11 @@ export type ConsolidatedTransactionsArgs = {
 export const consolidatedTransactionsQueryKey = ({
   address,
   currency,
-  cursor,
   transactionsLimit,
 }: ConsolidatedTransactionsArgs) =>
   createQueryKey(
     'consolidatedTransactions',
-    { address, currency, cursor, transactionsLimit },
+    { address, currency, transactionsLimit },
     { persisterVersion: 1 },
   );
 
@@ -53,12 +52,7 @@ type ConsolidatedTransactionsQueryKey = ReturnType<
 export async function fetchConsolidatedTransactions<
   TSelectData = ConsolidatedTransactionsResult,
 >(
-  {
-    address,
-    currency,
-    cursor,
-    transactionsLimit,
-  }: ConsolidatedTransactionsArgs,
+  { address, currency, transactionsLimit }: ConsolidatedTransactionsArgs,
   config: QueryConfig<
     ConsolidatedTransactionsResult,
     Error,
@@ -70,7 +64,6 @@ export async function fetchConsolidatedTransactions<
     consolidatedTransactionsQueryKey({
       address,
       currency,
-      cursor,
       transactionsLimit,
     }),
     consolidatedTransactionsQueryFunction,
@@ -81,11 +74,17 @@ export async function fetchConsolidatedTransactions<
 // ///////////////////////////////////////////////
 // Query Function
 
+type _QueryResult = {
+  nextPage?: string;
+  transactions: RainbowTransaction[];
+};
+
 async function consolidatedTransactionsQueryFunction({
   queryKey: [{ address, currency, transactionsLimit }],
-}: QueryFunctionArgs<typeof consolidatedTransactionsQueryKey>): Promise<
-  RainbowTransaction[]
-> {
+}: //   pageParam,
+QueryFunctionArgs<
+  typeof consolidatedTransactionsQueryKey
+>): Promise<_QueryResult> {
   try {
     const response = await addysHttpV3.get<TransactionsReceivedMessage>(
       `/${SUPPORTED_CHAIN_IDS.join(',')}/${address}/transactions`,
@@ -96,8 +95,17 @@ async function consolidatedTransactionsQueryFunction({
         },
       },
     );
-    console.log('RESPONSE: ', response);
-    return parseConsolidatedTransactions(response?.data, currency);
+    console.log('response: ', response);
+    return {
+      nextPage:
+        response?.data?.payload?.transactions?.length === transactionsLimit
+          ? response?.data?.meta?.next_page_cursor
+          : undefined,
+      transactions: await parseConsolidatedTransactions(
+        response?.data,
+        currency,
+      ),
+    };
   } catch (e) {
     const cache = queryClient.getQueryCache();
     const cachedConsolidatedTransactions = cache.find(
@@ -106,7 +114,7 @@ async function consolidatedTransactionsQueryFunction({
         currency,
         transactionsLimit,
       }),
-    )?.state?.data as RainbowTransaction[];
+    )?.state?.data as _QueryResult;
     logger.error(new RainbowError('consolidatedTransactionsQueryFunction: '), {
       message: (e as Error)?.message,
     });
@@ -142,33 +150,21 @@ async function parseConsolidatedTransactions(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useConsolidatedTransactions<
-  TSelectData = ConsolidatedTransactionsResult,
->(
-  {
-    address,
-    currency,
-    cursor,
-    transactionsLimit,
-  }: ConsolidatedTransactionsArgs,
-  config: QueryConfig<
-    ConsolidatedTransactionsResult,
-    Error,
-    TSelectData,
-    ConsolidatedTransactionsQueryKey
-  > = {},
+export function useConsolidatedTransactions(
+  { address, currency, transactionsLimit }: ConsolidatedTransactionsArgs,
+  config: InfiniteQueryConfig<ConsolidatedTransactionsResult, Error> = {},
 ) {
-  return useQuery(
+  return useInfiniteQuery(
     consolidatedTransactionsQueryKey({
       address,
       currency,
-      cursor,
       transactionsLimit,
     }),
     consolidatedTransactionsQueryFunction,
     {
       ...config,
-      refetchInterval: TRANSACTIONS_REFETCH_INTERVAL,
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+      refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
     },
   );
 }
