@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
-import { To, useLocation } from 'react-router-dom';
+import { To, useParams } from 'react-router-dom';
 
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedAddressAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -67,10 +67,12 @@ function PriceChange({ value = 0 }: { value?: number }) {
   return (
     <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end">
       <Text size="16pt" weight="heavy" color={color}>
-        {symbol && (
-          <Symbol color={color} size={12} symbol={symbol} weight="heavy" />
-        )}{' '}
-        {Math.abs(value).toFixed(2)} %
+        <Inline alignVertical="center" space="4px">
+          {symbol && (
+            <Symbol color={color} size={12} symbol={symbol} weight="heavy" />
+          )}{' '}
+          {Math.abs(value).toFixed(2)} %
+        </Inline>
       </Text>
       <Text size="14pt" weight="heavy" color={color}>
         Today
@@ -458,9 +460,9 @@ function About({ token }: { token: ParsedAddressAsset }) {
 }
 
 export function TokenDetails() {
-  const { state } = useLocation();
-  const asset = useUserAsset(state.uniqueId);
+  const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
 
+  const asset = useUserAsset(uniqueId);
   if (!asset) throw '';
 
   // const asset = useUserAsset(usdc.uniqueId);

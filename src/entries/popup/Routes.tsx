@@ -90,14 +90,12 @@ const ROUTE_DATA = [
     ),
   },
   {
-    path: 'token-details',
-
+    path: ROUTES.TOKEN_DETAILS(':uniqueId'),
     element: (
       <AnimatedRoute direction="base" protectedRoute navbar navbarIcon="arrow">
         <TokenDetails />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.APPROVE_APP_REQUEST,

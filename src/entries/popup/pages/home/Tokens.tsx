@@ -32,6 +32,7 @@ import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
+import { ROUTES } from '../../urls';
 
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
@@ -111,11 +112,7 @@ export function Tokens() {
             return (
               <Box
                 key={key}
-                onClick={() =>
-                  navigate('token-details', {
-                    state: { uniqueId: rowData.uniqueId },
-                  })
-                }
+                onClick={() => navigate(ROUTES.TOKEN_DETAILS(rowData.uniqueId))}
                 as={motion.div}
                 whileTap={{ scale: 0.98 }}
                 layoutId={`list-${index}`}
