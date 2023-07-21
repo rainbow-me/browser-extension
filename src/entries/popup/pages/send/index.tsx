@@ -311,7 +311,7 @@ export function Send() {
     if (
       !prevToAddressIsSmartContract &&
       toAddressIsSmartContract &&
-      !toEnsName.includes('argent.xyz')
+      !toEnsName?.includes('argent.xyz')
     ) {
       showToContractExplainer();
     }
