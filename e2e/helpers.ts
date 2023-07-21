@@ -263,6 +263,13 @@ export async function findElementByTestIdAndClick({ id, driver }) {
   }
 }
 
+export async function findElementByTestIdAndDoubleClick({ id, driver }) {
+  await delay(400);
+  const actions = driver.actions();
+  const element = await findElementByTestId({ id, driver });
+  return await actions.doubleClick(element).perform();
+}
+
 export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
   try {
     const element = await findElementByTestId({ id, driver });
