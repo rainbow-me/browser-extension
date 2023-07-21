@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
-import { HashRouter } from 'react-router-dom';
 import { WagmiConfig } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -18,12 +16,10 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { createWagmiClient } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
-import { Alert } from '~/design-system/components/Alert/Alert';
 
 import { Routes } from './Routes';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
-import { Toast } from './components/Toast/Toast';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { PlaygroundComponents } from './pages/_playgrounds';
@@ -84,12 +80,7 @@ export function App() {
                       : undefined,
                   }}
                 >
-                  <HashRouter>
-                    <Routes>
-                      <Toast />
-                      <Alert />
-                    </Routes>
-                  </HashRouter>
+                  <Routes />
                 </Box>
                 <IdleTimer />
               </AuthProvider>

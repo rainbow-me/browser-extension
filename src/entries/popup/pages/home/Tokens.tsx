@@ -117,6 +117,7 @@ export function Tokens() {
                   })
                 }
                 as={motion.div}
+                whileTap={{ scale: 0.98 }}
                 layoutId={`list-${index}`}
                 layoutScroll
                 layout="position"

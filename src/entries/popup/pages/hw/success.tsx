@@ -208,6 +208,7 @@ export function SuccessHW() {
               variant="flat"
               width="full"
               onClick={goHome}
+              enterCta
             >
               {i18n.t('hw.done')}
             </Button>
