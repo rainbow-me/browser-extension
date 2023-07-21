@@ -99,8 +99,7 @@ export async function getWindowHandle({ driver }) {
 
 export async function switchWindows(window, driver: WebDriver) {
   try {
-    await delayTime('medium');
-
+    await delayTime('long');
     await driver.switchTo().window(window);
   } catch (error) {
     console.error('Error occurred while switching windows:', error);
