@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.1.38",
+  "version": "1.1.39",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -159,7 +159,7 @@
     "@vanilla-extract/webpack-plugin": "2.2.0",
     "audit-ci": "6.3.0",
     "browserify": "17.0.0",
-    "chromedriver": "113.0.0",
+    "chromedriver": "114.0.3",
     "circular-dependency-plugin": "5.2.2",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.7.1",
