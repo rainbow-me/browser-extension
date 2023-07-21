@@ -1,10 +1,10 @@
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import {
+  Outlet,
   RouterProvider,
   createHashRouter,
   useLocation,
-  useOutlet,
 } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -95,7 +95,6 @@ const ROUTE_DATA = [
         <ApproveAppRequest />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
   },
   {
     path: ROUTES.CONNECTED,
@@ -722,34 +721,33 @@ const ROUTE_DATA = [
   },
 ];
 
-const ScrollToTopOnRouteChange = () => {
+const RootLayout = () => {
   const location = useLocation();
+
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
-  return null;
-};
 
-const Outlet = () => useOutlet();
-const RootContainer = () => {
   useGlobalShortcuts();
   useCommandKShortcuts();
+
   return (
     <FullScreenBackground>
-      <AnimatePresence>
-        <Outlet key={location.pathname} />
-        <ScrollToTopOnRouteChange />
-        <CommandK />
-        <Toast />
-        <Alert />
-        <WindowStroke />
+      <AnimatePresence mode="popLayout">
+        <div>
+          <Outlet key={location.pathname} />
+        </div>
       </AnimatePresence>
+      <CommandK />
+      <Toast />
+      <Alert />
+      <WindowStroke />
     </FullScreenBackground>
   );
 };
 
 const router = createHashRouter([
-  { element: <RootContainer />, children: ROUTE_DATA },
+  { element: <RootLayout />, children: ROUTE_DATA },
 ]);
 
 export function Routes() {
