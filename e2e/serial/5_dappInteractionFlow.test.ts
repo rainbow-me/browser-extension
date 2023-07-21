@@ -259,14 +259,20 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to create token', async () => {
+    await delayTime('medium');
     const dappHandler = await getWindowHandle({ driver });
 
-    const button = await findElementById({ id: 'createToken', driver });
-    await waitAndClick(button, driver);
+    await findElementByIdAndClick({ id: 'createToken', driver });
+
+    await delayTime('medium');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
+    await delayTime('medium');
+
     await switchWindows(popupHandler, driver);
+
+    await delayTime('medium');
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
