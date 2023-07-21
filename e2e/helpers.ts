@@ -160,18 +160,29 @@ export async function getExtensionIdByName(driver, extensionName) {
 
 // search functions
 
-export async function querySelector(driver: WebDriver, selector: string) {
-  try {
-    await driver.wait(until.elementLocated(By.css(selector)), waitUntilTime);
-    const element = await driver.findElement(By.css(selector));
-    await driver.wait(until.elementIsVisible(element), waitUntilTime);
-    // some of our sheets animations require some sort of delay for them to animate in
-    await delayTime('short');
-    return element;
-  } catch (error) {
-    console.error(`Failed to locate element with selector: ${selector}`, error);
-    throw error;
-  }
+export async function querySelector(driver, selector) {
+  return Promise.race([
+    (async () => {
+      await driver.wait(until.elementLocated(By.css(selector)));
+      const element = await driver.findElement(By.css(selector));
+      await driver.wait(until.elementIsVisible(element), waitUntilTime);
+      // some of our sheets animations require some sort of delay for them to animate in
+      await delayTime('short');
+      return element;
+    })(),
+
+    new Promise((_, reject) =>
+      setTimeout(
+        () =>
+          reject(
+            new Error(
+              `Timed out while trying to find element with selector ${selector}`,
+            ),
+          ),
+        waitUntilTime,
+      ),
+    ),
+  ]);
 }
 
 export async function findElementByText(driver: WebDriver, text: string) {
@@ -283,7 +294,6 @@ export async function waitAndClick(element, driver) {
   try {
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
-    await driver.wait(untilIsClickable(element), waitUntilTime);
     await element.click();
   } catch (error) {
     console.error(
@@ -344,11 +354,10 @@ export async function getTextFromDappText({ id, driver }) {
   }
 }
 
-export const untilIsClickable = (element) => {
+export const untilIsDisplayed = (element) => {
   return new WebElementCondition('until element is clickable', async () => {
     const isDisplayed = await element.isDisplayed();
-    const isEnabled = await element.isEnabled();
-    if (isDisplayed && isEnabled) return element;
+    if (isDisplayed) return element;
     return null;
   });
 };
