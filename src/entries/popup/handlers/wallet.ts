@@ -27,6 +27,7 @@ import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
+import { logger } from '~/logger';
 
 import {
   sendTransactionFromLedger,
@@ -337,7 +338,11 @@ export const importAccountAtIndex = async (
   switch (type) {
     case 'Trezor':
       {
-        window.TrezorConnect.init(TREZOR_CONFIG);
+        try {
+          window.TrezorConnect.init(TREZOR_CONFIG);
+        } catch (e) {
+          // ignore already initialized error
+        }
         const path = `m/${DEFAULT_HD_PATH}/${index}`;
         const result = await window.TrezorConnect.ethereumGetAddress({
           path,
@@ -346,6 +351,9 @@ export const importAccountAtIndex = async (
         });
 
         if (!result.success) {
+          logger.info('window.TrezorConnect.getAddress failed', {
+            result: JSON.stringify(result, null, 2),
+          });
           throw new Error('window.TrezorConnect.getAddress failed');
         }
         address = result.payload.address;
@@ -388,7 +396,11 @@ export const connectTrezor = async () => {
   //   accountsEnabled: 2,
   // };
   try {
-    window.TrezorConnect.init(TREZOR_CONFIG);
+    try {
+      window.TrezorConnect.init(TREZOR_CONFIG);
+    } catch (e) {
+      // ignore already initialized error
+    }
     const path = `m/${DEFAULT_HD_PATH}`;
 
     const result = await window.TrezorConnect.ethereumGetPublicKey({
@@ -398,6 +410,9 @@ export const connectTrezor = async () => {
     });
 
     if (!result.success) {
+      logger.info('window.TrezorConnect.ethereumGetPublicKey failed', {
+        result: JSON.stringify(result, null, 2),
+      });
       throw new Error('window.TrezorConnect.ethereumGetPublicKey failed');
     }
 
