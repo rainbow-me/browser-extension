@@ -478,6 +478,10 @@ it('should be able to flip correctly', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
@@ -1000,6 +1004,5 @@ it('should be able to execute swap', async () => {
   // Call the recursive function to wait for balance update
   const ethDifferenceAmount = await waitForBalanceUpdate();
 
-  // Assertion
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
 });
