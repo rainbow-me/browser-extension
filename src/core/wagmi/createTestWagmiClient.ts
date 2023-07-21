@@ -1,8 +1,8 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
 import {
   Chain,
   CreateClientConfig,
-  chain,
   configureChains,
   createClient,
   createStorage,
@@ -11,7 +11,6 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { queryClient } from '../react-query';
 import { Storage } from '../storage';
-import { bsc } from '../types/chains';
 
 const noopStorage = {
   getItem: () => '',
@@ -20,7 +19,7 @@ const noopStorage = {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [chain.mainnet, chain.optimism, chain.polygon, chain.arbitrum, bsc],
+  [mainnet, optimism, polygon, arbitrum, bsc] as Chain[],
   [
     jsonRpcProvider({
       rpc: () => {
@@ -56,7 +55,6 @@ export function createTestWagmiClient({
     // Passing `undefined` will use wagmi's default storage (window.localStorage).
     // If `persist` is falsy, we want to pass through a noopStorage.
     storage: persist ? undefined : createStorage({ storage: noopStorage }),
-    // @ts-expect-error – TODO: fix this
     queryClient,
     webSocketProvider,
   });
