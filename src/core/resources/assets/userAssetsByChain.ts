@@ -144,7 +144,7 @@ export async function userAssetsByChainQueryFunction({
     }
   } catch (e) {
     logger.error(
-      new RainbowError(`userAssetsByChainQueryFunction - chain = ${chain}: `),
+      new RainbowError(`userAssetsByChainQueryFunction - chain = ${chain}:`),
       {
         message: (e as Error)?.message,
       },
@@ -153,8 +153,8 @@ export async function userAssetsByChainQueryFunction({
     const cachedUserAssets = cache.find(
       userAssetsQueryKey({ address, currency, connectedToHardhat }),
     )?.state?.data as ParsedAssetsDictByChain;
-    const cachedDataForChain = cachedUserAssets[chainIdFromChainName(chain)];
-    return cachedDataForChain as Record<string, ParsedAddressAsset>;
+    const cachedDataForChain = cachedUserAssets?.[chainIdFromChainName(chain)];
+    return (cachedDataForChain as Record<string, ParsedAddressAsset>) || {};
   }
 }
 
