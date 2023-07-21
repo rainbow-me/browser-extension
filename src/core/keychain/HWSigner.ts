@@ -36,15 +36,22 @@ export class HWSigner extends ethers.Signer {
   }
 
   async fwdHWSignRequest(action: string, payload: any): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.messenger.send('hwRequest', {
         action,
         vendor: this.vendor,
         payload,
       });
-      this.messenger.reply('hwResponse', async (response: string) => {
-        resolve(response);
-      });
+      this.messenger.reply(
+        'hwResponse',
+        async (response: string | { error: string }) => {
+          if (typeof response === 'string') {
+            resolve(response);
+          } else {
+            reject('handled');
+          }
+        },
+      );
     });
   }
 

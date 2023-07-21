@@ -226,6 +226,7 @@ export const CreateWalletPrompt = ({
                   tabIndex={2}
                   symbol="return.left"
                   symbolSide="left"
+                  enterCta
                 >
                   {i18n.t('create_wallet_prompt.create_wallet')}
                 </Button>

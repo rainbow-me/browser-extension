@@ -70,7 +70,7 @@ jobs:
   # CHROME TESTS
   chrome-e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 23
     needs: [build]
     env:
       DISPLAY: :0
@@ -87,6 +87,8 @@ jobs:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzvf node_modules.tar.gz
+      - name: Install latest chromedriver
+        run: yarn upgrade chromedriver --latest --chromedriver_version=LATEST && yarn setup
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
@@ -115,7 +117,7 @@ jobs:
       - name: Run e2e parallel (Chrome)
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 18
+          timeout_minutes: 20
           max_attempts: 3
           command:  |
             export BROWSER=chrome
@@ -125,7 +127,7 @@ jobs:
       - name: Run e2e serial (Chrome)
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 18
+          timeout_minutes: 20
           max_attempts: 3
           command:  |
             export BROWSER=chrome

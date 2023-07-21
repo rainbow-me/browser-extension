@@ -8,10 +8,12 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
+import { useCommandKStatus } from './components/CommandK/useCommandKStatus';
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalletSelectionEdit';
 import { ImportWalletViaPrivateKey } from './components/ImportWallet/ImportWalletViaPrivateKey';
 import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSeed';
+import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -800,6 +802,7 @@ function CurrentRoute(props: { pathname: string }) {
   const element = match?.element;
   const currentDirection = state?.direction ?? element?.props.direction;
 
+  useCommandKShortcuts();
   useGlobalShortcuts();
 
   if (!element) {
@@ -821,6 +824,7 @@ function CurrentRoute(props: { pathname: string }) {
 }
 
 const useGlobalShortcuts = () => {
+  const { isCommandKVisible } = useCommandKStatus();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       // prevent scrolling with space
@@ -847,5 +851,6 @@ const useGlobalShortcuts = () => {
         simulateTab(!e.shiftKey);
       }
     },
+    condition: () => !isCommandKVisible,
   });
 };
