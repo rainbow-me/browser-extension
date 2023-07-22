@@ -15,7 +15,8 @@ const AddWallet = () => {
   const { featureFlags } = useFeatureFlagsStore();
 
   const handleCreateWallet = useCallback(async () => {
-    navigate(ROUTES.CHOOSE_WALLET_GROUP);
+    navigate(ROUTES.CHOOSE_WALLET_GROUP),
+      { state: { goHomeOnWalletCreation: true } };
   }, [navigate]);
 
   return (
