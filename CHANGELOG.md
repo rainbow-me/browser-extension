@@ -17,6 +17,55 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.1.40](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.40)
+
+### Changed
+
+- Keyboard navigation for dApp prompts is now even easier. Connect to a dApp with `return` and `tab` between Wallets and Network selection more quickly. Smart defaults ensure that you won't accidentally sign or send a transaction, with cancel/rejection actions always the default. #592
+- The native currency values are now editable in the Swap flow so that you can i.e. swap $100 USD of ETH to a different token, without manually estimating token amounts #702
+- You can now confirm a Swap or Send with the keyboard `return` key, and navigate around with `tab` and arrow keys to adjust settings #699 #763
+- Improved lengthy token amount display behavior in the Swap flow when using the Max feature #711
+- The destination Wallet Selection in Send is now collapsible by clicking the drop-down cell #712 #758
+- Improved header scroll animation and feel #691 #748
+- Improved token click and wallet reorder animation polish #762
+- You can now dismiss Swap Settings pop-ups by clicking outside the sheet #743
+- Renamed to `Binance Chain` chain to `BNB Smart Chain` #716
+- Renamed `Polygon (Matic)` chain to `Polygon` #737
+
+### Fixed
+
+- Improvements for `eth_requestAccounts` and `eth_accounts` RPC calls to mirror MetaMask, as well as param order inversion support #730
+- Ledger connection fixes, including “device is already open” scenario and waiting for the transport to closed #720
+- Improvements to dApp provider responsiveness, including network and account changes sent from a dApp #722
+- Fixed analytics toggle that would get stuck in the on position #759
+- dApp Prompts in Arc are now sized correctly and include a background #744
+- Fixed shortcut instruction UI on the Welcome screen on Linux #742
+- Improved Token right-click Send flow to correctly highlight wallet selection instead of token selection #714
+- Fixed a scenario where you could inadvertently create a new wallet after canceling the create process during the naming step #726
+- Fixed spacing on the green/red dApp connection indicator #721
+- Fixed My QR Code styling to mirror the Rainbow App and RainbowKit #734
+- Improved consistency of the Hide Balance setting in the Swaps flow #760
+- Fixed an issue where clicking the wallet name on the My QR Code screen opened the Wallet Switcher #734
+- Settings style fixes & tweaks #719
+- Fixed Watched Wallet alert when Swap keyboard shortcuts are used #723
+- Trimming whitespace when entering an ENS or public address to watch #681
+- Fixed an issue where Swap input fields set by Max would be cleared when selecting a destination token #755
+- Fixed an issue with keyboard navigation on dApp signature prompts where network drop-downs were highlightable #751
+- Fixed a crash on dApp signature prompts when dApp session data is unavailable #713
+- Fixed Sign Message crash in scenarios where the keychain is still booting #772
+- Fixed a crash where the dApp session data could be unavailable and crash the Send flow #729 #718
+- Fixed Send flow crash when an ENS name is unavailable #766
+- Improved keychain boot/deserialization stability #735
+- Fixed an issue where you could select the Send flow before the keychain is finished booting #727
+- Resolved problem area when fetching from localstorage APIs to anticipate undefined when they’re still booting #728
+- Network caching improvements for ENS Profile avatars #704
+- Network query reliability and caching for asset discovery #745
+- Improved error handling for multi-transactions like Swaps when existing transactions are pending #740
+- Fixed React implementation issue with symbols that caused some console warnings in Settings #736
+- Error handling for Trezor SDK initialization #770
+- Improved Trezor integration logging to get error visibility #771 #765
+- Improved Meterology integration to prevent bad gas data crashes #731
+
 ## [v1.1.17](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.17)
 
 ### Fixed
