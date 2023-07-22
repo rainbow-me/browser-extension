@@ -15,6 +15,7 @@ import {
   fillPrivateKey,
   findElementByTestId,
   findElementByTestIdAndClick,
+  findElementByTestIdAndDoubleClick,
   findElementByText,
   getExtensionIdByName,
   getTextFromText,
@@ -471,7 +472,7 @@ it('should be able to check price and balance of token to buy', async () => {
 });
 
 it('should be able to flip correctly', async () => {
-  await findElementByTestIdAndClick({
+  await findElementByTestIdAndDoubleClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
