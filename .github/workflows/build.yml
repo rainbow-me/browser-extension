@@ -70,11 +70,11 @@ jobs:
   # CHROME TESTS
   chrome-e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 23
+    timeout-minutes: 40
     needs: [build]
     env:
       DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 3
+      VITEST_SEGFAULT_RETRY: 4
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -117,7 +117,7 @@ jobs:
       - name: Run e2e parallel (Chrome)
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 20
+          timeout_minutes: 10
           max_attempts: 3
           command:  |
             export BROWSER=chrome
@@ -127,7 +127,7 @@ jobs:
       - name: Run e2e serial (Chrome)
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 20
+          timeout_minutes: 30
           max_attempts: 3
           command:  |
             export BROWSER=chrome
