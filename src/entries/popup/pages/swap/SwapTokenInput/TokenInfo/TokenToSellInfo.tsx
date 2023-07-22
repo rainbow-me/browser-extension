@@ -37,7 +37,7 @@ export const TokenToSellInfo = ({
   independentField: IndependentField;
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputNativeValue: (value: string) => void;
-  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
+  setIndependentField: (field: IndependentField) => void;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
 
