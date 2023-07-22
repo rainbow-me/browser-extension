@@ -33,7 +33,7 @@ interface SwapTokenInputProps {
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputValue: (value: string) => void;
   setAssetToSellInputNativeValue: (value: string) => void;
-  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
+  setIndependentField: (field: IndependentField) => void;
 }
 
 export const TokenToSellInput = ({
@@ -97,6 +97,7 @@ export const TokenToSellInput = ({
     <TokenInput
       testId={`${asset ? `${asset.uniqueId}-` : ''}token-to-sell`}
       inputRef={inputRef}
+      accentCaretColor
       asset={asset}
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
