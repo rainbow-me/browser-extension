@@ -58,8 +58,9 @@ export function SignMessage({
   const onAcceptRequest = useCallback(async () => {
     const walletAction = getWalletActionMethod(request?.method);
     const requestPayload = getSigningRequestDisplayDetails(request);
+    if (!requestPayload.msgData || !requestPayload.address || !selectedWallet)
+      return;
     const { type } = await wallet.getWallet(selectedWallet);
-    if (!requestPayload.msgData || !requestPayload.address) return;
     let result = null;
 
     setLoading(true);

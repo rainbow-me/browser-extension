@@ -228,6 +228,7 @@ export const BottomNetwork = ({
             gap: 4,
             padding: 2,
           }}
+          tabIndex={displaySymbol ? 0 : -1}
         >
           <ChainBadge chainId={selectedChainId} size={'small'} />
           <Text
@@ -301,7 +302,7 @@ export const BottomSwitchNetwork = ({
 export const WalletBalance = ({ appHost }: { appHost: string }) => {
   const { appSession } = useAppSession({ host: appHost });
   const { data: balance } = useBalance({
-    addressOrName: appSession.address,
+    address: appSession.address,
     chainId: appSession.chainId,
   });
   const displayBalance = handleSignificantDecimals(balance?.formatted || 0, 4);
