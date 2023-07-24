@@ -5,25 +5,78 @@ query getContractFunction($chainID: Int!, $hex: String!, $address: String!) {
 }
 
 query resolveENSProfile($chainId: Int!, $name: String!, $fields: [String!]) {
-    resolveENSProfile(chainID: $chainId, name: $name, fields: $fields) {
-        address
-        resolverAddress
-        reverseResolverAddress
-        fields {
-            key
-            value
-        }
+  resolveENSProfile(chainID: $chainId, name: $name, fields: $fields) {
+    address
+    resolverAddress
+    reverseResolverAddress
+    fields {
+      key
+      value
     }
+  }
 }
 
-query reverseResolveENSProfile($chainId: Int!, $address: String!, $fields: [String!]) {
-    reverseResolveENSProfile(chainID: $chainId, address: $address, fields: $fields) {
-        name
-        resolverAddress
-        reverseResolverAddress
-        fields {
-            key
-            value
-        }
+query reverseResolveENSProfile(
+  $chainId: Int!
+  $address: String!
+  $fields: [String!]
+) {
+  reverseResolveENSProfile(
+    chainID: $chainId
+    address: $address
+    fields: $fields
+  ) {
+    name
+    resolverAddress
+    reverseResolverAddress
+    fields {
+      key
+      value
     }
+  }
+}
+
+query aboutToken($chainId: Int!, $address: String!, $currency: String) {
+  token(chainID: $chainId, address: $address, currency: $currency) {
+    marketCap
+    fullyDilutedValuation
+    allTime {
+      highValue
+      lowValue
+    }
+    circulatingSupply
+    totalSupply
+    networks
+    volume1d
+  }
+}
+
+query priceChart(
+  $chainId: Int!
+  $address: String!
+  $day: Boolean!
+  $hour: Boolean!
+  $week: Boolean!
+  $month: Boolean!
+  $year: Boolean!
+) {
+  token(chainID: $chainId, address: $address) {
+    priceCharts {
+      day @include(if: $day) {
+        points
+      }
+      hour @include(if: $hour) {
+        points
+      }
+      week @include(if: $week) {
+        points
+      }
+      month @include(if: $month) {
+        points
+      }
+      year @include(if: $year) {
+        points
+      }
+    }
+  }
 }

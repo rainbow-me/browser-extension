@@ -1,7 +1,12 @@
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { To, useParams } from 'react-router-dom';
+import { Address } from 'wagmi';
 
+import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
+import { createQueryKey } from '~/core/react-query';
+import { ETH_ADDRESS } from '~/core/references';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
@@ -86,22 +91,51 @@ function PriceChange({
   );
 }
 
-const time = Date.now();
-let day = 0;
-const dates = Array.from({ length: 50 }).map(() =>
-  // eslint-disable-next-line no-plusplus
-  new Date(time - ++day * 1000 * 60 * 60 * 24).getTime(),
-);
+const chartTimes = ['hour', 'day', 'week', 'month', 'year'] as const;
+type ChartTime = typeof chartTimes[number];
+const getChartTimeArg = (selected: ChartTime) =>
+  chartTimes.reduce(
+    (args, time) => ({ ...args, [time]: time === selected }),
+    {} as Record<ChartTime, boolean>,
+  );
+const usePriceChart = ({
+  address,
+  chainId,
+  time,
+}: {
+  address: Address | typeof ETH_ADDRESS;
+  chainId: ChainId;
+  time: ChartTime;
+}) => {
+  return useQuery({
+    queryFn: () =>
+      metadataClient
+        .priceChart({ address, chainId, ...getChartTimeArg(time) })
+        .then((d) =>
+          (
+            d.token?.priceCharts[time]?.points as [
+              timestamp: number,
+              price: number,
+            ][]
+          ).reduce((result, point) => {
+            result.push({ timestamp: point[0], price: point[1] });
+            return result;
+          }, [] as { timestamp: number; price: number }[]),
+        ),
+    queryKey: createQueryKey('price chart', { address, chainId, time }),
+  });
+};
 
-const data = dates.map((date) => ({
-  date,
-  price: Math.random() * (102 - 98) + 98,
-}));
-
-const chartTimeframes = ['1H', '1D', '1W', '1M', '1Y'] as const;
 function Chart({ asset }: { asset: ParsedAddressAsset }) {
-  const selected = chartTimeframes[1];
+  const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
   const [date, setDate] = useState(new Date());
+
+  const { data } = usePriceChart({
+    address: asset.address,
+    chainId: asset.chainId,
+    time: selectedTime,
+  });
+
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -113,27 +147,30 @@ function Chart({ asset }: { asset: ParsedAddressAsset }) {
       </Box>
       <Box>
         <Box style={{ height: '222px' }} marginHorizontal="-20px">
-          <LineChart
-            data={data}
-            onMouseMove={(point) => {
-              setDate(point ? new Date(point.date) : new Date());
-            }}
-            width={POPUP_DIMENSIONS.width}
-            height={222}
-            paddingY={40}
-          />
+          {data && (
+            <LineChart
+              data={data}
+              onMouseMove={(point) => {
+                setDate(point ? new Date(point.timestamp * 1000) : new Date());
+              }}
+              width={POPUP_DIMENSIONS.width}
+              height={222}
+              paddingY={40}
+            />
+          )}
         </Box>
         <Box display="flex" justifyContent="center" gap="12px">
-          {chartTimeframes.map((timeframe) => {
-            const isSelected = timeframe === selected;
+          {chartTimes.map((time) => {
+            const isSelected = time === selectedTime;
             return (
               <Button
-                key={timeframe}
+                onClick={() => setSelectedTime(time)}
+                key={time}
                 height="24px"
                 variant={isSelected ? 'tinted' : 'transparentHover'}
                 color={isSelected ? 'accent' : 'labelTertiary'}
               >
-                {i18n.t(`token_details.${timeframe}`)}
+                {i18n.t(`token_details.${time}`)}
               </Button>
             );
           })}

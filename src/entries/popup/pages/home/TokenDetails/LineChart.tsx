@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { MouseEvent, createContext, useContext, useRef, useState } from 'react';
 
 import {
@@ -61,12 +62,20 @@ const Indicator = ({ position: { x, y } }: { position: Position }) => {
       />
       <defs>
         <linearGradient id="line-gradient-top" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="transparent" stopOpacity="0" />
+          <stop
+            offset="0%"
+            stopColor={transparentAccentColorAsHsl}
+            stopOpacity="0"
+          />
           <stop offset="100%" stopColor={accentColorAsHsl} stopOpacity="1" />
         </linearGradient>
         <linearGradient id="line-gradient-bottom" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0%" stopColor={accentColorAsHsl} stopOpacity="1" />
-          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+          <stop
+            offset="100%"
+            stopColor={transparentAccentColorAsHsl}
+            stopOpacity="0"
+          />
         </linearGradient>
       </defs>
       <circle cx={x} cy={y} r="16" fill={transparentAccentColorAsHsl} />
@@ -88,7 +97,7 @@ const useChart = () => {
   return c;
 };
 
-type Data = { date: number; price: number };
+type Data = { timestamp: number; price: number };
 type Position = { x: number; y: number };
 type Point = Data & Position;
 
@@ -110,13 +119,13 @@ export const LineChart = ({
 
   const yScale = (height - 2 * paddingY) / (maxY - minY);
 
-  const points = data.map(({ price, date }, index) => {
+  const points = data.map(({ price, timestamp }, index) => {
     const x = (index / (data.length - 1)) * width;
     const y = height - paddingY - (price - minY) * yScale;
-    return { price, date, x, y };
+    return { price, timestamp, x, y };
   });
 
-  const d = monotoneCubicInterpolation(points, 5000);
+  const d = monotoneCubicInterpolation(points, 2);
 
   const [indicator, setIndicator] = useState<Position | null>(null);
 
@@ -156,16 +165,20 @@ export const LineChart = ({
         onMouseMove={handleMouseMove}
         onMouseLeave={onMouseLeave}
       >
-        <path
+        <motion.path
           ref={pathRef}
-          d={d}
+          // initial={{ d: 'M 0' }}
+          animate={{ d }}
+          // d={d}
           fill="none"
           stroke={globalColors.blueGrey60}
           strokeWidth={3}
         />
-        <path
+        <motion.path
           ref={pathRightRef}
-          d={d}
+          // initial={{ d: 'M 0' }}
+          animate={{ d }}
+          // d={d}
           fill="none"
           strokeWidth={3}
           stroke={accentColorAsHsl}
