@@ -144,7 +144,7 @@ export class RainbowProvider extends EventEmitter {
   /** @deprecated – This method is deprecated in favor of `request`. */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async sendAsync(args: RequestArguments) {
-    this.request(args);
+    return this.request(args);
   }
 
   /** @deprecated – This method is deprecated in favor of `request`. */
@@ -157,12 +157,12 @@ export class RainbowProvider extends EventEmitter {
       typeof methodOrPayload === 'string' &&
       Array.isArray(paramsOrCallback)
     ) {
-      this.request({
+      return this.request({
         method: methodOrPayload as RPCMethod,
         params: paramsOrCallback,
       });
     } else {
-      this.request(methodOrPayload as RequestArguments);
+      return this.request(methodOrPayload as RequestArguments);
     }
   }
 }
