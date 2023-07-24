@@ -99,6 +99,7 @@ export function Privacy() {
               }
               rightComponent={
                 <Toggle
+                  testId={'hide-assets-toggle'}
                   tabIndex={-1}
                   checked={hideAssetBalances}
                   handleChange={setHideAssetBalances}
@@ -143,6 +144,7 @@ export function Privacy() {
           </Menu>
           <Menu>
             <MenuItem
+              testId={'change-password-button'}
               first
               hasRightArrow
               titleComponent={

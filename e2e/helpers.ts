@@ -232,6 +232,22 @@ export const untilIsClickable = (locator: Locator) =>
 
 // various functions and flows
 
+export async function navigateToSettingsPrivacy(driver, rootURL) {
+  await goToPopup(driver, rootURL, '#/home');
+  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+  await findElementByTestIdAndClick({ id: 'settings-link', driver });
+  await findElementByTestIdAndClick({ id: 'privacy-security-link', driver });
+  await delayTime('medium');
+}
+
+export async function toggleStatus(id: string, driver: WebDriver) {
+  const toggleInput = await driver.wait(
+    until.elementLocated(By.css(`[data-testid="${id}"] input`)),
+  );
+  const checkedStatus: string = await toggleInput.getAttribute('aria-checked');
+  return checkedStatus;
+}
+
 export function shortenAddress(address) {
   // if address is 42 in length and starts with 0x, then shorten it
   // otherwise return the base value. this is so it doesn't break incase an ens, etc is input

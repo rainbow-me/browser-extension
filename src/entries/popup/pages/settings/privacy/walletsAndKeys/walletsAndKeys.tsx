@@ -87,6 +87,7 @@ export function WalletsAndKeys() {
             return (
               <Menu key={idx}>
                 <MenuItem
+                  testId={`wallet-group-${idx + 1}`}
                   first
                   titleComponent={
                     <MenuItem.Title
