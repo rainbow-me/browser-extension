@@ -30,9 +30,17 @@ describe('Import wallet with a secret phrase flow', () => {
   afterAll(async () => driver.quit());
 
   it('should be able import a wallet via seed', async () => {
-    await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
+    await importWalletFlow(
+      driver,
+      rootURL,
+      TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET,
+    );
   });
   it('should display account name', async () => {
-    await checkWalletName(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.ADDRESS);
+    await checkWalletName(
+      driver,
+      rootURL,
+      TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS,
+    );
   });
 });
