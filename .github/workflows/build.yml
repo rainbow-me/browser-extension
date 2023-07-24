@@ -95,7 +95,7 @@ jobs:
           name: rainbowbx-${{ github.sha }}.zip
           path: build
       - name: Install chrome
-        run: npx @puppeteer/browsers install chrome@stable
+        run: npx @puppeteer/browsers install chrome@114.0.5735.90
       - name: Install Anvil
         uses: foundry-rs/foundry-toolchain@v1
         with:
