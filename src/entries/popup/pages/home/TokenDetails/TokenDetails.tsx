@@ -331,12 +331,16 @@ export function TokenDetails() {
         />
         <Box padding="20px" gap="16px" display="flex" flexDirection="column">
           <Chart asset={asset} />
+
           <Separator color="separatorTertiary" />
+
           <BalanceValue
             balance={asset.balance.display.split(' ') as Amount}
             value={asset.native.balance.display.split(' ').reverse() as Amount}
           />
+
           <SwapSend token={asset} />
+
           {asset.chainId !== ChainId.mainnet && (
             <NetworkBanner tokenSymbol={asset.symbol} chainId={asset.chainId} />
           )}
@@ -350,7 +354,9 @@ export function TokenDetails() {
         paddingVertical="24px"
       >
         <TokenApprovals />
+
         <Separator color="separatorTertiary" />
+
         <About token={asset} />
       </Box>
     </AccentColorProviderWrapper>
