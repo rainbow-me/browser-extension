@@ -92,7 +92,6 @@ export async function initDriverWithOptions(opts) {
     'enable-automation',
     '--no-sandbox',
     '--disable-dev-shm-usage',
-    '--disable-browser-side-navigation',
     '--disable-gpu',
   ];
 
