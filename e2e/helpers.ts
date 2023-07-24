@@ -88,6 +88,12 @@ export async function initDriverWithOptions(opts) {
     // '--auto-open-devtools-for-tabs',
     '--log-level=0',
     '--enable-logging',
+    'start-maximized',
+    'enable-automation',
+    '--no-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-browser-side-navigation',
+    '--disable-gpu',
   ];
 
   const options = new chrome.Options()
