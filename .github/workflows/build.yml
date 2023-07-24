@@ -108,25 +108,17 @@ jobs:
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run e2e parallel (Chrome)
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 20
-          max_attempts: 3
-          command:  |
+        run: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(which chrome)
-            yarn vitest:parallel
+            yarn vitest:parallel --retry=5
       - name: Run e2e serial (Chrome)
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 20
-          max_attempts: 3
-          command:  |
+        run: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(which chrome)
-            yarn vitest:serial
+            yarn vitest:serial --retry=5
   # BRAVE TESTS
   # brave-e2e:
   #   needs: [build]
