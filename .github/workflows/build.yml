@@ -395,7 +395,7 @@ jobs:
         run: yarn typecheck
   cleanup:
     runs-on:  ubuntu-latest
-    needs: [chrome-e2e, unit-tests, ci-checks]
+    needs: [chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, unit-tests, ci-checks]
     steps:
       - uses: geekyeggo/delete-artifact@v2
         with:
