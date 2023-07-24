@@ -33,7 +33,7 @@ interface TokenToBuyProps {
   selectAsset: (asset: ParsedSearchAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToBuyInputValue: (value: string) => void;
-  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
+  setIndependentField: (field: IndependentField) => void;
 }
 
 export const TokenToBuyInput = ({
