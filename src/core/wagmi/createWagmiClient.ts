@@ -28,7 +28,7 @@ const { chains, provider, webSocketProvider } = configureChains(
       rpc: (chain) => {
         switch (chain.id) {
           case ChainId.hardhat:
-            return { http: chain.rpcUrls.default };
+            return { http: chain.rpcUrls.default.http[0] };
           case ChainId.mainnet:
             return { http: process.env.ETH_MAINNET_RPC as string };
           case ChainId.optimism:
@@ -73,7 +73,6 @@ export function createWagmiClient({
     // Passing `undefined` will use wagmi's default storage (window.localStorage).
     // If `persist` is falsy, we want to pass through a noopStorage.
     storage: persist ? undefined : createStorage({ storage: noopStorage }),
-    // @ts-expect-error – TODO: fix this
     queryClient,
     webSocketProvider,
   });
