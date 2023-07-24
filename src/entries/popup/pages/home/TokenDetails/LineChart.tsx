@@ -1,99 +1,178 @@
-/* eslint-disable no-plusplus */
-import { curveNatural, line, scaleLinear, select } from 'd3';
-import { useEffect, useRef } from 'react';
+import { MouseEvent, createContext, useContext, useRef, useState } from 'react';
 
-const time = Date.now();
-let day = 0;
-const dates = Array.from({ length: 50 }).map(() =>
-  new Date(time - ++day * 1000 * 60 * 60 * 24).getTime(),
-);
+import {
+  accentColorAsHsl,
+  transparentAccentColorAsHsl,
+} from '~/design-system/styles/core.css';
+import { globalColors } from '~/design-system/styles/designTokens';
 
-const data = dates.map((date) => ({
-  date,
-  price: Math.random() * (122 - 98) + 98,
-}));
+import { monotoneCubicInterpolation } from './monotoneCubicInterpolation';
 
-export default function LineChart() {
-  const svgRef = useRef<SVGSVGElement>(null);
+const findClosestPoint = (points: Point[], mouseX: number) => {
+  if (points.length === 0) return;
+  return points.reduce(
+    (closest, current) =>
+      Math.abs(mouseX - current.x) < Math.abs(mouseX - closest.x)
+        ? current
+        : closest,
+    points[0],
+  );
+};
 
-  useEffect(() => {
-    if (!svgRef.current) return;
-    const svg = select(svgRef.current);
-    const width = svgRef.current.clientWidth;
-    const height = svgRef.current.clientHeight;
+const IndicatorLabel = ({ x }: { x: number }) => {
+  const { width, points } = useChart();
+  const textLabelWidth = 60;
+  const overflowRight = x + textLabelWidth > width;
+  const point = findClosestPoint(points, x);
+  if (!point) return null;
+  return (
+    <text
+      y={28}
+      fill={accentColorAsHsl}
+      fontWeight="bold"
+      fontSize="14px"
+      fontFamily="SFRounded, system-ui"
+      x={overflowRight ? x - 4 : x + 4}
+      textAnchor={overflowRight ? 'end' : 'start'}
+    >
+      {`$ ${point.price.toFixed(2)}`}
+    </text>
+  );
+};
 
-    const y = scaleLinear()
-      .range([height, 0])
-      .domain([
-        Math.min(...data.map((d) => d.price)) - 10,
-        Math.max(...data.map((d) => d.price)) + 10,
-      ]);
+const Indicator = ({ position: { x, y } }: { position: Position }) => {
+  const { height } = useChart();
 
-    const x = scaleLinear()
-      .range([0, width])
-      .domain([data.at(0)?.date || 0, data.at(-1)?.date || 0]);
-
-    const rootArea = svg.append('g');
-
-    // svg.on('mousemove', (event: MouseEvent) => {
-    //   const mousePoint = {
-    //     x: pointer(event)[0],
-    //     y: pointer(event)[1],
-    //   };
-    //   const mouseData = {
-    //     date: x.invert(mousePoint.x) || 0,
-    //     price: y.invert(mousePoint.y) || 0,
-    //   };
-
-    //   const a = data.reduce((a, b) =>
-    //     Math.abs(b.date - mouseData.date) < Math.abs(a.date - mouseData.date)
-    //       ? b
-    //       : a,
-    //   );
-    //   const index = data.findIndex((b) => b.date === a.date);
-
-    //   // find more close point in the price line!
-    //   // const indexBefore = 4;
-    //   const closestDataPoint = data[index];
-    //   const xPosition = x(closestDataPoint.date);
-    //   circle.attr('cx', xPosition);
-    //   circle.attr('cy', y(closestDataPoint.price));
-    //   lineInCircle.attr('x1', xPosition);
-    //   lineInCircle.attr('x2', xPosition);
-    // });
-
-    const pointLine = line<typeof data[number]>()
-      .curve(curveNatural) // <curve effect
-      .x((d) => x(d.date))
-      .y((d) => y(d.price));
-
-    const secondary = '#96979c';
-    // const color = '#2775ca';
-
-    rootArea
-      .append('path')
-      .datum(data)
-      .attr('fill', 'none')
-      .attr('d', pointLine)
-      .attr('stroke-width', 3)
-      .attr('stroke', secondary);
-
-    // const lineInCircle = rootArea
-    //   .append('line')
-    //   .attr('y1', 0)
-    //   .attr('y2', height)
-    //   .attr('fill', color)
-    //   .attr('stroke', color)
-    //   .attr('stroke-width', '3');
-    // const circle = rootArea.append('circle').attr('r', 10).attr('fill', color);
-
-    return () => {
-      svg.selectAll('*').remove();
-    };
-  }, []);
   return (
     <>
-      <svg id="svg-chart" ref={svgRef} width={'100%'} height={'100%'} />
+      <rect
+        x={x - 1}
+        y={0}
+        width="2"
+        height={y}
+        fill="url(#line-gradient-top)"
+      />
+      <rect
+        x={x - 1}
+        y={y}
+        width="2"
+        height={height - y}
+        fill="url(#line-gradient-bottom)"
+      />
+      <defs>
+        <linearGradient id="line-gradient-top" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="transparent" stopOpacity="0" />
+          <stop offset="100%" stopColor={accentColorAsHsl} stopOpacity="1" />
+        </linearGradient>
+        <linearGradient id="line-gradient-bottom" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor={accentColorAsHsl} stopOpacity="1" />
+          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <circle cx={x} cy={y} r="16" fill={transparentAccentColorAsHsl} />
+      <circle cx={x} cy={y} r="8" fill={accentColorAsHsl} />
+      <IndicatorLabel x={x} />
     </>
   );
-}
+};
+
+const ChartContext = createContext<{
+  width: number;
+  height: number;
+  points: Point[];
+} | null>(null);
+
+const useChart = () => {
+  const c = useContext(ChartContext);
+  if (!c) throw new Error('');
+  return c;
+};
+
+type Data = { date: number; price: number };
+type Position = { x: number; y: number };
+type Point = Data & Position;
+
+export const LineChart = ({
+  width,
+  height,
+  paddingY,
+  data,
+  onMouseMove,
+}: {
+  width: number;
+  height: number;
+  paddingY: number;
+  data: Data[];
+  onMouseMove: (pointData?: Point) => void;
+}) => {
+  const maxY = Math.max(...data.map((item) => item.price));
+  const minY = Math.min(...data.map((item) => item.price));
+
+  const yScale = (height - 2 * paddingY) / (maxY - minY);
+
+  const points = data.map(({ price, date }, index) => {
+    const x = (index / (data.length - 1)) * width;
+    const y = height - paddingY - (price - minY) * yScale;
+    return { price, date, x, y };
+  });
+
+  const d = monotoneCubicInterpolation(points, 5000);
+
+  const [indicator, setIndicator] = useState<Position | null>(null);
+
+  const pathRef = useRef<SVGPathElement>(null);
+  const pathRightRef = useRef<SVGPathElement>(null);
+
+  const handleMouseMove = (event: MouseEvent<SVGSVGElement>) => {
+    const svgContainer = event.currentTarget;
+    const { left, width } = svgContainer.getBoundingClientRect();
+    const mouseX = event.clientX - left;
+
+    const path = pathRef.current;
+    const pathRight = pathRightRef.current;
+    if (!path || !pathRight) return;
+
+    const pathLength = path.getTotalLength();
+    const mousePathLength = pathLength * (mouseX / width);
+    const closestPoint = path.getPointAtLength(mousePathLength);
+    setIndicator({ x: closestPoint.x, y: closestPoint.y });
+
+    pathRight.style.strokeDasharray = `${mousePathLength} ${pathLength}`;
+
+    onMouseMove(findClosestPoint(points, mouseX));
+  };
+
+  const onMouseLeave = () => {
+    setIndicator(null);
+    if (!pathRightRef.current) return;
+    pathRightRef.current.style.strokeDasharray = `0`;
+  };
+
+  return (
+    <ChartContext.Provider value={{ width, height, points }}>
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        role="presentation"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={onMouseLeave}
+      >
+        <path
+          ref={pathRef}
+          d={d}
+          fill="none"
+          stroke={globalColors.blueGrey60}
+          strokeWidth={3}
+        />
+        <path
+          ref={pathRightRef}
+          d={d}
+          fill="none"
+          strokeWidth={3}
+          stroke={accentColorAsHsl}
+          strokeDasharray="0"
+        />
+        {indicator && <Indicator position={indicator} />}
+      </svg>
+    </ChartContext.Provider>
+  );
+};

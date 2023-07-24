@@ -6,7 +6,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { UniqueId } from '~/core/types/assets';
 
-export function useUserAsset(uniqueId: UniqueId) {
+export function useUserAsset(uniqueId?: UniqueId) {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
@@ -18,7 +18,10 @@ export function useUserAsset(uniqueId: UniqueId) {
       connectedToHardhat,
     },
     {
-      select: selectUserAssetWithUniqueId(uniqueId),
+      select: uniqueId
+        ? selectUserAssetWithUniqueId(uniqueId)
+        : () => undefined,
+      enabled: !!uniqueId,
     },
   );
 

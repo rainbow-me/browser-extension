@@ -762,11 +762,38 @@
     "close_cta": "Cancel",
     "handle_copy_title": "Tx Hash Copied"
   },
-  "asset_details_menu": {
+  "token_details": {
     "swap": "Swap",
     "send": "Send",
+    "balance": "Balance",
+    "value": "Value",
+    "1H": "1H",
+    "1D": "1D",
+    "1W": "1W",
+    "1M": "1M",
+    "1Y": "1Y",
     "view_on_etherscan": "View on Etherscan",
-    "view_on_explorer": "View on Explorer"
+    "view_on_explorer": "View on Explorer",
+    "approvals": "Token Approvals",
+    "about": {
+      "about_token": "About %{name}",
+      "price": "Price",
+      "volume": "Volume",
+      "ath": "All time hight",
+      "atl": "All time low",
+      "market_cap": "Market Cap",
+      "fully_diluted": "Fully Diluted",
+
+      "supply": "Supply",
+      "max_total_supply": "Max Total Supply",
+      "holders": "Holders",
+      "total_transfers": "Total Transfers",
+
+      "more_info": "More info",
+      "token_standard": "Token Standard",
+      "token_contract": "Token Contract",
+      "other_chains": "Other Chains"
+    }
   },
   "wallet_ready": {
     "title": "Rainbow is ready to use",
