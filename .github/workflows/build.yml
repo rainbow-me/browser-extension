@@ -11,7 +11,7 @@ jobs:
   # INSTALL DEPS
   install:
     runs-on: ubuntu-latest
-    concurrency: 
+    concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
@@ -31,7 +31,7 @@ jobs:
         with:
           name: node_modules.tar.gz
           path: node_modules.tar.gz
-      
+
   # BUILD THE EXTENSION
   build:
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
       - name: Graphql Setup
         run: yarn graphql-setup
       - name: Build the extension
-        run: yarn build:webpack      
+        run: yarn build:webpack
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -94,11 +94,6 @@ jobs:
         with:
           name: rainbowbx-${{ github.sha }}.zip
           path: build
-      - name: Setup xvfb
-        run: |
-          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-          # start xvfb in the background
-          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
       - name: Install chrome
         uses: browser-actions/setup-chrome@latest
         with:
