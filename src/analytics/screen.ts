@@ -10,6 +10,6 @@ import { ROUTES } from '~/entries/popup/urls';
 export const screen = Object.fromEntries(
   Object.entries(ROUTES).map(([key, value]) => [
     value,
-    key.toLowerCase().replace('__', '.'),
+    key.toLowerCase().replaceAll('__', '.'),
   ]),
 );
