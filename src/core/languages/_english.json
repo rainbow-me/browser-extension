@@ -812,7 +812,7 @@
         "polygon_title": "What's Polygon?",
         "polygon_description_1": "Polygon is a sidechain, a distinct network that runs alongside Ethereum and is compatible with it.",
         "polygon_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Polygon has its own security and consensus mechanisms that differ from Ethereum.",
-        "bsc_title": "What's Binance Chain?",
+        "bsc_title": "What's BSC?",
         "bsc_description_1": "Binance Smart Chain, or BSC for short, is the blockchain network for the  trading platform Binance.",
         "bsc_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum.",
         "link_button_label": "Read more"
