@@ -792,7 +792,10 @@
       "more_info": "More info",
       "token_standard": "Token Standard",
       "token_contract": "Token Contract",
-      "other_chains": "Other Chains"
+      "chains": {
+        "one": "Chain",
+        "other": "Chains"
+      }
     }
   },
   "wallet_ready": {

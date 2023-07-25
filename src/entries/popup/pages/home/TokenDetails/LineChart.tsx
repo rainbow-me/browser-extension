@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { MouseEvent, createContext, useContext, useRef, useState } from 'react';
 
+import { createCurrencyFormatter } from '~/core/utils/formatCurrency';
 import {
   accentColorAsHsl,
   transparentAccentColorAsHsl,
@@ -20,6 +21,8 @@ const findClosestPoint = (points: Point[], mouseX: number) => {
   );
 };
 
+const formatCurrency = createCurrencyFormatter();
+
 const IndicatorLabel = ({ x }: { x: number }) => {
   const { width, points } = useChart();
   const textLabelWidth = 60;
@@ -36,7 +39,7 @@ const IndicatorLabel = ({ x }: { x: number }) => {
       x={overflowRight ? x - 4 : x + 4}
       textAnchor={overflowRight ? 'end' : 'start'}
     >
-      {`$ ${point.price.toFixed(2)}`}
+      {formatCurrency(point.price)}
     </text>
   );
 };
@@ -111,7 +114,7 @@ export const LineChart = ({
   width: number;
   height: number;
   paddingY: number;
-  data: Data[];
+  data: ChartData[];
   onMouseMove: (pointData?: Point) => void;
 }) => {
   const maxY = Math.max(...data.map((item) => item.price));

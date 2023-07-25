@@ -6,12 +6,13 @@ import { metadataClient } from '~/core/graphql';
 import { AboutTokenQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
-import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
+import { ETH_ADDRESS } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Inline, Separator, Symbol, Text } from '~/design-system';
+import { createCurrencyFormatter } from '~/core/utils/formatCurrency';
+import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import {
   Accordion,
   AccordionContent,
@@ -52,21 +53,11 @@ const InfoRow = ({
   </Box>
 );
 
-const createCurrencyFormatter = ({ currency = 'USD' }) => {
-  const formatter = new Intl.NumberFormat('en', {
-    style: 'currency',
-    currency,
-    maximumSignificantDigits: 3,
+const parseTokenInfo = (token: AboutTokenQuery['token']) => {
+  const f = createCurrencyFormatter({
     notation: 'compact',
+    maximumSignificantDigits: 4,
   });
-  return (n?: number | null) => (n ? formatter.format(n) : n);
-};
-
-const parseTokenInfo = (
-  currency: SupportedCurrencyKey,
-  token: AboutTokenQuery['token'],
-) => {
-  const f = createCurrencyFormatter({ currency });
   if (!token) return token;
   return {
     allTime: {
@@ -78,13 +69,15 @@ const parseTokenInfo = (
     marketCap: f(token.marketCap),
     totalSupply: f(token.totalSupply),
     volume1d: f(token.volume1d),
-    networks: token.networks as Record<
-      ChainId,
-      { address: Address; decimals: number }
-    >,
+    networks: Object.entries(token.networks).map(([chainId, network]) => ({
+      chainId: +chainId as ChainId,
+      ...(network as { address: Address; decimals: number }),
+    })),
+    description: token.description,
+    links: token.links as Record<string, { url?: string }>,
   };
 };
-const useTokenAboutInfo = ({
+const useTokenInfo = ({
   address,
   chainId,
 }: {
@@ -95,15 +88,13 @@ const useTokenAboutInfo = ({
   const args = { address, chainId, currency: currentCurrency };
   return useQuery({
     queryFn: () =>
-      metadataClient
-        .aboutToken(args)
-        .then((d) => parseTokenInfo(currentCurrency, d.token)),
+      metadataClient.aboutToken(args).then((d) => parseTokenInfo(d.token)),
     queryKey: createQueryKey('token about info', args),
   });
 };
 
 export function About({ token }: { token: ParsedAddressAsset }) {
-  const { data } = useTokenAboutInfo(token);
+  const { data } = useTokenInfo(token);
 
   if (!data) return null; // skeleton
 
@@ -115,6 +106,8 @@ export function About({ token }: { token: ParsedAddressAsset }) {
     marketCap,
     networks,
     totalSupply,
+    description,
+    links,
   } = data;
 
   return (
@@ -213,16 +206,20 @@ export function About({ token }: { token: ParsedAddressAsset }) {
           </AccordionContent>
         </AccordionItem>
 
-        {token.address !== ETH_ADDRESS && (
-          <>
-            <Separator color="separatorTertiary" />
+        <Separator color="separatorTertiary" />
 
-            <AccordionItem value="more info">
-              <AccordionTrigger>
-                {i18n.t(`token_details.about.more_info`)}
-              </AccordionTrigger>
-              <AccordionContent gap="20px">
-                <div />
+        <AccordionItem value="more info">
+          <AccordionTrigger>
+            {i18n.t(`token_details.about.more_info`)}
+          </AccordionTrigger>
+          <AccordionContent
+            gap="20px"
+            paddingHorizontal="20px"
+            marginHorizontal="-20px"
+          >
+            <div />
+            {token.address !== ETH_ADDRESS && (
+              <>
                 <InfoRow
                   symbol="info.circle"
                   label={i18n.t(`token_details.about.token_standard`)}
@@ -253,27 +250,54 @@ export function About({ token }: { token: ParsedAddressAsset }) {
                     </Box>
                   }
                 />
-                <InfoRow
-                  symbol="point.3.filled.connected.trianglepath.dotted"
-                  label={i18n.t(`token_details.about.other_chains`)}
-                  value={
-                    networks && (
-                      <Inline alignVertical="center" space="2px">
-                        {Object.keys(networks).map((chainId) => (
-                          <ChainBadge
-                            key={chainId}
-                            chainId={+chainId as ChainId}
-                            size="14px"
-                          />
-                        ))}
-                      </Inline>
-                    )
-                  }
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </>
-        )}
+              </>
+            )}
+            <InfoRow
+              symbol="point.3.filled.connected.trianglepath.dotted"
+              label={i18n.t(`token_details.about.chains`, {
+                count: networks.length,
+              })}
+              value={
+                networks && (
+                  <Inline alignVertical="center" space="2px">
+                    {networks.map(({ chainId }) => (
+                      <ChainBadge
+                        key={chainId}
+                        chainId={+chainId as ChainId}
+                        size="14px"
+                      />
+                    ))}
+                  </Inline>
+                )
+              }
+            />
+
+            <Separator color="separatorTertiary" />
+
+            <Text weight="regular" size="14pt" color="labelTertiary">
+              {description}
+            </Text>
+
+            {links && (
+              <Inline alignVertical="center" space="8px">
+                {Object.entries(links).map(
+                  ([name, { url }]) =>
+                    url && (
+                      <Button
+                        onClick={() => window.open(url, '_blank')}
+                        key={name}
+                        height="32px"
+                        variant="tinted"
+                        color="accent"
+                      >
+                        {name}
+                      </Button>
+                    ),
+                )}
+              </Inline>
+            )}
+          </AccordionContent>
+        </AccordionItem>
       </Box>
     </Accordion>
   );

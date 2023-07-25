@@ -36,7 +36,6 @@ import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { About } from './About';
-import { TokenApprovals } from './Approvals';
 import { ChartData, LineChart } from './LineChart';
 
 const parsePriceChange = (
@@ -399,9 +398,9 @@ export function TokenDetails() {
         paddingHorizontal="20px"
         paddingVertical="24px"
       >
-        <TokenApprovals />
+        {/* <TokenApprovals /> */}
 
-        <Separator color="separatorTertiary" />
+        {/* <Separator color="separatorTertiary" /> */}
 
         <About token={asset} />
       </Box>

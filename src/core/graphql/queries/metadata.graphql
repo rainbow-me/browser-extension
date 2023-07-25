@@ -48,6 +48,24 @@ query aboutToken($chainId: Int!, $address: String!, $currency: String) {
     totalSupply
     networks
     volume1d
+    description
+    links {
+      homepage {
+        url
+      }
+      twitter {
+        url
+      }
+      facebook {
+        url
+      }
+      reddit {
+        url
+      }
+      telegram {
+        url
+      }
+    }
   }
 }
 

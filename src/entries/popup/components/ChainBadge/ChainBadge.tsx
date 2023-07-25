@@ -48,6 +48,8 @@ const ChainBadge = ({
   shadow = false,
   size = 'small',
 }: ChainIconProps) => {
+  if (!Object.keys(networkBadges).includes(`${chainId}`)) return null;
+
   const { iconSize } = sizeConfigs[size];
   let boxShadow;
   if (shadow) {
