@@ -21,8 +21,8 @@ import {
   querySelector,
   typeOnTextInput,
   waitAndClick,
-} from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
+} from '../../helpers';
+import { TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -190,7 +190,7 @@ it('should be able to select token on send flow', async () => {
   });
   // dai
   await findElementByTestIdAndClick({
-    id: 'token-input-asset-0x6b175474e89094c44da98b954eedeac495271d0f_1',
+    id: 'token-input-asset-eth_1',
     driver,
   });
 });
