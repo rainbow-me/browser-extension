@@ -9,7 +9,7 @@ else
   sleep 5
 fi
 # Run the tests and store the result
-yarn vitest e2e/serial --config ./e2e/serial/vitest.config.ts
+yarn vitest e2e/serial/$1 --config ./e2e/serial/vitest.config.ts
 TEST_RESULT=$?
 # kill anvil
 yarn anvil:kill
