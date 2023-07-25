@@ -25,8 +25,8 @@ import {
   switchWallet,
   typeOnTextInput,
   waitAndClick,
-} from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
+} from '../../helpers';
+import { TEST_VARIABLES } from '../../walletVariables';
 
 const TYPED_MESSAGE = {
   domain: {
