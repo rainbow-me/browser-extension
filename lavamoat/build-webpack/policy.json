@@ -370,8 +370,8 @@
       },
       "packages": {
         "css-loader>postcss>nanoid": true,
-        "css-loader>postcss>picocolors": true,
-        "css-loader>postcss>source-map-js": true
+        "css-loader>postcss>source-map-js": true,
+        "vitest>picocolors": true
       }
     },
     "css-loader>postcss-modules-local-by-default": {
@@ -395,16 +395,6 @@
     "css-loader>postcss-modules-values": {
       "packages": {
         "css-loader>icss-utils": true
-      }
-    },
-    "css-loader>postcss>picocolors": {
-      "builtin": {
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.argv.includes": true,
-        "process.env": true,
-        "process.platform": true
       }
     },
     "dotenv-webpack": {
@@ -1344,6 +1334,11 @@
         "jest>@jest/core>jest-runner>source-map-support": true
       }
     },
+    "vitest>acorn-walk": {
+      "globals": {
+        "define": true
+      }
+    },
     "vitest>debug": {
       "builtin": {
         "tty.isatty": true,
@@ -1361,6 +1356,16 @@
       "packages": {
         "msw>chalk>supports-color": true,
         "vitest>debug>ms": true
+      }
+    },
+    "vitest>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
       }
     },
     "vitest>vite>terser": {
@@ -1522,18 +1527,13 @@
       "packages": {
         "eslint>chalk": true,
         "lodash": true,
-        "webpack-bundle-analyzer>acorn-walk": true,
+        "vitest>acorn-walk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
         "webpack-bundle-analyzer>ws": true,
         "webpack-cli>@discoveryjs/json-ext": true,
         "webpack>acorn": true
-      }
-    },
-    "webpack-bundle-analyzer>acorn-walk": {
-      "globals": {
-        "define": true
       }
     },
     "webpack-bundle-analyzer>gzip-size": {
