@@ -409,7 +409,7 @@ function AccountName() {
 
 function WalletBalance({ transaction }: { transaction: RainbowTransaction }) {
   const { data: balance } = useBalance({
-    addressOrName: transaction.from,
+    address: transaction.from,
     chainId: transaction.chainId,
   });
   const displayBalance = handleSignificantDecimals(balance?.formatted || 0, 3);
