@@ -1,8 +1,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { InfiniteQueryConfig } from 'wagmi/dist/declarations/src/types';
 
 import { addysHttpV3 } from '~/core/network/addys';
 import {
+  InfiniteQueryConfig,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
@@ -75,14 +75,15 @@ export async function fetchConsolidatedTransactions<
 // Query Function
 
 type _QueryResult = {
+  cutoff?: number;
   nextPage?: string;
   transactions: RainbowTransaction[];
 };
 
 async function consolidatedTransactionsQueryFunction({
   queryKey: [{ address, currency, transactionsLimit }],
-}: //   pageParam,
-QueryFunctionArgs<
+  pageParam,
+}: QueryFunctionArgs<
   typeof consolidatedTransactionsQueryKey
 >): Promise<_QueryResult> {
   try {
@@ -92,15 +93,14 @@ QueryFunctionArgs<
         params: {
           currency: currency.toLowerCase(),
           limit: transactionsLimit?.toString() || '100',
+          // passing empty value to pageParam breaks request
+          ...(pageParam ? { pageCursor: pageParam } : {}),
         },
       },
     );
-    console.log('response: ', response);
     return {
-      nextPage:
-        response?.data?.payload?.transactions?.length === transactionsLimit
-          ? response?.data?.meta?.next_page_cursor
-          : undefined,
+      cutoff: response?.data?.meta?.cutoff,
+      nextPage: response?.data?.meta?.next_page_cursor,
       transactions: await parseConsolidatedTransactions(
         response?.data,
         currency,
@@ -118,7 +118,7 @@ QueryFunctionArgs<
     logger.error(new RainbowError('consolidatedTransactionsQueryFunction: '), {
       message: (e as Error)?.message,
     });
-    return cachedConsolidatedTransactions;
+    return cachedConsolidatedTransactions || { transactions: [] };
   }
 }
 
@@ -163,7 +163,7 @@ export function useConsolidatedTransactions(
     consolidatedTransactionsQueryFunction,
     {
       ...config,
-      getNextPageParam: (lastPage) => lastPage.nextPage,
+      getNextPageParam: (lastPage) => lastPage?.nextPage,
       refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
     },
   );

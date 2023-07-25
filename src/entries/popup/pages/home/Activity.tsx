@@ -1,12 +1,7 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import React, { ReactNode, useEffect, useMemo } from 'react';
-import { useAccount } from 'wagmi';
+import React, { ReactNode, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { selectTransactionsByDate } from '~/core/resources/_selectors';
-import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
-import { useCurrentCurrencyStore } from '~/core/state';
 import {
   RainbowTransaction,
   TransactionStatus,
@@ -31,58 +26,20 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { ActivitySkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
-import { useAllTransactions } from '../../hooks/useAllTransactions';
+import useInfiniteTransactionList from '../../hooks/useInfiniteTransactionList';
 
 import { TransactionDetailsMenu } from './TransactionDetailsMenu';
 
 export function Activity() {
-  const { address } = useAccount();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { allTransactions, isInitialLoading } = useAllTransactions({
-    address,
-    currency,
-  });
-
   const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
-  } = useConsolidatedTransactions({ address, currency });
-  const pages = data?.pages;
-
-  useEffect(() => {
-    if (pages?.[pages?.length - 1]?.nextPage) {
-      console.log('FETCHING NEXT PAGE');
-      fetchNextPage();
-    }
-  }, [fetchNextPage, pages]);
-
-  console.log({
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
-  });
-
-  const listData = useMemo(
-    () => Object.entries(selectTransactionsByDate(allTransactions)).flat(2),
-    [allTransactions],
-  );
-
-  const containerRef = useContainerRef();
-  const activityRowVirtualizer = useVirtualizer({
-    count: listData.length,
+    isInitialLoading,
+    transactions,
+    virtualItems,
+    virtualizer: activityRowVirtualizer,
+  } = useInfiniteTransactionList({
     getScrollElement: () => containerRef.current,
-    estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
-    overscan: 20,
   });
+  const containerRef = useContainerRef();
 
   useActivityShortcuts();
 
@@ -90,7 +47,7 @@ export function Activity() {
     return <ActivitySkeleton />;
   }
 
-  if (!listData.length) {
+  if (!virtualItems.length) {
     return (
       <Box
         width="full"
@@ -124,6 +81,7 @@ export function Activity() {
   }
 
   let labelsCount = 0;
+  console.log('TOTAL SIZE: ', virtualItems.length);
 
   return (
     <>
@@ -133,8 +91,7 @@ export function Activity() {
         style={{
           overflow: 'auto',
           // prevent coin icon shadow from clipping in empty space when list is small
-          paddingBottom:
-            activityRowVirtualizer.getVirtualItems().length > 6 ? 8 : 60,
+          paddingBottom: virtualItems.length > 6 ? 8 : 60,
         }}
       >
         <Box
@@ -144,9 +101,9 @@ export function Activity() {
             position: 'relative',
           }}
         >
-          {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
+          {virtualItems.map((virtualItem) => {
             const { index, key, start, size } = virtualItem;
-            const rowData = listData[index];
+            const rowData = transactions[index];
             const isLabel = typeof rowData === 'string';
             if (isLabel) labelsCount += 1;
             return (
@@ -247,7 +204,6 @@ const titleIcons: {
   },
 };
 
-// TODO: create truncation component
 const truncateString = (txt = '', maxLength = 22) => {
   return `${txt?.slice(0, maxLength)}${txt.length > maxLength ? '...' : ''}`;
 };

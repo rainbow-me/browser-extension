@@ -80,6 +80,7 @@ async function transactionsQueryFunction({
           currency: currency.toLowerCase(),
           limit: transactionsLimit?.toString() || '100',
         },
+        timeout: 30000,
       },
     );
     return parseTransactions(response?.data, currency);

@@ -3,6 +3,7 @@
 import {
   QueryFunctionContext,
   QueryKey,
+  UseInfiniteQueryOptions,
   UseMutationOptions,
   UseQueryOptions,
 } from '@tanstack/react-query';
@@ -30,6 +31,19 @@ export type QueryConfig<
   TQueryKey extends QueryKey,
 > = Pick<
   UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+  | 'cacheTime'
+  | 'enabled'
+  | 'refetchInterval'
+  | 'retry'
+  | 'staleTime'
+  | 'select'
+  | 'onError'
+  | 'onSettled'
+  | 'onSuccess'
+>;
+
+export type InfiniteQueryConfig<TQueryFnData, TError> = Pick<
+  UseInfiniteQueryOptions<TQueryFnData, TError>,
   | 'cacheTime'
   | 'enabled'
   | 'refetchInterval'
