@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { Crypto } from '@peculiar/webcrypto';
 import { rest } from 'msw';
-import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { Crypto } from '../../node_modules/@peculiar/webcrypto/build/webcrypto.js';
+import { setupServer } from '../../node_modules/msw/lib/node/index.js';
 
 vi.stubGlobal('chrome', {
   storage: {
