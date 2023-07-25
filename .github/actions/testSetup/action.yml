@@ -1,6 +1,8 @@
 name: 'test setup'
 description: 'runs test setup'
-steps:
+runs:
+  using: 'composite'
+  steps:
   - uses: actions/setup-node@v3
     with:
        node-version: "16.20.0"
@@ -10,8 +12,10 @@ steps:
     with:
       name: node_modules.tar.gz
   - name: Unzip node_modules
+    shell: 'bash'
     run: tar xzvf node_modules.tar.gz
   - name: Install latest chromedriver
+    shell: 'bash'
     run: yarn upgrade chromedriver --latest --chromedriver_version=LATEST && yarn setup
   - name: Download build artifacts
     uses: actions/download-artifact@v3
@@ -19,6 +23,7 @@ steps:
         name: rainbowbx-${{ github.sha }}.zip
         path: build
   - name: Setup xvfb
+    shell: 'bash'
     run: |
        sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
        # start xvfb in the background
@@ -37,4 +42,5 @@ steps:
          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
          path: tmp
   - name: Copy dotenv
+    shell: 'bash'
     run: cat tmp/dotenv >> .env && rm -rf tmp
