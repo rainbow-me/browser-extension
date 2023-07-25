@@ -10,7 +10,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
   polygon,
   optimism,
-  { ...arbitrum, name: 'Arbitrum' },
+  arbitrum,
   bsc,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
