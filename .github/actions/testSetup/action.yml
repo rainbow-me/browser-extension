@@ -1,5 +1,9 @@
 name: 'test setup'
 description: 'runs test setup'
+inputs:
+  gh-access-token:
+    description: 'Github Access Token'
+    required: true
 runs:
   using: 'composite'
   steps:
@@ -39,7 +43,7 @@ runs:
   - uses: actions/checkout@v3
     with:
          repository: 'rainbow-me/browser-extension-env'
-         token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+         token: inputs.gh-access-token
          path: tmp
   - name: Copy dotenv
     shell: 'bash'
