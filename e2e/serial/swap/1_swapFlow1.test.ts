@@ -26,9 +26,9 @@ import {
   querySelector,
   typeOnTextInput,
   waitAndClick,
-} from '../helpers';
-import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
-import { SWAP_VARIABLES, TEST_VARIABLES } from '../walletVariables';
+} from '../../helpers';
+import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
+import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
