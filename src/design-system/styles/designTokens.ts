@@ -904,6 +904,8 @@ export const symbolNames = selectSymbolNames(
   'person.crop.rectangle.stack.fill',
   'plus.app.fill',
   'arrow.up.left.and.arrow.down.right',
+  'safari',
+  'link',
 );
 export type SymbolName = typeof symbolNames[number];
 

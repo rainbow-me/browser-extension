@@ -11,7 +11,9 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { createCurrencyFormatter } from '~/core/utils/formatCurrency';
+import { getTokenBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import {
   Accordion,
@@ -74,7 +76,7 @@ const parseTokenInfo = (token: AboutTokenQuery['token']) => {
       ...(network as { address: Address; decimals: number }),
     })),
     description: token.description,
-    links: token.links as Record<string, { url?: string }>,
+    links: token.links,
   };
 };
 const useTokenInfo = ({
@@ -92,6 +94,8 @@ const useTokenInfo = ({
     queryKey: createQueryKey('token about info', args),
   });
 };
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export function About({ token }: { token: ParsedAddressAsset }) {
   const { data } = useTokenInfo(token);
@@ -276,19 +280,33 @@ export function About({ token }: { token: ParsedAddressAsset }) {
 
             {links && (
               <Inline alignVertical="center" space="8px">
-                {Object.entries(links).map(
-                  ([name, { url }]) =>
-                    url && (
-                      <Button
-                        onClick={() => window.open(url, '_blank')}
-                        key={name}
-                        height="32px"
-                        variant="tinted"
-                        color="accent"
-                      >
-                        {name}
-                      </Button>
-                    ),
+                {links.homepage && (
+                  <Button
+                    symbol="safari"
+                    onClick={() => window.open(links.homepage?.url, '_blank')}
+                    height="32px"
+                    variant="tinted"
+                    color="accent"
+                  >
+                    Homepage
+                  </Button>
+                )}
+                {token.address && (
+                  <Button
+                    symbol="link"
+                    onClick={() =>
+                      window.open(getTokenBlockExplorerUrl(token), '_blank')
+                    }
+                    height="32px"
+                    variant="tinted"
+                    color="accent"
+                  >
+                    {capitalize(
+                      getBlockExplorerHostForChain(token.chainId)
+                        .split('.')
+                        .at(-2) || 'Explorer',
+                    )}
+                  </Button>
                 )}
               </Inline>
             )}
