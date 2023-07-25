@@ -11,7 +11,7 @@ jobs:
   # INSTALL DEPS
   install:
     runs-on: ubuntu-latest
-    concurrency: 
+    concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
@@ -31,7 +31,7 @@ jobs:
         with:
           name: node_modules.tar.gz
           path: node_modules.tar.gz
-      
+
   # BUILD THE EXTENSION
   build:
     runs-on: ubuntu-latest
@@ -41,7 +41,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.20.0"
-          cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
@@ -61,7 +60,7 @@ jobs:
       - name: Graphql Setup
         run: yarn graphql-setup
       - name: Build the extension
-        run: yarn build:webpack      
+        run: yarn build:webpack
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -157,7 +156,6 @@ jobs:
   #     - uses: actions/setup-node@v3
   #       with:
   #         node-version: "16.20.0"
-  #         cache: 'yarn'
   #     - name: Download deps cache artifacts
   #       uses: actions/download-artifact@v3
   #       with:
@@ -211,7 +209,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.20.0"
-          cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
@@ -254,7 +251,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.20.0"
-          cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
