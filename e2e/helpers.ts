@@ -88,7 +88,6 @@ export async function initDriverWithOptions(opts) {
     // '--auto-open-devtools-for-tabs',
     '--log-level=0',
     '--enable-logging',
-    '--headless=new',
   ];
 
   const options = new chrome.Options()

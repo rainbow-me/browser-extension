@@ -1,10 +1,7 @@
+import { Crypto } from '@peculiar/webcrypto';
 import { rest } from 'msw';
+import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { Crypto } from '../../node_modules/@peculiar/webcrypto/build/webcrypto.js';
-import { setupServer } from '../../node_modules/msw/lib/node/index.js';
 
 vi.stubGlobal('chrome', {
   storage: {
@@ -158,7 +155,7 @@ const apiResponses: ApiResponses = {
   },
 };
 export const restHandlers = [
-  rest.get('https://aha.rainbow.me/', (req, res, ctx) => {
+  rest.all('https://aha.rainbow.me/', (req, res, ctx) => {
     const address = req.url.searchParams.get('address') || '';
     return res(ctx.status(200), ctx.json(apiResponses?.[address]));
   }),
@@ -167,7 +164,10 @@ export const restHandlers = [
 const server = setupServer(...restHandlers);
 
 // Start server before all tests
-beforeAll(() => server.listen({ onUnhandledRequest: 'bypass' }));
+beforeAll(() => {
+  location.replace(`https://aha.rainbow.me/`);
+  server.listen({ onUnhandledRequest: 'bypass' });
+});
 
 //  Close server after all tests
 afterAll(() => server.close());
