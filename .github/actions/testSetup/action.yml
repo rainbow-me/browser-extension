@@ -29,9 +29,8 @@ runs:
        # start xvfb in the background
        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
   - name: Install chrome
-    uses: browser-actions/setup-chrome@latest
-    with:
-           chrome-version: 'stable'
+    shell: 'bash'
+    run: npx @puppeteer/browsers install chrome@stable
   - name: Install Anvil
     uses: foundry-rs/foundry-toolchain@v1
     with:
