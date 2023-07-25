@@ -43,7 +43,7 @@ runs:
   - uses: actions/checkout@v3
     with:
          repository: 'rainbow-me/browser-extension-env'
-         token: inputs.gh-access-token
+         token: ${{ inputs.gh-access-token }} 
          path: tmp
   - name: Copy dotenv
     shell: 'bash'
