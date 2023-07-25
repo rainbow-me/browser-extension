@@ -76,6 +76,7 @@ jobs:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setupTest.yml
       - name: Run e2e parallel (Chrome)
         uses: nick-fields/retry@v2
@@ -95,6 +96,7 @@ jobs:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setupTest.yml
       - name: Run e2e swap (Chrome)
         uses: nick-fields/retry@v2
@@ -114,6 +116,7 @@ jobs:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setupTest.yml
       - name: Run e2e send (Chrome)
         uses: nick-fields/retry@v2

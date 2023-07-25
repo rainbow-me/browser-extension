@@ -1,7 +1,6 @@
 name: 'test setup'
 description: 'runs test setup'
 steps:
-  - uses: actions/checkout@v3
   - uses: actions/setup-node@v3
     with:
        node-version: "16.20.0"
