@@ -251,6 +251,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.20.0"
+          cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
