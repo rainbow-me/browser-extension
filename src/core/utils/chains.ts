@@ -1,15 +1,16 @@
-import { Address, chain } from 'wagmi';
+import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
+import type { Address, Chain } from 'wagmi';
 
 import { ETH_ADDRESS, NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId, ChainName, ChainNameDisplay, bsc } from '~/core/types/chains';
 
 import { isLowerCaseMatch } from './strings';
 
-export const SUPPORTED_CHAINS = [
-  chain.mainnet,
-  chain.polygon,
-  chain.optimism,
-  { ...chain.arbitrum, name: 'Arbitrum' },
+export const SUPPORTED_CHAINS: Chain[] = [
+  mainnet,
+  polygon,
+  optimism,
+  { ...arbitrum, name: 'Arbitrum' },
   bsc,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 

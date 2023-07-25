@@ -15,6 +15,7 @@ import {
   fillPrivateKey,
   findElementByTestId,
   findElementByTestIdAndClick,
+  findElementByTestIdAndDoubleClick,
   findElementByText,
   getExtensionIdByName,
   getTextFromText,
@@ -25,9 +26,9 @@ import {
   querySelector,
   typeOnTextInput,
   waitAndClick,
-} from '../helpers';
-import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
-import { SWAP_VARIABLES, TEST_VARIABLES } from '../walletVariables';
+} from '../../helpers';
+import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
+import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -471,7 +472,7 @@ it('should be able to check price and balance of token to buy', async () => {
 });
 
 it('should be able to flip correctly', async () => {
-  await findElementByTestIdAndClick({
+  await findElementByTestIdAndDoubleClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });

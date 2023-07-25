@@ -370,8 +370,8 @@
       },
       "packages": {
         "css-loader>postcss>nanoid": true,
-        "css-loader>postcss>picocolors": true,
-        "css-loader>postcss>source-map-js": true
+        "css-loader>postcss>source-map-js": true,
+        "vitest>picocolors": true
       }
     },
     "css-loader>postcss-modules-local-by-default": {
@@ -395,16 +395,6 @@
     "css-loader>postcss-modules-values": {
       "packages": {
         "css-loader>icss-utils": true
-      }
-    },
-    "css-loader>postcss>picocolors": {
-      "builtin": {
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.argv.includes": true,
-        "process.env": true,
-        "process.platform": true
       }
     },
     "dotenv-webpack": {
@@ -548,14 +538,22 @@
         "path.extname": true
       },
       "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
         "lavamoat>lavamoat-tofu>@babel/traverse": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "wagmi>@coinbase/wallet-sdk>eth-block-tracker>@babel/plugin-transform-runtime>@babel/helper-module-imports": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
@@ -1214,7 +1212,23 @@
       },
       "native": true,
       "packages": {
-        "wagmi>@coinbase/wallet-sdk>keccak>node-gyp-build": true
+        "selenium-webdriver>ws>bufferutil>node-gyp-build": true
+      }
+    },
+    "selenium-webdriver>ws>bufferutil>node-gyp-build": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readdirSync": true,
+        "os.arch": true,
+        "os.platform": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "__non_webpack_require__": true,
+        "__webpack_require__": true,
+        "process": true
       }
     },
     "selenium-webdriver>ws>utf-8-validate": {
@@ -1223,7 +1237,7 @@
       },
       "native": true,
       "packages": {
-        "wagmi>@coinbase/wallet-sdk>keccak>node-gyp-build": true
+        "selenium-webdriver>ws>bufferutil>node-gyp-build": true
       }
     },
     "semver": {
@@ -1320,6 +1334,11 @@
         "jest>@jest/core>jest-runner>source-map-support": true
       }
     },
+    "vitest>acorn-walk": {
+      "globals": {
+        "define": true
+      }
+    },
     "vitest>debug": {
       "builtin": {
         "tty.isatty": true,
@@ -1337,6 +1356,16 @@
       "packages": {
         "msw>chalk>supports-color": true,
         "vitest>debug>ms": true
+      }
+    },
+    "vitest>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
       }
     },
     "vitest>vite>terser": {
@@ -1359,30 +1388,6 @@
         "Buffer": true,
         "TextDecoder": true,
         "define": true
-      }
-    },
-    "wagmi>@coinbase/wallet-sdk>eth-block-tracker>@babel/plugin-transform-runtime>@babel/helper-module-imports": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true
-      }
-    },
-    "wagmi>@coinbase/wallet-sdk>keccak>node-gyp-build": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readdirSync": true,
-        "os.arch": true,
-        "os.platform": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "__non_webpack_require__": true,
-        "__webpack_require__": true,
-        "process": true
       }
     },
     "webpack": {
@@ -1522,18 +1527,13 @@
       "packages": {
         "eslint>chalk": true,
         "lodash": true,
-        "webpack-bundle-analyzer>acorn-walk": true,
+        "vitest>acorn-walk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
         "webpack-bundle-analyzer>ws": true,
         "webpack-cli>@discoveryjs/json-ext": true,
         "webpack>acorn": true
-      }
-    },
-    "webpack-bundle-analyzer>acorn-walk": {
-      "globals": {
-        "define": true
       }
     },
     "webpack-bundle-analyzer>gzip-size": {

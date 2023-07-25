@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Crypto } from '@peculiar/webcrypto';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
@@ -47,7 +45,15 @@ Object.defineProperty(global, 'crypto', {
   writable: true,
 });
 
-const apiResponses = {
+type ApiResponse = {
+  data: {
+    addresses: Record<string, boolean>;
+  };
+};
+
+type ApiResponses = Record<string, ApiResponse>;
+
+const apiResponses: ApiResponses = {
   '0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a': {
     data: {
       addresses: {
@@ -151,17 +157,17 @@ const apiResponses = {
 export const restHandlers = [
   rest.all('https://aha.rainbow.me/', (req, res, ctx) => {
     const address = req.url.searchParams.get('address') || '';
-    {
-      // @ts-ignore
-      return res(ctx.status(200), ctx.json(apiResponses?.[address]));
-    }
+    return res(ctx.status(200), ctx.json(apiResponses?.[address]));
   }),
 ];
 
 const server = setupServer(...restHandlers);
 
 // Start server before all tests
-beforeAll(() => server.listen({ onUnhandledRequest: 'bypass' }));
+beforeAll(() => {
+  location.replace(`https://aha.rainbow.me/`);
+  server.listen({ onUnhandledRequest: 'bypass' });
+});
 
 //  Close server after all tests
 afterAll(() => server.close());
