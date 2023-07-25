@@ -20,6 +20,7 @@ import {
 } from '~/design-system/components/Accordion/Accordion';
 import { SymbolName } from '~/design-system/styles/designTokens';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 
 const InfoRow = ({
   symbol,
@@ -38,7 +39,13 @@ const InfoRow = ({
       </Text>
     </Inline>
     <Inline alignVertical="center">
-      <Text color="labelSecondary" size="12pt" weight="semibold">
+      <Text
+        color="labelSecondary"
+        size="12pt"
+        weight="semibold"
+        cursor="text"
+        userSelect="all"
+      >
         {value}
       </Text>
     </Inline>
@@ -225,15 +232,25 @@ export function About({ token }: { token: ParsedAddressAsset }) {
                   symbol="doc.plaintext"
                   label={i18n.t(`token_details.about.token_contract`)}
                   value={
-                    <Inline alignVertical="center" space="4px">
-                      {truncateAddress(token.address)}{' '}
-                      <Symbol
-                        size={14}
-                        weight="semibold"
-                        symbol="doc.on.doc"
-                        color="labelQuaternary"
-                      />
-                    </Inline>
+                    <Box
+                      onClick={() => {
+                        navigator.clipboard.writeText(token.address);
+                        triggerToast({
+                          title: i18n.t('wallet_header.copy_toast'),
+                          description: truncateAddress(token.address),
+                        });
+                      }}
+                    >
+                      <Inline alignVertical="center" space="4px">
+                        {truncateAddress(token.address)}{' '}
+                        <Symbol
+                          size={14}
+                          weight="semibold"
+                          symbol="doc.on.doc"
+                          color="labelQuaternary"
+                        />
+                      </Inline>
+                    </Box>
                   }
                 />
                 <InfoRow

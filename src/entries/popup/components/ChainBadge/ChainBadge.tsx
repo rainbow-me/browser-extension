@@ -68,6 +68,8 @@ const ChainBadge = ({
         width="100%"
         height="100%"
         loading="lazy"
+        style={{ userSelect: 'none' }}
+        draggable={false}
       />
     </Box>
   );

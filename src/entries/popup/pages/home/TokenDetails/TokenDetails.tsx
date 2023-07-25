@@ -37,7 +37,7 @@ import { ROUTES } from '~/entries/popup/urls';
 
 import { About } from './About';
 import { TokenApprovals } from './Approvals';
-import { LineChart } from './LineChart';
+import { ChartData, LineChart } from './LineChart';
 
 const parsePriceChange = (
   value: number,
@@ -108,20 +108,16 @@ const usePriceChart = ({
   time: ChartTime;
 }) => {
   return useQuery({
-    queryFn: () =>
-      metadataClient
+    queryFn: async () => {
+      const priceChart = await metadataClient
         .priceChart({ address, chainId, ...getChartTimeArg(time) })
-        .then((d) =>
-          (
-            d.token?.priceCharts[time]?.points as [
-              timestamp: number,
-              price: number,
-            ][]
-          ).reduce((result, point) => {
-            result.push({ timestamp: point[0], price: point[1] });
-            return result;
-          }, [] as { timestamp: number; price: number }[]),
-        ),
+        .then((d) => d.token?.priceCharts[time]);
+      const points = priceChart?.points as [timestamp: number, price: number][];
+      return points.reduce((result, point) => {
+        result.push({ timestamp: point[0], price: point[1] });
+        return result;
+      }, [] as ChartData[]);
+    },
     queryKey: createQueryKey('price chart', { address, chainId, time }),
   });
 };
@@ -196,21 +192,34 @@ function BalanceValue({ balance, value }: { balance: Amount; value: Amount }) {
         <Text size="12pt" weight="semibold" color="labelTertiary">
           {i18n.t('token_details.balance')}
         </Text>
-        <Text size="14pt" weight="semibold" color={color}>
-          <Inline alignVertical="center">
+        <Inline alignVertical="center">
+          <Text
+            size="14pt"
+            weight="semibold"
+            color={color}
+            cursor="text"
+            userSelect="all"
+          >
             {hideAssetBalances ? <HiddenValue /> : balance[0]} {balance[1]}
-          </Inline>
-        </Text>
+          </Text>
+        </Inline>
       </Box>
       <Box display="flex" flexDirection="column" gap="12px">
         <Text size="12pt" weight="semibold" color="labelTertiary" align="right">
           {i18n.t('token_details.value')}
         </Text>
-        <Text size="14pt" weight="semibold" color={color} align="right">
-          <Inline alignVertical="center">
+        <Inline alignVertical="center">
+          <Text
+            size="14pt"
+            weight="semibold"
+            color={color}
+            align="right"
+            cursor="text"
+            userSelect="all"
+          >
             {value[0]} {hideAssetBalances ? <HiddenValue /> : value[1]}
-          </Inline>
-        </Text>
+          </Text>
+        </Inline>
       </Box>
     </Box>
   );

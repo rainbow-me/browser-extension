@@ -97,9 +97,9 @@ const useChart = () => {
   return c;
 };
 
-type Data = { timestamp: number; price: number };
+export type ChartData = { timestamp: number; price: number };
 type Position = { x: number; y: number };
-type Point = Data & Position;
+type Point = ChartData & Position;
 
 export const LineChart = ({
   width,
@@ -167,18 +167,14 @@ export const LineChart = ({
       >
         <motion.path
           ref={pathRef}
-          // initial={{ d: 'M 0' }}
           animate={{ d }}
-          // d={d}
           fill="none"
           stroke={globalColors.blueGrey60}
           strokeWidth={3}
         />
         <motion.path
           ref={pathRightRef}
-          // initial={{ d: 'M 0' }}
           animate={{ d }}
-          // d={d}
           fill="none"
           strokeWidth={3}
           stroke={accentColorAsHsl}

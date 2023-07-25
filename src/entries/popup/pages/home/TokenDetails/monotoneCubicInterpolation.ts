@@ -1,67 +1,51 @@
-interface DataPoint {
-  x: number;
-  y: number;
+type Point = { x: number; y: number };
+
+function slope(points: Point[], index: number) {
+  const prev = points[index - 1] || points[index];
+  const next = points[index + 1] || points[index];
+  return (next.y - prev.y) / (next.x - prev.x);
 }
 
 export function monotoneCubicInterpolation(
-  dataPoints: DataPoint[],
-  range: number,
+  points: Point[],
+  range = 2,
   mergeThreshold = 6,
 ): string {
-  // Ensure the dataPoints array is sorted by x values
-  dataPoints.sort((a, b) => a.x - b.x);
+  points.sort((a, b) => a.x - b.x);
 
-  // Helper function to check if two numbers are almost equal
-  function isClose(a: number, b: number): boolean {
-    return Math.abs(a - b) <= mergeThreshold;
-  }
-
-  // Merge close data points by updating their y-values
-  const mergedDataPoints: DataPoint[] = [];
-  let prev: DataPoint = dataPoints[0];
-  mergedDataPoints.push(prev);
-  for (let i = 1; i < dataPoints.length; i++) {
-    const curr: DataPoint = dataPoints[i];
-    if (!isClose(curr.x, prev.x)) {
-      mergedDataPoints.push(curr);
+  // Merge close data points
+  const smoothedPoints: Point[] = [];
+  let prev = points[0];
+  smoothedPoints.push(prev);
+  for (let i = 1; i < points.length; i++) {
+    const curr = points[i];
+    if (Math.abs(curr.x - prev.x) > mergeThreshold) {
+      smoothedPoints.push(curr);
       prev = curr;
     } else {
       prev.y = curr.y;
     }
   }
 
-  const len: number = mergedDataPoints.length;
   const path: string[] = [];
 
-  // Helper function to compute the slope at a given index
-  function slope(index: number): number {
-    const prev: DataPoint =
-      mergedDataPoints[index - 1] || mergedDataPoints[index];
-    const next: DataPoint =
-      mergedDataPoints[index + 1] || mergedDataPoints[index];
-    return (next.y - prev.y) / (next.x - prev.x);
-  }
-
   // Push the starting point of the path
-  const { x, y } = mergedDataPoints[0];
+  const { x, y } = smoothedPoints[0];
   path.push(`M${x},${y}`);
 
   // Iterate through each data point and add cubic Bezier segments to the path
-  for (let i = 0; i < len - 1; i++) {
-    const curr: DataPoint = mergedDataPoints[i];
-    const next: DataPoint = mergedDataPoints[i + 1];
-    const m0: number = slope(i);
-    const m1: number = slope(i + 1);
-    const deltaX: number = (next.x - curr.x) / range;
-    const controlPoint1X: number = curr.x + deltaX;
-    const controlPoint1Y: number = curr.y + deltaX * m0 * range;
-    const controlPoint2X: number = next.x - deltaX;
-    const controlPoint2Y: number = next.y - deltaX * m1 * range;
-    const endPointX: number = next.x;
-    const endPointY: number = next.y;
-    path.push(
-      `C${controlPoint1X},${controlPoint1Y},${controlPoint2X},${controlPoint2Y},${endPointX},${endPointY}`,
-    );
+  for (let i = 0; i < smoothedPoints.length - 1; i++) {
+    const curr = smoothedPoints[i];
+    const next = smoothedPoints[i + 1];
+    if (!next) break;
+    const deltaX = (next.x - curr.x) / range;
+    const x1 = curr.x + deltaX;
+    const y1 = curr.y + deltaX * slope(points, i) * range;
+    const x2 = next.x - deltaX;
+    const y2 = next.y - deltaX * slope(points, i + 1) * range;
+    const endX = next.x;
+    const endY = next.y;
+    path.push(`C${x1},${y1},${x2},${y2},${endX},${endY}`);
   }
 
   return path.join(' ');
