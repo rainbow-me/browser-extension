@@ -30,6 +30,7 @@ export type ButtonProps = {
   paddingRight?: BoxStyles['paddingRight'];
   tabIndex?: number;
   disabled?: boolean;
+  enterCta?: boolean;
 } & ButtonVariantProps &
   (
     | {
@@ -60,16 +61,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     })[props.variant];
 
     const { paddingHorizontal, gap, textSize } = stylesForHeight[height];
-
+    const symbolSize =
+      parseInt(textSize?.split(' ')[0].replace('pt', '') ?? '') -
+      (props.enterCta ? 4 : 0);
     const symbolComponent =
       (symbol && (
         <Symbol
           color={textColor}
-          size={
-            parseInt(
-              textSize?.split(' ')[0].replace('pt', '') ?? '',
-            ) as SymbolProps['size']
-          }
+          boxed={props.enterCta}
+          size={symbolSize}
           symbol={symbol}
           weight="bold"
         />

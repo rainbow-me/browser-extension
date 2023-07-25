@@ -186,10 +186,12 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
     rightNavbarComponent,
     accentColor = true,
   } = props;
-  const { initial, end, exit } = animatedRouteValues[direction];
-  const transition = animatedRouteTransitionConfig[direction];
-
   const { state } = useLocation();
+  const animationDirection: AnimatedRouteDirection =
+    state?.direction ?? direction;
+  const { initial, end, exit } = animatedRouteValues[animationDirection];
+  const transition = animatedRouteTransitionConfig[animationDirection];
+
   const navigationType = useNavigationType();
   const isBack =
     (navigationType === 'POP' && state?.isBack !== false) || state?.isBack;
@@ -201,12 +203,12 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
 
   const leftNavbarIcon = useMemo(() => {
     if (hideBackButton) return undefined;
-    if (navbarIcon === 'arrow') {
+    if (navbarIcon === 'arrow' || state?.navbarIcon === 'arrow') {
       return <Navbar.BackButton />;
-    } else if (navbarIcon === 'ex') {
+    } else if (navbarIcon === 'ex' || state?.navbarIcon === 'ex') {
       return <Navbar.CloseButton />;
     } else return undefined;
-  }, [hideBackButton, navbarIcon]);
+  }, [hideBackButton, navbarIcon, state?.navbarIcon]);
 
   useEffect(() => {
     const app = document.getElementById('app');

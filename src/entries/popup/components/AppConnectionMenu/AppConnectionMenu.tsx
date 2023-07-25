@@ -1,5 +1,11 @@
 import { motion } from 'framer-motion';
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
@@ -12,6 +18,7 @@ import { useAppSession } from '../../hooks/useAppSession';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { useCommandKStatus } from '../CommandK/useCommandKStatus';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,6 +69,7 @@ export const AppConnectionMenu = ({
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const { isCommandKVisible } = useCommandKStatus();
   const { currentAddress } = useCurrentAddressStore();
   const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
@@ -130,6 +138,13 @@ export const AppConnectionMenu = ({
     );
   }, [subMenuOpen]);
 
+  useLayoutEffect(() => {
+    if (isCommandKVisible && menuOpen) {
+      setMenuOpen(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCommandKVisible]);
+
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.home.SWITCH_NETWORK.key) {
@@ -138,7 +153,14 @@ export const AppConnectionMenu = ({
         }
         toggleSubMenu(!subMenuOpen);
       }
+      if (e.key === shortcuts.global.CLOSE.key) {
+        if (subMenuOpen) {
+          e.preventDefault();
+          toggleSubMenu(false);
+        }
+      }
     },
+    condition: () => !isCommandKVisible,
   });
 
   return (
