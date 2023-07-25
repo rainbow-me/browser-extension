@@ -100,6 +100,7 @@
     "@tanstack/react-query-persist-client": "4.29.19",
     "@tanstack/react-virtual": "3.0.0-beta.54",
     "@trezor/connect-plugin-ethereum": "9.0.1",
+    "@types/qs": "6.9.7",
     "@vanilla-extract/css": "1.9.1",
     "@vanilla-extract/css-utils": "0.1.2",
     "@vanilla-extract/dynamic": "2.0.2",
