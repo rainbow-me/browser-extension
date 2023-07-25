@@ -77,7 +77,7 @@ jobs:
       VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/testSetup.yml
+      - uses: ./.github/actions/testSetup
       - name: Run e2e parallel (Chrome)
         uses: nick-fields/retry@v2
         with:
@@ -97,7 +97,7 @@ jobs:
       VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/testSetup.yml
+      - uses: ./.github/actions/testSetup
       - name: Run e2e swap (Chrome)
         uses: nick-fields/retry@v2
         with:
@@ -117,7 +117,7 @@ jobs:
       VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/testSetup.yml
+      - uses: ./.github/actions/testSetup
       - name: Run e2e send (Chrome)
         uses: nick-fields/retry@v2
         with:
@@ -136,7 +136,7 @@ jobs:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
     steps:
-      - uses: ./.github/actions/testSetup.yml
+      - uses: ./.github/actions/testSetup
       - name: Run e2e dappInteractions (Chrome)
         uses: nick-fields/retry@v2
         with:
