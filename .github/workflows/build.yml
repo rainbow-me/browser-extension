@@ -11,7 +11,7 @@ jobs:
   # INSTALL DEPS
   install:
     runs-on: ubuntu-latest
-    concurrency: 
+    concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
@@ -25,13 +25,13 @@ jobs:
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Zip node_modules
-        run: tar czvf node_modules.tar.gz node_modules/
+        run: tar czf node_modules.tar.gz node_modules/
       - name: Upload deps artifacts
         uses: actions/upload-artifact@v3
         with:
           name: node_modules.tar.gz
           path: node_modules.tar.gz
-      
+
   # BUILD THE EXTENSION
   build:
     runs-on: ubuntu-latest
@@ -41,13 +41,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.20.0"
-          cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
+        run: tar xzf node_modules.tar.gz
       - uses: actions/checkout@v3
         with:
             repository: 'rainbow-me/browser-extension-env'
@@ -61,79 +60,89 @@ jobs:
       - name: Graphql Setup
         run: yarn graphql-setup
       - name: Build the extension
-        run: yarn build:webpack      
+        run: yarn build:webpack
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: rainbowbx-${{ github.sha }}.zip
           path: build/
   # CHROME TESTS
-  chrome-e2e:
-    runs-on: ubuntu-latest
-    timeout-minutes: 23
+  chrome-e2e-parallel:
+    runs-on: beefy-runner-bx
+    timeout-minutes: 16
     needs: [build]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: ./.github/actions/testSetup
         with:
-          node-version: "16.20.0"
-          cache: 'yarn'
-      - name: Download deps cache artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: node_modules.tar.gz
-      - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
-      - name: Install latest chromedriver
-        run: yarn upgrade chromedriver --latest --chromedriver_version=LATEST && yarn setup
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: rainbowbx-${{ github.sha }}.zip
-          path: build
-      - name: Setup xvfb
-        run: |
-          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-          # start xvfb in the background
-          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-      - name: Install chrome
-        uses: browser-actions/setup-chrome@latest
-        with:
-              chrome-version: 'stable'
-      - name: Install Anvil
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-      - uses: actions/checkout@v3
-        with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-            path: tmp
-      - name: Copy dotenv
-        run: cat tmp/dotenv >> .env && rm -rf tmp
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e parallel (Chrome)
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(which chrome)
+          yarn vitest:parallel --retry=5
+  chrome-e2e-swap:
+    runs-on: beefy-runner-bx
+    timeout-minutes: 25
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/testSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e swap (Chrome)
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 20
-          max_attempts: 3
-          command:  |
+          timeout_minutes: 25
+          max_attempts: 2
+          command: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(which chrome)
-            yarn vitest:parallel
-      - name: Run e2e serial (Chrome)
-        uses: nick-fields/retry@v2
+            yarn vitest:swap
+  chrome-e2e-send:
+    runs-on: beefy-runner-bx
+    timeout-minutes: 25
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/testSetup
         with:
-          timeout_minutes: 20
-          max_attempts: 3
-          command:  |
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e send (Chrome)
+        run: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(which chrome)
-            yarn vitest:serial
+            yarn vitest:send --retry=5
+  chrome-e2e-dappInteractions:
+    runs-on: beefy-runner-bx
+    timeout-minutes: 25
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/testSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e dappInteractions (Chrome)
+        run: |
+            export BROWSER=chrome
+            export OS=linux
+            export CHROMIUM_BIN=$(which chrome)
+            yarn vitest:dappInteractions --retry=5
   # BRAVE TESTS
   # brave-e2e:
   #   needs: [build]
@@ -147,7 +156,6 @@ jobs:
   #     - uses: actions/setup-node@v3
   #       with:
   #         node-version: "16.20.0"
-  #         cache: 'yarn'
   #     - name: Download deps cache artifacts
   #       uses: actions/download-artifact@v3
   #       with:
@@ -201,13 +209,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.20.0"
-          cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
+        run: tar xzf node_modules.tar.gz
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
@@ -250,7 +257,7 @@ jobs:
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
+        run: tar xzf node_modules.tar.gz
       - name: DS Setup
         run: yarn ds:install
       - name: Graphql Setup
@@ -263,7 +270,7 @@ jobs:
         run: yarn typecheck
   cleanup:
     runs-on:  ubuntu-latest
-    needs: [chrome-e2e, unit-tests, ci-checks]
+    needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, unit-tests, ci-checks]
     steps:
       - uses: geekyeggo/delete-artifact@v2
         with:
