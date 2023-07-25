@@ -122,12 +122,10 @@ export function Tokens() {
                 width="full"
                 style={{ height: size, y: start }}
               >
-                {/* <TokenDetailsMenu token={rowData}> */}
                 <AssetRow
                   key={`${rowData?.uniqueId}-${index}`}
                   uniqueId={rowData?.uniqueId}
                 />
-                {/* </TokenDetailsMenu> */}
               </Box>
             );
           })}

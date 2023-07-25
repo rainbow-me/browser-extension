@@ -18,9 +18,7 @@ export function useUserAsset(uniqueId?: UniqueId) {
       connectedToHardhat,
     },
     {
-      select: uniqueId
-        ? selectUserAssetWithUniqueId(uniqueId)
-        : () => undefined,
+      select: uniqueId ? selectUserAssetWithUniqueId(uniqueId) : undefined,
       enabled: !!uniqueId,
     },
   );
