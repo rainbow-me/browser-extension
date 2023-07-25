@@ -16,7 +16,7 @@ runs:
       name: node_modules.tar.gz
   - name: Unzip node_modules
     shell: 'bash'
-    run: tar xzvf node_modules.tar.gz
+    run: tar xzf node_modules.tar.gz
   - name: Download build artifacts
     uses: actions/download-artifact@v3
     with:

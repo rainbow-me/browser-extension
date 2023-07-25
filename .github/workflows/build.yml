@@ -25,7 +25,7 @@ jobs:
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Zip node_modules
-        run: tar czvf node_modules.tar.gz node_modules/
+        run: tar czf node_modules.tar.gz node_modules/
       - name: Upload deps artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -46,7 +46,7 @@ jobs:
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
+        run: tar xzf node_modules.tar.gz
       - uses: actions/checkout@v3
         with:
             repository: 'rainbow-me/browser-extension-env'
@@ -214,7 +214,7 @@ jobs:
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
+        run: tar xzf node_modules.tar.gz
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
@@ -257,7 +257,7 @@ jobs:
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
+        run: tar xzf node_modules.tar.gz
       - name: DS Setup
         run: yarn ds:install
       - name: Graphql Setup
