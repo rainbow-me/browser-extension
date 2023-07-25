@@ -57,8 +57,6 @@ jobs:
       - name: Set IS_TESTING=true
         run: |
           sed -i 's/IS_TESTING.*/IS_TESTING=true/g' .env
-      - name: Graphql Setup
-        run: yarn graphql-setup
       - name: Build the extension
         run: yarn build:webpack
       - name: Upload artifacts
@@ -222,8 +220,6 @@ jobs:
           target: wasm32-unknown-unknown
           profile: minimal
           override: true
-      - name: Graphql Setup
-        run: yarn graphql-setup
       - name: Install Anvil
         uses: foundry-rs/foundry-toolchain@v1
         with:
@@ -260,8 +256,6 @@ jobs:
         run: tar xzf node_modules.tar.gz
       - name: DS Setup
         run: yarn ds:install
-      - name: Graphql Setup
-        run: yarn graphql-setup
       - name: Lint
         run: yarn lint
       - name: Audit CI
