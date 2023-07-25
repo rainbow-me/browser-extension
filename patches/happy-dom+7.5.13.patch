@@ -1,0 +1,68 @@
+diff --git a/node_modules/happy-dom/lib/location/RelativeURL.js b/node_modules/happy-dom/lib/location/RelativeURL.js
+index 62662da..d48d170 100644
+--- a/node_modules/happy-dom/lib/location/RelativeURL.js
++++ b/node_modules/happy-dom/lib/location/RelativeURL.js
+@@ -11,17 +11,21 @@ class RelativeURL {
+      * @param url URL.
+      */
+     static getAbsoluteURL(location, url) {
+-        if (url.startsWith('/')) {
+-            return location.origin + url;
+-        }
+-        if (!url.startsWith('https://') && !url.startsWith('http://')) {
+-            let pathname = location.pathname;
+-            if (pathname.endsWith('/')) {
+-                pathname = pathname.slice(0, -1);
+-            }
+-            return location.origin + pathname + '/' + url;
+-        }
+-        return url;
++        if(typeof url === 'string'){
++			if (url.startsWith('/')) {
++				return location.origin + url;
++			}
++
++			if (!url.startsWith('https://') && !url.startsWith('http://')) {
++				let pathname = location.pathname;
++				if (pathname.endsWith('/')) {
++					pathname = pathname.slice(0, -1);
++				}
++				return location.origin + pathname + '/' + url;
++			}
++		}
++
++		return url;
+     }
+ }
+ exports.default = RelativeURL;
+diff --git a/node_modules/happy-dom/src/location/RelativeURL.ts b/node_modules/happy-dom/src/location/RelativeURL.ts
+index b60ff1c..b6f62e8 100644
+--- a/node_modules/happy-dom/src/location/RelativeURL.ts
++++ b/node_modules/happy-dom/src/location/RelativeURL.ts
+@@ -11,16 +11,18 @@ export default class RelativeURL {
+ 	 * @param url URL.
+ 	 */
+ 	public static getAbsoluteURL(location: Location, url: string): string {
+-		if (url.startsWith('/')) {
+-			return location.origin + url;
+-		}
++		if(url){
++			if (url.startsWith('/')) {
++				return location.origin + url;
++			}
+ 
+-		if (!url.startsWith('https://') && !url.startsWith('http://')) {
+-			let pathname = location.pathname;
+-			if (pathname.endsWith('/')) {
+-				pathname = pathname.slice(0, -1);
++			if (!url.startsWith('https://') && !url.startsWith('http://')) {
++				let pathname = location.pathname;
++				if (pathname.endsWith('/')) {
++					pathname = pathname.slice(0, -1);
++				}
++				return location.origin + pathname + '/' + url;
+ 			}
+-			return location.origin + pathname + '/' + url;
+ 		}
+ 
+ 		return url;

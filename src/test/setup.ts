@@ -48,7 +48,15 @@ Object.defineProperty(global, 'crypto', {
   writable: true,
 });
 
-const apiResponses = {
+type ApiResponse = {
+  data: {
+    addresses: Record<string, boolean>;
+  };
+};
+
+type ApiResponses = Record<string, ApiResponse>;
+
+const apiResponses: ApiResponses = {
   '0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a': {
     data: {
       addresses: {
@@ -150,12 +158,9 @@ const apiResponses = {
   },
 };
 export const restHandlers = [
-  rest.all('https://aha.rainbow.me/', (req, res, ctx) => {
+  rest.get('https://aha.rainbow.me/', (req, res, ctx) => {
     const address = req.url.searchParams.get('address') || '';
-    {
-      // @ts-ignore
-      return res(ctx.status(200), ctx.json(apiResponses?.[address]));
-    }
+    return res(ctx.status(200), ctx.json(apiResponses?.[address]));
   }),
 ];
 
