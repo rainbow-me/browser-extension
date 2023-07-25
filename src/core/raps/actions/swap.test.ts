@@ -6,7 +6,8 @@ import {
   SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
-import { chain, getProvider } from '@wagmi/core';
+import { mainnet } from '@wagmi/chains';
+import { getProvider } from '@wagmi/core';
 import { beforeAll, expect, test } from 'vitest';
 
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
@@ -35,7 +36,7 @@ beforeAll(async () => {
 
 test('[rap/swap] :: should estimate swap gas limit', async () => {
   const swapGasLimit = await estimateSwapGasLimit({
-    chainId: chain.mainnet.id,
+    chainId: mainnet.id,
     requiresApprove: false,
     quote: quote as Quote,
   });
@@ -44,10 +45,10 @@ test('[rap/swap] :: should estimate swap gas limit', async () => {
 });
 
 test('[rap/swap] :: should execute swap', async () => {
-  const provider = getProvider({ chainId: chain.mainnet.id });
+  const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_2, provider);
   const swapTx = await executeSwap({
-    chainId: chain.mainnet.id,
+    chainId: mainnet.id,
     gasLimit: '600000',
     gasParams: {
       maxFeePerGas: '800000000000',

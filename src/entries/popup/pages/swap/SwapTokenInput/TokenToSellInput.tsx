@@ -33,7 +33,7 @@ interface SwapTokenInputProps {
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputValue: (value: string) => void;
   setAssetToSellInputNativeValue: (value: string) => void;
-  setIndependentField: React.Dispatch<React.SetStateAction<IndependentField>>;
+  setIndependentField: (field: IndependentField) => void;
 }
 
 export const TokenToSellInput = ({

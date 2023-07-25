@@ -25,8 +25,8 @@ import {
   transactionStatus,
   typeOnTextInput,
   waitAndClick,
-} from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
+} from '../../helpers';
+import { TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;

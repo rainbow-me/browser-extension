@@ -5,12 +5,15 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useWalletNamesStore } from '~/core/state/walletNames';
+import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
+import { getSettingWallets } from '~/core/utils/settings';
 import {
   Box,
   Button,
@@ -34,17 +37,29 @@ export const CreateWalletPrompt = ({
   show,
   onClose,
   onCancel,
+  fromChooseGroup = false,
 }: {
   address?: Address;
   show: boolean;
   onClose: () => void;
   onCancel?: () => void;
+  fromChooseGroup?: boolean;
 }) => {
   const navigate = useRainbowNavigate();
+  const { state } = useLocation();
   const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const { saveWalletName } = useWalletNamesStore();
   const { setCurrentAddress } = useCurrentAddressStore();
+  const [newWallet, setNewWallet] = useState<KeychainWallet | null>();
+
+  useEffect(() => {
+    const getWallet = async () => {
+      const wallet = await getSettingWallets();
+      setNewWallet(wallet);
+    };
+    getWallet();
+  }, []);
 
   const handleValidateWalletName = useCallback(async () => {
     if (address && walletName && walletName.trim() !== '') {
@@ -53,11 +68,32 @@ export const CreateWalletPrompt = ({
         address,
       });
       setCurrentAddress(address);
-      navigate(ROUTES.HOME, { state: { isBack: true } });
+      !fromChooseGroup
+        ? navigate(ROUTES.HOME, { state: { isBack: true } })
+        : navigate(
+            ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
+            {
+              state: {
+                newWallet,
+                account: address,
+                password: state?.password,
+                fromChooseGroup: true,
+              },
+            },
+          );
       return;
     }
     setError(i18n.t('errors.no_wallet_name_set'));
-  }, [address, navigate, saveWalletName, setCurrentAddress, walletName]);
+  }, [
+    address,
+    navigate,
+    saveWalletName,
+    setCurrentAddress,
+    fromChooseGroup,
+    state?.password,
+    walletName,
+    newWallet,
+  ]);
 
   const handleClose = useCallback(async () => {
     setWalletName('');
