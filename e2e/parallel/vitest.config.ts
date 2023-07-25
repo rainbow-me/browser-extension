@@ -1,4 +1,4 @@
-import { mergeConfig } from 'vite';
+import { UserConfig, mergeConfig } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 import viteConfig from '../vitest.config';
@@ -9,5 +9,5 @@ export default mergeConfig(
     test: {
       threads: false,
     },
-  }),
+  }) as UserConfig,
 );
