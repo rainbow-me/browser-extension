@@ -136,6 +136,11 @@ export const event = {
    * for mapped asset bridge transactions where the `mainnetAddress` is equal.
    */
   swapSubmitted: 'swap.submitted',
+  /**
+   * Called when the core wallet Tokens & Activity
+   * screen is viewed or opened in the extension popup.
+   */
+  walletViewed: 'wallet.viewed',
 } as const;
 
 /**
@@ -451,4 +456,5 @@ export type EventProperties = {
      */
     flashbots: boolean;
   };
+  [event.walletViewed]: undefined;
 };
