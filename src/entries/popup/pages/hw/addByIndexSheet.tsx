@@ -1,4 +1,5 @@
-import { chain, getProvider } from '@wagmi/core';
+import { mainnet } from '@wagmi/chains';
+import { getProvider } from '@wagmi/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -48,7 +49,7 @@ export const AddByIndexSheet = ({
   vendor: 'Ledger' | 'Trezor';
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
-  const nativeAsset = useNativeAssetForNetwork({ chainId: chain.mainnet.id });
+  const nativeAsset = useNativeAssetForNetwork({ chainId: mainnet.id });
   const inputRef = useRef<HTMLInputElement>(null);
   const prevShow = usePrevious(show);
   const [loading, setLoading] = useState<boolean>(false);
@@ -99,7 +100,7 @@ export const AddByIndexSheet = ({
         Number(newIndex),
       )) as Address;
       if (newAddress) {
-        const provider = getProvider({ chainId: chain.mainnet.id });
+        const provider = getProvider({ chainId: mainnet.id });
         const balance = await provider.getBalance(newAddress);
 
         const nativeCurrencyAmount = convertRawAmountToNativeDisplay(
