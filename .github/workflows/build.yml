@@ -69,7 +69,7 @@ jobs:
           path: build/
   # CHROME TESTS
   chrome-e2e-parallel:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 16
     needs: [build]
     env:
@@ -81,18 +81,14 @@ jobs:
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e parallel (Chrome)
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 20
-          max_attempts: 2
-          command:  |
-            export BROWSER=chrome
-            export OS=linux
-            export CHROMIUM_BIN=$(which chrome)
-            yarn vitest:parallel
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(which chrome)
+          yarn vitest:parallel --retry=5
   chrome-e2e-swap:
-    runs-on: ubuntu-latest
-    timeout-minutes: 16
+    runs-on: beefy-runner-bx
+    timeout-minutes: 25
     needs: [build]
     env:
       DISPLAY: :0
@@ -105,16 +101,16 @@ jobs:
       - name: Run e2e swap (Chrome)
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 16
+          timeout_minutes: 25
           max_attempts: 2
-          command:  |
+          command: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(which chrome)
             yarn vitest:swap
   chrome-e2e-send:
-    runs-on: ubuntu-latest
-    timeout-minutes: 16
+    runs-on: beefy-runner-bx
+    timeout-minutes: 25
     needs: [build]
     env:
       DISPLAY: :0
@@ -125,18 +121,14 @@ jobs:
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e send (Chrome)
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 16
-          max_attempts: 2
-          command:  |
+        run: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(which chrome)
-            yarn vitest:send
+            yarn vitest:send --retry=5
   chrome-e2e-dappInteractions:
-    runs-on: ubuntu-latest
-    timeout-minutes: 16
+    runs-on: beefy-runner-bx
+    timeout-minutes: 25
     needs: [build]
     env:
       DISPLAY: :0
@@ -147,15 +139,11 @@ jobs:
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e dappInteractions (Chrome)
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 16
-          max_attempts: 2
-          command:  |
+        run: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(which chrome)
-            yarn vitest:dappInteractions
+            yarn vitest:dappInteractions --retry=5
   # BRAVE TESTS
   # brave-e2e:
   #   needs: [build]
