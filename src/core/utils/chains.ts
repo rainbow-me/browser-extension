@@ -2,7 +2,7 @@ import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
 import type { Address, Chain } from 'wagmi';
 
 import { ETH_ADDRESS, NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
-import { ChainId, ChainName, ChainNameDisplay, bsc } from '~/core/types/chains';
+import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 
 import { isLowerCaseMatch } from './strings';
 
