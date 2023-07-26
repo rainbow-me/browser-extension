@@ -17,15 +17,15 @@ const manifest = require('./static/manifest.json');
 const manifestFilePath = resolve(__dirname, './build/manifest.json');
 
 const optionalPlugins = [];
-// if (process.env.ANALYZE_BUNDLE === 'true') {
-optionalPlugins.push(
-  new BundleAnalyzerPlugin({
-    analyzerMode: 'static',
-    generateStatsFile: true,
-    openAnalyzer: true,
-  }),
-);
-// }
+if (process.env.ANALYZE_BUNDLE === 'true') {
+  optionalPlugins.push(
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      generateStatsFile: true,
+      openAnalyzer: true,
+    }),
+  );
+}
 
 const manifestOverride = manifest;
 manifestOverride.content_security_policy.extension_pages = `${
