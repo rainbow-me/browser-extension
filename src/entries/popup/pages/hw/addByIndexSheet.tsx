@@ -112,7 +112,7 @@ export const AddByIndexSheet = ({
 
         setNewAccount({ address: newAddress, balance: nativeCurrencyAmount });
       }
-      setLoading(false);
+      setTimeout(() => setLoading(false), 1000);
     }, 100);
   }, [
     vendor,
@@ -136,12 +136,20 @@ export const AddByIndexSheet = ({
     }
   }, [prevShow, show]);
 
+  const onClose = useCallback(() => {
+    onDone({});
+    setTimeout(() => {
+      setNewAccount(undefined);
+      setNewIndex('');
+    }, 1000);
+  }, [onDone]);
+
   return (
     <BottomSheet background="scrim" show={show}>
       <Navbar
         leftComponent={
           <Navbar.CloseButton
-            onClick={() => onDone({})}
+            onClick={onClose}
             testId="close-add-by-index-modal-button"
           />
         }
@@ -210,7 +218,7 @@ export const AddByIndexSheet = ({
                     display="flex"
                   >
                     <Text color="label" size="14pt" weight="heavy">
-                      61
+                      60
                     </Text>
                   </Box>
                   <Box
@@ -222,16 +230,32 @@ export const AddByIndexSheet = ({
                       /
                     </Text>
                   </Box>
-                  <Box
-                    style={{ width: '53px' }}
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                  >
-                    <Text color="label" size="14pt" weight="heavy">
-                      0
-                    </Text>
-                  </Box>
+                  {vendor === 'Trezor' ? (
+                    <Box
+                      style={{ width: '53px' }}
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                    >
+                      <Text color="label" size="14pt" weight="heavy">
+                        0
+                      </Text>
+                    </Box>
+                  ) : (
+                    <Box style={{ width: '53px', paddingLeft: '2px' }}>
+                      <Input
+                        value={newIndex}
+                        onChange={handleNewIndexChange}
+                        height="32px"
+                        textAlign="center"
+                        tabIndex={1}
+                        variant="bordered"
+                        style={{ width: '50px' }}
+                        innerRef={inputRef}
+                        placeholder="0"
+                      />
+                    </Box>
+                  )}
                   <Box
                     alignItems="center"
                     justifyContent="center"
@@ -241,19 +265,32 @@ export const AddByIndexSheet = ({
                       /
                     </Text>
                   </Box>
-                  <Box style={{ width: '53px' }}>
-                    <Input
-                      value={newIndex}
-                      onChange={handleNewIndexChange}
-                      height="32px"
-                      textAlign="center"
-                      tabIndex={1}
-                      variant="bordered"
-                      style={{ width: '50px' }}
-                      innerRef={inputRef}
-                      placeholder="0"
-                    />
-                  </Box>
+                  {vendor === 'Ledger' ? (
+                    <Box
+                      style={{ width: '53px' }}
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                    >
+                      <Text color="label" size="14pt" weight="heavy">
+                        0
+                      </Text>
+                    </Box>
+                  ) : (
+                    <Box style={{ width: '53px' }}>
+                      <Input
+                        value={newIndex}
+                        onChange={handleNewIndexChange}
+                        height="32px"
+                        textAlign="center"
+                        tabIndex={1}
+                        variant="bordered"
+                        style={{ width: '50px' }}
+                        innerRef={inputRef}
+                        placeholder="0"
+                      />
+                    </Box>
+                  )}
                 </Inline>
               </Box>
               {newAccount && (
