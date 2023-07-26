@@ -1,4 +1,4 @@
-// these are all reported separately so they must be optional
+// these can be reported separately so they must be optional
 export interface UserProperties {
   ownedAccounts?: number;
   hardwareAccounts?: number;
