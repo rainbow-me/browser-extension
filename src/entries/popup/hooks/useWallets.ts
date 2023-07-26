@@ -6,7 +6,7 @@ import { analytics } from '~/analytics';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { KeychainType } from '~/core/types/keychainTypes';
 
-import { getWallets } from '../handlers/wallet';
+import { getStatus, getWallets } from '../handlers/wallet';
 
 export interface AddressAndType {
   address: Address;
@@ -30,6 +30,9 @@ const fetchWallets = async () => {
 };
 
 const trackWalletTypes = async () => {
+  const { unlocked, ready } = await getStatus();
+  if (!unlocked || !ready) return;
+
   const wallets = await getWallets();
 
   const ownedAccounts = wallets
