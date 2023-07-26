@@ -15,7 +15,7 @@ export function WatchWallet() {
     setTimeout(
       () =>
         navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } }),
-      0,
+      1,
     );
   }, [navigate]);
 

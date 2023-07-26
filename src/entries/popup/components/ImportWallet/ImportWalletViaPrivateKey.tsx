@@ -126,7 +126,7 @@ const ImportWalletViaPrivateKey = () => {
                 state: { backTo: ROUTES.WELCOME },
               });
             else navigate(ROUTES.HOME);
-          }, 0);
+          }, 1);
 
           setIsAddingWallets(false);
           removeImportWalletSecrets();
