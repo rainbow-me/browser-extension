@@ -205,11 +205,6 @@
         "stream": true
       }
     },
-    "browserify>concat-stream>buffer-from": {
-      "globals": {
-        "Buffer": true
-      }
-    },
     "browserify>crypto-browserify>randombytes": {
       "builtin": {
         "crypto.randomBytes": true
@@ -244,21 +239,12 @@
         "path.sep": true
       },
       "packages": {
-        "copy-webpack-plugin>glob-parent": true,
         "copy-webpack-plugin>globby": true,
         "copy-webpack-plugin>schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
+        "eslint>glob-parent": true,
         "globby>fast-glob": true,
         "lint-staged>normalize-path": true
-      }
-    },
-    "copy-webpack-plugin>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "copy-webpack-plugin>globby": {
@@ -299,9 +285,9 @@
         "console": true
       },
       "packages": {
-        "copy-webpack-plugin>schema-utils>ajv>json-schema-traverse": true,
         "eslint>ajv>uri-js": true,
-        "eslint>fast-deep-equal": true
+        "eslint>fast-deep-equal": true,
+        "web-ext>addons-linter>ajv>json-schema-traverse": true
       }
     },
     "copy-webpack-plugin>schema-utils>ajv-formats": {
@@ -609,6 +595,15 @@
         "util.promisify": true
       }
     },
+    "eslint>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
+      }
+    },
     "eslint>is-glob": {
       "packages": {
         "eslint>is-glob>is-extglob": true
@@ -699,8 +694,8 @@
       "packages": {
         "globby>fast-glob>@nodelib/fs.stat": true,
         "globby>fast-glob>@nodelib/fs.walk": true,
+        "globby>fast-glob>glob-parent": true,
         "globby>merge2": true,
-        "msw>chokidar>glob-parent": true,
         "ts-loader>micromatch": true
       }
     },
@@ -758,6 +753,15 @@
     "globby>fast-glob>@nodelib/fs.walk>fastq": {
       "packages": {
         "globby>fast-glob>@nodelib/fs.walk>fastq>reusify": true
+      }
+    },
+    "globby>fast-glob>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
       }
     },
     "globby>ignore": {
@@ -886,33 +890,33 @@
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select": {
       "packages": {
-        "html-webpack-plugin>pretty-error>renderkid>css-select>boolbase": true,
-        "html-webpack-plugin>pretty-error>renderkid>css-select>css-what": true,
         "html-webpack-plugin>pretty-error>renderkid>css-select>domutils": true,
-        "html-webpack-plugin>pretty-error>renderkid>css-select>nth-check": true
+        "html-webpack-plugin>pretty-error>renderkid>css-select>nth-check": true,
+        "web-ext>addons-linter>cheerio>cheerio-select>boolbase": true,
+        "web-ext>addons-linter>cheerio>cheerio-select>css-what": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>domhandler": {
       "packages": {
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domelementtype": true
+        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>domutils": {
       "packages": {
         "html-webpack-plugin>pretty-error>renderkid>css-select>domhandler": true,
         "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer": true,
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domelementtype": true
+        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer": {
       "packages": {
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domelementtype": true,
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": true
+        "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer>entities": true,
+        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>nth-check": {
       "packages": {
-        "html-webpack-plugin>pretty-error>renderkid>css-select>boolbase": true
+        "web-ext>addons-linter>cheerio>cheerio-select>boolbase": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>dom-converter": {
@@ -931,32 +935,33 @@
     },
     "html-webpack-plugin>pretty-error>renderkid>htmlparser2": {
       "packages": {
-        "html-webpack-plugin>pretty-error>renderkid>css-select>domhandler": true,
-        "html-webpack-plugin>pretty-error>renderkid>css-select>domutils": true,
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domelementtype": true,
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": true
+        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domhandler": true,
+        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils": true,
+        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": true,
+        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
+      }
+    },
+    "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domhandler": {
+      "packages": {
+        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
+      }
+    },
+    "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils": {
+      "packages": {
+        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domhandler": true,
+        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils>dom-serializer": true,
+        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
+      }
+    },
+    "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils>dom-serializer": {
+      "packages": {
+        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": true,
+        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
     "jest>@jest/core>jest-runner>p-limit": {
       "packages": {
         "jest>@jest/core>jest-runner>p-limit>yocto-queue": true
-      }
-    },
-    "jest>@jest/core>jest-runner>source-map-support": {
-      "builtin": {
-        "fs": true,
-        "module": true,
-        "path.dirname": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "XMLHttpRequest": true,
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "browserify>concat-stream>buffer-from": true,
-        "webpack-extension-reloader>@types/webpack>source-map": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/generator": {
@@ -1026,8 +1031,8 @@
       },
       "packages": {
         "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true,
-        "patch-package>chalk>escape-string-regexp": true
+        "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
+        "lavamoat>@babel/highlight>chalk>supports-color": true
       }
     },
     "lavamoat>@babel/highlight>chalk>ansi-styles": {
@@ -1134,7 +1139,7 @@
       "packages": {
         "eslint>ajv>uri-js": true,
         "eslint>fast-deep-equal": true,
-        "mini-css-extract-plugin>schema-utils>ajv>json-schema-traverse": true
+        "web-ext>addons-linter>ajv>json-schema-traverse": true
       }
     },
     "mini-css-extract-plugin>schema-utils>ajv-formats": {
@@ -1195,49 +1200,6 @@
     "msw>chokidar>braces>fill-range>to-regex-range": {
       "packages": {
         "msw>chokidar>braces>fill-range>to-regex-range>is-number": true
-      }
-    },
-    "msw>chokidar>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
-      }
-    },
-    "selenium-webdriver>ws>bufferutil": {
-      "globals": {
-        "__dirname": true
-      },
-      "native": true,
-      "packages": {
-        "selenium-webdriver>ws>bufferutil>node-gyp-build": true
-      }
-    },
-    "selenium-webdriver>ws>bufferutil>node-gyp-build": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readdirSync": true,
-        "os.arch": true,
-        "os.platform": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "__non_webpack_require__": true,
-        "__webpack_require__": true,
-        "process": true
-      }
-    },
-    "selenium-webdriver>ws>utf-8-validate": {
-      "globals": {
-        "__dirname": true
-      },
-      "native": true,
-      "packages": {
-        "selenium-webdriver>ws>bufferutil>node-gyp-build": true
       }
     },
     "semver": {
@@ -1331,7 +1293,7 @@
         "toolsVersion": "write"
       },
       "packages": {
-        "jest>@jest/core>jest-runner>source-map-support": true
+        "web-ext>source-map-support": true
       }
     },
     "vitest>acorn-walk": {
@@ -1388,6 +1350,61 @@
         "Buffer": true,
         "TextDecoder": true,
         "define": true
+      }
+    },
+    "web-ext>source-map-support": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "XMLHttpRequest": true,
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "web-ext>source-map-support>buffer-from": true,
+        "web-ext>source-map-support>source-map": true
+      }
+    },
+    "web-ext>source-map-support>buffer-from": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "web-ext>ws>bufferutil": {
+      "globals": {
+        "__dirname": true
+      },
+      "native": true,
+      "packages": {
+        "web-ext>ws>bufferutil>node-gyp-build": true
+      }
+    },
+    "web-ext>ws>bufferutil>node-gyp-build": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readdirSync": true,
+        "os.arch": true,
+        "os.platform": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "__non_webpack_require__": true,
+        "__webpack_require__": true,
+        "process": true
+      }
+    },
+    "web-ext>ws>utf-8-validate": {
+      "globals": {
+        "__dirname": true
+      },
+      "native": true,
+      "packages": {
+        "web-ext>ws>bufferutil>node-gyp-build": true
       }
     },
     "webpack": {
@@ -1619,8 +1636,8 @@
         "setTimeout": true
       },
       "packages": {
-        "selenium-webdriver>ws>bufferutil": true,
-        "selenium-webdriver>ws>utf-8-validate": true
+        "web-ext>ws>bufferutil": true,
+        "web-ext>ws>utf-8-validate": true
       }
     },
     "webpack-cli>@discoveryjs/json-ext": {

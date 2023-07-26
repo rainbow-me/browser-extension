@@ -135,8 +135,8 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "word-wrap": "1.2.4",
     "wagmi": "0.12.18",
+    "word-wrap": "1.2.4",
     "zustand": "4.1.2"
   },
   "devDependencies": {
@@ -200,6 +200,7 @@
     "ts-loader": "9.4.1",
     "typescript": "4.9.4",
     "vitest": "0.33.0",
+    "web-ext": "7.6.2",
     "webpack": "5.76.0",
     "webpack-bundle-analyzer": "4.8.0",
     "webpack-cli": "4.10.0",
@@ -268,7 +269,12 @@
       "@ledgerhq/hw-app-eth>@ledgerhq/domain-service>eip55>keccak": false,
       "@rainbow-me/swaps>ethereumjs-util>ethereum-cryptography>keccak": false,
       "@rainbow-me/swaps>ethereumjs-util>ethereum-cryptography>secp256k1": false,
-      "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>@solana/web3.js>bigint-buffer": false
+      "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>@solana/web3.js>bigint-buffer": false,
+      "web-ext>bunyan>dtrace-provider": false,
+      "web-ext>fx-runner>spawn-sync": false,
+      "web-ext>sign-addon>core-js": false,
+      "web-ext>ws>bufferutil": false,
+      "web-ext>ws>utf-8-validate": false
     }
   },
   "lint-staged": {

@@ -91,5 +91,11 @@
       },
       "description": "Open the Rainbow Wallet extension"
     }
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "bx@rainbow.me",
+      "strict_min_version": "115.0"
+    }
   }
 }
