@@ -1,4 +1,4 @@
-import { mergeConfig } from 'vite';
+import { UserConfig, mergeConfig } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 import viteConfig from '../vitest.config';
@@ -8,6 +8,7 @@ export default mergeConfig(
   defineConfig({
     test: {
       threads: false,
+      bail: 1,
       sequence: {
         shuffle: false,
         sequencer: class Sequencer {
@@ -20,5 +21,5 @@ export default mergeConfig(
         },
       },
     },
-  }),
+  }) as UserConfig,
 );
