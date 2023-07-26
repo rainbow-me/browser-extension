@@ -11,7 +11,7 @@ jobs:
   # INSTALL DEPS
   install:
     runs-on: ubuntu-latest
-    concurrency: 
+    concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
@@ -25,13 +25,13 @@ jobs:
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Zip node_modules
-        run: tar czvf node_modules.tar.gz node_modules/
+        run: tar czf node_modules.tar.gz node_modules/
       - name: Upload deps artifacts
         uses: actions/upload-artifact@v3
         with:
           name: node_modules.tar.gz
           path: node_modules.tar.gz
-      
+
   # BUILD THE EXTENSION
   build:
     runs-on: ubuntu-latest
@@ -41,13 +41,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.20.0"
-          cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
+        run: tar xzf node_modules.tar.gz
       - uses: actions/checkout@v3
         with:
             repository: 'rainbow-me/browser-extension-env'
@@ -61,7 +60,7 @@ jobs:
       - name: Graphql Setup
         run: yarn graphql-setup
       - name: Build the extension
-        run: yarn build:webpack      
+        run: yarn build:webpack
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -74,7 +73,7 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 3
+      VITEST_SEGFAULT_RETRY: 4
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/testSetup
@@ -84,7 +83,7 @@ jobs:
         run: |
           export BROWSER=chrome
           export OS=linux
-          export CHROMIUM_BIN=$(which chrome)
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           yarn vitest:parallel --retry=5
   chrome-e2e-swap:
     runs-on: beefy-runner-bx
@@ -106,7 +105,7 @@ jobs:
           command: |
             export BROWSER=chrome
             export OS=linux
-            export CHROMIUM_BIN=$(which chrome)
+            export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:swap
   chrome-e2e-send:
     runs-on: beefy-runner-bx
@@ -124,7 +123,7 @@ jobs:
         run: |
             export BROWSER=chrome
             export OS=linux
-            export CHROMIUM_BIN=$(which chrome)
+            export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:send --retry=5
   chrome-e2e-dappInteractions:
     runs-on: beefy-runner-bx
@@ -142,7 +141,7 @@ jobs:
         run: |
             export BROWSER=chrome
             export OS=linux
-            export CHROMIUM_BIN=$(which chrome)
+            export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:dappInteractions --retry=5
   # BRAVE TESTS
   # brave-e2e:
@@ -157,7 +156,6 @@ jobs:
   #     - uses: actions/setup-node@v3
   #       with:
   #         node-version: "16.20.0"
-  #         cache: 'yarn'
   #     - name: Download deps cache artifacts
   #       uses: actions/download-artifact@v3
   #       with:
@@ -211,13 +209,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.20.0"
-          cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
+        run: tar xzf node_modules.tar.gz
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
@@ -254,13 +251,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.20.0"
-          cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: tar xzvf node_modules.tar.gz
+        run: tar xzf node_modules.tar.gz
       - name: DS Setup
         run: yarn ds:install
       - name: Graphql Setup

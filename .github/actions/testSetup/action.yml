@@ -10,17 +10,13 @@ runs:
   - uses: actions/setup-node@v3
     with:
        node-version: "16.20.0"
-       cache: 'yarn'
   - name: Download deps cache artifacts
     uses: actions/download-artifact@v3
     with:
       name: node_modules.tar.gz
   - name: Unzip node_modules
     shell: 'bash'
-    run: tar xzvf node_modules.tar.gz
-  - name: Install latest chromedriver
-    shell: 'bash'
-    run: yarn upgrade chromedriver --latest --chromedriver_version=LATEST && yarn setup
+    run: tar xzf node_modules.tar.gz
   - name: Download build artifacts
     uses: actions/download-artifact@v3
     with:
@@ -33,9 +29,8 @@ runs:
        # start xvfb in the background
        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
   - name: Install chrome
-    uses: browser-actions/setup-chrome@latest
-    with:
-           chrome-version: 'stable'
+    shell: 'bash'
+    run: npx @puppeteer/browsers install chrome@stable
   - name: Install Anvil
     uses: foundry-rs/foundry-toolchain@v1
     with:
@@ -43,7 +38,7 @@ runs:
   - uses: actions/checkout@v3
     with:
          repository: 'rainbow-me/browser-extension-env'
-         token: ${{ inputs.gh-access-token }} 
+         token: ${{ inputs.gh-access-token }}
          path: tmp
   - name: Copy dotenv
     shell: 'bash'
