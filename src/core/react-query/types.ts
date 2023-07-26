@@ -42,8 +42,14 @@ export type QueryConfig<
   | 'onSuccess'
 >;
 
-export type InfiniteQueryConfig<TQueryFnData, TError> = Pick<
-  UseInfiniteQueryOptions<TQueryFnData, TError>,
+export type InfiniteQueryConfig<TQueryFnData, TError, TData> = Pick<
+  UseInfiniteQueryOptions<
+    TQueryFnData,
+    TError,
+    TData,
+    TQueryFnData,
+    Array<string | { [key: string]: any }>
+  >,
   | 'cacheTime'
   | 'enabled'
   | 'refetchInterval'

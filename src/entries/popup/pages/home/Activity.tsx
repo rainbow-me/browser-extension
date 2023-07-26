@@ -34,7 +34,6 @@ export function Activity() {
   const {
     isInitialLoading,
     transactions,
-    virtualItems,
     virtualizer: activityRowVirtualizer,
   } = useInfiniteTransactionList({
     getScrollElement: () => containerRef.current,
@@ -47,7 +46,7 @@ export function Activity() {
     return <ActivitySkeleton />;
   }
 
-  if (!virtualItems.length) {
+  if (!transactions.length) {
     return (
       <Box
         width="full"
@@ -81,8 +80,7 @@ export function Activity() {
   }
 
   let labelsCount = 0;
-  console.log('TOTAL SIZE: ', virtualItems.length);
-
+  console.log('LABELS COUNT: ', labelsCount);
   return (
     <>
       <Box
@@ -91,7 +89,7 @@ export function Activity() {
         style={{
           overflow: 'auto',
           // prevent coin icon shadow from clipping in empty space when list is small
-          paddingBottom: virtualItems.length > 6 ? 8 : 60,
+          paddingBottom: transactions.length > 6 ? 8 : 60,
         }}
       >
         <Box
@@ -101,17 +99,20 @@ export function Activity() {
             position: 'relative',
           }}
         >
-          {virtualItems.map((virtualItem) => {
+          {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { index, key, start, size } = virtualItem;
             const rowData = transactions[index];
             const isLabel = typeof rowData === 'string';
-            if (isLabel) labelsCount += 1;
+            if (isLabel) {
+              console.log('IS LABEL: ', labelsCount);
+              labelsCount += 1;
+            }
             return (
               <Box
                 key={key}
                 data-index={index}
                 as={motion.div}
-                layoutId={!isLabel ? `list-${index - labelsCount}` : undefined}
+                // layoutId={!isLabel ? `list-${index - labelsCount}` : undefined}
                 layoutScroll
                 layout="position"
                 initial={{ opacity: isLabel ? 0 : 1 }}

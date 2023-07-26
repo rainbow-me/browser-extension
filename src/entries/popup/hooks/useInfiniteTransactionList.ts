@@ -1,17 +1,23 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useEffect, useMemo } from 'react';
 
+import { queryClient } from '~/core/react-query';
 import { selectTransactionsByDate } from '~/core/resources/_selectors';
-import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
+import {
+  consolidatedTransactionsQueryKey,
+  useConsolidatedTransactions,
+} from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 
-interface UseInfiniteTransactionListProps {
+const PAGES_TO_CACHE_LIMIT = 2;
+
+interface UseInfiniteTransactionListParams {
   getScrollElement: () => HTMLDivElement | null;
 }
 
 export default function ({
   getScrollElement,
-}: UseInfiniteTransactionListProps) {
+}: UseInfiniteTransactionListParams) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const {
@@ -26,34 +32,42 @@ export default function ({
   } = useConsolidatedTransactions({ address, currency });
   //   const cutoff = data?.cutoff;
   const pages = data?.pages;
-  const transactionList = useMemo(
+  const transactions = useMemo(
     () =>
       Object.entries(
         selectTransactionsByDate(pages?.flatMap((p) => p.transactions) || []),
       ).flat(2),
     [pages],
   );
-  const infiniteTransactionVirtualizer = useVirtualizer({
-    count: transactionList?.length,
+
+  const infiniteRowVirtualizer = useVirtualizer({
+    count: transactions?.length,
     getScrollElement,
-    estimateSize: (i) => (typeof transactionList[i] === 'string' ? 34 : 52),
+    estimateSize: (i) => (typeof transactions[i] === 'string' ? 34 : 52),
     overscan: 5,
   });
-
-  const items = useMemo(
-    () => infiniteTransactionVirtualizer.getVirtualItems(),
-    [infiniteTransactionVirtualizer],
-  );
+  const rows = infiniteRowVirtualizer.getVirtualItems();
 
   useEffect(() => {
-    const [lastRow] = items.reverse();
+    return () => {
+      if (data && data?.pages) {
+        queryClient.setQueryData(
+          consolidatedTransactionsQueryKey({ address, currency }),
+          {
+            ...data,
+            pages: [...data.pages].slice(0, PAGES_TO_CACHE_LIMIT),
+          },
+        );
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    if (!lastRow) {
-      return;
-    }
-
+  useEffect(() => {
+    const [lastRow] = [...rows].reverse();
+    if (!lastRow) return;
     if (
-      lastRow.index === transactionList.length - 1 &&
+      lastRow.index >= transactions.length - 1 &&
       hasNextPage &&
       !isFetching &&
       !isFetchingNextPage
@@ -65,16 +79,18 @@ export default function ({
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-    items,
-    transactionList.length,
+    transactions.length,
+    rows,
   ]);
 
   return {
     error,
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
     isInitialLoading,
     status,
-    transactions: transactionList,
-    virtualItems: infiniteTransactionVirtualizer.getVirtualItems(),
-    virtualizer: infiniteTransactionVirtualizer,
+    transactions,
+    virtualizer: infiniteRowVirtualizer,
   };
 }

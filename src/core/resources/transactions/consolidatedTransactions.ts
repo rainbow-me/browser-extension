@@ -18,6 +18,7 @@ import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
 const CONSOLIDATED_TRANSACTIONS_INTERVAL = 60000;
+const CONSOLIDATED_TRANSACTIONS_TIMEOUT = 20000;
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -25,7 +26,6 @@ const CONSOLIDATED_TRANSACTIONS_INTERVAL = 60000;
 export type ConsolidatedTransactionsArgs = {
   address?: string;
   currency: SupportedCurrencyKey;
-  transactionsLimit?: number;
 };
 
 // ///////////////////////////////////////////////
@@ -34,11 +34,10 @@ export type ConsolidatedTransactionsArgs = {
 export const consolidatedTransactionsQueryKey = ({
   address,
   currency,
-  transactionsLimit,
 }: ConsolidatedTransactionsArgs) =>
   createQueryKey(
     'consolidatedTransactions',
-    { address, currency, transactionsLimit },
+    { address, currency },
     { persisterVersion: 1 },
   );
 
@@ -52,7 +51,7 @@ type ConsolidatedTransactionsQueryKey = ReturnType<
 export async function fetchConsolidatedTransactions<
   TSelectData = ConsolidatedTransactionsResult,
 >(
-  { address, currency, transactionsLimit }: ConsolidatedTransactionsArgs,
+  { address, currency }: ConsolidatedTransactionsArgs,
   config: QueryConfig<
     ConsolidatedTransactionsResult,
     Error,
@@ -64,7 +63,6 @@ export async function fetchConsolidatedTransactions<
     consolidatedTransactionsQueryKey({
       address,
       currency,
-      transactionsLimit,
     }),
     consolidatedTransactionsQueryFunction,
     config,
@@ -81,7 +79,7 @@ type _QueryResult = {
 };
 
 async function consolidatedTransactionsQueryFunction({
-  queryKey: [{ address, currency, transactionsLimit }],
+  queryKey: [{ address, currency }],
   pageParam,
 }: QueryFunctionArgs<
   typeof consolidatedTransactionsQueryKey
@@ -92,10 +90,10 @@ async function consolidatedTransactionsQueryFunction({
       {
         params: {
           currency: currency.toLowerCase(),
-          limit: transactionsLimit?.toString() || '100',
           // passing empty value to pageParam breaks request
           ...(pageParam ? { pageCursor: pageParam } : {}),
         },
+        timeout: CONSOLIDATED_TRANSACTIONS_TIMEOUT,
       },
     );
     return {
@@ -107,18 +105,11 @@ async function consolidatedTransactionsQueryFunction({
       ),
     };
   } catch (e) {
-    const cache = queryClient.getQueryCache();
-    const cachedConsolidatedTransactions = cache.find(
-      consolidatedTransactionsQueryKey({
-        address,
-        currency,
-        transactionsLimit,
-      }),
-    )?.state?.data as _QueryResult;
+    // we don't bother with fetching cache and returning stale data here because we probably have previous page data already
     logger.error(new RainbowError('consolidatedTransactionsQueryFunction: '), {
       message: (e as Error)?.message,
     });
-    return cachedConsolidatedTransactions || { transactions: [] };
+    return { transactions: [] };
   }
 }
 
@@ -150,21 +141,27 @@ async function parseConsolidatedTransactions(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useConsolidatedTransactions(
-  { address, currency, transactionsLimit }: ConsolidatedTransactionsArgs,
-  config: InfiniteQueryConfig<ConsolidatedTransactionsResult, Error> = {},
+export function useConsolidatedTransactions<
+  TSelectData = ConsolidatedTransactionsResult,
+>(
+  { address, currency }: ConsolidatedTransactionsArgs,
+  config: InfiniteQueryConfig<
+    ConsolidatedTransactionsResult,
+    Error,
+    TSelectData
+  > = {},
 ) {
   return useInfiniteQuery(
     consolidatedTransactionsQueryKey({
       address,
       currency,
-      transactionsLimit,
     }),
     consolidatedTransactionsQueryFunction,
     {
       ...config,
       getNextPageParam: (lastPage) => lastPage?.nextPage,
       refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
+      retry: 3,
     },
   );
 }
