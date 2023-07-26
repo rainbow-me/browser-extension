@@ -17,15 +17,15 @@ const manifest = require('./static/manifest.json');
 const manifestFilePath = resolve(__dirname, './build/manifest.json');
 
 const optionalPlugins = [];
-if (process.env.ANALYZE_BUNDLE === 'true') {
-  optionalPlugins.push(
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      generateStatsFile: true,
-      openAnalyzer: true,
-    }),
-  );
-}
+// if (process.env.ANALYZE_BUNDLE === 'true') {
+optionalPlugins.push(
+  new BundleAnalyzerPlugin({
+    analyzerMode: 'static',
+    generateStatsFile: true,
+    openAnalyzer: true,
+  }),
+);
+// }
 
 const manifestOverride = manifest;
 manifestOverride.content_security_policy.extension_pages = `${
@@ -34,23 +34,11 @@ manifestOverride.content_security_policy.extension_pages = `${
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
-  optimization: {
-    runtimeChunk: 'single',
-    splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-        },
-      },
-    },
-  },
   entry: {
     background: './src/entries/background/index.ts',
     contentscript: './src/entries/content/index.ts',
-    popup: './src/entries/popup/index.ts',
     inpage: './src/entries/inpage/index.ts',
+    popup: './src/entries/popup/index.ts',
   },
   module: {
     rules: [

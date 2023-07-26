@@ -64,7 +64,9 @@
     "e2e:mac:chrome": "BROWSER=chrome OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:brave": "BROWSER=brave OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac": "yarn e2e:mac:chrome && yarn e2e:mac:brave",
-    "e2e": "yarn e2e:mac"
+    "e2e": "yarn e2e:mac",
+    "firefox:build": "node scripts/firefox-manifest.js",
+    "firefox:lint": "yarn web-ext lint --source-dir ./build"
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",

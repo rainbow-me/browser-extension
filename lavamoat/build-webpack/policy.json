@@ -493,7 +493,7 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true
+        "jest>@jest/core>@jest/transform>@jridgewell/trace-mapping": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
@@ -620,7 +620,7 @@
       },
       "packages": {
         "file-loader>loader-utils": true,
-        "webpack>schema-utils": true
+        "file-loader>schema-utils": true
       }
     },
     "file-loader>loader-utils": {
@@ -652,6 +652,12 @@
     "file-loader>loader-utils>json5": {
       "globals": {
         "console.warn": true
+      }
+    },
+    "file-loader>schema-utils": {
+      "packages": {
+        "eslint>ajv": true,
+        "webpack>schema-utils>ajv-keywords": true
       }
     },
     "globby>dir-glob": {
@@ -959,6 +965,15 @@
         "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
+    "jest>@jest/core>@jest/transform>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
     "jest>@jest/core>jest-runner>p-limit": {
       "packages": {
         "jest>@jest/core>jest-runner>p-limit>yocto-queue": true
@@ -979,8 +994,8 @@
         "define": true
       },
       "packages": {
+        "jest>@jest/core>@jest/transform>@jridgewell/trace-mapping": true,
         "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
@@ -1884,6 +1899,9 @@
       }
     },
     "webpack>schema-utils": {
+      "globals": {
+        "process": true
+      },
       "packages": {
         "eslint>ajv": true,
         "webpack>schema-utils>ajv-keywords": true
@@ -1915,12 +1933,12 @@
         "process.stdout.write": true
       },
       "packages": {
-        "copy-webpack-plugin>serialize-javascript": true,
         "esbuild": true,
-        "vitest>vite>terser": true,
-        "webpack>schema-utils": true,
+        "file-loader>schema-utils": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,
-        "webpack>terser-webpack-plugin>jest-worker": true
+        "webpack>terser-webpack-plugin>jest-worker": true,
+        "webpack>terser-webpack-plugin>serialize-javascript": true,
+        "webpack>terser-webpack-plugin>terser": true
       }
     },
     "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": {
@@ -1975,6 +1993,42 @@
       },
       "packages": {
         "msw>chalk>supports-color>has-flag": true
+      }
+    },
+    "webpack>terser-webpack-plugin>serialize-javascript": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "browserify>crypto-browserify>randombytes": true
+      }
+    },
+    "webpack>terser-webpack-plugin>terser": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console.log": true,
+        "console.warn": true,
+        "define": true,
+        "process": true
+      },
+      "packages": {
+        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true,
+        "webpack>terser-webpack-plugin>terser>acorn": true
+      }
+    },
+    "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "webpack>terser-webpack-plugin>terser>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
       }
     },
     "webpack>watchpack": {
