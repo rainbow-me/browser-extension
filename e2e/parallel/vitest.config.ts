@@ -7,6 +7,7 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
+      bail: 1,
       threads: false,
     },
   }) as UserConfig,

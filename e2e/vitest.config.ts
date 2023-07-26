@@ -7,5 +7,6 @@ export default defineConfig({
     testTimeout: 90_000,
     watch: false,
     retry: 2,
+    bail: 1,
   },
 }) as UserConfig;
