@@ -787,7 +787,7 @@ export const strokeWeights = {
 };
 export type StrokeWeight = keyof typeof strokeWeights;
 
-function selectSymbolNames<SymbolName extends SFSymbolName[]>(
+function selectSymbolNames<SymbolName extends readonly SFSymbolName[]>(
   ...symbolNames: SymbolName
 ): SymbolName {
   return symbolNames;
