@@ -164,6 +164,7 @@ export const CreateWalletPrompt = ({
                     <Rows>
                       <Row>
                         <Input
+                          testId={'wallet-name-input'}
                           placeholder={i18n.t(
                             'create_wallet_prompt.input_placeholder',
                           )}

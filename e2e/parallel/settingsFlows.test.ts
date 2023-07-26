@@ -6,17 +6,16 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
-  fillPrivateKey,
-  findElementByIdAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
   getExtensionIdByName,
-  goToPopup,
+  getNumberOfWallets,
   importWalletFlow,
   initDriverWithOptions,
   navigateToSettingsPrivacy,
+  passSecretQuiz,
   querySelector,
   toggleStatus,
   typeOnTextInput,
@@ -51,36 +50,13 @@ describe('Navigate Settings and its flows', () => {
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
-  afterAll(async () => driver.quit());
+  afterAll(async () => await driver.quit());
 
   it('should be able import a wallet via seed', async () => {
+    // total wallets: 1
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to add a new wallet via pk', async () => {
-    await goToPopup(driver, rootURL, '#/home');
-    await findElementByIdAndClick({
-      id: 'header-account-name-shuffle',
-      driver,
-    });
-    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
-    await findElementByTestIdAndClick({
-      id: 'import-wallets-button',
-      driver,
-    });
-
-    await findElementByTestIdAndClick({
-      id: 'import-via-pkey-option',
-      driver,
-    });
-
-    await fillPrivateKey(driver, TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET);
-
-    await findElementByTestIdAndClick({
-      id: 'import-wallets-button',
-      driver,
-    });
-  });
   it('should be able to hide asset balances', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
     // find toggle status and expect to be false
@@ -173,7 +149,11 @@ describe('Navigate Settings and its flows', () => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
     await findElementByTextAndClick(driver, 'Wallets & Keys');
-    await findElementByTestIdAndClick({ id: 'wallet-group-2', driver });
+    await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
+    await findElementByTestIdAndClick({
+      id: `wallet-${TEST_VARIABLES.EMPTY_WALLET.ADDRESS}`,
+      driver,
+    });
     await findElementByTextAndClick(driver, 'View Private Key');
     await findElementByTextAndClick(driver, 'Show Private Key');
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
@@ -182,7 +162,7 @@ describe('Navigate Settings and its flows', () => {
     // check words exist and match expected seed word
     const pkey = await findElementByTestId({ id: 'private-key-hash', driver });
 
-    expect(await pkey.getText()).toBe(TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET);
+    expect(await pkey.getText()).toBe(TEST_VARIABLES.EMPTY_WALLET.PK);
 
     await findElementByTextAndClick(driver, 'saved this');
 
@@ -195,9 +175,8 @@ describe('Navigate Settings and its flows', () => {
     await navigateToSettingsPrivacy(driver, rootURL);
     await findElementByTextAndClick(driver, 'Wallets & Keys');
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
-    await driver.sleep(100000);
     await findElementByTestIdAndClick({
-      id: `wallet-${TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS}`,
+      id: `wallet-${TEST_VARIABLES.EMPTY_WALLET.ADDRESS}`,
       driver,
     });
     await findElementByTextAndClick(driver, 'Rename Wallet');
@@ -219,63 +198,50 @@ describe('Navigate Settings and its flows', () => {
 
     const copiedText = await findElementByText(driver, 'Address Copied');
     expect(copiedText).toBeTruthy;
+
+    // wait for copy popup to go away
+    await delayTime('very-long');
+  });
+
+  it('should be able to create a new wallet from a new seed', async () => {
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'create-a-new-wallet', driver });
+    await findElementByTestIdAndClick({ id: 'new-wallet-group', driver });
+    await findElementByTestIdAndClick({ id: 'show-phrase', driver });
+    await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+    await findElementByTextAndClick(driver, 'Continue');
+
+    await passSecretQuiz(driver);
+
+    await typeOnTextInput({
+      id: 'wallet-name-input',
+      text: 'new seed wallet',
+      driver,
+    });
+    await navigateToSettingsPrivacy(driver, rootURL);
+    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    expect(await getNumberOfWallets(driver)).toBe(2);
   });
 
   it('should be able to delete a wallet', async () => {
-    async function getNumberOfWallets() {
-      // go back and find the number of wallets currently imported
-      await findElementByTestIdAndClick({
-        id: 'navbar-button-with-back',
-        driver,
-      });
-      const numOfWallets = await findElementByTestId({
-        id: 'number-of-wallets',
-        driver,
-      });
-      // get the text from the element + store the num in a variable, return the num
-      const numberText = await numOfWallets.getText();
-      const wallets = numberText.match(RegExp);
-      return Number(wallets[0]);
-    }
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
 
-    const numOfWallets = await getNumberOfWallets();
+    const numOfWallets = await getNumberOfWallets(driver);
 
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     await findElementByTextAndClick(driver, 'test name');
     await findElementByTextAndClick(driver, 'Delete Wallet');
     await findElementByTestIdAndClick({ id: 'remove-button', driver });
 
-    const numOfWalletsAfterDeletion = await getNumberOfWallets();
+    const numOfWalletsAfterDeletion = await getNumberOfWallets(driver);
 
     // expect the current # of wallets to be the previous number + 1
     expect(numOfWalletsAfterDeletion).toBe(numOfWallets - 1);
-  });
-
-  it.skip('should be able to create a new wallet from a new seed', async () => {
-    async function getWordFromSeed(id) {
-      const el = await findElementByTestId({ id: id, driver });
-      const word = await el.getText();
-      return word;
-    }
-    await findElementByTextAndClick(driver, 'New Secret Phrase & Wallet');
-    await findElementByTextAndClick(driver, 'Show Recovery Phrase');
-    await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await findElementByTextAndClick(driver, 'Continue');
-    const word4 = await getWordFromSeed('seed_word_4');
-    console.log(word4);
-    const word8 = await getWordFromSeed('seed_word_8');
-    console.log(word8);
-    const word12 = await getWordFromSeed('seed_word_12');
-    console.log(word12);
-    await findElementByTextAndClick(driver, 'saved these words');
-    await findElementByTextAndClick(driver, word4);
-    await findElementByTextAndClick(driver, word8);
-    await findElementByTextAndClick(driver, word12);
-    await findElementByTestIdAndClick({
-      id: 'navbar-button-with-back',
-      driver,
-    });
-    const wallet2 = await findElementByTestId({ id: 'wallet-group-3', driver });
-    expect(wallet2).toBeTruthy();
   });
 });

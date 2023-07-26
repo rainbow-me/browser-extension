@@ -124,11 +124,15 @@ export async function getExtensionIdByName(driver, extensionName) {
 // search functions
 
 export async function querySelector(driver, selector) {
-  const el = await driver.wait(
-    until.elementLocated(By.css(selector)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  try {
+    const element = await driver.wait(
+      until.elementLocated(By.css(selector)),
+      waitUntilTime,
+    );
+    return await driver.wait(until.elementIsVisible(element), waitUntilTime);
+  } catch (error) {
+    throw new Error(`Timeout waiting for selector: ${selector}`);
+  }
 }
 
 export async function findElementByText(driver, text) {
@@ -231,6 +235,27 @@ export const untilIsClickable = (locator: Locator) =>
   });
 
 // various functions and flows
+
+export async function getNumberOfWallets(driver) {
+  let numOfWallets = 0;
+
+  for (let i = 1; ; i++) {
+    try {
+      const el = await driver.wait(
+        until.elementLocated(By.css(`[data-testid="wallet-group-${i}"]`)),
+        5000,
+      );
+      await driver.wait(until.elementIsVisible(el), 5000);
+
+      numOfWallets += 1;
+    } catch (err) {
+      // Element not found, break out of loop
+      break;
+    }
+  }
+
+  return numOfWallets;
+}
 
 export async function navigateToSettingsPrivacy(driver, rootURL) {
   await goToPopup(driver, rootURL, '#/home');

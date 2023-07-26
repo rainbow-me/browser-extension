@@ -136,6 +136,7 @@ export function WalletsAndKeys() {
           })}
           <Menu>
             <MenuItem
+              testId={'create-a-new-wallet'}
               first
               last
               leftComponent={
