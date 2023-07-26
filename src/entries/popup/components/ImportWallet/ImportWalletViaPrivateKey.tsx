@@ -1,7 +1,7 @@
 import { isAddress } from '@ethersproject/address';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
-import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -117,11 +117,17 @@ const ImportWalletViaPrivateKey = () => {
           )) as Address;
           setCurrentAddress(address);
           setIsAddingWallets(false);
-          onboarding
-            ? navigate(ROUTES.CREATE_PASSWORD, {
+
+          // workaround for a deeper issue where the keychain status
+          // didn't yet updated or synced in the same tick
+          setTimeout(() => {
+            if (onboarding)
+              navigate(ROUTES.CREATE_PASSWORD, {
                 state: { backTo: ROUTES.WELCOME },
-              })
-            : navigate(ROUTES.HOME);
+              });
+            else navigate(ROUTES.HOME);
+          }, 0);
+
           setIsAddingWallets(false);
           removeImportWalletSecrets();
           return;
