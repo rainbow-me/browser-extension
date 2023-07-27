@@ -296,6 +296,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
 
   it('should be able to delete a wallet', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
+    await findElementByTextAndClick(driver, 'Wallets & Keys');
     const numOfWallets = await getNumberOfWallets(driver, 'wallet-group-');
 
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
