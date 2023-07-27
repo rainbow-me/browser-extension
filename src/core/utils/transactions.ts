@@ -4,6 +4,7 @@ import { capitalize, isString } from 'lodash';
 import { Address } from 'wagmi';
 
 import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
+import { WETH_MAINNET_ASSET } from '~/test/utils';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
@@ -697,6 +698,24 @@ export function getTokenBlockExplorerUrl({
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
   return `http://${blockExplorerHost}/token/${address}`;
 }
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+export const getTokenBlockExplorer = ({
+  address,
+  chainId,
+}: {
+  address: Address | typeof ETH_ADDRESS;
+  chainId: ChainId;
+}) => {
+  let _address = address;
+  if (_address === ETH_ADDRESS) _address = WETH_MAINNET_ASSET.address;
+  return {
+    url: getTokenBlockExplorerUrl({ address: _address, chainId }),
+    name: capitalize(
+      getBlockExplorerHostForChain(chainId).split('.').at?.(-2) || 'Explorer',
+    ),
+  };
+};
 
 const flashbotsApi = createHttpClient({
   baseUrl: 'https://protect.flashbots.net',

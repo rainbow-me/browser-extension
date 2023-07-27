@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-import { To, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Navigate, To, useParams } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
@@ -12,13 +12,16 @@ import { useFavoritesStore } from '~/core/state/favorites';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedAddressAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { truncateAddress } from '~/core/utils/address';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import {
   Box,
   Button,
   ButtonSymbol,
   Inline,
   Separator,
+  Stack,
   Symbol,
   Text,
   TextOverflow,
@@ -29,7 +32,14 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 import { Asterisks } from '~/entries/popup/components/Asterisks/Asterisks';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
@@ -121,22 +131,22 @@ const usePriceChart = ({
   });
 };
 
-function Chart({ asset }: { asset: ParsedAddressAsset }) {
+function Chart({ token }: { token: ParsedAddressAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
   const [date, setDate] = useState(new Date());
 
   const { data } = usePriceChart({
-    address: asset.address,
-    chainId: asset.chainId,
+    address: token.address,
+    chainId: token.chainId,
     time: selectedTime,
   });
 
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <TokenPrice token={asset} />
+        <TokenPrice token={token} />
         <PriceChange
-          changePercentage={asset.price?.relative_change_24h}
+          changePercentage={token.price?.relative_change_24h}
           date={date}
         />
       </Box>
@@ -264,6 +274,7 @@ function NetworkBanner({
   tokenSymbol: string;
   chainId: ChainId;
 }) {
+  if (chainId === ChainId.mainnet) return null;
   return (
     <Box
       display="flex"
@@ -338,19 +349,99 @@ function FavoriteButton({ token }: { token: ParsedAddressAsset }) {
   );
 }
 
+export const getCoingeckoUrl = ({
+  address,
+  mainnetAddress,
+}: {
+  address: Address | typeof ETH_ADDRESS;
+  mainnetAddress?: Address;
+}) => {
+  if ([mainnetAddress, address].includes(ETH_ADDRESS))
+    return `https://www.coingecko.com/en/coins/ethereum`;
+  return `https://www.coingecko.com/en/coins/${mainnetAddress || address}`;
+};
+
+function MoreOptions({ token }: { token: ParsedAddressAsset }) {
+  const explorer = getTokenBlockExplorer(token);
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div>
+          <ButtonSymbol
+            symbol="ellipsis.circle"
+            height="32px"
+            variant="transparentHover"
+            color="labelSecondary"
+          />
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <AccentColorProviderWrapper
+          color={token.colors?.primary || token.colors?.fallback}
+        >
+          <DropdownMenuItem
+            symbolLeft="doc.on.doc.fill"
+            onSelect={() => {
+              navigator.clipboard.writeText(token.address);
+              triggerToast({
+                title: i18n.t('wallet_header.copy_toast'),
+                description: truncateAddress(token.address),
+              });
+            }}
+          >
+            <Stack space="8px">
+              <Text size="14pt" weight="semibold">
+                Copy Address
+              </Text>
+              <Text size="11pt" color="labelTertiary" weight="medium">
+                {truncateAddress(token.address)}
+              </Text>
+            </Stack>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            symbolLeft="safari"
+            external
+            onSelect={() => window.open(getCoingeckoUrl(token), '_blank')}
+          >
+            CoinGecko
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            symbolLeft="binoculars.fill"
+            external
+            onSelect={() => window.open(explorer.url, '_blank')}
+          >
+            {explorer.name}
+          </DropdownMenuItem>
+
+          <Separator color="separatorSecondary" />
+
+          <DropdownMenuItem emoji="🙈">Hide Token</DropdownMenuItem>
+          <DropdownMenuItem emoji="🆘">Report Token</DropdownMenuItem>
+        </AccentColorProviderWrapper>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+const useIsMounted = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  return isMounted;
+};
+
 export function TokenDetails() {
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
-  const navigate = useRainbowNavigate();
 
-  const asset = useUserAsset(uniqueId);
-  if (!asset) {
-    navigate(ROUTES.HOME);
-    return null;
-  }
+  const token = useUserAsset(uniqueId);
+  const isMounted = useIsMounted();
+  if (isMounted && !token) return <Navigate to={ROUTES.HOME} />;
+  if (!token) return null;
 
   return (
     <AccentColorProviderWrapper
-      color={asset.colors?.primary || asset.colors?.fallback}
+      color={token.colors?.primary || token.colors?.fallback}
     >
       <Box
         display="flex"
@@ -364,31 +455,24 @@ export function TokenDetails() {
           leftComponent={<Navbar.BackButton />}
           rightComponent={
             <Inline alignVertical="center" space="7px">
-              <FavoriteButton token={asset} />
-              <ButtonSymbol
-                symbol="ellipsis.circle"
-                height="32px"
-                variant="transparentHover"
-                color="labelSecondary"
-              />
+              <FavoriteButton token={token} />
+              <MoreOptions token={token} />
             </Inline>
           }
         />
         <Box padding="20px" gap="16px" display="flex" flexDirection="column">
-          <Chart asset={asset} />
+          <Chart token={token} />
 
           <Separator color="separatorTertiary" />
 
           <BalanceValue
-            balance={asset.balance.display.split(' ') as Amount}
-            value={asset.native.balance.display.split(' ').reverse() as Amount}
+            balance={token.balance.display.split(' ') as Amount}
+            value={token.native.balance.display.split(' ').reverse() as Amount}
           />
 
-          <SwapSend token={asset} />
+          <SwapSend token={token} />
 
-          {asset.chainId !== ChainId.mainnet && (
-            <NetworkBanner tokenSymbol={asset.symbol} chainId={asset.chainId} />
-          )}
+          <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
       </Box>
       <Box
@@ -402,7 +486,7 @@ export function TokenDetails() {
 
         {/* <Separator color="separatorTertiary" /> */}
 
-        <About token={asset} />
+        <About token={token} />
       </Box>
     </AccentColorProviderWrapper>
   );

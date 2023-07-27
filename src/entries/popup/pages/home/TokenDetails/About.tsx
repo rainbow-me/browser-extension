@@ -11,9 +11,8 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { createCurrencyFormatter } from '~/core/utils/formatCurrency';
-import { getTokenBlockExplorerUrl } from '~/core/utils/transactions';
+import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import {
   Accordion,
@@ -95,8 +94,6 @@ const useTokenInfo = ({
   });
 };
 
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
 export function About({ token }: { token: ParsedAddressAsset }) {
   const { data } = useTokenInfo(token);
 
@@ -113,6 +110,8 @@ export function About({ token }: { token: ParsedAddressAsset }) {
     description,
     links,
   } = data;
+
+  const explorer = getTokenBlockExplorer(token);
 
   return (
     <Accordion
@@ -294,18 +293,12 @@ export function About({ token }: { token: ParsedAddressAsset }) {
                 {token.address && (
                   <Button
                     symbol="link"
-                    onClick={() =>
-                      window.open(getTokenBlockExplorerUrl(token), '_blank')
-                    }
+                    onClick={() => window.open(explorer.url, '_blank')}
                     height="32px"
                     variant="tinted"
                     color="accent"
                   >
-                    {capitalize(
-                      getBlockExplorerHostForChain(token.chainId)
-                        .split('.')
-                        .at(-2) || 'Explorer',
-                    )}
+                    {explorer.name}
                   </Button>
                 )}
               </Inline>
