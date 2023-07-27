@@ -26,6 +26,7 @@ import { RainbowError, logger } from '~/logger';
 const MAX_REQUEST_PER_SECOND = 10;
 const MAX_REQUEST_PER_MINUTE = 90;
 let minuteTimer: NodeJS.Timeout | null = null;
+let secondTimer: NodeJS.Timeout | null = null;
 
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
@@ -108,9 +109,9 @@ const resetRateLimit = async (host: string, second: boolean) => {
   const { rateLimits } = await chrome.storage.session.get('rateLimits');
   if (second) {
     rateLimits[host].perSecond = 0;
+    secondTimer = null;
   } else {
     rateLimits[host].perMinute = 0;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     minuteTimer = null;
   }
   return chrome.storage.session.set({ rateLimits });
@@ -144,9 +145,11 @@ const checkRateLimit = async (host: string) => {
     }
 
     // Clear after 1 sec
-    setTimeout(async () => {
-      resetRateLimit(host, true);
-    }, 1000);
+    if (!secondTimer) {
+      secondTimer = setTimeout(async () => {
+        resetRateLimit(host, true);
+      }, 1000);
+    }
 
     if (!minuteTimer) {
       minuteTimer = // Clear after 1 min
