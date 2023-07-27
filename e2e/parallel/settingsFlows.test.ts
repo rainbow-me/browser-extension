@@ -12,6 +12,7 @@ import {
   findElementByTextAndClick,
   getExtensionIdByName,
   getNumberOfWallets,
+  goToPopup,
   importWalletFlow,
   initDriverWithOptions,
   navigateToSettingsPrivacy,
@@ -40,7 +41,7 @@ async function goBackTwice() {
   });
 }
 
-describe('Navigate Settings and its flows', () => {
+describe('Navigate Settings & Privacy and its flows', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -123,6 +124,7 @@ describe('Navigate Settings and its flows', () => {
     await findElementByTestIdAndClick({ id: 'unlock-button', driver });
   });
 
+  // begin wallets & keys flows
   it('should be able to reveal secret', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
@@ -156,6 +158,7 @@ describe('Navigate Settings and its flows', () => {
     const walletsKeysText = await findElementByText(driver, 'Wallets & Keys');
     expect(walletsKeysText).toBeTruthy;
   });
+
   it('should be able to reveal pkey', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
@@ -235,7 +238,7 @@ describe('Navigate Settings and its flows', () => {
     });
     await navigateToSettingsPrivacy(driver, rootURL);
     await findElementByTextAndClick(driver, 'Wallets & Keys');
-    expect(await getNumberOfWallets(driver)).toBe(2);
+    expect(await getNumberOfWallets(driver, 'wallet-group-')).toBe(2);
   });
 
   it('should be able to create a new wallet from an existing seed', async () => {
@@ -263,18 +266,47 @@ describe('Navigate Settings and its flows', () => {
       driver,
     });
     expect(await textContent.getText()).toContain('2 Wallets');
-    console.log(await textContent.getText());
+  });
+
+  it('should be able to hide / unhide a wallet', async () => {
+    await goToPopup(driver, rootURL);
+    await findElementByTestIdAndClick({ id: 'account-name', driver });
+    const numOfWallets = await getNumberOfWallets(driver, 'wallet-account-');
+    await findElementByTestIdAndClick({ id: 'more-info-1', driver });
+    await findElementByTextAndClick(driver, 'Hide wallet');
+    await findElementByTestIdAndClick({ id: 'remove-button', driver });
+    const numOfWalletsAfterHide = await getNumberOfWallets(
+      driver,
+      'wallet-account-',
+    );
+    expect(numOfWalletsAfterHide).toBe(numOfWallets - 1);
+    await navigateToSettingsPrivacy(driver, rootURL);
+    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
+    await findElementByTextAndClick(driver, 'Hidden');
+    await findElementByTextAndClick(driver, 'Unhide Wallet');
+    await goToPopup(driver, rootURL);
+    await findElementByTestIdAndClick({ id: 'account-name', driver });
+    const numOfWalletsAfterUnhide = await getNumberOfWallets(
+      driver,
+      'wallet-account-',
+    );
+    expect(numOfWalletsAfterUnhide).toBe(numOfWallets);
   });
 
   it('should be able to delete a wallet', async () => {
-    const numOfWallets = await getNumberOfWallets(driver);
+    await navigateToSettingsPrivacy(driver, rootURL);
+    const numOfWallets = await getNumberOfWallets(driver, 'wallet-group-');
 
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     await findElementByTextAndClick(driver, 'new pk wallet');
     await findElementByTextAndClick(driver, 'Delete Wallet');
     await findElementByTestIdAndClick({ id: 'remove-button', driver });
 
-    const numOfWalletsAfterDeletion = await getNumberOfWallets(driver);
+    const numOfWalletsAfterDeletion = await getNumberOfWallets(
+      driver,
+      'wallet-group-',
+    );
 
     // expect the current # of wallets to be the previous number + 1
     expect(numOfWalletsAfterDeletion).toBe(numOfWallets - 1);

@@ -236,13 +236,13 @@ export const untilIsClickable = (locator: Locator) =>
 
 // various functions and flows
 
-export async function getNumberOfWallets(driver) {
+export async function getNumberOfWallets(driver, testIdPrefix) {
   let numOfWallets = 0;
 
   for (let i = 1; ; i++) {
     try {
       const el = await driver.wait(
-        until.elementLocated(By.css(`[data-testid="wallet-group-${i}"]`)),
+        until.elementLocated(By.css(`[data-testid="${testIdPrefix}${i}"]`)),
         5000,
       );
       await driver.wait(until.elementIsVisible(el), 5000);

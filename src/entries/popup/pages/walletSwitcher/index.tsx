@@ -294,6 +294,7 @@ export function WalletSwitcher() {
                 }
               >
                 <AccountItem
+                  testId={`wallet-account-${index + 1}`}
                   key={account.address}
                   onClick={() => handleSelectAddress(account.address)}
                   account={account.address}
@@ -311,6 +312,7 @@ export function WalletSwitcher() {
                         />
                       )}
                       <MoreInfoButton
+                        testId={`more-info-${index + 1}`}
                         options={infoButtonOptions({
                           account,
                           setRenameAccount,
