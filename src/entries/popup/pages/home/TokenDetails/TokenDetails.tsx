@@ -406,14 +406,14 @@ function MoreOptions({ token }: { token: ParsedAddressAsset }) {
             {explorer.name}
           </DropdownMenuItem>
 
-          <Separator color="separatorSecondary" />
+          {/* <Separator color="separatorSecondary" />
 
           <DropdownMenuItem emoji="🙈">
             {i18n.t('token_details.more_options.hide')}
           </DropdownMenuItem>
           <DropdownMenuItem emoji="🆘">
             {i18n.t('token_details.more_options.report')}
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </AccentColorProviderWrapper>
       </DropdownMenuContent>
     </DropdownMenu>
