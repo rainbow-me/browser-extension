@@ -11,7 +11,7 @@ export function useUserAsset(uniqueId?: UniqueId) {
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
-  const { data: asset } = useUserAssets(
+  return useUserAssets(
     {
       address,
       currency,
@@ -22,6 +22,4 @@ export function useUserAsset(uniqueId?: UniqueId) {
       enabled: !!uniqueId,
     },
   );
-
-  return asset;
 }

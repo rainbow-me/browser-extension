@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Navigate, To, useParams } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -306,11 +306,9 @@ function NetworkBanner({
 
 function TokenPrice({ token }: { token: ParsedAddressAsset }) {
   const coinIconAsset = token;
-  // CoinIcon displays a ChainBadge when chainId !== mainnet
-  coinIconAsset.chainId = ChainId.mainnet;
   return (
     <Box display="flex" justifyContent="space-between" gap="10px">
-      <CoinIcon asset={coinIconAsset} size={40} />
+      <CoinIcon badge={false} asset={coinIconAsset} size={40} />
       <Box
         display="flex"
         flexDirection="column"
@@ -321,12 +319,7 @@ function TokenPrice({ token }: { token: ParsedAddressAsset }) {
           {token.native.price?.display}
         </Text>
         <Box style={{ maxWidth: '150px' }}>
-          <TextOverflow
-            color="accent"
-            size="14pt"
-            weight="heavy"
-            // cursor="text"
-          >
+          <TextOverflow color="accent" size="14pt" weight="heavy">
             {token.name}
           </TextOverflow>
         </Box>
@@ -391,7 +384,7 @@ function MoreOptions({ token }: { token: ParsedAddressAsset }) {
           >
             <Stack space="8px">
               <Text size="14pt" weight="semibold">
-                Copy Address
+                {i18n.t('token_details.more_options.copy_address')}
               </Text>
               <Text size="11pt" color="labelTertiary" weight="medium">
                 {truncateAddress(token.address)}
@@ -415,28 +408,24 @@ function MoreOptions({ token }: { token: ParsedAddressAsset }) {
 
           <Separator color="separatorSecondary" />
 
-          <DropdownMenuItem emoji="🙈">Hide Token</DropdownMenuItem>
-          <DropdownMenuItem emoji="🆘">Report Token</DropdownMenuItem>
+          <DropdownMenuItem emoji="🙈">
+            {i18n.t('token_details.more_options.hide')}
+          </DropdownMenuItem>
+          <DropdownMenuItem emoji="🆘">
+            {i18n.t('token_details.more_options.report')}
+          </DropdownMenuItem>
         </AccentColorProviderWrapper>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
 
-const useIsMounted = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  return isMounted;
-};
-
 export function TokenDetails() {
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
 
-  const token = useUserAsset(uniqueId);
-  const isMounted = useIsMounted();
-  if (isMounted && !token) return <Navigate to={ROUTES.HOME} />;
+  const { data: token, isFetched } = useUserAsset(uniqueId);
+
+  if (!uniqueId || (isFetched && !token)) return <Navigate to={ROUTES.HOME} />;
   if (!token) return null;
 
   return (

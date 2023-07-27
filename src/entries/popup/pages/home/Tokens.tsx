@@ -140,7 +140,7 @@ type AssetRowProps = {
 };
 
 export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
-  const asset = useUserAsset(uniqueId);
+  const { data: asset } = useUserAsset(uniqueId);
   const name = asset?.name;
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { currentCurrency } = useCurrentCurrencyStore();

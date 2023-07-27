@@ -29,6 +29,7 @@ export function CoinIcon({
   asset,
   fallbackText,
   size = 36,
+  badge,
 }: {
   asset?:
     | ParsedAsset
@@ -38,6 +39,7 @@ export function CoinIcon({
     | null;
   fallbackText?: string;
   size?: number;
+  badge?: boolean;
 }) {
   const sym = asset?.symbol || fallbackText || '';
 
@@ -48,7 +50,12 @@ export function CoinIcon({
   const shadowColor = asset?.colors?.primary || '#808088';
 
   return (
-    <CoinIconWrapper size={size} shadowColor={shadowColor} chainId={chain}>
+    <CoinIconWrapper
+      badge={badge}
+      size={size}
+      shadowColor={shadowColor}
+      chainId={chain}
+    >
       <CloudinaryCoinIcon
         address={address}
         chainId={chain}
@@ -110,18 +117,20 @@ function CoinIconWrapper({
   children,
   shadowColor,
   size,
+  badge = true,
 }: {
   chainId: ChainId;
   children: React.ReactNode;
   shadowColor: string;
   size: number;
+  badge?: boolean;
 }) {
   return (
     <Fragment>
       <ShadowWrapper color={shadowColor} size={size}>
         {children}
       </ShadowWrapper>
-      {chainId !== ChainId.mainnet && (
+      {badge && chainId !== ChainId.mainnet && (
         <Bleed top="16px" left="6px">
           <ChainBadge chainId={chainId} shadow size="extraSmall" />
         </Bleed>

@@ -772,9 +772,14 @@
     "week": "1W",
     "month": "1M",
     "year": "1Y",
-    "view_on_etherscan": "View on Etherscan",
-    "view_on_explorer": "View on Explorer",
     "approvals": "Token Approvals",
+
+    "more_options": {
+      "copy_address": "Copy Address",
+      "hide": "Hide Token",
+      "report": "Report Token"
+    },
+
     "about": {
       "about_token": "About %{name}",
       "price": "Price",
