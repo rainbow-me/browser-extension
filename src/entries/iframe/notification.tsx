@@ -43,7 +43,7 @@ export const Notification = ({
   extensionUrl: string;
 }) => {
   const [ref, setRef] = useState<HTMLIFrameElement>();
-  const [ready, setReady] = useState<boolean>(false);
+  const [iframeLoaded, setIframeLoaded] = useState<boolean>(false);
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
 
   const onRef = (ref: HTMLIFrameElement) => {
@@ -166,7 +166,7 @@ export const Notification = ({
     iframeLink.href = `${extensionUrl}popup.css`;
     iframeLink.rel = 'stylesheet';
     ref?.contentDocument?.head?.appendChild(iframeLink);
-
+    iframeLink.onload = () => setIframeLoaded(true);
     // get the iframe element
     const root = ref?.contentDocument?.getElementsByTagName('html')[0];
     if (root) {
@@ -176,10 +176,9 @@ export const Notification = ({
       // set rnbw theme
       root.setAttribute('class', colorScheme === 'dark' ? 'dt' : 'lt');
     }
-    setReady(true);
   }, [extensionUrl, ref?.contentDocument]);
 
-  return ready ? (
+  return (
     <iframe
       style={{
         top: INJECTED_NOTIFICATION_DIMENSIONS.top,
@@ -200,11 +199,12 @@ export const Notification = ({
             chainId={chainId}
             status={status}
             extensionUrl={extensionUrl}
+            iframeLoaded={iframeLoaded}
           />,
           container,
         )}
     </iframe>
-  ) : null;
+  );
 };
 
 const NotificationComponent = ({
@@ -212,11 +212,13 @@ const NotificationComponent = ({
   siteTheme,
   status,
   extensionUrl,
+  iframeLoaded,
 }: {
   chainId: ChainId;
   siteTheme: 'dark' | 'light';
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
+  iframeLoaded: boolean;
 }) => {
   const { title, description } = useMemo(() => {
     switch (status) {
@@ -239,7 +241,7 @@ const NotificationComponent = ({
     }
   }, [chainId, status]);
 
-  return (
+  return iframeLoaded ? (
     <ThemeProvider theme={siteTheme}>
       <Box
         height="full"
@@ -313,5 +315,5 @@ const NotificationComponent = ({
         </Inline>
       </Box>
     </ThemeProvider>
-  );
+  ) : null;
 };
