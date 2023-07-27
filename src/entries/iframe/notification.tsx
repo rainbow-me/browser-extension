@@ -17,6 +17,8 @@ import {
   ThemeProvider,
 } from '~/design-system';
 
+const HTML_COLOR_SCHEME_PATTERN = /color-scheme:\s*(\w+);/;
+
 const ASSET_SOURCE = {
   [ChainId.mainnet]: 'assets/badges/ethereumBadge.png',
   [ChainId.optimism]: 'assets/badges/optimismBadge.png',
@@ -129,9 +131,9 @@ export const Notification = ({
     }
 
     // check if style has a color-scheme
-    const styleColorScheme = htmlStyle?.includes('color-scheme: ')
-      ? htmlStyle?.replace('color-scheme: ', '').replace(';', '')
-      : undefined;
+    const styleColorScheme = HTML_COLOR_SCHEME_PATTERN.exec(
+      htmlStyle || '',
+    )?.[1];
 
     // check is the html has a theme class
     let htmlClassStyle = undefined;
