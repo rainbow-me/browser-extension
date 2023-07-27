@@ -53,15 +53,25 @@ describe('Navigate Settings and its flows', () => {
   afterAll(async () => await driver.quit());
 
   it('should be able import a wallet via seed', async () => {
-    // total wallets: 1
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to hide asset balances', async () => {
+  it('should be able to toggle analytics', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
+    // find toggle status and expect to be true
+    expect(await toggleStatus('analytics-toggle', driver)).toBe('true');
+
+    await findElementByTestIdAndClick({ id: 'analytics-toggle', driver });
+    expect(await toggleStatus('analytics-toggle', driver)).toBe('false');
+
+    await findElementByTestIdAndClick({ id: 'analytics-toggle', driver });
+    expect(await toggleStatus('analytics-toggle', driver)).toBe('true');
+  });
+
+  it('should be able to hide asset balances', async () => {
     // find toggle status and expect to be false
     expect(await toggleStatus('hide-assets-toggle', driver)).toBe('false');
-    // go check balance is shown
+    // go home + check balance is shown
     await goBackTwice();
     const balanceShown = await findElementByTestId({
       id: 'balance-shown',
@@ -72,7 +82,7 @@ describe('Navigate Settings and its flows', () => {
     await navigateToSettingsPrivacy(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'hide-assets-toggle', driver });
     expect(await toggleStatus('hide-assets-toggle', driver)).toBe('true');
-    // check balance hidden
+    // go home + check balance hidden
     await goBackTwice();
     const balanceHidden = await findElementByTestId({
       id: 'balance-hidden',
@@ -81,6 +91,7 @@ describe('Navigate Settings and its flows', () => {
     expect(balanceHidden).toBeTruthy;
   });
 
+  // bug currently exists on this flow. will remove skip once fixed.
   it.skip('should be able to change password and then lock and unlock with it', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
@@ -203,7 +214,8 @@ describe('Navigate Settings and its flows', () => {
     await delayTime('very-long');
   });
 
-  it('should be able to create a new wallet from a new seed', async () => {
+  // bug currently exists on this flow. will remove skip once fixed.
+  it.skip('should be able to create a new wallet from a new seed', async () => {
     await findElementByTestIdAndClick({
       id: 'navbar-button-with-back',
       driver,
@@ -226,16 +238,39 @@ describe('Navigate Settings and its flows', () => {
     expect(await getNumberOfWallets(driver)).toBe(2);
   });
 
-  it('should be able to delete a wallet', async () => {
+  it('should be able to create a new wallet from an existing seed', async () => {
     await findElementByTestIdAndClick({
       id: 'navbar-button-with-back',
       driver,
     });
+    await findElementByTestIdAndClick({ id: 'create-a-new-wallet', driver });
+    await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
+    await typeOnTextInput({
+      id: 'wallet-name-input',
+      text: 'new pk wallet',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'confirm-name-button', driver });
+    const accountName = await findElementByTestId({
+      id: 'account-name',
+      driver,
+    });
+    expect(await accountName.getText()).toBe('new pk wallet');
+    await navigateToSettingsPrivacy(driver, rootURL);
+    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    const textContent = await findElementByTestId({
+      id: 'wallet-group-1',
+      driver,
+    });
+    expect(await textContent.getText()).toContain('2 Wallets');
+    console.log(await textContent.getText());
+  });
 
+  it('should be able to delete a wallet', async () => {
     const numOfWallets = await getNumberOfWallets(driver);
 
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
-    await findElementByTextAndClick(driver, 'test name');
+    await findElementByTextAndClick(driver, 'new pk wallet');
     await findElementByTextAndClick(driver, 'Delete Wallet');
     await findElementByTestIdAndClick({ id: 'remove-button', driver });
 

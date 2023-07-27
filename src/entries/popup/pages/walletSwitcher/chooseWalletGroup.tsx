@@ -193,6 +193,7 @@ const WalletGroups = ({
         {wallets.map((wallet, i) => {
           return (
             <GroupRow
+              testId={`wallet-group-${i + 1}`}
               key={i}
               onClick={() => onCreateNewWalletOnGroup(i)}
               leftcomponent={<GroupAvatar accounts={wallet.accounts} />}

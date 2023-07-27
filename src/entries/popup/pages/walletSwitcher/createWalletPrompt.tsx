@@ -218,6 +218,7 @@ export const CreateWalletPrompt = ({
             <Rows space="8px">
               <Row>
                 <Button
+                  testId={'confirm-name-button'}
                   color={isValid ? 'accent' : 'labelQuaternary'}
                   variant={isValid ? 'flat' : 'disabled'}
                   height="36px"

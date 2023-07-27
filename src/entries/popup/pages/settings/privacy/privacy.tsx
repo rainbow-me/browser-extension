@@ -68,6 +68,7 @@ export function Privacy() {
               }
               rightComponent={
                 <Toggle
+                  testId={'analytics-toggle'}
                   tabIndex={-1}
                   checked={!analyticsDisabled}
                   handleChange={() => setAnalyticsDisabled(!analyticsDisabled)}
