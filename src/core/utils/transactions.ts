@@ -1,6 +1,6 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getProvider } from '@wagmi/core';
-import { capitalize, isString } from 'lodash';
+import { isString } from 'lodash';
 import { Address } from 'wagmi';
 
 import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
