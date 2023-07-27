@@ -179,34 +179,32 @@ export const Notification = ({
     setReady(true);
   }, [extensionUrl, ref?.contentDocument]);
 
-  return (
-    ready && (
-      <iframe
-        style={{
-          top: INJECTED_NOTIFICATION_DIMENSIONS.top,
-          right: INJECTED_NOTIFICATION_DIMENSIONS.right,
-          height: INJECTED_NOTIFICATION_DIMENSIONS.height,
-          width: INJECTED_NOTIFICATION_DIMENSIONS.width,
-          borderWidth: '0px',
-          position: 'fixed',
-          zIndex: '9999999',
-        }}
-        title="iframe"
-        ref={onRef}
-      >
-        {container &&
-          createPortal(
-            <NotificationComponent
-              siteTheme={siteTheme}
-              chainId={chainId}
-              status={status}
-              extensionUrl={extensionUrl}
-            />,
-            container,
-          )}
-      </iframe>
-    )
-  );
+  return ready ? (
+    <iframe
+      style={{
+        top: INJECTED_NOTIFICATION_DIMENSIONS.top,
+        right: INJECTED_NOTIFICATION_DIMENSIONS.right,
+        height: INJECTED_NOTIFICATION_DIMENSIONS.height,
+        width: INJECTED_NOTIFICATION_DIMENSIONS.width,
+        borderWidth: '0px',
+        position: 'fixed',
+        zIndex: '9999999',
+      }}
+      title="iframe"
+      ref={onRef}
+    >
+      {container &&
+        createPortal(
+          <NotificationComponent
+            siteTheme={siteTheme}
+            chainId={chainId}
+            status={status}
+            extensionUrl={extensionUrl}
+          />,
+          container,
+        )}
+    </iframe>
+  ) : null;
 };
 
 const NotificationComponent = ({
