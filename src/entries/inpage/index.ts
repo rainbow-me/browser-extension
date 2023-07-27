@@ -63,6 +63,9 @@ if (shouldInjectProvider()) {
             window.walletRouter.lastInjectedProvider ??
             (window.ethereum as Ethereum);
           window.walletRouter.currentProvider = nonDefaultProvider;
+          if (!window.walletRouter.lastInjectedProvider) {
+            cachedCurrentProvider = nonDefaultProvider;
+          }
         }
       },
       addProvider: (provider: RainbowProvider | Ethereum) => {
