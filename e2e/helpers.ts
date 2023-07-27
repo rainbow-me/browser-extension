@@ -124,15 +124,11 @@ export async function getExtensionIdByName(driver, extensionName) {
 // search functions
 
 export async function querySelector(driver, selector) {
-  try {
-    const element = await driver.wait(
-      until.elementLocated(By.css(selector)),
-      waitUntilTime,
-    );
-    return await driver.wait(until.elementIsVisible(element), waitUntilTime);
-  } catch (error) {
-    throw new Error(`Timeout waiting for selector: ${selector}`);
-  }
+  const el = await driver.wait(
+    until.elementLocated(By.css(selector)),
+    waitUntilTime,
+  );
+  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
 export async function findElementByText(driver, text) {
