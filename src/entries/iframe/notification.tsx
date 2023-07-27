@@ -43,6 +43,7 @@ export const Notification = ({
   extensionUrl: string;
 }) => {
   const [ref, setRef] = useState<HTMLIFrameElement>();
+  const [ready, setReady] = useState<boolean>(false);
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
 
   const onRef = (ref: HTMLIFrameElement) => {
@@ -130,10 +131,9 @@ export const Notification = ({
       }
     }
 
-    // check if style has a color-scheme
-    const styleColorScheme = HTML_COLOR_SCHEME_PATTERN.exec(
-      htmlStyle || '',
-    )?.[1];
+    const matches = htmlStyle?.match(HTML_COLOR_SCHEME_PATTERN);
+    const styleColorScheme =
+      matches && matches.length > 0 ? matches?.[1] : null;
 
     // check is the html has a theme class
     let htmlClassStyle = undefined;
@@ -176,33 +176,36 @@ export const Notification = ({
       // set rnbw theme
       root.setAttribute('class', colorScheme === 'dark' ? 'dt' : 'lt');
     }
+    setReady(true);
   }, [extensionUrl, ref?.contentDocument]);
 
   return (
-    <iframe
-      style={{
-        top: INJECTED_NOTIFICATION_DIMENSIONS.top,
-        right: INJECTED_NOTIFICATION_DIMENSIONS.right,
-        height: INJECTED_NOTIFICATION_DIMENSIONS.height,
-        width: INJECTED_NOTIFICATION_DIMENSIONS.width,
-        borderWidth: '0px',
-        position: 'fixed',
-        zIndex: '9999999',
-      }}
-      title="iframe"
-      ref={onRef}
-    >
-      {container &&
-        createPortal(
-          <NotificationComponent
-            siteTheme={siteTheme}
-            chainId={chainId}
-            status={status}
-            extensionUrl={extensionUrl}
-          />,
-          container,
-        )}
-    </iframe>
+    ready && (
+      <iframe
+        style={{
+          top: INJECTED_NOTIFICATION_DIMENSIONS.top,
+          right: INJECTED_NOTIFICATION_DIMENSIONS.right,
+          height: INJECTED_NOTIFICATION_DIMENSIONS.height,
+          width: INJECTED_NOTIFICATION_DIMENSIONS.width,
+          borderWidth: '0px',
+          position: 'fixed',
+          zIndex: '9999999',
+        }}
+        title="iframe"
+        ref={onRef}
+      >
+        {container &&
+          createPortal(
+            <NotificationComponent
+              siteTheme={siteTheme}
+              chainId={chainId}
+              status={status}
+              extensionUrl={extensionUrl}
+            />,
+            container,
+          )}
+      </iframe>
+    )
   );
 };
 
