@@ -87,7 +87,6 @@ const useTokenInfo = ({
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const args = { address, chainId, currency: currentCurrency };
-  console.log(chainId);
   return useQuery({
     queryFn: () =>
       metadataClient.aboutToken(args).then((d) => parseTokenInfo(d.token)),
