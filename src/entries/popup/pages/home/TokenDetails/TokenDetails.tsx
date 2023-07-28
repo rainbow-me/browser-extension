@@ -14,6 +14,11 @@ import { ParsedAddressAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import {
+  FormattedCurrencyParts,
+  formatCurrency,
+  formatCurrencyParts,
+} from '~/core/utils/formatNumber';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import {
   Box,
@@ -186,9 +191,14 @@ function Chart({ token }: { token: ParsedAddressAsset }) {
 }
 
 const HiddenValue = () => <Asterisks color="labelTertiary" size={10} />;
-type Amount = [value: string, symbol: string];
 
-function BalanceValue({ balance, value }: { balance: Amount; value: Amount }) {
+function BalanceValue({
+  balance,
+  nativeBalance,
+}: {
+  balance: FormattedCurrencyParts;
+  nativeBalance: FormattedCurrencyParts;
+}) {
   const { hideAssetBalances } = useHideAssetBalancesStore();
 
   const color: TextProps['color'] = hideAssetBalances
@@ -209,7 +219,8 @@ function BalanceValue({ balance, value }: { balance: Amount; value: Amount }) {
             cursor="text"
             userSelect="all"
           >
-            {hideAssetBalances ? <HiddenValue /> : balance[0]} {balance[1]}
+            {hideAssetBalances ? <HiddenValue /> : balance.value}{' '}
+            {balance.symbol}
           </Text>
         </Inline>
       </Box>
@@ -226,7 +237,9 @@ function BalanceValue({ balance, value }: { balance: Amount; value: Amount }) {
             cursor="text"
             userSelect="all"
           >
-            {value[0]} {hideAssetBalances ? <HiddenValue /> : value[1]}
+            {nativeBalance.symbolAtStart && nativeBalance.symbol}{' '}
+            {hideAssetBalances ? <HiddenValue /> : nativeBalance.value}{' '}
+            {!nativeBalance.symbolAtStart && nativeBalance.symbol}
           </Text>
         </Inline>
       </Box>
@@ -319,7 +332,7 @@ function TokenPrice({ token }: { token: ParsedAddressAsset }) {
         gap="10px"
       >
         <Text size="16pt" weight="heavy">
-          {token.native.price?.display}
+          {formatCurrency(token.native.price?.amount)}
         </Text>
         <Box style={{ maxWidth: '150px' }}>
           <TextOverflow color="accent" size="14pt" weight="heavy">
@@ -431,6 +444,12 @@ export function TokenDetails() {
   if (!uniqueId || (isFetched && !token)) return <Navigate to={ROUTES.HOME} />;
   if (!token) return null;
 
+  const tokenBalance = {
+    ...formatCurrencyParts(token.balance.amount),
+    symbol: token.symbol,
+  };
+  const tokenNativeBalance = formatCurrencyParts(token.native.balance.amount);
+
   return (
     <AccentColorProviderWrapper
       color={token.colors?.primary || token.colors?.fallback}
@@ -458,8 +477,8 @@ export function TokenDetails() {
           <Separator color="separatorTertiary" />
 
           <BalanceValue
-            balance={token.balance.display.split(' ') as Amount}
-            value={token.native.balance.display.split(' ').reverse() as Amount}
+            balance={tokenBalance}
+            nativeBalance={tokenNativeBalance}
           />
 
           <SwapSend token={token} />

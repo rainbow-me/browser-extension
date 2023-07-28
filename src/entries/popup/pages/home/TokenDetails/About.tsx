@@ -11,7 +11,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { createCurrencyFormatter } from '~/core/utils/formatCurrency';
+import { createCurrencyFormatter } from '~/core/utils/formatNumber';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import {
@@ -55,21 +55,21 @@ const InfoRow = ({
 );
 
 const parseTokenInfo = (token: AboutTokenQuery['token']) => {
-  const f = createCurrencyFormatter({
+  const { format } = createCurrencyFormatter({
     notation: 'compact',
     maximumSignificantDigits: 4,
   });
   if (!token) return token;
   return {
     allTime: {
-      high: f(token.allTime.highValue),
-      low: f(token.allTime.lowValue),
+      high: format(token.allTime.highValue),
+      low: format(token.allTime.lowValue),
     },
-    circulatingSupply: f(token.circulatingSupply),
-    fullyDilutedValuation: f(token.fullyDilutedValuation),
-    marketCap: f(token.marketCap),
-    totalSupply: f(token.totalSupply),
-    volume1d: f(token.volume1d),
+    circulatingSupply: format(token.circulatingSupply),
+    fullyDilutedValuation: format(token.fullyDilutedValuation),
+    marketCap: format(token.marketCap),
+    totalSupply: format(token.totalSupply),
+    volume1d: format(token.volume1d),
     networks: Object.entries(token.networks).map(([chainId, network]) => ({
       chainId: +chainId as ChainId,
       ...(network as { address: Address; decimals: number }),

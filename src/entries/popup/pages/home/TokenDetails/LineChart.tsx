@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { MouseEvent, createContext, useContext, useRef, useState } from 'react';
 
-import { createCurrencyFormatter } from '~/core/utils/formatCurrency';
+import { formatCurrency } from '~/core/utils/formatNumber';
 import {
   accentColorAsHsl,
   transparentAccentColorAsHsl,
@@ -20,8 +20,6 @@ const findClosestPoint = (points: Point[], mouseX: number) => {
     points[0],
   );
 };
-
-const formatCurrency = createCurrencyFormatter();
 
 const IndicatorLabel = ({ x }: { x: number }) => {
   const { width, points } = useChart();
