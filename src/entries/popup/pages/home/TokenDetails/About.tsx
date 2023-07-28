@@ -97,18 +97,16 @@ const useTokenInfo = ({
 export function About({ token }: { token: ParsedAddressAsset }) {
   const { data } = useTokenInfo(token);
 
-  if (!data) return null; // skeleton
-
   const {
-    volume1d,
-    allTime,
-    fullyDilutedValuation,
-    marketCap,
-    networks,
-    totalSupply,
-    description,
-    links,
-  } = data;
+    volume1d = 0,
+    allTime = { high: 0, low: 0 },
+    fullyDilutedValuation = 0,
+    marketCap = 0,
+    networks = [token],
+    totalSupply = 0,
+    description = '',
+    links = {},
+  } = data || {};
 
   const explorer = getTokenBlockExplorer(token);
 
@@ -199,12 +197,12 @@ export function About({ token }: { token: ParsedAddressAsset }) {
               label={i18n.t(`token_details.about.max_total_supply`)}
               value={totalSupply}
             />
-            <InfoRow symbol="person" label={'Holders'} value={'---'} />
+            {/* <InfoRow symbol="person" label={'Holders'} value={'---'} />
             <InfoRow
               symbol="arrow.triangle.swap"
               label={i18n.t(`token_details.about.total_transfers`)}
               value={'---'}
-            />
+            /> */}
           </AccordionContent>
         </AccordionItem>
 
