@@ -230,7 +230,7 @@ export const BottomNetwork = ({
           }}
           tabIndex={displaySymbol ? 0 : -1}
         >
-          <ChainBadge chainId={selectedChainId} size={'small'} />
+          <ChainBadge chainId={selectedChainId} size="18" />
           <Text
             align="right"
             size="14pt"

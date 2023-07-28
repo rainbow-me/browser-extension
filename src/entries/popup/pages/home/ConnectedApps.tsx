@@ -239,10 +239,7 @@ const ConnectedApp = ({
                         height="full"
                       >
                         <Bleed top="7px">
-                          <ChainBadge
-                            chainId={appSession?.chainId}
-                            size="extraSmall2"
-                          />
+                          <ChainBadge chainId={appSession?.chainId} size="14" />
                         </Bleed>
                       </Inline>
                     </Box>
