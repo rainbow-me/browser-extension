@@ -102,7 +102,6 @@ export function About({ token }: { token: ParsedAddressAsset }) {
   const {
     volume1d,
     allTime,
-    // circulatingSupply,
     fullyDilutedValuation,
     marketCap,
     networks,

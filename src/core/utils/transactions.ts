@@ -4,13 +4,13 @@ import { isString } from 'lodash';
 import { Address } from 'wagmi';
 
 import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
-import { WETH_MAINNET_ASSET } from '~/test/utils';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
 import {
   ETH_ADDRESS,
   SupportedCurrencyKey,
+  WETH_ADDRESS,
   smartContractMethods,
 } from '../references';
 import { fetchRegistryLookup } from '../resources/transactions/registryLookup';
@@ -708,7 +708,7 @@ export const getTokenBlockExplorer = ({
   chainId: ChainId;
 }) => {
   let _address = address;
-  if (_address === ETH_ADDRESS) _address = WETH_MAINNET_ASSET.address;
+  if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
   return {
     url: getTokenBlockExplorerUrl({ address: _address, chainId }),
     name: capitalize(

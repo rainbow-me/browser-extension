@@ -288,7 +288,10 @@ function NetworkBanner({
     >
       <ChainBadge chainId={chainId} size="14px" />
       <Text size="12pt" weight="semibold" color="labelSecondary">
-        This {tokenSymbol} is on the {ChainNameDisplay[chainId]} network
+        {i18n.t('token_details.this_token_is_on_network', {
+          symbol: tokenSymbol,
+          chainName: ChainNameDisplay[chainId],
+        })}
       </Text>
       <Tooltip text="lalala" textSize="12pt">
         <Box style={{ marginLeft: 'auto', height: 14 }}>
