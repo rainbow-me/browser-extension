@@ -7,6 +7,8 @@ import {
   useLocation,
 } from 'react-router-dom';
 
+import { analytics } from '~/analytics';
+import { screen } from '~/analytics/screen';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { Alert } from '~/design-system/components/Alert/Alert';
@@ -726,6 +728,10 @@ const RootLayout = () => {
 
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  React.useEffect(() => {
+    analytics.screen(screen[location.pathname], { path: location.pathname });
   }, [location.pathname]);
 
   useGlobalShortcuts();
