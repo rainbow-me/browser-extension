@@ -17,6 +17,8 @@ import {
   ThemeProvider,
 } from '~/design-system';
 
+const HTML_COLOR_SCHEME_PATTERN = /color-scheme:\s*(\w+);/;
+
 const ASSET_SOURCE = {
   [ChainId.mainnet]: 'assets/badges/ethereumBadge.png',
   [ChainId.optimism]: 'assets/badges/optimismBadge.png',
@@ -41,6 +43,7 @@ export const Notification = ({
   extensionUrl: string;
 }) => {
   const [ref, setRef] = useState<HTMLIFrameElement>();
+  const [iframeLoaded, setIframeLoaded] = useState<boolean>(false);
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
 
   const onRef = (ref: HTMLIFrameElement) => {
@@ -128,10 +131,9 @@ export const Notification = ({
       }
     }
 
-    // check if style has a color-scheme
-    const styleColorScheme = htmlStyle?.includes('color-scheme: ')
-      ? htmlStyle?.replace('color-scheme: ', '').replace(';', '')
-      : undefined;
+    const matches = htmlStyle?.match(HTML_COLOR_SCHEME_PATTERN);
+    const styleColorScheme =
+      matches && matches.length > 0 ? matches?.[1] : null;
 
     // check is the html has a theme class
     let htmlClassStyle = undefined;
@@ -164,7 +166,7 @@ export const Notification = ({
     iframeLink.href = `${extensionUrl}popup.css`;
     iframeLink.rel = 'stylesheet';
     ref?.contentDocument?.head?.appendChild(iframeLink);
-
+    iframeLink.onload = () => setIframeLoaded(true);
     // get the iframe element
     const root = ref?.contentDocument?.getElementsByTagName('html')[0];
     if (root) {
@@ -197,6 +199,7 @@ export const Notification = ({
             chainId={chainId}
             status={status}
             extensionUrl={extensionUrl}
+            iframeLoaded={iframeLoaded}
           />,
           container,
         )}
@@ -209,11 +212,13 @@ const NotificationComponent = ({
   siteTheme,
   status,
   extensionUrl,
+  iframeLoaded,
 }: {
   chainId: ChainId;
   siteTheme: 'dark' | 'light';
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
+  iframeLoaded: boolean;
 }) => {
   const { title, description } = useMemo(() => {
     switch (status) {
@@ -236,7 +241,7 @@ const NotificationComponent = ({
     }
   }, [chainId, status]);
 
-  return (
+  return iframeLoaded ? (
     <ThemeProvider theme={siteTheme}>
       <Box
         height="full"
@@ -310,5 +315,5 @@ const NotificationComponent = ({
         </Inline>
       </Box>
     </ThemeProvider>
-  );
+  ) : null;
 };
