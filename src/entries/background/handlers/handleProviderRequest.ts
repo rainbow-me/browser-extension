@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import { ToBufferInputTypes } from '@ethereumjs/util';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { isAddress } from '@ethersproject/address';
@@ -9,7 +10,7 @@ import { Address, UserRejectedRequestError } from 'wagmi';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
-import { hasVault, isPasswordSet } from '~/core/keychain';
+import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { appSessionsStore, notificationWindowStore } from '~/core/state';
 import { pendingRequestStore } from '~/core/state/requests';
@@ -81,7 +82,16 @@ const messengerProviderRequest = async (
   // Add pending request to global background state.
   addPendingRequest(request);
 
-  if (hasVault() && (await isPasswordSet())) {
+  let ready = await isInitialized();
+  while (!ready) {
+    // eslint-disable-next-line no-promise-executor-return
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    ready = await isInitialized();
+  }
+  const _hasVault = ready && (await hasVault());
+  const passwordSet = _hasVault && (await isPasswordSet());
+
+  if (_hasVault && passwordSet) {
     openWindowForTabId(Number(request.meta?.sender.tab?.id).toString());
   } else {
     goToNewTab({
