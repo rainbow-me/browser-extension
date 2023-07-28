@@ -12,6 +12,7 @@ import {
   findElementByTextAndClick,
   getExtensionIdByName,
   getNumberOfWallets,
+  goBackTwice,
   goToPopup,
   importWalletFlow,
   initDriverWithOptions,
@@ -28,18 +29,6 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-
-async function goBackTwice() {
-  await delayTime('short');
-  await findElementByTestIdAndClick({
-    id: 'navbar-button-with-back',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'navbar-button-with-back',
-    driver,
-  });
-}
 
 describe('Navigate Settings & Privacy and its flows', () => {
   beforeAll(async () => {
@@ -73,7 +62,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     // find toggle status and expect to be false
     expect(await toggleStatus('hide-assets-toggle', driver)).toBe('false');
     // go home + check balance is shown
-    await goBackTwice();
+    await goBackTwice(driver);
     const balanceShown = await findElementByTestId({
       id: 'balance-shown',
       driver,
@@ -84,7 +73,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await findElementByTestIdAndClick({ id: 'hide-assets-toggle', driver });
     expect(await toggleStatus('hide-assets-toggle', driver)).toBe('true');
     // go home + check balance hidden
-    await goBackTwice();
+    await goBackTwice(driver);
     const balanceHidden = await findElementByTestId({
       id: 'balance-hidden',
       driver,
@@ -113,7 +102,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       text: 'test5678',
     });
     await findElementByTextAndClick(driver, 'Update Password');
-    await goBackTwice();
+    await goBackTwice(driver);
     await findElementByTestIdAndClick({
       id: 'home-page-header-right',
       driver,

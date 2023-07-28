@@ -232,6 +232,18 @@ export const untilIsClickable = (locator: Locator) =>
 
 // various functions and flows
 
+export async function goBackTwice(driver) {
+  await delayTime('short');
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back',
+    driver,
+  });
+}
+
 export async function getNumberOfWallets(driver, testIdPrefix) {
   let numOfWallets = 0;
 
