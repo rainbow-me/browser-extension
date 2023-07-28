@@ -7,7 +7,11 @@ import {
   consolidatedTransactionsQueryKey,
   useConsolidatedTransactions,
 } from '~/core/resources/transactions/consolidatedTransactions';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useCurrentCurrencyStore,
+  usePendingTransactionsStore,
+} from '~/core/state';
 
 const PAGES_TO_CACHE_LIMIT = 2;
 
@@ -20,6 +24,7 @@ export default function ({
 }: UseInfiniteTransactionListParams) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { getPendingTransactions } = usePendingTransactionsStore();
   const {
     data,
     error,
@@ -32,19 +37,24 @@ export default function ({
   } = useConsolidatedTransactions({ address, currency });
   //   const cutoff = data?.cutoff;
   const pages = data?.pages;
+  const pendingTransactions = getPendingTransactions({ address });
   const transactions = useMemo(
     () =>
       Object.entries(
-        selectTransactionsByDate(pages?.flatMap((p) => p.transactions) || []),
+        selectTransactionsByDate(
+          pendingTransactions.concat(
+            pages?.flatMap((p) => p.transactions) || [],
+          ),
+        ),
       ).flat(2),
-    [pages],
+    [pendingTransactions, pages],
   );
 
   const infiniteRowVirtualizer = useVirtualizer({
     count: transactions?.length,
     getScrollElement,
     estimateSize: (i) => (typeof transactions[i] === 'string' ? 34 : 52),
-    overscan: 5,
+    overscan: 20,
   });
   const rows = infiniteRowVirtualizer.getVirtualItems();
 

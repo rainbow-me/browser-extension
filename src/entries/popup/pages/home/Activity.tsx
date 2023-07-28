@@ -79,8 +79,7 @@ export function Activity() {
     );
   }
 
-  let labelsCount = 0;
-  console.log('LABELS COUNT: ', labelsCount);
+  const rows = activityRowVirtualizer.getVirtualItems();
   return (
     <>
       <Box
@@ -99,20 +98,16 @@ export function Activity() {
             position: 'relative',
           }}
         >
-          {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
+          {rows.map((virtualItem) => {
             const { index, key, start, size } = virtualItem;
             const rowData = transactions[index];
             const isLabel = typeof rowData === 'string';
-            if (isLabel) {
-              console.log('IS LABEL: ', labelsCount);
-              labelsCount += 1;
-            }
             return (
               <Box
                 key={key}
                 data-index={index}
                 as={motion.div}
-                // layoutId={!isLabel ? `list-${index - labelsCount}` : undefined}
+                layoutId={`list-${index}`}
                 layoutScroll
                 layout="position"
                 initial={{ opacity: isLabel ? 0 : 1 }}

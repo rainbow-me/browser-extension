@@ -38,7 +38,7 @@ export const consolidatedTransactionsQueryKey = ({
   createQueryKey(
     'consolidatedTransactions',
     { address, currency },
-    { persisterVersion: 1 },
+    { persisterVersion: 2 },
   );
 
 type ConsolidatedTransactionsQueryKey = ReturnType<
@@ -78,7 +78,7 @@ type _QueryResult = {
   transactions: RainbowTransaction[];
 };
 
-async function consolidatedTransactionsQueryFunction({
+export async function consolidatedTransactionsQueryFunction({
   queryKey: [{ address, currency }],
   pageParam,
 }: QueryFunctionArgs<
@@ -126,9 +126,7 @@ async function parseConsolidatedTransactions(
     parseTransaction({
       tx,
       currency,
-      chainId: chainIdFromChainName(
-        (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
-      ),
+      chainId: chainIdFromChainName(tx?.network ?? ChainName.mainnet),
     }),
   );
 
