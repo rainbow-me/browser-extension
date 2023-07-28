@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
@@ -25,13 +25,19 @@ const ASSET_SOURCE = {
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
 };
 
+export enum IN_DAPP_NOTIFICATION_STATUS {
+  'success' = 'success',
+  'no_active_session' = 'no_active_session',
+  'unsupported_network' = 'unsupported_network',
+}
+
 export const Notification = ({
   chainId,
   status,
   extensionUrl,
 }: {
   chainId: ChainId;
-  status: 'success' | 'failed';
+  status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
 }) => {
   const [ref, setRef] = useState<HTMLIFrameElement>();
@@ -206,9 +212,30 @@ const NotificationComponent = ({
 }: {
   chainId: ChainId;
   siteTheme: 'dark' | 'light';
-  status: 'success' | 'failed';
+  status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
 }) => {
+  const { title, description } = useMemo(() => {
+    switch (status) {
+      case IN_DAPP_NOTIFICATION_STATUS.success:
+        return {
+          title: i18n.t(`injected_notifications.network_changed`),
+          description: ChainNameDisplay[chainId],
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.unsupported_network:
+        return {
+          title: i18n.t(`injected_notifications.network_changed_failed`),
+          description: i18n.t('injected_notifications.unsupported_network'),
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.no_active_session:
+      default:
+        return {
+          title: i18n.t(`injected_notifications.network_changed_failed`),
+          description: i18n.t('injected_notifications.no_active_session'),
+        };
+    }
+  }, [chainId, status]);
+
   return (
     <ThemeProvider theme={siteTheme}>
       <Box
@@ -235,7 +262,7 @@ const NotificationComponent = ({
           >
             <Columns space="8px">
               <Column width="content">
-                {status === 'success' ? (
+                {status === IN_DAPP_NOTIFICATION_STATUS.success ? (
                   <img
                     src={`${extensionUrl}${ASSET_SOURCE[chainId]}`}
                     width={24}
@@ -268,20 +295,12 @@ const NotificationComponent = ({
                 <Rows alignVertical="center" space="6px">
                   <Row>
                     <Text color="label" size="12pt" weight="bold">
-                      {i18n.t(
-                        `injected_notifications.${
-                          status === 'success'
-                            ? 'network_changed'
-                            : 'network_changed_failed'
-                        }`,
-                      )}
+                      {title}
                     </Text>
                   </Row>
                   <Row>
                     <Text color="labelTertiary" size="11pt" weight="medium">
-                      {status === 'success'
-                        ? ChainNameDisplay[chainId]
-                        : i18n.t('injected_notifications.unsupported_network')}
+                      {description}
                     </Text>
                   </Row>
                 </Rows>

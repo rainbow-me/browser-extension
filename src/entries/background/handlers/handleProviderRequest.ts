@@ -21,6 +21,7 @@ import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/hex';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
+import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 import { RainbowError, logger } from '~/logger';
 
 const createNewWindow = async (tabId: string) => {
@@ -187,10 +188,13 @@ export const handleProviderRequest = ({
           );
           const supportedChainId = isSupportedChainId(Number(proposedChainId));
           const extensionUrl = chrome.runtime.getURL('');
-          if (!supportedChainId) {
+          const activeSession = getActiveSession({ host });
+          if (!supportedChainId || !activeSession) {
             inpageMessenger?.send('wallet_switchEthereumChain', {
               chainId: proposedChainId,
-              status: 'failed',
+              status: !supportedChainId
+                ? IN_DAPP_NOTIFICATION_STATUS.unsupported_network
+                : IN_DAPP_NOTIFICATION_STATUS.no_active_session,
               extensionUrl,
               host,
             });
@@ -206,7 +210,7 @@ export const handleProviderRequest = ({
             });
             inpageMessenger?.send('wallet_switchEthereumChain', {
               chainId: proposedChainId,
-              status: 'success',
+              status: IN_DAPP_NOTIFICATION_STATUS.success,
               extensionUrl,
               host,
             });
