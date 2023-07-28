@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 import { ChainId } from '~/core/types/chains';
 
-import { Notification } from './notification';
+import { IN_DAPP_NOTIFICATION_STATUS, Notification } from './notification';
 
 const ELEMENT_ID = 'rainbow-notification';
 
@@ -16,7 +16,7 @@ export const injectNotificationIframe = async ({
   extensionUrl,
 }: {
   chainId: ChainId;
-  status: 'success' | 'failed';
+  status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
 }) => {
   // in case there's one already
