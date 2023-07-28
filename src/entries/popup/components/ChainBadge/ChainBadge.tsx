@@ -22,6 +22,9 @@ const sizeConfigs = {
   extraSmall: {
     iconSize: 16,
   },
+  extraSmall2: {
+    iconSize: 14,
+  },
   micro: {
     iconSize: 8,
   },
@@ -30,7 +33,7 @@ const sizeConfigs = {
 interface ChainIconProps {
   chainId: ChainId;
   shadow?: boolean;
-  size: 'large' | 'medium' | 'small' | 'extraSmall' | 'micro';
+  size: 'large' | 'medium' | 'small' | 'extraSmall' | 'micro' | 'extraSmall2';
 }
 
 const networkBadges = {
