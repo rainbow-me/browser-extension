@@ -1,11 +1,7 @@
-import { mainnet } from '@wagmi/chains';
-import { getProvider } from '@wagmi/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useCurrentCurrencyStore } from '~/core/state';
-import { convertRawAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -26,8 +22,8 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { importAccountAtIndex } from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';
-import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import usePrevious from '../../hooks/usePrevious';
+import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 
 import { AccountIndex } from './walletList/AccountIndex';
 
@@ -48,30 +44,33 @@ export const AddByIndexSheet = ({
   }) => void;
   vendor: 'Ledger' | 'Trezor';
 }) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const nativeAsset = useNativeAssetForNetwork({ chainId: mainnet.id });
   const inputRef = useRef<HTMLInputElement>(null);
   const prevShow = usePrevious(show);
   const [loading, setLoading] = useState<boolean>(false);
   const [newIndex, setNewIndex] = useState<string>('');
   const [newAccount, setNewAccount] = useState<{
     address: Address;
-    balance: string;
   }>();
+
+  const { walletsSummary } = useWalletsSummary({
+    addresses: [newAccount?.address as Address] || [],
+  });
+
   const handleAddWallet = useCallback(() => {
-    const params = newAccount
-      ? {
-          address: newAccount?.address as Address,
-          balance: newAccount?.balance as string,
-          index: Number(newIndex),
-        }
-      : {};
+    const params =
+      newAccount && walletsSummary
+        ? {
+            address: newAccount.address as Address,
+            balance: walletsSummary[newAccount?.address].balance.display,
+            index: Number(newIndex),
+          }
+        : {};
     onDone(params);
     setTimeout(() => {
       setNewAccount(undefined);
       setNewIndex('');
     }, 1000);
-  }, [newAccount, newIndex, onDone]);
+  }, [newAccount, newIndex, onDone, walletsSummary]);
 
   const handleNewIndexChange = useCallback(
     (e: { target: { value: string } }) => {
@@ -100,27 +99,11 @@ export const AddByIndexSheet = ({
         Number(newIndex),
       )) as Address;
       if (newAddress) {
-        const provider = getProvider({ chainId: mainnet.id });
-        const balance = await provider.getBalance(newAddress);
-
-        const nativeCurrencyAmount = convertRawAmountToNativeDisplay(
-          balance.toString() ?? 0,
-          nativeAsset?.decimals ?? 18,
-          nativeAsset?.price?.value as number,
-          currentCurrency,
-        ).display;
-
-        setNewAccount({ address: newAddress, balance: nativeCurrencyAmount });
+        setNewAccount({ address: newAddress });
       }
-      setLoading(false);
+      setTimeout(() => setLoading(false), 1000);
     }, 100);
-  }, [
-    vendor,
-    newIndex,
-    nativeAsset?.decimals,
-    nativeAsset?.price?.value,
-    currentCurrency,
-  ]);
+  }, [vendor, newIndex]);
 
   const debouncedNewIndex = useDebounce(newIndex, 1000);
 
@@ -136,12 +119,20 @@ export const AddByIndexSheet = ({
     }
   }, [prevShow, show]);
 
+  const onClose = useCallback(() => {
+    onDone({});
+    setTimeout(() => {
+      setNewAccount(undefined);
+      setNewIndex('');
+    }, 1000);
+  }, [onDone]);
+
   return (
     <BottomSheet background="scrim" show={show}>
       <Navbar
         leftComponent={
           <Navbar.CloseButton
-            onClick={() => onDone({})}
+            onClick={onClose}
             testId="close-add-by-index-modal-button"
           />
         }
@@ -210,7 +201,7 @@ export const AddByIndexSheet = ({
                     display="flex"
                   >
                     <Text color="label" size="14pt" weight="heavy">
-                      61
+                      60
                     </Text>
                   </Box>
                   <Box
@@ -222,16 +213,32 @@ export const AddByIndexSheet = ({
                       /
                     </Text>
                   </Box>
-                  <Box
-                    style={{ width: '53px' }}
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                  >
-                    <Text color="label" size="14pt" weight="heavy">
-                      0
-                    </Text>
-                  </Box>
+                  {vendor === 'Trezor' ? (
+                    <Box
+                      style={{ width: '53px' }}
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                    >
+                      <Text color="label" size="14pt" weight="heavy">
+                        0
+                      </Text>
+                    </Box>
+                  ) : (
+                    <Box style={{ width: '53px', paddingLeft: '2px' }}>
+                      <Input
+                        value={newIndex}
+                        onChange={handleNewIndexChange}
+                        height="32px"
+                        textAlign="center"
+                        tabIndex={1}
+                        variant="bordered"
+                        style={{ width: '50px' }}
+                        innerRef={inputRef}
+                        placeholder="0"
+                      />
+                    </Box>
+                  )}
                   <Box
                     alignItems="center"
                     justifyContent="center"
@@ -241,19 +248,32 @@ export const AddByIndexSheet = ({
                       /
                     </Text>
                   </Box>
-                  <Box style={{ width: '53px' }}>
-                    <Input
-                      value={newIndex}
-                      onChange={handleNewIndexChange}
-                      height="32px"
-                      textAlign="center"
-                      tabIndex={1}
-                      variant="bordered"
-                      style={{ width: '50px' }}
-                      innerRef={inputRef}
-                      placeholder="0"
-                    />
-                  </Box>
+                  {vendor === 'Ledger' ? (
+                    <Box
+                      style={{ width: '53px' }}
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                    >
+                      <Text color="label" size="14pt" weight="heavy">
+                        0
+                      </Text>
+                    </Box>
+                  ) : (
+                    <Box style={{ width: '53px' }}>
+                      <Input
+                        value={newIndex}
+                        onChange={handleNewIndexChange}
+                        height="32px"
+                        textAlign="center"
+                        tabIndex={1}
+                        variant="bordered"
+                        style={{ width: '50px' }}
+                        innerRef={inputRef}
+                        placeholder="0"
+                      />
+                    </Box>
+                  )}
                 </Inline>
               </Box>
               {newAccount && (
@@ -340,7 +360,10 @@ export const AddByIndexSheet = ({
                                 size="12pt"
                                 weight="regular"
                               >
-                                {newAccount.balance}
+                                {
+                                  walletsSummary[newAccount?.address].balance
+                                    .display
+                                }
                               </Text>
                             )}
                           </Row>
