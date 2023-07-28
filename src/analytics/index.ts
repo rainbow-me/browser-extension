@@ -5,8 +5,30 @@ import { UserProperties } from '~/analytics/userProperties';
 import { analyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
 import { RainbowError, logger } from '~/logger';
 
+import { version } from '../../package.json';
+
 const IS_DEV = process.env.IS_DEV === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
+
+/**
+ * Metadata about the current application and browser/device.
+ * `context` doesn't come for free in @segment/analytics-node
+ */
+const context = {
+  direct: true /* collect ip address for geoip */,
+  app: { version },
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  locale: window?.navigator?.language,
+  screen: {
+    width: window?.screen.width,
+    height: window?.screen.height,
+    density: window?.devicePixelRatio,
+  },
+  userAgent: window?.navigator?.userAgent,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - userAgentData is experimental and supported in Chrome
+  userAgentData: window?.navigator?.userAgentData,
+};
 
 export class Analytics {
   client?: AnalyticsNode;
@@ -58,7 +80,7 @@ export class Analytics {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const traits = { ...userProperties, ...metadata };
-    this.client?.identify({ userId: this.deviceId, traits });
+    this.client?.identify({ userId: this.deviceId, traits, context });
     logger.info('analytics.identify()', {
       userId: this.deviceId,
       userProperties,
@@ -72,7 +94,7 @@ export class Analytics {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const properties = { ...params, ...metadata };
-    this.client?.screen({ userId: this.deviceId, name, properties });
+    this.client?.screen({ userId: this.deviceId, name, properties, context });
     logger.info('analytics.screen()', {
       userId: this.deviceId,
       name,
@@ -92,7 +114,7 @@ export class Analytics {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const properties = Object.assign(metadata, params);
-    this.client?.track({ userId: this.deviceId, event, properties });
+    this.client?.track({ userId: this.deviceId, event, properties, context });
     logger.info('analytics.track()', {
       userId: this.deviceId,
       event,
