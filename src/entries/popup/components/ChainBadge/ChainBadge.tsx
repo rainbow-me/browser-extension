@@ -9,7 +9,7 @@ import PolygonBadge from 'static/assets/badges/polygonBadge.png';
 import { ChainId } from '~/core/types/chains';
 import { Box } from '~/design-system';
 
-export const chainBadgeSize = {
+const chainBadgeSize = {
   '60': 60,
   '45': 45,
   '18': 18,
