@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.1.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.48)
 
-## Changed
+### Changed
 - Adopted Socket v2 contracts for gas optimization for token bridging #814
 - Adopted colloquial BSC naming for Binance Smart Chain #768
 - Added support for deprecated `send` and `sendAsync` RPC calls #792
