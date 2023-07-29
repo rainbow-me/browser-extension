@@ -1,914 +1,825 @@
 {
   "test": {
-    "salute": "hello!"
+    "salute": "你好！"
   },
   "label": {
-    "toggle": "Toggle"
+    "toggle": "切换"
   },
   "wallet_switcher": {
-    "title": "Wallets",
-    "rename_wallet": "Rename wallet",
-    "copy_address": "Copy address",
-    "remove_wallet": "Remove wallet",
-    "hide_wallet": "Hide wallet",
-    "watching": "Watching",
-    "ledger": "Ledger",
+    "title": "钱包",
+    "rename_wallet": "重命名钱包",
+    "copy_address": "复制地址",
+    "remove_wallet": "移除钱包",
+    "hide_wallet": "隐藏钱包",
+    "watching": "观察中",
+    "ledger": "账本",
     "trezor": "Trezor",
-    "add_another_wallet": "Add another wallet",
-    "connect_hardware_wallet": "Add from your hardware wallet",
-    "search_placeholder": "Search wallets",
-    "no_wallets": "No wallets",
-    "no_results": "No results",
+    "add_another_wallet": "添加另一个钱包",
+    "connect_hardware_wallet": "从您的硬件钱包添加",
+    "search_placeholder": "搜索钱包",
+    "no_wallets": "无钱包",
+    "no_results": "没有结果",
     "quick_promo": {
-      "text": "Drag wallets to reorder them",
-      "text_bold": "Tip:"
+      "text": "拖动钱包以重新排序",
+      "text_bold": "提示："
     }
   },
   "qr_code": {
-    "copy_address": "Copy address"
+    "copy_address": "复制地址"
   },
   "add_wallet": {
-    "title": "Add another wallet",
-    "create_wallet": "Create a new wallet",
-    "create_wallet_description": "Create a new wallet on one of your seed phrases.",
-    "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
-    "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
-    "hardware_wallet": "Add from your hardware wallet",
-    "hardware_wallet_description": "Add more accounts from your hardware wallet.",
-    "watch_address": "Watch an Ethereum address",
-    "watch_address_description": "Watch a public address or ENS name."
+    "title": "添加另一个钱包",
+    "create_wallet": "创建新钱包",
+    "create_wallet_description": "在您的种子短语中创建一个新钱包。",
+    "import_wallet": "使用秘密恢复短语或私钥导入",
+    "import_wallet_description": "使用您的秘密恢复短语或私钥添加钱包。",
+    "hardware_wallet": "从您的硬件钱包添加",
+    "hardware_wallet_description": "从您的硬件钱包添加更多账户。",
+    "watch_address": "查看以太坊地址",
+    "watch_address_description": "查看公共地址或ENS名称。"
   },
   "create_wallet_prompt": {
-    "title": "Name your wallet",
-    "create_wallet": "Create wallet",
-    "create": "Create",
-    "input_placeholder": "Name"
+    "title": "给你的钱包取个名字",
+    "create_wallet": "创建钱包",
+    "create": "创建",
+    "input_placeholder": "名称"
   },
   "rename_wallet_prompt": {
-    "rename_wallet": "Rename wallet",
-    "done": "Done"
+    "rename_wallet": "重命名钱包",
+    "done": "完成"
   },
   "remove_wallet_prompt": {
-    "error": "Error removing wallet",
-    "remove": "Remove",
-    "remove_title": "Remove %{name}",
-    "remove_last_wallet_title": "Remove %{name} and your Secret Recovery Phrase",
-    "remove_description": "This will remove the wallet from this list and delete all data associated with it.",
-    "remove_last_wallet_description": "This will permanently delete your wallet and Secret Recovery Phrase and all associated data",
-    "hide": "Hide",
-    "hide_title": "Hide %{name}",
-    "hide_description": "This only removes the wallet from this list. You can find this wallet and additional management options in settings.",
-    "cancel": "Cancel"
+    "error": "移除钱包时出错",
+    "remove": "删除",
+    "remove_title": "删除 %{name}",
+    "remove_last_wallet_title": "删除 %{name} 和您的秘密恢复短语",
+    "remove_description": "这将从列表中移除钱包并删除与之关联的所有数据。",
+    "remove_last_wallet_description": "此操作将永久删除您的钱包、秘密恢复短语和所有相关数据",
+    "hide": "隐藏",
+    "hide_title": "隐藏 %{name}",
+    "hide_description": "这只会将钱包从列表中移除。您可以在设置中找到该钱包和其他管理选项。",
+    "cancel": "取消"
   },
   "settings": {
-    "title": "Settings",
-    "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
-    "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
-    "contacts": "Contacts",
-    "guides_and_support": "Guides & Support",
-    "learn_about_ethereum": "Learn about Ethereum",
-    "follow_us_on_twitter": "Follow us on Twitter",
-    "share_beta_feedback": "Share Beta Feedback",
+    "title": "设置",
+    "use_rainbow_as_default_wallet": "将Rainbow设为默认钱包",
+    "default_wallet_description": "允许应用程序在寻找要连接的扩展时优先选择彩虹。",
+    "contacts": "联系人",
+    "guides_and_support": "指南与支持",
+    "learn_about_ethereum": "了解以太坊",
+    "follow_us_on_twitter": "关注我们的Twitter",
+    "share_beta_feedback": "分享测试反馈",
     "theme": {
-      "title": "Theme",
-      "system": "System",
-      "light": "Light",
-      "dark": "Dark"
+      "title": "主题",
+      "system": "系统",
+      "light": "轻",
+      "dark": "黑暗"
     },
     "privacy_and_security": {
-      "title": "Privacy & Security",
-      "analytics": "Analytics",
-      "analytics_description": "Help Rainbow improve its products and services by allowing analytics of usage data. Collected data is not associated with you or your account.",
-      "hide_asset_balances": "Hide asset balances",
-      "hide_asset_balances_description": "With this turned on Rainbow will obfuscate token balances accross the app.",
-      "auto_hide_balances_under_1": " Auto-hide balances under $1",
-      "view_private_key": "View Private Key",
-      "view_secret_recovery_phrase": "View Secret Recovery Phrase",
+      "title": "隐私与安全",
+      "analytics": "分析",
+      "analytics_description": "通过允许分析使用数据来帮助彩虹改进其产品和服务。收集的数据与您或您的帐户无关。",
+      "hide_asset_balances": "隐藏资产余额",
+      "hide_asset_balances_description": "打开此选项后，彩虹将在整个应用中混淆代币余额。",
+      "auto_hide_balances_under_1": "自动隐藏小于1美元的余额",
+      "view_private_key": "查看私钥",
+      "view_secret_recovery_phrase": "查看恢复短语",
       "auto_lock_timer": {
-        "title": "Auto-Lock Timer",
-        "immediately": "Immediately",
-        "one_minute": "1 minute",
-        "five_minutes": "5 minutes",
-        "ten_minutes": "10 minutes",
-        "fifteen_minutes": "15 minutes",
-        "thirty_minutes": "30 minutes",
-        "one_hour": "1 hour",
-        "twelve_hours": "12 hours",
-        "twenty_four_hours": "24 hours",
-        "none": "None"
+        "title": "自动锁定计时器",
+        "immediately": "立即",
+        "one_minute": "1分钟",
+        "five_minutes": "5分钟",
+        "ten_minutes": "10分钟",
+        "fifteen_minutes": "15分钟",
+        "thirty_minutes": "30分钟",
+        "one_hour": "1小时",
+        "twelve_hours": "12小时",
+        "twenty_four_hours": "24小时",
+        "none": "无"
       },
       "change_password": {
-        "title": "Change Password",
-        "header_label": "Change your password"
+        "title": "修改密码",
+        "header_label": "更改您的密码"
       },
       "confirm_password": {
-        "title": "Enter your Password",
-        "description": "You need to enter your current password to continue."
+        "title": "请输入密码",
+        "description": "您需要输入当前密码才能继续。"
       },
       "wallets_and_keys": {
-        "title": "Wallets & Keys",
-        "create_a_new_wallet": "Create a new wallet",
-        "imported": "Imported",
-        "wallet_single": "Wallet",
-        "wallet_plural": "Wallets",
-        "recovery_phrase_label": "Wallet Group",
-        "private_key_label": "Private Key",
-        "hardware_wallet_label": "Hardware Wallet",
+        "title": "钱包与密钥",
+        "create_a_new_wallet": "创建新钱包",
+        "imported": "已导入",
+        "wallet_single": "钱包",
+        "wallet_plural": "钱包",
+        "recovery_phrase_label": "钱包组",
+        "private_key_label": "私钥",
+        "hardware_wallet_label": "硬件钱包",
         "wallet_details": {
-          "title": "Wallet Details",
-          "view_recovery_phrase": "View Recovery Phrase",
-          "create_new_wallet": "Create a new Wallet",
-          "rename_wallet": "Rename Wallet",
-          "unhide_wallet": "Unhide Wallet",
-          "delete_wallet": "Delete Wallet",
-          "view_private_key": "View Private Key",
-          "copy_address": "Copy Address",
-          "hidden": "Hidden"
+          "title": "钱包详情",
+          "view_recovery_phrase": "查看恢复短语",
+          "create_new_wallet": "创建新钱包",
+          "rename_wallet": "重命名钱包",
+          "unhide_wallet": "显示钱包",
+          "delete_wallet": "删除钱包",
+          "view_private_key": "查看私钥",
+          "copy_address": "复制地址",
+          "hidden": "隐藏"
         },
         "new_wallet": {
-          "name_your_wallet": "Name your wallet",
-          "create": "Create Wallet",
-          "input_placeholder": "ex: Wallet 1"
+          "name_your_wallet": "给你的钱包取个名字",
+          "create": "创建钱包",
+          "input_placeholder": "示例：钱包 1"
         },
         "private_key": {
-          "title": "Your Private Key",
-          "subtitle": "Anyone who has this key can access your entire wallet! You should never share it.",
-          "saved": "I've saved this",
-          "warning_1": "Never share your Private Key or enter it into any apps.",
-          "warning_2": "Make sure nobody can view your screen when viewing your Private Key.",
-          "warning_3": "Anyone with your Private Key can access your entire wallet.",
-          "warning_4": "Rainbow Support will never ask you for your Private Key.",
-          "show": "Show Private Key"
+          "title": "您的私钥",
+          "subtitle": "任何拥有此密钥的人都可以访问您的整个钱包！您绝对不应该分享它。",
+          "saved": "我已保存此内容",
+          "warning_1": "永远不要分享您的私钥或将其输入任何应用程序。",
+          "warning_2": "查看您的私钥时，请确保没有人能够看到您的屏幕。",
+          "warning_3": "任何人拥有您的私钥都可以访问您的整个钱包。",
+          "warning_4": "Rainbow Support 绝不会要求您提供私钥。",
+          "show": "显示私钥"
         },
         "recovery_phrase": {
-          "title": "Your Recovery Phrase",
-          "subtitle": "Anyone who has these words can access your entire wallet! You should never share them.",
-          "saved": "I've saved these words",
-          "warning_1": "Never share your Recovery Phrase or enter it into any apps.",
-          "warning_2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
-          "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
-          "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
-          "show": "Show Recovery Phrase",
-          "phrase_copied": "Recovery Phrase Copied"
+          "title": "您的恢复短语",
+          "subtitle": "任何拥有这些单词的人都可以访问您的整个钱包！您绝对不应该分享它们。",
+          "saved": "我已保存这些单词",
+          "warning_1": "永远不要分享您的恢复短语或将其输入任何应用程序。",
+          "warning_2": "查看恢复短语时，请确保没有人能够查看您的屏幕。",
+          "warning_3": "任何人拥有您的恢复短语都可以访问您的整个钱包。",
+          "warning_4": "彩虹支持团队永远不会要求您提供恢复短语。",
+          "show": "显示恢复短语",
+          "phrase_copied": "助记词已复制"
         }
       }
     },
     "transactions": {
-      "title": "Transactions",
-      "default_speed": "Default Speed",
-      "use_flashbots": "Use Flashbots",
-      "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures. Learn more."
+      "title": "交易记录",
+      "default_speed": "默认速度",
+      "use_flashbots": "使用Flashbots",
+      "flashbots_description": "Flashbots保护您的交易，降低交易失败的可能性。了解更多。"
     },
     "currency": {
-      "title": "Currency",
-      "ETH": "Ethereum",
-      "USD": "United States Dollar",
-      "EUR": "Euro",
-      "GBP": "British Pound",
-      "AUD": "Australian Dollar",
-      "CNY": "Chinese Yuan",
-      "KRW": "South Korean Won",
-      "JPY": "Japanese Yen",
-      "RUB": "Russian Ruble",
-      "INR": "Indian Rupee",
-      "TRY": "Turkish Lira",
-      "CAD": "Canadian Dollar",
-      "NZD": "New Zealand Dollar",
-      "ZAR": "South African Rand"
+      "title": "货币",
+      "ETH": "以太坊",
+      "USD": "美元",
+      "EUR": "欧元",
+      "GBP": "英镑",
+      "AUD": "澳元",
+      "CNY": "人民币",
+      "KRW": "韩元",
+      "JPY": "日元",
+      "RUB": "俄罗斯卢布",
+      "INR": "印度卢比",
+      "TRY": "土耳其里拉",
+      "CAD": "加拿大元",
+      "NZD": "新西兰元",
+      "ZAR": "南非兰特"
     },
     "language": {
-      "title": "Language",
-      "en_us": "English",
-      "es_419": "Spanish (Latin America)",
-      "zh_cn": "Simplified Chinese (Mainland China)"
+      "title": "语言"
     },
     "feature_flags": {
-      "full_watching_wallets": "Full Access to Watched Wallets",
-      "hw_wallets_enabled": "Enable Hardware Wallet Support",
-      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts"
+      "full_watching_wallets": "完全访问被监视的钱包",
+      "hw_wallets_enabled": "启用硬件钱包支持",
+      "command_k_internal_shortcuts_enabled": "启用 ⌘K 内部快捷键"
     }
   },
   "transactions": {
-    "contract_interaction": "Contract Interaction",
-    "savings": "Savings",
-    "deposited": "Deposited",
-    "withdrew": "Withdrew"
+    "contract_interaction": "合约交互",
+    "savings": "储蓄",
+    "deposited": "已存入",
+    "withdrew": "已提现"
   },
   "command_k": {
     "hide_balances_toast": {
-      "description_hidden": "Your balances are obscured",
-      "description_revealed": "Your balances are visible",
-      "title_hidden": "Balances Hidden",
-      "title_revealed": "Balances Revealed"
+      "description_hidden": "您的余额已隐藏",
+      "description_revealed": "您的余额可见",
+      "title_hidden": "隐藏余额",
+      "title_revealed": "余额显示"
     },
-    "no_results": "No results",
+    "no_results": "没有结果",
     "section_titles": {
-      "shortcuts": "Shortcuts"
+      "shortcuts": "快捷方式"
     },
-    "search_placeholder": "Search or enter command…",
+    "search_placeholder": "搜索或输入命令...",
     "shortcuts": {
       "names": {
-        "send": "Send",
-        "swap": "Swap",
-        "copy_address": "Copy Address",
-        "view_nfts": "View NFTs",
-        "switch_wallets": "Switch Wallets",
-        "settings": "Settings",
-        "add_wallet": "Add a Wallet",
-        "watch_wallet": "Watch a Wallet",
-        "hide_balances": "Toggle Hidden Balances",
-        "wallets_and_keys": "Wallets & Keys",
-        "view_full_screen": "View Full Screen"
+        "send": "发送",
+        "swap": "交换",
+        "copy_address": "复制地址",
+        "view_nfts": "查看NFT",
+        "switch_wallets": "切换钱包",
+        "settings": "设置",
+        "add_wallet": "添加钱包",
+        "watch_wallet": "查看钱包",
+        "hide_balances": "切换隐藏余额",
+        "wallets_and_keys": "钱包与密钥",
+        "view_full_screen": "全屏查看"
       },
       "search_tags": {
-        "swap": "bridge",
-        "view_nfts": "gallery, profile",
-        "settings": "preferences",
-        "add_wallet": "create, import, hardware wallet",
-        "hide_balances_hidden": "show, hide",
-        "hide_balances_revealed": "hide",
-        "wallets_and_keys": "wallets and keys"
+        "swap": "桥",
+        "view_nfts": "画廊，个人资料",
+        "settings": "偏好设置",
+        "add_wallet": "创建，导入，硬件钱包",
+        "hide_balances_hidden": "显示，隐藏",
+        "hide_balances_revealed": "隐藏",
+        "wallets_and_keys": "钱包和密钥"
       }
     }
   },
   "connected_apps": {
-    "title": "Connected Apps",
-    "disconnect": "Disconnect All",
-    "other_wallets": "Other Wallets",
-    "no_connections_title": "No connected apps",
-    "no_connections_copy": "Websites you connect to will show up here"
+    "title": "已连接的应用",
+    "disconnect": "断开所有连接",
+    "other_wallets": "其他钱包",
+    "no_connections_title": "没有连接的应用程序",
+    "no_connections_copy": "您连接的网站将显示在这里"
   },
   "send": {
-    "title": "Send",
-    "input_to_address_placeholder": "Name, ENS or address",
-    "input_token_placeholder": "Token",
-    "max": "Max",
-    "switch_to": "Switch to %{currency}",
+    "title": "发送",
+    "input_to_address_placeholder": "名称，ENS或地址",
+    "input_token_placeholder": "代币",
+    "max": "最大",
+    "switch_to": "切换到 %{currency}",
     "button_label": {
-      "review": "Review",
-      "enter_address_and_amount": "Enter an address and amount",
-      "enter_valid_address": "Enter a valid address",
-      "enter_address": "Enter an address",
-      "enter_amount": "Enter an amount",
-      "insufficient_asset": "Insufficient %{symbol}",
-      "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
+      "review": "审核",
+      "enter_address_and_amount": "输入地址和金额",
+      "enter_valid_address": "请输入有效的地址",
+      "enter_address": "输入地址",
+      "enter_amount": "输入金额",
+      "insufficient_asset": "%{symbol}不足",
+      "insufficient_native_asset_for_gas": "燃气不足，无法支付 %{symbol}"
     },
     "wallets_list": {
-      "contacts": "Contacts",
-      "my_wallets": "My wallets",
-      "watched_wallets": "Watching",
-      "no_results": "No results"
+      "contacts": "联系人",
+      "my_wallets": "我的钱包",
+      "watched_wallets": "观察中",
+      "no_results": "没有结果"
     },
     "tokens_input": {
-      "tokens": "Tokens",
-      "sort": "Sort",
-      "available": "available",
-      "token_balance": "Token Balance",
-      "networks": "Networks",
-      "nothing_found": "Nothing found"
+      "tokens": "代币",
+      "sort": "排序",
+      "available": "可用",
+      "token_balance": "代币余额",
+      "networks": "网络",
+      "nothing_found": "未找到"
     },
     "review": {
-      "title": "Review & Send",
-      "to": "to",
-      "you_own_wallet": "You own this wallet",
-      "send_to": "Send to %{toName}",
-      "cancel": "Cancel",
-      "sending_on_network": "Sending on the %{chainName} network",
-      "sending_on_l2_check_1": "I’m not sending to an exchange",
-      "sending_on_l2_check_2": "The person I’m sending to has a wallet that support %{chainName}",
-      "complete_checks": "Complete the checks",
-      "confirm_hw": "Confirm on your device"
+      "title": "审核并发送",
+      "to": "至",
+      "you_own_wallet": "您拥有此钱包",
+      "send_to": "发送给 %{toName}",
+      "cancel": "取消",
+      "sending_on_network": "正在 %{chainName} 网络上发送",
+      "sending_on_l2_check_1": "我不是在发送到交易所",
+      "sending_on_l2_check_2": "我要发送给的人拥有支持%{chainName}的钱包",
+      "complete_checks": "完成验证",
+      "confirm_hw": "在您的设备上确认"
     }
   },
   "swap": {
-    "title": "Swap",
-    "input_token_to_swap_placeholder": "Select a token to swap",
-    "input_token_to_receive_placeholder": "Select a token to receive",
-    "select_tokens_to_swap": "Select tokens to swap",
-    "max": "Max",
-    "balance": "Balance",
+    "title": "交换",
+    "input_token_to_swap_placeholder": "选择要交换的代币",
+    "input_token_to_receive_placeholder": "选择要接收的代币",
+    "select_tokens_to_swap": "选择要交换的代币",
+    "max": "最大",
+    "balance": "余额",
     "tokens_input": {
-      "tokens": "Tokens",
-      "sort": "Sort",
-      "available": "available",
-      "token_balance": "Token Balance",
-      "networks": "Networks",
-      "filter_by_network": "Filter by Network",
-      "switch_networks": "Switch Networks",
-      "nothing_found": "Nothing found",
-      "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
-      "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap.",
-      "output_quotes_disabled": "Output quotes disabled"
+      "tokens": "代币",
+      "sort": "排序",
+      "available": "可用",
+      "token_balance": "代币余额",
+      "networks": "网络",
+      "filter_by_network": "按网络筛选",
+      "switch_networks": "切换网络",
+      "nothing_found": "未找到",
+      "nothing_found_description": "一些代币没有足够的流动性来进行成功的交换。",
+      "nothing_found_description_l2": "一些代币在二层网络上没有足够的流动性来进行成功的交换。",
+      "output_quotes_disabled": "禁用输出报价"
     },
     "warnings": {
       "long_wait": {
-        "title": "Long wait",
-        "description": "Up to %{time} to swap"
+        "title": "长时间等待",
+        "description": "最多%{time}可交换"
       },
       "price_impact": {
-        "title": "Small market",
-        "description": "Losing %{impactAmount}"
+        "title": "小市场",
+        "description": "失去 %{impactAmount}"
       }
     },
     "aggregators": {
-      "rainbow": "Auto"
+      "rainbow": "自动"
     },
     "settings": {
-      "title": "Swap Settings",
-      "route_swaps": "Route swaps via",
-      "use_flashbots": "Use Flashbots",
-      "max_slippage": "Max slippage",
-      "use_defaults": "Use defaults",
-      "done": "Done",
+      "title": "交易设置",
+      "route_swaps": "通过路由进行兑换",
+      "use_flashbots": "使用Flashbots",
+      "max_slippage": "最大滑点",
+      "use_defaults": "使用默认值",
+      "done": "完成",
       "warnings": {
-        "high": "High",
-        "possible_loss": "Possible loss"
+        "high": "高",
+        "possible_loss": "可能的损失"
       },
       "explainers": {
         "slippage": {
-          "title": "Slippage",
-          "description_1": "Slippage occurs when the price of a swap changes during the time between you submitting your transaction and its confirmation.",
-          "description_2": "Setting a higher slippage tolerance increases the likelihood your swap will be successful, but may result in you getting a worse price.",
+          "title": "滑点",
+          "description_1": "滑点是指在您提交交易和确认交易之间的时间内，交换价格发生变化。",
+          "description_2": "设置更高的滑点容忍度会增加您交换成功的可能性，但可能导致您获得更差的价格。",
           "read_more": {
-            "open_text": "Still curious? ",
-            "link_text": "Read more",
-            "close_text": " about slippage and how it affects swaps."
+            "open_text": "还有疑问吗？",
+            "link_text": "阅读更多",
+            "close_text": "关于滑点及其对交换的影响。"
           }
         },
         "flashbots": {
-          "title": "Flashbots",
-          "description": "Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing.",
+          "title": "闪电机器人",
+          "description": "Flashbots保护您的交易免受前置交易和夹心攻击，这可能导致您获得更差的价格或交易失败。",
           "read_more": {
-            "open_text": "Still curious? ",
-            "link_text": "Read more",
-            "close_text": " about Flashbots and the protection it offers."
+            "open_text": "还有疑问吗？",
+            "link_text": "阅读更多",
+            "close_text": "关于Flashbots及其提供的保护。"
           }
         },
         "routing": {
-          "title": "Swap Routing",
-          "description": "By default, Rainbow chooses the cheapest route possible for your swap. If you prefer to specifically use either 0x or 1inch, you can do that too.",
+          "title": "交易路由",
+          "description": "默认情况下，Rainbow会选择最便宜的路线进行兑换。如果您更喜欢使用0x或1inch，您也可以这样做。",
           "read_more": {
-            "open_text": "Still curious? ",
-            "link_text": "Read more",
-            "close_text": " about our approach to routing swaps."
+            "open_text": "还有疑问吗？",
+            "link_text": "阅读更多",
+            "close_text": "关于我们的交换路由方法。"
           }
         },
-        "got_it": "Got it"
+        "got_it": "明白了"
       }
     },
     "actions": {
-      "review": "Review",
-      "loading": "Loading",
-      "insufficient_liquidity": "Insufficient liquidity",
-      "no_route": "No route found",
-      "no_quote": "No quote available",
-      "enter_an_amount": "Enter an amount"
+      "review": "审核",
+      "loading": "加载中",
+      "insufficient_liquidity": "流动性不足",
+      "no_route": "未找到路由",
+      "no_quote": "无报价",
+      "enter_an_amount": "输入金额"
     },
     "review": {
-      "title_swap": "Review & Swap",
-      "title_bridge": "Review & Bridge",
-      "flashbots_on": "On",
-      "minimum_received": "Minimum received",
-      "swapping_via": "Swapping via",
-      "bridging_via": "Bridging via",
-      "included_fee": "Included Rainbow fee",
-      "use_flashbots": "Use Flashbots",
-      "exchange_rate": "Exchange rate",
-      "asset_contract": "%{symbol} contract",
-      "more_details": "More details",
-      "swap_confirmation": "Swap %{sellSymbol} to %{buySymbol}",
-      "bridge_confirmation": "Bridge %{sellSymbol}",
-      "go_back": "Go back"
+      "title_swap": "审核和交换",
+      "title_bridge": "审核与桥接",
+      "flashbots_on": "开启",
+      "minimum_received": "最低收到",
+      "swapping_via": "通过交换",
+      "bridging_via": "通过桥接",
+      "included_fee": "包含彩虹费用",
+      "use_flashbots": "使用Flashbots",
+      "exchange_rate": "汇率",
+      "asset_contract": "%{symbol} 合约",
+      "more_details": "更多细节",
+      "swap_confirmation": "将 %{sellSymbol} 兑换为 %{buySymbol}",
+      "bridge_confirmation": "桥接 %{sellSymbol}",
+      "go_back": "返回"
     },
     "explainers": {
       "long_wait": {
-        "title": "Long wait to swap",
-        "description": "This swap may take a very long time to complete. This is usually due to problems with a cross-chain bridge.",
-        "action_label": "Continue anyway"
+        "title": "长时间等待进行兑换",
+        "description": "此次交换可能需要很长时间才能完成。这通常是由于跨链桥的问题所致。",
+        "action_label": "继续"
       },
       "no_route": {
-        "title": "No routes found",
-        "description": "We couldn’t find a route for this swap. A route may not exist for this swap, or the amount may be too small.",
-        "action_label": "Got it"
+        "title": "未找到路由",
+        "description": "我们找不到此交换的路径。可能不存在此交换的路径，或者交换的金额可能太小。",
+        "action_label": "明白了"
       },
       "no_quote": {
-        "title": "No quote available",
-        "description": "We couldn’t find quotes for this swap. This could be because there isn’t enough liqudity to swap or because of problems with how the  token is implemented.",
-        "action_label": "Continue anyway"
+        "title": "无报价",
+        "description": "我们无法找到此交换的报价。这可能是因为交换的流动性不足，或者是由于代币的实施问题。",
+        "action_label": "继续"
       },
       "insufficient_liquidity": {
-        "title": "Insufficient liquidity",
-        "description": "We couldn’t find quotes for this swap because this pair doesn’t have enough liquidity on exchanges.",
-        "action_label": "Got it",
+        "title": "流动性不足",
+        "description": "我们无法为此交换找到报价，因为该交易对在交易所上没有足够的流动性。",
+        "action_label": "明白了",
         "footer_text": {
-          "open_text": "Still curious? ",
-          "link_text": "Read more",
-          "close_text": " about AMMs and token liquidity."
+          "open_text": "还有疑问吗？",
+          "link_text": "阅读更多",
+          "close_text": "关于AMM和代币流动性。"
         }
       }
     }
   },
   "custom_gas": {
-    "title": "Gas Settings",
-    "current_base_fee": "Current base fee",
-    "max_base_fee": "Max base fee",
-    "miner_tip": "Miner tip",
-    "max_transaction_fee": "Max transaction fee",
-    "transaction_speed": "Transaction speed",
-    "cancel": "Cancel",
-    "set": "Set",
+    "title": "燃气设置",
+    "current_base_fee": "当前基础费用",
+    "max_base_fee": "最大基础费用",
+    "miner_tip": "矿工小费",
+    "max_transaction_fee": "最大交易费用",
+    "transaction_speed": "交易速度",
+    "cancel": "取消",
+    "set": "设置",
     "base_trend": {
-      "falling": "Falling",
-      "stable": "Stable",
-      "surging": "Surging",
-      "rising": "Rising"
+      "falling": "下降",
+      "stable": "稳定",
+      "surging": "激增",
+      "rising": "上升"
     },
     "warnings": {
-      "may_get_stuck": "may get stuck",
-      "likely_to_fail": "likely to fail",
-      "low": "Low"
+      "may_get_stuck": "可能会卡住",
+      "likely_to_fail": "可能失败",
+      "low": "低"
     }
   },
   "contacts": {
-    "save_contact": "Save contact",
-    "add_to_contacts": "Add to contacts",
-    "edit_contact": "Edit contact",
-    "save_changes": "Save changes",
-    "cancel": "Cancel",
-    "remove_contact_title": "Remove contact?",
-    "remove_contact_action": "Remove contact",
-    "remove_contact_description": "Are you sure you want to remove “%{name}” from your contacts?",
-    "save": "Save",
-    "copy_address": "Copy address",
-    "view_on_etherscan": "View on Etherscan",
-    "view_on_explorer": "View on Explorer",
-    "delete_contact": "Delete contact",
-    "contact_address_copied": "Address Copied"
+    "save_contact": "保存联系人",
+    "add_to_contacts": "添加到联系人",
+    "edit_contact": "编辑联系人",
+    "save_changes": "保存更改",
+    "cancel": "取消",
+    "remove_contact_title": "删除联系人？",
+    "remove_contact_action": "删除联系人",
+    "remove_contact_description": "您确定要从您的联系人中删除“%{name}”吗？",
+    "save": "保存",
+    "copy_address": "复制地址",
+    "view_on_etherscan": "在Etherscan上查看",
+    "view_on_explorer": "在浏览器中查看",
+    "delete_contact": "删除联系人",
+    "contact_address_copied": "地址已复制"
   },
   "sign": {
-    "title": "Sign"
+    "title": "签名"
   },
   "unlock": {
-    "welcome_back": "Welcome back",
-    "enter_password": "Enter your password to unlock Rainbow.",
-    "unlock": "Unlock",
-    "having_trouble": "Having trouble?",
-    "contact": "Contact",
-    "rainbow_support": "Rainbow Support"
+    "welcome_back": "欢迎回来",
+    "enter_password": "输入密码以解锁彩虹钱包。",
+    "unlock": "解锁",
+    "having_trouble": "遇到问题了吗？",
+    "contact": "联系人",
+    "rainbow_support": "彩虹支持"
   },
   "onboard_before_connect": {
-    "before_connect": "Before you can connect",
-    "almost_done": "You’re almost done. Quickly finish setting up your wallet with Rainbow.",
-    "setup_wallet": "Set up your wallet"
+    "before_connect": "在您连接之前",
+    "almost_done": "您已经快完成了。快速完成彩虹钱包的设置。",
+    "setup_wallet": "设置您的钱包"
   },
   "welcome": {
-    "title": "Rainbow",
-    "subtitle": "Explore the new world of Ethereum",
-    "create_wallet": "Create a new wallet",
-    "import_wallet": "Import or connect a wallet",
-    "disclaimer_tos": "By proceeding, you agree to Rainbow’s",
-    "disclaimer_tos_link": "Terms of Use",
-    "invalid_code": "Invalid code",
-    "join": "Join",
-    "invite_code_explanation": "Rainbow is currently in a private beta stage and an invite code is required to gain access. If you need one, you can",
-    "invite_code_explanation_link": "get one here",
-    "enter_code": "Enter your beta code"
+    "title": "彩虹",
+    "subtitle": "探索以太坊的新世界",
+    "create_wallet": "创建新钱包",
+    "import_wallet": "导入或连接钱包",
+    "disclaimer_tos": "继续操作即表示您同意Rainbow的",
+    "disclaimer_tos_link": "使用条款",
+    "invalid_code": "无效的代码",
+    "join": "加入",
+    "invite_code_explanation": "Rainbow目前处于私人测试阶段，需要邀请码才能获得访问权限。如果您需要一个邀请码，您可以",
+    "invite_code_explanation_link": "在这里获取一个",
+    "enter_code": "请输入您的测试代码"
   },
   "seed_backup_prompt": {
-    "title": "Before you get started, backup your Secret Recovery Phrase",
-    "warning_1": "It's important to write down and store your Secret Recovery Phrase somewhere safe.",
-    "warning_2": "Your Secret Recovery Phrase is the only way to recover your accounts and funds.",
-    "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet.",
-    "reveal_your_recovery_phrase": "Reveal your recovery phrase",
-    "take_me_to_wallet": "Take me to my wallet"
+    "title": "在开始之前，请备份您的秘密恢复短语",
+    "warning_1": "重要的是将您的秘密恢复短语写下来并妥善存放在安全的地方。",
+    "warning_2": "您的秘密恢复短语是恢复您的账户和资金的唯一方式。",
+    "warning_3": "任何人拥有您的秘密恢复短语都可以访问您的整个钱包。",
+    "reveal_your_recovery_phrase": "揭示您的恢复短语",
+    "take_me_to_wallet": "带我去我的钱包"
   },
   "seed_reveal": {
-    "title": "Your Secret Recovery Phrase",
-    "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
-    "saved_these_words": "I've saved these words",
-    "phrase_copied": "Recovery Phrase Copied"
+    "title": "您的秘密恢复短语",
+    "write_down_seed_importance": "请妥善保存这些单词，它们可以访问您的整个钱包！请将它们存放在安全的地方，切勿分享。",
+    "saved_these_words": "我已保存这些单词",
+    "phrase_copied": "助记词已复制"
   },
   "import_wallet_via_secret": {
-    "title": "Import Wallet",
-    "explanation": "Select an import method that suites you best. You may import additional wallets later at any time.",
-    "seed_phrase": "Import from a Secret Recovery Phrase",
-    "seed_phrase_desc": "Add a wallet group using your 12 or 24 word Secret Recovery Phrase",
-    "private_key": "Import from a Private Key",
-    "private_key_desc": "Add a single wallet using your 64-character Private Key"
+    "title": "导入钱包",
+    "explanation": "选择最适合您的导入方式。您随时可以随时导入其他钱包。",
+    "seed_phrase": "从秘密恢复短语导入",
+    "seed_phrase_desc": "使用您的12或24个单词的秘密恢复短语添加一个钱包组",
+    "private_key": "从私钥导入",
+    "private_key_desc": "使用您的64位字符私钥添加一个钱包"
   },
   "import_wallet_via_seed": {
-    "title": "Import Your Wallet",
-    "explanation": "To add a wallet, enter or paste your 12 or 24 word Secret Recovery Phrase.",
-    "24_words": "I'm using 24 words",
-    "12_words": "I'm using 12 words",
-    "import_wallet_group": "Import wallet group",
-    "n_words_might_be_wrong": "%{n} words may be misspelled or incorrect.",
-    "1_word_might_be_wrong": "1 word may be misspelled or incorrect.",
-    "couldnt_paste": "We couldn’t paste your Secret Recovery Phrase"
+    "title": "导入您的钱包",
+    "explanation": "要添加钱包，请输入或粘贴您的12个或24个单词的秘密恢复短语。",
+    "24_words": "我正在使用24个单词",
+    "12_words": "我正在使用12个单词",
+    "import_wallet_group": "导入钱包组",
+    "n_words_might_be_wrong": "可能有%{n}个单词拼写错误或不正确。",
+    "1_word_might_be_wrong": "可能有一个单词拼写错误或不正确。",
+    "couldnt_paste": "无法粘贴您的恢复短语"
   },
   "import_wallet_via_private_key": {
-    "title": "Import Your Wallet",
-    "explanation": "Enter your 64-character Private Key from Rainbow or any Ethereum wallet.",
-    "placeholder": "Paste your Private Key from another wallet",
-    "import_wallet": "Import wallet"
+    "title": "导入您的钱包",
+    "explanation": "从彩虹钱包或任何以太坊钱包输入您的64位字符私钥。",
+    "placeholder": "从其他钱包粘贴您的私钥",
+    "import_wallet": "导入钱包"
   },
   "import_or_connect": {
-    "title": "Restore or Connect",
-    "explanation": "Anyone with your Secret Recovery Phrase can access your entire wallet! Store it somewhere safe and don't share it with anyone.",
-    "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
-    "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
-    "connect_wallet": "Connect your hardware wallet",
-    "connect_wallet_description": "Add accounts from your hardware wallet.",
-    "watch_address": "Watch an Ethereum address",
-    "watch_address_description": "Watch a public address or ENS name."
+    "title": "恢复或连接",
+    "explanation": "任何人拥有您的秘密恢复短语都可以访问您的整个钱包！请将其存放在安全的地方，不要与任何人分享。",
+    "import_wallet": "使用秘密恢复短语或私钥导入",
+    "import_wallet_description": "使用您的秘密恢复短语或私钥添加钱包。",
+    "connect_wallet": "连接您的硬件钱包",
+    "connect_wallet_description": "从您的硬件钱包添加账户。",
+    "watch_address": "查看以太坊地址",
+    "watch_address_description": "查看公共地址或ENS名称。"
   },
   "import_wallet_selection": {
-    "title": "Your wallets",
+    "title": "您的钱包",
     "description": {
-      "zero": "Rainbow detected 1 wallet. You can add more at any time.",
-      "one": "Rainbow detected 1 wallet that have been used recently. You can add more at any time.",
-      "other": "Rainbow detected %{count} wallets that have been used recently. You can edit or add more at any time."
+      "zero": "Rainbow检测到1个钱包。您随时可以添加更多。",
+      "one": "Rainbow检测到1个最近使用过的钱包。您随时可以添加更多。",
+      "other": "Rainbow检测到最近使用了%{count}个钱包。您随时可以编辑或添加更多。"
     },
-    "add_wallets": "Add wallets",
-    "edit_wallets": "Edit wallets",
-    "loading": "Hold tight while we look up all your wallets...",
-    "importing": "Importing your wallets...",
-    "account_summary_tokens": "Tokens: %{tokensAmount}",
-    "account_summary_last_tx": "Last tx: %{lastTx} ago"
+    "add_wallets": "添加钱包",
+    "edit_wallets": "编辑钱包",
+    "loading": "请稍等，我们正在查找您的所有钱包...",
+    "importing": "正在导入您的钱包...",
+    "account_summary_tokens": "代币数量：%{tokensAmount}",
+    "account_summary_last_tx": "上次交易：%{lastTx} 前"
   },
   "watch_wallet": {
-    "title": "Watch an Ethereum address",
-    "description": "Enter any Ethereum address or ENS name. You'll have to import it later to send or sign transactions.",
-    "invalid_address": "Invalid address",
-    "unsupported_tld": "%{tld} is not supported",
-    "address_already_added": "Address already added",
-    "address_already_added_as": "Address already added as %{addedAs}",
-    "watch_top_ens_wallets": "Watch top ENS wallets",
-    "placeholder": "Ethereum address or ENS name",
-    "watch_wallet": "Watch wallet",
-    "watch_wallets": "Watch wallets",
-    "loading": "Hold tight while we start watching these wallets..."
+    "title": "查看以太坊地址",
+    "description": "输入任何以太坊地址或ENS名称。您将需要在稍后导入它以发送或签署交易。",
+    "invalid_address": "无效地址",
+    "unsupported_tld": "不支持%{tld}",
+    "address_already_added": "地址已添加",
+    "address_already_added_as": "地址已添加为 %{addedAs}",
+    "watch_top_ens_wallets": "查看热门ENS钱包",
+    "placeholder": "以太坊地址或ENS名称",
+    "watch_wallet": "查看钱包",
+    "watch_wallets": "查看钱包",
+    "loading": "请稍等，我们开始监视这些钱包..."
   },
   "import_wallet": {
-    "title": "Import your wallet",
-    "description": "Enter your Secret Recovery Phrase or a Private Key from Rainbow or any Ethereum wallet.",
-    "too_many_words": "Too many words",
-    "too_many_chars": "Too many characters",
-    "add_another": "Add another",
-    "remove": "Remove",
-    "placeholder": "Paste your Secret Recovery Phrase or a Private Key from another wallet",
-    "invalid_word": "Invalid word: %{word}",
-    "invalid_private_key": "Invalid Private Key",
-    "invalid_recovery_phrase": "Invalid recovery phrase",
+    "title": "导入您的钱包",
+    "description": "请输入您的秘密恢复短语或来自彩虹钱包或任何以太坊钱包的私钥。",
+    "too_many_words": "字数过多",
+    "too_many_chars": "字符过多",
+    "add_another": "添加另一个",
+    "remove": "删除",
+    "placeholder": "粘贴您的秘密恢复短语或来自其他钱包的私钥",
+    "invalid_word": "无效的单词：%{word}",
+    "invalid_private_key": "无效的私钥",
+    "invalid_recovery_phrase": "无效的恢复短语",
     "missing_words": {
-      "one": "Missing 1 word",
-      "other": "Missing %{count} words"
+      "one": "缺少1个单词",
+      "other": "缺少 %{count} 个单词"
     },
     "import_wallet": {
-      "one": "Restore wallet",
-      "other": "Restore wallets"
+      "one": "恢复钱包",
+      "other": "恢复钱包"
     }
   },
   "edit_import_wallet_selection": {
-    "title": "All wallets",
+    "title": "所有钱包",
     "add_wallet": {
-      "zero": "Select a wallet",
-      "one": "Add wallet",
-      "other": "Add %{count} wallets"
+      "zero": "选择一个钱包",
+      "one": "添加钱包",
+      "other": "添加 %{count} 个钱包"
     },
     "importing_your_wallet": {
-      "one": "Importing your wallet...",
-      "other": "Importing your wallets..."
+      "one": "导入您的钱包...",
+      "other": "正在导入您的钱包..."
     },
     "sort": {
-      "title": "Sort",
-      "default": "Default",
-      "token_balance": "Token Balance",
-      "last_transaction": "Last Transaction"
+      "title": "排序",
+      "default": "默认",
+      "token_balance": "代币余额",
+      "last_transaction": "最后一笔交易"
     }
   },
   "seed_verify": {
-    "title": "Verify your Secret Recovery Phrase",
-    "explanation": "Select the 4th, 8th, and 12th words in order your  Secret Recovery Phrase displays them.",
-    "skip": "Skip this"
+    "title": "验证您的秘密恢复短语",
+    "explanation": "按顺序选择您的密钥恢复短语中的第4、第8和第12个单词显示它们。",
+    "skip": "跳过"
   },
   "menu": {
     "network": {
-      "title": "Switch Networks",
-      "disconnect": "Disconnect"
+      "title": "切换网络",
+      "disconnect": "断开连接"
     },
     "app_connection_menu": {
-      "all_connected_apps": "All connected apps",
-      "not_connected": "Not connected",
-      "networks": "Networks",
-      "connect": "Connect",
-      "switch_networks": "Switch networks"
+      "all_connected_apps": "所有已连接的应用",
+      "not_connected": "未连接",
+      "networks": "网络",
+      "connect": "连接",
+      "switch_networks": "切换网络"
     },
     "home_header_right": {
-      "settings": "Settings",
-      "qr_code": "My QR Code",
-      "rainbow_profile": "Rainbow Profile",
-      "guides_and_support": "Guides & Support",
-      "share_feedback": "Share Feedback",
-      "lock_rainbow": "Lock Rainbow"
+      "settings": "设置",
+      "qr_code": "我的二维码",
+      "rainbow_profile": "彩虹个人资料",
+      "guides_and_support": "指南与支持",
+      "share_feedback": "分享反馈",
+      "lock_rainbow": "锁定彩虹"
     }
   },
   "approve_request": {
-    "wallet_info_title": "wants to connect to your wallet",
-    "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions.",
-    "wallet": "Wallet",
-    "network": "Network",
-    "switch_networks": "Switch Networks",
-    "switch_wallets": "Switch Wallets",
-    "connect": "Connect to %{appName}",
-    "message_signing_request": "Message Signing Request",
-    "message": "Message",
-    "sign_message": "Sign Message",
-    "confirm_hw": "Confirm on your device",
-    "balance": "Balance",
-    "send_transaction": "Send Transaction",
-    "contract_deployment": "Contract Deployment",
-    "transaction_request": "Transaction Request",
-    "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
+    "wallet_info_title": "希望连接到您的钱包",
+    "wallet_info_description": "允许 %{appName} 查看您的钱包地址、余额、活动并请求交易批准。",
+    "wallet": "钱包",
+    "network": "网络",
+    "switch_networks": "切换网络",
+    "switch_wallets": "切换钱包",
+    "connect": "连接到 %{appName}",
+    "message_signing_request": "消息签名请求",
+    "message": "消息",
+    "sign_message": "签名消息",
+    "confirm_hw": "在您的设备上确认",
+    "balance": "余额",
+    "send_transaction": "发送交易",
+    "contract_deployment": "合约部署",
+    "transaction_request": "交易请求",
+    "insufficient_native_asset_for_gas": "燃气不足，无法支付 %{symbol}"
   },
   "transaction_fee": {
-    "title": "Transaction Speed",
-    "urgent": "Urgent",
-    "fast": "Fast",
-    "normal": "Normal",
-    "custom": "Custom",
-    "estimated_fee": "Estimated fee"
+    "title": "交易速度",
+    "urgent": "紧急",
+    "fast": "快速",
+    "normal": "正常",
+    "custom": "自定义",
+    "estimated_fee": "预估手续费"
   },
   "time": {
     "days": {
       "long": {
-        "plural": "days",
-        "singular": "day"
+        "plural": "天",
+        "singular": "天"
       },
       "micro": "d",
       "short": {
-        "plural": "days",
-        "singular": "day"
+        "plural": "天",
+        "singular": "天"
       }
     },
     "hours": {
       "long": {
-        "plural": "hours",
-        "singular": "hour"
+        "plural": "小时",
+        "singular": "小时"
       },
-      "micro": "h",
+      "micro": "你好",
       "short": {
-        "plural": "hrs",
-        "singular": "hr"
+        "plural": "小时",
+        "singular": "小时"
       }
     },
     "milliseconds": {
       "long": {
-        "plural": "milliseconds",
-        "singular": "millisecond"
+        "plural": "毫秒",
+        "singular": "毫秒"
       },
-      "micro": "ms",
+      "micro": "毫秒",
       "short": {
-        "plural": "ms",
-        "singular": "ms"
+        "plural": "毫秒",
+        "singular": "毫秒"
       }
     },
     "minutes": {
       "long": {
-        "plural": "minutes",
-        "singular": "minute"
+        "plural": "分钟",
+        "singular": "分钟"
       },
-      "micro": "m",
+      "micro": "男",
       "short": {
-        "plural": "mins",
-        "singular": "min"
+        "plural": "分钟",
+        "singular": "最小"
       }
     },
-    "now": "Now",
+    "now": "现在",
     "seconds": {
       "long": {
-        "plural": "seconds",
-        "singular": "second"
+        "plural": "秒",
+        "singular": "第二"
       },
       "micro": "s",
       "short": {
-        "plural": "secs",
-        "singular": "sec"
+        "plural": "秒",
+        "singular": "秒"
       }
     }
   },
   "wallets": {
-    "title": "Wallets"
+    "title": "钱包"
   },
   "common_actions": {
-    "back": "Back",
-    "cancel": "Cancel",
-    "continue": "Continue",
-    "copy_to_clipboard": "Copy to clipboard"
+    "back": "返回",
+    "cancel": "取消",
+    "continue": "继续",
+    "copy_to_clipboard": "复制到剪贴板"
   },
   "errors": {
-    "no_wallet_name_set": "No wallet name set"
+    "no_wallet_name_set": "未设置钱包名称"
   },
   "common_titles": {
-    "before_you_proceed": "Before you proceed"
+    "before_you_proceed": "请继续操作"
   },
   "passwords": {
-    "password": "Password",
-    "password_not_set": "Password not set",
-    "password_incorrect": "Password incorrect",
-    "passwords_do_not_match": "Passwords do not match",
-    "wrong_password": "Wrong password",
-    "new_password": "New password",
-    "confirm_password": "Confirm password",
-    "update_password": "Update Password",
-    "set_password": "Set password",
-    "too_weak": "Too weak",
-    "weak": "Weak",
-    "good": "Good",
-    "excellent": "Excellent",
-    "8_chars_min": "8 characters min",
-    "try_another_password_weak": "This is a weak password that is easy to crack. Try a stronger password.",
-    "try_another_password_common": "This is a common password that is easy to crack. Try a stronger password.",
-    "too_short": "Password needs to be at least 8 chars long"
+    "password": "密码",
+    "password_not_set": "密码未设置",
+    "password_incorrect": "密码错误",
+    "passwords_do_not_match": "密码不匹配",
+    "wrong_password": "密码错误",
+    "new_password": "新密码",
+    "confirm_password": "确认密码",
+    "update_password": "更新密码",
+    "set_password": "设置密码",
+    "too_weak": "太弱",
+    "weak": "弱",
+    "good": "好",
+    "excellent": "优秀",
+    "8_chars_min": "最少8个字符",
+    "try_another_password_weak": "这是一个弱密码，容易被破解。请尝试使用更强的密码。",
+    "try_another_password_common": "这是一个常见的密码，容易被破解。请尝试使用更强的密码。",
+    "too_short": "密码长度至少为8个字符"
   },
   "create_password": {
-    "title": "Create your password",
-    "description": "Choose a password to secure & lock your wallet."
+    "title": "创建您的密码",
+    "description": "选择一个密码来保护和锁定您的钱包。"
   },
   "activity": {
-    "today": "Today",
-    "yesterday": "Yesterday",
-    "this_month": "This Month",
-    "empty_header": "No activity yet",
-    "empty_description": "Once you start using your wallet, you will see your transactions here."
+    "today": "今天",
+    "yesterday": "昨天",
+    "this_month": "本月",
+    "empty_header": "暂无活动",
+    "empty_description": "一旦您开始使用您的钱包，您将在此处看到您的交易。"
   },
   "tokens_tab": {
-    "coinbase_title": "Deposit from Coinbase",
-    "coinbase_description": "Buy or transfer from Coinbase",
-    "send_from_wallet": "Send from another wallet",
-    "send_description_1": "Press",
-    "send_description_2": "to copy your address",
-    "unknown_token": "Unknown Token"
+    "coinbase_title": "从Coinbase存入",
+    "coinbase_description": "从Coinbase购买或转账",
+    "send_from_wallet": "从另一个钱包发送",
+    "send_description_1": "按下",
+    "send_description_2": "复制您的地址",
+    "unknown_token": "未知代币"
   },
   "speed_up_and_cancel": {
-    "speed_up": "Speed up",
-    "cancel": "Cancel",
-    "view_on_etherscan": "View on Etherscan",
-    "view_on_explorer": "View on Explorer",
-    "copy_tx_hash": "Copy Tx Hash",
-    "cancel_explanation": "This will attempt to cancel your pending transaction. It requires broadcasting another transaction.",
-    "speed_up_explanation": "This will speed up your pending transaction by replacing it. There's a chance your original transaction will confirm first.",
-    "cancel_title": "Cancel transaction",
-    "speed_up_title": "Speed up transaction",
-    "wallet": "Wallet",
-    "balance": "Balance",
-    "cancel_cta": "Cancel transaction",
-    "speed_up_cta": "Speed up transaction",
-    "speed_up_transaction": "Speed up transaction",
-    "close_cta": "Cancel",
-    "handle_copy_title": "Tx Hash Copied"
+    "speed_up": "加速",
+    "cancel": "取消",
+    "view_on_etherscan": "在Etherscan上查看",
+    "view_on_explorer": "在浏览器中查看",
+    "copy_tx_hash": "复制交易哈希",
+    "cancel_explanation": "这将尝试取消您的待处理交易。它需要广播另一笔交易。",
+    "speed_up_explanation": "通过替换待处理交易，可以加快交易速度。原始交易有可能会先确认。",
+    "cancel_title": "取消交易",
+    "speed_up_title": "加快交易速度",
+    "wallet": "钱包",
+    "balance": "余额",
+    "cancel_cta": "取消交易",
+    "speed_up_cta": "加快交易速度",
+    "speed_up_transaction": "加快交易速度",
+    "close_cta": "取消",
+    "handle_copy_title": "交易哈希已复制"
   },
   "asset_details_menu": {
-    "swap": "Swap",
-    "send": "Send",
-    "view_on_etherscan": "View on Etherscan",
-    "view_on_explorer": "View on Explorer"
+    "swap": "交换",
+    "send": "发送",
+    "view_on_etherscan": "在Etherscan上查看",
+    "view_on_explorer": "在浏览器中查看"
   },
   "wallet_ready": {
-    "title": "Rainbow is ready to use",
-    "subtitle": "To access your wallet, just click Rainbow from the Extensions drop-down, or use the speedy keyboard shortcut",
-    "open": "Open Rainbow",
-    "get_started_with_rainbow": "Get started with Rainbow",
-    "get_started_with_rainbow_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow.",
-    "discover_shortcuts": "Discover shortcuts",
-    "discover_shortcuts_desc": "Looking to discover more shortcuts? Check out this helpful guide we’ve put together for you.",
-    "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar"
+    "title": "彩虹已准备就绪",
+    "subtitle": "要访问您的钱包，只需从扩展下拉菜单中点击彩虹，或使用快捷键",
+    "open": "打开彩虹",
+    "get_started_with_rainbow": "开始使用彩虹钱包",
+    "get_started_with_rainbow_desc": "欢迎使用彩虹钱包！我们非常高兴您的加入。我们创建了这个指南，以帮助您了解彩虹钱包的基础知识。",
+    "discover_shortcuts": "发现快捷方式",
+    "discover_shortcuts_desc": "想要发现更多快捷方式吗？请查看我们为您准备的有用指南。",
+    "pin_rainbow_to_your_toolbar": "将Rainbow固定到您的工具栏"
   },
   "wallet_header": {
-    "copy": "Copy",
-    "swap": "Swap",
-    "send": "Send",
-    "copy_toast": "Address Copied"
+    "copy": "复制",
+    "swap": "交换",
+    "send": "发送",
+    "copy_toast": "地址已复制"
   },
   "token_search": {
     "section_header": {
-      "favorites": "Favorites",
-      "unverified": "Unverified",
-      "verified": "Verified",
-      "on_other_networks": "On other networks",
-      "bridge": "Bridge"
+      "favorites": "收藏夹",
+      "unverified": "未验证",
+      "verified": "已验证",
+      "on_other_networks": "在其他网络上",
+      "bridge": "桥"
     },
-    "verified_by_rainbow": "Verified by Rainbow"
+    "verified_by_rainbow": "已通过彩虹验证"
   },
   "explainers": {
     "send": {
       "to_smart_contract": {
-        "description_1": "The address you entered is for a smart contract.",
-        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
-        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
-        "title": "Hold your horses!"
+        "description_1": "您输入的地址是一个智能合约。",
+        "description_2": "除非是极其特殊的情况，你可能不应该这样做。你可能会丢失你的资产，或者它们可能会被发送到错误的地方。",
+        "description_3": "请仔细检查地址，与收款人核实，或先联系客服支持。",
+        "title": "请稍等！"
       },
       "sending_on_l2": {
-        "arbitrum_title": "What's Arbitrum?",
-        "arbitrum_description_1": "Arbitrum is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
-        "arbitrum_description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum.",
-        "optimism_title": "What's Optimism?",
-        "optimism_description_1": "Optimism is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
-        "optimism_description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum.",
-        "polygon_title": "What's Polygon?",
-        "polygon_description_1": "Polygon is a sidechain, a distinct network that runs alongside Ethereum and is compatible with it.",
-        "polygon_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Polygon has its own security and consensus mechanisms that differ from Ethereum.",
-        "bsc_title": "What's BSC?",
-        "bsc_description_1": "Binance Smart Chain, or BSC for short, is the blockchain network for the  trading platform Binance.",
-        "bsc_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum.",
-        "link_button_label": "Read more"
-      },
-      "action_label": "Got it"
-    },
-    "custom_gas": {
-      "action_button_label": "Got it",
-      "current_base_stable": "Network traffic is stable right now. Have fun!",
-      "current_base_surging": "Fees are unusually high right now! Unless your transaction is urgent, it’s best to wait for fees to drop.",
-      "current_base_falling": "Fees are dropping right now!",
-      "current_base_rising": "Fees are rising right now! It’s best to use a higher max base fee to avoid a stuck transaction.",
-      "current_base_description": "The base fee is set by the Ethereum network and changes depending on how busy the network is.",
-      "current_base_title": "Current base fee",
-      "max_base_explainer_1": "This is the maximum base fee you’re willing to pay for this transaction.",
-      "max_base_explainer_2": "Setting a higher max base fee prevents your transaction from getting stuck if fees rise.",
-      "max_base_title": "Max base fee",
-      "max_priority_explainer": "The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.",
-      "max_priority_title": "Miner tip"
-    },
-    "swap": {
-      "flashbots": {
-        "title": "Flashbots",
-        "description": "Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing.",
-        "action_label": "Got it"
-      },
-      "fee": {
-        "title": "Rainbow Fee",
-        "description": "Rainbow takes a %{feePercentage} fee from swaps. It’s part of what enables us to give you the best Ethereum experience possible.",
-        "action_label": "Got it"
+        "arbitrum_title": "什么是Arbitrum？",
+        "arbitrum_description_1": "Arbitrum是一个运行在以太坊之上的第二层网络，可以实现更便宜、更快速的交易，同时仍然享受以太坊底层的安全性。",
+        "arbitrum_description_2": "在将它们永久存储在以太坊上之前，它将大量的交易捆绑在一起，然后发送下来。",
+        "optimism_title": "什么是Optimism？",
+        "optimism_description_1": "Optimism是一个在以太坊之上运行的第二层网络，可以实现更便宜、更快速的交易，同时仍然享受以太坊底层安全性的好处。",
+        "optimism_description_2": "在将它们永久存储在以太坊上之前，它将大量的交易捆绑在一起，然后发送下来。",
+        "polygon_title": "什么是Polygon？",
+        "polygon_description_1": "Polygon 是一个侧链，它是与以太坊兼容的独立网络，与以太坊并行运行。",
+        "polygon_description_2": "它允许更便宜和更快的交易，但与第二层网络不同，Polygon具有自己的安全性和共识机制，与以太坊不同。",
+        "bsc_title": "BSC 是什么？",
+        "bsc_description_1": "币安智能链（Binance Smart Chain），简称BSC，是币安交易平台的区块链网络。",
+        "bsc_description_2": "它可以实现更便宜和更快的交易，但与第二层网络不同，BSC具有自己的安全性和共识机制，与以太坊不同。",
+        "link_button_label": "阅读更多"
       }
     }
-  },
-  "injected_notifications": {
-    "network_changed": "Network changed",
-    "network_changed_failed": "Network changed failed",
-    "unsupported_network": "Unsupported network",
-    "no_active_session": "No active session"
-  },
-  "alert": {
-    "ok": "Ok",
-    "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
-    "coming_soon": "Coming Soon!"
-  },
-  "hw": {
-    "choose_title": "Connect a hardware wallet",
-    "ledger_support": "Supports Ledger Nano S, Nano S Plus, Nano X, and Stax devices.",
-    "trezor_support": "Supports Model One or Model T devices.",
-    "connect_ledger_title": "Connect your Ledger",
-    "connect_ledger_description": "Connect your Ledger to Rainbow by plugging it into your computer using the USB-C cable.",
-    "unlock_ledger_title": "Unlock Ledger",
-    "unlock_ledger_description": "The Ethereum app needs to be open on your Ledger to continue.",
-    "unlock_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
-    "exclusivity_ledger_title": "Looks like another app is using your Ledger",
-    "exclusivity_ledger_description": "Make sure you're not using your device with another app like Ledger Live, MetaMask or another browser tab.",
-    "exclusivity_ledger_description_2": "Once you close the other app, please reload this page to try again.",
-    "needs_app_ledger_title": "Open the ETH app",
-    "needs_app_ledger_description": "The Ethereum app needs to be open on your Ledger to proced with the transaction.",
-    "needs_app_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
-    "connect_trezor_title": "Complete your Trezor set up",
-    "connect_trezor_description": "Continue to connect your Trezor to Rainbow through the web interface.",
-    "learn_more": "Learn more.",
-    "connect_wallets_title": "Connect your wallets",
-    "connect_wallets_found": "We’ve found %{count} wallets on your %{vendor} with a balance or activity. Select which to connect.",
-    "connect_wallets_not_found": "We didn't find any wallets with activity on this %{vendor} but you can still add these.",
-    "connect_wallet": "Connect wallet",
-    "connect_n_wallets": "Connect %{count} wallets",
-    "wallets_found": "%{count} wallets found",
-    "add_by_index": "Add by index",
-    "index_label": "Index",
-    "connection_successful_title": "Connected successfully",
-    "connection_successful_description": "You’ve successfully added %{count} %{wallet_noun}. %{wallet_pronoun} easy to identify in your wallet list with the %{vendor} badge. You can add more at any time.",
-    "wallet_singular": "wallet",
-    "wallet_plural": "wallets",
-    "wallet_pronoun_plural": "They're",
-    "wallet_pronoun_singular": "It's",
-    "done": "Done",
-    "add_wallet": "Add wallet",
-    "add_by_index_title": "Add a wallet by its index",
-    "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger.",
-    "waiting_for_trezor_connect": "Waiting for Trezor Connect",
-    "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
-    "trezor_success": "Success!",
-    "you_can_close_this_window": "You can close this window"
-  },
-  "choose_wallet_group": {
-    "title": "Choose wallet group",
-    "description": "Choose the wallet group you'd like to create a new wallet within, or create a new one",
-    "wallet_group": "Wallet Group %{number}",
-    "new_wallet_group": "New Wallet Group",
-    "create_recovery_phrase": "Create a new recovery phrase"
   }
 }
