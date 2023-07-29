@@ -97,7 +97,7 @@ export async function consolidatedTransactionsQueryFunction({
       },
     );
     return {
-      cutoff: response?.data?.meta?.cutoff,
+      cutoff: response?.data?.meta?.cut_off,
       nextPage: response?.data?.meta?.next_page_cursor,
       transactions: await parseConsolidatedTransactions(
         response?.data,

@@ -8,7 +8,7 @@ import { ZerionTransaction } from '~/core/types/transactions';
 export interface MessageMeta {
   address?: string;
   currency?: string;
-  cutoff?: number;
+  cut_off?: number;
   status?: string;
   chain_id?: ChainName; // L2
   asset_codes?: string;

@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
+import { fetchConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import { fetchTransactions } from '~/core/resources/transactions/transactions';
 import {
   nonceStore,
@@ -10,7 +11,7 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { TransactionType } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   getPendingTransactionData,
@@ -21,20 +22,20 @@ import {
 
 import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
 
-const isPendingTransaction = (status: TransactionStatus) => {
-  return (
-    status === TransactionStatus.approving ||
-    status === TransactionStatus.bridging ||
-    status === TransactionStatus.cancelling ||
-    status === TransactionStatus.depositing ||
-    status === TransactionStatus.purchasing ||
-    status === TransactionStatus.receiving ||
-    status === TransactionStatus.sending ||
-    status === TransactionStatus.speeding_up ||
-    status === TransactionStatus.swapping ||
-    status === TransactionStatus.withdrawing
-  );
-};
+// const isPendingTransaction = (status: TransactionStatus) => {
+//   return (
+//     status === TransactionStatus.approving ||
+//     status === TransactionStatus.bridging ||
+//     status === TransactionStatus.cancelling ||
+//     status === TransactionStatus.depositing ||
+//     status === TransactionStatus.purchasing ||
+//     status === TransactionStatus.receiving ||
+//     status === TransactionStatus.sending ||
+//     status === TransactionStatus.speeding_up ||
+//     status === TransactionStatus.swapping ||
+//     status === TransactionStatus.withdrawing
+//   );
+// };
 
 export const useWatchPendingTransactions = ({
   address,
@@ -56,7 +57,7 @@ export const useWatchPendingTransactions = ({
 
   const watchPendingTransactions = useCallback(async () => {
     if (!pendingTransactions?.length || !address) return;
-    const rainbowConfirmedTransactions: string[] = [];
+    let transactionConfirmedByRainbow = false;
     const updatedPendingTransactions = await Promise.all(
       pendingTransactions.map(async (tx) => {
         let updatedTransaction = { ...tx };
@@ -130,7 +131,7 @@ export const useWatchPendingTransactions = ({
                 });
 
                 if (tx?.nonce && latest?.nonce && tx?.nonce <= latest?.nonce) {
-                  rainbowConfirmedTransactions.push(txHash);
+                  transactionConfirmedByRainbow = true;
                 }
 
                 if (latestTransactionHashConfirmedByBackend === tx?.hash) {
@@ -164,15 +165,19 @@ export const useWatchPendingTransactions = ({
       }),
     );
 
+    if (transactionConfirmedByRainbow) {
+      fetchConsolidatedTransactions(
+        {
+          address,
+          currency: currentCurrency,
+        },
+        {},
+      );
+    }
+
     setPendingTransactions({
       address,
-      pendingTransactions: updatedPendingTransactions.filter((tx) => {
-        const txHash = getTransactionHash(tx);
-        if (txHash && !rainbowConfirmedTransactions.includes(txHash)) {
-          return true;
-        }
-        return isPendingTransaction(tx?.status as TransactionStatus);
-      }),
+      pendingTransactions: updatedPendingTransactions,
     });
   }, [
     address,
