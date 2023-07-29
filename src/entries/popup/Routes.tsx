@@ -44,6 +44,7 @@ import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
+import { Language } from './pages/settings/language';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
@@ -599,7 +600,7 @@ const ROUTE_DATA = [
         protectedRoute
         background="surfaceSecondary"
       >
-        <Currency />
+        <Language />
       </AnimatedRoute>
     ),
   },

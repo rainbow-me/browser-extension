@@ -177,7 +177,9 @@
       "ZAR": "South African Rand"
     },
     "language": {
-      "title": "Language"
+      "title": "Language",
+      "en_us": "English",
+      "es_419": "Spanish (Latin America)"
     },
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",
