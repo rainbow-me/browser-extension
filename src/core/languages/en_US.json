@@ -180,7 +180,10 @@
       "title": "Language",
       "en_us": "English",
       "es_419": "Spanish (Latin America)",
-      "zh_cn": "Simplified Chinese (Mainland China)"
+      "zh_cn": "Simplified Chinese (Mainland China)",
+      "fr_fr": "French",
+      "ja_jp": "Japanese",
+      "pt_br": "Portuguese (Brazil)"
     },
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",

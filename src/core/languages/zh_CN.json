@@ -819,7 +819,93 @@
         "bsc_description_1": "币安智能链（Binance Smart Chain），简称BSC，是币安交易平台的区块链网络。",
         "bsc_description_2": "它可以实现更便宜和更快的交易，但与第二层网络不同，BSC具有自己的安全性和共识机制，与以太坊不同。",
         "link_button_label": "阅读更多"
+      },
+      "action_label": "明白了"
+    },
+    "custom_gas": {
+      "action_button_label": "明白了",
+      "current_base_stable": "网络流量目前稳定。玩得开心！",
+      "current_base_surging": "当前手续费异常高！除非您的交易非常紧急，最好等待手续费下降。",
+      "current_base_falling": "手续费正在下降！",
+      "current_base_rising": "手续费正在上涨！为了避免交易卡住，最好使用更高的最大基础费用。",
+      "current_base_description": "基础费用由以太坊网络设置，并根据网络繁忙程度而变化。",
+      "current_base_title": "当前基础费用",
+      "max_base_explainer_1": "这是您愿意为此交易支付的最高基础费用。",
+      "max_base_explainer_2": "设置更高的最大基础费用可以防止您的交易在费用上涨时被卡住。",
+      "max_base_title": "最大基础费用",
+      "max_priority_explainer": "矿工小费直接给确认您在网络上的交易的矿工。\n\n较高的小费可以使您的交易更有可能快速确认。",
+      "max_priority_title": "矿工小费"
+    },
+    "swap": {
+      "flashbots": {
+        "title": "闪电机器人",
+        "description": "Flashbots保护您的交易免受前置交易和夹心攻击，这可能导致您获得更差的价格或交易失败。",
+        "action_label": "明白了"
+      },
+      "fee": {
+        "title": "彩虹手续费",
+        "description": "Rainbow从交换中收取%{feePercentage}的手续费。这是我们能够为您提供最佳以太坊体验的一部分。",
+        "action_label": "明白了"
       }
     }
+  },
+  "injected_notifications": {
+    "network_changed": "网络已更改",
+    "network_changed_failed": "网络切换失败",
+    "unsupported_network": "不支持的网络",
+    "no_active_session": "没有活动会话"
+  },
+  "alert": {
+    "ok": "确定",
+    "wallet_watching_mode": "该钱包当前处于“观察”模式",
+    "coming_soon": "即将推出！"
+  },
+  "hw": {
+    "choose_title": "连接硬件钱包",
+    "ledger_support": "支持Ledger Nano S、Nano S Plus、Nano X和Stax设备。",
+    "trezor_support": "支持 Model One 或 Model T 设备。",
+    "connect_ledger_title": "连接您的Ledger",
+    "connect_ledger_description": "通过使用 USB-C 电缆将您的 Ledger 连接到 Rainbow，插入计算机。",
+    "unlock_ledger_title": "解锁Ledger",
+    "unlock_ledger_description": "您需要在您的Ledger上打开Ethereum应用才能继续。",
+    "unlock_ledger_description_2": "输入密码解锁您的Ledger。解锁后，同时按下两个按钮打开Ethereum应用程序。",
+    "exclusivity_ledger_title": "看起来另一个应用正在使用您的Ledger",
+    "exclusivity_ledger_description": "请确保您的设备没有同时运行其他应用程序，如Ledger Live、MetaMask或其他浏览器标签页。",
+    "exclusivity_ledger_description_2": "请关闭其他应用程序，然后重新加载此页面以重试。",
+    "needs_app_ledger_title": "打开ETH应用",
+    "needs_app_ledger_description": "在进行交易之前，您需要在您的Ledger上打开Ethereum应用程序。",
+    "needs_app_ledger_description_2": "输入密码解锁您的Ledger。解锁后，同时按下两个按钮打开Ethereum应用程序。",
+    "connect_trezor_title": "完成您的Trezor设置",
+    "connect_trezor_description": "请继续通过Web界面将您的Trezor连接到Rainbow。",
+    "learn_more": "了解更多。",
+    "connect_wallets_title": "连接您的钱包",
+    "connect_wallets_found": "我们在您的%{vendor}上找到了%{count}个有余额或活动的钱包。请选择要连接的钱包。",
+    "connect_wallets_not_found": "我们没有在此%{vendor}上找到任何有活动的钱包，但您仍然可以添加这些。",
+    "connect_wallet": "连接钱包",
+    "connect_n_wallets": "连接 %{count} 个钱包",
+    "wallets_found": "找到%{count}个钱包",
+    "add_by_index": "按索引添加",
+    "index_label": "索引",
+    "connection_successful_title": "连接成功",
+    "connection_successful_description": "您已成功添加了 %{count} 个 %{wallet_noun}。在您的钱包列表中，%{wallet_pronoun} 通过 %{vendor} 徽章很容易辨认。您随时可以添加更多。",
+    "wallet_singular": "钱包",
+    "wallet_plural": "钱包",
+    "wallet_pronoun_plural": "他们",
+    "wallet_pronoun_singular": "这是",
+    "done": "完成",
+    "add_wallet": "添加钱包",
+    "add_by_index_title": "通过索引添加钱包",
+    "add_by_index_description": "请输入您要从Ledger导入的钱包的派生路径。",
+    "waiting_for_trezor_connect": "等待Trezor Connect",
+    "continue_on_trezor_connect": "请按照Trezor Connect窗口上的指示操作",
+    "trezor_success": "成功！",
+    "you_can_close_this_window": "您可以关闭此窗口"
+  },
+  "choose_wallet_group": {
+    "title": "选择钱包组",
+    "description": "选择您想在其中创建新钱包的钱包组，或创建一个新的钱包组",
+    "wallet_group": "钱包组 %{number}",
+    "new_wallet_group": "新钱包组",
+    "create_recovery_phrase": "创建新的恢复短语"
   }
 }
