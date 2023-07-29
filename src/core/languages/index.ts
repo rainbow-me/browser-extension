@@ -32,7 +32,7 @@ export const supportedLanguages = {
     label: i18n.t('settings.language.es_419'),
   },
   [Language.ZH_CN]: {
-    label: i18n.t('settings.language.zh_CN'),
+    label: i18n.t('settings.language.zh_cn'),
   },
 };
 
