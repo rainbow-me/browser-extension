@@ -193,6 +193,21 @@ export function Settings() {
               <MenuItem.Title text={i18n.t('settings.currency.title')} />
             }
           />
+          <MenuItem
+            hasRightArrow
+            leftComponent={
+              <Symbol symbol="globe" weight="medium" size={18} color="pink" />
+            }
+            onClick={() => navigate(ROUTES.SETTINGS__LANGUAGE)}
+            rightComponent={
+              <MenuItem.Selection
+                text={supportedCurrencies[currentCurrency].label}
+              />
+            }
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.language.title')} />
+            }
+          />
           <Lens
             style={{
               borderRadius: 6,
