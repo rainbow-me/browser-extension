@@ -1,6 +1,7 @@
 import { I18n } from 'i18n-js';
 
 import en_US from './en_US.json';
+import es_419 from './es_419.json';
 
 export enum Language {
   EN_US = 'en_US',
@@ -9,6 +10,7 @@ export enum Language {
 
 export const i18n = new I18n({
   en_US,
+  es_419,
 });
 
 // Configure languages
