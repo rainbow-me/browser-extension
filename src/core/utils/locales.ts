@@ -12,8 +12,8 @@ import { currentLanguageStore } from '../state';
  * add a new supported language
  */
 export const locales: Record<Language, Locale> = {
-  en: enUS,
-  es: es,
+  en_US: enUS,
+  es_419: es,
 };
 
 // return date-fns Locale object based on currentLanguage

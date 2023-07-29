@@ -10,7 +10,7 @@ export interface CurrentLanguageState {
 
 export const currentLanguageStore = createStore<CurrentLanguageState>(
   (set) => ({
-    currentLanguage: Language.EN,
+    currentLanguage: Language.EN_US,
     setCurrentLanguage: (newLanguage) => {
       changeI18nLanguage(newLanguage);
       set({ currentLanguage: newLanguage });

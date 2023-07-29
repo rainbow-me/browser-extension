@@ -1,19 +1,19 @@
 import { I18n } from 'i18n-js';
 
-import en from './_english.json';
+import en_US from './en_US.json';
 
 enum Language {
-  EN = 'en',
-  ES = 'es',
+  EN_US = 'en_US',
+  ES_419 = 'es_419',
 }
 
 const i18n = new I18n({
-  en,
+  en_US,
 });
 
 // Configure languages
-i18n.defaultLocale = 'en';
-i18n.locale = 'en';
+i18n.defaultLocale = Language.EN_US;
+i18n.locale = Language.EN_US;
 
 const changeI18nLanguage = (locale: Language) => {
   i18n.locale = locale;
