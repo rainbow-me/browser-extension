@@ -589,6 +589,21 @@ const ROUTE_DATA = [
     ),
   },
   {
+    path: ROUTES.SETTINGS__LANGUAGE,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.language.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <Currency />
+      </AnimatedRoute>
+    ),
+  },
+  {
     path: ROUTES.SEND,
     element: (
       <AnimatedRoute direction="up" title={i18n.t('send.title')} protectedRoute>
