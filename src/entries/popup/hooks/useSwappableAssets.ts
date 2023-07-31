@@ -46,6 +46,24 @@ export function useSwappableAssets(toChainId?: ChainId) {
   });
 
   const {
+    data: swappableBaseAddresses,
+    isLoading: swappableBaseAddressesAreLoading,
+  } = useSwappableAddresses({
+    addresses: assetAddressMap[ChainId.base],
+    fromChainId: ChainId.base,
+    toChainId,
+  });
+
+  const {
+    data: swappableZoraAddresses,
+    isLoading: swappableZoraAddressesAreLoading,
+  } = useSwappableAddresses({
+    addresses: assetAddressMap[ChainId.zora],
+    fromChainId: ChainId.zora,
+    toChainId,
+  });
+
+  const {
     data: swappableBscAddresses,
     isLoading: swappableBscAddressesAreLoading,
   } = useSwappableAddresses({
@@ -94,6 +112,14 @@ export function useSwappableAssets(toChainId?: ChainId) {
         addresses: swappableArbitrumAddresses,
         loading: swappableArbitrumAddressesAreLoading,
       },
+      [ChainId.base]: {
+        addresses: swappableBaseAddresses,
+        loading: swappableBaseAddressesAreLoading,
+      },
+      [ChainId.zora]: {
+        addresses: swappableZoraAddresses,
+        loading: swappableZoraAddressesAreLoading,
+      },
     }),
     [
       swappableArbitrumAddresses,
@@ -106,6 +132,10 @@ export function useSwappableAssets(toChainId?: ChainId) {
       swappableOptimismAddressesAreLoading,
       swappablePolygonAddresses,
       swappablePolygonAddressesAreLoading,
+      swappableBaseAddresses,
+      swappableBaseAddressesAreLoading,
+      swappableZoraAddresses,
+      swappableZoraAddressesAreLoading,
     ],
   );
 
