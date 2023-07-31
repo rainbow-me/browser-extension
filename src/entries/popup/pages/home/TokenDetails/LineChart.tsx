@@ -94,7 +94,7 @@ const ChartContext = createContext<{
 
 const useChart = () => {
   const c = useContext(ChartContext);
-  if (!c) throw new Error('');
+  if (!c) throw new Error('useChart must be used inside a chart');
   return c;
 };
 
@@ -149,7 +149,7 @@ export const LineChart = ({
 
     pathRight.style.strokeDasharray = `${mousePathLength} ${pathLength}`;
 
-    onMouseMove(findClosestPoint(points, mousePathLength));
+    onMouseMove(findClosestPoint(points, x));
   };
 
   const onMouseLeave = () => {
@@ -160,7 +160,7 @@ export const LineChart = ({
 
   return (
     <ChartContext.Provider value={{ width, height, points }}>
-      <svg
+      <motion.svg
         viewBox={`0 0 ${width} ${height}`}
         role="presentation"
         onMouseMove={handleMouseMove}
@@ -182,7 +182,7 @@ export const LineChart = ({
           strokeDasharray="0"
         />
         {indicator && <Indicator position={indicator} />}
-      </svg>
+      </motion.svg>
     </ChartContext.Provider>
   );
 };

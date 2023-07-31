@@ -128,6 +128,7 @@ const usePriceChart = ({
     },
     queryKey: createQueryKey('price chart', { address, chainId, time }),
     keepPreviousData: true,
+    staleTime: 1 * 60 * 1000, // 1min
   });
 };
 
