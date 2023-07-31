@@ -60,6 +60,12 @@ export const USDC_OPTIMISM_ADDRESS =
 export const WBTC_OPTIMISM_ADDRESS =
   '0x68f180fcce6836688e9084f035309e29bf0a2095';
 
+// base
+export const ETH_BASE_ADDRESS = AddressZero;
+
+// zora
+export const ETH_ZORA_ADDRESS = AddressZero;
+
 // bsc
 export const BSC_BNB_ADDRESS = AddressZero;
 
@@ -90,6 +96,8 @@ export const NATIVE_ASSETS_PER_CHAIN = {
   [ChainId.bsc]: BSC_BNB_ADDRESS,
   [ChainId.mainnet]: ETH_ADDRESS,
   [ChainId.optimism]: ETH_OPTIMISM_ADDRESS,
+  [ChainId.base]: ETH_BASE_ADDRESS,
+  [ChainId.zora]: ETH_ZORA_ADDRESS,
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS,
   [ChainId.hardhat]: ETH_ADDRESS,
 };
