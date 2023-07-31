@@ -1,0 +1,917 @@
+{
+  "test": {
+    "salute": "こんにちは！"
+  },
+  "label": {
+    "toggle": "切り替える"
+  },
+  "wallet_switcher": {
+    "title": "ウォレット",
+    "rename_wallet": "ウォレット名の変更",
+    "copy_address": "アドレスをコピー",
+    "remove_wallet": "ウォレットを削除する",
+    "hide_wallet": "ウォレットを非表示にする",
+    "watching": "観察中",
+    "ledger": "レジャー",
+    "trezor": "Trezor",
+    "add_another_wallet": "もう1つのウォレットを追加する",
+    "connect_hardware_wallet": "ハードウェアウォレットから追加する",
+    "search_placeholder": "ウォレットを検索する",
+    "no_wallets": "ウォレットがありません",
+    "no_results": "結果がありません",
+    "quick_promo": {
+      "text": "ウォレットをドラッグして並び替えてください",
+      "text_bold": "ヒント:"
+    }
+  },
+  "qr_code": {
+    "copy_address": "アドレスをコピー"
+  },
+  "add_wallet": {
+    "title": "もう1つのウォレットを追加する",
+    "create_wallet": "新しいウォレットを作成する",
+    "create_wallet_description": "シードフレーズのいずれかで新しいウォレットを作成します。",
+    "import_wallet": "秘密の回復フレーズまたはプライベートキーでインポートする",
+    "import_wallet_description": "秘密の回復フレーズまたはプライベートキーを使用してウォレットを追加してください。",
+    "hardware_wallet": "ハードウェアウォレットから追加する",
+    "hardware_wallet_description": "ハードウェアウォレットからさらにアカウントを追加してください。",
+    "watch_address": "Ethereumアドレスを監視する",
+    "watch_address_description": "公開アドレスまたはENS名を表示する。"
+  },
+  "create_wallet_prompt": {
+    "title": "ウォレットに名前を付けてください",
+    "create_wallet": "ウォレットを作成する",
+    "create": "作成する",
+    "input_placeholder": "名前"
+  },
+  "rename_wallet_prompt": {
+    "rename_wallet": "ウォレット名を変更する",
+    "done": "完了"
+  },
+  "remove_wallet_prompt": {
+    "error": "ウォレットの削除中にエラーが発生しました",
+    "remove": "削除する",
+    "remove_title": "%{name}を削除する",
+    "remove_last_wallet_title": "%{name}と秘密の回復フレーズを削除します",
+    "remove_description": "このウォレットはリストから削除され、それに関連するすべてのデータが削除されます。",
+    "remove_last_wallet_description": "ウォレットと秘密の回復フレーズ、および関連するすべてのデータが永久に削除されます",
+    "hide": "非表示",
+    "hide_title": "%{name}を非表示にする",
+    "hide_description": "これにより、ウォレットはリストからのみ削除されます。このウォレットと追加の管理オプションは設定で見つけることができます。",
+    "cancel": "キャンセル"
+  },
+  "settings": {
+    "title": "設定",
+    "use_rainbow_as_default_wallet": "デフォルトのウォレットとしてRainbowを使用する",
+    "default_wallet_description": "アプリが接続する拡張機能を探す際に、Rainbowを優先するように許可します。",
+    "contacts": "連絡先",
+    "guides_and_support": "ガイドとサポート",
+    "learn_about_ethereum": "Ethereumについて学ぶ",
+    "follow_us_on_twitter": "Twitterでフォローしてください",
+    "share_beta_feedback": "ベータフィードバックを共有する",
+    "theme": {
+      "title": "テーマ",
+      "system": "システム",
+      "light": "ライト",
+      "dark": "ダーク"
+    },
+    "privacy_and_security": {
+      "title": "プライバシーとセキュリティ",
+      "analytics": "分析",
+      "analytics_description": "使用データの分析を許可することで、Rainbowの製品とサービスの改善にご協力ください。収集されたデータは、お客様やお客様のアカウントと関連付けられません。",
+      "hide_asset_balances": "資産残高を非表示にする",
+      "hide_asset_balances_description": "この機能をオンにすると、Rainbowはアプリ全体でトークンの残高を曖昧化します。",
+      "auto_hide_balances_under_1": "$1未満の残高を自動的に非表示にする",
+      "view_private_key": "プライベートキーを表示する",
+      "view_secret_recovery_phrase": "秘密の回復フレーズを表示する",
+      "auto_lock_timer": {
+        "title": "自動ロックタイマー",
+        "immediately": "すぐに",
+        "one_minute": "1 分間",
+        "five_minutes": "5 分間",
+        "ten_minutes": "10 分間",
+        "fifteen_minutes": "15 分間",
+        "thirty_minutes": "30 分間",
+        "one_hour": "1 時間",
+        "twelve_hours": "12時間",
+        "twenty_four_hours": "24時間",
+        "none": "なし"
+      },
+      "change_password": {
+        "title": "パスワードの変更",
+        "header_label": "パスワードを変更してください"
+      },
+      "confirm_password": {
+        "title": "パスワードを入力してください",
+        "description": "続行するには現在のパスワードを入力する必要があります。"
+      },
+      "wallets_and_keys": {
+        "title": "ウォレットとキー",
+        "create_a_new_wallet": "新しいウォレットを作成する",
+        "imported": "インポート済み",
+        "wallet_single": "ウォレット",
+        "wallet_plural": "ウォレット",
+        "recovery_phrase_label": "ウォレットグループ",
+        "private_key_label": "プライベートキー",
+        "hardware_wallet_label": "ハードウェアウォレット",
+        "wallet_details": {
+          "title": "ウォレットの詳細",
+          "view_recovery_phrase": "リカバリーフレーズを表示する",
+          "create_new_wallet": "新しいウォレットを作成する",
+          "rename_wallet": "ウォレット名の変更",
+          "unhide_wallet": "ウォレットを表示する",
+          "delete_wallet": "ウォレットを削除する",
+          "view_private_key": "プライベートキーを表示する",
+          "copy_address": "アドレスをコピー",
+          "hidden": "非表示"
+        },
+        "new_wallet": {
+          "name_your_wallet": "ウォレットに名前を付けてください",
+          "create": "ウォレットを作成する",
+          "input_placeholder": "例: ウォレット 1"
+        },
+        "private_key": {
+          "title": "プライベートキー",
+          "subtitle": "このキーを持っている人は、あなたのウォレット全体にアクセスできます！決して共有しないでください。",
+          "saved": "これを保存しました",
+          "warning_1": "プライベートキーを他人と共有したり、アプリに入力したりしないでください。",
+          "warning_2": "プライベートキーを表示する際に、誰もが画面を見ることができないようにしてください。",
+          "warning_3": "プライベートキーを持つ人は、あなたのウォレット全体にアクセスできます。",
+          "warning_4": "Rainbowサポートは、あなたのプライベートキーを求めることはありません。",
+          "show": "プライベートキーを表示する"
+        },
+        "recovery_phrase": {
+          "title": "リカバリーフレーズ",
+          "subtitle": "これらの単語を持っている人は、あなたのウォレット全体にアクセスできます！決して共有しないでください。",
+          "saved": "これらの単語を保存しました",
+          "warning_1": "リカバリーフレーズを他人と共有したり、アプリに入力したりしないでください。",
+          "warning_2": "リカバリーフレーズを表示する際に、誰もが画面を見ることができないようにしてください。",
+          "warning_3": "あなたの復旧フレーズを持つ人は、あなたのウォレット全体にアクセスできます。",
+          "warning_4": "Rainbowサポートは、あなたの復旧フレーズを求めることはありません。",
+          "show": "リカバリーフレーズを表示する",
+          "phrase_copied": "リカバリーフレーズがコピーされました"
+        }
+      }
+    },
+    "transactions": {
+      "title": "取引",
+      "default_speed": "デフォルトの速度",
+      "use_flashbots": "Flashbotsを使用する",
+      "flashbots_description": "Flashbotsは、トランザクションを保護し、トランザクションの失敗の可能性を低減します。詳細をご覧ください。"
+    },
+    "currency": {
+      "title": "通貨",
+      "ETH": "イーサリアム",
+      "USD": "アメリカ合衆国ドル",
+      "EUR": "ユーロ",
+      "GBP": "イギリスポンド",
+      "AUD": "オーストラリアドル",
+      "CNY": "中国元",
+      "KRW": "韓国ウォン",
+      "JPY": "日本円",
+      "RUB": "ロシアルーブル",
+      "INR": "インドルピー",
+      "TRY": "トルコリラ",
+      "CAD": "カナダドル",
+      "NZD": "ニュージーランドドル",
+      "ZAR": "南アフリカランド"
+    },
+    "language": {
+      "title": "言語",
+      "en_us": "日本語",
+      "es_419": "スペイン語（ラテンアメリカ）",
+      "zh_cn": "簡体字中国（中国本土）",
+      "fr_fr": "フランス語",
+      "ja_jp": "日本語",
+      "pt_br": "ポルトガル語（ブラジル）"
+    },
+    "feature_flags": {
+      "full_watching_wallets": "ウォッチウォレットへの完全アクセス",
+      "hw_wallets_enabled": "ハードウェアウォレットサポートを有効にする",
+      "command_k_internal_shortcuts_enabled": "⌘K内部ショートカットを有効にする"
+    }
+  },
+  "transactions": {
+    "contract_interaction": "契約のやり取り",
+    "savings": "貯金",
+    "deposited": "入金済み",
+    "withdrew": "引き出しました"
+  },
+  "command_k": {
+    "hide_balances_toast": {
+      "description_hidden": "残高が非表示になっています",
+      "description_revealed": "残高が表示されます",
+      "title_hidden": "残高非表示",
+      "title_revealed": "残高が公開されました"
+    },
+    "no_results": "結果がありません",
+    "section_titles": {
+      "shortcuts": "ショートカット"
+    },
+    "search_placeholder": "検索またはコマンドを入力してください...",
+    "shortcuts": {
+      "names": {
+        "send": "送信する",
+        "swap": "スワップ",
+        "copy_address": "アドレスをコピー",
+        "view_nfts": "NFTを表示する",
+        "switch_wallets": "ウォレットを切り替える",
+        "settings": "設定",
+        "add_wallet": "ウォレットを追加する",
+        "watch_wallet": "ウォレットを見る",
+        "hide_balances": "非表示残高の切り替え",
+        "wallets_and_keys": "ウォレットとキー",
+        "view_full_screen": "フルスクリーンで表示"
+      },
+      "search_tags": {
+        "swap": "ブリッジ",
+        "view_nfts": "ギャラリー、プロフィール",
+        "settings": "設定",
+        "add_wallet": "作成する、インポートする、ハードウェアウォレット",
+        "hide_balances_hidden": "表示する、非表示にする",
+        "hide_balances_revealed": "非表示",
+        "wallets_and_keys": "ウォレットとキー"
+      }
+    }
+  },
+  "connected_apps": {
+    "title": "接続されたアプリ",
+    "disconnect": "すべて切断する",
+    "other_wallets": "他のウォレット",
+    "no_connections_title": "接続されているアプリはありません",
+    "no_connections_copy": "接続したウェブサイトはここに表示されます"
+  },
+  "send": {
+    "title": "送信する",
+    "input_to_address_placeholder": "名前、ENSまたはアドレス",
+    "input_token_placeholder": "トークン",
+    "max": "マックス",
+    "switch_to": "%{currency}に切り替える",
+    "button_label": {
+      "review": "レビュー",
+      "enter_address_and_amount": "アドレスと金額を入力してください",
+      "enter_valid_address": "有効なアドレスを入力してください",
+      "enter_address": "アドレスを入力してください",
+      "enter_amount": "金額を入力してください",
+      "insufficient_asset": "%{symbol}が不足しています",
+      "insufficient_native_asset_for_gas": "ガスのための不十分な%{symbol}"
+    },
+    "wallets_list": {
+      "contacts": "連絡先",
+      "my_wallets": "私のウォレット",
+      "watched_wallets": "観察中",
+      "no_results": "結果がありません"
+    },
+    "tokens_input": {
+      "tokens": "トークン",
+      "sort": "ソート",
+      "available": "利用可能",
+      "token_balance": "トークン残高",
+      "networks": "ネットワーク",
+      "nothing_found": "見つかりませんでした"
+    },
+    "review": {
+      "title": "確認して送信",
+      "to": "へ",
+      "you_own_wallet": "このウォレットはあなたの所有です",
+      "send_to": "%{toName} に送信する",
+      "cancel": "キャンセル",
+      "sending_on_network": "%{chainName}ネットワークで送信中",
+      "sending_on_l2_check_1": "私は取引所に送信していません",
+      "sending_on_l2_check_2": "送信先の方は、%{chainName}をサポートしているウォレットをお持ちです",
+      "complete_checks": "チェックを完了してください",
+      "confirm_hw": "デバイスで確認してください"
+    }
+  },
+  "swap": {
+    "title": "スワップ",
+    "input_token_to_swap_placeholder": "トークンを選択してスワップしてください",
+    "input_token_to_receive_placeholder": "受け取るトークンを選択してください",
+    "select_tokens_to_swap": "トークンを選択してスワップ",
+    "max": "マックス",
+    "balance": "残高",
+    "tokens_input": {
+      "tokens": "トークン",
+      "sort": "ソート",
+      "available": "利用可能",
+      "token_balance": "トークン残高",
+      "networks": "ネットワーク",
+      "filter_by_network": "ネットワークでフィルタリング",
+      "switch_networks": "ネットワークを切り替える",
+      "nothing_found": "見つかりませんでした",
+      "nothing_found_description": "一部のトークンは、成功したスワップを行うための十分な流動性を持っていません。",
+      "nothing_found_description_l2": "一部のトークンは、成功したスワップを行うために十分なレイヤー2の流動性を持っていません。",
+      "output_quotes_disabled": "出力引用無効化"
+    },
+    "warnings": {
+      "long_wait": {
+        "title": "長い待ち時間",
+        "description": "スワップまで%{time}まで"
+      },
+      "price_impact": {
+        "title": "小規模市場",
+        "description": "%{impactAmount}の損失"
+      }
+    },
+    "aggregators": {
+      "rainbow": "自動"
+    },
+    "settings": {
+      "title": "スワップ設定",
+      "route_swaps": "ルートを介してスワップ",
+      "use_flashbots": "Flashbotsを使用する",
+      "max_slippage": "最大スリッページ",
+      "use_defaults": "デフォルトを使用する",
+      "done": "完了",
+      "warnings": {
+        "high": "高い",
+        "possible_loss": "損失の可能性があります"
+      },
+      "explainers": {
+        "slippage": {
+          "title": "スリッページ",
+          "description_1": "スリッページは、トランザクションを送信して確認されるまでの間にスワップの価格が変動することです。",
+          "description_2": "スリッページ許容度を高く設定すると、スワップが成功する可能性が高まりますが、より悪い価格で取引される可能性があります。",
+          "read_more": {
+            "open_text": "まだ興味がありますか？",
+            "link_text": "もっと読む",
+            "close_text": "スリッページについてとスワップに与える影響について"
+          }
+        },
+        "flashbots": {
+          "title": "フラッシュボット",
+          "description": "Flashbotsは、あなたのトランザクションをフロントランニングやサンドイッチ攻撃から保護し、それによって価格が悪化したり、トランザクションが失敗する可能性を防ぎます。",
+          "read_more": {
+            "open_text": "まだ興味がありますか？",
+            "link_text": "もっと読む",
+            "close_text": "Flashbotsについてと、それが提供する保護について"
+          }
+        },
+        "routing": {
+          "title": "スワップルーティング",
+          "description": "デフォルトでは、Rainbowはスワップのために可能な限り最も安いルートを選択します。0xまたは1inchのいずれかを特に使用したい場合は、それも可能です。",
+          "read_more": {
+            "open_text": "まだ興味がありますか？",
+            "link_text": "もっと読む",
+            "close_text": "スワップのルーティングについての私たちのアプローチについて"
+          }
+        },
+        "got_it": "了解しました"
+      }
+    },
+    "actions": {
+      "review": "レビュー",
+      "loading": "読み込み中",
+      "insufficient_liquidity": "流動性不足",
+      "no_route": "ルートが見つかりません",
+      "no_quote": "見積もりはありません",
+      "enter_an_amount": "金額を入力してください"
+    },
+    "review": {
+      "title_swap": "確認＆交換",
+      "title_bridge": "レビュー＆ブリッジ",
+      "flashbots_on": "オン",
+      "minimum_received": "最低受け取り額",
+      "swapping_via": "スワッピング中",
+      "bridging_via": "経由でブリッジング",
+      "included_fee": "レインボー手数料込み",
+      "use_flashbots": "Flashbotsを使用する",
+      "exchange_rate": "為替レート",
+      "asset_contract": "%{symbol} コントラクト",
+      "more_details": "詳細",
+      "swap_confirmation": "%{sellSymbol} を %{buySymbol} に交換する",
+      "bridge_confirmation": "ブリッジ %{sellSymbol}",
+      "go_back": "戻る"
+    },
+    "explainers": {
+      "long_wait": {
+        "title": "スワップまでの長い待ち時間",
+        "description": "このスワップは非常に長い時間がかかる場合があります。これは通常、クロスチェーンブリッジの問題によるものです。",
+        "action_label": "続行する"
+      },
+      "no_route": {
+        "title": "ルートが見つかりません",
+        "description": "このスワップに対するルートが見つかりませんでした。このスワップに対するルートが存在しないか、金額が小さすぎる可能性があります。",
+        "action_label": "了解しました"
+      },
+      "no_quote": {
+        "title": "見積もりはありません",
+        "description": "このスワップのための見積もりを見つけることができませんでした。これは、スワップするための十分な流動性がないか、トークンの実装に問題があるためかもしれません。",
+        "action_label": "続行する"
+      },
+      "insufficient_liquidity": {
+        "title": "流動性不足",
+        "description": "このスワップについての見積もりを見つけることができませんでした。なぜなら、このペアは取引所での流動性が十分ではないためです。",
+        "action_label": "了解しました",
+        "footer_text": {
+          "open_text": "まだ興味がありますか？",
+          "link_text": "もっと読む",
+          "close_text": "AMMとトークンの流動性について"
+        }
+      }
+    }
+  },
+  "custom_gas": {
+    "title": "ガス設定",
+    "current_base_fee": "現在の基本手数料",
+    "max_base_fee": "最大基本料金",
+    "miner_tip": "マイナーチップ",
+    "max_transaction_fee": "最大トランザクション手数料",
+    "transaction_speed": "トランザクションの速度",
+    "cancel": "キャンセル",
+    "set": "設定",
+    "base_trend": {
+      "falling": "落下中",
+      "stable": "安定",
+      "surging": "急増",
+      "rising": "上昇中"
+    },
+    "warnings": {
+      "may_get_stuck": "進行が停止する可能性があります",
+      "likely_to_fail": "失敗する可能性が高い",
+      "low": "低"
+    }
+  },
+  "contacts": {
+    "save_contact": "連絡先を保存する",
+    "add_to_contacts": "連絡先に追加する",
+    "edit_contact": "連絡先を編集する",
+    "save_changes": "変更を保存する",
+    "cancel": "キャンセル",
+    "remove_contact_title": "連絡先を削除しますか？",
+    "remove_contact_action": "連絡先を削除する",
+    "remove_contact_description": "本当に「%{name}」を連絡先から削除しますか？",
+    "save": "保存する",
+    "copy_address": "アドレスをコピー",
+    "view_on_etherscan": "Etherscanで表示する",
+    "view_on_explorer": "エクスプローラーで表示する",
+    "delete_contact": "連絡先を削除する",
+    "contact_address_copied": "アドレスがコピーされました"
+  },
+  "sign": {
+    "title": "署名"
+  },
+  "unlock": {
+    "welcome_back": "お帰りなさい",
+    "enter_password": "パスワードを入力してRainbowをロック解除してください。",
+    "unlock": "ロック解除",
+    "having_trouble": "問題がありますか？",
+    "contact": "連絡先",
+    "rainbow_support": "レインボーサポート"
+  },
+  "onboard_before_connect": {
+    "before_connect": "接続する前に",
+    "almost_done": "もうすぐ完了です。Rainbowでウォレットの設定を素早く完了させましょう。",
+    "setup_wallet": "ウォレットを設定する"
+  },
+  "welcome": {
+    "title": "虹",
+    "subtitle": "Ethereumの新しい世界を探索する",
+    "create_wallet": "新しいウォレットを作成する",
+    "import_wallet": "ウォレットをインポートまたは接続する",
+    "disclaimer_tos": "続行することで、Rainbowの",
+    "disclaimer_tos_link": "利用規約",
+    "invalid_code": "無効なコード",
+    "join": "参加する",
+    "invite_code_explanation": "Rainbowは現在プライベートベータ版であり、アクセスするには招待コードが必要です。必要な場合は、",
+    "invite_code_explanation_link": "こちらで入手する",
+    "enter_code": "ベータコードを入力してください"
+  },
+  "seed_backup_prompt": {
+    "title": "始める前に、秘密の回復フレーズをバックアップしてください",
+    "warning_1": "秘密の回復フレーズを書き留めて安全な場所に保管することは重要です。",
+    "warning_2": "アカウントと資金を回復する唯一の方法は、秘密の回復フレーズです。",
+    "warning_3": "秘密の回復フレーズを持つ人は、あなたのウォレット全体にアクセスできます。",
+    "reveal_your_recovery_phrase": "リカバリーフレーズを表示する",
+    "take_me_to_wallet": "ウォレットに連れて行ってください"
+  },
+  "seed_reveal": {
+    "title": "秘密の回復フレーズ",
+    "write_down_seed_importance": "これらの単語を保存すると、ウォレット全体にアクセスできます！安全な場所に保存し、決して共有しないでください。",
+    "saved_these_words": "これらの単語を保存しました",
+    "phrase_copied": "リカバリーフレーズがコピーされました"
+  },
+  "import_wallet_via_secret": {
+    "title": "ウォレットのインポート",
+    "explanation": "最適なインポート方法を選択してください。後でいつでも追加のウォレットをインポートすることができます。",
+    "seed_phrase": "秘密の回復フレーズからインポートする",
+    "seed_phrase_desc": "12または24単語の秘密回復フレーズを使用してウォレットグループを追加します",
+    "private_key": "プライベートキーからインポートする",
+    "private_key_desc": "64文字のプライベートキーを使用して単一のウォレットを追加します"
+  },
+  "import_wallet_via_seed": {
+    "title": "ウォレットをインポートする",
+    "explanation": "ウォレットを追加するには、12または24単語の秘密の回復フレーズを入力または貼り付けてください。",
+    "24_words": "24ワードを使用しています",
+    "12_words": "12ワードを使用しています",
+    "import_wallet_group": "ウォレットグループのインポート",
+    "n_words_might_be_wrong": "%{n} 単語がスペルミスや間違いがある可能性があります。",
+    "1_word_might_be_wrong": "1つの単語がスペルミスや間違っている可能性があります。",
+    "couldnt_paste": "シークレットリカバリフレーズを貼り付けることができませんでした"
+  },
+  "import_wallet_via_private_key": {
+    "title": "ウォレットをインポートする",
+    "explanation": "Rainbowまたは他のEthereumウォレットから、64文字のプライベートキーを入力してください。",
+    "placeholder": "他のウォレットからプライベートキーを貼り付けてください",
+    "import_wallet": "ウォレットのインポート"
+  },
+  "import_or_connect": {
+    "title": "復元または接続する",
+    "explanation": "秘密の回復フレーズを持つ人は、あなたのウォレット全体にアクセスできます！安全な場所に保管し、他の人と共有しないでください。",
+    "import_wallet": "秘密の回復フレーズまたはプライベートキーでインポートする",
+    "import_wallet_description": "秘密の回復フレーズまたはプライベートキーを使用してウォレットを追加してください。",
+    "connect_wallet": "ハードウェアウォレットを接続してください",
+    "connect_wallet_description": "ハードウェアウォレットからアカウントを追加します。",
+    "watch_address": "Ethereumアドレスを監視する",
+    "watch_address_description": "公開アドレスまたはENS名を表示する。"
+  },
+  "import_wallet_selection": {
+    "title": "あなたのウォレット",
+    "description": {
+      "zero": "ウォレットが1つ検出されました。いつでも追加できます。",
+      "one": "最近使用されたウォレットが1つのRainbowが検出されました。いつでも追加できます。",
+      "other": "最近使用されたウォレットが%{count}個検出されました。いつでも編集や追加ができます。"
+    },
+    "add_wallets": "ウォレットを追加する",
+    "edit_wallets": "ウォレットの編集",
+    "loading": "すべてのウォレットを検索中ですのでお待ちください...",
+    "importing": "ウォレットをインポートしています...",
+    "account_summary_tokens": "トークン: %{tokensAmount}",
+    "account_summary_last_tx": "最後の取引：%{lastTx} 前"
+  },
+  "watch_wallet": {
+    "title": "Ethereumアドレスを監視する",
+    "description": "EthereumアドレスまたはENS名を入力してください。後で送金やトランザクションの署名にインポートする必要があります。",
+    "invalid_address": "無効なアドレス",
+    "unsupported_tld": "%{tld}はサポートされていません",
+    "address_already_added": "アドレスはすでに追加されています",
+    "address_already_added_as": "アドレスは既に%{addedAs}として追加されています",
+    "watch_top_ens_wallets": "トップのENSウォレットを見る",
+    "placeholder": "EthereumアドレスまたはENS名",
+    "watch_wallet": "ウォレットを表示する",
+    "watch_wallets": "ウォレットを見る",
+    "loading": "これらのウォレットを監視し始めるまでお待ちください..."
+  },
+  "import_wallet": {
+    "title": "ウォレットをインポートする",
+    "description": "Rainbowまたは他のEthereumウォレットから、秘密の回復フレーズまたはプライベートキーを入力してください。",
+    "too_many_words": "言葉が多すぎます",
+    "too_many_chars": "文字数が多すぎます",
+    "add_another": "もう一つ追加",
+    "remove": "削除する",
+    "placeholder": "他のウォレットから秘密の回復フレーズまたはプライベートキーを貼り付けてください",
+    "invalid_word": "無効な単語: %{word}",
+    "invalid_private_key": "無効なプライベートキー",
+    "invalid_recovery_phrase": "無効な復元フレーズ",
+    "missing_words": {
+      "one": "1つの単語が不足しています",
+      "other": "%{count}つの単語が不足しています"
+    },
+    "import_wallet": {
+      "one": "ウォレットを復元する",
+      "other": "ウォレットの復元"
+    }
+  },
+  "edit_import_wallet_selection": {
+    "title": "すべてのウォレット",
+    "add_wallet": {
+      "zero": "ウォレットを選択してください",
+      "one": "ウォレットを追加する",
+      "other": "%{count}つのウォレットを追加する"
+    },
+    "importing_your_wallet": {
+      "one": "ウォレットをインポートしています...",
+      "other": "ウォレットをインポートしています..."
+    },
+    "sort": {
+      "title": "ソート",
+      "default": "デフォルト",
+      "token_balance": "トークン残高",
+      "last_transaction": "最後の取引"
+    }
+  },
+  "seed_verify": {
+    "title": "秘密の回復フレーズを確認してください",
+    "explanation": "表示される秘密の回復フレーズの中で、4番目、8番目、12番目の単語を順番に選択してください。",
+    "skip": "スキップする"
+  },
+  "menu": {
+    "network": {
+      "title": "ネットワークを切り替える",
+      "disconnect": "切断する"
+    },
+    "app_connection_menu": {
+      "all_connected_apps": "すべての接続されたアプリ",
+      "not_connected": "接続されていません",
+      "networks": "ネットワーク",
+      "connect": "接続する",
+      "switch_networks": "ネットワークを切り替える"
+    },
+    "home_header_right": {
+      "settings": "設定",
+      "qr_code": "QRコード",
+      "rainbow_profile": "プロフィール",
+      "guides_and_support": "ガイドとサポート",
+      "share_feedback": "フィードバックを共有する",
+      "lock_rainbow": "ロックする"
+    }
+  },
+  "approve_request": {
+    "wallet_info_title": "ウォレットに接続したいです",
+    "wallet_info_description": "%{appName}にウォレットのアドレス、残高、取引履歴を表示し、トランザクションの承認をリクエストする許可を与えます。",
+    "wallet": "ウォレット",
+    "network": "ネットワーク",
+    "switch_networks": "ネットワークを切り替える",
+    "switch_wallets": "ウォレットを切り替える",
+    "connect": "%{appName}に接続する",
+    "message_signing_request": "メッセージ署名リクエスト",
+    "message": "メッセージ",
+    "sign_message": "メッセージに署名する",
+    "confirm_hw": "デバイスで確認してください",
+    "balance": "残高",
+    "send_transaction": "トランザクションを送信する",
+    "contract_deployment": "契約のデプロイ",
+    "transaction_request": "トランザクションリクエスト",
+    "insufficient_native_asset_for_gas": "ガスのための不十分な%{symbol}"
+  },
+  "transaction_fee": {
+    "title": "トランザクションの速度",
+    "urgent": "緊急",
+    "fast": "高速",
+    "normal": "通常",
+    "custom": "カスタム",
+    "estimated_fee": "手数料の見積もり"
+  },
+  "time": {
+    "days": {
+      "long": {
+        "plural": "日",
+        "singular": "日"
+      },
+      "micro": "d",
+      "short": {
+        "plural": "日々",
+        "singular": "日"
+      }
+    },
+    "hours": {
+      "long": {
+        "plural": "時間",
+        "singular": "時間"
+      },
+      "micro": "h",
+      "short": {
+        "plural": "時間",
+        "singular": "時間"
+      }
+    },
+    "milliseconds": {
+      "long": {
+        "plural": "ミリ秒",
+        "singular": "ミリ秒"
+      },
+      "micro": "ミリ秒",
+      "short": {
+        "plural": "ミリ秒",
+        "singular": "ミリ秒"
+      }
+    },
+    "minutes": {
+      "long": {
+        "plural": "分",
+        "singular": "分"
+      },
+      "micro": "m",
+      "short": {
+        "plural": "分",
+        "singular": "最小"
+      }
+    },
+    "now": "今",
+    "seconds": {
+      "long": {
+        "plural": "秒",
+        "singular": "秒"
+      },
+      "micro": "s",
+      "short": {
+        "plural": "秒",
+        "singular": "セキュリティ"
+      }
+    }
+  },
+  "wallets": {
+    "title": "ウォレット"
+  },
+  "common_actions": {
+    "back": "戻る",
+    "cancel": "キャンセル",
+    "continue": "続ける",
+    "copy_to_clipboard": "クリップボードにコピー"
+  },
+  "errors": {
+    "no_wallet_name_set": "ウォレット名が設定されていません"
+  },
+  "common_titles": {
+    "before_you_proceed": "続行する前に"
+  },
+  "passwords": {
+    "password": "パスワード",
+    "password_not_set": "パスワードが設定されていません",
+    "password_incorrect": "パスワードが正しくありません",
+    "passwords_do_not_match": "パスワードが一致しません",
+    "wrong_password": "パスワードが間違っています",
+    "new_password": "新しいパスワード",
+    "confirm_password": "パスワードを確認する",
+    "update_password": "パスワードの更新",
+    "set_password": "パスワードを設定する",
+    "too_weak": "弱すぎます",
+    "weak": "弱い",
+    "good": "良い",
+    "excellent": "優れた",
+    "8_chars_min": "8文字以上",
+    "try_another_password_weak": "これは簡単にクラックされる可能性のある弱いパスワードです。より強力なパスワードを試してください。",
+    "try_another_password_common": "これは簡単に解読できる一般的なパスワードです。より強力なパスワードを試してください。",
+    "too_short": "パスワードは少なくとも8文字以上である必要があります"
+  },
+  "create_password": {
+    "title": "パスワードを作成してください",
+    "description": "ウォレットを安全に保護し、ロックするためのパスワードを選択してください。"
+  },
+  "activity": {
+    "today": "今日",
+    "yesterday": "昨日",
+    "this_month": "今月",
+    "empty_header": "まだアクティビティはありません",
+    "empty_description": "ウォレットを使用し始めると、ここに取引が表示されます。"
+  },
+  "tokens_tab": {
+    "coinbase_title": "Coinbaseからの入金",
+    "coinbase_description": "Coinbaseから購入または送金する",
+    "send_from_wallet": "他のウォレットから送信する",
+    "send_description_1": "押す",
+    "send_description_2": "アドレスをコピーする",
+    "unknown_token": "不明なトークン"
+  },
+  "speed_up_and_cancel": {
+    "speed_up": "スピードアップ",
+    "cancel": "キャンセル",
+    "view_on_etherscan": "Etherscanで表示する",
+    "view_on_explorer": "エクスプローラーで表示する",
+    "copy_tx_hash": "トランザクションハッシュをコピー",
+    "cancel_explanation": "これにより、保留中のトランザクションをキャンセルしようとします。別のトランザクションのブロードキャストが必要です。",
+    "speed_up_explanation": "これにより、保留中のトランザクションが置き換えられて処理が早くなります。元のトランザクションが先に確認される可能性もあります。",
+    "cancel_title": "トランザクションをキャンセルする",
+    "speed_up_title": "トランザクションを加速する",
+    "wallet": "ウォレット",
+    "balance": "残高",
+    "cancel_cta": "トランザクションをキャンセルする",
+    "speed_up_cta": "トランザクションを加速する",
+    "speed_up_transaction": "トランザクションを加速する",
+    "close_cta": "キャンセル",
+    "handle_copy_title": "トランザクションハッシュがコピーされました"
+  },
+  "asset_details_menu": {
+    "swap": "スワップ",
+    "send": "送信する",
+    "view_on_etherscan": "Etherscanで表示する",
+    "view_on_explorer": "エクスプローラーで表示する"
+  },
+  "wallet_ready": {
+    "title": "Rainbowの準備が完了しました",
+    "subtitle": "ウォレットにアクセスするには、拡張機能のドロップダウンからRainbowをクリックするか、スピーディなキーボードショートカットを使用してください",
+    "open": "レインボーを開く",
+    "get_started_with_rainbow": "Rainbowで始めましょう",
+    "get_started_with_rainbow_desc": "Rainbowへようこそ！あなたがここにいてくれてとても嬉しいです。Rainbowの基本を理解するために、このガイドを作成しました。",
+    "discover_shortcuts": "ショートカットを見つける",
+    "discover_shortcuts_desc": "もっとショートカットを見つけたいですか？ あなたのためにまとめたこの便利なガイドをチェックしてみてください。",
+    "pin_rainbow_to_your_toolbar": "ツールバーにRainbowを固定する"
+  },
+  "wallet_header": {
+    "copy": "コピー",
+    "swap": "スワップ",
+    "send": "送信する",
+    "copy_toast": "アドレスがコピーされました"
+  },
+  "token_search": {
+    "section_header": {
+      "favorites": "お気に入り",
+      "unverified": "未確認",
+      "verified": "確認済み",
+      "on_other_networks": "他のネットワークで",
+      "bridge": "ブリッジ"
+    },
+    "verified_by_rainbow": "Rainbowによって確認済み"
+  },
+  "explainers": {
+    "send": {
+      "to_smart_contract": {
+        "description_1": "入力したアドレスはスマートコントラクト用です。",
+        "description_2": "稀な状況を除いて、おそらくこれは行わない方が良いでしょう。資産を失ったり、誤った場所に送られる可能性があります。",
+        "description_3": "アドレスを再確認し、受信者と確認するか、まずサポートに連絡してください。",
+        "title": "馬を待ってください！"
+      },
+      "sending_on_l2": {
+        "arbitrum_title": "Arbitrumとは何ですか？",
+        "arbitrum_description_1": "ArbitrumはEthereumの上で動作するLayer 2ネットワークであり、より安価で高速なトランザクションを可能にしますが、同時にEthereumの基盤となるセキュリティの恩恵も受けます。",
+        "arbitrum_description_2": "それは、Ethereum 上で永久に生き続ける前に、複数のトランザクションを一緒にまとめて「ロールアップ」して送信します。",
+        "optimism_title": "Optimismとは何ですか？",
+        "optimism_description_1": "Optimismは、Ethereumの上で動作するLayer 2ネットワークであり、より安価で高速なトランザクションを可能にし、同時にEthereumの基盤となるセキュリティの恩恵を受けることができます。",
+        "optimism_description_2": "それは、Ethereum上で永久に生き続ける前に、複数のトランザクションを一緒にまとめて「ロールアップ」して送信します。",
+        "polygon_title": "Polygonとは何ですか？",
+        "polygon_description_1": "Polygonはサイドチェーンであり、Ethereumと並行して動作し、互換性があります。",
+        "polygon_description_2": "Polygonは、より安価で高速なトランザクションを可能にしますが、Layer 2ネットワークとは異なり、Polygonには独自のセキュリティとコンセンサスメカニズムがあり、Ethereumとは異なります。",
+        "bsc_title": "BSCとは何ですか？",
+        "bsc_description_1": "Binance Smart Chain（BSC）は、取引プラットフォームBinanceのためのブロックチェーンネットワークです。",
+        "bsc_description_2": "BSCは、より安価で高速なトランザクションを可能にしますが、Layer 2ネットワークとは異なり、BSCには独自のセキュリティとコンセンサスメカニズムがあり、Ethereumとは異なります。",
+        "link_button_label": "もっと読む"
+      },
+      "action_label": "了解しました"
+    },
+    "custom_gas": {
+      "action_button_label": "了解しました",
+      "current_base_stable": "ネットワークトラフィックは現在安定しています。楽しんでください！",
+      "current_base_surging": "手数料が現在非常に高いです！トランザクションが緊急でない場合は、手数料が下がるのを待つのが最善です。",
+      "current_base_falling": "手数料が現在下がっています！",
+      "current_base_rising": "手数料が現在上昇しています！トランザクションが詰まるのを避けるために、より高い最大基本手数料を使用することが最善です。",
+      "current_base_description": "ベース料金はEthereumネットワークによって設定され、ネットワークの混雑具合に応じて変動します。",
+      "current_base_title": "現在の基本手数料",
+      "max_base_explainer_1": "このトランザクションに対して支払いたい最大の基本手数料です。",
+      "max_base_explainer_2": "最大ベース料金を高く設定すると、手数料が上昇してもトランザクションが詰まることを防ぎます。",
+      "max_base_title": "最大基本料金",
+      "max_priority_explainer": "マイナーチップは、ネットワーク上であなたのトランザクションを確認するマイナーに直接送られます。\n\nより高いチップは、トランザクションが迅速に確認される可能性を高めます。",
+      "max_priority_title": "マイナーチップ"
+    },
+    "swap": {
+      "flashbots": {
+        "title": "フラッシュボット",
+        "description": "Flashbotsは、あなたのトランザクションをフロントランニングやサンドイッチ攻撃から保護し、それによって価格が悪化したり、トランザクションが失敗する可能性を防ぎます。",
+        "action_label": "了解しました"
+      },
+      "fee": {
+        "title": "手数料",
+        "description": "Rainbowはスワップから%{feePercentage}の手数料を取ります。これにより、最高のEthereum体験を提供することができます。",
+        "action_label": "了解しました"
+      }
+    }
+  },
+  "injected_notifications": {
+    "network_changed": "ネットワークが変更されました",
+    "network_changed_failed": "ネットワークの変更に失敗しました",
+    "unsupported_network": "サポートされていないネットワーク",
+    "no_active_session": "アクティブなセッションはありません"
+  },
+  "alert": {
+    "ok": "はい",
+    "wallet_watching_mode": "このウォレットは現在「ウォッチング」モードです",
+    "coming_soon": "近日公開予定です！"
+  },
+  "hw": {
+    "choose_title": "ハードウェアウォレットを接続する",
+    "ledger_support": "Ledger Nano S、Nano S Plus、Nano X、およびStaxデバイスに対応しています。",
+    "trezor_support": "Model OneまたはModel Tデバイスをサポートしています。",
+    "connect_ledger_title": "Ledgerを接続してください",
+    "connect_ledger_description": "USB-Cケーブルを使用して、コンピュータにLedgerを接続してRainbowに接続します。",
+    "unlock_ledger_title": "Ledgerのロックを解除する",
+    "unlock_ledger_description": "続行するには、EthereumアプリをLedgerで開いておく必要があります。",
+    "unlock_ledger_description_2": "Ledgerをアンロックするためにパスコードを入力してください。アンロックされたら、両方のボタンを同時に押してEthereumアプリを開いてください。",
+    "exclusivity_ledger_title": "別のアプリがあなたのLedgerを使用しているようです",
+    "exclusivity_ledger_description": "Ledger Live、MetaMask、または他のブラウザータブなど、他のアプリと同時にデバイスを使用していないことを確認してください。",
+    "exclusivity_ledger_description_2": "他のアプリを閉じた後、このページを再読み込みして再試行してください。",
+    "needs_app_ledger_title": "ETHアプリを開く",
+    "needs_app_ledger_description": "トランザクションを続行するには、Ledger上でEthereumアプリを開いておく必要があります。",
+    "needs_app_ledger_description_2": "Ledgerをアンロックするためにパスコードを入力してください。アンロックされたら、両方のボタンを同時に押してEthereumアプリを開いてください。",
+    "connect_trezor_title": "Trezorのセットアップを完了してください",
+    "connect_trezor_description": "ウェブインターフェースを介して、TrezorをRainbowに接続し続けてください。",
+    "learn_more": "詳細を学ぶ",
+    "connect_wallets_title": "ウォレットを接続する",
+    "connect_wallets_found": "%{vendor}で残高やアクティビティを持つウォレットが%{count}つ見つかりました。接続するウォレットを選択してください。",
+    "connect_wallets_not_found": "この%{vendor}でアクティビティのあるウォレットは見つかりませんでしたが、それでもこれらを追加することができます。",
+    "connect_wallet": "ウォレットに接続する",
+    "connect_n_wallets": "%{count}つのウォレットを接続する",
+    "wallets_found": "%{count}つのウォレットが見つかりました",
+    "add_by_index": "インデックスで追加",
+    "index_label": "インデックス",
+    "connection_successful_title": "接続に成功しました",
+    "connection_successful_description": "%{count}つの%{wallet_noun}が正常に追加されました。%{wallet_pronoun}は%{vendor}のバッジで簡単に識別できます。いつでも追加することができます。",
+    "wallet_singular": "ウォレット",
+    "wallet_plural": "ウォレット",
+    "wallet_pronoun_plural": "彼らは",
+    "wallet_pronoun_singular": "それは",
+    "done": "完了",
+    "add_wallet": "ウォレットを追加する",
+    "add_by_index_title": "ウォレットをインデックスで追加する",
+    "add_by_index_description": "Ledgerからインポートしたいウォレットの導出パスを入力してください。",
+    "waiting_for_trezor_connect": "Trezor Connectの接続を待っています",
+    "continue_on_trezor_connect": "Trezor Connect ウィンドウの指示に従ってください",
+    "trezor_success": "成功しました！",
+    "you_can_close_this_window": "このウィンドウを閉じることができます"
+  },
+  "choose_wallet_group": {
+    "title": "ウォレットグループを選択してください",
+    "description": "新しいウォレットを作成するウォレットグループを選択するか、新しいグループを作成してください",
+    "wallet_group": "ウォレットグループ %{number}",
+    "new_wallet_group": "新しいウォレットグループ",
+    "create_recovery_phrase": "新しいリカバリーフレーズを作成する"
+  }
+}
