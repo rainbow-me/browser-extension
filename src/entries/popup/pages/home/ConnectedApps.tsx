@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { AppSession } from '~/core/state/appSessions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { truncateAddress } from '~/core/utils/truncateAddress';
@@ -25,9 +25,10 @@ import { ConnectedAppNetworkMenu } from '../../components/SwitchMenu/ConnectedAp
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import { useAppSessions } from '../../hooks/useAppSessions';
 
 export const ConnectedApps = () => {
-  const { appSessions, clearSessions } = useAppSessionsStore();
+  const { appSessions, disconnectAppSessions } = useAppSessions();
   const { currentAddress } = useCurrentAddressStore();
 
   const filteredSessions = Object.values(appSessions).reduce(
@@ -123,7 +124,7 @@ export const ConnectedApps = () => {
         >
           <Inline alignHorizontal="center">
             <Button
-              onClick={clearSessions}
+              onClick={disconnectAppSessions}
               color="surfacePrimaryElevated"
               height="44px"
               variant="stroked"

@@ -10,19 +10,19 @@ import {
 import type { Address, Chain } from 'wagmi';
 
 import { ETH_ADDRESS, NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 
 import { isLowerCaseMatch } from './strings';
 
 export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
   polygon,
-  { ...optimism, name: 'Optimism' },
-  { ...arbitrum, name: 'Arbitrum' },
+  optimism,
+  arbitrum,
   base,
   zora,
   bsc,
-];
+].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 /**
  * @desc Checks if the given chain is a Layer 2.

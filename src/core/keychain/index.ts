@@ -62,10 +62,15 @@ export const wipeVault = async () => {
 export const lockVault = () => {
   return keychainManager.lock();
 };
-export const hasVault = () => {
-  return (
-    keychainManager.state.keychains.length > 0 || keychainManager.state.vault
-  );
+export const hasVault = async () => {
+  const keychainState =
+    keychainManager.state.keychains.length > 0 || keychainManager.state.vault;
+  if (keychainState) {
+    return true;
+  } else {
+    // fallback to check storage in case rehydration failed
+    return keychainManager.hasVaultInStorage();
+  }
 };
 
 export const isPasswordSet = async () => {

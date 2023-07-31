@@ -2832,10 +2832,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@rainbow-me/swaps@0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.4.2.tgz#9a6734bd93b99500210089d653aa2de64acabfb7"
-  integrity sha512-BppJreZCzBZQGIuKujMRt7wDbPSDtXQF7ddDOadGetaykHOgHmOLLtK5LsbQd60QXv3YsMr2dcUaOmzVVyLL1g==
+"@rainbow-me/swaps@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.5.0.tgz#7823fc9b052ce8af730c7685b6839e7da309dbda"
+  integrity sha512-MU9YnFM+KU3esjtDYW6Ts/uESN+Zb8WhkhM/o5L5/HEhsDYyNEpl5KhI6/sxkehEH8eE2POeFSzNDX76OU98Ew==
   dependencies:
     "@ethersproject/abi" "5.7.0"
     "@ethersproject/abstract-signer" "5.7.0"
