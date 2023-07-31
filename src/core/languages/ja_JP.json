@@ -178,12 +178,12 @@
     },
     "language": {
       "title": "言語",
-      "en_us": "日本語",
-      "es_419": "スペイン語（ラテンアメリカ）",
-      "zh_cn": "簡体字中国（中国本土）",
-      "fr_fr": "フランス語",
+      "en_us": "English",
+      "es_419": "Español",
+      "zh_cn": "中文",
+      "fr_fr": "Français",
       "ja_jp": "日本語",
-      "pt_br": "ポルトガル語（ブラジル）"
+      "pt_br": "Português"
     },
     "feature_flags": {
       "full_watching_wallets": "ウォッチウォレットへの完全アクセス",

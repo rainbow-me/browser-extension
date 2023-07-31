@@ -179,11 +179,11 @@
     "language": {
       "title": "Language",
       "en_us": "English",
-      "es_419": "Spanish (Latin America)",
-      "zh_cn": "Simplified Chinese (Mainland China)",
-      "fr_fr": "French",
-      "ja_jp": "Japanese",
-      "pt_br": "Portuguese (Brazil)"
+      "es_419": "Español",
+      "zh_cn": "中文",
+      "fr_fr": "Français",
+      "ja_jp": "日本語",
+      "pt_br": "Português"
     },
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",

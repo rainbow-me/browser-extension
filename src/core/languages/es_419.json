@@ -177,7 +177,13 @@
       "ZAR": "Rand sudafricano"
     },
     "language": {
-      "title": "Idioma"
+      "title": "Idioma",
+      "en_us": "English",
+      "es_419": "Español",
+      "zh_cn": "中文",
+      "fr_fr": "Français",
+      "ja_jp": "日本語",
+      "pt_br": "Português"
     },
     "feature_flags": {
       "full_watching_wallets": "Acceso completo a billeteras vigiladas",

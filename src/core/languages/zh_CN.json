@@ -177,7 +177,13 @@
       "ZAR": "南非兰特"
     },
     "language": {
-      "title": "语言"
+      "title": "语言",
+      "en_us": "English",
+      "es_419": "Español",
+      "zh_cn": "中文",
+      "fr_fr": "Français",
+      "ja_jp": "日本語",
+      "pt_br": "Português"
     },
     "feature_flags": {
       "full_watching_wallets": "完全访问被监视的钱包",
