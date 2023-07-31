@@ -7,31 +7,19 @@ import PolygonBadge from 'static/assets/badges/polygonBadge.png';
 import { ChainId } from '~/core/types/chains';
 import { Box } from '~/design-system';
 
-const sizeConfigs = {
-  large: {
-    iconSize: 60,
-  },
-  medium: {
-    iconSize: 45,
-  },
-  small: {
-    iconSize: 18,
-  },
-  extraSmall: {
-    iconSize: 16,
-  },
-  '14px': {
-    iconSize: 14,
-  },
-  micro: {
-    iconSize: 8,
-  },
+const chainBadgeSize = {
+  '60': 60,
+  '45': 45,
+  '18': 18,
+  '16': 16,
+  '14': 14,
+  '8': 8,
 };
 
 interface ChainIconProps {
   chainId: ChainId;
   shadow?: boolean;
-  size: keyof typeof sizeConfigs;
+  size: keyof typeof chainBadgeSize;
 }
 
 const networkBadges = {
@@ -46,11 +34,12 @@ const networkBadges = {
 const ChainBadge = ({
   chainId,
   shadow = false,
-  size = 'small',
+  size = '18',
 }: ChainIconProps) => {
   if (!Object.keys(networkBadges).includes(`${chainId}`)) return null;
 
-  const { iconSize } = sizeConfigs[size];
+  const iconSize = chainBadgeSize[size];
+
   let boxShadow;
   if (shadow) {
     boxShadow = '0px 4px 12px 0px rgba(0, 0, 0, 0.3)';

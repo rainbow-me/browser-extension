@@ -108,7 +108,7 @@ export const SwitchNetworkMenuSelector = ({
                 <Column>
                   <Box testId={`switch-network-item-${i}`}>
                     <Inline space="8px" alignVertical="center">
-                      <ChainBadge chainId={chainId} size="small" />
+                      <ChainBadge chainId={chainId} size="18" />
                       <Text color="label" size="14pt" weight="semibold">
                         {name}
                       </Text>
