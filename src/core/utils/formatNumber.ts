@@ -15,7 +15,7 @@ export const createNumberFormatter = (options?: Intl.NumberFormatOptions) => {
   };
 };
 
-export const formatNumber = createNumberFormatter().format;
+export const { format: formatNumber } = createNumberFormatter();
 
 export const createCurrencyFormatter = (
   options?: Intl.NumberFormatOptions,
@@ -46,7 +46,6 @@ export const createCurrencyFormatter = (
   };
 };
 
-export const formatCurrency = createCurrencyFormatter().format;
-export const formatCurrencyParts = createCurrencyFormatter().formatToParts;
-
+export const { format: formatCurrency, formatToParts: formatCurrencyParts } =
+  createCurrencyFormatter();
 export type FormattedCurrencyParts = ReturnType<typeof formatCurrencyParts>;

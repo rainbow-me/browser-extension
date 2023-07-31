@@ -32,13 +32,13 @@ const parsePriceChange = (
 };
 
 function formatDate(date: number | Date) {
-  const currentDate = new Date();
   const targetDate = new Date(date);
 
-  const yesterday = new Date(currentDate);
-  yesterday.setDate(currentDate.getDate() - 1);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
 
-  if (currentDate.toDateString() === targetDate.toDateString())
+  if (today.toDateString() === targetDate.toDateString())
     return i18n.t('activity.today');
   if (yesterday.toDateString() === targetDate.toDateString())
     return i18n.t('activity.yesterday');
@@ -76,12 +76,9 @@ function PriceChange({
 }
 
 function TokenPrice({ token }: { token: ParsedAddressAsset }) {
-  const coinIconAsset = token;
-  // CoinIcon displays a ChainBadge when chainId !== mainnet
-  coinIconAsset.chainId = ChainId.mainnet;
   return (
     <Box display="flex" justifyContent="space-between" gap="10px">
-      <CoinIcon asset={coinIconAsset} size={40} />
+      <CoinIcon asset={token} size={40} badge={false} />
       <Box
         display="flex"
         flexDirection="column"
@@ -108,6 +105,8 @@ const getChartTimeArg = (selected: ChartTime) =>
     (args, time) => ({ ...args, [time]: time === selected }),
     {} as Record<ChartTime, boolean>,
   );
+
+type PriceChartTimeData = { points?: [timestamp: number, price: number][] };
 const usePriceChart = ({
   address,
   chainId,
@@ -121,33 +120,33 @@ const usePriceChart = ({
     queryFn: async () => {
       const priceChart = await metadataClient
         .priceChart({ address, chainId, ...getChartTimeArg(time) })
-        .then((d) => d.token?.priceCharts[time]);
-      const points = priceChart?.points as [timestamp: number, price: number][];
-      return points.reduce((result, point) => {
+        .then((d) => d.token?.priceCharts[time] as PriceChartTimeData);
+      return priceChart.points?.reduce((result, point) => {
         result.push({ timestamp: point[0], price: point[1] });
         return result;
       }, [] as ChartData[]);
     },
     queryKey: createQueryKey('price chart', { address, chainId, time }),
+    keepPreviousData: true,
   });
 };
 
-export function PriceChart({ asset }: { asset: ParsedAddressAsset }) {
+export function PriceChart({ token }: { token: ParsedAddressAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
   const [date, setDate] = useState(new Date());
 
   const { data } = usePriceChart({
-    address: asset.address,
-    chainId: asset.chainId,
+    address: token.address,
+    chainId: token.chainId,
     time: selectedTime,
   });
 
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <TokenPrice token={asset} />
+        <TokenPrice token={token} />
         <PriceChange
-          changePercentage={asset.price?.relative_change_24h}
+          changePercentage={token.price?.relative_change_24h}
           date={date}
         />
       </Box>
