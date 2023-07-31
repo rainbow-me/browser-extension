@@ -1,13 +1,13 @@
 import React from 'react';
 
-import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
-import BaseBadge from 'static/assets/badges/baseBadge.png';
-import BscBadge from 'static/assets/badges/bscBadge.png';
-import EthereumBadge from 'static/assets/badges/ethereumBadge.png';
-import HardhatBadge from 'static/assets/badges/hardhatBadge.png';
-import OptimismBadge from 'static/assets/badges/optimismBadge.png';
-import PolygonBadge from 'static/assets/badges/polygonBadge.png';
-import ZoraBadge from 'static/assets/badges/zoraBadge.png';
+import ArbitrumBadge from 'static/assets/badges/arbitrumBadge@3x.png';
+import BaseBadge from 'static/assets/badges/baseBadge@3x.png';
+import BscBadge from 'static/assets/badges/bscBadge@3x.png';
+import EthereumBadge from 'static/assets/badges/ethereumBadge@3x.png';
+import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
+import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
+import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
+import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
 import { ChainId } from '~/core/types/chains';
 import { Box } from '~/design-system';
 
