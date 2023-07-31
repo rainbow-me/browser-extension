@@ -50,7 +50,7 @@ export function App() {
       setTimeout(() => flushQueuedEvents(), 1000);
     }
     // Init trezor once globally
-    window.TrezorConnect.init({
+    window.TrezorConnect?.init({
       manifest: {
         email: 'support@rainbow.me',
         appUrl: 'https://rainbow.me',
