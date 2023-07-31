@@ -16,7 +16,7 @@ import { erc20ABI } from 'wagmi';
 
 // consts
 
-const waitUntilTime = 20000;
+const waitUntilTime = 15000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
@@ -198,6 +198,7 @@ export async function findElementByIdAndClick({ id, driver }) {
 export async function waitAndClick(element, driver) {
   await delayTime('short');
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
+  await driver.wait(until.elementIsEnabled(element), waitUntilTime);
   return element.click();
 }
 
