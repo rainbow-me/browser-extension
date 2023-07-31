@@ -312,10 +312,7 @@ export const ReviewSheet = ({
       ],
       header: {
         icon: (
-          <ChainBadge
-            chainId={asset?.chainId || ChainId.mainnet}
-            size="medium"
-          />
+          <ChainBadge chainId={asset?.chainId || ChainId.mainnet} size="45" />
         ),
       },
       linkButton: {
@@ -523,7 +520,7 @@ export const ReviewSheet = ({
                     <Inline alignVertical="center" space="8px">
                       <ChainBadge
                         chainId={asset?.chainId || ChainId.mainnet}
-                        size="extraSmall"
+                        size="16"
                       />
                       <Text size="12pt" weight="bold" color="labelSecondary">
                         {i18n.t('send.review.sending_on_network', {
