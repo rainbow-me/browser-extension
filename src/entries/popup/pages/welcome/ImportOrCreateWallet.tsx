@@ -127,7 +127,7 @@ export function ImportOrCreateWallet() {
             exit={{ opacity: 1 }}
             key="description"
             display="flex"
-            style={{ width: '210px', margin: 'auto' }}
+            style={{ width: '210px', margin: 'auto', position: 'relative' }}
           >
             <Text
               align="center"
