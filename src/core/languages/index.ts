@@ -3,8 +3,11 @@ import { I18n } from 'i18n-js';
 import en_US from './en_US.json';
 import es_419 from './es_419.json';
 import fr_FR from './fr_FR.json';
+import hi_IN from './hi_IN.json';
 import ja_JP from './ja_JP.json';
 import pt_BR from './pt_BR.json';
+import ru_RU from './ru_RU.json';
+import tr_TR from './tr_TR.json';
 import zh_CN from './zh_CN.json';
 
 export enum Language {
@@ -14,6 +17,9 @@ export enum Language {
   JA_JP = 'ja_JP',
   PT_BR = 'pt_BR',
   ZH_CN = 'zh_CN',
+  HI_IN = 'hi_IN',
+  TR_TR = 'tr_TR',
+  RU_RU = 'ru_RU',
 }
 
 export const i18n = new I18n({
@@ -23,6 +29,9 @@ export const i18n = new I18n({
   ja_JP,
   pt_BR,
   zh_CN,
+  hi_IN,
+  tr_TR,
+  ru_RU,
 });
 
 // Configure languages
@@ -51,6 +60,15 @@ export const supportedLanguages = {
   },
   [Language.ZH_CN]: {
     label: '中文',
+  },
+  [Language.HI_IN]: {
+    label: 'हिंदी',
+  },
+  [Language.TR_TR]: {
+    label: 'Türkçe',
+  },
+  [Language.RU_RU]: {
+    label: 'Русский',
   },
 };
 
