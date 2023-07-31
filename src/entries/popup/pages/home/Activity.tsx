@@ -35,6 +35,7 @@ export function Activity() {
     isInitialLoading,
     transactions,
     virtualizer: activityRowVirtualizer,
+    isRefetching,
   } = useInfiniteTransactionList({
     getScrollElement: () => containerRef.current,
   });
@@ -42,7 +43,7 @@ export function Activity() {
 
   useActivityShortcuts();
 
-  if (isInitialLoading) {
+  if (isInitialLoading || isRefetching) {
     return <ActivitySkeleton />;
   }
 

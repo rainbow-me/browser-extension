@@ -102,9 +102,10 @@ export default function ({
   );
 
   const infiniteRowVirtualizer = useVirtualizer({
-    count: transactions?.length,
+    count: formattedTransactions?.length,
     getScrollElement,
-    estimateSize: (i) => (typeof transactions[i] === 'string' ? 34 : 52),
+    estimateSize: (i) =>
+      typeof formattedTransactions[i] === 'string' ? 34 : 52,
     overscan: 20,
   });
   const rows = infiniteRowVirtualizer.getVirtualItems();
@@ -168,6 +169,7 @@ export default function ({
     status,
     transactions: formattedTransactions,
     virtualizer: infiniteRowVirtualizer,
+    isRefetching: manuallyRefetching,
   };
 }
 

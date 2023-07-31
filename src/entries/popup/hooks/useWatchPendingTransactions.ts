@@ -2,8 +2,8 @@ import { getProvider } from '@wagmi/core';
 import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
+import { queryClient } from '~/core/react-query';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
-import { fetchConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import { fetchTransactions } from '~/core/resources/transactions/transactions';
 import {
   nonceStore,
@@ -11,7 +11,7 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { TransactionType } from '~/core/types/transactions';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   getPendingTransactionData,
@@ -22,20 +22,20 @@ import {
 
 import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
 
-// const isPendingTransaction = (status: TransactionStatus) => {
-//   return (
-//     status === TransactionStatus.approving ||
-//     status === TransactionStatus.bridging ||
-//     status === TransactionStatus.cancelling ||
-//     status === TransactionStatus.depositing ||
-//     status === TransactionStatus.purchasing ||
-//     status === TransactionStatus.receiving ||
-//     status === TransactionStatus.sending ||
-//     status === TransactionStatus.speeding_up ||
-//     status === TransactionStatus.swapping ||
-//     status === TransactionStatus.withdrawing
-//   );
-// };
+const isPendingTransaction = (status: TransactionStatus) => {
+  return (
+    status === TransactionStatus.approving ||
+    status === TransactionStatus.bridging ||
+    status === TransactionStatus.cancelling ||
+    status === TransactionStatus.depositing ||
+    status === TransactionStatus.purchasing ||
+    status === TransactionStatus.receiving ||
+    status === TransactionStatus.sending ||
+    status === TransactionStatus.speeding_up ||
+    status === TransactionStatus.swapping ||
+    status === TransactionStatus.withdrawing
+  );
+};
 
 export const useWatchPendingTransactions = ({
   address,
@@ -166,18 +166,21 @@ export const useWatchPendingTransactions = ({
     );
 
     if (transactionConfirmedByRainbow) {
-      fetchConsolidatedTransactions(
-        {
-          address,
-          currency: currentCurrency,
+      queryClient.refetchQueries({
+        predicate: (query) => {
+          if (query.queryKey.includes('consolidatedTransactions')) {
+            return true;
+          }
+          return false;
         },
-        {},
-      );
+      });
     }
 
     setPendingTransactions({
       address,
-      pendingTransactions: updatedPendingTransactions,
+      pendingTransactions: updatedPendingTransactions.filter((tx) =>
+        isPendingTransaction(tx?.status as TransactionStatus),
+      ),
     });
   }, [
     address,
