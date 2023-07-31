@@ -65,7 +65,7 @@ export default function ({
               }
               return latestTxMap;
             }, new Map(SUPPORTED_CHAIN_IDS.map((chain) => [chain, null as RainbowTransaction | null])));
-          watchConfirmedTransactions({
+          watchForPendingTransactionsReportedByRainbowBackend({
             currentAddress: address,
             pendingTransactions,
             latestTransactions,
@@ -173,7 +173,7 @@ export default function ({
   };
 }
 
-function watchConfirmedTransactions({
+function watchForPendingTransactionsReportedByRainbowBackend({
   currentAddress,
   pendingTransactions,
   latestTransactions,
