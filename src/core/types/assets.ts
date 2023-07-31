@@ -69,6 +69,8 @@ export enum AssetType {
   eth = 'eth',
   nft = 'nft',
   optimism = 'optimism',
+  base = 'base',
+  zora = 'zora',
   polygon = 'polygon',
   token = 'token',
   trash = 'trash',
