@@ -121,12 +121,12 @@ export const LineChart = ({
   const yScale = (height - 2 * paddingY) / (maxY - minY);
 
   const points = data.map(({ price, timestamp }, index) => {
-    const x = (index / (data.length - 1)) * width;
+    const x = (index / data.length) * width;
     const y = height - paddingY - (price - minY) * yScale;
     return { price, timestamp, x, y };
   });
 
-  const d = monotoneCubicInterpolation(points, 2);
+  const d = monotoneCubicInterpolation(points);
 
   const [indicator, setIndicator] = useState<Position | null>(null);
 
@@ -144,12 +144,12 @@ export const LineChart = ({
 
     const pathLength = path.getTotalLength();
     const mousePathLength = pathLength * (mouseX / width);
-    const closestPoint = path.getPointAtLength(mousePathLength);
-    setIndicator({ x: closestPoint.x, y: closestPoint.y });
+    const { x, y } = path.getPointAtLength(mousePathLength);
+    setIndicator({ x, y });
 
     pathRight.style.strokeDasharray = `${mousePathLength} ${pathLength}`;
 
-    onMouseMove(findClosestPoint(points, mouseX));
+    onMouseMove(findClosestPoint(points, mousePathLength));
   };
 
   const onMouseLeave = () => {
