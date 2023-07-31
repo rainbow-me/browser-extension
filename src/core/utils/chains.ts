@@ -69,6 +69,10 @@ export function chainNameFromChainId(chainId: ChainId) {
 export function getBlockExplorerHostForChain(chainId: ChainId) {
   if (chainId === ChainId.optimism) {
     return 'optimistic.etherscan.io';
+  } else if (chainId === ChainId.base) {
+    return 'basescan.org';
+  } else if (chainId === ChainId.zora) {
+    return 'explorer.zora.energy';
   } else if (chainId === ChainId.polygon) {
     return 'polygonscan.com';
   } else if (chainId === ChainId.bsc) {
