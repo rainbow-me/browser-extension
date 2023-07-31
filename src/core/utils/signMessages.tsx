@@ -72,7 +72,8 @@ export const getSigningRequestDisplayDetails = (
     }
     return {};
   } catch (e) {
-    logger.error(new RainbowError('Error parsing msg signing data'), {
+    logger.info('MSG Signing Parsing Error with meta', payload.meta);
+    logger.error(new RainbowError('MSG Signing Parsing Error'), {
       payload,
     });
     return {};
