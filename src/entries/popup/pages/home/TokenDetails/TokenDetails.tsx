@@ -152,7 +152,7 @@ function NetworkBanner({
       padding="8px"
       gap="4px"
     >
-      <ChainBadge chainId={chainId} size="14px" />
+      <ChainBadge chainId={chainId} size="14" />
       <Text size="12pt" weight="semibold" color="labelSecondary">
         {i18n.t('token_details.this_token_is_on_network', {
           symbol: tokenSymbol,

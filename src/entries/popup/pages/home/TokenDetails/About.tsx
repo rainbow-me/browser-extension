@@ -261,7 +261,7 @@ export function About({ token }: { token: ParsedAddressAsset }) {
                 networks && (
                   <Inline alignVertical="center" space="2px">
                     {networks.map(({ chainId }) => (
-                      <ChainBadge key={chainId} chainId={chainId} size="14px" />
+                      <ChainBadge key={chainId} chainId={chainId} size="14" />
                     ))}
                   </Inline>
                 )
