@@ -13,6 +13,8 @@ export const DEFAULT_SLIPPAGE_BIPS = {
   [ChainId.polygon]: 200,
   [ChainId.bsc]: 200,
   [ChainId.optimism]: 200,
+  [ChainId.base]: 200,
+  [ChainId.zora]: 200,
   [ChainId.arbitrum]: 200,
 };
 
@@ -21,6 +23,8 @@ export const DEFAULT_SLIPPAGE = {
   [ChainId.polygon]: '2',
   [ChainId.bsc]: '2',
   [ChainId.optimism]: '2',
+  [ChainId.base]: '2',
+  [ChainId.zora]: '2',
   [ChainId.arbitrum]: '2',
 };
 
@@ -33,6 +37,8 @@ export const getDefaultSlippage = (chainId: ChainId) => {
     | ChainName.optimism
     | ChainName.polygon
     | ChainName.arbitrum
+    | ChainName.base
+    | ChainName.zora
     | ChainName.bsc;
   return slippageInBipsToString(
     config.default_slippage_bips[chainName] || DEFAULT_SLIPPAGE_BIPS[chainId],
