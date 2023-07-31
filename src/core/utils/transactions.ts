@@ -19,6 +19,7 @@ import {
   nonceStore,
   pendingTransactionsStore,
 } from '../state';
+import { ParsedAddressAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -699,21 +700,16 @@ export function getTokenBlockExplorerUrl({
   return `http://${blockExplorerHost}/token/${address}`;
 }
 
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const capitalize = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
 export const getTokenBlockExplorer = ({
   address,
   chainId,
-}: {
-  address: Address | typeof ETH_ADDRESS;
-  chainId: ChainId;
-}) => {
+}: Pick<ParsedAddressAsset, 'address' | 'mainnetAddress' | 'chainId'>) => {
   let _address = address;
   if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
   return {
     url: getTokenBlockExplorerUrl({ address: _address, chainId }),
-    name: capitalize(
-      getBlockExplorerHostForChain(chainId).split('.').at?.(-2) || 'Explorer',
-    ),
+    name: capitalize(getBlockExplorerHostForChain(chainId).split('.').at?.(-2)),
   };
 };
 

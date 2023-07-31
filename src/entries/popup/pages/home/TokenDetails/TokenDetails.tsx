@@ -1,5 +1,4 @@
 import { Navigate, To, useParams } from 'react-router-dom';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
@@ -191,10 +190,7 @@ function FavoriteButton({ token }: { token: ParsedAddressAsset }) {
 export const getCoingeckoUrl = ({
   address,
   mainnetAddress,
-}: {
-  address: Address | typeof ETH_ADDRESS;
-  mainnetAddress?: Address;
-}) => {
+}: Pick<ParsedAddressAsset, 'address' | 'mainnetAddress'>) => {
   if ([mainnetAddress, address].includes(ETH_ADDRESS))
     return `https://www.coingecko.com/en/coins/ethereum`;
   return `https://www.coingecko.com/en/coins/${mainnetAddress || address}`;
@@ -218,25 +214,27 @@ function MoreOptions({ token }: { token: ParsedAddressAsset }) {
         <AccentColorProviderWrapper
           color={token.colors?.primary || token.colors?.fallback}
         >
-          <DropdownMenuItem
-            symbolLeft="doc.on.doc.fill"
-            onSelect={() => {
-              navigator.clipboard.writeText(token.address);
-              triggerToast({
-                title: i18n.t('wallet_header.copy_toast'),
-                description: truncateAddress(token.address),
-              });
-            }}
-          >
-            <Stack space="8px">
-              <Text size="14pt" weight="semibold">
-                {i18n.t('token_details.more_options.copy_address')}
-              </Text>
-              <Text size="11pt" color="labelTertiary" weight="medium">
-                {truncateAddress(token.address)}
-              </Text>
-            </Stack>
-          </DropdownMenuItem>
+          {token.mainnetAddress !== ETH_ADDRESS && (
+            <DropdownMenuItem
+              symbolLeft="doc.on.doc.fill"
+              onSelect={() => {
+                navigator.clipboard.writeText(token.address);
+                triggerToast({
+                  title: i18n.t('wallet_header.copy_toast'),
+                  description: truncateAddress(token.address),
+                });
+              }}
+            >
+              <Stack space="8px">
+                <Text size="14pt" weight="semibold">
+                  {i18n.t('token_details.more_options.copy_address')}
+                </Text>
+                <Text size="11pt" color="labelTertiary" weight="medium">
+                  {truncateAddress(token.address)}
+                </Text>
+              </Stack>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem
             symbolLeft="safari"
             external
@@ -244,13 +242,15 @@ function MoreOptions({ token }: { token: ParsedAddressAsset }) {
           >
             CoinGecko
           </DropdownMenuItem>
-          <DropdownMenuItem
-            symbolLeft="binoculars.fill"
-            external
-            onSelect={() => window.open(explorer.url, '_blank')}
-          >
-            {explorer.name}
-          </DropdownMenuItem>
+          {token.mainnetAddress !== ETH_ADDRESS && (
+            <DropdownMenuItem
+              symbolLeft="binoculars.fill"
+              external
+              onSelect={() => window.open(explorer.url, '_blank')}
+            >
+              {explorer.name}
+            </DropdownMenuItem>
+          )}
 
           {/* <Separator color="separatorSecondary" />
 

@@ -218,7 +218,7 @@ export function About({ token }: { token: ParsedAddressAsset }) {
             marginHorizontal="-20px"
           >
             <div />
-            {token.address !== ETH_ADDRESS && (
+            {token.mainnetAddress !== ETH_ADDRESS && (
               <>
                 <InfoRow
                   symbol="info.circle"
