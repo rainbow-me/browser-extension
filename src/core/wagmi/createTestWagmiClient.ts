@@ -1,15 +1,10 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import {
   arbitrum,
-  arbitrum,
   base,
   bsc,
-  bsc,
-  mainnet,
   mainnet,
   optimism,
-  optimism,
-  polygon,
   polygon,
   zora,
 } from '@wagmi/chains';
