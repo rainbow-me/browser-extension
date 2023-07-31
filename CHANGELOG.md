@@ -17,6 +17,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.1.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.48)
+
+### Changed
+- Adopted Socket v2 contracts for gas optimization for token bridging #814
+- Adopted colloquial BSC naming for Binance Smart Chain #768
+- Added support for deprecated `send` and `sendAsync` RPC calls #792
+- Rate limiting dApps that abuse the `window.ethereum` RPC provider #785
+- Analytics for device context to learn about our user’s browsers #776
+- Analytics for screen routing events to follow user journeys #775
+
+### Fixed
+
+- Improved keychain vault stability to resolve an issue where the extension could appear like the user had not yet onboarded #813
+- Resolved an issue with Ledger account discovery for users with more than 1 address #807
+- Resolved an issue where dApps would not reflect a disconnection when using Disconnect All #806 
+- Fixed an issue with the `window.ethereum` provider when no other wallets were injected #800
+- Fixed a crash in the Recovery Phrase Seed quiz #780
+- Fixed a crash in Edge when a New Tab is opened #811
+- Fixed an issue with the styling of the Network Changed notification on certain dApps #809
+- Removed unnecessary console logs #769
+
 ## [v1.1.40](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.40)
 
 ### Changed
