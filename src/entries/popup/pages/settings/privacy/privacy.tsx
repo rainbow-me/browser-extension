@@ -123,7 +123,6 @@ export function Privacy() {
               rightComponent={
                 <Toggle
                   checked={hideSmallBalances}
-                  disabled
                   handleChange={setHideSmallBalances}
                   tabIndex={-1}
                 />
@@ -135,10 +134,7 @@ export function Privacy() {
                   )}
                 />
               }
-              onToggle={() => {
-                // uncomment when this is enabled
-                // setHideSmallBalances(!hideSmallBalances);
-              }}
+              onToggle={() => setHideSmallBalances(!hideSmallBalances)}
             />
           </Menu>
           <Menu>

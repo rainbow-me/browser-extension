@@ -6,10 +6,12 @@ import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
+import { selectUserAssetsFilteringSmallBalancesList } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { UniqueId } from '~/core/types/assets';
 import {
   Box,
@@ -40,6 +42,7 @@ export function Tokens() {
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
     useState(false);
+  const { hideSmallBalances } = useHideSmallBalancesStore();
 
   const {
     data: assets = [],
@@ -52,7 +55,9 @@ export function Tokens() {
       connectedToHardhat,
     },
     {
-      select: selectUserAssetsList,
+      select: hideSmallBalances
+        ? selectUserAssetsFilteringSmallBalancesList
+        : selectUserAssetsList,
     },
   );
 
