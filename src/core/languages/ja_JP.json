@@ -177,13 +177,7 @@
       "ZAR": "南アフリカランド"
     },
     "language": {
-      "title": "言語",
-      "en_us": "English",
-      "es_419": "Español",
-      "zh_cn": "中文",
-      "fr_fr": "Français",
-      "ja_jp": "日本語",
-      "pt_br": "Português"
+      "title": "言語"
     },
     "feature_flags": {
       "full_watching_wallets": "ウォッチウォレットへの完全アクセス",

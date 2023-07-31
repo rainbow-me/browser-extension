@@ -7,6 +7,9 @@ import zh_CN from './zh_CN.json';
 export enum Language {
   EN_US = 'en_US',
   ES_419 = 'es_419',
+  FR_FR = 'fr_FR',
+  JA_JP = 'ja_JP',
+  PT_BR = 'pt_BR',
   ZH_CN = 'zh_CN',
 }
 
@@ -26,13 +29,22 @@ export const changeI18nLanguage = (locale: Language) => {
 
 export const supportedLanguages = {
   [Language.EN_US]: {
-    label: i18n.t('settings.language.en_us'),
+    label: 'English',
   },
   [Language.ES_419]: {
-    label: i18n.t('settings.language.es_419'),
+    label: 'Español',
+  },
+  [Language.FR_FR]: {
+    label: 'Français',
+  },
+  [Language.JA_JP]: {
+    label: '日本語',
+  },
+  [Language.PT_BR]: {
+    label: 'Português',
   },
   [Language.ZH_CN]: {
-    label: i18n.t('settings.language.zh_cn'),
+    label: '中文',
   },
 };
 
