@@ -94,11 +94,14 @@ export const useSwapValidations = ({
     nativeAsset?.symbol,
   ]);
 
+  const enoughAssetsForSwap =
+    Boolean(enoughAssetBalance) && Boolean(enoughNativeAssetBalanceForGas);
+
   return {
+    buttonLabel,
     enoughAssetBalance,
     enoughNativeAssetBalanceForGas,
-    buttonLabel,
-    enoughAssetsForSwap:
-      Boolean(enoughAssetBalance) && Boolean(enoughNativeAssetBalanceForGas),
+    enoughAssetsForSwap,
+    readyForReview: enoughAssetsForSwap && selectedGas?.gasFee.amount,
   };
 };

@@ -140,6 +140,7 @@ export const useSendValidations = ({
 
   const readyForReview = useMemo(
     () =>
+      selectedGas?.gasFee?.amount &&
       isValidToAddress &&
       toAddressOrName !== '' &&
       assetAmount &&
@@ -150,6 +151,7 @@ export const useSendValidations = ({
       enoughAssetBalance,
       enoughNativeAssetForGas,
       isValidToAddress,
+      selectedGas?.gasFee?.amount,
       toAddressOrName,
     ],
   );

@@ -50,7 +50,8 @@ export const useApproveAppRequestValidations = ({
   }, [chainIdToUse, enoughNativeAssetForGas, nativeAsset?.symbol]);
 
   return {
-    enoughNativeAssetForGas,
+    enoughNativeAssetForGas:
+      enoughNativeAssetForGas && selectedGas?.gasFee.amount,
     buttonLabel,
   };
 };
