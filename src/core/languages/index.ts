@@ -2,6 +2,9 @@ import { I18n } from 'i18n-js';
 
 import en_US from './en_US.json';
 import es_419 from './es_419.json';
+import fr_FR from './fr_FR.json';
+import ja_JP from './ja_JP.json';
+import pt_BR from './pt_BR.json';
 import zh_CN from './zh_CN.json';
 
 export enum Language {
@@ -16,6 +19,9 @@ export enum Language {
 export const i18n = new I18n({
   en_US,
   es_419,
+  fr_FR,
+  ja_JP,
+  pt_BR,
   zh_CN,
 });
 
