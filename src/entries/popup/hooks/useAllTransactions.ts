@@ -103,6 +103,36 @@ export function useAllTransactions({
         watchConfirmedTransactions(transactions, ChainId.polygon),
     },
   );
+  const {
+    data: confirmedBaseTransactions,
+    isInitialLoading: baseInitialLoading,
+    refetch: refetchBase,
+  } = useTransactions(
+    {
+      address,
+      chainId: ChainId.base,
+      currency,
+    },
+    {
+      onSuccess: (transactions: RainbowTransaction[]) =>
+        watchConfirmedTransactions(transactions, ChainId.base),
+    },
+  );
+  const {
+    data: confirmedZoraTransactions,
+    isInitialLoading: zoraInitialLoading,
+    refetch: refetchZora,
+  } = useTransactions(
+    {
+      address,
+      chainId: ChainId.zora,
+      currency,
+    },
+    {
+      onSuccess: (transactions: RainbowTransaction[]) =>
+        watchConfirmedTransactions(transactions, ChainId.zora),
+    },
+  );
 
   const refetchTransactions = async () => {
     setManuallyRefetching(true);
@@ -112,6 +142,8 @@ export function useAllTransactions({
       refetchConfirmed(),
       refetchOptimism(),
       refetchPolygon(),
+      refetchBase(),
+      refetchZora(),
     ];
     await Promise.all(queries);
     setManuallyRefetching(false);
@@ -137,6 +169,8 @@ export function useAllTransactions({
     bscInitialLoading ||
     optimismInitialLoading ||
     polygonInitialLoading ||
+    baseInitialLoading ||
+    zoraInitialLoading ||
     manuallyRefetching;
 
   return useMemo(
@@ -148,6 +182,8 @@ export function useAllTransactions({
         ...(confirmedBscTransactions || []),
         ...(confirmedOptimismTransactions || []),
         ...(confirmedPolygonTransactions || []),
+        ...(confirmedBaseTransactions || []),
+        ...(confirmedZoraTransactions || []),
       ],
       isInitialLoading,
     }),
@@ -156,6 +192,8 @@ export function useAllTransactions({
       confirmedBscTransactions,
       confirmedOptimismTransactions,
       confirmedPolygonTransactions,
+      confirmedBaseTransactions,
+      confirmedZoraTransactions,
       confirmedTransactions,
       pendingTransactions,
       isInitialLoading,
