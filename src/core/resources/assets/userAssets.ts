@@ -22,6 +22,8 @@ const REFRACTION_SUPPORTED_CHAINS = [
   ChainName.optimism,
   ChainName.polygon,
   ChainName.arbitrum,
+  ChainName.base,
+  ChainName.zora,
   ChainName.bsc,
 ];
 
