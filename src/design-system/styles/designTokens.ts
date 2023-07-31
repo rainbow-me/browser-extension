@@ -566,12 +566,12 @@ export const foregroundColors: Record<
     dark: '#BE97FF',
   },
   base: {
-    light: '#FF4040',
-    dark: '#FF8A8A',
+    light: '#0052FF',
+    dark: '#3979FF',
   },
   zora: {
-    light: '#FF4040',
-    dark: '#FF8A8A',
+    light: '#2B5DF0',
+    dark: '#6183F0',
   },
   bsc: {
     light: '#EBAF09',
