@@ -1,5 +1,5 @@
 import { ZerionAsset } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 import { ZerionTransaction } from '~/core/types/transactions';
 
 /**
@@ -11,6 +11,8 @@ export interface MessageMeta {
   cut_off?: number;
   status?: string;
   chain_id?: ChainName; // L2
+  chain_ids?: ChainId[]; // v3 consolidated
+  chain_ids_with_errors?: ChainId[]; // v3 consolidated
   asset_codes?: string;
   next_page_cursor?: string;
 }
@@ -26,6 +28,16 @@ export interface AddressAssetsReceivedMessage {
         quantity: string;
       };
     };
+  };
+  meta?: MessageMeta;
+}
+
+/**
+ * A message from the Zerion API indicating that consolidated assets were received.
+ */
+export interface AddressConsolidatedAssetsReceivedMessage {
+  payload?: {
+    assets?: { asset: ZerionAsset; quantity: string }[];
   };
   meta?: MessageMeta;
 }

@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { addysHttpV3 } from '~/core/network/addys';
+import { addysHttp } from '~/core/network/addys';
 import {
   InfiniteQueryConfig,
   QueryConfig,
@@ -38,7 +38,7 @@ export const consolidatedTransactionsQueryKey = ({
   createQueryKey(
     'consolidatedTransactions',
     { address, currency },
-    { persisterVersion: 2 },
+    { persisterVersion: 1 },
   );
 
 type ConsolidatedTransactionsQueryKey = ReturnType<
@@ -85,7 +85,7 @@ export async function consolidatedTransactionsQueryFunction({
   typeof consolidatedTransactionsQueryKey
 >): Promise<_QueryResult> {
   try {
-    const response = await addysHttpV3.get<TransactionsReceivedMessage>(
+    const response = await addysHttp.get<TransactionsReceivedMessage>(
       `/${SUPPORTED_CHAIN_IDS.join(',')}/${address}/transactions`,
       {
         params: {
