@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import appConnectionSheetImageMask from 'static/assets/appConnectionSheetImageMask.svg';
 import { useCurrentAddressStore } from '~/core/state';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Box,
   Button,
@@ -15,6 +16,7 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useAppSession } from '../../hooks/useAppSession';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import { Checkbox } from '../Checkbox/Checkbox';
@@ -28,11 +30,17 @@ export const AppConnectionSheet = () => {
   const { url } = useActiveTab();
   const { appHost, appName } = useAppMetadata({ url });
 
+  const { appSession } = useAppSession({ host: appHost });
   useEffect(() => {
     setTimeout(() => {
-      setshow(true);
+      if (
+        appSession &&
+        !isLowerCaseMatch(appSession?.address, currentAddress)
+      ) {
+        setshow(true);
+      }
     }, 1000);
-  }, []);
+  }, [appSession, appSession?.address, currentAddress]);
 
   console.log('-- show', show);
   return (
