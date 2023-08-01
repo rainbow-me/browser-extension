@@ -821,6 +821,7 @@ export const symbolNames = selectSymbolNames(
   'person.crop.circle.fill.badge.plus',
   'binoculars.fill',
   'circle.fill',
+  'circle',
   'checkmark.circle.fill',
   'record.circle.fill',
   'bolt.fill',
