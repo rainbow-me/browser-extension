@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import appConnectionSheetImageMask from 'static/assets/appConnectionSheetImageMask.svg';
 import { useCurrentAddressStore } from '~/core/state';
 import {
   Box,
@@ -45,7 +46,8 @@ export const AppConnectionSheet = () => {
                 <WalletAvatar
                   address={currentAddress}
                   size={44}
-                  emojiSize="10pt"
+                  background="transparent"
+                  mask={appConnectionSheetImageMask}
                 />
               </Box>
               <Stack space="16px" alignHorizontal="center">
