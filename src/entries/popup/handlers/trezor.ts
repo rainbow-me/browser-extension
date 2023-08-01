@@ -11,14 +11,6 @@ import { addHexPrefix } from '~/core/utils/hex';
 
 import { walletAction } from './walletAction';
 
-export const TREZOR_CONFIG = {
-  manifest: {
-    email: 'support@rainbow.me',
-    appUrl: 'https://rainbow.me',
-  },
-  lazyLoad: true,
-};
-
 const getPath = async (address: Address) => {
   return (await walletAction('get_path', address)) as string;
 };
@@ -27,11 +19,6 @@ export async function signTransactionFromTrezor(
   transaction: ethers.providers.TransactionRequest,
 ): Promise<string> {
   try {
-    try {
-      window.TrezorConnect.init(TREZOR_CONFIG);
-    } catch (e) {
-      // ignore already initialized error
-    }
     const { from: address } = transaction;
     const provider = getProvider({
       chainId: transaction.chainId,
@@ -114,11 +101,6 @@ export async function signMessageByTypeFromTrezor(
   address: Address,
   messageType: string,
 ): Promise<string> {
-  try {
-    window.TrezorConnect.init(TREZOR_CONFIG);
-  } catch (e) {
-    // ignore already initialized error
-  }
   const path = await getPath(address);
   // Personal sign
   if (messageType === 'personal_sign') {
