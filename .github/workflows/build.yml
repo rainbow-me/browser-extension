@@ -71,7 +71,7 @@ jobs:
     runs-on: beefy-runner-bx
     timeout-minutes: 16
     strategy:
-      max-parallel: 4
+      max-parallel: 3
     needs: [build]
     env:
       DISPLAY: :0
@@ -86,7 +86,7 @@ jobs:
           export BROWSER=chrome
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-          yarn vitest:parallel --retry=5
+          yarn vitest:parallel --retry=3
   chrome-e2e-swap:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
@@ -126,7 +126,7 @@ jobs:
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-            yarn vitest:send --retry=5
+            yarn vitest:send --retry=3
   chrome-e2e-dappInteractions:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
@@ -144,7 +144,7 @@ jobs:
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-            yarn vitest:dappInteractions --retry=5
+            yarn vitest:dappInteractions --retry=3
   # BRAVE TESTS
   # brave-e2e:
   #   needs: [build]
