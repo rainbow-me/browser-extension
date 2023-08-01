@@ -20,6 +20,7 @@ import { useAppSession } from '../../hooks/useAppSession';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import { Checkbox } from '../Checkbox/Checkbox';
+import ExternalImage from '../ExternalImage/ExternalImage';
 import { Navbar } from '../Navbar/Navbar';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
@@ -28,7 +29,7 @@ export const AppConnectionSheet = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
-  const { appHost, appName } = useAppMetadata({ url });
+  const { appHost, appName, appLogo } = useAppMetadata({ url });
 
   const { appSession } = useAppSession({ host: appHost });
   useEffect(() => {
@@ -61,6 +62,31 @@ export const AppConnectionSheet = () => {
                   background="transparent"
                   mask={appConnectionSheetImageMask}
                 />
+                <Box
+                  position="absolute"
+                  style={{
+                    marginLeft: '-9px',
+                    marginTop: '-18px',
+                    borderRadius: '8px',
+                  }}
+                >
+                  <Box
+                    style={{
+                      height: '18px',
+                      width: '18px',
+                      borderRadius: 6,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <Inline
+                      alignHorizontal="center"
+                      alignVertical="center"
+                      height="full"
+                    >
+                      <ExternalImage src={appLogo} width="18" height="18" />
+                    </Inline>
+                  </Box>
+                </Box>
               </Box>
               <Stack space="16px" alignHorizontal="center">
                 <Stack space="10px" alignHorizontal="center">
