@@ -27,6 +27,7 @@ import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
+import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
 import { ConnectLedger } from './pages/hw/ledger';
 import { SuccessHW } from './pages/hw/success';
@@ -87,6 +88,14 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute direction="base" protectedRoute>
         <Home />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.TOKEN_DETAILS(':uniqueId'),
+    element: (
+      <AnimatedRoute direction="base" protectedRoute>
+        <TokenDetails />
       </AnimatedRoute>
     ),
   },
