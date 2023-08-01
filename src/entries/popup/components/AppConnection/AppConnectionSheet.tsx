@@ -13,6 +13,8 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 
+import { useActiveTab } from '../../hooks/useActiveTab';
+import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import { Checkbox } from '../Checkbox/Checkbox';
@@ -23,6 +25,8 @@ export const AppConnectionSheet = () => {
   const [show, setshow] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
+  const { url } = useActiveTab();
+  const { appHost, appName } = useAppMetadata({ url });
 
   useEffect(() => {
     setTimeout(() => {
@@ -64,7 +68,7 @@ export const AppConnectionSheet = () => {
                     </TextOverflow>
                   </Inline>
                   <TextOverflow color="label" size="12pt" weight="bold">
-                    Connect to Uniswap?
+                    {`Connect to ${appName || appHost}?`}
                   </TextOverflow>
                 </Stack>
                 <Text
@@ -73,8 +77,10 @@ export const AppConnectionSheet = () => {
                   weight="medium"
                   align="center"
                 >
-                  Allow Uniswap to view your wallet address, balance, activity
-                  and request approval for transactions.
+                  {`Allow ${
+                    appName || appHost
+                  } to view your wallet address, balance, activity
+                  and request approval for transactions.`}
                 </Text>
               </Stack>
             </Stack>
