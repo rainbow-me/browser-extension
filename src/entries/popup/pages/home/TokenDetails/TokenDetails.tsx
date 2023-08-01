@@ -209,6 +209,7 @@ export const getCoingeckoUrl = ({
 
 function MoreOptions({ token }: { token: ParsedAddressAsset }) {
   const explorer = getTokenBlockExplorer(token);
+  const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -225,7 +226,7 @@ function MoreOptions({ token }: { token: ParsedAddressAsset }) {
         <AccentColorProviderWrapper
           color={token.colors?.primary || token.colors?.fallback}
         >
-          {token.mainnetAddress !== ETH_ADDRESS && (
+          {!isEth && (
             <DropdownMenuItem
               symbolLeft="doc.on.doc.fill"
               onSelect={() => {
@@ -253,7 +254,7 @@ function MoreOptions({ token }: { token: ParsedAddressAsset }) {
           >
             CoinGecko
           </DropdownMenuItem>
-          {token.mainnetAddress !== ETH_ADDRESS && (
+          {!isEth && (
             <DropdownMenuItem
               symbolLeft="binoculars.fill"
               external

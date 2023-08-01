@@ -206,6 +206,8 @@ export function About({ token }: { token: ParsedAddressAsset }) {
 
   const explorer = getTokenBlockExplorer(token);
 
+  const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
+
   return (
     <Accordion
       type="multiple"
@@ -286,7 +288,7 @@ export function About({ token }: { token: ParsedAddressAsset }) {
             marginHorizontal="-20px"
           >
             <div />
-            {token.mainnetAddress !== ETH_ADDRESS && (
+            {!isEth && (
               <>
                 <InfoRow
                   symbol="info.circle"
