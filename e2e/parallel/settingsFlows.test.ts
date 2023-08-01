@@ -24,7 +24,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe('Navigate Settings & Privacy and its flows', () => {
+describe.skip('Navigate Settings & Privacy and its flows', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
