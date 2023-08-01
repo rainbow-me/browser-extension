@@ -81,7 +81,7 @@
       "analytics_description": "Help Rainbow improve its products and services by allowing analytics of usage data. Collected data is not associated with you or your account.",
       "hide_asset_balances": "Hide asset balances",
       "hide_asset_balances_description": "With this turned on Rainbow will obfuscate token balances accross the app.",
-      "auto_hide_balances_under_1": " Auto-hide balances under $1",
+      "auto_hide_balances_under_1": "Auto-hide balances under %{amount}",
       "view_private_key": "View Private Key",
       "view_secret_recovery_phrase": "View Secret Recovery Phrase",
       "auto_lock_timer": {

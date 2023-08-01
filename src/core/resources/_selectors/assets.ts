@@ -20,6 +20,14 @@ export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
     );
 }
 
+export function selectUserAssetsFilteringSmallBalancesList(
+  assets: ParsedAssetsDictByChain,
+) {
+  return selectUserAssetsList(assets).filter(
+    (a) => parseFloat(a?.native?.balance?.amount) > 1,
+  );
+}
+
 export function selectUserAssetsDictByChain(assets: ParsedAssetsDictByChain) {
   return assets;
 }
