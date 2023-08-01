@@ -73,7 +73,7 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 4
+      VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/testSetup
