@@ -151,7 +151,7 @@ function Fee({
             <Row>
               <Columns alignVertical="center" space="4px">
                 <Column width="content">
-                  <ChainBadge chainId={chainId} size="small" />
+                  <ChainBadge chainId={chainId} size="18" />
                 </Column>
                 <Column width="content">
                   <TextOverflow weight="semibold" color="label" size="14pt">
