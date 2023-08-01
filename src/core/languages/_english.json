@@ -789,7 +789,15 @@
       "ath": "All time hight",
       "atl": "All time low",
       "market_cap": "Market Cap",
+      "market_cap_explainer": {
+        "title": "Market Cap",
+        "description": "A market cap is the total market value of a token's circulating supply. It is calculated with an average exchange price."
+      },
       "fully_diluted": "Fully Diluted",
+      "fully_diluted_explainer": {
+        "title": "Fully Diluted Market Cap",
+        "description": "The maximum possible market cap of a token if the total supply was available in circulation."
+      },
 
       "supply": "Supply",
       "max_total_supply": "Max Total Supply",
@@ -832,27 +840,36 @@
     "verified_by_rainbow": "Verified by Rainbow"
   },
   "explainers": {
+    "sidechains": {
+      "arbitrum": {
+        "title": "What's Arbitrum?",
+        "description_1": "Arbitrum is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
+        "description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum."
+      },
+      "optimism": {
+        "title": "What's Optimism?",
+        "description_1": "Optimism is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
+        "description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum."
+      },
+      "polygon": {
+        "title": "What's Polygon?",
+        "description_1": "Polygon is a sidechain, a distinct network that runs alongside Ethereum and is compatible with it.",
+        "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Polygon has its own security and consensus mechanisms that differ from Ethereum."
+      },
+      "bsc": {
+        "title": "What's BSC?",
+        "description_1": "Binance Smart Chain, or BSC for short, is the blockchain network for the trading platform Binance.",
+        "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum."
+      },
+      "link_button_label": "Read more",
+      "action_label": "Got it"
+    },
     "send": {
       "to_smart_contract": {
         "description_1": "The address you entered is for a smart contract.",
         "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
         "description_3": "Double check the address, verify it with the recipient, or contact support first.",
         "title": "Hold your horses!"
-      },
-      "sending_on_l2": {
-        "arbitrum_title": "What's Arbitrum?",
-        "arbitrum_description_1": "Arbitrum is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
-        "arbitrum_description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum.",
-        "optimism_title": "What's Optimism?",
-        "optimism_description_1": "Optimism is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
-        "optimism_description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum.",
-        "polygon_title": "What's Polygon?",
-        "polygon_description_1": "Polygon is a sidechain, a distinct network that runs alongside Ethereum and is compatible with it.",
-        "polygon_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Polygon has its own security and consensus mechanisms that differ from Ethereum.",
-        "bsc_title": "What's BSC?",
-        "bsc_description_1": "Binance Smart Chain, or BSC for short, is the blockchain network for the  trading platform Binance.",
-        "bsc_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum.",
-        "link_button_label": "Read more"
       },
       "action_label": "Got it"
     },

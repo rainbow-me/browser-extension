@@ -1,3 +1,4 @@
+import { useReducer } from 'react';
 import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -34,6 +35,7 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
+import { SideChainExplainerSheet } from '~/entries/popup/components/SideChainExplainer';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
@@ -140,36 +142,45 @@ function NetworkBanner({
   tokenSymbol: string;
   chainId: ChainId;
 }) {
+  const [isExplainerOpen, toggleExplainer] = useReducer((s) => !s, false);
   if (chainId === ChainId.mainnet) return null;
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      background="surfacePrimaryElevated"
-      borderColor="separatorTertiary"
-      borderWidth="1px"
-      borderRadius="12px"
-      padding="8px"
-      gap="4px"
-    >
-      <ChainBadge chainId={chainId} size="14" />
-      <Text size="12pt" weight="semibold" color="labelSecondary">
-        {i18n.t('token_details.this_token_is_on_network', {
-          symbol: tokenSymbol,
-          chainName: ChainNameDisplay[chainId],
-        })}
-      </Text>
-      <Tooltip text="lalala" textSize="12pt">
-        <Box style={{ marginLeft: 'auto', height: 14 }}>
-          <Symbol
-            symbol="info.circle.fill"
-            color="labelTertiary"
-            size={14}
-            weight="semibold"
-          />
-        </Box>
-      </Tooltip>
-    </Box>
+    <>
+      <Box
+        display="flex"
+        alignItems="center"
+        background="surfacePrimaryElevated"
+        borderColor="separatorTertiary"
+        borderWidth="1px"
+        borderRadius="12px"
+        padding="8px"
+        gap="4px"
+        onClick={toggleExplainer}
+      >
+        <ChainBadge chainId={chainId} size="14" />
+        <Text size="12pt" weight="semibold" color="labelSecondary">
+          {i18n.t('token_details.this_token_is_on_network', {
+            symbol: tokenSymbol,
+            chainName: ChainNameDisplay[chainId],
+          })}
+        </Text>
+        <Tooltip text="lalala" textSize="12pt">
+          <Box style={{ marginLeft: 'auto', height: 14 }}>
+            <Symbol
+              symbol="info.circle.fill"
+              color="labelTertiary"
+              size={14}
+              weight="semibold"
+            />
+          </Box>
+        </Tooltip>
+      </Box>
+      <SideChainExplainerSheet
+        chainId={chainId}
+        show={isExplainerOpen}
+        onDismiss={toggleExplainer}
+      />
+    </>
   );
 }
 

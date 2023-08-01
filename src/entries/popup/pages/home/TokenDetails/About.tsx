@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import { ReactNode, useReducer } from 'react';
 import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
@@ -22,6 +22,7 @@ import {
 } from '~/design-system/components/Accordion/Accordion';
 import { SymbolName } from '~/design-system/styles/designTokens';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
+import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 
 const InfoRow = ({
@@ -94,14 +95,109 @@ const useTokenInfo = ({
   });
 };
 
+function MarketCapInfoRow({ marketCap }: { marketCap: string }) {
+  const [isMarketCapExplainerOpen, toggleMarketCapExplainer] = useReducer(
+    (s) => !s,
+    false,
+  );
+  return (
+    <InfoRow
+      symbol="chart.pie"
+      label={
+        <>
+          <Box
+            display="flex"
+            alignItems="center"
+            gap="4px"
+            onClick={toggleMarketCapExplainer}
+          >
+            {i18n.t(`token_details.about.market_cap`)}
+            <Symbol
+              symbol="info.circle"
+              color="labelQuaternary"
+              size={12}
+              weight="semibold"
+            />
+          </Box>
+          <ExplainerSheet
+            show={isMarketCapExplainerOpen}
+            title={i18n.t('token_details.about.market_cap_explainer.title')}
+            description={[
+              i18n.t('token_details.about.market_cap_explainer.description'),
+            ]}
+            actionButton={{
+              label: 'Got it',
+              variant: 'tinted',
+              labelColor: 'blue',
+              action: toggleMarketCapExplainer,
+            }}
+            header={{
+              emoji: '📈',
+            }}
+          />
+        </>
+      }
+      value={marketCap}
+    />
+  );
+}
+
+function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: string }) {
+  const [isFullyDilutedExplainerOpen, toggleFullyDilutedExplainer] = useReducer(
+    (s) => !s,
+    false,
+  );
+
+  return (
+    <InfoRow
+      symbol="chart.pie"
+      label={
+        <>
+          <Box
+            display="flex"
+            alignItems="center"
+            gap="4px"
+            onClick={toggleFullyDilutedExplainer}
+          >
+            {i18n.t(`token_details.about.fully_diluted`)}
+            <Symbol
+              symbol="info.circle"
+              color="labelQuaternary"
+              size={12}
+              weight="semibold"
+            />
+          </Box>
+          <ExplainerSheet
+            show={isFullyDilutedExplainerOpen}
+            title={i18n.t('token_details.about.fully_diluted_explainer.title')}
+            description={[
+              i18n.t('token_details.about.fully_diluted_explainer.description'),
+            ]}
+            actionButton={{
+              label: 'Got it',
+              variant: 'tinted',
+              labelColor: 'blue',
+              action: toggleFullyDilutedExplainer,
+            }}
+            header={{
+              emoji: '📊',
+            }}
+          />
+        </>
+      }
+      value={fullyDiluted}
+    />
+  );
+}
+
 export function About({ token }: { token: ParsedAddressAsset }) {
   const { data } = useTokenInfo(token);
 
   const {
     volume1d = 0,
     allTime = { high: 0, low: 0 },
-    fullyDilutedValuation = 0,
-    marketCap = 0,
+    fullyDilutedValuation = '0',
+    marketCap = '0',
     networks = [token],
     totalSupply = 0,
     description = '',
@@ -151,36 +247,8 @@ export function About({ token }: { token: ParsedAddressAsset }) {
               value={allTime.low}
             />
             <Separator color="separatorTertiary" />
-            <InfoRow
-              symbol="chart.pie"
-              label={
-                <Inline alignVertical="center" space="4px">
-                  {i18n.t(`token_details.about.market_cap`)}
-                  <Symbol
-                    symbol="info.circle"
-                    color="labelQuaternary"
-                    size={12}
-                    weight="semibold"
-                  />
-                </Inline>
-              }
-              value={marketCap}
-            />
-            <InfoRow
-              symbol="chart.pie"
-              label={
-                <Inline alignVertical="center" space="4px">
-                  {i18n.t(`token_details.about.fully_diluted`)}
-                  <Symbol
-                    symbol="info.circle"
-                    color="labelQuaternary"
-                    size={12}
-                    weight="semibold"
-                  />
-                </Inline>
-              }
-              value={fullyDilutedValuation}
-            />
+            <MarketCapInfoRow marketCap={marketCap} />
+            <FullyDilutedInfoRow fullyDiluted={fullyDilutedValuation} />
           </AccordionContent>
         </AccordionItem>
 
