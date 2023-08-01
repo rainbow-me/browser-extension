@@ -220,7 +220,6 @@ const ConnectedApp = ({
                     />
                   </Box>
                   <Box
-                    position="absolute"
                     style={{
                       marginLeft: '-7px',
                       marginTop: '-10.5px',
