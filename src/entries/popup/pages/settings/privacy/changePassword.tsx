@@ -172,6 +172,7 @@ export function ChangePassword() {
               </Row>
               <Row>
                 <PasswordInput
+                  testId={'new-password-input'}
                   placeholder={i18n.t('passwords.new_password')}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -195,6 +196,7 @@ export function ChangePassword() {
                 <Rows>
                   <Row>
                     <PasswordInput
+                      testId={'confirm-new-password-input'}
                       placeholder={i18n.t('passwords.password')}
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
