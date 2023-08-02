@@ -2,6 +2,7 @@ import { UserConfig } from 'vitest';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  workers: 4,
   test: {
     include: ['./**/**/*.test.ts'],
     testTimeout: 60_000,

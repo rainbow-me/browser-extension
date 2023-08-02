@@ -70,8 +70,8 @@ jobs:
   chrome-e2e-parallel:
     runs-on: beefy-runner-bx
     timeout-minutes: 16
-    strategy:
-      max-parallel: 3
+    # strategy:
+    #   max-parallel: 3
     needs: [build]
     env:
       DISPLAY: :0
