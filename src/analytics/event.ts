@@ -94,6 +94,10 @@ export const event = {
    */
   dappProviderNetworkSwitched: 'dapp.provider.network.switched',
   /**
+   * Called when the dapps hits the rate limit per second or minute.
+   */
+  dappProviderRateLimit: 'dapp.provider.rate_limit',
+  /**
    * Called when the popup entry is opened, including:
    * - extension popup
    * - new window

@@ -8,6 +8,7 @@ export default mergeConfig(
   defineConfig({
     test: {
       threads: false,
+      bail: 1,
       sequence: {
         shuffle: false,
         sequencer: class Sequencer {

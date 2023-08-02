@@ -258,6 +258,18 @@ class KeychainManager {
     return false;
   }
 
+  async hasVaultInStorage() {
+    if (this.state.vault) {
+      return true;
+    } else {
+      const { vault } = await privates.get(this).getLastStorageState();
+      if (vault) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   async overrideReadOnlyKeychains(incomingKeychain: Keychain) {
     if (incomingKeychain.type === KeychainType.ReadOnlyKeychain) return;
     const currentAccounts = await this.getAccounts();

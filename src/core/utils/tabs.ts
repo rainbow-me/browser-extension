@@ -14,9 +14,13 @@ export const goToNewTab = ({
   index?: number;
   active?: boolean;
 }) => {
-  chrome.tabs.create({
-    url,
-    index,
-    active,
-  });
+  try {
+    chrome.tabs.create({
+      url,
+      index,
+      active,
+    });
+  } catch (e) {
+    // Edge sometimes returns `Tab creation is restricted in standalone sidebar mode.
+  }
 };
