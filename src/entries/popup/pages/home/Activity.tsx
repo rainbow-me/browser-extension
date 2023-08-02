@@ -33,9 +33,10 @@ import { TransactionDetailsMenu } from './TransactionDetailsMenu';
 export function Activity() {
   const {
     isInitialLoading,
+    isFetchingNextPage,
+    isRefetching,
     transactions,
     virtualizer: activityRowVirtualizer,
-    isRefetching,
   } = useInfiniteTransactionList({
     getScrollElement: () => containerRef.current,
   });
@@ -139,6 +140,20 @@ export function Activity() {
           })}
         </Box>
       </Box>
+      {isFetchingNextPage && (
+        <Box
+          as={motion.div}
+          alignItems="center"
+          display="flex"
+          justifyContent="center"
+          style={{ height: 72 }}
+          initial={{ opacity: 0.5, height: 0 }}
+          animate={{ opacity: 1, height: 72 }}
+          key="page-loader"
+        >
+          <Spinner size={32} />
+        </Box>
+      )}
     </>
   );
 }
