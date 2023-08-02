@@ -80,7 +80,7 @@ export function ChangePassword() {
   const handleUpdatePassword = async () => {
     if (!isValid || !isMatching) return;
     await updatePassword(state?.password, newPassword);
-    navigate(ROUTES.SETTINGS__PRIVACY);
+    navigate(-1);
   };
 
   return (
