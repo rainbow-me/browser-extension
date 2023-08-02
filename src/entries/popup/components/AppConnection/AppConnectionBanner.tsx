@@ -2,7 +2,17 @@ import React, { useEffect, useState } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import { Box, Inline, Stack, Symbol, TextOverflow } from '~/design-system';
+import {
+  Box,
+  Button,
+  Column,
+  Columns,
+  Inline,
+  Stack,
+  Symbol,
+  TextOverflow,
+} from '~/design-system';
+import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { NudgeBanner } from '~/design-system/components/NudgeBanner/NudgeBanner';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
@@ -43,53 +53,89 @@ export const AppConnectionBanner = () => {
     <>
       <NudgeBanner show={show} zIndex={zIndexes.BOTTOM_SHEET}>
         <Box padding="10px">
-          <Inline space="10px" alignVertical="center">
-            <Box
-              style={{
-                height: '36px',
-                width: '36px',
-                overflow: 'hidden',
-              }}
-              borderRadius="10px"
-              background="fill"
-              borderWidth="1px"
-              borderColor="buttonStroke"
-            >
-              <Inline
-                alignHorizontal="center"
-                alignVertical="center"
-                height="full"
-              >
+          <Columns>
+            <Column>
+              <Inline space="10px" alignVertical="center">
                 <Box
                   style={{
-                    height: '30px',
-                    width: '30px',
+                    height: '36px',
+                    width: '36px',
                     overflow: 'hidden',
                   }}
-                  borderRadius="8px"
+                  borderRadius="10px"
+                  background="fill"
+                  borderWidth="1px"
+                  borderColor="buttonStroke"
                 >
-                  <ExternalImage src={appLogo} width="30" height="30" />
+                  <Inline
+                    alignHorizontal="center"
+                    alignVertical="center"
+                    height="full"
+                  >
+                    <Box
+                      style={{
+                        height: '30px',
+                        width: '30px',
+                        overflow: 'hidden',
+                      }}
+                      borderRadius="8px"
+                    >
+                      <ExternalImage src={appLogo} width="30" height="30" />
+                    </Box>
+                  </Inline>
                 </Box>
-              </Inline>
-            </Box>
 
-            <Stack space="8px">
-              <Inline space="4px" alignVertical="center">
-                <Symbol
-                  symbol="circle"
-                  size={8}
-                  weight="medium"
-                  color="labelTertiary"
-                />
-                <TextOverflow color="label" size="12pt" weight="bold">
-                  {displayName}
-                </TextOverflow>
+                <Stack space="8px">
+                  <Inline space="4px" alignVertical="center">
+                    <Symbol
+                      symbol="circle"
+                      size={8}
+                      weight="medium"
+                      color="labelTertiary"
+                    />
+                    <TextOverflow color="label" size="12pt" weight="bold">
+                      {displayName}
+                    </TextOverflow>
+                  </Inline>
+                  <TextOverflow color="label" size="12pt" weight="bold">
+                    {`Connect to ${appName || appHost}?`}
+                  </TextOverflow>
+                </Stack>
               </Inline>
-              <TextOverflow color="label" size="12pt" weight="bold">
-                {`Connect to ${appName || appHost}?`}
-              </TextOverflow>
-            </Stack>
-          </Inline>
+            </Column>
+            <Column width="content">
+              <ButtonOverflow>
+                <Box
+                  padding="3px"
+                  borderWidth="1px"
+                  borderRadius="10px"
+                  style={{
+                    borderColor: 'rgba(206, 34, 51, 0.50)',
+                  }}
+                >
+                  <Box
+                    style={{ backgroundColor: 'rgba(206, 34, 51, 0.30)' }}
+                    borderRadius="10px"
+                  >
+                    <Button
+                      symbol="return.left"
+                      symbolSide="left"
+                      width="fit"
+                      color={'red'}
+                      height="30px"
+                      onClick={undefined}
+                      variant={'square'}
+                      tabIndex={0}
+                      borderRadius="8px"
+                      disabled
+                    >
+                      {'Connect'}
+                    </Button>
+                  </Box>
+                </Box>
+              </ButtonOverflow>
+            </Column>
+          </Columns>
         </Box>
       </NudgeBanner>
     </>

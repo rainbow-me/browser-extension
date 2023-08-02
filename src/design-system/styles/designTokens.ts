@@ -159,6 +159,7 @@ export type ButtonVariant =
   | 'transparent'
   | 'transparentHover'
   | 'plain'
+  | 'square'
   | 'disabled';
 
 export const backdropFilter = {
