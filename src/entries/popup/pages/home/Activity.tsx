@@ -112,6 +112,7 @@ export function Activity() {
           width="full"
           style={{
             height: activityRowVirtualizer.getTotalSize(),
+            minHeight: '436px',
             position: 'relative',
           }}
         >
