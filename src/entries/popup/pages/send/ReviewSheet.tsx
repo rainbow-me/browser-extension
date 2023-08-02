@@ -13,11 +13,7 @@ import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import {
-  chainNameFromChainId,
-  getBlockExplorerHostForChain,
-  isL2Chain,
-} from '~/core/utils/chains';
+import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
 import {
@@ -57,6 +53,10 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
+import {
+  getSideChainExplainerParams,
+  isSideChain,
+} from '../../components/SideChainExplainer';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import usePrevious from '../../hooks/usePrevious';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
@@ -302,29 +302,10 @@ export const ReviewSheet = ({
     useExplainerSheetParams();
 
   const showL2Explainer = useCallback(() => {
-    const chainName = chainNameFromChainId(asset?.chainId || ChainId.mainnet);
+    if (!asset?.chainId || !isSideChain(asset.chainId)) return;
     showExplainerSheet({
+      ...getSideChainExplainerParams(asset.chainId, hideExplainerSheet),
       show: true,
-      title: i18n.t(`explainers.send.sending_on_l2.${chainName}_title`),
-      description: [
-        i18n.t(`explainers.send.sending_on_l2.${chainName}_description_1`),
-        i18n.t(`explainers.send.sending_on_l2.${chainName}_description_2`),
-      ],
-      header: {
-        icon: (
-          <ChainBadge chainId={asset?.chainId || ChainId.mainnet} size="45" />
-        ),
-      },
-      linkButton: {
-        url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
-        label: i18n.t(`explainers.send.sending_on_l2.link_button_label`),
-      },
-      actionButton: {
-        label: i18n.t('explainers.send.action_label'),
-        variant: 'tinted',
-        labelColor: 'blue',
-        action: hideExplainerSheet,
-      },
     });
   }, [asset?.chainId, hideExplainerSheet, showExplainerSheet]);
 

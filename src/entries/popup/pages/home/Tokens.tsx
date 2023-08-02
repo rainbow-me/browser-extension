@@ -32,9 +32,9 @@ import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
-
-import { TokenDetailsMenu } from './TokenDetailsMenu';
+import { ROUTES } from '../../urls';
 
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
@@ -81,6 +81,7 @@ export function Tokens() {
   });
 
   useTokensShortcuts();
+  const navigate = useRainbowNavigate();
 
   if (isInitialLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
@@ -116,6 +117,7 @@ export function Tokens() {
             return (
               <Box
                 key={key}
+                onClick={() => navigate(ROUTES.TOKEN_DETAILS(rowData.uniqueId))}
                 as={motion.div}
                 whileTap={{ scale: 0.98 }}
                 layoutId={`list-${index}`}
@@ -125,12 +127,10 @@ export function Tokens() {
                 width="full"
                 style={{ height: size, y: start }}
               >
-                <TokenDetailsMenu token={rowData}>
-                  <AssetRow
-                    key={`${rowData?.uniqueId}-${index}`}
-                    uniqueId={rowData?.uniqueId}
-                  />
-                </TokenDetailsMenu>
+                <AssetRow
+                  key={`${rowData?.uniqueId}-${index}`}
+                  uniqueId={rowData?.uniqueId}
+                />
               </Box>
             );
           })}
@@ -145,7 +145,7 @@ type AssetRowProps = {
 };
 
 export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
-  const asset = useUserAsset(uniqueId);
+  const { data: asset } = useUserAsset(uniqueId);
   const name = asset?.name;
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { currentCurrency } = useCurrentCurrencyStore();

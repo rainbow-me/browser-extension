@@ -1,13 +1,5 @@
 import { shortcuts } from '~/core/references/shortcuts';
-import {
-  Box,
-  ButtonSymbol,
-  Inline,
-  Row,
-  Rows,
-  Symbol,
-  Text,
-} from '~/design-system';
+import { Box, ButtonSymbol, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 
@@ -72,34 +64,21 @@ const MoreInfoButton = ({
         <DropdownMenuContent align="end">
           {options.map((option) => (
             <Box key={option.symbol}>
-              <DropdownMenuItem onSelect={option.onSelect}>
-                <Inline alignVertical="center" space="10px" wrap={false}>
-                  <Symbol
-                    size={18}
-                    symbol={option.symbol}
-                    weight="semibold"
-                    color={option.color}
-                  />
-                  <Rows space="6px">
-                    <Row>
-                      <Text size="14pt" weight="semibold" color={option.color}>
-                        {option.label}
-                      </Text>
-                    </Row>
-
-                    {option.subLabel && (
-                      <Row>
-                        <Text
-                          size="12pt"
-                          color="labelTertiary"
-                          weight="regular"
-                        >
-                          {option.subLabel}
-                        </Text>
-                      </Row>
-                    )}
-                  </Rows>
-                </Inline>
+              <DropdownMenuItem
+                color={option.color}
+                symbolLeft={option.symbol}
+                onSelect={option.onSelect}
+              >
+                <Stack space="8px">
+                  <Text size="14pt" weight="semibold" color={option.color}>
+                    {option.label}
+                  </Text>
+                  {option.subLabel && (
+                    <Text size="12pt" color="labelTertiary" weight="regular">
+                      {option.subLabel}
+                    </Text>
+                  )}
+                </Stack>
               </DropdownMenuItem>
               {option.separator && (
                 <Box paddingVertical="4px">
