@@ -3,6 +3,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    threads: true,
     maxThreads: 4,
     minThreads: 4,
     useAtomics: true,
