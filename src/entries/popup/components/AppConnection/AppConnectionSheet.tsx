@@ -73,9 +73,9 @@ export const AppConnectionSheet = () => {
                     style={{
                       height: '18px',
                       width: '18px',
-                      borderRadius: 6,
                       overflow: 'hidden',
                     }}
+                    borderRadius="6px"
                     background="fill"
                     borderWidth="1px"
                     borderColor="buttonStroke"

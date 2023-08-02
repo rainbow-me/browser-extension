@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useCurrentAddressStore } from '~/core/state';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { Box, Inline, Stack, Symbol, TextOverflow } from '~/design-system';
-import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { NudgeBanner } from '~/design-system/components/NudgeBanner/NudgeBanner';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
@@ -31,21 +31,48 @@ export const AppConnectionBanner = () => {
     }, 1000);
   }, [appSession, appSession?.address, currentAddress]);
 
+  //   useEffect(() => {
+  //     setTimeout(() => {
+  //       if (show) {
+  //         setshow(false);
+  //       }
+  //     }, 4000);
+  //   }, [show]);
+
   return (
     <>
-      <BottomSheet show={show} zIndex={zIndexes.BOTTOM_SHEET}>
+      <NudgeBanner show={show} zIndex={zIndexes.BOTTOM_SHEET}>
         <Box padding="10px">
           <Inline space="10px" alignVertical="center">
             <Box
               style={{
                 height: '36px',
                 width: '36px',
-                borderRadius: '10px',
                 overflow: 'hidden',
               }}
+              borderRadius="10px"
+              background="fill"
+              borderWidth="1px"
+              borderColor="buttonStroke"
             >
-              <ExternalImage src={appLogo} width="36" height="36" />
+              <Inline
+                alignHorizontal="center"
+                alignVertical="center"
+                height="full"
+              >
+                <Box
+                  style={{
+                    height: '30px',
+                    width: '30px',
+                    overflow: 'hidden',
+                  }}
+                  borderRadius="8px"
+                >
+                  <ExternalImage src={appLogo} width="30" height="30" />
+                </Box>
+              </Inline>
             </Box>
+
             <Stack space="8px">
               <Inline space="4px" alignVertical="center">
                 <Symbol
@@ -64,7 +91,7 @@ export const AppConnectionBanner = () => {
             </Stack>
           </Inline>
         </Box>
-      </BottomSheet>
+      </NudgeBanner>
     </>
   );
 };
