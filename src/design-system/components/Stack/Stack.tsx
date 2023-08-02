@@ -1,7 +1,5 @@
 import { Children, ReactNode } from 'react';
 
-import { BoxStyles } from '~/design-system/styles/core.css';
-
 import { Space } from '../../styles/designTokens';
 import { Box } from '../Box/Box';
 
@@ -16,7 +14,6 @@ type AlignHorizontal = keyof typeof alignHorizontalToAlignItems;
 interface StackProps {
   space?: Space;
   alignHorizontal?: AlignHorizontal;
-  justify?: BoxStyles['justifyContent'];
   children?: ReactNode;
   separator?: ReactNode;
 }
@@ -24,7 +21,6 @@ interface StackProps {
 export function Stack({
   children,
   alignHorizontal,
-  justify,
   space,
   separator = null,
 }: StackProps) {
@@ -36,7 +32,6 @@ export function Stack({
       alignItems={
         alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
       }
-      justifyContent={justify}
       gap={space}
     >
       {Children.map(childrenArray, (child, index) => {
