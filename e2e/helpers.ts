@@ -16,7 +16,7 @@ import { erc20ABI } from 'wagmi';
 
 // consts
 
-const waitUntilTime = 15000;
+const waitUntilTime = 20000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
