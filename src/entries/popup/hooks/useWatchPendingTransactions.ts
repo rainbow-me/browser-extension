@@ -167,11 +167,7 @@ export const useWatchPendingTransactions = ({
 
     if (pendingTransactionReportedByRainbowBackend) {
       queryClient.refetchQueries({
-        predicate: (query) => {
-          if (query.queryKey.includes('consolidatedTransactions')) {
-            return true;
-          }
-          return false;
+        predicate: (query) => query.queryKey.includes('consolidatedTransactions')
         },
       });
     }
