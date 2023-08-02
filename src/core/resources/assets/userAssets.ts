@@ -41,27 +41,27 @@ export const USER_ASSETS_STALE_INTERVAL = 30000;
 // Query Types
 
 export type UserAssetsArgs = {
-  address: Address;
+  address?: Address;
   currency: SupportedCurrencyKey;
   connectedToHardhat: boolean;
 };
 
 type SetUserAssetsArgs = {
-  address: Address;
+  address?: Address;
   currency: SupportedCurrencyKey;
   connectedToHardhat: boolean;
   userAssets?: UserAssetsResult;
 };
 
 type SetUserDefaultsArgs = {
-  address: Address;
+  address?: Address;
   currency: SupportedCurrencyKey;
   connectedToHardhat: boolean;
   staleTime: number;
 };
 
 type FetchUserAssetsArgs = {
-  address: Address;
+  address?: Address;
   currency: SupportedCurrencyKey;
   connectedToHardhat: boolean;
 };
@@ -126,9 +126,9 @@ async function userAssetsQueryFunctionByChain({
   connectedToHardhat,
 }: UserAssetsArgs) {
   const cache = queryClient.getQueryCache();
-  const cachedUserAssets =
-    cache.find(userAssetsQueryKey({ address, currency, connectedToHardhat }))
-      ?.state?.data || ({} as ParsedAssetsDictByChain);
+  const cachedUserAssets = (cache.find(
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+  )?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
     const url = `/${SUPPORTED_CHAIN_IDS.join(',')}/${address}/assets`;
     const res = await addysHttp.get<AddressConsolidatedAssetsReceivedMessage>(
@@ -144,7 +144,7 @@ async function userAssetsQueryFunctionByChain({
     const chainIdsWithErrorsInResponse =
       res?.data?.meta?.chain_ids_with_errors || [];
     const assets = res?.data?.payload?.assets || [];
-    if (Array.isArray(assets) && chainIdsInResponse) {
+    if (address && Array.isArray(assets) && chainIdsInResponse) {
       const parsedAssetsDict = await parseUserAssets({
         address,
         assets,
@@ -162,6 +162,7 @@ async function userAssetsQueryFunctionByChain({
 
       return parsedAssetsDict;
     }
+    return cachedUserAssets;
   } catch (e) {
     return cachedUserAssets;
   }
