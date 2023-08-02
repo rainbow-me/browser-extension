@@ -17,7 +17,6 @@ import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 import { PasswordInput } from '~/entries/popup/components/PasswordInput/PasswordInput';
 import { updatePassword } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { ROUTES } from '~/entries/popup/urls';
 import {
   getPasswordStrength,
   strengthMeta,
@@ -250,7 +249,7 @@ export function ChangePassword() {
                   height="44px"
                   variant="transparent"
                   width="full"
-                  onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
+                  onClick={() => navigate(-1)}
                   tabIndex={4}
                 >
                   {i18n.t('common_actions.cancel')}
