@@ -87,6 +87,7 @@ export function WalletsAndKeys() {
             return (
               <Menu key={idx}>
                 <MenuItem
+                  testId={`wallet-group-${idx + 1}`}
                   first
                   titleComponent={
                     <MenuItem.Title
@@ -135,6 +136,7 @@ export function WalletsAndKeys() {
           })}
           <Menu>
             <MenuItem
+              testId={'create-a-new-wallet'}
               first
               last
               leftComponent={

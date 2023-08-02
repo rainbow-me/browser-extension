@@ -26,6 +26,7 @@ interface MoreInfoButtonProps {
   open?: boolean;
   onClose?: () => void;
   onOpen?: () => void;
+  testId?: string;
 }
 
 const MoreInfoButton = ({
@@ -33,6 +34,7 @@ const MoreInfoButton = ({
   onOpen,
   open,
   options,
+  testId,
 }: MoreInfoButtonProps) => {
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -43,7 +45,7 @@ const MoreInfoButton = ({
     },
   });
   return (
-    <Box onClick={(e) => e.stopPropagation()}>
+    <Box onClick={(e) => e.stopPropagation()} testId={testId}>
       <DropdownMenu
         onOpenChange={(openState) => (openState ? onOpen?.() : onClose?.())}
         open={open}
