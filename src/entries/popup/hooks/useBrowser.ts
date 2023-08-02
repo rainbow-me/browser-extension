@@ -33,24 +33,23 @@ const SupportedBrowsers: Browser[] = [
 // needs to be a hook because we can only know if it's Arc based on the computed css props
 // useLayoutEffect doesn't work, neither a smaller setTimeout :/
 export const useBrowser = () => {
-  const [{ browser, isCommited }, set] = useState<{
+  const [{ browser, isDetected }, set] = useState<{
     browser: Browser;
-    isCommited: boolean;
+    isDetected: boolean;
   }>({
     browser: getBrowser(),
-    // commited means it's the final result,
     // if the browser is arc, for the first 200ms while the css props are not injected
-    // the browser will be "Chrome" with isCommited: false
-    isCommited: false,
+    // the browser will be "Chrome" with isDetected: false
+    isDetected: false,
   });
 
   useEffect(() => {
-    setTimeout(() => set({ browser: getBrowser(), isCommited: true }), 200);
+    setTimeout(() => set({ browser: getBrowser(), isDetected: true }), 200);
   }, []);
 
   return {
     browser,
-    isCommited,
+    isDetected,
     isSupported: SupportedBrowsers.includes(browser),
     isBrave: browser === 'Brave',
     isArc: browser === 'Arc',
