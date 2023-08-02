@@ -39,6 +39,7 @@ import {
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
+import { isLedgerConnectionError } from '../../handlers/ledger';
 import { getWallet, sendTransaction } from '../../handlers/wallet';
 import { useSendAsset } from '../../hooks/send/useSendAsset';
 import { useSendInputs } from '../../hooks/send/useSendInputs';
@@ -234,8 +235,11 @@ export function Send() {
             chainId,
           });
         }
-      } catch (e) {
-        alert('Transaction failed');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        if (!isLedgerConnectionError(e)) {
+          alert('Transaction failed');
+        }
         logger.error(new RainbowError('send: error executing send'), {
           message: (e as Error)?.message,
         });

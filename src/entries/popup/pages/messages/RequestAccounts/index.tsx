@@ -54,9 +54,10 @@ export const RequestAccounts = ({
         dappURL: appHost,
         dappName: appName,
       });
-    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       logger.info('error connecting to dapp');
-      logger.error(e as RainbowError);
+      logger.error(new RainbowError(e.name), { message: e.message });
     } finally {
       setLoading(false);
     }
