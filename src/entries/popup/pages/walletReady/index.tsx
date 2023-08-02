@@ -18,9 +18,9 @@ const useChromeUserSettings = () => {
 
 const PinToToolbar = () => {
   const { isOnToolbar } = useChromeUserSettings();
-  const { isBrave, isArc, isCommited } = useBrowser();
+  const { isBrave, isArc, isDetected } = useBrowser();
 
-  if (!isCommited || isOnToolbar) return null;
+  if (!isDetected || isOnToolbar) return null;
   return (
     <Box
       as={motion.div}
