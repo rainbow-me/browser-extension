@@ -226,7 +226,7 @@ const SwapReviewSheetWithQuote = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
   });
-  const nativeAsset = useUserAsset(nativeAssetUniqueId || '');
+  const { data: nativeAsset } = useUserAsset(nativeAssetUniqueId || '');
 
   const { buttonLabel: validationButtonLabel, enoughNativeAssetBalanceForGas } =
     useSwapValidations({

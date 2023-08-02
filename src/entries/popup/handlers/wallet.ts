@@ -35,7 +35,6 @@ import {
   signTransactionFromLedger,
 } from './ledger';
 import {
-  TREZOR_CONFIG,
   sendTransactionFromTrezor,
   signMessageByTypeFromTrezor,
   signTransactionFromTrezor,
@@ -43,6 +42,7 @@ import {
 import { walletAction } from './walletAction';
 
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
+const DEFAULT_LEDGER_LIVE_PATH = "m/44'/60'/";
 
 const signMessageByType = async (
   msgData: string | Bytes,
@@ -338,11 +338,6 @@ export const importAccountAtIndex = async (
   switch (type) {
     case 'Trezor':
       {
-        try {
-          window.TrezorConnect.init(TREZOR_CONFIG);
-        } catch (e) {
-          // ignore already initialized error
-        }
         const path = `m/${DEFAULT_HD_PATH}/${index}`;
         const result = await window.TrezorConnect.ethereumGetAddress({
           path,
@@ -363,7 +358,7 @@ export const importAccountAtIndex = async (
       const transport = await TransportWebHID.create();
       const appEth = new AppEth(transport);
       const result = await appEth.getAddress(
-        `${DEFAULT_HD_PATH}/${index}`,
+        `${DEFAULT_LEDGER_LIVE_PATH}/${index}'/0/0`,
         false,
         false,
       );
@@ -396,11 +391,6 @@ export const connectTrezor = async () => {
   //   accountsEnabled: 2,
   // };
   try {
-    try {
-      window.TrezorConnect.init(TREZOR_CONFIG);
-    } catch (e) {
-      // ignore already initialized error
-    }
     const path = `m/${DEFAULT_HD_PATH}`;
 
     const result = await window.TrezorConnect.ethereumGetPublicKey({
@@ -482,7 +472,7 @@ export const connectLedger = async () => {
     transport = await TransportWebHID.create();
     const appEth = new AppEth(transport);
     const result = await appEth.getAddress(
-      `${DEFAULT_HD_PATH}/0`,
+      `${DEFAULT_LEDGER_LIVE_PATH}/0'/0/0`,
       false,
       false,
     );
@@ -493,7 +483,7 @@ export const connectLedger = async () => {
     while (!empty) {
       // eslint-disable-next-line no-await-in-loop
       const result = await appEth.getAddress(
-        `${DEFAULT_HD_PATH}/${accountsEnabled}`,
+        `${DEFAULT_LEDGER_LIVE_PATH}/${accountsEnabled}'/0/0`,
         false,
         false,
       );

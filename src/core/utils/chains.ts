@@ -2,7 +2,7 @@ import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
 import type { Address, Chain } from 'wagmi';
 
 import { ETH_ADDRESS, NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 
 import { isLowerCaseMatch } from './strings';
 
@@ -10,9 +10,9 @@ export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
   polygon,
   optimism,
-  { ...arbitrum, name: 'Arbitrum' },
+  arbitrum,
   bsc,
-];
+].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(({ id }) => id);
 

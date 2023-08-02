@@ -1,12 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import { Address, useEnsName } from 'wagmi';
 
+import appsConnectedImageMask from 'static/assets/appsConnectedImageMask.svg';
 import { i18n } from '~/core/languages';
-import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { AppSession } from '~/core/state/appSessions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
+  Bleed,
   Box,
   Button,
   ButtonSymbol,
@@ -20,14 +22,16 @@ import {
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
+import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import ExternalImage from '../../components/ExternalImage/ExternalImage';
 import { ConnectedAppNetworkMenu } from '../../components/SwitchMenu/ConnectedAppNetworkMenu';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import { useAppSessions } from '../../hooks/useAppSessions';
 
 export const ConnectedApps = () => {
-  const { appSessions, clearSessions } = useAppSessionsStore();
+  const { appSessions, disconnectAppSessions } = useAppSessions();
   const { currentAddress } = useCurrentAddressStore();
 
   const filteredSessions = Object.values(appSessions).reduce(
@@ -123,7 +127,7 @@ export const ConnectedApps = () => {
         >
           <Inline alignHorizontal="center">
             <Button
-              onClick={clearSessions}
+              onClick={disconnectAppSessions}
               color="surfacePrimaryElevated"
               height="44px"
               variant="stroked"
@@ -162,7 +166,7 @@ const ConnectedApp = ({
 }) => {
   const [disconnectButtonVisible, setDisconnectButtonVisible] = useState(false);
   const { data: ensName } = useEnsName({ address });
-  const { disconnectAppSession } = useAppSession({
+  const { disconnectAppSession, appSession } = useAppSession({
     host,
   });
   const { appLogo, appName, appHost } = useAppMetadata({ url });
@@ -202,17 +206,46 @@ const ConnectedApp = ({
               <Columns space="8px">
                 <Column width="content">
                   <Box
-                    background="fill"
-                    borderRadius="12px"
                     style={{
                       width: '36px',
                       height: '36px',
                       overflow: 'hidden',
                     }}
                   >
-                    <ExternalImage src={appLogo} width="36" height="36" />
+                    <ExternalImage
+                      mask={appsConnectedImageMask}
+                      src={appLogo}
+                      width="36"
+                      height="36"
+                    />
+                  </Box>
+                  <Box
+                    position="absolute"
+                    style={{
+                      marginLeft: '-7px',
+                      marginTop: '-10.5px',
+                    }}
+                  >
+                    <Box
+                      style={{
+                        height: 14,
+                        width: 14,
+                        borderRadius: 7,
+                      }}
+                    >
+                      <Inline
+                        alignHorizontal="center"
+                        alignVertical="center"
+                        height="full"
+                      >
+                        <Bleed top="7px">
+                          <ChainBadge chainId={appSession?.chainId} size="14" />
+                        </Bleed>
+                      </Inline>
+                    </Box>
                   </Box>
                 </Column>
+
                 <Column>
                   <Box>
                     <Stack space="8px">

@@ -15,7 +15,6 @@ export function initializeSentry(context: 'popup' | 'background') {
         environment:
           process.env.INTERNAL_BUILD === 'true' ? 'internal' : 'production',
       });
-      console.log('sentry initialized correctly!');
     } catch (e) {
       console.log('sentry failed to initialize', e);
     }
