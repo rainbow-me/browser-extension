@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
@@ -27,7 +27,7 @@ export type TokenToSellRowProps = {
 };
 
 export function TokenToSellRow({ uniqueId }: TokenToSellRowProps) {
-  const asset = useUserAsset(uniqueId);
+  const { data: asset } = useUserAsset(uniqueId);
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { currentCurrency } = useCurrentCurrencyStore();
 

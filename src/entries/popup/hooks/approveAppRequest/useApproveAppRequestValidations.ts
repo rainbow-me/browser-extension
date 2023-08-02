@@ -31,7 +31,7 @@ export const useApproveAppRequestValidations = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: chainIdToUse,
   });
-  const nativeAsset = useUserAsset(nativeAssetUniqueId || '');
+  const { data: nativeAsset } = useUserAsset(nativeAssetUniqueId || '');
 
   const enoughNativeAssetForGas = useMemo(() => {
     return lessThan(

@@ -37,7 +37,7 @@ export const useSendValidations = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: asset?.chainId || ChainId.mainnet,
   });
-  const nativeAsset = useUserAsset(nativeAssetUniqueId || '');
+  const { data: nativeAsset } = useUserAsset(nativeAssetUniqueId || '');
 
   const [isValidToAddress, setIsValidToAddress] = useState(false);
 
