@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import UnsupportedBrowserIcon from 'static/assets/unsupportedBrowserIcon.svg';
+import { i18n } from '~/core/languages';
 import { Box } from '~/design-system';
 
 import { useBrowser } from '../hooks/useBrowser';
@@ -15,29 +16,25 @@ export function UnsupportedBrowserSheet() {
   return (
     <ExplainerSheet
       show={isOpen}
-      description={[
-        'Your browser is not currently supported. Rainbow is currently available for Android and iOS on mobile, and Chrome, Brave, Arc, and Edge on desktop devices.',
-      ]}
-      title="Unsupported Browser"
+      title={i18n.t('unsupported_browser.title')}
+      description={[i18n.t('unsupported_browser.description')]}
       header={{
         icon: (
           <Box
             as="img"
             src={UnsupportedBrowserIcon}
-            style={{
-              width: '212px',
-            }}
+            style={{ width: '212px' }}
           />
         ),
       }}
       footerLinkText={{
         openText: '',
-        linkText: 'Contact Rainbow',
-        closeText: ' to request more.',
+        linkText: i18n.t('unsupported_browser.link_text.highlighted'),
+        closeText: i18n.t('unsupported_browser.link_text.after'),
         link: 'https://support.rainbow.me/',
       }}
       actionButton={{
-        label: 'Download the App',
+        label: i18n.t('unsupported_browser.download_the_app'),
         labelColor: 'label',
         symbol: 'arrow.right',
         symbolSide: 'right',
