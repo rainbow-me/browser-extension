@@ -57,7 +57,7 @@ export const useWatchPendingTransactions = ({
 
   const watchPendingTransactions = useCallback(async () => {
     if (!pendingTransactions?.length || !address) return;
-    let transactionConfirmedByRainbow = false;
+    let pendingTransactionReportedByRainbowBackend = false;
     const updatedPendingTransactions = await Promise.all(
       pendingTransactions.map(async (tx) => {
         let updatedTransaction = { ...tx };
@@ -131,7 +131,7 @@ export const useWatchPendingTransactions = ({
                 });
 
                 if (tx?.nonce && latest?.nonce && tx?.nonce <= latest?.nonce) {
-                  transactionConfirmedByRainbow = true;
+                  pendingTransactionReportedByRainbowBackend = true;
                 }
 
                 if (latestTransactionHashConfirmedByBackend === tx?.hash) {
@@ -165,7 +165,7 @@ export const useWatchPendingTransactions = ({
       }),
     );
 
-    if (transactionConfirmedByRainbow) {
+    if (pendingTransactionReportedByRainbowBackend) {
       queryClient.refetchQueries({
         predicate: (query) => {
           if (query.queryKey.includes('consolidatedTransactions')) {
