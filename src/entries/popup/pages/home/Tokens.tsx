@@ -27,7 +27,6 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
-import { TokensSkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
@@ -35,6 +34,8 @@ import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
 import { ROUTES } from '../../urls';
+
+import { TokensSkeleton } from './Skeletons';
 
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();

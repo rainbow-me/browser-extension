@@ -27,11 +27,11 @@ import { TextStyles } from '~/design-system/styles/core.css';
 import { Space, TextColor } from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
-import { ActivitySkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
 
+import { ActivitySkeleton } from './Skeletons';
 import { TransactionDetailsMenu } from './TransactionDetailsMenu';
 
 export function Activity() {
