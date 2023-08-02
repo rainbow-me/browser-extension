@@ -1,6 +1,6 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getProvider } from '@wagmi/core';
-import { capitalize, isString } from 'lodash';
+import { isString } from 'lodash';
 import { Address } from 'wagmi';
 
 import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
@@ -10,6 +10,7 @@ import { createHttpClient } from '../network/internal/createHttpClient';
 import {
   ETH_ADDRESS,
   SupportedCurrencyKey,
+  WETH_ADDRESS,
   smartContractMethods,
 } from '../references';
 import { fetchRegistryLookup } from '../resources/transactions/registryLookup';
@@ -18,6 +19,7 @@ import {
   nonceStore,
   pendingTransactionsStore,
 } from '../state';
+import { ParsedAddressAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -697,6 +699,19 @@ export function getTokenBlockExplorerUrl({
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
   return `http://${blockExplorerHost}/token/${address}`;
 }
+
+const capitalize = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
+export const getTokenBlockExplorer = ({
+  address,
+  chainId,
+}: Pick<ParsedAddressAsset, 'address' | 'mainnetAddress' | 'chainId'>) => {
+  let _address = address;
+  if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
+  return {
+    url: getTokenBlockExplorerUrl({ address: _address, chainId }),
+    name: capitalize(getBlockExplorerHostForChain(chainId).split('.').at?.(-2)),
+  };
+};
 
 const flashbotsApi = createHttpClient({
   baseUrl: 'https://protect.flashbots.net',

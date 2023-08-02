@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
 import BscBadge from 'static/assets/badges/bscBadge.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge.png';
@@ -38,7 +36,10 @@ const ChainBadge = ({
   shadow = false,
   size = '18',
 }: ChainIconProps) => {
+  if (!Object.keys(networkBadges).includes(`${chainId}`)) return null;
+
   const iconSize = chainBadgeSize[size];
+
   let boxShadow;
   if (shadow) {
     boxShadow = '0px 4px 12px 0px rgba(0, 0, 0, 0.3)';
@@ -58,6 +59,8 @@ const ChainBadge = ({
         width="100%"
         height="100%"
         loading="lazy"
+        style={{ userSelect: 'none' }}
+        draggable={false}
       />
     </Box>
   );
