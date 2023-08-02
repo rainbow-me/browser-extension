@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const isArc = () =>
   getComputedStyle(document.documentElement).getPropertyValue(
@@ -30,17 +30,24 @@ const SupportedBrowsers: Browser[] = [
   // 'Firefox'
 ];
 
-// needs to be a hook and in a useLayoutEffect
-// because we can only know if it's Arc based on the computed css props
+// needs to be a hook because we can only know if it's Arc based on the computed css props
+// useLayoutEffect doesn't work, neither a smaller setTimeout :/
 export const useBrowser = () => {
-  const [browser, setBrowser] = useState<Browser>(getBrowser());
+  const [{ browser, isCommited }, set] = useState({
+    browser: getBrowser(),
+    // commited means it's the final result,
+    // if the browser is arc, for the first 200ms while the css props are not injected
+    // the browser will be "Chrome" with isCommited: false
+    isCommited: false,
+  });
 
-  useLayoutEffect(() => {
-    setBrowser(getBrowser());
+  useEffect(() => {
+    setTimeout(() => set({ browser: getBrowser(), isCommited: true }), 200);
   }, []);
 
   return {
     browser,
+    isCommited,
     isSupported: SupportedBrowsers.includes(browser),
     isBrave: browser === 'Brave',
     isArc: browser === 'Arc',

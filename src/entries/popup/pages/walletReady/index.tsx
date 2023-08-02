@@ -18,9 +18,9 @@ const useChromeUserSettings = () => {
 
 const PinToToolbar = () => {
   const { isOnToolbar } = useChromeUserSettings();
-  const { isBrave, isArc } = useBrowser();
+  const { isBrave, isArc, isCommited } = useBrowser();
 
-  if (isOnToolbar) return null;
+  if (!isCommited || isOnToolbar) return null;
   return (
     <Box
       as={motion.div}
@@ -52,7 +52,7 @@ const PinToToolbar = () => {
       <Symbol
         symbol={isArc ? 'arrow.right' : 'arrow.up'}
         color="purple"
-        size={18}
+        size={14}
         weight="bold"
       />
     </Box>
