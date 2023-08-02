@@ -1,4 +1,4 @@
-import { Children, ReactNode } from 'react';
+import React, { Children, ReactNode } from 'react';
 
 import { Space } from '../../styles/designTokens';
 import { Box } from '../Box/Box';
