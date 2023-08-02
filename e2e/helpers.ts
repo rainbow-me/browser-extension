@@ -145,7 +145,6 @@ export async function findElementByTextAndClick(driver, text) {
 }
 
 export async function findElementAndClick({ id, driver }) {
-  await delayTime('short');
   const element = await driver.findElement({
     id,
   });
@@ -169,20 +168,17 @@ export async function doNotFindElementByTestId({ id, driver }) {
 }
 
 export async function findElementByTestIdAndClick({ id, driver }) {
-  await delayTime('short');
   const element = await findElementByTestId({ id, driver });
   await waitAndClick(element, driver);
 }
 
 export async function findElementByTestIdAndDoubleClick({ id, driver }) {
-  await delayTime('medium');
   const actions = driver.actions();
   const element = await findElementByTestId({ id, driver });
   return await actions.doubleClick(element).perform();
 }
 
 export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
-  await delayTime('medium');
   const element = await findElementByTestId({ id, driver });
   if (element) {
     return;
@@ -191,13 +187,12 @@ export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
-  await delayTime('short');
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
 export async function waitAndClick(element, driver) {
   try {
-    await delayTime('short');
+    await delayTime('medium');
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     return element.click();
@@ -240,7 +235,6 @@ export const untilIsClickable = (locator: Locator) =>
 // various functions and flows
 
 export async function goBackTwice(driver) {
-  await delayTime('short');
   await findElementByTestIdAndClick({
     id: 'navbar-button-with-back',
     driver,
@@ -277,7 +271,6 @@ export async function navigateToSettingsPrivacy(driver, rootURL) {
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
   await findElementByTestIdAndClick({ id: 'privacy-security-link', driver });
-  await delayTime('medium');
 }
 
 export async function toggleStatus(id: string, driver: WebDriver) {
@@ -302,14 +295,12 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
 
   // go to popup
   await goToPopup(driver, rootURL, '#/home');
-  await delayTime('medium');
 
   // find header and click
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
     driver,
   });
-  await delayTime('medium');
 
   // find wallet you want to switch to and click
   await waitUntilElementByTestIdIsPresent({
@@ -320,8 +311,6 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
     id: `account-item-${shortenedAddress}`,
     driver,
   });
-
-  await delayTime('long');
 }
 
 export async function getOnchainBalance(addy, contract) {
@@ -400,8 +389,6 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     });
   }
 
-  await delayTime('medium');
-
   await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
   await typeOnTextInput({
     id: 'confirm-password-input',
@@ -409,13 +396,11 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     text: testPassword,
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-  await delayTime('long');
   await findElementByText(driver, 'Rainbow is ready to use');
 }
 
 export async function checkWalletName(driver, rootURL, walletAddress) {
   goToPopup(driver, rootURL);
-  await delayTime('short');
   const account = await getTextFromText({ id: 'account-name', driver });
   expect(account).toBe(shortenAddress(walletAddress));
 }
@@ -438,13 +423,9 @@ export async function passSecretQuiz(driver) {
     driver,
   });
 
-  await delayTime('long');
-
   for (const word of requiredWords) {
     await findElementByTestIdAndClick({ id: `word_${word}`, driver });
   }
-
-  await delayTime('long');
 }
 
 // delays
