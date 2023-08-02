@@ -76,13 +76,16 @@ export const AppConnectionSheet = () => {
                       borderRadius: 6,
                       overflow: 'hidden',
                     }}
+                    background="fill"
+                    borderWidth="1px"
+                    borderColor="buttonStroke"
                   >
                     <Inline
                       alignHorizontal="center"
                       alignVertical="center"
                       height="full"
                     >
-                      <ExternalImage src={appLogo} width="18" height="18" />
+                      <ExternalImage src={appLogo} width="14" height="14" />
                     </Inline>
                   </Box>
                 </Box>
