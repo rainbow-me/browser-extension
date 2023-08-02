@@ -22,21 +22,6 @@ export interface MessageMeta {
  */
 export interface AddressAssetsReceivedMessage {
   payload?: {
-    assets?: {
-      [id: string]: {
-        asset: ZerionAsset;
-        quantity: string;
-      };
-    };
-  };
-  meta?: MessageMeta;
-}
-
-/**
- * A message from the Zerion API indicating that consolidated assets were received.
- */
-export interface AddressConsolidatedAssetsReceivedMessage {
-  payload?: {
     assets?: { asset: ZerionAsset; quantity: string }[];
   };
   meta?: MessageMeta;

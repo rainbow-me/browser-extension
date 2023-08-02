@@ -17,14 +17,15 @@ import {
   ZerionAsset,
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { AddressConsolidatedAssetsReceivedMessage } from '~/core/types/refraction';
+import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 import {
   fetchAssetBalanceViaProvider,
   filterAsset,
   parseAddressAsset,
 } from '~/core/utils/assets';
-import { SUPPORTED_CHAIN_IDS, chainNameFromChainId } from '~/core/utils/chains';
+import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 import { greaterThan } from '~/core/utils/numbers';
+import { RainbowError, logger } from '~/logger';
 import {
   DAI_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
@@ -120,31 +121,26 @@ export const userAssetsSetQueryData = ({
   );
 };
 
-async function userAssetsQueryFunctionByChain({
-  address,
-  currency,
-  connectedToHardhat,
-}: UserAssetsArgs) {
+async function userAssetsQueryFunction({
+  queryKey: [{ address, currency, connectedToHardhat }],
+}: QueryFunctionArgs<typeof userAssetsQueryKey>) {
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = (cache.find(
     userAssetsQueryKey({ address, currency, connectedToHardhat }),
   )?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
     const url = `/${SUPPORTED_CHAIN_IDS.join(',')}/${address}/assets`;
-    const res = await addysHttp.get<AddressConsolidatedAssetsReceivedMessage>(
-      url,
-      {
-        params: {
-          currency: currency.toLowerCase(),
-        },
-        timeout: USER_ASSETS_TIMEOUT_DURATION,
+    const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
+      params: {
+        currency: currency.toLowerCase(),
       },
-    );
-    const chainIdsInResponse = res?.data?.meta?.chain_ids;
+      timeout: USER_ASSETS_TIMEOUT_DURATION,
+    });
+    const chainIdsInResponse = res?.data?.meta?.chain_ids || [];
     const chainIdsWithErrorsInResponse =
       res?.data?.meta?.chain_ids_with_errors || [];
     const assets = res?.data?.payload?.assets || [];
-    if (address && Array.isArray(assets) && chainIdsInResponse) {
+    if (address && assets.length && chainIdsInResponse.length) {
       const parsedAssetsDict = await parseUserAssets({
         address,
         assets,
@@ -164,9 +160,14 @@ async function userAssetsQueryFunctionByChain({
     }
     return cachedUserAssets;
   } catch (e) {
+    logger.error(new RainbowError('userAssetsQueryFunction: '), {
+      message: (e as Error)?.message,
+    });
     return cachedUserAssets;
   }
 }
+
+type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
 
 async function userAssetsQueryFunctionRetryByChain({
   address,
@@ -179,35 +180,41 @@ async function userAssetsQueryFunctionRetryByChain({
   connectedToHardhat: boolean;
   currency: SupportedCurrencyKey;
 }) {
-  const cache = queryClient.getQueryCache();
-  const cachedUserAssets =
-    (cache.find(userAssetsQueryKey({ address, currency, connectedToHardhat }))
-      ?.state?.data as ParsedAssetsDictByChain) || {};
-  const retries = [];
-  for (const chainIdWithError of chainIds) {
-    retries.push(
-      fetchUserAssetsByChain(
-        {
-          address,
-          chain: chainNameFromChainId(chainIdWithError),
-          connectedToHardhat,
-          currency,
-        },
-        { cacheTime: 0 },
-      ),
-    );
-  }
-  const parsedRetries = await Promise.all(retries);
-  for (const parsedAssets of parsedRetries) {
-    const values = Object.values(parsedAssets);
-    if (values[0]) {
-      cachedUserAssets[values[0].chainId] = parsedAssets;
+  try {
+    const cache = queryClient.getQueryCache();
+    const cachedUserAssets =
+      (cache.find(userAssetsQueryKey({ address, currency, connectedToHardhat }))
+        ?.state?.data as ParsedAssetsDictByChain) || {};
+    const retries = [];
+    for (const chainIdWithError of chainIds) {
+      retries.push(
+        fetchUserAssetsByChain(
+          {
+            address,
+            chainId: chainIdWithError,
+            connectedToHardhat,
+            currency,
+          },
+          { cacheTime: 0 },
+        ),
+      );
     }
+    const parsedRetries = await Promise.all(retries);
+    for (const parsedAssets of parsedRetries) {
+      const values = Object.values(parsedAssets);
+      if (values[0]) {
+        cachedUserAssets[values[0].chainId] = parsedAssets;
+      }
+    }
+    queryClient.setQueryData(
+      userAssetsQueryKey({ address, connectedToHardhat, currency }),
+      cachedUserAssets,
+    );
+  } catch (e) {
+    logger.error(new RainbowError('userAssetsQueryFunctionRetryByChain: '), {
+      message: (e as Error)?.message,
+    });
   }
-  queryClient.setQueryData(
-    userAssetsQueryKey({ address, connectedToHardhat, currency }),
-    cachedUserAssets,
-  );
 }
 
 export async function parseUserAssets({
@@ -280,18 +287,6 @@ export async function parseUserAssets({
   }
   return parsedAssetsDict;
 }
-
-async function userAssetsQueryFunction({
-  queryKey: [{ address, currency, connectedToHardhat }],
-}: QueryFunctionArgs<typeof userAssetsQueryKey>) {
-  return await userAssetsQueryFunctionByChain({
-    address,
-    currency,
-    connectedToHardhat,
-  });
-}
-
-type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
 
 // ///////////////////////////////////////////////
 // Query Hook

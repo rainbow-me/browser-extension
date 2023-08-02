@@ -14,9 +14,8 @@ import {
   ParsedAddressAsset,
   ParsedAssetsDictByChain,
 } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
-import { chainIdFromChainName } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 import { parseUserAssets, userAssetsQueryKey } from './userAssets';
@@ -28,7 +27,7 @@ const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
 export type UserAssetsByChainArgs = {
   address: Address;
-  chain: ChainName;
+  chainId: ChainId;
   currency: SupportedCurrencyKey;
   connectedToHardhat: boolean;
 };
@@ -38,13 +37,13 @@ export type UserAssetsByChainArgs = {
 
 export const userAssetsByChainQueryKey = ({
   address,
-  chain,
+  chainId,
   currency,
   connectedToHardhat,
 }: UserAssetsByChainArgs) =>
   createQueryKey(
     'userAssetsByChain',
-    { address, chain, currency, connectedToHardhat },
+    { address, chainId, currency, connectedToHardhat },
     { persisterVersion: 1 },
   );
 
@@ -56,7 +55,7 @@ type UserAssetsByChainQueryKey = ReturnType<typeof userAssetsByChainQueryKey>;
 export async function fetchUserAssetsByChain<
   TSelectData = UserAssetsByChainResult,
 >(
-  { address, chain, currency, connectedToHardhat }: UserAssetsByChainArgs,
+  { address, chainId, currency, connectedToHardhat }: UserAssetsByChainArgs,
   config: QueryConfig<
     UserAssetsByChainResult,
     Error,
@@ -65,7 +64,12 @@ export async function fetchUserAssetsByChain<
   > = {},
 ) {
   return await queryClient.fetchQuery(
-    userAssetsByChainQueryKey({ address, chain, currency, connectedToHardhat }),
+    userAssetsByChainQueryKey({
+      address,
+      chainId,
+      currency,
+      connectedToHardhat,
+    }),
     userAssetsByChainQueryFunction,
     config,
   );
@@ -75,22 +79,21 @@ export async function fetchUserAssetsByChain<
 // Query Function
 
 export async function userAssetsByChainQueryFunction({
-  queryKey: [{ address, chain, currency, connectedToHardhat }],
+  queryKey: [{ address, chainId, currency, connectedToHardhat }],
 }: QueryFunctionArgs<typeof userAssetsByChainQueryKey>): Promise<
   Record<string, ParsedAddressAsset>
 > {
+  const cache = queryClient.getQueryCache();
+  const cachedUserAssets = (cache.find(
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+  )?.state?.data || {}) as ParsedAssetsDictByChain;
+  const cachedDataForChain = cachedUserAssets?.[chainId];
   try {
-    const chainId = chainIdFromChainName(chain);
-    const cache = queryClient.getQueryCache();
-    const cachedUserAssets = cache.find(
-      userAssetsQueryKey({ address, currency, connectedToHardhat }),
-    )?.state?.data as ParsedAssetsDictByChain;
-    const cachedDataForChain = cachedUserAssets?.[chainIdFromChainName(chain)];
     const url = `/${chainId}/${address}/assets/?currency=${currency.toLowerCase()}`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url);
-    const chainIdsInResponse = res?.data?.meta?.chain_ids;
+    const chainIdsInResponse = res?.data?.meta?.chain_ids || [];
     const assets = res?.data?.payload?.assets || [];
-    if (Array.isArray(assets) && chainIdsInResponse) {
+    if (assets.length && chainIdsInResponse.length) {
       const parsedAssetsDict = await parseUserAssets({
         address,
         assets,
@@ -105,17 +108,14 @@ export async function userAssetsByChainQueryFunction({
     }
   } catch (e) {
     logger.error(
-      new RainbowError(`userAssetsByChainQueryFunction - chain = ${chain}:`),
+      new RainbowError(
+        `userAssetsByChainQueryFunction - chainId = ${chainId}:`,
+      ),
       {
         message: (e as Error)?.message,
       },
     );
-    const cache = queryClient.getQueryCache();
-    const cachedUserAssets = cache.find(
-      userAssetsQueryKey({ address, currency, connectedToHardhat }),
-    )?.state?.data as ParsedAssetsDictByChain;
-    const cachedDataForChain = cachedUserAssets?.[chainIdFromChainName(chain)];
-    return (cachedDataForChain as Record<string, ParsedAddressAsset>) || {};
+    return cachedDataForChain;
   }
 }
 
@@ -127,7 +127,7 @@ type UserAssetsByChainResult = QueryFunctionResult<
 // Query Hook
 
 export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
-  { address, chain, currency, connectedToHardhat }: UserAssetsByChainArgs,
+  { address, chainId, currency, connectedToHardhat }: UserAssetsByChainArgs,
   config: QueryConfig<
     UserAssetsByChainResult,
     Error,
@@ -136,7 +136,12 @@ export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
   > = {},
 ) {
   return useQuery(
-    userAssetsByChainQueryKey({ address, chain, currency, connectedToHardhat }),
+    userAssetsByChainQueryKey({
+      address,
+      chainId,
+      currency,
+      connectedToHardhat,
+    }),
     userAssetsByChainQueryFunction,
     {
       ...config,
