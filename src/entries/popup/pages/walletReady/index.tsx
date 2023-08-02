@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+
+import { useBrowser } from '../../hooks/useBrowser';
 
 import { ReadyShortcut } from './ReadyShortcut';
 
@@ -15,35 +16,11 @@ const useChromeUserSettings = () => {
   return settings.data || userSettingsPlaceholder;
 };
 
-const isBrave = 'brave' in navigator;
-const useBrowser = () => {
-  const [browser, setBrowser] = useState('loading');
-
-  useEffect(() => {
-    if (isBrave) {
-      setBrowser('brave');
-      return;
-    }
-    setTimeout(() => {
-      const isArc = getComputedStyle(document.documentElement).getPropertyValue(
-        '--arc-palette-title',
-      );
-      setBrowser(isArc ? 'arc' : 'chrome');
-    }, 200);
-  }, []);
-
-  return {
-    isLoading: browser === 'loading',
-    isBrave: browser === 'brave',
-    isArc: browser === 'arc',
-  };
-};
-
 const PinToToolbar = () => {
   const { isOnToolbar } = useChromeUserSettings();
-  const { isLoading, isBrave, isArc } = useBrowser();
+  const { isBrave, isArc } = useBrowser();
 
-  if (isLoading || isOnToolbar) return null;
+  if (isOnToolbar) return null;
   return (
     <Box
       as={motion.div}
