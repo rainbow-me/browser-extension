@@ -5,7 +5,6 @@ export default defineConfig({
   test: {
     maxThreads: 4,
     minThreads: 4,
-    useAtomics: true,
     include: ['./**/**/*.test.ts'],
     testTimeout: 60_000,
     watch: false,
