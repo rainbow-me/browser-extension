@@ -140,23 +140,24 @@ async function userAssetsQueryFunction({
     const chainIdsWithErrorsInResponse =
       res?.data?.meta?.chain_ids_with_errors || [];
     const assets = res?.data?.payload?.assets || [];
-    if (address && assets.length && chainIdsInResponse.length) {
-      const parsedAssetsDict = await parseUserAssets({
-        address,
-        assets,
-        chainIds: chainIdsInResponse,
-        connectedToHardhat,
-        currency,
-      });
-
+    if (address) {
       userAssetsQueryFunctionRetryByChain({
         address,
         chainIds: chainIdsWithErrorsInResponse,
         connectedToHardhat,
         currency,
       });
+      if (assets.length && chainIdsInResponse.length) {
+        const parsedAssetsDict = await parseUserAssets({
+          address,
+          assets,
+          chainIds: chainIdsInResponse,
+          connectedToHardhat,
+          currency,
+        });
 
-      return parsedAssetsDict;
+        return parsedAssetsDict;
+      }
     }
     return cachedUserAssets;
   } catch (e) {
