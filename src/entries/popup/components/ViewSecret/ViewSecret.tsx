@@ -92,6 +92,7 @@ export default function ViewSecret({
 
       <Box position="absolute" width="full" bottom="0" padding="20px">
         <Button
+          testId={'saved-these-words-button'}
           color="accent"
           height="44px"
           variant="flat"
