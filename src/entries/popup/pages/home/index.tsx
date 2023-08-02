@@ -28,7 +28,7 @@ import { useContainerRef } from '~/design-system/components/AnimatedRoute/Animat
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
-import { AppConnectionSheet } from '../../components/AppConnection/AppConnectionSheet';
+import { AppConnectionBanner } from '../../components/AppConnection/AppConnectionBanner';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
@@ -172,7 +172,7 @@ export function Home() {
             <Header />
             <Tabs />
           </motion.div>
-          <AppConnectionSheet />
+          <AppConnectionBanner />
           {currentHomeSheet}
         </>
       )}

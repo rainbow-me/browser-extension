@@ -43,7 +43,6 @@ export const AppConnectionSheet = () => {
     }, 1000);
   }, [appSession, appSession?.address, currentAddress]);
 
-  console.log('-- show', show);
   return (
     <>
       <BottomSheet show={show} zIndex={zIndexes.BOTTOM_SHEET}>
