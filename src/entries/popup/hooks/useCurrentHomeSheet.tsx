@@ -6,11 +6,13 @@ import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 
 import { SpeedUpAndCancelSheet } from '../pages/speedUpAndCancelSheet';
 
+import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 
 export function useCurrentHomeSheet() {
   const { setCurrentHomeSheet, sheet } = useCurrentHomeSheetStore();
   const { selectedTransaction } = useSelectedTransactionStore();
+  const { trackShortcut } = useKeyboardAnalytics();
 
   const closeSheet = useCallback(
     () => setCurrentHomeSheet('none'),
@@ -39,6 +41,10 @@ export function useCurrentHomeSheet() {
     condition: () => isDisplayingSheet,
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
+        trackShortcut({
+          key: shortcuts.global.CLOSE.display,
+          type: 'home.dismissSheet',
+        });
         closeSheet();
         e.preventDefault();
       }
