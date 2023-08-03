@@ -2,7 +2,15 @@ import React, { useEffect, useState } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import { Box, Button, Inline, Text, TextOverflow } from '~/design-system';
+import {
+  Box,
+  Button,
+  Inline,
+  Separator,
+  Stack,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 import { useAccounts } from '../../hooks/useAccounts';
@@ -39,7 +47,7 @@ export const AppConnectionWalletSwitcher = () => {
   }, [appSession, appSession?.address, currentAddress]);
 
   return (
-    <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET}>
+    <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET} padding="12px">
       <Box>
         <Navbar
           leftComponent={<Navbar.CloseButton onClick={() => setshow(false)} />}
@@ -70,13 +78,51 @@ export const AppConnectionWalletSwitcher = () => {
             </Inline>
           }
         />
-        {sortedAccounts.map((account) => (
-          <AppConnectionWalletItem
-            key={account.address}
-            onClick={() => null}
-            account={account.address}
-          />
-        ))}
+
+        <Box paddingHorizontal="8px">
+          <Stack space="8px">
+            <Box paddingTop="8px">
+              <Stack space="8px">
+                <Box paddingHorizontal="12px">
+                  <Text weight="semibold" size="14pt" color="labelTertiary">
+                    {'Connected'}
+                  </Text>
+                </Box>
+                <Box>
+                  {sortedAccounts.map((account) => (
+                    <AppConnectionWalletItem
+                      key={account.address}
+                      onClick={() => null}
+                      account={account.address}
+                    />
+                  ))}
+                </Box>
+              </Stack>
+            </Box>
+            <Box paddingHorizontal="8px">
+              <Separator strokeWeight="1px" color="separatorSecondary" />
+            </Box>
+            <Box paddingTop="8px">
+              <Stack space="8px">
+                <Box paddingHorizontal="12px">
+                  <Text weight="semibold" size="14pt" color="labelTertiary">
+                    {'Other Wallets'}
+                  </Text>
+                </Box>
+                <Box>
+                  {sortedAccounts.map((account) => (
+                    <AppConnectionWalletItem
+                      key={account.address}
+                      onClick={() => null}
+                      account={account.address}
+                    />
+                  ))}
+                </Box>
+              </Stack>
+            </Box>
+          </Stack>
+        </Box>
+
         <Box padding="20px">
           <Box width="full">
             <Button

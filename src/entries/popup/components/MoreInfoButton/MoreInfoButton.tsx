@@ -2,6 +2,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { Box, ButtonSymbol, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
+import { ButtonVariant } from '~/design-system/styles/designTokens';
 
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
@@ -28,6 +29,7 @@ interface MoreInfoButtonProps {
   onClose?: () => void;
   onOpen?: () => void;
   testId?: string;
+  variant?: ButtonVariant;
 }
 
 const MoreInfoButton = ({
@@ -36,6 +38,7 @@ const MoreInfoButton = ({
   open,
   options,
   testId,
+  variant = 'transparentHover',
 }: MoreInfoButtonProps) => {
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
@@ -61,7 +64,7 @@ const MoreInfoButton = ({
             <ButtonSymbol
               color="labelTertiary"
               height="32px"
-              variant="transparentHover"
+              variant={variant}
               symbol="ellipsis.circle"
             />
           </Box>

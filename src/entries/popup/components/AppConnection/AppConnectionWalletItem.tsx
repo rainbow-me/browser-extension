@@ -2,6 +2,7 @@ import React from 'react';
 import { Address } from 'wagmi';
 
 import {
+  Bleed,
   Box,
   Column,
   Columns,
@@ -62,8 +63,8 @@ export default function AppConnectionWalletItem({
       handleOpenMenu={onClick}
       key={account}
       onClick={onClick}
-      paddingHorizontal="14px"
-      paddingVertical="10px"
+      paddingHorizontal="12px"
+      paddingVertical="8px"
       borderRadius="12px"
     >
       <Columns space="8px" alignVertical="center" alignHorizontal="justify">
@@ -93,7 +94,12 @@ export default function AppConnectionWalletItem({
           </Box>
         </Column>
         <Column width="content">
-          <MoreInfoButton options={InfoButtonOptions()} />
+          <Bleed horizontal="8px">
+            <MoreInfoButton
+              variant="transparent"
+              options={InfoButtonOptions()}
+            />
+          </Bleed>
         </Column>
       </Columns>
     </Lens>
