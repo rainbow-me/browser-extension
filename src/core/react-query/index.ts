@@ -5,6 +5,7 @@ export { persistOptions, queryClient } from './queryClient';
 export type {
   MutationConfig,
   MutationFunctionResult,
+  InfiniteQueryConfig,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,

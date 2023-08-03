@@ -960,5 +960,14 @@
     "wallet_group": "Wallet Group %{number}",
     "new_wallet_group": "New Wallet Group",
     "create_recovery_phrase": "Create a new recovery phrase"
+  },
+  "unsupported_browser": {
+    "title": "Unsupported Browser",
+    "description": "Your browser is not currently supported. Rainbow is currently available for Android and iOS on mobile, and Chrome, Brave, Arc, and Edge on desktop devices.",
+    "download_the_app": "Download the App",
+    "link_text": {
+      "highlighted": "Contact Rainbow",
+      "after": " to request more."
+    }
   }
 }

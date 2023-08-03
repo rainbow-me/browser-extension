@@ -137,6 +137,7 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
+            testId={'privacy-security-link'}
             first
             last
             leftComponent={
