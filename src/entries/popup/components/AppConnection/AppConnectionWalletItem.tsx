@@ -87,7 +87,7 @@ export default function AppConnectionWalletItem({
 
   const subLabel = useMemo(
     () => (
-      <AnimatePresence>
+      <AnimatePresence initial={false} mode="popLayout">
         {!hovering && (
           <Box
             as={motion.div}
@@ -95,7 +95,6 @@ export default function AppConnectionWalletItem({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
           >
             {connected ? (
               <Inline space="4px" alignVertical="center">
@@ -110,9 +109,11 @@ export default function AppConnectionWalletItem({
                 </Text>
               </Inline>
             ) : (
-              <TextOverflow color="labelQuaternary" size="12pt" weight="bold">
-                {userAssetsBalanceDisplay}
-              </TextOverflow>
+              <Inline space="4px" alignVertical="center">
+                <TextOverflow color="labelQuaternary" size="12pt" weight="bold">
+                  {userAssetsBalanceDisplay}
+                </TextOverflow>
+              </Inline>
             )}
           </Box>
         )}
@@ -123,17 +124,15 @@ export default function AppConnectionWalletItem({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
           >
-            {connected ? (
-              <Text size="12pt" weight="semibold" align="left" color="red">
-                {'Switch connection'}
-              </Text>
-            ) : (
-              <Text size="12pt" weight="semibold" align="left" color="green">
-                {'Connect'}
-              </Text>
-            )}
+            <Text
+              size="12pt"
+              weight="semibold"
+              align="left"
+              color={connected ? 'red' : 'green'}
+            >
+              {connected ? 'Switch connection' : 'Connect'}
+            </Text>
           </Box>
         )}
       </AnimatePresence>
@@ -200,7 +199,7 @@ export default function AppConnectionWalletItem({
                     {displayName}
                   </TextOverflow>
                 </Row>
-                {subLabel}
+                <Row>{subLabel}</Row>
               </Rows>
             </Box>
           </Column>
