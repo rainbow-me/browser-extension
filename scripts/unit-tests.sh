@@ -17,11 +17,11 @@ echo "Anvil Launched..."
 # Run the tests and store the result
 echo "Running Tests..."
 vitest
-TEST_EXIT_CODE=$?
+TEST_RESULT=$?
 
 # kill anvil
 echo "Cleaning Up..."
 kill %1 || true
 
 # return the result of the tests
-exit "$TEST_EXIT_CODE"
+exit "$TEST_RESULT"

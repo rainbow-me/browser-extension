@@ -19,11 +19,11 @@ echo "Running Tests..."
 yarn vitest e2e/serial/$1 --config ./e2e/serial/vitest.config.ts --reporter=verbose 
 
 # Store exit code
-TEST_EXIT_CODE=$?
+TEST_RESULT=$?
 
 # kill anvil
 echo "Cleaning Up..."
 kill %1 || true
 
 # return the result of the tests
-exit "$TEST_EXIT_CODE"
+exit "$TEST_RESULT"
