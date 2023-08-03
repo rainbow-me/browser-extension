@@ -11,6 +11,7 @@ import { getProvider } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
 
 import { walletAction } from './walletAction';
@@ -84,9 +85,12 @@ export async function signTransactionFromLedger(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     if (e?.name === 'TransportStatusError' || e?.name === 'LockedDeviceError') {
-      alert(
-        'Please make sure your ledger is unlocked and open the Ethereum app',
-      );
+      alert(i18n.t('hw.ledger_locked_error'));
+    } else if (
+      e?.name === 'TransportOpenUserCancelled' &&
+      e?.message === 'Access denied to use Ledger device'
+    ) {
+      alert(i18n.t('hw.check_ledger_disconnected'));
     } else if (e?.message) {
       alert(e.message);
     }
@@ -175,3 +179,20 @@ export async function signMessageByTypeFromLedger(
     throw new Error(`Message type ${messageType} not supported`);
   }
 }
+
+export const showLedgerDisconnectedAlertIfNeeded = (e: Error) => {
+  if (
+    e.name === 'TransportOpenUserCancelled' &&
+    e.message === 'Access denied to use Ledger device'
+  ) {
+    alert(i18n.t('hw.check_ledger_disconnected'));
+  }
+};
+
+export const isLedgerConnectionError = (e: Error) => {
+  return [
+    'TransportOpenUserCancelled',
+    'TransportStatusError',
+    'LockedDeviceError',
+  ].includes(e?.name);
+};

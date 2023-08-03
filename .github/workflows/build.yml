@@ -68,7 +68,7 @@ jobs:
           path: build/
   # CHROME TESTS
   chrome-e2e-parallel:
-    runs-on: beefy-runner-bx
+    runs-on: ubuntu-latest
     timeout-minutes: 16
     needs: [build]
     env:

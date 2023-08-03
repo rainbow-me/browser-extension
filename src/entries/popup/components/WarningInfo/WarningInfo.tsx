@@ -14,6 +14,7 @@ interface WarningInfoProps {
   onProceed: () => void;
   proceedButtonLabel: string;
   proceedButtonSymbol: SymbolName;
+  testId?: string;
 }
 
 export default function WarningInfo({
@@ -21,6 +22,7 @@ export default function WarningInfo({
   onProceed,
   proceedButtonLabel,
   proceedButtonSymbol,
+  testId,
 }: WarningInfoProps) {
   return (
     <Box
@@ -76,6 +78,7 @@ export default function WarningInfo({
       <Box width="full" style={{ paddingTop: 76 }}>
         <Rows alignVertical="top" space="8px">
           <Button
+            testId={testId}
             color="orange"
             height="44px"
             variant="flat"

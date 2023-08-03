@@ -8,6 +8,7 @@ export const TEST_VARIABLES = {
     ADDRESS: '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F',
     SECRET:
       'fragile height cinnamon brief various inform thing gorilla decrease enemy dream split',
+    PK: '0x30cf0b4e692056ce62de7b9a9eb40e97feaf1ee191ac22b33346fae13ae2e61b',
   },
   PRIVATE_KEY_WALLET: {
     ADDRESS: '0x38eDa688Cd8DFC6FeE8016c85803a584A0564dDC',

@@ -48,9 +48,10 @@ export function ImportOrCreateWallet() {
       const seedPhrase = await wallet.exportWallet(newWalletAddress, '');
       setImportWalletSecrets([seedPhrase]);
       navigate(ROUTES.SEED_BACKUP_PROMPT);
-    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       logger.info('Onboarding error: creating new wallet failed');
-      logger.error(e as RainbowError);
+      logger.error(new RainbowError(e?.name), { message: e?.message });
       setLoading(false);
     }
   }, [loading, navigate, setCurrentAddress]);
@@ -127,7 +128,7 @@ export function ImportOrCreateWallet() {
             exit={{ opacity: 1 }}
             key="description"
             display="flex"
-            style={{ width: '210px', margin: 'auto' }}
+            style={{ width: '210px', margin: 'auto', position: 'relative' }}
           >
             <Text
               align="center"

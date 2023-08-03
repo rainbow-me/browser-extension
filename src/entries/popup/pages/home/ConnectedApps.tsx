@@ -1,12 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import { Address, useEnsName } from 'wagmi';
 
+import appsConnectedImageMask from 'static/assets/appsConnectedImageMask.svg';
 import { i18n } from '~/core/languages';
-import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { AppSession } from '~/core/state/appSessions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
+  Bleed,
   Box,
   Button,
   ButtonSymbol,
@@ -17,17 +19,20 @@ import {
   Stack,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
+import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import ExternalImage from '../../components/ExternalImage/ExternalImage';
 import { ConnectedAppNetworkMenu } from '../../components/SwitchMenu/ConnectedAppNetworkMenu';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import { useAppSessions } from '../../hooks/useAppSessions';
 
 export const ConnectedApps = () => {
-  const { appSessions, clearSessions } = useAppSessionsStore();
+  const { appSessions, disconnectAppSessions } = useAppSessions();
   const { currentAddress } = useCurrentAddressStore();
 
   const filteredSessions = Object.values(appSessions).reduce(
@@ -123,7 +128,7 @@ export const ConnectedApps = () => {
         >
           <Inline alignHorizontal="center">
             <Button
-              onClick={clearSessions}
+              onClick={disconnectAppSessions}
               color="surfacePrimaryElevated"
               height="44px"
               variant="stroked"
@@ -162,7 +167,7 @@ const ConnectedApp = ({
 }) => {
   const [disconnectButtonVisible, setDisconnectButtonVisible] = useState(false);
   const { data: ensName } = useEnsName({ address });
-  const { disconnectAppSession } = useAppSession({
+  const { disconnectAppSession, appSession } = useAppSession({
     host,
   });
   const { appLogo, appName, appHost } = useAppMetadata({ url });
@@ -181,82 +186,119 @@ const ConnectedApp = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        {disconnectButtonVisible && (
-          <Box position="absolute" paddingTop="12px" style={{ right: 20 }}>
-            <ButtonSymbol
-              color="red"
-              height="28px"
-              variant="raised"
-              symbol="xmark"
-              borderRadius="8px"
-              onClick={disconnectAppSession}
-            />
-          </Box>
-        )}
-        <ConnectedAppNetworkMenu
-          url={url}
-          menuTriggerId={`connected-app-menu-${appHost}`}
-        >
-          <Inset horizontal="12px" vertical="8px">
-            <Inline alignHorizontal="justify" alignVertical="center">
-              <Columns space="8px">
-                <Column width="content">
-                  <Box
-                    background="fill"
-                    borderRadius="12px"
-                    style={{
-                      width: '36px',
-                      height: '36px',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <ExternalImage src={appLogo} width="36" height="36" />
-                  </Box>
-                </Column>
-                <Column>
-                  <Box>
-                    <Stack space="8px">
-                      <Box style={{ wordBreak: 'break-all' }}>
-                        <Text
-                          align="left"
-                          size="14pt"
-                          weight="semibold"
-                          color="label"
-                        >
-                          {appName || appHost}
-                        </Text>
+        <Columns>
+          <Column>
+            <ConnectedAppNetworkMenu
+              url={url}
+              menuTriggerId={`connected-app-menu-${appHost}`}
+            >
+              <Inset horizontal="12px" vertical="8px">
+                <Inline alignHorizontal="justify" alignVertical="center">
+                  <Columns space="8px">
+                    <Column width="content">
+                      <Box
+                        style={{
+                          width: '36px',
+                          height: '36px',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <ExternalImage
+                          mask={appsConnectedImageMask}
+                          src={appLogo}
+                          width="36"
+                          height="36"
+                        />
                       </Box>
-                      <Inline space="4px" alignVertical="center">
+                      <Box
+                        style={{
+                          marginLeft: '-7px',
+                          marginTop: '-10.5px',
+                        }}
+                      >
                         <Box
-                          background="fill"
-                          borderRadius="30px"
                           style={{
-                            width: '16px',
-                            height: '16px',
-                            overflow: 'hidden',
+                            height: 14,
+                            width: 14,
+                            borderRadius: 7,
                           }}
                         >
-                          <WalletAvatar
-                            address={address}
-                            size={16}
-                            emojiSize="12pt"
-                          />
+                          <Inline
+                            alignHorizontal="center"
+                            alignVertical="center"
+                            height="full"
+                          >
+                            <Bleed top="7px">
+                              <ChainBadge
+                                chainId={appSession?.chainId}
+                                size="14"
+                              />
+                            </Bleed>
+                          </Inline>
                         </Box>
-                        <Text
-                          color="labelTertiary"
-                          size="12pt"
-                          weight="semibold"
-                        >
-                          {ensName || truncateAddress(address)}
-                        </Text>
-                      </Inline>
-                    </Stack>
-                  </Box>
-                </Column>
-              </Columns>
-            </Inline>
-          </Inset>
-        </ConnectedAppNetworkMenu>
+                      </Box>
+                    </Column>
+
+                    <Column>
+                      <Box>
+                        <Stack space="8px">
+                          <Box style={{ wordBreak: 'break-all' }}>
+                            <TextOverflow
+                              align="left"
+                              size="14pt"
+                              weight="semibold"
+                              color="label"
+                            >
+                              {appName || appHost}
+                            </TextOverflow>
+                          </Box>
+                          <Inline space="4px" alignVertical="center">
+                            <Box
+                              background="fill"
+                              borderRadius="30px"
+                              style={{
+                                width: '16px',
+                                height: '16px',
+                                overflow: 'hidden',
+                              }}
+                            >
+                              <WalletAvatar
+                                address={address}
+                                size={16}
+                                emojiSize="12pt"
+                              />
+                            </Box>
+                            <Text
+                              color="labelTertiary"
+                              size="12pt"
+                              weight="semibold"
+                            >
+                              {ensName || truncateAddress(address)}
+                            </Text>
+                          </Inline>
+                        </Stack>
+                      </Box>
+                    </Column>
+                  </Columns>
+                </Inline>
+              </Inset>
+            </ConnectedAppNetworkMenu>
+          </Column>
+          <Column width="content">
+            {disconnectButtonVisible && (
+              <Box paddingTop="12px" paddingRight="12px">
+                <ButtonSymbol
+                  color="red"
+                  height="28px"
+                  variant="raised"
+                  symbol="xmark"
+                  borderRadius="8px"
+                  onClick={disconnectAppSession}
+                />
+              </Box>
+            )}
+          </Column>
+        </Columns>
       </Box>
     </Box>
   );

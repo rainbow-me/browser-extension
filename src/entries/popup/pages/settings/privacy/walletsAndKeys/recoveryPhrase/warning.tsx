@@ -69,6 +69,7 @@ export function RecoveryPhraseWarning() {
         extraState={{ ...state }}
       />
       <WarningInfo
+        testId={'show-phrase'}
         iconAndCopyList={iconAndCopyList}
         onProceed={openPasswordPrompt}
         proceedButtonLabel={i18n.t(
