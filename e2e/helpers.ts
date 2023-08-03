@@ -121,7 +121,6 @@ export async function getExtensionIdByName(driver, extensionName) {
 
 export async function querySelector(driver, selector) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
-  await delayTime('short');
   const el = await driver.wait(
     until.elementLocated(By.css(selector)),
     waitUntilTime,
@@ -131,7 +130,6 @@ export async function querySelector(driver, selector) {
 
 export async function findElementByText(driver, text) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
-  await delayTime('short');
   const el = await driver.wait(
     until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
     waitUntilTime,
@@ -175,17 +173,20 @@ export async function doNotFindElementByTestId({ id, driver }) {
 }
 
 export async function findElementByTestIdAndClick({ id, driver }) {
+  await delayTime('short');
   const element = await findElementByTestId({ id, driver });
   await waitAndClick(element, driver);
 }
 
 export async function findElementByTestIdAndDoubleClick({ id, driver }) {
+  await delayTime('short');
   const actions = driver.actions();
   const element = await findElementByTestId({ id, driver });
   return await actions.doubleClick(element).perform();
 }
 
 export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
+  await delayTime('medium');
   const element = await findElementByTestId({ id, driver });
   if (element) {
     return;
