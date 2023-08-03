@@ -50,7 +50,12 @@ export const AppConnectionWalletSwitcher = () => {
     <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET} padding="12px">
       <Box>
         <Navbar
-          leftComponent={<Navbar.CloseButton onClick={() => setshow(false)} />}
+          leftComponent={
+            <Navbar.CloseButton
+              onClick={() => setshow(false)}
+              variant="transparent"
+            />
+          }
           titleComponent={
             <Inline alignVertical="center" space="4px">
               <Box
@@ -123,6 +128,7 @@ export const AppConnectionWalletSwitcher = () => {
           </Stack>
         </Box>
 
+        <Separator strokeWeight="1px" color="separatorSecondary" />
         <Box padding="20px">
           <Box width="full">
             <Button
