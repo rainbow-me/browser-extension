@@ -2,7 +2,7 @@
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { ethers } from 'ethers';
-import { Builder, By, WebDriver, until } from 'selenium-webdriver';
+import { Builder, By, Condition, WebDriver, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
@@ -30,16 +30,19 @@ export const byText = (text: string) =>
 
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
 export async function goToPopup(driver, rootURL, route = '') {
   await driver.get(rootURL + '/popup.html' + route);
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
 export async function goToWelcome(driver, rootURL) {
   await driver.get(rootURL + '/popup.html#/welcome');
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
@@ -117,6 +120,7 @@ export async function getExtensionIdByName(driver, extensionName) {
 // search functions
 
 export async function querySelector(driver, selector) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const el = await driver.wait(
     until.elementLocated(By.css(selector)),
@@ -125,7 +129,37 @@ export async function querySelector(driver, selector) {
   return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
+export const untilDocumentLoaded = async function () {
+  return new Condition('for document to load', async (driver) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (typeof jQuery !== 'undefined') {
+      await driver.executeAsyncScript(
+        'const cb = arguments[0]; $(document).ready(cb);',
+      );
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (typeof angular !== 'undefined') {
+      await driver.executeAsyncScript(
+        'const cb = arguments[0]; angular.element(document).ready(cb);',
+      );
+    }
+    const documentReadyState = await driver.executeScript(
+      'return document.readyState',
+    );
+
+    if (documentReadyState === 'complete') {
+      return true;
+    }
+
+    return false;
+  });
+};
+
 export async function findElementByText(driver, text) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const el = await driver.wait(
     until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
@@ -140,6 +174,7 @@ export async function findElementByTextAndClick(driver, text) {
 }
 
 export async function findElementAndClick({ id, driver }) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const element = await driver.findElement({
     id,
@@ -170,7 +205,7 @@ export async function doNotFindElementByTestId({ id, driver }) {
 
 export async function findElementByTestIdAndClick({ id, driver }) {
   const element = await findElementByTestId({ id, driver });
-  return await waitAndClick(element, driver);
+  await waitAndClick(element, driver);
 }
 
 export async function findElementByTestIdAndDoubleClick({ id, driver }) {
@@ -188,11 +223,13 @@ export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
 export async function waitAndClick(element, driver) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
   await driver.wait(until.elementIsEnabled(element), waitUntilTime);
