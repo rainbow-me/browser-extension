@@ -117,33 +117,21 @@ export async function getExtensionIdByName(driver, extensionName) {
 // search functions
 
 export async function querySelector(driver, selector) {
-  try {
-    await delayTime('short');
-    const el = await driver.wait(
-      until.elementLocated(By.css(selector)),
-      waitUntilTime,
-    );
-    return await driver.wait(until.elementIsVisible(el), waitUntilTime);
-  } catch (error) {
-    throw new Error(
-      `querySelector failed to find element with selector ${selector}`,
-    );
-  }
+  await delayTime('short');
+  const el = await driver.wait(
+    until.elementLocated(By.css(selector)),
+    waitUntilTime,
+  );
+  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
 export async function findElementByText(driver, text) {
-  try {
-    await delayTime('short');
-    const el = await driver.wait(
-      until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
-      waitUntilTime,
-    );
-    return await driver.wait(until.elementIsVisible(el), waitUntilTime);
-  } catch (error) {
-    throw new Error(
-      `findElementByText failed to find element with text ${text}`,
-    );
-  }
+  await delayTime('short');
+  const el = await driver.wait(
+    until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
+    waitUntilTime,
+  );
+  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
 export async function findElementByTextAndClick(driver, text) {
@@ -152,16 +140,12 @@ export async function findElementByTextAndClick(driver, text) {
 }
 
 export async function findElementAndClick({ id, driver }) {
-  try {
-    const element = await driver.findElement({
-      id,
-    });
-    await driver.wait(until.elementLocated(element), waitUntilTime);
-    await driver.wait(until.elementIsVisible(element), waitUntilTime);
-    await waitAndClick(element, driver);
-  } catch (error) {
-    throw new Error(`findElementAndClick failed to find element with id ${id}`);
-  }
+  const element = await driver.findElement({
+    id,
+  });
+  await driver.wait(until.elementLocated(element), waitUntilTime);
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
+  await waitAndClick(element, driver);
 }
 
 export async function findElementByTestId({ id, driver }) {
@@ -204,16 +188,10 @@ export async function findElementByIdAndClick({ id, driver }) {
   await waitAndClick(element, driver);
 }
 export async function waitAndClick(element, driver) {
-  try {
-    await delayTime('medium');
-    await driver.wait(until.elementIsVisible(element), waitUntilTime);
-    await driver.wait(until.elementIsEnabled(element), waitUntilTime);
-    return element.click();
-  } catch (error) {
-    throw new Error(
-      `Failed to click element ${await element.getAttribute('testid')}`,
-    );
-  }
+  await delayTime('medium');
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
+  await driver.wait(until.elementIsEnabled(element), waitUntilTime);
+  return element.click();
 }
 
 export async function typeOnTextInput({ id, text, driver }) {
@@ -299,12 +277,14 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
 
   // go to popup
   await goToPopup(driver, rootURL, '#/home');
+  await delayTime('medium');
 
   // find header and click
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
     driver,
   });
+  await delayTime('medium');
 
   // find wallet you want to switch to and click
   await waitUntilElementByTestIdIsPresent({
@@ -315,6 +295,8 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
     id: `account-item-${shortenedAddress}`,
     driver,
   });
+
+  await delayTime('long');
 }
 
 export async function getOnchainBalance(addy, contract) {
@@ -399,12 +381,14 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     driver,
     text: testPassword,
   });
-  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+  await findElementByTestIdAndClick({ id: 'word-button', driver });
+  await delayTime('long');
   await findElementByText(driver, 'Rainbow is ready to use');
 }
 
 export async function checkWalletName(driver, rootURL, walletAddress) {
   goToPopup(driver, rootURL);
+  await delayTime('short');
   const account = await getTextFromText({ id: 'account-name', driver });
   expect(account).toBe(shortenAddress(walletAddress));
 }
@@ -430,6 +414,8 @@ export async function passSecretQuiz(driver) {
   for (const word of requiredWords) {
     await findElementByTestIdAndClick({ id: `word_${word}`, driver });
   }
+
+  await delayTime('long');
 }
 
 // delays
