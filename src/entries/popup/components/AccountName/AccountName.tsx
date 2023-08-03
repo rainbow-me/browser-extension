@@ -10,7 +10,6 @@ import { transformScales } from '~/design-system/styles/designTokens';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
-import { tabIndexes } from '../../utils/tabIndexes';
 
 type AccountNameProps = {
   avatar?: ReactNode;
@@ -18,6 +17,7 @@ type AccountNameProps = {
   size?: '16pt' | '20pt';
   chevron?: boolean;
   disableNav?: boolean;
+  tabIndex?: number;
 };
 
 const chevronDownSizes = {
@@ -31,6 +31,7 @@ export function AccountName({
   id,
   chevron = true,
   disableNav = false,
+  tabIndex,
 }: AccountNameProps) {
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
@@ -53,47 +54,52 @@ export function AccountName({
     : {};
 
   return (
-    <Lens
-      tabIndex={
-        avatar || disableNav ? -1 : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
-      }
-      onKeyDown={handleClick}
-      borderRadius="6px"
-      style={{ padding: avatar ? 0 : 2 }}
+    <Box
+      as={motion.div}
+      id={`${id ?? ''}-account-name-shuffle`}
+      onClick={handleClick}
+      padding="4px"
+      {...chevronProps}
     >
-      <Box
-        as={motion.div}
-        id={`${id ?? ''}-account-name-shuffle`}
-        onClick={handleClick}
-        padding="4px"
-        {...chevronProps}
-      >
-        <Columns alignVertical="center" space="4px">
-          {avatar && <Column width="content">{avatar}</Column>}
-          <Column>
-            <Box id={`${id ?? ''}-account-name-shuffle`}>
-              <TextOverflow
-                color="label"
-                size={size}
-                weight="heavy"
-                testId="account-name"
-              >
-                {displayName}
-              </TextOverflow>
-            </Box>
+      <Columns alignVertical="center" space="4px">
+        {avatar && (
+          <Column width="content">
+            <Box marginRight="-6px">{avatar}</Box>
           </Column>
-          {chevron && (
-            <Column width="content">
-              <Symbol
-                size={chevronDownSizes[size]}
-                symbol="chevron.down"
-                color={hover ? 'label' : 'labelTertiary'}
-                weight="semibold"
-              />
-            </Column>
-          )}
-        </Columns>
-      </Box>
-    </Lens>
+        )}
+        <Column>
+          <Lens
+            tabIndex={tabIndex ?? -1}
+            onKeyDown={handleClick}
+            borderRadius="6px"
+            style={{ padding: avatar ? 0 : 2 }}
+          >
+            <Box display="flex" flexDirection="row" padding="4px">
+              <Box
+                id={`${id ?? ''}-account-name-shuffle`}
+                style={{ paddingRight: 4 }}
+              >
+                <TextOverflow
+                  color="label"
+                  size={size}
+                  weight="heavy"
+                  testId="account-name"
+                >
+                  {displayName}
+                </TextOverflow>
+              </Box>
+              {chevron && (
+                <Symbol
+                  size={chevronDownSizes[size]}
+                  symbol="chevron.down"
+                  color={hover ? 'label' : 'labelTertiary'}
+                  weight="semibold"
+                />
+              )}
+            </Box>
+          </Lens>
+        </Column>
+      </Columns>
+    </Box>
   );
 }
