@@ -148,11 +148,6 @@ export async function findElementAndClick({ id, driver }) {
   const element = await driver.findElement({
     id,
   });
-  await driver.wait(
-    until.elementLocated(By.css(`[id="${id}"] input`)),
-    waitUntilTime,
-  );
-  await driver.wait(until.elementIsVisible(element), waitUntilTime);
   await waitAndClick(element, driver);
 }
 
@@ -201,11 +196,17 @@ export async function findElementByIdAndClick({ id, driver }) {
   await waitAndClick(element, driver);
 }
 export async function waitAndClick(element, driver) {
-  await driver.wait(untilDocumentLoaded(), waitUntilTime);
-  await delayTime('short');
-  await driver.wait(until.elementIsVisible(element), waitUntilTime);
-  await driver.wait(until.elementIsEnabled(element), waitUntilTime);
-  return element.click();
+  try {
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+    await delayTime('short');
+    await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    await driver.wait(until.elementIsEnabled(element), waitUntilTime);
+    return element.click();
+  } catch (error) {
+    throw new Error(
+      `Failed to click element ${await element.getAttribute('testid')}`,
+    );
+  }
 }
 
 export async function typeOnTextInput({ id, text, driver }) {
