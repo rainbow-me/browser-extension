@@ -106,14 +106,16 @@ const GroupRow = ({
   centerComponent,
   rightComponent,
   onClick,
+  testId,
 }: {
   leftcomponent: ReactElement;
   centerComponent: ReactElement;
   rightComponent: ReactElement | null;
   onClick: () => void;
+  testId?: string;
 }) => {
   return (
-    <Box onClick={onClick}>
+    <Box onClick={onClick} testId={testId}>
       <Columns alignHorizontal="justify" alignVertical="center">
         <Column width="content">
           <Inline space="10px" alignHorizontal="center" alignVertical="center">
@@ -139,6 +141,7 @@ const WalletGroups = ({
   return (
     <Stack space="16px">
       <GroupRow
+        testId={'new-wallet-group'}
         onClick={onCreateNewWallet}
         leftcomponent={
           <Box
@@ -190,6 +193,7 @@ const WalletGroups = ({
         {wallets.map((wallet, i) => {
           return (
             <GroupRow
+              testId={`wallet-group-${i + 1}`}
               key={i}
               onClick={() => onCreateNewWalletOnGroup(i)}
               leftcomponent={<GroupAvatar accounts={wallet.accounts} />}

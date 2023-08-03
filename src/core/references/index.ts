@@ -2,9 +2,9 @@ import { AddressZero } from '@ethersproject/constants';
 
 import { ChainId } from '~/core/types/chains';
 
-export { supportedCurrencies } from './supportedCurrencies';
 export { ethUnits } from './ethUnits';
 export { gasUnits } from './gasUnits';
+export { supportedCurrencies } from './supportedCurrencies';
 
 export const smartContractMethods = {
   token_transfer: {
@@ -47,6 +47,7 @@ export const MATIC_MAINNET_ADDRESS =
   '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0';
 export const BNB_MAINNET_ADDRESS = '0xb8c77482e45f1f44de1745f52c74426c631bdd52';
 export const SOCKS_ADDRESS = '0x23b608675a2b2fb1890d3abbd85c5775c51691d5';
+export const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 
 // optimism
 export const ETH_OPTIMISM_ADDRESS = AddressZero;

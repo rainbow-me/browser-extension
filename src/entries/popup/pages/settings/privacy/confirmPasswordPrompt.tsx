@@ -98,6 +98,7 @@ export const ConfirmPasswordPrompt = ({
                 <Rows>
                   <Row>
                     <PasswordInput
+                      testId={'password-input'}
                       placeholder={i18n.t('passwords.password')}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}

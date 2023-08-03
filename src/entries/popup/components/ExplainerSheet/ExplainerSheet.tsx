@@ -9,9 +9,11 @@ import {
   Rows,
   Separator,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { ButtonProps } from '~/design-system/components/Button/Button';
 import { TextLink } from '~/design-system/components/TextLink/TextLink';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { ButtonVariant } from '~/design-system/styles/designTokens';
@@ -35,8 +37,10 @@ export interface ExplainerSheetProps {
   description: string[];
   actionButton?: {
     label: string;
-    variant?: ButtonVariant;
     labelColor?: TextStyles['color'];
+    variant?: ButtonVariant;
+    symbol?: ButtonProps['symbol'];
+    symbolSide?: ButtonProps['symbolSide'];
     action: () => void;
   };
   cancelButton?: {
@@ -56,6 +60,7 @@ export interface ExplainerSheetProps {
     link: string;
   };
   testId?: string;
+  onClickOutside?: VoidFunction;
 }
 
 export const useExplainerSheetParams = () => {
@@ -104,6 +109,7 @@ export const ExplainerSheet = ({
   linkButton,
   footerLinkText,
   testId,
+  onClickOutside,
 }: ExplainerSheetProps) => {
   const goToLink = useCallback((link?: string) => {
     link &&
@@ -115,7 +121,7 @@ export const ExplainerSheet = ({
 
   return (
     <BottomSheet
-      onClickOutside={actionButton?.action}
+      onClickOutside={onClickOutside || actionButton?.action}
       zIndex={zIndexes.EXPLAINER_BOTTOM_SHEET}
       show={show}
     >
@@ -204,16 +210,27 @@ export const ExplainerSheet = ({
                 height="44px"
                 variant={actionButton?.variant || 'raised'}
                 onClick={actionButton?.action}
+                symbol={actionButton?.symbol}
                 testId="explainer-action-button"
               >
-                <Text
-                  align="center"
-                  weight="bold"
-                  size="16pt"
-                  color={actionButton?.labelColor || 'accent'}
-                >
-                  {actionButton?.label}
-                </Text>
+                <Inline alignVertical="center" space="4px">
+                  <Text
+                    align="center"
+                    weight="bold"
+                    size="16pt"
+                    color={actionButton?.labelColor || 'accent'}
+                  >
+                    {actionButton?.label}
+                  </Text>
+                  {actionButton?.symbol && (
+                    <Symbol
+                      color={actionButton?.labelColor || 'accent'}
+                      size={14}
+                      symbol={actionButton.symbol}
+                      weight="bold"
+                    />
+                  )}
+                </Inline>
               </Button>
             </Row>
 

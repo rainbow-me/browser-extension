@@ -21,12 +21,14 @@ import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalle
 import { ImportWalletViaPrivateKey } from './components/ImportWallet/ImportWalletViaPrivateKey';
 import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSeed';
 import { Toast } from './components/Toast/Toast';
+import { UnsupportedBrowserSheet } from './components/UnsupportedBrowserSheet';
 import { WindowStroke } from './components/WindowStroke/WindowStroke';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
+import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
 import { ConnectLedger } from './pages/hw/ledger';
 import { SuccessHW } from './pages/hw/success';
@@ -87,6 +89,14 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute direction="base" protectedRoute>
         <Home />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.TOKEN_DETAILS(':uniqueId'),
+    element: (
+      <AnimatedRoute direction="base" protectedRoute>
+        <TokenDetails />
       </AnimatedRoute>
     ),
   },
@@ -748,6 +758,7 @@ const RootLayout = () => {
       <Toast />
       <Alert />
       <WindowStroke />
+      <UnsupportedBrowserSheet />
     </FullScreenBackground>
   );
 };

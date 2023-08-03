@@ -35,7 +35,6 @@ import {
   signTransactionFromLedger,
 } from './ledger';
 import {
-  TREZOR_CONFIG,
   sendTransactionFromTrezor,
   signMessageByTypeFromTrezor,
   signTransactionFromTrezor,
@@ -339,11 +338,6 @@ export const importAccountAtIndex = async (
   switch (type) {
     case 'Trezor':
       {
-        try {
-          window.TrezorConnect.init(TREZOR_CONFIG);
-        } catch (e) {
-          // ignore already initialized error
-        }
         const path = `m/${DEFAULT_HD_PATH}/${index}`;
         const result = await window.TrezorConnect.ethereumGetAddress({
           path,
@@ -397,11 +391,6 @@ export const connectTrezor = async () => {
   //   accountsEnabled: 2,
   // };
   try {
-    try {
-      window.TrezorConnect.init(TREZOR_CONFIG);
-    } catch (e) {
-      // ignore already initialized error
-    }
     const path = `m/${DEFAULT_HD_PATH}`;
 
     const result = await window.TrezorConnect.ethereumGetPublicKey({

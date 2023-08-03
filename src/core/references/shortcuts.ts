@@ -217,4 +217,4 @@ export const shortcuts = {
       key: '/',
     },
   },
-};
+} as const;

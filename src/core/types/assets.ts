@@ -23,7 +23,7 @@ export interface ParsedAsset {
       display: string;
     };
   };
-  mainnetAddress?: Address;
+  mainnetAddress?: Address | typeof ETH_ADDRESS;
   price?: ZerionAssetPrice;
   symbol: string;
   uniqueId: UniqueId;

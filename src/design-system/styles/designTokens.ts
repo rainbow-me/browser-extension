@@ -882,6 +882,7 @@ export const symbolNames = selectSymbolNames(
   'command',
   'asterisk',
   'info.circle.fill',
+  'info.circle',
   'info',
   'app.connected.to.app.below.fill',
   'trash.fill',
@@ -905,9 +906,18 @@ export const symbolNames = selectSymbolNames(
   'message.fill',
   'ellipsis.rectangle',
   'eye.fill',
+  'dollarsign.square',
+  'clock.arrow.circlepath',
+  'chart.line.uptrend.xyaxis',
+  'chart.pie',
+  'chart.bar',
+  'person',
+  'point.3.filled.connected.trianglepath.dotted',
   'person.crop.rectangle.stack.fill',
   'plus.app.fill',
   'arrow.up.left.and.arrow.down.right',
+  'safari',
+  'link',
 );
 export type SymbolName = typeof symbolNames[number];
 

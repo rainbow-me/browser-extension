@@ -7,7 +7,14 @@ import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
+import {
+  AccentColorProvider,
+  Box,
+  Inline,
+  Symbol,
+  Text,
+  ThemeProvider,
+} from '~/design-system';
 import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import {
   BoxStyles,
@@ -17,6 +24,7 @@ import {
 import {
   BackgroundColor,
   Space,
+  SymbolName,
   globalColors,
 } from '~/design-system/styles/designTokens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
@@ -184,13 +192,24 @@ export const DropdownMenuLabel = (props: DropdownMenuLabelProps) => {
   );
 };
 
-interface DropdownMenuItemProps {
+type DropdownMenuItemProps = {
   children: ReactNode;
   onSelect?: (event: Event) => void;
-}
+  external?: boolean;
+  color?: TextStyles['color'];
+} & (
+  | { symbolLeft?: SymbolName; emoji?: never }
+  | { symbolLeft?: never; emoji?: string }
+);
 
-export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
-  const { children, onSelect } = props;
+export const DropdownMenuItem = ({
+  children,
+  onSelect,
+  external,
+  symbolLeft,
+  emoji,
+  color,
+}: DropdownMenuItemProps) => {
   return (
     <Box
       as={DropdownMenuPrimitive.Item}
@@ -201,6 +220,7 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
         boxStyles({
           display: 'flex',
           alignItems: 'center',
+          justifyContent: 'space-between',
           borderRadius: '12px',
           outline: 'none',
         }),
@@ -212,8 +232,38 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
         hover: 'surfaceSecondary',
       }}
       tabIndex={0}
+      style={{ minHeight: '34px' }}
     >
-      {children}
+      <Inline alignVertical="center" space="10px">
+        {emoji && (
+          <Text size="14pt" weight="semibold">
+            {emoji}
+          </Text>
+        )}
+        {symbolLeft && (
+          <Symbol
+            size={16}
+            symbol={symbolLeft}
+            weight="semibold"
+            color={color}
+          />
+        )}
+        {typeof children === 'string' ? (
+          <Text size="14pt" weight="semibold">
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </Inline>
+      {external && (
+        <Symbol
+          size={12}
+          symbol="arrow.up.forward.circle"
+          weight="semibold"
+          color="labelTertiary"
+        />
+      )}
     </Box>
   );
 };
