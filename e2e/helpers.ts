@@ -458,30 +458,18 @@ export async function awaitTextChange(
 
 export const untilDocumentLoaded = async function () {
   return new Condition('for document to load', async (driver) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (typeof jQuery !== 'undefined') {
-      await driver.executeAsyncScript(
-        'const cb = arguments[0]; $(document).ready(cb);',
+    return await driver.wait(async () => {
+      await delayTime('medium');
+      const documentReadyState = await driver.executeScript(
+        'return document.readyState',
       );
-    }
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (typeof angular !== 'undefined') {
-      await driver.executeAsyncScript(
-        'const cb = arguments[0]; angular.element(document).ready(cb);',
-      );
-    }
-    const documentReadyState = await driver.executeScript(
-      'return document.readyState',
-    );
+      if (documentReadyState === 'complete') {
+        return true;
+      }
 
-    if (documentReadyState === 'complete') {
-      return true;
-    }
-
-    return false;
+      return false;
+    }, waitUntilTime);
   });
 };
 
