@@ -1,6 +1,5 @@
-import { DismissableLayerProps } from '@radix-ui/react-tooltip';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 
 import { Box, Stack } from '~/design-system';
 
@@ -17,8 +16,30 @@ interface DropdownSubMenuProps {
   subMenuContent: ReactNode;
   top?: number;
   marginLeft?: number;
-  onInteractOutsideContent: DismissableLayerProps['onInteractOutside'];
+  position?: number;
+  toggleSubMenu?: (open: boolean) => void;
+  setMenuOpen?: (open: boolean) => void;
+  // onInteractOutsideContent: DismissableLayerProps['onInteractOutside'];
 }
+
+const NETWORK_MENU_HEADER_X = 23;
+const NETWORK_MENU_HEADER_Y = 72;
+const NETWORK_MENU_HEADER_WIDTH = 190;
+const NETWORK_MENU_HEADER_HEIGHT = 52;
+
+const isClickingMenuHeader = ({
+  x,
+  y,
+  position = 1,
+}: {
+  x: number;
+  y: number;
+  position?: number;
+}) =>
+  x < NETWORK_MENU_HEADER_X ||
+  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
+  y < NETWORK_MENU_HEADER_Y ||
+  y > NETWORK_MENU_HEADER_Y + position * NETWORK_MENU_HEADER_HEIGHT;
 
 export const DropdownSubMenu = ({
   open,
@@ -27,8 +48,25 @@ export const DropdownSubMenu = ({
   subMenuContent,
   top,
   marginLeft,
-  onInteractOutsideContent,
+  position,
+  toggleSubMenu,
+  setMenuOpen,
 }: DropdownSubMenuProps) => {
+  const onInteractOutsideContent = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (e: any) => {
+      e.preventDefault();
+      const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
+      if (x && y) {
+        toggleSubMenu?.(false);
+        if (isClickingMenuHeader({ x, y, position })) {
+          setMenuOpen?.(false);
+        }
+      }
+    },
+    [position, setMenuOpen, toggleSubMenu],
+  );
+
   return (
     <DropdownMenu open={open}>
       {subMenuElement}

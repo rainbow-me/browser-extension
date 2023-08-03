@@ -35,17 +35,6 @@ import { AppInteractionItem } from './AppInteractionItem';
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
-const NETWORK_MENU_HEADER_X = 23;
-const NETWORK_MENU_HEADER_Y = 72;
-const NETWORK_MENU_HEADER_WIDTH = 190;
-const NETWORK_MENU_HEADER_HEIGHT = 52;
-
-const isClickingMenuHeader = ({ x, y }: { x: number; y: number }) =>
-  x < NETWORK_MENU_HEADER_X ||
-  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
-  y < NETWORK_MENU_HEADER_Y ||
-  y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT;
-
 interface AppConnectionMenuProps {
   children: ReactNode;
   url: string;
@@ -203,8 +192,11 @@ export const AppConnectionMenu = ({
               <DropdownSubMenu
                 open={subMenuOpenDelayed}
                 openContent={subMenuOpen}
+                toggleSubMenu={toggleSubMenu}
+                setMenuOpen={setMenuOpen}
                 top={100}
                 marginLeft={30}
+                position={1}
                 subMenuContent={
                   <Stack space="4px">
                     {!appSession ? (
@@ -244,17 +236,6 @@ export const AppConnectionMenu = ({
                     showChevron
                   />
                 }
-                onInteractOutsideContent={(e) => {
-                  e.preventDefault();
-                  const { x, y } =
-                    (e.detail.originalEvent as PointerEvent) || {};
-                  if (x && y) {
-                    toggleSubMenu(false);
-                    if (isClickingMenuHeader({ x, y })) {
-                      setMenuOpen(false);
-                    }
-                  }
-                }}
               />
             ) : null}
             {url ? <DropdownMenuSeparator /> : null}
