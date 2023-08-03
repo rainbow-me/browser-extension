@@ -29,6 +29,7 @@ import { Space } from '~/design-system/styles/designTokens';
 
 import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
@@ -72,6 +73,7 @@ function Fee({
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
 }: FeeProps) {
+  const { trackShortcut } = useKeyboardAnalytics();
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
   const switchTransactionSpeedMenuRef = useRef<{ open: () => void }>(null);
   const gasFeeParamsForSelectedSpeed = useMemo(
@@ -120,9 +122,17 @@ function Fee({
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
+        trackShortcut({
+          key: shortcuts.global.OPEN_CUSTOM_GAS_MENU.display,
+          type: 'customGasMenu.open',
+        });
         // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
         setTimeout(() => openCustomGasSheet(), 0);
       } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
+        trackShortcut({
+          key: shortcuts.global.OPEN_GAS_MENU.display,
+          type: 'gasMenu.open',
+        });
         switchTransactionSpeedMenuRef?.current?.open();
       }
     },
