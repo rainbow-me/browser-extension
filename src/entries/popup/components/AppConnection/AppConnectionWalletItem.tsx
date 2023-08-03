@@ -25,74 +25,10 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { useWalletName } from '../../hooks/useWalletName';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
-import ExternalImage from '../ExternalImage/ExternalImage';
-import {
-  MoreInfoButton,
-  MoreInfoOption,
-} from '../MoreInfoButton/MoreInfoButton';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 import { appConnectionWalletItem } from './AppConnectionWalletItem.css';
-
-const InfoButtonOptions = ({
-  appLogo,
-  appName,
-}: {
-  appLogo: string;
-  appName: string;
-}) => {
-  const options = [
-    {
-      onSelect: () => null,
-      label: 'Switch Networks',
-      leftComponent: (
-        <Box height="fit" style={{ width: '18px', height: '18px' }}>
-          <Inline height="full" alignHorizontal="center" alignVertical="center">
-            <Symbol
-              size={16}
-              symbol="network"
-              weight="semibold"
-              color="label"
-            />
-          </Inline>
-        </Box>
-      ),
-    },
-    {
-      onSelect: () => null,
-      label: 'Disconnect',
-      separator: true,
-      symbolSize: 12,
-      leftComponent: (
-        <Box height="fit" style={{ width: '18px', height: '18px' }}>
-          <Inline height="full" alignHorizontal="center" alignVertical="center">
-            <Symbol size={12} symbol="xmark" weight="semibold" color="label" />
-          </Inline>
-        </Box>
-      ),
-    },
-    {
-      onSelect: () => null,
-      label: `Open ${appName}`,
-      leftComponent: (
-        <Box
-          style={{
-            height: '18px',
-            width: '18px',
-            overflow: 'hidden',
-          }}
-          borderRadius="9px"
-        >
-          <Inline alignHorizontal="center" alignVertical="center" height="full">
-            <ExternalImage src={appLogo} width="18" height="18" />
-          </Inline>
-        </Box>
-      ),
-    },
-  ];
-
-  return options as MoreInfoOption[];
-};
+import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItemDropdownMenu';
 
 export default function AppConnectionWalletItem({
   account,
@@ -247,9 +183,9 @@ export default function AppConnectionWalletItem({
           </Column>
           <Column width="content">
             <Bleed horizontal="8px">
-              <MoreInfoButton
-                variant="transparent"
-                options={InfoButtonOptions({ appLogo, appName })}
+              <AppConnectionWalletItemDropdownMenu
+                appName={appName}
+                appLogo={appLogo}
               />
             </Bleed>
           </Column>
