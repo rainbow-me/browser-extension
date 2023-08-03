@@ -2,7 +2,7 @@
 ANVIL_PORT=8545
 
 # Launch anvil in the bg
-pkill -f anvil
+yarn anvil:kill
 yarn anvil > anvil-unit.log 2>&1 &
 echo "Launching Anvil..."
 
@@ -21,7 +21,7 @@ TEST_RESULT=$?
 
 # kill anvil
 echo "Cleaning Up..."
-kill %1 || true
+yarn anvil:kill
 
 # return the result of the tests
 exit "$TEST_RESULT"
