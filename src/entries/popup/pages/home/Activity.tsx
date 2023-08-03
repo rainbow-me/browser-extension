@@ -1,11 +1,7 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import React, { ReactNode, useMemo } from 'react';
-import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { selectTransactionsByDate } from '~/core/resources/_selectors';
-import { useCurrentCurrencyStore } from '~/core/state';
 import {
   RainbowTransaction,
   TransactionStatus,
@@ -30,38 +26,29 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { ActivitySkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
-import { useAllTransactions } from '../../hooks/useAllTransactions';
+import useInfiniteTransactionList from '../../hooks/useInfiniteTransactionList';
 
 import { TransactionDetailsMenu } from './TransactionDetailsMenu';
 
 export function Activity() {
-  const { address } = useAccount();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { allTransactions, isInitialLoading } = useAllTransactions({
-    address,
-    currency,
-  });
-
-  const listData = useMemo(
-    () => Object.entries(selectTransactionsByDate(allTransactions)).flat(2),
-    [allTransactions],
-  );
-
-  const containerRef = useContainerRef();
-  const activityRowVirtualizer = useVirtualizer({
-    count: listData.length,
+  const {
+    isInitialLoading,
+    isFetchingNextPage,
+    isRefetching,
+    transactions,
+    virtualizer: activityRowVirtualizer,
+  } = useInfiniteTransactionList({
     getScrollElement: () => containerRef.current,
-    estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
-    overscan: 20,
   });
+  const containerRef = useContainerRef();
 
   useActivityShortcuts();
 
-  if (isInitialLoading) {
+  if (isInitialLoading || isRefetching) {
     return <ActivitySkeleton />;
   }
 
-  if (!listData.length) {
+  if (!transactions.length) {
     return (
       <Box
         width="full"
@@ -94,8 +81,7 @@ export function Activity() {
     );
   }
 
-  let labelsCount = 0;
-
+  const rows = activityRowVirtualizer.getVirtualItems();
   return (
     <>
       <Box
@@ -104,8 +90,7 @@ export function Activity() {
         style={{
           overflow: 'auto',
           // prevent coin icon shadow from clipping in empty space when list is small
-          paddingBottom:
-            activityRowVirtualizer.getVirtualItems().length > 6 ? 8 : 60,
+          paddingBottom: transactions.length > 6 ? 8 : 60,
         }}
       >
         <Box
@@ -115,17 +100,16 @@ export function Activity() {
             position: 'relative',
           }}
         >
-          {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
+          {rows.map((virtualItem) => {
             const { index, key, start, size } = virtualItem;
-            const rowData = listData[index];
+            const rowData = transactions[index];
             const isLabel = typeof rowData === 'string';
-            if (isLabel) labelsCount += 1;
             return (
               <Box
                 key={key}
                 data-index={index}
                 as={motion.div}
-                layoutId={!isLabel ? `list-${index - labelsCount}` : undefined}
+                layoutId={`list-${index}`}
                 layoutScroll
                 layout="position"
                 initial={{ opacity: isLabel ? 0 : 1 }}
@@ -156,6 +140,20 @@ export function Activity() {
           })}
         </Box>
       </Box>
+      {isFetchingNextPage && (
+        <Box
+          as={motion.div}
+          alignItems="center"
+          display="flex"
+          justifyContent="center"
+          style={{ height: 72 }}
+          initial={{ opacity: 0.5, height: 0 }}
+          animate={{ opacity: 1, height: 72 }}
+          key="page-loader"
+        >
+          <Spinner size={32} />
+        </Box>
+      )}
     </>
   );
 }
@@ -218,7 +216,6 @@ const titleIcons: {
   },
 };
 
-// TODO: create truncation component
 const truncateString = (txt = '', maxLength = 22) => {
   return `${txt?.slice(0, maxLength)}${txt.length > maxLength ? '...' : ''}`;
 };

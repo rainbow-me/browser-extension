@@ -1,5 +1,3 @@
-import { createWebSocketClient } from '~/core/network/internal/createWebSocketClient';
-
 export const refractionAddressMessages = {
   ADDRESS_ASSETS: {
     APPENDED: 'appended address assets',
@@ -20,10 +18,3 @@ export const refractionAddressMessages = {
     REMOVED: 'removed address transactions',
   },
 };
-
-export const refractionAddressWs = createWebSocketClient({
-  baseUrl: `${process.env.DATA_ENDPOINT}/address`,
-  query: {
-    api_token: process.env.DATA_API_KEY,
-  },
-});
