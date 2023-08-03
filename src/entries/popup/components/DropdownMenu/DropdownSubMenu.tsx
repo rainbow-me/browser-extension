@@ -1,10 +1,13 @@
 import { DismissableLayerProps } from '@radix-ui/react-tooltip';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactNode } from 'react';
+
+import { Box, Stack } from '~/design-system';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuSeparator,
 } from '../DropdownMenu/DropdownMenu';
 
 interface DropdownSubMenuProps {
@@ -53,7 +56,19 @@ export const DropdownSubMenu = ({
             position="absolute"
             onInteractOutside={onInteractOutsideContent}
           >
-            {subMenuContent}
+            <Stack space="4px">
+              {subMenuElement}
+              <DropdownMenuSeparator />
+              <Box
+                as={motion.div}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {subMenuContent}
+              </Box>
+            </Stack>
           </DropdownMenuContent>
         )}
       </AnimatePresence>

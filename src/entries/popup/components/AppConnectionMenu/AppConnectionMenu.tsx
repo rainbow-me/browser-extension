@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion';
-import {
+import React, {
   ReactNode,
   useCallback,
   useEffect,
@@ -208,56 +207,34 @@ export const AppConnectionMenu = ({
                 marginLeft={30}
                 subMenuContent={
                   <Stack space="4px">
-                    <AppInteractionItem
-                      appSession={appSession}
-                      chevronDirection={subMenuOpen ? 'down' : 'right'}
-                      showChevron
-                    />
-                    {url ? <DropdownMenuSeparator /> : null}
-                    <Box
-                      as={motion.div}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Stack space="4px">
-                        {!appSession ? (
-                          <Box paddingTop="12px">
-                            <Text
-                              weight="bold"
-                              color="labelTertiary"
-                              size="11pt"
-                            >
-                              {i18n.t('menu.app_connection_menu.networks')}
-                            </Text>
-                          </Box>
-                        ) : null}
+                    {!appSession ? (
+                      <Box paddingTop="12px">
+                        <Text weight="bold" color="labelTertiary" size="11pt">
+                          {i18n.t('menu.app_connection_menu.networks')}
+                        </Text>
+                      </Box>
+                    ) : null}
 
-                        <DropdownMenuRadioGroup
-                          value={`${appSession?.chainId}`}
-                          onValueChange={
-                            appSession ? changeChainId : connectToApp
-                          }
-                        >
-                          <SwitchNetworkMenuSelector
-                            type="dropdown"
-                            highlightAccentColor
-                            selectedValue={`${appSession?.chainId}`}
-                            onNetworkSelect={(e) => {
-                              e?.preventDefault();
-                              toggleSubMenu(false);
-                              setMenuOpen(false);
-                            }}
-                            onShortcutPress={
-                              appSession ? changeChainId : connectToApp
-                            }
-                            showDisconnect={!!appSession}
-                            disconnect={disconnect}
-                          />
-                        </DropdownMenuRadioGroup>
-                      </Stack>
-                    </Box>
+                    <DropdownMenuRadioGroup
+                      value={`${appSession?.chainId}`}
+                      onValueChange={appSession ? changeChainId : connectToApp}
+                    >
+                      <SwitchNetworkMenuSelector
+                        type="dropdown"
+                        highlightAccentColor
+                        selectedValue={`${appSession?.chainId}`}
+                        onNetworkSelect={(e) => {
+                          e?.preventDefault();
+                          toggleSubMenu(false);
+                          setMenuOpen(false);
+                        }}
+                        onShortcutPress={
+                          appSession ? changeChainId : connectToApp
+                        }
+                        showDisconnect={!!appSession}
+                        disconnect={disconnect}
+                      />
+                    </DropdownMenuRadioGroup>
                   </Stack>
                 }
                 subMenuElement={
