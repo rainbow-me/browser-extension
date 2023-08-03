@@ -198,8 +198,8 @@ type DropdownMenuItemProps = {
   external?: boolean;
   color?: TextStyles['color'];
 } & (
-  | { symbolLeft?: SymbolName; emoji?: never }
-  | { symbolLeft?: never; emoji?: string }
+  | { symbolLeft?: SymbolName; emoji?: never; leftComponent?: ReactNode }
+  | { symbolLeft?: never; emoji?: string; leftComponent?: ReactNode }
 );
 
 export const DropdownMenuItem = ({
@@ -207,6 +207,7 @@ export const DropdownMenuItem = ({
   onSelect,
   external,
   symbolLeft,
+  leftComponent,
   emoji,
   color,
 }: DropdownMenuItemProps) => {
@@ -248,6 +249,7 @@ export const DropdownMenuItem = ({
             color={color}
           />
         )}
+        {leftComponent}
         {typeof children === 'string' ? (
           <Text size="14pt" weight="semibold">
             {children}

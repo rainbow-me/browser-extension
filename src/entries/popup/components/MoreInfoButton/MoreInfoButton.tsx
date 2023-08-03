@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, ButtonSymbol, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -17,7 +19,8 @@ import {
 export interface MoreInfoOption {
   label: string;
   subLabel?: string;
-  symbol: SymbolProps['symbol'];
+  symbol?: SymbolProps['symbol'];
+  leftComponent?: ReactNode;
   separator?: boolean;
   onSelect: () => void;
   color?: TextStyles['color'];
@@ -76,6 +79,7 @@ const MoreInfoButton = ({
               <DropdownMenuItem
                 color={option.color}
                 symbolLeft={option.symbol}
+                leftComponent={option.leftComponent}
                 onSelect={option.onSelect}
               >
                 <Stack space="8px">

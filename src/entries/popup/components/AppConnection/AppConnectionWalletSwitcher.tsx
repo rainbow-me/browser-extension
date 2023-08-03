@@ -29,7 +29,7 @@ export const AppConnectionWalletSwitcher = () => {
   const [show, setshow] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
-  const { appHost, appLogo } = useAppMetadata({ url });
+  const { appHost, appLogo, appName } = useAppMetadata({ url });
 
   const { appSession } = useAppSession({ host: appHost });
 
@@ -120,6 +120,8 @@ export const AppConnectionWalletSwitcher = () => {
                         chainId={appSession.chainId}
                         active={true}
                         connected={true}
+                        appLogo={appLogo}
+                        appName={appName || appHost}
                       />
                     ))}
                   </AccentColorProviderWrapper>
@@ -145,6 +147,8 @@ export const AppConnectionWalletSwitcher = () => {
                         account={account.address}
                         chainId={ChainId.mainnet}
                         connected={false}
+                        appLogo={appLogo}
+                        appName={appName || appHost}
                       />
                     ))}
                   </AccentColorProviderWrapper>

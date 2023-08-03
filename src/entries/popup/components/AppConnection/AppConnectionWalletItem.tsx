@@ -25,6 +25,7 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { useWalletName } from '../../hooks/useWalletName';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
+import ExternalImage from '../ExternalImage/ExternalImage';
 import {
   MoreInfoButton,
   MoreInfoOption,
@@ -33,23 +34,60 @@ import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 import { appConnectionWalletItem } from './AppConnectionWalletItem.css';
 
-const InfoButtonOptions = () => {
+const InfoButtonOptions = ({
+  appLogo,
+  appName,
+}: {
+  appLogo: string;
+  appName: string;
+}) => {
   const options = [
     {
       onSelect: () => null,
       label: 'Switch Networks',
-      symbol: 'network',
+      leftComponent: (
+        <Box height="fit" style={{ width: '18px', height: '18px' }}>
+          <Inline height="full" alignHorizontal="center" alignVertical="center">
+            <Symbol
+              size={16}
+              symbol="network"
+              weight="semibold"
+              color="label"
+            />
+          </Inline>
+        </Box>
+      ),
     },
     {
       onSelect: () => null,
       label: 'Disconnect',
-      symbol: 'xmark',
       separator: true,
+      symbolSize: 12,
+      leftComponent: (
+        <Box height="fit" style={{ width: '18px', height: '18px' }}>
+          <Inline height="full" alignHorizontal="center" alignVertical="center">
+            <Symbol size={12} symbol="xmark" weight="semibold" color="label" />
+          </Inline>
+        </Box>
+      ),
     },
     {
       onSelect: () => null,
-      label: 'Open Uniswap',
-      symbol: 'trash.fill',
+      label: `Open ${appName}`,
+      leftComponent: (
+        <Box
+          style={{
+            height: '18px',
+            width: '18px',
+            overflow: 'hidden',
+          }}
+          borderRadius="9px"
+        >
+          <Inline alignHorizontal="center" alignVertical="center" height="full">
+            <ExternalImage src={appLogo} width="18" height="18" />
+          </Inline>
+        </Box>
+      ),
     },
   ];
 
@@ -62,12 +100,16 @@ export default function AppConnectionWalletItem({
   chainId,
   active,
   connected,
+  appLogo,
+  appName,
 }: {
   account: Address;
   onClick?: () => void;
   chainId: ChainId;
   active?: boolean;
   connected: boolean;
+  appLogo: string;
+  appName: string;
 }) {
   const [hovering, setHovering] = useState(false);
   const { displayName } = useWalletName({ address: account });
@@ -207,7 +249,7 @@ export default function AppConnectionWalletItem({
             <Bleed horizontal="8px">
               <MoreInfoButton
                 variant="transparent"
-                options={InfoButtonOptions()}
+                options={InfoButtonOptions({ appLogo, appName })}
               />
             </Bleed>
           </Column>
