@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { screen } from '~/analytics/screen';
 
 export type KeyboardEventDescription =
@@ -62,7 +63,7 @@ export default function useKeyboardAnalytics() {
   const currentScreen = screen[pathname];
   const trackNavigation = useCallback(
     ({ key }: { key: string; type: KeyboardEventDescription }) => {
-      analytics.track('keyboard.navigation.triggered', {
+      analytics.track(event.keyboardNavigationTriggered, {
         key,
         screen: currentScreen,
       });
@@ -71,7 +72,7 @@ export default function useKeyboardAnalytics() {
   );
   const trackShortcut = useCallback(
     ({ key, type }: { key: string; type: KeyboardEventDescription }) => {
-      analytics.track('keyboard.shortcut.triggered', {
+      analytics.track(event.keyboardShortcutTriggered, {
         key,
         screen: currentScreen,
         type,
