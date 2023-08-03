@@ -271,7 +271,7 @@ export function WalletDetails() {
             </Menu>
           )}
           <Menu>
-            {wallet?.accounts?.map((account: Address) => {
+            {wallet?.accounts?.map((account: Address, index) => {
               return (
                 <WalletRow
                   key={account}
@@ -282,6 +282,7 @@ export function WalletDetails() {
                   setRemoveAccount={setRemoveAccount}
                   unhideWallet={unhideWallet}
                   type={wallet?.type}
+                  index={index + 1}
                 />
               );
             })}
@@ -325,6 +326,7 @@ const WalletRow = ({
   setRemoveAccount,
   unhideWallet,
   type,
+  index,
 }: {
   account: Address;
   hiddenWallets: Record<Address, boolean>;
@@ -333,6 +335,7 @@ const WalletRow = ({
   setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   unhideWallet: ({ address }: { address: Address }) => void;
   type: KeychainType;
+  index: number;
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -350,31 +353,33 @@ const WalletRow = ({
   } as unknown as typeof InfoButtonOptions;
 
   return (
-    <AccountItem
-      testId={`wallet-${account}`}
-      onClick={() => setMenuOpen(true)}
-      key={account}
-      account={account}
-      rightComponent={
-        <Inline alignVertical="center" space="10px">
-          {hiddenWallets[account] && (
-            <LabelPill
-              label={i18n.t(
-                'settings.privacy_and_security.wallets_and_keys.wallet_details.hidden',
-              )}
+    <Box testId={`wallet-item-${index}`}>
+      <AccountItem
+        testId={`wallet-${account}`}
+        onClick={() => setMenuOpen(true)}
+        key={account}
+        account={account}
+        rightComponent={
+          <Inline alignVertical="center" space="10px">
+            {hiddenWallets[account] && (
+              <LabelPill
+                label={i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.wallet_details.hidden',
+                )}
+              />
+            )}
+            <MoreInfoButton
+              open={menuOpen}
+              onClose={() => setMenuOpen(false)}
+              onOpen={() => setMenuOpen(true)}
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              options={InfoButtonOptions(opts)}
             />
-          )}
-          <MoreInfoButton
-            open={menuOpen}
-            onClose={() => setMenuOpen(false)}
-            onOpen={() => setMenuOpen(true)}
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            options={InfoButtonOptions(opts)}
-          />
-        </Inline>
-      }
-      labelType={LabelOption.address}
-    />
+          </Inline>
+        }
+        labelType={LabelOption.address}
+      />
+    </Box>
   );
 };
