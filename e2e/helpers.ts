@@ -129,35 +129,6 @@ export async function querySelector(driver, selector) {
   return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
-export const untilDocumentLoaded = async function () {
-  return new Condition('for document to load', async (driver) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (typeof jQuery !== 'undefined') {
-      await driver.executeAsyncScript(
-        'const cb = arguments[0]; $(document).ready(cb);',
-      );
-    }
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (typeof angular !== 'undefined') {
-      await driver.executeAsyncScript(
-        'const cb = arguments[0]; angular.element(document).ready(cb);',
-      );
-    }
-    const documentReadyState = await driver.executeScript(
-      'return document.readyState',
-    );
-
-    if (documentReadyState === 'complete') {
-      return true;
-    }
-
-    return false;
-  });
-};
-
 export async function findElementByText(driver, text) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
@@ -461,27 +432,6 @@ export async function passSecretQuiz(driver) {
   await delayTime('long');
 }
 
-// delays
-
-export async function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export async function delayTime(
-  time: 'short' | 'medium' | 'long' | 'very-long',
-) {
-  switch (time) {
-    case 'short':
-      return await delay(200);
-    case 'medium':
-      return await delay(500);
-    case 'long':
-      return await delay(1000);
-    case 'very-long':
-      return await delay(5000);
-  }
-}
-
 export async function awaitTextChange(
   id: string,
   text: string,
@@ -500,5 +450,57 @@ export async function awaitTextChange(
       error,
     );
     throw error;
+  }
+}
+
+// custom conditions
+
+export const untilDocumentLoaded = async function () {
+  return new Condition('for document to load', async (driver) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (typeof jQuery !== 'undefined') {
+      await driver.executeAsyncScript(
+        'const cb = arguments[0]; $(document).ready(cb);',
+      );
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (typeof angular !== 'undefined') {
+      await driver.executeAsyncScript(
+        'const cb = arguments[0]; angular.element(document).ready(cb);',
+      );
+    }
+    const documentReadyState = await driver.executeScript(
+      'return document.readyState',
+    );
+
+    if (documentReadyState === 'complete') {
+      return true;
+    }
+
+    return false;
+  });
+};
+
+// delays
+
+export async function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function delayTime(
+  time: 'short' | 'medium' | 'long' | 'very-long',
+) {
+  switch (time) {
+    case 'short':
+      return await delay(200);
+    case 'medium':
+      return await delay(500);
+    case 'long':
+      return await delay(1000);
+    case 'very-long':
+      return await delay(5000);
   }
 }
