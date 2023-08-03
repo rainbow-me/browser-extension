@@ -232,6 +232,7 @@ export async function getTextFromDappText({ id, driver }) {
 // various functions and flows
 
 export async function goBackTwice(driver) {
+  await delayTime('short');
   await findElementByTestIdAndClick({
     id: 'navbar-button-with-back',
     driver,
@@ -268,6 +269,7 @@ export async function navigateToSettingsPrivacy(driver, rootURL) {
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
   await findElementByTestIdAndClick({ id: 'privacy-security-link', driver });
+  await delayTime('medium');
 }
 
 export async function toggleStatus(id: string, driver: WebDriver) {
@@ -389,6 +391,7 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
       driver,
     });
   }
+
   await delayTime('medium');
 
   await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
@@ -426,6 +429,7 @@ export async function passSecretQuiz(driver) {
     id: 'saved-these-words-button',
     driver,
   });
+  await delayTime('long');
 
   for (const word of requiredWords) {
     await findElementByTestIdAndClick({ id: `word_${word}`, driver });
