@@ -16,6 +16,7 @@ import { AccentColorProviderWrapper } from '~/design-system/components/Box/Color
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -71,6 +72,7 @@ export const AppConnectionMenu = ({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { isCommandKVisible } = useCommandKStatus();
+  const { trackShortcut } = useKeyboardAnalytics();
   const { currentAddress } = useCurrentAddressStore();
   const { appHost, appLogo, appName, appColor } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
@@ -149,6 +151,10 @@ export const AppConnectionMenu = ({
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.home.SWITCH_NETWORK.key) {
+        trackShortcut({
+          key: shortcuts.home.SWITCH_NETWORK.display,
+          type: 'switchNetworkMenu.toggle',
+        });
         if (!menuOpen) {
           setMenuOpen(true);
         }
@@ -156,6 +162,10 @@ export const AppConnectionMenu = ({
       }
       if (e.key === shortcuts.global.CLOSE.key) {
         if (subMenuOpen) {
+          trackShortcut({
+            key: shortcuts.global.CLOSE.display,
+            type: 'switchNetworkMenu.dismiss',
+          });
           e.preventDefault();
           toggleSubMenu(false);
         }
