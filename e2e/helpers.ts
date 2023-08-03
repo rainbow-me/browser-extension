@@ -9,7 +9,7 @@ import { erc20ABI } from 'wagmi';
 
 // consts
 
-const waitUntilTime = 15_000;
+const waitUntilTime = 20_000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
@@ -188,6 +188,7 @@ export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
+  await delayTime('short');
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
@@ -378,6 +379,7 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
       driver,
     });
   }
+  await delayTime('medium');
 
   await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
   await typeOnTextInput({
