@@ -140,10 +140,14 @@ export async function findElementByTextAndClick(driver, text) {
 }
 
 export async function findElementAndClick({ id, driver }) {
+  await delayTime('short');
   const element = await driver.findElement({
     id,
   });
-  await driver.wait(until.elementLocated(element), waitUntilTime);
+  await driver.wait(
+    until.elementLocated(By.css(`[id="${id}"] input`)),
+    waitUntilTime,
+  );
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
   await waitAndClick(element, driver);
 }
@@ -188,7 +192,7 @@ export async function findElementByIdAndClick({ id, driver }) {
   await waitAndClick(element, driver);
 }
 export async function waitAndClick(element, driver) {
-  await delayTime('medium');
+  await delayTime('short');
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
   await driver.wait(until.elementIsEnabled(element), waitUntilTime);
   return element.click();
@@ -381,7 +385,7 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     driver,
     text: testPassword,
   });
-  await findElementByTestIdAndClick({ id: 'word-button', driver });
+  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
   await delayTime('long');
   await findElementByText(driver, 'Rainbow is ready to use');
 }
