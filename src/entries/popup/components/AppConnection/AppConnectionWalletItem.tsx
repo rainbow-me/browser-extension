@@ -3,7 +3,12 @@ import React, { useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import appConnectionWalletItemImageMask from 'static/assets/appConnectionWalletItemImageMask.svg';
+import { selectUserAssetsBalance } from '~/core/resources/_selectors/assets';
+import { useUserAssets } from '~/core/resources/assets';
+import { useCurrentCurrencyStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -68,6 +73,18 @@ export default function AppConnectionWalletItem({
   const { displayName } = useWalletName({ address: account });
   const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
 
+  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { data: totalAssetsBalance } = useUserAssets(
+    { address: account, currency, connectedToHardhat },
+    { select: selectUserAssetsBalance() },
+  );
+
+  const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
+    totalAssetsBalance || 0,
+    currency,
+  );
+
   const subLabel = useMemo(
     () => (
       <AnimatePresence>
@@ -94,7 +111,7 @@ export default function AppConnectionWalletItem({
               </Inline>
             ) : (
               <TextOverflow color="labelQuaternary" size="12pt" weight="bold">
-                {'0.00'}
+                {userAssetsBalanceDisplay}
               </TextOverflow>
             )}
           </Box>
@@ -121,7 +138,7 @@ export default function AppConnectionWalletItem({
         )}
       </AnimatePresence>
     ),
-    [account, active, chainId, connected, hovering],
+    [account, active, chainId, connected, hovering, userAssetsBalanceDisplay],
   );
 
   return (
