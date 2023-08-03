@@ -94,6 +94,7 @@ export const Header = React.memo(function Header() {
                 )
               }
               id="header"
+              tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
             />
           </Box>
 
