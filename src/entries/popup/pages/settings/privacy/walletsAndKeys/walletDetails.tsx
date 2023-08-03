@@ -351,6 +351,7 @@ const WalletRow = ({
 
   return (
     <AccountItem
+      testId={`wallet-${account}`}
       onClick={() => setMenuOpen(true)}
       key={account}
       account={account}

@@ -150,6 +150,7 @@ export const RemoveWalletPrompt = ({
               </Column>
               <Column>
                 <Button
+                  testId={'remove-button'}
                   variant="flat"
                   height="36px"
                   color="red"

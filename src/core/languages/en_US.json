@@ -953,7 +953,9 @@
     "waiting_for_trezor_connect": "Waiting for Trezor Connect",
     "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
     "trezor_success": "Success!",
-    "you_can_close_this_window": "You can close this window"
+    "you_can_close_this_window": "You can close this window",
+    "ledger_locked_error": "Please make sure your ledger is unlocked and open the Ethereum app",
+    "check_ledger_disconnected": "Make sure your device is connected, unlocked and the ethereum app is open"
   },
   "choose_wallet_group": {
     "title": "Choose wallet group",
@@ -961,5 +963,14 @@
     "wallet_group": "Wallet Group %{number}",
     "new_wallet_group": "New Wallet Group",
     "create_recovery_phrase": "Create a new recovery phrase"
+  },
+  "unsupported_browser": {
+    "title": "Unsupported Browser",
+    "description": "Your browser is not currently supported. Rainbow is currently available for Android and iOS on mobile, and Chrome, Brave, Arc, and Edge on desktop devices.",
+    "download_the_app": "Download the App",
+    "link_text": {
+      "highlighted": "Contact Rainbow",
+      "after": " to request more."
+    }
   }
 }

@@ -21,6 +21,7 @@ import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalle
 import { ImportWalletViaPrivateKey } from './components/ImportWallet/ImportWalletViaPrivateKey';
 import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSeed';
 import { Toast } from './components/Toast/Toast';
+import { UnsupportedBrowserSheet } from './components/UnsupportedBrowserSheet';
 import { WindowStroke } from './components/WindowStroke/WindowStroke';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
@@ -773,6 +774,7 @@ const RootLayout = () => {
       <Toast />
       <Alert />
       <WindowStroke />
+      <UnsupportedBrowserSheet />
     </FullScreenBackground>
   );
 };
