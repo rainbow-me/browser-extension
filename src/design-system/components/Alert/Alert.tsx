@@ -31,7 +31,10 @@ export const Alert = () => {
     condition: () => visible,
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
-        trackShortcut();
+        trackShortcut({
+          key: shortcuts.global.CLOSE.display,
+          type: 'alert.dismiss',
+        });
         onClose();
         e.preventDefault();
       }
