@@ -2,21 +2,14 @@
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { ethers } from 'ethers';
-import {
-  Builder,
-  By,
-  Locator,
-  WebDriver,
-  WebElementCondition,
-  until,
-} from 'selenium-webdriver';
+import { Builder, By, WebDriver, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
 // consts
 
-const waitUntilTime = 20000;
+const waitUntilTime = 15_000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
@@ -124,19 +117,33 @@ export async function getExtensionIdByName(driver, extensionName) {
 // search functions
 
 export async function querySelector(driver, selector) {
-  const el = await driver.wait(
-    until.elementLocated(By.css(selector)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  try {
+    await delayTime('short');
+    const el = await driver.wait(
+      until.elementLocated(By.css(selector)),
+      waitUntilTime,
+    );
+    return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  } catch (error) {
+    throw new Error(
+      `querySelector failed to find element with selector ${selector}`,
+    );
+  }
 }
 
 export async function findElementByText(driver, text) {
-  const el = await driver.wait(
-    until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  try {
+    await delayTime('short');
+    const el = await driver.wait(
+      until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
+      waitUntilTime,
+    );
+    return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  } catch (error) {
+    throw new Error(
+      `findElementByText failed to find element with text ${text}`,
+    );
+  }
 }
 
 export async function findElementByTextAndClick(driver, text) {
@@ -145,10 +152,16 @@ export async function findElementByTextAndClick(driver, text) {
 }
 
 export async function findElementAndClick({ id, driver }) {
-  const element = await driver.findElement({
-    id,
-  });
-  await waitAndClick(element, driver);
+  try {
+    const element = await driver.findElement({
+      id,
+    });
+    await driver.wait(until.elementLocated(element), waitUntilTime);
+    await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    await waitAndClick(element, driver);
+  } catch (error) {
+    throw new Error(`findElementAndClick failed to find element with id ${id}`);
+  }
 }
 
 export async function findElementByTestId({ id, driver }) {
@@ -169,7 +182,7 @@ export async function doNotFindElementByTestId({ id, driver }) {
 
 export async function findElementByTestIdAndClick({ id, driver }) {
   const element = await findElementByTestId({ id, driver });
-  await waitAndClick(element, driver);
+  return await waitAndClick(element, driver);
 }
 
 export async function findElementByTestIdAndDoubleClick({ id, driver }) {
@@ -222,15 +235,6 @@ export async function getTextFromDappText({ id, driver }) {
   const element = await findElementById({ id, driver });
   return await element.getText();
 }
-
-export const untilIsClickable = (locator: Locator) =>
-  new WebElementCondition('until element is clickable', async (driver) => {
-    const element = driver.findElement(locator);
-    const isDisplayed = await element.isDisplayed();
-    const isEnabled = await element.isEnabled();
-    if (isDisplayed && isEnabled) return element;
-    return null;
-  });
 
 // various functions and flows
 
