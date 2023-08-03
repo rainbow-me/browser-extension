@@ -12,12 +12,6 @@ until nc -z localhost $ANVIL_PORT; do
   sleep $interval
   interval=$((interval * 2))
 done
-
-# Check if Anvil has launched successfully
-if ! nc -z localhost $ANVIL_PORT; then
-  echo "Anvil failed to launch within the timeout."
-  exit 1
-fi
 echo "Anvil Launched..."
 
 # Run the tests and store the result
