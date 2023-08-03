@@ -929,6 +929,7 @@ export const radii = {
   '0': 0,
   '2px': 2,
   '3px': 3,
+  '4px': 4,
   '5px': 5,
   '6px': 6,
   '8px': 8,

@@ -1,0 +1,100 @@
+import React, { useEffect, useState } from 'react';
+
+import { useCurrentAddressStore } from '~/core/state';
+import { isLowerCaseMatch } from '~/core/utils/strings';
+import { Box, Button, Inline, Text, TextOverflow } from '~/design-system';
+import { Prompt } from '~/design-system/components/Prompt/Prompt';
+
+import { useAccounts } from '../../hooks/useAccounts';
+import { useActiveTab } from '../../hooks/useActiveTab';
+import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useAppSession } from '../../hooks/useAppSession';
+import { zIndexes } from '../../utils/zIndexes';
+import ExternalImage from '../ExternalImage/ExternalImage';
+import { Navbar } from '../Navbar/Navbar';
+
+import AppConnectionWalletItem from './AppConnectionWalletItem';
+
+export const AppConnectionWalletSwitcher = () => {
+  const [show, setshow] = useState(false);
+  const { currentAddress } = useCurrentAddressStore();
+  const { url } = useActiveTab();
+  const { appHost, appLogo } = useAppMetadata({ url });
+
+  const { appSession } = useAppSession({ host: appHost });
+
+  const { sortedAccounts } = useAccounts(({ sortedAccounts }) => ({
+    sortedAccounts,
+  }));
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (
+        appSession &&
+        !isLowerCaseMatch(appSession?.address, currentAddress)
+      ) {
+        setshow(true);
+      }
+    }, 1000);
+  }, [appSession, appSession?.address, currentAddress]);
+
+  return (
+    <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET}>
+      <Box>
+        <Navbar
+          leftComponent={<Navbar.CloseButton onClick={() => setshow(false)} />}
+          titleComponent={
+            <Inline alignVertical="center" space="4px">
+              <Box
+                style={{
+                  height: '14px',
+                  width: '14px',
+                  overflow: 'hidden',
+                }}
+                borderRadius="4px"
+                background="fill"
+                borderWidth="1px"
+                borderColor="buttonStroke"
+              >
+                <Inline
+                  alignHorizontal="center"
+                  alignVertical="center"
+                  height="full"
+                >
+                  <ExternalImage src={appLogo} width="10" height="10" />
+                </Inline>
+              </Box>
+              <Text size="14pt" weight="heavy" align="center">
+                {'Switch Wallets'}
+              </Text>
+            </Inline>
+          }
+        />
+        {sortedAccounts.map((account) => (
+          <AppConnectionWalletItem
+            key={account.address}
+            onClick={() => null}
+            account={account.address}
+          />
+        ))}
+        <Box padding="20px">
+          <Box width="full">
+            <Button
+              color="fillSecondary"
+              height="44px"
+              width="full"
+              onClick={undefined}
+              variant="plain"
+              disabled={false}
+              tabIndex={0}
+            >
+              <TextOverflow weight="bold" size="16pt" color="label">
+                {'Cancel'}
+              </TextOverflow>
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Prompt>
+  );
+};
