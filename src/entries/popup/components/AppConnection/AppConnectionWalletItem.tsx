@@ -1,6 +1,8 @@
 import React from 'react';
 import { Address } from 'wagmi';
 
+import appConnectionWalletItemImageMask from 'static/assets/appConnectionWalletItemImageMask.svg';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import {
   Bleed,
   Box,
@@ -15,6 +17,7 @@ import {
 import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { useWalletName } from '../../hooks/useWalletName';
+import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   MoreInfoButton,
   MoreInfoOption,
@@ -52,11 +55,14 @@ const InfoButtonOptions = () => {
 export default function AppConnectionWalletItem({
   account,
   onClick,
+  chainId,
 }: {
   account: Address;
   onClick?: () => void;
+  chainId: ChainId;
 }) {
   const { displayName } = useWalletName({ address: account });
+  const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
 
   return (
     <Lens
@@ -69,7 +75,39 @@ export default function AppConnectionWalletItem({
     >
       <Columns space="8px" alignVertical="center" alignHorizontal="justify">
         <Column width="content">
-          <WalletAvatar address={account} size={36} emojiSize="20pt" />
+          <WalletAvatar
+            mask={showChainBadge ? appConnectionWalletItemImageMask : null}
+            address={account}
+            size={36}
+            emojiSize="20pt"
+            background="transparent"
+          />
+          {showChainBadge ? (
+            <Box
+              style={{
+                marginLeft: '-7px',
+                marginTop: '-10.5px',
+              }}
+            >
+              <Box
+                style={{
+                  height: 14,
+                  width: 14,
+                  borderRadius: 7,
+                }}
+              >
+                <Inline
+                  alignHorizontal="center"
+                  alignVertical="center"
+                  height="full"
+                >
+                  <Bleed top="7px">
+                    <ChainBadge chainId={chainId} size="14" />
+                  </Bleed>
+                </Inline>
+              </Box>
+            </Box>
+          ) : null}
         </Column>
         <Column>
           <Box>
@@ -87,7 +125,7 @@ export default function AppConnectionWalletItem({
                   color="labelTertiary"
                 />
                 <TextOverflow color="labelQuaternary" size="12pt" weight="bold">
-                  {'Polygon'}
+                  {ChainNameDisplay[chainId]}
                 </TextOverflow>
               </Inline>
             </Rows>

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Box,
@@ -13,7 +14,7 @@ import {
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
-import { useAccounts } from '../../hooks/useAccounts';
+import { Account, useAccounts } from '../../hooks/useAccounts';
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
@@ -45,6 +46,24 @@ export const AppConnectionWalletSwitcher = () => {
       }
     }, 1000);
   }, [appSession, appSession?.address, currentAddress]);
+
+  const { connectedAccounts, notConnectedAccounts } = useMemo(() => {
+    const appSessionAccounts = [appSession?.address];
+
+    const [connectedAccounts, notConnectedAccounts] = sortedAccounts.reduce(
+      (result, item) => {
+        const [matching, nonMatching] = result;
+        if (appSessionAccounts.includes(item?.address)) {
+          matching.push(item);
+        } else {
+          nonMatching.push(item);
+        }
+        return [matching, nonMatching];
+      },
+      [[] as Account[], [] as Account[]],
+    );
+    return { connectedAccounts, notConnectedAccounts };
+  }, [appSession?.address, sortedAccounts]);
 
   return (
     <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET} padding="12px">
@@ -94,11 +113,12 @@ export const AppConnectionWalletSwitcher = () => {
                   </Text>
                 </Box>
                 <Box>
-                  {sortedAccounts.map((account) => (
+                  {connectedAccounts.map((account) => (
                     <AppConnectionWalletItem
                       key={account.address}
                       onClick={() => null}
                       account={account.address}
+                      chainId={appSession.chainId}
                     />
                   ))}
                 </Box>
@@ -115,11 +135,12 @@ export const AppConnectionWalletSwitcher = () => {
                   </Text>
                 </Box>
                 <Box>
-                  {sortedAccounts.map((account) => (
+                  {notConnectedAccounts.map((account) => (
                     <AppConnectionWalletItem
                       key={account.address}
                       onClick={() => null}
                       account={account.address}
+                      chainId={ChainId.mainnet}
                     />
                   ))}
                 </Box>
