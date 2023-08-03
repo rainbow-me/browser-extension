@@ -12,6 +12,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 import { Account, useAccounts } from '../../hooks/useAccounts';
@@ -113,14 +114,16 @@ export const AppConnectionWalletSwitcher = () => {
                   </Text>
                 </Box>
                 <Box>
-                  {connectedAccounts.map((account) => (
-                    <AppConnectionWalletItem
-                      key={account.address}
-                      onClick={() => null}
-                      account={account.address}
-                      chainId={appSession.chainId}
-                    />
-                  ))}
+                  <AccentColorProviderWrapper color="red">
+                    {connectedAccounts.map((account) => (
+                      <AppConnectionWalletItem
+                        key={account.address}
+                        onClick={() => null}
+                        account={account.address}
+                        chainId={appSession.chainId}
+                      />
+                    ))}
+                  </AccentColorProviderWrapper>
                 </Box>
               </Stack>
             </Box>
@@ -135,14 +138,16 @@ export const AppConnectionWalletSwitcher = () => {
                   </Text>
                 </Box>
                 <Box>
-                  {notConnectedAccounts.map((account) => (
-                    <AppConnectionWalletItem
-                      key={account.address}
-                      onClick={() => null}
-                      account={account.address}
-                      chainId={ChainId.mainnet}
-                    />
-                  ))}
+                  <AccentColorProviderWrapper color="green">
+                    {notConnectedAccounts.map((account) => (
+                      <AppConnectionWalletItem
+                        key={account.address}
+                        onClick={() => null}
+                        account={account.address}
+                        chainId={ChainId.mainnet}
+                      />
+                    ))}
+                  </AccentColorProviderWrapper>
                 </Box>
               </Stack>
             </Box>

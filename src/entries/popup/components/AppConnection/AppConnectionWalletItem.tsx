@@ -24,10 +24,7 @@ import {
 } from '../MoreInfoButton/MoreInfoButton';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
-export enum LabelOption {
-  address = 'address',
-  balance = 'balance',
-}
+import { appConnectionWalletItem } from './AppConnectionWalletItem.css';
 
 const InfoButtonOptions = () => {
   const options = [
@@ -65,81 +62,87 @@ export default function AppConnectionWalletItem({
   const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
 
   return (
-    <Lens
-      handleOpenMenu={onClick}
-      key={account}
-      onClick={onClick}
-      paddingHorizontal="12px"
-      paddingVertical="8px"
-      borderRadius="12px"
-    >
-      <Columns space="8px" alignVertical="center" alignHorizontal="justify">
-        <Column width="content">
-          <WalletAvatar
-            mask={showChainBadge ? appConnectionWalletItemImageMask : null}
-            address={account}
-            size={36}
-            emojiSize="20pt"
-            background="transparent"
-          />
-          {showChainBadge ? (
-            <Box
-              style={{
-                marginLeft: '-7px',
-                marginTop: '-10.5px',
-              }}
-            >
+    <Box className={appConnectionWalletItem}>
+      <Lens
+        handleOpenMenu={onClick}
+        key={account}
+        onClick={onClick}
+        paddingHorizontal="12px"
+        paddingVertical="8px"
+        borderRadius="12px"
+      >
+        <Columns space="8px" alignVertical="center" alignHorizontal="justify">
+          <Column width="content">
+            <WalletAvatar
+              mask={showChainBadge ? appConnectionWalletItemImageMask : null}
+              address={account}
+              size={36}
+              emojiSize="20pt"
+              background="transparent"
+            />
+            {showChainBadge ? (
               <Box
                 style={{
-                  height: 14,
-                  width: 14,
-                  borderRadius: 7,
+                  marginLeft: '-7px',
+                  marginTop: '-10.5px',
                 }}
               >
-                <Inline
-                  alignHorizontal="center"
-                  alignVertical="center"
-                  height="full"
+                <Box
+                  style={{
+                    height: 14,
+                    width: 14,
+                    borderRadius: 7,
+                  }}
                 >
-                  <Bleed top="7px">
-                    <ChainBadge chainId={chainId} size="14" />
-                  </Bleed>
-                </Inline>
+                  <Inline
+                    alignHorizontal="center"
+                    alignVertical="center"
+                    height="full"
+                  >
+                    <Bleed top="7px">
+                      <ChainBadge chainId={chainId} size="14" />
+                    </Bleed>
+                  </Inline>
+                </Box>
               </Box>
+            ) : null}
+          </Column>
+          <Column>
+            <Box>
+              <Rows space="8px" alignVertical="center">
+                <Row height="content">
+                  <TextOverflow color="label" size="14pt" weight="semibold">
+                    {displayName}
+                  </TextOverflow>
+                </Row>
+                <Inline space="4px" alignVertical="center">
+                  <Symbol
+                    symbol="circle"
+                    size={8}
+                    weight="medium"
+                    color="labelTertiary"
+                  />
+                  <TextOverflow
+                    color="labelQuaternary"
+                    size="12pt"
+                    weight="bold"
+                  >
+                    {ChainNameDisplay[chainId]}
+                  </TextOverflow>
+                </Inline>
+              </Rows>
             </Box>
-          ) : null}
-        </Column>
-        <Column>
-          <Box>
-            <Rows space="8px" alignVertical="center">
-              <Row height="content">
-                <TextOverflow color="label" size="14pt" weight="semibold">
-                  {displayName}
-                </TextOverflow>
-              </Row>
-              <Inline space="4px" alignVertical="center">
-                <Symbol
-                  symbol="circle"
-                  size={8}
-                  weight="medium"
-                  color="labelTertiary"
-                />
-                <TextOverflow color="labelQuaternary" size="12pt" weight="bold">
-                  {ChainNameDisplay[chainId]}
-                </TextOverflow>
-              </Inline>
-            </Rows>
-          </Box>
-        </Column>
-        <Column width="content">
-          <Bleed horizontal="8px">
-            <MoreInfoButton
-              variant="transparent"
-              options={InfoButtonOptions()}
-            />
-          </Bleed>
-        </Column>
-      </Columns>
-    </Lens>
+          </Column>
+          <Column width="content">
+            <Bleed horizontal="8px">
+              <MoreInfoButton
+                variant="transparent"
+                options={InfoButtonOptions()}
+              />
+            </Bleed>
+          </Column>
+        </Columns>
+      </Lens>
+    </Box>
   );
 }
