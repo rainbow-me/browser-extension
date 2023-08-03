@@ -85,16 +85,13 @@ export const AppConnectionWalletSwitcher = () => {
                   overflow: 'hidden',
                 }}
                 borderRadius="4px"
-                background="fill"
-                borderWidth="1px"
-                borderColor="buttonStroke"
               >
                 <Inline
                   alignHorizontal="center"
                   alignVertical="center"
                   height="full"
                 >
-                  <ExternalImage src={appLogo} width="10" height="10" />
+                  <ExternalImage src={appLogo} width="14" height="14" />
                 </Inline>
               </Box>
               <Text size="14pt" weight="heavy" align="center">
@@ -121,6 +118,8 @@ export const AppConnectionWalletSwitcher = () => {
                         onClick={() => null}
                         account={account.address}
                         chainId={appSession.chainId}
+                        active={true}
+                        connected={true}
                       />
                     ))}
                   </AccentColorProviderWrapper>
@@ -145,6 +144,7 @@ export const AppConnectionWalletSwitcher = () => {
                         onClick={() => null}
                         account={account.address}
                         chainId={ChainId.mainnet}
+                        connected={false}
                       />
                     ))}
                   </AccentColorProviderWrapper>

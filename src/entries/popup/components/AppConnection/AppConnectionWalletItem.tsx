@@ -1,4 +1,5 @@
-import React from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import appConnectionWalletItemImageMask from 'static/assets/appConnectionWalletItemImageMask.svg';
@@ -12,6 +13,7 @@ import {
   Row,
   Rows,
   Symbol,
+  Text,
   TextOverflow,
 } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
@@ -53,16 +55,82 @@ export default function AppConnectionWalletItem({
   account,
   onClick,
   chainId,
+  active,
+  connected,
 }: {
   account: Address;
   onClick?: () => void;
   chainId: ChainId;
+  active?: boolean;
+  connected: boolean;
 }) {
+  const [hovering, setHovering] = useState(false);
   const { displayName } = useWalletName({ address: account });
   const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
 
+  const subLabel = useMemo(
+    () => (
+      <AnimatePresence>
+        {!hovering && (
+          <Box
+            as={motion.div}
+            key={`${account}-${connected ? '' : 'not-'}-connected`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {connected ? (
+              <Inline space="4px" alignVertical="center">
+                <Symbol
+                  symbol={active ? 'circle.fill' : 'circle'}
+                  size={8}
+                  weight="medium"
+                  color={active ? 'green' : 'labelTertiary'}
+                />
+                <Text size="12pt" weight="semibold" align="left" color="label">
+                  {ChainNameDisplay[chainId]}
+                </Text>
+              </Inline>
+            ) : (
+              <TextOverflow color="labelQuaternary" size="12pt" weight="bold">
+                {'0.00'}
+              </TextOverflow>
+            )}
+          </Box>
+        )}
+        {hovering && (
+          <Box
+            as={motion.div}
+            key={`${account}-${connected ? '' : 'not-'}connected-hovering`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {connected ? (
+              <Text size="12pt" weight="semibold" align="left" color="red">
+                {'Switch connection'}
+              </Text>
+            ) : (
+              <Text size="12pt" weight="semibold" align="left" color="green">
+                {'Connect'}
+              </Text>
+            )}
+          </Box>
+        )}
+      </AnimatePresence>
+    ),
+    [account, active, chainId, connected, hovering],
+  );
+
   return (
-    <Box className={appConnectionWalletItem}>
+    <Box
+      as={motion.div}
+      className={appConnectionWalletItem}
+      onHoverStart={() => setHovering(true)}
+      onHoverEnd={() => setHovering(false)}
+    >
       <Lens
         handleOpenMenu={onClick}
         key={account}
@@ -115,21 +183,7 @@ export default function AppConnectionWalletItem({
                     {displayName}
                   </TextOverflow>
                 </Row>
-                <Inline space="4px" alignVertical="center">
-                  <Symbol
-                    symbol="circle"
-                    size={8}
-                    weight="medium"
-                    color="labelTertiary"
-                  />
-                  <TextOverflow
-                    color="labelQuaternary"
-                    size="12pt"
-                    weight="bold"
-                  >
-                    {ChainNameDisplay[chainId]}
-                  </TextOverflow>
-                </Inline>
+                {subLabel}
               </Rows>
             </Box>
           </Column>
