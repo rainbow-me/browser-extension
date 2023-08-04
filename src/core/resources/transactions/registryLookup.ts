@@ -52,7 +52,7 @@ async function registryLookupQueryFunction({
   if ((!data || data === '0x') && hash) {
     const provider = getProvider({ chainId });
     const tx = await provider.getTransaction(hash);
-    dataToLookup = tx.data;
+    dataToLookup = tx?.data;
   }
 
   if (!dataToLookup || dataToLookup === '0x' || dataToLookup.length < 10) {

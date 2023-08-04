@@ -631,7 +631,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-4',
+    id: 'switch-network-item-6',
     driver,
   });
   await typeOnTextInput({

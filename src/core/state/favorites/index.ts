@@ -8,7 +8,9 @@ import {
   DAI_POLYGON_ADDRESS,
   ETH_ADDRESS,
   ETH_ARBITRUM_ADDRESS,
+  ETH_BASE_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
+  ETH_ZORA_ADDRESS,
   MATIC_POLYGON_ADDRESS,
   OP_ADDRESS,
   SOCKS_ADDRESS,
@@ -74,6 +76,8 @@ export const favoritesStore = createStore<FavoritesState>(
         USDC_OPTIMISM_ADDRESS,
         WBTC_OPTIMISM_ADDRESS,
       ],
+      [ChainId.base]: [ETH_BASE_ADDRESS],
+      [ChainId.zora]: [ETH_ZORA_ADDRESS],
     },
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();

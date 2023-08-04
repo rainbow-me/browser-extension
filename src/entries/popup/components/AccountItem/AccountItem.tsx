@@ -67,6 +67,7 @@ export default function AccountItem({
   onClick,
   labelType,
   isSelected,
+  testId,
 }: {
   account: Address;
   rightComponent?: React.ReactNode;
@@ -74,6 +75,7 @@ export default function AccountItem({
   isSelected?: boolean;
   labelType?: LabelOption;
   searchTerm?: string;
+  testId?: string;
 }) {
   const { displayName, showAddress } = useWalletName({ address: account });
 
@@ -94,6 +96,7 @@ export default function AccountItem({
       paddingHorizontal="14px"
       paddingVertical="10px"
       borderRadius="12px"
+      testId={testId}
     >
       <Columns space="8px" alignVertical="center" alignHorizontal="justify">
         <Column width="content">

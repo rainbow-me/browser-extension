@@ -32,6 +32,7 @@ export function TabBar({
       hideAssetBalances ? (
         <Inline alignHorizontal="right" alignVertical="center">
           <Text
+            testId={'balance-hidden'}
             color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
             size="16pt"
             weight="bold"
@@ -42,6 +43,7 @@ export function TabBar({
         </Inline>
       ) : (
         <Text
+          testId={'balance-shown'}
           color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
           size="16pt"
           weight="bold"

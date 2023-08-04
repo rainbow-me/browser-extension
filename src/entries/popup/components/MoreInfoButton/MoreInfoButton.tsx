@@ -3,6 +3,7 @@ import { Box, ButtonSymbol, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import {
   DropdownMenu,
@@ -26,6 +27,7 @@ interface MoreInfoButtonProps {
   open?: boolean;
   onClose?: () => void;
   onOpen?: () => void;
+  testId?: string;
 }
 
 const MoreInfoButton = ({
@@ -33,17 +35,23 @@ const MoreInfoButton = ({
   onOpen,
   open,
   options,
+  testId,
 }: MoreInfoButtonProps) => {
+  const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
+        trackShortcut({
+          key: shortcuts.global.CLOSE.display,
+          type: 'moreInfoButton.dismiss',
+        });
         e.preventDefault();
         onClose?.();
       }
     },
   });
   return (
-    <Box onClick={(e) => e.stopPropagation()}>
+    <Box onClick={(e) => e.stopPropagation()} testId={testId}>
       <DropdownMenu
         onOpenChange={(openState) => (openState ? onOpen?.() : onClose?.())}
         open={open}

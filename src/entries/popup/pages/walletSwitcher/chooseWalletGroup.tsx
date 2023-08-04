@@ -26,6 +26,7 @@ import {
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -106,14 +107,16 @@ const GroupRow = ({
   centerComponent,
   rightComponent,
   onClick,
+  testId,
 }: {
   leftcomponent: ReactElement;
   centerComponent: ReactElement;
   rightComponent: ReactElement | null;
   onClick: () => void;
+  testId?: string;
 }) => {
   return (
-    <Box onClick={onClick}>
+    <Box onClick={onClick} testId={testId}>
       <Columns alignHorizontal="justify" alignVertical="center">
         <Column width="content">
           <Inline space="10px" alignHorizontal="center" alignVertical="center">
@@ -139,6 +142,7 @@ const WalletGroups = ({
   return (
     <Stack space="16px">
       <GroupRow
+        testId={'new-wallet-group'}
         onClick={onCreateNewWallet}
         leftcomponent={
           <Box
@@ -190,6 +194,7 @@ const WalletGroups = ({
         {wallets.map((wallet, i) => {
           return (
             <GroupRow
+              testId={`wallet-group-${i + 1}`}
               key={i}
               onClick={() => onCreateNewWalletOnGroup(i)}
               leftcomponent={<GroupAvatar accounts={wallet.accounts} />}
@@ -258,6 +263,7 @@ const ChooseWalletGroup = () => {
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
   const goHomeOnWalletCreation = state?.goHomeOnWalletCreation;
   const [fromChooseGroup, setFromChooseGroup] = useState(false);
+  const { trackShortcut } = useKeyboardAnalytics();
 
   useEffect(() => {
     const fetchWallets = async () => {
@@ -320,11 +326,19 @@ const ChooseWalletGroup = () => {
       if (createWalletAddress) return;
       const key = e.key;
       if (key === 'n' || key === 'N') {
+        trackShortcut({
+          key: 'N',
+          type: 'chooseWallet.create',
+        });
         handleCreateWallet();
         return;
       }
       const number = Number(key);
       if (number <= wallets.length) {
+        trackShortcut({
+          key,
+          type: 'chooseWallet.select',
+        });
         handleCreateWalletOnGroup(Number(key) - 1);
       }
     },
@@ -332,6 +346,7 @@ const ChooseWalletGroup = () => {
       createWalletAddress,
       handleCreateWallet,
       handleCreateWalletOnGroup,
+      trackShortcut,
       wallets.length,
     ],
   );
