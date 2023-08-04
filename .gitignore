@@ -13,3 +13,6 @@ yarn-error.log
 build/
 
 src/core/graphql/__generated__/
+
+# Anvil logs
+anvil*.log

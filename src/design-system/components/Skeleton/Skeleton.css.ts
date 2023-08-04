@@ -12,8 +12,6 @@ export const skeletonCircle = style({
   borderRadius: '100%',
   position: 'relative',
   overflow: 'hidden',
-  width: '36px',
-  height: '36px',
 
   '::after': {
     content: '""',
