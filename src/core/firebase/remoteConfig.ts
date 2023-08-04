@@ -30,6 +30,8 @@ export interface RainbowConfig extends Record<string, any> {
     [ChainName.optimism]: number;
     [ChainName.polygon]: number;
     [ChainName.arbitrum]: number;
+    [ChainName.base]: number;
+    [ChainName.zora]: number;
     [ChainName.bsc]: number;
   };
 }
@@ -47,6 +49,8 @@ const DEFAULT_CONFIG = {
     mainnet: 100,
     optimism: 200,
     polygon: 200,
+    base: 200,
+    zora: 200,
     bsc: 200,
   },
 };

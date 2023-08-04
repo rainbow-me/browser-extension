@@ -133,6 +133,20 @@ export function useSearchCurrencyLists({
     fromChainId,
   });
 
+  const { data: baseVerifiedAssets, isLoading: baseVerifiedAssetsLoading } =
+    useTokenSearch({
+      chainId: ChainId.base,
+      ...VERIFIED_ASSETS_PAYLOAD,
+      fromChainId,
+    });
+
+  const { data: zoraVerifiedAssets, isLoading: zoraVerifiedAssetsLoading } =
+    useTokenSearch({
+      chainId: ChainId.zora,
+      ...VERIFIED_ASSETS_PAYLOAD,
+      fromChainId,
+    });
+
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
     useTokenSearch({
@@ -202,6 +216,14 @@ export function useSearchCurrencyLists({
         assets: arbitrumVerifiedAssets,
         loading: arbitrumVerifiedAssetsLoading,
       },
+      [ChainId.base]: {
+        assets: baseVerifiedAssets,
+        loading: baseVerifiedAssetsLoading,
+      },
+      [ChainId.zora]: {
+        assets: zoraVerifiedAssets,
+        loading: zoraVerifiedAssetsLoading,
+      },
     }),
     [
       mainnetVerifiedAssets,
@@ -214,6 +236,10 @@ export function useSearchCurrencyLists({
       polygonVerifiedAssetsLoading,
       arbitrumVerifiedAssets,
       arbitrumVerifiedAssetsLoading,
+      baseVerifiedAssets,
+      baseVerifiedAssetsLoading,
+      zoraVerifiedAssets,
+      zoraVerifiedAssetsLoading,
     ],
   );
 
@@ -266,6 +292,8 @@ export function useSearchCurrencyLists({
       [ChainId.bsc]: getCuratedAssets(ChainId.bsc),
       [ChainId.polygon]: getCuratedAssets(ChainId.polygon),
       [ChainId.arbitrum]: getCuratedAssets(ChainId.arbitrum),
+      [ChainId.base]: getCuratedAssets(ChainId.base),
+      [ChainId.zora]: getCuratedAssets(ChainId.zora),
     }),
     [getCuratedAssets],
   );

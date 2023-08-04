@@ -203,6 +203,12 @@ const displayDappNames: {
   'zora.co': {
     name: 'Zora',
   },
+  'base.org': {
+    name: 'Base',
+  },
+  'zora.energy': {
+    name: 'Zora Energy',
+  },
 };
 
 export const getHardcodedDappInformation = (hostName: string) =>
