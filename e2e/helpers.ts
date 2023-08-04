@@ -37,17 +37,17 @@ export const byText = (text: string) =>
 
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
-  await delay(1000);
+  await delayTime('very-long');
 }
 
 export async function goToPopup(driver, rootURL, route = '') {
   await driver.get(rootURL + '/popup.html' + route);
-  await delay(5000);
+  await delayTime('very-long');
 }
 
 export async function goToWelcome(driver, rootURL) {
   await driver.get(rootURL + '/popup.html#/welcome');
-  await delay(1000);
+  await delayTime('very-long');
 }
 
 export async function getAllWindowHandles({
@@ -169,20 +169,20 @@ export async function doNotFindElementByTestId({ id, driver }) {
 }
 
 export async function findElementByTestIdAndClick({ id, driver }) {
-  await delay(200);
+  await delayTime('short');
   const element = await findElementByTestId({ id, driver });
   await waitAndClick(element, driver);
 }
 
 export async function findElementByTestIdAndDoubleClick({ id, driver }) {
-  await delay(400);
+  await delayTime('medium');
   const actions = driver.actions();
   const element = await findElementByTestId({ id, driver });
   return await actions.doubleClick(element).perform();
 }
 
 export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
-  await delay(500);
+  await delayTime('medium');
   const element = await findElementByTestId({ id, driver });
   if (element) {
     return;
@@ -191,14 +191,21 @@ export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
-  await delay(200);
+  await delayTime('short');
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
 export async function waitAndClick(element, driver) {
-  await delayTime('short');
-  await driver.wait(until.elementIsVisible(element), waitUntilTime);
-  return element.click();
+  try {
+    await delayTime('short');
+    await driver.wait(until.elementIsVisible(element), waitUntilTime);
+    await driver.wait(until.elementIsEnabled(element), waitUntilTime);
+    return element.click();
+  } catch (error) {
+    throw new Error(
+      `Failed to click element ${await element.getAttribute('testid')}`,
+    );
+  }
 }
 
 export async function typeOnTextInput({ id, text, driver }) {
@@ -231,6 +238,55 @@ export const untilIsClickable = (locator: Locator) =>
   });
 
 // various functions and flows
+
+export async function goBackTwice(driver) {
+  await delayTime('short');
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back',
+    driver,
+  });
+}
+
+export async function getNumberOfWallets(driver, testIdPrefix) {
+  let numOfWallets = 0;
+
+  for (let i = 1; ; i++) {
+    try {
+      const el = await driver.wait(
+        until.elementLocated(By.css(`[data-testid="${testIdPrefix}${i}"]`)),
+        5000,
+      );
+      await driver.wait(until.elementIsVisible(el), 5000);
+
+      numOfWallets += 1;
+    } catch (err) {
+      // Element not found, break out of loop
+      break;
+    }
+  }
+
+  return numOfWallets;
+}
+
+export async function navigateToSettingsPrivacy(driver, rootURL) {
+  await goToPopup(driver, rootURL, '#/home');
+  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+  await findElementByTestIdAndClick({ id: 'settings-link', driver });
+  await findElementByTestIdAndClick({ id: 'privacy-security-link', driver });
+  await delayTime('medium');
+}
+
+export async function toggleStatus(id: string, driver: WebDriver) {
+  const toggleInput = await driver.wait(
+    until.elementLocated(By.css(`[data-testid="${id}"] input`)),
+  );
+  const checkedStatus: string = await toggleInput.getAttribute('aria-checked');
+  return checkedStatus;
+}
 
 export function shortenAddress(address) {
   // if address is 42 in length and starts with 0x, then shorten it

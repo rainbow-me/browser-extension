@@ -16,6 +16,8 @@ enum SummarySupportedChainId {
   optimism = ChainId.optimism as number,
   polygon = ChainId.polygon as number,
   arbitrum = ChainId.arbitrum as number,
+  base = ChainId.base as number,
+  zora = ChainId.zora as number,
   bsc = ChainId.bsc as number,
 }
 

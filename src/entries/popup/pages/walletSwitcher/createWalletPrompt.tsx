@@ -164,6 +164,7 @@ export const CreateWalletPrompt = ({
                     <Rows>
                       <Row>
                         <Input
+                          testId={'wallet-name-input'}
                           placeholder={i18n.t(
                             'create_wallet_prompt.input_placeholder',
                           )}
@@ -217,6 +218,7 @@ export const CreateWalletPrompt = ({
             <Rows space="8px">
               <Row>
                 <Button
+                  testId={'confirm-name-button'}
                   color={isValid ? 'accent' : 'labelQuaternary'}
                   variant={isValid ? 'flat' : 'disabled'}
                   height="36px"

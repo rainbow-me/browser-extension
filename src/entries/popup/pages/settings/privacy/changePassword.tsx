@@ -17,7 +17,6 @@ import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 import { PasswordInput } from '~/entries/popup/components/PasswordInput/PasswordInput';
 import { updatePassword } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { ROUTES } from '~/entries/popup/urls';
 import {
   getPasswordStrength,
   strengthMeta,
@@ -80,7 +79,7 @@ export function ChangePassword() {
   const handleUpdatePassword = async () => {
     if (!isValid || !isMatching) return;
     await updatePassword(state?.password, newPassword);
-    navigate(ROUTES.SETTINGS__PRIVACY);
+    navigate(-1);
   };
 
   return (
@@ -172,6 +171,7 @@ export function ChangePassword() {
               </Row>
               <Row>
                 <PasswordInput
+                  testId={'new-password-input'}
                   placeholder={i18n.t('passwords.new_password')}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -195,6 +195,7 @@ export function ChangePassword() {
                 <Rows>
                   <Row>
                     <PasswordInput
+                      testId={'confirm-new-password-input'}
                       placeholder={i18n.t('passwords.password')}
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
@@ -248,7 +249,7 @@ export function ChangePassword() {
                   height="44px"
                   variant="transparent"
                   width="full"
-                  onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
+                  onClick={() => navigate(-1)}
                   tabIndex={4}
                 >
                   {i18n.t('common_actions.cancel')}

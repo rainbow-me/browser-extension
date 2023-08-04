@@ -33,6 +33,7 @@ import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
 import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { usePendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
 import usePrevious from '../../hooks/usePrevious';
@@ -58,6 +59,7 @@ const TOP_NAV_HEIGHT = 65;
 function Tabs() {
   const { state } = useLocation();
   const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
+  const { trackShortcut } = useKeyboardAnalytics();
 
   const [, startTransition] = useTransition();
 
@@ -89,9 +91,17 @@ function Tabs() {
   useKeyboardShortcut({
     handler: (e) => {
       if (e.key === shortcuts.global.BACK.key) {
+        trackShortcut({
+          key: shortcuts.global.BACK.display,
+          type: 'home.switchTab',
+        });
         onSelectTab('tokens');
       }
       if (e.key === shortcuts.global.FORWARD.key) {
+        trackShortcut({
+          key: shortcuts.global.FORWARD.display,
+          type: 'home.switchTab',
+        });
         onSelectTab('activity');
       }
     },
