@@ -3,7 +3,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { Address } from 'wagmi';
 
 import { ParsedAsset, ZerionAsset } from './assets';
-import { ChainId } from './chains';
+import { ChainId, ChainName } from './chains';
 
 export interface RainbowTransaction {
   address?: Address;
@@ -53,6 +53,7 @@ export interface ZerionTransaction {
   id: string;
   meta: ZerionTransactionMeta;
   mined_at: number;
+  network?: ChainName;
   nonce: number;
   protocol: ProtocolType;
   status: ZerionTransactionStatus;
