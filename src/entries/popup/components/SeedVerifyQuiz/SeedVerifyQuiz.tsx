@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import CorrectSeedQuiz from 'static/assets/audio/correct_seed_quiz.mp3';
@@ -17,7 +17,6 @@ import {
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 
 const shuffleArray = (array: { word: string; index: number }[]) => {
   const arrayCopy = [...array];
@@ -135,8 +134,6 @@ export function SeedVerifyQuiz({
   onQuizValidated: () => void;
   handleSkip: () => void;
 }) {
-  const navigate = useRainbowNavigate();
-
   const [seed, setSeed] = useState('');
   const [validated, setValidated] = useState(false);
   const [incorrect, setIncorrect] = useState(false);
@@ -144,7 +141,7 @@ export function SeedVerifyQuiz({
   const [randomSeedWithIndex, setRandomSeedWithIndex] = useState<SeedWord[]>(
     [],
   );
-  const [selectedWords, setselectedWords] = useState<SeedWord[]>([]);
+  const [selectedWords, setSelectedWords] = useState<SeedWord[]>([]);
 
   const seedBoxBorderColor = useMemo(() => {
     if (validated) return globalColors.green90;
@@ -163,13 +160,40 @@ export function SeedVerifyQuiz({
             selectedWord.index === index && selectedWord.word === word,
         );
         selectedWords.splice(selectedWordIndex, 1);
-        setselectedWords([...selectedWords]);
+        setSelectedWords([...selectedWords]);
       } else if (selectedWords.length < 3) {
         selectedWords.push({ word, index });
-        setselectedWords([...selectedWords]);
+        setSelectedWords([...selectedWords]);
+      }
+
+      if (selectedWords.length === 3) {
+        setTimeout(() => {
+          // Validate
+          const seedWords = seed.split(' ');
+          if (
+            seedWords[3] === selectedWords[0]?.word &&
+            selectedWords[0].index === 3 &&
+            seedWords[7] === selectedWords[1]?.word &&
+            selectedWords[1].index === 7 &&
+            seedWords[11] === selectedWords[2]?.word &&
+            selectedWords[2].index === 11
+          ) {
+            setValidated(true);
+            new Audio(CorrectSeedQuiz).play();
+            setTimeout(() => {
+              onQuizValidated();
+            }, 1200);
+          } else {
+            new Audio(IncorrectSeedQuiz).play();
+            setIncorrect(true);
+          }
+        }, 100);
+      } else {
+        setValidated(false);
+        setIncorrect(false);
       }
     },
-    [selectedWords],
+    [onQuizValidated, seed, selectedWords],
   );
 
   useEffect(() => {
@@ -198,35 +222,6 @@ export function SeedVerifyQuiz({
       longestWordLength - 6 > 0 ? longestWordLength - 6 : 0;
     return adittionalCharacters * CHARACTER_WIDTH;
   }, [seed]);
-
-  useEffect(() => {
-    if (selectedWords.length === 3) {
-      setTimeout(() => {
-        // Validate
-        const seedWords = seed.split(' ');
-        if (
-          seedWords[3] === selectedWords[0]?.word &&
-          selectedWords[0].index === 3 &&
-          seedWords[7] === selectedWords[1]?.word &&
-          selectedWords[1].index === 7 &&
-          seedWords[11] === selectedWords[2]?.word &&
-          selectedWords[2].index === 11
-        ) {
-          setValidated(true);
-          new Audio(CorrectSeedQuiz).play();
-          setTimeout(() => {
-            onQuizValidated();
-          }, 1200);
-        } else {
-          new Audio(IncorrectSeedQuiz).play();
-          setIncorrect(true);
-        }
-      }, 100);
-    } else {
-      setValidated(false);
-      setIncorrect(false);
-    }
-  }, [navigate, selectedWords, seed, onQuizValidated]);
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">

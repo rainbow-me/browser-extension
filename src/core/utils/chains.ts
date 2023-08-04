@@ -24,6 +24,8 @@ export const SUPPORTED_CHAINS: Chain[] = [
   bsc,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
+export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(({ id }) => id);
+
 /**
  * @desc Checks if the given chain is a Layer 2.
  * @param chain The chain name to check.

@@ -2,14 +2,17 @@ import { getProvider } from '@wagmi/core';
 import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
+import { queryClient } from '~/core/react-query';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
 import { fetchTransactions } from '~/core/resources/transactions/transactions';
 import {
+  nonceStore,
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   getPendingTransactionData,
   getTransactionFlashbotStatus,
@@ -42,14 +45,19 @@ export const useWatchPendingTransactions = ({
   const { swapRefreshAssets } = useSwapRefreshAssets();
   const { getPendingTransactions, setPendingTransactions } =
     usePendingTransactionsStore();
+  const { setNonce } = nonceStore.getState();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
+  const pendingTransactions = getPendingTransactions({
+    address,
+  });
+  const pendingTransactionsByDescendingNonce = pendingTransactions
+    .filter((tx) => isLowerCaseMatch(tx?.from, address))
+    .sort(({ nonce: n1 }, { nonce: n2 }) => (n2 ?? 0) - (n1 ?? 0));
 
   const watchPendingTransactions = useCallback(async () => {
-    const pendingTransactions = getPendingTransactions({
-      address,
-    });
     if (!pendingTransactions?.length || !address) return;
+    let pendingTransactionReportedByRainbowBackend = false;
     const updatedPendingTransactions = await Promise.all(
       pendingTransactions.map(async (tx) => {
         let updatedTransaction = { ...tx };
@@ -59,13 +67,11 @@ export const useWatchPendingTransactions = ({
           if (chainId) {
             const provider = getProvider({ chainId });
             if (txHash) {
-              const currentNonceForChainId = await provider.getTransactionCount(
-                address,
-                'latest',
-              );
+              const currentTxCountForChainId =
+                await provider.getTransactionCount(address, 'latest');
               const transactionResponse = await provider.getTransaction(txHash);
               const nonceAlreadyIncluded =
-                currentNonceForChainId >
+                currentTxCountForChainId >
                 (tx?.nonce || transactionResponse?.nonce);
               const transactionStatus = await getTransactionReceiptStatus({
                 included: nonceAlreadyIncluded,
@@ -103,7 +109,32 @@ export const useWatchPendingTransactions = ({
                     { cacheTime: 0 },
                   );
                 const latest = latestTransactionsConfirmedByBackend?.[0];
-                if (latest && getTransactionHash(latest) === tx?.hash) {
+
+                const latestPendingNonceForChainId =
+                  pendingTransactionsByDescendingNonce?.filter(
+                    (tx) => tx?.chainId === chainId,
+                  )?.[0]?.nonce || 0;
+                const currentNonceForChainId =
+                  currentTxCountForChainId - 1 || 0;
+                const latestTransactionHashConfirmedByBackend = latest
+                  ? getTransactionHash(latest)
+                  : null;
+
+                setNonce({
+                  address,
+                  chainId,
+                  currentNonce:
+                    currentNonceForChainId > latestPendingNonceForChainId
+                      ? currentNonceForChainId
+                      : latestPendingNonceForChainId,
+                  latestConfirmedNonce: latest?.nonce,
+                });
+
+                if (tx?.nonce && latest?.nonce && tx?.nonce <= latest?.nonce) {
+                  pendingTransactionReportedByRainbowBackend = true;
+                }
+
+                if (latestTransactionHashConfirmedByBackend === tx?.hash) {
                   updatedTransaction = {
                     ...updatedTransaction,
                     ...latest,
@@ -134,6 +165,13 @@ export const useWatchPendingTransactions = ({
       }),
     );
 
+    if (pendingTransactionReportedByRainbowBackend) {
+      queryClient.refetchQueries({
+        predicate: (query) =>
+          query.queryKey.includes('consolidatedTransactions'),
+      });
+    }
+
     setPendingTransactions({
       address,
       pendingTransactions: updatedPendingTransactions.filter((tx) =>
@@ -144,7 +182,9 @@ export const useWatchPendingTransactions = ({
     address,
     connectedToHardhat,
     currentCurrency,
-    getPendingTransactions,
+    pendingTransactions,
+    pendingTransactionsByDescendingNonce,
+    setNonce,
     setPendingTransactions,
     swapRefreshAssets,
   ]);
