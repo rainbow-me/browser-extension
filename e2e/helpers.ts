@@ -197,6 +197,7 @@ export async function findElementByIdAndClick({ id, driver }) {
 }
 export async function waitAndClick(element, driver) {
   try {
+    console.log(await element.getAttribute('data-testid'));
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await delayTime('short');
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
@@ -204,7 +205,7 @@ export async function waitAndClick(element, driver) {
     return element.click();
   } catch (error) {
     throw new Error(
-      `Failed to click element ${await element.getAttribute('testid')}`,
+      `Failed to click element ${await element.getAttribute('data-testid')}`,
     );
   }
 }
