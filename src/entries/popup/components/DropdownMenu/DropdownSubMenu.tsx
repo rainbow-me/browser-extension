@@ -10,17 +10,6 @@ import {
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 
-interface DropdownSubMenuProps {
-  open: boolean;
-  openContent: boolean;
-  subMenuElement: ReactNode;
-  subMenuContent: ReactNode;
-  position?: number;
-  toggleSubMenu?: (open: boolean) => void;
-  setMenuOpen?: (open: boolean) => void;
-  // onInteractOutsideContent: DismissableLayerProps['onInteractOutside'];
-}
-
 const NETWORK_MENU_HEADER_X = 23;
 const NETWORK_MENU_HEADER_Y = 72;
 const NETWORK_MENU_HEADER_WIDTH = 190;
@@ -40,13 +29,45 @@ const isClickingMenuHeader = ({
   y < NETWORK_MENU_HEADER_Y ||
   y > NETWORK_MENU_HEADER_Y + position * NETWORK_MENU_HEADER_HEIGHT;
 
+export const DropdownMenuContentWithSubMenu = ({
+  align,
+  children,
+  subMenuOpen,
+  sideOffset,
+}: {
+  children: ReactNode;
+  subMenuOpen: boolean;
+  align?: 'start' | 'center' | 'end';
+  sideOffset?: number;
+}) => {
+  return (
+    <DropdownMenuContent
+      scale={subMenuOpen ? 0.94 : 1}
+      sideOffset={sideOffset}
+      align={align}
+    >
+      {children}
+    </DropdownMenuContent>
+  );
+};
+
+interface DropdownSubMenuProps {
+  menuOpen: boolean;
+  subMenuOpen: boolean;
+  subMenuElement: ReactNode;
+  subMenuContent: ReactNode;
+  position?: number;
+  setSubMenuOpen?: (open: boolean) => void;
+  setMenuOpen?: (open: boolean) => void;
+}
+
 export const DropdownSubMenu = ({
-  open,
-  openContent,
+  menuOpen,
+  subMenuOpen,
   subMenuElement,
   subMenuContent,
   position,
-  toggleSubMenu,
+  setSubMenuOpen,
   setMenuOpen,
 }: DropdownSubMenuProps) => {
   const onInteractOutsideContent = useCallback(
@@ -55,17 +76,17 @@ export const DropdownSubMenu = ({
       e.preventDefault();
       const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
       if (x && y) {
-        toggleSubMenu?.(false);
+        setSubMenuOpen?.(false);
         if (isClickingMenuHeader({ x, y, position })) {
           setMenuOpen?.(false);
         }
       }
     },
-    [position, setMenuOpen, toggleSubMenu],
+    [position, setMenuOpen, setSubMenuOpen],
   );
 
   return (
-    <DropdownMenu key="o" open={open}>
+    <DropdownMenu open={menuOpen}>
       <DropdownMenuTrigger asChild>
         <Box position="relative">{subMenuElement}</Box>
       </DropdownMenuTrigger>
@@ -80,9 +101,10 @@ export const DropdownSubMenu = ({
         {subMenuElement}
       </DropdownMenuContent>
       <AnimatePresence>
-        {openContent && (
+        {subMenuOpen && (
           <DropdownMenuContent
             animate
+            border={false}
             key="sub-menu-content"
             sideOffset={-40}
             alignOffset={-12}

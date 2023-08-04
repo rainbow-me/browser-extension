@@ -21,13 +21,15 @@ import { ROUTES } from '../../urls';
 import { useCommandKStatus } from '../CommandK/useCommandKStatus';
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
-import { DropdownSubMenu } from '../DropdownMenu/DropdownSubMenu';
+import {
+  DropdownMenuContentWithSubMenu,
+  DropdownSubMenu,
+} from '../DropdownMenu/DropdownSubMenu';
 import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 
 import { AppConnectionMenuHeader } from './AppConnectionMenuHeader';
@@ -95,10 +97,6 @@ export const AppConnectionMenu = ({
     [addSession, appHost, currentAddress, url],
   );
 
-  const toggleSubMenu = useCallback((open: boolean) => {
-    setSubMenuOpen(open);
-  }, []);
-
   const onValueChange = useCallback(
     (value: 'connected-apps' | 'switch-networks') => {
       switch (value) {
@@ -106,18 +104,18 @@ export const AppConnectionMenu = ({
           navigate(ROUTES.CONNECTED);
           break;
         case 'switch-networks':
-          toggleSubMenu(!subMenuOpen);
+          setSubMenuOpen(!subMenuOpen);
           break;
       }
     },
-    [navigate, subMenuOpen, toggleSubMenu],
+    [navigate, subMenuOpen],
   );
 
   const disconnect = useCallback(() => {
     disconnectAppSession();
-    toggleSubMenu(false);
+    setSubMenuOpen(false);
     setMenuOpen(false);
-  }, [disconnectAppSession, toggleSubMenu]);
+  }, [disconnectAppSession]);
 
   useEffect(() => {
     setTimeout(
@@ -145,7 +143,7 @@ export const AppConnectionMenu = ({
         if (!menuOpen) {
           setMenuOpen(true);
         }
-        toggleSubMenu(!subMenuOpen);
+        setSubMenuOpen(!subMenuOpen);
       }
       if (e.key === shortcuts.global.CLOSE.key) {
         if (subMenuOpen) {
@@ -154,7 +152,7 @@ export const AppConnectionMenu = ({
             type: 'switchNetworkMenu.dismiss',
           });
           e.preventDefault();
-          toggleSubMenu(false);
+          setSubMenuOpen(false);
         }
       }
     },
@@ -166,8 +164,8 @@ export const AppConnectionMenu = ({
       <DropdownMenuTrigger asChild>
         <Box testId={menuTriggerId}>{children}</Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        scale={subMenuOpen ? 0.94 : 1}
+      <DropdownMenuContentWithSubMenu
+        subMenuOpen={subMenuOpen}
         sideOffset={sideOffset}
         align={align}
       >
@@ -190,9 +188,9 @@ export const AppConnectionMenu = ({
           <Stack space="4px">
             {url ? (
               <DropdownSubMenu
-                open={subMenuOpenDelayed}
-                openContent={subMenuOpen}
-                toggleSubMenu={toggleSubMenu}
+                menuOpen={subMenuOpenDelayed}
+                subMenuOpen={subMenuOpen}
+                setSubMenuOpen={setSubMenuOpen}
                 setMenuOpen={setMenuOpen}
                 position={1}
                 subMenuContent={
@@ -215,7 +213,7 @@ export const AppConnectionMenu = ({
                         selectedValue={`${appSession?.chainId}`}
                         onNetworkSelect={(e) => {
                           e?.preventDefault();
-                          toggleSubMenu(false);
+                          setSubMenuOpen(false);
                           setMenuOpen(false);
                         }}
                         onShortcutPress={
@@ -256,7 +254,7 @@ export const AppConnectionMenu = ({
             </DropdownMenuRadioItem>
           </Stack>
         </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
+      </DropdownMenuContentWithSubMenu>
     </DropdownMenu>
   );
 };
