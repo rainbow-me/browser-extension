@@ -7,6 +7,7 @@ import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { Column, Columns, Inset, Row, Rows, Stack } from '~/design-system';
 import { useApproveAppRequestValidations } from '~/entries/popup/hooks/approveAppRequest/useApproveAppRequestValidations';
+import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import {
@@ -36,9 +37,14 @@ export const SendTransactionActions = ({
   const { selectedGas } = useGasStore();
   const { enoughNativeAssetForGas, buttonLabel } =
     useApproveAppRequestValidations({ chainId, selectedGas });
+  const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.transaction_request.CANCEL.key) {
+        trackShortcut({
+          key: shortcuts.transaction_request.CANCEL.display,
+          type: 'send.cancel',
+        });
         e.preventDefault();
         onRejectRequest();
       }

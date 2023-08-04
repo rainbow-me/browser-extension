@@ -1,5 +1,9 @@
 /* eslint sort-keys: "error"*/
 
+import { KeyboardEventDescription } from '~/entries/popup/hooks/useKeyboardAnalytics';
+
+import { screen } from './screen';
+
 /**
  * All events, used by `analytics.track()`
  */
@@ -97,6 +101,14 @@ export const event = {
    * Called when the dapps hits the rate limit per second or minute.
    */
   dappProviderRateLimit: 'dapp.provider.rate_limit',
+  /**
+   * Called when keyboard navigation is triggered
+   */
+  keyboardNavigationTriggered: 'keyboard.navigation.triggered',
+  /**
+   * Called when a keyboard shortcut is triggered
+   */
+  keyboardShortcutTriggered: 'keyboard.shortcut.triggered',
   /**
    * Called when the popup entry is opened, including:
    * - extension popup
@@ -367,6 +379,30 @@ export type EventProperties = {
      * `chainId` of the network the dApp requested a switch to.
      */
     chainId: number;
+  };
+  [event.keyboardNavigationTriggered]: {
+    /**
+     * The key pressed to navigate
+     */
+    key: string;
+    /**
+     * The current screen
+     */
+    screen: keyof typeof screen;
+  };
+  [event.keyboardShortcutTriggered]: {
+    /**
+     * The key pressed to activate the shortcut
+     */
+    key: string;
+    /**
+     * The current screen
+     */
+    screen?: keyof typeof screen;
+    /**
+     * A description of the action triggered via the keyboard
+     */
+    type: KeyboardEventDescription;
   };
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;
