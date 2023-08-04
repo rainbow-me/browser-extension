@@ -8,6 +8,8 @@ export const gasUnits = {
     [ChainId.mainnet]: '200000',
     [ChainId.arbitrum]: '3500000',
     [ChainId.optimism]: '1000000',
+    [ChainId.base]: '1000000',
+    [ChainId.zora]: '1000000',
     [ChainId.bsc]: '600000',
     [ChainId.polygon]: '600000',
   },
