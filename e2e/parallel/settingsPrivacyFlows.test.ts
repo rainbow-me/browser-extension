@@ -138,7 +138,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
   });
 
   // bug currently exists on this flow. will remove skip once fixed.
-  it.skip('should be able to create a new wallet from a new seed', async () => {
+  it('should be able to create a new wallet from a new seed', async () => {
     await findElementByTestIdAndClick({
       id: 'navbar-button-with-back',
       driver,
@@ -162,10 +162,6 @@ describe('Navigate Settings & Privacy and its flows', () => {
   });
 
   it('should be able to create a new wallet from an existing seed', async () => {
-    await findElementByTestIdAndClick({
-      id: 'navbar-button-with-back',
-      driver,
-    });
     await findElementByTestIdAndClick({ id: 'create-a-new-wallet', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     await typeOnTextInput({
@@ -217,16 +213,18 @@ describe('Navigate Settings & Privacy and its flows', () => {
   it('should be able to delete a wallet', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
     await findElementByTextAndClick(driver, 'Wallets & Keys');
-    const numOfWallets = await getNumberOfWallets(driver, 'wallet-group-');
-
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
+    const numOfWallets = await getNumberOfWallets(driver, 'wallet-item-');
+
     await findElementByTextAndClick(driver, 'new pk wallet');
     await findElementByTextAndClick(driver, 'Delete Wallet');
     await findElementByTestIdAndClick({ id: 'remove-button', driver });
 
+    // wait for modal to go away
+    await delayTime('long');
     const numOfWalletsAfterDeletion = await getNumberOfWallets(
       driver,
-      'wallet-group-',
+      'wallet-item-',
     );
 
     // expect the current # of wallets to be the previous number + 1

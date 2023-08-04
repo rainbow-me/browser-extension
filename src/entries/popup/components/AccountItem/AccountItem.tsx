@@ -20,6 +20,7 @@ import {
   Text,
 } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
+import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
 import { useWalletName } from '../../hooks/useWalletName';
 import { Asterisks } from '../Asterisks/Asterisks';
@@ -30,6 +31,35 @@ export enum LabelOption {
   address = 'address',
   balance = 'balance',
 }
+
+const TotalAssetsBalance = ({ account }: { account: Address }) => {
+  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { data: totalAssetsBalance, isLoading } = useUserAssets(
+    { address: account, currency, connectedToHardhat },
+    { select: selectUserAssetsBalance() },
+  );
+  const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
+    totalAssetsBalance || 0,
+    currency,
+  );
+
+  const { hideAssetBalances } = useHideAssetBalancesStore();
+  const { currentCurrency } = useCurrentCurrencyStore();
+
+  if (hideAssetBalances)
+    return (
+      <Inline alignVertical="center">
+        <Text color="labelTertiary" size="12pt" weight="medium">
+          {supportedCurrencies[currentCurrency]?.symbol}
+        </Text>
+        <Asterisks color="labelTertiary" size={10} />
+      </Inline>
+    );
+  if (isLoading) return <Skeleton height="12px" width="60px" />;
+
+  return <MenuItem.Label text={`${userAssetsBalanceDisplay}`} />;
+};
 
 export default function AccountItem({
   account,
@@ -49,37 +79,13 @@ export default function AccountItem({
 }) {
   const { displayName, showAddress } = useWalletName({ address: account });
 
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
-  const { data: totalAssetsBalance } = useUserAssets(
-    { address: account, currency, connectedToHardhat },
-    { select: selectUserAssetsBalance() },
-  );
-
-  const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
-    totalAssetsBalance || 0,
-    currency,
-  );
-
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const { hideAssetBalances } = useHideAssetBalancesStore();
-
   let labelComponent = null;
   if (labelType === LabelOption.address) {
     labelComponent = showAddress ? (
       <MenuItem.Label text={truncateAddress(account)} />
     ) : null;
   } else if (labelType === LabelOption.balance) {
-    labelComponent = hideAssetBalances ? (
-      <Inline alignVertical="center">
-        <Text color="labelTertiary" size="12pt" weight="medium">
-          {supportedCurrencies[currentCurrency]?.symbol}
-        </Text>
-        <Asterisks color="labelTertiary" size={10} />
-      </Inline>
-    ) : (
-      <MenuItem.Label text={`${userAssetsBalanceDisplay}`} />
-    );
+    labelComponent = <TotalAssetsBalance account={account} />;
   }
 
   return (
