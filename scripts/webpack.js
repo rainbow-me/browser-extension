@@ -101,13 +101,14 @@ const webpackConfigUI = {
   },
 };
 
-// BUILD THE APP
-// webpack(webpackConfig).run((err, stats) => {
-//   if (err) throw err;
-//   console.log(stats.toString());
-//   if(stats.hasErrors()) {
-//     process.exit(1);
-//   } else {
+// BUILD THE APP (BG + CONTENTSCRIPT + INPAGE)
+webpack(webpackConfig).run((err, stats) => {
+  if (err) throw err;
+  console.log(stats.toString());
+  if(stats.hasErrors()) {
+    process.exit(1);
+  } else {
+      // BUILD THE UI (POPUP)
       webpack(webpackConfigUI).run((err, stats) => {
         if (err) throw err;
         console.log(stats.toString());
@@ -117,5 +118,5 @@ const webpackConfigUI = {
           process.exit(0);
         }
     });
-//   }
-// });
+}
+});
