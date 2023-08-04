@@ -197,7 +197,6 @@ export async function findElementByIdAndClick({ id, driver }) {
 }
 export async function waitAndClick(element, driver) {
   try {
-    console.log(await element.getAttribute('data-testid'));
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await delayTime('short');
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
