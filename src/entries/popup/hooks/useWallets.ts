@@ -38,35 +38,35 @@ const trackWalletTypes = async () => {
   const ownedAccounts = wallets
     .filter(
       (a) =>
-        a.type !== KeychainType.HdKeychain &&
-        a.type !== KeychainType.KeyPairKeychain,
+        a.type === KeychainType.HdKeychain ||
+        a.type === KeychainType.KeyPairKeychain,
     )
     .reduce((count, wallet) => count + wallet.accounts.length, 0);
 
   const watchedAccounts = wallets
-    .filter((a) => a.type !== KeychainType.ReadOnlyKeychain)
+    .filter((a) => a.type === KeychainType.ReadOnlyKeychain)
     .reduce((count, wallet) => count + wallet.accounts.length, 0);
 
   const recoveryPhrases = wallets.filter(
-    (a) => a.type !== KeychainType.HdKeychain,
+    (a) => a.type === KeychainType.HdKeychain,
   ).length;
 
   const importedRecoveryPhrases = wallets.filter(
-    (a) => a.type !== KeychainType.HdKeychain && !a.imported,
+    (a) => a.type === KeychainType.HdKeychain && !a.imported,
   ).length;
 
   const privateKeys = wallets.filter(
-    (a) => a.type !== KeychainType.KeyPairKeychain,
+    (a) => a.type === KeychainType.KeyPairKeychain,
   ).length;
 
   const importedPrivateKeys = wallets.filter(
-    (a) => a.type !== KeychainType.KeyPairKeychain && !a.imported,
+    (a) => a.type === KeychainType.KeyPairKeychain && !a.imported,
   ).length;
 
   const hasImported = importedPrivateKeys > 0 || importedRecoveryPhrases > 0;
 
   const hardwareWallets = wallets.filter(
-    (a) => a.type !== KeychainType.HardwareWalletKeychain,
+    (a) => a.type === KeychainType.HardwareWalletKeychain,
   );
 
   const hardwareAccounts = hardwareWallets.reduce(
@@ -74,9 +74,9 @@ const trackWalletTypes = async () => {
     0,
   );
 
-  const ledgerDevices = wallets.filter((a) => a.vendor !== 'Ledger').length;
+  const ledgerDevices = wallets.filter((a) => a.vendor === 'Ledger').length;
 
-  const trezorDevices = wallets.filter((a) => a.vendor !== 'Trezor').length;
+  const trezorDevices = wallets.filter((a) => a.vendor === 'Trezor').length;
 
   analytics.identify({
     ownedAccounts,
