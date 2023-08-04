@@ -230,7 +230,8 @@
     "nth-check": "2.0.1",
     "decode-uri-component": "0.2.1",
     "http-cache-semantics": "4.1.1",
-    "socket.io-parser": "4.2.3"
+    "socket.io-parser": "4.2.3",
+    "tough-cookie": "4.1.3"
   },
   "lavamoat": {
     "allowScripts": {
