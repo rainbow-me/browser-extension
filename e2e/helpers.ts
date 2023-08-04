@@ -464,7 +464,6 @@ export async function awaitTextChange(
 export const untilDocumentLoaded = async function () {
   return new Condition('for document to load', async (driver) => {
     return await driver.wait(async () => {
-      await delayTime('medium');
       const documentReadyState = await driver.executeScript(
         'return document.readyState',
       );
