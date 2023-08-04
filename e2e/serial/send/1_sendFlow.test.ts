@@ -9,16 +9,20 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
   delayTime,
-  fillPrivateKey,
   findElementAndClick,
+  findElementById,
+  findElementByIdAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
+  findElementByTextAndClick,
   getExtensionIdByName,
   goToPopup,
-  goToWelcome,
+  importWalletFlow,
   initDriverWithOptions,
   querySelector,
+  shortenAddress,
+  transactionStatus,
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
@@ -43,40 +47,25 @@ beforeAll(async () => {
 afterAll(() => driver.quit());
 
 it('should be able import a wallet via pk', async () => {
-  //  Start from welcome screen
-  await goToWelcome(driver, rootURL);
-  await findElementByTestIdAndClick({
-    id: 'import-wallet-button',
+  await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
+});
+
+it('should be able import a second wallet via pk then switch back to wallet 1', async () => {
+  await importWalletFlow(
+    driver,
+    rootURL,
+    TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET,
+    true,
+  );
+  await findElementByIdAndClick({ id: 'header-account-name-shuffle', driver });
+  await findElementByTestIdAndClick({ id: 'wallet-account-1', driver });
+  const accountName = await findElementById({
+    id: 'header-account-name-shuffle',
     driver,
   });
-  await findElementByTestIdAndClick({
-    id: 'import-wallet-option',
-    driver,
-  });
-
-  await findElementByTestIdAndClick({
-    id: 'import-via-pkey-option',
-    driver,
-  });
-
-  await fillPrivateKey(driver, TEST_VARIABLES.SEED_WALLET.PK);
-
-  await findElementByTestIdAndClick({
-    id: 'import-wallets-button',
-    driver,
-  });
-
-  await delayTime('medium');
-
-  await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-  await typeOnTextInput({
-    id: 'confirm-password-input',
-    driver,
-    text: 'test1234',
-  });
-  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-  await delayTime('long');
-  await findElementByText(driver, 'Rainbow is ready to use');
+  expect(await accountName.getText()).toBe(
+    shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS),
+  );
 });
 
 it('should be able to go to setings', async () => {
@@ -241,4 +230,71 @@ it('should be able to interact with destination menu on review on send flow', as
 
 it('should be able to send transaction on review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
+  const sendTransaction = await transactionStatus();
+  expect(await sendTransaction).toBe('success');
+});
+
+it('should be able to rename a wallet from the wallet switcher', async () => {
+  await goToPopup(driver, rootURL);
+  await findElementByIdAndClick({
+    id: 'header-account-name-shuffle',
+    driver,
+  });
+  await findElementByTestIdAndClick({ id: 'more-info-2', driver });
+  await findElementByTextAndClick(driver, 'Rename wallet');
+  await typeOnTextInput({
+    id: 'wallet-name-input',
+    driver,
+    text: 'test name',
+  });
+  await findElementByTextAndClick(driver, 'Done');
+  const newWalletName = await findElementByText(driver, 'test name');
+  expect(newWalletName).toBeTruthy;
+});
+
+it('should be able to go to send flow and choose recipient based on suggestions', async () => {
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back',
+    driver,
+  });
+  await findElementAndClick({ id: 'header-link-send', driver });
+  await delayTime('medium');
+  await findElementByTestIdAndClick({
+    id: 'wallet-1',
+    driver,
+  });
+  await delayTime('medium');
+  const recipientAddress = await findElementByTestId({
+    id: 'recipient-address',
+    driver,
+  });
+  expect(await recipientAddress.getText()).toBe(
+    shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
+  );
+});
+
+it('should be able to select token on send flow', async () => {
+  await findElementByTestIdAndClick({
+    id: 'input-wrapper-dropdown-token-input',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-input-asset-eth_1',
+    driver,
+  });
+  const inputMask = await findElementByTestId({
+    id: 'send-input-mask',
+    driver,
+  });
+  await inputMask.sendKeys('0.01');
+});
+
+it('should be able to go to review on send flow', async () => {
+  await findElementByTestIdAndClick({ id: 'send-review-button', driver });
+});
+
+it('should be able to send transaction on review on send flow', async () => {
+  await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
+  const sendTransaction = await transactionStatus();
+  expect(await sendTransaction).toBe('success');
 });
