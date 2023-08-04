@@ -3,7 +3,7 @@ ANVIL_PORT=8545
 
 # Launch anvil in the bg
 yarn anvil:kill
-yarn anvil --chain-id 1337 > anvil-e2e.log 2>&1 &
+yarn anvil --chain-id 1337 | grep -v 'eth_' > anvil-e2e.log 2>&1 &
 echo "Launching Anvil..."
 
 # Give it some time to boot
