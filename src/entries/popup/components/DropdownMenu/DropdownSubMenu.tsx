@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 
 interface DropdownSubMenuProps {
@@ -14,8 +15,6 @@ interface DropdownSubMenuProps {
   openContent: boolean;
   subMenuElement: ReactNode;
   subMenuContent: ReactNode;
-  top?: number;
-  marginLeft?: number;
   position?: number;
   toggleSubMenu?: (open: boolean) => void;
   setMenuOpen?: (open: boolean) => void;
@@ -46,8 +45,6 @@ export const DropdownSubMenu = ({
   openContent,
   subMenuElement,
   subMenuContent,
-  top,
-  marginLeft,
   position,
   toggleSubMenu,
   setMenuOpen,
@@ -68,19 +65,17 @@ export const DropdownSubMenu = ({
   );
 
   return (
-    <DropdownMenu open={open}>
-      {subMenuElement}
+    <DropdownMenu key="o" open={open}>
+      <DropdownMenuTrigger asChild>
+        <Box position="relative">{subMenuElement}</Box>
+      </DropdownMenuTrigger>
       <DropdownMenuContent
         animate={false}
         key="sub-menu-element"
-        top={top}
-        marginLeft={marginLeft}
         border={false}
-        boxShadow=""
-        position="absolute"
-        onInteractOutside={(e) => {
-          e.preventDefault();
-        }}
+        onInteractOutside={(e) => e.preventDefault()}
+        sideOffset={-40}
+        alignOffset={-12}
       >
         {subMenuElement}
       </DropdownMenuContent>
@@ -89,9 +84,8 @@ export const DropdownSubMenu = ({
           <DropdownMenuContent
             animate
             key="sub-menu-content"
-            top={top}
-            marginLeft={marginLeft}
-            position="absolute"
+            sideOffset={-40}
+            alignOffset={-12}
             onInteractOutside={onInteractOutsideContent}
           >
             <Stack space="4px">

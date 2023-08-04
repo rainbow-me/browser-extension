@@ -78,6 +78,7 @@ interface DropdownMenuContentProps {
   marginTop?: Space | number;
   accentColor?: string;
   sideOffset?: number;
+  alignOffset?: number;
   onPointerDownOutside?: () => void;
   scale?: number;
   top?: number;
@@ -114,6 +115,7 @@ export const DropdownMenuContentBody = React.forwardRef<
     top,
     position,
     sideOffset,
+    alignOffset,
     onInteractOutside,
     animate = false,
   } = props;
@@ -137,6 +139,7 @@ export const DropdownMenuContentBody = React.forwardRef<
           justifyContent="center"
           display="flex"
           sideOffset={sideOffset}
+          alignOffset={alignOffset}
           hideWhenDetached
         >
           <Box
