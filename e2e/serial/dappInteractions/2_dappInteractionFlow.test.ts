@@ -256,7 +256,7 @@ describe('App interactions flow', () => {
     });
 
     await findElementByTextAndClick(driver, 'bx-e2e-dapp.vercel.app');
-    await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
+    await findElementByTestIdAndClick({ id: 'switch-network-item-7', driver });
 
     await driver.get('https://bx-e2e-dapp.vercel.app/');
     const dappHandler = await getWindowHandle({ driver });
