@@ -1,7 +1,6 @@
 import React, {
   ReactNode,
   useCallback,
-  useEffect,
   useLayoutEffect,
   useState,
 } from 'react';
@@ -56,7 +55,6 @@ export const AppConnectionMenu = ({
   headerHostId,
   connectedAppsId,
 }: AppConnectionMenuProps) => {
-  const [subMenuOpenDelayed, setSubMenuOpenDelayed] = useState(false);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -117,15 +115,6 @@ export const AppConnectionMenu = ({
     setMenuOpen(false);
   }, [disconnectAppSession]);
 
-  useEffect(() => {
-    setTimeout(
-      () => {
-        setSubMenuOpenDelayed(subMenuOpen);
-      },
-      subMenuOpen ? 0 : 250,
-    );
-  }, [subMenuOpen]);
-
   useLayoutEffect(() => {
     if (isCommandKVisible && menuOpen) {
       setMenuOpen(false);
@@ -184,10 +173,8 @@ export const AppConnectionMenu = ({
           <Stack space="4px">
             {url ? (
               <DropdownSubMenu
-                menuOpen={subMenuOpenDelayed}
                 subMenuOpen={subMenuOpen}
                 setSubMenuOpen={setSubMenuOpen}
-                setMenuOpen={setMenuOpen}
                 position={1}
                 subMenuContent={
                   <Stack space="4px">

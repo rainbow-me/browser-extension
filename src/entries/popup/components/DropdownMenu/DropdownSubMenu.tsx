@@ -85,24 +85,21 @@ export const DropdownMenuContentWithSubMenu = ({
 };
 
 interface DropdownSubMenuProps {
-  menuOpen: boolean;
   subMenuOpen: boolean;
   subMenuElement: ReactNode;
   subMenuContent: ReactNode;
   position?: number;
   setSubMenuOpen?: (open: boolean) => void;
-  setMenuOpen?: (open: boolean) => void;
 }
 
 export const DropdownSubMenu = ({
-  menuOpen,
   subMenuOpen,
   subMenuElement,
   subMenuContent,
   position,
   setSubMenuOpen,
-  setMenuOpen,
 }: DropdownSubMenuProps) => {
+  const [menuOpen, setMenuOpen] = useState(false);
   const onInteractOutsideContent = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (e: any) => {
@@ -117,6 +114,15 @@ export const DropdownSubMenu = ({
     },
     [position, setMenuOpen, setSubMenuOpen],
   );
+
+  useEffect(() => {
+    setTimeout(
+      () => {
+        setMenuOpen(subMenuOpen);
+      },
+      subMenuOpen ? 0 : 250,
+    );
+  }, [subMenuOpen]);
 
   useEffect(() => {
     triggerSubMenuListener({ open: subMenuOpen });
