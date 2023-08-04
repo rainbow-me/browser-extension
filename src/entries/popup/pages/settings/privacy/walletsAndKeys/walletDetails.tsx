@@ -271,7 +271,7 @@ export function WalletDetails() {
             </Menu>
           )}
           <Menu>
-            {wallet?.accounts?.map((account: Address, index) => {
+            {wallet?.accounts?.map((account: Address, numOfWallets) => {
               return (
                 <WalletRow
                   key={account}
@@ -282,7 +282,7 @@ export function WalletDetails() {
                   setRemoveAccount={setRemoveAccount}
                   unhideWallet={unhideWallet}
                   type={wallet?.type}
-                  index={index + 1}
+                  numOfWallets={numOfWallets + 1}
                 />
               );
             })}
@@ -326,7 +326,7 @@ const WalletRow = ({
   setRemoveAccount,
   unhideWallet,
   type,
-  index,
+  numOfWallets,
 }: {
   account: Address;
   hiddenWallets: Record<Address, boolean>;
@@ -335,7 +335,7 @@ const WalletRow = ({
   setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   unhideWallet: ({ address }: { address: Address }) => void;
   type: KeychainType;
-  index: number;
+  numOfWallets: number;
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -353,7 +353,7 @@ const WalletRow = ({
   } as unknown as typeof InfoButtonOptions;
 
   return (
-    <Box testId={`wallet-item-${index}`}>
+    <Box testId={`wallet-item-${numOfWallets}`}>
       <AccountItem
         testId={`wallet-${account}`}
         onClick={() => setMenuOpen(true)}
