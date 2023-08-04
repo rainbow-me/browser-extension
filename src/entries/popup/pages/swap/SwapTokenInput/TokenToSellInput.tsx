@@ -4,6 +4,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
+import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { TokenToSellDropdown } from './TokenDropdown/TokenToSellDropdown';
@@ -63,6 +64,7 @@ export const TokenToSellInput = ({
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(asset: ParsedSearchAsset) => void>();
   const dropdownRef = useRef<{ openDropdown: () => void }>(null);
+  const { trackShortcut } = useKeyboardAnalytics();
 
   const setOnSelectAsset = useCallback(
     (cb: (asset: ParsedSearchAsset) => void) => {
@@ -87,6 +89,10 @@ export const TokenToSellInput = ({
     handler: (e: KeyboardEvent) => {
       if (e.altKey) {
         if (e.key === shortcuts.swap.FOCUS_ASSET_TO_SELL.key) {
+          trackShortcut({
+            key: shortcuts.swap.FOCUS_ASSET_TO_SELL.display,
+            type: 'swap.focusAssetToSell',
+          });
           dropdownRef?.current?.openDropdown();
         }
       }

@@ -48,6 +48,7 @@ import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
 import { useAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
@@ -188,6 +189,7 @@ export function WalletSwitcher() {
   const { visibleWallets: accounts, allWallets, fetchWallets } = useWallets();
   const { avatar } = useAvatar({ address: currentAddress });
   const { featureFlags } = useFeatureFlagsStore();
+  const { trackShortcut } = useKeyboardAnalytics();
 
   const isLastWallet = allWallets?.length === 1;
 
@@ -366,6 +368,10 @@ export function WalletSwitcher() {
         e.key === shortcuts.wallet_switcher.SEARCH.key &&
         document.activeElement !== searchInputRef.current
       ) {
+        trackShortcut({
+          key: shortcuts.wallet_switcher.SEARCH.display,
+          type: 'walletSwitcher.search',
+        });
         setTimeout(() => searchInputRef.current?.focus(), 0);
       }
     },
