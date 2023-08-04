@@ -164,11 +164,7 @@ export const AppConnectionMenu = ({
       <DropdownMenuTrigger asChild>
         <Box testId={menuTriggerId}>{children}</Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContentWithSubMenu
-        subMenuOpen={subMenuOpen}
-        sideOffset={sideOffset}
-        align={align}
-      >
+      <DropdownMenuContentWithSubMenu sideOffset={sideOffset} align={align}>
         {url ? (
           <AppConnectionMenuHeader
             opacity={subMenuOpen ? 0.5 : 1}

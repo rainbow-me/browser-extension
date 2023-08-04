@@ -1,5 +1,13 @@
+import EventEmitter from 'events';
+
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { ReactNode, useCallback } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Box, Stack } from '~/design-system';
 
@@ -29,24 +37,49 @@ const isClickingMenuHeader = ({
   y < NETWORK_MENU_HEADER_Y ||
   y > NETWORK_MENU_HEADER_Y + position * NETWORK_MENU_HEADER_HEIGHT;
 
+const eventEmitter = new EventEmitter();
+
+const subMenuListener = (callback: ({ open }: { open: boolean }) => void) => {
+  eventEmitter.addListener('sub_menu_listener', callback);
+  return () => {
+    eventEmitter.removeListener('sub_menu_listener', callback);
+  };
+};
+
+const triggerSubMenuListener = ({ open }: { open: boolean }) => {
+  eventEmitter.emit('sub_menu_listener', { open });
+};
+
 export const DropdownMenuContentWithSubMenu = ({
   align,
   children,
-  subMenuOpen,
   sideOffset,
 }: {
   children: ReactNode;
-  subMenuOpen: boolean;
   align?: 'start' | 'center' | 'end';
   sideOffset?: number;
 }) => {
+  const [subMenuOpen, setSubMenuOpen] = useState(false);
+  const parentRef = useRef<HTMLDivElement | null>(null);
+
+  const clearSubMenuListener = subMenuListener(({ open }) =>
+    setSubMenuOpen(open),
+  );
+  useEffect(() => {
+    return () => {
+      clearSubMenuListener();
+    };
+  }, [clearSubMenuListener]);
+
   return (
     <DropdownMenuContent
       scale={subMenuOpen ? 0.94 : 1}
       sideOffset={sideOffset}
       align={align}
     >
-      {children}
+      <Box ref={parentRef} id="desired-tree">
+        {children}
+      </Box>
     </DropdownMenuContent>
   );
 };
@@ -85,10 +118,16 @@ export const DropdownSubMenu = ({
     [position, setMenuOpen, setSubMenuOpen],
   );
 
+  useEffect(() => {
+    triggerSubMenuListener({ open: subMenuOpen });
+  }, [subMenuOpen]);
+
   return (
     <DropdownMenu open={menuOpen}>
       <DropdownMenuTrigger asChild>
-        <Box position="relative">{subMenuElement}</Box>
+        <Box id="sub-menu" position="relative">
+          {subMenuElement}
+        </Box>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         animate={false}
