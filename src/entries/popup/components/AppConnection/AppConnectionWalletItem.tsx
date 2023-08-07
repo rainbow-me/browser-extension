@@ -180,11 +180,15 @@ export default function AppConnectionWalletItem({
               </Rows>
             </Box>
           </Column>
-          <Column width="content">
-            <Bleed horizontal="8px">
-              <AppConnectionWalletItemDropdownMenu appMetadata={appMetadata} />
-            </Bleed>
-          </Column>
+          {connected ? (
+            <Column width="content">
+              <Bleed horizontal="8px">
+                <AppConnectionWalletItemDropdownMenu
+                  appMetadata={appMetadata}
+                />
+              </Bleed>
+            </Column>
+          ) : null}
         </Columns>
       </Lens>
     </Box>
