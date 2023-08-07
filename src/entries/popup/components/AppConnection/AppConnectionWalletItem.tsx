@@ -134,18 +134,18 @@ export default function AppConnectionWalletItem({
       >
         <Columns space="8px" alignVertical="center" alignHorizontal="justify">
           <Column width="content">
-            <WalletAvatar
-              mask={showChainBadge ? appConnectionWalletItemImageMask : null}
-              address={account}
-              size={36}
-              emojiSize="20pt"
-              background="transparent"
-            />
-            {showChainBadge ? (
+            <Box>
+              <WalletAvatar
+                mask={showChainBadge ? appConnectionWalletItemImageMask : null}
+                address={account}
+                size={36}
+                emojiSize="20pt"
+                background="transparent"
+              />
               <Box
                 style={{
                   marginLeft: '-7px',
-                  marginTop: '-10.5px',
+                  marginTop: '-14px',
                 }}
               >
                 <Box
@@ -160,13 +160,15 @@ export default function AppConnectionWalletItem({
                     alignVertical="center"
                     height="full"
                   >
-                    <Bleed top="7px">
+                    {/* <Bleed top="7px"> */}
+                    {showChainBadge ? (
                       <ChainBadge chainId={chainId} size="14" />
-                    </Bleed>
+                    ) : null}
+                    {/* </Bleed> */}
                   </Inline>
                 </Box>
               </Box>
-            ) : null}
+            </Box>
           </Column>
           <Column>
             <Box>
