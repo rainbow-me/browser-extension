@@ -21,15 +21,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-- Added the ability to enabled the toggle to filter small balances #818
-- Added better logging for msg signing errors #821
+- Added the ability to enable the toggle to filter small balances #818
+- Added better logging for message signing errors #821
 - Added a new unsupported browser bottom sheet #828
 - Added a new activity History Page Loader #830
 - Added keyboard shortcut and navigation tracking #837
 
 ### Changed
 
-- Moved to addys consolidated transactions endpoint and added pagination to activity history #816 / #827
+- Moved to consolidated transactions endpoint and added pagination to activity history #816 / #827
 - The header collapses now on scroll when list is small #831
 - Updated loading skeletons #833
 - Made test scripts for serial and unit tests more robust #838
