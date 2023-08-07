@@ -23,7 +23,10 @@ import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
 import { Navbar } from '../Navbar/Navbar';
 
-import AppConnectionWalletItem from './AppConnectionWalletItem';
+import {
+  AppConnectionWalletItem,
+  AppConnectionWalletItemConnectedWrapper,
+} from './AppConnectionWalletItem';
 
 export const AppConnectionWalletSwitcher = () => {
   const [show, setshow] = useState(false);
@@ -117,15 +120,20 @@ export const AppConnectionWalletSwitcher = () => {
                 <Box>
                   <AccentColorProviderWrapper color="red">
                     {connectedAccounts.map((account) => (
-                      <AppConnectionWalletItem
+                      <AppConnectionWalletItemConnectedWrapper
                         key={account.address}
-                        onClick={() => null}
-                        account={account.address}
-                        chainId={appSession.chainId}
-                        active={true}
-                        connected={true}
                         appMetadata={appMetadata}
-                      />
+                      >
+                        <AppConnectionWalletItem
+                          key={account.address}
+                          onClick={() => null}
+                          account={account.address}
+                          chainId={appSession.chainId}
+                          active={true}
+                          connected={true}
+                          appMetadata={appMetadata}
+                        />
+                      </AppConnectionWalletItemConnectedWrapper>
                     ))}
                   </AccentColorProviderWrapper>
                 </Box>

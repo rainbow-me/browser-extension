@@ -79,10 +79,10 @@ interface DropdownMenuContentProps {
   accentColor?: string;
   sideOffset?: number;
   alignOffset?: number;
-  onPointerDownOutside?: () => void;
   scale?: number;
   top?: number;
   position?: BoxStyles['position'];
+  onPointerDownOutside?: () => void;
   onInteractOutside?: DismissableLayerProps['onInteractOutside'];
 }
 
@@ -117,6 +117,7 @@ export const DropdownMenuContentBody = React.forwardRef<
     sideOffset,
     alignOffset,
     onInteractOutside,
+    onPointerDownOutside,
     animate = false,
   } = props;
   const { currentTheme } = useCurrentThemeStore();
@@ -130,7 +131,7 @@ export const DropdownMenuContentBody = React.forwardRef<
         <Box
           as={DropdownMenuPrimitive.Content}
           ref={ref}
-          onPointerDownOutside={props?.onPointerDownOutside}
+          onPointerDownOutside={onPointerDownOutside}
           tabIndex={-1}
           onInteractOutside={onInteractOutside}
           align={align}

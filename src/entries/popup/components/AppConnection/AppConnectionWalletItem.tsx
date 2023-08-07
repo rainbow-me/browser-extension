@@ -1,5 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useMemo, useState } from 'react';
+import React, {
+  ReactElement,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Address } from 'wagmi';
 
 import appConnectionWalletItemImageMask from 'static/assets/appConnectionWalletItemImageMask.svg';
@@ -17,189 +23,356 @@ import {
   Inline,
   Row,
   Rows,
+  Stack,
   Symbol,
   Text,
   TextOverflow,
 } from '~/design-system';
+import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { AppMetadata } from '../../hooks/useAppMetadata';
+import { useAppSession } from '../../hooks/useAppSession';
 import { useWalletName } from '../../hooks/useWalletName';
+import { AppInteractionItem } from '../AppConnectionMenu/AppInteractionItem';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuRadioGroup,
+  ContextMenuTrigger,
+} from '../ContextMenu/ContextMenu';
+import { ContextMenuContentWithSubMenu } from '../ContextMenu/ContextSubMenu';
+import { DropdownSubMenu } from '../DropdownMenu/DropdownSubMenu';
+import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 import { appConnectionWalletItem } from './AppConnectionWalletItem.css';
 import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItemDropdownMenu';
 
-export default function AppConnectionWalletItem({
-  account,
-  onClick,
-  chainId,
-  active,
-  connected,
-  appMetadata,
-}: {
+interface WalletItemConnectedWrapperProps {
+  children: ReactElement;
+  appMetadata: AppMetadata;
+  onClose?: () => null;
+  onOpen?: () => null;
+}
+
+export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
+  (props: WalletItemConnectedWrapperProps) => {
+    const { children, appMetadata, onClose, onOpen } = props;
+    const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
+    const [subMenuOpen, setSubMenuOpen] = useState(false);
+    const [, setMenuOpen] = useState(false);
+
+    const { updateAppSessionChainId, disconnectAppSession, appSession } =
+      useAppSession({ host: appMetadata.appHost });
+
+    const changeChainId = useCallback(
+      (chainId: string) => {
+        updateAppSessionChainId(Number(chainId));
+      },
+      [updateAppSessionChainId],
+    );
+
+    const disconnect = useCallback(() => {
+      disconnectAppSession();
+      setSubMenuOpen(false);
+      setMenuOpen(false);
+    }, [disconnectAppSession]);
+
+    const onValueChange = useCallback(
+      (value: 'disconnect' | 'switch-networks' | 'open-dapp') => {
+        switch (value) {
+          case 'disconnect':
+            disconnect();
+            break;
+          case 'switch-networks':
+            setSubMenuOpen(!subMenuOpen);
+            break;
+          case 'open-dapp':
+            break;
+        }
+      },
+      [disconnect, subMenuOpen],
+    );
+
+    return (
+      <ContextMenu
+        onOpenChange={(openState) => {
+          console.log('openchange', openState);
+          openState ? onOpen?.() : onClose?.();
+        }}
+      >
+        <ContextMenuTrigger asChild>
+          <Box>{children}</Box>
+        </ContextMenuTrigger>
+
+        <ContextMenuContentWithSubMenu reff={dropdownMenuRef}>
+          <ContextMenuRadioGroup
+            onValueChange={(value) =>
+              onValueChange(
+                value as 'disconnect' | 'switch-networks' | 'open-dapp',
+              )
+            }
+          >
+            <Box key="switch-networks">
+              <DropdownSubMenu
+                parentRef={dropdownMenuRef}
+                setMenuOpen={setMenuOpen}
+                subMenuOpen={subMenuOpen}
+                setSubMenuOpen={setSubMenuOpen}
+                subMenuContent={
+                  <Stack space="4px">
+                    <ContextMenuRadioGroup
+                      value={`${appSession?.chainId}`}
+                      onValueChange={changeChainId}
+                    >
+                      <AccentColorProviderWrapper
+                        color={appMetadata.appColor || undefined}
+                      >
+                        <SwitchNetworkMenuSelector
+                          type="context"
+                          highlightAccentColor
+                          selectedValue={`${appSession?.chainId}`}
+                          onNetworkSelect={(e) => {
+                            e?.preventDefault();
+                            setSubMenuOpen(false);
+                            setMenuOpen(false);
+                          }}
+                          onShortcutPress={changeChainId}
+                          showDisconnect={!!appSession}
+                          disconnect={disconnect}
+                        />
+                      </AccentColorProviderWrapper>
+                    </ContextMenuRadioGroup>
+                  </Stack>
+                }
+                subMenuElement={
+                  <AppInteractionItem
+                    type="context"
+                    appSession={appSession}
+                    chevronDirection={subMenuOpen ? 'down' : 'right'}
+                    showChevron
+                  />
+                }
+              />
+            </Box>
+            <Box key="disconnect">
+              <ContextMenuItem
+                // color="label"
+                onSelect={() => null}
+              >
+                <Inline>
+                  <Box height="fit" style={{ width: '18px', height: '18px' }}>
+                    <Inline
+                      height="full"
+                      alignHorizontal="center"
+                      alignVertical="center"
+                    >
+                      <Symbol
+                        size={12}
+                        symbol="xmark"
+                        weight="semibold"
+                        color="label"
+                      />
+                    </Inline>
+                  </Box>
+                  <Text size="14pt" weight="semibold" color="label">
+                    {'Disconnect'}
+                  </Text>
+                </Inline>
+              </ContextMenuItem>
+            </Box>
+          </ContextMenuRadioGroup>
+        </ContextMenuContentWithSubMenu>
+      </ContextMenu>
+    );
+  },
+);
+
+AppConnectionWalletItemConnectedWrapper.displayName =
+  'AppConnectionWalletItemConnectedWrapper';
+
+interface WalletItemProps {
   account: Address;
   onClick?: () => void;
   chainId: ChainId;
   active?: boolean;
   connected: boolean;
   appMetadata: AppMetadata;
-}) {
-  const [hovering, setHovering] = useState(false);
-  const { displayName } = useWalletName({ address: account });
-  const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
+}
 
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
-  const { data: totalAssetsBalance } = useUserAssets(
-    { address: account, currency, connectedToHardhat },
-    { select: selectUserAssetsBalance() },
-  );
+export const AppConnectionWalletItem = React.forwardRef(
+  (props: WalletItemProps) => {
+    const { account, onClick, chainId, active, connected, appMetadata } = props;
+    const [hovering, setHovering] = useState(false);
+    const { displayName } = useWalletName({ address: account });
+    const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
 
-  const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
-    totalAssetsBalance || 0,
-    currency,
-  );
+    const { currentCurrency: currency } = useCurrentCurrencyStore();
+    const { connectedToHardhat } = useConnectedToHardhatStore();
+    const { data: totalAssetsBalance } = useUserAssets(
+      { address: account, currency, connectedToHardhat },
+      { select: selectUserAssetsBalance() },
+    );
 
-  const subLabel = useMemo(
-    () => (
-      <AnimatePresence initial={false} mode="popLayout">
-        {!hovering && (
-          <Box
-            as={motion.div}
-            key={`${account}-${connected ? '' : 'not-'}-connected`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {connected ? (
-              <Inline space="4px" alignVertical="center">
-                <Symbol
-                  symbol={active ? 'circle.fill' : 'circle'}
-                  size={8}
-                  weight="medium"
-                  color={active ? 'green' : 'labelTertiary'}
-                />
-                <Text size="12pt" weight="semibold" align="left" color="label">
-                  {ChainNameDisplay[chainId]}
-                </Text>
-              </Inline>
-            ) : (
-              <Inline space="4px" alignVertical="center">
-                <TextOverflow color="labelQuaternary" size="12pt" weight="bold">
-                  {userAssetsBalanceDisplay}
-                </TextOverflow>
-              </Inline>
-            )}
-          </Box>
-        )}
-        {hovering && (
-          <Box
-            as={motion.div}
-            key={`${account}-${connected ? '' : 'not-'}connected-hovering`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <Text
-              size="12pt"
-              weight="semibold"
-              align="left"
-              color={connected ? 'red' : 'green'}
+    const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
+      totalAssetsBalance || 0,
+      currency,
+    );
+
+    const subLabel = useMemo(
+      () => (
+        <AnimatePresence initial={false} mode="popLayout">
+          {!hovering && (
+            <Box
+              as={motion.div}
+              key={`${account}-${connected ? '' : 'not-'}-connected`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
             >
-              {connected ? 'Switch connection' : 'Connect'}
-            </Text>
-          </Box>
-        )}
-      </AnimatePresence>
-    ),
-    [account, active, chainId, connected, hovering, userAssetsBalanceDisplay],
-  );
-
-  return (
-    <Box
-      as={motion.div}
-      className={appConnectionWalletItem}
-      onHoverStart={() => setHovering(true)}
-      onHoverEnd={() => setHovering(false)}
-    >
-      <Lens
-        handleOpenMenu={onClick}
-        key={account}
-        onClick={onClick}
-        paddingHorizontal="12px"
-        paddingVertical="8px"
-        borderRadius="12px"
-      >
-        <Columns space="8px" alignVertical="center" alignHorizontal="justify">
-          <Column width="content">
-            <Box>
-              <WalletAvatar
-                mask={showChainBadge ? appConnectionWalletItemImageMask : null}
-                address={account}
-                size={36}
-                emojiSize="20pt"
-                background="transparent"
-              />
-              <Box
-                style={{
-                  marginLeft: '-7px',
-                  marginTop: '-14px',
-                }}
+              {connected ? (
+                <Inline space="4px" alignVertical="center">
+                  <Symbol
+                    symbol={active ? 'circle.fill' : 'circle'}
+                    size={8}
+                    weight="medium"
+                    color={active ? 'green' : 'labelTertiary'}
+                  />
+                  <Text
+                    size="12pt"
+                    weight="semibold"
+                    align="left"
+                    color="label"
+                  >
+                    {ChainNameDisplay[chainId]}
+                  </Text>
+                </Inline>
+              ) : (
+                <Inline space="4px" alignVertical="center">
+                  <TextOverflow
+                    color="labelQuaternary"
+                    size="12pt"
+                    weight="bold"
+                  >
+                    {userAssetsBalanceDisplay}
+                  </TextOverflow>
+                </Inline>
+              )}
+            </Box>
+          )}
+          {hovering && (
+            <Box
+              as={motion.div}
+              key={`${account}-${connected ? '' : 'not-'}connected-hovering`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <Text
+                size="12pt"
+                weight="semibold"
+                align="left"
+                color={connected ? 'red' : 'green'}
               >
+                {connected ? 'Switch connection' : 'Connect'}
+              </Text>
+            </Box>
+          )}
+        </AnimatePresence>
+      ),
+      [account, active, chainId, connected, hovering, userAssetsBalanceDisplay],
+    );
+
+    return (
+      <Box
+        as={motion.div}
+        className={appConnectionWalletItem}
+        onHoverStart={() => setHovering(true)}
+        onHoverEnd={() => setHovering(false)}
+      >
+        <Lens
+          handleOpenMenu={onClick}
+          key={account}
+          onClick={onClick}
+          paddingHorizontal="12px"
+          paddingVertical="8px"
+          borderRadius="12px"
+        >
+          <Columns space="8px" alignVertical="center" alignHorizontal="justify">
+            <Column width="content">
+              <Box>
+                <WalletAvatar
+                  mask={
+                    showChainBadge ? appConnectionWalletItemImageMask : null
+                  }
+                  address={account}
+                  size={36}
+                  emojiSize="20pt"
+                  background="transparent"
+                />
                 <Box
                   style={{
-                    height: 14,
-                    width: 14,
-                    borderRadius: 7,
+                    marginLeft: '-7px',
+                    marginTop: '-14px',
                   }}
                 >
-                  <Inline
-                    alignHorizontal="center"
-                    alignVertical="center"
-                    height="full"
+                  <Box
+                    style={{
+                      height: 14,
+                      width: 14,
+                      borderRadius: 7,
+                    }}
                   >
-                    <AnimatePresence>
-                      {showChainBadge ? (
-                        <Box
-                          as={motion.div}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                        >
-                          <ChainBadge chainId={chainId} size="14" />
-                        </Box>
-                      ) : null}
-                    </AnimatePresence>
-                  </Inline>
+                    <Inline
+                      alignHorizontal="center"
+                      alignVertical="center"
+                      height="full"
+                    >
+                      <AnimatePresence>
+                        {showChainBadge ? (
+                          <Box
+                            as={motion.div}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                          >
+                            <ChainBadge chainId={chainId} size="14" />
+                          </Box>
+                        ) : null}
+                      </AnimatePresence>
+                    </Inline>
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-          </Column>
-          <Column>
-            <Box>
-              <Rows space="8px" alignVertical="center">
-                <Row height="content">
-                  <TextOverflow color="label" size="14pt" weight="semibold">
-                    {displayName}
-                  </TextOverflow>
-                </Row>
-                <Row>{subLabel}</Row>
-              </Rows>
-            </Box>
-          </Column>
-          {connected ? (
-            <Column width="content">
-              <Bleed horizontal="8px">
-                <AppConnectionWalletItemDropdownMenu
-                  appMetadata={appMetadata}
-                />
-              </Bleed>
             </Column>
-          ) : null}
-        </Columns>
-      </Lens>
-    </Box>
-  );
-}
+            <Column>
+              <Box>
+                <Rows space="8px" alignVertical="center">
+                  <Row height="content">
+                    <TextOverflow color="label" size="14pt" weight="semibold">
+                      {displayName}
+                    </TextOverflow>
+                  </Row>
+                  <Row>{subLabel}</Row>
+                </Rows>
+              </Box>
+            </Column>
+            {connected ? (
+              <Column width="content">
+                <Bleed horizontal="8px">
+                  <AppConnectionWalletItemDropdownMenu
+                    appMetadata={appMetadata}
+                  />
+                </Bleed>
+              </Column>
+            ) : null}
+          </Columns>
+        </Lens>
+      </Box>
+    );
+  },
+);
+
+AppConnectionWalletItem.displayName = 'AppConnectionWalletItem';

@@ -13,11 +13,11 @@ import React, {
 import { Box, Stack } from '~/design-system';
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../DropdownMenu/DropdownMenu';
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '../ContextMenu/ContextMenu';
 
 // in order to get the header width we need to scale down the
 // context menu by 0.94, and also consider the additional horizontal
@@ -57,14 +57,12 @@ const triggerSubMenuListener = ({ open }: { open: boolean }) => {
   eventEmitter.emit('sub_menu_listener', { open });
 };
 
-export const DropdownMenuContentWithSubMenu = ({
-  align,
+export const ContextMenuContentWithSubMenu = ({
   children,
   sideOffset,
   reff,
 }: {
   children: ReactElement;
-  align?: 'start' | 'center' | 'end';
   sideOffset?: number;
   reff: React.MutableRefObject<HTMLDivElement | null>;
 }) => {
@@ -81,13 +79,13 @@ export const DropdownMenuContentWithSubMenu = ({
 
   return (
     <Box ref={reff}>
-      <DropdownMenuContent
+      <ContextMenuContent
         scale={subMenuOpen ? 0.94 : 1}
         sideOffset={sideOffset}
-        align={align}
+        // align={align}
       >
         {children}
-      </DropdownMenuContent>
+      </ContextMenuContent>
     </Box>
   );
 };
@@ -101,7 +99,7 @@ interface DropdownSubMenuProps {
   setSubMenuOpen?: (open: boolean) => void;
 }
 
-export const DropdownSubMenu = ({
+export const ContextSubMenu = ({
   subMenuOpen,
   subMenuElement,
   subMenuContent,
@@ -109,7 +107,7 @@ export const DropdownSubMenu = ({
   setMenuOpen,
   setSubMenuOpen,
 }: DropdownSubMenuProps) => {
-  const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
+  const [, setDropdownMenuOpen] = useState(false);
   const [subMenuRect, setSubMenuRect] = useState<DOMRect | null>(null);
   const [parentRect, setParentRect] = useState<DOMRect | null>(null);
 
@@ -161,11 +159,11 @@ export const DropdownSubMenu = ({
   }, [parentRef]);
 
   return (
-    <DropdownMenu open={dropdownMenuOpen}>
-      <DropdownMenuTrigger asChild>
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
         <Box ref={subMenuElementRef}>{subMenuElement}</Box>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
+      </ContextMenuTrigger>
+      <ContextMenuContent
         animate={false}
         key="sub-menu-element"
         border={false}
@@ -174,10 +172,10 @@ export const DropdownSubMenu = ({
         alignOffset={-12}
       >
         {subMenuElement}
-      </DropdownMenuContent>
+      </ContextMenuContent>
       <AnimatePresence>
         {subMenuOpen && (
-          <DropdownMenuContent
+          <ContextMenuContent
             animate
             border={false}
             key="sub-menu-content"
@@ -187,7 +185,7 @@ export const DropdownSubMenu = ({
           >
             <Stack space="4px">
               {subMenuElement}
-              <DropdownMenuSeparator />
+              <ContextMenuSeparator />
               <Box
                 as={motion.div}
                 initial={{ opacity: 0 }}
@@ -198,9 +196,9 @@ export const DropdownSubMenu = ({
                 {subMenuContent}
               </Box>
             </Stack>
-          </DropdownMenuContent>
+          </ContextMenuContent>
         )}
       </AnimatePresence>
-    </DropdownMenu>
+    </ContextMenu>
   );
 };
