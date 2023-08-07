@@ -29,9 +29,9 @@ export const AppConnectionWalletSwitcher = () => {
   const [show, setshow] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
-  const { appHost, appLogo, appName } = useAppMetadata({ url });
+  const appMetadata = useAppMetadata({ url });
 
-  const { appSession } = useAppSession({ host: appHost });
+  const { appSession } = useAppSession({ host: appMetadata.appHost });
 
   const { sortedAccounts } = useAccounts(({ sortedAccounts }) => ({
     sortedAccounts,
@@ -91,7 +91,11 @@ export const AppConnectionWalletSwitcher = () => {
                   alignVertical="center"
                   height="full"
                 >
-                  <ExternalImage src={appLogo} width="14" height="14" />
+                  <ExternalImage
+                    src={appMetadata.appLogo}
+                    width="14"
+                    height="14"
+                  />
                 </Inline>
               </Box>
               <Text size="14pt" weight="heavy" align="center">
@@ -120,8 +124,7 @@ export const AppConnectionWalletSwitcher = () => {
                         chainId={appSession.chainId}
                         active={true}
                         connected={true}
-                        appLogo={appLogo}
-                        appName={appName || appHost}
+                        appMetadata={appMetadata}
                       />
                     ))}
                   </AccentColorProviderWrapper>
@@ -147,8 +150,7 @@ export const AppConnectionWalletSwitcher = () => {
                         account={account.address}
                         chainId={ChainId.mainnet}
                         connected={false}
-                        appLogo={appLogo}
-                        appName={appName || appHost}
+                        appMetadata={appMetadata}
                       />
                     ))}
                   </AccentColorProviderWrapper>

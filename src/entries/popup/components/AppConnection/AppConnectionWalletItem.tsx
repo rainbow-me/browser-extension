@@ -23,6 +23,7 @@ import {
 } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 
+import { AppMetadata } from '../../hooks/useAppMetadata';
 import { useWalletName } from '../../hooks/useWalletName';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
@@ -36,16 +37,14 @@ export default function AppConnectionWalletItem({
   chainId,
   active,
   connected,
-  appLogo,
-  appName,
+  appMetadata,
 }: {
   account: Address;
   onClick?: () => void;
   chainId: ChainId;
   active?: boolean;
   connected: boolean;
-  appLogo: string;
-  appName: string;
+  appMetadata: AppMetadata;
 }) {
   const [hovering, setHovering] = useState(false);
   const { displayName } = useWalletName({ address: account });
@@ -183,10 +182,7 @@ export default function AppConnectionWalletItem({
           </Column>
           <Column width="content">
             <Bleed horizontal="8px">
-              <AppConnectionWalletItemDropdownMenu
-                appName={appName}
-                appLogo={appLogo}
-              />
+              <AppConnectionWalletItemDropdownMenu appMetadata={appMetadata} />
             </Bleed>
           </Column>
         </Columns>

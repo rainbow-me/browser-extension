@@ -1,34 +1,79 @@
+import { useCallback, useRef, useState } from 'react';
+
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, ButtonSymbol, Inline, Stack, Text } from '~/design-system';
+import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { Symbol } from '~/design-system/components/Symbol/Symbol';
 
+import { AppMetadata } from '../../hooks/useAppMetadata';
+import { useAppSession } from '../../hooks/useAppSession';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { AppInteractionItem } from '../AppConnectionMenu/AppInteractionItem';
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuRadioGroup,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
+import {
+  DropdownMenuContentWithSubMenu,
+  DropdownSubMenu,
+} from '../DropdownMenu/DropdownSubMenu';
 import ExternalImage from '../ExternalImage/ExternalImage';
+import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 
 interface AppConnectionWalletItemDropdownMenuProps {
-  appName?: string;
-  appLogo?: string;
+  appMetadata: AppMetadata;
   open?: boolean;
+  testId?: string;
   onClose?: () => void;
   onOpen?: () => void;
-  testId?: string;
 }
 
 export const AppConnectionWalletItemDropdownMenu = ({
-  appName,
-  appLogo,
-  onClose,
-  onOpen,
+  appMetadata,
   open,
   testId,
+  onClose,
+  onOpen,
 }: AppConnectionWalletItemDropdownMenuProps) => {
+  const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
+  const [subMenuOpen, setSubMenuOpen] = useState(false);
+  const [, setMenuOpen] = useState(false);
+
+  const { updateAppSessionChainId, disconnectAppSession, appSession } =
+    useAppSession({ host: appMetadata.appHost });
+
+  const changeChainId = useCallback(
+    (chainId: string) => {
+      updateAppSessionChainId(Number(chainId));
+    },
+    [updateAppSessionChainId],
+  );
+
+  const disconnect = useCallback(() => {
+    disconnectAppSession();
+    setSubMenuOpen(false);
+    setMenuOpen(false);
+  }, [disconnectAppSession]);
+
+  const onValueChange = useCallback(
+    (value: 'disconnect' | 'switch-networks' | 'open-dapp') => {
+      switch (value) {
+        case 'disconnect':
+          disconnect();
+          break;
+        case 'switch-networks':
+          setSubMenuOpen(!subMenuOpen);
+          break;
+        case 'open-dapp':
+          break;
+      }
+    },
+    [disconnect, subMenuOpen],
+  );
+
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
@@ -54,96 +99,122 @@ export const AppConnectionWalletItemDropdownMenu = ({
           </Box>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end">
-          <Box key="switch-networks">
-            <DropdownMenuItem
-              leftComponent={
-                <Box height="fit" style={{ width: '18px', height: '18px' }}>
-                  <Inline
-                    height="full"
-                    alignHorizontal="center"
-                    alignVertical="center"
-                  >
-                    <Symbol
-                      size={16}
-                      symbol="network"
-                      weight="semibold"
-                      color="label"
-                    />
-                  </Inline>
-                </Box>
-              }
-              onSelect={() => null}
-            >
-              <Stack space="8px">
-                <Text size="14pt" weight="semibold" color="label">
-                  {'Switch Networks'}
-                </Text>
-              </Stack>
-            </DropdownMenuItem>
-          </Box>
-          <Box key="disconnect">
-            <DropdownMenuItem
-              color="label"
-              leftComponent={
-                <Box height="fit" style={{ width: '18px', height: '18px' }}>
-                  <Inline
-                    height="full"
-                    alignHorizontal="center"
-                    alignVertical="center"
-                  >
-                    <Symbol
-                      size={12}
-                      symbol="xmark"
-                      weight="semibold"
-                      color="label"
-                    />
-                  </Inline>
-                </Box>
-              }
-              onSelect={() => null}
-            >
-              <Stack space="8px">
-                <Text size="14pt" weight="semibold" color="label">
-                  {'Disconnect'}
-                </Text>
-              </Stack>
-            </DropdownMenuItem>
-            <Box paddingVertical="4px">
-              <DropdownMenuSeparator />
+        <DropdownMenuContentWithSubMenu reff={dropdownMenuRef} align="end">
+          <DropdownMenuRadioGroup
+            onValueChange={(value) =>
+              onValueChange(
+                value as 'disconnect' | 'switch-networks' | 'open-dapp',
+              )
+            }
+          >
+            <Box key="switch-networks">
+              <DropdownSubMenu
+                parentRef={dropdownMenuRef}
+                setMenuOpen={setMenuOpen}
+                subMenuOpen={subMenuOpen}
+                setSubMenuOpen={setSubMenuOpen}
+                subMenuContent={
+                  <Stack space="4px">
+                    <DropdownMenuRadioGroup
+                      value={`${appSession?.chainId}`}
+                      onValueChange={changeChainId}
+                    >
+                      <AccentColorProviderWrapper
+                        color={appMetadata.appColor || undefined}
+                      >
+                        <SwitchNetworkMenuSelector
+                          type="dropdown"
+                          highlightAccentColor
+                          selectedValue={`${appSession?.chainId}`}
+                          onNetworkSelect={(e) => {
+                            e?.preventDefault();
+                            setSubMenuOpen(false);
+                            setMenuOpen(false);
+                          }}
+                          onShortcutPress={changeChainId}
+                          showDisconnect={!!appSession}
+                          disconnect={disconnect}
+                        />
+                      </AccentColorProviderWrapper>
+                    </DropdownMenuRadioGroup>
+                  </Stack>
+                }
+                subMenuElement={
+                  <AppInteractionItem
+                    appSession={appSession}
+                    chevronDirection={subMenuOpen ? 'down' : 'right'}
+                    showChevron
+                  />
+                }
+              />
             </Box>
-          </Box>
-          <Box key="open-dapp">
-            <DropdownMenuItem
-              color="label"
-              leftComponent={
-                <Box
-                  style={{
-                    height: '18px',
-                    width: '18px',
-                    overflow: 'hidden',
-                  }}
-                  borderRadius="9px"
-                >
-                  <Inline
-                    alignHorizontal="center"
-                    alignVertical="center"
-                    height="full"
+            <Box key="disconnect">
+              <DropdownMenuItem
+                color="label"
+                leftComponent={
+                  <Box height="fit" style={{ width: '18px', height: '18px' }}>
+                    <Inline
+                      height="full"
+                      alignHorizontal="center"
+                      alignVertical="center"
+                    >
+                      <Symbol
+                        size={12}
+                        symbol="xmark"
+                        weight="semibold"
+                        color="label"
+                      />
+                    </Inline>
+                  </Box>
+                }
+                onSelect={() => null}
+              >
+                <Stack space="8px">
+                  <Text size="14pt" weight="semibold" color="label">
+                    {'Disconnect'}
+                  </Text>
+                </Stack>
+              </DropdownMenuItem>
+              <Box paddingVertical="4px">
+                <DropdownMenuSeparator />
+              </Box>
+            </Box>
+            <Box key="open-dapp">
+              <DropdownMenuItem
+                color="label"
+                leftComponent={
+                  <Box
+                    style={{
+                      height: '18px',
+                      width: '18px',
+                      overflow: 'hidden',
+                    }}
+                    borderRadius="9px"
                   >
-                    <ExternalImage src={appLogo} width="18" height="18" />
-                  </Inline>
-                </Box>
-              }
-              onSelect={() => null}
-            >
-              <Stack space="8px">
-                <Text size="14pt" weight="semibold" color="label">
-                  {`Open ${appName}`}
-                </Text>
-              </Stack>
-            </DropdownMenuItem>
-          </Box>
-        </DropdownMenuContent>
+                    <Inline
+                      alignHorizontal="center"
+                      alignVertical="center"
+                      height="full"
+                    >
+                      <ExternalImage
+                        src={appMetadata.appLogo}
+                        width="18"
+                        height="18"
+                      />
+                    </Inline>
+                  </Box>
+                }
+                onSelect={() => null}
+              >
+                <Stack space="8px">
+                  <Text size="14pt" weight="semibold" color="label">
+                    {`Open ${appMetadata.appName || appMetadata.appHost}`}
+                  </Text>
+                </Stack>
+              </DropdownMenuItem>
+            </Box>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContentWithSubMenu>
       </DropdownMenu>
     </Box>
   );
