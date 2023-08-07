@@ -114,6 +114,7 @@ export function Tokens() {
         width="full"
         style={{
           height: assetsRowVirtualizer.getTotalSize(),
+          minHeight: '436px',
           position: 'relative',
         }}
       >
