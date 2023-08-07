@@ -17,9 +17,38 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.1.49](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.49)
+
+### Added
+
+- Added the ability to enabled the toggle to filter small balances #818
+- Added better logging for msg signing errors #821
+- Added a new unsupported browser bottom sheet #828
+- Added a new activity History Page Loader #830
+- Added keyboard shortcut and navigation tracking #837
+
+### Changed
+
+- Moved to addys consolidated transactions endpoint and added pagination to activity history #816 / #827
+- The header collapses now on scroll when list is small #831
+- Updated loading skeletons #833
+- Made test scripts for serial and unit tests more robust #838
+
+### Fixed
+
+- Improved Trezor connectivity #819
+- Added optionals to prevent crash on bottom actions #822
+- Made TOS link clickable #823
+- Fixed a bug wehre connected apps network badge wouldn't display properly #825
+- Added a new alert when attempting to sign with Ledger device disconnected #826
+- Fixed a bug where header AccountName tabIndex wasn't allowing proper navigation #832
+- Fixed a bug that prevented correct navigation after setting a new password #834
+- Fixed an issue where users couldn't rename new seed wallet immdedately after creation #836
+
 ## [v1.1.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.48)
 
 ### Changed
+
 - Adopted Socket v2 contracts for gas optimization for token bridging #814
 - Adopted colloquial BSC naming for Binance Smart Chain #768
 - Added support for deprecated `send` and `sendAsync` RPC calls #792
