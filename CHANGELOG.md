@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
-## [v1.1.49](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.49)
+## [v1.1.59](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.59)
 
 ### Added
 
