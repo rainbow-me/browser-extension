@@ -99,7 +99,6 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
     return (
       <ContextMenu
         onOpenChange={(openState) => {
-          console.log('openchange', openState);
           openState ? onOpen?.() : onClose?.();
         }}
       >
@@ -158,11 +157,12 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
               />
             </Box>
             <Box key="disconnect">
-              <ContextMenuItem
-                // color="label"
-                onSelect={() => null}
-              >
-                <Inline>
+              <ContextMenuItem onSelect={() => null}>
+                <Inline
+                  height="full"
+                  alignHorizontal="center"
+                  alignVertical="center"
+                >
                   <Box height="fit" style={{ width: '18px', height: '18px' }}>
                     <Inline
                       height="full"
