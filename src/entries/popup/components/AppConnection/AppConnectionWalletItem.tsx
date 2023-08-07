@@ -160,11 +160,18 @@ export default function AppConnectionWalletItem({
                     alignVertical="center"
                     height="full"
                   >
-                    {/* <Bleed top="7px"> */}
-                    {showChainBadge ? (
-                      <ChainBadge chainId={chainId} size="14" />
-                    ) : null}
-                    {/* </Bleed> */}
+                    <AnimatePresence>
+                      {showChainBadge ? (
+                        <Box
+                          as={motion.div}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                        >
+                          <ChainBadge chainId={chainId} size="14" />
+                        </Box>
+                      ) : null}
+                    </AnimatePresence>
                   </Inline>
                 </Box>
               </Box>
