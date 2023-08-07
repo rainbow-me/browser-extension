@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
+  ReactElement,
   ReactNode,
   useCallback,
   useEffect,
@@ -18,24 +19,30 @@ import {
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 
-const NETWORK_MENU_HEADER_X = 23;
-const NETWORK_MENU_HEADER_Y = 72;
-const NETWORK_MENU_HEADER_WIDTH = 190;
-const NETWORK_MENU_HEADER_HEIGHT = 52;
+// in order to get the header width we need to scale down the
+// context menu by 0.94, and also consider the additional horizontal
+// padding scaled down which (204 - 204*0.94) / 2
+const NETWORK_MENU_HEADER_WIDTH = 204 * 0.94;
+const ADDITIONAL_HORIZONTAL_PADDING = (204 - NETWORK_MENU_HEADER_WIDTH) / 2;
+// we also need an additional vertical padding for the same reason
+const ADDITIONAL_VERTICAL_PADDING = 6;
 
 const isClickingMenuHeader = ({
   x,
   y,
-  position = 1,
+  subMenuRect,
+  parentRect,
 }: {
   x: number;
   y: number;
-  position?: number;
+  subMenuRect: DOMRect;
+  parentRect: DOMRect;
 }) =>
-  x < NETWORK_MENU_HEADER_X ||
-  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
-  y < NETWORK_MENU_HEADER_Y ||
-  y > NETWORK_MENU_HEADER_Y + position * NETWORK_MENU_HEADER_HEIGHT;
+  x <
+    subMenuRect.x - ADDITIONAL_HORIZONTAL_PADDING + NETWORK_MENU_HEADER_WIDTH &&
+  x > subMenuRect.x - ADDITIONAL_HORIZONTAL_PADDING &&
+  y < subMenuRect.y &&
+  y > parentRect.y + ADDITIONAL_VERTICAL_PADDING;
 
 const eventEmitter = new EventEmitter();
 
@@ -54,13 +61,14 @@ export const DropdownMenuContentWithSubMenu = ({
   align,
   children,
   sideOffset,
+  reff,
 }: {
-  children: ReactNode;
+  children: ReactElement;
   align?: 'start' | 'center' | 'end';
   sideOffset?: number;
+  reff: React.MutableRefObject<HTMLDivElement | null>;
 }) => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
-  const parentRef = useRef<HTMLDivElement | null>(null);
 
   const clearSubMenuListener = subMenuListener(({ open }) =>
     setSubMenuOpen(open),
@@ -72,23 +80,24 @@ export const DropdownMenuContentWithSubMenu = ({
   }, [clearSubMenuListener]);
 
   return (
-    <DropdownMenuContent
-      scale={subMenuOpen ? 0.94 : 1}
-      sideOffset={sideOffset}
-      align={align}
-    >
-      <Box ref={parentRef} id="desired-tree">
+    <Box ref={reff}>
+      <DropdownMenuContent
+        scale={subMenuOpen ? 0.94 : 1}
+        sideOffset={sideOffset}
+        align={align}
+      >
         {children}
-      </Box>
-    </DropdownMenuContent>
+      </DropdownMenuContent>
+    </Box>
   );
 };
 
 interface DropdownSubMenuProps {
+  setMenuOpen: (open: boolean) => void;
   subMenuOpen: boolean;
   subMenuElement: ReactNode;
   subMenuContent: ReactNode;
-  position?: number;
+  parentRef?: React.MutableRefObject<HTMLDivElement | null>;
   setSubMenuOpen?: (open: boolean) => void;
 }
 
@@ -96,10 +105,16 @@ export const DropdownSubMenu = ({
   subMenuOpen,
   subMenuElement,
   subMenuContent,
-  position,
+  parentRef,
+  setMenuOpen,
   setSubMenuOpen,
 }: DropdownSubMenuProps) => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
+  const [subMenuRect, setSubMenuRect] = useState<DOMRect | null>(null);
+  const [parentRect, setParentRect] = useState<DOMRect | null>(null);
+
+  const subMenuElementRef = useRef<HTMLDivElement>(null);
+
   const onInteractOutsideContent = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (e: any) => {
@@ -107,18 +122,24 @@ export const DropdownSubMenu = ({
       const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
       if (x && y) {
         setSubMenuOpen?.(false);
-        if (isClickingMenuHeader({ x, y, position })) {
+        console.log('-- subMenuRect', subMenuRect);
+        console.log('-- parentRect', parentRect);
+        if (
+          subMenuRect &&
+          parentRect &&
+          !isClickingMenuHeader({ x, y, subMenuRect, parentRect })
+        ) {
           setMenuOpen?.(false);
         }
       }
     },
-    [position, setMenuOpen, setSubMenuOpen],
+    [parentRect, setMenuOpen, setSubMenuOpen, subMenuRect],
   );
 
   useEffect(() => {
     setTimeout(
       () => {
-        setMenuOpen(subMenuOpen);
+        setDropdownMenuOpen(subMenuOpen);
       },
       subMenuOpen ? 0 : 250,
     );
@@ -128,12 +149,23 @@ export const DropdownSubMenu = ({
     triggerSubMenuListener({ open: subMenuOpen });
   }, [subMenuOpen]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      if (subMenuElementRef.current) {
+        const rect = subMenuElementRef.current.getBoundingClientRect();
+        setSubMenuRect(rect);
+      }
+      if (parentRef?.current) {
+        const parentRefRect = parentRef.current.getBoundingClientRect();
+        setParentRect(parentRefRect);
+      }
+    }, 100);
+  }, [parentRef]);
+
   return (
-    <DropdownMenu open={menuOpen}>
+    <DropdownMenu open={dropdownMenuOpen}>
       <DropdownMenuTrigger asChild>
-        <Box id="sub-menu" position="relative">
-          {subMenuElement}
-        </Box>
+        <Box ref={subMenuElementRef}>{subMenuElement}</Box>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         animate={false}
