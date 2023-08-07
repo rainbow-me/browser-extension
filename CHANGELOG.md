@@ -39,11 +39,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Improved Trezor connectivity #819
 - Added optionals to prevent crash on bottom actions #822
 - Made TOS link clickable #823
-- Fixed a bug wehre connected apps network badge wouldn't display properly #825
+- Fixed a bug where connected apps network badge wouldn't display properly #825
 - Added a new alert when attempting to sign with Ledger device disconnected #826
 - Fixed a bug where header AccountName tabIndex wasn't allowing proper navigation #832
 - Fixed a bug that prevented correct navigation after setting a new password #834
-- Fixed an issue where users couldn't rename new seed wallet immdedately after creation #836
+- Fixed an issue where users couldn't rename new seed wallet immediately after creation #836
 
 ## [v1.1.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.48)
 
