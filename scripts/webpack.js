@@ -19,7 +19,12 @@ const TerserPlugin = require('terser-webpack-plugin');
 const MAX_CYCLES = 8;
 let numCyclesDetected = 0;
 
-webpack({ ...config, 
+const webpackConfig = { ...config, 
+  entry: {
+    background: './src/entries/background/index.ts',
+    contentscript: './src/entries/content/index.ts',
+    inpage: './src/entries/inpage/index.ts',
+  },
   optimization: {
     minimize: true,
     nodeEnv: 'production',
@@ -76,12 +81,42 @@ webpack({ ...config,
       parallel: true,
   }),
   ],
- }).run((err, stats) => {
+ };
+
+// Tweak the UI build to split chunks
+const webpackConfigUI = { 
+  ...webpackConfig,
+  entry: {
+    popup: './src/entries/popup/index.ts',
+  },
+  optimization: {
+    ...webpackConfig.optimization,
+    splitChunks: {
+      chunks: 'all',
+    }
+  },
+  output: {
+    ...config.output,
+    clean: false,
+  },
+};
+
+// BUILD THE APP (BG + CONTENTSCRIPT + INPAGE)
+webpack(webpackConfig).run((err, stats) => {
   if (err) throw err;
   console.log(stats.toString());
   if(stats.hasErrors()) {
     process.exit(1);
   } else {
-    process.exit(0);
-  }
+      // BUILD THE UI (POPUP)
+      webpack(webpackConfigUI).run((err, stats) => {
+        if (err) throw err;
+        console.log(stats.toString());
+        if(stats.hasErrors()) {
+          process.exit(1);
+        } else {
+          process.exit(0);
+        }
+    });
+}
 });

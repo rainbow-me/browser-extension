@@ -18,6 +18,7 @@ import {
   findElementByTestIdAndDoubleClick,
   findElementByText,
   getExtensionIdByName,
+  getRootUrl,
   getTextFromText,
   getTextFromTextInput,
   goToPopup,
@@ -30,7 +31,7 @@ import {
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = 'chrome-extension://';
+let rootURL = getRootUrl();
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';

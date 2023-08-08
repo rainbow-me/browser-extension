@@ -2,31 +2,35 @@
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { ethers } from 'ethers';
-import {
-  Builder,
-  By,
-  Locator,
-  WebDriver,
-  WebElementCondition,
-  until,
-} from 'selenium-webdriver';
+import { Builder, By, Condition, WebDriver, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
+import firefox from 'selenium-webdriver/firefox';
 import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
 // consts
 
-const waitUntilTime = 20000;
+const waitUntilTime = 20_000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
     chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     brave: '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
+    firefox: '/Applications/Firefox.app/Contents/MacOS/Firefox',
   },
   linux: {
     chrome: process.env.CHROMIUM_BIN,
     brave: process.env.BRAVE_BIN,
+    firefox: process.env.FIREFOX_BIN,
   },
+};
+
+export const getRootUrl = () => {
+  const browser = process.env.BROWSER || 'chrome';
+  if (browser === 'firefox') {
+    return 'moz-extension://';
+  }
+  return 'chrome-extension://';
 };
 
 export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
@@ -37,16 +41,19 @@ export const byText = (text: string) =>
 
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
 export async function goToPopup(driver, rootURL, route = '') {
   await driver.get(rootURL + '/popup.html' + route);
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
 export async function goToWelcome(driver, rootURL) {
   await driver.get(rootURL + '/popup.html#/welcome');
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
@@ -90,18 +97,34 @@ export async function initDriverWithOptions(opts) {
     '--enable-logging',
   ];
 
-  const options = new chrome.Options()
-    .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
-    .addArguments(...args);
-  options.setAcceptInsecureCerts(true);
+  if (opts.browser === 'firefox') {
+    const options = new firefox.Options()
+      .setBinary(BINARY_PATHS[opts.os][opts.browser])
+      .addArguments(...args.slice(1))
+      .addExtensions('rainbowbx.xpi');
+    options.setAcceptInsecureCerts(true);
 
-  const service = new chrome.ServiceBuilder().setStdio('inherit');
+    const service = new firefox.ServiceBuilder().setStdio('inherit');
 
-  return await new Builder()
-    .setChromeService(service)
-    .forBrowser('chrome')
-    .setChromeOptions(options)
-    .build();
+    return await new Builder()
+      .setFirefoxService(service)
+      .forBrowser('firefox')
+      .setFirefoxOptions(options)
+      .build();
+  } else {
+    const options = new chrome.Options()
+      .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
+      .addArguments(...args);
+    options.setAcceptInsecureCerts(true);
+
+    const service = new chrome.ServiceBuilder().setStdio('inherit');
+
+    return await new Builder()
+      .setChromeService(service)
+      .forBrowser('chrome')
+      .setChromeOptions(options)
+      .build();
+  }
 }
 
 export async function getExtensionIdByName(driver, extensionName) {
@@ -124,6 +147,7 @@ export async function getExtensionIdByName(driver, extensionName) {
 // search functions
 
 export async function querySelector(driver, selector) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const el = await driver.wait(
     until.elementLocated(By.css(selector)),
     waitUntilTime,
@@ -132,6 +156,7 @@ export async function querySelector(driver, selector) {
 }
 
 export async function findElementByText(driver, text) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const el = await driver.wait(
     until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
     waitUntilTime,
@@ -145,6 +170,7 @@ export async function findElementByTextAndClick(driver, text) {
 }
 
 export async function findElementAndClick({ id, driver }) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const element = await driver.findElement({
     id,
@@ -175,7 +201,7 @@ export async function findElementByTestIdAndClick({ id, driver }) {
 }
 
 export async function findElementByTestIdAndDoubleClick({ id, driver }) {
-  await delayTime('medium');
+  await delayTime('short');
   const actions = driver.actions();
   const element = await findElementByTestId({ id, driver });
   return await actions.doubleClick(element).perform();
@@ -191,19 +217,21 @@ export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
 export async function waitAndClick(element, driver) {
   try {
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await delayTime('short');
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     return element.click();
   } catch (error) {
     throw new Error(
-      `Failed to click element ${await element.getAttribute('testid')}`,
+      `Failed to click element ${await element.getAttribute('data-testid')}`,
     );
   }
 }
@@ -227,15 +255,6 @@ export async function getTextFromDappText({ id, driver }) {
   const element = await findElementById({ id, driver });
   return await element.getText();
 }
-
-export const untilIsClickable = (locator: Locator) =>
-  new WebElementCondition('until element is clickable', async (driver) => {
-    const element = driver.findElement(locator);
-    const isDisplayed = await element.isDisplayed();
-    const isEnabled = await element.isEnabled();
-    if (isDisplayed && isEnabled) return element;
-    return null;
-  });
 
 // various functions and flows
 
@@ -467,7 +486,6 @@ export async function passSecretQuiz(driver) {
     id: 'saved-these-words-button',
     driver,
   });
-
   await delayTime('long');
 
   for (const word of requiredWords) {
@@ -475,27 +493,6 @@ export async function passSecretQuiz(driver) {
   }
 
   await delayTime('long');
-}
-
-// delays
-
-export async function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export async function delayTime(
-  time: 'short' | 'medium' | 'long' | 'very-long',
-) {
-  switch (time) {
-    case 'short':
-      return await delay(200);
-    case 'medium':
-      return await delay(500);
-    case 'long':
-      return await delay(1000);
-    case 'very-long':
-      return await delay(5000);
-  }
 }
 
 export async function awaitTextChange(
@@ -516,5 +513,44 @@ export async function awaitTextChange(
       error,
     );
     throw error;
+  }
+}
+
+// custom conditions
+
+export const untilDocumentLoaded = async function () {
+  return new Condition('for document to load', async (driver) => {
+    return await driver.wait(async () => {
+      const documentReadyState = await driver.executeScript(
+        'return document.readyState',
+      );
+
+      if (documentReadyState === 'complete') {
+        return true;
+      }
+
+      return false;
+    }, waitUntilTime);
+  });
+};
+
+// delays
+
+export async function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function delayTime(
+  time: 'short' | 'medium' | 'long' | 'very-long',
+) {
+  switch (time) {
+    case 'short':
+      return await delay(200);
+    case 'medium':
+      return await delay(500);
+    case 'long':
+      return await delay(1000);
+    case 'very-long':
+      return await delay(5000);
   }
 }
