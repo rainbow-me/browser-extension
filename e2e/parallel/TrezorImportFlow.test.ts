@@ -5,15 +5,13 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   checkWalletName,
-  delayTime,
   findElementByIdAndClick,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
   getRootUrl,
-  goToWelcome,
+  importHardwareWalletFlow,
   initDriverWithOptions,
-  typeOnTextInput,
 } from '../helpers';
 import { HARDWARE_WALLETS } from '../walletVariables';
 
@@ -35,45 +33,12 @@ describe('Import wallet with a Trezor hw wallet', () => {
   });
   afterAll(async () => driver.quit());
 
-  it('should be able import a wallet via seed', async () => {
-    await goToWelcome(driver, rootURL);
-    await findElementByTestIdAndClick({
-      id: 'import-wallet-button',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'connect-wallet-option',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'trezor-option',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'connect-wallets-button',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'hw-done',
-      driver,
-    });
-    await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await typeOnTextInput({
-      id: 'confirm-password-input',
-      driver,
-      text: 'test1234',
-    });
-    await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-    await delayTime('long');
-    await findElementByText(driver, 'Rainbow is ready to use');
+  it('should be able import a wallet via hw wallet', async () => {
+    await importHardwareWalletFlow(driver, rootURL, 'trezor');
   });
 
   it('should display account 0 name', async () => {
-    await checkWalletName(
-      driver,
-      rootURL,
-      HARDWARE_WALLETS.TREZOR.accountsToImport[0].address,
-    );
+    await checkWalletName(driver, rootURL, HARDWARE_WALLETS.WALLET_1);
   });
 
   it('should display hw label on wallet switcher screen', async () => {
@@ -90,10 +55,6 @@ describe('Import wallet with a Trezor hw wallet', () => {
       id: 'wallet-account-2',
       driver,
     });
-    await checkWalletName(
-      driver,
-      rootURL,
-      HARDWARE_WALLETS.TREZOR.accountsToImport[1].address,
-    );
+    await checkWalletName(driver, rootURL, HARDWARE_WALLETS.WALLET_2);
   });
 });

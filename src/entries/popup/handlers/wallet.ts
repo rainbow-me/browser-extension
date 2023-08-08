@@ -376,7 +376,7 @@ export const importAccountAtIndex = async (
 
 export const connectTrezor = async () => {
   if (process.env.IS_TESTING === 'true') {
-    return HARDWARE_WALLETS.TREZOR;
+    return HARDWARE_WALLETS.MOCK_ACCOUNT;
   }
   try {
     const path = `m/${DEFAULT_HD_PATH}`;
@@ -438,7 +438,7 @@ export const connectTrezor = async () => {
 
 export const connectLedger = async () => {
   if (process.env.IS_TESTING === 'true') {
-    return HARDWARE_WALLETS.LEDGER;
+    return HARDWARE_WALLETS.MOCK_ACCOUNT;
   }
   let transport;
   try {

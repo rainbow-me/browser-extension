@@ -383,6 +383,39 @@ export const fillPrivateKey = async (driver, privateKey) => {
   });
 };
 
+export async function importHardwareWalletFlow(driver, rootURL, hardwareType) {
+  await goToWelcome(driver, rootURL);
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'connect-wallet-option',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${hardwareType}-option`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'connect-wallets-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'hw-done',
+    driver,
+  });
+  await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+  await typeOnTextInput({
+    id: 'confirm-password-input',
+    driver,
+    text: 'test1234',
+  });
+  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+  await delayTime('long');
+  await findElementByText(driver, 'Rainbow is ready to use');
+}
+
 export async function importWalletFlow(driver, rootURL, walletSecret) {
   await goToWelcome(driver, rootURL);
   await findElementByTestIdAndClick({
