@@ -32,11 +32,12 @@ interface ContextMenuTriggerProps {
   children: ReactNode;
   accentColor?: string;
   asChild?: boolean;
+  disabled?: boolean;
   onTrigger?: () => void;
 }
 
 export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
-  const { children, accentColor, asChild } = props;
+  const { children, accentColor, asChild, disabled } = props;
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -47,6 +48,7 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
     >
       <ContextMenuPrimitive.Trigger
         asChild={asChild}
+        disabled={disabled}
         onContextMenu={(e) => {
           if (
             e.clientX > WINDOW_LEFT_OFFSET &&

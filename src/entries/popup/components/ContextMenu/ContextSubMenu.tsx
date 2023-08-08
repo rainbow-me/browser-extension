@@ -1,5 +1,4 @@
-import EventEmitter from 'events';
-
+import { DismissableLayerProps } from '@radix-ui/react-tooltip';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   ReactElement,
@@ -18,6 +17,10 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../ContextMenu/ContextMenu';
+import {
+  subMenuListener,
+  triggerSubMenuListener,
+} from '../DropdownMenu/DropdownSubMenu';
 
 // in order to get the header width we need to scale down the
 // context menu by 0.94, and also consider the additional horizontal
@@ -44,27 +47,16 @@ const isClickingMenuHeader = ({
   y < subMenuRect.y &&
   y > parentRect.y + ADDITIONAL_VERTICAL_PADDING;
 
-const eventEmitter = new EventEmitter();
-
-const subMenuListener = (callback: ({ open }: { open: boolean }) => void) => {
-  eventEmitter.addListener('sub_menu_listener', callback);
-  return () => {
-    eventEmitter.removeListener('sub_menu_listener', callback);
-  };
-};
-
-const triggerSubMenuListener = ({ open }: { open: boolean }) => {
-  eventEmitter.emit('sub_menu_listener', { open });
-};
-
 export const ContextMenuContentWithSubMenu = ({
   children,
   sideOffset,
   reff,
+  onInteractOutside,
 }: {
   children: ReactElement;
   sideOffset?: number;
   reff: React.MutableRefObject<HTMLDivElement | null>;
+  onInteractOutside?: DismissableLayerProps['onInteractOutside'];
 }) => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
@@ -82,7 +74,7 @@ export const ContextMenuContentWithSubMenu = ({
       <ContextMenuContent
         scale={subMenuOpen ? 0.94 : 1}
         sideOffset={sideOffset}
-        // align={align}
+        onInteractOutside={onInteractOutside}
       >
         {children}
       </ContextMenuContent>
@@ -107,7 +99,7 @@ export const ContextSubMenu = ({
   setMenuOpen,
   setSubMenuOpen,
 }: DropdownSubMenuProps) => {
-  const [, setDropdownMenuOpen] = useState(false);
+  const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
   const [subMenuRect, setSubMenuRect] = useState<DOMRect | null>(null);
   const [parentRect, setParentRect] = useState<DOMRect | null>(null);
 
@@ -159,7 +151,7 @@ export const ContextSubMenu = ({
   }, [parentRef]);
 
   return (
-    <ContextMenu>
+    <ContextMenu open={dropdownMenuOpen}>
       <ContextMenuTrigger asChild>
         <Box ref={subMenuElementRef}>{subMenuElement}</Box>
       </ContextMenuTrigger>

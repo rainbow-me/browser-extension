@@ -43,6 +43,7 @@ import {
   ContextMenuTrigger,
 } from '../ContextMenu/ContextMenu';
 import { ContextMenuContentWithSubMenu } from '../ContextMenu/ContextSubMenu';
+import { DropdownMenuRadioGroup } from '../DropdownMenu/DropdownMenu';
 import { DropdownSubMenu } from '../DropdownMenu/DropdownSubMenu';
 import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
@@ -59,13 +60,22 @@ interface WalletItemConnectedWrapperProps {
 
 export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
   (props: WalletItemConnectedWrapperProps) => {
-    const { children, appMetadata, onClose, onOpen } = props;
+    const { children, appMetadata } = props;
     const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
     const [subMenuOpen, setSubMenuOpen] = useState(false);
-    const [, setMenuOpen] = useState(false);
+    const [menuOpen, setMenuOpenn] = useState(false);
 
     const { updateAppSessionChainId, disconnectAppSession, appSession } =
       useAppSession({ host: appMetadata.appHost });
+
+    const setMenuOpen = useCallback((open: boolean) => {
+      setTimeout(
+        () => {
+          setMenuOpenn(open);
+        },
+        open ? 0 : 1,
+      );
+    }, []);
 
     const changeChainId = useCallback(
       (chainId: string) => {
@@ -78,7 +88,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
       disconnectAppSession();
       setSubMenuOpen(false);
       setMenuOpen(false);
-    }, [disconnectAppSession]);
+    }, [disconnectAppSession, setMenuOpen]);
 
     const onValueChange = useCallback(
       (value: 'disconnect' | 'switch-networks' | 'open-dapp') => {
@@ -97,12 +107,8 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
     );
 
     return (
-      <ContextMenu
-        onOpenChange={(openState) => {
-          openState ? onOpen?.() : onClose?.();
-        }}
-      >
-        <ContextMenuTrigger asChild>
+      <ContextMenu onOpenChange={setMenuOpen} open={menuOpen}>
+        <ContextMenuTrigger disabled={menuOpen} asChild>
           <Box>{children}</Box>
         </ContextMenuTrigger>
 
@@ -122,7 +128,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                 setSubMenuOpen={setSubMenuOpen}
                 subMenuContent={
                   <Stack space="4px">
-                    <ContextMenuRadioGroup
+                    <DropdownMenuRadioGroup
                       value={`${appSession?.chainId}`}
                       onValueChange={changeChainId}
                     >
@@ -130,7 +136,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                         color={appMetadata.appColor || undefined}
                       >
                         <SwitchNetworkMenuSelector
-                          type="context"
+                          type="dropdown"
                           highlightAccentColor
                           selectedValue={`${appSession?.chainId}`}
                           onNetworkSelect={(e) => {
@@ -143,7 +149,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                           disconnect={disconnect}
                         />
                       </AccentColorProviderWrapper>
-                    </ContextMenuRadioGroup>
+                    </DropdownMenuRadioGroup>
                   </Stack>
                 }
                 subMenuElement={

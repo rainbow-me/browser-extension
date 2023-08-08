@@ -46,14 +46,16 @@ const isClickingMenuHeader = ({
 
 const eventEmitter = new EventEmitter();
 
-const subMenuListener = (callback: ({ open }: { open: boolean }) => void) => {
+export const subMenuListener = (
+  callback: ({ open }: { open: boolean }) => void,
+) => {
   eventEmitter.addListener('sub_menu_listener', callback);
   return () => {
     eventEmitter.removeListener('sub_menu_listener', callback);
   };
 };
 
-const triggerSubMenuListener = ({ open }: { open: boolean }) => {
+export const triggerSubMenuListener = ({ open }: { open: boolean }) => {
   eventEmitter.emit('sub_menu_listener', { open });
 };
 
@@ -120,6 +122,7 @@ export const DropdownSubMenu = ({
     (e: any) => {
       e.preventDefault();
       const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
+      console.log('---- onInteractOutsideContent', x, y);
       if (x && y) {
         setSubMenuOpen?.(false);
         if (
@@ -139,7 +142,7 @@ export const DropdownSubMenu = ({
       () => {
         setDropdownMenuOpen(subMenuOpen);
       },
-      subMenuOpen ? 0 : 250,
+      subMenuOpen ? 0 : 0,
     );
   }, [subMenuOpen]);
 
