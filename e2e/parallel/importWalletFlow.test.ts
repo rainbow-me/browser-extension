@@ -25,6 +25,7 @@ describe('Import wallet with a secret phrase flow', () => {
       os,
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
+    console.log('extension id is', extensionId);
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
