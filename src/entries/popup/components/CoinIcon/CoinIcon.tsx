@@ -20,6 +20,7 @@ import ExternalImage from '../ExternalImage/ExternalImage';
 
 import {
   fallbackTextStyleExtraLarge,
+  fallbackTextStyleExtraSmall,
   fallbackTextStyleLarge,
   fallbackTextStyleMedium,
   fallbackTextStyleSmall,
@@ -76,7 +77,7 @@ export function CoinIcon({
             display: 'flex',
           }}
         >
-          <Box as={'p'} className={getFallbackTextStyle(sym)}>
+          <Box as={'p'} className={getFallbackTextStyle(sym, size)}>
             {upperCase(formattedSymbol)}
           </Box>
         </Box>
@@ -167,11 +168,12 @@ function CloudinaryCoinIcon({
   return <Fragment>{children}</Fragment>;
 }
 
-function getFallbackTextStyle(text: string) {
+function getFallbackTextStyle(text: string, size: number) {
   if (!text) return undefined;
-  else if (text.length > 4) return fallbackTextStyleSmall;
-  else if (text.length === 4) return fallbackTextStyleMedium;
-  else if (text.length === 3) return fallbackTextStyleLarge;
+  if (text.length >= 4 && size < 24) return fallbackTextStyleExtraSmall;
+  if (text.length > 4) return fallbackTextStyleSmall;
+  if (text.length === 4) return fallbackTextStyleMedium;
+  if (text.length === 3) return fallbackTextStyleLarge;
   return fallbackTextStyleExtraLarge;
 }
 

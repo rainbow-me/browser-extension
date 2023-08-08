@@ -736,6 +736,9 @@
     "empty_header": "No activity yet",
     "empty_description": "Once you start using your wallet, you will see your transactions here."
   },
+  "activity_details": {
+    "you": "You"
+  },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",
     "coinbase_description": "Buy or transfer from Coinbase",

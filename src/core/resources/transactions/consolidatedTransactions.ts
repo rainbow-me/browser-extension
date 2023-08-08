@@ -1,4 +1,10 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryKey,
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { addysHttp } from '~/core/network/addys';
 import {
@@ -10,6 +16,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainName } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -122,6 +129,7 @@ async function parseConsolidatedTransactions(
   currency: SupportedCurrencyKey,
 ) {
   const data = message?.payload?.transactions || [];
+  console.log(data);
   const parsedTransactionPromises = data.map((tx) =>
     parseTransaction({
       tx,
@@ -162,4 +170,46 @@ export function useConsolidatedTransactions<
       retry: 3,
     },
   );
+}
+
+const getInfiniteQueryData = <Page>(client: QueryClient, key: QueryKey) =>
+  client.getQueryData<{ pages: Page[] }>(key);
+
+const findTransaction = (
+  hash: RainbowTransaction['hash'],
+  pages?: ConsolidatedTransactionsResult[],
+) => {
+  if (!pages) return;
+  for (const page of pages) {
+    const tx = page.transactions.find((tx) => tx.hash === hash);
+    if (tx) return tx;
+  }
+};
+
+export function useTransaction(hash: RainbowTransaction['hash']) {
+  const queryClient = useQueryClient();
+  const { currentAddress: address } = useCurrentAddressStore();
+  const { currentCurrency: currency } = useCurrentCurrencyStore();
+
+  const key = consolidatedTransactionsQueryKey({ address, currency });
+
+  return useQuery({
+    queryKey: createQueryKey('transaction', { hash }),
+    queryFn: () => {
+      const queryData = getInfiniteQueryData<ConsolidatedTransactionsResult>(
+        queryClient,
+        key,
+      );
+      return findTransaction(hash, queryData?.pages);
+    },
+    enabled: !!hash,
+    initialData: () => {
+      const queryData = getInfiniteQueryData<ConsolidatedTransactionsResult>(
+        queryClient,
+        key,
+      );
+      return findTransaction(hash, queryData?.pages);
+    },
+    initialDataUpdatedAt: () => queryClient.getQueryState(key)?.dataUpdatedAt,
+  });
 }

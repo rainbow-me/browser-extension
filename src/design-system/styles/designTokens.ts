@@ -918,6 +918,13 @@ export const symbolNames = selectSymbolNames(
   'arrow.up.left.and.arrow.down.right',
   'safari',
   'link',
+  'arrow.down.circle',
+  'number',
+  'clock.badge.checkmark',
+  'clock',
+  'number.square',
+  'barometer',
+  'fuelpump.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 
@@ -926,6 +933,7 @@ export const radii = {
   '0': 0,
   '2px': 2,
   '3px': 3,
+  '4px': 4,
   '5px': 5,
   '6px': 6,
   '8px': 8,

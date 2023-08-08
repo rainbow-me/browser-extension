@@ -166,6 +166,8 @@ export async function parseTransaction({
         title,
         to: (internalTxn.address_to ?? tx.address_to) as Address,
         type: tx.type,
+        meta: tx.meta,
+        blockNumber: tx.block_number,
       };
     });
   }

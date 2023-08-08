@@ -29,6 +29,7 @@ export interface ParsedAsset {
   uniqueId: UniqueId;
   decimals: number;
   icon_url?: string;
+  type: 'nft' | 'token';
 }
 
 export interface ParsedAddressAsset extends ParsedAsset {

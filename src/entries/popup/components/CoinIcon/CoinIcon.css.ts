@@ -8,6 +8,11 @@ const fallbackTextBaseStyles = textStyles({
   color: 'label',
 });
 
+export const fallbackTextStyleExtraSmall = style([
+  fallbackTextBaseStyles,
+  { fontSize: '5pt' },
+]);
+
 export const fallbackTextStyleSmall = style([
   fallbackTextBaseStyles,
   { fontSize: '6pt' },

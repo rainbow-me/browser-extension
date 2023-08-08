@@ -26,9 +26,10 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
 import useInfiniteTransactionList from '../../hooks/useInfiniteTransactionList';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 
 import { ActivitySkeleton } from './Skeletons';
-import { TransactionDetailsMenu } from './TransactionDetailsMenu';
 
 export function Activity() {
   const {
@@ -43,6 +44,8 @@ export function Activity() {
   const containerRef = useContainerRef();
 
   useActivityShortcuts();
+
+  const navigate = useRainbowNavigate();
 
   if (isInitialLoading || isRefetching) {
     return <ActivitySkeleton />;
@@ -118,6 +121,9 @@ export function Activity() {
                 position="absolute"
                 width="full"
                 style={{ height: size, y: start }}
+                onClick={() =>
+                  !isLabel && navigate(ROUTES.ACTIVITY_DETAILS(rowData.hash))
+                }
               >
                 {isLabel ? (
                   <Inset horizontal="20px" top="16px" bottom="8px">
@@ -132,9 +138,9 @@ export function Activity() {
                     </Box>
                   </Inset>
                 ) : (
-                  <TransactionDetailsMenu transaction={rowData}>
-                    <ActivityRow transaction={rowData} />
-                  </TransactionDetailsMenu>
+                  // <TransactionDetailsMenu transaction={rowData}>
+                  <ActivityRow transaction={rowData} />
+                  // </TransactionDetailsMenu>
                 )}
               </Box>
             );

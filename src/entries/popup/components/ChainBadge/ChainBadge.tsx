@@ -21,7 +21,7 @@ const chainBadgeSize = {
 interface ChainIconProps {
   chainId: ChainId;
   shadow?: boolean;
-  size: keyof typeof chainBadgeSize;
+  size: keyof typeof chainBadgeSize | number;
 }
 
 const networkBadges = {
@@ -42,7 +42,7 @@ const ChainBadge = ({
 }: ChainIconProps) => {
   if (!Object.keys(networkBadges).includes(`${chainId}`)) return null;
 
-  const iconSize = chainBadgeSize[size];
+  const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
 
   let boxShadow;
   if (shadow) {

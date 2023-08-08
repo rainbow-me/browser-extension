@@ -15,7 +15,7 @@ export interface RainbowTransaction {
   data?: string; // for pending tx
   description?: string;
   direction?: string;
-  from?: Address;
+  from: Address;
   gasLimit?: BigNumberish;
   gasPrice?: BigNumberish;
   maxFeePerGas?: BigNumberish;
@@ -34,11 +34,12 @@ export interface RainbowTransaction {
   status?: TransactionStatus;
   symbol?: string;
   title?: string;
-  to?: Address;
+  to: Address;
   txTo?: string;
   type?: TransactionType;
   value?: BigNumberish; // for pending tx
   flashbots?: boolean;
+  blockNumber?: number;
 }
 
 export interface ZerionTransaction {
