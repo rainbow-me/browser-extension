@@ -20,13 +20,10 @@ const os = process.env.OS || 'mac';
 
 describe('Import wallet with a secret phrase flow', () => {
   beforeAll(async () => {
-    driver = await initDriverWithOptions(
-      {
-        browser,
-        os,
-      },
-      'parallel',
-    );
+    driver = await initDriverWithOptions({
+      browser,
+      os,
+    });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;

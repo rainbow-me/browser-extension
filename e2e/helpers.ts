@@ -89,16 +89,12 @@ export async function getWindowHandle({ driver }) {
 
 // setup functions
 
-export async function initDriverWithOptions(opts, testType = 'serial') {
-  const parallelArgs =
-    testType === 'parallel' ? ['--headless=new', '--disable-gpu'] : [];
-
+export async function initDriverWithOptions(opts) {
   const args = [
     'load-extension=build/',
     // '--auto-open-devtools-for-tabs',
     '--log-level=0',
     '--enable-logging',
-    ...parallelArgs,
   ];
 
   if (opts.browser === 'firefox') {
