@@ -10,19 +10,20 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  getRootUrl,
   goToWelcome,
   initDriverWithOptions,
   typeOnTextInput,
 } from '../helpers';
 import { HARDWARE_WALLETS } from '../walletVariables';
 
-let rootURL = 'chrome-extension://';
+let rootURL = getRootUrl();
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe('Import wallet with a secret phrase flow', () => {
+describe('Import wallet with a Ledger hw wallet', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions(
       {
