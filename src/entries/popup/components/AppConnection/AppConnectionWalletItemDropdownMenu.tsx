@@ -26,22 +26,16 @@ import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 
 interface AppConnectionWalletItemDropdownMenuProps {
   appMetadata: AppMetadata;
-  open?: boolean;
   testId?: string;
-  onClose?: () => void;
-  onOpen?: () => void;
 }
 
 export const AppConnectionWalletItemDropdownMenu = ({
   appMetadata,
-  open,
   testId,
-  onClose,
-  onOpen,
 }: AppConnectionWalletItemDropdownMenuProps) => {
   const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
-  const [, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const { updateAppSessionChainId, disconnectAppSession, appSession } =
     useAppSession({ host: appMetadata.appHost });
@@ -79,16 +73,12 @@ export const AppConnectionWalletItemDropdownMenu = ({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
         e.preventDefault();
-        onClose?.();
       }
     },
   });
   return (
     <Box onClick={(e) => e.stopPropagation()} testId={testId}>
-      <DropdownMenu
-        onOpenChange={(openState) => (openState ? onOpen?.() : onClose?.())}
-        open={open}
-      >
+      <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
         <DropdownMenuTrigger asChild>
           <Box style={{ cursor: 'default' }}>
             <ButtonSymbol
