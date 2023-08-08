@@ -7,9 +7,8 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
-      threads: true,
-      maxThreads: 4,
-      minThreads: 4,
+      bail: 1,
+      threads: false,
     },
   }) as UserConfig,
 );
