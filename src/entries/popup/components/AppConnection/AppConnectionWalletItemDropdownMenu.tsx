@@ -1,3 +1,4 @@
+import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, ButtonSymbol, Inline, Stack, Text } from '~/design-system';
 import { Symbol } from '~/design-system/components/Symbol/Symbol';
@@ -105,7 +106,9 @@ export const AppConnectionWalletItemDropdownMenu = ({
             >
               <Stack space="8px">
                 <Text size="14pt" weight="semibold" color="label">
-                  {'Disconnect'}
+                  {i18n.t(
+                    'app_connection_switcher.wallet_item_dropdown_menu.connect',
+                  )}
                 </Text>
               </Stack>
             </DropdownMenuItem>
@@ -138,7 +141,10 @@ export const AppConnectionWalletItemDropdownMenu = ({
             >
               <Stack space="8px">
                 <Text size="14pt" weight="semibold" color="label">
-                  {`Open ${appName}`}
+                  {i18n.t(
+                    'app_connection_switcher.wallet_item_dropdown_menu.open_app',
+                    { appName },
+                  )}
                 </Text>
               </Stack>
             </DropdownMenuItem>
