@@ -113,9 +113,8 @@ jobs:
       - name: Copy dotenv
         shell: 'bash'
         run: cat tmp/dotenv >> .env && rm -rf tmp
-    
-        - name: Run e2e parallel (Firefox)
-          run: |
+      - name: Run e2e parallel (Firefox)
+        run: |
             export BROWSER=firefox
             export OS=linux
             export FIREFOX_BIN=$(find firefox -type f -name 'firefox')
