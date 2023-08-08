@@ -130,7 +130,7 @@ function ActivityPill({ transaction }: ActivityPillProps) {
       />
     );
 
-  if (asset.type === 'token')
+  if (asset.type === 'erc20')
     return (
       <BaseActivityPill
         paddingLeft="5px"
