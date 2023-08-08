@@ -100,7 +100,11 @@ jobs:
           sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
       - name: Install firefox dev
         shell: 'bash'
-        run: npx @puppeteer/browsers install firefox@dev
+        run: |
+          wget "https://download.mozilla.org/?product=firefox-devedition-latest-ssl&os=linux64&lang=en-US" -O Firefox-dev.tar.bz2
+          sudo tar xjf Firefox-dev.tar.bz2 -C /opt/
+          rm -r Firefox-dev.tar.bz2
+          sudo ln -s /opt/firefox/firefox /usr/local/bin/firefox-dev
       - name: Install Anvil
         uses: foundry-rs/foundry-toolchain@v1
         with:
@@ -117,8 +121,8 @@ jobs:
         run: |
             export BROWSER=firefox
             export OS=linux
-            export FIREFOX_BIN=$(find firefox -type f -name 'firefox')
-            yarn e2e:firefox:linux --retry=5
+            export FIREFOX_BIN=/opt/firefox/firefox
+            yarn firefox:zip && yarn vitest:parallel --retry=5
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
