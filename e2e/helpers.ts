@@ -25,8 +25,7 @@ const BINARY_PATHS = {
   mac: {
     chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     brave: '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
-    firefox:
-      '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
+    firefox: '/Applications/Firefox.app/Contents/MacOS/Firefox',
   },
   linux: {
     chrome: process.env.CHROMIUM_BIN,
@@ -42,6 +41,10 @@ export const getRootUrl = () => {
   }
   return 'chrome-extension://';
 };
+
+export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
+export const byText = (text: string) =>
+  By.xpath(`//*[contains(text(),"${text}")]`);
 
 // navigators
 
@@ -116,13 +119,12 @@ export async function initDriverWithOptions(opts: {
       // @ts-ignore
       .setBinary(BINARY_PATHS[opts.os][opts.browser])
       .addArguments(...args.slice(1))
-      .setPreference('xpinstall.signatures.required', false)
-      .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');
+    options.setAcceptInsecureCerts(true);
 
     const service = new firefox.ServiceBuilder().setStdio('inherit');
 
-    driver = await new Builder()
+    return await new Builder()
       .setFirefoxService(service)
       .forBrowser('firefox')
       .setFirefoxOptions(options)
@@ -136,46 +138,11 @@ export async function initDriverWithOptions(opts: {
 
     const service = new chrome.ServiceBuilder().setStdio('inherit');
 
-    driver = await new Builder()
+    return await new Builder()
       .setChromeService(service)
       .forBrowser('chrome')
       .setChromeOptions(options)
       .build();
-  }
-  // @ts-ignore
-  driver.browser = opts.browser;
-  return driver;
-}
-
-export async function getExtensionIdByName(
-  driver: WebDriver,
-  extensionName: string,
-) {
-  // @ts-ignore
-  if (driver?.browser === 'firefox') {
-    await driver.get('about:debugging#addons');
-    const text = await driver
-      .wait(
-        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
-        1000,
-      )
-      .getText();
-    return text;
-  } else {
-    await driver.get('chrome://extensions');
-    return await driver.executeScript(`
-        const extensions = document.querySelector("extensions-manager").shadowRoot
-          .querySelector("extensions-item-list").shadowRoot
-          .querySelectorAll("extensions-item")
-        for (let i = 0; i < extensions.length; i++) {
-          const extension = extensions[i].shadowRoot
-          const name = extension.querySelector('#name').textContent
-          if (name.startsWith("${extensionName}")) {
-            return extensions[i].getAttribute("id")
-          }
-        }
-        return undefined
-      `);
   }
 }
 

@@ -63,11 +63,10 @@
     "vitest:dappInteractions": "./scripts/e2e-serial-tests.sh 'dappInteractions'",
     "e2e:mac:chrome": "BROWSER=chrome OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:brave": "BROWSER=brave OS=mac yarn vitest:parallel && yarn vitest:serial",
-    "e2e:mac:firefox": "yarn firefox:zip && BROWSER=firefox OS=mac yarn vitest:parallel",
+    "e2e:mac:firefox": "BROWSER=firefox OS=mac yarn vitest:parallel",
     "e2e:mac": "yarn e2e:mac:chrome && yarn e2e:mac:brave",
     "e2e": "yarn e2e:mac",
-    "firefox:manifest": "node scripts/firefox-manifest.js",
-    "firefox:build": "yarn build && yarn firefox:manifest",
+    "firefox:build": "yarn build && node scripts/firefox-manifest.js",
     "firefox:zip": "yarn zip && mv rainbowbx.zip rainbowbx.xpi",
     "firefox:lint": "yarn web-ext lint --source-dir ./build",
     "firefox:run": "yarn web-ext run --source-dir ./build/"
