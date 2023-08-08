@@ -407,6 +407,7 @@ const WalletListHW = () => {
               <Row height="content">
                 <Box width="full" paddingVertical="20px">
                   <Button
+                    testId={'connect-wallets-button'}
                     symbol="arrow.uturn.down.circle.fill"
                     symbolSide="left"
                     color={selectedAccounts > 0 ? 'accent' : 'labelQuaternary'}

@@ -10,7 +10,6 @@ import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
-import { HARDWARE_WALLETS } from 'e2e/walletVariables';
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import {
   RapSwapActionParameters,
@@ -41,6 +40,7 @@ import {
   signTransactionFromTrezor,
 } from './trezor';
 import { walletAction } from './walletAction';
+import { HARDWARE_WALLETS } from './walletVariables';
 
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
 const DEFAULT_LEDGER_LIVE_PATH = "m/44'/60'/";

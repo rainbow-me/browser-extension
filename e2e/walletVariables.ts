@@ -1,3 +1,5 @@
+import { Address } from 'wagmi';
+
 export const TEST_VARIABLES = {
   SEED_WALLET: {
     ADDRESS: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
