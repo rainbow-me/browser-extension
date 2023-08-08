@@ -56,15 +56,20 @@
     "test": "./scripts/unit-tests.sh",
     "test:watch": "yarn anvil & vitest --watch",
     "// Runs e2e": "",
-    "vitest:parallel": "yarn vitest e2e/parallel --config ./e2e/vitest.config.ts",
+    "vitest:parallel": "yarn vitest e2e/parallel --config ./e2e/parallel/vitest.config.ts",
     "vitest:serial": "./scripts/e2e-serial-tests.sh",
     "vitest:swap": "./scripts/e2e-serial-tests.sh 'swap'",
     "vitest:send": "./scripts/e2e-serial-tests.sh 'send'",
     "vitest:dappInteractions": "./scripts/e2e-serial-tests.sh 'dappInteractions'",
     "e2e:mac:chrome": "BROWSER=chrome OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:brave": "BROWSER=brave OS=mac yarn vitest:parallel && yarn vitest:serial",
+    "e2e:mac:firefox": "BROWSER=firefox OS=mac yarn vitest:parallel",
     "e2e:mac": "yarn e2e:mac:chrome && yarn e2e:mac:brave",
-    "e2e": "yarn e2e:mac"
+    "e2e": "yarn e2e:mac",
+    "firefox:build": "yarn build && node scripts/firefox-manifest.js",
+    "firefox:zip": "yarn zip && mv rainbowbx.zip rainbowbx.xpi",
+    "firefox:lint": "yarn web-ext lint --source-dir ./build",
+    "firefox:run": "yarn web-ext run --source-dir ./build/"
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
@@ -200,6 +205,7 @@
     "ts-loader": "9.4.1",
     "typescript": "4.9.4",
     "vitest": "0.33.0",
+    "web-ext": "7.6.2",
     "webpack": "5.76.0",
     "webpack-bundle-analyzer": "4.8.0",
     "webpack-cli": "4.10.0",
@@ -226,7 +232,8 @@
     "nth-check": "2.0.1",
     "decode-uri-component": "0.2.1",
     "http-cache-semantics": "4.1.1",
-    "socket.io-parser": "4.2.3"
+    "socket.io-parser": "4.2.3",
+    "tough-cookie": "4.1.3"
   },
   "lavamoat": {
     "allowScripts": {
@@ -268,7 +275,12 @@
       "@ledgerhq/hw-app-eth>@ledgerhq/domain-service>eip55>keccak": false,
       "@rainbow-me/swaps>ethereumjs-util>ethereum-cryptography>keccak": false,
       "@rainbow-me/swaps>ethereumjs-util>ethereum-cryptography>secp256k1": false,
-      "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>@solana/web3.js>bigint-buffer": false
+      "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>@solana/web3.js>bigint-buffer": false,
+      "web-ext>bunyan>dtrace-provider": false,
+      "web-ext>fx-runner>spawn-sync": false,
+      "web-ext>sign-addon>core-js": false,
+      "web-ext>ws>bufferutil": false,
+      "web-ext>ws>utf-8-validate": false
     }
   },
   "lint-staged": {

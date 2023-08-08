@@ -43,7 +43,8 @@
   "description": "DEV VERSION",
   "host_permissions": [
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "wss://*/*"
   ],
   "icons": {
     "16": "images/icon-16.png",
