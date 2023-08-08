@@ -628,7 +628,13 @@
       "connect": "Connect"
     },
     "wallet_item_dropdown_menu": {
-      "connect": "Connect"
+      "connect": "Connect",
+      "open_app": "Open %{appName}"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "Switch Wallets",
+      "other_wallets": "Other Wallets",
+      "cancel": "Cancel"
     }
   },
   "approve_request": {
