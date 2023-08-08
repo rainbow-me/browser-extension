@@ -15,12 +15,15 @@ import {
   setImportWalletSecrets,
 } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
+import { useBrowser } from '../../hooks/useBrowser';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function ImportOrCreateWallet() {
   const navigate = useRainbowNavigate();
   const [loading, setLoading] = useState(false);
+  const { browser } = useBrowser();
+  const isFirefox = browser === 'Firefox';
 
   useEffect(() => {
     const wipeIncompleteWallet = async () => {
@@ -72,9 +75,9 @@ export function ImportOrCreateWallet() {
                   borderRadius="round"
                 >
                   <Button
-                    color="label"
+                    color={isFirefox ? 'surfaceSecondaryElevated' : 'label'}
                     height="44px"
-                    variant="tinted"
+                    variant={isFirefox ? 'flat' : 'tinted'}
                     width="full"
                     symbol="arrow.right"
                     symbolSide="right"
