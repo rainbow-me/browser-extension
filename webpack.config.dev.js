@@ -18,6 +18,25 @@ const manifestOverride = {
 
 const manifestFilePath = resolve(__dirname, './build/manifest.json');
 
+const manifestForBuild = require(manifestFilePath);
+const allowedPlugins = [];
+
+if (manifestForBuild.background.scripts) {
+  console.log('building for firefox! disabling hot reload');
+} else {
+  allowedPlugins.push(
+    new ExtensionReloader({
+      manifest: manifestFilePath,
+      reloadPage: true,
+      entries: {
+        background: 'background',
+        contentScript: 'contentscript',
+        extensionPage: 'popup',
+      },
+    }),
+  );
+}
+
 module.exports = {
   ...config,
   mode: 'development',
@@ -29,15 +48,7 @@ module.exports = {
         ? JSON.stringify(process.env.PLAYGROUND)
         : null,
     }),
-    new ExtensionReloader({
-      manifest: manifestFilePath,
-      reloadPage: true,
-      entries: {
-        background: 'background',
-        contentScript: 'contentscript',
-        extensionPage: 'popup',
-      },
-    }),
+    ...allowedPlugins,
     {
       apply: (compiler) => {
         compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => {

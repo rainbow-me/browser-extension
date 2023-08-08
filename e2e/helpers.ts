@@ -4,6 +4,7 @@
 import { ethers } from 'ethers';
 import { Builder, By, Condition, WebDriver, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
+import firefox from 'selenium-webdriver/firefox';
 import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
@@ -15,11 +16,21 @@ const BINARY_PATHS = {
   mac: {
     chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     brave: '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
+    firefox: '/Applications/Firefox.app/Contents/MacOS/Firefox',
   },
   linux: {
     chrome: process.env.CHROMIUM_BIN,
     brave: process.env.BRAVE_BIN,
+    firefox: process.env.FIREFOX_BIN,
   },
+};
+
+export const getRootUrl = () => {
+  const browser = process.env.BROWSER || 'chrome';
+  if (browser === 'firefox') {
+    return 'moz-extension://';
+  }
+  return 'chrome-extension://';
 };
 
 export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
@@ -86,18 +97,34 @@ export async function initDriverWithOptions(opts) {
     '--enable-logging',
   ];
 
-  const options = new chrome.Options()
-    .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
-    .addArguments(...args);
-  options.setAcceptInsecureCerts(true);
+  if (opts.browser === 'firefox') {
+    const options = new firefox.Options()
+      .setBinary(BINARY_PATHS[opts.os][opts.browser])
+      .addArguments(...args.slice(1))
+      .addExtensions('rainbowbx.xpi');
+    options.setAcceptInsecureCerts(true);
 
-  const service = new chrome.ServiceBuilder().setStdio('inherit');
+    const service = new firefox.ServiceBuilder().setStdio('inherit');
 
-  return await new Builder()
-    .setChromeService(service)
-    .forBrowser('chrome')
-    .setChromeOptions(options)
-    .build();
+    return await new Builder()
+      .setFirefoxService(service)
+      .forBrowser('firefox')
+      .setFirefoxOptions(options)
+      .build();
+  } else {
+    const options = new chrome.Options()
+      .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
+      .addArguments(...args);
+    options.setAcceptInsecureCerts(true);
+
+    const service = new chrome.ServiceBuilder().setStdio('inherit');
+
+    return await new Builder()
+      .setChromeService(service)
+      .forBrowser('chrome')
+      .setChromeOptions(options)
+      .build();
+  }
 }
 
 export async function getExtensionIdByName(driver, extensionName) {
