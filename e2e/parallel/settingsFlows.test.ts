@@ -27,10 +27,13 @@ const os = process.env.OS || 'mac';
 
 describe('Navigate Settings & Privacy and its flows', () => {
   beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
+    driver = await initDriverWithOptions(
+      {
+        browser,
+        os,
+      },
+      'parallel',
+    );
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;

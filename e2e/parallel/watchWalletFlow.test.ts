@@ -32,10 +32,13 @@ const os = process.env.OS || 'mac';
 
 describe('Watch wallet then add more and switch between them', () => {
   beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
+    driver = await initDriverWithOptions(
+      {
+        browser,
+        os,
+      },
+      'parallel',
+    );
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;

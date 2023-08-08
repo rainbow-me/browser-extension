@@ -20,10 +20,13 @@ const os = process.env.OS || 'mac';
 
 describe('Import wallet with a private key flow', () => {
   beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
+    driver = await initDriverWithOptions(
+      {
+        browser,
+        os,
+      },
+      'parallel',
+    );
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
