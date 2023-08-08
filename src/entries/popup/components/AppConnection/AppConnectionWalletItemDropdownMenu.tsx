@@ -11,8 +11,8 @@ import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { AppInteractionItem } from '../AppConnectionMenu/AppInteractionItem';
 import {
   DropdownMenu,
-  DropdownMenuItem,
   DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
@@ -107,112 +107,102 @@ export const AppConnectionWalletItemDropdownMenu = ({
               )
             }
           >
-            <Box key="switch-networks">
-              <DropdownSubMenu
-                parentRef={dropdownMenuRef}
-                setMenuOpen={setMenuOpen}
-                subMenuOpen={subMenuOpen}
-                setSubMenuOpen={setSubMenuOpen}
-                subMenuContent={
-                  <Stack space="4px">
-                    <DropdownMenuRadioGroup
-                      value={`${appSession?.chainId}`}
-                      onValueChange={changeChainId}
-                    >
-                      <AccentColorProviderWrapper
-                        color={appMetadata.appColor || undefined}
-                      >
-                        <SwitchNetworkMenuSelector
-                          type="dropdown"
-                          highlightAccentColor
-                          selectedValue={`${appSession?.chainId}`}
-                          onNetworkSelect={(e) => {
-                            e?.preventDefault();
-                            setSubMenuOpen(false);
-                            setMenuOpen(false);
-                          }}
-                          onShortcutPress={changeChainId}
-                          showDisconnect={!!appSession}
-                          disconnect={disconnect}
-                        />
-                      </AccentColorProviderWrapper>
-                    </DropdownMenuRadioGroup>
-                  </Stack>
-                }
-                subMenuElement={
-                  <AppInteractionItem
-                    appSession={appSession}
-                    chevronDirection={subMenuOpen ? 'down' : 'right'}
-                    showChevron
-                  />
-                }
-              />
-            </Box>
-            <Box key="disconnect">
-              <DropdownMenuItem
-                color="label"
-                leftComponent={
-                  <Box height="fit" style={{ width: '18px', height: '18px' }}>
-                    <Inline
-                      height="full"
-                      alignHorizontal="center"
-                      alignVertical="center"
-                    >
-                      <Symbol
-                        size={12}
-                        symbol="xmark"
-                        weight="semibold"
-                        color="label"
-                      />
-                    </Inline>
-                  </Box>
-                }
-                onSelect={() => null}
-              >
-                <Stack space="8px">
-                  <Text size="14pt" weight="semibold" color="label">
-                    {'Disconnect'}
-                  </Text>
-                </Stack>
-              </DropdownMenuItem>
-              <Box paddingVertical="4px">
-                <DropdownMenuSeparator />
-              </Box>
-            </Box>
-            <Box key="open-dapp">
-              <DropdownMenuItem
-                color="label"
-                leftComponent={
-                  <Box
-                    style={{
-                      height: '18px',
-                      width: '18px',
-                      overflow: 'hidden',
-                    }}
-                    borderRadius="9px"
+            <DropdownSubMenu
+              parentRef={dropdownMenuRef}
+              setMenuOpen={setMenuOpen}
+              subMenuOpen={subMenuOpen}
+              setSubMenuOpen={setSubMenuOpen}
+              subMenuContent={
+                <Stack space="4px">
+                  <DropdownMenuRadioGroup
+                    value={`${appSession?.chainId}`}
+                    onValueChange={changeChainId}
                   >
-                    <Inline
-                      alignHorizontal="center"
-                      alignVertical="center"
-                      height="full"
+                    <AccentColorProviderWrapper
+                      color={appMetadata.appColor || undefined}
                     >
-                      <ExternalImage
-                        src={appMetadata.appLogo}
-                        width="18"
-                        height="18"
+                      <SwitchNetworkMenuSelector
+                        type="dropdown"
+                        highlightAccentColor
+                        selectedValue={`${appSession?.chainId}`}
+                        onNetworkSelect={(e) => {
+                          e?.preventDefault();
+                          setSubMenuOpen(false);
+                          setMenuOpen(false);
+                        }}
+                        onShortcutPress={changeChainId}
+                        showDisconnect={!!appSession}
+                        disconnect={disconnect}
                       />
-                    </Inline>
-                  </Box>
-                }
-                onSelect={() => null}
-              >
-                <Stack space="8px">
-                  <Text size="14pt" weight="semibold" color="label">
-                    {`Open ${appMetadata.appName || appMetadata.appHost}`}
-                  </Text>
+                    </AccentColorProviderWrapper>
+                  </DropdownMenuRadioGroup>
                 </Stack>
-              </DropdownMenuItem>
+              }
+              subMenuElement={
+                <AppInteractionItem
+                  appSession={appSession}
+                  chevronDirection={subMenuOpen ? 'down' : 'right'}
+                  showChevron
+                />
+              }
+            />
+            <DropdownMenuRadioItem
+              value="disconnect"
+              onSelect={(e) => e.stopPropagation()}
+            >
+              <Inline alignVertical="center">
+                <Box height="fit" style={{ width: '18px', height: '18px' }}>
+                  <Inline
+                    height="full"
+                    alignHorizontal="center"
+                    alignVertical="center"
+                  >
+                    <Symbol
+                      size={12}
+                      symbol="xmark"
+                      weight="semibold"
+                      color="label"
+                    />
+                  </Inline>
+                </Box>
+                <Text size="14pt" weight="semibold" color="label">
+                  {'Disconnect'}
+                </Text>
+              </Inline>
+            </DropdownMenuRadioItem>
+            <Box paddingVertical="4px">
+              <DropdownMenuSeparator />
             </Box>
+            <DropdownMenuRadioItem
+              value="open-dapp"
+              onSelect={(e) => e.preventDefault()}
+            >
+              <Inline alignVertical="center">
+                <Box
+                  style={{
+                    height: '18px',
+                    width: '18px',
+                    overflow: 'hidden',
+                  }}
+                  borderRadius="9px"
+                >
+                  <Inline
+                    alignHorizontal="center"
+                    alignVertical="center"
+                    height="full"
+                  >
+                    <ExternalImage
+                      src={appMetadata.appLogo}
+                      width="18"
+                      height="18"
+                    />
+                  </Inline>
+                </Box>
+                <Text size="14pt" weight="semibold" color="label">
+                  {`Open ${appMetadata.appName || appMetadata.appHost}`}
+                </Text>
+              </Inline>
+            </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
         </DropdownMenuContentWithSubMenu>
       </DropdownMenu>

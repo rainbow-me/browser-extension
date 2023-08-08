@@ -38,8 +38,8 @@ import { AppInteractionItem } from '../AppConnectionMenu/AppInteractionItem';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   ContextMenu,
-  ContextMenuItem,
   ContextMenuRadioGroup,
+  ContextMenuRadioItem,
   ContextMenuTrigger,
 } from '../ContextMenu/ContextMenu';
 import { ContextMenuContentWithSubMenu } from '../ContextMenu/ContextSubMenu';
@@ -163,7 +163,15 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
               />
             </Box>
             <Box key="disconnect">
-              <ContextMenuItem onSelect={() => null}>
+              <ContextMenuRadioItem
+                value="disconnect"
+                onSelect={(e) => {
+                  e.stopPropagation();
+                  e.stopImmediatePropagation();
+                  console.log('-- onSelect', 'disconnect');
+                  // disconnect();
+                }}
+              >
                 <Inline
                   height="full"
                   alignHorizontal="center"
@@ -184,10 +192,10 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                     </Inline>
                   </Box>
                   <Text size="14pt" weight="semibold" color="label">
-                    {'Disconnect'}
+                    {'Disconnectt'}
                   </Text>
                 </Inline>
-              </ContextMenuItem>
+              </ContextMenuRadioItem>
             </Box>
           </ContextMenuRadioGroup>
         </ContextMenuContentWithSubMenu>
