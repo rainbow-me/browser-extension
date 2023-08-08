@@ -8,7 +8,7 @@ export default mergeConfig(
   defineConfig({
     test: {
       bail: 1,
-      threads: true,
+      threads: false,
     },
   }) as UserConfig,
 );
