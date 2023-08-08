@@ -49,3 +49,34 @@ export const SWAP_VARIABLES = {
   WBTC_MAINNET_ID: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599_1',
   ZEROX_MAINNET_ID: '0xe41d2489571d322189246dafa5ebde1f4699f498_1',
 };
+
+export const HARDWARE_WALLETS = {
+  TREZOR: {
+    accountsToImport: [
+      {
+        address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
+        index: 0,
+      },
+      {
+        address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
+        index: 1,
+      },
+    ],
+    deviceId: 'lol',
+    accountsEnabled: 2,
+  },
+  LEDGER: {
+    accountsToImport: [
+      {
+        address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
+        index: 0,
+      },
+      {
+        address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
+        index: 1,
+      },
+    ],
+    deviceId: 'lol',
+    accountsEnabled: 2,
+  },
+};
