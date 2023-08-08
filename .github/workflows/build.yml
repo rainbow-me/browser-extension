@@ -78,48 +78,48 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      with:
-         node-version: "16.20.0"
-    - name: Download deps cache artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: node_modules.tar.gz
-    - name: Unzip node_modules
-      shell: 'bash'
-      run: tar xzf node_modules.tar.gz
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-          name: rainbowbx-${{ github.sha }}.zip
-          path: build
-    - name: Setup xvfb
-      shell: 'bash'
-      run: |
-         sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-         # start xvfb in the background
-         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-    - name: Install firefox dev
-      shell: 'bash'
-      run: npx @puppeteer/browsers install firefox@dev
-    - name: Install Anvil
-      uses: foundry-rs/foundry-toolchain@v1
-      with:
-         version: nightly
-    - uses: actions/checkout@v3
-      with:
-           repository: 'rainbow-me/browser-extension-env'
-           token: ${{ inputs.gh-access-token }}
-           path: tmp
-    - name: Copy dotenv
-      shell: 'bash'
-      run: cat tmp/dotenv >> .env && rm -rf tmp
-  
-      - name: Run e2e parallel (Firefox)
+        with:
+          node-version: "16.20.0"
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        shell: 'bash'
+        run: tar xzf node_modules.tar.gz
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+            name: rainbowbx-${{ github.sha }}.zip
+            path: build
+      - name: Setup xvfb
+        shell: 'bash'
         run: |
-          export BROWSER=firefox
-          export OS=linux
-          export FIREFOX_BIN=$(find firefox -type f -name 'firefox')
-          yarn e2e:firefox:linux --retry=5
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+      - name: Install firefox dev
+        shell: 'bash'
+        run: npx @puppeteer/browsers install firefox@dev
+      - name: Install Anvil
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      - uses: actions/checkout@v3
+        with:
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ inputs.gh-access-token }}
+            path: tmp
+      - name: Copy dotenv
+        shell: 'bash'
+        run: cat tmp/dotenv >> .env && rm -rf tmp
+    
+        - name: Run e2e parallel (Firefox)
+          run: |
+            export BROWSER=firefox
+            export OS=linux
+            export FIREFOX_BIN=$(find firefox -type f -name 'firefox')
+            yarn e2e:firefox:linux --retry=5
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
