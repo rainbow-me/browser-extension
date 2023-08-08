@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
@@ -40,14 +41,6 @@ export const AppConnectionBanner = () => {
       }
     }, 1000);
   }, [appSession, appSession?.address, currentAddress]);
-
-  //   useEffect(() => {
-  //     setTimeout(() => {
-  //       if (show) {
-  //         setshow(false);
-  //       }
-  //     }, 4000);
-  //   }, [show]);
 
   return (
     <>
@@ -98,7 +91,9 @@ export const AppConnectionBanner = () => {
                     </TextOverflow>
                   </Inline>
                   <TextOverflow color="label" size="12pt" weight="bold">
-                    {`Connect to ${appName || appHost}?`}
+                    {i18n.t('app_connection_switcher.banner.connect_to', {
+                      appName: appName || appHost,
+                    })}
                   </TextOverflow>
                 </Stack>
               </Inline>
@@ -129,7 +124,7 @@ export const AppConnectionBanner = () => {
                       borderRadius="8px"
                       disabled
                     >
-                      {'Connect'}
+                      {i18n.t('app_connection_switcher.banner.connect')}
                     </Button>
                   </Box>
                 </Box>

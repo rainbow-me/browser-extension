@@ -599,7 +599,7 @@
       "not_connected": "Not connected",
       "networks": "Networks",
       "connect": "Connect",
-      "switch_networks": "Switch Networks"
+      "switch_networks": "Switch networks"
     },
     "home_header_right": {
       "settings": "Settings",
@@ -608,6 +608,27 @@
       "guides_and_support": "Guides & Support",
       "share_feedback": "Share Feedback",
       "lock_rainbow": "Lock Rainbow"
+    }
+  },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "Connect",
+      "connect_to": "Connect to %{appName}?"
+    },
+    "sheet": {
+      "connect": "Connect",
+      "connect_different_wallet": "Connect different wallet",
+      "dont_show_again": "Don’t show this again",
+      "allow_to": "Allow %{appName} to view your wallet address, balance, activity and request approval for transactions.",
+      "connect_to": "Connect to %{appName}?"
+    },
+    "wallet_item": {
+      "disconnect": "Disconnect",
+      "switch_connection": "Switch connection",
+      "connect": "Connect"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "Connect"
     }
   },
   "approve_request": {

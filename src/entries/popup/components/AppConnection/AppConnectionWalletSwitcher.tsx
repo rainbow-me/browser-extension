@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
@@ -102,7 +103,9 @@ export const AppConnectionWalletSwitcher = () => {
                 </Inline>
               </Box>
               <Text size="14pt" weight="heavy" align="center">
-                {'Switch Wallets'}
+                {i18n.t(
+                  'app_connection_switcher.wallet_switcher.switch_wallets',
+                )}
               </Text>
             </Inline>
           }
@@ -146,7 +149,9 @@ export const AppConnectionWalletSwitcher = () => {
               <Stack space="8px">
                 <Box paddingHorizontal="12px">
                   <Text weight="semibold" size="14pt" color="labelTertiary">
-                    {'Other Wallets'}
+                    {i18n.t(
+                      'app_connection_switcher.wallet_switcher.other_wallets',
+                    )}
                   </Text>
                 </Box>
                 <Box>
@@ -181,7 +186,7 @@ export const AppConnectionWalletSwitcher = () => {
               tabIndex={0}
             >
               <TextOverflow weight="bold" size="16pt" color="label">
-                {'Cancel'}
+                {i18n.t('app_connection_switcher.wallet_switcher.cancel')}
               </TextOverflow>
             </Button>
           </Box>

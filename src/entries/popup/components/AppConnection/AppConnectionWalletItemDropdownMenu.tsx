@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, ButtonSymbol, Inline, Stack, Text } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
@@ -166,7 +167,9 @@ export const AppConnectionWalletItemDropdownMenu = ({
                   </Inline>
                 </Box>
                 <Text size="14pt" weight="semibold" color="label">
-                  {'Disconnect'}
+                  {i18n.t(
+                    'app_connection_switcher.wallet_item_dropdown_menu.connect',
+                  )}
                 </Text>
               </Inline>
             </DropdownMenuRadioItem>
@@ -199,7 +202,10 @@ export const AppConnectionWalletItemDropdownMenu = ({
                   </Inline>
                 </Box>
                 <Text size="14pt" weight="semibold" color="label">
-                  {`Open ${appMetadata.appName || appMetadata.appHost}`}
+                  {i18n.t(
+                    'app_connection_switcher.wallet_item_dropdown_menu.open_app',
+                    { appName: appMetadata.appName || appMetadata.appHost },
+                  )}
                 </Text>
               </Inline>
             </DropdownMenuRadioItem>

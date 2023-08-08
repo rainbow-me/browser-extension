@@ -9,6 +9,7 @@ import React, {
 import { Address } from 'wagmi';
 
 import appConnectionWalletItemImageMask from 'static/assets/appConnectionWalletItemImageMask.svg';
+import { i18n } from '~/core/languages';
 import { selectUserAssetsBalance } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
@@ -167,9 +168,6 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                 value="disconnect"
                 onSelect={(e) => {
                   e.stopPropagation();
-                  e.stopImmediatePropagation();
-                  console.log('-- onSelect', 'disconnect');
-                  // disconnect();
                 }}
               >
                 <Inline
@@ -192,7 +190,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                     </Inline>
                   </Box>
                   <Text size="14pt" weight="semibold" color="label">
-                    {'Disconnectt'}
+                    {i18n.t('app_connection_switcher.wallet_item.disconnect')}
                   </Text>
                 </Inline>
               </ContextMenuRadioItem>
@@ -290,7 +288,11 @@ export const AppConnectionWalletItem = React.forwardRef(
                 align="left"
                 color={connected ? 'red' : 'green'}
               >
-                {connected ? 'Switch connection' : 'Connect'}
+                {i18n.t(
+                  `app_connection_switcher.wallet_item.${
+                    connected ? 'switch_connection' : 'connect'
+                  }`,
+                )}
               </Text>
             </Box>
           )}

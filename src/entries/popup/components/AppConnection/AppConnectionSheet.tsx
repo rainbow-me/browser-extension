@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import appConnectionSheetImageMask from 'static/assets/appConnectionSheetImageMask.svg';
+import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
@@ -104,7 +105,9 @@ export const AppConnectionSheet = () => {
                     </TextOverflow>
                   </Inline>
                   <TextOverflow color="label" size="12pt" weight="bold">
-                    {`Connect to ${appName || appHost}?`}
+                    {i18n.t('app_connection_switcher.sheet.connect_to', {
+                      appName: appName || appHost,
+                    })}
                   </TextOverflow>
                 </Stack>
                 <Text
@@ -113,10 +116,9 @@ export const AppConnectionSheet = () => {
                   weight="medium"
                   align="center"
                 >
-                  {`Allow ${
-                    appName || appHost
-                  } to view your wallet address, balance, activity
-                  and request approval for transactions.`}
+                  {i18n.t('app_connection_switcher.sheet.allow_to', {
+                    appName: appName || appHost,
+                  })}
                 </Text>
               </Stack>
             </Stack>
@@ -137,7 +139,7 @@ export const AppConnectionSheet = () => {
                     tabIndex={0}
                     enterCta
                   >
-                    {'Connect'}
+                    {i18n.t('app_connection_switcher.sheet.connect')}
                   </Button>
                   <Button
                     color="fillSecondary"
@@ -149,7 +151,9 @@ export const AppConnectionSheet = () => {
                     tabIndex={0}
                   >
                     <TextOverflow weight="bold" size="16pt" color="label">
-                      {'Connect different wallet'}
+                      {i18n.t(
+                        'app_connection_switcher.sheet.connect_different_wallet',
+                      )}
                     </TextOverflow>
                   </Button>
                 </Stack>
@@ -163,7 +167,7 @@ export const AppConnectionSheet = () => {
                   size="12pt"
                   color="labelSecondary"
                 >
-                  Don’t show this again
+                  {i18n.t('app_connection_switcher.sheet.dont_show_again')}
                 </Text>
               </Inline>
             </Stack>

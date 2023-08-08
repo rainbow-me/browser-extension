@@ -143,18 +143,8 @@ const ContextMenuContentBody = React.forwardRef<
           onInteractOutside={onInteractOutside}
           style={{
             width: 204,
-            // backdropFilter: 'blur(26px)',
-            // boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
-            // marginRight: marginRight ?? '0px',
           }}
           forceMount
-          // paddingHorizontal="12px"
-          // paddingVertical="4px"
-          // background="surfaceMenu"
-          // borderColor="separatorTertiary"
-          // borderWidth="1px"
-          // borderRadius="16px"
-          // sideOffset={sideOffset}
           alignOffset={alignOffset}
           hideWhenDetached
         >
