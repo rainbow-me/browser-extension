@@ -1,4 +1,3 @@
-import { DismissableLayerProps } from '@radix-ui/react-tooltip';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   ReactElement,
@@ -56,7 +55,7 @@ export const ContextMenuContentWithSubMenu = ({
   children: ReactElement;
   sideOffset?: number;
   reff: React.MutableRefObject<HTMLDivElement | null>;
-  onInteractOutside?: DismissableLayerProps['onInteractOutside'];
+  onInteractOutside?: () => void;
 }) => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
@@ -160,7 +159,7 @@ export const ContextSubMenu = ({
         animate={false}
         key="sub-menu-element"
         border={false}
-        onInteractOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e: Event) => e.preventDefault()}
         sideOffset={-44}
         alignOffset={-12}
       >

@@ -172,7 +172,7 @@ export const DropdownSubMenu = ({
         animate={false}
         key="sub-menu-element"
         border={false}
-        onInteractOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e: Event) => e.preventDefault()}
         sideOffset={SUBMENU_SIDE_OFFSET}
         alignOffset={SUBMENU_ALIGN_OFFSET}
       >

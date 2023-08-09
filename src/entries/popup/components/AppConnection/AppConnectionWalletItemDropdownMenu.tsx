@@ -77,7 +77,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
     },
   });
   return (
-    <Box onClick={(e) => e.stopPropagation()} testId={testId}>
+    <Box onClick={(e: Event) => e.stopPropagation()} testId={testId}>
       <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
         <DropdownMenuTrigger asChild>
           <Box style={{ cursor: 'default' }}>
@@ -92,7 +92,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
 
         <DropdownMenuContentWithSubMenu reff={dropdownMenuRef} align="end">
           <DropdownMenuRadioGroup
-            onValueChange={(value) =>
+            onValueChange={(value: string) =>
               onValueChange(
                 value as 'disconnect' | 'switch-networks' | 'open-dapp',
               )
