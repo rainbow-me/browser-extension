@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { Box, ButtonSymbol, Inline, Stack, Text } from '~/design-system';
+import { Box, ButtonSymbol, Inline, Text } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { Symbol } from '~/design-system/components/Symbol/Symbol';
 
@@ -100,34 +100,33 @@ export const AppConnectionWalletItemDropdownMenu = ({
           >
             <DropdownSubMenu
               parentRef={dropdownMenuRef}
+              menuOpen={menuOpen}
               setMenuOpen={setMenuOpen}
               subMenuOpen={subMenuOpen}
               setSubMenuOpen={setSubMenuOpen}
               subMenuContent={
-                <Stack space="4px">
-                  <DropdownMenuRadioGroup
-                    value={`${appSession?.chainId}`}
-                    onValueChange={changeChainId}
+                <DropdownMenuRadioGroup
+                  value={`${appSession?.chainId}`}
+                  onValueChange={changeChainId}
+                >
+                  <AccentColorProviderWrapper
+                    color={appMetadata.appColor || undefined}
                   >
-                    <AccentColorProviderWrapper
-                      color={appMetadata.appColor || undefined}
-                    >
-                      <SwitchNetworkMenuSelector
-                        type="dropdown"
-                        highlightAccentColor
-                        selectedValue={`${appSession?.chainId}`}
-                        onNetworkSelect={(e) => {
-                          e?.preventDefault();
-                          setSubMenuOpen(false);
-                          setMenuOpen(false);
-                        }}
-                        onShortcutPress={changeChainId}
-                        showDisconnect={!!appSession}
-                        disconnect={disconnect}
-                      />
-                    </AccentColorProviderWrapper>
-                  </DropdownMenuRadioGroup>
-                </Stack>
+                    <SwitchNetworkMenuSelector
+                      type="dropdown"
+                      highlightAccentColor
+                      selectedValue={`${appSession?.chainId}`}
+                      onNetworkSelect={(e) => {
+                        e?.preventDefault();
+                        setSubMenuOpen(false);
+                        setMenuOpen(false);
+                      }}
+                      onShortcutPress={changeChainId}
+                      showDisconnect={!!appSession}
+                      disconnect={disconnect}
+                    />
+                  </AccentColorProviderWrapper>
+                </DropdownMenuRadioGroup>
               }
               subMenuElement={
                 <AppInteractionItem

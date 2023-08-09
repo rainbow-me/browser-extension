@@ -23,7 +23,6 @@ import {
   Inline,
   Row,
   Rows,
-  Stack,
   Symbol,
   Text,
   TextOverflow,
@@ -62,19 +61,14 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
     const { children, appMetadata } = props;
     const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
     const [subMenuOpen, setSubMenuOpen] = useState(false);
-    const [menuOpen, setMenuOpenn] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const { updateAppSessionChainId, disconnectAppSession, appSession } =
       useAppSession({ host: appMetadata.appHost });
 
-    const setMenuOpen = useCallback((open: boolean) => {
-      setTimeout(
-        () => {
-          setMenuOpenn(open);
-        },
-        open ? 0 : 1,
-      );
-    }, []);
+    // const setMenuOpen = useCallback((open: boolean) => {
+    //   setMenuOpenn(open);
+    // }, []);
 
     const changeChainId = useCallback(
       (chainId: string) => {
@@ -107,7 +101,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
 
     return (
       <ContextMenu onOpenChange={setMenuOpen} open={menuOpen}>
-        <ContextMenuTrigger disabled={menuOpen} asChild>
+        <ContextMenuTrigger asChild>
           <Box>{children}</Box>
         </ContextMenuTrigger>
 
@@ -127,30 +121,30 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                 subMenuOpen={subMenuOpen}
                 setSubMenuOpen={setSubMenuOpen}
                 subMenuContent={
-                  <Stack space="4px">
-                    <DropdownMenuRadioGroup
-                      value={`${appSession?.chainId}`}
-                      onValueChange={changeChainId}
+                  <DropdownMenuRadioGroup
+                    value={`${appSession?.chainId}`}
+                    onValueChange={changeChainId}
+                  >
+                    <AccentColorProviderWrapper
+                      color={appMetadata.appColor || undefined}
                     >
-                      <AccentColorProviderWrapper
-                        color={appMetadata.appColor || undefined}
-                      >
-                        <SwitchNetworkMenuSelector
-                          type="dropdown"
-                          highlightAccentColor
-                          selectedValue={`${appSession?.chainId}`}
-                          onNetworkSelect={(e) => {
-                            e?.preventDefault();
-                            setSubMenuOpen(false);
+                      <SwitchNetworkMenuSelector
+                        type="dropdown"
+                        highlightAccentColor
+                        selectedValue={`${appSession?.chainId}`}
+                        onNetworkSelect={(e) => {
+                          e?.preventDefault();
+                          setSubMenuOpen(false);
+                          setTimeout(() => {
                             setMenuOpen(false);
-                          }}
-                          onShortcutPress={changeChainId}
-                          showDisconnect={!!appSession}
-                          disconnect={disconnect}
-                        />
-                      </AccentColorProviderWrapper>
-                    </DropdownMenuRadioGroup>
-                  </Stack>
+                          }, 100);
+                        }}
+                        onShortcutPress={changeChainId}
+                        showDisconnect={!!appSession}
+                        disconnect={disconnect}
+                      />
+                    </AccentColorProviderWrapper>
+                  </DropdownMenuRadioGroup>
                 }
                 subMenuElement={
                   <AppInteractionItem
@@ -163,16 +157,12 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
               />
             </Box>
             <Box key="disconnect">
-              <ContextMenuRadioItem
-                value="disconnect"
-                onSelect={(e) => {
-                  e.stopPropagation();
-                }}
-              >
+              <ContextMenuRadioItem value="disconnect">
                 <Inline
                   height="full"
                   alignHorizontal="center"
                   alignVertical="center"
+                  space="8px"
                 >
                   <Box height="fit" style={{ width: '18px', height: '18px' }}>
                     <Inline

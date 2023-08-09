@@ -143,13 +143,7 @@ export const DropdownSubMenu = ({
   );
 
   useEffect(() => {
-    setTimeout(
-      () => {
-        setDropdownMenuOpen(subMenuOpen);
-      },
-      // eslint-disable-next-line no-nested-ternary
-      subMenuOpen ? 0 : menuOpen ? 500 : 0,
-    );
+    setDropdownMenuOpen(subMenuOpen);
   }, [subMenuOpen, menuOpen]);
 
   useEffect(() => {
