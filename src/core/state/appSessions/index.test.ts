@@ -24,8 +24,8 @@ test('should be able to add session but not duplicate it', async () => {
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
-      address: ADDRESS_1,
-      chainId: ChainId.mainnet,
+      sessions: { [ADDRESS_1]: ChainId.mainnet },
+      activeSession: { address: ADDRESS_1, chainId: ChainId.mainnet },
     },
   });
   addSession({
@@ -38,8 +38,8 @@ test('should be able to add session but not duplicate it', async () => {
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
-      address: ADDRESS_1,
-      chainId: ChainId.mainnet,
+      sessions: { [ADDRESS_1]: ChainId.mainnet, [ADDRESS_2]: ChainId.arbitrum },
+      activeSession: { address: ADDRESS_2, chainId: ChainId.arbitrum },
     },
   });
   addSession({
@@ -52,14 +52,14 @@ test('should be able to add session but not duplicate it', async () => {
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
-      address: ADDRESS_1,
-      chainId: ChainId.mainnet,
+      sessions: { [ADDRESS_1]: ChainId.mainnet, [ADDRESS_2]: ChainId.arbitrum },
+      activeSession: { address: ADDRESS_2, chainId: ChainId.arbitrum },
     },
     [OPENSEA_HOST]: {
       url: OPENSEA_URL,
       host: OPENSEA_HOST,
-      address: ADDRESS_2,
-      chainId: ChainId.arbitrum,
+      sessions: { [ADDRESS_2]: ChainId.arbitrum },
+      activeSession: { address: ADDRESS_2, chainId: ChainId.arbitrum },
     },
   });
 });
@@ -71,8 +71,8 @@ test('should be able to remove session', async () => {
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
-      address: ADDRESS_1,
-      chainId: ChainId.mainnet,
+      sessions: { [ADDRESS_1]: ChainId.mainnet, [ADDRESS_2]: ChainId.arbitrum },
+      activeSession: { address: ADDRESS_2, chainId: ChainId.arbitrum },
     },
   });
 });
@@ -96,8 +96,8 @@ test('should be able to check if host has an active session', async () => {
   expect(activeSession).toStrictEqual({
     url: UNISWAP_URL,
     host: UNISWAP_HOST,
-    address: ADDRESS_1,
-    chainId: ChainId.mainnet,
+    sessions: { [ADDRESS_1]: ChainId.mainnet },
+    activeSession: { address: ADDRESS_1, chainId: ChainId.mainnet },
   });
 });
 
@@ -108,8 +108,8 @@ test('should be able to update session chain id', async () => {
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
-      address: ADDRESS_1,
-      chainId: ChainId.arbitrum,
+      sessions: { [ADDRESS_1]: ChainId.arbitrum },
+      activeSession: { address: ADDRESS_1, chainId: ChainId.arbitrum },
     },
   });
 });
@@ -121,8 +121,10 @@ test('should be able to update session address', async () => {
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
-      address: ADDRESS_2,
-      chainId: ChainId.arbitrum,
+      sessions: {
+        [ADDRESS_1]: ChainId.arbitrum,
+      },
+      activeSession: { address: ADDRESS_2, chainId: ChainId.arbitrum },
     },
   });
 });

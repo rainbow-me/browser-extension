@@ -21,7 +21,7 @@ interface V0AppSession {
 
 export interface AppSessionsStore<T extends AppSession | V0AppSession> {
   appSessions: Record<string, T>;
-  getactiveSessionAddress: ({ host }: { host: string }) => AppSession | null;
+  getActiveSession: ({ host }: { host: string }) => T | null;
   addSession: ({
     host,
     address,
@@ -54,7 +54,7 @@ export interface AppSessionsStore<T extends AppSession | V0AppSession> {
 export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
   (set, get) => ({
     appSessions: {},
-    getactiveSessionAddress: ({ host }) => {
+    getActiveSession: ({ host }) => {
       const appSessions = get().appSessions;
       return appSessions[host] || null;
     },
