@@ -28,6 +28,7 @@ import {
   AppConnectionWalletItem,
   AppConnectionWalletItemConnectedWrapper,
 } from './AppConnectionWalletItem';
+import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItemDropdownMenu';
 
 export const AppConnectionWalletSwitcher = () => {
   const [show, setshow] = useState(false);
@@ -117,26 +118,35 @@ export const AppConnectionWalletSwitcher = () => {
               <Stack space="8px">
                 <Box paddingHorizontal="12px">
                   <Text weight="semibold" size="14pt" color="labelTertiary">
-                    {'Connected'}
+                    {i18n.t(
+                      'app_connection_switcher.wallet_switcher.connected',
+                    )}
                   </Text>
                 </Box>
                 <Box>
                   <AccentColorProviderWrapper color="red">
                     {connectedAccounts.map((account) => (
-                      <AppConnectionWalletItemConnectedWrapper
-                        key={account.address}
-                        appMetadata={appMetadata}
-                      >
-                        <AppConnectionWalletItem
+                      <Box key={account.address} position="relative">
+                        <AppConnectionWalletItemConnectedWrapper
                           key={account.address}
-                          onClick={() => null}
-                          account={account.address}
-                          chainId={appSession.chainId}
-                          active={true}
-                          connected={true}
                           appMetadata={appMetadata}
-                        />
-                      </AppConnectionWalletItemConnectedWrapper>
+                        >
+                          <AppConnectionWalletItem
+                            key={account.address}
+                            onClick={() => null}
+                            account={account.address}
+                            chainId={appSession.chainId}
+                            active={true}
+                            connected={true}
+                            appMetadata={appMetadata}
+                          />
+                        </AppConnectionWalletItemConnectedWrapper>
+                        <Box position="absolute" style={{ top: 10, right: 3 }}>
+                          <AppConnectionWalletItemDropdownMenu
+                            appMetadata={appMetadata}
+                          />
+                        </Box>
+                      </Box>
                     ))}
                   </AccentColorProviderWrapper>
                 </Box>

@@ -634,7 +634,8 @@
     "wallet_switcher": {
       "switch_wallets": "Switch Wallets",
       "other_wallets": "Other Wallets",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "connected": "Connected"
     }
   },
   "approve_request": {

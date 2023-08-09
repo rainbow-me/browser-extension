@@ -17,7 +17,6 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
-  Bleed,
   Box,
   Column,
   Columns,
@@ -50,7 +49,6 @@ import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 import { appConnectionWalletItem } from './AppConnectionWalletItem.css';
-import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItemDropdownMenu';
 
 interface WalletItemConnectedWrapperProps {
   children: ReactElement;
@@ -216,7 +214,7 @@ interface WalletItemProps {
 
 export const AppConnectionWalletItem = React.forwardRef(
   (props: WalletItemProps) => {
-    const { account, onClick, chainId, active, connected, appMetadata } = props;
+    const { account, onClick, chainId, active, connected } = props;
     const [hovering, setHovering] = useState(false);
     const { displayName } = useWalletName({ address: account });
     const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
@@ -375,15 +373,6 @@ export const AppConnectionWalletItem = React.forwardRef(
                 </Rows>
               </Box>
             </Column>
-            {connected ? (
-              <Column width="content">
-                <Bleed horizontal="8px">
-                  <AppConnectionWalletItemDropdownMenu
-                    appMetadata={appMetadata}
-                  />
-                </Bleed>
-              </Column>
-            ) : null}
           </Columns>
         </Lens>
       </Box>
