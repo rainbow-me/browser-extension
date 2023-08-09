@@ -139,15 +139,42 @@ export async function initDriverWithOptions(opts) {
   return driver;
 }
 
+// const addPermissionForAllWebsites = async (driver) => {
+//   // Add the permission to access all websites
+//   await driver.get('about:addons');
+//   const sidebarBtn = await querySelector(driver, `[title="Extensions"]`);
+//   await sidebarBtn.click();
+//   const moreBtn = await querySelector(driver, `[action="more-options"]`);
+//   await moreBtn.click();
+//   const manageBtn = await querySelector(
+//     driver,
+//     `[data-l10n-id="manage-addon-button"]`,
+//   );
+//   await manageBtn.click();
+//   await findElementByIdAndClick({
+//     id: 'details-deck-button-permissions',
+//     driver,
+//   });
+//   await driver.executeScript(`
+//     const h = document.querySelectorAll('[class="permission-info"]');
+//     let i = 0;
+//     for(item of h){
+//       i > 0 && item.children[0].click();
+//       i++
+//     } 
+//   `);
+// };
+
 export async function getExtensionIdByName(driver, extensionName) {
   if (driver?.browser === 'firefox') {
     await driver.get('about:debugging#addons');
-    return await driver
+    const text = await driver
       .wait(
         until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
         1000,
       )
       .getText();
+    return text;
   } else {
     await driver.get('chrome://extensions');
     return await driver.executeScript(`
