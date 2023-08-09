@@ -6,6 +6,8 @@ import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import { ChainId } from '~/core/types/chains';
+
 import {
   delayTime,
   fillPrivateKey,
@@ -27,7 +29,7 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
-import { CHAIN_ID, TEST_VARIABLES } from '../../walletVariables';
+import { TEST_VARIABLES } from '../../walletVariables';
 
 const TYPED_MESSAGE = {
   domain: {
@@ -227,7 +229,7 @@ describe('App interactions flow', () => {
     // switch network
     await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
     await findElementByTestIdAndClick({
-      id: `switch-network-item-${CHAIN_ID.ETH}`,
+      id: `switch-network-item-${ChainId.mainnet}`,
       driver,
     });
 
@@ -260,7 +262,7 @@ describe('App interactions flow', () => {
     });
 
     await findElementByTestIdAndClick({
-      id: `switch-network-item-${CHAIN_ID.ETH}`,
+      id: `switch-network-item-${ChainId.mainnet}`,
       driver,
     });
     await goToTestApp(driver);

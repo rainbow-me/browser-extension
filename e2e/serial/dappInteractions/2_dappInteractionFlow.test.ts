@@ -4,6 +4,8 @@ import { getAddress } from '@ethersproject/address';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import { ChainId } from '~/core/types/chains';
+
 import {
   awaitTextChange,
   delayTime,
@@ -27,7 +29,7 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
-import { CHAIN_ID, TEST_VARIABLES } from '../../walletVariables';
+import { TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
@@ -258,7 +260,7 @@ describe('App interactions flow', () => {
 
     await findElementByTextAndClick(driver, 'bx-e2e-dapp.vercel.app');
     await findElementByTestIdAndClick({
-      id: `switch-network-item-${CHAIN_ID.HARDHAT}`,
+      id: `switch-network-item-${ChainId.hardhat}`,
       driver,
     });
     await driver.get('https://bx-e2e-dapp.vercel.app/');

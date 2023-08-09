@@ -8,6 +8,8 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
+import { ChainId } from '~/core/types/chains';
+
 import {
   delay,
   delayTime,
@@ -29,11 +31,7 @@ import {
   waitAndClick,
 } from '../../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
-import {
-  CHAIN_ID,
-  SWAP_VARIABLES,
-  TEST_VARIABLES,
-} from '../../walletVariables';
+import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
@@ -567,7 +565,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `switch-network-item-${CHAIN_ID.OPTIMISM}`,
+    id: `switch-network-item-${ChainId.optimism}`,
     driver,
   });
   await typeOnTextInput({
@@ -590,7 +588,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `switch-network-item-${CHAIN_ID.POLYGON}`,
+    id: `switch-network-item-${ChainId.polygon}`,
     driver,
   });
   await typeOnTextInput({
@@ -613,7 +611,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `switch-network-item-${CHAIN_ID.ARBITRUM}`,
+    id: `switch-network-item-${ChainId.arbitrum}`,
     driver,
   });
   await typeOnTextInput({
@@ -636,7 +634,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `switch-network-item-${CHAIN_ID.BSC}`,
+    id: `switch-network-item-${ChainId.bsc}`,
     driver,
   });
   await typeOnTextInput({
@@ -661,7 +659,7 @@ it('should be able to see no route explainer', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `switch-network-item-${CHAIN_ID.OPTIMISM}`,
+    id: `switch-network-item-${ChainId.optimism}`,
     driver,
   });
   await typeOnTextInput({
@@ -688,7 +686,7 @@ it('should be able to see no route explainer', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `switch-network-item-${CHAIN_ID.ARBITRUM}`,
+    id: `switch-network-item-${ChainId.arbitrum}`,
     driver,
   });
   await typeOnTextInput({
@@ -750,7 +748,7 @@ it('should be able to find exact match on other networks', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `switch-network-item-${CHAIN_ID.POLYGON}`,
+    id: `switch-network-item-${ChainId.polygon}`,
     driver,
   });
 
