@@ -8,6 +8,8 @@ import {
   Box,
   Button,
   Inline,
+  Row,
+  Rows,
   Separator,
   Stack,
   Text,
@@ -73,134 +75,144 @@ export const AppConnectionWalletSwitcher = () => {
 
   return (
     <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET} padding="12px">
-      <Box>
-        <Navbar
-          leftComponent={
-            <Navbar.CloseButton
-              onClick={() => setshow(false)}
-              variant="transparent"
-            />
-          }
-          titleComponent={
-            <Inline alignVertical="center" space="4px">
-              <Box
-                style={{
-                  height: '14px',
-                  width: '14px',
-                  overflow: 'hidden',
-                }}
-                borderRadius="4px"
-              >
-                <Inline
-                  alignHorizontal="center"
-                  alignVertical="center"
-                  height="full"
-                >
-                  <ExternalImage
-                    src={appMetadata.appLogo}
-                    width="14"
-                    height="14"
-                  />
-                </Inline>
-              </Box>
-              <Text size="14pt" weight="heavy" align="center">
-                {i18n.t(
-                  'app_connection_switcher.wallet_switcher.switch_wallets',
-                )}
-              </Text>
-            </Inline>
-          }
-        />
-
-        <Box paddingHorizontal="8px">
-          <Stack space="8px">
-            <Box paddingTop="8px">
-              <Stack space="8px">
-                <Box paddingHorizontal="12px">
-                  <Text weight="semibold" size="14pt" color="labelTertiary">
+      <Box style={{ height: '576px' }}>
+        <Rows alignVertical="justify">
+          <Row>
+            <Navbar
+              leftComponent={
+                <Navbar.CloseButton
+                  onClick={() => setshow(false)}
+                  variant="transparent"
+                />
+              }
+              titleComponent={
+                <Inline alignVertical="center" space="4px">
+                  <Box
+                    style={{
+                      height: '14px',
+                      width: '14px',
+                      overflow: 'hidden',
+                    }}
+                    borderRadius="4px"
+                  >
+                    <Inline
+                      alignHorizontal="center"
+                      alignVertical="center"
+                      height="full"
+                    >
+                      <ExternalImage
+                        src={appMetadata.appLogo}
+                        width="14"
+                        height="14"
+                      />
+                    </Inline>
+                  </Box>
+                  <Text size="14pt" weight="heavy" align="center">
                     {i18n.t(
-                      'app_connection_switcher.wallet_switcher.connected',
+                      'app_connection_switcher.wallet_switcher.switch_wallets',
                     )}
                   </Text>
+                </Inline>
+              }
+            />
+
+            <Box paddingHorizontal="8px">
+              <Stack space="8px">
+                <Box paddingTop="8px">
+                  <Stack space="8px">
+                    <Box paddingHorizontal="12px">
+                      <Text weight="semibold" size="14pt" color="labelTertiary">
+                        {i18n.t(
+                          'app_connection_switcher.wallet_switcher.connected',
+                        )}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <AccentColorProviderWrapper color="red">
+                        {connectedAccounts.map((account) => (
+                          <Box key={account.address} position="relative">
+                            <AppConnectionWalletItemConnectedWrapper
+                              key={account.address}
+                              appMetadata={appMetadata}
+                            >
+                              <AppConnectionWalletItem
+                                key={account.address}
+                                onClick={() => null}
+                                account={account.address}
+                                chainId={appSession.chainId}
+                                active={true}
+                                connected={true}
+                                appMetadata={appMetadata}
+                              />
+                            </AppConnectionWalletItemConnectedWrapper>
+                            <Box
+                              position="absolute"
+                              style={{ top: 10, right: 3 }}
+                            >
+                              <AppConnectionWalletItemDropdownMenu
+                                appMetadata={appMetadata}
+                              />
+                            </Box>
+                          </Box>
+                        ))}
+                      </AccentColorProviderWrapper>
+                    </Box>
+                  </Stack>
                 </Box>
-                <Box>
-                  <AccentColorProviderWrapper color="red">
-                    {connectedAccounts.map((account) => (
-                      <Box key={account.address} position="relative">
-                        <AppConnectionWalletItemConnectedWrapper
-                          key={account.address}
-                          appMetadata={appMetadata}
-                        >
+                <Box paddingHorizontal="8px">
+                  <Separator strokeWeight="1px" color="separatorSecondary" />
+                </Box>
+                <Box paddingTop="8px">
+                  <Stack space="8px">
+                    <Box paddingHorizontal="12px">
+                      <Text weight="semibold" size="14pt" color="labelTertiary">
+                        {i18n.t(
+                          'app_connection_switcher.wallet_switcher.other_wallets',
+                        )}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <AccentColorProviderWrapper color="green">
+                        {notConnectedAccounts.map((account) => (
                           <AppConnectionWalletItem
                             key={account.address}
                             onClick={() => null}
                             account={account.address}
-                            chainId={appSession.chainId}
-                            active={true}
-                            connected={true}
+                            chainId={ChainId.mainnet}
+                            connected={false}
                             appMetadata={appMetadata}
                           />
-                        </AppConnectionWalletItemConnectedWrapper>
-                        <Box position="absolute" style={{ top: 10, right: 3 }}>
-                          <AppConnectionWalletItemDropdownMenu
-                            appMetadata={appMetadata}
-                          />
-                        </Box>
-                      </Box>
-                    ))}
-                  </AccentColorProviderWrapper>
+                        ))}
+                      </AccentColorProviderWrapper>
+                    </Box>
+                  </Stack>
                 </Box>
               </Stack>
             </Box>
-            <Box paddingHorizontal="8px">
-              <Separator strokeWeight="1px" color="separatorSecondary" />
-            </Box>
-            <Box paddingTop="8px">
-              <Stack space="8px">
-                <Box paddingHorizontal="12px">
-                  <Text weight="semibold" size="14pt" color="labelTertiary">
-                    {i18n.t(
-                      'app_connection_switcher.wallet_switcher.other_wallets',
-                    )}
-                  </Text>
-                </Box>
-                <Box>
-                  <AccentColorProviderWrapper color="green">
-                    {notConnectedAccounts.map((account) => (
-                      <AppConnectionWalletItem
-                        key={account.address}
-                        onClick={() => null}
-                        account={account.address}
-                        chainId={ChainId.mainnet}
-                        connected={false}
-                        appMetadata={appMetadata}
-                      />
-                    ))}
-                  </AccentColorProviderWrapper>
-                </Box>
-              </Stack>
-            </Box>
-          </Stack>
-        </Box>
+          </Row>
 
-        <Separator strokeWeight="1px" color="separatorSecondary" />
-        <Box padding="20px">
-          <Box width="full">
-            <Button
-              color="fillSecondary"
-              height="44px"
-              width="full"
-              onClick={undefined}
-              variant="plain"
-              disabled={false}
-              tabIndex={0}
-            >
-              <TextOverflow weight="bold" size="16pt" color="label">
-                {i18n.t('app_connection_switcher.wallet_switcher.cancel')}
-              </TextOverflow>
-            </Button>
-          </Box>
-        </Box>
+          <Row height="content">
+            <Separator strokeWeight="1px" color="separatorSecondary" />
+
+            <Box padding="20px">
+              <Box width="full">
+                <Button
+                  color="fillSecondary"
+                  height="44px"
+                  width="full"
+                  onClick={undefined}
+                  variant="plain"
+                  disabled={false}
+                  tabIndex={0}
+                >
+                  <TextOverflow weight="bold" size="16pt" color="label">
+                    {i18n.t('app_connection_switcher.wallet_switcher.cancel')}
+                  </TextOverflow>
+                </Button>
+              </Box>
+            </Box>
+          </Row>
+        </Rows>
       </Box>
     </Prompt>
   );
