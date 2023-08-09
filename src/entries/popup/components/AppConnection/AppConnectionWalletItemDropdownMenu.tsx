@@ -141,7 +141,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
               value="disconnect"
               onSelect={(e) => e.stopPropagation()}
             >
-              <Inline alignVertical="center">
+              <Inline space="8px" alignVertical="center">
                 <Box height="fit" style={{ width: '18px', height: '18px' }}>
                   <Inline
                     height="full"
@@ -158,7 +158,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
                 </Box>
                 <Text size="14pt" weight="semibold" color="label">
                   {i18n.t(
-                    'app_connection_switcher.wallet_item_dropdown_menu.connect',
+                    'app_connection_switcher.wallet_item_dropdown_menu.disconnect',
                   )}
                 </Text>
               </Inline>
@@ -170,7 +170,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
               value="open-dapp"
               onSelect={(e) => e.preventDefault()}
             >
-              <Inline alignVertical="center">
+              <Inline space="8px" alignVertical="center">
                 <Box
                   style={{
                     height: '18px',

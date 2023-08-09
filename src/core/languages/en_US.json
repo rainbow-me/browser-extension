@@ -629,6 +629,7 @@
     },
     "wallet_item_dropdown_menu": {
       "connect": "Connect",
+      "disconnect": "Disconnect",
       "open_app": "Open %{appName}"
     },
     "wallet_switcher": {

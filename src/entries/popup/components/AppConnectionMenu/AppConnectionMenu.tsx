@@ -235,13 +235,20 @@ export const AppConnectionMenu = ({
               >
                 <Box testId={connectedAppsId}>
                   <Inline alignVertical="center" space="8px">
-                    <Inline alignVertical="center" alignHorizontal="center">
-                      <Symbol
-                        size={12}
-                        symbol="square.on.square.dashed"
-                        weight="semibold"
-                      />
-                    </Inline>
+                    <Box height="fit" style={{ width: '18px', height: '18px' }}>
+                      <Inline
+                        height="full"
+                        alignVertical="center"
+                        alignHorizontal="center"
+                      >
+                        <Symbol
+                          size={14}
+                          symbol="square.on.square.dashed"
+                          weight="semibold"
+                        />
+                      </Inline>
+                    </Box>
+
                     <Text size="14pt" weight="semibold">
                       {i18n.t('menu.app_connection_menu.all_connected_apps')}
                     </Text>

@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { AppSession } from '~/core/state/appSessions';
-import { Box, Column, Columns, Symbol, Text } from '~/design-system';
+import { Box, Column, Columns, Inline, Symbol, Text } from '~/design-system';
 
 import { ChevronDown } from '../ChevronDown/ChevronDown';
 import { ContextMenuRadioItem } from '../ContextMenu/ContextMenu';
@@ -38,13 +38,21 @@ export const AppInteractionItem = ({
       <Box width="full">
         <Columns alignVertical="center" space="8px">
           <Column width="content">
-            <Symbol
-              size={12}
-              symbol={
-                !appSession ? 'app.connected.to.app.below.fill' : 'network'
-              }
-              weight="semibold"
-            />
+            <Box height="fit" style={{ height: '18px', width: '18px' }}>
+              <Inline
+                height="full"
+                alignHorizontal="center"
+                alignVertical="center"
+              >
+                <Symbol
+                  size={14}
+                  symbol={
+                    !appSession ? 'app.connected.to.app.below.fill' : 'network'
+                  }
+                  weight="semibold"
+                />
+              </Inline>
+            </Box>
           </Column>
           <Column>
             <Text size="14pt" weight="semibold">

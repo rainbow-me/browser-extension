@@ -8,6 +8,7 @@ import {
   Box,
   Column,
   Columns,
+  Inline,
   Inset,
   Row,
   Rows,
@@ -42,14 +43,20 @@ export const AppConnectionMenuHeader = ({
           <Column width="content">
             <Box
               style={{
-                height: 14,
-                width: 14,
+                height: 18,
+                width: 18,
                 borderRadius: 3.5,
                 overflow: 'hidden',
                 marginRight: 2,
               }}
             >
-              <ExternalImage src={appLogo} width="14" height="14" />
+              <Inline
+                height="full"
+                alignHorizontal="center"
+                alignVertical="center"
+              >
+                <ExternalImage src={appLogo} width="16" height="16" />
+              </Inline>
             </Box>
           </Column>
           <Column>
