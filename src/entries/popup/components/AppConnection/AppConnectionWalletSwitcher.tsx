@@ -116,7 +116,10 @@ export const AppConnectionWalletSwitcher = () => {
               }
             />
 
-            <Box paddingHorizontal="8px">
+            <Box
+              paddingHorizontal="8px"
+              style={{ overflow: 'scroll', height: '428px' }}
+            >
               <Stack space="8px">
                 <Box paddingTop="8px">
                   <Stack space="8px">

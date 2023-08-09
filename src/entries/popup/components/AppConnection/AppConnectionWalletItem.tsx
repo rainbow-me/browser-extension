@@ -350,14 +350,16 @@ export const AppConnectionWalletItem = React.forwardRef(
               </Box>
             </Column>
             <Column>
-              <Box>
+              <Box position="relative">
                 <Rows space="8px" alignVertical="center">
                   <Row height="content">
                     <TextOverflow color="label" size="14pt" weight="semibold">
                       {displayName}
                     </TextOverflow>
                   </Row>
-                  <Row>{subLabel}</Row>
+                  <Row>
+                    <Box position="relative">{subLabel}</Box>
+                  </Row>
                 </Rows>
               </Box>
             </Column>
