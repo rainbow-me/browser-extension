@@ -94,7 +94,11 @@ export const DropdownMenuContentWithSubMenu = ({
   );
 };
 
+const SUBMENU_SIDE_OFFSET = -44;
+const SUBMENU_ALIGN_OFFSET = -12;
+
 interface DropdownSubMenuProps {
+  menuOpen: boolean;
   setMenuOpen: (open: boolean) => void;
   subMenuOpen: boolean;
   subMenuElement: ReactNode;
@@ -108,6 +112,7 @@ export const DropdownSubMenu = ({
   subMenuElement,
   subMenuContent,
   parentRef,
+  menuOpen,
   setMenuOpen,
   setSubMenuOpen,
 }: DropdownSubMenuProps) => {
@@ -122,9 +127,9 @@ export const DropdownSubMenu = ({
     (e: any) => {
       e.preventDefault();
       const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
-      console.log('---- onInteractOutsideContent', x, y);
       if (x && y) {
         setSubMenuOpen?.(false);
+        setDropdownMenuOpen(false);
         if (
           subMenuRect &&
           parentRect &&
@@ -142,9 +147,10 @@ export const DropdownSubMenu = ({
       () => {
         setDropdownMenuOpen(subMenuOpen);
       },
-      subMenuOpen ? 0 : 0,
+      // eslint-disable-next-line no-nested-ternary
+      subMenuOpen ? 0 : menuOpen ? 500 : 0,
     );
-  }, [subMenuOpen]);
+  }, [subMenuOpen, menuOpen]);
 
   useEffect(() => {
     triggerSubMenuListener({ open: subMenuOpen });
@@ -173,8 +179,8 @@ export const DropdownSubMenu = ({
         key="sub-menu-element"
         border={false}
         onInteractOutside={(e) => e.preventDefault()}
-        sideOffset={-40}
-        alignOffset={-12}
+        sideOffset={SUBMENU_SIDE_OFFSET}
+        alignOffset={SUBMENU_ALIGN_OFFSET}
       >
         {subMenuElement}
       </DropdownMenuContent>
@@ -184,8 +190,8 @@ export const DropdownSubMenu = ({
             animate
             border={false}
             key="sub-menu-content"
-            sideOffset={-40}
-            alignOffset={-12}
+            sideOffset={SUBMENU_SIDE_OFFSET}
+            alignOffset={SUBMENU_ALIGN_OFFSET}
             onInteractOutside={onInteractOutsideContent}
           >
             <Stack space="4px">

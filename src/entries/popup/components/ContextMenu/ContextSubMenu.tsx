@@ -111,6 +111,7 @@ export const ContextSubMenu = ({
       e.preventDefault();
       const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
       if (x && y) {
+        setDropdownMenuOpen(false);
         setSubMenuOpen?.(false);
         if (
           subMenuRect &&
@@ -129,7 +130,7 @@ export const ContextSubMenu = ({
       () => {
         setDropdownMenuOpen(subMenuOpen);
       },
-      subMenuOpen ? 0 : 250,
+      subMenuOpen ? 0 : 500,
     );
   }, [subMenuOpen]);
 
@@ -160,7 +161,7 @@ export const ContextSubMenu = ({
         key="sub-menu-element"
         border={false}
         onInteractOutside={(e) => e.preventDefault()}
-        sideOffset={-40}
+        sideOffset={-44}
         alignOffset={-12}
       >
         {subMenuElement}
@@ -171,7 +172,7 @@ export const ContextSubMenu = ({
             animate
             border={false}
             key="sub-menu-content"
-            sideOffset={-40}
+            sideOffset={-44}
             alignOffset={-12}
             onInteractOutside={onInteractOutsideContent}
           >

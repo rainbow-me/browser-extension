@@ -180,6 +180,7 @@ export const AppConnectionMenu = ({
             <Stack space="4px">
               {url ? (
                 <DropdownSubMenu
+                  menuOpen={menuOpen}
                   parentRef={dropdownMenuRef}
                   setMenuOpen={setMenuOpen}
                   subMenuOpen={subMenuOpen}

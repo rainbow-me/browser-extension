@@ -121,6 +121,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
           >
             <Box key="switch-networks">
               <DropdownSubMenu
+                menuOpen={menuOpen}
                 parentRef={dropdownMenuRef}
                 setMenuOpen={setMenuOpen}
                 subMenuOpen={subMenuOpen}
