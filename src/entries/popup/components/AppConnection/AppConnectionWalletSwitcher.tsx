@@ -203,7 +203,7 @@ export const AppConnectionWalletSwitcher = () => {
                   color="fillSecondary"
                   height="44px"
                   width="full"
-                  onClick={undefined}
+                  onClick={() => setshow(false)}
                   variant="plain"
                   disabled={false}
                   tabIndex={0}
