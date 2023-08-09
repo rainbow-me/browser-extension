@@ -196,7 +196,7 @@ export const AppConnectionMenu = ({
                       ) : null}
 
                       <DropdownMenuRadioGroup
-                        value={`${appSession?.chainId}`}
+                        value={`${appSession?.activeSession?.chainId}`}
                         onValueChange={
                           appSession ? changeChainId : connectToApp
                         }
@@ -204,7 +204,7 @@ export const AppConnectionMenu = ({
                         <SwitchNetworkMenuSelector
                           type="dropdown"
                           highlightAccentColor
-                          selectedValue={`${appSession?.chainId}`}
+                          selectedValue={`${appSession?.activeSession?.chainId}`}
                           onNetworkSelect={(e) => {
                             e?.preventDefault();
                             setSubMenuOpen(false);

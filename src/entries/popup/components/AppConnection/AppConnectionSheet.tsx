@@ -37,12 +37,12 @@ export const AppConnectionSheet = () => {
     setTimeout(() => {
       if (
         appSession &&
-        !isLowerCaseMatch(appSession?.address, currentAddress)
+        !isLowerCaseMatch(appSession?.activeSession?.address, currentAddress)
       ) {
         setshow(true);
       }
     }, 1000);
-  }, [appSession, appSession?.address, currentAddress]);
+  }, [appSession, appSession?.activeSession?.address, currentAddress]);
 
   return (
     <>

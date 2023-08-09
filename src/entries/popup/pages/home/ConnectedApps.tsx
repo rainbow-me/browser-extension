@@ -37,9 +37,9 @@ export const ConnectedApps = () => {
 
   const filteredSessions = Object.values(appSessions).reduce(
     (acc: [AppSession[], AppSession[]], session: AppSession) => (
-      acc[isLowerCaseMatch(session.address, currentAddress) ? 0 : 1].push(
-        session,
-      ),
+      acc[
+        isLowerCaseMatch(session.activeSession.address, currentAddress) ? 0 : 1
+      ].push(session),
       acc
     ),
     [[], []],
@@ -86,7 +86,7 @@ export const ConnectedApps = () => {
                 <ConnectedApp
                   host={session.host}
                   url={session.url}
-                  address={session.address}
+                  address={session.activeSession.address}
                 />
               </Row>
             ))}
@@ -106,7 +106,7 @@ export const ConnectedApps = () => {
                     <ConnectedApp
                       host={session.host}
                       url={session.url}
-                      address={session.address}
+                      address={session.activeSession.address}
                     />
                   </Row>
                 ))}
@@ -230,7 +230,7 @@ const ConnectedApp = ({
                           >
                             <Bleed top="7px">
                               <ChainBadge
-                                chainId={appSession?.chainId}
+                                chainId={appSession?.activeSession?.chainId}
                                 size="14"
                               />
                             </Bleed>

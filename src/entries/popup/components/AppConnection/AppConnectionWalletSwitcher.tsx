@@ -48,15 +48,15 @@ export const AppConnectionWalletSwitcher = () => {
     setTimeout(() => {
       if (
         appSession &&
-        !isLowerCaseMatch(appSession?.address, currentAddress)
+        !isLowerCaseMatch(appSession?.activeSession?.address, currentAddress)
       ) {
         setshow(true);
       }
     }, 1000);
-  }, [appSession, appSession?.address, currentAddress]);
+  }, [appSession, appSession?.activeSession?.address, currentAddress]);
 
   const { connectedAccounts, notConnectedAccounts } = useMemo(() => {
-    const appSessionAccounts = [appSession?.address];
+    const appSessionAccounts = [appSession?.activeSession?.address];
 
     const [connectedAccounts, notConnectedAccounts] = sortedAccounts.reduce(
       (result, item) => {
@@ -71,7 +71,7 @@ export const AppConnectionWalletSwitcher = () => {
       [[] as Account[], [] as Account[]],
     );
     return { connectedAccounts, notConnectedAccounts };
-  }, [appSession?.address, sortedAccounts]);
+  }, [appSession?.activeSession?.address, sortedAccounts]);
 
   return (
     <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET} padding="12px">
@@ -142,7 +142,7 @@ export const AppConnectionWalletSwitcher = () => {
                                 key={account.address}
                                 onClick={() => null}
                                 account={account.address}
-                                chainId={appSession.chainId}
+                                chainId={appSession.activeSession.chainId}
                                 active={true}
                                 connected={true}
                                 appMetadata={appMetadata}

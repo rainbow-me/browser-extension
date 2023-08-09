@@ -110,7 +110,10 @@ export const AppConnection = () => {
                       height="full"
                     >
                       <Bleed top="7px">
-                        <ChainBadge chainId={appSession?.chainId} size="8" />
+                        <ChainBadge
+                          chainId={appSession?.activeSession?.chainId}
+                          size="8"
+                        />
                       </Bleed>
                     </Inline>
                   </Box>

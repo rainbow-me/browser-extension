@@ -77,7 +77,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
     },
   });
   return (
-    <Box onClick={(e: Event) => e.stopPropagation()} testId={testId}>
+    <Box onClick={(e) => e.stopPropagation()} testId={testId}>
       <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
         <DropdownMenuTrigger asChild>
           <Box style={{ cursor: 'default' }}>
@@ -106,7 +106,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
               setSubMenuOpen={setSubMenuOpen}
               subMenuContent={
                 <DropdownMenuRadioGroup
-                  value={`${appSession?.chainId}`}
+                  value={`${appSession?.activeSession?.chainId}`}
                   onValueChange={changeChainId}
                 >
                   <AccentColorProviderWrapper
@@ -115,7 +115,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
                     <SwitchNetworkMenuSelector
                       type="dropdown"
                       highlightAccentColor
-                      selectedValue={`${appSession?.chainId}`}
+                      selectedValue={`${appSession?.activeSession?.chainId}`}
                       onNetworkSelect={(e) => {
                         e?.preventDefault();
                         setSubMenuOpen(false);

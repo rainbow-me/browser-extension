@@ -118,7 +118,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                 setSubMenuOpen={setSubMenuOpen}
                 subMenuContent={
                   <DropdownMenuRadioGroup
-                    value={`${appSession?.chainId}`}
+                    value={`${appSession?.activeSession?.chainId}`}
                     onValueChange={changeChainId}
                   >
                     <AccentColorProviderWrapper
@@ -127,7 +127,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                       <SwitchNetworkMenuSelector
                         type="dropdown"
                         highlightAccentColor
-                        selectedValue={`${appSession?.chainId}`}
+                        selectedValue={`${appSession?.activeSession?.chainId}`}
                         onNetworkSelect={(e) => {
                           e?.preventDefault();
                           setSubMenuOpen(false);

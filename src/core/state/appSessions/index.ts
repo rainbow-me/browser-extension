@@ -1,19 +1,38 @@
 import { Address } from 'wagmi';
 import create from 'zustand';
 
+import { ChainId } from '~/core/types/chains';
+
 import { createStore } from '../internal/createStore';
 
 export interface AppSession {
+  host: string;
+  sessions: Record<Address, ChainId>;
+  activeSession: { address: Address; chainId: ChainId };
+  url: string;
+}
+
+interface V0AppSession {
   host: string;
   chainId: number;
   address: Address;
   url: string;
 }
 
-export interface AppSessionsStore {
-  appSessions: Record<string, AppSession>;
-  getActiveSession: ({ host }: { host: string }) => AppSession | null;
-  addSession: ({ host, address, chainId }: AppSession) => void;
+export interface AppSessionsStore<T extends AppSession | V0AppSession> {
+  appSessions: Record<string, T>;
+  getactiveSessionAddress: ({ host }: { host: string }) => AppSession | null;
+  addSession: ({
+    host,
+    address,
+    chainId,
+    url,
+  }: {
+    host: string;
+    address: Address;
+    chainId: ChainId;
+    url: string;
+  }) => void;
   removeSession: ({ host }: { host: string }) => void;
   updateSessionChainId: ({
     host,
@@ -32,10 +51,10 @@ export interface AppSessionsStore {
   clearSessions: () => void;
 }
 
-export const appSessionsStore = createStore<AppSessionsStore>(
+export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
   (set, get) => ({
     appSessions: {},
-    getActiveSession: ({ host }) => {
+    getactiveSessionAddress: ({ host }) => {
       const appSessions = get().appSessions;
       return appSessions[host] || null;
     },
@@ -43,10 +62,21 @@ export const appSessionsStore = createStore<AppSessionsStore>(
       const appSessions = get().appSessions;
       const existingSession = appSessions[host];
       if (!existingSession) {
-        appSessions[host] = { host, address, chainId, url };
+        appSessions[host] = {
+          host,
+          sessions: { [address]: chainId },
+          activeSession: { address, chainId },
+          url,
+        };
+      } else {
+        appSessions[host].sessions[address] = chainId;
+        appSessions[host].activeSession = { address, chainId };
       }
+      const updatedSessions = {
+        ...appSessions,
+      };
       set({
-        appSessions,
+        appSessions: updatedSessions,
       });
     },
     removeSession: ({ host }) => {
@@ -58,28 +88,33 @@ export const appSessionsStore = createStore<AppSessionsStore>(
     },
     updateSessionChainId: ({ host, chainId }) => {
       const appSessions = get().appSessions;
-      const newSessions = {
+      const activeSession = appSessions[host].activeSession;
+      const updatedSessions = {
         ...appSessions,
         [host]: {
           ...appSessions[host],
-          chainId,
+          activeSession: {
+            address: activeSession.address,
+            chainId,
+          },
+          sessions: {
+            ...appSessions[host].sessions,
+            [activeSession.address]: chainId,
+          },
         },
       };
       set({
-        appSessions: newSessions,
+        appSessions: updatedSessions,
       });
     },
     updateSessionAddress: ({ host, address }) => {
       const appSessions = get().appSessions;
-      const newSessions = {
+      appSessions[host].activeSession.address = address;
+      const updatedSessions = {
         ...appSessions,
-        [host]: {
-          ...appSessions[host],
-          address,
-        },
       };
       set({
-        appSessions: newSessions,
+        appSessions: updatedSessions,
       });
     },
     clearSessions: () => set({ appSessions: {} }),
@@ -87,7 +122,31 @@ export const appSessionsStore = createStore<AppSessionsStore>(
   {
     persist: {
       name: 'appSessions',
-      version: 0,
+      version: 1,
+      migrate: (persistedState: unknown, version: number) => {
+        if (version === 0) {
+          const v0PersistedState =
+            persistedState as AppSessionsStore<V0AppSession>;
+          const appSessions: Record<string, AppSession> = {};
+          Object.values(v0PersistedState.appSessions).forEach((appSession) => {
+            appSessions[appSession.host] = {
+              sessions: { [appSession.address]: appSession.chainId },
+              activeSession: {
+                address: appSession.address,
+                chainId: appSession.chainId,
+              },
+              url: appSession.url,
+              host: appSession.host,
+            };
+          });
+
+          return {
+            ...v0PersistedState,
+            appSessions,
+          } as AppSessionsStore<AppSession>;
+        }
+        return persistedState as AppSessionsStore<AppSession>;
+      },
     },
   },
 );
