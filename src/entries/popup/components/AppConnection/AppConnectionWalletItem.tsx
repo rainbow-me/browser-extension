@@ -66,10 +66,6 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
     const { updateAppSessionChainId, disconnectAppSession, appSession } =
       useAppSession({ host: appMetadata.appHost });
 
-    // const setMenuOpen = useCallback((open: boolean) => {
-    //   setMenuOpenn(open);
-    // }, []);
-
     const changeChainId = useCallback(
       (chainId: string) => {
         updateAppSessionChainId(Number(chainId));
@@ -135,9 +131,10 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                         onNetworkSelect={(e) => {
                           e?.preventDefault();
                           setSubMenuOpen(false);
+                          // without this timeout the collapse of the context menu freezes the screen
                           setTimeout(() => {
                             setMenuOpen(false);
-                          }, 100);
+                          }, 1);
                         }}
                         onShortcutPress={changeChainId}
                         showDisconnect={!!appSession}
