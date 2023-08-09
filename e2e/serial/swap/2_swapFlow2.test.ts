@@ -29,7 +29,11 @@ import {
   waitUntilElementByTestIdIsPresent,
 } from '../../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
-import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
+import {
+  CHAIN_ID,
+  SWAP_VARIABLES,
+  TEST_VARIABLES,
+} from '../../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
@@ -188,7 +192,7 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-3',
+    id: `switch-network-item-${CHAIN_ID.ARBITRUM}`,
     driver,
   });
   const daiBridge = await findElementByTestId({
@@ -401,7 +405,7 @@ it('should be able to go to review a bridge', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-2',
+    id: `switch-network-item-${CHAIN_ID.OPTIMISM}`,
     driver,
   });
   await typeOnTextInput({

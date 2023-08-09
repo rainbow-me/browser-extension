@@ -29,7 +29,11 @@ import {
   waitAndClick,
 } from '../../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
-import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
+import {
+  CHAIN_ID,
+  SWAP_VARIABLES,
+  TEST_VARIABLES,
+} from '../../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
@@ -563,7 +567,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-2',
+    id: `switch-network-item-${CHAIN_ID.OPTIMISM}`,
     driver,
   });
   await typeOnTextInput({
@@ -586,7 +590,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-1',
+    id: `switch-network-item-${CHAIN_ID.POLYGON}`,
     driver,
   });
   await typeOnTextInput({
@@ -609,7 +613,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-3',
+    id: `switch-network-item-${CHAIN_ID.ARBITRUM}`,
     driver,
   });
   await typeOnTextInput({
@@ -632,7 +636,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-6',
+    id: `switch-network-item-${CHAIN_ID.BSC}`,
     driver,
   });
   await typeOnTextInput({
@@ -657,7 +661,7 @@ it('should be able to see no route explainer', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-2',
+    id: `switch-network-item-${CHAIN_ID.OPTIMISM}`,
     driver,
   });
   await typeOnTextInput({
@@ -684,7 +688,7 @@ it('should be able to see no route explainer', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-3',
+    id: `switch-network-item-${CHAIN_ID.ARBITRUM}`,
     driver,
   });
   await typeOnTextInput({
@@ -746,7 +750,7 @@ it('should be able to find exact match on other networks', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-1',
+    id: `switch-network-item-${CHAIN_ID.POLYGON}`,
     driver,
   });
 

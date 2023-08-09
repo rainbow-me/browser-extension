@@ -40,7 +40,7 @@ export const SwitchSpeedMenuSelector = ({
     <>
       {ChainId.mainnet === chainId ? (
         <DropdownMenuRadioItem value={'custom'} selectedValue={selectedValue}>
-          <Box width="full" testId={`switch-network-item-${0}`}>
+          <Box width="full" testId={`switch-network-item-${chainId}`}>
             <Inline
               space="8px"
               alignVertical="center"
@@ -72,7 +72,7 @@ export const SwitchSpeedMenuSelector = ({
             key={i}
             selectedValue={selectedValue}
           >
-            <Box testId={`switch-network-item-${i}`}>
+            <Box testId={`switch-network-item-${chainId}`}>
               <Inline space="8px" alignVertical="center">
                 <Text weight="semibold" size="14pt">
                   {txSpeedEmoji[speed]}

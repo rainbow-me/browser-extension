@@ -27,7 +27,7 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
-import { TEST_VARIABLES } from '../../walletVariables';
+import { CHAIN_ID, TEST_VARIABLES } from '../../walletVariables';
 
 const TYPED_MESSAGE = {
   domain: {
@@ -226,7 +226,10 @@ describe('App interactions flow', () => {
     await findElementByTestIdAndClick({ id: 'switch-wallet-item-2', driver });
     // switch network
     await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
-    await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
+    await findElementByTestIdAndClick({
+      id: `switch-network-item-${CHAIN_ID.ETH}`,
+      driver,
+    });
 
     await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -256,8 +259,10 @@ describe('App interactions flow', () => {
       driver,
     });
 
-    await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
-
+    await findElementByTestIdAndClick({
+      id: `switch-network-item-${CHAIN_ID.ETH}`,
+      driver,
+    });
     await goToTestApp(driver);
     const expectedNetwork = 'Network: Ethereum - homestead';
     const network = await querySelector(driver, '[id="network"]');
