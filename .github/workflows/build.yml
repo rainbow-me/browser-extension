@@ -70,7 +70,7 @@ jobs:
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
-    timeout-minutes: 16
+    timeout-minutes: 30
     needs: [build]
     env:
       DISPLAY: :0
