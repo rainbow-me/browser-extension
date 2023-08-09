@@ -99,6 +99,11 @@ export async function initDriverWithOptions(opts) {
     '--enable-logging',
   ];
 
+  console.log(
+    `Setting up ${opts.browser} with binary`,
+    BINARY_PATHS[opts.os][opts.browser],
+  );
+
   if (opts.browser === 'firefox') {
     const options = new firefox.Options()
       .setBinary(BINARY_PATHS[opts.os][opts.browser])
