@@ -25,8 +25,16 @@ import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
 import { Navbar } from '../Navbar/Navbar';
 
+<<<<<<< HEAD
 import { AppConnectionWalletItem } from './AppConnectionWalletItem/AppConnectionWalletItem';
 import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItem/AppConnectionWalletItemDropdownMenu';
+=======
+import {
+  AppConnectionWalletItem,
+  AppConnectionWalletItemConnectedWrapper,
+} from './AppConnectionWalletItem';
+import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItemDropdownMenu';
+>>>>>>> 2323a964 (fix three dots menu)
 
 export const AppConnectionWalletSwitcher = ({
   show,
