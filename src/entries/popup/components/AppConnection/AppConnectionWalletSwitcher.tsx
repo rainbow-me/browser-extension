@@ -38,7 +38,7 @@ export const AppConnectionWalletSwitcher = () => {
   const { url } = useActiveTab();
   const appMetadata = useAppMetadata({ url });
 
-  const { appSession, activeSession } = useAppSession({
+  const { appSession, activeSession, addSession } = useAppSession({
     host: appMetadata.appHost,
   });
 
@@ -58,8 +58,7 @@ export const AppConnectionWalletSwitcher = () => {
   }, [appSession, activeSession?.address, currentAddress]);
 
   const { connectedAccounts, notConnectedAccounts } = useMemo(() => {
-    const appSessionAccounts = [activeSession?.address];
-
+    const appSessionAccounts = Object.keys(appSession?.sessions || {});
     const [connectedAccounts, notConnectedAccounts] = sortedAccounts.reduce(
       (result, item) => {
         const [matching, nonMatching] = result;
@@ -73,7 +72,7 @@ export const AppConnectionWalletSwitcher = () => {
       [[] as Account[], [] as Account[]],
     );
     return { connectedAccounts, notConnectedAccounts };
-  }, [activeSession?.address, sortedAccounts]);
+  }, [appSession?.sessions, sortedAccounts]);
 
   return (
     <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET} padding="12px">
@@ -139,15 +138,17 @@ export const AppConnectionWalletSwitcher = () => {
                             <AppConnectionWalletItemConnectedWrapper
                               key={account.address}
                               appMetadata={appMetadata}
+                              address={account.address}
                             >
                               <AppConnectionWalletItem
                                 key={account.address}
                                 onClick={() => null}
-                                account={account.address}
-                                chainId={
-                                  activeSession?.chainId || ChainId.mainnet
-                                }
-                                active={true}
+                                address={account.address}
+                                chainId={appSession.sessions?.[account.address]}
+                                active={isLowerCaseMatch(
+                                  activeSession?.address,
+                                  account.address,
+                                )}
                                 connected={true}
                                 appMetadata={appMetadata}
                               />
@@ -158,6 +159,7 @@ export const AppConnectionWalletSwitcher = () => {
                             >
                               <AppConnectionWalletItemDropdownMenu
                                 appMetadata={appMetadata}
+                                address={account.address}
                               />
                             </Box>
                           </Box>
@@ -183,8 +185,15 @@ export const AppConnectionWalletSwitcher = () => {
                         {notConnectedAccounts.map((account) => (
                           <AppConnectionWalletItem
                             key={account.address}
-                            onClick={() => null}
-                            account={account.address}
+                            onClick={() =>
+                              addSession({
+                                host: appMetadata.appHost,
+                                address: account.address,
+                                chainId: ChainId.mainnet,
+                                url: appMetadata.appHost,
+                              })
+                            }
+                            address={account.address}
                             chainId={ChainId.mainnet}
                             connected={false}
                             appMetadata={appMetadata}

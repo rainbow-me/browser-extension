@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -27,28 +28,26 @@ import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 interface AppConnectionWalletItemDropdownMenuProps {
   appMetadata: AppMetadata;
   testId?: string;
+  address: Address;
 }
 
 export const AppConnectionWalletItemDropdownMenu = ({
   appMetadata,
   testId,
+  address,
 }: AppConnectionWalletItemDropdownMenuProps) => {
   const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const {
-    updateAppSessionChainId,
-    disconnectAppSession,
-    appSession,
-    activeSession,
-  } = useAppSession({ host: appMetadata.appHost });
+  const { updateSessionChainId, disconnectAppSession, appSession } =
+    useAppSession({ host: appMetadata.appHost });
 
   const changeChainId = useCallback(
     (chainId: string) => {
-      updateAppSessionChainId(Number(chainId));
+      updateSessionChainId({ address, chainId: Number(chainId) });
     },
-    [updateAppSessionChainId],
+    [address, updateSessionChainId],
   );
 
   const disconnect = useCallback(() => {
@@ -110,7 +109,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
               setSubMenuOpen={setSubMenuOpen}
               subMenuContent={
                 <DropdownMenuRadioGroup
-                  value={`${activeSession?.chainId}`}
+                  value={`${appSession.sessions[address]}`}
                   onValueChange={changeChainId}
                 >
                   <AccentColorProviderWrapper
@@ -119,7 +118,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
                     <SwitchNetworkMenuSelector
                       type="dropdown"
                       highlightAccentColor
-                      selectedValue={`${activeSession?.chainId}`}
+                      selectedValue={`${appSession.sessions[address]}`}
                       onNetworkSelect={(e) => {
                         e?.preventDefault();
                         setSubMenuOpen(false);

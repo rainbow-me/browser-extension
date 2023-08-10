@@ -3,13 +3,15 @@ import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function useAppSession({ host }: { host: string }) {
   const {
     removeAppSession,
-    updateActiveSessionChainId,
+    updateActiveSessionChainId: storeUpdateActiveSessionChainId,
+    updateSessionChainId: storeUpdateSessionChainId,
     updateActiveSession,
     appSessions,
     addSession,
@@ -28,10 +30,28 @@ export function useAppSession({ host }: { host: string }) {
 
   const updateAppSessionChainId = React.useCallback(
     (chainId: number) => {
-      updateActiveSessionChainId({ host, chainId });
+      storeUpdateActiveSessionChainId({ host, chainId });
       messenger.send(`chainChanged:${host}`, chainId);
     },
-    [host, updateActiveSessionChainId],
+    [host, storeUpdateActiveSessionChainId],
+  );
+
+  const updateActiveSessionChainId = React.useCallback(
+    (chainId: number) => {
+      storeUpdateActiveSessionChainId({ host, chainId });
+      messenger.send(`chainChanged:${host}`, chainId);
+    },
+    [host, storeUpdateActiveSessionChainId],
+  );
+
+  const updateSessionChainId = React.useCallback(
+    ({ address, chainId }: { address: Address; chainId: number }) => {
+      storeUpdateSessionChainId({ host, address, chainId });
+      if (isLowerCaseMatch(activeSession?.address, address)) {
+        messenger.send(`chainChanged:${host}`, chainId);
+      }
+    },
+    [activeSession?.address, host, storeUpdateSessionChainId],
   );
 
   const appSession = React.useMemo(
@@ -47,6 +67,8 @@ export function useAppSession({ host }: { host: string }) {
   return {
     addSession,
     updateAppSessionAddress,
+    updateActiveSessionChainId,
+    updateSessionChainId,
     updateAppSessionChainId,
     disconnectAppSession,
     appSession,

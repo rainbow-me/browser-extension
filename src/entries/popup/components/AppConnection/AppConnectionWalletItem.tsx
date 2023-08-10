@@ -52,29 +52,26 @@ import { appConnectionWalletItem } from './AppConnectionWalletItem.css';
 interface WalletItemConnectedWrapperProps {
   children: ReactElement;
   appMetadata: AppMetadata;
+  address: Address;
   onClose?: () => null;
   onOpen?: () => null;
 }
 
 export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
   (props: WalletItemConnectedWrapperProps) => {
-    const { children, appMetadata } = props;
+    const { children, appMetadata, address } = props;
     const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
     const [subMenuOpen, setSubMenuOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
-    const {
-      updateAppSessionChainId,
-      disconnectAppSession,
-      appSession,
-      activeSession,
-    } = useAppSession({ host: appMetadata.appHost });
+    const { updateSessionChainId, disconnectAppSession, appSession } =
+      useAppSession({ host: appMetadata.appHost });
 
     const changeChainId = useCallback(
       (chainId: string) => {
-        updateAppSessionChainId(Number(chainId));
+        updateSessionChainId({ address, chainId: Number(chainId) });
       },
-      [updateAppSessionChainId],
+      [address, updateSessionChainId],
     );
 
     const disconnect = useCallback(() => {
@@ -122,7 +119,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                 setSubMenuOpen={setSubMenuOpen}
                 subMenuContent={
                   <DropdownMenuRadioGroup
-                    value={`${activeSession?.chainId}`}
+                    value={`${appSession.sessions[address]}`}
                     onValueChange={changeChainId}
                   >
                     <AccentColorProviderWrapper
@@ -131,7 +128,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                       <SwitchNetworkMenuSelector
                         type="dropdown"
                         highlightAccentColor
-                        selectedValue={`${activeSession?.chainId}`}
+                        selectedValue={`${appSession.sessions[address]}`}
                         onNetworkSelect={(e) => {
                           e?.preventDefault();
                           setSubMenuOpen(false);
@@ -196,7 +193,7 @@ AppConnectionWalletItemConnectedWrapper.displayName =
   'AppConnectionWalletItemConnectedWrapper';
 
 interface WalletItemProps {
-  account: Address;
+  address: Address;
   onClick?: () => void;
   chainId: ChainId;
   active?: boolean;
@@ -206,15 +203,15 @@ interface WalletItemProps {
 
 export const AppConnectionWalletItem = React.forwardRef(
   (props: WalletItemProps) => {
-    const { account, onClick, chainId, active, connected } = props;
+    const { address, onClick, chainId, active, connected } = props;
     const [hovering, setHovering] = useState(false);
-    const { displayName } = useWalletName({ address: account });
+    const { displayName } = useWalletName({ address });
     const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
 
     const { currentCurrency: currency } = useCurrentCurrencyStore();
     const { connectedToHardhat } = useConnectedToHardhatStore();
     const { data: totalAssetsBalance } = useUserAssets(
-      { address: account, currency, connectedToHardhat },
+      { address, currency, connectedToHardhat },
       { select: selectUserAssetsBalance() },
     );
 
@@ -229,7 +226,7 @@ export const AppConnectionWalletItem = React.forwardRef(
           {!hovering && (
             <Box
               as={motion.div}
-              key={`${account}-${connected ? '' : 'not-'}-connected`}
+              key={`${address}-${connected ? '' : 'not-'}-connected`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -267,7 +264,7 @@ export const AppConnectionWalletItem = React.forwardRef(
           {hovering && (
             <Box
               as={motion.div}
-              key={`${account}-${connected ? '' : 'not-'}connected-hovering`}
+              key={`${address}-${connected ? '' : 'not-'}connected-hovering`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -288,7 +285,7 @@ export const AppConnectionWalletItem = React.forwardRef(
           )}
         </AnimatePresence>
       ),
-      [account, active, chainId, connected, hovering, userAssetsBalanceDisplay],
+      [address, active, chainId, connected, hovering, userAssetsBalanceDisplay],
     );
 
     return (
@@ -300,7 +297,7 @@ export const AppConnectionWalletItem = React.forwardRef(
       >
         <Lens
           handleOpenMenu={onClick}
-          key={account}
+          key={address}
           onClick={onClick}
           paddingHorizontal="12px"
           paddingVertical="8px"
@@ -313,7 +310,7 @@ export const AppConnectionWalletItem = React.forwardRef(
                   mask={
                     showChainBadge ? appConnectionWalletItemImageMask : null
                   }
-                  address={account}
+                  address={address}
                   size={36}
                   emojiSize="20pt"
                   background="transparent"
