@@ -55,9 +55,9 @@ export function SendTransaction({
   const { appHost, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
-  const { appSession } = useAppSession({ host: appHost });
+  const { activeSession } = useAppSession({ host: appHost });
   const { selectedGas } = useGasStore();
-  const selectedWallet = appSession?.activeSession?.address;
+  const selectedWallet = activeSession?.address || '';
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { watchedWallets } = useWallets();
@@ -65,7 +65,7 @@ export function SendTransaction({
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
-    if (!selectedWallet) return;
+    if (!selectedWallet || !activeSession) return;
     setLoading(true);
     try {
       const txRequest = request?.params?.[0] as TransactionRequest;
@@ -80,9 +80,7 @@ export function SendTransaction({
         to: txRequest?.to ? getAddress(txRequest?.to) : undefined,
         value: txRequest.value || '0x0',
         data: txRequest.data ?? '0x',
-        chainId: connectedToHardhat
-          ? ChainId.hardhat
-          : appSession?.activeSession?.chainId,
+        chainId: connectedToHardhat ? ChainId.hardhat : activeSession?.chainId,
       };
       const result = await wallet.sendTransaction(txData);
       if (result) {
@@ -130,25 +128,27 @@ export function SendTransaction({
       setLoading(false);
     }
   }, [
+    selectedWallet,
+    activeSession,
+    request?.params,
+    connectedToHardhat,
+    asset,
+    selectedGas.transactionGasParams,
+    approveRequest,
     appHost,
     appName,
-    appSession?.activeSession?.chainId,
-    approveRequest,
-    asset,
-    connectedToHardhat,
-    request?.params,
-    selectedGas.transactionGasParams,
-    selectedWallet,
   ]);
 
   const onRejectRequest = useCallback(() => {
     rejectRequest();
-    analytics.track(event.dappPromptSendTransactionRejected, {
-      chainId: appSession?.activeSession?.chainId,
-      dappURL: appHost,
-      dappName: appName,
-    });
-  }, [appHost, appName, appSession?.activeSession?.chainId, rejectRequest]);
+    if (activeSession) {
+      analytics.track(event.dappPromptSendTransactionRejected, {
+        chainId: activeSession?.chainId,
+        dappURL: appHost,
+        dappName: appName,
+      });
+    }
+  }, [rejectRequest, activeSession, appHost, appName]);
 
   const isWatchingWallet = useMemo(() => {
     const watchedAddresses = watchedWallets?.map(({ address }) => address);
@@ -165,14 +165,17 @@ export function SendTransaction({
   }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
   useEffect(() => {
-    selectAssetAddressAndChain(
-      NATIVE_ASSETS_PER_CHAIN[
-        connectedToHardhat ? ChainId.hardhat : appSession?.activeSession.chainId
-      ] as Address,
-      connectedToHardhat ? ChainId.hardhat : appSession?.activeSession.chainId,
-    );
+    if (activeSession) {
+      selectAssetAddressAndChain(
+        NATIVE_ASSETS_PER_CHAIN[
+          connectedToHardhat ? ChainId.hardhat : activeSession?.chainId
+        ] as Address,
+        connectedToHardhat ? ChainId.hardhat : activeSession?.chainId,
+      );
+    }
   }, [
-    appSession?.activeSession.chainId,
+    activeSession,
+    activeSession?.chainId,
     connectedToHardhat,
     selectAssetAddressAndChain,
   ]);
@@ -184,10 +187,10 @@ export function SendTransaction({
       </Row>
       <Row height="content">
         <SendTransactionActions
-          chainId={appSession?.activeSession.chainId || ChainId.mainnet}
+          chainId={activeSession?.chainId || ChainId.mainnet}
           waitingForDevice={waitingForDevice}
           appHost={appHost}
-          selectedWallet={selectedWallet}
+          selectedWallet={selectedWallet || ('' as Address)}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
           loading={loading}

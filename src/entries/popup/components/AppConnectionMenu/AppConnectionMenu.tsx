@@ -71,6 +71,7 @@ export const AppConnectionMenu = ({
     updateAppSessionChainId,
     disconnectAppSession,
     appSession,
+    activeSession,
   } = useAppSession({ host: appHost });
 
   const changeChainId = useCallback(
@@ -196,7 +197,7 @@ export const AppConnectionMenu = ({
                       ) : null}
 
                       <DropdownMenuRadioGroup
-                        value={`${appSession?.activeSession?.chainId}`}
+                        value={`${activeSession?.chainId}`}
                         onValueChange={
                           appSession ? changeChainId : connectToApp
                         }
@@ -204,7 +205,7 @@ export const AppConnectionMenu = ({
                         <SwitchNetworkMenuSelector
                           type="dropdown"
                           highlightAccentColor
-                          selectedValue={`${appSession?.activeSession?.chainId}`}
+                          selectedValue={`${activeSession?.chainId}`}
                           onNetworkSelect={(e) => {
                             e?.preventDefault();
                             setSubMenuOpen(false);

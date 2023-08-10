@@ -311,10 +311,10 @@ export const BottomSwitchNetwork = ({
 };
 
 export const WalletBalance = ({ appHost }: { appHost: string }) => {
-  const { appSession } = useAppSession({ host: appHost });
+  const { activeSession } = useAppSession({ host: appHost });
   const { data: balance } = useBalance({
-    address: appSession?.activeSession?.address,
-    chainId: appSession?.activeSession?.chainId,
+    address: activeSession?.address,
+    chainId: activeSession?.chainId,
   });
   const displayBalance = handleSignificantDecimals(balance?.formatted || 0, 4);
 

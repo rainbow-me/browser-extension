@@ -38,7 +38,9 @@ export const AppConnectionWalletSwitcher = () => {
   const { url } = useActiveTab();
   const appMetadata = useAppMetadata({ url });
 
-  const { appSession } = useAppSession({ host: appMetadata.appHost });
+  const { appSession, activeSession } = useAppSession({
+    host: appMetadata.appHost,
+  });
 
   const { sortedAccounts } = useAccounts(({ sortedAccounts }) => ({
     sortedAccounts,
@@ -48,15 +50,15 @@ export const AppConnectionWalletSwitcher = () => {
     setTimeout(() => {
       if (
         appSession &&
-        !isLowerCaseMatch(appSession?.activeSession?.address, currentAddress)
+        !isLowerCaseMatch(activeSession?.address, currentAddress)
       ) {
         setshow(true);
       }
     }, 1000);
-  }, [appSession, appSession?.activeSession?.address, currentAddress]);
+  }, [appSession, activeSession?.address, currentAddress]);
 
   const { connectedAccounts, notConnectedAccounts } = useMemo(() => {
-    const appSessionAccounts = [appSession?.activeSession?.address];
+    const appSessionAccounts = [activeSession?.address];
 
     const [connectedAccounts, notConnectedAccounts] = sortedAccounts.reduce(
       (result, item) => {
@@ -71,7 +73,7 @@ export const AppConnectionWalletSwitcher = () => {
       [[] as Account[], [] as Account[]],
     );
     return { connectedAccounts, notConnectedAccounts };
-  }, [appSession?.activeSession?.address, sortedAccounts]);
+  }, [activeSession?.address, sortedAccounts]);
 
   return (
     <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET} padding="12px">
@@ -142,7 +144,9 @@ export const AppConnectionWalletSwitcher = () => {
                                 key={account.address}
                                 onClick={() => null}
                                 account={account.address}
-                                chainId={appSession.activeSession.chainId}
+                                chainId={
+                                  activeSession?.chainId || ChainId.mainnet
+                                }
                                 active={true}
                                 connected={true}
                                 appMetadata={appMetadata}

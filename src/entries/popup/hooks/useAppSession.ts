@@ -8,27 +8,30 @@ const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function useAppSession({ host }: { host: string }) {
   const {
-    updateSessionAddress,
-    updateSessionChainId,
-    removeSession,
+    removeAppSession,
+    updateActiveSessionChainId,
+    updateActiveSession,
     appSessions,
     addSession,
+    getActiveSession,
   } = useAppSessionsStore();
+
+  const activeSession = getActiveSession({ host });
 
   const updateAppSessionAddress = React.useCallback(
     (address: Address) => {
-      updateSessionAddress({ host, address });
+      updateActiveSession({ host, address });
       messenger.send(`accountsChanged:${host}`, [address]);
     },
-    [host, updateSessionAddress],
+    [host, updateActiveSession],
   );
 
   const updateAppSessionChainId = React.useCallback(
     (chainId: number) => {
-      updateSessionChainId({ host, chainId });
+      updateActiveSessionChainId({ host, chainId });
       messenger.send(`chainChanged:${host}`, chainId);
     },
-    [host, updateSessionChainId],
+    [host, updateActiveSessionChainId],
   );
 
   const appSession = React.useMemo(
@@ -37,9 +40,9 @@ export function useAppSession({ host }: { host: string }) {
   );
 
   const disconnectAppSession = React.useCallback(() => {
-    removeSession({ host });
+    removeAppSession({ host });
     messenger.send(`disconnect:${host}`, null);
-  }, [host, removeSession]);
+  }, [host, removeAppSession]);
 
   return {
     addSession,
@@ -47,5 +50,6 @@ export function useAppSession({ host }: { host: string }) {
     updateAppSessionChainId,
     disconnectAppSession,
     appSession,
+    activeSession,
   };
 }

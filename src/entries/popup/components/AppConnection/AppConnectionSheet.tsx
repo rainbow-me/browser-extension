@@ -32,17 +32,14 @@ export const AppConnectionSheet = () => {
   const { url } = useActiveTab();
   const { appHost, appName, appLogo } = useAppMetadata({ url });
 
-  const { appSession } = useAppSession({ host: appHost });
+  const { appSession, activeSession } = useAppSession({ host: appHost });
   useEffect(() => {
     setTimeout(() => {
-      if (
-        appSession &&
-        !isLowerCaseMatch(appSession?.activeSession?.address, currentAddress)
-      ) {
+      if (!isLowerCaseMatch(activeSession?.address, currentAddress)) {
         setshow(true);
       }
     }, 1000);
-  }, [appSession, appSession?.activeSession?.address, currentAddress]);
+  }, [appSession, activeSession?.address, currentAddress]);
 
   return (
     <>

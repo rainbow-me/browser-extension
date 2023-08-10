@@ -6,9 +6,9 @@ import { ChainId } from '~/core/types/chains';
 import { createStore } from '../internal/createStore';
 
 export interface AppSession {
+  activeSession: Address;
   host: string;
   sessions: Record<Address, ChainId>;
-  activeSession: { address: Address; chainId: ChainId };
   url: string;
 }
 
@@ -21,7 +21,10 @@ interface V0AppSession {
 
 export interface AppSessionsStore<T extends AppSession | V0AppSession> {
   appSessions: Record<string, T>;
-  getActiveSession: ({ host }: { host: string }) => T | null;
+  getActiveSession: ({ host }: { host: string }) => {
+    address: Address;
+    chainId: ChainId;
+  } | null;
   addSession: ({
     host,
     address,
@@ -33,20 +36,36 @@ export interface AppSessionsStore<T extends AppSession | V0AppSession> {
     chainId: ChainId;
     url: string;
   }) => void;
-  removeSession: ({ host }: { host: string }) => void;
-  updateSessionChainId: ({
+  removeSession: ({
+    host,
+    address,
+  }: {
+    host: string;
+    address: Address;
+  }) => void;
+  removeAppSession: ({ host }: { host: string }) => void;
+  updateActiveSession: ({
+    host,
+    address,
+  }: {
+    host: string;
+    address: Address;
+  }) => void;
+  updateActiveSessionChainId: ({
     host,
     chainId,
   }: {
     host: string;
     chainId: number;
   }) => void;
-  updateSessionAddress: ({
-    host,
+  updateSessionChainId: ({
     address,
+    host,
+    chainId,
   }: {
-    host: string;
     address: Address;
+    host: string;
+    chainId: number;
   }) => void;
   clearSessions: () => void;
 }
@@ -56,7 +75,14 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
     appSessions: {},
     getActiveSession: ({ host }) => {
       const appSessions = get().appSessions;
-      return appSessions[host] || null;
+      const activeSession = appSessions[host]?.activeSession;
+      const sessions = appSessions[host]?.sessions;
+      return activeSession
+        ? {
+            address: activeSession,
+            chainId: sessions[activeSession],
+          }
+        : null;
     },
     addSession: ({ host, address, chainId, url }) => {
       const appSessions = get().appSessions;
@@ -65,56 +91,87 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
         appSessions[host] = {
           host,
           sessions: { [address]: chainId },
-          activeSession: { address, chainId },
+          activeSession: address,
           url,
         };
       } else {
         appSessions[host].sessions[address] = chainId;
-        appSessions[host].activeSession = { address, chainId };
+        appSessions[host].activeSession = address;
       }
-      const updatedSessions = {
-        ...appSessions,
-      };
       set({
-        appSessions: updatedSessions,
+        appSessions: {
+          ...appSessions,
+        },
       });
     },
-    removeSession: ({ host }) => {
+    removeAppSession: ({ host }) => {
       const appSessions = get().appSessions;
       delete appSessions[host];
       set({
-        appSessions,
+        appSessions: {
+          ...appSessions,
+        },
       });
     },
-    updateSessionChainId: ({ host, chainId }) => {
+    removeSession: ({ host, address }) => {
       const appSessions = get().appSessions;
-      const activeSession = appSessions[host].activeSession;
-      const updatedSessions = {
+      const appSession = appSessions[host];
+      if (Object.keys(appSession.sessions).length === 1) {
+        delete appSessions[host];
+      } else {
+        delete appSession.sessions[address];
+        appSession.activeSession = Object.keys(
+          appSession.sessions,
+        )[0] as Address;
+      }
+      set({
         ...appSessions,
         [host]: {
-          ...appSessions[host],
-          activeSession: {
-            address: activeSession.address,
-            chainId,
-          },
-          sessions: {
-            ...appSessions[host].sessions,
-            [activeSession.address]: chainId,
-          },
+          ...appSession,
         },
-      };
-      set({
-        appSessions: updatedSessions,
       });
     },
-    updateSessionAddress: ({ host, address }) => {
+    updateActiveSession: ({ host, address }) => {
       const appSessions = get().appSessions;
-      appSessions[host].activeSession.address = address;
-      const updatedSessions = {
-        ...appSessions,
-      };
+      const appSession = appSessions[host];
       set({
-        appSessions: updatedSessions,
+        ...appSessions,
+        [host]: {
+          ...appSession,
+          activeSession: address,
+        },
+      });
+    },
+    updateActiveSessionChainId: ({ host, chainId }) => {
+      const appSessions = get().appSessions;
+      const appSession = appSessions[host];
+      set({
+        appSessions: {
+          ...appSessions,
+          [host]: {
+            ...appSession,
+            sessions: {
+              ...appSession.sessions,
+              [appSession.activeSession]: chainId,
+            },
+          },
+        },
+      });
+    },
+    updateSessionChainId: ({ host, address, chainId }) => {
+      const appSessions = get().appSessions;
+      const appSession = appSessions[host];
+      set({
+        appSessions: {
+          ...appSessions,
+          [host]: {
+            ...appSession,
+            sessions: {
+              ...appSession.sessions,
+              [address]: chainId,
+            },
+          },
+        },
       });
     },
     clearSessions: () => set({ appSessions: {} }),
@@ -131,10 +188,7 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
           Object.values(v0PersistedState.appSessions).forEach((appSession) => {
             appSessions[appSession.host] = {
               sessions: { [appSession.address]: appSession.chainId },
-              activeSession: {
-                address: appSession.address,
-                chainId: appSession.chainId,
-              },
+              activeSession: appSession.address,
               url: appSession.url,
               host: appSession.host,
             };

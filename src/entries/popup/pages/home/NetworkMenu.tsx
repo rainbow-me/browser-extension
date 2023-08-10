@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import appConnectionImageMask from 'static/assets/appConnectionImageMask.svg';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { ChainId } from '~/core/types/chains';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import {
@@ -22,7 +23,7 @@ import { tabIndexes } from '../../utils/tabIndexes';
 export const AppConnection = () => {
   const { url } = useActiveTab();
   const { appLogo, appHost } = useAppMetadata({ url });
-  const { appSession } = useAppSession({ host: appHost });
+  const { appSession, activeSession } = useAppSession({ host: appHost });
   const { currentTheme } = useCurrentThemeStore();
 
   return (
@@ -111,7 +112,7 @@ export const AppConnection = () => {
                     >
                       <Bleed top="7px">
                         <ChainBadge
-                          chainId={appSession?.activeSession?.chainId}
+                          chainId={activeSession?.chainId || ChainId.mainnet}
                           size="8"
                         />
                       </Bleed>
