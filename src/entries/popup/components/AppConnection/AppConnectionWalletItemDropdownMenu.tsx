@@ -126,7 +126,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
                         setMenuOpen(false);
                       }}
                       onShortcutPress={changeChainId}
-                      showDisconnect={!!appSession}
+                      showDisconnect={false}
                       disconnect={disconnect}
                     />
                   </AccentColorProviderWrapper>

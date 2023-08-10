@@ -138,7 +138,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                           }, 1);
                         }}
                         onShortcutPress={changeChainId}
-                        showDisconnect={!!appSession}
+                        showDisconnect={false}
                         disconnect={disconnect}
                       />
                     </AccentColorProviderWrapper>
