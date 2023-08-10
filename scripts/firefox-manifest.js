@@ -11,12 +11,12 @@ const manifestFF = {
       id: 'bx@rainbow.me',
       strict_min_version: '115.0',
     },
-  },
-  content_security_policy: {
-    extension_pages:
-      "frame-ancestors 'none'; script-src 'self'; object-src 'self';",
-  },
-  host_permissions: ['<all_urls>'],
+    browser_specific_settings: {
+      "gecko": {
+        "id": "bx@rainbow.me",
+        "strict_min_version": "115.0"
+      },
+    }
 };
 
 require('fs').writeFileSync(

@@ -25,7 +25,8 @@ const BINARY_PATHS = {
   mac: {
     chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     brave: '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
-    firefox: '/Applications/Firefox.app/Contents/MacOS/Firefox',
+    firefox:
+      '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
   },
   linux: {
     chrome: process.env.CHROMIUM_BIN,
@@ -119,12 +120,13 @@ export async function initDriverWithOptions(opts: {
       // @ts-ignore
       .setBinary(BINARY_PATHS[opts.os][opts.browser])
       .addArguments(...args.slice(1))
+      .setPreference('xpinstall.signatures.required', false)
+      .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');
-    options.setAcceptInsecureCerts(true);
 
     const service = new firefox.ServiceBuilder().setStdio('inherit');
 
-    return await new Builder()
+    driver = await new Builder()
       .setFirefoxService(service)
       .forBrowser('firefox')
       .setFirefoxOptions(options)
@@ -138,12 +140,15 @@ export async function initDriverWithOptions(opts: {
 
     const service = new chrome.ServiceBuilder().setStdio('inherit');
 
-    return await new Builder()
+    driver = await new Builder()
       .setChromeService(service)
       .forBrowser('chrome')
       .setChromeOptions(options)
       .build();
   }
+
+  driver.browser = opts.browser;
+  return driver;
 }
 
 // search functions
