@@ -122,7 +122,7 @@ jobs:
             export BROWSER=firefox
             export OS=linux
             export FIREFOX_BIN=/usr/local/bin/firefox-dev
-            yarn firefox:zip && yarn vitest:parallel --retry=5
+            node scripts/firefox-manifest.js && yarn firefox:zip && yarn vitest:parallel --retry=5
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
