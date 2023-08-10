@@ -81,8 +81,12 @@ export function useAppSession({ host }: { host: string }) {
   const disconnectSession = React.useCallback(
     ({ address, host }: { address: Address; host: string }) => {
       const newActiveSession = removeSession({ host, address });
-      messenger.send(`accountsChanged:${host}`, newActiveSession?.address);
-      messenger.send(`chainChanged:${host}`, newActiveSession?.chainId);
+      if (newActiveSession) {
+        messenger.send(`accountsChanged:${host}`, newActiveSession?.address);
+        messenger.send(`chainChanged:${host}`, newActiveSession?.chainId);
+      } else {
+        messenger.send(`disconnect:${host}`, []);
+      }
     },
     [removeSession],
   );

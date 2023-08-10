@@ -10,6 +10,7 @@ import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
+import { toHex } from '~/core/utils/hex';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
@@ -91,9 +92,8 @@ export const AppConnectionMenu = ({
       });
       inpageMessenger.send(`connect:${appHost}`, {
         address: currentAddress,
-        chainId: Number(chainId),
+        chainId: toHex(chainId),
       });
-      inpageMessenger.send('rainbow_reload', null);
     },
     [addSession, appHost, currentAddress, url],
   );
