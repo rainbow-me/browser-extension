@@ -20,5 +20,5 @@
     },
   },
   "include": ["src", "e2e", ".env.d.ts"],
-  "exclude": ["vitest.config.*", "design-system/docs", "static/", "node_modules", "dist", "build"],
+  "exclude": ["vitest.config.*", "serial/vitest.config.ts", "design-system/docs", "static/", "node_modules", "dist", "build"],
 }
