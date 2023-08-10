@@ -7,10 +7,8 @@ import React, {
 } from 'react';
 
 import { i18n } from '~/core/languages';
-import { initializeMessenger } from '~/core/messengers';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { toHex } from '~/core/utils/hex';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
@@ -35,8 +33,6 @@ import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 
 import { AppConnectionMenuHeader } from './AppConnectionMenuHeader';
 import { AppInteractionItem } from './AppInteractionItem';
-
-const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
 interface AppConnectionMenuProps {
   children: ReactNode;
@@ -89,10 +85,6 @@ export const AppConnectionMenu = ({
         address: currentAddress,
         chainId: Number(chainId),
         url,
-      });
-      inpageMessenger.send(`connect:${appHost}`, {
-        address: currentAddress,
-        chainId: toHex(chainId),
       });
     },
     [addSession, appHost, currentAddress, url],

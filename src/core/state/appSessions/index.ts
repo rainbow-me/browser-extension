@@ -35,7 +35,7 @@ export interface AppSessionsStore<T extends AppSession | V0AppSession> {
     address: Address;
     chainId: ChainId;
     url: string;
-  }) => void;
+  }) => Record<Address, ChainId>;
   removeSession: ({
     host,
     address,
@@ -103,6 +103,7 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
           ...appSessions,
         },
       });
+      return appSessions[host].sessions;
     },
     removeAppSession: ({ host }) => {
       const appSessions = get().appSessions;

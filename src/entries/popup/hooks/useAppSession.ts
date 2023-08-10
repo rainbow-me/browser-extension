@@ -3,6 +3,7 @@ import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
+import { toHex } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
@@ -41,8 +42,14 @@ export function useAppSession({ host }: { host: string }) {
       chainId: number;
       url: string;
     }) => {
-      storeAddSession({ host, address, chainId, url });
+      const sessions = storeAddSession({ host, address, chainId, url });
       messenger.send(`accountsChanged:${host}`, address);
+      if (Object.keys(sessions).length === 1) {
+        messenger.send(`connect:${host}`, {
+          address,
+          chainId: toHex(String(chainId)),
+        });
+      }
     },
     [storeAddSession],
   );
