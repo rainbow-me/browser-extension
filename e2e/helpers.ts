@@ -147,8 +147,11 @@ export async function initDriverWithOptions(opts: {
   return driver;
 }
 
-// @ts-ignore
-export async function getExtensionIdByName(driver, extensionName: string) {
+export async function getExtensionIdByName(
+  driver: WebDriver,
+  extensionName: string,
+) {
+  // @ts-ignore
   if (driver?.browser === 'firefox') {
     await driver.get('about:debugging#addons');
     const text = await driver
