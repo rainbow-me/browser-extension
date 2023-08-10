@@ -170,7 +170,8 @@ function CloudinaryCoinIcon({
 
 function getFallbackTextStyle(text: string, size: number) {
   if (!text) return undefined;
-  if (text.length >= 4 && size < 24) return fallbackTextStyleExtraSmall;
+
+  if (size < 24) return fallbackTextStyleExtraSmall;
   if (text.length > 4) return fallbackTextStyleSmall;
   if (text.length === 4) return fallbackTextStyleMedium;
   if (text.length === 3) return fallbackTextStyleLarge;

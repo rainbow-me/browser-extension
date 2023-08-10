@@ -17,7 +17,6 @@ import {
   Inline,
   Separator,
   Stack,
-  Symbol,
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
@@ -37,7 +36,7 @@ import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvat
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
-import { InfoRow } from '../TokenDetails/About';
+import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 function AddressMoreOptions({ address }: { address: Address }) {
   return (
@@ -119,7 +118,7 @@ type ActivityPillProps = { transaction: RainbowTransaction };
 
 function ActivityPill({ transaction }: ActivityPillProps) {
   const asset = transaction.asset;
-  console.log(transaction);
+
   if (!asset || !transaction.title) return null;
 
   if (asset.type === 'nft')
@@ -207,29 +206,6 @@ function ToFrom({ to, from }: { to: Address; from: Address }) {
   );
 }
 
-const AddressWithCopy = ({ address }: { address: Address }) => (
-  <Box
-    onClick={() => {
-      navigator.clipboard.writeText(address);
-      triggerToast({
-        title: i18n.t('wallet_header.copy_toast'),
-        description: truncateAddress(address),
-      });
-    }}
-    display="flex"
-    alignItems="center"
-    gap="4px"
-  >
-    {truncateAddress(address)}{' '}
-    <Symbol
-      size={14}
-      weight="semibold"
-      symbol="doc.on.doc"
-      color="labelQuaternary"
-    />
-  </Box>
-);
-
 function ConfirmationData({
   transaction,
 }: {
@@ -244,7 +220,11 @@ function ConfirmationData({
       <InfoRow
         symbol="number"
         label="TxHash"
-        value={<AddressWithCopy address={transaction.hash} />}
+        value={
+          <CopyableValue title={'Hash Copied'} value={transaction.hash}>
+            {truncateAddress(transaction.hash)}
+          </CopyableValue>
+        }
       />
       {/* {transaction.minedAt && (
         <InfoRow
@@ -292,7 +272,7 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
           </Inline>
         }
       />
-      <InfoRow
+      {/* <InfoRow
         symbol="fuelpump.fill"
         label="Network Fee"
         value={`${formatNumber(transaction.maxFeePerGas?.toString())}`}
@@ -308,7 +288,7 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
         value={`${formatNumber(
           transaction.maxPriorityFeePerGas?.toString(),
         )} Gwei`}
-      />
+      /> */}
       <InfoRow symbol="number" label="Nonce" value={transaction.nonce} />
     </Stack>
   );
@@ -317,8 +297,6 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
 export function ActivityDetails() {
   const { hash } = useParams<{ hash: RainbowTransaction['hash'] }>();
   const { data: tx, isFetched } = useTransaction(hash);
-
-  console.log(tx);
 
   const navigate = useRainbowNavigate();
 

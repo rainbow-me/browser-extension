@@ -129,7 +129,6 @@ async function parseConsolidatedTransactions(
   currency: SupportedCurrencyKey,
 ) {
   const data = message?.payload?.transactions || [];
-  console.log(data);
   const parsedTransactionPromises = data.map((tx) =>
     parseTransaction({
       tx,

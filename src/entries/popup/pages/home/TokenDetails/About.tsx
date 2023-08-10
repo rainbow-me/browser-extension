@@ -29,6 +29,34 @@ import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 
+export const CopyableValue = ({
+  value,
+  title,
+  children,
+}: {
+  value: string;
+  title: string;
+  children: string;
+}) => (
+  <Box
+    onClick={() => {
+      navigator.clipboard.writeText(value);
+      triggerToast({ title, description: children });
+    }}
+    display="flex"
+    alignItems="center"
+    gap="4px"
+  >
+    {children}{' '}
+    <Symbol
+      size={14}
+      weight="semibold"
+      symbol="doc.on.doc"
+      color="labelQuaternary"
+    />
+  </Box>
+);
+
 export const InfoRow = ({
   symbol,
   label,
@@ -300,26 +328,12 @@ export function About({ token }: { token: ParsedAddressAsset }) {
                   symbol="doc.plaintext"
                   label={i18n.t(`token_details.about.token_contract`)}
                   value={
-                    <Box
-                      onClick={() => {
-                        navigator.clipboard.writeText(token.address);
-                        triggerToast({
-                          title: i18n.t('wallet_header.copy_toast'),
-                          description: truncateAddress(token.address),
-                        });
-                      }}
-                      display="flex"
-                      alignItems="center"
-                      gap="4px"
+                    <CopyableValue
+                      title={i18n.t('wallet_header.copy_toast')}
+                      value={token.address}
                     >
-                      {truncateAddress(token.address)}{' '}
-                      <Symbol
-                        size={14}
-                        weight="semibold"
-                        symbol="doc.on.doc"
-                        color="labelQuaternary"
-                      />
-                    </Box>
+                      {truncateAddress(token.address)}
+                    </CopyableValue>
                   }
                 />
               </>
