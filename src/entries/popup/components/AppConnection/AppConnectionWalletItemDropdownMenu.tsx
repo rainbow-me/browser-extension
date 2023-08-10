@@ -39,7 +39,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { updateAppSessionChainId, disconnectAppSession, appSession } =
+  const { updateAppSessionChainId, disconnectSession, appSession } =
     useAppSession({ host: appMetadata.appHost });
 
   const changeChainId = useCallback(
@@ -50,10 +50,10 @@ export const AppConnectionWalletItemDropdownMenu = ({
   );
 
   const disconnect = useCallback(() => {
-    disconnectAppSession();
+    disconnectSession({ address, host: appMetadata.appHost });
     setSubMenuOpen(false);
     setMenuOpen(false);
-  }, [disconnectAppSession]);
+  }, [address, appMetadata.appHost, disconnectSession]);
 
   const onValueChange = useCallback(
     (value: 'disconnect' | 'switch-networks' | 'open-dapp') => {
