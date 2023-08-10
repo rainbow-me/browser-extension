@@ -120,6 +120,11 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
       let newActiveSession = null;
       if (Object.keys(appSession.sessions).length === 1) {
         delete appSessions[host];
+        set({
+          appSessions: {
+            ...appSessions,
+          },
+        });
       } else {
         delete appSession.sessions[address];
         const newActiveSessionAddress = Object.keys(
@@ -130,15 +135,15 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
           address: newActiveSessionAddress,
           chainId: appSession.sessions[newActiveSessionAddress],
         };
-      }
-      set({
-        appSessions: {
-          ...appSessions,
-          [host]: {
-            ...appSession,
+        set({
+          appSessions: {
+            ...appSessions,
+            [host]: {
+              ...appSession,
+            },
           },
-        },
-      });
+        });
+      }
       return newActiveSession;
     },
     updateActiveSession: ({ host, address }) => {
