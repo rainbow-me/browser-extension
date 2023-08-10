@@ -223,7 +223,7 @@ export const AppConnectionWalletItem = React.forwardRef(
     const subLabel = useMemo(
       () => (
         <AnimatePresence initial={false} mode="popLayout">
-          {!hovering && (
+          {(!hovering || active) && (
             <Box
               as={motion.div}
               key={`${address}-${connected ? '' : 'not-'}-connected`}
@@ -261,7 +261,7 @@ export const AppConnectionWalletItem = React.forwardRef(
               )}
             </Box>
           )}
-          {hovering && (
+          {hovering && !active && (
             <Box
               as={motion.div}
               key={`${address}-${connected ? '' : 'not-'}connected-hovering`}
@@ -291,7 +291,7 @@ export const AppConnectionWalletItem = React.forwardRef(
     return (
       <Box
         as={motion.div}
-        className={appConnectionWalletItem}
+        className={active ? null : appConnectionWalletItem}
         onHoverStart={() => setHovering(true)}
         onHoverEnd={() => setHovering(false)}
       >

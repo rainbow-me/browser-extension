@@ -132,9 +132,11 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
         };
       }
       set({
-        ...appSessions,
-        [host]: {
-          ...appSession,
+        appSessions: {
+          ...appSessions,
+          [host]: {
+            ...appSession,
+          },
         },
       });
       return newActiveSession;
@@ -142,11 +144,14 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
     updateActiveSession: ({ host, address }) => {
       const appSessions = get().appSessions;
       const appSession = appSessions[host];
+      console.log('STORE SETTING NEW ADDRESS address', appSession, address);
       set({
-        ...appSessions,
-        [host]: {
-          ...appSession,
-          activeSessionAddress: address,
+        appSessions: {
+          ...appSessions,
+          [host]: {
+            ...appSession,
+            activeSessionAddress: address,
+          },
         },
       });
     },

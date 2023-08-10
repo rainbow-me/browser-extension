@@ -26,10 +26,7 @@ import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
 import { Navbar } from '../Navbar/Navbar';
 
-import {
-  AppConnectionWalletItem,
-  AppConnectionWalletItemConnectedWrapper,
-} from './AppConnectionWalletItem';
+import { AppConnectionWalletItem } from './AppConnectionWalletItem';
 import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItemDropdownMenu';
 
 export const AppConnectionWalletSwitcher = () => {
@@ -38,9 +35,10 @@ export const AppConnectionWalletSwitcher = () => {
   const { url } = useActiveTab();
   const appMetadata = useAppMetadata({ url });
 
-  const { appSession, activeSession, addSession } = useAppSession({
-    host: appMetadata.appHost,
-  });
+  const { appSession, activeSession, addSession, updateAppSessionAddress } =
+    useAppSession({
+      host: appMetadata.appHost,
+    });
 
   const { sortedAccounts } = useAccounts(({ sortedAccounts }) => ({
     sortedAccounts,
@@ -135,24 +133,22 @@ export const AppConnectionWalletSwitcher = () => {
                       <AccentColorProviderWrapper color="red">
                         {connectedAccounts.map((account) => (
                           <Box key={account.address} position="relative">
-                            <AppConnectionWalletItemConnectedWrapper
+                            <AppConnectionWalletItem
                               key={account.address}
-                              appMetadata={appMetadata}
+                              onClick={() =>
+                                updateAppSessionAddress({
+                                  address: account.address,
+                                })
+                              }
                               address={account.address}
-                            >
-                              <AppConnectionWalletItem
-                                key={account.address}
-                                onClick={() => null}
-                                address={account.address}
-                                chainId={appSession.sessions?.[account.address]}
-                                active={isLowerCaseMatch(
-                                  activeSession?.address,
-                                  account.address,
-                                )}
-                                connected={true}
-                                appMetadata={appMetadata}
-                              />
-                            </AppConnectionWalletItemConnectedWrapper>
+                              chainId={appSession.sessions?.[account.address]}
+                              active={isLowerCaseMatch(
+                                activeSession?.address,
+                                account.address,
+                              )}
+                              connected={true}
+                              appMetadata={appMetadata}
+                            />
                             <Box
                               position="absolute"
                               style={{ top: 10, right: 3 }}
