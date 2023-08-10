@@ -42,10 +42,6 @@ export const getRootUrl = () => {
   return 'chrome-extension://';
 };
 
-export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
-export const byText = (text: string) =>
-  By.xpath(`//*[contains(text(),"${text}")]`);
-
 // navigators
 
 export async function goToTestApp(driver: WebDriver) {
@@ -508,7 +504,7 @@ export async function importWalletFlow(
 
   // button doesn't exist for pkeys. check if pkey, and if so, dont check for this button
   const isPrivateKey =
-    walletSecret.substr(0, 2) === '0x' && walletSecret.length === 66;
+    walletSecret.substring(0, 2) === '0x' && walletSecret.length === 66;
 
   await findElementByTestIdAndClick({
     id: isPrivateKey ? 'import-via-pkey-option' : 'import-via-seed-option',
@@ -622,7 +618,7 @@ export const untilDocumentLoaded = async function () {
 
 // delays
 
-export async function delay(ms: number | undefined) {
+export async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
