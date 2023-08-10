@@ -142,7 +142,7 @@ export async function initDriverWithOptions(opts: {
       .setChromeOptions(options)
       .build();
   }
-
+  // @ts-ignore
   driver.browser = opts.browser;
   return driver;
 }
