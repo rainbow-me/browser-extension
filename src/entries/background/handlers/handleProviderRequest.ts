@@ -85,6 +85,7 @@ const messengerProviderRequest = async (
 ) => {
   const { addPendingRequest } = pendingRequestStore.getState();
   // Add pending request to global background state.
+  console.log('--- adding pending req addPendingRequest', request);
   addPendingRequest(request);
 
   let ready = await isInitialized();
@@ -213,10 +214,12 @@ export const handleProviderRequest = ({
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     const { getActiveSession, addSession, updateActiveSessionChainId } =
       appSessionsStore.getState();
+    console.log('-- handleProviderRequest 2');
     const url = meta?.sender?.url || '';
     const host = (isValidUrl(url) && getDappHost(url)) || '';
     const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
+    console.log('-- handleProviderRequest activeSession', activeSession);
 
     const rateLimited = await checkRateLimit(host);
     if (rateLimited) {
@@ -329,10 +332,17 @@ export const handleProviderRequest = ({
           break;
         }
         case 'eth_requestAccounts': {
+          console.log('--- eth_requestAccounts activeSession', activeSession);
           if (activeSession) {
             response = [activeSession.address?.toLowerCase()];
             break;
           }
+          console.log(
+            '--- eth_requestAccounts sending messengerProviderRequest',
+            params,
+            method,
+            meta,
+          );
           const { address, chainId } = (await messengerProviderRequest(
             popupMessenger,
             {
@@ -342,6 +352,11 @@ export const handleProviderRequest = ({
               meta,
             },
           )) as { address: Address; chainId: number };
+          console.log(
+            '--- eth_requestAccounts out messengerProviderRequest',
+            address,
+            chainId,
+          );
           addSession({
             host,
             address,
