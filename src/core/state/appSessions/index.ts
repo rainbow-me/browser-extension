@@ -42,7 +42,7 @@ export interface AppSessionsStore<T extends AppSession | V0AppSession> {
   }: {
     host: string;
     address: Address;
-  }) => void;
+  }) => { address: Address; chainId: number } | null;
   removeAppSession: ({ host }: { host: string }) => void;
   updateActiveSession: ({
     host,
@@ -116,13 +116,19 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
     removeSession: ({ host, address }) => {
       const appSessions = get().appSessions;
       const appSession = appSessions[host];
+      let newActiveSession = null;
       if (Object.keys(appSession.sessions).length === 1) {
         delete appSessions[host];
       } else {
         delete appSession.sessions[address];
-        appSession.activeSessionAddress = Object.keys(
+        const newActiveSessionAddress = Object.keys(
           appSession.sessions,
         )[0] as Address;
+        appSession.activeSessionAddress = newActiveSessionAddress;
+        newActiveSession = {
+          address: newActiveSessionAddress,
+          chainId: appSession.sessions[newActiveSessionAddress],
+        };
       }
       set({
         ...appSessions,
@@ -130,6 +136,7 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
           ...appSession,
         },
       });
+      return newActiveSession;
     },
     updateActiveSession: ({ host, address }) => {
       const appSessions = get().appSessions;

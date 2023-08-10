@@ -10,6 +10,7 @@ const messenger = initializeMessenger({ connect: 'inpage' });
 export function useAppSession({ host }: { host: string }) {
   const {
     removeAppSession,
+    removeSession,
     updateActiveSessionChainId: storeUpdateActiveSessionChainId,
     updateSessionChainId: storeUpdateSessionChainId,
     updateActiveSession: storeUpdateActiveSession,
@@ -77,6 +78,15 @@ export function useAppSession({ host }: { host: string }) {
     [appSessions, host],
   );
 
+  const disconnectSession = React.useCallback(
+    ({ address, host }: { address: Address; host: string }) => {
+      const newActiveSession = removeSession({ host, address });
+      messenger.send(`accountsChanged:${host}`, newActiveSession?.address);
+      messenger.send(`chainChanged:${host}`, newActiveSession?.chainId);
+    },
+    [removeSession],
+  );
+
   const disconnectAppSession = React.useCallback(() => {
     removeAppSession({ host });
     messenger.send(`disconnect:${host}`, null);
@@ -89,6 +99,7 @@ export function useAppSession({ host }: { host: string }) {
     updateSessionChainId,
     updateAppSessionChainId,
     disconnectAppSession,
+    disconnectSession,
     appSession,
     activeSession,
   };

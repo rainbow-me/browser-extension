@@ -64,7 +64,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
     const [subMenuOpen, setSubMenuOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
-    const { updateSessionChainId, disconnectAppSession, appSession } =
+    const { updateSessionChainId, disconnectSession, appSession } =
       useAppSession({ host: appMetadata.appHost });
 
     const changeChainId = useCallback(
@@ -75,10 +75,10 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
     );
 
     const disconnect = useCallback(() => {
-      disconnectAppSession();
+      disconnectSession({ address, host: appMetadata.appHost });
       setSubMenuOpen(false);
       setMenuOpen(false);
-    }, [disconnectAppSession, setMenuOpen]);
+    }, [address, appMetadata.appHost, disconnectSession]);
 
     const onValueChange = useCallback(
       (value: 'disconnect' | 'switch-networks' | 'open-dapp') => {
