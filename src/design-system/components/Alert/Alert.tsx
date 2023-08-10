@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -16,11 +16,13 @@ export const Alert = () => {
   const alertCallback = useRef<() => void>();
   const { trackShortcut } = useKeyboardAnalytics();
 
-  listenAlert(async ({ text, callback }: AlertProps) => {
-    setText(text);
-    setVisible(true);
-    alertCallback.current = callback;
-  });
+  useEffect(() => {
+    listenAlert(async ({ text, callback }: AlertProps) => {
+      setText(text);
+      setVisible(true);
+      alertCallback.current = callback;
+    });
+  }, []);
 
   const onClose = useCallback(() => {
     setVisible(false);
