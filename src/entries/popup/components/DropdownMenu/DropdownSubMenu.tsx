@@ -135,7 +135,10 @@ export const DropdownSubMenu = ({
           parentRect &&
           !isClickingMenuHeader({ x, y, subMenuRect, parentRect })
         ) {
-          setMenuOpen?.(false);
+          // without this timeout the collapse of the context menu freezes the screen
+          setTimeout(() => {
+            setMenuOpen?.(false);
+          }, 1);
         }
       }
     },
