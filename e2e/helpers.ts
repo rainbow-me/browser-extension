@@ -16,7 +16,8 @@ const BINARY_PATHS = {
   mac: {
     chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     brave: '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
-    firefox: '/Applications/FirefoxDev.app/Contents/MacOS/firefox',
+    firefox:
+      '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
   },
   linux: {
     chrome: process.env.CHROMIUM_BIN,
@@ -99,11 +100,6 @@ export async function initDriverWithOptions(opts) {
     '--enable-logging',
   ];
 
-  console.log(
-    `Setting up ${opts.browser} with binary`,
-    BINARY_PATHS[opts.os][opts.browser],
-  );
-
   if (opts.browser === 'firefox') {
     const options = new firefox.Options()
       .setBinary(BINARY_PATHS[opts.os][opts.browser])
@@ -111,7 +107,6 @@ export async function initDriverWithOptions(opts) {
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');
-    // options.setAcceptInsecureCerts(true);
 
     const service = new firefox.ServiceBuilder().setStdio('inherit');
 
@@ -138,32 +133,6 @@ export async function initDriverWithOptions(opts) {
   driver.browser = opts.browser;
   return driver;
 }
-
-// const addPermissionForAllWebsites = async (driver) => {
-//   // Add the permission to access all websites
-//   await driver.get('about:addons');
-//   const sidebarBtn = await querySelector(driver, `[title="Extensions"]`);
-//   await sidebarBtn.click();
-//   const moreBtn = await querySelector(driver, `[action="more-options"]`);
-//   await moreBtn.click();
-//   const manageBtn = await querySelector(
-//     driver,
-//     `[data-l10n-id="manage-addon-button"]`,
-//   );
-//   await manageBtn.click();
-//   await findElementByIdAndClick({
-//     id: 'details-deck-button-permissions',
-//     driver,
-//   });
-//   await driver.executeScript(`
-//     const h = document.querySelectorAll('[class="permission-info"]');
-//     let i = 0;
-//     for(item of h){
-//       i > 0 && item.children[0].click();
-//       i++
-//     } 
-//   `);
-// };
 
 export async function getExtensionIdByName(driver, extensionName) {
   if (driver?.browser === 'firefox') {

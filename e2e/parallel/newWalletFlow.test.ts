@@ -70,7 +70,6 @@ describe('New wallet flow', () => {
       driver,
       '[data-testid="header"] [data-testid="account-name"]',
     );
-    await delayTime('long');
     const actual = await label.getText();
     expect(actual.substr(0, 2) === '0x' && actual.length === 13).toEqual(true);
   });

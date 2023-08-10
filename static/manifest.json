@@ -44,8 +44,7 @@
   "host_permissions": [
     "http://*/*",
     "https://*/*",
-    "wss://*/*",
-    "ws://*/*"
+    "wss://*/*"
   ],
   "icons": {
     "16": "images/icon-16.png",
