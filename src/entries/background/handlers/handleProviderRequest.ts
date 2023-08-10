@@ -214,12 +214,10 @@ export const handleProviderRequest = ({
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     const { getActiveSession, addSession, updateActiveSessionChainId } =
       appSessionsStore.getState();
-    console.log('-- handleProviderRequest 2');
     const url = meta?.sender?.url || '';
     const host = (isValidUrl(url) && getDappHost(url)) || '';
     const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
-    console.log('-- handleProviderRequest activeSession', activeSession);
 
     const rateLimited = await checkRateLimit(host);
     if (rateLimited) {
