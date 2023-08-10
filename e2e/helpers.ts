@@ -269,7 +269,7 @@ export async function waitUntilElementByTestIdIsPresent({
 }: {
   id: string;
   driver: WebDriver;
-}) {
+}): Promise<void> {
   await delayTime('medium');
   const element = await findElementByTestId({ id, driver });
   if (element) {

@@ -25,4 +25,5 @@
     "exclude": [
       "vitest.config.*" 
     ]
-}}
+  }
+}
