@@ -333,17 +333,10 @@ export const handleProviderRequest = ({
           break;
         }
         case 'eth_requestAccounts': {
-          console.log('--- eth_requestAccounts activeSession', activeSession);
           if (activeSession) {
             response = [activeSession.address?.toLowerCase()];
             break;
           }
-          console.log(
-            '--- eth_requestAccounts sending messengerProviderRequest',
-            params,
-            method,
-            meta,
-          );
           const { address, chainId } = (await messengerProviderRequest(
             popupMessenger,
             {
@@ -353,11 +346,6 @@ export const handleProviderRequest = ({
               meta,
             },
           )) as { address: Address; chainId: number };
-          console.log(
-            '--- eth_requestAccounts out messengerProviderRequest',
-            address,
-            chainId,
-          );
           addSession({
             host,
             address,

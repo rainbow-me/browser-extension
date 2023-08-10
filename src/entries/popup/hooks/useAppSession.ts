@@ -12,9 +12,9 @@ export function useAppSession({ host }: { host: string }) {
     removeAppSession,
     updateActiveSessionChainId: storeUpdateActiveSessionChainId,
     updateSessionChainId: storeUpdateSessionChainId,
-    updateActiveSession,
+    updateActiveSession: storeUpdateActiveSession,
     appSessions,
-    addSession,
+    addSession: storeAddSession,
     getActiveSession,
   } = useAppSessionsStore();
 
@@ -22,10 +22,28 @@ export function useAppSession({ host }: { host: string }) {
 
   const updateAppSessionAddress = React.useCallback(
     ({ address }: { address: Address }) => {
-      updateActiveSession({ host, address });
+      storeUpdateActiveSession({ host, address });
       messenger.send(`accountsChanged:${host}`, address);
     },
-    [host, updateActiveSession],
+    [host, storeUpdateActiveSession],
+  );
+
+  const addSession = React.useCallback(
+    ({
+      host,
+      address,
+      chainId,
+      url,
+    }: {
+      host: string;
+      address: Address;
+      chainId: number;
+      url: string;
+    }) => {
+      storeAddSession({ host, address, chainId, url });
+      messenger.send(`accountsChanged:${host}`, address);
+    },
+    [storeAddSession],
   );
 
   const updateAppSessionChainId = React.useCallback(
