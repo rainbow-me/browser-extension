@@ -20,10 +20,5 @@
     },
   },
   "include": ["src", "e2e", ".env.d.ts"],
-  "exclude": ["design-system/docs", "static/", "node_modules", "dist", "build", "vitest.config.*"],
-  "typeAcquisition": {
-    "exclude": [
-      "vitest.config.*" 
-    ]
-  }
+  "exclude": ["vitest.config.*", "design-system/docs", "static/", "node_modules", "dist", "build"],
 }
