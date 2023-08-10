@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import React from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { AppSession } from '~/core/state/appSessions';
 import { ChainNameDisplay } from '~/core/types/chains';
 import {
   Box,
@@ -23,7 +23,7 @@ interface AppConnectionMenuHeaderProps {
   opacity: number;
   appLogo?: string;
   headerHostId?: string;
-  appSession?: AppSession;
+  activeSession: { address: Address; chainId: number } | null;
   appHost?: string;
   appName?: string;
 }
@@ -32,7 +32,7 @@ export const AppConnectionMenuHeader = ({
   opacity,
   appLogo,
   headerHostId,
-  appSession,
+  activeSession,
   appHost,
   appName,
 }: AppConnectionMenuHeaderProps) => {
@@ -61,7 +61,9 @@ export const AppConnectionMenuHeader = ({
           </Column>
           <Column>
             <Box
-              id={`${headerHostId}-${appSession ? appHost : 'not-connected'}`}
+              id={`${headerHostId}-${
+                activeSession ? appHost : 'not-connected'
+              }`}
             >
               <Rows space="8px">
                 <Row>
@@ -71,10 +73,9 @@ export const AppConnectionMenuHeader = ({
                 </Row>
                 <Row>
                   <Text size="11pt" weight="bold">
-                    {!appSession
+                    {!activeSession
                       ? i18n.t('menu.app_connection_menu.not_connected')
-                      : ChainNameDisplay[appSession.activeSession.chainId] ||
-                        ''}
+                      : ChainNameDisplay[activeSession.chainId] || ''}
                   </Text>
                 </Row>
               </Rows>
@@ -83,7 +84,7 @@ export const AppConnectionMenuHeader = ({
           <Column width="content">
             <Symbol
               size={6}
-              color={appSession ? 'green' : 'labelQuaternary'}
+              color={activeSession ? 'green' : 'labelQuaternary'}
               symbol="circle.fill"
               weight="semibold"
             />

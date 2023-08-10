@@ -168,7 +168,7 @@ export const AppConnectionMenu = ({
               appLogo={appLogo}
               appHost={appHost}
               headerHostId={headerHostId}
-              appSession={appSession}
+              activeSession={activeSession}
               appName={appName || appHost}
             />
           ) : null}

@@ -6,7 +6,7 @@ import { ChainId } from '~/core/types/chains';
 import { createStore } from '../internal/createStore';
 
 export interface AppSession {
-  activeSession: Address;
+  activeSessionAddress: Address;
   host: string;
   sessions: Record<Address, ChainId>;
   url: string;
@@ -75,12 +75,12 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
     appSessions: {},
     getActiveSession: ({ host }) => {
       const appSessions = get().appSessions;
-      const activeSession = appSessions[host]?.activeSession;
+      const activeSessionAddress = appSessions[host]?.activeSessionAddress;
       const sessions = appSessions[host]?.sessions;
-      return activeSession
+      return activeSessionAddress
         ? {
-            address: activeSession,
-            chainId: sessions[activeSession],
+            address: activeSessionAddress,
+            chainId: sessions[activeSessionAddress],
           }
         : null;
     },
@@ -91,12 +91,12 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
         appSessions[host] = {
           host,
           sessions: { [address]: chainId },
-          activeSession: address,
+          activeSessionAddress: address,
           url,
         };
       } else {
         appSessions[host].sessions[address] = chainId;
-        appSessions[host].activeSession = address;
+        appSessions[host].activeSessionAddress = address;
       }
       set({
         appSessions: {
@@ -120,7 +120,7 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
         delete appSessions[host];
       } else {
         delete appSession.sessions[address];
-        appSession.activeSession = Object.keys(
+        appSession.activeSessionAddress = Object.keys(
           appSession.sessions,
         )[0] as Address;
       }
@@ -138,7 +138,7 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
         ...appSessions,
         [host]: {
           ...appSession,
-          activeSession: address,
+          activeSessionAddress: address,
         },
       });
     },
@@ -152,7 +152,7 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
             ...appSession,
             sessions: {
               ...appSession.sessions,
-              [appSession.activeSession]: chainId,
+              [appSession.activeSessionAddress]: chainId,
             },
           },
         },
@@ -188,7 +188,7 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
           Object.values(v0PersistedState.appSessions).forEach((appSession) => {
             appSessions[appSession.host] = {
               sessions: { [appSession.address]: appSession.chainId },
-              activeSession: appSession.address,
+              activeSessionAddress: appSession.address,
               url: appSession.url,
               host: appSession.host,
             };
