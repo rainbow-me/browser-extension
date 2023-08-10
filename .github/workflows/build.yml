@@ -125,7 +125,8 @@ jobs:
         run: |
             export BROWSER=firefox
             export OS=linux
-            export FIREFOX_BIN=$(find firefox -type f -name 'firefox')
+            export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
+            yarn firefox:zip
             yarn vitest e2e/parallel/newWalletFlow.test.ts --config ./e2e/parallel/vitest.config.ts
   # CHROME TESTS
   # [TODO] Uncomment everything after this line later!
