@@ -32,55 +32,61 @@ export const AppConnectionBanner = ({ show }: { show: boolean }) => {
       <Box padding="10px">
         <Columns>
           <Column>
-            <Inline space="10px" alignVertical="center">
-              <Box
-                style={{
-                  height: '36px',
-                  width: '36px',
-                  overflow: 'hidden',
-                }}
-                borderRadius="10px"
-                background="fill"
-                borderWidth="1px"
-                borderColor="buttonStroke"
-              >
-                <Inline
-                  alignHorizontal="center"
-                  alignVertical="center"
-                  height="full"
+            <Columns space="10px" alignVertical="center">
+              <Column width="content">
+                <Box
+                  style={{
+                    height: '36px',
+                    width: '36px',
+                    overflow: 'hidden',
+                  }}
+                  borderRadius="10px"
+                  background="fill"
+                  borderWidth="1px"
+                  borderColor="buttonStroke"
+                  position="relative"
                 >
-                  <Box
-                    style={{
-                      height: '30px',
-                      width: '30px',
-                      overflow: 'hidden',
-                    }}
-                    borderRadius="8px"
+                  <Inline
+                    alignHorizontal="center"
+                    alignVertical="center"
+                    height="full"
                   >
-                    <ExternalImage src={appLogo} width="30" height="30" />
-                  </Box>
-                </Inline>
-              </Box>
-
-              <Stack space="8px">
-                <Inline space="4px" alignVertical="center">
-                  <Symbol
-                    symbol="circle"
-                    size={8}
-                    weight="medium"
-                    color="labelTertiary"
-                  />
-                  <TextOverflow color="label" size="12pt" weight="bold">
-                    {displayName}
-                  </TextOverflow>
-                </Inline>
-                <TextOverflow color="label" size="12pt" weight="bold">
-                  {i18n.t('app_connection_switcher.banner.connect_to', {
-                    appName: appName || appHost,
-                  })}
-                </TextOverflow>
-              </Stack>
-            </Inline>
+                    <Box
+                      style={{
+                        height: '30px',
+                        width: '30px',
+                        overflow: 'hidden',
+                      }}
+                      borderRadius="8px"
+                    >
+                      <ExternalImage src={appLogo} width="30" height="30" />
+                    </Box>
+                  </Inline>
+                </Box>
+              </Column>
+              <Column>
+                <Box>
+                  <Stack space="8px">
+                    <Inline space="4px" alignVertical="center">
+                      <Symbol
+                        symbol="circle"
+                        size={8}
+                        weight="medium"
+                        color="labelTertiary"
+                      />
+                      <TextOverflow color="label" size="12pt" weight="bold">
+                        {displayName}
+                      </TextOverflow>
+                    </Inline>
+                    <TextOverflow color="label" size="12pt" weight="bold">
+                      {i18n.t('app_connection_switcher.banner.connect_to', {
+                        appName: appName || appHost,
+                      })}
+                    </TextOverflow>
+                  </Stack>
+                </Box>
+              </Column>
+            </Columns>
           </Column>
           <Column width="content">
             <ButtonOverflow>
