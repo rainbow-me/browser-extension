@@ -102,6 +102,6 @@ export const useSwapValidations = ({
     enoughAssetBalance,
     enoughNativeAssetBalanceForGas,
     enoughAssetsForSwap,
-    readyForReview: enoughAssetsForSwap && selectedGas?.gasFee.amount,
+    readyForReview: enoughAssetsForSwap && selectedGas?.gasFee?.amount,
   };
 };
