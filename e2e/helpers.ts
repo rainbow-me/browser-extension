@@ -34,10 +34,6 @@ export const getRootUrl = () => {
   return 'chrome-extension://';
 };
 
-export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
-export const byText = (text: string) =>
-  By.xpath(`//*[contains(text(),"${text}")]`);
-
 // navigators
 
 export async function goToTestApp(driver) {
