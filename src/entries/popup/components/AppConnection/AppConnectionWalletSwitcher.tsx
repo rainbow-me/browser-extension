@@ -184,7 +184,7 @@ export const AppConnectionWalletSwitcher = ({
                                 address: account.address,
                                 chainId:
                                   activeSession?.chainId || ChainId.mainnet,
-                                url: appMetadata.appHost,
+                                url,
                               });
                             }}
                             address={account.address}

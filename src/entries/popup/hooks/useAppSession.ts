@@ -120,8 +120,8 @@ export function useAppSession({ host }: { host: string }) {
   );
 
   const disconnectAppSession = React.useCallback(() => {
-    removeAppSession({ host });
     messenger.send(`disconnect:${host}`, null);
+    removeAppSession({ host });
     clearAppHasInteractedWithNudgeSheet({
       host: host,
     });
