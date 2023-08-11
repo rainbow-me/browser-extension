@@ -25,11 +25,8 @@ import {
   NewTransaction,
   ProtocolType,
   RainbowTransaction,
-  TransactionDirection,
-  TransactionStatus,
   TransactionType,
-  ZerionTransaction,
-  ZerionTransactionStatus,
+  TransactionsApiResponse,
 } from '../types/transactions';
 
 import { parseAsset } from './assets';
@@ -95,7 +92,7 @@ export const getDataForTokenTransfer = (value: string, to: string): string => {
 };
 
 type ParseTransactionArgs = {
-  tx: ZerionTransaction;
+  tx: TransactionsApiResponse;
   currency: SupportedCurrencyKey;
   chainId: ChainId;
 };
@@ -104,86 +101,71 @@ export async function parseTransaction({
   tx,
   currency,
   chainId,
-}: ParseTransactionArgs): Promise<RainbowTransaction | RainbowTransaction[]> {
-  if (tx.changes.length) {
-    return tx.changes.map((internalTxn, index) => {
-      const address = (internalTxn?.asset?.asset_code?.toLowerCase() ??
-        '0x') as Address;
-      const decimals = internalTxn?.asset?.decimals || 0;
-      const parsedAsset = parseAsset({
-        address,
-        asset: internalTxn?.asset,
-        currency,
-      });
-      const priceUnit =
-        internalTxn.price ?? internalTxn?.asset?.price?.value ?? 0;
-      const valueUnit: number = internalTxn?.value || 0;
-      const nativeDisplay = convertRawAmountToNativeDisplay(
-        valueUnit,
-        decimals,
-        priceUnit,
-        currency,
-      );
+}: ParseTransactionArgs): Promise<RainbowTransaction> {
+  const internalTxn = tx;
+  console.log(tx);
 
-      const status = getTransactionLabel({
-        direction: internalTxn.direction || tx.direction,
-        pending: false,
-        protocol: tx.protocol,
-        status: tx.status,
-        type: tx.type,
-      });
+  // const address = (internalTxn?.asset?.asset_code?.toLowerCase() ??
+  //   '0x') as Address;
+  // const decimals = internalTxn?.asset?.decimals || 0;
+  // const parsedAsset = parseAsset({
+  //   address,
+  //   asset: internalTxn?.asset,
+  //   currency,
+  // });
+  // const priceUnit = internalTxn.price ?? internalTxn?.asset?.price?.value ?? 0;
+  // const valueUnit: number = internalTxn?.value || 0;
+  // const nativeDisplay = convertRawAmountToNativeDisplay(
+  //   valueUnit,
+  //   decimals,
+  //   priceUnit,
+  //   currency,
+  // );
 
-      const title = getTitle({
-        protocol: tx.protocol,
-        status,
-        type: tx.type,
-      });
+  // const status = getTransactionLabel({
+  //   direction: internalTxn.direction || tx.direction,
+  //   pending: false,
+  //   protocol: tx.protocol,
+  //   status: tx.status,
+  //   type: tx.type,
+  // });
 
-      const description = getDescription({
-        name: parsedAsset?.name,
-        status,
-        type: tx.type,
-      });
+  // const title = getTitle({
+  //   protocol: tx.protocol,
+  //   status,
+  //   type: tx.type,
+  // });
 
-      return {
-        address: (parsedAsset.address.toLowerCase() === ETH_ADDRESS
-          ? ETH_ADDRESS
-          : parsedAsset.address) as Address,
-        asset: parsedAsset,
-        balance: convertRawAmountToBalance(valueUnit, { decimals }),
-        description,
-        from: (internalTxn.address_from ?? tx.address_from) as Address,
-        hash: `${tx.hash}-${index}`,
-        minedAt: tx.mined_at,
-        name: parsedAsset.name,
-        native: nativeDisplay,
-        chainId,
-        nonce: tx.nonce,
-        pending: false,
-        protocol: tx.protocol,
-        status,
-        symbol: parsedAsset.symbol,
-        title,
-        to: (internalTxn.address_to ?? tx.address_to) as Address,
-        type: tx.type,
-        meta: tx.meta,
-        blockNumber: tx.block_number,
-      };
-    });
-  }
+  // const description = getDescription({
+  //   name: parsedAsset?.name,
+  //   status,
+  //   type: tx.type,
+  // });
 
-  return parseTransactionWithEmptyChanges({
-    tx,
-    currency,
-    chainId,
-  });
-}
+  // return {
+  //   address: (parsedAsset.address.toLowerCase() === ETH_ADDRESS
+  //     ? ETH_ADDRESS
+  //     : parsedAsset.address) as Address,
+  //   asset: parsedAsset,
+  //   balance: convertRawAmountToBalance(valueUnit, { decimals }),
+  //   description,
+  //   from: (internalTxn.address_from ?? tx.address_from) as Address,
+  //   hash: tx.hash,
+  //   minedAt: tx.mined_at,
+  //   name: parsedAsset.name,
+  //   native: nativeDisplay,
+  //   chainId,
+  //   nonce: tx.nonce,
+  //   pending: false,
+  //   protocol: tx.protocol,
+  //   status,
+  //   symbol: parsedAsset.symbol,
+  //   title,
+  //   to: (internalTxn.address_to ?? tx.address_to) as Address,
+  //   type: tx.type,
+  //   meta: tx.meta,
+  // };
 
-const parseTransactionWithEmptyChanges = async ({
-  tx,
-  currency,
-  chainId,
-}: ParseTransactionArgs): Promise<RainbowTransaction> => {
   const methodName = await fetchRegistryLookup({
     data: null,
     to: tx.address_to,
@@ -254,7 +236,7 @@ const parseTransactionWithEmptyChanges = async ({
     to: tx.address_to as Address,
     type: TransactionType.contract_interaction,
   };
-};
+}
 
 export const getTitle = ({
   protocol,
@@ -285,92 +267,90 @@ export const getTitle = ({
   return capitalize(status);
 };
 
-export const getTransactionLabel = ({
-  direction,
-  pending,
-  protocol,
-  status,
-  type,
-}: {
-  direction: TransactionDirection;
-  pending: boolean;
-  protocol: ProtocolType | undefined;
-  status: ZerionTransactionStatus | TransactionStatus;
-  type?: TransactionType;
-}) => {
-  if (status === TransactionStatus.cancelling)
-    return TransactionStatus.cancelling;
+// export const getTransactionLabel = ({
+//   direction,
+//   protocol,
+//   status,
+//   type,
+// }: {
+//   direction: TransactionDirection;
+//   protocol: ProtocolType | undefined;
+//   status: RainbowTransaction['status'];
+//   type: TransactionType;
+// }) => {
+//   if (type === 'cancel')
+//     return TransactionStatus.cancelling;
 
-  if (status === TransactionStatus.cancelled)
-    return TransactionStatus.cancelled;
+//   if (status === TransactionStatus.cancelled)
+//     return TransactionStatus.cancelled;
 
-  if (status === TransactionStatus.speeding_up)
-    return TransactionStatus.speeding_up;
+//   if (status === TransactionStatus.speeding_up)
+//     return TransactionStatus.speeding_up;
 
-  if (pending && type === TransactionType.purchase)
-    return TransactionStatus.purchasing;
+//   if (pending && type === TransactionType.purchase)
+//     return TransactionStatus.purchasing;
 
-  const isFromAccount = direction === TransactionDirection.out;
-  const isToAccount = direction === TransactionDirection.in;
-  const isSelf = direction === TransactionDirection.self;
+//   const isFromAccount = direction === TransactionDirection.out;
+//   const isToAccount = direction === TransactionDirection.in;
+//   const isSelf = direction === TransactionDirection.self;
 
-  if (pending && type === TransactionType.authorize)
-    return TransactionStatus.approving;
+//   if (pending && type === TransactionType.authorize)
+//     return TransactionStatus.approving;
 
-  if (pending && type === TransactionType.deposit) {
-    if (protocol === ProtocolType.compound) {
-      return TransactionStatus.depositing;
-    } else {
-      return TransactionStatus.sending;
-    }
-  }
+//   if (pending && type === TransactionType.deposit) {
+//     if (protocol === ProtocolType.compound) {
+//       return TransactionStatus.depositing;
+//     } else {
+//       return TransactionStatus.sending;
+//     }
+//   }
 
-  if (pending && type === TransactionType.withdraw) {
-    if (protocol === ProtocolType.compound) {
-      return TransactionStatus.withdrawing;
-    } else {
-      return TransactionStatus.receiving;
-    }
-  }
+//   if (pending && type === TransactionType.withdraw) {
+//     if (protocol === ProtocolType.compound) {
+//       return TransactionStatus.withdrawing;
+//     } else {
+//       return TransactionStatus.receiving;
+//     }
+//   }
 
-  if (pending && isFromAccount) return TransactionStatus.sending;
-  if (pending && isToAccount) return TransactionStatus.receiving;
+//   if (pending && isFromAccount) return TransactionStatus.sending;
+//   if (pending && isToAccount) return TransactionStatus.receiving;
 
-  if (status === TransactionStatus.failed) return TransactionStatus.failed;
-  if (status === TransactionStatus.dropped) return TransactionStatus.dropped;
+//   if (status === TransactionStatus.failed) return TransactionStatus.failed;
+//   if (status === TransactionStatus.dropped) return TransactionStatus.dropped;
 
-  if (type === TransactionType.trade && isFromAccount)
-    return TransactionStatus.swapped;
+//   if (type === TransactionType.trade && isFromAccount)
+//     return TransactionStatus.swapped;
 
-  if (type === TransactionType.authorize) return TransactionStatus.approved;
-  if (type === TransactionType.purchase) return TransactionStatus.purchased;
-  if (type === TransactionType.cancel) return TransactionStatus.cancelled;
+//   if (type === TransactionType.authorize) return TransactionStatus.approved;
+//   if (type === TransactionType.purchase) return TransactionStatus.purchased;
+//   if (type === TransactionType.cancel) return TransactionStatus.cancelled;
 
-  if (type === TransactionType.deposit) {
-    if (protocol === ProtocolType.compound) {
-      return TransactionStatus.deposited;
-    } else {
-      return TransactionStatus.sent;
-    }
-  }
+//   if (type === TransactionType.deposit) {
+//     if (protocol === ProtocolType.compound) {
+//       return TransactionStatus.deposited;
+//     } else {
+//       return TransactionStatus.sent;
+//     }
+//   }
 
-  if (type === TransactionType.withdraw) {
-    if (protocol === ProtocolType.compound) {
-      return TransactionStatus.withdrew;
-    } else {
-      return TransactionStatus.received;
-    }
-  }
+//   if (type === TransactionType.withdraw) {
+//     if (protocol === ProtocolType.compound) {
+//       return TransactionStatus.withdrew;
+//     } else {
+//       return TransactionStatus.received;
+//     }
+//   }
 
-  if (isSelf) return TransactionStatus.sent;
+//   if (isSelf) return TransactionStatus.sent;
 
-  if (type === TransactionType.execution)
-    return TransactionStatus.contract_interaction;
-  if (isFromAccount) return TransactionStatus.sent;
-  if (isToAccount) return TransactionStatus.received;
+//   if (type === TransactionType.execution)
+//     return TransactionStatus.contract_interaction;
+//   if (isFromAccount) return TransactionStatus.sent;
+//   if (isToAccount) return TransactionStatus.received;
 
-  return TransactionStatus.unknown;
-};
+//   return TransactionStatus.unknown;
+// };
 
 export const getDescription = ({
   name,
@@ -378,23 +358,13 @@ export const getDescription = ({
   type,
 }: {
   name: string;
-  status: TransactionStatus;
+  status: RainbowTransaction['status'];
   type: TransactionType;
 }) => {
-  switch (type) {
-    case TransactionType.deposit:
-      return status === TransactionStatus.depositing ||
-        status === TransactionStatus.sending
-        ? name
-        : `${i18n.t('transactions.deposited')} ${name}`;
-    case TransactionType.withdraw:
-      return status === TransactionStatus.withdrawing ||
-        status === TransactionStatus.receiving
-        ? name
-        : `${i18n.t('transactions.withdrew')} ${name}`;
-    default:
-      return name;
-  }
+  if (status === 'pending') return name;
+  if (type === 'deposit') return `${i18n.t('transactions.deposited')} ${name}`;
+  if (type === 'withdraw') return `${i18n.t('transactions.withdrew')} ${name}`;
+  return name;
 };
 
 export const parseNewTransaction = (

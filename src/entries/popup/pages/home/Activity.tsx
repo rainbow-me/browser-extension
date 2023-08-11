@@ -1,12 +1,8 @@
 import { motion } from 'framer-motion';
-import React, { ReactNode, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import {
-  RainbowTransaction,
-  TransactionStatus,
-  TransactionType,
-} from '~/core/types/transactions';
+import { RainbowTransaction } from '~/core/types/transactions';
 import {
   Box,
   Column,
@@ -17,10 +13,13 @@ import {
   Text,
 } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
-import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { TextStyles } from '~/design-system/styles/core.css';
-import { Space, TextColor } from '~/design-system/styles/designTokens';
+import {
+  Space,
+  SymbolName,
+  TextColor,
+} from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
 import { Spinner } from '../../components/Spinner/Spinner';
@@ -30,6 +29,39 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 import { ActivitySkeleton } from './Skeletons';
+
+const NoActivity = () => {
+  return (
+    <Box
+      width="full"
+      height="full"
+      justifyContent="center"
+      alignItems="center"
+      paddingTop="104px"
+    >
+      <Box paddingBottom="14px">
+        <Text
+          align="center"
+          size="20pt"
+          weight="semibold"
+          color="labelTertiary"
+        >
+          {i18n.t('activity.empty_header')}
+        </Text>
+      </Box>
+      <Inset horizontal="40px">
+        <Text
+          align="center"
+          size="12pt"
+          weight="medium"
+          color="labelQuaternary"
+        >
+          {i18n.t('activity.empty_description')}
+        </Text>
+      </Inset>
+    </Box>
+  );
+};
 
 export function Activity() {
   const {
@@ -47,42 +79,8 @@ export function Activity() {
 
   const navigate = useRainbowNavigate();
 
-  if (isInitialLoading || isRefetching) {
-    return <ActivitySkeleton />;
-  }
-
-  if (!transactions.length) {
-    return (
-      <Box
-        width="full"
-        height="full"
-        justifyContent="center"
-        alignItems="center"
-        paddingTop="104px"
-      >
-        <Box paddingBottom="14px">
-          <Text
-            align="center"
-            size="20pt"
-            weight="semibold"
-            color="labelTertiary"
-          >
-            {i18n.t('activity.empty_header')}
-          </Text>
-        </Box>
-        <Inset horizontal="40px">
-          <Text
-            align="center"
-            size="12pt"
-            weight="medium"
-            color="labelQuaternary"
-          >
-            {i18n.t('activity.empty_description')}
-          </Text>
-        </Inset>
-      </Box>
-    );
-  }
+  if (isInitialLoading || isRefetching) return <ActivitySkeleton />;
+  if (!transactions.length) return <NoActivity />;
 
   const rows = activityRowVirtualizer.getVirtualItems();
   return (
@@ -166,12 +164,12 @@ export function Activity() {
 }
 
 const titleIcons: {
-  [key: string]: {
-    color: 'accent' | TextColor;
-    element?: ReactNode;
-    space?: Space;
-    type: 'icon' | 'emoji' | 'spinner';
+  [k in SymbolName | 'spinner' | 'robot']?: {
+    color: TextColor;
+    space: Space;
+    type: string;
     size?: number;
+    element?: React.ReactNode;
   };
 } = {
   'xmark.circle': {
@@ -221,10 +219,90 @@ const titleIcons: {
     space: '3px',
     type: 'spinner',
   },
-};
+} as const;
 
 const truncateString = (txt = '', maxLength = 22) => {
   return `${txt?.slice(0, maxLength)}${txt.length > maxLength ? '...' : ''}`;
+};
+
+const getActivityIcon = (tx: Pick<RainbowTransaction, 'status' | 'type'>) => {
+  let iconSymbol: keyof typeof titleIcons | null = null;
+
+  if (tx.status === 'pending') iconSymbol = 'spinner';
+  if (tx.status === 'failed') iconSymbol = 'xmark.circle';
+  if (tx.type === 'contract interaction') iconSymbol = 'robot';
+  if (tx.type === 'send') iconSymbol = 'paperplane.fill';
+  if (tx.type === 'swap') iconSymbol = 'arrow.triangle.swap';
+  if (tx.type === 'receive') iconSymbol = 'arrow.down';
+  if (tx.type === 'approve') iconSymbol = 'circle.fill';
+
+  if (!iconSymbol) return null;
+
+  const iconConfig = titleIcons[iconSymbol];
+  if (!iconConfig) return null;
+
+  return {
+    ...iconConfig,
+    icon: iconConfig.element ? (
+      iconConfig?.element
+    ) : (
+      <Symbol
+        symbol={iconSymbol as SymbolName}
+        color={iconConfig.color}
+        size={iconConfig.size || 9}
+        weight="semibold"
+      />
+    ),
+  };
+};
+
+const ActivityTopRow = ({
+  type,
+  status,
+  title,
+}: Pick<RainbowTransaction, 'status' | 'type' | 'title'>) => {
+  const titleColor = useMemo((): TextStyles['color'] => {
+    if (status === 'pending') return 'blue';
+    return type === 'swap' ? 'purple' : 'labelTertiary';
+  }, [status, type]);
+
+  const titleIconConfig = getActivityIcon({ status, type });
+
+  return (
+    <Columns>
+      <Column width="content">
+        <Box paddingVertical="4px">
+          <Inline space={titleIconConfig?.space} alignVertical="center">
+            <Box style={{ width: 9, height: 9 }}>
+              <Inline
+                height="full"
+                alignHorizontal="center"
+                alignVertical="center"
+              >
+                {titleIconConfig?.icon}
+              </Inline>
+            </Box>
+
+            <Text color={titleColor} size="12pt" weight="semibold">
+              {truncateString(title, 20)}
+            </Text>
+          </Inline>
+        </Box>
+      </Column>
+      <Column>
+        <Box paddingVertical="4px">
+          <Text
+            size="12pt"
+            weight="semibold"
+            align="right"
+            color="labelTertiary"
+          >
+            aa
+          </Text>
+        </Box>
+      </Column>
+    </Columns>
+  );
 };
 
 const ActivityRow = React.memo(function ({
@@ -232,139 +310,17 @@ const ActivityRow = React.memo(function ({
 }: {
   transaction: RainbowTransaction;
 }) {
-  const { asset, balance, name, native, status, symbol, title, type } =
-    transaction;
-  const isTrade = type === TransactionType.trade;
-  const received = status === TransactionStatus.received;
-  const receivedViaSwap = status === TransactionStatus.received && isTrade;
-  const sent = status === TransactionStatus.sent;
-  const approved = status === TransactionStatus.approved;
-  const approving = status === TransactionStatus.approving;
-  const sentViaSwap = status === TransactionStatus.swapped && isTrade;
-  const failed = status === TransactionStatus.failed;
-  const isContractInteraction =
-    status === TransactionStatus.contract_interaction;
-  const swapping = status === TransactionStatus.swapping;
-  const sending = status === TransactionStatus.sending;
-  const speedingUp = status === TransactionStatus.speeding_up;
-  const cancelling = status === TransactionStatus.cancelling;
+  const { status, title, type } = transaction;
 
-  const nativeDisplay = useMemo(() => {
-    const isDebit = sent || sentViaSwap || sending || swapping;
-
-    return `${isDebit ? '- ' : ''}${native?.display}`;
-  }, [native?.display, sent, sentViaSwap, sending, swapping]);
+  // const nativeDisplay = useMemo(() => {
+  //   const isDebit = transaction.direction === 'out';
+  //   return `${isDebit ? '- ' : ''}${native?.display}`;
+  // }, [native?.display, transaction.direction]);
 
   const nativeDisplayColor = useMemo(() => {
-    if (received) {
-      return 'green';
-    }
-    return receivedViaSwap ? 'purple' : 'labelTertiary';
-  }, [received, receivedViaSwap]);
-
-  const titleColor = useMemo((): TextStyles['color'] => {
-    if (cancelling || sending || speedingUp || swapping || approving) {
-      return 'blue';
-    }
-    return sentViaSwap ? 'purple' : 'labelTertiary';
-  }, [cancelling, sentViaSwap, sending, speedingUp, swapping, approving]);
-
-  const titleIconConfig = useMemo(() => {
-    let iconSymbol: keyof typeof titleIcons | undefined;
-
-    if (isContractInteraction) {
-      iconSymbol = 'robot';
-    } else if (failed) {
-      iconSymbol = 'xmark.circle';
-    } else if (sent) {
-      iconSymbol = 'paperplane.fill';
-    } else if (sentViaSwap) {
-      iconSymbol = 'arrow.triangle.swap';
-    } else if (received || receivedViaSwap) {
-      iconSymbol = 'arrow.down';
-    } else if (cancelling || sending || speedingUp || swapping || approving) {
-      iconSymbol = 'spinner';
-    } else if (approved) {
-      iconSymbol = 'circle.fill';
-    }
-
-    if (iconSymbol) {
-      const iconConfig = titleIcons[iconSymbol];
-      return {
-        ...iconConfig,
-        icon: iconConfig?.element ? (
-          iconConfig?.element
-        ) : (
-          <Symbol
-            symbol={iconSymbol as SymbolProps['symbol']}
-            color={iconConfig.color}
-            size={iconConfig.size || 9}
-            weight="semibold"
-          />
-        ),
-      };
-    }
-
-    return null;
-  }, [
-    isContractInteraction,
-    failed,
-    sent,
-    sentViaSwap,
-    received,
-    receivedViaSwap,
-    cancelling,
-    sending,
-    speedingUp,
-    swapping,
-    approved,
-    approving,
-  ]);
-
-  const topRow = useMemo(
-    () => (
-      <Columns>
-        <Column width="content">
-          <Box paddingVertical="4px">
-            <Inline space={titleIconConfig?.space} alignVertical="center">
-              <Box style={{ width: 9, height: 9 }}>
-                <Inline
-                  height="full"
-                  alignHorizontal="center"
-                  alignVertical="center"
-                >
-                  {titleIconConfig?.icon}
-                </Inline>
-              </Box>
-
-              <Text color={titleColor} size="12pt" weight="semibold">
-                {truncateString(title, 20)}
-              </Text>
-            </Inline>
-          </Box>
-        </Column>
-        <Column>
-          <Box paddingVertical="4px">
-            <Text
-              size="12pt"
-              weight="semibold"
-              align="right"
-              color="labelTertiary"
-            >
-              {truncateString(balance?.display, 20)}
-            </Text>
-          </Box>
-        </Column>
-      </Columns>
-    ),
-    [
-      balance?.display,
-      title,
-      titleColor,
-      titleIconConfig?.icon,
-      titleIconConfig?.space,
-    ],
-  );
+    if (type === 'receive') return 'green';
+    return type === 'swap' ? 'purple' : 'labelTertiary';
+  }, [type]);
 
   const bottomRow = useMemo(() => {
     return (
@@ -372,7 +328,7 @@ const ActivityRow = React.memo(function ({
         <Column>
           <Box paddingVertical="4px">
             <TextOverflow size="14pt" weight="semibold">
-              {name}
+              {title}
             </TextOverflow>
           </Box>
         </Column>
@@ -384,23 +340,27 @@ const ActivityRow = React.memo(function ({
               align="right"
               color={nativeDisplayColor}
             >
-              {nativeDisplay}
+              aa
             </TextOverflow>
           </Box>
         </Column>
       </Columns>
     );
-  }, [nativeDisplay, nativeDisplayColor, name]);
+  }, [nativeDisplayColor, title]);
 
   return asset ? (
     <CoinRow
       asset={asset}
       fallbackText={symbol}
-      topRow={topRow}
+      topRow={<ActivityTopRow type={type} status={status} title={title} />}
       bottomRow={bottomRow}
     />
   ) : (
-    <CoinRow fallbackText={symbol} topRow={topRow} bottomRow={bottomRow} />
+    <CoinRow
+      fallbackText={symbol}
+      topRow={<ActivityTopRow type={type} status={status} title={title} />}
+      bottomRow={bottomRow}
+    />
   );
 });
 

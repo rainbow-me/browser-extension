@@ -1,11 +1,11 @@
 import { Contract } from '@ethersproject/contracts';
 import { Provider } from '@ethersproject/providers';
+import { ETH_ADDRESS } from '@rainbow-me/swaps';
 import isURL from 'validator/lib/isURL';
 import { Address, erc20ABI } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
-  AssetType,
   ParsedAddressAsset,
   ParsedAsset,
   ParsedSearchAsset,
@@ -72,7 +72,7 @@ export function parseAsset({
   currency,
   chainId: opChainId,
 }: {
-  address: Address;
+  address: Address | typeof ETH_ADDRESS;
   asset: ZerionAsset;
   currency: SupportedCurrencyKey;
   chainId?: ChainId;
@@ -97,7 +97,7 @@ export function parseAsset({
     },
     price: asset?.price,
     symbol: asset?.symbol,
-    type: asset?.type ?? AssetType.token,
+    type: asset?.type ?? ('token' as const),
     uniqueId,
     decimals: asset?.decimals,
     icon_url: asset?.icon_url,

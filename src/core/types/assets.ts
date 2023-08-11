@@ -63,24 +63,8 @@ export interface ZerionAssetPrice {
   changed_at: number;
 }
 
-export enum AssetType {
-  arbitrum = 'arbitrum',
-  bsc = 'bsc',
-  compound = 'compound',
-  eth = 'eth',
-  nft = 'nft',
-  optimism = 'optimism',
-  base = 'base',
-  zora = 'zora',
-  polygon = 'polygon',
-  token = 'token',
-  trash = 'trash',
-  uniswap = 'uniswap',
-  uniswapV2 = 'uniswap-v2',
-}
-
 export interface ZerionAsset {
-  asset_code: Address;
+  asset_code: Address | typeof ETH_ADDRESS;
   colors?: {
     primary: string;
     fallback: string;
@@ -93,7 +77,7 @@ export interface ZerionAsset {
   name: string;
   symbol: string;
   decimals: number;
-  type?: AssetType;
+  type?: 'token' | 'nft';
   icon_url?: string;
   is_displayable?: boolean;
   is_verified?: boolean;

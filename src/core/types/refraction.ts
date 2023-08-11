@@ -1,6 +1,6 @@
 import { ZerionAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
-import { ZerionTransaction } from '~/core/types/transactions';
+import { TransactionsApiResponse } from '~/core/types/transactions';
 
 /**
  * Metadata for a message from the Zerion API.
@@ -32,7 +32,7 @@ export interface AddressAssetsReceivedMessage {
  */
 export interface TransactionsReceivedMessage {
   payload?: {
-    transactions?: ZerionTransaction[];
+    transactions?: TransactionsApiResponse[];
   };
   meta?: MessageMeta;
 }
