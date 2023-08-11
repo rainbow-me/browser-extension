@@ -238,7 +238,7 @@ export async function parseTransaction({
   };
 }
 
-export const getTitle = ({
+const getTitle = ({
   protocol,
   status,
   type,
@@ -352,7 +352,7 @@ export const getTitle = ({
 //   return TransactionStatus.unknown;
 // };
 
-export const getDescription = ({
+const getDescription = ({
   name,
   status,
   type,
@@ -453,7 +453,7 @@ export const parseNewTransaction = (
   };
 };
 
-export function getTransactionConfirmedState(
+function getTransactionConfirmedState(
   type?: TransactionType,
 ): TransactionStatus {
   switch (type) {
@@ -537,29 +537,6 @@ export async function getTransactionReceiptStatus({
 
 export function getTransactionHash(tx: RainbowTransaction): string | undefined {
   return tx.hash?.split('-').shift();
-}
-
-export async function getCurrentNonce({
-  address,
-  chainId,
-}: {
-  address: Address;
-  chainId: ChainId;
-}) {
-  const { getNonce } = nonceStore.getState();
-  const localNonceData = getNonce({ address, chainId });
-  const localNonce = localNonceData?.currentNonce;
-  const provider = getProvider({ chainId });
-
-  const nonceIncludingPending = await provider.getTransactionCount(
-    address,
-    'pending',
-  );
-  const nonceOnChain = (nonceIncludingPending || 0) - 1;
-  const currentNonce =
-    (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
-
-  return currentNonce;
 }
 
 export async function getNextNonce({

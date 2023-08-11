@@ -6,6 +6,7 @@ import { Address, erc20ABI } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
+  AssetType,
   ParsedAddressAsset,
   ParsedAsset,
   ParsedSearchAsset,
@@ -97,7 +98,7 @@ export function parseAsset({
     },
     price: asset?.price,
     symbol: asset?.symbol,
-    type: asset?.type ?? ('token' as const),
+    type: asset?.type === AssetType.nft ? ('nft' as const) : ('erc20' as const),
     uniqueId,
     decimals: asset?.decimals,
     icon_url: asset?.icon_url,

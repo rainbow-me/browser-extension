@@ -29,7 +29,7 @@ export interface ParsedAsset {
   uniqueId: UniqueId;
   decimals: number;
   icon_url?: string;
-  type: 'nft' | 'token';
+  type: 'nft' | 'erc20';
 }
 
 export interface ParsedAddressAsset extends ParsedAsset {
@@ -63,6 +63,22 @@ export interface ZerionAssetPrice {
   changed_at: number;
 }
 
+export enum AssetType {
+  arbitrum = 'arbitrum',
+  bsc = 'bsc',
+  compound = 'compound',
+  eth = 'eth',
+  nft = 'nft',
+  optimism = 'optimism',
+  base = 'base',
+  zora = 'zora',
+  polygon = 'polygon',
+  token = 'token',
+  trash = 'trash',
+  uniswap = 'uniswap',
+  uniswapV2 = 'uniswap-v2',
+}
+
 export interface ZerionAsset {
   asset_code: Address | typeof ETH_ADDRESS;
   colors?: {
@@ -77,21 +93,12 @@ export interface ZerionAsset {
   name: string;
   symbol: string;
   decimals: number;
-  type?: 'token' | 'nft';
+  type?: AssetType;
   icon_url?: string;
   is_displayable?: boolean;
   is_verified?: boolean;
   price?: ZerionAssetPrice;
   network?: ChainName;
-}
-
-export interface RainbowPrice {
-  change: string;
-  price: { amount?: number; display: string };
-}
-
-export interface RainbowPrices {
-  [id: string]: RainbowPrice;
 }
 
 export type UniqueId = `${Address}_${ChainId}`;
