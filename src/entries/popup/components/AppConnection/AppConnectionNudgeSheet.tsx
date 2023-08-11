@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import appConnectionSheetImageMask from 'static/assets/appConnectionSheetImageMask.svg';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Box,
   Button,
@@ -17,7 +16,6 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
-import { useAppSession } from '../../hooks/useAppSession';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import { Checkbox } from '../Checkbox/Checkbox';
@@ -25,21 +23,17 @@ import ExternalImage from '../ExternalImage/ExternalImage';
 import { Navbar } from '../Navbar/Navbar';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
-export const AppConnectionNudgeSheet = () => {
-  const [show, setshow] = useState(false);
+export const AppConnectionNudgeSheet = ({
+  show,
+  setShow,
+}: {
+  show: boolean;
+  setShow: (show: boolean) => void;
+}) => {
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
   const { appHost, appName, appLogo } = useAppMetadata({ url });
-
-  const { appSession, activeSession } = useAppSession({ host: appHost });
-  useEffect(() => {
-    setTimeout(() => {
-      if (!isLowerCaseMatch(activeSession?.address, currentAddress)) {
-        setshow(true);
-      }
-    }, 1000);
-  }, [appSession, activeSession?.address, currentAddress]);
 
   return (
     <>
@@ -47,7 +41,7 @@ export const AppConnectionNudgeSheet = () => {
         <Box>
           <Navbar
             leftComponent={
-              <Navbar.CloseButton onClick={() => setshow(false)} />
+              <Navbar.CloseButton onClick={() => setShow(false)} />
             }
           />
           <Box marginTop="-16px">
