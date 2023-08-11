@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import appConnectionSheetImageMask from 'static/assets/appConnectionSheetImageMask.svg';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
 import {
   Box,
   Button,
@@ -16,6 +17,7 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
+import usePrevious from '../../hooks/usePrevious';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import { Checkbox } from '../Checkbox/Checkbox';
@@ -36,12 +38,22 @@ export const AppConnectionNudgeSheet = ({
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
   const { appHost, appName, appLogo } = useAppMetadata({ url });
+  const { setNudgeSheetDisabled } = useAppConnectionWalletSwitcherStore();
+  const previousShow = usePrevious(show);
+
   const [showWalletSwitcher, setShowWalletSwitcher] = useState(false);
+  const [doNotShowAgain, setDoNotShowAgain] = useState(false);
 
   const connectToDifferentWallet = () => {
     setShowWalletSwitcher(true);
     setShow(false);
   };
+
+  useEffect(() => {
+    if (previousShow && !show && doNotShowAgain) {
+      setNudgeSheetDisabled();
+    }
+  }, [doNotShowAgain, previousShow, setNudgeSheetDisabled, show]);
 
   return (
     <>
@@ -163,7 +175,12 @@ export const AppConnectionNudgeSheet = ({
               </Box>
 
               <Inline alignVertical="center" space="4px">
-                <Checkbox selected={false} />
+                <Checkbox
+                  onClick={() =>
+                    setDoNotShowAgain((doNotShowAgain) => !doNotShowAgain)
+                  }
+                  selected={doNotShowAgain}
+                />
                 <Text
                   align="center"
                   weight="semibold"
