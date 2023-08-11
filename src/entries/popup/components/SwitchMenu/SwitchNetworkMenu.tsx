@@ -120,10 +120,10 @@ export const SwitchNetworkMenuSelector = ({
             selectedValue={selectedValue}
             onSelect={onNetworkSelect}
           >
-            <Box width="full" testId={`switch-network-item-${i}`}>
+            <Box width="full">
               <Columns alignHorizontal="justify" alignVertical="center">
                 <Column>
-                  <Box testId={`switch-network-item-${i}`}>
+                  <Box testId={`switch-network-item-${chainId}`}>
                     <Inline space="8px" alignVertical="center">
                       <ChainBadge chainId={chainId} size="18" />
                       <Text color="label" size="14pt" weight="semibold">
