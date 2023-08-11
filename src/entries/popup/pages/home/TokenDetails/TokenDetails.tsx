@@ -40,6 +40,7 @@ import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { About } from './About';
@@ -283,6 +284,8 @@ export function TokenDetails() {
 
   const { data: token, isFetched } = useUserAsset(uniqueId);
 
+  const { isWatchingWallet } = useWallets();
+
   if (!uniqueId || (isFetched && !token)) return <Navigate to={ROUTES.HOME} />;
   if (!token) return null;
 
@@ -323,7 +326,9 @@ export function TokenDetails() {
             nativeBalance={tokenNativeBalance}
           />
 
-          <SwapSend token={token} />
+          {!isWatchingWallet && token.balance.amount !== '0' && (
+            <SwapSend token={token} />
+          )}
 
           <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
