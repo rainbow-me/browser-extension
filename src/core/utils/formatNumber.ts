@@ -2,9 +2,8 @@ import { currentCurrencyStore } from '../state';
 
 export const createNumberFormatter = (options?: Intl.NumberFormatOptions) => {
   const formatter = new Intl.NumberFormat(navigator.language, {
-    minimumSignificantDigits: 3,
+    minimumSignificantDigits: 1,
     maximumSignificantDigits: 4,
-    minimumFractionDigits: 2,
     ...options,
   });
   return {
@@ -24,6 +23,7 @@ export const createCurrencyFormatter = (
   const formatter = createNumberFormatter({
     style: 'currency',
     currency,
+    minimumFractionDigits: 2,
     ...options,
   });
   return {

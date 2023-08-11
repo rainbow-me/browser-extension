@@ -8,6 +8,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { ParsedAsset } from '~/core/types/assets';
 import { ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
+import { formatDate } from '~/core/utils/formatDate';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
@@ -226,13 +227,13 @@ function ConfirmationData({
           </CopyableValue>
         }
       />
-      {/* {transaction.minedAt && (
+      {txData?.maxPriorityFeePerGas && (
         <InfoRow
           symbol="clock.badge.checkmark"
-          label="Submitted"
-          value={formatDate(transaction.minedAt)}
+          label="Confirmed at"
+          value={formatDate(txData?.timestamp)}
         />
-      )} */}
+      )}
       {/* <InfoRow
           symbol="clock"
           label="Time to Confirmation"
@@ -243,7 +244,7 @@ function ConfirmationData({
         label="Block"
         value={
           <Inline alignVertical="center" space="4px">
-            {transaction.blockNumber}
+            {txData?.blockNumber}
             <Text size="12pt" weight="semibold" color="labelQuaternary">
               {txData?.confirmations} Confirmations
             </Text>
@@ -255,6 +256,14 @@ function ConfirmationData({
 }
 
 function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
+  const { data: txData } = useWagmiTransaction({
+    hash: transaction.hash?.split('-')[0], // TODO
+    chainId: transaction.chainId,
+  });
+
+  const maxPriorityFeePerGas = txData?.maxPriorityFeePerGas?.div(10 ** 9);
+  const gasPrice = txData?.gasPrice?.div(10 ** 9);
+
   return (
     <Stack space="24px">
       <InfoRow
@@ -276,19 +285,23 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
         symbol="fuelpump.fill"
         label="Network Fee"
         value={`${formatNumber(transaction.maxFeePerGas?.toString())}`}
-      />
-      <InfoRow
-        symbol="barometer"
-        label="Max Base Fee"
-        value={`${formatNumber(transaction.maxFeePerGas?.toString())} Gwei`}
-      />
-      <InfoRow
-        symbol="barometer"
-        label="Miner Tip"
-        value={`${formatNumber(
-          transaction.maxPriorityFeePerGas?.toString(),
-        )} Gwei`}
       /> */}
+      {gasPrice && maxPriorityFeePerGas && (
+        <InfoRow
+          symbol="barometer"
+          label="Base Fee"
+          value={`${formatNumber(
+            gasPrice.sub(maxPriorityFeePerGas).toString(),
+          )} Gwei`}
+        />
+      )}
+      {maxPriorityFeePerGas && (
+        <InfoRow
+          symbol="barometer"
+          label="Miner Tip"
+          value={`${formatNumber(maxPriorityFeePerGas?.toString())} Gwei`}
+        />
+      )}
       <InfoRow symbol="number" label="Nonce" value={transaction.nonce} />
     </Stack>
   );
