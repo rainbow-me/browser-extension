@@ -29,9 +29,11 @@ import { AppConnectionWalletSwitcher } from './AppConnectionWalletSwitcher';
 
 export const AppConnectionNudgeSheet = ({
   show,
+  connect,
   setShow,
 }: {
   show: boolean;
+  connect: () => void;
   setShow: (show: boolean) => void;
 }) => {
   const { currentAddress } = useCurrentAddressStore();
@@ -148,7 +150,7 @@ export const AppConnectionNudgeSheet = ({
                     width="full"
                     color={'accent'}
                     height="44px"
-                    onClick={undefined}
+                    onClick={connect}
                     variant={'flat'}
                     disabled={false}
                     tabIndex={0}
