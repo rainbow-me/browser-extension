@@ -40,9 +40,7 @@ export const AppConnectionNudgeSheet = ({
 
   const connectToDifferentWallet = () => {
     setShowWalletSwitcher(true);
-    setTimeout(() => {
-      setShow(false);
-    }, 100);
+    setShow(false);
   };
 
   return (

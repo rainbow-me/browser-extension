@@ -26,8 +26,8 @@ export const AppConnectionWatcher = () => {
   const {
     nudgeSheetEnabled,
     appHasInteractedWithNudgeSheet,
-    addressHasInteractedWithNudgeSheet,
-    setAddressHasInteractedWithNudgeSheet,
+    addressInAppHasInteractedWithNudgeSheet,
+    setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,
   } = useAppConnectionWalletSwitcherStore();
 
@@ -44,11 +44,17 @@ export const AppConnectionWatcher = () => {
           !appHasInteractedWithNudgeSheet({ host: appMetadata.appHost })
         ) {
           setShowNudgeSheet(true);
-          setAddressHasInteractedWithNudgeSheet({ address: currentAddress });
+          setAddressInAppHasInteractedWithNudgeSheet({
+            address: currentAddress,
+            host: appMetadata.appHost,
+          });
           setAppHasInteractedWithNudgeSheet({ host: appMetadata.appHost });
           // else if the address has not interacted with the nudgeSheet
         } else if (
-          !addressHasInteractedWithNudgeSheet({ address: currentAddress })
+          !addressInAppHasInteractedWithNudgeSheet({
+            address: currentAddress,
+            host: appMetadata.appHost,
+          })
         ) {
           setShowNudgeBanner(true);
           setTimeout(() => {
@@ -64,8 +70,8 @@ export const AppConnectionWatcher = () => {
     nudgeSheetEnabled,
     appHasInteractedWithNudgeSheet,
     appMetadata.appHost,
-    addressHasInteractedWithNudgeSheet,
-    setAddressHasInteractedWithNudgeSheet,
+    addressInAppHasInteractedWithNudgeSheet,
+    setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,
   ]);
 

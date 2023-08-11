@@ -39,6 +39,7 @@ export const NudgeBanner = ({ show, children, zIndex }: BottomSheetProps) => {
               borderRadius="20px"
               borderWidth="1px"
               borderColor="buttonStroke"
+              backdropFilter="blur(26px)"
             >
               {children}
             </Box>

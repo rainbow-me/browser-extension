@@ -3,6 +3,7 @@ import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
+import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
 import { toHex } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -21,6 +22,10 @@ export function useAppSession({ host }: { host: string }) {
   } = useAppSessionsStore();
 
   const activeSession = getActiveSession({ host });
+  const {
+    setAddressInAppHasInteractedWithNudgeSheet,
+    clearAppHasInteractedWithNudgeSheet,
+  } = useAppConnectionWalletSwitcherStore();
 
   const updateAppSessionAddress = React.useCallback(
     ({ address }: { address: Address }) => {
@@ -95,17 +100,32 @@ export function useAppSession({ host }: { host: string }) {
       if (newActiveSession) {
         messenger.send(`accountsChanged:${host}`, newActiveSession?.address);
         messenger.send(`chainChanged:${host}`, newActiveSession?.chainId);
+        setAddressInAppHasInteractedWithNudgeSheet({
+          address,
+          host,
+          interacted: false,
+        });
       } else {
         messenger.send(`disconnect:${host}`, []);
+        clearAppHasInteractedWithNudgeSheet({
+          host: host,
+        });
       }
     },
-    [removeSession],
+    [
+      clearAppHasInteractedWithNudgeSheet,
+      removeSession,
+      setAddressInAppHasInteractedWithNudgeSheet,
+    ],
   );
 
   const disconnectAppSession = React.useCallback(() => {
     removeAppSession({ host });
     messenger.send(`disconnect:${host}`, null);
-  }, [host, removeAppSession]);
+    clearAppHasInteractedWithNudgeSheet({
+      host: host,
+    });
+  }, [host, removeAppSession, clearAppHasInteractedWithNudgeSheet]);
 
   return {
     addSession,

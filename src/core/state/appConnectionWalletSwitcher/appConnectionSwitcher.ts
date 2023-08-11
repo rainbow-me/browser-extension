@@ -5,20 +5,36 @@ import { createStore } from '../internal/createStore';
 
 export interface AppConnectionWalletSwitcherStore {
   nudgeSheetEnabled: boolean;
-  nudgeSheetInteractionsByAddress: Record<Address, boolean>;
+  nudgeSheetInteractionsByAddressByApp: Record<
+    string,
+    Record<Address, boolean>
+  >;
   nudgeSheetInteractionsByApp: Record<string, boolean>;
-  addressHasInteractedWithNudgeSheet: ({
+  addressInAppHasInteractedWithNudgeSheet: ({
     address,
+    host,
   }: {
     address: Address;
+    host: string;
   }) => boolean;
   appHasInteractedWithNudgeSheet: ({ host }: { host: string }) => boolean;
-  setAddressHasInteractedWithNudgeSheet: ({
+  setAddressInAppHasInteractedWithNudgeSheet: ({
     address,
+    host,
+    interacted,
   }: {
     address: Address;
+    host: string;
+    interacted?: boolean;
   }) => void;
-  setAppHasInteractedWithNudgeSheet: ({ host }: { host: string }) => void;
+  setAppHasInteractedWithNudgeSheet: ({
+    host,
+    interacted,
+  }: {
+    host: string;
+    interacted?: boolean;
+  }) => void;
+  clearAppHasInteractedWithNudgeSheet: ({ host }: { host: string }) => void;
   disableNudgeSheet: () => void;
 }
 
@@ -26,34 +42,56 @@ export const appConnectionWalletSwitcherStore =
   createStore<AppConnectionWalletSwitcherStore>(
     (set, get) => ({
       nudgeSheetEnabled: true,
-      nudgeSheetInteractionsByAddress: {},
+      nudgeSheetInteractionsByAddressByApp: {},
       nudgeSheetInteractionsByApp: {},
-      addressHasInteractedWithNudgeSheet: ({ address }) => {
-        const nudgeSheetInteractionsByAddress =
-          get().nudgeSheetInteractionsByAddress;
-        return !!nudgeSheetInteractionsByAddress[address];
+      addressInAppHasInteractedWithNudgeSheet: ({ address, host }) => {
+        const nudgeSheetInteractionsByAddressByApp =
+          get().nudgeSheetInteractionsByAddressByApp;
+        return !!nudgeSheetInteractionsByAddressByApp?.[host]?.[address];
       },
       appHasInteractedWithNudgeSheet: ({ host }) => {
         const nudgeSheetInteractionsByApp = get().nudgeSheetInteractionsByApp;
         return !!nudgeSheetInteractionsByApp[host];
       },
-      setAddressHasInteractedWithNudgeSheet: ({ address }) => {
-        const newNudgeSheetInteractionsByAddress =
-          get().nudgeSheetInteractionsByAddress;
+      setAddressInAppHasInteractedWithNudgeSheet: ({
+        address,
+        host,
+        interacted = true,
+      }) => {
+        const nudgeSheetInteractionsByAddressByApp =
+          get().nudgeSheetInteractionsByAddressByApp;
         set({
-          nudgeSheetInteractionsByAddress: {
-            ...newNudgeSheetInteractionsByAddress,
-            [address]: true,
+          nudgeSheetInteractionsByAddressByApp: {
+            ...nudgeSheetInteractionsByAddressByApp,
+            [address]: {
+              [host]: interacted,
+            },
           },
         });
       },
-      setAppHasInteractedWithNudgeSheet: ({ host }) => {
+      setAppHasInteractedWithNudgeSheet: ({ host, interacted = true }) => {
         const newNudgeSheetInteractionsByApp =
           get().nudgeSheetInteractionsByApp;
         set({
           nudgeSheetInteractionsByApp: {
             ...newNudgeSheetInteractionsByApp,
-            [host]: true,
+            [host]: interacted,
+          },
+        });
+      },
+      clearAppHasInteractedWithNudgeSheet: ({ host }) => {
+        const {
+          nudgeSheetInteractionsByAddressByApp,
+          nudgeSheetInteractionsByApp,
+        } = get();
+        delete nudgeSheetInteractionsByAddressByApp[host];
+        delete nudgeSheetInteractionsByApp[host];
+        set({
+          nudgeSheetInteractionsByAddressByApp: {
+            ...nudgeSheetInteractionsByAddressByApp,
+          },
+          nudgeSheetInteractionsByApp: {
+            ...nudgeSheetInteractionsByApp,
           },
         });
       },

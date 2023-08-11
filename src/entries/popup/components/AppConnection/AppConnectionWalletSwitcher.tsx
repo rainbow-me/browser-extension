@@ -69,6 +69,7 @@ export const AppConnectionWalletSwitcher = ({
       show={show}
       zIndex={zIndexes.APP_CONNECTION_WALLET_SWITCHER}
       padding="12px"
+      backdropFilter={'blur(26px)'}
     >
       <Box style={{ height: '576px' }}>
         <Rows alignVertical="justify">
