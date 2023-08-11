@@ -5,8 +5,8 @@ import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { Box, Inline, Inset, Text } from '~/design-system';
+import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
-import { skeletonLine } from '../../components/ActivitySkeleton/ActivitySkeleton.css';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { Tabs } from '../../components/Tabs/Tabs';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
@@ -32,6 +32,7 @@ export function TabBar({
       hideAssetBalances ? (
         <Inline alignHorizontal="right" alignVertical="center">
           <Text
+            testId={'balance-hidden'}
             color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
             size="16pt"
             weight="bold"
@@ -42,6 +43,7 @@ export function TabBar({
         </Inline>
       ) : (
         <Text
+          testId={'balance-shown'}
           color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
           size="16pt"
           weight="bold"
@@ -83,11 +85,7 @@ export function TabBar({
       <Inset top="4px">
         {isLoading && (
           <Inline alignVertical="center">
-            <Box
-              className={skeletonLine}
-              background="fillHorizontal"
-              style={{ width: '62px', height: '11px' }}
-            ></Box>
+            <Skeleton width="62px" height="11px" />
           </Inline>
         )}
 

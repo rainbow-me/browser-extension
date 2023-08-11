@@ -27,6 +27,7 @@ import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchN
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useAccounts } from '~/entries/popup/hooks/useAccounts';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';
 import {
@@ -66,6 +67,7 @@ export const BottomWallet = React.forwardRef(
     },
     ref,
   ) => {
+    const { trackShortcut } = useKeyboardAnalytics();
     const triggerRef = useRef<HTMLDivElement>(null);
     useImperativeHandle(ref, () => ({
       triggerMenu: () => simulateClick(triggerRef?.current),
@@ -73,6 +75,10 @@ export const BottomWallet = React.forwardRef(
     useKeyboardShortcut({
       handler: (e: KeyboardEvent) => {
         if (e.key === shortcuts.connect.OPEN_WALLET_SWITCHER.key) {
+          trackShortcut({
+            key: shortcuts.connect.OPEN_WALLET_SWITCHER.display,
+            type: 'connect.openWalletSwitcher',
+          });
           simulateClick(triggerRef?.current);
         }
       },
@@ -138,6 +144,7 @@ export const BottomSwitchWallet = ({
 }) => {
   const { setCurrentAddress } = useCurrentAddressStore();
   const { sortedAccounts } = useAccounts();
+  const { trackShortcut } = useKeyboardAnalytics();
   const menuTriggerRef = useRef<{ triggerMenu: () => void }>(null);
 
   const onOpenChange = useCallback((isOpen: boolean) => {
@@ -160,6 +167,10 @@ export const BottomSwitchWallet = ({
         if (regex.test(e.key)) {
           const accountIndex = parseInt(e.key, 10) - 1;
           if (sortedAccounts[accountIndex]) {
+            trackShortcut({
+              key: e.key.toString(),
+              type: 'connect.switchWallet',
+            });
             onValueChange(sortedAccounts[accountIndex]?.address);
           }
         }
@@ -369,10 +380,15 @@ export const RejectRequestButton = ({
   onClick: () => void;
   label: string;
 }) => {
+  const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.connect.CANCEL.key) {
         if (!radixIsActive()) {
+          trackShortcut({
+            key: shortcuts.connect.CANCEL.display,
+            type: 'connect.cancel',
+          });
           onClick?.();
         }
       }

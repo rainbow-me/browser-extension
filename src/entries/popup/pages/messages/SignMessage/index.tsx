@@ -9,6 +9,7 @@ import { RPCMethod } from '~/core/types/rpcMethods';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/util';
+import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -90,9 +91,11 @@ export function SignMessage({
         });
       }
       approveRequest(result);
-    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      showLedgerDisconnectedAlertIfNeeded(e);
       logger.info('error in sign message');
-      logger.error(e as RainbowError);
+      logger.error(new RainbowError(e.name), { message: e.message });
     } finally {
       setWaitingForDevice(false);
       setLoading(false);

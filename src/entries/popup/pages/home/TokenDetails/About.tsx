@@ -11,7 +11,10 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { createCurrencyFormatter } from '~/core/utils/formatNumber';
+import {
+  createCurrencyFormatter,
+  formatCurrency,
+} from '~/core/utils/formatNumber';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import {
@@ -20,6 +23,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '~/design-system/components/Accordion/Accordion';
+import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { SymbolName } from '~/design-system/styles/designTokens';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
@@ -95,7 +99,7 @@ const useTokenInfo = ({
   });
 };
 
-function MarketCapInfoRow({ marketCap }: { marketCap: string }) {
+function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
   const [isMarketCapExplainerOpen, toggleMarketCapExplainer] = useReducer(
     (s) => !s,
     false,
@@ -142,7 +146,7 @@ function MarketCapInfoRow({ marketCap }: { marketCap: string }) {
   );
 }
 
-function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: string }) {
+function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
   const [isFullyDilutedExplainerOpen, toggleFullyDilutedExplainer] = useReducer(
     (s) => !s,
     false,
@@ -190,16 +194,17 @@ function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: string }) {
   );
 }
 
+const placeholder = <Skeleton width="40px" height="12px" />;
 export function About({ token }: { token: ParsedAddressAsset }) {
   const { data } = useTokenInfo(token);
 
   const {
-    volume1d = 0,
-    allTime = { high: 0, low: 0 },
-    fullyDilutedValuation = '0',
-    marketCap = '0',
+    volume1d = placeholder,
+    allTime = { high: placeholder, low: placeholder },
+    fullyDilutedValuation = placeholder,
+    marketCap = placeholder,
     networks = [token],
-    totalSupply = 0,
+    totalSupply = placeholder,
     description = '',
     links = {},
   } = data || {};
@@ -224,7 +229,7 @@ export function About({ token }: { token: ParsedAddressAsset }) {
             <InfoRow
               symbol="dollarsign.square"
               label={i18n.t(`token_details.about.price`)}
-              value={token.native.price?.display}
+              value={formatCurrency(token.native.price?.amount)}
             />
             <InfoRow
               symbol="clock.arrow.circlepath"

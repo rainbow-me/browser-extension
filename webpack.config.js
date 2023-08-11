@@ -18,11 +18,13 @@ const manifestFilePath = resolve(__dirname, './build/manifest.json');
 
 const optionalPlugins = [];
 if (process.env.ANALYZE_BUNDLE === 'true') {
-  optionalPlugins.push(new BundleAnalyzerPlugin(), {
-    analyzerMode: 'static',
-    generateStatsFile: true,
-    openAnalyzer: false,
-  });
+  optionalPlugins.push(
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      generateStatsFile: true,
+      openAnalyzer: true,
+    }),
+  );
 }
 
 const manifestOverride = manifest;
@@ -35,8 +37,8 @@ module.exports = {
   entry: {
     background: './src/entries/background/index.ts',
     contentscript: './src/entries/content/index.ts',
-    popup: './src/entries/popup/index.ts',
     inpage: './src/entries/inpage/index.ts',
+    popup: './src/entries/popup/index.ts',
   },
   module: {
     rules: [

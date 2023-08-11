@@ -14,6 +14,7 @@ import {
   findElementByText,
   getAllWindowHandles,
   getExtensionIdByName,
+  getRootUrl,
   getTextFromText,
   getWindowHandle,
   goToPopup,
@@ -60,7 +61,7 @@ const TYPED_MESSAGE = {
 };
 const MESSAGE = 'rainbow rocks 🌈';
 
-let rootURL = 'chrome-extension://';
+let rootURL = getRootUrl();
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';

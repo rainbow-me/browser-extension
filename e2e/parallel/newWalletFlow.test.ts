@@ -9,6 +9,7 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  getRootUrl,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
@@ -18,7 +19,7 @@ import {
   waitAndClick,
 } from '../helpers';
 
-let rootURL = 'chrome-extension://';
+let rootURL = getRootUrl();
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';

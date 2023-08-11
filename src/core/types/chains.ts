@@ -21,29 +21,35 @@ export const hardhat: Chain = {
 
 export enum ChainName {
   arbitrum = 'arbitrum',
+  base = 'base',
   bsc = 'bsc',
   goerli = 'goerli',
   optimism = 'optimism',
   polygon = 'polygon',
+  zora = 'zora',
   mainnet = 'mainnet',
   hardhat = 'hardhat',
 }
 
 export enum ChainId {
   arbitrum = chain.arbitrum.id,
+  base = chain.base.id,
   bsc = chain.bsc.id,
   goerli = chain.goerli.id,
   optimism = chain.optimism.id,
   mainnet = chain.mainnet.id,
   polygon = chain.polygon.id,
+  zora = chain.zora.id,
   hardhat = HARDHAT_CHAIN_ID,
 }
 
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
+  [ChainId.base]: 'Base',
   [ChainId.bsc]: 'BSC',
   [ChainId.optimism]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
+  [ChainId.zora]: 'Zora',
   [ChainId.mainnet]: 'Ethereum',
   [ChainId.hardhat]: 'Hardhat',
 };

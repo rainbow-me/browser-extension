@@ -1,9 +1,10 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
@@ -13,12 +14,15 @@ export const Alert = () => {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
   const alertCallback = useRef<() => void>();
+  const { trackShortcut } = useKeyboardAnalytics();
 
-  listenAlert(async ({ text, callback }: AlertProps) => {
-    setText(text);
-    setVisible(true);
-    alertCallback.current = callback;
-  });
+  useEffect(() => {
+    listenAlert(async ({ text, callback }: AlertProps) => {
+      setText(text);
+      setVisible(true);
+      alertCallback.current = callback;
+    });
+  }, []);
 
   const onClose = useCallback(() => {
     setVisible(false);
@@ -29,6 +33,10 @@ export const Alert = () => {
     condition: () => visible,
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
+        trackShortcut({
+          key: shortcuts.global.CLOSE.display,
+          type: 'alert.dismiss',
+        });
         onClose();
         e.preventDefault();
       }

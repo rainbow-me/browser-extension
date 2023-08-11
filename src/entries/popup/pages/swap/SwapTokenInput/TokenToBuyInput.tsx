@@ -4,6 +4,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
+import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
 
@@ -63,6 +64,7 @@ export const TokenToBuyInput = ({
   const onSelectAssetRef =
     useRef<(address: ParsedSearchAsset | null) => void>();
   const dropdownRef = useRef<{ openDropdown: () => void }>(null);
+  const { trackShortcut } = useKeyboardAnalytics();
 
   const setOnSelectAsset = useCallback(
     (cb: (asset: ParsedSearchAsset | null) => void) => {
@@ -87,6 +89,10 @@ export const TokenToBuyInput = ({
     handler: (e: KeyboardEvent) => {
       if (e.altKey) {
         if (e.key === shortcuts.swap.FOCUS_ASSET_TO_BUY.key) {
+          trackShortcut({
+            key: `ALT + ${shortcuts.swap.FOCUS_ASSET_TO_BUY.display}`,
+            type: 'swap.focusAssetToBuy',
+          });
           dropdownRef?.current?.openDropdown();
         }
       }
