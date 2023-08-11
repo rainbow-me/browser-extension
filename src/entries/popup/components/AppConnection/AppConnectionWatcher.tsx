@@ -36,6 +36,7 @@ export const AppConnectionWatcher = () => {
 
   const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
   const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
+  const [showWalletSwitcher, setShowWalletSwitcher] = useState<boolean>(false);
 
   const {
     nudgeSheetEnabled,
@@ -72,7 +73,8 @@ export const AppConnectionWatcher = () => {
       // if there's another active address
       if (
         !!activeSession?.address &&
-        !isLowerCaseMatch(activeSession?.address, currentAddress)
+        !isLowerCaseMatch(activeSession?.address, currentAddress) &&
+        !showWalletSwitcher
       ) {
         // if nudgeSheet is enabled and the nudgeSheet has not appeared on that dapp
         if (
@@ -109,6 +111,7 @@ export const AppConnectionWatcher = () => {
     setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,
     appHost,
+    showWalletSwitcher,
   ]);
 
   return (
@@ -118,6 +121,8 @@ export const AppConnectionWatcher = () => {
         show={showNudgeSheet}
         connect={connect}
         setShow={setShowNudgeSheet}
+        showWalletSwitcher={showWalletSwitcher}
+        setShowWalletSwitcher={setShowWalletSwitcher}
       />
     </>
   );

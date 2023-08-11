@@ -29,12 +29,16 @@ import { AppConnectionWalletSwitcher } from './AppConnectionWalletSwitcher';
 
 export const AppConnectionNudgeSheet = ({
   show,
+  showWalletSwitcher,
   connect,
   setShow,
+  setShowWalletSwitcher,
 }: {
   show: boolean;
+  showWalletSwitcher: boolean;
   connect: () => void;
   setShow: (show: boolean) => void;
+  setShowWalletSwitcher: (show: boolean) => void;
 }) => {
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
@@ -43,7 +47,6 @@ export const AppConnectionNudgeSheet = ({
   const { setNudgeSheetDisabled } = useAppConnectionWalletSwitcherStore();
   const previousShow = usePrevious(show);
 
-  const [showWalletSwitcher, setShowWalletSwitcher] = useState(false);
   const [doNotShowAgain, setDoNotShowAgain] = useState(false);
 
   const connectToDifferentWallet = () => {
