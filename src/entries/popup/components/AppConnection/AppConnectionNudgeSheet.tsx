@@ -25,7 +25,7 @@ import ExternalImage from '../ExternalImage/ExternalImage';
 import { Navbar } from '../Navbar/Navbar';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
-export const AppConnectionSheet = () => {
+export const AppConnectionNudgeSheet = () => {
   const [show, setshow] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
