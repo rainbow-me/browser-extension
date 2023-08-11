@@ -6,6 +6,8 @@ import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import { ChainId } from '~/core/types/chains';
+
 import {
   delayTime,
   fillPrivateKey,
@@ -226,7 +228,10 @@ describe('App interactions flow', () => {
     await findElementByTestIdAndClick({ id: 'switch-wallet-item-2', driver });
     // switch network
     await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
-    await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
+    await findElementByTestIdAndClick({
+      id: `switch-network-item-${ChainId.mainnet}`,
+      driver,
+    });
 
     await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -256,8 +261,10 @@ describe('App interactions flow', () => {
       driver,
     });
 
-    await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
-
+    await findElementByTestIdAndClick({
+      id: `switch-network-item-${ChainId.mainnet}`,
+      driver,
+    });
     await goToTestApp(driver);
     const expectedNetwork = 'Network: Ethereum - homestead';
     const network = await querySelector(driver, '[id="network"]');
