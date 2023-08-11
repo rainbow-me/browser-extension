@@ -5,7 +5,7 @@ import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
-import { triggerAlert } from '~/design-system/components/Alert/util';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
 import { ROUTES } from '../urls';
 
