@@ -26,8 +26,12 @@ export function useAppSession({ host }: { host: string }) {
     ({ address }: { address: Address }) => {
       storeUpdateActiveSession({ host, address });
       messenger.send(`accountsChanged:${host}`, address);
+      messenger.send(
+        `chainChanged:${host}`,
+        appSessions[host].sessions[address],
+      );
     },
-    [host, storeUpdateActiveSession],
+    [appSessions, host, storeUpdateActiveSession],
   );
 
   const addSession = React.useCallback(
