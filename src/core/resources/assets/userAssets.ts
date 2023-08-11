@@ -156,6 +156,12 @@ async function userAssetsQueryFunction({
           currency,
         });
 
+        for (const missingChainId of chainIdsWithErrorsInResponse) {
+          if (cachedUserAssets[missingChainId]) {
+            parsedAssetsDict[missingChainId] = cachedUserAssets[missingChainId];
+          }
+        }
+
         return parsedAssetsDict;
       }
     }
