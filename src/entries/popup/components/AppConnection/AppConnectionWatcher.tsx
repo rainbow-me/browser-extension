@@ -77,7 +77,10 @@ export const AppConnectionWatcher = () => {
 
   return (
     <>
-      <AppConnectionNudgeBanner show={showNudgeBanner} />
+      <AppConnectionNudgeBanner
+        show={showNudgeBanner}
+        setShow={setShowNudgeBanner}
+      />
       <AppConnectionNudgeSheet
         show={showNudgeSheet}
         setShow={setShowNudgeSheet}

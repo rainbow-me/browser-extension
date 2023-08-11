@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import {
   Box,
   Button,
@@ -17,15 +19,52 @@ import { NudgeBanner } from '~/design-system/components/NudgeBanner/NudgeBanner'
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useAppSession } from '../../hooks/useAppSession';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
+import { triggerToast } from '../Toast/Toast';
 
-export const AppConnectionNudgeBanner = ({ show }: { show: boolean }) => {
+export const AppConnectionNudgeBanner = ({
+  show,
+  setShow,
+}: {
+  show: boolean;
+  setShow: (show: boolean) => void;
+}) => {
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
   const { appHost, appName, appLogo } = useAppMetadata({ url });
+  const { addSession, activeSession } = useAppSession({ host: appHost });
+
+  const connect = useCallback(() => {
+    addSession({
+      host: appHost,
+      address: currentAddress,
+      chainId: activeSession?.chainId || ChainId.mainnet,
+      url,
+    });
+  }, [activeSession?.chainId, addSession, appHost, currentAddress, url]);
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.CLOSE.key) {
+        setShow(false);
+      } else if (e.key === shortcuts.global.SELECT.key) {
+        connect();
+        setShow(false);
+        triggerToast({
+          title: i18n.t('app_connection_switcher.banner.app_connected', {
+            appName: appName || appHost,
+          }),
+          description:
+            ChainNameDisplay[activeSession?.chainId || ChainId.mainnet],
+        });
+      }
+    },
+  });
 
   return (
     <NudgeBanner show={show} zIndex={zIndexes.BOTTOM_SHEET}>
@@ -108,7 +147,7 @@ export const AppConnectionNudgeBanner = ({ show }: { show: boolean }) => {
                     width="fit"
                     color={'red'}
                     height="30px"
-                    onClick={undefined}
+                    onClick={connect}
                     variant={'square'}
                     tabIndex={0}
                     borderRadius="8px"
