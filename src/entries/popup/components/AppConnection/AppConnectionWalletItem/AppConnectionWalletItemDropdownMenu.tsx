@@ -7,23 +7,23 @@ import { Box, ButtonSymbol, Inline, Text } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { Symbol } from '~/design-system/components/Symbol/Symbol';
 
-import { AppMetadata } from '../../hooks/useAppMetadata';
-import { useAppSession } from '../../hooks/useAppSession';
-import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
-import { AppInteractionItem } from '../AppConnectionMenu/AppInteractionItem';
+import { AppMetadata } from '../../../hooks/useAppMetadata';
+import { useAppSession } from '../../../hooks/useAppSession';
+import { useKeyboardShortcut } from '../../../hooks/useKeyboardShortcut';
+import { AppInteractionItem } from '../../AppConnectionMenu/AppInteractionItem';
 import {
   DropdownMenu,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../DropdownMenu/DropdownMenu';
+} from '../../DropdownMenu/DropdownMenu';
 import {
   DropdownMenuContentWithSubMenu,
   DropdownSubMenu,
-} from '../DropdownMenu/DropdownSubMenu';
-import ExternalImage from '../ExternalImage/ExternalImage';
-import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
+} from '../../DropdownMenu/DropdownSubMenu';
+import ExternalImage from '../../ExternalImage/ExternalImage';
+import { SwitchNetworkMenuSelector } from '../../SwitchMenu/SwitchNetworkMenu';
 
 interface AppConnectionWalletItemDropdownMenuProps {
   appMetadata: AppMetadata;

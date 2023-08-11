@@ -30,22 +30,22 @@ import {
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { Lens } from '~/design-system/components/Lens/Lens';
 
-import { AppMetadata } from '../../hooks/useAppMetadata';
-import { useAppSession } from '../../hooks/useAppSession';
-import { useWalletName } from '../../hooks/useWalletName';
-import { AppInteractionItem } from '../AppConnectionMenu/AppInteractionItem';
-import { ChainBadge } from '../ChainBadge/ChainBadge';
+import { AppMetadata } from '../../../hooks/useAppMetadata';
+import { useAppSession } from '../../../hooks/useAppSession';
+import { useWalletName } from '../../../hooks/useWalletName';
+import { AppInteractionItem } from '../../AppConnectionMenu/AppInteractionItem';
+import { ChainBadge } from '../../ChainBadge/ChainBadge';
 import {
   ContextMenu,
   ContextMenuRadioGroup,
   ContextMenuRadioItem,
   ContextMenuTrigger,
-} from '../ContextMenu/ContextMenu';
-import { ContextMenuContentWithSubMenu } from '../ContextMenu/ContextSubMenu';
-import { DropdownMenuRadioGroup } from '../DropdownMenu/DropdownMenu';
-import { DropdownSubMenu } from '../DropdownMenu/DropdownSubMenu';
-import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
-import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
+} from '../../ContextMenu/ContextMenu';
+import { ContextMenuContentWithSubMenu } from '../../ContextMenu/ContextSubMenu';
+import { DropdownMenuRadioGroup } from '../../DropdownMenu/DropdownMenu';
+import { DropdownSubMenu } from '../../DropdownMenu/DropdownSubMenu';
+import { SwitchNetworkMenuSelector } from '../../SwitchMenu/SwitchNetworkMenu';
+import { WalletAvatar } from '../../WalletAvatar/WalletAvatar';
 
 import { appConnectionWalletItem } from './AppConnectionWalletItem.css';
 

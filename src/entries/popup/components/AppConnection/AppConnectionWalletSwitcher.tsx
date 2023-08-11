@@ -26,8 +26,8 @@ import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
 import { Navbar } from '../Navbar/Navbar';
 
-import { AppConnectionWalletItem } from './AppConnectionWalletItem';
-import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItemDropdownMenu';
+import { AppConnectionWalletItem } from './AppConnectionWalletItem/AppConnectionWalletItem';
+import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItem/AppConnectionWalletItemDropdownMenu';
 
 export const AppConnectionWalletSwitcher = () => {
   const [show, setshow] = useState(false);
