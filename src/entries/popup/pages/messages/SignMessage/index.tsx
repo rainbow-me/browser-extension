@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -8,7 +8,7 @@ import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box } from '~/design-system';
-import { triggerAlert } from '~/design-system/components/Alert/util';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';

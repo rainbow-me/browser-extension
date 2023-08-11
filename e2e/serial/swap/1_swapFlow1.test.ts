@@ -8,6 +8,8 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
+import { ChainId } from '~/core/types/chains';
+
 import {
   delay,
   delayTime,
@@ -563,7 +565,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-2',
+    id: `switch-network-item-${ChainId.optimism}`,
     driver,
   });
   await typeOnTextInput({
@@ -586,7 +588,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-1',
+    id: `switch-network-item-${ChainId.polygon}`,
     driver,
   });
   await typeOnTextInput({
@@ -609,7 +611,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-3',
+    id: `switch-network-item-${ChainId.arbitrum}`,
     driver,
   });
   await typeOnTextInput({
@@ -632,7 +634,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-6',
+    id: `switch-network-item-${ChainId.bsc}`,
     driver,
   });
   await typeOnTextInput({
@@ -657,7 +659,7 @@ it('should be able to see no route explainer', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-2',
+    id: `switch-network-item-${ChainId.optimism}`,
     driver,
   });
   await typeOnTextInput({
@@ -684,7 +686,7 @@ it('should be able to see no route explainer', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-3',
+    id: `switch-network-item-${ChainId.arbitrum}`,
     driver,
   });
   await typeOnTextInput({
@@ -746,7 +748,7 @@ it('should be able to find exact match on other networks', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-1',
+    id: `switch-network-item-${ChainId.polygon}`,
     driver,
   });
 
