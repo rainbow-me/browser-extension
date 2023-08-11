@@ -21,7 +21,7 @@ import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
 
-export const AppConnectionBanner = ({ show }: { show: boolean }) => {
+export const AppConnectionNudgeBanner = ({ show }: { show: boolean }) => {
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();

@@ -8,7 +8,7 @@ import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 
-import { AppConnectionBanner } from './AppConnectionBanner';
+import { AppConnectionNudgeBanner } from './AppConnectionNudgeBanner';
 import { AppConnectionNudgeSheet } from './AppConnectionNudgeSheet';
 
 export const AppConnectionWatcher = () => {
@@ -77,7 +77,7 @@ export const AppConnectionWatcher = () => {
 
   return (
     <>
-      <AppConnectionBanner show={showNudgeBanner} />
+      <AppConnectionNudgeBanner show={showNudgeBanner} />
       <AppConnectionNudgeSheet
         show={showNudgeSheet}
         setShow={setShowNudgeSheet}
