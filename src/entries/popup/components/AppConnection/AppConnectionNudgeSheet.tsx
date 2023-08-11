@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import appConnectionSheetImageMask from 'static/assets/appConnectionSheetImageMask.svg';
 import { i18n } from '~/core/languages';
@@ -23,6 +23,8 @@ import ExternalImage from '../ExternalImage/ExternalImage';
 import { Navbar } from '../Navbar/Navbar';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
+import { AppConnectionWalletSwitcher } from './AppConnectionWalletSwitcher';
+
 export const AppConnectionNudgeSheet = ({
   show,
   setShow,
@@ -34,9 +36,21 @@ export const AppConnectionNudgeSheet = ({
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
   const { appHost, appName, appLogo } = useAppMetadata({ url });
+  const [showWalletSwitcher, setShowWalletSwitcher] = useState(false);
+
+  const connectToDifferentWallet = () => {
+    setShowWalletSwitcher(true);
+    setTimeout(() => {
+      setShow(false);
+    }, 100);
+  };
 
   return (
     <>
+      <AppConnectionWalletSwitcher
+        show={showWalletSwitcher}
+        setShow={setShowWalletSwitcher}
+      />
       <BottomSheet show={show} zIndex={zIndexes.BOTTOM_SHEET}>
         <Box>
           <Navbar
@@ -136,7 +150,7 @@ export const AppConnectionNudgeSheet = ({
                     color="fillSecondary"
                     height="44px"
                     width="full"
-                    onClick={undefined}
+                    onClick={connectToDifferentWallet}
                     variant="plain"
                     disabled={false}
                     tabIndex={0}

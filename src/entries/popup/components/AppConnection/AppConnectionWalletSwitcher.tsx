@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
@@ -29,9 +28,13 @@ import { Navbar } from '../Navbar/Navbar';
 import { AppConnectionWalletItem } from './AppConnectionWalletItem/AppConnectionWalletItem';
 import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItem/AppConnectionWalletItemDropdownMenu';
 
-export const AppConnectionWalletSwitcher = () => {
-  const [show, setshow] = useState(false);
-  const { currentAddress } = useCurrentAddressStore();
+export const AppConnectionWalletSwitcher = ({
+  show,
+  setShow,
+}: {
+  show: boolean;
+  setShow: (show: boolean) => void;
+}) => {
   const { url } = useActiveTab();
   const appMetadata = useAppMetadata({ url });
 
@@ -43,17 +46,6 @@ export const AppConnectionWalletSwitcher = () => {
   const { sortedAccounts } = useAccounts(({ sortedAccounts }) => ({
     sortedAccounts,
   }));
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (
-        appSession &&
-        !isLowerCaseMatch(activeSession?.address, currentAddress)
-      ) {
-        setshow(true);
-      }
-    }, 1000);
-  }, [appSession, activeSession?.address, currentAddress]);
 
   const { connectedAccounts, notConnectedAccounts } = useMemo(() => {
     const appSessionAccounts = Object.keys(appSession?.sessions || {});
@@ -73,14 +65,18 @@ export const AppConnectionWalletSwitcher = () => {
   }, [appSession?.sessions, sortedAccounts]);
 
   return (
-    <Prompt show={show} zIndex={zIndexes.BOTTOM_SHEET} padding="12px">
+    <Prompt
+      show={show}
+      zIndex={zIndexes.APP_CONNECTION_WALLET_SWITCHER}
+      padding="12px"
+    >
       <Box style={{ height: '576px' }}>
         <Rows alignVertical="justify">
           <Row>
             <Navbar
               leftComponent={
                 <Navbar.CloseButton
-                  onClick={() => setshow(false)}
+                  onClick={() => setShow(false)}
                   variant="transparent"
                 />
               }
@@ -213,7 +209,7 @@ export const AppConnectionWalletSwitcher = () => {
                   color="fillSecondary"
                   height="44px"
                   width="full"
-                  onClick={() => setshow(false)}
+                  onClick={() => setShow(false)}
                   variant="plain"
                   disabled={false}
                   tabIndex={0}

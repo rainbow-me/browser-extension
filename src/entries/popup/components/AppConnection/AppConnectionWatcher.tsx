@@ -34,7 +34,10 @@ export const AppConnectionWatcher = () => {
   useEffect(() => {
     setTimeout(() => {
       // if there's another active address
-      if (!isLowerCaseMatch(activeSession?.address, currentAddress)) {
+      if (
+        !!activeSession?.address &&
+        !isLowerCaseMatch(activeSession?.address, currentAddress)
+      ) {
         // if nudgeSheet is enabled and the nudgeSheet has not appeared on that dapp
         if (
           nudgeSheetEnabled &&
