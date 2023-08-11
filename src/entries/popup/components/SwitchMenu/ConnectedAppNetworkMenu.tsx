@@ -91,7 +91,7 @@ export const ConnectedAppNetworkMenu = ({
                   <Rows space="10px">
                     <Row>
                       <TextOverflow size="14pt" weight="bold" color="label">
-                        {appName ?? appHost}
+                        {appName || appHost}
                       </TextOverflow>
                     </Row>
                     {!appSession && (
