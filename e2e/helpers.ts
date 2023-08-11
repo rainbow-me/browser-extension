@@ -2,14 +2,7 @@
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { ethers } from 'ethers';
-import {
-  Builder,
-  By,
-  Locator,
-  WebDriver,
-  WebElementCondition,
-  until,
-} from 'selenium-webdriver';
+import { Builder, By, Condition, WebDriver, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
 import { expect } from 'vitest';
@@ -17,13 +10,14 @@ import { erc20ABI } from 'wagmi';
 
 // consts
 
-const waitUntilTime = 20000;
+const waitUntilTime = 20_000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
     chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     brave: '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
-    firefox: '/Applications/Firefox.app/Contents/MacOS/Firefox',
+    firefox:
+      '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
   },
   linux: {
     chrome: process.env.CHROMIUM_BIN,
@@ -48,16 +42,19 @@ export const byText = (text: string) =>
 
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
 export async function goToPopup(driver, rootURL, route = '') {
   await driver.get(rootURL + '/popup.html' + route);
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
 export async function goToWelcome(driver, rootURL) {
   await driver.get(rootURL + '/popup.html#/welcome');
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
@@ -94,6 +91,8 @@ export async function getWindowHandle({ driver }) {
 // setup functions
 
 export async function initDriverWithOptions(opts) {
+  let driver;
+
   const args = [
     'load-extension=build/',
     // '--auto-open-devtools-for-tabs',
@@ -105,12 +104,13 @@ export async function initDriverWithOptions(opts) {
     const options = new firefox.Options()
       .setBinary(BINARY_PATHS[opts.os][opts.browser])
       .addArguments(...args.slice(1))
+      .setPreference('xpinstall.signatures.required', false)
+      .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');
-    options.setAcceptInsecureCerts(true);
 
     const service = new firefox.ServiceBuilder().setStdio('inherit');
 
-    return await new Builder()
+    driver = await new Builder()
       .setFirefoxService(service)
       .forBrowser('firefox')
       .setFirefoxOptions(options)
@@ -123,34 +123,49 @@ export async function initDriverWithOptions(opts) {
 
     const service = new chrome.ServiceBuilder().setStdio('inherit');
 
-    return await new Builder()
+    driver = await new Builder()
       .setChromeService(service)
       .forBrowser('chrome')
       .setChromeOptions(options)
       .build();
   }
+
+  driver.browser = opts.browser;
+  return driver;
 }
 
 export async function getExtensionIdByName(driver, extensionName) {
-  await driver.get('chrome://extensions');
-  return await driver.executeScript(`
-      const extensions = document.querySelector("extensions-manager").shadowRoot
-        .querySelector("extensions-item-list").shadowRoot
-        .querySelectorAll("extensions-item")
-      for (let i = 0; i < extensions.length; i++) {
-        const extension = extensions[i].shadowRoot
-        const name = extension.querySelector('#name').textContent
-        if (name.startsWith("${extensionName}")) {
-          return extensions[i].getAttribute("id")
+  if (driver?.browser === 'firefox') {
+    await driver.get('about:debugging#addons');
+    const text = await driver
+      .wait(
+        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
+        1000,
+      )
+      .getText();
+    return text;
+  } else {
+    await driver.get('chrome://extensions');
+    return await driver.executeScript(`
+        const extensions = document.querySelector("extensions-manager").shadowRoot
+          .querySelector("extensions-item-list").shadowRoot
+          .querySelectorAll("extensions-item")
+        for (let i = 0; i < extensions.length; i++) {
+          const extension = extensions[i].shadowRoot
+          const name = extension.querySelector('#name').textContent
+          if (name.startsWith("${extensionName}")) {
+            return extensions[i].getAttribute("id")
+          }
         }
-      }
-      return undefined
-    `);
+        return undefined
+      `);
+  }
 }
 
 // search functions
 
 export async function querySelector(driver, selector) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const el = await driver.wait(
     until.elementLocated(By.css(selector)),
     waitUntilTime,
@@ -159,6 +174,7 @@ export async function querySelector(driver, selector) {
 }
 
 export async function findElementByText(driver, text) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const el = await driver.wait(
     until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
     waitUntilTime,
@@ -172,6 +188,7 @@ export async function findElementByTextAndClick(driver, text) {
 }
 
 export async function findElementAndClick({ id, driver }) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const element = await driver.findElement({
     id,
@@ -202,7 +219,7 @@ export async function findElementByTestIdAndClick({ id, driver }) {
 }
 
 export async function findElementByTestIdAndDoubleClick({ id, driver }) {
-  await delayTime('medium');
+  await delayTime('short');
   const actions = driver.actions();
   const element = await findElementByTestId({ id, driver });
   return await actions.doubleClick(element).perform();
@@ -218,19 +235,21 @@ export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
 export async function waitAndClick(element, driver) {
   try {
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await delayTime('short');
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     return element.click();
   } catch (error) {
     throw new Error(
-      `Failed to click element ${await element.getAttribute('testid')}`,
+      `Failed to click element ${await element.getAttribute('data-testid')}`,
     );
   }
 }
@@ -254,15 +273,6 @@ export async function getTextFromDappText({ id, driver }) {
   const element = await findElementById({ id, driver });
   return await element.getText();
 }
-
-export const untilIsClickable = (locator: Locator) =>
-  new WebElementCondition('until element is clickable', async (driver) => {
-    const element = driver.findElement(locator);
-    const isDisplayed = await element.isDisplayed();
-    const isEnabled = await element.isEnabled();
-    if (isDisplayed && isEnabled) return element;
-    return null;
-  });
 
 // various functions and flows
 
@@ -464,7 +474,6 @@ export async function passSecretQuiz(driver) {
     id: 'saved-these-words-button',
     driver,
   });
-
   await delayTime('long');
 
   for (const word of requiredWords) {
@@ -472,27 +481,6 @@ export async function passSecretQuiz(driver) {
   }
 
   await delayTime('long');
-}
-
-// delays
-
-export async function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export async function delayTime(
-  time: 'short' | 'medium' | 'long' | 'very-long',
-) {
-  switch (time) {
-    case 'short':
-      return await delay(200);
-    case 'medium':
-      return await delay(500);
-    case 'long':
-      return await delay(1000);
-    case 'very-long':
-      return await delay(5000);
-  }
 }
 
 export async function awaitTextChange(
@@ -513,5 +501,44 @@ export async function awaitTextChange(
       error,
     );
     throw error;
+  }
+}
+
+// custom conditions
+
+export const untilDocumentLoaded = async function () {
+  return new Condition('for document to load', async (driver) => {
+    return await driver.wait(async () => {
+      const documentReadyState = await driver.executeScript(
+        'return document.readyState',
+      );
+
+      if (documentReadyState === 'complete') {
+        return true;
+      }
+
+      return false;
+    }, waitUntilTime);
+  });
+};
+
+// delays
+
+export async function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function delayTime(
+  time: 'short' | 'medium' | 'long' | 'very-long',
+) {
+  switch (time) {
+    case 'short':
+      return await delay(200);
+    case 'medium':
+      return await delay(500);
+    case 'long':
+      return await delay(1000);
+    case 'very-long':
+      return await delay(5000);
   }
 }
