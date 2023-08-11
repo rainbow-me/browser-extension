@@ -509,17 +509,30 @@ export async function importWalletFlow(
   driver: WebDriver,
   rootURL: string,
   walletSecret: string,
+  secondaryWallet = false as boolean,
 ) {
-  await goToWelcome(driver, rootURL);
-  await findElementByTestIdAndClick({
-    id: 'import-wallet-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'import-wallet-option',
-    driver,
-  });
-
+  if (secondaryWallet) {
+    await goToPopup(driver, rootURL);
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+  } else {
+    await goToWelcome(driver, rootURL);
+    await findElementByTestIdAndClick({
+      id: 'import-wallet-button',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'import-wallet-option',
+      driver,
+    });
+  }
   // button doesn't exist for pkeys. check if pkey, and if so, dont check for this button
   const isPrivateKey =
     walletSecret.substring(0, 2) === '0x' && walletSecret.length === 66;
@@ -545,17 +558,30 @@ export async function importWalletFlow(
     });
   }
 
-  await delayTime('medium');
+  if (secondaryWallet) {
+    await delayTime('medium');
 
-  await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
-  await typeOnTextInput({
-    id: 'confirm-password-input',
-    driver,
-    text: testPassword,
-  });
-  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-  await delayTime('long');
-  await findElementByText(driver, 'Rainbow is ready to use');
+    const accountHeader = await findElementById({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    expect(accountHeader).toBeTruthy;
+  } else {
+    await delayTime('medium');
+    await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
+    await typeOnTextInput({
+      id: 'confirm-password-input',
+      driver,
+      text: testPassword,
+    });
+    await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+    await delayTime('long');
+    const welcomeText = await findElementByText(
+      driver,
+      'Rainbow is ready to use',
+    );
+    expect(welcomeText).toBeTruthy;
+  }
 }
 
 export async function checkWalletName(
