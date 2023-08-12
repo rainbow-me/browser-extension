@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -48,6 +49,12 @@ export const useSwapInputs = ({
   const [assetToSellNativeValue, setAssetToSellNativeValue] = useState('');
   const [assetToBuyValue, setAssetToBuyValue] = useState('');
 
+  const {
+    saveSwapAmount,
+    saveSwapField,
+    swapField: savedSwapField,
+  } = usePopupInstanceStore();
+
   const assetToSellInputRef = useRef<HTMLInputElement>(null);
   const assetToSellNativeInputRef = useRef<HTMLInputElement>(null);
   const assetToBuyInputRef = useRef<HTMLInputElement>(null);
@@ -62,17 +69,29 @@ export const useSwapInputs = ({
         return;
       }
       if (field === 'buyField' && !assetToBuy) return;
+      saveSwapField({ field });
       setIndependentField(field);
     },
-    [assetToBuy, assetToSell],
+    [assetToBuy, assetToSell, saveSwapField],
   );
 
-  const setAssetToSellInputValue = useCallback((value: string) => {
-    setAssetToSellDropdownClosed(true);
-    setAssetToSellValue(value);
-    setIndependentField('sellField');
-    setIndependentValue(value);
+  useEffect(() => {
+    if (savedSwapField) {
+      setIndependentField(savedSwapField);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const setAssetToSellInputValue = useCallback(
+    (value: string) => {
+      setAssetToSellDropdownClosed(true);
+      saveSwapAmount({ amount: value });
+      setAssetToSellValue(value);
+      setIndependentField('sellField');
+      setIndependentValue(value);
+    },
+    [saveSwapAmount],
+  );
 
   const setAssetToSellInputNativeValue = useCallback(
     (value: string) => {
@@ -89,22 +108,26 @@ export const useSwapInputs = ({
             )
           : '',
       );
+      saveSwapAmount({ amount: value });
     },
     [
       assetToSell?.decimals,
       assetToSell?.price?.value,
+      saveSwapAmount,
       setIndependentFieldIfOccupied,
     ],
   );
 
   const setAssetToBuyInputValue = useCallback(
     (value: string) => {
+      console.log('setting asset to buy input value: ', value);
       setAssetToBuyDropdownClosed(true);
       setAssetToBuyValue(value);
       setIndependentFieldIfOccupied('buyField');
       setIndependentValue(value);
+      saveSwapAmount({ amount: value });
     },
-    [setIndependentFieldIfOccupied],
+    [saveSwapAmount, setIndependentFieldIfOccupied],
   );
 
   const onAssetToSellInputOpen = useCallback(

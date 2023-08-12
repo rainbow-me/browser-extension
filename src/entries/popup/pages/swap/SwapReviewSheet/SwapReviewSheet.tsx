@@ -304,7 +304,7 @@ const SwapReviewSheetWithQuote = ({
       }
     } else {
       setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
-      navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+      navigate(ROUTES.HOME, { state: { activeTab: 'activity' } }); // CBH TODO
     }
     isBridge
       ? analytics.track(event.bridgeSubmitted, {

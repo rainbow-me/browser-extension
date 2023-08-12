@@ -20,6 +20,7 @@ import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -181,6 +182,14 @@ export function Send() {
 
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
 
+  const {
+    sendAddress,
+    sendAmount,
+    sendField,
+    sendTokenAddressAndChain,
+    saveSendTokenAddressAndChain,
+  } = usePopupInstanceStore();
+
   const handleSend = useCallback(
     async (callback?: () => void) => {
       if (!config.send_enabled) return;
@@ -228,7 +237,7 @@ export function Send() {
             transaction,
           });
           callback?.();
-          navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+          navigate(ROUTES.HOME, { state: { activeTab: 'activity' } }); // CBH TODO
           analytics.track(event.sendSubmitted, {
             assetSymbol: asset?.symbol,
             assetName: asset?.name,
@@ -267,12 +276,20 @@ export function Send() {
   const selectAsset = useCallback(
     (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
       selectAssetAddressAndChain(address as Address, chainId);
+      saveSendTokenAddressAndChain({
+        address,
+        chainId,
+      });
       setIndependentAmount('');
       setTimeout(() => {
         valueInputRef?.current?.focus();
       }, 300);
     },
-    [selectAssetAddressAndChain, setIndependentAmount],
+    [
+      saveSendTokenAddressAndChain,
+      selectAssetAddressAndChain,
+      setIndependentAmount,
+    ],
   );
 
   useEffect(() => {
@@ -309,8 +326,20 @@ export function Send() {
       selectAsset(selectedToken.address, selectedToken.chainId);
       // clear selected token
       setSelectedToken();
+    } else if (sendTokenAddressAndChain) {
+      selectAsset(...sendTokenAddressAndChain);
     }
-  }, [selectAsset, selectedToken, setSelectedToken]);
+    if (sendAddress && sendAddress.length) {
+      setToAddressOrName(sendAddress);
+    }
+    if (sendField !== independentField) {
+      switchIndependentField();
+    }
+    if (sendAmount) {
+      setIndependentAmount(sendAmount);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {
@@ -361,6 +390,7 @@ export function Send() {
               key: shortcuts.send.SWITCH_CURRENCY_LABEL.display,
               type: 'send.switchCurrency',
             });
+            console.log('here 2');
             switchIndependentField();
           }
         }

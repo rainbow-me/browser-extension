@@ -14,13 +14,13 @@ import {
   useState,
   useTransition,
 } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
@@ -57,8 +57,7 @@ const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
 function Tabs() {
-  const { state } = useLocation();
-  const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
+  const { activeTab, saveActiveTab } = usePopupInstanceStore();
   const { trackShortcut } = useKeyboardAnalytics();
 
   const [, startTransition] = useTransition();
@@ -68,7 +67,7 @@ function Tabs() {
   const onSelectTab = (tab: Tab) => {
     prevScrollPosition.current = containerRef.current?.scrollTop;
     startTransition(() => {
-      setActiveTab(tab);
+      saveActiveTab({ tab });
     });
   };
 

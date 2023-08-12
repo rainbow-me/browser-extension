@@ -24,3 +24,9 @@ export const goToNewTab = ({
     // Edge sometimes returns `Tab creation is restricted in standalone sidebar mode.
   }
 };
+
+export const isNativePopup = async () => {
+  return new Promise((resolve) => {
+    chrome.tabs.getCurrent((tab) => resolve(!tab));
+  });
+};

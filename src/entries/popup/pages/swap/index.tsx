@@ -7,6 +7,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -329,6 +330,13 @@ export function Swap() {
     [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
   );
 
+  const {
+    swapAmount: savedAmount,
+    swapField: savedField,
+    swapTokenToBuy: savedTokenToBuy,
+    swapTokenToSell: savedTokenToSell,
+  } = usePopupInstanceStore();
+
   useEffect(() => {
     // navigating from token row
     if (selectedToken) {
@@ -343,7 +351,33 @@ export function Swap() {
       }
       setInputToOpenOnMount('buy');
     } else {
-      setInputToOpenOnMount('sell');
+      console.log('SAVED AMOUNT: ', savedAmount);
+      console.log('SAVED FIELD: ', savedField);
+      if (savedTokenToBuy) {
+        setAssetToBuy(savedTokenToBuy);
+      }
+      if (savedTokenToSell) {
+        setAssetToSell(savedTokenToSell);
+      } else {
+        setInputToOpenOnMount('sell');
+      }
+      const field = savedField || 'sellField';
+      setTimeout(() => {
+        console.log('SAVED AMOUNT: ', savedAmount);
+        console.log('SAVED FIELD: ', savedField);
+        if (savedAmount) {
+          if (field === 'buyField') {
+            setAssetToBuyInputValue(savedAmount);
+          } else if (field === 'sellField') {
+            setAssetToSellInputValue(savedAmount);
+          } else {
+            setAssetToSellInputNativeValue(savedAmount);
+          }
+        }
+      }, 100);
+      setTimeout(() => {
+        setIndependentField(field);
+      }, 500);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
