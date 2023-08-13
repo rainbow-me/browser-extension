@@ -12,6 +12,7 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  getRootUrl,
   getTextFromText,
   goToPopup,
   goToWelcome,
@@ -24,7 +25,7 @@ import {
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = 'chrome-extension://';
+let rootURL = getRootUrl();
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
