@@ -143,6 +143,8 @@ export const LineChart = ({
     if (!path || !pathRight) return;
 
     const pathLength = path.getTotalLength();
+    if (!pathLength) return;
+
     const mousePathLength = pathLength * (mouseX / width);
     const { x, y } = path.getPointAtLength(mousePathLength);
     setIndicator({ x, y });
