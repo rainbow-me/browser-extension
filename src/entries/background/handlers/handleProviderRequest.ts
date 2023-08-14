@@ -119,10 +119,14 @@ const messengerProviderRequest = async (
 const resetRateLimit = async (host: string, second: boolean) => {
   const { rateLimits } = await chrome.storage.session.get('rateLimits');
   if (second) {
-    rateLimits[host].perSecond = 0;
+    if (rateLimits[host]) {
+      rateLimits[host].perSecond = 0;
+    }
     secondTimer = null;
   } else {
-    rateLimits[host].perMinute = 0;
+    if (rateLimits[host]) {
+      rateLimits[host].perMinute = 0;
+    }
     minuteTimer = null;
   }
   return chrome.storage.session.set({ rateLimits });
