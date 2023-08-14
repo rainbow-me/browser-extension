@@ -266,7 +266,7 @@ describe('App interactions flow', () => {
     expect(appConnectionRow).toBeTruthy();
   });
 
-  it('should be able to go back to disconnect', async () => {
+  it('should be able to disconnect', async () => {
     await findElementByTestIdAndClick({
       id: `connected-app-bx-test-dapp.vercel.app-${shortenAddress(
         TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS,
@@ -281,5 +281,62 @@ describe('App interactions flow', () => {
       id: 'navbar-button-with-back',
       driver,
     });
+  });
+
+  it('should be able to connect to bx test dapp again', async () => {
+    await goToTestApp(driver);
+    const dappHandler = await getWindowHandle({ driver });
+
+    const button = await findElementByText(driver, 'Connect Wallet');
+    expect(button).toBeTruthy();
+    await waitAndClick(button, driver);
+
+    const modalTitle = await findElementByText(driver, 'Connect a Wallet');
+    expect(modalTitle).toBeTruthy();
+
+    const mmButton = await querySelector(
+      driver,
+      '[data-testid="rk-wallet-option-rainbow"]',
+    );
+    await waitAndClick(mmButton, driver);
+
+    const { popupHandler } = await getAllWindowHandles({
+      driver,
+      dappHandler,
+    });
+
+    await driver.switchTo().window(popupHandler);
+    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+
+    await driver.switchTo().window(dappHandler);
+    const topButton = await querySelector(
+      driver,
+      '[data-testid="rk-account-button"]',
+    );
+
+    expect(topButton).toBeTruthy();
+    await waitAndClick(topButton, driver);
+
+    const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
+    expect(ensLabel).toBeTruthy();
+  });
+
+  it('should be able to go back to extension and switch wallets prompt', async () => {
+    await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
+    await delayTime('long');
+    const appConnectionNudgeSheet = await findElementByTestId({
+      id: 'app-connection-nudge-sheet',
+      driver,
+    });
+    expect(appConnectionNudgeSheet).toBeTruthy();
+    await findElementByTestIdAndClick({
+      id: 'nudge-sheet-connect-different-wallet',
+      driver,
+    });
+    const switchWalletsPrompt = await findElementByTestId({
+      id: 'app-connection-wallet-switcher',
+      driver,
+    });
+    expect(switchWalletsPrompt).toBeTruthy();
   });
 });
