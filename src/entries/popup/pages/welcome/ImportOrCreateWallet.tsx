@@ -22,8 +22,7 @@ import { ROUTES } from '../../urls';
 export function ImportOrCreateWallet() {
   const navigate = useRainbowNavigate();
   const [loading, setLoading] = useState(false);
-  const { browser } = useBrowser();
-  const isFirefox = browser === 'Firefox';
+  const { isFirefox } = useBrowser();
 
   useEffect(() => {
     const wipeIncompleteWallet = async () => {
