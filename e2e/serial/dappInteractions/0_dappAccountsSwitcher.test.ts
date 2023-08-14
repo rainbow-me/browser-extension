@@ -215,7 +215,6 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to go back to extension, switch account and connect from nudge sheet', async () => {
-    await goToPopup(driver, rootURL, '#/home');
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('long');
     const appConnectionNudgeSheet = await findElementByTestId({
@@ -229,9 +228,41 @@ describe('App interactions flow', () => {
       id: 'home-page-header-connected-apps',
       driver,
     });
-    await findElementByTestIdAndClick({
-      id: 'connected-app-bx-test-dapp.vercel.app-0xf39F...2266',
+    const appConnectionRow = await findElementByTestId({
+      id: `connected-app-bx-test-dapp.vercel.app-${shortenAddress(
+        TEST_VARIABLES.SEED_WALLET.ADDRESS,
+      )}`,
       driver,
     });
+    expect(appConnectionRow).toBeTruthy();
+  });
+
+  it('should be able to go back to extension, switch account and connect from nudge banner', async () => {
+    await switchWallet(
+      TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS,
+      rootURL,
+      driver,
+    );
+    await delayTime('long');
+    await delayTime('medium');
+    const appConnectionNudgeBaner = await findElementByTestId({
+      id: 'app-connection-nudge-banner',
+      driver,
+    });
+    expect(appConnectionNudgeBaner).toBeTruthy();
+    await findElementByTestIdAndClick({ id: 'nudge-banner-connect', driver });
+
+    await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
+    await findElementByTestIdAndClick({
+      id: 'home-page-header-connected-apps',
+      driver,
+    });
+    const appConnectionRow = await findElementByTestId({
+      id: `connected-app-bx-test-dapp.vercel.app-${shortenAddress(
+        TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS,
+      )}`,
+      driver,
+    });
+    expect(appConnectionRow).toBeTruthy();
   });
 });
