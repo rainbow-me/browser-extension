@@ -92,7 +92,9 @@ const SeedWordRow = ({
       style={{
         maxWidth: '136px',
         marginBottom: '8px',
-        background: wordIsSelected ? undefined : '',
+        background: wordIsSelected
+          ? undefined
+          : 'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
         textOverflow: 'ellipsis',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
