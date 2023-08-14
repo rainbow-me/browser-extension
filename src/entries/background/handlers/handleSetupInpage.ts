@@ -6,7 +6,9 @@ export function handleSetupInpage() {
         matches: ['file://*/*', 'http://*/*', 'https://*/*'],
         js: ['inpage.js'],
         runAt: 'document_start',
-        world: 'MAIN',
+        world: navigator.userAgent.toLowerCase().includes('firefox')
+          ? 'ISOLATED'
+          : 'MAIN',
       },
     ]);
   } catch (e) {
