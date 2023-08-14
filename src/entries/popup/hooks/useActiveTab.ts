@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 
 export const useActiveTab = () => {
   const [activeTab, setActiveTab] = useState<{ url: string; title: string }>({
-    url: '',
+    url:
+      process.env.IS_TESTING === 'true'
+        ? 'https://bx-test-dapp.vercel.app/'
+        : '',
     title: '',
   });
   useEffect(() => {
