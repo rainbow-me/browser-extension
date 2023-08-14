@@ -43,10 +43,6 @@ export const getRootUrl = () => {
   return 'chrome-extension://';
 };
 
-export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
-export const byText = (text: string) =>
-  By.xpath(`//*[contains(text(),"${text}")]`);
-
 // navigators
 
 export async function goToTestApp(driver: WebDriver) {
@@ -146,9 +142,41 @@ export async function initDriverWithOptions(opts: {
       .setChromeOptions(options)
       .build();
   }
-
+  // @ts-ignore
   driver.browser = opts.browser;
   return driver;
+}
+
+export async function getExtensionIdByName(
+  driver: WebDriver,
+  extensionName: string,
+) {
+  // @ts-ignore
+  if (driver?.browser === 'firefox') {
+    await driver.get('about:debugging#addons');
+    const text = await driver
+      .wait(
+        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
+        1000,
+      )
+      .getText();
+    return text;
+  } else {
+    await driver.get('chrome://extensions');
+    return await driver.executeScript(`
+        const extensions = document.querySelector("extensions-manager").shadowRoot
+          .querySelector("extensions-item-list").shadowRoot
+          .querySelectorAll("extensions-item")
+        for (let i = 0; i < extensions.length; i++) {
+          const extension = extensions[i].shadowRoot
+          const name = extension.querySelector('#name').textContent
+          if (name.startsWith("${extensionName}")) {
+            return extensions[i].getAttribute("id")
+          }
+        }
+        return undefined
+      `);
+  }
 }
 
 // search functions
