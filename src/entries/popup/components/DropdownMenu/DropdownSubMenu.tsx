@@ -129,7 +129,6 @@ export const DropdownSubMenu = ({
       const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
       if (x && y) {
         setSubMenuOpen?.(false);
-        setDropdownMenuOpen(false);
         if (
           subMenuRect &&
           parentRect &&
