@@ -17,7 +17,7 @@ import { pendingRequestStore } from '~/core/state/requests';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
-import { getDappHost } from '~/core/utils/connectedApps';
+import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/hex';
@@ -210,7 +210,7 @@ export const handleProviderRequest = ({
     const { getActiveSession, addSession, updateSessionChainId } =
       appSessionsStore.getState();
     const url = meta?.sender?.url || '';
-    const host = getDappHost(url);
+    const host = (isValidUrl(url) && getDappHost(url)) || '';
     const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
 
