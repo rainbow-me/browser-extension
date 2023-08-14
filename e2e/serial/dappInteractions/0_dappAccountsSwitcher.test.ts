@@ -265,4 +265,21 @@ describe('App interactions flow', () => {
     });
     expect(appConnectionRow).toBeTruthy();
   });
+
+  it('should be able to go back to disconnect', async () => {
+    await findElementByTestIdAndClick({
+      id: `connected-app-bx-test-dapp.vercel.app-${shortenAddress(
+        TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS,
+      )}`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `switch-network-menu-disconnect`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+  });
 });
