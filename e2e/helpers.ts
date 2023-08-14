@@ -565,7 +565,7 @@ export async function importWalletFlow(
       id: 'header-account-name-shuffle',
       driver,
     });
-    expect(accountHeader).toBeTruthy;
+    expect(accountHeader).toBeTruthy();
   } else {
     await delayTime('medium');
     await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
@@ -580,7 +580,7 @@ export async function importWalletFlow(
       driver,
       'Rainbow is ready to use',
     );
-    expect(welcomeText).toBeTruthy;
+    expect(welcomeText).toBeTruthy();
   }
 }
 
