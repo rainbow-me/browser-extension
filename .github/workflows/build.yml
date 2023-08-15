@@ -171,7 +171,7 @@ jobs:
             export OS=linux
             export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
             yarn firefox:manifest && yarn firefox:zip
-            yarn vitest:serial --retry=5
+            yarn vitest:serial
             
   # CHROME TESTS
   chrome-e2e-parallel:
