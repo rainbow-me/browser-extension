@@ -120,7 +120,6 @@ export const useSwapInputs = ({
 
   const setAssetToBuyInputValue = useCallback(
     (value: string) => {
-      console.log('setting asset to buy input value: ', value);
       setAssetToBuyDropdownClosed(true);
       setAssetToBuyValue(value);
       setIndependentFieldIfOccupied('buyField');
@@ -181,12 +180,12 @@ export const useSwapInputs = ({
     if (isCrosschainSwap) {
       setAssetToBuyValue('');
       setAssetToSellValue(assetToBuyValue);
-      setIndependentFieldIfOccupied('sellField');
+      setIndependentField('sellField');
       focusOnInput(assetToSellInputRef);
     } else if (independentField === 'buyField') {
       setAssetToBuyValue('');
       setAssetToSellValue(independentValue);
-      setIndependentFieldIfOccupied('sellField');
+      setIndependentField('sellField');
       focusOnInput(assetToSellInputRef);
     } else if (
       independentField === 'sellField' ||
@@ -200,7 +199,7 @@ export const useSwapInputs = ({
       setAssetToBuyValue(tokenValue);
       setIndependentValue(tokenValue);
       setAssetToSellNativeValue('');
-      setIndependentFieldIfOccupied('buyField');
+      setIndependentField('buyField');
       focusOnInput(assetToBuyInputRef);
     }
     setAssetToBuy(assetToSell);
@@ -216,7 +215,7 @@ export const useSwapInputs = ({
     independentValue,
     setAssetToBuy,
     setAssetToSell,
-    setIndependentFieldIfOccupied,
+    setIndependentField,
   ]);
 
   const assetToSellDisplay = useMemo(

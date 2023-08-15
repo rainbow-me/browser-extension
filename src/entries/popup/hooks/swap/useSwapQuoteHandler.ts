@@ -28,7 +28,7 @@ export const useSwapQuoteHandler = ({
   const prevQuote = usePrevious(quote);
 
   useEffect(() => {
-    if (!(quote as QuoteError)?.error) {
+    if (quote && !(quote as QuoteError)?.error) {
       const { sellAmountDisplay, buyAmountDisplay } = (quote || {}) as
         | Quote
         | CrosschainQuote;
@@ -56,7 +56,7 @@ export const useSwapQuoteHandler = ({
             : '',
         );
       }
-    } else {
+    } else if ((quote as QuoteError)?.error) {
       if (independentField === 'buyField') {
         setAssetToSellValue('');
       } else if (
