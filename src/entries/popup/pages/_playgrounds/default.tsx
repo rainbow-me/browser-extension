@@ -38,12 +38,6 @@ export function Default() {
     },
     { select: selectUserAssetsList },
   );
-  // const { data: assetPrices } = useAssetPrices({
-  //   assetAddresses: userAssets
-  //     ?.map((asset) => asset?.address)
-  //     .concat(ETH_ADDRESS as Address),
-  //   currency: currentCurrency,
-  // });
   const { data: transactions } = useTransactions({
     address,
     chainId: ChainId.mainnet,
@@ -176,21 +170,6 @@ export function Default() {
             </Text>
           );
         })}
-        <Text color="label" size="20pt" weight="bold">
-          Prices:
-        </Text>
-        {/* {Object.values(assetPrices || {}).map((price, i) => {
-          return (
-            <Text
-              color="labelSecondary"
-              size="16pt"
-              weight="medium"
-              key={`prices-${i}`}
-            >
-              {`${price?.price?.display}: ${price?.change}`}
-            </Text>
-          );
-        })} */}
       </Stack>
     </Inset>
   );
