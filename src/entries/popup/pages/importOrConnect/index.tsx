@@ -1,11 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { NavigateOptions } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box, Separator, Stack, Text } from '~/design-system';
-import { triggerAlert } from '~/design-system/components/Alert/util';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';

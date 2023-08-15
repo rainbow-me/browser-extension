@@ -20,6 +20,7 @@ globalStyle('*', {
   boxSizing: 'border-box',
   transition: 'background 0.2s ease',
   userSelect: 'none',
+  scrollbarWidth: 'none',
 });
 
 globalStyle('*::-webkit-scrollbar', {

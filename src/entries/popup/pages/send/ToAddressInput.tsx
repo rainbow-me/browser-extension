@@ -76,6 +76,7 @@ const WalletSection = ({
               <RowHighlightWrapper key={i}>
                 <Inset horizontal="12px" key={i}>
                   <WalletRow
+                    testId={`wallet-${i + 1}`}
                     onClick={onClickWallet}
                     key={wallet}
                     section={section}
@@ -95,10 +96,12 @@ const WalletRow = ({
   wallet,
   onClick,
   section,
+  testId,
 }: {
   wallet: Address;
   onClick: (address: Address) => void;
   section: 'contacts' | 'my_wallets' | 'watching';
+  testId?: string;
 }) => {
   const { displayName, contactName, isNameDefined } = useWalletInfo({
     address: wallet,
@@ -106,7 +109,12 @@ const WalletRow = ({
   const name = section === 'contacts' ? contactName : displayName;
 
   return (
-    <Box key={wallet} onClick={() => onClick(wallet)} paddingVertical="8px">
+    <Box
+      testId={testId}
+      key={wallet}
+      onClick={() => onClick(wallet)}
+      paddingVertical="8px"
+    >
       <Columns alignVertical="center" space="8px">
         <Column width="content">
           <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
@@ -392,6 +400,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
                 <AnimatePresence>
                   {!inputVisible && isNameDefined && (
                     <Box
+                      testId={'recipient-address'}
                       as={motion.div}
                       key="wallet"
                       layout="position"
