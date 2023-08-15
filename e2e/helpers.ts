@@ -147,12 +147,35 @@ export async function initDriverWithOptions(opts: {
   return driver;
 }
 
+const addPermissionForAllWebsites = async (driver: WebDriver) => {
+  // Add the permission to access all websites
+  await driver.get('about:addons');
+  const sidebarBtn = await querySelector(driver, `[title="Extensions"]`);
+  await sidebarBtn.click();
+  const moreBtn = await querySelector(driver, `[action="more-options"]`);
+  await moreBtn.click();
+  const manageBtn = await querySelector(
+    driver,
+    `[data-l10n-id="manage-addon-button"]`,
+  );
+  await manageBtn.click();
+  await findElementByIdAndClick({
+    id: 'details-deck-button-permissions',
+    driver,
+  });
+  await driver.executeScript(
+    `document.querySelectorAll('[class="permission-info"]')[0].children[0].click();`,
+  );
+};
+
 export async function getExtensionIdByName(
   driver: WebDriver,
   extensionName: string,
 ) {
   // @ts-ignore
   if (driver?.browser === 'firefox') {
+    await addPermissionForAllWebsites(driver);
+
     await driver.get('about:debugging#addons');
     const text = await driver
       .wait(
