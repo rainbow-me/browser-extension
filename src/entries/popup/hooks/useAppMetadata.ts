@@ -11,6 +11,14 @@ interface AppMetadataProps {
   title?: string;
 }
 
+export interface AppMetadata {
+  appHost: string;
+  appHostName: string;
+  appName: string;
+  appLogo: string;
+  appColor: string;
+}
+
 export function useAppMetadata({ url, title }: AppMetadataProps) {
   const appHostName = url && isValidUrl(url) ? getDappHostname(url) : '';
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
