@@ -331,6 +331,7 @@ export const AppConnectionWalletItem = React.forwardRef(
                       <AnimatePresence>
                         {showChainBadge ? (
                           <Box
+                            testId={`app-connection-wallet-item-badge-${chainId}`}
                             as={motion.div}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
