@@ -26,20 +26,16 @@ export function ImportOrCreateWallet() {
 
   const requestPermissionsIfNeeded = useCallback(async () => {
     if (!isFirefox) return true;
-    if (await chrome.permissions.contains({ origins: ['<all_urls>'] })) {
-      return true;
-    } else {
-      const permissionGranted = await chrome.permissions.request({
-        origins: ['<all_urls>'],
-      });
-      if (!permissionGranted) {
-        alert(
-          'Rainbow needs permission to access all websites to work properly. Please grant the permission in order to continue.',
-        );
-        return false;
-      }
-      return true;
+    const permissionGranted = await chrome.permissions.request({
+      origins: ['<all_urls>'],
+    });
+    if (!permissionGranted) {
+      alert(
+        'Rainbow needs permission to access all websites to work properly. Please grant the permission in order to continue.',
+      );
+      return false;
     }
+    return true;
   }, [isFirefox]);
 
   useEffect(() => {
