@@ -27,6 +27,6 @@ export const goToNewTab = ({
 
 export const isNativePopup = async () => {
   return new Promise((resolve) => {
-    chrome.tabs.getCurrent((tab) => resolve(!tab));
+    chrome.tabs?.getCurrent((tab) => resolve(!tab));
   });
 };
