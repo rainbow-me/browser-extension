@@ -321,7 +321,7 @@ describe('App interactions flow', () => {
     expect(ensLabel).toBeTruthy();
   });
 
-  it('should be able to go back to extension and switch wallets prompt', async () => {
+  it('should be able to go back to extension and go to switch wallets prompt', async () => {
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('long');
     const appConnectionNudgeSheet = await findElementByTestId({
@@ -338,5 +338,25 @@ describe('App interactions flow', () => {
       driver,
     });
     expect(switchWalletsPrompt).toBeTruthy();
+  });
+
+  it('should be able to change connected network chain', async () => {
+    await findElementByTestIdAndClick({
+      id: 'app-connection-wallet-item-dropdown-menu',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'switch-networks-app-interation-item',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `switch-network-item-${ChainId.optimism}`,
+      driver,
+    });
+    const walletItemBadge = await findElementByTestId({
+      id: `app-connection-wallet-item-badge-${ChainId.optimism}`,
+      driver,
+    });
+    expect(walletItemBadge).toBeTruthy();
   });
 });
