@@ -341,8 +341,14 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to change connected network chain', async () => {
+    // data-testid="app-connection-wallet-item-dropdown-menu-0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+    // const initialWalletItemBadge = await findElementByTestId({
+    //   id: `app-connection-wallet-item-badge-${TEST_VARIABLES.SEED_WALLET.ADDRESS}-${ChainId.mainnet}`,
+    //   driver,
+    // });
+    // expect(initialWalletItemBadge).toBeTruthy();
     await findElementByTestIdAndClick({
-      id: 'app-connection-wallet-item-dropdown-menu',
+      id: `app-connection-wallet-item-dropdown-menu-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}`,
       driver,
     });
     await findElementByTestIdAndClick({
@@ -354,9 +360,73 @@ describe('App interactions flow', () => {
       driver,
     });
     const walletItemBadge = await findElementByTestId({
-      id: `app-connection-wallet-item-badge-${ChainId.optimism}`,
+      id: `app-connection-wallet-item-badge-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}-${ChainId.optimism}`,
       driver,
     });
     expect(walletItemBadge).toBeTruthy();
+  });
+
+  it('should be able to connect another account and change network', async () => {
+    const activeSeedWallet = await findElementByTestId({
+      id: `app-connection-wallet-item-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}-active`,
+      driver,
+    });
+    expect(activeSeedWallet).toBeTruthy();
+    await findElementByTestIdAndClick({
+      id: `app-connection-wallet-item-${TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS}-not-active`,
+      driver,
+    });
+    const activePKWallet2 = await findElementByTestId({
+      id: `app-connection-wallet-item-${TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS}-active`,
+      driver,
+    });
+    expect(activePKWallet2).toBeTruthy();
+    await findElementByTestIdAndClick({
+      id: `app-connection-wallet-item-dropdown-menu-${TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS}`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'switch-networks-app-interation-item',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `switch-network-item-${ChainId.polygon}`,
+      driver,
+    });
+    const walletItemBadge = await findElementByTestId({
+      id: `app-connection-wallet-item-badge-${TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS}-${ChainId.polygon}`,
+      driver,
+    });
+    expect(walletItemBadge).toBeTruthy();
+  });
+
+  it('should be able to connect another account and change network of a connected but not active session', async () => {
+    const notActivePK3Wallet = await findElementByTestId({
+      id: `app-connection-wallet-item-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}-not-active`,
+      driver,
+    });
+    expect(notActivePK3Wallet).toBeTruthy();
+    await findElementByTestIdAndClick({
+      id: `app-connection-wallet-item-dropdown-menu-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'switch-networks-app-interation-item',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `switch-network-item-${ChainId.arbitrum}`,
+      driver,
+    });
+    const walletItemBadge = await findElementByTestId({
+      id: `app-connection-wallet-item-badge-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}-${ChainId.arbitrum}`,
+      driver,
+    });
+    expect(walletItemBadge).toBeTruthy();
+    // await findElementByTestIdAndClick({
+    //   id: `app-connection-wallet-item-${TEST_VARIABLES.SEED_WALLET.ADDRESS}-not-active`,
+    //   driver,
+    // });
+    // await delay(10000);
   });
 });
