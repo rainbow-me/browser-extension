@@ -3,7 +3,7 @@ import React, { useImperativeHandle } from 'react';
 
 import { i18n } from '~/core/languages';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import {
   Box,
   Button,
@@ -27,7 +27,7 @@ interface InputAPI {
 }
 
 interface ValueInputProps {
-  asset: ParsedAddressAsset;
+  asset: ParsedUserAsset;
   currentCurrency: SupportedCurrencyKey;
   dependentAmount: {
     amount: string;

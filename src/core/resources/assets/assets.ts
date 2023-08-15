@@ -117,7 +117,6 @@ function parseAssets({
       const asset = data[address];
       if (asset) {
         const parsedAsset = parseAsset({
-          address: asset?.asset_code,
           asset: {
             ...asset,
             network: chainNameFromChainId(chainId),

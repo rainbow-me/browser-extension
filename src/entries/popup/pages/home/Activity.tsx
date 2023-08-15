@@ -3,16 +3,9 @@ import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { RainbowTransaction } from '~/core/types/transactions';
-import {
-  Box,
-  Column,
-  Columns,
-  Inline,
-  Inset,
-  Symbol,
-  Text,
-} from '~/design-system';
+import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
@@ -20,8 +13,9 @@ import {
   SymbolName,
   TextColor,
 } from '~/design-system/styles/designTokens';
-import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
+import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
+import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
 import useInfiniteTransactionList from '../../hooks/useInfiniteTransactionList';
@@ -122,9 +116,10 @@ export function Activity() {
                 onClick={() =>
                   !isLabel && navigate(ROUTES.ACTIVITY_DETAILS(rowData.hash))
                 }
+                paddingHorizontal="20px"
               >
                 {isLabel ? (
-                  <Inset horizontal="20px" top="16px" bottom="8px">
+                  <Inset top="16px" bottom="8px">
                     <Box>
                       <Text
                         size="14pt"
@@ -230,7 +225,7 @@ const getActivityIcon = (tx: Pick<RainbowTransaction, 'status' | 'type'>) => {
 
   if (tx.status === 'pending') iconSymbol = 'spinner';
   if (tx.status === 'failed') iconSymbol = 'xmark.circle';
-  if (tx.type === 'contract interaction') iconSymbol = 'robot';
+  if (tx.type === 'contract_interaction') iconSymbol = 'robot';
   if (tx.type === 'send') iconSymbol = 'paperplane.fill';
   if (tx.type === 'swap') iconSymbol = 'arrow.triangle.swap';
   if (tx.type === 'receive') iconSymbol = 'arrow.down';
@@ -256,55 +251,6 @@ const getActivityIcon = (tx: Pick<RainbowTransaction, 'status' | 'type'>) => {
   };
 };
 
-const ActivityTopRow = ({
-  type,
-  status,
-  title,
-}: Pick<RainbowTransaction, 'status' | 'type' | 'title'>) => {
-  const titleColor = useMemo((): TextStyles['color'] => {
-    if (status === 'pending') return 'blue';
-    return type === 'swap' ? 'purple' : 'labelTertiary';
-  }, [status, type]);
-
-  const titleIconConfig = getActivityIcon({ status, type });
-
-  return (
-    <Columns>
-      <Column width="content">
-        <Box paddingVertical="4px">
-          <Inline space={titleIconConfig?.space} alignVertical="center">
-            <Box style={{ width: 9, height: 9 }}>
-              <Inline
-                height="full"
-                alignHorizontal="center"
-                alignVertical="center"
-              >
-                {titleIconConfig?.icon}
-              </Inline>
-            </Box>
-
-            <Text color={titleColor} size="12pt" weight="semibold">
-              {truncateString(title, 20)}
-            </Text>
-          </Inline>
-        </Box>
-      </Column>
-      <Column>
-        <Box paddingVertical="4px">
-          <Text
-            size="12pt"
-            weight="semibold"
-            align="right"
-            color="labelTertiary"
-          >
-            aa
-          </Text>
-        </Box>
-      </Column>
-    </Columns>
-  );
-};
-
 const ActivityRow = React.memo(function ({
   transaction,
 }: {
@@ -322,45 +268,73 @@ const ActivityRow = React.memo(function ({
     return type === 'swap' ? 'purple' : 'labelTertiary';
   }, [type]);
 
-  const bottomRow = useMemo(() => {
-    return (
-      <Columns>
-        <Column>
-          <Box paddingVertical="4px">
+  const asset = transaction.asset;
+  const symbol = asset?.symbol || 'contract';
+
+  const titleColor = useMemo((): TextStyles['color'] => {
+    if (status === 'pending') return 'blue';
+    return type === 'swap' ? 'purple' : 'labelTertiary';
+  }, [status, type]);
+
+  const titleIconConfig = getActivityIcon({ status, type });
+
+  return (
+    <Lens borderRadius="12px" forceAvatarColor>
+      <Box
+        style={{ height: '52px' }}
+        display="flex"
+        gap="8px"
+        paddingHorizontal="12px"
+        paddingVertical="8px"
+        marginHorizontal="-12px"
+        borderRadius="12px"
+        className={rowTransparentAccentHighlight}
+      >
+        <CoinIcon asset={asset} fallbackText={symbol} badge={false} />
+
+        <Box display="flex" flexDirection="column" width="full" gap="8px">
+          <Inline alignVertical="center" alignHorizontal="justify">
+            <Inline space={titleIconConfig?.space} alignVertical="center">
+              <Box style={{ width: 9, height: 9 }}>
+                <Inline
+                  height="full"
+                  alignHorizontal="center"
+                  alignVertical="center"
+                >
+                  {titleIconConfig?.icon}
+                </Inline>
+              </Box>
+              <Text
+                size="12pt"
+                weight="semibold"
+                align="right"
+                color="labelTertiary"
+              >
+                {truncateString(title, 20)}
+              </Text>
+            </Inline>
+
+            <Text color={titleColor} size="12pt" weight="semibold">
+              {transaction.value?.display}
+            </Text>
+          </Inline>
+
+          <Inline alignVertical="center" alignHorizontal="justify">
             <TextOverflow size="14pt" weight="semibold">
               {title}
             </TextOverflow>
-          </Box>
-        </Column>
-        <Column>
-          <Box paddingVertical="4px">
             <TextOverflow
               size="14pt"
               weight="semibold"
               align="right"
               color={nativeDisplayColor}
             >
-              aa
+              {transaction.value?.display}
             </TextOverflow>
-          </Box>
-        </Column>
-      </Columns>
-    );
-  }, [nativeDisplayColor, title]);
-
-  return asset ? (
-    <CoinRow
-      asset={asset}
-      fallbackText={symbol}
-      topRow={<ActivityTopRow type={type} status={status} title={title} />}
-      bottomRow={bottomRow}
-    />
-  ) : (
-    <CoinRow
-      fallbackText={symbol}
-      topRow={<ActivityTopRow type={type} status={status} title={title} />}
-      bottomRow={bottomRow}
-    />
+          </Inline>
+        </Box>
+      </Box>
+    </Lens>
   );
 });
 

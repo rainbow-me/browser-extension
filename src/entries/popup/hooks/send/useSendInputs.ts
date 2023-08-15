@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import {
   convertAmountAndPriceToNativeDisplay,
@@ -21,7 +21,7 @@ export const useSendInputs = ({
   asset,
   selectedGas,
 }: {
-  asset: ParsedAddressAsset | null;
+  asset: ParsedUserAsset | null;
   selectedGas: GasFeeParams | GasFeeLegacyParams;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();

@@ -183,10 +183,127 @@
     }
   },
   "transactions": {
-    "contract_interaction": "Contract Interaction",
     "savings": "Savings",
-    "deposited": "Deposited",
-    "withdrew": "Withdrew"
+    "burn": {
+      "pending": "Burning",
+      "confirmed": "Burnned",
+      "failed": "Burn Failed"
+    },
+    "cancel": {
+      "pending": "Canceling",
+      "confirmed": "Canceled",
+      "failed": "Cancel Failed"
+    },
+    "send": {
+      "pending": "Sending",
+      "confirmed": "Sent",
+      "failed": "Send Failed"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "Received",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "Withdrawing",
+      "confirmed": "Withdrew",
+      "failed": "Withdraw Failed"
+    },
+    "deposit": {
+      "pending": "Depositing",
+      "confirmed": "Deposited",
+      "failed": "Deposit Failed"
+    },
+    "mint": {
+      "pending": "Minting",
+      "confirmed": "Minted",
+      "failed": "Mint Failed"
+    },
+    "approve": {
+      "pending": "Approving",
+      "confirmed": "Approved",
+      "failed": "Approve Failed"
+    },
+    "contract_interaction": {
+      "pending": "Pending",
+      "confirmed": "Contract Interaction",
+      "failed": "Failed"
+    },
+    "swap": {
+      "pending": "Swapping",
+      "confirmed": "Swapped",
+      "failed": "Swap Failed"
+    },
+    "borrow": {
+      "pending": "Borrowing",
+      "confirmed": "Borrowed",
+      "failed": "Borrow Failed"
+    },
+    "claim": {
+      "pending": "Claiming",
+      "confirmed": "Claimed",
+      "failed": "Claim Failed"
+    },
+    "deployment": {
+      "pending": "Deploying",
+      "confirmed": "Deployed",
+      "failed": "Deploy Failed"
+    },
+    "repay": {
+      "pending": "Repaying",
+      "confirmed": "Repayed",
+      "failed": "Repay Failed"
+    },
+    "stake": {
+      "pending": "Staking",
+      "confirmed": "Staked",
+      "failed": "Stake Failed"
+    },
+    "unstake": {
+      "pending": "Unstaking",
+      "confirmed": "Unstaked",
+      "failed": "Unstake Failed"
+    },
+    "purchase": {
+      "pending": "Purchasing",
+      "confirmed": "Purchased",
+      "failed": "Purchase Failed"
+    },
+    "revoke": {
+      "pending": "Revoking",
+      "confirmed": "Revoked",
+      "failed": "Revoke Failed"
+    },
+    "sale": {
+      "pending": "Selling",
+      "confirmed": "Sold",
+      "failed": "Sale Failed"
+    },
+    "bridge": {
+      "pending": "Briding",
+      "confirmed": "Bridged",
+      "failed": "Bridge Failed"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "Airdropped",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "Wrapping",
+      "confirmed": "Wrapped",
+      "failed": "Wrap Failed"
+    },
+    "unwrap": {
+      "pending": "Unwrapping",
+      "confirmed": "Unwrapped",
+      "failed": "Unwrap Failed"
+    },
+    "bid": {
+      "pending": "Bidding",
+      "confirmed": "Bid",
+      "failed": "Bid Failed"
+    }
   },
   "command_k": {
     "hide_balances_toast": {

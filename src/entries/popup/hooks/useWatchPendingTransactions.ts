@@ -11,7 +11,6 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   getPendingTransactionData,
@@ -21,21 +20,6 @@ import {
 } from '~/core/utils/transactions';
 
 import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
-
-const isPendingTransaction = (status: TransactionStatus) => {
-  return (
-    status === TransactionStatus.approving ||
-    status === TransactionStatus.bridging ||
-    status === TransactionStatus.cancelling ||
-    status === TransactionStatus.depositing ||
-    status === TransactionStatus.purchasing ||
-    status === TransactionStatus.receiving ||
-    status === TransactionStatus.sending ||
-    status === TransactionStatus.speeding_up ||
-    status === TransactionStatus.swapping ||
-    status === TransactionStatus.withdrawing
-  );
-};
 
 export const useWatchPendingTransactions = ({
   address,
@@ -73,11 +57,13 @@ export const useWatchPendingTransactions = ({
               const nonceAlreadyIncluded =
                 currentTxCountForChainId >
                 (tx?.nonce || transactionResponse?.nonce);
+
               const transactionStatus = await getTransactionReceiptStatus({
                 included: nonceAlreadyIncluded,
                 transaction: tx,
                 transactionResponse,
               });
+
               let pendingTransactionData = getPendingTransactionData({
                 transaction: tx,
                 transactionStatus,
@@ -88,7 +74,7 @@ export const useWatchPendingTransactions = ({
                   transactionResponse?.blockHash) ||
                 nonceAlreadyIncluded
               ) {
-                if (updatedTransaction.type === TransactionType.trade) {
+                if (updatedTransaction.type === 'swap') {
                   swapRefreshAssets(tx.nonce);
                 } else {
                   userAssetsFetchQuery({
@@ -174,8 +160,8 @@ export const useWatchPendingTransactions = ({
 
     setPendingTransactions({
       address,
-      pendingTransactions: updatedPendingTransactions.filter((tx) =>
-        isPendingTransaction(tx?.status as TransactionStatus),
+      pendingTransactions: updatedPendingTransactions.filter(
+        (tx) => tx?.status === 'pending',
       ),
     });
   }, [

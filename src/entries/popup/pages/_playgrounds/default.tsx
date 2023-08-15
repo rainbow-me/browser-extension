@@ -4,7 +4,7 @@ import { useAccount, useBalance } from 'wagmi';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
-import { useTransactions } from '~/core/resources/transactions/transactions';
+import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
@@ -44,9 +44,8 @@ export function Default() {
   //     .concat(ETH_ADDRESS as Address),
   //   currency: currentCurrency,
   // });
-  const { data: transactions } = useTransactions({
+  const { data: transactions } = useConsolidatedTransactions({
     address,
-    chainId: ChainId.mainnet,
     currency: currentCurrency,
   });
   const { data: mainnetBalance } = useBalance({

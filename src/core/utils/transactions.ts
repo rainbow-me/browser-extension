@@ -13,24 +13,23 @@ import {
   WETH_ADDRESS,
   smartContractMethods,
 } from '../references';
-import { fetchRegistryLookup } from '../resources/transactions/registryLookup';
 import {
   currentCurrencyStore,
   nonceStore,
   pendingTransactionsStore,
 } from '../state';
-import { ParsedAddressAsset } from '../types/assets';
+import { AddressOrEth, ParsedUserAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
-  ProtocolType,
   RainbowTransaction,
+  TransactionStatus,
   TransactionType,
   TransactionsApiResponse,
 } from '../types/transactions';
 
 import { parseAsset } from './assets';
-import { getBlockExplorerHostForChain, isL2Chain } from './chains';
+import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
 import {
   convertAmountAndPriceToNativeDisplay,
@@ -102,28 +101,29 @@ export async function parseTransaction({
   currency,
   chainId,
 }: ParseTransactionArgs): Promise<RainbowTransaction> {
-  const internalTxn = tx;
-  console.log(tx);
-
-  // const address = (internalTxn?.asset?.asset_code?.toLowerCase() ??
-  //   '0x') as Address;
-  // const decimals = internalTxn?.asset?.decimals || 0;
-  // const parsedAsset = parseAsset({
-  //   address,
-  //   asset: internalTxn?.asset,
-  //   currency,
+  const methodName = 'method sname';
+  // await fetchRegistryLookup({
+  //   data: null,
+  //   to: tx.address_to || null,
+  //   chainId,
+  //   hash: tx.hash,
   // });
-  // const priceUnit = internalTxn.price ?? internalTxn?.asset?.price?.value ?? 0;
-  // const valueUnit: number = internalTxn?.value || 0;
-  // const nativeDisplay = convertRawAmountToNativeDisplay(
-  //   valueUnit,
-  //   decimals,
-  //   priceUnit,
-  //   currency,
-  // );
+
+  const parsedAsset = tx.meta.asset
+    ? parseAsset({ asset: tx.meta.asset, currency })
+    : await getNativeAssetForNetwork({ chainId });
+
+  const priceUnit = 0;
+  const valueUnit = 0;
+  const nativeDisplay = convertRawAmountToNativeDisplay(
+    0,
+    18,
+    priceUnit,
+    currency,
+  );
 
   // const status = getTransactionLabel({
-  //   direction: internalTxn.direction || tx.direction,
+  //   direction: tx.direction,
   //   pending: false,
   //   protocol: tx.protocol,
   //   status: tx.status,
@@ -136,136 +136,100 @@ export async function parseTransaction({
   //   type: tx.type,
   // });
 
-  // const description = getDescription({
-  //   name: parsedAsset?.name,
-  //   status,
-  //   type: tx.type,
-  // });
-
-  // return {
-  //   address: (parsedAsset.address.toLowerCase() === ETH_ADDRESS
-  //     ? ETH_ADDRESS
-  //     : parsedAsset.address) as Address,
-  //   asset: parsedAsset,
-  //   balance: convertRawAmountToBalance(valueUnit, { decimals }),
-  //   description,
-  //   from: (internalTxn.address_from ?? tx.address_from) as Address,
-  //   hash: tx.hash,
-  //   minedAt: tx.mined_at,
-  //   name: parsedAsset.name,
-  //   native: nativeDisplay,
-  //   chainId,
-  //   nonce: tx.nonce,
-  //   pending: false,
-  //   protocol: tx.protocol,
-  //   status,
-  //   symbol: parsedAsset.symbol,
-  //   title,
-  //   to: (internalTxn.address_to ?? tx.address_to) as Address,
-  //   type: tx.type,
-  //   meta: tx.meta,
-  // };
-
-  const methodName = await fetchRegistryLookup({
-    data: null,
-    to: tx.address_to,
-    chainId,
-    hash: tx.hash,
-  });
-
-  const parsedAsset = tx.meta.asset
-    ? parseAsset({
-        address: tx.meta.asset.asset_code,
-        asset: tx.meta.asset,
-        currency,
-        chainId,
-      })
-    : await getNativeAssetForNetwork({ chainId });
-
-  const priceUnit = 0;
-  const valueUnit = 0;
-  const nativeDisplay = convertRawAmountToNativeDisplay(
-    0,
-    18,
-    priceUnit,
-    currency,
-  );
-
-  const status = getTransactionLabel({
-    direction: tx.direction,
-    pending: false,
-    protocol: tx.protocol,
-    status: tx.status,
-    type: tx.type,
-  });
-
-  const title = getTitle({
-    protocol: tx.protocol,
-    status,
-    type: tx.type,
-  });
-
   const description = getDescription({
     name: parsedAsset?.name || '',
-    status,
-    type: tx.type,
+    status: tx.status,
+    type: tx.meta.type,
   });
 
-  return {
-    asset: parsedAsset,
-    address: ETH_ADDRESS as Address,
-    balance: isL2Chain(chainId)
-      ? { amount: '', display: '-' }
-      : convertRawAmountToBalance(valueUnit, { decimals: 18 }),
-    description: description || methodName || 'Signed',
+  const { status, address_from, address_to, meta, nonce, protocol, direction } =
+    tx;
+  const _tx = {
+    status,
+    description: tx.meta.action || description || methodName || 'Signed',
     from: tx?.address_from as Address,
-    hash: `${tx.hash}-${0}`,
-    minedAt: tx.mined_at,
+    hash: tx.hash,
     name:
-      status === TransactionStatus.contract_interaction
+      tx.meta.type === 'contract_interaction'
         ? methodName
         : parsedAsset?.name || 'Signed',
-    native: nativeDisplay,
     chainId,
-    nonce: tx.nonce,
-    pending: false,
-    protocol: tx.protocol,
-    status,
-    symbol: 'contract',
-    title: title ?? i18n.t('transactions.contract_interaction'),
-    to: tx.address_to as Address,
-    type: TransactionType.contract_interaction,
+    nonce,
+    protocol,
+    title: tx.meta.type ?? i18n.t('transactions.contract_interaction'),
+    to: address_to,
+    type: tx.meta.type || 'contract_interaction',
+    direction,
+    asset: parsedAsset,
+    value: convertRawAmountToBalance(valueUnit, {
+      decimals: parsedAsset?.decimals || 0,
+    }),
   };
+
+  console.log(tx.meta);
+
+  if (status === 'confirmed')
+    return { ..._tx, minedAt: tx.mined_at, blockNumber: tx.block_number };
+
+  return _tx;
+
+  // return {
+  //   // asset: parsedAsset,
+  //   // balance: isL2Chain(chainId)
+  //   //   ? { amount: '', display: '-' }
+  //   //   : convertRawAmountToBalance(valueUnit, { decimals: 18 }),
+  //   description: tx.meta.action || description || methodName || 'Signed',
+  //   from: tx?.address_from as Address,
+  //   hash: tx.hash,
+  //   name:
+  //     tx.meta.type === 'contract_interaction'
+  //       ? methodName
+  //       : parsedAsset?.name || 'Signed',
+  //   // native: nativeDisplay,
+  //   chainId,
+  //   nonce: tx.nonce,
+  //   protocol: tx.protocol,
+  //   status: 'failed',
+  //   // ...(tx.status === 'confirmed' && {
+  //   //   minedAt: tx.mined_at,
+  //   //   blockNumber: tx.block_number,
+  //   // }),
+  //   // symbol: tx.changes[0]?.asset.symbol || 'contract',
+  //   title: /* tx.title ?? */ i18n.t('transactions.contract_interaction'),
+  //   to: tx.address_to,
+  //   type: tx.meta.type || 'contract_interaction',
+  //   direction: tx.direction,
+  // };
 }
 
-const getTitle = ({
-  protocol,
-  status,
-  type,
-}: {
-  protocol?: ProtocolType;
-  status: TransactionStatus;
-  type?: TransactionType;
-}) => {
-  if (
-    protocol &&
-    (type === TransactionType.deposit || type === TransactionType.withdraw)
-  ) {
-    if (
-      status === TransactionStatus.deposited ||
-      status === TransactionStatus.withdrew ||
-      status === TransactionStatus.sent ||
-      status === TransactionStatus.received
-    ) {
-      if (protocol === ProtocolType.compound) {
-        return i18n.t('transactions.savings');
-      } else {
-        return ProtocolType?.[protocol];
-      }
-    }
-  }
-  return capitalize(status);
-};
+// const getTitle = ({
+//   protocol,
+//   status,
+//   type,
+// }: {
+//   protocol?: ProtocolType;
+//   status: TransactionStatus;
+//   type?: TransactionType;
+// }) => {
+//   if (
+//     protocol &&
+//     (type === TransactionType.deposit || type === TransactionType.withdraw)
+//   ) {
+//     if (
+//       status === TransactionStatus.deposited ||
+//       status === TransactionStatus.withdrew ||
+//       status === TransactionStatus.sent ||
+//       status === TransactionStatus.received
+//     ) {
+//       if (protocol === ProtocolType.compound) {
+//         return i18n.t('transactions.savings');
+//       } else {
+//         return ProtocolType?.[protocol];
+//       }
+//     }
+//   }
+//   return capitalize(status);
+// };
 
 // export const getTransactionLabel = ({
 //   direction,
@@ -359,7 +323,7 @@ const getDescription = ({
 }: {
   name: string;
   status: RainbowTransaction['status'];
-  type: TransactionType;
+  type?: TransactionType;
 }) => {
   if (status === 'pending') return name;
   if (type === 'deposit') return `${i18n.t('transactions.deposited')} ${name}`;
@@ -453,24 +417,24 @@ export const parseNewTransaction = (
   };
 };
 
-function getTransactionConfirmedState(
-  type?: TransactionType,
-): TransactionStatus {
-  switch (type) {
-    case TransactionType.authorize:
-      return TransactionStatus.approved;
-    case TransactionType.deposit:
-      return TransactionStatus.deposited;
-    case TransactionType.withdraw:
-      return TransactionStatus.withdrew;
-    case TransactionType.receive:
-      return TransactionStatus.received;
-    case TransactionType.purchase:
-      return TransactionStatus.purchased;
-    default:
-      return TransactionStatus.sent;
-  }
-}
+// function getTransactionConfirmedState(
+//   type?: TransactionType,
+// ): TransactionStatus {
+//   switch (type) {
+//     case TransactionType.authorize:
+//       return TransactionStatus.approved;
+//     case TransactionType.deposit:
+//       return TransactionStatus.deposited;
+//     case TransactionType.withdraw:
+//       return TransactionStatus.withdrew;
+//     case TransactionType.receive:
+//       return TransactionStatus.received;
+//     case TransactionType.purchase:
+//       return TransactionStatus.purchased;
+//     default:
+//       return TransactionStatus.sent;
+//   }
+// }
 
 export function getPendingTransactionData({
   transaction,
@@ -480,12 +444,16 @@ export function getPendingTransactionData({
   transactionStatus: TransactionStatus;
 }) {
   const minedAt = Math.floor(Date.now() / 1000);
-  const title = getTitle({
-    protocol: transaction.protocol,
+  // const title = getTitle({
+  //   protocol: transaction.protocol,
+  //   status: transactionStatus,
+  //   type: transaction.type,
+  // });
+  return {
+    minedAt,
+    title: 'fix getPendingTransactionData',
     status: transactionStatus,
-    type: transaction.type,
-  });
-  return { minedAt, title, pending: false, status: transactionStatus };
+  };
 }
 
 export async function getTransactionReceiptStatus({
@@ -513,13 +481,8 @@ export async function getTransactionReceiptStatus({
       transaction?.from || '',
       transaction?.to || '',
     );
-    const transactionDirection = isSelf
-      ? TransactionDirection.self
-      : TransactionDirection.out;
-    const transactionStatus =
-      transaction.status === TransactionStatus.cancelling
-        ? TransactionStatus.cancelled
-        : getTransactionConfirmedState(transaction?.type);
+    const transactionDirection = isSelf ? 'self' : 'out';
+    const transactionStatus = 'confirmed';
     status = getTransactionLabel({
       direction: transactionDirection,
       pending: false,
@@ -642,7 +605,7 @@ export function getTokenBlockExplorerUrl({
   address,
   chainId,
 }: {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
 }) {
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
@@ -653,7 +616,7 @@ const capitalize = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
 export const getTokenBlockExplorer = ({
   address,
   chainId,
-}: Pick<ParsedAddressAsset, 'address' | 'mainnetAddress' | 'chainId'>) => {
+}: Pick<ParsedUserAsset, 'address' | 'mainnetAddress' | 'chainId'>) => {
   let _address = address;
   if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
   return {

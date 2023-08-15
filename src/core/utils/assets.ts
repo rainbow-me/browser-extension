@@ -1,13 +1,11 @@
-import { Contract } from '@ethersproject/contracts';
 import { Provider } from '@ethersproject/providers';
-import { ETH_ADDRESS } from '@rainbow-me/swaps';
 import isURL from 'validator/lib/isURL';
 import { Address, erc20ABI } from 'wagmi';
+import { getContract } from 'wagmi/actions';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
   AssetType,
-  ParsedAddressAsset,
   ParsedAsset,
   ParsedSearchAsset,
   UniqueId,
@@ -18,6 +16,7 @@ import { ChainId, ChainName } from '~/core/types/chains';
 
 import { i18n } from '../languages';
 import { SearchAsset } from '../types/search';
+import { Asset } from '../types/transactions';
 
 import {
   chainIdFromChainName,
@@ -68,111 +67,80 @@ export const getNativeAssetBalance = ({
 };
 
 export function parseAsset({
-  address,
   asset,
   currency,
-  chainId: opChainId,
 }: {
-  address: Address | typeof ETH_ADDRESS;
-  asset: ZerionAsset;
+  asset: Asset;
   currency: SupportedCurrencyKey;
-  chainId?: ChainId;
 }): ParsedAsset {
-  const chainName = asset?.network ?? ChainName.mainnet;
-  const chainId = opChainId || chainIdFromChainName(chainName);
-  const mainnetAddress = asset?.mainnet_address;
+  const address = asset.asset_code;
+  const chainName = asset.network ?? ChainName.mainnet;
+  const chainId = chainIdFromChainName(chainName);
+  const mainnetAddress = asset.networks?.[ChainId.mainnet]?.address;
   const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
   const parsedAsset = {
     address,
-    colors: asset?.colors,
+    uniqueId,
     chainId,
     chainName,
-    isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
-    name: asset?.name || i18n.t('tokens_tab.unknown_token'),
     mainnetAddress,
+    isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
     native: {
       price: getNativeAssetPrice({
         currency,
         priceData: asset?.price,
       }),
     },
-    price: asset?.price,
-    symbol: asset?.symbol,
-    type: asset?.type === AssetType.nft ? ('nft' as const) : ('erc20' as const),
-    uniqueId,
-    decimals: asset?.decimals,
-    icon_url: asset?.icon_url,
+    name: asset.name || i18n.t('tokens_tab.unknown_token'),
+    price: asset.price,
+    symbol: asset.symbol,
+    type: asset.type === AssetType.nft ? ('nft' as const) : ('erc20' as const),
+    decimals: asset.decimals,
+    icon_url: asset.icon_url,
+    colors: asset.colors,
   };
 
   return parsedAsset;
 }
 
-export function parseAddressAsset({
-  address,
+export function parseUserAsset({
   asset,
   currency,
-  quantity,
+  balance,
 }: {
-  address: Address;
-  asset: ZerionAsset;
+  asset: Asset;
   currency: SupportedCurrencyKey;
-  quantity: string;
-}): ParsedAddressAsset {
-  const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
-  const parsedAsset = parseAsset({
-    address,
-    asset,
-    currency,
-  });
-  return {
-    ...parsedAsset,
-    balance: {
-      amount,
-      display: convertAmountToBalanceDisplay(amount, {
-        decimals: asset?.decimals,
-        symbol: asset?.symbol,
-      }),
-    },
-    native: {
-      ...parsedAsset.native,
-      balance: getNativeAssetBalance({
-        currency,
-        decimals: asset?.decimals,
-        priceUnit: asset?.price?.value || 0,
-        value: amount,
-      }),
-    },
-  };
+  balance: string;
+}) {
+  const parsedAsset = parseAsset({ asset, currency });
+  return parseUserAssetBalances({ asset: parsedAsset, currency, balance });
 }
+export type ParsedUserAsset = ReturnType<typeof parseUserAsset>;
 
-export function parseParsedAddressAsset({
-  parsedAsset,
+export function parseUserAssetBalances({
+  asset,
   currency,
-  quantity,
+  balance,
 }: {
-  parsedAsset: ParsedAddressAsset;
+  asset: ParsedAsset;
   currency: SupportedCurrencyKey;
-  quantity: string;
-}): ParsedAddressAsset {
-  const amount = convertRawAmountToDecimalFormat(
-    quantity,
-    parsedAsset?.decimals,
-  );
+  balance: string;
+}) {
+  const { decimals, symbol, price } = asset;
+  const amount = convertRawAmountToDecimalFormat(balance, decimals);
+
   return {
-    ...parsedAsset,
+    ...asset,
     balance: {
       amount,
-      display: convertAmountToBalanceDisplay(amount, {
-        decimals: parsedAsset?.decimals,
-        symbol: parsedAsset?.symbol,
-      }),
+      display: convertAmountToBalanceDisplay(amount, { decimals, symbol }),
     },
     native: {
-      ...parsedAsset.native,
+      ...asset.native,
       balance: getNativeAssetBalance({
         currency,
-        decimals: parsedAsset?.decimals,
-        priceUnit: parsedAsset?.price?.value || 0,
+        decimals,
+        priceUnit: price?.value || 0,
         value: amount,
       }),
     },
@@ -186,7 +154,7 @@ export const parseSearchAsset = ({
 }: {
   assetWithPrice?: ParsedAsset;
   searchAsset: ParsedSearchAsset | SearchAsset;
-  userAsset?: ParsedAddressAsset;
+  userAsset?: ParsedUserAsset;
 }): ParsedSearchAsset => ({
   ...searchAsset,
   address: searchAsset.address,
@@ -204,6 +172,7 @@ export const parseSearchAsset = ({
   icon_url:
     userAsset?.icon_url || assetWithPrice?.icon_url || searchAsset?.icon_url,
   colors: userAsset?.colors || assetWithPrice?.colors || searchAsset?.colors,
+  type: userAsset?.type || assetWithPrice?.type,
 });
 
 export function filterAsset(asset: ZerionAsset) {
@@ -221,27 +190,23 @@ export const fetchAssetBalanceViaProvider = async ({
   currency,
   provider,
 }: {
-  parsedAsset: ParsedAddressAsset;
+  parsedAsset: ParsedUserAsset;
   currentAddress: Address;
   currency: SupportedCurrencyKey;
   provider: Provider;
 }) => {
-  if (parsedAsset.isNativeAsset) {
-    const balance = await provider.getBalance(currentAddress);
-    const updatedAsset = parseParsedAddressAsset({
-      parsedAsset,
-      currency,
-      quantity: balance.toString(),
-    });
-    return updatedAsset;
-  } else {
-    const contract = new Contract(parsedAsset.address, erc20ABI, provider);
-    const balance = await contract.balanceOf(currentAddress);
-    const updatedAsset = parseParsedAddressAsset({
-      parsedAsset,
-      currency,
-      quantity: balance.toString(),
-    });
-    return updatedAsset;
-  }
+  const balance = parsedAsset.isNativeAsset
+    ? await provider.getBalance(currentAddress)
+    : await getContract({
+        address: parsedAsset.address,
+        abi: erc20ABI,
+        signerOrProvider: provider,
+      }).balanceOf(currentAddress);
+
+  const updatedAsset = parseUserAssetBalances({
+    asset: parsedAsset,
+    currency,
+    balance: balance.toString(),
+  });
+  return updatedAsset;
 };

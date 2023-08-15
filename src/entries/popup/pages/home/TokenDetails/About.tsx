@@ -8,7 +8,7 @@ import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
 import { ETH_ADDRESS } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -113,7 +113,7 @@ const useTokenInfo = ({
   address,
   chainId,
 }: {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -219,7 +219,7 @@ function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
 }
 
 const placeholder = <Skeleton width="40px" height="12px" />;
-export function About({ token }: { token: ParsedAddressAsset }) {
+export function About({ token }: { token: ParsedUserAsset }) {
   const { data } = useTokenInfo(token);
 
   const {

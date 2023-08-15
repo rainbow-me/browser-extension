@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useAnimationControls } from 'framer-motion';
-import React, {
+import {
   ChangeEvent,
   useCallback,
   useEffect,
@@ -14,19 +14,18 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { handleAssetAccentColor } from '~/core/utils/colors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
@@ -265,7 +264,7 @@ export function Send() {
   );
 
   const selectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+    (address: AddressOrEth | '', chainId: ChainId) => {
       selectAssetAddressAndChain(address as Address, chainId);
       setIndependentAmount('');
       setTimeout(() => {

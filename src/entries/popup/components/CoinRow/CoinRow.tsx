@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
+import { ParsedAsset, ParsedUserAsset } from '~/core/types/assets';
 import { Box, Column, Columns, Inset, Row, Rows } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
@@ -25,7 +25,7 @@ export function CoinRow({
   topRow,
   bottomRow,
 }: {
-  asset?: ParsedAsset | ParsedAddressAsset;
+  asset?: ParsedAsset | ParsedUserAsset;
   fallbackText?: string;
   topRow: ReactNode;
   bottomRow: ReactNode;

@@ -2,12 +2,12 @@ import { Address } from 'wagmi';
 
 import { ChainId, ChainName } from '~/core/types/chains';
 
-import { ETH_ADDRESS } from '../references';
-
 import { SearchAsset } from './search';
 
+export type AddressOrEth = Address | 'eth';
+
 export interface ParsedAsset {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
@@ -23,16 +23,16 @@ export interface ParsedAsset {
       display: string;
     };
   };
-  mainnetAddress?: Address | typeof ETH_ADDRESS;
+  mainnetAddress?: AddressOrEth;
   price?: ZerionAssetPrice;
   symbol: string;
   uniqueId: UniqueId;
   decimals: number;
   icon_url?: string;
-  type: 'nft' | 'erc20';
+  type?: AssetType;
 }
 
-export interface ParsedAddressAsset extends ParsedAsset {
+export interface ParsedUserAsset extends ParsedAsset {
   balance: {
     amount: string;
     display: string;
@@ -51,9 +51,9 @@ export interface ParsedAddressAsset extends ParsedAsset {
 }
 
 export type SearchAssetWithPrice = SearchAsset & ParsedAsset;
-export type ParsedSearchAsset = SearchAsset & ParsedAddressAsset;
+export type ParsedSearchAsset = SearchAsset & ParsedUserAsset;
 
-export type ParsedAssetsDict = Record<UniqueId, ParsedAddressAsset>;
+export type ParsedAssetsDict = Record<UniqueId, ParsedUserAsset>;
 
 export type ParsedAssetsDictByChain = Record<ChainId, ParsedAssetsDict>;
 
@@ -80,7 +80,7 @@ export enum AssetType {
 }
 
 export interface ZerionAsset {
-  asset_code: Address | typeof ETH_ADDRESS;
+  asset_code: AddressOrEth;
   colors?: {
     primary: string;
     fallback: string;

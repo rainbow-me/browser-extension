@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Address, useAccount } from 'wagmi';
+import { useAccount } from 'wagmi';
 
-import { ETH_ADDRESS } from '~/core/references';
 import {
   selectUserAssetsList,
   selectUserAssetsListByChainId,
@@ -9,6 +8,7 @@ import {
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -30,7 +30,7 @@ export const useSendAsset = () => {
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
   const [selectedAssetAddress, setSelectedAssetAddress] = useState<
-    Address | typeof ETH_ADDRESS | ''
+    AddressOrEth | ''
   >('');
   const [selectedAssetChain, setSelectedAssetChain] = useState<ChainId>(
     ChainId.mainnet,
@@ -45,7 +45,7 @@ export const useSendAsset = () => {
   );
 
   const selectAssetAddressAndChain = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+    (address: AddressOrEth | '', chainId: ChainId) => {
       setSelectedAssetAddress(address);
       setSelectedAssetChain(chainId);
     },

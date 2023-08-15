@@ -1,12 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
-import { ETH_ADDRESS } from '~/core/references';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
@@ -58,7 +56,7 @@ function PriceChange({
   );
 }
 
-function TokenPrice({ token }: { token: ParsedAddressAsset }) {
+function TokenPrice({ token }: { token: ParsedUserAsset }) {
   return (
     <Box display="flex" justifyContent="space-between" gap="10px">
       <CoinIcon asset={token} size={40} badge={false} />
@@ -95,7 +93,7 @@ const usePriceChart = ({
   chainId,
   time,
 }: {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
   time: ChartTime;
 }) => {
@@ -115,7 +113,7 @@ const usePriceChart = ({
   });
 };
 
-export function PriceChart({ token }: { token: ParsedAddressAsset }) {
+export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
   const [date, setDate] = useState(new Date());
 
