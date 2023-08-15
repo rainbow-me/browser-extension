@@ -341,12 +341,6 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to change connected network chain', async () => {
-    // data-testid="app-connection-wallet-item-dropdown-menu-0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
-    // const initialWalletItemBadge = await findElementByTestId({
-    //   id: `app-connection-wallet-item-badge-${TEST_VARIABLES.SEED_WALLET.ADDRESS}-${ChainId.mainnet}`,
-    //   driver,
-    // });
-    // expect(initialWalletItemBadge).toBeTruthy();
     await findElementByTestIdAndClick({
       id: `app-connection-wallet-item-dropdown-menu-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}`,
       driver,
@@ -423,10 +417,27 @@ describe('App interactions flow', () => {
       driver,
     });
     expect(walletItemBadge).toBeTruthy();
-    // await findElementByTestIdAndClick({
-    //   id: `app-connection-wallet-item-${TEST_VARIABLES.SEED_WALLET.ADDRESS}-not-active`,
-    //   driver,
-    // });
-    // await delay(10000);
+  });
+
+  it('should be able to connect another account and check the connection in the dapp', async () => {
+    await findElementByTestIdAndClick({
+      id: `app-connection-wallet-item-${TEST_VARIABLES.SEED_WALLET.ADDRESS}-not-active`,
+      driver,
+    });
+    const walletItemBadge = await findElementByTestId({
+      id: `app-connection-wallet-item-badge-${TEST_VARIABLES.SEED_WALLET.ADDRESS}-${ChainId.polygon}`,
+      driver,
+    });
+    expect(walletItemBadge).toBeTruthy();
+    await goToTestApp(driver);
+    const expectedNetwork = 'Network: Polygon - matic';
+    const network = await querySelector(driver, '[id="network"]');
+    const actualNetwork = await network.getText();
+    expect(actualNetwork).toEqual(expectedNetwork);
+
+    const expectedAccountAddress = `Account: ${TEST_VARIABLES.SEED_WALLET.ADDRESS}`;
+    const accountAddress = await querySelector(driver, '[id="accountAddress"]');
+    const actualAccountAddress = await accountAddress.getText();
+    expect(actualAccountAddress.includes(expectedAccountAddress)).toBe(true);
   });
 });
