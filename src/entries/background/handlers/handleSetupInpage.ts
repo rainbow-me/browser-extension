@@ -1,16 +1,18 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 export function handleSetupInpage() {
   try {
-    chrome.scripting.registerContentScripts([
-      {
-        id: 'inpage',
-        matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-        js: ['inpage.js'],
-        runAt: 'document_start',
-        world: navigator.userAgent.toLowerCase().includes('firefox')
-          ? 'ISOLATED'
-          : 'MAIN',
-      },
-    ]);
+    if (!navigator.userAgent.toLowerCase().includes('firefox')) {
+      chrome.scripting.registerContentScripts([
+        {
+          id: 'inpage',
+          matches: ['file://*/*', 'http://*/*', 'https://*/*'],
+          js: ['inpage.js'],
+          runAt: 'document_start',
+          // @ts-ignore
+          world: !'MAIN', // Firefox doesn't support the world property
+        },
+      ]);
+    }
   } catch (e) {
     // This will trigger if the service worker restarts and the current tab
     // is still open and we already injected the content script.
