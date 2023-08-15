@@ -62,7 +62,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       id: 'balance-shown',
       driver,
     });
-    expect(balanceShown).toBeTruthy;
+    expect(balanceShown).toBeTruthy();
     // toggle to true
     await navigateToSettingsPrivacy(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'hide-assets-toggle', driver });
@@ -73,7 +73,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       id: 'balance-hidden',
       driver,
     });
-    expect(balanceHidden).toBeTruthy;
+    expect(balanceHidden).toBeTruthy();
   });
 
   // bug currently exists on this flow. will remove skip once fixed.

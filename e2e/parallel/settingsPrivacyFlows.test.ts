@@ -76,7 +76,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
 
     // make sure it navigates back correctly
     const walletsKeysText = await findElementByText(driver, 'Wallets & Keys');
-    expect(walletsKeysText).toBeTruthy;
+    expect(walletsKeysText).toBeTruthy();
   });
 
   it('should be able to reveal pkey', async () => {
@@ -102,7 +102,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
 
     // make sure it navigates back correctly
     const walletsKeysText = await findElementByText(driver, 'Wallets & Keys');
-    expect(walletsKeysText).toBeTruthy;
+    expect(walletsKeysText).toBeTruthy();
   });
 
   it('should be able to rename a wallet', async () => {
@@ -123,7 +123,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     const testName = await findElementByText(driver, 'test name');
 
     expect(testName).toBeTruthy;
-    expect(TEST_VARIABLES.SEED_WALLET.ADDRESS).toBeTruthy;
+    expect(TEST_VARIABLES.SEED_WALLET.ADDRESS).toBeTruthy();
   });
 
   it('should be able to copy an address', async () => {
@@ -131,7 +131,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await findElementByTextAndClick(driver, 'Copy Address');
 
     const copiedText = await findElementByText(driver, 'Address Copied');
-    expect(copiedText).toBeTruthy;
+    expect(copiedText).toBeTruthy();
 
     // wait for copy popup to go away
     await delayTime('very-long');

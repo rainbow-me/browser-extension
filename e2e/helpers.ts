@@ -1,8 +1,17 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
+
 import { ethers } from 'ethers';
-import { Builder, By, Condition, WebDriver, until } from 'selenium-webdriver';
+import {
+  Builder,
+  By,
+  Condition,
+  WebDriver,
+  WebElement,
+  until,
+} from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
 import { expect } from 'vitest';
@@ -36,19 +45,23 @@ export const getRootUrl = () => {
 
 // navigators
 
-export async function goToTestApp(driver) {
+export async function goToTestApp(driver: WebDriver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
-export async function goToPopup(driver, rootURL, route = '') {
+export async function goToPopup(
+  driver: WebDriver,
+  rootURL: string,
+  route = '',
+) {
   await driver.get(rootURL + '/popup.html' + route);
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
-export async function goToWelcome(driver, rootURL) {
+export async function goToWelcome(driver: WebDriver, rootURL: string) {
   await driver.get(rootURL + '/popup.html#/welcome');
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
@@ -78,7 +91,7 @@ export async function getAllWindowHandles({
   };
 }
 
-export async function getWindowHandle({ driver }) {
+export async function getWindowHandle({ driver }: { driver: WebDriver }) {
   await delayTime('long');
   const windowHandle = await driver.getWindowHandle();
   return windowHandle;
@@ -86,9 +99,11 @@ export async function getWindowHandle({ driver }) {
 
 // setup functions
 
-export async function initDriverWithOptions(opts) {
+export async function initDriverWithOptions(opts: {
+  browser: string;
+  os: string;
+}) {
   let driver;
-
   const args = [
     'load-extension=build/',
     // '--auto-open-devtools-for-tabs',
@@ -98,6 +113,7 @@ export async function initDriverWithOptions(opts) {
 
   if (opts.browser === 'firefox') {
     const options = new firefox.Options()
+      // @ts-ignore
       .setBinary(BINARY_PATHS[opts.os][opts.browser])
       .addArguments(...args.slice(1))
       .setPreference('xpinstall.signatures.required', false)
@@ -113,6 +129,7 @@ export async function initDriverWithOptions(opts) {
       .build();
   } else {
     const options = new chrome.Options()
+      // @ts-ignore
       .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
       .addArguments(...args);
     options.setAcceptInsecureCerts(true);
@@ -125,12 +142,16 @@ export async function initDriverWithOptions(opts) {
       .setChromeOptions(options)
       .build();
   }
-
+  // @ts-ignore
   driver.browser = opts.browser;
   return driver;
 }
 
-export async function getExtensionIdByName(driver, extensionName) {
+export async function getExtensionIdByName(
+  driver: WebDriver,
+  extensionName: string,
+) {
+  // @ts-ignore
   if (driver?.browser === 'firefox') {
     await driver.get('about:debugging#addons');
     const text = await driver
@@ -160,7 +181,7 @@ export async function getExtensionIdByName(driver, extensionName) {
 
 // search functions
 
-export async function querySelector(driver, selector) {
+export async function querySelector(driver: WebDriver, selector: string) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const el = await driver.wait(
     until.elementLocated(By.css(selector)),
@@ -169,7 +190,7 @@ export async function querySelector(driver, selector) {
   return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
-export async function findElementByText(driver, text) {
+export async function findElementByText(driver: WebDriver, text: string) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const el = await driver.wait(
     until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
@@ -178,12 +199,21 @@ export async function findElementByText(driver, text) {
   return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
-export async function findElementByTextAndClick(driver, text) {
+export async function findElementByTextAndClick(
+  driver: WebDriver,
+  text: string,
+) {
   const element = await findElementByText(driver, text);
   await waitAndClick(element, driver);
 }
 
-export async function findElementAndClick({ id, driver }) {
+export async function findElementAndClick({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const element = await driver.findElement({
@@ -192,15 +222,33 @@ export async function findElementAndClick({ id, driver }) {
   await waitAndClick(element, driver);
 }
 
-export async function findElementByTestId({ id, driver }) {
+export async function findElementByTestId({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   return querySelector(driver, `[data-testid="${id}"]`);
 }
 
-export async function findElementById({ id, driver }) {
+export async function findElementById({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   return querySelector(driver, `[id="${id}"]`);
 }
 
-export async function doNotFindElementByTestId({ id, driver }) {
+export async function doNotFindElementByTestId({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   const elementFound = await Promise.race([
     querySelector(driver, `[data-testid="${id}"]`),
     new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
@@ -208,20 +256,38 @@ export async function doNotFindElementByTestId({ id, driver }) {
   return !!elementFound;
 }
 
-export async function findElementByTestIdAndClick({ id, driver }) {
+export async function findElementByTestIdAndClick({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   await delayTime('short');
   const element = await findElementByTestId({ id, driver });
   await waitAndClick(element, driver);
 }
 
-export async function findElementByTestIdAndDoubleClick({ id, driver }) {
+export async function findElementByTestIdAndDoubleClick({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   await delayTime('short');
   const actions = driver.actions();
   const element = await findElementByTestId({ id, driver });
   return await actions.doubleClick(element).perform();
 }
 
-export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
+export async function waitUntilElementByTestIdIsPresent({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}): Promise<void> {
   await delayTime('medium');
   const element = await findElementByTestId({ id, driver });
   if (element) {
@@ -230,13 +296,19 @@ export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
   return waitUntilElementByTestIdIsPresent({ id, driver });
 }
 
-export async function findElementByIdAndClick({ id, driver }) {
+export async function findElementByIdAndClick({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('short');
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
-export async function waitAndClick(element, driver) {
+export async function waitAndClick(element: WebElement, driver: WebDriver) {
   try {
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await delayTime('short');
@@ -250,29 +322,55 @@ export async function waitAndClick(element, driver) {
   }
 }
 
-export async function typeOnTextInput({ id, text, driver }) {
+export async function typeOnTextInput({
+  id,
+  text,
+  driver,
+}: {
+  id: string;
+  text: number | string;
+  driver: WebDriver;
+}) {
   const element = await findElementByTestId({ id, driver });
   await element.sendKeys(text);
 }
 
-export async function getTextFromTextInput({ id, driver }) {
+export async function getTextFromTextInput({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   const element = await findElementByTestId({ id, driver });
   return await element.getAttribute('value');
 }
 
-export async function getTextFromText({ id, driver }) {
+export async function getTextFromText({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   const element = await findElementByTestId({ id, driver });
   return await element.getText();
 }
 
-export async function getTextFromDappText({ id, driver }) {
+export async function getTextFromDappText({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
   const element = await findElementById({ id, driver });
   return await element.getText();
 }
 
 // various functions and flows
 
-export async function goBackTwice(driver) {
+export async function goBackTwice(driver: WebDriver) {
   await delayTime('short');
   await findElementByTestIdAndClick({
     id: 'navbar-button-with-back',
@@ -284,7 +382,10 @@ export async function goBackTwice(driver) {
   });
 }
 
-export async function getNumberOfWallets(driver, testIdPrefix) {
+export async function getNumberOfWallets(
+  driver: WebDriver,
+  testIdPrefix: string,
+) {
   let numOfWallets = 0;
 
   for (let i = 1; ; i++) {
@@ -305,7 +406,10 @@ export async function getNumberOfWallets(driver, testIdPrefix) {
   return numOfWallets;
 }
 
-export async function navigateToSettingsPrivacy(driver, rootURL) {
+export async function navigateToSettingsPrivacy(
+  driver: WebDriver,
+  rootURL: string,
+) {
   await goToPopup(driver, rootURL, '#/home');
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
@@ -321,7 +425,7 @@ export async function toggleStatus(id: string, driver: WebDriver) {
   return checkedStatus;
 }
 
-export function shortenAddress(address) {
+export function shortenAddress(address: string) {
   // if address is 42 in length and starts with 0x, then shorten it
   // otherwise return the base value. this is so it doesn't break incase an ens, etc is input
   return address.substring(0, 2) === '0x' && address.length === 42
@@ -329,7 +433,11 @@ export function shortenAddress(address) {
     : address;
 }
 
-export async function switchWallet(address, rootURL, driver: WebDriver) {
+export async function switchWallet(
+  address: string,
+  rootURL: string,
+  driver: WebDriver,
+) {
   // find shortened address
   const shortenedAddress = shortenAddress(address);
 
@@ -357,7 +465,7 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
   await delayTime('long');
 }
 
-export async function getOnchainBalance(addy, contract) {
+export async function getOnchainBalance(addy: string, contract: string) {
   const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
   const testContract = new ethers.Contract(contract, erc20ABI, provider);
   const balance = await testContract.balanceOf(addy);
@@ -378,7 +486,7 @@ export async function transactionStatus() {
   return txnStatus;
 }
 
-export const fillSeedPhrase = async (driver, seedPhrase) => {
+export const fillSeedPhrase = async (driver: WebDriver, seedPhrase: string) => {
   const words = seedPhrase.split(' ');
   for (let i = 0; i < 12; i++) {
     await typeOnTextInput({
@@ -389,7 +497,7 @@ export const fillSeedPhrase = async (driver, seedPhrase) => {
   }
 };
 
-export const fillPrivateKey = async (driver, privateKey) => {
+export const fillPrivateKey = async (driver: WebDriver, privateKey: string) => {
   return typeOnTextInput({
     id: 'private-key-input',
     driver,
@@ -397,20 +505,37 @@ export const fillPrivateKey = async (driver, privateKey) => {
   });
 };
 
-export async function importWalletFlow(driver, rootURL, walletSecret) {
-  await goToWelcome(driver, rootURL);
-  await findElementByTestIdAndClick({
-    id: 'import-wallet-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'import-wallet-option',
-    driver,
-  });
-
+export async function importWalletFlow(
+  driver: WebDriver,
+  rootURL: string,
+  walletSecret: string,
+  secondaryWallet = false as boolean,
+) {
+  if (secondaryWallet) {
+    await goToPopup(driver, rootURL);
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+  } else {
+    await goToWelcome(driver, rootURL);
+    await findElementByTestIdAndClick({
+      id: 'import-wallet-button',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'import-wallet-option',
+      driver,
+    });
+  }
   // button doesn't exist for pkeys. check if pkey, and if so, dont check for this button
   const isPrivateKey =
-    walletSecret.substr(0, 2) === '0x' && walletSecret.length === 66;
+    walletSecret.substring(0, 2) === '0x' && walletSecret.length === 66;
 
   await findElementByTestIdAndClick({
     id: isPrivateKey ? 'import-via-pkey-option' : 'import-via-seed-option',
@@ -433,27 +558,44 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     });
   }
 
-  await delayTime('medium');
+  if (secondaryWallet) {
+    await delayTime('medium');
 
-  await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
-  await typeOnTextInput({
-    id: 'confirm-password-input',
-    driver,
-    text: testPassword,
-  });
-  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-  await delayTime('long');
-  await findElementByText(driver, 'Rainbow is ready to use');
+    const accountHeader = await findElementById({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    expect(accountHeader).toBeTruthy();
+  } else {
+    await delayTime('medium');
+    await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
+    await typeOnTextInput({
+      id: 'confirm-password-input',
+      driver,
+      text: testPassword,
+    });
+    await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+    await delayTime('long');
+    const welcomeText = await findElementByText(
+      driver,
+      'Rainbow is ready to use',
+    );
+    expect(welcomeText).toBeTruthy();
+  }
 }
 
-export async function checkWalletName(driver, rootURL, walletAddress) {
+export async function checkWalletName(
+  driver: WebDriver,
+  rootURL: string,
+  walletAddress: string,
+) {
   goToPopup(driver, rootURL);
   await delayTime('short');
   const account = await getTextFromText({ id: 'account-name', driver });
   expect(account).toBe(shortenAddress(walletAddress));
 }
 
-export async function passSecretQuiz(driver) {
+export async function passSecretQuiz(driver: WebDriver) {
   const requiredWordsIndexes = [4, 8, 12];
   const requiredWords: string[] = [];
 
@@ -520,7 +662,7 @@ export const untilDocumentLoaded = async function () {
 
 // delays
 
-export async function delay(ms) {
+export async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 

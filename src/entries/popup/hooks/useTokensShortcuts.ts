@@ -10,7 +10,7 @@ import { ChainId } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorerUrl } from '~/core/utils/transactions';
-import { triggerAlert } from '~/design-system/components/Alert/util';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
 import { ROUTES } from '../urls';
 
