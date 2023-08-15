@@ -82,7 +82,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
       <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
         <DropdownMenuTrigger asChild>
           <Box
-            testId="app-connection-wallet-item-dropdown-menu"
+            testId={`app-connection-wallet-item-dropdown-menu-${address}`}
             style={{ cursor: 'default' }}
           >
             <ButtonSymbol

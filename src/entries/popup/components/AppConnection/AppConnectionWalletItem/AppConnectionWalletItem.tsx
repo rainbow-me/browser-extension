@@ -289,6 +289,9 @@ export const AppConnectionWalletItem = React.forwardRef(
         className={active ? null : appConnectionWalletItem}
         onHoverStart={() => setHovering(true)}
         onHoverEnd={() => setHovering(false)}
+        testId={`app-connection-wallet-item-${address}-${
+          active ? 'active' : 'not-active'
+        }`}
       >
         <Lens
           handleOpenMenu={onClick}
@@ -331,7 +334,7 @@ export const AppConnectionWalletItem = React.forwardRef(
                       <AnimatePresence>
                         {showChainBadge ? (
                           <Box
-                            testId={`app-connection-wallet-item-badge-${chainId}`}
+                            testId={`app-connection-wallet-item-badge-${address}-${chainId}`}
                             as={motion.div}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
