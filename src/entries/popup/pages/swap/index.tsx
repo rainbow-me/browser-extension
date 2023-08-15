@@ -337,6 +337,10 @@ export function Swap() {
     swapTokenToSell: savedTokenToSell,
   } = usePopupInstanceStore();
 
+  const [didPopulateSavedTokens, setDidPopulateSavedTokens] = useState(false);
+  const [didPopulateSavedInputValues, setDidPopulateSavedInputValues] =
+    useState(false);
+
   useEffect(() => {
     // navigating from token row
     if (selectedToken) {
@@ -351,20 +355,19 @@ export function Swap() {
       }
       setInputToOpenOnMount('buy');
     } else {
-      console.log('SAVED AMOUNT: ', savedAmount);
-      console.log('SAVED FIELD: ', savedField);
-      if (savedTokenToBuy) {
-        setAssetToBuy(savedTokenToBuy);
+      if (!didPopulateSavedTokens) {
+        if (savedTokenToBuy) {
+          setAssetToBuy(savedTokenToBuy);
+        }
+        if (savedTokenToSell) {
+          setAssetToSell(savedTokenToSell);
+        } else {
+          setInputToOpenOnMount('sell');
+        }
+        setDidPopulateSavedTokens(true);
       }
-      if (savedTokenToSell) {
-        setAssetToSell(savedTokenToSell);
-      } else {
-        setInputToOpenOnMount('sell');
-      }
-      const field = savedField || 'sellField';
-      setTimeout(() => {
-        console.log('SAVED AMOUNT: ', savedAmount);
-        console.log('SAVED FIELD: ', savedField);
+      if (didPopulateSavedTokens && !didPopulateSavedInputValues) {
+        const field = savedField || 'sellField';
         if (savedAmount) {
           if (field === 'buyField') {
             setAssetToBuyInputValue(savedAmount);
@@ -374,13 +377,11 @@ export function Swap() {
             setAssetToSellInputNativeValue(savedAmount);
           }
         }
-      }, 100);
-      setTimeout(() => {
-        setIndependentField(field);
-      }, 500);
+        setDidPopulateSavedInputValues(true);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [didPopulateSavedInputValues, didPopulateSavedTokens]);
 
   useEffect(() => {
     return () => {

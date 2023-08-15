@@ -87,10 +87,10 @@ export const useSwapInputs = ({
       setAssetToSellDropdownClosed(true);
       saveSwapAmount({ amount: value });
       setAssetToSellValue(value);
-      setIndependentField('sellField');
+      setIndependentFieldIfOccupied('sellField');
       setIndependentValue(value);
     },
-    [saveSwapAmount],
+    [saveSwapAmount, setIndependentFieldIfOccupied],
   );
 
   const setAssetToSellInputNativeValue = useCallback(
