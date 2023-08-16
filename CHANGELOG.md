@@ -17,6 +17,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.1.70](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.70)
+
+### Changed
+
+- Cleaned up the codebase by removing some unused files and functions #850
+
+### Fixed
+
+- Fix onboarding loop bug by keeping service worker alive #861
+
 ## [v1.1.67](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.67)
 
 ### Added
