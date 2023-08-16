@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { Address, useAccount, useBalance } from 'wagmi';
+import { useState } from 'react';
+import { useAccount, useBalance } from 'wagmi';
 
-import { ETH_ADDRESS } from '~/core/references';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
-import { useAssetPrices, useUserAssets } from '~/core/resources/assets';
+import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
@@ -39,12 +38,6 @@ export function Default() {
     },
     { select: selectUserAssetsList },
   );
-  const { data: assetPrices } = useAssetPrices({
-    assetAddresses: userAssets
-      ?.map((asset) => asset?.address)
-      .concat(ETH_ADDRESS as Address),
-    currency: currentCurrency,
-  });
   const { data: transactions } = useTransactions({
     address,
     chainId: ChainId.mainnet,
@@ -174,21 +167,6 @@ export function Default() {
               key={tx?.hash}
             >
               {`${tx?.title} ${tx?.name}: ${tx.native?.display}`}
-            </Text>
-          );
-        })}
-        <Text color="label" size="20pt" weight="bold">
-          Prices:
-        </Text>
-        {Object.values(assetPrices || {}).map((price, i) => {
-          return (
-            <Text
-              color="labelSecondary"
-              size="16pt"
-              weight="medium"
-              key={`prices-${i}`}
-            >
-              {`${price?.price?.display}: ${price?.change}`}
             </Text>
           );
         })}

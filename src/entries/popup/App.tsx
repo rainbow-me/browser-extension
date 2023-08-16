@@ -20,6 +20,7 @@ import { Box, ThemeProvider } from '~/design-system';
 import { Routes } from './Routes';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
+import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { PlaygroundComponents } from './pages/_playgrounds';
@@ -91,6 +92,7 @@ export function App() {
                   <Routes />
                 </Box>
                 <IdleTimer />
+                <OnboardingKeepAlive />
               </AuthProvider>
             )}
           </ThemeProvider>
