@@ -92,13 +92,13 @@ export function App() {
                   <Routes />
                 </Box>
                 <IdleTimer />
+                <OnboardingKeepAlive />
               </AuthProvider>
             )}
           </ThemeProvider>
         </WagmiConfig>
       </PersistQueryClientProvider>
       <HWRequestListener />
-      <OnboardingKeepAlive />
     </>
   );
 }
