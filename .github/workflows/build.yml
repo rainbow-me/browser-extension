@@ -164,6 +164,7 @@ jobs:
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+            yarn chrome:zip
             yarn vitest:swap
   chrome-e2e-send:
     runs-on: beefy-runner-bx
@@ -182,6 +183,7 @@ jobs:
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+            yarn chrome:zip
             yarn vitest:send --retry=5
   chrome-e2e-dapp:
     runs-on: beefy-runner-bx
@@ -203,6 +205,7 @@ jobs:
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+            yarn chrome:zip
             yarn vitest:dapp --retry=5
   # BRAVE TESTS
   # brave-e2e:
