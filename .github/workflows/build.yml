@@ -115,7 +115,7 @@ jobs:
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Download MetaMask (Firefox)
         run: |
-            curl -o metamask.xpi https://github.com/MetaMask/metamask-extension/releases/download/v10.34.4/metamask-firefox-10.34.4.zip
+            curl -L -o metamask.xpi https://github.com/MetaMask/metamask-extension/releases/download/v10.34.4/metamask-firefox-10.34.4.zip
       - name: Run e2e parallel (Firefox)
         run: |
             export BROWSER=firefox
@@ -199,7 +199,7 @@ jobs:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Download MetaMask (Chrome)
         run: |
-            curl -o metamask.crx https://github.com/MetaMask/metamask-extension/releases/download/v10.34.4/metamask-chrome-10.34.4.zip
+            curl -L -o metamask.crx https://github.com/MetaMask/metamask-extension/releases/download/v10.34.4/metamask-chrome-10.34.4.zip
       - name: Run e2e dapp (Chrome)
         run: |
             export BROWSER=chrome
