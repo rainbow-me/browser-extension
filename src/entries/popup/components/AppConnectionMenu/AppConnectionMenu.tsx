@@ -149,7 +149,7 @@ export const AppConnectionMenu = ({
         <Box testId={menuTriggerId}>{children}</Box>
       </DropdownMenuTrigger>
       <DropdownMenuContentWithSubMenu
-        reff={dropdownMenuRef}
+        subMenuRef={dropdownMenuRef}
         sideOffset={sideOffset}
         align={align}
       >

@@ -102,7 +102,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
           <Box>{children}</Box>
         </ContextMenuTrigger>
 
-        <ContextMenuContentWithSubMenu reff={dropdownMenuRef}>
+        <ContextMenuContentWithSubMenu subMenuRef={dropdownMenuRef}>
           <ContextMenuRadioGroup
             onValueChange={(value) =>
               onValueChange(

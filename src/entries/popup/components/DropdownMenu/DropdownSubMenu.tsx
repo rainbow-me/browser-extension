@@ -63,12 +63,12 @@ export const DropdownMenuContentWithSubMenu = ({
   align,
   children,
   sideOffset,
-  reff,
+  subMenuRef,
 }: {
   children: ReactElement;
   align?: 'start' | 'center' | 'end';
   sideOffset?: number;
-  reff: React.MutableRefObject<HTMLDivElement | null>;
+  subMenuRef: React.MutableRefObject<HTMLDivElement | null>;
 }) => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
@@ -82,7 +82,7 @@ export const DropdownMenuContentWithSubMenu = ({
   }, [clearSubMenuListener]);
 
   return (
-    <Box ref={reff}>
+    <Box ref={subMenuRef}>
       <DropdownMenuContent
         scale={subMenuOpen ? 0.94 : 1}
         sideOffset={sideOffset}

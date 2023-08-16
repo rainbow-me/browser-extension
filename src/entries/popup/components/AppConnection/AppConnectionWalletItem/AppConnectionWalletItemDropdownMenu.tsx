@@ -94,7 +94,10 @@ export const AppConnectionWalletItemDropdownMenu = ({
           </Box>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContentWithSubMenu reff={dropdownMenuRef} align="end">
+        <DropdownMenuContentWithSubMenu
+          subMenuRef={dropdownMenuRef}
+          align="end"
+        >
           <DropdownMenuRadioGroup
             onValueChange={(value: string) =>
               onValueChange(

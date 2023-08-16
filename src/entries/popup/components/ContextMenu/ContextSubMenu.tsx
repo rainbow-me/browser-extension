@@ -49,12 +49,12 @@ const isClickingMenuHeader = ({
 export const ContextMenuContentWithSubMenu = ({
   children,
   sideOffset,
-  reff,
+  subMenuRef,
   onInteractOutside,
 }: {
   children: ReactElement;
   sideOffset?: number;
-  reff: React.MutableRefObject<HTMLDivElement | null>;
+  subMenuRef: React.MutableRefObject<HTMLDivElement | null>;
   onInteractOutside?: () => void;
 }) => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
@@ -69,7 +69,7 @@ export const ContextMenuContentWithSubMenu = ({
   }, [clearSubMenuListener]);
 
   return (
-    <Box ref={reff}>
+    <Box ref={subMenuRef}>
       <ContextMenuContent
         scale={subMenuOpen ? 0.94 : 1}
         sideOffset={sideOffset}
