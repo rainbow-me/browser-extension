@@ -19,13 +19,13 @@ export interface AppMetadata {
   appColor: string;
 }
 
-export function useAppMetadata({ url, title }: AppMetadataProps) {
+export function useAppMetadata({ url, title }: AppMetadataProps): AppMetadata {
   const appHostName = url && isValidUrl(url) ? getDappHostname(url) : '';
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
   const appLogo = appHost ? getPublicAppIcon(appHost) : '';
   const appName =
     url && isValidUrl(url)
-      ? getHardcodedDappInformation(appHostName)?.name || title
+      ? getHardcodedDappInformation(appHostName)?.name || title || ''
       : '';
 
   return {
