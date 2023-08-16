@@ -60,7 +60,7 @@
     "vitest:serial": "./scripts/e2e-serial-tests.sh",
     "vitest:swap": "./scripts/e2e-serial-tests.sh 'swap'",
     "vitest:send": "./scripts/e2e-serial-tests.sh 'send'",
-    "vitest:dappInteractions": "./scripts/e2e-serial-tests.sh 'dappInteractions'",
+    "vitest:dapp": "./scripts/e2e-serial-tests.sh 'dapp'",
     "e2e:mac:chrome": "BROWSER=chrome OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:brave": "BROWSER=brave OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:firefox": "yarn firefox:zip && BROWSER=firefox OS=mac yarn vitest:parallel",
