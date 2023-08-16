@@ -113,6 +113,9 @@ jobs:
       - name: Copy dotenv
         shell: 'bash'
         run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Download MetaMask (Firefox)
+        run: |
+            curl -o metamask.xpi https://github.com/MetaMask/metamask-extension/releases/download/v10.34.4/metamask-firefox-10.34.4.zip
       - name: Run e2e parallel (Firefox)
         run: |
             export BROWSER=firefox
