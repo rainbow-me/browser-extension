@@ -20,3 +20,5 @@ anvil*.log
 # Browser artifacts
 rainbowbx.crx
 rainbowbx.xpi
+metamask.crx
+metamask.xpi
