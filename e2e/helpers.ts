@@ -132,8 +132,8 @@ export async function initDriverWithOptions(opts: {
       .build();
   } else {
     const extensions = opts.metamask
-      ? ['rainbowbx.zip', 'metamask.zip']
-      : ['rainbowbx.zip'];
+      ? ['rainbowbx.crx', 'metamask.crx']
+      : ['rainbowbx.crx'];
     const options = new chrome.Options()
       // @ts-ignore
       .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])

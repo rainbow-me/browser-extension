@@ -17,4 +17,6 @@ src/core/graphql/__generated__/
 # Anvil logs
 anvil*.log
 
+# Browser artifacts
+rainbowbx.crx
 rainbowbx.xpi
