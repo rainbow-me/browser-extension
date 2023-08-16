@@ -529,7 +529,7 @@ export async function getTransactionReceiptStatus({
   let status;
 
   try {
-    if (transactionResponse) {
+    if (transactionResponse && transactionResponse.wait) {
       receipt = await transactionResponse.wait();
     }
     // eslint-disable-next-line no-empty

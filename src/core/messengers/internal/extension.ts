@@ -47,7 +47,6 @@ export const extensionMessenger = createMessenger({
       };
 
       chrome.runtime.onMessage.addListener(listener);
-
       chrome.runtime.sendMessage({
         topic: `> ${topic}`,
         payload,
@@ -74,7 +73,6 @@ export const extensionMessenger = createMessenger({
           sender,
           topic: message.topic,
         });
-
         chrome.runtime.sendMessage({
           topic: repliedTopic,
           payload: { response, sender },

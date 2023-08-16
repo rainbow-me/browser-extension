@@ -230,7 +230,14 @@ export const sendTransaction = async (
   }
   const signer = await keychainManager.getSigner(txPayload.from as Address);
   const wallet = signer.connect(provider);
-  return wallet.sendTransaction(txPayload);
+  const response = await wallet.sendTransaction(txPayload);
+  // Firefox can't serialize functions
+  if (navigator.userAgent.toLowerCase().includes('firefox')) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    response.wait = undefined;
+  }
+  return response;
 };
 
 export const executeRap = async ({
