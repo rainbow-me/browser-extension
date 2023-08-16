@@ -181,11 +181,13 @@ export const useSwapInputs = ({
       setAssetToBuyValue('');
       setAssetToSellValue(assetToBuyValue);
       setIndependentField('sellField');
+      saveSwapField({ field: 'sellField' });
       focusOnInput(assetToSellInputRef);
     } else if (independentField === 'buyField') {
       setAssetToBuyValue('');
       setAssetToSellValue(independentValue);
       setIndependentField('sellField');
+      saveSwapField({ field: 'sellField' });
       focusOnInput(assetToSellInputRef);
     } else if (
       independentField === 'sellField' ||
@@ -200,6 +202,7 @@ export const useSwapInputs = ({
       setIndependentValue(tokenValue);
       setAssetToSellNativeValue('');
       setIndependentField('buyField');
+      saveSwapField({ field: 'buyField' });
       focusOnInput(assetToBuyInputRef);
     }
     setAssetToBuy(assetToSell);
@@ -213,6 +216,7 @@ export const useSwapInputs = ({
     assetToSellValue,
     independentField,
     independentValue,
+    saveSwapField,
     setAssetToBuy,
     setAssetToSell,
     setIndependentField,
