@@ -5,7 +5,6 @@ import { Address, erc20ABI } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
-  AssetType,
   ParsedAddressAsset,
   ParsedAsset,
   ParsedSearchAsset,
@@ -97,7 +96,7 @@ export function parseAsset({
     },
     price: asset?.price,
     symbol: asset?.symbol,
-    type: asset?.type ?? AssetType.token,
+    type: asset?.type ?? 'token',
     uniqueId,
     decimals: asset?.decimals,
     icon_url: asset?.icon_url,
