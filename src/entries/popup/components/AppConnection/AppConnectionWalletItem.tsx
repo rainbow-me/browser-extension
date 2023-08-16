@@ -29,7 +29,7 @@ import { ChainBadge } from '../ChainBadge/ChainBadge';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 import { appConnectionWalletItem } from './AppConnectionWalletItem/AppConnectionWalletItem.css';
-import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItemDropdownMenu';
+import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItem/AppConnectionWalletItemDropdownMenu';
 
 export default function AppConnectionWalletItem({
   account,
