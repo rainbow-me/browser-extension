@@ -102,23 +102,26 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
 export async function initDriverWithOptions(opts: {
   browser: string;
   os: string;
+  metamask?: boolean;
 }) {
   let driver;
   const args = [
-    'load-extension=build/',
     // '--auto-open-devtools-for-tabs',
     '--log-level=0',
     '--enable-logging',
   ];
 
   if (opts.browser === 'firefox') {
+    const extensions = opts.metamask
+      ? ['rainbowbx.xpi', 'metamask.xpi']
+      : ['rainbowbx.xpi'];
     const options = new firefox.Options()
       // @ts-ignore
       .setBinary(BINARY_PATHS[opts.os][opts.browser])
-      .addArguments(...args.slice(1))
+      .addArguments(...args)
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
-      .addExtensions('rainbowbx.xpi');
+      .addExtensions(...extensions);
 
     const service = new firefox.ServiceBuilder().setStdio('inherit');
 
@@ -128,9 +131,13 @@ export async function initDriverWithOptions(opts: {
       .setFirefoxOptions(options)
       .build();
   } else {
+    const extensions = opts.metamask
+      ? ['rainbowbx.zip', 'metamask.zip']
+      : ['rainbowbx.zip'];
     const options = new chrome.Options()
       // @ts-ignore
       .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
+      .addExtensions(...extensions)
       .addArguments(...args);
     options.setAcceptInsecureCerts(true);
 
