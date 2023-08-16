@@ -89,13 +89,6 @@ export const useSendInputs = ({
 
   const { saveSendAmount, saveSendField } = usePopupInstanceStore();
   const assetAmount = useMemo(() => {
-    console.log('SETTING ASSET AMOUNT: ', [
-      dependentAmountDisplay,
-      independentAmount,
-      independentField,
-      saveSendAmount,
-      saveSendField,
-    ]);
     const amount =
       independentField === 'asset'
         ? independentAmount
@@ -119,7 +112,6 @@ export const useSendInputs = ({
   }, []);
 
   const switchIndependentField = useCallback(() => {
-    console.log('switching indepenent field');
     const newValue =
       independentField === 'asset'
         ? dependentAmountDisplay?.amount

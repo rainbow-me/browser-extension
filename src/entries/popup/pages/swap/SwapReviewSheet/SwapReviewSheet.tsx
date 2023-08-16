@@ -16,6 +16,7 @@ import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { popupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -303,8 +304,10 @@ const SwapReviewSheetWithQuote = ({
         });
       }
     } else {
+      const { saveActiveTab } = popupInstanceStore.getState();
       setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
-      navigate(ROUTES.HOME, { state: { activeTab: 'activity' } }); // CBH TODO
+      saveActiveTab({ tab: 'activity' });
+      navigate(ROUTES.HOME);
     }
     isBridge
       ? analytics.track(event.bridgeSubmitted, {

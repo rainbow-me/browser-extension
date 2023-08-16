@@ -20,7 +20,10 @@ import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import {
+  popupInstanceStore,
+  usePopupInstanceStore,
+} from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -196,6 +199,7 @@ export function Send() {
 
       try {
         const { type } = await getWallet(fromAddress);
+        const { saveActiveTab } = popupInstanceStore.getState();
 
         // Change the label while we wait for confirmation
         if (type === 'HardwareWalletKeychain') {
@@ -237,7 +241,8 @@ export function Send() {
             transaction,
           });
           callback?.();
-          navigate(ROUTES.HOME, { state: { activeTab: 'activity' } }); // CBH TODO
+          saveActiveTab({ tab: 'activity' });
+          navigate(ROUTES.HOME);
           analytics.track(event.sendSubmitted, {
             assetSymbol: asset?.symbol,
             assetName: asset?.name,
@@ -390,7 +395,6 @@ export function Send() {
               key: shortcuts.send.SWITCH_CURRENCY_LABEL.display,
               type: 'send.switchCurrency',
             });
-            console.log('here 2');
             switchIndependentField();
           }
         }
