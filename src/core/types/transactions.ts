@@ -30,7 +30,14 @@ type BaseTransaction = {
 
   submittedAt?: number;
 
-  changes?: TransactionsApiResponse['changes'];
+  changes?: Array<{
+    asset: ParsedAsset;
+    value: number;
+    direction: TransactionDirection;
+    address_from: Address;
+    address_to: Address;
+    price: number;
+  }>;
   direction?: TransactionDirection;
 
   asset?: ParsedAsset;
@@ -46,8 +53,16 @@ type BaseTransaction = {
 // type DroppedTransaction = BaseTransaction & { status: 'dropped' };
 // type CancelledTransaction = BaseTransaction & { status: 'cancelled' };
 
-export type RainbowTransaction = BaseTransaction;
-// | DroppedTransaction;
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+
+export type RainbowTransaction =
+  | ({
+      type: Exclude<TransactionType, 'swap' | 'wrap' | 'unwrap'>;
+    } & BaseTransaction)
+  | ({ type: 'swap' | 'wrap' | 'unwrap' } & WithRequired<
+      BaseTransaction,
+      'changes'
+    >);
 
 export type TransactionStatus = RainbowTransaction['status'];
 export type NewTransaction = Partial<BaseTransaction>;

@@ -446,7 +446,10 @@ const boxColorProperties = defineProperties({
         ...separatorColors,
         ...strokeColors,
       ] as const),
-      ...pick(semanticColorVars.backgroundColors, [...buttonColors] as const),
+      ...pick(semanticColorVars.backgroundColors, [
+        ...buttonColors,
+        'surfaceSecondary',
+      ] as const),
     },
     boxShadow: shadowVars,
   },

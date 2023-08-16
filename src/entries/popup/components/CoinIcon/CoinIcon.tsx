@@ -193,3 +193,25 @@ function formatSymbol(symbol: string, width: number) {
 
   return _cache[key];
 }
+
+const nftRadiusBySize = {
+  14: '4px',
+  16: '4px',
+  36: '10px',
+} as const;
+export const NFTIcon = ({
+  asset,
+  size,
+}: {
+  asset: ParsedAsset;
+  size: keyof typeof nftRadiusBySize;
+}) => {
+  return (
+    <Box
+      as="img"
+      src={asset.icon_url}
+      style={{ height: size, width: size }}
+      borderRadius={nftRadiusBySize[size]}
+    />
+  );
+};

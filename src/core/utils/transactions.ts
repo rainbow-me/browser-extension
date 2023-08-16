@@ -164,6 +164,10 @@ export async function parseTransaction({
     value: convertRawAmountToBalance(valueUnit, {
       decimals: parsedAsset?.decimals || 0,
     }),
+    changes: tx.changes.map((change) => ({
+      ...change,
+      asset: parseAsset({ asset: change.asset, currency }),
+    })),
   };
 
   console.log(tx.meta);

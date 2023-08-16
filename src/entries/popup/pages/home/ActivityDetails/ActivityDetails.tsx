@@ -5,7 +5,6 @@ import { Address, useTransaction as useWagmiTransaction } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { useTransaction } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore } from '~/core/state';
-import { ParsedAsset } from '~/core/types/assets';
 import { ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { formatDate } from '~/core/utils/formatDate';
@@ -24,7 +23,10 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 import { BoxProps } from '~/design-system/components/Box/Box';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
-import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
+import {
+  CoinIcon,
+  NFTIcon,
+} from '~/entries/popup/components/CoinIcon/CoinIcon';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -78,17 +80,6 @@ function AddressMoreOptions({ address }: { address: Address }) {
   );
 }
 
-const NFTIcon = ({ asset, size }: { asset: ParsedAsset; size: number }) => {
-  return (
-    <Box
-      as="img"
-      src={asset.icon_url}
-      style={{ height: size, width: size }}
-      borderRadius="4px"
-    />
-  );
-};
-
 function BaseActivityPill({
   title,
   icon,
@@ -130,19 +121,16 @@ function ActivityPill({ transaction }: ActivityPillProps) {
       />
     );
 
-  if (asset.type === 'erc20')
-    return (
-      <BaseActivityPill
-        paddingLeft="5px"
-        icon={<CoinIcon asset={asset} badge={false} size={20} />}
-        title={transaction.title}
-      />
-    );
+  return (
+    <BaseActivityPill
+      paddingLeft="5px"
+      icon={<CoinIcon asset={asset} badge={false} size={20} />}
+      title={transaction.title}
+    />
+  );
 
   // if (transaction.type === TransactionType.trade)
   //   return <CoinIcon asset={asset} badge={false} size={20} />; // one on top of the other
-
-  return null;
 }
 
 const YouOrAddress = ({ address }: { address: Address }) => {

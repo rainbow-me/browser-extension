@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
+import { ParsedAsset } from '~/core/types/assets';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
@@ -15,7 +16,7 @@ import {
 } from '~/design-system/styles/designTokens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
-import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
+import { CoinIcon, NFTIcon } from '../../components/CoinIcon/CoinIcon';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
 import useInfiniteTransactionList from '../../hooks/useInfiniteTransactionList';
@@ -251,6 +252,68 @@ const getActivityIcon = (tx: Pick<RainbowTransaction, 'status' | 'type'>) => {
   };
 };
 
+function TwoCoinsIcon({
+  size = 36,
+  under,
+  over,
+}: {
+  size?: number;
+  under: ParsedAsset;
+  over: ParsedAsset;
+}) {
+  const overSize = size * 0.75;
+  const underSize = size * 0.67;
+  return (
+    <Box position="relative" style={{ minWidth: size, height: size }}>
+      <Box position="absolute" top="0" left="0" style={{ zIndex: 1 }}>
+        <CoinIcon
+          asset={under}
+          size={underSize}
+          fallbackText={under.symbol}
+          badge={false}
+        />
+      </Box>
+      <Box
+        position="absolute"
+        bottom="0"
+        right="0"
+        marginRight="-2px"
+        marginBottom="-2px"
+        borderRadius="round"
+        borderWidth="2px"
+        borderColor="surfaceSecondary"
+        style={{ zIndex: 2 }}
+      >
+        <CoinIcon
+          asset={over}
+          size={overSize}
+          fallbackText={over.symbol}
+          badge={false}
+        />
+      </Box>
+    </Box>
+  );
+}
+
+const ActivityIcon = ({ transaction }: { transaction: RainbowTransaction }) => {
+  if (transaction.type === 'swap')
+    return (
+      <TwoCoinsIcon
+        under={transaction.changes[0].asset}
+        over={transaction.changes[1].asset}
+      />
+    );
+
+  if (transaction.asset?.type === 'nft')
+    return <NFTIcon asset={transaction.asset} size={36} />;
+
+  const asset = transaction.asset;
+  if (asset)
+    return <CoinIcon asset={asset} fallbackText={asset.symbol} badge={false} />;
+
+  return null;
+};
+
 const ActivityRow = React.memo(function ({
   transaction,
 }: {
@@ -290,7 +353,7 @@ const ActivityRow = React.memo(function ({
         borderRadius="12px"
         className={rowTransparentAccentHighlight}
       >
-        <CoinIcon asset={asset} fallbackText={symbol} badge={false} />
+        <ActivityIcon transaction={transaction} />
 
         <Box display="flex" flexDirection="column" width="full" gap="8px">
           <Inline alignVertical="center" alignHorizontal="justify">
