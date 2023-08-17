@@ -168,11 +168,6 @@ export function Swap() {
   const [urlSearchParams] = useSearchParams();
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 
-  const showSwapReviewSheet = useCallback(() => {
-    setShowSwapReview(true);
-    setInReviewSheet(true);
-  }, []);
-
   const hideSwapReviewSheet = useCallback(() => {
     setShowSwapReview(false);
     // to give time for the review sheet to hide after we re enable
@@ -277,12 +272,22 @@ export function Swap() {
     assetToBuyNativeValue: assetToBuyNativeDisplay,
   });
 
-  const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
-    useSwapValidations({
-      assetToSell,
-      assetToSellValue,
-      selectedGas,
-    });
+  const {
+    buttonLabel: validationButtonLabel,
+    enoughAssetsForSwap,
+    readyForReview,
+  } = useSwapValidations({
+    assetToSell,
+    assetToSellValue,
+    selectedGas,
+  });
+
+  const showSwapReviewSheet = useCallback(() => {
+    if (readyForReview) {
+      setShowSwapReview(true);
+      setInReviewSheet(true);
+    }
+  }, [readyForReview]);
 
   const {
     buttonLabel,

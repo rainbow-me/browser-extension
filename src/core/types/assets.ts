@@ -62,19 +62,7 @@ export interface ZerionAssetPrice {
   changed_at: number;
 }
 
-export enum AssetType {
-  arbitrum = 'arbitrum',
-  bsc = 'bsc',
-  compound = 'compound',
-  eth = 'eth',
-  nft = 'nft',
-  optimism = 'optimism',
-  polygon = 'polygon',
-  token = 'token',
-  trash = 'trash',
-  uniswap = 'uniswap',
-  uniswapV2 = 'uniswap-v2',
-}
+export type AssetType = 'nft' | 'token';
 
 export interface ZerionAsset {
   asset_code: Address;
@@ -96,15 +84,6 @@ export interface ZerionAsset {
   is_verified?: boolean;
   price?: ZerionAssetPrice;
   network?: ChainName;
-}
-
-export interface RainbowPrice {
-  change: string;
-  price: { amount?: number; display: string };
-}
-
-export interface RainbowPrices {
-  [id: string]: RainbowPrice;
 }
 
 export type UniqueId = `${Address}_${ChainId}`;
