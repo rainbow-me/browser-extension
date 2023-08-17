@@ -1,9 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  useLocation,
-  useNavigation,
-  useNavigationType,
-} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -17,6 +13,7 @@ import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
+import { ROUTES } from '../../urls';
 import { triggerToast } from '../Toast/Toast';
 
 import { AppConnectionNudgeBanner } from './AppConnectionNudgeBanner';
@@ -26,19 +23,20 @@ export const AppConnectionWatcher = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
   const { appHost, appName, appHostName } = useAppMetadata({ url });
-  const navigationType = useNavigationType();
-  const prevCurrentAddress = usePrevious(currentAddress);
   const location = useLocation();
-  const { addSession, appSession, activeSession } = useAppSession({
+  const { addSession, activeSession } = useAppSession({
     host: appHost,
   });
-  const navigation = useNavigation();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hideNudgeBannerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
   const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
   const [showWalletSwitcher, setShowWalletSwitcher] = useState<boolean>(false);
+
+  const [accountChangeHappened, setAccountChangeHappened] = useState(false);
+  const prevLocationPathname = usePrevious(location.pathname);
+  const prevCurrentAddress = usePrevious(currentAddress);
 
   const connect = useCallback(() => {
     addSession({
@@ -87,63 +85,91 @@ export const AppConnectionWatcher = () => {
     },
   });
 
-  console.log('CURRENR ADDRESS', currentAddress);
+  const differentActiveSession =
+    !!activeSession?.address &&
+    !isLowerCaseMatch(activeSession?.address, currentAddress);
 
-  useEffect(() => {
-    timeoutRef.current && clearTimeout(timeoutRef.current);
-    setShowNudgeBanner(false);
+  const firstLoad =
+    prevLocationPathname === '/' || prevLocationPathname === ROUTES.UNLOCK;
+
+  const triggerCheck = useCallback(() => {
     timeoutRef.current = setTimeout(() => {
       // if there's another active address
       if (
-        (navigationType === 'PUSH' || prevCurrentAddress !== currentAddress) &&
-        !!activeSession?.address &&
-        !isLowerCaseMatch(activeSession?.address, currentAddress) &&
-        !showWalletSwitcher
+        nudgeSheetEnabled &&
+        !appHasInteractedWithNudgeSheet({ host: appHost })
       ) {
-        // if nudgeSheet is enabled and the nudgeSheet has not appeared on that dapp
-        if (
-          nudgeSheetEnabled &&
-          !appHasInteractedWithNudgeSheet({ host: appHost })
-        ) {
-          setShowNudgeSheet(true);
-          setAddressInAppHasInteractedWithNudgeSheet({
-            address: currentAddress,
-            host: appHost,
-          });
-          setAppHasInteractedWithNudgeSheet({ host: appHost });
-          // else if the address has not interacted with the nudgeSheet
-        } else if (
-          !addressInAppHasInteractedWithNudgeSheet({
-            address: currentAddress,
-            host: appHost,
-          })
-        ) {
-          setShowNudgeBanner(true);
-          hideTimeoutRef.current = setTimeout(() => {
-            setShowNudgeBanner(false);
-          }, 3000);
-        }
+        setShowNudgeSheet(true);
+        setAddressInAppHasInteractedWithNudgeSheet({
+          address: currentAddress,
+          host: appHost,
+        });
+        setAppHasInteractedWithNudgeSheet({ host: appHost });
+        // else if the address has not interacted with the nudgeSheet
+      } else if (
+        !addressInAppHasInteractedWithNudgeSheet({
+          address: currentAddress,
+          host: appHost,
+        })
+      ) {
+        setShowNudgeBanner(true);
+        hideNudgeBannerTimeoutRef.current = setTimeout(() => {
+          setShowNudgeBanner(false);
+        }, 3000);
       }
     }, 1000);
-    return () => {
-      hideTimeoutRef.current && clearTimeout(hideTimeoutRef.current);
-      timeoutRef.current && clearTimeout(timeoutRef.current);
-    };
   }, [
-    appSession,
-    activeSession?.address,
+    addressInAppHasInteractedWithNudgeSheet,
+    appHasInteractedWithNudgeSheet,
+    appHost,
     currentAddress,
     nudgeSheetEnabled,
-    appHasInteractedWithNudgeSheet,
-    addressInAppHasInteractedWithNudgeSheet,
     setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,
-    appHost,
-    showWalletSwitcher,
-    navigationType,
+  ]);
+
+  const hide = useCallback(() => {
+    setShowNudgeSheet(false);
+    setShowNudgeBanner(false);
+    hideNudgeBannerTimeoutRef.current &&
+      clearTimeout(hideNudgeBannerTimeoutRef.current);
+    timeoutRef.current && clearTimeout(timeoutRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (!isLowerCaseMatch(currentAddress, prevCurrentAddress)) {
+      setAccountChangeHappened(true);
+      hide();
+    }
+  }, [currentAddress, hide, prevCurrentAddress]);
+
+  useEffect(() => {
+    if (location.pathname !== ROUTES.HOME) {
+      hide();
+    }
+  }, [hide, location.pathname]);
+
+  useEffect(() => {
+    if (
+      location.pathname === ROUTES.HOME &&
+      (firstLoad || accountChangeHappened) &&
+      differentActiveSession &&
+      !showWalletSwitcher
+    ) {
+      setAccountChangeHappened(false);
+      hide();
+      triggerCheck();
+    }
+  }, [
+    accountChangeHappened,
+    currentAddress,
+    differentActiveSession,
+    firstLoad,
+    hide,
+    location.pathname,
     prevCurrentAddress,
-    navigation,
-    location,
+    showWalletSwitcher,
+    triggerCheck,
   ]);
 
   return (
