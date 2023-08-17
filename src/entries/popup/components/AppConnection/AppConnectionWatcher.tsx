@@ -87,12 +87,15 @@ export const AppConnectionWatcher = () => {
     },
   });
 
+  console.log('CURRENR ADDRESS', currentAddress);
+
   useEffect(() => {
     timeoutRef.current && clearTimeout(timeoutRef.current);
     setShowNudgeBanner(false);
     timeoutRef.current = setTimeout(() => {
       // if there's another active address
       if (
+        (navigationType === 'PUSH' || prevCurrentAddress !== currentAddress) &&
         !!activeSession?.address &&
         !isLowerCaseMatch(activeSession?.address, currentAddress) &&
         !showWalletSwitcher

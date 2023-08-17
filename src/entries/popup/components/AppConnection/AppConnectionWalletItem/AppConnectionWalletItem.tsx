@@ -57,7 +57,10 @@ interface WalletItemConnectedWrapperProps {
 }
 
 export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
-  (props: WalletItemConnectedWrapperProps) => {
+  (
+    props: WalletItemConnectedWrapperProps,
+    ref: React.ForwardedRef<HTMLDivElement>,
+  ) => {
     const { children, appMetadata, address } = props;
     const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
     const [subMenuOpen, setSubMenuOpen] = useState(false);
@@ -98,7 +101,7 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
     return (
       <ContextMenu onOpenChange={setMenuOpen} open={menuOpen}>
         <ContextMenuTrigger asChild>
-          <Box>{children}</Box>
+          <Box ref={ref}>{children}</Box>
         </ContextMenuTrigger>
 
         <ContextMenuContentWithSubMenu subMenuRef={dropdownMenuRef}>
@@ -197,7 +200,7 @@ interface WalletItemProps {
 }
 
 export const AppConnectionWalletItem = React.forwardRef(
-  (props: WalletItemProps) => {
+  (props: WalletItemProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const { address, onClick, chainId, active, connected } = props;
     const [hovering, setHovering] = useState(false);
     const { displayName } = useWalletName({ address });
@@ -285,6 +288,7 @@ export const AppConnectionWalletItem = React.forwardRef(
 
     return (
       <Box
+        ref={ref}
         as={motion.div}
         className={active ? null : appConnectionWalletItem}
         onHoverStart={() => setHovering(true)}
