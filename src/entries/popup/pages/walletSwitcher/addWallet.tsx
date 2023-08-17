@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box } from '~/design-system';
-import { triggerAlert } from '~/design-system/components/Alert/util';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';

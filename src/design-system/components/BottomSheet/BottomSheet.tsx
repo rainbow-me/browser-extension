@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode } from 'react';
 
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
@@ -21,9 +22,9 @@ export const BottomSheet = ({
   onClickOutside,
 }: BottomSheetProps) => {
   return (
-    <Box as={motion.div} key="bottom-sheet" layout isModal={show}>
-      <AnimatePresence>
-        {show && (
+    <AnimatePresence>
+      {show && (
+        <>
           <Box
             position="fixed"
             onClick={onClickOutside}
@@ -43,8 +44,6 @@ export const BottomSheet = ({
             key="background"
             transition={{ duration: 0.3 }}
           />
-        )}
-        {show && (
           <Box
             position="absolute"
             bottom="0"
@@ -52,9 +51,7 @@ export const BottomSheet = ({
             right="0"
             paddingBottom="12px"
             paddingHorizontal="12px"
-            style={{
-              zIndex: zIndex ? zIndex + 1 : zIndexes.BOTTOM_SHEET + 1,
-            }}
+            style={{ zIndex: zIndex ? zIndex + 1 : zIndexes.BOTTOM_SHEET + 1 }}
             as={motion.div}
             initial={{ opacity: 1, y: 800 }}
             animate={{ opacity: 1, y: 0 }}
@@ -62,13 +59,21 @@ export const BottomSheet = ({
             key="bottom"
             transition={{ duration: 0.3 }}
             layout
+            isModal
           >
-            <Box background="surfacePrimaryElevated" borderRadius="24px">
+            <Box
+              background="surfacePrimaryElevated"
+              borderRadius="24px"
+              style={{
+                maxHeight: POPUP_DIMENSIONS.height - 24, // 24 from paddings
+                overflow: 'scroll',
+              }}
+            >
               {children}
             </Box>
           </Box>
-        )}
-      </AnimatePresence>
-    </Box>
+        </>
+      )}
+    </AnimatePresence>
   );
 };

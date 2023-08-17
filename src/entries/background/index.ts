@@ -7,6 +7,7 @@ import { syncStores } from '~/core/state/internal/syncStores';
 import { createWagmiClient } from '~/core/wagmi';
 
 import { handleInstallExtension } from './handlers/handleInstallExtension';
+import { handleKeepAlive } from './handlers/handleKeepAlive';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates';
@@ -27,3 +28,4 @@ handleWallets();
 syncStores();
 uuid4();
 initFCM();
+handleKeepAlive();
