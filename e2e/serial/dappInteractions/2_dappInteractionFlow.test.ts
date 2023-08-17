@@ -277,6 +277,10 @@ describe('App interactions flow', () => {
     const dappHandler = await getWindowHandle({ driver });
     await driver.switchTo().window(dappHandler);
 
+    if (process.env.BROWSER === 'firefox') {
+      await driver.navigate().refresh();
+    }
+
     const button = await findElementById({ id: 'createToken', driver });
     await waitAndClick(button, driver);
 

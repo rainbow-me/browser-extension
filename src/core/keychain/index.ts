@@ -22,7 +22,11 @@ import { walletExecuteRap } from '../raps/execute';
 import { RapSwapActionParameters, RapTypes } from '../raps/references';
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
-import { EthereumWalletSeed, identifyWalletType } from '../utils/ethereum';
+import {
+  EthereumWalletSeed,
+  identifyWalletType,
+  normalizeTransactionResponsePayload,
+} from '../utils/ethereum';
 import { addHexPrefix } from '../utils/hex';
 
 import { keychainManager } from './KeychainManager';
@@ -230,13 +234,8 @@ export const sendTransaction = async (
   }
   const signer = await keychainManager.getSigner(txPayload.from as Address);
   const wallet = signer.connect(provider);
-  const response = await wallet.sendTransaction(txPayload);
-  // Firefox can't serialize functions
-  if (navigator.userAgent.toLowerCase().includes('firefox')) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    response.wait = undefined;
-  }
+  let response = await wallet.sendTransaction(txPayload);
+  response = normalizeTransactionResponsePayload(response);
   return response;
 };
 
