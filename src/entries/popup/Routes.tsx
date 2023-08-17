@@ -14,6 +14,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
+import { AppConnectionWatcher } from './components/AppConnection/AppConnectionWatcher';
 import { CommandK } from './components/CommandK/CommandK';
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalletSelectionEdit';
@@ -775,6 +776,7 @@ const RootLayout = () => {
       <Alert />
       <WindowStroke />
       <UnsupportedBrowserSheet />
+      <AppConnectionWatcher />
     </FullScreenBackground>
   );
 };
