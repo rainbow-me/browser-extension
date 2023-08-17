@@ -201,6 +201,7 @@ export function SuccessHW() {
           </Box>
           <Box alignItems="center" justifyContent="center" display="flex">
             <Button
+              testId={'hw-done'}
               symbol="return.left"
               symbolSide="left"
               color="surfaceSecondaryElevated"
