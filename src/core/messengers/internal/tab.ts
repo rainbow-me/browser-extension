@@ -24,16 +24,14 @@ function sendMessage<TPayload>(
   message: SendMessage<TPayload>,
   { tabId }: { tabId?: number } = {},
 ) {
-  console.log('tab:sendMessage', message);
   try {
     if (!tabId) {
       chrome?.runtime?.sendMessage?.(message);
     } else {
       chrome.tabs?.sendMessage(tabId, message);
     }
-  } catch (e) {
-    console.log('error sending message (tab)', { tabId, message });
-  }
+    // eslint-disable-next-line no-empty
+  } catch (e) {}
 }
 
 /**
