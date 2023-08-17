@@ -6,7 +6,7 @@ export function useExpiryListener() {
   const { resetValues, setupPort } = usePopupInstanceStore();
 
   const checkExpiry = async () => {
-    const expiryEntry = await chrome.storage.local.get('expiry');
+    const expiryEntry = await chrome.storage.session.get('expiry');
     const expired = Date.now() > (expiryEntry?.expiry || 0);
     if (expired) {
       await resetValues();
