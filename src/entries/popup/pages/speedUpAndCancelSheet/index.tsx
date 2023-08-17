@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import BigNumber from 'bignumber.js';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   Address,
   useAccount,
@@ -18,11 +18,7 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import {
-  RainbowTransaction,
-  TransactionStatus,
-  TransactionType,
-} from '~/core/types/transactions';
+import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { toHex } from '~/core/utils/hex';
 import { greaterThan, handleSignificantDecimals } from '~/core/utils/numbers';
@@ -189,8 +185,8 @@ export function SpeedUpAndCancelSheet({
       to: cancellationResult?.from as Address,
       hash: cancellationResult?.hash,
       chainId: cancelTransactionRequest?.chainId,
-      status: TransactionStatus.cancelling,
-      type: TransactionType.cancel,
+      status: 'pending',
+      type: 'cancel',
       nonce: transaction?.nonce,
     };
     updateTransaction({
@@ -210,8 +206,8 @@ export function SpeedUpAndCancelSheet({
       to: speedUpResult?.to as Address,
       hash: speedUpResult?.hash,
       chainId: speedUpResult?.chainId,
-      status: TransactionStatus.speeding_up,
-      type: TransactionType.send,
+      status: 'pending',
+      type: 'speed_up',
       nonce: transaction?.nonce,
     };
     updateTransaction({

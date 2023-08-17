@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import { TextStyles, textStyles } from '../../styles/core.css';
 import { Box } from '../Box/Box';
@@ -14,6 +14,7 @@ interface TextOverflowProps {
   testId?: string;
   cursor?: TextStyles['cursor'];
   userSelect?: TextStyles['userSelect'];
+  width?: CSSProperties['width'];
 }
 
 export function TextOverflow({
@@ -26,9 +27,10 @@ export function TextOverflow({
   testId,
   cursor = 'default',
   userSelect = 'none',
+  width = '',
 }: TextOverflowProps) {
   return (
-    <Box style={{ display: 'grid' }}>
+    <Box style={{ display: 'grid', width }}>
       <Box
         marginVertical="-8px"
         className={textStyles({

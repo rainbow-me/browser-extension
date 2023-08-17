@@ -45,7 +45,7 @@ export const consolidatedTransactionsQueryKey = ({
   createQueryKey(
     'consolidatedTransactions',
     { address, currency },
-    { persisterVersion: 1 },
+    // { persisterVersion: 1 },
   );
 
 type ConsolidatedTransactionsQueryKey = ReturnType<

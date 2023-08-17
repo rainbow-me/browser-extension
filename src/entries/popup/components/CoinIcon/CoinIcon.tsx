@@ -11,7 +11,7 @@ import {
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
-import { AccentColorProvider, Bleed, Box } from '~/design-system';
+import { AccentColorProvider, Box } from '~/design-system';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
 
@@ -127,16 +127,16 @@ function CoinIconWrapper({
   badge?: boolean;
 }) {
   return (
-    <Fragment>
+    <Box position="relative">
       <ShadowWrapper color={shadowColor} size={size}>
         {children}
       </ShadowWrapper>
       {badge && chainId !== ChainId.mainnet && (
-        <Bleed top="16px" left="6px">
+        <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
           <ChainBadge chainId={chainId} shadow size="16" />
-        </Bleed>
+        </Box>
       )}
-    </Fragment>
+    </Box>
   );
 }
 
@@ -172,7 +172,11 @@ function getFallbackTextStyle(text: string, size: number) {
   if (!text) return undefined;
 
   if (size < 24) return fallbackTextStyleExtraSmall;
-  if (text.length > 4) return fallbackTextStyleSmall;
+  if (text.length > 4) {
+    if (size < 28) return fallbackTextStyleExtraSmall;
+    return fallbackTextStyleSmall;
+  }
+  if (size < 28) return fallbackTextStyleSmall;
   if (text.length === 4) return fallbackTextStyleMedium;
   if (text.length === 3) return fallbackTextStyleLarge;
   return fallbackTextStyleExtraLarge;
@@ -202,16 +206,77 @@ const nftRadiusBySize = {
 export const NFTIcon = ({
   asset,
   size,
+  badge = false,
 }: {
   asset: ParsedAsset;
   size: keyof typeof nftRadiusBySize;
+  badge?: boolean;
 }) => {
+  const chainId = asset.chainId;
   return (
-    <Box
-      as="img"
-      src={asset.icon_url}
-      style={{ height: size, width: size }}
-      borderRadius={nftRadiusBySize[size]}
-    />
+    <Box position="relative" style={{ minWidth: size, height: size }}>
+      <Box
+        as="img"
+        src={asset.icon_url}
+        style={{ height: size, width: size }}
+        borderRadius={nftRadiusBySize[size]}
+      />
+      <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
+        {badge && chainId !== ChainId.mainnet && (
+          <ChainBadge chainId={chainId} shadow size="16" />
+        )}
+      </Box>
+    </Box>
   );
 };
+
+export function TwoCoinsIcon({
+  size = 36,
+  under,
+  over,
+}: {
+  size?: number;
+  under: ParsedAsset;
+  over: ParsedAsset;
+}) {
+  const overSize = size * 0.75;
+  const underSize = size * 0.67;
+
+  const chainId = over.chainId;
+
+  return (
+    <Box position="relative" style={{ minWidth: size, height: size }}>
+      <Box position="absolute" top="0" left="0" style={{ zIndex: 1 }}>
+        <CoinIcon
+          asset={under}
+          size={underSize}
+          fallbackText={under.symbol}
+          badge={false}
+        />
+      </Box>
+      <Box
+        position="absolute"
+        bottom="0"
+        right="0"
+        marginRight="-3px"
+        marginBottom="-3px"
+        borderRadius="round"
+        borderWidth="3px"
+        borderColor="surfaceSecondary"
+        style={{ zIndex: 2 }}
+      >
+        <CoinIcon
+          asset={over}
+          size={overSize}
+          fallbackText={over.symbol}
+          badge={false}
+        />
+      </Box>
+      <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
+        {chainId !== ChainId.mainnet && (
+          <ChainBadge chainId={chainId} shadow size="16" />
+        )}
+      </Box>
+    </Box>
+  );
+}

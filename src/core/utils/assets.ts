@@ -5,7 +5,6 @@ import { getContract } from 'wagmi/actions';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
-  AssetType,
   ParsedAsset,
   ParsedSearchAsset,
   UniqueId,
@@ -94,7 +93,7 @@ export function parseAsset({
     name: asset.name || i18n.t('tokens_tab.unknown_token'),
     price: asset.price,
     symbol: asset.symbol,
-    type: asset.type === AssetType.nft ? ('nft' as const) : ('erc20' as const),
+    type: asset.type,
     decimals: asset.decimals,
     icon_url: asset.icon_url,
     colors: asset.colors,

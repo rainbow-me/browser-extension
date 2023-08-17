@@ -225,9 +225,9 @@
       "failed": "Approve Failed"
     },
     "contract_interaction": {
-      "pending": "Pending",
-      "confirmed": "Contract Interaction",
-      "failed": "Failed"
+      "pending": "Interaction Pending",
+      "confirmed": "Interacted",
+      "failed": "Interaction Failed"
     },
     "swap": {
       "pending": "Swapping",

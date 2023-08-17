@@ -3,8 +3,6 @@ import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
 import { Address } from 'wagmi';
 
-import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
-
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
 import {
@@ -24,7 +22,6 @@ import {
   NewTransaction,
   RainbowTransaction,
   TransactionStatus,
-  TransactionType,
   TransactionsApiResponse,
 } from '../types/transactions';
 
@@ -34,8 +31,7 @@ import { convertStringToHex } from './hex';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
-  convertRawAmountToBalance,
-  convertRawAmountToNativeDisplay,
+  convertRawAmountToDecimalFormat,
   isZero,
 } from './numbers';
 import { isLowerCaseMatch } from './strings';
@@ -101,7 +97,7 @@ export async function parseTransaction({
   currency,
   chainId,
 }: ParseTransactionArgs): Promise<RainbowTransaction> {
-  const methodName = 'method sname';
+  const methodName = tx.meta.action || 'method sname';
   // await fetchRegistryLookup({
   //   data: null,
   //   to: tx.address_to || null,
@@ -109,68 +105,62 @@ export async function parseTransaction({
   //   hash: tx.hash,
   // });
 
-  const parsedAsset = tx.meta.asset
-    ? parseAsset({ asset: tx.meta.asset, currency })
-    : await getNativeAssetForNetwork({ chainId });
+  const changes = tx.changes.map(
+    (change) =>
+      change && {
+        ...change,
+        asset: parseAsset({ asset: change?.asset, currency }),
+      },
+  );
 
-  const priceUnit = 0;
-  const valueUnit = 0;
-  const nativeDisplay = convertRawAmountToNativeDisplay(
-    0,
-    18,
-    priceUnit,
+  const asset = changes[0]?.asset; // || (await getNativeAssetForNetwork({ chainId }));
+
+  const {
+    status,
+    hash,
+    address_from,
+    address_to,
+    meta,
+    nonce,
+    protocol,
+    direction,
+  } = tx;
+
+  const type = meta.type || 'contract_interaction';
+
+  const value = convertRawAmountToDecimalFormat(
+    changes[0]?.value || '0',
+    changes[0]?.asset.decimals,
+  );
+
+  const native = convertAmountAndPriceToNativeDisplay(
+    value ?? 0,
+    asset?.price?.value ?? 0,
     currency,
   );
 
-  // const status = getTransactionLabel({
-  //   direction: tx.direction,
-  //   pending: false,
-  //   protocol: tx.protocol,
-  //   status: tx.status,
-  //   type: tx.type,
-  // });
-
-  // const title = getTitle({
-  //   protocol: tx.protocol,
-  //   status,
-  //   type: tx.type,
-  // });
-
-  const description = getDescription({
-    name: parsedAsset?.name || '',
-    status: tx.status,
-    type: tx.meta.type,
-  });
-
-  const { status, address_from, address_to, meta, nonce, protocol, direction } =
-    tx;
-  const _tx = {
-    status,
-    description: tx.meta.action || description || methodName || 'Signed',
-    from: tx?.address_from as Address,
-    hash: tx.hash,
+  const _tx: RainbowTransaction = {
+    description: asset?.name || methodName || 'Signed',
+    from: address_from || '0x',
+    to: address_to,
     name:
-      tx.meta.type === 'contract_interaction'
+      meta.type === 'contract_interaction'
         ? methodName
-        : parsedAsset?.name || 'Signed',
+        : asset?.name || 'Signed',
+    title: i18n.t(`transactions.${type}.${status}`),
+    asset,
+    value,
+    native,
+    status,
+    hash,
     chainId,
     nonce,
     protocol,
-    title: tx.meta.type ?? i18n.t('transactions.contract_interaction'),
-    to: address_to,
-    type: tx.meta.type || 'contract_interaction',
+    type,
     direction,
-    asset: parsedAsset,
-    value: convertRawAmountToBalance(valueUnit, {
-      decimals: parsedAsset?.decimals || 0,
-    }),
-    changes: tx.changes.map((change) => ({
-      ...change,
-      asset: parseAsset({ asset: change.asset, currency }),
-    })),
+    changes,
   };
-
-  console.log(tx.meta);
+  console.log(_tx);
 
   if (status === 'confirmed')
     return { ..._tx, minedAt: tx.mined_at, blockNumber: tx.block_number };
@@ -320,28 +310,13 @@ export async function parseTransaction({
 //   return TransactionStatus.unknown;
 // };
 
-const getDescription = ({
-  name,
-  status,
-  type,
-}: {
-  name: string;
-  status: RainbowTransaction['status'];
-  type?: TransactionType;
-}) => {
-  if (status === 'pending') return name;
-  if (type === 'deposit') return `${i18n.t('transactions.deposited')} ${name}`;
-  if (type === 'withdraw') return `${i18n.t('transactions.withdrew')} ${name}`;
-  return name;
-};
-
 export const parseNewTransaction = (
   txDetails: NewTransaction,
   nativeCurrency: SupportedCurrencyKey,
 ): RainbowTransaction => {
   let balance;
   const {
-    amount,
+    amount = 0,
     asset,
     data,
     from,
@@ -356,7 +331,7 @@ export const parseNewTransaction = (
     status: txStatus,
     to,
     type: txType,
-    txTo,
+    // txTo,
     value,
     flashbots,
   } = txDetails;
@@ -375,27 +350,29 @@ export const parseNewTransaction = (
     assetPrice ?? 0,
     nativeCurrency,
   );
-  const hash = txHash ?? `${txHash}-0`;
+  const hash = txHash || '0x';
 
-  const status = txStatus ?? TransactionStatus.sending;
-  const type = txType ?? TransactionType.send;
+  const status = txStatus ?? 'pending';
+  const type = txType ?? 'send';
 
-  const title = getTitle({
-    protocol: protocol,
-    status,
-    type,
-  });
+  const title = '';
+  // getTitle({
+  //   protocol: protocol,
+  //   status,
+  //   type,
+  // });
 
-  const description = getDescription({
-    name: asset?.name || '',
-    status,
-    type,
-  });
+  const description = '';
+  // getDescription({
+  //   name: asset?.name || '',
+  //   status,
+  //   type,
+  // });
 
   return {
-    address: (asset?.address ?? ETH_ADDRESS) as Address,
+    // address: (asset?.address ?? ETH_ADDRESS) as Address,
     asset,
-    balance,
+    // balance,
     data,
     description,
     from,
@@ -405,16 +382,16 @@ export const parseNewTransaction = (
     maxFeePerGas,
     maxPriorityFeePerGas,
     name: asset?.name,
-    native,
+    // native,
     chainId,
     nonce,
-    pending: true,
+    // pending: true,
     protocol,
     status,
-    symbol: asset?.symbol,
+    // symbol: asset?.symbol,
     title,
     to,
-    txTo: txTo || to,
+    // txTo: txTo || to,
     type,
     value,
     flashbots,
@@ -487,17 +464,18 @@ export async function getTransactionReceiptStatus({
     );
     const transactionDirection = isSelf ? 'self' : 'out';
     const transactionStatus = 'confirmed';
-    status = getTransactionLabel({
-      direction: transactionDirection,
-      pending: false,
-      protocol: transaction?.protocol,
-      status: transactionStatus,
-      type: transaction?.type,
-    });
+    status = transactionStatus;
+    // getTransactionLabel({
+    //   direction: transactionDirection,
+    //   pending: false,
+    //   protocol: transaction?.protocol,
+    //   status: transactionStatus,
+    //   type: transaction?.type,
+    // });
   } else if (included) {
-    status = TransactionStatus.unknown;
+    status = 'pending'; // TODO: prev unknown
   } else {
-    status = TransactionStatus.failed;
+    status = 'failed';
   }
   return status;
 }

@@ -8,7 +8,7 @@ import { ChainId, ChainName } from './chains';
 type BaseTransaction = {
   status: 'pending' | 'confirmed' | 'failed' | 'cancelled' | 'dropped';
   hash: `0x${string}`;
-  nonce: number;
+  nonce: number; // -2 when not from the wallet user
   chainId: ChainId;
 
   from: Address;
@@ -20,7 +20,7 @@ type BaseTransaction = {
   name?: string;
   description?: string;
 
-  // data: string;
+  data?: string;
   flashbots?: boolean;
 
   gasLimit?: BigNumberish;
@@ -30,21 +30,21 @@ type BaseTransaction = {
 
   submittedAt?: number;
 
-  changes?: Array<{
-    asset: ParsedAsset;
-    value: number;
-    direction: TransactionDirection;
-    address_from: Address;
-    address_to: Address;
-    price: number;
-  }>;
+  changes?: Array<
+    | {
+        asset: ParsedAsset;
+        value: number;
+        direction: TransactionDirection;
+        address_from: Address;
+        address_to: Address;
+        price: number;
+      }
+    | undefined
+  >;
   direction?: TransactionDirection;
 
   asset?: ParsedAsset;
-  value?: {
-    amount: string;
-    display: string;
-  };
+  value?: string;
 
   blockNumber?: number;
   minedAt?: number;
@@ -55,17 +55,20 @@ type BaseTransaction = {
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
-export type RainbowTransaction =
-  | ({
-      type: Exclude<TransactionType, 'swap' | 'wrap' | 'unwrap'>;
-    } & BaseTransaction)
-  | ({ type: 'swap' | 'wrap' | 'unwrap' } & WithRequired<
-      BaseTransaction,
-      'changes'
-    >);
+export type RainbowTransaction = BaseTransaction;
+// | ({
+//     type: Exclude<TransactionType, 'swap' | 'wrap' | 'unwrap'>;
+//   } & BaseTransaction)
+// | ({ type: 'swap' | 'wrap' | 'unwrap' } & WithRequired<
+//     BaseTransaction,
+//     'changes'
+//   >);
 
 export type TransactionStatus = RainbowTransaction['status'];
-export type NewTransaction = Partial<BaseTransaction>;
+export type NewTransaction = WithRequired<
+  Partial<BaseTransaction>,
+  'from' | 'nonce' | 'data'
+> & { amount: number | string };
 
 // protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
 export type ProtocolType =
@@ -120,7 +123,8 @@ export type TransactionType =
   | 'airdrop'
   | 'wrap'
   | 'unwrap'
-  | 'bid';
+  | 'bid'
+  | 'speed_up';
 
 export type TransactionDirection = 'in' | 'out' | 'self';
 
@@ -160,14 +164,17 @@ export type TransactionsApiResponse = {
   address_to?: Address;
   // this value will ALWAYS be -2 when the transaction is *not* from the wallet user
   nonce: number;
-  changes: Array<{
-    asset: AssetApiResponse;
-    value: number;
-    direction: TransactionDirection;
-    address_from: Address;
-    address_to: Address;
-    price: number;
-  }>;
+  changes: Array<
+    | {
+        asset: AssetApiResponse;
+        value: number;
+        direction: TransactionDirection;
+        address_from: Address;
+        address_to: Address;
+        price: number;
+      }
+    | undefined
+  >;
   fee: { value: number; price: number };
   meta: {
     contract_name?: string;

@@ -796,6 +796,7 @@ export const strokeWeights = {
   '0px': 0,
   '1px': 1,
   '2px': 2,
+  '3px': 3,
 };
 export type StrokeWeight = keyof typeof strokeWeights;
 
@@ -925,6 +926,20 @@ export const symbolNames = selectSymbolNames(
   'number.square',
   'barometer',
   'fuelpump.fill',
+  'tag',
+  'checkmark.circle',
+  'flame',
+  'gift',
+  'shippingbox',
+  'plus.app',
+  'sparkle',
+  'bag',
+  'arrow.turn.up.right',
+  'square.stack.3d.up',
+  'minus.circle',
+  'hare',
+  'arrow.turn.left.down',
+  'arrow.turn.right.up',
 );
 export type SymbolName = typeof symbolNames[number];
 

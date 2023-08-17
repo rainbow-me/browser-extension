@@ -5,7 +5,7 @@ import { ZerionAsset } from '../types/assets';
 import { ChainId, ChainName } from '../types/chains';
 import { SearchAsset } from '../types/search';
 
-import { parseAddressAsset, parseAsset, parseSearchAsset } from './assets';
+import { parseAsset, parseSearchAsset, parseUserAsset } from './assets';
 
 const ETH_FROM_ZERION: ZerionAsset = {
   asset_code: 'eth' as Address,
@@ -280,13 +280,13 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
   expect(optimismUSD.native.price?.display[0]).toEqual('$');
 });
 
-test('[utils/assets -> parseAddressAsset] :: parse zerion asset with user balance', async () => {
+test('[utils/assets -> parseUserAsset] :: parse zerion asset with user balance', async () => {
   const eth = parseAsset({
     address: ETH_FROM_ZERION.asset_code as Address,
     asset: ETH_FROM_ZERION as ZerionAsset,
     currency: 'USD',
   });
-  const ethWithQuantity = parseAddressAsset({
+  const ethWithQuantity = parseUserAsset({
     address: ETH_FROM_ZERION.asset_code as Address,
     asset: ETH_FROM_ZERION,
     currency: 'USD',
@@ -298,7 +298,7 @@ test('[utils/assets -> parseAddressAsset] :: parse zerion asset with user balanc
   );
   expect(ethWithQuantity.native.balance.display).toEqual('$58.01');
 
-  const optimismUSDWithQuantity = parseAddressAsset({
+  const optimismUSDWithQuantity = parseUserAsset({
     address: OPTIMISM_USD_FROM_ZERION.asset_code as Address,
     asset: OPTIMISM_USD_FROM_ZERION as ZerionAsset,
     currency: 'JPY',
@@ -317,7 +317,7 @@ test('[utils/assets -> parseSearchAsset] :: combine search asset data with optio
     asset: ETH_FROM_ZERION as ZerionAsset,
     currency: 'USD',
   });
-  const ethWithQuantity = parseAddressAsset({
+  const ethWithQuantity = parseUserAsset({
     address: ETH_FROM_ZERION.asset_code as Address,
     asset: ETH_FROM_ZERION,
     currency: 'USD',
@@ -358,7 +358,7 @@ test('[utils/assets -> parseSearchAsset] :: combine search asset data with optio
     asset: OPTIMISM_USD_FROM_ZERION as ZerionAsset,
     currency: 'USD',
   });
-  const optimismUSDWithQuantity = parseAddressAsset({
+  const optimismUSDWithQuantity = parseUserAsset({
     address: OPTIMISM_USD_FROM_ZERION.asset_code as Address,
     asset: OPTIMISM_USD_FROM_ZERION as ZerionAsset,
     currency: 'USD',
