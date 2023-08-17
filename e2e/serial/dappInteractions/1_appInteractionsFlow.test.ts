@@ -266,6 +266,13 @@ describe('App interactions flow', () => {
       driver,
     });
     await goToTestApp(driver);
+
+    // IDK why firefox doesn't reconnect
+    // This is probably some RK bug
+    if (process.env.BROWSER === 'firefox') {
+      await driver.navigate().refresh();
+    }
+
     const expectedNetwork = 'Network: Ethereum - homestead';
     const network = await querySelector(driver, '[id="network"]');
     const actualNetwork = await network.getText();
