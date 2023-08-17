@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useLocation,
+  useNavigation,
+  useNavigationType,
+} from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -11,6 +16,7 @@ import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import usePrevious from '../../hooks/usePrevious';
 import { triggerToast } from '../Toast/Toast';
 
 import { AppConnectionNudgeBanner } from './AppConnectionNudgeBanner';
@@ -20,10 +26,15 @@ export const AppConnectionWatcher = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
   const { appHost, appName, appHostName } = useAppMetadata({ url });
-
+  const navigationType = useNavigationType();
+  const prevCurrentAddress = usePrevious(currentAddress);
+  const location = useLocation();
   const { addSession, appSession, activeSession } = useAppSession({
     host: appHost,
   });
+  const navigation = useNavigation();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
   const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
@@ -77,7 +88,9 @@ export const AppConnectionWatcher = () => {
   });
 
   useEffect(() => {
-    setTimeout(() => {
+    timeoutRef.current && clearTimeout(timeoutRef.current);
+    setShowNudgeBanner(false);
+    timeoutRef.current = setTimeout(() => {
       // if there's another active address
       if (
         !!activeSession?.address &&
@@ -103,12 +116,16 @@ export const AppConnectionWatcher = () => {
           })
         ) {
           setShowNudgeBanner(true);
-          setTimeout(() => {
+          hideTimeoutRef.current = setTimeout(() => {
             setShowNudgeBanner(false);
           }, 3000);
         }
       }
     }, 1000);
+    return () => {
+      hideTimeoutRef.current && clearTimeout(hideTimeoutRef.current);
+      timeoutRef.current && clearTimeout(timeoutRef.current);
+    };
   }, [
     appSession,
     activeSession?.address,
@@ -120,6 +137,10 @@ export const AppConnectionWatcher = () => {
     setAppHasInteractedWithNudgeSheet,
     appHost,
     showWalletSwitcher,
+    navigationType,
+    prevCurrentAddress,
+    navigation,
+    location,
   ]);
 
   return (
