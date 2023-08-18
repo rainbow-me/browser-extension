@@ -53,6 +53,7 @@ import {
   SwapPriceImpactType,
   useSwapPriceImpact,
 } from '../../hooks/swap/useSwapPriceImpact';
+import { useBrowser } from '../../hooks/useBrowser';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { getActiveElement, getInputIsFocused } from '../../utils/activeElement';
@@ -157,6 +158,7 @@ export function Swap() {
   const [inputToOpenOnMount, setInputToOpenOnMount] = useState<
     'sell' | 'buy' | null
   >(null);
+  const { isFirefox } = useBrowser();
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
@@ -515,7 +517,7 @@ export function Swap() {
                           alignVertical="center"
                         >
                           <Stack alignHorizontal="center">
-                            <Box marginBottom="-4px">
+                            <Box marginBottom={isFirefox ? '-9px' : '-4px'}>
                               <ChevronDown color="labelTertiary" />
                             </Box>
                             <Box marginTop="-4px">
