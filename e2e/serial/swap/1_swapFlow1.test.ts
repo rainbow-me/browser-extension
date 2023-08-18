@@ -11,6 +11,7 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import {
+  clearInput,
   delay,
   delayTime,
   doNotFindElementByTestId,
@@ -454,6 +455,12 @@ it('should be able to favorite a token and check the info button is present', as
     id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
+  if (process.env.BROWSER === 'firefox') {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-token-to-buy-token-input-remove`,
+      driver,
+    });
+  }
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
@@ -479,11 +486,17 @@ it('should be able to flip correctly', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  await clearInput({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
     driver,
   });
+  await delayTime('very-long');
+
   const assetToSellInputText = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -532,7 +545,11 @@ it('should be able to check insufficient native asset for gas', async () => {
     id: 'swap-flip-button',
     driver,
   });
-  await delayTime('short');
+  await delayTime('very-long');
+  await clearInput({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b10000`,

@@ -358,6 +358,17 @@ export async function typeOnTextInput({
   await element.sendKeys(text);
 }
 
+export async function clearInput({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
+  const element = await findElementByTestId({ id, driver });
+  await element.clear();
+}
+
 export async function getTextFromTextInput({
   id,
   driver,
