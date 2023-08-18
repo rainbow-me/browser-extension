@@ -5,6 +5,7 @@ import { useInviteCodeStore } from '~/core/state/inviteCode';
 import { pendingRequestStore } from '~/core/state/requests';
 
 const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
+const IS_DEV = process.env.IS_DEV === 'true';
 
 export const handleTabAndWindowUpdates = () => {
   // When a tab is removed, check if that was the last tab for that host
@@ -28,7 +29,7 @@ export const handleTabAndWindowUpdates = () => {
   chrome.tabs.onActivated.addListener(() => {
     bridgeMessenger.send('rainbow_setDefaultProvider', {
       rainbowAsDefault:
-        useInviteCodeStore.getState().inviteCodeValidated &&
+        (useInviteCodeStore.getState().inviteCodeValidated || IS_DEV) &&
         isDefaultWalletStore.getState().isDefaultWallet,
     });
   });
