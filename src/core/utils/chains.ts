@@ -1,4 +1,12 @@
-import { arbitrum, bsc, mainnet, optimism, polygon } from '@wagmi/chains';
+import {
+  arbitrum,
+  base,
+  bsc,
+  mainnet,
+  optimism,
+  polygon,
+  zora,
+} from '@wagmi/chains';
 import type { Address, Chain } from 'wagmi';
 
 import { ETH_ADDRESS, NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
@@ -11,8 +19,12 @@ export const SUPPORTED_CHAINS: Chain[] = [
   polygon,
   optimism,
   arbitrum,
+  base,
+  zora,
   bsc,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
+
+export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(({ id }) => id);
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -22,13 +34,17 @@ export const SUPPORTED_CHAINS: Chain[] = [
 export const isL2Chain = (chain: ChainName | ChainId): boolean => {
   switch (chain) {
     case ChainName.arbitrum:
+    case ChainName.base:
     case ChainName.bsc:
     case ChainName.optimism:
     case ChainName.polygon:
+    case ChainName.zora:
     case ChainId.arbitrum:
+    case ChainId.base:
     case ChainId.bsc:
     case ChainId.optimism:
     case ChainId.polygon:
+    case ChainId.zora:
       return true;
     default:
       return false;
@@ -55,6 +71,10 @@ export function chainNameFromChainId(chainId: ChainId) {
 export function getBlockExplorerHostForChain(chainId: ChainId) {
   if (chainId === ChainId.optimism) {
     return 'optimistic.etherscan.io';
+  } else if (chainId === ChainId.base) {
+    return 'basescan.org';
+  } else if (chainId === ChainId.zora) {
+    return 'explorer.zora.energy';
   } else if (chainId === ChainId.polygon) {
     return 'polygonscan.com';
   } else if (chainId === ChainId.bsc) {

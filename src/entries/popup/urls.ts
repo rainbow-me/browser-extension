@@ -1,6 +1,10 @@
+import { UniqueId } from '~/core/types/assets';
+
 export const ROUTES = {
   ROOT: '/', // RootHandler
   HOME: '/home', // Home
+  TOKEN_DETAILS: (uniqueId: UniqueId | ':uniqueId') =>
+    `/token-details/${uniqueId}`,
   CONNECTED: '/connected', // ConnectedApps
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect
@@ -51,6 +55,6 @@ export const ROUTES = {
   HW_CHOOSE: '/hw/choose',
   HW_LEDGER: '/hw/ledger',
   HW_TREZOR: '/hw/trezor',
-  HW_WALLET_LIST: '/hw/wallet-list',
+  HW_WALLET_LIST: '/hw/wallet-list', // hw/walletList/index
   HW_SUCCESS: '/hw/success',
-};
+} as const;

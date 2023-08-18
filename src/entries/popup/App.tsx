@@ -20,6 +20,7 @@ import { Box, ThemeProvider } from '~/design-system';
 import { Routes } from './Routes';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
+import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { PlaygroundComponents } from './pages/_playgrounds';
@@ -49,6 +50,14 @@ export function App() {
       analytics.track(event.popupOpened);
       setTimeout(() => flushQueuedEvents(), 1000);
     }
+    // Init trezor once globally
+    window.TrezorConnect?.init({
+      manifest: {
+        email: 'support@rainbow.me',
+        appUrl: 'https://rainbow.me',
+      },
+      lazyLoad: true,
+    });
 
     if (process.env.IS_DEV !== 'true') {
       document.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -83,6 +92,7 @@ export function App() {
                   <Routes />
                 </Box>
                 <IdleTimer />
+                <OnboardingKeepAlive />
               </AuthProvider>
             )}
           </ThemeProvider>

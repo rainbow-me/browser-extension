@@ -43,6 +43,7 @@ export function Unlock() {
         setError(i18n.t('passwords.wrong_password'));
         setLoading(false);
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e) {
       logger.info('Unlock error: exception while trying to unlock');
       logger.error(e as RainbowError);

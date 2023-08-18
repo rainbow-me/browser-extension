@@ -8,7 +8,7 @@ import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
-import { triggerAlert } from '~/design-system/components/Alert/util';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
@@ -94,6 +94,7 @@ export const Header = React.memo(function Header() {
                 )
               }
               id="header"
+              tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
             />
           </Box>
 

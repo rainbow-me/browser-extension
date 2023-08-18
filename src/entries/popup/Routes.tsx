@@ -21,12 +21,15 @@ import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalle
 import { ImportWalletViaPrivateKey } from './components/ImportWallet/ImportWalletViaPrivateKey';
 import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSeed';
 import { Toast } from './components/Toast/Toast';
+import { UnsupportedBrowserSheet } from './components/UnsupportedBrowserSheet';
 import { WindowStroke } from './components/WindowStroke/WindowStroke';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
+import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
+import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
 import { ConnectLedger } from './pages/hw/ledger';
 import { SuccessHW } from './pages/hw/success';
@@ -87,6 +90,14 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute direction="base" protectedRoute>
         <Home />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.TOKEN_DETAILS(':uniqueId'),
+    element: (
+      <AnimatedRoute direction="base" protectedRoute>
+        <TokenDetails />
       </AnimatedRoute>
     ),
   },
@@ -748,6 +759,7 @@ const RootLayout = () => {
       <Toast />
       <Alert />
       <WindowStroke />
+      <UnsupportedBrowserSheet />
     </FullScreenBackground>
   );
 };
@@ -762,6 +774,7 @@ export function Routes() {
 
 const useGlobalShortcuts = () => {
   const { isCommandKVisible } = useCommandKStatus();
+  const { trackNavigation } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       // prevent scrolling with space
@@ -774,16 +787,28 @@ const useGlobalShortcuts = () => {
       // traverse tabIndex with arrow keys
       if (!e.altKey) {
         if (e.key === shortcuts.global.DOWN.key) {
+          trackNavigation({
+            key: shortcuts.global.DOWN.display,
+            type: 'navigate.down',
+          });
           e.preventDefault();
           simulateTab(true);
         }
         if (e.key === shortcuts.global.UP.key) {
+          trackNavigation({
+            key: shortcuts.global.UP.display,
+            type: 'navigate.up',
+          });
           e.preventDefault();
           simulateTab(false);
         }
       }
 
       if (e.key === shortcuts.global.TAB.key) {
+        trackNavigation({
+          key: shortcuts.global.TAB.display,
+          type: e.shiftKey ? 'navigate.up' : 'navigate.down',
+        });
         e.preventDefault();
         simulateTab(!e.shiftKey);
       }

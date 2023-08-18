@@ -6,6 +6,7 @@ import { ChainId } from '~/core/types/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 
 import { injectNotificationIframe } from '../iframe';
+import { IN_DAPP_NOTIFICATION_STATUS } from '../iframe/notification';
 
 declare global {
   interface Window {
@@ -145,7 +146,7 @@ backgroundMessenger.reply(
     host,
   }: {
     chainId: ChainId;
-    status: 'success' | 'failed';
+    status: IN_DAPP_NOTIFICATION_STATUS;
     extensionUrl: string;
     host: string;
   }) => {

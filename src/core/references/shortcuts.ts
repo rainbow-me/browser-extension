@@ -51,7 +51,7 @@ export const shortcuts = {
       key: 'Escape',
     },
     DOWN: {
-      display: '\u2993',
+      display: '\u2193',
       key: 'ArrowDown',
     },
     FORWARD: {
@@ -79,7 +79,7 @@ export const shortcuts = {
       key: 'Tab',
     },
     UP: {
-      display: '\u2991',
+      display: '\u2191',
       key: 'ArrowUp',
     },
     COMMAND_K: {
@@ -217,4 +217,4 @@ export const shortcuts = {
       key: '/',
     },
   },
-};
+} as const;

@@ -1,36 +1,27 @@
-import React from 'react';
-
-import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
-import BscBadge from 'static/assets/badges/bscBadge.png';
-import EthereumBadge from 'static/assets/badges/ethereumBadge.png';
-import HardhatBadge from 'static/assets/badges/hardhatBadge.png';
-import OptimismBadge from 'static/assets/badges/optimismBadge.png';
-import PolygonBadge from 'static/assets/badges/polygonBadge.png';
+import ArbitrumBadge from 'static/assets/badges/arbitrumBadge@3x.png';
+import BaseBadge from 'static/assets/badges/baseBadge@3x.png';
+import BscBadge from 'static/assets/badges/bscBadge@3x.png';
+import EthereumBadge from 'static/assets/badges/ethereumBadge@3x.png';
+import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
+import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
+import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
+import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
 import { ChainId } from '~/core/types/chains';
 import { Box } from '~/design-system';
 
-const sizeConfigs = {
-  large: {
-    iconSize: 60,
-  },
-  medium: {
-    iconSize: 45,
-  },
-  small: {
-    iconSize: 18,
-  },
-  extraSmall: {
-    iconSize: 16,
-  },
-  micro: {
-    iconSize: 8,
-  },
+const chainBadgeSize = {
+  '60': 60,
+  '45': 45,
+  '18': 18,
+  '16': 16,
+  '14': 14,
+  '8': 8,
 };
 
 interface ChainIconProps {
   chainId: ChainId;
   shadow?: boolean;
-  size: 'large' | 'medium' | 'small' | 'extraSmall' | 'micro';
+  size: keyof typeof chainBadgeSize;
 }
 
 const networkBadges = {
@@ -38,6 +29,8 @@ const networkBadges = {
   [ChainId.polygon]: PolygonBadge,
   [ChainId.optimism]: OptimismBadge,
   [ChainId.arbitrum]: ArbitrumBadge,
+  [ChainId.base]: BaseBadge,
+  [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
   [ChainId.hardhat]: HardhatBadge,
 };
@@ -45,9 +38,12 @@ const networkBadges = {
 const ChainBadge = ({
   chainId,
   shadow = false,
-  size = 'small',
+  size = '18',
 }: ChainIconProps) => {
-  const { iconSize } = sizeConfigs[size];
+  if (!Object.keys(networkBadges).includes(`${chainId}`)) return null;
+
+  const iconSize = chainBadgeSize[size];
+
   let boxShadow;
   if (shadow) {
     boxShadow = '0px 4px 12px 0px rgba(0, 0, 0, 0.3)';
@@ -67,6 +63,8 @@ const ChainBadge = ({
         width="100%"
         height="100%"
         loading="lazy"
+        style={{ userSelect: 'none' }}
+        draggable={false}
       />
     </Box>
   );

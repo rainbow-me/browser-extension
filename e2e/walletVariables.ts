@@ -8,6 +8,7 @@ export const TEST_VARIABLES = {
     ADDRESS: '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F',
     SECRET:
       'fragile height cinnamon brief various inform thing gorilla decrease enemy dream split',
+    PK: '0x30cf0b4e692056ce62de7b9a9eb40e97feaf1ee191ac22b33346fae13ae2e61b',
   },
   PRIVATE_KEY_WALLET: {
     ADDRESS: '0x38eDa688Cd8DFC6FeE8016c85803a584A0564dDC',
@@ -47,4 +48,9 @@ export const SWAP_VARIABLES = {
   USDC_MAINNET_ID: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1',
   WBTC_MAINNET_ID: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599_1',
   ZEROX_MAINNET_ID: '0xe41d2489571d322189246dafa5ebde1f4699f498_1',
+};
+
+export const HARDWARE_WALLETS = {
+  WALLET_1: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83',
+  WALLET_2: '0x37bD75826582532373D738F83b913C97447b0906',
 };

@@ -483,6 +483,8 @@ export type ForegroundColor =
   | 'arbitrum'
   | 'optimism'
   | 'polygon'
+  | 'base'
+  | 'zora'
   | 'bsc';
 
 export const foregroundColors: Record<
@@ -563,6 +565,14 @@ export const foregroundColors: Record<
     light: '#8247E5',
     dark: '#BE97FF',
   },
+  base: {
+    light: '#0052FF',
+    dark: '#3979FF',
+  },
+  zora: {
+    light: '#2B5DF0',
+    dark: '#6183F0',
+  },
   bsc: {
     light: '#EBAF09',
     dark: '#EBAF09',
@@ -616,6 +626,8 @@ export const textColors = selectForegroundColors(
   'arbitrum',
   'optimism',
   'polygon',
+  'base',
+  'zora',
   'bsc',
   ...genericColors,
 );
@@ -870,6 +882,7 @@ export const symbolNames = selectSymbolNames(
   'command',
   'asterisk',
   'info.circle.fill',
+  'info.circle',
   'info',
   'app.connected.to.app.below.fill',
   'trash.fill',
@@ -893,9 +906,18 @@ export const symbolNames = selectSymbolNames(
   'message.fill',
   'ellipsis.rectangle',
   'eye.fill',
+  'dollarsign.square',
+  'clock.arrow.circlepath',
+  'chart.line.uptrend.xyaxis',
+  'chart.pie',
+  'chart.bar',
+  'person',
+  'point.3.filled.connected.trianglepath.dotted',
   'person.crop.rectangle.stack.fill',
   'plus.app.fill',
   'arrow.up.left.and.arrow.down.right',
+  'safari',
+  'link',
 );
 export type SymbolName = typeof symbolNames[number];
 

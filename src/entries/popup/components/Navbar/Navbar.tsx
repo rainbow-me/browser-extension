@@ -9,6 +9,7 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { getInputIsFocused, radixIsActive } from '../../utils/activeElement';
@@ -173,14 +174,23 @@ function NavbarButtonWithBack({
   testId?: string;
 }) {
   const { state } = useLocation();
+  const { trackShortcut } = useKeyboardAnalytics();
   const navigate = useRainbowNavigate();
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
+      const closeWithEscape =
+        e.key === shortcuts.global.CLOSE.key && !radixIsActive();
       if (
-        (e.key === shortcuts.global.CLOSE.key && !radixIsActive()) ||
+        closeWithEscape ||
         (!getInputIsFocused() && e.key === shortcuts.global.BACK.key)
       ) {
+        trackShortcut({
+          key: closeWithEscape
+            ? shortcuts.global.CLOSE.display
+            : shortcuts.global.BACK.display,
+          type: 'navbar.goBack',
+        });
         e.preventDefault();
         e.stopPropagation();
         click();

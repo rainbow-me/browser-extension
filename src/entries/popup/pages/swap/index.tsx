@@ -53,6 +53,7 @@ import {
   SwapPriceImpactType,
   useSwapPriceImpact,
 } from '../../hooks/swap/useSwapPriceImpact';
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { getActiveElement, getInputIsFocused } from '../../utils/activeElement';
 
@@ -160,16 +161,12 @@ export function Swap() {
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
   const { selectedGas, clearCustomGasModified } = useGasStore();
+  const { trackShortcut } = useKeyboardAnalytics();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const { currentTheme } = useCurrentThemeStore();
   const [urlSearchParams] = useSearchParams();
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
-
-  const showSwapReviewSheet = useCallback(() => {
-    setShowSwapReview(true);
-    setInReviewSheet(true);
-  }, []);
 
   const hideSwapReviewSheet = useCallback(() => {
     setShowSwapReview(false);
@@ -275,12 +272,22 @@ export function Swap() {
     assetToBuyNativeValue: assetToBuyNativeDisplay,
   });
 
-  const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
-    useSwapValidations({
-      assetToSell,
-      assetToSellValue,
-      selectedGas,
-    });
+  const {
+    buttonLabel: validationButtonLabel,
+    enoughAssetsForSwap,
+    readyForReview,
+  } = useSwapValidations({
+    assetToSell,
+    assetToSellValue,
+    selectedGas,
+  });
+
+  const showSwapReviewSheet = useCallback(() => {
+    if (readyForReview) {
+      setShowSwapReview(true);
+      setInReviewSheet(true);
+    }
+  }, [readyForReview]);
 
   const {
     buttonLabel,
@@ -358,6 +365,10 @@ export function Swap() {
         const flippingAfterSearch =
           getInputIsFocused() && getActiveElement()?.id === SWAP_INPUT_MASK_ID;
         if (flippingAfterSearch || !getInputIsFocused()) {
+          trackShortcut({
+            key: shortcuts.swap.FLIP_ASSETS.display,
+            type: 'swap.flipAssets',
+          });
           e.preventDefault();
           flipAssets();
         }
@@ -368,6 +379,10 @@ export function Swap() {
             getInputIsFocused() &&
             getActiveElement()?.id === SWAP_INPUT_MASK_ID;
           if (maxxingAfterSearch || !getInputIsFocused()) {
+            trackShortcut({
+              key: shortcuts.swap.SET_MAX_AMOUNT.display,
+              type: 'swap.setMax',
+            });
             e.preventDefault();
             setAssetToSellMaxValue();
           }

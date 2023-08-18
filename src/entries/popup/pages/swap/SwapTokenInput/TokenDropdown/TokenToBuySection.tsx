@@ -75,6 +75,8 @@ const bridgeSectionsColorsByChain = {
   [ChainId.arbitrum]: 'arbitrum' as TextStyles['color'],
   [ChainId.optimism]: 'optimism' as TextStyles['color'],
   [ChainId.polygon]: 'polygon' as TextStyles['color'],
+  [ChainId.base]: 'base' as TextStyles['color'],
+  [ChainId.zora]: 'zora' as TextStyles['color'],
   [ChainId.bsc]: 'bsc' as TextStyles['color'],
 };
 

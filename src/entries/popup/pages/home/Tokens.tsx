@@ -6,10 +6,12 @@ import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
+import { selectUserAssetsFilteringSmallBalancesList } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { UniqueId } from '~/core/types/assets';
 import {
   Box,
@@ -25,14 +27,16 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
-import { TokensSkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
+import { ROUTES } from '../../urls';
 
-import { TokenDetailsMenu } from './TokenDetailsMenu';
+import { TokensSkeleton } from './Skeletons';
 
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
@@ -40,6 +44,8 @@ export function Tokens() {
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
     useState(false);
+  const { hideSmallBalances } = useHideSmallBalancesStore();
+  const { trackShortcut } = useKeyboardAnalytics();
 
   const {
     data: assets = [],
@@ -52,7 +58,9 @@ export function Tokens() {
       connectedToHardhat,
     },
     {
-      select: selectUserAssetsList,
+      select: hideSmallBalances
+        ? selectUserAssetsFilteringSmallBalancesList
+        : selectUserAssetsList,
     },
   );
 
@@ -67,6 +75,10 @@ export function Tokens() {
   useKeyboardShortcut({
     handler: async (e: KeyboardEvent) => {
       if (e.key === shortcuts.tokens.REFRESH_TOKENS.key) {
+        trackShortcut({
+          key: shortcuts.tokens.REFRESH_TOKENS.display,
+          type: 'tokens.refresh',
+        });
         setManuallyRefetchingTokens(true);
         await refetchUserAssets();
         setManuallyRefetchingTokens(false);
@@ -76,6 +88,7 @@ export function Tokens() {
   });
 
   useTokensShortcuts();
+  const navigate = useRainbowNavigate();
 
   if (isInitialLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
@@ -101,6 +114,7 @@ export function Tokens() {
         width="full"
         style={{
           height: assetsRowVirtualizer.getTotalSize(),
+          minHeight: '436px',
           position: 'relative',
         }}
       >
@@ -111,6 +125,7 @@ export function Tokens() {
             return (
               <Box
                 key={key}
+                onClick={() => navigate(ROUTES.TOKEN_DETAILS(rowData.uniqueId))}
                 as={motion.div}
                 whileTap={{ scale: 0.98 }}
                 layoutId={`list-${index}`}
@@ -120,12 +135,10 @@ export function Tokens() {
                 width="full"
                 style={{ height: size, y: start }}
               >
-                <TokenDetailsMenu token={rowData}>
-                  <AssetRow
-                    key={`${rowData?.uniqueId}-${index}`}
-                    uniqueId={rowData?.uniqueId}
-                  />
-                </TokenDetailsMenu>
+                <AssetRow
+                  key={`${rowData?.uniqueId}-${index}`}
+                  uniqueId={rowData?.uniqueId}
+                />
               </Box>
             );
           })}
@@ -140,7 +153,7 @@ type AssetRowProps = {
 };
 
 export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
-  const asset = useUserAsset(uniqueId);
+  const { data: asset } = useUserAsset(uniqueId);
   const name = asset?.name;
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { currentCurrency } = useCurrentCurrencyStore();

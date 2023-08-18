@@ -30,7 +30,7 @@ export const useSwapValidations = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
   });
-  const userNativeAsset = useUserAsset(nativeAssetUniqueId || '');
+  const { data: userNativeAsset } = useUserAsset(nativeAssetUniqueId || '');
 
   const enoughAssetBalance = useMemo(() => {
     if (assetToSellValue) {
@@ -94,11 +94,14 @@ export const useSwapValidations = ({
     nativeAsset?.symbol,
   ]);
 
+  const enoughAssetsForSwap =
+    Boolean(enoughAssetBalance) && Boolean(enoughNativeAssetBalanceForGas);
+
   return {
+    buttonLabel,
     enoughAssetBalance,
     enoughNativeAssetBalanceForGas,
-    buttonLabel,
-    enoughAssetsForSwap:
-      Boolean(enoughAssetBalance) && Boolean(enoughNativeAssetBalanceForGas),
+    enoughAssetsForSwap,
+    readyForReview: enoughAssetsForSwap && selectedGas?.gasFee?.amount,
   };
 };

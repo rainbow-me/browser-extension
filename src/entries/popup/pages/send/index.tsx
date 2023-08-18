@@ -39,11 +39,13 @@ import {
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
+import { isLedgerConnectionError } from '../../handlers/ledger';
 import { getWallet, sendTransaction } from '../../handlers/wallet';
 import { useSendAsset } from '../../hooks/send/useSendAsset';
 import { useSendInputs } from '../../hooks/send/useSendInputs';
 import { useSendState } from '../../hooks/send/useSendState';
 import { useSendValidations } from '../../hooks/send/useSendValidations';
+import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -94,6 +96,7 @@ export function Send() {
   const { clearCustomGasModified, selectedGas } = useGasStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+  const { trackShortcut } = useKeyboardAnalytics();
 
   const toAddressInputRef = useRef<ChildInputAPI>(null);
   const sendTokenInputRef = useRef<ChildInputAPI>(null);
@@ -234,8 +237,11 @@ export function Send() {
             chainId,
           });
         }
-      } catch (e) {
-        alert('Transaction failed');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        if (!isLedgerConnectionError(e)) {
+          alert('Transaction failed');
+        }
         logger.error(new RainbowError('send: error executing send'), {
           message: (e as Error)?.message,
         });
@@ -326,19 +332,35 @@ export function Send() {
     handler: (e: KeyboardEvent) => {
       if (e.altKey) {
         if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
+          trackShortcut({
+            key: shortcuts.send.FOCUS_TO_ADDRESS.display,
+            type: 'send.focusToAddress',
+          });
           toAddressInputRef?.current?.focus();
           sendTokenInputRef?.current?.blur();
         }
         if (e.key === shortcuts.send.FOCUS_ASSET.key) {
+          trackShortcut({
+            key: shortcuts.send.FOCUS_ASSET.display,
+            type: 'send.focusAsset',
+          });
           toAddressInputRef?.current?.blur();
           sendTokenInputRef.current?.focus();
         }
       } else {
         if (!toAddressInputRef.current?.isFocused?.()) {
           if (e.key === shortcuts.send.SET_MAX_AMOUNT.key) {
+            trackShortcut({
+              key: shortcuts.send.SET_MAX_AMOUNT.display,
+              type: 'send.setMax',
+            });
             setMaxAssetAmount();
           }
           if (e.key === shortcuts.send.SWITCH_CURRENCY_LABEL.key) {
+            trackShortcut({
+              key: shortcuts.send.SWITCH_CURRENCY_LABEL.display,
+              type: 'send.switchCurrency',
+            });
             switchIndependentField();
           }
         }
@@ -346,6 +368,10 @@ export function Send() {
           e.key === shortcuts.send.OPEN_CONTACT_MENU.key &&
           !valueInputRef.current?.isFocused?.()
         ) {
+          trackShortcut({
+            key: shortcuts.send.OPEN_CONTACT_MENU.display,
+            type: 'send.openContactMenu',
+          });
           clickHeaderRight();
         }
       }

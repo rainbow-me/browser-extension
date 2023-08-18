@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
@@ -17,13 +17,23 @@ import {
   ThemeProvider,
 } from '~/design-system';
 
+const HTML_COLOR_SCHEME_PATTERN = /color-scheme:\s*(\w+);/;
+
 const ASSET_SOURCE = {
   [ChainId.mainnet]: 'assets/badges/ethereumBadge.png',
   [ChainId.optimism]: 'assets/badges/optimismBadge.png',
   [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
   [ChainId.polygon]: 'assets/badges/polygonBadge.png',
+  [ChainId.base]: 'assets/badges/baseBadge.png',
+  [ChainId.zora]: 'assets/badges/zoraBadge.png',
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
 };
+
+export enum IN_DAPP_NOTIFICATION_STATUS {
+  'success' = 'success',
+  'no_active_session' = 'no_active_session',
+  'unsupported_network' = 'unsupported_network',
+}
 
 export const Notification = ({
   chainId,
@@ -31,10 +41,11 @@ export const Notification = ({
   extensionUrl,
 }: {
   chainId: ChainId;
-  status: 'success' | 'failed';
+  status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
 }) => {
   const [ref, setRef] = useState<HTMLIFrameElement>();
+  const [iframeLoaded, setIframeLoaded] = useState<boolean>(false);
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
 
   const onRef = (ref: HTMLIFrameElement) => {
@@ -122,10 +133,9 @@ export const Notification = ({
       }
     }
 
-    // check if style has a color-scheme
-    const styleColorScheme = htmlStyle?.includes('color-scheme: ')
-      ? htmlStyle?.replace('color-scheme: ', '').replace(';', '')
-      : undefined;
+    const matches = htmlStyle?.match(HTML_COLOR_SCHEME_PATTERN);
+    const styleColorScheme =
+      matches && matches.length > 0 ? matches?.[1] : null;
 
     // check is the html has a theme class
     let htmlClassStyle = undefined;
@@ -158,7 +168,7 @@ export const Notification = ({
     iframeLink.href = `${extensionUrl}popup.css`;
     iframeLink.rel = 'stylesheet';
     ref?.contentDocument?.head?.appendChild(iframeLink);
-
+    iframeLink.onload = () => setIframeLoaded(true);
     // get the iframe element
     const root = ref?.contentDocument?.getElementsByTagName('html')[0];
     if (root) {
@@ -191,6 +201,7 @@ export const Notification = ({
             chainId={chainId}
             status={status}
             extensionUrl={extensionUrl}
+            iframeLoaded={iframeLoaded}
           />,
           container,
         )}
@@ -203,13 +214,36 @@ const NotificationComponent = ({
   siteTheme,
   status,
   extensionUrl,
+  iframeLoaded,
 }: {
   chainId: ChainId;
   siteTheme: 'dark' | 'light';
-  status: 'success' | 'failed';
+  status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
+  iframeLoaded: boolean;
 }) => {
-  return (
+  const { title, description } = useMemo(() => {
+    switch (status) {
+      case IN_DAPP_NOTIFICATION_STATUS.success:
+        return {
+          title: i18n.t(`injected_notifications.network_changed`),
+          description: ChainNameDisplay[chainId],
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.unsupported_network:
+        return {
+          title: i18n.t(`injected_notifications.network_changed_failed`),
+          description: i18n.t('injected_notifications.unsupported_network'),
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.no_active_session:
+      default:
+        return {
+          title: i18n.t(`injected_notifications.network_changed_failed`),
+          description: i18n.t('injected_notifications.no_active_session'),
+        };
+    }
+  }, [chainId, status]);
+
+  return iframeLoaded ? (
     <ThemeProvider theme={siteTheme}>
       <Box
         height="full"
@@ -235,7 +269,7 @@ const NotificationComponent = ({
           >
             <Columns space="8px">
               <Column width="content">
-                {status === 'success' ? (
+                {status === IN_DAPP_NOTIFICATION_STATUS.success ? (
                   <img
                     src={`${extensionUrl}${ASSET_SOURCE[chainId]}`}
                     width={24}
@@ -268,20 +302,12 @@ const NotificationComponent = ({
                 <Rows alignVertical="center" space="6px">
                   <Row>
                     <Text color="label" size="12pt" weight="bold">
-                      {i18n.t(
-                        `injected_notifications.${
-                          status === 'success'
-                            ? 'network_changed'
-                            : 'network_changed_failed'
-                        }`,
-                      )}
+                      {title}
                     </Text>
                   </Row>
                   <Row>
                     <Text color="labelTertiary" size="11pt" weight="medium">
-                      {status === 'success'
-                        ? ChainNameDisplay[chainId]
-                        : i18n.t('injected_notifications.unsupported_network')}
+                      {description}
                     </Text>
                   </Row>
                 </Rows>
@@ -291,5 +317,5 @@ const NotificationComponent = ({
         </Inline>
       </Box>
     </ThemeProvider>
-  );
+  ) : null;
 };

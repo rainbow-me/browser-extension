@@ -35,14 +35,15 @@ import {
   signTransactionFromLedger,
 } from './ledger';
 import {
-  TREZOR_CONFIG,
   sendTransactionFromTrezor,
   signMessageByTypeFromTrezor,
   signTransactionFromTrezor,
 } from './trezor';
 import { walletAction } from './walletAction';
+import { HARDWARE_WALLETS } from './walletVariables';
 
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
+const DEFAULT_LEDGER_LIVE_PATH = "m/44'/60'/";
 
 const signMessageByType = async (
   msgData: string | Bytes,
@@ -338,11 +339,6 @@ export const importAccountAtIndex = async (
   switch (type) {
     case 'Trezor':
       {
-        try {
-          window.TrezorConnect.init(TREZOR_CONFIG);
-        } catch (e) {
-          // ignore already initialized error
-        }
         const path = `m/${DEFAULT_HD_PATH}/${index}`;
         const result = await window.TrezorConnect.ethereumGetAddress({
           path,
@@ -363,7 +359,7 @@ export const importAccountAtIndex = async (
       const transport = await TransportWebHID.create();
       const appEth = new AppEth(transport);
       const result = await appEth.getAddress(
-        `${DEFAULT_HD_PATH}/${index}`,
+        `${DEFAULT_LEDGER_LIVE_PATH}/${index}'/0/0`,
         false,
         false,
       );
@@ -379,28 +375,10 @@ export const importAccountAtIndex = async (
 };
 
 export const connectTrezor = async () => {
-  // TODO: DELETE
-  // Debugging purposes only - useful if you don't have a real device
-  // return {
-  //   accountsToImport: [
-  //     {
-  //       address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
-  //       index: 0,
-  //     },
-  //     {
-  //       address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
-  //       index: 1,
-  //     },
-  //   ],
-  //   deviceId: 'lol',
-  //   accountsEnabled: 2,
-  // };
+  if (process.env.IS_TESTING === 'true') {
+    return HARDWARE_WALLETS.MOCK_ACCOUNT;
+  }
   try {
-    try {
-      window.TrezorConnect.init(TREZOR_CONFIG);
-    } catch (e) {
-      // ignore already initialized error
-    }
     const path = `m/${DEFAULT_HD_PATH}`;
 
     const result = await window.TrezorConnect.ethereumGetPublicKey({
@@ -459,30 +437,15 @@ export const connectTrezor = async () => {
 };
 
 export const connectLedger = async () => {
-  // TODO: DELETE
-  //  Debugging purposes only - useful if you don't have a real device
-  // return {
-  //   accountsToImport: [
-  //     {
-  //       address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
-  //       index: 0,
-  //     },
-  //     {
-  //       address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
-  //       index: 1,
-  //     },
-  //   ],
-  //   deviceId: 'lol',
-  //   accountsEnabled: 2,
-  // };
-
-  // Connect to the device
+  if (process.env.IS_TESTING === 'true') {
+    return HARDWARE_WALLETS.MOCK_ACCOUNT;
+  }
   let transport;
   try {
     transport = await TransportWebHID.create();
     const appEth = new AppEth(transport);
     const result = await appEth.getAddress(
-      `${DEFAULT_HD_PATH}/0`,
+      `${DEFAULT_LEDGER_LIVE_PATH}/0'/0/0`,
       false,
       false,
     );
@@ -493,7 +456,7 @@ export const connectLedger = async () => {
     while (!empty) {
       // eslint-disable-next-line no-await-in-loop
       const result = await appEth.getAddress(
-        `${DEFAULT_HD_PATH}/${accountsEnabled}`,
+        `${DEFAULT_LEDGER_LIVE_PATH}/${accountsEnabled}'/0/0`,
         false,
         false,
       );

@@ -1,6 +1,6 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getProvider } from '@wagmi/core';
-import { capitalize, isString } from 'lodash';
+import { isString } from 'lodash';
 import { Address } from 'wagmi';
 
 import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
@@ -10,6 +10,7 @@ import { createHttpClient } from '../network/internal/createHttpClient';
 import {
   ETH_ADDRESS,
   SupportedCurrencyKey,
+  WETH_ADDRESS,
   smartContractMethods,
 } from '../references';
 import { fetchRegistryLookup } from '../resources/transactions/registryLookup';
@@ -18,6 +19,7 @@ import {
   nonceStore,
   pendingTransactionsStore,
 } from '../state';
+import { ParsedAddressAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -252,7 +254,7 @@ const parseTransactionWithEmptyChanges = async ({
   };
 };
 
-export const getTitle = ({
+const getTitle = ({
   protocol,
   status,
   type,
@@ -281,7 +283,7 @@ export const getTitle = ({
   return capitalize(status);
 };
 
-export const getTransactionLabel = ({
+const getTransactionLabel = ({
   direction,
   pending,
   protocol,
@@ -368,7 +370,7 @@ export const getTransactionLabel = ({
   return TransactionStatus.unknown;
 };
 
-export const getDescription = ({
+const getDescription = ({
   name,
   status,
   type,
@@ -479,7 +481,7 @@ export const parseNewTransaction = (
   };
 };
 
-export function getTransactionConfirmedState(
+function getTransactionConfirmedState(
   type?: TransactionType,
 ): TransactionStatus {
   switch (type) {
@@ -563,29 +565,6 @@ export async function getTransactionReceiptStatus({
 
 export function getTransactionHash(tx: RainbowTransaction): string | undefined {
   return tx.hash?.split('-').shift();
-}
-
-export async function getCurrentNonce({
-  address,
-  chainId,
-}: {
-  address: Address;
-  chainId: ChainId;
-}) {
-  const { getNonce } = nonceStore.getState();
-  const localNonceData = getNonce({ address, chainId });
-  const localNonce = localNonceData?.currentNonce;
-  const provider = getProvider({ chainId });
-
-  const nonceIncludingPending = await provider.getTransactionCount(
-    address,
-    'pending',
-  );
-  const nonceOnChain = (nonceIncludingPending || 0) - 1;
-  const currentNonce =
-    (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
-
-  return currentNonce;
 }
 
 export async function getNextNonce({
@@ -697,6 +676,19 @@ export function getTokenBlockExplorerUrl({
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
   return `http://${blockExplorerHost}/token/${address}`;
 }
+
+const capitalize = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
+export const getTokenBlockExplorer = ({
+  address,
+  chainId,
+}: Pick<ParsedAddressAsset, 'address' | 'mainnetAddress' | 'chainId'>) => {
+  let _address = address;
+  if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
+  return {
+    url: getTokenBlockExplorerUrl({ address: _address, chainId }),
+    name: capitalize(getBlockExplorerHostForChain(chainId).split('.').at?.(-2)),
+  };
+};
 
 const flashbotsApi = createHttpClient({
   baseUrl: 'https://protect.flashbots.net',

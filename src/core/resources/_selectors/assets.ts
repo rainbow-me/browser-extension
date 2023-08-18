@@ -20,6 +20,14 @@ export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
     );
 }
 
+export function selectUserAssetsFilteringSmallBalancesList(
+  assets: ParsedAssetsDictByChain,
+) {
+  return selectUserAssetsList(assets).filter(
+    (a) => parseFloat(a?.native?.balance?.amount) > 1,
+  );
+}
+
 export function selectUserAssetsDictByChain(assets: ParsedAssetsDictByChain) {
   return assets;
 }
@@ -30,6 +38,8 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
     assets?.[ChainId.optimism],
     assets?.[ChainId.polygon],
     assets?.[ChainId.arbitrum],
+    assets?.[ChainId.base],
+    assets?.[ChainId.zora],
     assets?.[ChainId.bsc],
   ].flat();
   return assetsByNetwork
@@ -54,6 +64,8 @@ export function selectUserAssetAddressMapByChainId(
     [ChainId.bsc]: mapAddresses(assets?.[ChainId.bsc]) || [],
     [ChainId.polygon]: mapAddresses(assets?.[ChainId.polygon]) || [],
     [ChainId.arbitrum]: mapAddresses(assets?.[ChainId.arbitrum]) || [],
+    [ChainId.base]: mapAddresses(assets?.[ChainId.base]) || [],
+    [ChainId.zora]: mapAddresses(assets?.[ChainId.zora]) || [],
   };
 }
 

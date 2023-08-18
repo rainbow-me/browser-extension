@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import { ToBufferInputTypes } from '@ethereumjs/util';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { isAddress } from '@ethersproject/address';
@@ -9,19 +10,25 @@ import { Address, UserRejectedRequestError } from 'wagmi';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
-import { hasVault, isPasswordSet } from '~/core/keychain';
+import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { appSessionsStore, notificationWindowStore } from '~/core/state';
 import { pendingRequestStore } from '~/core/state/requests';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
-import { getDappHost } from '~/core/utils/connectedApps';
+import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/hex';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
+import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 import { RainbowError, logger } from '~/logger';
+
+const MAX_REQUEST_PER_SECOND = 10;
+const MAX_REQUEST_PER_MINUTE = 90;
+let minuteTimer: NodeJS.Timeout | null = null;
+let secondTimer: NodeJS.Timeout | null = null;
 
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
@@ -80,7 +87,16 @@ const messengerProviderRequest = async (
   // Add pending request to global background state.
   addPendingRequest(request);
 
-  if (hasVault() && (await isPasswordSet())) {
+  let ready = await isInitialized();
+  while (!ready) {
+    // eslint-disable-next-line no-promise-executor-return
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    ready = await isInitialized();
+  }
+  const _hasVault = ready && (await hasVault());
+  const passwordSet = _hasVault && (await isPasswordSet());
+
+  if (_hasVault && passwordSet) {
     openWindowForTabId(Number(request.meta?.sender.tab?.id).toString());
   } else {
     goToNewTab({
@@ -100,6 +116,90 @@ const messengerProviderRequest = async (
   return payload;
 };
 
+const resetRateLimit = async (host: string, second: boolean) => {
+  const { rateLimits } = await chrome.storage.session.get('rateLimits');
+  if (second) {
+    if (rateLimits[host]) {
+      rateLimits[host].perSecond = 0;
+    }
+    secondTimer = null;
+  } else {
+    if (rateLimits[host]) {
+      rateLimits[host].perMinute = 0;
+    }
+    minuteTimer = null;
+  }
+  return chrome.storage.session.set({ rateLimits });
+};
+
+const checkRateLimit = async (host: string) => {
+  try {
+    // Read from session
+    let { rateLimits } = await chrome.storage.session.get('rateLimits');
+
+    // Initialize if needed
+    if (rateLimits === undefined) {
+      rateLimits = {
+        [host]: {
+          perSecond: 0,
+          perMinute: 0,
+        },
+      };
+    }
+
+    if (rateLimits[host] === undefined) {
+      rateLimits[host] = {
+        perSecond: 1,
+        perMinute: 1,
+      };
+    } else {
+      rateLimits[host] = {
+        perSecond: rateLimits[host].perSecond + 1,
+        perMinute: rateLimits[host].perMinute + 1,
+      };
+    }
+
+    // Clear after 1 sec
+    if (!secondTimer) {
+      secondTimer = setTimeout(async () => {
+        resetRateLimit(host, true);
+      }, 1000);
+    }
+
+    if (!minuteTimer) {
+      minuteTimer = // Clear after 1 min
+        setTimeout(async () => {
+          resetRateLimit(host, false);
+        }, 60000);
+    }
+
+    // Write to session
+    chrome.storage.session.set({ rateLimits });
+
+    // Check rate limits
+    if (rateLimits[host].perSecond > MAX_REQUEST_PER_SECOND) {
+      queueEventTracking(event.dappProviderRateLimit, {
+        dappURL: host,
+        typeOfLimitHit: 'perSecond',
+        requests: rateLimits[host].perSecond,
+      });
+      return true;
+    }
+
+    if (rateLimits[host].perMinute > MAX_REQUEST_PER_MINUTE) {
+      queueEventTracking(event.dappProviderRateLimit, {
+        dappURL: host,
+        typeOfLimitHit: 'perMinute',
+        requests: rateLimits[host].perMinute,
+      });
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+};
+
 /**
  * Handles RPC requests from the provider.
  */
@@ -114,9 +214,14 @@ export const handleProviderRequest = ({
     const { getActiveSession, addSession, updateSessionChainId } =
       appSessionsStore.getState();
     const url = meta?.sender?.url || '';
-    const host = getDappHost(url);
+    const host = (isValidUrl(url) && getDappHost(url)) || '';
     const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
+
+    const rateLimited = await checkRateLimit(host);
+    if (rateLimited) {
+      return { id, error: <Error>new Error('Rate Limit Exceeded') };
+    }
 
     try {
       let response = null;
@@ -187,10 +292,13 @@ export const handleProviderRequest = ({
           );
           const supportedChainId = isSupportedChainId(Number(proposedChainId));
           const extensionUrl = chrome.runtime.getURL('');
-          if (!supportedChainId) {
+          const activeSession = getActiveSession({ host });
+          if (!supportedChainId || !activeSession) {
             inpageMessenger?.send('wallet_switchEthereumChain', {
               chainId: proposedChainId,
-              status: 'failed',
+              status: !supportedChainId
+                ? IN_DAPP_NOTIFICATION_STATUS.unsupported_network
+                : IN_DAPP_NOTIFICATION_STATUS.no_active_session,
               extensionUrl,
               host,
             });
@@ -206,7 +314,7 @@ export const handleProviderRequest = ({
             });
             inpageMessenger?.send('wallet_switchEthereumChain', {
               chainId: proposedChainId,
-              status: 'success',
+              status: IN_DAPP_NOTIFICATION_STATUS.success,
               extensionUrl,
               host,
             });

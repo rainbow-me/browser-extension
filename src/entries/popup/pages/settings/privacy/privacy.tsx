@@ -3,10 +3,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { useAnalyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
 import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
+import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import { Box, Symbol } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -25,6 +27,8 @@ export function Privacy() {
     useHideAssetBalancesStore();
   const { hideSmallBalances, setHideSmallBalances } =
     useHideSmallBalancesStore();
+  const { currentCurrency } = useCurrentCurrencyStore();
+
   const { autoLockTimer } = useAutoLockTimerStore();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
   const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
@@ -68,6 +72,7 @@ export function Privacy() {
               }
               rightComponent={
                 <Toggle
+                  testId={'analytics-toggle'}
                   tabIndex={-1}
                   checked={!analyticsDisabled}
                   handleChange={() => setAnalyticsDisabled(!analyticsDisabled)}
@@ -99,6 +104,7 @@ export function Privacy() {
               }
               rightComponent={
                 <Toggle
+                  testId={'hide-assets-toggle'}
                   tabIndex={-1}
                   checked={hideAssetBalances}
                   handleChange={setHideAssetBalances}
@@ -123,7 +129,6 @@ export function Privacy() {
               rightComponent={
                 <Toggle
                   checked={hideSmallBalances}
-                  disabled
                   handleChange={setHideSmallBalances}
                   tabIndex={-1}
                 />
@@ -132,17 +137,23 @@ export function Privacy() {
                 <MenuItem.Title
                   text={i18n.t(
                     'settings.privacy_and_security.auto_hide_balances_under_1',
+                    {
+                      amount: convertAmountToNativeDisplay(
+                        '1',
+                        currentCurrency,
+                        undefined,
+                        true,
+                      ),
+                    },
                   )}
                 />
               }
-              onToggle={() => {
-                // uncomment when this is enabled
-                // setHideSmallBalances(!hideSmallBalances);
-              }}
+              onToggle={() => setHideSmallBalances(!hideSmallBalances)}
             />
           </Menu>
           <Menu>
             <MenuItem
+              testId={'change-password-button'}
               first
               hasRightArrow
               titleComponent={
