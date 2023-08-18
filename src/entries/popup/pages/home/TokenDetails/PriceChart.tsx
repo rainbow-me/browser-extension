@@ -108,24 +108,36 @@ const getChartTimeArg = (selected: ChartTime) =>
   );
 
 type PriceChartTimeData = { points?: [timestamp: number, price: number][] };
+const fetchPriceChart = async (
+  time: ChartTime,
+  chainId: ChainId,
+  address: Address | typeof ETH_ADDRESS,
+) => {
+  const priceChart = await metadataClient
+    .priceChart({ address, chainId, ...getChartTimeArg(time) })
+    .then((d) => d.token?.priceCharts[time] as PriceChartTimeData);
+  return priceChart.points?.reduce((result, point) => {
+    result.push({ timestamp: point[0], price: point[1] });
+    return result;
+  }, [] as ChartData[]);
+};
 const usePriceChart = ({
+  mainnetAddress,
   address,
   chainId,
   time,
 }: {
+  mainnetAddress?: Address | typeof ETH_ADDRESS;
   address: Address | typeof ETH_ADDRESS;
   chainId: ChainId;
   time: ChartTime;
 }) => {
   return useQuery({
     queryFn: async () => {
-      const priceChart = await metadataClient
-        .priceChart({ address, chainId, ...getChartTimeArg(time) })
-        .then((d) => d.token?.priceCharts[time] as PriceChartTimeData);
-      return priceChart.points?.reduce((result, point) => {
-        result.push({ timestamp: point[0], price: point[1] });
-        return result;
-      }, [] as ChartData[]);
+      const chart = await fetchPriceChart(time, chainId, address);
+      if (!chart && mainnetAddress)
+        return fetchPriceChart(time, ChainId.mainnet, mainnetAddress);
+      return chart;
     },
     queryKey: createQueryKey('price chart', { address, chainId, time }),
     keepPreviousData: true,
@@ -138,6 +150,7 @@ export function PriceChart({ token }: { token: ParsedAddressAsset }) {
   const [date, setDate] = useState(new Date());
 
   const { data } = usePriceChart({
+    mainnetAddress: token.mainnetAddress,
     address: token.address,
     chainId: token.chainId,
     time: selectedTime,
