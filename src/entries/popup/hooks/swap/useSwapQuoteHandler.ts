@@ -56,7 +56,7 @@ export const useSwapQuoteHandler = ({
             : '',
         );
       }
-    } else if ((quote as QuoteError)?.error) {
+    } else {
       if (independentField === 'buyField') {
         setAssetToSellValue('');
       } else if (

@@ -383,6 +383,15 @@ export function Swap() {
           }
         }
         setDidPopulateSavedInputValues(true);
+
+        switch (field) {
+          case 'buyField':
+            assetToBuyInputRef.current?.focus();
+            break;
+          case 'sellField':
+            assetToSellInputRef.current?.focus();
+            break;
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
