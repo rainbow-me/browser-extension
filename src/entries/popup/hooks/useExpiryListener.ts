@@ -1,9 +1,14 @@
 import { useEffect } from 'react';
 
+import { useCurrentAddressStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
+
+import usePrevious from './usePrevious';
 
 export function useExpiryListener() {
   const { resetValues, setupPort } = usePopupInstanceStore();
+  const { currentAddress } = useCurrentAddressStore();
+  const previousAddress = usePrevious(currentAddress);
 
   const checkExpiry = async () => {
     const expiryEntry = await chrome.storage.session.get('expiry');
@@ -20,4 +25,10 @@ export function useExpiryListener() {
     checkExpiry();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (previousAddress !== currentAddress) {
+      resetValues();
+    }
+  });
 }
