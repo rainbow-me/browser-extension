@@ -1,4 +1,6 @@
-import React, { useMemo } from 'react';
+import EventEmitter from 'events';
+
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
@@ -28,15 +30,48 @@ import { Navbar } from '../Navbar/Navbar';
 import { AppConnectionWalletItem } from './AppConnectionWalletItem/AppConnectionWalletItem';
 import { AppConnectionWalletItemDropdownMenu } from './AppConnectionWalletItem/AppConnectionWalletItemDropdownMenu';
 
-export const AppConnectionWalletSwitcher = ({
-  show,
-  setShow,
-}: {
+interface WalletSwitcherProps {
   show: boolean;
-  setShow: (show: boolean) => void;
-}) => {
+  callback?: () => void;
+}
+
+const eventEmitter = new EventEmitter();
+
+const listenWalletSwitcher = (
+  callback: ({ callback }: WalletSwitcherProps) => void,
+) => {
+  eventEmitter.addListener('rainbow_app_connection_wallet_switcher', callback);
+  return () => {
+    eventEmitter.removeListener(
+      'rainbow_app_connection_wallet_switcher',
+      callback,
+    );
+  };
+};
+
+export const triggerWalletSwitcher = ({
+  show,
+  callback,
+}: WalletSwitcherProps) => {
+  eventEmitter.emit('rainbow_app_connection_wallet_switcher', {
+    show,
+    callback,
+  });
+};
+
+export const AppConnectionWalletSwitcher = () => {
+  const [walletSwitcher, setWalletSwitcher] = useState<WalletSwitcherProps>({
+    show: false,
+    callback: undefined,
+  });
+
   const { url } = useActiveTab();
   const appMetadata = useAppMetadata({ url });
+
+  useEffect(() => listenWalletSwitcher(setWalletSwitcher), []);
+
+  const hideWalletSwitcher = () =>
+    setWalletSwitcher({ show: false, callback: undefined });
 
   const { appSession, activeSession, addSession, updateAppSessionAddress } =
     useAppSession({
@@ -66,7 +101,7 @@ export const AppConnectionWalletSwitcher = ({
 
   return (
     <Prompt
-      show={show}
+      show={walletSwitcher.show}
       zIndex={zIndexes.APP_CONNECTION_WALLET_SWITCHER}
       padding="12px"
       backdropFilter={'blur(26px)'}
@@ -77,7 +112,7 @@ export const AppConnectionWalletSwitcher = ({
             <Navbar
               leftComponent={
                 <Navbar.CloseButton
-                  onClick={() => setShow(false)}
+                  onClick={hideWalletSwitcher}
                   variant="transparent"
                 />
               }
@@ -209,7 +244,7 @@ export const AppConnectionWalletSwitcher = ({
                   color="fillSecondary"
                   height="44px"
                   width="full"
-                  onClick={() => setShow(false)}
+                  onClick={hideWalletSwitcher}
                   variant="plain"
                   disabled={false}
                   tabIndex={0}

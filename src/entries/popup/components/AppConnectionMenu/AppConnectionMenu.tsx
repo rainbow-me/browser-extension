@@ -17,6 +17,7 @@ import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { triggerWalletSwitcher } from '../AppConnection/AppConnectionWalletSwitcher';
 import { useCommandKStatus } from '../CommandK/useCommandKStatus';
 import {
   DropdownMenu,
@@ -91,13 +92,16 @@ export const AppConnectionMenu = ({
   );
 
   const onValueChange = useCallback(
-    (value: 'connected-apps' | 'switch-networks') => {
+    (value: 'connected-apps' | 'switch-networks' | 'switch-wallets') => {
       switch (value) {
         case 'connected-apps':
           navigate(ROUTES.CONNECTED);
           break;
         case 'switch-networks':
           setSubMenuOpen(!subMenuOpen);
+          break;
+        case 'switch-wallets':
+          triggerWalletSwitcher({ show: true });
           break;
       }
     },
@@ -165,8 +169,13 @@ export const AppConnectionMenu = ({
           ) : null}
 
           <DropdownMenuRadioGroup
-            onValueChange={(value) =>
-              onValueChange(value as 'connected-apps' | 'switch-networks')
+            onValueChange={(value: string) =>
+              onValueChange(
+                value as
+                  | 'connected-apps'
+                  | 'switch-networks'
+                  | 'switch-wallets',
+              )
             }
           >
             <Stack space="4px">
@@ -220,6 +229,38 @@ export const AppConnectionMenu = ({
                   }
                 />
               ) : null}
+              {activeSession ? (
+                <DropdownMenuRadioItem
+                  highlightAccentColor
+                  value="switch-wallets"
+                >
+                  <Box testId={connectedAppsId}>
+                    <Inline alignVertical="center" space="8px">
+                      <Box
+                        height="fit"
+                        style={{ width: '18px', height: '18px' }}
+                      >
+                        <Inline
+                          height="full"
+                          alignVertical="center"
+                          alignHorizontal="center"
+                        >
+                          <Symbol
+                            size={14}
+                            symbol="wand.and.stars"
+                            weight="semibold"
+                          />
+                        </Inline>
+                      </Box>
+
+                      <Text size="14pt" weight="semibold">
+                        {i18n.t('menu.app_connection_menu.switch_wallets')}
+                      </Text>
+                    </Inline>
+                  </Box>
+                </DropdownMenuRadioItem>
+              ) : null}
+
               {url ? <DropdownMenuSeparator /> : null}
 
               <DropdownMenuRadioItem

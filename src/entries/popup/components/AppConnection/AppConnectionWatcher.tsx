@@ -32,7 +32,6 @@ export const AppConnectionWatcher = () => {
 
   const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
   const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
-  const [showWalletSwitcher, setShowWalletSwitcher] = useState<boolean>(false);
 
   const [accountChangeHappened, setAccountChangeHappened] = useState(false);
   const prevLocationPathname = usePrevious(location.pathname);
@@ -153,8 +152,7 @@ export const AppConnectionWatcher = () => {
     if (
       location.pathname === ROUTES.HOME &&
       (firstLoad || accountChangeHappened) &&
-      differentActiveSession &&
-      !showWalletSwitcher
+      differentActiveSession
     ) {
       setAccountChangeHappened(false);
       hide();
@@ -168,7 +166,6 @@ export const AppConnectionWatcher = () => {
     hide,
     location.pathname,
     prevCurrentAddress,
-    showWalletSwitcher,
     triggerCheck,
   ]);
 
@@ -179,8 +176,6 @@ export const AppConnectionWatcher = () => {
         show={showNudgeSheet}
         connect={connect}
         setShow={setShowNudgeSheet}
-        showWalletSwitcher={showWalletSwitcher}
-        setShowWalletSwitcher={setShowWalletSwitcher}
       />
     </>
   );
