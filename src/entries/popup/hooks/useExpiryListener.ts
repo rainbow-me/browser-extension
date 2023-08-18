@@ -27,8 +27,8 @@ export function useExpiryListener() {
   }, []);
 
   useEffect(() => {
-    if (previousAddress !== currentAddress) {
+    if (previousAddress && previousAddress !== currentAddress) {
       resetValues();
     }
-  });
+  }, [currentAddress, previousAddress, resetValues]);
 }
