@@ -5,12 +5,20 @@ import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
+import {
+  AccentColorProvider,
+  Box,
+  Inline,
+  Symbol,
+  Text,
+  ThemeProvider,
+} from '~/design-system';
 import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
   Space,
+  SymbolName,
   globalColors,
 } from '~/design-system/styles/designTokens';
 
@@ -146,10 +154,16 @@ export const ContextMenuLabel = (props: ContextMenuLabelProps) => {
 interface ContextMenuItemProps {
   children: ReactNode;
   onSelect?: (event: Event) => void;
+  symbolLeft: SymbolName;
+  color?: TextStyles['color'];
 }
 
-export const ContextMenuItem = (props: ContextMenuItemProps) => {
-  const { children, onSelect } = props;
+export const ContextMenuItem = ({
+  children,
+  onSelect,
+  symbolLeft,
+  color,
+}: ContextMenuItemProps) => {
   return (
     <Box
       as={ContextMenuPrimitive.Item}
@@ -169,7 +183,23 @@ export const ContextMenuItem = (props: ContextMenuItemProps) => {
         hover: 'surfaceSecondary',
       }}
     >
-      {children}
+      <Inline alignVertical="center" space="8px">
+        {symbolLeft && (
+          <Symbol
+            size={16}
+            symbol={symbolLeft}
+            weight="semibold"
+            color={color}
+          />
+        )}
+        {typeof children === 'string' ? (
+          <Text size="14pt" weight="semibold">
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </Inline>
     </Box>
   );
 };
