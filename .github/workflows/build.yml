@@ -66,113 +66,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: rainbowbx-${{ github.sha }}.zip
-          path: build/
-  firefox-e2e-parallel:
-    runs-on: ubuntu-latest
-    timeout-minutes: 16
-    needs: [build]
-    env:
-      DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 4
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16.20.0"
-      - name: Download deps cache artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: node_modules.tar.gz
-      - name: Unzip node_modules
-        shell: 'bash'
-        run: tar xzf node_modules.tar.gz
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-            name: rainbowbx-${{ github.sha }}.zip
-            path: build
-      - name: Setup xvfb
-        shell: 'bash'
-        run: |
-          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-          # start xvfb in the background
-          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-      - name: Install Anvil
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-      - uses: browser-actions/setup-firefox@v1
-        with:
-          firefox-version: 'latest-devedition'
-      - uses: actions/checkout@v3
-        with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-            path: tmp
-      - name: Copy dotenv
-        shell: 'bash'
-        run: cat tmp/dotenv >> .env && rm -rf tmp
-      - name: Run e2e parallel (Firefox)
-        run: |
-            export BROWSER=firefox
-            export OS=linux
-            export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
-            yarn firefox:manifest && yarn firefox:zip
-            yarn vitest:parallel --retry=5
-
-  firefox-e2e-serial:
-    runs-on: ubuntu-latest
-    timeout-minutes: 16
-    needs: [build]
-    env:
-      DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 4
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16.20.0"
-      - name: Download deps cache artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: node_modules.tar.gz
-      - name: Unzip node_modules
-        shell: 'bash'
-        run: tar xzf node_modules.tar.gz
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-            name: rainbowbx-${{ github.sha }}.zip
-            path: build
-      - name: Setup xvfb
-        shell: 'bash'
-        run: |
-          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-          # start xvfb in the background
-          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-      - name: Install Anvil
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-      - uses: browser-actions/setup-firefox@v1
-        with:
-          firefox-version: 'latest-devedition'
-      - uses: actions/checkout@v3
-        with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-            path: tmp
-      - name: Copy dotenv
-        shell: 'bash'
-        run: cat tmp/dotenv >> .env && rm -rf tmp
-      - name: Run e2e serial (Firefox)
-        run: |
-            export BROWSER=firefox
-            export OS=linux
-            export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
-            yarn firefox:manifest && yarn firefox:zip
-            yarn vitest:serial
-            
+          path: build/        
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
@@ -250,6 +144,215 @@ jobs:
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:dappInteractions --retry=5
+  # FIREFOX TESTS
+  firefox-e2e-parallel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 4
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.20.0"
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        shell: 'bash'
+        run: tar xzf node_modules.tar.gz
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+            name: rainbowbx-${{ github.sha }}.zip
+            path: build
+      - name: Setup xvfb
+        shell: 'bash'
+        run: |
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+      - name: Install Anvil
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      - uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: 'latest-devedition'
+      - uses: actions/checkout@v3
+        with:
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
+      - name: Copy dotenv
+        shell: 'bash'
+        run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Run e2e parallel (Firefox)
+        run: |
+            export BROWSER=firefox
+            export OS=linux
+            export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
+            yarn firefox:manifest && yarn firefox:zip
+            yarn vitest:parallel --retry=5    
+  firefox-e2e-swap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 4
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.20.0"
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        shell: 'bash'
+        run: tar xzf node_modules.tar.gz
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+            name: rainbowbx-${{ github.sha }}.zip
+            path: build
+      - name: Setup xvfb
+        shell: 'bash'
+        run: |
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+      - name: Install Anvil
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      - uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: 'latest-devedition'
+      - uses: actions/checkout@v3
+        with:
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
+      - name: Copy dotenv
+        shell: 'bash'
+        run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Run e2e swaps (Firefox)
+        run: |
+            export BROWSER=firefox
+            export OS=linux
+            export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
+            yarn firefox:manifest && yarn firefox:zip
+            yarn vitest:swap
+  firefox-e2e-send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 4
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.20.0"
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        shell: 'bash'
+        run: tar xzf node_modules.tar.gz
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+            name: rainbowbx-${{ github.sha }}.zip
+            path: build
+      - name: Setup xvfb
+        shell: 'bash'
+        run: |
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+      - name: Install Anvil
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      - uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: 'latest-devedition'
+      - uses: actions/checkout@v3
+        with:
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
+      - name: Copy dotenv
+        shell: 'bash'
+        run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Run e2e send (Firefox)
+        run: |
+            export BROWSER=firefox
+            export OS=linux
+            export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
+            yarn firefox:manifest && yarn firefox:zip
+            yarn vitest:send
+  firefox-e2e-dappInteractions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 4
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.20.0"
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        shell: 'bash'
+        run: tar xzf node_modules.tar.gz
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+            name: rainbowbx-${{ github.sha }}.zip
+            path: build
+      - name: Setup xvfb
+        shell: 'bash'
+        run: |
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+      - name: Install Anvil
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      - uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: 'latest-devedition'
+      - uses: actions/checkout@v3
+        with:
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
+      - name: Copy dotenv
+        shell: 'bash'
+        run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Run e2e dappInteractions (Firefox)
+        run: |
+            export BROWSER=firefox
+            export OS=linux
+            export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
+            yarn firefox:manifest && yarn firefox:zip
+            yarn vitest:dappInteractions
   # BRAVE TESTS
   # brave-e2e:
   #   needs: [build]
