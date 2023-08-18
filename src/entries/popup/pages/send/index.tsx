@@ -332,7 +332,10 @@ export function Send() {
       // clear selected token
       setSelectedToken();
     } else if (sendTokenAddressAndChain) {
-      selectAsset(...sendTokenAddressAndChain);
+      selectAsset(
+        sendTokenAddressAndChain.address,
+        sendTokenAddressAndChain.chainId,
+      );
     }
     if (sendAddress && sendAddress.length) {
       setToAddressOrName(sendAddress);

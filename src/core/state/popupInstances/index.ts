@@ -16,7 +16,7 @@ interface PopupInstance {
   sendAddress: Address | string | null;
   sendAmount: string | null;
   sendField: 'asset' | 'native';
-  sendTokenAddressAndChain: [SendAddress, ChainId] | null;
+  sendTokenAddressAndChain: { address: SendAddress; chainId: ChainId } | null;
   swapAmount: string | null;
   swapField: IndependentField | null;
   swapTokenToBuy: ParsedSearchAsset | null;
@@ -87,7 +87,7 @@ export const popupInstanceStore = createStore<PopupInstanceStore>(
     }),
     saveSendTokenAddressAndChain: popupInstanceHandlerFactory(
       ({ address, chainId }) => {
-        set({ sendTokenAddressAndChain: [address, chainId] });
+        set({ sendTokenAddressAndChain: { address, chainId } });
       },
     ),
     saveSwapAmount: popupInstanceHandlerFactory(({ amount }) => {
