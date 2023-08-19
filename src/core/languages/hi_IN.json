@@ -177,7 +177,7 @@
       "ZAR": "दक्षिण अफ़्रीकी रैंड"
     },
     "language": {
-      "title": "Language"
+      "title": "भाषा"
     },
     "feature_flags": {
       "full_watching_wallets": "Watched वॉलेट्स का पूरा उपयोग",
@@ -859,6 +859,16 @@
         "description_1": "बाइनेंस स्मार्ट चेन, यानी बीएससी, ट्रेडिंग प्लेटफ़ॉर्म बाइनेंस के लिए ब्लॉकचेन नेटवर्क है।",
         "description_2": "यह सस्ते और तेज़ ट्रांजेक्शनों की सुविधा प्रदान करता है, लेकिन अनुमानित लेयर 2 नेटवर्क की तरह, बीएससी का अपना सुरक्षा और सहमति मैकनिज़्म है जो ईथेरियम से अलग होता है।"
       },
+      "base": {
+        "title": "बेस क्या है?",
+        "description_1": "बेस एक Layer 2 नेटवर्क है जो ईथेरियम के ऊपर चलता है, जिससे हमेशा के लिए ईथेरियम की अपेक्षाकृत सुरक्षा का लाभ लेते हुए सस्ते और तेज़ लेनदेन संभव होते हैं।",
+        "description_2": "यह लेनदेनों को पुनर्प्रेषित करने से पहले उन्हें एक \"रोल अप\" में संकलित करता है और फिर उन्हें स्थायी रूप से ईथेरियम पर भेजता है।"
+      },
+      "zora": {
+        "title": "ज़ोरा क्या है?",
+        "description_1": "Zora एक Layer 2 नेटवर्क है जो Ethereum के ऊपर चलता है, जो सस्ते और तेज़ लेनदेन को संभव बनाता है जबकि फिर भी Ethereum की बुनियादी सुरक्षा से लाभान्वित होता है।",
+        "description_2": "यह Ethereum पर स्थायी रूप से भेजने से पहले \"रोल अप\" में कई लेनदेनों को साथ में बंडल करता है।"
+      },
       "link_button_label": "और पढ़ें",
       "action_label": "समझे"
     },
@@ -949,8 +959,8 @@
     "continue_on_trezor_connect": "Trezor Connect विंडो पर दिए गए निर्देशों का पालन करें",
     "trezor_success": "सफलता!",
     "you_can_close_this_window": "आप इस विंडो को बंद कर सकते हैं",
-    "ledger_locked_error": "Please make sure your ledger is unlocked and open the Ethereum app",
-    "check_ledger_disconnected": "Make sure your device is connected, unlocked and the ethereum app is open"
+    "ledger_locked_error": "कृपया सुनिश्चित करें कि आपका लेजर खोला और ओपन ईथेरियम ऐप है",
+    "check_ledger_disconnected": "यह सुनिश्चित करें कि आपका उपकरण कनेक्ट किया हुआ है, खोला हुआ है और ईथेरियम ऐप खोला हुआ है"
   },
   "choose_wallet_group": {
     "title": "वॉलेट समूह चुनें",
@@ -960,12 +970,12 @@
     "create_recovery_phrase": "एक नई पुनर्प्राप्ति वाक्य बनाएं"
   },
   "unsupported_browser": {
-    "title": "Unsupported Browser",
-    "description": "Your browser is not currently supported. Rainbow is currently available for Android and iOS on mobile, and Chrome, Brave, Arc, and Edge on desktop devices.",
-    "download_the_app": "Download the App",
+    "title": "असमर्थित ब्राउज़र",
+    "description": "आपका ब्राउज़र वर्तमान में समर्थित नहीं है। रेनबो वर्तमान में एंड्रॉइड और आईओएस पर मोबाइल और क्रोम, ब्रेव, आर्क और एज डेस्कटॉप उपकरणों के लिए उपलब्ध है।",
+    "download_the_app": "ऐप डाउनलोड करें",
     "link_text": {
-      "highlighted": "Contact Rainbow",
-      "after": " to request more."
+      "highlighted": "रेनबो से संपर्क करें",
+      "after": " अधिक जानकारी के लिए अनुरोध करें।"
     }
   }
 }

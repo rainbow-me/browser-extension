@@ -177,7 +177,7 @@
       "ZAR": "Южноафриканский рэнд"
     },
     "language": {
-      "title": "Language"
+      "title": "Язык"
     },
     "feature_flags": {
       "full_watching_wallets": "Полный доступ к отслеживаемым кошелькам",
@@ -859,6 +859,16 @@
         "description_1": "Binance Smart Chain (BSC) - это блокчейн-сеть для торговой платформы Binance.",
         "description_2": "Он позволяет проводить более дешевые и быстрые транзакции, но в отличие от сетей второго уровня, у BSC есть свои собственные механизмы безопасности и консенсуса, отличающиеся от Ethereum."
       },
+      "base": {
+        "title": "Что такое Base?",
+        "description_1": "Base - это Layer 2 сеть, работающая поверх Ethereum, обеспечивающая более дешевые и быстрые транзакции, при этом сохраняя преимущества основной безопасности Ethereum.",
+        "description_2": "Он объединяет множество транзакций вместе в «roll up», прежде чем отправлять их на постоянное размещение в Ethereum."
+      },
+      "zora": {
+        "title": "Что такое Zora?",
+        "description_1": "Zora - это сеть Layer 2, работающая поверх Ethereum, что позволяет снизить стоимость и ускорить транзакции, при этом сохраняя все преимущества безопасности Ethereum.",
+        "description_2": "Она объединяет множество транзакций вместе в «роллап», прежде чем отправить их на постоянное хранение в Ethereum."
+      },
       "link_button_label": "Подробнее",
       "action_label": "Понятно"
     },
@@ -949,8 +959,8 @@
     "continue_on_trezor_connect": "Пожалуйста, следуйте инструкциям в окне подключения Trezor",
     "trezor_success": "Успех!",
     "you_can_close_this_window": "Вы можете закрыть это окно",
-    "ledger_locked_error": "Please make sure your ledger is unlocked and open the Ethereum app",
-    "check_ledger_disconnected": "Make sure your device is connected, unlocked and the ethereum app is open"
+    "ledger_locked_error": "Пожалуйста, убедитесь, что ваше устройство Ledger разблокировано и открыто приложение Ethereum",
+    "check_ledger_disconnected": "Убедитесь, что ваше устройство подключено, разблокировано и приложение Ethereum открыто"
   },
   "choose_wallet_group": {
     "title": "Выберите группу кошелька",
@@ -960,12 +970,12 @@
     "create_recovery_phrase": "Создать новую фразу восстановления"
   },
   "unsupported_browser": {
-    "title": "Unsupported Browser",
-    "description": "Your browser is not currently supported. Rainbow is currently available for Android and iOS on mobile, and Chrome, Brave, Arc, and Edge on desktop devices.",
-    "download_the_app": "Download the App",
+    "title": "Неподдерживаемый браузер",
+    "description": "Ваш браузер в настоящее время не поддерживается. Rainbow в настоящее время доступен для Android и iOS на мобильных устройствах, а также для Chrome, Brave, Arc и Edge на настольных устройствах.",
+    "download_the_app": "Скачать приложение",
     "link_text": {
-      "highlighted": "Contact Rainbow",
-      "after": " to request more."
+      "highlighted": "Связаться с Rainbow",
+      "after": " для запроса дополнительной информации."
     }
   }
 }

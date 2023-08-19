@@ -177,7 +177,7 @@
       "ZAR": "Güney Afrika Randı"
     },
     "language": {
-      "title": "Language"
+      "title": "Dil"
     },
     "feature_flags": {
       "full_watching_wallets": "İzlenen Cüzdanlara Tam Erişim",
@@ -859,6 +859,16 @@
         "description_1": "Binance Smart Chain veya kısaca BSC, Binance ticaret platformunun blok zinciridir.",
         "description_2": "Daha ucuz ve daha hızlı işlemlere izin verir, ancak Layer 2 ağlarından farklı olarak, BSC'nin kendi güvenlik ve uzlaşma mekanizmaları vardır."
       },
+      "base": {
+        "title": "Ne Base'dir?",
+        "description_1": "Base, Ethereum'un altında yatan güvenlikten faydalanırken, daha ucuz ve daha hızlı işlemler yapmayı sağlayan Ethereum üzerinde çalışan Layer 2 bir ağdır.",
+        "description_2": "Birçok işlemi Ethereum'a kalıcı olarak göndermeden önce bunları bir \"roll up\" içinde birleştirir."
+      },
+      "zora": {
+        "title": "Zora Nedir?",
+        "description_1": "Zora, Ethereum üzerinde çalışan ve Ethereum'un temel güvenliğinden yararlanırken daha ucuz ve daha hızlı işlemler yapmayı sağlayan Layer 2 bir ağdır.",
+        "description_2": "Birçok işlemi Ethereum üzerinde kalıcı olarak yaşatmadan önce \"roll up\" olarak bir araya getirir ve sonra gönderir."
+      },
       "link_button_label": "Daha fazla bilgi",
       "action_label": "Anladım"
     },
@@ -949,8 +959,8 @@
     "continue_on_trezor_connect": "Lütfen Trezor Connect penceresindeki talimatları takip edin",
     "trezor_success": "Başarı!",
     "you_can_close_this_window": "Bu pencereyi kapatabilirsiniz",
-    "ledger_locked_error": "Please make sure your ledger is unlocked and open the Ethereum app",
-    "check_ledger_disconnected": "Make sure your device is connected, unlocked and the ethereum app is open"
+    "ledger_locked_error": "Lütfen Ledger'ınızın kilidini açtığınızdan ve Ethereum uygulamasını çalıştırdığınızdan emin olun",
+    "check_ledger_disconnected": "Cihazınızın bağlı olduğundan, kilidinin açık olduğundan ve Ethereum uygulamasının çalıştığını kontrol edin"
   },
   "choose_wallet_group": {
     "title": "Cüzdan grubu seçin",
@@ -960,12 +970,12 @@
     "create_recovery_phrase": "Yeni bir kurtarma ifadesi oluşturun"
   },
   "unsupported_browser": {
-    "title": "Unsupported Browser",
-    "description": "Your browser is not currently supported. Rainbow is currently available for Android and iOS on mobile, and Chrome, Brave, Arc, and Edge on desktop devices.",
-    "download_the_app": "Download the App",
+    "title": "Desteklenmeyen Tarayıcı",
+    "description": "Tarayıcınız şu anda desteklenmemektedir. Rainbow şu anda mobil cihazlarda Android ve iOS, masaüstü cihazlarda ise Chrome, Brave, Arc ve Edge'de kullanılabilir durumdadır.",
+    "download_the_app": "Uygulamayı İndir",
     "link_text": {
-      "highlighted": "Contact Rainbow",
-      "after": " to request more."
+      "highlighted": "Rainbow ile İletişime Geçin",
+      "after": " daha fazla talep etmek için."
     }
   }
 }

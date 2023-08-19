@@ -177,7 +177,7 @@
       "ZAR": "Rand sud-africain"
     },
     "language": {
-      "title": "Language"
+      "title": "Langue"
     },
     "feature_flags": {
       "full_watching_wallets": "Accès complet aux portefeuilles surveillés",
@@ -859,6 +859,16 @@
         "description_1": "Binance Smart Chain, ou BSC en abrégé, est le réseau blockchain de la plateforme de trading Binance.",
         "description_2": "Elle permet des transactions moins chères et plus rapides, mais contrairement aux réseaux de couche 2, BSC possède ses propres mécanismes de sécurité et de consensus qui diffèrent d'Ethereum."
       },
+      "base": {
+        "title": "Qu'est-ce que Base?",
+        "description_1": "Base est un réseau Layer 2 qui fonctionne par-dessus Ethereum, permettant des transactions moins chères et plus rapides tout en bénéficiant de la sécurité sous-jacente d'Ethereum",
+        "description_2": "Il regroupe de nombreuses transactions ensemble dans un \"roll up\" avant de les envoyer de manière permanente sur Ethereum"
+      },
+      "zora": {
+        "title": "Qu'est-ce que Zora?",
+        "description_1": "Zora est un réseau de couche 2 qui fonctionne au-dessus d'Ethereum, permettant des transactions moins chères et plus rapides tout en bénéficiant de la sécurité sous-jacente d'Ethereum.",
+        "description_2": "Il regroupe plusieurs transactions ensemble dans un \"roll up\" avant de les envoyer de manière permanente sur Ethereum."
+      },
       "link_button_label": "En savoir plus",
       "action_label": "Compris"
     },
@@ -949,8 +959,8 @@
     "continue_on_trezor_connect": "Veuillez suivre les instructions sur la fenêtre de connexion à Trezor",
     "trezor_success": "Succès !",
     "you_can_close_this_window": "Vous pouvez fermer cette fenêtre",
-    "ledger_locked_error": "Please make sure your ledger is unlocked and open the Ethereum app",
-    "check_ledger_disconnected": "Make sure your device is connected, unlocked and the ethereum app is open"
+    "ledger_locked_error": "Assurez-vous que votre Ledger est déverrouillé et ouvrez l'application Ethereum",
+    "check_ledger_disconnected": "Vérifiez que votre appareil est connecté, déverrouillé et que l'application Ethereum est ouverte"
   },
   "choose_wallet_group": {
     "title": "Choisissez le groupe de portefeuilles",
@@ -960,12 +970,12 @@
     "create_recovery_phrase": "Créez une nouvelle phrase de récupération"
   },
   "unsupported_browser": {
-    "title": "Unsupported Browser",
-    "description": "Your browser is not currently supported. Rainbow is currently available for Android and iOS on mobile, and Chrome, Brave, Arc, and Edge on desktop devices.",
-    "download_the_app": "Download the App",
+    "title": "Navigateur non pris en charge",
+    "description": "Votre navigateur n'est pas pris en charge actuellement. Rainbow est disponible pour Android et iOS sur mobile, et Chrome, Brave, Arc et Edge sur ordinateurs de bureau",
+    "download_the_app": "Téléchargez l'application",
     "link_text": {
-      "highlighted": "Contact Rainbow",
-      "after": " to request more."
+      "highlighted": "Contacter Rainbow",
+      "after": " pour en demander davantage"
     }
   }
 }

@@ -177,7 +177,7 @@
       "ZAR": "南非兰特"
     },
     "language": {
-      "title": "Language"
+      "title": "语言"
     },
     "feature_flags": {
       "full_watching_wallets": "完全访问被监视的钱包",
@@ -859,6 +859,16 @@
         "description_1": "Binance智能链，简称BSC，是Binance交易平台的区块链网络。",
         "description_2": "它支持更便宜和更快速的交易，但与Layer 2网络不同，BSC具有自己的安全性和共识机制，与以太坊不同。"
       },
+      "base": {
+        "title": "什么是Base?",
+        "description_1": "Base是在以太坊之上运行的第二层网络，可以实现更便宜和更快的交易，同时仍能从以太坊的底层安全性中受益。",
+        "description_2": "它将许多交易捆绑在一起，在发送到以太坊之前将它们“卷起”并永久保存。"
+      },
+      "zora": {
+        "title": "什么是Zora?",
+        "description_1": "Zora是一个在以太坊之上运行的二层网络，可以实现更便宜、更快速的交易，同时仍然享受以太坊底层安全性的好处。",
+        "description_2": "在将它们永久存储在以太坊上之前，它会将许多交易捆绑在一起并进行\"roll up\"处理。"
+      },
       "link_button_label": "了解更多",
       "action_label": "了解"
     },
@@ -949,8 +959,8 @@
     "continue_on_trezor_connect": "请按照Trezor Connect窗口上的说明操作",
     "trezor_success": "成功！",
     "you_can_close_this_window": "您可以关闭此窗口",
-    "ledger_locked_error": "Please make sure your ledger is unlocked and open the Ethereum app",
-    "check_ledger_disconnected": "Make sure your device is connected, unlocked and the ethereum app is open"
+    "ledger_locked_error": "请确认您的Ledger已解锁并打开Ethereum应用",
+    "check_ledger_disconnected": "确保您的设备已连接、解锁并打开了以太坊应用"
   },
   "choose_wallet_group": {
     "title": "选择钱包组",
@@ -960,12 +970,12 @@
     "create_recovery_phrase": "创建新的恢复短语"
   },
   "unsupported_browser": {
-    "title": "Unsupported Browser",
-    "description": "Your browser is not currently supported. Rainbow is currently available for Android and iOS on mobile, and Chrome, Brave, Arc, and Edge on desktop devices.",
-    "download_the_app": "Download the App",
+    "title": "不支持的浏览器",
+    "description": "您的浏览器目前不支持。Rainbow目前可用于Android和iOS移动设备上的Chrome、Brave、Arc和Edge浏览器。",
+    "download_the_app": "下载应用",
     "link_text": {
-      "highlighted": "Contact Rainbow",
-      "after": " to request more."
+      "highlighted": "联系Rainbow",
+      "after": " 进行更多请求。"
     }
   }
 }

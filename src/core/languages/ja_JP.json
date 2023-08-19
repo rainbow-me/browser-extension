@@ -177,7 +177,7 @@
       "ZAR": "南アフリカランド"
     },
     "language": {
-      "title": "Language"
+      "title": "言語"
     },
     "feature_flags": {
       "full_watching_wallets": "ウォレットの監視機能を完全に有効にする",
@@ -859,6 +859,16 @@
         "description_1": "バイナンススマートチェーン（BSC）は、取引プラットフォームBinanceのためのブロックチェーンネットワークです。",
         "description_2": "より安価かつ高速なトランザクションが可能ですが、Layer 2ネットワークとは異なり、BSCには独自のセキュリティとコンセンサスメカニズムがあります。"
       },
+      "base": {
+        "title": "ベースとは？",
+        "description_1": "ベースは、Ethereumの基盤のセキュリティを活用しながら、より安価かつ高速なトランザクションを可能にする、Ethereum上で動作するLayer 2ネットワークです。",
+        "description_2": "トランザクションを\"ロールアップ\"してからEthereumに永久に記録する前に、多くのトランザクションをまとめて送信します。"
+      },
+      "zora": {
+        "title": "ゾーラとは？",
+        "description_1": "ZoraはEthereumの上で実行されるLayer 2ネットワークであり、より安価かつ高速なトランザクションを可能にしながら、Ethereumの基礎的なセキュリティの恩恵を受けることができます。",
+        "description_2": "それは複数のトランザクションをまとめて「ロールアップ」し、それらをEthereum上で永久に保存する前に送信します。"
+      },
       "link_button_label": "詳細を読む",
       "action_label": "了解"
     },
@@ -949,8 +959,8 @@
     "continue_on_trezor_connect": "Trezor Connect ウィンドウの指示に従ってください",
     "trezor_success": "成功！",
     "you_can_close_this_window": "このウィンドウを閉じることができます",
-    "ledger_locked_error": "Please make sure your ledger is unlocked and open the Ethereum app",
-    "check_ledger_disconnected": "Make sure your device is connected, unlocked and the ethereum app is open"
+    "ledger_locked_error": "あなたのLedgerがロック解除されていて、Ethereumアプリが開いていることを確認してください",
+    "check_ledger_disconnected": "デバイスが接続され、ロック解除され、Ethereumアプリが開いていることを確認してください"
   },
   "choose_wallet_group": {
     "title": "ウォレットグループを選択してください",
@@ -960,12 +970,12 @@
     "create_recovery_phrase": "新しいリカバリーフレーズを作成する"
   },
   "unsupported_browser": {
-    "title": "Unsupported Browser",
-    "description": "Your browser is not currently supported. Rainbow is currently available for Android and iOS on mobile, and Chrome, Brave, Arc, and Edge on desktop devices.",
-    "download_the_app": "Download the App",
+    "title": "サポートされていないブラウザ",
+    "description": "現在ご利用のブラウザはサポートされていません。Rainbowは、モバイルではAndroidとiOSで利用でき、デスクトップデバイスではChrome、Brave、Arc、Edgeで利用できます。",
+    "download_the_app": "アプリをダウンロード",
     "link_text": {
-      "highlighted": "Contact Rainbow",
-      "after": " to request more."
+      "highlighted": "Rainbowに問い合わせる",
+      "after": " を要求するために。"
     }
   }
 }
