@@ -198,8 +198,8 @@ jobs:
             yarn firefox:manifest && yarn firefox:zip
             yarn vitest:parallel --retry=5    
   firefox-e2e-swap:
-    runs-on: ubuntu-latest
-    timeout-minutes: 16
+    runs-on: beefy-runner-bx
+    timeout-minutes: 25
     needs: [build]
     env:
       DISPLAY: :0
