@@ -19,7 +19,7 @@ export const currentLanguageStore = createStore<CurrentLanguageState>(
   {
     persist: {
       name: 'currentLanguage',
-      version: 0,
+      version: 1,
     },
   },
 );
