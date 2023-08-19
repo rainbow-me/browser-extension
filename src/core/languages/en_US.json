@@ -776,15 +776,12 @@
     "month": "1M",
     "year": "1Y",
     "approvals": "Token Approvals",
-
     "this_token_is_on_network": "This %{symbol} is on the %{chainName} network",
-
     "more_options": {
       "copy_address": "Copy Address",
       "hide": "Hide Token",
       "report": "Report Token"
     },
-
     "about": {
       "about_token": "About %{name}",
       "price": "Price",
@@ -801,12 +798,10 @@
         "title": "Fully Diluted Market Cap",
         "description": "The maximum possible market cap of a token if the total supply was available in circulation."
       },
-
       "supply": "Supply",
       "max_total_supply": "Max Total Supply",
       "holders": "Holders",
       "total_transfers": "Total Transfers",
-
       "more_info": "More info",
       "token_standard": "Token Standard",
       "token_contract": "Token Contract",
@@ -863,6 +858,16 @@
         "title": "What's BSC?",
         "description_1": "Binance Smart Chain, or BSC for short, is the blockchain network for the trading platform Binance.",
         "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum."
+      },
+      "base": {
+        "title": "What's Base?",
+        "description_1": "Base is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
+        "description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum."
+      },
+      "zora": {
+        "title": "What's Zora?",
+        "description_1": "Zora is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
+        "description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum."
       },
       "link_button_label": "Read more",
       "action_label": "Got it"

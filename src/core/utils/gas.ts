@@ -352,6 +352,10 @@ export const getChainWaitTime = (chainId: ChainId) => {
       return { safeWait: 6, proposedWait: 3, fastWait: 3 };
     case ChainId.optimism:
       return { safeWait: 20, proposedWait: 20, fastWait: 20 };
+    case ChainId.base:
+      return { safeWait: 20, proposedWait: 20, fastWait: 20 };
+    case ChainId.zora:
+      return { safeWait: 20, proposedWait: 20, fastWait: 20 };
     case ChainId.arbitrum:
       return { safeWait: 8, proposedWait: 8, fastWait: 8 };
     default:

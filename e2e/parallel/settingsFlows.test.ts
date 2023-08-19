@@ -9,6 +9,7 @@ import {
   findElementByTestIdAndClick,
   findElementByTextAndClick,
   getExtensionIdByName,
+  getRootUrl,
   goBackTwice,
   importWalletFlow,
   initDriverWithOptions,
@@ -18,7 +19,7 @@ import {
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = 'chrome-extension://';
+let rootURL = getRootUrl();
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
@@ -61,7 +62,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       id: 'balance-shown',
       driver,
     });
-    expect(balanceShown).toBeTruthy;
+    expect(balanceShown).toBeTruthy();
     // toggle to true
     await navigateToSettingsPrivacy(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'hide-assets-toggle', driver });
@@ -72,11 +73,11 @@ describe('Navigate Settings & Privacy and its flows', () => {
       id: 'balance-hidden',
       driver,
     });
-    expect(balanceHidden).toBeTruthy;
+    expect(balanceHidden).toBeTruthy();
   });
 
   // bug currently exists on this flow. will remove skip once fixed.
-  it.skip('should be able to change password and then lock and unlock with it', async () => {
+  it('should be able to change password and then lock and unlock with it', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
     await findElementByTestIdAndClick({

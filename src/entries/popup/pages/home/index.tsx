@@ -19,6 +19,7 @@ import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { usePendingRequestStore } from '~/core/state/requests';
@@ -142,6 +143,7 @@ export function Home() {
 
   useEffect(() => {
     analytics.track(event.walletViewed);
+    identifyWalletTypes();
     removeImportWalletSecrets();
   }, []);
 

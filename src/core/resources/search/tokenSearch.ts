@@ -99,6 +99,8 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
       `${ETH_ADDRESS}_${ChainId.arbitrum}`,
       `${BNB_MAINNET_ADDRESS}_${ChainId.bsc}`,
       `${MATIC_MAINNET_ADDRESS}_${ChainId.polygon}`,
+      `${ETH_ADDRESS}_${ChainId.base}`,
+      `${ETH_ADDRESS}_${ChainId.zora}`,
     ].includes(`${a.uniqueId}_${chainId}`),
     mainnetAddress: a.uniqueId as Address,
     uniqueId: `${a.uniqueId}_${chainId}`,

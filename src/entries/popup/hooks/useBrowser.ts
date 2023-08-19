@@ -27,7 +27,7 @@ const SupportedBrowsers: Browser[] = [
   'Brave',
   'Chrome',
   'Edge',
-  // 'Firefox'
+  'Firefox',
 ];
 
 // needs to be a hook because we can only know if it's Arc based on the computed css props

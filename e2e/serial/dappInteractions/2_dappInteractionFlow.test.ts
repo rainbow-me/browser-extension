@@ -4,6 +4,8 @@ import { getAddress } from '@ethersproject/address';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import { ChainId } from '~/core/types/chains';
+
 import {
   awaitTextChange,
   delayTime,
@@ -16,6 +18,7 @@ import {
   getAllWindowHandles,
   getExtensionIdByName,
   getOnchainBalance,
+  getRootUrl,
   getTextFromDappText,
   getWindowHandle,
   goToPopup,
@@ -28,7 +31,7 @@ import {
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = 'chrome-extension://';
+let rootURL = getRootUrl();
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
@@ -256,8 +259,10 @@ describe('App interactions flow', () => {
     });
 
     await findElementByTextAndClick(driver, 'bx-e2e-dapp.vercel.app');
-    await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
-
+    await findElementByTestIdAndClick({
+      id: `switch-network-item-${ChainId.hardhat}`,
+      driver,
+    });
     await driver.get('https://bx-e2e-dapp.vercel.app/');
     const dappHandler = await getWindowHandle({ driver });
 

@@ -38,6 +38,8 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
     assets?.[ChainId.optimism],
     assets?.[ChainId.polygon],
     assets?.[ChainId.arbitrum],
+    assets?.[ChainId.base],
+    assets?.[ChainId.zora],
     assets?.[ChainId.bsc],
   ].flat();
   return assetsByNetwork
@@ -62,6 +64,8 @@ export function selectUserAssetAddressMapByChainId(
     [ChainId.bsc]: mapAddresses(assets?.[ChainId.bsc]) || [],
     [ChainId.polygon]: mapAddresses(assets?.[ChainId.polygon]) || [],
     [ChainId.arbitrum]: mapAddresses(assets?.[ChainId.arbitrum]) || [],
+    [ChainId.base]: mapAddresses(assets?.[ChainId.base]) || [],
+    [ChainId.zora]: mapAddresses(assets?.[ChainId.zora]) || [],
   };
 }
 

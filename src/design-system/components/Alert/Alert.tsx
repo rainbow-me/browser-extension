@@ -1,4 +1,6 @@
-import React, { useCallback, useRef, useState } from 'react';
+import EventEmitter from 'events';
+
+import { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -8,24 +10,36 @@ import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
-import { AlertProps, listenAlert } from './util';
+interface AlertProps {
+  text: string;
+  callback?: () => void;
+}
+
+const eventEmitter = new EventEmitter();
+
+const listenAlert = (callback: ({ text, callback }: AlertProps) => void) => {
+  eventEmitter.addListener('rainbow_alert', callback);
+  return () => {
+    eventEmitter.removeListener('rainbow_alert', callback);
+  };
+};
+
+export const triggerAlert = ({ text, callback }: AlertProps) => {
+  eventEmitter.emit('rainbow_alert', { text, callback });
+};
 
 export const Alert = () => {
-  const [visible, setVisible] = useState(false);
-  const [text, setText] = useState('');
-  const alertCallback = useRef<() => void>();
+  const [alert, setAlert] = useState<AlertProps | null>(null);
   const { trackShortcut } = useKeyboardAnalytics();
 
-  listenAlert(async ({ text, callback }: AlertProps) => {
-    setText(text);
-    setVisible(true);
-    alertCallback.current = callback;
-  });
+  const visible = !!alert;
 
-  const onClose = useCallback(() => {
-    setVisible(false);
-    alertCallback.current?.();
-  }, []);
+  useEffect(() => listenAlert(setAlert), []);
+
+  const onClose = () => {
+    alert?.callback?.();
+    setAlert(null);
+  };
 
   useKeyboardShortcut({
     condition: () => visible,
@@ -49,7 +63,7 @@ export const Alert = () => {
         <Stack space="20px">
           <Box style={{ wordBreak: 'break-all' }}>
             <Text align="center" color="label" size="14pt" weight="medium">
-              {text}
+              {alert.text}
             </Text>
           </Box>
           <Inline alignHorizontal="right">

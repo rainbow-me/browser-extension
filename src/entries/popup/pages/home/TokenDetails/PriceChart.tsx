@@ -9,6 +9,7 @@ import { ETH_ADDRESS } from '~/core/references';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { formatCurrency } from '~/core/utils/formatNumber';
 import {
   Box,
   Button,
@@ -86,7 +87,7 @@ function TokenPrice({ token }: { token: ParsedAddressAsset }) {
         gap="10px"
       >
         <Text size="16pt" weight="heavy" cursor="text" userSelect="all">
-          {token.native.price?.display}
+          {formatCurrency(token.native.price?.amount)}
         </Text>
         <Box style={{ maxWidth: '150px' }}>
           <TextOverflow color="accent" size="14pt" weight="heavy">

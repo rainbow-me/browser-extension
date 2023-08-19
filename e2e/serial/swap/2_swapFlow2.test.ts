@@ -10,6 +10,8 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
+import { ChainId } from '~/core/types/chains';
+
 import {
   delayTime,
   doNotFindElementByTestId,
@@ -18,6 +20,7 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  getRootUrl,
   getTextFromText,
   goToPopup,
   goToWelcome,
@@ -30,7 +33,7 @@ import {
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = 'chrome-extension://';
+let rootURL = getRootUrl();
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
@@ -187,7 +190,7 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-3',
+    id: `switch-network-item-${ChainId.arbitrum}`,
     driver,
   });
   const daiBridge = await findElementByTestId({
@@ -400,7 +403,7 @@ it('should be able to go to review a bridge', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'switch-network-item-2',
+    id: `switch-network-item-${ChainId.optimism}`,
     driver,
   });
   await typeOnTextInput({

@@ -40,6 +40,7 @@ import {
   signTransactionFromTrezor,
 } from './trezor';
 import { walletAction } from './walletAction';
+import { HARDWARE_WALLETS } from './walletVariables';
 
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
 const DEFAULT_LEDGER_LIVE_PATH = "m/44'/60'/";
@@ -374,22 +375,9 @@ export const importAccountAtIndex = async (
 };
 
 export const connectTrezor = async () => {
-  // TODO: DELETE
-  // Debugging purposes only - useful if you don't have a real device
-  // return {
-  //   accountsToImport: [
-  //     {
-  //       address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
-  //       index: 0,
-  //     },
-  //     {
-  //       address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
-  //       index: 1,
-  //     },
-  //   ],
-  //   deviceId: 'lol',
-  //   accountsEnabled: 2,
-  // };
+  if (process.env.IS_TESTING === 'true') {
+    return HARDWARE_WALLETS.MOCK_ACCOUNT;
+  }
   try {
     const path = `m/${DEFAULT_HD_PATH}`;
 
@@ -449,24 +437,9 @@ export const connectTrezor = async () => {
 };
 
 export const connectLedger = async () => {
-  // TODO: DELETE
-  //  Debugging purposes only - useful if you don't have a real device
-  // return {
-  //   accountsToImport: [
-  //     {
-  //       address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
-  //       index: 0,
-  //     },
-  //     {
-  //       address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
-  //       index: 1,
-  //     },
-  //   ],
-  //   deviceId: 'lol',
-  //   accountsEnabled: 2,
-  // };
-
-  // Connect to the device
+  if (process.env.IS_TESTING === 'true') {
+    return HARDWARE_WALLETS.MOCK_ACCOUNT;
+  }
   let transport;
   try {
     transport = await TransportWebHID.create();
