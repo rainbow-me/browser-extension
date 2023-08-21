@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import { i18n } from '~/core/languages';
+import { i18n, supportedLanguages } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { supportedCurrencies } from '~/core/references';
 import {
@@ -12,7 +12,7 @@ import {
   RAINBOW_TWITTER_URL,
 } from '~/core/references/links';
 import { themeOptions } from '~/core/references/themes';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import {
@@ -40,6 +40,7 @@ const messenger = initializeMessenger({ connect: 'inpage' });
 export function Settings() {
   const navigate = useRainbowNavigate();
   const { currentCurrency } = useCurrentCurrencyStore();
+  const { currentLanguage } = useCurrentLanguageStore();
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
   const { featureFlags, setFeatureFlag } = useFeatureFlagsStore();
 
@@ -192,6 +193,21 @@ export function Settings() {
             }
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.currency.title')} />
+            }
+          />
+          <MenuItem
+            hasRightArrow
+            leftComponent={
+              <Symbol symbol="globe" weight="medium" size={18} color="pink" />
+            }
+            onClick={() => navigate(ROUTES.SETTINGS__LANGUAGE)}
+            rightComponent={
+              <MenuItem.Selection
+                text={supportedLanguages[currentLanguage].label}
+              />
+            }
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.language.title')} />
             }
           />
           <Lens

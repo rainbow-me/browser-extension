@@ -212,7 +212,7 @@ export const handleProviderRequest = ({
   inpageMessenger: Messenger;
 }) =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
-    const { getActiveSession, addSession, updateSessionChainId } =
+    const { getActiveSession, addSession, updateActiveSessionChainId } =
       appSessionsStore.getState();
     const url = meta?.sender?.url || '';
     const host = (isValidUrl(url) && getDappHost(url)) || '';
@@ -309,7 +309,7 @@ export const handleProviderRequest = ({
             });
             throw new Error('Chain Id not supported');
           } else {
-            updateSessionChainId({
+            updateActiveSessionChainId({
               chainId: proposedChainId,
               host,
             });

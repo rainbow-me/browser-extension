@@ -176,6 +176,9 @@
       "NZD": "New Zealand Dollar",
       "ZAR": "South African Rand"
     },
+    "language": {
+      "title": "Language"
+    },
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
@@ -605,6 +608,36 @@
       "guides_and_support": "Guides & Support",
       "share_feedback": "Share Feedback",
       "lock_rainbow": "Lock Rainbow"
+    }
+  },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "Connect",
+      "connect_to": "Connect to %{appName}?",
+      "app_connected": "%{appName} connected"
+    },
+    "sheet": {
+      "connect": "Connect",
+      "connect_different_wallet": "Connect different wallet",
+      "dont_show_again": "Don’t show this again",
+      "allow_to": "Allow %{appName} to view your wallet address, balance, activity and request approval for transactions.",
+      "connect_to": "Connect to %{appName}?"
+    },
+    "wallet_item": {
+      "disconnect": "Disconnect",
+      "switch_connection": "Switch connection",
+      "connect": "Connect"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "open_app": "Open %{appName}"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "Switch Wallets",
+      "other_wallets": "Other Wallets",
+      "cancel": "Cancel",
+      "connected": "Connected"
     }
   },
   "approve_request": {

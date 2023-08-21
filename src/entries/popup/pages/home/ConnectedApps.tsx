@@ -5,6 +5,7 @@ import appsConnectedImageMask from 'static/assets/appsConnectedImageMask.svg';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { AppSession } from '~/core/state/appSessions';
+import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
@@ -37,9 +38,9 @@ export const ConnectedApps = () => {
 
   const filteredSessions = Object.values(appSessions).reduce(
     (acc: [AppSession[], AppSession[]], session: AppSession) => (
-      acc[isLowerCaseMatch(session.address, currentAddress) ? 0 : 1].push(
-        session,
-      ),
+      acc[
+        isLowerCaseMatch(session.activeSessionAddress, currentAddress) ? 0 : 1
+      ].push(session),
       acc
     ),
     [[], []],
@@ -86,7 +87,7 @@ export const ConnectedApps = () => {
                 <ConnectedApp
                   host={session.host}
                   url={session.url}
-                  address={session.address}
+                  address={session.activeSessionAddress}
                 />
               </Row>
             ))}
@@ -106,7 +107,7 @@ export const ConnectedApps = () => {
                     <ConnectedApp
                       host={session.host}
                       url={session.url}
-                      address={session.address}
+                      address={session.activeSessionAddress}
                     />
                   </Row>
                 ))}
@@ -167,7 +168,7 @@ const ConnectedApp = ({
 }) => {
   const [disconnectButtonVisible, setDisconnectButtonVisible] = useState(false);
   const { data: ensName } = useEnsName({ address });
-  const { disconnectAppSession, appSession } = useAppSession({
+  const { disconnectAppSession, activeSession } = useAppSession({
     host,
   });
   const { appLogo, appName, appHost } = useAppMetadata({ url });
@@ -230,7 +231,9 @@ const ConnectedApp = ({
                           >
                             <Bleed top="7px">
                               <ChainBadge
-                                chainId={appSession?.chainId}
+                                chainId={
+                                  activeSession?.chainId || ChainId.mainnet
+                                }
                                 size="14"
                               />
                             </Bleed>
