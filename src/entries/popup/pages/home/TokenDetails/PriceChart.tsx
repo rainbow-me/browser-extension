@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
@@ -22,7 +22,7 @@ import { TextProps } from '~/design-system/components/Text/Text';
 import { SymbolName } from '~/design-system/styles/designTokens';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 
-import { ChartData, LineChart } from './LineChart';
+import { ChartData, ChartPoint, LineChart } from './LineChart';
 
 const parsePriceChange = (
   value: number,
@@ -145,9 +145,10 @@ const usePriceChart = ({
   });
 };
 
+const percentDiff = (current = 1, last = 0) =>
+  ((current - last) / current) * 100;
 export function PriceChart({ token }: { token: ParsedAddressAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
-  const [date, setDate] = useState(new Date());
 
   const { data } = usePriceChart({
     mainnetAddress: token.mainnetAddress,
@@ -156,23 +157,36 @@ export function PriceChart({ token }: { token: ParsedAddressAsset }) {
     time: selectedTime,
   });
 
+  const todayPoint = {
+    date: new Date(),
+    changePercent: data
+      ? percentDiff(data[data.length - 1].price, data[1].price)
+      : token.price?.relative_change_24h,
+  };
+
+  const [{ changePercent, date }, setIndicatorPoint] = useReducer(
+    (s, point?: ChartPoint) => {
+      if (!point || !data) return todayPoint;
+      return {
+        date: new Date(point.timestamp * 1000),
+        changePercent: percentDiff(data[data.length - 1].price, point.price),
+      };
+    },
+    todayPoint,
+  );
+
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <TokenPrice token={token} />
-        <PriceChange
-          changePercentage={token.price?.relative_change_24h}
-          date={date}
-        />
+        <PriceChange changePercentage={changePercent} date={date} />
       </Box>
       <Box>
         <Box style={{ height: '222px' }} marginHorizontal="-20px">
           {data && (
             <LineChart
               data={data}
-              onMouseMove={(point) => {
-                setDate(point ? new Date(point.timestamp * 1000) : new Date());
-              }}
+              onMouseMove={setIndicatorPoint}
               width={POPUP_DIMENSIONS.width}
               height={222}
               paddingY={40}
