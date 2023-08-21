@@ -170,7 +170,6 @@ export const AppConnectionMenu = ({
         }
       }
     },
-    condition: () => !isCommandKVisible,
   });
 
   return (
