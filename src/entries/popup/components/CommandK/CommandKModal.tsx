@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, AnimationControls, motion } from 'framer-motion';
 import React from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
@@ -9,17 +9,21 @@ import { globalColors } from '~/design-system/styles/designTokens';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+import { CommandKToolbar, TOOLBAR_HEIGHT } from './CommandKToolbar';
+import { SearchItem } from './SearchItems';
+import { CommandKPage } from './pageConfig';
 import { useCommandKStatus } from './useCommandKStatus';
 
 const HORIZONTAL_PADDING = 16;
 const VERTICAL_PADDING = 66;
 
-const MODAL_WIDTH = POPUP_DIMENSIONS.width - HORIZONTAL_PADDING * 2;
+export const MODAL_WIDTH = POPUP_DIMENSIONS.width - HORIZONTAL_PADDING * 2;
 export const MODAL_HEIGHT = POPUP_DIMENSIONS.height - VERTICAL_PADDING * 2;
 
 const INPUT_HEIGHT = 56;
 const SEPARATOR_HEIGHT = 1;
-export const LIST_HEIGHT = MODAL_HEIGHT - INPUT_HEIGHT - SEPARATOR_HEIGHT;
+export const LIST_HEIGHT =
+  MODAL_HEIGHT - INPUT_HEIGHT - SEPARATOR_HEIGHT - TOOLBAR_HEIGHT;
 
 const springConfig = {
   type: 'spring',
@@ -57,7 +61,19 @@ const scrimStates = {
   },
 };
 
-export function CommandKModal({ children }: { children: React.ReactNode }) {
+export function CommandKModal({
+  children,
+  backAnimation,
+  handleExecuteCommand,
+  navigateTo,
+  selectedCommand,
+}: {
+  children: React.ReactNode;
+  backAnimation: AnimationControls;
+  handleExecuteCommand: (command: SearchItem | null) => void;
+  navigateTo: (page: CommandKPage, triggeredCommand: SearchItem) => void;
+  selectedCommand: SearchItem | null;
+}) {
   const { closeCommandK, isCommandKVisible, setFinishedExiting } =
     useCommandKStatus();
   const { currentAddress: address } = useCurrentAddressStore();
@@ -114,33 +130,60 @@ export function CommandKModal({ children }: { children: React.ReactNode }) {
           top="0"
         >
           <Box
-            animate="open"
+            animate={backAnimation}
             as={motion.div}
-            borderRadius="20px"
-            exit="closed"
-            initial="closed"
-            key="commandKModal"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              backdropFilter: 'blur(30px)',
-              background:
-                currentTheme === 'dark'
-                  ? 'linear-gradient(180deg, rgba(36, 38, 41, 0.8) 0%, rgba(36, 38, 41, 0.7) 100%)'
-                  : 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.875) 100%)',
-              boxShadow:
-                currentTheme === 'dark'
-                  ? '0px 15px 45px rgba(0, 0, 0, 0.3), 0px 0px 1px #000000, inset 0px 0.5px 2px rgba(245, 248, 255, 0.07), inset 0px -1px 6px rgba(245, 248, 255, 0.05)'
-                  : '0px 15px 45px rgba(0, 0, 0, 0.3), 0px 0px 1px rgba(0, 0, 0, 0.4), inset 0px 0.5px 2px #FFFFFF, inset 0px -1px 6px #FFFFFF',
-              height: MODAL_HEIGHT,
-              overflow: 'hidden',
-              width: MODAL_WIDTH,
-              willChange: 'transform',
-            }}
-            variants={modalStates}
+            key="backAnimationContainer"
+            style={{ willChange: 'transform' }}
           >
-            <AccentColorProvider color={avatar?.color ?? globalColors.blue60}>
-              {children}
-            </AccentColorProvider>
+            <Box
+              animate="open"
+              as={motion.div}
+              borderRadius="20px"
+              exit="closed"
+              initial="closed"
+              key="commandKModal"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                backdropFilter: 'blur(30px)',
+                background:
+                  currentTheme === 'dark'
+                    ? 'linear-gradient(180deg, rgba(36, 38, 41, 0.8) 0%, rgba(36, 38, 41, 0.7) 100%)'
+                    : 'rgba(255, 255, 255, 0.92)',
+                boxShadow:
+                  currentTheme === 'dark'
+                    ? '0px 15px 45px rgba(0, 0, 0, 0.3), 0px 0px 1px #000000'
+                    : '0px 15px 45px rgba(0, 0, 0, 0.3), 0px 0px 1px rgba(0, 0, 0, 0.4)',
+                height: MODAL_HEIGHT,
+                overflow: 'hidden',
+                width: MODAL_WIDTH,
+                willChange: 'transform',
+              }}
+              variants={modalStates}
+            >
+              <AccentColorProvider color={avatar?.color ?? globalColors.blue60}>
+                {children}
+                <CommandKToolbar
+                  handleExecuteCommand={handleExecuteCommand}
+                  navigateTo={navigateTo}
+                  selectedCommand={selectedCommand}
+                />
+                <Box
+                  borderRadius="20px"
+                  height="full"
+                  left="0"
+                  position="absolute"
+                  style={{
+                    boxShadow:
+                      currentTheme === 'dark'
+                        ? 'inset 0px 0.5px 2px rgba(245, 248, 255, 0.07), inset 0px -1px 6px rgba(245, 248, 255, 0.05)'
+                        : 'inset 0px 0.5px 2px #FFFFFF, inset 0px -1px 6px #FFFFFF',
+                    pointerEvents: 'none',
+                  }}
+                  top="0"
+                  width="full"
+                />
+              </AccentColorProvider>
+            </Box>
           </Box>
         </Box>
       )}

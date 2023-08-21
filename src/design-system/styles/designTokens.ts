@@ -137,6 +137,7 @@ export type BackgroundColor =
   | 'fill'
   | 'fillHorizontal'
   | 'fillSecondary'
+  | 'fillTertiary'
   | 'white'
   | 'blue'
   | 'green'
@@ -147,6 +148,9 @@ export type BackgroundColor =
   | 'yellow'
   | 'shadowNear'
   | 'shadowFar'
+  | 'separator'
+  | 'separatorSecondary'
+  | 'separatorTertiary'
   | 'scrim'
   | 'scrimSecondary'
   | 'scrimTertiary';
@@ -163,6 +167,7 @@ export type ButtonVariant =
 
 export const backdropFilter = {
   'blur(12px)': 'blur(12px)',
+  'blur(20px)': 'blur(20px)',
   'blur(26px)': 'blur(26px)',
   'blur(80px)': 'blur(80px)',
   'opacity(80%)': 'opacity(80%)',
@@ -284,6 +289,16 @@ export const backgroundColors: Record<
       setColorContext: 'dark',
     },
   },
+  fillTertiary: {
+    light: {
+      color: globalColors.grey20,
+      setColorContext: 'light',
+    },
+    dark: {
+      color: 'rgba(245, 248, 255, 0.08)',
+      setColorContext: 'dark',
+    },
+  },
   white: {
     light: {
       color: globalColors.white100,
@@ -372,6 +387,18 @@ export const backgroundColors: Record<
     dark: { color: globalColors.grey100, setColorContext: 'dark' },
     light: { color: '#25292E', setColorContext: 'dark' },
   },
+  separator: {
+    light: { color: globalColors.grey20, setColorContext: 'light' },
+    dark: { color: globalColors.white20, setColorContext: 'dark' },
+  },
+  separatorSecondary: {
+    light: { color: globalColors.grey20, setColorContext: 'light' },
+    dark: { color: 'rgba(245, 248, 255, 0.06)', setColorContext: 'dark' },
+  },
+  separatorTertiary: {
+    light: { color: 'rgba(9, 17, 31, 0.02)', setColorContext: 'light' },
+    dark: { color: 'rgba(245, 248, 255, 0.02)', setColorContext: 'dark' },
+  },
   scrim: {
     light: {
       color: 'rgba(0, 0, 0, 0.2)',
@@ -423,6 +450,7 @@ export const buttonColors = [
   ...selectBackgroundColors(
     'fill',
     'fillSecondary',
+    'fillTertiary',
     'surfacePrimaryElevated',
     'surfacePrimaryElevatedSecondary',
     'surfaceSecondaryElevated',
@@ -442,6 +470,7 @@ export const shadowColors = [
   ...selectBackgroundColors(
     'fill',
     'fillSecondary',
+    'fillTertiary',
     'surfacePrimaryElevated',
     'surfacePrimaryElevatedSecondary',
     'surfaceSecondaryElevated',
@@ -471,6 +500,7 @@ export type ForegroundColor =
   | 'yellow'
   | 'fill'
   | 'fillSecondary'
+  | 'fillTertiary'
   | 'scrim'
   | 'scrimSecondary'
   | 'scrimTertiary'
@@ -517,6 +547,10 @@ export const foregroundColors: Record<
   yellow: selectBackgroundAsForeground('yellow'),
   fill: selectBackgroundAsForeground('fill'),
   fillSecondary: selectBackgroundAsForeground('fillSecondary'),
+  fillTertiary: selectBackgroundAsForeground('fillTertiary'),
+  separator: selectBackgroundAsForeground('separator'),
+  separatorSecondary: selectBackgroundAsForeground('separatorSecondary'),
+  separatorTertiary: selectBackgroundAsForeground('separatorTertiary'),
   scrim: {
     light: 'rgba(0, 0, 0, 0.2)',
     dark: 'rgba(0, 0, 0, 0.4)',
@@ -528,18 +562,6 @@ export const foregroundColors: Record<
   scrimTertiary: {
     light: 'rgba(0, 0, 0, 0.6)',
     dark: 'rgba(0, 0, 0, 0.8)',
-  },
-  separator: {
-    light: globalColors.grey20,
-    dark: globalColors.white20,
-  },
-  separatorSecondary: {
-    light: globalColors.grey20,
-    dark: 'rgba(245, 248, 255, 0.06)',
-  },
-  separatorTertiary: {
-    light: 'rgba(9, 17, 31, 0.02)',
-    dark: 'rgba(245, 248, 255, 0.02)',
   },
   buttonStroke: {
     light: 'rgba(0, 0, 0, 0.05)',
@@ -685,6 +707,7 @@ export const space = {
   '72px': 72,
   '80px': 80,
   '104px': 104,
+  '120px': 120,
 } as const;
 
 export const negativeSpace = {
@@ -724,6 +747,7 @@ export const negativeSpace = {
   '-72px': -72,
   '-80px': -80,
   '-104px': -104,
+  '-120px': -120,
 } as const;
 
 export const spaceToNegativeSpace: Record<
@@ -766,6 +790,7 @@ export const spaceToNegativeSpace: Record<
   '72px': '-72px',
   '80px': '-80px',
   '104px': '-104px',
+  '120px': '-120px',
 };
 
 export const positionSpace = {
@@ -794,6 +819,7 @@ export type Transition = keyof typeof transitions;
 
 export const strokeWeights = {
   '0px': 0,
+  '0.5px': 0.5,
   '1px': 1,
   '2px': 2,
 };
@@ -918,6 +944,11 @@ export const symbolNames = selectSymbolNames(
   'arrow.up.left.and.arrow.down.right',
   'safari',
   'link',
+  'cable.connector',
+  'person.fill.viewfinder',
+  'circlebadge.2.fill',
+  'globe',
+  'xmark.bin.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 
@@ -926,10 +957,13 @@ export const radii = {
   '0': 0,
   '2px': 2,
   '3px': 3,
+  '4px': 4,
   '5px': 5,
   '6px': 6,
+  '7px': 7,
   '8px': 8,
   '9px': 9,
+  '10px': 10,
   '12px': 12,
   '14px': 14,
   '16px': 16,

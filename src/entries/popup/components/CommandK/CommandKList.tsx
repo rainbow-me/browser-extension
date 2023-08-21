@@ -1,45 +1,94 @@
-import { motion } from 'framer-motion';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 
 import { i18n } from '~/core/languages';
-import { Box, Stack, Symbol, Text } from '~/design-system';
+import { Box, Stack, Symbol, Text, TextOverflow } from '~/design-system';
 
 import { LIST_HEIGHT, MODAL_HEIGHT } from './CommandKModal';
-import { ShortcutRow } from './ShortcutRow';
+import { TOOLBAR_HEIGHT } from './CommandKToolbar';
+import {
+  COMMAND_ROW_HEIGHT,
+  ShortcutRow,
+  TokenRow,
+  WalletRow,
+} from './CommandRows';
+import {
+  ENSOrAddressSearchItem,
+  SearchItem,
+  SearchItemType,
+  ShortcutSearchItem,
+  TokenSearchItem,
+  WalletSearchItem,
+} from './SearchItems';
+import { CommandKPage, PAGES } from './pageConfig';
+import { timingConfig } from './references';
+import { CommandKPageState } from './useCommandKNavigation';
 import { useCommandKStatus } from './useCommandKStatus';
-import { ShortcutCommand, useCommands } from './useCommands';
 import { SCROLL_TO_BEHAVIOR } from './utils';
 
 const LIST_HEADER_HEIGHT = 28;
 
+function getPageTitle(
+  currentPage: CommandKPage,
+  command: SearchItem | null,
+  searchQuery: string,
+): string {
+  if (searchQuery && currentPage === PAGES.HOME) {
+    return i18n.t('command_k.pages.home.section_title_results');
+  }
+
+  const title = currentPage.listTitle;
+
+  if (typeof title === 'string') {
+    return title;
+  } else if (command) {
+    return title(command);
+  }
+
+  return '';
+}
+
 export const CommandKList = React.forwardRef<
   HTMLDivElement,
   {
+    currentPage: CommandKPage;
     didScrollOrNavigate: boolean;
-    filteredShortcuts: ShortcutCommand[];
-    handleExecuteCommand: (command: ShortcutCommand | null) => void;
-    selectedCommand: ShortcutCommand | null;
+    filteredCommands: SearchItem[];
+    handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
+    previousPageState: CommandKPageState;
+    searchQuery: string;
+    selectedCommand: SearchItem | null;
     selectedCommandIndex: number;
     setDidScrollOrNavigate: (value: boolean) => void;
   }
 >(
   (
     {
+      currentPage,
       didScrollOrNavigate,
-      filteredShortcuts,
+      filteredCommands,
       handleExecuteCommand,
+      previousPageState,
+      searchQuery,
       selectedCommand,
       selectedCommandIndex,
       setDidScrollOrNavigate,
     },
     ref,
   ) => {
-    const { shortcutList } = useCommands();
     const { isCommandKVisible } = useCommandKStatus();
 
-    const shortcutRowRefs = React.useRef<React.RefObject<HTMLDivElement>[]>(
-      shortcutList.map(() => React.createRef()),
-    );
+    const listVirtualizer = useVirtualizer({
+      count: (filteredCommands?.length || 0) + 1,
+      estimateSize: (index) =>
+        index === 0 ? LIST_HEADER_HEIGHT : COMMAND_ROW_HEIGHT,
+      getScrollElement: () => (ref as React.RefObject<HTMLDivElement>).current,
+      overscan: 20,
+      paddingEnd: 8,
+      scrollPaddingEnd: 8,
+      scrollPaddingStart: 8,
+    });
 
     const enableRowHover = () => {
       if (didScrollOrNavigate) {
@@ -48,59 +97,35 @@ export const CommandKList = React.forwardRef<
     };
 
     const disableRowHover = (e: React.WheelEvent<HTMLDivElement>) => {
+      if (didScrollOrNavigate) {
+        return;
+      }
+
       const atTop = e.currentTarget.scrollTop === 0;
       const atBottom =
         e.currentTarget.scrollTop + e.currentTarget.clientHeight ===
         e.currentTarget.scrollHeight;
 
       if (!((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom))) {
-        if (!didScrollOrNavigate) {
-          setDidScrollOrNavigate(true);
-        }
+        setDidScrollOrNavigate(true);
       }
     };
 
     React.useLayoutEffect(() => {
-      if (
-        isCommandKVisible &&
-        selectedCommandIndex !== -1 &&
-        shortcutRowRefs.current[selectedCommandIndex]
-      ) {
-        const currentItem =
-          shortcutRowRefs.current[selectedCommandIndex].current;
-        if (currentItem) {
-          currentItem.scrollIntoView({
-            behavior: SCROLL_TO_BEHAVIOR,
-            block: 'nearest',
-          });
-        }
+      if (isCommandKVisible && selectedCommandIndex !== -1) {
+        listVirtualizer.scrollToIndex(selectedCommandIndex + 1, {
+          align: 'auto',
+          behavior: SCROLL_TO_BEHAVIOR,
+        });
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isCommandKVisible, selectedCommand]);
-
-    const shortcutRows = React.useMemo(
-      () =>
-        (filteredShortcuts ?? []).map((shortcut, index) => (
-          <ShortcutRow
-            handleExecuteCommand={handleExecuteCommand}
-            key={shortcut.id}
-            ref={shortcutRowRefs.current[index]}
-            selected={
-              (selectedCommand && selectedCommand.id === shortcut.id) ?? false
-            }
-            shortcut={shortcut}
-          />
-        )),
-      [
-        filteredShortcuts,
-        handleExecuteCommand,
-        selectedCommand,
-        shortcutRowRefs,
-      ],
-    );
+    }, [isCommandKVisible, selectedCommandIndex]);
 
     const shouldShowEmptyState =
-      !filteredShortcuts || filteredShortcuts.length === 0;
+      !filteredCommands || filteredCommands.length === 0;
+    const listHeight = shouldShowEmptyState
+      ? LIST_HEIGHT + TOOLBAR_HEIGHT
+      : LIST_HEIGHT;
 
     return (
       <Box
@@ -110,30 +135,110 @@ export const CommandKList = React.forwardRef<
         position="relative"
         ref={ref}
         style={{
-          height: LIST_HEIGHT,
+          height: listHeight,
           overflowY: 'scroll',
-          overscrollBehaviorY: 'none',
-          paddingBottom: 8,
-          scrollPaddingBlockEnd: shouldShowEmptyState ? 0 : 8,
-          scrollPaddingBlockStart: shouldShowEmptyState ? 0 : 8,
         }}
       >
-        {shouldShowEmptyState ? (
-          <CommandKEmptyState />
-        ) : (
-          <Box
-            style={{
-              pointerEvents: didScrollOrNavigate ? 'none' : 'auto',
-            }}
-          >
-            <Stack>
-              <CommandKListHeader
-                title={i18n.t('command_k.section_titles.shortcuts')}
-              />
-              {shortcutRows}
-            </Stack>
-          </Box>
-        )}
+        <AnimatePresence initial={false}>
+          {shouldShowEmptyState ? (
+            <CommandKEmptyState
+              currentPage={currentPage}
+              height={listHeight}
+              searchQuery={searchQuery}
+            />
+          ) : (
+            <Box
+              style={{
+                pointerEvents: didScrollOrNavigate ? 'none' : 'auto',
+              }}
+            >
+              <Box
+                style={{
+                  height: listVirtualizer.getTotalSize(),
+                  position: 'relative',
+                }}
+              >
+                {listVirtualizer.getVirtualItems().map((virtualItem) => {
+                  const { index, key, start, size } = virtualItem;
+
+                  if (index === 0) {
+                    return (
+                      <Box
+                        key={key}
+                        position="absolute"
+                        style={{ height: size, top: start }}
+                        width="full"
+                      >
+                        <CommandKListHeader
+                          title={getPageTitle(
+                            currentPage,
+                            previousPageState.selectedCommand,
+                            searchQuery,
+                          )}
+                        />
+                      </Box>
+                    );
+                  }
+
+                  const commandIndex = index - 1;
+                  const command = filteredCommands[commandIndex];
+                  const isSelected =
+                    (selectedCommand && selectedCommand.id === command.id) ??
+                    false;
+
+                  let row;
+
+                  if (command.type === SearchItemType.Shortcut) {
+                    row = (
+                      <ShortcutRow
+                        command={command as ShortcutSearchItem}
+                        handleExecuteCommand={handleExecuteCommand}
+                        key={command.id}
+                        selected={isSelected}
+                      />
+                    );
+                  } else if (
+                    command.type === SearchItemType.ENSOrAddressResult ||
+                    command.type === SearchItemType.Wallet
+                  ) {
+                    row = (
+                      <WalletRow
+                        command={
+                          command.type === SearchItemType.Wallet
+                            ? (command as WalletSearchItem)
+                            : (command as ENSOrAddressSearchItem)
+                        }
+                        handleExecuteCommand={handleExecuteCommand}
+                        key={command.id}
+                        selected={isSelected}
+                      />
+                    );
+                  } else if (command.type === SearchItemType.Token) {
+                    row = (
+                      <TokenRow
+                        command={command as TokenSearchItem}
+                        handleExecuteCommand={handleExecuteCommand}
+                        key={command.id}
+                        selected={isSelected}
+                      />
+                    );
+                  }
+
+                  return (
+                    <Box
+                      key={key}
+                      position="absolute"
+                      style={{ height: size, top: start }}
+                      width="full"
+                    >
+                      {row}
+                    </Box>
+                  );
+                })}
+              </Box>
+            </Box>
+          )}
+        </AnimatePresence>
       </Box>
     );
   },
@@ -142,25 +247,31 @@ export const CommandKList = React.forwardRef<
 CommandKList.displayName = 'CommandKList';
 
 export function CommandKEmptyState({
+  currentPage,
   height = LIST_HEIGHT,
+  searchQuery,
 }: {
+  currentPage: CommandKPage;
   height?: number;
+  searchQuery: string;
 }) {
   return (
     <Box
       alignItems="center"
-      animate={{ opacity: 1, scale: 1 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       as={motion.div}
       display="flex"
-      exit={{ opacity: 0, scale: 0.8 }}
+      exit={{ opacity: 0, scale: 0.8, y: 0 }}
       height="full"
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.8, y: 0 }}
       justifyContent="center"
+      key="commandKEmptyState"
       position="relative"
       style={{
         height: height,
-        paddingBottom: MODAL_HEIGHT - LIST_HEIGHT,
+        paddingBottom: MODAL_HEIGHT - height,
       }}
+      transition={timingConfig(0.2)}
     >
       <Stack alignHorizontal="center" space="12px">
         <Symbol
@@ -170,7 +281,9 @@ export function CommandKEmptyState({
           weight="bold"
         />
         <Text color="labelQuaternary" size="20pt" weight="bold">
-          {i18n.t('command_k.no_results')}
+          {!searchQuery && currentPage.emptyLabel
+            ? currentPage.emptyLabel
+            : i18n.t('command_k.no_results')}
         </Text>
       </Stack>
     </Box>
@@ -185,9 +298,9 @@ export function CommandKListHeader({ title }: { title: string }) {
       paddingHorizontal="14px"
       paddingTop="14px"
     >
-      <Text color="labelTertiary" size="12pt" weight="semibold">
+      <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
         {title}
-      </Text>
+      </TextOverflow>
     </Box>
   );
 }
