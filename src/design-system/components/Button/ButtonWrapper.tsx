@@ -114,6 +114,7 @@ export const stylesForHeightAndVariant = ({
     white: {
       boxShadow: shadowValue('30px', color),
     },
+    square: {},
   },
   '36px': {
     raised: { boxShadow: shadowValue('24px', color) },
@@ -127,6 +128,7 @@ export const stylesForHeightAndVariant = ({
     white: {
       boxShadow: shadowValue('24px', color),
     },
+    square: {},
   },
   '32px': {
     raised: { boxShadow: shadowValue('24px', color) },
@@ -140,6 +142,7 @@ export const stylesForHeightAndVariant = ({
     white: {
       boxShadow: shadowValue('24px', color),
     },
+    square: {},
   },
   '30px': {
     raised: { boxShadow: shadowValue('24px', color) },
@@ -153,6 +156,7 @@ export const stylesForHeightAndVariant = ({
     white: {
       boxShadow: shadowValue('24px', color),
     },
+    square: {},
   },
   '28px': {
     raised: { boxShadow: shadowValue('12px', color) },
@@ -166,6 +170,7 @@ export const stylesForHeightAndVariant = ({
     white: {
       boxShadow: shadowValue('12px', color),
     },
+    square: {},
   },
   '24px': {
     raised: { boxShadow: shadowValue('12px', color) },
@@ -179,6 +184,7 @@ export const stylesForHeightAndVariant = ({
     white: {
       boxShadow: shadowValue('12px', color),
     },
+    square: {},
   },
 });
 
@@ -229,6 +235,11 @@ export const stylesForVariant = ({
     borderColor: 'separatorSecondary',
     borderWidth: '2px',
     textColor: color as TextColor,
+  },
+  square: {
+    borderColor: color as ButtonColor,
+    borderWidth: '1px',
+    textColor: 'label',
   },
 });
 

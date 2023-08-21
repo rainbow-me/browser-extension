@@ -9,4 +9,5 @@ export const zIndexes = {
   TOAST: 9,
   ALERT: 9,
   WINDOW_STROKE: 10,
+  APP_CONNECTION_WALLET_SWITCHER: 11,
 };

@@ -1,24 +1,34 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { AppSession } from '~/core/state/appSessions';
-import { Box, Column, Columns, Symbol, Text } from '~/design-system';
+import { Box, Column, Columns, Inline, Symbol, Text } from '~/design-system';
 
 import { ChevronDown } from '../ChevronDown/ChevronDown';
+import { ContextMenuRadioItem } from '../ContextMenu/ContextMenu';
 import { DropdownMenuRadioItem } from '../DropdownMenu/DropdownMenu';
 
 export const AppInteractionItem = ({
   appSession,
   chevronDirection,
   showChevron,
+  type = 'dropdown',
 }: {
   appSession: AppSession;
   chevronDirection: 'right' | 'down';
   showChevron: boolean;
+  type?: 'dropdown' | 'context';
 }) => {
+  const { MenuRadioItem } = useMemo(() => {
+    return {
+      MenuRadioItem:
+        type === 'dropdown' ? DropdownMenuRadioItem : ContextMenuRadioItem,
+    };
+  }, [type]);
+
   return (
-    <DropdownMenuRadioItem
+    <MenuRadioItem
       onSelect={(e) => {
         e.preventDefault();
       }}
@@ -28,13 +38,21 @@ export const AppInteractionItem = ({
       <Box width="full">
         <Columns alignVertical="center" space="8px">
           <Column width="content">
-            <Symbol
-              size={12}
-              symbol={
-                !appSession ? 'app.connected.to.app.below.fill' : 'network'
-              }
-              weight="semibold"
-            />
+            <Box height="fit" style={{ height: '18px', width: '18px' }}>
+              <Inline
+                height="full"
+                alignHorizontal="center"
+                alignVertical="center"
+              >
+                <Symbol
+                  size={14}
+                  symbol={
+                    !appSession ? 'app.connected.to.app.below.fill' : 'network'
+                  }
+                  weight="semibold"
+                />
+              </Inline>
+            </Box>
           </Column>
           <Column>
             <Text size="14pt" weight="semibold">
@@ -61,6 +79,6 @@ export const AppInteractionItem = ({
           )}
         </Columns>
       </Box>
-    </DropdownMenuRadioItem>
+    </MenuRadioItem>
   );
 };

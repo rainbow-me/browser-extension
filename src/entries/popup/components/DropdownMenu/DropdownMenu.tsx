@@ -78,10 +78,11 @@ interface DropdownMenuContentProps {
   marginTop?: Space | number;
   accentColor?: string;
   sideOffset?: number;
-  onPointerDownOutside?: () => void;
+  alignOffset?: number;
   scale?: number;
   top?: number;
   position?: BoxStyles['position'];
+  onPointerDownOutside?: () => void;
   onInteractOutside?: DismissableLayerProps['onInteractOutside'];
 }
 
@@ -114,7 +115,9 @@ export const DropdownMenuContentBody = React.forwardRef<
     top,
     position,
     sideOffset,
+    alignOffset,
     onInteractOutside,
+    onPointerDownOutside,
     animate = false,
   } = props;
   const { currentTheme } = useCurrentThemeStore();
@@ -128,7 +131,7 @@ export const DropdownMenuContentBody = React.forwardRef<
         <Box
           as={DropdownMenuPrimitive.Content}
           ref={ref}
-          onPointerDownOutside={props?.onPointerDownOutside}
+          onPointerDownOutside={onPointerDownOutside}
           tabIndex={-1}
           onInteractOutside={onInteractOutside}
           align={align}
@@ -137,6 +140,7 @@ export const DropdownMenuContentBody = React.forwardRef<
           justifyContent="center"
           display="flex"
           sideOffset={sideOffset}
+          alignOffset={alignOffset}
           hideWhenDetached
         >
           <Box
@@ -198,8 +202,8 @@ type DropdownMenuItemProps = {
   external?: boolean;
   color?: TextStyles['color'];
 } & (
-  | { symbolLeft?: SymbolName; emoji?: never }
-  | { symbolLeft?: never; emoji?: string }
+  | { symbolLeft?: SymbolName; emoji?: never; leftComponent?: ReactNode }
+  | { symbolLeft?: never; emoji?: string; leftComponent?: ReactNode }
 );
 
 export const DropdownMenuItem = ({
@@ -207,6 +211,7 @@ export const DropdownMenuItem = ({
   onSelect,
   external,
   symbolLeft,
+  leftComponent,
   emoji,
   color,
 }: DropdownMenuItemProps) => {
@@ -248,6 +253,7 @@ export const DropdownMenuItem = ({
             color={color}
           />
         )}
+        {leftComponent}
         {typeof children === 'string' ? (
           <Text size="14pt" weight="semibold">
             {children}

@@ -1,14 +1,12 @@
-import { motion } from 'framer-motion';
-import {
+import React, {
   ReactNode,
   useCallback,
-  useEffect,
   useLayoutEffect,
+  useRef,
   useState,
 } from 'react';
 
 import { i18n } from '~/core/languages';
-import { initializeMessenger } from '~/core/messengers';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -22,30 +20,19 @@ import { ROUTES } from '../../urls';
 import { useCommandKStatus } from '../CommandK/useCommandKStatus';
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
-import { DropdownSubMenu } from '../DropdownMenu/DropdownSubMenu';
+import {
+  DropdownMenuContentWithSubMenu,
+  DropdownSubMenu,
+} from '../DropdownMenu/DropdownSubMenu';
 import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 
 import { AppConnectionMenuHeader } from './AppConnectionMenuHeader';
 import { AppInteractionItem } from './AppInteractionItem';
-
-const inpageMessenger = initializeMessenger({ connect: 'inpage' });
-
-const NETWORK_MENU_HEADER_X = 23;
-const NETWORK_MENU_HEADER_Y = 72;
-const NETWORK_MENU_HEADER_WIDTH = 190;
-const NETWORK_MENU_HEADER_HEIGHT = 52;
-
-const isClickingMenuHeader = ({ x, y }: { x: number; y: number }) =>
-  x < NETWORK_MENU_HEADER_X ||
-  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
-  y < NETWORK_MENU_HEADER_Y ||
-  y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT;
 
 interface AppConnectionMenuProps {
   children: ReactNode;
@@ -66,7 +53,6 @@ export const AppConnectionMenu = ({
   headerHostId,
   connectedAppsId,
 }: AppConnectionMenuProps) => {
-  const [subMenuOpenDelayed, setSubMenuOpenDelayed] = useState(false);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -75,12 +61,14 @@ export const AppConnectionMenu = ({
   const { currentAddress } = useCurrentAddressStore();
   const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
+  const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
 
   const {
     addSession,
     updateAppSessionChainId,
     disconnectAppSession,
     appSession,
+    activeSession,
   } = useAppSession({ host: appHost });
 
   const changeChainId = useCallback(
@@ -98,18 +86,9 @@ export const AppConnectionMenu = ({
         chainId: Number(chainId),
         url,
       });
-      inpageMessenger.send(`connect:${appHost}`, {
-        address: currentAddress,
-        chainId: Number(chainId),
-      });
-      inpageMessenger.send('rainbow_reload', null);
     },
     [addSession, appHost, currentAddress, url],
   );
-
-  const toggleSubMenu = useCallback((open: boolean) => {
-    setSubMenuOpen(open);
-  }, []);
 
   const onValueChange = useCallback(
     (value: 'connected-apps' | 'switch-networks') => {
@@ -118,27 +97,18 @@ export const AppConnectionMenu = ({
           navigate(ROUTES.CONNECTED);
           break;
         case 'switch-networks':
-          toggleSubMenu(!subMenuOpen);
+          setSubMenuOpen(!subMenuOpen);
           break;
       }
     },
-    [navigate, subMenuOpen, toggleSubMenu],
+    [navigate, subMenuOpen],
   );
 
   const disconnect = useCallback(() => {
     disconnectAppSession();
-    toggleSubMenu(false);
+    setSubMenuOpen(false);
     setMenuOpen(false);
-  }, [disconnectAppSession, toggleSubMenu]);
-
-  useEffect(() => {
-    setTimeout(
-      () => {
-        setSubMenuOpenDelayed(subMenuOpen);
-      },
-      subMenuOpen ? 0 : 250,
-    );
-  }, [subMenuOpen]);
+  }, [disconnectAppSession]);
 
   useLayoutEffect(() => {
     if (isCommandKVisible && menuOpen) {
@@ -157,7 +127,7 @@ export const AppConnectionMenu = ({
         if (!menuOpen) {
           setMenuOpen(true);
         }
-        toggleSubMenu(!subMenuOpen);
+        setSubMenuOpen(!subMenuOpen);
       }
       if (e.key === shortcuts.global.CLOSE.key) {
         if (subMenuOpen) {
@@ -166,7 +136,7 @@ export const AppConnectionMenu = ({
             type: 'switchNetworkMenu.dismiss',
           });
           e.preventDefault();
-          toggleSubMenu(false);
+          setSubMenuOpen(false);
         }
       }
     },
@@ -178,129 +148,111 @@ export const AppConnectionMenu = ({
       <DropdownMenuTrigger asChild>
         <Box testId={menuTriggerId}>{children}</Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        scale={subMenuOpen ? 0.94 : 1}
+      <DropdownMenuContentWithSubMenu
+        subMenuRef={dropdownMenuRef}
         sideOffset={sideOffset}
         align={align}
       >
-        {url ? (
-          <AppConnectionMenuHeader
-            opacity={subMenuOpen ? 0.5 : 1}
-            appLogo={appLogo}
-            appHost={appHost}
-            headerHostId={headerHostId}
-            appSession={appSession}
-            appName={appName}
-          />
-        ) : null}
+        <>
+          {url ? (
+            <AppConnectionMenuHeader
+              opacity={subMenuOpen ? 0.5 : 1}
+              appLogo={appLogo}
+              appHost={appHost}
+              headerHostId={headerHostId}
+              activeSession={activeSession}
+              appName={appName || appHost}
+            />
+          ) : null}
 
-        <DropdownMenuRadioGroup
-          onValueChange={(value) =>
-            onValueChange(value as 'connected-apps' | 'switch-networks')
-          }
-        >
-          <Stack space="4px">
-            {url ? (
-              <DropdownSubMenu
-                open={subMenuOpenDelayed}
-                openContent={subMenuOpen}
-                top={100}
-                marginLeft={30}
-                subMenuContent={
-                  <Stack space="4px">
+          <DropdownMenuRadioGroup
+            onValueChange={(value) =>
+              onValueChange(value as 'connected-apps' | 'switch-networks')
+            }
+          >
+            <Stack space="4px">
+              {url ? (
+                <DropdownSubMenu
+                  menuOpen={menuOpen}
+                  parentRef={dropdownMenuRef}
+                  setMenuOpen={setMenuOpen}
+                  subMenuOpen={subMenuOpen}
+                  setSubMenuOpen={setSubMenuOpen}
+                  subMenuContent={
+                    <Stack space="4px">
+                      {!appSession ? (
+                        <Box paddingTop="12px">
+                          <Text weight="bold" color="labelTertiary" size="11pt">
+                            {i18n.t('menu.app_connection_menu.networks')}
+                          </Text>
+                        </Box>
+                      ) : null}
+
+                      <DropdownMenuRadioGroup
+                        value={`${activeSession?.chainId}`}
+                        onValueChange={
+                          appSession ? changeChainId : connectToApp
+                        }
+                      >
+                        <SwitchNetworkMenuSelector
+                          type="dropdown"
+                          highlightAccentColor
+                          selectedValue={`${activeSession?.chainId}`}
+                          onNetworkSelect={(e) => {
+                            e?.preventDefault();
+                            setSubMenuOpen(false);
+                            setMenuOpen(false);
+                          }}
+                          onShortcutPress={
+                            appSession ? changeChainId : connectToApp
+                          }
+                          showDisconnect={!!appSession}
+                          disconnect={disconnect}
+                        />
+                      </DropdownMenuRadioGroup>
+                    </Stack>
+                  }
+                  subMenuElement={
                     <AppInteractionItem
                       appSession={appSession}
                       chevronDirection={subMenuOpen ? 'down' : 'right'}
                       showChevron
                     />
-                    {url ? <DropdownMenuSeparator /> : null}
-                    <Box
-                      as={motion.div}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Stack space="4px">
-                        {!appSession ? (
-                          <Box paddingTop="12px">
-                            <Text
-                              weight="bold"
-                              color="labelTertiary"
-                              size="11pt"
-                            >
-                              {i18n.t('menu.app_connection_menu.networks')}
-                            </Text>
-                          </Box>
-                        ) : null}
-
-                        <DropdownMenuRadioGroup
-                          value={`${appSession?.chainId}`}
-                          onValueChange={
-                            appSession ? changeChainId : connectToApp
-                          }
-                        >
-                          <SwitchNetworkMenuSelector
-                            type="dropdown"
-                            highlightAccentColor
-                            selectedValue={`${appSession?.chainId}`}
-                            onNetworkSelect={(e) => {
-                              e?.preventDefault();
-                              toggleSubMenu(false);
-                              setMenuOpen(false);
-                            }}
-                            onShortcutPress={
-                              appSession ? changeChainId : connectToApp
-                            }
-                            showDisconnect={!!appSession}
-                            disconnect={disconnect}
-                          />
-                        </DropdownMenuRadioGroup>
-                      </Stack>
-                    </Box>
-                  </Stack>
-                }
-                subMenuElement={
-                  <AppInteractionItem
-                    appSession={appSession}
-                    chevronDirection={subMenuOpen ? 'down' : 'right'}
-                    showChevron
-                  />
-                }
-                onInteractOutsideContent={(e) => {
-                  e.preventDefault();
-                  const { x, y } =
-                    (e.detail.originalEvent as PointerEvent) || {};
-                  if (x && y) {
-                    toggleSubMenu(false);
-                    if (isClickingMenuHeader({ x, y })) {
-                      setMenuOpen(false);
-                    }
                   }
-                }}
-              />
-            ) : null}
-            {url ? <DropdownMenuSeparator /> : null}
+                />
+              ) : null}
+              {url ? <DropdownMenuSeparator /> : null}
 
-            <DropdownMenuRadioItem highlightAccentColor value="connected-apps">
-              <Box testId={connectedAppsId}>
-                <Inline alignVertical="center" space="8px">
-                  <Inline alignVertical="center" alignHorizontal="center">
-                    <Symbol
-                      size={12}
-                      symbol="square.on.square.dashed"
-                      weight="semibold"
-                    />
+              <DropdownMenuRadioItem
+                highlightAccentColor
+                value="connected-apps"
+              >
+                <Box testId={connectedAppsId}>
+                  <Inline alignVertical="center" space="8px">
+                    <Box height="fit" style={{ width: '18px', height: '18px' }}>
+                      <Inline
+                        height="full"
+                        alignVertical="center"
+                        alignHorizontal="center"
+                      >
+                        <Symbol
+                          size={14}
+                          symbol="square.on.square.dashed"
+                          weight="semibold"
+                        />
+                      </Inline>
+                    </Box>
+
+                    <Text size="14pt" weight="semibold">
+                      {i18n.t('menu.app_connection_menu.all_connected_apps')}
+                    </Text>
                   </Inline>
-                  <Text size="14pt" weight="semibold">
-                    {i18n.t('menu.app_connection_menu.all_connected_apps')}
-                  </Text>
-                </Inline>
-              </Box>
-            </DropdownMenuRadioItem>
-          </Stack>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
+                </Box>
+              </DropdownMenuRadioItem>
+            </Stack>
+          </DropdownMenuRadioGroup>
+        </>
+      </DropdownMenuContentWithSubMenu>
     </DropdownMenu>
   );
 };

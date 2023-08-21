@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -50,11 +51,11 @@ export function SignMessage({
   const { appHost, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
-  const { appSession } = useAppSession({ host: appHost });
+  const { activeSession } = useAppSession({ host: appHost });
   const { watchedWallets } = useWallets();
 
-  const selectedChainId = appSession?.chainId ?? ChainId.mainnet;
-  const selectedWallet = appSession?.address;
+  const selectedChainId = activeSession?.chainId ?? ChainId.mainnet;
+  const selectedWallet = activeSession?.address;
 
   const onAcceptRequest = useCallback(async () => {
     const walletAction = getWalletActionMethod(request?.method);
@@ -137,7 +138,7 @@ export function SignMessage({
       <SignMessageInfo request={request} />
       <SignMessageActions
         waitingForDevice={waitingForDevice}
-        selectedWallet={selectedWallet}
+        selectedWallet={selectedWallet || ('' as Address)}
         selectedChainId={selectedChainId}
         onAcceptRequest={onAcceptRequest}
         onRejectRequest={onRejectRequest}
