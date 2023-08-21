@@ -29,6 +29,7 @@ export interface ParsedAsset {
   uniqueId: UniqueId;
   decimals: number;
   icon_url?: string;
+  smallBalance?: boolean;
 }
 
 export interface ParsedAddressAsset extends ParsedAsset {

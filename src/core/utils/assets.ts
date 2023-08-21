@@ -110,11 +110,13 @@ export function parseAddressAsset({
   asset,
   currency,
   quantity,
+  smallBalance,
 }: {
   address: Address;
   asset: ZerionAsset;
   currency: SupportedCurrencyKey;
   quantity: string;
+  smallBalance?: boolean;
 }): ParsedAddressAsset {
   const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
   const parsedAsset = parseAsset({
@@ -140,6 +142,7 @@ export function parseAddressAsset({
         value: amount,
       }),
     },
+    smallBalance,
   };
 }
 
