@@ -16,7 +16,6 @@ export interface AppMetadata {
   appHostName: string;
   appName: string;
   appLogo: string;
-  appColor: string;
 }
 
 export function useAppMetadata({ url, title }: AppMetadataProps): AppMetadata {
