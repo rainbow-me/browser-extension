@@ -918,6 +918,7 @@ export const symbolNames = selectSymbolNames(
   'arrow.up.left.and.arrow.down.right',
   'safari',
   'link',
+  'globe',
 );
 export type SymbolName = typeof symbolNames[number];
 
