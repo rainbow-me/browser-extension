@@ -39,6 +39,7 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+const isFirefox = browser === 'firefox';
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -455,7 +456,7 @@ it('should be able to favorite a token and check the info button is present', as
     id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
-  if (process.env.BROWSER === 'firefox') {
+  if (isFirefox) {
     await findElementByTestIdAndClick({
       id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-token-to-buy-token-input-remove`,
       driver,
@@ -486,17 +487,19 @@ it('should be able to flip correctly', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
-  await delayTime('short');
-  await clearInput({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    driver,
-  });
+  if (isFirefox) {
+    await delayTime('very-long');
+    await clearInput({
+      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      driver,
+    });
+  }
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
     driver,
   });
-  await delayTime('very-long');
+  isFirefox && (await delay(5000));
 
   const assetToSellInputText = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -546,11 +549,15 @@ it('should be able to check insufficient native asset for gas', async () => {
     id: 'swap-flip-button',
     driver,
   });
-  await delayTime('very-long');
-  await clearInput({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    driver,
-  });
+  if (isFirefox) {
+    await delayTime('very-long');
+    await clearInput({
+      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      driver,
+    });
+  } else {
+    await delayTime('short');
+  }
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b10000`,
