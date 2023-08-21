@@ -51,7 +51,7 @@ export const Header = React.memo(function Header() {
       testId="header"
     >
       <Inset>
-        <Stack alignHorizontal="center" space="16px">
+        <Stack alignHorizontal="center" space="8px">
           <Box
             as={motion.div}
             display="flex"
