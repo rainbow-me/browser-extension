@@ -10,7 +10,6 @@ import { truncateAddress } from '~/core/utils/address';
 import { isNativeAsset } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
-import { Box } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 
@@ -69,9 +68,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
 
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
-      <ContextMenuTrigger asChild>
-        <Box onPointerDown={console.log}>{children}</Box>
-      </ContextMenuTrigger>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {allowSwap && (
           <ContextMenuItem symbolLeft="arrow.triangle.swap" onSelect={onSwap}>

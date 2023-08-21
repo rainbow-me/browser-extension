@@ -23,7 +23,7 @@ import {
 } from '~/design-system/styles/designTokens';
 
 import { useAvatar } from '../../hooks/useAvatar';
-import { simulateClick } from '../../utils/simulateClick';
+import { simulateContextClick } from '../../utils/simulateClick';
 
 const { innerWidth: windowWidth } = window;
 
@@ -35,6 +35,7 @@ interface ContextMenuTriggerProps {
   accentColor?: string;
   asChild?: boolean;
   onTrigger?: () => void;
+  openOnClick?: boolean;
 }
 
 export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
@@ -58,6 +59,11 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
           }
           props.onTrigger?.();
         }}
+        onClick={() => {
+          if (props.openOnClick) {
+            simulateContextClick(triggerRef?.current);
+          }
+        }}
         onKeyDown={(e) => {
           if (e.key === shortcuts.global.CLOSE.key) {
             e.stopPropagation();
@@ -66,7 +72,7 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
             e.preventDefault();
           }
           if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
-            simulateClick(triggerRef?.current);
+            simulateContextClick(triggerRef?.current);
           }
         }}
         ref={triggerRef}
