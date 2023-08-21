@@ -20,9 +20,10 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore, useNonceStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { usePendingRequestStore } from '~/core/state/requests';
+import { ChainId } from '~/core/types/chains';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -148,6 +149,41 @@ export function Home() {
 
   useHomeShortcuts();
   useSwitchWalletShortcuts();
+
+  const { getNonce, setNonce, nonces } = useNonceStore();
+
+  useEffect(() => {
+    const A = '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5';
+    const B = '0x69968ce0e92d9c101bad81de55efbcb69603cfe3';
+    setNonce({
+      address: A,
+      chainId: ChainId.mainnet,
+      currentNonce: 1,
+    });
+    setNonce({
+      address: A,
+      chainId: ChainId.optimism,
+      currentNonce: 2,
+    });
+    setNonce({
+      address: B,
+      chainId: ChainId.arbitrum,
+      currentNonce: 1,
+    });
+    console.log('- nonces', nonces);
+    setTimeout(() => {
+      const aMainnet = getNonce({ address: A, chainId: ChainId.mainnet });
+      const aOP = getNonce({ address: A, chainId: ChainId.optimism });
+      const aARB = getNonce({ address: B, chainId: ChainId.arbitrum });
+      const aBASE = getNonce({ address: B, chainId: ChainId.base });
+      console.log('aMainnet', aMainnet);
+      console.log('aOP', aOP);
+      console.log('aARB', aARB);
+      console.log('aBASE', aBASE);
+      console.log('- nonces', nonces);
+    }, 3000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>

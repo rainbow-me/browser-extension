@@ -18,7 +18,7 @@ type GetNonceArgs = {
 type UpdateNonceArgs = NonceData & GetNonceArgs;
 
 export interface CurrentNonceState {
-  [key: Address]: Record<ChainId, NonceData>;
+  nonces: Record<Address, Record<ChainId, NonceData>>;
   setNonce: ({
     address,
     currentNonce,
@@ -28,24 +28,31 @@ export interface CurrentNonceState {
   getNonce: ({ address, chainId }: GetNonceArgs) => NonceData | null;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 export const nonceStore = createStore<CurrentNonceState>(
   (set, get) => ({
+    nonces: {},
     setNonce: ({ address, currentNonce, latestConfirmedNonce, chainId }) => {
-      const staleData = get()?.[address]?.[chainId];
+      const { nonces: oldNonces } = get();
+      const addressAndChainIdNonces = oldNonces?.[address]?.[chainId] || {};
       set({
-        [address]: {
-          [chainId]: {
-            currentNonce: currentNonce ?? staleData?.currentNonce,
-            latestConfirmedNonce:
-              latestConfirmedNonce ?? staleData?.latestConfirmedNonce,
+        nonces: {
+          ...oldNonces,
+          [address]: {
+            ...oldNonces[address],
+            [chainId]: {
+              currentNonce:
+                currentNonce ?? addressAndChainIdNonces?.currentNonce,
+              latestConfirmedNonce:
+                latestConfirmedNonce ??
+                addressAndChainIdNonces?.latestConfirmedNonce,
+            },
           },
         },
       });
     },
     getNonce: ({ address, chainId }) => {
-      return get()?.[address]?.[chainId] ?? null;
+      const { nonces } = get();
+      return nonces[address]?.[chainId] ?? null;
     },
   }),
   {
