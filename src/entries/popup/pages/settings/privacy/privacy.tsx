@@ -3,12 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
-import { useCurrentCurrencyStore } from '~/core/state';
 import { useAnalyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
 import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
-import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import { Box, Symbol } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -27,7 +25,6 @@ export function Privacy() {
     useHideAssetBalancesStore();
   const { hideSmallBalances, setHideSmallBalances } =
     useHideSmallBalancesStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
 
   const { autoLockTimer } = useAutoLockTimerStore();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
@@ -137,14 +134,6 @@ export function Privacy() {
                 <MenuItem.Title
                   text={i18n.t(
                     'settings.privacy_and_security.auto_hide_balances_under_1',
-                    {
-                      amount: convertAmountToNativeDisplay(
-                        '1',
-                        currentCurrency,
-                        undefined,
-                        true,
-                      ),
-                    },
                   )}
                 />
               }
