@@ -26,6 +26,7 @@ import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import {
   CoinIcon,
   NFTIcon,
+  TwoCoinsIcon,
 } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import {
   DropdownMenu,
@@ -112,6 +113,25 @@ function ActivityPill({ transaction }: ActivityPillProps) {
   const asset = transaction.asset;
 
   if (!asset || !transaction.title) return null;
+
+  const changes = transaction.changes || [];
+  if (
+    ['wrap', 'undwrap', 'swap'].includes(transaction.type) &&
+    !!changes[0] &&
+    !!changes[1]
+  )
+    return (
+      <BaseActivityPill
+        icon={
+          <TwoCoinsIcon
+            under={changes[1].asset}
+            over={changes[0].asset}
+            size={16}
+          />
+        }
+        title={transaction.title}
+      />
+    );
 
   if (asset.type === 'nft')
     return (

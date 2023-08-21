@@ -28,7 +28,7 @@ import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
-import { ActivityDetails } from './pages/home/ActivityDetails/ActivityDetails';
+import { ActivityDetails } from './pages/home/Activity/ActivityDetails';
 import { ConnectedApps } from './pages/home/ConnectedApps';
 import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';

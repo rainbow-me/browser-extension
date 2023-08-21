@@ -43,7 +43,7 @@ import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
-import { Activity } from './Activity';
+import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { AppConnection } from './NetworkMenu';
@@ -113,7 +113,7 @@ function Tabs() {
       <Separator color="separatorTertiary" strokeWeight="1px" />
       <Content>
         {activeTab === 'tokens' && <Tokens />}
-        {activeTab === 'activity' && <Activity />}
+        {activeTab === 'activity' && <Activities />}
       </Content>
     </>
   );
