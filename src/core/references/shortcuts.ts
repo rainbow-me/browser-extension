@@ -136,6 +136,10 @@ export const shortcuts = {
       display: 'N',
       key: 'n',
     },
+    SWITCH_WALLETS: {
+      display: 'E',
+      key: 'e',
+    },
   },
   wallets: {
     CHOOSE_WALLET_GROUP_NEW: {

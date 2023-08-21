@@ -140,25 +140,42 @@ export const AppConnectionMenu = ({
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.home.SWITCH_NETWORK.key) {
-        trackShortcut({
-          key: shortcuts.home.SWITCH_NETWORK.display,
-          type: 'switchNetworkMenu.toggle',
-        });
-        if (!menuOpen) {
-          setMenuOpen(true);
-        }
-        setSubMenuOpen(!subMenuOpen);
-      }
-      if (e.key === shortcuts.global.CLOSE.key) {
-        if (subMenuOpen) {
+      switch (e.key) {
+        case shortcuts.home.SWITCH_NETWORK.key:
           trackShortcut({
-            key: shortcuts.global.CLOSE.display,
-            type: 'switchNetworkMenu.dismiss',
+            key: shortcuts.home.SWITCH_NETWORK.display,
+            type: 'switchNetworkMenu.toggle',
           });
-          e.preventDefault();
-          setSubMenuOpen(false);
-        }
+          if (!menuOpen) {
+            setMenuOpen(true);
+          }
+          if (menuOpen && !subMenuOpen) {
+            setSubMenuOpen(true);
+          }
+          if (menuOpen && subMenuOpen) {
+            setSubMenuOpen(false);
+          }
+          break;
+        case shortcuts.global.CLOSE.key:
+          if (subMenuOpen) {
+            trackShortcut({
+              key: shortcuts.global.CLOSE.display,
+              type: 'switchNetworkMenu.dismiss',
+            });
+            e.preventDefault();
+            setSubMenuOpen(false);
+          }
+          break;
+        case shortcuts.home.SWITCH_WALLETS.key:
+          if (!subMenuOpen) {
+            trackShortcut({
+              key: shortcuts.home.SWITCH_WALLETS.display,
+              type: 'switchNetworkMenu.switchWallets',
+            });
+            e.preventDefault();
+            setMenuOpen(false);
+            triggerWalletSwitcher({ show: true });
+          }
       }
     },
   });

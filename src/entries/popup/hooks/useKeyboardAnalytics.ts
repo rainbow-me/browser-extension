@@ -52,6 +52,7 @@ export type KeyboardEventDescription =
   | 'switchNetworkMenu.disconnect'
   | 'switchNetworkMenu.dismiss'
   | 'switchNetworkMenu.selectChain'
+  | 'switchNetworkMenu.switchWallets'
   | 'switchNetworkMenu.toggle'
   | 'tokens.goToSend'
   | 'tokens.goToSwap'
