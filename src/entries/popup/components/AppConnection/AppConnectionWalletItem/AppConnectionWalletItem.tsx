@@ -16,6 +16,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
+import { goToNewTab } from '~/core/utils/tabs';
 import {
   Box,
   Column,
@@ -92,10 +93,14 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
             setSubMenuOpen(!subMenuOpen);
             break;
           case 'open-dapp':
+            goToNewTab({
+              url: appMetadata.url,
+              active: false,
+            });
             break;
         }
       },
-      [disconnect, subMenuOpen],
+      [appMetadata.url, disconnect, subMenuOpen],
     );
 
     return (

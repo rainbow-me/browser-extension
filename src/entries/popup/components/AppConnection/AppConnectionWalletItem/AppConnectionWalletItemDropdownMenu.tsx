@@ -3,6 +3,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { goToNewTab } from '~/core/utils/tabs';
 import { Box, ButtonSymbol, Inline, Text } from '~/design-system';
 import { Symbol } from '~/design-system/components/Symbol/Symbol';
 
@@ -64,10 +65,14 @@ export const AppConnectionWalletItemDropdownMenu = ({
           setSubMenuOpen(!subMenuOpen);
           break;
         case 'open-dapp':
+          goToNewTab({
+            url: appMetadata.url,
+            active: false,
+          });
           break;
       }
     },
-    [disconnect, subMenuOpen],
+    [appMetadata.url, disconnect, subMenuOpen],
   );
 
   useKeyboardShortcut({
