@@ -170,7 +170,6 @@ export function Home() {
             <TopNav />
             <Header />
             <Tabs />
-            {/* <AppConnectionWatcher /> */}
           </motion.div>
           {currentHomeSheet}
         </>

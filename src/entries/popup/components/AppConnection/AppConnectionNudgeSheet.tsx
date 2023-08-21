@@ -17,6 +17,7 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useDebounce } from '../../hooks/useDebounce';
 import usePrevious from '../../hooks/usePrevious';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
@@ -46,6 +47,7 @@ export const AppConnectionNudgeSheet = ({
   const { appHost, appName, appLogo } = useAppMetadata({ url });
   const { setNudgeSheetDisabled } = useAppConnectionWalletSwitcherStore();
   const previousShow = usePrevious(show);
+  const name = useDebounce(displayName, 500);
 
   const [doNotShowAgain, setDoNotShowAgain] = useState(false);
 
@@ -121,7 +123,7 @@ export const AppConnectionNudgeSheet = ({
                       color="labelTertiary"
                     />
                     <TextOverflow color="label" size="12pt" weight="bold">
-                      {displayName}
+                      {name}
                     </TextOverflow>
                   </Inline>
                   <TextOverflow color="label" size="12pt" weight="bold">
