@@ -21,6 +21,7 @@ export type KeyboardEventDescription =
   | 'global.switchWallet'
   | 'home.copyAddress'
   | 'home.dismissSheet'
+  | 'home.disconnectApp'
   | 'home.goToConnectedApps'
   | 'home.goToProfile'
   | 'home.goToSend'

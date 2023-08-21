@@ -68,6 +68,7 @@ export const AppConnectionMenu = ({
     addSession,
     updateAppSessionChainId,
     disconnectAppSession,
+    disconnectSession,
     appSession,
     activeSession,
   } = useAppSession({ host: appHost });
@@ -91,8 +92,21 @@ export const AppConnectionMenu = ({
     [addSession, appHost, currentAddress, url],
   );
 
+  const disconnectFromApp = useCallback(() => {
+    disconnectSession({
+      address: currentAddress,
+      host: appHost,
+    });
+  }, [appHost, currentAddress, disconnectSession]);
+
   const onValueChange = useCallback(
-    (value: 'connected-apps' | 'switch-networks' | 'switch-wallets') => {
+    (
+      value:
+        | 'connected-apps'
+        | 'switch-networks'
+        | 'switch-wallets'
+        | 'disconnect',
+    ) => {
       switch (value) {
         case 'connected-apps':
           navigate(ROUTES.CONNECTED);
@@ -103,9 +117,12 @@ export const AppConnectionMenu = ({
         case 'switch-wallets':
           triggerWalletSwitcher({ show: true });
           break;
+        case 'disconnect':
+          disconnectFromApp();
+          break;
       }
     },
-    [navigate, subMenuOpen],
+    [disconnectFromApp, navigate, subMenuOpen],
   );
 
   const disconnect = useCallback(() => {
@@ -179,87 +196,124 @@ export const AppConnectionMenu = ({
             }
           >
             <Stack space="4px">
-              {url ? (
-                <DropdownSubMenu
-                  menuOpen={menuOpen}
-                  parentRef={dropdownMenuRef}
-                  setMenuOpen={setMenuOpen}
-                  subMenuOpen={subMenuOpen}
-                  setSubMenuOpen={setSubMenuOpen}
-                  subMenuContent={
-                    <Stack space="4px">
-                      {!appSession ? (
-                        <Box paddingTop="12px">
-                          <Text weight="bold" color="labelTertiary" size="11pt">
-                            {i18n.t('menu.app_connection_menu.networks')}
-                          </Text>
-                        </Box>
-                      ) : null}
+              <Box>
+                {url ? (
+                  <DropdownSubMenu
+                    menuOpen={menuOpen}
+                    parentRef={dropdownMenuRef}
+                    setMenuOpen={setMenuOpen}
+                    subMenuOpen={subMenuOpen}
+                    setSubMenuOpen={setSubMenuOpen}
+                    subMenuContent={
+                      <Stack space="4px">
+                        {!appSession ? (
+                          <Box paddingTop="12px">
+                            <Text
+                              weight="bold"
+                              color="labelTertiary"
+                              size="11pt"
+                            >
+                              {i18n.t('menu.app_connection_menu.networks')}
+                            </Text>
+                          </Box>
+                        ) : null}
 
-                      <DropdownMenuRadioGroup
-                        value={`${activeSession?.chainId}`}
-                        onValueChange={
-                          appSession ? changeChainId : connectToApp
-                        }
-                      >
-                        <SwitchNetworkMenuSelector
-                          type="dropdown"
-                          highlightAccentColor
-                          selectedValue={`${activeSession?.chainId}`}
-                          onNetworkSelect={(e) => {
-                            e?.preventDefault();
-                            setSubMenuOpen(false);
-                            setMenuOpen(false);
-                          }}
-                          onShortcutPress={
+                        <DropdownMenuRadioGroup
+                          value={`${activeSession?.chainId}`}
+                          onValueChange={
                             appSession ? changeChainId : connectToApp
                           }
-                          showDisconnect={!!appSession}
-                          disconnect={disconnect}
-                        />
-                      </DropdownMenuRadioGroup>
-                    </Stack>
-                  }
-                  subMenuElement={
-                    <AppInteractionItem
-                      appSession={appSession}
-                      chevronDirection={subMenuOpen ? 'down' : 'right'}
-                      showChevron
-                    />
-                  }
-                />
-              ) : null}
-              {activeSession ? (
-                <DropdownMenuRadioItem
-                  highlightAccentColor
-                  value="switch-wallets"
-                >
-                  <Box testId={connectedAppsId}>
-                    <Inline alignVertical="center" space="8px">
-                      <Box
-                        height="fit"
-                        style={{ width: '18px', height: '18px' }}
-                      >
-                        <Inline
-                          height="full"
-                          alignVertical="center"
-                          alignHorizontal="center"
                         >
-                          <Symbol
-                            size={14}
-                            symbol="wand.and.stars"
-                            weight="semibold"
+                          <SwitchNetworkMenuSelector
+                            type="dropdown"
+                            highlightAccentColor
+                            selectedValue={`${activeSession?.chainId}`}
+                            onNetworkSelect={(e) => {
+                              e?.preventDefault();
+                              setSubMenuOpen(false);
+                              setMenuOpen(false);
+                            }}
+                            onShortcutPress={
+                              appSession ? changeChainId : connectToApp
+                            }
+                            showDisconnect={!!appSession}
+                            disconnect={disconnect}
                           />
+                        </DropdownMenuRadioGroup>
+                      </Stack>
+                    }
+                    subMenuElement={
+                      <AppInteractionItem
+                        appSession={appSession}
+                        chevronDirection={subMenuOpen ? 'down' : 'right'}
+                        showChevron
+                      />
+                    }
+                  />
+                ) : null}
+                {activeSession ? (
+                  <>
+                    <DropdownMenuRadioItem
+                      highlightAccentColor
+                      value="switch-wallets"
+                    >
+                      <Box testId={connectedAppsId}>
+                        <Inline alignVertical="center" space="8px">
+                          <Box
+                            height="fit"
+                            style={{ width: '18px', height: '18px' }}
+                          >
+                            <Inline
+                              height="full"
+                              alignVertical="center"
+                              alignHorizontal="center"
+                            >
+                              <Symbol
+                                size={14}
+                                symbol="wand.and.stars"
+                                weight="semibold"
+                              />
+                            </Inline>
+                          </Box>
+
+                          <Text size="14pt" weight="semibold">
+                            {i18n.t('menu.app_connection_menu.switch_wallets')}
+                          </Text>
                         </Inline>
                       </Box>
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem
+                      highlightAccentColor
+                      value="disconnect"
+                    >
+                      <Box testId={connectedAppsId}>
+                        <Inline alignVertical="center" space="8px">
+                          <Box
+                            height="fit"
+                            style={{ width: '18px', height: '18px' }}
+                          >
+                            <Inline
+                              height="full"
+                              alignVertical="center"
+                              alignHorizontal="center"
+                            >
+                              <Symbol
+                                size={12}
+                                symbol="xmark"
+                                weight="semibold"
+                              />
+                            </Inline>
+                          </Box>
 
-                      <Text size="14pt" weight="semibold">
-                        {i18n.t('menu.app_connection_menu.switch_wallets')}
-                      </Text>
-                    </Inline>
-                  </Box>
-                </DropdownMenuRadioItem>
-              ) : null}
+                          <Text size="14pt" weight="semibold">
+                            {i18n.t('menu.app_connection_menu.disconnect')}
+                          </Text>
+                        </Inline>
+                      </Box>
+                    </DropdownMenuRadioItem>
+                  </>
+                ) : null}
+              </Box>
 
               {url ? <DropdownMenuSeparator /> : null}
 

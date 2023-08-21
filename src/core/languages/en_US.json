@@ -680,7 +680,8 @@
       "networks": "Networks",
       "connect": "Connect",
       "switch_networks": "Switch networks",
-      "switch_wallets": "Switch wallets"
+      "switch_wallets": "Switch wallets",
+      "disconnect": "Disconnect"
     },
     "home_header_right": {
       "settings": "Settings",
