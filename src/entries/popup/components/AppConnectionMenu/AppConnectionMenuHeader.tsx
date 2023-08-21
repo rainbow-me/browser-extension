@@ -68,7 +68,7 @@ export const AppConnectionMenuHeader = ({
               <Rows space="8px">
                 <Row>
                   <TextOverflow size="14pt" weight="bold" color="label">
-                    {appName ?? appHost}
+                    {appName || appHost}
                   </TextOverflow>
                 </Row>
                 <Row>

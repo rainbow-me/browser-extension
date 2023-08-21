@@ -35,7 +35,7 @@ export const AppConnectionNudgeBanner = ({
 
   return (
     <NudgeBanner show={show} zIndex={zIndexes.BOTTOM_SHEET}>
-      <Box padding="10px">
+      <Box testId="app-connection-nudge-banner" padding="10px">
         <Columns>
           <Column>
             <Columns space="10px" alignVertical="center">
@@ -109,6 +109,7 @@ export const AppConnectionNudgeBanner = ({
                   borderRadius="10px"
                 >
                   <Button
+                    testId="nudge-banner-connect"
                     symbol="return.left"
                     symbolSide="left"
                     width="fit"
@@ -118,7 +119,6 @@ export const AppConnectionNudgeBanner = ({
                     variant={'square'}
                     tabIndex={0}
                     borderRadius="8px"
-                    disabled
                   >
                     {i18n.t('app_connection_switcher.banner.connect')}
                   </Button>
