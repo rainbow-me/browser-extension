@@ -14,9 +14,9 @@ import {
 test('should be able to set and change language', async () => {
   const { currentLanguage, setCurrentLanguage } =
     currentLanguageStore.getState();
-  expect(currentLanguage).toBe(Language.EN);
-  setCurrentLanguage(Language.ES);
-  expect(currentLanguageStore.getState().currentLanguage).toBe(Language.ES);
+  expect(currentLanguage).toBe(Language.EN_US);
+  setCurrentLanguage(Language.ES_419);
+  expect(currentLanguageStore.getState().currentLanguage).toBe(Language.ES_419);
 });
 
 test('should be able to set and change address', async () => {

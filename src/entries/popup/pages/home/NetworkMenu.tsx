@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import appConnectionImageMask from 'static/assets/appConnectionImageMask.svg';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { ChainId } from '~/core/types/chains';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import {
@@ -14,34 +15,16 @@ import { AppConnectionMenu } from '../../components/AppConnectionMenu/AppConnect
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import ExternalImage from '../../components/ExternalImage/ExternalImage';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import { tabIndexes } from '../../utils/tabIndexes';
 
 export const AppConnection = () => {
-  const [url, setUrl] = React.useState('');
+  const { url } = useActiveTab();
   const { appLogo, appHost } = useAppMetadata({ url });
-  const { appSession } = useAppSession({ host: appHost });
+  const { appSession, activeSession } = useAppSession({ host: appHost });
   const { currentTheme } = useCurrentThemeStore();
-
-  React.useEffect(() => {
-    chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-      try {
-        const url = tabs[0].url;
-        if (url) {
-          const urlObject = new URL(url ?? '');
-          if (
-            urlObject.protocol === 'http:' ||
-            urlObject.protocol === 'https:'
-          ) {
-            setUrl(url);
-          }
-        }
-      } catch (e) {
-        //
-      }
-    });
-  }, []);
 
   return (
     <AppConnectionMenu
@@ -128,7 +111,10 @@ export const AppConnection = () => {
                       height="full"
                     >
                       <Bleed top="7px">
-                        <ChainBadge chainId={appSession?.chainId} size="8" />
+                        <ChainBadge
+                          chainId={activeSession?.chainId || ChainId.mainnet}
+                          size="8"
+                        />
                       </Bleed>
                     </Inline>
                   </Box>
