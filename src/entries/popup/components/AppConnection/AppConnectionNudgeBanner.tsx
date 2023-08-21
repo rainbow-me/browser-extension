@@ -17,6 +17,7 @@ import { NudgeBanner } from '~/design-system/components/NudgeBanner/NudgeBanner'
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useDebounce } from '../../hooks/useDebounce';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
@@ -32,6 +33,8 @@ export const AppConnectionNudgeBanner = ({
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
   const { appHost, appName, appLogo } = useAppMetadata({ url });
+
+  const name = useDebounce(displayName, 500);
 
   return (
     <NudgeBanner show={show} zIndex={zIndexes.BOTTOM_SHEET}>
@@ -81,7 +84,7 @@ export const AppConnectionNudgeBanner = ({
                         color="labelTertiary"
                       />
                       <TextOverflow color="label" size="12pt" weight="bold">
-                        {displayName}
+                        {name}
                       </TextOverflow>
                     </Inline>
                     <TextOverflow color="label" size="12pt" weight="bold">
