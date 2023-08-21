@@ -35,7 +35,7 @@ export const AppInteractionItem = ({
       highlightAccentColor
       value="switch-networks"
     >
-      <Box width="full">
+      <Box width="full" testId="switch-networks-app-interation-item">
         <Columns alignVertical="center" space="8px">
           <Column width="content">
             <Box height="fit" style={{ height: '18px', width: '18px' }}>
