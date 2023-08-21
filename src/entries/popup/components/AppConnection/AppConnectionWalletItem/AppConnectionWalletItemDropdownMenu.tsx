@@ -4,7 +4,6 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, ButtonSymbol, Inline, Text } from '~/design-system';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { Symbol } from '~/design-system/components/Symbol/Symbol';
 
 import { AppMetadata } from '../../../hooks/useAppMetadata';
@@ -116,23 +115,19 @@ export const AppConnectionWalletItemDropdownMenu = ({
                   value={`${appSession.sessions[address]}`}
                   onValueChange={changeChainId}
                 >
-                  <AccentColorProviderWrapper
-                    color={appMetadata.appColor || undefined}
-                  >
-                    <SwitchNetworkMenuSelector
-                      type="dropdown"
-                      highlightAccentColor
-                      selectedValue={`${appSession.sessions[address]}`}
-                      onNetworkSelect={(e) => {
-                        e?.preventDefault();
-                        setSubMenuOpen(false);
-                        setMenuOpen(false);
-                      }}
-                      onShortcutPress={changeChainId}
-                      showDisconnect={false}
-                      disconnect={disconnect}
-                    />
-                  </AccentColorProviderWrapper>
+                  <SwitchNetworkMenuSelector
+                    type="dropdown"
+                    highlightAccentColor
+                    selectedValue={`${appSession.sessions[address]}`}
+                    onNetworkSelect={(e) => {
+                      e?.preventDefault();
+                      setSubMenuOpen(false);
+                      setMenuOpen(false);
+                    }}
+                    onShortcutPress={changeChainId}
+                    showDisconnect={false}
+                    disconnect={disconnect}
+                  />
                 </DropdownMenuRadioGroup>
               }
               subMenuElement={
