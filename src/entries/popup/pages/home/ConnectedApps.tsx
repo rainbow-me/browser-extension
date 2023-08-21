@@ -275,6 +275,9 @@ const ConnectedApp = ({
                               color="labelTertiary"
                               size="12pt"
                               weight="semibold"
+                              testId={`connected-app-${appHost}-${
+                                ensName || truncateAddress(address)
+                              }`}
                             >
                               {ensName || truncateAddress(address)}
                             </Text>

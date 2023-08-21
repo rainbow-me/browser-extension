@@ -26,13 +26,11 @@ import { SwitchNetworkMenuSelector } from '../../SwitchMenu/SwitchNetworkMenu';
 
 interface AppConnectionWalletItemDropdownMenuProps {
   appMetadata: AppMetadata;
-  testId?: string;
   address: Address;
 }
 
 export const AppConnectionWalletItemDropdownMenu = ({
   appMetadata,
-  testId,
   address,
 }: AppConnectionWalletItemDropdownMenuProps) => {
   const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
@@ -80,10 +78,13 @@ export const AppConnectionWalletItemDropdownMenu = ({
     },
   });
   return (
-    <Box onClick={(e) => e.stopPropagation()} testId={testId}>
+    <Box onClick={(e) => e.stopPropagation()}>
       <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
         <DropdownMenuTrigger asChild>
-          <Box style={{ cursor: 'default' }}>
+          <Box
+            testId={`app-connection-wallet-item-dropdown-menu-${address}`}
+            style={{ cursor: 'default' }}
+          >
             <ButtonSymbol
               color="labelTertiary"
               height="32px"

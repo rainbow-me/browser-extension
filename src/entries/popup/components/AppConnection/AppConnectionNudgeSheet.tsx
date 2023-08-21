@@ -67,7 +67,7 @@ export const AppConnectionNudgeSheet = ({
         setShow={setShowWalletSwitcher}
       />
       <BottomSheet show={show} zIndex={zIndexes.BOTTOM_SHEET}>
-        <Box>
+        <Box testId="app-connection-nudge-sheet">
           <Navbar
             leftComponent={
               <Navbar.CloseButton onClick={() => setShow(false)} />
@@ -148,6 +148,7 @@ export const AppConnectionNudgeSheet = ({
               <Box width="full">
                 <Stack space="8px">
                   <Button
+                    testId="nudge-sheet-connect"
                     symbol="return.left"
                     symbolSide="left"
                     width="full"
@@ -162,6 +163,7 @@ export const AppConnectionNudgeSheet = ({
                     {i18n.t('app_connection_switcher.sheet.connect')}
                   </Button>
                   <Button
+                    testId="nudge-sheet-connect-different-wallet"
                     color="fillSecondary"
                     height="44px"
                     width="full"

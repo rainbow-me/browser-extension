@@ -25,6 +25,10 @@ export const AppConnectionWatcher = () => {
     host: appHost,
   });
 
+  const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
+  const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
+  const [showWalletSwitcher, setShowWalletSwitcher] = useState<boolean>(false);
+
   const connect = useCallback(() => {
     addSession({
       host: appHost,
@@ -32,11 +36,17 @@ export const AppConnectionWatcher = () => {
       chainId: activeSession?.chainId || ChainId.mainnet,
       url,
     });
-  }, [activeSession?.chainId, addSession, appHost, currentAddress, url]);
-
-  const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
-  const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
-  const [showWalletSwitcher, setShowWalletSwitcher] = useState<boolean>(false);
+    if (showNudgeBanner) setShowNudgeBanner(false);
+    if (showNudgeSheet) setShowNudgeSheet(false);
+  }, [
+    activeSession?.chainId,
+    addSession,
+    appHost,
+    currentAddress,
+    showNudgeBanner,
+    showNudgeSheet,
+    url,
+  ]);
 
   const {
     nudgeSheetEnabled,
@@ -54,8 +64,6 @@ export const AppConnectionWatcher = () => {
         if (showNudgeSheet) setShowNudgeSheet(false);
       } else if (e.key === shortcuts.global.SELECT.key) {
         connect();
-        if (showNudgeBanner) setShowNudgeBanner(false);
-        if (showNudgeSheet) setShowNudgeSheet(false);
         triggerToast({
           title: i18n.t('app_connection_switcher.banner.app_connected', {
             appName: appName || appHostName,
