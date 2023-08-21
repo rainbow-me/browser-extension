@@ -83,7 +83,10 @@ function AvatarContent({
               maskImage: `url(${mask})`,
               WebkitMaskImage: `url(${mask})`,
             }
-          : {}),
+          : {
+              maskImage: 'initial',
+              WebkitMaskImage: 'initial',
+            }),
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import { enUS, es } from 'date-fns/locale';
+import { enUS, es, fr, hi, ja, ptBR, ru, tr, zhCN } from 'date-fns/locale';
 
 import { Language } from '../languages';
 import { currentLanguageStore } from '../state';
@@ -12,8 +12,15 @@ import { currentLanguageStore } from '../state';
  * add a new supported language
  */
 export const locales: Record<Language, Locale> = {
-  en: enUS,
-  es: es,
+  en_US: enUS,
+  es_419: es,
+  fr_FR: fr,
+  ja_JP: ja,
+  pt_BR: ptBR,
+  zh_CN: zhCN,
+  hi_IN: hi,
+  tr_TR: tr,
+  ru_RU: ru,
 };
 
 // return date-fns Locale object based on currentLanguage

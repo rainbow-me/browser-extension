@@ -163,6 +163,7 @@ export type ButtonVariant =
   | 'transparent'
   | 'transparentHover'
   | 'plain'
+  | 'square'
   | 'disabled';
 
 export const backdropFilter = {
@@ -847,6 +848,7 @@ export const symbolNames = selectSymbolNames(
   'person.crop.circle.fill.badge.plus',
   'binoculars.fill',
   'circle.fill',
+  'circle',
   'checkmark.circle.fill',
   'record.circle.fill',
   'bolt.fill',
@@ -947,8 +949,8 @@ export const symbolNames = selectSymbolNames(
   'cable.connector',
   'person.fill.viewfinder',
   'circlebadge.2.fill',
-  'globe',
   'xmark.bin.fill',
+  'globe',
 );
 export type SymbolName = typeof symbolNames[number];
 

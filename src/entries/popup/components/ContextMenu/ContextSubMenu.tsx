@@ -1,5 +1,3 @@
-import EventEmitter from 'events';
-
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   ReactElement,
@@ -13,11 +11,15 @@ import React, {
 import { Box, Stack } from '~/design-system';
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../DropdownMenu/DropdownMenu';
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '../ContextMenu/ContextMenu';
+import {
+  subMenuListener,
+  triggerSubMenuListener,
+} from '../DropdownMenu/DropdownSubMenu';
 
 // in order to get the header width we need to scale down the
 // context menu by 0.94, and also consider the additional horizontal
@@ -44,31 +46,16 @@ const isClickingMenuHeader = ({
   y < subMenuRect.y &&
   y > parentRect.y + ADDITIONAL_VERTICAL_PADDING;
 
-const eventEmitter = new EventEmitter();
-
-export const subMenuListener = (
-  callback: ({ open }: { open: boolean }) => void,
-) => {
-  eventEmitter.addListener('sub_menu_listener', callback);
-  return () => {
-    eventEmitter.removeListener('sub_menu_listener', callback);
-  };
-};
-
-export const triggerSubMenuListener = ({ open }: { open: boolean }) => {
-  eventEmitter.emit('sub_menu_listener', { open });
-};
-
-export const DropdownMenuContentWithSubMenu = ({
-  align,
+export const ContextMenuContentWithSubMenu = ({
   children,
   sideOffset,
   subMenuRef,
+  onInteractOutside,
 }: {
   children: ReactElement;
-  align?: 'start' | 'center' | 'end';
   sideOffset?: number;
   subMenuRef: React.MutableRefObject<HTMLDivElement | null>;
+  onInteractOutside?: () => void;
 }) => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
@@ -83,22 +70,18 @@ export const DropdownMenuContentWithSubMenu = ({
 
   return (
     <Box ref={subMenuRef}>
-      <DropdownMenuContent
+      <ContextMenuContent
         scale={subMenuOpen ? 0.94 : 1}
         sideOffset={sideOffset}
-        align={align}
+        onInteractOutside={onInteractOutside}
       >
         {children}
-      </DropdownMenuContent>
+      </ContextMenuContent>
     </Box>
   );
 };
 
-const SUBMENU_SIDE_OFFSET = -44;
-const SUBMENU_ALIGN_OFFSET = -12;
-
 interface DropdownSubMenuProps {
-  menuOpen: boolean;
   setMenuOpen: (open: boolean) => void;
   subMenuOpen: boolean;
   subMenuElement: ReactNode;
@@ -107,12 +90,11 @@ interface DropdownSubMenuProps {
   setSubMenuOpen?: (open: boolean) => void;
 }
 
-export const DropdownSubMenu = ({
+export const ContextSubMenu = ({
   subMenuOpen,
   subMenuElement,
   subMenuContent,
   parentRef,
-  menuOpen,
   setMenuOpen,
   setSubMenuOpen,
 }: DropdownSubMenuProps) => {
@@ -128,16 +110,14 @@ export const DropdownSubMenu = ({
       e.preventDefault();
       const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
       if (x && y) {
+        setDropdownMenuOpen(false);
         setSubMenuOpen?.(false);
         if (
           subMenuRect &&
           parentRect &&
           !isClickingMenuHeader({ x, y, subMenuRect, parentRect })
         ) {
-          // without this timeout the collapse of the context menu freezes the screen
-          setTimeout(() => {
-            setMenuOpen?.(false);
-          }, 1);
+          setMenuOpen?.(false);
         }
       }
     },
@@ -149,10 +129,9 @@ export const DropdownSubMenu = ({
       () => {
         setDropdownMenuOpen(subMenuOpen);
       },
-      // eslint-disable-next-line no-nested-ternary
-      subMenuOpen ? 0 : menuOpen ? 200 : 0,
+      subMenuOpen ? 0 : 500,
     );
-  }, [subMenuOpen, menuOpen]);
+  }, [subMenuOpen]);
 
   useEffect(() => {
     triggerSubMenuListener({ open: subMenuOpen });
@@ -172,33 +151,33 @@ export const DropdownSubMenu = ({
   }, [parentRef]);
 
   return (
-    <DropdownMenu open={dropdownMenuOpen}>
-      <DropdownMenuTrigger asChild>
+    <ContextMenu open={dropdownMenuOpen}>
+      <ContextMenuTrigger asChild>
         <Box ref={subMenuElementRef}>{subMenuElement}</Box>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
+      </ContextMenuTrigger>
+      <ContextMenuContent
         animate={false}
         key="sub-menu-element"
         border={false}
         onInteractOutside={(e: Event) => e.preventDefault()}
-        sideOffset={SUBMENU_SIDE_OFFSET}
-        alignOffset={SUBMENU_ALIGN_OFFSET}
+        sideOffset={-44}
+        alignOffset={-12}
       >
         {subMenuElement}
-      </DropdownMenuContent>
+      </ContextMenuContent>
       <AnimatePresence>
         {subMenuOpen && (
-          <DropdownMenuContent
+          <ContextMenuContent
             animate
             border={false}
             key="sub-menu-content"
-            sideOffset={SUBMENU_SIDE_OFFSET}
-            alignOffset={SUBMENU_ALIGN_OFFSET}
+            sideOffset={-44}
+            alignOffset={-12}
             onInteractOutside={onInteractOutsideContent}
           >
             <Stack space="4px">
               {subMenuElement}
-              <DropdownMenuSeparator />
+              <ContextMenuSeparator />
               <Box
                 as={motion.div}
                 initial={{ opacity: 0 }}
@@ -209,9 +188,9 @@ export const DropdownSubMenu = ({
                 {subMenuContent}
               </Box>
             </Stack>
-          </DropdownMenuContent>
+          </ContextMenuContent>
         )}
       </AnimatePresence>
-    </DropdownMenu>
+    </ContextMenu>
   );
 };

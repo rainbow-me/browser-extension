@@ -14,6 +14,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
+import { AppConnectionWatcher } from './components/AppConnection/AppConnectionWatcher';
 import { CommandK } from './components/CommandK/CommandK';
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalletSelectionEdit';
@@ -45,6 +46,7 @@ import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
+import { Language } from './pages/settings/language';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
@@ -590,6 +592,21 @@ const ROUTE_DATA = [
     ),
   },
   {
+    path: ROUTES.SETTINGS__LANGUAGE,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.language.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <Language />
+      </AnimatedRoute>
+    ),
+  },
+  {
     path: ROUTES.SEND,
     element: (
       <AnimatedRoute direction="up" title={i18n.t('send.title')} protectedRoute>
@@ -759,6 +776,7 @@ const RootLayout = () => {
       <Alert />
       <WindowStroke />
       <UnsupportedBrowserSheet />
+      <AppConnectionWatcher />
     </FullScreenBackground>
   );
 };
