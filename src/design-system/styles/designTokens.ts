@@ -159,6 +159,7 @@ export type ButtonVariant =
   | 'transparent'
   | 'transparentHover'
   | 'plain'
+  | 'square'
   | 'disabled';
 
 export const backdropFilter = {
@@ -821,6 +822,7 @@ export const symbolNames = selectSymbolNames(
   'person.crop.circle.fill.badge.plus',
   'binoculars.fill',
   'circle.fill',
+  'circle',
   'checkmark.circle.fill',
   'record.circle.fill',
   'bolt.fill',
@@ -927,10 +929,12 @@ export const radii = {
   '0': 0,
   '2px': 2,
   '3px': 3,
+  '4px': 4,
   '5px': 5,
   '6px': 6,
   '8px': 8,
   '9px': 9,
+  '10px': 10,
   '12px': 12,
   '14px': 14,
   '16px': 16,
