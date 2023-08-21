@@ -27,7 +27,6 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { AppMetadata } from '../../../hooks/useAppMetadata';
@@ -122,26 +121,22 @@ export const AppConnectionWalletItemConnectedWrapper = React.forwardRef(
                     value={`${appSession.sessions[address]}`}
                     onValueChange={changeChainId}
                   >
-                    <AccentColorProviderWrapper
-                      color={appMetadata.appColor || undefined}
-                    >
-                      <SwitchNetworkMenuSelector
-                        type="dropdown"
-                        highlightAccentColor
-                        selectedValue={`${appSession.sessions[address]}`}
-                        onNetworkSelect={(e) => {
-                          e?.preventDefault();
-                          setSubMenuOpen(false);
-                          // without this timeout the collapse of the context menu freezes the screen
-                          setTimeout(() => {
-                            setMenuOpen(false);
-                          }, 1);
-                        }}
-                        onShortcutPress={changeChainId}
-                        showDisconnect={false}
-                        disconnect={disconnect}
-                      />
-                    </AccentColorProviderWrapper>
+                    <SwitchNetworkMenuSelector
+                      type="dropdown"
+                      highlightAccentColor
+                      selectedValue={`${appSession.sessions[address]}`}
+                      onNetworkSelect={(e) => {
+                        e?.preventDefault();
+                        setSubMenuOpen(false);
+                        // without this timeout the collapse of the context menu freezes the screen
+                        setTimeout(() => {
+                          setMenuOpen(false);
+                        }, 1);
+                      }}
+                      onShortcutPress={changeChainId}
+                      showDisconnect={false}
+                      disconnect={disconnect}
+                    />
                   </DropdownMenuRadioGroup>
                 }
                 subMenuElement={
