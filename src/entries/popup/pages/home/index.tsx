@@ -24,6 +24,7 @@ import { useCurrentAddressStore, useNonceStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { ChainId } from '~/core/types/chains';
+import { getNextNonce } from '~/core/utils/transactions';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -182,6 +183,13 @@ export function Home() {
       console.log('aBASE', aBASE);
       console.log('- nonces', nonces);
     }, 3000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const a = async () => {
+      const c = '0x4Aa3BF87624560C98c111111858e11B4b977985d';
+      const nn = await getNextNonce({ address: c, chainId: ChainId.optimism });
+      console.log('nn', nn);
+    };
+    a();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
