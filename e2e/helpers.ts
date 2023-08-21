@@ -17,6 +17,8 @@ import firefox from 'selenium-webdriver/firefox';
 import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
+import { RAINBOW_TEST_DAPP } from '~/core/references/links';
+
 // consts
 
 const waitUntilTime = 20_000;
@@ -46,7 +48,7 @@ export const getRootUrl = () => {
 // navigators
 
 export async function goToTestApp(driver: WebDriver) {
-  await driver.get('https://bx-test-dapp.vercel.app/');
+  await driver.get(RAINBOW_TEST_DAPP);
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }

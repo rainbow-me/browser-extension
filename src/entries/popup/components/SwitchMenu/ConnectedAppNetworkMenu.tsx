@@ -44,8 +44,12 @@ export const ConnectedAppNetworkMenu = ({
 }: ConnectedAppNetworkMenuProps) => {
   const { appHost, appLogo, appName } = useAppMetadata({ url });
 
-  const { updateAppSessionChainId, disconnectAppSession, appSession } =
-    useAppSession({ host: appHost });
+  const {
+    updateAppSessionChainId,
+    disconnectAppSession,
+    appSession,
+    activeSession,
+  } = useAppSession({ host: appHost });
 
   const changeChainId = useCallback(
     (chainId: string) => {
@@ -87,7 +91,7 @@ export const ConnectedAppNetworkMenu = ({
                   <Rows space="10px">
                     <Row>
                       <TextOverflow size="14pt" weight="bold" color="label">
-                        {appName ?? appHost}
+                        {appName || appHost}
                       </TextOverflow>
                     </Row>
                     {!appSession && (
@@ -120,13 +124,13 @@ export const ConnectedAppNetworkMenu = ({
 
           <Box paddingTop="4px">
             <ContextMenuRadioGroup
-              value={`${appSession?.chainId}`}
+              value={`${activeSession?.chainId}`}
               onValueChange={changeChainId}
             >
               <SwitchNetworkMenuSelector
                 type="context"
                 highlightAccentColor
-                selectedValue={`${appSession?.chainId}`}
+                selectedValue={`${activeSession?.chainId}`}
                 onShortcutPress={changeChainId}
                 disconnect={disconnect}
                 showDisconnect

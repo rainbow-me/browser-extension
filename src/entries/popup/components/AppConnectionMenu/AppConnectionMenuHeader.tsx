@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion';
 import React from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { AppSession } from '~/core/state/appSessions';
 import { ChainNameDisplay } from '~/core/types/chains';
 import {
   Box,
   Column,
   Columns,
+  Inline,
   Inset,
   Row,
   Rows,
@@ -22,7 +23,7 @@ interface AppConnectionMenuHeaderProps {
   opacity: number;
   appLogo?: string;
   headerHostId?: string;
-  appSession?: AppSession;
+  activeSession: { address: Address; chainId: number } | null;
   appHost?: string;
   appName?: string;
 }
@@ -31,7 +32,7 @@ export const AppConnectionMenuHeader = ({
   opacity,
   appLogo,
   headerHostId,
-  appSession,
+  activeSession,
   appHost,
   appName,
 }: AppConnectionMenuHeaderProps) => {
@@ -42,31 +43,39 @@ export const AppConnectionMenuHeader = ({
           <Column width="content">
             <Box
               style={{
-                height: 14,
-                width: 14,
+                height: 18,
+                width: 18,
                 borderRadius: 3.5,
                 overflow: 'hidden',
                 marginRight: 2,
               }}
             >
-              <ExternalImage src={appLogo} width="14" height="14" />
+              <Inline
+                height="full"
+                alignHorizontal="center"
+                alignVertical="center"
+              >
+                <ExternalImage src={appLogo} width="16" height="16" />
+              </Inline>
             </Box>
           </Column>
           <Column>
             <Box
-              id={`${headerHostId}-${appSession ? appHost : 'not-connected'}`}
+              id={`${headerHostId}-${
+                activeSession ? appHost : 'not-connected'
+              }`}
             >
               <Rows space="8px">
                 <Row>
                   <TextOverflow size="14pt" weight="bold" color="label">
-                    {appName ?? appHost}
+                    {appName || appHost}
                   </TextOverflow>
                 </Row>
                 <Row>
                   <Text size="11pt" weight="bold">
-                    {!appSession
+                    {!activeSession
                       ? i18n.t('menu.app_connection_menu.not_connected')
-                      : ChainNameDisplay[appSession.chainId] || ''}
+                      : ChainNameDisplay[activeSession.chainId] || ''}
                   </Text>
                 </Row>
               </Rows>
@@ -75,7 +84,7 @@ export const AppConnectionMenuHeader = ({
           <Column width="content">
             <Symbol
               size={6}
-              color={appSession ? 'green' : 'labelQuaternary'}
+              color={activeSession ? 'green' : 'labelQuaternary'}
               symbol="circle.fill"
               weight="semibold"
             />
