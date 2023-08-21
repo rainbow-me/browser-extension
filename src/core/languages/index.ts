@@ -37,6 +37,7 @@ export const i18n = new I18n({
 // Configure languages
 i18n.defaultLocale = Language.EN_US;
 i18n.locale = Language.EN_US;
+i18n.enableFallback = true;
 
 export const changeI18nLanguage = (locale: Language) => {
   i18n.locale = locale;
