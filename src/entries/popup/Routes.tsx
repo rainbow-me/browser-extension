@@ -46,6 +46,7 @@ import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
+import { Language } from './pages/settings/language';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
@@ -587,6 +588,21 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <Currency />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__LANGUAGE,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.language.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <Language />
       </AnimatedRoute>
     ),
   },

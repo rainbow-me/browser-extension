@@ -176,6 +176,9 @@
       "NZD": "New Zealand Dollar",
       "ZAR": "South African Rand"
     },
+    "language": {
+      "title": "Language"
+    },
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
