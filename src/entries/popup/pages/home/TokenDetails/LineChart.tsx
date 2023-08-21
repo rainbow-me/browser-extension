@@ -145,13 +145,13 @@ export const LineChart = ({
     const pathLength = path.getTotalLength();
     if (!pathLength) return;
 
-    const point = findClosestPoint(points, mouseX);
-    const { x = 0, y = 0 } = point || {};
+    const mousePathLength = pathLength * (mouseX / width);
+    const { x, y } = path.getPointAtLength(mousePathLength);
+    setIndicator({ x, y });
 
-    setIndicator(point ? { x, y } : null);
-    pathRight.style.strokeDasharray = `${x || mouseX} ${pathLength}`;
+    pathRight.style.strokeDasharray = `${mousePathLength} ${pathLength}`;
 
-    onMouseMove(point);
+    onMouseMove(findClosestPoint(points, x));
   };
 
   const onMouseLeave = () => {
