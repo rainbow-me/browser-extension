@@ -17,6 +17,7 @@ import { NudgeBanner } from '~/design-system/components/NudgeBanner/NudgeBanner'
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useDebounce } from '../../hooks/useDebounce';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
@@ -33,9 +34,11 @@ export const AppConnectionNudgeBanner = ({
   const { url } = useActiveTab();
   const { appHost, appName, appLogo } = useAppMetadata({ url });
 
+  const name = useDebounce(displayName, 500);
+
   return (
     <NudgeBanner show={show} zIndex={zIndexes.BOTTOM_SHEET}>
-      <Box padding="10px">
+      <Box testId="app-connection-nudge-banner" padding="10px">
         <Columns>
           <Column>
             <Columns space="10px" alignVertical="center">
@@ -81,7 +84,7 @@ export const AppConnectionNudgeBanner = ({
                         color="labelTertiary"
                       />
                       <TextOverflow color="label" size="12pt" weight="bold">
-                        {displayName}
+                        {name}
                       </TextOverflow>
                     </Inline>
                     <TextOverflow color="label" size="12pt" weight="bold">
@@ -109,6 +112,7 @@ export const AppConnectionNudgeBanner = ({
                   borderRadius="10px"
                 >
                   <Button
+                    testId="nudge-banner-connect"
                     symbol="return.left"
                     symbolSide="left"
                     width="fit"
@@ -118,7 +122,6 @@ export const AppConnectionNudgeBanner = ({
                     variant={'square'}
                     tabIndex={0}
                     borderRadius="8px"
-                    disabled
                   >
                     {i18n.t('app_connection_switcher.banner.connect')}
                   </Button>

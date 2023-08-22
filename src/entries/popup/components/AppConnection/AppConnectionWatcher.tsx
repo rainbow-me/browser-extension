@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -11,6 +12,8 @@ import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import usePrevious from '../../hooks/usePrevious';
+import { ROUTES } from '../../urls';
 import { triggerToast } from '../Toast/Toast';
 
 import { AppConnectionNudgeBanner } from './AppConnectionNudgeBanner';
@@ -20,10 +23,20 @@ export const AppConnectionWatcher = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
   const { appHost, appName, appHostName } = useAppMetadata({ url });
-
-  const { addSession, appSession, activeSession } = useAppSession({
+  const location = useLocation();
+  const { addSession, activeSession } = useAppSession({
     host: appHost,
   });
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hideNudgeBannerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
+  const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
+  const [showWalletSwitcher, setShowWalletSwitcher] = useState<boolean>(false);
+
+  const [accountChangeHappened, setAccountChangeHappened] = useState(false);
+  const prevLocationPathname = usePrevious(location.pathname);
+  const prevCurrentAddress = usePrevious(currentAddress);
 
   const connect = useCallback(() => {
     addSession({
@@ -32,11 +45,17 @@ export const AppConnectionWatcher = () => {
       chainId: activeSession?.chainId || ChainId.mainnet,
       url,
     });
-  }, [activeSession?.chainId, addSession, appHost, currentAddress, url]);
-
-  const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
-  const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
-  const [showWalletSwitcher, setShowWalletSwitcher] = useState<boolean>(false);
+    if (showNudgeBanner) setShowNudgeBanner(false);
+    if (showNudgeSheet) setShowNudgeSheet(false);
+  }, [
+    activeSession?.chainId,
+    addSession,
+    appHost,
+    currentAddress,
+    showNudgeBanner,
+    showNudgeSheet,
+    url,
+  ]);
 
   const {
     nudgeSheetEnabled,
@@ -54,8 +73,6 @@ export const AppConnectionWatcher = () => {
         if (showNudgeSheet) setShowNudgeSheet(false);
       } else if (e.key === shortcuts.global.SELECT.key) {
         connect();
-        if (showNudgeBanner) setShowNudgeBanner(false);
-        if (showNudgeSheet) setShowNudgeSheet(false);
         triggerToast({
           title: i18n.t('app_connection_switcher.banner.app_connected', {
             appName: appName || appHostName,
@@ -68,50 +85,91 @@ export const AppConnectionWatcher = () => {
     },
   });
 
-  useEffect(() => {
-    setTimeout(() => {
+  const differentActiveSession =
+    !!activeSession?.address &&
+    !isLowerCaseMatch(activeSession?.address, currentAddress);
+
+  const firstLoad =
+    prevLocationPathname === '/' || prevLocationPathname === ROUTES.UNLOCK;
+
+  const triggerCheck = useCallback(() => {
+    timeoutRef.current = setTimeout(() => {
       // if there's another active address
       if (
-        !!activeSession?.address &&
-        !isLowerCaseMatch(activeSession?.address, currentAddress) &&
-        !showWalletSwitcher
+        nudgeSheetEnabled &&
+        !appHasInteractedWithNudgeSheet({ host: appHost })
       ) {
-        // if nudgeSheet is enabled and the nudgeSheet has not appeared on that dapp
-        if (
-          nudgeSheetEnabled &&
-          !appHasInteractedWithNudgeSheet({ host: appHost })
-        ) {
-          setShowNudgeSheet(true);
-          setAddressInAppHasInteractedWithNudgeSheet({
-            address: currentAddress,
-            host: appHost,
-          });
-          setAppHasInteractedWithNudgeSheet({ host: appHost });
-          // else if the address has not interacted with the nudgeSheet
-        } else if (
-          !addressInAppHasInteractedWithNudgeSheet({
-            address: currentAddress,
-            host: appHost,
-          })
-        ) {
-          setShowNudgeBanner(true);
-          setTimeout(() => {
-            setShowNudgeBanner(false);
-          }, 3000);
-        }
+        setShowNudgeSheet(true);
+        setAddressInAppHasInteractedWithNudgeSheet({
+          address: currentAddress,
+          host: appHost,
+        });
+        setAppHasInteractedWithNudgeSheet({ host: appHost });
+        // else if the address has not interacted with the nudgeSheet
+      } else if (
+        !addressInAppHasInteractedWithNudgeSheet({
+          address: currentAddress,
+          host: appHost,
+        })
+      ) {
+        setShowNudgeBanner(true);
+        hideNudgeBannerTimeoutRef.current = setTimeout(() => {
+          setShowNudgeBanner(false);
+        }, 3000);
       }
     }, 1000);
   }, [
-    appSession,
-    activeSession?.address,
+    addressInAppHasInteractedWithNudgeSheet,
+    appHasInteractedWithNudgeSheet,
+    appHost,
     currentAddress,
     nudgeSheetEnabled,
-    appHasInteractedWithNudgeSheet,
-    addressInAppHasInteractedWithNudgeSheet,
     setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,
-    appHost,
+  ]);
+
+  const hide = useCallback(() => {
+    setShowNudgeSheet(false);
+    setShowNudgeBanner(false);
+    hideNudgeBannerTimeoutRef.current &&
+      clearTimeout(hideNudgeBannerTimeoutRef.current);
+    timeoutRef.current && clearTimeout(timeoutRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (!isLowerCaseMatch(currentAddress, prevCurrentAddress)) {
+      setAccountChangeHappened(true);
+      hide();
+    }
+  }, [currentAddress, hide, prevCurrentAddress]);
+
+  useEffect(() => {
+    if (location.pathname !== ROUTES.HOME) {
+      hide();
+    }
+  }, [hide, location.pathname]);
+
+  useEffect(() => {
+    if (
+      location.pathname === ROUTES.HOME &&
+      (firstLoad || accountChangeHappened) &&
+      differentActiveSession &&
+      !showWalletSwitcher
+    ) {
+      setAccountChangeHappened(false);
+      hide();
+      triggerCheck();
+    }
+  }, [
+    accountChangeHappened,
+    currentAddress,
+    differentActiveSession,
+    firstLoad,
+    hide,
+    location.pathname,
+    prevCurrentAddress,
     showWalletSwitcher,
+    triggerCheck,
   ]);
 
   return (
