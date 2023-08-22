@@ -82,7 +82,9 @@ export function SendTransaction({
         data: txRequest.data ?? '0x',
         chainId: connectedToHardhat ? ChainId.hardhat : activeSession?.chainId,
       };
+      console.log('wallet send tx before');
       const result = await wallet.sendTransaction(txData);
+      console.log('wallet send tx after');
       if (result) {
         const transaction = {
           amount: formatEther(result?.value || ''),

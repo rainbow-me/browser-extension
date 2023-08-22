@@ -278,8 +278,6 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to accept a signing request', async () => {
-    await goToTestApp(driver);
-
     const dappHandler = await getWindowHandle({ driver });
     const button = await querySelector(driver, '[id="signTx"]');
     expect(button).toBeTruthy();
@@ -343,8 +341,6 @@ describe('App interactions flow', () => {
 
   it('should be able to accept a transaction request', async () => {
     await delayTime('long');
-    await goToTestApp(driver);
-
     const dappHandler = await getWindowHandle({ driver });
 
     await delayTime('long');
@@ -359,7 +355,6 @@ describe('App interactions flow', () => {
     await delayTime('long');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('long');
-    await driver.switchTo().window(dappHandler);
   });
 
   it('should be able to disconnect from connected dapps', async () => {
