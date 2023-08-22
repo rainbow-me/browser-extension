@@ -8,7 +8,7 @@ import { useUserAssets } from '~/core/resources/assets';
 import { useSwappableAddresses } from '~/core/resources/search/swappableAddresses';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
 export function useSwappableAssets(toChainId?: ChainId) {
@@ -139,7 +139,7 @@ export function useSwappableAssets(toChainId?: ChainId) {
     ],
   );
 
-  const isSwappableAsset = (asset: ParsedAddressAsset) => {
+  const isSwappableAsset = (asset: ParsedUserAsset) => {
     const { address, chainId } = asset;
     if (chainId === toChainId) return true;
     const { addresses, loading } = swappableInfo[chainId];

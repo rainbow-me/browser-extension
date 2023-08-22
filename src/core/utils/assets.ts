@@ -5,9 +5,9 @@ import { Address, erc20ABI } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
-  ParsedAddressAsset,
   ParsedAsset,
   ParsedSearchAsset,
+  ParsedUserAsset,
   UniqueId,
   ZerionAsset,
   ZerionAssetPrice,
@@ -117,7 +117,7 @@ export function parseAddressAsset({
   currency: SupportedCurrencyKey;
   quantity: string;
   smallBalance?: boolean;
-}): ParsedAddressAsset {
+}): ParsedUserAsset {
   const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
   const parsedAsset = parseAsset({
     address,
@@ -146,15 +146,15 @@ export function parseAddressAsset({
   };
 }
 
-export function parseParsedAddressAsset({
+export function parseParsedUserAsset({
   parsedAsset,
   currency,
   quantity,
 }: {
-  parsedAsset: ParsedAddressAsset;
+  parsedAsset: ParsedUserAsset;
   currency: SupportedCurrencyKey;
   quantity: string;
-}): ParsedAddressAsset {
+}): ParsedUserAsset {
   const amount = convertRawAmountToDecimalFormat(
     quantity,
     parsedAsset?.decimals,
@@ -187,7 +187,7 @@ export const parseSearchAsset = ({
 }: {
   assetWithPrice?: ParsedAsset;
   searchAsset: ParsedSearchAsset | SearchAsset;
-  userAsset?: ParsedAddressAsset;
+  userAsset?: ParsedUserAsset;
 }): ParsedSearchAsset => ({
   ...searchAsset,
   address: searchAsset.address,
@@ -222,14 +222,14 @@ export const fetchAssetBalanceViaProvider = async ({
   currency,
   provider,
 }: {
-  parsedAsset: ParsedAddressAsset;
+  parsedAsset: ParsedUserAsset;
   currentAddress: Address;
   currency: SupportedCurrencyKey;
   provider: Provider;
 }) => {
   if (parsedAsset.isNativeAsset) {
     const balance = await provider.getBalance(currentAddress);
-    const updatedAsset = parseParsedAddressAsset({
+    const updatedAsset = parseParsedUserAsset({
       parsedAsset,
       currency,
       quantity: balance.toString(),
@@ -238,7 +238,7 @@ export const fetchAssetBalanceViaProvider = async ({
   } else {
     const contract = new Contract(parsedAsset.address, erc20ABI, provider);
     const balance = await contract.balanceOf(currentAddress);
-    const updatedAsset = parseParsedAddressAsset({
+    const updatedAsset = parseParsedUserAsset({
       parsedAsset,
       currency,
       quantity: balance.toString(),

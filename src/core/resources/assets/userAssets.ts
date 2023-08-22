@@ -12,8 +12,8 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import {
-  ParsedAddressAsset,
   ParsedAssetsDictByChain,
+  ParsedUserAsset,
   ZerionAsset,
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -287,7 +287,7 @@ export async function parseUserAssets({
       mainnetBalanceRequests,
     );
     const newMainnetAssets = newParsedMainnetAssetsByUniqueId.reduce<
-      Record<string, ParsedAddressAsset>
+      Record<string, ParsedUserAsset>
     >((acc, parsedAsset) => {
       acc[parsedAsset.uniqueId] = parsedAsset;
       return acc;

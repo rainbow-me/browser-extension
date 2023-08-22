@@ -1,19 +1,19 @@
 import create from 'zustand';
 
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 
 import { createStore } from '../internal/createStore';
 
 export interface SelectedTokenState {
-  getSelectedToken: () => ParsedAddressAsset | null;
-  setSelectedToken: (token?: ParsedAddressAsset) => void;
-  selectedToken: ParsedAddressAsset | null;
+  getSelectedToken: () => ParsedUserAsset | null;
+  setSelectedToken: (token?: ParsedUserAsset) => void;
+  selectedToken: ParsedUserAsset | null;
 }
 
 export const selectedTokenStore = createStore<SelectedTokenState>(
   (set, get) => ({
     getSelectedToken: () => get()?.selectedToken,
-    setSelectedToken: (selectedToken?: ParsedAddressAsset) => {
+    setSelectedToken: (selectedToken?: ParsedUserAsset) => {
       set({ selectedToken });
     },
     selectedToken: null,
