@@ -198,7 +198,7 @@ describe('Dapp accounts switcher flow', () => {
       driver,
     });
 
-    await delayTime('medium');
+    await delayTime('very-long');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await driver.switchTo().window(dappHandler);
@@ -216,7 +216,7 @@ describe('Dapp accounts switcher flow', () => {
 
   it('should be able to go back to extension, switch account and connect from nudge sheet', async () => {
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
-    await delayTime('long');
+    await delayTime('very-long');
     const appConnectionNudgeSheet = await findElementByTestId({
       id: 'app-connection-nudge-sheet',
       driver,

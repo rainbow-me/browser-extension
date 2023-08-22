@@ -9,7 +9,7 @@ export function handleSetupInpage() {
           js: ['inpage.js'],
           runAt: 'document_start',
           // @ts-ignore
-          world: !'MAIN', // Firefox doesn't support the world property
+          world: 'MAIN', // Firefox doesn't support the world property
         },
       ]);
     }
