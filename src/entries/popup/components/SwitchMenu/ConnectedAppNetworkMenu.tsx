@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from 'react';
+import { ReactNode, useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -64,7 +64,7 @@ export const ConnectedAppNetworkMenu = ({
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger asChild>
+      <ContextMenuTrigger openOnClick asChild>
         <Box testId={menuTriggerId}>{children}</Box>
       </ContextMenuTrigger>
       <ContextMenuContent sideOffset={sideOffset}>
