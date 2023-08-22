@@ -113,15 +113,18 @@ export default function useRestoreNavigation() {
   const navigate = useRainbowNavigate();
   const { setShouldRestoreNavigation, shouldRestoreNavigation, lastPage } =
     useNavRestorationStore();
-
-  useEffect(() => {
+  const restoreNavigation = async () => {
     if (lastPage && shouldRestoreNavigation && RESTORE_NAV_MAP[lastPage]) {
+      await setShouldRestoreNavigation(false);
       const navPath = RESTORE_NAV_MAP[lastPage];
       for (const screen of navPath) {
         navigate(screen);
       }
-      setShouldRestoreNavigation(false);
     }
+  };
+
+  useEffect(() => {
+    restoreNavigation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
