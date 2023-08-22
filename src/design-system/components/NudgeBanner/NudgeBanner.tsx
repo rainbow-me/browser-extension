@@ -12,40 +12,38 @@ interface BottomSheetProps {
 
 export const NudgeBanner = ({ show, children, zIndex }: BottomSheetProps) => {
   return (
-    <Box as={motion.div} key="bottom-sheet" layout isModal={show}>
-      <AnimatePresence>
-        {show && (
+    <AnimatePresence>
+      {show && (
+        <Box
+          position="absolute"
+          bottom="0"
+          left="0"
+          right="0"
+          paddingBottom="16px"
+          paddingHorizontal="16px"
+          style={{
+            zIndex: zIndex ? zIndex + 1 : zIndexes.BOTTOM_SHEET + 1,
+          }}
+          as={motion.div}
+          initial={{ opacity: 1, y: 800 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 1, y: 800 }}
+          key="bottom"
+          transition={{ duration: 0.3 }}
+          layout
+        >
           <Box
-            position="absolute"
-            bottom="0"
-            left="0"
-            right="0"
-            paddingBottom="16px"
-            paddingHorizontal="16px"
-            style={{
-              zIndex: zIndex ? zIndex + 1 : zIndexes.BOTTOM_SHEET + 1,
-            }}
-            as={motion.div}
-            initial={{ opacity: 1, y: 800 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 1, y: 800 }}
-            key="bottom"
-            transition={{ duration: 0.3 }}
-            layout
+            opacity="1"
+            background="surfaceMenu"
+            borderRadius="20px"
+            borderWidth="1px"
+            borderColor="buttonStroke"
+            backdropFilter="blur(26px)"
           >
-            <Box
-              opacity="1"
-              background="surfaceMenu"
-              borderRadius="20px"
-              borderWidth="1px"
-              borderColor="buttonStroke"
-              backdropFilter="blur(26px)"
-            >
-              {children}
-            </Box>
+            {children}
           </Box>
-        )}
-      </AnimatePresence>
-    </Box>
+        </Box>
+      )}
+    </AnimatePresence>
   );
 };
