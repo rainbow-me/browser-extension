@@ -12,6 +12,7 @@ import {
   delayTime,
   fillPrivateKey,
   findElementByIdAndClick,
+  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getAllWindowHandles,
@@ -352,8 +353,15 @@ describe('App interactions flow', () => {
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await delayTime('long');
+
     await driver.switchTo().window(popupHandler);
     await delayTime('long');
+    const sendTransactionActions = await findElementByTestId({
+      id: 'send-transaction-actions',
+      driver,
+    });
+
+    console.log('SEND TRANSACTION ACTIONS ELEMENT', sendTransactionActions);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('long');
   });

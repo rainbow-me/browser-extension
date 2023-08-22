@@ -5,7 +5,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { Column, Columns, Inset, Row, Rows, Stack } from '~/design-system';
+import { Box, Column, Columns, Inset, Row, Rows, Stack } from '~/design-system';
 import { useApproveAppRequestValidations } from '~/entries/popup/hooks/approveAppRequest/useApproveAppRequestValidations';
 import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
@@ -51,39 +51,41 @@ export const SendTransactionActions = ({
     },
   });
   return (
-    <Inset vertical="20px" horizontal="20px">
-      <Stack space="24px">
-        <Columns alignVertical="center" alignHorizontal="justify">
-          <Column>
-            <BottomDisplayWallet selectedWallet={selectedWallet} />
-          </Column>
-          <Column>
-            <WalletBalance appHost={appHost} />
-          </Column>
-        </Columns>
-        <Rows space="8px">
-          <Row>
-            <AcceptRequestButton
-              disabled={!enoughNativeAssetForGas}
-              onClick={onAcceptRequest}
-              label={
-                waitingForDevice
-                  ? i18n.t('approve_request.confirm_hw')
-                  : buttonLabel
-              }
-              waitingForDevice={waitingForDevice}
-              loading={loading}
-            />
-          </Row>
-          <Row>
-            <RejectRequestButton
-              autoFocus
-              onClick={onRejectRequest}
-              label={i18n.t('common_actions.cancel')}
-            />
-          </Row>
-        </Rows>
-      </Stack>
-    </Inset>
+    <Box testId="send-transaction-actions">
+      <Inset vertical="20px" horizontal="20px">
+        <Stack space="24px">
+          <Columns alignVertical="center" alignHorizontal="justify">
+            <Column>
+              <BottomDisplayWallet selectedWallet={selectedWallet} />
+            </Column>
+            <Column>
+              <WalletBalance appHost={appHost} />
+            </Column>
+          </Columns>
+          <Rows space="8px">
+            <Row>
+              <AcceptRequestButton
+                disabled={!enoughNativeAssetForGas}
+                onClick={onAcceptRequest}
+                label={
+                  waitingForDevice
+                    ? i18n.t('approve_request.confirm_hw')
+                    : buttonLabel
+                }
+                waitingForDevice={waitingForDevice}
+                loading={loading}
+              />
+            </Row>
+            <Row>
+              <RejectRequestButton
+                autoFocus
+                onClick={onRejectRequest}
+                label={i18n.t('common_actions.cancel')}
+              />
+            </Row>
+          </Rows>
+        </Stack>
+      </Inset>
+    </Box>
   );
 };
