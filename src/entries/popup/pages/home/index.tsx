@@ -39,6 +39,7 @@ import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { usePendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { StickyHeader } from '../../layouts/StickyHeader';
@@ -147,6 +148,7 @@ export function Home() {
   }, []);
 
   useHomeShortcuts();
+  useRestoreNavigation();
   useSwitchWalletShortcuts();
 
   return (

@@ -11,6 +11,7 @@ import { analytics } from '~/analytics';
 import { screen } from '~/analytics/screen';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useNavRestorationStore } from '~/core/state/navRestoration';
 import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
@@ -753,6 +754,7 @@ const ROUTE_DATA = [
 
 const RootLayout = () => {
   const location = useLocation();
+  const { setLastPage } = useNavRestorationStore();
 
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -760,7 +762,8 @@ const RootLayout = () => {
 
   React.useEffect(() => {
     analytics.screen(screen[location.pathname], { path: location.pathname });
-  }, [location.pathname]);
+    setLastPage(location.pathname);
+  }, [location.pathname, setLastPage]);
 
   useGlobalShortcuts();
   useCommandKShortcuts();

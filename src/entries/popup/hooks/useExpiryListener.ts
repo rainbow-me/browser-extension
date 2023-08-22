@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { useNavRestorationStore } from '~/core/state/navRestoration';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 
 import usePrevious from './usePrevious';
@@ -8,6 +9,8 @@ import usePrevious from './usePrevious';
 export function useExpiryListener() {
   const { resetValues, setupPort } = usePopupInstanceStore();
   const { currentAddress } = useCurrentAddressStore();
+  const { clearLastPage, setShouldRestoreNavigation } =
+    useNavRestorationStore();
   const previousAddress = usePrevious(currentAddress);
 
   const checkExpiry = async () => {
@@ -15,6 +18,9 @@ export function useExpiryListener() {
     const expired = Date.now() > (expiryEntry?.expiry || 0);
     if (expired) {
       await resetValues();
+      await clearLastPage();
+    } else {
+      await setShouldRestoreNavigation(true);
     }
   };
 
