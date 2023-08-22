@@ -6,7 +6,6 @@ import { createStore } from '../internal/createStore';
 
 export interface NavRestorationStore {
   clearLastPage: () => Promise<void>;
-  history?: History;
   lastPage?: string;
   setLastPage: (lastPage: string) => Promise<void>;
   setShouldRestoreNavigation: (should: boolean) => Promise<void>;
@@ -21,7 +20,6 @@ export const navRestorationStore = createStore<NavRestorationStore>(
         set({ lastPage: undefined });
       }
     },
-    history: undefined,
     lastPage: undefined,
     setLastPage: async (lastPage) => {
       const isPopup = await isNativePopup();
