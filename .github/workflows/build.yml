@@ -140,7 +140,7 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           yarn vitest:parallel --retry=5
   chrome-e2e-swap:
-    runs-on: beefy-runner-bx
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [build]
     env:
@@ -162,7 +162,7 @@ jobs:
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:swap
   chrome-e2e-send:
-    runs-on: beefy-runner-bx
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [build]
     env:
@@ -180,7 +180,7 @@ jobs:
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:send --retry=5
   chrome-e2e-dappInteractions:
-    runs-on: beefy-runner-bx
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [build]
     env:
@@ -322,7 +322,7 @@ jobs:
       - name: Check types
         run: yarn typecheck
   cleanup:
-    runs-on:  ubuntu-latest
+    runs-on: ubuntu-latest
     needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, unit-tests, ci-checks]
     steps:
       - uses: geekyeggo/delete-artifact@v2
