@@ -171,7 +171,7 @@
     "@vanilla-extract/webpack-plugin": "2.2.0",
     "audit-ci": "6.3.0",
     "browserify": "17.0.0",
-    "chromedriver": "115.0.0",
+    "chromedriver": "116.0.0",
     "circular-dependency-plugin": "5.2.2",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.7.1",
