@@ -82,6 +82,9 @@ if (shouldInjectProvider()) {
     writable: false,
   });
 
+  // defining `providers` on rainbowProvider, since it's undefined on the object itself
+  window.rainbow.providers = window.walletRouter.providers;
+
   Object.defineProperty(window, 'ethereum', {
     get() {
       if (
@@ -96,8 +99,8 @@ if (shouldInjectProvider()) {
         {
           get(target, prop, receiver) {
             if (
-              window.walletRouter &&
-              window.walletRouter.currentProvider &&
+              !!window.walletRouter &&
+              !!window.walletRouter.currentProvider &&
               !(prop in window.walletRouter.currentProvider) &&
               prop in window.walletRouter
             ) {
