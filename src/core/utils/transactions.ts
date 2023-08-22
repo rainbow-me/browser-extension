@@ -28,11 +28,7 @@ import {
 import { parseAsset, parseUserAsset } from './assets';
 import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
-import {
-  convertAmountAndPriceToNativeDisplay,
-  convertAmountToBalanceDisplay,
-  isZero,
-} from './numbers';
+import { isZero } from './numbers';
 import { isLowerCaseMatch } from './strings';
 
 /**
@@ -135,7 +131,6 @@ export async function parseTransaction({
   const type = meta.type || 'contract_interaction';
 
   const _tx: RainbowTransaction = {
-    description: asset?.name || methodName || 'Signed',
     from: address_from || '0x',
     to: address_to,
     name:
@@ -143,6 +138,7 @@ export async function parseTransaction({
         ? methodName
         : asset?.name || 'Signed',
     title: i18n.t(`transactions.${type}.${status}`),
+    description: asset?.name || methodName || 'Signed',
     status,
     hash,
     chainId,
@@ -157,158 +153,13 @@ export async function parseTransaction({
     return { ..._tx, minedAt: tx.mined_at, blockNumber: tx.block_number };
 
   return _tx;
-
-  // return {
-  //   // asset: parsedAsset,
-  //   // balance: isL2Chain(chainId)
-  //   //   ? { amount: '', display: '-' }
-  //   //   : convertRawAmountToBalance(valueUnit, { decimals: 18 }),
-  //   description: tx.meta.action || description || methodName || 'Signed',
-  //   from: tx?.address_from as Address,
-  //   hash: tx.hash,
-  //   name:
-  //     tx.meta.type === 'contract_interaction'
-  //       ? methodName
-  //       : parsedAsset?.name || 'Signed',
-  //   // native: nativeDisplay,
-  //   chainId,
-  //   nonce: tx.nonce,
-  //   protocol: tx.protocol,
-  //   status: 'failed',
-  //   // ...(tx.status === 'confirmed' && {
-  //   //   minedAt: tx.mined_at,
-  //   //   blockNumber: tx.block_number,
-  //   // }),
-  //   // symbol: tx.changes[0]?.asset.symbol || 'contract',
-  //   title: /* tx.title ?? */ i18n.t('transactions.contract_interaction'),
-  //   to: tx.address_to,
-  //   type: tx.meta.type || 'contract_interaction',
-  //   direction: tx.direction,
-  // };
 }
-
-// const getTitle = ({
-//   protocol,
-//   status,
-//   type,
-// }: {
-//   protocol?: ProtocolType;
-//   status: TransactionStatus;
-//   type?: TransactionType;
-// }) => {
-//   if (
-//     protocol &&
-//     (type === TransactionType.deposit || type === TransactionType.withdraw)
-//   ) {
-//     if (
-//       status === TransactionStatus.deposited ||
-//       status === TransactionStatus.withdrew ||
-//       status === TransactionStatus.sent ||
-//       status === TransactionStatus.received
-//     ) {
-//       if (protocol === ProtocolType.compound) {
-//         return i18n.t('transactions.savings');
-//       } else {
-//         return ProtocolType?.[protocol];
-//       }
-//     }
-//   }
-//   return capitalize(status);
-// };
-
-// export const getTransactionLabel = ({
-//   direction,
-//   protocol,
-//   status,
-//   type,
-// }: {
-//   direction: TransactionDirection;
-//   protocol: ProtocolType | undefined;
-//   status: RainbowTransaction['status'];
-//   type: TransactionType;
-// }) => {
-//   if (type === 'cancel')
-//     return TransactionStatus.cancelling;
-
-//   if (status === TransactionStatus.cancelled)
-//     return TransactionStatus.cancelled;
-
-//   if (status === TransactionStatus.speeding_up)
-//     return TransactionStatus.speeding_up;
-
-//   if (pending && type === TransactionType.purchase)
-//     return TransactionStatus.purchasing;
-
-//   const isFromAccount = direction === TransactionDirection.out;
-//   const isToAccount = direction === TransactionDirection.in;
-//   const isSelf = direction === TransactionDirection.self;
-
-//   if (pending && type === TransactionType.authorize)
-//     return TransactionStatus.approving;
-
-//   if (pending && type === TransactionType.deposit) {
-//     if (protocol === ProtocolType.compound) {
-//       return TransactionStatus.depositing;
-//     } else {
-//       return TransactionStatus.sending;
-//     }
-//   }
-
-//   if (pending && type === TransactionType.withdraw) {
-//     if (protocol === ProtocolType.compound) {
-//       return TransactionStatus.withdrawing;
-//     } else {
-//       return TransactionStatus.receiving;
-//     }
-//   }
-
-//   if (pending && isFromAccount) return TransactionStatus.sending;
-//   if (pending && isToAccount) return TransactionStatus.receiving;
-
-//   if (status === TransactionStatus.failed) return TransactionStatus.failed;
-//   if (status === TransactionStatus.dropped) return TransactionStatus.dropped;
-
-//   if (type === TransactionType.trade && isFromAccount)
-//     return TransactionStatus.swapped;
-
-//   if (type === TransactionType.authorize) return TransactionStatus.approved;
-//   if (type === TransactionType.purchase) return TransactionStatus.purchased;
-//   if (type === TransactionType.cancel) return TransactionStatus.cancelled;
-
-//   if (type === TransactionType.deposit) {
-//     if (protocol === ProtocolType.compound) {
-//       return TransactionStatus.deposited;
-//     } else {
-//       return TransactionStatus.sent;
-//     }
-//   }
-
-//   if (type === TransactionType.withdraw) {
-//     if (protocol === ProtocolType.compound) {
-//       return TransactionStatus.withdrew;
-//     } else {
-//       return TransactionStatus.received;
-//     }
-//   }
-
-//   if (isSelf) return TransactionStatus.sent;
-
-//   if (type === TransactionType.execution)
-//     return TransactionStatus.contract_interaction;
-//   if (isFromAccount) return TransactionStatus.sent;
-//   if (isToAccount) return TransactionStatus.received;
-
-//   return TransactionStatus.unknown;
-// };
 
 export const parseNewTransaction = (
   txDetails: NewTransaction,
-  nativeCurrency: SupportedCurrencyKey,
+  currency: SupportedCurrencyKey,
 ): RainbowTransaction => {
-  let balance;
   const {
-    amount = 0,
-    asset,
     data,
     from,
     gasLimit,
@@ -319,94 +170,51 @@ export const parseNewTransaction = (
     nonce,
     hash: txHash,
     protocol,
-    status: txStatus,
+    status,
     to,
-    type: txType,
-    // txTo,
-    value,
+    type,
     flashbots,
   } = txDetails;
 
-  if (amount && asset) {
-    balance = {
-      amount,
-      display: convertAmountToBalanceDisplay(amount, asset),
-    };
-  }
-
-  const assetPrice = asset?.price?.value;
-
-  const native = convertAmountAndPriceToNativeDisplay(
-    amount ?? 0,
-    assetPrice ?? 0,
-    nativeCurrency,
-  );
   const hash = txHash || '0x';
 
-  const status = txStatus ?? 'pending';
-  const type = txType ?? 'send';
+  const changes = txDetails.changes.map(
+    (change) =>
+      change && {
+        ...change,
+        asset: parseUserAsset({
+          asset: change.asset,
+          balance: change.value?.toString(),
+          currency,
+        }),
+      },
+  );
 
-  const title = '';
-  // getTitle({
-  //   protocol: protocol,
-  //   status,
-  //   type,
-  // });
-
-  const description = '';
-  // getDescription({
-  //   name: asset?.name || '',
-  //   status,
-  //   type,
-  // });
+  const asset = changes[0]?.asset;
+  const methodName = 'unknown method';
 
   return {
-    // address: (asset?.address ?? ETH_ADDRESS) as Address,
-    asset,
-    // balance,
     data,
-    description,
+    name:
+      type === 'contract_interaction' ? methodName : asset?.name || 'Signed',
+    title: i18n.t(`transactions.${type}.${status}`),
+    description: asset?.name || methodName || 'Signed',
     from,
+    changes,
     gasLimit,
     gasPrice,
     hash,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    name: asset?.name,
-    // native,
     chainId,
     nonce,
-    // pending: true,
     protocol,
     status,
-    // symbol: asset?.symbol,
-    title,
     to,
-    // txTo: txTo || to,
     type,
-    value,
     flashbots,
   };
 };
-
-// function getTransactionConfirmedState(
-//   type?: TransactionType,
-// ): TransactionStatus {
-//   switch (type) {
-//     case TransactionType.authorize:
-//       return TransactionStatus.approved;
-//     case TransactionType.deposit:
-//       return TransactionStatus.deposited;
-//     case TransactionType.withdraw:
-//       return TransactionStatus.withdrew;
-//     case TransactionType.receive:
-//       return TransactionStatus.received;
-//     case TransactionType.purchase:
-//       return TransactionStatus.purchased;
-//     default:
-//       return TransactionStatus.sent;
-//   }
-// }
 
 export function getPendingTransactionData({
   transaction,
@@ -496,7 +304,7 @@ export async function getNextNonce({
   return ret;
 }
 
-export async function addNewTransaction({
+export function addNewTransaction({
   address,
   chainId,
   transaction,

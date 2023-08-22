@@ -4,7 +4,7 @@ import { Address } from 'wagmi';
 
 import { ParsedUserAsset } from '../utils/assets';
 
-import { AddressOrEth } from './assets';
+import { AddressOrEth, ParsedAsset } from './assets';
 import { ChainId, ChainName } from './chains';
 
 export type TransactionStatus =
@@ -42,11 +42,11 @@ type BaseTransaction = {
   changes: Array<
     | {
         asset: ParsedUserAsset;
-        value: number;
         direction: TransactionDirection;
-        address_from: Address;
-        address_to: Address;
-        price: number;
+        address_from?: Address;
+        address_to?: Address;
+        value: number | string;
+        price?: number;
       }
     | undefined
   >;
@@ -74,9 +74,18 @@ export type RainbowTransaction = BaseTransaction;
 //   >);
 
 export type NewTransaction = WithRequired<
-  Partial<BaseTransaction>,
+  Omit<BaseTransaction, 'title' | 'changes'>,
   'from' | 'nonce' | 'data'
-> & { amount: number | string };
+> & {
+  changes: Array<
+    | {
+        asset: ParsedAsset;
+        direction: TransactionDirection;
+        value: number | string;
+      }
+    | undefined
+  >;
+};
 
 // protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
 export type ProtocolType =
