@@ -140,7 +140,7 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           yarn vitest:parallel --retry=5
   chrome-e2e-swap:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
@@ -180,7 +180,7 @@ jobs:
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:send --retry=5
   chrome-e2e-dappInteractions:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
