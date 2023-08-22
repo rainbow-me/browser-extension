@@ -25,13 +25,12 @@ import {
   TransactionsApiResponse,
 } from '../types/transactions';
 
-import { parseAsset } from './assets';
+import { parseUserAsset } from './assets';
 import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
-  convertRawAmountToDecimalFormat,
   isZero,
 } from './numbers';
 import { isLowerCaseMatch } from './strings';
@@ -97,23 +96,30 @@ export async function parseTransaction({
   currency,
   chainId,
 }: ParseTransactionArgs): Promise<RainbowTransaction> {
-  const methodName = tx.meta.action || 'method sname';
-  // await fetchRegistryLookup({
+  const methodName = tx.meta.action;
+  // ||
+  // (await fetchRegistryLookup({
   //   data: null,
   //   to: tx.address_to || null,
   //   chainId,
   //   hash: tx.hash,
-  // });
+  // }));
+
+  if (tx.meta.type === 'approve') console.log(tx);
 
   const changes = tx.changes.map(
     (change) =>
       change && {
         ...change,
-        asset: parseAsset({ asset: change?.asset, currency }),
+        asset: parseUserAsset({
+          asset: change.asset,
+          balance: change.value?.toString(),
+          currency,
+        }),
       },
   );
 
-  const asset = changes[0]?.asset; // || (await getNativeAssetForNetwork({ chainId }));
+  const asset = changes[0]?.asset; // || parseUserAsset(tx.meta.asset, );
 
   const {
     status,
@@ -128,17 +134,6 @@ export async function parseTransaction({
 
   const type = meta.type || 'contract_interaction';
 
-  const value = convertRawAmountToDecimalFormat(
-    changes[0]?.value || '0',
-    changes[0]?.asset.decimals,
-  );
-
-  const native = convertAmountAndPriceToNativeDisplay(
-    value ?? 0,
-    asset?.price?.value ?? 0,
-    currency,
-  );
-
   const _tx: RainbowTransaction = {
     description: asset?.name || methodName || 'Signed',
     from: address_from || '0x',
@@ -148,9 +143,6 @@ export async function parseTransaction({
         ? methodName
         : asset?.name || 'Signed',
     title: i18n.t(`transactions.${type}.${status}`),
-    asset,
-    value,
-    native,
     status,
     hash,
     chainId,
@@ -160,7 +152,6 @@ export async function parseTransaction({
     direction,
     changes,
   };
-  console.log(_tx);
 
   if (status === 'confirmed')
     return { ..._tx, minedAt: tx.mined_at, blockNumber: tx.block_number };

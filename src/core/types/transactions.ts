@@ -2,11 +2,20 @@ import { BigNumberish } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { Address } from 'wagmi';
 
-import { AddressOrEth, ParsedAsset } from './assets';
+import { ParsedUserAsset } from '../utils/assets';
+
+import { AddressOrEth } from './assets';
 import { ChainId, ChainName } from './chains';
 
+export type TransactionStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'failed'
+  | 'cancelled'
+  | 'dropped';
+
 type BaseTransaction = {
-  status: 'pending' | 'confirmed' | 'failed' | 'cancelled' | 'dropped';
+  status: TransactionStatus;
   hash: `0x${string}`;
   nonce: number; // -2 when not from the wallet user
   chainId: ChainId;
@@ -30,9 +39,9 @@ type BaseTransaction = {
 
   submittedAt?: number;
 
-  changes?: Array<
+  changes: Array<
     | {
-        asset: ParsedAsset;
+        asset: ParsedUserAsset;
         value: number;
         direction: TransactionDirection;
         address_from: Address;
@@ -43,8 +52,8 @@ type BaseTransaction = {
   >;
   direction?: TransactionDirection;
 
-  asset?: ParsedAsset;
-  value?: string;
+  // asset?: ParsedAsset;
+  // value?: string;
 
   blockNumber?: number;
   minedAt?: number;
@@ -64,7 +73,6 @@ export type RainbowTransaction = BaseTransaction;
 //     'changes'
 //   >);
 
-export type TransactionStatus = RainbowTransaction['status'];
 export type NewTransaction = WithRequired<
   Partial<BaseTransaction>,
   'from' | 'nonce' | 'data'
@@ -126,6 +134,27 @@ export type TransactionType =
   | 'bid'
   | 'speed_up';
 
+export const TransactionOutTypes: Partial<TransactionType>[] = [
+  'burn',
+  'send',
+  'withdraw',
+  'deposit',
+  'repay',
+  'stake',
+  'sale',
+  'bridge',
+];
+
+export const TransactionInTypes: Partial<TransactionType>[] = [
+  'receive',
+  'mint',
+  'borrow',
+  'claim',
+  'unstake',
+  'purchase',
+  'airdrop',
+];
+
 export type TransactionDirection = 'in' | 'out' | 'self';
 
 export interface ExecuteRapResponse extends TransactionResponse {
@@ -162,7 +191,7 @@ export type TransactionsApiResponse = {
   direction?: TransactionDirection;
   address_from?: Address;
   address_to?: Address;
-  // this value will ALWAYS be -2 when the transaction is *not* from the wallet user
+  // nonce will ALWAYS be -2 when the transaction is *not* from the wallet user
   nonce: number;
   changes: Array<
     | {

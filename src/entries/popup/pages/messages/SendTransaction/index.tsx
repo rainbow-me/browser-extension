@@ -18,7 +18,6 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -94,8 +93,8 @@ export function SendTransaction({
           hash: result.hash,
           chainId: txData.chainId,
           nonce: result.nonce,
-          status: TransactionStatus.sending,
-          type: TransactionType.send,
+          status: 'pending',
+          type: 'send',
           gasPrice: (
             selectedGas.transactionGasParams as TransactionLegacyGasParams
           )?.gasPrice,

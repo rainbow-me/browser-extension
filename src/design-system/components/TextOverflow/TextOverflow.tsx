@@ -14,7 +14,7 @@ interface TextOverflowProps {
   testId?: string;
   cursor?: TextStyles['cursor'];
   userSelect?: TextStyles['userSelect'];
-  width?: CSSProperties['width'];
+  maxWidth?: CSSProperties['maxWidth'];
 }
 
 export function TextOverflow({
@@ -27,10 +27,10 @@ export function TextOverflow({
   testId,
   cursor = 'default',
   userSelect = 'none',
-  width = '',
+  maxWidth = '',
 }: TextOverflowProps) {
   return (
-    <Box style={{ display: 'grid', width }}>
+    <Box style={{ display: 'grid', maxWidth }}>
       <Box
         marginVertical="-8px"
         className={textStyles({
