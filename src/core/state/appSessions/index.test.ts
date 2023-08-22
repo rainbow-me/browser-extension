@@ -153,8 +153,8 @@ test('should be able to check if host has an active session', async () => {
     address: ADDRESS_1,
     chainId: ChainId.mainnet,
   });
-  const activeSessionAddress = getActiveSession({ host: UNISWAP_HOST });
-  expect(activeSessionAddress).toStrictEqual({
+  const activeSession = getActiveSession({ host: UNISWAP_HOST });
+  expect(activeSession).toStrictEqual({
     address: ADDRESS_1,
     chainId: ChainId.mainnet,
   });

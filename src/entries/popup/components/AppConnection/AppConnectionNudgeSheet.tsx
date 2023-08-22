@@ -17,6 +17,7 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useDebounce } from '../../hooks/useDebounce';
 import usePrevious from '../../hooks/usePrevious';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
@@ -46,6 +47,7 @@ export const AppConnectionNudgeSheet = ({
   const { appHost, appName, appLogo } = useAppMetadata({ url });
   const { setNudgeSheetDisabled } = useAppConnectionWalletSwitcherStore();
   const previousShow = usePrevious(show);
+  const name = useDebounce(displayName, 500);
 
   const [doNotShowAgain, setDoNotShowAgain] = useState(false);
 
@@ -67,7 +69,7 @@ export const AppConnectionNudgeSheet = ({
         setShow={setShowWalletSwitcher}
       />
       <BottomSheet show={show} zIndex={zIndexes.BOTTOM_SHEET}>
-        <Box>
+        <Box testId="app-connection-nudge-sheet">
           <Navbar
             leftComponent={
               <Navbar.CloseButton onClick={() => setShow(false)} />
@@ -121,7 +123,7 @@ export const AppConnectionNudgeSheet = ({
                       color="labelTertiary"
                     />
                     <TextOverflow color="label" size="12pt" weight="bold">
-                      {displayName}
+                      {name}
                     </TextOverflow>
                   </Inline>
                   <TextOverflow color="label" size="12pt" weight="bold">
@@ -148,6 +150,7 @@ export const AppConnectionNudgeSheet = ({
               <Box width="full">
                 <Stack space="8px">
                   <Button
+                    testId="nudge-sheet-connect"
                     symbol="return.left"
                     symbolSide="left"
                     width="full"
@@ -162,6 +165,7 @@ export const AppConnectionNudgeSheet = ({
                     {i18n.t('app_connection_switcher.sheet.connect')}
                   </Button>
                   <Button
+                    testId="nudge-sheet-connect-different-wallet"
                     color="fillSecondary"
                     height="44px"
                     width="full"

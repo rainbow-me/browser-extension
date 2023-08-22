@@ -71,7 +71,7 @@ export const AppConnectionWalletSwitcher = ({
       padding="12px"
       backdropFilter={'blur(26px)'}
     >
-      <Box style={{ height: '576px' }}>
+      <Box testId="app-connection-wallet-switcher" style={{ height: '576px' }}>
         <Rows alignVertical="justify">
           <Row>
             <Navbar
@@ -111,7 +111,6 @@ export const AppConnectionWalletSwitcher = ({
                 </Inline>
               }
             />
-
             <Box
               paddingHorizontal="8px"
               style={{ overflow: 'scroll', height: '428px' }}

@@ -3,6 +3,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { goToNewTab } from '~/core/utils/tabs';
 import { Box, ButtonSymbol, Inline, Text } from '~/design-system';
 import { Symbol } from '~/design-system/components/Symbol/Symbol';
 
@@ -26,13 +27,11 @@ import { SwitchNetworkMenuSelector } from '../../SwitchMenu/SwitchNetworkMenu';
 
 interface AppConnectionWalletItemDropdownMenuProps {
   appMetadata: AppMetadata;
-  testId?: string;
   address: Address;
 }
 
 export const AppConnectionWalletItemDropdownMenu = ({
   appMetadata,
-  testId,
   address,
 }: AppConnectionWalletItemDropdownMenuProps) => {
   const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
@@ -66,10 +65,14 @@ export const AppConnectionWalletItemDropdownMenu = ({
           setSubMenuOpen(!subMenuOpen);
           break;
         case 'open-dapp':
+          goToNewTab({
+            url: appMetadata.url,
+            active: false,
+          });
           break;
       }
     },
-    [disconnect, subMenuOpen],
+    [appMetadata.url, disconnect, subMenuOpen],
   );
 
   useKeyboardShortcut({
@@ -80,10 +83,13 @@ export const AppConnectionWalletItemDropdownMenu = ({
     },
   });
   return (
-    <Box onClick={(e) => e.stopPropagation()} testId={testId}>
+    <Box onClick={(e) => e.stopPropagation()}>
       <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
         <DropdownMenuTrigger asChild>
-          <Box style={{ cursor: 'default' }}>
+          <Box
+            testId={`app-connection-wallet-item-dropdown-menu-${address}`}
+            style={{ cursor: 'default' }}
+          >
             <ButtonSymbol
               color="labelTertiary"
               height="32px"
