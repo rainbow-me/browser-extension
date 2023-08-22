@@ -79,6 +79,7 @@ export async function getAllWindowHandles({
   dappHandler?: string;
 }) {
   await delayTime('long');
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const handlers = await driver.getAllWindowHandles();
   const popupHandlerFromHandlers =
     handlers.find((handler) => handler !== dappHandler) || '';
@@ -95,6 +96,7 @@ export async function getAllWindowHandles({
 
 export async function getWindowHandle({ driver }: { driver: WebDriver }) {
   await delayTime('long');
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const windowHandle = await driver.getWindowHandle();
   return windowHandle;
 }
@@ -184,12 +186,16 @@ export async function getExtensionIdByName(
 // search functions
 
 export async function querySelector(driver: WebDriver, selector: string) {
-  await driver.wait(untilDocumentLoaded(), waitUntilTime);
-  const el = await driver.wait(
-    until.elementLocated(By.css(selector)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  try {
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+    const el = await driver.wait(
+      until.elementLocated(By.css(selector)),
+      waitUntilTime,
+    );
+    return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  } catch (error) {
+    throw new Error(`Failed to find element ${selector}`);
+  }
 }
 
 export async function findElementByText(driver: WebDriver, text: string) {
