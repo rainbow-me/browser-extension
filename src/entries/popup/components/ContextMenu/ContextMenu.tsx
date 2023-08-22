@@ -59,9 +59,12 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
           }
           props.onTrigger?.();
         }}
-        onClick={() => {
+        onClick={(e) => {
           if (props.openOnClick) {
-            simulateContextClick(triggerRef?.current);
+            simulateContextClick(triggerRef?.current, {
+              clientX: e.clientX,
+              clientY: e.clientY,
+            });
           }
         }}
         onKeyDown={(e) => {
