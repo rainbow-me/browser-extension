@@ -22,6 +22,7 @@ import { HWRequestListener } from './components/HWRequestListener/HWRequestListe
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
 import { AuthProvider } from './hooks/useAuth';
+import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
@@ -37,6 +38,7 @@ const wagmiClient = createWagmiClient({
 export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
   const { deviceId } = useDeviceIdStore();
+  useExpiryListener();
 
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode

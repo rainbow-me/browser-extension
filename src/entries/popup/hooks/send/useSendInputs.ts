@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import {
@@ -86,13 +87,22 @@ export const useSendInputs = ({
     }
   }, [asset, currentCurrency, independentAmount, independentField]);
 
-  const assetAmount = useMemo(
-    () =>
+  const { saveSendAmount, saveSendField } = usePopupInstanceStore();
+  const assetAmount = useMemo(() => {
+    const amount =
       independentField === 'asset'
         ? independentAmount
-        : dependentAmountDisplay?.amount,
-    [dependentAmountDisplay, independentAmount, independentField],
-  );
+        : dependentAmountDisplay?.amount;
+    saveSendField({ field: independentField });
+    saveSendAmount({ amount: independentAmount });
+    return amount;
+  }, [
+    dependentAmountDisplay,
+    independentAmount,
+    independentField,
+    saveSendAmount,
+    saveSendField,
+  ]);
 
   const setInputValue = useCallback((newValue: string) => {
     if (independentFieldRef.current) {
