@@ -3,32 +3,90 @@ import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
+import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
+import { toHex } from '~/core/utils/hex';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function useAppSession({ host }: { host: string }) {
   const {
-    updateSessionAddress,
-    updateSessionChainId,
+    removeAppSession,
     removeSession,
+    updateActiveSessionChainId: storeUpdateActiveSessionChainId,
+    updateSessionChainId: storeUpdateSessionChainId,
+    updateActiveSession: storeUpdateActiveSession,
     appSessions,
-    addSession,
+    addSession: storeAddSession,
+    getActiveSession,
   } = useAppSessionsStore();
 
+  const activeSession = getActiveSession({ host });
+  const {
+    setAddressInAppHasInteractedWithNudgeSheet,
+    clearAppHasInteractedWithNudgeSheet,
+  } = useAppConnectionWalletSwitcherStore();
+
   const updateAppSessionAddress = React.useCallback(
-    (address: Address) => {
-      updateSessionAddress({ host, address });
-      messenger.send(`accountsChanged:${host}`, [address]);
+    ({ address }: { address: Address }) => {
+      storeUpdateActiveSession({ host, address });
+      messenger.send(`accountsChanged:${host}`, address);
+      messenger.send(
+        `chainChanged:${host}`,
+        appSessions[host].sessions[address],
+      );
     },
-    [host, updateSessionAddress],
+    [appSessions, host, storeUpdateActiveSession],
+  );
+
+  const addSession = React.useCallback(
+    ({
+      host,
+      address,
+      chainId,
+      url,
+    }: {
+      host: string;
+      address: Address;
+      chainId: number;
+      url: string;
+    }) => {
+      const sessions = storeAddSession({ host, address, chainId, url });
+      messenger.send(`accountsChanged:${host}`, address);
+      if (Object.keys(sessions).length === 1) {
+        messenger.send(`connect:${host}`, {
+          address,
+          chainId: toHex(String(chainId)),
+        });
+      }
+    },
+    [storeAddSession],
   );
 
   const updateAppSessionChainId = React.useCallback(
     (chainId: number) => {
-      updateSessionChainId({ host, chainId });
+      storeUpdateActiveSessionChainId({ host, chainId });
       messenger.send(`chainChanged:${host}`, chainId);
     },
-    [host, updateSessionChainId],
+    [host, storeUpdateActiveSessionChainId],
+  );
+
+  const updateActiveSessionChainId = React.useCallback(
+    (chainId: number) => {
+      storeUpdateActiveSessionChainId({ host, chainId });
+      messenger.send(`chainChanged:${host}`, chainId);
+    },
+    [host, storeUpdateActiveSessionChainId],
+  );
+
+  const updateSessionChainId = React.useCallback(
+    ({ address, chainId }: { address: Address; chainId: number }) => {
+      storeUpdateSessionChainId({ host, address, chainId });
+      if (isLowerCaseMatch(activeSession?.address, address)) {
+        messenger.send(`chainChanged:${host}`, chainId);
+      }
+    },
+    [activeSession?.address, host, storeUpdateSessionChainId],
   );
 
   const appSession = React.useMemo(
@@ -36,16 +94,48 @@ export function useAppSession({ host }: { host: string }) {
     [appSessions, host],
   );
 
+  const disconnectSession = React.useCallback(
+    ({ address, host }: { address: Address; host: string }) => {
+      const newActiveSession = removeSession({ host, address });
+      if (newActiveSession) {
+        messenger.send(`accountsChanged:${host}`, newActiveSession?.address);
+        messenger.send(`chainChanged:${host}`, newActiveSession?.chainId);
+        setAddressInAppHasInteractedWithNudgeSheet({
+          address,
+          host,
+          interacted: false,
+        });
+      } else {
+        messenger.send(`disconnect:${host}`, []);
+        clearAppHasInteractedWithNudgeSheet({
+          host: host,
+        });
+      }
+    },
+    [
+      clearAppHasInteractedWithNudgeSheet,
+      removeSession,
+      setAddressInAppHasInteractedWithNudgeSheet,
+    ],
+  );
+
   const disconnectAppSession = React.useCallback(() => {
-    removeSession({ host });
     messenger.send(`disconnect:${host}`, null);
-  }, [host, removeSession]);
+    removeAppSession({ host });
+    clearAppHasInteractedWithNudgeSheet({
+      host: host,
+    });
+  }, [host, removeAppSession, clearAppHasInteractedWithNudgeSheet]);
 
   return {
     addSession,
     updateAppSessionAddress,
+    updateActiveSessionChainId,
+    updateSessionChainId,
     updateAppSessionChainId,
     disconnectAppSession,
+    disconnectSession,
     appSession,
+    activeSession,
   };
 }

@@ -6,29 +6,33 @@ import {
   isValidUrl,
 } from '~/core/utils/connectedApps';
 
-// import { useDominantColor } from './useDominantColor';
-
-interface AppMetadata {
+interface AppMetadataProps {
   url?: string;
   title?: string;
 }
 
-export function useAppMetadata({ url, title }: AppMetadata) {
+export interface AppMetadata {
+  appHost: string;
+  appHostName: string;
+  appName: string;
+  appLogo: string;
+  url?: string;
+}
+
+export function useAppMetadata({ url, title }: AppMetadataProps): AppMetadata {
   const appHostName = url && isValidUrl(url) ? getDappHostname(url) : '';
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
   const appLogo = appHost ? getPublicAppIcon(appHost) : '';
-  const appName = appHostName
-    ? getHardcodedDappInformation(appHostName)?.name || title
-    : '';
-  // const { data: appColor } = useDominantColor({
-  //   imageUrl: appLogo ?? undefined,
-  // });
+  const appName =
+    url && isValidUrl(url)
+      ? getHardcodedDappInformation(appHostName)?.name || title || ''
+      : '';
 
   return {
+    url,
     appHost,
     appHostName,
     appName,
     appLogo,
-    // appColor,
   };
 }
