@@ -122,7 +122,7 @@ jobs:
             yarn vitest:parallel --retry=5
   # CHROME TESTS
   chrome-e2e-parallel:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 16
     needs: [build]
     env:
@@ -140,7 +140,7 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           yarn vitest:parallel --retry=5
   chrome-e2e-swap:
-    runs-on: beefy-runner-bx
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [build]
     env:
@@ -162,7 +162,7 @@ jobs:
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:swap
   chrome-e2e-send:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
@@ -180,7 +180,7 @@ jobs:
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:send --retry=5
   chrome-e2e-dappInteractions:
-    runs-on: beefy-runner-bx
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [build]
     env:
