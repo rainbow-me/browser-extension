@@ -20,11 +20,12 @@ insertInpageScriptIfNeeded();
 setupBridgeMessengerRelay();
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
+const IS_DEV = process.env.IS_DEV === 'true';
 
 setTimeout(() => {
   inpageMessenger.send('rainbow_setDefaultProvider', {
     rainbowAsDefault:
-      useInviteCodeStore.getState().inviteCodeValidated &&
+      (useInviteCodeStore.getState().inviteCodeValidated || IS_DEV) &&
       isDefaultWalletStore.getState().isDefaultWallet,
   });
 }, 1);

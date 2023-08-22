@@ -7,6 +7,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -336,6 +337,17 @@ export function Swap() {
     [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
   );
 
+  const {
+    swapAmount: savedAmount,
+    swapField: savedField,
+    swapTokenToBuy: savedTokenToBuy,
+    swapTokenToSell: savedTokenToSell,
+  } = usePopupInstanceStore();
+
+  const [didPopulateSavedTokens, setDidPopulateSavedTokens] = useState(false);
+  const [didPopulateSavedInputValues, setDidPopulateSavedInputValues] =
+    useState(false);
+
   useEffect(() => {
     // navigating from token row
     if (selectedToken) {
@@ -350,10 +362,42 @@ export function Swap() {
       }
       setInputToOpenOnMount('buy');
     } else {
-      setInputToOpenOnMount('sell');
+      if (!didPopulateSavedTokens) {
+        if (savedTokenToBuy) {
+          setAssetToBuy(savedTokenToBuy);
+        }
+        if (savedTokenToSell) {
+          setAssetToSell(savedTokenToSell);
+        } else {
+          setInputToOpenOnMount('sell');
+        }
+        setDidPopulateSavedTokens(true);
+      }
+      if (didPopulateSavedTokens && !didPopulateSavedInputValues) {
+        const field = savedField || 'sellField';
+        if (savedAmount) {
+          if (field === 'buyField') {
+            setAssetToBuyInputValue(savedAmount);
+          } else if (field === 'sellField') {
+            setAssetToSellInputValue(savedAmount);
+          } else {
+            setAssetToSellInputNativeValue(savedAmount);
+          }
+        }
+        setDidPopulateSavedInputValues(true);
+
+        switch (field) {
+          case 'buyField':
+            assetToBuyInputRef.current?.focus();
+            break;
+          case 'sellField':
+            assetToSellInputRef.current?.focus();
+            break;
+        }
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [didPopulateSavedInputValues, didPopulateSavedTokens]);
 
   useEffect(() => {
     return () => {
