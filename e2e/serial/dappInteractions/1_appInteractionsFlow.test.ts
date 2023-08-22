@@ -345,8 +345,7 @@ describe('App interactions flow', () => {
     const dappHandler = await getWindowHandle({ driver });
 
     console.log('TX REQUEST 1');
-    await delayTime('long');
-    await delayTime('long');
+    await delayTime('very-long');
     console.log('TX REQUEST 2 button query selector');
     const button = await querySelector(driver, '[id="sendTx"]');
     console.log('TX REQUEST 2 button', button);
