@@ -1,17 +1,11 @@
 import { motion } from 'framer-motion';
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import {
-  RainbowTransaction,
-  TransactionInTypes,
-  TransactionOutTypes,
-} from '~/core/types/transactions';
-import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
+import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
-import { TextStyles } from '~/design-system/styles/core.css';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { Spinner } from '../../../components/Spinner/Spinner';
@@ -23,6 +17,7 @@ import { ActivitySkeleton } from '../Skeletons';
 
 import { ActivityIcon } from './ActivityIcon';
 import { ActivityTypeIcon } from './ActivityTypeIcon';
+import { ActivityValue } from './ActivityValue';
 import { NoActivity } from './NoActivity';
 
 export function Activities() {
@@ -133,31 +128,24 @@ const truncateString = (txt = '', maxLength = 22) => {
 };
 
 const NFTAmount = ({ transaction }: { transaction: RainbowTransaction }) => {
-  const nftChanges = transaction.changes
-    .filter((c) => c?.asset.type === 'nft')
-    .filter(Boolean);
-
-  if (!nftChanges.length) return null;
-
-  let amount: number | undefined;
-  if (TransactionInTypes.includes(transaction.type)) {
-    amount = nftChanges.filter((c) => c.direction === 'in').length;
-  }
-  if (TransactionOutTypes.includes(transaction.type)) {
-    amount = nftChanges.filter((c) => c.direction === 'out').length;
-  }
+  const amount = transaction.changes
+    .filter(
+      (c) => c?.asset.type === 'nft' && c.direction !== transaction.direction,
+    )
+    .filter(Boolean).length;
 
   if (!amount) return null;
 
   return (
     <Box
-      paddingHorizontal="6px"
-      paddingVertical="5px"
+      paddingHorizontal="5px"
+      paddingVertical="4px"
+      marginVertical="-3px"
       borderColor="separatorSecondary"
       borderRadius="6px"
       borderWidth="1px"
     >
-      <Text size="12pt" weight="semibold" align="right" color="labelTertiary">
+      <Text size="11pt" weight="semibold" align="right" color="labelTertiary">
         {amount}
       </Text>
     </Box>
@@ -169,25 +157,7 @@ const ActivityRow = React.memo(function ActivityRow({
 }: {
   transaction: RainbowTransaction;
 }) {
-  const { status, title, type } = transaction;
-
-  // const nativeDisplay = useMemo(() => {
-  //   const isDebit = transaction.direction === 'out';
-  //   return `${isDebit ? '- ' : ''}${native?.display}`;
-  // }, [native?.display, transaction.direction]);
-
-  const nativeDisplayColor = useMemo(() => {
-    if (type === 'receive') return 'green';
-    return type === 'swap' ? 'purple' : 'labelTertiary';
-  }, [type]);
-
-  const titleColor = useMemo((): TextStyles['color'] => {
-    if (status === 'pending') return 'blue';
-    return type === 'swap' ? 'purple' : 'labelTertiary';
-  }, [status, type]);
-
-  const description = transaction.description;
-  const firstChangedAsset = transaction.changes[0]?.asset;
+  const { description } = transaction;
 
   return (
     <Lens borderRadius="12px" forceAvatarColor>
@@ -222,27 +192,7 @@ const ActivityRow = React.memo(function ActivityRow({
             </Inline>
           </Box>
 
-          {firstChangedAsset && (
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="flex-end"
-              justifyContent="center"
-              gap="8px"
-            >
-              <Text color={titleColor} size="12pt" weight="semibold">
-                {formatNumber(firstChangedAsset.balance.amount)}
-              </Text>
-              <TextOverflow
-                size="14pt"
-                weight="semibold"
-                align="right"
-                color={nativeDisplayColor}
-              >
-                {formatCurrency(firstChangedAsset.native.balance.amount || 0)}
-              </TextOverflow>
-            </Box>
-          )}
+          <ActivityValue transaction={transaction} />
         </Box>
       </Box>
     </Lens>
@@ -254,6 +204,8 @@ const ActivityTypeLabel = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
+  const color = status === 'pending' ? 'blue' : 'labelTertiary';
+
   return (
     <Inline space="4px">
       <Box style={{ width: 9, height: 9 }}>
@@ -261,7 +213,7 @@ const ActivityTypeLabel = ({
           <ActivityTypeIcon transaction={{ status, type }} />
         </Inline>
       </Box>
-      <Text size="12pt" weight="semibold" align="right" color="labelTertiary">
+      <Text size="12pt" weight="semibold" align="right" color={color}>
         {truncateString(title, 20)}
       </Text>
     </Inline>

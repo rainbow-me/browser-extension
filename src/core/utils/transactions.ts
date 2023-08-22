@@ -25,7 +25,7 @@ import {
   TransactionsApiResponse,
 } from '../types/transactions';
 
-import { parseUserAsset } from './assets';
+import { parseAsset, parseUserAsset } from './assets';
 import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
 import {
@@ -105,8 +105,6 @@ export async function parseTransaction({
   //   hash: tx.hash,
   // }));
 
-  if (tx.meta.type === 'approve') console.log(tx);
-
   const changes = tx.changes.map(
     (change) =>
       change && {
@@ -119,7 +117,9 @@ export async function parseTransaction({
       },
   );
 
-  const asset = changes[0]?.asset; // || parseUserAsset(tx.meta.asset, );
+  const asset = tx.meta.asset
+    ? parseAsset({ asset: tx.meta.asset, currency })
+    : changes[0]?.asset;
 
   const {
     status,

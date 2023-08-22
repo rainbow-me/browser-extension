@@ -115,7 +115,6 @@ export type TransactionType =
   | 'withdraw'
   | 'deposit'
   | 'mint'
-  | 'approve'
   | 'contract_interaction'
   | 'swap'
   | 'borrow'
@@ -125,6 +124,7 @@ export type TransactionType =
   | 'stake'
   | 'unstake'
   | 'purchase'
+  | 'approve'
   | 'revoke'
   | 'sale'
   | 'bridge'
@@ -134,26 +134,36 @@ export type TransactionType =
   | 'bid'
   | 'speed_up';
 
-export const TransactionOutTypes: Partial<TransactionType>[] = [
-  'burn',
-  'send',
-  'withdraw',
-  'deposit',
-  'repay',
-  'stake',
-  'sale',
-  'bridge',
-];
+// export const TransactionOutTypes = [
+//   'burn',
+//   'send',
+//   'deposit',
+//   'repay',
+//   'stake',
+//   'sale',
+//   'bridge',
+//   'bid',
+//   'speed_up',
+//   'revoke',
+//   'deployment',
+//   'contract_interaction',
+// ] as const;
 
-export const TransactionInTypes: Partial<TransactionType>[] = [
-  'receive',
-  'mint',
-  'borrow',
-  'claim',
-  'unstake',
-  'purchase',
-  'airdrop',
-];
+// export const TransactionInTypes = [
+//   'receive',
+//   'withdraw',
+//   'mint',
+//   'borrow',
+//   'claim',
+//   'unstake',
+//   'purchase',
+//   'airdrop',
+//   'wrap',
+//   'unwrap',
+//   'approve',
+//   'swap',
+//   'cancel',
+// ] as const;
 
 export type TransactionDirection = 'in' | 'out' | 'self';
 

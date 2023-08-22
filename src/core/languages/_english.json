@@ -851,7 +851,8 @@
     "yesterday": "Yesterday",
     "this_month": "This Month",
     "empty_header": "No activity yet",
-    "empty_description": "Once you start using your wallet, you will see your transactions here."
+    "empty_description": "Once you start using your wallet, you will see your transactions here.",
+    "no_value": "No value"
   },
   "activity_details": {
     "you": "You"

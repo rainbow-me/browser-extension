@@ -40,7 +40,7 @@ export const ActivityTypeIcon = ({
   let symbol = activityTypeIcon[type];
   let color: SymbolProps['color'] = 'labelTertiary';
 
-  if (status === 'pending') return <Spinner size={9} color="accent" />;
+  if (status === 'pending') return <Spinner size={9} color="blue" />;
   if (status === 'failed') {
     symbol = 'xmark.circle';
     color = 'red';
