@@ -13,6 +13,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -330,12 +331,16 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     });
     const { currentAddress } = useCurrentAddressStore();
     const selectableWallets = wallets.filter((a) => a !== currentAddress);
+    const { sendAddress: savedSendAddress } = usePopupInstanceStore();
 
     useEffect(() => {
-      setTimeout(() => {
-        openDropdown();
-      }, 200);
-    }, [openDropdown]);
+      if (!toAddressOrName && !savedSendAddress) {
+        setTimeout(() => {
+          openDropdown();
+        }, 200);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
       <>

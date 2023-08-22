@@ -109,6 +109,7 @@ export function useAddysSummary(
     addysSummaryQueryFunction,
     {
       ...config,
+      retry: true,
     },
   );
 }

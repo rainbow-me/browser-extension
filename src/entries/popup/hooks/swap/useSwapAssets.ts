@@ -6,6 +6,7 @@ import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/asset
 import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
@@ -39,7 +40,7 @@ export const useSwapAssets = () => {
   const [assetToSell, setAssetToSellState] = useState<
     ParsedSearchAsset | SearchAsset | null
   >(null);
-  const [assetToBuy, setAssetToBuy] = useState<
+  const [assetToBuy, setAssetToBuyState] = useState<
     ParsedSearchAsset | SearchAsset | null
   >(null);
 
@@ -59,6 +60,8 @@ export const useSwapAssets = () => {
 
   const debouncedAssetToSellFilter = useDebounce(assetToSellFilter, 200);
   const debouncedAssetToBuyFilter = useDebounce(assetToBuyFilter, 200);
+
+  const { saveSwapTokenToBuy, saveSwapTokenToSell } = usePopupInstanceStore();
 
   const { data: userAssets = [] } = useUserAssets(
     {
@@ -154,6 +157,14 @@ export const useSwapAssets = () => {
     });
   }, [assetToSell, assetToSellWithPrice, userAssets]);
 
+  const setAssetToBuy = useCallback(
+    (asset: ParsedSearchAsset | null) => {
+      saveSwapTokenToBuy({ token: asset });
+      setAssetToBuyState(asset);
+    },
+    [saveSwapTokenToBuy],
+  );
+
   const setAssetToSell = useCallback(
     (asset: ParsedSearchAsset | null) => {
       if (
@@ -162,12 +173,15 @@ export const useSwapAssets = () => {
         assetToBuy?.address === asset?.address &&
         assetToBuy?.chainId === asset?.chainId
       ) {
-        setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
+        setAssetToBuyState(
+          prevAssetToSell === undefined ? null : prevAssetToSell,
+        );
       }
       setAssetToSellState(asset);
+      saveSwapTokenToSell({ token: asset });
       asset?.chainId && setOutputChainId(asset?.chainId);
     },
-    [assetToBuy, prevAssetToSell],
+    [assetToBuy, prevAssetToSell, saveSwapTokenToSell],
   );
 
   return {
