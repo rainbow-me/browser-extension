@@ -138,9 +138,9 @@ export function Tokens() {
                 style={{ height: size, y: start }}
               >
                 <TokenContextMenu token={token}>
-                  <div onClick={openDetails}>
+                  <Box onClick={openDetails}>
                     <AssetRow uniqueId={token.uniqueId} />
-                  </div>
+                  </Box>
                 </TokenContextMenu>
               </Box>
             );
