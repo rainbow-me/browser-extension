@@ -7,7 +7,14 @@ import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
+import {
+  AccentColorProvider,
+  Box,
+  Inline,
+  Symbol,
+  Text,
+  ThemeProvider,
+} from '~/design-system';
 import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import {
   BoxStyles,
@@ -17,11 +24,12 @@ import {
 import {
   BackgroundColor,
   Space,
+  SymbolName,
   globalColors,
 } from '~/design-system/styles/designTokens';
 
 import { useAvatar } from '../../hooks/useAvatar';
-import { simulateClick } from '../../utils/simulateClick';
+import { simulateContextClick } from '../../utils/simulateClick';
 
 const { innerWidth: windowWidth } = window;
 
@@ -34,6 +42,7 @@ interface ContextMenuTriggerProps {
   asChild?: boolean;
   disabled?: boolean;
   onTrigger?: () => void;
+  openOnClick?: boolean;
 }
 
 export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
@@ -58,6 +67,14 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
           }
           props.onTrigger?.();
         }}
+        onClick={(e) => {
+          if (props.openOnClick) {
+            simulateContextClick(triggerRef?.current, {
+              clientX: e.clientX,
+              clientY: e.clientY,
+            });
+          }
+        }}
         onKeyDown={(e) => {
           if (e.key === shortcuts.global.CLOSE.key) {
             e.stopPropagation();
@@ -66,7 +83,7 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
             e.preventDefault();
           }
           if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
-            simulateClick(triggerRef?.current);
+            simulateContextClick(triggerRef?.current);
           }
         }}
         ref={triggerRef}
@@ -204,10 +221,16 @@ export const ContextMenuLabel = (props: ContextMenuLabelProps) => {
 interface ContextMenuItemProps {
   children: ReactNode;
   onSelect?: (event: Event) => void;
+  symbolLeft: SymbolName;
+  color?: TextStyles['color'];
 }
 
-export const ContextMenuItem = (props: ContextMenuItemProps) => {
-  const { children, onSelect } = props;
+export const ContextMenuItem = ({
+  children,
+  onSelect,
+  symbolLeft,
+  color,
+}: ContextMenuItemProps) => {
   return (
     <Box
       as={ContextMenuPrimitive.Item}
@@ -227,7 +250,23 @@ export const ContextMenuItem = (props: ContextMenuItemProps) => {
         hover: 'surfaceSecondary',
       }}
     >
-      {children}
+      <Inline alignVertical="center" space="8px">
+        {symbolLeft && (
+          <Symbol
+            size={16}
+            symbol={symbolLeft}
+            weight="semibold"
+            color={color}
+          />
+        )}
+        {typeof children === 'string' ? (
+          <Text size="14pt" weight="semibold">
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </Inline>
     </Box>
   );
 };
