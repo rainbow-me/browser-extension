@@ -234,6 +234,7 @@ export async function parseUserAssets({
   address: Address;
   assets: {
     quantity: string;
+    small_balance?: boolean;
     asset: ZerionAsset;
   }[];
   chainIds: ChainId[];
@@ -244,13 +245,14 @@ export async function parseUserAssets({
     (dict, currentChainId) => ({ ...dict, [currentChainId]: {} }),
     {},
   ) as ParsedAssetsDictByChain;
-  for (const { asset, quantity } of assets) {
+  for (const { asset, quantity, small_balance } of assets) {
     if (!filterAsset(asset) && greaterThan(quantity, 0)) {
       const parsedAsset = parseAddressAsset({
         address: asset?.asset_code,
         asset,
         currency,
         quantity,
+        smallBalance: small_balance,
       });
       parsedAssetsDict[parsedAsset?.chainId][parsedAsset.uniqueId] =
         parsedAsset;
