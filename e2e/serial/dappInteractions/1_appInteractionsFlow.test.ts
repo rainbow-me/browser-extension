@@ -344,18 +344,22 @@ describe('App interactions flow', () => {
     await delayTime('long');
     const dappHandler = await getWindowHandle({ driver });
 
+    console.log('TX REQUEST 1');
     await delayTime('long');
     const button = await querySelector(driver, '[id="sendTx"]');
+    console.log('TX REQUEST 2 button', button);
 
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
 
+    console.log('TX REQUEST 3 clicked button');
+    await delayTime('long');
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await delayTime('long');
-
+    console.log('SEND TRANSACTION ACTIONS switchTo');
     await driver.switchTo().window(popupHandler);
     await delayTime('long');
+    console.log('SEND TRANSACTION ACTIONS ELEMENT', 'before');
     const sendTransactionActions = await findElementByTestId({
       id: 'send-transaction-actions',
       driver,
