@@ -37,6 +37,7 @@ import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
 import { ROUTES } from '../../urls';
 
 import { TokensSkeleton } from './Skeletons';
+import { TokenContextMenu } from './TokenDetails/TokenContextMenu';
 
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
@@ -121,11 +122,12 @@ export function Tokens() {
         <Box style={{ overflow: 'auto' }}>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, index, start, size } = virtualItem;
-            const rowData = assets[index];
+            const token = assets[index];
+            const openDetails = () =>
+              navigate(ROUTES.TOKEN_DETAILS(token.uniqueId));
             return (
               <Box
                 key={key}
-                onClick={() => navigate(ROUTES.TOKEN_DETAILS(rowData.uniqueId))}
                 as={motion.div}
                 whileTap={{ scale: 0.98 }}
                 layoutId={`list-${index}`}
@@ -135,10 +137,11 @@ export function Tokens() {
                 width="full"
                 style={{ height: size, y: start }}
               >
-                <AssetRow
-                  key={`${rowData?.uniqueId}-${index}`}
-                  uniqueId={rowData?.uniqueId}
-                />
+                <TokenContextMenu token={token}>
+                  <Box onClick={openDetails}>
+                    <AssetRow uniqueId={token.uniqueId} />
+                  </Box>
+                </TokenContextMenu>
               </Box>
             );
           })}

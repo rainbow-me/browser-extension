@@ -4,6 +4,7 @@ import {
   fetchAndActivate,
   getAll,
   getRemoteConfig,
+  isSupported,
 } from 'firebase/remote-config';
 
 import { RainbowError, logger } from '~/logger';
@@ -60,50 +61,53 @@ const config: RainbowConfig = { ...DEFAULT_CONFIG, status: 'loading' };
 
 export const init = async () => {
   try {
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
+    const supported = await isSupported();
+    if (supported) {
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
 
-    // Initialize Remote Config and get a reference to the service
-    const remoteConfig = getRemoteConfig(app);
-    remoteConfig.settings.minimumFetchIntervalMillis = 120000;
-    remoteConfig.defaultConfig = {
-      ...DEFAULT_CONFIG,
-      default_slippage_bips: JSON.stringify(
-        DEFAULT_CONFIG.default_slippage_bips,
-      ),
-    };
-    const fetchedRemotely = await fetchAndActivate(remoteConfig);
+      // Initialize Remote Config and get a reference to the service
+      const remoteConfig = getRemoteConfig(app);
+      remoteConfig.settings.minimumFetchIntervalMillis = 120000;
+      remoteConfig.defaultConfig = {
+        ...DEFAULT_CONFIG,
+        default_slippage_bips: JSON.stringify(
+          DEFAULT_CONFIG.default_slippage_bips,
+        ),
+      };
+      const fetchedRemotely = await fetchAndActivate(remoteConfig);
 
-    if (fetchedRemotely) {
-      logger.debug('Configs were retrieved from the backend and activated.');
-    } else {
-      logger.debug(
-        'No configs were fetched from the backend, and the local configs were already activated',
-      );
-    }
-    const parameters = getAll(remoteConfig);
-    Object.entries(parameters).forEach(($) => {
-      const [key, entry] = $;
-      const realKey = key.replace('BX_', '');
-      // Ignore non BX keys
-      if (key.startsWith('BX_')) {
-        if (key === 'BX_default_slippage_bips') {
-          config[realKey] = JSON.parse(
-            entry.asString(),
-          ) as RainbowConfig['default_slippage_bips'];
-        } else if (
-          key === 'BX_send_enabled' ||
-          key === 'BX_swaps_enabled' ||
-          key === 'BX_tx_requests_enabled' ||
-          key === 'BX_flashbots_enabled' ||
-          key === 'BX_invite_code_required'
-        ) {
-          config[realKey] = entry.asBoolean();
-        } else {
-          config[realKey] = entry.asString();
-        }
+      if (fetchedRemotely) {
+        logger.debug('Configs were retrieved from the backend and activated.');
+      } else {
+        logger.debug(
+          'No configs were fetched from the backend, and the local configs were already activated',
+        );
       }
-    });
+      const parameters = getAll(remoteConfig);
+      Object.entries(parameters).forEach(($) => {
+        const [key, entry] = $;
+        const realKey = key.replace('BX_', '');
+        // Ignore non BX keys
+        if (key.startsWith('BX_')) {
+          if (key === 'BX_default_slippage_bips') {
+            config[realKey] = JSON.parse(
+              entry.asString(),
+            ) as RainbowConfig['default_slippage_bips'];
+          } else if (
+            key === 'BX_send_enabled' ||
+            key === 'BX_swaps_enabled' ||
+            key === 'BX_tx_requests_enabled' ||
+            key === 'BX_flashbots_enabled' ||
+            key === 'BX_invite_code_required'
+          ) {
+            config[realKey] = entry.asBoolean();
+          } else {
+            config[realKey] = entry.asString();
+          }
+        }
+      });
+    }
   } catch (e) {
     console.log('error getting remote config', e);
     logger.info(`error getting remote config: ${e}`);

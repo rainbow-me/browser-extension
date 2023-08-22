@@ -1,21 +1,35 @@
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu';
+import { DismissableLayerProps } from '@radix-ui/react-tooltip';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import React, { CSSProperties, ReactNode, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
+import {
+  AccentColorProvider,
+  Box,
+  Inline,
+  Symbol,
+  Text,
+  ThemeProvider,
+} from '~/design-system';
 import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
-import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
+import {
+  BoxStyles,
+  TextStyles,
+  boxStyles,
+} from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
   Space,
+  SymbolName,
   globalColors,
 } from '~/design-system/styles/designTokens';
 
 import { useAvatar } from '../../hooks/useAvatar';
-import { simulateClick } from '../../utils/simulateClick';
+import { simulateContextClick } from '../../utils/simulateClick';
 
 const { innerWidth: windowWidth } = window;
 
@@ -26,11 +40,13 @@ interface ContextMenuTriggerProps {
   children: ReactNode;
   accentColor?: string;
   asChild?: boolean;
+  disabled?: boolean;
   onTrigger?: () => void;
+  openOnClick?: boolean;
 }
 
 export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
-  const { children, accentColor, asChild } = props;
+  const { children, accentColor, asChild, disabled } = props;
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -41,6 +57,7 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
     >
       <ContextMenuPrimitive.Trigger
         asChild={asChild}
+        disabled={disabled}
         onContextMenu={(e) => {
           if (
             e.clientX > WINDOW_LEFT_OFFSET &&
@@ -50,6 +67,14 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
           }
           props.onTrigger?.();
         }}
+        onClick={(e) => {
+          if (props.openOnClick) {
+            simulateContextClick(triggerRef?.current, {
+              clientX: e.clientX,
+              clientY: e.clientY,
+            });
+          }
+        }}
         onKeyDown={(e) => {
           if (e.key === shortcuts.global.CLOSE.key) {
             e.stopPropagation();
@@ -58,7 +83,7 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
             e.preventDefault();
           }
           if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
-            simulateClick(triggerRef?.current);
+            simulateContextClick(triggerRef?.current);
           }
         }}
         ref={triggerRef}
@@ -70,10 +95,22 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
 };
 
 interface ContextMenuContentProps {
-  children: ReactNode;
-  marginRight?: Space;
   accentColor?: string;
+  animate?: boolean;
+  border?: boolean;
+  boxShadow?: string;
+  children: ReactNode;
+  backdropFilter?: BoxStyles['backdropFilter'];
+  marginRight?: Space;
+  marginLeft?: Space | number;
+  marginTop?: Space | number;
+  position?: BoxStyles['position'];
   sideOffset?: number;
+  alignOffset?: number;
+  scale?: number;
+  top?: number;
+  onPointerDownOutside?: () => void;
+  onInteractOutside?: DismissableLayerProps['onInteractOutside'];
 }
 
 export function ContextMenuContent(props: ContextMenuContentProps) {
@@ -91,7 +128,23 @@ const ContextMenuContentBody = React.forwardRef<
   HTMLDivElement,
   ContextMenuContentProps
 >((props: ContextMenuContentProps, ref) => {
-  const { children, marginRight, accentColor } = props;
+  const {
+    animate,
+    border,
+    boxShadow,
+    backdropFilter,
+    children,
+    marginRight,
+    marginLeft,
+    marginTop,
+    position,
+    accentColor,
+    scale,
+    top,
+    alignOffset,
+    onInteractOutside,
+    onPointerDownOutside,
+  } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
@@ -102,23 +155,45 @@ const ContextMenuContentBody = React.forwardRef<
       <ThemeProvider theme={currentTheme}>
         <Box
           as={ContextMenuPrimitive.Content}
+          ref={ref}
+          onPointerDownOutside={onPointerDownOutside}
+          onInteractOutside={onInteractOutside}
           style={{
             width: 204,
-            backdropFilter: 'blur(26px)',
-            boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
-            marginRight: marginRight ?? '0px',
           }}
           forceMount
-          paddingHorizontal="12px"
-          paddingVertical="4px"
-          background="surfaceMenu"
-          borderColor="separatorTertiary"
-          borderWidth="1px"
-          borderRadius="16px"
-          ref={ref}
+          alignOffset={alignOffset}
           hideWhenDetached
         >
-          {children}
+          <Box
+            as={motion.div}
+            initial={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
+            animate={{
+              scale: scale ?? 1,
+              width: '204px',
+              opacity: 1,
+            }}
+            exit={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
+            transition={{ duration: 0.1 }}
+            style={{
+              boxShadow: boxShadow ?? '0px 10px 30px rgba(0, 0, 0, 0.2)',
+              marginRight: marginRight ?? '0px',
+              marginLeft: marginLeft ?? '0px',
+              marginTop: marginTop ?? '0px',
+              top: top ?? '0px',
+            }}
+            width="fit"
+            backdropFilter={backdropFilter || 'blur(26px)'}
+            paddingHorizontal="12px"
+            paddingVertical="4px"
+            background="surfaceMenu"
+            borderColor="separatorTertiary"
+            borderWidth={border ? '1px' : undefined}
+            borderRadius="16px"
+            position={position}
+          >
+            {children}
+          </Box>
         </Box>
       </ThemeProvider>
     </AccentColorProvider>
@@ -146,10 +221,16 @@ export const ContextMenuLabel = (props: ContextMenuLabelProps) => {
 interface ContextMenuItemProps {
   children: ReactNode;
   onSelect?: (event: Event) => void;
+  symbolLeft: SymbolName;
+  color?: TextStyles['color'];
 }
 
-export const ContextMenuItem = (props: ContextMenuItemProps) => {
-  const { children, onSelect } = props;
+export const ContextMenuItem = ({
+  children,
+  onSelect,
+  symbolLeft,
+  color,
+}: ContextMenuItemProps) => {
   return (
     <Box
       as={ContextMenuPrimitive.Item}
@@ -169,7 +250,23 @@ export const ContextMenuItem = (props: ContextMenuItemProps) => {
         hover: 'surfaceSecondary',
       }}
     >
-      {children}
+      <Inline alignVertical="center" space="8px">
+        {symbolLeft && (
+          <Symbol
+            size={16}
+            symbol={symbolLeft}
+            weight="semibold"
+            color={color}
+          />
+        )}
+        {typeof children === 'string' ? (
+          <Text size="14pt" weight="semibold">
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </Inline>
     </Box>
   );
 };
