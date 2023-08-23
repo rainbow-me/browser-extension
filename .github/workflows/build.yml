@@ -67,7 +67,7 @@ jobs:
         with:
           name: rainbowbx-${{ github.sha }}.zip
           path: build/
-  # FIREFOX TESTS - Disabled for now till all tests are passing
+  # FIREFOX TESTS
   firefox-e2e-parallel:
     runs-on: ubuntu-latest
     timeout-minutes: 16
@@ -114,6 +114,8 @@ jobs:
         shell: 'bash'
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run e2e parallel (Firefox)
+        id: FFE2eParallel
+        continue-on-error: true
         run: |
             export BROWSER=firefox
             export OS=linux
@@ -121,10 +123,14 @@ jobs:
             yarn firefox:manifest && yarn firefox:zip
             yarn vitest:parallel --retry=5
       - name: Upload deps artifacts
+        if: steps.FFE2eParallel.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.FFE2eParallel.outcome == 'failure'
+        run: exit 1
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
@@ -139,16 +145,21 @@ jobs:
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e parallel (Chrome)
+        id: ChromeE2EParallel
         run: |
           export BROWSER=chrome
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           yarn vitest:parallel --retry=5
       - name: Upload deps artifacts
+        if: steps.ChromeE2EParallel.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2EParallel.outcome == 'failure'
+        run: exit 1
   chrome-e2e-swap:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
@@ -162,6 +173,7 @@ jobs:
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e swap (Chrome)
+        id: ChromeE2ESwaps
         uses: nick-fields/retry@v2
         with:
           timeout_minutes: 25
@@ -172,10 +184,14 @@ jobs:
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:swap
       - name: Upload deps artifacts
+        if: steps.ChromeE2ESwaps.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
-            name: screenshots
-            path: screenshots/
+          name: screenshots
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2ESwaps.outcome == 'failure'
+        run: exit 1
   chrome-e2e-send:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
@@ -189,16 +205,21 @@ jobs:
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e send (Chrome)
+        id: ChromeE2ESend
         run: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:send --retry=5
       - name: Upload deps artifacts
+        if: steps.ChromeE2ESend.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2ESend.outcome == 'failure'
+        run: exit 1
   chrome-e2e-dappInteractions:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
@@ -212,16 +233,21 @@ jobs:
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e dappInteractions (Chrome)
+        id: ChromeE2EDappInteractions
         run: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
             yarn vitest:dappInteractions --retry=5
       - name: Upload deps artifacts
+        if: steps.ChromeE2EDappInteractions.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2EDappInteractions.outcome == 'failure'
+        run: exit 1
   # BRAVE TESTS
   # brave-e2e:
   #   needs: [build]
