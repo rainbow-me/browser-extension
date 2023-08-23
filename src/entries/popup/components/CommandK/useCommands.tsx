@@ -4,7 +4,7 @@ import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import * as state from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -444,7 +444,7 @@ export const useCommands = (
   setSelectedCommandNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   const { currentAddress: address, setCurrentAddress } =
-    state.useCurrentAddressStore();
+    useCurrentAddressStore();
   const { currentTheme } = useCurrentThemeStore();
   const { data: ensName } = useEnsName({ address });
   const { featureFlags } = useFeatureFlagsStore();
