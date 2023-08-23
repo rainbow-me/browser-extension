@@ -323,6 +323,7 @@ export async function waitAndClick(element: WebElement, driver: WebDriver) {
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     return element.click();
   } catch (error) {
+    await takeScreenshot(driver, await element.getAttribute('data-testid'));
     throw new Error(
       `Failed to click element ${await element.getAttribute('data-testid')}`,
     );
