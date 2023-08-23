@@ -48,6 +48,7 @@ export const getRootUrl = () => {
 // navigators
 
 export async function goToTestApp(driver: WebDriver) {
+  await driver.manage().deleteAllCookies();
   await driver.get(RAINBOW_TEST_DAPP);
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
