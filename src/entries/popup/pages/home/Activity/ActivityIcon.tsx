@@ -15,12 +15,8 @@ export const ActivityIcon = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const changes = transaction.changes || [];
-
   const firstChangedAsset = transaction.changes[0]?.asset;
   const secondChangedAsset = transaction.changes[1]?.asset;
-  // const assetsIn = changes.filter((change) => change?.direction === 'in');
-  // const assetsOut = changes.filter((change) => change?.direction === 'out');
 
   if (
     ['wrap', 'undwrap', 'swap'].includes(transaction.type) &&

@@ -22,6 +22,22 @@ import { RainbowTransaction } from '~/core/types/transactions';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { Box, Text, TextOverflow } from '~/design-system';
 
+const getBridgeActivityValues = (transaction: RainbowTransaction) => {
+  const { changes } = transaction;
+
+  const tokenIn = changes.filter((c) => c?.direction === 'in')[0]?.asset;
+  const tokenOut = changes.filter((c) => c?.direction === 'out')[0]?.asset;
+
+  if (!tokenIn || !tokenOut) return;
+
+  const valueOut = `-${formatNumber(tokenOut.balance.amount)} ${
+    tokenOut.symbol
+  }`;
+  const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
+
+  return [valueOut, valueIn];
+};
+
 const getSwapActivityValues = (transaction: RainbowTransaction) => {
   const { changes } = transaction;
 
@@ -52,6 +68,8 @@ const getActivityValues = (transaction: RainbowTransaction) => {
   if (!asset) return;
 
   const { balance, native } = asset;
+  if (balance.amount === '0') return;
+
   const assetValue = `${valueSymbol}${formatNumber(balance.amount)} ${
     asset.symbol
   }`;

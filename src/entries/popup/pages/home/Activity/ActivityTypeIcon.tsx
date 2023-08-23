@@ -1,5 +1,5 @@
 import { RainbowTransaction, TransactionType } from '~/core/types/transactions';
-import { Symbol, SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { Symbol } from '~/design-system/components/Symbol/Symbol';
 import { SymbolName } from '~/design-system/styles/designTokens';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 
@@ -37,16 +37,15 @@ export const ActivityTypeIcon = ({
 }: {
   transaction: Pick<RainbowTransaction, 'status' | 'type'>;
 }) => {
-  let symbol = activityTypeIcon[type];
-  let color: SymbolProps['color'] = 'labelTertiary';
-
   if (status === 'pending') return <Spinner size={9} color="blue" />;
-  if (status === 'failed') {
-    symbol = 'xmark.circle';
-    color = 'red';
-  }
+  if (status === 'failed')
+    return (
+      <Symbol symbol="xmark.circle" color="red" size={9} weight="semibold" />
+    );
 
+  const symbol = activityTypeIcon[type];
   if (!symbol) return null;
-
-  return <Symbol symbol={symbol} color={color} size={9} weight="semibold" />;
+  return (
+    <Symbol symbol={symbol} color="labelTertiary" size={9} weight="semibold" />
+  );
 };

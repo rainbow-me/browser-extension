@@ -1,11 +1,15 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import { RainbowTransaction } from '~/core/types/transactions';
+import {
+  RainbowTransaction,
+  TransactionStatus,
+} from '~/core/types/transactions';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
+import { TextColor } from '~/design-system/styles/designTokens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { Spinner } from '../../../components/Spinner/Spinner';
@@ -185,7 +189,7 @@ const ActivityRow = React.memo(function ActivityRow({
             <ActivityTypeLabel transaction={transaction} />
 
             <Inline space="4px" alignVertical="center">
-              <TextOverflow size="14pt" weight="semibold" maxWidth={220}>
+              <TextOverflow size="14pt" weight="semibold" maxWidth={200}>
                 {description}
               </TextOverflow>
               <NFTAmount transaction={transaction} />
@@ -199,12 +203,18 @@ const ActivityRow = React.memo(function ActivityRow({
   );
 });
 
+const colorByStatus: Record<TransactionStatus, TextColor> = {
+  pending: 'blue',
+  failed: 'red',
+  confirmed: 'labelTertiary',
+};
+
 const ActivityTypeLabel = ({
   transaction: { type, title, status },
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const color = status === 'pending' ? 'blue' : 'labelTertiary';
+  const color = colorByStatus[status] || 'labelTertiary';
 
   return (
     <Inline space="4px">

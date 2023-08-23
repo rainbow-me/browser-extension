@@ -7,12 +7,9 @@ import { ParsedUserAsset } from '../utils/assets';
 import { AssetApiResponse, ParsedAsset, ProtocolType } from './assets';
 import { ChainId, ChainName } from './chains';
 
-export type TransactionStatus =
-  | 'pending'
-  | 'confirmed'
-  | 'failed'
-  | 'cancelled'
-  | 'dropped';
+export type TransactionStatus = 'pending' | 'confirmed' | 'failed';
+// | 'cancelled'
+// | 'dropped';
 
 type BaseTransaction = {
   status: TransactionStatus;
@@ -64,17 +61,17 @@ type ConfirmedTransaction = WithRequired<
 > & { status: 'confirmed' };
 type PendingTransaction = BaseTransaction & { status: 'pending' };
 type FailedTransaction = BaseTransaction & { status: 'failed' };
-type DroppedTransaction = BaseTransaction & { status: 'dropped' };
-type CancelledTransaction = BaseTransaction & { status: 'cancelled' };
+// type DroppedTransaction = BaseTransaction & { status: 'dropped' };
+// type CancelledTransaction = BaseTransaction & { status: 'cancelled' };
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
 export type RainbowTransaction =
   | ConfirmedTransaction
   | PendingTransaction
-  | FailedTransaction
-  | DroppedTransaction
-  | CancelledTransaction;
+  | FailedTransaction;
+// | DroppedTransaction
+// | CancelledTransaction;
 // | ({
 //     type: Exclude<TransactionType, 'swap' | 'wrap' | 'unwrap'>;
 //   } & BaseTransaction)
@@ -140,7 +137,7 @@ export type TransactionsApiResponse = {
   changes: Array<
     | {
         asset: AssetApiResponse;
-        value: number;
+        value: number | null;
         direction: TransactionDirection;
         address_from: Address;
         address_to: Address;

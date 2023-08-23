@@ -117,7 +117,7 @@ export function parseUserAsset({
   currency,
   balance,
 }: {
-  asset: ZerionAsset;
+  asset: ZerionAsset | AssetApiResponse;
   currency: SupportedCurrencyKey;
   balance: string;
 }) {

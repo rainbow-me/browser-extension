@@ -22,10 +22,11 @@ import {
   NewTransaction,
   RainbowTransaction,
   TransactionStatus,
+  TransactionType,
   TransactionsApiResponse,
 } from '../types/transactions';
 
-import { parseAsset, parseUserAsset } from './assets';
+import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
 import { isZero } from './numbers';
@@ -91,14 +92,7 @@ export async function parseTransaction({
   currency,
   chainId,
 }: ParseTransactionArgs): Promise<RainbowTransaction> {
-  const methodName = tx.meta.action;
-  // ||
-  // (await fetchRegistryLookup({
-  //   data: null,
-  //   to: tx.address_to || null,
-  //   chainId,
-  //   hash: tx.hash,
-  // }));
+  const { status, hash, meta, nonce, protocol } = tx;
 
   const changes = tx.changes.map(
     (change) =>
@@ -106,7 +100,7 @@ export async function parseTransaction({
         ...change,
         asset: parseUserAsset({
           asset: change.asset,
-          balance: change.value?.toString(),
+          balance: change.value?.toString() || '0',
           currency,
         }),
       },
@@ -116,22 +110,13 @@ export async function parseTransaction({
     ? parseAsset({ asset: tx.meta.asset, currency })
     : changes[0]?.asset;
 
-  const {
-    status,
-    hash,
-    address_from,
-    address_to,
-    meta,
-    nonce,
-    protocol,
-    direction,
-  } = tx;
-
   const type = meta.type || 'contract_interaction';
+  const direction = tx.direction || getDirection(type);
+  const methodName = meta.action;
 
   const _tx: RainbowTransaction = {
-    from: address_from || '0x',
-    to: address_to,
+    from: tx.address_from || '0x',
+    to: tx.address_to,
     name:
       meta.type === 'contract_interaction'
         ? methodName
@@ -177,17 +162,19 @@ export const parseNewTransaction = (
 
   const hash = txHash || '0x';
 
-  const changes = txDetails.changes.map(
-    (change) =>
-      change && {
-        ...change,
-        asset: parseUserAsset({
-          asset: change.asset,
-          balance: change.value?.toString(),
-          currency,
-        }),
-      },
-  );
+  const changes = txDetails.changes
+    .map(
+      (change) =>
+        change?.asset && {
+          ...change,
+          asset: parseUserAssetBalances({
+            asset: change.asset,
+            balance: change.value?.toString() || '0',
+            currency,
+          }),
+        },
+    )
+    .filter(Boolean);
 
   const asset = changes[0]?.asset;
   const methodName = 'unknown method';
@@ -417,4 +404,40 @@ export const getTransactionFlashbotStatus = async (
     //
   }
   return null;
+};
+
+const TransactionOutTypes = [
+  'burn',
+  'send',
+  'deposit',
+  'repay',
+  'stake',
+  'sale',
+  'bridge',
+  'bid',
+  'speed_up',
+  'revoke',
+  'deployment',
+  'contract_interaction',
+] as const;
+
+const TransactionInTypes = [
+  'receive',
+  'withdraw',
+  'mint',
+  'borrow',
+  'claim',
+  'unstake',
+  'purchase',
+  'airdrop',
+  'wrap',
+  'unwrap',
+  'approve',
+  'swap',
+  'cancel',
+] as const;
+
+export const getDirection = (type: TransactionType) => {
+  if (TransactionOutTypes.includes(type)) return 'out';
+  return 'in';
 };
