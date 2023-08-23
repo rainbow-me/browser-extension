@@ -54,7 +54,7 @@ const calcGasParamRetryValue = (prevWeiValue?: string) => {
 type SpeedUpAndCancelSheetProps = {
   currentSheet: SheetMode;
   onClose: () => void;
-  transaction: RainbowTransaction | null;
+  transaction: RainbowTransaction;
 };
 
 // governs type of sheet displayed on top of MainLayout
@@ -177,14 +177,14 @@ export function SpeedUpAndCancelSheet({
 
   const handleCancellation = async () => {
     const cancellationResult = await sendTransaction(cancelTransactionRequest);
-    const cancelTx = {
-      asset: transaction?.asset,
+    const cancelTx: RainbowTransaction = {
+      ...transaction,
       data: cancellationResult?.data,
-      value: cancellationResult?.value,
+      value: cancellationResult?.value?.toString(),
       from: cancellationResult?.from as Address,
       to: cancellationResult?.from as Address,
-      hash: cancellationResult?.hash,
-      chainId: cancelTransactionRequest?.chainId,
+      hash: cancellationResult?.hash as `0x${string}`,
+      chainId: cancelTransactionRequest?.chainId as ChainId,
       status: 'pending',
       type: 'cancel',
       nonce: transaction?.nonce,
@@ -198,13 +198,13 @@ export function SpeedUpAndCancelSheet({
   };
   const handleSpeedUp = async () => {
     const speedUpResult = await sendTransaction(speedUpTransactionRequest);
-    const speedUpTransaction = {
-      asset: transaction?.asset,
+    const speedUpTransaction: RainbowTransaction = {
+      ...transaction,
       data: speedUpResult?.data,
-      value: speedUpResult?.value,
+      value: speedUpResult?.value?.toString(),
       from: speedUpResult?.from as Address,
       to: speedUpResult?.to as Address,
-      hash: speedUpResult?.hash,
+      hash: speedUpResult?.hash as `0x${string}`,
       chainId: speedUpResult?.chainId,
       status: 'pending',
       type: 'speed_up',

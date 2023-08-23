@@ -15,7 +15,7 @@ export type TokenSearchListId =
 export type SearchAsset = {
   address: AddressOrEth;
   chainId: ChainId;
-  colors: { primary: string; fallback?: string };
+  colors?: { primary?: string; fallback?: string };
   decimals: number;
   highLiquidity: boolean;
   icon_url: string;
@@ -24,7 +24,7 @@ export type SearchAsset = {
   isVerified: boolean;
   mainnetAddress: Address;
   name: string;
-  networks: Record<ChainId, { address: Address; decimals: number }>;
+  networks: { [id in ChainId]?: { address: Address; decimals: number } };
   rainbowMetadataId: number;
   symbol: string;
   uniqueId: UniqueId;

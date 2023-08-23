@@ -46,7 +46,7 @@ export function useActivityShortcuts() {
 
   const handleActivityShortcuts = useCallback(
     (e: KeyboardEvent) => {
-      if (selectedTransaction?.pending && sheet === 'none') {
+      if (selectedTransaction?.status === 'pending' && sheet === 'none') {
         if (e.key === shortcuts.activity.CANCEL_TRANSACTION.key) {
           trackShortcut({
             key: shortcuts.activity.CANCEL_TRANSACTION.display,

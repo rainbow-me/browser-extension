@@ -8,7 +8,6 @@ import { useConsolidatedTransactions } from '~/core/resources/transactions/conso
 import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
-import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
 import {
   DropdownMenu,
@@ -160,36 +159,6 @@ export function Default() {
               {`NAME: ${asset?.name} CHAIN: ${asset?.chainName} NATIVE BALANCE: ${asset?.native?.balance?.display}`}
             </Text>
           ))}
-        <Text color="label" size="20pt" weight="bold">
-          Transactions:
-        </Text>
-        {transactions?.map((tx: RainbowTransaction) => {
-          return (
-            <Text
-              color="labelSecondary"
-              size="16pt"
-              weight="medium"
-              key={tx?.hash}
-            >
-              {`${tx?.title} ${tx?.name}: ${tx.native?.display}`}
-            </Text>
-          );
-        })}
-        <Text color="label" size="20pt" weight="bold">
-          Prices:
-        </Text>
-        {/* {Object.values(assetPrices || {}).map((price, i) => {
-          return (
-            <Text
-              color="labelSecondary"
-              size="16pt"
-              weight="medium"
-              key={`prices-${i}`}
-            >
-              {`${price?.price?.display}: ${price?.change}`}
-            </Text>
-          );
-        })} */}
       </Stack>
     </Inset>
   );

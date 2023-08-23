@@ -4,11 +4,7 @@ import { Address, getProvider } from '@wagmi/core';
 
 import { gasUnits } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
-import {
-  NewTransaction,
-  TransactionStatus,
-  TransactionType,
-} from '~/core/types/transactions';
+import { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -167,18 +163,30 @@ export const crosschainSwap = async ({
     throw e;
   }
 
+  if (!swap || !parameters.assetToBuy)
+    throw new Error('crosschainSwap: error executeCrosschainSwap');
+
   const transaction: NewTransaction = {
-    amount: parameters.quote.value?.toString(),
-    asset: parameters.assetToSell,
     data: parameters.quote.data,
-    value: parameters.quote.value,
+    changes: [
+      {
+        direction: 'out',
+        asset: parameters.assetToSell,
+        value: quote.sellAmount.toString(),
+      },
+      {
+        direction: 'in',
+        asset: parameters.assetToBuy,
+        value: quote.buyAmount.toString(),
+      },
+    ],
     from: parameters.quote.from as Address,
     to: parameters.quote.to as Address,
-    hash: swap?.hash,
+    hash: swap.hash as `0x${string}`,
     chainId: parameters.chainId,
-    nonce: swap?.nonce,
-    status: TransactionStatus.swapping,
-    type: TransactionType.trade,
+    nonce: swap.nonce,
+    status: 'pending',
+    type: 'swap',
     flashbots: parameters.flashbots,
     gasPrice: (gasParams as TransactionLegacyGasParams).gasPrice,
     maxFeePerGas: (gasParams as TransactionGasParams).maxFeePerGas,

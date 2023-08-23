@@ -11,7 +11,7 @@ export interface ParsedAsset {
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
-    primary: string;
+    primary?: string;
     fallback?: string;
   };
   isNativeAsset: boolean;
@@ -63,21 +63,58 @@ export interface ZerionAssetPrice {
   changed_at: number;
 }
 
-export enum AssetType {
-  arbitrum = 'arbitrum',
-  bsc = 'bsc',
-  compound = 'compound',
-  eth = 'eth',
-  nft = 'nft',
-  optimism = 'optimism',
-  base = 'base',
-  zora = 'zora',
-  polygon = 'polygon',
-  token = 'token',
-  trash = 'trash',
-  uniswap = 'uniswap',
-  uniswapV2 = 'uniswap-v2',
-}
+// protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
+export type ProtocolType =
+  | 'aave-v2'
+  | 'balancer'
+  | 'curve'
+  | 'compound'
+  | 'compound-v3'
+  | 'maker'
+  | 'one-inch'
+  | 'piedao-pool'
+  | 'yearn'
+  | 'yearn-v2'
+  | 'uniswap-v2'
+  | 'aave-v3'
+  | 'harvest'
+  | 'lido'
+  | 'uniswap-v3'
+  | 'convex'
+  | 'convex-frax'
+  | 'pancake-swap'
+  | 'balancer-v2'
+  | 'frax'
+  | 'gmx'
+  | 'aura'
+  | 'pickle'
+  | 'yearn-v3'
+  | 'venus'
+  | 'sushiswap';
+
+export type AssetApiResponse = {
+  asset_code: AddressOrEth;
+  decimals: number;
+  icon_url: string;
+  name: string;
+  price: {
+    value: number;
+    changed_at: number;
+    relative_change_24h: number;
+  };
+  symbol: string;
+  colors?: { primary?: string; fallback?: string; shadow?: string };
+  network?: ChainName;
+  networks?: {
+    [chainId in ChainId]?: {
+      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
+      decimals: number;
+    };
+  };
+  type?: AssetType;
+};
+
+type AssetType = ProtocolType | 'nft';
 
 export interface ZerionAsset {
   asset_code: AddressOrEth;
@@ -85,10 +122,7 @@ export interface ZerionAsset {
     primary: string;
     fallback: string;
   };
-  implementations?: Record<
-    string,
-    { address: Address | null; decimals: number }
-  >;
+  implementations?: Record<string, { address?: Address; decimals: number }>;
   mainnet_address?: Address;
   name: string;
   symbol: string;

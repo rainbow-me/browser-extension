@@ -674,7 +674,7 @@ const SwapReviewSheetWithQuote = ({
         <Separator strokeWeight="1px" color="separatorSecondary" />
         <Box padding="20px">
           <AccentColorProviderWrapper
-            color={assetToBuy.colors.primary || assetToBuy.colors.fallback}
+            color={assetToBuy.colors?.primary || assetToBuy.colors?.fallback}
           >
             <Box>
               <Rows space="20px">

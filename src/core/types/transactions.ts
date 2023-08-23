@@ -4,7 +4,7 @@ import { Address } from 'wagmi';
 
 import { ParsedUserAsset } from '../utils/assets';
 
-import { AddressOrEth, ParsedAsset } from './assets';
+import { AssetApiResponse, ParsedAsset, ProtocolType } from './assets';
 import { ChainId, ChainName } from './chains';
 
 export type TransactionStatus =
@@ -52,19 +52,29 @@ type BaseTransaction = {
   >;
   direction?: TransactionDirection;
 
-  // asset?: ParsedAsset;
-  // value?: string;
+  value?: string; // ETH value
 
   blockNumber?: number;
   minedAt?: number;
 };
 
-// type DroppedTransaction = BaseTransaction & { status: 'dropped' };
-// type CancelledTransaction = BaseTransaction & { status: 'cancelled' };
+type ConfirmedTransaction = WithRequired<
+  BaseTransaction,
+  'minedAt' | 'blockNumber'
+> & { status: 'confirmed' };
+type PendingTransaction = BaseTransaction & { status: 'pending' };
+type FailedTransaction = BaseTransaction & { status: 'failed' };
+type DroppedTransaction = BaseTransaction & { status: 'dropped' };
+type CancelledTransaction = BaseTransaction & { status: 'cancelled' };
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
-export type RainbowTransaction = BaseTransaction;
+export type RainbowTransaction =
+  | ConfirmedTransaction
+  | PendingTransaction
+  | FailedTransaction
+  | DroppedTransaction
+  | CancelledTransaction;
 // | ({
 //     type: Exclude<TransactionType, 'swap' | 'wrap' | 'unwrap'>;
 //   } & BaseTransaction)
@@ -73,48 +83,16 @@ export type RainbowTransaction = BaseTransaction;
 //     'changes'
 //   >);
 
-export type NewTransaction = WithRequired<
-  Omit<BaseTransaction, 'title' | 'changes'>,
-  'from' | 'nonce' | 'data'
-> & {
+export type NewTransaction = Omit<BaseTransaction, 'title' | 'changes'> & {
   changes: Array<
     | {
-        asset: ParsedAsset;
+        asset?: ParsedAsset | null;
         direction: TransactionDirection;
         value: number | string;
       }
     | undefined
   >;
 };
-
-// protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
-export type ProtocolType =
-  | 'aave-v2'
-  | 'balancer'
-  | 'curve'
-  | 'compound'
-  | 'compound-v3'
-  | 'maker'
-  | 'one-inch'
-  | 'piedao-pool'
-  | 'yearn'
-  | 'yearn-v2'
-  | 'uniswap-v2'
-  | 'aave-v3'
-  | 'harvest'
-  | 'lido'
-  | 'uniswap-v3'
-  | 'convex'
-  | 'convex-frax'
-  | 'pancake-swap'
-  | 'balancer-v2'
-  | 'frax'
-  | 'gmx'
-  | 'aura'
-  | 'pickle'
-  | 'yearn-v3'
-  | 'venus'
-  | 'sushiswap';
 
 export type TransactionType =
   | 'burn'
@@ -143,64 +121,11 @@ export type TransactionType =
   | 'bid'
   | 'speed_up';
 
-// export const TransactionOutTypes = [
-//   'burn',
-//   'send',
-//   'deposit',
-//   'repay',
-//   'stake',
-//   'sale',
-//   'bridge',
-//   'bid',
-//   'speed_up',
-//   'revoke',
-//   'deployment',
-//   'contract_interaction',
-// ] as const;
-
-// export const TransactionInTypes = [
-//   'receive',
-//   'withdraw',
-//   'mint',
-//   'borrow',
-//   'claim',
-//   'unstake',
-//   'purchase',
-//   'airdrop',
-//   'wrap',
-//   'unwrap',
-//   'approve',
-//   'swap',
-//   'cancel',
-// ] as const;
-
 export type TransactionDirection = 'in' | 'out' | 'self';
 
 export interface ExecuteRapResponse extends TransactionResponse {
   errorMessage?: string;
 }
-
-export type AssetApiResponse = {
-  asset_code: AddressOrEth;
-  decimals: number;
-  icon_url: string;
-  name: string;
-  price: {
-    value: number;
-    changed_at: number;
-    relative_change_24h: number;
-  };
-  symbol: string;
-  colors?: { primary?: string; fallback?: string; shadow?: string };
-  network?: ChainName;
-  networks?: {
-    [chainId in ChainId]?: {
-      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
-      decimals: number;
-    };
-  };
-  type?: ProtocolType | 'nft';
-};
 
 export type TransactionsApiResponse = {
   id: `0x${string}`;

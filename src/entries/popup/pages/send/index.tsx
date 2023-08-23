@@ -26,6 +26,7 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
+import { NewTransaction } from '~/core/types/transactions';
 import { handleAssetAccentColor } from '~/core/utils/colors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
@@ -199,17 +200,22 @@ export function Send() {
           data,
         });
         if (result) {
-          const transaction = {
-            amount: assetAmount,
-            asset,
+          const transaction: NewTransaction = {
+            changes: [
+              {
+                direction: 'out',
+                asset,
+                value: assetAmount,
+              },
+            ],
             data: result.data,
-            value: result.value,
+            value: result.value.toString(),
             from: fromAddress,
             to: txToAddress,
-            hash: result.hash,
+            hash: result.hash as `0x${string}`,
             chainId,
-            status: TransactionStatus.sending,
-            type: TransactionType.send,
+            status: 'pending',
+            type: 'send',
             nonce: result.nonce,
             gasPrice: (
               selectedGas.transactionGasParams as TransactionLegacyGasParams

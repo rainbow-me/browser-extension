@@ -39,9 +39,9 @@ export const thisYearTimestamp = calculateTimestampOfThisYear();
 
 export const groupTransactionByDate = ({
   minedAt,
-  pending,
+  status,
 }: RainbowTransaction) => {
-  if (pending || !minedAt) return i18n.t('activity.today');
+  if (status === 'pending' || !minedAt) return i18n.t('activity.today');
   const ts = minedAt * 1000;
 
   if (ts > todayTimestamp) return i18n.t('activity.today');

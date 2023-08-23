@@ -110,10 +110,6 @@ function BaseActivityPill({
 type ActivityPillProps = { transaction: RainbowTransaction };
 
 function ActivityPill({ transaction }: ActivityPillProps) {
-  const asset = transaction.asset;
-
-  if (!asset || !transaction.title) return null;
-
   const changes = transaction.changes || [];
   if (
     ['wrap', 'undwrap', 'swap'].includes(transaction.type) &&
@@ -132,6 +128,9 @@ function ActivityPill({ transaction }: ActivityPillProps) {
         title={transaction.title}
       />
     );
+
+  const asset = transaction.changes?.[0]?.asset;
+  if (!asset) return null;
 
   if (asset.type === 'nft')
     return (

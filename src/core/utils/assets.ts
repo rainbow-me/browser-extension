@@ -5,6 +5,7 @@ import { getContract } from 'wagmi/actions';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
+  AssetApiResponse,
   ParsedAsset,
   ParsedSearchAsset,
   UniqueId,
@@ -15,7 +16,6 @@ import { ChainId, ChainName } from '~/core/types/chains';
 
 import { i18n } from '../languages';
 import { SearchAsset } from '../types/search';
-import { Asset } from '../types/transactions';
 
 import {
   chainIdFromChainName,
@@ -65,17 +65,27 @@ export const getNativeAssetBalance = ({
   return convertAmountAndPriceToNativeDisplay(value, priceUnit, currency);
 };
 
+const isZerionAsset = (
+  asset: ZerionAsset | AssetApiResponse,
+): asset is ZerionAsset => 'implementations' in asset;
+
 export function parseAsset({
   asset,
   currency,
 }: {
-  asset: Asset;
+  asset: ZerionAsset | AssetApiResponse;
   currency: SupportedCurrencyKey;
 }): ParsedAsset {
   const address = asset.asset_code;
   const chainName = asset.network ?? ChainName.mainnet;
   const chainId = chainIdFromChainName(chainName);
-  const mainnetAddress = asset.networks?.[ChainId.mainnet]?.address;
+
+  // ZerionAsset should be removed when we move fully away from websckets/refraction api
+  const mainnetAddress = isZerionAsset(asset)
+    ? asset.mainnet_address ||
+      asset.implementations?.[ChainName.mainnet].address
+    : asset.networks?.[ChainId.mainnet]?.address;
+
   const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
   const parsedAsset = {
     address,
@@ -107,7 +117,7 @@ export function parseUserAsset({
   currency,
   balance,
 }: {
-  asset: Asset;
+  asset: ZerionAsset;
   currency: SupportedCurrencyKey;
   balance: string;
 }) {

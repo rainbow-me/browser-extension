@@ -18,6 +18,7 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
+import { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -83,14 +84,19 @@ export function SendTransaction({
       };
       const result = await wallet.sendTransaction(txData);
       if (result) {
-        const transaction = {
-          amount: formatEther(result?.value || ''),
-          asset,
+        const transaction: NewTransaction = {
+          changes: [
+            {
+              direction: 'out',
+              asset,
+              value: formatEther(result?.value || ''),
+            },
+          ],
+          value: formatEther(result?.value || ''),
           data: result.data,
-          value: result.value,
           from: txData.from,
           to: txData.to,
-          hash: result.hash,
+          hash: result.hash as `0x${string}`,
           chainId: txData.chainId,
           nonce: result.nonce,
           status: 'pending',

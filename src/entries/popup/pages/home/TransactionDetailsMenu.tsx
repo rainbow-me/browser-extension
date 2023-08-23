@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -112,7 +106,7 @@ export function TransactionDetailsMenu({
             onValueChange(value as 'copy' | 'view' | 'speedUp' | 'cancel')
           }
         >
-          {transaction?.pending && (
+          {transaction?.status === 'pending' && (
             <>
               <ContextMenuRadioItem value={'speedUp'}>
                 <DetailsMenuRow>

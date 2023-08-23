@@ -29,7 +29,6 @@ import { parseAsset, parseUserAsset } from './assets';
 import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
 import { isZero } from './numbers';
-import { isLowerCaseMatch } from './strings';
 
 /**
  * @desc remove hex prefix
@@ -224,14 +223,9 @@ export function getPendingTransactionData({
   transactionStatus: TransactionStatus;
 }) {
   const minedAt = Math.floor(Date.now() / 1000);
-  // const title = getTitle({
-  //   protocol: transaction.protocol,
-  //   status: transactionStatus,
-  //   type: transaction.type,
-  // });
   return {
     minedAt,
-    title: 'fix getPendingTransactionData',
+    title: i18n.t(`transactions.${transaction.type}.${transactionStatus}`),
     status: transactionStatus,
   };
 }
@@ -246,7 +240,7 @@ export async function getTransactionReceiptStatus({
   transactionResponse: TransactionResponse;
 }) {
   let receipt;
-  let status;
+  let status: TransactionStatus;
 
   try {
     if (transactionResponse) {
@@ -255,27 +249,13 @@ export async function getTransactionReceiptStatus({
     // eslint-disable-next-line no-empty
   } catch (e) {}
 
-  status = receipt?.status || 0;
-  if (!isZero(status)) {
-    const isSelf = isLowerCaseMatch(
-      transaction?.from || '',
-      transaction?.to || '',
-    );
-    const transactionDirection = isSelf ? 'self' : 'out';
-    const transactionStatus = 'confirmed';
-    status = transactionStatus;
-    // getTransactionLabel({
-    //   direction: transactionDirection,
-    //   pending: false,
-    //   protocol: transaction?.protocol,
-    //   status: transactionStatus,
-    //   type: transaction?.type,
-    // });
+  status = 'failed';
+  if (!isZero(receipt?.status || 0)) {
+    status = 'confirmed';
   } else if (included) {
     status = 'pending'; // TODO: prev unknown
-  } else {
-    status = 'failed';
   }
+
   return status;
 }
 
@@ -428,14 +408,10 @@ export const getTransactionFlashbotStatus = async (
     const flashbotStatus = fbStatus.data.status;
     // Make sure it wasn't dropped after 25 blocks or never made it
     if (flashbotStatus === 'FAILED' || flashbotStatus === 'CANCELLED') {
-      const transactionStatus = TransactionStatus.dropped;
+      const status = 'dropped';
       const minedAt = Math.floor(Date.now() / 1000);
-      const title = getTitle({
-        protocol: transaction.protocol,
-        status: transactionStatus,
-        type: transaction.type,
-      });
-      return { status: transactionStatus, minedAt, pending: false, title };
+      const title = i18n.t(`transactions.${transaction.type}.failed`);
+      return { status, minedAt, title } as const;
     }
   } catch (e) {
     //
