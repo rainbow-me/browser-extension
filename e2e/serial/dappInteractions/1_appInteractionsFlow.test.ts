@@ -344,8 +344,9 @@ describe('App interactions flow', () => {
   it('should be able to accept a transaction request', async () => {
     await delayTime('long');
     const dappHandler = await getWindowHandle({ driver });
-
+    const title = await driver.getTitle();
     console.log('TX REQUEST 1');
+    console.log('TX REQUEST 1 title', title);
     await delayTime('very-long');
     await driver.switchTo().window(dappHandler);
     console.log('TX REQUEST 2 button query selector');
