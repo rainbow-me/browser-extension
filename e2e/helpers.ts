@@ -184,12 +184,17 @@ export async function getExtensionIdByName(
 // search functions
 
 export async function querySelector(driver: WebDriver, selector: string) {
-  await driver.wait(untilDocumentLoaded(), waitUntilTime);
-  const el = await driver.wait(
-    until.elementLocated(By.css(selector)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  try {
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+    const el = await driver.wait(
+      until.elementLocated(By.css(selector)),
+      waitUntilTime,
+    );
+    return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  } catch (error) {
+    await takeScreenshot(driver, selector);
+    throw error;
+  }
 }
 
 export async function findElementByText(driver: WebDriver, text: string) {
@@ -717,5 +722,15 @@ export async function delayTime(
       return await delay(1000);
     case 'very-long':
       return await delay(5000);
+  }
+}
+
+export async function takeScreenshot(driver: WebDriver, name: string) {
+  try {
+    const image = driver.takeScreenshot();
+    const filename = `${new Date().getTime()}-${name}`;
+    require('fs').writeFileSync(`screenshots/${filename}.png`, image, 'base64');
+  } catch (error) {
+    console.error('Error occurred while taking screenshot:', error);
   }
 }

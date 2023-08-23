@@ -160,7 +160,13 @@ jobs:
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+            rm -rf screenshots/*
             yarn vitest:swap
+      - name: Upload deps artifacts
+        uses: actions/upload-artifact@v3
+        with:
+            name: screenshots
+            path: screenshots/
   chrome-e2e-send:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
@@ -196,7 +202,13 @@ jobs:
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+            rm -rf screenshots/*
             yarn vitest:dappInteractions --retry=5
+      - name: Upload deps artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
   # BRAVE TESTS
   # brave-e2e:
   #   needs: [build]
