@@ -348,7 +348,14 @@ describe('App interactions flow', () => {
     console.log('TX REQUEST 1');
     console.log('TX REQUEST 1 title', title);
     await delayTime('very-long');
+    const buttonsignTypedData = await querySelector(
+      driver,
+      '[id="signTypedData"]',
+    );
+    console.log('TX REQUEST 2 buttonsignTypedData', buttonsignTypedData);
+    const buttonsignTx = await querySelector(driver, '[id="signTx"]');
     // await driver.switchTo().window(dappHandler);
+    console.log('TX REQUEST 2 buttonsignTx', buttonsignTx);
     console.log('TX REQUEST 2 button query selector');
     const button = await querySelector(driver, '[id="sendTx"]');
     console.log('TX REQUEST 2 button', button);
