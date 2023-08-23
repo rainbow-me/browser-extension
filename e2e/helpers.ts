@@ -325,10 +325,7 @@ export async function waitAndClick(element: WebElement, driver: WebDriver) {
   } catch (error) {
     const testId = await element.getAttribute('data-testid');
     if (testId) {
-      await takeScreenshot(
-        driver,
-        testId.replace('[data-testid="', '').replace('"]', ''),
-      );
+      await takeScreenshot(driver, testId);
     } else {
       console.log("couldn't take screenshot because element has no test id");
     }
@@ -735,7 +732,8 @@ export async function delayTime(
 export async function takeScreenshot(driver: WebDriver, name: string) {
   try {
     const image = await driver.takeScreenshot();
-    const filename = `${new Date().getTime()}-${name}`;
+    const safeName = name.replace('[data-testid="', '').replace('"]', '');
+    const filename = `${new Date().getTime()}-${safeName}`;
     require('fs').writeFileSync(`screenshots/${filename}.png`, image, 'base64');
   } catch (error) {
     console.error('Error occurred while taking screenshot:', error);
