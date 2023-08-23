@@ -727,7 +727,7 @@ export async function delayTime(
 
 export async function takeScreenshot(driver: WebDriver, name: string) {
   try {
-    const image = driver.takeScreenshot();
+    const image = await driver.takeScreenshot();
     const filename = `${new Date().getTime()}-${name}`;
     require('fs').writeFileSync(`screenshots/${filename}.png`, image, 'base64');
   } catch (error) {
