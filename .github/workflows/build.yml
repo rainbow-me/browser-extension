@@ -164,7 +164,7 @@ jobs:
   chrome-e2e-swap:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
-    needs: [build]
+    needs: [chrome-e2e-parallel]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
@@ -197,7 +197,7 @@ jobs:
   chrome-e2e-send:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
-    needs: [build]
+    needs: [chrome-e2e-swap]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
@@ -226,7 +226,7 @@ jobs:
   chrome-e2e-dappInteractions:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
-    needs: [build]
+    needs: [chrome-e2e-send]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
