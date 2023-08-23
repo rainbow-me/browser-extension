@@ -78,6 +78,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/firefoxTestsSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e parallel (Firefox)
         id: FFE2eParallel
         continue-on-error: true
@@ -106,7 +108,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/firefoxTestsSetup
-      - name: Run e2e parallel (Firefox)
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e Swap (Firefox)
         id: FFE2eSwap
         continue-on-error: true
         run: |
@@ -134,7 +138,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/firefoxTestsSetup
-      - name: Run e2e send (Firefox)
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e Send (Firefox)
         id: FFE2eSend
         continue-on-error: true
         run: |
@@ -162,7 +168,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/firefoxTestsSetup
-      - name: Run e2e send (Firefox)
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e Dapp Interactions (Firefox)
         id: FFE2eDappInteractions
         continue-on-error: true
         run: |
