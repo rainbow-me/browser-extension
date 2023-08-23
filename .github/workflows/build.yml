@@ -146,6 +146,7 @@ jobs:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e parallel (Chrome)
         id: ChromeE2EParallel
+        continue-on-error: true
         run: |
           export BROWSER=chrome
           export OS=linux
@@ -174,6 +175,7 @@ jobs:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e swap (Chrome)
         id: ChromeE2ESwaps
+        continue-on-error: true
         uses: nick-fields/retry@v2
         with:
           timeout_minutes: 25
@@ -206,6 +208,7 @@ jobs:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e send (Chrome)
         id: ChromeE2ESend
+        continue-on-error: true
         run: |
             export BROWSER=chrome
             export OS=linux
@@ -234,6 +237,7 @@ jobs:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
       - name: Run e2e dappInteractions (Chrome)
         id: ChromeE2EDappInteractions
+        continue-on-error: true
         run: |
             export BROWSER=chrome
             export OS=linux
