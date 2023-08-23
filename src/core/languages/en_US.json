@@ -263,7 +263,7 @@
       "title_revealed": "Balances Revealed"
     },
     "hide_small_balances_toast": {
-      "description_hidden": "Balances under %{amount}",
+      "description_hidden": "Balances under $1",
       "description_revealed": "All tokens visible",
       "title_hidden": "Small Balances Hidden",
       "title_revealed": "Showing Small Balances"

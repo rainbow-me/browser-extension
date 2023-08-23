@@ -15,7 +15,6 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
-import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   POPUP_URL,
   getExplorerUrl,
@@ -467,7 +466,6 @@ export const useCommands = (
     useHideAssetBalancesStore();
   const { hideSmallBalances, setHideSmallBalances } =
     useHideSmallBalancesStore();
-  const { currentCurrency } = state.useCurrentCurrencyStore();
 
   const handleCopy = React.useCallback((address: Address) => {
     navigator.clipboard.writeText(address as string);
@@ -494,18 +492,10 @@ export const useCommands = (
       title: i18n.t(`command_k.hide_small_balances_toast.title_${status}`),
       description: i18n.t(
         `command_k.hide_small_balances_toast.description_${status}`,
-        {
-          amount: convertAmountToNativeDisplay(
-            '1',
-            currentCurrency,
-            undefined,
-            true,
-          ),
-        },
       ),
     });
     setHideSmallBalances(!hideSmallBalances);
-  }, [currentCurrency, hideSmallBalances, setHideSmallBalances]);
+  }, [hideSmallBalances, setHideSmallBalances]);
 
   const openProfile = React.useCallback(
     (command?: ENSOrAddressSearchItem) =>
