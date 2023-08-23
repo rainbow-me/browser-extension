@@ -119,7 +119,13 @@ jobs:
             export OS=linux
             export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
             yarn firefox:manifest && yarn firefox:zip
+            rm -rf screenshots/*
             yarn vitest:parallel --retry=5
+      - name: Upload deps artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
@@ -138,7 +144,13 @@ jobs:
           export BROWSER=chrome
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          rm -rf screenshots/*
           yarn vitest:parallel --retry=5
+      - name: Upload deps artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
   chrome-e2e-swap:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
@@ -184,7 +196,13 @@ jobs:
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+            rm -rf screenshots/*
             yarn vitest:send --retry=5
+      - name: Upload deps artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
   chrome-e2e-dappInteractions:
     runs-on: beefy-runner-bx
     timeout-minutes: 25
@@ -340,3 +358,6 @@ jobs:
       - uses: geekyeggo/delete-artifact@v2
         with:
           name: node_modules.tar.gz
+      - uses: geekyeggo/delete-artifact@v2
+        with:
+          name: screenshots
