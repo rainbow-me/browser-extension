@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box, Separator, Symbol } from '~/design-system';
@@ -127,7 +127,7 @@ export const CommandK = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCommandKVisible]);
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     if (selectedCommandNeedsUpdate) {
       setSelectedCommand(filteredCommands[0]);
       setSelectedCommandNeedsUpdate(false);
