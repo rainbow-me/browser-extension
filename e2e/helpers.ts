@@ -323,10 +323,16 @@ export async function waitAndClick(element: WebElement, driver: WebDriver) {
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     return element.click();
   } catch (error) {
-    await takeScreenshot(driver, await element.getAttribute('data-testid'));
-    throw new Error(
-      `Failed to click element ${await element.getAttribute('data-testid')}`,
-    );
+    const testId = await element.getAttribute('data-testid');
+    if (testId) {
+      await takeScreenshot(
+        driver,
+        testId.replace('[data-testid="', '').replace('"]', ''),
+      );
+    } else {
+      console.log("couldn't take screenshot because element has no test id");
+    }
+    throw new Error(`Failed to click element ${testId}`);
   }
 }
 
