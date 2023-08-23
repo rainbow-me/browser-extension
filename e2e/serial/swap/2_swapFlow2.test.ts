@@ -26,6 +26,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  returnTagValues,
   typeOnTextInput,
   waitAndClick,
   waitUntilElementByTestIdIsPresent,
@@ -138,10 +139,14 @@ it('should be able to execute unlock and swap', async () => {
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
 
+  await returnTagValues(driver);
+
   await waitUntilElementByTestIdIsPresent({
     id: 'swap-confirmation-button-ready',
     driver,
   });
+
+  await returnTagValues(driver);
 
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
@@ -222,10 +227,14 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
 
+  await returnTagValues(driver);
+
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,
   });
+
+  await returnTagValues(driver);
 
   await delayTime('long');
   const longWaitExplainerFound = await doNotFindElementByTestId({
@@ -431,10 +440,14 @@ it('should be able to go to review a bridge', async () => {
     driver,
   });
 
+  await returnTagValues(driver);
+
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,
   });
+
+  await returnTagValues(driver);
 
   const longWaitExplainerFound = await doNotFindElementByTestId({
     id: 'explainer-sheet-swap-long-wait',

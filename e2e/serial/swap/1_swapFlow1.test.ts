@@ -27,6 +27,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  returnTagValues,
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
@@ -524,6 +525,8 @@ it('should be able to flip correctly', async () => {
 });
 
 it('should be able to check insufficient asset for swap', async () => {
+  await returnTagValues(driver);
+
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -543,6 +546,8 @@ it('should be able to check insufficient native asset for gas', async () => {
     driver,
   });
   await delayTime('very-long');
+  await returnTagValues(driver);
+
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -709,11 +714,15 @@ it('should be able to see no route explainer', async () => {
     text: 1,
   });
   await delayTime('long');
+  await returnTagValues(driver);
+
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-error',
     driver,
   });
   expect(confirmButtonText).toEqual('No route found');
+  await returnTagValues(driver);
+
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-error',
     driver,
@@ -817,6 +826,8 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
   await delayTime('very-long');
+  await returnTagValues(driver);
+
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -970,6 +981,7 @@ it('should be able to execute swap', async () => {
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
   await delayTime('very-long');
+  await returnTagValues(driver);
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,

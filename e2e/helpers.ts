@@ -719,3 +719,23 @@ export async function delayTime(
       return await delay(5000);
   }
 }
+
+export async function getBodyId(driver: WebDriver): Promise<string> {
+  const body = await driver.findElement(By.css('body'));
+  const id = body.getAttribute('id');
+  const class1 = body.getAttribute('class');
+  const testId = body.getAttribute('testId');
+  return `id: ${await id}, class: ${await class1}, testId: ${await testId}`;
+}
+
+export async function returnTagValues(driver: WebDriver) {
+  await delayTime('long');
+  const bodyId = await getBodyId(driver);
+  await console.log('body tags: ', await bodyId);
+  await delayTime('long');
+  const buttonContent = await findElementByTestId({
+    id: 'button-content-please',
+    driver,
+  });
+  await console.log('BUTTON CONTENT ', await buttonContent.getText());
+}

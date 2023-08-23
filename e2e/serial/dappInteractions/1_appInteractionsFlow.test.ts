@@ -3,7 +3,7 @@ import 'geckodriver';
 import { getAddress } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
 import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
-import { By, WebDriver } from 'selenium-webdriver';
+import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
@@ -12,7 +12,6 @@ import {
   delayTime,
   fillPrivateKey,
   findElementByIdAndClick,
-  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getAllWindowHandles,
@@ -25,6 +24,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  returnTagValues,
   shortenAddress,
   switchWallet,
   typeOnTextInput,
@@ -69,14 +69,6 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-
-async function getBodyId(driver: WebDriver): Promise<string> {
-  const body = await driver.findElement(By.css('body'));
-  const id = body.getAttribute('id');
-  const class1 = body.getAttribute('class');
-  const testId = body.getAttribute('testId');
-  return `id: ${await id}, class: ${await class1}, testId: ${await testId}`;
-}
 
 describe('App interactions flow', () => {
   beforeAll(async () => {
@@ -242,16 +234,7 @@ describe('App interactions flow', () => {
       driver,
     });
 
-    await delayTime('long');
-    const bodyId = await getBodyId(driver);
-    await console.log('body tags: ', await bodyId);
-    await delayTime('long');
-
-    const buttonContent = await findElementByTestId({
-      id: 'button-content-please',
-      driver,
-    });
-    await console.log('BUTTON CONTENT ', await buttonContent.getText());
+    await returnTagValues(driver);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await driver.switchTo().window(dappHandler);
@@ -307,15 +290,8 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('long');
-    const bodyId = await getBodyId(driver);
-    await console.log('body tags: ', await bodyId);
-    await delayTime('long');
-    const buttonContent = await findElementByTestId({
-      id: 'button-content-please',
-      driver,
-    });
-    await console.log('BUTTON CONTENT ', await buttonContent.getText());
+    await returnTagValues(driver);
+
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await delayTime('medium');
@@ -344,15 +320,8 @@ describe('App interactions flow', () => {
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
-    await delayTime('long');
-    const bodyId = await getBodyId(driver);
-    await console.log('body tags: ', await bodyId);
-    await delayTime('long');
-    const buttonContent = await findElementByTestId({
-      id: 'button-content-please',
-      driver,
-    });
-    await console.log('BUTTON CONTENT ', await buttonContent.getText());
+    await returnTagValues(driver);
+
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('medium');
     await driver.switchTo().window(dappHandler);
@@ -390,16 +359,8 @@ describe('App interactions flow', () => {
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
-    await delayTime('long');
-    const bodyId = await getBodyId(driver);
-    await console.log('body tags: ', await bodyId);
-    await delayTime('long');
+    await returnTagValues(driver);
 
-    const buttonContent = await findElementByTestId({
-      id: 'button-content-please',
-      driver,
-    });
-    await console.log('BUTTON CONTENT ', await buttonContent.getText());
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('long');
     await driver.switchTo().window(dappHandler);
