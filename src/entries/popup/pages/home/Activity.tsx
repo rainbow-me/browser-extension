@@ -24,6 +24,7 @@ import { Space, TextColor } from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
 import { Spinner } from '../../components/Spinner/Spinner';
+import { SpinnerRow } from '../../components/SpinnerRow/SpinnerRow';
 import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
 import useInfiniteTransactionList from '../../hooks/useInfiniteTransactionList';
 
@@ -141,20 +142,7 @@ export function Activity() {
           })}
         </Box>
       </Box>
-      {isFetchingNextPage && (
-        <Box
-          as={motion.div}
-          alignItems="center"
-          display="flex"
-          justifyContent="center"
-          style={{ height: 72 }}
-          initial={{ opacity: 0.5, height: 0 }}
-          animate={{ opacity: 1, height: 72 }}
-          key="page-loader"
-        >
-          <Spinner size={32} />
-        </Box>
-      )}
+      {isFetchingNextPage && <SpinnerRow />}
     </>
   );
 }

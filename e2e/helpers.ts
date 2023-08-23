@@ -207,12 +207,17 @@ export async function getExtensionIdByName(
 // search functions
 
 export async function querySelector(driver: WebDriver, selector: string) {
-  await driver.wait(untilDocumentLoaded(), waitUntilTime);
-  const el = await driver.wait(
-    until.elementLocated(By.css(selector)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  try {
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+    const el = await driver.wait(
+      until.elementLocated(By.css(selector)),
+      waitUntilTime,
+    );
+    return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  } catch (error) {
+    await takeScreenshot(driver, selector);
+    throw error;
+  }
 }
 
 export async function findElementByText(driver: WebDriver, text: string) {
@@ -341,9 +346,13 @@ export async function waitAndClick(element: WebElement, driver: WebDriver) {
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     return element.click();
   } catch (error) {
-    throw new Error(
-      `Failed to click element ${await element.getAttribute('data-testid')}`,
-    );
+    const testId = await element.getAttribute('data-testid');
+    if (testId) {
+      await takeScreenshot(driver, testId);
+    } else {
+      console.log("couldn't take screenshot because element has no test id");
+    }
+    throw new Error(`Failed to click element ${testId}`);
   }
 }
 
@@ -751,5 +760,16 @@ export async function delayTime(
       return await delay(1000);
     case 'very-long':
       return await delay(5000);
+  }
+}
+
+export async function takeScreenshot(driver: WebDriver, name: string) {
+  try {
+    const image = await driver.takeScreenshot();
+    const safeName = name.replace('[data-testid="', '').replace('"]', '');
+    const filename = `${new Date().getTime()}-${safeName}`;
+    require('fs').writeFileSync(`screenshots/${filename}.png`, image, 'base64');
+  } catch (error) {
+    console.error('Error occurred while taking screenshot:', error);
   }
 }

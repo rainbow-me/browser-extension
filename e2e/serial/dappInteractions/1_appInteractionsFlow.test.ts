@@ -363,7 +363,7 @@ describe('App interactions flow', () => {
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
-    await delayTime('long');
+    await delayTime('very-long');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('long');
     await driver.switchTo().window(dappHandler);
