@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -41,9 +41,9 @@ import {
 export const COMMAND_ROW_HEIGHT = 40;
 
 type CommandRowProps = {
-  LeftComponent: () => JSX.Element;
-  NameAccessory?: () => JSX.Element | null;
-  RightComponent?: () => JSX.Element | null;
+  LeftComponent: ReactElement;
+  NameAccessory?: ReactElement | null;
+  RightComponent?: ReactElement | null;
   command: SearchItem;
   description?: string;
   handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
@@ -100,7 +100,7 @@ export const CommandRow = ({
               justifyContent="center"
               style={{ height: 20, width: 20 }}
             >
-              <LeftComponent />
+              {LeftComponent}
             </Box>
           </Column>
           <Column>
@@ -124,13 +124,13 @@ export const CommandRow = ({
                     </Box>
                   )}
                 </Inline>
-                {NameAccessory && <NameAccessory />}
+                {NameAccessory}
               </Inline>
             </Box>
           </Column>
           <Column width="content">
             <Inline space="6px" wrap={false}>
-              {RightComponent && <RightComponent />}
+              {RightComponent}
             </Inline>
           </Column>
         </Columns>
@@ -156,7 +156,7 @@ export const ShortcutRow = ({
     command.address && command.id === 'switchToWallet';
   const isViewTokenRow = command.asset && command.id === 'viewToken';
 
-  const LeftComponent = React.useCallback(() => {
+  const LeftComponent = React.useMemo(() => {
     if (isAddAsWatchedWalletRow || isSwitchToWalletRow) {
       return (
         <WalletAvatar
@@ -226,7 +226,7 @@ export const TokenRow = ({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { hideAssetBalances } = useHideAssetBalancesStore();
 
-  const TokenIcon = React.useCallback(
+  const TokenIcon = React.useMemo(
     () => (
       <CoinIcon
         asset={command.asset}
@@ -239,7 +239,7 @@ export const TokenRow = ({
     [command.asset],
   );
 
-  const TokenBalanceBadge = React.useCallback(() => {
+  const TokenBalanceBadge = React.useMemo(() => {
     const hasValue = command.price && command.price?.value > 0;
     return (
       <Box
@@ -333,7 +333,7 @@ export const WalletRow = ({
     return undefined;
   }, [hardwareWalletType, isWalletSearchItem, walletType]);
 
-  const Avatar = React.useCallback(
+  const Avatar = React.useMemo(
     () => (
       <WalletAvatar
         address={address}
