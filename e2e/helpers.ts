@@ -766,7 +766,10 @@ export async function delayTime(
 export async function takeScreenshot(driver: WebDriver, name: string) {
   try {
     const image = await driver.takeScreenshot();
-    const safeName = name.replace('[data-testid="', '').replace('"]', '');
+    const safeName = name
+      .replace('[data-testid="', '')
+      .replace('[id="', '')
+      .replace('"]', '');
     const filename = `${new Date().getTime()}-${safeName}`;
     require('fs').writeFileSync(`screenshots/${filename}.png`, image, 'base64');
   } catch (error) {
