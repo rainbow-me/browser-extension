@@ -72,6 +72,7 @@ export const useSendValidations = ({
   ]);
 
   const enoughNativeAssetForGas = useMemo(() => {
+    console.log('--- nativeAsset?.balance?.amount', nativeAsset?.balance);
     if (asset?.isNativeAsset) {
       return lessOrEqualThan(
         add(toWei(assetAmount || '0'), selectedGas?.gasFee?.amount || '0'),
@@ -85,7 +86,7 @@ export const useSendValidations = ({
   }, [
     asset?.isNativeAsset,
     assetAmount,
-    nativeAsset?.balance?.amount,
+    nativeAsset?.balance,
     selectedGas?.gasFee?.amount,
   ]);
 

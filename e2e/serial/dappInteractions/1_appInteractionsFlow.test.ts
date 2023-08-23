@@ -343,7 +343,6 @@ describe('App interactions flow', () => {
 
   it('should be able to accept a transaction request', async () => {
     await delayTime('long');
-    await goToTestApp(driver);
 
     const dappHandler = await getWindowHandle({ driver });
 
