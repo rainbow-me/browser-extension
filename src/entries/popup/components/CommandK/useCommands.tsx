@@ -469,7 +469,7 @@ export const useCommands = (
     useHideSmallBalancesStore();
   const { currentCurrency } = state.useCurrentCurrencyStore();
 
-  const handleCopy = React.useCallback((address: `0x${string}`) => {
+  const handleCopy = React.useCallback((address: Address) => {
     navigator.clipboard.writeText(address as string);
     triggerToast({
       title: i18n.t('wallet_header.copy_toast'),
@@ -559,7 +559,7 @@ export const useCommands = (
     goToNewTab({ url: `https://app.ens.domains/${ensName}` });
   }, []);
 
-  const viewWalletOnEtherscan = React.useCallback((address: `0x${string}`) => {
+  const viewWalletOnEtherscan = React.useCallback((address: Address) => {
     const explorer = getBlockExplorerHostForChain(ChainId.mainnet);
     goToNewTab({ url: getExplorerUrl(explorer, address) });
   }, []);

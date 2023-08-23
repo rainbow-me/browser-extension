@@ -1,3 +1,5 @@
+import { Address } from 'wagmi';
+
 import { ParsedAddressAsset, ZerionAssetPrice } from '~/core/types/assets';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
@@ -24,7 +26,7 @@ export interface BaseSearchItem {
   name: string;
   page?: CommandKPage;
   searchTags?: string[];
-  selectedWallet?: `0x${string}` | string;
+  selectedWallet?: Address | string;
   shortcut?: { display: string; key: string; modifier?: string };
   shouldRemainOnActiveRoute?: boolean;
   to?: string;
@@ -33,14 +35,14 @@ export interface BaseSearchItem {
 }
 
 export interface ENSOrAddressSearchItem extends BaseSearchItem {
-  address: `0x${string}`;
+  address: Address;
   ensName?: string | null;
   truncatedName?: string;
   type: SearchItemType.ENSOrAddressResult;
 }
 
 export interface ShortcutSearchItem extends BaseSearchItem {
-  address?: `0x${string}`;
+  address?: Address;
   hideWhenFullScreen?: boolean;
   symbol: SymbolName;
   symbolSize?: number;
@@ -54,12 +56,12 @@ export interface TokenSearchItem extends BaseSearchItem {
   tokenBalanceDisplay: string;
   tokenSymbol: string;
   nativeTokenBalance: string;
-  selectedWalletAddress: `0x${string}`;
+  selectedWalletAddress: Address;
   type: SearchItemType.Token;
 }
 
 export interface WalletSearchItem extends BaseSearchItem {
-  address: `0x${string}`;
+  address: Address;
   ensName?: string | null;
   hardwareWalletType?: string;
   truncatedName?: string;
