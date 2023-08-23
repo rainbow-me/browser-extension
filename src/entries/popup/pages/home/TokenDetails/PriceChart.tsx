@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
@@ -22,7 +22,7 @@ import { TextProps } from '~/design-system/components/Text/Text';
 import { SymbolName } from '~/design-system/styles/designTokens';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 
-import { ChartData, LineChart } from './LineChart';
+import { ChartData, ChartPoint, LineChart } from './LineChart';
 
 const parsePriceChange = (
   value: number,
@@ -108,24 +108,36 @@ const getChartTimeArg = (selected: ChartTime) =>
   );
 
 type PriceChartTimeData = { points?: [timestamp: number, price: number][] };
+const fetchPriceChart = async (
+  time: ChartTime,
+  chainId: ChainId,
+  address: Address | typeof ETH_ADDRESS,
+) => {
+  const priceChart = await metadataClient
+    .priceChart({ address, chainId, ...getChartTimeArg(time) })
+    .then((d) => d.token?.priceCharts[time] as PriceChartTimeData);
+  return priceChart.points?.reduce((result, point) => {
+    result.push({ timestamp: point[0], price: point[1] });
+    return result;
+  }, [] as ChartData[]);
+};
 const usePriceChart = ({
+  mainnetAddress,
   address,
   chainId,
   time,
 }: {
+  mainnetAddress?: Address | typeof ETH_ADDRESS;
   address: Address | typeof ETH_ADDRESS;
   chainId: ChainId;
   time: ChartTime;
 }) => {
   return useQuery({
     queryFn: async () => {
-      const priceChart = await metadataClient
-        .priceChart({ address, chainId, ...getChartTimeArg(time) })
-        .then((d) => d.token?.priceCharts[time] as PriceChartTimeData);
-      return priceChart.points?.reduce((result, point) => {
-        result.push({ timestamp: point[0], price: point[1] });
-        return result;
-      }, [] as ChartData[]);
+      const chart = await fetchPriceChart(time, chainId, address);
+      if (!chart && mainnetAddress)
+        return fetchPriceChart(time, ChainId.mainnet, mainnetAddress);
+      return chart;
     },
     queryKey: createQueryKey('price chart', { address, chainId, time }),
     keepPreviousData: true,
@@ -133,33 +145,48 @@ const usePriceChart = ({
   });
 };
 
+const percentDiff = (current = 1, last = 0) =>
+  ((current - last) / current) * 100;
 export function PriceChart({ token }: { token: ParsedAddressAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
-  const [date, setDate] = useState(new Date());
 
   const { data } = usePriceChart({
+    mainnetAddress: token.mainnetAddress,
     address: token.address,
     chainId: token.chainId,
     time: selectedTime,
   });
 
+  const todayPoint = {
+    date: new Date(),
+    changePercent: data
+      ? percentDiff(data[data.length - 1].price, data[1].price)
+      : token.price?.relative_change_24h,
+  };
+
+  const [{ changePercent, date }, setIndicatorPoint] = useReducer(
+    (s, point?: ChartPoint) => {
+      if (!point || !data) return todayPoint;
+      return {
+        date: new Date(point.timestamp * 1000),
+        changePercent: percentDiff(data[data.length - 1].price, point.price),
+      };
+    },
+    todayPoint,
+  );
+
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <TokenPrice token={token} />
-        <PriceChange
-          changePercentage={token.price?.relative_change_24h}
-          date={date}
-        />
+        <PriceChange changePercentage={changePercent} date={date} />
       </Box>
       <Box>
         <Box style={{ height: '222px' }} marginHorizontal="-20px">
           {data && (
             <LineChart
               data={data}
-              onMouseMove={(point) => {
-                setDate(point ? new Date(point.timestamp * 1000) : new Date());
-              }}
+              onMouseMove={setIndicatorPoint}
               width={POPUP_DIMENSIONS.width}
               height={222}
               paddingY={40}

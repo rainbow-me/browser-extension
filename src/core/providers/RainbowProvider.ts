@@ -48,7 +48,7 @@ export class RainbowProvider extends EventEmitter {
   isMetaMask = true;
   networkVersion = '1';
   selectedAddress: string | undefined;
-  providers: RainbowProvider[] | Ethereum[] | undefined = undefined;
+  providers: (RainbowProvider | Ethereum)[] | undefined = undefined;
 
   #isUnlocked = true;
   requestId = 0;
