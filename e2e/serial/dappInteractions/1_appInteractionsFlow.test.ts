@@ -338,6 +338,7 @@ describe('App interactions flow', () => {
     expect(getAddress(recoveredAddress)).eq(
       getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
     );
+    await driver.switchTo().window(dappHandler);
   });
 
   it('should be able to accept a transaction request', async () => {
@@ -346,6 +347,7 @@ describe('App interactions flow', () => {
 
     console.log('TX REQUEST 1');
     await delayTime('very-long');
+    await driver.switchTo().window(dappHandler);
     console.log('TX REQUEST 2 button query selector');
     const button = await querySelector(driver, '[id="sendTx"]');
     console.log('TX REQUEST 2 button', button);
