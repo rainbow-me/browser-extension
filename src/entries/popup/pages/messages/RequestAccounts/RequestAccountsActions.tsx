@@ -48,22 +48,24 @@ export const RequestAccountsActions = ({
             />
           </Column>
         </Columns>
-        <Rows space="8px">
-          <Row>
-            <AcceptRequestButton
-              autoFocus
-              onClick={onAcceptRequest}
-              label={i18n.t('approve_request.connect', { appName })}
-              loading={loading}
-            />
-          </Row>
-          <Row>
-            <RejectRequestButton
-              onClick={onRejectRequest}
-              label={i18n.t('common_actions.cancel')}
-            />
-          </Row>
-        </Rows>
+        <Box testId={'button-content-please'}>
+          <Rows space="8px">
+            <Row>
+              <AcceptRequestButton
+                autoFocus
+                onClick={onAcceptRequest}
+                label={i18n.t('approve_request.connect', { appName })}
+                loading={loading}
+              />
+            </Row>
+            <Row>
+              <RejectRequestButton
+                onClick={onRejectRequest}
+                label={i18n.t('common_actions.cancel')}
+              />
+            </Row>
+          </Rows>
+        </Box>
       </Stack>
     </Box>
   );

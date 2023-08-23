@@ -12,6 +12,7 @@ import {
   delayTime,
   fillPrivateKey,
   findElementByIdAndClick,
+  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getAllWindowHandles,
@@ -233,7 +234,12 @@ describe('App interactions flow', () => {
       driver,
     });
 
-    await delayTime('medium');
+    await delayTime('very-long');
+    const buttonContent = await findElementByTestId({
+      id: 'button-content-please',
+      driver,
+    });
+    await console.log('BUTTON CONTENT ', await buttonContent.getText());
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await driver.switchTo().window(dappHandler);
@@ -289,7 +295,12 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('very-long');
+    const buttonContent = await findElementByTestId({
+      id: 'button-content-please',
+      driver,
+    });
+    await console.log('BUTTON CONTENT ', await buttonContent.getText());
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await delayTime('medium');
@@ -318,7 +329,12 @@ describe('App interactions flow', () => {
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
-    await delayTime('medium');
+    await delayTime('very-long');
+    const buttonContent = await findElementByTestId({
+      id: 'button-content-please',
+      driver,
+    });
+    await console.log('BUTTON CONTENT ', await buttonContent.getText());
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('medium');
     await driver.switchTo().window(dappHandler);
@@ -356,7 +372,12 @@ describe('App interactions flow', () => {
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
-    await delayTime('long');
+    await delayTime('very-long');
+    const buttonContent = await findElementByTestId({
+      id: 'button-content-please',
+      driver,
+    });
+    await console.log('BUTTON CONTENT ', await buttonContent.getText());
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('long');
     await driver.switchTo().window(dappHandler);

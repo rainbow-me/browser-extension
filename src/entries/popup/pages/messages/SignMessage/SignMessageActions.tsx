@@ -38,27 +38,29 @@ export const SignMessageActions = ({
             <BottomDisplayNetwork selectedChainId={selectedChainId} />
           </Column>
         </Columns>
-        <Rows space="8px">
-          <Row>
-            <AcceptRequestButton
-              onClick={onAcceptRequest}
-              label={
-                waitingForDevice
-                  ? i18n.t('approve_request.confirm_hw')
-                  : i18n.t('approve_request.sign_message')
-              }
-              waitingForDevice={waitingForDevice}
-              loading={loading}
-            />
-          </Row>
-          <Row>
-            <RejectRequestButton
-              autoFocus
-              onClick={onRejectRequest}
-              label={i18n.t('common_actions.cancel')}
-            />
-          </Row>
-        </Rows>
+        <Box testId={'button-content-please'}>
+          <Rows space="8px">
+            <Row>
+              <AcceptRequestButton
+                onClick={onAcceptRequest}
+                label={
+                  waitingForDevice
+                    ? i18n.t('approve_request.confirm_hw')
+                    : i18n.t('approve_request.sign_message')
+                }
+                waitingForDevice={waitingForDevice}
+                loading={loading}
+              />
+            </Row>
+            <Row>
+              <RejectRequestButton
+                autoFocus
+                onClick={onRejectRequest}
+                label={i18n.t('common_actions.cancel')}
+              />
+            </Row>
+          </Rows>
+        </Box>
       </Stack>
     </Box>
   );
