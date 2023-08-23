@@ -357,8 +357,11 @@ describe('App interactions flow', () => {
     // await driver.switchTo().window(dappHandler);
     console.log('TX REQUEST 2 buttonsignTx', buttonsignTx);
     console.log('TX REQUEST 2 button query selector');
-    const button = await querySelector(driver, '[id="sendTx"]');
+    // const button = await querySelector(driver, '[id="sendTx"]');
+    const button = await findElementByText(driver, 'send');
     console.log('TX REQUEST 2 button', button);
+    expect(button).toBeTruthy();
+    await waitAndClick(button, driver);
 
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
