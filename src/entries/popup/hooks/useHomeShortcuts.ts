@@ -17,7 +17,7 @@ import {
   appConnectionMenuIsActive,
   getInputIsFocused,
 } from '../utils/activeElement';
-import { clickHeaderRight } from '../utils/clickHeader';
+import { clickHeaderLeft, clickHeaderRight } from '../utils/clickHeader';
 
 import { useActiveTab } from './useActiveTab';
 import { useAppMetadata } from './useAppMetadata';
@@ -71,7 +71,13 @@ export function useHomeShortcuts() {
     (e: KeyboardEvent) => {
       const { key } = e;
       const inputIsFocused = getInputIsFocused();
+      console.log('handleHomeShortcuts');
       if (inputIsFocused) return;
+      console.log(
+        'handleHomeShortcuts after',
+        shortcuts.home.OPEN_APP_CONNECTION_MENU.key,
+        key,
+      );
       switch (key) {
         case shortcuts.home.COPY_ADDRESS.key:
           trackShortcut({
@@ -144,6 +150,14 @@ export function useHomeShortcuts() {
             type: 'home.openMoreMenu',
           });
           clickHeaderRight();
+          break;
+        case shortcuts.home.OPEN_APP_CONNECTION_MENU.key:
+          console.log('- in OPEN_APP_CONNECTION_MENU');
+          trackShortcut({
+            key: shortcuts.home.OPEN_APP_CONNECTION_MENU.display,
+            type: 'home.openAppConnectionMenu',
+          });
+          clickHeaderLeft();
           break;
         case shortcuts.home.DISCONNECT_APP.key:
           if (!appConnectionMenuIsActive()) {

@@ -1,5 +1,4 @@
 import React, {
-  ReactElement,
   ReactNode,
   useCallback,
   useLayoutEffect,
@@ -10,15 +9,7 @@ import React, {
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import {
-  Box,
-  Column,
-  Columns,
-  Inline,
-  Stack,
-  Symbol,
-  Text,
-} from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
@@ -39,35 +30,13 @@ import {
   DropdownMenuContentWithSubMenu,
   DropdownSubMenu,
 } from '../DropdownMenu/DropdownSubMenu';
+import { HomeMenuRow } from '../HomeMenuRow/HomeMenuRow';
 import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 
 import { AppConnectionMenuHeader } from './AppConnectionMenuHeader';
 import { AppInteractionItem } from './AppInteractionItem';
 
-const MenuRow = ({
-  leftComponent,
-  centerComponent,
-  rightComponent,
-}: {
-  leftComponent: ReactElement;
-  centerComponent: ReactElement;
-  rightComponent: ReactElement;
-}) => {
-  return (
-    <Box width="full">
-      <Columns alignVertical="center" space="8px">
-        <Column width="content">{leftComponent}</Column>
-        <Column>
-          <Columns alignVertical="center" space="8px">
-            <Column>{centerComponent}</Column>
-            <Column width="content">{rightComponent}</Column>
-          </Columns>
-        </Column>
-      </Columns>
-    </Box>
-  );
-};
 interface AppConnectionMenuProps {
   children: ReactNode;
   url: string;
@@ -177,6 +146,11 @@ export const AppConnectionMenu = ({
       switch (e.key) {
         case shortcuts.home.SWITCH_NETWORK.key:
           if (!pressingNetworkShortcut.current) {
+            console.log(
+              'apdpdppdpdppd shortcuts.home.SWITCH_NETWORK.key',
+              shortcuts.home.SWITCH_NETWORK.key,
+              menuOpen,
+            );
             pressingNetworkShortcut.current = true;
             trackShortcut({
               key: shortcuts.home.SWITCH_NETWORK.display,
@@ -231,7 +205,7 @@ export const AppConnectionMenu = ({
   return (
     <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
       <DropdownMenuTrigger asChild>
-        <Box id="app-connection-menu-selector" testId={menuTriggerId}>
+        <Box as="div" id="app-connection-menu-selector" testId={menuTriggerId}>
           {children}
         </Box>
       </DropdownMenuTrigger>
@@ -325,7 +299,7 @@ export const AppConnectionMenu = ({
                       highlightAccentColor
                       value="switch-wallets"
                     >
-                      <MenuRow
+                      <HomeMenuRow
                         leftComponent={
                           <Box
                             height="fit"
@@ -360,7 +334,7 @@ export const AppConnectionMenu = ({
                       highlightAccentColor
                       value="disconnect"
                     >
-                      <MenuRow
+                      <HomeMenuRow
                         leftComponent={
                           <Box
                             height="fit"
@@ -402,7 +376,7 @@ export const AppConnectionMenu = ({
                 highlightAccentColor
                 value="connected-apps"
               >
-                <MenuRow
+                <HomeMenuRow
                   leftComponent={
                     <Box height="fit" style={{ width: '18px', height: '18px' }}>
                       <Inline

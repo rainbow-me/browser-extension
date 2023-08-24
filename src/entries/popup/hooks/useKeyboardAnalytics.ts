@@ -31,6 +31,7 @@ export type KeyboardEventDescription =
   | 'home.goToQr'
   | 'home.lock'
   | 'home.openMoreMenu'
+  | 'home.openAppConnectionMenu'
   | 'home.switchTab'
   | 'moreInfoButton.dismiss'
   | 'navbar.goBack'

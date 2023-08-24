@@ -7,6 +7,7 @@ import {
   RAINBOW_FEEDBACK_URL,
   RAINBOW_SUPPORT_URL,
 } from '~/core/references/links';
+import { shortcuts } from '~/core/references/shortcuts';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
@@ -18,6 +19,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import { HomeMenuRow } from '../../components/HomeMenuRow/HomeMenuRow';
+import { ShortcutHint } from '../../components/ShortcutHint/ShortcutHint';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -88,44 +91,58 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           <Stack space="4px">
             <Stack>
               <DropdownMenuRadioItem highlightAccentColor value="settings">
-                <Box testId="settings-link">
-                  <Inline alignVertical="center" space="8px">
+                <HomeMenuRow
+                  testId="settings-link"
+                  leftComponent={
                     <Symbol
                       size={12}
                       symbol="gearshape.fill"
                       weight="semibold"
                     />
+                  }
+                  centerComponent={
                     <Text size="14pt" weight="semibold">
                       {i18n.t('menu.home_header_right.settings')}
                     </Text>
-                  </Inline>
-                </Box>
+                  }
+                  rightComponent={
+                    <ShortcutHint
+                      hint={shortcuts.home.GO_TO_SETTINGS.display}
+                    />
+                  }
+                />
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem highlightAccentColor value="qr-code">
-                <Inline alignVertical="center" space="8px">
-                  <Symbol
-                    size={12.75}
-                    symbol="person.fill.viewfinder"
-                    weight="semibold"
-                  />
-                  <Text size="14pt" weight="semibold">
-                    {i18n.t('menu.home_header_right.qr_code')}
-                  </Text>
-                </Inline>
+                <HomeMenuRow
+                  testId="qr-code"
+                  leftComponent={
+                    <Symbol size={12} symbol="qrcode" weight="semibold" />
+                  }
+                  centerComponent={
+                    <Text size="14pt" weight="semibold">
+                      {i18n.t('menu.home_header_right.qr_code')}
+                    </Text>
+                  }
+                  rightComponent={
+                    <ShortcutHint hint={shortcuts.home.GO_TO_QR.display} />
+                  }
+                />
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem highlightAccentColor value="lock">
-                <Box testId="lock">
-                  <Inline alignVertical="center" space="8px">
-                    <Symbol
-                      size={12}
-                      symbol="lock.open.fill"
-                      weight="semibold"
-                    />
+                <HomeMenuRow
+                  testId="lock.open.fill"
+                  leftComponent={
+                    <Symbol size={12} symbol="lock.fill" weight="semibold" />
+                  }
+                  centerComponent={
                     <Text size="14pt" weight="semibold">
                       {i18n.t('menu.home_header_right.lock_rainbow')}
                     </Text>
-                  </Inline>
-                </Box>
+                  }
+                  rightComponent={
+                    <ShortcutHint hint={shortcuts.home.LOCK.display} />
+                  }
+                />
               </DropdownMenuRadioItem>
             </Stack>
             <Stack space="4px">

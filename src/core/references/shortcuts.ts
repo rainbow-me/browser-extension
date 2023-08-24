@@ -128,6 +128,10 @@ export const shortcuts = {
       display: '.',
       key: '.',
     },
+    OPEN_APP_CONNECTION_MENU: {
+      display: 'N',
+      key: 'n',
+    },
     DISCONNECT_APP: {
       display: 'D',
       key: 'd',
