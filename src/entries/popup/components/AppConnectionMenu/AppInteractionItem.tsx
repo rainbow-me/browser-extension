@@ -82,10 +82,10 @@ export const AppInteractionItem = ({
                         rotate: chevronDirection === 'right' ? 0 : 90,
                       }}
                       initial={{
-                        rotate: chevronDirection === 'right' ? 90 : 0,
+                        rotate: 0,
                       }}
                       exit={{
-                        rotate: chevronDirection === 'right' ? 90 : 0,
+                        rotate: chevronDirection === 'right' ? 0 : 90,
                       }}
                     >
                       <Inline alignHorizontal="center" alignVertical="center">
