@@ -12,4 +12,5 @@
   Boolean,
   Boolean.prototype,
 ].forEach(Object.freeze);
+
 export {};

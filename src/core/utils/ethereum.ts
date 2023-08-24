@@ -94,7 +94,6 @@ export const normalizeTransactionResponsePayload = (
 ): TransactionResponse => {
   // Firefox can't serialize functions
   if (navigator.userAgent.toLowerCase().includes('firefox')) {
-    console.log('omitting wait on firefox!');
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return omit(payload, 'wait') as TransactionResponse;

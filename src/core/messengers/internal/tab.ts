@@ -24,14 +24,11 @@ function sendMessage<TPayload>(
   message: SendMessage<TPayload>,
   { tabId }: { tabId?: number } = {},
 ) {
-  try {
-    if (!tabId) {
-      chrome?.runtime?.sendMessage?.(message);
-    } else {
-      chrome.tabs?.sendMessage(tabId, message);
-    }
-    // eslint-disable-next-line no-empty
-  } catch (e) {}
+  if (!tabId) {
+    chrome?.runtime?.sendMessage?.(message);
+  } else {
+    chrome.tabs?.sendMessage(tabId, message);
+  }
 }
 
 /**
