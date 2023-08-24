@@ -22,9 +22,22 @@ export const ProtectedRoute = ({
   children: React.ReactNode;
   allowedStates: UserStatusResult[] | true;
 }): JSX.Element => {
-  const { status } = useAuth();
+  const { status, updateStatus } = useAuth();
   const isFullScreen = useIsFullScreen();
   const { pendingRequests } = usePendingRequestStore();
+
+  const [isStatusInitialized, setStatusInitialized] = React.useState(false);
+  React.useEffect(() => {
+    const initializeStatus = async () => {
+      await updateStatus();
+      setStatusInitialized(true);
+    };
+    initializeStatus();
+  }, [updateStatus]);
+
+  if (!isStatusInitialized) {
+    return <></>;
+  }
 
   // we don't want to move from ready screen when we reach it
   if (isReadyScreen()) {
