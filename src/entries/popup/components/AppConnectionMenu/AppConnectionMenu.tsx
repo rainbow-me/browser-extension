@@ -1,4 +1,5 @@
 import React, {
+  ReactElement,
   ReactNode,
   useCallback,
   useLayoutEffect,
@@ -9,7 +10,15 @@ import React, {
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
@@ -30,11 +39,35 @@ import {
   DropdownMenuContentWithSubMenu,
   DropdownSubMenu,
 } from '../DropdownMenu/DropdownSubMenu';
+import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 
 import { AppConnectionMenuHeader } from './AppConnectionMenuHeader';
 import { AppInteractionItem } from './AppInteractionItem';
 
+const MenuRow = ({
+  leftComponent,
+  centerComponent,
+  rightComponent,
+}: {
+  leftComponent: ReactElement;
+  centerComponent: ReactElement;
+  rightComponent: ReactElement;
+}) => {
+  return (
+    <Box width="full">
+      <Columns alignVertical="center" space="8px">
+        <Column width="content">{leftComponent}</Column>
+        <Column>
+          <Columns alignVertical="center" space="8px">
+            <Column>{centerComponent}</Column>
+            <Column width="content">{rightComponent}</Column>
+          </Columns>
+        </Column>
+      </Columns>
+    </Box>
+  );
+};
 interface AppConnectionMenuProps {
   children: ReactNode;
   url: string;
@@ -190,7 +223,7 @@ export const AppConnectionMenu = ({
         sideOffset={sideOffset}
         align={align}
       >
-        <>
+        <Box testId={connectedAppsId}>
           {url ? (
             <AppConnectionMenuHeader
               opacity={subMenuOpen ? 0.5 : 1}
@@ -253,7 +286,7 @@ export const AppConnectionMenu = ({
                             onShortcutPress={
                               appSession ? changeChainId : connectToApp
                             }
-                            showDisconnect={!!appSession}
+                            showDisconnect={false}
                             disconnect={disconnect}
                           />
                         </DropdownMenuRadioGroup>
@@ -263,6 +296,7 @@ export const AppConnectionMenu = ({
                       <AppInteractionItem
                         appSession={appSession}
                         chevronDirection={subMenuOpen ? 'down' : 'right'}
+                        shortcutHint={shortcuts.home.SWITCH_NETWORK.display}
                         showChevron
                       />
                     }
@@ -274,8 +308,8 @@ export const AppConnectionMenu = ({
                       highlightAccentColor
                       value="switch-wallets"
                     >
-                      <Box testId={connectedAppsId}>
-                        <Inline alignVertical="center" space="8px">
+                      <MenuRow
+                        leftComponent={
                           <Box
                             height="fit"
                             style={{ width: '18px', height: '18px' }}
@@ -292,19 +326,27 @@ export const AppConnectionMenu = ({
                               />
                             </Inline>
                           </Box>
-
+                        }
+                        centerComponent={
                           <Text size="14pt" weight="semibold">
                             {i18n.t('menu.app_connection_menu.switch_wallets')}
                           </Text>
-                        </Inline>
-                      </Box>
+                        }
+                        rightComponent={
+                          <ShortcutHint
+                            hint={
+                              shortcuts.connect.OPEN_WALLET_SWITCHER.display
+                            }
+                          />
+                        }
+                      />
                     </DropdownMenuRadioItem>
                     <DropdownMenuRadioItem
                       highlightAccentColor
                       value="disconnect"
                     >
-                      <Box testId={connectedAppsId}>
-                        <Inline alignVertical="center" space="8px">
+                      <MenuRow
+                        leftComponent={
                           <Box
                             height="fit"
                             style={{ width: '18px', height: '18px' }}
@@ -318,15 +360,22 @@ export const AppConnectionMenu = ({
                                 size={12}
                                 symbol="xmark"
                                 weight="semibold"
+                                color="red"
                               />
                             </Inline>
                           </Box>
-
-                          <Text size="14pt" weight="semibold">
+                        }
+                        centerComponent={
+                          <Text size="14pt" weight="semibold" color="red">
                             {i18n.t('menu.app_connection_menu.disconnect')}
                           </Text>
-                        </Inline>
-                      </Box>
+                        }
+                        rightComponent={
+                          <ShortcutHint
+                            hint={shortcuts.home.DISCONNECT_APP.display}
+                          />
+                        }
+                      />
                     </DropdownMenuRadioItem>
                   </>
                 ) : null}
@@ -338,8 +387,8 @@ export const AppConnectionMenu = ({
                 highlightAccentColor
                 value="connected-apps"
               >
-                <Box testId={connectedAppsId}>
-                  <Inline alignVertical="center" space="8px">
+                <MenuRow
+                  leftComponent={
                     <Box height="fit" style={{ width: '18px', height: '18px' }}>
                       <Inline
                         height="full"
@@ -353,16 +402,22 @@ export const AppConnectionMenu = ({
                         />
                       </Inline>
                     </Box>
-
+                  }
+                  centerComponent={
                     <Text size="14pt" weight="semibold">
                       {i18n.t('menu.app_connection_menu.all_connected_apps')}
                     </Text>
-                  </Inline>
-                </Box>
+                  }
+                  rightComponent={
+                    <ShortcutHint
+                      hint={shortcuts.home.GO_TO_CONNECTED_APPS.display}
+                    />
+                  }
+                />
               </DropdownMenuRadioItem>
             </Stack>
           </DropdownMenuRadioGroup>
-        </>
+        </Box>
       </DropdownMenuContentWithSubMenu>
     </DropdownMenu>
   );

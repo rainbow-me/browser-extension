@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Text } from '~/design-system';
+import { Box, Inline, Text } from '~/design-system';
 
 export const ShortcutHint = ({ hint }: { hint: string }) => {
   return (
@@ -9,10 +9,15 @@ export const ShortcutHint = ({ hint }: { hint: string }) => {
       padding="4px"
       borderRadius="3px"
       boxShadow="1px"
+      style={{ width: '18px', height: '18px' }}
     >
-      <Text size="12pt" color="labelSecondary" weight="semibold">
-        {hint}
-      </Text>
+      <Inline alignHorizontal="center" alignVertical="center">
+        <Box background="blue">
+          <Text size="12pt" color="labelSecondary" weight="semibold">
+            {hint}
+          </Text>
+        </Box>
+      </Inline>
     </Box>
   );
 };
