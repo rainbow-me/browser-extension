@@ -9,3 +9,7 @@ export const radixIsActive = () =>
   !!document.querySelector('div[data-radix-popper-content-wrapper]');
 export const switchNetworkMenuIsActive = () =>
   !!document.getElementById('switch-network-menu-selector');
+export const appConnectionMenuIsActive = () =>
+  !!document.getElementById('app-connection-menu-selector');
+export const appConnectionSwitchWalletsPromptIsActive = () =>
+  !!document.getElementById('app-connection-switch-wallets-prompt');

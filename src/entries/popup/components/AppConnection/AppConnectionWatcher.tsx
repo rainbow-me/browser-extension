@@ -14,6 +14,7 @@ import { useAppSession } from '../../hooks/useAppSession';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { ROUTES } from '../../urls';
+import { appConnectionSwitchWalletsPromptIsActive } from '../../utils/activeElement';
 import { triggerToast } from '../Toast/Toast';
 
 import { AppConnectionNudgeBanner } from './AppConnectionNudgeBanner';
@@ -152,7 +153,8 @@ export const AppConnectionWatcher = () => {
     if (
       location.pathname === ROUTES.HOME &&
       (firstLoad || accountChangeHappened) &&
-      differentActiveSession
+      differentActiveSession &&
+      !appConnectionSwitchWalletsPromptIsActive()
     ) {
       setAccountChangeHappened(false);
       hide();

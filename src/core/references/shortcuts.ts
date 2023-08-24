@@ -137,8 +137,8 @@ export const shortcuts = {
       key: 'n',
     },
     SWITCH_WALLETS: {
-      display: 'E',
-      key: 'e',
+      display: 'W',
+      key: 'w',
     },
   },
   wallets: {

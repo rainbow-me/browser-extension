@@ -13,7 +13,10 @@ import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { triggerToast } from '../components/Toast/Toast';
 import * as wallet from '../handlers/wallet';
 import { ROUTES } from '../urls';
-import { getInputIsFocused } from '../utils/activeElement';
+import {
+  appConnectionMenuIsActive,
+  getInputIsFocused,
+} from '../utils/activeElement';
 import { clickHeaderRight } from '../utils/clickHeader';
 
 import { useActiveTab } from './useActiveTab';
@@ -113,11 +116,13 @@ export function useHomeShortcuts() {
           openProfile();
           break;
         case shortcuts.home.GO_TO_WALLETS.key:
-          trackShortcut({
-            key: shortcuts.home.GO_TO_WALLETS.display,
-            type: 'home.goToWallets',
-          });
-          navigate(ROUTES.WALLET_SWITCHER);
+          if (!appConnectionMenuIsActive()) {
+            trackShortcut({
+              key: shortcuts.home.GO_TO_WALLETS.display,
+              type: 'home.goToWallets',
+            });
+            navigate(ROUTES.WALLET_SWITCHER);
+          }
           break;
         case shortcuts.home.GO_TO_QR.key:
           trackShortcut({
@@ -141,11 +146,13 @@ export function useHomeShortcuts() {
           clickHeaderRight();
           break;
         case shortcuts.home.DISCONNECT_APP.key:
-          trackShortcut({
-            key: shortcuts.home.DISCONNECT_APP.display,
-            type: 'home.disconnectApp',
-          });
-          disconnectFromApp();
+          if (!appConnectionMenuIsActive()) {
+            trackShortcut({
+              key: shortcuts.home.DISCONNECT_APP.display,
+              type: 'home.disconnectApp',
+            });
+            disconnectFromApp();
+          }
           break;
       }
     },

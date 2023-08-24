@@ -216,6 +216,14 @@ export const AppConnectionMenu = ({
             setMenuOpen(false);
             triggerWalletSwitcher({ show: true });
           }
+          break;
+        case shortcuts.home.DISCONNECT_APP.key:
+          trackShortcut({
+            key: shortcuts.home.DISCONNECT_APP.display,
+            type: 'switchNetworkMenu.disconnect',
+          });
+          disconnectFromApp();
+          break;
       }
     },
   });
@@ -223,7 +231,9 @@ export const AppConnectionMenu = ({
   return (
     <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
       <DropdownMenuTrigger asChild>
-        <Box testId={menuTriggerId}>{children}</Box>
+        <Box id="app-connection-menu-selector" testId={menuTriggerId}>
+          {children}
+        </Box>
       </DropdownMenuTrigger>
       <DropdownMenuContentWithSubMenu
         subMenuRef={dropdownMenuRef}
@@ -341,9 +351,7 @@ export const AppConnectionMenu = ({
                         }
                         rightComponent={
                           <ShortcutHint
-                            hint={
-                              shortcuts.connect.OPEN_WALLET_SWITCHER.display
-                            }
+                            hint={shortcuts.home.SWITCH_WALLETS.display}
                           />
                         }
                       />
