@@ -5,7 +5,7 @@ import { i18n } from '~/core/languages';
 import { AppSession } from '~/core/state/appSessions';
 import { Box, Column, Columns, Inline, Symbol, Text } from '~/design-system';
 
-import { ChevronDown } from '../ChevronDown/ChevronDown';
+import { ChevronSwitcher } from '../ChevronSwitcher/ChevronSwitcher';
 import { ContextMenuRadioItem } from '../ContextMenu/ContextMenu';
 import { DropdownMenuRadioItem } from '../DropdownMenu/DropdownMenu';
 import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
@@ -72,29 +72,27 @@ export const AppInteractionItem = ({
                 {showChevron && (
                   <Column width="content">
                     <Box
+                      as={motion.div}
+                      paddingTop="3px"
                       style={{
-                        rotate: '-90deg',
+                        height: '18px',
+                        width: '18px',
+                      }}
+                      animate={{
+                        rotate: chevronDirection === 'right' ? 0 : 90,
+                      }}
+                      initial={{
+                        rotate: chevronDirection === 'right' ? 90 : 0,
+                      }}
+                      exit={{
+                        rotate: chevronDirection === 'right' ? 90 : 0,
                       }}
                     >
-                      <Box
-                        as={motion.div}
-                        animate={{
-                          rotate: chevronDirection === 'right' ? 0 : 90,
-                        }}
-                        initial={{
-                          rotate: chevronDirection === 'right' ? 90 : 0,
-                        }}
-                        exit={{ rotate: chevronDirection === 'right' ? 90 : 0 }}
-                      >
-                        <Box style={{ height: '18px', width: '18px' }}>
-                          <Inline
-                            alignHorizontal="center"
-                            alignVertical="center"
-                          >
-                            <ChevronDown color="labelTertiary" />
-                          </Inline>
+                      <Inline alignHorizontal="center" alignVertical="center">
+                        <Box height="fit" width="fit">
+                          <ChevronSwitcher color="labelTertiary" />
                         </Box>
-                      </Box>
+                      </Inline>
                     </Box>
                   </Column>
                 )}
