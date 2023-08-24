@@ -96,6 +96,7 @@ export const AppConnectionMenu = ({
   const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
   const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
+  const pressingNetworkShortcut = useRef<boolean>(false);
 
   const {
     addSession,
@@ -175,19 +176,25 @@ export const AppConnectionMenu = ({
     handler: (e: KeyboardEvent) => {
       switch (e.key) {
         case shortcuts.home.SWITCH_NETWORK.key:
-          trackShortcut({
-            key: shortcuts.home.SWITCH_NETWORK.display,
-            type: 'switchNetworkMenu.toggle',
-          });
-          if (!menuOpen) {
-            setMenuOpen(true);
+          if (!pressingNetworkShortcut.current) {
+            pressingNetworkShortcut.current = true;
+            trackShortcut({
+              key: shortcuts.home.SWITCH_NETWORK.display,
+              type: 'switchNetworkMenu.toggle',
+            });
+            if (!menuOpen) {
+              setMenuOpen(true);
+            }
+            if (menuOpen && !subMenuOpen) {
+              setSubMenuOpen(true);
+            }
+            if (menuOpen && subMenuOpen) {
+              setSubMenuOpen(false);
+            }
           }
-          if (menuOpen && !subMenuOpen) {
-            setSubMenuOpen(true);
-          }
-          if (menuOpen && subMenuOpen) {
-            setSubMenuOpen(false);
-          }
+          setTimeout(() => {
+            pressingNetworkShortcut.current = false;
+          }, 400);
           break;
         case shortcuts.global.CLOSE.key:
           if (subMenuOpen) {
