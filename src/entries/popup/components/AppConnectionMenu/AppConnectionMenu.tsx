@@ -72,7 +72,6 @@ export const AppConnectionMenu = ({
     addSession,
     updateAppSessionChainId,
     disconnectAppSession,
-    disconnectSession,
     appSession,
     activeSession,
   } = useAppSession({ host: appHost });
@@ -96,13 +95,6 @@ export const AppConnectionMenu = ({
     [addSession, appHost, currentAddress, url],
   );
 
-  const disconnectFromApp = useCallback(() => {
-    disconnectSession({
-      address: currentAddress,
-      host: appHost,
-    });
-  }, [appHost, currentAddress, disconnectSession]);
-
   const onValueChange = useCallback(
     (
       value:
@@ -122,11 +114,11 @@ export const AppConnectionMenu = ({
           triggerWalletSwitcher({ show: true });
           break;
         case 'disconnect':
-          disconnectFromApp();
+          disconnectAppSession();
           break;
       }
     },
-    [disconnectFromApp, navigate, subMenuOpen],
+    [disconnectAppSession, navigate, subMenuOpen],
   );
 
   const disconnect = useCallback(() => {
@@ -204,7 +196,7 @@ export const AppConnectionMenu = ({
             key: shortcuts.home.DISCONNECT_APP.display,
             type: 'switchNetworkMenu.disconnect',
           });
-          disconnectFromApp();
+          disconnectAppSession();
           break;
       }
     },
