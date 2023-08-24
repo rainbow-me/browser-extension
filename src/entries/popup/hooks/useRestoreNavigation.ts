@@ -114,11 +114,13 @@ export default function useRestoreNavigation() {
   const { setShouldRestoreNavigation, shouldRestoreNavigation, lastPage } =
     useNavRestorationStore();
   const restoreNavigation = async () => {
-    if (lastPage && shouldRestoreNavigation && RESTORE_NAV_MAP[lastPage]) {
+    if (lastPage && shouldRestoreNavigation) {
       await setShouldRestoreNavigation(false);
-      const navPath = RESTORE_NAV_MAP[lastPage];
-      for (const screen of navPath) {
-        navigate(screen);
+      if (RESTORE_NAV_MAP[lastPage]) {
+        const navPath = RESTORE_NAV_MAP[lastPage];
+        for (const screen of navPath) {
+          navigate(screen);
+        }
       }
     }
   };

@@ -754,7 +754,7 @@ const ROUTE_DATA = [
 
 const RootLayout = () => {
   const location = useLocation();
-  const { setLastPage } = useNavRestorationStore();
+  const { setLastPage, shouldRestoreNavigation } = useNavRestorationStore();
 
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -762,8 +762,10 @@ const RootLayout = () => {
 
   React.useEffect(() => {
     analytics.screen(screen[location.pathname], { path: location.pathname });
-    setLastPage(location.pathname);
-  }, [location.pathname, setLastPage]);
+    if (!shouldRestoreNavigation) {
+      setLastPage(location.pathname);
+    }
+  }, [location.pathname, setLastPage, shouldRestoreNavigation]);
 
   useGlobalShortcuts();
   useCommandKShortcuts();

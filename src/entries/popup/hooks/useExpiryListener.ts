@@ -9,7 +9,7 @@ import usePrevious from './usePrevious';
 export function useExpiryListener() {
   const { resetValues, setupPort } = usePopupInstanceStore();
   const { currentAddress } = useCurrentAddressStore();
-  const { clearLastPage, setShouldRestoreNavigation } =
+  const { clearLastPage, lastPage, setShouldRestoreNavigation } =
     useNavRestorationStore();
   const previousAddress = usePrevious(currentAddress);
 
@@ -19,9 +19,8 @@ export function useExpiryListener() {
     if (expired) {
       await resetValues();
       await clearLastPage();
-    } else {
-      await setShouldRestoreNavigation(true);
     }
+    setShouldRestoreNavigation(!!lastPage);
   };
 
   useEffect(() => {
