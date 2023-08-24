@@ -11,7 +11,7 @@ import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAsse
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useSavedEnsNames } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
@@ -517,14 +517,14 @@ export const useCommands = (
   );
 
   const selectTokenAndNavigate = React.useCallback(
-    (asset: ParsedAddressAsset, to: To) => {
+    (asset: ParsedUserAsset, to: To) => {
       setSelectedToken(asset);
       navigate(to);
     },
     [navigate, setSelectedToken],
   );
 
-  const viewTokenOnExplorer = React.useCallback((asset: ParsedAddressAsset) => {
+  const viewTokenOnExplorer = React.useCallback((asset: ParsedUserAsset) => {
     if (isETHAddress(asset.address)) {
       return;
     }

@@ -8,7 +8,7 @@ import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -42,7 +42,7 @@ export const useSearchableTokens = () => {
       action: () => navigate(ROUTES.TOKEN_DETAILS(asset.uniqueId)),
       actionLabel: actionLabels.open,
       actionPage: PAGES.TOKEN_DETAIL,
-      asset: asset as ParsedAddressAsset,
+      asset: asset as ParsedUserAsset,
       id: asset.uniqueId,
       name: asset.name,
       nativeTokenBalance: asset.native.balance.display,

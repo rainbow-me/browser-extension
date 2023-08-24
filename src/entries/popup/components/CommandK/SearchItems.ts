@@ -1,6 +1,6 @@
 import { Address } from 'wagmi';
 
-import { ParsedAddressAsset, ZerionAssetPrice } from '~/core/types/assets';
+import { ParsedUserAsset, ZerionAssetPrice } from '~/core/types/assets';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { CommandKPage } from './pageConfig';
@@ -16,7 +16,7 @@ export interface BaseSearchItem {
   action?: () => void;
   actionLabel?: string;
   actionPage?: CommandKPage;
-  asset?: ParsedAddressAsset;
+  asset?: ParsedUserAsset;
   description?: string;
   downrank?: boolean;
   hidden?: boolean;
@@ -50,7 +50,7 @@ export interface ShortcutSearchItem extends BaseSearchItem {
 }
 
 export interface TokenSearchItem extends BaseSearchItem {
-  asset: ParsedAddressAsset;
+  asset: ParsedUserAsset;
   price: ZerionAssetPrice | undefined;
   tokenBalanceAmount: string;
   tokenBalanceDisplay: string;
