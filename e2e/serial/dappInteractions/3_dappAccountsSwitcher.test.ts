@@ -1,7 +1,15 @@
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -24,6 +32,7 @@ import {
   querySelector,
   shortenAddress,
   switchWallet,
+  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
@@ -44,6 +53,16 @@ describe('Dapp accounts switcher flow', () => {
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  beforeEach(async (context: any) => {
+    context.driver = driver;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  afterEach(async (context: any) => {
+    await takeScreenshotOnFailure(context);
   });
 
   afterAll(() => driver.quit());

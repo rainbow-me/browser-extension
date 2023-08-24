@@ -1,7 +1,9 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
+import * as fs from 'node:fs';
 
 import { ethers } from 'ethers';
 import {
@@ -207,17 +209,12 @@ export async function getExtensionIdByName(
 // search functions
 
 export async function querySelector(driver: WebDriver, selector: string) {
-  try {
-    await driver.wait(untilDocumentLoaded(), waitUntilTime);
-    const el = await driver.wait(
-      until.elementLocated(By.css(selector)),
-      waitUntilTime,
-    );
-    return await driver.wait(until.elementIsVisible(el), waitUntilTime);
-  } catch (error) {
-    await takeScreenshot(driver, selector);
-    throw error;
-  }
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  const el = await driver.wait(
+    until.elementLocated(By.css(selector)),
+    waitUntilTime,
+  );
+  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
 export async function findElementByText(driver: WebDriver, text: string) {
@@ -347,11 +344,6 @@ export async function waitAndClick(element: WebElement, driver: WebDriver) {
     return element.click();
   } catch (error) {
     const testId = await element.getAttribute('data-testid');
-    if (testId) {
-      await takeScreenshot(driver, testId);
-    } else {
-      console.log("couldn't take screenshot because element has no test id");
-    }
     throw new Error(`Failed to click element ${testId}`);
   }
 }
@@ -763,16 +755,29 @@ export async function delayTime(
   }
 }
 
-export async function takeScreenshot(driver: WebDriver, name: string) {
-  try {
-    const image = await driver.takeScreenshot();
-    const safeName = name
-      .replace('[data-testid="', '')
-      .replace('[id="', '')
-      .replace('"]', '');
-    const filename = `${new Date().getTime()}-${safeName}`;
-    require('fs').writeFileSync(`screenshots/${filename}.png`, image, 'base64');
-  } catch (error) {
-    console.error('Error occurred while taking screenshot:', error);
-  }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function takeScreenshotOnFailure(context: any) {
+  context.onTestFailed(async () => {
+    const normalizedFilePath = context.task.name
+      .replace(/'/g, '')
+      .replace(/"/g, '')
+      .replace(/=/g, '')
+      .replace(/\//g, '_')
+      .replace(/:/g, '_')
+      .replace(/ /g, '_');
+    let fileName = `${normalizedFilePath}_failure`;
+    let counter = 0;
+    while (fs.existsSync(`screenshots/${fileName}.png`)) {
+      counter++;
+      fileName = `${fileName}_${counter}`;
+      if (counter > 10) break;
+    }
+    console.log(`Screenshot of the failed test will be saved to: ${fileName}`);
+    try {
+      const image = await context.driver.takeScreenshot();
+      fs.writeFileSync(`screenshots/${fileName}.png`, image, 'base64');
+    } catch (error) {
+      console.error('Error occurred while taking screenshot:', error);
+    }
+  });
 }

@@ -7,7 +7,7 @@ import 'geckodriver';
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
@@ -26,6 +26,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
   waitUntilElementByTestIdIsPresent,
@@ -47,6 +48,16 @@ beforeAll(async () => {
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
   rootURL += extensionId;
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+beforeEach(async (context: any) => {
+  context.driver = driver;
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+afterEach(async (context: any) => {
+  await takeScreenshotOnFailure(context);
 });
 
 afterAll(() => driver.quit());
