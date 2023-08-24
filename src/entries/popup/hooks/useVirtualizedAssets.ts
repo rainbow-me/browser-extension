@@ -2,9 +2,9 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef } from 'react';
 
 import {
-  ParsedAddressAsset,
   ParsedAsset,
   ParsedSearchAsset,
+  ParsedUserAsset,
 } from '~/core/types/assets';
 import { SearchAsset } from '~/core/types/search';
 
@@ -14,7 +14,7 @@ export const useVirtualizedAssets = ({
 }: {
   assets?:
     | ParsedAsset[]
-    | ParsedAddressAsset[]
+    | ParsedUserAsset[]
     | ParsedSearchAsset[]
     | SearchAsset[];
   size?: number;

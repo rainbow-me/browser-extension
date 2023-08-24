@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { toWei } from '~/core/utils/ethereum';
@@ -25,7 +25,7 @@ export const useSendValidations = ({
   toAddress,
   toAddressOrName,
 }: {
-  asset?: ParsedAddressAsset | null;
+  asset?: ParsedUserAsset | null;
   assetAmount?: string;
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
   toAddress?: Address;
