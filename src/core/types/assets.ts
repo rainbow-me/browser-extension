@@ -30,6 +30,7 @@ export interface ParsedAsset {
   decimals: number;
   icon_url?: string;
   type?: AssetType;
+  smallBalance?: boolean;
 }
 
 export interface ParsedUserAsset extends ParsedAsset {

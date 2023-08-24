@@ -42,6 +42,7 @@ export const ROUTES = {
     '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase-verify', // RecoveryPhraseVerify
   SETTINGS__TRANSACTIONS: '/settings/transactions', // Transactions
   SETTINGS__CURRENCY: '/settings/currency', // Currency
+  SETTINGS__LANGUAGE: '/settings/language', // Language
   SEND: '/send', // Send
   SWAP: '/swap', // Swap
   SIGN: '/sign', // Sign
@@ -58,6 +59,6 @@ export const ROUTES = {
   HW_CHOOSE: '/hw/choose',
   HW_LEDGER: '/hw/ledger',
   HW_TREZOR: '/hw/trezor',
-  HW_WALLET_LIST: '/hw/wallet-list',
+  HW_WALLET_LIST: '/hw/wallet-list', // hw/walletList/index
   HW_SUCCESS: '/hw/success',
 } as const;

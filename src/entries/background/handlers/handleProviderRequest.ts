@@ -17,7 +17,7 @@ import { pendingRequestStore } from '~/core/state/requests';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
-import { getDappHost } from '~/core/utils/connectedApps';
+import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/hex';
@@ -85,6 +85,7 @@ const messengerProviderRequest = async (
 ) => {
   const { addPendingRequest } = pendingRequestStore.getState();
   // Add pending request to global background state.
+  console.log('--- adding pending req addPendingRequest', request);
   addPendingRequest(request);
 
   let ready = await isInitialized();
@@ -119,10 +120,14 @@ const messengerProviderRequest = async (
 const resetRateLimit = async (host: string, second: boolean) => {
   const { rateLimits } = await chrome.storage.session.get('rateLimits');
   if (second) {
-    rateLimits[host].perSecond = 0;
+    if (rateLimits[host]) {
+      rateLimits[host].perSecond = 0;
+    }
     secondTimer = null;
   } else {
-    rateLimits[host].perMinute = 0;
+    if (rateLimits[host]) {
+      rateLimits[host].perMinute = 0;
+    }
     minuteTimer = null;
   }
   return chrome.storage.session.set({ rateLimits });
@@ -207,10 +212,10 @@ export const handleProviderRequest = ({
   inpageMessenger: Messenger;
 }) =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
-    const { getActiveSession, addSession, updateSessionChainId } =
+    const { getActiveSession, addSession, updateActiveSessionChainId } =
       appSessionsStore.getState();
     const url = meta?.sender?.url || '';
-    const host = getDappHost(url);
+    const host = (isValidUrl(url) && getDappHost(url)) || '';
     const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
 
@@ -304,7 +309,7 @@ export const handleProviderRequest = ({
             });
             throw new Error('Chain Id not supported');
           } else {
-            updateSessionChainId({
+            updateActiveSessionChainId({
               chainId: proposedChainId,
               host,
             });

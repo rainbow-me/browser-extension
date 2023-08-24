@@ -250,7 +250,7 @@ it('should be able to rename a wallet from the wallet switcher', async () => {
   });
   await findElementByTextAndClick(driver, 'Done');
   const newWalletName = await findElementByText(driver, 'test name');
-  expect(newWalletName).toBeTruthy;
+  expect(newWalletName).toBeTruthy();
 });
 
 it('should be able to go to send flow and choose recipient based on suggestions', async () => {

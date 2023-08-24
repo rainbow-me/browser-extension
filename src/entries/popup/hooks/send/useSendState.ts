@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
@@ -22,6 +23,7 @@ export const useSendState = ({
   rawMaxAssetBalanceAmount: string;
 }) => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
+  const { saveSendAddress } = usePopupInstanceStore();
   const { currentCurrency } = useCurrentCurrencyStore();
 
   const [, setAsset] = useState<ParsedUserAsset>();
@@ -84,6 +86,9 @@ export const useSendState = ({
     txToAddress,
     value,
     setAsset,
-    setToAddressOrName,
+    setToAddressOrName: (address: Address | string) => {
+      setToAddressOrName(address);
+      saveSendAddress({ address });
+    },
   };
 };

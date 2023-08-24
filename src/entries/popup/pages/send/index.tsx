@@ -19,6 +19,10 @@ import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import {
+  popupInstanceStore,
+  usePopupInstanceStore,
+} from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -181,12 +185,21 @@ export function Send() {
 
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
 
+  const {
+    sendAddress,
+    sendAmount,
+    sendField,
+    sendTokenAddressAndChain,
+    saveSendTokenAddressAndChain,
+  } = usePopupInstanceStore();
+
   const handleSend = useCallback(
     async (callback?: () => void) => {
       if (!config.send_enabled) return;
 
       try {
         const { type } = await getWallet(fromAddress);
+        const { saveActiveTab } = popupInstanceStore.getState();
 
         // Change the label while we wait for confirmation
         if (type === 'HardwareWalletKeychain') {
@@ -233,7 +246,8 @@ export function Send() {
             transaction,
           });
           callback?.();
-          navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+          saveActiveTab({ tab: 'activity' });
+          navigate(ROUTES.HOME);
           analytics.track(event.sendSubmitted, {
             assetSymbol: asset?.symbol,
             assetName: asset?.name,
@@ -272,12 +286,20 @@ export function Send() {
   const selectAsset = useCallback(
     (address: AddressOrEth | '', chainId: ChainId) => {
       selectAssetAddressAndChain(address as Address, chainId);
+      saveSendTokenAddressAndChain({
+        address,
+        chainId,
+      });
       setIndependentAmount('');
       setTimeout(() => {
         valueInputRef?.current?.focus();
       }, 300);
     },
-    [selectAssetAddressAndChain, setIndependentAmount],
+    [
+      saveSendTokenAddressAndChain,
+      selectAssetAddressAndChain,
+      setIndependentAmount,
+    ],
   );
 
   useEffect(() => {
@@ -314,8 +336,23 @@ export function Send() {
       selectAsset(selectedToken.address, selectedToken.chainId);
       // clear selected token
       setSelectedToken();
+    } else if (sendTokenAddressAndChain) {
+      selectAsset(
+        sendTokenAddressAndChain.address,
+        sendTokenAddressAndChain.chainId,
+      );
     }
-  }, [selectAsset, selectedToken, setSelectedToken]);
+    if (sendAddress && sendAddress.length) {
+      setToAddressOrName(sendAddress);
+    }
+    if (sendField !== independentField) {
+      switchIndependentField();
+    }
+    if (sendAmount) {
+      setIndependentAmount(sendAmount);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {

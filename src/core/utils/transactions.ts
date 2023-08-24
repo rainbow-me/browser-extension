@@ -421,22 +421,6 @@ const TransactionOutTypes = [
   'contract_interaction',
 ] as const;
 
-const TransactionInTypes = [
-  'receive',
-  'withdraw',
-  'mint',
-  'borrow',
-  'claim',
-  'unstake',
-  'purchase',
-  'airdrop',
-  'wrap',
-  'unwrap',
-  'approve',
-  'swap',
-  'cancel',
-] as const;
-
 export const getDirection = (type: TransactionType) => {
   if (TransactionOutTypes.includes(type)) return 'out';
   return 'in';

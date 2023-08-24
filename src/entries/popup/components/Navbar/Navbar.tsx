@@ -166,12 +166,14 @@ function NavbarButtonWithBack({
   symbol,
   symbolSize,
   testId,
+  variant = 'flat',
 }: {
   height: ButtonSymbolProps['height'];
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolSize?: SymbolProps['size'];
   testId?: string;
+  variant?: 'flat' | 'transparent' | 'transparentHover';
 }) {
   const { state } = useLocation();
   const { trackShortcut } = useKeyboardAnalytics();
@@ -218,7 +220,7 @@ function NavbarButtonWithBack({
         height={height}
         onClick={click}
         symbol={symbol}
-        variant="flat"
+        variant={variant}
         symbolSize={symbolSize}
         tabIndex={0}
       />
@@ -240,9 +242,11 @@ export function NavbarBackButton({ onClick }: { onClick?: () => void }) {
 export function NavbarCloseButton({
   onClick,
   testId,
+  variant,
 }: {
   onClick?: () => void;
   testId?: string;
+  variant?: 'flat' | 'transparent' | 'transparentHover';
 }) {
   return (
     <NavbarButtonWithBack
@@ -251,6 +255,7 @@ export function NavbarCloseButton({
       symbolSize={11}
       symbol="xmark"
       testId={testId}
+      variant={variant}
     />
   );
 }

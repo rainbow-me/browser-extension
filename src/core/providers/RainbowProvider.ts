@@ -48,7 +48,7 @@ export class RainbowProvider extends EventEmitter {
   isMetaMask = true;
   networkVersion = '1';
   selectedAddress: string | undefined;
-  providers: RainbowProvider[] | Ethereum[] | undefined = undefined;
+  providers: (RainbowProvider | Ethereum)[] | undefined = undefined;
 
   #isUnlocked = true;
   requestId = 0;
@@ -68,8 +68,7 @@ export class RainbowProvider extends EventEmitter {
         this.emit('chainChanged', toHex(String(chainId)));
       });
       messenger?.reply(`disconnect:${host}`, async () => {
-        this.emit('disconnect');
-        this.emit('accountsChanged', []);
+        this.emit('disconnect', []);
       });
       messenger?.reply(`connect:${host}`, async (connectionInfo) => {
         this.emit('connect', connectionInfo);

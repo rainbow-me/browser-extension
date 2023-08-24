@@ -29,22 +29,22 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
   const { appHostName, appLogo, appHost } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
-  const { appSession } = useAppSession({ host: appHost });
+  const { activeSession } = useAppSession({ host: appHost });
   const { flashbotsEnabled } = useFlashbotsEnabledStore();
   const nativeAsset = useNativeAssetForNetwork({
-    chainId: appSession?.chainId || ChainId.mainnet,
+    chainId: activeSession?.chainId || ChainId.mainnet,
   });
   const { currentCurrency } = useCurrentCurrencyStore();
   const flashbotsEnabledGlobally =
     config.flashbots_enabled &&
     flashbotsEnabled &&
-    appSession?.chainId === ChainId.mainnet;
+    activeSession?.chainId === ChainId.mainnet;
   const txRequest = request?.params?.[0] as TransactionRequest;
 
   const { data: methodName = '' } = useRegistryLookup({
     data: (txRequest?.data as string) || null,
     to: txRequest?.to || null,
-    chainId: appSession?.chainId || ChainId.mainnet,
+    chainId: activeSession?.chainId || ChainId.mainnet,
     hash: null,
   });
 
@@ -146,7 +146,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                 transactionSpeedClicked:
                   event.dappPromptSendTransactionSpeedClicked,
               }}
-              chainId={appSession?.chainId || ChainId.mainnet}
+              chainId={activeSession?.chainId || ChainId.mainnet}
               transactionRequest={request?.params?.[0] as TransactionRequest}
               plainTriggerBorder
               flashbotsEnabled={flashbotsEnabledGlobally}

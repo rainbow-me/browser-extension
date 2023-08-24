@@ -3,12 +3,14 @@ import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { handleAssetAccentColor } from '~/core/utils/colors';
 import {
   FormattedCurrencyParts,
   formatCurrencyParts,
@@ -211,6 +213,7 @@ export const getCoingeckoUrl = ({
 function MoreOptions({ token }: { token: ParsedUserAsset }) {
   const explorer = getTokenBlockExplorer(token);
   const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
+  const theme = useCurrentThemeStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -225,7 +228,10 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <AccentColorProviderWrapper
-          color={token.colors?.primary || token.colors?.fallback}
+          color={handleAssetAccentColor(
+            theme.currentTheme,
+            token.colors?.primary || token.colors?.fallback,
+          )}
         >
           {!isEth && (
             <DropdownMenuItem
@@ -261,7 +267,7 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
               external
               onSelect={() => window.open(explorer.url, '_blank')}
             >
-              {explorer.name}
+              {i18n.t('token_details.view_on', { explorer: explorer.name })}
             </DropdownMenuItem>
           )}
 

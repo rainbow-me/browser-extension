@@ -22,7 +22,11 @@ export interface MessageMeta {
  */
 export interface AddressAssetsReceivedMessage {
   payload?: {
-    assets?: { asset: ZerionAsset; quantity: string }[];
+    assets?: {
+      asset: ZerionAsset;
+      quantity: string;
+      small_balances?: boolean;
+    }[];
   };
   meta?: MessageMeta;
 }

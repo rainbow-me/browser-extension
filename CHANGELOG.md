@@ -17,6 +17,38 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.1.70](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.70)
+
+### Changed
+
+- Cleaned up the codebase by removing some unused files and functions #850
+
+### Fixed
+
+- Fix onboarding loop bug by keeping service worker alive #861
+
+## [v1.1.67](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.67)
+
+### Added
+
+- Added e2e testing for future Firefox support #810
+- Moved to chain Ids for e2e tests #847
+- Added more robust testing around sends #840
+- Safety checks for Urls #857
+
+### Changed
+
+- Created better failure handling in user assets #843
+- Firefox Style Tweaks #842
+
+### Fixed
+
+- Fixed alerts memory leak #849
+- Gas ready validation on transactions #824
+- Fixed keychain stores #851
+- Fixed logic in rate limit checks #855
+- Fixed chart exception when data is empty #856
+
 ## [v1.1.59](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.59)
 
 ### Added

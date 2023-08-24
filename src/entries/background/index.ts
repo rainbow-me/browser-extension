@@ -6,7 +6,9 @@ import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
 import { createWagmiClient } from '~/core/wagmi';
 
+import { handleDisconnect } from './handlers/handleDisconnect';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
+import { handleKeepAlive } from './handlers/handleKeepAlive';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates';
@@ -24,6 +26,8 @@ handleProviderRequest({ popupMessenger, inpageMessenger });
 handleTabAndWindowUpdates();
 handleSetupInpage();
 handleWallets();
+handleDisconnect();
 syncStores();
 uuid4();
 initFCM();
+handleKeepAlive();

@@ -20,7 +20,9 @@ import { Box, ThemeProvider } from '~/design-system';
 import { Routes } from './Routes';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
+import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
 import { AuthProvider } from './hooks/useAuth';
+import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
@@ -36,11 +38,10 @@ const wagmiClient = createWagmiClient({
 export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
   const { deviceId } = useDeviceIdStore();
+  useExpiryListener();
 
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
-    changeI18nLanguage(currentLanguage);
-
     if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
       initializeSentry('popup');
       setSentryUser(deviceId);
@@ -63,6 +64,10 @@ export function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  React.useEffect(() => {
+    changeI18nLanguage(currentLanguage);
+  }, [currentLanguage]);
 
   const { currentTheme } = useCurrentThemeStore();
   const isFullScreen = useIsFullScreen();
@@ -91,6 +96,7 @@ export function App() {
                   <Routes />
                 </Box>
                 <IdleTimer />
+                <OnboardingKeepAlive />
               </AuthProvider>
             )}
           </ThemeProvider>

@@ -17,6 +17,8 @@ import firefox from 'selenium-webdriver/firefox';
 import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
+import { RAINBOW_TEST_DAPP } from '~/core/references/links';
+
 // consts
 
 const waitUntilTime = 20_000;
@@ -46,7 +48,7 @@ export const getRootUrl = () => {
 // navigators
 
 export async function goToTestApp(driver: WebDriver) {
-  await driver.get('https://bx-test-dapp.vercel.app/');
+  await driver.get(RAINBOW_TEST_DAPP);
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
@@ -182,12 +184,17 @@ export async function getExtensionIdByName(
 // search functions
 
 export async function querySelector(driver: WebDriver, selector: string) {
-  await driver.wait(untilDocumentLoaded(), waitUntilTime);
-  const el = await driver.wait(
-    until.elementLocated(By.css(selector)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  try {
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+    const el = await driver.wait(
+      until.elementLocated(By.css(selector)),
+      waitUntilTime,
+    );
+    return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  } catch (error) {
+    await takeScreenshot(driver, selector);
+    throw error;
+  }
 }
 
 export async function findElementByText(driver: WebDriver, text: string) {
@@ -316,9 +323,13 @@ export async function waitAndClick(element: WebElement, driver: WebDriver) {
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     return element.click();
   } catch (error) {
-    throw new Error(
-      `Failed to click element ${await element.getAttribute('data-testid')}`,
-    );
+    const testId = await element.getAttribute('data-testid');
+    if (testId) {
+      await takeScreenshot(driver, testId);
+    } else {
+      console.log("couldn't take screenshot because element has no test id");
+    }
+    throw new Error(`Failed to click element ${testId}`);
   }
 }
 
@@ -505,6 +516,43 @@ export const fillPrivateKey = async (driver: WebDriver, privateKey: string) => {
   });
 };
 
+export async function importHardwareWalletFlow(
+  driver: WebDriver,
+  rootURL: string,
+  hardwareType: string,
+) {
+  await goToWelcome(driver, rootURL);
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'connect-wallet-option',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${hardwareType}-option`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'connect-wallets-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'hw-done',
+    driver,
+  });
+  await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+  await typeOnTextInput({
+    id: 'confirm-password-input',
+    driver,
+    text: 'test1234',
+  });
+  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+  await delayTime('long');
+  await findElementByText(driver, 'Rainbow is ready to use');
+}
+
 export async function importWalletFlow(
   driver: WebDriver,
   rootURL: string,
@@ -565,7 +613,7 @@ export async function importWalletFlow(
       id: 'header-account-name-shuffle',
       driver,
     });
-    expect(accountHeader).toBeTruthy;
+    expect(accountHeader).toBeTruthy();
   } else {
     await delayTime('medium');
     await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
@@ -580,7 +628,7 @@ export async function importWalletFlow(
       driver,
       'Rainbow is ready to use',
     );
-    expect(welcomeText).toBeTruthy;
+    expect(welcomeText).toBeTruthy();
   }
 }
 
@@ -678,5 +726,16 @@ export async function delayTime(
       return await delay(1000);
     case 'very-long':
       return await delay(5000);
+  }
+}
+
+export async function takeScreenshot(driver: WebDriver, name: string) {
+  try {
+    const image = await driver.takeScreenshot();
+    const safeName = name.replace('[data-testid="', '').replace('"]', '');
+    const filename = `${new Date().getTime()}-${safeName}`;
+    require('fs').writeFileSync(`screenshots/${filename}.png`, image, 'base64');
+  } catch (error) {
+    console.error('Error occurred while taking screenshot:', error);
   }
 }

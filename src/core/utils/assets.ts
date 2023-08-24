@@ -116,13 +116,20 @@ export function parseUserAsset({
   asset,
   currency,
   balance,
+  smallBalance,
 }: {
   asset: ZerionAsset | AssetApiResponse;
   currency: SupportedCurrencyKey;
   balance: string;
+  smallBalance?: boolean;
 }) {
   const parsedAsset = parseAsset({ asset, currency });
-  return parseUserAssetBalances({ asset: parsedAsset, currency, balance });
+  return parseUserAssetBalances({
+    asset: parsedAsset,
+    currency,
+    balance,
+    smallBalance,
+  });
 }
 export type ParsedUserAsset = ReturnType<typeof parseUserAsset>;
 
@@ -130,10 +137,12 @@ export function parseUserAssetBalances({
   asset,
   currency,
   balance,
+  smallBalance = false,
 }: {
   asset: ParsedAsset;
   currency: SupportedCurrencyKey;
   balance: string;
+  smallBalance?: boolean;
 }) {
   const { decimals, symbol, price } = asset;
   const amount = convertRawAmountToDecimalFormat(balance, decimals);
@@ -153,6 +162,7 @@ export function parseUserAssetBalances({
         value: amount,
       }),
     },
+    smallBalance,
   };
 }
 

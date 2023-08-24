@@ -97,8 +97,8 @@ export function TransactionDetailsMenu({
 
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
-      <ContextMenuTrigger asChild onTrigger={onTrigger}>
-        <Box position="relative">{children}</Box>
+      <ContextMenuTrigger onTrigger={onTrigger} openOnClick>
+        {children}
       </ContextMenuTrigger>
       <DetailsMenuContentWrapper closed={closed}>
         <ContextMenuRadioGroup

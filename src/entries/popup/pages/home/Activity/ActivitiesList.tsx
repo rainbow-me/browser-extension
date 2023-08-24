@@ -11,8 +11,8 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { TextColor } from '~/design-system/styles/designTokens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
+import { SpinnerRow } from '~/entries/popup/components/SpinnerRow/SpinnerRow';
 
-import { Spinner } from '../../../components/Spinner/Spinner';
 import { useActivityShortcuts } from '../../../hooks/useActivityShortcuts';
 import useInfiniteTransactionList from '../../../hooks/useInfiniteTransactionList';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
@@ -109,20 +109,7 @@ export function Activities() {
           })}
         </Box>
       </Box>
-      {isFetchingNextPage && (
-        <Box
-          as={motion.div}
-          alignItems="center"
-          display="flex"
-          justifyContent="center"
-          style={{ height: 72 }}
-          initial={{ opacity: 0.5, height: 0 }}
-          animate={{ opacity: 1, height: 72 }}
-          key="page-loader"
-        >
-          <Spinner size={32} />
-        </Box>
-      )}
+      {isFetchingNextPage && <SpinnerRow />}
     </>
   );
 }

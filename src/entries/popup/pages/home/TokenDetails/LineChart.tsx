@@ -10,7 +10,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { monotoneCubicInterpolation } from './monotoneCubicInterpolation';
 
-const findClosestPoint = (points: Point[], mouseX: number) => {
+const findClosestPoint = (points: ChartPoint[], mouseX: number) => {
   if (points.length === 0) return;
   return points.reduce(
     (closest, current) =>
@@ -89,7 +89,7 @@ const Indicator = ({ position: { x, y } }: { position: Position }) => {
 const ChartContext = createContext<{
   width: number;
   height: number;
-  points: Point[];
+  points: ChartPoint[];
 } | null>(null);
 
 const useChart = () => {
@@ -100,7 +100,7 @@ const useChart = () => {
 
 export type ChartData = { timestamp: number; price: number };
 type Position = { x: number; y: number };
-type Point = ChartData & Position;
+export type ChartPoint = ChartData & Position;
 
 export const LineChart = ({
   width,
@@ -113,7 +113,7 @@ export const LineChart = ({
   height: number;
   paddingY: number;
   data: ChartData[];
-  onMouseMove: (pointData?: Point) => void;
+  onMouseMove: (pointData?: ChartPoint) => void;
 }) => {
   const maxY = Math.max(...data.map((item) => item.price));
   const minY = Math.min(...data.map((item) => item.price));
@@ -143,6 +143,8 @@ export const LineChart = ({
     if (!path || !pathRight) return;
 
     const pathLength = path.getTotalLength();
+    if (!pathLength) return;
+
     const mousePathLength = pathLength * (mouseX / width);
     const { x, y } = path.getPointAtLength(mousePathLength);
     setIndicator({ x, y });
@@ -154,6 +156,7 @@ export const LineChart = ({
 
   const onMouseLeave = () => {
     setIndicator(null);
+    onMouseMove(undefined);
     if (!pathRightRef.current) return;
     pathRightRef.current.style.strokeDasharray = `0`;
   };

@@ -43,3 +43,6 @@ runs:
   - name: Copy dotenv
     shell: 'bash'
     run: cat tmp/dotenv >> .env && rm -rf tmp
+  - name: Clear old screenshots
+    shell: 'bash'
+    run: rm -rf screenshots/*
