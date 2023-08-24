@@ -5,7 +5,7 @@ export const NAVBAR_RIGHT_COMPONENT_ID = 'navbar-right-component';
 
 export const clickHeaderLeft = () => {
   const leftActionButton = document.querySelector(
-    '#app-connection-menu-selector div',
+    '#app-connection-menu-selector-closed div',
   );
   simulateClick(leftActionButton);
 };

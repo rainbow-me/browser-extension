@@ -10,6 +10,6 @@ export const radixIsActive = () =>
 export const switchNetworkMenuIsActive = () =>
   !!document.getElementById('switch-network-menu-selector');
 export const appConnectionMenuIsActive = () =>
-  !!document.getElementById('app-connection-menu-selector');
+  !!document.getElementById('app-connection-menu-selector-open');
 export const appConnectionSwitchWalletsPromptIsActive = () =>
   !!document.getElementById('app-connection-switch-wallets-prompt');

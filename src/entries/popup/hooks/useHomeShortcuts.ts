@@ -152,12 +152,13 @@ export function useHomeShortcuts() {
           clickHeaderRight();
           break;
         case shortcuts.home.OPEN_APP_CONNECTION_MENU.key:
-          console.log('- in OPEN_APP_CONNECTION_MENU');
-          trackShortcut({
-            key: shortcuts.home.OPEN_APP_CONNECTION_MENU.display,
-            type: 'home.openAppConnectionMenu',
-          });
-          clickHeaderLeft();
+          if (!appConnectionMenuIsActive()) {
+            trackShortcut({
+              key: shortcuts.home.OPEN_APP_CONNECTION_MENU.display,
+              type: 'home.openAppConnectionMenu',
+            });
+            clickHeaderLeft();
+          }
           break;
         case shortcuts.home.DISCONNECT_APP.key:
           if (!appConnectionMenuIsActive()) {

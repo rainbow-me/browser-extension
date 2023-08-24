@@ -1,6 +1,7 @@
 import React, {
   ReactNode,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -141,6 +142,13 @@ export const AppConnectionMenu = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCommandKVisible]);
 
+  useEffect(() => {
+    pressingNetworkShortcut.current = true;
+    setTimeout(() => {
+      pressingNetworkShortcut.current = false;
+    }, 400);
+  }, []);
+
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       switch (e.key) {
@@ -205,7 +213,11 @@ export const AppConnectionMenu = ({
   return (
     <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
       <DropdownMenuTrigger asChild>
-        <Box as="div" id="app-connection-menu-selector" testId={menuTriggerId}>
+        <Box
+          as="div"
+          id={`app-connection-menu-selector-${menuOpen ? 'open' : 'closed'}`}
+          testId={menuTriggerId}
+        >
           {children}
         </Box>
       </DropdownMenuTrigger>
