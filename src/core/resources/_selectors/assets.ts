@@ -1,7 +1,7 @@
 import {
-  ParsedAddressAsset,
   ParsedAssetsDict,
   ParsedAssetsDictByChain,
+  ParsedUserAsset,
   UniqueId,
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -14,7 +14,7 @@ export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
     .map((chainAssets) => Object.values(chainAssets))
     .flat()
     .sort(
-      (a: ParsedAddressAsset, b: ParsedAddressAsset) =>
+      (a: ParsedUserAsset, b: ParsedUserAsset) =>
         parseFloat(b?.native?.balance?.amount) -
         parseFloat(a?.native?.balance?.amount),
     );
@@ -43,7 +43,7 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
   return assetsByNetwork
     .map((chainAssets) =>
       Object.values(chainAssets).sort(
-        (a: ParsedAddressAsset, b: ParsedAddressAsset) =>
+        (a: ParsedUserAsset, b: ParsedUserAsset) =>
           parseFloat(b?.native?.balance?.amount) -
           parseFloat(a?.native?.balance?.amount),
       ),
