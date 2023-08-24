@@ -328,7 +328,7 @@ export const AppConnectionMenu = ({
                             >
                               <Symbol
                                 size={14}
-                                symbol="wand.and.stars"
+                                symbol="person.crop.rectangle.stack.fill"
                                 weight="semibold"
                               />
                             </Inline>
@@ -365,7 +365,7 @@ export const AppConnectionMenu = ({
                             >
                               <Symbol
                                 size={12}
-                                symbol="xmark"
+                                symbol="trash.fill"
                                 weight="semibold"
                                 color="red"
                               />
