@@ -30,9 +30,7 @@ export function ImportOrCreateWallet() {
       origins: ['<all_urls>'],
     });
     if (!permissionGranted) {
-      alert(
-        'Rainbow needs permission to access all websites to work properly. Please grant the permission in order to continue.',
-      );
+      alert(i18n.t('permissions.firefox_permission_denied'));
       return false;
     }
     return true;
