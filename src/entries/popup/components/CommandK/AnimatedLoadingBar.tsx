@@ -26,8 +26,7 @@ const AnimatedLoadingBar = ({ isFetching }: { isFetching: boolean }) => {
         x: [-LOADER_WIDTH, MODAL_WIDTH],
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching]);
+  }, [controls, isFetching]);
 
   return (
     <AnimatePresence onExitComplete={() => controls.stop()}>
