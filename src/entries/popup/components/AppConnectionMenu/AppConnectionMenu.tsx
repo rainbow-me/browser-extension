@@ -146,11 +146,6 @@ export const AppConnectionMenu = ({
       switch (e.key) {
         case shortcuts.home.SWITCH_NETWORK.key:
           if (!pressingNetworkShortcut.current) {
-            console.log(
-              'apdpdppdpdppd shortcuts.home.SWITCH_NETWORK.key',
-              shortcuts.home.SWITCH_NETWORK.key,
-              menuOpen,
-            );
             pressingNetworkShortcut.current = true;
             trackShortcut({
               key: shortcuts.home.SWITCH_NETWORK.display,

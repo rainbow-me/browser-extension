@@ -71,13 +71,7 @@ export function useHomeShortcuts() {
     (e: KeyboardEvent) => {
       const { key } = e;
       const inputIsFocused = getInputIsFocused();
-      console.log('handleHomeShortcuts');
       if (inputIsFocused) return;
-      console.log(
-        'handleHomeShortcuts after',
-        shortcuts.home.OPEN_APP_CONNECTION_MENU.key,
-        key,
-      );
       switch (key) {
         case shortcuts.home.COPY_ADDRESS.key:
           trackShortcut({
