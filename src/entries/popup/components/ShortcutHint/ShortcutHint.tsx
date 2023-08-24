@@ -12,11 +12,9 @@ export const ShortcutHint = ({ hint }: { hint: string }) => {
       style={{ width: '18px', height: '18px' }}
     >
       <Inline alignHorizontal="center" alignVertical="center">
-        <Box background="blue">
-          <Text size="12pt" color="labelSecondary" weight="semibold">
-            {hint}
-          </Text>
-        </Box>
+        <Text size="12pt" color="labelSecondary" weight="semibold">
+          {hint}
+        </Text>
       </Inline>
     </Box>
   );

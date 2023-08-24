@@ -675,7 +675,7 @@
       "disconnect": "Disconnect"
     },
     "app_connection_menu": {
-      "all_connected_apps": "Connected Apps",
+      "connected_apps": "Connected Apps",
       "not_connected": "Not connected",
       "networks": "Networks",
       "connect": "Connect",

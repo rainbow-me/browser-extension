@@ -405,7 +405,7 @@ export const AppConnectionMenu = ({
                   }
                   centerComponent={
                     <Text size="14pt" weight="semibold">
-                      {i18n.t('menu.app_connection_menu.all_connected_apps')}
+                      {i18n.t('menu.app_connection_menu.connected_apps')}
                     </Text>
                   }
                   rightComponent={

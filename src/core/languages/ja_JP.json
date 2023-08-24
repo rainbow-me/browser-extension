@@ -595,7 +595,7 @@
       "disconnect": "切断する"
     },
     "app_connection_menu": {
-      "all_connected_apps": "すべての接続されたアプリ",
+      "connected_apps": "すべての接続されたアプリ",
       "not_connected": "接続されていません",
       "networks": "ネットワーク",
       "connect": "接続する",
