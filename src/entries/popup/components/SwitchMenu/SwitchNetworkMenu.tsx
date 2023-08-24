@@ -22,7 +22,6 @@ import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   ContextMenu,
   ContextMenuContent,
-  ContextMenuItemIndicator,
   ContextMenuLabel,
   ContextMenuRadioGroup,
   ContextMenuRadioItem,
@@ -32,7 +31,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItemIndicator,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -62,15 +60,13 @@ export const SwitchNetworkMenuSelector = ({
   const { chains } = useNetwork();
   const { trackShortcut } = useKeyboardAnalytics();
 
-  const { MenuRadioItem, MenuItemIndicator } = useMemo(() => {
+  const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'
       ? {
           MenuRadioItem: DropdownMenuRadioItem,
-          MenuItemIndicator: DropdownMenuItemIndicator,
         }
       : {
           MenuRadioItem: ContextMenuRadioItem,
-          MenuItemIndicator: ContextMenuItemIndicator,
         };
   }, [type]);
 
@@ -136,9 +132,13 @@ export const SwitchNetworkMenuSelector = ({
 
                 <Column width="content">
                   {selectedValue === String(chainId) ? (
-                    <MenuItemIndicator style={{ marginLeft: 'auto' }}>
-                      <Symbol weight="medium" symbol="checkmark" size={11} />
-                    </MenuItemIndicator>
+                    <Box style={{ height: '18px', width: '18px' }}>
+                      <Inline alignHorizontal="center" alignVertical="center">
+                        <Inset vertical="3px">
+                          <Symbol weight="bold" symbol="checkmark" size={12} />
+                        </Inset>
+                      </Inline>
+                    </Box>
                   ) : (
                     <ShortcutHint hint={`${i + 1}`} />
                   )}
