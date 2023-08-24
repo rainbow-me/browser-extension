@@ -3,7 +3,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box, Inline, Text } from '~/design-system';
-import { globalColors } from '~/design-system/styles/designTokens';
+import {
+  foregroundColors,
+  globalColors,
+} from '~/design-system/styles/designTokens';
 
 import { SearchItem } from './SearchItems';
 import { CommandKPage } from './pageConfig';
@@ -96,8 +99,8 @@ export function CommandKToolbar({
                   whileHover={{
                     borderColor:
                       currentTheme === 'dark'
-                        ? 'rgba(245, 248, 255, 0.08)'
-                        : 'rgba(9, 17, 31, 0.05)',
+                        ? foregroundColors.fillTertiary.dark
+                        : globalColors.grey20,
                   }}
                   whileTap={{ scale: 0.925 }}
                 >
@@ -169,8 +172,8 @@ export function CommandKToolbar({
               whileHover={{
                 borderColor:
                   currentTheme === 'dark'
-                    ? 'rgba(245, 248, 255, 0.08)'
-                    : 'rgba(9, 17, 31, 0.05)',
+                    ? foregroundColors.fillTertiary.dark
+                    : globalColors.grey20,
               }}
               whileTap={{ scale: 0.925 }}
             >
