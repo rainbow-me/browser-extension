@@ -99,7 +99,7 @@ jobs:
         if: steps.FFE2eParallel.outcome == 'failure'
         run: exit 1
   firefox-e2e-swap:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 16
     needs: [build]
     env:
@@ -129,7 +129,7 @@ jobs:
         if: steps.FFE2eSwap.outcome == 'failure'
         run: exit 1
   firefox-e2e-send:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 16
     needs: [build]
     env:
@@ -159,7 +159,7 @@ jobs:
         if: steps.FFE2eSend.outcome == 'failure'
         run: exit 1
   firefox-e2e-dappInteractions:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 16
     needs: [build]
     env:
