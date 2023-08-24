@@ -249,6 +249,7 @@ export const swap = async ({
     data: swap.data,
     from: swap.from as Address,
     to: swap.to as Address,
+    value: quote.value?.toString(),
     changes: [
       {
         direction: 'out',

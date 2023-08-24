@@ -105,7 +105,6 @@ function parseAssets({
   message: AssetPricesReceivedMessage;
 }) {
   const data = message?.payload?.prices || {};
-  console.log(data);
   const requestedAssets = Object.entries(assetAddresses).map(
     ([chainId, ...addresses]) => ({
       chainId: parseInt(chainId) as ChainId,
