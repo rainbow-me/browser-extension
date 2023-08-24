@@ -67,6 +67,8 @@ jobs:
         with:
           name: rainbowbx-${{ github.sha }}.zip
           path: build/
+      - name: Remove old screenshots
+        run: rm -rf screenshots/*
   # FIREFOX TESTS
   firefox-e2e-parallel:
     runs-on: ubuntu-latest
