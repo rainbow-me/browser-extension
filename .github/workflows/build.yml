@@ -99,8 +99,8 @@ jobs:
         if: steps.FFE2eParallel.outcome == 'failure'
         run: exit 1
   firefox-e2e-swap:
-    runs-on: beefy-runner-bx
-    timeout-minutes: 16
+    runs-on: swaps-runner-bx
+    timeout-minutes: 25
     needs: [build]
     env:
       DISPLAY: :0
@@ -113,7 +113,11 @@ jobs:
       - name: Run e2e Swap (Firefox)
         id: FFE2eSwap
         continue-on-error: true
-        run: |
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 25
+          max_attempts: 2
+          command: |
             export BROWSER=firefox
             export OS=linux
             export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
@@ -129,7 +133,7 @@ jobs:
         if: steps.FFE2eSwap.outcome == 'failure'
         run: exit 1
   firefox-e2e-send:
-    runs-on: beefy-runner-bx
+    runs-on: send-runner-bx
     timeout-minutes: 16
     needs: [build]
     env:
@@ -143,7 +147,11 @@ jobs:
       - name: Run e2e Send (Firefox)
         id: FFE2eSend
         continue-on-error: true
-        run: |
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 25
+          max_attempts: 2
+          command: |
             export BROWSER=firefox
             export OS=linux
             export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
@@ -159,7 +167,7 @@ jobs:
         if: steps.FFE2eSend.outcome == 'failure'
         run: exit 1
   firefox-e2e-dappInteractions:
-    runs-on: beefy-runner-bx
+    runs-on: dapp-interactions-runner-bx
     timeout-minutes: 16
     needs: [build]
     env:
@@ -173,7 +181,11 @@ jobs:
       - name: Run e2e Dapp Interactions (Firefox)
         id: FFE2eDappInteractions
         continue-on-error: true
-        run: |
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 25
+          max_attempts: 2
+          command: |
             export BROWSER=firefox
             export OS=linux
             export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
@@ -219,7 +231,7 @@ jobs:
         if: steps.ChromeE2EParallel.outcome == 'failure'
         run: exit 1
   chrome-e2e-swap:
-    runs-on: beefy-runner-bx
+    runs-on: swaps-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
@@ -252,7 +264,7 @@ jobs:
         if: steps.ChromeE2ESwaps.outcome == 'failure'
         run: exit 1
   chrome-e2e-send:
-    runs-on: beefy-runner-bx
+    runs-on: send-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
@@ -266,7 +278,11 @@ jobs:
       - name: Run e2e send (Chrome)
         id: ChromeE2ESend
         continue-on-error: true
-        run: |
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 25
+          max_attempts: 2
+          command: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
@@ -281,7 +297,7 @@ jobs:
         if: steps.ChromeE2ESend.outcome == 'failure'
         run: exit 1
   chrome-e2e-dappInteractions:
-    runs-on: beefy-runner-bx
+    runs-on: dapp-interactions-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
@@ -295,7 +311,11 @@ jobs:
       - name: Run e2e dappInteractions (Chrome)
         id: ChromeE2EDappInteractions
         continue-on-error: true
-        run: |
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 25
+          max_attempts: 2
+          command: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
