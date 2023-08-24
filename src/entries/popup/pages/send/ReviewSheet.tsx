@@ -10,7 +10,7 @@ import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.mp3';
 import { i18n } from '~/core/languages';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
@@ -243,7 +243,7 @@ export const ReviewSheet = ({
 }: {
   show: boolean;
   toAddress: Address;
-  asset?: ParsedAddressAsset | null;
+  asset?: ParsedUserAsset | null;
   primaryAmountDisplay: string;
   secondaryAmountDisplay: string;
   waitingForDevice: boolean;

@@ -19,7 +19,7 @@ import {
   nonceStore,
   pendingTransactionsStore,
 } from '../state';
-import { ParsedAddressAsset } from '../types/assets';
+import { ParsedUserAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -681,7 +681,7 @@ const capitalize = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
 export const getTokenBlockExplorer = ({
   address,
   chainId,
-}: Pick<ParsedAddressAsset, 'address' | 'mainnetAddress' | 'chainId'>) => {
+}: Pick<ParsedUserAsset, 'address' | 'mainnetAddress' | 'chainId'>) => {
   let _address = address;
   if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
   return {

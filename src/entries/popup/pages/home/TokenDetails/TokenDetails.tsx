@@ -7,7 +7,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { ParsedAddressAsset, UniqueId } from '~/core/types/assets';
+import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { handleAssetAccentColor } from '~/core/utils/colors';
@@ -105,7 +105,7 @@ function BalanceValue({
   );
 }
 
-function SwapSend({ token }: { token: ParsedAddressAsset }) {
+function SwapSend({ token }: { token: ParsedUserAsset }) {
   const navigate = useRainbowNavigate();
   const { setSelectedToken } = useSelectedTokenStore();
   const selectTokenAndNavigate = (to: To) => {
@@ -187,7 +187,7 @@ function NetworkBanner({
   );
 }
 
-function FavoriteButton({ token }: { token: ParsedAddressAsset }) {
+function FavoriteButton({ token }: { token: ParsedUserAsset }) {
   const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
   const isFavorite = favorites[token.chainId]?.includes(token.address);
   return (
@@ -204,13 +204,13 @@ function FavoriteButton({ token }: { token: ParsedAddressAsset }) {
 export const getCoingeckoUrl = ({
   address,
   mainnetAddress,
-}: Pick<ParsedAddressAsset, 'address' | 'mainnetAddress'>) => {
+}: Pick<ParsedUserAsset, 'address' | 'mainnetAddress'>) => {
   if ([mainnetAddress, address].includes(ETH_ADDRESS))
     return `https://www.coingecko.com/en/coins/ethereum`;
   return `https://www.coingecko.com/en/coins/${mainnetAddress || address}`;
 };
 
-function MoreOptions({ token }: { token: ParsedAddressAsset }) {
+function MoreOptions({ token }: { token: ParsedUserAsset }) {
   const explorer = getTokenBlockExplorer(token);
   const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
   const theme = useCurrentThemeStore();

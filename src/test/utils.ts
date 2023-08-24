@@ -1,6 +1,6 @@
 import { Address } from 'wagmi';
 
-import { ParsedAddressAsset, ParsedAsset, UniqueId } from '~/core/types/assets';
+import { ParsedAsset, ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 
 export const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
@@ -16,7 +16,7 @@ export const TEST_PK_3 =
 export const RAINBOW_WALLET_ADDRESS =
   '0x7a3d05c70581bd345fe117c06e45f9669205384f';
 
-export const ETH_MAINNET_ASSET: ParsedAddressAsset = {
+export const ETH_MAINNET_ASSET: ParsedUserAsset = {
   address: 'eth' as Address,
   balance: { amount: '10000', display: '10,000.00 ETH' },
   chainId: 1,
@@ -39,7 +39,7 @@ export const ETH_MAINNET_ASSET: ParsedAddressAsset = {
   symbol: 'ETH',
   uniqueId: 'eth_1',
 };
-export const DAI_MAINNET_ASSET: ParsedAddressAsset = {
+export const DAI_MAINNET_ASSET: ParsedUserAsset = {
   address: '0x6b175474e89094c44da98b954eedeac495271d0f' as Address,
   balance: { amount: '0', display: '0 DAI' },
   chainId: 1,
@@ -63,7 +63,7 @@ export const DAI_MAINNET_ASSET: ParsedAddressAsset = {
   symbol: 'DAI',
   uniqueId: '0x6b175474e89094c44da98b954eedeac495271d0f_1',
 };
-export const USDC_MAINNET_ASSET: ParsedAddressAsset = {
+export const USDC_MAINNET_ASSET: ParsedUserAsset = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
   balance: { amount: '0', display: '0 USDC' },
   chainId: 1,

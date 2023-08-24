@@ -10,10 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import {
-  ParsedAddressAsset,
-  ParsedAssetsDictByChain,
-} from '~/core/types/assets';
+import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 import { RainbowError, logger } from '~/logger';
@@ -81,7 +78,7 @@ export async function fetchUserAssetsByChain<
 export async function userAssetsByChainQueryFunction({
   queryKey: [{ address, chainId, currency, connectedToHardhat }],
 }: QueryFunctionArgs<typeof userAssetsByChainQueryKey>): Promise<
-  Record<string, ParsedAddressAsset>
+  Record<string, ParsedUserAsset>
 > {
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = (cache.find(

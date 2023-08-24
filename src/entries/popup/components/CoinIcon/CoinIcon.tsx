@@ -5,9 +5,9 @@ import { Address } from 'wagmi';
 import EthIcon from 'static/assets/ethIcon.png';
 import { ETH_ADDRESS } from '~/core/references';
 import {
-  ParsedAddressAsset,
   ParsedAsset,
   ParsedSearchAsset,
+  ParsedUserAsset,
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
@@ -39,7 +39,7 @@ export function CoinIcon({
 }: {
   asset?:
     | ParsedAsset
-    | ParsedAddressAsset
+    | ParsedUserAsset
     | ParsedSearchAsset
     | SearchAsset
     | null;

@@ -6,7 +6,7 @@ import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
 import { ETH_ADDRESS } from '~/core/references';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -76,7 +76,7 @@ function PriceChange({
   );
 }
 
-function TokenPrice({ token }: { token: ParsedAddressAsset }) {
+function TokenPrice({ token }: { token: ParsedUserAsset }) {
   return (
     <Box display="flex" justifyContent="space-between" gap="10px">
       <CoinIcon asset={token} size={40} badge={false} />
@@ -147,7 +147,7 @@ const usePriceChart = ({
 
 const percentDiff = (current = 1, last = 0) =>
   ((current - last) / current) * 100;
-export function PriceChart({ token }: { token: ParsedAddressAsset }) {
+export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
 
   const { data } = usePriceChart({
