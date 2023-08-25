@@ -15,26 +15,23 @@ export const ActivityIcon = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const firstChangedAsset = transaction.changes[0]?.asset;
-  const secondChangedAsset = transaction.changes[1]?.asset;
+  if (['wrap', 'undwrap', 'swap'].includes(transaction.type)) {
+    const inAsset = transaction.changes.find(
+      (a) => a?.direction === 'in',
+    )?.asset;
+    const outAsset = transaction.changes.find(
+      (a) => a?.direction === 'out',
+    )?.asset;
 
-  if (
-    ['wrap', 'undwrap', 'swap'].includes(transaction.type) &&
-    !!firstChangedAsset &&
-    !!secondChangedAsset
-  )
-    return <TwoCoinsIcon under={firstChangedAsset} over={secondChangedAsset} />;
+    if (!!inAsset && !!outAsset)
+      return <TwoCoinsIcon under={outAsset} over={inAsset} />;
+  }
 
-  if (firstChangedAsset?.type === 'nft')
-    return <NFTIcon asset={firstChangedAsset} size={36} badge />;
+  const asset = transaction.asset;
 
-  if (firstChangedAsset)
-    return (
-      <CoinIcon
-        asset={firstChangedAsset}
-        fallbackText={firstChangedAsset.symbol}
-      />
-    );
+  if (asset?.type === 'nft') return <NFTIcon asset={asset} size={36} badge />;
+
+  if (asset) return <CoinIcon asset={asset} fallbackText={asset.symbol} />;
 
   return (
     <Box position="relative">

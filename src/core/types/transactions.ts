@@ -50,19 +50,19 @@ type BaseTransaction = {
   direction?: TransactionDirection;
 
   value?: string; // ETH value
+  asset: ParsedAsset;
 
+  blockNumber: number;
+  minedAt: number;
+};
+
+type ConfirmedTransaction = BaseTransaction & { status: 'confirmed' };
+type PendingTransaction = Omit<BaseTransaction, 'blockNumber' | 'minedAt'> & {
+  status: 'pending';
   blockNumber?: number;
   minedAt?: number;
 };
-
-type ConfirmedTransaction = WithRequired<
-  BaseTransaction,
-  'minedAt' | 'blockNumber'
-> & { status: 'confirmed' };
-type PendingTransaction = BaseTransaction & { status: 'pending' };
 type FailedTransaction = BaseTransaction & { status: 'failed' };
-// type DroppedTransaction = BaseTransaction & { status: 'dropped' };
-// type CancelledTransaction = BaseTransaction & { status: 'cancelled' };
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
@@ -70,6 +70,7 @@ export type RainbowTransaction =
   | ConfirmedTransaction
   | PendingTransaction
   | FailedTransaction;
+
 // | DroppedTransaction
 // | CancelledTransaction;
 // | ({

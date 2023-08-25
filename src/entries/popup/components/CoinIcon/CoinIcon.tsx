@@ -258,10 +258,10 @@ export function TwoCoinsIcon({
         position="absolute"
         bottom="0"
         right="0"
-        marginRight="-3px"
-        marginBottom="-3px"
+        // marginRight="-3px"
+        // marginBottom="-3px"
         borderRadius="round"
-        borderWidth="3px"
+        // borderWidth="3px"
         borderColor="surfaceSecondary"
         style={{ zIndex: 2 }}
       >

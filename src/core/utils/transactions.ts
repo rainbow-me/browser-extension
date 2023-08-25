@@ -94,6 +94,7 @@ export async function parseTransaction({
 }: ParseTransactionArgs): Promise<RainbowTransaction> {
   const { status, hash, meta, nonce, protocol } = tx;
 
+  if (status === 'failed') console.log(tx);
   const changes = tx.changes.map(
     (change) =>
       change && {
@@ -130,6 +131,7 @@ export async function parseTransaction({
     protocol,
     type,
     direction,
+    asset,
     changes,
   };
 

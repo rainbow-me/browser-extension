@@ -86,7 +86,7 @@ export default function ({
   const transactionsAfterCutoff = useMemo(() => {
     if (!cutoff) return transactions;
     const cutoffIndex = transactions.findIndex(
-      (tx) => tx.status === 'confirmed' && tx.minedAt < cutoff,
+      (tx) => tx.status !== 'pending' && tx.minedAt < cutoff,
     );
     if (!cutoffIndex) return transactions;
     return [...transactions].slice(0, cutoffIndex);
