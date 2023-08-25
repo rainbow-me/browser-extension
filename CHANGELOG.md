@@ -19,13 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.1.70](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.70)
 
-### Changed
-
-- Cleaned up the codebase by removing some unused files and functions #850
-
 ### Fixed
 
-- Fix onboarding loop bug by keeping service worker alive #861
+- Resolved an issue that caused some users to experience a loop where creating or importing a wallet during Onboarding could bring them back to the initial Onboarding step #861
 
 ## [v1.1.67](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.67)
 
