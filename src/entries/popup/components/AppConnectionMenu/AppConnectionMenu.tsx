@@ -299,6 +299,7 @@ export const AppConnectionMenu = ({
                       value="switch-wallets"
                     >
                       <HomeMenuRow
+                        testId="app-connection-menu-swtch-wallets"
                         leftComponent={
                           <Box
                             height="fit"
@@ -334,6 +335,7 @@ export const AppConnectionMenu = ({
                       value="disconnect"
                     >
                       <HomeMenuRow
+                        testId="app-connection-menu-disconnect"
                         leftComponent={
                           <Box
                             height="fit"
@@ -376,6 +378,7 @@ export const AppConnectionMenu = ({
                 value="connected-apps"
               >
                 <HomeMenuRow
+                  testId="app-connection-menu-connected-apps"
                   leftComponent={
                     <Box height="fit" style={{ width: '18px', height: '18px' }}>
                       <Inline

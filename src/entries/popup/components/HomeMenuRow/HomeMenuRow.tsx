@@ -10,7 +10,7 @@ export const HomeMenuRow = ({
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;
-  rightComponent: ReactElement;
+  rightComponent: ReactElement | null;
   testId?: string;
 }) => {
   return (

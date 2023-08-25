@@ -8,6 +8,7 @@ import { Box, Column, Columns, Inline, Symbol, Text } from '~/design-system';
 import { ChevronSwitcher } from '../ChevronSwitcher/ChevronSwitcher';
 import { ContextMenuRadioItem } from '../ContextMenu/ContextMenu';
 import { DropdownMenuRadioItem } from '../DropdownMenu/DropdownMenu';
+import { HomeMenuRow } from '../HomeMenuRow/HomeMenuRow';
 import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 
 export const AppInteractionItem = ({
@@ -39,8 +40,9 @@ export const AppInteractionItem = ({
       value="switch-networks"
     >
       <Box width="full" testId="switch-networks-app-interation-item">
-        <Columns alignVertical="center" space="8px">
-          <Column width="content">
+        <HomeMenuRow
+          testId="app-interaction-switch-networks"
+          leftComponent={
             <Box height="fit" style={{ height: '18px', width: '18px' }}>
               <Inline
                 height="full"
@@ -56,55 +58,51 @@ export const AppInteractionItem = ({
                 />
               </Inline>
             </Box>
-          </Column>
-          <Columns alignVertical="center">
-            <Column>
-              <Text size="14pt" weight="semibold">
-                {i18n.t(
-                  `menu.app_connection_menu.${
-                    !appSession ? 'connect' : 'switch_network'
-                  }`,
-                )}
-              </Text>
-            </Column>
-            <Column width="content">
-              <Columns space="8px">
-                {showChevron && (
-                  <Column width="content">
-                    <Box
-                      as={motion.div}
-                      paddingTop="3px"
-                      style={{
-                        height: '18px',
-                        width: '18px',
-                      }}
-                      animate={{
-                        rotate: chevronDirection === 'right' ? 0 : 90,
-                      }}
-                      initial={{
-                        rotate: 0,
-                      }}
-                      exit={{
-                        rotate: chevronDirection === 'right' ? 0 : 90,
-                      }}
-                    >
-                      <Inline alignHorizontal="center" alignVertical="center">
-                        <Box height="fit" width="fit">
-                          <ChevronSwitcher color="labelTertiary" />
-                        </Box>
-                      </Inline>
-                    </Box>
-                  </Column>
-                )}
-                {shortcutHint ? (
-                  <Column width="content">
-                    <ShortcutHint hint={shortcutHint} />
-                  </Column>
-                ) : null}
-              </Columns>
-            </Column>
-          </Columns>
-        </Columns>
+          }
+          centerComponent={
+            <Columns alignVertical="center" space="8px">
+              <Column width="content">
+                <Text size="14pt" weight="semibold">
+                  {i18n.t(
+                    `menu.app_connection_menu.${
+                      !appSession ? 'connect' : 'switch_network'
+                    }`,
+                  )}
+                </Text>
+              </Column>
+              {showChevron && (
+                <Column width="content">
+                  <Box
+                    as={motion.div}
+                    paddingTop="3px"
+                    style={{
+                      height: '18px',
+                      width: '18px',
+                    }}
+                    animate={{
+                      rotate: chevronDirection === 'right' ? 0 : 90,
+                    }}
+                    initial={{
+                      rotate: 0,
+                    }}
+                    exit={{
+                      rotate: chevronDirection === 'right' ? 0 : 90,
+                    }}
+                  >
+                    <Inline alignHorizontal="center" alignVertical="center">
+                      <Box height="fit" width="fit">
+                        <ChevronSwitcher color="labelTertiary" />
+                      </Box>
+                    </Inline>
+                  </Box>
+                </Column>
+              )}
+            </Columns>
+          }
+          rightComponent={
+            shortcutHint ? <ShortcutHint hint={shortcutHint} /> : null
+          }
+        />
       </Box>
     </MenuRadioItem>
   );
