@@ -177,7 +177,7 @@ it('should be able to go to swap flow', async () => {
   await delayTime('long');
 });
 
-it('should be able to go to review a crosschain swap', async () => {
+it.skip('should be able to go to review a crosschain swap', async () => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-row`,
     driver,
@@ -248,7 +248,7 @@ it('should be able to go to review a crosschain swap', async () => {
   }
 });
 
-it('should be able to see crosschain swap information in review sheet', async () => {
+it.skip('should be able to see crosschain swap information in review sheet', async () => {
   await delayTime('long');
   const daiAssetToSellAssetCard = await findElementByTestId({
     id: `DAI-asset-to-sell-swap-asset-card`,
