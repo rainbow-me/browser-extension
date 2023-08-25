@@ -217,7 +217,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
       driver,
     });
 
-    await delayTime('very-long');
+    await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await driver.switchTo().window(dappHandler);
@@ -235,7 +235,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
 
   it('should be able to go back to extension, switch account and connect from nudge sheet', async () => {
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
-    await delayTime('very-long');
+    await delayTime('long');
     const appConnectionNudgeSheet = await findElementByTestId({
       id: 'app-connection-nudge-sheet',
       driver,
