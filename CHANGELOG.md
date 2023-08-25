@@ -69,29 +69,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-- Added the ability to enable the toggle to filter small balances #818
-- Added better logging for message signing errors #821
-- Added a new unsupported browser bottom sheet #828
-- Added a new activity History Page Loader #830
-- Added keyboard shortcut and navigation tracking #837
+- The "Auto-hide balances under $1" toggle in Settings is now available to automatically filter out spam and token dust #818
 
 ### Changed
 
-- Moved to consolidated transactions endpoint and added pagination to activity history #816 / #827
-- The header collapses now on scroll when list is small #831
-- Updated loading skeletons #833
-- Made test scripts for serial and unit tests more robust #838
+- Introduced a new alert when attempting to sign a message or transaction for a Ledger wallet when the device is disconnected #826
+- Added an Unsupported Browser explainer during Onboarding for unsupported browsers with known issues, including Kiwi Browser #828
+- When fetching additional transactions when scrolling the Activity list, a new loading indicator is available #830
+- Migrated to a more efficient transactions API and introduced pagination in the Activity list #816 #827
+- Improved empty state loading skeletons for the Tokens and Activity interfaces #833
+- The wallet header will now consistently collapse when scrolling Tokens on wallets with a limited number of assets #831
+- Keyboard shortcut and navigation analytics #837
 
 ### Fixed
 
-- Improved Trezor connectivity #819
-- Added optionals to prevent crash on bottom actions #822
-- Made TOS link clickable #823
-- Fixed a bug where connected apps network badge wouldn't display properly #825
-- Added a new alert when attempting to sign with Ledger device disconnected #826
-- Fixed a bug where header AccountName tabIndex wasn't allowing proper navigation #832
-- Fixed a bug that prevented correct navigation after setting a new password #834
-- Fixed an issue where users couldn't rename new seed wallet immediately after creation #836
+- Fixed a crash for Trezor devices if connectivity is established more than once #819
+- Fixed a crash on dApp interactions if address or chain metadata was unavailable #822
+- Resolved an issue that prevented clicking the Terms of Service link during Onboarding #823
+- Fixed a bug where the Connected Apps network badge wouldn't display properly #825
+- Fixed a bug where wallet name in the Header couldn't be selected with tab keyboard navigation #832
+- Resolved an issue where the user would be asked to create a password again after updating their password in Wallets & Keys in Settings and then using the back button #834
+- Fixed an issue where a user couldn't create a name for a wallet after creating a new Wallet Group #836
+- Improved logging for dApp message signing errors to diagnose problematic dApps #821
 
 ## [v1.1.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.48)
 
