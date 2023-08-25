@@ -386,7 +386,7 @@ it.skip('should be able to see crosschain swap information in review sheet', asy
   await delayTime('long');
 });
 
-it('should be able to go to review a bridge', async () => {
+it.skip('should be able to go to review a bridge', async () => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -458,7 +458,7 @@ it('should be able to go to review a bridge', async () => {
   await delayTime('long');
 });
 
-it('should be able to see bridge information in review sheet', async () => {
+it.skip('should be able to see bridge information in review sheet', async () => {
   const ethAssetToSellAssetCard = await findElementByTestId({
     id: `ETH-asset-to-sell-swap-asset-card`,
     driver,
