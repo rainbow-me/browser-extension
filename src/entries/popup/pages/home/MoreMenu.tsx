@@ -103,7 +103,11 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem highlightAccentColor value="qr-code">
                 <Inline alignVertical="center" space="8px">
-                  <Symbol size={12} symbol="qrcode" weight="semibold" />
+                  <Symbol
+                    size={12.75}
+                    symbol="person.fill.viewfinder"
+                    weight="semibold"
+                  />
                   <Text size="14pt" weight="semibold">
                     {i18n.t('menu.home_header_right.qr_code')}
                   </Text>
@@ -112,7 +116,11 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
               <DropdownMenuRadioItem highlightAccentColor value="lock">
                 <Box testId="lock">
                   <Inline alignVertical="center" space="8px">
-                    <Symbol size={12} symbol="lock.fill" weight="semibold" />
+                    <Symbol
+                      size={12}
+                      symbol="lock.open.fill"
+                      weight="semibold"
+                    />
                     <Text size="14pt" weight="semibold">
                       {i18n.t('menu.home_header_right.lock_rainbow')}
                     </Text>
