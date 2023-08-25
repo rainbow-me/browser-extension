@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## Added
 
-- Command K (⌘K) is now available to search and launch screens, toggle settings, search your wallets and tokens, and search ENS and public addresses to quickly watch a new wallet. ⌘⏎ or ⇧⏎ are available to expose additional actions for wallets and tokens. Press ESC to go back or close. #869
+- Command K (⌘K or Ctrl+K) is now available to search and launch screens, toggle settings, search your wallets and tokens, and search ENS and public addresses to quickly watch a new wallet. ⌘⏎ or ⇧⏎ are available to expose additional actions for wallets and tokens. Press ESC to go back or close. #869
 - dApp Account Switch functionality when switching wallets while interacting with a dApp #845 #863 #860
 - Language option in Settings and internationalization support for Latin American Spanish, Simplified Chinese, Japanese, French, Brazilian Portuguese, Hindi, Turkish, and Russian #817
 
