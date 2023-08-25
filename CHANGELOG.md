@@ -50,25 +50,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.1.67](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.67)
 
-### Added
-
-- Added e2e testing for future Firefox support #810
-- Moved to chain Ids for e2e tests #847
-- Added more robust testing around sends #840
-- Safety checks for Urls #857
-
 ### Changed
 
-- Created better failure handling in user assets #843
-- Firefox Style Tweaks #842
+- Improved token caching in scenarios where network requests fail #843
+- Improved styling in preparation for Firefox support #842
+- Removed Send and Swap buttons in Token Details for watched wallets #849
 
 ### Fixed
 
-- Fixed alerts memory leak #849
-- Gas ready validation on transactions #824
-- Fixed keychain stores #851
-- Fixed logic in rate limit checks #855
-- Fixed chart exception when data is empty #856
+- Resolved a crash that could be caused by an invalid dApp url #857
+- Fixed a memory leak in Alert components #849
+- Blocking interaction with Swap and Send confirmation buttons while gas is being fetched to prevent invalid transactions from being dispatched #824
+- Resolved an issue that could lead to an infinite loop when syncing keychain stores #851
+- Improved logic in dApp provider throttling and resolved a potential crash #855
+- Resolved a crash when pricing data is unavailable for Token Details charts #856
 
 ## [v1.1.59](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.59)
 
