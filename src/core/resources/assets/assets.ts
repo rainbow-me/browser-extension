@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'wagmi';
 
+import { requestMetadata } from '~/core/graphql';
 import { refractionAssetsMessages, refractionAssetsWs } from '~/core/network';
 import {
   QueryConfig,
@@ -15,6 +16,8 @@ import { ChainId } from '~/core/types/chains';
 import { AssetPricesReceivedMessage } from '~/core/types/refraction';
 import { parseAsset } from '~/core/utils/assets';
 import { chainNameFromChainId } from '~/core/utils/chains';
+
+import { createAssetQuery } from './helpers';
 
 const ASSETS_TIMEOUT_DURATION = 10000;
 const ASSETS_REFETCH_INTERVAL = 60000;
@@ -49,6 +52,10 @@ export async function assetsQueryFunction({
 }> {
   const assetCodes = assetAddresses;
   if (!assetCodes || !assetCodes.length) return {};
+  const assetsMeta = await requestMetadata(
+    createAssetQuery(assetAddresses.slice(0, 10), currency),
+  );
+  console.log('assetsMeta: ', assetsMeta);
   refractionAssetsWs.emit('get', {
     payload: {
       asset_codes: assetCodes,

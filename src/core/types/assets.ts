@@ -1,3 +1,4 @@
+import { ChainId as SwapChainId } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
 import { ChainId, ChainName } from '~/core/types/chains';
@@ -7,7 +8,7 @@ import { ETH_ADDRESS } from '../references';
 import { SearchAsset } from './search';
 
 export interface ParsedAsset {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
@@ -86,5 +87,58 @@ export interface ZerionAsset {
   price?: ZerionAssetPrice;
   network?: ChainName;
 }
+
+export type AddressOrEth = Address | 'eth';
+
+// protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
+export type ProtocolType =
+  | 'aave-v2'
+  | 'balancer'
+  | 'curve'
+  | 'compound'
+  | 'compound-v3'
+  | 'maker'
+  | 'one-inch'
+  | 'piedao-pool'
+  | 'yearn'
+  | 'yearn-v2'
+  | 'uniswap-v2'
+  | 'aave-v3'
+  | 'harvest'
+  | 'lido'
+  | 'uniswap-v3'
+  | 'convex'
+  | 'convex-frax'
+  | 'pancake-swap'
+  | 'balancer-v2'
+  | 'frax'
+  | 'gmx'
+  | 'aura'
+  | 'pickle'
+  | 'yearn-v3'
+  | 'venus'
+  | 'sushiswap';
+
+export type AssetMetadata = {
+  asset_code: AddressOrEth;
+  decimals: number;
+  icon_url: string;
+  name: string;
+  price: {
+    value: number;
+    changed_at: number;
+    relative_change_24h: number;
+  };
+  symbol: string;
+  colors?: { primary?: string; fallback?: string; shadow?: string };
+  network?: ChainName;
+  networks?: {
+    [chainId in SwapChainId]?: {
+      address: chainId extends SwapChainId.mainnet ? AddressOrEth : Address;
+      decimals: number;
+    };
+  };
+  type?: AssetType;
+};
 
 export type UniqueId = `${Address}_${ChainId}`;
