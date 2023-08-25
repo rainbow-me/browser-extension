@@ -17,6 +17,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.1.79](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.79)
+
+## Added
+
+- Command K (⌘K) is now available to search and launch screens, toggle settings, search your wallets and tokens, and search ENS and public addresses to quickly watch a new wallet. ⌘⏎ or ⇧⏎ are available to expose additional actions for wallets and tokens. Press ESC to go back or close. #869
+- dApp Account Switch functionality when switching wallets while interacting with a dApp #845 #863 #860
+- Language option in Settings and internationalization support for Latin American Spanish, Simplified Chinese, Japanese, French, Brazilian Portuguese, Hindi, Turkish, and Russian #817
+
+## Changed
+
+- State restoration for the Swap and Send flows so that user selections and input are sticky for a short period of time for when you need to close the pop-up or back-out to copy an address #852
+- Paginated scroll and loading indicators on the Tokens and Activity interfaces for heavy wallets #880
+- Analytics for anonymized metrics on the types of wallets our users interface with in Rainbow #805 
+
+### Fixed
+
+- Resolved regression in Right-click support for Tokens #865
+- Fixed an issue with dApps that support `window.ethereum.providers` when Rainbow is toggled as the default browser wallet #867
+- Resolved an issue that could cause wallet discovery to fail during Onboarding #868
+- Improved pricing chart fallbacks and hovering behavior in Token Details #865
+- Improved Hide Small Balances toggle reliability #870
+- Fixed a white screen flash that would sometimes appear when launching Rainbow #877
+- Resolved a crash in browsers without support for IndexedDB before attempting to initialize our Firebase configuration #864
+- Color shading consistency on the dApp Switch Network menu #761
+
 ## [v1.1.70](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.70)
 
 ### Fixed
