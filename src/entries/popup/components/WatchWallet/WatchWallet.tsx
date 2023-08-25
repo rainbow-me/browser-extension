@@ -196,7 +196,7 @@ const getError = (
   }
 };
 
-const useValidateInput = (input: string) => {
+export const useValidateInput = (input: string) => {
   const { data: addressFromEns, isFetching: isFetchingEns } = useEnsAddress({
     name: input,
     enabled: isENSAddressFormat(input),
@@ -211,7 +211,10 @@ const useValidateInput = (input: string) => {
   const { allWallets } = useWallets();
 
   const debouncedInput = useDebounce(input, 1000);
-  const shouldValidate = !isLoading && !!input && debouncedInput === input;
+  const shouldValidate =
+    !isLoading &&
+    !!input &&
+    (!!address || !!addressFromEns || debouncedInput === input);
   const error =
     shouldValidate && getError(inputAddress, input, allWallets, savedNames);
   const isValid = shouldValidate && !error;

@@ -17,7 +17,6 @@ import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/Animated
 
 import { AppConnectionWatcher } from './components/AppConnection/AppConnectionWatcher';
 import { CommandK } from './components/CommandK/CommandK';
-import { useCommandKStatus } from './components/CommandK/useCommandKStatus';
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalletSelectionEdit';
 import { ImportWalletViaPrivateKey } from './components/ImportWallet/ImportWalletViaPrivateKey';
@@ -796,7 +795,6 @@ export function Routes() {
 }
 
 const useGlobalShortcuts = () => {
-  const { isCommandKVisible } = useCommandKStatus();
   const { trackNavigation } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -836,6 +834,5 @@ const useGlobalShortcuts = () => {
         simulateTab(!e.shiftKey);
       }
     },
-    condition: () => !isCommandKVisible,
   });
 };
