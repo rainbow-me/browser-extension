@@ -203,10 +203,9 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
 
   const leftNavbarIcon = useMemo(() => {
     if (hideBackButton) return undefined;
-    if (navbarIcon === 'arrow' || state?.navbarIcon === 'arrow') {
-      return <Navbar.BackButton />;
-    } else if (navbarIcon === 'ex' || state?.navbarIcon === 'ex') {
-      return <Navbar.CloseButton />;
+    const icon = state?.navbarIcon || navbarIcon;
+    if (icon === 'arrow' || icon === 'ex') {
+      return icon === 'arrow' ? <Navbar.BackButton /> : <Navbar.CloseButton />;
     } else return undefined;
   }, [hideBackButton, navbarIcon, state?.navbarIcon]);
 

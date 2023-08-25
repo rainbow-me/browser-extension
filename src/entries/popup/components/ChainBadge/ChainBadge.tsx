@@ -15,10 +15,11 @@ const chainBadgeSize = {
   '18': 18,
   '16': 16,
   '14': 14,
+  '10': 10,
   '8': 8,
 };
 
-interface ChainIconProps {
+export interface ChainIconProps {
   chainId: ChainId;
   shadow?: boolean;
   size: keyof typeof chainBadgeSize;

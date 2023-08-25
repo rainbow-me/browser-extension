@@ -466,7 +466,7 @@ export function shortenAddress(address: string) {
   // if address is 42 in length and starts with 0x, then shorten it
   // otherwise return the base value. this is so it doesn't break incase an ens, etc is input
   return address.substring(0, 2) === '0x' && address.length === 42
-    ? `${address.substring(0, 6)}...${address.substring(38, 42)}`
+    ? `${address.substring(0, 6)}…${address.substring(38, 42)}`
     : address;
 }
 

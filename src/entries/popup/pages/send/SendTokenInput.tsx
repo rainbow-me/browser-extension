@@ -14,7 +14,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -43,7 +43,7 @@ const TokenSortMenu = ({
   sortMethod,
   setSortMethod,
 }: {
-  asset: ParsedAddressAsset | null;
+  asset: ParsedUserAsset | null;
   setSortDropdownOpen: Dispatch<SetStateAction<boolean>>;
   sortDropdownOpen: boolean;
   sortMethod: string;
@@ -124,8 +124,8 @@ interface InputRefAPI {
 }
 
 interface SendTokenInputProps {
-  asset: ParsedAddressAsset | null;
-  assets: ParsedAddressAsset[];
+  asset: ParsedUserAsset | null;
+  assets: ParsedUserAsset[];
   selectAssetAddressAndChain: (
     address: Address | typeof ETH_ADDRESS | '',
     chainId: ChainId,

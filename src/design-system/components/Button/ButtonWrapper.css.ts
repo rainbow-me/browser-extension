@@ -39,6 +39,7 @@ export const tintedStyles = styleVariants<
     background: globalColors.greenA10,
   },
   fillSecondary: {},
+  fillTertiary: {},
   red: {
     background: globalColors.redA10,
   },

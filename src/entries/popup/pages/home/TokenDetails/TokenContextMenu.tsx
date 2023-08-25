@@ -5,7 +5,7 @@ import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import { isNativeAsset } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -26,7 +26,7 @@ import { ROUTES } from '../../../urls';
 
 interface TokenContextMenuProps {
   children: ReactNode;
-  token: ParsedAddressAsset;
+  token: ParsedUserAsset;
 }
 
 export function TokenContextMenu({ children, token }: TokenContextMenuProps) {

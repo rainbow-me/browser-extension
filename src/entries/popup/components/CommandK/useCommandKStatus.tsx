@@ -1,11 +1,15 @@
 import create from 'zustand';
 
+import { promoTypes, quickPromoStore } from '~/core/state/quickPromo';
+
 type CommandKState = {
   isCommandKVisible: boolean;
   openCommandK: () => void;
   closeCommandK: (options?: { refocus: boolean }) => void;
   isExiting: boolean;
   setFinishedExiting: () => void;
+  isFetching: boolean;
+  setIsFetching: (fetching?: boolean) => void;
   lastActiveElement: HTMLElement | null;
   setLastActiveElement: (element: HTMLElement | null) => void;
 };
@@ -25,7 +29,13 @@ export const useCommandKStatus = create<CommandKState>((set, get) => {
     if (get().isExiting) {
       pendingOperation = openCommandK;
     } else {
-      set({ isCommandKVisible: true });
+      set(() => {
+        const store = quickPromoStore.getState();
+        if (!store.seenPromos[promoTypes.command_k]) {
+          store.setSeenPromo(promoTypes.command_k);
+        }
+        return { isCommandKVisible: true };
+      });
     }
   };
 
@@ -46,17 +56,23 @@ export const useCommandKStatus = create<CommandKState>((set, get) => {
     executePendingOperation();
   };
 
+  const setIsFetching = (fetching?: boolean) => {
+    set({ isFetching: fetching ?? true });
+  };
+
   const setLastActiveElement = (element: HTMLElement | null) => {
     set({ lastActiveElement: element });
   };
 
   return {
     isCommandKVisible: false,
-    isExiting: false,
-    lastActiveElement: null,
     openCommandK,
     closeCommandK,
+    isExiting: false,
     setFinishedExiting,
+    isFetching: false,
+    setIsFetching,
+    lastActiveElement: null,
     setLastActiveElement,
   };
 });

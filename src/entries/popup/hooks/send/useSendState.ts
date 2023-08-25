@@ -3,7 +3,7 @@ import { Address } from 'wagmi';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
@@ -19,14 +19,14 @@ export const useSendState = ({
   rawMaxAssetBalanceAmount,
 }: {
   assetAmount?: string;
-  asset: ParsedAddressAsset | null;
+  asset: ParsedUserAsset | null;
   rawMaxAssetBalanceAmount: string;
 }) => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
   const { saveSendAddress } = usePopupInstanceStore();
   const { currentCurrency } = useCurrentCurrencyStore();
 
-  const [, setAsset] = useState<ParsedAddressAsset>();
+  const [, setAsset] = useState<ParsedUserAsset>();
 
   const { currentAddress: fromAddress } = useCurrentAddressStore();
   const chainId = asset?.chainId ?? ChainId.mainnet;

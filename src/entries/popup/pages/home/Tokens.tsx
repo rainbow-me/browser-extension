@@ -29,6 +29,7 @@ import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
+import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
@@ -111,6 +112,19 @@ export function Tokens() {
       paddingTop="2px"
       marginTop="-16px"
     >
+      <QuickPromo
+        text={i18n.t('command_k.quick_promo.text')}
+        textBold={i18n.t('command_k.quick_promo.text_bold')}
+        style={{
+          paddingBottom: 12,
+          paddingLeft: 20,
+          paddingRight: 20,
+          paddingTop: 10,
+        }}
+        symbol="sparkle"
+        symbolColor="accent"
+        promoType="command_k"
+      />
       <Box
         width="full"
         style={{

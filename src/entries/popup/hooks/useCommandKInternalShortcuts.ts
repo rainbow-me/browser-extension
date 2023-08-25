@@ -1,31 +1,34 @@
 import React from 'react';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 
+import { SearchItem } from '../components/CommandK/SearchItems';
+import { CommandKPage, PAGES } from '../components/CommandK/pageConfig';
 import { useCommandKStatus } from '../components/CommandK/useCommandKStatus';
-import {
-  ShortcutCommand,
-  useCommands,
-} from '../components/CommandK/useCommands';
 
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 
 export function useCommandKInternalShortcuts(
-  handleExecuteCommand: (command: ShortcutCommand | null) => void,
+  commandList: SearchItem[],
+  currentPage: CommandKPage,
+  goBack: () => void,
+  handleExecuteCommand: (command: SearchItem | null) => void,
+  searchQuery: string,
+  setDidScrollOrNavigate: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
-  const { shortcutList } = useCommands();
-  const { isCommandKVisible } = useCommandKStatus();
+  const { closeCommandK, isCommandKVisible } = useCommandKStatus();
   const { featureFlags } = useFeatureFlagsStore();
 
   const keyToShortcutMap = React.useMemo(() => {
     const map = new Map();
-    shortcutList.forEach((shortcut) => {
-      if (shortcut.shortcut) {
-        map.set(shortcut.shortcut.key, shortcut);
+    commandList.forEach((command) => {
+      if (command.shortcut) {
+        map.set(command.shortcut.key, command);
       }
     });
     return map;
-  }, [shortcutList]);
+  }, [commandList]);
 
   const getCommandKShortcutsAreEnabled = React.useCallback(() => {
     return (
@@ -33,10 +36,34 @@ export function useCommandKInternalShortcuts(
     );
   }, [isCommandKVisible, featureFlags.command_k_internal_shortcuts_enabled]);
 
+  const goBackOrCloseCommandKHandler = React.useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
+        if (currentPage !== PAGES.HOME) {
+          goBack();
+          setDidScrollOrNavigate(true);
+        } else {
+          closeCommandK();
+        }
+      } else if (
+        (e.key === 'ArrowLeft' || e.key === 'Backspace') &&
+        e.repeat === false &&
+        searchQuery === '' &&
+        currentPage !== PAGES.HOME
+      ) {
+        e.preventDefault();
+        goBack();
+        setDidScrollOrNavigate(true);
+      }
+    },
+    [closeCommandK, currentPage, goBack, searchQuery, setDidScrollOrNavigate],
+  );
+
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       const command = keyToShortcutMap.get(e.key);
-      if (command) {
+      if (command && command.page === currentPage) {
         e.preventDefault();
         handleExecuteCommand(command);
       }
@@ -44,5 +71,11 @@ export function useCommandKInternalShortcuts(
     condition: getCommandKShortcutsAreEnabled,
     enableWithinCommandK: true,
     modifierKey: 'command',
+  });
+
+  useKeyboardShortcut({
+    handler: goBackOrCloseCommandKHandler,
+    condition: () => isCommandKVisible,
+    enableWithinCommandK: true,
   });
 }

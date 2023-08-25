@@ -32,7 +32,7 @@ export interface ParsedAsset {
   smallBalance?: boolean;
 }
 
-export interface ParsedAddressAsset extends ParsedAsset {
+export interface ParsedUserAsset extends ParsedAsset {
   balance: {
     amount: string;
     display: string;
@@ -51,9 +51,9 @@ export interface ParsedAddressAsset extends ParsedAsset {
 }
 
 export type SearchAssetWithPrice = SearchAsset & ParsedAsset;
-export type ParsedSearchAsset = SearchAsset & ParsedAddressAsset;
+export type ParsedSearchAsset = SearchAsset & ParsedUserAsset;
 
-export type ParsedAssetsDict = Record<UniqueId, ParsedAddressAsset>;
+export type ParsedAssetsDict = Record<UniqueId, ParsedUserAsset>;
 
 export type ParsedAssetsDictByChain = Record<ChainId, ParsedAssetsDict>;
 
