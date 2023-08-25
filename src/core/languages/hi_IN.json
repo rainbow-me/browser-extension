@@ -81,7 +81,7 @@
       "analytics_description": "तुक्तीय् डेटा और अनुप्रयोग उपयोग के विश्लेषण की अनुमति देकर रेनबो अपने उत्पादों और सेवाओं में सुधार करें. इकट्ठा किया गया डेटा आपके या आपके खाते से संबंधित नहीं होता है.",
       "hide_asset_balances": "संपत्ति मान को छिपाएँ",
       "hide_asset_balances_description": "इसके साथ जब रेनबो टोकन संतुलन को गुमा देगा |",
-      "auto_hide_balances_under_1": "%{amount}के नीचे  स्वतः छिपाएँ",
+      "auto_hide_balances_under_1": "₹1 से कम शेष राशि स्वचालित रूप से छिपाएं",
       "view_private_key": "निजी कुंजी देखें",
       "view_secret_recovery_phrase": "गुप्त पुनर्प्राप्ति मंत्र देखें",
       "auto_lock_timer": {
@@ -192,40 +192,117 @@
     "withdrew": "निकाला"
   },
   "command_k": {
+    "action_labels": {
+      "activate_command": "कमांड सक्रिय करें",
+      "open": "खोलें",
+      "open_in_new_tab": "नई टैब में खोलें",
+      "switch_to_wallet": "वॉलेट में स्विच करें",
+      "view": "देखें"
+    },
+    "commands": {
+      "names": {
+        "send": "भेजें",
+        "swap": "स्वैप करें",
+        "my_wallets": "मेरे वॉलेट",
+        "my_tokens": "मेरे टोकन",
+        "my_tokens_watched": "टोकन्स",
+        "copy_address": "पता कॉपी करें",
+        "view_nfts": "NFT देखें",
+        "add_wallet": "वॉलेट जोड़ें",
+        "lock": "रेनबोल लॉक करें",
+        "connected_apps": "कनेक्टेड एप्स",
+        "settings": "सेटिंग्स",
+        "my_qr_code": "मेरा क्यूआर कोड",
+        "my_qr_code_watched": "क्यूआर कोड",
+        "create_wallet": "वॉलेट बनाएं",
+        "import_wallet": "वॉलेट आयात करें",
+        "watch_wallet": "वॉलेट देखें",
+        "add_hardware_wallet": "हार्डवेयर वॉलेट जोड़ें",
+        "hide_balances": "छिपे हुए शेष राशि टॉगल करें",
+        "hide_balances_hidden": "शेष राशि दिखाएँ",
+        "hide_balances_revealed": "शेष राशि छिपाएँ",
+        "hide_small_balances": "छोटे शेष राशियों को टॉगल करें",
+        "hide_small_balances_hidden": "छोटे शेष राशियाँ दिखाएँ",
+        "hide_small_balances_revealed": "छोटे शेष राशियाँ छिपाएं",
+        "wallets_and_keys": "वॉलेट और कुंजी",
+        "view_full_screen": "फ़ुल स्क्रीन देखें",
+        "view_token": "टोकन देखें",
+        "send_token": "टोकन भेजें",
+        "swap_token": "टोकन बदलें",
+        "copy_token_address": "टोकन कॉन्ट्रैक्ट पता कॉपी करें",
+        "view_token_on_explorer": "एक्सप्लोरर पर देखें",
+        "add_as_watched_wallet": "इस वॉलेट को देखें",
+        "view_on_ens": "ENS पर देखें",
+        "switch_to_wallet": "इस वॉलेट में स्विच करें",
+        "copy_wallet_address": "पता कॉपी करें",
+        "view_wallet_on_etherscan": "Etherscan पर देखें"
+      },
+      "search_tags": {
+        "swap": "सेतु",
+        "my_wallets": "स्विच",
+        "my_tokens_watched": "मेरा",
+        "view_nfts": "गैलरी, प्रोफ़ाइल",
+        "settings": "प्राथमिकताएं",
+        "my_qr_code_watched": "मेरा",
+        "create_wallet": "जोड़ें, नया",
+        "import_wallet": "जोड़ें, गुप्त बचाव, बीज शब्द, निजी कुंजी",
+        "watch_wallet": "जोड़ें",
+        "add_hardware_wallet": "लेजर, त्रेजोर, कनेक्ट",
+        "hide_balances": "टॉगल करें",
+        "hide_small_balances": "टॉगल करें",
+        "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं"
+      }
+    },
+    "command_rows": {
+      "no_value": "कोई मूल्य नहीं"
+    },
     "hide_balances_toast": {
       "description_hidden": "आपके शेष राशि छिपी हुई है",
       "description_revealed": "आपके शेष देख सकते हैं",
       "title_hidden": "शेष छिपा हुआ है",
       "title_revealed": "शेष खुला हुआ है"
     },
-    "no_results": "कोई परिणाम नहीं मिला",
-    "section_titles": {
-      "shortcuts": "शॉर्टकट्स"
+    "hide_small_balances_toast": {
+      "description_hidden": "$1 के नीचे शेष",
+      "description_revealed": "सभी टोकन दिखाएं",
+      "title_hidden": "सामान्य संतुलन छिपा हुआ",
+      "title_revealed": "छोटे संतुलन दिखा रहे हैं"
     },
-    "search_placeholder": "खोजें या कमांड दर्ज करें…",
-    "shortcuts": {
-      "names": {
-        "send": "भेजें",
-        "swap": "स्वॉप करें",
-        "copy_address": "पता कॉपी करें",
-        "view_nfts": "NFT देखें",
-        "switch_wallets": "वॉलेट बदलें",
-        "settings": "सेटिंग्स",
-        "add_wallet": "वॉलेट जोड़ें",
-        "watch_wallet": "वॉलेट देखें",
-        "hide_balances": "छिपे हुए शेष टॉगल करें",
-        "wallets_and_keys": "वॉलेट और कुंजी",
-        "view_full_screen": "पूर्ण स्क्रीन देखें"
+    "no_results": "कोई परिणाम नहीं मिला",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "वॉलेट जोड़ने के तरीके खोजें…",
+        "section_title": "वॉलेट जोड़ें"
       },
-      "search_tags": {
-        "swap": "ब्रिज",
-        "view_nfts": "गैलरी, प्रोफ़ाइल",
-        "settings": "प्राथमिकताएँ",
-        "add_wallet": "बनाएँ, आयात करें, हार्डवेयर वॉलेट",
-        "hide_balances_hidden": "दिखाएँ, छिपाएँ",
-        "hide_balances_revealed": "छिपाएं",
-        "wallets_and_keys": "वॉलेट और कीज"
+      "home": {
+        "search_placeholder": "खोजें या कमांड दर्ज करें…",
+        "section_title": "सुझाव",
+        "section_title_results": "परिणाम"
+      },
+      "my_tokens": {
+        "empty_label": "कोई टोकन नहीं मिला",
+        "search_placeholder": "टोकन खोजें…",
+        "section_title": "मेरे टोकन"
+      },
+      "my_wallets": {
+        "search_placeholder": "स्विच करने के लिए वॉलेट का चयन करें…",
+        "section_title": "मेरे वॉलेट"
+      },
+      "token_detail": {
+        "search_placeholder": "खोज टोकन कार्रवाई…",
+        "section_title": "कार्रवाइयाँ"
+      },
+      "wallet_detail": {
+        "search_placeholder": "खोज वॉलेट कार्रवाइयाँ…",
+        "section_title": "कार्रवाइयाँ"
       }
+    },
+    "quick_promo": {
+      "text": "मेनु खोलने के लिए ⌘K दबाएँ",
+      "text_bold": "टिप:"
+    },
+    "toolbar": {
+      "actions_hint": "कार्रवाइयाँ"
     }
   },
   "connected_apps": {
@@ -610,6 +687,36 @@
       "lock_rainbow": "रेनबो लॉक करें"
     }
   },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "कनेक्ट करें",
+      "connect_to": "%{appName}से कनेक्ट करें?",
+      "app_connected": "%{appName} कनेक्ट किया गया"
+    },
+    "sheet": {
+      "connect": "कनेक्ट करें",
+      "connect_different_wallet": "एक अलग वॉलेट कनेक्ट करें",
+      "dont_show_again": "फिर से दिखाएँ नहीं",
+      "allow_to": "%{appName} को अपने वॉलेट पता, शेष राशि, गतिविधि देखने और लेन-देन के लिए मंजूरी के लिए आपको अनुमति दें।",
+      "connect_to": "%{appName}से कनेक्ट करें?"
+    },
+    "wallet_item": {
+      "disconnect": "डिस्कनेक्ट करें",
+      "switch_connection": "कनेक्शन बदलें",
+      "connect": "कनेक्ट करें"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "कनेक्ट करें",
+      "disconnect": "डिस्कनेक्ट करें",
+      "open_app": "%{appName}ओपन करें"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "वॉलेट बदलें",
+      "other_wallets": "अन्य वॉलेट",
+      "cancel": "रद्द करें",
+      "connected": "कनेक्टेड"
+    }
+  },
   "approve_request": {
     "wallet_info_title": "आपके वॉलेट के साथ कनेक्ट करना चाहता है",
     "wallet_info_description": "%{appName} को आपके वॉलेट का पता, शेष राशि, गतिविधि देखने और लेनदेनों की मंज़ूरी अनुरोध करने के लिए अनुमति दें।",
@@ -737,7 +844,8 @@
     "yesterday": "कल",
     "this_month": "इस महीने",
     "empty_header": "अभी तक कोई गतिविधि नहीं",
-    "empty_description": "अपने वॉलेट का उपयोग शुरू करने के बाद, आप यहाँ अपने लेन-देन देखेंगे।"
+    "empty_description": "अपने वॉलेट का उपयोग शुरू करने के बाद, आप यहाँ अपने लेन-देन देखेंगे।",
+    "loading_more": "और लोड हो रहा है..."
   },
   "tokens_tab": {
     "coinbase_title": "कॉइनबेस से जमा करें",
@@ -777,6 +885,7 @@
     "year": "1साल",
     "approvals": "टोकन  अनुमोदन",
     "this_token_is_on_network": "यह %{symbol} इस %{chainName} नेटवर्क पर है",
+    "view_on": "%{explorer}पर देखें",
     "more_options": {
       "copy_address": "पता कॉपी करें",
       "hide": "टोकन छिपाएँ",

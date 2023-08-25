@@ -81,7 +81,7 @@
       "analytics_description": "Ajude a Rainbow a melhorar seus produtos e serviços permitindo análises de dados de uso. Os dados coletados não estão associados a você ou à sua conta.",
       "hide_asset_balances": "Ocultar saldos de ativos",
       "hide_asset_balances_description": "Quando ativado, a Rainbow ocultará os saldos de tokens em todo o aplicativo.",
-      "auto_hide_balances_under_1": "Ocultar automaticamente saldos abaixo de %{amount}",
+      "auto_hide_balances_under_1": "Ocultar automaticamente saldos abaixo de $1",
       "view_private_key": "Ver Chave Privada",
       "view_secret_recovery_phrase": "Ver Frase Secreta de Recuperação",
       "auto_lock_timer": {
@@ -192,40 +192,117 @@
     "withdrew": "Sacado"
   },
   "command_k": {
+    "action_labels": {
+      "activate_command": "Ativar Comando",
+      "open": "Abrir",
+      "open_in_new_tab": "Abrir em Nova Aba",
+      "switch_to_wallet": "Alternar para Carteira",
+      "view": "Visualizar"
+    },
+    "commands": {
+      "names": {
+        "send": "Enviar",
+        "swap": "Trocar",
+        "my_wallets": "Minhas Carteiras",
+        "my_tokens": "Meus Tokens",
+        "my_tokens_watched": "Tokens",
+        "copy_address": "Copiar Endereço",
+        "view_nfts": "Visualizar NFTs",
+        "add_wallet": "Adicionar uma Carteira",
+        "lock": "Bloquear Rainbow",
+        "connected_apps": "Aplicativos Conectados",
+        "settings": "Configurações",
+        "my_qr_code": "Meu Código QR",
+        "my_qr_code_watched": "Código QR",
+        "create_wallet": "Criar uma Carteira",
+        "import_wallet": "Importar uma Carteira",
+        "watch_wallet": "Observar uma Carteira",
+        "add_hardware_wallet": "Adicionar uma Carteira de Hardware",
+        "hide_balances": "Alternar para Saldo Oculto",
+        "hide_balances_hidden": "Exibir Saldos",
+        "hide_balances_revealed": "Ocultar Saldos",
+        "hide_small_balances": "Alternar para Saldo Pequeno",
+        "hide_small_balances_hidden": "Exibir Saldos Pequenos",
+        "hide_small_balances_revealed": "Ocultar Saldos Pequenos",
+        "wallets_and_keys": "Carteiras e Chaves",
+        "view_full_screen": "Ver Tela Cheia",
+        "view_token": "Ver Token",
+        "send_token": "Enviar Token",
+        "swap_token": "Trocar Token",
+        "copy_token_address": "Copiar Endereço do Contrato do Token",
+        "view_token_on_explorer": "Ver no Explorer",
+        "add_as_watched_wallet": "Assistir esta Carteira",
+        "view_on_ens": "Ver no ENS",
+        "switch_to_wallet": "Trocar para esta Carteira",
+        "copy_wallet_address": "Copiar Endereço",
+        "view_wallet_on_etherscan": "Ver no Etherscan"
+      },
+      "search_tags": {
+        "swap": "ponte",
+        "my_wallets": "alternar",
+        "my_tokens_watched": "meus",
+        "view_nfts": "galeria, perfil",
+        "settings": "preferências",
+        "my_qr_code_watched": "meus",
+        "create_wallet": "adicionar, novo",
+        "import_wallet": "adicionar, recuperação secreta, frase de segurança, chave privada",
+        "watch_wallet": "adicionar",
+        "add_hardware_wallet": "ledger, trezor, conectar",
+        "hide_balances": "alternar",
+        "hide_small_balances": "alternar",
+        "wallets_and_keys": "carteiras e chaves, configurações, preferências"
+      }
+    },
+    "command_rows": {
+      "no_value": "Sem Valor"
+    },
     "hide_balances_toast": {
       "description_hidden": "Seus saldos estão ocultos",
       "description_revealed": "Seus saldos são visíveis",
       "title_hidden": "Saldos ocultos",
       "title_revealed": "Saldos revelados"
     },
-    "no_results": "Nenhum resultado",
-    "section_titles": {
-      "shortcuts": "Atalhos"
+    "hide_small_balances_toast": {
+      "description_hidden": "Saldos abaixo de $1",
+      "description_revealed": "Todos os tokens visíveis",
+      "title_hidden": "Saldo Pequeno Oculto",
+      "title_revealed": "Mostrando Saldos Pequenos"
     },
-    "search_placeholder": "Pesquisar ou inserir comando…",
-    "shortcuts": {
-      "names": {
-        "send": "Enviar",
-        "swap": "Trocar",
-        "copy_address": "Copiar endereço",
-        "view_nfts": "Ver NFTs",
-        "switch_wallets": "Alternar Carteiras",
-        "settings": "Configurações",
-        "add_wallet": "Adicionar uma Carteira",
-        "watch_wallet": "Assistir uma Carteira",
-        "hide_balances": "Alternar Saldos Ocultos",
-        "wallets_and_keys": "Carteiras e Chaves",
-        "view_full_screen": "Ver Tela Cheia"
+    "no_results": "Nenhum resultado",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "Buscar formas de adicionar uma carteira…",
+        "section_title": "Adicionar uma Carteira"
       },
-      "search_tags": {
-        "swap": "ponte",
-        "view_nfts": "galeria, perfil",
-        "settings": "preferências",
-        "add_wallet": "criar, importar, carteira de hardware",
-        "hide_balances_hidden": "mostrar, ocultar",
-        "hide_balances_revealed": "ocultar",
-        "wallets_and_keys": "carteiras e chaves"
+      "home": {
+        "search_placeholder": "Pesquisar ou digitar comando…",
+        "section_title": "Sugestões",
+        "section_title_results": "Resultados"
+      },
+      "my_tokens": {
+        "empty_label": "Nenhum token encontrado",
+        "search_placeholder": "Buscar tokens…",
+        "section_title": "Meus Tokens"
+      },
+      "my_wallets": {
+        "search_placeholder": "Selecione uma carteira para alternar…",
+        "section_title": "Minhas Carteiras"
+      },
+      "token_detail": {
+        "search_placeholder": "Pesquisar ações de token…",
+        "section_title": "Ações"
+      },
+      "wallet_detail": {
+        "search_placeholder": "Pesquisar ações da carteira…",
+        "section_title": "Ações"
       }
+    },
+    "quick_promo": {
+      "text": "Pressione ⌘K para abrir o menu de comandos",
+      "text_bold": "Dica:"
+    },
+    "toolbar": {
+      "actions_hint": "Ações"
     }
   },
   "connected_apps": {
@@ -610,6 +687,36 @@
       "lock_rainbow": "Bloquear Rainbow"
     }
   },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "Conectar",
+      "connect_to": "Conectar a %{appName}?",
+      "app_connected": "%{appName} conectado"
+    },
+    "sheet": {
+      "connect": "Conectar",
+      "connect_different_wallet": "Conectar carteira diferente",
+      "dont_show_again": "Não mostrar novamente",
+      "allow_to": "Permitir que %{appName} visualize seu endereço da carteira, saldo, atividade e solicite aprovação para transações.",
+      "connect_to": "Conectar a %{appName}?"
+    },
+    "wallet_item": {
+      "disconnect": "Desconectar",
+      "switch_connection": "Trocar conexão",
+      "connect": "Conectar"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "Conectar",
+      "disconnect": "Desconectar",
+      "open_app": "Abrir %{appName}"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "Trocar Carteiras",
+      "other_wallets": "Outras Carteiras",
+      "cancel": "Cancelar",
+      "connected": "Conectado"
+    }
+  },
   "approve_request": {
     "wallet_info_title": "deseja conectar-se à sua carteira",
     "wallet_info_description": "Permitir que %{appName} visualize o endereço, o saldo, a atividade da sua carteira e solicite aprovação para transações.",
@@ -737,7 +844,8 @@
     "yesterday": "Ontem",
     "this_month": "Este Mês",
     "empty_header": "Nenhuma atividade ainda",
-    "empty_description": "Ao começar a usar sua carteira, você verá suas transações aqui."
+    "empty_description": "Ao começar a usar sua carteira, você verá suas transações aqui.",
+    "loading_more": "Carregando mais..."
   },
   "tokens_tab": {
     "coinbase_title": "Depósito da Coinbase",
@@ -777,6 +885,7 @@
     "year": "1A",
     "approvals": "Aprovações de Tokens",
     "this_token_is_on_network": "Esta %{symbol} está na rede %{chainName}",
+    "view_on": "Ver no %{explorer}",
     "more_options": {
       "copy_address": "Copiar Endereço",
       "hide": "Ocultar Token",

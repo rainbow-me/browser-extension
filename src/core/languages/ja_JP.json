@@ -81,7 +81,7 @@
       "analytics_description": "使用データの解析により、Rainbowの製品とサービスを改善するのに役立てます。収集されたデータは、あなたやアカウントと関連付けられません。",
       "hide_asset_balances": "資産の残高を非表示にする",
       "hide_asset_balances_description": "この機能をオンにすると、Rainbowはアプリ全体でトークンの残高を曖昧化します。",
-      "auto_hide_balances_under_1": "%{amount}以下の残高を自動で非表示にする",
+      "auto_hide_balances_under_1": "$1未満の残高を自動的に非表示にする",
       "view_private_key": "秘密鍵を表示する",
       "view_secret_recovery_phrase": "秘密の回復フレーズを表示する",
       "auto_lock_timer": {
@@ -192,40 +192,117 @@
     "withdrew": "引き出しました"
   },
   "command_k": {
+    "action_labels": {
+      "activate_command": "コマンドをアクティベートする",
+      "open": "開く",
+      "open_in_new_tab": "新しいタブで開く",
+      "switch_to_wallet": "ウォレットに切り替える",
+      "view": "表示"
+    },
+    "commands": {
+      "names": {
+        "send": "送信する",
+        "swap": "スワップ",
+        "my_wallets": "マイウォレット",
+        "my_tokens": "マイトークン",
+        "my_tokens_watched": "トークン",
+        "copy_address": "アドレスをコピー",
+        "view_nfts": "NFTを表示",
+        "add_wallet": "ウォレットを追加",
+        "lock": "Rainbowをロックする",
+        "connected_apps": "接続されたアプリ",
+        "settings": "設定",
+        "my_qr_code": "私のQRコード",
+        "my_qr_code_watched": "QRコード",
+        "create_wallet": "ウォレットを作成",
+        "import_wallet": "ウォレットのインポート",
+        "watch_wallet": "ウォレットのウォッチ",
+        "add_hardware_wallet": "ハードウェアウォレットの追加",
+        "hide_balances": "非表示残高の切り替え",
+        "hide_balances_hidden": "残高の表示",
+        "hide_balances_revealed": "残高を非表示",
+        "hide_small_balances": "小額残高の切り替え",
+        "hide_small_balances_hidden": "小額残高の表示",
+        "hide_small_balances_revealed": "小額残高を非表示",
+        "wallets_and_keys": "ウォレットとキー",
+        "view_full_screen": "フルスクリーン表示",
+        "view_token": "トークンを表示",
+        "send_token": "トークンを送信",
+        "swap_token": "トークンを交換",
+        "copy_token_address": "トークン契約アドレスをコピー",
+        "view_token_on_explorer": "エクスプローラーで表示",
+        "add_as_watched_wallet": "このウォレットを監視",
+        "view_on_ens": "ENSで表示",
+        "switch_to_wallet": "このウォレットに切り替え",
+        "copy_wallet_address": "アドレスをコピー",
+        "view_wallet_on_etherscan": "Etherscanで表示"
+      },
+      "search_tags": {
+        "swap": "ブリッジ",
+        "my_wallets": "切り替え",
+        "my_tokens_watched": "マイ",
+        "view_nfts": "ギャラリー、プロフィール",
+        "settings": "設定",
+        "my_qr_code_watched": "マイ",
+        "create_wallet": "追加、新規",
+        "import_wallet": "追加、シークレットリカバリ、シードフレーズ、プライベートキー",
+        "watch_wallet": "追加",
+        "add_hardware_wallet": "レジャー、トレゾール、接続",
+        "hide_balances": "切り替える",
+        "hide_small_balances": "切り替える",
+        "wallets_and_keys": "ウォレットとキー、設定、設定"
+      }
+    },
+    "command_rows": {
+      "no_value": "価値なし"
+    },
     "hide_balances_toast": {
       "description_hidden": "あなたの残高は見えません",
       "description_revealed": "残高が表示されています",
       "title_hidden": "残高が非表示になりました",
       "title_revealed": "残高が表示されました"
     },
-    "no_results": "結果がありません",
-    "section_titles": {
-      "shortcuts": "ショートカット"
+    "hide_small_balances_toast": {
+      "description_hidden": "$1未満の残高",
+      "description_revealed": "すべてのトークンが表示されます",
+      "title_hidden": "小額残高非表示",
+      "title_revealed": "小額残高表示中"
     },
-    "search_placeholder": "検索またはコマンドを入力…",
-    "shortcuts": {
-      "names": {
-        "send": "送信",
-        "swap": "スワップ",
-        "copy_address": "アドレスをコピー",
-        "view_nfts": "NFTを表示",
-        "switch_wallets": "ウォレットを切り替え",
-        "settings": "設定",
-        "add_wallet": "ウォレットを追加",
-        "watch_wallet": "ウォレットを監視",
-        "hide_balances": "非表示残高を切り替え",
-        "wallets_and_keys": "ウォレットとキー",
-        "view_full_screen": "フルスクリーン表示"
+    "no_results": "結果がありません",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "ウォレットの追加方法を検索…",
+        "section_title": "ウォレットを追加"
       },
-      "search_tags": {
-        "swap": "ブリッジ",
-        "view_nfts": "ギャラリー、プロフィール",
-        "settings": "設定",
-        "add_wallet": "作成、インポート、ハードウェアウォレット",
-        "hide_balances_hidden": "表示、非表示",
-        "hide_balances_revealed": "非表示",
-        "wallets_and_keys": "ウォレットとキー"
+      "home": {
+        "search_placeholder": "検索またはコマンドの入力…",
+        "section_title": "提案",
+        "section_title_results": "結果"
+      },
+      "my_tokens": {
+        "empty_label": "トークンが見つかりません",
+        "search_placeholder": "トークンを検索…",
+        "section_title": "マイトークン"
+      },
+      "my_wallets": {
+        "search_placeholder": "切り替えるウォレットを選択…",
+        "section_title": "マイウォレット"
+      },
+      "token_detail": {
+        "search_placeholder": "トークンアクションを検索する…",
+        "section_title": "アクション"
+      },
+      "wallet_detail": {
+        "search_placeholder": "ウォレットアクションを検索する…",
+        "section_title": "アクション"
       }
+    },
+    "quick_promo": {
+      "text": "⌘Kを押してコマンドメニューを開く",
+      "text_bold": "ヒント："
+    },
+    "toolbar": {
+      "actions_hint": "アクション"
     }
   },
   "connected_apps": {
@@ -610,6 +687,36 @@
       "lock_rainbow": "Rainbowをロックする"
     }
   },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "接続",
+      "connect_to": "%{appName}に接続しますか？",
+      "app_connected": "%{appName} が接続されました"
+    },
+    "sheet": {
+      "connect": "接続",
+      "connect_different_wallet": "異なるウォレットに接続する",
+      "dont_show_again": "これをもう表示しない",
+      "allow_to": "ウォレットのアドレス、残高、取引履歴を閲覧し、トランザクションの承認をリクエストするために %{appName} に許可します。",
+      "connect_to": "%{appName}に接続しますか？"
+    },
+    "wallet_item": {
+      "disconnect": "切断",
+      "switch_connection": "接続を切り替える",
+      "connect": "接続"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "接続",
+      "disconnect": "切断",
+      "open_app": "%{appName}を開く"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "ウォレットの切り替え",
+      "other_wallets": "その他のウォレット",
+      "cancel": "キャンセル",
+      "connected": "接続されています"
+    }
+  },
   "approve_request": {
     "wallet_info_title": "あなたのウォレットに接続を許可します",
     "wallet_info_description": "ウォレットのアドレス、残高、取引履歴を表示し、トランザクションの承認をリクエストするには、 %{appName} を許可します",
@@ -737,7 +844,8 @@
     "yesterday": "昨日",
     "this_month": "今月",
     "empty_header": "まだアクティビティはありません",
-    "empty_description": "ウォレットを使い始めると、ここにトランザクションが表示されます。"
+    "empty_description": "ウォレットを使い始めると、ここにトランザクションが表示されます。",
+    "loading_more": "読み込み中..."
   },
   "tokens_tab": {
     "coinbase_title": "Coinbaseから入金",
@@ -777,6 +885,7 @@
     "year": "1年",
     "approvals": "トークンの承認",
     "this_token_is_on_network": "この %{symbol} は %{chainName} ネットワーク上にあります",
+    "view_on": "表示 %{explorer}で",
     "more_options": {
       "copy_address": "アドレスをコピー",
       "hide": "トークンを非表示にする",

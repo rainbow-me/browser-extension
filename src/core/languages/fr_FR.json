@@ -81,7 +81,7 @@
       "analytics_description": "Aidez Rainbow à améliorer ses produits et services en autorisant l'analyse des données d'utilisation. Les données collectées ne sont pas associées à vous ou à votre compte.",
       "hide_asset_balances": "Masquer les soldes des actifs",
       "hide_asset_balances_description": "Lorsque cette option est activée, Rainbow masque les soldes des jetons dans l'application.",
-      "auto_hide_balances_under_1": "Masquer automatiquement les soldes inférieurs à %{amount}",
+      "auto_hide_balances_under_1": "Masquer les soldes inférieurs à 1 $",
       "view_private_key": "Afficher la clé privée",
       "view_secret_recovery_phrase": "Afficher la phrase de récupération secrète",
       "auto_lock_timer": {
@@ -192,40 +192,117 @@
     "withdrew": "Retiré"
   },
   "command_k": {
+    "action_labels": {
+      "activate_command": "Activer la commande",
+      "open": "Ouvrir",
+      "open_in_new_tab": "Ouvrir dans un nouvel onglet",
+      "switch_to_wallet": "Changer de portefeuille",
+      "view": "Voir"
+    },
+    "commands": {
+      "names": {
+        "send": "Envoyer",
+        "swap": "Échanger",
+        "my_wallets": "Mes portefeuilles",
+        "my_tokens": "Mes jetons",
+        "my_tokens_watched": "Jetons",
+        "copy_address": "Copier l'adresse",
+        "view_nfts": "Voir les NFT",
+        "add_wallet": "Ajouter un portefeuille",
+        "lock": "Verrouiller Rainbow",
+        "connected_apps": "Applications connectées",
+        "settings": "Paramètres",
+        "my_qr_code": "Mon code QR",
+        "my_qr_code_watched": "Code QR",
+        "create_wallet": "Créer un portefeuille",
+        "import_wallet": "Importer un portefeuille",
+        "watch_wallet": "Suivre un portefeuille",
+        "add_hardware_wallet": "Ajouter un portefeuille matériel",
+        "hide_balances": "Basculer les soldes masqués",
+        "hide_balances_hidden": "Afficher les soldes",
+        "hide_balances_revealed": "Masquer les soldes",
+        "hide_small_balances": "Basculer les petits soldes",
+        "hide_small_balances_hidden": "Afficher les petits soldes",
+        "hide_small_balances_revealed": "Masquer les petits soldes",
+        "wallets_and_keys": "Portefeuilles et clés",
+        "view_full_screen": "Plein écran",
+        "view_token": "Voir le jeton",
+        "send_token": "Envoyer le jeton",
+        "swap_token": "Échanger le jeton",
+        "copy_token_address": "Copier l'adresse du contrat de jeton",
+        "view_token_on_explorer": "Afficher sur l'explorateur",
+        "add_as_watched_wallet": "Surveiller ce portefeuille",
+        "view_on_ens": "Afficher sur ENS",
+        "switch_to_wallet": "Passer à ce portefeuille",
+        "copy_wallet_address": "Copier l'adresse",
+        "view_wallet_on_etherscan": "Afficher sur Etherscan"
+      },
+      "search_tags": {
+        "swap": "pont",
+        "my_wallets": "changer",
+        "my_tokens_watched": "mes",
+        "view_nfts": "galerie, profil",
+        "settings": "préférences",
+        "my_qr_code_watched": "mes",
+        "create_wallet": "ajouter, nouveau",
+        "import_wallet": "ajouter, récupération secrète, phrase de récupération, clé privée",
+        "watch_wallet": "ajouter",
+        "add_hardware_wallet": "ledger, trezor, connecter",
+        "hide_balances": "basculer",
+        "hide_small_balances": "basculer",
+        "wallets_and_keys": "portefeuilles et clés, paramètres, préférences"
+      }
+    },
+    "command_rows": {
+      "no_value": "Aucune valeur"
+    },
     "hide_balances_toast": {
       "description_hidden": "Vos soldes sont masqués",
       "description_revealed": "Vos soldes sont visibles",
       "title_hidden": "Soldes masqués",
       "title_revealed": "Soldes révélés"
     },
-    "no_results": "Aucun résultat",
-    "section_titles": {
-      "shortcuts": "Raccourcis"
+    "hide_small_balances_toast": {
+      "description_hidden": "Soldes inférieurs à 1 $",
+      "description_revealed": "Tous les tokens visibles",
+      "title_hidden": "Soldes faibles cachés",
+      "title_revealed": "Affichage des soldes faibles"
     },
-    "search_placeholder": "Rechercher ou saisir une commande…",
-    "shortcuts": {
-      "names": {
-        "send": "Envoyer",
-        "swap": "Échanger",
-        "copy_address": "Copier l'adresse",
-        "view_nfts": "Voir des NFT",
-        "switch_wallets": "Changer de portefeuille",
-        "settings": "Paramètres",
-        "add_wallet": "Ajouter un portefeuille",
-        "watch_wallet": "Surveiller un portefeuille",
-        "hide_balances": "Activer/désactiver les soldes masqués",
-        "wallets_and_keys": "Portefeuilles et clés",
-        "view_full_screen": "Afficher en plein écran"
+    "no_results": "Aucun résultat",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "Rechercher des moyens d'ajouter un portefeuille…",
+        "section_title": "Ajouter un portefeuille"
       },
-      "search_tags": {
-        "swap": "pont",
-        "view_nfts": "galerie, profil",
-        "settings": "préférences",
-        "add_wallet": "créer, importer, portefeuille matériel",
-        "hide_balances_hidden": "afficher, masquer",
-        "hide_balances_revealed": "cacher",
-        "wallets_and_keys": "portefeuilles et clés"
+      "home": {
+        "search_placeholder": "Rechercher ou entrer une commande…",
+        "section_title": "Suggestions",
+        "section_title_results": "Résultats"
+      },
+      "my_tokens": {
+        "empty_label": "Aucun jeton trouvé",
+        "search_placeholder": "Rechercher des jetons…",
+        "section_title": "Mes jetons"
+      },
+      "my_wallets": {
+        "search_placeholder": "Sélectionnez un portefeuille pour basculer vers…",
+        "section_title": "Mes portefeuilles"
+      },
+      "token_detail": {
+        "search_placeholder": "Rechercher des actions de jetons…",
+        "section_title": "Actions"
+      },
+      "wallet_detail": {
+        "search_placeholder": "Rechercher des actions de portefeuille…",
+        "section_title": "Actions"
       }
+    },
+    "quick_promo": {
+      "text": "Appuyez sur ⌘K pour ouvrir le menu des commandes",
+      "text_bold": "Astuce :"
+    },
+    "toolbar": {
+      "actions_hint": "Actions"
     }
   },
   "connected_apps": {
@@ -610,6 +687,36 @@
       "lock_rainbow": "Verrouiller Rainbow"
     }
   },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "Connexion",
+      "connect_to": "Se connecter à %{appName}?",
+      "app_connected": "%{appName} connecté"
+    },
+    "sheet": {
+      "connect": "Connexion",
+      "connect_different_wallet": "Connecter un portefeuille différent",
+      "dont_show_again": "Ne plus afficher cela",
+      "allow_to": "Autoriser %{appName} à voir votre adresse de portefeuille, solde, activité et demander l'approbation des transactions.",
+      "connect_to": "Se connecter à %{appName}?"
+    },
+    "wallet_item": {
+      "disconnect": "Déconnecter",
+      "switch_connection": "Changer de connexion",
+      "connect": "Connecter"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "Connecter",
+      "disconnect": "Déconnecter",
+      "open_app": "Ouvrir %{appName}"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "Changer de portefeuilles",
+      "other_wallets": "Autres portefeuilles",
+      "cancel": "Annuler",
+      "connected": "Connecté"
+    }
+  },
   "approve_request": {
     "wallet_info_title": "veut se connecter à votre portefeuille",
     "wallet_info_description": "Autoriser %{appName} à afficher l'adresse de vos portefeuilles, les soldes, les activités et demander l'approbation des transactions.",
@@ -737,7 +844,8 @@
     "yesterday": "Hier",
     "this_month": "Ce mois-ci",
     "empty_header": "Aucune activité pour le moment",
-    "empty_description": "Une fois que vous commencez à utiliser votre portefeuille, vous verrez vos transactions ici."
+    "empty_description": "Une fois que vous commencez à utiliser votre portefeuille, vous verrez vos transactions ici.",
+    "loading_more": "Chargement en cours..."
   },
   "tokens_tab": {
     "coinbase_title": "Dépôt depuis Coinbase",
@@ -777,6 +885,7 @@
     "year": "1A",
     "approvals": "Approbations de jetons",
     "this_token_is_on_network": "Cette %{symbol} est sur le réseau %{chainName}",
+    "view_on": "Voir sur %{explorer}",
     "more_options": {
       "copy_address": "Copier l'adresse",
       "hide": "Cacher le jeton",

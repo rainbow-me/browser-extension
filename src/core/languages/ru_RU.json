@@ -81,7 +81,7 @@
       "analytics_description": "Помогите Rainbow улучшить свои продукты и сервисы, разрешив анализ данных использования. Собранные данные не связаны с вами или вашей учетной записью.",
       "hide_asset_balances": "Скрыть балансы активов",
       "hide_asset_balances_description": "Если это включено, Rainbow будет затруднять распознавание балансов токенов в приложении.",
-      "auto_hide_balances_under_1": "Автоматически скрывать балансы менее %{amount}",
+      "auto_hide_balances_under_1": "Скрыть балансы меньше $1",
       "view_private_key": "Посмотреть Приватный Ключ",
       "view_secret_recovery_phrase": "Посмотреть Секретную фразу для восстановления",
       "auto_lock_timer": {
@@ -192,40 +192,117 @@
     "withdrew": "Изъято"
   },
   "command_k": {
+    "action_labels": {
+      "activate_command": "Активировать команду",
+      "open": "Открыть",
+      "open_in_new_tab": "Открыть в новой вкладке",
+      "switch_to_wallet": "Переключиться на кошелек",
+      "view": "Просмотр"
+    },
+    "commands": {
+      "names": {
+        "send": "Отправить",
+        "swap": "Обменять",
+        "my_wallets": "Мои кошельки",
+        "my_tokens": "Мои токены",
+        "my_tokens_watched": "Токены",
+        "copy_address": "Копировать адрес",
+        "view_nfts": "Просмотреть NFT",
+        "add_wallet": "Добавить кошелек",
+        "lock": "Заблокировать Rainbow",
+        "connected_apps": "Подключенные приложения",
+        "settings": "Настройки",
+        "my_qr_code": "Мой QR-код",
+        "my_qr_code_watched": "QR-код",
+        "create_wallet": "Создать кошелек",
+        "import_wallet": "Импортировать кошелек",
+        "watch_wallet": "Просмотреть кошелек",
+        "add_hardware_wallet": "Добавить аппаратный кошелек",
+        "hide_balances": "Переключить скрытые балансы",
+        "hide_balances_hidden": "Показать балансы",
+        "hide_balances_revealed": "Скрыть балансы",
+        "hide_small_balances": "Переключить малые балансы",
+        "hide_small_balances_hidden": "Показать малые балансы",
+        "hide_small_balances_revealed": "Скрыть малые балансы",
+        "wallets_and_keys": "Кошельки и ключи",
+        "view_full_screen": "Просмотр на полный экран",
+        "view_token": "Просмотр токена",
+        "send_token": "Отправить токен",
+        "swap_token": "Обменять токен",
+        "copy_token_address": "Скопировать адрес контракта токена",
+        "view_token_on_explorer": "Просмотр в обозревателе",
+        "add_as_watched_wallet": "Просмотр данного кошелька",
+        "view_on_ens": "Просмотр в ENS",
+        "switch_to_wallet": "Переключиться на этот кошелек",
+        "copy_wallet_address": "Скопировать адрес",
+        "view_wallet_on_etherscan": "Просмотр в Etherscan"
+      },
+      "search_tags": {
+        "swap": "Мост",
+        "my_wallets": "Переключение",
+        "my_tokens_watched": "мои",
+        "view_nfts": "галерея, профиль",
+        "settings": "настройки",
+        "my_qr_code_watched": "мои",
+        "create_wallet": "добавить, новый",
+        "import_wallet": "добавить, восстановление секрета, фраза восстановления, приватный ключ",
+        "watch_wallet": "добавить",
+        "add_hardware_wallet": "ledger, trezor, подключить",
+        "hide_balances": "переключить",
+        "hide_small_balances": "переключить",
+        "wallets_and_keys": "кошельки и ключи, настройки, предпочтения"
+      }
+    },
+    "command_rows": {
+      "no_value": "Нет значения"
+    },
     "hide_balances_toast": {
       "description_hidden": "Ваши балансы скрыты",
       "description_revealed": "Ваши балансы видимы",
       "title_hidden": "Скрытые балансы",
       "title_revealed": "Раскрытые балансы"
     },
-    "no_results": "Нет результатов",
-    "section_titles": {
-      "shortcuts": "Ярлыки"
+    "hide_small_balances_toast": {
+      "description_hidden": "Баланс менее $1",
+      "description_revealed": "Все токены видимы",
+      "title_hidden": "Скрытые небольшие балансы",
+      "title_revealed": "Показать небольшие балансы"
     },
-    "search_placeholder": "Поиск или ввод команды…",
-    "shortcuts": {
-      "names": {
-        "send": "Отправить",
-        "swap": "Обменять",
-        "copy_address": "Скопировать адрес",
-        "view_nfts": "Просмотр NFT",
-        "switch_wallets": "Переключить кошельки",
-        "settings": "Настройки",
-        "add_wallet": "Добавить кошелек",
-        "watch_wallet": "Следить за кошельком",
-        "hide_balances": "Переключить скрытие балансов",
-        "wallets_and_keys": "Кошельки и ключи",
-        "view_full_screen": "Просмотр в полноэкранном режиме"
+    "no_results": "Нет результатов",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "Поиск способов добавить кошелек…",
+        "section_title": "Добавить кошелек"
       },
-      "search_tags": {
-        "swap": "мост",
-        "view_nfts": "галерея, профиль",
-        "settings": "настройки",
-        "add_wallet": "создать, импортировать, аппаратный кошелек",
-        "hide_balances_hidden": "показать, скрыть",
-        "hide_balances_revealed": "скрыть",
-        "wallets_and_keys": "кошельки и ключи"
+      "home": {
+        "search_placeholder": "Поиск или введите команду…",
+        "section_title": "Предложения",
+        "section_title_results": "Результаты"
+      },
+      "my_tokens": {
+        "empty_label": "Токены не найдены",
+        "search_placeholder": "Поиск токенов…",
+        "section_title": "Мои токены"
+      },
+      "my_wallets": {
+        "search_placeholder": "Выберите кошелек для переключения…",
+        "section_title": "Мои кошельки"
+      },
+      "token_detail": {
+        "search_placeholder": "Поиск действий токена…",
+        "section_title": "Действия"
+      },
+      "wallet_detail": {
+        "search_placeholder": "Поиск действий кошелька…",
+        "section_title": "Действия"
       }
+    },
+    "quick_promo": {
+      "text": "Нажмите ⌘K, чтобы открыть меню команд",
+      "text_bold": "Совет:"
+    },
+    "toolbar": {
+      "actions_hint": "Действия"
     }
   },
   "connected_apps": {
@@ -610,6 +687,36 @@
       "lock_rainbow": "Заблокировать Rainbow"
     }
   },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "Подключить",
+      "connect_to": "Подключить к %{appName}?",
+      "app_connected": "%{appName} подключен"
+    },
+    "sheet": {
+      "connect": "Подключить",
+      "connect_different_wallet": "Подключить другой кошелек",
+      "dont_show_again": "Не показывать это снова",
+      "allow_to": "Разрешить %{appName} просматривать адрес вашего кошелька, баланс, активность и запрашивать разрешение на транзакции.",
+      "connect_to": "Подключиться к %{appName}?"
+    },
+    "wallet_item": {
+      "disconnect": "Отключить",
+      "switch_connection": "Переключить подключение",
+      "connect": "Подключить"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "Подключить",
+      "disconnect": "Отключить",
+      "open_app": "Открыть %{appName}"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "Переключить кошельки",
+      "other_wallets": "Другие кошельки",
+      "cancel": "Отмена",
+      "connected": "Подключено"
+    }
+  },
   "approve_request": {
     "wallet_info_title": "хочет получить доступ к вашему кошельку",
     "wallet_info_description": "Разрешить %{appName} просматривать адреса, балансы и операции вашего кошелька, а также запрашивать подтверждение для транзакций.",
@@ -737,7 +844,8 @@
     "yesterday": "Вчера",
     "this_month": "В этом месяце",
     "empty_header": "Пока нет активности",
-    "empty_description": "Как только вы начнете использовать свой кошелек, вы увидите здесь ваши транзакции."
+    "empty_description": "Как только вы начнете использовать свой кошелек, вы увидите здесь ваши транзакции.",
+    "loading_more": "Загрузка..."
   },
   "tokens_tab": {
     "coinbase_title": "Депозит с Coinbase",
@@ -777,6 +885,7 @@
     "year": "1 г.",
     "approvals": "Разрешения для токенов",
     "this_token_is_on_network": "Этот %{symbol} находится в сети %{chainName}",
+    "view_on": "Посмотреть на %{explorer}",
     "more_options": {
       "copy_address": "Скопировать адрес",
       "hide": "Скрыть токен",
