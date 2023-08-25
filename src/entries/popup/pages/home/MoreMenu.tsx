@@ -130,7 +130,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem highlightAccentColor value="lock">
                 <HomeMenuRow
-                  testId="lock.open.fill"
+                  testId="lock"
                   leftComponent={
                     <Symbol size={12} symbol="lock.fill" weight="semibold" />
                   }
