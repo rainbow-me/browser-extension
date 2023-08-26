@@ -20,6 +20,7 @@ import { isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { normalizeTransactionResponsePayload } from '~/core/utils/ethereum';
 import { toHex } from '~/core/utils/hex';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
@@ -371,6 +372,7 @@ export const handleProviderRequest = ({
         case 'eth_getTransactionByHash': {
           const provider = getProvider({ chainId: activeSession?.chainId });
           response = await provider.getTransaction(params?.[0] as string);
+          response = normalizeTransactionResponsePayload(response);
           break;
         }
         case 'eth_call': {

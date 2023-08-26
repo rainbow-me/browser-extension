@@ -5,6 +5,9 @@
   "label": {
     "toggle": "Toggle"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant the permission in order to continue."
+  },
   "wallet_switcher": {
     "title": "Wallets",
     "rename_wallet": "Rename wallet",
