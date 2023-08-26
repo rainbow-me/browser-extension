@@ -1,16 +1,13 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable jest/expect-expect */
-
 import 'chromedriver';
 import 'geckodriver';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
 import {
+  clearInput,
   delay,
   delayTime,
   doNotFindElementByTestId,
@@ -27,6 +24,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
@@ -38,6 +36,7 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+const isFirefox = browser === 'firefox';
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -47,6 +46,16 @@ beforeAll(async () => {
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
   rootURL += extensionId;
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+beforeEach(async (context: any) => {
+  context.driver = driver;
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+afterEach(async (context: any) => {
+  await takeScreenshotOnFailure(context);
 });
 
 afterAll(() => driver.quit());
@@ -458,6 +467,12 @@ it('should be able to favorite a token and check the info button is present', as
     id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
+  if (isFirefox) {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-token-to-buy-token-input-remove`,
+      driver,
+    });
+  }
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
@@ -483,11 +498,20 @@ it('should be able to flip correctly', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  if (isFirefox) {
+    await delayTime('very-long');
+    await clearInput({
+      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      driver,
+    });
+  }
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
     driver,
   });
+  isFirefox && (await delay(5000));
+
   const assetToSellInputText = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -536,7 +560,15 @@ it('should be able to check insufficient native asset for gas', async () => {
     id: 'swap-flip-button',
     driver,
   });
-  await delayTime('short');
+  if (isFirefox) {
+    await delayTime('very-long');
+    await clearInput({
+      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      driver,
+    });
+  } else {
+    await delayTime('short');
+  }
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b10000`,
