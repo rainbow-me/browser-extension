@@ -4,7 +4,15 @@ import { getAddress } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
 import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -26,6 +34,7 @@ import {
   querySelector,
   shortenAddress,
   switchWallet,
+  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
@@ -78,6 +87,16 @@ describe('App interactions flow', () => {
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  beforeEach(async (context: any) => {
+    context.driver = driver;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  afterEach(async (context: any) => {
+    await takeScreenshotOnFailure(context);
   });
 
   afterAll(() => driver.quit());
@@ -266,6 +285,13 @@ describe('App interactions flow', () => {
       driver,
     });
     await goToTestApp(driver);
+
+    // IDK why firefox doesn't reconnect
+    // This is probably some RK bug
+    if (process.env.BROWSER === 'firefox') {
+      await driver.navigate().refresh();
+    }
+
     const expectedNetwork = 'Network: Ethereum - homestead';
     const network = await querySelector(driver, '[id="network"]');
     const actualNetwork = await network.getText();
