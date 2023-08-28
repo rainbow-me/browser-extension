@@ -7,10 +7,12 @@ import {
   polygon,
   zora,
 } from '@wagmi/chains';
-import type { Address, Chain } from 'wagmi';
+import type { Chain } from 'wagmi';
 
-import { ETH_ADDRESS, NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
+import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
+
+import { AddressOrEth } from '../types/assets';
 
 import { isLowerCaseMatch } from './strings';
 
@@ -51,10 +53,7 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
   }
 };
 
-export function isNativeAsset(
-  address: Address | typeof ETH_ADDRESS,
-  chainId: ChainId,
-) {
+export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
 }
 

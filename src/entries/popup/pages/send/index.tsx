@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useAnimationControls } from 'framer-motion';
-import React, {
+import {
   ChangeEvent,
   useCallback,
   useEffect,
@@ -14,7 +14,6 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
@@ -25,6 +24,7 @@ import {
   usePopupInstanceStore,
 } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
@@ -279,8 +279,8 @@ export function Send() {
   );
 
   const selectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
-      selectAssetAddressAndChain(address as Address, chainId);
+    (address: AddressOrEth | '', chainId: ChainId) => {
+      selectAssetAddressAndChain(address, chainId);
       saveSendTokenAddressAndChain({
         address,
         chainId,

@@ -1,12 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useReducer, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
-import { ETH_ADDRESS } from '~/core/references';
-import { ParsedUserAsset } from '~/core/types/assets';
+import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -111,7 +109,7 @@ type PriceChartTimeData = { points?: [timestamp: number, price: number][] };
 const fetchPriceChart = async (
   time: ChartTime,
   chainId: ChainId,
-  address: Address | typeof ETH_ADDRESS,
+  address: AddressOrEth,
 ) => {
   const priceChart = await metadataClient
     .priceChart({ address, chainId, ...getChartTimeArg(time) })
@@ -127,8 +125,8 @@ const usePriceChart = ({
   chainId,
   time,
 }: {
-  mainnetAddress?: Address | typeof ETH_ADDRESS;
-  address: Address | typeof ETH_ADDRESS;
+  mainnetAddress?: AddressOrEth;
+  address: AddressOrEth;
   chainId: ChainId;
   time: ChartTime;
 }) => {

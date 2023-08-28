@@ -1,4 +1,3 @@
-import { Address } from 'wagmi';
 import create from 'zustand';
 
 import {
@@ -26,19 +25,20 @@ import {
   WETH_OPTIMISM_ADDRESS,
   WETH_POLYGON_ADDRESS,
 } from '~/core/references';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
 
 type UpdateFavoritesArgs = {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
 };
 
 type UpdateFavoritesFn = ({ address, chainId }: UpdateFavoritesArgs) => void;
 
 export interface FavoritesState {
-  favorites: Record<ChainId, (Address | typeof ETH_ADDRESS)[]>;
+  favorites: Partial<Record<ChainId, AddressOrEth[]>>;
   addFavorite: UpdateFavoritesFn;
   removeFavorite: UpdateFavoritesFn;
 }
@@ -47,7 +47,7 @@ export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
     favorites: {
       [ChainId.mainnet]: [
-        ETH_ADDRESS as Address,
+        ETH_ADDRESS,
         DAI_ADDRESS,
         USDC_ADDRESS,
         WBTC_ADDRESS,

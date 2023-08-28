@@ -38,9 +38,9 @@ export const ETH_MAINNET_ASSET: ParsedUserAsset = {
   },
   symbol: 'ETH',
   uniqueId: 'eth_1',
-};
+} as const;
 export const DAI_MAINNET_ASSET: ParsedUserAsset = {
-  address: '0x6b175474e89094c44da98b954eedeac495271d0f' as Address,
+  address: '0x6b175474e89094c44da98b954eedeac495271d0f',
   balance: { amount: '0', display: '0 DAI' },
   chainId: 1,
   chainName: 'mainnet' as ChainName,
@@ -62,9 +62,9 @@ export const DAI_MAINNET_ASSET: ParsedUserAsset = {
   },
   symbol: 'DAI',
   uniqueId: '0x6b175474e89094c44da98b954eedeac495271d0f_1',
-};
+} as const;
 export const USDC_MAINNET_ASSET: ParsedUserAsset = {
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   balance: { amount: '0', display: '0 USDC' },
   chainId: 1,
   chainName: 'mainnet' as ChainName,
@@ -90,7 +90,7 @@ export const USDC_MAINNET_ASSET: ParsedUserAsset = {
   symbol: 'USDC',
   uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
   decimals: 6,
-};
+} as const;
 export const ENS_MAINNET_ASSET: ParsedAsset = {
   address: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72',
   chainId: 1,
@@ -109,10 +109,10 @@ export const ENS_MAINNET_ASSET: ParsedAsset = {
   symbol: 'ENS',
   uniqueId: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72_1',
   decimals: 18,
-};
+} as const;
 
 export const USDC_ARBITRUM_ASSET: ParsedAsset = {
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   chainId: ChainId.arbitrum,
   chainName: ChainName.arbitrum,
   colors: { primary: '#2775CA' },
@@ -134,7 +134,7 @@ export const USDC_ARBITRUM_ASSET: ParsedAsset = {
   symbol: 'USDC',
   uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
   decimals: 6,
-};
+} as const;
 
 export const WETH_MAINNET_ASSET: ParsedAsset = {
   address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -161,7 +161,7 @@ export const WETH_MAINNET_ASSET: ParsedAsset = {
   },
   symbol: 'WETH',
   uniqueId: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2_1',
-};
+} as const;
 
 export async function delay(ms: number) {
   // eslint-disable-next-line no-promise-executor-return

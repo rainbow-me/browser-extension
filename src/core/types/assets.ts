@@ -6,8 +6,10 @@ import { ETH_ADDRESS } from '../references';
 
 import { SearchAsset } from './search';
 
+export type AddressOrEth = Address | typeof ETH_ADDRESS;
+
 export interface ParsedAsset {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
@@ -23,7 +25,7 @@ export interface ParsedAsset {
       display: string;
     };
   };
-  mainnetAddress?: Address | typeof ETH_ADDRESS;
+  mainnetAddress?: AddressOrEth;
   price?: ZerionAssetPrice;
   symbol: string;
   uniqueId: UniqueId;

@@ -243,16 +243,23 @@ export const swap = async ({
     throw e;
   }
 
+  if (!swap) {
+    return {
+      nonce: undefined,
+      hash: undefined,
+    };
+  }
+
   const transaction = {
     amount: formatEther(swap?.value?.toString() || ''),
     asset: parameters.assetToSell,
-    data: swap?.data,
-    value: swap?.value,
-    from: swap?.from as Address,
-    to: swap?.to as Address,
-    hash: swap?.hash,
+    data: swap.data,
+    value: swap.value,
+    from: swap.from as Address,
+    to: swap.to as Address,
+    hash: swap.hash,
     chainId: parameters.chainId,
-    nonce: swap?.nonce,
+    nonce: swap.nonce,
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
     flashbots: parameters.flashbots,
@@ -261,14 +268,14 @@ export const swap = async ({
     maxPriorityFeePerGas: (gasParams as TransactionGasParams)
       ?.maxPriorityFeePerGas,
   };
-  await addNewTransaction({
+  addNewTransaction({
     address: parameters.quote.from as Address,
     chainId: parameters.chainId as ChainId,
     transaction,
   });
 
   return {
-    nonce: swap?.nonce,
-    hash: swap?.hash,
+    nonce: swap.nonce,
+    hash: swap.hash,
   };
 };
