@@ -1279,18 +1279,15 @@
       "globals": {
         "Intl": true,
         "PerformanceObserver": true,
-        "TypeScript": "write",
         "__dirname": true,
         "__filename": true,
-        "__magic__": true,
         "clearTimeout": true,
         "console": true,
         "gc": true,
-        "globalThis": "write",
+        "onProfilerEvent": true,
         "performance": true,
         "process": true,
-        "setTimeout": true,
-        "toolsVersion": "write"
+        "setTimeout": true
       },
       "packages": {
         "web-ext>source-map-support": true

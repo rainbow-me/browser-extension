@@ -24,7 +24,7 @@ export type SearchAsset = {
   isVerified: boolean;
   mainnetAddress: Address;
   name: string;
-  networks: Record<ChainId, { address: Address; decimals: number }>;
+  networks: Partial<Record<ChainId, { address: Address; decimals: number }>>;
   rainbowMetadataId: number;
   symbol: string;
   uniqueId: UniqueId;
