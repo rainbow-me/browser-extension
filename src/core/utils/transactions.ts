@@ -587,7 +587,6 @@ export async function getNextNonce({
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || 0;
   const provider = getProvider({ chainId });
-
   const txCountIncludingPending = await provider.getTransactionCount(
     address,
     'pending',
