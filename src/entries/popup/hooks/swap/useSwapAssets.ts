@@ -114,6 +114,7 @@ export const useSwapAssets = () => {
 
   const { data: assetsWithPrice = [] } = useAssets({
     assetAddresses: assetAddressesToFetchPrices,
+    chainId: outputChainId,
     currency: currentCurrency,
   });
 
