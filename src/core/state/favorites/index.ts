@@ -38,7 +38,7 @@ type UpdateFavoritesArgs = {
 type UpdateFavoritesFn = ({ address, chainId }: UpdateFavoritesArgs) => void;
 
 export interface FavoritesState {
-  favorites: Record<ChainId, (Address | typeof ETH_ADDRESS)[]>;
+  favorites: Partial<Record<ChainId, (Address | typeof ETH_ADDRESS)[]>>;
   addFavorite: UpdateFavoritesFn;
   removeFavorite: UpdateFavoritesFn;
 }
