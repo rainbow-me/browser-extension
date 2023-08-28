@@ -23,6 +23,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { usePendingRequestStore } from '~/core/state/requests';
+import { isNativePopup } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -58,7 +59,8 @@ const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
 function Tabs() {
-  const { activeTab, saveActiveTab } = usePopupInstanceStore();
+  const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
+  const [activeTab, setActiveTab] = useState<Tab>('tokens');
   const { trackShortcut } = useKeyboardAnalytics();
 
   const [, startTransition] = useTransition();
@@ -68,9 +70,21 @@ function Tabs() {
   const onSelectTab = (tab: Tab) => {
     prevScrollPosition.current = containerRef.current?.scrollTop;
     startTransition(() => {
+      setActiveTab(tab);
       saveActiveTab({ tab });
     });
   };
+
+  useEffect(() => {
+    const mountWithSavedTabInPopup = async () => {
+      const isPopup = await isNativePopup();
+      if (isPopup) {
+        setActiveTab(popupActiveTab);
+      }
+    };
+    mountWithSavedTabInPopup();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // If we are already in a state where the header is collapsed,
   // then ensure we are scrolling to the top when we change tab.
