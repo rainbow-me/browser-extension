@@ -212,7 +212,7 @@ export function Send() {
           chainId: connectedToHardhat ? ChainId.hardhat : chainId,
           data,
         });
-        if (result) {
+        if (result && asset) {
           const transaction: NewTransaction = {
             changes: [
               {
@@ -221,6 +221,7 @@ export function Send() {
                 value: assetAmount,
               },
             ],
+            asset,
             data: result.data,
             value: result.value.toString(),
             from: fromAddress,
@@ -285,7 +286,7 @@ export function Send() {
 
   const selectAsset = useCallback(
     (address: AddressOrEth | '', chainId: ChainId) => {
-      selectAssetAddressAndChain(address as Address, chainId);
+      selectAssetAddressAndChain(address, chainId);
       saveSendTokenAddressAndChain({
         address,
         chainId,

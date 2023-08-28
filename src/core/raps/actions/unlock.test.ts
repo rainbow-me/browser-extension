@@ -29,7 +29,7 @@ beforeAll(async () => {
 test('[rap/unlock] :: get raw allowance', async () => {
   const rawAllowance = await getAssetRawAllowance({
     owner: RAINBOW_WALLET_ADDRESS,
-    assetAddress: USDC_MAINNET_ASSET.address as Address,
+    assetAddress: USDC_MAINNET_ASSET.address,
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: mainnet.id,
   });

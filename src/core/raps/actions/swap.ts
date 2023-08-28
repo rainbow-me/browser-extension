@@ -250,6 +250,7 @@ export const swap = async ({
     from: swap.from as Address,
     to: swap.to as Address,
     value: quote.value?.toString(),
+    asset: parameters.assetToBuy,
     changes: [
       {
         direction: 'out',
@@ -280,7 +281,7 @@ export const swap = async ({
   });
 
   return {
-    nonce: swap?.nonce,
-    hash: swap?.hash,
+    nonce: swap.nonce,
+    hash: swap.hash,
   };
 };
