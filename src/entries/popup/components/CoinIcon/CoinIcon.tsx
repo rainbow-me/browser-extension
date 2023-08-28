@@ -1,10 +1,10 @@
 import { upperCase } from 'lodash';
 import React, { Fragment, ReactNode } from 'react';
-import { Address } from 'wagmi';
 
 import EthIcon from 'static/assets/ethIcon.png';
 import { ETH_ADDRESS } from '~/core/references';
 import {
+  AddressOrEth,
   ParsedAsset,
   ParsedSearchAsset,
   ParsedUserAsset,
@@ -54,7 +54,7 @@ export function CoinIcon({
 
   const formattedSymbol = formatSymbol(sym, size);
   const mainnetAddress = asset?.mainnetAddress;
-  const address = (asset?.address || '') as Address;
+  const address = asset?.address;
   const chain = asset?.chainId || ChainId.mainnet;
   const shadowColor = asset?.colors?.primary || '#808088';
 
@@ -71,7 +71,7 @@ export function CoinIcon({
       <CloudinaryCoinIcon
         address={address}
         chainId={chain}
-        mainnetAddress={(mainnetAddress || '') as Address}
+        mainnetAddress={mainnetAddress}
         url={asset?.icon_url}
         size={size}
       >
@@ -170,15 +170,15 @@ function CloudinaryCoinIcon({
   size = 36,
   url,
 }: {
-  address: Address;
+  address?: AddressOrEth;
   chainId: ChainId;
-  mainnetAddress?: Address;
+  mainnetAddress?: AddressOrEth;
   children: React.ReactNode;
   size: number;
   url?: string;
 }) {
   let src = url;
-  const eth = ETH_ADDRESS as Address;
+  const eth = ETH_ADDRESS;
 
   if (address === eth || mainnetAddress === eth) {
     src = EthIcon;

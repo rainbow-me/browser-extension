@@ -1,4 +1,3 @@
-import React from 'react';
 import { Address, useEnsName } from 'wagmi';
 
 import { isENSAddressFormat } from '~/core/utils/ethereum';
@@ -13,7 +12,11 @@ type AddressOrEnsProps = {
   weight: TextStyles['fontWeight'];
 };
 
-export function AddressWithENSReverseResolution(address: Address) {
+export function AddressWithENSReverseResolution({
+  address,
+}: {
+  address: Address;
+}) {
   // Attempt reverse resoltion first
   const { data: ensName } = useEnsName({ address });
   if (ensName) {
@@ -31,9 +34,11 @@ export function AddressOrEns({
   if (!address) return null;
   return (
     <Text color={color || 'label'} size={size} weight={weight}>
-      {isENSAddressFormat(address)
-        ? address
-        : AddressWithENSReverseResolution(address as Address)}
+      {isENSAddressFormat(address) ? (
+        address
+      ) : (
+        <AddressWithENSReverseResolution address={address as Address} />
+      )}
     </Text>
   );
 }

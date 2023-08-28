@@ -26,6 +26,7 @@ import { gasStore } from '../../state';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
+  isLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
@@ -269,10 +270,7 @@ export const swap = async ({
     status: 'pending',
     type: 'swap',
     flashbots: parameters.flashbots,
-    gasPrice: (gasParams as TransactionLegacyGasParams)?.gasPrice,
-    maxFeePerGas: (gasParams as TransactionGasParams)?.maxFeePerGas,
-    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
-      ?.maxPriorityFeePerGas,
+    ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
   };
   addNewTransaction({
     address: parameters.quote.from as Address,

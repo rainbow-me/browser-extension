@@ -124,8 +124,11 @@ export interface ZerionAsset {
     primary: string;
     fallback: string;
   };
-  implementations?: Record<string, { address?: Address; decimals: number }>;
-  mainnet_address?: Address;
+  implementations?: Record<
+    string,
+    { address: Address | null; decimals: number }
+  >;
+  mainnet_address?: AddressOrEth;
   name: string;
   symbol: string;
   decimals: number;

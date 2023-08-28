@@ -22,9 +22,14 @@ export type SearchAsset = {
   isRainbowCurated: boolean;
   isNativeAsset: boolean;
   isVerified: boolean;
-  mainnetAddress: Address;
+  mainnetAddress: AddressOrEth;
   name: string;
-  networks: { [id in ChainId]?: { address: Address; decimals: number } };
+  networks: {
+    [chainId in ChainId]?: {
+      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
+      decimals: number;
+    };
+  };
   rainbowMetadataId: number;
   symbol: string;
   uniqueId: UniqueId;

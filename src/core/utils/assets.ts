@@ -84,7 +84,8 @@ export function parseAsset({
   // ZerionAsset should be removed when we move fully away from websckets/refraction api
   const mainnetAddress = isZerionAsset(asset)
     ? asset.mainnet_address ||
-      asset.implementations?.[ChainName.mainnet].address
+      asset.implementations?.[ChainName.mainnet].address ||
+      undefined
     : asset.networks?.[ChainId.mainnet]?.address;
 
   const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
@@ -132,7 +133,6 @@ export function parseUserAsset({
     smallBalance,
   });
 }
-export type ParsedUserAsset = ReturnType<typeof parseUserAsset>;
 
 export function parseUserAssetBalances({
   asset,

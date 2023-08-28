@@ -12,6 +12,7 @@ import { gasStore } from '../../state';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
+  isLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
@@ -166,9 +167,10 @@ export const crosschainSwap = async ({
   if (!swap || !parameters.assetToBuy)
     throw new Error('crosschainSwap: error executeCrosschainSwap');
 
-  const transaction: NewTransaction = {
+  const transaction = {
     data: parameters.quote.data,
     value: parameters.quote.value?.toString(),
+    asset: parameters.assetToBuy,
     changes: [
       {
         direction: 'out',
@@ -189,11 +191,8 @@ export const crosschainSwap = async ({
     status: 'pending',
     type: 'swap',
     flashbots: parameters.flashbots,
-    gasPrice: (gasParams as TransactionLegacyGasParams).gasPrice,
-    maxFeePerGas: (gasParams as TransactionGasParams).maxFeePerGas,
-    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
-      .maxPriorityFeePerGas,
-  };
+    ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
+  } satisfies NewTransaction;
   await addNewTransaction({
     address: parameters.quote.from as Address,
     chainId: parameters.chainId as ChainId,
@@ -201,7 +200,7 @@ export const crosschainSwap = async ({
   });
 
   return {
-    nonce: swap?.nonce,
-    hash: swap?.hash,
+    nonce: swap.nonce,
+    hash: swap.hash,
   };
 };
