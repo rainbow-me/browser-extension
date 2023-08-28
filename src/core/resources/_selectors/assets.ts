@@ -13,7 +13,6 @@ export function selectUserAssetsList(
   assets: ParsedAssetsDictByChain = {} as ParsedAssetsDictByChain,
 ) {
   return Object.values(assets)
-    .filter(Boolean)
     .map((chainAssets) => Object.values(chainAssets))
     .flat()
     .sort(
@@ -44,7 +43,6 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
     assets?.[ChainId.bsc],
   ].flat();
   return assetsByNetwork
-    .filter(Boolean)
     .map((chainAssets) =>
       Object.values(chainAssets).sort(
         (a: ParsedUserAsset, b: ParsedUserAsset) =>
