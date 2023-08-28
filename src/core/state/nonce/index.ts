@@ -57,7 +57,7 @@ export const nonceStore = createStore<CurrentNonceState>(
   }),
   {
     persist: {
-      name: 'currentNonce',
+      name: 'nonce',
       version: 0,
     },
   },
