@@ -50,6 +50,7 @@ export const SendTransactionActions = ({
       }
     },
   });
+
   return (
     <Inset vertical="20px" horizontal="20px">
       <Stack space="24px">
@@ -72,7 +73,7 @@ export const SendTransactionActions = ({
                   : buttonLabel
               }
               waitingForDevice={waitingForDevice}
-              loading={loading}
+              loading={loading || !chainId}
             />
           </Row>
           <Row>
