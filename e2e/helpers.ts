@@ -10,12 +10,14 @@ import {
   Builder,
   By,
   Condition,
+  Key,
   WebDriver,
   WebElement,
   until,
 } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
+import { IKey } from 'selenium-webdriver/lib/input';
 import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
@@ -403,6 +405,58 @@ export async function getTextFromDappText({
 }) {
   const element = await findElementById({ id, driver });
   return await element.getText();
+}
+
+export async function performShortcutCharacter(
+  driver: WebDriver,
+  key: IKey,
+  keyboardCharacter: string,
+) {
+  try {
+    await driver.actions().sendKeys(key.chord(keyboardCharacter)).perform();
+  } catch (error) {
+    console.error(
+      `Error occurred while attempting shortcut with the keyboard character '${keyboardCharacter}':`,
+      error,
+    );
+    throw error;
+  }
+}
+
+export async function performShortcutSpecialCharacter(
+  driver: WebDriver,
+  key: string,
+) {
+  try {
+    // selinium uses a key object for special characters
+    // this throws an error if the key we are trying to use doesn't exist
+    if (!(key in Key)) {
+      throw new Error(`Key '${key}' not found in the 'Key' object`);
+    }
+    // Access the Key object using a type assertion
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const specialKey = (Key as any)[key] as string;
+
+    await driver.actions().sendKeys(specialKey).perform();
+  } catch (error) {
+    console.error(
+      `Error occurred while attempting shortcut with the key '${key}':`,
+      error,
+    );
+    throw error;
+  }
+}
+
+export async function checkExtensionURL(driver: WebDriver, urlValue: string) {
+  try {
+    await driver.wait(until.urlContains(urlValue), waitUntilTime);
+  } catch (error) {
+    console.error(
+      `Error occurred while checking url with the value '${urlValue}':`,
+      error,
+    );
+    throw error;
+  }
 }
 
 // various functions and flows
