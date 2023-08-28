@@ -81,7 +81,7 @@ export type RainbowTransaction =
 //     'changes'
 //   >);
 
-export type NewTransaction = Omit<BaseTransaction, 'title' | 'changes'> & {
+export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
   changes: Array<
     | {
         asset?: ParsedAsset | null;

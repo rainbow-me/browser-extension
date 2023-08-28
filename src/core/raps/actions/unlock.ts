@@ -182,7 +182,9 @@ export const unlock = async ({
   }
 
   const transaction: NewTransaction = {
+    asset: assetToUnlock,
     data: approval.data,
+    value: approval.value,
     changes: [],
     from: parameters.fromAddress,
     to: assetAddress as Address,
