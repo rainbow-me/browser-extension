@@ -10,8 +10,8 @@ import {
   getRootUrl,
   importWalletFlow,
   initDriverWithOptions,
-  performShortcutCharacter,
-  performShortcutSpecialCharacter,
+  performShortcutWithNormalKey,
+  performShortcutWithSpecialKey,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -39,10 +39,12 @@ describe('navigate through settings flows with shortcuts', () => {
   it('should display account name', async () => {
     await checkWalletName(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.ADDRESS);
   });
+
+  // shortcut tests begin
   it('navigate to settings via shortcuts', async () => {
-    await performShortcutCharacter(driver, Key, '.');
-    await performShortcutSpecialCharacter(driver, 'ARROW_DOWN');
-    await performShortcutSpecialCharacter(driver, 'ENTER');
+    await performShortcutWithNormalKey(driver, Key, '.');
+    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
+    await performShortcutWithSpecialKey(driver, 'ENTER');
     await checkExtensionURL(driver, 'settings');
   });
 });
