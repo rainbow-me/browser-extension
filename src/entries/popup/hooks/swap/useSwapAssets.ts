@@ -96,13 +96,11 @@ export const useSwapAssets = () => {
 
   const assetAddressesToFetchPrices = useMemo(() => {
     const assetAddressesFromSearch = searchAssetsToBuySections
-      .map(
-        (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
-      )
+      .map((section) => section.data?.map((asset) => asset.address) || [])
       .flat();
 
-    const assetToBuyAddress = (assetToBuy?.mainnetAddress ||
-      prevAssetToBuy?.mainnetAddress) as Address;
+    const assetToBuyAddress = (assetToBuy?.address ||
+      prevAssetToBuy?.address) as Address;
     if (
       assetToBuyAddress &&
       !assetAddressesFromSearch.includes(assetToBuyAddress)
@@ -121,7 +119,7 @@ export const useSwapAssets = () => {
   const assetToSellWithPrice = useMemo(
     () =>
       Object.values(assetsWithPrice || {})?.find(
-        (asset) => asset.mainnetAddress === assetToSell?.mainnetAddress,
+        (asset) => asset.uniqueId === assetToSell?.uniqueId,
       ),
     [assetToSell, assetsWithPrice],
   );
@@ -129,7 +127,7 @@ export const useSwapAssets = () => {
   const assetToBuyWithPrice = useMemo(
     () =>
       Object.values(assetsWithPrice || {})?.find(
-        (asset) => asset.mainnetAddress === assetToBuy?.mainnetAddress,
+        (asset) => asset.uniqueId === assetToBuy?.uniqueId,
       ),
     [assetToBuy, assetsWithPrice],
   );

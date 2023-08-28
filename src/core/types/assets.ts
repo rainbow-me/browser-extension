@@ -1,4 +1,3 @@
-import { ChainId as SwapChainId } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
 import { ChainId, ChainName } from '~/core/types/chains';
@@ -14,6 +13,7 @@ export interface ParsedAsset {
   colors?: {
     primary: string;
     fallback?: string;
+    shadow?: string;
   };
   isNativeAsset: boolean;
   name: string;
@@ -61,7 +61,7 @@ export type ParsedAssetsDictByChain = Record<ChainId, ParsedAssetsDict>;
 export interface ZerionAssetPrice {
   value: number;
   relative_change_24h?: number;
-  changed_at: number;
+  changed_at?: number; // appears unused
 }
 
 export type AssetType = 'nft' | 'token';
@@ -120,25 +120,22 @@ export type ProtocolType =
   | 'sushiswap';
 
 export type AssetMetadata = {
-  asset_code: AddressOrEth;
+  circulatingSupply: number;
+  colors?: { primary: string; fallback?: string; shadow?: string };
   decimals: number;
-  icon_url: string;
+  description: string;
+  fullyDilutedValuation: number;
+  iconUrl: string;
+  marketCap: number;
   name: string;
+  networks?: Record<ChainId, { address: AddressOrEth; decimals: number }>;
   price: {
     value: number;
-    changed_at: number;
-    relative_change_24h: number;
+    relativeChange24h: number;
   };
   symbol: string;
-  colors?: { primary?: string; fallback?: string; shadow?: string };
-  network?: ChainName;
-  networks?: {
-    [chainId in SwapChainId]?: {
-      address: chainId extends SwapChainId.mainnet ? AddressOrEth : Address;
-      decimals: number;
-    };
-  };
-  type?: AssetType;
+  totalSupply: number;
+  volume1d: number;
 };
 
 export type UniqueId = `${Address}_${ChainId}`;
