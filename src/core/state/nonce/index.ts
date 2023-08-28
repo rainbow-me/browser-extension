@@ -18,7 +18,7 @@ type GetNonceArgs = {
 type UpdateNonceArgs = NonceData & GetNonceArgs;
 
 export interface CurrentNonceState {
-  [key: Address]: Record<ChainId, NonceData>;
+  [key: Address]: Partial<Record<ChainId, NonceData>>;
   setNonce: ({
     address,
     currentNonce,
@@ -28,8 +28,6 @@ export interface CurrentNonceState {
   getNonce: ({ address, chainId }: GetNonceArgs) => NonceData | null;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 export const nonceStore = createStore<CurrentNonceState>(
   (set, get) => ({
     setNonce: ({ address, currentNonce, latestConfirmedNonce, chainId }) => {
