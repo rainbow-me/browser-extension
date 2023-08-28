@@ -1,6 +1,8 @@
 import { isAddress } from '@ethersproject/address';
 import { Mnemonic, isValidMnemonic } from '@ethersproject/hdnode';
+import { TransactionResponse } from '@ethersproject/providers';
 import { parseEther } from '@ethersproject/units';
+import omit from 'lodash/omit';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '../keychain/IKeychain';
@@ -85,4 +87,16 @@ export const weiToGwei = (weiAmount: string) => {
 export const toWei = (ether: string): string => {
   const result = parseEther(ether);
   return result.toString();
+};
+
+export const normalizeTransactionResponsePayload = (
+  payload: TransactionResponse,
+): TransactionResponse => {
+  // Firefox can't serialize functions
+  if (navigator.userAgent.toLowerCase().includes('firefox')) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return omit(payload, 'wait') as TransactionResponse;
+  }
+  return payload;
 };

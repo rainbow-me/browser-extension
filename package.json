@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.1.79",
+  "version": "1.1.82",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -63,7 +63,7 @@
     "vitest:dappInteractions": "./scripts/e2e-serial-tests.sh 'dappInteractions'",
     "e2e:mac:chrome": "BROWSER=chrome OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:brave": "BROWSER=brave OS=mac yarn vitest:parallel && yarn vitest:serial",
-    "e2e:mac:firefox": "yarn firefox:zip && BROWSER=firefox OS=mac yarn vitest:parallel",
+    "e2e:mac:firefox": "yarn firefox:zip && BROWSER=firefox OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac": "yarn e2e:mac:chrome && yarn e2e:mac:brave",
     "e2e": "yarn e2e:mac",
     "firefox:manifest": "node scripts/firefox-manifest.js",
