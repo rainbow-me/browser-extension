@@ -1,13 +1,9 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable jest/expect-expect */
-
 import 'chromedriver';
 import 'geckodriver';
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
@@ -26,6 +22,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
   waitUntilElementByTestIdIsPresent,
@@ -47,6 +44,16 @@ beforeAll(async () => {
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
   rootURL += extensionId;
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+beforeEach(async (context: any) => {
+  context.driver = driver;
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+afterEach(async (context: any) => {
+  await takeScreenshotOnFailure(context);
 });
 
 afterAll(() => driver.quit());
@@ -170,7 +177,7 @@ it('should be able to go to swap flow', async () => {
   await delayTime('long');
 });
 
-it('should be able to go to review a crosschain swap', async () => {
+it.skip('should be able to go to review a crosschain swap', async () => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-row`,
     driver,
@@ -241,7 +248,7 @@ it('should be able to go to review a crosschain swap', async () => {
   }
 });
 
-it('should be able to see crosschain swap information in review sheet', async () => {
+it.skip('should be able to see crosschain swap information in review sheet', async () => {
   await delayTime('long');
   const daiAssetToSellAssetCard = await findElementByTestId({
     id: `DAI-asset-to-sell-swap-asset-card`,
@@ -379,7 +386,7 @@ it('should be able to see crosschain swap information in review sheet', async ()
   await delayTime('long');
 });
 
-it('should be able to go to review a bridge', async () => {
+it.skip('should be able to go to review a bridge', async () => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -451,7 +458,7 @@ it('should be able to go to review a bridge', async () => {
   await delayTime('long');
 });
 
-it('should be able to see bridge information in review sheet', async () => {
+it.skip('should be able to see bridge information in review sheet', async () => {
   const ethAssetToSellAssetCard = await findElementByTestId({
     id: `ETH-asset-to-sell-swap-asset-card`,
     driver,

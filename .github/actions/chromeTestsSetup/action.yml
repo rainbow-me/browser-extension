@@ -1,0 +1,15 @@
+name: 'Chrome tests setup'
+description: 'runs Chrome tests setup'
+inputs:
+  gh-access-token:
+    description: 'Github Access Token'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+  - uses: ./.github/actions/testsSetup
+    with:
+      gh-access-token: ${{ inputs.gh-access-token }}
+  - name: Install chrome
+    shell: 'bash'
+    run: npx @puppeteer/browsers install chrome@stable

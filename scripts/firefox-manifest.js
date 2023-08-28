@@ -11,7 +11,11 @@ const manifestFF = {
         "id": "bx@rainbow.me",
         "strict_min_version": "115.0"
       },
-    }
+    },
+    host_permissions: [
+      ...manifestBase.host_permissions,
+      "<all_urls>",
+    ]
 };
 
 require('fs').writeFileSync(
