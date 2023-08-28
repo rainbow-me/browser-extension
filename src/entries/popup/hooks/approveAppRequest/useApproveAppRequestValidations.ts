@@ -36,12 +36,10 @@ export const useApproveAppRequestValidations = ({
   chainId?: ChainId;
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
 }) => {
-  const chainIdToUse = chainId;
-
   const nativeAssetUniqueId =
-    chainIdToUse &&
+    chainId &&
     getNetworkNativeAssetUniqueId({
-      chainId: chainIdToUse,
+      chainId: chainId,
     });
   const { data: nativeAsset } = useUserAsset(nativeAssetUniqueId || '');
 
@@ -62,10 +60,10 @@ export const useApproveAppRequestValidations = ({
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
         symbol:
           nativeAsset?.symbol ||
-          DEFAULT_NATIVE_ASSET_SYMBOL[chainIdToUse || ChainId.mainnet],
+          DEFAULT_NATIVE_ASSET_SYMBOL[chainId || ChainId.mainnet],
       });
     return i18n.t('approve_request.send_transaction');
-  }, [chainIdToUse, enoughNativeAssetForGas, nativeAsset?.symbol]);
+  }, [chainId, enoughNativeAssetForGas, nativeAsset?.symbol]);
 
   return {
     enoughNativeAssetForGas:
