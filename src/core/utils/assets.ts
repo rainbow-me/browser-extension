@@ -5,6 +5,7 @@ import { Address, erc20ABI } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
+  AddressOrEth,
   ParsedAsset,
   ParsedSearchAsset,
   ParsedUserAsset,
@@ -71,7 +72,7 @@ export function parseAsset({
   currency,
   chainId: opChainId,
 }: {
-  address: Address;
+  address: AddressOrEth;
   asset: ZerionAsset;
   currency: SupportedCurrencyKey;
   chainId?: ChainId;
@@ -105,14 +106,14 @@ export function parseAsset({
   return parsedAsset;
 }
 
-export function parseAddressAsset({
+export function parseUserAsset({
   address,
   asset,
   currency,
   quantity,
   smallBalance,
 }: {
-  address: Address;
+  address: AddressOrEth;
   asset: ZerionAsset;
   currency: SupportedCurrencyKey;
   quantity: string;

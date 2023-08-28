@@ -1,14 +1,13 @@
 import { expect, test } from 'vitest';
-import { Address } from 'wagmi';
 
 import { ZerionAsset } from '../types/assets';
 import { ChainId, ChainName } from '../types/chains';
 import { SearchAsset } from '../types/search';
 
-import { parseAddressAsset, parseAsset, parseSearchAsset } from './assets';
+import { parseAsset, parseSearchAsset, parseUserAsset } from './assets';
 
-const ETH_FROM_ZERION: ZerionAsset = {
-  asset_code: 'eth' as Address,
+const ETH_FROM_ZERION = {
+  asset_code: 'eth',
   name: 'Ethereum',
   symbol: 'ETH',
   decimals: 18,
@@ -47,9 +46,9 @@ const ETH_FROM_ZERION: ZerionAsset = {
     primary: '#808088',
     fallback: '#E8EAF5',
   },
-  network: 'mainnet' as ChainName,
-  mainnet_address: 'eth' as Address,
-};
+  network: ChainName.mainnet,
+  mainnet_address: 'eth',
+} satisfies ZerionAsset;
 
 const ETH_FROM_SEARCH: SearchAsset = {
   decimals: 18,
@@ -64,7 +63,7 @@ const ETH_FROM_SEARCH: SearchAsset = {
   isRainbowCurated: true,
   isVerified: true,
   networks: {
-    '1': { address: 'eth' as Address, decimals: 18 },
+    '1': { address: 'eth', decimals: 18 },
     '10': {
       address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
@@ -78,14 +77,14 @@ const ETH_FROM_SEARCH: SearchAsset = {
       decimals: 18,
     },
   },
-  address: 'eth' as Address,
+  address: 'eth',
   chainId: 1,
   isNativeAsset: true,
-  mainnetAddress: 'eth' as Address,
+  mainnetAddress: 'eth',
 };
 
 const BSC_ETH_FROM_ZERION = {
-  asset_code: '0x2170ed0880ac9a755fd29b2688956bd959f933f8' as Address,
+  asset_code: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
   decimals: 18,
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/smartchain/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png',
@@ -101,12 +100,11 @@ const BSC_ETH_FROM_ZERION = {
     primary: '#808088',
     fallback: '#E8EAF5',
   },
-  coingecko_id: 'ethereum',
-  mainnet_address: 'eth' as Address,
-};
+  mainnet_address: 'eth',
+} satisfies ZerionAsset;
 
 const USD_FROM_ZERION = {
-  asset_code: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
+  asset_code: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   name: 'USD Coin',
   symbol: 'USDC',
   decimals: 6,
@@ -147,16 +145,11 @@ const USD_FROM_ZERION = {
       address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
       decimals: 6,
     },
-    solana: {
-      address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-      decimals: 6,
-    },
     xdai: {
       address: '0xddafbb505ad214d7b80b1f830fccc89b60fb7a83',
       decimals: 6,
     },
   },
-  type: 'stablecoin',
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
   price: {
@@ -170,9 +163,9 @@ const USD_FROM_ZERION = {
     primary: '#2775CA',
     fallback: '#9ABDE8',
   },
-};
+} satisfies ZerionAsset;
 
-const OPTIMISM_USD_FROM_SEARCH: SearchAsset = {
+const OPTIMISM_USD_FROM_SEARCH = {
   decimals: 6,
   highLiquidity: true,
   name: 'USD Coin',
@@ -217,7 +210,7 @@ const OPTIMISM_USD_FROM_SEARCH: SearchAsset = {
   chainId: 10,
   isNativeAsset: false,
   mainnetAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-};
+} satisfies SearchAsset;
 
 const OPTIMISM_USD_FROM_ZERION = {
   asset_code: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
@@ -225,7 +218,7 @@ const OPTIMISM_USD_FROM_ZERION = {
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
   name: 'USD Coin',
-  network: 'optimism',
+  network: ChainName.optimism,
   price: {
     value: 1.001,
     changed_at: 1678390027,
@@ -236,22 +229,21 @@ const OPTIMISM_USD_FROM_ZERION = {
     primary: '#2775CA',
     fallback: '#9ABDE8',
   },
-  coingecko_id: 'usd-coin',
   mainnet_address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-};
+} satisfies ZerionAsset;
 
 test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
   const eth = parseAsset({
-    address: ETH_FROM_ZERION.asset_code as Address,
-    asset: ETH_FROM_ZERION as ZerionAsset,
+    address: ETH_FROM_ZERION.asset_code,
+    asset: ETH_FROM_ZERION,
     currency: 'USD',
   });
   expect(eth.uniqueId).toEqual('eth_1');
   expect(eth.isNativeAsset).toEqual(true);
 
   const bscEth = parseAsset({
-    address: BSC_ETH_FROM_ZERION.asset_code as Address,
-    asset: BSC_ETH_FROM_ZERION as ZerionAsset,
+    address: BSC_ETH_FROM_ZERION.asset_code,
+    asset: BSC_ETH_FROM_ZERION,
     currency: 'EUR',
   });
   expect(bscEth.uniqueId).toEqual('eth_56');
@@ -259,8 +251,8 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
   expect(bscEth.native.price?.display[0]).toEqual('€');
 
   const usd = parseAsset({
-    address: USD_FROM_ZERION.asset_code as Address,
-    asset: USD_FROM_ZERION as ZerionAsset,
+    address: USD_FROM_ZERION.asset_code,
+    asset: USD_FROM_ZERION,
     currency: 'USD',
   });
   expect(usd.uniqueId).toEqual(
@@ -269,8 +261,8 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
   expect(usd.isNativeAsset).toEqual(false);
 
   const optimismUSD = parseAsset({
-    address: OPTIMISM_USD_FROM_ZERION.asset_code as Address,
-    asset: OPTIMISM_USD_FROM_ZERION as ZerionAsset,
+    address: OPTIMISM_USD_FROM_ZERION.asset_code,
+    asset: OPTIMISM_USD_FROM_ZERION,
     currency: 'USD',
   });
   expect(optimismUSD.uniqueId).toEqual(
@@ -280,14 +272,14 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
   expect(optimismUSD.native.price?.display[0]).toEqual('$');
 });
 
-test('[utils/assets -> parseAddressAsset] :: parse zerion asset with user balance', async () => {
+test('[utils/assets -> parseUserAsset] :: parse zerion asset with user balance', async () => {
   const eth = parseAsset({
-    address: ETH_FROM_ZERION.asset_code as Address,
-    asset: ETH_FROM_ZERION as ZerionAsset,
+    address: ETH_FROM_ZERION.asset_code,
+    asset: ETH_FROM_ZERION,
     currency: 'USD',
   });
-  const ethWithQuantity = parseAddressAsset({
-    address: ETH_FROM_ZERION.asset_code as Address,
+  const ethWithQuantity = parseUserAsset({
+    address: ETH_FROM_ZERION.asset_code,
     asset: ETH_FROM_ZERION,
     currency: 'USD',
     quantity: '38677330754953265',
@@ -298,9 +290,9 @@ test('[utils/assets -> parseAddressAsset] :: parse zerion asset with user balanc
   );
   expect(ethWithQuantity.native.balance.display).toEqual('$58.01');
 
-  const optimismUSDWithQuantity = parseAddressAsset({
-    address: OPTIMISM_USD_FROM_ZERION.asset_code as Address,
-    asset: OPTIMISM_USD_FROM_ZERION as ZerionAsset,
+  const optimismUSDWithQuantity = parseUserAsset({
+    address: OPTIMISM_USD_FROM_ZERION.asset_code,
+    asset: OPTIMISM_USD_FROM_ZERION,
     currency: 'JPY',
     quantity: '423170978092067929',
   });
@@ -313,12 +305,12 @@ test('[utils/assets -> parseAddressAsset] :: parse zerion asset with user balanc
 });
 test('[utils/assets -> parseSearchAsset] :: combine search asset data with optional price socket info and optional address socket info', async () => {
   const eth = parseAsset({
-    address: ETH_FROM_ZERION.asset_code as Address,
-    asset: ETH_FROM_ZERION as ZerionAsset,
+    address: ETH_FROM_ZERION.asset_code,
+    asset: ETH_FROM_ZERION,
     currency: 'USD',
   });
-  const ethWithQuantity = parseAddressAsset({
-    address: ETH_FROM_ZERION.asset_code as Address,
+  const ethWithQuantity = parseUserAsset({
+    address: ETH_FROM_ZERION.asset_code,
     asset: ETH_FROM_ZERION,
     currency: 'USD',
     quantity: '38677330754953265',
@@ -354,13 +346,13 @@ test('[utils/assets -> parseSearchAsset] :: combine search asset data with optio
   expect(ethFromSearchDataWithQuantity.isNativeAsset).toBe(true);
 
   const optimismUSD = parseAsset({
-    address: OPTIMISM_USD_FROM_ZERION.asset_code as Address,
-    asset: OPTIMISM_USD_FROM_ZERION as ZerionAsset,
+    address: OPTIMISM_USD_FROM_ZERION.asset_code,
+    asset: OPTIMISM_USD_FROM_ZERION,
     currency: 'USD',
   });
-  const optimismUSDWithQuantity = parseAddressAsset({
-    address: OPTIMISM_USD_FROM_ZERION.asset_code as Address,
-    asset: OPTIMISM_USD_FROM_ZERION as ZerionAsset,
+  const optimismUSDWithQuantity = parseUserAsset({
+    address: OPTIMISM_USD_FROM_ZERION.asset_code,
+    asset: OPTIMISM_USD_FROM_ZERION,
     currency: 'USD',
     quantity: '38677330754953265',
   });

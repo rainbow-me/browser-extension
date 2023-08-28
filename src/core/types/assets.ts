@@ -68,7 +68,7 @@ export interface ZerionAssetPrice {
 export type AssetType = 'nft' | 'token';
 
 export interface ZerionAsset {
-  asset_code: Address;
+  asset_code: AddressOrEth;
   colors?: {
     primary: string;
     fallback: string;
@@ -77,7 +77,7 @@ export interface ZerionAsset {
     string,
     { address: Address | null; decimals: number }
   >;
-  mainnet_address?: Address;
+  mainnet_address?: AddressOrEth;
   name: string;
   symbol: string;
   decimals: number;

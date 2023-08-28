@@ -27,6 +27,7 @@ import { gasStore } from '../../state';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
+  isLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
@@ -243,12 +244,7 @@ export const swap = async ({
     throw e;
   }
 
-  if (!swap) {
-    return {
-      nonce: undefined,
-      hash: undefined,
-    };
-  }
+  if (!swap) throw new RainbowError('swap: error executeSwap');
 
   const transaction = {
     amount: formatEther(swap?.value?.toString() || ''),
@@ -263,10 +259,7 @@ export const swap = async ({
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
     flashbots: parameters.flashbots,
-    gasPrice: (gasParams as TransactionLegacyGasParams)?.gasPrice,
-    maxFeePerGas: (gasParams as TransactionGasParams)?.maxFeePerGas,
-    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
-      ?.maxPriorityFeePerGas,
+    ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
   };
   addNewTransaction({
     address: parameters.quote.from as Address,

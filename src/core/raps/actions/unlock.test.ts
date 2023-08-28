@@ -3,7 +3,6 @@ import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
 import { mainnet } from '@wagmi/chains';
 import { getProvider } from '@wagmi/core';
 import { beforeAll, expect, test } from 'vitest';
-import { Address } from 'wagmi';
 
 import {
   RAINBOW_WALLET_ADDRESS,
@@ -50,7 +49,7 @@ test('[rap/unlock] :: asset needs unlocking', async () => {
 test('[rap/unlock] :: estimate approve', async () => {
   const approveGasLimit = await estimateApprove({
     owner: RAINBOW_WALLET_ADDRESS,
-    tokenAddress: USDC_MAINNET_ASSET.address as Address,
+    tokenAddress: USDC_MAINNET_ASSET.address,
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: mainnet.id,
   });
@@ -68,7 +67,7 @@ test('[rap/unlock] :: should execute approve', async () => {
       maxPriorityFeePerGas: '2000000000',
     },
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
-    tokenAddress: USDC_MAINNET_ASSET.address as Address,
+    tokenAddress: USDC_MAINNET_ASSET.address,
     wallet,
   });
   expect(approvalTx.hash).toBeDefined();

@@ -16,6 +16,7 @@ import { gasStore } from '../../state';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
+  isLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
@@ -167,6 +168,9 @@ export const crosschainSwap = async ({
     throw e;
   }
 
+  if (!swap)
+    throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
+
   const transaction: NewTransaction = {
     amount: parameters.quote.value?.toString(),
     asset: parameters.assetToSell,
@@ -174,16 +178,13 @@ export const crosschainSwap = async ({
     value: parameters.quote.value,
     from: parameters.quote.from as Address,
     to: parameters.quote.to as Address,
-    hash: swap?.hash,
+    hash: swap.hash,
     chainId: parameters.chainId,
-    nonce: swap?.nonce,
+    nonce: swap.nonce,
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
     flashbots: parameters.flashbots,
-    gasPrice: (gasParams as TransactionLegacyGasParams).gasPrice,
-    maxFeePerGas: (gasParams as TransactionGasParams).maxFeePerGas,
-    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
-      .maxPriorityFeePerGas,
+    ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
   };
   await addNewTransaction({
     address: parameters.quote.from as Address,
@@ -192,7 +193,7 @@ export const crosschainSwap = async ({
   });
 
   return {
-    nonce: swap?.nonce,
-    hash: swap?.hash,
+    nonce: swap.nonce,
+    hash: swap.hash,
   };
 };
