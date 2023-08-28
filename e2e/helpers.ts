@@ -407,7 +407,7 @@ export async function getTextFromDappText({
   return await element.getText();
 }
 
-export async function performShortcutCharacter(
+export async function performShortcutWithNormalKey(
   driver: WebDriver,
   key: IKey,
   keyboardCharacter: string,
@@ -423,7 +423,7 @@ export async function performShortcutCharacter(
   }
 }
 
-export async function performShortcutSpecialCharacter(
+export async function performShortcutWithSpecialKey(
   driver: WebDriver,
   key: string,
 ) {
