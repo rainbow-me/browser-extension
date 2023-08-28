@@ -14,11 +14,7 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import {
-  TransactionGasParams,
-  TransactionLegacyGasParams,
-} from '~/core/types/gas';
-import { NewTransaction } from '~/core/types/transactions';
+import { isLegacyGasParams } from '~/core/types/gas';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -30,6 +26,7 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import * as wallet from '../../../handlers/wallet';
 
+import { NewTransaction } from '~/core/types/transactions';
 import { SendTransactionActions } from './SendTransactionActions';
 import { SendTransactionInfo } from './SendTransactionsInfo';
 
@@ -83,8 +80,8 @@ export function SendTransaction({
         chainId: connectedToHardhat ? ChainId.hardhat : activeSession?.chainId,
       };
       const result = await wallet.sendTransaction(txData);
-      if (result) {
-        const transaction: NewTransaction = {
+      if (result && asset) {
+        const transaction = {
           changes: [
             {
               direction: 'out',
@@ -92,6 +89,7 @@ export function SendTransaction({
               value: formatEther(result?.value || ''),
             },
           ],
+          asset,
           value: formatEther(result?.value || ''),
           data: result.data,
           from: txData.from,
@@ -101,17 +99,12 @@ export function SendTransaction({
           nonce: result.nonce,
           status: 'pending',
           type: 'send',
-          gasPrice: (
-            selectedGas.transactionGasParams as TransactionLegacyGasParams
-          )?.gasPrice,
-          maxFeePerGas: (
-            selectedGas.transactionGasParams as TransactionGasParams
-          )?.maxFeePerGas,
-          maxPriorityFeePerGas: (
-            selectedGas.transactionGasParams as TransactionGasParams
-          )?.maxPriorityFeePerGas,
-        };
-        await addNewTransaction({
+          ...(isLegacyGasParams(selectedGas.transactionGasParams)
+            ? selectedGas.transactionGasParams
+            : selectedGas.transactionGasParams),
+        } satisfies NewTransaction;
+
+        addNewTransaction({
           address: txData.from as Address,
           chainId: txData.chainId as ChainId,
           transaction,

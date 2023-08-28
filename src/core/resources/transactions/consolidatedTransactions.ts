@@ -185,7 +185,7 @@ const findTransaction = (
   }
 };
 
-export function useTransaction(hash: RainbowTransaction['hash']) {
+export function useTransaction(hash?: RainbowTransaction['hash']) {
   const queryClient = useQueryClient();
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
@@ -199,7 +199,7 @@ export function useTransaction(hash: RainbowTransaction['hash']) {
         queryClient,
         key,
       );
-      return findTransaction(hash, queryData?.pages);
+      return findTransaction(hash!, queryData?.pages);
     },
     enabled: !!hash,
     initialData: () => {
@@ -207,7 +207,7 @@ export function useTransaction(hash: RainbowTransaction['hash']) {
         queryClient,
         key,
       );
-      return findTransaction(hash, queryData?.pages);
+      return findTransaction(hash!, queryData?.pages);
     },
     initialDataUpdatedAt: () => queryClient.getQueryState(key)?.dataUpdatedAt,
   });

@@ -185,7 +185,13 @@ const YouOrAddress = ({ address }: { address: Address }) => {
   );
 };
 
-function ToFrom({ to, from }: { to: Address; from: Address }) {
+function ToFrom({
+  to,
+  from,
+}: {
+  to?: Address; // may not have a to when it's a contract deployment
+  from: Address;
+}) {
   return (
     <Stack space="24px">
       <InfoRow
@@ -199,17 +205,19 @@ function ToFrom({ to, from }: { to: Address; from: Address }) {
           </Inline>
         }
       />
-      <InfoRow
-        symbol="paperplane.fill"
-        label="To"
-        value={
-          <Inline space="6px" alignVertical="center">
-            <WalletAvatar address={to} size={16} emojiSize="9pt" />
-            <YouOrAddress address={to} />
-            <AddressMoreOptions address={to} />
-          </Inline>
-        }
-      />
+      {to && (
+        <InfoRow
+          symbol="paperplane.fill"
+          label="To"
+          value={
+            <Inline space="6px" alignVertical="center">
+              <WalletAvatar address={to} size={16} emojiSize="9pt" />
+              <YouOrAddress address={to} />
+              <AddressMoreOptions address={to} />
+            </Inline>
+          }
+        />
+      )}
     </Stack>
   );
 }
@@ -220,7 +228,7 @@ function ConfirmationData({
   transaction: RainbowTransaction;
 }) {
   const { data: txData } = useWagmiTransaction({
-    hash: transaction.hash?.split('-')[0], // TODO
+    hash: transaction.hash,
     chainId: transaction.chainId,
   });
   return (
@@ -234,11 +242,11 @@ function ConfirmationData({
           </CopyableValue>
         }
       />
-      {txData?.maxPriorityFeePerGas && (
+      {txData?.timestamp && (
         <InfoRow
           symbol="clock.badge.checkmark"
           label="Confirmed at"
-          value={formatDate(txData?.timestamp)}
+          value={formatDate(txData.timestamp)}
         />
       )}
       {/* <InfoRow
@@ -264,7 +272,7 @@ function ConfirmationData({
 
 function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
   const { data: txData } = useWagmiTransaction({
-    hash: transaction.hash?.split('-')[0], // TODO
+    hash: transaction.hash,
     chainId: transaction.chainId,
   });
 
