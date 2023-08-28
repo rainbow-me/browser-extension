@@ -3,14 +3,25 @@ import { style } from '@vanilla-extract/css';
 import { textStyles } from '~/design-system';
 
 const fallbackTextBaseStyles = textStyles({
+  fontFamily: 'rounded',
   fontWeight: 'bold',
   textAlign: 'center',
   color: 'label',
 });
 
-export const fallbackTextStyleExtraSmall = style([
+export const fallbackTextStyleTiny = style([
   fallbackTextBaseStyles,
-  { fontSize: '5pt' },
+  { fontSize: '3pt', fontWeight: 'heavy' },
+]);
+
+export const fallbackTextStyleXXSmall = style([
+  fallbackTextBaseStyles,
+  { fontSize: '4pt', fontWeight: 'heavy' },
+]);
+
+export const fallbackTextStyleXSmall = style([
+  fallbackTextBaseStyles,
+  { fontSize: '5pt', fontWeight: 'heavy' },
 ]);
 
 export const fallbackTextStyleSmall = style([

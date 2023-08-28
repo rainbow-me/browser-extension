@@ -72,7 +72,7 @@ describe('New wallet flow', () => {
     );
 
     const actual = await label.getText();
-    expect(actual.substr(0, 2) === '0x' && actual.length === 13).toEqual(true);
+    expect(actual.substr(0, 2) === '0x' && actual.length === 11).toEqual(true);
   });
 
   it('should be able to lock and unlock the extension', async () => {

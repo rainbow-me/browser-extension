@@ -5,6 +5,9 @@
   "label": {
     "toggle": "Toggle"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant the permission in order to continue."
+  },
   "wallet_switcher": {
     "title": "Wallets",
     "rename_wallet": "Rename wallet",
@@ -309,40 +312,117 @@
     }
   },
   "command_k": {
+    "action_labels": {
+      "activate_command": "Activate Command",
+      "open": "Open",
+      "open_in_new_tab": "Open in New Tab",
+      "switch_to_wallet": "Switch to Wallet",
+      "view": "View"
+    },
+    "commands": {
+      "names": {
+        "send": "Send",
+        "swap": "Swap",
+        "my_wallets": "My Wallets",
+        "my_tokens": "My Tokens",
+        "my_tokens_watched": "Tokens",
+        "copy_address": "Copy Address",
+        "view_nfts": "View NFTs",
+        "add_wallet": "Add a Wallet",
+        "lock": "Lock Rainbow",
+        "connected_apps": "Connected Apps",
+        "settings": "Settings",
+        "my_qr_code": "My QR Code",
+        "my_qr_code_watched": "QR Code",
+        "create_wallet": "Create a Wallet",
+        "import_wallet": "Import a Wallet",
+        "watch_wallet": "Watch a Wallet",
+        "add_hardware_wallet": "Add a Hardware Wallet",
+        "hide_balances": "Toggle Hidden Balances",
+        "hide_balances_hidden": "Show Balances",
+        "hide_balances_revealed": "Hide Balances",
+        "hide_small_balances": "Toggle Small Balances",
+        "hide_small_balances_hidden": "Show Small Balances",
+        "hide_small_balances_revealed": "Hide Small Balances",
+        "wallets_and_keys": "Wallets & Keys",
+        "view_full_screen": "View Full Screen",
+        "view_token": "View Token",
+        "send_token": "Send Token",
+        "swap_token": "Swap Token",
+        "copy_token_address": "Copy Token Contract Address",
+        "view_token_on_explorer": "View on Explorer",
+        "add_as_watched_wallet": "Watch This Wallet",
+        "view_on_ens": "View on ENS",
+        "switch_to_wallet": "Switch to This Wallet",
+        "copy_wallet_address": "Copy Address",
+        "view_wallet_on_etherscan": "View on Etherscan"
+      },
+      "search_tags": {
+        "swap": "bridge",
+        "my_wallets": "switch",
+        "my_tokens_watched": "my",
+        "view_nfts": "gallery, profile",
+        "settings": "preferences",
+        "my_qr_code_watched": "my",
+        "create_wallet": "add, new",
+        "import_wallet": "add, secret recovery, seed phrase, private key",
+        "watch_wallet": "add",
+        "add_hardware_wallet": "ledger, trezor, connect",
+        "hide_balances": "toggle",
+        "hide_small_balances": "toggle",
+        "wallets_and_keys": "wallets and keys, settings, preferences"
+      }
+    },
+    "command_rows": {
+      "no_value": "No Value"
+    },
     "hide_balances_toast": {
       "description_hidden": "Your balances are obscured",
       "description_revealed": "Your balances are visible",
       "title_hidden": "Balances Hidden",
       "title_revealed": "Balances Revealed"
     },
-    "no_results": "No results",
-    "section_titles": {
-      "shortcuts": "Shortcuts"
+    "hide_small_balances_toast": {
+      "description_hidden": "Balances under $1",
+      "description_revealed": "All tokens visible",
+      "title_hidden": "Small Balances Hidden",
+      "title_revealed": "Showing Small Balances"
     },
-    "search_placeholder": "Search or enter command…",
-    "shortcuts": {
-      "names": {
-        "send": "Send",
-        "swap": "Swap",
-        "copy_address": "Copy Address",
-        "view_nfts": "View NFTs",
-        "switch_wallets": "Switch Wallets",
-        "settings": "Settings",
-        "add_wallet": "Add a Wallet",
-        "watch_wallet": "Watch a Wallet",
-        "hide_balances": "Toggle Hidden Balances",
-        "wallets_and_keys": "Wallets & Keys",
-        "view_full_screen": "View Full Screen"
+    "no_results": "No results",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "Search ways to add a wallet…",
+        "section_title": "Add a Wallet"
       },
-      "search_tags": {
-        "swap": "bridge",
-        "view_nfts": "gallery, profile",
-        "settings": "preferences",
-        "add_wallet": "create, import, hardware wallet",
-        "hide_balances_hidden": "show, hide",
-        "hide_balances_revealed": "hide",
-        "wallets_and_keys": "wallets and keys"
+      "home": {
+        "search_placeholder": "Search or enter command…",
+        "section_title": "Suggestions",
+        "section_title_results": "Results"
+      },
+      "my_tokens": {
+        "empty_label": "No tokens found",
+        "search_placeholder": "Search tokens…",
+        "section_title": "My Tokens"
+      },
+      "my_wallets": {
+        "search_placeholder": "Select a wallet to switch to…",
+        "section_title": "My Wallets"
+      },
+      "token_detail": {
+        "search_placeholder": "Search token actions…",
+        "section_title": "Actions"
+      },
+      "wallet_detail": {
+        "search_placeholder": "Search wallet actions…",
+        "section_title": "Actions"
       }
+    },
+    "quick_promo": {
+      "text": "Press ⌘K to open the command menu",
+      "text_bold": "Tip:"
+    },
+    "toolbar": {
+      "actions_hint": "Actions"
     }
   },
   "connected_apps": {

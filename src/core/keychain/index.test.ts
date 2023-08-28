@@ -240,7 +240,8 @@ test('[keychain/index] :: should be able to send transactions', async () => {
   };
   const result = await sendTransaction(tx, provider);
   expect(isHexString(result.hash)).toBe(true);
-  const receipt = await result.wait();
+  const txReceipt = await provider.getTransaction(result.hash);
+  const receipt = await txReceipt.wait();
   expect(receipt.status).toBe(1);
   expect(receipt.blockNumber).toBeGreaterThan(0);
   expect(receipt.confirmations).toBeGreaterThan(0);

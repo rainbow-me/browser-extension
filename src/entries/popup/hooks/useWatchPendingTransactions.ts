@@ -62,6 +62,7 @@ export const useWatchPendingTransactions = ({
                 included: nonceAlreadyIncluded,
                 transaction: tx,
                 transactionResponse,
+                provider,
               });
 
               let pendingTransactionData = getPendingTransactionData({

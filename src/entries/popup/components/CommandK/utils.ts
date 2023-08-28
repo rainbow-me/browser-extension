@@ -6,21 +6,34 @@ import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
+import { SearchItem, SearchItemType } from './SearchItems';
+import { CommandKPage, PAGES } from './pageConfig';
 import { useCommandKStatus } from './useCommandKStatus';
-import { ShortcutCommand } from './useCommands';
 
 export const SCROLL_TO_BEHAVIOR = 'auto';
 
-interface ShortcutCommandWithRelevance extends ShortcutCommand {
+export type SearchItemWithRelevance = SearchItem & {
   relevance: number;
-}
+};
 
 interface CacheItem {
   [name: string]: number;
 }
 
+const shouldHideCommand = (
+  command: SearchItem,
+  currentPage: CommandKPage,
+  query: string,
+) =>
+  command.hidden ||
+  (currentPage === PAGES.HOME &&
+    query === '' &&
+    command.type === SearchItemType.Wallet) ||
+  (currentPage === PAGES.HOME && command.hideFromMainSearch) ||
+  (currentPage !== PAGES.HOME && currentPage !== command.page);
+
 const calculateCommandRelevance = (
-  command: ShortcutCommand,
+  command: SearchItem,
   query: string,
 ): number => {
   if (query === '') {
@@ -32,129 +45,238 @@ const calculateCommandRelevance = (
     const normalizedCommandName = command.name.toLowerCase();
     const commandNameWords = normalizedCommandName.split(' ');
 
-    // High relevance: Command name starts with query
-    if (
-      !command.downrank &&
-      normalizedCommandName.startsWith(normalizedQuery)
-    ) {
+    const normalizedShortcutKey = command.shortcut?.key.toLowerCase();
+
+    if (command.type === SearchItemType.Wallet) {
+      const normalizedAddress = command.address
+        ? command.address.toLowerCase()
+        : '';
+      const normalizedWalletName = command.walletName
+        ? command.walletName.toLowerCase()
+        : '';
+      const normalizedEnsName = command.ensName
+        ? command.ensName.toLowerCase()
+        : '';
+
+      // High relevance: Wallet name or ENS name or address starts with the query
+      if (
+        (normalizedQuery.length > 2 &&
+          normalizedAddress.startsWith(normalizedQuery)) ||
+        normalizedWalletName.startsWith(normalizedQuery) ||
+        normalizedEnsName.startsWith(normalizedQuery) ||
+        (normalizedShortcutKey && normalizedShortcutKey === normalizedQuery)
+      ) {
+        return 4;
+      }
+
+      // Low-medium relevance: Wallet name, ENS name, or address contains the query
+      if (
+        normalizedWalletName.includes(normalizedQuery) ||
+        normalizedEnsName.includes(normalizedQuery)
+      ) {
+        return 2;
+      }
+    } else if (command.type === SearchItemType.ENSOrAddressResult) {
+      // Only a single exact match is possible
       return 4;
-    }
+    } else {
+      // High relevance: Command name starts with query
+      if (
+        (!command.downrank &&
+          normalizedCommandName.startsWith(normalizedQuery)) ||
+        (normalizedShortcutKey && normalizedShortcutKey === normalizedQuery)
+      ) {
+        return 4;
+      }
 
-    // Medium relevance: Non-leading word in command name starts with query
-    if (
-      commandNameWords.some(
-        (word, index) => index !== 0 && word.startsWith(normalizedQuery),
-      )
-    ) {
-      return 3;
-    }
+      // Medium relevance: Non-leading word in command name starts with query
+      if (
+        commandNameWords.some(
+          (word, index) => index !== 0 && word.startsWith(normalizedQuery),
+        )
+      ) {
+        return 3;
+      }
 
-    // Low-medium relevance: A search tag begins with the query
-    const normalizedTags = command.searchTags
-      ? command.searchTags.map((tag) => tag.toLowerCase())
-      : [];
-    if (normalizedTags.some((tag) => tag.startsWith(normalizedQuery))) {
-      return 2;
-    }
+      // Low-medium relevance: A search tag begins with the query
+      const normalizedTags = command.searchTags
+        ? command.searchTags.map((tag) => tag.toLowerCase())
+        : [];
+      if (normalizedTags.some((tag) => tag.startsWith(normalizedQuery))) {
+        return 2;
+      }
 
-    // Low relevance: Command name or search tags contain the query
-    const checkSet = new Set([...commandNameWords, ...normalizedTags]);
-    if (
-      queryWords.every((word) => {
-        for (const item of checkSet) {
-          if (item.includes(word)) {
-            checkSet.delete(item);
-            return true;
+      // Low relevance: Command name or search tags contain the query
+      const checkSet = new Set([...commandNameWords, ...normalizedTags]);
+      if (
+        queryWords.every((word) => {
+          for (const item of checkSet) {
+            if (item.includes(word)) {
+              checkSet.delete(item);
+              return true;
+            }
           }
-        }
-        return false;
-      })
-    ) {
-      return 1;
+          return false;
+        })
+      ) {
+        return 1;
+      }
     }
-
     return 0;
   }
 };
 
 const memoize = (
   search: (
+    commandList: SearchItem[],
+    currentPage: CommandKPage,
     query: string,
-    shortcutList: ShortcutCommand[],
-  ) => ShortcutCommandWithRelevance[],
+  ) => SearchItemWithRelevance[],
 ) => {
-  const resultsCache = new Map<string, CacheItem>();
+  const pageCache = new Map<CommandKPage, Map<string, CacheItem>>();
+  let commandListVersion = 0;
 
   return (
+    commandList: SearchItem[],
+    currentPage: CommandKPage,
     query: string,
-    shortcutList: ShortcutCommand[],
-  ): ShortcutCommandWithRelevance[] => {
+  ): SearchItemWithRelevance[] => {
+    let resultsCache = pageCache.get(currentPage);
+    if (!resultsCache) {
+      resultsCache = new Map<string, CacheItem>();
+      pageCache.set(currentPage, resultsCache);
+    }
+
     if (query === '') {
-      return shortcutList.map((sc) => ({ ...sc, relevance: 0 }));
+      return commandList
+        .filter(
+          (cmd) =>
+            cmd.page === currentPage &&
+            !shouldHideCommand(cmd, currentPage, query),
+        )
+        .map((cmd) => ({ ...cmd, relevance: 0 }));
+    }
+
+    const currentVersion = commandList.length;
+
+    if (commandListVersion !== currentVersion) {
+      for (const [query, cacheItem] of resultsCache) {
+        const newCacheItem: CacheItem = {};
+        commandList.forEach((cmd) => {
+          const key = cmd.id || cmd.name;
+          const relevance =
+            key in cacheItem
+              ? cacheItem[key]
+              : calculateCommandRelevance(cmd, query);
+          newCacheItem[key] = relevance;
+        });
+        resultsCache.set(query, newCacheItem);
+      }
+      commandListVersion = currentVersion;
     }
 
     if (!resultsCache.has(query)) {
-      const result = search(query, shortcutList);
+      const result = search(commandList, currentPage, query);
       const cacheItem: CacheItem = {};
-      result.forEach((item) => (cacheItem[item.name] = item.relevance));
+      result.forEach(
+        (item) => (cacheItem[item.id || item.name] = item.relevance),
+      );
       resultsCache.set(query, cacheItem);
     }
 
     const cachedItem = resultsCache.get(query) as CacheItem;
 
-    return shortcutList
-      .map((sc) => ({ ...sc, relevance: cachedItem[sc.name] || 0 }))
-      .filter((sc) => sc.relevance > 0)
+    return commandList
+      .map((cmd) => ({
+        ...cmd,
+        relevance: cachedItem[cmd.id || cmd.name] || 0,
+      }))
+      .filter((cmd) => cmd.relevance > 0)
       .sort((a, b) => b.relevance - a.relevance);
   };
 };
 
-export const filterAndSortShortcuts = memoize(
+export const filterAndSortCommands = memoize(
   (
+    commandList: SearchItem[],
+    currentPage: CommandKPage,
     query: string,
-    shortcutList: ShortcutCommand[],
-  ): ShortcutCommandWithRelevance[] => {
-    const shortcutWithRelevance: ShortcutCommandWithRelevance[] = [];
+  ): SearchItemWithRelevance[] => {
+    const commandWithRelevance: SearchItemWithRelevance[] = [];
 
-    for (const command of shortcutList) {
+    for (const command of commandList) {
+      if (shouldHideCommand(command, currentPage, query)) {
+        // Do not show command in results
+        continue;
+      }
+
       const relevance = calculateCommandRelevance(command, query);
 
       if (relevance > 0) {
-        shortcutWithRelevance.push({ ...command, relevance });
+        commandWithRelevance.push({ ...command, relevance });
       }
     }
 
-    return shortcutWithRelevance.sort((a, b) => b.relevance - a.relevance);
+    return commandWithRelevance.sort((a, b) => b.relevance - a.relevance);
   },
 );
 
 export function useCommandExecution(
+  clearPageState: () => void,
   clearSearch: () => void,
-  shortcutList: ShortcutCommand[],
+  filteredCommands: SearchItem[],
+  navigateTo: (page: CommandKPage, triggeredCommand: SearchItem) => void,
+  selectedCommand: SearchItem | null,
+  setDidScrollOrNavigate: React.Dispatch<React.SetStateAction<boolean>>,
+  setSelectedCommand: React.Dispatch<React.SetStateAction<SearchItem | null>>,
 ) {
   const { closeCommandK } = useCommandKStatus();
   const navigate = useRainbowNavigate();
-  const [selectedCommand, setSelectedCommand] =
-    React.useState<ShortcutCommand | null>(shortcutList[0]);
 
   const handleExecuteCommand = React.useCallback(
-    (command: ShortcutCommand | null) => {
-      if (command) {
-        closeCommandK({ refocus: command.shouldRemainOnActiveRoute ?? false });
-        if (command.action) {
-          if (!command.shouldRemainOnActiveRoute) {
-            navigate(ROUTES.HOME);
-          }
-          command.action();
-        } else if (command.to) {
-          navigate(ROUTES.HOME);
-          navigate(command.to);
+    (command: SearchItem | null, e?: KeyboardEvent) => {
+      if (e) {
+        const { key, metaKey, shiftKey } = e;
+        const isCommandEnter = key === shortcuts.global.SELECT.key && metaKey;
+        const isShiftEnter = key === shortcuts.global.SELECT.key && shiftKey;
+
+        if (command?.actionPage && (isCommandEnter || isShiftEnter)) {
+          navigateTo(command.actionPage, command);
+          setDidScrollOrNavigate(true);
+          return;
         }
-        clearSearch();
-        setSelectedCommand(shortcutList[0]);
+      }
+
+      if (command) {
+        if (command.toPage) {
+          navigateTo(command.toPage, command);
+          setDidScrollOrNavigate(true);
+        } else {
+          closeCommandK({
+            refocus: command.shouldRemainOnActiveRoute ?? false,
+          });
+          if (command.action) {
+            if (!command.shouldRemainOnActiveRoute) {
+              navigate(ROUTES.HOME);
+            }
+            command.action();
+          } else if (command.to) {
+            navigate(ROUTES.HOME);
+            navigate(command.to);
+          }
+          clearSearch();
+          clearPageState();
+        }
       }
     },
-    [clearSearch, closeCommandK, navigate, shortcutList],
+    [
+      clearPageState,
+      clearSearch,
+      closeCommandK,
+      navigate,
+      navigateTo,
+      setDidScrollOrNavigate,
+    ],
   );
 
   return { selectedCommand, setSelectedCommand, handleExecuteCommand };
@@ -162,22 +284,20 @@ export function useCommandExecution(
 
 export function useKeyboardNavigation(
   didScrollOrNavigate: boolean,
-  filteredShortcuts: ShortcutCommand[],
-  handleExecuteCommand: (command: ShortcutCommand | null) => void,
+  filteredCommands: SearchItem[],
+  handleExecuteCommand: (command: SearchItem | null, e?: KeyboardEvent) => void,
   listRef: React.RefObject<HTMLDivElement>,
-  selectedCommand: ShortcutCommand | null,
+  selectedCommand: SearchItem | null,
   selectedCommandIndex: number,
   setDidScrollOrNavigate: React.Dispatch<React.SetStateAction<boolean>>,
-  setSelectedCommand: React.Dispatch<
-    React.SetStateAction<ShortcutCommand | null>
-  >,
+  setSelectedCommand: React.Dispatch<React.SetStateAction<SearchItem | null>>,
 ) {
   const scrollTimer = React.useRef<NodeJS.Timeout | null>(null);
 
   // Handle arrow key and tab navigation
   const handleKeyboardNavigation = React.useCallback(
     (e: KeyboardEvent) => {
-      const { key, shiftKey } = e;
+      const { key, altKey, shiftKey } = e;
       const isArrowUp = key === 'ArrowUp';
       const isArrowDown = key === 'ArrowDown';
       const isTab = key === 'Tab';
@@ -185,7 +305,7 @@ export function useKeyboardNavigation(
       if (isArrowUp || isArrowDown || isTab) {
         e.preventDefault();
 
-        if (filteredShortcuts.length === 0) {
+        if (filteredCommands.length === 0) {
           setSelectedCommand(null);
           return;
         }
@@ -215,10 +335,20 @@ export function useKeyboardNavigation(
             listRef.current.scrollHeight;
         }
 
-        if (isArrowUp || (isTab && shiftKey)) {
+        if (isArrowUp && altKey) {
+          newSelectedCommandIndex = 0;
+          requestAnimationFrame(() => {
+            listRef.current?.scrollTo({
+              top: 0,
+              behavior: SCROLL_TO_BEHAVIOR,
+            });
+          });
+        } else if (isArrowDown && altKey) {
+          newSelectedCommandIndex = filteredCommands.length - 1;
+        } else if (isArrowUp || (isTab && shiftKey)) {
           newSelectedCommandIndex =
             isTab && selectedCommandIndex === 0
-              ? filteredShortcuts.length - 1
+              ? filteredCommands.length - 1
               : Math.max(selectedCommandIndex - 1, 0);
           if (isArrowUp && selectedCommandIndex === 0) {
             listRef.current?.scrollTo({
@@ -228,23 +358,25 @@ export function useKeyboardNavigation(
           }
         } else if (
           isTab &&
-          selectedCommandIndex === filteredShortcuts.length - 1
+          selectedCommandIndex === filteredCommands.length - 1
         ) {
           newSelectedCommandIndex = 0;
-          listRef.current?.scrollTo({
-            top: 0,
-            behavior: SCROLL_TO_BEHAVIOR,
+          requestAnimationFrame(() => {
+            listRef.current?.scrollTo({
+              top: 0,
+              behavior: SCROLL_TO_BEHAVIOR,
+            });
           });
         } else {
           newSelectedCommandIndex = Math.min(
             selectedCommandIndex + 1,
-            filteredShortcuts.length - 1,
+            filteredCommands.length - 1,
           );
         }
 
         const firstCommandIsSelected = newSelectedCommandIndex === 0;
         const lastCommandIsSelected =
-          newSelectedCommandIndex === filteredShortcuts.length - 1;
+          newSelectedCommandIndex === filteredCommands.length - 1;
         const selectedCommandDidChange =
           newSelectedCommandIndex !== selectedCommandIndex;
 
@@ -256,7 +388,7 @@ export function useKeyboardNavigation(
             !selectedCommandDidChange &&
             !listIsScrolledToBottom);
 
-        const newSelectedCommand = filteredShortcuts[newSelectedCommandIndex];
+        const newSelectedCommand = filteredCommands[newSelectedCommandIndex];
 
         if (selectedCommandDidChange || scrollPositionShouldUpdate) {
           if (!didScrollOrNavigate) {
@@ -266,12 +398,12 @@ export function useKeyboardNavigation(
           setSelectedCommand(newSelectedCommand);
         }
       } else if (selectedCommand && key === shortcuts.global.SELECT.key) {
-        handleExecuteCommand(selectedCommand);
+        handleExecuteCommand(selectedCommand, e);
       }
     },
     [
       didScrollOrNavigate,
-      filteredShortcuts,
+      filteredCommands,
       handleExecuteCommand,
       listRef,
       selectedCommand,

@@ -10,7 +10,7 @@ import { Box, Separator, Text } from '~/design-system';
 import * as wallet from '../../handlers/wallet';
 
 const shortAddress = (address: string) => {
-  return `${address?.substring(0, 6)}...${address?.substring(38, 42)}`;
+  return `${address?.substring(0, 6)}…${address?.substring(38, 42)}`;
 };
 
 function PasswordForm({

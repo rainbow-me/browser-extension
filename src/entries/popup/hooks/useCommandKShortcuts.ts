@@ -39,7 +39,7 @@ export function useCommandKShortcuts() {
     return !disableOnCurrentRoute;
   }, [disableOnCurrentRoute]);
 
-  const handleOpenCommandK = React.useCallback(
+  const handleCommandKShortcutPress = React.useCallback(
     (e: KeyboardEvent) => {
       if (!isCommandKVisible) {
         e.preventDefault();
@@ -58,16 +58,6 @@ export function useCommandKShortcuts() {
     [isCommandKVisible, openCommandK, closeCommandK, setLastActiveElement],
   );
 
-  const closeCommandKHandler = React.useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === shortcuts.global.CLOSE.key && isCommandKVisible) {
-        e.preventDefault();
-        closeCommandK();
-      }
-    },
-    [isCommandKVisible, closeCommandK],
-  );
-
   React.useEffect(() => {
     if (disableOnCurrentRoute && isCommandKVisible) {
       closeCommandK();
@@ -78,7 +68,7 @@ export function useCommandKShortcuts() {
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.COMMAND_K.key) {
-        handleOpenCommandK(e);
+        handleCommandKShortcutPress(e);
       }
     },
     condition: getCommandKTriggerIsActive,
@@ -90,14 +80,9 @@ export function useCommandKShortcuts() {
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.COMMAND_K.key && !getInputIsFocused()) {
-        handleOpenCommandK(e);
+        handleCommandKShortcutPress(e);
       }
     },
     condition: getCommandKTriggerIsActive,
-  });
-
-  useKeyboardShortcut({
-    handler: closeCommandKHandler,
-    enableWithinCommandK: true,
   });
 }

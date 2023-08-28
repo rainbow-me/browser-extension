@@ -15,15 +15,17 @@ import { AccentColorProvider, Box } from '~/design-system';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
 
-import { ChainBadge } from '../ChainBadge/ChainBadge';
+import { ChainBadge, ChainIconProps } from '../ChainBadge/ChainBadge';
 import ExternalImage from '../ExternalImage/ExternalImage';
 
 import {
   fallbackTextStyleExtraLarge,
-  fallbackTextStyleExtraSmall,
   fallbackTextStyleLarge,
   fallbackTextStyleMedium,
   fallbackTextStyleSmall,
+  fallbackTextStyleTiny,
+  fallbackTextStyleXSmall,
+  fallbackTextStyleXXSmall,
 } from './CoinIcon.css';
 
 export function CoinIcon({
@@ -31,6 +33,9 @@ export function CoinIcon({
   fallbackText,
   size = 36,
   badge,
+  badgePositionBottom = 0,
+  badgePositionLeft = -6,
+  badgeSize = '16',
 }: {
   asset?:
     | ParsedAsset
@@ -41,6 +46,9 @@ export function CoinIcon({
   fallbackText?: string;
   size?: number;
   badge?: boolean;
+  badgePositionBottom?: number;
+  badgePositionLeft?: number;
+  badgeSize?: ChainIconProps['size'];
 }) {
   const sym = asset?.symbol || fallbackText || '';
 
@@ -53,6 +61,9 @@ export function CoinIcon({
   return (
     <CoinIconWrapper
       badge={badge}
+      badgePositionBottom={badgePositionBottom}
+      badgePositionLeft={badgePositionLeft}
+      badgeSize={badgeSize}
       size={size}
       shadowColor={shadowColor}
       chainId={chain}
@@ -77,7 +88,7 @@ export function CoinIcon({
             display: 'flex',
           }}
         >
-          <Box as={'p'} className={getFallbackTextStyle(sym, size)}>
+          <Box as={'p'} className={getFallbackTextStyle(size, sym)}>
             {upperCase(formattedSymbol)}
           </Box>
         </Box>
@@ -98,8 +109,8 @@ function ShadowWrapper({
   return (
     <AccentColorProvider color={color}>
       <Box
-        boxShadow={'24px accent'}
-        background="fillSecondary"
+        boxShadow={size < 30 ? '12px accent' : '24px accent'}
+        background="transparent"
         borderRadius="round"
         style={{
           width: size,
@@ -119,21 +130,33 @@ function CoinIconWrapper({
   shadowColor,
   size,
   badge = true,
+  badgePositionBottom,
+  badgePositionLeft,
+  badgeSize,
 }: {
   chainId: ChainId;
   children: React.ReactNode;
   shadowColor: string;
   size: number;
   badge?: boolean;
+  badgePositionBottom: number;
+  badgePositionLeft: number;
+  badgeSize: ChainIconProps['size'];
 }) {
   return (
-    <Box position="relative">
+    <Box position="relative" style={{ height: size, width: size }}>
       <ShadowWrapper color={shadowColor} size={size}>
         {children}
       </ShadowWrapper>
       {badge && chainId !== ChainId.mainnet && (
-        <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
-          <ChainBadge chainId={chainId} shadow size="16" />
+        <Box
+          display="flex"
+          height="fit"
+          position="absolute"
+          style={{ bottom: badgePositionBottom, left: badgePositionLeft }}
+          width="fit"
+        >
+          <ChainBadge chainId={chainId} shadow size={badgeSize} />
         </Box>
       )}
     </Box>
@@ -168,18 +191,20 @@ function CloudinaryCoinIcon({
   return <Fragment>{children}</Fragment>;
 }
 
-function getFallbackTextStyle(text: string, size: number) {
+function getFallbackTextStyle(size: number, text: string) {
   if (!text) return undefined;
 
-  if (size < 24) return fallbackTextStyleExtraSmall;
-  if (text.length > 4) {
-    if (size < 28) return fallbackTextStyleExtraSmall;
+  if (size < 30) {
+    if (text.length > 4) return fallbackTextStyleTiny;
+    else if (text.length === 4) return fallbackTextStyleXXSmall;
+    else if (text.length === 3) return fallbackTextStyleXSmall;
     return fallbackTextStyleSmall;
+  } else {
+    if (text.length > 4) return fallbackTextStyleSmall;
+    else if (text.length === 4) return fallbackTextStyleMedium;
+    else if (text.length === 3) return fallbackTextStyleLarge;
+    return fallbackTextStyleExtraLarge;
   }
-  if (size < 28) return fallbackTextStyleSmall;
-  if (text.length === 4) return fallbackTextStyleMedium;
-  if (text.length === 3) return fallbackTextStyleLarge;
-  return fallbackTextStyleExtraLarge;
 }
 
 const _cache: Record<string, string> = {};
