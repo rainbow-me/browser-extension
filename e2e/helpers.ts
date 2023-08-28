@@ -23,7 +23,7 @@ import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
 // consts
 
-const waitUntilTime = 20_000;
+const waitUntilTime = 30_000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
@@ -315,12 +315,15 @@ export async function waitUntilElementByTestIdIsPresent({
   id: string;
   driver: WebDriver;
 }): Promise<void> {
-  await delayTime('medium');
-  const element = await findElementByTestId({ id, driver });
-  if (element) {
-    return;
+  await delayTime('long');
+  try {
+    const element = await findElementByTestId({ id, driver });
+    if (element) {
+      return;
+    }
+  } catch (error) {
+    return waitUntilElementByTestIdIsPresent({ id, driver });
   }
-  return waitUntilElementByTestIdIsPresent({ id, driver });
 }
 
 export async function findElementByIdAndClick({
