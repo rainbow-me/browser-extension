@@ -9,7 +9,9 @@ import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
 import { add } from '~/core/utils/numbers';
 
 // selectors
-export function selectUserAssetsList(assets: ParsedAssetsDictByChain = {}) {
+export function selectUserAssetsList(
+  assets: ParsedAssetsDictByChain = {} as ParsedAssetsDictByChain,
+) {
   return Object.values(assets)
     .filter(Boolean)
     .map((chainAssets) => Object.values(chainAssets))
@@ -31,9 +33,7 @@ export function selectUserAssetsDictByChain(assets: ParsedAssetsDictByChain) {
   return assets;
 }
 
-export function selectUserAssetsListByChainId(
-  assets: ParsedAssetsDictByChain = {},
-) {
+export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
   const assetsByNetwork = [
     assets?.[ChainId.mainnet],
     assets?.[ChainId.optimism],
@@ -56,10 +56,10 @@ export function selectUserAssetsListByChainId(
 }
 
 export function selectUserAssetAddressMapByChainId(
-  assets: ParsedAssetsDictByChain = {},
+  assets: ParsedAssetsDictByChain = {} as ParsedAssetsDictByChain,
 ) {
   const mapAddresses = (list: ParsedAssetsDict = {}) =>
-    Object.values(list).map((i) => i?.address);
+    Object.values(list).map((i) => i.address);
   return {
     [ChainId.mainnet]: mapAddresses(assets[ChainId.mainnet]) || [],
     [ChainId.optimism]: mapAddresses(assets[ChainId.optimism]) || [],
@@ -81,18 +81,16 @@ export function selectUserAssetWithUniqueId(uniqueId: UniqueId) {
 
 export function selectUserAssetsBalance() {
   return (assets: ParsedAssetsDictByChain) => {
-    const networksTotalBalance = Object.values(assets)
-      .filter(Boolean)
-      .map((assetsOnject) => {
-        const assetsNetwork = Object.values(assetsOnject);
-        const networkBalance = assetsNetwork
-          .map((asset) => asset.native.balance.amount)
-          .reduce(
-            (prevBalance, currBalance) => add(prevBalance, currBalance),
-            '0',
-          );
-        return networkBalance;
-      });
+    const networksTotalBalance = Object.values(assets).map((assetsOnject) => {
+      const assetsNetwork = Object.values(assetsOnject);
+      const networkBalance = assetsNetwork
+        .map((asset) => asset.native.balance.amount)
+        .reduce(
+          (prevBalance, currBalance) => add(prevBalance, currBalance),
+          '0',
+        );
+      return networkBalance;
+    });
     const totalAssetsBalance = networksTotalBalance.reduce(
       (prevBalance, currBalance) => add(prevBalance, currBalance),
       '0',

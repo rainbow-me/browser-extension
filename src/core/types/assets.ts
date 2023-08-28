@@ -55,9 +55,7 @@ export type ParsedSearchAsset = SearchAsset & ParsedUserAsset;
 
 export type ParsedAssetsDict = Record<UniqueId, ParsedUserAsset>;
 
-export type ParsedAssetsDictByChain = Partial<
-  Record<ChainId, ParsedAssetsDict>
->;
+export type ParsedAssetsDictByChain = Record<ChainId, ParsedAssetsDict>;
 
 export interface ZerionAssetPrice {
   value: number;
