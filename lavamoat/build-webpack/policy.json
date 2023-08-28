@@ -239,12 +239,21 @@
         "path.sep": true
       },
       "packages": {
+        "copy-webpack-plugin>glob-parent": true,
         "copy-webpack-plugin>globby": true,
         "copy-webpack-plugin>schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
-        "eslint>glob-parent": true,
         "globby>fast-glob": true,
         "lint-staged>normalize-path": true
+      }
+    },
+    "copy-webpack-plugin>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
       }
     },
     "copy-webpack-plugin>globby": {
@@ -561,6 +570,54 @@
         "lavamoat>lavamoat-tofu>@babel/parser": true
       }
     },
+    "eslint>@nodelib/fs.walk": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "path.sep": true,
+        "stream.Readable": true
+      },
+      "globals": {
+        "setImmediate": true
+      },
+      "packages": {
+        "eslint>@nodelib/fs.walk>@nodelib/fs.scandir": true,
+        "eslint>@nodelib/fs.walk>fastq": true
+      }
+    },
+    "eslint>@nodelib/fs.walk>@nodelib/fs.scandir": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.readdir": true,
+        "fs.readdirSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.versions.node": true
+      },
+      "packages": {
+        "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": true,
+        "globby>fast-glob>@nodelib/fs.stat": true
+      }
+    },
+    "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": {
+      "packages": {
+        "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": true
+      }
+    },
+    "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": {
+      "globals": {
+        "queueMicrotask": true,
+        "setTimeout": true
+      }
+    },
+    "eslint>@nodelib/fs.walk>fastq": {
+      "packages": {
+        "eslint>@nodelib/fs.walk>fastq>reusify": true
+      }
+    },
     "eslint>ajv": {
       "globals": {
         "console": true
@@ -593,15 +650,6 @@
         "fs.access": true,
         "fs.accessSync": true,
         "util.promisify": true
-      }
-    },
-    "eslint>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "eslint>is-glob": {
@@ -692,10 +740,10 @@
         "process.cwd": true
       },
       "packages": {
+        "eslint>@nodelib/fs.walk": true,
         "globby>fast-glob>@nodelib/fs.stat": true,
-        "globby>fast-glob>@nodelib/fs.walk": true,
-        "globby>fast-glob>glob-parent": true,
         "globby>merge2": true,
+        "msw>chokidar>glob-parent": true,
         "ts-loader>micromatch": true
       }
     },
@@ -705,63 +753,6 @@
         "fs.lstatSync": true,
         "fs.stat": true,
         "fs.statSync": true
-      }
-    },
-    "globby>fast-glob>@nodelib/fs.walk": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "path.sep": true,
-        "stream.Readable": true
-      },
-      "globals": {
-        "setImmediate": true
-      },
-      "packages": {
-        "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir": true,
-        "globby>fast-glob>@nodelib/fs.walk>fastq": true
-      }
-    },
-    "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.readdir": true,
-        "fs.readdirSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "path.sep": true
-      },
-      "globals": {
-        "process.versions.node": true
-      },
-      "packages": {
-        "globby>fast-glob>@nodelib/fs.stat": true,
-        "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": true
-      }
-    },
-    "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": {
-      "packages": {
-        "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": true
-      }
-    },
-    "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": {
-      "globals": {
-        "queueMicrotask": true,
-        "setTimeout": true
-      }
-    },
-    "globby>fast-glob>@nodelib/fs.walk>fastq": {
-      "packages": {
-        "globby>fast-glob>@nodelib/fs.walk>fastq>reusify": true
-      }
-    },
-    "globby>fast-glob>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "globby>ignore": {
@@ -1202,6 +1193,15 @@
         "msw>chokidar>braces>fill-range>to-regex-range>is-number": true
       }
     },
+    "msw>chokidar>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
+      }
+    },
     "semver": {
       "globals": {
         "console.error": true,
@@ -1339,13 +1339,19 @@
       },
       "packages": {
         "vitest>vite>terser>@jridgewell/source-map": true,
-        "webpack>acorn": true
+        "vitest>vite>terser>acorn": true
       }
     },
     "vitest>vite>terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
+        "define": true
+      }
+    },
+    "vitest>vite>terser>acorn": {
+      "globals": {
+        "console": true,
         "define": true
       }
     },
@@ -1542,12 +1548,18 @@
         "eslint>chalk": true,
         "lodash": true,
         "vitest>acorn-walk": true,
+        "webpack-bundle-analyzer>acorn": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
         "webpack-bundle-analyzer>ws": true,
-        "webpack-cli>@discoveryjs/json-ext": true,
-        "webpack>acorn": true
+        "webpack-cli>@discoveryjs/json-ext": true
+      }
+    },
+    "webpack-bundle-analyzer>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
       }
     },
     "webpack-bundle-analyzer>gzip-size": {
