@@ -3,10 +3,8 @@ import path from 'path';
 import { mkdirSync, readFileSync, writeFileSync } from 'fs-extra';
 import { capitalize } from 'lodash';
 import opentype from 'opentype.js';
-import prettierTypeScript from 'prettier/parser-typescript';
-import prettier from 'prettier/standalone';
+import * as prettier from 'prettier';
 import SVGPathCommander from 'svg-path-commander';
-
 import { FontWeight, fontWeights, symbolNames } from '../styles/designTokens';
 import { SFSymbol } from '../symbols/generated/types';
 
@@ -79,11 +77,13 @@ const weights = Object.keys(fontWeights);
 
   writeFileSync(
     path.join(__dirname, `../symbols/generated/index.ts`),
-    prettier.format(`export default ${JSON.stringify(symbols)} as const`, {
-      parser: 'typescript',
-      plugins: [prettierTypeScript],
-      singleQuote: true,
-    }),
+    await prettier.format(
+      `export default ${JSON.stringify(symbols)} as const`,
+      {
+        parser: 'typescript',
+        singleQuote: true,
+      },
+    ),
   );
 
   const typesSource = `
@@ -100,9 +100,8 @@ const weights = Object.keys(fontWeights);
   `;
   writeFileSync(
     path.join(__dirname, `../symbols/generated/types.ts`),
-    prettier.format(typesSource, {
+    await prettier.format(typesSource, {
       parser: 'typescript',
-      plugins: [prettierTypeScript],
       singleQuote: true,
     }),
   );
