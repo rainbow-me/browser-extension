@@ -187,11 +187,7 @@ export function SendTransaction({
       </Row>
       <Row height="content">
         <SendTransactionActions
-          chainId={
-            process.env.IS_TESTING === 'true'
-              ? ChainId.hardhat
-              : activeSession?.chainId || ChainId.mainnet
-          }
+          chainId={activeSession?.chainId}
           waitingForDevice={waitingForDevice}
           appHost={appHost}
           selectedWallet={selectedWallet || ('' as Address)}

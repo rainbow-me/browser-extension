@@ -27,7 +27,7 @@ export const SendTransactionActions = ({
   loading = false,
 }: {
   appHost: string;
-  chainId: ChainId;
+  chainId?: ChainId;
   selectedWallet: Address;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
