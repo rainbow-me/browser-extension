@@ -188,9 +188,10 @@ export function SendTransaction({
       <Row height="content">
         <SendTransactionActions
           chainId={
-            activeSession?.chainId || process.env.IS_TESTING === 'true'
+            activeSession?.chainId ||
+            (process.env.IS_TESTING === 'true'
               ? ChainId.hardhat
-              : ChainId.mainnet
+              : ChainId.mainnet)
           }
           waitingForDevice={waitingForDevice}
           appHost={appHost}
