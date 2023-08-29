@@ -203,7 +203,7 @@ jobs:
         if: steps.FFE2eDappInteractions.outcome == 'failure'
         run: exit 1
   firefox-e2e-shortcuts:
-    runs-on: beefy-runner-bx
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [build]
     env:
@@ -366,7 +366,7 @@ jobs:
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
         run: exit 1
   chrome-e2e-shortcuts:
-    runs-on: beefy-runner-bx
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [build]
     env:
