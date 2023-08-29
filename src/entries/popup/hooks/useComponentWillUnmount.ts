@@ -1,15 +1,11 @@
 import { useEffect, useRef } from 'react';
 
-export default function useComponentWillUnmount(handler: () => void) {
-  const willUnmount = useRef<boolean>(false);
+export default function useComponentWillUnmount(handler: VoidFunction) {
+  const cb = useRef(handler);
+  cb.current = handler;
   useEffect(() => {
     return () => {
-      willUnmount.current = true;
+      cb.current();
     };
   }, []);
-  useEffect(() => {
-    if (willUnmount.current) {
-      handler();
-    }
-  }, [handler]);
 }
