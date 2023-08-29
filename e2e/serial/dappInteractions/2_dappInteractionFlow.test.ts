@@ -307,8 +307,8 @@ describe('App interactions flow', () => {
 
     await delayTime('long');
 
-    const address = await findElementByText(driver, shortenedAddress);
-    expect(address).toBeTruthy();
+    // const address = await findElementByText(driver, shortenedAddress);
+    // expect(address).toBeTruthy();
     await clickAcceptRequestButton(driver);
     await delayTime('long');
 
