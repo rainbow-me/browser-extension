@@ -124,26 +124,50 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
     );
     expect(changedToggleStatus).toBe('true');
+  });
 
-    // TODO: add validation that the balances are actually hidden on home
+  it('should be able to validate that balances are hidden', async () => {
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_LEFT',
+      timesToPress: 2,
+    });
+    const balanceHidden = await findElementByTestId({
+      id: 'balance-hidden',
+      driver,
+    });
+    expect(balanceHidden).toBeTruthy();
+    await executePerformShortcut({ driver, key: '.' });
+    await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  });
+
+  it('should be able to naviagate back to Privacy & Security using keyboard ', async () => {
+    await executePerformShortcut({ driver, key: '.' });
+    await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, 'privacy');
   });
 
   it('should be able to toggle auto hide small balances with keyboard', async () => {
     await delayTime('medium');
+    await driver.sleep(10000);
     const defaultToggleStatus = await toggleStatus(
       'hide-small-balances-toggle',
       driver,
     );
     expect(defaultToggleStatus).toBe('false');
-    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 4 });
     await executePerformShortcut({ driver, key: 'ENTER' });
     const changedToggleStatus = await toggleStatus(
       'hide-small-balances-toggle',
       driver,
     );
     expect(changedToggleStatus).toBe('true');
-
-    // TODO: add validation that small balances are actually hidden (?????)
   });
 
   it('should be able to change password using only the keyboard', async () => {
@@ -315,8 +339,31 @@ describe('navigate through settings flows with shortcuts', () => {
     });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'language');
+  });
 
-    // TODO: add a validation for switching languages
+  it('should be able navigate to switch to spanish and back to english', async () => {
+    await executePerformShortcut({
+      driver,
+      key: 'TAB',
+      timesToPress: 3,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+    const chosenLanguageOption = await findElementByText(driver, 'Idioma');
+    expect(chosenLanguageOption).toBeTruthy();
+    await executePerformShortcut({
+      driver,
+      key: 'TAB',
+      timesToPress: 6,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, 'language');
+    await executePerformShortcut({
+      driver,
+      key: 'TAB',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
   });
 
   it('should be able navigate to switch theme and open context menu', async () => {
