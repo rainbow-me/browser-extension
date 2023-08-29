@@ -18,7 +18,7 @@ export const RAINBOW_WALLET_ADDRESS =
 
 export const ETH_MAINNET_ASSET: ParsedUserAsset = {
   address: 'eth' as Address,
-  balance: { amount: '10000', display: '10,000.00 ETH' },
+  balance: { amount: '0', display: '0 ETH' },
   chainId: 1,
   chainName: 'mainnet' as ChainName,
   colors: { primary: '#808088', fallback: '#E8EAF5' },
