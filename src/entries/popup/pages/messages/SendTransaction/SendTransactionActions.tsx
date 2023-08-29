@@ -43,8 +43,12 @@ export const SendTransactionActions = ({
   loading: boolean;
 }) => {
   const { selectedGas } = useGasStore();
-  const { enoughNativeAssetForGas, buttonLabel, nativeAsset } =
-    useApproveAppRequestValidations({ chainId, selectedGas });
+  const {
+    enoughNativeAssetForGas,
+    buttonLabel,
+    nativeAsset,
+    nativeAssetUniqueId,
+  } = useApproveAppRequestValidations({ chainId, selectedGas });
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -73,6 +77,10 @@ export const SendTransactionActions = ({
         <Text size="7pt" weight="bold" align="center">
           {JSON.stringify(selectedGas)}
         </Text>
+        <Text size="7pt" weight="bold" align="center">
+          {nativeAssetUniqueId}
+        </Text>
+
         {/* <Text size="7pt" weight="bold" align="center">
           {JSON.stringify(selectedGas)}
         </Text> */}

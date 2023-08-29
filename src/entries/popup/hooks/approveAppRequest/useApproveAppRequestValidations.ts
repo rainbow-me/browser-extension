@@ -64,5 +64,6 @@ export const useApproveAppRequestValidations = ({
       enoughNativeAssetForGas && !!selectedGas?.gasFee?.amount,
     buttonLabel,
     nativeAsset: nativeAsset,
+    nativeAssetUniqueId: nativeAssetUniqueId,
   };
 };
