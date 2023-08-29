@@ -471,7 +471,7 @@ export function Swap() {
         quote={quote}
         flashbotsEnabled={flashbotsEnabledGlobally}
         hideSwapReview={hideSwapReviewSheet}
-        assetToSellValue={assetToSellDisplay}
+        assetToSellValue={assetToSellValue}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}
