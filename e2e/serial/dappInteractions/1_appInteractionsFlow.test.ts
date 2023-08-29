@@ -273,7 +273,7 @@ describe('App interactions flow', () => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
-      id: 'home-page-header-connected-apps',
+      id: 'app-connection-menu-connected-apps',
       driver,
     });
     await findElementByTestIdAndClick({
@@ -393,7 +393,7 @@ describe('App interactions flow', () => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
-      id: 'home-page-header-connected-apps',
+      id: 'app-connection-menu-connected-apps',
       driver,
     });
     await findElementByTestIdAndClick({

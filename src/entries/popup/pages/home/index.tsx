@@ -28,6 +28,7 @@ import { useContainerRef } from '~/design-system/components/AnimatedRoute/Animat
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
+import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
@@ -169,6 +170,7 @@ export function Home() {
             <TopNav />
             <Header />
             <Tabs />
+            <AppConnectionWalletSwitcher />
           </motion.div>
           {currentHomeSheet}
         </>

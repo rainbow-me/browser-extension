@@ -245,7 +245,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     await findElementByTestIdAndClick({ id: 'nudge-sheet-connect', driver });
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
-      id: 'home-page-header-connected-apps',
+      id: 'app-connection-menu-connected-apps',
       driver,
     });
     const appConnectionRow = await findElementByTestId({
@@ -274,7 +274,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
 
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
-      id: 'home-page-header-connected-apps',
+      id: 'app-connection-menu-connected-apps',
       driver,
     });
     const appConnectionRow = await findElementByTestId({
@@ -366,7 +366,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
       driver,
     });
     await findElementByTestIdAndClick({
-      id: 'switch-networks-app-interation-item',
+      id: 'app-interaction-switch-networks',
       driver,
     });
     await findElementByTestIdAndClick({
@@ -400,7 +400,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
       driver,
     });
     await findElementByTestIdAndClick({
-      id: 'switch-networks-app-interation-item',
+      id: 'app-interaction-switch-networks',
       driver,
     });
     await findElementByTestIdAndClick({
@@ -425,7 +425,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
       driver,
     });
     await findElementByTestIdAndClick({
-      id: 'switch-networks-app-interation-item',
+      id: 'app-interaction-switch-networks',
       driver,
     });
     await findElementByTestIdAndClick({
