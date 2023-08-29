@@ -451,16 +451,20 @@ export async function performShortcutWithSpecialKey(
 
 // this helper simplifies test writing by using the length of the key to
 // determine which function to use and then repeat depending on count
-export async function executePerformShortcut(
-  driver: WebDriver,
-  key?: string,
-  count = 1,
-): Promise<void> {
+export async function executePerformShortcut({
+  driver,
+  key,
+  timesToPress = 1,
+}: {
+  driver: WebDriver;
+  key?: string;
+  timesToPress?: number;
+}): Promise<void> {
   try {
     if (key === undefined) {
       throw new Error('key cannot be undefined');
     }
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < timesToPress; i++) {
       if (key.length === 1) {
         await performShortcutWithNormalKey(driver, Key, key);
       } else if (key.length > 1) {

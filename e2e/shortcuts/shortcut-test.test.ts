@@ -45,29 +45,29 @@ describe('navigate through settings flows with shortcuts', () => {
 
   // shortcut tests begin
   it('should be able to navigate to settings via shortcuts', async () => {
-    await executePerformShortcut(driver, '.');
-    await executePerformShortcut(driver, 'ARROW_DOWN');
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({ driver, key: '.' });
+    await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'settings');
   });
 
   it('should be able to navigate back home with keyboard', async () => {
-    await executePerformShortcut(driver, 'ESCAPE');
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
     await delayTime('medium');
   });
 
   it('should be able to navigate to settings via keyboard', async () => {
-    await executePerformShortcut(driver, 'TAB', 3);
-    await executePerformShortcut(driver, 'ENTER');
-    await executePerformShortcut(driver, 'TAB');
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'settings');
   });
 
   it('should be able to navigate to Privacy & Security using keyboard', async () => {
     await delayTime('medium');
-    await executePerformShortcut(driver, 'TAB', 3);
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'privacy');
   });
 
@@ -75,8 +75,8 @@ describe('navigate through settings flows with shortcuts', () => {
     await delayTime('medium');
     const defaultToggleStatus = await toggleStatus('analytics-toggle', driver);
     expect(defaultToggleStatus).toBe('true');
-    await executePerformShortcut(driver, 'TAB', 2);
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await delayTime('long');
     const changedToggleStatus = await toggleStatus('analytics-toggle', driver);
     expect(changedToggleStatus).toBe('false');
@@ -89,8 +89,8 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
     );
     expect(defaultToggleStatus).toBe('false');
-    await executePerformShortcut(driver, 'TAB');
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     const changedToggleStatus = await toggleStatus(
       'hide-assets-toggle',
       driver,
@@ -105,8 +105,8 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
     );
     expect(defaultToggleStatus).toBe('false');
-    await executePerformShortcut(driver, 'TAB');
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     const changedToggleStatus = await toggleStatus(
       'hide-small-balances-toggle',
       driver,
@@ -115,11 +115,11 @@ describe('navigate through settings flows with shortcuts', () => {
   });
 
   it('should be able to change password using only the keyboard', async () => {
-    await executePerformShortcut(driver, 'TAB');
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await executePerformShortcut(driver, 'TAB');
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await typeOnTextInput({
       id: 'new-password-input',
       driver,
@@ -130,25 +130,37 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
       text: 'test5678',
     });
-    await executePerformShortcut(driver, 'TAB');
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
   });
 
   it('should be able to navigate to Wallets & Keys with the keyboard', async () => {
-    await executePerformShortcut(driver, 'ARROW_DOWN', 7);
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 7,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'wallets-and-keys');
   });
 
   it('should be able to navigate to Wallet Details with the keyboard', async () => {
-    await executePerformShortcut(driver, 'ARROW_DOWN', 2);
-    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'wallet-details');
   });
 
   it('should be able to open the wallet context menu and close it with the keyboard', async () => {
-    await executePerformShortcut(driver, 'ARROW_DOWN', 3);
-    await executePerformShortcut(driver, 'SPACE');
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 3,
+    });
+    await executePerformShortcut({ driver, key: 'SPACE' });
     const contextMenuOption = await findElementByText(driver, 'Private Key');
     expect(contextMenuOption).toBeTruthy();
   });
