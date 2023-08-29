@@ -1,6 +1,6 @@
 export const POPUP_DIMENSIONS = {
   width: 360,
-  height: 600,
+  height: 800,
 };
 
 export const INJECTED_NOTIFICATION_DIMENSIONS = {

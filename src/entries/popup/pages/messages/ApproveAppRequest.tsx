@@ -45,9 +45,9 @@ export const ApproveAppRequest = () => {
         Number(pendingRequest?.meta?.sender?.tab?.id)?.toString()
       ];
     if (pendingRequests.length <= 1 && notificationWindow?.id) {
-      notificationWindow?.id && chrome.windows.remove(notificationWindow?.id);
       setTimeout(() => {
         navigate(ROUTES.HOME);
+        notificationWindow?.id && chrome.windows.remove(notificationWindow?.id);
       }, 50);
     }
   }, [

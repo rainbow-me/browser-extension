@@ -31,7 +31,7 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import * as wallet from '../../../handlers/wallet';
 
 import { SendTransactionActions } from './SendTransactionActions';
-// import { SendTransactionInfo } from './SendTransactionsInfo';
+import { SendTransactionInfo } from './SendTransactionsInfo';
 
 interface ApproveRequestProps {
   approveRequest: (payload: unknown) => void;
@@ -182,9 +182,9 @@ export function SendTransaction({
 
   return (
     <Rows alignVertical="justify">
-      {/* <Row height="content">
+      <Row height="content">
         <SendTransactionInfo request={request} />
-      </Row> */}
+      </Row>
       <Row height="content">
         <SendTransactionActions
           chainId={activeSession?.chainId || ChainId.mainnet}
