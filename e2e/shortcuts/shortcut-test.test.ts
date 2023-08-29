@@ -1,19 +1,18 @@
 import 'chromedriver';
 import 'geckodriver';
-import { Key, WebDriver } from 'selenium-webdriver';
+import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
   checkWalletName,
   delayTime,
+  executePerformShortcut,
   findElementByText,
   getExtensionIdByName,
   getRootUrl,
   importWalletFlow,
   initDriverWithOptions,
-  performShortcutWithNormalKey,
-  performShortcutWithSpecialKey,
   toggleStatus,
   typeOnTextInput,
 } from '../helpers';
@@ -46,33 +45,29 @@ describe('navigate through settings flows with shortcuts', () => {
 
   // shortcut tests begin
   it('should be able to navigate to settings via shortcuts', async () => {
-    await performShortcutWithNormalKey(driver, Key, '.');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, '.');
+    await executePerformShortcut(driver, 'ARROW_DOWN');
+    await executePerformShortcut(driver, 'ENTER');
     await checkExtensionURL(driver, 'settings');
   });
 
   it('should be able to navigate back home with keyboard', async () => {
-    await performShortcutWithSpecialKey(driver, 'ESCAPE');
+    await executePerformShortcut(driver, 'ESCAPE');
     await delayTime('medium');
   });
 
   it('should be able to navigate to settings via keyboard', async () => {
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'TAB', 3);
+    await executePerformShortcut(driver, 'ENTER');
+    await executePerformShortcut(driver, 'TAB');
+    await executePerformShortcut(driver, 'ENTER');
     await checkExtensionURL(driver, 'settings');
   });
 
   it('should be able to navigate to Privacy & Security using keyboard', async () => {
     await delayTime('medium');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'TAB', 3);
+    await executePerformShortcut(driver, 'ENTER');
     await checkExtensionURL(driver, 'privacy');
   });
 
@@ -80,9 +75,8 @@ describe('navigate through settings flows with shortcuts', () => {
     await delayTime('medium');
     const defaultToggleStatus = await toggleStatus('analytics-toggle', driver);
     expect(defaultToggleStatus).toBe('true');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'TAB', 2);
+    await executePerformShortcut(driver, 'ENTER');
     await delayTime('long');
     const changedToggleStatus = await toggleStatus('analytics-toggle', driver);
     expect(changedToggleStatus).toBe('false');
@@ -95,8 +89,8 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
     );
     expect(defaultToggleStatus).toBe('false');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'TAB');
+    await executePerformShortcut(driver, 'ENTER');
     const changedToggleStatus = await toggleStatus(
       'hide-assets-toggle',
       driver,
@@ -111,8 +105,8 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
     );
     expect(defaultToggleStatus).toBe('false');
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'TAB');
+    await executePerformShortcut(driver, 'ENTER');
     const changedToggleStatus = await toggleStatus(
       'hide-small-balances-toggle',
       driver,
@@ -121,11 +115,11 @@ describe('navigate through settings flows with shortcuts', () => {
   });
 
   it('should be able to change password using only the keyboard', async () => {
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'TAB');
+    await executePerformShortcut(driver, 'ENTER');
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'TAB');
+    await executePerformShortcut(driver, 'ENTER');
     await typeOnTextInput({
       id: 'new-password-input',
       driver,
@@ -136,34 +130,25 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
       text: 'test5678',
     });
-    await performShortcutWithSpecialKey(driver, 'TAB');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'TAB');
+    await executePerformShortcut(driver, 'ENTER');
   });
 
   it('should be able to navigate to Wallets & Keys with the keyboard', async () => {
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'ARROW_DOWN', 7);
+    await executePerformShortcut(driver, 'ENTER');
     await checkExtensionURL(driver, 'wallets-and-keys');
   });
 
   it('should be able to navigate to Wallet Details with the keyboard', async () => {
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ENTER');
+    await executePerformShortcut(driver, 'ARROW_DOWN', 2);
+    await executePerformShortcut(driver, 'ENTER');
     await checkExtensionURL(driver, 'wallet-details');
   });
 
   it('should be able to open the wallet context menu and close it with the keyboard', async () => {
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'ARROW_DOWN');
-    await performShortcutWithSpecialKey(driver, 'SPACE');
+    await executePerformShortcut(driver, 'ARROW_DOWN', 3);
+    await executePerformShortcut(driver, 'SPACE');
     const contextMenuOption = await findElementByText(driver, 'Private Key');
     expect(contextMenuOption).toBeTruthy();
   });

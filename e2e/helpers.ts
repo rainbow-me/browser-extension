@@ -406,7 +406,6 @@ export async function getTextFromDappText({
   const element = await findElementById({ id, driver });
   return await element.getText();
 }
-
 export async function performShortcutWithNormalKey(
   driver: WebDriver,
   key: IKey,
@@ -426,24 +425,48 @@ export async function performShortcutWithNormalKey(
 
 export async function performShortcutWithSpecialKey(
   driver: WebDriver,
-  key: string,
+  specialKey: string,
 ) {
   try {
-    // selinium uses a key object for special characters
-    // this throws an error if the key we are trying to use doesn't exist
-    if (!(key in Key)) {
-      throw new Error(`Key '${key}' not found in the 'Key' object`);
+    if (!(specialKey in Key)) {
+      throw new Error(`Key '${specialKey}' not found in the 'Key' object`);
     }
+    await delayTime('short');
     // Access the Key object using a type assertion
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const specialKey = (Key as any)[key] as string;
-    await delayTime('short');
-    await driver.actions().sendKeys(specialKey).perform();
+    const key = (Key as any)[specialKey] as string;
+    await driver.actions().sendKeys(key).perform();
   } catch (error) {
     console.error(
-      `Error occurred while attempting shortcut with the key '${key}':`,
+      `Error occurred while attempting shortcut with the key '${specialKey}':`,
       error,
     );
+    throw error;
+  }
+}
+
+// to simplify test writing I made a helper that will use either of the shortcut functions
+// depending on key length, and then repeat it given a count (default 1)
+export async function executePerformShortcut(
+  driver: WebDriver,
+  key?: string,
+  count = 1,
+): Promise<void> {
+  try {
+    if (key === undefined) {
+      throw new Error('key cannot be undefined');
+    }
+    for (let i = 0; i < count; i++) {
+      if (key.length === 1) {
+        await performShortcutWithNormalKey(driver, Key, key);
+      } else if (key.length > 1) {
+        await performShortcutWithSpecialKey(driver, key);
+      } else {
+        throw new Error('No valid key or keyboard character provided.');
+      }
+    }
+  } catch (error) {
+    console.error(`Error occurred while executing shortcut:`, error);
     throw error;
   }
 }
