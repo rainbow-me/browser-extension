@@ -73,7 +73,7 @@ jobs:
   firefox-e2e-parallel:
     runs-on: ubuntu-latest
     timeout-minutes: 16
-    needs: [build]
+    needs: [chrome-e2e-parallel]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 4
@@ -103,7 +103,7 @@ jobs:
   firefox-e2e-swap:
     runs-on: swaps-runner-bx
     timeout-minutes: 25
-    needs: [build]
+    needs: [chrome-e2e-swap]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 4
@@ -137,7 +137,7 @@ jobs:
   firefox-e2e-send:
     runs-on: send-runner-bx
     timeout-minutes: 16
-    needs: [build]
+    needs: [chrome-e2e-send]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 4
@@ -171,7 +171,7 @@ jobs:
   firefox-e2e-dappInteractions:
     runs-on: dapp-interactions-runner-bx
     timeout-minutes: 25
-    needs: [build]
+    needs: [chrome-e2e-dappInteractions]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 4
