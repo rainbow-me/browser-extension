@@ -93,8 +93,8 @@ export const shortcuts = {
       key: 'c',
     },
     GO_TO_CONNECTED_APPS: {
-      display: 'D',
-      key: 'd',
+      display: 'A',
+      key: 'a',
     },
     GO_TO_SEND: {
       display: 'S',
@@ -128,9 +128,21 @@ export const shortcuts = {
       display: '.',
       key: '.',
     },
+    OPEN_APP_CONNECTION_MENU: {
+      display: 'N',
+      key: 'n',
+    },
+    DISCONNECT_APP: {
+      display: 'D',
+      key: 'd',
+    },
     SWITCH_NETWORK: {
       display: 'N',
       key: 'n',
+    },
+    SWITCH_WALLETS: {
+      display: 'W',
+      key: 'w',
     },
   },
   wallets: {
