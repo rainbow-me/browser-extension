@@ -8,7 +8,7 @@ export default defineConfig({
     include: ['./**/**/*.test.ts'],
     testTimeout: 90_000,
     watch: false,
-    retry: 0,
+    // retry: 0,
     bail: 1,
     hookTimeout: 30_000,
   },
