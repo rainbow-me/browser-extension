@@ -406,6 +406,8 @@ export async function getTextFromDappText({
   const element = await findElementById({ id, driver });
   return await element.getText();
 }
+
+// two helpers bc normal keys / special keys work a little different in selenium
 export async function performShortcutWithNormalKey(
   driver: WebDriver,
   key: IKey,
@@ -428,6 +430,8 @@ export async function performShortcutWithSpecialKey(
   specialKey: string,
 ) {
   try {
+    // selenium has a key object for special keys
+    // throw an error if the key were inputting doesn't exist in their object
     if (!(specialKey in Key)) {
       throw new Error(`Key '${specialKey}' not found in the 'Key' object`);
     }
@@ -445,8 +449,8 @@ export async function performShortcutWithSpecialKey(
   }
 }
 
-// to simplify test writing I made a helper that will use either of the shortcut functions
-// depending on key length, and then repeat it given a count (default 1)
+// this helper simplifies test writing by using the length of the key to
+// determine which function to use and then repeat depending on count
 export async function executePerformShortcut(
   driver: WebDriver,
   key?: string,
