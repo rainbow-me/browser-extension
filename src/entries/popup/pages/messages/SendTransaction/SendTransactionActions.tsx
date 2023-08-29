@@ -43,7 +43,7 @@ export const SendTransactionActions = ({
   loading: boolean;
 }) => {
   const { selectedGas } = useGasStore();
-  const { enoughNativeAssetForGas, buttonLabel } =
+  const { enoughNativeAssetForGas, buttonLabel, nativeAsset } =
     useApproveAppRequestValidations({ chainId, selectedGas });
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
@@ -68,11 +68,14 @@ export const SendTransactionActions = ({
           <Column> */}
         {/* <WalletBalance appHost={appHost} /> */}
         <Text size="10pt" weight="bold" align="center">
-          {enoughNativeAssetForGas ? 'TRUE' : 'FALSE'}
+          {JSON.stringify(nativeAsset)}
         </Text>
         <Text size="7pt" weight="bold" align="center">
           {JSON.stringify(selectedGas)}
         </Text>
+        {/* <Text size="7pt" weight="bold" align="center">
+          {JSON.stringify(selectedGas)}
+        </Text> */}
         {/* </Column>
         </Columns> */}
         <Rows space="8px">

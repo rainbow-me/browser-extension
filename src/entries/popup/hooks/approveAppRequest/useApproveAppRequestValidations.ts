@@ -63,5 +63,6 @@ export const useApproveAppRequestValidations = ({
     enoughNativeAssetForGas:
       enoughNativeAssetForGas && !!selectedGas?.gasFee?.amount,
     buttonLabel,
+    nativeAsset: nativeAsset,
   };
 };
