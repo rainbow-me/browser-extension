@@ -14,6 +14,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 
 import {
+  clickAcceptRequestButton,
   delayTime,
   fillPrivateKey,
   findElementByIdAndClick,
@@ -218,7 +219,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     });
 
     await delayTime('medium');
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
 
     await driver.switchTo().window(dappHandler);
     const topButton = await querySelector(
@@ -325,7 +326,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     });
 
     await driver.switchTo().window(popupHandler);
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
 
     await driver.switchTo().window(dappHandler);
     const topButton = await querySelector(

@@ -545,6 +545,15 @@ export const fillPrivateKey = async (driver: WebDriver, privateKey: string) => {
   });
 };
 
+export async function clickAcceptRequestButton(driver: WebDriver) {
+  await waitUntilElementByTestIdIsPresent({
+    id: 'accept-request-button',
+    driver,
+  });
+
+  await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+}
+
 export async function importHardwareWalletFlow(
   driver: WebDriver,
   rootURL: string,
