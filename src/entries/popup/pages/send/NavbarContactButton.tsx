@@ -28,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { ShortcutHint } from '../../components/ShortcutHint/ShortcutHint';
 import { triggerToast } from '../../components/Toast/Toast';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useContact } from '../../hooks/useContacts';
@@ -288,16 +289,9 @@ const EditContactDropdownCopyAddressRow = ({
             </Stack>
           </Box>
         </Inline>
-        <Box
-          background={'fillSecondary'}
-          padding="4px"
-          borderRadius="3px"
-          boxShadow="1px"
-        >
-          <Text size="12pt" color="labelSecondary" weight="semibold">
-            {shortcuts.contact_menu.COPY_CONTACT_ADDRESS.display}
-          </Text>
-        </Box>
+        <ShortcutHint
+          hint={shortcuts.contact_menu.COPY_CONTACT_ADDRESS.display}
+        />
       </Inline>
     </Box>
   );
@@ -332,16 +326,7 @@ const EditContactDropdownEditContactRow = () => {
             {i18n.t('contacts.edit_contact')}
           </Text>
         </Inline>
-        <Box
-          background={'fillSecondary'}
-          padding="4px"
-          borderRadius="3px"
-          boxShadow="1px"
-        >
-          <Text size="12pt" color="labelSecondary" weight="semibold">
-            {shortcuts.contact_menu.EDIT_CONTACT.display}
-          </Text>
-        </Box>
+        <ShortcutHint hint={shortcuts.contact_menu.EDIT_CONTACT.display} />
       </Inline>
     </Box>
   );

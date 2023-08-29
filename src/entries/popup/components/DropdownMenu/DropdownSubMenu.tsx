@@ -94,7 +94,7 @@ export const DropdownMenuContentWithSubMenu = ({
   );
 };
 
-const SUBMENU_SIDE_OFFSET = -44;
+const SUBMENU_SIDE_OFFSET = -38;
 const SUBMENU_ALIGN_OFFSET = -12;
 
 interface DropdownSubMenuProps {
