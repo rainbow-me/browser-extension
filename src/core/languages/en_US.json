@@ -5,6 +5,9 @@
   "label": {
     "toggle": "Toggle"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant the permission in order to continue."
+  },
   "wallet_switcher": {
     "title": "Wallets",
     "rename_wallet": "Rename wallet",
@@ -672,11 +675,13 @@
       "disconnect": "Disconnect"
     },
     "app_connection_menu": {
-      "all_connected_apps": "All connected apps",
+      "connected_apps": "Connected Apps",
       "not_connected": "Not connected",
       "networks": "Networks",
       "connect": "Connect",
-      "switch_networks": "Switch networks"
+      "switch_network": "Switch Network",
+      "switch_wallets": "Switch Wallet",
+      "disconnect": "Disconnect"
     },
     "home_header_right": {
       "settings": "Settings",

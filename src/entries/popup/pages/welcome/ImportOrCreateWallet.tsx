@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -24,6 +24,18 @@ export function ImportOrCreateWallet() {
   const [loading, setLoading] = useState(false);
   const { isFirefox } = useBrowser();
 
+  const requestPermissionsIfNeeded = useCallback(async () => {
+    if (!isFirefox) return true;
+    const permissionGranted = await chrome.permissions.request({
+      origins: ['<all_urls>'],
+    });
+    if (!permissionGranted) {
+      alert(i18n.t('permissions.firefox_permission_denied'));
+      return false;
+    }
+    return true;
+  }, [isFirefox]);
+
   useEffect(() => {
     const wipeIncompleteWallet = async () => {
       const { hasVault } = await wallet.getStatus();
@@ -38,11 +50,14 @@ export function ImportOrCreateWallet() {
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const handleImportWalletClick = React.useCallback(async () => {
-    navigate(ROUTES.IMPORT_OR_CONNECT);
-  }, [navigate]);
+    const permissionsOk = await requestPermissionsIfNeeded();
+    permissionsOk && navigate(ROUTES.IMPORT_OR_CONNECT);
+  }, [navigate, requestPermissionsIfNeeded]);
 
   const handleCreateNewWalletClick = React.useCallback(async () => {
     if (loading) return;
+    const permissionsOk = await requestPermissionsIfNeeded();
+    if (!permissionsOk) return;
     setLoading(true);
     try {
       const newWalletAddress = await wallet.create();
@@ -56,7 +71,7 @@ export function ImportOrCreateWallet() {
       logger.error(new RainbowError(e?.name), { message: e?.message });
       setLoading(false);
     }
-  }, [loading, navigate, setCurrentAddress]);
+  }, [loading, navigate, requestPermissionsIfNeeded, setCurrentAddress]);
 
   return (
     <Box style={{ marginTop: '234px' }}>

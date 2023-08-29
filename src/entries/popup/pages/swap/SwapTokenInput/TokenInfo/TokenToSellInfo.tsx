@@ -19,6 +19,7 @@ import { placeholderStyle } from '~/design-system/components/Input/Input.css';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
+import { useBrowser } from '~/entries/popup/hooks/useBrowser';
 
 export const TokenToSellInfo = ({
   asset,
@@ -40,6 +41,7 @@ export const TokenToSellInfo = ({
   setIndependentField: (field: IndependentField) => void;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+  const { isFirefox } = useBrowser();
 
   const handleNativeValueOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +77,7 @@ export const TokenToSellInfo = ({
       <Columns alignHorizontal="justify" alignVertical="center">
         {asset && (
           <Column>
-            <Inline alignVertical="center">
+            <Inline alignVertical="center" wrap={!isFirefox}>
               <Text
                 size="12pt"
                 weight="semibold"
@@ -120,6 +122,7 @@ export const TokenToSellInfo = ({
             <Box
               onClick={setAssetToSellMaxValue}
               testId="token-to-sell-info-max-button"
+              marginLeft={isFirefox ? '-36px' : undefined}
             >
               <ButtonOverflow>
                 <Inline alignVertical="center" space="4px">

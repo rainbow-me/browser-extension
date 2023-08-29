@@ -2,12 +2,21 @@ import 'chromedriver';
 import 'geckodriver';
 import { getAddress } from '@ethersproject/address';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
 import {
   awaitTextChange,
+  clickAcceptRequestButton,
   delayTime,
   fillPrivateKey,
   findElementById,
@@ -25,6 +34,7 @@ import {
   goToWelcome,
   initDriverWithOptions,
   shortenAddress,
+  takeScreenshotOnFailure,
   transactionStatus,
   typeOnTextInput,
   waitAndClick,
@@ -47,6 +57,16 @@ describe('App interactions flow', () => {
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  beforeEach(async (context: any) => {
+    context.driver = driver;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  afterEach(async (context: any) => {
+    await takeScreenshotOnFailure(context);
   });
 
   afterAll(() => driver.quit());
@@ -123,7 +143,7 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
 
     await delayTime('long');
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
 
     await driver.switchTo().window(dappHandler);
 
@@ -155,8 +175,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
@@ -190,8 +209,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
@@ -230,8 +248,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
@@ -277,6 +294,10 @@ describe('App interactions flow', () => {
     const dappHandler = await getWindowHandle({ driver });
     await driver.switchTo().window(dappHandler);
 
+    if (process.env.BROWSER === 'firefox') {
+      await driver.navigate().refresh();
+    }
+
     const button = await findElementById({ id: 'createToken', driver });
     await waitAndClick(button, driver);
 
@@ -288,8 +309,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
@@ -334,8 +354,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
@@ -380,8 +399,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
@@ -424,8 +442,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
@@ -473,8 +490,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
@@ -498,8 +514,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
@@ -520,8 +535,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
@@ -545,8 +559,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
@@ -572,8 +585,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
@@ -599,7 +611,7 @@ describe('App interactions flow', () => {
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
@@ -625,8 +637,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
@@ -656,8 +667,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
@@ -683,8 +693,7 @@ describe('App interactions flow', () => {
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
-
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);

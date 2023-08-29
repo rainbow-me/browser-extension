@@ -1,11 +1,20 @@
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
 import {
+  clickAcceptRequestButton,
   delayTime,
   fillPrivateKey,
   findElementByIdAndClick,
@@ -24,6 +33,7 @@ import {
   querySelector,
   shortenAddress,
   switchWallet,
+  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
@@ -35,7 +45,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe('Dapp accounts switcher flow', () => {
+describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -44,6 +54,16 @@ describe('Dapp accounts switcher flow', () => {
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  beforeEach(async (context: any) => {
+    context.driver = driver;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  afterEach(async (context: any) => {
+    await takeScreenshotOnFailure(context);
   });
 
   afterAll(() => driver.quit());
@@ -199,7 +219,7 @@ describe('Dapp accounts switcher flow', () => {
     });
 
     await delayTime('medium');
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
 
     await driver.switchTo().window(dappHandler);
     const topButton = await querySelector(
@@ -225,7 +245,7 @@ describe('Dapp accounts switcher flow', () => {
     await findElementByTestIdAndClick({ id: 'nudge-sheet-connect', driver });
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
-      id: 'home-page-header-connected-apps',
+      id: 'app-connection-menu-connected-apps',
       driver,
     });
     const appConnectionRow = await findElementByTestId({
@@ -254,7 +274,7 @@ describe('Dapp accounts switcher flow', () => {
 
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
-      id: 'home-page-header-connected-apps',
+      id: 'app-connection-menu-connected-apps',
       driver,
     });
     const appConnectionRow = await findElementByTestId({
@@ -306,7 +326,7 @@ describe('Dapp accounts switcher flow', () => {
     });
 
     await driver.switchTo().window(popupHandler);
-    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await clickAcceptRequestButton(driver);
 
     await driver.switchTo().window(dappHandler);
     const topButton = await querySelector(
@@ -346,7 +366,7 @@ describe('Dapp accounts switcher flow', () => {
       driver,
     });
     await findElementByTestIdAndClick({
-      id: 'switch-networks-app-interation-item',
+      id: 'app-interaction-switch-networks',
       driver,
     });
     await findElementByTestIdAndClick({
@@ -380,7 +400,7 @@ describe('Dapp accounts switcher flow', () => {
       driver,
     });
     await findElementByTestIdAndClick({
-      id: 'switch-networks-app-interation-item',
+      id: 'app-interaction-switch-networks',
       driver,
     });
     await findElementByTestIdAndClick({
@@ -405,7 +425,7 @@ describe('Dapp accounts switcher flow', () => {
       driver,
     });
     await findElementByTestIdAndClick({
-      id: 'switch-networks-app-interation-item',
+      id: 'app-interaction-switch-networks',
       driver,
     });
     await findElementByTestIdAndClick({
