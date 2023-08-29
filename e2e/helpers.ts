@@ -315,12 +315,15 @@ export async function waitUntilElementByTestIdIsPresent({
   id: string;
   driver: WebDriver;
 }): Promise<void> {
-  await delayTime('medium');
-  const element = await findElementByTestId({ id, driver });
-  if (element) {
-    return;
+  await delayTime('long');
+  try {
+    const element = await findElementByTestId({ id, driver });
+    if (element) {
+      return;
+    }
+  } catch (error) {
+    return waitUntilElementByTestIdIsPresent({ id, driver });
   }
-  return waitUntilElementByTestIdIsPresent({ id, driver });
 }
 
 export async function findElementByIdAndClick({
@@ -541,6 +544,15 @@ export const fillPrivateKey = async (driver: WebDriver, privateKey: string) => {
     text: privateKey,
   });
 };
+
+export async function clickAcceptRequestButton(driver: WebDriver) {
+  await waitUntilElementByTestIdIsPresent({
+    id: 'accept-request-button',
+    driver,
+  });
+
+  await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+}
 
 export async function importHardwareWalletFlow(
   driver: WebDriver,

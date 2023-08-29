@@ -29,6 +29,7 @@ import { useContainerRef } from '~/design-system/components/AnimatedRoute/Animat
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
+import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
@@ -40,6 +41,7 @@ import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { usePendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { StickyHeader } from '../../layouts/StickyHeader';
@@ -161,6 +163,7 @@ export function Home() {
   }, []);
 
   useHomeShortcuts();
+  useRestoreNavigation();
   useSwitchWalletShortcuts();
 
   return (
@@ -183,6 +186,7 @@ export function Home() {
             <TopNav />
             <Header />
             <Tabs />
+            <AppConnectionWalletSwitcher />
           </motion.div>
           {currentHomeSheet}
         </>
