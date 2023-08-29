@@ -62,7 +62,6 @@ export async function assetsQueryFunction({
   try {
     if (!assetAddresses || !assetAddresses.length) return {};
     const batches = chunkArray([...assetAddresses], 10); // chunking because a full batch would throw 413
-    console.log('BATCHES: ', batches);
     const batchResults = batches.map((batchedQuery) =>
       requestMetadata(createAssetQuery(batchedQuery, chainId, currency)),
     ) as Promise<Record<string, AssetMetadata>[]>[];
