@@ -202,6 +202,40 @@ jobs:
       - name: Fail if any tests failed
         if: steps.FFE2eDappInteractions.outcome == 'failure'
         run: exit 1
+  firefox-e2e-shortcuts:
+    runs-on: beefy-runner-bx
+    timeout-minutes: 25
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 4
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/firefoxTestsSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e Shortcuts (Firefox)
+        id: FFE2eShortcuts
+        continue-on-error: true
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 25
+          max_attempts: 2
+          command: |
+            export BROWSER=firefox
+            export OS=linux
+            export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
+            yarn firefox:manifest && yarn firefox:zip
+            yarn vitest:shortcuts --retry=5
+      - name: Upload deps artifacts
+        if: steps.FFE2eShortcuts.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.FFE2eShortcuts.outcome == 'failure'
+        run: exit 1
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
@@ -330,6 +364,39 @@ jobs:
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
+        run: exit 1
+  chrome-e2e-shortcuts:
+    runs-on: beefy-runner-bx
+    timeout-minutes: 25
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/chromeTestsSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e shortcuts (Chrome)
+        id: ChromeE2EShortcuts
+        continue-on-error: true
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 25
+          max_attempts: 2
+          command: |
+            export BROWSER=chrome
+            export OS=linux
+            export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+            yarn vitest:shortcuts --retry=5
+      - name: Upload deps artifacts
+        if: steps.ChromeE2EShortcuts.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2EShortcuts.outcome == 'failure'
         run: exit 1
   # BRAVE TESTS
   # brave-e2e:
