@@ -158,6 +158,7 @@ export function Privacy() {
             <MenuItem
               last
               hasRightArrow
+              testId={'auto-lock-option'}
               rightComponent={
                 <MenuItem.Selection
                   text={autoLockTimerOptions[autoLockTimer].label}

@@ -8,11 +8,13 @@ import {
   checkWalletName,
   delayTime,
   executePerformShortcut,
+  findElementByTestId,
   findElementByText,
   getExtensionIdByName,
   getRootUrl,
   importWalletFlow,
   initDriverWithOptions,
+  isElementFoundByText,
   toggleStatus,
   typeOnTextInput,
 } from '../helpers';
@@ -51,8 +53,17 @@ describe('navigate through settings flows with shortcuts', () => {
     await checkExtensionURL(driver, 'settings');
   });
 
-  it('should be able to navigate back home with keyboard', async () => {
+  it('should be able to navigate back home with esc', async () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
+    await delayTime('medium');
+  });
+
+  it('should be able to navigate back home with arrow left', async () => {
+    await executePerformShortcut({ driver, key: '.' });
+    await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, 'settings');
+    await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
     await delayTime('medium');
   });
 
@@ -64,10 +75,27 @@ describe('navigate through settings flows with shortcuts', () => {
     await checkExtensionURL(driver, 'settings');
   });
 
+  it('should be able to toggle Set Rainbow As Default Wallet via keybaord', async () => {
+    await delayTime('medium');
+    const defaultToggleStatus = await toggleStatus(
+      'set-rainbow-default-toggle',
+      driver,
+    );
+    expect(defaultToggleStatus).toBe('true');
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await delayTime('long');
+    const changedToggleStatus = await toggleStatus(
+      'set-rainbow-default-toggle',
+      driver,
+    );
+    expect(changedToggleStatus).toBe('false');
+  });
+
   it('should be able to navigate to Privacy & Security using keyboard', async () => {
     await delayTime('medium');
-    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
-    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
     await checkExtensionURL(driver, 'privacy');
   });
 
@@ -96,6 +124,8 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
     );
     expect(changedToggleStatus).toBe('true');
+
+    // TODO: add validation that the balances are actually hidden on home
   });
 
   it('should be able to toggle auto hide small balances with keyboard', async () => {
@@ -112,6 +142,8 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
     );
     expect(changedToggleStatus).toBe('true');
+
+    // TODO: add validation that small balances are actually hidden (?????)
   });
 
   it('should be able to change password using only the keyboard', async () => {
@@ -132,6 +164,24 @@ describe('navigate through settings flows with shortcuts', () => {
     });
     await executePerformShortcut({ driver, key: 'TAB' });
     await executePerformShortcut({ driver, key: 'ENTER' });
+  });
+
+  it('should be able to navigate to auto-lock options', async () => {
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 6 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, 'autolock');
+  });
+
+  it('should be able to change auto-lock option', async () => {
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 5 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+    const chosenAutoLockTime = await findElementByTestId({
+      id: 'auto-lock-option',
+      driver,
+    });
+    console.log(await chosenAutoLockTime.getText());
+    expect(await chosenAutoLockTime.getText()).toContain('10 minutes');
   });
 
   it('should be able to navigate to Wallets & Keys with the keyboard', async () => {
@@ -161,7 +211,135 @@ describe('navigate through settings flows with shortcuts', () => {
       timesToPress: 3,
     });
     await executePerformShortcut({ driver, key: 'SPACE' });
-    const contextMenuOption = await findElementByText(driver, 'Private Key');
-    expect(contextMenuOption).toBeTruthy();
+    const contextMenuOption = await isElementFoundByText({
+      text: 'Private Key',
+      driver,
+    });
+    expect(contextMenuOption).toBe(true);
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
+    const newContextMenuOption = await isElementFoundByText({
+      text: 'Private Key',
+      driver,
+    });
+    expect(newContextMenuOption).toBe(false);
+  });
+
+  it('should be able to navigate back to settings page', async () => {
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_LEFT',
+      timesToPress: 3,
+    });
+    await checkExtensionURL(driver, 'settings');
+  });
+
+  it('should be able to navigate to transaction options', async () => {
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 4,
+    });
+    await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+    await checkExtensionURL(driver, 'transactions');
+  });
+
+  it('should be able to change default txn speed', async () => {
+    await executePerformShortcut({
+      driver,
+      key: 'TAB',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'ARROW_UP' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
+    const fastGasLabel = await isElementFoundByText({
+      text: 'Fast',
+      driver,
+    });
+    expect(fastGasLabel).toBe(true);
+  });
+
+  it('should be able to toggle flashbots', async () => {
+    const defaultToggleStatus = await toggleStatus(
+      'flashbots-transactions-toggle',
+      driver,
+    );
+    expect(defaultToggleStatus).toBe('false');
+    await executePerformShortcut({
+      driver,
+      key: 'TAB',
+      timesToPress: 3,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await delayTime('long');
+    const changedToggleStatus = await toggleStatus(
+      'flashbots-transactions-toggle',
+      driver,
+    );
+    expect(changedToggleStatus).toBe('true');
+  });
+
+  it('should be able navigate to currencies', async () => {
+    await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+    await executePerformShortcut({
+      driver,
+      key: 'TAB',
+      timesToPress: 5,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, 'currency');
+  });
+
+  it('should be able navigate to select new currency', async () => {
+    await executePerformShortcut({
+      driver,
+      key: 'TAB',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+    const currencyTextContent = await findElementByTestId({
+      id: 'currency-selection',
+      driver,
+    });
+    console.log(await currencyTextContent.getText());
+    expect(await currencyTextContent.getText()).toContain('Ethereum');
+  });
+
+  it('should be able navigate to languages', async () => {
+    await executePerformShortcut({
+      driver,
+      key: 'TAB',
+      timesToPress: 6,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, 'language');
+
+    // TODO: add a validation for switching languages
+  });
+
+  it('should be able navigate to switch theme and open context menu', async () => {
+    await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+    await executePerformShortcut({
+      driver,
+      key: 'TAB',
+      timesToPress: 7,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    const systemOption = await findElementByText(driver, 'System');
+    const lightOption = await findElementByText(driver, 'Light');
+    expect(systemOption && lightOption).toBeTruthy();
+    await executePerformShortcut({ driver, key: 'ARROW_UP' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
+  });
+
+  it('should be able to switch theme to light', async () => {
+    await executePerformShortcut({ driver, key: 'ARROW_UP' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
+    const chosenThemeOption = await findElementByText(driver, 'Light');
+    expect(chosenThemeOption).toBeTruthy();
   });
 });

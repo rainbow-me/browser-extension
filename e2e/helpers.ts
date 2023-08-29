@@ -285,6 +285,26 @@ export async function doNotFindElementByTestId({
   return !!elementFound;
 }
 
+export async function isElementFoundByText({
+  text,
+  driver,
+}: {
+  text: string;
+  driver: WebDriver;
+}) {
+  let isElementFound = true;
+  try {
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+    await driver.wait(
+      until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
+      5000,
+    );
+  } catch (error) {
+    isElementFound = false;
+  }
+  return isElementFound;
+}
+
 export async function findElementByTestIdAndClick({
   id,
   driver,
