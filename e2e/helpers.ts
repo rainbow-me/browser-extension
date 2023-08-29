@@ -413,6 +413,7 @@ export async function performShortcutWithNormalKey(
   keyboardCharacter: string,
 ) {
   try {
+    await delayTime('short');
     await driver.actions().sendKeys(key.chord(keyboardCharacter)).perform();
   } catch (error) {
     console.error(
@@ -436,7 +437,7 @@ export async function performShortcutWithSpecialKey(
     // Access the Key object using a type assertion
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const specialKey = (Key as any)[key] as string;
-
+    await delayTime('short');
     await driver.actions().sendKeys(specialKey).perform();
   } catch (error) {
     console.error(

@@ -125,6 +125,7 @@ export function Privacy() {
               last
               rightComponent={
                 <Toggle
+                  testId={'hide-small-balances-toggle'}
                   checked={hideSmallBalances}
                   handleChange={setHideSmallBalances}
                   tabIndex={-1}
