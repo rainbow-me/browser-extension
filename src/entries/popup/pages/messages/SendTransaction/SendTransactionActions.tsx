@@ -5,22 +5,30 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { Column, Columns, Inset, Row, Rows, Stack } from '~/design-system';
+import {
+  // Column,
+  // Columns,
+  Inset,
+  Row,
+  Rows,
+  Stack,
+  Text,
+} from '~/design-system';
 import { useApproveAppRequestValidations } from '~/entries/popup/hooks/approveAppRequest/useApproveAppRequestValidations';
 import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import {
   AcceptRequestButton,
-  BottomDisplayWallet,
+  // BottomDisplayWallet,
   RejectRequestButton,
-  WalletBalance,
+  // WalletBalance,
 } from '../BottomActions';
 
 export const SendTransactionActions = ({
-  appHost,
+  // appHost,
   chainId,
-  selectedWallet,
+  // selectedWallet,
   onAcceptRequest,
   onRejectRequest,
   waitingForDevice,
@@ -53,14 +61,20 @@ export const SendTransactionActions = ({
   return (
     <Inset vertical="20px" horizontal="20px">
       <Stack space="24px">
-        <Columns alignVertical="center" alignHorizontal="justify">
+        {/* <Columns alignVertical="center" alignHorizontal="justify">
           <Column>
             <BottomDisplayWallet selectedWallet={selectedWallet} />
           </Column>
-          <Column>
-            <WalletBalance appHost={appHost} />
-          </Column>
-        </Columns>
+          <Column> */}
+        {/* <WalletBalance appHost={appHost} /> */}
+        <Text size="10pt" weight="bold" align="center">
+          {enoughNativeAssetForGas}
+        </Text>
+        <Text size="7pt" weight="bold" align="center">
+          {JSON.stringify(selectedGas)}
+        </Text>
+        {/* </Column>
+        </Columns> */}
         <Rows space="8px">
           <Row>
             <AcceptRequestButton
