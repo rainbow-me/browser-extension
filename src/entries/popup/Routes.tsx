@@ -104,7 +104,7 @@ const ROUTE_DATA = [
     ),
   },
   {
-    path: ROUTES.ACTIVITY_DETAILS(':hash'),
+    path: ROUTES.ACTIVITY_DETAILS(':chainId', ':hash'),
     element: (
       <AnimatedRoute direction="base" protectedRoute>
         <ActivityDetails />

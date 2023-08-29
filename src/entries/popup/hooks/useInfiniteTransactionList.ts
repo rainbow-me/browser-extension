@@ -55,16 +55,24 @@ export default function ({
           const latestTransactions = data.pages
             .map((p) => p.transactions)
             .flat()
-            .reduce((latestTxMap, currentTx) => {
-              const currentChain = currentTx?.chainId;
-              if (currentChain) {
-                const latestTx = latestTxMap.get(currentChain);
-                if (!latestTx) {
-                  latestTxMap.set(currentChain, currentTx);
+            .reduce(
+              (latestTxMap, currentTx) => {
+                const currentChain = currentTx?.chainId;
+                if (currentChain) {
+                  const latestTx = latestTxMap.get(currentChain);
+                  if (!latestTx) {
+                    latestTxMap.set(currentChain, currentTx);
+                  }
                 }
-              }
-              return latestTxMap;
-            }, new Map(SUPPORTED_CHAIN_IDS.map((chain) => [chain, null as RainbowTransaction | null])));
+                return latestTxMap;
+              },
+              new Map(
+                SUPPORTED_CHAIN_IDS.map((chain) => [
+                  chain,
+                  null as RainbowTransaction | null,
+                ]),
+              ),
+            );
           watchForPendingTransactionsReportedByRainbowBackend({
             currentAddress: address,
             pendingTransactions,

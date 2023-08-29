@@ -44,11 +44,11 @@ import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
-import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { AppConnection } from './NetworkMenu';
 import { TabBar as TabBar_ } from './TabBar';
+import { Tokens } from './Tokens';
 
 export type Tab = 'tokens' | 'activity';
 
@@ -113,7 +113,8 @@ function Tabs() {
       <Content>
         {/* {activeTab === 'tokens' && <Tokens />}
         {activeTab === 'activity' && <Activities />} */}
-        <Activities />
+        {/* <Activities /> */}
+        <Tokens />
       </Content>
     </>
   );

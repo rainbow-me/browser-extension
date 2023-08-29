@@ -19,12 +19,13 @@ import {
 } from '../state';
 import { AddressOrEth, ParsedUserAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
+import { isLegacyGasParams } from '../types/gas';
 import {
   NewTransaction,
+  PaginatedTransactionsApiResponse,
   RainbowTransaction,
   TransactionStatus,
   TransactionType,
-  TransactionsApiResponse,
 } from '../types/transactions';
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
@@ -83,30 +84,34 @@ export const getDataForTokenTransfer = (value: string, to: string): string => {
 };
 
 type ParseTransactionArgs = {
-  tx: TransactionsApiResponse;
+  tx: PaginatedTransactionsApiResponse;
   currency: SupportedCurrencyKey;
   chainId: ChainId;
 };
 
-export async function parseTransaction({
+let a = true;
+export function parseTransaction({
   tx,
   currency,
   chainId,
-}: ParseTransactionArgs): Promise<RainbowTransaction> {
+}: ParseTransactionArgs): RainbowTransaction {
   const { status, hash, meta, nonce, protocol } = tx;
 
   if (status === 'failed') console.log(tx);
-  const changes = tx.changes.map(
-    (change) =>
-      change && {
-        ...change,
-        asset: parseUserAsset({
-          asset: change.asset,
-          balance: change.value?.toString() || '0',
-          currency,
-        }),
-      },
-  );
+  else if (a) {
+    console.log(tx);
+    a = false;
+  }
+
+  const changes = tx.changes.filter(Boolean).map((change) => ({
+    ...change,
+    asset: parseUserAsset({
+      asset: change.asset,
+      balance: change.value?.toString() || '0',
+      currency,
+    }),
+    value: change.value || undefined,
+  }));
 
   const asset = tx.meta.asset
     ? parseAsset({ asset: tx.meta.asset, currency })
@@ -116,31 +121,43 @@ export async function parseTransaction({
   const direction = tx.direction || getDirection(type);
   const methodName = meta.action;
 
-  const _tx: RainbowTransaction = {
+  const value = changes
+    .find((change) => change?.asset.isNativeAsset)
+    ?.value?.toString();
+
+  const name =
+    meta.type === 'contract_interaction' ? methodName : asset?.name || 'Signed';
+
+  const _tx = {
     from: tx.address_from || '0x',
     to: tx.address_to,
-    name:
-      meta.type === 'contract_interaction'
-        ? methodName
-        : asset?.name || 'Signed',
+    name,
     title: i18n.t(`transactions.${type}.${status}`),
     description: asset?.name || methodName || 'Signed',
-    status,
     hash,
     chainId,
+    status,
     nonce,
     protocol,
     type,
     direction,
-    // value: tx.,
+    value,
     asset,
     changes,
+
+    // maxFeePerGas: '0', // tx.max_fee_per_gas,
+    // maxPriorityFeePerGas: '0', // tx.max_priority_fee_per_gas,
+    // gasLimit: tx.gas_limit,
+    // gasPrice: '0' // tx.gas_price,
   };
 
-  if (status === 'confirmed')
-    return { ..._tx, minedAt: tx.mined_at, blockNumber: tx.block_number };
-
-  return _tx;
+  if (status === 'pending') return { ..._tx, status };
+  return {
+    ..._tx,
+    status,
+    minedAt: tx.mined_at,
+    blockNumber: tx.block_number,
+  };
 }
 
 export const parseNewTransaction = (
@@ -150,10 +167,6 @@ export const parseNewTransaction = (
   const {
     data,
     from,
-    gasLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
     chainId = ChainId.mainnet,
     nonce,
     hash: txHash,
@@ -166,24 +179,27 @@ export const parseNewTransaction = (
 
   const hash = txHash || '0x';
 
-  const changes = txDetails.changes
-    .map(
-      (change) =>
-        change?.asset && {
-          ...change,
-          asset: parseUserAssetBalances({
-            asset: change.asset,
-            balance: change.value?.toString() || '0',
-            currency,
-          }),
-        },
-    )
-    .filter(Boolean);
+  const changes = txDetails.changes.filter(Boolean).map((change) => ({
+    ...change,
+    asset: parseUserAssetBalances({
+      asset: change.asset,
+      balance: change.value?.toString() || '0',
+      currency,
+    }),
+  }));
 
   const asset = changes[0]?.asset;
   const methodName = 'unknown method';
 
+  const gasParams = isLegacyGasParams(txDetails)
+    ? { gasPrice: txDetails.gasPrice }
+    : {
+        maxFeePerGas: txDetails.maxFeePerGas,
+        maxPriorityFeePerGas: txDetails.maxPriorityFeePerGas,
+      };
+
   return {
+    status: 'pending',
     data,
     name:
       type === 'contract_interaction' ? methodName : asset?.name || 'Signed',
@@ -191,18 +207,14 @@ export const parseNewTransaction = (
     description: asset?.name || methodName || 'Signed',
     from,
     changes,
-    gasLimit,
-    gasPrice,
     hash,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
     chainId,
     nonce,
     protocol,
-    status,
     to,
     type,
     flashbots,
+    ...gasParams,
   };
 };
 

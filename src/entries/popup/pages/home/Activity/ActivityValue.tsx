@@ -19,46 +19,46 @@
 
 import { i18n } from '~/core/languages';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { formatNumber } from '~/core/utils/formatNumber';
+import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { Box, Text, TextOverflow } from '~/design-system';
 
-const getBridgeActivityValues = (transaction: RainbowTransaction) => {
-  const { changes } = transaction;
+// const getBridgeActivityValues = (transaction: RainbowTransaction) => {
+//   const { changes } = transaction;
 
+//   const tokenIn = changes.filter((c) => c?.direction === 'in')[0]?.asset;
+//   const tokenOut = changes.filter((c) => c?.direction === 'out')[0]?.asset;
+
+//   if (!tokenIn || !tokenOut) return;
+
+//   const valueOut = `-${formatNumber(tokenOut.balance.amount)} ${
+//     tokenOut.symbol
+//   }`;
+//   const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
+
+//   return [valueOut, valueIn];
+// };
+
+const getSwapActivityValues = (changes: RainbowTransaction['changes']) => {
   const tokenIn = changes.filter((c) => c?.direction === 'in')[0]?.asset;
   const tokenOut = changes.filter((c) => c?.direction === 'out')[0]?.asset;
 
   if (!tokenIn || !tokenOut) return;
 
-  const valueOut = `-${formatNumber(tokenOut.balance.amount)} ${
+  const valueOut = `- ${formatNumber(tokenOut.balance.amount)} ${
     tokenOut.symbol
   }`;
-  const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
+  const valueIn = `+ ${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
 
   return [valueOut, valueIn];
 };
 
-const getSwapActivityValues = (transaction: RainbowTransaction) => {
-  const { changes } = transaction;
-
-  const tokenIn = changes.filter((c) => c?.direction === 'in')[0]?.asset;
-  const tokenOut = changes.filter((c) => c?.direction === 'out')[0]?.asset;
-
-  if (!tokenIn || !tokenOut) return;
-
-  const valueOut = `-${formatNumber(tokenOut.balance.amount)} ${
-    tokenOut.symbol
-  }`;
-  const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
-
-  return [valueOut, valueIn];
-};
-
-const getActivityValues = (transaction: RainbowTransaction) => {
-  const { changes, direction, type } = transaction;
-
+const getActivityValues = ({
+  changes,
+  direction,
+  type,
+}: ActivityValueProps) => {
   if (['swap', 'wrap', 'unwrap'].includes(type))
-    return getSwapActivityValues(transaction);
+    return getSwapActivityValues(changes);
 
   const asset = changes.filter(
     (c) => c?.direction === direction && c?.asset.type !== 'nft',
@@ -70,27 +70,26 @@ const getActivityValues = (transaction: RainbowTransaction) => {
   const { balance, native } = asset;
   if (balance.amount === '0') return;
 
-  const assetValue = `${valueSymbol}${formatNumber(balance.amount)} ${
-    asset.symbol
-  }`;
+  const assetValue = `${formatNumber(balance.amount)} ${asset.symbol}`;
 
   const nativeBalance = native.balance.amount;
   const assetNativeValue =
     +nativeBalance > 0
-      ? `${valueSymbol}${formatNumber(nativeBalance)}`
+      ? `${valueSymbol} ${formatCurrency(nativeBalance)}`
       : i18n.t('activity.no_value');
 
   return +nativeBalance > 0
     ? [assetValue, assetNativeValue]
-    : [assetNativeValue, assetValue];
+    : [assetNativeValue, `${valueSymbol} ${assetValue}`];
 };
 
-export const ActivityValue = ({
-  transaction,
-}: {
-  transaction: RainbowTransaction;
-}) => {
-  const [topValue, bottomValue] = getActivityValues(transaction) ?? [];
+type ActivityValueProps = Pick<
+  RainbowTransaction,
+  'type' | 'direction' | 'changes'
+>;
+
+export const ActivityValue = (tx: ActivityValueProps) => {
+  const [topValue, bottomValue] = getActivityValues(tx) ?? [];
   if (!topValue || !bottomValue) return null;
 
   const bottomValueColor = bottomValue.includes('+')

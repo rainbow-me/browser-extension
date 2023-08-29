@@ -65,8 +65,8 @@ export function Activities() {
         >
           {rows.map((virtualItem) => {
             const { index, key, start, size } = virtualItem;
-            const rowData = transactions[index];
-            const isLabel = typeof rowData === 'string';
+            const tx = transactions[index];
+            const isLabel = typeof tx === 'string';
             return (
               <Box
                 key={key}
@@ -81,7 +81,8 @@ export function Activities() {
                 width="full"
                 style={{ height: size, y: start }}
                 onClick={() =>
-                  !isLabel && navigate(ROUTES.ACTIVITY_DETAILS(rowData.hash))
+                  !isLabel &&
+                  navigate(ROUTES.ACTIVITY_DETAILS(tx.chainId, tx.hash))
                 }
                 paddingHorizontal="20px"
               >
@@ -93,14 +94,14 @@ export function Activities() {
                         weight={'semibold'}
                         color={'labelTertiary'}
                       >
-                        {rowData}
+                        {tx}
                       </Text>
                     </Box>
                   </Inset>
                 ) : (
                   // <TransactionDetailsMenu transaction={rowData}>
                   <Box paddingVertical="4px">
-                    <ActivityRow transaction={rowData} />
+                    <ActivityRow transaction={tx} />
                   </Box>
                   // </TransactionDetailsMenu>
                 )}

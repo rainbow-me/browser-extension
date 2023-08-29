@@ -1,18 +1,20 @@
-import { BigNumberish } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { Address } from 'wagmi';
 
-import { ParsedUserAsset } from '../utils/assets';
-
-import { AssetApiResponse, ParsedAsset, ProtocolType } from './assets';
+import {
+  AssetApiResponse,
+  ParsedAsset,
+  ParsedUserAsset,
+  ProtocolType,
+} from './assets';
 import { ChainId, ChainName } from './chains';
+import { TransactionGasParams, TransactionLegacyGasParams } from './gas';
 
 export type TransactionStatus = 'pending' | 'confirmed' | 'failed';
 // | 'cancelled'
 // | 'dropped';
 
 type BaseTransaction = {
-  status: TransactionStatus;
   hash: `0x${string}`;
   nonce: number; // -2 when not from the wallet user
   chainId: ChainId;
@@ -29,68 +31,37 @@ type BaseTransaction = {
   data?: string;
   flashbots?: boolean;
 
-  gasLimit?: BigNumberish;
-  gasPrice?: BigNumberish;
-  maxFeePerGas?: BigNumberish;
-  maxPriorityFeePerGas?: BigNumberish;
-
-  submittedAt?: number;
-
   changes: Array<
     | {
         asset: ParsedUserAsset;
         direction: TransactionDirection;
         address_from?: Address;
         address_to?: Address;
-        value: number | string;
+        value?: number;
         price?: number;
       }
     | undefined
   >;
   direction?: TransactionDirection;
 
-  value?: string; // ETH value
-  asset: ParsedAsset;
+  value?: string; // native asset value (eth)
+  asset?: ParsedAsset;
+};
 
+type BaseTransactionWithGas =
+  | (BaseTransaction & Partial<TransactionGasParams>)
+  | (BaseTransaction & Partial<TransactionLegacyGasParams>);
+
+type PendingTransaction = BaseTransactionWithGas & { status: 'pending' };
+type MinedTransaction = BaseTransactionWithGas & {
+  status: 'confirmed' | 'failed';
   blockNumber: number;
   minedAt: number;
 };
 
-type ConfirmedTransaction = BaseTransaction & { status: 'confirmed' };
-type PendingTransaction = Omit<BaseTransaction, 'blockNumber' | 'minedAt'> & {
-  status: 'pending';
-  blockNumber?: number;
-  minedAt?: number;
-};
-type FailedTransaction = BaseTransaction & { status: 'failed' };
+export type RainbowTransaction = PendingTransaction | MinedTransaction;
 
-type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
-
-export type RainbowTransaction =
-  | ConfirmedTransaction
-  | PendingTransaction
-  | FailedTransaction;
-
-// | DroppedTransaction
-// | CancelledTransaction;
-// | ({
-//     type: Exclude<TransactionType, 'swap' | 'wrap' | 'unwrap'>;
-//   } & BaseTransaction)
-// | ({ type: 'swap' | 'wrap' | 'unwrap' } & WithRequired<
-//     BaseTransaction,
-//     'changes'
-//   >);
-
-export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
-  changes: Array<
-    | {
-        asset?: ParsedAsset | null;
-        direction: TransactionDirection;
-        value: number | string;
-      }
-    | undefined
-  >;
-};
+export type NewTransaction = RainbowTransaction; // Omit<BaseTransaction<'pending'>, 'title'>;
 
 export type TransactionType =
   | 'burn'
@@ -125,7 +96,10 @@ export interface ExecuteRapResponse extends TransactionResponse {
   errorMessage?: string;
 }
 
-export type TransactionsApiResponse = {
+export type TransactionApiResponse<
+  Status extends TransactionStatus = TransactionStatus,
+> = {
+  status: Status;
   id: `0x${string}`;
   hash: `0x${string}`;
   network: ChainName;
@@ -154,13 +128,11 @@ export type TransactionsApiResponse = {
     contract_icon_url?: string;
     asset?: AssetApiResponse;
   };
-} & (
-  | {
-      status: 'confirmed';
-      block_number: number;
-      mined_at: number;
-    }
-  | {
-      status: 'failed' | 'pending';
-    }
-);
+  block_number: Status extends 'pending' ? undefined : number;
+  mined_at: Status extends 'pending' ? undefined : number;
+};
+
+export type PaginatedTransactionsApiResponse =
+  | TransactionApiResponse<'pending'>
+  | TransactionApiResponse<'confirmed'>
+  | TransactionApiResponse<'failed'>;

@@ -3,10 +3,10 @@ import { Navigate, useParams } from 'react-router-dom';
 import { Address, useTransaction as useWagmiTransaction } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useTransaction } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore } from '~/core/state';
-import { ChainNameDisplay } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
+import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { truncateAddress } from '~/core/utils/truncateAddress';
@@ -41,6 +41,8 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
+
+import { useTransaction } from './useTransaction';
 
 function AddressMoreOptions({ address }: { address: Address }) {
   return (
@@ -322,15 +324,32 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
   );
 }
 
+const isSupportedChain = (chainId?: number | string): chainId is ChainId =>
+  SUPPORTED_CHAIN_IDS.includes(Number(chainId));
+
 export function ActivityDetails() {
-  const { hash } = useParams<{ hash: RainbowTransaction['hash'] }>();
-  const { data: tx, isFetched } = useTransaction(hash);
+  const { hash, chainId } = useParams<{
+    hash: `0x${string}`;
+    chainId: string;
+  }>();
+
+  if (!isSupportedChain(chainId) || !hash) return <Navigate to={ROUTES.HOME} />;
+
+  return <ActivityDetailsSheet hash={hash} chainId={chainId} />;
+}
+
+function ActivityDetailsSheet({
+  hash,
+  chainId,
+}: {
+  hash: `0x${string}`;
+  chainId: ChainId;
+}) {
+  const { data: tx, isFetched } = useTransaction({ hash, chainId });
 
   const navigate = useRainbowNavigate();
 
-  const { currentAddress: address } = useCurrentAddressStore();
-
-  if (!hash || (isFetched && !tx)) return <Navigate to={ROUTES.HOME} />;
+  if (isFetched && !tx) return <Navigate to={ROUTES.HOME} />;
   if (!tx) return null;
 
   return (

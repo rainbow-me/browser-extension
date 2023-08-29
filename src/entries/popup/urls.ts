@@ -1,13 +1,15 @@
 import { UniqueId } from '~/core/types/assets';
-import { RainbowTransaction } from '~/core/types/transactions';
+import { ChainId } from '~/core/types/chains';
 
 export const ROUTES = {
   ROOT: '/', // RootHandler
   HOME: '/home', // Home
   TOKEN_DETAILS: (uniqueId: UniqueId | ':uniqueId') =>
     `/token-details/${uniqueId}`,
-  ACTIVITY_DETAILS: (hash: RainbowTransaction['hash'] | ':hash') =>
-    `/activity-details/${hash}`,
+  ACTIVITY_DETAILS: (
+    chainId: ChainId | ':chainId',
+    hash: `0x${string}` | ':hash',
+  ) => `/activity-details/${chainId}/${hash}`,
   CONNECTED: '/connected', // ConnectedApps
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect
