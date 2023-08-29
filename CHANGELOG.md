@@ -17,65 +17,80 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
-## [v1.1.70](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.70)
+## [v1.1.79](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.79)
 
-### Changed
+## Added
 
-- Cleaned up the codebase by removing some unused files and functions #850
+- Command K (⌘K or Ctrl+K) is now available to search and launch screens, toggle settings, search your wallets and tokens, and search ENS and public addresses to quickly watch a new wallet. ⌘⏎ or ⇧⏎ are available to expose additional actions for wallets and tokens. Press ESC to go back or close. #869
+- dApp Account Switch functionality when switching wallets while interacting with a dApp #845 #863 #860
+- Language option in Settings and internationalization support for Latin American Spanish, Simplified Chinese, Japanese, French, Brazilian Portuguese, Hindi, Turkish, and Russian #817
+
+## Changed
+
+- State restoration for the Swap and Send flows so that user selections and input are sticky for a short period of time for when you need to close the pop-up or back-out to copy an address #852
+- Paginated scroll and loading indicators on the Tokens and Activity interfaces for heavy wallets #880
+- Analytics for anonymized metrics on the types of wallets our users interface with in Rainbow #805 
 
 ### Fixed
 
-- Fix onboarding loop bug by keeping service worker alive #861
+- Resolved regression in Right-click support for Tokens #865
+- Fixed an issue with dApps that support `window.ethereum.providers` when Rainbow is toggled as the default browser wallet #867
+- Resolved an issue that could cause wallet discovery to fail during Onboarding #868
+- Improved pricing chart fallbacks and hovering behavior in Token Details #865
+- Improved Hide Small Balances toggle reliability #870
+- Fixed a white screen flash that would sometimes appear when launching Rainbow #877
+- Resolved a crash in browsers without support for IndexedDB before attempting to initialize our Firebase configuration #864
+- Color shading consistency on the dApp Switch Network menu #761
+
+## [v1.1.70](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.70)
+
+### Fixed
+
+- Resolved an issue that caused some users to experience a loop where creating or importing a wallet during Onboarding could bring them back to the initial Onboarding step #861
 
 ## [v1.1.67](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.67)
 
-### Added
-
-- Added e2e testing for future Firefox support #810
-- Moved to chain Ids for e2e tests #847
-- Added more robust testing around sends #840
-- Safety checks for Urls #857
-
 ### Changed
 
-- Created better failure handling in user assets #843
-- Firefox Style Tweaks #842
+- Improved token caching in scenarios where network requests fail #843
+- Improved styling in preparation for Firefox support #842
+- Removed Send and Swap buttons in Token Details for watched wallets #849
 
 ### Fixed
 
-- Fixed alerts memory leak #849
-- Gas ready validation on transactions #824
-- Fixed keychain stores #851
-- Fixed logic in rate limit checks #855
-- Fixed chart exception when data is empty #856
+- Resolved a crash that could be caused by an invalid dApp url #857
+- Fixed a memory leak in Alert components #849
+- Blocking interaction with Swap and Send confirmation buttons while gas is being fetched to prevent invalid transactions from being dispatched #824
+- Resolved an issue that could lead to an infinite loop when syncing keychain stores #851
+- Improved logic in dApp provider throttling and resolved a potential crash #855
+- Resolved a crash when pricing data is unavailable for Token Details charts #856
 
 ## [v1.1.59](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.59)
 
 ### Added
 
-- Added the ability to enable the toggle to filter small balances #818
-- Added better logging for message signing errors #821
-- Added a new unsupported browser bottom sheet #828
-- Added a new activity History Page Loader #830
-- Added keyboard shortcut and navigation tracking #837
+- The "Auto-hide balances under $1" toggle in Settings is now available to automatically filter out spam and token dust #818
 
 ### Changed
 
-- Moved to consolidated transactions endpoint and added pagination to activity history #816 / #827
-- The header collapses now on scroll when list is small #831
-- Updated loading skeletons #833
-- Made test scripts for serial and unit tests more robust #838
+- Introduced a new alert when attempting to sign a message or transaction for a Ledger wallet when the device is disconnected #826
+- Added an Unsupported Browser explainer during Onboarding for unsupported browsers with known issues, including Kiwi Browser #828
+- When fetching additional transactions when scrolling the Activity list, a new loading indicator is available #830
+- Migrated to a more efficient transactions API and introduced pagination in the Activity list #816 #827
+- Improved empty state loading skeletons for the Tokens and Activity interfaces #833
+- The wallet header will now consistently collapse when scrolling Tokens on wallets with a limited number of assets #831
+- Keyboard shortcut and navigation analytics #837
 
 ### Fixed
 
-- Improved Trezor connectivity #819
-- Added optionals to prevent crash on bottom actions #822
-- Made TOS link clickable #823
-- Fixed a bug where connected apps network badge wouldn't display properly #825
-- Added a new alert when attempting to sign with Ledger device disconnected #826
-- Fixed a bug where header AccountName tabIndex wasn't allowing proper navigation #832
-- Fixed a bug that prevented correct navigation after setting a new password #834
-- Fixed an issue where users couldn't rename new seed wallet immediately after creation #836
+- Fixed a crash for Trezor devices if connectivity is established more than once #819
+- Fixed a crash on dApp interactions if address or chain metadata was unavailable #822
+- Resolved an issue that prevented clicking the Terms of Service link during Onboarding #823
+- Fixed a bug where the Connected Apps network badge wouldn't display properly #825
+- Fixed a bug where wallet name in the Header couldn't be selected with tab keyboard navigation #832
+- Resolved an issue where the user would be asked to create a password again after updating their password in Wallets & Keys in Settings and then using the back button #834
+- Fixed an issue where a user couldn't create a name for a wallet after creating a new Wallet Group #836
+- Improved logging for dApp message signing errors to diagnose problematic dApps #821
 
 ## [v1.1.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.48)
 

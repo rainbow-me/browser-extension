@@ -11,6 +11,7 @@ yarn-error.log
 .eslintcache
 
 build/
+screenshots/
 
 src/core/graphql/__generated__/
 

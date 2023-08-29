@@ -1,4 +1,5 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { Provider } from '@ethersproject/providers';
 import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
 import { Address } from 'wagmi';
@@ -520,17 +521,25 @@ export async function getTransactionReceiptStatus({
   included,
   transaction,
   transactionResponse,
+  provider,
 }: {
   included: boolean;
   transaction: RainbowTransaction;
   transactionResponse: TransactionResponse;
+  provider: Provider;
 }) {
   let receipt;
   let status;
 
   try {
     if (transactionResponse) {
-      receipt = await transactionResponse.wait();
+      if (transactionResponse.wait) {
+        receipt = await transactionResponse.wait();
+      } else {
+        receipt = await provider.getTransactionReceipt(
+          transactionResponse.hash,
+        );
+      }
     }
     // eslint-disable-next-line no-empty
   } catch (e) {}
@@ -578,7 +587,6 @@ export async function getNextNonce({
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || 0;
   const provider = getProvider({ chainId });
-
   const txCountIncludingPending = await provider.getTransactionCount(
     address,
     'pending',
