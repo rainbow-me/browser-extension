@@ -68,7 +68,7 @@ export const SendTransactionActions = ({
           <Column> */}
         {/* <WalletBalance appHost={appHost} /> */}
         <Text size="10pt" weight="bold" align="center">
-          {enoughNativeAssetForGas}
+          {enoughNativeAssetForGas ? 'TRUE' : 'FALSE'}
         </Text>
         <Text size="7pt" weight="bold" align="center">
           {JSON.stringify(selectedGas)}
