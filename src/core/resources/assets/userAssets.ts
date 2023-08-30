@@ -124,6 +124,7 @@ export const userAssetsSetQueryData = ({
 async function userAssetsQueryFunction({
   queryKey: [{ address, currency, connectedToHardhat }],
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
+  console.log('userAssetsQueryFunction'.toUpperCase());
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = (cache.find(
     userAssetsQueryKey({ address, currency, connectedToHardhat }),
@@ -315,7 +316,7 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
     {
       ...config,
       refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
-      staleTime: USER_ASSETS_REFETCH_INTERVAL,
+      // staleTime: USER_ASSETS_REFETCH_INTERVAL,
     },
   );
 }
