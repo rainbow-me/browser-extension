@@ -78,7 +78,7 @@ export function ActivityPill({
 
   return (
     <Box position="relative">
-      {status === 'confirmed' && size && (
+      {status === 'pending' && size && (
         <Box position="absolute" style={{ top: -5, left: -5 }}>
           <PendingIndicator
             width={size.width}
