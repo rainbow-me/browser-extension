@@ -53,6 +53,7 @@ const PendingIndicator = ({
       <rect
         stroke={backgroundColorsVars.blue}
         className={pendingStyle}
+        strokeLinecap="round"
         {...props}
       />
     </svg>
@@ -77,7 +78,7 @@ export function ActivityPill({
 
   return (
     <Box position="relative">
-      {status === 'pending' && size && (
+      {status === 'confirmed' && size && (
         <Box position="absolute" style={{ top: -5, left: -5 }}>
           <PendingIndicator
             width={size.width}
