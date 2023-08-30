@@ -204,7 +204,6 @@ describe('navigate through settings flows with shortcuts', () => {
       id: 'auto-lock-option',
       driver,
     });
-    console.log(await chosenAutoLockTime.getText());
     expect(await chosenAutoLockTime.getText()).toContain('10 minutes');
   });
 
@@ -327,7 +326,6 @@ describe('navigate through settings flows with shortcuts', () => {
       id: 'currency-selection',
       driver,
     });
-    console.log(await currencyTextContent.getText());
     expect(await currencyTextContent.getText()).toContain('Ethereum');
   });
 

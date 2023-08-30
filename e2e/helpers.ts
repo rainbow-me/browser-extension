@@ -298,8 +298,14 @@ export async function isElementFoundByText({
       until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
       5000,
     );
+    console.error(
+      `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
+    );
   } catch (error) {
     isElementFound = false;
+    console.error(
+      `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
+    );
   }
   return isElementFound;
 }
