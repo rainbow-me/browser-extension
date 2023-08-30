@@ -1,4 +1,5 @@
 import { Signer } from '@ethersproject/abstract-signer';
+import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { formatEther } from '@ethersproject/units';
@@ -8,7 +9,6 @@ import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
-  isLegacyGasParams,
 } from '~/core/types/gas';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
@@ -20,7 +20,6 @@ import { ParsedAsset } from '../../types/assets';
 import { convertAmountToRawAmount, greaterThan } from '../../utils/numbers';
 import { ActionProps, RapActionResult } from '../references';
 
-import { BigNumber } from '@ethersproject/bignumber';
 import { overrideWithFastSpeedIfNeeded } from './../utils';
 
 export const getAssetRawAllowance = async ({
@@ -105,6 +104,8 @@ export const estimateApprove = async ({
   }
 };
 
+const toBigNumber = (v?: string | number | BigNumber) =>
+  v ? BigNumber.from(v) : undefined;
 export const executeApprove = async ({
   gasLimit,
   gasParams,
@@ -115,7 +116,7 @@ export const executeApprove = async ({
 }: {
   chainId: ChainId;
   gasLimit: string;
-  gasParams: TransactionGasParams | TransactionLegacyGasParams;
+  gasParams: Partial<TransactionGasParams & TransactionLegacyGasParams>;
   nonce?: number;
   spender: Address;
   tokenAddress: Address;
@@ -127,15 +128,14 @@ export const executeApprove = async ({
     signerOrProvider: wallet,
   });
 
+  const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasParams;
+
   return tokenContract.approve(spender, MaxUint256, {
-    gasLimit: BigNumber.from(gasLimit),
     nonce,
-    ...(isLegacyGasParams(gasParams)
-      ? { gasPrice: BigNumber.from(gasParams.gasPrice) }
-      : {
-          maxFeePerGas: BigNumber.from(gasParams.maxFeePerGas),
-          maxPriorityFeePerGas: BigNumber.from(gasParams.maxPriorityFeePerGas),
-        }),
+    gasLimit: toBigNumber(gasLimit),
+    gasPrice: toBigNumber(gasPrice),
+    maxFeePerGas: toBigNumber(maxFeePerGas),
+    maxPriorityFeePerGas: toBigNumber(maxPriorityFeePerGas),
   });
 };
 
@@ -209,7 +209,7 @@ export const unlock = async ({
     nonce: approval.nonce,
     status: TransactionStatus.approving,
     type: TransactionType.send,
-    ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
+    ...gasParams,
   };
   await addNewTransaction({
     address: parameters.fromAddress as Address,

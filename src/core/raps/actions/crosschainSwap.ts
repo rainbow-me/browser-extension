@@ -16,7 +16,6 @@ import { gasStore } from '../../state';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
-  isLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
@@ -184,9 +183,10 @@ export const crosschainSwap = async ({
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
     flashbots: parameters.flashbots,
-    ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
+    ...gasParams,
   };
-  await addNewTransaction({
+
+  addNewTransaction({
     address: parameters.quote.from as Address,
     chainId: parameters.chainId as ChainId,
     transaction,
