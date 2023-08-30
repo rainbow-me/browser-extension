@@ -104,3 +104,5 @@ export const NATIVE_ASSETS_PER_CHAIN = {
 };
 export const OVM_GAS_PRICE_ORACLE =
   '0x420000000000000000000000000000000000000F';
+
+export const REFERRER = 'browser-extension';
