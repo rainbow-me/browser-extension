@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { Address, useTransaction as useWagmiTransaction } from 'wagmi';
 
@@ -20,14 +20,8 @@ import {
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
-import { BoxProps } from '~/design-system/components/Box/Box';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
-import {
-  CoinIcon,
-  NFTIcon,
-  TwoCoinsIcon,
-} from '~/entries/popup/components/CoinIcon/CoinIcon';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +36,8 @@ import { ROUTES } from '~/entries/popup/urls';
 
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
+import { ActivityIcon } from './ActivityIcon';
+import { pendingStyle } from './ActivityPill.css';
 import { useTransaction } from './useTransaction';
 
 function AddressMoreOptions({ address }: { address: Address }) {
@@ -83,75 +79,74 @@ function AddressMoreOptions({ address }: { address: Address }) {
   );
 }
 
-function BaseActivityPill({
-  title,
-  icon,
-  ...props
-}: BoxProps & { title: string; icon: ReactNode }) {
+const statusColor = {
+  pending: 'blue',
+  failed: 'red',
+  confirmed: 'label',
+} as const;
+
+const AA = ({ width }: { width: number }) => {
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      gap="6px"
-      paddingHorizontal="10px"
-      paddingVertical="5px"
-      borderRadius="round"
-      background="fillHorizontal"
-      borderColor="buttonStroke"
-      borderWidth="1px"
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      {...props}
-    >
-      {icon}
-      <Text weight="bold" color="label" size="12pt">
-        {title}
-      </Text>
+    <svg height="40" width={width + 4}>
+      <rect
+        width={width}
+        height="36"
+        fill="transparent"
+        stroke="#F5F8FF1F"
+        strokeWidth="2"
+        ry="20" // fix roundness
+        rx="20" // fix roundness
+        x="2"
+        y="2"
+      />
+      <rect
+        width={width}
+        height="36"
+        fill="transparent"
+        stroke="#2775CA"
+        strokeWidth="2"
+        ry="20" // fix roundness
+        rx="20" // fix roundness
+        x="2"
+        y="2"
+        className={pendingStyle}
+      />
+    </svg>
+  );
+};
+
+function ActivityPill({ transaction }: { transaction: RainbowTransaction }) {
+  const { status, title } = transaction;
+  const color = statusColor[status];
+
+  const [width, setWidth] = useState(0);
+
+  return (
+    <Box position="relative">
+      <Box position="absolute" style={{ top: -6, left: -6 }}>
+        {width && <AA width={width + 4} />}
+      </Box>
+      <Box
+        ref={(n) => {
+          if (n) setWidth(n.clientWidth);
+        }}
+        display="flex"
+        alignItems="center"
+        gap="6px"
+        paddingHorizontal="10px"
+        paddingVertical="5px"
+        borderRadius="round"
+        background="fillHorizontal"
+        borderColor={status === 'failed' ? 'red' : 'buttonStroke'}
+        borderWidth="1px"
+      >
+        <ActivityIcon transaction={transaction} size={16} badge={false} />
+        <Text weight="bold" color={color} size="12pt">
+          {title}
+        </Text>
+      </Box>
     </Box>
   );
-}
-type ActivityPillProps = { transaction: RainbowTransaction };
-
-function ActivityPill({ transaction }: ActivityPillProps) {
-  const changes = transaction.changes || [];
-  if (
-    ['wrap', 'undwrap', 'swap'].includes(transaction.type) &&
-    !!changes[0] &&
-    !!changes[1]
-  )
-    return (
-      <BaseActivityPill
-        icon={
-          <TwoCoinsIcon
-            under={changes[1].asset}
-            over={changes[0].asset}
-            size={16}
-          />
-        }
-        title={transaction.title}
-      />
-    );
-
-  const asset = transaction.changes?.[0]?.asset;
-  if (!asset) return null;
-
-  if (asset.type === 'nft')
-    return (
-      <BaseActivityPill
-        icon={<NFTIcon asset={asset} size={16} />}
-        title={transaction.title}
-      />
-    );
-
-  return (
-    <BaseActivityPill
-      paddingLeft="5px"
-      icon={<CoinIcon asset={asset} badge={false} size={20} />}
-      title={transaction.title}
-    />
-  );
-
-  // if (transaction.type === TransactionType.trade)
-  //   return <CoinIcon asset={asset} badge={false} size={20} />; // one on top of the other
 }
 
 const YouOrAddress = ({ address }: { address: Address }) => {

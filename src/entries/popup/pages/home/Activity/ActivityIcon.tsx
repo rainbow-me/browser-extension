@@ -11,34 +11,41 @@ import {
 import { ContractInteractionIcon } from './ContractInteractionIcon';
 
 export const ActivityIcon = ({
-  transaction,
+  transaction: { type, changes, asset, chainId },
+  size = 36,
+  badge = true,
 }: {
   transaction: RainbowTransaction;
+  badge?: boolean;
+  size: 36 | 14 | 16;
 }) => {
-  if (['wrap', 'undwrap', 'swap'].includes(transaction.type)) {
-    const inAsset = transaction.changes.find(
-      (a) => a?.direction === 'in',
-    )?.asset;
-    const outAsset = transaction.changes.find(
-      (a) => a?.direction === 'out',
-    )?.asset;
+  if (['wrap', 'undwrap', 'swap'].includes(type)) {
+    const inAsset = changes.find((a) => a?.direction === 'in')?.asset;
+    const outAsset = changes.find((a) => a?.direction === 'out')?.asset;
 
     if (!!inAsset && !!outAsset)
-      return <TwoCoinsIcon under={outAsset} over={inAsset} />;
+      return <TwoCoinsIcon size={size} under={outAsset} over={inAsset} />;
   }
 
-  const asset = transaction.asset;
+  if (asset?.type === 'nft')
+    return <NFTIcon asset={asset} size={size} badge={badge} />;
 
-  if (asset?.type === 'nft') return <NFTIcon asset={asset} size={36} badge />;
-
-  if (asset) return <CoinIcon asset={asset} fallbackText={asset.symbol} />;
+  if (asset)
+    return (
+      <CoinIcon
+        asset={asset}
+        fallbackText={asset.symbol}
+        size={size}
+        badge={badge}
+      />
+    );
 
   return (
     <Box position="relative">
-      <ContractInteractionIcon />
-      {transaction.chainId !== ChainId.mainnet && (
+      <ContractInteractionIcon size={size} />
+      {badge && chainId !== ChainId.mainnet && (
         <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
-          <ChainBadge chainId={transaction.chainId} shadow size="16" />
+          <ChainBadge chainId={chainId} shadow size="16" />
         </Box>
       )}
     </Box>

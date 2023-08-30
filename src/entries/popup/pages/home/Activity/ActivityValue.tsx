@@ -44,10 +44,10 @@ const getSwapActivityValues = (changes: RainbowTransaction['changes']) => {
 
   if (!tokenIn || !tokenOut) return;
 
-  const valueOut = `- ${formatNumber(tokenOut.balance.amount)} ${
+  const valueOut = `-${formatNumber(tokenOut.balance.amount)} ${
     tokenOut.symbol
   }`;
-  const valueIn = `+ ${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
+  const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
 
   return [valueOut, valueIn];
 };
@@ -75,12 +75,12 @@ const getActivityValues = ({
   const nativeBalance = native.balance.amount;
   const assetNativeValue =
     +nativeBalance > 0
-      ? `${valueSymbol} ${formatCurrency(nativeBalance)}`
+      ? `${valueSymbol}${formatCurrency(nativeBalance)}`
       : i18n.t('activity.no_value');
 
   return +nativeBalance > 0
     ? [assetValue, assetNativeValue]
-    : [assetNativeValue, `${valueSymbol} ${assetValue}`];
+    : [assetNativeValue, `${valueSymbol}${assetValue}`];
 };
 
 type ActivityValueProps = Pick<

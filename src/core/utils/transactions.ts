@@ -19,7 +19,6 @@ import {
 } from '../state';
 import { AddressOrEth, ParsedUserAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
-import { isLegacyGasParams } from '../types/gas';
 import {
   NewTransaction,
   PaginatedTransactionsApiResponse,
@@ -28,6 +27,7 @@ import {
   TransactionType,
 } from '../types/transactions';
 
+import { truncateAddress } from './address';
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
@@ -89,31 +89,42 @@ type ParseTransactionArgs = {
   chainId: ChainId;
 };
 
-let a = true;
+let a = 0;
 export function parseTransaction({
   tx,
   currency,
   chainId,
 }: ParseTransactionArgs): RainbowTransaction {
-  const { status, hash, meta, nonce, protocol } = tx;
+  let { status, hash, meta, nonce, protocol } = tx;
 
-  if (status === 'failed') console.log(tx);
-  else if (a) {
-    console.log(tx);
-    a = false;
+  if (
+    meta.type !== 'airdrop' &&
+    meta.type !== 'receive' &&
+    tx.mined_at &&
+    tx.mined_at < Date.now() - 1000 * 60 * 60 * 24 * 7
+  ) {
+    status = 'pending';
   }
 
-  const changes = tx.changes.filter(Boolean).map((change) => ({
-    ...change,
-    asset: parseUserAsset({
-      asset: change.asset,
-      balance: change.value?.toString() || '0',
-      currency,
-    }),
-    value: change.value || undefined,
-  }));
+  if (status === 'failed') console.log(tx);
+  else if (a < 2) {
+    console.log(tx);
+    a++;
+  }
 
-  const asset = tx.meta.asset
+  const changes: RainbowTransaction['changes'] = tx.changes
+    .filter(Boolean)
+    .map((change) => ({
+      ...change,
+      asset: parseUserAsset({
+        asset: change.asset,
+        balance: change.value?.toString() || '0',
+        currency,
+      }),
+      value: change.value || undefined,
+    }));
+
+  const asset = tx.meta.asset?.asset_code
     ? parseAsset({ asset: tx.meta.asset, currency })
     : changes[0]?.asset;
 
@@ -121,19 +132,18 @@ export function parseTransaction({
   const direction = tx.direction || getDirection(type);
   const methodName = meta.action;
 
+  const description =
+    asset?.name || methodName || truncateAddress(tx.address_to);
+
   const value = changes
     .find((change) => change?.asset.isNativeAsset)
     ?.value?.toString();
 
-  const name =
-    meta.type === 'contract_interaction' ? methodName : asset?.name || 'Signed';
-
   const _tx = {
     from: tx.address_from || '0x',
     to: tx.address_to,
-    name,
     title: i18n.t(`transactions.${type}.${status}`),
-    description: asset?.name || methodName || 'Signed',
+    description,
     hash,
     chainId,
     status,
@@ -144,11 +154,6 @@ export function parseTransaction({
     value,
     asset,
     changes,
-
-    // maxFeePerGas: '0', // tx.max_fee_per_gas,
-    // maxPriorityFeePerGas: '0', // tx.max_priority_fee_per_gas,
-    // gasLimit: tx.gas_limit,
-    // gasPrice: '0' // tx.gas_price,
   };
 
   if (status === 'pending') return { ..._tx, status };
@@ -169,6 +174,9 @@ export const parseNewTransaction = (
     from,
     chainId = ChainId.mainnet,
     nonce,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     hash: txHash,
     protocol,
     status,
@@ -191,18 +199,9 @@ export const parseNewTransaction = (
   const asset = changes[0]?.asset;
   const methodName = 'unknown method';
 
-  const gasParams = isLegacyGasParams(txDetails)
-    ? { gasPrice: txDetails.gasPrice }
-    : {
-        maxFeePerGas: txDetails.maxFeePerGas,
-        maxPriorityFeePerGas: txDetails.maxPriorityFeePerGas,
-      };
-
   return {
     status: 'pending',
     data,
-    name:
-      type === 'contract_interaction' ? methodName : asset?.name || 'Signed',
     title: i18n.t(`transactions.${type}.${status}`),
     description: asset?.name || methodName || 'Signed',
     from,
@@ -214,7 +213,9 @@ export const parseNewTransaction = (
     to,
     type,
     flashbots,
-    ...gasParams,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
   };
 };
 

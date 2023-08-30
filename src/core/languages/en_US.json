@@ -286,7 +286,7 @@
       "failed": "Sale Failed"
     },
     "bridge": {
-      "pending": "Briding",
+      "pending": "Bridging",
       "confirmed": "Bridged",
       "failed": "Bridge Failed"
     },

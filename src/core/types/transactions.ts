@@ -23,9 +23,8 @@ type BaseTransaction = {
   to?: Address; // it may not have a to if it's a contract deployment (covalent)
 
   type: TransactionType;
-  title: string;
   protocol?: ProtocolType;
-  name?: string;
+  title: string;
   description?: string;
 
   data?: string;
@@ -46,14 +45,10 @@ type BaseTransaction = {
 
   value?: string; // native asset value (eth)
   asset?: ParsedAsset;
-};
+} & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
-type BaseTransactionWithGas =
-  | (BaseTransaction & Partial<TransactionGasParams>)
-  | (BaseTransaction & Partial<TransactionLegacyGasParams>);
-
-type PendingTransaction = BaseTransactionWithGas & { status: 'pending' };
-type MinedTransaction = BaseTransactionWithGas & {
+type PendingTransaction = BaseTransaction & { status: 'pending' };
+type MinedTransaction = BaseTransaction & {
   status: 'confirmed' | 'failed';
   blockNumber: number;
   minedAt: number;
@@ -61,7 +56,7 @@ type MinedTransaction = BaseTransactionWithGas & {
 
 export type RainbowTransaction = PendingTransaction | MinedTransaction;
 
-export type NewTransaction = RainbowTransaction; // Omit<BaseTransaction<'pending'>, 'title'>;
+export type NewTransaction = Omit<PendingTransaction, 'title'>;
 
 export type TransactionType =
   | 'burn'

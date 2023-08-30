@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import React from 'react';
 
 import {
   RainbowTransaction,
@@ -88,15 +87,9 @@ export function Activities() {
               >
                 {isLabel ? (
                   <Inset top="16px" bottom="8px">
-                    <Box>
-                      <Text
-                        size="14pt"
-                        weight={'semibold'}
-                        color={'labelTertiary'}
-                      >
-                        {tx}
-                      </Text>
-                    </Box>
+                    <Text size="14pt" weight="semibold" color="labelTertiary">
+                      {tx}
+                    </Text>
                   </Inset>
                 ) : (
                   // <TransactionDetailsMenu transaction={rowData}>
@@ -144,11 +137,7 @@ const NFTAmount = ({ transaction }: { transaction: RainbowTransaction }) => {
   );
 };
 
-const ActivityRow = React.memo(function ActivityRow({
-  transaction,
-}: {
-  transaction: RainbowTransaction;
-}) {
+function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   const { description } = transaction;
 
   return (
@@ -177,21 +166,25 @@ const ActivityRow = React.memo(function ActivityRow({
             <ActivityTypeLabel transaction={transaction} />
 
             <Inline space="4px" alignVertical="center">
-              <TextOverflow size="14pt" weight="semibold" maxWidth={200}>
+              <TextOverflow size="14pt" weight="semibold" maxWidth={150}>
                 {description}
               </TextOverflow>
               <NFTAmount transaction={transaction} />
             </Inline>
           </Box>
 
-          <ActivityValue transaction={transaction} />
+          <ActivityValue
+            type={transaction.type}
+            changes={transaction.changes}
+            direction={transaction.direction}
+          />
         </Box>
       </Box>
     </Lens>
   );
-});
+}
 
-const colorByStatus: Record<TransactionStatus, TextColor> = {
+const statusColor: Record<TransactionStatus, TextColor> = {
   pending: 'blue',
   failed: 'red',
   confirmed: 'labelTertiary',
@@ -202,7 +195,7 @@ const ActivityTypeLabel = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const color = colorByStatus[status] || 'labelTertiary';
+  const color = statusColor[status];
 
   return (
     <Inline space="4px">
