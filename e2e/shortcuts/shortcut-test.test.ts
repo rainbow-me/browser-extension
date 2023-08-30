@@ -47,7 +47,7 @@ describe('navigate through settings flows with shortcuts', () => {
 
   // shortcut tests begin
   it('should be able to navigate to settings via shortcuts', async () => {
-    await executePerformShortcut({ driver, key: '.' });
+    await executePerformShortcut({ driver, key: 'DECIMAL' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'settings');
@@ -59,7 +59,7 @@ describe('navigate through settings flows with shortcuts', () => {
   });
 
   it('should be able to navigate back home with arrow left', async () => {
-    await executePerformShortcut({ driver, key: '.' });
+    await executePerformShortcut({ driver, key: 'DECIMAL' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'settings');
@@ -137,7 +137,7 @@ describe('navigate through settings flows with shortcuts', () => {
       driver,
     });
     expect(balanceHidden).toBeTruthy();
-    await executePerformShortcut({ driver, key: '.' });
+    await executePerformShortcut({ driver, key: 'DECIMAL' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
@@ -145,7 +145,7 @@ describe('navigate through settings flows with shortcuts', () => {
   });
 
   it('should be able to naviagate back to Privacy & Security using keyboard ', async () => {
-    await executePerformShortcut({ driver, key: '.' });
+    await executePerformShortcut({ driver, key: 'DECIMAL' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });

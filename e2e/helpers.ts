@@ -480,7 +480,7 @@ export async function executePerformShortcut({
   timesToPress = 1,
 }: {
   driver: WebDriver;
-  key?: string;
+  key: keyof typeof Key;
   timesToPress?: number;
 }): Promise<void> {
   try {
