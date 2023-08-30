@@ -22,7 +22,7 @@ import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
-import { gasUnits } from '../../references';
+import { REFERRER, gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import {
   TransactionGasParams,
@@ -182,6 +182,7 @@ export const executeSwap = async ({
       wallet,
       permit,
       chainId as unknown as SwapChainId,
+      REFERRER,
     );
   }
 };
