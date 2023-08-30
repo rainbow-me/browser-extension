@@ -595,7 +595,7 @@
       "disconnect": "Déconnecter"
     },
     "app_connection_menu": {
-      "all_connected_apps": "Toutes les applications connectées",
+      "connected_apps": "Toutes les applications connectées",
       "not_connected": "Non connecté",
       "networks": "Réseaux",
       "connect": "Connecter",

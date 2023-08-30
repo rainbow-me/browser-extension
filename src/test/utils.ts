@@ -112,7 +112,7 @@ export const ENS_MAINNET_ASSET: ParsedAsset = {
 };
 
 export const USDC_ARBITRUM_ASSET: ParsedAsset = {
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
+  address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8' as Address,
   chainId: ChainId.arbitrum,
   chainName: ChainName.arbitrum,
   colors: { primary: '#2775CA' },
@@ -132,7 +132,7 @@ export const USDC_ARBITRUM_ASSET: ParsedAsset = {
     changed_at: -1,
   },
   symbol: 'USDC',
-  uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
+  uniqueId: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8_1' as UniqueId,
   decimals: 6,
 };
 

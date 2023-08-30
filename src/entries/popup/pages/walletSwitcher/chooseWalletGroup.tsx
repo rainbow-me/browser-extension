@@ -25,6 +25,7 @@ import {
 } from '~/entries/popup/handlers/wallet';
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
+import { ShortcutHint } from '../../components/ShortcutHint/ShortcutHint';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
@@ -175,16 +176,9 @@ const WalletGroups = ({
           </Stack>
         }
         rightComponent={
-          <Box
-            background={'fillSecondary'}
-            padding="4px"
-            borderRadius="3px"
-            boxShadow="1px"
-          >
-            <Text size="12pt" color="labelSecondary" weight="semibold">
-              {shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
-            </Text>
-          </Box>
+          <ShortcutHint
+            hint={shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
+          />
         }
       />
       <Box>
@@ -235,20 +229,7 @@ const WalletGroups = ({
                   </Inline>
                 </Stack>
               }
-              rightComponent={
-                i < 9 ? (
-                  <Box
-                    background={'fillSecondary'}
-                    padding="4px"
-                    borderRadius="3px"
-                    boxShadow="1px"
-                  >
-                    <Text size="12pt" color="labelSecondary" weight="semibold">
-                      {i + 1}
-                    </Text>
-                  </Box>
-                ) : null
-              }
+              rightComponent={i < 9 ? <ShortcutHint hint={`${i + 1}`} /> : null}
             />
           );
         })}
