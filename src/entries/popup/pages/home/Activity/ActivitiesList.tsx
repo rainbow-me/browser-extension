@@ -4,6 +4,7 @@ import {
   RainbowTransaction,
   TransactionStatus,
 } from '~/core/types/transactions';
+import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
@@ -112,34 +113,53 @@ const truncateString = (txt = '', maxLength = 22) => {
   return `${txt?.slice(0, maxLength)}${txt.length > maxLength ? '...' : ''}`;
 };
 
-const NFTAmount = ({ transaction }: { transaction: RainbowTransaction }) => {
-  const amount = transaction.changes
-    .filter(
-      (c) => c?.asset.type === 'nft' && c.direction !== transaction.direction,
-    )
-    .filter(Boolean).length;
+const ActivityDescription = ({
+  transaction,
+}: {
+  transaction: RainbowTransaction;
+}) => {
+  const { type, to, direction } = transaction;
+  let description = transaction.description;
+  let tag: string | undefined;
+  if (type === 'contract_interaction' && to) {
+    description = truncateAddress(to);
+    tag = transaction.description;
+  }
 
-  if (!amount) return null;
+  const nftChangesAmount = transaction.changes
+    .filter((c) => c?.asset.type === 'nft' && c.direction !== direction)
+    .filter(Boolean).length;
+  if (nftChangesAmount) tag = nftChangesAmount.toString();
 
   return (
-    <Box
-      paddingHorizontal="5px"
-      paddingVertical="4px"
-      marginVertical="-3px"
-      borderColor="separatorSecondary"
-      borderRadius="6px"
-      borderWidth="1px"
-    >
-      <Text size="11pt" weight="semibold" align="right" color="labelTertiary">
-        {amount}
-      </Text>
-    </Box>
+    <Inline space="4px" alignVertical="center">
+      <TextOverflow size="14pt" weight="semibold" maxWidth={150}>
+        {description}
+      </TextOverflow>
+      {tag && (
+        <Box
+          paddingHorizontal="5px"
+          paddingVertical="4px"
+          marginVertical="-3px"
+          borderColor="separatorSecondary"
+          borderRadius="6px"
+          borderWidth="1px"
+        >
+          <Text
+            size="11pt"
+            weight="semibold"
+            align="right"
+            color="labelTertiary"
+          >
+            {truncateString(tag, 27)}
+          </Text>
+        </Box>
+      )}
+    </Inline>
   );
 };
 
 function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
-  const { description } = transaction;
-
   return (
     <Lens borderRadius="12px" forceAvatarColor>
       <Box
@@ -164,20 +184,10 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
             gap="8px"
           >
             <ActivityTypeLabel transaction={transaction} />
-
-            <Inline space="4px" alignVertical="center">
-              <TextOverflow size="14pt" weight="semibold" maxWidth={150}>
-                {description}
-              </TextOverflow>
-              <NFTAmount transaction={transaction} />
-            </Inline>
+            <ActivityDescription transaction={transaction} />
           </Box>
 
-          <ActivityValue
-            type={transaction.type}
-            changes={transaction.changes}
-            direction={transaction.direction}
-          />
+          <ActivityValue transaction={transaction} />
         </Box>
       </Box>
     </Lens>

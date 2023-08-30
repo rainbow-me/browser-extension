@@ -1,4 +1,5 @@
 import { Signer } from '@ethersproject/abstract-signer';
+import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { Address, erc20ABI, getContract, getProvider } from '@wagmi/core';
@@ -19,7 +20,6 @@ import { ParsedAsset } from '../../types/assets';
 import { convertAmountToRawAmount, greaterThan } from '../../utils/numbers';
 import { ActionProps, RapActionResult } from '../references';
 
-import { BigNumber } from '@ethersproject/bignumber';
 import { overrideWithFastSpeedIfNeeded } from './../utils';
 
 export const getAssetRawAllowance = async ({
@@ -208,6 +208,7 @@ export const unlock = async ({
     nonce: approval.nonce,
     status: 'pending',
     type: 'approve',
+    approvalAmount: 'UNLIMITED',
     ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
   } satisfies NewTransaction;
 

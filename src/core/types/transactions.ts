@@ -36,8 +36,8 @@ type BaseTransaction = {
         direction: TransactionDirection;
         address_from?: Address;
         address_to?: Address;
-        value?: number;
-        price?: number;
+        value?: number | string;
+        price?: number | string;
       }
     | undefined
   >;
@@ -45,6 +45,7 @@ type BaseTransaction = {
 
   value?: string; // native asset value (eth)
   asset?: ParsedAsset;
+  approvalAmount?: 'UNLIMITED' | (string & object);
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
 type PendingTransaction = BaseTransaction & { status: 'pending' };
@@ -56,7 +57,14 @@ type MinedTransaction = BaseTransaction & {
 
 export type RainbowTransaction = PendingTransaction | MinedTransaction;
 
-export type NewTransaction = Omit<PendingTransaction, 'title'>;
+export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
+  changes: Array<{
+    direction: TransactionDirection;
+    asset: ParsedAsset; // becomes a user asset when the transaction is parsed
+    value?: number | string;
+    price?: number | string;
+  }>;
+};
 
 export type TransactionType =
   | 'burn'
@@ -91,10 +99,8 @@ export interface ExecuteRapResponse extends TransactionResponse {
   errorMessage?: string;
 }
 
-export type TransactionApiResponse<
-  Status extends TransactionStatus = TransactionStatus,
-> = {
-  status: Status;
+export type TransactionApiResponse = {
+  status: TransactionStatus;
   id: `0x${string}`;
   hash: `0x${string}`;
   network: ChainName;
@@ -122,12 +128,10 @@ export type TransactionApiResponse<
     action?: string;
     contract_icon_url?: string;
     asset?: AssetApiResponse;
+    quantity?: 'UNLIMITED' | string;
   };
-  block_number: Status extends 'pending' ? undefined : number;
-  mined_at: Status extends 'pending' ? undefined : number;
+  block_number?: number;
+  mined_at?: number;
 };
 
-export type PaginatedTransactionsApiResponse =
-  | TransactionApiResponse<'pending'>
-  | TransactionApiResponse<'confirmed'>
-  | TransactionApiResponse<'failed'>;
+export type PaginatedTransactionsApiResponse = TransactionApiResponse;

@@ -17,28 +17,48 @@
   if native amount is 0, show no value on top and token amount on bottom
 */
 
+import { formatUnits } from '@ethersproject/units';
+
 import { i18n } from '~/core/languages';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { Box, Text, TextOverflow } from '~/design-system';
 
-// const getBridgeActivityValues = (transaction: RainbowTransaction) => {
-//   const { changes } = transaction;
+const approvalTypeValues = (transaction: RainbowTransaction) => {
+  const { asset, approvalAmount } = transaction;
 
-//   const tokenIn = changes.filter((c) => c?.direction === 'in')[0]?.asset;
-//   const tokenOut = changes.filter((c) => c?.direction === 'out')[0]?.asset;
+  if (!asset || !approvalAmount) return;
 
-//   if (!tokenIn || !tokenOut) return;
+  let label;
+  if (approvalAmount === 'UNLIMITED') label = i18n.t('approvals.unlimited');
+  else if (transaction.type === 'revoke')
+    label = i18n.t('approvals.no_allowance');
+  else
+    label = `${formatNumber(formatUnits(approvalAmount, asset.decimals))} ${
+      asset.symbol
+    }`;
 
-//   const valueOut = `-${formatNumber(tokenOut.balance.amount)} ${
-//     tokenOut.symbol
-//   }`;
-//   const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
+  return [
+    null, // protocol name and icon goes here, when backend get this data
+    label && (
+      <Box
+        key="approval"
+        paddingHorizontal="6px"
+        paddingVertical="5px"
+        borderColor="separatorSecondary"
+        borderRadius="6px"
+        borderWidth="1px"
+        style={{ borderStyle: 'dashed' }}
+      >
+        <Text size="11pt" weight="semibold" color="labelTertiary">
+          {label}
+        </Text>
+      </Box>
+    ),
+  ];
+};
 
-//   return [valueOut, valueIn];
-// };
-
-const getSwapActivityValues = (changes: RainbowTransaction['changes']) => {
+const swapTypeValues = (changes: RainbowTransaction['changes']) => {
   const tokenIn = changes.filter((c) => c?.direction === 'in')[0]?.asset;
   const tokenOut = changes.filter((c) => c?.direction === 'out')[0]?.asset;
 
@@ -52,13 +72,11 @@ const getSwapActivityValues = (changes: RainbowTransaction['changes']) => {
   return [valueOut, valueIn];
 };
 
-const getActivityValues = ({
-  changes,
-  direction,
-  type,
-}: ActivityValueProps) => {
-  if (['swap', 'wrap', 'unwrap'].includes(type))
-    return getSwapActivityValues(changes);
+const activityValues = (transaction: RainbowTransaction) => {
+  const { changes, direction, type } = transaction;
+  if (['swap', 'wrap', 'unwrap'].includes(type)) return swapTypeValues(changes);
+  if (['approve', 'revoke'].includes(type))
+    return approvalTypeValues(transaction);
 
   const asset = changes.filter(
     (c) => c?.direction === direction && c?.asset.type !== 'nft',
@@ -83,18 +101,13 @@ const getActivityValues = ({
     : [assetNativeValue, `${valueSymbol}${assetValue}`];
 };
 
-type ActivityValueProps = Pick<
-  RainbowTransaction,
-  'type' | 'direction' | 'changes'
->;
-
-export const ActivityValue = (tx: ActivityValueProps) => {
-  const [topValue, bottomValue] = getActivityValues(tx) ?? [];
-  if (!topValue || !bottomValue) return null;
-
-  const bottomValueColor = bottomValue.includes('+')
-    ? 'green'
-    : 'labelTertiary';
+export const ActivityValue = ({
+  transaction,
+}: {
+  transaction: RainbowTransaction;
+}) => {
+  const [topValue, bottomValue] = activityValues(transaction) ?? [];
+  if (!topValue && !bottomValue) return null;
 
   return (
     <Box
@@ -104,17 +117,23 @@ export const ActivityValue = (tx: ActivityValueProps) => {
       justifyContent="center"
       gap="8px"
     >
-      <Text color="labelTertiary" size="12pt" weight="semibold">
-        {topValue}
-      </Text>
-      <TextOverflow
-        size="14pt"
-        weight="semibold"
-        align="right"
-        color={bottomValueColor}
-      >
-        {bottomValue}
-      </TextOverflow>
+      {topValue && (
+        <Text color="labelTertiary" size="12pt" weight="semibold">
+          {topValue}
+        </Text>
+      )}
+      {typeof bottomValue === 'string' ? (
+        <TextOverflow
+          size="14pt"
+          weight="semibold"
+          align="right"
+          color={bottomValue.includes('+') ? 'green' : 'labelTertiary'}
+        >
+          {bottomValue}
+        </TextOverflow>
+      ) : (
+        bottomValue
+      )}
     </Box>
   );
 };

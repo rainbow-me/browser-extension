@@ -246,7 +246,7 @@ export const swap = async ({
   if (!swap || !parameters.assetToBuy)
     throw new Error('swap: error executeSwap');
 
-  const transaction: NewTransaction = {
+  const transaction = {
     data: swap.data,
     from: swap.from as Address,
     to: swap.to as Address,
@@ -271,7 +271,8 @@ export const swap = async ({
     type: 'swap',
     flashbots: parameters.flashbots,
     ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
-  };
+  } satisfies NewTransaction;
+
   addNewTransaction({
     address: parameters.quote.from as Address,
     chainId: parameters.chainId as ChainId,

@@ -193,7 +193,8 @@ export const crosschainSwap = async ({
     flashbots: parameters.flashbots,
     ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
   } satisfies NewTransaction;
-  await addNewTransaction({
+
+  addNewTransaction({
     address: parameters.quote.from as Address,
     chainId: parameters.chainId as ChainId,
     transaction,

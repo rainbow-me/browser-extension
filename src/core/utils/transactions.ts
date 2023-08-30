@@ -27,7 +27,6 @@ import {
   TransactionType,
 } from '../types/transactions';
 
-import { truncateAddress } from './address';
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
@@ -116,14 +115,13 @@ export function parseTransaction({
   const direction = tx.direction || getDirection(type);
   const methodName = meta.action;
 
-  const description =
-    asset?.name || methodName || truncateAddress(tx.address_to);
+  const description = asset?.name || methodName;
 
   const value = changes
     .find((change) => change?.asset.isNativeAsset)
     ?.value?.toString();
 
-  const _tx = {
+  return {
     from: tx.address_from || '0x',
     to: tx.address_to,
     title: i18n.t(`transactions.${type}.${status}`),
@@ -136,17 +134,12 @@ export function parseTransaction({
     type,
     direction,
     value,
-    asset,
     changes,
-  };
-
-  if (status === 'pending') return { ..._tx, status };
-  return {
-    ..._tx,
-    status,
+    asset,
+    approvalAmount: meta.quantity,
     minedAt: tx.mined_at,
     blockNumber: tx.block_number,
-  };
+  } as RainbowTransaction;
 }
 
 export const parseNewTransaction = (

@@ -1,5 +1,5 @@
 import { upperCase } from 'lodash';
-import React, { Fragment, ReactNode } from 'react';
+import React, { Fragment, ReactNode, useState } from 'react';
 
 import EthIcon from 'static/assets/ethIcon.png';
 import { ETH_ADDRESS } from '~/core/references';
@@ -239,6 +239,9 @@ export const NFTIcon = ({
   badge?: boolean;
 }) => {
   const chainId = asset.chainId;
+  const [badSrc, setBadSrc] = useState(false);
+  if (!asset.icon_url || badSrc)
+    return <CoinIcon asset={asset} size={size} badge={badge} />;
   return (
     <Box position="relative" style={{ minWidth: size, height: size }}>
       <Box
@@ -246,6 +249,7 @@ export const NFTIcon = ({
         src={asset.icon_url}
         style={{ height: size, width: size }}
         borderRadius={nftRadiusBySize[size]}
+        onError={() => setBadSrc(true)}
       />
       <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
         {badge && chainId !== ChainId.mainnet && (

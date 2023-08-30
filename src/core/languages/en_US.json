@@ -1210,5 +1210,9 @@
       "highlighted": "Contact Rainbow",
       "after": " to request more."
     }
+  },
+  "approvals": {
+    "unlimited": "Unlimited",
+    "no_allowance": "No Allowance"
   }
 }
