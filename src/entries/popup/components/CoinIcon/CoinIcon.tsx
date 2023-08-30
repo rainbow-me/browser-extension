@@ -226,6 +226,7 @@ function formatSymbol(symbol: string, width: number) {
 const nftRadiusBySize = {
   14: '4px',
   16: '4px',
+  20: '6px',
   36: '10px',
 } as const;
 export const NFTIcon = ({

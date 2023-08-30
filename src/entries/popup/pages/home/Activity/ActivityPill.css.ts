@@ -1,15 +1,15 @@
 import { keyframes, style } from '@vanilla-extract/css';
 
+export const pendingDashLenght = 50;
+
 const line = keyframes({
-  '0%': { strokeDashoffset: '-180' },
-  '100%': { strokeDashoffset: '90' },
+  '100%': { strokeDashoffset: pendingDashLenght },
 });
 
 export const pendingStyle = style([
   {
-    strokeDasharray: '90px 180px',
-    strokeDashoffset: -180,
-
+    strokeDasharray: `${pendingDashLenght}px var(--activity-pill-pending-dashArray-gap)`,
+    strokeDashoffset: `calc(-1 * var(--activity-pill-pending-dashArray-gap))`,
     animationName: line,
     animationDuration: '2.5s',
     animationTimingFunction: 'linear',

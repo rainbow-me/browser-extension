@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { Address, useTransaction as useWagmiTransaction } from 'wagmi';
 
@@ -36,8 +35,7 @@ import { ROUTES } from '~/entries/popup/urls';
 
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
-import { ActivityIcon } from './ActivityIcon';
-import { pendingStyle } from './ActivityPill.css';
+import { ActivityPill } from './ActivityPill';
 import { useTransaction } from './useTransaction';
 
 function AddressMoreOptions({ address }: { address: Address }) {
@@ -76,76 +74,6 @@ function AddressMoreOptions({ address }: { address: Address }) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-}
-
-const statusColor = {
-  pending: 'blue',
-  failed: 'red',
-  confirmed: 'label',
-} as const;
-
-const AA = ({ width }: { width: number }) => {
-  return (
-    <svg height="40" width={width + 4}>
-      <rect
-        width={width}
-        height="36"
-        fill="transparent"
-        stroke="#F5F8FF1F"
-        strokeWidth="2"
-        ry="20" // fix roundness
-        rx="20" // fix roundness
-        x="2"
-        y="2"
-      />
-      <rect
-        width={width}
-        height="36"
-        fill="transparent"
-        stroke="#2775CA"
-        strokeWidth="2"
-        ry="20" // fix roundness
-        rx="20" // fix roundness
-        x="2"
-        y="2"
-        className={pendingStyle}
-      />
-    </svg>
-  );
-};
-
-function ActivityPill({ transaction }: { transaction: RainbowTransaction }) {
-  const { status, title } = transaction;
-  const color = statusColor[status];
-
-  const [width, setWidth] = useState(0);
-
-  return (
-    <Box position="relative">
-      <Box position="absolute" style={{ top: -6, left: -6 }}>
-        {width && <AA width={width + 4} />}
-      </Box>
-      <Box
-        ref={(n) => {
-          if (n) setWidth(n.clientWidth);
-        }}
-        display="flex"
-        alignItems="center"
-        gap="6px"
-        paddingHorizontal="10px"
-        paddingVertical="5px"
-        borderRadius="round"
-        background="fillHorizontal"
-        borderColor={status === 'failed' ? 'red' : 'buttonStroke'}
-        borderWidth="1px"
-      >
-        <ActivityIcon transaction={transaction} size={16} badge={false} />
-        <Text weight="bold" color={color} size="12pt">
-          {title}
-        </Text>
-      </Box>
-    </Box>
   );
 }
 

@@ -89,28 +89,12 @@ type ParseTransactionArgs = {
   chainId: ChainId;
 };
 
-let a = 0;
 export function parseTransaction({
   tx,
   currency,
   chainId,
 }: ParseTransactionArgs): RainbowTransaction {
-  let { status, hash, meta, nonce, protocol } = tx;
-
-  if (
-    meta.type !== 'airdrop' &&
-    meta.type !== 'receive' &&
-    tx.mined_at &&
-    tx.mined_at < Date.now() - 1000 * 60 * 60 * 24 * 7
-  ) {
-    status = 'pending';
-  }
-
-  if (status === 'failed') console.log(tx);
-  else if (a < 2) {
-    console.log(tx);
-    a++;
-  }
+  const { status, hash, meta, nonce, protocol } = tx;
 
   const changes: RainbowTransaction['changes'] = tx.changes
     .filter(Boolean)
