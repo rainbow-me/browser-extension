@@ -48,6 +48,7 @@ import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
 import { useAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useBrowser } from '../../hooks/useBrowser';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -178,6 +179,7 @@ interface WalletSearchData extends AddressAndType {
 }
 
 export function WalletSwitcher() {
+  const { isFirefox } = useBrowser();
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<
     AddressAndType | undefined
@@ -485,7 +487,7 @@ export function WalletSwitcher() {
             {i18n.t('wallet_switcher.add_another_wallet')}
           </Button>
         </Link>
-        {featureFlags.hw_wallets_enabled && (
+        {featureFlags.hw_wallets_enabled && !isFirefox && (
           <Link to={ROUTES.HW_CHOOSE}>
             <Button
               color="fillSecondary"
