@@ -17,7 +17,6 @@ import {
 } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
-import { IKey } from 'selenium-webdriver/lib/input';
 import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
@@ -433,15 +432,17 @@ export async function getTextFromDappText({
 // two helpers bc normal keys / special keys work a little different in selenium
 export async function performShortcutWithNormalKey(
   driver: WebDriver,
-  key: IKey,
-  keyboardCharacter: string,
+  key: keyof typeof Key,
 ) {
   try {
     await delayTime('short');
-    await driver.actions().sendKeys(key.chord(keyboardCharacter)).perform();
+    await driver
+      .actions()
+      .sendKeys(Key.chord(Key[key] as string))
+      .perform();
   } catch (error) {
     console.error(
-      `Error occurred while attempting shortcut with the keyboard character '${keyboardCharacter}':`,
+      `Error occurred while attempting shortcut with the keyboard character '${key}':`,
       error,
     );
     throw error;
@@ -450,18 +451,11 @@ export async function performShortcutWithNormalKey(
 
 export async function performShortcutWithSpecialKey(
   driver: WebDriver,
-  specialKey: string,
+  specialKey: keyof typeof Key,
 ) {
   try {
-    // selenium has a key object for special keys
-    // throw an error if the key were inputting doesn't exist in their object
-    if (!(specialKey in Key)) {
-      throw new Error(`Key '${specialKey}' not found in the 'Key' object`);
-    }
     await delayTime('short');
-    // Access the Key object using a type assertion
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const key = (Key as any)[specialKey] as string;
+    const key = Key[specialKey] as string;
     await driver.actions().sendKeys(key).perform();
   } catch (error) {
     console.error(
@@ -489,7 +483,7 @@ export async function executePerformShortcut({
     }
     for (let i = 0; i < timesToPress; i++) {
       if (key.length === 1) {
-        await performShortcutWithNormalKey(driver, Key, key);
+        await performShortcutWithNormalKey(driver, key);
       } else if (key.length > 1) {
         await performShortcutWithSpecialKey(driver, key);
       } else {
