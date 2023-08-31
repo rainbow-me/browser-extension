@@ -465,7 +465,6 @@ export function Send() {
           </AccentColorProviderWrapper>
         </>
       )}
-
       <Navbar
         title={i18n.t('send.title')}
         background={'surfaceSecondary'}

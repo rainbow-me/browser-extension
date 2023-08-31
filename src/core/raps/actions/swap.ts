@@ -21,12 +21,11 @@ import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
-import { gasUnits } from '../../references';
+import { REFERRER, gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
-  isLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
@@ -182,6 +181,7 @@ export const executeSwap = async ({
       wallet,
       permit,
       chainId as unknown as SwapChainId,
+      REFERRER,
     );
   }
 };
@@ -270,7 +270,7 @@ export const swap = async ({
     status: 'pending',
     type: 'swap',
     flashbots: parameters.flashbots,
-    ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
+    ...gasParams,
   } satisfies NewTransaction;
 
   addNewTransaction({

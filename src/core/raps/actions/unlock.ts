@@ -8,7 +8,6 @@ import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
-  isLegacyGasParams,
 } from '~/core/types/gas';
 import { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
@@ -104,6 +103,8 @@ export const estimateApprove = async ({
   }
 };
 
+const toBigNumber = (v?: string | number | BigNumber) =>
+  v ? BigNumber.from(v) : undefined;
 export const executeApprove = async ({
   gasLimit,
   gasParams,
@@ -114,7 +115,7 @@ export const executeApprove = async ({
 }: {
   chainId: ChainId;
   gasLimit: string;
-  gasParams: TransactionGasParams | TransactionLegacyGasParams;
+  gasParams: Partial<TransactionGasParams & TransactionLegacyGasParams>;
   nonce?: number;
   spender: Address;
   tokenAddress: Address;
@@ -126,15 +127,14 @@ export const executeApprove = async ({
     signerOrProvider: wallet,
   });
 
+  const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasParams;
+
   return tokenContract.approve(spender, MaxUint256, {
-    gasLimit: BigNumber.from(gasLimit),
     nonce,
-    ...(isLegacyGasParams(gasParams)
-      ? { gasPrice: BigNumber.from(gasParams.gasPrice) }
-      : {
-          maxFeePerGas: BigNumber.from(gasParams.maxFeePerGas),
-          maxPriorityFeePerGas: BigNumber.from(gasParams.maxPriorityFeePerGas),
-        }),
+    gasLimit: toBigNumber(gasLimit),
+    gasPrice: toBigNumber(gasPrice),
+    maxFeePerGas: toBigNumber(maxFeePerGas),
+    maxPriorityFeePerGas: toBigNumber(maxPriorityFeePerGas),
   });
 };
 
@@ -209,7 +209,7 @@ export const unlock = async ({
     status: 'pending',
     type: 'approve',
     approvalAmount: 'UNLIMITED',
-    ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
+    ...gasParams,
   } satisfies NewTransaction;
 
   addNewTransaction({

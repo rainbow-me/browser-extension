@@ -2,7 +2,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
 import { Address, getProvider } from '@wagmi/core';
 
-import { gasUnits } from '~/core/references';
+import { REFERRER, gasUnits } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
@@ -12,7 +12,6 @@ import { gasStore } from '../../state';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
-  isLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
@@ -101,7 +100,7 @@ export const executeCrosschainSwap = async ({
     nonce: nonce ? toHex(String(nonce)) : undefined,
     ...gasParams,
   };
-  return fillCrosschainQuote(quote, transactionParams, wallet);
+  return fillCrosschainQuote(quote, transactionParams, wallet, REFERRER);
 };
 
 export const crosschainSwap = async ({
@@ -191,7 +190,7 @@ export const crosschainSwap = async ({
     status: 'pending',
     type: 'swap',
     flashbots: parameters.flashbots,
-    ...(isLegacyGasParams(gasParams) ? gasParams : gasParams),
+    ...gasParams,
   } satisfies NewTransaction;
 
   addNewTransaction({

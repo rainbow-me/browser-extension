@@ -291,7 +291,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
 
     const inputVisible =
       ((!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName)) ||
-      (toAddress && !isAddress(toAddress));
+      !isAddress(toAddress || '');
 
     const selectWalletAndCloseDropdown = useCallback(
       (address: Address) => {

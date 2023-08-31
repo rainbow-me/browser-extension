@@ -297,7 +297,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
     <Box
       as={DropdownMenuPrimitive.RadioItem}
       value={value}
-      paddingVertical="10px"
+      paddingVertical="7px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
