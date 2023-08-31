@@ -1,8 +1,15 @@
 import 'chromedriver';
 import 'geckodriver';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -28,6 +35,7 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
+import { StaticJsonRpcProvider } from '../../mocks/swapsMock';
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
@@ -37,6 +45,45 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 const isFirefox = browser === 'firefox';
+
+vi.mock('your-real-ethereum-library', () => {
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    StaticJsonRpcProvider: require('../../mocks/swapsMock')
+      .StaticJsonRpcProvider,
+  };
+});
+
+const executeSwapSpy = vi.fn(() =>
+  Promise.resolve({ errorMessage: null, nonce: 1 }),
+);
+
+vi.mock(
+  '../../../src/entries/popup/pages/swap/SwapReviewSheet/SwapReviewSheet',
+  () => {
+    return {
+      executeSwap: executeSwapSpy,
+    };
+  },
+);
+// mock the hooks
+vi.mock('../../../src/core/network/meteorology', () => ({
+  useMeteorology: vi.fn(() => ({
+    data: {
+      /* your mock meteorology data */
+    },
+    isLoading: false,
+  })),
+}));
+
+vi.mock('../../../src/core/resources/gas/providerGas', () => ({
+  useProviderGas: vi.fn(() => ({
+    data: {
+      /* your mock providerGas data */
+    },
+    isLoading: false,
+  })),
+}));
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -973,7 +1020,8 @@ it('should be able to see swap information in review sheet', async () => {
 });
 
 it('should be able to execute swap', async () => {
-  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
+  const provider = new StaticJsonRpcProvider();
+  console.log('PROVIDER', provider);
   await provider.ready;
   await delayTime('short');
 
@@ -1001,6 +1049,8 @@ it('should be able to execute swap', async () => {
   const ethBalanceBeforeSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
+  console.log('ethBalanceBeforeSwap', ethBalanceBeforeSwap);
+
   await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
@@ -1015,6 +1065,7 @@ it('should be able to execute swap', async () => {
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
+  console.log('ethBalanceAfterSwap', ethBalanceAfterSwap);
 
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
@@ -1024,6 +1075,6 @@ it('should be able to execute swap', async () => {
     balanceDifference,
     18,
   );
-
+  expect(executeSwapSpy).toHaveBeenCalled();
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
 });
