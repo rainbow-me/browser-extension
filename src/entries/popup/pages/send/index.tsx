@@ -433,35 +433,38 @@ export function Send() {
         description={explainerSheetParams.description}
         actionButton={explainerSheetParams.actionButton}
       />
-      <ContactPrompt
-        address={toAddress}
-        show={contactSaveAction?.show}
-        action={contactSaveAction?.action}
-        onSaveContactAction={setSaveContactAction}
-        handleClose={() =>
-          setSaveContactAction({ show: false, action: 'save' })
-        }
-      />
-      <AccentColorProviderWrapper color={assetAccentColor}>
-        <ReviewSheet
-          show={showReviewSheet}
-          onCancel={closeReviewSheet}
-          onSend={handleSend}
-          toAddress={toAddress}
-          asset={asset}
-          primaryAmountDisplay={independentAmountDisplay.display}
-          secondaryAmountDisplay={dependentAmountDisplay.display}
-          onSaveContactAction={setSaveContactAction}
-          waitingForDevice={waitingForDevice}
-        />
-      </AccentColorProviderWrapper>
-
+      {toAddress && (
+        <>
+          <ContactPrompt
+            address={toAddress}
+            show={contactSaveAction?.show}
+            action={contactSaveAction?.action}
+            onSaveContactAction={setSaveContactAction}
+            handleClose={() =>
+              setSaveContactAction({ show: false, action: 'save' })
+            }
+          />
+          <AccentColorProviderWrapper color={assetAccentColor}>
+            <ReviewSheet
+              show={showReviewSheet}
+              onCancel={closeReviewSheet}
+              onSend={handleSend}
+              toAddress={toAddress}
+              asset={asset}
+              primaryAmountDisplay={independentAmountDisplay.display}
+              secondaryAmountDisplay={dependentAmountDisplay.display}
+              onSaveContactAction={setSaveContactAction}
+              waitingForDevice={waitingForDevice}
+            />
+          </AccentColorProviderWrapper>
+        </>
+      )}
       <Navbar
         title={i18n.t('send.title')}
         background={'surfaceSecondary'}
         leftComponent={<Navbar.CloseButton />}
         rightComponent={
-          isMyWallet(toAddress) ? undefined : (
+          !toAddress || isMyWallet(toAddress) ? undefined : (
             <NavbarContactButton
               onSaveAction={setSaveContactAction}
               toAddress={toAddress}

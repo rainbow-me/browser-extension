@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
 
 import { refractionAssetsMessages, refractionAssetsWs } from '~/core/network';
 import {
@@ -10,7 +9,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { ParsedAsset, UniqueId } from '~/core/types/assets';
+import { AddressOrEth, ParsedAsset, UniqueId } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AssetPricesReceivedMessage } from '~/core/types/refraction';
 import { parseAsset } from '~/core/utils/assets';
@@ -23,7 +22,7 @@ const ASSETS_REFETCH_INTERVAL = 60000;
 // Query Types
 
 export type AssetsQueryArgs = {
-  assetAddresses: Address[];
+  assetAddresses: AddressOrEth[];
   currency: SupportedCurrencyKey;
 };
 
@@ -100,7 +99,7 @@ function parseAssets({
   currency,
   message,
 }: {
-  assetAddresses: Address[];
+  assetAddresses: AddressOrEth[];
   currency: SupportedCurrencyKey;
   message: AssetPricesReceivedMessage;
 }) {
@@ -112,31 +111,37 @@ function parseAssets({
     }),
   );
   // base assets dict off of params to support requesting same mainnet address on multiple chains
-  const parsed = requestedAssets.reduce((dict, { chainId, addresses }) => {
-    const assetInfoByChain = addresses.reduce((info, address) => {
-      const asset = data[address];
-      if (asset) {
-        const parsedAsset = parseAsset({
-          address: asset?.asset_code,
-          asset: {
-            ...asset,
-            network: chainNameFromChainId(chainId),
-            mainnet_address: asset?.asset_code,
-          },
-          currency,
-        });
-        return {
-          ...info,
-          [parsedAsset?.uniqueId]: parsedAsset,
-        };
-      }
-      return info;
-    }, {} as { [key: UniqueId]: ParsedAsset });
-    return {
-      ...dict,
-      ...assetInfoByChain,
-    };
-  }, {} as { [key: UniqueId]: ParsedAsset });
+  const parsed = requestedAssets.reduce(
+    (dict, { chainId, addresses }) => {
+      const assetInfoByChain = addresses.reduce(
+        (info, address) => {
+          const asset = data[address];
+          if (asset) {
+            const parsedAsset = parseAsset({
+              address: asset?.asset_code,
+              asset: {
+                ...asset,
+                network: chainNameFromChainId(chainId),
+                mainnet_address: asset?.asset_code,
+              },
+              currency,
+            });
+            return {
+              ...info,
+              [parsedAsset?.uniqueId]: parsedAsset,
+            };
+          }
+          return info;
+        },
+        {} as { [key: UniqueId]: ParsedAsset },
+      );
+      return {
+        ...dict,
+        ...assetInfoByChain,
+      };
+    },
+    {} as { [key: UniqueId]: ParsedAsset },
+  );
   return parsed;
 }
 

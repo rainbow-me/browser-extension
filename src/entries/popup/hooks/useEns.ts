@@ -18,7 +18,11 @@ export const useEns = ({
   });
 
   return {
-    ensName: isENSAddressFormat(addressOrName) ? addressOrName : ensName,
-    ensAddress: isAddress(addressOrName) ? addressOrName : ensAddress,
+    ensName: isENSAddressFormat(addressOrName)
+      ? addressOrName
+      : ensName || undefined,
+    ensAddress: isAddress(addressOrName)
+      ? addressOrName
+      : ensAddress || undefined,
   };
 };
