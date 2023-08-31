@@ -1,4 +1,5 @@
 import { Provider, TransactionResponse } from '@ethersproject/providers';
+import { formatEther } from '@ethersproject/units';
 import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
 import { Address } from 'wagmi';
@@ -118,6 +119,11 @@ export function parseTransaction({
     .find((change) => change?.asset.isNativeAsset)
     ?.value?.toString();
 
+  const { gas_price, max_base_fee, max_priority_fee, gas_used } =
+    tx.fee.details || {};
+
+  const fee = +formatEther(tx.fee.value.toString()) * tx.fee.price;
+
   return {
     from: tx.address_from || '0x',
     to: tx.address_to,
@@ -136,6 +142,12 @@ export function parseTransaction({
     approvalAmount: meta.quantity,
     minedAt: tx.mined_at,
     blockNumber: tx.block_number,
+    gasPrice: gas_price?.toString(),
+    maxFeePerGas: max_base_fee?.toString(),
+    maxPriorityFeePerGas: max_priority_fee?.toString(),
+    gasUsed: gas_used?.toString(),
+    fee: fee ? fee.toString() : undefined,
+    confirmations: tx.block_confirmations,
   } as RainbowTransaction;
 }
 

@@ -24,7 +24,6 @@ const activityTypeIcon: Record<TransactionType, SymbolName> = {
   unstake: 'arrow.turn.right.up',
   withdraw: 'arrow.turn.right.up',
   deposit: 'arrow.turn.left.down',
-  //
   revoke: 'minus.circle',
   speed_up: 'hare',
   claim: 'arrow.down',

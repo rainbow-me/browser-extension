@@ -52,6 +52,7 @@ import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { AppConnection } from './NetworkMenu';
 import { TabBar as TabBar_ } from './TabBar';
+import { Tokens } from './Tokens';
 
 export type Tab = 'tokens' | 'activity';
 
@@ -127,9 +128,8 @@ function Tabs() {
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
       <Separator color="separatorTertiary" strokeWeight="1px" />
       <Content>
-        {/* {activeTab === 'tokens' && <Tokens />}
-        {activeTab === 'activity' && <Activities />} */}
-        <Activities />
+        {activeTab === 'tokens' && <Tokens />}
+        {activeTab === 'activity' && <Activities />}
       </Content>
     </>
   );

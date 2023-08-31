@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { motion } from 'framer-motion';
 import { CSSProperties, useState } from 'react';
 
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -19,7 +20,7 @@ const PendingIndicator = ({
   const borders = borderWidth * 2;
   const paddings = padding * 2;
   const adjustedHeight = height + borders + paddings;
-  const adjustedWidth = width + paddings;
+  const adjustedWidth = width + borders + paddings;
   const radius = adjustedHeight / 2;
   const props = {
     rx: radius,
@@ -32,7 +33,9 @@ const PendingIndicator = ({
   };
   const [totalLength, setTotalLength] = useState<number>();
   return (
-    <svg
+    <motion.svg
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
       height={adjustedHeight + borders}
       width={adjustedWidth + borders}
       opacity={totalLength ? 1 : 0}
@@ -56,7 +59,7 @@ const PendingIndicator = ({
         strokeLinecap="round"
         {...props}
       />
-    </svg>
+    </motion.svg>
   );
 };
 
@@ -83,14 +86,16 @@ export function ActivityPill({
           <PendingIndicator
             width={size.width}
             height={size.height}
-            padding={2}
+            padding={1}
           />
         </Box>
       )}
       <Box
         ref={(n) => {
           if (!n || !!size) return;
-          setSize({ width: n.clientWidth, height: n.clientHeight });
+          setTimeout(() => {
+            setSize(n.getBoundingClientRect());
+          }, 100);
         }}
         display="flex"
         alignItems="center"

@@ -20,6 +20,7 @@ import {
 } from '~/core/types/gas';
 import { NewTransaction, RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/hex';
 import { greaterThan, handleSignificantDecimals } from '~/core/utils/numbers';
 import { updateTransaction } from '~/core/utils/transactions';
@@ -229,6 +230,7 @@ export function SpeedUpAndCancelSheet({
       <Box
         style={{
           height: window.innerHeight - 64,
+          maxHeight: POPUP_DIMENSIONS.height - 64,
         }}
         padding="12px"
       >

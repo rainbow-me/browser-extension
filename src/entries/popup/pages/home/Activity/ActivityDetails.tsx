@@ -1,17 +1,20 @@
+import { formatEther, formatUnits } from '@ethersproject/units';
 import { Navigate, useParams } from 'react-router-dom';
-import { Address, useTransaction as useWagmiTransaction } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 import { formatDate } from '~/core/utils/formatDate';
-import { formatNumber } from '~/core/utils/formatNumber';
+import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
   Bleed,
   Box,
+  Button,
   ButtonSymbol,
   Inline,
   Separator,
@@ -33,6 +36,7 @@ import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvat
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
+import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 import { ActivityPill } from './ActivityPill';
@@ -152,10 +156,8 @@ function ConfirmationData({
 }: {
   transaction: RainbowTransaction;
 }) {
-  const { data: txData } = useWagmiTransaction({
-    hash: transaction.hash,
-    chainId: transaction.chainId,
-  });
+  const isMined = transaction.status !== 'pending';
+
   return (
     <Stack space="24px">
       <InfoRow
@@ -167,50 +169,50 @@ function ConfirmationData({
           </CopyableValue>
         }
       />
-      {txData?.timestamp && (
-        <InfoRow
-          symbol="clock.badge.checkmark"
-          label="Confirmed at"
-          value={formatDate(txData.timestamp)}
-        />
+      {isMined && (
+        <>
+          <InfoRow
+            symbol="clock.badge.checkmark"
+            label="Confirmed at"
+            value={formatDate(transaction.minedAt * 1000)}
+          />
+          <InfoRow
+            symbol="number.square"
+            label="Block"
+            value={
+              <Inline alignVertical="center" space="4px">
+                {transaction.blockNumber}
+                {transaction.confirmations && (
+                  <Text size="12pt" weight="semibold" color="labelQuaternary">
+                    {transaction.confirmations} Confirmations
+                  </Text>
+                )}
+              </Inline>
+            }
+          />
+        </>
       )}
-      {/* <InfoRow
-          symbol="clock"
-          label="Time to Confirmation"
-          value={formatDate(transaction.minedAt)}
-        /> */}
-      <InfoRow
-        symbol="number.square"
-        label="Block"
-        value={
-          <Inline alignVertical="center" space="4px">
-            {txData?.blockNumber}
-            <Text size="12pt" weight="semibold" color="labelQuaternary">
-              {txData?.confirmations} Confirmations
-            </Text>
-          </Inline>
-        }
-      />
     </Stack>
   );
 }
 
 function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
-  const { data: txData } = useWagmiTransaction({
-    hash: transaction.hash,
-    chainId: transaction.chainId,
-  });
+  const { maxPriorityFeePerGas, maxFeePerGas, fee } = transaction;
 
-  const maxPriorityFeePerGas = txData?.maxPriorityFeePerGas?.div(10 ** 9);
-  const gasPrice = txData?.gasPrice?.div(10 ** 9);
+  const value = transaction.value && formatEther(transaction.value);
+  const minerTip =
+    maxPriorityFeePerGas && formatUnits(maxPriorityFeePerGas, 'gwei');
+  const maxBaseFee = maxFeePerGas && formatUnits(maxFeePerGas, 'gwei');
 
   return (
     <Stack space="24px">
-      <InfoRow
-        symbol="dollarsign.square"
-        label="Value"
-        value={formatNumber(transaction.value?.toString())}
-      />
+      {value && (
+        <InfoRow
+          symbol="dollarsign.square"
+          label="Value"
+          value={`${formatNumber(value)} ETH`}
+        />
+      )}
       <InfoRow
         symbol="point.3.filled.connected.trianglepath.dotted"
         label="Network"
@@ -221,25 +223,25 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
           </Inline>
         }
       />
-      {/* <InfoRow
-        symbol="fuelpump.fill"
-        label="Network Fee"
-        value={`${formatNumber(transaction.maxFeePerGas?.toString())}`}
-      /> */}
-      {gasPrice && maxPriorityFeePerGas && (
+      {fee && (
         <InfoRow
-          symbol="barometer"
-          label="Base Fee"
-          value={`${formatNumber(
-            gasPrice.sub(maxPriorityFeePerGas).toString(),
-          )} Gwei`}
+          symbol="fuelpump.fill"
+          label="Network Fee"
+          value={formatCurrency(fee)}
         />
       )}
-      {maxPriorityFeePerGas && (
+      {maxBaseFee && (
+        <InfoRow
+          symbol="barometer"
+          label="Max Base Fee"
+          value={`${formatNumber(maxBaseFee)} Gwei`}
+        />
+      )}
+      {minerTip && (
         <InfoRow
           symbol="barometer"
           label="Miner Tip"
-          value={`${formatNumber(maxPriorityFeePerGas?.toString())} Gwei`}
+          value={`${formatNumber(minerTip)} Gwei`}
         />
       )}
       <InfoRow symbol="number" label="Nonce" value={transaction.nonce} />
@@ -260,6 +262,46 @@ export function ActivityDetails() {
 
   return <ActivityDetailsSheet hash={hash} chainId={chainId} />;
 }
+
+const SpeedUpOrCancel = ({
+  transaction,
+}: {
+  transaction: RainbowTransaction;
+}) => {
+  const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
+
+  return (
+    <Box display="flex" flexDirection="column" gap="8px">
+      <Button
+        onClick={() => setCurrentHomeSheet('speedUp')}
+        symbol="bolt.fill"
+        height="32px"
+        width="full"
+        variant="plain"
+        color="blue"
+      >
+        {i18n.t('speed_up_and_cancel.speed_up')}
+      </Button>
+      <Button
+        onClick={() => setCurrentHomeSheet('cancel')}
+        symbol="trash.fill"
+        height="32px"
+        width="full"
+        variant="plain"
+        color="fillSecondary"
+      >
+        {i18n.t('speed_up_and_cancel.cancel')}
+      </Button>
+      {sheet !== 'none' && (
+        <SpeedUpAndCancelSheet
+          currentSheet={sheet}
+          transaction={transaction}
+          onClose={() => setCurrentHomeSheet('none')}
+        />
+      )}
+    </Box>
+  );
+};
 
 function ActivityDetailsSheet({
   hash,
@@ -305,6 +347,12 @@ function ActivityDetailsSheet({
         <ConfirmationData transaction={tx} />
         <Separator color="separatorTertiary" />
         <NetworkData transaction={tx} />
+        {tx.status === 'pending' && (
+          <>
+            <Separator color="separatorTertiary" />
+            <SpeedUpOrCancel transaction={tx} />
+          </>
+        )}
       </Box>
     </BottomSheet>
   );

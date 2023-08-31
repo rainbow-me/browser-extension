@@ -46,6 +46,7 @@ type BaseTransaction = {
   value?: string; // native asset value (eth)
   asset?: ParsedAsset;
   approvalAmount?: 'UNLIMITED' | (string & object);
+  fee?: string;
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
 export type PendingTransaction = BaseTransaction & { status: 'pending' };
@@ -53,6 +54,8 @@ export type MinedTransaction = BaseTransaction & {
   status: 'confirmed' | 'failed';
   blockNumber: number;
   minedAt: number;
+  confirmations: number;
+  gasUsed: number;
 };
 
 export type RainbowTransaction = PendingTransaction | MinedTransaction;
@@ -124,7 +127,30 @@ export type TransactionApiResponse = {
       }
     | undefined
   >;
-  fee: { value: number; price: number };
+  fee: {
+    value: number;
+    price: number;
+
+    // Fee Details are only available on the tx by hash endpoint
+    // (won't be available on the consolidated txs list)
+    details?: {
+      gas_price: number;
+      gas_limit: number;
+      gas_used: number;
+      max_fee: number;
+      max_priority_fee: number;
+      base_fee: number;
+      max_base_fee: number;
+      rollup_fee_details?: {
+        l1_fee: number;
+        l1_fee_scalar: number;
+        l1_gas_price: number;
+        l1_gas_used: number;
+        l2_fee: number;
+      };
+    };
+  };
+  block_confirmations?: number; // also only available on the tx by hash endpoint
   meta: {
     contract_name?: string;
     type?: TransactionType;

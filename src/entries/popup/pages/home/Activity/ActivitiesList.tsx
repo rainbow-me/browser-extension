@@ -19,6 +19,7 @@ import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../../urls';
 import { ActivitySkeleton } from '../Skeletons';
 
+import { ActivityContextMenu } from './ActivityContextMenu';
 import { ActivityIcon } from './ActivityIcon';
 import { ActivityTypeIcon } from './ActivityTypeIcon';
 import { ActivityValue } from './ActivityValue';
@@ -37,8 +38,6 @@ export function Activities() {
   const containerRef = useContainerRef();
 
   useActivityShortcuts();
-
-  const navigate = useRainbowNavigate();
 
   if (isInitialLoading || isRefetching) return <ActivitySkeleton />;
   if (!transactions.length) return <NoActivity />;
@@ -80,10 +79,6 @@ export function Activities() {
                 position="absolute"
                 width="full"
                 style={{ height: size, y: start }}
-                onClick={() =>
-                  !isLabel &&
-                  navigate(ROUTES.ACTIVITY_DETAILS(tx.chainId, tx.hash))
-                }
                 paddingHorizontal="20px"
               >
                 {isLabel ? (
@@ -93,11 +88,11 @@ export function Activities() {
                     </Text>
                   </Inset>
                 ) : (
-                  // <TransactionDetailsMenu transaction={rowData}>
-                  <Box paddingVertical="4px">
-                    <ActivityRow transaction={tx} />
-                  </Box>
-                  // </TransactionDetailsMenu>
+                  <ActivityContextMenu transaction={tx}>
+                    <Box paddingVertical="4px">
+                      <ActivityRow transaction={tx} />
+                    </Box>
+                  </ActivityContextMenu>
                 )}
               </Box>
             );
@@ -160,8 +155,17 @@ const ActivityDescription = ({
 };
 
 function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
+  const navigate = useRainbowNavigate();
+
   return (
-    <Lens borderRadius="12px" forceAvatarColor>
+    <Lens
+      borderRadius="12px"
+      marginHorizontal="-12px"
+      forceAvatarColor
+      onClick={() =>
+        navigate(ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash))
+      }
+    >
       <Box
         style={{ height: '52px' }}
         display="flex"
@@ -169,7 +173,6 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
         gap="8px"
         paddingHorizontal="12px"
         paddingVertical="8px"
-        marginHorizontal="-12px"
         borderRadius="12px"
         className={rowTransparentAccentHighlight}
       >
@@ -194,18 +197,18 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   );
 }
 
-const statusColor: Record<TransactionStatus, TextColor> = {
+const typeLabelColor = {
   pending: 'blue',
   failed: 'red',
   confirmed: 'labelTertiary',
-};
+} satisfies Record<TransactionStatus, TextColor>;
 
 const ActivityTypeLabel = ({
   transaction: { type, title, status },
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const color = statusColor[status];
+  const color = typeLabelColor[status];
 
   return (
     <Inline space="4px">
