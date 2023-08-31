@@ -1,6 +1,5 @@
 import { initializeMessenger } from '~/core/messengers';
-import { notificationWindowStore } from '~/core/state';
-import { isDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
+import { isDefaultWalletStore, notificationWindowStore } from '~/core/state';
 import { useInviteCodeStore } from '~/core/state/inviteCode';
 import { pendingRequestStore } from '~/core/state/requests';
 

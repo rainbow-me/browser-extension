@@ -1,9 +1,11 @@
 export { appSessionsStore, useAppSessionsStore } from './appSessions';
 export {
+  isDefaultWalletStore,
   currentAddressStore,
   currentChainIdStore,
   currentCurrencyStore,
   currentLanguageStore,
+  useIsDefaultWalletStore,
   useCurrentAddressStore,
   useCurrentChainIdStore,
   useCurrentCurrencyStore,

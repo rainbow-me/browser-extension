@@ -8,3 +8,7 @@ export {
   currentLanguageStore,
   useCurrentLanguageStore,
 } from './currentLanguage';
+export {
+  isDefaultWalletStore,
+  useIsDefaultWalletStore,
+} from './isDefaultWallet';
