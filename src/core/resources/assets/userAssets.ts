@@ -315,7 +315,6 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
     {
       ...config,
       refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
-      staleTime: 10,
     },
   );
 }
