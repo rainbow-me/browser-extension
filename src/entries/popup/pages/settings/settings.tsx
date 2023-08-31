@@ -177,6 +177,7 @@ export function Settings() {
             testId="settings-transactions"
           />
           <MenuItem
+            testId={'currency-selection'}
             hasRightArrow
             leftComponent={
               <Box style={{ width: 18 }}>
