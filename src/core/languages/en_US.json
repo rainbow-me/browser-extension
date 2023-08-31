@@ -1031,7 +1031,8 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
-    "coming_soon": "Coming Soon!"
+    "coming_soon": "Coming Soon!",
+    "no_hw_ff": "Hardware wallets are not supported on Firefox. Try a different browser like Chrome or Brave."
   },
   "hw": {
     "choose_title": "Connect a hardware wallet",
