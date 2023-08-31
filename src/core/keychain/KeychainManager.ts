@@ -168,13 +168,15 @@ class KeychainManager {
       },
 
       persist: async () => {
-        // Remove any potential empty keychains
         // Serialize all the keychains
-        const serializedKeychains = this.state.keychains?.length
+        let serializedKeychains = this.state.keychains?.length
           ? await Promise.all(
-              this.state.keychains?.map((keychain) => keychain.serialize()),
+              this.state.keychains?.map((keychain) => keychain?.serialize()),
             )
           : [];
+
+        // Remove any potential empty keychains
+        serializedKeychains = serializedKeychains.filter((k) => !!k);
 
         // Encrypt the serialized keychains
         const pwd = privates.get(this).password;

@@ -6,6 +6,7 @@ import { Wallet } from '@ethersproject/wallet';
 import { Address } from 'wagmi';
 
 import { KeychainType } from '~/core/types/keychainTypes';
+import { logger } from '~/logger';
 
 import { IKeychain, PrivateKey } from '../IKeychain';
 
@@ -46,6 +47,7 @@ export class ReadOnlyKeychain implements IKeychain {
 
   async deserialize(opts: SerializedReadOnlyKeychain) {
     if (!isAddress(opts.address)) {
+      logger.info('Invalid address:', { address: opts.address });
       throw new Error('Invalid address');
     }
     this.address = opts.address;
