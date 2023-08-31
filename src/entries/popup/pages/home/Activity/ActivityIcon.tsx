@@ -41,7 +41,7 @@ export const ActivityIcon = ({
     );
 
   return (
-    <Box position="relative">
+    <Box position="relative" style={{ maxHeight: size, maxWidth: size }}>
       <ContractInteractionIcon size={size} />
       {badge && chainId !== ChainId.mainnet && (
         <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
