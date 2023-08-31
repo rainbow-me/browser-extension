@@ -125,6 +125,7 @@ export function Privacy() {
               last
               rightComponent={
                 <Toggle
+                  testId={'hide-small-balances-toggle'}
                   checked={hideSmallBalances}
                   handleChange={setHideSmallBalances}
                   tabIndex={-1}
@@ -157,6 +158,7 @@ export function Privacy() {
             <MenuItem
               last
               hasRightArrow
+              testId={'auto-lock-option'}
               rightComponent={
                 <MenuItem.Selection
                   text={autoLockTimerOptions[autoLockTimer].label}

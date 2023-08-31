@@ -76,7 +76,6 @@ describe('Navigate Settings & Privacy and its flows', () => {
     expect(balanceHidden).toBeTruthy();
   });
 
-  // bug currently exists on this flow. will remove skip once fixed.
   it('should be able to change password and then lock and unlock with it', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
