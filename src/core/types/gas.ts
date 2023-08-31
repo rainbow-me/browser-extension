@@ -11,10 +11,6 @@ export interface GasFeeParam {
   gwei: string;
 }
 
-export const isLegacyGasParams = (
-  params: TransactionGasParams | TransactionLegacyGasParams,
-): params is TransactionLegacyGasParams => !('maxFeePerGas' in params);
-
 export interface TransactionLegacyGasParams {
   gasPrice: string;
 }

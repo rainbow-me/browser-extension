@@ -14,7 +14,7 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import { isLegacyGasParams } from '~/core/types/gas';
+import { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -26,7 +26,6 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import * as wallet from '../../../handlers/wallet';
 
-import { NewTransaction } from '~/core/types/transactions';
 import { SendTransactionActions } from './SendTransactionActions';
 import { SendTransactionInfo } from './SendTransactionsInfo';
 
@@ -99,9 +98,7 @@ export function SendTransaction({
           nonce: result.nonce,
           status: 'pending',
           type: 'send',
-          ...(isLegacyGasParams(selectedGas.transactionGasParams)
-            ? selectedGas.transactionGasParams
-            : selectedGas.transactionGasParams),
+          ...selectedGas.transactionGasParams,
         } satisfies NewTransaction;
 
         addNewTransaction({

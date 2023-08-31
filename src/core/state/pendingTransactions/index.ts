@@ -1,7 +1,7 @@
 import { Address } from 'wagmi';
 import create from 'zustand';
 
-import { NewTransaction, RainbowTransaction } from '~/core/types/transactions';
+import { NewTransaction, PendingTransaction } from '~/core/types/transactions';
 import { parseNewTransaction } from '~/core/utils/transactions';
 
 import { currentCurrencyStore } from '../currentSettings';
@@ -9,19 +9,19 @@ import { createStore } from '../internal/createStore';
 
 export interface PendingTransactionsState {
   [key: Address]: {
-    pendingTransactions: RainbowTransaction[];
+    pendingTransactions: PendingTransaction[];
   };
   getPendingTransactions: ({
     address,
   }: {
     address?: Address;
-  }) => RainbowTransaction[];
+  }) => PendingTransaction[];
   setPendingTransactions: ({
     address,
     pendingTransactions,
   }: {
     address?: Address;
-    pendingTransactions: RainbowTransaction[];
+    pendingTransactions: PendingTransaction[];
   }) => void;
 }
 

@@ -18,7 +18,7 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { RainbowTransaction } from '~/core/types/transactions';
+import { NewTransaction, RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { toHex } from '~/core/utils/hex';
 import { greaterThan, handleSignificantDecimals } from '~/core/utils/numbers';
@@ -177,7 +177,7 @@ export function SpeedUpAndCancelSheet({
 
   const handleCancellation = async () => {
     const cancellationResult = await sendTransaction(cancelTransactionRequest);
-    const cancelTx: RainbowTransaction = {
+    const cancelTx = {
       ...transaction,
       data: cancellationResult?.data,
       value: cancellationResult?.value?.toString(),
@@ -188,7 +188,7 @@ export function SpeedUpAndCancelSheet({
       status: 'pending',
       type: 'cancel',
       nonce: transaction?.nonce,
-    };
+    } satisfies NewTransaction;
     updateTransaction({
       address: cancellationResult?.from as Address,
       chainId: cancellationResult?.chainId,
@@ -198,7 +198,7 @@ export function SpeedUpAndCancelSheet({
   };
   const handleSpeedUp = async () => {
     const speedUpResult = await sendTransaction(speedUpTransactionRequest);
-    const speedUpTransaction: RainbowTransaction = {
+    const speedUpTransaction = {
       ...transaction,
       data: speedUpResult?.data,
       value: speedUpResult?.value?.toString(),
@@ -209,7 +209,7 @@ export function SpeedUpAndCancelSheet({
       status: 'pending',
       type: 'speed_up',
       nonce: transaction?.nonce,
-    };
+    } satisfies NewTransaction;
     updateTransaction({
       address: speedUpResult?.from as Address,
       chainId: speedUpResult?.chainId,

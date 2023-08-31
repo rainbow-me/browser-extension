@@ -30,7 +30,7 @@ type BaseTransaction = {
   data?: string;
   flashbots?: boolean;
 
-  changes: Array<
+  changes?: Array<
     | {
         asset: ParsedUserAsset;
         direction: TransactionDirection;
@@ -48,8 +48,8 @@ type BaseTransaction = {
   approvalAmount?: 'UNLIMITED' | (string & object);
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
-type PendingTransaction = BaseTransaction & { status: 'pending' };
-type MinedTransaction = BaseTransaction & {
+export type PendingTransaction = BaseTransaction & { status: 'pending' };
+export type MinedTransaction = BaseTransaction & {
   status: 'confirmed' | 'failed';
   blockNumber: number;
   minedAt: number;
@@ -58,12 +58,15 @@ type MinedTransaction = BaseTransaction & {
 export type RainbowTransaction = PendingTransaction | MinedTransaction;
 
 export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
-  changes: Array<{
-    direction: TransactionDirection;
-    asset: ParsedAsset; // becomes a user asset when the transaction is parsed
-    value?: number | string;
-    price?: number | string;
-  }>;
+  changes?: Array<
+    | {
+        direction: TransactionDirection;
+        asset: ParsedAsset; // becomes a user asset when the transaction is parsed
+        value?: number | string;
+        price?: number | string;
+      }
+    | undefined
+  >;
 };
 
 export type TransactionType =

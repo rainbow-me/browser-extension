@@ -11,13 +11,12 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
-  getPendingTransactionData,
-  getTransactionFlashbotStatus,
-  getTransactionHash,
-  getTransactionReceiptStatus,
-} from '~/core/utils/transactions';
+  PendingTransaction,
+  RainbowTransaction,
+} from '~/core/types/transactions';
+import { isLowerCaseMatch } from '~/core/utils/strings';
+import { getTransactionFlashbotStatus } from '~/core/utils/transactions';
 
 import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
 
@@ -44,8 +43,8 @@ export const useWatchPendingTransactions = ({
     let pendingTransactionReportedByRainbowBackend = false;
     const updatedPendingTransactions = await Promise.all(
       pendingTransactions.map(async (tx) => {
-        let updatedTransaction = { ...tx };
-        const txHash = getTransactionHash(tx);
+        let updatedTransaction: RainbowTransaction = { ...tx };
+        const txHash = tx.hash;
         try {
           const chainId = tx?.chainId;
           if (chainId) {
@@ -58,17 +57,14 @@ export const useWatchPendingTransactions = ({
                 currentTxCountForChainId >
                 (tx?.nonce || transactionResponse?.nonce);
 
-              const transactionStatus = await getTransactionReceiptStatus({
-                included: nonceAlreadyIncluded,
-                transaction: tx,
-                transactionResponse,
-                provider,
-              });
+              // const transactionStatus = await getTransactionReceiptStatus({
+              //   transactionResponse,
+              //   provider,
+              // });
 
-              let pendingTransactionData = getPendingTransactionData({
-                transaction: tx,
-                transactionStatus,
-              });
+              // let pendingTransactionData = {
+              //   status: 'pending',
+              // };
 
               if (
                 (transactionResponse?.blockNumber &&
@@ -104,7 +100,7 @@ export const useWatchPendingTransactions = ({
                 const currentNonceForChainId =
                   currentTxCountForChainId - 1 || 0;
                 const latestTransactionHashConfirmedByBackend = latest
-                  ? getTransactionHash(latest)
+                  ? latest.hash
                   : null;
 
                 setNonce({
@@ -129,7 +125,7 @@ export const useWatchPendingTransactions = ({
                 } else {
                   updatedTransaction = {
                     ...updatedTransaction,
-                    ...pendingTransactionData,
+                    // ...pendingTransactionData,
                   };
                 }
               } else if (tx.flashbots) {
@@ -138,7 +134,7 @@ export const useWatchPendingTransactions = ({
                   txHash,
                 );
                 if (flashbotsTxStatus) {
-                  pendingTransactionData = flashbotsTxStatus;
+                  // pendingTransactionData = flashbotsTxStatus;
                 }
               }
             }
@@ -162,7 +158,7 @@ export const useWatchPendingTransactions = ({
     setPendingTransactions({
       address,
       pendingTransactions: updatedPendingTransactions.filter(
-        (tx) => tx?.status === 'pending',
+        (tx): tx is PendingTransaction => tx?.status === 'pending',
       ),
     });
   }, [

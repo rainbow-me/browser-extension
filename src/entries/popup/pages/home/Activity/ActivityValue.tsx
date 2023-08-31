@@ -59,8 +59,8 @@ const approvalTypeValues = (transaction: RainbowTransaction) => {
 };
 
 const swapTypeValues = (changes: RainbowTransaction['changes']) => {
-  const tokenIn = changes.filter((c) => c?.direction === 'in')[0]?.asset;
-  const tokenOut = changes.filter((c) => c?.direction === 'out')[0]?.asset;
+  const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;
+  const tokenOut = changes?.filter((c) => c?.direction === 'out')[0]?.asset;
 
   if (!tokenIn || !tokenOut) return;
 
@@ -78,7 +78,7 @@ const activityValues = (transaction: RainbowTransaction) => {
   if (['approve', 'revoke'].includes(type))
     return approvalTypeValues(transaction);
 
-  const asset = changes.filter(
+  const asset = changes?.filter(
     (c) => c?.direction === direction && c?.asset.type !== 'nft',
   )[0]?.asset;
   const valueSymbol = direction === 'out' ? '-' : '+';

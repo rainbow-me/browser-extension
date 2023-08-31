@@ -20,8 +20,8 @@ export const ActivityIcon = ({
   size?: 36 | 20 | 14 | 16;
 }) => {
   if (['wrap', 'undwrap', 'swap'].includes(type)) {
-    const inAsset = changes.find((a) => a?.direction === 'in')?.asset;
-    const outAsset = changes.find((a) => a?.direction === 'out')?.asset;
+    const inAsset = changes?.find((a) => a?.direction === 'in')?.asset;
+    const outAsset = changes?.find((a) => a?.direction === 'out')?.asset;
 
     if (!!inAsset && !!outAsset)
       return <TwoCoinsIcon size={size} under={outAsset} over={inAsset} />;

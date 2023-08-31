@@ -37,12 +37,9 @@ export const yesterdayTimestamp = calculateTimestampOfYesterday();
 export const thisMonthTimestamp = calculateTimestampOfThisMonth();
 export const thisYearTimestamp = calculateTimestampOfThisYear();
 
-export const groupTransactionByDate = ({
-  minedAt,
-  status,
-}: RainbowTransaction) => {
-  if (status === 'pending' || !minedAt) return i18n.t('activity.today');
-  const ts = minedAt * 1000;
+export const groupTransactionByDate = (tx: RainbowTransaction) => {
+  if (tx.status === 'pending' || !tx.minedAt) return i18n.t('activity.today');
+  const ts = tx.minedAt * 1000;
 
   if (ts > todayTimestamp) return i18n.t('activity.today');
   if (ts > yesterdayTimestamp) return i18n.t('activity.yesterday');

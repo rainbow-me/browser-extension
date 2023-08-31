@@ -17,7 +17,10 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { RainbowTransaction } from '~/core/types/transactions';
+import {
+  PendingTransaction,
+  RainbowTransaction,
+} from '~/core/types/transactions';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
@@ -103,9 +106,10 @@ export default function ({
   const formattedTransactions = useMemo(
     () =>
       Object.entries(
-        selectTransactionsByDate(
-          pendingTransactions.concat(transactionsAfterCutoff),
-        ),
+        selectTransactionsByDate([
+          ...pendingTransactions,
+          ...transactionsAfterCutoff,
+        ]),
       ).flat(2),
     [pendingTransactions, transactionsAfterCutoff],
   );
@@ -187,7 +191,7 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   latestTransactions,
 }: {
   currentAddress: Address;
-  pendingTransactions: RainbowTransaction[];
+  pendingTransactions: PendingTransaction[];
   latestTransactions: Map<ChainId, RainbowTransaction | null>;
 }) {
   const { setNonce } = nonceStore.getState();

@@ -1,5 +1,4 @@
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Provider } from '@ethersproject/providers';
+import { Provider, TransactionResponse } from '@ethersproject/providers';
 import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
 import { Address } from 'wagmi';
@@ -23,14 +22,12 @@ import {
   NewTransaction,
   PaginatedTransactionsApiResponse,
   RainbowTransaction,
-  TransactionStatus,
   TransactionType,
 } from '../types/transactions';
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
-import { isZero } from './numbers';
 
 /**
  * @desc remove hex prefix
@@ -143,28 +140,10 @@ export function parseTransaction({
 }
 
 export const parseNewTransaction = (
-  txDetails: NewTransaction,
+  tx: NewTransaction,
   currency: SupportedCurrencyKey,
-): RainbowTransaction => {
-  const {
-    data,
-    from,
-    chainId = ChainId.mainnet,
-    nonce,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    hash: txHash,
-    protocol,
-    status,
-    to,
-    type,
-    flashbots,
-  } = txDetails;
-
-  const hash = txHash || '0x';
-
-  const changes = txDetails.changes.filter(Boolean).map((change) => ({
+) => {
+  const changes = tx.changes?.filter(Boolean).map((change) => ({
     ...change,
     asset: parseUserAssetBalances({
       asset: change.asset,
@@ -173,57 +152,37 @@ export const parseNewTransaction = (
     }),
   }));
 
-  const asset = changes[0]?.asset;
-  const methodName = 'unknown method';
+  const asset = changes?.[0]?.asset;
+  const methodName = 'Unknown method';
 
   return {
     status: 'pending',
-    data,
-    title: i18n.t(`transactions.${type}.${status}`),
-    description: asset?.name || methodName || 'Signed',
-    from,
+    data: tx.data,
+    title: i18n.t(`transactions.${tx.type}.${tx.status}`),
+    description: asset?.name || methodName,
+    from: tx.from,
     changes,
-    hash,
-    chainId,
-    nonce,
-    protocol,
-    to,
-    type,
-    flashbots,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-  };
+    hash: tx.hash,
+    chainId: tx.chainId,
+    nonce: tx.nonce,
+    protocol: tx.protocol,
+    to: tx.to,
+    type: tx.type,
+    flashbots: tx.flashbots,
+    gasPrice: tx.gasPrice,
+    maxFeePerGas: tx.maxFeePerGas,
+    maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
+  } satisfies RainbowTransaction;
 };
 
-export function getPendingTransactionData({
-  transaction,
-  transactionStatus,
-}: {
-  transaction: RainbowTransaction;
-  transactionStatus: TransactionStatus;
-}) {
-  const minedAt = Math.floor(Date.now() / 1000);
-  return {
-    minedAt,
-    title: i18n.t(`transactions.${transaction.type}.${transactionStatus}`),
-    status: transactionStatus,
-  };
-}
-
 export async function getTransactionReceiptStatus({
-  included,
-  transaction,
   transactionResponse,
   provider,
 }: {
-  included: boolean;
-  transaction: RainbowTransaction;
   transactionResponse: TransactionResponse;
   provider: Provider;
 }) {
   let receipt;
-  let status: TransactionStatus;
 
   try {
     if (transactionResponse) {
@@ -238,18 +197,9 @@ export async function getTransactionReceiptStatus({
     // eslint-disable-next-line no-empty
   } catch (e) {}
 
-  status = 'failed';
-  if (!isZero(receipt?.status || 0)) {
-    status = 'confirmed';
-  } else if (included) {
-    status = 'pending'; // TODO: prev unknown
-  }
-
-  return status;
-}
-
-export function getTransactionHash(tx: RainbowTransaction): string | undefined {
-  return tx.hash?.split('-').shift();
+  if (!receipt) return 'pending';
+  if (receipt.status === 0) return 'confirmed';
+  return 'failed';
 }
 
 export async function getNextNonce({
@@ -396,7 +346,7 @@ export const getTransactionFlashbotStatus = async (
     const flashbotStatus = fbStatus.data.status;
     // Make sure it wasn't dropped after 25 blocks or never made it
     if (flashbotStatus === 'FAILED' || flashbotStatus === 'CANCELLED') {
-      const status = 'dropped';
+      const status = 'failed';
       const minedAt = Math.floor(Date.now() / 1000);
       const title = i18n.t(`transactions.${transaction.type}.failed`);
       return { status, minedAt, title } as const;

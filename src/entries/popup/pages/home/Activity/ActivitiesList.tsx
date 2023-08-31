@@ -127,7 +127,7 @@ const ActivityDescription = ({
   }
 
   const nftChangesAmount = transaction.changes
-    .filter((c) => c?.asset.type === 'nft' && c.direction !== direction)
+    ?.filter((c) => c?.asset.type === 'nft' && c.direction !== direction)
     .filter(Boolean).length;
   if (nftChangesAmount) tag = nftChangesAmount.toString();
 
