@@ -10,6 +10,7 @@ import {
   Builder,
   By,
   Condition,
+  Key,
   WebDriver,
   WebElement,
   until,
@@ -283,6 +284,32 @@ export async function doNotFindElementByTestId({
   return !!elementFound;
 }
 
+export async function isElementFoundByText({
+  text,
+  driver,
+}: {
+  text: string;
+  driver: WebDriver;
+}) {
+  let isElementFound = true;
+  try {
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+    await driver.wait(
+      until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
+      5000,
+    );
+    console.error(
+      `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
+    );
+  } catch (error) {
+    isElementFound = false;
+    console.error(
+      `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
+    );
+  }
+  return isElementFound;
+}
+
 export async function findElementByTestIdAndClick({
   id,
   driver,
@@ -406,6 +433,83 @@ export async function getTextFromDappText({
 }) {
   const element = await findElementById({ id, driver });
   return await element.getText();
+}
+
+// two helpers bc normal keys / special keys work a little different in selenium
+export async function performShortcutWithNormalKey(
+  driver: WebDriver,
+  key: keyof typeof Key,
+) {
+  try {
+    await delayTime('short');
+    await driver
+      .actions()
+      .sendKeys(Key.chord(Key[key] as string))
+      .perform();
+  } catch (error) {
+    console.error(
+      `Error occurred while attempting shortcut with the keyboard character '${key}':`,
+      error,
+    );
+    throw error;
+  }
+}
+
+export async function performShortcutWithSpecialKey(
+  driver: WebDriver,
+  specialKey: keyof typeof Key,
+) {
+  try {
+    await delayTime('short');
+    const key = Key[specialKey] as string;
+    await driver.actions().sendKeys(key).perform();
+  } catch (error) {
+    console.error(
+      `Error occurred while attempting shortcut with the key '${specialKey}':`,
+      error,
+    );
+    throw error;
+  }
+}
+
+// this helper simplifies test writing by using the length of the key to
+// determine which function to use and then repeat depending on count
+
+export async function executePerformShortcut({
+  driver,
+  key,
+  timesToPress = 1,
+}: {
+  driver: WebDriver;
+  key: keyof typeof Key;
+  timesToPress?: number;
+}): Promise<void> {
+  try {
+    for (let i = 0; i < timesToPress; i++) {
+      if (key.length === 1) {
+        await performShortcutWithNormalKey(driver, key);
+      } else if (key.length > 1) {
+        await performShortcutWithSpecialKey(driver, key);
+      } else {
+        throw new Error('No valid key or keyboard character provided.');
+      }
+    }
+  } catch (error) {
+    console.error(`Error occurred while executing shortcut:`, error);
+    throw error;
+  }
+}
+
+export async function checkExtensionURL(driver: WebDriver, urlValue: string) {
+  try {
+    await driver.wait(until.urlContains(urlValue), waitUntilTime);
+  } catch (error) {
+    console.error(
+      `Error occurred while checking url with the value '${urlValue}':`,
+      error,
+    );
+    throw error;
+  }
 }
 
 // various functions and flows
