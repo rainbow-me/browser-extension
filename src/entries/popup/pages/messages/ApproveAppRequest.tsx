@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 
 import { initializeMessenger } from '~/core/messengers';
+import { usePendingRequestStore } from '~/core/state';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
-import { usePendingRequestStore } from '~/core/state/requests';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
