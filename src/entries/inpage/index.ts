@@ -71,7 +71,7 @@ if (shouldInjectProvider()) {
       },
       addProvider: (provider: RainbowProvider | Ethereum) => {
         if (!window.walletRouter.providers.includes(provider)) {
-          window.walletRouter.providers.unshift(provider);
+          window.walletRouter.providers.push(provider);
         }
         if (rainbowProvider !== provider) {
           window.walletRouter.lastInjectedProvider = provider;
@@ -133,6 +133,7 @@ if (shouldInjectProvider()) {
   backgroundMessenger.reply(
     'rainbow_setDefaultProvider',
     async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
+      console.log('--- GOT rainbow_setDefaultProvider', rainbowAsDefault);
       window.walletRouter.setDefaultProvider(rainbowAsDefault);
     },
   );
