@@ -133,7 +133,6 @@ if (shouldInjectProvider()) {
   backgroundMessenger.reply(
     'rainbow_setDefaultProvider',
     async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
-      console.log('--- GOT rainbow_setDefaultProvider', rainbowAsDefault);
       window.walletRouter.setDefaultProvider(rainbowAsDefault);
     },
   );
