@@ -484,9 +484,6 @@ export async function executePerformShortcut({
   timesToPress?: number;
 }): Promise<void> {
   try {
-    if (key === undefined) {
-      throw new Error('key cannot be undefined');
-    }
     for (let i = 0; i < timesToPress; i++) {
       if (key.length === 1) {
         await performShortcutWithNormalKey(driver, key);
