@@ -17,6 +17,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+## [v1.2.3](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.3)
+
+## Added
+
+- When accidentally closing the extension while preparing a Swap or Send or managing your wallets in Settings, Rainbow will now restore your state and let you continue where you left off #878
+- You can now Disconnect (`D`) your wallet or Switch Wallet (`W`) to change the wallet connected to a dApp from the dApp Menu in the top-left. You can always open this menu with the `N` shortcut, and follow the shortcut hints to drill-down without touching your mouse #866
+
+## Changed
+
+- Flashbots support now includes more builders for faster transaction inclusion #903
+- Provider injection is now available for Firefox for a future release #859
+
+### Fixed
+
+- Resolved issues with nonce management and transaction submission reliability for users that interact across multiple wallets and networks simultaneously #891
+- Fixed an issue with the Activity pane when using Rainbow in Full Screen mode #889
+- Resolved transaction caching issues on the Activity pane that caused unnecessary network refreshes #905
+- Fixed a potential crash when fetching output-based Swap quotes #887
+- Improved anonymized logging to better diagnose wallets with keychain store issues #892
+
 ## [v1.1.79](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.79)
 
 ## Added
