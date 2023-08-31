@@ -474,6 +474,7 @@ export async function performShortcutWithSpecialKey(
 
 // this helper simplifies test writing by using the length of the key to
 // determine which function to use and then repeat depending on count
+
 export async function executePerformShortcut({
   driver,
   key,
