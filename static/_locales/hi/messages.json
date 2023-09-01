@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "Rainbow",
+    "description": "The name of the extension, displayed in the web store."
+  },
+  "appShortName": {
+    "message": "Rainbow",
+    "description": "The short name of the extension, displayed in the toolbar."
+  },
+  "appDescription": {
+    "message": "Rainbow मजेदार, सरल, और सुरक्षित Ethereum वॉलेट है जो आपके संपत्ति का प्रबंधन आनंदमय बनाता है",
+    "description": "The description of the extension, displayed in the web store."
+  }
+}

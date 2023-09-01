@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "Rainbow",
+    "description": "The name of the extension, displayed in the web store."
+  },
+  "appShortName": {
+    "message": "Rainbow",
+    "description": "The short name of the extension, displayed in the toolbar."
+  },
+  "appDescription": {
+    "message": "Rainbow é uma carteira Ethereum divertida, simples e segura que torna a gestão dos seus ativos um prazer.",
+    "description": "The description of the extension, displayed in the web store."
+  }
+}
