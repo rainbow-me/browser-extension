@@ -105,7 +105,6 @@ async function meteorologyQueryFunction({
   const meteorologyData = parsedResponse.data as
     | MeteorologyResponse
     | MeteorologyLegacyResponse;
-  console.log('-- meteorologyData gasss', meteorologyData);
   return meteorologyData;
 }
 
