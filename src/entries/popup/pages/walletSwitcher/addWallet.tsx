@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -7,11 +8,13 @@ import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
+import { useBrowser } from '../../hooks/useBrowser';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const AddWallet = () => {
   const navigate = useRainbowNavigate();
+  const { isFirefox } = useBrowser();
   const { featureFlags } = useFeatureFlagsStore();
 
   const handleCreateWallet = useCallback(async () => {
@@ -61,7 +64,9 @@ const AddWallet = () => {
           <OnboardMenu.Item
             onClick={() =>
               featureFlags.hw_wallets_enabled
-                ? navigate(ROUTES.HW_CHOOSE)
+                ? isFirefox
+                  ? triggerAlert({ text: i18n.t('alert.no_hw_ff') })
+                  : navigate(ROUTES.HW_CHOOSE)
                 : triggerAlert({ text: i18n.t('alert.coming_soon') })
             }
             title={i18n.t('add_wallet.hardware_wallet')}
