@@ -524,6 +524,9 @@ export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
     ChainId.zora,
   ].includes(chainId);
 
+export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
+  [ChainId.base, ChainId.optimism, ChainId.zora].includes(chainId);
+
 export const parseGasFeeParamsBySpeed = ({
   chainId,
   data,

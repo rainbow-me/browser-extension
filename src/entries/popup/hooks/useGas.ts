@@ -22,6 +22,7 @@ import {
 import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
   FLASHBOTS_MIN_TIP,
+  chainNeedsL1SecurityFee,
   gasFeeParamsChanged,
   parseCustomGasFeeParams,
   parseGasFeeParamsBySpeed,
@@ -64,7 +65,7 @@ const useGas = ({
 
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
     { transactionRequest: transactionRequest || {}, chainId },
-    { enabled: chainId === ChainId.optimism },
+    { enabled: chainNeedsL1SecurityFee(chainId) },
   );
 
   const {
@@ -79,6 +80,10 @@ const useGas = ({
 
   const setCustomMaxBaseFee = useCallback((maxBaseFee = '0') => {
     setInternalMaxBaseFee(maxBaseFee);
+  }, []);
+
+  const setCustomMaxPriorityFee = useCallback((maxPriorityFee = '0') => {
+    setInternalMaxPriorityFee(maxPriorityFee);
   }, []);
 
   useEffect(() => {
@@ -125,10 +130,6 @@ const useGas = ({
     setCustomSpeed,
     storeGasFeeParamsBySpeed?.custom,
   ]);
-
-  const setCustomMaxPriorityFee = useCallback((maxPriorityFee = '0') => {
-    setInternalMaxPriorityFee(maxPriorityFee);
-  }, []);
 
   useEffect(() => {
     if (
