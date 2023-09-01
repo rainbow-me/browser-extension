@@ -61,7 +61,6 @@ export type ParsedAssetsDictByChain = Record<ChainId, ParsedAssetsDict>;
 export interface ZerionAssetPrice {
   value: number;
   relative_change_24h?: number;
-  changed_at?: number; // appears unused
 }
 
 export type AssetType = 'nft' | 'token';

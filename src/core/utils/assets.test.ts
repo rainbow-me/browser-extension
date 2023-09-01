@@ -44,7 +44,6 @@ const ETH_FROM_ZERION: ZerionAsset = {
   price: {
     value: 1499.87,
     relative_change_24h: -3.4472325578401155,
-    changed_at: 0,
   },
   is_displayable: true,
   is_verified: true,
@@ -149,7 +148,6 @@ const BSC_ETH_FROM_ZERION = {
   network: 'bsc' as ChainName,
   price: {
     value: 1500.67,
-    changed_at: 1678390024,
     relative_change_24h: -3.3290651940864646,
   },
   symbol: 'ETH',
@@ -218,7 +216,6 @@ const USD_FROM_ZERION = {
   price: {
     value: 1.0034249098613037,
     relative_change_24h: 0.3604239001534948,
-    changed_at: -1,
   },
   is_displayable: true,
   is_verified: true,
@@ -284,7 +281,6 @@ const OPTIMISM_USD_FROM_ZERION = {
   network: 'optimism',
   price: {
     value: 1.001,
-    changed_at: 1678390027,
     relative_change_24h: 0.06633900739942358,
   },
   symbol: 'USDC',
