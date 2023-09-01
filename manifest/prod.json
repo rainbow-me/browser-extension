@@ -1,4 +1,5 @@
 {
-  "name": "Rainbow",
-  "description": "Rainbow is a fun, simple, and secure Ethereum wallet that makes managing your assets a joy."
+  "name": "__MSG_appName__",
+  "short_name": "__MSG_appShortName__",
+  "description": "__MSG_appDescription__"
 }
