@@ -22,7 +22,6 @@ import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   ContextMenu,
   ContextMenuContent,
-  ContextMenuItemIndicator,
   ContextMenuLabel,
   ContextMenuRadioGroup,
   ContextMenuRadioItem,
@@ -32,7 +31,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItemIndicator,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -40,6 +38,7 @@ import {
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 import { SWAP_INPUT_MASK_ID } from '../InputMask/SwapInputMask/SwapInputMask';
+import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 
 export const SwitchNetworkMenuSelector = ({
   selectedValue,
@@ -61,15 +60,13 @@ export const SwitchNetworkMenuSelector = ({
   const { chains } = useNetwork();
   const { trackShortcut } = useKeyboardAnalytics();
 
-  const { MenuRadioItem, MenuItemIndicator } = useMemo(() => {
+  const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'
       ? {
           MenuRadioItem: DropdownMenuRadioItem,
-          MenuItemIndicator: DropdownMenuItemIndicator,
         }
       : {
           MenuRadioItem: ContextMenuRadioItem,
-          MenuItemIndicator: ContextMenuItemIndicator,
         };
   }, [type]);
 
@@ -135,24 +132,15 @@ export const SwitchNetworkMenuSelector = ({
 
                 <Column width="content">
                   {selectedValue === String(chainId) ? (
-                    <MenuItemIndicator style={{ marginLeft: 'auto' }}>
-                      <Symbol weight="medium" symbol="checkmark" size={11} />
-                    </MenuItemIndicator>
-                  ) : (
-                    <Box
-                      background="fillSecondary"
-                      padding="4px"
-                      borderRadius="3px"
-                      boxShadow="1px"
-                    >
-                      <Text
-                        size="12pt"
-                        color="labelSecondary"
-                        weight="semibold"
-                      >
-                        {i + 1}
-                      </Text>
+                    <Box style={{ height: '18px', width: '18px' }}>
+                      <Inline alignHorizontal="center" alignVertical="center">
+                        <Inset vertical="3px">
+                          <Symbol weight="bold" symbol="checkmark" size={12} />
+                        </Inset>
+                      </Inline>
                     </Box>
+                  ) : (
+                    <ShortcutHint hint={`${i + 1}`} />
                   )}
                 </Column>
               </Columns>
@@ -203,16 +191,7 @@ export const SwitchNetworkMenuDisconnect = ({
             </Inline>
           </Column>
           <Column width="content">
-            <Box
-              background="fillSecondary"
-              padding="4px"
-              borderRadius="3px"
-              boxShadow="1px"
-            >
-              <Text size="12pt" color="labelSecondary" weight="semibold">
-                {shortcutLabel}
-              </Text>
-            </Box>
+            <ShortcutHint hint={shortcutLabel} />
           </Column>
         </Columns>
       </Inset>
@@ -303,7 +282,7 @@ export const SwitchNetworkMenu = ({
         <MenuSeparator />
         <MenuRadioGroup
           value={String(chainId)}
-          onValueChange={(chainId) => {
+          onValueChange={(chainId: string) => {
             const chain = chains.find(
               ({ id }) => String(id) === chainId,
             ) as Chain;

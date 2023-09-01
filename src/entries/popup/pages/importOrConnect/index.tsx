@@ -10,11 +10,13 @@ import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
+import { useBrowser } from '../../hooks/useBrowser';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function ImportOrConnect() {
   const navigate = useRainbowNavigate();
+  const { isFirefox } = useBrowser();
   const { featureFlags } = useFeatureFlagsStore();
 
   const navigateTo = useCallback(
@@ -31,11 +33,13 @@ export function ImportOrConnect() {
 
   const onConnectHardwareWallet = useCallback(() => {
     featureFlags.hw_wallets_enabled
-      ? navigateTo(ROUTES.HW_CHOOSE, {
-          state: { direction: 'right', navbarIcon: 'arrow' },
-        })
+      ? isFirefox
+        ? triggerAlert({ text: i18n.t('alert.no_hw_ff') })
+        : navigateTo(ROUTES.HW_CHOOSE, {
+            state: { direction: 'right', navbarIcon: 'arrow' },
+          })
       : triggerAlert({ text: i18n.t('alert.coming_soon') });
-  }, [featureFlags.hw_wallets_enabled, navigateTo]);
+  }, [featureFlags.hw_wallets_enabled, isFirefox, navigateTo]);
 
   const onWatchEthereumAddress = useCallback(
     () => navigateTo(ROUTES.WATCH),

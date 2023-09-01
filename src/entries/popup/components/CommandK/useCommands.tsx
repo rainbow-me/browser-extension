@@ -21,12 +21,14 @@ import {
   getProfileUrl,
   goToNewTab,
 } from '~/core/utils/tabs';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import * as wallet from '~/entries/popup/handlers/wallet';
 import { useNavigateToSwaps } from '~/entries/popup/hooks/useNavigateToSwaps';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
+import { useBrowser } from '../../hooks/useBrowser';
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { triggerToast } from '../Toast/Toast';
 
@@ -443,6 +445,7 @@ export const useCommands = (
   searchQuery: string,
   setSelectedCommandNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
+  const { isFirefox } = useBrowser();
   const { currentAddress: address, setCurrentAddress } =
     useCurrentAddressStore();
   const { currentTheme } = useCurrentThemeStore();
@@ -626,10 +629,13 @@ export const useCommands = (
         symbol: currentTheme === 'dark' ? 'eyes.inverse' : 'eyes',
       },
       addHardwareWallet: {
-        action: () =>
-          navigate(ROUTES.HW_CHOOSE, {
-            state: { direction: 'upRight', navbarIcon: 'ex' },
-          }),
+        action: () => {
+          isFirefox
+            ? triggerAlert({ text: i18n.t('alert.no_hw_ff') })
+            : navigate(ROUTES.HW_CHOOSE, {
+                state: { direction: 'upRight', navbarIcon: 'ex' },
+              });
+        },
       },
 
       // PAGE: TOKEN_DETAIL
@@ -770,6 +776,7 @@ export const useCommands = (
       selectTokenAndNavigate,
       viewWalletOnEtherscan,
       viewTokenOnExplorer,
+      isFirefox,
     ],
   );
 

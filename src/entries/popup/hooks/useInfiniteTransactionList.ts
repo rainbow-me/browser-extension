@@ -1,5 +1,5 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { queryClient } from '~/core/react-query';
@@ -20,6 +20,7 @@ import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 
+import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 
 const PAGES_TO_CACHE_LIMIT = 2;
@@ -110,20 +111,19 @@ export default function ({
   });
   const rows = infiniteRowVirtualizer.getVirtualItems();
 
-  useEffect(() => {
-    return () => {
-      if (data && data?.pages) {
-        queryClient.setQueryData(
-          consolidatedTransactionsQueryKey({ address, currency }),
-          {
-            ...data,
-            pages: [...data.pages].slice(0, PAGES_TO_CACHE_LIMIT),
-          },
-        );
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const cleanupPages = useCallback(() => {
+    if (data && data?.pages) {
+      queryClient.setQueryData(
+        consolidatedTransactionsQueryKey({ address, currency }),
+        {
+          ...data,
+          pages: [...data.pages].slice(0, PAGES_TO_CACHE_LIMIT),
+        },
+      );
+    }
+  }, [address, currency, data]);
+
+  useComponentWillUnmount(cleanupPages);
 
   useEffect(() => {
     const [lastRow] = [...rows].reverse();
