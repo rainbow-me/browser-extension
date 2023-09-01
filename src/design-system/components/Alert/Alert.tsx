@@ -61,7 +61,7 @@ export const Alert = () => {
     <Prompt zIndex={zIndexes.ALERT} show={visible} handleClose={onClose}>
       <Box padding="20px">
         <Stack space="20px">
-          <Box style={{ wordBreak: 'break-all' }}>
+          <Box style={{ wordBreak: 'break-word' }}>
             <Text align="center" color="label" size="14pt" weight="medium">
               {alert.text}
             </Text>
