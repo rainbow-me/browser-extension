@@ -5,6 +5,9 @@
   "label": {
     "toggle": "切换"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow需要权限访问所有网站以正常工作。请授权以便继续。"
+  },
   "wallet_switcher": {
     "title": "钱包",
     "rename_wallet": "重命名钱包",
@@ -672,11 +675,13 @@
       "disconnect": "断开连接"
     },
     "app_connection_menu": {
-      "connected_apps": "所有已连接应用",
+      "connected_apps": "已连接应用",
       "not_connected": "未连接",
       "networks": "网络",
       "connect": "连接",
-      "switch_networks": "切换网络"
+      "switch_network": "切换网络",
+      "switch_wallets": "切换钱包",
+      "disconnect": "断开连接"
     },
     "home_header_right": {
       "settings": "设置",
@@ -1026,7 +1031,8 @@
   "alert": {
     "ok": "确定",
     "wallet_watching_mode": "此钱包当前处于'查看'模式",
-    "coming_soon": "即将推出！"
+    "coming_soon": "即将推出！",
+    "no_hw_ff": "火狐浏览器不支持硬件钱包。试试其他浏览器，例如Chrome或Brave。"
   },
   "hw": {
     "choose_title": "连接硬件钱包",

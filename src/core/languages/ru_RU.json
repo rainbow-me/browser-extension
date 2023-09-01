@@ -5,6 +5,9 @@
   "label": {
     "toggle": "Переключить"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow требуется разрешение на доступ ко всем сайтам для нормальной работы. Пожалуйста, предоставьте разрешение, чтобы продолжить"
+  },
   "wallet_switcher": {
     "title": "Кошельки",
     "rename_wallet": "Переименовать кошелек",
@@ -672,11 +675,13 @@
       "disconnect": "Отключиться"
     },
     "app_connection_menu": {
-      "connected_apps": "Все подключенные приложения",
+      "connected_apps": "Подключенные приложения",
       "not_connected": "Не подключено",
       "networks": "Сети",
       "connect": "Подключить",
-      "switch_networks": "Сменить сети"
+      "switch_network": "Переключить сеть",
+      "switch_wallets": "Переключить кошелек",
+      "disconnect": "Отключиться"
     },
     "home_header_right": {
       "settings": "Настройки",
@@ -1026,7 +1031,8 @@
   "alert": {
     "ok": "ОК",
     "wallet_watching_mode": "Этот кошелек в настоящее время находится в режиме 'Наблюдение'",
-    "coming_soon": "Скоро!"
+    "coming_soon": "Скоро!",
+    "no_hw_ff": "Аппаратные кошельки не поддерживаются в Firefox. Попробуйте другой браузер, например, Chrome или Brave"
   },
   "hw": {
     "choose_title": "Подключите аппаратный кошелек",

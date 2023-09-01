@@ -5,6 +5,9 @@
   "label": {
     "toggle": "Aç/Kapat"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow'ın düzgün çalışabilmesi için tüm web sitelerine erişim iznine ihtiyacı var. Lütfen devam etmek için izni verin."
+  },
   "wallet_switcher": {
     "title": "Cüzdanlar",
     "rename_wallet": "Cüzdanı Yeniden Adlandır",
@@ -672,11 +675,13 @@
       "disconnect": "Bağlantıyı Kes"
     },
     "app_connection_menu": {
-      "connected_apps": "Tüm bağlı uygulamalar",
+      "connected_apps": "Bağlı Uygulamalar",
       "not_connected": "Bağlı değil",
       "networks": "Ağlar",
       "connect": "Bağlan",
-      "switch_networks": "Ağları değiştir"
+      "switch_network": "Ağı Değiştir",
+      "switch_wallets": "Cüzdanı Değiştir",
+      "disconnect": "Bağlantıyı Kes"
     },
     "home_header_right": {
       "settings": "Ayarlar",
@@ -1026,7 +1031,8 @@
   "alert": {
     "ok": "Tamam",
     "wallet_watching_mode": "Bu cüzdan şu anda 'İzleme' modunda",
-    "coming_soon": "Çok yakında!"
+    "coming_soon": "Çok yakında!",
+    "no_hw_ff": "Donanım cüzdanları Firefox'ta desteklenmiyor. Chrome veya Brave gibi farklı bir tarayıcı deneyin."
   },
   "hw": {
     "choose_title": "Bir donanım cüzdanı bağlayın",

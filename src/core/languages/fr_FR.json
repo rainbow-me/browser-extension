@@ -5,6 +5,9 @@
   "label": {
     "toggle": "Basculer"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow a besoin de l'autorisation pour accéder à tous les sites Web pour fonctionner correctement. Veuillez accorder l'autorisation pour continuer"
+  },
   "wallet_switcher": {
     "title": "Portefeuilles",
     "rename_wallet": "Renommer le portefeuille",
@@ -672,11 +675,13 @@
       "disconnect": "Déconnecter"
     },
     "app_connection_menu": {
-      "connected_apps": "Toutes les applications connectées",
+      "connected_apps": "Applications connectées",
       "not_connected": "Non connecté",
       "networks": "Réseaux",
       "connect": "Connecter",
-      "switch_networks": "Changer de réseau"
+      "switch_network": "Changer de réseau",
+      "switch_wallets": "Changer de portefeuille",
+      "disconnect": "Déconnecter"
     },
     "home_header_right": {
       "settings": "Paramètres",
@@ -1026,7 +1031,8 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "Ce portefeuille est actuellement en mode 'Observation'",
-    "coming_soon": "Bientôt disponible !"
+    "coming_soon": "Bientôt disponible !",
+    "no_hw_ff": "Les portefeuilles matériels ne sont pas pris en charge sur Firefox. Essayez un autre navigateur comme Chrome ou Brave"
   },
   "hw": {
     "choose_title": "Connectez un portefeuille matériel",

@@ -5,6 +5,9 @@
   "label": {
     "toggle": "切り替え"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbowは適切に動作するためにすべてのウェブサイトへのアクセス許可が必要です。続行するには許可を与えてください。"
+  },
   "wallet_switcher": {
     "title": "ウォレット",
     "rename_wallet": "ウォレット名の変更",
@@ -672,11 +675,13 @@
       "disconnect": "切断する"
     },
     "app_connection_menu": {
-      "connected_apps": "すべての接続されたアプリ",
+      "connected_apps": "接続されたアプリ",
       "not_connected": "接続されていません",
       "networks": "ネットワーク",
       "connect": "接続する",
-      "switch_networks": "ネットワークを切り替える"
+      "switch_network": "ネットワークを切り替える",
+      "switch_wallets": "ウォレットを切り替える",
+      "disconnect": "切断する"
     },
     "home_header_right": {
       "settings": "設定",
@@ -1026,7 +1031,8 @@
   "alert": {
     "ok": "OK",
     "wallet_watching_mode": "このウォレットは現在「ウォッチモード」です",
-    "coming_soon": "近日公開予定です！"
+    "coming_soon": "近日公開予定です！",
+    "no_hw_ff": "ハードウェアウォレットはFirefoxではサポートされていません。ChromeまたはBraveのような別のブラウザを試してみてください。"
   },
   "hw": {
     "choose_title": "ハードウェアウォレットを接続します",

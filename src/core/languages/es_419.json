@@ -5,6 +5,9 @@
   "label": {
     "toggle": "Alternar"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow necesita permiso para acceder a todos los sitios web para funcionar correctamente. Por favor otorga el permiso para continuar"
+  },
   "wallet_switcher": {
     "title": "Billeteras",
     "rename_wallet": "Renombrar billetera",
@@ -672,11 +675,13 @@
       "disconnect": "Desconectar"
     },
     "app_connection_menu": {
-      "connected_apps": "Todas las aplicaciones conectadas",
+      "connected_apps": "Aplicaciones Conectadas",
       "not_connected": "No conectado",
       "networks": "Redes",
       "connect": "Conectar",
-      "switch_networks": "Cambiar redes"
+      "switch_network": "Cambiar Red",
+      "switch_wallets": "Cambiar Cartera",
+      "disconnect": "Desconectar"
     },
     "home_header_right": {
       "settings": "Configuración",
@@ -1026,7 +1031,8 @@
   "alert": {
     "ok": "Aceptar",
     "wallet_watching_mode": "Esta billetera está actualmente en modo 'Observación'",
-    "coming_soon": "¡Próximamente!"
+    "coming_soon": "¡Próximamente!",
+    "no_hw_ff": "Las carteras de hardware no son compatibles con Firefox. Intenta con un navegador diferente como Chrome o Brave"
   },
   "hw": {
     "choose_title": "Conecta una billetera de hardware",
