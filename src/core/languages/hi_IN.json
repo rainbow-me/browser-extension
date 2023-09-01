@@ -672,7 +672,7 @@
       "disconnect": "डिस्कनेक्ट करें"
     },
     "app_connection_menu": {
-      "all_connected_apps": "सभी कनेक्टेड ऐप्स",
+      "connected_apps": "सभी कनेक्टेड ऐप्स",
       "not_connected": "कनेक्ट नहीं हुआ",
       "networks": "नेटवर्क्स",
       "connect": "कनेक्ट करें",

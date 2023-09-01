@@ -672,7 +672,7 @@
       "disconnect": "断开连接"
     },
     "app_connection_menu": {
-      "all_connected_apps": "所有已连接应用",
+      "connected_apps": "所有已连接应用",
       "not_connected": "未连接",
       "networks": "网络",
       "connect": "连接",

@@ -672,7 +672,7 @@
       "disconnect": "Bağlantıyı Kes"
     },
     "app_connection_menu": {
-      "all_connected_apps": "Tüm bağlı uygulamalar",
+      "connected_apps": "Tüm bağlı uygulamalar",
       "not_connected": "Bağlı değil",
       "networks": "Ağlar",
       "connect": "Bağlan",

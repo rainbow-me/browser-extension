@@ -287,7 +287,7 @@ export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
     <Box
       as={ContextMenuPrimitive.RadioItem}
       value={value}
-      paddingVertical="10px"
+      paddingVertical="7px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"

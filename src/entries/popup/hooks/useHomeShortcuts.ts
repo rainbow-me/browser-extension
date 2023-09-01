@@ -13,9 +13,15 @@ import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { triggerToast } from '../components/Toast/Toast';
 import * as wallet from '../handlers/wallet';
 import { ROUTES } from '../urls';
-import { getInputIsFocused } from '../utils/activeElement';
-import { clickHeaderRight } from '../utils/clickHeader';
+import {
+  appConnectionMenuIsActive,
+  getInputIsFocused,
+} from '../utils/activeElement';
+import { clickHeaderLeft, clickHeaderRight } from '../utils/clickHeader';
 
+import { useActiveTab } from './useActiveTab';
+import { useAppMetadata } from './useAppMetadata';
+import { useAppSession } from './useAppSession';
 import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useNavigateToSwaps } from './useNavigateToSwaps';
@@ -29,6 +35,9 @@ export function useHomeShortcuts() {
   const { sheet } = useCurrentHomeSheetStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const navigateToSwaps = useNavigateToSwaps();
+  const { url } = useActiveTab();
+  const { appHost } = useAppMetadata({ url });
+  const { disconnectSession } = useAppSession({ host: appHost });
 
   const getHomeShortcutsAreActive = useCallback(() => {
     return sheet === 'none' && !selectedTransaction && !selectedToken;
@@ -41,6 +50,13 @@ export function useHomeShortcuts() {
       description: truncateAddress(address),
     });
   }, [address]);
+
+  const disconnectFromApp = useCallback(() => {
+    disconnectSession({
+      address: address,
+      host: appHost,
+    });
+  }, [appHost, address, disconnectSession]);
 
   const openProfile = useCallback(
     () =>
@@ -100,11 +116,13 @@ export function useHomeShortcuts() {
           openProfile();
           break;
         case shortcuts.home.GO_TO_WALLETS.key:
-          trackShortcut({
-            key: shortcuts.home.GO_TO_WALLETS.display,
-            type: 'home.goToWallets',
-          });
-          navigate(ROUTES.WALLET_SWITCHER);
+          if (!appConnectionMenuIsActive()) {
+            trackShortcut({
+              key: shortcuts.home.GO_TO_WALLETS.display,
+              type: 'home.goToWallets',
+            });
+            navigate(ROUTES.WALLET_SWITCHER);
+          }
           break;
         case shortcuts.home.GO_TO_QR.key:
           trackShortcut({
@@ -127,9 +145,34 @@ export function useHomeShortcuts() {
           });
           clickHeaderRight();
           break;
+        case shortcuts.home.OPEN_APP_CONNECTION_MENU.key:
+          if (!appConnectionMenuIsActive()) {
+            trackShortcut({
+              key: shortcuts.home.OPEN_APP_CONNECTION_MENU.display,
+              type: 'home.openAppConnectionMenu',
+            });
+            clickHeaderLeft();
+          }
+          break;
+        case shortcuts.home.DISCONNECT_APP.key:
+          if (!appConnectionMenuIsActive()) {
+            trackShortcut({
+              key: shortcuts.home.DISCONNECT_APP.display,
+              type: 'home.disconnectApp',
+            });
+            disconnectFromApp();
+          }
+          break;
       }
     },
-    [handleCopy, navigate, navigateToSwaps, openProfile, trackShortcut],
+    [
+      disconnectFromApp,
+      handleCopy,
+      navigate,
+      navigateToSwaps,
+      openProfile,
+      trackShortcut,
+    ],
   );
   useKeyboardShortcut({
     condition: getHomeShortcutsAreActive,

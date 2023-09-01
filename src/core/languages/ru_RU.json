@@ -672,7 +672,7 @@
       "disconnect": "Отключиться"
     },
     "app_connection_menu": {
-      "all_connected_apps": "Все подключенные приложения",
+      "connected_apps": "Все подключенные приложения",
       "not_connected": "Не подключено",
       "networks": "Сети",
       "connect": "Подключить",
