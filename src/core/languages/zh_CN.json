@@ -5,6 +5,9 @@
   "label": {
     "toggle": "切换"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow需要权限访问所有网站以正常工作。请授权以便继续。"
+  },
   "wallet_switcher": {
     "title": "钱包",
     "rename_wallet": "重命名钱包",
@@ -81,7 +84,7 @@
       "analytics_description": "通过允许使用情况数据的分析来帮助 Rainbow 改进其产品和服务。收集的数据不会与您或您的账户关联。",
       "hide_asset_balances": "隐藏资产余额",
       "hide_asset_balances_description": "启用此功能后，Rainbow 将在整个应用中对代币余额进行模糊化处理。",
-      "auto_hide_balances_under_1": "自动隐藏小于 %{amount}的余额",
+      "auto_hide_balances_under_1": "自动隐藏少于1美元的余额",
       "view_private_key": "查看私钥",
       "view_secret_recovery_phrase": "查看秘密恢复短语",
       "auto_lock_timer": {
@@ -192,40 +195,117 @@
     "withdrew": "已提款"
   },
   "command_k": {
+    "action_labels": {
+      "activate_command": "激活命令",
+      "open": "打开",
+      "open_in_new_tab": "在新标签页中打开",
+      "switch_to_wallet": "切换到钱包",
+      "view": "查看"
+    },
+    "commands": {
+      "names": {
+        "send": "发送",
+        "swap": "交换",
+        "my_wallets": "我的钱包",
+        "my_tokens": "我的代币",
+        "my_tokens_watched": "代币",
+        "copy_address": "复制地址",
+        "view_nfts": "查看NFT",
+        "add_wallet": "添加钱包",
+        "lock": "锁定彩虹",
+        "connected_apps": "连接的应用",
+        "settings": "设置",
+        "my_qr_code": "我的二维码",
+        "my_qr_code_watched": "二维码",
+        "create_wallet": "创建钱包",
+        "import_wallet": "导入钱包",
+        "watch_wallet": "监视钱包",
+        "add_hardware_wallet": "添加硬件钱包",
+        "hide_balances": "切换隐藏余额",
+        "hide_balances_hidden": "显示余额",
+        "hide_balances_revealed": "隐藏余额",
+        "hide_small_balances": "切换小额余额",
+        "hide_small_balances_hidden": "显示小额余额",
+        "hide_small_balances_revealed": "隐藏小额余额",
+        "wallets_and_keys": "钱包及密钥",
+        "view_full_screen": "全屏查看",
+        "view_token": "查看代币",
+        "send_token": "发送代币",
+        "swap_token": "交换代币",
+        "copy_token_address": "复制代币合约地址",
+        "view_token_on_explorer": "在浏览器中查看",
+        "add_as_watched_wallet": "观察此钱包",
+        "view_on_ens": "在 ENS 上查看",
+        "switch_to_wallet": "切换至此钱包",
+        "copy_wallet_address": "复制地址",
+        "view_wallet_on_etherscan": "在 Etherscan 上查看"
+      },
+      "search_tags": {
+        "swap": "桥接",
+        "my_wallets": "切换",
+        "my_tokens_watched": "我的",
+        "view_nfts": "画廊、个人资料",
+        "settings": "偏好设置",
+        "my_qr_code_watched": "我的",
+        "create_wallet": "添加、新建",
+        "import_wallet": "添加、私钥安全恢复、助记词",
+        "watch_wallet": "添加",
+        "add_hardware_wallet": "Ledger、Trezor、连接",
+        "hide_balances": "切换",
+        "hide_small_balances": "切换",
+        "wallets_and_keys": "钱包和密钥、设置、偏好设置"
+      }
+    },
+    "command_rows": {
+      "no_value": "无数值"
+    },
     "hide_balances_toast": {
       "description_hidden": "您的余额已隐藏",
       "description_revealed": "您的余额可见",
       "title_hidden": "隐藏余额",
       "title_revealed": "显示余额"
     },
-    "no_results": "无结果",
-    "section_titles": {
-      "shortcuts": "快捷键"
+    "hide_small_balances_toast": {
+      "description_hidden": "低于1美元的余额",
+      "description_revealed": "所有代币可见",
+      "title_hidden": "隐藏小额余额",
+      "title_revealed": "显示小额余额"
     },
-    "search_placeholder": "搜索或输入命令…",
-    "shortcuts": {
-      "names": {
-        "send": "发送",
-        "swap": "交换",
-        "copy_address": "复制地址",
-        "view_nfts": "查看NFT",
-        "switch_wallets": "切换钱包",
-        "settings": "设置",
-        "add_wallet": "添加钱包",
-        "watch_wallet": "查看钱包",
-        "hide_balances": "切换隐藏余额",
-        "wallets_and_keys": "钱包与密钥",
-        "view_full_screen": "全屏查看"
+    "no_results": "无结果",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "搜索添加钱包的方式…",
+        "section_title": "添加钱包"
       },
-      "search_tags": {
-        "swap": "桥接",
-        "view_nfts": "画廊，个人资料",
-        "settings": "偏好设置",
-        "add_wallet": "创建、导入、硬件钱包",
-        "hide_balances_hidden": "显示，隐藏",
-        "hide_balances_revealed": "隐藏",
-        "wallets_and_keys": "钱包和密钥"
+      "home": {
+        "search_placeholder": "搜索或输入命令…",
+        "section_title": "建议",
+        "section_title_results": "结果"
+      },
+      "my_tokens": {
+        "empty_label": "未找到代币",
+        "search_placeholder": "搜索代币…",
+        "section_title": "我的代币"
+      },
+      "my_wallets": {
+        "search_placeholder": "选择要切换的钱包…",
+        "section_title": "我的钱包"
+      },
+      "token_detail": {
+        "search_placeholder": "搜索代币操作…",
+        "section_title": "操作"
+      },
+      "wallet_detail": {
+        "search_placeholder": "搜索钱包操作…",
+        "section_title": "操作"
       }
+    },
+    "quick_promo": {
+      "text": "按下 ⌘K 打开命令菜单",
+      "text_bold": "提示:"
+    },
+    "toolbar": {
+      "actions_hint": "操作"
     }
   },
   "connected_apps": {
@@ -595,11 +675,13 @@
       "disconnect": "断开连接"
     },
     "app_connection_menu": {
-      "connected_apps": "所有已连接应用",
+      "connected_apps": "已连接应用",
       "not_connected": "未连接",
       "networks": "网络",
       "connect": "连接",
-      "switch_networks": "切换网络"
+      "switch_network": "切换网络",
+      "switch_wallets": "切换钱包",
+      "disconnect": "断开连接"
     },
     "home_header_right": {
       "settings": "设置",
@@ -608,6 +690,36 @@
       "guides_and_support": "指南与支持",
       "share_feedback": "分享反馈",
       "lock_rainbow": "锁定彩虹"
+    }
+  },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "连接",
+      "connect_to": "连接至 %{appName}?",
+      "app_connected": "已连接 %{appName}"
+    },
+    "sheet": {
+      "connect": "连接",
+      "connect_different_wallet": "连接其他钱包",
+      "dont_show_again": "不再显示",
+      "allow_to": "允许 %{appName} 查看您的钱包地址、余额、活动并请求交易批准。",
+      "connect_to": "连接至 %{appName}？"
+    },
+    "wallet_item": {
+      "disconnect": "断开连接",
+      "switch_connection": "切换连接",
+      "connect": "连接"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "连接",
+      "disconnect": "断开连接",
+      "open_app": "打开 %{appName}"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "切换钱包",
+      "other_wallets": "其他钱包",
+      "cancel": "取消",
+      "connected": "已连接"
     }
   },
   "approve_request": {
@@ -737,7 +849,8 @@
     "yesterday": "昨天",
     "this_month": "本月",
     "empty_header": "暂无活动",
-    "empty_description": "您一旦开始使用您的钱包，您将在此处看到您的交易。"
+    "empty_description": "您一旦开始使用您的钱包，您将在此处看到您的交易。",
+    "loading_more": "正在加载更多..."
   },
   "tokens_tab": {
     "coinbase_title": "从Coinbase存入",
@@ -777,6 +890,7 @@
     "year": "1年",
     "approvals": "代币批准",
     "this_token_is_on_network": "该 %{symbol} 在 %{chainName} 网络上",
+    "view_on": "在 %{explorer}上查看",
     "more_options": {
       "copy_address": "复制地址",
       "hide": "隐藏代币",
@@ -917,7 +1031,8 @@
   "alert": {
     "ok": "确定",
     "wallet_watching_mode": "此钱包当前处于'查看'模式",
-    "coming_soon": "即将推出！"
+    "coming_soon": "即将推出！",
+    "no_hw_ff": "火狐浏览器不支持硬件钱包。试试其他浏览器，例如Chrome或Brave。"
   },
   "hw": {
     "choose_title": "连接硬件钱包",
