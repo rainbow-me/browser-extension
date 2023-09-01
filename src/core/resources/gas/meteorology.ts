@@ -17,6 +17,14 @@ const getMeteorologyNetworkFromChainId = (chainId: Chain['id']) => {
       return 'polygon';
     case ChainId.bsc:
       return 'bsc';
+    case ChainId.base:
+      return 'base';
+    case ChainId.optimism:
+      return 'optimism';
+    case ChainId.arbitrum:
+      return 'arbitrum';
+    case ChainId.zora:
+      return 'zora';
     default:
       return 'mainnet';
   }
@@ -97,6 +105,7 @@ async function meteorologyQueryFunction({
   const meteorologyData = parsedResponse.data as
     | MeteorologyResponse
     | MeteorologyLegacyResponse;
+  console.log('-- meteorologyData gasss', meteorologyData);
   return meteorologyData;
 }
 

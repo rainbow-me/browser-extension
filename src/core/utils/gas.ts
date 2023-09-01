@@ -504,6 +504,26 @@ export const calculateL1FeeOptimism = async ({
   }
 };
 
+export const meteorologySupportsChain = (chainId: ChainId) =>
+  [
+    ChainId.bsc,
+    ChainId.mainnet,
+    ChainId.polygon,
+    ChainId.base,
+    ChainId.arbitrum,
+    ChainId.optimism,
+    ChainId.zora,
+  ].includes(chainId);
+
+export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
+  [
+    ChainId.mainnet,
+    ChainId.base,
+    ChainId.arbitrum,
+    ChainId.optimism,
+    ChainId.zora,
+  ].includes(chainId);
+
 export const parseGasFeeParamsBySpeed = ({
   chainId,
   data,
@@ -523,7 +543,7 @@ export const parseGasFeeParamsBySpeed = ({
   flashbotsEnabled?: boolean;
   additionalTime?: number;
 }) => {
-  if (chainId === ChainId.mainnet) {
+  if (meteorologySupportsType2ForChain(chainId)) {
     const response = data as MeteorologyResponse;
     const {
       data: { currentBaseFee, maxPriorityFeeSuggestions, baseFeeSuggestion },
