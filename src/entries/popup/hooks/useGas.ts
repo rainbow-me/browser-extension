@@ -97,6 +97,7 @@ const useGas = ({
 
     const { data } = gasData as MeteorologyResponse;
     const currentBaseFee = data.currentBaseFee;
+    const secondsPerNewBlock = data.secondsPerNewBlock;
 
     const blocksToConfirmation = {
       byBaseFee: data.blocksToConfirmationByBaseFee,
@@ -116,6 +117,7 @@ const useGas = ({
       gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
       nativeAsset,
       currency: currentCurrency,
+      secondsPerNewBlock,
     });
     setCustomSpeed(newCustomSpeed);
   }, [
@@ -141,6 +143,7 @@ const useGas = ({
       return;
     const { data } = gasData as MeteorologyResponse;
     const currentBaseFee = data.currentBaseFee;
+    const secondsPerNewBlock = data.secondsPerNewBlock;
 
     const blocksToConfirmation = {
       byBaseFee: data.blocksToConfirmationByBaseFee,
@@ -168,6 +171,7 @@ const useGas = ({
       gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
       nativeAsset,
       currency: currentCurrency,
+      secondsPerNewBlock,
     });
     setCustomSpeed(newCustomSpeed);
   }, [

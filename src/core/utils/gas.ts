@@ -55,11 +55,13 @@ export const parseGasDataConfirmationTime = ({
   maxPriorityFee,
   blocksToConfirmation,
   additionalTime = 0,
+  secondsPerNewBlock,
 }: {
   maxBaseFee: string;
   maxPriorityFee: string;
   blocksToConfirmation: BlocksToConfirmation;
   additionalTime?: number;
+  secondsPerNewBlock: number;
 }) => {
   let blocksToWaitForPriorityFee = 0;
   let blocksToWaitForBaseFee = 0;
@@ -95,7 +97,7 @@ export const parseGasDataConfirmationTime = ({
   const totalBlocksToWait =
     blocksToWaitForBaseFee +
     (blocksToWaitForBaseFee < 240 ? blocksToWaitForPriorityFee : 0);
-  const timeAmount = 15 * totalBlocksToWait + additionalTime;
+  const timeAmount = secondsPerNewBlock * totalBlocksToWait + additionalTime;
   return {
     amount: timeAmount,
     display: `${timeAmount >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
@@ -123,6 +125,7 @@ export const parseCustomGasFeeParams = ({
   nativeAsset,
   currency,
   additionalTime,
+  secondsPerNewBlock,
 }: {
   baseFeeWei: string;
   speed: GasSpeed;
@@ -133,6 +136,7 @@ export const parseCustomGasFeeParams = ({
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
   additionalTime?: number;
+  secondsPerNewBlock: number;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
     wei: baseFeeWei || '0',
@@ -156,6 +160,7 @@ export const parseCustomGasFeeParams = ({
     maxPriorityFee: maxPriorityFeePerGas.amount,
     blocksToConfirmation,
     additionalTime,
+    secondsPerNewBlock,
   });
 
   const transactionGasParams = {
@@ -201,6 +206,7 @@ export const parseGasFeeParams = ({
   nativeAsset,
   currency,
   additionalTime,
+  secondsPerNewBlock,
 }: {
   wei: string;
   speed: GasSpeed;
@@ -215,6 +221,7 @@ export const parseGasFeeParams = ({
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
   additionalTime?: number;
+  secondsPerNewBlock: number;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
@@ -238,6 +245,7 @@ export const parseGasFeeParams = ({
     maxPriorityFee: maxPriorityFeePerGas.amount,
     blocksToConfirmation,
     additionalTime,
+    secondsPerNewBlock,
   });
 
   const transactionGasParams = {
@@ -549,7 +557,12 @@ export const parseGasFeeParamsBySpeed = ({
   if (meteorologySupportsType2ForChain(chainId)) {
     const response = data as MeteorologyResponse;
     const {
-      data: { currentBaseFee, maxPriorityFeeSuggestions, baseFeeSuggestion },
+      data: {
+        currentBaseFee,
+        maxPriorityFeeSuggestions,
+        baseFeeSuggestion,
+        secondsPerNewBlock,
+      },
     } = response;
 
     const blocksToConfirmation = {
@@ -578,6 +591,7 @@ export const parseGasFeeParamsBySpeed = ({
         nativeAsset,
         currency,
         additionalTime,
+        secondsPerNewBlock,
       });
 
     return {

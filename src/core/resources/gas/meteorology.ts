@@ -61,6 +61,7 @@ export type MeteorologyResponse = {
       normal: string;
       urgent: string;
     };
+    secondsPerNewBlock: number;
     meta: {
       blockNumber: number;
       provider: string;
