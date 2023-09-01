@@ -5,6 +5,9 @@
   "label": {
     "toggle": "Aç/Kapat"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow'ın düzgün çalışabilmesi için tüm web sitelerine erişim iznine ihtiyacı var. Lütfen devam etmek için izni verin."
+  },
   "wallet_switcher": {
     "title": "Cüzdanlar",
     "rename_wallet": "Cüzdanı Yeniden Adlandır",
@@ -81,7 +84,7 @@
       "analytics_description": "Rainbow'un ürün ve hizmetlerinin kullanım verilerinin analizine izin vererek Rainbow'un ürünlerini ve hizmetlerini geliştirmesine yardımcı olun. Toplanan veri sizin veya hesabınızla ilişkilendirilmez.",
       "hide_asset_balances": "Varlık bakiyelerini gizle",
       "hide_asset_balances_description": "Bu açık olduğunda Rainbow, uygulamanın genelinde token bakiyelerini gizler.",
-      "auto_hide_balances_under_1": "%{amount}altındaki bakiyeleri otomatik olarak gizle",
+      "auto_hide_balances_under_1": "$1'in altında bakiyeleri otomatik olarak gizle",
       "view_private_key": "Özel Anahtarı Görüntüle",
       "view_secret_recovery_phrase": "Gizli Kurtarma Cümlesini Görüntüle",
       "auto_lock_timer": {
@@ -192,40 +195,117 @@
     "withdrew": "Çekilen"
   },
   "command_k": {
+    "action_labels": {
+      "activate_command": "Komutu Etkinleştir",
+      "open": "Aç",
+      "open_in_new_tab": "Yeni Sekmede Aç",
+      "switch_to_wallet": "Cüzdana Geçiş Yap",
+      "view": "Görüntüle"
+    },
+    "commands": {
+      "names": {
+        "send": "Gönder",
+        "swap": "Takas Et",
+        "my_wallets": "Cüzdanlarım",
+        "my_tokens": "Tokenlerim",
+        "my_tokens_watched": "Tokenler",
+        "copy_address": "Adresi Kopyala",
+        "view_nfts": "NFT'leri Görüntüle",
+        "add_wallet": "Bir Cüzdan Ekle",
+        "lock": "Rainbow'u Kilitle",
+        "connected_apps": "Bağlı Uygulamalar",
+        "settings": "Ayarlar",
+        "my_qr_code": "QR Kodum",
+        "my_qr_code_watched": "QR Kodu",
+        "create_wallet": "Cüzdan Oluştur",
+        "import_wallet": "Cüzdanı İçeri Aktar",
+        "watch_wallet": "Cüzdanı İzle",
+        "add_hardware_wallet": "Donanım Cüzdanı Ekle",
+        "hide_balances": "Gizli Bakiyeleri Değiştir",
+        "hide_balances_hidden": "Bakiyeleri Göster",
+        "hide_balances_revealed": "Bakiyeleri Gizle",
+        "hide_small_balances": "Küçük Bakiyeleri Değiştir",
+        "hide_small_balances_hidden": "Küçük Bakiyeleri Göster",
+        "hide_small_balances_revealed": "Küçük Bakiyeleri Gizle",
+        "wallets_and_keys": "Cüzdanlar ve Anahtarlar",
+        "view_full_screen": "Tam Ekran Görüntüleme",
+        "view_token": "Token Görüntüleme",
+        "send_token": "Token Gönderme",
+        "swap_token": "Token Takası",
+        "copy_token_address": "Token Sözleşme Adresini Kopyala",
+        "view_token_on_explorer": "Arayüzde Görüntüle",
+        "add_as_watched_wallet": "Bu Cüzdanı İzle",
+        "view_on_ens": "ENS'de Görüntüle",
+        "switch_to_wallet": "Bu Cüzdana Geç",
+        "copy_wallet_address": "Adresi Kopyala",
+        "view_wallet_on_etherscan": "Etherscan'da Görüntüle"
+      },
+      "search_tags": {
+        "swap": "köprü",
+        "my_wallets": "değiştir",
+        "my_tokens_watched": "benim",
+        "view_nfts": "galeri, profil",
+        "settings": "tercihler",
+        "my_qr_code_watched": "benim",
+        "create_wallet": "ekle, yeni",
+        "import_wallet": "ekle, gizli kurtarma, seed cümlesi, özel anahtar",
+        "watch_wallet": "ekle",
+        "add_hardware_wallet": "ledger, trezor, bağlan",
+        "hide_balances": "aç/kapa",
+        "hide_small_balances": "aç/kapa",
+        "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler"
+      }
+    },
+    "command_rows": {
+      "no_value": "Değer Yok"
+    },
     "hide_balances_toast": {
       "description_hidden": "Bakiyeleriniz gizlenmiştir",
       "description_revealed": "Bakiyeleriniz görünür",
       "title_hidden": "Bakiyeler Gizlendi",
       "title_revealed": "Bakiyeler Açığa Çıktı"
     },
-    "no_results": "Sonuç bulunamadı",
-    "section_titles": {
-      "shortcuts": "Kısayollar"
+    "hide_small_balances_toast": {
+      "description_hidden": "$1'in altındaki bakiyeler gizli",
+      "description_revealed": "Tüm tokenler görünür",
+      "title_hidden": "Küçük Bakiyeler Gizlendi",
+      "title_revealed": "Küçük Bakiyeler Gösteriliyor"
     },
-    "search_placeholder": "Ara veya komut gir…",
-    "shortcuts": {
-      "names": {
-        "send": "Gönder",
-        "swap": "Değiştir",
-        "copy_address": "Adresi Kopyala",
-        "view_nfts": "NFT'leri Görüntüle",
-        "switch_wallets": "Cüzdanları Değiştir",
-        "settings": "Ayarlar",
-        "add_wallet": "Bir Cüzdan Ekle",
-        "watch_wallet": "Bir Cüzdanı İzle",
-        "hide_balances": "Gizli Bakiyeleri Aç/Kapa",
-        "wallets_and_keys": "Cüzdanlar ve Anahtarlar",
-        "view_full_screen": "Tam Ekran Görüntüle"
+    "no_results": "Sonuç bulunamadı",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "Bir cüzdan eklemek için arama yapın…",
+        "section_title": "Bir Cüzdan Ekle"
       },
-      "search_tags": {
-        "swap": "köprü",
-        "view_nfts": "galeri, profil",
-        "settings": "tercihler",
-        "add_wallet": "oluştur, içe aktar, donanım cüzdanı",
-        "hide_balances_hidden": "göster, gizle",
-        "hide_balances_revealed": "gizle",
-        "wallets_and_keys": "cüzdanlar ve anahtarlar"
+      "home": {
+        "search_placeholder": "Arama yapın veya komut girin…",
+        "section_title": "Öneriler",
+        "section_title_results": "Sonuçlar"
+      },
+      "my_tokens": {
+        "empty_label": "Token bulunamadı",
+        "search_placeholder": "Tokenları arayın…",
+        "section_title": "Tokenlarım"
+      },
+      "my_wallets": {
+        "search_placeholder": "Geçiş yapmak için bir cüzdan seçin…",
+        "section_title": "Cüzdanlarım"
+      },
+      "token_detail": {
+        "search_placeholder": "Token işlemlerini ara…",
+        "section_title": "İşlemler"
+      },
+      "wallet_detail": {
+        "search_placeholder": "Cüzdan işlemlerini ara…",
+        "section_title": "İşlemler"
       }
+    },
+    "quick_promo": {
+      "text": "Komut menüsünü açmak için ⌘K tuşuna basın",
+      "text_bold": "İpucu:"
+    },
+    "toolbar": {
+      "actions_hint": "İşlemler"
     }
   },
   "connected_apps": {
@@ -595,11 +675,13 @@
       "disconnect": "Bağlantıyı Kes"
     },
     "app_connection_menu": {
-      "connected_apps": "Tüm bağlı uygulamalar",
+      "connected_apps": "Bağlı Uygulamalar",
       "not_connected": "Bağlı değil",
       "networks": "Ağlar",
       "connect": "Bağlan",
-      "switch_networks": "Ağları değiştir"
+      "switch_network": "Ağı Değiştir",
+      "switch_wallets": "Cüzdanı Değiştir",
+      "disconnect": "Bağlantıyı Kes"
     },
     "home_header_right": {
       "settings": "Ayarlar",
@@ -608,6 +690,36 @@
       "guides_and_support": "Rehberler ve Destek",
       "share_feedback": "Geri Bildirim Paylaş",
       "lock_rainbow": "Rainbow'u Kitle"
+    }
+  },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "Bağlan",
+      "connect_to": "%{appName}ile bağlan?",
+      "app_connected": "%{appName} bağlandı"
+    },
+    "sheet": {
+      "connect": "Bağlan",
+      "connect_different_wallet": "Farklı bir cüzdan ile bağlan",
+      "dont_show_again": "Bunu tekrar gösterme",
+      "allow_to": "Cüzdan adresinizi, bakiyenizi, etkinliği görüntülemek ve işlemler için izin istemek için %{appName} 'a izin verin.",
+      "connect_to": "%{appName}ile bağlanmak mı?"
+    },
+    "wallet_item": {
+      "disconnect": "Bağlantıyı kes",
+      "switch_connection": "Bağlantıyı değiştir",
+      "connect": "Bağlan"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "Bağlan",
+      "disconnect": "Bağlantıyı kes",
+      "open_app": "%{appName}uygulamasını aç"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "Cüzdanları Değiştir",
+      "other_wallets": "Diğer Cüzdanlar",
+      "cancel": "İptal",
+      "connected": "Bağlı"
     }
   },
   "approve_request": {
@@ -737,7 +849,8 @@
     "yesterday": "Dün",
     "this_month": "Bu Ay",
     "empty_header": "Henüz aktivite yok",
-    "empty_description": "Cüzdanını kullanmaya başladığınızda, işlemlerinizi burada göreceksiniz."
+    "empty_description": "Cüzdanını kullanmaya başladığınızda, işlemlerinizi burada göreceksiniz.",
+    "loading_more": "Daha fazla yükleniyor..."
   },
   "tokens_tab": {
     "coinbase_title": "Coinbase'den Yatırma",
@@ -777,6 +890,7 @@
     "year": "1Y",
     "approvals": "Token Onayları",
     "this_token_is_on_network": "Bu %{symbol} %{chainName} ağında.",
+    "view_on": "%{explorer}üzerinde görüntüle",
     "more_options": {
       "copy_address": "Adresi Kopyala",
       "hide": "Tokeni Gizle",
@@ -917,7 +1031,8 @@
   "alert": {
     "ok": "Tamam",
     "wallet_watching_mode": "Bu cüzdan şu anda 'İzleme' modunda",
-    "coming_soon": "Çok yakında!"
+    "coming_soon": "Çok yakında!",
+    "no_hw_ff": "Donanım cüzdanları Firefox'ta desteklenmiyor. Chrome veya Brave gibi farklı bir tarayıcı deneyin."
   },
   "hw": {
     "choose_title": "Bir donanım cüzdanı bağlayın",
