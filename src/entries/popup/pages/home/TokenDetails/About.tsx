@@ -11,10 +11,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import {
-  createCurrencyFormatter,
-  formatCurrency,
-} from '~/core/utils/formatNumber';
+import { formatCurrency } from '~/core/utils/formatNumber';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import {
@@ -86,11 +83,12 @@ export const InfoRow = ({
 );
 
 const parseTokenInfo = (token: AboutTokenQuery['token']) => {
-  const { format } = createCurrencyFormatter({
-    notation: 'compact',
-    maximumSignificantDigits: 4,
-  });
   if (!token) return token;
+  const format = (n?: number | string | null) =>
+    formatCurrency(n || 0, {
+      notation: 'compact',
+      maximumSignificantDigits: 4,
+    });
   return {
     allTime: {
       high: format(token.allTime.highValue),

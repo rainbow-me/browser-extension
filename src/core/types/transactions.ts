@@ -72,32 +72,45 @@ export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
   >;
 };
 
-export type TransactionType =
-  | 'burn'
+const transactionTypesWithChanges = [
+  'sale',
+  'bridge',
+  'airdrop',
+  'wrap',
+  'unwrap',
+  'bid',
+  'burn',
+  'send',
+  'receive',
+  'withdraw',
+  'deposit',
+  'mint',
+  'swap',
+  'borrow',
+  'claim',
+  'repay',
+  'stake',
+  'unstake',
+  'purchase',
+] as const;
+
+export const transactionTypeShouldHaveChanges = (
+  type: TransactionType,
+): type is TransactionWithChangesType =>
+  transactionTypesWithChanges.includes(type);
+
+type TransactionWithChangesType = (typeof transactionTypesWithChanges)[number];
+type TransactionWithoutChangesType =
   | 'cancel'
-  | 'send'
-  | 'receive'
-  | 'withdraw'
-  | 'deposit'
-  | 'mint'
   | 'contract_interaction'
-  | 'swap'
-  | 'borrow'
-  | 'claim'
   | 'deployment'
-  | 'repay'
-  | 'stake'
-  | 'unstake'
-  | 'purchase'
   | 'approve'
   | 'revoke'
-  | 'sale'
-  | 'bridge'
-  | 'airdrop'
-  | 'wrap'
-  | 'unwrap'
-  | 'bid'
   | 'speed_up';
+
+export type TransactionType =
+  | TransactionWithChangesType
+  | TransactionWithoutChangesType;
 
 export type TransactionDirection = 'in' | 'out' | 'self';
 

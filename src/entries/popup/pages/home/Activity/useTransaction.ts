@@ -37,7 +37,9 @@ const fetchTransaction = async ({
         params: { currency: currency.toLowerCase() },
       })
       .then((r) => r.data.payload.transaction);
-    return parseTransaction({ tx, currency, chainId });
+    const parsedTx = parseTransaction({ tx, currency, chainId });
+    if (!parsedTx) throw new Error('Failed to parse transaction');
+    return parsedTx;
   } catch (e) {
     logger.error(new RainbowError('fetchTransaction: '), {
       message: (e as Error)?.message,

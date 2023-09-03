@@ -24,6 +24,7 @@ import {
   PaginatedTransactionsApiResponse,
   RainbowTransaction,
   TransactionType,
+  transactionTypeShouldHaveChanges,
 } from '../types/transactions';
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
@@ -90,26 +91,28 @@ export function parseTransaction({
   tx,
   currency,
   chainId,
-}: ParseTransactionArgs): RainbowTransaction {
+}: ParseTransactionArgs): RainbowTransaction | undefined {
   const { status, hash, meta, nonce, protocol } = tx;
 
-  const changes: RainbowTransaction['changes'] = tx.changes
-    .filter(Boolean)
-    .map((change) => ({
-      ...change,
-      asset: parseUserAsset({
-        asset: change.asset,
-        balance: change.value?.toString() || '0',
-        currency,
-      }),
-      value: change.value || undefined,
-    }));
+  const changes = tx.changes.filter(Boolean).map((change) => ({
+    ...change,
+    asset: parseUserAsset({
+      asset: change.asset,
+      balance: change.value?.toString() || '0',
+      currency,
+    }),
+    value: change.value || undefined,
+  }));
+
+  const type = meta.type;
+
+  if (!type || (transactionTypeShouldHaveChanges(type) && changes.length === 0))
+    return; // filters some spam or weird api responses
 
   const asset = tx.meta.asset?.asset_code
     ? parseAsset({ asset: tx.meta.asset, currency })
     : changes[0]?.asset;
 
-  const type = meta.type || 'contract_interaction';
   const direction = tx.direction || getDirection(type);
   const methodName = meta.action;
 
