@@ -5,6 +5,9 @@
   "label": {
     "toggle": "Alternar"
   },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow necesita permiso para acceder a todos los sitios web para funcionar correctamente. Por favor otorga el permiso para continuar"
+  },
   "wallet_switcher": {
     "title": "Billeteras",
     "rename_wallet": "Renombrar billetera",
@@ -81,7 +84,7 @@
       "analytics_description": "Ayuda a Rainbow a mejorar sus productos y servicios permitiendo el análisis de datos de uso. Los datos recolectados no están asociados a usted ni a su cuenta.",
       "hide_asset_balances": "Ocultar saldos de activos",
       "hide_asset_balances_description": "Con esta opción activada, Rainbow ocultará los saldos de tokens en toda la aplicación.",
-      "auto_hide_balances_under_1": "Ocultar automáticamente los saldos por debajo de %{amount}",
+      "auto_hide_balances_under_1": "Ocultar saldos inferiores a $1",
       "view_private_key": "Ver clave privada",
       "view_secret_recovery_phrase": "Ver frase de recuperación secreta",
       "auto_lock_timer": {
@@ -192,40 +195,117 @@
     "withdrew": "Retirado"
   },
   "command_k": {
+    "action_labels": {
+      "activate_command": "Activar comando",
+      "open": "Abrir",
+      "open_in_new_tab": "Abrir en nueva pestaña",
+      "switch_to_wallet": "Cambiar a monedero",
+      "view": "Ver"
+    },
+    "commands": {
+      "names": {
+        "send": "Enviar",
+        "swap": "Intercambiar",
+        "my_wallets": "Mis monederos",
+        "my_tokens": "Mis tokens",
+        "my_tokens_watched": "Tokens",
+        "copy_address": "Copiar dirección",
+        "view_nfts": "Ver NFTs",
+        "add_wallet": "Agregar un monedero",
+        "lock": "Bloquear Rainbow",
+        "connected_apps": "Aplicaciones Conectadas",
+        "settings": "Configuración",
+        "my_qr_code": "Mi Código QR",
+        "my_qr_code_watched": "Código QR",
+        "create_wallet": "Crear una Billetera",
+        "import_wallet": "Importar una Billetera",
+        "watch_wallet": "Observar una Billetera",
+        "add_hardware_wallet": "Agregar una Billetera de Hardware",
+        "hide_balances": "Alternar Saldo Oculto",
+        "hide_balances_hidden": "Mostrar Saldos",
+        "hide_balances_revealed": "Ocultar Saldos",
+        "hide_small_balances": "Alternar Saldos Pequeños",
+        "hide_small_balances_hidden": "Mostrar Saldos Pequeños",
+        "hide_small_balances_revealed": "Ocultar Saldos Pequeños",
+        "wallets_and_keys": "Billeteras y Claves",
+        "view_full_screen": "Ver Pantalla Completa",
+        "view_token": "Ver Token",
+        "send_token": "Enviar Token",
+        "swap_token": "Cambiar Token",
+        "copy_token_address": "Copiar Dirección del Contrato del Token",
+        "view_token_on_explorer": "Ver en el Explorador",
+        "add_as_watched_wallet": "Observar esta Billetera",
+        "view_on_ens": "Ver en ENS",
+        "switch_to_wallet": "Cambiar a esta Billetera",
+        "copy_wallet_address": "Copiar Dirección",
+        "view_wallet_on_etherscan": "Ver en Etherscan"
+      },
+      "search_tags": {
+        "swap": "puente",
+        "my_wallets": "cambiar",
+        "my_tokens_watched": "mis",
+        "view_nfts": "galería, perfil",
+        "settings": "preferencias",
+        "my_qr_code_watched": "mis",
+        "create_wallet": "agregar, nuevo",
+        "import_wallet": "agregar, recuperación secreta, frase de recuperación, clave privada",
+        "watch_wallet": "agregar",
+        "add_hardware_wallet": "ledger, trezor, conectar",
+        "hide_balances": "alternar",
+        "hide_small_balances": "alternar",
+        "wallets_and_keys": "billeteras y claves, configuración, preferencias"
+      }
+    },
+    "command_rows": {
+      "no_value": "Sin Valor"
+    },
     "hide_balances_toast": {
       "description_hidden": "Tus saldos están ocultos",
       "description_revealed": "Tus saldos son visibles",
       "title_hidden": "Saldo oculto",
       "title_revealed": "Saldos revelados"
     },
-    "no_results": "No hay resultados",
-    "section_titles": {
-      "shortcuts": "Accesos directos"
+    "hide_small_balances_toast": {
+      "description_hidden": "Saldos menores a $1",
+      "description_revealed": "Todos los tokens visibles",
+      "title_hidden": "Se ocultan los saldos pequeños",
+      "title_revealed": "Mostrando saldos pequeños"
     },
-    "search_placeholder": "Buscar o ingresar comando…",
-    "shortcuts": {
-      "names": {
-        "send": "Enviar",
-        "swap": "Intercambiar",
-        "copy_address": "Copiar dirección",
-        "view_nfts": "Ver NFT",
-        "switch_wallets": "Cambiar billeteras",
-        "settings": "Configuración",
-        "add_wallet": "Agregar una billetera",
-        "watch_wallet": "Ver una billetera",
-        "hide_balances": "Alternar saldos ocultos",
-        "wallets_and_keys": "Billeteras y claves",
-        "view_full_screen": "Ver pantalla completa"
+    "no_results": "No hay resultados",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "Buscar formas de agregar un monedero…",
+        "section_title": "Agregar un monedero"
       },
-      "search_tags": {
-        "swap": "puente",
-        "view_nfts": "galería, perfil",
-        "settings": "preferencias",
-        "add_wallet": "crear, importar, billetera de hardware",
-        "hide_balances_hidden": "mostrar, ocultar",
-        "hide_balances_revealed": "ocultar",
-        "wallets_and_keys": "billeteras y claves"
+      "home": {
+        "search_placeholder": "Buscar o ingresar un comando…",
+        "section_title": "Sugerencias",
+        "section_title_results": "Resultados"
+      },
+      "my_tokens": {
+        "empty_label": "No se encontraron tokens",
+        "search_placeholder": "Buscar tokens…",
+        "section_title": "Mis Tokens"
+      },
+      "my_wallets": {
+        "search_placeholder": "Selecciona un monedero para cambiar a…",
+        "section_title": "Mis billeteras"
+      },
+      "token_detail": {
+        "search_placeholder": "Buscar acciones de token…",
+        "section_title": "Acciones"
+      },
+      "wallet_detail": {
+        "search_placeholder": "Buscar acciones de billetera…",
+        "section_title": "Acciones"
       }
+    },
+    "quick_promo": {
+      "text": "Presiona ⌘K para abrir el menú de comandos",
+      "text_bold": "Consejo:"
+    },
+    "toolbar": {
+      "actions_hint": "Acciones"
     }
   },
   "connected_apps": {
@@ -595,11 +675,13 @@
       "disconnect": "Desconectar"
     },
     "app_connection_menu": {
-      "connected_apps": "Todas las aplicaciones conectadas",
+      "connected_apps": "Aplicaciones Conectadas",
       "not_connected": "No conectado",
       "networks": "Redes",
       "connect": "Conectar",
-      "switch_networks": "Cambiar redes"
+      "switch_network": "Cambiar Red",
+      "switch_wallets": "Cambiar Cartera",
+      "disconnect": "Desconectar"
     },
     "home_header_right": {
       "settings": "Configuración",
@@ -608,6 +690,36 @@
       "guides_and_support": "Guías y soporte",
       "share_feedback": "Compartir comentarios",
       "lock_rainbow": "Bloquear Rainbow"
+    }
+  },
+  "app_connection_switcher": {
+    "banner": {
+      "connect": "Conectar",
+      "connect_to": "Conectar a %{appName}?",
+      "app_connected": "%{appName} conectado"
+    },
+    "sheet": {
+      "connect": "Conectar",
+      "connect_different_wallet": "Conectar una billetera diferente",
+      "dont_show_again": "No mostrar esto de nuevo",
+      "allow_to": "Permitir que %{appName} vea la dirección de tu billetera, saldo, actividad y solicite aprobación para transacciones.",
+      "connect_to": "Conectar a %{appName}?"
+    },
+    "wallet_item": {
+      "disconnect": "Desconectar",
+      "switch_connection": "Cambiar conexión",
+      "connect": "Conectar"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "Conectar",
+      "disconnect": "Desconectar",
+      "open_app": "Abrir %{appName}"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "Cambiar Billeteras",
+      "other_wallets": "Otras Billeteras",
+      "cancel": "Cancelar",
+      "connected": "Conectado"
     }
   },
   "approve_request": {
@@ -737,7 +849,8 @@
     "yesterday": "Ayer",
     "this_month": "Este mes",
     "empty_header": "Actividad no disponible aún",
-    "empty_description": "Una vez que comiences a usar tu billetera, verás aquí tus transacciones."
+    "empty_description": "Una vez que comiences a usar tu billetera, verás aquí tus transacciones.",
+    "loading_more": "Cargando más..."
   },
   "tokens_tab": {
     "coinbase_title": "Depósito desde Coinbase",
@@ -777,6 +890,7 @@
     "year": "1A",
     "approvals": "Aprobaciones de tokens",
     "this_token_is_on_network": "Esta %{symbol} está en la red %{chainName}",
+    "view_on": "Ver en %{explorer}",
     "more_options": {
       "copy_address": "Copiar dirección",
       "hide": "Ocultar token",
@@ -917,7 +1031,8 @@
   "alert": {
     "ok": "Aceptar",
     "wallet_watching_mode": "Esta billetera está actualmente en modo 'Observación'",
-    "coming_soon": "¡Próximamente!"
+    "coming_soon": "¡Próximamente!",
+    "no_hw_ff": "Las carteras de hardware no son compatibles con Firefox. Intenta con un navegador diferente como Chrome o Brave"
   },
   "hw": {
     "choose_title": "Conecta una billetera de hardware",
