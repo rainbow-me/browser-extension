@@ -94,6 +94,8 @@ export function parseTransaction({
 }: ParseTransactionArgs): RainbowTransaction | undefined {
   const { status, hash, meta, nonce, protocol } = tx;
 
+  console.log(tx);
+
   const changes = tx.changes.filter(Boolean).map((change) => ({
     ...change,
     asset: parseUserAsset({
@@ -109,14 +111,15 @@ export function parseTransaction({
   if (!type || (transactionTypeShouldHaveChanges(type) && changes.length === 0))
     return; // filters some spam or weird api responses
 
-  const asset = tx.meta.asset?.asset_code
+  const asset: RainbowTransaction['asset'] = tx.meta.asset?.asset_code
     ? parseAsset({ asset: tx.meta.asset, currency })
     : changes[0]?.asset;
 
   const direction = tx.direction || getDirection(type);
   const methodName = meta.action;
 
-  const description = asset?.name || methodName;
+  const description =
+    asset?.type === 'nft' ? asset.symbol : asset?.name || methodName;
 
   const value = changes
     .find((change) => change?.asset.isNativeAsset)

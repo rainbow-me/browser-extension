@@ -7,10 +7,10 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
+import { truncateAddress } from '~/core/utils/address';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
-import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
   Bleed,
   Box,
@@ -125,7 +125,7 @@ function ToFrom({
     <Stack space="24px">
       <InfoRow
         symbol="arrow.down.circle"
-        label="From"
+        label={i18n.t('activity_details.from')}
         value={
           <Inline space="6px" alignVertical="center">
             <WalletAvatar address={from} size={16} emojiSize="9pt" />
@@ -137,7 +137,7 @@ function ToFrom({
       {to && (
         <InfoRow
           symbol="paperplane.fill"
-          label="To"
+          label={i18n.t('activity_details.to')}
           value={
             <Inline space="6px" alignVertical="center">
               <WalletAvatar address={to} size={16} emojiSize="9pt" />
@@ -164,7 +164,10 @@ function ConfirmationData({
         symbol="number"
         label="TxHash"
         value={
-          <CopyableValue title={'Hash Copied'} value={transaction.hash}>
+          <CopyableValue
+            title={i18n.t('activity_details.hash_copied')}
+            value={transaction.hash}
+          >
             {truncateAddress(transaction.hash)}
           </CopyableValue>
         }
@@ -173,12 +176,12 @@ function ConfirmationData({
         <>
           <InfoRow
             symbol="clock.badge.checkmark"
-            label="Confirmed at"
+            label={i18n.t('activity_details.confirmed_at')}
             value={formatDate(transaction.minedAt * 1000)}
           />
           <InfoRow
             symbol="number.square"
-            label="Block"
+            label={i18n.t('activity_details.block')}
             value={
               <Inline alignVertical="center" space="4px">
                 {transaction.blockNumber}
@@ -209,13 +212,13 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
       {value && (
         <InfoRow
           symbol="dollarsign.square"
-          label="Value"
+          label={i18n.t('activity_details.value')}
           value={`${formatNumber(value)} ETH`}
         />
       )}
       <InfoRow
         symbol="point.3.filled.connected.trianglepath.dotted"
-        label="Network"
+        label={i18n.t('activity_details.network')}
         value={
           <Inline alignVertical="center" space="4px">
             <ChainBadge chainId={transaction.chainId} size={12} />
@@ -226,25 +229,31 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
       {fee && (
         <InfoRow
           symbol="fuelpump.fill"
-          label="Network Fee"
+          label={i18n.t('activity_details.fee')}
           value={formatCurrency(fee)}
         />
       )}
       {maxBaseFee && (
         <InfoRow
           symbol="barometer"
-          label="Max Base Fee"
+          label={i18n.t('activity_details.max_base_fee')}
           value={`${formatNumber(maxBaseFee)} Gwei`}
         />
       )}
       {minerTip && (
         <InfoRow
           symbol="barometer"
-          label="Miner Tip"
+          label={i18n.t('activity_details.max_priority_fee')}
           value={`${formatNumber(minerTip)} Gwei`}
         />
       )}
-      {nonce >= 0 && <InfoRow symbol="number" label="Nonce" value={nonce} />}
+      {nonce >= 0 && (
+        <InfoRow
+          symbol="number"
+          label={i18n.t('activity_details.nonce')}
+          value={nonce}
+        />
+      )}
     </Stack>
   );
 }
@@ -303,6 +312,74 @@ const SpeedUpOrCancel = ({
   );
 };
 
+const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
+  if (type !== 'swap') return;
+
+  const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;
+  const tokenOut = changes?.filter((c) => c?.direction === 'out')[0]?.asset;
+
+  const amountIn = tokenIn?.balance.amount;
+  const amountOut = tokenOut?.balance.amount;
+
+  if (!amountIn || !amountOut) return;
+
+  const rate = +amountIn / +amountOut;
+  if (!rate) return;
+
+  return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;
+};
+
+const AdditionalDetails = ({
+  transaction,
+}: {
+  transaction: RainbowTransaction;
+}) => {
+  const tokenContract = transaction.asset?.address;
+  const exchangeRate = getExchangeRate(transaction);
+  const nft = transaction.changes?.find((c) => c?.asset.type === 'nft')?.asset;
+  const collection = nft?.symbol;
+  const standard = nft?.standard;
+  return (
+    <Stack space="24px">
+      {exchangeRate && (
+        <InfoRow
+          symbol="arrow.2.squarepath"
+          label={i18n.t('activity_details.exchange_rate')}
+          value={exchangeRate}
+        />
+      )}
+      {collection && (
+        <InfoRow
+          symbol="square.grid.2x2"
+          label={i18n.t('activity_details.collection')}
+          value={collection}
+        />
+      )}
+      {tokenContract && (
+        <InfoRow
+          symbol="doc.plaintext.fill"
+          label={i18n.t('activity_details.token_contract')}
+          value={
+            <CopyableValue
+              title={i18n.t('wallet_header.copy_toast')}
+              value={tokenContract}
+            >
+              {truncateAddress(tokenContract)}
+            </CopyableValue>
+          }
+        />
+      )}
+      {standard && (
+        <InfoRow
+          symbol="info.circle"
+          label={i18n.t('activity_details.token_standard')}
+          value={standard}
+        />
+      )}
+    </Stack>
+  );
+};
+
 function ActivityDetailsSheet({
   hash,
   chainId,
@@ -343,6 +420,8 @@ function ActivityDetailsSheet({
 
       <Box padding="20px" display="flex" flexDirection="column" gap="20px">
         <ToFrom to={tx.to} from={tx.from} />
+        <Separator color="separatorTertiary" />
+        <AdditionalDetails transaction={tx} />
         <Separator color="separatorTertiary" />
         <ConfirmationData transaction={tx} />
         <Separator color="separatorTertiary" />

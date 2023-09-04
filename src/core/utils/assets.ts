@@ -88,6 +88,9 @@ export function parseAsset({
       undefined
     : asset.networks?.[ChainId.mainnet]?.address;
 
+  const standard =
+    'interface' in asset ? asset.interface?.toUpperCase() : undefined;
+
   const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
   const parsedAsset = {
     address,
@@ -109,6 +112,7 @@ export function parseAsset({
     decimals: asset.decimals,
     icon_url: asset.icon_url,
     colors: asset.colors,
+    standard,
   };
 
   return parsedAsset;

@@ -3,6 +3,7 @@ import { Address } from 'wagmi';
 import { ChainId, ChainName } from '~/core/types/chains';
 
 import { ETH_ADDRESS } from '../references';
+
 import { SearchAsset } from './search';
 
 export type AddressOrEth = Address | typeof ETH_ADDRESS;
@@ -32,6 +33,7 @@ export interface ParsedAsset {
   icon_url?: string;
   type?: AssetType;
   smallBalance?: boolean;
+  standard?: 'ERC-721' | 'ERC-1155';
 }
 
 export interface ParsedUserAsset extends ParsedAsset {
@@ -114,6 +116,7 @@ export type AssetApiResponse = {
     };
   };
   type?: AssetType;
+  interface?: 'erc-721' | 'erc-1155';
 };
 
 type AssetType = ProtocolType | 'nft';

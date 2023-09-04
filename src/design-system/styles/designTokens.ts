@@ -464,7 +464,7 @@ export const buttonColors = [
     'yellow',
   ),
 ] as const;
-export type ButtonColor = typeof buttonColors[number];
+export type ButtonColor = (typeof buttonColors)[number];
 
 export const shadowColors = [
   'accent',
@@ -484,7 +484,7 @@ export const shadowColors = [
     'yellow',
   ),
 ] as const;
-export type ShadowColor = typeof shadowColors[number];
+export type ShadowColor = (typeof shadowColors)[number];
 
 export type ForegroundColor =
   | 'label'
@@ -617,27 +617,27 @@ export const genericColors = selectForegroundColors(
   'red',
   'yellow',
 );
-export type GenericColor = typeof genericColors[number];
+export type GenericColor = (typeof genericColors)[number];
 
 export const scrimColors = selectForegroundColors(
   'scrim',
   'scrimSecondary',
   'scrimTertiary',
 );
-export type ScrimColor = typeof scrimColors[number];
+export type ScrimColor = (typeof scrimColors)[number];
 
 export const strokeColors = selectForegroundColors(
   'buttonStroke',
   'buttonStrokeSecondary',
 );
-export type StrokeColor = typeof strokeColors[number];
+export type StrokeColor = (typeof strokeColors)[number];
 
 export const separatorColors = selectForegroundColors(
   'separator',
   'separatorSecondary',
   'separatorTertiary',
 );
-export type SeparatorColor = typeof separatorColors[number];
+export type SeparatorColor = (typeof separatorColors)[number];
 
 export const textColors = selectForegroundColors(
   'label',
@@ -654,7 +654,7 @@ export const textColors = selectForegroundColors(
   'bsc',
   ...genericColors,
 );
-export type TextColor = typeof textColors[number];
+export type TextColor = (typeof textColors)[number];
 
 export const fontWeights = {
   regular: 400,
@@ -973,8 +973,9 @@ export const symbolNames = selectSymbolNames(
   'circlebadge.2.fill',
   'xmark.bin.fill',
   'globe',
+  'square.grid.2x2',
 );
-export type SymbolName = typeof symbolNames[number];
+export type SymbolName = (typeof symbolNames)[number];
 
 export const radii = {
   round: 9999,

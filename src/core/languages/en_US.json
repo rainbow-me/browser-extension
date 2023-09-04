@@ -971,7 +971,23 @@
     "no_value": "No value"
   },
   "activity_details": {
-    "you": "You"
+    "you": "You",
+    "from": "From",
+    "to": "To",
+    "confirmed_at": "Confirmed at",
+    "confirmations": "Confirmations",
+    "block": "Block",
+    "value": "Value",
+    "network": "Network",
+    "fee": "Network Fee",
+    "max_base_fee": "Max Base Fee",
+    "max_priority_fee": "Miner Tip",
+    "nonce": "Nonce",
+    "hash_copied": "Hash Copied",
+    "exchange_rate": "Exchange",
+    "collection": "Collection",
+    "token_contract": "Token Contract",
+    "token_standard": "Token Standard"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",
