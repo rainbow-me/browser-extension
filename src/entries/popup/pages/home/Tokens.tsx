@@ -138,7 +138,9 @@ export function Tokens() {
             const { key, index, start, size } = virtualItem;
             const token = assets[index];
             const openDetails = () =>
-              navigate(ROUTES.TOKEN_DETAILS(token.uniqueId));
+              navigate(ROUTES.TOKEN_DETAILS(token.uniqueId), {
+                state: { skipPageTransition: true },
+              });
             return (
               <Box
                 key={key}

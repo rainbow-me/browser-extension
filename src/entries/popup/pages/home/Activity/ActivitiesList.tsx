@@ -146,7 +146,7 @@ const ActivityDescription = ({
             align="right"
             color="labelTertiary"
           >
-            {truncateString(tag, 27)}
+            {truncateString(tag, 25)}
           </Text>
         </Box>
       )}
@@ -163,7 +163,10 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
       marginHorizontal="-12px"
       forceAvatarColor
       onClick={() =>
-        navigate(ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash))
+        navigate(
+          ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
+          { state: { skipPageTransition: true } },
+        )
       }
     >
       <Box

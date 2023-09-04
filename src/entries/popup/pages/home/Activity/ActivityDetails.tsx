@@ -197,7 +197,7 @@ function ConfirmationData({
 }
 
 function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
-  const { maxPriorityFeePerGas, maxFeePerGas, fee } = transaction;
+  const { maxPriorityFeePerGas, maxFeePerGas, fee, nonce } = transaction;
 
   const value = transaction.value && formatEther(transaction.value);
   const minerTip =
@@ -244,7 +244,7 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
           value={`${formatNumber(minerTip)} Gwei`}
         />
       )}
-      <InfoRow symbol="number" label="Nonce" value={transaction.nonce} />
+      {nonce >= 0 && <InfoRow symbol="number" label="Nonce" value={nonce} />}
     </Stack>
   );
 }
@@ -323,7 +323,7 @@ function ActivityDetailsSheet({
         leftComponent={
           <Navbar.CloseButton
             onClick={() =>
-              navigate(ROUTES.HOME, { state: { activeTab: 'activity' } })
+              navigate(ROUTES.HOME, { state: { skipPageTransition: true } })
             }
           />
         }
