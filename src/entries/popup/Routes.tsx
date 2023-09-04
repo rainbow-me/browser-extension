@@ -86,7 +86,7 @@ const ChildOutlet = () => {
   const { pathname } = useLocation();
   return (
     <AnimatePresence mode="popLayout">
-      <Outlet key={`${pathname} child`} />
+      <Outlet key={pathname} />
     </AnimatePresence>
   );
 };
@@ -792,9 +792,8 @@ const ROUTE_DATA = [
 ] satisfies RouteObject[];
 
 const RootLayout = () => {
-  const { pathname, state } = useLocation();
-  const { setLastPage, shouldRestoreNavigation, lastPage } =
-    useNavRestorationStore();
+  const { pathname } = useLocation();
+  const { setLastPage, shouldRestoreNavigation } = useNavRestorationStore();
 
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -814,11 +813,7 @@ const RootLayout = () => {
     <FullScreenBackground>
       <AnimatePresence mode="popLayout">
         <div>
-          <Outlet
-            // the key is to make the route rerender and animate it's presence
-            // keeping the same key will prevent it from rerendering
-            key={state?.skipPageTransition ? lastPage : pathname}
-          />
+          <Outlet key={pathname.split('/')[1]} />
         </div>
       </AnimatePresence>
       <CommandK />
