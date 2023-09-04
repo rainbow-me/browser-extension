@@ -143,6 +143,7 @@ export const AppConnectionMenu = ({
   }, []);
 
   useKeyboardShortcut({
+    condition: () => menuOpen,
     handler: (e: KeyboardEvent) => {
       switch (e.key) {
         case shortcuts.home.SWITCH_NETWORK.key:
@@ -180,22 +181,27 @@ export const AppConnectionMenu = ({
           }
           break;
         case shortcuts.home.SWITCH_WALLETS.key:
-          if (!subMenuOpen) {
+          if (!subMenuOpen && activeSession) {
             trackShortcut({
               key: shortcuts.home.SWITCH_WALLETS.display,
               type: 'switchNetworkMenu.switchWallets',
             });
-            e.preventDefault();
-            setMenuOpen(false);
             triggerWalletSwitcher({ show: true });
+            setMenuOpen(false);
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return;
           }
           break;
         case shortcuts.home.DISCONNECT_APP.key:
-          trackShortcut({
-            key: shortcuts.home.DISCONNECT_APP.display,
-            type: 'switchNetworkMenu.disconnect',
-          });
-          disconnectAppSession();
+          if (activeSession) {
+            trackShortcut({
+              key: shortcuts.home.DISCONNECT_APP.display,
+              type: 'switchNetworkMenu.disconnect',
+            });
+            disconnectAppSession();
+          }
           break;
       }
     },
