@@ -18,6 +18,7 @@ import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { appConnectionSwitchWalletsPromptIsActive } from '../../utils/activeElement';
 import { triggerWalletSwitcher } from '../AppConnection/AppConnectionWalletSwitcher';
 import { useCommandKStatus } from '../CommandK/useCommandKStatus';
 import {
@@ -145,7 +146,10 @@ export const AppConnectionMenu = ({
     handler: (e: KeyboardEvent) => {
       switch (e.key) {
         case shortcuts.home.SWITCH_NETWORK.key:
-          if (!pressingNetworkShortcut.current) {
+          if (
+            !pressingNetworkShortcut.current &&
+            !appConnectionSwitchWalletsPromptIsActive()
+          ) {
             pressingNetworkShortcut.current = true;
             trackShortcut({
               key: shortcuts.home.SWITCH_NETWORK.display,

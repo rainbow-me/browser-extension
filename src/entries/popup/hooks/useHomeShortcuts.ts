@@ -15,6 +15,7 @@ import * as wallet from '../handlers/wallet';
 import { ROUTES } from '../urls';
 import {
   appConnectionMenuIsActive,
+  appConnectionSwitchWalletsPromptIsActive,
   getInputIsFocused,
 } from '../utils/activeElement';
 import { clickHeaderLeft, clickHeaderRight } from '../utils/clickHeader';
@@ -139,14 +140,19 @@ export function useHomeShortcuts() {
           wallet.lock();
           break;
         case shortcuts.home.OPEN_MORE_MENU.key:
-          trackShortcut({
-            key: shortcuts.home.OPEN_MORE_MENU.display,
-            type: 'home.openMoreMenu',
-          });
-          clickHeaderRight();
+          if (!appConnectionSwitchWalletsPromptIsActive()) {
+            trackShortcut({
+              key: shortcuts.home.OPEN_MORE_MENU.display,
+              type: 'home.openMoreMenu',
+            });
+            clickHeaderRight();
+          }
           break;
         case shortcuts.home.OPEN_APP_CONNECTION_MENU.key:
-          if (!appConnectionMenuIsActive()) {
+          if (
+            !appConnectionMenuIsActive() &&
+            !appConnectionSwitchWalletsPromptIsActive()
+          ) {
             trackShortcut({
               key: shortcuts.home.OPEN_APP_CONNECTION_MENU.display,
               type: 'home.openAppConnectionMenu',
