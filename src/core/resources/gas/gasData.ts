@@ -1,21 +1,33 @@
 import { ChainId } from '~/core/types/chains';
+import { meteorologySupportsChain } from '~/core/utils/gas';
 
 import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';
 
-export const useGasData = ({ chainId }: { chainId: ChainId }) => {
-  const meteorologySupportsChain = [
-    ChainId.bsc,
-    ChainId.mainnet,
-    ChainId.polygon,
-  ].includes(chainId);
+const getRefetchTime = (chainId: ChainId) => {
+  switch (chainId) {
+    case ChainId.arbitrum:
+    case ChainId.mainnet:
+    case ChainId.hardhat:
+      return 5000;
+    case ChainId.base:
+    case ChainId.bsc:
+    case ChainId.optimism:
+    case ChainId.polygon:
+    case ChainId.zora:
+    default:
+      return 2000;
+  }
+};
 
+export const useGasData = ({ chainId }: { chainId: ChainId }) => {
+  const meteorologySupportsChainId = meteorologySupportsChain(chainId);
   const { data: meteorologyData, isLoading: meteorologyDataIsLoading } =
     useMeteorology(
       { chainId },
       {
-        refetchInterval: 5000,
-        enabled: meteorologySupportsChain,
+        refetchInterval: getRefetchTime(chainId),
+        enabled: meteorologySupportsChainId,
       },
     );
 
@@ -23,14 +35,14 @@ export const useGasData = ({ chainId }: { chainId: ChainId }) => {
     useProviderGas(
       { chainId },
       {
-        enabled: !meteorologySupportsChain,
-        refetchInterval: 5000,
+        enabled: !meteorologySupportsChainId,
+        refetchInterval: getRefetchTime(chainId),
       },
     );
 
   return {
-    data: meteorologySupportsChain ? meteorologyData : providerGasData,
-    isLoading: meteorologySupportsChain
+    data: meteorologySupportsChainId ? meteorologyData : providerGasData,
+    isLoading: meteorologySupportsChainId
       ? meteorologyDataIsLoading
       : providerGasDataIsLoading,
   };

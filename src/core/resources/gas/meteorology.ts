@@ -17,6 +17,14 @@ const getMeteorologyNetworkFromChainId = (chainId: Chain['id']) => {
       return 'polygon';
     case ChainId.bsc:
       return 'bsc';
+    case ChainId.base:
+      return 'base';
+    case ChainId.optimism:
+      return 'optimism';
+    case ChainId.arbitrum:
+      return 'arbitrum';
+    case ChainId.zora:
+      return 'zora';
     default:
       return 'mainnet';
   }
@@ -53,6 +61,7 @@ export type MeteorologyResponse = {
       normal: string;
       urgent: string;
     };
+    secondsPerNewBlock: number;
     meta: {
       blockNumber: number;
       provider: string;
