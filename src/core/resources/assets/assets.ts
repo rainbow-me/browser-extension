@@ -23,7 +23,7 @@ import {
 } from '~/core/utils/assets';
 import { RainbowError, logger } from '~/logger';
 
-// const ASSETS_TIMEOUT_DURATION = 10000;
+const ASSETS_TIMEOUT_DURATION = 10000;
 const ASSETS_REFETCH_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
@@ -63,7 +63,9 @@ export async function assetsQueryFunction({
     if (!assetAddresses || !assetAddresses.length) return {};
     const batches = chunkArray([...assetAddresses], 10); // chunking because a full batch would throw 413
     const batchResults = batches.map((batchedQuery) =>
-      requestMetadata(createAssetQuery(batchedQuery, chainId, currency)),
+      requestMetadata(createAssetQuery(batchedQuery, chainId, currency), {
+        timeout: ASSETS_TIMEOUT_DURATION,
+      }),
     ) as Promise<Record<string, AssetMetadata>[]>[];
     const results = (await Promise.all(batchResults))
       .flat()
