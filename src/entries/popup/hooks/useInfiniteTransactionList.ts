@@ -19,6 +19,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
@@ -56,6 +57,7 @@ export default function ({
           const latestTransactions = data.pages
             .map((p) => p.transactions)
             .flat()
+            .filter((t) => isLowerCaseMatch(t.from, address))
             .reduce((latestTxMap, currentTx) => {
               const currentChain = currentTx?.chainId;
               if (currentChain) {
