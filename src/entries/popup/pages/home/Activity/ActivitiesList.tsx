@@ -165,7 +165,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
       onClick={() =>
         navigate(
           ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
-          { state: { skipPageTransition: true } },
+          { state: { skipTransitionOnRoute: ROUTES.HOME } },
         )
       }
     >

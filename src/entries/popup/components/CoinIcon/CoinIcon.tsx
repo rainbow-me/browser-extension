@@ -264,10 +264,12 @@ export function TwoCoinsIcon({
   size = 36,
   under,
   over,
+  badge = true,
 }: {
   size?: number;
   under: ParsedAsset;
   over: ParsedAsset;
+  badge?: boolean;
 }) {
   const overSize = size * 0.75;
   const underSize = size * 0.67;
@@ -303,7 +305,7 @@ export function TwoCoinsIcon({
         />
       </Box>
       <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
-        {chainId !== ChainId.mainnet && (
+        {badge && chainId !== ChainId.mainnet && (
           <ChainBadge chainId={chainId} shadow size="16" />
         )}
       </Box>

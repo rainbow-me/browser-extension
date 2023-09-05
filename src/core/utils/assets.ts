@@ -68,7 +68,7 @@ export const getNativeAssetBalance = ({
 
 const isZerionAsset = (
   asset: ZerionAsset | AssetApiResponse,
-): asset is ZerionAsset => 'implementations' in asset;
+): asset is ZerionAsset => 'implementations' in asset || !('networks' in asset);
 
 export function parseAsset({
   asset,
@@ -88,8 +88,7 @@ export function parseAsset({
       undefined
     : asset.networks?.[ChainId.mainnet]?.address;
 
-  const standard =
-    'interface' in asset ? asset.interface?.toUpperCase() : undefined;
+  const standard = 'interface' in asset ? asset.interface : undefined;
 
   const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
   const parsedAsset = {

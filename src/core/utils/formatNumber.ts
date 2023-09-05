@@ -15,7 +15,10 @@ export const createNumberFormatter = (options?: Intl.NumberFormatOptions) => {
   };
 };
 
-export const { format: formatNumber } = createNumberFormatter();
+export const formatNumber = (
+  n: number | undefined | null | string,
+  options?: Intl.NumberFormatOptions,
+) => createNumberFormatter(options).format(n);
 
 export const formatCurrencyParts = (
   n: number | string = 0,

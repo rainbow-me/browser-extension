@@ -3,8 +3,10 @@ import { Navigate, useParams } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ETH_ADDRESS } from '~/core/references';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
+import { ParsedAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
@@ -187,7 +189,10 @@ function ConfirmationData({
                 {transaction.blockNumber}
                 {transaction.confirmations && (
                   <Text size="12pt" weight="semibold" color="labelQuaternary">
-                    {transaction.confirmations} Confirmations
+                    {formatNumber(transaction.confirmations, {
+                      notation: 'compact',
+                    })}{' '}
+                    Confirmations
                   </Text>
                 )}
               </Inline>
@@ -329,16 +334,32 @@ const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
   return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;
 };
 
-const AdditionalDetails = ({
-  transaction,
-}: {
-  transaction: RainbowTransaction;
-}) => {
+type TxAdditionalDetails = {
+  tokenContract?: Address;
+  exchangeRate?: string;
+  collection?: string;
+  standard?: ParsedAsset['standard'];
+};
+const getAdditionalDetails = (transaction: RainbowTransaction) => {
   const tokenContract = transaction.asset?.address;
   const exchangeRate = getExchangeRate(transaction);
   const nft = transaction.changes?.find((c) => c?.asset.type === 'nft')?.asset;
   const collection = nft?.symbol;
   const standard = nft?.standard;
+  const tokenIsEth = tokenContract === ETH_ADDRESS;
+
+  if (!tokenContract && !exchangeRate && !collection && !standard) return;
+
+  return {
+    tokenContract: !tokenIsEth ? tokenContract : undefined,
+    exchangeRate,
+    collection,
+    standard,
+  } satisfies TxAdditionalDetails;
+};
+
+const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
+  const { tokenContract, exchangeRate, collection, standard } = details;
   return (
     <Stack space="24px">
       {exchangeRate && (
@@ -357,7 +378,7 @@ const AdditionalDetails = ({
       )}
       {tokenContract && (
         <InfoRow
-          symbol="doc.plaintext.fill"
+          symbol="doc.plaintext"
           label={i18n.t('activity_details.token_contract')}
           value={
             <CopyableValue
@@ -373,7 +394,7 @@ const AdditionalDetails = ({
         <InfoRow
           symbol="info.circle"
           label={i18n.t('activity_details.token_standard')}
-          value={standard}
+          value={standard.toUpperCase()}
         />
       )}
     </Stack>
@@ -394,13 +415,17 @@ function ActivityDetailsSheet({
   if (isFetched && !tx) return <Navigate to={ROUTES.HOME} />;
   if (!tx) return null;
 
+  const additionalDetails = getAdditionalDetails(tx);
+
   return (
     <BottomSheet show>
       <Navbar
         leftComponent={
           <Navbar.CloseButton
             onClick={() =>
-              navigate(ROUTES.HOME, { state: { skipPageTransition: true } })
+              navigate(ROUTES.HOME, {
+                state: { skipTransitionOnRoute: ROUTES.HOME },
+              })
             }
           />
         }
@@ -418,21 +443,19 @@ function ActivityDetailsSheet({
       />
       <Separator color="separatorTertiary" />
 
-      <Box padding="20px" display="flex" flexDirection="column" gap="20px">
+      <Stack
+        separator={<Separator color="separatorTertiary" />}
+        padding="20px"
+        display="flex"
+        flexDirection="column"
+        gap="20px"
+      >
         <ToFrom to={tx.to} from={tx.from} />
-        <Separator color="separatorTertiary" />
-        <AdditionalDetails transaction={tx} />
-        <Separator color="separatorTertiary" />
+        {additionalDetails && <AdditionalDetails details={additionalDetails} />}
         <ConfirmationData transaction={tx} />
-        <Separator color="separatorTertiary" />
         <NetworkData transaction={tx} />
-        {tx.status === 'pending' && (
-          <>
-            <Separator color="separatorTertiary" />
-            <SpeedUpOrCancel transaction={tx} />
-          </>
-        )}
-      </Box>
+        {tx.status === 'pending' && <SpeedUpOrCancel transaction={tx} />}
+      </Stack>
     </BottomSheet>
   );
 }

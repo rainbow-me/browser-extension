@@ -33,7 +33,7 @@ export interface ParsedAsset {
   icon_url?: string;
   type?: AssetType;
   smallBalance?: boolean;
-  standard?: 'ERC-721' | 'ERC-1155';
+  standard?: 'erc-721' | 'erc-1155';
 }
 
 export interface ParsedUserAsset extends ParsedAsset {

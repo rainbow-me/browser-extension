@@ -24,7 +24,14 @@ export const ActivityIcon = ({
     const outAsset = changes?.find((a) => a?.direction === 'out')?.asset;
 
     if (!!inAsset && !!outAsset)
-      return <TwoCoinsIcon size={size} under={outAsset} over={inAsset} />;
+      return (
+        <TwoCoinsIcon
+          size={size}
+          under={outAsset}
+          over={inAsset}
+          badge={badge}
+        />
+      );
   }
 
   if (asset?.type === 'nft')

@@ -94,8 +94,6 @@ export function parseTransaction({
 }: ParseTransactionArgs): RainbowTransaction | undefined {
   const { status, hash, meta, nonce, protocol } = tx;
 
-  console.log(tx);
-
   const changes = tx.changes.filter(Boolean).map((change) => ({
     ...change,
     asset: parseUserAsset({

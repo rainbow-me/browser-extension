@@ -792,7 +792,7 @@ const ROUTE_DATA = [
 ] satisfies RouteObject[];
 
 const RootLayout = () => {
-  const { pathname } = useLocation();
+  const { pathname, state } = useLocation();
   const { setLastPage, shouldRestoreNavigation } = useNavRestorationStore();
 
   React.useLayoutEffect(() => {
@@ -813,7 +813,11 @@ const RootLayout = () => {
     <FullScreenBackground>
       <AnimatePresence mode="popLayout">
         <div>
-          <Outlet key={pathname.split('/')[1]} />
+          <Outlet
+            // skip the page transition with a unique state.skipTransitionOnRoute
+            // the animate presence only runs on the <Outlet /> when it's key changes
+            key={state?.skipTransitionOnRoute || pathname}
+          />
         </div>
       </AnimatePresence>
       <CommandK />

@@ -1,7 +1,7 @@
-import React, { Children, ReactNode } from 'react';
+import { Children, ReactNode } from 'react';
 
 import { Space } from '../../styles/designTokens';
-import { Box } from '../Box/Box';
+import { Box, BoxProps } from '../Box/Box';
 
 const alignHorizontalToAlignItems = {
   center: 'center',
@@ -11,7 +11,7 @@ const alignHorizontalToAlignItems = {
 } as const;
 type AlignHorizontal = keyof typeof alignHorizontalToAlignItems;
 
-interface StackProps {
+interface StackProps extends BoxProps {
   space?: Space;
   alignHorizontal?: AlignHorizontal;
   children?: ReactNode;
@@ -23,6 +23,7 @@ export function Stack({
   alignHorizontal,
   space,
   separator = null,
+  ...props
 }: StackProps) {
   const childrenArray = Children.toArray(children);
   return (
@@ -33,6 +34,7 @@ export function Stack({
         alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
       }
       gap={space}
+      {...props}
     >
       {Children.map(childrenArray, (child, index) => {
         const isLastChild = index === childrenArray.length - 1;

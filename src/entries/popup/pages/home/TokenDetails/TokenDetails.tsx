@@ -319,7 +319,9 @@ export function TokenDetails() {
           leftComponent={
             <Navbar.BackButton
               onClick={() =>
-                navigate(ROUTES.HOME, { state: { skipPageTransition: true } })
+                navigate(ROUTES.HOME, {
+                  state: { skipTransitionOnRoute: ROUTES.HOME },
+                })
               }
             />
           }

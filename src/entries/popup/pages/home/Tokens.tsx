@@ -139,7 +139,7 @@ export function Tokens() {
             const token = assets[index];
             const openDetails = () =>
               navigate(ROUTES.TOKEN_DETAILS(token.uniqueId), {
-                state: { skipPageTransition: true },
+                state: { skipTransitionOnRoute: ROUTES.HOME },
               });
             return (
               <Box
