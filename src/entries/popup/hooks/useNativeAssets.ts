@@ -8,6 +8,7 @@ import {
 import { useAssets } from '~/core/resources/assets';
 import { fetchAssets } from '~/core/resources/assets/assets';
 import { currentCurrencyStore, useCurrentCurrencyStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 
 export async function getNativeAssets() {
   const { currentCurrency } = currentCurrencyStore.getState();
@@ -17,6 +18,7 @@ export async function getNativeAssets() {
       BNB_MAINNET_ADDRESS,
       MATIC_MAINNET_ADDRESS,
     ],
+    chainId: ChainId.mainnet,
     currency: currentCurrency,
   });
   return assets;
@@ -30,6 +32,7 @@ export function useNativeAssets() {
       BNB_MAINNET_ADDRESS,
       MATIC_MAINNET_ADDRESS,
     ],
+    chainId: ChainId.mainnet,
     currency,
   });
   return assets;

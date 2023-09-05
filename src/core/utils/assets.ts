@@ -6,6 +6,7 @@ import { Address, erc20ABI } from 'wagmi';
 import { SupportedCurrencyKey } from '~/core/references';
 import {
   AddressOrEth,
+  AssetMetadata,
   ParsedAsset,
   ParsedSearchAsset,
   ParsedUserAsset,
@@ -103,6 +104,47 @@ export function parseAsset({
     icon_url: asset?.icon_url,
   };
 
+  return parsedAsset;
+}
+
+export function parseAssetMetadata({
+  address,
+  asset,
+  chainId,
+  currency,
+}: {
+  address: AddressOrEth;
+  asset: AssetMetadata;
+  chainId: ChainId;
+  currency: SupportedCurrencyKey;
+}): ParsedAsset {
+  const mainnetAddress = asset.networks?.[ChainId.mainnet]?.address || address;
+  const uniqueId = `${mainnetAddress || address}_${chainId}`;
+  const priceData = {
+    relative_change_24h: asset?.price?.relativeChange24h,
+    value: asset?.price?.value,
+  };
+  const parsedAsset = {
+    address,
+    chainId,
+    chainName: chainNameFromChainId(chainId),
+    colors: asset?.colors,
+    decimals: asset?.decimals,
+    icon_url: asset?.iconUrl,
+    isNativeAsset: isNativeAsset(address, chainId),
+    mainnetAddress,
+    name: asset?.name || i18n.t('tokens_tab.unknown_token'),
+    native: {
+      price: getNativeAssetPrice({
+        currency,
+        priceData,
+      }),
+    },
+    price: priceData,
+    symbol: asset?.symbol,
+    type: 'token',
+    uniqueId,
+  };
   return parsedAsset;
 }
 
@@ -246,4 +288,56 @@ export const fetchAssetBalanceViaProvider = async ({
     });
     return updatedAsset;
   }
+};
+
+const assetQueryFragment = (
+  address: AddressOrEth,
+  chainId: ChainId,
+  currency: SupportedCurrencyKey,
+  index: number,
+) => {
+  return `Q${index}: token(address: "${address}", chainID: ${chainId}, currency: "${currency}") {
+      colors {
+        primary
+        fallback
+        shadow
+      }
+      circulatingSupply
+      decimals
+      description
+      fullyDilutedValuation
+      iconUrl
+      marketCap
+      name
+      networks
+      price {
+        value
+        relativeChange24h
+      }
+      symbol
+      totalSupply
+      volume1d
+  }`;
+};
+
+export const chunkArray = (arr: AddressOrEth[], chunkSize: number) => {
+  const result = [];
+
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    result.push(arr.slice(i, i + chunkSize));
+  }
+
+  return result;
+};
+
+export const createAssetQuery = (
+  addresses: AddressOrEth[],
+  chainId: ChainId,
+  currency: SupportedCurrencyKey,
+) => {
+  return `{
+        ${addresses
+          .map((a, i) => assetQueryFragment(a, chainId, currency, i))
+          .join(',')}
+    }`;
 };
