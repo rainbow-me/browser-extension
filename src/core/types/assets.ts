@@ -7,12 +7,13 @@ import { ETH_ADDRESS } from '../references';
 import { SearchAsset } from './search';
 
 export interface ParsedAsset {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
     primary: string;
     fallback?: string;
+    shadow?: string;
   };
   isNativeAsset: boolean;
   name: string;
@@ -60,7 +61,6 @@ export type ParsedAssetsDictByChain = Record<ChainId, ParsedAssetsDict>;
 export interface ZerionAssetPrice {
   value: number;
   relative_change_24h?: number;
-  changed_at: number;
 }
 
 export type AssetType = 'nft' | 'token';
@@ -86,5 +86,55 @@ export interface ZerionAsset {
   price?: ZerionAssetPrice;
   network?: ChainName;
 }
+
+export type AddressOrEth = Address | 'eth';
+
+// protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
+export type ProtocolType =
+  | 'aave-v2'
+  | 'balancer'
+  | 'curve'
+  | 'compound'
+  | 'compound-v3'
+  | 'maker'
+  | 'one-inch'
+  | 'piedao-pool'
+  | 'yearn'
+  | 'yearn-v2'
+  | 'uniswap-v2'
+  | 'aave-v3'
+  | 'harvest'
+  | 'lido'
+  | 'uniswap-v3'
+  | 'convex'
+  | 'convex-frax'
+  | 'pancake-swap'
+  | 'balancer-v2'
+  | 'frax'
+  | 'gmx'
+  | 'aura'
+  | 'pickle'
+  | 'yearn-v3'
+  | 'venus'
+  | 'sushiswap';
+
+export type AssetMetadata = {
+  circulatingSupply: number;
+  colors?: { primary: string; fallback?: string; shadow?: string };
+  decimals: number;
+  description: string;
+  fullyDilutedValuation: number;
+  iconUrl: string;
+  marketCap: number;
+  name: string;
+  networks?: Record<ChainId, { address: AddressOrEth; decimals: number }>;
+  price: {
+    value: number;
+    relativeChange24h: number;
+  };
+  symbol: string;
+  totalSupply: number;
+  volume1d: number;
+};
 
 export type UniqueId = `${Address}_${ChainId}`;

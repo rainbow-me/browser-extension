@@ -34,7 +34,6 @@ export const ETH_MAINNET_ASSET: ParsedUserAsset = {
   price: {
     value: 1634.18,
     relative_change_24h: 0.14646492502099484,
-    changed_at: -1,
   },
   symbol: 'ETH',
   uniqueId: 'eth_1',
@@ -58,7 +57,6 @@ export const DAI_MAINNET_ASSET: ParsedUserAsset = {
   price: {
     value: 1634.18,
     relative_change_24h: 0.14646492502099484,
-    changed_at: -1,
   },
   symbol: 'DAI',
   uniqueId: '0x6b175474e89094c44da98b954eedeac495271d0f_1',
@@ -85,7 +83,6 @@ export const USDC_MAINNET_ASSET: ParsedUserAsset = {
   price: {
     value: 1.000587633346778,
     relative_change_24h: -1.3378856946931859,
-    changed_at: -1,
   },
   symbol: 'USDC',
   uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
@@ -102,7 +99,6 @@ export const ENS_MAINNET_ASSET: ParsedAsset = {
     price: { change: '0.64%', amount: 13.984137272000002, display: '$13.98' },
   },
   price: {
-    changed_at: -1,
     relative_change_24h: 0.6397137281285907,
     value: 13.984137272000002,
   },
@@ -129,7 +125,6 @@ export const USDC_ARBITRUM_ASSET: ParsedAsset = {
   price: {
     value: 1.000587633346778,
     relative_change_24h: -1.3378856946931859,
-    changed_at: -1,
   },
   symbol: 'USDC',
   uniqueId: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8_1' as UniqueId,
@@ -157,7 +152,6 @@ export const WETH_MAINNET_ASSET: ParsedAsset = {
   price: {
     value: 1997.0000000000002,
     relative_change_24h: -4.92966127918878,
-    changed_at: -1,
   },
   symbol: 'WETH',
   uniqueId: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2_1',
