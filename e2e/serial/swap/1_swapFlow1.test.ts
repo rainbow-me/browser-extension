@@ -33,7 +33,7 @@ import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
-let provider: WebSocketProvider;
+let mockedProvider: MockWebSocketProvider;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
@@ -42,6 +42,7 @@ const isFirefox = browser === 'firefox';
 class MockWebSocketProvider extends WebSocketProvider {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   async send(method: string, _params: any): Promise<any> {
+    console.log(`Method called: ${method}`);
     switch (method) {
       case 'eth_call':
         return '0x01';
@@ -71,6 +72,49 @@ class MockWebSocketProvider extends WebSocketProvider {
   }
 }
 
+// vi.mock('@ethersproject/providers', async () => {
+//   const { WebSocketProvider } = await vi.importActual<
+//     typeof import('@ethersproject/providers')
+//   >('@ethersproject/providers');
+
+//   class MockWebSocketProvider extends WebSocketProvider {
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+//     async send(method: string, _params: any): Promise<any> {
+//       switch (method) {
+//         case 'eth_call':
+//           return '0x01';
+//         case 'eth_chainId':
+//           return '0x1';
+//         case 'eth_getTransactionCount':
+//           return '0x0';
+//         case 'eth_getBlockByNumber':
+//           return {
+//             number: '0x12345',
+//             hash: '0xabcdef1234567890',
+//             timestamp:
+//               '0x617263202331302f323032332032313a31353a3031202b30303030',
+//           };
+//         case 'eth_estimateGas':
+//           return '0x5';
+//         case 'eth_getBalance':
+//           return '0x1000000000000000'; // mock balance
+//         case 'eth_sendRawTransaction':
+//           return {
+//             id: 1,
+//             jsonrpc: '2.0',
+//             result: '0x1234...',
+//           };
+//         default:
+//           throw new Error(`Unsupported method: ${method}`);
+//       }
+//     }
+//   }
+
+//   return {
+//     WebSocketProvider: MockWebSocketProvider,
+//   };
+// });
+
 beforeAll(async () => {
   driver = await initDriverWithOptions({
     browser,
@@ -79,7 +123,7 @@ beforeAll(async () => {
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
   rootURL += extensionId;
-  provider = new MockWebSocketProvider('http://localhost:8545');
+  mockedProvider = new MockWebSocketProvider('https://127.0.0.1:8546');
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1030,10 +1074,10 @@ it('should be able to execute swap', async () => {
   });
   await delayTime('medium');
 
-  console.log(provider);
+  console.log(mockedProvider);
 
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
-  const ethBalanceBeforeSwap = await provider.getBalance(
+  const ethBalanceBeforeSwap = await mockedProvider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
   console.log(`ethBalanceBeforeSwap`, ethBalanceBeforeSwap);
@@ -1049,7 +1093,7 @@ it('should be able to execute swap', async () => {
   // Adding delay to make sure the provider gets the balance after the swap
   // Because CI is slow so this triggers a race condition most of the time.
   await delay(5000);
-  const ethBalanceAfterSwap = await provider.getBalance(
+  const ethBalanceAfterSwap = await mockedProvider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
   console.log(`ethBalanceAfterSwap`, ethBalanceAfterSwap);
