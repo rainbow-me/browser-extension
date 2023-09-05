@@ -207,6 +207,7 @@ export const parseGasFeeParams = ({
   currency,
   additionalTime,
   secondsPerNewBlock,
+  optimismL1SecurityFee,
 }: {
   wei: string;
   speed: GasSpeed;
@@ -222,6 +223,7 @@ export const parseGasFeeParams = ({
   currency: SupportedCurrencyKey;
   additionalTime?: number;
   secondsPerNewBlock: number;
+  optimismL1SecurityFee?: string | null;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
@@ -258,7 +260,10 @@ export const parseGasFeeParams = ({
   };
 
   const feeAmount = add(maxBaseFee.amount, maxPriorityFeePerGas.amount);
-  const totalWei = multiply(gasLimit, feeAmount);
+  const totalWei = add(
+    multiply(gasLimit, feeAmount),
+    optimismL1SecurityFee || 0,
+  );
   const nativeTotalWei = convertRawAmountToBalance(
     totalWei,
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
@@ -592,6 +597,7 @@ export const parseGasFeeParamsBySpeed = ({
         currency,
         additionalTime,
         secondsPerNewBlock,
+        optimismL1SecurityFee,
       });
 
     return {
