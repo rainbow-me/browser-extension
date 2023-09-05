@@ -12,13 +12,19 @@ import {
   Rows,
   Separator,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { Input } from '~/design-system/components/Input/Input';
+import { Lens } from '~/design-system/components/Lens/Lens';
+import { TextStyles } from '~/design-system/styles/core.css';
+import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
+import { MenuItem } from '../../components/Menu/MenuItem';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { SwitchMenu } from '../../components/SwitchMenu/SwitchMenu';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { importAccountAtIndex } from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -26,6 +32,27 @@ import usePrevious from '../../hooks/usePrevious';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 
 import { AccountIndex } from './walletList/AccountIndex';
+
+export type PathOptions = 'live' | 'legacy';
+
+export interface PathData {
+  symbol: SymbolName;
+  label: string;
+  color: TextStyles['color'];
+}
+
+export const pathOptions: { [key in PathOptions]: PathData } = {
+  live: {
+    symbol: '123.rectangle.fill',
+    label: 'Ledger Live',
+    color: 'label',
+  },
+  legacy: {
+    symbol: 'clock.arrow.2.circlepath',
+    label: 'Legacy',
+    color: 'label',
+  },
+};
 
 export const AddByIndexSheet = ({
   show,
@@ -46,8 +73,10 @@ export const AddByIndexSheet = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const prevShow = usePrevious(show);
+  const [pathDropdownOpen, setPathDropdownOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [newIndex, setNewIndex] = useState<string>('');
+  const [currentPath, setCurrentPath] = useState('live' as PathOptions);
   const [newAccount, setNewAccount] = useState<{
     address: Address;
   }>();
@@ -97,13 +126,14 @@ export const AddByIndexSheet = ({
       const newAddress = (await importAccountAtIndex(
         vendor,
         Number(newIndex),
+        currentPath,
       )) as Address;
       if (newAddress) {
         setNewAccount({ address: newAddress });
       }
       setTimeout(() => setLoading(false), 1000);
     }, 100);
-  }, [vendor, newIndex]);
+  }, [vendor, newIndex, currentPath]);
 
   const debouncedNewIndex = useDebounce(newIndex, 1000);
 
@@ -174,57 +204,85 @@ export const AddByIndexSheet = ({
                 alignItems="center"
                 justifyContent="center"
               >
-                <Inline space="6px">
-                  <Box
-                    style={{ width: '53px' }}
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                  >
-                    <Text color="label" size="14pt" weight="heavy">
-                      44
-                    </Text>
-                  </Box>
-                  <Box
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                  >
-                    <Text color="labelTertiary" size="14pt" weight="regular">
-                      /
-                    </Text>
-                  </Box>
-                  <Box
-                    style={{ width: '53px' }}
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                  >
-                    <Text color="label" size="14pt" weight="heavy">
-                      60
-                    </Text>
-                  </Box>
-                  <Box
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                  >
-                    <Text color="labelTertiary" size="14pt" weight="regular">
-                      /
-                    </Text>
-                  </Box>
-                  {vendor === 'Trezor' ? (
-                    <Box
-                      style={{ width: '53px' }}
-                      alignItems="center"
-                      justifyContent="center"
-                      display="flex"
+                {vendor === 'Ledger' ? (
+                  <Inline space="6px">
+                    <Lens
+                      style={{
+                        borderRadius: 12,
+                      }}
+                      onClick={() => setPathDropdownOpen(true)}
+                      onKeyDown={() => setPathDropdownOpen(true)}
                     >
-                      <Text color="label" size="14pt" weight="heavy">
-                        0
-                      </Text>
-                    </Box>
-                  ) : (
+                      <Box
+                        style={{ width: '193px', height: '32px' }}
+                        alignItems="center"
+                        justifyContent="flex-start"
+                        display="flex"
+                        background="fillSecondary"
+                        borderRadius="12px"
+                        borderColor="separatorSecondary"
+                      >
+                        <SwitchMenu
+                          align="end"
+                          onClose={() => setPathDropdownOpen(false)}
+                          open={pathDropdownOpen}
+                          renderMenuTrigger={
+                            <MenuItem
+                              tabIndex={-1}
+                              hasChevronDownOnly
+                              leftComponent={
+                                <Symbol
+                                  symbol={pathOptions[currentPath].symbol}
+                                  color={pathOptions[currentPath].color}
+                                  size={18}
+                                  weight="medium"
+                                />
+                              }
+                              titleComponent={
+                                <MenuItem.Title
+                                  text={pathOptions[currentPath].label}
+                                />
+                              }
+                            />
+                          }
+                          menuItemIndicator={
+                            <Symbol
+                              symbol="checkmark"
+                              color="label"
+                              size={12}
+                              weight="semibold"
+                            />
+                          }
+                          renderMenuItem={(option, i) => {
+                            const { label, symbol, color } =
+                              pathOptions[option as PathOptions];
+
+                            return (
+                              <Box id={`switch-option-item-${i}`}>
+                                <Inline space="8px" alignVertical="center">
+                                  <Inline alignVertical="center" space="8px">
+                                    <Symbol
+                                      size={14}
+                                      symbol={symbol}
+                                      color={color}
+                                      weight="semibold"
+                                    />
+                                  </Inline>
+                                  <Text weight="regular" size="14pt">
+                                    {label}
+                                  </Text>
+                                </Inline>
+                              </Box>
+                            );
+                          }}
+                          menuItems={Object.keys(pathOptions)}
+                          selectedValue={currentPath}
+                          onValueChange={(value) => {
+                            setCurrentPath(value as PathOptions);
+                          }}
+                        />
+                      </Box>
+                    </Lens>
                     <Box style={{ width: '53px', paddingLeft: '2px' }}>
                       <Input
                         value={newIndex}
@@ -238,17 +296,47 @@ export const AddByIndexSheet = ({
                         placeholder="0"
                       />
                     </Box>
-                  )}
-                  <Box
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                  >
-                    <Text color="labelTertiary" size="14pt" weight="regular">
-                      /
-                    </Text>
-                  </Box>
-                  {vendor === 'Ledger' ? (
+                  </Inline>
+                ) : (
+                  <Inline space="6px">
+                    <Box
+                      style={{ width: '53px' }}
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                    >
+                      <Text color="label" size="14pt" weight="heavy">
+                        44
+                      </Text>
+                    </Box>
+                    <Box
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                    >
+                      <Text color="labelTertiary" size="14pt" weight="regular">
+                        /
+                      </Text>
+                    </Box>
+                    <Box
+                      style={{ width: '53px' }}
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                    >
+                      <Text color="label" size="14pt" weight="heavy">
+                        60
+                      </Text>
+                    </Box>
+                    <Box
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                    >
+                      <Text color="labelTertiary" size="14pt" weight="regular">
+                        /
+                      </Text>
+                    </Box>
                     <Box
                       style={{ width: '53px' }}
                       alignItems="center"
@@ -259,7 +347,15 @@ export const AddByIndexSheet = ({
                         0
                       </Text>
                     </Box>
-                  ) : (
+                    <Box
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                    >
+                      <Text color="labelTertiary" size="14pt" weight="regular">
+                        /
+                      </Text>
+                    </Box>
                     <Box style={{ width: '53px' }}>
                       <Input
                         value={newIndex}
@@ -273,8 +369,8 @@ export const AddByIndexSheet = ({
                         placeholder="0"
                       />
                     </Box>
-                  )}
-                </Inline>
+                  </Inline>
+                )}
               </Box>
               {newAccount && (
                 <Box

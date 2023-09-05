@@ -951,6 +951,8 @@ export const symbolNames = selectSymbolNames(
   'circlebadge.2.fill',
   'xmark.bin.fill',
   'globe',
+  '123.rectangle.fill',
+  'clock.arrow.2.circlepath',
 );
 export type SymbolName = typeof symbolNames[number];
 

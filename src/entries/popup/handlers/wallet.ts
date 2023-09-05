@@ -29,6 +29,8 @@ import { toHex } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
+import { PathOptions } from '../pages/hw/addByIndexSheet';
+
 import {
   sendTransactionFromLedger,
   signMessageByTypeFromLedger,
@@ -43,7 +45,8 @@ import { walletAction } from './walletAction';
 import { HARDWARE_WALLETS } from './walletVariables';
 
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
-const DEFAULT_LEDGER_LIVE_PATH = "m/44'/60'/";
+const DEFAULT_LEDGER_LIVE_PATH = "m/44'/60'";
+const LEGACY_LEDGER_PATH = "m/44'/60'/0'";
 
 const signMessageByType = async (
   msgData: string | Bytes,
@@ -334,6 +337,7 @@ export const exportAccount = async (address: Address, password: string) => {
 export const importAccountAtIndex = async (
   type: string | 'Trezor' | 'Ledger',
   index: number,
+  currentPath?: PathOptions,
 ) => {
   let address = '';
   switch (type) {
@@ -358,11 +362,11 @@ export const importAccountAtIndex = async (
     case 'Ledger': {
       const transport = await TransportWebHID.create();
       const appEth = new AppEth(transport);
-      const result = await appEth.getAddress(
-        `${DEFAULT_LEDGER_LIVE_PATH}/${index}'/0/0`,
-        false,
-        false,
-      );
+      const hdPath =
+        currentPath === 'legacy'
+          ? `${LEGACY_LEDGER_PATH}/${index}`
+          : `${DEFAULT_LEDGER_LIVE_PATH}/${index}'/0/0`;
+      const result = await appEth.getAddress(hdPath, false, false);
       await transport?.close();
 
       address = result.address;

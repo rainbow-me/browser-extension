@@ -1069,7 +1069,7 @@
     "done": "Done",
     "add_wallet": "Add wallet",
     "add_by_index_title": "Add a wallet by its index",
-    "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger.",
+    "add_by_index_description": "Select the derivation path and enter the index of the wallet you would like to add.",
     "waiting_for_trezor_connect": "Waiting for Trezor Connect",
     "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
     "trezor_success": "Success!",
