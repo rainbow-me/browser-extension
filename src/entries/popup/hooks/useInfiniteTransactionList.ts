@@ -189,45 +189,43 @@ function watchForPendingTransactionsReportedByRainbowBackend({
 
   for (const supportedChainId of SUPPORTED_CHAIN_IDS) {
     const latestTxConfirmedByBackend = latestTransactions.get(supportedChainId);
-    if (!latestTxConfirmedByBackend) return;
-    const latestNonceConfirmedByBackend = latestTxConfirmedByBackend.nonce || 0;
-    const [latestPendingTx] = pendingTransactions.filter(
-      (tx) => tx?.chainId === supportedChainId,
-    );
+    if (latestTxConfirmedByBackend) {
+      const latestNonceConfirmedByBackend =
+        latestTxConfirmedByBackend.nonce || 0;
+      const [latestPendingTx] = pendingTransactions.filter(
+        (tx) => tx?.chainId === supportedChainId,
+      );
 
-    let currentNonce;
-    if (latestPendingTx) {
-      const latestPendingNonce = latestPendingTx?.nonce || 0;
-      const latestTransactionIsPending =
-        latestPendingNonce > latestNonceConfirmedByBackend;
-      currentNonce = latestTransactionIsPending
-        ? latestPendingNonce
-        : latestNonceConfirmedByBackend;
-    } else {
-      currentNonce = latestNonceConfirmedByBackend;
+      let currentNonce;
+      if (latestPendingTx) {
+        const latestPendingNonce = latestPendingTx?.nonce || 0;
+        const latestTransactionIsPending =
+          latestPendingNonce > latestNonceConfirmedByBackend;
+        currentNonce = latestTransactionIsPending
+          ? latestPendingNonce
+          : latestNonceConfirmedByBackend;
+      } else {
+        currentNonce = latestNonceConfirmedByBackend;
+      }
+
+      setNonce({
+        address: currentAddress,
+        chainId: supportedChainId,
+        currentNonce,
+        latestConfirmedNonce: latestNonceConfirmedByBackend,
+      });
     }
-
-    setNonce({
-      address: currentAddress,
-      chainId: supportedChainId,
-      currentNonce,
-      latestConfirmedNonce: latestNonceConfirmedByBackend,
-    });
   }
 
-  const updatedPendingTx = pendingTransactions?.filter((tx) => {
-    const { chainId, nonce } = tx;
-    const latestConfirmedNonce = latestTransactions.get(chainId)?.nonce || 0;
-    // remove pending tx because backend is now returning full tx data
-    if ((nonce || 0) <= latestConfirmedNonce) {
-      return false;
-    }
-    // either still pending or backend is not returning confirmation yet
-    return true;
+  const updatedPendingTransactions = pendingTransactions?.filter((tx) => {
+    const txNonce = tx.nonce || 0;
+    const latestConfirmedNonce = latestTransactions.get(tx.chainId)?.nonce || 0;
+    // still pending or backend is not returning confirmation yet
+    return txNonce > latestConfirmedNonce;
   });
 
   setPendingTransactions({
     address: currentAddress,
-    pendingTransactions: updatedPendingTx,
+    pendingTransactions: updatedPendingTransactions,
   });
 }
