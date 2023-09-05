@@ -84,7 +84,7 @@ export function parseAsset({
   // ZerionAsset should be removed when we move fully away from websckets/refraction api
   const mainnetAddress = isZerionAsset(asset)
     ? asset.mainnet_address ||
-      asset.implementations?.[ChainName.mainnet].address ||
+      asset.implementations?.[ChainName.mainnet]?.address ||
       undefined
     : asset.networks?.[ChainId.mainnet]?.address;
 
