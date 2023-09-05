@@ -278,22 +278,34 @@ export function TwoCoinsIcon({
 
   return (
     <Box position="relative" style={{ minWidth: size, height: size }}>
-      <Box position="absolute" top="0" left="0" style={{ zIndex: 1 }}>
+      <Box
+        position="absolute"
+        top="0"
+        left="0"
+        style={{
+          zIndex: 1,
+          clipPath: `url(#underTokenClip)`,
+          width: underSize * 0.924544,
+          height: underSize * 0.924544,
+        }}
+      >
         <CoinIcon
           asset={under}
           size={underSize}
           fallbackText={under.symbol}
           badge={false}
         />
+        <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+          <clipPath id="underTokenClip" clipPathUnits="objectBoundingBox">
+            <path d="M0.56,0 C0.251,0,0,0.251,0,0.56 C0,0.731,0.077,0.885,0.199,0.988 C0.237,1,0.29,0.983,0.29,0.933 V0.933 C0.29,0.578,0.578,0.29,0.933,0.29 V0.29 C0.983,0.29,1,0.237,0.988,0.199 C0.885,0.077,0.731,0,0.56,0"></path>
+          </clipPath>
+        </svg>
       </Box>
       <Box
         position="absolute"
         bottom="0"
         right="0"
-        // marginRight="-3px"
-        // marginBottom="-3px"
         borderRadius="round"
-        // borderWidth="3px"
         borderColor="surfaceSecondary"
         style={{ zIndex: 2 }}
       >
