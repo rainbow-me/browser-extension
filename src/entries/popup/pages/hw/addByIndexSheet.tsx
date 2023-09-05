@@ -238,6 +238,14 @@ export const AddByIndexSheet = ({
                                   weight="medium"
                                 />
                               }
+                              rightComponent={
+                                <Box
+                                  style={{
+                                    width:
+                                      currentPath === 'live' ? '30px' : '59px',
+                                  }}
+                                />
+                              }
                               titleComponent={
                                 <MenuItem.Title
                                   text={pathOptions[currentPath].label}
