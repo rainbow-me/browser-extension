@@ -22,6 +22,7 @@ import {
 import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
   FLASHBOTS_MIN_TIP,
+  chainNeedsL1SecurityFee,
   gasFeeParamsChanged,
   parseCustomGasFeeParams,
   parseGasFeeParamsBySpeed,
@@ -64,7 +65,7 @@ const useGas = ({
 
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
     { transactionRequest: transactionRequest || {}, chainId },
-    { enabled: chainId === ChainId.optimism },
+    { enabled: chainNeedsL1SecurityFee(chainId) },
   );
 
   const {
@@ -81,6 +82,10 @@ const useGas = ({
     setInternalMaxBaseFee(maxBaseFee);
   }, []);
 
+  const setCustomMaxPriorityFee = useCallback((maxPriorityFee = '0') => {
+    setInternalMaxPriorityFee(maxPriorityFee);
+  }, []);
+
   useEffect(() => {
     if (
       !gasData ||
@@ -92,6 +97,7 @@ const useGas = ({
 
     const { data } = gasData as MeteorologyResponse;
     const currentBaseFee = data.currentBaseFee;
+    const secondsPerNewBlock = data.secondsPerNewBlock;
 
     const blocksToConfirmation = {
       byBaseFee: data.blocksToConfirmationByBaseFee,
@@ -111,6 +117,7 @@ const useGas = ({
       gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
       nativeAsset,
       currency: currentCurrency,
+      secondsPerNewBlock,
     });
     setCustomSpeed(newCustomSpeed);
   }, [
@@ -126,10 +133,6 @@ const useGas = ({
     storeGasFeeParamsBySpeed?.custom,
   ]);
 
-  const setCustomMaxPriorityFee = useCallback((maxPriorityFee = '0') => {
-    setInternalMaxPriorityFee(maxPriorityFee);
-  }, []);
-
   useEffect(() => {
     if (
       !gasData ||
@@ -140,6 +143,7 @@ const useGas = ({
       return;
     const { data } = gasData as MeteorologyResponse;
     const currentBaseFee = data.currentBaseFee;
+    const secondsPerNewBlock = data.secondsPerNewBlock;
 
     const blocksToConfirmation = {
       byBaseFee: data.blocksToConfirmationByBaseFee,
@@ -167,6 +171,7 @@ const useGas = ({
       gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
       nativeAsset,
       currency: currentCurrency,
+      secondsPerNewBlock,
     });
     setCustomSpeed(newCustomSpeed);
   }, [

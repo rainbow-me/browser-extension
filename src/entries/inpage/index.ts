@@ -71,7 +71,7 @@ if (shouldInjectProvider()) {
       },
       addProvider: (provider: RainbowProvider | Ethereum) => {
         if (!window.walletRouter.providers.includes(provider)) {
-          window.walletRouter.providers.unshift(provider);
+          window.walletRouter.providers.push(provider);
         }
         if (rainbowProvider !== provider) {
           window.walletRouter.lastInjectedProvider = provider;
