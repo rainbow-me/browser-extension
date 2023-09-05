@@ -10,7 +10,10 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
-import { calculateL1FeeOptimism } from '~/core/utils/gas';
+import {
+  calculateL1FeeOptimism,
+  chainNeedsL1SecurityFee,
+} from '~/core/utils/gas';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -47,7 +50,7 @@ type OptimismL1SecurityFeeQueryKey = ReturnType<
 async function optimismL1SecurityFeeQueryFunction({
   queryKey: [{ transactionRequest, chainId }],
 }: QueryFunctionArgs<typeof optimismL1SecurityFeeQueryKey>) {
-  if (chainId === ChainId.optimism) {
+  if (chainNeedsL1SecurityFee(chainId)) {
     const provider = getProvider({ chainId: ChainId.optimism });
     const gasPrice = await provider.getGasPrice();
     const l1Fee = await calculateL1FeeOptimism({
