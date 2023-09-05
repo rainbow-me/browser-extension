@@ -5,6 +5,7 @@ import {
   TransactionStatus,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
+import { truncateString } from '~/core/utils/strings';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
@@ -103,10 +104,6 @@ export function Activities() {
     </>
   );
 }
-
-const truncateString = (txt = '', maxLength = 22) => {
-  return `${txt?.slice(0, maxLength)}${txt.length > maxLength ? '...' : ''}`;
-};
 
 const ActivityDescription = ({
   transaction,

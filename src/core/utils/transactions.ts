@@ -134,7 +134,7 @@ export function parseTransaction({
     title: i18n.t(`transactions.${type}.${status}`),
     description,
     hash,
-    chainId,
+    chainId: +chainId,
     status,
     nonce,
     protocol,

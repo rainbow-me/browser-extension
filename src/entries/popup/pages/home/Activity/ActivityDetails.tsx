@@ -10,9 +10,14 @@ import { ParsedAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
+import {
+  SUPPORTED_CHAIN_IDS,
+  getBlockExplorerHostForChain,
+} from '~/core/utils/chains';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
+import { truncateString } from '~/core/utils/strings';
+import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
 import {
   Bleed,
   Box,
@@ -170,7 +175,7 @@ function ConfirmationData({
             title={i18n.t('activity_details.hash_copied')}
             value={transaction.hash}
           >
-            {truncateAddress(transaction.hash)}
+            {truncateString(transaction.hash, 18)}
           </CopyableValue>
         }
       />
@@ -401,6 +406,78 @@ const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
   );
 };
 
+function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
+  const explorerHost = getBlockExplorerHostForChain(transaction.chainId);
+  const explorerUrl = getTransactionBlockExplorerUrl(transaction);
+  const hash = transaction.hash;
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div>
+          <ButtonSymbol
+            symbol="ellipsis"
+            height="32px"
+            variant="transparentHover"
+            color="labelSecondary"
+          />
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem
+          symbolLeft="doc.on.doc.fill"
+          onSelect={() => {
+            navigator.clipboard.writeText(hash);
+            triggerToast({
+              title: i18n.t('activity_details.hash_copied'),
+              description: truncateString(hash, 18),
+            });
+          }}
+        >
+          <Stack space="8px">
+            <Text size="14pt" weight="semibold">
+              {i18n.t('activity_details.copy_hash')}
+            </Text>
+            <Text size="11pt" color="labelTertiary" weight="medium">
+              {truncateString(hash, 18)}
+            </Text>
+          </Stack>
+        </DropdownMenuItem>
+        {explorerUrl && (
+          <DropdownMenuItem
+            symbolLeft="doc.on.doc.fill"
+            onSelect={() => {
+              navigator.clipboard.writeText(explorerUrl);
+              triggerToast({
+                title: i18n.t('activity_details.explorer_copied'),
+                description: truncateString(explorerUrl, 18),
+              });
+            }}
+          >
+            <Stack space="8px">
+              <Text size="14pt" weight="semibold">
+                {i18n.t('activity_details.copy_explorer_url')}
+              </Text>
+              <Text size="11pt" color="labelTertiary" weight="medium">
+                {truncateString(explorerUrl, 18)}
+              </Text>
+            </Stack>
+          </DropdownMenuItem>
+        )}
+        <Box paddingVertical="4px">
+          <Separator color="separatorSecondary" />
+        </Box>
+        <DropdownMenuItem
+          symbolLeft="binoculars.fill"
+          external
+          onSelect={() => window.open(explorerUrl, '_blank')}
+        >
+          {i18n.t('token_details.view_on', { explorer: explorerHost })}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 function ActivityDetailsSheet({
   hash,
   chainId,
@@ -417,29 +494,17 @@ function ActivityDetailsSheet({
 
   const additionalDetails = getAdditionalDetails(tx);
 
+  const backToHome = () =>
+    navigate(ROUTES.HOME, {
+      state: { skipTransitionOnRoute: ROUTES.HOME },
+    });
+
   return (
     <BottomSheet show>
       <Navbar
-        leftComponent={
-          <Navbar.CloseButton
-            onClick={() =>
-              navigate(ROUTES.HOME, {
-                state: { skipTransitionOnRoute: ROUTES.HOME },
-              })
-            }
-          />
-        }
+        leftComponent={<Navbar.CloseButton onClick={backToHome} />}
         titleComponent={<ActivityPill transaction={tx} />}
-        rightComponent={
-          <Inline alignVertical="center" space="7px">
-            <ButtonSymbol
-              symbol="ellipsis"
-              height="32px"
-              variant="transparentHover"
-              color="labelSecondary"
-            />
-          </Inline>
-        }
+        rightComponent={<MoreOptions transaction={tx} />}
       />
       <Separator color="separatorTertiary" />
 
