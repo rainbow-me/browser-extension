@@ -1,6 +1,6 @@
 import 'chromedriver';
 import 'geckodriver';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import { WebSocketProvider } from '@ethersproject/providers';
 import { Crypto } from '@peculiar/webcrypto';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
@@ -44,6 +44,7 @@ import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
+let provider: WebSocketProvider;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
@@ -65,6 +66,10 @@ vi.stubGlobal('chrome', {
   runtime: {
     getURL: (url: string) => `https://local.io/${url}`,
   },
+});
+
+vi.stubGlobal('WebSocketProvider', () => {
+  throw new Error('Real WebSocketProvider instantiated!');
 });
 
 vi.stubGlobal('window', {});
@@ -209,32 +214,106 @@ const apiResponses: ApiResponses = {
   },
 };
 
-export const restHandlers = [
+class MockWebSocketProvider extends WebSocketProvider {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  async send(method: string, _params: any): Promise<any> {
+    switch (method) {
+      case 'eth_call':
+        return '0x01';
+      case 'eth_chainId':
+        return '0x1';
+      case 'eth_getTransactionCount':
+        return '0x0';
+      case 'eth_getBlockByNumber':
+        return {
+          number: '0x12345',
+          hash: '0xabcdef1234567890',
+          timestamp: '0x617263202331302f323032332032313a31353a3031202b30303030',
+        };
+      case 'eth_estimateGas':
+        return '0x5';
+      case 'eth_getBalance':
+        return '0x1000000000000000'; // mock balance
+      default:
+        throw new Error(`Unsupported method: ${method}`);
+    }
+  }
+}
+
+const mockAnvilHandlers = [
+  rest.post('https://localhost:8545', async (req, res, ctx) => {
+    const requestBody = await req.json();
+    switch (requestBody.method) {
+      case 'eth_call':
+        return res(
+          ctx.status(200),
+          ctx.json({
+            jsonrpc: '2.0',
+            id: requestBody.id,
+            result: '0x01', // Replace with correct thing???
+          }),
+        );
+      case 'eth_chainId':
+        return res(
+          ctx.status(200),
+          ctx.json({
+            jsonrpc: '2.0',
+            id: requestBody.id,
+            result: '0x1', // Chain ID 1 (Mainnet)
+          }),
+        );
+      case 'eth_getTransactionCount':
+        return res(
+          ctx.status(200),
+          ctx.json({
+            jsonrpc: '2.0',
+            id: requestBody.id,
+            result: '0x0', // Custom nonce ?????? maybe write a funciton for this
+          }),
+        );
+      case 'eth_getBlockByNumber':
+        return res(
+          ctx.status(200),
+          ctx.json({
+            jsonrpc: '2.0',
+            id: requestBody.id,
+            result: {
+              number: '0x12345',
+              hash: '0xabcdef1234567890',
+              timestamp:
+                '0x617263202331302f323032332032313a31353a3031202b30303030',
+            },
+          }),
+        );
+      case 'eth_estimateGas':
+        return res(
+          ctx.status(200),
+          ctx.json({
+            jsonrpc: '2.0',
+            id: requestBody.id,
+            result: '0x5', // Gas estimate
+          }),
+        );
+      default:
+        return res(
+          ctx.status(400),
+          ctx.json({
+            error: 'Invalid request',
+          }),
+        );
+    }
+  }),
+];
+
+const restHandlers = [
   rest.all('https://aha.rainbow.me/', (req, res, ctx) => {
     const address = req.url.searchParams.get('address') || '';
     return res(ctx.status(200), ctx.json(apiResponses?.[address]));
   }),
 ];
 
-// const restHandlers = [
-//   rest.all('https://aha.rainbow.me/', (req, res, ctx) => {
-//     const address = req.url.searchParams.get('address') || '';
-//     console.log(`Request to ${req.url} intercepted.`);
-//     return res(
-//       ctx.status(200),
-//       ctx.json({ message: 'This is a mock response' }),
-//     );
-//   }),
-// ];
-
-const server = setupServer(...restHandlers);
-
-// server.listen({
-//   onUnhandledRequest: (req) => {
-//     console.log('Unhandled request:', req.url.toString());
-//   },
-// });
-
+// Create the server with all request handlers
+const server = setupServer(...restHandlers, ...mockAnvilHandlers);
 beforeAll(async () => {
   driver = await initDriverWithOptions({
     browser,
@@ -245,6 +324,7 @@ beforeAll(async () => {
   rootURL += extensionId;
   location.replace(`https://aha.rainbow.me/`);
   server.listen({ onUnhandledRequest: 'bypass' });
+  provider = new MockWebSocketProvider('http://localhost:8545');
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -266,6 +346,8 @@ afterAll(() => {
 it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen
   await goToWelcome(driver, rootURL);
+  console.log(window.location);
+  console.log(window);
   await findElementByTestIdAndClick({
     id: 'import-wallet-button',
     driver,
@@ -1176,8 +1258,6 @@ it('should be able to see swap information in review sheet', async () => {
 });
 
 it('should be able to execute swap', async () => {
-  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
-  await provider.ready;
   await delayTime('short');
 
   await findElementByTestIdAndClick({
@@ -1199,11 +1279,14 @@ it('should be able to execute swap', async () => {
   });
   await delayTime('medium');
 
-  await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
+  console.log(provider);
 
+  await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
   const ethBalanceBeforeSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
+  console.log(`ethBalanceBeforeSwap`, ethBalanceBeforeSwap);
+
   await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
@@ -1218,6 +1301,7 @@ it('should be able to execute swap', async () => {
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
+  console.log(`ethBalanceAfterSwap`, ethBalanceAfterSwap);
 
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
