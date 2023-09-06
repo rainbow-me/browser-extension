@@ -9,6 +9,7 @@ import { erc20ABI } from 'wagmi';
 import { ChainId } from '~/core/types/chains';
 
 import {
+  clearInput,
   delayTime,
   doNotFindElementByTestId,
   fillPrivateKey,
@@ -144,6 +145,24 @@ it('should be able to execute unlock and swap', async () => {
   const daiBalanceBeforeSwap = await tokenContract.balanceOf(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
+
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-navbar-button',
+    driver,
+  });
+  await delayTime('short');
+  await clearInput({
+    id: 'slippage-input-mask',
+    driver,
+  });
+  await typeOnTextInput({
+    id: 'slippage-input-mask',
+    driver,
+    text: '99',
+  });
+  await delayTime('medium');
+
+  await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
   await waitUntilElementByTestIdIsPresent({
     id: 'swap-confirmation-button-ready',

@@ -214,10 +214,14 @@ it('should be able to interact with slippage settings', async () => {
     id: 'explainer-action-button',
     driver,
   });
+  await clearInput({
+    id: 'slippage-input-mask',
+    driver,
+  });
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '\b4',
+    text: '4',
   });
   await delayTime('short');
   const warning = await findElementByTestId({
@@ -988,11 +992,14 @@ it('should be able to execute swap', async () => {
     driver,
   });
   await delayTime('short');
-
+  await clearInput({
+    id: 'slippage-input-mask',
+    driver,
+  });
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '\b99',
+    text: '99',
   });
   await delayTime('medium');
 
