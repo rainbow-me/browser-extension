@@ -12,7 +12,7 @@ import {
   findElementByText,
   getExtensionIdByName,
   getRootUrl,
-  importWalletFlow,
+  importWalletFlowUsingKeyboardNavigation,
   initDriverWithOptions,
   isElementFoundByText,
   toggleStatus,
@@ -39,7 +39,11 @@ describe('navigate through settings flows with shortcuts', () => {
   afterAll(async () => driver.quit());
 
   it('should be able import a wallet via seed', async () => {
-    await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
+    await importWalletFlowUsingKeyboardNavigation(
+      driver,
+      rootURL,
+      TEST_VARIABLES.EMPTY_WALLET.SECRET,
+    );
   });
   it('should display account name', async () => {
     await checkWalletName(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.ADDRESS);
