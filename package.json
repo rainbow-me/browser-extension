@@ -284,10 +284,5 @@
       "web-ext>ws>bufferutil": false,
       "web-ext>ws>utf-8-validate": false
     }
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "yarn lint --fix --ignore-pattern '!*.d.ts'"
-    ]
   }
 }
