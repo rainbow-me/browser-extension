@@ -226,6 +226,7 @@ export const AddByIndexSheet = ({
                           align="end"
                           onClose={() => setPathDropdownOpen(false)}
                           open={pathDropdownOpen}
+                          sideOffset={-5}
                           renderMenuTrigger={
                             <MenuItem
                               tabIndex={-1}
@@ -242,7 +243,9 @@ export const AddByIndexSheet = ({
                                 <Box
                                   style={{
                                     width:
-                                      currentPath === 'live' ? '30px' : '59px',
+                                      currentPath === 'live'
+                                        ? '30px'
+                                        : '58.5px',
                                   }}
                                 />
                               }
