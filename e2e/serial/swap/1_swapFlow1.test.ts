@@ -77,7 +77,12 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await fillPrivateKey(driver, TEST_VARIABLES.SEED_WALLET.PK);
+  await fillPrivateKey(
+    driver,
+    isFirefox
+      ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
+      : TEST_VARIABLES.SEED_WALLET.PK,
+  );
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',

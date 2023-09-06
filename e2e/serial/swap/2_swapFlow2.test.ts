@@ -36,6 +36,7 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+const isFirefox = browser === 'firefox';
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -76,7 +77,12 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await fillPrivateKey(driver, TEST_VARIABLES.SEED_WALLET.PK);
+  await fillPrivateKey(
+    driver,
+    isFirefox
+      ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
+      : TEST_VARIABLES.SEED_WALLET.PK,
+  );
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
