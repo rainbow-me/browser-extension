@@ -19,10 +19,8 @@ export function AddressWithENSReverseResolution({
 }) {
   // Attempt reverse resoltion first
   const { data: ensName } = useEnsName({ address });
-  if (ensName) {
-    return ensName;
-  }
-  return truncateAddress(address || '0x');
+  if (ensName) return <>{ensName}</>;
+  return <>{truncateAddress(address || '0x')}</>;
 }
 
 export function AddressOrEns({
