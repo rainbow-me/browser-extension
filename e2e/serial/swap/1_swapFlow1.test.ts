@@ -60,6 +60,14 @@ afterEach(async (context: any) => {
 
 afterAll(() => driver.quit());
 
+const WALLET_TO_USE_SECRET = isFirefox
+  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
+  : TEST_VARIABLES.SEED_WALLET.PK;
+
+const WALLET_TO_USE_ADDRESS = isFirefox
+  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
+  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+
 it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen
   await goToWelcome(driver, rootURL);
@@ -77,12 +85,7 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await fillPrivateKey(
-    driver,
-    isFirefox
-      ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
-      : TEST_VARIABLES.SEED_WALLET.PK,
-  );
+  await fillPrivateKey(driver, WALLET_TO_USE_SECRET);
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
@@ -1010,9 +1013,7 @@ it('should be able to execute swap', async () => {
 
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
-  const ethBalanceBeforeSwap = await provider.getBalance(
-    TEST_VARIABLES.SEED_WALLET.ADDRESS,
-  );
+  const ethBalanceBeforeSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
   await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
@@ -1024,9 +1025,7 @@ it('should be able to execute swap', async () => {
   // Adding delay to make sure the provider gets the balance after the swap
   // Because CI is slow so this triggers a race condition most of the time.
   await delay(5000);
-  const ethBalanceAfterSwap = await provider.getBalance(
-    TEST_VARIABLES.SEED_WALLET.ADDRESS,
-  );
+  const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
 
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),

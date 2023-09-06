@@ -38,6 +38,14 @@ const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 const isFirefox = browser === 'firefox';
 
+const WALLET_TO_USE_SECRET = isFirefox
+  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
+  : TEST_VARIABLES.SEED_WALLET.PK;
+
+const WALLET_TO_USE_ADDRESS = isFirefox
+  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
+  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+
 beforeAll(async () => {
   driver = await initDriverWithOptions({
     browser,
@@ -77,12 +85,7 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await fillPrivateKey(
-    driver,
-    isFirefox
-      ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
-      : TEST_VARIABLES.SEED_WALLET.PK,
-  );
+  await fillPrivateKey(driver, WALLET_TO_USE_SECRET);
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
@@ -149,7 +152,7 @@ it('should be able to execute unlock and swap', async () => {
     provider,
   );
   const usdcBalanceBeforeSwap = await tokenContract.balanceOf(
-    TEST_VARIABLES.SEED_WALLET.ADDRESS,
+    WALLET_TO_USE_ADDRESS,
   );
 
   await findElementByTestIdAndClick({
@@ -183,7 +186,7 @@ it('should be able to execute unlock and swap', async () => {
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('long');
   const usdcBalanceAfterSwap = await tokenContract.balanceOf(
-    TEST_VARIABLES.SEED_WALLET.ADDRESS,
+    WALLET_TO_USE_ADDRESS,
   );
   const balanceDifference = subtract(
     usdcBalanceBeforeSwap.toString(),
