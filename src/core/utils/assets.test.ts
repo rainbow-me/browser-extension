@@ -129,6 +129,7 @@ const ETH_FROM_METADATA = {
     },
   },
   price: {
+    // changedAt: 1678390027,
     relativeChange24h: -0.6368079848712814,
     value: 1644.5900000000001,
   },
