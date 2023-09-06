@@ -27,11 +27,11 @@ export function AddressOrEns({
   address,
   size = '20pt',
   weight = 'heavy',
-  color,
+  color = 'label',
 }: AddressOrEnsProps) {
   if (!address) return null;
   return (
-    <Text color={color || 'label'} size={size} weight={weight}>
+    <Text color={color} size={size} weight={weight}>
       {isENSAddressFormat(address) ? (
         address
       ) : (
