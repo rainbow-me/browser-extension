@@ -397,12 +397,12 @@ it('should be able to open token to buy input and select assets', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   expect(elementFound).toBeFalsy();
   const toBuyInputDaiSelected = await findElementByTestId({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
@@ -434,7 +434,7 @@ it('should be able to type native amount on sell input', async () => {
   expect(assetToSellInputText).not.toBe('');
 
   const assetToBuyInputText = await getTextFromTextInput({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(assetToBuyInputText).not.toBe('');
@@ -442,7 +442,7 @@ it('should be able to type native amount on sell input', async () => {
 
 it('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   const favoritesSection = await findElementByTestId({
@@ -839,11 +839,11 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   const toBuyInputDaiSelected = await findElementByTestId({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
@@ -865,11 +865,11 @@ it('should be able to see swap information in review sheet', async () => {
     driver,
   });
   expect(ethAssetToSellAssetCard).toBeTruthy();
-  const daiAssetToBuyAssetCard = await findElementByTestId({
-    id: `DAI-asset-to-buy-swap-asset-card`,
+  const usdcAssetToBuyAssetCard = await findElementByTestId({
+    id: `USDC-asset-to-buy-swap-asset-card`,
     driver,
   });
-  expect(daiAssetToBuyAssetCard).toBeTruthy();
+  expect(usdcAssetToBuyAssetCard).toBeTruthy();
   const minimumReceivedDetailsRow = await findElementByTestId({
     id: `minimum-received-details-row`,
     driver,
@@ -967,7 +967,7 @@ it('should be able to see swap information in review sheet', async () => {
     id: 'swap-review-confirmation-text',
     driver,
   });
-  expect(swapReviewConfirmationText).toBe('Swap ETH to DAI');
+  expect(swapReviewConfirmationText).toBe('Swap ETH to USDC');
 
   const swapReviewTitleText = await getTextFromText({
     id: 'swap-review-title-text',
