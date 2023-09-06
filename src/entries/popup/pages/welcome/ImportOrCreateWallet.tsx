@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { Box, Button, Inline, Text, ThemeProvider } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
@@ -16,8 +17,10 @@ import {
 } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { useBrowser } from '../../hooks/useBrowser';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { simulateClick } from '../../utils/simulateClick';
 
 export function ImportOrCreateWallet() {
   const navigate = useRainbowNavigate();
@@ -73,6 +76,18 @@ export function ImportOrCreateWallet() {
     }
   }, [loading, navigate, requestPermissionsIfNeeded, setCurrentAddress]);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.FORWARD.key) {
+        e.preventDefault();
+        simulateClick(containerRef?.current);
+      } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
+        simulateClick(containerRef?.current);
+      }
+    },
+  });
+
   return (
     <Box style={{ marginTop: '234px' }}>
       <Rows space="20px">
@@ -97,6 +112,7 @@ export function ImportOrCreateWallet() {
                     symbolSide="right"
                     onClick={handleCreateNewWalletClick}
                     testId="create-wallet-button"
+                    tabIndex={0}
                   >
                     {loading ? (
                       <Inline space="8px" alignVertical="center">
@@ -129,6 +145,7 @@ export function ImportOrCreateWallet() {
                     width="full"
                     onClick={handleImportWalletClick}
                     testId="import-wallet-button"
+                    tabIndex={0}
                   >
                     {i18n.t('welcome.import_wallet')}
                   </Button>
