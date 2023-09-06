@@ -334,57 +334,51 @@ export function useSearchCurrencyLists({
   const results = useMemo(() => {
     const sections: AssetToBuySection[] = [];
     if (bridgeAsset) {
-      const bridgeSection = {
+      sections.push({
         data: [bridgeAsset],
-        id: 'bridge' as AssetToBuySectionId,
-      };
-      sections.push(bridgeSection);
+        id: 'bridge',
+      });
     }
     if (favoritesList?.length) {
-      const favoritesSection = {
+      sections.push({
         data: filterAssetsFromBridgeAndAssetToSell(favoritesList),
-        id: 'favorites' as AssetToBuySectionId,
-      };
-      sections.push(favoritesSection);
+        id: 'favorites',
+      });
     }
 
     if (query === '') {
-      const curatedSection = {
+      sections.push({
         data: filterAssetsFromFavoritesBridgeAndAssetToSell(
           curatedAssets[outputChainId],
         ),
-        id: 'verified' as AssetToBuySectionId,
-      };
-      sections.push(curatedSection);
+        id: 'verified',
+      });
     } else {
       if (targetVerifiedAssets?.length) {
-        const verifiedSection = {
+        sections.push({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             targetVerifiedAssets,
           ),
-          id: 'verified' as AssetToBuySectionId,
-        };
-        sections.push(verifiedSection);
+          id: 'verified',
+        });
       }
 
       if (targetUnverifiedAssets?.length) {
-        const unverifiedSection = {
+        sections.push({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             targetUnverifiedAssets,
           ),
-          id: 'unverified' as AssetToBuySectionId,
-        };
-        sections.push(unverifiedSection);
+          id: 'unverified',
+        });
       }
 
       if (!sections.length && crosschainExactMatches?.length) {
-        const crosschainSection = {
+        sections.push({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             crosschainExactMatches,
           ),
-          id: 'other_networks' as AssetToBuySectionId,
-        };
-        sections.push(crosschainSection);
+          id: 'other_networks',
+        });
       }
     }
 

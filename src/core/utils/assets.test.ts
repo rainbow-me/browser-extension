@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { Address } from 'wagmi';
 
-import { AddressOrEth, ZerionAsset } from '../types/assets';
+import { AddressOrEth, AssetMetadata, ZerionAsset } from '../types/assets';
 import { ChainId, ChainName } from '../types/chains';
 import { SearchAsset } from '../types/search';
 
@@ -105,39 +105,39 @@ const ETH_FROM_METADATA = {
   name: 'Ethereum',
   networks: {
     1: {
-      address: 'eth' as AddressOrEth,
+      address: 'eth',
       decimals: 18,
     },
     10: {
-      address: '0x0000000000000000000000000000000000000000' as AddressOrEth,
+      address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
     },
     56: {
-      address: '0x2170ed0880ac9a755fd29b2688956bd959f933f8' as AddressOrEth,
+      address: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
       decimals: 18,
     },
     8453: {
-      address: '0x0000000000000000000000000000000000000000' as AddressOrEth,
+      address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
     },
     42161: {
-      address: '0x0000000000000000000000000000000000000000' as AddressOrEth,
+      address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
     },
     7777777: {
-      address: '0x0000000000000000000000000000000000000000' as AddressOrEth,
+      address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
     },
   },
   price: {
-    changedAt: 1678390027,
+    // changedAt: 1678390027,
     relativeChange24h: -0.6368079848712814,
     value: 1644.5900000000001,
   },
   symbol: 'ETH',
   totalSupply: 120217770.055426,
   volume1d: 4573101281,
-};
+} satisfies AssetMetadata;
 
 const BSC_ETH_FROM_ZERION = {
   asset_code: '0x2170ed0880ac9a755fd29b2688956bd959f933f8' as Address,
