@@ -120,6 +120,7 @@ export function SeedReveal() {
               blur="26px"
               onClick={handleSavedTheseWords}
               testId="saved-these-words-button"
+              tabIndex={0}
             >
               {i18n.t('seed_reveal.saved_these_words')}
             </Button>

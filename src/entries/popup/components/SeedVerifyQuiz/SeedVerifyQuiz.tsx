@@ -79,11 +79,24 @@ const SeedWordRow = ({
     handleSelect({ word, index });
   }, [handleSelect, index, word]);
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<Element>) => {
+      if (e.key === 'Enter') {
+        onClick();
+      }
+    },
+    [onClick],
+  );
+
   return (
     <Box
       width="fit"
       onClick={onClick}
-      borderColor="separatorTertiary"
+      onKeyDown={handleKeyDown}
+      borderColor={{
+        default: 'separatorTertiary',
+        focus: 'accent',
+      }}
       borderRadius="8px"
       padding="8px"
       borderWidth="1px"
@@ -100,6 +113,7 @@ const SeedWordRow = ({
         whiteSpace: 'nowrap',
       }}
       testId={`word_${word}`}
+      tabIndex={0}
     >
       <Inline wrap={false} alignVertical="bottom" space="10px">
         <Box style={{ width: '15px' }}>
@@ -320,6 +334,7 @@ export function SeedVerifyQuiz({
           width="full"
           onClick={handleSkip}
           testId="skip-this-button"
+          tabIndex={0}
         >
           {i18n.t('seed_verify.skip')}
         </Button>
