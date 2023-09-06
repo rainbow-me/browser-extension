@@ -89,8 +89,6 @@ export interface ZerionAsset {
   network?: ChainName;
 }
 
-export type AddressOrEth = Address | 'eth';
-
 // protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
 export type ProtocolType =
   | 'aave-v2'
