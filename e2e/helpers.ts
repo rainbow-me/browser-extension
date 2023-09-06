@@ -438,14 +438,11 @@ export async function getTextFromDappText({
 // two helpers bc normal keys / special keys work a little different in selenium
 export async function performShortcutWithNormalKey(
   driver: WebDriver,
-  key: keyof typeof Key,
+  key: string,
 ) {
   try {
     await delayTime('short');
-    await driver
-      .actions()
-      .sendKeys(Key.chord(Key[key] as string))
-      .perform();
+    await driver.actions().sendKeys(key).perform();
   } catch (error) {
     console.error(
       `Error occurred while attempting shortcut with the keyboard character '${key}':`,
@@ -481,17 +478,16 @@ export async function executePerformShortcut({
   timesToPress = 1,
 }: {
   driver: WebDriver;
-  key: keyof typeof Key;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  key: any;
   timesToPress?: number;
 }): Promise<void> {
   try {
     for (let i = 0; i < timesToPress; i++) {
-      if (key.length === 1) {
+      if (!(key in Key)) {
         await performShortcutWithNormalKey(driver, key);
-      } else if (key.length > 1) {
-        await performShortcutWithSpecialKey(driver, key);
       } else {
-        throw new Error('No valid key or keyboard character provided.');
+        await performShortcutWithSpecialKey(driver, key);
       }
     }
   } catch (error) {
@@ -765,6 +761,101 @@ export async function importWalletFlow(
       text: testPassword,
     });
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+    await delayTime('long');
+    const welcomeText = await findElementByText(
+      driver,
+      'Rainbow is ready to use',
+    );
+    expect(welcomeText).toBeTruthy();
+  }
+}
+
+export async function importWalletFlowUsingKeyboardNavigation(
+  driver: WebDriver,
+  rootURL: string,
+  walletSecret: string,
+  secondaryWallet = false as boolean,
+) {
+  if (secondaryWallet) {
+    await goToPopup(driver, rootURL);
+    await executePerformShortcut({ driver, key: 'w' });
+    // TODO fix: can't navigate to these options via keyboard yet
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 3,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  } else {
+    await goToPopup(driver, rootURL);
+    // TODO fix: can't navigate to these options via keyboard yet
+    await findElementByTestIdAndClick({
+      id: 'import-wallet-button',
+      driver,
+    });
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  }
+  const isPrivateKey =
+    walletSecret.substring(0, 2) === '0x' && walletSecret.length === 66;
+  await executePerformShortcut({
+    driver,
+    key: 'ARROW_DOWN',
+    timesToPress: isPrivateKey ? 3 : 2,
+  });
+  await executePerformShortcut({ driver, key: 'ENTER' });
+  isPrivateKey
+    ? await fillPrivateKey(driver, walletSecret)
+    : await fillSeedPhrase(driver, walletSecret);
+  await executePerformShortcut({
+    driver,
+    key: 'ARROW_DOWN',
+  });
+  await executePerformShortcut({ driver, key: 'ENTER' });
+  if (!isPrivateKey) {
+    // TODO fix: can't navigate to this with keyboard yet.
+    await findElementByTestIdAndClick({
+      id: 'add-wallets-button',
+      driver,
+    });
+  }
+  if (secondaryWallet) {
+    await delayTime('medium');
+    const accountHeader = await findElementById({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    expect(accountHeader).toBeTruthy();
+  } else {
+    const pwInput = await findElementByTestId({
+      id: 'password-input',
+      driver,
+    });
+    const pwInputConfirm = await findElementByTestId({
+      id: 'confirm-password-input',
+      driver,
+    });
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+    });
+    await pwInput.sendKeys(testPassword);
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
+    await pwInputConfirm.sendKeys(testPassword);
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await delayTime('long');
     const welcomeText = await findElementByText(
       driver,
