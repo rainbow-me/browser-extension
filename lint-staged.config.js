@@ -1,4 +1,7 @@
 module.exports = {
-  '*.{js,jsx}': ['eslint --cache --fix'],
-  '*.{ts,tsx}': [() => 'tsc --skipLibCheck --noEmit', 'eslint --cache --fix'],
+  '*.{js,jsx}': ['eslint --fix --cache --max-warnings 0'],
+  '*.{ts,tsx}': [
+    () => 'tsc --skipLibCheck --noEmit ',
+    "eslint --fix --cache --max-warnings 0 --ignore-pattern '!*.d.ts'",
+  ],
 };
