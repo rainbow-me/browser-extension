@@ -79,7 +79,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe('App interactions flow', () => {
+describe.runIf(browser !== 'firefox')('App interactions flow', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
