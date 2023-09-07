@@ -128,7 +128,7 @@ export const createUnlockAndSwapRap = async (
 
   const allowsPermit =
     !nativeAsset &&
-    (chainId === ChainId.mainnet || chainId === 1337) &&
+    chainId === ChainId.mainnet &&
     ALLOWS_PERMIT[
       assetToSell.address?.toLowerCase() as keyof PermitSupportedTokenList
     ];
