@@ -110,7 +110,7 @@ const ActivityDescription = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const { type, to, direction } = transaction;
+  const { type, to, asset } = transaction;
   let description = transaction.description;
   let tag: string | undefined;
   if (type === 'contract_interaction' && to) {
@@ -119,7 +119,9 @@ const ActivityDescription = ({
   }
 
   const nftChangesAmount = transaction.changes
-    ?.filter((c) => c?.asset.type === 'nft' && c.direction !== direction)
+    ?.filter(
+      (c) => asset?.address === c?.asset.address && c?.asset.type === 'nft',
+    )
     .filter(Boolean).length;
   if (nftChangesAmount) tag = nftChangesAmount.toString();
 
@@ -178,9 +180,15 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
       >
         <ActivityIcon transaction={transaction} />
 
-        <Box display="flex" justifyContent="space-between" width="full">
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          width="full"
+          gap="4px"
+        >
           <Box
             display="flex"
+            flexShrink="0"
             flexDirection="column"
             alignItems="flex-start"
             justifyContent="center"
@@ -211,7 +219,7 @@ const ActivityTypeLabel = ({
   const color = typeLabelColor[status];
 
   return (
-    <Inline space="4px">
+    <Inline space="4px" wrap={false}>
       <Box style={{ width: 9, height: 9 }}>
         <Inline height="full" alignHorizontal="center" alignVertical="center">
           <ActivityTypeIcon transaction={{ status, type }} />

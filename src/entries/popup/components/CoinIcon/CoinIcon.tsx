@@ -241,7 +241,14 @@ export const NFTIcon = ({
   const chainId = asset.chainId;
   const [badSrc, setBadSrc] = useState(false);
   if (!asset.icon_url || badSrc)
-    return <CoinIcon asset={asset} size={size} badge={badge} />;
+    return (
+      <CoinIcon
+        asset={asset}
+        fallbackText={asset.name}
+        size={size}
+        badge={badge}
+      />
+    );
   return (
     <Box position="relative" style={{ minWidth: size, height: size }}>
       <Box

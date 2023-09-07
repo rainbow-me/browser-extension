@@ -41,7 +41,7 @@ export const ActivityIcon = ({
     return (
       <CoinIcon
         asset={asset}
-        fallbackText={asset.symbol}
+        fallbackText={asset.name}
         size={size}
         badge={badge}
       />

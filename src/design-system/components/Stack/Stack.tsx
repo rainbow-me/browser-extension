@@ -34,6 +34,7 @@ export function Stack({
         alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
       }
       gap={space}
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
     >
       {Children.map(childrenArray, (child, index) => {

@@ -23,6 +23,7 @@ import {
   NewTransaction,
   PaginatedTransactionsApiResponse,
   RainbowTransaction,
+  TransactionDirection,
   TransactionType,
   transactionTypeShouldHaveChanges,
 } from '../types/transactions';
@@ -87,6 +88,15 @@ type ParseTransactionArgs = {
   chainId: ChainId;
 };
 
+const getAssetFromChanges = (
+  changes: { direction: TransactionDirection; asset: ParsedUserAsset }[],
+  type: TransactionType,
+) => {
+  if (type === 'sale')
+    return changes?.find((c) => c?.direction === 'out')?.asset;
+  return changes[0]?.asset;
+};
+
 export function parseTransaction({
   tx,
   currency,
@@ -109,15 +119,17 @@ export function parseTransaction({
   if (!type || (transactionTypeShouldHaveChanges(type) && changes.length === 0))
     return; // filters some spam or weird api responses
 
-  const asset: RainbowTransaction['asset'] = tx.meta.asset?.asset_code
-    ? parseAsset({ asset: tx.meta.asset, currency })
-    : changes[0]?.asset;
+  const asset: RainbowTransaction['asset'] = meta.asset?.asset_code
+    ? parseAsset({ asset: meta.asset, currency })
+    : getAssetFromChanges(changes, type);
 
   const direction = tx.direction || getDirection(type);
   const methodName = meta.action;
 
   const description =
-    asset?.type === 'nft' ? asset.symbol : asset?.name || methodName;
+    asset?.type === 'nft'
+      ? asset.symbol || asset.name
+      : asset?.name || methodName;
 
   const value = changes
     .find((change) => change?.asset.isNativeAsset)

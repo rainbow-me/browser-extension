@@ -46,7 +46,7 @@ type BaseTransaction = {
   approvalAmount?: 'UNLIMITED' | (string & object);
   contract?: {
     name: string;
-    iconUrl: string;
+    iconUrl?: string;
   };
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 

@@ -140,20 +140,17 @@ const ContractDisplay = ({
   address: Address;
   contract: {
     name: string;
-    iconUrl: string;
+    iconUrl?: string;
   };
 }) => {
   if (!name) return <AddressDisplay address={address} />;
   return (
     <Inline space="6px" alignVertical="center">
-      <Box
-        borderRadius="6px"
-        position="relative"
-        background={'fillSecondary'}
-        style={{ height: 16, width: 16, overflow: 'hidden' }}
-      >
+      {iconUrl ? (
         <ExternalImage src={iconUrl} width={16} height={16} loading="lazy" />
-      </Box>
+      ) : (
+        <WalletAvatar address={address} size={16} emojiSize="9pt" />
+      )}
       <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
         {name}
       </TextOverflow>
@@ -249,10 +246,12 @@ function ConfirmationData({
 }
 
 function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
-  const { maxPriorityFeePerGas, maxFeePerGas, gasPrice, fee, nonce } =
+  const { maxPriorityFeePerGas, maxFeePerGas, gasPrice, fee, nonce, changes } =
     transaction;
 
   const value = transaction.value && formatEther(transaction.value);
+  const nativeAssetSymbol = changes?.find((c) => c?.asset.isNativeAsset)?.asset
+    .symbol;
   const minerTip =
     maxPriorityFeePerGas && formatUnits(maxPriorityFeePerGas, 'gwei');
   const maxBaseFee =
@@ -260,11 +259,11 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
 
   return (
     <Stack space="24px">
-      {value && (
+      {value && nativeAssetSymbol && (
         <InfoRow
           symbol="dollarsign.square"
           label={i18n.t('activity_details.value')}
-          value={`${formatNumber(value)} ETH`}
+          value={`${formatNumber(value)} ${nativeAssetSymbol}`}
         />
       )}
       <InfoRow
@@ -387,17 +386,17 @@ type TxAdditionalDetails = {
   standard?: ParsedAsset['standard'];
 };
 const getAdditionalDetails = (transaction: RainbowTransaction) => {
-  const tokenContract = transaction.asset?.address;
   const exchangeRate = getExchangeRate(transaction);
   const nft = transaction.changes?.find((c) => c?.asset.type === 'nft')?.asset;
   const collection = nft?.symbol;
   const standard = nft?.standard;
-  const tokenIsEth = tokenContract === ETH_ADDRESS;
+  const assetAddress = transaction.asset?.address;
+  const tokenContract = assetAddress !== ETH_ADDRESS ? assetAddress : undefined;
 
   if (!tokenContract && !exchangeRate && !collection && !standard) return;
 
   return {
-    tokenContract: !tokenIsEth ? tokenContract : undefined,
+    tokenContract,
     exchangeRate,
     collection,
     standard,
@@ -552,8 +551,6 @@ function ActivityDetailsSheet({
       <Stack
         separator={<Separator color="separatorTertiary" />}
         padding="20px"
-        display="flex"
-        flexDirection="column"
         gap="20px"
       >
         <ToFrom transaction={tx} />
