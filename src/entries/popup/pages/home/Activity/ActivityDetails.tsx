@@ -11,14 +11,14 @@ import { ParsedAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import {
-  SUPPORTED_CHAIN_IDS,
-  getBlockExplorerHostForChain,
-} from '~/core/utils/chains';
+import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { truncateString } from '~/core/utils/strings';
-import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
+import {
+  getBlockExplorerName,
+  getTransactionBlockExplorerUrl,
+} from '~/core/utils/transactions';
 import {
   Bleed,
   Box,
@@ -489,7 +489,7 @@ const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
 };
 
 function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
-  const explorerHost = getBlockExplorerHostForChain(transaction.chainId);
+  const explorerHost = getBlockExplorerName(transaction.chainId);
   const explorerUrl = getTransactionBlockExplorerUrl(transaction);
   const hash = transaction.hash;
   return (

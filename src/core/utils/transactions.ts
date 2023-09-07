@@ -31,6 +31,7 @@ import {
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
+import { capitalize } from './strings';
 
 /**
  * @desc remove hex prefix
@@ -345,7 +346,10 @@ export function getTokenBlockExplorerUrl({
   return `http://${blockExplorerHost}/token/${address}`;
 }
 
-const capitalize = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
+export function getBlockExplorerName(chainId: ChainId) {
+  return capitalize(getBlockExplorerHostForChain(chainId).split('.').at?.(-2));
+}
+
 export const getTokenBlockExplorer = ({
   address,
   chainId,
@@ -354,7 +358,7 @@ export const getTokenBlockExplorer = ({
   if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
   return {
     url: getTokenBlockExplorerUrl({ address: _address, chainId }),
-    name: capitalize(getBlockExplorerHostForChain(chainId).split('.').at?.(-2)),
+    name: getBlockExplorerName(chainId),
   };
 };
 

@@ -256,7 +256,7 @@ export const DropdownMenuItem = ({
         )}
         {leftComponent}
         {typeof children === 'string' ? (
-          <TextOverflow size="14pt" weight="semibold" maxWidth={125}>
+          <TextOverflow size="14pt" weight="semibold">
             {children}
           </TextOverflow>
         ) : (
