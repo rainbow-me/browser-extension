@@ -114,15 +114,16 @@ export const ActivityValue = ({
   return (
     <Box
       display="flex"
+      flexShrink="0"
       flexDirection="column"
       alignItems="flex-end"
       justifyContent="center"
       gap="8px"
     >
       {topValue && (
-        <Text color="labelTertiary" size="12pt" weight="semibold">
+        <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
           {topValue}
-        </Text>
+        </TextOverflow>
       )}
       {typeof bottomValue === 'string' ? (
         <TextOverflow

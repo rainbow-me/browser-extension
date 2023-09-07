@@ -126,8 +126,8 @@ const ActivityDescription = ({
   if (nftChangesAmount) tag = nftChangesAmount.toString();
 
   return (
-    <Inline space="4px" alignVertical="center">
-      <TextOverflow size="14pt" weight="semibold" maxWidth={150}>
+    <Inline space="4px" alignVertical="center" wrap={false}>
+      <TextOverflow size="14pt" weight="semibold">
         {description}
       </TextOverflow>
       {tag && (
@@ -188,7 +188,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
         >
           <Box
             display="flex"
-            flexShrink="0"
+            flexShrink="1"
             flexDirection="column"
             alignItems="flex-start"
             justifyContent="center"
