@@ -9,6 +9,7 @@ import { erc20ABI } from 'wagmi';
 import { ChainId } from '~/core/types/chains';
 
 import {
+  clearInput,
   delayTime,
   doNotFindElementByTestId,
   fillPrivateKey,
@@ -35,6 +36,15 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+const isFirefox = browser === 'firefox';
+
+const WALLET_TO_USE_SECRET = isFirefox
+  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
+  : TEST_VARIABLES.SEED_WALLET.PK;
+
+const WALLET_TO_USE_ADDRESS = isFirefox
+  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
+  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -75,7 +85,7 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await fillPrivateKey(driver, TEST_VARIABLES.SEED_WALLET.PK);
+  await fillPrivateKey(driver, WALLET_TO_USE_SECRET);
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
@@ -113,7 +123,7 @@ it('should be able to go to swap flow', async () => {
 
 it('should be able to go to review a unlock and swap', async () => {
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-row`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -121,11 +131,11 @@ it('should be able to go to review a unlock and swap', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   await typeOnTextInput({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b50`,
     driver,
   });
@@ -137,13 +147,31 @@ it('should be able to execute unlock and swap', async () => {
   await provider.ready;
   await delayTime('short');
   const tokenContract = new Contract(
-    SWAP_VARIABLES.DAI_MAINNET_ADDRESS,
+    SWAP_VARIABLES.USDC_MAINNET_ADDRESS,
     erc20ABI,
     provider,
   );
-  const daiBalanceBeforeSwap = await tokenContract.balanceOf(
-    TEST_VARIABLES.SEED_WALLET.ADDRESS,
+  const usdcBalanceBeforeSwap = await tokenContract.balanceOf(
+    WALLET_TO_USE_ADDRESS,
   );
+
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-navbar-button',
+    driver,
+  });
+  await delayTime('short');
+  await clearInput({
+    id: 'slippage-input-mask',
+    driver,
+  });
+  await typeOnTextInput({
+    id: 'slippage-input-mask',
+    driver,
+    text: '99',
+  });
+  await delayTime('medium');
+
+  await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
   await waitUntilElementByTestIdIsPresent({
     id: 'swap-confirmation-button-ready',
@@ -157,19 +185,19 @@ it('should be able to execute unlock and swap', async () => {
   await delayTime('long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('long');
-  const daiBalanceAfterSwap = await tokenContract.balanceOf(
-    TEST_VARIABLES.SEED_WALLET.ADDRESS,
+  const usdcBalanceAfterSwap = await tokenContract.balanceOf(
+    WALLET_TO_USE_ADDRESS,
   );
   const balanceDifference = subtract(
-    daiBalanceBeforeSwap.toString(),
-    daiBalanceAfterSwap.toString(),
+    usdcBalanceBeforeSwap.toString(),
+    usdcBalanceAfterSwap.toString(),
   );
-  const daiBalanceDifference = convertRawAmountToDecimalFormat(
+  const usdcBalanceDifference = convertRawAmountToDecimalFormat(
     balanceDifference.toString(),
-    18,
+    6,
   );
 
-  expect(Number(daiBalanceDifference)).toBe(50);
+  expect(Number(usdcBalanceDifference)).toBe(50);
 });
 
 it('should be able to go to swap flow', async () => {
@@ -179,12 +207,12 @@ it('should be able to go to swap flow', async () => {
 
 it.skip('should be able to go to review a crosschain swap', async () => {
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-row`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   await delayTime('medium');
   const toSellInputDaiSelected = await findElementByTestId({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toSellInputDaiSelected).toBeTruthy();
@@ -388,7 +416,7 @@ it.skip('should be able to see crosschain swap information in review sheet', asy
 
 it.skip('should be able to go to review a bridge', async () => {
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-token-input-remove`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({

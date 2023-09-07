@@ -127,7 +127,9 @@ export type AssetMetadata = {
   iconUrl: string;
   marketCap: number;
   name: string;
-  networks?: Record<ChainId, { address: AddressOrEth; decimals: number }>;
+  networks?: Partial<
+    Record<ChainId, { address: AddressOrEth; decimals: number }>
+  >;
   price: {
     value: number;
     relativeChange24h: number;

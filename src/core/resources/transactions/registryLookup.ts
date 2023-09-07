@@ -11,6 +11,7 @@ import {
 } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
 import { methodRegistryLookupAndParse } from '~/core/utils/methodRegistry';
+import { RainbowError, logger } from '~/logger';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -45,27 +46,32 @@ type RegistryLookupQueryKey = ReturnType<typeof registryLookupQueryKey>;
 async function registryLookupQueryFunction({
   queryKey: [{ data, to, chainId, hash }],
 }: QueryFunctionArgs<typeof registryLookupQueryKey>) {
-  let dataToLookup = data;
-  if (!to) {
-    return i18n.t('approve_request.contract_deployment');
-  }
-  if ((!data || data === '0x') && hash) {
-    const provider = getProvider({ chainId });
-    const tx = await provider.getTransaction(hash);
-    dataToLookup = tx?.data;
-  }
+  try {
+    let dataToLookup = data;
+    if (!to) {
+      return i18n.t('approve_request.contract_deployment');
+    }
+    if ((!data || data === '0x') && hash) {
+      const provider = getProvider({ chainId });
+      const tx = await provider.getTransaction(hash);
+      dataToLookup = tx?.data;
+    }
+    if (!dataToLookup || dataToLookup === '0x' || dataToLookup.length < 10) {
+      return '';
+    }
+    const methodSignaturePrefix = dataToLookup?.substr(0, 10);
 
-  if (!dataToLookup || dataToLookup === '0x' || dataToLookup.length < 10) {
+    const { name } = await methodRegistryLookupAndParse(
+      methodSignaturePrefix,
+      to as Address,
+    );
+    return name;
+  } catch (e) {
+    logger.error(new RainbowError('registryLookUpQueryFunction: '), {
+      message: (e as Error)?.message,
+    });
     return '';
   }
-
-  const methodSignaturePrefix = dataToLookup?.substr(0, 10);
-
-  const { name } = await methodRegistryLookupAndParse(
-    methodSignaturePrefix,
-    to as Address,
-  );
-  return name;
 }
 
 type RegistryLookupResult = QueryFunctionResult<
