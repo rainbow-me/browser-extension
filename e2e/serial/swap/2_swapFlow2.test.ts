@@ -131,7 +131,7 @@ it('should be able to go to review a unlock and swap', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   await typeOnTextInput({
