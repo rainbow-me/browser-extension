@@ -8,6 +8,7 @@ import { KeychainType } from '~/core/types/keychainTypes';
 
 import { HWSigner } from '../HWSigner';
 import { IKeychain, PrivateKey } from '../IKeychain';
+import { getHDPathForVendorAndType } from '../hdPath';
 
 export interface SerializedHardwareWalletKeychain {
   vendor?: string;
@@ -16,7 +17,7 @@ export interface SerializedHardwareWalletKeychain {
   accountsEnabled?: number;
   type: string;
   autodiscover?: boolean;
-  wallets?: Array<{ address: Address; index: number }>;
+  wallets?: Array<{ address: Address; index: number; hdPath?: string }>;
   accountsDeleted?: Array<number>;
 }
 
@@ -35,14 +36,16 @@ export class HardwareWalletKeychain implements IKeychain {
       deviceId: '',
       accountsEnabled: 1,
       accountsDeleted: [],
-      hdPath: "m/44'/60'/0'/0",
+      hdPath: '', // No longer used but kept for backwards compatibility
       addAccount: (
         index: number,
         address: Address,
-      ): { address: Address; index: number } => {
+        hdPath: string,
+      ): { address: Address; index: number; hdPath?: string } => {
         const wallet = {
           address,
           index,
+          hdPath,
         };
         privates.get(this).wallets.push(wallet);
         return wallet;
@@ -54,10 +57,15 @@ export class HardwareWalletKeychain implements IKeychain {
     return this.deserialize(options);
   }
 
-  async addAccountAtIndex(index: number, address: Address): Promise<Address> {
+  async addAccountAtIndex(
+    index: number,
+    address: Address,
+    hdPath?: string,
+  ): Promise<Address> {
     const wallet = {
       address,
       index,
+      hdPath,
     };
     privates.get(this).wallets.push(wallet);
     return Promise.resolve(address);
@@ -83,7 +91,15 @@ export class HardwareWalletKeychain implements IKeychain {
     const wallet = privates
       .get(this)
       .wallets.find((wallet: Wallet) => (wallet as Wallet).address === address);
-    return `${privates.get(this).hdPath}/${wallet.index}`;
+    if (wallet.hdPath) {
+      return wallet.hdPath;
+    } else {
+      // Backwards compatibility
+      return getHDPathForVendorAndType(
+        wallet.index,
+        this.vendor as 'Ledger' | 'Trezor',
+      );
+    }
   }
 
   async serialize(): Promise<SerializedHardwareWalletKeychain> {

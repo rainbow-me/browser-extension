@@ -45,7 +45,7 @@ const WalletListHW = () => {
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const [accountsToImport, setAccountsToImport] = useState<
-    { address: Address; index: number }[]
+    { address: Address; index: number; hdPath?: string }[]
   >(state.accountsToImport);
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
@@ -124,15 +124,18 @@ const WalletListHW = () => {
     ({
       address,
       index,
+      hdPath,
     }: {
       address?: Address;
       index?: number;
+      hdPath?: string;
     } = {}) => {
-      if (address && index) {
+      if (address && index && hdPath) {
         const newAccountsToImport = [...accountsToImport];
         newAccountsToImport.unshift({
           address: address as Address,
           index: index as number,
+          hdPath: hdPath as string,
         });
         setAccountsToImport(newAccountsToImport);
       }

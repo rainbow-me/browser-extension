@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
 import { i18n } from '~/core/languages';
 import {
   Box,
@@ -86,12 +87,18 @@ export const AddByIndexSheet = ({
   });
 
   const handleAddWallet = useCallback(() => {
+    const hdPath = getHDPathForVendorAndType(
+      Number(newIndex),
+      vendor,
+      currentPath === 'legacy' ? 'legacy' : undefined,
+    );
     const params =
       newAccount && walletsSummary
         ? {
             address: newAccount.address as Address,
             balance: walletsSummary[newAccount?.address].balance.display,
             index: Number(newIndex),
+            hdPath,
           }
         : {};
     onDone(params);
@@ -99,7 +106,7 @@ export const AddByIndexSheet = ({
       setNewAccount(undefined);
       setNewIndex('');
     }, 1000);
-  }, [newAccount, newIndex, onDone, walletsSummary]);
+  }, [currentPath, newAccount, newIndex, onDone, vendor, walletsSummary]);
 
   const handleNewIndexChange = useCallback(
     (e: { target: { value: string } }) => {

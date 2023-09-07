@@ -119,7 +119,11 @@ export const handleWallets = () =>
           case 'import_hw':
             response = await importHardwareWallet(
               payload as {
-                wallets: Array<{ address: Address; index: number }>;
+                wallets: Array<{
+                  address: Address;
+                  index: number;
+                  hdPath: string;
+                }>;
                 vendor: string;
                 deviceId: string;
                 accountsEnabled: number;
