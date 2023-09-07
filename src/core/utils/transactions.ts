@@ -128,6 +128,11 @@ export function parseTransaction({
 
   const fee = +formatEther(tx.fee.value.toString()) * tx.fee.price;
 
+  const contract = meta.contract_name && {
+    name: meta.contract_name,
+    iconUrl: meta.contract_icon_url,
+  };
+
   return {
     from: tx.address_from || '0x',
     to: tx.address_to,
@@ -152,6 +157,7 @@ export function parseTransaction({
     gasUsed: gas_used?.toString(),
     fee: fee ? fee.toString() : undefined,
     confirmations: tx.block_confirmations,
+    contract,
   } as RainbowTransaction;
 }
 

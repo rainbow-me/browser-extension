@@ -156,15 +156,13 @@ export const crosschainSwap = async ({
   } catch (e) {
     logger.error(
       new RainbowError('crosschainSwap: error executeCrosschainSwap'),
-      {
-        message: (e as Error)?.message,
-      },
+      { message: (e as Error)?.message },
     );
     throw e;
   }
 
   if (!swap || !parameters.assetToBuy)
-    throw new Error('crosschainSwap: error executeCrosschainSwap');
+    throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
 
   const transaction = {
     data: parameters.quote.data,

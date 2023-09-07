@@ -1056,12 +1056,14 @@
       "market_cap": "Market Cap",
       "market_cap_explainer": {
         "title": "Market Cap",
-        "description": "A market cap is the total market value of a token's circulating supply. It is calculated with an average exchange price."
+        "description": "A market cap is the total market value of a token's circulating supply. It is calculated with an average exchange price.",
+        "action": "Got it"
       },
       "fully_diluted": "Fully Diluted",
       "fully_diluted_explainer": {
         "title": "Fully Diluted Market Cap",
-        "description": "The maximum possible market cap of a token if the total supply was available in circulation."
+        "description": "The maximum possible market cap of a token if the total supply was available in circulation.",
+        "action": "Got it"
       },
       "supply": "Supply",
       "max_total_supply": "Max Total Supply",

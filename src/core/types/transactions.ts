@@ -11,24 +11,14 @@ import { ChainId, ChainName } from './chains';
 import { TransactionGasParams, TransactionLegacyGasParams } from './gas';
 
 export type TransactionStatus = 'pending' | 'confirmed' | 'failed';
-// | 'cancelled'
-// | 'dropped';
 
 type BaseTransaction = {
   hash: `0x${string}`;
   nonce: number; // -2 when not from the wallet user
   chainId: ChainId;
-
   from: Address;
   to?: Address; // it may not have a to if it's a contract deployment (covalent)
-
-  type: TransactionType;
-  protocol?: ProtocolType;
-  title: string;
-  description?: string;
-
   data?: string;
-  flashbots?: boolean;
 
   changes?: Array<
     | {
@@ -42,11 +32,22 @@ type BaseTransaction = {
     | undefined
   >;
   direction?: TransactionDirection;
+  flashbots?: boolean;
 
   value?: string; // native asset value (eth)
+  fee?: string;
+
+  type: TransactionType;
+  protocol?: ProtocolType;
+  title: string;
+  description?: string;
+
   asset?: ParsedAsset;
   approvalAmount?: 'UNLIMITED' | (string & object);
-  fee?: string;
+  contract?: {
+    name: string;
+    iconUrl: string;
+  };
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
 export type PendingTransaction = BaseTransaction & { status: 'pending' };
@@ -166,9 +167,9 @@ export type TransactionApiResponse = {
   block_confirmations?: number; // also only available on the tx by hash endpoint
   meta: {
     contract_name?: string;
+    contract_icon_url?: string;
     type?: TransactionType;
     action?: string;
-    contract_icon_url?: string;
     asset?: AssetApiResponse;
     quantity?: 'UNLIMITED' | string;
   };

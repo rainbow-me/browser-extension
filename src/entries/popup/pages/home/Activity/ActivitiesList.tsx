@@ -114,7 +114,7 @@ const ActivityDescription = ({
   let description = transaction.description;
   let tag: string | undefined;
   if (type === 'contract_interaction' && to) {
-    description = truncateAddress(to);
+    description = transaction.contract?.name || truncateAddress(to);
     tag = transaction.description;
   }
 

@@ -27,6 +27,7 @@ import {
   Separator,
   Stack,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
@@ -37,6 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
@@ -121,24 +123,61 @@ const YouOrAddress = ({ address }: { address: Address }) => {
   );
 };
 
-function ToFrom({
-  to,
-  from,
+const AddressDisplay = ({ address }: { address: Address }) => {
+  return (
+    <Inline space="6px" alignVertical="center">
+      <WalletAvatar address={address} size={16} emojiSize="9pt" />
+      <YouOrAddress address={address} />
+      <AddressMoreOptions address={address} />
+    </Inline>
+  );
+};
+
+const ContractDisplay = ({
+  address,
+  contract: { name, iconUrl },
 }: {
-  to?: Address; // may not have a to when it's a contract deployment
-  from: Address;
-}) {
+  address: Address;
+  contract: {
+    name: string;
+    iconUrl: string;
+  };
+}) => {
+  if (!name) return <AddressDisplay address={address} />;
+  return (
+    <Inline space="6px" alignVertical="center">
+      <Box
+        borderRadius="6px"
+        position="relative"
+        background={'fillSecondary'}
+        style={{ height: 16, width: 16, overflow: 'hidden' }}
+      >
+        <ExternalImage src={iconUrl} width={16} height={16} loading="lazy" />
+      </Box>
+      <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
+        {name}
+      </TextOverflow>
+      <AddressMoreOptions address={address} />
+    </Inline>
+  );
+};
+
+function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
+  const { from, to, contract, direction } = transaction;
+  const isFromAContract = !!contract && direction === 'in';
+  const isToAContract = !!contract && direction === 'out';
+
   return (
     <Stack space="24px">
       <InfoRow
         symbol="arrow.down.circle"
         label={i18n.t('activity_details.from')}
         value={
-          <Inline space="6px" alignVertical="center">
-            <WalletAvatar address={from} size={16} emojiSize="9pt" />
-            <YouOrAddress address={from} />
-            <AddressMoreOptions address={from} />
-          </Inline>
+          isFromAContract ? (
+            <ContractDisplay address={from} contract={contract} />
+          ) : (
+            <AddressDisplay address={from} />
+          )
         }
       />
       {to && (
@@ -146,11 +185,11 @@ function ToFrom({
           symbol="paperplane.fill"
           label={i18n.t('activity_details.to')}
           value={
-            <Inline space="6px" alignVertical="center">
-              <WalletAvatar address={to} size={16} emojiSize="9pt" />
-              <YouOrAddress address={to} />
-              <AddressMoreOptions address={to} />
-            </Inline>
+            isToAContract ? (
+              <ContractDisplay address={to} contract={contract} />
+            ) : (
+              <AddressDisplay address={to} />
+            )
           }
         />
       )}
@@ -210,12 +249,14 @@ function ConfirmationData({
 }
 
 function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
-  const { maxPriorityFeePerGas, maxFeePerGas, fee, nonce } = transaction;
+  const { maxPriorityFeePerGas, maxFeePerGas, gasPrice, fee, nonce } =
+    transaction;
 
   const value = transaction.value && formatEther(transaction.value);
   const minerTip =
     maxPriorityFeePerGas && formatUnits(maxPriorityFeePerGas, 'gwei');
-  const maxBaseFee = maxFeePerGas && formatUnits(maxFeePerGas, 'gwei');
+  const maxBaseFee =
+    maxFeePerGas || (gasPrice && formatUnits(maxFeePerGas || gasPrice, 'gwei'));
 
   return (
     <Stack space="24px">
@@ -515,7 +556,7 @@ function ActivityDetailsSheet({
         flexDirection="column"
         gap="20px"
       >
-        <ToFrom to={tx.to} from={tx.from} />
+        <ToFrom transaction={tx} />
         {additionalDetails && <AdditionalDetails details={additionalDetails} />}
         <ConfirmationData transaction={tx} />
         <NetworkData transaction={tx} />

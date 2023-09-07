@@ -158,7 +158,7 @@ function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
         ]}
         onClickOutside={toggleMarketCapExplainer}
         actionButton={{
-          label: 'Got it',
+          label: i18n.t('token_details.about.market_cap_explainer.action'),
           variant: 'tinted',
           labelColor: 'blue',
           action: toggleMarketCapExplainer,
@@ -205,7 +205,7 @@ function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
         ]}
         onClickOutside={toggleFullyDilutedExplainer}
         actionButton={{
-          label: 'Got it',
+          label: i18n.t('token_details.about.fully_diluted_explainer.action'),
           variant: 'tinted',
           labelColor: 'blue',
           action: toggleFullyDilutedExplainer,
