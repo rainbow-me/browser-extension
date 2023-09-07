@@ -250,7 +250,7 @@ function ConfirmationData({
 }
 
 function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
-  const { maxPriorityFeePerGas, maxFeePerGas, gasPrice, fee, nonce, changes } =
+  const { maxPriorityFeePerGas, maxFeePerGas, fee, nonce, changes } =
     transaction;
 
   const value = transaction.value && formatEther(transaction.value);
@@ -258,8 +258,7 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
     .symbol;
   const minerTip =
     maxPriorityFeePerGas && formatUnits(maxPriorityFeePerGas, 'gwei');
-  const maxBaseFee =
-    maxFeePerGas || (gasPrice && formatUnits(maxFeePerGas || gasPrice, 'gwei'));
+  const maxBaseFee = maxFeePerGas && formatUnits(maxFeePerGas, 'gwei');
 
   return (
     <Stack space="24px">
