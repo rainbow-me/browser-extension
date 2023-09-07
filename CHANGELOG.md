@@ -21,18 +21,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## Added
 
-- Added shortcut support to e2e tests #899
-- Updated i18n support, allowing us to enable multi-lingual store listings on the Chrome Web Store #895
-- Added meteorology and type 2 transaction support for Base, Arbitrum, Optimism and Zora. Added l1 Optimism fee for Base and Zora #911
+- Introduced shortcut support for end-to-end tests #899
+- Enhanced i18n support, paving the way for multi-lingual store listings on the Chrome Web Store #895
+- Incorporated meteorology and type 2 transaction support for Base, Arbitrum, Optimism, and Zora. Introduced L1 Optimism fee for Base and Zora #911
 
 ## Changed
-- Disabled hardware wallets on firefox due to browser restrictions #907
-- Upgraded to Typescript 5 for better type safety #890
+- Disabled hardware wallets on Firefox due to browser restrictions #907
+- Upgraded to TypeScript 5 to enhance type safety #890
 
 ### Fixed
-- Fixed timeouts for end to end testing, creating more consistent testing #909
-- Fixed web3 modal behavior to return a correct array of `window.ethereum.providers` #910
-- Fixed an issue where our nonce and pending transactions weren't being accounted for correctly #914
+- Addressed timeouts in end-to-end testing to foster more consistent results #909
+- Rectified web3 modal behavior to ensure the correct array of `window.ethereum.providers` is returned  #910
+- Resolved an issue where nonce and pending transactions were not correctly accounted for  #914
 
 ## [v1.2.3](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.3)
 
