@@ -15,6 +15,7 @@ import * as wallet from '../handlers/wallet';
 import { ROUTES } from '../urls';
 import {
   appConnectionMenuIsActive,
+  appConnectionSwitchWalletsPromptIsActive,
   getInputIsFocused,
 } from '../utils/activeElement';
 import { clickHeaderLeft, clickHeaderRight } from '../utils/clickHeader';
@@ -69,10 +70,12 @@ export function useHomeShortcuts() {
   const navigate = useRainbowNavigate();
   const handleHomeShortcuts = useCallback(
     (e: KeyboardEvent) => {
-      const { key } = e;
+      const activeAppConnectionMenu = appConnectionMenuIsActive();
+      const activeAppWalletSwitcher =
+        appConnectionSwitchWalletsPromptIsActive();
       const inputIsFocused = getInputIsFocused();
       if (inputIsFocused) return;
-      switch (key) {
+      switch (e.key) {
         case shortcuts.home.COPY_ADDRESS.key:
           trackShortcut({
             key: shortcuts.home.COPY_ADDRESS.display,
@@ -116,7 +119,7 @@ export function useHomeShortcuts() {
           openProfile();
           break;
         case shortcuts.home.GO_TO_WALLETS.key:
-          if (!appConnectionMenuIsActive()) {
+          if (!activeAppConnectionMenu) {
             trackShortcut({
               key: shortcuts.home.GO_TO_WALLETS.display,
               type: 'home.goToWallets',
@@ -139,14 +142,16 @@ export function useHomeShortcuts() {
           wallet.lock();
           break;
         case shortcuts.home.OPEN_MORE_MENU.key:
-          trackShortcut({
-            key: shortcuts.home.OPEN_MORE_MENU.display,
-            type: 'home.openMoreMenu',
-          });
-          clickHeaderRight();
+          if (!activeAppWalletSwitcher) {
+            trackShortcut({
+              key: shortcuts.home.OPEN_MORE_MENU.display,
+              type: 'home.openMoreMenu',
+            });
+            clickHeaderRight();
+          }
           break;
         case shortcuts.home.OPEN_APP_CONNECTION_MENU.key:
-          if (!appConnectionMenuIsActive()) {
+          if (!activeAppConnectionMenu && !activeAppWalletSwitcher) {
             trackShortcut({
               key: shortcuts.home.OPEN_APP_CONNECTION_MENU.display,
               type: 'home.openAppConnectionMenu',
@@ -155,7 +160,7 @@ export function useHomeShortcuts() {
           }
           break;
         case shortcuts.home.DISCONNECT_APP.key:
-          if (!appConnectionMenuIsActive()) {
+          if (!activeAppConnectionMenu) {
             trackShortcut({
               key: shortcuts.home.DISCONNECT_APP.display,
               type: 'home.disconnectApp',
