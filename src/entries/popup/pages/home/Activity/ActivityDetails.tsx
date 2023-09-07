@@ -32,13 +32,13 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
+import { ContractIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
-import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
@@ -147,7 +147,7 @@ const ContractDisplay = ({
   return (
     <Inline space="6px" alignVertical="center">
       {iconUrl ? (
-        <ExternalImage src={iconUrl} width={16} height={16} loading="lazy" />
+        <ContractIcon size={16} iconUrl={iconUrl} />
       ) : (
         <WalletAvatar address={address} size={16} emojiSize="9pt" />
       )}

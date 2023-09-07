@@ -27,6 +27,7 @@ import {
   fallbackTextStyleXSmall,
   fallbackTextStyleXXSmall,
 } from './CoinIcon.css';
+import { ContractInteractionIcon } from './ContractInteractionIcon';
 
 export function CoinIcon({
   asset,
@@ -263,6 +264,39 @@ export const NFTIcon = ({
           <ChainBadge chainId={chainId} shadow size="16" />
         )}
       </Box>
+    </Box>
+  );
+};
+
+export const ContractIcon = ({
+  size,
+  iconUrl,
+  badge,
+  chainId,
+}: {
+  iconUrl?: string;
+  size: keyof typeof nftRadiusBySize;
+  badge?: boolean;
+  chainId?: ChainId;
+}) => {
+  return (
+    <Box position="relative" style={{ maxHeight: size, maxWidth: size }}>
+      {iconUrl ? (
+        <ExternalImage
+          src={iconUrl}
+          width={size}
+          height={size}
+          loading="lazy"
+          style={{ borderRadius: nftRadiusBySize[size] }}
+        />
+      ) : (
+        <ContractInteractionIcon size={size} />
+      )}
+      {badge && chainId && chainId !== ChainId.mainnet && (
+        <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
+          <ChainBadge chainId={chainId} shadow size="16" />
+        </Box>
+      )}
     </Box>
   );
 };

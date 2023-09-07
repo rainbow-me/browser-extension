@@ -1,17 +1,13 @@
-import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { Box } from '~/design-system';
-import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import {
   CoinIcon,
+  ContractIcon,
   NFTIcon,
   TwoCoinsIcon,
 } from '~/entries/popup/components/CoinIcon/CoinIcon';
 
-import { ContractInteractionIcon } from './ContractInteractionIcon';
-
 export const ActivityIcon = ({
-  transaction: { type, changes, asset, chainId },
+  transaction: { type, changes, asset, chainId, contract },
   size = 36,
   badge = true,
 }: {
@@ -48,13 +44,11 @@ export const ActivityIcon = ({
     );
 
   return (
-    <Box position="relative" style={{ maxHeight: size, maxWidth: size }}>
-      <ContractInteractionIcon size={size} />
-      {badge && chainId !== ChainId.mainnet && (
-        <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
-          <ChainBadge chainId={chainId} shadow size="16" />
-        </Box>
-      )}
-    </Box>
+    <ContractIcon
+      iconUrl={contract?.iconUrl}
+      size={size}
+      badge={badge}
+      chainId={chainId}
+    />
   );
 };
