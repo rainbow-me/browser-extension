@@ -1,4 +1,5 @@
 import { formatDistanceToNowStrict } from 'date-fns';
+import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -29,6 +30,20 @@ export const AccountToImportRows = ({
   walletsSummary: { [key: Address]: WalletSummary };
   toggleAccount?: (address: Address) => void;
 }) => {
+  const onClick = useCallback(
+    (address: Address) => toggleAccount?.(address),
+    [toggleAccount],
+  );
+
+  const handleKeyDown = useCallback(
+    (address: Address) => (e: React.KeyboardEvent<Element>) => {
+      if (e.key === 'Enter') {
+        onClick(address);
+      }
+    },
+    [onClick],
+  );
+
   return (
     <Stack
       space="6px"
@@ -39,7 +54,12 @@ export const AccountToImportRows = ({
       }
     >
       {accountsToImport?.map((address) => (
-        <Box onClick={() => toggleAccount?.(address)} key={`avatar_${address}`}>
+        <Box
+          onClick={() => onClick(address)}
+          onKeyDown={handleKeyDown(address)}
+          key={`avatar_${address}`}
+          tabIndex={0}
+        >
           <Columns alignVertical="center" space="16px">
             <Column>
               <Columns
