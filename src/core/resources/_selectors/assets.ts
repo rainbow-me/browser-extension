@@ -9,7 +9,9 @@ import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
 import { add } from '~/core/utils/numbers';
 
 // selectors
-export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
+export function selectUserAssetsList(
+  assets: ParsedAssetsDictByChain = {} as ParsedAssetsDictByChain,
+) {
   return Object.values(assets)
     .map((chainAssets) => Object.values(chainAssets))
     .flat()
@@ -52,18 +54,18 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
 }
 
 export function selectUserAssetAddressMapByChainId(
-  assets: ParsedAssetsDictByChain,
+  assets: ParsedAssetsDictByChain = {} as ParsedAssetsDictByChain,
 ) {
-  const mapAddresses = (list: ParsedAssetsDict) =>
-    Object.values(list || {}).map((i) => i?.address);
+  const mapAddresses = (list: ParsedAssetsDict = {}) =>
+    Object.values(list).map((i) => i.address);
   return {
-    [ChainId.mainnet]: mapAddresses(assets?.[ChainId.mainnet]) || [],
-    [ChainId.optimism]: mapAddresses(assets?.[ChainId.optimism]) || [],
-    [ChainId.bsc]: mapAddresses(assets?.[ChainId.bsc]) || [],
-    [ChainId.polygon]: mapAddresses(assets?.[ChainId.polygon]) || [],
-    [ChainId.arbitrum]: mapAddresses(assets?.[ChainId.arbitrum]) || [],
-    [ChainId.base]: mapAddresses(assets?.[ChainId.base]) || [],
-    [ChainId.zora]: mapAddresses(assets?.[ChainId.zora]) || [],
+    [ChainId.mainnet]: mapAddresses(assets[ChainId.mainnet]) || [],
+    [ChainId.optimism]: mapAddresses(assets[ChainId.optimism]) || [],
+    [ChainId.bsc]: mapAddresses(assets[ChainId.bsc]) || [],
+    [ChainId.polygon]: mapAddresses(assets[ChainId.polygon]) || [],
+    [ChainId.arbitrum]: mapAddresses(assets[ChainId.arbitrum]) || [],
+    [ChainId.base]: mapAddresses(assets[ChainId.base]) || [],
+    [ChainId.zora]: mapAddresses(assets[ChainId.zora]) || [],
   };
 }
 

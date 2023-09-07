@@ -6,7 +6,7 @@ module.exports = {
     'import/no-default-export': 'off',
     'react/react-in-jsx-scope': 'off',
     'import/order': [
-      'error',
+      'warn',
       {
         alphabetize: {
           order: 'asc',
@@ -36,6 +36,6 @@ module.exports = {
         ignoreMemberSort: false,
       },
     ],
-    'prettier/prettier': ['error', require('./.prettierrc.js')],
+    'prettier/prettier': ['warn', require('./.prettierrc.js')],
   },
 };

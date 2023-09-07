@@ -60,6 +60,14 @@ afterEach(async (context: any) => {
 
 afterAll(() => driver.quit());
 
+const WALLET_TO_USE_SECRET = isFirefox
+  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
+  : TEST_VARIABLES.SEED_WALLET.PK;
+
+const WALLET_TO_USE_ADDRESS = isFirefox
+  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
+  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+
 it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen
   await goToWelcome(driver, rootURL);
@@ -77,7 +85,7 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await fillPrivateKey(driver, TEST_VARIABLES.SEED_WALLET.PK);
+  await fillPrivateKey(driver, WALLET_TO_USE_SECRET);
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
@@ -214,10 +222,14 @@ it('should be able to interact with slippage settings', async () => {
     id: 'explainer-action-button',
     driver,
   });
+  await clearInput({
+    id: 'slippage-input-mask',
+    driver,
+  });
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '\b4',
+    text: '4',
   });
   await delayTime('short');
   const warning = await findElementByTestId({
@@ -393,12 +405,12 @@ it('should be able to open token to buy input and select assets', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   expect(elementFound).toBeFalsy();
   const toBuyInputDaiSelected = await findElementByTestId({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
@@ -430,7 +442,7 @@ it('should be able to type native amount on sell input', async () => {
   expect(assetToSellInputText).not.toBe('');
 
   const assetToBuyInputText = await getTextFromTextInput({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(assetToBuyInputText).not.toBe('');
@@ -438,7 +450,7 @@ it('should be able to type native amount on sell input', async () => {
 
 it('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   const favoritesSection = await findElementByTestId({
@@ -835,11 +847,11 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   const toBuyInputDaiSelected = await findElementByTestId({
-    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
@@ -861,11 +873,11 @@ it('should be able to see swap information in review sheet', async () => {
     driver,
   });
   expect(ethAssetToSellAssetCard).toBeTruthy();
-  const daiAssetToBuyAssetCard = await findElementByTestId({
-    id: `DAI-asset-to-buy-swap-asset-card`,
+  const usdcAssetToBuyAssetCard = await findElementByTestId({
+    id: `USDC-asset-to-buy-swap-asset-card`,
     driver,
   });
-  expect(daiAssetToBuyAssetCard).toBeTruthy();
+  expect(usdcAssetToBuyAssetCard).toBeTruthy();
   const minimumReceivedDetailsRow = await findElementByTestId({
     id: `minimum-received-details-row`,
     driver,
@@ -963,7 +975,7 @@ it('should be able to see swap information in review sheet', async () => {
     id: 'swap-review-confirmation-text',
     driver,
   });
-  expect(swapReviewConfirmationText).toBe('Swap ETH to DAI');
+  expect(swapReviewConfirmationText).toBe('Swap ETH to USDC');
 
   const swapReviewTitleText = await getTextFromText({
     id: 'swap-review-title-text',
@@ -988,19 +1000,20 @@ it('should be able to execute swap', async () => {
     driver,
   });
   await delayTime('short');
-
+  await clearInput({
+    id: 'slippage-input-mask',
+    driver,
+  });
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '\b99',
+    text: '99',
   });
   await delayTime('medium');
 
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
-  const ethBalanceBeforeSwap = await provider.getBalance(
-    TEST_VARIABLES.SEED_WALLET.ADDRESS,
-  );
+  const ethBalanceBeforeSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
   await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
@@ -1012,9 +1025,7 @@ it('should be able to execute swap', async () => {
   // Adding delay to make sure the provider gets the balance after the swap
   // Because CI is slow so this triggers a race condition most of the time.
   await delay(5000);
-  const ethBalanceAfterSwap = await provider.getBalance(
-    TEST_VARIABLES.SEED_WALLET.ADDRESS,
-  );
+  const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
 
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
