@@ -19,13 +19,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.2.11](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.11)
 
-## Added
+### Added
 
 - Introduced shortcut support for end-to-end tests #899
 - Enhanced i18n support, paving the way for multi-lingual store listings on the Chrome Web Store #895
 - Incorporated meteorology and type 2 transaction support for Base, Arbitrum, Optimism, and Zora. Introduced L1 Optimism fee for Base and Zora #911
 
-## Changed
+### Changed
 - Disabled hardware wallets on Firefox due to browser restrictions #907
 - Upgraded to TypeScript 5 to enhance type safety #890
 
@@ -36,12 +36,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.2.3](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.3)
 
-## Added
+### Added
 
 - When accidentally closing the extension while preparing a Swap or Send or managing your wallets in Settings, Rainbow will now restore your state and let you continue where you left off #878
 - You can now Disconnect (`D`) your wallet or Switch Wallet (`W`) to change the wallet connected to a dApp from the dApp Menu in the top-left. You can always open this menu with the `N` shortcut, and follow the shortcut hints to drill-down without touching your mouse #866
 
-## Changed
+### Changed
 
 - Flashbots support now includes more builders for faster transaction inclusion #903
 - Provider injection is now available for Firefox for a future release #859
@@ -56,13 +56,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.1.79](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.79)
 
-## Added
+### Added
 
 - Command K (⌘K or Ctrl+K) is now available to search and launch screens, toggle settings, search your wallets and tokens, and search ENS and public addresses to quickly watch a new wallet. ⌘⏎ or ⇧⏎ are available to expose additional actions for wallets and tokens. Press ESC to go back or close. #869
 - dApp Account Switch functionality when switching wallets while interacting with a dApp #845 #863 #860
 - Language option in Settings and internationalization support for Latin American Spanish, Simplified Chinese, Japanese, French, Brazilian Portuguese, Hindi, Turkish, and Russian #817
 
-## Changed
+### Changed
 
 - State restoration for the Swap and Send flows so that user selections and input are sticky for a short period of time for when you need to close the pop-up or back-out to copy an address #852
 - Paginated scroll and loading indicators on the Tokens and Activity interfaces for heavy wallets #880
