@@ -103,7 +103,6 @@ export const AddByIndexSheet = ({
             hdPath,
           }
         : {};
-    console.log(params);
     onDone(params);
     setTimeout(() => {
       setNewAccount(undefined);
