@@ -987,6 +987,7 @@
     "to": "To",
     "confirmed_at": "Confirmed at",
     "confirmations": "Confirmations",
+    "token": "Token",
     "block": "Block",
     "value": "Value",
     "network": "Network",

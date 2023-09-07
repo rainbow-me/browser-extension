@@ -1,3 +1,4 @@
+import { AddressZero } from '@ethersproject/constants';
 import { formatEther, formatUnits } from '@ethersproject/units';
 import { Navigate, useParams } from 'react-router-dom';
 import { Address } from 'wagmi';
@@ -32,7 +33,10 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
-import { ContractIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
+import {
+  CoinIcon,
+  ContractIcon,
+} from '~/entries/popup/components/CoinIcon/CoinIcon';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -380,6 +384,8 @@ const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
 };
 
 type TxAdditionalDetails = {
+  asset?: ParsedAsset;
+  tokenAmount?: string;
   tokenContract?: Address;
   exchangeRate?: string;
   collection?: string;
@@ -387,15 +393,33 @@ type TxAdditionalDetails = {
 };
 const getAdditionalDetails = (transaction: RainbowTransaction) => {
   const exchangeRate = getExchangeRate(transaction);
-  const nft = transaction.changes?.find((c) => c?.asset.type === 'nft')?.asset;
+  const { asset, changes } = transaction;
+  const nft = changes?.find((c) => c?.asset.type === 'nft')?.asset;
   const collection = nft?.symbol;
   const standard = nft?.standard;
-  const assetAddress = transaction.asset?.address;
-  const tokenContract = assetAddress !== ETH_ADDRESS ? assetAddress : undefined;
+  const tokenContract =
+    asset?.address !== ETH_ADDRESS && asset?.address !== AddressZero
+      ? asset?.address
+      : undefined;
 
-  if (!tokenContract && !exchangeRate && !collection && !standard) return;
+  const tokenAmount =
+    !nft && tokenContract
+      ? changes?.find((c) => c?.asset.address === tokenContract)?.asset.balance
+          .amount
+      : undefined;
+
+  if (
+    !tokenAmount &&
+    !tokenContract &&
+    !exchangeRate &&
+    !collection &&
+    !standard
+  )
+    return;
 
   return {
+    asset,
+    tokenAmount: tokenAmount && `${formatNumber(tokenAmount)} ${asset?.symbol}`,
     tokenContract,
     exchangeRate,
     collection,
@@ -404,9 +428,28 @@ const getAdditionalDetails = (transaction: RainbowTransaction) => {
 };
 
 const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
-  const { tokenContract, exchangeRate, collection, standard } = details;
+  const {
+    asset,
+    tokenAmount,
+    tokenContract,
+    exchangeRate,
+    collection,
+    standard,
+  } = details;
   return (
     <Stack space="24px">
+      {tokenAmount && (
+        <InfoRow
+          symbol="dollarsign.square"
+          label={i18n.t('activity_details.token')}
+          value={
+            <Inline alignVertical="center" space="4px">
+              <CoinIcon asset={asset} badge={false} size={16} />
+              {tokenAmount}
+            </Inline>
+          }
+        />
+      )}
       {exchangeRate && (
         <InfoRow
           symbol="arrow.2.squarepath"
