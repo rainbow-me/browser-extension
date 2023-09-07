@@ -218,6 +218,7 @@ export const AddByIndexSheet = ({
                     <Lens
                       style={{
                         borderRadius: 12,
+                        position: 'relative',
                       }}
                       onClick={() => setPathDropdownOpen(true)}
                       onKeyDown={() => setPathDropdownOpen(true)}
@@ -232,7 +233,7 @@ export const AddByIndexSheet = ({
                         borderColor="separatorSecondary"
                       >
                         <SwitchMenu
-                          align="end"
+                          align="center"
                           onClose={() => setPathDropdownOpen(false)}
                           open={pathDropdownOpen}
                           sideOffset={-5}
