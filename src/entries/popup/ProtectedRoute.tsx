@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { usePendingRequestStore } from '~/core/state/requests';
+import { usePendingRequestStore } from '~/core/state';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 
 import { UserStatusResult, useAuth } from './hooks/useAuth';
