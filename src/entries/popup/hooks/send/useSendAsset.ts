@@ -1,12 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
 
 import {
   selectUserAssetsList,
   selectUserAssetsListByChainId,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -24,7 +23,7 @@ const sortBy = (by: SortMethod) => {
 };
 
 export const useSendAsset = () => {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');

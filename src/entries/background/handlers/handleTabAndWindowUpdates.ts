@@ -1,8 +1,10 @@
 import { initializeMessenger } from '~/core/messengers';
-import { notificationWindowStore } from '~/core/state';
-import { isDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
-import { useInviteCodeStore } from '~/core/state/inviteCode';
-import { pendingRequestStore } from '~/core/state/requests';
+import {
+  isDefaultWalletStore,
+  notificationWindowStore,
+  pendingRequestStore,
+  useInviteCodeStore,
+} from '~/core/state';
 
 const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
 const IS_DEV = process.env.IS_DEV === 'true';

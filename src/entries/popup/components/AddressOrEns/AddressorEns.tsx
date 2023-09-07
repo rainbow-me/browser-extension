@@ -19,21 +19,19 @@ export function AddressWithENSReverseResolution({
 }) {
   // Attempt reverse resoltion first
   const { data: ensName } = useEnsName({ address });
-  if (ensName) {
-    return ensName;
-  }
-  return truncateAddress(address || '0x');
+  if (ensName) return <>{ensName}</>;
+  return <>{truncateAddress(address || '0x')}</>;
 }
 
 export function AddressOrEns({
   address,
   size = '20pt',
   weight = 'heavy',
-  color,
+  color = 'label',
 }: AddressOrEnsProps) {
   if (!address) return null;
   return (
-    <Text color={color || 'label'} size={size} weight={weight}>
+    <Text color={color} size={size} weight={weight}>
       {isENSAddressFormat(address) ? (
         address
       ) : (
