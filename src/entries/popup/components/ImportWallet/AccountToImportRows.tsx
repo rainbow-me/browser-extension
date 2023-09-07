@@ -58,7 +58,6 @@ export const AccountToImportRows = ({
           onClick={() => onClick(address)}
           onKeyDown={handleKeyDown(address)}
           key={`avatar_${address}`}
-          tabIndex={0}
         >
           <Columns alignVertical="center" space="16px">
             <Column>
