@@ -480,6 +480,7 @@ export function Swap() {
         description={explainerSheetParams.description}
         actionButton={explainerSheetParams.actionButton}
         linkButton={explainerSheetParams.linkButton}
+        footerLinkText={explainerSheetParams.footerLinkText}
         testId={explainerSheetParams.testId}
       />
       <SwapSettings

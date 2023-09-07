@@ -38,7 +38,7 @@ import {
 } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
 import { WalletExecuteRapProps } from '~/core/raps/references';
-import { flashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
+import { flashbotsEnabledStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
 import { getFlashbotsProvider } from '~/core/utils/flashbots';

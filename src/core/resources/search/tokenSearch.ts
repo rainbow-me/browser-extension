@@ -89,22 +89,28 @@ async function tokenSearchQueryFunction({
 }
 
 function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
-  return assets.map((a) => ({
-    ...a,
-    address: a.networks[chainId]?.address,
-    chainId,
-    isNativeAsset: [
-      `${ETH_ADDRESS}_${ChainId.mainnet}`,
-      `${ETH_ADDRESS}_${ChainId.optimism}`,
-      `${ETH_ADDRESS}_${ChainId.arbitrum}`,
-      `${BNB_MAINNET_ADDRESS}_${ChainId.bsc}`,
-      `${MATIC_MAINNET_ADDRESS}_${ChainId.polygon}`,
-      `${ETH_ADDRESS}_${ChainId.base}`,
-      `${ETH_ADDRESS}_${ChainId.zora}`,
-    ].includes(`${a.uniqueId}_${chainId}`),
-    mainnetAddress: a.uniqueId as Address,
-    uniqueId: `${a.uniqueId}_${chainId}`,
-  }));
+  return assets
+    .map((a) => {
+      const address = a.networks[chainId]?.address;
+      if (!address) return;
+      return {
+        ...a,
+        address,
+        chainId,
+        isNativeAsset: [
+          `${ETH_ADDRESS}_${ChainId.mainnet}`,
+          `${ETH_ADDRESS}_${ChainId.optimism}`,
+          `${ETH_ADDRESS}_${ChainId.arbitrum}`,
+          `${BNB_MAINNET_ADDRESS}_${ChainId.bsc}`,
+          `${MATIC_MAINNET_ADDRESS}_${ChainId.polygon}`,
+          `${ETH_ADDRESS}_${ChainId.base}`,
+          `${ETH_ADDRESS}_${ChainId.zora}`,
+        ].includes(`${a.uniqueId}_${chainId}`),
+        mainnetAddress: a.uniqueId as Address,
+        uniqueId: `${a.uniqueId}_${chainId}`,
+      };
+    })
+    .filter(Boolean);
 }
 
 type TokenSearchResult = QueryFunctionResult<typeof tokenSearchQueryFunction>;
