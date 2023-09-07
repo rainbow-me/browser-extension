@@ -12,14 +12,17 @@ import {
   RAINBOW_TWITTER_URL,
 } from '~/core/references/links';
 import { themeOptions } from '~/core/references/themes';
-import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
+import {
+  useCurrentCurrencyStore,
+  useCurrentLanguageStore,
+  useIsDefaultWalletStore,
+} from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import {
   FeatureFlagTypes,
   useFeatureFlagsStore,
 } from '~/core/state/currentSettings/featureFlags';
-import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
 import { ThemeOption } from '~/core/types/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
