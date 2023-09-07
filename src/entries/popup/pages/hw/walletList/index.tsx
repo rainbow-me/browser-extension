@@ -130,7 +130,8 @@ const WalletListHW = () => {
       index?: number;
       hdPath?: string;
     } = {}) => {
-      if (address && index && hdPath) {
+      console.log({ address, index, hdPath });
+      if (address && typeof index !== 'undefined' && hdPath) {
         const newAccountsToImport = [...accountsToImport];
         newAccountsToImport.unshift({
           address: address as Address,
@@ -138,6 +139,7 @@ const WalletListHW = () => {
           hdPath: hdPath as string,
         });
         setAccountsToImport(newAccountsToImport);
+        console.log({ newAccountsToImport });
       }
       setShowAddByIndexSheet(false);
     },

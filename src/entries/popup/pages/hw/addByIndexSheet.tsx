@@ -65,10 +65,12 @@ export const AddByIndexSheet = ({
     address,
     balance,
     index,
+    hdPath,
   }: {
     address?: Address;
     balance?: string;
     index?: number;
+    hdPath?: string;
   }) => void;
   vendor: 'Ledger' | 'Trezor';
 }) => {
@@ -101,6 +103,7 @@ export const AddByIndexSheet = ({
             hdPath,
           }
         : {};
+    console.log(params);
     onDone(params);
     setTimeout(() => {
       setNewAccount(undefined);
