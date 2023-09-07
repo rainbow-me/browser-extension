@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.12)
+
+### Added
+- Introduced a loading spinner to the "Send" button, mirroring the swap behavior #916
+- Implemented an explainer for tokens that require a fee on transfer #917
+
+### Fixed
+- Corrected the setting of `rainbow_setDefaultProvider` during tab switches #906
+- Ensured the browser extension correctly displays the appropriate sheet when using the `w` shortcut in the app menu #913
+
 ## [v1.2.11](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.11)
 
 ### Changed
