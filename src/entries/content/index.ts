@@ -1,7 +1,6 @@
 import { initializeMessenger } from '~/core/messengers';
 import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
-import { isDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
-import { useInviteCodeStore } from '~/core/state/inviteCode';
+import { isDefaultWalletStore, useInviteCodeStore } from '~/core/state';
 require('../../core/utils/lockdown');
 
 const insertInpageScriptIfNeeded = () => {
