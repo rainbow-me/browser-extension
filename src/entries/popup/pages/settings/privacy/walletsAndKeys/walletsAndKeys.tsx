@@ -25,17 +25,23 @@ export function WalletsAndKeys() {
   }, []);
 
   const handleViewWallet = useCallback(
-    async ({
-      wallet,
-      backedUp,
-    }: {
-      wallet: KeychainWallet;
-      backedUp: boolean;
-    }) => {
+    async ({ wallet }: { wallet: KeychainWallet }) => {
       setSettingWallets(wallet);
       navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS, {
-        state: { wallet, showQuiz: !backedUp },
+        state: { wallet },
       });
+    },
+    [navigate],
+  );
+
+  const handleBackUp = useCallback(
+    ({ wallet }: { wallet: KeychainWallet }) => {
+      navigate(
+        ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
+        {
+          state: { wallet, showQuiz: true },
+        },
+      );
     },
     [navigate],
   );
@@ -131,9 +137,7 @@ export function WalletsAndKeys() {
                       </Text>
                     </Inline>
                   }
-                  onClick={() =>
-                    handleViewWallet({ wallet, backedUp: walletBackedUp })
-                  }
+                  onClick={() => handleViewWallet({ wallet })}
                   leftComponent={
                     wallet.type === KeychainType.HardwareWalletKeychain ? (
                       wallet.vendor === 'Trezor' ? (
@@ -165,6 +169,7 @@ export function WalletsAndKeys() {
                         color="red"
                         height="36px"
                         variant="tinted"
+                        onClick={() => handleBackUp({ wallet })}
                       >
                         Back Up Now
                       </Button>

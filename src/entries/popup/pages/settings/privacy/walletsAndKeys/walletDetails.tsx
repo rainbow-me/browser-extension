@@ -29,6 +29,7 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
+import { formatDate } from '../../../home/TokenDetails/PriceChart';
 import { CreateWalletPrompt } from '../../../walletSwitcher/createWalletPrompt';
 import { RemoveWalletPrompt } from '../../../walletSwitcher/removeWalletPrompt';
 import { RenameWalletPrompt } from '../../../walletSwitcher/renameWalletPrompt';
@@ -125,13 +126,6 @@ export function WalletDetails() {
 
   const { isWalletBackedUp, getWalletBackUp } = useWalletBackUpsStore();
 
-  const handleViewRecoveryPhrase = useCallback(() => {
-    navigate(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
-      { state: { wallet, password: state?.password, showQuiz: false } },
-    );
-  }, [navigate, state?.password, wallet]);
-
   const handleViewPrivateKey = useCallback(
     (account: Address) => {
       navigate(
@@ -147,19 +141,6 @@ export function WalletDetails() {
     },
     [navigate, state?.password, wallet],
   );
-
-  const handleViewSecret = useCallback(() => {
-    if (wallet?.type === KeychainType.HdKeychain) {
-      handleViewRecoveryPhrase();
-    } else {
-      handleViewPrivateKey(wallet?.accounts[0] as Address);
-    }
-  }, [
-    handleViewPrivateKey,
-    handleViewRecoveryPhrase,
-    wallet?.accounts,
-    wallet?.type,
-  ]);
 
   useEffect(() => {
     const getWallet = async () => {
@@ -234,6 +215,28 @@ export function WalletDetails() {
     }
     return null;
   }, [getWalletBackUp, wallet]);
+
+  const handleViewRecoveryPhrase = useCallback(() => {
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
+      {
+        state: { wallet, password: state?.password, showQuiz: !walletBackedUp },
+      },
+    );
+  }, [navigate, state?.password, wallet, walletBackedUp]);
+
+  const handleViewSecret = useCallback(() => {
+    if (wallet?.type === KeychainType.HdKeychain) {
+      handleViewRecoveryPhrase();
+    } else {
+      handleViewPrivateKey(wallet?.accounts[0] as Address);
+    }
+  }, [
+    handleViewPrivateKey,
+    handleViewRecoveryPhrase,
+    wallet?.accounts,
+    wallet?.type,
+  ]);
 
   return (
     <Box>
@@ -315,7 +318,9 @@ export function WalletDetails() {
                 color="labelQuaternary"
                 align="left"
               >
-                {`Last backed up as ${walletBackedUpInfo?.timestamp}`}
+                {`Last backed up as ${formatDate(
+                  walletBackedUpInfo?.timestamp,
+                )}`}
               </Text>
             </Box>
           ) : null}
