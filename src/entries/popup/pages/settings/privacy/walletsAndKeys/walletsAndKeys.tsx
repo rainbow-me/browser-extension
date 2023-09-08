@@ -25,10 +25,16 @@ export function WalletsAndKeys() {
   }, []);
 
   const handleViewWallet = useCallback(
-    async (wallet: KeychainWallet) => {
+    async ({
+      wallet,
+      backedUp,
+    }: {
+      wallet: KeychainWallet;
+      backedUp: boolean;
+    }) => {
       setSettingWallets(wallet);
       navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS, {
-        state: { wallet },
+        state: { wallet, showQuiz: !backedUp },
       });
     },
     [navigate],
@@ -71,7 +77,7 @@ export function WalletsAndKeys() {
                 ? `${i18n.t(
                     'settings.privacy_and_security.wallets_and_keys.imported',
                   )} ‧`
-                : ''
+                : 'Backed up'
             }`;
             const walletsLabel = `${wallet.accounts.length} ${i18n.t(
               `settings.privacy_and_security.wallets_and_keys.${
@@ -125,7 +131,9 @@ export function WalletsAndKeys() {
                       </Text>
                     </Inline>
                   }
-                  onClick={() => handleViewWallet(wallet)}
+                  onClick={() =>
+                    handleViewWallet({ wallet, backedUp: walletBackedUp })
+                  }
                   leftComponent={
                     wallet.type === KeychainType.HardwareWalletKeychain ? (
                       wallet.vendor === 'Trezor' ? (

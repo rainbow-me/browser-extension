@@ -10,7 +10,7 @@ import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { getSettingWallets } from '~/core/utils/settings';
-import { Box, Inline, Symbol } from '~/design-system';
+import { Box, Inline, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import AccountItem, {
   LabelOption,
@@ -123,7 +123,7 @@ export function WalletDetails() {
   const { deleteWalletName } = useWalletNamesStore();
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
 
-  const { isWalletBackedUp } = useWalletBackUpsStore();
+  const { isWalletBackedUp, getWalletBackUp } = useWalletBackUpsStore();
 
   const handleViewRecoveryPhrase = useCallback(() => {
     navigate(
@@ -228,6 +228,13 @@ export function WalletDetails() {
     return true;
   }, [isWalletBackedUp, wallet]);
 
+  const walletBackedUpInfo = useMemo(() => {
+    if (wallet) {
+      return getWalletBackUp({ wallet });
+    }
+    return null;
+  }, [getWalletBackUp, wallet]);
+
   return (
     <Box>
       <CreateWalletPrompt
@@ -300,6 +307,18 @@ export function WalletDetails() {
               />
             </Menu>
           )}
+          {walletBackedUpInfo ? (
+            <Box paddingHorizontal="12px">
+              <Text
+                size="12pt"
+                weight="medium"
+                color="labelQuaternary"
+                align="left"
+              >
+                {`Last backed up as ${walletBackedUpInfo?.timestamp}`}
+              </Text>
+            </Box>
+          ) : null}
           <Menu>
             {wallet?.accounts?.map((account: Address, numOfWallets) => {
               return (
