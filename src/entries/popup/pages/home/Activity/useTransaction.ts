@@ -75,7 +75,7 @@ export function useTransaction({
   return useQuery({
     queryKey: createQueryKey('transaction', params),
     queryFn: () => fetchTransaction(params),
-    enabled: !!hash,
+    enabled: !!hash && !!address && !!chainId,
     initialData: () => {
       const queryData = queryClient.getQueryData<PaginatedTransactions>(
         paginatedTransactionsKey,
