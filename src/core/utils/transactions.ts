@@ -17,7 +17,7 @@ import {
   nonceStore,
   pendingTransactionsStore,
 } from '../state';
-import { AddressOrEth, ParsedUserAsset } from '../types/assets';
+import { AddressOrEth, ParsedAsset, ParsedUserAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -98,6 +98,17 @@ const getAssetFromChanges = (
   return changes[0]?.asset;
 };
 
+const getDescription = (
+  asset: ParsedAsset | undefined,
+  type: TransactionType,
+  meta: PaginatedTransactionsApiResponse['meta'],
+) => {
+  if (asset?.type === 'nft') return asset.symbol || asset.name;
+  if (type === 'cancel') return i18n.t('transactions.canceled');
+
+  return asset?.name || meta.action;
+};
+
 export function parseTransaction({
   tx,
   currency,
@@ -125,12 +136,8 @@ export function parseTransaction({
     : getAssetFromChanges(changes, type);
 
   const direction = tx.direction || getDirection(type);
-  const methodName = meta.action;
 
-  const description =
-    asset?.type === 'nft'
-      ? asset.symbol || asset.name
-      : asset?.name || methodName;
+  const description = getDescription(asset, type, meta);
 
   const value = changes
     .find((change) => change?.asset.isNativeAsset)

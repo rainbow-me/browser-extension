@@ -190,6 +190,7 @@
   },
   "transactions": {
     "savings": "Savings",
+    "canceled": "Transaction Canceled",
     "burn": {
       "pending": "Burning",
       "confirmed": "Burnned",
