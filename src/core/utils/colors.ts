@@ -22,11 +22,9 @@ export const handleAssetAccentColor = (
   if (!hex) return undefined;
   const rgb = hexToRgb(hex);
   if (theme === 'dark' && rgb && rgb?.g < 50) {
-    console.log('handleAssetAccentColor 808088', theme, hex, rgb);
     // return ETH color
     return '#808088';
   }
-  console.log('handleAssetAccentColor', theme, hex);
   return hex;
 };
 
