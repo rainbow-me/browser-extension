@@ -218,7 +218,6 @@ export const AddByIndexSheet = ({
                     <Lens
                       style={{
                         borderRadius: 12,
-                        position: 'relative',
                       }}
                       onClick={() => setPathDropdownOpen(true)}
                       onKeyDown={() => setPathDropdownOpen(true)}
