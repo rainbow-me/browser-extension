@@ -104,7 +104,7 @@ const getDescription = (
   meta: PaginatedTransactionsApiResponse['meta'],
 ) => {
   if (asset?.type === 'nft') return asset.symbol || asset.name;
-  if (type === 'cancel') return i18n.t('transactions.canceled');
+  if (type === 'cancel') return i18n.t('transactions.cancelled');
 
   return asset?.name || meta.action;
 };
