@@ -1,4 +1,6 @@
+import { uuid4 } from '@sentry/utils';
 import { Ethereum } from '@wagmi/core';
+import { EIP1193Provider, announceProvider } from 'mipd';
 
 import { initializeMessenger } from '~/core/messengers';
 import { RainbowProvider } from '~/core/providers';
@@ -81,7 +83,7 @@ if (shouldInjectProvider()) {
     get() {
       return window.walletRouter.currentProvider;
     },
-    set(newProvider) {
+    set(newProvider: Ethereum | RainbowProvider) {
       window.walletRouter?.addProvider(newProvider);
     },
     configurable: false,
@@ -96,7 +98,15 @@ if (shouldInjectProvider()) {
   );
 }
 
-window.dispatchEvent(new Event('ethereum#initialized'));
+announceProvider({
+  info: {
+    icon: 'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/dapps/rainbow.me.png',
+    name: 'Rainbow',
+    rdns: 'me.rainbow',
+    uuid: uuid4(),
+  },
+  provider: window.rainbow as EIP1193Provider,
+});
 
 backgroundMessenger.reply(
   'wallet_switchEthereumChain',
