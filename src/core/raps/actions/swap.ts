@@ -243,8 +243,7 @@ export const swap = async ({
     throw e;
   }
 
-  if (!swap || !parameters.assetToBuy)
-    throw new RainbowError('swap: error executeSwap');
+  if (!swap) throw new RainbowError('swap: error executeSwap');
 
   const transaction = {
     data: swap.data,

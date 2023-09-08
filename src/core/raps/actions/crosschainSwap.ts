@@ -161,7 +161,7 @@ export const crosschainSwap = async ({
     throw e;
   }
 
-  if (!swap || !parameters.assetToBuy)
+  if (!swap)
     throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
 
   const transaction = {
