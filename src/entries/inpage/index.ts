@@ -4,6 +4,7 @@ import { EIP1193Provider, announceProvider } from 'mipd';
 
 import { initializeMessenger } from '~/core/messengers';
 import { RainbowProvider } from '~/core/providers';
+import { RAINBOW_ICON_RAW_SVG } from '~/core/references/rawImages';
 import { ChainId } from '~/core/types/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 
@@ -100,7 +101,7 @@ if (shouldInjectProvider()) {
 
 announceProvider({
   info: {
-    icon: 'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/dapps/rainbow.me.png',
+    icon: RAINBOW_ICON_RAW_SVG,
     name: 'Rainbow',
     rdns: 'me.rainbow',
     uuid: uuid4(),
