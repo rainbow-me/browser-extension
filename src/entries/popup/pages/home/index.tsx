@@ -43,6 +43,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
+import { useWalletBackUps } from '../../hooks/useWalletBackUps';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
@@ -164,6 +165,7 @@ export function Home() {
   useHomeShortcuts();
   useRestoreNavigation();
   useSwitchWalletShortcuts();
+  useWalletBackUps();
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
