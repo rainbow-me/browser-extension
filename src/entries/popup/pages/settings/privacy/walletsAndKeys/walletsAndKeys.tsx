@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { i18n } from '~/core/languages';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { setSettingWallets } from '~/core/utils/settings';
-import { Box, Symbol } from '~/design-system';
+import { Box, Button, Inline, Symbol, Text } from '~/design-system';
 import { LedgerIcon } from '~/entries/popup/components/LedgerIcon/LedgerIcon';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
@@ -12,11 +12,13 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { TrezorIcon } from '~/entries/popup/components/TrezorIcon/TrezorIcon';
 import { getWallets } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useWalletBackUps } from '~/entries/popup/hooks/useWalletBackUps';
 import { ROUTES } from '~/entries/popup/urls';
 
 export function WalletsAndKeys() {
   const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
+  const { isWalletBackedUp } = useWalletBackUps();
 
   useEffect(() => {
     setSettingWallets(null);
@@ -59,22 +61,23 @@ export function WalletsAndKeys() {
       <Box paddingHorizontal="20px">
         <MenuContainer>
           {wallets.map((wallet, idx) => {
+            const walletBackedUp = isWalletBackedUp({ wallet });
             const singleAccount = wallet.accounts.length === 1;
-            const label = `${
-              wallet.imported || wallet.type === KeychainType.KeyPairKeychain
+            const importedLabel = `${
+              !walletBackedUp
+                ? 'Not backed up  ‧'
+                : wallet.imported ||
+                  wallet.type === KeychainType.KeyPairKeychain
                 ? `${i18n.t(
                     'settings.privacy_and_security.wallets_and_keys.imported',
-                  )} ‧ `
+                  )} ‧`
                 : ''
-            }${wallet.accounts.length} ${
-              singleAccount
-                ? i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.wallet_single',
-                  )
-                : i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.wallet_plural',
-                  )
             }`;
+            const walletsLabel = `${wallet.accounts.length} ${i18n.t(
+              `settings.privacy_and_security.wallets_and_keys.${
+                singleAccount ? 'wallet_single' : 'wallet_plural'
+              }`,
+            )}`;
 
             if (wallet.type === KeychainType.HdKeychain) {
               walletCountPerType.hd += 1;
@@ -106,7 +109,22 @@ export function WalletsAndKeys() {
                       }`}
                     />
                   }
-                  labelComponent={<MenuItem.Label text={label} />}
+                  labelComponent={
+                    <Inline alignVertical="center" space="4px">
+                      {importedLabel ? (
+                        <Text
+                          color={walletBackedUp ? 'labelTertiary' : 'red'}
+                          size="12pt"
+                          weight={walletBackedUp ? 'medium' : 'bold'}
+                        >
+                          {importedLabel}
+                        </Text>
+                      ) : null}
+                      <Text color="labelTertiary" size="12pt" weight="medium">
+                        {walletsLabel}
+                      </Text>
+                    </Inline>
+                  }
                   onClick={() => handleViewWallet(wallet)}
                   leftComponent={
                     wallet.type === KeychainType.HardwareWalletKeychain ? (
@@ -131,6 +149,20 @@ export function WalletsAndKeys() {
                   hasRightArrow
                 />
                 <MenuItem.AccountList accounts={wallet.accounts} />
+                {walletBackedUp ? null : (
+                  <Box paddingHorizontal="16px" paddingVertical="16px">
+                    <Inline alignHorizontal="center" alignVertical="center">
+                      <Button
+                        width="full"
+                        color="red"
+                        height="36px"
+                        variant="tinted"
+                      >
+                        Back Up Now
+                      </Button>
+                    </Inline>
+                  </Box>
+                )}
               </Menu>
             );
           })}

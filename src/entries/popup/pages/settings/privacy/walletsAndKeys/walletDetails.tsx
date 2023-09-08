@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { useWalletBackUpsStore } from '~/core/state/walletBackUps';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
@@ -122,6 +123,8 @@ export function WalletDetails() {
   const { deleteWalletName } = useWalletNamesStore();
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
 
+  const { isWalletBackedUp } = useWalletBackUpsStore();
+
   const handleViewRecoveryPhrase = useCallback(() => {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
@@ -218,6 +221,13 @@ export function WalletDetails() {
     setCreateWalletAddress(undefined);
   };
 
+  const walletBackedUp = useMemo(() => {
+    if (wallet) {
+      return isWalletBackedUp({ wallet });
+    }
+    return true;
+  }, [isWalletBackedUp, wallet]);
+
   return (
     <Box>
       <CreateWalletPrompt
@@ -243,26 +253,46 @@ export function WalletDetails() {
       />
       <Box paddingHorizontal="20px">
         <MenuContainer testId="settings-menu-container">
-          {wallet?.type !== KeychainType.HardwareWalletKeychain && (
+          {wallet?.type !== KeychainType.HardwareWalletKeychain &&
+            walletBackedUp && (
+              <Menu>
+                <MenuItem
+                  first
+                  last
+                  titleComponent={
+                    <MenuItem.Title
+                      text={i18n.t(
+                        wallet?.type === KeychainType.HdKeychain
+                          ? 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_recovery_phrase'
+                          : 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
+                      )}
+                    />
+                  }
+                  leftComponent={
+                    <Symbol
+                      symbol="lock.square.fill"
+                      weight="medium"
+                      size={18}
+                      color="labelTertiary"
+                    />
+                  }
+                  hasRightArrow
+                  onClick={handleViewSecret}
+                />
+              </Menu>
+            )}
+          {!walletBackedUp && (
             <Menu>
               <MenuItem
                 first
                 last
-                titleComponent={
-                  <MenuItem.Title
-                    text={i18n.t(
-                      wallet?.type === KeychainType.HdKeychain
-                        ? 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_recovery_phrase'
-                        : 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
-                    )}
-                  />
-                }
+                titleComponent={<MenuItem.Title text={'Back Up Now'} />}
                 leftComponent={
                   <Symbol
-                    symbol="lock.square.fill"
+                    symbol="exclamationmark.circle.fill"
                     weight="medium"
                     size={18}
-                    color="labelTertiary"
+                    color="red"
                   />
                 }
                 hasRightArrow

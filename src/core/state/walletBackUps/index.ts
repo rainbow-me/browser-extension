@@ -14,13 +14,14 @@ export interface WalletBackUpsStore {
   }: {
     wallet: KeychainWallet;
   }) => { backedUp: boolean; timestamp: Date } | null;
+  clear: () => void;
 }
 
 export const walletBackUpsStore = createStore<WalletBackUpsStore>(
   (set, get) => ({
     walletBackUps: {},
     setWalletBackedUp: ({ wallet }) => {
-      if (wallet.type === KeychainType.KeyPairKeychain) {
+      if (wallet.type === KeychainType.HdKeychain) {
         const { walletBackUps } = get();
         const newWalletBackUps = {
           ...walletBackUps,
@@ -32,7 +33,7 @@ export const walletBackUpsStore = createStore<WalletBackUpsStore>(
       }
     },
     isWalletBackedUp: ({ wallet }) => {
-      if (wallet.type === KeychainType.KeyPairKeychain) {
+      if (wallet.type === KeychainType.HdKeychain) {
         const { walletBackUps } = get();
         return !!walletBackUps[wallet.accounts[0]]?.backedUp;
       } else {
@@ -40,12 +41,15 @@ export const walletBackUpsStore = createStore<WalletBackUpsStore>(
       }
     },
     getWalletBackUp: ({ wallet }) => {
-      if (wallet.type === KeychainType.KeyPairKeychain) {
+      if (wallet.type === KeychainType.HdKeychain) {
         const { walletBackUps } = get();
         return walletBackUps[wallet.accounts[0]] || null;
       } else {
         return null;
       }
+    },
+    clear: () => {
+      set({ walletBackUps: {} });
     },
   }),
   {
