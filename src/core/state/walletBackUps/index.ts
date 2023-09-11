@@ -90,7 +90,7 @@ export const walletBackupsStore = createStore<WalletBackupsStore>(
     },
 
     clear: () => {
-      set({ walletBackups: {} });
+      set({ walletBackups: {}, needsInitialization: true });
     },
   }),
   {

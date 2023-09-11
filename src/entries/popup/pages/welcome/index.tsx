@@ -51,6 +51,7 @@ export function Welcome() {
   }, [headerControls, prevScreen, screen]);
 
   useEffect(() => {
+    console.log('WELCOONNEENEN');
     setNeedsInitialization(false);
   }, [setNeedsInitialization]);
 

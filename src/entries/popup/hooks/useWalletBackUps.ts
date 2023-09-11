@@ -32,7 +32,11 @@ export const useWalletBackups = () => {
 
   useEffect(() => {
     // if there's no backup info we set everything as backed up for old users
-    if (needsInitialization && Object.keys(walletBackups).length === 0) {
+    if (
+      needsInitialization &&
+      walletsFromKeychain.length &&
+      Object.keys(walletBackups).length === 0
+    ) {
       walletsFromKeychain.map((wallet) => setWalletAlreadyBackedUp({ wallet }));
       setNeedsInitialization(false);
     }
