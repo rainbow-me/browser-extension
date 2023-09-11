@@ -131,7 +131,7 @@
           "copy_address": "Copy Address",
           "hidden": "Hidden",
           "back_up_now": "Back Up Now",
-          "last_backed_up": "Last backed up as %date"
+          "last_backed_up": "Last backed up as %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "Name your wallet",
