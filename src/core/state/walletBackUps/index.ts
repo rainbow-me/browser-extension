@@ -43,7 +43,7 @@ export interface WalletBackupsStore {
     [address: Address]: { backedUp: boolean; timestamp: Date | number };
   };
   setWalletAlreadyBackedUp: ({ wallet }: { wallet: KeychainWallet }) => void;
-  setWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => void;
+  setWalletBackedUp: ({ address }: { address: Address }) => void;
   isWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => boolean;
   deleteWalletBackup: ({ address }: { address: Address }) => void;
   getWalletBackup: ({
@@ -69,17 +69,15 @@ export const walletBackupsStore = createStore<WalletBackupsStore>(
         });
       }
     },
-    setWalletBackedUp: ({ wallet }) => {
-      if (wallet.type === KeychainType.HdKeychain) {
-        const { walletBackups } = get();
-        const newWalletBackups = {
-          ...walletBackups,
-          [wallet.accounts[0]]: { backedUp: true, timestamp: Date.now() },
-        };
-        set({
-          walletBackups: { ...newWalletBackups },
-        });
-      }
+    setWalletBackedUp: ({ address }) => {
+      const { walletBackups } = get();
+      const newWalletBackups = {
+        ...walletBackups,
+        [address]: { backedUp: true, timestamp: Date.now() },
+      };
+      set({
+        walletBackups: { ...newWalletBackups },
+      });
     },
     isWalletBackedUp: ({ wallet }) => {
       if (wallet.type === KeychainType.HdKeychain && !wallet.imported) {

@@ -51,10 +51,10 @@ export const useWalletBackups = () => {
       });
       if (needsBackupReminder) {
         setShowWalletBackupReminder(true);
-        setReminded();
       } else {
         popQueue();
       }
+      setReminded();
     }
   }, [
     getWalletBackup,

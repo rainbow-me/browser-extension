@@ -227,6 +227,15 @@ export function WalletDetails() {
     );
   }, [navigate, state?.password, wallet, walletBackedUp]);
 
+  const handleBackup = useCallback(() => {
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
+      {
+        state: { wallet, showQuiz: true, fromChooseGroup: true },
+      },
+    );
+  }, [navigate, wallet]);
+
   const handleViewSecret = useCallback(() => {
     if (wallet?.type === KeychainType.HdKeychain) {
       handleViewRecoveryPhrase();
@@ -314,7 +323,7 @@ export function WalletDetails() {
                   />
                 }
                 hasRightArrow
-                onClick={handleViewSecret}
+                onClick={handleBackup}
               />
             </Menu>
           )}

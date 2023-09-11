@@ -39,7 +39,7 @@ export function WalletsAndKeys() {
       navigate(
         ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
         {
-          state: { wallet, showQuiz: true },
+          state: { wallet, showQuiz: true, fromChooseGroup: true },
         },
       );
     },
