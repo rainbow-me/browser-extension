@@ -1,10 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import { motion, useTransform } from 'framer-motion';
+import { motion, useMotionValueEvent, useTransform } from 'framer-motion';
 import * as React from 'react';
 import { useAccount } from 'wagmi';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
@@ -16,6 +17,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
@@ -25,7 +27,7 @@ import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
 export const Header = React.memo(function Header() {
-  const { scrollYProgress: progress } = useScroll({
+  const { scrollYProgress: progress, scrollY } = useScroll({
     offset: ['0px', '64px', '92px'],
   });
 
@@ -38,7 +40,31 @@ export const Header = React.memo(function Header() {
   const x = useTransform(progress, [0, 0.25, 1], [-12, -12, 0]);
   const avatarOpacityValue = useTransform(progress, [0, 0.25, 1], [0, 0, 1]);
 
+  const [tooltipOffset, setTooltipOffset] = React.useState(scrollY.get());
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setTooltipOffset(latest);
+  });
+
   const { address } = useAccount();
+
+  const accountName = (
+    <AccountName
+      avatar={
+        address && (
+          <Box
+            as={motion.div}
+            style={{ opacity: avatarOpacityValue }}
+            paddingRight="2px"
+          >
+            <WalletAvatar address={address} size={20} emojiSize="14pt" />
+          </Box>
+        )
+      }
+      id="header"
+      tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
+    />
+  );
 
   return (
     <Box
@@ -77,28 +103,29 @@ export const Header = React.memo(function Header() {
               x,
             }}
           >
-            <AccountName
-              avatar={
-                address && (
-                  <Box
-                    as={motion.div}
-                    style={{ opacity: avatarOpacityValue }}
-                    paddingRight="2px"
-                  >
-                    <WalletAvatar
-                      address={address}
-                      size={20}
-                      emojiSize="14pt"
-                    />
-                  </Box>
-                )
-              }
-              id="header"
-              tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
-            />
+            {tooltipOffset < 92 ? (
+              <CursorTooltip
+                align="start"
+                arrowAlignment="center"
+                text={i18n.t('tooltip.switch_wallet')}
+                textWeight="bold"
+                textSize="12pt"
+                textColor="labelSecondary"
+                marginLeft="22px"
+                marginTop={
+                  tooltipOffset > 46 ? `${55 + (tooltipOffset - 40)}px` : '0px'
+                }
+                arrowDirection={tooltipOffset > 46 ? 'up' : 'down'}
+                hint={shortcuts.home.GO_TO_WALLETS.display}
+              >
+                {accountName}
+              </CursorTooltip>
+            ) : (
+              accountName
+            )}
           </Box>
 
-          <ActionButtonsSection />
+          <ActionButtonsSection tooltipOffset={tooltipOffset} />
         </Stack>
       </Inset>
       <Box style={{ minHeight: 32 }} />
@@ -125,7 +152,7 @@ export function AvatarSection() {
   );
 }
 
-function ActionButtonsSection() {
+function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
 
@@ -165,41 +192,77 @@ function ActionButtonsSection() {
     <Box style={{ height: 56 }}>
       {avatar?.color && (
         <Inline space="12px">
-          <ActionButton
-            symbol="square.on.square"
-            text={i18n.t('wallet_header.copy')}
-            onClick={handleCopy}
-            testId="header-link-copy"
-            tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
-          />
-
-          <ActionButton
-            symbol="arrow.triangle.swap"
-            testId="header-link-swap"
-            text={i18n.t('wallet_header.swap')}
-            tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
-            onClick={
-              allowSwap
-                ? () => navigateToSwaps()
-                : isWatchingWallet
-                ? alertWatchingWallet
-                : alertComingSoon
-            }
-          />
-
-          <Link
-            tabIndex={-1}
-            id="header-link-send"
-            to={allowSend ? ROUTES.SEND : '#'}
-            state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
-            onClick={allowSend ? () => null : alertWatchingWallet}
+          <CursorTooltip
+            align="center"
+            arrowAlignment="center"
+            text={i18n.t('tooltip.copy_address')}
+            textWeight="bold"
+            textSize="12pt"
+            textColor="labelSecondary"
+            marginLeft="18px"
+            marginTop={`${0 - tooltipOffset}px`}
+            hint={shortcuts.home.COPY_ADDRESS.display}
           >
             <ActionButton
-              symbol="paperplane.fill"
-              text={i18n.t('wallet_header.send')}
-              tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
+              symbol="square.on.square"
+              text={i18n.t('wallet_header.copy')}
+              onClick={handleCopy}
+              testId="header-link-copy"
+              tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
             />
-          </Link>
+          </CursorTooltip>
+
+          <CursorTooltip
+            align="center"
+            arrowAlignment="center"
+            text={i18n.t('tooltip.swap')}
+            textWeight="bold"
+            textSize="12pt"
+            textColor="labelSecondary"
+            marginLeft="66px"
+            marginTop={`${0 - tooltipOffset}px`}
+            hint={shortcuts.home.GO_TO_SWAP.display}
+          >
+            <ActionButton
+              symbol="arrow.triangle.swap"
+              testId="header-link-swap"
+              text={i18n.t('wallet_header.swap')}
+              tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
+              onClick={
+                allowSwap
+                  ? () => navigateToSwaps()
+                  : isWatchingWallet
+                  ? alertWatchingWallet
+                  : alertComingSoon
+              }
+            />
+          </CursorTooltip>
+
+          <CursorTooltip
+            align="center"
+            arrowAlignment="center"
+            text={i18n.t('tooltip.send')}
+            textWeight="bold"
+            textSize="12pt"
+            textColor="labelSecondary"
+            marginLeft="114px"
+            marginTop={`${0 - tooltipOffset}px`}
+            hint={shortcuts.home.GO_TO_SEND.display}
+          >
+            <Link
+              tabIndex={-1}
+              id="header-link-send"
+              to={allowSend ? ROUTES.SEND : '#'}
+              state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
+              onClick={allowSend ? () => null : alertWatchingWallet}
+            >
+              <ActionButton
+                symbol="paperplane.fill"
+                text={i18n.t('wallet_header.send')}
+                tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
+              />
+            </Link>
+          </CursorTooltip>
         </Inline>
       )}
     </Box>

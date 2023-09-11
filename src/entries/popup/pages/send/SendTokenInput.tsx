@@ -28,6 +28,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { SortMethod } from '../../hooks/send/useSendAsset';
 import { AssetRow } from '../home/Tokens';
 
@@ -279,13 +280,35 @@ export const SendTokenInput = React.forwardRef<
         </Box>
       }
       rightComponent={
-        <InputActionButton
-          showClose={!!asset}
-          onClose={onCloseDropdown}
-          onDropdownAction={onDropdownAction}
-          dropdownVisible={dropdownVisible}
-          testId={`input-wrapper-close-${'token-input'}`}
-        />
+        asset ? (
+          <CursorTooltip
+            align="end"
+            arrowAlignment="right"
+            text={i18n.t('tooltip.clear_token')}
+            textWeight="bold"
+            textSize="12pt"
+            textColor="labelSecondary"
+            marginLeft="22px"
+            marginTop="66px"
+            arrowDirection={'up'}
+          >
+            <InputActionButton
+              showClose={!!asset}
+              onClose={onCloseDropdown}
+              onDropdownAction={onDropdownAction}
+              dropdownVisible={dropdownVisible}
+              testId={`input-wrapper-close-${'token-input'}`}
+            />
+          </CursorTooltip>
+        ) : (
+          <InputActionButton
+            showClose={!!asset}
+            onClose={onCloseDropdown}
+            onDropdownAction={onDropdownAction}
+            dropdownVisible={dropdownVisible}
+            testId={`input-wrapper-close-${'token-input'}`}
+          />
+        )
       }
       dropdownComponent={
         <Stack space="8px">

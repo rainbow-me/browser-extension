@@ -1,16 +1,21 @@
-import { motion } from 'framer-motion';
-import React, { useMemo } from 'react';
+import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import React, { useContext, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isL2Chain } from '~/core/utils/chains';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
+import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
 
-import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
+import {
+  DropdownScrollContext,
+  dropdownContainerVariant,
+} from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { BottomNetwork } from '../../../messages/BottomActions';
 
 import { TokenToBuySection } from './TokenToBuySection';
@@ -32,7 +37,18 @@ export const TokenToBuyDropdown = ({
   setOutputChainId,
   onDropdownChange,
 }: TokenToBuyDropdownProps) => {
+  const dropdownScrollRef = useContext(DropdownScrollContext);
+  const [tooltipOffset, setTooltipOffset] = useState(0);
   const isL2 = useMemo(() => isL2Chain(outputChainId), [outputChainId]);
+
+  const { scrollY } = useScroll({
+    container: dropdownScrollRef,
+    layoutEffect: false,
+  });
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setTooltipOffset(latest);
+  });
 
   const assetsCount = useMemo(
     () => assets?.reduce((count, section) => count + section.data.length, 0),
@@ -64,14 +80,26 @@ export const TokenToBuyDropdown = ({
               setOutputChainId(chainId);
             }}
             triggerComponent={
-              <ButtonOverflow testId="token-to-buy-networks-trigger">
-                <BottomNetwork
-                  selectedChainId={outputChainId}
-                  displaySymbol
-                  symbolSize={12}
-                  symbol="chevron.down"
-                />
-              </ButtonOverflow>
+              <CursorTooltip
+                align="start"
+                arrowAlignment="center"
+                text={i18n.t('tooltip.switch_network')}
+                textWeight="bold"
+                textSize="12pt"
+                textColor="labelSecondary"
+                marginLeft="-18px"
+                marginTop={`-${tooltipOffset}px`}
+                hint={shortcuts.home.SWITCH_NETWORK.display}
+              >
+                <ButtonOverflow testId="token-to-buy-networks-trigger">
+                  <BottomNetwork
+                    selectedChainId={outputChainId}
+                    displaySymbol
+                    symbolSize={12}
+                    symbol="chevron.down"
+                  />
+                </ButtonOverflow>
+              </CursorTooltip>
             }
           />
         </Inline>
@@ -91,6 +119,7 @@ export const TokenToBuyDropdown = ({
               onSelectAsset={onSelectAsset}
               onDropdownChange={onDropdownChange}
               outputChainId={outputChainId}
+              tooltipOffset={tooltipOffset}
             />
           ))}
         </Stack>

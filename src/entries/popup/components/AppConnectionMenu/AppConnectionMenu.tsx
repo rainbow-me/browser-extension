@@ -35,6 +35,7 @@ import {
 import { HomeMenuRow } from '../HomeMenuRow/HomeMenuRow';
 import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
+import { CursorTooltip } from '../Tooltip/CursorTooltip';
 
 import { AppConnectionMenuHeader } from './AppConnectionMenuHeader';
 import { AppInteractionItem } from './AppInteractionItem';
@@ -215,7 +216,20 @@ export const AppConnectionMenu = ({
           id={`app-connection-menu-selector-${menuOpen ? 'open' : 'closed'}`}
           testId={menuTriggerId}
         >
-          {children}
+          <CursorTooltip
+            align="start"
+            arrowAlignment="left"
+            arrowDirection="up"
+            text={i18n.t('tooltip.switch_network')}
+            textWeight="bold"
+            textSize="12pt"
+            textColor="labelSecondary"
+            marginLeft="2px"
+            marginTop="76px"
+            hint={shortcuts.home.SWITCH_NETWORK.display}
+          >
+            {children}
+          </CursorTooltip>
         </Box>
       </DropdownMenuTrigger>
       <DropdownMenuContentWithSubMenu

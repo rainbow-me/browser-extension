@@ -32,6 +32,7 @@ import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
+import { CursorTooltip } from '../Tooltip/CursorTooltip';
 
 import { CustomGasSheet } from './CustomGasSheet';
 import { SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
@@ -202,23 +203,35 @@ function Fee({
               ref={switchTransactionSpeedMenuRef}
             />
             {chainId === ChainId.mainnet ? (
-              <Lens
-                borderRadius="round"
-                boxShadow="12px accent"
-                borderWidth="2px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                borderColor="fillSecondary"
-                style={{ height: 28, width: 28 }}
-                onClick={openCustomGasSheet}
+              <CursorTooltip
+                align="end"
+                arrowAlignment="right"
+                text={i18n.t('tooltip.gwei_settings')}
+                textWeight="bold"
+                textSize="12pt"
+                textColor="labelSecondary"
+                marginLeft="0px"
+                marginTop="-28px"
+                hint={shortcuts.global.OPEN_CUSTOM_GAS_MENU.display}
               >
-                <Symbol
-                  weight="medium"
-                  symbol="slider.horizontal.3"
-                  size={12}
-                />
-              </Lens>
+                <Lens
+                  borderRadius="round"
+                  boxShadow="12px accent"
+                  borderWidth="2px"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  borderColor="fillSecondary"
+                  style={{ height: 28, width: 28 }}
+                  onClick={openCustomGasSheet}
+                >
+                  <Symbol
+                    weight="medium"
+                    symbol="slider.horizontal.3"
+                    size={12}
+                  />
+                </Lens>
+              </CursorTooltip>
             ) : null}
           </Inline>
         </Column>

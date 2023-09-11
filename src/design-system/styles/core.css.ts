@@ -202,7 +202,7 @@ function getShadowColor(
 
 const shadowTokens: Record<Shadow, ShadowDefinition> = {
   '1px': {
-    light: [`0 1px 0 ${getShadowColor('shadowFar', 'light', 0.02)}`].join(', '),
+    light: [`0 1px 0 ${getShadowColor('shadowFar', 'light', 0.2)}`].join(', '),
     dark: [`0 1px 0 ${getShadowColor('shadowFar', 'dark', 0.2)}`].join(', '),
   },
   ...coloredShadows('1px', (color) => ({

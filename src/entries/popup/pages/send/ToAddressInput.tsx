@@ -33,6 +33,7 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { DropdownInputWrapper } from '../../components/DropdownInputWrapper/DropdownInputWrapper';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
@@ -425,13 +426,35 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
           }
           dropdownVisible={dropdownVisible}
           rightComponent={
-            <InputActionButton
-              showClose={!!toAddress}
-              onClose={onActionClose}
-              onDropdownAction={onDropdownAction}
-              dropdownVisible={dropdownVisible}
-              testId={`input-wrapper-close-to-address-input`}
-            />
+            toAddress ? (
+              <CursorTooltip
+                align="end"
+                arrowAlignment="right"
+                text={i18n.t('tooltip.clear_address')}
+                textWeight="bold"
+                textSize="12pt"
+                textColor="labelSecondary"
+                marginLeft="22px"
+                marginTop="66px"
+                arrowDirection={'up'}
+              >
+                <InputActionButton
+                  showClose={!!toAddress}
+                  onClose={onActionClose}
+                  onDropdownAction={onDropdownAction}
+                  dropdownVisible={dropdownVisible}
+                  testId={`input-wrapper-close-to-address-input`}
+                />
+              </CursorTooltip>
+            ) : (
+              <InputActionButton
+                showClose={!!toAddress}
+                onClose={onActionClose}
+                onDropdownAction={onDropdownAction}
+                dropdownVisible={dropdownVisible}
+                testId={`input-wrapper-close-to-address-input`}
+              />
+            )
           }
         />
       </>
