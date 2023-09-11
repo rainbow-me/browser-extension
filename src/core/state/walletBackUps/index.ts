@@ -22,9 +22,11 @@ export const walletBackupReminderStore = createStore<WalletBackupReminderStore>(
 export const useWalletBackupReminderStore = create(walletBackupReminderStore);
 
 export interface WalletBackupsStore {
+  needsInitialization: boolean;
   walletBackups: {
     [address: Address]: { backedUp: boolean; timestamp: Date | number };
   };
+  setNeedsInitialization: (needsInitialization: boolean) => void;
   setWalletAlreadyBackedUp: ({ wallet }: { wallet: KeychainWallet }) => void;
   setWalletBackedUp: ({ address }: { address: Address }) => void;
   isWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => boolean;
@@ -39,7 +41,10 @@ export interface WalletBackupsStore {
 
 export const walletBackupsStore = createStore<WalletBackupsStore>(
   (set, get) => ({
+    needsInitialization: true,
     walletBackups: {},
+    setNeedsInitialization: (needsInitialization) =>
+      set({ needsInitialization }),
     setWalletAlreadyBackedUp: ({ wallet }) => {
       if (wallet.type === KeychainType.HdKeychain) {
         const { walletBackups } = get();

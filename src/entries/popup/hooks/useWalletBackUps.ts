@@ -14,12 +14,13 @@ export const useWalletBackups = () => {
     useState(false);
   const { popQueue } = useHomePromptQueue();
   const {
+    needsInitialization,
     walletBackups,
     setWalletBackedUp,
     setWalletAlreadyBackedUp,
+    setNeedsInitialization,
     isWalletBackedUp,
     getWalletBackup,
-    // clear,
   } = useWalletBackupsStore();
 
   const { walletsFromKeychain } = useWalletsFromKeychain();
@@ -31,11 +32,13 @@ export const useWalletBackups = () => {
 
   useEffect(() => {
     // if there's no backup info we set everything as backed up for old users
-    if (Object.keys(walletBackups).length === 0) {
-      // walletsFromKeychain.map((wallet) => setWalletAlreadyBackedUp({ wallet }));
+    if (needsInitialization && Object.keys(walletBackups).length === 0) {
+      walletsFromKeychain.map((wallet) => setWalletAlreadyBackedUp({ wallet }));
+      setNeedsInitialization(false);
     }
-    // clear();
   }, [
+    needsInitialization,
+    setNeedsInitialization,
     setWalletAlreadyBackedUp,
     setWalletBackedUp,
     walletBackups,
