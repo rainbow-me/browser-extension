@@ -215,6 +215,7 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "bn.js": "5.2.1",
     "protobufjs": "7.2.4",
     "@grpc/grpc-js": "1.8.8",
     "semver": "7.5.2",
@@ -262,7 +263,7 @@
       "@foundry-rs/hardhat-anvil>hardhat>ws>bufferutil": false,
       "@foundry-rs/hardhat-anvil>hardhat>ws>utf-8-validate": false,
       "esbuild": false,
-      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>ethereumjs-util>ethereum-cryptography>secp256k1": false,
+      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>gaswapshe-core>ethereumjs-util>ethereum-cryptography>secp256k1": false,
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>ethereumjs-vm>core-js-pure": false,
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>keccak": false,
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>web3": false,
