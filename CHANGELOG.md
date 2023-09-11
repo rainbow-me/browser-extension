@@ -23,13 +23,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.2.13](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.13)
 
-### Added
-- Introduced a loading spinner to the "Send" button, mirroring the swap behavior #916
-- Implemented an explainer for tokens that require a fee on transfer #917
+### Changed
+- Introduced a transaction submission loading spinner for the "Send" button in the Send feature, mirroring the behavior in Swaps #916
+- Implemented an explainer for tokens that aren't supported in Swaps because their contract requires a fee on transfer #917
 
 ### Fixed
-- Corrected the setting of `rainbow_setDefaultProvider` during tab switches #906
-- Ensured the browser extension correctly displays the appropriate sheet when using the `w` shortcut in the app menu #913
+- Resolved an issue with Rainbow's "default wallet" toggle behavior for users that interacted with dApps across multiple tabs simultaneously #906
+- The dApp and More menus on the core wallet screen can now be toggled properly with the `n` and `.` hotkeys #913
+- Resolved a conflict where the `w` hotkey for the Wallet Switcher could be triggered while the dApp menu is active #913
+
+### Internal
+
+- Resolved an issue with development hot reloading #920
+
+### Testing
+
+- Improvements to e2e reliability, and disabling unstable tests on Firefox #921
 
 ## [v1.2.11](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.11)
 
