@@ -3,10 +3,12 @@ new file mode 100644
 index 0000000..e69de29
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store b/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store
 new file mode 100644
-index 0000000..e69de29
+index 0000000..0070020
+Binary files /dev/null and b/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store differ
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store
 new file mode 100644
-index 0000000..e69de29
+index 0000000..5008ddf
+Binary files /dev/null and b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store differ
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/1/erc20-signatures.json b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/1/erc20-signatures.json
 deleted file mode 100644
 index 72ff419..0000000
