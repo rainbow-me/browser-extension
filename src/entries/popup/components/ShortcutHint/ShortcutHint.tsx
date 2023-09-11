@@ -2,22 +2,34 @@ import React from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 
-export const ShortcutHint = ({ hint }: { hint: string }) => {
+export const ShortcutHint = ({
+  hint,
+  small,
+}: {
+  hint: string;
+  small?: boolean;
+}) => {
+  const height = small ? '14px' : '18px';
+  const width = small ? '16px' : '18px';
   return (
     <Box
       background="fillSecondary"
       padding="4px"
-      borderRadius="3px"
+      borderRadius={small ? '4px' : '5px'}
       boxShadow="1px"
-      style={{ width: '18px', height: '18px' }}
+      style={{ width, height }}
     >
-      <Box paddingTop="1px">
-        <Inline alignHorizontal="center" alignVertical="center">
-          <Text size="12pt" color="labelSecondary" weight="semibold">
+      <Inline alignHorizontal="center" alignVertical="center">
+        <Box style={{ marginTop: small ? -1 : 1 }}>
+          <Text
+            size={small ? '11pt' : '12pt'}
+            color="labelSecondary"
+            weight="bold"
+          >
             {hint}
           </Text>
-        </Inline>
-      </Box>
+        </Box>
+      </Inline>
     </Box>
   );
 };

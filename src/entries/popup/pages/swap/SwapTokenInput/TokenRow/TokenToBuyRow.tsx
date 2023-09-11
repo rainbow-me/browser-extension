@@ -34,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
+import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 
 import { RowHighlightWrapper } from './RowHighlightWrapper';
 
@@ -41,12 +42,14 @@ export type TokenToBuyRowProps = {
   asset: SearchAsset;
   testId: string;
   onDropdownChange: (open: boolean) => void;
+  tooltipOffset: number;
 };
 
 export function TokenToBuyRow({
   asset,
   testId,
   onDropdownChange,
+  tooltipOffset,
 }: TokenToBuyRowProps) {
   const { addFavorite, favorites, removeFavorite } = useFavoritesStore();
   const isFavorite = useMemo(
@@ -227,15 +230,26 @@ export function TokenToBuyRow({
             </DropdownMenu>
           </Box>
         ) : null}
-        <ButtonSymbol
-          symbol="star.fill"
-          height="24px"
-          variant="plain"
-          color="fillHorizontal"
-          symbolColor={isFavorite ? 'yellow' : 'labelSecondary'}
-          onClick={onToggleFavorite}
-          testId={`${testId}-favorite-button`}
-        />
+        <CursorTooltip
+          align="start"
+          arrowAlignment="right"
+          text={i18n.t(isFavorite ? 'tooltip.unfavorite' : 'tooltip.favorite')}
+          textWeight="bold"
+          textSize="12pt"
+          textColor="labelSecondary"
+          marginLeft={isFavorite ? '-88px' : '-48px'}
+          marginTop={`-${tooltipOffset}px`}
+        >
+          <ButtonSymbol
+            symbol="star.fill"
+            height="24px"
+            variant="plain"
+            color="fillHorizontal"
+            symbolColor={isFavorite ? 'yellow' : 'labelSecondary'}
+            onClick={onToggleFavorite}
+            testId={`${testId}-favorite-button`}
+          />
+        </CursorTooltip>
       </Inline>
     ),
     [
@@ -249,6 +263,7 @@ export function TokenToBuyRow({
       isFavorite,
       onToggleFavorite,
       testId,
+      tooltipOffset,
     ],
   );
 

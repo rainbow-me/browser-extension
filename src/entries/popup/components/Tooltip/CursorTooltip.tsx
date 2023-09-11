@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 
 import { Box } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
@@ -6,6 +6,9 @@ import { TextStyles } from '~/design-system/styles/core.css';
 import { Tooltip } from './Tooltip';
 
 export const CursorTooltip = ({
+  align,
+  arrowAlignment,
+  arrowDirection,
   marginTop,
   marginLeft,
   text,
@@ -13,26 +16,33 @@ export const CursorTooltip = ({
   textSize,
   textColor,
   children,
+  hint,
 }: {
-  children: ReactElement;
+  children: ReactNode;
   marginTop?: string;
   marginLeft?: string;
   text: string;
   align?: 'start' | 'center' | 'end';
   arrowAlignment?: 'left' | 'center' | 'right';
+  arrowDirection?: 'down' | 'up';
   textSize?: TextStyles['fontSize'];
   textWeight?: TextStyles['fontWeight'];
   textColor?: TextStyles['color'];
+  hint?: string;
 }) => {
   const [open, setOpen] = useState(false);
   return (
     <>
       <Tooltip
+        align={align}
+        arrowAlignment={arrowAlignment}
+        arrowDirection={arrowDirection}
         text={text}
         textWeight={textWeight}
         textSize={textSize}
         textColor={textColor}
         open={open}
+        hint={hint}
       >
         <Box
           background="green"

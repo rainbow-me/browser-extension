@@ -17,7 +17,7 @@ import {
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { placeholderStyle } from '~/design-system/components/Input/Input.css';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
-import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
+import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 import { useBrowser } from '~/entries/popup/hooks/useBrowser';
 
@@ -111,13 +111,14 @@ export const TokenToSellInfo = ({
           </Column>
         )}
         <Column width="content">
-          <Tooltip
+          <CursorTooltip
             text={`${assetToSellMaxValue.display} ${asset?.symbol}`}
             textColor="labelSecondary"
             textSize="12pt"
-            textWeight="medium"
+            textWeight="bold"
             arrowAlignment="right"
             align="end"
+            marginLeft="42px"
           >
             <Box
               onClick={setAssetToSellMaxValue}
@@ -141,7 +142,7 @@ export const TokenToSellInfo = ({
                 </Inline>
               </ButtonOverflow>
             </Box>
-          </Tooltip>
+          </CursorTooltip>
         </Column>
       </Columns>
     </Box>

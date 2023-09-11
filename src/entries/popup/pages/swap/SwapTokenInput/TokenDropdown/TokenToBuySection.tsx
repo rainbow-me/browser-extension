@@ -9,7 +9,7 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
-import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
+import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 import {
   AssetToBuySection,
   AssetToBuySectionId,
@@ -83,22 +83,25 @@ const bridgeSectionsColorsByChain = {
 const VerifiedWrappedTooltip = ({
   children,
   id,
+  offset,
 }: {
   children: ReactElement;
   id: string;
+  offset: number;
 }) => {
   if (id !== 'verified') return children;
   return (
-    <Tooltip
+    <CursorTooltip
       text={i18n.t('token_search.verified_by_rainbow')}
       textSize="12pt"
       textWeight="medium"
       textColor="labelSecondary"
       arrowAlignment="left"
       align="start"
+      marginTop={`-${offset}px`}
     >
       {children}
-    </Tooltip>
+    </CursorTooltip>
   );
 };
 
@@ -107,11 +110,13 @@ export const TokenToBuySection = ({
   outputChainId,
   onSelectAsset,
   onDropdownChange,
+  tooltipOffset,
 }: {
   assetSection: AssetToBuySection;
   outputChainId?: ChainId;
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   onDropdownChange: (open: boolean) => void;
+  tooltipOffset: number;
 }) => {
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets: assetSection.data,
@@ -145,7 +150,7 @@ export const TokenToBuySection = ({
           </Box>
         ) : null}
         <Box paddingHorizontal="15px">
-          <VerifiedWrappedTooltip id={assetSection.id}>
+          <VerifiedWrappedTooltip id={assetSection.id} offset={tooltipOffset}>
             <Box paddingHorizontal="5px" width="full">
               <Inline space="4px" alignVertical="center">
                 <Symbol
@@ -186,6 +191,7 @@ export const TokenToBuySection = ({
                   onDropdownChange={onDropdownChange}
                   asset={asset}
                   testId={`${asset?.uniqueId}-${assetSection.id}-token-to-buy-row`}
+                  tooltipOffset={tooltipOffset}
                 />
               </Box>
             );

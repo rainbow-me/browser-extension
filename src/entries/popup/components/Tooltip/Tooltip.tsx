@@ -6,6 +6,8 @@ import { Box, Inline, TextOverflow, ThemeProvider } from '~/design-system';
 import { AlignHorizontal } from '~/design-system/components/Inline/Inline';
 import { TextStyles } from '~/design-system/styles/core.css';
 
+import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
+
 const { innerWidth: windowWidth } = window;
 
 export const Tooltip = ({
@@ -17,17 +19,21 @@ export const Tooltip = ({
   textWeight,
   textColor,
   arrowAlignment = 'center',
+  arrowDirection = 'down',
   open,
+  hint,
 }: {
   children: ReactNode;
   text: string;
   align?: 'start' | 'center' | 'end';
   alignOffset?: number;
   arrowAlignment?: 'left' | 'center' | 'right';
+  arrowDirection?: 'down' | 'up';
   textSize?: TextStyles['fontSize'];
   textWeight?: TextStyles['fontWeight'];
   textColor?: TextStyles['color'];
   open?: boolean;
+  hint?: string;
 }) => {
   const { currentTheme } = useCurrentThemeStore();
 
@@ -85,22 +91,27 @@ export const Tooltip = ({
                       rotate: '45deg',
                       left,
                       right,
+                      ...(arrowDirection === 'up' ? { top: -4 } : {}),
                     }}
                   />
                 </Inline>
                 <Box
                   background="surfaceSecondaryElevated"
-                  padding="7px"
+                  padding="4px"
+                  paddingLeft="6px"
                   borderRadius="6px"
                   backdropFilter="blur(26px)"
                 >
-                  <TextOverflow
-                    color={textColor || 'label'}
-                    size={textSize || '16pt'}
-                    weight={textWeight || 'bold'}
-                  >
-                    {text}
-                  </TextOverflow>
+                  <Inline alignVertical="center" space={'6px'}>
+                    <TextOverflow
+                      color={textColor || 'label'}
+                      size={textSize || '16pt'}
+                      weight={textWeight || 'bold'}
+                    >
+                      {text}
+                    </TextOverflow>
+                    {hint ? <ShortcutHint hint={hint} small /> : null}
+                  </Inline>
                 </Box>
               </Box>
             </ThemeProvider>
