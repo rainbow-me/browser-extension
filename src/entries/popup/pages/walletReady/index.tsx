@@ -33,9 +33,9 @@ const PinToToolbar = () => {
         ...(!isArc && {
           borderTopLeftRadius: 0,
           borderTopRightRadius: 0,
-          right: isBrave ? '144px' : '104px',
+          right: isBrave ? '144px' : '118px',
         }),
-        maxWidth: '152px',
+        maxWidth: '154px',
         top: isArc ? '95px' : '0',
       }}
       paddingHorizontal="12px"

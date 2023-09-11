@@ -6,7 +6,6 @@ import {
   accentColorAsHsl,
   transparentAccentColorAsHsl,
 } from '~/design-system/styles/core.css';
-import { globalColors } from '~/design-system/styles/designTokens';
 
 import { monotoneCubicInterpolation } from './monotoneCubicInterpolation';
 
@@ -34,7 +33,7 @@ const IndicatorLabel = ({ x }: { x: number }) => {
       fontWeight="bold"
       fontSize="14px"
       fontFamily="SFRounded, system-ui"
-      x={overflowRight ? x - 4 : x + 4}
+      x={overflowRight ? x - 6 : x + 6}
       textAnchor={overflowRight ? 'end' : 'start'}
     >
       {formatCurrency(point.price)}
@@ -173,7 +172,8 @@ export const LineChart = ({
           ref={pathRef}
           animate={{ d }}
           fill="none"
-          stroke={globalColors.blueGrey60}
+          stroke={accentColorAsHsl}
+          strokeOpacity={0.5}
           strokeWidth={3}
         />
         <motion.path

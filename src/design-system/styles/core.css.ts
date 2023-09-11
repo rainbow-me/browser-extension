@@ -151,12 +151,24 @@ export const semiTransparentAccentColorAsHsl = getColorAsHsl({
   alpha: 0.8,
   vars: accentColorHslVars,
 });
+export const outlineAccentColorAsHsl = getColorAsHsl({
+  alpha: 0.2,
+  vars: accentColorHslVars,
+});
+export const tabBackgroundColor = getColorAsHsl({
+  alpha: 0.2,
+  vars: accentColorHslVars,
+});
 export const transparentAccentColorAsHsl = getColorAsHsl({
   alpha: 0.1,
   vars: accentColorHslVars,
 });
 
 export const avatarColorAsHsl = getColorAsHsl({ vars: avatarColorHslVars });
+export const outlineAvatarColorAsHsl = getColorAsHsl({
+  alpha: 0.2,
+  vars: avatarColorHslVars,
+});
 export const transparentAvatarColorAsHsl = getColorAsHsl({
   alpha: 0.1,
   vars: avatarColorHslVars,
@@ -394,7 +406,7 @@ const boxBaseProperties = defineProperties({
     marginLeft: negativeSpace,
     marginRight: negativeSpace,
     marginTop: negativeSpace,
-    opacity: ['1', '0.04', '0.1', '0.2', '0.5', '0.6', '0.75'],
+    opacity: ['1', '0', '0.04', '0.1', '0.2', '0.5', '0.6', '0.75'],
     outline: ['none'],
     paddingBottom: space,
     paddingLeft: space,
@@ -518,7 +530,16 @@ const textProperties = defineProperties({
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
     cursor: cursorOpts,
-    fontFamily: { rounded: 'SFRounded, system-ui' },
+    fontFamily: {
+      emoji: `'Apple Color Emoji',
+        'Twemoji Mozilla',
+        'Segoe UI Emoji',
+        'Segoe UI Symbol',
+        'Noto Color Emoji',
+        'EmojiOne Color',
+        'Android Emoji'`,
+      rounded: 'SFRounded, system-ui',
+    },
     fontSize: {
       '7pt': defineType(7, 11, 0.64),
       '9pt': defineType(9, 11, 0.56),

@@ -1,10 +1,12 @@
+import chroma from 'chroma-js';
 import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import {
+  AccentColorProvider,
   Box,
-  Button,
   Column,
   Columns,
   Inline,
@@ -14,10 +16,11 @@ import {
 } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { NudgeBanner } from '~/design-system/components/NudgeBanner/NudgeBanner';
+import { globalColors } from '~/design-system/styles/designTokens';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
-import { useDebounce } from '../../hooks/useDebounce';
+import { useAvatar } from '../../hooks/useAvatar';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
@@ -25,20 +28,44 @@ import ExternalImage from '../ExternalImage/ExternalImage';
 export const AppConnectionNudgeBanner = ({
   show,
   connect,
+  hide,
+  bannerHoverRef,
 }: {
   show: boolean;
   connect: () => void;
+  hide: () => void;
+  bannerHoverRef: React.MutableRefObject<boolean>;
 }) => {
   const { currentAddress } = useCurrentAddressStore();
+  const { avatar } = useAvatar({ address: currentAddress });
+  const { currentTheme } = useCurrentThemeStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
   const { appHost, appName, appLogo } = useAppMetadata({ url });
 
-  const name = useDebounce(displayName, 500);
+  const accentWithOpacity = React.useCallback(
+    (opacity: number) => {
+      const color = avatar?.color || globalColors.blue50;
+      return chroma(color).alpha(opacity).css();
+    },
+    [avatar],
+  );
+
+  const useDarkForegroundColor =
+    chroma.contrast(avatar?.color || globalColors.blue50, '#fff') < 2.125;
 
   return (
     <NudgeBanner show={show} zIndex={zIndexes.BOTTOM_SHEET}>
-      <Box testId="app-connection-nudge-banner" padding="10px">
+      <Box
+        testId="app-connection-nudge-banner"
+        padding="9px"
+        onMouseEnter={() => {
+          bannerHoverRef.current = true;
+        }}
+        onMouseLeave={() => {
+          bannerHoverRef.current = false;
+        }}
+      >
         <Columns>
           <Column>
             <Columns space="10px" alignVertical="center">
@@ -51,8 +78,9 @@ export const AppConnectionNudgeBanner = ({
                   }}
                   borderRadius="10px"
                   background="fill"
+                  borderColor="separatorSecondary"
                   borderWidth="1px"
-                  borderColor="buttonStroke"
+                  boxShadow="12px"
                   position="relative"
                 >
                   <Inline
@@ -66,7 +94,6 @@ export const AppConnectionNudgeBanner = ({
                         width: '30px',
                         overflow: 'hidden',
                       }}
-                      borderRadius="8px"
                     >
                       <ExternalImage src={appLogo} width="30" height="30" />
                     </Box>
@@ -74,20 +101,25 @@ export const AppConnectionNudgeBanner = ({
                 </Box>
               </Column>
               <Column>
-                <Box>
+                <Box paddingRight="10px">
                   <Stack space="8px">
-                    <Inline space="4px" alignVertical="center">
-                      <Symbol
-                        symbol="circle"
-                        size={8}
-                        weight="medium"
-                        color="labelTertiary"
+                    <Inline alignVertical="center" space="4px">
+                      <Box
+                        background="transparent"
+                        borderColor="fill"
+                        borderRadius="round"
+                        borderWidth="1.5px"
+                        style={{ borderWidth: 1.5, height: 8, width: 8 }}
                       />
-                      <TextOverflow color="label" size="12pt" weight="bold">
-                        {name}
+                      <TextOverflow
+                        color="labelSecondary"
+                        size="12pt"
+                        weight="bold"
+                      >
+                        {displayName}
                       </TextOverflow>
                     </Inline>
-                    <TextOverflow color="label" size="12pt" weight="bold">
+                    <TextOverflow color="label" size="14pt" weight="bold">
                       {i18n.t('app_connection_switcher.banner.connect_to', {
                         appName: appName || appHost,
                       })}
@@ -98,36 +130,96 @@ export const AppConnectionNudgeBanner = ({
             </Columns>
           </Column>
           <Column width="content">
-            <ButtonOverflow>
-              <Box
-                padding="3px"
-                borderWidth="1px"
-                borderRadius="10px"
-                style={{
-                  borderColor: 'rgba(206, 34, 51, 0.50)',
-                }}
-              >
+            <Inline space="4px">
+              <ButtonOverflow>
                 <Box
-                  style={{ backgroundColor: 'rgba(206, 34, 51, 0.30)' }}
                   borderRadius="10px"
+                  onClick={connect}
+                  padding="3px"
+                  style={{
+                    backgroundColor: accentWithOpacity(0.25),
+                    boxShadow: `0 0 10px 2px ${accentWithOpacity(0.2)}`,
+                    height: 36,
+                    width: 36,
+                  }}
+                  tabIndex={0}
                 >
-                  <Button
-                    testId="nudge-banner-connect"
-                    symbol="return.left"
-                    symbolSide="left"
-                    width="fit"
-                    color={'red'}
-                    height="30px"
-                    onClick={connect}
-                    variant={'square'}
-                    tabIndex={0}
-                    borderRadius="8px"
+                  <Box
+                    alignItems="center"
+                    borderRadius="7px"
+                    borderWidth="1.5px"
+                    display="flex"
+                    justifyContent="center"
+                    style={{
+                      backgroundColor: accentWithOpacity(
+                        currentTheme === 'dark' ? 0.6 : 1,
+                      ),
+                      borderColor: accentWithOpacity(0.8),
+                      height: 30,
+                      width: 30,
+                    }}
+                    paddingTop="1px"
                   >
-                    {i18n.t('app_connection_switcher.banner.connect')}
-                  </Button>
+                    <AccentColorProvider
+                      color={
+                        useDarkForegroundColor
+                          ? globalColors.grey100
+                          : globalColors.white100
+                      }
+                    >
+                      <Box
+                        style={{ opacity: useDarkForegroundColor ? 0.65 : 1 }}
+                      >
+                        <Symbol
+                          color="accent"
+                          // color={useDarkForegroundColor ? 'label' : 'labelWhite'}
+                          symbol="return.left"
+                          size={14.75}
+                          weight="heavy"
+                        />
+                      </Box>
+                    </AccentColorProvider>
+                  </Box>
                 </Box>
-              </Box>
-            </ButtonOverflow>
+              </ButtonOverflow>
+              <ButtonOverflow>
+                <Box
+                  borderColor="transparent"
+                  borderWidth="1.5px"
+                  borderRadius="10px"
+                  onClick={hide}
+                  style={{
+                    height: 36,
+                    padding: 1.5,
+                    width: 36,
+                  }}
+                  tabIndex={1}
+                >
+                  <Box
+                    alignItems="center"
+                    background="fillTertiary"
+                    borderColor="separatorTertiary"
+                    borderRadius="7px"
+                    borderWidth="1.5px"
+                    boxShadow="12px"
+                    display="flex"
+                    justifyContent="center"
+                    style={{
+                      height: 30,
+                      width: 30,
+                    }}
+                    paddingTop="1px"
+                  >
+                    <Symbol
+                      symbol="xmark"
+                      color="labelSecondary"
+                      size={10.75}
+                      weight="heavy"
+                    />
+                  </Box>
+                </Box>
+              </ButtonOverflow>
+            </Inline>
           </Column>
         </Columns>
       </Box>

@@ -28,6 +28,7 @@ import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
+import { usePreviousRoute } from '~/entries/popup/hooks/usePreviousRoute';
 import { getActiveElement } from '~/entries/popup/utils/activeElement';
 import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
@@ -58,14 +59,17 @@ export const animatedRouteValues: Record<
   base: {
     initial: {
       opacity: 0,
+      x: 0,
       y: 0,
     },
     end: {
       opacity: 1,
+      x: 0,
       y: 0,
     },
     exit: {
       opacity: 0,
+      x: 0,
       y: -16,
     },
   },
@@ -73,41 +77,50 @@ export const animatedRouteValues: Record<
     initial: {
       opacity: 0,
       x: 16,
+      y: 0,
     },
     end: {
       opacity: 1,
       x: 0,
+      y: 0,
     },
     exit: {
       opacity: 0,
       x: -16,
+      y: 0,
     },
   },
   left: {
     initial: {
       opacity: 0,
       x: -16,
+      y: 0,
     },
     end: {
       opacity: 1,
       x: 0,
+      y: 0,
     },
     exit: {
       opacity: 0,
       x: 16,
+      y: 0,
     },
   },
   up: {
     initial: {
       opacity: 0,
+      x: 0,
       y: 16,
     },
     end: {
       opacity: 1,
+      x: 0,
       y: 0,
     },
     exit: {
       opacity: 0,
+      x: 0,
       y: -16,
     },
   },
@@ -124,21 +137,24 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      x: -16,
-      y: 0,
+      x: 0,
+      y: -16,
     },
   },
   down: {
     initial: {
       opacity: 0,
+      x: 0,
       y: -16,
     },
     end: {
       opacity: 1,
+      x: 0,
       y: 0,
     },
     exit: {
       opacity: 0,
+      x: 0,
       y: 16,
     },
   },
@@ -186,11 +202,12 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
     rightNavbarComponent,
     accentColor = true,
   } = props;
-  const { state } = useLocation();
+  const { state, ...location } = useLocation();
   const animationDirection: AnimatedRouteDirection =
     state?.direction ?? direction;
   const { initial, end, exit } = animatedRouteValues[animationDirection];
   const transition = animatedRouteTransitionConfig[animationDirection];
+  const { previousExit } = usePreviousRoute(exit);
 
   const navigationType = useNavigationType();
   const isBack =
@@ -232,7 +249,8 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
             display="flex"
             flexDirection="column"
             height="full"
-            initial={isBack ? exit : initial}
+            initial={isBack && previousExit ? previousExit : initial}
+            key={location.pathname}
             style={{ overflow: 'auto', maxHeight: POPUP_DIMENSIONS.height }}
             animate={end}
             exit={isBack ? initial : exit}

@@ -116,7 +116,7 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
     <Box display="flex" gap="8px">
       <Button
         height="32px"
-        variant="flat"
+        variant="raised"
         width="full"
         color="accent"
         symbol="arrow.triangle.swap"
@@ -126,7 +126,7 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
       </Button>
       <Button
         height="32px"
-        variant="flat"
+        variant="raised"
         width="full"
         color="accent"
         symbol="paperplane.fill"
@@ -322,7 +322,14 @@ export function TokenDetails() {
             </Inline>
           }
         />
-        <Box padding="20px" gap="16px" display="flex" flexDirection="column">
+        <Box
+          paddingTop="4px"
+          paddingHorizontal="20px"
+          paddingBottom="20px"
+          gap="16px"
+          display="flex"
+          flexDirection="column"
+        >
           <PriceChart token={token} />
 
           <Separator color="separatorTertiary" />

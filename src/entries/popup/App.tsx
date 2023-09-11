@@ -22,6 +22,7 @@ import { HWRequestListener } from './components/HWRequestListener/HWRequestListe
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
 import { AuthProvider } from './hooks/useAuth';
+// import { useCoolMode } from './hooks/useCoolMode';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { PlaygroundComponents } from './pages/_playgrounds';
@@ -36,6 +37,7 @@ const wagmiClient = createWagmiClient({
 });
 
 export function App() {
+  // const ref = useCoolMode() as React.Ref<HTMLDivElement>;
   const { currentLanguage } = useCurrentLanguageStore();
   const { deviceId } = useDeviceIdStore();
   useExpiryListener();
@@ -87,6 +89,7 @@ export function App() {
                 <Box
                   id="main"
                   background="surfacePrimaryElevated"
+                  // ref={ref}
                   style={{
                     maxWidth: !isFullScreen
                       ? `${POPUP_DIMENSIONS.width}px`

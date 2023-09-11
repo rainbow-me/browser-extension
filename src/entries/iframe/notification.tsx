@@ -20,13 +20,13 @@ import {
 const HTML_COLOR_SCHEME_PATTERN = /color-scheme:\s*(\w+);/;
 
 const ASSET_SOURCE = {
-  [ChainId.mainnet]: 'assets/badges/ethereumBadge.png',
-  [ChainId.optimism]: 'assets/badges/optimismBadge.png',
-  [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
-  [ChainId.polygon]: 'assets/badges/polygonBadge.png',
-  [ChainId.base]: 'assets/badges/baseBadge.png',
-  [ChainId.zora]: 'assets/badges/zoraBadge.png',
-  [ChainId.bsc]: 'assets/badges/bscBadge.png',
+  [ChainId.mainnet]: 'assets/badges/ethereumBadge@3x.png',
+  [ChainId.optimism]: 'assets/badges/optimismBadge@3x.png',
+  [ChainId.arbitrum]: 'assets/badges/arbitrumBadge@3x.png',
+  [ChainId.polygon]: 'assets/badges/polygonBadge@3x.png',
+  [ChainId.base]: 'assets/badges/baseBadge@3x.png',
+  [ChainId.zora]: 'assets/badges/zoraBadge@3x.png',
+  [ChainId.bsc]: 'assets/badges/bscBadge@3x.png',
 };
 
 export enum IN_DAPP_NOTIFICATION_STATUS {

@@ -6,7 +6,7 @@
     "toggle": "Toggle"
   },
   "permissions": {
-    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant the permission in order to continue."
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant permission in order to continue."
   },
   "wallet_switcher": {
     "title": "Wallets",
@@ -185,7 +185,10 @@
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
-      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts"
+      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
+      "new_tab_bar_enabled": "New Tab Bar",
+      "header_search_button_enabled": "Header Search Button",
+      "navbar_search_button_enabled": "Navbar Search Button"
     }
   },
   "transactions": {
@@ -706,8 +709,8 @@
   "app_connection_switcher": {
     "banner": {
       "connect": "Connect",
-      "connect_to": "Connect to %{appName}?",
-      "app_connected": "%{appName} connected"
+      "connect_to": "Connect to %{appName}",
+      "app_connected": "%{appName} Connected"
     },
     "sheet": {
       "connect": "Connect",
@@ -855,6 +858,11 @@
     "title": "Create your password",
     "description": "Choose a password to secure & lock your wallet."
   },
+  "tabs": {
+    "activity": "Activity",
+    "tokens": "Tokens",
+    "nfts": "NFTs"
+  },
   "activity": {
     "today": "Today",
     "yesterday": "Yesterday",
@@ -870,6 +878,11 @@
     "send_description_1": "Press",
     "send_description_2": "to copy your address",
     "unknown_token": "Unknown Token"
+  },
+  "nfts": {
+    "coming_soon_header": "Coming Soon",
+    "coming_soon_description": "NFTs are coming soon. Stay tuned!",
+    "view_on_web": "View on Web"
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -950,6 +963,7 @@
     "copy": "Copy",
     "swap": "Swap",
     "send": "Send",
+    "search": "Search",
     "copy_toast": "Address Copied"
   },
   "token_search": {

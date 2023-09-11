@@ -34,13 +34,15 @@ const MAX_REQUEST_PER_MINUTE = 90;
 let minuteTimer: NodeJS.Timeout | null = null;
 let secondTimer: NodeJS.Timeout | null = null;
 
+const MACOS_TITLE_BAR_HEIGHT = 28;
+
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
     type: 'popup',
-    height: POPUP_DIMENSIONS.height + 25,
+    height: POPUP_DIMENSIONS.height + MACOS_TITLE_BAR_HEIGHT,
     width: 360,
     left:
       (currentWindow.width || POPUP_DIMENSIONS.width) - POPUP_DIMENSIONS.width,

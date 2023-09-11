@@ -15,8 +15,9 @@ export const spinnerStyle = style([
     maskImage,
     WebkitMaskImage: maskImage,
     animationName: rotate,
-    animationDuration: '1s',
+    animationDuration: '0.5s',
     animationTimingFunction: 'linear',
     animationIterationCount: 'infinite',
+    willChange: 'transform',
   },
 ]);

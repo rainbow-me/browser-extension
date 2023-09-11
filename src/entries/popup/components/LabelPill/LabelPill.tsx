@@ -1,12 +1,26 @@
 import React from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
+import { BoxStyles } from '~/design-system/styles/core.css';
 
-const LabelPill = ({ label, dot }: { label: string; dot?: boolean }) => (
+const LabelPill = ({
+  label,
+  dot,
+  height = '24px',
+  paddingHorizontal = '8px',
+}: {
+  label: string;
+  dot?: boolean;
+  height?: React.CSSProperties['height'];
+  paddingHorizontal?: BoxStyles['paddingHorizontal'];
+}) => (
   <Box
+    alignItems="center"
     background="surfacePrimaryElevatedSecondary"
     borderRadius="round"
-    padding="8px"
+    display="flex"
+    paddingHorizontal={paddingHorizontal}
+    style={{ height }}
   >
     {dot ? (
       <Inline>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -7,6 +7,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { Box } from '~/design-system';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
@@ -28,11 +29,13 @@ export const AppConnectionWatcher = () => {
   const { addSession, activeSession } = useAppSession({
     host: appHost,
   });
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hideNudgeBannerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const bannerHoverRef = useRef<boolean>(false);
 
   const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
   const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
+  const shouldAnimateOut = useRef<boolean>(false);
 
   const [accountChangeHappened, setAccountChangeHappened] = useState(false);
   const prevLocationPathname = usePrevious(location.pathname);
@@ -45,7 +48,10 @@ export const AppConnectionWatcher = () => {
       chainId: activeSession?.chainId || ChainId.mainnet,
       url,
     });
-    if (showNudgeBanner) setShowNudgeBanner(false);
+    if (showNudgeBanner) {
+      shouldAnimateOut.current = true;
+      setShowNudgeBanner(false);
+    }
     if (showNudgeSheet) setShowNudgeSheet(false);
   }, [
     activeSession?.chainId,
@@ -69,9 +75,11 @@ export const AppConnectionWatcher = () => {
     handler: (e: KeyboardEvent) => {
       if (!showNudgeBanner && !showNudgeSheet) return;
       if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
         if (showNudgeBanner) setShowNudgeBanner(false);
         if (showNudgeSheet) setShowNudgeSheet(false);
       } else if (e.key === shortcuts.global.SELECT.key) {
+        e.preventDefault();
         connect();
         triggerToast({
           title: i18n.t('app_connection_switcher.banner.app_connected', {
@@ -81,7 +89,6 @@ export const AppConnectionWatcher = () => {
             ChainNameDisplay[activeSession?.chainId || ChainId.mainnet],
         });
       }
-      e.preventDefault();
     },
   });
 
@@ -92,37 +99,52 @@ export const AppConnectionWatcher = () => {
   const firstLoad =
     prevLocationPathname === '/' || prevLocationPathname === ROUTES.UNLOCK;
 
-  const triggerCheck = useCallback(() => {
-    timeoutRef.current = setTimeout(() => {
-      // if there's another active address
-      if (
-        nudgeSheetEnabled &&
-        !appHasInteractedWithNudgeSheet({ host: appHost })
-      ) {
-        setShowNudgeSheet(true);
-        setAddressInAppHasInteractedWithNudgeSheet({
-          address: currentAddress,
-          host: appHost,
-        });
-        setAppHasInteractedWithNudgeSheet({ host: appHost });
-        // else if the address has not interacted with the nudgeSheet
-      } else if (
-        !addressInAppHasInteractedWithNudgeSheet({
-          address: currentAddress,
-          host: appHost,
-        })
-      ) {
-        setShowNudgeBanner(true);
-        hideNudgeBannerTimeoutRef.current = setTimeout(() => {
-          setShowNudgeBanner(false);
-        }, 3000);
-      }
-    }, 1000);
+  const handleBannerTimeout = useCallback(() => {
+    if (bannerHoverRef.current) {
+      hideNudgeBannerTimeoutRef.current = setTimeout(handleBannerTimeout, 1000);
+    } else {
+      shouldAnimateOut.current = true;
+      setShowNudgeBanner(false);
+    }
+  }, []);
+
+  const checkAndDisplayBanner = useCallback(() => {
+    // Clear existing timeouts
+    if (hideNudgeBannerTimeoutRef.current) {
+      clearTimeout(hideNudgeBannerTimeoutRef.current);
+    }
+
+    if (
+      nudgeSheetEnabled &&
+      !appHasInteractedWithNudgeSheet({ host: appHost })
+    ) {
+      shouldAnimateOut.current = true;
+      setShowNudgeSheet(true);
+      setAddressInAppHasInteractedWithNudgeSheet({
+        address: currentAddress,
+        host: appHost,
+      });
+      setAppHasInteractedWithNudgeSheet({ host: appHost });
+      return true;
+    } else if (
+      !addressInAppHasInteractedWithNudgeSheet({
+        address: currentAddress,
+        host: appHost,
+      })
+    ) {
+      shouldAnimateOut.current = true;
+      setShowNudgeBanner(true);
+      hideNudgeBannerTimeoutRef.current = setTimeout(handleBannerTimeout, 4000);
+      return true;
+    }
+    shouldAnimateOut.current = false;
+    return false;
   }, [
     addressInAppHasInteractedWithNudgeSheet,
     appHasInteractedWithNudgeSheet,
     appHost,
     currentAddress,
+    handleBannerTimeout,
     nudgeSheetEnabled,
     setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,
@@ -131,25 +153,35 @@ export const AppConnectionWatcher = () => {
   const hide = useCallback(() => {
     setShowNudgeSheet(false);
     setShowNudgeBanner(false);
-    hideNudgeBannerTimeoutRef.current &&
+    if (hideNudgeBannerTimeoutRef.current) {
       clearTimeout(hideNudgeBannerTimeoutRef.current);
-    timeoutRef.current && clearTimeout(timeoutRef.current);
+    }
   }, []);
 
-  useEffect(() => {
-    if (!isLowerCaseMatch(currentAddress, prevCurrentAddress)) {
-      setAccountChangeHappened(true);
+  useLayoutEffect(() => {
+    if (
+      !isLowerCaseMatch(currentAddress, prevCurrentAddress) &&
+      (!checkAndDisplayBanner() || !differentActiveSession)
+    ) {
+      shouldAnimateOut.current = false;
       hide();
     }
-  }, [currentAddress, hide, prevCurrentAddress]);
+  }, [
+    currentAddress,
+    hide,
+    prevCurrentAddress,
+    checkAndDisplayBanner,
+    differentActiveSession,
+  ]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (location.pathname !== ROUTES.HOME) {
+      shouldAnimateOut.current = true;
       hide();
     }
   }, [hide, location.pathname]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (
       location.pathname === ROUTES.HOME &&
       (firstLoad || accountChangeHappened) &&
@@ -157,23 +189,26 @@ export const AppConnectionWatcher = () => {
       !appConnectionSwitchWalletsPromptIsActive()
     ) {
       setAccountChangeHappened(false);
-      hide();
-      triggerCheck();
+      checkAndDisplayBanner();
     }
   }, [
     accountChangeHappened,
-    currentAddress,
     differentActiveSession,
     firstLoad,
-    hide,
     location.pathname,
-    prevCurrentAddress,
-    triggerCheck,
+    checkAndDisplayBanner,
   ]);
 
   return (
     <>
-      <AppConnectionNudgeBanner show={showNudgeBanner} connect={connect} />
+      <Box opacity={shouldAnimateOut.current === true ? '1' : '0'}>
+        <AppConnectionNudgeBanner
+          show={showNudgeBanner}
+          connect={connect}
+          hide={hide}
+          bannerHoverRef={bannerHoverRef}
+        />
+      </Box>
       <AppConnectionNudgeSheet
         show={showNudgeSheet}
         connect={connect}

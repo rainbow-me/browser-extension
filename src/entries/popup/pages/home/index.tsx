@@ -1,9 +1,9 @@
 import {
   motion,
-  transform,
+  // transform,
   useMotionValueEvent,
-  useSpring,
-  useTransform,
+  // useSpring,
+  // useTransform,
 } from 'framer-motion';
 import {
   PropsWithChildren,
@@ -21,15 +21,24 @@ import { event } from '~/analytics/event';
 import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { isNativePopup } from '~/core/utils/tabs';
-import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
+import {
+  AccentColorProvider,
+  Box,
+  Inline,
+  Inset,
+  Separator,
+} from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
+import { useCommandKStatus } from '../../components/CommandK/useCommandKStatus';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { TabBar as NewTabBar } from '../../components/Tabs/TabBar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAvatar } from '../../hooks/useAvatar';
@@ -49,32 +58,34 @@ import { ROUTES } from '../../urls';
 import { Activity } from './Activity';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
+import { NFTs } from './NFTs';
 import { AppConnection } from './NetworkMenu';
 import { TabBar as TabBar_ } from './TabBar';
+import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
-export type Tab = 'tokens' | 'activity';
+export type Tab = 'tokens' | 'activity' | 'nfts';
 
 const COLLAPSED_HEADER_TOP_OFFSET = 172;
 const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
-function Tabs() {
-  const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
-  const [activeTab, setActiveTab] = useState<Tab>('tokens');
+function Tabs({
+  activeTab,
+  containerRef,
+  onSelectTab,
+  prevScrollPosition,
+  setActiveTab,
+}: {
+  activeTab: Tab;
+  containerRef: React.RefObject<HTMLDivElement>;
+  onSelectTab: (tab: Tab) => void;
+  prevScrollPosition: React.MutableRefObject<number | undefined>;
+  setActiveTab: (tab: Tab) => void;
+}) {
+  const { featureFlags } = useFeatureFlagsStore();
   const { trackShortcut } = useKeyboardAnalytics();
-
-  const [, startTransition] = useTransition();
-
-  const containerRef = useContainerRef();
-  const prevScrollPosition = useRef<number | undefined>(undefined);
-  const onSelectTab = (tab: Tab) => {
-    prevScrollPosition.current = containerRef.current?.scrollTop;
-    startTransition(() => {
-      setActiveTab(tab);
-      saveActiveTab({ tab });
-    });
-  };
+  const { activeTab: popupActiveTab } = usePopupInstanceStore();
 
   useEffect(() => {
     const mountWithSavedTabInPopup = async () => {
@@ -101,23 +112,48 @@ function Tabs() {
           ? COLLAPSED_HEADER_TOP_OFFSET + 4 // don't know why, but +4 solves a shift :)
           : top,
     });
-  }, [containerRef, activeTab]);
+  }, [prevScrollPosition, containerRef, activeTab]);
 
   useKeyboardShortcut({
     handler: (e) => {
-      if (e.key === shortcuts.global.BACK.key) {
-        trackShortcut({
-          key: shortcuts.global.BACK.display,
-          type: 'home.switchTab',
-        });
-        onSelectTab('tokens');
-      }
-      if (e.key === shortcuts.global.FORWARD.key) {
-        trackShortcut({
-          key: shortcuts.global.FORWARD.display,
-          type: 'home.switchTab',
-        });
-        onSelectTab('activity');
+      if (featureFlags.new_tab_bar_enabled) {
+        if (e.key === shortcuts.global.BACK.key) {
+          trackShortcut({
+            key: shortcuts.global.BACK.display,
+            type: 'home.switchTab',
+          });
+          if (activeTab === 'tokens') {
+            onSelectTab('activity');
+          } else if (activeTab === 'nfts') {
+            onSelectTab('tokens');
+          }
+        }
+        if (e.key === shortcuts.global.FORWARD.key) {
+          trackShortcut({
+            key: shortcuts.global.FORWARD.display,
+            type: 'home.switchTab',
+          });
+          if (activeTab === 'tokens') {
+            onSelectTab('nfts');
+          } else if (activeTab === 'activity') {
+            onSelectTab('tokens');
+          }
+        }
+      } else {
+        if (e.key === shortcuts.global.BACK.key) {
+          trackShortcut({
+            key: shortcuts.global.BACK.display,
+            type: 'home.switchTab',
+          });
+          onSelectTab('tokens');
+        }
+        if (e.key === shortcuts.global.FORWARD.key) {
+          trackShortcut({
+            key: shortcuts.global.FORWARD.display,
+            type: 'home.switchTab',
+          });
+          onSelectTab('activity');
+        }
       }
     },
   });
@@ -125,10 +161,10 @@ function Tabs() {
   return (
     <>
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-      <Separator color="separatorTertiary" strokeWeight="1px" />
       <Content>
         {activeTab === 'tokens' && <Tokens />}
         {activeTab === 'activity' && <Activity />}
+        {activeTab === 'nfts' && <NFTs />}
       </Content>
     </>
   );
@@ -138,6 +174,21 @@ export function Home() {
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
+  const { featureFlags } = useFeatureFlagsStore();
+  const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
+
+  const [activeTab, setActiveTab] = useState<Tab>(popupActiveTab);
+  const [, startTransition] = useTransition();
+
+  const containerRef = useContainerRef();
+  const prevScrollPosition = useRef<number | undefined>(undefined);
+  const onSelectTab = (tab: Tab) => {
+    prevScrollPosition.current = containerRef.current?.scrollTop;
+    startTransition(() => {
+      setActiveTab(tab);
+      saveActiveTab({ tab });
+    });
+  };
 
   usePendingTransactionWatcher({ address: currentAddress });
 
@@ -184,9 +235,18 @@ export function Home() {
           >
             <TopNav />
             <Header />
-            <Tabs />
+            <Tabs
+              activeTab={activeTab}
+              containerRef={containerRef}
+              onSelectTab={onSelectTab}
+              prevScrollPosition={prevScrollPosition}
+              setActiveTab={setActiveTab}
+            />
             <AppConnectionWalletSwitcher />
           </motion.div>
+          {featureFlags.new_tab_bar_enabled && (
+            <NewTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
+          )}
           {currentHomeSheet}
         </>
       )}
@@ -196,6 +256,8 @@ export function Home() {
 
 const TopNav = memo(function TopNav() {
   const { address } = useAccount();
+  const { openCommandK } = useCommandKStatus();
+  const { featureFlags } = useFeatureFlagsStore();
 
   const { scrollY } = useScroll();
   const [isCollapsed, setIsCollapsed] = useState(scrollY.get() > 91);
@@ -210,13 +272,23 @@ const TopNav = memo(function TopNav() {
       <Navbar
         leftComponent={<AppConnection />}
         rightComponent={
-          <MoreMenu>
-            <Navbar.SymbolButton
-              symbol="ellipsis"
-              variant="flat"
-              tabIndex={3}
-            />
-          </MoreMenu>
+          <Inline space="10px">
+            {featureFlags.navbar_search_button_enabled && (
+              <Navbar.SymbolButton
+                onClick={openCommandK}
+                symbol="magnifyingglass"
+                variant="flat"
+                tabIndex={3}
+              />
+            )}
+            <MoreMenu>
+              <Navbar.SymbolButton
+                symbol="ellipsis"
+                variant="flat"
+                tabIndex={featureFlags.navbar_search_button_enabled ? 4 : 3}
+              />
+            </MoreMenu>
+          </Inline>
         }
         titleComponent={
           isCollapsed && (
@@ -255,25 +327,34 @@ function TabBar({
   activeTab: Tab;
   setActiveTab: (tab: Tab) => void;
 }) {
+  const { featureFlags } = useFeatureFlagsStore();
   return (
     <StickyHeader
       background="surfacePrimaryElevatedSecondary"
-      height={TAB_BAR_HEIGHT}
+      height={featureFlags.new_tab_bar_enabled ? 39 : TAB_BAR_HEIGHT}
       topOffset={TOP_NAV_HEIGHT}
     >
-      <TabBar_ activeTab={activeTab} onSelectTab={setActiveTab} />
+      {featureFlags.new_tab_bar_enabled ? (
+        <TabHeader activeTab={activeTab} onSelectTab={setActiveTab} />
+      ) : (
+        <TabBar_ activeTab={activeTab} onSelectTab={setActiveTab} />
+      )}
+      <Box position="relative" style={{ bottom: 1 }}>
+        <Separator color="separatorTertiary" strokeWeight="1px" />
+      </Box>
     </StickyHeader>
   );
 }
 
-const transformListScrollBounce = (y: number) =>
-  transform(y, [0, 1000], [0, COLLAPSED_HEADER_TOP_OFFSET]);
+// const transformListScrollBounce = (y: number) =>
+//   transform(y, [0, 1000], [0, COLLAPSED_HEADER_TOP_OFFSET]);
 function Content({ children }: PropsWithChildren) {
-  const { scrollY } = useScroll();
-  const smoothScrollY = useSpring(scrollY, { damping: 50, stiffness: 350 });
-  const y = useTransform(smoothScrollY, (springY) =>
-    scrollY.get() < 1 ? transformListScrollBounce(springY) : 0,
-  );
+  const { featureFlags } = useFeatureFlagsStore();
+  // const { scrollY } = useScroll();
+  // const smoothScrollY = useSpring(scrollY, { damping: 50, stiffness: 350 });
+  // const y = useTransform(smoothScrollY, (springY) =>
+  //   scrollY.get() < 1 ? transformListScrollBounce(springY) : 0,
+  // );
 
   return (
     <Box
@@ -281,7 +362,11 @@ function Content({ children }: PropsWithChildren) {
       style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
     >
       {/** spring transformY to imitate scroll bounce*/}
-      <Box height="full" as={motion.div} style={{ y }}>
+      {/* <Box height="full" as={motion.div} style={{ y }}> */}
+      <Box
+        height="full"
+        paddingBottom={featureFlags.new_tab_bar_enabled ? '64px' : undefined}
+      >
         <Inset top="20px">{children}</Inset>
       </Box>
     </Box>

@@ -2,10 +2,15 @@ import { motion, useAnimationControls } from 'framer-motion';
 import React, { useEffect } from 'react';
 
 import rainbowLight from 'static/assets/rainbow/light-rainbow.png';
+import rainbowLight2x from 'static/assets/rainbow/light-rainbow@2x.png';
 import rainbowNeon from 'static/assets/rainbow/neon-rainbow.png';
+import rainbowNeon2x from 'static/assets/rainbow/neon-rainbow@2x.png';
 import rainbowOg from 'static/assets/rainbow/og-rainbow.png';
+import rainbowOg2x from 'static/assets/rainbow/og-rainbow@2x.png';
 import rainbowPixel from 'static/assets/rainbow/pixel-rainbow.png';
+import rainbowPixel2x from 'static/assets/rainbow/pixel-rainbow@2x.png';
 import rainbowWhite from 'static/assets/rainbow/white-rainbow.png';
+import rainbowWhite2x from 'static/assets/rainbow/white-rainbow@2x.png';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
@@ -88,6 +93,7 @@ export function FlyingRainbows({
         <Box
           as={motion.img}
           src={rainbowWhite}
+          srcSet={`${rainbowWhite2x} 2x`}
           position="absolute"
           style={RAINBOW_STYLE.rainbowWhite}
           initial={RAINBOW_POSITION.rainbowWhite[animationScreen]}
@@ -97,6 +103,7 @@ export function FlyingRainbows({
         <Box
           as={motion.img}
           src={rainbowPixel}
+          srcSet={`${rainbowPixel2x} 2x`}
           position="absolute"
           style={RAINBOW_STYLE.rainbowPixel}
           initial={RAINBOW_POSITION.rainbowPixel[animationScreen]}
@@ -106,6 +113,7 @@ export function FlyingRainbows({
         <Box
           as={motion.img}
           src={rainbowOg}
+          srcSet={`${rainbowOg2x} 2x`}
           position="absolute"
           style={RAINBOW_STYLE.rainbowOg}
           initial={RAINBOW_POSITION.rainbowOg[animationScreen]}
@@ -115,6 +123,7 @@ export function FlyingRainbows({
         <Box
           as={motion.img}
           src={rainbowLight}
+          srcSet={`${rainbowLight2x} 2x`}
           position="absolute"
           style={RAINBOW_STYLE.rainbowLight}
           initial={RAINBOW_POSITION.rainbowLight[animationScreen]}
@@ -124,6 +133,7 @@ export function FlyingRainbows({
         <Box
           as={motion.img}
           src={rainbowNeon}
+          srcSet={`${rainbowNeon2x} 2x`}
           position="absolute"
           style={RAINBOW_STYLE.rainbowNeon}
           initial={RAINBOW_POSITION.rainbowNeon[animationScreen]}

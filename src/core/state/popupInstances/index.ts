@@ -68,10 +68,10 @@ export interface PopupInstanceStore extends PopupInstance {
 }
 
 export const popupInstanceStore = createStore<PopupInstanceStore>(
-  (set) => ({
+  (set, get) => ({
     ...DEFAULT_POPUP_INSTANCE_VALUES,
     resetValues: popupInstanceHandlerFactory(() =>
-      set(DEFAULT_POPUP_INSTANCE_VALUES),
+      set({ ...DEFAULT_POPUP_INSTANCE_VALUES, activeTab: get().activeTab }),
     ),
     saveActiveTab: popupInstanceHandlerFactory(({ tab }) => {
       set({ activeTab: tab });

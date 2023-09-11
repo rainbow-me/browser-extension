@@ -59,6 +59,7 @@ export function AccountName({
       id={`${id ?? ''}-account-name-shuffle`}
       onClick={handleClick}
       padding="4px"
+      style={{ willChange: 'transform' }}
       {...chevronProps}
     >
       <Columns alignVertical="center" space="4px">
@@ -71,8 +72,11 @@ export function AccountName({
           <Lens
             tabIndex={tabIndex ?? -1}
             onKeyDown={handleClick}
-            borderRadius="6px"
-            style={{ padding: avatar ? 0 : 2 }}
+            borderRadius={avatar ? '20px' : '6px'}
+            marginHorizontal={avatar ? '-5px' : undefined}
+            marginVertical={avatar ? '-2px' : undefined}
+            paddingHorizontal={avatar ? '5px' : '2px'}
+            paddingVertical="2px"
           >
             <Box display="flex" flexDirection="row" padding="4px">
               <Box

@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion';
 import React, { SetStateAction, useCallback, useState } from 'react';
 
 import UnlockSound from 'static/assets/audio/ui_unlock.mp3';
@@ -92,7 +93,7 @@ export function Unlock() {
                 align="center"
                 color="labelTertiary"
                 size="12pt"
-                weight="regular"
+                weight="medium"
               >
                 {i18n.t('unlock.enter_password')}
               </Text>
@@ -138,38 +139,40 @@ export function Unlock() {
               />
             </Box>
             <Box width="fit">
-              {loading ? (
-                <Button
-                  color="accent"
-                  height="36px"
-                  variant="flat"
-                  width="full"
-                  onClick={handleUnlock}
-                  testId="unlock-button"
-                  tabIndex={2}
-                >
-                  <Inline space="6px" alignVertical="center">
-                    <Text color="label" size="16pt" weight="bold">
-                      {i18n.t('unlock.unlock')}
-                    </Text>
-                    <Spinner size={16} color="label" />
-                  </Inline>
-                </Button>
-              ) : (
-                <Button
-                  color="accent"
-                  height="36px"
-                  variant="flat"
-                  width="full"
-                  symbol="arrow.right"
-                  symbolSide="right"
-                  onClick={handleUnlock}
-                  testId="unlock-button"
-                  tabIndex={2}
-                >
-                  {i18n.t('unlock.unlock')}
-                </Button>
-              )}
+              <AnimatePresence>
+                {loading ? (
+                  <Button
+                    color="accent"
+                    height="36px"
+                    variant="flat"
+                    width="full"
+                    onClick={handleUnlock}
+                    testId="unlock-button"
+                    tabIndex={2}
+                  >
+                    <Inline space="6px" alignVertical="center">
+                      <Text color="label" size="16pt" weight="bold">
+                        {i18n.t('unlock.unlock')}
+                      </Text>
+                      <Spinner size={16} color="label" />
+                    </Inline>
+                  </Button>
+                ) : (
+                  <Button
+                    color="accent"
+                    height="36px"
+                    variant="flat"
+                    width="full"
+                    symbol="arrow.right"
+                    symbolSide="right"
+                    onClick={handleUnlock}
+                    testId="unlock-button"
+                    tabIndex={2}
+                  >
+                    {i18n.t('unlock.unlock')}
+                  </Button>
+                )}
+              </AnimatePresence>
             </Box>
           </Box>
         </Box>
@@ -179,7 +182,7 @@ export function Unlock() {
               align="center"
               color="labelTertiary"
               size="12pt"
-              weight="regular"
+              weight="medium"
               as="p"
             >
               {i18n.t('unlock.having_trouble')} <br />
@@ -187,7 +190,11 @@ export function Unlock() {
               <a
                 href="https://twitter.com/rainbowdotme"
                 target="_blank"
-                style={{ color: accentColorAsHsl, cursor: 'pointer' }}
+                style={{
+                  color: accentColorAsHsl,
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                }}
                 rel="noreferrer"
               >
                 {i18n.t('unlock.rainbow_support')}

@@ -6,6 +6,9 @@ export enum featureFlagTypes {
   full_watching_wallets = 'full_watching_wallets',
   hw_wallets_enabled = 'hw_wallets_enabled',
   command_k_internal_shortcuts_enabled = 'command_k_internal_shortcuts_enabled',
+  new_tab_bar_enabled = 'new_tab_bar_enabled',
+  header_search_button_enabled = 'header_search_button_enabled',
+  navbar_search_button_enabled = 'navbar_search_button_enabled',
 }
 export type FeatureFlagTypes = keyof typeof featureFlagTypes;
 
@@ -20,6 +23,9 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
       full_watching_wallets: false,
       hw_wallets_enabled: true,
       command_k_internal_shortcuts_enabled: false,
+      new_tab_bar_enabled: false,
+      header_search_button_enabled: false,
+      navbar_search_button_enabled: false,
     },
     setFeatureFlag: (key, value) => {
       const { featureFlags } = get();
@@ -33,7 +39,7 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
   {
     persist: {
       name: 'featureFlagsStore',
-      version: 3,
+      version: 6,
     },
   },
 );

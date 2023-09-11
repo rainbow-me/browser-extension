@@ -12,6 +12,7 @@ export type SymbolProps = {
   boxed?: boolean;
   color?: SymbolStyles['color'];
   cursor?: SymbolStyles['cursor'];
+  disableSmoothing?: boolean;
   symbol: SymbolName;
   weight: FontWeight;
   size: number;
@@ -24,6 +25,7 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
       boxed = false,
       color = 'label',
       cursor = 'default',
+      disableSmoothing,
       symbol: name,
       weight,
       size,
@@ -53,10 +55,10 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
                   justifyContent: 'center',
                   alignItems: 'center',
                   display: 'flex',
-                  transform: 'scale(0.5)',
+                  transform: disableSmoothing ? 'none' : 'scale(0.5)',
                 }
               : {
-                  transform: 'scale(0.5)',
+                  transform: disableSmoothing ? 'none' : 'scale(0.5)',
                   transformOrigin: 'top left',
                   willChange: 'transform',
                 }),
@@ -68,7 +70,10 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
             fill="none"
             className={symbolStyles({ color })}
             ref={ref}
-            style={{ width: size * 2, height: size * 2 }}
+            style={{
+              width: disableSmoothing ? size : size * 2,
+              height: disableSmoothing ? size : size * 2,
+            }}
             xmlns="http://www.w3.org/2000/svg"
           >
             {gradient ? <defs>{gradient}</defs> : null}

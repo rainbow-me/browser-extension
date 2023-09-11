@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 
 import { Box } from '~/design-system';
@@ -18,17 +19,30 @@ export function Spinner({
 }) {
   return (
     <Box
-      className={spinnerStyle}
-      style={{
-        maskSize: `${size}px ${size}px`,
-        WebkitMaskSize: `${size}px ${size}px`,
-        height: size,
-        width: size,
-        backgroundColor:
-          color === 'accent'
-            ? accentColorAsHsl
-            : foregroundColorVars[color || 'blue'],
+      as={motion.div}
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 1, opacity: 1 }}
+      transition={{
+        type: 'spring',
+        stiffness: 540,
+        damping: 40,
+        mass: 1.2,
       }}
-    />
+    >
+      <Box
+        className={spinnerStyle}
+        style={{
+          maskSize: `${size}px ${size}px`,
+          WebkitMaskSize: `${size}px ${size}px`,
+          height: size,
+          width: size,
+          backgroundColor:
+            color === 'accent'
+              ? accentColorAsHsl
+              : foregroundColorVars[color || 'blue'],
+        }}
+      />
+    </Box>
   );
 }

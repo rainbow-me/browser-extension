@@ -317,23 +317,25 @@ function TokensEmptyState() {
             </Inline>
           </Box>
           <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-            {i18n.t('tokens_tab.send_description_1')}
-            <Box
-              background="fillSecondary"
-              as="span"
-              style={{
-                display: 'inline-block',
-                width: '16px',
-                height: '16px',
-                borderRadius: '4px',
-                verticalAlign: 'middle',
-                textAlign: 'center',
-                lineHeight: '16px',
-              }}
-            >
-              C
-            </Box>
-            {i18n.t('tokens_tab.send_description_2')}
+            <Inline space="4px">
+              {i18n.t('tokens_tab.send_description_1')}
+              <Box
+                background="fillSecondary"
+                as="span"
+                style={{
+                  display: 'inline-block',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '4px',
+                  verticalAlign: 'middle',
+                  textAlign: 'center',
+                  lineHeight: '16px',
+                }}
+              >
+                C
+              </Box>
+              {i18n.t('tokens_tab.send_description_2')}
+            </Inline>
           </Text>
         </Inset>
       </Box>

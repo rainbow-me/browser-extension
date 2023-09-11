@@ -423,8 +423,15 @@ export const backgroundColors: Record<
   },
 };
 
-type Cursor = 'copy' | 'default' | 'pointer' | 'text';
-export const cursorOpts: Cursor[] = ['copy', 'default', 'pointer', 'text'];
+type Cursor = 'auto' | 'copy' | 'default' | 'inherit' | 'pointer' | 'text';
+export const cursorOpts: Cursor[] = [
+  'auto',
+  'copy',
+  'default',
+  'inherit',
+  'pointer',
+  'text',
+];
 
 type UserSelect = 'all' | 'none' | 'text';
 export const userSelectOpts: UserSelect[] = ['all', 'none', 'text'];
@@ -464,7 +471,7 @@ export const buttonColors = [
     'yellow',
   ),
 ] as const;
-export type ButtonColor = typeof buttonColors[number];
+export type ButtonColor = (typeof buttonColors)[number];
 
 export const shadowColors = [
   'accent',
@@ -484,13 +491,14 @@ export const shadowColors = [
     'yellow',
   ),
 ] as const;
-export type ShadowColor = typeof shadowColors[number];
+export type ShadowColor = (typeof shadowColors)[number];
 
 export type ForegroundColor =
   | 'label'
   | 'labelSecondary'
   | 'labelTertiary'
   | 'labelQuaternary'
+  | 'labelWhite'
   | 'transparent'
   | 'blue'
   | 'green'
@@ -537,6 +545,10 @@ export const foregroundColors: Record<
   labelQuaternary: {
     light: globalColors.grey60,
     dark: globalColors.white60,
+  },
+  labelWhite: {
+    light: globalColors.white100,
+    dark: globalColors.white100,
   },
   transparent: selectBackgroundAsForeground('transparent'),
   blue: selectBackgroundAsForeground('blue'),
@@ -617,27 +629,27 @@ export const genericColors = selectForegroundColors(
   'red',
   'yellow',
 );
-export type GenericColor = typeof genericColors[number];
+export type GenericColor = (typeof genericColors)[number];
 
 export const scrimColors = selectForegroundColors(
   'scrim',
   'scrimSecondary',
   'scrimTertiary',
 );
-export type ScrimColor = typeof scrimColors[number];
+export type ScrimColor = (typeof scrimColors)[number];
 
 export const strokeColors = selectForegroundColors(
   'buttonStroke',
   'buttonStrokeSecondary',
 );
-export type StrokeColor = typeof strokeColors[number];
+export type StrokeColor = (typeof strokeColors)[number];
 
 export const separatorColors = selectForegroundColors(
   'separator',
   'separatorSecondary',
   'separatorTertiary',
 );
-export type SeparatorColor = typeof separatorColors[number];
+export type SeparatorColor = (typeof separatorColors)[number];
 
 export const textColors = selectForegroundColors(
   'label',
@@ -645,6 +657,7 @@ export const textColors = selectForegroundColors(
   'labelSecondary',
   'labelTertiary',
   'labelQuaternary',
+  'labelWhite',
   'mainnet',
   'arbitrum',
   'optimism',
@@ -654,7 +667,7 @@ export const textColors = selectForegroundColors(
   'bsc',
   ...genericColors,
 );
-export type TextColor = typeof textColors[number];
+export type TextColor = (typeof textColors)[number];
 
 export const fontWeights = {
   regular: 400,
@@ -822,6 +835,7 @@ export const strokeWeights = {
   '0px': 0,
   '0.5px': 0.5,
   '1px': 1,
+  '1.5px': 1.5,
   '2px': 2,
 };
 export type StrokeWeight = keyof typeof strokeWeights;
@@ -951,8 +965,9 @@ export const symbolNames = selectSymbolNames(
   'circlebadge.2.fill',
   'xmark.bin.fill',
   'globe',
+  'sparkles',
 );
-export type SymbolName = typeof symbolNames[number];
+export type SymbolName = (typeof symbolNames)[number];
 
 export const radii = {
   round: 9999,

@@ -17,7 +17,7 @@ export const useSearchableENSorAddress = (
   searchQuery: string,
   setSelectedCommandNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
 ): { searchableENSOrAddress: ENSOrAddressSearchItem[] } => {
-  const { isFetching, setIsFetching } = useCommandKStatus();
+  const { isCommandKVisible, isFetching, setIsFetching } = useCommandKStatus();
   const { allWallets } = useWallets();
 
   const query = searchQuery.trim();
@@ -59,6 +59,8 @@ export const useSearchableENSorAddress = (
   }, [allWallets, cache, currentPage, query, validation]);
 
   React.useLayoutEffect(() => {
+    if (!isCommandKVisible || !query) return;
+
     const shouldStartFetching =
       currentPage === PAGES.HOME &&
       !validation.address &&
@@ -80,6 +82,7 @@ export const useSearchableENSorAddress = (
     }
   }, [
     currentPage,
+    isCommandKVisible,
     isFetching,
     query,
     setIsFetching,

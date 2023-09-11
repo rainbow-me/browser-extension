@@ -98,7 +98,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.TOKEN_DETAILS(':uniqueId'),
     element: (
-      <AnimatedRoute direction="base" protectedRoute>
+      <AnimatedRoute direction="right" protectedRoute>
         <TokenDetails />
       </AnimatedRoute>
     ),
@@ -540,7 +540,7 @@ const ROUTE_DATA = [
       <AnimatedRoute
         direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         background="surfaceSecondary"
         protectedRoute
       >
@@ -554,7 +554,7 @@ const ROUTE_DATA = [
       <AnimatedRoute
         direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         background="surfaceSecondary"
         protectedRoute
       >
