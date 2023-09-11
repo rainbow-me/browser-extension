@@ -965,6 +965,10 @@ export async function delayTime(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function takeScreenshotOnFailure(context: any) {
   context.onTestFailed(async () => {
+    if (!fs.existsSync('screenshots')) {
+      fs.mkdirSync('screenshots');
+      console.log(`Folder screenshots created.`);
+    }
     const normalizedFilePath = context.task.name
       .replace(/'/g, '')
       .replace(/"/g, '')

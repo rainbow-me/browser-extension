@@ -207,6 +207,56 @@ export const useSwapActions = ({
           }),
         status: 'ready',
       };
+    case 503:
+      // fee on transfer
+      return {
+        buttonColor: 'fillSecondary',
+        buttonDisabled: false,
+        buttonLabel: i18n.t('swap.actions.fee_on_transfer_token'),
+        buttonLabelColor: 'label',
+        buttonIcon: (
+          <Symbol
+            symbol="exclamationmark.circle.fill"
+            weight="bold"
+            size={16}
+          />
+        ),
+        buttonAction: () =>
+          showExplainerSheet({
+            show: true,
+            header: { icon: <CoinIcon asset={assetToSell} size={32} /> },
+
+            title: i18n.t('swap.explainers.fee_on_transfer_token.title'),
+            description: [
+              i18n.t('swap.explainers.fee_on_transfer_token.description', {
+                tokenName: assetToSell?.name,
+              }),
+            ],
+            footerLinkText: {
+              openText: i18n.t(
+                'swap.explainers.fee_on_transfer_token.footer_text.open_text',
+              ),
+              linkText: i18n.t(
+                'swap.explainers.fee_on_transfer_token.footer_text.link_text',
+              ),
+              closeText: i18n.t(
+                'swap.explainers.fee_on_transfer_token.footer_text.close_text',
+              ),
+              link: 'https://support.rainbow.me/en/articles/8324868-fee-on-transfer-tokens',
+            },
+            actionButton: {
+              label: i18n.t(
+                'swap.explainers.fee_on_transfer_token.action_label',
+              ),
+              variant: 'tinted',
+              labelColor: 'blue',
+              action: hideExplainerSheet,
+            },
+            testId: 'fee-on-transfer',
+          }),
+        status: 'ready',
+      };
+
     case 504:
       // no route
       return {

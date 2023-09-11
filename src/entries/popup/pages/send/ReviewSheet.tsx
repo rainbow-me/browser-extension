@@ -57,6 +57,7 @@ import {
   getSideChainExplainerParams,
   isSideChain,
 } from '../../components/SideChainExplainer';
+import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import usePrevious from '../../hooks/usePrevious';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
@@ -619,16 +620,28 @@ export const ReviewSheet = ({
                 testId="review-confirm-button"
                 tabIndex={0}
                 ref={confirmSendButtonRef}
+                disabled={sending}
               >
                 {sendEnabled ? (
                   <Box>
-                    <TextOverflow weight="bold" size="16pt" color="label">
-                      {waitingForDevice
-                        ? `👀 ${i18n.t('send.review.confirm_hw')}`
-                        : i18n.t('send.review.send_to', {
-                            toName: walletDisplayName,
-                          })}
-                    </TextOverflow>
+                    {sending ? (
+                      <Box
+                        width="fit"
+                        alignItems="center"
+                        justifyContent="center"
+                        style={{ margin: 'auto' }}
+                      >
+                        <Spinner size={16} color="label" />
+                      </Box>
+                    ) : (
+                      <TextOverflow weight="bold" size="16pt" color="label">
+                        {waitingForDevice
+                          ? `👀 ${i18n.t('send.review.confirm_hw')}`
+                          : i18n.t('send.review.send_to', {
+                              toName: walletDisplayName,
+                            })}
+                      </TextOverflow>
+                    )}
                   </Box>
                 ) : (
                   <Box>
