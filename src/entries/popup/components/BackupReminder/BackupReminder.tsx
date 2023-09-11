@@ -12,13 +12,15 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletBackUps } from '../../hooks/useWalletBackUps';
+import { ROUTES } from '../../urls';
 import { zIndexes } from '../../utils/zIndexes';
 import { Navbar } from '../Navbar/Navbar';
 
 export const BackupReminder = () => {
   const { showWalletBackup, setShowWalletBackup } = useWalletBackUps();
-
+  const navigate = useRainbowNavigate();
   return (
     <BottomSheet
       show={showWalletBackup}
@@ -78,7 +80,15 @@ export const BackupReminder = () => {
           </Inset>
           <Inset horizontal="20px" vertical="20px">
             <Stack space="8px">
-              <Button width="full" color="red" height="44px" variant="flat">
+              <Button
+                width="full"
+                color="red"
+                height="44px"
+                variant="flat"
+                onClick={() =>
+                  navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS)
+                }
+              >
                 <Text align="center" color="label" size="16pt" weight="heavy">
                   {'Back Up Now'}
                 </Text>
@@ -89,6 +99,7 @@ export const BackupReminder = () => {
                 color="transparent"
                 height="44px"
                 variant="tinted"
+                onClick={() => setShowWalletBackup(false)}
               >
                 <Text
                   align="center"
@@ -102,8 +113,6 @@ export const BackupReminder = () => {
             </Stack>
           </Inset>
         </Box>
-
-        {/* <Rows alignVertical="justify"></Rows> */}
       </Box>
     </BottomSheet>
   );
