@@ -29,6 +29,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
+import { BackupReminder } from '../../components/BackupReminder/BackupReminder';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
@@ -43,7 +44,6 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
-import { useWalletBackUps } from '../../hooks/useWalletBackUps';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
@@ -165,7 +165,6 @@ export function Home() {
   useHomeShortcuts();
   useRestoreNavigation();
   useSwitchWalletShortcuts();
-  useWalletBackUps();
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
@@ -189,6 +188,7 @@ export function Home() {
             <Tabs />
             <AppConnectionWalletSwitcher />
           </motion.div>
+          <BackupReminder />
           {currentHomeSheet}
         </>
       )}
