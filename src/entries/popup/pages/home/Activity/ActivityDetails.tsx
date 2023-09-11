@@ -1,5 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
-import { formatEther, formatUnits } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import { Navigate, useParams } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -250,23 +250,21 @@ function ConfirmationData({
 }
 
 function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
-  const { maxPriorityFeePerGas, maxFeePerGas, fee, nonce, changes } =
-    transaction;
+  const { maxPriorityFeePerGas, maxFeePerGas, nonce, native } = transaction;
 
-  const value = transaction.value && formatEther(transaction.value);
-  const nativeAssetSymbol = changes?.find((c) => c?.asset.isNativeAsset)?.asset
-    .symbol;
   const minerTip =
     maxPriorityFeePerGas && formatUnits(maxPriorityFeePerGas, 'gwei');
   const maxBaseFee = maxFeePerGas && formatUnits(maxFeePerGas, 'gwei');
 
+  const { value, fee } = native || {};
+
   return (
     <Stack space="24px">
-      {value && nativeAssetSymbol && (
+      {value && (
         <InfoRow
           symbol="dollarsign.square"
           label={i18n.t('activity_details.value')}
-          value={`${formatNumber(value)} ${nativeAssetSymbol}`}
+          value={formatCurrency(value)}
         />
       )}
       <InfoRow

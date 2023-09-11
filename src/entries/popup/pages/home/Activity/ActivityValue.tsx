@@ -88,9 +88,11 @@ const activityValues = (transaction: RainbowTransaction) => {
   const { balance, native } = asset;
   if (balance.amount === '0') return;
 
-  const assetValue = `${formatNumber(balance.amount, {
-    notation: 'compact',
-  })} ${asset.symbol}`;
+  const formatOptions =
+    +balance.amount > 100_000 ? ({ notation: 'compact' } as const) : undefined;
+  const assetValue = `${formatNumber(balance.amount, formatOptions)} ${
+    asset.symbol
+  }`;
 
   const nativeBalance = native.balance.amount;
   const assetNativeValue =

@@ -34,15 +34,20 @@ type BaseTransaction = {
   direction?: TransactionDirection;
   flashbots?: boolean;
 
-  value?: string; // native asset value (eth)
+  value?: string; // network asset amount sent with the tx (like eth or matic)
   fee?: string;
+  native?: {
+    // fee and value but in the user prefered currency terms (USD, EUR, etc)
+    value?: string;
+    fee?: string;
+  };
 
   type: TransactionType;
   protocol?: ProtocolType;
   title: string;
   description?: string;
 
-  asset?: ParsedAsset;
+  asset?: ParsedAsset; // this is the relevant tx asset, like the asset being sold/approved/withdrawn etc
   approvalAmount?: 'UNLIMITED' | (string & object);
   contract?: {
     name: string;

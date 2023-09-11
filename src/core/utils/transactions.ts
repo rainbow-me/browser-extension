@@ -1,5 +1,6 @@
+import { FixedNumber } from '@ethersproject/bignumber';
 import { Provider, TransactionResponse } from '@ethersproject/providers';
-import { formatEther } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
 import { Address } from 'wagmi';
@@ -128,7 +129,11 @@ export function parseTransaction({
 
   const type = meta.type;
 
-  if (!type || (transactionTypeShouldHaveChanges(type) && changes.length === 0))
+  if (
+    !type ||
+    (transactionTypeShouldHaveChanges(type) && changes.length === 0) ||
+    !tx.address_from
+  )
     return; // filters some spam or weird api responses
 
   const asset: RainbowTransaction['asset'] = meta.asset?.asset_code
@@ -139,14 +144,35 @@ export function parseTransaction({
 
   const description = getDescription(asset, type, meta);
 
-  const value = changes
-    .find((change) => change?.asset.isNativeAsset)
-    ?.value?.toString();
+  const nativeAsset = changes.find((change) => change?.asset.isNativeAsset);
+  const value = nativeAsset?.value?.toString();
+
+  const nativeAssetDecimals = 18; // we only support networks with 18 decimals native assets rn, backend will change when we support more
 
   const { gas_price, max_base_fee, max_priority_fee, gas_used } =
     tx.fee.details || {};
+  const rollupFee = BigInt(
+    tx.fee.details?.rollup_fee_details?.l1_fee || '0', // zero when it's not a rollup
+  );
+  const fee = FixedNumber.from(
+    formatUnits(BigInt(tx.fee.value) + rollupFee, nativeAssetDecimals),
+  );
 
-  const fee = +formatEther(tx.fee.value.toString()) * tx.fee.price;
+  const price = FixedNumber.fromString(
+    (
+      nativeAsset?.price ||
+      nativeAsset?.asset.price?.value ||
+      tx.fee.price
+    ).toString(),
+  );
+  const native = price && {
+    fee: fee && fee.mulUnsafe(price).toString(),
+    value:
+      value &&
+      FixedNumber.from(formatUnits(value, nativeAssetDecimals))
+        .mulUnsafe(price)
+        .toString(),
+  };
 
   const contract = meta.contract_name && {
     name: meta.contract_name,
@@ -154,7 +180,7 @@ export function parseTransaction({
   };
 
   return {
-    from: tx.address_from || '0x',
+    from: tx.address_from,
     to: tx.address_to,
     title: i18n.t(`transactions.${type}.${status}`),
     description,
@@ -178,6 +204,7 @@ export function parseTransaction({
     fee: fee ? fee.toString() : undefined,
     confirmations: tx.block_confirmations,
     contract,
+    native,
   } as RainbowTransaction;
 }
 
