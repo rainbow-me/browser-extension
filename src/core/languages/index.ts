@@ -1,14 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { I18n } from 'i18n-js';
 
-import en_US from './en_US.json';
-import es_419 from './es_419.json';
-import fr_FR from './fr_FR.json';
-import hi_IN from './hi_IN.json';
-import ja_JP from './ja_JP.json';
-import pt_BR from './pt_BR.json';
-import ru_RU from './ru_RU.json';
-import tr_TR from './tr_TR.json';
-import zh_CN from './zh_CN.json';
+import { fetchJsonLocally } from '../utils/localJson';
 
 export enum Language {
   EN_US = 'en_US',
@@ -21,27 +14,6 @@ export enum Language {
   TR_TR = 'tr_TR',
   RU_RU = 'ru_RU',
 }
-
-export const i18n = new I18n({
-  en_US,
-  es_419,
-  fr_FR,
-  ja_JP,
-  pt_BR,
-  zh_CN,
-  hi_IN,
-  tr_TR,
-  ru_RU,
-});
-
-// Configure languages
-i18n.defaultLocale = Language.EN_US;
-i18n.locale = Language.EN_US;
-i18n.enableFallback = true;
-
-export const changeI18nLanguage = (locale: Language) => {
-  i18n.locale = locale;
-};
 
 export const supportedLanguages = {
   [Language.EN_US]: {
@@ -75,3 +47,54 @@ export const supportedLanguages = {
 
 export type SupportedLanguage = typeof supportedLanguages;
 export type SupportedLanguageKey = keyof SupportedLanguage;
+
+let i18n: I18n, changeI18nLanguage: (locale: Language) => void;
+
+const initLanguages = async () => {
+  const {
+    en_US,
+    es_419,
+    fr_FR,
+    hi_IN,
+    ja_JP,
+    pt_BR,
+    ru_RU,
+    tr_TR,
+    zh_CN,
+  }: any = await Promise.all([
+    await fetchJsonLocally('languages/en_US.json'),
+    await fetchJsonLocally('languages./es_419.json'),
+    await fetchJsonLocally('languages/fr_FR.json'),
+    await fetchJsonLocally('languages/hi_IN.json'),
+    await fetchJsonLocally('languages/ja_JP.json'),
+    await fetchJsonLocally('languages/pt_BR.json'),
+    await fetchJsonLocally('languages/ru_RU.json'),
+    await fetchJsonLocally('languages/tr_TR.json'),
+    await fetchJsonLocally('languages/zh_CN.json'),
+  ]);
+
+  i18n = new I18n({
+    en_US,
+    es_419,
+    fr_FR,
+    ja_JP,
+    pt_BR,
+    zh_CN,
+    hi_IN,
+    tr_TR,
+    ru_RU,
+  });
+
+  // Configure languages
+  i18n.defaultLocale = Language.EN_US;
+  i18n.locale = Language.EN_US;
+  i18n.enableFallback = true;
+
+  changeI18nLanguage = (locale: Language) => {
+    i18n.locale = locale;
+  };
+};
+
+initLanguages();
+
+export { i18n, changeI18nLanguage };
