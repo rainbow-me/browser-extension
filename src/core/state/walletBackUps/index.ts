@@ -5,6 +5,22 @@ import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 
 import { createStore } from '../internal/createStore';
 
+export interface WalletBackupReminderStore {
+  reminded: boolean;
+  setReminded: () => void;
+}
+
+export const walletBackupReminderStore = createStore<WalletBackupReminderStore>(
+  (set) => ({
+    reminded: false,
+    setReminded: () => {
+      set({ reminded: true });
+    },
+  }),
+);
+
+export const useWalletBackupReminderStore = create(walletBackupReminderStore);
+
 export interface WalletBackUpsStore {
   walletBackUps: { [address: Address]: { backedUp: boolean; timestamp: Date } };
   setWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => void;
