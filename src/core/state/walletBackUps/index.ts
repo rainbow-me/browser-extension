@@ -9,6 +9,7 @@ export interface WalletBackUpsStore {
   walletBackUps: { [address: Address]: { backedUp: boolean; timestamp: Date } };
   setWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => void;
   isWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => boolean;
+  deleteWalletBackup: ({ address }: { address: Address }) => void;
   getWalletBackUp: ({
     wallet,
   }: {
@@ -40,6 +41,11 @@ export const walletBackUpsStore = createStore<WalletBackUpsStore>(
         return true;
       }
     },
+    deleteWalletBackup: ({ address }) => {
+      const { walletBackUps: newWalletBackUps } = get();
+      delete newWalletBackUps[address];
+      set({ walletBackUps: { ...newWalletBackUps } });
+    },
     getWalletBackUp: ({ wallet }) => {
       if (wallet.type === KeychainType.HdKeychain) {
         const { walletBackUps } = get();
@@ -48,6 +54,7 @@ export const walletBackUpsStore = createStore<WalletBackUpsStore>(
         return null;
       }
     },
+
     clear: () => {
       set({ walletBackUps: {} });
     },
