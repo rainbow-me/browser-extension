@@ -14,7 +14,7 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWalletBackups } from '../../hooks/useWalletBackUps';
+import { useWalletBackups } from '../../hooks/useWalletBackups';
 import { ROUTES } from '../../urls';
 import { zIndexes } from '../../utils/zIndexes';
 import { Navbar } from '../Navbar/Navbar';
