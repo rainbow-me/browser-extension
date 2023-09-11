@@ -17,7 +17,7 @@ import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
 import { tabIndexes } from '../../utils/tabIndexes';
 
-import { COLLAPSED_HEADER_TOP_OFFSET, Tab } from '.';
+import { Tab } from '.';
 
 export function TabBar({
   activeTab,
@@ -39,7 +39,7 @@ export function TabBar({
   const [tooltipOffset, setTooltipOffset] = useState(scrollY.get() || 0);
 
   useMotionValueEvent(scrollY, 'change', (latest) => {
-    if (latest <= COLLAPSED_HEADER_TOP_OFFSET) {
+    if (latest <= 172) {
       setTooltipOffset(latest);
     }
   });

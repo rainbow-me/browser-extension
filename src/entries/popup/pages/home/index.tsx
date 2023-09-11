@@ -57,7 +57,7 @@ import { Tokens } from './Tokens';
 
 export type Tab = 'tokens' | 'activity';
 
-export const COLLAPSED_HEADER_TOP_OFFSET = 172;
+const COLLAPSED_HEADER_TOP_OFFSET = 172;
 const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
