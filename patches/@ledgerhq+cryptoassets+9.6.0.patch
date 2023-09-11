@@ -1,15 +1,13 @@
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/.DS_Store b/node_modules/@ledgerhq/cryptoassets/lib-es/.DS_Store
 new file mode 100644
-index 0000000..57c8025
-Binary files /dev/null and b/node_modules/@ledgerhq/cryptoassets/lib-es/.DS_Store differ
+index 0000000..e69de29
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store b/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store
 new file mode 100644
 index 0000000..522dd8b
 Binary files /dev/null and b/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store differ
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store
 new file mode 100644
-index 0000000..caf7205
-Binary files /dev/null and b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store differ
+index 0000000..e69de29
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/1/erc20-signatures.json b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/1/erc20-signatures.json
 deleted file mode 100644
 index 72ff419..0000000
@@ -929,10 +927,10 @@ index 3546909..0000000
 -{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/data/evm/56/index.ts"],"names":[],"mappings":"AAAA,OAAO,MAAM,MAAM,cAAc,CAAC;AAClC,OAAO,UAAU,MAAM,yBAAyB,CAAC;AACjD,eAAe,EAAE,MAAM,EAAE,UAAU,EAAE,CAAC"}
 \ No newline at end of file
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
-index 0dd87a8..8e420a6 100644
+index 0dd87a8..14baa7d 100644
 --- a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
 +++ b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
-@@ -1,75 +1,132 @@
+@@ -1,38 +1,90 @@
 -import arbitrum_tokens from "./42161/erc20.json";
 -import arbitrum_goerli_tokens from "./421613/erc20.json";
 -import bsc_tokens from "./56/erc20.json";
@@ -968,172 +966,122 @@ index 0dd87a8..8e420a6 100644
 -import rootstock_signatures from "./30/erc20-signatures.json";
 -import songbird_signatures from "./19/erc20-signatures.json";
 -export const tokens = {
--    42161: arbitrum_tokens,
--    421613: arbitrum_goerli_tokens,
--    56: bsc_tokens,
--    25: cronos_tokens,
--    1: ethereum_tokens,
--    5: ethereum_goerli_tokens,
--    4: ethereum_rinkeby_tokens,
--    3: ethereum_ropsten_tokens,
--    11155111: ethereum_sepolia_tokens,
--    250: fantom_tokens,
--    14: flare_tokens,
--    1284: moonbeam_tokens,
--    10: optimism_tokens,
--    420: optimism_goerli_tokens,
--    137: polygon_tokens,
--    30: rootstock_tokens,
--    19: songbird_tokens,
--};
--export const signatures = {
--    42161: arbitrum_signatures,
--    421613: arbitrum_goerli_signatures,
--    56: bsc_signatures,
--    25: cronos_signatures,
--    1: ethereum_signatures,
--    5: ethereum_goerli_signatures,
--    4: ethereum_rinkeby_signatures,
--    3: ethereum_ropsten_signatures,
--    11155111: ethereum_sepolia_signatures,
--    250: fantom_signatures,
--    14: flare_signatures,
--    1284: moonbeam_signatures,
--    10: optimism_signatures,
--    420: optimism_goerli_signatures,
--    137: polygon_signatures,
--    30: rootstock_signatures,
--    19: songbird_signatures,
--};
 +export let tokens;
 +export let signatures;
 +
 +async function fetchJsonLocally(filename) {
-+    try {
-+      const req = await fetch(chrome.runtime.getURL(`ledger/${filename}`));
-+      const json = await req.json();
-+      return json;
-+    } catch (e) {
-+      return {};
-+    }
++  try {
++    const req = await fetch(chrome.runtime.getURL(`json/ledger/${filename}`));
++    const json = await req.json();
++    return json;
++  } catch (e) {
++    return {};
 +  }
++}
 +
 +const init = async () => {
++  const {
++    arbitrum_tokens,
++    arbitrum_goerli_tokens,
++    bsc_tokens,
++    cronos_tokens,
++    ethereum_tokens,
++    ethereum_goerli_tokens,
++    ethereum_rinkeby_tokens,
++    ethereum_ropsten_tokens,
++    ethereum_sepolia_tokens,
++    fantom_tokens,
++    flare_tokens,
++    moonbeam_tokens,
++    optimism_tokens,
++    optimism_goerli_tokens,
++    polygon_tokens,
++    rootstock_tokens,
++    songbird_tokens,
++    arbitrum_signatures,
++    arbitrum_goerli_signatures,
++    bsc_signatures,
++    cronos_signatures,
++    ethereum_signatures,
++    ethereum_goerli_signatures,
++    ethereum_rinkeby_signatures,
++    ethereum_ropsten_signatures,
++    ethereum_sepolia_signatures,
++    fantom_signatures,
++    flare_signatures,
++    moonbeam_signatures,
++    optimism_signatures,
++    optimism_goerli_signatures,
++    polygon_signatures,
++    rootstock_signatures,
++    songbird_signatures,
++  } = await Promise.all([
++    await fetchJsonLocally('42161/erc20.json'),
++    await fetchJsonLocally('421613/erc20.json'),
++    await fetchJsonLocally('56/erc20.json'),
++    await fetchJsonLocally('25/erc20.json'),
++    await fetchJsonLocally('1/erc20.json'),
++    await fetchJsonLocally('5/erc20.json'),
++    await fetchJsonLocally('4/erc20.json'),
++    await fetchJsonLocally('3/erc20.json'),
++    await fetchJsonLocally('11155111/erc20.json'),
++    await fetchJsonLocally('250/erc20.json'),
++    await fetchJsonLocally('14/erc20.json'),
++    await fetchJsonLocally('1284/erc20.json'),
++    await fetchJsonLocally('10/erc20.json'),
++    await fetchJsonLocally('420/erc20.json'),
++    await fetchJsonLocally('137/erc20.json'),
++    await fetchJsonLocally('30/erc20.json'),
++    await fetchJsonLocally('19/erc20.json'),
++    await fetchJsonLocally('42161/erc20-signatures.json'),
++    await fetchJsonLocally('421613/erc20-signatures.json'),
++    await fetchJsonLocally('56/erc20-signatures.json'),
++    await fetchJsonLocally('25/erc20-signatures.json'),
++    await fetchJsonLocally('1/erc20-signatures.json'),
++    await fetchJsonLocally('5/erc20-signatures.json'),
++    await fetchJsonLocally('4/erc20-signatures.json'),
++    await fetchJsonLocally('3/erc20-signatures.json'),
++    await fetchJsonLocally('11155111/erc20-signatures.json'),
++    await fetchJsonLocally('250/erc20-signatures.json'),
++    await fetchJsonLocally('14/erc20-signatures.json'),
++    await fetchJsonLocally('1284/erc20-signatures.json'),
++    await fetchJsonLocally('10/erc20-signatures.json'),
++    await fetchJsonLocally('420/erc20-signatures.json'),
++    await fetchJsonLocally('137/erc20-signatures.json'),
++    await fetchJsonLocally('30/erc20-signatures.json'),
++    await fetchJsonLocally('19/erc20-signatures.json'),
++  ]);
 +
-+    const {
-+        arbitrum_tokens,
-+        arbitrum_goerli_tokens,
-+        bsc_tokens,
-+        cronos_tokens,
-+        ethereum_tokens,
-+        ethereum_goerli_tokens,
-+        ethereum_rinkeby_tokens,
-+        ethereum_ropsten_tokens,
-+        ethereum_sepolia_tokens,
-+        fantom_tokens,
-+        flare_tokens,
-+        moonbeam_tokens,
-+        optimism_tokens,
-+        optimism_goerli_tokens,
-+        polygon_tokens,
-+        rootstock_tokens,
-+        songbird_tokens,
-+        arbitrum_signatures,
-+        arbitrum_goerli_signatures,
-+        bsc_signatures,
-+        cronos_signatures,
-+        ethereum_signatures,
-+        ethereum_goerli_signatures,
-+        ethereum_rinkeby_signatures,
-+        ethereum_ropsten_signatures,
-+        ethereum_sepolia_signatures,
-+        fantom_signatures,
-+        flare_signatures,
-+        moonbeam_signatures,
-+        optimism_signatures,
-+        optimism_goerli_signatures,
-+        polygon_signatures,
-+        rootstock_signatures,
-+        songbird_signatures
-+    } = Promise.all([
-+        await fetchJsonLocally("42161/erc20.json"),
-+        await fetchJsonLocally("421613/erc20.json"),
-+        await fetchJsonLocally("56/erc20.json"),
-+        await fetchJsonLocally("25/erc20.json"),
-+        await fetchJsonLocally("1/erc20.json"),
-+        await fetchJsonLocally("5/erc20.json"),
-+        await fetchJsonLocally("4/erc20.json"),
-+        await fetchJsonLocally("3/erc20.json"),
-+        await fetchJsonLocally("11155111/erc20.json"),
-+        await fetchJsonLocally("250/erc20.json"),
-+        await fetchJsonLocally("14/erc20.json"),
-+        await fetchJsonLocally("1284/erc20.json"),
-+        await fetchJsonLocally("10/erc20.json"),
-+        await fetchJsonLocally("420/erc20.json"),
-+        await fetchJsonLocally("137/erc20.json"),
-+        await fetchJsonLocally("30/erc20.json"),
-+        await fetchJsonLocally("19/erc20.json"),
-+        await fetchJsonLocally("42161/erc20-signatures.json"),
-+        await fetchJsonLocally("421613/erc20-signatures.json"),
-+        await fetchJsonLocally("56/erc20-signatures.json"),
-+        await fetchJsonLocally("25/erc20-signatures.json"),
-+        await fetchJsonLocally("1/erc20-signatures.json"),
-+        await fetchJsonLocally("5/erc20-signatures.json"),
-+        await fetchJsonLocally("4/erc20-signatures.json"),
-+        await fetchJsonLocally("3/erc20-signatures.json"),
-+        await fetchJsonLocally("11155111/erc20-signatures.json"),
-+        await fetchJsonLocally("250/erc20-signatures.json"),
-+        await fetchJsonLocally("14/erc20-signatures.json"),
-+        await fetchJsonLocally("1284/erc20-signatures.json"),
-+        await fetchJsonLocally("10/erc20-signatures.json"),
-+        await fetchJsonLocally("420/erc20-signatures.json"),
-+        await fetchJsonLocally("137/erc20-signatures.json"),
-+        await fetchJsonLocally("30/erc20-signatures.json"),
-+        await fetchJsonLocally("19/erc20-signatures.json"),
-+    ]);
-+
-+    tokens = {
-+        42161: arbitrum_tokens,
-+        421613: arbitrum_goerli_tokens,
-+        56: bsc_tokens,
-+        25: cronos_tokens,
-+        1: ethereum_tokens,
-+        5: ethereum_goerli_tokens,
-+        4: ethereum_rinkeby_tokens,
-+        3: ethereum_ropsten_tokens,
-+        11155111: ethereum_sepolia_tokens,
-+        250: fantom_tokens,
-+        14: flare_tokens,
-+        1284: moonbeam_tokens,
-+        10: optimism_tokens,
-+        420: optimism_goerli_tokens,
-+        137: polygon_tokens,
-+        30: rootstock_tokens,
-+        19: songbird_tokens,
-+    };
-+    signatures = {
-+        42161: arbitrum_signatures,
-+        421613: arbitrum_goerli_signatures,
-+        56: bsc_signatures,
-+        25: cronos_signatures,
-+        1: ethereum_signatures,
-+        5: ethereum_goerli_signatures,
-+        4: ethereum_rinkeby_signatures,
-+        3: ethereum_ropsten_signatures,
-+        11155111: ethereum_sepolia_signatures,
-+        250: fantom_signatures,
-+        14: flare_signatures,
-+        1284: moonbeam_signatures,
-+        10: optimism_signatures,
-+        420: optimism_goerli_signatures,
-+        137: polygon_signatures,
-+        30: rootstock_signatures,
-+        19: songbird_signatures,
-+    };
-+}
++  tokens = {
+     42161: arbitrum_tokens,
+     421613: arbitrum_goerli_tokens,
+     56: bsc_tokens,
+@@ -50,8 +102,8 @@ export const tokens = {
+     137: polygon_tokens,
+     30: rootstock_tokens,
+     19: songbird_tokens,
+-};
+-export const signatures = {
++  };
++  signatures = {
+     42161: arbitrum_signatures,
+     421613: arbitrum_goerli_signatures,
+     56: bsc_signatures,
+@@ -69,9 +121,13 @@ export const signatures = {
+     137: polygon_signatures,
+     30: rootstock_signatures,
+     19: songbird_signatures,
++  };
+ };
 +
 +init();
 +
  export default {
-     tokens,
-     signatures,
+-    tokens,
+-    signatures,
++  tokens,
++  signatures,
+ };
+-//# sourceMappingURL=index.js.map
+\ No newline at end of file
++// # sourceMappingURL=index.js.map

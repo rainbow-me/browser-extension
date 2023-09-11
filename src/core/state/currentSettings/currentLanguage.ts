@@ -1,7 +1,8 @@
 import create from 'zustand';
 
-import { Language, changeI18nLanguage } from '~/core/languages';
+import { Language, changeI18nLanguage, i18n } from '~/core/languages';
 import { createStore } from '~/core/state/internal/createStore';
+import { fetchJsonLocally } from '~/core/utils/localJson';
 
 export interface CurrentLanguageState {
   currentLanguage: Language;
@@ -11,7 +12,11 @@ export interface CurrentLanguageState {
 export const currentLanguageStore = createStore<CurrentLanguageState>(
   (set) => ({
     currentLanguage: Language.EN_US,
-    setCurrentLanguage: (newLanguage) => {
+    setCurrentLanguage: async (newLanguage) => {
+      const newLangDict = await fetchJsonLocally(
+        `languages/${newLanguage}.json`,
+      );
+      i18n.translations[newLanguage] = newLangDict;
       changeI18nLanguage(newLanguage);
       set({ currentLanguage: newLanguage });
     },
