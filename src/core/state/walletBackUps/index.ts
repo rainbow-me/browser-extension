@@ -5,23 +5,6 @@ import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 
 import { createStore } from '../internal/createStore';
 
-export interface ShowWalletBackupReminderStore {
-  show: boolean;
-  setShowWalletBackupReminder: (show: boolean) => void;
-}
-
-export const showWalletBackupReminderStore =
-  createStore<ShowWalletBackupReminderStore>((set) => ({
-    show: false,
-    setShowWalletBackupReminder: (show) => {
-      set({ show });
-    },
-  }));
-
-export const useShowWalletBackupReminderStore = create(
-  showWalletBackupReminderStore,
-);
-
 export interface WalletBackupReminderStore {
   reminded: boolean;
   setReminded: () => void;

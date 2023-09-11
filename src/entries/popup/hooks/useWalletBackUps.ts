@@ -1,7 +1,6 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
-  useShowWalletBackupReminderStore,
   useWalletBackupReminderStore,
   useWalletBackupsStore,
 } from '~/core/state/walletBackups';
@@ -11,8 +10,8 @@ import { useWalletsFromKeychain } from './useWalletsFromKeychain';
 
 export const useWalletBackups = () => {
   const { reminded, setReminded } = useWalletBackupReminderStore();
-  const { show: showWalletBackupReminder, setShowWalletBackupReminder } =
-    useShowWalletBackupReminderStore();
+  const [showWalletBackupReminder, setShowWalletBackupReminder] =
+    useState(false);
   const { popQueue } = useHomePromptQueue();
   const {
     walletBackups,
@@ -33,7 +32,7 @@ export const useWalletBackups = () => {
   useEffect(() => {
     // if there's no backup info we set everything as backed up for old users
     if (Object.keys(walletBackups).length === 0) {
-      walletsFromKeychain.map((wallet) => setWalletAlreadyBackedUp({ wallet }));
+      // walletsFromKeychain.map((wallet) => setWalletAlreadyBackedUp({ wallet }));
     }
     // clear();
   }, [

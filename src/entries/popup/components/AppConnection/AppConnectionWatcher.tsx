@@ -5,7 +5,6 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
-import { useShowWalletBackupReminderStore } from '~/core/state/walletBackups';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -39,7 +38,6 @@ export const AppConnectionWatcher = () => {
   const [accountChangeHappened, setAccountChangeHappened] = useState(false);
   const prevLocationPathname = usePrevious(location.pathname);
   const prevCurrentAddress = usePrevious(currentAddress);
-  const { show: showWalletBackupReminder } = useShowWalletBackupReminderStore();
   const { nextInQueue } = useHomePromptQueue();
 
   const connect = useCallback(() => {
@@ -174,7 +172,6 @@ export const AppConnectionWatcher = () => {
     location.pathname,
     nextInQueue,
     prevCurrentAddress,
-    showWalletBackupReminder,
     triggerCheck,
   ]);
 
