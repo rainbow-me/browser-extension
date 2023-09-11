@@ -74,7 +74,12 @@ export function WalletsAndKeys() {
         <MenuContainer>
           {wallets.map((wallet, idx) => {
             const walletBackedUp = getWalletBackUp({ wallet });
-            console.log('walletBackedUp', wallet.accounts[0], walletBackedUp);
+            console.log(
+              'walletBackedUp',
+              wallet,
+              wallet.accounts[0],
+              walletBackedUp,
+            );
             const singleAccount = wallet.accounts.length === 1;
             const importedLabel = walletBackedUp?.timestamp
               ? 'Backed up ‧'

@@ -65,7 +65,7 @@ export const walletBackUpsStore = createStore<WalletBackUpsStore>(
       }
     },
     isWalletBackedUp: ({ wallet }) => {
-      if (wallet.type === KeychainType.HdKeychain) {
+      if (wallet.type === KeychainType.HdKeychain && !wallet.imported) {
         const { walletBackUps } = get();
         return !!walletBackUps[wallet.accounts[0]]?.backedUp;
       } else {
@@ -78,7 +78,7 @@ export const walletBackUpsStore = createStore<WalletBackUpsStore>(
       set({ walletBackUps: { ...newWalletBackUps } });
     },
     getWalletBackUp: ({ wallet }) => {
-      if (wallet.type !== KeychainType.HdKeychain) {
+      if (wallet.type !== KeychainType.HdKeychain || wallet.imported) {
         return { backedUp: true, timestamp: 0 };
       } else {
         const { walletBackUps } = get();
