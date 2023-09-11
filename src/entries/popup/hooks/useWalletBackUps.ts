@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
-import { useCurrentAddressStore } from '~/core/state';
 import {
+  useShowWalletBackupReminderStore,
   useWalletBackUpsStore,
   useWalletBackupReminderStore,
 } from '~/core/state/walletBackUps';
-import { isLowerCaseMatch } from '~/core/utils/strings';
 
+import { useHomePromptQueue } from './useHomePromptsQueue';
 import { useWalletsFromKeychain } from './useWalletsFromKeychain';
 
 export const useWalletBackUps = () => {
-  const { currentAddress } = useCurrentAddressStore();
   const { reminded, setReminded } = useWalletBackupReminderStore();
-  const [showWalletBackup, setShowWalletBackup] = useState(false);
+  const { show: showWalletBackupReminder, setShowWalletBackupReminder } =
+    useShowWalletBackupReminderStore();
+  const { popQueue } = useHomePromptQueue();
   const {
     walletBackUps,
     setWalletBackedUp,
@@ -21,7 +22,14 @@ export const useWalletBackUps = () => {
     getWalletBackUp,
     // clear,
   } = useWalletBackUpsStore();
+
   const { walletsFromKeychain } = useWalletsFromKeychain();
+
+  const closeBackupReminder = useCallback(() => {
+    popQueue();
+    setShowWalletBackupReminder(false);
+  }, [popQueue, setShowWalletBackupReminder]);
+
   useEffect(() => {
     // if there's no backup info we set everything as backed up for old users
     if (Object.keys(walletBackUps).length === 0) {
@@ -36,35 +44,31 @@ export const useWalletBackUps = () => {
   ]);
 
   useEffect(() => {
-    if (!reminded) {
-      const wallet = walletsFromKeychain.find(
-        (wallet) =>
-          !!wallet.accounts.find((account) =>
-            isLowerCaseMatch(account, currentAddress),
-          ),
-      );
-      if (wallet) {
+    if (!reminded && walletsFromKeychain.length) {
+      const needsBackupReminder = walletsFromKeychain.find((wallet) => {
         const walletBackup = getWalletBackUp({ wallet });
-        if (!walletBackup) {
-          setShowWalletBackup(true);
-          setReminded();
-        }
+        return !walletBackup?.backedUp;
+      });
+      if (needsBackupReminder) {
+        setShowWalletBackupReminder(true);
+        setReminded();
+      } else {
+        popQueue();
       }
     }
   }, [
-    currentAddress,
     getWalletBackUp,
+    popQueue,
     reminded,
     setReminded,
-    setWalletBackedUp,
-    walletBackUps,
+    setShowWalletBackupReminder,
     walletsFromKeychain,
   ]);
 
   return {
     walletBackUps,
-    showWalletBackup,
+    showWalletBackupReminder,
     isWalletBackedUp,
-    setShowWalletBackup,
+    closeBackupReminder,
   };
 };

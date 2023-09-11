@@ -19,22 +19,20 @@ import { zIndexes } from '../../utils/zIndexes';
 import { Navbar } from '../Navbar/Navbar';
 
 export const BackupReminder = () => {
-  const { showWalletBackup, setShowWalletBackup } = useWalletBackUps();
+  const { showWalletBackupReminder, closeBackupReminder } = useWalletBackUps();
   const navigate = useRainbowNavigate();
+
   return (
     <BottomSheet
-      show={showWalletBackup}
+      show={showWalletBackupReminder}
       zIndex={zIndexes.APP_CONNECTION_WALLET_SWITCHER}
-      onClickOutside={() => setShowWalletBackup(false)}
+      onClickOutside={closeBackupReminder}
     >
-      <Box
-        id="app-connection-switch-wallets-prompt"
-        testId="app-connection-wallet-switcher"
-      >
+      <Box id="wallet-backup-reminder-sheet">
         <Navbar
           leftComponent={
             <Navbar.CloseButton
-              onClick={() => setShowWalletBackup(false)}
+              onClick={closeBackupReminder}
               variant="transparent"
             />
           }
@@ -85,9 +83,10 @@ export const BackupReminder = () => {
                 color="red"
                 height="44px"
                 variant="flat"
-                onClick={() =>
-                  navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS)
-                }
+                onClick={() => {
+                  closeBackupReminder();
+                  navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
+                }}
               >
                 <Text align="center" color="label" size="16pt" weight="heavy">
                   {'Back Up Now'}
@@ -99,7 +98,7 @@ export const BackupReminder = () => {
                 color="transparent"
                 height="44px"
                 variant="tinted"
-                onClick={() => setShowWalletBackup(false)}
+                onClick={closeBackupReminder}
               >
                 <Text
                   align="center"

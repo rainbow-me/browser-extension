@@ -5,12 +5,14 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
+import { useShowWalletBackupReminderStore } from '~/core/state/walletBackUps';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import { useHomePromptQueue } from '../../hooks/useHomePromptsQueue';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { ROUTES } from '../../urls';
@@ -37,6 +39,8 @@ export const AppConnectionWatcher = () => {
   const [accountChangeHappened, setAccountChangeHappened] = useState(false);
   const prevLocationPathname = usePrevious(location.pathname);
   const prevCurrentAddress = usePrevious(currentAddress);
+  const { show: showWalletBackupReminder } = useShowWalletBackupReminderStore();
+  const { nextInQueue } = useHomePromptQueue();
 
   const connect = useCallback(() => {
     addSession({
@@ -150,11 +154,14 @@ export const AppConnectionWatcher = () => {
   }, [hide, location.pathname]);
 
   useEffect(() => {
+    console.log('--- showWalletBackupReminder', showWalletBackupReminder);
+    console.log('--- nextInQueue', nextInQueue);
     if (
       location.pathname === ROUTES.HOME &&
       (firstLoad || accountChangeHappened) &&
       differentActiveSession &&
-      !appConnectionSwitchWalletsPromptIsActive()
+      !appConnectionSwitchWalletsPromptIsActive() &&
+      nextInQueue === 'app-connection'
     ) {
       setAccountChangeHappened(false);
       hide();
@@ -167,7 +174,9 @@ export const AppConnectionWatcher = () => {
     firstLoad,
     hide,
     location.pathname,
+    nextInQueue,
     prevCurrentAddress,
+    showWalletBackupReminder,
     triggerCheck,
   ]);
 
