@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
-## [v1.2.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.12)
+## [v1.2.13](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.13)
 
 ### Added
 - Introduced a loading spinner to the "Send" button, mirroring the swap behavior #916
