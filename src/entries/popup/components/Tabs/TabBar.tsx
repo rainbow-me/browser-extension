@@ -157,54 +157,58 @@ function Tab({
 
   return (
     <Box
-      alignItems="center"
-      as={motion.div}
-      display="flex"
-      height="full"
-      justifyContent="center"
-      key={`tab-${name}`}
       onClick={() => {
         onSelectTab(name);
       }}
-      style={{
-        width: TAB_WIDTH,
-        willChange: 'transform',
-        zIndex: 2,
-      }}
-      transition={timingConfig(0.2)}
-      whileTap={{ scale: 0.82 }}
+      style={{ height: TAB_HEIGHT, width: TAB_WIDTH }}
     >
-      <Box style={{ height: ICON_SIZE, width: ICON_SIZE }}>
-        <Box
-          position="relative"
-          style={{
-            height: ICON_SIZE * 2,
-            transform: 'scale(0.5)',
-            transformOrigin: 'top left',
-            width: ICON_SIZE * 2,
-            willChange: 'transform',
-          }}
-        >
+      <Box
+        alignItems="center"
+        as={motion.div}
+        display="flex"
+        height="full"
+        justifyContent="center"
+        key={`tab-${name}`}
+        style={{
+          width: TAB_WIDTH,
+          willChange: 'transform',
+          zIndex: 2,
+        }}
+        transition={timingConfig(0.2)}
+        whileTap={{ scale: 0.82 }}
+      >
+        <Box style={{ height: ICON_SIZE, width: ICON_SIZE }}>
           <Box
-            position="absolute"
+            position="relative"
             style={{
-              opacity: isSelected ? 1 : 0,
-              transition: '0.2s cubic-bezier(0.2, 0, 0, 1)',
+              height: ICON_SIZE * 2,
+              transform: 'scale(0.5)',
+              transformOrigin: 'top left',
+              width: ICON_SIZE * 2,
+              willChange: 'transform',
             }}
           >
-            <SelectedIcon
-              accentColor={accentColor}
-              colorMatrixValues={colorMatrixValues}
-            />
-          </Box>
-          <Box
-            position="absolute"
-            style={{
-              opacity: isSelected ? 0 : 1,
-              transition: '0.2s cubic-bezier(0.2, 0, 0, 1)',
-            }}
-          >
-            <Icon />
+            <Box
+              position="absolute"
+              style={{
+                opacity: isSelected ? 1 : 0,
+                transition: '0.2s cubic-bezier(0.2, 0, 0, 1)',
+              }}
+            >
+              <SelectedIcon
+                accentColor={accentColor}
+                colorMatrixValues={colorMatrixValues}
+              />
+            </Box>
+            <Box
+              position="absolute"
+              style={{
+                opacity: isSelected ? 0 : 1,
+                transition: '0.2s cubic-bezier(0.2, 0, 0, 1)',
+              }}
+            >
+              <Icon />
+            </Box>
           </Box>
         </Box>
       </Box>

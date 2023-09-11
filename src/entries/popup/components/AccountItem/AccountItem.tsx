@@ -90,6 +90,7 @@ export default function AccountItem({
 
   return (
     <Lens
+      forceAvatarColor
       handleOpenMenu={onClick}
       key={account}
       onClick={onClick}

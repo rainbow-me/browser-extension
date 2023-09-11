@@ -11,7 +11,8 @@ export const accentFocusVisibleStyle = style({
   selectors: {
     '&:focus': {
       backgroundColor: transparentAccentColorAsHsl,
-      boxShadow: `inset 0 0 0 1px ${outlineAccentColorAsHsl}`,
+      outline: '1px solid',
+      outlineColor: outlineAccentColorAsHsl,
     },
   },
 });
@@ -20,7 +21,6 @@ export const accentMenuFocusVisibleStyle = style({
   selectors: {
     '&:focus': {
       backgroundColor: transparentAccentColorAsHsl,
-      boxShadow: `inset 0 0 0 1px ${outlineAccentColorAsHsl}`,
     },
   },
 });

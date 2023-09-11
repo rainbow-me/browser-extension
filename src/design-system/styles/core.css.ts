@@ -152,7 +152,7 @@ export const semiTransparentAccentColorAsHsl = getColorAsHsl({
   vars: accentColorHslVars,
 });
 export const outlineAccentColorAsHsl = getColorAsHsl({
-  alpha: 0.2,
+  alpha: 0.4,
   vars: accentColorHslVars,
 });
 export const tabBackgroundColor = getColorAsHsl({
