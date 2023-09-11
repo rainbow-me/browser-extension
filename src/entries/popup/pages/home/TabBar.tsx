@@ -109,7 +109,7 @@ export function TabBar({
             textWeight="bold"
             textSize="12pt"
             textColor="labelSecondary"
-            marginLeft="120px"
+            marginLeft="128px"
             marginTop={`${0 - tooltipOffset}px`}
             hint={shortcuts.global.FORWARD.display}
           >

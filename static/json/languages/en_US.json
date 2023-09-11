@@ -1315,6 +1315,7 @@
     "gwei_settings": "Gwei Settings",
     "flip_tokens": "Flip token positions",
     "favorite": "Add to favorites",
-    "unfavorite": "Remove from favorites"
+    "unfavorite": "Remove from favorites",
+    "estimated_difference": "Estimated difference in value"
   }
 }
