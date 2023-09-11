@@ -298,7 +298,13 @@ export function WalletDetails() {
               <MenuItem
                 first
                 last
-                titleComponent={<MenuItem.Title text={'Back Up Now'} />}
+                titleComponent={
+                  <MenuItem.Title
+                    text={i18n.t(
+                      'settings.privacy_and_security.wallets_and_keys.wallet_details.back_up_now',
+                    )}
+                  />
+                }
                 leftComponent={
                   <Symbol
                     symbol="exclamationmark.circle.fill"
@@ -320,9 +326,10 @@ export function WalletDetails() {
                 color="labelQuaternary"
                 align="left"
               >
-                {`Last backed up as ${formatDate(
-                  walletBackedUpInfo?.timestamp,
-                )}`}
+                {i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.wallet_details.last_backed_up',
+                  { date: formatDate(walletBackedUpInfo?.timestamp) },
+                )}
               </Text>
             </Box>
           ) : null}

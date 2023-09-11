@@ -154,8 +154,6 @@ export const AppConnectionWatcher = () => {
   }, [hide, location.pathname]);
 
   useEffect(() => {
-    console.log('--- showWalletBackupReminder', showWalletBackupReminder);
-    console.log('--- nextInQueue', nextInQueue);
     if (
       location.pathname === ROUTES.HOME &&
       (firstLoad || accountChangeHappened) &&

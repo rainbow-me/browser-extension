@@ -74,17 +74,15 @@ export function WalletsAndKeys() {
         <MenuContainer>
           {wallets.map((wallet, idx) => {
             const walletBackedUp = getWalletBackUp({ wallet });
-            console.log(
-              'walletBackedUp',
-              wallet,
-              wallet.accounts[0],
-              walletBackedUp,
-            );
             const singleAccount = wallet.accounts.length === 1;
             const importedLabel = walletBackedUp?.timestamp
-              ? 'Backed up ‧'
+              ? `${i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.backed_up',
+                )} ‧`
               : !walletBackedUp
-              ? 'Not backed up  ‧'
+              ? `${i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.not_backed_up',
+                )} ‧`
               : wallet.imported || wallet.type === KeychainType.KeyPairKeychain
               ? `${i18n.t(
                   'settings.privacy_and_security.wallets_and_keys.imported',
@@ -177,7 +175,9 @@ export function WalletsAndKeys() {
                         variant="tinted"
                         onClick={() => handleBackUp({ wallet })}
                       >
-                        Back Up Now
+                        {i18n.t(
+                          'settings.privacy_and_security.wallets_and_keys.back_up_now',
+                        )}
                       </Button>
                     </Inline>
                   </Box>

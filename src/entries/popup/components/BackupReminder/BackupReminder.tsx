@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { i18n } from '~/core/languages';
 import {
   Box,
   Button,
@@ -53,7 +54,7 @@ export const BackupReminder = () => {
 
               <Inset horizontal="30px">
                 <Text align="center" color="label" size="20pt" weight="heavy">
-                  {'Some of your wallets aren’t backed up'}
+                  {i18n.t('wallet_backup_reminder.title')}
                 </Text>
               </Inset>
               <Inline alignHorizontal="center">
@@ -69,9 +70,7 @@ export const BackupReminder = () => {
                   size="14pt"
                   weight="regular"
                 >
-                  {
-                    'Some of your wallets aren’t backed up. Back up so you can regain access to your wallets if you lose access to this device.'
-                  }
+                  {i18n.t('wallet_backup_reminder.description')}
                 </Text>
               </Box>
             </Stack>
@@ -89,7 +88,7 @@ export const BackupReminder = () => {
                 }}
               >
                 <Text align="center" color="label" size="16pt" weight="heavy">
-                  {'Back Up Now'}
+                  {i18n.t('wallet_backup_reminder.button_label_action')}
                 </Text>
               </Button>
 
@@ -106,7 +105,7 @@ export const BackupReminder = () => {
                   size="16pt"
                   weight="bold"
                 >
-                  {'Remind Me Later'}
+                  {i18n.t('wallet_backup_reminder.button_label_cancel')}
                 </Text>
               </Button>
             </Stack>

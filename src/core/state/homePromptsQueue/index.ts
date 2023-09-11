@@ -18,9 +18,7 @@ export const homePromptsQueueStore = createStore<HomePromptsQueue>(
     },
     popQueue: () => {
       const { queue } = get();
-      console.log('popqueue', queue);
       queue.splice(0, 1);
-      console.log('popqueue newQueue', queue);
       set({ queue: [...queue] });
     },
   }),
