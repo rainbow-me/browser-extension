@@ -312,7 +312,7 @@ export function WalletDetails() {
               />
             </Menu>
           )}
-          {walletBackedUpInfo ? (
+          {walletBackedUpInfo?.timestamp ? (
             <Box paddingHorizontal="12px">
               <Text
                 size="12pt"

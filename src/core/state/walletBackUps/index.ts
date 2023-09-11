@@ -22,7 +22,10 @@ export const walletBackupReminderStore = createStore<WalletBackupReminderStore>(
 export const useWalletBackupReminderStore = create(walletBackupReminderStore);
 
 export interface WalletBackUpsStore {
-  walletBackUps: { [address: Address]: { backedUp: boolean; timestamp: Date } };
+  walletBackUps: {
+    [address: Address]: { backedUp: boolean; timestamp: Date | number };
+  };
+  setWalletAlreadyBackedUp: ({ wallet }: { wallet: KeychainWallet }) => void;
   setWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => void;
   isWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => boolean;
   deleteWalletBackup: ({ address }: { address: Address }) => void;
@@ -30,13 +33,25 @@ export interface WalletBackUpsStore {
     wallet,
   }: {
     wallet: KeychainWallet;
-  }) => { backedUp: boolean; timestamp: Date } | null;
+  }) => { backedUp: boolean; timestamp: Date | number } | null;
   clear: () => void;
 }
 
 export const walletBackUpsStore = createStore<WalletBackUpsStore>(
   (set, get) => ({
     walletBackUps: {},
+    setWalletAlreadyBackedUp: ({ wallet }) => {
+      if (wallet.type === KeychainType.HdKeychain) {
+        const { walletBackUps } = get();
+        const newWalletBackUps = {
+          ...walletBackUps,
+          [wallet.accounts[0]]: { backedUp: true, timestamp: 0 },
+        };
+        set({
+          walletBackUps: { ...newWalletBackUps },
+        });
+      }
+    },
     setWalletBackedUp: ({ wallet }) => {
       if (wallet.type === KeychainType.HdKeychain) {
         const { walletBackUps } = get();
@@ -63,11 +78,11 @@ export const walletBackUpsStore = createStore<WalletBackUpsStore>(
       set({ walletBackUps: { ...newWalletBackUps } });
     },
     getWalletBackUp: ({ wallet }) => {
-      if (wallet.type === KeychainType.HdKeychain) {
+      if (wallet.type !== KeychainType.HdKeychain) {
+        return { backedUp: true, timestamp: 0 };
+      } else {
         const { walletBackUps } = get();
         return walletBackUps[wallet.accounts[0]] || null;
-      } else {
-        return null;
       }
     },
 

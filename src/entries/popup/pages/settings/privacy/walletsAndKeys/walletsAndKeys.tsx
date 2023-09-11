@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useWalletBackUpsStore } from '~/core/state/walletBackUps';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { setSettingWallets } from '~/core/utils/settings';
 import { Box, Button, Inline, Symbol, Text } from '~/design-system';
@@ -12,13 +13,12 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { TrezorIcon } from '~/entries/popup/components/TrezorIcon/TrezorIcon';
 import { getWallets } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { useWalletBackUps } from '~/entries/popup/hooks/useWalletBackUps';
 import { ROUTES } from '~/entries/popup/urls';
 
 export function WalletsAndKeys() {
   const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
-  const { isWalletBackedUp } = useWalletBackUps();
+  const { getWalletBackUp } = useWalletBackUpsStore();
 
   useEffect(() => {
     setSettingWallets(null);
@@ -73,18 +73,19 @@ export function WalletsAndKeys() {
       <Box paddingHorizontal="20px">
         <MenuContainer>
           {wallets.map((wallet, idx) => {
-            const walletBackedUp = isWalletBackedUp({ wallet });
+            const walletBackedUp = getWalletBackUp({ wallet });
+            console.log('walletBackedUp', wallet.accounts[0], walletBackedUp);
             const singleAccount = wallet.accounts.length === 1;
-            const importedLabel = `${
-              !walletBackedUp
-                ? 'Not backed up  ‧'
-                : wallet.imported ||
-                  wallet.type === KeychainType.KeyPairKeychain
-                ? `${i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.imported',
-                  )} ‧`
-                : 'Backed up'
-            }`;
+            const importedLabel = walletBackedUp?.timestamp
+              ? 'Backed up ‧'
+              : !walletBackedUp
+              ? 'Not backed up  ‧'
+              : wallet.imported || wallet.type === KeychainType.KeyPairKeychain
+              ? `${i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.imported',
+                )} ‧`
+              : '';
+
             const walletsLabel = `${wallet.accounts.length} ${i18n.t(
               `settings.privacy_and_security.wallets_and_keys.${
                 singleAccount ? 'wallet_single' : 'wallet_plural'
@@ -161,7 +162,7 @@ export function WalletsAndKeys() {
                   hasRightArrow
                 />
                 <MenuItem.AccountList accounts={wallet.accounts} />
-                {walletBackedUp ? null : (
+                {walletBackedUp?.backedUp ? null : (
                   <Box paddingHorizontal="16px" paddingVertical="16px">
                     <Inline alignHorizontal="center" alignVertical="center">
                       <Button

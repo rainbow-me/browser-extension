@@ -16,28 +16,33 @@ export const useWalletBackUps = () => {
   const {
     walletBackUps,
     setWalletBackedUp,
+    setWalletAlreadyBackedUp,
     isWalletBackedUp,
     getWalletBackUp,
     // clear,
   } = useWalletBackUpsStore();
   const { walletsFromKeychain } = useWalletsFromKeychain();
   useEffect(() => {
-    console.log('walletBackUps', walletBackUps);
     // if there's no backup info we set everything as backed up for old users
-    // if (Object.keys(walletBackUps).length === 0) {
-    //   console.log('BACKUPS INITL');
-    //   walletsFromKeychain.map((wallet) => setWalletBackedUp({ wallet }));
-    // }
+    if (Object.keys(walletBackUps).length === 0) {
+      walletsFromKeychain.map((wallet) => setWalletAlreadyBackedUp({ wallet }));
+    }
     // clear();
-  }, [setWalletBackedUp, walletBackUps, walletsFromKeychain]);
+  }, [
+    setWalletAlreadyBackedUp,
+    setWalletBackedUp,
+    walletBackUps,
+    walletsFromKeychain,
+  ]);
 
   useEffect(() => {
     if (!reminded) {
-      const wallet = walletsFromKeychain.find((wallet) => {
-        return !!wallet.accounts.find((account) =>
-          isLowerCaseMatch(account, currentAddress),
-        );
-      });
+      const wallet = walletsFromKeychain.find(
+        (wallet) =>
+          !!wallet.accounts.find((account) =>
+            isLowerCaseMatch(account, currentAddress),
+          ),
+      );
       if (wallet) {
         const walletBackup = getWalletBackUp({ wallet });
         if (!walletBackup) {
