@@ -5,7 +5,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
-import { useWalletBackUpsStore } from '~/core/state/walletBackUps';
+import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
@@ -120,12 +120,12 @@ export function WalletDetails() {
   const [wallet, setWallet] = useState<KeychainWallet | null>();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
-  const { deleteWalletBackup } = useWalletBackUpsStore();
   const { visibleWallets } = useWallets();
   const { deleteWalletName } = useWalletNamesStore();
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
 
-  const { isWalletBackedUp, getWalletBackUp } = useWalletBackUpsStore();
+  const { isWalletBackedUp, getWalletBackup, deleteWalletBackup } =
+    useWalletBackupsStore();
 
   const handleViewPrivateKey = useCallback(
     (account: Address) => {
@@ -213,10 +213,10 @@ export function WalletDetails() {
 
   const walletBackedUpInfo = useMemo(() => {
     if (wallet) {
-      return getWalletBackUp({ wallet });
+      return getWalletBackup({ wallet });
     }
     return null;
-  }, [getWalletBackUp, wallet]);
+  }, [getWalletBackup, wallet]);
 
   const handleViewRecoveryPhrase = useCallback(() => {
     navigate(

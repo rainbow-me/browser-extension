@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { useWalletBackUpsStore } from '~/core/state/walletBackUps';
+import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhraseTable';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
@@ -16,7 +16,7 @@ export function RecoveryPhrase() {
   const navigate = useRainbowNavigate();
 
   const [seed, setSeed] = useState('');
-  const { setWalletBackedUp } = useWalletBackUpsStore();
+  const { setWalletBackedUp } = useWalletBackupsStore();
 
   const handleSavedTheseWords = useCallback(() => {
     state?.wallet && setWalletBackedUp({ wallet: state?.wallet });

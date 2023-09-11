@@ -14,13 +14,13 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWalletBackUps } from '../../hooks/useWalletBackUps';
+import { useWalletBackups } from '../../hooks/useWalletBackUps';
 import { ROUTES } from '../../urls';
 import { zIndexes } from '../../utils/zIndexes';
 import { Navbar } from '../Navbar/Navbar';
 
 export const BackupReminder = () => {
-  const { showWalletBackupReminder, closeBackupReminder } = useWalletBackUps();
+  const { showWalletBackupReminder, closeBackupReminder } = useWalletBackups();
   const navigate = useRainbowNavigate();
 
   return (

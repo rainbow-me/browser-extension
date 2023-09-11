@@ -38,15 +38,15 @@ export const walletBackupReminderStore = createStore<WalletBackupReminderStore>(
 
 export const useWalletBackupReminderStore = create(walletBackupReminderStore);
 
-export interface WalletBackUpsStore {
-  walletBackUps: {
+export interface WalletBackupsStore {
+  walletBackups: {
     [address: Address]: { backedUp: boolean; timestamp: Date | number };
   };
   setWalletAlreadyBackedUp: ({ wallet }: { wallet: KeychainWallet }) => void;
   setWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => void;
   isWalletBackedUp: ({ wallet }: { wallet: KeychainWallet }) => boolean;
   deleteWalletBackup: ({ address }: { address: Address }) => void;
-  getWalletBackUp: ({
+  getWalletBackup: ({
     wallet,
   }: {
     wallet: KeychainWallet;
@@ -54,65 +54,65 @@ export interface WalletBackUpsStore {
   clear: () => void;
 }
 
-export const walletBackUpsStore = createStore<WalletBackUpsStore>(
+export const walletBackupsStore = createStore<WalletBackupsStore>(
   (set, get) => ({
-    walletBackUps: {},
+    walletBackups: {},
     setWalletAlreadyBackedUp: ({ wallet }) => {
       if (wallet.type === KeychainType.HdKeychain) {
-        const { walletBackUps } = get();
-        const newWalletBackUps = {
-          ...walletBackUps,
+        const { walletBackups } = get();
+        const newWalletBackups = {
+          ...walletBackups,
           [wallet.accounts[0]]: { backedUp: true, timestamp: 0 },
         };
         set({
-          walletBackUps: { ...newWalletBackUps },
+          walletBackups: { ...newWalletBackups },
         });
       }
     },
     setWalletBackedUp: ({ wallet }) => {
       if (wallet.type === KeychainType.HdKeychain) {
-        const { walletBackUps } = get();
-        const newWalletBackUps = {
-          ...walletBackUps,
+        const { walletBackups } = get();
+        const newWalletBackups = {
+          ...walletBackups,
           [wallet.accounts[0]]: { backedUp: true, timestamp: Date.now() },
         };
         set({
-          walletBackUps: { ...newWalletBackUps },
+          walletBackups: { ...newWalletBackups },
         });
       }
     },
     isWalletBackedUp: ({ wallet }) => {
       if (wallet.type === KeychainType.HdKeychain && !wallet.imported) {
-        const { walletBackUps } = get();
-        return !!walletBackUps[wallet.accounts[0]]?.backedUp;
+        const { walletBackups } = get();
+        return !!walletBackups[wallet.accounts[0]]?.backedUp;
       } else {
         return true;
       }
     },
     deleteWalletBackup: ({ address }) => {
-      const { walletBackUps: newWalletBackUps } = get();
-      delete newWalletBackUps[address];
-      set({ walletBackUps: { ...newWalletBackUps } });
+      const { walletBackups: newWalletBackups } = get();
+      delete newWalletBackups[address];
+      set({ walletBackups: { ...newWalletBackups } });
     },
-    getWalletBackUp: ({ wallet }) => {
+    getWalletBackup: ({ wallet }) => {
       if (wallet.type !== KeychainType.HdKeychain || wallet.imported) {
         return { backedUp: true, timestamp: 0 };
       } else {
-        const { walletBackUps } = get();
-        return walletBackUps[wallet.accounts[0]] || null;
+        const { walletBackups } = get();
+        return walletBackups[wallet.accounts[0]] || null;
       }
     },
 
     clear: () => {
-      set({ walletBackUps: {} });
+      set({ walletBackups: {} });
     },
   }),
   {
     persist: {
-      name: 'walletBackUps',
+      name: 'walletBackups',
       version: 0,
     },
   },
 );
 
-export const useWalletBackUpsStore = create(walletBackUpsStore);
+export const useWalletBackupsStore = create(walletBackupsStore);

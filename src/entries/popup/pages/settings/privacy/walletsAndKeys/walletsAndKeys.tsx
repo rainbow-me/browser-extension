@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useWalletBackUpsStore } from '~/core/state/walletBackUps';
+import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { setSettingWallets } from '~/core/utils/settings';
 import { Box, Button, Inline, Symbol, Text } from '~/design-system';
@@ -18,7 +18,7 @@ import { ROUTES } from '~/entries/popup/urls';
 export function WalletsAndKeys() {
   const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
-  const { getWalletBackUp } = useWalletBackUpsStore();
+  const { getWalletBackup } = useWalletBackupsStore();
 
   useEffect(() => {
     setSettingWallets(null);
@@ -34,7 +34,7 @@ export function WalletsAndKeys() {
     [navigate],
   );
 
-  const handleBackUp = useCallback(
+  const handleBackup = useCallback(
     ({ wallet }: { wallet: KeychainWallet }) => {
       navigate(
         ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
@@ -73,7 +73,7 @@ export function WalletsAndKeys() {
       <Box paddingHorizontal="20px">
         <MenuContainer>
           {wallets.map((wallet, idx) => {
-            const walletBackedUp = getWalletBackUp({ wallet });
+            const walletBackedUp = getWalletBackup({ wallet });
             const singleAccount = wallet.accounts.length === 1;
             const importedLabel = walletBackedUp?.timestamp
               ? `${i18n.t(
@@ -173,7 +173,7 @@ export function WalletsAndKeys() {
                         color="red"
                         height="36px"
                         variant="tinted"
-                        onClick={() => handleBackUp({ wallet })}
+                        onClick={() => handleBackup({ wallet })}
                       >
                         {i18n.t(
                           'settings.privacy_and_security.wallets_and_keys.back_up_now',

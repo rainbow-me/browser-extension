@@ -2,26 +2,26 @@ import { useCallback, useEffect } from 'react';
 
 import {
   useShowWalletBackupReminderStore,
-  useWalletBackUpsStore,
   useWalletBackupReminderStore,
-} from '~/core/state/walletBackUps';
+  useWalletBackupsStore,
+} from '~/core/state/walletBackups';
 
 import { useHomePromptQueue } from './useHomePromptsQueue';
 import { useWalletsFromKeychain } from './useWalletsFromKeychain';
 
-export const useWalletBackUps = () => {
+export const useWalletBackups = () => {
   const { reminded, setReminded } = useWalletBackupReminderStore();
   const { show: showWalletBackupReminder, setShowWalletBackupReminder } =
     useShowWalletBackupReminderStore();
   const { popQueue } = useHomePromptQueue();
   const {
-    walletBackUps,
+    walletBackups,
     setWalletBackedUp,
     setWalletAlreadyBackedUp,
     isWalletBackedUp,
-    getWalletBackUp,
+    getWalletBackup,
     // clear,
-  } = useWalletBackUpsStore();
+  } = useWalletBackupsStore();
 
   const { walletsFromKeychain } = useWalletsFromKeychain();
 
@@ -32,21 +32,21 @@ export const useWalletBackUps = () => {
 
   useEffect(() => {
     // if there's no backup info we set everything as backed up for old users
-    if (Object.keys(walletBackUps).length === 0) {
+    if (Object.keys(walletBackups).length === 0) {
       walletsFromKeychain.map((wallet) => setWalletAlreadyBackedUp({ wallet }));
     }
     // clear();
   }, [
     setWalletAlreadyBackedUp,
     setWalletBackedUp,
-    walletBackUps,
+    walletBackups,
     walletsFromKeychain,
   ]);
 
   useEffect(() => {
     if (!reminded && walletsFromKeychain.length) {
       const needsBackupReminder = walletsFromKeychain.find((wallet) => {
-        const walletBackup = getWalletBackUp({ wallet });
+        const walletBackup = getWalletBackup({ wallet });
         return !walletBackup?.backedUp;
       });
       if (needsBackupReminder) {
@@ -57,7 +57,7 @@ export const useWalletBackUps = () => {
       }
     }
   }, [
-    getWalletBackUp,
+    getWalletBackup,
     popQueue,
     reminded,
     setReminded,
@@ -66,7 +66,7 @@ export const useWalletBackUps = () => {
   ]);
 
   return {
-    walletBackUps,
+    walletBackups,
     showWalletBackupReminder,
     isWalletBackedUp,
     closeBackupReminder,

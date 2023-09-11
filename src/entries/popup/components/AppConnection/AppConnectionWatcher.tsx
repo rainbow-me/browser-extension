@@ -5,7 +5,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
-import { useShowWalletBackupReminderStore } from '~/core/state/walletBackUps';
+import { useShowWalletBackupReminderStore } from '~/core/state/walletBackups';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
