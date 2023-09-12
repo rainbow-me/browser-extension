@@ -212,57 +212,64 @@ function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
             />
           </CursorTooltip>
 
-          <CursorTooltip
-            align="center"
-            arrowAlignment="center"
-            text={i18n.t('tooltip.swap')}
-            textWeight="bold"
-            textSize="12pt"
-            textColor="labelSecondary"
-            marginLeft="66px"
-            marginTop={`${0 - tooltipOffset}px`}
-            hint={shortcuts.home.GO_TO_SWAP.display}
+          <Link
+            tabIndex={-1}
+            id="header-link-swap"
+            to={allowSwap ? ROUTES.SWAP : '#'}
+            state={{ from: ROUTES.HOME, to: ROUTES.SWAP }}
+            onClick={
+              allowSwap
+                ? () => navigateToSwaps()
+                : isWatchingWallet
+                ? alertWatchingWallet
+                : alertComingSoon
+            }
           >
-            <ActionButton
-              symbol="arrow.triangle.swap"
-              testId="header-link-swap"
-              text={i18n.t('wallet_header.swap')}
-              tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
-              onClick={
-                allowSwap
-                  ? () => navigateToSwaps()
-                  : isWatchingWallet
-                  ? alertWatchingWallet
-                  : alertComingSoon
-              }
-            />
-          </CursorTooltip>
+            <CursorTooltip
+              align="center"
+              arrowAlignment="center"
+              text={i18n.t('tooltip.swap')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              marginLeft="18px"
+              marginTop={`${0 - tooltipOffset}px`}
+              hint={shortcuts.home.GO_TO_SWAP.display}
+            >
+              <ActionButton
+                symbol="arrow.triangle.swap"
+                testId="header-link-swap"
+                text={i18n.t('wallet_header.swap')}
+                tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
+              />
+            </CursorTooltip>
+          </Link>
 
-          <CursorTooltip
-            align="center"
-            arrowAlignment="center"
-            text={i18n.t('tooltip.send')}
-            textWeight="bold"
-            textSize="12pt"
-            textColor="labelSecondary"
-            marginLeft="114px"
-            marginTop={`${0 - tooltipOffset}px`}
-            hint={shortcuts.home.GO_TO_SEND.display}
+          <Link
+            tabIndex={-1}
+            id="header-link-send"
+            to={allowSend ? ROUTES.SEND : '#'}
+            state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
+            onClick={allowSend ? () => null : alertWatchingWallet}
           >
-            <Link
-              tabIndex={-1}
-              id="header-link-send"
-              to={allowSend ? ROUTES.SEND : '#'}
-              state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
-              onClick={allowSend ? () => null : alertWatchingWallet}
+            <CursorTooltip
+              align="center"
+              arrowAlignment="center"
+              text={i18n.t('tooltip.send')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              marginLeft="18px"
+              marginTop={`${0 - tooltipOffset}px`}
+              hint={shortcuts.home.GO_TO_SEND.display}
             >
               <ActionButton
                 symbol="paperplane.fill"
                 text={i18n.t('wallet_header.send')}
                 tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
               />
-            </Link>
-          </CursorTooltip>
+            </CursorTooltip>
+          </Link>
         </Inline>
       )}
     </Box>
