@@ -278,6 +278,65 @@ function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
               tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
             />
           </Link>
+
+          <Link
+            tabIndex={-1}
+            id="header-link-swap"
+            to={allowSwap ? ROUTES.SWAP : '#'}
+            state={{ from: ROUTES.HOME, to: ROUTES.SWAP }}
+            onClick={
+              allowSwap
+                ? () => navigateToSwaps()
+                : isWatchingWallet
+                ? alertWatchingWallet
+                : alertComingSoon
+            }
+          >
+            <CursorTooltip
+              align="center"
+              arrowAlignment="center"
+              text={i18n.t('tooltip.swap')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              marginLeft="18px"
+              marginTop={`${0 - tooltipOffset}px`}
+              hint={shortcuts.home.GO_TO_SWAP.display}
+            >
+              <ActionButton
+                symbol="arrow.triangle.swap"
+                testId="header-link-swap"
+                text={i18n.t('wallet_header.swap')}
+                tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
+              />
+            </CursorTooltip>
+          </Link>
+
+          <Link
+            tabIndex={-1}
+            id="header-link-send"
+            to={allowSend ? ROUTES.SEND : '#'}
+            state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
+            onClick={allowSend ? () => null : alertWatchingWallet}
+          >
+            <CursorTooltip
+              align="center"
+              arrowAlignment="center"
+              text={i18n.t('tooltip.send')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              marginLeft="18px"
+              marginTop={`${0 - tooltipOffset}px`}
+              hint={shortcuts.home.GO_TO_SEND.display}
+            >
+              <ActionButton
+                symbol="paperplane.fill"
+                text={i18n.t('wallet_header.send')}
+                tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
+              />
+            </CursorTooltip>
+          </Link>
         </Inline>
       )}
     </Box>
