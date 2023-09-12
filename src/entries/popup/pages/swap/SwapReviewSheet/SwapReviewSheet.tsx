@@ -16,7 +16,10 @@ import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { popupInstanceStore } from '~/core/state/popupInstances';
+import {
+  popupInstanceStore,
+  usePopupInstanceStore,
+} from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -223,6 +226,7 @@ const SwapReviewSheetWithQuote = ({
   const { selectedGas } = useGasStore();
   const { setSwapAssetsToRefresh } = useSwapAssetsToRefreshStore();
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
+  const { resetSwapValues } = usePopupInstanceStore();
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
@@ -364,9 +368,15 @@ const SwapReviewSheetWithQuote = ({
       );
       return;
     }
+    resetSwapValues();
     executeSwap();
     new Audio(SendSound).play();
-  }, [enoughNativeAssetBalanceForGas, executeSwap, nativeAsset?.symbol]);
+  }, [
+    enoughNativeAssetBalanceForGas,
+    executeSwap,
+    nativeAsset?.symbol,
+    resetSwapValues,
+  ]);
 
   const goBack = useCallback(() => {
     hideSwapReview();

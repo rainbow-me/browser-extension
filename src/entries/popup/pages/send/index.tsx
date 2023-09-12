@@ -190,6 +190,7 @@ export function Send() {
     sendAmount,
     sendField,
     sendTokenAddressAndChain,
+    resetSendValues,
     saveSendTokenAddressAndChain,
   } = usePopupInstanceStore();
 
@@ -205,6 +206,7 @@ export function Send() {
         if (type === 'HardwareWalletKeychain') {
           setWaitingForDevice(true);
         }
+        resetSendValues();
         const result = await sendTransaction({
           from: fromAddress,
           to: txToAddress,
@@ -272,6 +274,7 @@ export function Send() {
     },
     [
       fromAddress,
+      resetSendValues,
       txToAddress,
       value,
       connectedToHardhat,
