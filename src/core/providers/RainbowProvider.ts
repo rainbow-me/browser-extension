@@ -54,6 +54,8 @@ export class RainbowProvider extends EventEmitter {
   requestId = 0;
   rainbowIsDefaultProvider = false;
 
+  [key: string]: unknown;
+
   constructor({ messenger }: { messenger?: Messenger } = {}) {
     super();
 
@@ -79,6 +81,18 @@ export class RainbowProvider extends EventEmitter {
           this.rainbowIsDefaultProvider = rainbowAsDefault;
         },
       );
+    }
+
+    // EIP-6963 RainbowProvider in announceProvider was losing context
+    this.bindMethods();
+  }
+
+  bindMethods() {
+    for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
+      const value = this[key];
+      if (typeof value === 'function' && key !== 'constructor') {
+        this[key] = value.bind(this);
+      }
     }
   }
 
