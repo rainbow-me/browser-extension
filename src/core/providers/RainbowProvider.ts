@@ -83,7 +83,7 @@ export class RainbowProvider extends EventEmitter {
       );
     }
 
-    // EIP-6963 RainbowProvider in announceProvider was loosing context
+    // EIP-6963 RainbowProvider in announceProvider was losing context
     this.bindMethods();
   }
 
