@@ -1,3 +1,4 @@
+import { isAddress } from '@ethersproject/address';
 import { Address } from 'wagmi';
 import create from 'zustand';
 
@@ -57,7 +58,22 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
   {
     persist: {
       name: 'pendingTransactions',
-      version: 0,
+      version: 1,
+      migrate(persistedState, version) {
+        const state = persistedState as PendingTransactionsState;
+        if (version === 0) {
+          Object.keys(state).forEach((address) => {
+            if (!isAddress(address)) return;
+            state[address]?.pendingTransactions?.forEach((tx) => {
+              if ('pending' in tx) {
+                tx.status = 'pending';
+                delete tx.pending;
+              }
+            });
+          });
+        }
+        return state;
+      },
     },
   },
 );
