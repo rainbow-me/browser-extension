@@ -1,7 +1,10 @@
+import { uuid4 } from '@sentry/utils';
 import { Ethereum } from '@wagmi/core';
+import { EIP1193Provider, announceProvider } from 'mipd';
 
 import { initializeMessenger } from '~/core/messengers';
 import { RainbowProvider } from '~/core/providers';
+import { RAINBOW_ICON_RAW_SVG } from '~/core/references/rawImages';
 import { ChainId } from '~/core/types/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 
@@ -31,9 +34,6 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 const rainbowProvider = new RainbowProvider({ messenger });
 
 if (shouldInjectProvider()) {
-  let cachedWindowEthereumProxy: unknown;
-  let cachedCurrentProvider: RainbowProvider | Ethereum;
-
   Object.defineProperty(window, 'rainbow', {
     value: rainbowProvider,
     configurable: false,
@@ -49,9 +49,7 @@ if (shouldInjectProvider()) {
         window.rainbow,
         // eslint-disable-next-line no-nested-ternary
         ...(window.ethereum
-          ? // let's use the providers that has already been registered
-            // This format is used by coinbase wallet
-            Array.isArray(window.ethereum?.providers)
+          ? Array.isArray(window.ethereum?.providers)
             ? [...(window.ethereum?.providers || []), window.ethereum]
             : [window.ethereum]
           : []),
@@ -64,9 +62,6 @@ if (shouldInjectProvider()) {
             window.walletRouter.lastInjectedProvider ??
             (window.ethereum as Ethereum);
           window.walletRouter.currentProvider = nonDefaultProvider;
-          if (!window.walletRouter.lastInjectedProvider) {
-            cachedCurrentProvider = nonDefaultProvider;
-          }
         }
       },
       addProvider: (provider: RainbowProvider | Ethereum) => {
@@ -87,43 +82,9 @@ if (shouldInjectProvider()) {
 
   Object.defineProperty(window, 'ethereum', {
     get() {
-      if (
-        cachedWindowEthereumProxy &&
-        cachedCurrentProvider === window.walletRouter.currentProvider
-      ) {
-        return cachedWindowEthereumProxy;
-      }
-
-      cachedWindowEthereumProxy = new Proxy(
-        window.walletRouter.currentProvider,
-        {
-          get(target, prop, receiver) {
-            if (
-              !!window.walletRouter &&
-              !!window.walletRouter.currentProvider &&
-              !(prop in window.walletRouter.currentProvider) &&
-              prop in window.walletRouter
-            ) {
-              // Uniswap MM connector checks the providers array for the MM provider and forces to use that
-              // https://github.com/Uniswap/web3-react/blob/main/packages/metamask/src/index.ts#L57
-              if (
-                window.location.href.includes('app.uniswap.org') &&
-                prop === 'providers'
-              ) {
-                return null;
-              }
-              // @ts-expect-error ts accepts symbols as index only from 4.4
-              return window.walletRouter[prop];
-            }
-
-            return Reflect.get(target, prop, receiver);
-          },
-        },
-      );
-      cachedCurrentProvider = window.walletRouter.currentProvider;
-      return cachedWindowEthereumProxy;
+      return window.walletRouter.currentProvider;
     },
-    set(newProvider) {
+    set(newProvider: Ethereum | RainbowProvider) {
       window.walletRouter?.addProvider(newProvider);
     },
     configurable: false,
@@ -138,7 +99,15 @@ if (shouldInjectProvider()) {
   );
 }
 
-window.dispatchEvent(new Event('ethereum#initialized'));
+announceProvider({
+  info: {
+    icon: RAINBOW_ICON_RAW_SVG,
+    name: 'Rainbow',
+    rdns: 'me.rainbow',
+    uuid: uuid4(),
+  },
+  provider: window.rainbow as EIP1193Provider,
+});
 
 backgroundMessenger.reply(
   'wallet_switchEthereumChain',
