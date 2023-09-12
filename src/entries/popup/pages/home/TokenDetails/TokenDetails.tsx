@@ -213,7 +213,7 @@ export const getCoingeckoUrl = ({
 function MoreOptions({ token }: { token: ParsedUserAsset }) {
   const explorer = getTokenBlockExplorer(token);
   const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
-  const theme = useCurrentThemeStore();
+  const { currentTheme } = useCurrentThemeStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -229,7 +229,7 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
       <DropdownMenuContent align="end">
         <AccentColorProviderWrapper
           color={handleAssetAccentColor(
-            theme.currentTheme,
+            currentTheme,
             token.colors?.primary || token.colors?.fallback,
           )}
         >
@@ -287,6 +287,7 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
 
 export function TokenDetails() {
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
+  const { currentTheme } = useCurrentThemeStore();
 
   const { data: token, isFetched } = useUserAsset(uniqueId);
 
@@ -303,7 +304,10 @@ export function TokenDetails() {
 
   return (
     <AccentColorProviderWrapper
-      color={token.colors?.primary || token.colors?.fallback}
+      color={handleAssetAccentColor(
+        currentTheme,
+        token.colors?.primary || token.colors?.fallback,
+      )}
     >
       <Box
         display="flex"
