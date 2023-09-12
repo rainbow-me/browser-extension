@@ -15,7 +15,7 @@ test('should be able to set and change language', async () => {
   const { currentLanguage, setCurrentLanguage } =
     currentLanguageStore.getState();
   expect(currentLanguage).toBe(Language.EN_US);
-  setCurrentLanguage(Language.ES_419);
+  await setCurrentLanguage(Language.ES_419);
   expect(currentLanguageStore.getState().currentLanguage).toBe(Language.ES_419);
 });
 
