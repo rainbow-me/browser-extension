@@ -326,6 +326,7 @@ const SwapReviewSheetWithQuote = ({
               ? 'address'
               : 'mainnetAddress',
           flashbots,
+          tradeAmountUSD: q.tradeAmountUSD,
         })
       : analytics.track(event.swapSubmitted, {
           inputAssetSymbol: assetToSell.symbol,
@@ -340,6 +341,7 @@ const SwapReviewSheetWithQuote = ({
           outputAssetAmount: q.buyAmount as number,
           crosschain: assetToSell.chainId !== assetToBuy.chainId,
           flashbots,
+          tradeAmountUSD: q.tradeAmountUSD,
         });
   }, [
     assetToSell,
