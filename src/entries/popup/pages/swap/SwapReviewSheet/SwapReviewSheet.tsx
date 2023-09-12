@@ -16,10 +16,7 @@ import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import {
-  popupInstanceStore,
-  usePopupInstanceStore,
-} from '~/core/state/popupInstances';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -308,10 +305,10 @@ const SwapReviewSheetWithQuote = ({
         });
       }
     } else {
-      const { saveActiveTab } = popupInstanceStore.getState();
       setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
-      saveActiveTab({ tab: 'activity' });
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, {
+        state: { tab: 'activity' },
+      });
     }
     isBridge
       ? analytics.track(event.bridgeSubmitted, {
@@ -351,10 +348,10 @@ const SwapReviewSheetWithQuote = ({
     assetToSell,
     assetToBuy,
     quote,
-    isBridge,
     sendingSwap,
-    connectedToHardhat,
     flashbotsEnabled,
+    connectedToHardhat,
+    isBridge,
     setSwapAssetsToRefresh,
     navigate,
   ]);
