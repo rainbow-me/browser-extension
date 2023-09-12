@@ -183,7 +183,6 @@ export const useSwapAssets = () => {
     [assetToBuy, prevAssetToSell, saveSwapTokenToSell],
   );
 
-  console.log('assettobuy', parsedAssetToBuy);
   return {
     assetsToSell: filteredAssetsToSell,
     assetToSellFilter,
