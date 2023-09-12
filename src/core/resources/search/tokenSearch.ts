@@ -91,8 +91,9 @@ async function tokenSearchQueryFunction({
 function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
   return assets
     .map((a) => {
-      const address = a.networks[chainId]?.address;
-      const decimals = a.networks[chainId]?.decimals;
+      const networkInfo = a.networks[chainId];
+      const address = networkInfo ? networkInfo.address : a.address;
+      const decimals = networkInfo ? networkInfo.decimals : a.decimals;
       if (!address) return;
       return {
         ...a,
