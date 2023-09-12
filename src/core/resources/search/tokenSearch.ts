@@ -91,12 +91,14 @@ async function tokenSearchQueryFunction({
 function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
   return assets
     .map((a) => {
-      const address = a.networks[chainId]?.address;
+      const address = a.networks[chainId]?.address || a.address;
+      const decimals = a.networks[chainId]?.decimals || a.decimals;
       if (!address) return;
       return {
         ...a,
         address,
         chainId,
+        decimals,
         isNativeAsset: [
           `${ETH_ADDRESS}_${ChainId.mainnet}`,
           `${ETH_ADDRESS}_${ChainId.optimism}`,
