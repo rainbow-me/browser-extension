@@ -215,15 +215,19 @@ function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
           <Link
             tabIndex={-1}
             id="header-link-swap"
-            to={allowSwap ? ROUTES.SWAP : '#'}
+            to={'#'}
             state={{ from: ROUTES.HOME, to: ROUTES.SWAP }}
-            onClick={
-              allowSwap
-                ? () => navigateToSwaps()
-                : isWatchingWallet
-                ? alertWatchingWallet
-                : alertComingSoon
-            }
+            onClick={() => {
+              if (!allowSwap) {
+                if (isWatchingWallet) {
+                  alertWatchingWallet();
+                } else {
+                  alertComingSoon();
+                }
+              } else {
+                navigateToSwaps();
+              }
+            }}
           >
             <CursorTooltip
               align="center"
