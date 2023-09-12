@@ -97,7 +97,7 @@
     "@radix-ui/react-polymorphic": "0.0.14",
     "@radix-ui/react-select": "1.2.1",
     "@radix-ui/react-tooltip": "1.0.3",
-    "@rainbow-me/swaps": "0.6.0",
+    "@rainbow-me/swaps": "0.7.0",
     "@segment/analytics-node": "1.0.0-beta.24",
     "@sentry/browser": "7.42.0",
     "@sentry/tracing": "7.42.0",
@@ -216,6 +216,7 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "bn.js": "5.2.1",
     "protobufjs": "7.2.4",
     "@grpc/grpc-js": "1.8.8",
     "semver": "7.5.2",
