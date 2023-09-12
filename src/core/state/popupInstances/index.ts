@@ -36,35 +36,25 @@ const DEFAULT_POPUP_INSTANCE_VALUES: PopupInstance = {
 };
 
 export interface PopupInstanceStore extends PopupInstance {
-  resetValues: () => Promise<void>;
-  saveActiveTab: ({ tab }: { tab: Tab }) => Promise<void>;
-  saveSendAddress: ({
-    address,
-  }: {
-    address: Address | string;
-  }) => Promise<void>;
-  saveSendAmount: ({ amount }: { amount: string }) => Promise<void>;
-  saveSendField: ({ field }: { field: 'asset' | 'native' }) => Promise<void>;
+  resetValues: () => void;
+  resetSwapValues: () => void;
+  resetSendValues: () => void;
+  saveActiveTab: ({ tab }: { tab: Tab }) => void;
+  saveSendAddress: ({ address }: { address: Address | string }) => void;
+  saveSendAmount: ({ amount }: { amount: string }) => void;
+  saveSendField: ({ field }: { field: 'asset' | 'native' }) => void;
   saveSendTokenAddressAndChain: ({
     address,
     chainId,
   }: {
     address: SendAddress;
     chainId: ChainId;
-  }) => Promise<void>;
-  saveSwapAmount: ({ amount }: { amount: string }) => Promise<void>;
-  saveSwapField: ({ field }: { field: IndependentField }) => Promise<void>;
-  saveSwapTokenToBuy: ({
-    token,
-  }: {
-    token: ParsedSearchAsset | null;
-  }) => Promise<void>;
-  saveSwapTokenToSell: ({
-    token,
-  }: {
-    token: ParsedSearchAsset | null;
-  }) => Promise<void>;
-  setupPort: () => Promise<void>;
+  }) => void;
+  saveSwapAmount: ({ amount }: { amount: string }) => void;
+  saveSwapField: ({ field }: { field: IndependentField }) => void;
+  saveSwapTokenToBuy: ({ token }: { token: ParsedSearchAsset | null }) => void;
+  saveSwapTokenToSell: ({ token }: { token: ParsedSearchAsset | null }) => void;
+  setupPort: () => void;
 }
 
 export const popupInstanceStore = createStore<PopupInstanceStore>(
@@ -72,6 +62,22 @@ export const popupInstanceStore = createStore<PopupInstanceStore>(
     ...DEFAULT_POPUP_INSTANCE_VALUES,
     resetValues: popupInstanceHandlerFactory(() =>
       set(DEFAULT_POPUP_INSTANCE_VALUES),
+    ),
+    resetSwapValues: popupInstanceHandlerFactory(() =>
+      set({
+        swapAmount: null,
+        swapField: null,
+        swapTokenToBuy: null,
+        swapTokenToSell: null,
+      }),
+    ),
+    resetSendValues: popupInstanceHandlerFactory(() =>
+      set({
+        sendAddress: null,
+        sendAmount: null,
+        sendField: 'asset',
+        sendTokenAddressAndChain: null,
+      }),
     ),
     saveActiveTab: popupInstanceHandlerFactory(({ tab }) => {
       set({ activeTab: tab });
