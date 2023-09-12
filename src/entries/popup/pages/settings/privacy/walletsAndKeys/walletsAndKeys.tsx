@@ -86,7 +86,7 @@ export const WalletsAndKeys = () => {
             behavior: 'smooth',
           });
         }
-      }, 1000);
+      }, 500);
     }
   }, [containerRef, state?.fromBackupReminder]);
 
