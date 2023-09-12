@@ -84,7 +84,11 @@ export const BackupReminder = () => {
                 variant="flat"
                 onClick={() => {
                   closeBackupReminder();
-                  navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
+                  navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS, {
+                    state: {
+                      fromBackupReminder: true,
+                    },
+                  });
                 }}
               >
                 <Text align="center" color="label" size="16pt" weight="heavy">
