@@ -31,9 +31,6 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 const rainbowProvider = new RainbowProvider({ messenger });
 
 if (shouldInjectProvider()) {
-  let cachedWindowEthereumProxy: unknown;
-  let cachedCurrentProvider: RainbowProvider | Ethereum;
-
   Object.defineProperty(window, 'rainbow', {
     value: rainbowProvider,
     configurable: false,
@@ -49,9 +46,7 @@ if (shouldInjectProvider()) {
         window.rainbow,
         // eslint-disable-next-line no-nested-ternary
         ...(window.ethereum
-          ? // let's use the providers that has already been registered
-            // This format is used by coinbase wallet
-            Array.isArray(window.ethereum?.providers)
+          ? Array.isArray(window.ethereum?.providers)
             ? [...(window.ethereum?.providers || []), window.ethereum]
             : [window.ethereum]
           : []),
@@ -64,9 +59,6 @@ if (shouldInjectProvider()) {
             window.walletRouter.lastInjectedProvider ??
             (window.ethereum as Ethereum);
           window.walletRouter.currentProvider = nonDefaultProvider;
-          if (!window.walletRouter.lastInjectedProvider) {
-            cachedCurrentProvider = nonDefaultProvider;
-          }
         }
       },
       addProvider: (provider: RainbowProvider | Ethereum) => {
@@ -87,41 +79,7 @@ if (shouldInjectProvider()) {
 
   Object.defineProperty(window, 'ethereum', {
     get() {
-      if (
-        cachedWindowEthereumProxy &&
-        cachedCurrentProvider === window.walletRouter.currentProvider
-      ) {
-        return cachedWindowEthereumProxy;
-      }
-
-      cachedWindowEthereumProxy = new Proxy(
-        window.walletRouter.currentProvider,
-        {
-          get(target, prop, receiver) {
-            if (
-              !!window.walletRouter &&
-              !!window.walletRouter.currentProvider &&
-              !(prop in window.walletRouter.currentProvider) &&
-              prop in window.walletRouter
-            ) {
-              // Uniswap MM connector checks the providers array for the MM provider and forces to use that
-              // https://github.com/Uniswap/web3-react/blob/main/packages/metamask/src/index.ts#L57
-              if (
-                window.location.href.includes('app.uniswap.org') &&
-                prop === 'providers'
-              ) {
-                return null;
-              }
-              // @ts-expect-error ts accepts symbols as index only from 4.4
-              return window.walletRouter[prop];
-            }
-
-            return Reflect.get(target, prop, receiver);
-          },
-        },
-      );
-      cachedCurrentProvider = window.walletRouter.currentProvider;
-      return cachedWindowEthereumProxy;
+      return window.walletRouter.currentProvider;
     },
     set(newProvider) {
       window.walletRouter?.addProvider(newProvider);
