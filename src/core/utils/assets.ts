@@ -148,14 +148,14 @@ export function parseAssetMetadata({
   return parsedAsset;
 }
 
-export function parseAddressAsset({
+export function parseUserAsset({
   address,
   asset,
   currency,
   quantity,
   smallBalance,
 }: {
-  address: Address;
+  address: AddressOrEth;
   asset: ZerionAsset;
   currency: SupportedCurrencyKey;
   quantity: string;

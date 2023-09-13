@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
 
 import { tokenSearchHttp } from '~/core/network/tokenSearch';
 import {
@@ -9,13 +8,13 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { ETH_ADDRESS } from '~/core/references';
+import { AddressOrEth } from '~/core/types/assets';
 
 // ///////////////////////////////////////////////
 // Query Types
 
 export type SwappableAddressesArgs = {
-  addresses: (Address | typeof ETH_ADDRESS)[];
+  addresses: AddressOrEth[];
   fromChainId: number;
   toChainId?: number;
 };
@@ -43,7 +42,7 @@ async function swappableAddressesQueryFunction({
   queryKey: [{ addresses, fromChainId, toChainId }],
 }: QueryFunctionArgs<typeof swappableAddressesQueryKey>) {
   const filteredAddresses = await tokenSearchHttp.post<{
-    data?: (Address | typeof ETH_ADDRESS)[];
+    data?: AddressOrEth[];
   }>(`/${fromChainId}`, {
     addresses,
     toChainId,
