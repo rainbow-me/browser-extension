@@ -13,7 +13,15 @@ import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { formatCurrency } from '~/core/utils/formatNumber';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
-import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Button,
+  Inline,
+  Separator,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import {
   Accordion,
   AccordionContent,
@@ -63,14 +71,19 @@ export const InfoRow = ({
   label: ReactNode;
   value: ReactNode;
 }) => (
-  <Box display="flex" alignItems="center" justifyContent="space-between">
-    <Inline alignVertical="center" space="12px">
+  <Box
+    display="flex"
+    alignItems="center"
+    justifyContent="space-between"
+    gap="4px"
+  >
+    <Inline alignVertical="center" space="12px" wrap={false}>
       <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
       <Text color="labelTertiary" size="12pt" weight="semibold">
         {label}
       </Text>
     </Inline>
-    <Text
+    <TextOverflow
       color="labelSecondary"
       size="12pt"
       weight="semibold"
@@ -78,7 +91,7 @@ export const InfoRow = ({
       userSelect="all"
     >
       {value}
-    </Text>
+    </TextOverflow>
   </Box>
 );
 

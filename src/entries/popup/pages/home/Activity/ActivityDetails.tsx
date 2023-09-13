@@ -238,7 +238,7 @@ function ConfirmationData({
                     {formatNumber(transaction.confirmations, {
                       notation: 'compact',
                     })}{' '}
-                    Confirmations
+                    {i18n.t('activity_details.confirmations')}
                   </Text>
                 )}
               </Inline>
