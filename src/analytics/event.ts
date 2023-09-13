@@ -222,6 +222,10 @@ export type EventProperties = {
      * Whether Flashbots was used for the swap.
      */
     flashbots: boolean;
+    /**
+     * The estimated USD value of the swap.
+     */
+    tradeAmountUSD: number;
   };
   [event.dappPromptConnectApproved]: {
     /**
@@ -495,6 +499,10 @@ export type EventProperties = {
      * Whether Flashbots was used for the swap.
      */
     flashbots: boolean;
+    /**
+     * The estimated USD value of the swap.
+     */
+    tradeAmountUSD: number;
   };
   [event.walletViewed]: undefined;
 };

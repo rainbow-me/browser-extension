@@ -15,6 +15,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '~': resolve(__dirname, './src'),
+      static: resolve(__dirname, './static'),
     },
   },
 });
