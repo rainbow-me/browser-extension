@@ -17,7 +17,6 @@ export const CursorTooltip = ({
   textColor,
   children,
   hint,
-  testId,
 }: {
   children: ReactNode;
   marginTop?: string;
@@ -30,7 +29,6 @@ export const CursorTooltip = ({
   textWeight?: TextStyles['fontWeight'];
   textColor?: TextStyles['color'];
   hint?: string;
-  testId?: string;
 }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -54,7 +52,6 @@ export const CursorTooltip = ({
             marginTop: marginTop,
             marginLeft: marginLeft,
           }}
-          testId={testId}
         />
       </Tooltip>
       <Box
