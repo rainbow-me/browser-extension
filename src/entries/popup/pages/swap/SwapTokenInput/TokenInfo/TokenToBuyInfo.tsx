@@ -58,7 +58,7 @@ export const TokenToBuyInfo = ({
       assetToBuyNativeDisplay.amount,
     );
     const nativeDifference = convertAmountToPercentageDisplay(
-      lessThan(abs(division), 0.01) ? '0.01' : division,
+      lessThan(abs(division), 0.01) ? '-0.01' : division,
     );
     return nativeDifference;
   }, [assetToBuyNativeDisplay, assetToSellNativeDisplay]);
