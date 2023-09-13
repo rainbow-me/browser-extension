@@ -278,14 +278,14 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
               value={`${formatNumber(baseFee)} Gwei`}
             />
           )}
-          {maxFeePerGas && +maxFeePerGas > 0 && (
+          {maxFeePerGas && (
             <InfoRow
               symbol="barometer"
               label={i18n.t('activity_details.max_base_fee')}
               value={`${formatNumber(maxFeePerGas)} Gwei`}
             />
           )}
-          {maxPriorityFeePerGas && +maxPriorityFeePerGas > 0 && (
+          {maxPriorityFeePerGas && (
             <InfoRow
               symbol="barometer"
               label={i18n.t('activity_details.max_priority_fee')}
