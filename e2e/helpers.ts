@@ -438,14 +438,11 @@ export async function getTextFromDappText({
 // two helpers bc normal keys / special keys work a little different in selenium
 export async function performShortcutWithNormalKey(
   driver: WebDriver,
-  key: keyof typeof Key,
+  key: string,
 ) {
   try {
     await delayTime('short');
-    await driver
-      .actions()
-      .sendKeys(Key.chord(Key[key] as string))
-      .perform();
+    await driver.actions().sendKeys(key).perform();
   } catch (error) {
     console.error(
       `Error occurred while attempting shortcut with the keyboard character '${key}':`,
@@ -481,17 +478,16 @@ export async function executePerformShortcut({
   timesToPress = 1,
 }: {
   driver: WebDriver;
-  key: keyof typeof Key;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  key: any;
   timesToPress?: number;
 }): Promise<void> {
   try {
     for (let i = 0; i < timesToPress; i++) {
-      if (key.length === 1) {
+      if (!(key in Key)) {
         await performShortcutWithNormalKey(driver, key);
-      } else if (key.length > 1) {
-        await performShortcutWithSpecialKey(driver, key);
       } else {
-        throw new Error('No valid key or keyboard character provided.');
+        await performShortcutWithSpecialKey(driver, key);
       }
     }
   } catch (error) {
