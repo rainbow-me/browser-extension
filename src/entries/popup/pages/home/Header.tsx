@@ -279,42 +279,35 @@ function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
             />
           </Link>
 
-          <Link
-            tabIndex={-1}
-            id="header-link-swap"
-            to={'#'}
-            state={{ from: ROUTES.HOME, to: ROUTES.SWAP }}
-            onClick={() => {
-              if (!allowSwap) {
-                if (isWatchingWallet) {
-                  alertWatchingWallet();
-                } else {
-                  alertComingSoon();
-                }
-              } else {
-                navigateToSwaps();
-              }
-            }}
+          <CursorTooltip
+            align="center"
+            arrowAlignment="center"
+            text={i18n.t('tooltip.swap')}
+            textWeight="bold"
+            textSize="12pt"
+            textColor="labelSecondary"
+            marginLeft="18px"
+            marginTop={`${0 - tooltipOffset}px`}
+            hint={shortcuts.home.GO_TO_SWAP.display}
+            testId="header-link-swap"
           >
-            <CursorTooltip
-              align="center"
-              arrowAlignment="center"
-              text={i18n.t('tooltip.swap')}
-              textWeight="bold"
-              textSize="12pt"
-              textColor="labelSecondary"
-              marginLeft="18px"
-              marginTop={`${0 - tooltipOffset}px`}
-              hint={shortcuts.home.GO_TO_SWAP.display}
-            >
-              <ActionButton
-                symbol="arrow.triangle.swap"
-                testId="header-link-swap"
-                text={i18n.t('wallet_header.swap')}
-                tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
-              />
-            </CursorTooltip>
-          </Link>
+            <ActionButton
+              symbol="arrow.triangle.swap"
+              text={i18n.t('wallet_header.swap')}
+              tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
+              onClick={() => {
+                if (!allowSwap) {
+                  if (isWatchingWallet) {
+                    alertWatchingWallet();
+                  } else {
+                    alertComingSoon();
+                  }
+                } else {
+                  navigateToSwaps();
+                }
+              }}
+            />
+          </CursorTooltip>
 
           <Link
             tabIndex={-1}
