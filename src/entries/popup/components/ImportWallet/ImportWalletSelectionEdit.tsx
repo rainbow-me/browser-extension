@@ -162,7 +162,7 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
                   toggleAccount={toggleAccount}
                   walletsSummary={walletsSummary}
                   showCheckbox
-                  navigableWithKeyboard={true}
+                  navigableWithKeyboard
                 />
               </Box>
             </Box>
