@@ -243,7 +243,7 @@ interface InputRefAPI {
 interface ToAddressProps {
   toAddressOrName: string;
   toEnsName?: string;
-  toAddress: Address | undefined;
+  toAddress?: Address;
   handleToAddressChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearToAddress: () => void;
   setToAddressOrName: (adrressOrName: string) => void;
