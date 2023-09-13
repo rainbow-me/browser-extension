@@ -54,6 +54,9 @@ type BaseTransaction = {
     iconUrl?: string;
   };
 
+  feeType?: 'legacy' | 'eip-1559';
+  gasPrice?: string;
+  gasLimit?: string;
   baseFee?: string;
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
@@ -63,7 +66,7 @@ export type MinedTransaction = BaseTransaction & {
   blockNumber: number;
   minedAt: number;
   confirmations: number;
-  gasUsed: number;
+  gasUsed: string;
 };
 
 export type RainbowTransaction = PendingTransaction | MinedTransaction;
@@ -155,6 +158,8 @@ export type TransactionApiResponse = {
     // Fee Details are only available on the tx by hash endpoint
     // (won't be available on the consolidated txs list)
     details?: {
+      type: 0 | 2;
+      type_label: 'legacy' | 'eip-1559';
       gas_price: number;
       gas_limit: number;
       gas_used: number;
@@ -162,7 +167,7 @@ export type TransactionApiResponse = {
       max_priority_fee: number;
       base_fee: number;
       max_base_fee: number;
-      rollup_fee_details?: {
+      rollup_fee_details: {
         l1_fee: number;
         l1_fee_scalar: number;
         l1_gas_price: number;

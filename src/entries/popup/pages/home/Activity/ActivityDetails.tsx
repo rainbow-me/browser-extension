@@ -250,24 +250,74 @@ function ConfirmationData({
   );
 }
 
-function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const { maxPriorityFeePerGas, maxFeePerGas, nonce, native } = tx;
+function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
+  const { native, feeType } = tx;
 
-  const priorityFee =
-    maxPriorityFeePerGas && formatUnits(maxPriorityFeePerGas, 'gwei');
-  const maxBaseFee = maxFeePerGas && formatUnits(maxFeePerGas, 'gwei');
+  const maxPriorityFeePerGas =
+    tx.maxPriorityFeePerGas && formatUnits(tx.maxPriorityFeePerGas, 'gwei');
+  const maxFeePerGas = tx.maxFeePerGas && formatUnits(tx.maxFeePerGas, 'gwei');
   const baseFee = tx.baseFee && formatUnits(tx.baseFee, 'gwei');
+
   const gasPrice = tx.gasPrice && formatUnits(tx.gasPrice, 'gwei');
 
-  const { value, fee } = native || {};
+  return (
+    <>
+      {native?.fee && (
+        <InfoRow
+          symbol="fuelpump.fill"
+          label={i18n.t('activity_details.fee')}
+          value={formatCurrency(native.fee)}
+        />
+      )}
+      {feeType === 'eip-1559' ? (
+        <>
+          {baseFee && (
+            <InfoRow
+              symbol="barometer"
+              label={i18n.t('activity_details.base_fee')}
+              value={`${formatNumber(baseFee)} Gwei`}
+            />
+          )}
+          {maxFeePerGas && +maxFeePerGas > 0 && (
+            <InfoRow
+              symbol="barometer"
+              label={i18n.t('activity_details.max_base_fee')}
+              value={`${formatNumber(maxFeePerGas)} Gwei`}
+            />
+          )}
+          {maxPriorityFeePerGas && +maxPriorityFeePerGas > 0 && (
+            <InfoRow
+              symbol="barometer"
+              label={i18n.t('activity_details.max_priority_fee')}
+              value={`${formatNumber(maxPriorityFeePerGas)} Gwei`}
+            />
+          )}
+        </>
+      ) : (
+        <>
+          {gasPrice && (
+            <InfoRow
+              symbol="barometer"
+              label={i18n.t('activity_details.gas_price')}
+              value={`${formatNumber(gasPrice)} Gwei`}
+            />
+          )}
+        </>
+      )}
+    </>
+  );
+}
+
+function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
+  const { nonce, native } = tx;
 
   return (
     <Stack space="24px">
-      {value && (
+      {native?.value && +native?.value > 0 && (
         <InfoRow
           symbol="dollarsign.square"
           label={i18n.t('activity_details.value')}
-          value={formatCurrency(value)}
+          value={formatCurrency(native.value)}
         />
       )}
       <InfoRow
@@ -280,41 +330,7 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
           </Inline>
         }
       />
-      {fee && (
-        <InfoRow
-          symbol="fuelpump.fill"
-          label={i18n.t('activity_details.fee')}
-          value={formatCurrency(fee)}
-        />
-      )}
-      {baseFee && (
-        <InfoRow
-          symbol="barometer"
-          label={i18n.t('activity_details.max_base_fee')}
-          value={`${formatNumber(baseFee)} Gwei`}
-        />
-      )}
-      {/* {gasPrice && (
-        <InfoRow
-          symbol="barometer"
-          label={i18n.t('activity_details.gas_price')}
-          value={`${formatNumber(gasPrice)} Gwei`}
-        />
-      )} */}
-      {maxBaseFee && (
-        <InfoRow
-          symbol="barometer"
-          label={i18n.t('activity_details.max_base_fee')}
-          value={`${formatNumber(maxBaseFee)} Gwei`}
-        />
-      )}
-      {priorityFee && (
-        <InfoRow
-          symbol="barometer"
-          label={i18n.t('activity_details.max_priority_fee')}
-          value={`${formatNumber(priorityFee)} Gwei`}
-        />
-      )}
+      <FeeData transaction={tx} />
       {nonce >= 0 && (
         <InfoRow
           symbol="number"

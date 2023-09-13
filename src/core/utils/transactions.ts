@@ -110,6 +110,41 @@ const getDescription = (
   return asset?.name || meta.action;
 };
 
+const parseFees = (
+  fee: PaginatedTransactionsApiResponse['fee'],
+  nativeAssetDecimals: number,
+) => {
+  const {
+    gas_price,
+    gas_limit,
+    max_base_fee,
+    max_priority_fee,
+    gas_used,
+    base_fee,
+    type_label,
+  } = fee.details || {};
+
+  const rollupFee = BigInt(
+    fee.details?.rollup_fee_details?.l1_fee || '0', // zero when it's not a rollup
+  );
+  const feeValue = FixedNumber.from(
+    formatUnits(BigInt(fee.value) + rollupFee, nativeAssetDecimals),
+  );
+  const feePrice = FixedNumber.fromString(fee.price.toString());
+
+  return {
+    fee: feeValue.toString(),
+    feeInNative: feeValue.mulUnsafe(feePrice).toString(),
+    feeType: type_label,
+    gasUsed: gas_used?.toString(),
+    maxFeePerGas: max_base_fee?.toString(),
+    maxPriorityFeePerGas: max_priority_fee?.toString(),
+    baseFee: base_fee?.toString(),
+    gasPrice: gas_price?.toString(),
+    gasLimit: gas_limit?.toString(),
+  };
+};
+
 export function parseTransaction({
   tx,
   currency,
@@ -158,18 +193,10 @@ export function parseTransaction({
 
   const nativeAssetDecimals = 18; // we only support networks with 18 decimals native assets rn, backend will change when we support more
 
-  const { gas_price, max_base_fee, max_priority_fee, gas_used, base_fee } =
-    tx.fee.details || {};
-  const rollupFee = BigInt(
-    tx.fee.details?.rollup_fee_details?.l1_fee || '0', // zero when it's not a rollup
-  );
-  const fee = FixedNumber.from(
-    formatUnits(BigInt(tx.fee.value) + rollupFee, nativeAssetDecimals),
-  );
-  const feePrice = FixedNumber.fromString(tx.fee.price.toString());
+  const { feeInNative, ...fee } = parseFees(tx.fee, nativeAssetDecimals);
 
   const native = {
-    fee: fee.mulUnsafe(feePrice).toString(),
+    fee: feeInNative,
     value: valueInNative,
   };
 
@@ -196,15 +223,10 @@ export function parseTransaction({
     approvalAmount: meta.quantity,
     minedAt: tx.mined_at,
     blockNumber: tx.block_number,
-    gasPrice: gas_price?.toString(),
-    maxFeePerGas: max_base_fee?.toString(),
-    baseFee: base_fee?.toString(),
-    maxPriorityFeePerGas: max_priority_fee?.toString(),
-    gasUsed: gas_used?.toString(),
-    fee: fee ? fee.toString() : undefined,
     confirmations: tx.block_confirmations,
     contract,
     native,
+    ...fee,
   } as RainbowTransaction;
 }
 
@@ -225,6 +247,7 @@ export const parseNewTransaction = (
   const methodName = 'Unknown method';
 
   return {
+    ...tx,
     status: 'pending',
     data: tx.data,
     title: i18n.t(`transactions.${tx.type}.${tx.status}`),
@@ -272,7 +295,7 @@ export async function getTransactionReceiptStatus({
     blockNumber: receipt?.blockNumber,
     minedAt: Math.floor(Date.now() / 1000),
     confirmations: receipt?.confirmations,
-    gasUsed: receipt?.gasUsed.toNumber(),
+    gasUsed: receipt?.gasUsed.toString(),
   };
 }
 
