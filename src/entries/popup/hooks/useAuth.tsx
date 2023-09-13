@@ -81,9 +81,9 @@ const useSessionStatus = () => {
           const { lastUnlock: lastUnlockFromStorage } =
             await chrome.storage.session.get('lastUnlock');
           if (lastUnlockFromStorage) {
-            const lastUnlock = new Date(lastUnlockFromStorage);
-            const now = new Date();
-            const diff = now.getTime() - lastUnlock.getTime();
+            const lastUnlock = lastUnlockFromStorage;
+            const now = Date.now();
+            const diff = now - lastUnlock;
             const diffMinutes = diff / 1000 / 60;
             if (diffMinutes >= autoLockTimerMinutes) {
               await wallet.lock();
