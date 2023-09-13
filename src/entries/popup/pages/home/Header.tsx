@@ -15,12 +15,12 @@ import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
-import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useScroll } from '../../hooks/useScroll';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
@@ -158,6 +158,7 @@ function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
+  const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
 
   const handleCopy = React.useCallback(() => {
@@ -192,82 +193,54 @@ function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
     <Box style={{ height: 56 }}>
       {avatar?.color && (
         <Inline space="12px">
-          <CursorTooltip
-            align="center"
-            arrowAlignment="center"
-            text={i18n.t('tooltip.copy_address')}
-            textWeight="bold"
-            textSize="12pt"
-            textColor="labelSecondary"
-            marginLeft="18px"
-            marginTop={`${0 - tooltipOffset}px`}
-            hint={shortcuts.home.COPY_ADDRESS.display}
-          >
-            <ActionButton
-              symbol="square.on.square"
-              text={i18n.t('wallet_header.copy')}
-              onClick={handleCopy}
-              testId="header-link-copy"
-              tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
-            />
-          </CursorTooltip>
+          <ActionButton
+            symbol="square.on.square"
+            text={i18n.t('wallet_header.copy')}
+            onClick={handleCopy}
+            testId="header-link-copy"
+            tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
+            tooltipHint={shortcuts.home.COPY_ADDRESS.display}
+            tooltipOffset={tooltipOffset}
+            tooltipText={i18n.t('tooltip.copy_address')}
+          />
 
-          <Box testId="header-link-swap">
-            <CursorTooltip
-              align="center"
-              arrowAlignment="center"
-              text={i18n.t('tooltip.swap')}
-              textWeight="bold"
-              textSize="12pt"
-              textColor="labelSecondary"
-              marginLeft="18px"
-              marginTop={`${0 - tooltipOffset}px`}
-              hint={shortcuts.home.GO_TO_SWAP.display}
-            >
-              <ActionButton
-                symbol="arrow.triangle.swap"
-                text={i18n.t('wallet_header.swap')}
-                tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
-                onClick={() => {
-                  if (!allowSwap) {
-                    if (isWatchingWallet) {
-                      alertWatchingWallet();
-                    } else {
-                      alertComingSoon();
-                    }
-                  } else {
-                    navigateToSwaps();
-                  }
-                }}
-              />
-            </CursorTooltip>
-          </Box>
+          <ActionButton
+            symbol="arrow.triangle.swap"
+            text={i18n.t('wallet_header.swap')}
+            tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
+            testId={'header-link-swap'}
+            onClick={() => {
+              if (!allowSwap) {
+                if (isWatchingWallet) {
+                  alertWatchingWallet();
+                } else {
+                  alertComingSoon();
+                }
+              } else {
+                navigateToSwaps();
+              }
+            }}
+            tooltipHint={shortcuts.home.GO_TO_SWAP.display}
+            tooltipOffset={tooltipOffset}
+            tooltipText={i18n.t('tooltip.swap')}
+          />
 
-          <Link
-            tabIndex={-1}
-            id="header-link-send"
-            to={allowSend ? ROUTES.SEND : '#'}
-            state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
-            onClick={allowSend ? () => null : alertWatchingWallet}
-          >
-            <CursorTooltip
-              align="center"
-              arrowAlignment="center"
-              text={i18n.t('tooltip.send')}
-              textWeight="bold"
-              textSize="12pt"
-              textColor="labelSecondary"
-              marginLeft="18px"
-              marginTop={`${0 - tooltipOffset}px`}
-              hint={shortcuts.home.GO_TO_SEND.display}
-            >
-              <ActionButton
-                symbol="paperplane.fill"
-                text={i18n.t('wallet_header.send')}
-                tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
-              />
-            </CursorTooltip>
-          </Link>
+          <ActionButton
+            symbol="paperplane.fill"
+            text={i18n.t('wallet_header.send')}
+            tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
+            tooltipHint={shortcuts.home.GO_TO_SEND.display}
+            tooltipOffset={tooltipOffset}
+            tooltipText={i18n.t('tooltip.send')}
+            testId={'header-link-send'}
+            onClick={() => {
+              if (allowSend) {
+                navigate(ROUTES.SEND);
+              } else {
+                alertWatchingWallet();
+              }
+            }}
+          />
         </Inline>
       )}
     </Box>
@@ -281,6 +254,9 @@ function ActionButton({
   onClick,
   testId,
   tabIndex,
+  tooltipHint,
+  tooltipOffset,
+  tooltipText,
 }: {
   cursor?: BoxStyles['cursor'];
   symbol: SymbolProps['symbol'];
@@ -288,19 +264,33 @@ function ActionButton({
   onClick?: () => void;
   testId?: string;
   tabIndex?: number;
+  tooltipHint: string;
+  tooltipOffset: number;
+  tooltipText: string;
 }) {
   return (
     <Stack alignHorizontal="center" space="10px">
-      <ButtonSymbol
-        color="accent"
-        cursor={cursor}
-        height="36px"
-        variant="raised"
-        symbol={symbol}
-        testId={testId}
-        onClick={onClick}
-        tabIndex={tabIndex}
-      />
+      <CursorTooltip
+        align="center"
+        arrowAlignment="center"
+        text={tooltipText}
+        textWeight="bold"
+        textSize="12pt"
+        textColor="labelSecondary"
+        marginTop={`${0 - tooltipOffset}px`}
+        hint={tooltipHint}
+      >
+        <ButtonSymbol
+          color="accent"
+          cursor={cursor}
+          height="36px"
+          variant="raised"
+          symbol={symbol}
+          testId={testId}
+          onClick={onClick}
+          tabIndex={tabIndex}
+        />
+      </CursorTooltip>
       <Text
         color="labelSecondary"
         cursor={cursor as TextStyles['cursor']}
