@@ -11,6 +11,7 @@ import {
   Stack,
   TextOverflow,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { WalletSummary } from '../../hooks/useWalletsSummary';
 import { AddressOrEns } from '../AddressOrEns/AddressorEns';
@@ -23,25 +24,18 @@ export const AccountToImportRows = ({
   showCheckbox,
   walletsSummary,
   toggleAccount,
+  navigableWithKeyboard,
 }: {
   accountsIgnored?: Address[];
   accountsToImport?: Address[];
   showCheckbox?: boolean;
   walletsSummary: { [key: Address]: WalletSummary };
   toggleAccount?: (address: Address) => void;
+  navigableWithKeyboard?: boolean;
 }) => {
   const onClick = useCallback(
     (address: Address) => toggleAccount?.(address),
     [toggleAccount],
-  );
-
-  const handleKeyDown = useCallback(
-    (address: Address) => (e: React.KeyboardEvent<Element>) => {
-      if (e.key === 'Enter') {
-        onClick(address);
-      }
-    },
-    [onClick],
   );
 
   return (
@@ -54,9 +48,9 @@ export const AccountToImportRows = ({
       }
     >
       {accountsToImport?.map((address) => (
-        <Box
+        <Lens
           onClick={() => onClick(address)}
-          onKeyDown={handleKeyDown(address)}
+          tabIndex={navigableWithKeyboard ? 0 : -1}
           key={`avatar_${address}`}
         >
           <Columns alignVertical="center" space="16px">
@@ -115,7 +109,7 @@ export const AccountToImportRows = ({
               </Column>
             )}
           </Columns>
-        </Box>
+        </Lens>
       ))}
     </Stack>
   );

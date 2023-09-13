@@ -14,6 +14,7 @@ import {
   Stack,
   Text,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
@@ -79,23 +80,12 @@ const SeedWordRow = ({
     handleSelect({ word, index });
   }, [handleSelect, index, word]);
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<Element>) => {
-      if (e.key === 'Enter') {
-        onClick();
-      }
-    },
-    [onClick],
-  );
-
   return (
-    <Box
+    <Lens
       width="fit"
       onClick={onClick}
-      onKeyDown={handleKeyDown}
       borderColor={{
         default: 'separatorTertiary',
-        focus: 'accent',
       }}
       borderRadius="8px"
       padding="8px"
@@ -135,7 +125,7 @@ const SeedWordRow = ({
           </Text>
         </Box>
       </Inline>
-    </Box>
+    </Lens>
   );
 };
 
