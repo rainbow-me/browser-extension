@@ -266,9 +266,14 @@ export async function getTransactionReceiptStatus({
     // eslint-disable-next-line no-empty
   } catch (e) {}
 
-  if (!receipt) return 'pending';
-  if (receipt.status === 0) return 'confirmed';
-  return 'failed';
+  if (!receipt) return { status: 'pending' as const };
+  return {
+    status: receipt.status === 0 ? ('confirmed' as const) : ('failed' as const),
+    blockNumber: receipt?.blockNumber,
+    minedAt: Math.floor(Date.now() / 1000),
+    confirmations: receipt?.confirmations,
+    gasUsed: receipt?.gasUsed.toNumber(),
+  };
 }
 
 export async function getNextNonce({

@@ -47,15 +47,16 @@ export const useWatchPendingTransactions = ({
     const updatedPendingTransactions = await Promise.all(
       pendingTransactions.map(async (tx) => {
         let updatedTransaction: RainbowTransaction = { ...tx };
-        const txHash = tx.hash;
         try {
           const chainId = tx?.chainId;
           if (chainId) {
             const provider = getProvider({ chainId });
-            if (txHash) {
+            if (tx.hash) {
               const currentTxCountForChainId =
                 await provider.getTransactionCount(address, 'latest');
-              const transactionResponse = await provider.getTransaction(txHash);
+              const transactionResponse = await provider.getTransaction(
+                tx.hash,
+              );
               const nonceAlreadyIncluded =
                 currentTxCountForChainId >
                 (tx?.nonce || transactionResponse?.nonce);
@@ -64,9 +65,9 @@ export const useWatchPendingTransactions = ({
                 transactionResponse,
                 provider,
               });
-
               let pendingTransactionData = {
-                status: transactionStatus,
+                ...tx,
+                ...transactionStatus,
               };
 
               if (
@@ -134,10 +135,13 @@ export const useWatchPendingTransactions = ({
               } else if (tx.flashbots) {
                 const flashbotsTxStatus = await getTransactionFlashbotStatus(
                   updatedTransaction,
-                  txHash,
+                  tx.hash,
                 );
                 if (flashbotsTxStatus) {
-                  pendingTransactionData = flashbotsTxStatus;
+                  pendingTransactionData = {
+                    ...updatedTransaction,
+                    ...flashbotsTxStatus,
+                  } as RainbowTransaction; // review what's the expected flashbots behaviour here
                 }
               }
             }

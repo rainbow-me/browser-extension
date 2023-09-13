@@ -4,10 +4,11 @@ import { useAccount, useBalance } from 'wagmi';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
-import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
+import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
+import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
 import {
   DropdownMenu,
@@ -37,14 +38,9 @@ export function Default() {
     },
     { select: selectUserAssetsList },
   );
-  // const { data: assetPrices } = useAssetPrices({
-  //   assetAddresses: userAssets
-  //     ?.map((asset) => asset?.address)
-  //     .concat(ETH_ADDRESS as Address),
-  //   currency: currentCurrency,
-  // });
-  const { data: transactions } = useConsolidatedTransactions({
+  const { data: transactions } = useTransactions({
     address,
+    chainId: ChainId.mainnet,
     currency: currentCurrency,
   });
   const { data: mainnetBalance } = useBalance({
@@ -159,6 +155,21 @@ export function Default() {
               {`NAME: ${asset?.name} CHAIN: ${asset?.chainName} NATIVE BALANCE: ${asset?.native?.balance?.display}`}
             </Text>
           ))}
+        <Text color="label" size="20pt" weight="bold">
+          Transactions:
+        </Text>
+        {transactions?.map((tx: RainbowTransaction) => {
+          return (
+            <Text
+              color="labelSecondary"
+              size="16pt"
+              weight="medium"
+              key={tx?.hash}
+            >
+              {`${tx?.title} ${tx?.description}: ${tx.native?.value}`}
+            </Text>
+          );
+        })}
       </Stack>
     </Inset>
   );
