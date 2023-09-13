@@ -80,7 +80,7 @@ function TokenPrice({ token }: { token: ParsedUserAsset }) {
 }
 
 const chartTimes = ['hour', 'day', 'week', 'month', 'year'] as const;
-type ChartTime = typeof chartTimes[number];
+type ChartTime = (typeof chartTimes)[number];
 const getChartTimeArg = (selected: ChartTime) =>
   chartTimes.reduce(
     (args, time) => ({ ...args, [time]: time === selected }),

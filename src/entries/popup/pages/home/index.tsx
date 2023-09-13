@@ -28,6 +28,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
+import { BackupReminder } from '../../components/BackupReminder/BackupReminder';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
@@ -175,6 +176,7 @@ export const Home = memo(function Home() {
             <Tabs />
             <AppConnectionWalletSwitcher />
           </motion.div>
+          <BackupReminder />
           {currentHomeSheet}
         </>
       )}

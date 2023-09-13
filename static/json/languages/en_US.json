@@ -117,6 +117,9 @@
         "recovery_phrase_label": "Wallet Group",
         "private_key_label": "Private Key",
         "hardware_wallet_label": "Hardware Wallet",
+        "backed_up": "Backed up",
+        "not_backed_up": "Not backed up",
+        "back_up_now": "Back Up Now",
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
@@ -126,7 +129,9 @@
           "delete_wallet": "Delete Wallet",
           "view_private_key": "View Private Key",
           "copy_address": "Copy Address",
-          "hidden": "Hidden"
+          "hidden": "Hidden",
+          "back_up_now": "Back Up Now",
+          "last_backed_up": "Last backed up as %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "Name your wallet",
@@ -850,6 +855,12 @@
       "cancel": "Cancel",
       "connected": "Connected"
     }
+  },
+  "wallet_backup_reminder": {
+    "title": "Some of your wallets aren’t backed up",
+    "description": "Some of your wallets aren’t backed up. Back up so you can regain access to your wallets if you lose access to this device.",
+    "button_label_action": "Back Up Now",
+    "button_label_cancel": "Remind Me Later"
   },
   "approve_request": {
     "wallet_info_title": "wants to connect to your wallet",
