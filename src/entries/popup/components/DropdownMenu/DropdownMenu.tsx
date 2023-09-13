@@ -240,7 +240,7 @@ export const DropdownMenuItem = ({
       tabIndex={0}
       style={{ minHeight: '34px' }}
     >
-      <Inline alignVertical="center" space="10px">
+      <Inline alignVertical="center" space="10px" wrap={false}>
         {emoji && (
           <Text size="14pt" weight="semibold">
             {emoji}

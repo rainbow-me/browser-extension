@@ -82,15 +82,6 @@ import { getInputIsFocused } from './utils/activeElement';
 import { simulateTab } from './utils/simulateTab';
 import { zIndexes } from './utils/zIndexes';
 
-const ChildOutlet = () => {
-  const { pathname } = useLocation();
-  return (
-    <AnimatePresence mode="popLayout">
-      <Outlet key={pathname} />
-    </AnimatePresence>
-  );
-};
-
 const ChildRoute = (props: React.PropsWithChildren) => (
   <Box
     position="absolute"
@@ -115,7 +106,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute direction="base" protectedRoute>
         <Home />
-        <ChildOutlet />
+        <Outlet />
       </AnimatedRoute>
     ),
     children: [

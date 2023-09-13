@@ -145,11 +145,20 @@ export function parseTransaction({
   const description = getDescription(asset, type, meta);
 
   const nativeAsset = changes.find((change) => change?.asset.isNativeAsset);
-  const value = nativeAsset?.value?.toString();
+  const nativeAssetPrice = FixedNumber.fromString(
+    nativeAsset?.price?.toString() || '0',
+  );
+
+  const value =
+    nativeAsset?.value &&
+    formatUnits(nativeAsset.value.toString(), nativeAsset.asset.decimals);
+  const valueInNative = FixedNumber.from(value || '0')
+    .mulUnsafe(nativeAssetPrice)
+    .toString();
 
   const nativeAssetDecimals = 18; // we only support networks with 18 decimals native assets rn, backend will change when we support more
 
-  const { gas_price, max_base_fee, max_priority_fee, gas_used } =
+  const { gas_price, max_base_fee, max_priority_fee, gas_used, base_fee } =
     tx.fee.details || {};
   const rollupFee = BigInt(
     tx.fee.details?.rollup_fee_details?.l1_fee || '0', // zero when it's not a rollup
@@ -157,21 +166,11 @@ export function parseTransaction({
   const fee = FixedNumber.from(
     formatUnits(BigInt(tx.fee.value) + rollupFee, nativeAssetDecimals),
   );
+  const feePrice = FixedNumber.fromString(tx.fee.price.toString());
 
-  const price = FixedNumber.fromString(
-    (
-      nativeAsset?.price ||
-      nativeAsset?.asset.price?.value ||
-      tx.fee.price
-    ).toString(),
-  );
-  const native = price && {
-    fee: fee && fee.mulUnsafe(price).toString(),
-    value:
-      value &&
-      FixedNumber.from(formatUnits(value, nativeAssetDecimals))
-        .mulUnsafe(price)
-        .toString(),
+  const native = {
+    fee: fee.mulUnsafe(feePrice).toString(),
+    value: valueInNative,
   };
 
   const contract = meta.contract_name && {
@@ -199,6 +198,7 @@ export function parseTransaction({
     blockNumber: tx.block_number,
     gasPrice: gas_price?.toString(),
     maxFeePerGas: max_base_fee?.toString(),
+    baseFee: base_fee?.toString(),
     maxPriorityFeePerGas: max_priority_fee?.toString(),
     gasUsed: gas_used?.toString(),
     fee: fee ? fee.toString() : undefined,

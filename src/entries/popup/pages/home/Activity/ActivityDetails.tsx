@@ -7,7 +7,6 @@ import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
-import { ParsedAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
@@ -27,6 +26,7 @@ import {
   Inline,
   Separator,
   Stack,
+  Symbol,
   Text,
   TextOverflow,
 } from '~/design-system';
@@ -53,6 +53,7 @@ import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 import { ActivityPill } from './ActivityPill';
+import { getApprovalLabel } from './ActivityValue';
 import { useTransaction } from './useTransaction';
 
 function AddressMoreOptions({ address }: { address: Address }) {
@@ -249,12 +250,14 @@ function ConfirmationData({
   );
 }
 
-function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
-  const { maxPriorityFeePerGas, maxFeePerGas, nonce, native } = transaction;
+function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
+  const { maxPriorityFeePerGas, maxFeePerGas, nonce, native } = tx;
 
-  const minerTip =
+  const priorityFee =
     maxPriorityFeePerGas && formatUnits(maxPriorityFeePerGas, 'gwei');
   const maxBaseFee = maxFeePerGas && formatUnits(maxFeePerGas, 'gwei');
+  const baseFee = tx.baseFee && formatUnits(tx.baseFee, 'gwei');
+  const gasPrice = tx.gasPrice && formatUnits(tx.gasPrice, 'gwei');
 
   const { value, fee } = native || {};
 
@@ -272,8 +275,8 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
         label={i18n.t('activity_details.network')}
         value={
           <Inline alignVertical="center" space="4px">
-            <ChainBadge chainId={transaction.chainId} size={12} />
-            {ChainNameDisplay[transaction.chainId]}
+            <ChainBadge chainId={tx.chainId} size={12} />
+            {ChainNameDisplay[tx.chainId]}
           </Inline>
         }
       />
@@ -284,6 +287,20 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
           value={formatCurrency(fee)}
         />
       )}
+      {baseFee && (
+        <InfoRow
+          symbol="barometer"
+          label={i18n.t('activity_details.max_base_fee')}
+          value={`${formatNumber(baseFee)} Gwei`}
+        />
+      )}
+      {/* {gasPrice && (
+        <InfoRow
+          symbol="barometer"
+          label={i18n.t('activity_details.gas_price')}
+          value={`${formatNumber(gasPrice)} Gwei`}
+        />
+      )} */}
       {maxBaseFee && (
         <InfoRow
           symbol="barometer"
@@ -291,11 +308,11 @@ function NetworkData({ transaction }: { transaction: RainbowTransaction }) {
           value={`${formatNumber(maxBaseFee)} Gwei`}
         />
       )}
-      {minerTip && (
+      {priorityFee && (
         <InfoRow
           symbol="barometer"
           label={i18n.t('activity_details.max_priority_fee')}
-          value={`${formatNumber(minerTip)} Gwei`}
+          value={`${formatNumber(priorityFee)} Gwei`}
         />
       )}
       {nonce >= 0 && (
@@ -379,18 +396,9 @@ const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
 
   return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;
 };
-
-type TxAdditionalDetails = {
-  asset?: ParsedAsset;
-  tokenAmount?: string;
-  tokenContract?: Address;
-  exchangeRate?: string;
-  collection?: string;
-  standard?: ParsedAsset['standard'];
-};
 const getAdditionalDetails = (transaction: RainbowTransaction) => {
   const exchangeRate = getExchangeRate(transaction);
-  const { asset, changes } = transaction;
+  const { asset, changes, approvalAmount, contract, type } = transaction;
   const nft = changes?.find((c) => c?.asset.type === 'nft')?.asset;
   const collection = nft?.symbol;
   const standard = nft?.standard;
@@ -400,17 +408,23 @@ const getAdditionalDetails = (transaction: RainbowTransaction) => {
       : undefined;
 
   const tokenAmount =
-    !nft && tokenContract
+    !nft && !exchangeRate && tokenContract
       ? changes?.find((c) => c?.asset.address === tokenContract)?.asset.balance
           .amount
       : undefined;
+
+  const approval = type === 'approve' && {
+    value: approvalAmount,
+    label: getApprovalLabel(transaction),
+  };
 
   if (
     !tokenAmount &&
     !tokenContract &&
     !exchangeRate &&
     !collection &&
-    !standard
+    !standard &&
+    !approval
   )
     return;
 
@@ -418,11 +432,14 @@ const getAdditionalDetails = (transaction: RainbowTransaction) => {
     asset,
     tokenAmount: tokenAmount && `${formatNumber(tokenAmount)} ${asset?.symbol}`,
     tokenContract,
+    contract,
     exchangeRate,
     collection,
     standard,
-  } satisfies TxAdditionalDetails;
+    approval,
+  };
 };
+type TxAdditionalDetails = ReturnType<typeof getAdditionalDetails>;
 
 const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
   const {
@@ -432,9 +449,33 @@ const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
     exchangeRate,
     collection,
     standard,
-  } = details;
+    approval,
+    contract,
+  } = details || {};
+
   return (
     <Stack space="24px">
+      {exchangeRate && (
+        <InfoRow
+          symbol="arrow.2.squarepath"
+          label={i18n.t('activity_details.exchange_rate')}
+          value={exchangeRate}
+        />
+      )}
+      {contract?.name && (
+        <InfoRow
+          symbol="app.badge.checkmark"
+          label={i18n.t('activity_details.app')}
+          value={
+            <Inline alignVertical="center" space="4px">
+              {contract.iconUrl && (
+                <ContractIcon size={16} iconUrl={contract.iconUrl} />
+              )}
+              {contract.name}
+            </Inline>
+          }
+        />
+      )}
       {tokenAmount && (
         <InfoRow
           symbol="dollarsign.square"
@@ -447,11 +488,29 @@ const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
           }
         />
       )}
-      {exchangeRate && (
+      {approval && (
         <InfoRow
-          symbol="arrow.2.squarepath"
-          label={i18n.t('activity_details.exchange_rate')}
-          value={exchangeRate}
+          symbol="dollarsign.square"
+          label={i18n.t('activity_details.allowance')}
+          value={
+            approval.value === 'UNLIMITED' ? (
+              <Inline alignVertical="center" space="4px">
+                <Text color="orange" size="12pt" weight="semibold">
+                  {i18n.t('activity_details.unlimited_allowance', {
+                    symbol: asset?.symbol,
+                  })}
+                </Text>
+                <Symbol
+                  weight="semibold"
+                  symbol="exclamationmark.triangle"
+                  size={12}
+                  color="orange"
+                />
+              </Inline>
+            ) : (
+              approval.label
+            )
+          }
         />
       )}
       {collection && (
@@ -517,9 +576,9 @@ function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
             <Text size="14pt" weight="semibold">
               {i18n.t('activity_details.copy_hash')}
             </Text>
-            <Text size="11pt" color="labelTertiary" weight="medium">
-              {truncateString(hash, 18)}
-            </Text>
+            <TextOverflow size="11pt" color="labelTertiary" weight="medium">
+              {hash}
+            </TextOverflow>
           </Stack>
         </DropdownMenuItem>
         {explorerUrl && (
@@ -537,9 +596,9 @@ function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
               <Text size="14pt" weight="semibold">
                 {i18n.t('activity_details.copy_explorer_url')}
               </Text>
-              <Text size="11pt" color="labelTertiary" weight="medium">
-                {truncateString(explorerUrl, 18)}
-              </Text>
+              <TextOverflow size="11pt" color="labelTertiary" weight="medium">
+                {explorerUrl}
+              </TextOverflow>
             </Stack>
           </DropdownMenuItem>
         )}

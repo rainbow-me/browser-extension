@@ -53,6 +53,8 @@ type BaseTransaction = {
     name: string;
     iconUrl?: string;
   };
+
+  baseFee?: string;
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
 export type PendingTransaction = BaseTransaction & { status: 'pending' };

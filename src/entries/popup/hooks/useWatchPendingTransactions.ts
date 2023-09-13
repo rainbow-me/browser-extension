@@ -16,7 +16,10 @@ import {
   RainbowTransaction,
 } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import { getTransactionFlashbotStatus } from '~/core/utils/transactions';
+import {
+  getTransactionFlashbotStatus,
+  getTransactionReceiptStatus,
+} from '~/core/utils/transactions';
 
 import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
 
@@ -57,14 +60,14 @@ export const useWatchPendingTransactions = ({
                 currentTxCountForChainId >
                 (tx?.nonce || transactionResponse?.nonce);
 
-              // const transactionStatus = await getTransactionReceiptStatus({
-              //   transactionResponse,
-              //   provider,
-              // });
+              const transactionStatus = await getTransactionReceiptStatus({
+                transactionResponse,
+                provider,
+              });
 
-              // let pendingTransactionData = {
-              //   status: 'pending',
-              // };
+              let pendingTransactionData = {
+                status: transactionStatus,
+              };
 
               if (
                 (transactionResponse?.blockNumber &&
@@ -125,7 +128,7 @@ export const useWatchPendingTransactions = ({
                 } else {
                   updatedTransaction = {
                     ...updatedTransaction,
-                    // ...pendingTransactionData,
+                    ...pendingTransactionData,
                   };
                 }
               } else if (tx.flashbots) {
@@ -134,7 +137,7 @@ export const useWatchPendingTransactions = ({
                   txHash,
                 );
                 if (flashbotsTxStatus) {
-                  // pendingTransactionData = flashbotsTxStatus;
+                  pendingTransactionData = flashbotsTxStatus;
                 }
               }
             }
