@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRemoteConfig } from '~/core/firebase/useRemoteConfig';
 import { i18n } from '~/core/languages';
 import { useInviteCodeStore, usePendingRequestStore } from '~/core/state';
+import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { Box, Stack, Text } from '~/design-system';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
@@ -23,6 +24,7 @@ export function Welcome() {
     useState(!!pendingRequests.length);
   const headerControls = useAnimationControls();
   const { remoteConfig } = useRemoteConfig();
+  const { setNeedsInitialization } = useWalletBackupsStore();
 
   const { inviteCodeValidated, setInviteCodeValidated } = useInviteCodeStore();
   const [screen, setScreen] = useState<'invite_code' | 'welcome' | ''>(
@@ -47,6 +49,10 @@ export function Welcome() {
       });
     }
   }, [headerControls, prevScreen, screen]);
+
+  useEffect(() => {
+    setNeedsInitialization(false);
+  }, [setNeedsInitialization]);
 
   return (
     <>

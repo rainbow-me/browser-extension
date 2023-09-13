@@ -1,15 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { getSettingWallets } from '~/core/utils/settings';
-import { Box, Inline, Symbol } from '~/design-system';
+import { Box, Inline, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import AccountItem, {
   LabelOption,
@@ -28,6 +29,7 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
+import { formatDate } from '../../../home/TokenDetails/PriceChart';
 import { CreateWalletPrompt } from '../../../walletSwitcher/createWalletPrompt';
 import { RemoveWalletPrompt } from '../../../walletSwitcher/removeWalletPrompt';
 import { RenameWalletPrompt } from '../../../walletSwitcher/renameWalletPrompt';
@@ -122,12 +124,8 @@ export function WalletDetails() {
   const { deleteWalletName } = useWalletNamesStore();
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
 
-  const handleViewRecoveryPhrase = useCallback(() => {
-    navigate(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
-      { state: { wallet, password: state?.password, showQuiz: false } },
-    );
-  }, [navigate, state?.password, wallet]);
+  const { isWalletBackedUp, getWalletBackup, deleteWalletBackup } =
+    useWalletBackupsStore();
 
   const handleViewPrivateKey = useCallback(
     (account: Address) => {
@@ -144,19 +142,6 @@ export function WalletDetails() {
     },
     [navigate, state?.password, wallet],
   );
-
-  const handleViewSecret = useCallback(() => {
-    if (wallet?.type === KeychainType.HdKeychain) {
-      handleViewRecoveryPhrase();
-    } else {
-      handleViewPrivateKey(wallet?.accounts[0] as Address);
-    }
-  }, [
-    handleViewPrivateKey,
-    handleViewRecoveryPhrase,
-    wallet?.accounts,
-    wallet?.type,
-  ]);
 
   useEffect(() => {
     const getWallet = async () => {
@@ -178,6 +163,7 @@ export function WalletDetails() {
     unhideWallet({ address });
     await remove(address);
     deleteWalletName({ address });
+    deleteWalletBackup({ address });
 
     if (visibleWallets.length > 1) {
       // set current address to the next account if you deleted that one
@@ -218,6 +204,51 @@ export function WalletDetails() {
     setCreateWalletAddress(undefined);
   };
 
+  const walletBackedUp = useMemo(() => {
+    if (wallet) {
+      return isWalletBackedUp({ wallet });
+    }
+    return true;
+  }, [isWalletBackedUp, wallet]);
+
+  const walletBackedUpInfo = useMemo(() => {
+    if (wallet) {
+      return getWalletBackup({ wallet });
+    }
+    return null;
+  }, [getWalletBackup, wallet]);
+
+  const handleViewRecoveryPhrase = useCallback(() => {
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
+      {
+        state: { wallet, password: state?.password, showQuiz: !walletBackedUp },
+      },
+    );
+  }, [navigate, state?.password, wallet, walletBackedUp]);
+
+  const handleBackup = useCallback(() => {
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
+      {
+        state: { wallet, showQuiz: true, fromChooseGroup: true },
+      },
+    );
+  }, [navigate, wallet]);
+
+  const handleViewSecret = useCallback(() => {
+    if (wallet?.type === KeychainType.HdKeychain) {
+      handleViewRecoveryPhrase();
+    } else {
+      handleViewPrivateKey(wallet?.accounts[0] as Address);
+    }
+  }, [
+    handleViewPrivateKey,
+    handleViewRecoveryPhrase,
+    wallet?.accounts,
+    wallet?.type,
+  ]);
+
   return (
     <Box>
       <CreateWalletPrompt
@@ -243,7 +274,35 @@ export function WalletDetails() {
       />
       <Box paddingHorizontal="20px">
         <MenuContainer testId="settings-menu-container">
-          {wallet?.type !== KeychainType.HardwareWalletKeychain && (
+          {wallet?.type !== KeychainType.HardwareWalletKeychain &&
+            walletBackedUp && (
+              <Menu>
+                <MenuItem
+                  first
+                  last
+                  titleComponent={
+                    <MenuItem.Title
+                      text={i18n.t(
+                        wallet?.type === KeychainType.HdKeychain
+                          ? 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_recovery_phrase'
+                          : 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
+                      )}
+                    />
+                  }
+                  leftComponent={
+                    <Symbol
+                      symbol="lock.square.fill"
+                      weight="medium"
+                      size={18}
+                      color="labelTertiary"
+                    />
+                  }
+                  hasRightArrow
+                  onClick={handleViewSecret}
+                />
+              </Menu>
+            )}
+          {!walletBackedUp && (
             <Menu>
               <MenuItem
                 first
@@ -251,25 +310,38 @@ export function WalletDetails() {
                 titleComponent={
                   <MenuItem.Title
                     text={i18n.t(
-                      wallet?.type === KeychainType.HdKeychain
-                        ? 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_recovery_phrase'
-                        : 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
+                      'settings.privacy_and_security.wallets_and_keys.wallet_details.back_up_now',
                     )}
                   />
                 }
                 leftComponent={
                   <Symbol
-                    symbol="lock.square.fill"
+                    symbol="exclamationmark.circle.fill"
                     weight="medium"
                     size={18}
-                    color="labelTertiary"
+                    color="red"
                   />
                 }
                 hasRightArrow
-                onClick={handleViewSecret}
+                onClick={handleBackup}
               />
             </Menu>
           )}
+          {walletBackedUpInfo?.timestamp ? (
+            <Box paddingHorizontal="12px">
+              <Text
+                size="12pt"
+                weight="medium"
+                color="labelQuaternary"
+                align="left"
+              >
+                {i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.wallet_details.last_backed_up',
+                  { date: formatDate(walletBackedUpInfo?.timestamp) },
+                )}
+              </Text>
+            </Box>
+          ) : null}
           <Menu>
             {wallet?.accounts?.map((account: Address, numOfWallets) => {
               return (
