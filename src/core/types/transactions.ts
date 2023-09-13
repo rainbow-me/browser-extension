@@ -12,8 +12,10 @@ import { TransactionGasParams, TransactionLegacyGasParams } from './gas';
 
 export type TransactionStatus = 'pending' | 'confirmed' | 'failed';
 
+export type TxHash = `0x${string}`;
+
 type BaseTransaction = {
-  hash: `0x${string}`;
+  hash: TxHash;
   nonce: number; // -2 when not from the wallet user
   chainId: ChainId;
   from: Address;
@@ -131,8 +133,8 @@ export interface ExecuteRapResponse extends TransactionResponse {
 
 export type TransactionApiResponse = {
   status: TransactionStatus;
-  id: `0x${string}`;
-  hash: `0x${string}`;
+  id: TxHash;
+  hash: TxHash;
   network: ChainName;
   protocol?: ProtocolType;
   direction?: TransactionDirection;

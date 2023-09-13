@@ -14,7 +14,7 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import { NewTransaction } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -93,7 +93,7 @@ export function SendTransaction({
           data: result.data,
           from: txData.from,
           to: txData.to,
-          hash: result.hash as `0x${string}`,
+          hash: result.hash as TxHash,
           chainId: txData.chainId,
           nonce: result.nonce,
           status: 'pending',

@@ -15,7 +15,7 @@ import {
 import { Address, getProvider } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
-import { NewTransaction } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
@@ -263,7 +263,7 @@ export const swap = async ({
         value: quote.buyAmount.toString(),
       },
     ],
-    hash: swap.hash as `0x${string}`,
+    hash: swap.hash as TxHash,
     chainId: parameters.chainId,
     nonce: swap.nonce,
     status: 'pending',

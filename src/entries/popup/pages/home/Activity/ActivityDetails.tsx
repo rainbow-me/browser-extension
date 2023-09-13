@@ -8,7 +8,7 @@ import { ETH_ADDRESS } from '~/core/references';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
-import { RainbowTransaction } from '~/core/types/transactions';
+import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 import { formatDate } from '~/core/utils/formatDate';
@@ -346,10 +346,7 @@ const isSupportedChain = (chainId?: number | string): chainId is ChainId =>
   SUPPORTED_CHAIN_IDS.includes(Number(chainId));
 
 export function ActivityDetails() {
-  const { hash, chainId } = useParams<{
-    hash: `0x${string}`;
-    chainId: string;
-  }>();
+  const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
 
   if (!isSupportedChain(chainId) || !hash) return <Navigate to={ROUTES.HOME} />;
 
@@ -637,7 +634,7 @@ function ActivityDetailsSheet({
   hash,
   chainId,
 }: {
-  hash: `0x${string}`;
+  hash: TxHash;
   chainId: ChainId;
 }) {
   const { data: tx, isFetched } = useTransaction({ hash, chainId });

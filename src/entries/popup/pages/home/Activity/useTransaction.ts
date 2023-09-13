@@ -10,7 +10,7 @@ import {
 } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { TransactionApiResponse } from '~/core/types/transactions';
+import { TransactionApiResponse, TxHash } from '~/core/types/transactions';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -24,7 +24,7 @@ const fetchTransaction = async ({
   currency,
   chainId,
 }: {
-  hash: `0x${string}`;
+  hash: TxHash;
   address: Address;
   currency: SupportedCurrencyKey;
   chainId: ChainId;
@@ -53,7 +53,7 @@ export function useTransaction({
   hash,
   chainId,
 }: {
-  hash?: `0x${string}`;
+  hash?: TxHash;
   chainId: ChainId;
 }) {
   const queryClient = useQueryClient();

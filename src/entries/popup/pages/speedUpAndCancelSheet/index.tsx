@@ -18,7 +18,11 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { NewTransaction, RainbowTransaction } from '~/core/types/transactions';
+import {
+  NewTransaction,
+  RainbowTransaction,
+  TxHash,
+} from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/hex';
@@ -73,7 +77,7 @@ export function SpeedUpAndCancelSheet({
 
   const { data: transactionResponse } = useTransaction({
     chainId: transaction?.chainId,
-    hash: transaction?.hash as `0x${string}`,
+    hash: transaction?.hash,
   });
   const cancel = currentSheet === 'cancel';
   const handleClose = useCallback(() => {
@@ -184,7 +188,7 @@ export function SpeedUpAndCancelSheet({
       value: cancellationResult?.value?.toString(),
       from: cancellationResult?.from as Address,
       to: cancellationResult?.from as Address,
-      hash: cancellationResult?.hash as `0x${string}`,
+      hash: cancellationResult?.hash as TxHash,
       chainId: cancelTransactionRequest?.chainId as ChainId,
       status: 'pending',
       type: 'cancel',
@@ -205,7 +209,7 @@ export function SpeedUpAndCancelSheet({
       value: speedUpResult?.value?.toString(),
       from: speedUpResult?.from as Address,
       to: speedUpResult?.to as Address,
-      hash: speedUpResult?.hash as `0x${string}`,
+      hash: speedUpResult?.hash as TxHash,
       chainId: speedUpResult?.chainId,
       status: 'pending',
       type: 'speed_up',

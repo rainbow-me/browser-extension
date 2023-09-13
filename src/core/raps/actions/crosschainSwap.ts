@@ -4,7 +4,7 @@ import { Address, getProvider } from '@wagmi/core';
 
 import { REFERRER, gasUnits } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
-import { NewTransaction } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -182,7 +182,7 @@ export const crosschainSwap = async ({
     ],
     from: parameters.quote.from as Address,
     to: parameters.quote.to as Address,
-    hash: swap.hash as `0x${string}`,
+    hash: swap.hash as TxHash,
     chainId: parameters.chainId,
     nonce: swap.nonce,
     status: 'pending',

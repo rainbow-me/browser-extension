@@ -8,7 +8,7 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { NewTransaction } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -204,7 +204,7 @@ export const unlock = async ({
     changes: [],
     from: parameters.fromAddress,
     to: assetAddress,
-    hash: approval.hash as `0x${string}`,
+    hash: approval.hash as TxHash,
     chainId: approval.chainId,
     nonce: approval.nonce,
     status: 'pending',
