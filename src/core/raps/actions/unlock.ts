@@ -1,5 +1,4 @@
 import { Signer } from '@ethersproject/abstract-signer';
-import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { formatEther } from '@ethersproject/units';
@@ -17,7 +16,11 @@ import { RainbowError, logger } from '~/logger';
 import { ETH_ADDRESS, gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import { ParsedAsset } from '../../types/assets';
-import { convertAmountToRawAmount, greaterThan } from '../../utils/numbers';
+import {
+  convertAmountToRawAmount,
+  greaterThan,
+  toBigNumber,
+} from '../../utils/numbers';
 import { ActionProps, RapActionResult } from '../references';
 
 import { overrideWithFastSpeedIfNeeded } from './../utils';
@@ -104,8 +107,6 @@ export const estimateApprove = async ({
   }
 };
 
-const toBigNumber = (v?: string | number | BigNumber) =>
-  v ? BigNumber.from(v) : undefined;
 export const executeApprove = async ({
   gasLimit,
   gasParams,
