@@ -103,7 +103,6 @@ const SeedWordRow = ({
         whiteSpace: 'nowrap',
       }}
       testId={`word_${word}`}
-      tabIndex={0}
     >
       <Inline wrap={false} alignVertical="bottom" space="10px">
         <Box style={{ width: '15px' }}>
