@@ -145,7 +145,7 @@ export const ActivityValue = ({
           size="14pt"
           weight="semibold"
           align="right"
-          color={bottomValue.includes('+') ? 'green' : 'labelTertiary'}
+          color={bottomValue.includes('+') ? 'green' : 'labelSecondary'}
         >
           {bottomValue}
         </TextOverflow>
