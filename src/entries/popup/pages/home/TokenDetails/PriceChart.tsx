@@ -32,7 +32,7 @@ const parsePriceChange = (
   return { color: 'labelSecondary', symbol: '' };
 };
 
-function formatDate(date: number | Date) {
+export function formatDate(date: number | Date) {
   const targetDate = new Date(date);
 
   const today = new Date();
@@ -100,7 +100,7 @@ function TokenPrice({ token }: { token: ParsedUserAsset }) {
 }
 
 const chartTimes = ['hour', 'day', 'week', 'month', 'year'] as const;
-type ChartTime = typeof chartTimes[number];
+type ChartTime = (typeof chartTimes)[number];
 const getChartTimeArg = (selected: ChartTime) =>
   chartTimes.reduce(
     (args, time) => ({ ...args, [time]: time === selected }),
