@@ -21,7 +21,7 @@ import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 import {
   fetchAssetBalanceViaProvider,
   filterAsset,
-  parseAddressAsset,
+  parseUserAsset,
 } from '~/core/utils/assets';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 import { greaterThan } from '~/core/utils/numbers';
@@ -247,7 +247,7 @@ export async function parseUserAssets({
   ) as ParsedAssetsDictByChain;
   for (const { asset, quantity, small_balance } of assets) {
     if (!filterAsset(asset) && greaterThan(quantity, 0)) {
-      const parsedAsset = parseAddressAsset({
+      const parsedAsset = parseUserAsset({
         address: asset?.asset_code,
         asset,
         currency,

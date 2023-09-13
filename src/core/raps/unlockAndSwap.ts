@@ -51,11 +51,11 @@ export const estimateUnlockAndSwap = async (
 
   const nativeAsset =
     isLowerCaseMatch(ETH_ADDRESS_AGGREGATOR, sellTokenAddress) ||
-    isNativeAsset(sellTokenAddress as Address, chainId);
+    isNativeAsset(sellTokenAddress, chainId);
 
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
-      owner: accountAddress as Address,
+      owner: accountAddress,
       amount: sellAmount,
       assetToUnlock: assetToSell,
       spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,

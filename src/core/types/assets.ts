@@ -6,6 +6,8 @@ import { ETH_ADDRESS } from '../references';
 
 import { SearchAsset } from './search';
 
+export type AddressOrEth = Address | typeof ETH_ADDRESS;
+
 export interface ParsedAsset {
   address: AddressOrEth;
   chainId: ChainId;
@@ -24,7 +26,7 @@ export interface ParsedAsset {
       display: string;
     };
   };
-  mainnetAddress?: Address | typeof ETH_ADDRESS;
+  mainnetAddress?: AddressOrEth;
   price?: ZerionAssetPrice;
   symbol: string;
   uniqueId: UniqueId;
@@ -66,7 +68,7 @@ export interface ZerionAssetPrice {
 export type AssetType = 'nft' | 'token';
 
 export interface ZerionAsset {
-  asset_code: Address;
+  asset_code: AddressOrEth;
   colors?: {
     primary: string;
     fallback: string;
@@ -75,7 +77,7 @@ export interface ZerionAsset {
     string,
     { address: Address | null; decimals: number }
   >;
-  mainnet_address?: Address;
+  mainnet_address?: AddressOrEth;
   name: string;
   symbol: string;
   decimals: number;
@@ -86,8 +88,6 @@ export interface ZerionAsset {
   price?: ZerionAssetPrice;
   network?: ChainName;
 }
-
-export type AddressOrEth = Address | 'eth';
 
 // protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
 export type ProtocolType =

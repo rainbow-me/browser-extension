@@ -20,7 +20,7 @@ import {
   nonceStore,
   pendingTransactionsStore,
 } from '../state';
-import { ParsedUserAsset } from '../types/assets';
+import { AddressOrEth, ParsedUserAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -596,7 +596,7 @@ export async function getNextNonce({
   return ret;
 }
 
-export async function addNewTransaction({
+export function addNewTransaction({
   address,
   chainId,
   transaction,
@@ -678,7 +678,7 @@ export function getTokenBlockExplorerUrl({
   address,
   chainId,
 }: {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
 }) {
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);

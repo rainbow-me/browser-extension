@@ -1,8 +1,6 @@
 import { Address } from 'wagmi';
 
-import { ETH_ADDRESS } from '../references';
-
-import { ParsedAsset, UniqueId } from './assets';
+import { AddressOrEth, ParsedAsset, UniqueId } from './assets';
 import { ChainId } from './chains';
 
 export type TokenSearchAssetKey = keyof ParsedAsset;
@@ -15,7 +13,7 @@ export type TokenSearchListId =
   | 'verifiedAssets';
 
 export type SearchAsset = {
-  address: Address | typeof ETH_ADDRESS;
+  address: AddressOrEth;
   chainId: ChainId;
   colors: { primary: string; fallback?: string };
   decimals: number;
@@ -24,9 +22,14 @@ export type SearchAsset = {
   isRainbowCurated: boolean;
   isNativeAsset: boolean;
   isVerified: boolean;
-  mainnetAddress: Address;
+  mainnetAddress: AddressOrEth;
   name: string;
-  networks: Partial<Record<ChainId, { address: Address; decimals: number }>>;
+  networks: {
+    [chainId in ChainId]?: {
+      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
+      decimals: number;
+    };
+  };
   rainbowMetadataId: number;
   symbol: string;
   uniqueId: UniqueId;

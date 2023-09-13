@@ -2,7 +2,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { formatEther } from '@ethersproject/units';
-import { Address, erc20ABI, getProvider } from '@wagmi/core';
+import { Address, erc20ABI, getContract, getProvider } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
 import {
@@ -16,8 +16,11 @@ import { RainbowError, logger } from '~/logger';
 import { ETH_ADDRESS, gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import { ParsedAsset } from '../../types/assets';
-import { toHex } from '../../utils/hex';
-import { convertAmountToRawAmount, greaterThan } from '../../utils/numbers';
+import {
+  convertAmountToRawAmount,
+  greaterThan,
+  toBigNumber,
+} from '../../utils/numbers';
 import { ActionProps, RapActionResult } from '../references';
 
 import { overrideWithFastSpeedIfNeeded } from './../utils';
@@ -114,18 +117,26 @@ export const executeApprove = async ({
 }: {
   chainId: ChainId;
   gasLimit: string;
-  gasParams: TransactionGasParams | TransactionLegacyGasParams;
+  gasParams: Partial<TransactionGasParams & TransactionLegacyGasParams>;
   nonce?: number;
   spender: Address;
   tokenAddress: Address;
   wallet: Signer;
 }) => {
-  const tokenContract = new Contract(tokenAddress, erc20ABI, wallet);
+  const tokenContract = getContract({
+    address: tokenAddress,
+    abi: erc20ABI,
+    signerOrProvider: wallet,
+  });
+
+  const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasParams;
 
   return tokenContract.approve(spender, MaxUint256, {
-    gasLimit: toHex(gasLimit) || undefined,
-    nonce: nonce ? toHex(String(nonce)) : undefined,
-    ...gasParams,
+    nonce,
+    gasLimit: toBigNumber(gasLimit),
+    gasPrice: toBigNumber(gasPrice),
+    maxFeePerGas: toBigNumber(maxFeePerGas),
+    maxPriorityFeePerGas: toBigNumber(maxPriorityFeePerGas),
   });
 };
 
@@ -141,11 +152,14 @@ export const unlock = async ({
 
   const { address: assetAddress } = assetToUnlock;
 
+  if (assetAddress === ETH_ADDRESS)
+    throw new RainbowError('unlock: Native ETH cannot be unlocked');
+
   let gasLimit;
   try {
     gasLimit = await estimateApprove({
       owner: parameters.fromAddress,
-      tokenAddress: assetAddress as Address,
+      tokenAddress: assetAddress,
       spender: contractAddress,
       chainId,
     });
@@ -167,7 +181,7 @@ export const unlock = async ({
   let approval;
   try {
     approval = await executeApprove({
-      tokenAddress: assetAddress as Address,
+      tokenAddress: assetAddress,
       spender: contractAddress,
       gasLimit,
       gasParams,
@@ -182,25 +196,21 @@ export const unlock = async ({
     throw e;
   }
 
+  if (!approval) throw new RainbowError('unlock: error executeApprove');
+
   const transaction = {
-    amount: formatEther(approval?.value || ''),
+    amount: formatEther(approval.value || ''),
     asset: assetToUnlock,
     data: approval.data,
     value: approval.value,
     from: parameters.fromAddress,
-    to: assetAddress as Address,
+    to: assetAddress,
     hash: approval.hash,
     chainId: approval.chainId,
     nonce: approval.nonce,
     status: TransactionStatus.approving,
     type: TransactionType.send,
-    gasPrice: (selectedGas.transactionGasParams as TransactionLegacyGasParams)
-      ?.gasPrice,
-    maxFeePerGas: (selectedGas.transactionGasParams as TransactionGasParams)
-      ?.maxFeePerGas,
-    maxPriorityFeePerGas: (
-      selectedGas.transactionGasParams as TransactionGasParams
-    )?.maxPriorityFeePerGas,
+    ...gasParams,
   };
   await addNewTransaction({
     address: parameters.fromAddress as Address,

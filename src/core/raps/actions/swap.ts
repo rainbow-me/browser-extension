@@ -244,32 +244,32 @@ export const swap = async ({
     throw e;
   }
 
+  if (!swap) throw new RainbowError('swap: error executeSwap');
+
   const transaction = {
     amount: formatEther(swap?.value?.toString() || ''),
     asset: parameters.assetToSell,
-    data: swap?.data,
-    value: swap?.value,
-    from: swap?.from as Address,
-    to: swap?.to as Address,
-    hash: swap?.hash,
+    data: swap.data,
+    value: swap.value,
+    from: swap.from as Address,
+    to: swap.to as Address,
+    hash: swap.hash,
     chainId: parameters.chainId,
-    nonce: swap?.nonce,
+    nonce: swap.nonce,
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
     flashbots: parameters.flashbots,
-    gasPrice: (gasParams as TransactionLegacyGasParams)?.gasPrice,
-    maxFeePerGas: (gasParams as TransactionGasParams)?.maxFeePerGas,
-    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
-      ?.maxPriorityFeePerGas,
+    ...gasParams,
   };
-  await addNewTransaction({
+
+  addNewTransaction({
     address: parameters.quote.from as Address,
     chainId: parameters.chainId as ChainId,
     transaction,
   });
 
   return {
-    nonce: swap?.nonce,
-    hash: swap?.hash,
+    nonce: swap.nonce,
+    hash: swap.hash,
   };
 };
