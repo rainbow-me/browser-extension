@@ -7,6 +7,7 @@ import {
   checkExtensionURL,
   checkWalletName,
   executePerformShortcut,
+  findElementByText,
   getExtensionIdByName,
   getRootUrl,
   importWalletFlow,
@@ -51,27 +52,51 @@ describe.runIf(browser !== 'firefox')(
 
     // shortcut tests begin
 
-    //
-
-    // network selector + close with keyboard
-
-    // open more menu + close with keyboard
-
-    // go to QR + back with keyboard
-
-    // arrows to tab switch
-
-    // highlight asset + open context menu with keyboard
-
-    // highlight transaction + open context menu with keyboard
-
-    // lock extension
-
-    //
-
-    it('should be able to connected apps + back with keyboard', async () => {
+    it('should be able to navigate to connected apps + back with keyboard', async () => {
       await executePerformShortcut({ driver, key: 'a' });
       await checkExtensionURL(driver, 'connected');
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await checkExtensionURL(driver, 'home');
+    });
+
+    it('should be able to navigate to network selector + close with keyboard', async () => {
+      await executePerformShortcut({ driver, key: 'n' });
+      await findElementByText(driver, 'Connected Apps');
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await checkExtensionURL(driver, 'home');
+    });
+
+    it('should be able to open more menu + close with keyboard', async () => {
+      await executePerformShortcut({ driver, key: 'n' });
+      await findElementByText(driver, 'Connected Apps');
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await checkExtensionURL(driver, 'home');
+    });
+
+    it('should be able to use arrows to tab switch', async () => {
+      await executePerformShortcut({ driver, key: 'n' });
+      await findElementByText(driver, 'Connected Apps');
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await checkExtensionURL(driver, 'home');
+    });
+
+    it('should be able to navigate to highlight asset + open context menu with keyboard', async () => {
+      await executePerformShortcut({ driver, key: 'n' });
+      await findElementByText(driver, 'Connected Apps');
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await checkExtensionURL(driver, 'home');
+    });
+
+    it('should be able to navigate to highlight transaction + open context menu with keyboard', async () => {
+      await executePerformShortcut({ driver, key: 'n' });
+      await findElementByText(driver, 'Connected Apps');
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await checkExtensionURL(driver, 'home');
+    });
+
+    it('should be able to lock extension with keyboard', async () => {
+      await executePerformShortcut({ driver, key: 'n' });
+      await findElementByText(driver, 'Connected Apps');
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
       await checkExtensionURL(driver, 'home');
     });
