@@ -104,13 +104,14 @@ const YouOrAddress = ({ address }: { address: Address }) => {
       <>
         {i18n.t('activity_details.you')}
         <Text size="12pt" weight="semibold" color="labelQuaternary">
-          <Inline alignVertical="center">
+          <Inline alignVertical="center" wrap={false}>
             (
             <AddressOrEns
               address={address}
               size="12pt"
               weight="semibold"
               color="labelQuaternary"
+              maxWidth={150}
             />
             )
           </Inline>
@@ -124,13 +125,14 @@ const YouOrAddress = ({ address }: { address: Address }) => {
       size="12pt"
       weight="semibold"
       color="labelQuaternary"
+      maxWidth={150}
     />
   );
 };
 
 const AddressDisplay = ({ address }: { address: Address }) => {
   return (
-    <Inline space="6px" alignVertical="center">
+    <Inline space="6px" alignVertical="center" wrap={false}>
       <WalletAvatar address={address} size={16} emojiSize="9pt" />
       <YouOrAddress address={address} />
       <AddressMoreOptions address={address} />

@@ -1,8 +1,9 @@
+import { CSSProperties } from 'react';
 import { Address, useEnsName } from 'wagmi';
 
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import { truncateAddress } from '~/core/utils/truncateAddress';
-import { Text } from '~/design-system';
+import { TextOverflow } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 type AddressOrEnsProps = {
@@ -10,6 +11,7 @@ type AddressOrEnsProps = {
   color?: TextStyles['color'];
   size: TextStyles['fontSize'];
   weight: TextStyles['fontWeight'];
+  maxWidth?: CSSProperties['maxWidth'];
 };
 
 export function AddressWithENSReverseResolution({
@@ -28,15 +30,16 @@ export function AddressOrEns({
   size = '20pt',
   weight = 'heavy',
   color = 'label',
+  maxWidth,
 }: AddressOrEnsProps) {
   if (!address) return null;
   return (
-    <Text color={color} size={size} weight={weight}>
+    <TextOverflow color={color} size={size} weight={weight} maxWidth={maxWidth}>
       {isENSAddressFormat(address) ? (
         address
       ) : (
         <AddressWithENSReverseResolution address={address as Address} />
       )}
-    </Text>
+    </TextOverflow>
   );
 }
