@@ -14,7 +14,6 @@ import {
   useState,
 } from 'react';
 import { useLocation } from 'react-router';
-import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -22,6 +21,7 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import { isNativePopup } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -62,10 +62,8 @@ const TOP_NAV_HEIGHT = 65;
 const Tabs = memo(function Tabs() {
   const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
   const { state } = useLocation();
-  const [activeTab, setActiveTab] = useState<Tab>(
-    state?.activeTab || popupActiveTab,
-  );
 
+  const [activeTab, setActiveTab] = useState<Tab>('tokens');
   const { trackShortcut } = useKeyboardAnalytics();
 
   const containerRef = useContainerRef();
@@ -75,6 +73,18 @@ const Tabs = memo(function Tabs() {
     setActiveTab(tab);
     saveActiveTab({ tab });
   };
+
+  useEffect(() => {
+    const mountWithSavedTabInPopup = async () => {
+      const isPopup = await isNativePopup();
+      if (state?.tab) {
+        setActiveTab(state.tab);
+      } else if (isPopup) {
+        setActiveTab(popupActiveTab);
+      }
+    };
+    mountWithSavedTabInPopup();
+  }, [popupActiveTab, state?.tab]);
 
   // If we are already in a state where the header is collapsed,
   // then ensure we are scrolling to the top when we change tab.
@@ -90,7 +100,7 @@ const Tabs = memo(function Tabs() {
           ? COLLAPSED_HEADER_TOP_OFFSET + 4 // don't know why, but +4 solves a shift :)
           : top,
     });
-  }, [containerRef, activeTab]);
+  }, [containerRef]);
 
   useKeyboardShortcut({
     handler: (e) => {
@@ -185,7 +195,7 @@ export const Home = memo(function Home() {
 });
 
 const TopNav = memo(function TopNav() {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   const { scrollY } = useScroll();
   const [isCollapsed, setIsCollapsed] = useState(scrollY.get() > 91);

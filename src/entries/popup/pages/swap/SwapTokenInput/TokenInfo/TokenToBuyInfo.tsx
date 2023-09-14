@@ -4,10 +4,12 @@ import { i18n } from '~/core/languages';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import {
+  abs,
   convertAmountAndPriceToNativeDisplay,
   convertAmountToPercentageDisplay,
   divide,
   handleSignificantDecimals,
+  lessThan,
   subtract,
 } from '~/core/utils/numbers';
 import {
@@ -44,19 +46,22 @@ export const TokenToBuyInfo = ({
   }, [assetToBuy?.native?.price?.amount, currentCurrency, assetToBuyValue]);
 
   const nativeValueDifferenceDisplay = useMemo(() => {
-    if (!assetToSellNativeDisplay?.amount || !assetToBuyNativeDisplay?.amount)
+    if (
+      !assetToSellNativeDisplay?.amount ||
+      assetToSellNativeDisplay?.amount === '0' ||
+      !assetToBuyNativeDisplay?.amount ||
+      assetToBuyNativeDisplay?.amount === '0'
+    )
       return null;
+    const division = divide(
+      subtract(assetToBuyNativeDisplay.amount, assetToSellNativeDisplay.amount),
+      assetToBuyNativeDisplay.amount,
+    );
     const nativeDifference = convertAmountToPercentageDisplay(
-      divide(
-        subtract(
-          assetToBuyNativeDisplay.amount,
-          assetToSellNativeDisplay.amount,
-        ),
-        assetToBuyNativeDisplay.amount,
-      ),
+      lessThan(abs(division), 0.01) ? '-0.01' : division,
     );
     return nativeDifference;
-  }, [assetToBuyNativeDisplay?.amount, assetToSellNativeDisplay?.amount]);
+  }, [assetToBuyNativeDisplay, assetToSellNativeDisplay]);
 
   if (!assetToBuy) return null;
   return (
