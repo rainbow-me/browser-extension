@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { useCurrentAddressStore } from '~/core/state';
 
 import {
@@ -14,8 +12,8 @@ import { useKeyboardShortcut } from './useKeyboardShortcut';
 export function useSwitchWalletShortcuts(disable?: boolean) {
   const { sortedAccounts } = useAccounts();
   const { setCurrentAddress } = useCurrentAddressStore();
-  const [shouldDebounce, setShouldDebounce] = useState(false);
   const { trackShortcut } = useKeyboardAnalytics();
+
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (!switchNetworkMenuIsActive() && !getInputIsFocused()) {
@@ -27,13 +25,11 @@ export function useSwitchWalletShortcuts(disable?: boolean) {
               key: e.key.toString(),
               type: 'global.switchWallet',
             });
-            setShouldDebounce(true);
             setCurrentAddress(sortedAccounts[accountIndex]?.address);
-            setTimeout(() => setShouldDebounce(false), 250);
           }
         }
       }
     },
-    condition: () => !disable && !shouldDebounce,
+    condition: () => !disable,
   });
 }
