@@ -51,11 +51,11 @@ export const estimateUnlockAndSwap = async (
 
   const nativeAsset =
     isLowerCaseMatch(ETH_ADDRESS_AGGREGATOR, sellTokenAddress) ||
-    isNativeAsset(sellTokenAddress as Address, chainId);
+    isNativeAsset(sellTokenAddress, chainId);
 
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
-      owner: accountAddress as Address,
+      owner: accountAddress,
       amount: sellAmount,
       assetToUnlock: assetToSell,
       spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
@@ -93,7 +93,8 @@ export const createUnlockAndSwapRap = async (
 ) => {
   let actions: RapAction<'swap' | 'unlock'>[] = [];
 
-  const { sellAmount, quote, chainId, assetToSell } = swapParameters;
+  const { sellAmount, quote, chainId, assetToSell, assetToBuy } =
+    swapParameters;
 
   const {
     from: accountAddress,
@@ -153,6 +154,7 @@ export const createUnlockAndSwapRap = async (
     quote,
     meta: swapParameters.meta,
     assetToSell,
+    assetToBuy,
   } as RapSwapActionParameters<'swap'>);
   actions = actions.concat(swap);
 

@@ -117,6 +117,9 @@
         "recovery_phrase_label": "Wallet Group",
         "private_key_label": "Private Key",
         "hardware_wallet_label": "Hardware Wallet",
+        "backed_up": "Backed up",
+        "not_backed_up": "Not backed up",
+        "back_up_now": "Back Up Now",
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
@@ -126,7 +129,9 @@
           "delete_wallet": "Delete Wallet",
           "view_private_key": "View Private Key",
           "copy_address": "Copy Address",
-          "hidden": "Hidden"
+          "hidden": "Hidden",
+          "back_up_now": "Back Up Now",
+          "last_backed_up": "Last backed up as %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "Name your wallet",
@@ -190,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "Contract Interaction",
     "savings": "Savings",
-    "deposited": "Deposited",
-    "withdrew": "Withdrew"
+    "cancelled": "Transaction Cancelled",
+    "burn": {
+      "pending": "Burning",
+      "confirmed": "Burnned",
+      "failed": "Burn Failed"
+    },
+    "cancel": {
+      "pending": "Canceling",
+      "confirmed": "Cancelled",
+      "failed": "Cancel Failed"
+    },
+    "send": {
+      "pending": "Sending",
+      "confirmed": "Sent",
+      "failed": "Send Failed"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "Received",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "Withdrawing",
+      "confirmed": "Withdrew",
+      "failed": "Withdraw Failed"
+    },
+    "deposit": {
+      "pending": "Depositing",
+      "confirmed": "Deposited",
+      "failed": "Deposit Failed"
+    },
+    "mint": {
+      "pending": "Minting",
+      "confirmed": "Minted",
+      "failed": "Mint Failed"
+    },
+    "approve": {
+      "pending": "Approving",
+      "confirmed": "Approved",
+      "failed": "Approve Failed"
+    },
+    "contract_interaction": {
+      "pending": "Interaction Pending",
+      "confirmed": "Interacted",
+      "failed": "Interaction Failed"
+    },
+    "swap": {
+      "pending": "Swapping",
+      "confirmed": "Swapped",
+      "failed": "Swap Failed"
+    },
+    "borrow": {
+      "pending": "Borrowing",
+      "confirmed": "Borrowed",
+      "failed": "Borrow Failed"
+    },
+    "claim": {
+      "pending": "Claiming",
+      "confirmed": "Claimed",
+      "failed": "Claim Failed"
+    },
+    "deployment": {
+      "pending": "Deploying",
+      "confirmed": "Deployed",
+      "failed": "Deploy Failed"
+    },
+    "repay": {
+      "pending": "Repaying",
+      "confirmed": "Repayed",
+      "failed": "Repay Failed"
+    },
+    "stake": {
+      "pending": "Staking",
+      "confirmed": "Staked",
+      "failed": "Stake Failed"
+    },
+    "unstake": {
+      "pending": "Unstaking",
+      "confirmed": "Unstaked",
+      "failed": "Unstake Failed"
+    },
+    "purchase": {
+      "pending": "Purchasing",
+      "confirmed": "Purchased",
+      "failed": "Purchase Failed"
+    },
+    "revoke": {
+      "pending": "Revoking",
+      "confirmed": "Revoked",
+      "failed": "Revoke Failed"
+    },
+    "sale": {
+      "pending": "Selling",
+      "confirmed": "Sold",
+      "failed": "Sale Failed"
+    },
+    "bridge": {
+      "pending": "Bridging",
+      "confirmed": "Bridged",
+      "failed": "Bridge Failed"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "Airdropped",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "Wrapping",
+      "confirmed": "Wrapped",
+      "failed": "Wrap Failed"
+    },
+    "unwrap": {
+      "pending": "Unwrapping",
+      "confirmed": "Unwrapped",
+      "failed": "Unwrap Failed"
+    },
+    "bid": {
+      "pending": "Bidding",
+      "confirmed": "Bid",
+      "failed": "Bid Failed"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -734,6 +857,12 @@
       "connected": "Connected"
     }
   },
+  "wallet_backup_reminder": {
+    "title": "Some of your wallets aren’t backed up",
+    "description": "Some of your wallets aren’t backed up. Back up so you can regain access to your wallets if you lose access to this device.",
+    "button_label_action": "Back Up Now",
+    "button_label_cancel": "Remind Me Later"
+  },
   "approve_request": {
     "wallet_info_title": "wants to connect to your wallet",
     "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions.",
@@ -862,7 +991,38 @@
     "this_month": "This Month",
     "empty_header": "No activity yet",
     "empty_description": "Once you start using your wallet, you will see your transactions here.",
-    "loading_more": "Loading more..."
+    "loading_more": "Loading more...",
+    "no_value": "No value"
+  },
+  "activity_details": {
+    "you": "You",
+    "from": "From",
+    "to": "To",
+    "confirmed_at": "Confirmed at",
+    "confirmations": "Confirmations",
+    "token": "Token",
+    "block": "Block",
+    "value": "Value",
+    "network": "Network",
+    "fee": "Network Fee",
+    "base_fee": "Base Fee",
+    "max_base_fee": "Max Base Fee",
+    "gas_price": "Gas Price",
+    "gas_limit": "Gas Limit",
+    "gas_used": "Gas Used",
+    "max_priority_fee": "Miner Tip",
+    "nonce": "Nonce",
+    "allowance": "Allowance",
+    "unlimited_allowance": "Unlimited %{symbol}",
+    "app": "App",
+    "copy_hash": "Copy Tx Hash",
+    "hash_copied": "Hash Copied",
+    "copy_explorer_url": "Copy Link",
+    "explorer_copied": "Link Copied",
+    "exchange_rate": "Exchange",
+    "collection": "Collection",
+    "token_contract": "Token Contract",
+    "token_standard": "Token Standard"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",
@@ -917,12 +1077,14 @@
       "market_cap": "Market Cap",
       "market_cap_explainer": {
         "title": "Market Cap",
-        "description": "A market cap is the total market value of a token's circulating supply. It is calculated with an average exchange price."
+        "description": "A market cap is the total market value of a token's circulating supply. It is calculated with an average exchange price.",
+        "action": "Got it"
       },
       "fully_diluted": "Fully Diluted",
       "fully_diluted_explainer": {
         "title": "Fully Diluted Market Cap",
-        "description": "The maximum possible market cap of a token if the total supply was available in circulation."
+        "description": "The maximum possible market cap of a token if the total supply was available in circulation.",
+        "action": "Got it"
       },
       "supply": "Supply",
       "max_total_supply": "Max Total Supply",
@@ -1104,5 +1266,9 @@
       "highlighted": "Contact Rainbow",
       "after": " to request more."
     }
+  },
+  "approvals": {
+    "unlimited": "Unlimited",
+    "no_allowance": "No Allowance"
   }
 }

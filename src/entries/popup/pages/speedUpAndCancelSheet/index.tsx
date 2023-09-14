@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import BigNumber from 'bignumber.js';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   Address,
   useAccount,
@@ -19,11 +19,12 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import {
+  NewTransaction,
   RainbowTransaction,
-  TransactionStatus,
-  TransactionType,
+  TxHash,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/hex';
 import { greaterThan, handleSignificantDecimals } from '~/core/utils/numbers';
 import { updateTransaction } from '~/core/utils/transactions';
@@ -58,7 +59,7 @@ const calcGasParamRetryValue = (prevWeiValue?: string) => {
 type SpeedUpAndCancelSheetProps = {
   currentSheet: SheetMode;
   onClose: () => void;
-  transaction: RainbowTransaction | null;
+  transaction: RainbowTransaction;
 };
 
 // governs type of sheet displayed on top of MainLayout
@@ -76,7 +77,7 @@ export function SpeedUpAndCancelSheet({
 
   const { data: transactionResponse } = useTransaction({
     chainId: transaction?.chainId,
-    hash: transaction?.hash as `0x${string}`,
+    hash: transaction?.hash,
   });
   const cancel = currentSheet === 'cancel';
   const handleClose = useCallback(() => {
@@ -182,17 +183,17 @@ export function SpeedUpAndCancelSheet({
   const handleCancellation = async () => {
     const cancellationResult = await sendTransaction(cancelTransactionRequest);
     const cancelTx = {
-      asset: transaction?.asset,
+      ...transaction,
       data: cancellationResult?.data,
-      value: cancellationResult?.value,
+      value: cancellationResult?.value?.toString(),
       from: cancellationResult?.from as Address,
       to: cancellationResult?.from as Address,
-      hash: cancellationResult?.hash,
-      chainId: cancelTransactionRequest?.chainId,
-      status: TransactionStatus.cancelling,
-      type: TransactionType.cancel,
+      hash: cancellationResult?.hash as TxHash,
+      chainId: cancelTransactionRequest?.chainId as ChainId,
+      status: 'pending',
+      type: 'cancel',
       nonce: transaction?.nonce,
-    };
+    } satisfies NewTransaction;
     updateTransaction({
       address: cancellationResult?.from as Address,
       chainId: cancellationResult?.chainId,
@@ -203,17 +204,17 @@ export function SpeedUpAndCancelSheet({
   const handleSpeedUp = async () => {
     const speedUpResult = await sendTransaction(speedUpTransactionRequest);
     const speedUpTransaction = {
-      asset: transaction?.asset,
+      ...transaction,
       data: speedUpResult?.data,
-      value: speedUpResult?.value,
+      value: speedUpResult?.value?.toString(),
       from: speedUpResult?.from as Address,
       to: speedUpResult?.to as Address,
-      hash: speedUpResult?.hash,
+      hash: speedUpResult?.hash as TxHash,
       chainId: speedUpResult?.chainId,
-      status: TransactionStatus.speeding_up,
-      type: TransactionType.send,
+      status: 'pending',
+      type: 'speed_up',
       nonce: transaction?.nonce,
-    };
+    } satisfies NewTransaction;
     updateTransaction({
       address: speedUpResult?.from as Address,
       chainId: speedUpResult?.chainId,
@@ -233,6 +234,7 @@ export function SpeedUpAndCancelSheet({
       <Box
         style={{
           height: window.innerHeight - 64,
+          maxHeight: POPUP_DIMENSIONS.height - 64,
         }}
         padding="12px"
       >

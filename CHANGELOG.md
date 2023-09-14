@@ -17,14 +17,56 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Security
 
+### Internal
+
+### Testing
+
+## [v1.2.13](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.13)
+
+### Changed
+- Introduced a transaction submission loading spinner for the "Send" button in the Send feature, mirroring the behavior in Swaps #916
+- Implemented an explainer for tokens that aren't supported in Swaps because their contract requires a fee on transfer #917
+
+### Fixed
+- Resolved an issue with Rainbow's "default wallet" toggle behavior for users that interacted with dApps across multiple tabs simultaneously #906
+- The dApp and More menus on the core wallet screen can now be toggled properly with the `n` and `.` hotkeys #913
+- Resolved a conflict where the `w` hotkey for the Wallet Switcher could be triggered while the dApp menu is active #913
+
+### Internal
+
+- Resolved an issue with development hot reloading #920
+
+### Testing
+
+- Improvements to e2e reliability, and disabling unstable tests on Firefox #921
+
+## [v1.2.11](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.11)
+
+### Changed
+- Temporarily disabled hardware wallet support on Firefox due to browser restrictions #907
+- Enhanced internalization support for multi-lingual store listings on the Chrome Web Store #895
+
+### Fixed
+- Resolved an issue where some pending transactions would get stuck in the Activity list or transaction nonces would be incorrect for users simultaneously sending transactions across multiple wallets or networks #914
+- Improved transaction gas estimation reliability on Base, Arbitrum, Optimism, and Zora with Rainbow estimates #911
+- Improved gas estimation support for OP Stack chains with an L1 security fee #911
+- Improved behavior on dApps that use Web3Modal by supporting the expected `window.ethereum.providers` provider ordering #910
+
+### Internal
+- Upgraded to TypeScript 5 to enhance type safety #890
+
+### Testing
+- Shortcuts support for end-to-end tests #899
+- Addressed timeouts in end-to-end testing to foster more consistent results #909
+
 ## [v1.2.3](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.3)
 
-## Added
+### Added
 
 - When accidentally closing the extension while preparing a Swap or Send or managing your wallets in Settings, Rainbow will now restore your state and let you continue where you left off #878
 - You can now Disconnect (`D`) your wallet or Switch Wallet (`W`) to change the wallet connected to a dApp from the dApp Menu in the top-left. You can always open this menu with the `N` shortcut, and follow the shortcut hints to drill-down without touching your mouse #866
 
-## Changed
+### Changed
 
 - Flashbots support now includes more builders for faster transaction inclusion #903
 - Provider injection is now available for Firefox for a future release #859
@@ -39,13 +81,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.1.79](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.79)
 
-## Added
+### Added
 
 - Command K (⌘K or Ctrl+K) is now available to search and launch screens, toggle settings, search your wallets and tokens, and search ENS and public addresses to quickly watch a new wallet. ⌘⏎ or ⇧⏎ are available to expose additional actions for wallets and tokens. Press ESC to go back or close. #869
 - dApp Account Switch functionality when switching wallets while interacting with a dApp #845 #863 #860
 - Language option in Settings and internationalization support for Latin American Spanish, Simplified Chinese, Japanese, French, Brazilian Portuguese, Hindi, Turkish, and Russian #817
 
-## Changed
+### Changed
 
 - State restoration for the Swap and Send flows so that user selections and input are sticky for a short period of time for when you need to close the pop-up or back-out to copy an address #852
 - Paginated scroll and loading indicators on the Tokens and Activity interfaces for heavy wallets #880

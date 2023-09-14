@@ -2,6 +2,7 @@ import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import {
   Outlet,
+  RouteObject,
   RouterProvider,
   createHashRouter,
   useLocation,
@@ -12,6 +13,8 @@ import { screen } from '~/analytics/screen';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useNavRestorationStore } from '~/core/state/navRestoration';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { Box } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
@@ -29,6 +32,7 @@ import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
+import { ActivityDetails } from './pages/home/Activity/ActivityDetails';
 import { ConnectedApps } from './pages/home/ConnectedApps';
 import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
@@ -76,10 +80,21 @@ import { Welcome } from './pages/welcome';
 import { ROUTES } from './urls';
 import { getInputIsFocused } from './utils/activeElement';
 import { simulateTab } from './utils/simulateTab';
+import { zIndexes } from './utils/zIndexes';
+
+const ChildRoute = (props: React.PropsWithChildren) => (
+  <Box
+    position="absolute"
+    style={{ ...POPUP_DIMENSIONS, zIndex: zIndexes.CHILD_ROUTE }}
+  >
+    {props.children}
+  </Box>
+);
 
 const ROUTE_DATA = [
   {
     path: ROUTES.ROOT,
+    index: true,
     element: (
       <AnimatedRoute direction="base" protectedRoute>
         <RootHandler />
@@ -88,20 +103,36 @@ const ROUTE_DATA = [
   },
   {
     path: ROUTES.HOME,
-    index: true,
     element: (
       <AnimatedRoute direction="base" protectedRoute>
         <Home />
+        <Outlet />
       </AnimatedRoute>
     ),
-  },
-  {
-    path: ROUTES.TOKEN_DETAILS(':uniqueId'),
-    element: (
-      <AnimatedRoute direction="base" protectedRoute>
-        <TokenDetails />
-      </AnimatedRoute>
-    ),
+    children: [
+      {
+        path: ROUTES.TOKEN_DETAILS(':uniqueId'),
+        element: (
+          <ChildRoute>
+            <AnimatedRoute
+              background="surfacePrimaryElevated"
+              direction="base"
+              protectedRoute
+            >
+              <TokenDetails />
+            </AnimatedRoute>
+          </ChildRoute>
+        ),
+      },
+      {
+        path: ROUTES.ACTIVITY_DETAILS(':chainId', ':hash'),
+        element: (
+          <ChildRoute>
+            <ActivityDetails />
+          </ChildRoute>
+        ),
+      },
+    ],
   },
   {
     path: ROUTES.APPROVE_APP_REQUEST,
@@ -749,22 +780,22 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
   },
-];
+] satisfies RouteObject[];
 
 const RootLayout = () => {
-  const location = useLocation();
+  const { pathname, state } = useLocation();
   const { setLastPage, shouldRestoreNavigation } = useNavRestorationStore();
 
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);
-  }, [location.pathname]);
+  }, [pathname]);
 
   React.useEffect(() => {
-    analytics.screen(screen[location.pathname], { path: location.pathname });
+    analytics.screen(screen[pathname], { path: pathname });
     if (!shouldRestoreNavigation) {
-      setLastPage(location.pathname);
+      setLastPage(pathname);
     }
-  }, [location.pathname, setLastPage, shouldRestoreNavigation]);
+  }, [pathname, setLastPage, shouldRestoreNavigation]);
 
   useGlobalShortcuts();
   useCommandKShortcuts();
@@ -773,7 +804,11 @@ const RootLayout = () => {
     <FullScreenBackground>
       <AnimatePresence mode="popLayout">
         <div>
-          <Outlet key={location.pathname} />
+          <Outlet
+            // skip the page transition with a unique state.skipTransitionOnRoute
+            // the animate presence only runs on the <Outlet /> when it's key changes
+            key={state?.skipTransitionOnRoute || pathname}
+          />
         </div>
       </AnimatePresence>
       <CommandK />

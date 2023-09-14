@@ -1,6 +1,6 @@
-import React, { ReactElement, useCallback, useMemo, useState } from 'react';
+import { ReactElement, useCallback, useMemo, useState } from 'react';
 
-import { upperFirst } from '~/core/utils/strings';
+import { capitalize } from '~/core/utils/strings';
 import { Bleed, Box, Inline, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
@@ -88,7 +88,7 @@ const RouteProtocol = ({
         </Box>
       )}
       <Text color="label" size="14pt" weight="semibold">
-        {upperFirst(protocolName)}
+        {capitalize(protocolName)}
       </Text>
       <Box background="fillSecondary" borderRadius="round" padding="4px">
         <Text color="labelSecondary" size="12pt" weight="semibold">

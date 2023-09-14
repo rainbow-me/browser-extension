@@ -243,7 +243,7 @@ interface InputRefAPI {
 interface ToAddressProps {
   toAddressOrName: string;
   toEnsName?: string;
-  toAddress: Address;
+  toAddress?: Address;
   handleToAddressChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearToAddress: () => void;
   setToAddressOrName: (adrressOrName: string) => void;
@@ -291,7 +291,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
 
     const inputVisible =
       ((!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName)) ||
-      !isAddress(toAddress);
+      !isAddress(toAddress || '');
 
     const selectWalletAndCloseDropdown = useCallback(
       (address: Address) => {

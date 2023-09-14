@@ -1,10 +1,10 @@
+/* eslint-disable default-param-last */
 import { currentCurrencyStore } from '../state';
 
 export const createNumberFormatter = (options?: Intl.NumberFormatOptions) => {
   const formatter = new Intl.NumberFormat(navigator.language, {
-    minimumSignificantDigits: 3,
+    minimumSignificantDigits: 1,
     maximumSignificantDigits: 4,
-    minimumFractionDigits: 2,
     ...options,
   });
   return {
@@ -15,37 +15,42 @@ export const createNumberFormatter = (options?: Intl.NumberFormatOptions) => {
   };
 };
 
-export const { format: formatNumber } = createNumberFormatter();
-
-export const createCurrencyFormatter = (
+export const formatNumber = (
+  n: number | undefined | null | string,
   options?: Intl.NumberFormatOptions,
-  currency = currentCurrencyStore.getState().currentCurrency,
+) => createNumberFormatter(options).format(n);
+
+export const formatCurrencyParts = (
+  n: number | string = 0,
+  options?: Intl.NumberFormatOptions,
 ) => {
+  const currency = currentCurrencyStore.getState().currentCurrency;
   const formatter = createNumberFormatter({
     style: 'currency',
     currency,
+    minimumFractionDigits: 2,
     ...options,
   });
-  return {
-    ...formatter,
-    formatToParts: (n: number | string = 0) => {
-      const parts = formatter.formatToParts(+n);
-      const symbolIndex = parts.findIndex((p) => p.type === 'currency');
-      const value = parts.reduce(
-        (v, p) => (p.type !== 'currency' ? v + p.value : v),
-        '',
-      );
 
-      return {
-        symbolAtStart: symbolIndex === 0, // some locales put the symbol at the end
-        symbol: parts[symbolIndex].value,
-        value,
-        raw: parts.reduce((result, p) => result + p.value, ''),
-      };
-    },
+  const parts = formatter.formatToParts(+n);
+  const symbolIndex = parts.findIndex((p) => p.type === 'currency');
+  if (currency === 'ETH') parts[symbolIndex].value = 'Ξ';
+
+  const value = parts.reduce(
+    (v, p) => (p.type !== 'currency' ? v + p.value : v),
+    '',
+  );
+
+  return {
+    symbolAtStart: symbolIndex === 0, // some locales put the symbol at the end
+    symbol: parts[symbolIndex].value,
+    value,
+    raw: parts.reduce((result, p) => result + p.value, ''),
   };
 };
-
-export const { format: formatCurrency, formatToParts: formatCurrencyParts } =
-  createCurrencyFormatter();
 export type FormattedCurrencyParts = ReturnType<typeof formatCurrencyParts>;
+
+export const formatCurrency = (
+  n: number | string = 0,
+  options?: Intl.NumberFormatOptions,
+) => formatCurrencyParts(n, options).raw.split(/\s/).join('');
