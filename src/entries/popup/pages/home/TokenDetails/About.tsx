@@ -75,7 +75,7 @@ export const InfoRow = ({
     display="flex"
     alignItems="center"
     justifyContent="space-between"
-    gap="16px"
+    gap="4px"
   >
     <Inline alignVertical="center" space="12px" wrap={false}>
       <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
