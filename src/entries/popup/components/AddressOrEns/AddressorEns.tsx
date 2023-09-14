@@ -14,6 +14,15 @@ type AddressOrEnsProps = {
   maxWidth?: CSSProperties['maxWidth'];
 };
 
+const truncateEnsName = (ensName: string) => {
+  const parts = ensName.split('.');
+  const truncatedParts = parts.map((part) => {
+    if (part.length > 20) return `${part.slice(0, 8)}…${part.slice(-4)}`;
+    return part;
+  });
+  return truncatedParts.join('.');
+};
+
 export function AddressWithENSReverseResolution({
   address,
 }: {
@@ -21,7 +30,7 @@ export function AddressWithENSReverseResolution({
 }) {
   // Attempt reverse resoltion first
   const { data: ensName } = useEnsName({ address });
-  if (ensName) return <>{ensName}</>;
+  if (ensName) return <>{truncateEnsName(ensName)}</>;
   return <>{truncateAddress(address || '0x')}</>;
 }
 
@@ -30,13 +39,12 @@ export function AddressOrEns({
   size = '20pt',
   weight = 'heavy',
   color = 'label',
-  maxWidth,
 }: AddressOrEnsProps) {
   if (!address) return null;
   return (
-    <TextOverflow color={color} size={size} weight={weight} maxWidth={maxWidth}>
+    <TextOverflow color={color} size={size} weight={weight}>
       {isENSAddressFormat(address) ? (
-        address
+        truncateEnsName(address)
       ) : (
         <AddressWithENSReverseResolution address={address as Address} />
       )}

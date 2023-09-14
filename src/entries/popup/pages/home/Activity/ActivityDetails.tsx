@@ -111,7 +111,6 @@ const YouOrAddress = ({ address }: { address: Address }) => {
               size="12pt"
               weight="semibold"
               color="labelQuaternary"
-              maxWidth={150}
             />
             )
           </Inline>
@@ -125,7 +124,6 @@ const YouOrAddress = ({ address }: { address: Address }) => {
       size="12pt"
       weight="semibold"
       color="labelQuaternary"
-      maxWidth={150}
     />
   );
 };
