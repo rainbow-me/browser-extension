@@ -31,6 +31,11 @@ export const CursorTooltip = ({
   hint?: string;
 }) => {
   const [open, setOpen] = useState(false);
+
+  if (process.env.IS_TESTING) {
+    return <Box>{children}</Box>;
+  }
+
   return (
     <>
       <Tooltip
