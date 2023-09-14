@@ -1,7 +1,8 @@
+import { isAddress } from '@ethersproject/address';
 import { Address } from 'wagmi';
 import create from 'zustand';
 
-import { NewTransaction, RainbowTransaction } from '~/core/types/transactions';
+import { NewTransaction, PendingTransaction } from '~/core/types/transactions';
 import { parseNewTransaction } from '~/core/utils/transactions';
 
 import { currentCurrencyStore } from '../currentSettings';
@@ -9,19 +10,19 @@ import { createStore } from '../internal/createStore';
 
 export interface PendingTransactionsState {
   [key: Address]: {
-    pendingTransactions: RainbowTransaction[];
+    pendingTransactions: PendingTransaction[];
   };
   getPendingTransactions: ({
     address,
   }: {
     address?: Address;
-  }) => RainbowTransaction[];
+  }) => PendingTransaction[];
   setPendingTransactions: ({
     address,
     pendingTransactions,
   }: {
     address?: Address;
-    pendingTransactions: RainbowTransaction[];
+    pendingTransactions: PendingTransaction[];
   }) => void;
 }
 
@@ -33,7 +34,7 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
         const pendingTransactions = (
           get()?.[address]?.pendingTransactions || []
         ).map((tx) => {
-          if (tx?.pending) {
+          if (tx?.status === 'pending') {
             return parseNewTransaction(tx as NewTransaction, currentCurrency);
           } else {
             return tx;
@@ -57,7 +58,22 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
   {
     persist: {
       name: 'pendingTransactions',
-      version: 0,
+      version: 1,
+      migrate(persistedState, version) {
+        const state = persistedState as PendingTransactionsState;
+        if (version === 0) {
+          Object.keys(state).forEach((address) => {
+            if (!isAddress(address)) return;
+            state[address]?.pendingTransactions?.forEach((tx) => {
+              if ('pending' in tx) {
+                tx.status = 'pending';
+                delete tx.pending;
+              }
+            });
+          });
+        }
+        return state;
+      },
     },
   },
 );

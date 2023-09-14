@@ -1,7 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
-import { formatEther } from '@ethersproject/units';
 import { Address, erc20ABI, getContract, getProvider } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
@@ -9,7 +8,7 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -199,20 +198,22 @@ export const unlock = async ({
   if (!approval) throw new RainbowError('unlock: error executeApprove');
 
   const transaction = {
-    amount: formatEther(approval.value || ''),
     asset: assetToUnlock,
     data: approval.data,
-    value: approval.value,
+    value: approval.value?.toString(),
+    changes: [],
     from: parameters.fromAddress,
     to: assetAddress,
-    hash: approval.hash,
+    hash: approval.hash as TxHash,
     chainId: approval.chainId,
     nonce: approval.nonce,
-    status: TransactionStatus.approving,
-    type: TransactionType.send,
+    status: 'pending',
+    type: 'approve',
+    approvalAmount: 'UNLIMITED',
     ...gasParams,
-  };
-  await addNewTransaction({
+  } satisfies NewTransaction;
+
+  addNewTransaction({
     address: parameters.fromAddress as Address,
     chainId: approval.chainId as ChainId,
     transaction,

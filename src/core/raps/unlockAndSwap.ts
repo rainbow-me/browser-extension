@@ -93,7 +93,8 @@ export const createUnlockAndSwapRap = async (
 ) => {
   let actions: RapAction<'swap' | 'unlock'>[] = [];
 
-  const { sellAmount, quote, chainId, assetToSell } = swapParameters;
+  const { sellAmount, quote, chainId, assetToSell, assetToBuy } =
+    swapParameters;
 
   const {
     from: accountAddress,
@@ -153,6 +154,7 @@ export const createUnlockAndSwapRap = async (
     quote,
     meta: swapParameters.meta,
     assetToSell,
+    assetToBuy,
   } as RapSwapActionParameters<'swap'>);
   actions = actions.concat(swap);
 

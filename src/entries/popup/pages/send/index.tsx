@@ -30,7 +30,7 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { handleAssetAccentColor } from '~/core/utils/colors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
@@ -214,18 +214,24 @@ export function Send() {
           chainId: connectedToHardhat ? ChainId.hardhat : chainId,
           data,
         });
-        if (result) {
-          const transaction = {
-            amount: assetAmount,
+        if (result && asset) {
+          const transaction: NewTransaction = {
+            changes: [
+              {
+                direction: 'out',
+                asset,
+                value: assetAmount,
+              },
+            ],
             asset,
             data: result.data,
-            value: result.value,
+            value: result.value.toString(),
             from: fromAddress,
             to: txToAddress,
-            hash: result.hash,
+            hash: result.hash as TxHash,
             chainId,
-            status: TransactionStatus.sending,
-            type: TransactionType.send,
+            status: 'pending',
+            type: 'send',
             nonce: result.nonce,
             gasPrice: (
               selectedGas.transactionGasParams as TransactionLegacyGasParams

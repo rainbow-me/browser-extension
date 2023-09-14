@@ -17,7 +17,10 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { RainbowTransaction } from '~/core/types/transactions';
+import {
+  PendingTransaction,
+  RainbowTransaction,
+} from '~/core/types/transactions';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -58,16 +61,24 @@ export default function ({
             .map((p) => p.transactions)
             .flat()
             .filter((t) => isLowerCaseMatch(t.from, address))
-            .reduce((latestTxMap, currentTx) => {
-              const currentChain = currentTx?.chainId;
-              if (currentChain) {
-                const latestTx = latestTxMap.get(currentChain);
-                if (!latestTx) {
-                  latestTxMap.set(currentChain, currentTx);
+            .reduce(
+              (latestTxMap, currentTx) => {
+                const currentChain = currentTx?.chainId;
+                if (currentChain) {
+                  const latestTx = latestTxMap.get(currentChain);
+                  if (!latestTx) {
+                    latestTxMap.set(currentChain, currentTx);
+                  }
                 }
-              }
-              return latestTxMap;
-            }, new Map(SUPPORTED_CHAIN_IDS.map((chain) => [chain, null as RainbowTransaction | null])));
+                return latestTxMap;
+              },
+              new Map(
+                SUPPORTED_CHAIN_IDS.map((chain) => [
+                  chain,
+                  null as RainbowTransaction | null,
+                ]),
+              ),
+            );
           watchForPendingTransactionsReportedByRainbowBackend({
             currentAddress: address,
             pendingTransactions,
@@ -89,7 +100,7 @@ export default function ({
   const transactionsAfterCutoff = useMemo(() => {
     if (!cutoff) return transactions;
     const cutoffIndex = transactions.findIndex(
-      (tx) => (tx.minedAt || Infinity) < cutoff,
+      (tx) => tx.status !== 'pending' && tx.minedAt < cutoff,
     );
     if (!cutoffIndex) return transactions;
     return [...transactions].slice(0, cutoffIndex);
@@ -97,9 +108,10 @@ export default function ({
   const formattedTransactions = useMemo(
     () =>
       Object.entries(
-        selectTransactionsByDate(
-          pendingTransactions.concat(transactionsAfterCutoff),
-        ),
+        selectTransactionsByDate([
+          ...pendingTransactions,
+          ...transactionsAfterCutoff,
+        ]),
       ).flat(2),
     [pendingTransactions, transactionsAfterCutoff],
   );
@@ -181,7 +193,7 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   latestTransactions,
 }: {
   currentAddress: Address;
-  pendingTransactions: RainbowTransaction[];
+  pendingTransactions: PendingTransaction[];
   latestTransactions: Map<ChainId, RainbowTransaction | null>;
 }) {
   const { setNonce } = nonceStore.getState();

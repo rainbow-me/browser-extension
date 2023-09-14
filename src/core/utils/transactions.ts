@@ -1,10 +1,9 @@
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Provider } from '@ethersproject/providers';
+import { FixedNumber } from '@ethersproject/bignumber';
+import { Provider, TransactionResponse } from '@ethersproject/providers';
+import { formatUnits } from '@ethersproject/units';
 import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
 import { Address } from 'wagmi';
-
-import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
@@ -14,36 +13,26 @@ import {
   WETH_ADDRESS,
   smartContractMethods,
 } from '../references';
-import { fetchRegistryLookup } from '../resources/transactions/registryLookup';
 import {
   currentCurrencyStore,
   nonceStore,
   pendingTransactionsStore,
 } from '../state';
-import { AddressOrEth, ParsedUserAsset } from '../types/assets';
+import { AddressOrEth, ParsedAsset, ParsedUserAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
-  ProtocolType,
+  PaginatedTransactionsApiResponse,
   RainbowTransaction,
   TransactionDirection,
-  TransactionStatus,
   TransactionType,
-  ZerionTransaction,
-  ZerionTransactionStatus,
+  transactionTypeShouldHaveChanges,
 } from '../types/transactions';
 
-import { parseAsset } from './assets';
-import { getBlockExplorerHostForChain, isL2Chain } from './chains';
+import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
+import { getBlockExplorerHostForChain } from './chains';
 import { convertStringToHex } from './hex';
-import {
-  convertAmountAndPriceToNativeDisplay,
-  convertAmountToBalanceDisplay,
-  convertRawAmountToBalance,
-  convertRawAmountToNativeDisplay,
-  isZero,
-} from './numbers';
-import { isLowerCaseMatch } from './strings';
+import { capitalize } from './strings';
 
 /**
  * @desc remove hex prefix
@@ -96,440 +85,196 @@ export const getDataForTokenTransfer = (value: string, to: string): string => {
 };
 
 type ParseTransactionArgs = {
-  tx: ZerionTransaction;
+  tx: PaginatedTransactionsApiResponse;
   currency: SupportedCurrencyKey;
   chainId: ChainId;
 };
 
-export async function parseTransaction({
-  tx,
-  currency,
-  chainId,
-}: ParseTransactionArgs): Promise<RainbowTransaction | RainbowTransaction[]> {
-  if (tx.changes.length) {
-    return tx.changes.map((internalTxn, index) => {
-      const address = (internalTxn?.asset?.asset_code?.toLowerCase() ??
-        '0x') as Address;
-      const decimals = internalTxn?.asset?.decimals || 0;
-      const parsedAsset = parseAsset({
-        address,
-        asset: internalTxn?.asset,
-        currency,
-      });
-      const priceUnit =
-        internalTxn.price ?? internalTxn?.asset?.price?.value ?? 0;
-      const valueUnit: number = internalTxn?.value || 0;
-      const nativeDisplay = convertRawAmountToNativeDisplay(
-        valueUnit,
-        decimals,
-        priceUnit,
-        currency,
-      );
+const getAssetFromChanges = (
+  changes: { direction: TransactionDirection; asset: ParsedUserAsset }[],
+  type: TransactionType,
+) => {
+  if (type === 'sale')
+    return changes?.find((c) => c?.direction === 'out')?.asset;
+  return changes[0]?.asset;
+};
 
-      const status = getTransactionLabel({
-        direction: internalTxn.direction || tx.direction,
-        pending: false,
-        protocol: tx.protocol,
-        status: tx.status,
-        type: tx.type,
-      });
+const getDescription = (
+  asset: ParsedAsset | undefined,
+  type: TransactionType,
+  meta: PaginatedTransactionsApiResponse['meta'],
+) => {
+  if (asset?.type === 'nft') return asset.symbol || asset.name;
+  if (type === 'cancel') return i18n.t('transactions.cancelled');
 
-      const title = getTitle({
-        protocol: tx.protocol,
-        status,
-        type: tx.type,
-      });
+  return asset?.name || meta.action;
+};
 
-      const description = getDescription({
-        name: parsedAsset?.name,
-        status,
-        type: tx.type,
-      });
+const parseFees = (
+  fee: PaginatedTransactionsApiResponse['fee'],
+  nativeAssetDecimals: number,
+) => {
+  const {
+    gas_price,
+    gas_limit,
+    max_base_fee,
+    max_priority_fee,
+    gas_used,
+    base_fee,
+    type_label,
+  } = fee.details || {};
 
-      return {
-        address: (parsedAsset.address.toLowerCase() === ETH_ADDRESS
-          ? ETH_ADDRESS
-          : parsedAsset.address) as Address,
-        asset: parsedAsset,
-        balance: convertRawAmountToBalance(valueUnit, { decimals }),
-        description,
-        from: (internalTxn.address_from ?? tx.address_from) as Address,
-        hash: `${tx.hash}-${index}`,
-        minedAt: tx.mined_at,
-        name: parsedAsset.name,
-        native: nativeDisplay,
-        chainId,
-        nonce: tx.nonce,
-        pending: false,
-        protocol: tx.protocol,
-        status,
-        symbol: parsedAsset.symbol,
-        title,
-        to: (internalTxn.address_to ?? tx.address_to) as Address,
-        type: tx.type,
-      };
-    });
-  }
-
-  return parseTransactionWithEmptyChanges({
-    tx,
-    currency,
-    chainId,
-  });
-}
-
-const parseTransactionWithEmptyChanges = async ({
-  tx,
-  currency,
-  chainId,
-}: ParseTransactionArgs): Promise<RainbowTransaction> => {
-  const methodName = await fetchRegistryLookup({
-    data: null,
-    to: tx.address_to,
-    chainId,
-    hash: tx.hash,
-  });
-
-  const parsedAsset = tx.meta.asset
-    ? parseAsset({
-        address: tx.meta.asset.asset_code,
-        asset: tx.meta.asset,
-        currency,
-        chainId,
-      })
-    : await getNativeAssetForNetwork({ chainId });
-
-  const priceUnit = 0;
-  const valueUnit = 0;
-  const nativeDisplay = convertRawAmountToNativeDisplay(
-    0,
-    18,
-    priceUnit,
-    currency,
+  const rollupFee = BigInt(
+    fee.details?.rollup_fee_details?.l1_fee || '0', // zero when it's not a rollup
   );
-
-  const status = getTransactionLabel({
-    direction: tx.direction,
-    pending: false,
-    protocol: tx.protocol,
-    status: tx.status,
-    type: tx.type,
-  });
-
-  const title = getTitle({
-    protocol: tx.protocol,
-    status,
-    type: tx.type,
-  });
-
-  const description = getDescription({
-    name: parsedAsset?.name || '',
-    status,
-    type: tx.type,
-  });
+  const feeValue = FixedNumber.from(
+    formatUnits(BigInt(fee.value) + rollupFee, nativeAssetDecimals),
+  );
+  const feePrice = FixedNumber.fromString(fee.price.toString());
 
   return {
-    asset: parsedAsset,
-    address: ETH_ADDRESS as Address,
-    balance: isL2Chain(chainId)
-      ? { amount: '', display: '-' }
-      : convertRawAmountToBalance(valueUnit, { decimals: 18 }),
-    description: description || methodName || 'Signed',
-    from: tx?.address_from as Address,
-    hash: `${tx.hash}-${0}`,
-    minedAt: tx.mined_at,
-    name:
-      status === TransactionStatus.contract_interaction
-        ? methodName
-        : parsedAsset?.name || 'Signed',
-    native: nativeDisplay,
-    chainId,
-    nonce: tx.nonce,
-    pending: false,
-    protocol: tx.protocol,
-    status,
-    symbol: 'contract',
-    title: title ?? i18n.t('transactions.contract_interaction'),
-    to: tx.address_to as Address,
-    type: TransactionType.contract_interaction,
+    fee: feeValue.toString(),
+    feeInNative: feeValue.mulUnsafe(feePrice).toString(),
+    feeType: type_label,
+    gasUsed: gas_used?.toString(),
+    maxFeePerGas: max_base_fee?.toString(),
+    maxPriorityFeePerGas: max_priority_fee?.toString(),
+    baseFee: base_fee?.toString(),
+    gasPrice: gas_price?.toString(),
+    gasLimit: gas_limit?.toString(),
   };
 };
 
-const getTitle = ({
-  protocol,
-  status,
-  type,
-}: {
-  protocol?: ProtocolType;
-  status: TransactionStatus;
-  type?: TransactionType;
-}) => {
+export function parseTransaction({
+  tx,
+  currency,
+  chainId,
+}: ParseTransactionArgs): RainbowTransaction | undefined {
+  const { status, hash, meta, nonce, protocol } = tx;
+
+  const changes = tx.changes.filter(Boolean).map((change) => ({
+    ...change,
+    asset: parseUserAsset({
+      asset: change.asset,
+      balance: change.value?.toString() || '0',
+      currency,
+    }),
+    value: change.value || undefined,
+  }));
+
+  const type = meta.type;
+
   if (
-    protocol &&
-    (type === TransactionType.deposit || type === TransactionType.withdraw)
-  ) {
-    if (
-      status === TransactionStatus.deposited ||
-      status === TransactionStatus.withdrew ||
-      status === TransactionStatus.sent ||
-      status === TransactionStatus.received
-    ) {
-      if (protocol === ProtocolType.compound) {
-        return i18n.t('transactions.savings');
-      } else {
-        return ProtocolType?.[protocol];
-      }
-    }
-  }
-  return capitalize(status);
-};
+    !type ||
+    (transactionTypeShouldHaveChanges(type) && changes.length === 0) ||
+    !tx.address_from
+  )
+    return; // filters some spam or weird api responses
 
-const getTransactionLabel = ({
-  direction,
-  pending,
-  protocol,
-  status,
-  type,
-}: {
-  direction: TransactionDirection;
-  pending: boolean;
-  protocol: ProtocolType | undefined;
-  status: ZerionTransactionStatus | TransactionStatus;
-  type?: TransactionType;
-}) => {
-  if (status === TransactionStatus.cancelling)
-    return TransactionStatus.cancelling;
+  const asset: RainbowTransaction['asset'] = meta.asset?.asset_code
+    ? parseAsset({ asset: meta.asset, currency })
+    : getAssetFromChanges(changes, type);
 
-  if (status === TransactionStatus.cancelled)
-    return TransactionStatus.cancelled;
+  const direction = tx.direction || getDirection(type);
 
-  if (status === TransactionStatus.speeding_up)
-    return TransactionStatus.speeding_up;
+  const description = getDescription(asset, type, meta);
 
-  if (pending && type === TransactionType.purchase)
-    return TransactionStatus.purchasing;
+  const nativeAsset = changes.find((change) => change?.asset.isNativeAsset);
+  const nativeAssetPrice = FixedNumber.fromString(
+    nativeAsset?.price?.toString() || '0',
+  );
 
-  const isFromAccount = direction === TransactionDirection.out;
-  const isToAccount = direction === TransactionDirection.in;
-  const isSelf = direction === TransactionDirection.self;
+  const value =
+    nativeAsset?.value &&
+    formatUnits(nativeAsset.value.toString(), nativeAsset.asset.decimals);
+  const valueInNative = FixedNumber.from(value || '0')
+    .mulUnsafe(nativeAssetPrice)
+    .toString();
 
-  if (pending && type === TransactionType.authorize)
-    return TransactionStatus.approving;
+  const nativeAssetDecimals = 18; // we only support networks with 18 decimals native assets rn, backend will change when we support more
 
-  if (pending && type === TransactionType.deposit) {
-    if (protocol === ProtocolType.compound) {
-      return TransactionStatus.depositing;
-    } else {
-      return TransactionStatus.sending;
-    }
-  }
+  const { feeInNative, ...fee } = parseFees(tx.fee, nativeAssetDecimals);
 
-  if (pending && type === TransactionType.withdraw) {
-    if (protocol === ProtocolType.compound) {
-      return TransactionStatus.withdrawing;
-    } else {
-      return TransactionStatus.receiving;
-    }
-  }
+  const native = {
+    fee: feeInNative,
+    value: valueInNative,
+  };
 
-  if (pending && isFromAccount) return TransactionStatus.sending;
-  if (pending && isToAccount) return TransactionStatus.receiving;
+  const contract = meta.contract_name && {
+    name: meta.contract_name,
+    iconUrl: meta.contract_icon_url,
+  };
 
-  if (status === TransactionStatus.failed) return TransactionStatus.failed;
-  if (status === TransactionStatus.dropped) return TransactionStatus.dropped;
-
-  if (type === TransactionType.trade && isFromAccount)
-    return TransactionStatus.swapped;
-
-  if (type === TransactionType.authorize) return TransactionStatus.approved;
-  if (type === TransactionType.purchase) return TransactionStatus.purchased;
-  if (type === TransactionType.cancel) return TransactionStatus.cancelled;
-
-  if (type === TransactionType.deposit) {
-    if (protocol === ProtocolType.compound) {
-      return TransactionStatus.deposited;
-    } else {
-      return TransactionStatus.sent;
-    }
-  }
-
-  if (type === TransactionType.withdraw) {
-    if (protocol === ProtocolType.compound) {
-      return TransactionStatus.withdrew;
-    } else {
-      return TransactionStatus.received;
-    }
-  }
-
-  if (isSelf) return TransactionStatus.sent;
-
-  if (type === TransactionType.execution)
-    return TransactionStatus.contract_interaction;
-  if (isFromAccount) return TransactionStatus.sent;
-  if (isToAccount) return TransactionStatus.received;
-
-  return TransactionStatus.unknown;
-};
-
-const getDescription = ({
-  name,
-  status,
-  type,
-}: {
-  name: string;
-  status: TransactionStatus;
-  type: TransactionType;
-}) => {
-  switch (type) {
-    case TransactionType.deposit:
-      return status === TransactionStatus.depositing ||
-        status === TransactionStatus.sending
-        ? name
-        : `${i18n.t('transactions.deposited')} ${name}`;
-    case TransactionType.withdraw:
-      return status === TransactionStatus.withdrawing ||
-        status === TransactionStatus.receiving
-        ? name
-        : `${i18n.t('transactions.withdrew')} ${name}`;
-    default:
-      return name;
-  }
-};
+  return {
+    from: tx.address_from,
+    to: tx.address_to,
+    title: i18n.t(`transactions.${type}.${status}`),
+    description,
+    hash,
+    chainId: +chainId,
+    status,
+    nonce,
+    protocol,
+    type,
+    direction,
+    value,
+    changes,
+    asset,
+    approvalAmount: meta.quantity,
+    minedAt: tx.mined_at,
+    blockNumber: tx.block_number,
+    confirmations: tx.block_confirmations,
+    contract,
+    native,
+    ...fee,
+  } as RainbowTransaction;
+}
 
 export const parseNewTransaction = (
-  txDetails: NewTransaction,
-  nativeCurrency: SupportedCurrencyKey,
-): RainbowTransaction => {
-  let balance;
-  const {
-    amount,
-    asset,
-    data,
-    from,
-    gasLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    chainId = ChainId.mainnet,
-    nonce,
-    hash: txHash,
-    protocol,
-    status: txStatus,
-    to,
-    type: txType,
-    txTo,
-    value,
-    flashbots,
-  } = txDetails;
+  tx: NewTransaction,
+  currency: SupportedCurrencyKey,
+) => {
+  const changes = tx.changes?.filter(Boolean).map((change) => ({
+    ...change,
+    asset: parseUserAssetBalances({
+      asset: change.asset,
+      balance: change.value?.toString() || '0',
+      currency,
+    }),
+  }));
 
-  if (amount && asset) {
-    balance = {
-      amount,
-      display: convertAmountToBalanceDisplay(amount, asset),
-    };
-  }
-
-  const assetPrice = asset?.price?.value;
-
-  const native = convertAmountAndPriceToNativeDisplay(
-    amount ?? 0,
-    assetPrice ?? 0,
-    nativeCurrency,
-  );
-  const hash = txHash ?? `${txHash}-0`;
-
-  const status = txStatus ?? TransactionStatus.sending;
-  const type = txType ?? TransactionType.send;
-
-  const title = getTitle({
-    protocol: protocol,
-    status,
-    type,
-  });
-
-  const description = getDescription({
-    name: asset?.name || '',
-    status,
-    type,
-  });
+  const asset = changes?.[0]?.asset;
+  const methodName = 'Unknown method';
 
   return {
-    address: (asset?.address ?? ETH_ADDRESS) as Address,
-    asset,
-    balance,
-    data,
-    description,
-    from,
-    gasLimit,
-    gasPrice,
-    hash,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    name: asset?.name,
-    native,
-    chainId,
-    nonce,
-    pending: true,
-    protocol,
-    status,
-    symbol: asset?.symbol,
-    title,
-    to,
-    txTo: txTo || to,
-    type,
-    value,
-    flashbots,
-  };
+    ...tx,
+    status: 'pending',
+    data: tx.data,
+    title: i18n.t(`transactions.${tx.type}.${tx.status}`),
+    description: asset?.name || methodName,
+    from: tx.from,
+    changes,
+    hash: tx.hash,
+    chainId: tx.chainId,
+    nonce: tx.nonce,
+    protocol: tx.protocol,
+    to: tx.to,
+    type: tx.type,
+    flashbots: tx.flashbots,
+    gasPrice: tx.gasPrice,
+    maxFeePerGas: tx.maxFeePerGas,
+    maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
+  } satisfies RainbowTransaction;
 };
 
-function getTransactionConfirmedState(
-  type?: TransactionType,
-): TransactionStatus {
-  switch (type) {
-    case TransactionType.authorize:
-      return TransactionStatus.approved;
-    case TransactionType.deposit:
-      return TransactionStatus.deposited;
-    case TransactionType.withdraw:
-      return TransactionStatus.withdrew;
-    case TransactionType.receive:
-      return TransactionStatus.received;
-    case TransactionType.purchase:
-      return TransactionStatus.purchased;
-    default:
-      return TransactionStatus.sent;
-  }
-}
-
-export function getPendingTransactionData({
-  transaction,
-  transactionStatus,
-}: {
-  transaction: RainbowTransaction;
-  transactionStatus: TransactionStatus;
-}) {
-  const minedAt = Math.floor(Date.now() / 1000);
-  const title = getTitle({
-    protocol: transaction.protocol,
-    status: transactionStatus,
-    type: transaction.type,
-  });
-  return { minedAt, title, pending: false, status: transactionStatus };
-}
-
 export async function getTransactionReceiptStatus({
-  included,
-  transaction,
   transactionResponse,
   provider,
 }: {
-  included: boolean;
-  transaction: RainbowTransaction;
   transactionResponse: TransactionResponse;
   provider: Provider;
 }) {
   let receipt;
-  let status;
 
   try {
     if (transactionResponse) {
@@ -544,36 +289,14 @@ export async function getTransactionReceiptStatus({
     // eslint-disable-next-line no-empty
   } catch (e) {}
 
-  status = receipt?.status || 0;
-  if (!isZero(status)) {
-    const isSelf = isLowerCaseMatch(
-      transaction?.from || '',
-      transaction?.to || '',
-    );
-    const transactionDirection = isSelf
-      ? TransactionDirection.self
-      : TransactionDirection.out;
-    const transactionStatus =
-      transaction.status === TransactionStatus.cancelling
-        ? TransactionStatus.cancelled
-        : getTransactionConfirmedState(transaction?.type);
-    status = getTransactionLabel({
-      direction: transactionDirection,
-      pending: false,
-      protocol: transaction?.protocol,
-      status: transactionStatus,
-      type: transaction?.type,
-    });
-  } else if (included) {
-    status = TransactionStatus.unknown;
-  } else {
-    status = TransactionStatus.failed;
-  }
-  return status;
-}
-
-export function getTransactionHash(tx: RainbowTransaction): string | undefined {
-  return tx.hash?.split('-').shift();
+  if (!receipt) return { status: 'pending' as const };
+  return {
+    status: receipt.status === 0 ? ('confirmed' as const) : ('failed' as const),
+    blockNumber: receipt?.blockNumber,
+    minedAt: Math.floor(Date.now() / 1000),
+    confirmations: receipt?.confirmations,
+    gasUsed: receipt?.gasUsed.toString(),
+  };
 }
 
 export async function getNextNonce({
@@ -685,7 +408,10 @@ export function getTokenBlockExplorerUrl({
   return `http://${blockExplorerHost}/token/${address}`;
 }
 
-const capitalize = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
+export function getBlockExplorerName(chainId: ChainId) {
+  return capitalize(getBlockExplorerHostForChain(chainId).split('.').at?.(-2));
+}
+
 export const getTokenBlockExplorer = ({
   address,
   chainId,
@@ -694,7 +420,7 @@ export const getTokenBlockExplorer = ({
   if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
   return {
     url: getTokenBlockExplorerUrl({ address: _address, chainId }),
-    name: capitalize(getBlockExplorerHostForChain(chainId).split('.').at?.(-2)),
+    name: getBlockExplorerName(chainId),
   };
 };
 
@@ -720,17 +446,33 @@ export const getTransactionFlashbotStatus = async (
     const flashbotStatus = fbStatus.data.status;
     // Make sure it wasn't dropped after 25 blocks or never made it
     if (flashbotStatus === 'FAILED' || flashbotStatus === 'CANCELLED') {
-      const transactionStatus = TransactionStatus.dropped;
+      const status = 'failed';
       const minedAt = Math.floor(Date.now() / 1000);
-      const title = getTitle({
-        protocol: transaction.protocol,
-        status: transactionStatus,
-        type: transaction.type,
-      });
-      return { status: transactionStatus, minedAt, pending: false, title };
+      const title = i18n.t(`transactions.${transaction.type}.failed`);
+      return { status, minedAt, title } as const;
     }
   } catch (e) {
     //
   }
   return null;
+};
+
+const TransactionOutTypes = [
+  'burn',
+  'send',
+  'deposit',
+  'repay',
+  'stake',
+  'sale',
+  'bridge',
+  'bid',
+  'speed_up',
+  'revoke',
+  'deployment',
+  'contract_interaction',
+] as const;
+
+export const getDirection = (type: TransactionType) => {
+  if (TransactionOutTypes.includes(type)) return 'out';
+  return 'in';
 };
