@@ -13,7 +13,7 @@ function debounce(func: CallableFunction, delay: number) {
 }
 
 const recordActivity = debounce(() => {
-  chrome.storage.session.set({ lastUnlock: Date.now() });
+  chrome.storage.session.set({ lastUnlock: new Date().toJSON() });
 }, 1000);
 
 export const IdleTimer = () => {
