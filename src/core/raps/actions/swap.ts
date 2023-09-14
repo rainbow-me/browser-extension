@@ -1,7 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Transaction } from '@ethersproject/transactions';
-import { formatEther } from '@ethersproject/units';
 import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
@@ -16,7 +15,7 @@ import {
 import { Address, getProvider } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
@@ -244,32 +243,43 @@ export const swap = async ({
     throw e;
   }
 
+  if (!swap) throw new RainbowError('swap: error executeSwap');
+
   const transaction = {
-    amount: formatEther(swap?.value?.toString() || ''),
-    asset: parameters.assetToSell,
-    data: swap?.data,
-    value: swap?.value,
-    from: swap?.from as Address,
-    to: swap?.to as Address,
-    hash: swap?.hash,
+    data: swap.data,
+    from: swap.from as Address,
+    to: swap.to as Address,
+    value: quote.value?.toString(),
+    asset: parameters.assetToBuy,
+    changes: [
+      {
+        direction: 'out',
+        asset: parameters.assetToSell,
+        value: quote.sellAmount.toString(),
+      },
+      {
+        direction: 'in',
+        asset: parameters.assetToBuy,
+        value: quote.buyAmount.toString(),
+      },
+    ],
+    hash: swap.hash as TxHash,
     chainId: parameters.chainId,
-    nonce: swap?.nonce,
-    status: TransactionStatus.swapping,
-    type: TransactionType.trade,
+    nonce: swap.nonce,
+    status: 'pending',
+    type: 'swap',
     flashbots: parameters.flashbots,
-    gasPrice: (gasParams as TransactionLegacyGasParams)?.gasPrice,
-    maxFeePerGas: (gasParams as TransactionGasParams)?.maxFeePerGas,
-    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
-      ?.maxPriorityFeePerGas,
-  };
-  await addNewTransaction({
+    ...gasParams,
+  } satisfies NewTransaction;
+
+  addNewTransaction({
     address: parameters.quote.from as Address,
     chainId: parameters.chainId as ChainId,
     transaction,
   });
 
   return {
-    nonce: swap?.nonce,
-    hash: swap?.hash,
+    nonce: swap.nonce,
+    hash: swap.hash,
   };
 };

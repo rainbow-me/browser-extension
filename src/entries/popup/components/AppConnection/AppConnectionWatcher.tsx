@@ -11,6 +11,7 @@ import { isLowerCaseMatch } from '~/core/utils/strings';
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import { useHomePromptQueue } from '../../hooks/useHomePromptsQueue';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { ROUTES } from '../../urls';
@@ -37,6 +38,7 @@ export const AppConnectionWatcher = () => {
   const [accountChangeHappened, setAccountChangeHappened] = useState(false);
   const prevLocationPathname = usePrevious(location.pathname);
   const prevCurrentAddress = usePrevious(currentAddress);
+  const { nextInQueue } = useHomePromptQueue();
 
   const connect = useCallback(() => {
     addSession({
@@ -154,7 +156,8 @@ export const AppConnectionWatcher = () => {
       location.pathname === ROUTES.HOME &&
       (firstLoad || accountChangeHappened) &&
       differentActiveSession &&
-      !appConnectionSwitchWalletsPromptIsActive()
+      !appConnectionSwitchWalletsPromptIsActive() &&
+      nextInQueue === 'app-connection'
     ) {
       setAccountChangeHappened(false);
       hide();
@@ -167,6 +170,7 @@ export const AppConnectionWatcher = () => {
     firstLoad,
     hide,
     location.pathname,
+    nextInQueue,
     prevCurrentAddress,
     triggerCheck,
   ]);

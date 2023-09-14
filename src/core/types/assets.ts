@@ -6,12 +6,14 @@ import { ETH_ADDRESS } from '../references';
 
 import { SearchAsset } from './search';
 
+export type AddressOrEth = Address | typeof ETH_ADDRESS;
+
 export interface ParsedAsset {
   address: AddressOrEth;
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
-    primary: string;
+    primary?: string;
     fallback?: string;
     shadow?: string;
   };
@@ -24,13 +26,15 @@ export interface ParsedAsset {
       display: string;
     };
   };
-  mainnetAddress?: Address | typeof ETH_ADDRESS;
+  mainnetAddress?: AddressOrEth;
   price?: ZerionAssetPrice;
   symbol: string;
   uniqueId: UniqueId;
   decimals: number;
   icon_url?: string;
+  type?: AssetType;
   smallBalance?: boolean;
+  standard?: 'erc-721' | 'erc-1155';
 }
 
 export interface ParsedUserAsset extends ParsedAsset {
@@ -63,10 +67,33 @@ export interface ZerionAssetPrice {
   relative_change_24h?: number;
 }
 
-export type AssetType = 'nft' | 'token';
+export type AssetApiResponse = {
+  asset_code: AddressOrEth;
+  decimals: number;
+  icon_url: string;
+  name: string;
+  price: {
+    value: number;
+    changed_at: number;
+    relative_change_24h: number;
+  };
+  symbol: string;
+  colors?: { primary?: string; fallback?: string; shadow?: string };
+  network?: ChainName;
+  networks?: {
+    [chainId in ChainId]?: {
+      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
+      decimals: number;
+    };
+  };
+  type?: AssetType;
+  interface?: 'erc-721' | 'erc-1155';
+};
+
+type AssetType = ProtocolType | 'nft';
 
 export interface ZerionAsset {
-  asset_code: Address;
+  asset_code: AddressOrEth;
   colors?: {
     primary: string;
     fallback: string;
@@ -75,7 +102,7 @@ export interface ZerionAsset {
     string,
     { address: Address | null; decimals: number }
   >;
-  mainnet_address?: Address;
+  mainnet_address?: AddressOrEth;
   name: string;
   symbol: string;
   decimals: number;
@@ -86,8 +113,6 @@ export interface ZerionAsset {
   price?: ZerionAssetPrice;
   network?: ChainName;
 }
-
-export type AddressOrEth = Address | 'eth';
 
 // protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
 export type ProtocolType =

@@ -4,6 +4,7 @@ import { Address } from 'wagmi';
 import CorrectSeedQuiz from 'static/assets/audio/correct_seed_quiz.mp3';
 import IncorrectSeedQuiz from 'static/assets/audio/incorrect_seed_quiz.mp3';
 import { i18n } from '~/core/languages';
+import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import {
   Box,
   Button,
@@ -146,6 +147,7 @@ export function SeedVerifyQuiz({
   );
   const [selectedWords, setSelectedWords] = useState<SeedWord[]>([]);
 
+  const { setWalletBackedUp } = useWalletBackupsStore();
   const seedBoxBorderColor = useMemo(() => {
     if (validated) return globalColors.green90;
     if (incorrect) return globalColors.red90;
@@ -184,6 +186,7 @@ export function SeedVerifyQuiz({
             setValidated(true);
             new Audio(CorrectSeedQuiz).play();
             setTimeout(() => {
+              setWalletBackedUp({ address });
               onQuizValidated();
             }, 1200);
           } else {
@@ -196,7 +199,7 @@ export function SeedVerifyQuiz({
         setIncorrect(false);
       }
     },
-    [onQuizValidated, seed, selectedWords],
+    [address, onQuizValidated, seed, selectedWords, setWalletBackedUp],
   );
 
   useEffect(() => {

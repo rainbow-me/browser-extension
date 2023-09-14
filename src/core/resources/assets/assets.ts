@@ -107,19 +107,22 @@ function parseAssets(
   chainId: ChainId,
   currency: SupportedCurrencyKey,
 ) {
-  return assets.reduce((assetsDict, asset) => {
-    const address = asset.networks?.[chainId]?.address;
-    if (address) {
-      const parsedAsset = parseAssetMetadata({
-        address,
-        asset,
-        chainId,
-        currency,
-      });
-      assetsDict[parsedAsset?.uniqueId] = parsedAsset;
-    }
-    return assetsDict;
-  }, {} as Record<UniqueId, ParsedAsset>);
+  return assets.reduce(
+    (assetsDict, asset) => {
+      const address = asset.networks?.[chainId]?.address;
+      if (address) {
+        const parsedAsset = parseAssetMetadata({
+          address,
+          asset,
+          chainId,
+          currency,
+        });
+        assetsDict[parsedAsset?.uniqueId] = parsedAsset;
+      }
+      return assetsDict;
+    },
+    {} as Record<UniqueId, ParsedAsset>,
+  );
 }
 
 // ///////////////////////////////////////////////

@@ -13,6 +13,7 @@ import {
   Inline,
   Symbol,
   Text,
+  TextOverflow,
   ThemeProvider,
 } from '~/design-system';
 import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
@@ -239,7 +240,7 @@ export const DropdownMenuItem = ({
       tabIndex={0}
       style={{ minHeight: '34px' }}
     >
-      <Inline alignVertical="center" space="10px">
+      <Inline alignVertical="center" space="10px" wrap={false}>
         {emoji && (
           <Text size="14pt" weight="semibold">
             {emoji}
@@ -255,9 +256,9 @@ export const DropdownMenuItem = ({
         )}
         {leftComponent}
         {typeof children === 'string' ? (
-          <Text size="14pt" weight="semibold">
+          <TextOverflow size="14pt" weight="semibold">
             {children}
-          </Text>
+          </TextOverflow>
         ) : (
           children
         )}

@@ -122,13 +122,15 @@ async function parseConsolidatedTransactions(
   currency: SupportedCurrencyKey,
 ) {
   const data = message?.payload?.transactions || [];
-  const parsedTransactionPromises = data.map((tx) =>
-    parseTransaction({
-      tx,
-      currency,
-      chainId: chainIdFromChainName(tx?.network ?? ChainName.mainnet),
-    }),
-  );
+  const parsedTransactionPromises = data
+    .map((tx) =>
+      parseTransaction({
+        tx,
+        currency,
+        chainId: chainIdFromChainName(tx?.network ?? ChainName.mainnet),
+      }),
+    )
+    .filter(Boolean);
 
   const parsedConsolidatedTransactions = (
     await Promise.all(parsedTransactionPromises)

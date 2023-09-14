@@ -46,7 +46,7 @@ export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
   requiresApprove?: boolean;
   meta?: SwapMetadata;
   assetToSell: ParsedAsset;
-  assetToBuy?: ParsedAsset;
+  assetToBuy: ParsedAsset;
   nonce?: number;
   flashbots?: boolean;
   quote: QuoteTypeMap[T];

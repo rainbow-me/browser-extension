@@ -1,10 +1,14 @@
 import { UniqueId } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
+import { TxHash } from '~/core/types/transactions';
 
 export const ROUTES = {
   ROOT: '/', // RootHandler
   HOME: '/home', // Home
   TOKEN_DETAILS: (uniqueId: UniqueId | ':uniqueId') =>
-    `/token-details/${uniqueId}`,
+    `/home/token-details/${uniqueId}`,
+  ACTIVITY_DETAILS: (chainId: ChainId | ':chainId', hash: TxHash | ':hash') =>
+    `/home/activity-details/${chainId}/${hash}`,
   CONNECTED: '/connected', // ConnectedApps
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect

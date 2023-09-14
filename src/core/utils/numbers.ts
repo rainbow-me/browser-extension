@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import currency from 'currency.js';
+import { BigNumber as EthersBigNumber } from 'ethers';
 import { isNil } from 'lodash';
 
 import { supportedCurrencies } from '~/core/references';
@@ -7,6 +8,9 @@ import { supportedCurrencies } from '~/core/references';
 import { BigNumberish } from './hex';
 
 type nativeCurrencyType = typeof supportedCurrencies;
+
+export const toBigNumber = (v?: string | number | BigNumber) =>
+  v ? EthersBigNumber.from(v) : undefined;
 
 export const abs = (value: BigNumberish): string =>
   new BigNumber(value).abs().toFixed();

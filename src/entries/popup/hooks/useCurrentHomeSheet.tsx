@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
@@ -23,13 +23,13 @@ export function useCurrentHomeSheet() {
     switch (sheet) {
       case 'cancel':
       case 'speedUp':
-        return (
+        return selectedTransaction ? (
           <SpeedUpAndCancelSheet
             currentSheet={sheet}
             onClose={closeSheet}
             transaction={selectedTransaction}
           />
-        );
+        ) : null;
       default:
         return null;
     }

@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { Address, useAccount } from 'wagmi';
+import { Address } from 'wagmi';
 
+import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { KeychainType } from '~/core/types/keychainTypes';
 
@@ -36,7 +37,7 @@ export const useWallets = () => {
     refetchOnReconnect: false,
   });
 
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   return useMemo(() => {
     if (!allWallets)

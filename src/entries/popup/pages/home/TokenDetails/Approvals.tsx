@@ -52,7 +52,9 @@ export function TokenApprovals() {
                 </Inline>
                 <Inline alignVertical="center" space="4px">
                   <Text color="labelSecondary" size="12pt" weight="semibold">
-                    {amount === Number.MAX_VALUE ? 'Unlimited' : amount}
+                    {amount === Number.MAX_VALUE
+                      ? i18n.t('approvals.unlimited')
+                      : amount}
                   </Text>
                   <Symbol
                     size={12}
