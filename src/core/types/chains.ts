@@ -52,4 +52,4 @@ export const ChainNameDisplay = {
   [ChainId.zora]: 'Zora',
   [ChainId.mainnet]: 'Ethereum',
   [ChainId.hardhat]: 'Hardhat',
-};
+} as const;

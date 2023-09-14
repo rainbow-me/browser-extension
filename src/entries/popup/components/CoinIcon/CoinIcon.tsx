@@ -1,10 +1,10 @@
 import { upperCase } from 'lodash';
-import React, { Fragment, ReactNode } from 'react';
-import { Address } from 'wagmi';
+import React, { Fragment, ReactNode, useState } from 'react';
 
 import EthIcon from 'static/assets/ethIcon.png';
 import { ETH_ADDRESS } from '~/core/references';
 import {
+  AddressOrEth,
   ParsedAsset,
   ParsedSearchAsset,
   ParsedUserAsset,
@@ -27,6 +27,7 @@ import {
   fallbackTextStyleXSmall,
   fallbackTextStyleXXSmall,
 } from './CoinIcon.css';
+import { ContractInteractionIcon } from './ContractInteractionIcon';
 
 export function CoinIcon({
   asset,
@@ -54,7 +55,7 @@ export function CoinIcon({
 
   const formattedSymbol = formatSymbol(sym, size);
   const mainnetAddress = asset?.mainnetAddress;
-  const address = (asset?.address || '') as Address;
+  const address = asset?.address;
   const chain = asset?.chainId || ChainId.mainnet;
   const shadowColor = asset?.colors?.primary || '#808088';
 
@@ -71,7 +72,7 @@ export function CoinIcon({
       <CloudinaryCoinIcon
         address={address}
         chainId={chain}
-        mainnetAddress={(mainnetAddress || '') as Address}
+        mainnetAddress={mainnetAddress}
         url={asset?.icon_url}
         size={size}
       >
@@ -170,15 +171,15 @@ function CloudinaryCoinIcon({
   size = 36,
   url,
 }: {
-  address: Address;
+  address?: AddressOrEth;
   chainId: ChainId;
-  mainnetAddress?: Address;
+  mainnetAddress?: AddressOrEth;
   children: React.ReactNode;
   size: number;
   url?: string;
 }) {
   let src = url;
-  const eth = ETH_ADDRESS as Address;
+  const eth = ETH_ADDRESS;
 
   if (address === eth || mainnetAddress === eth) {
     src = EthIcon;
@@ -221,4 +222,146 @@ function formatSymbol(symbol: string, width: number) {
   }
 
   return _cache[key];
+}
+
+const nftRadiusBySize = {
+  14: '4px',
+  16: '4px',
+  20: '6px',
+  36: '10px',
+} as const;
+export const NFTIcon = ({
+  asset,
+  size,
+  badge = false,
+}: {
+  asset: ParsedAsset;
+  size: keyof typeof nftRadiusBySize;
+  badge?: boolean;
+}) => {
+  const chainId = asset.chainId;
+  const [badSrc, setBadSrc] = useState(false);
+  if (!asset.icon_url || badSrc)
+    return (
+      <CoinIcon
+        asset={asset}
+        fallbackText={asset.name}
+        size={size}
+        badge={badge}
+      />
+    );
+  return (
+    <Box position="relative" style={{ minWidth: size, height: size }}>
+      <Box
+        as="img"
+        src={asset.icon_url}
+        style={{ height: size, width: size }}
+        borderRadius={nftRadiusBySize[size]}
+        onError={() => setBadSrc(true)}
+      />
+      <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
+        {badge && chainId !== ChainId.mainnet && (
+          <ChainBadge chainId={chainId} shadow size="16" />
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+export const ContractIcon = ({
+  size,
+  iconUrl,
+  badge,
+  chainId,
+}: {
+  iconUrl?: string;
+  size: keyof typeof nftRadiusBySize;
+  badge?: boolean;
+  chainId?: ChainId;
+}) => {
+  return (
+    <Box position="relative" style={{ maxHeight: size, maxWidth: size }}>
+      {iconUrl ? (
+        <ExternalImage
+          src={iconUrl}
+          width={size}
+          height={size}
+          loading="lazy"
+          style={{ borderRadius: nftRadiusBySize[size] }}
+        />
+      ) : (
+        <ContractInteractionIcon size={size} />
+      )}
+      {badge && chainId && chainId !== ChainId.mainnet && (
+        <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
+          <ChainBadge chainId={chainId} shadow size="16" />
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+export function TwoCoinsIcon({
+  size = 36,
+  under,
+  over,
+  badge = true,
+}: {
+  size?: number;
+  under: ParsedAsset;
+  over: ParsedAsset;
+  badge?: boolean;
+}) {
+  const overSize = size * 0.75;
+  const underSize = size * 0.67;
+
+  const chainId = over.chainId;
+
+  return (
+    <Box position="relative" style={{ minWidth: size, height: size }}>
+      <Box
+        position="absolute"
+        top="0"
+        left="0"
+        style={{
+          zIndex: 1,
+          clipPath: `url(#underTokenClip)`,
+          width: underSize * 0.924544,
+          height: underSize * 0.924544,
+        }}
+      >
+        <CoinIcon
+          asset={under}
+          size={underSize}
+          fallbackText={under.symbol}
+          badge={false}
+        />
+        <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+          <clipPath id="underTokenClip" clipPathUnits="objectBoundingBox">
+            <path d="M0.56,0 C0.251,0,0,0.251,0,0.56 C0,0.731,0.077,0.885,0.199,0.988 C0.237,1,0.29,0.983,0.29,0.933 V0.933 C0.29,0.578,0.578,0.29,0.933,0.29 V0.29 C0.983,0.29,1,0.237,0.988,0.199 C0.885,0.077,0.731,0,0.56,0"></path>
+          </clipPath>
+        </svg>
+      </Box>
+      <Box
+        position="absolute"
+        bottom="0"
+        right="0"
+        borderRadius="round"
+        borderColor="surfaceSecondary"
+        style={{ zIndex: 2 }}
+      >
+        <CoinIcon
+          asset={over}
+          size={overSize}
+          fallbackText={over.symbol}
+          badge={false}
+        />
+      </Box>
+      <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
+        {badge && chainId !== ChainId.mainnet && (
+          <ChainBadge chainId={chainId} shadow size="16" />
+        )}
+      </Box>
+    </Box>
+  );
 }

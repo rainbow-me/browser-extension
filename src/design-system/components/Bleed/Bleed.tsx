@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode, forwardRef } from 'react';
 
 import { Space, spaceToNegativeSpace } from '../../styles/designTokens';
 import { Box } from '../Box/Box';
@@ -14,16 +14,10 @@ interface BleedProps {
   children?: ReactNode;
 }
 
-export function Bleed({
-  children,
-  space,
-  horizontal,
-  vertical,
-  top,
-  bottom,
-  right,
-  left,
-}: BleedProps) {
+export const Bleed = forwardRef<HTMLDivElement, BleedProps>(function Bleed(
+  { children, space, horizontal, vertical, top, bottom, right, left, ...props },
+  ref,
+) {
   const topSpace = top ?? vertical ?? space;
   const bottomSpace = bottom ?? vertical ?? space;
   const leftSpace = left ?? horizontal ?? space;
@@ -31,12 +25,15 @@ export function Bleed({
 
   return (
     <Box
+      ref={ref}
       marginTop={topSpace && spaceToNegativeSpace[topSpace]}
       marginBottom={bottomSpace && spaceToNegativeSpace[bottomSpace]}
       marginLeft={leftSpace && spaceToNegativeSpace[leftSpace]}
       marginRight={rightSpace && spaceToNegativeSpace[rightSpace]}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
     >
       {children}
     </Box>
   );
-}
+});

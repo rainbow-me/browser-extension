@@ -27,9 +27,11 @@ import {
   SymbolName,
   globalColors,
 } from '~/design-system/styles/designTokens';
+import symbols from '~/design-system/symbols/generated';
 
 import { useAvatar } from '../../hooks/useAvatar';
 import { simulateContextClick } from '../../utils/simulateClick';
+import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 
 const { innerWidth: windowWidth } = window;
 
@@ -221,15 +223,21 @@ export const ContextMenuLabel = (props: ContextMenuLabelProps) => {
 interface ContextMenuItemProps {
   children: ReactNode;
   onSelect?: (event: Event) => void;
-  symbolLeft: SymbolName;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  symbolLeft: SymbolName | (string & {});
   color?: TextStyles['color'];
+  shortcut?: string;
 }
+
+const isSymbol = (symbol: string): symbol is SymbolName =>
+  !!symbols[symbol as SymbolName];
 
 export const ContextMenuItem = ({
   children,
   onSelect,
   symbolLeft,
   color,
+  shortcut,
 }: ContextMenuItemProps) => {
   return (
     <Box
@@ -241,6 +249,7 @@ export const ContextMenuItem = ({
       style={{
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'space-between',
         borderRadius: '12px',
         outline: 'none',
       }}
@@ -251,13 +260,17 @@ export const ContextMenuItem = ({
       }}
     >
       <Inline alignVertical="center" space="8px">
-        {symbolLeft && (
+        {isSymbol(symbolLeft) ? (
           <Symbol
             size={16}
             symbol={symbolLeft}
             weight="semibold"
             color={color}
           />
+        ) : (
+          <Text weight="semibold" size="14pt">
+            {symbolLeft}
+          </Text>
         )}
         {typeof children === 'string' ? (
           <Text size="14pt" weight="semibold">
@@ -267,6 +280,7 @@ export const ContextMenuItem = ({
           children
         )}
       </Inline>
+      {shortcut && <ShortcutHint hint={shortcut} />}
     </Box>
   );
 };

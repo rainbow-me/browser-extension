@@ -464,7 +464,7 @@ export const buttonColors = [
     'yellow',
   ),
 ] as const;
-export type ButtonColor = typeof buttonColors[number];
+export type ButtonColor = (typeof buttonColors)[number];
 
 export const shadowColors = [
   'accent',
@@ -484,7 +484,7 @@ export const shadowColors = [
     'yellow',
   ),
 ] as const;
-export type ShadowColor = typeof shadowColors[number];
+export type ShadowColor = (typeof shadowColors)[number];
 
 export type ForegroundColor =
   | 'label'
@@ -617,27 +617,27 @@ export const genericColors = selectForegroundColors(
   'red',
   'yellow',
 );
-export type GenericColor = typeof genericColors[number];
+export type GenericColor = (typeof genericColors)[number];
 
 export const scrimColors = selectForegroundColors(
   'scrim',
   'scrimSecondary',
   'scrimTertiary',
 );
-export type ScrimColor = typeof scrimColors[number];
+export type ScrimColor = (typeof scrimColors)[number];
 
 export const strokeColors = selectForegroundColors(
   'buttonStroke',
   'buttonStrokeSecondary',
 );
-export type StrokeColor = typeof strokeColors[number];
+export type StrokeColor = (typeof strokeColors)[number];
 
 export const separatorColors = selectForegroundColors(
   'separator',
   'separatorSecondary',
   'separatorTertiary',
 );
-export type SeparatorColor = typeof separatorColors[number];
+export type SeparatorColor = (typeof separatorColors)[number];
 
 export const textColors = selectForegroundColors(
   'label',
@@ -654,7 +654,7 @@ export const textColors = selectForegroundColors(
   'bsc',
   ...genericColors,
 );
-export type TextColor = typeof textColors[number];
+export type TextColor = (typeof textColors)[number];
 
 export const fontWeights = {
   regular: 400,
@@ -696,6 +696,7 @@ export const space = {
   '27px': 27,
   '30px': 30,
   '32px': 32,
+  '34px': 34,
   '35px': 35,
   '36px': 36,
   '40px': 40,
@@ -705,6 +706,7 @@ export const space = {
   '52px': 52,
   '60px': 60,
   '64px': 64,
+  '65px': 65,
   '72px': 72,
   '80px': 80,
   '104px': 104,
@@ -736,6 +738,7 @@ export const negativeSpace = {
   '-28px': -28,
   '-30px': -30,
   '-32px': -32,
+  '-34px': -34,
   '-35px': -35,
   '-36px': -36,
   '-40px': -40,
@@ -745,6 +748,7 @@ export const negativeSpace = {
   '-52px': -52,
   '-60px': -60,
   '-64px': -64,
+  '-65px': -65,
   '-72px': -72,
   '-80px': -80,
   '-104px': -104,
@@ -779,6 +783,7 @@ export const spaceToNegativeSpace: Record<
   '28px': '-28px',
   '30px': '-30px',
   '32px': '-32px',
+  '34px': '-34px',
   '35px': '-35px',
   '36px': '-36px',
   '40px': '-40px',
@@ -788,6 +793,7 @@ export const spaceToNegativeSpace: Record<
   '52px': '-52px',
   '60px': '-60px',
   '64px': '-64px',
+  '65px': '-65px',
   '72px': '-72px',
   '80px': '-80px',
   '104px': '-104px',
@@ -823,6 +829,7 @@ export const strokeWeights = {
   '0.5px': 0.5,
   '1px': 1,
   '2px': 2,
+  '3px': 3,
 };
 export type StrokeWeight = keyof typeof strokeWeights;
 
@@ -946,15 +953,37 @@ export const symbolNames = selectSymbolNames(
   'arrow.up.left.and.arrow.down.right',
   'safari',
   'link',
+  'arrow.down.circle',
+  'number',
+  'clock.badge.checkmark',
+  'clock',
+  'number.square',
+  'barometer',
+  'fuelpump.fill',
+  'tag',
+  'checkmark.circle',
+  'flame',
+  'gift',
+  'shippingbox',
+  'plus.app',
+  'sparkle',
+  'bag',
+  'arrow.turn.up.right',
+  'square.stack.3d.up',
+  'minus.circle',
+  'hare',
+  'arrow.turn.left.down',
+  'arrow.turn.right.up',
   'cable.connector',
   'person.fill.viewfinder',
   'circlebadge.2.fill',
   'xmark.bin.fill',
   'globe',
+  'square.grid.2x2',
   '123.rectangle.fill',
   'clock.arrow.2.circlepath',
 );
-export type SymbolName = typeof symbolNames[number];
+export type SymbolName = (typeof symbolNames)[number];
 
 export const radii = {
   round: 9999,

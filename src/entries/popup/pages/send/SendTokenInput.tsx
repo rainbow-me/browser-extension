@@ -10,11 +10,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { ETH_ADDRESS } from '~/core/references';
-import { ParsedUserAsset } from '~/core/types/assets';
+import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -127,7 +125,7 @@ interface SendTokenInputProps {
   asset: ParsedUserAsset | null;
   assets: ParsedUserAsset[];
   selectAssetAddressAndChain: (
-    address: Address | typeof ETH_ADDRESS | '',
+    address: AddressOrEth | '',
     chainId: ChainId,
   ) => void;
   dropdownClosed: boolean;
@@ -171,7 +169,7 @@ export const SendTokenInput = React.forwardRef<
   }, [dropdownVisible, inputRef]);
 
   const onSelectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+    (address: AddressOrEth | '', chainId: ChainId) => {
       selectAssetAddressAndChain(address, chainId);
       setDropdownVisible(false);
     },
@@ -205,7 +203,7 @@ export const SendTokenInput = React.forwardRef<
   }, [inputRef, onSelectAsset, onDropdownAction]);
 
   const selectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+    (address: AddressOrEth | '', chainId: ChainId) => {
       onSelectAsset(address, chainId);
       setInputValue('');
     },

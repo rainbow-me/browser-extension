@@ -14,11 +14,7 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import {
-  TransactionGasParams,
-  TransactionLegacyGasParams,
-} from '~/core/types/gas';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -85,28 +81,20 @@ export function SendTransaction({
       const result = await wallet.sendTransaction(txData);
       if (result) {
         const transaction = {
-          amount: formatEther(result?.value || ''),
-          asset,
+          asset: asset || undefined,
+          value: formatEther(result?.value || ''),
           data: result.data,
-          value: result.value,
           from: txData.from,
           to: txData.to,
-          hash: result.hash,
+          hash: result.hash as TxHash,
           chainId: txData.chainId,
           nonce: result.nonce,
-          status: TransactionStatus.sending,
-          type: TransactionType.send,
-          gasPrice: (
-            selectedGas.transactionGasParams as TransactionLegacyGasParams
-          )?.gasPrice,
-          maxFeePerGas: (
-            selectedGas.transactionGasParams as TransactionGasParams
-          )?.maxFeePerGas,
-          maxPriorityFeePerGas: (
-            selectedGas.transactionGasParams as TransactionGasParams
-          )?.maxPriorityFeePerGas,
-        };
-        await addNewTransaction({
+          status: 'pending',
+          type: 'send',
+          ...selectedGas.transactionGasParams,
+        } satisfies NewTransaction;
+
+        addNewTransaction({
           address: txData.from as Address,
           chainId: txData.chainId as ChainId,
           transaction,

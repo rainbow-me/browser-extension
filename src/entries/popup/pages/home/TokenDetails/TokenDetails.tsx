@@ -213,7 +213,7 @@ export const getCoingeckoUrl = ({
 function MoreOptions({ token }: { token: ParsedUserAsset }) {
   const explorer = getTokenBlockExplorer(token);
   const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
-  const theme = useCurrentThemeStore();
+  const { currentTheme } = useCurrentThemeStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -229,7 +229,7 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
       <DropdownMenuContent align="end">
         <AccentColorProviderWrapper
           color={handleAssetAccentColor(
-            theme.currentTheme,
+            currentTheme,
             token.colors?.primary || token.colors?.fallback,
           )}
         >
@@ -287,10 +287,13 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
 
 export function TokenDetails() {
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
+  const { currentTheme } = useCurrentThemeStore();
 
   const { data: token, isFetched } = useUserAsset(uniqueId);
 
   const { isWatchingWallet } = useWallets();
+
+  const navigate = useRainbowNavigate();
 
   if (!uniqueId || (isFetched && !token)) return <Navigate to={ROUTES.HOME} />;
   if (!token) return null;
@@ -303,7 +306,10 @@ export function TokenDetails() {
 
   return (
     <AccentColorProviderWrapper
-      color={token.colors?.primary || token.colors?.fallback}
+      color={handleAssetAccentColor(
+        currentTheme,
+        token.colors?.primary || token.colors?.fallback,
+      )}
     >
       <Box
         display="flex"
@@ -314,7 +320,15 @@ export function TokenDetails() {
         style={{ borderTop: 0, borderLeft: 0, borderRight: 0 }}
       >
         <Navbar
-          leftComponent={<Navbar.BackButton />}
+          leftComponent={
+            <Navbar.BackButton
+              onClick={() =>
+                navigate(ROUTES.HOME, {
+                  state: { skipTransitionOnRoute: ROUTES.HOME },
+                })
+              }
+            />
+          }
           rightComponent={
             <Inline alignVertical="center" space="7px">
               <FavoriteButton token={token} />

@@ -1,5 +1,3 @@
-import { Address } from 'wagmi';
-
 import { ParsedAsset, ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 
@@ -16,8 +14,8 @@ export const TEST_PK_3 =
 export const RAINBOW_WALLET_ADDRESS =
   '0x7a3d05c70581bd345fe117c06e45f9669205384f';
 
-export const ETH_MAINNET_ASSET: ParsedUserAsset = {
-  address: 'eth' as Address,
+export const ETH_MAINNET_ASSET = {
+  address: 'eth',
   balance: { amount: '10000', display: '10,000.00 ETH' },
   chainId: 1,
   chainName: 'mainnet' as ChainName,
@@ -37,9 +35,10 @@ export const ETH_MAINNET_ASSET: ParsedUserAsset = {
   },
   symbol: 'ETH',
   uniqueId: 'eth_1',
-};
-export const DAI_MAINNET_ASSET: ParsedUserAsset = {
-  address: '0x6b175474e89094c44da98b954eedeac495271d0f' as Address,
+} satisfies ParsedUserAsset;
+
+export const DAI_MAINNET_ASSET = {
+  address: '0x6b175474e89094c44da98b954eedeac495271d0f',
   balance: { amount: '0', display: '0 DAI' },
   chainId: 1,
   chainName: 'mainnet' as ChainName,
@@ -60,12 +59,13 @@ export const DAI_MAINNET_ASSET: ParsedUserAsset = {
   },
   symbol: 'DAI',
   uniqueId: '0x6b175474e89094c44da98b954eedeac495271d0f_1',
-};
-export const USDC_MAINNET_ASSET: ParsedUserAsset = {
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
+} satisfies ParsedUserAsset;
+
+export const USDC_MAINNET_ASSET = {
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   balance: { amount: '0', display: '0 USDC' },
   chainId: 1,
-  chainName: 'mainnet' as ChainName,
+  chainName: ChainName.mainnet,
   colors: { primary: '#2775CA' },
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
@@ -87,8 +87,9 @@ export const USDC_MAINNET_ASSET: ParsedUserAsset = {
   symbol: 'USDC',
   uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
   decimals: 6,
-};
-export const ENS_MAINNET_ASSET: ParsedAsset = {
+} satisfies ParsedUserAsset;
+
+export const ENS_MAINNET_ASSET = {
   address: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72',
   chainId: 1,
   chainName: ChainName.mainnet,
@@ -105,10 +106,10 @@ export const ENS_MAINNET_ASSET: ParsedAsset = {
   symbol: 'ENS',
   uniqueId: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72_1',
   decimals: 18,
-};
+} satisfies ParsedAsset;
 
-export const USDC_ARBITRUM_ASSET: ParsedAsset = {
-  address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8' as Address,
+export const USDC_ARBITRUM_ASSET = {
+  address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
   chainId: ChainId.arbitrum,
   chainName: ChainName.arbitrum,
   colors: { primary: '#2775CA' },
@@ -129,9 +130,9 @@ export const USDC_ARBITRUM_ASSET: ParsedAsset = {
   symbol: 'USDC',
   uniqueId: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8_1' as UniqueId,
   decimals: 6,
-};
+} satisfies ParsedAsset;
 
-export const WETH_MAINNET_ASSET: ParsedAsset = {
+export const WETH_MAINNET_ASSET = {
   address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   chainId: 1,
   chainName: 'mainnet' as ChainName,
@@ -155,7 +156,7 @@ export const WETH_MAINNET_ASSET: ParsedAsset = {
   },
   symbol: 'WETH',
   uniqueId: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2_1',
-};
+} satisfies ParsedAsset;
 
 export async function delay(ms: number) {
   // eslint-disable-next-line no-promise-executor-return

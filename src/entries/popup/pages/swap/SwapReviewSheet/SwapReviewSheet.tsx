@@ -16,7 +16,10 @@ import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { popupInstanceStore } from '~/core/state/popupInstances';
+import {
+  popupInstanceStore,
+  usePopupInstanceStore,
+} from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -223,6 +226,7 @@ const SwapReviewSheetWithQuote = ({
   const { selectedGas } = useGasStore();
   const { setSwapAssetsToRefresh } = useSwapAssetsToRefreshStore();
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
+  const { resetSwapValues } = usePopupInstanceStore();
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
@@ -326,6 +330,7 @@ const SwapReviewSheetWithQuote = ({
               ? 'address'
               : 'mainnetAddress',
           flashbots,
+          tradeAmountUSD: q.tradeAmountUSD,
         })
       : analytics.track(event.swapSubmitted, {
           inputAssetSymbol: assetToSell.symbol,
@@ -340,6 +345,7 @@ const SwapReviewSheetWithQuote = ({
           outputAssetAmount: q.buyAmount as number,
           crosschain: assetToSell.chainId !== assetToBuy.chainId,
           flashbots,
+          tradeAmountUSD: q.tradeAmountUSD,
         });
   }, [
     assetToSell,
@@ -362,9 +368,15 @@ const SwapReviewSheetWithQuote = ({
       );
       return;
     }
+    resetSwapValues();
     executeSwap();
     new Audio(SendSound).play();
-  }, [enoughNativeAssetBalanceForGas, executeSwap, nativeAsset?.symbol]);
+  }, [
+    enoughNativeAssetBalanceForGas,
+    executeSwap,
+    nativeAsset?.symbol,
+    resetSwapValues,
+  ]);
 
   const goBack = useCallback(() => {
     hideSwapReview();
@@ -677,7 +689,7 @@ const SwapReviewSheetWithQuote = ({
         <Separator strokeWeight="1px" color="separatorSecondary" />
         <Box padding="20px">
           <AccentColorProviderWrapper
-            color={assetToBuy.colors.primary || assetToBuy.colors.fallback}
+            color={assetToBuy.colors?.primary || assetToBuy.colors?.fallback}
           >
             <Box>
               <Rows space="20px">

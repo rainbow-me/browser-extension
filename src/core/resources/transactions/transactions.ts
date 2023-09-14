@@ -103,15 +103,17 @@ async function parseTransactions(
   currency: SupportedCurrencyKey,
 ) {
   const data = message?.payload?.transactions || [];
-  const parsedTransactionPromises = data.map((tx) =>
-    parseTransaction({
-      tx,
-      currency,
-      chainId: chainIdFromChainName(
-        (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
-      ),
-    }),
-  );
+  const parsedTransactionPromises = data
+    .map((tx) =>
+      parseTransaction({
+        tx,
+        currency,
+        chainId: chainIdFromChainName(
+          (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
+        ),
+      }),
+    )
+    .filter(Boolean);
 
   const parsedTransactions = (
     await Promise.all(parsedTransactionPromises)

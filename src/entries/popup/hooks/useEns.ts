@@ -20,9 +20,9 @@ export const useEns = ({
   return {
     ensName: isENSAddressFormat(addressOrName)
       ? addressOrName
-      : (ensName as string),
+      : ensName || undefined,
     ensAddress: isAddress(addressOrName)
       ? addressOrName
-      : (ensAddress as Address),
+      : ensAddress || undefined,
   };
 };

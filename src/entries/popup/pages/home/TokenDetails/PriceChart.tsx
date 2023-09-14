@@ -1,14 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { useReducer, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
-import { ETH_ADDRESS } from '~/core/references';
-import { ParsedUserAsset } from '~/core/types/assets';
+import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
 import {
   Box,
@@ -31,25 +30,6 @@ const parsePriceChange = (
   if (value > 0) return { color: 'green', symbol: 'arrow.up' };
   return { color: 'labelSecondary', symbol: '' };
 };
-
-function formatDate(date: number | Date) {
-  const targetDate = new Date(date);
-
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
-
-  if (today.toDateString() === targetDate.toDateString())
-    return i18n.t('activity.today');
-  if (yesterday.toDateString() === targetDate.toDateString())
-    return i18n.t('activity.yesterday');
-
-  return targetDate.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 function PriceChange({
   changePercentage = 0,
@@ -100,7 +80,7 @@ function TokenPrice({ token }: { token: ParsedUserAsset }) {
 }
 
 const chartTimes = ['hour', 'day', 'week', 'month', 'year'] as const;
-type ChartTime = typeof chartTimes[number];
+type ChartTime = (typeof chartTimes)[number];
 const getChartTimeArg = (selected: ChartTime) =>
   chartTimes.reduce(
     (args, time) => ({ ...args, [time]: time === selected }),
@@ -111,7 +91,7 @@ type PriceChartTimeData = { points?: [timestamp: number, price: number][] };
 const fetchPriceChart = async (
   time: ChartTime,
   chainId: ChainId,
-  address: Address | typeof ETH_ADDRESS,
+  address: AddressOrEth,
 ) => {
   const priceChart = await metadataClient
     .priceChart({ address, chainId, ...getChartTimeArg(time) })
@@ -127,8 +107,8 @@ const usePriceChart = ({
   chainId,
   time,
 }: {
-  mainnetAddress?: Address | typeof ETH_ADDRESS;
-  address: Address | typeof ETH_ADDRESS;
+  mainnetAddress?: AddressOrEth;
+  address: AddressOrEth;
   chainId: ChainId;
   time: ChartTime;
 }) => {

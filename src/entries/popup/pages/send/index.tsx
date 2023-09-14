@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useAnimationControls } from 'framer-motion';
-import React, {
+import {
   ChangeEvent,
   useCallback,
   useEffect,
@@ -14,7 +14,6 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
@@ -25,12 +24,13 @@ import {
   usePopupInstanceStore,
 } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { handleAssetAccentColor } from '~/core/utils/colors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
@@ -190,6 +190,7 @@ export function Send() {
     sendAmount,
     sendField,
     sendTokenAddressAndChain,
+    resetSendValues,
     saveSendTokenAddressAndChain,
   } = usePopupInstanceStore();
 
@@ -205,6 +206,7 @@ export function Send() {
         if (type === 'HardwareWalletKeychain') {
           setWaitingForDevice(true);
         }
+        resetSendValues();
         const result = await sendTransaction({
           from: fromAddress,
           to: txToAddress,
@@ -212,18 +214,24 @@ export function Send() {
           chainId: connectedToHardhat ? ChainId.hardhat : chainId,
           data,
         });
-        if (result) {
-          const transaction = {
-            amount: assetAmount,
+        if (result && asset) {
+          const transaction: NewTransaction = {
+            changes: [
+              {
+                direction: 'out',
+                asset,
+                value: assetAmount,
+              },
+            ],
             asset,
             data: result.data,
-            value: result.value,
+            value: result.value.toString(),
             from: fromAddress,
             to: txToAddress,
-            hash: result.hash,
+            hash: result.hash as TxHash,
             chainId,
-            status: TransactionStatus.sending,
-            type: TransactionType.send,
+            status: 'pending',
+            type: 'send',
             nonce: result.nonce,
             gasPrice: (
               selectedGas.transactionGasParams as TransactionLegacyGasParams
@@ -266,6 +274,7 @@ export function Send() {
     },
     [
       fromAddress,
+      resetSendValues,
       txToAddress,
       value,
       connectedToHardhat,
@@ -279,8 +288,8 @@ export function Send() {
   );
 
   const selectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
-      selectAssetAddressAndChain(address as Address, chainId);
+    (address: AddressOrEth | '', chainId: ChainId) => {
+      selectAssetAddressAndChain(address, chainId);
       saveSendTokenAddressAndChain({
         address,
         chainId,
@@ -433,35 +442,38 @@ export function Send() {
         description={explainerSheetParams.description}
         actionButton={explainerSheetParams.actionButton}
       />
-      <ContactPrompt
-        address={toAddress}
-        show={contactSaveAction?.show}
-        action={contactSaveAction?.action}
-        onSaveContactAction={setSaveContactAction}
-        handleClose={() =>
-          setSaveContactAction({ show: false, action: 'save' })
-        }
-      />
-      <AccentColorProviderWrapper color={assetAccentColor}>
-        <ReviewSheet
-          show={showReviewSheet}
-          onCancel={closeReviewSheet}
-          onSend={handleSend}
-          toAddress={toAddress}
-          asset={asset}
-          primaryAmountDisplay={independentAmountDisplay.display}
-          secondaryAmountDisplay={dependentAmountDisplay.display}
-          onSaveContactAction={setSaveContactAction}
-          waitingForDevice={waitingForDevice}
-        />
-      </AccentColorProviderWrapper>
-
+      {toAddress && (
+        <>
+          <ContactPrompt
+            address={toAddress}
+            show={contactSaveAction?.show}
+            action={contactSaveAction?.action}
+            onSaveContactAction={setSaveContactAction}
+            handleClose={() =>
+              setSaveContactAction({ show: false, action: 'save' })
+            }
+          />
+          <AccentColorProviderWrapper color={assetAccentColor}>
+            <ReviewSheet
+              show={showReviewSheet}
+              onCancel={closeReviewSheet}
+              onSend={handleSend}
+              toAddress={toAddress}
+              asset={asset}
+              primaryAmountDisplay={independentAmountDisplay.display}
+              secondaryAmountDisplay={dependentAmountDisplay.display}
+              onSaveContactAction={setSaveContactAction}
+              waitingForDevice={waitingForDevice}
+            />
+          </AccentColorProviderWrapper>
+        </>
+      )}
       <Navbar
         title={i18n.t('send.title')}
         background={'surfaceSecondary'}
         leftComponent={<Navbar.CloseButton />}
         rightComponent={
-          isMyWallet(toAddress) ? undefined : (
+          !toAddress || isMyWallet(toAddress) ? undefined : (
             <NavbarContactButton
               onSaveAction={setSaveContactAction}
               toAddress={toAddress}
