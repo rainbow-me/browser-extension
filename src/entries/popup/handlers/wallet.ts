@@ -74,8 +74,6 @@ export const signTransactionFromHW = async (
     chainId: transactionRequest.chainId as number,
   });
 
-  console.log('selectedGas', JSON.stringify(selectedGas, null, 2));
-
   const params = {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
