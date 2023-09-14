@@ -243,7 +243,7 @@ export const parseNewTransaction = (
     }),
   }));
 
-  const asset = changes?.[0]?.asset;
+  const asset = changes?.[0]?.asset || tx.asset;
   const methodName = 'Unknown method';
 
   return {
@@ -261,6 +261,7 @@ export const parseNewTransaction = (
     to: tx.to,
     type: tx.type,
     flashbots: tx.flashbots,
+    feeType: 'maxFeePerGas' in tx ? 'eip-1559' : 'legacy',
     gasPrice: tx.gasPrice,
     maxFeePerGas: tx.maxFeePerGas,
     maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
