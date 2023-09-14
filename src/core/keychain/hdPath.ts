@@ -19,7 +19,6 @@ export const getHDPathForVendorAndType = (
       break;
     case 'Trezor':
       return `${DEFAULT_HD_PATH}/${index}`;
-      break;
     default:
       return `${DEFAULT_HD_PATH}/${index}`;
   }

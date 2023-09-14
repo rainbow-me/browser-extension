@@ -382,8 +382,7 @@ export const connectTrezor = async () => {
   try {
     // We don't want the index to be part of the path
     // because we need the public key
-    const path = getHDPathForVendorAndType(0, 'Trezor').substring(0, -2);
-
+    const path = getHDPathForVendorAndType(0, 'Trezor').slice(0, -2);
     const result = await window.TrezorConnect.ethereumGetPublicKey({
       path,
       coin: 'eth',
