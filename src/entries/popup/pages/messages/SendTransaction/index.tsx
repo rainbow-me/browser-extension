@@ -79,16 +79,9 @@ export function SendTransaction({
         chainId: connectedToHardhat ? ChainId.hardhat : activeSession?.chainId,
       };
       const result = await wallet.sendTransaction(txData);
-      if (result && asset) {
+      if (result) {
         const transaction = {
-          changes: [
-            {
-              direction: 'out',
-              asset,
-              value: formatEther(result?.value || ''),
-            },
-          ],
-          asset,
+          asset: asset || undefined,
           value: formatEther(result?.value || ''),
           data: result.data,
           from: txData.from,
