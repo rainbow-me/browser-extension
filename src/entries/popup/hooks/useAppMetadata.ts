@@ -6,6 +6,7 @@ import {
   getPublicAppIcon,
   isValidUrl,
 } from '~/core/utils/connectedApps';
+import { capitalize } from '~/core/utils/strings';
 
 interface AppMetadataProps {
   url?: string;
@@ -39,8 +40,12 @@ export function useAppMetadata({ url, title }: AppMetadataProps): AppMetadata {
     url,
     appHost,
     appHostName,
-    appName: dappMetadata?.dApp?.name || appName,
-    appShortName: dappMetadata?.dApp?.shortName || appName,
+    appName: dappMetadata?.dApp?.name
+      ? capitalize(dappMetadata?.dApp?.name)
+      : appName,
+    appShortName: dappMetadata?.dApp?.name
+      ? capitalize(dappMetadata?.dApp?.shortName)
+      : appName,
     appLogo: dappMetadata?.dApp?.iconURL || appLogo,
   };
 }
