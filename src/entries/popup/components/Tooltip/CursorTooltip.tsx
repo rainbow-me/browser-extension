@@ -32,7 +32,7 @@ export const CursorTooltip = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  if (process.env.IS_TESTING) {
+  if (process.env.IS_TESTING === 'true') {
     return <Box>{children}</Box>;
   }
 
