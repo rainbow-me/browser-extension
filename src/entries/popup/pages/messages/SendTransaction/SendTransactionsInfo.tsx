@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
@@ -17,7 +18,6 @@ import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
-import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
@@ -26,10 +26,10 @@ interface SendTransactionProps {
 }
 
 export function SendTransactionInfo({ request }: SendTransactionProps) {
-  const { appHostName, appLogo, appHost } = useAppMetadata({
+  const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
-  const { activeSession } = useAppSession({ host: appHost });
+  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { flashbotsEnabled } = useFlashbotsEnabledStore();
   const nativeAsset = useNativeAssetForNetwork({
     chainId: activeSession?.chainId || ChainId.mainnet,
@@ -90,8 +90,12 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                   borderRadius="18px"
                   alignItems="center"
                 >
-                  {appLogo ? (
-                    <ExternalImage src={appLogo} width="32" height="32" />
+                  {dappMetadata?.appLogo ? (
+                    <ExternalImage
+                      src={dappMetadata.appLogo}
+                      width="32"
+                      height="32"
+                    />
                   ) : null}
                 </Box>
               </Inline>
@@ -102,7 +106,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                   weight="semibold"
                   color="labelSecondary"
                 >
-                  {appHostName}
+                  {dappMetadata?.appHostName}
                 </Text>
                 <Text align="center" size="20pt" weight="semibold">
                   {methodName}

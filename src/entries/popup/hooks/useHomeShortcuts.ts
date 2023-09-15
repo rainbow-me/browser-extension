@@ -3,6 +3,7 @@ import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
@@ -21,7 +22,6 @@ import {
 import { clickHeaderLeft, clickHeaderRight } from '../utils/clickHeader';
 
 import { useActiveTab } from './useActiveTab';
-import { useAppMetadata } from './useAppMetadata';
 import { useAppSession } from './useAppSession';
 import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
@@ -37,8 +37,8 @@ export function useHomeShortcuts() {
   const { trackShortcut } = useKeyboardAnalytics();
   const navigateToSwaps = useNavigateToSwaps();
   const { url } = useActiveTab();
-  const { appHost } = useAppMetadata({ url });
-  const { disconnectSession } = useAppSession({ host: appHost });
+  const { data: dappMetadata } = useDappMetadata({ url });
+  const { disconnectSession } = useAppSession({ host: dappMetadata?.appHost });
 
   const getHomeShortcutsAreActive = useCallback(() => {
     return sheet === 'none' && !selectedTransaction && !selectedToken;
@@ -55,9 +55,9 @@ export function useHomeShortcuts() {
   const disconnectFromApp = useCallback(() => {
     disconnectSession({
       address: address,
-      host: appHost,
+      host: dappMetadata?.appHost || '',
     });
-  }, [appHost, address, disconnectSession]);
+  }, [dappMetadata?.appHost, address, disconnectSession]);
 
   const openProfile = useCallback(
     () =>

@@ -18,8 +18,6 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
         () => null,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as any,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        null as any,
       );
       const version = persistOptions.version;
       const newStore = persistOptions.serialize?.({ state, version });

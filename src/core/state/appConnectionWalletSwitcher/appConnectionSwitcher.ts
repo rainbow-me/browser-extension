@@ -15,9 +15,9 @@ export interface AppConnectionWalletSwitcherStore {
     host,
   }: {
     address: Address;
-    host: string;
+    host?: string;
   }) => boolean;
-  appHasInteractedWithNudgeSheet: ({ host }: { host: string }) => boolean;
+  appHasInteractedWithNudgeSheet: ({ host }: { host?: string }) => boolean;
   setNudgeSheetDisabled: () => void;
   setAddressInAppHasInteractedWithNudgeSheet: ({
     address,
@@ -48,11 +48,13 @@ export const appConnectionWalletSwitcherStore =
       addressInAppHasInteractedWithNudgeSheet: ({ address, host }) => {
         const nudgeSheetInteractionsByAddressByApp =
           get().nudgeSheetInteractionsByAddressByApp;
-        return !!nudgeSheetInteractionsByAddressByApp?.[host]?.[address];
+        return (
+          !!host && !!nudgeSheetInteractionsByAddressByApp?.[host]?.[address]
+        );
       },
       appHasInteractedWithNudgeSheet: ({ host }) => {
         const nudgeSheetInteractionsByApp = get().nudgeSheetInteractionsByApp;
-        return !!nudgeSheetInteractionsByApp[host];
+        return !!host && !!nudgeSheetInteractionsByApp[host];
       },
       setNudgeSheetDisabled: () => {
         set({

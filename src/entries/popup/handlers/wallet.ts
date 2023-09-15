@@ -11,6 +11,7 @@ import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
+import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
 import {
   RapSwapActionParameters,
   RapTypes,
@@ -29,6 +30,8 @@ import { toHex } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
+import { PathOptions } from '../pages/hw/addByIndexSheet';
+
 import {
   sendTransactionFromLedger,
   signMessageByTypeFromLedger,
@@ -41,9 +44,6 @@ import {
 } from './trezor';
 import { walletAction } from './walletAction';
 import { HARDWARE_WALLETS } from './walletVariables';
-
-const DEFAULT_HD_PATH = "44'/60'/0'/0";
-const DEFAULT_LEDGER_LIVE_PATH = "m/44'/60'/";
 
 const signMessageByType = async (
   msgData: string | Bytes,
@@ -334,12 +334,13 @@ export const exportAccount = async (address: Address, password: string) => {
 export const importAccountAtIndex = async (
   type: string | 'Trezor' | 'Ledger',
   index: number,
+  currentPath?: PathOptions,
 ) => {
   let address = '';
   switch (type) {
     case 'Trezor':
       {
-        const path = `m/${DEFAULT_HD_PATH}/${index}`;
+        const path = getHDPathForVendorAndType(index, 'Trezor');
         const result = await window.TrezorConnect.ethereumGetAddress({
           path,
           coin: 'eth',
@@ -358,11 +359,11 @@ export const importAccountAtIndex = async (
     case 'Ledger': {
       const transport = await TransportWebHID.create();
       const appEth = new AppEth(transport);
-      const result = await appEth.getAddress(
-        `${DEFAULT_LEDGER_LIVE_PATH}/${index}'/0/0`,
-        false,
-        false,
-      );
+      const hdPath =
+        currentPath === 'legacy'
+          ? getHDPathForVendorAndType(index, 'Ledger', 'legacy')
+          : getHDPathForVendorAndType(index, 'Ledger');
+      const result = await appEth.getAddress(hdPath, false, false);
       await transport?.close();
 
       address = result.address;
@@ -379,8 +380,9 @@ export const connectTrezor = async () => {
     return HARDWARE_WALLETS.MOCK_ACCOUNT;
   }
   try {
-    const path = `m/${DEFAULT_HD_PATH}`;
-
+    // We don't want the index to be part of the path
+    // because we need the public key
+    const path = getHDPathForVendorAndType(0, 'Trezor').slice(0, -2);
     const result = await window.TrezorConnect.ethereumGetPublicKey({
       path,
       coin: 'eth',
@@ -445,7 +447,7 @@ export const connectLedger = async () => {
     transport = await TransportWebHID.create();
     const appEth = new AppEth(transport);
     const result = await appEth.getAddress(
-      `${DEFAULT_LEDGER_LIVE_PATH}/0'/0/0`,
+      getHDPathForVendorAndType(0, 'Ledger'),
       false,
       false,
     );
@@ -456,7 +458,7 @@ export const connectLedger = async () => {
     while (!empty) {
       // eslint-disable-next-line no-await-in-loop
       const result = await appEth.getAddress(
-        `${DEFAULT_LEDGER_LIVE_PATH}/${accountsEnabled}'/0/0`,
+        getHDPathForVendorAndType(accountsEnabled, 'Ledger'),
         false,
         false,
       );
@@ -508,6 +510,7 @@ export const importAccountsFromHW = async (
   accountsToImport: {
     address: string;
     index: number;
+    hdPath?: string;
   }[],
   accountsEnabled: number,
   deviceId: string,

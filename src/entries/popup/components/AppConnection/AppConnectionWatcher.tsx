@@ -3,13 +3,13 @@ import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
-import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import { useHomePromptQueue } from '../../hooks/useHomePromptsQueue';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
@@ -24,10 +24,10 @@ import { AppConnectionNudgeSheet } from './AppConnectionNudgeSheet';
 export const AppConnectionWatcher = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
-  const { appHost, appName, appHostName } = useAppMetadata({ url });
+  const { data: dappMetadata } = useDappMetadata({ url });
   const location = useLocation();
   const { addSession, activeSession } = useAppSession({
-    host: appHost,
+    host: dappMetadata?.appHost || '',
   });
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hideNudgeBannerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -41,19 +41,20 @@ export const AppConnectionWatcher = () => {
   const { nextInQueue } = useHomePromptQueue();
 
   const connect = useCallback(() => {
-    addSession({
-      host: appHost,
-      address: currentAddress,
-      chainId: activeSession?.chainId || ChainId.mainnet,
-      url,
-    });
+    dappMetadata?.appHost &&
+      addSession({
+        host: dappMetadata?.appHost,
+        address: currentAddress,
+        chainId: activeSession?.chainId || ChainId.mainnet,
+        url,
+      });
     if (showNudgeBanner) setShowNudgeBanner(false);
     if (showNudgeSheet) setShowNudgeSheet(false);
   }, [
     activeSession?.chainId,
     addSession,
-    appHost,
     currentAddress,
+    dappMetadata?.appHost,
     showNudgeBanner,
     showNudgeSheet,
     url,
@@ -77,7 +78,7 @@ export const AppConnectionWatcher = () => {
         connect();
         triggerToast({
           title: i18n.t('app_connection_switcher.banner.app_connected', {
-            appName: appName || appHostName,
+            appName: dappMetadata?.appName || dappMetadata?.appHostName,
           }),
           description:
             ChainNameDisplay[activeSession?.chainId || ChainId.mainnet],
@@ -99,19 +100,21 @@ export const AppConnectionWatcher = () => {
       // if there's another active address
       if (
         nudgeSheetEnabled &&
-        !appHasInteractedWithNudgeSheet({ host: appHost })
+        !appHasInteractedWithNudgeSheet({ host: dappMetadata?.appHost })
       ) {
         setShowNudgeSheet(true);
-        setAddressInAppHasInteractedWithNudgeSheet({
-          address: currentAddress,
-          host: appHost,
-        });
-        setAppHasInteractedWithNudgeSheet({ host: appHost });
+        if (dappMetadata?.appHost) {
+          setAddressInAppHasInteractedWithNudgeSheet({
+            address: currentAddress,
+            host: dappMetadata?.appHost,
+          });
+          setAppHasInteractedWithNudgeSheet({ host: dappMetadata?.appHost });
+        }
         // else if the address has not interacted with the nudgeSheet
       } else if (
         !addressInAppHasInteractedWithNudgeSheet({
           address: currentAddress,
-          host: appHost,
+          host: dappMetadata?.appHost,
         })
       ) {
         setShowNudgeBanner(true);
@@ -123,8 +126,8 @@ export const AppConnectionWatcher = () => {
   }, [
     addressInAppHasInteractedWithNudgeSheet,
     appHasInteractedWithNudgeSheet,
-    appHost,
     currentAddress,
+    dappMetadata?.appHost,
     nudgeSheetEnabled,
     setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,

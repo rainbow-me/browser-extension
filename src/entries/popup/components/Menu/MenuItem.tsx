@@ -140,6 +140,7 @@ interface MenuItemProps {
   labelComponent?: React.ReactNode;
   disabled?: boolean;
   hasChevron?: boolean;
+  hasChevronDownOnly?: boolean;
   testId?: string;
   first?: boolean;
   last?: boolean;
@@ -155,6 +156,7 @@ const MenuItem = ({
   titleComponent,
   labelComponent,
   hasChevron,
+  hasChevronDownOnly,
   testId,
   first,
   last,
@@ -231,6 +233,14 @@ const MenuItem = ({
               {hasChevron && (
                 <Symbol
                   symbol="chevron.up.chevron.down"
+                  size={12}
+                  color="labelTertiary"
+                  weight="semibold"
+                />
+              )}
+              {hasChevronDownOnly && (
+                <Symbol
+                  symbol="chevron.down"
                   size={12}
                   color="labelTertiary"
                   weight="semibold"
