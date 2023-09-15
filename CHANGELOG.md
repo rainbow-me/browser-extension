@@ -26,13 +26,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - Transactions are now even easier to read with rich metadata when scrolling through your Activity list. You can also see detailed transaction information when clicking on each transaction #853
-- Support for EIP-6963 to improve the Rainbow connection experience and mitigiate `window.ethereum` namespace overrides #926
+- Support for EIP-6963 to improve the dApp connection experience and mitigating `window.ethereum` namespace conflicts and overrides for users with multiple active extensions #926
 - Reminders to backup Secret Recovery Phrases for users that have created a new wallet and skipped the backup and quiz verification #931
 
 ### Changed
 
 - Wallet switching is faster than ever. Give it a try by using the numbered hotkeys to rapidly switch between wallets in your list #940
-- After sending a Swap or Send, you'll jump to the Activity tab to follow the transaction progress #936
+- After sending a Swap or Send, you'll now jump right to the Activity tab to follow the transaction progress #936
 
 ### Fixed
 
