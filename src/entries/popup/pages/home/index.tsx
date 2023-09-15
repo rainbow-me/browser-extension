@@ -47,6 +47,7 @@ import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
+import { isFullScreen } from '../../utils/windows';
 
 import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
@@ -263,8 +264,8 @@ const TopNav = memo(function TopNav() {
                     textSize="12pt"
                     textColor="labelSecondary"
                     arrowDirection={'up'}
-                    marginLeft="-620px"
-                    marginTop="-48px"
+                    marginLeft={isFullScreen ? '-620px' : '-20px'}
+                    marginTop={isFullScreen ? '-48px' : '40px'}
                     hint={shortcuts.home.GO_TO_WALLETS.display}
                   >
                     {content}

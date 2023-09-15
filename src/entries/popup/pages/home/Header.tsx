@@ -25,6 +25,7 @@ import { useScroll } from '../../hooks/useScroll';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
+import { isFullScreen } from '../../utils/windows';
 
 export const Header = React.memo(function Header() {
   const { scrollYProgress: progress, scrollY } = useScroll({
@@ -114,8 +115,8 @@ export const Header = React.memo(function Header() {
                         textSize="12pt"
                         textColor="labelSecondary"
                         hint={shortcuts.home.GO_TO_WALLETS.display}
-                        marginLeft="-620px"
-                        marginTop="-204px"
+                        marginLeft={isFullScreen ? '-620px' : '-20px'}
+                        marginTop={isFullScreen ? '-204px' : '-110px'}
                       >
                         {content}
                       </CursorTooltip>
