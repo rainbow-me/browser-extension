@@ -90,7 +90,8 @@ export const createUnlockAndCrosschainSwapRap = async (
   swapParameters: RapSwapActionParameters<'crosschainSwap'>,
 ) => {
   let actions: RapAction<'crosschainSwap' | 'unlock'>[] = [];
-  const { sellAmount, quote, chainId, assetToSell } = swapParameters;
+  const { sellAmount, assetToBuy, quote, chainId, assetToSell } =
+    swapParameters;
 
   const {
     from: accountAddress,
@@ -152,7 +153,8 @@ export const createUnlockAndCrosschainSwapRap = async (
     meta: swapParameters.meta,
     assetToSell,
     sellAmount,
-  } as RapSwapActionParameters<'crosschainSwap'>);
+    assetToBuy,
+  } satisfies RapSwapActionParameters<'crosschainSwap'>);
   actions = actions.concat(swap);
 
   // create the overall rap

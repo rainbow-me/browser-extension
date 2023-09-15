@@ -139,7 +139,7 @@ export const importHardwareWallet = async ({
 }: {
   vendor: string;
   deviceId: string;
-  wallets: Array<{ address: Address; index: number }>;
+  wallets: Array<{ address: Address; index: number; hdPath: string }>;
   accountsEnabled: number;
 }) => {
   const keychain = await keychainManager.importKeychain({
