@@ -9,14 +9,19 @@ export interface CurrentLanguageState {
   setCurrentLanguage: (language: Language) => void;
 }
 
+const isTranslationLoaded = (language: Language) =>
+  !!i18n.translations[language];
+const loadTranslation = async (language: Language) => {
+  if (isTranslationLoaded(language)) return;
+  const newLangDict = await fetchJsonLocally(`languages/${language}.json`);
+  i18n.translations[language] = newLangDict;
+};
+
 export const currentLanguageStore = createStore<CurrentLanguageState>(
   (set) => ({
     currentLanguage: Language.EN_US,
     setCurrentLanguage: async (newLanguage) => {
-      const newLangDict = await fetchJsonLocally(
-        `languages/${newLanguage}.json`,
-      );
-      i18n.translations[newLanguage] = newLangDict;
+      await loadTranslation(newLanguage);
       changeI18nLanguage(newLanguage);
       set({ currentLanguage: newLanguage });
     },

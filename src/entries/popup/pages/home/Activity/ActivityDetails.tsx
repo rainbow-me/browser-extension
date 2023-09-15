@@ -1,5 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
+import { motion } from 'framer-motion';
 import { Navigate, useParams } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -31,6 +32,7 @@ import {
   TextOverflow,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import {
@@ -234,12 +236,17 @@ function ConfirmationData({
               <Inline alignVertical="center" space="4px">
                 {transaction.blockNumber}
                 {transaction.confirmations && (
-                  <Text size="12pt" weight="semibold" color="labelQuaternary">
-                    {formatNumber(transaction.confirmations, {
-                      notation: 'compact',
-                    })}{' '}
-                    {i18n.t('activity_details.confirmations')}
-                  </Text>
+                  <motion.div
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: 'auto' }}
+                  >
+                    <Text size="12pt" weight="semibold" color="labelQuaternary">
+                      {formatNumber(transaction.confirmations, {
+                        notation: 'compact',
+                      })}{' '}
+                      {i18n.t('activity_details.confirmations')}
+                    </Text>
+                  </motion.div>
                 )}
               </Inline>
             }
@@ -250,6 +257,7 @@ function ConfirmationData({
   );
 }
 
+const InfoValueSkeleton = () => <Skeleton width="50px" height="12px" />;
 function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
   const { native, feeType } = tx;
 
@@ -269,31 +277,7 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
           value={formatCurrency(native.fee)}
         />
       )}
-      {feeType === 'eip-1559' ? (
-        <>
-          {baseFee && (
-            <InfoRow
-              symbol="barometer"
-              label={i18n.t('activity_details.base_fee')}
-              value={`${formatNumber(baseFee)} Gwei`}
-            />
-          )}
-          {maxFeePerGas && (
-            <InfoRow
-              symbol="barometer"
-              label={i18n.t('activity_details.max_base_fee')}
-              value={`${formatNumber(maxFeePerGas)} Gwei`}
-            />
-          )}
-          {maxPriorityFeePerGas && (
-            <InfoRow
-              symbol="barometer"
-              label={i18n.t('activity_details.max_priority_fee')}
-              value={`${formatNumber(maxPriorityFeePerGas)} Gwei`}
-            />
-          )}
-        </>
-      ) : (
+      {feeType === 'legacy' ? (
         <>
           {gasPrice && (
             <InfoRow
@@ -302,6 +286,38 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
               value={`${formatNumber(gasPrice)} Gwei`}
             />
           )}
+        </>
+      ) : (
+        <>
+          <InfoRow
+            symbol="barometer"
+            label={i18n.t('activity_details.base_fee')}
+            value={
+              baseFee ? `${formatNumber(baseFee)} Gwei` : <InfoValueSkeleton />
+            }
+          />
+          <InfoRow
+            symbol="barometer"
+            label={i18n.t('activity_details.max_base_fee')}
+            value={
+              maxFeePerGas ? (
+                `${formatNumber(maxFeePerGas)} Gwei`
+              ) : (
+                <InfoValueSkeleton />
+              )
+            }
+          />
+          <InfoRow
+            symbol="barometer"
+            label={i18n.t('activity_details.max_priority_fee')}
+            value={
+              maxPriorityFeePerGas ? (
+                `${formatNumber(maxPriorityFeePerGas)} Gwei`
+              ) : (
+                <InfoValueSkeleton />
+              )
+            }
+          />
         </>
       )}
     </>
