@@ -12,11 +12,9 @@ export const getHDPathForVendorAndType = (
       switch (type) {
         case 'legacy':
           return `${LEGACY_LEDGER_PATH}/${index}`;
-          break;
         default:
           return `${DEFAULT_LEDGER_LIVE_PATH}/${index}'/0/0`;
       }
-      break;
     case 'Trezor':
       return `${DEFAULT_HD_PATH}/${index}`;
     default:
