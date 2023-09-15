@@ -143,6 +143,7 @@ export function SeedBackupPrompt() {
                   blur="26px"
                   onClick={handleShowRecoveryPhraseClick}
                   testId="show-recovery-phrase-button"
+                  tabIndex={0}
                 >
                   {i18n.t('seed_backup_prompt.reveal_your_recovery_phrase')}
                 </Button>
@@ -155,6 +156,7 @@ export function SeedBackupPrompt() {
                   width="full"
                   onClick={handleSkipClick}
                   testId="skip-button"
+                  tabIndex={0}
                 >
                   {i18n.t('seed_backup_prompt.take_me_to_wallet')}
                 </Button>
