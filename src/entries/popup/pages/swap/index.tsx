@@ -553,8 +553,7 @@ export function Swap() {
                     textWeight="bold"
                     textSize="12pt"
                     textColor="labelSecondary"
-                    marginLeft="0px"
-                    marginTop="0px"
+                    marginLeft="21px"
                     hint={shortcuts.swap.FLIP_ASSETS.display}
                   >
                     <ButtonOverflow testId="swap-flip-button">

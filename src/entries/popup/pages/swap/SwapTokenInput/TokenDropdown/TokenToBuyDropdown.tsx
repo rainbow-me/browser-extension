@@ -88,7 +88,6 @@ export const TokenToBuyDropdown = ({
                 textSize="12pt"
                 textColor="labelSecondary"
                 marginLeft="-18px"
-                marginTop={`-${tooltipOffset}px`}
                 hint={shortcuts.home.SWITCH_NETWORK.display}
               >
                 <ButtonOverflow testId="token-to-buy-networks-trigger">

@@ -210,8 +210,7 @@ function Fee({
                 textWeight="bold"
                 textSize="12pt"
                 textColor="labelSecondary"
-                marginLeft="0px"
-                marginTop="-28px"
+                marginLeft="24px"
                 hint={shortcuts.global.OPEN_CUSTOM_GAS_MENU.display}
               >
                 <Lens
