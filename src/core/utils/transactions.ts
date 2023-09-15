@@ -24,6 +24,7 @@ import {
   NewTransaction,
   PaginatedTransactionsApiResponse,
   RainbowTransaction,
+  TransactionApiResponse,
   TransactionDirection,
   TransactionType,
   transactionTypeShouldHaveChanges,
@@ -111,7 +112,7 @@ const getDescription = (
 };
 
 const parseFees = (
-  fee: PaginatedTransactionsApiResponse['fee'],
+  fee: TransactionApiResponse['fee'],
   nativeAssetDecimals: number,
 ) => {
   const {
