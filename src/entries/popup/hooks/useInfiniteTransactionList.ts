@@ -149,13 +149,27 @@ export default function ({
       !isFetchingNextPage
     ) {
       fetchNextPage();
+    } else if (
+      // BE does not guarantee a particular number of transactions per page
+      // BE grabs a group from our data providers then filters for various reasons
+      // there are rare cases where BE filters out so many transactions on a page
+      // that we end up not filling the list UI, preventing the user from paginating via scroll
+      // so we recursively paginate until we know the UI is full
+      transactionsAfterCutoff.length < 8 &&
+      hasNextPage &&
+      !isFetching &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage();
     }
   }, [
+    data?.pages.length,
     fetchNextPage,
     hasNextPage,
     isFetching,
     isFetchingNextPage,
     transactions.length,
+    transactionsAfterCutoff.length,
     rows,
   ]);
 
