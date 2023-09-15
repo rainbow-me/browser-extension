@@ -21,6 +21,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.21](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.21)
+
+### Added
+
+- Transactions are now even easier to read with rich metadata when scrolling through your Activity list. You can also see detailed transaction information when clicking on each transaction #853
+- Support for EIP-6963 to improve the Rainbow connection experience and mitigiate `window.ethereum` namespace overrides #926
+- Reminders to backup Secret Recovery Phrases for users that have created a new wallet and skipped the backup and quiz verification #931
+
+### Changed
+
+- Wallet switching is faster than ever. Give it a try by using the numbered hotkeys to rapidly switch between wallets in your list #940
+- After sending a Swap or Send, you'll jump to the Activity tab to follow the transaction progress #936
+
+### Fixed
+
+- Fixed a crash on Zora and Base when sending transactions because of invalid the Optimism L1 Security fees #933
+- Resolved an issue with the Immediate auto-lock preference, where the wallet would not always immediately lock, and users could get stuck in an auto-lock loop after attempting to unlock #939
+- Fixed an issue where the first submitted transaction for a generated wallet would not properly appear as pending #936
+- Fixed an issue where Swaps and Sends were persisted by state restoration even after a successful transaction submission #935
+- Resolved an issue where the slippage percentage for Swaps would sometimes appear as `-Infinity%` or `NaN%` #938
+- Resolved an issue with USD estimates for Swap quotes on a subset of networks #934
+- Resolved a theme conflict for WETH tokens in dark mode #928
+
+### Internal
+
+- Improved Swap analytics event with standardized `tradeAmountUSD` values returned from the Quote API #927
+- Refactoring the inpage provider injection script and deprecating the `window.ethereum.providers` proxy #919
+- Bundle size optimizations #932
+- Type safety improvements with `AddressOrEth` type #896
+
+### Testing
+
+- Helpers for shortcut e2e tests #941
+- Resolved an e2e test failure within the Send flow #943
+
 ## [v1.2.13](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.13)
 
 ### Changed
