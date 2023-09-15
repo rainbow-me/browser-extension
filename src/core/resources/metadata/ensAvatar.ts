@@ -1,5 +1,6 @@
 import { isAddress } from '@ethersproject/address';
-import { Address, useQuery } from 'wagmi';
+import { useQuery } from '@tanstack/react-query';
+import { Address } from 'viem';
 
 import { metadataClient } from '~/core/graphql';
 import { QueryFunctionArgs, createQueryKey } from '~/core/react-query';

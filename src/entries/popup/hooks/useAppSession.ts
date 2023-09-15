@@ -9,7 +9,7 @@ import { isLowerCaseMatch } from '~/core/utils/strings';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
 
-export function useAppSession({ host }: { host: string }) {
+export function useAppSession({ host = '' }: { host?: string }) {
   const {
     removeAppSession,
     removeSession,

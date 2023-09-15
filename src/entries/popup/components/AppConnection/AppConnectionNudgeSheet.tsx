@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import appConnectionSheetImageMask from 'static/assets/appConnectionSheetImageMask.svg';
 import { i18n } from '~/core/languages';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
 import {
@@ -16,7 +17,6 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
-import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useDebounce } from '../../hooks/useDebounce';
 import usePrevious from '../../hooks/usePrevious';
 import { useWalletName } from '../../hooks/useWalletName';
@@ -40,7 +40,7 @@ export const AppConnectionNudgeSheet = ({
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
-  const { appHost, appName, appLogo } = useAppMetadata({ url });
+  const { data: dappMetadata } = useDappMetadata({ url });
   const { setNudgeSheetDisabled } = useAppConnectionWalletSwitcherStore();
   const previousShow = usePrevious(show);
   const name = useDebounce(displayName, 500);
@@ -97,7 +97,11 @@ export const AppConnectionNudgeSheet = ({
                     alignVertical="center"
                     height="full"
                   >
-                    <ExternalImage src={appLogo} width="14" height="14" />
+                    <ExternalImage
+                      src={dappMetadata?.appLogo}
+                      width="14"
+                      height="14"
+                    />
                   </Inline>
                 </Box>
               </Box>
@@ -117,7 +121,7 @@ export const AppConnectionNudgeSheet = ({
                 </Inline>
                 <TextOverflow color="label" size="12pt" weight="bold">
                   {i18n.t('app_connection_switcher.sheet.connect_to', {
-                    appName: appName || appHost,
+                    appName: dappMetadata?.appName || dappMetadata?.appHost,
                   })}
                 </TextOverflow>
               </Stack>
@@ -128,7 +132,7 @@ export const AppConnectionNudgeSheet = ({
                 align="center"
               >
                 {i18n.t('app_connection_switcher.sheet.allow_to', {
-                  appName: appName || appHost,
+                  appName: dappMetadata?.appName || dappMetadata?.appHost,
                 })}
               </Text>
             </Stack>

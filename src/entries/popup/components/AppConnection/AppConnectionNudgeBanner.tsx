@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { i18n } from '~/core/languages';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import {
   Box,
@@ -16,7 +17,6 @@ import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow
 import { NudgeBanner } from '~/design-system/components/NudgeBanner/NudgeBanner';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
-import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
@@ -32,7 +32,7 @@ export const AppConnectionNudgeBanner = ({
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
-  const { appHost, appName, appLogo } = useAppMetadata({ url });
+  const { data: dappMetadata } = useDappMetadata({ url });
 
   const name = useDebounce(displayName, 500);
 
@@ -68,7 +68,11 @@ export const AppConnectionNudgeBanner = ({
                       }}
                       borderRadius="8px"
                     >
-                      <ExternalImage src={appLogo} width="30" height="30" />
+                      <ExternalImage
+                        src={dappMetadata?.appLogo}
+                        width="30"
+                        height="30"
+                      />
                     </Box>
                   </Inline>
                 </Box>
@@ -89,7 +93,7 @@ export const AppConnectionNudgeBanner = ({
                     </Inline>
                     <TextOverflow color="label" size="12pt" weight="bold">
                       {i18n.t('app_connection_switcher.banner.connect_to', {
-                        appName: appName || appHost,
+                        appName: dappMetadata?.appName || dappMetadata?.appHost,
                       })}
                     </TextOverflow>
                   </Stack>

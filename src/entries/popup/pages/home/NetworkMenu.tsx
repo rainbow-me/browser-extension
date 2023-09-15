@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 
 import appConnectionImageMask from 'static/assets/appConnectionImageMask.svg';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
@@ -16,14 +17,15 @@ import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import ExternalImage from '../../components/ExternalImage/ExternalImage';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useActiveTab } from '../../hooks/useActiveTab';
-import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import { tabIndexes } from '../../utils/tabIndexes';
 
 export const AppConnection = () => {
   const { url } = useActiveTab();
-  const { appLogo, appHost } = useAppMetadata({ url });
-  const { appSession, activeSession } = useAppSession({ host: appHost });
+  const { data: dappMetadata } = useDappMetadata({ url });
+  const { appSession, activeSession } = useAppSession({
+    host: dappMetadata?.appHost,
+  });
   const { currentTheme } = useCurrentThemeStore();
 
   return (
@@ -130,7 +132,7 @@ export const AppConnection = () => {
               >
                 <ExternalImage
                   mask={appSession ? appConnectionImageMask : undefined}
-                  src={appLogo}
+                  src={dappMetadata?.appLogo}
                   width="16"
                   height="16"
                 />

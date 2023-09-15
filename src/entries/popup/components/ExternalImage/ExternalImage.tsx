@@ -51,6 +51,7 @@ const ExternalImage = (
     );
   }
 
+  if (!signedUrl) return null;
   return (
     <img
       {...props}
