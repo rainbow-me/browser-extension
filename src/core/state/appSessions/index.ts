@@ -128,27 +128,26 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
             ...appSessions,
           },
         });
-      } else {
-        if (appSession.sessions) {
-          delete appSession.sessions[address];
-          const newActiveSessionAddress = Object.keys(
-            appSession.sessions,
-          )[0] as Address;
-          appSession.activeSessionAddress = newActiveSessionAddress;
-          newActiveSession = {
-            address: newActiveSessionAddress,
-            chainId: appSession.sessions[newActiveSessionAddress],
-          };
-          set({
-            appSessions: {
-              ...appSessions,
-              [host]: {
-                ...appSession,
-              },
+      } else if (appSession.sessions) {
+        delete appSession.sessions[address];
+        const newActiveSessionAddress = Object.keys(
+          appSession.sessions,
+        )[0] as Address;
+        appSession.activeSessionAddress = newActiveSessionAddress;
+        newActiveSession = {
+          address: newActiveSessionAddress,
+          chainId: appSession.sessions[newActiveSessionAddress],
+        };
+        set({
+          appSessions: {
+            ...appSessions,
+            [host]: {
+              ...appSession,
             },
-          });
-        }
+          },
+        });
       }
+
       return newActiveSession;
     },
     updateActiveSession: ({ host, address }) => {
