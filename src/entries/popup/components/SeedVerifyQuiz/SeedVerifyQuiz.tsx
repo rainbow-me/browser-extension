@@ -15,6 +15,7 @@ import {
   Stack,
   Text,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
@@ -81,10 +82,12 @@ const SeedWordRow = ({
   }, [handleSelect, index, word]);
 
   return (
-    <Box
+    <Lens
       width="fit"
       onClick={onClick}
-      borderColor="separatorTertiary"
+      borderColor={{
+        default: 'separatorTertiary',
+      }}
       borderRadius="8px"
       padding="8px"
       borderWidth="1px"
@@ -122,7 +125,7 @@ const SeedWordRow = ({
           </Text>
         </Box>
       </Inline>
-    </Box>
+    </Lens>
   );
 };
 
@@ -323,6 +326,7 @@ export function SeedVerifyQuiz({
           width="full"
           onClick={handleSkip}
           testId="skip-this-button"
+          tabIndex={0}
         >
           {i18n.t('seed_verify.skip')}
         </Button>

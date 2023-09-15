@@ -1,4 +1,5 @@
 import { formatDistanceToNowStrict } from 'date-fns';
+import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -10,6 +11,7 @@ import {
   Stack,
   TextOverflow,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { WalletSummary } from '../../hooks/useWalletsSummary';
 import { AddressOrEns } from '../AddressOrEns/AddressorEns';
@@ -22,13 +24,20 @@ export const AccountToImportRows = ({
   showCheckbox,
   walletsSummary,
   toggleAccount,
+  navigableWithKeyboard,
 }: {
   accountsIgnored?: Address[];
   accountsToImport?: Address[];
   showCheckbox?: boolean;
   walletsSummary: { [key: Address]: WalletSummary };
   toggleAccount?: (address: Address) => void;
+  navigableWithKeyboard?: boolean;
 }) => {
+  const onClick = useCallback(
+    (address: Address) => toggleAccount?.(address),
+    [toggleAccount],
+  );
+
   return (
     <Stack
       space="6px"
@@ -39,7 +48,11 @@ export const AccountToImportRows = ({
       }
     >
       {accountsToImport?.map((address) => (
-        <Box onClick={() => toggleAccount?.(address)} key={`avatar_${address}`}>
+        <Lens
+          onClick={() => onClick(address)}
+          tabIndex={navigableWithKeyboard ? 0 : -1}
+          key={`avatar_${address}`}
+        >
           <Columns alignVertical="center" space="16px">
             <Column>
               <Columns
@@ -96,7 +109,7 @@ export const AccountToImportRows = ({
               </Column>
             )}
           </Columns>
-        </Box>
+        </Lens>
       ))}
     </Stack>
   );
