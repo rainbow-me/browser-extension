@@ -1,3 +1,6 @@
+import qs from 'qs';
+import { Address } from 'wagmi';
+
 import { f2cHttp } from '~/core/network';
 import {
   QueryConfig,
@@ -6,15 +9,15 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+
 import { FiatProviderName } from './types';
-import qs from 'qs';
 
 // ///////////////////////////////////////////////
 // Query Types
 
 export type ProviderWidgetUrlArgs = {
   provider: FiatProviderName;
-  depositAddress: string;
+  depositAddress: Address;
   redirectUri?: string;
 };
 
