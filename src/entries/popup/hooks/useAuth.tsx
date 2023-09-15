@@ -24,7 +24,8 @@ export const getUserStatus = async (): Promise<UserStatusResult> => {
   // here we'll run the redirect logic
   // if we have a vault set it means onboarding is complete
   let status = await wallet.getStatus();
-  while (!status.ready) {
+  // if it's not ready, storage can throw and we wouldn't get the ready flag
+  while (!status?.ready) {
     // wait till the keychain bootstrap is done
     // eslint-disable-next-line no-promise-executor-return
     await new Promise((resolve) => setTimeout(resolve, 100));
