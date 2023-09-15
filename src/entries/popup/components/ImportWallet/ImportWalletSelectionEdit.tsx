@@ -162,6 +162,7 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
                   toggleAccount={toggleAccount}
                   walletsSummary={walletsSummary}
                   showCheckbox
+                  navigableWithKeyboard
                 />
               </Box>
             </Box>
@@ -176,6 +177,7 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
                 width="full"
                 disabled={isButtonDisabled}
                 onClick={onImport}
+                tabIndex={0}
               >
                 {i18n.t('edit_import_wallet_selection.add_wallet', {
                   count: amountOfAddressesBeingAdded,
