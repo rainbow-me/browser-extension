@@ -10,6 +10,7 @@ export enum Language {
   JA_JP = 'ja_JP',
   PT_BR = 'pt_BR',
   ZH_CN = 'zh_CN',
+  ID_ID = 'id_ID',
   HI_IN = 'hi_IN',
   TR_TR = 'tr_TR',
   RU_RU = 'ru_RU',
@@ -33,6 +34,9 @@ export const supportedLanguages = {
   },
   [Language.ZH_CN]: {
     label: '中文',
+  },
+  [Language.ID_ID]: {
+    label: 'Bahasa Indonesia',
   },
   [Language.HI_IN]: {
     label: 'हिंदी',
