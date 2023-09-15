@@ -1025,7 +1025,9 @@
   },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",
-    "coinbase_description": "Buy or transfer from Coinbase",
+    "coinbase_description": "Transfer your crypto from Coinbase for free",
+    "buy_title": "Buy crypto to fund your wallet",
+    "buy_description": "Choose from trusted providers and payment options",
     "send_from_wallet": "Send from another wallet",
     "send_description_1": "Press",
     "send_description_2": "to copy your address",
@@ -1269,5 +1271,8 @@
   "approvals": {
     "unlimited": "Unlimited",
     "no_allowance": "No Allowance"
+  },
+  "buy": {
+    "title": "Buy"
   }
 }

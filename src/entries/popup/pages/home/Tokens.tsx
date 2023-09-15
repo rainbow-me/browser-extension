@@ -28,7 +28,9 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
+import { BuyIcon } from '../../components/BuyIcon/BuyIcon';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
+import { Link } from '../../components/Link/Link';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
@@ -263,11 +265,49 @@ function TokensEmptyState() {
   return (
     <Inset horizontal="20px">
       <Box paddingBottom="8px">
-        <a
-          style={{ cursor: 'default' }}
-          href="https://www.coinbase.com/"
-          target="_blank"
-          rel="noreferrer"
+        <Link
+          tabIndex={-1}
+          to={ROUTES.BUY}
+          state={{ from: ROUTES.HOME, to: ROUTES.BUY }}
+        >
+          <Box
+            background="surfaceSecondaryElevated"
+            borderRadius="16px"
+            borderColor="separatorTertiary"
+            boxShadow="12px"
+          >
+            <Inset horizontal="16px" vertical="16px">
+              <Box paddingBottom="12px">
+                <Inline alignVertical="center" alignHorizontal="justify">
+                  <Box>
+                    <Inline alignVertical="center" space="8px">
+                      <BuyIcon />
+                      <Text as="p" size="14pt" color="label" weight="semibold">
+                        {i18n.t('tokens_tab.buy_title')}
+                      </Text>
+                    </Inline>
+                  </Box>
+                  <Symbol
+                    size={12}
+                    symbol="arrow.up.forward.circle"
+                    weight="semibold"
+                    color="labelTertiary"
+                  />
+                </Inline>
+              </Box>
+              <Text as="p" size="11pt" color="labelSecondary" weight="bold">
+                {i18n.t('tokens_tab.buy_description')}
+              </Text>
+            </Inset>
+          </Box>
+        </Link>
+      </Box>
+
+      <Box paddingBottom="8px">
+        <Link
+          tabIndex={-1}
+          to={ROUTES.BUY}
+          state={{ from: ROUTES.HOME, to: ROUTES.BUY }}
         >
           <Box
             background="surfaceSecondaryElevated"
@@ -299,7 +339,7 @@ function TokensEmptyState() {
               </Text>
             </Inset>
           </Box>
-        </a>
+        </Link>
       </Box>
 
       <Box
@@ -331,6 +371,8 @@ function TokensEmptyState() {
                 verticalAlign: 'middle',
                 textAlign: 'center',
                 lineHeight: '16px',
+                marginLeft: '3px',
+                marginRight: '3px',
               }}
             >
               C
