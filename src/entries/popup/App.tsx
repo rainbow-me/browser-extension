@@ -8,7 +8,6 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
-import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
 import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
@@ -36,7 +35,7 @@ const wagmiClient = createWagmiClient({
 });
 
 export function App() {
-  const { currentLanguage } = useCurrentLanguageStore();
+  const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
   const { deviceId } = useDeviceIdStore();
   useExpiryListener();
 
@@ -66,8 +65,8 @@ export function App() {
   }, []);
 
   React.useEffect(() => {
-    changeI18nLanguage(currentLanguage);
-  }, [currentLanguage]);
+    setCurrentLanguage(currentLanguage);
+  }, [currentLanguage, setCurrentLanguage]);
 
   const { currentTheme } = useCurrentThemeStore();
   const isFullScreen = useIsFullScreen();

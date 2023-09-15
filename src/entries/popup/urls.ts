@@ -17,7 +17,7 @@ export const ROUTES = {
   IMPORT__SEED: '/import/seed', // ImportWalletViaSeed
   IMPORT__PRIVATE_KEY: '/import/pkey', // ImportWalletViaPrivateKey
   IMPORT__SELECT: '/import/select', // ImportWalletSelection
-  IMPORT__EDIT: '/import/edit', // EditImportWalletSelection
+  IMPORT__EDIT: '/import/edit', // ImportWalletSelectionEdit
   UNLOCK: '/unlock', // ImportWalletSelection
   SEED_BACKUP_PROMPT: '/seed-backup-prompt', // SeedBackupPrompt
   SEED_REVEAL: '/seed-reveal', // SeedReveal

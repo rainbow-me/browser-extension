@@ -617,7 +617,7 @@ export const useCommands = (
       },
       importWallet: {
         action: () =>
-          navigate(ROUTES.IMPORT, {
+          navigate(ROUTES.NEW_IMPORT_WALLET, {
             state: { direction: 'upRight', navbarIcon: 'ex' },
           }),
       },
@@ -658,9 +658,8 @@ export const useCommands = (
             previousPageState.selectedCommand?.asset,
             ROUTES.SEND,
           ),
-        name: `${getCommandName('send')} ${
-          previousPageState.selectedCommand?.asset?.symbol
-        }`,
+        name: `${getCommandName('send')} ${previousPageState.selectedCommand
+          ?.asset?.symbol}`,
       },
       swapToken: {
         action: () =>
@@ -669,9 +668,8 @@ export const useCommands = (
             previousPageState.selectedCommand?.asset,
             ROUTES.SWAP,
           ),
-        name: `${getCommandName('swap')} ${
-          previousPageState.selectedCommand?.asset?.symbol
-        }`,
+        name: `${getCommandName('swap')} ${previousPageState.selectedCommand
+          ?.asset?.symbol}`,
       },
       copyTokenAddress: {
         action: () =>
