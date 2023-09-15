@@ -1,6 +1,6 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import { memo, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -269,6 +269,15 @@ type EmptyStateProps = {
 };
 
 function TokensEmptyState({ depositAddress }: EmptyStateProps) {
+
+  const handleCoinbase = useCallback(async () => {
+    const { data } = await fetchProviderWidgetUrl({
+      provider: FiatProviderName.Coinbase,
+      depositAddress,
+    });
+    window.open(data.url, '_blank');
+  }, [depositAddress]);
+
   return (
     <Inset horizontal="20px">
       <Box paddingBottom="8px">
@@ -316,13 +325,7 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
           borderRadius="16px"
           borderColor="separatorTertiary"
           boxShadow="12px"
-          onClick={async () => {
-            const { data } = await fetchProviderWidgetUrl({
-              provider: FiatProviderName.Coinbase,
-              depositAddress,
-            });
-            window.open(data.url, '_blank');
-          }}
+          onClick={handleCoinbase}
         >
           <Inset horizontal="16px" vertical="16px">
             <Box paddingBottom="12px">
