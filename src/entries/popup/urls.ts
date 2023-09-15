@@ -62,4 +62,5 @@ export const ROUTES = {
   HW_TREZOR: '/hw/trezor',
   HW_WALLET_LIST: '/hw/wallet-list', // hw/walletList/index
   HW_SUCCESS: '/hw/success',
+  BUY: '/buy',
 } as const;
