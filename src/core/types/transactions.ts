@@ -191,4 +191,7 @@ export type TransactionApiResponse = {
   mined_at?: number;
 };
 
-export type PaginatedTransactionsApiResponse = TransactionApiResponse;
+export type PaginatedTransactionsApiResponse = Omit<
+  TransactionApiResponse,
+  'fee'
+> & { fee: Omit<TransactionApiResponse['fee'], 'details'> };
