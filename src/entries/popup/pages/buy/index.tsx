@@ -8,6 +8,10 @@ import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
+import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
+import { MoonpayIcon } from '../../components/MoonpayIcon/MoonpayIcon';
+import { RampIcon } from '../../components/RampIcon/RampIcon';
+
 export function Buy() {
   const { currentAddress: depositAddress } = useCurrentAddressStore();
   const { data } = useProvidersList();
@@ -31,6 +35,13 @@ export function Buy() {
                   }
                   labelComponent={
                     <MenuItem.Label text={provider.content.description} />
+                  }
+                  leftComponent={
+                    {
+                      moonpay: <MoonpayIcon />,
+                      ramp: <RampIcon />,
+                      coinbase: <CoinbaseIcon />,
+                    }[provider.id]
                   }
                   onClick={async () => {
                     const { data } = await fetchProviderWidgetUrl({
