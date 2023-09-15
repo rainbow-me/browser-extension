@@ -117,6 +117,9 @@
         "recovery_phrase_label": "Grup Dompet",
         "private_key_label": "Kunci Pribadi",
         "hardware_wallet_label": "Dompet Hardware",
+        "backed_up": "Sudah di-backup",
+        "not_backed_up": "Belum di-backup",
+        "back_up_now": "Backup Sekarang",
         "wallet_details": {
           "title": "Detail Dompet",
           "view_recovery_phrase": "Lihat Frasa Pemulihan",
@@ -126,7 +129,9 @@
           "delete_wallet": "Hapus Dompet",
           "view_private_key": "Lihat Kunci Pribadi",
           "copy_address": "Salin Alamat",
-          "hidden": "Tersembunyi"
+          "hidden": "Tersembunyi",
+          "back_up_now": "Backup Sekarang",
+          "last_backed_up": "Terakhir di-backup sebagai %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "Beri nama dompet Anda",
@@ -173,6 +178,7 @@
       "KRW": "Won Korea Selatan",
       "JPY": "Yen Jepang",
       "RUB": "Rubel Rusia",
+      "IDR": "Rupiah Indonesia",
       "INR": "Rupee India",
       "TRY": "Lira Turki",
       "CAD": "Dolar Kanada",
@@ -189,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "Interaksi Kontrak",
     "savings": "Tabungan",
-    "deposited": "Disetorkan",
-    "withdrew": "Ditarik"
+    "cancelled": "Transaksi Dibatalkan",
+    "burn": {
+      "pending": "Membakar",
+      "confirmed": "Terbakar",
+      "failed": "Gagal Membakar"
+    },
+    "cancel": {
+      "pending": "Membatalkan",
+      "confirmed": "Dibatalkan",
+      "failed": "Gagal Membatalkan"
+    },
+    "send": {
+      "pending": "Mengirim",
+      "confirmed": "Terkirim",
+      "failed": "Gagal Mengirim"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "Diterima",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "Menarik",
+      "confirmed": "Ditarik",
+      "failed": "Penarikan Gagal"
+    },
+    "deposit": {
+      "pending": "Menyetor",
+      "confirmed": "Disetor",
+      "failed": "Penyetoran Gagal"
+    },
+    "mint": {
+      "pending": "Mencetak",
+      "confirmed": "Dicetak",
+      "failed": "Pencetakan Gagal"
+    },
+    "approve": {
+      "pending": "Menyetujui",
+      "confirmed": "Disetujui",
+      "failed": "Penyetujuan Gagal"
+    },
+    "contract_interaction": {
+      "pending": "Interaksi Tertunda",
+      "confirmed": "Berinteraksi",
+      "failed": "Interaksi Gagal"
+    },
+    "swap": {
+      "pending": "Menukar",
+      "confirmed": "Ditukar",
+      "failed": "Penukaran Gagal"
+    },
+    "borrow": {
+      "pending": "Meminjam",
+      "confirmed": "Dipinjam",
+      "failed": "Peminjaman Gagal"
+    },
+    "claim": {
+      "pending": "Mengklaim",
+      "confirmed": "Diklaim",
+      "failed": "Klaim Gagal"
+    },
+    "deployment": {
+      "pending": "Menyebarkan",
+      "confirmed": "Disebarkan",
+      "failed": "Penyebaran Gagal"
+    },
+    "repay": {
+      "pending": "Membayar",
+      "confirmed": "Dibayar",
+      "failed": "Pembayaran Gagal"
+    },
+    "stake": {
+      "pending": "Menyimpan",
+      "confirmed": "Disimpan",
+      "failed": "Penyimpanan Gagal"
+    },
+    "unstake": {
+      "pending": "Menghilangkan Simpanan",
+      "confirmed": "Simpanan Dihilangkan",
+      "failed": "Penghapusan Simpanan Gagal"
+    },
+    "purchase": {
+      "pending": "Membeli",
+      "confirmed": "Dibeli",
+      "failed": "Pembelian Gagal"
+    },
+    "revoke": {
+      "pending": "Mencabut",
+      "confirmed": "Dicabut",
+      "failed": "Pencabutan Gagal"
+    },
+    "sale": {
+      "pending": "Menjual",
+      "confirmed": "Terjual",
+      "failed": "Penjualan Gagal"
+    },
+    "bridge": {
+      "pending": "Membuat Jembatan",
+      "confirmed": "Jembatan Terbuat",
+      "failed": "Pembuatan Jembatan Gagal"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "Ditaburkan",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "Membungkus",
+      "confirmed": "Dibungkus",
+      "failed": "Pembungkusan Gagal"
+    },
+    "unwrap": {
+      "pending": "Membuka Bungkus",
+      "confirmed": "Bungkus Dibuka",
+      "failed": "Gagal Membuka Kembali"
+    },
+    "bid": {
+      "pending": "Menawar",
+      "confirmed": "Tawaran",
+      "failed": "Tawaran Gagal"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -437,6 +561,7 @@
       "review": "Ulasan",
       "loading": "Sedang Memuat",
       "insufficient_liquidity": "Kekurangan likuiditas",
+      "fee_on_transfer_token": "Biaya Pada Transfer Token",
       "no_route": "Tidak ada rute yang ditemukan",
       "no_quote": "Tidak ada kutipan yang tersedia",
       "enter_an_amount": "Masukkan jumlah"
@@ -481,6 +606,16 @@
           "open_text": "Masih penasaran? ",
           "link_text": "Baca lebih lanjut",
           "close_text": " tentang AMM dan likuiditas token."
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "Biaya Pada Transfer Token",
+        "description": "Penukaran ini akan gagal di Rainbow karena kontrak %{tokenName} menambahkan biaya ekstra",
+        "action_label": "Mengerti",
+        "footer_text": {
+          "open_text": "Baca ",
+          "link_text": "panduan kami",
+          "close_text": " untuk bantuan menukar token ini!"
         }
       }
     }
@@ -722,6 +857,12 @@
       "connected": "Terhubung"
     }
   },
+  "wallet_backup_reminder": {
+    "title": "Beberapa dompet Anda tidak didukung cadangan",
+    "description": "Beberapa dompet Anda tidak didukung cadangan. Cadangkan agar Anda dapat mengakses kembali dompet Anda jika Anda kehilangan akses ke perangkat ini",
+    "button_label_action": "Backup Sekarang",
+    "button_label_cancel": "Ingatkan Saya Nanti"
+  },
   "approve_request": {
     "wallet_info_title": "ingin terhubung ke dompet Anda",
     "wallet_info_description": "Izinkan %{appName} untuk melihat alamat, saldo, aktivitas dompet Anda dan minta persetujuan untuk transaksi.",
@@ -850,7 +991,38 @@
     "this_month": "Bulan Ini",
     "empty_header": "Belum ada aktivitas",
     "empty_description": "Setelah Anda mulai menggunakan dompet Anda, Anda akan melihat transaksi Anda di sini",
-    "loading_more": "Memuat lebih banyak..."
+    "loading_more": "Memuat lebih banyak...",
+    "no_value": "Tidak ada nilai"
+  },
+  "activity_details": {
+    "you": "Anda",
+    "from": "Dari",
+    "to": "Ke",
+    "confirmed_at": "Dikonfirmasi pada",
+    "confirmations": "Konfirmasi",
+    "token": "Token",
+    "block": "Blok",
+    "value": "Nilai",
+    "network": "Jaringan",
+    "fee": "Biaya Jaringan",
+    "base_fee": "Biaya Dasar",
+    "max_base_fee": "Biaya Dasar Maksimum",
+    "gas_price": "Harga Gas",
+    "gas_limit": "Batas Gas",
+    "gas_used": "Gas yang Digunakan",
+    "max_priority_fee": "Tip Miner",
+    "nonce": "Nonce",
+    "allowance": "Alokasi",
+    "unlimited_allowance": "Tidak terbatas %{symbol}",
+    "app": "Aplikasi",
+    "copy_hash": "Salin Tx Hash",
+    "hash_copied": "Hash Tersalin",
+    "copy_explorer_url": "Salin Tautan",
+    "explorer_copied": "Tautan Tersalin",
+    "exchange_rate": "Pertukaran",
+    "collection": "Koleksi",
+    "token_contract": "Kontrak Token",
+    "token_standard": "Standar Token"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit dari Coinbase",
@@ -905,12 +1077,14 @@
       "market_cap": "Kap Pasar",
       "market_cap_explainer": {
         "title": "Kap Pasar",
-        "description": "Kap pasar adalah total nilai pasar dari sirkulasi token. Ini dihitung dengan harga bursa rata-rata"
+        "description": "Kap pasar adalah total nilai pasar dari sirkulasi token. Ini dihitung dengan harga bursa rata-rata",
+        "action": "Mengerti"
       },
       "fully_diluted": "Penuh Dilusi",
       "fully_diluted_explainer": {
         "title": "Kap Pasar Penuh Dilusi",
-        "description": "Nilai pasar maksimal dari token jika total pasokan tersedia dalam sirkulasi"
+        "description": "Nilai pasar maksimal dari token jika total pasokan tersedia dalam sirkulasi",
+        "action": "Mengerti"
       },
       "supply": "Pasokan",
       "max_total_supply": "Pasokan Total Maksimum",
@@ -1092,5 +1266,9 @@
       "highlighted": "Hubungi Rainbow",
       "after": " untuk meminta lebih banyak."
     }
+  },
+  "approvals": {
+    "unlimited": "Tak Terbatas",
+    "no_allowance": "Tanpa Kuota"
   }
 }
