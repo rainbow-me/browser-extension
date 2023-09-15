@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { metadataClient } from '~/core/graphql';
 import { QueryFunctionArgs, createQueryKey } from '~/core/react-query';
+import { dappMetadataStore } from '~/core/state/dappMetadata';
 import {
   getDappHost,
   getDappHostname,
@@ -44,6 +45,7 @@ export async function dappMetadataQueryFunction({
   typeof AppMetadataQueryKey
 >): Promise<DappMetadata | null> {
   if (!url) return null;
+  const { setDappMetadata } = dappMetadataStore.getState();
   const appHostName = url && isValidUrl(url) ? getDappHostname(url) : '';
   const appName =
     url && isValidUrl(url)
@@ -56,8 +58,7 @@ export async function dappMetadataQueryFunction({
 
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
   const appLogo = appHost ? getPublicAppIcon(appHost) : '';
-
-  return {
+  const dappMetadata = {
     url,
     appHost,
     appHostName,
@@ -67,6 +68,8 @@ export async function dappMetadataQueryFunction({
       : appName,
     appLogo: response?.dApp?.iconURL || appLogo,
   };
+  setDappMetadata({ host: appHost, dappMetadata });
+  return dappMetadata;
 }
 
 // ///////////////////////////////////////////////
@@ -75,5 +78,10 @@ export async function dappMetadataQueryFunction({
 export function useDappMetadata({ url }: DappMetadataArgs) {
   return useQuery(AppMetadataQueryKey({ url }), dappMetadataQueryFunction, {
     cacheTime: 1000 * 60 * 60 * 24,
+    initialData: () => {
+      const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
+      const { getDappMetadata } = dappMetadataStore.getState();
+      return getDappMetadata({ host: appHost });
+    },
   });
 }
