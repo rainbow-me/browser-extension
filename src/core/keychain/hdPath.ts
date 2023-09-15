@@ -5,7 +5,7 @@ const LEGACY_LEDGER_PATH = "m/44'/60'/0'";
 export const getHDPathForVendorAndType = (
   index: number,
   vendor?: 'Ledger' | 'Trezor',
-  type?: 'legacy' | undefined,
+  type?: 'legacy',
 ) => {
   switch (vendor) {
     case 'Ledger':

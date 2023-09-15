@@ -91,15 +91,14 @@ export class HardwareWalletKeychain implements IKeychain {
     const wallet = privates
       .get(this)
       .wallets.find((wallet: Wallet) => (wallet as Wallet).address === address);
-    if (wallet.hdPath) {
-      return wallet.hdPath;
-    } else {
+    return (
+      wallet.hdPath ??
       // Backwards compatibility
-      return getHDPathForVendorAndType(
+      getHDPathForVendorAndType(
         wallet.index,
         this.vendor as 'Ledger' | 'Trezor',
-      );
-    }
+      )
+    );
   }
 
   async serialize(): Promise<SerializedHardwareWalletKeychain> {
