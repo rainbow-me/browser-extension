@@ -66,6 +66,7 @@
   "settings": {
     "title": "Settings",
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
+    "sounds": "Sounds",
     "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
     "guides_and_support": "Guides & Support",
