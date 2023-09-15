@@ -18,7 +18,7 @@ export interface DappMetadata {
   appHostName: string;
   appName: string;
   appShortName: string;
-  appLogo: string;
+  appLogo?: string;
 }
 
 // ///////////////////////////////////////////////
@@ -57,7 +57,7 @@ export async function dappMetadataQueryFunction({
   });
 
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
-  const appLogo = appHost ? getPublicAppIcon(appHost) : '';
+  const appLogo = appHost ? getPublicAppIcon(appHost) : undefined;
   const dappMetadata = {
     url,
     appHost,
