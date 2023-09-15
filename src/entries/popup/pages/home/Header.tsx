@@ -108,18 +108,17 @@ export const Header = React.memo(function Header() {
 
 export function AvatarSection() {
   const { address } = useAccount();
-  const { data: avatar, isFetched } = useAvatar({ addressOrName: address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
+
   return (
     <Avatar.Wrapper size={60} color={avatar?.color}>
-      {isFetched ? (
-        <>
-          {avatar?.imageUrl ? (
-            <Avatar.Image size={60} imageUrl={avatar.imageUrl} />
-          ) : (
-            <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
-          )}
-        </>
-      ) : null}
+      <>
+        {avatar?.imageUrl ? (
+          <Avatar.Image size={60} imageUrl={avatar.imageUrl} />
+        ) : (
+          <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
+        )}
+      </>
       <Avatar.Skeleton />
     </Avatar.Wrapper>
   );
