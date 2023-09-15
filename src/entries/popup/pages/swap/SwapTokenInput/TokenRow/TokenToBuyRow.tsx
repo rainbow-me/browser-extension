@@ -42,7 +42,6 @@ export type TokenToBuyRowProps = {
   asset: SearchAsset;
   testId: string;
   onDropdownChange: (open: boolean) => void;
-  tooltipOffset: number;
 };
 
 export function TokenToBuyRow({

@@ -107,13 +107,11 @@ export const TokenToBuySection = ({
   outputChainId,
   onSelectAsset,
   onDropdownChange,
-  tooltipOffset,
 }: {
   assetSection: AssetToBuySection;
   outputChainId?: ChainId;
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   onDropdownChange: (open: boolean) => void;
-  tooltipOffset: number;
 }) => {
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets: assetSection.data,
@@ -188,7 +186,6 @@ export const TokenToBuySection = ({
                   onDropdownChange={onDropdownChange}
                   asset={asset}
                   testId={`${asset?.uniqueId}-${assetSection.id}-token-to-buy-row`}
-                  tooltipOffset={tooltipOffset}
                 />
               </Box>
             );

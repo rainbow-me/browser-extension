@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { ReactElement, createContext, useRef } from 'react';
+import React, { ReactElement, useRef } from 'react';
 
 import {
   Box,
@@ -48,10 +48,6 @@ interface DropdownInputWrapperProps {
   zIndex?: number;
   onDropdownScroll?: () => void;
 }
-
-export const DropdownScrollContext = createContext<
-  React.RefObject<HTMLDivElement> | undefined
->(undefined);
 
 export const DropdownInputWrapper = ({
   bottomComponent,
@@ -148,15 +144,7 @@ export const DropdownInputWrapper = ({
                     paddingVertical="16px"
                     ref={scrollContainerRef}
                   >
-                    <Stack space="12px">
-                      {
-                        <DropdownScrollContext.Provider
-                          value={scrollContainerRef}
-                        >
-                          {dropdownComponent}
-                        </DropdownScrollContext.Provider>
-                      }
-                    </Stack>
+                    <Stack space="12px">{dropdownComponent}</Stack>
                   </Box>
                 </Box>
               )}
