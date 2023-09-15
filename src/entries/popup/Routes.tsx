@@ -30,6 +30,7 @@ import { WindowStroke } from './components/WindowStroke/WindowStroke';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
+import { Buy } from './pages/buy';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ActivityDetails } from './pages/home/Activity/ActivityDetails';
@@ -777,6 +778,21 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <ImportWalletSelectionEdit />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.BUY,
+    element: (
+      <AnimatedRoute
+        direction="upRight"
+        navbar
+        navbarIcon="ex"
+        title={i18n.t('buy.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <Buy />
       </AnimatedRoute>
     ),
   },

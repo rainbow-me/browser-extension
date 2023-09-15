@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -6,10 +6,12 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { truncateAddress } from '~/core/utils/address';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
 import { triggerToast } from '../components/Toast/Toast';
 import * as wallet from '../handlers/wallet';
@@ -27,6 +29,7 @@ import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useNavigateToSwaps } from './useNavigateToSwaps';
 import { useRainbowNavigate } from './useRainbowNavigate';
+import { useWallets } from './useWallets';
 
 export function useHomeShortcuts() {
   const { currentAddress: address } = useCurrentAddressStore();
@@ -39,6 +42,17 @@ export function useHomeShortcuts() {
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
   const { disconnectSession } = useAppSession({ host: dappMetadata?.appHost });
+  const { featureFlags } = useFeatureFlagsStore();
+  const { isWatchingWallet } = useWallets();
+
+  const allowSend = useMemo(
+    () => !isWatchingWallet || featureFlags.full_watching_wallets,
+    [featureFlags.full_watching_wallets, isWatchingWallet],
+  );
+
+  const alertWatchingWallet = useCallback(() => {
+    triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
+  }, []);
 
   const getHomeShortcutsAreActive = useCallback(() => {
     return sheet === 'none' && !selectedTransaction && !selectedToken;
@@ -95,7 +109,11 @@ export function useHomeShortcuts() {
             key: shortcuts.home.GO_TO_SEND.display,
             type: 'home.goToSend',
           });
-          navigate(ROUTES.SEND);
+          if (allowSend) {
+            navigate(ROUTES.SEND);
+          } else {
+            alertWatchingWallet();
+          }
           break;
         case shortcuts.home.GO_TO_SETTINGS.key:
           trackShortcut({
@@ -171,6 +189,8 @@ export function useHomeShortcuts() {
       }
     },
     [
+      allowSend,
+      alertWatchingWallet,
       disconnectFromApp,
       handleCopy,
       navigate,
