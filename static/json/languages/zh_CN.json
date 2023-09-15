@@ -117,6 +117,9 @@
         "recovery_phrase_label": "钱包群组",
         "private_key_label": "私钥",
         "hardware_wallet_label": "硬件钱包",
+        "backed_up": "已备份",
+        "not_backed_up": "未备份",
+        "back_up_now": "立即备份",
         "wallet_details": {
           "title": "钱包详情",
           "view_recovery_phrase": "查看恢复短语",
@@ -126,7 +129,9 @@
           "delete_wallet": "删除钱包",
           "view_private_key": "查看私钥",
           "copy_address": "复制地址",
-          "hidden": "已隐藏"
+          "hidden": "已隐藏",
+          "back_up_now": "立即备份",
+          "last_backed_up": "上次备份为 %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "为你的钱包命名",
@@ -173,6 +178,7 @@
       "KRW": "韩元",
       "JPY": "日元",
       "RUB": "卢布",
+      "IDR": "印尼盾",
       "INR": "印度卢比",
       "TRY": "土耳其里拉",
       "CAD": "加拿大元",
@@ -189,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "合约交互",
     "savings": "储蓄",
-    "deposited": "已存入",
-    "withdrew": "已提款"
+    "cancelled": "交易已取消",
+    "burn": {
+      "pending": "正在销毁",
+      "confirmed": "已销毁",
+      "failed": "销毁失败"
+    },
+    "cancel": {
+      "pending": "正在取消",
+      "confirmed": "已取消",
+      "failed": "取消失败"
+    },
+    "send": {
+      "pending": "正在发送",
+      "confirmed": "已发送",
+      "failed": "发送失败"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "已收到",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "正在提现",
+      "confirmed": "已提现",
+      "failed": "提现失败"
+    },
+    "deposit": {
+      "pending": "正在存款",
+      "confirmed": "已存款",
+      "failed": "存款失败"
+    },
+    "mint": {
+      "pending": "正在铸币",
+      "confirmed": "已铸币",
+      "failed": "铸币失败"
+    },
+    "approve": {
+      "pending": "正在授权",
+      "confirmed": "已授权",
+      "failed": "授权失败"
+    },
+    "contract_interaction": {
+      "pending": "交互待定",
+      "confirmed": "已交互",
+      "failed": "交互失败"
+    },
+    "swap": {
+      "pending": "正在交换",
+      "confirmed": "已交换",
+      "failed": "交换失败"
+    },
+    "borrow": {
+      "pending": "借款中",
+      "confirmed": "已借款",
+      "failed": "借款失败"
+    },
+    "claim": {
+      "pending": "认领中",
+      "confirmed": "已认领",
+      "failed": "认领失败"
+    },
+    "deployment": {
+      "pending": "部署中",
+      "confirmed": "已部署",
+      "failed": "部署失败"
+    },
+    "repay": {
+      "pending": "偿还中",
+      "confirmed": "已偿还",
+      "failed": "偿还失败"
+    },
+    "stake": {
+      "pending": "质押中",
+      "confirmed": "已质押",
+      "failed": "质押失败"
+    },
+    "unstake": {
+      "pending": "撤销质押中",
+      "confirmed": "已撤销质押",
+      "failed": "撤销质押失败"
+    },
+    "purchase": {
+      "pending": "购买中",
+      "confirmed": "已购买",
+      "failed": "购买失败"
+    },
+    "revoke": {
+      "pending": "撤销中",
+      "confirmed": "已撤销",
+      "failed": "撤销失败"
+    },
+    "sale": {
+      "pending": "销售中",
+      "confirmed": "已售出",
+      "failed": "销售失败"
+    },
+    "bridge": {
+      "pending": "桥接中",
+      "confirmed": "已桥接",
+      "failed": "桥接失败"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "已空投",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "包装中",
+      "confirmed": "已包装",
+      "failed": "包装失败"
+    },
+    "unwrap": {
+      "pending": "解包中",
+      "confirmed": "已解包",
+      "failed": "取消包装失败"
+    },
+    "bid": {
+      "pending": "出价中",
+      "confirmed": "出价",
+      "failed": "出价失败"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -437,6 +561,7 @@
       "review": "审查",
       "loading": "加载中",
       "insufficient_liquidity": "流动性不足",
+      "fee_on_transfer_token": "转账代币的费用",
       "no_route": "找不到路由",
       "no_quote": "无可用报价",
       "enter_an_amount": "输入金额"
@@ -481,6 +606,16 @@
           "open_text": "还想了解更多吗？ ",
           "link_text": "阅读更多",
           "close_text": " 关于自动化做市商和代币流动性"
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "转账代币的费用",
+        "description": "因为 %{tokenName} 合约增加了额外费用，所以这个交换在Rainbow中会失败",
+        "action_label": "知道了",
+        "footer_text": {
+          "open_text": "阅读 ",
+          "link_text": "我们的指南",
+          "close_text": " 以帮助交换此代币"
         }
       }
     }
@@ -722,6 +857,12 @@
       "connected": "已连接"
     }
   },
+  "wallet_backup_reminder": {
+    "title": "你的一些钱包尚未备份",
+    "description": "你的一些钱包尚未备份。备份以便在丢失该设备的访问权限时可以恢复对钱包的访问",
+    "button_label_action": "立即备份",
+    "button_label_cancel": "稍后提醒我"
+  },
   "approve_request": {
     "wallet_info_title": "愿意连接到您的钱包",
     "wallet_info_description": "允许 %{appName} 查看您的钱包地址、余额、活动并请求交易授权。",
@@ -850,7 +991,38 @@
     "this_month": "本月",
     "empty_header": "暂无活动",
     "empty_description": "您一旦开始使用您的钱包，您将在此处看到您的交易。",
-    "loading_more": "正在加载更多..."
+    "loading_more": "正在加载更多...",
+    "no_value": "无价值"
+  },
+  "activity_details": {
+    "you": "你",
+    "from": "来自",
+    "to": "至",
+    "confirmed_at": "确认于",
+    "confirmations": "确认次数",
+    "token": "代币",
+    "block": "区块",
+    "value": "价值",
+    "network": "网络",
+    "fee": "网络费",
+    "base_fee": "基础费",
+    "max_base_fee": "最大基础费",
+    "gas_price": "Gas价格",
+    "gas_limit": "Gas限制",
+    "gas_used": "使用的Gas",
+    "max_priority_fee": "矿工小费",
+    "nonce": "随机数",
+    "allowance": "额度",
+    "unlimited_allowance": "无限额 %{symbol}",
+    "app": "应用",
+    "copy_hash": "复制交易哈希",
+    "hash_copied": "哈希已复制",
+    "copy_explorer_url": "复制链接",
+    "explorer_copied": "链接已复制",
+    "exchange_rate": "兑换",
+    "collection": "收藏",
+    "token_contract": "代币合约",
+    "token_standard": "代币标准"
   },
   "tokens_tab": {
     "coinbase_title": "从Coinbase存入",
@@ -905,12 +1077,14 @@
       "market_cap": "市值",
       "market_cap_explainer": {
         "title": "市值",
-        "description": "市值是代币流通供应的总市值。它是通过平均交换价格计算的。"
+        "description": "市值是代币流通供应的总市值。它是通过平均交换价格计算的。",
+        "action": "知道了"
       },
       "fully_diluted": "完全稀释",
       "fully_diluted_explainer": {
         "title": "全面稀释市值",
-        "description": "如果总供应量可供流通，代币的最大可能市值。"
+        "description": "如果总供应量可供流通，代币的最大可能市值。",
+        "action": "知道了"
       },
       "supply": "供应量",
       "max_total_supply": "最大总供应量",
@@ -1092,5 +1266,9 @@
       "highlighted": "联系Rainbow",
       "after": " 进行更多请求。"
     }
+  },
+  "approvals": {
+    "unlimited": "无限",
+    "no_allowance": "无额度权限"
   }
 }
