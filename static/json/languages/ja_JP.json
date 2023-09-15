@@ -117,6 +117,9 @@
         "recovery_phrase_label": "ウォレットグループ",
         "private_key_label": "プライベートキー",
         "hardware_wallet_label": "ハードウェアウォレット",
+        "backed_up": "バックアップ済み",
+        "not_backed_up": "バックアップされていません",
+        "back_up_now": "今すぐバックアップ",
         "wallet_details": {
           "title": "ウォレットの詳細",
           "view_recovery_phrase": "復旧フレーズを表示",
@@ -126,7 +129,9 @@
           "delete_wallet": "ウォレットを削除",
           "view_private_key": "秘密鍵を表示",
           "copy_address": "アドレスをコピー",
-          "hidden": "非表示"
+          "hidden": "非表示",
+          "back_up_now": "今すぐバックアップ",
+          "last_backed_up": "最後にバックアップされたのは %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "ウォレットに名前を付ける",
@@ -173,6 +178,7 @@
       "KRW": "韓国ウォン",
       "JPY": "日本円",
       "RUB": "ロシアルーブル",
+      "IDR": "インドネシアルピア",
       "INR": "インドルピー",
       "TRY": "トルコリラ",
       "CAD": "カナダドル",
@@ -189,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "契約の相互作用",
     "savings": "貯金",
-    "deposited": "預金済み",
-    "withdrew": "引き出しました"
+    "cancelled": "取引がキャンセルされました",
+    "burn": {
+      "pending": "焼却中",
+      "confirmed": "焼却済み",
+      "failed": "焼却に失敗しました"
+    },
+    "cancel": {
+      "pending": "キャンセル中",
+      "confirmed": "キャンセル済み",
+      "failed": "キャンセルに失敗しました"
+    },
+    "send": {
+      "pending": "送信中",
+      "confirmed": "送信済み",
+      "failed": "送信に失敗しました"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "受信済み",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "引き出し中",
+      "confirmed": "引き出し完了",
+      "failed": "引き出し失敗"
+    },
+    "deposit": {
+      "pending": "預け入れ中",
+      "confirmed": "預け入れ完了",
+      "failed": "預け入れ失敗"
+    },
+    "mint": {
+      "pending": "鋳造中",
+      "confirmed": "鋳造完了",
+      "failed": "鋳造失敗"
+    },
+    "approve": {
+      "pending": "承認中",
+      "confirmed": "承認完了",
+      "failed": "承認失敗"
+    },
+    "contract_interaction": {
+      "pending": "操作待ち",
+      "confirmed": "操作完了",
+      "failed": "操作失敗"
+    },
+    "swap": {
+      "pending": "交換中",
+      "confirmed": "交換完了",
+      "failed": "交換失敗"
+    },
+    "borrow": {
+      "pending": "借りる",
+      "confirmed": "借りた",
+      "failed": "借用失敗"
+    },
+    "claim": {
+      "pending": "主張",
+      "confirmed": "主張済み",
+      "failed": "主張失敗"
+    },
+    "deployment": {
+      "pending": "デプロイ中",
+      "confirmed": "デプロイ済み",
+      "failed": "デプロイ失敗"
+    },
+    "repay": {
+      "pending": "返済中",
+      "confirmed": "返済済み",
+      "failed": "返済失敗"
+    },
+    "stake": {
+      "pending": "ステーキング",
+      "confirmed": "ステイクされた",
+      "failed": "ステーク失敗"
+    },
+    "unstake": {
+      "pending": "アンステーキング",
+      "confirmed": "アンステイク済み",
+      "failed": "アンステイク失敗"
+    },
+    "purchase": {
+      "pending": "購入中",
+      "confirmed": "購入済み",
+      "failed": "購入失敗"
+    },
+    "revoke": {
+      "pending": "取り消し中",
+      "confirmed": "取り消し済み",
+      "failed": "取り消し失敗"
+    },
+    "sale": {
+      "pending": "販売中",
+      "confirmed": "販売済み",
+      "failed": "販売失敗"
+    },
+    "bridge": {
+      "pending": "ブリッジング中",
+      "confirmed": "ブリッジ済み",
+      "failed": "ブリッジ失敗"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "エアドロップ済み",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "ラッピング中",
+      "confirmed": "ラップ済み",
+      "failed": "ラップ失敗"
+    },
+    "unwrap": {
+      "pending": "アンラッピング中",
+      "confirmed": "アンラップ済み",
+      "failed": "アンラップ失敗"
+    },
+    "bid": {
+      "pending": "入札中",
+      "confirmed": "入札",
+      "failed": "入札失敗"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -437,6 +561,7 @@
       "review": "確認",
       "loading": "ロード中",
       "insufficient_liquidity": "流動性不足",
+      "fee_on_transfer_token": "転送トークンの手数料",
       "no_route": "ルートが見つかりません",
       "no_quote": "利用可能な見積もりなし",
       "enter_an_amount": "金額を入力してください"
@@ -481,6 +606,16 @@
           "open_text": "まだ気になりますか？ ",
           "link_text": "続きを読む",
           "close_text": " AMMおよびトークンの流動性について"
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "転送トークンの手数料",
+        "description": "%{tokenName} 契約が追加の手数料を追加するため、Rainbowでこのスワップは失敗します",
+        "action_label": "了解",
+        "footer_text": {
+          "open_text": "読む ",
+          "link_text": "私たちのガイド",
+          "close_text": " このトークンのスワッピングに関するヘルプのために"
         }
       }
     }
@@ -722,6 +857,12 @@
       "connected": "接続されています"
     }
   },
+  "wallet_backup_reminder": {
+    "title": "ウォレットの一部がバックアップされていません",
+    "description": "ウォレットの一部がバックアップされていません。このデバイスへのアクセスを失った場合でもウォレットへのアクセスを再開するためにバックアップしてください",
+    "button_label_action": "今すぐバックアップ",
+    "button_label_cancel": "後でリマインドする"
+  },
   "approve_request": {
     "wallet_info_title": "あなたのウォレットに接続を許可します",
     "wallet_info_description": "ウォレットのアドレス、残高、取引履歴を表示し、トランザクションの承認をリクエストするには、 %{appName} を許可します",
@@ -850,7 +991,38 @@
     "this_month": "今月",
     "empty_header": "まだアクティビティはありません",
     "empty_description": "ウォレットを使い始めると、ここにトランザクションが表示されます。",
-    "loading_more": "読み込み中..."
+    "loading_more": "読み込み中...",
+    "no_value": "価値なし"
+  },
+  "activity_details": {
+    "you": "あなた",
+    "from": "から",
+    "to": "まで",
+    "confirmed_at": "確認済み",
+    "confirmations": "確認回数",
+    "token": "トークン",
+    "block": "ブロック",
+    "value": "価値",
+    "network": "ネットワーク",
+    "fee": "ネットワーク手数料",
+    "base_fee": "ベース手数料",
+    "max_base_fee": "最大ベース手数料",
+    "gas_price": "ガス価格",
+    "gas_limit": "ガス上限",
+    "gas_used": "使用ガス",
+    "max_priority_fee": "マイナーのヒント",
+    "nonce": "ノンス",
+    "allowance": "許可",
+    "unlimited_allowance": "制限なし %{symbol}",
+    "app": "アプリ",
+    "copy_hash": "Txハッシュをコピー",
+    "hash_copied": "ハッシュをコピーしました",
+    "copy_explorer_url": "リンクをコピー",
+    "explorer_copied": "リンクをコピーしました",
+    "exchange_rate": "交換",
+    "collection": "コレクション",
+    "token_contract": "トークン契約",
+    "token_standard": "トークン標準"
   },
   "tokens_tab": {
     "coinbase_title": "Coinbaseから入金",
@@ -905,12 +1077,14 @@
       "market_cap": "時価総額",
       "market_cap_explainer": {
         "title": "時価総額",
-        "description": "時価総額は、トークンの流通供給量の総市場価値です。平均取引価格で計算されます。"
+        "description": "時価総額は、トークンの流通供給量の総市場価値です。平均取引価格で計算されます。",
+        "action": "了解"
       },
       "fully_diluted": "完全に希釈された",
       "fully_diluted_explainer": {
         "title": "完全に希釈された時価総額",
-        "description": "総供給量が流通可能である場合のトークンの最大可能な時価総額。"
+        "description": "総供給量が流通可能である場合のトークンの最大可能な時価総額。",
+        "action": "了解"
       },
       "supply": "供給量",
       "max_total_supply": "最大総供給量",
@@ -1092,5 +1266,9 @@
       "highlighted": "Rainbowに問い合わせる",
       "after": " を要求するために。"
     }
+  },
+  "approvals": {
+    "unlimited": "無制限",
+    "no_allowance": "許可がありません"
   }
 }

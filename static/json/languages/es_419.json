@@ -117,6 +117,9 @@
         "recovery_phrase_label": "Grupo de Billeteras",
         "private_key_label": "Clave Privada",
         "hardware_wallet_label": "Billetera de Hardware",
+        "backed_up": "Respaldado",
+        "not_backed_up": "No respaldado",
+        "back_up_now": "Respaldar ahora",
         "wallet_details": {
           "title": "Detalles de la Billetera",
           "view_recovery_phrase": "Ver frase de recuperación",
@@ -126,7 +129,9 @@
           "delete_wallet": "Eliminar billetera",
           "view_private_key": "Ver clave privada",
           "copy_address": "Copiar dirección",
-          "hidden": "Oculto"
+          "hidden": "Oculto",
+          "back_up_now": "Respaldar ahora",
+          "last_backed_up": "Última vez respaldado como %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "Nombra tu billetera",
@@ -173,6 +178,7 @@
       "KRW": "Won Surcoreano",
       "JPY": "Yen Japonés",
       "RUB": "Rublo Ruso",
+      "IDR": "Rupia indonesia",
       "INR": "Rupia India",
       "TRY": "Lira Turca",
       "CAD": "Dólar Canadiense",
@@ -189,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "Interacción de contratos",
     "savings": "Ahorros",
-    "deposited": "Depositado",
-    "withdrew": "Retirado"
+    "cancelled": "Transacción cancelada",
+    "burn": {
+      "pending": "Quemando",
+      "confirmed": "Quemado",
+      "failed": "Quema fallida"
+    },
+    "cancel": {
+      "pending": "Cancelando",
+      "confirmed": "Cancelado",
+      "failed": "Cancelación fallida"
+    },
+    "send": {
+      "pending": "Enviando",
+      "confirmed": "Enviado",
+      "failed": "Envío fallido"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "Recibido",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "Retirando",
+      "confirmed": "Retirado",
+      "failed": "Retiro fallido"
+    },
+    "deposit": {
+      "pending": "Depositando",
+      "confirmed": "Depositado",
+      "failed": "Depósito fallido"
+    },
+    "mint": {
+      "pending": "Acuñando",
+      "confirmed": "Acuñado",
+      "failed": "Acuñación fallida"
+    },
+    "approve": {
+      "pending": "Aprobando",
+      "confirmed": "Aprobado",
+      "failed": "Aprobación fallida"
+    },
+    "contract_interaction": {
+      "pending": "Interacción pendiente",
+      "confirmed": "Interactuado",
+      "failed": "Interacción fallida"
+    },
+    "swap": {
+      "pending": "Intercambiando",
+      "confirmed": "Intercambiado",
+      "failed": "Intercambio fallido"
+    },
+    "borrow": {
+      "pending": "Pidiendo prestado",
+      "confirmed": "Prestado",
+      "failed": "Préstamo fallido"
+    },
+    "claim": {
+      "pending": "Reclamando",
+      "confirmed": "Reclamado",
+      "failed": "Reclamo fallido"
+    },
+    "deployment": {
+      "pending": "Desplegando",
+      "confirmed": "Desplegado",
+      "failed": "Despliegue fallido"
+    },
+    "repay": {
+      "pending": "Reembolsando",
+      "confirmed": "Reembolsado",
+      "failed": "Reembolso fallido"
+    },
+    "stake": {
+      "pending": "Aplicando stake",
+      "confirmed": "Stake aplicado",
+      "failed": "Stake fallido"
+    },
+    "unstake": {
+      "pending": "Removiendo stake",
+      "confirmed": "Stake removido",
+      "failed": "Remoción de stake fallida"
+    },
+    "purchase": {
+      "pending": "Comprando",
+      "confirmed": "Comprado",
+      "failed": "Compra Fallida"
+    },
+    "revoke": {
+      "pending": "Revocando",
+      "confirmed": "Revocado",
+      "failed": "Revocación Fallida"
+    },
+    "sale": {
+      "pending": "Vendiendo",
+      "confirmed": "Vendido",
+      "failed": "Venta Fallida"
+    },
+    "bridge": {
+      "pending": "Puentificando",
+      "confirmed": "Puentificado",
+      "failed": "Puente Fallido"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "Airdropped",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "Envoltura en Proceso",
+      "confirmed": "Envuelto",
+      "failed": "Envoltura Fallida"
+    },
+    "unwrap": {
+      "pending": "Desenvolviendo",
+      "confirmed": "Desenvuelto",
+      "failed": "Desenvolver Falló"
+    },
+    "bid": {
+      "pending": "Haciendo una Oferta",
+      "confirmed": "Oferta",
+      "failed": "Oferta Fallida"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -437,6 +561,7 @@
       "review": "Revisar",
       "loading": "Cargando",
       "insufficient_liquidity": "Liquidez insuficiente",
+      "fee_on_transfer_token": "Comisión en el Token de Transferencia",
       "no_route": "No se encontró ruta",
       "no_quote": "No hay cotización disponible",
       "enter_an_amount": "Ingresa una cantidad"
@@ -481,6 +606,16 @@
           "open_text": "¿Todavía tienes curiosidad? ",
           "link_text": "Leer más",
           "close_text": " sobre los AMMs y la liquidez de tokens."
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "Comisión en el Token de Transferencia",
+        "description": "Este intercambio fallará en Rainbow porque el contrato %{tokenName} incluye comisiones extra",
+        "action_label": "Entendido",
+        "footer_text": {
+          "open_text": "Leer ",
+          "link_text": "nuestra guía",
+          "close_text": " para obtener ayuda sobre este intercambio de tokens!"
         }
       }
     }
@@ -722,6 +857,12 @@
       "connected": "Conectado"
     }
   },
+  "wallet_backup_reminder": {
+    "title": "Algunas de sus billeteras no están respaldadas",
+    "description": "Algunas de sus billeteras no están respaldadas. Haga un respaldo para que pueda recuperar el acceso a sus billeteras si pierde acceso a este dispositivo",
+    "button_label_action": "Respaldar ahora",
+    "button_label_cancel": "Recordarme Más Tarde"
+  },
   "approve_request": {
     "wallet_info_title": "quiere conectarse a tu billetera",
     "wallet_info_description": "Permitir que %{appName} vea la dirección, el saldo, la actividad de tus billeteras y solicite aprobación para transacciones.",
@@ -850,7 +991,38 @@
     "this_month": "Este mes",
     "empty_header": "Actividad no disponible aún",
     "empty_description": "Una vez que comiences a usar tu billetera, verás aquí tus transacciones.",
-    "loading_more": "Cargando más..."
+    "loading_more": "Cargando más...",
+    "no_value": "Sin valor"
+  },
+  "activity_details": {
+    "you": "Tú",
+    "from": "De",
+    "to": "A",
+    "confirmed_at": "Confirmado en",
+    "confirmations": "Confirmaciones",
+    "token": "Token",
+    "block": "Bloque",
+    "value": "Valor",
+    "network": "Red",
+    "fee": "Tarifa de Red",
+    "base_fee": "Tarifa Base",
+    "max_base_fee": "Tarifa Base Máxima",
+    "gas_price": "Precio del Gas",
+    "gas_limit": "Límite del Gas",
+    "gas_used": "Gas Utilizado",
+    "max_priority_fee": "Propina al Minero",
+    "nonce": "Nonce",
+    "allowance": "Permiso",
+    "unlimited_allowance": "Ilimitado %{symbol}",
+    "app": "Aplicación",
+    "copy_hash": "Copiar hash de transacción",
+    "hash_copied": "Hash Copiado",
+    "copy_explorer_url": "Copiar Enlace",
+    "explorer_copied": "Enlace Copiado",
+    "exchange_rate": "Intercambio",
+    "collection": "Colección",
+    "token_contract": "Contrato del token",
+    "token_standard": "Estándar del token"
   },
   "tokens_tab": {
     "coinbase_title": "Depósito desde Coinbase",
@@ -905,12 +1077,14 @@
       "market_cap": "Capitalización de mercado",
       "market_cap_explainer": {
         "title": "Capitalización de mercado",
-        "description": "La capitalización de mercado es el valor de mercado total del suministro circulante de un token. Se calcula con un precio promedio de intercambio."
+        "description": "La capitalización de mercado es el valor de mercado total del suministro circulante de un token. Se calcula con un precio promedio de intercambio.",
+        "action": "Entendido"
       },
       "fully_diluted": "Total diluido",
       "fully_diluted_explainer": {
         "title": "Capitalización de mercado potencial",
-        "description": "La capitalización de mercado máxima posible de un token si el suministro total estuviera disponible en circulación."
+        "description": "La capitalización de mercado máxima posible de un token si el suministro total estuviera disponible en circulación.",
+        "action": "Entendido"
       },
       "supply": "Suministro",
       "max_total_supply": "Suministro total máximo",
@@ -1092,5 +1266,9 @@
       "highlighted": "Contactar con Rainbow",
       "after": " para solicitar más información."
     }
+  },
+  "approvals": {
+    "unlimited": "Ilimitado",
+    "no_allowance": "Sin Permiso"
   }
 }

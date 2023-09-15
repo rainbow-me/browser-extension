@@ -117,6 +117,9 @@
         "recovery_phrase_label": "Grupo de Carteiras",
         "private_key_label": "Chave Privada",
         "hardware_wallet_label": "Carteira de Hardware",
+        "backed_up": "Com backup",
+        "not_backed_up": "Sem backup",
+        "back_up_now": "Fazer Backup Agora",
         "wallet_details": {
           "title": "Detalhes da Carteira",
           "view_recovery_phrase": "Visualizar frase de recuperação",
@@ -126,7 +129,9 @@
           "delete_wallet": "Excluir carteira",
           "view_private_key": "Visualizar chave privada",
           "copy_address": "Copiar endereço",
-          "hidden": "Oculto"
+          "hidden": "Oculto",
+          "back_up_now": "Fazer Backup Agora",
+          "last_backed_up": "Último backup feito em %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "Nomeie sua carteira",
@@ -173,6 +178,7 @@
       "KRW": "Won Sul-Coreano",
       "JPY": "Iene Japonês",
       "RUB": "Rublo Russo",
+      "IDR": "Rupia Indonésia",
       "INR": "Rúpia Indiana",
       "TRY": "Lira Turca",
       "CAD": "Dólar Canadense",
@@ -189,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "Interação com Contratos",
     "savings": "Economias",
-    "deposited": "Depositado",
-    "withdrew": "Sacado"
+    "cancelled": "Transação Cancelada",
+    "burn": {
+      "pending": "Queimando",
+      "confirmed": "Queimado",
+      "failed": "Falha na Queima"
+    },
+    "cancel": {
+      "pending": "Cancelando",
+      "confirmed": "Cancelado",
+      "failed": "Falha no Cancelamento"
+    },
+    "send": {
+      "pending": "Enviando",
+      "confirmed": "Enviado",
+      "failed": "Falha no Envio"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "Recebido",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "Sacando",
+      "confirmed": "Sacado",
+      "failed": "Saque Falhou"
+    },
+    "deposit": {
+      "pending": "Depositando",
+      "confirmed": "Depositado",
+      "failed": "Depósito Falhou"
+    },
+    "mint": {
+      "pending": "Cunhando",
+      "confirmed": "Cunhado",
+      "failed": "Cunhagem Falhou"
+    },
+    "approve": {
+      "pending": "Aprovando",
+      "confirmed": "Aprovado",
+      "failed": "Aprovação Falhou"
+    },
+    "contract_interaction": {
+      "pending": "Interação Pendente",
+      "confirmed": "Interagido",
+      "failed": "Interação Falhou"
+    },
+    "swap": {
+      "pending": "Trocando",
+      "confirmed": "Trocado",
+      "failed": "Troca Falhou"
+    },
+    "borrow": {
+      "pending": "Tomando emprestado",
+      "confirmed": "Emprestado",
+      "failed": "Empréstimo falhou"
+    },
+    "claim": {
+      "pending": "Reivindicando",
+      "confirmed": "Reivindicado",
+      "failed": "Reivindicação falhou"
+    },
+    "deployment": {
+      "pending": "Implantando",
+      "confirmed": "Implantado",
+      "failed": "Implantação falhou"
+    },
+    "repay": {
+      "pending": "Pagando",
+      "confirmed": "Pago",
+      "failed": "Pagamento falhou"
+    },
+    "stake": {
+      "pending": "Apostando",
+      "confirmed": "Apostado",
+      "failed": "Aposta falhou"
+    },
+    "unstake": {
+      "pending": "Desapostando",
+      "confirmed": "Desapostado",
+      "failed": "Desaposta falhou"
+    },
+    "purchase": {
+      "pending": "Comprando",
+      "confirmed": "Comprado",
+      "failed": "Compra Falhou"
+    },
+    "revoke": {
+      "pending": "Revogando",
+      "confirmed": "Revogado",
+      "failed": "Revogação Falhou"
+    },
+    "sale": {
+      "pending": "Vendendo",
+      "confirmed": "Vendido",
+      "failed": "Venda Falhou"
+    },
+    "bridge": {
+      "pending": "Conectando",
+      "confirmed": "Conectado",
+      "failed": "Conexão Falhou"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "Distribuído",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "Envolvendo",
+      "confirmed": "Envolvido",
+      "failed": "Falha ao Envelopar"
+    },
+    "unwrap": {
+      "pending": "Desenvolvendo",
+      "confirmed": "Desenvolvido",
+      "failed": "Falha ao Desembrulhar"
+    },
+    "bid": {
+      "pending": "Licitando",
+      "confirmed": "Lance",
+      "failed": "Lance Falhou"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -437,6 +561,7 @@
       "review": "Revisão",
       "loading": "Carregando",
       "insufficient_liquidity": "Liquidez insuficiente",
+      "fee_on_transfer_token": "Taxa em Token de Transferência",
       "no_route": "Nenhuma rota encontrada",
       "no_quote": "Nenhuma cotação disponível",
       "enter_an_amount": "Insira um valor"
@@ -481,6 +606,16 @@
           "open_text": "Ainda curioso? ",
           "link_text": "Leia mais",
           "close_text": " sobre AMMs e liquidez de tokens."
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "Taxa em Token de Transferência",
+        "description": "Esta troca falhará no Rainbow porque o contrato %{tokenName} adiciona taxas extras.",
+        "action_label": "Entendi",
+        "footer_text": {
+          "open_text": "Leia ",
+          "link_text": "nosso guia",
+          "close_text": " para ajuda na troca deste token!"
         }
       }
     }
@@ -722,6 +857,12 @@
       "connected": "Conectado"
     }
   },
+  "wallet_backup_reminder": {
+    "title": "Algumas de suas carteiras não estão com backup",
+    "description": "Algumas de suas carteiras não estão com backup. Faça backup para poder recuperar o acesso às suas carteiras se perder o acesso a este dispositivo.",
+    "button_label_action": "Fazer Backup Agora",
+    "button_label_cancel": "Lembre-me Depois"
+  },
   "approve_request": {
     "wallet_info_title": "deseja conectar-se à sua carteira",
     "wallet_info_description": "Permitir que %{appName} visualize o endereço, o saldo, a atividade da sua carteira e solicite aprovação para transações.",
@@ -850,7 +991,38 @@
     "this_month": "Este Mês",
     "empty_header": "Nenhuma atividade ainda",
     "empty_description": "Ao começar a usar sua carteira, você verá suas transações aqui.",
-    "loading_more": "Carregando mais..."
+    "loading_more": "Carregando mais...",
+    "no_value": "Sem valor"
+  },
+  "activity_details": {
+    "you": "Você",
+    "from": "De",
+    "to": "Para",
+    "confirmed_at": "Confirmado em",
+    "confirmations": "Confirmações",
+    "token": "Token",
+    "block": "Bloco",
+    "value": "Valor",
+    "network": "Rede",
+    "fee": "Taxa de Rede",
+    "base_fee": "Taxa Base",
+    "max_base_fee": "Taxa Base Máxima",
+    "gas_price": "Preço do Gás",
+    "gas_limit": "Limite de Gás",
+    "gas_used": "Gás Usado",
+    "max_priority_fee": "Gorjeta do Minerador",
+    "nonce": "Nonce",
+    "allowance": "Permissão",
+    "unlimited_allowance": "Ilimitado %{symbol}",
+    "app": "App",
+    "copy_hash": "Copiar Hash da Tx",
+    "hash_copied": "Hash Copiado",
+    "copy_explorer_url": "Copiar Link",
+    "explorer_copied": "Link Copiado",
+    "exchange_rate": "Troca",
+    "collection": "Coleção",
+    "token_contract": "Contrato do Token",
+    "token_standard": "Padrão do Token"
   },
   "tokens_tab": {
     "coinbase_title": "Depósito da Coinbase",
@@ -905,12 +1077,14 @@
       "market_cap": "Valor de Mercado",
       "market_cap_explainer": {
         "title": "Valor de Mercado",
-        "description": "O valor de mercado é o valor de mercado total do fornecimento circulante de um token. É calculado com base em um preço médio de troca."
+        "description": "O valor de mercado é o valor de mercado total do fornecimento circulante de um token. É calculado com base em um preço médio de troca.",
+        "action": "Entendi"
       },
       "fully_diluted": "Totalmente diluído",
       "fully_diluted_explainer": {
         "title": "Cap de Mercado Totalmente Diluído",
-        "description": "O valor máximo possível de mercado de um token se o fornecimento total estivesse disponível em circulação."
+        "description": "O valor máximo possível de mercado de um token se o fornecimento total estivesse disponível em circulação.",
+        "action": "Entendi"
       },
       "supply": "Fornecimento",
       "max_total_supply": "Fornecimento Máximo Total",
@@ -1092,5 +1266,9 @@
       "highlighted": "Contato Rainbow",
       "after": " para solicitar mais informações."
     }
+  },
+  "approvals": {
+    "unlimited": "Ilimitado",
+    "no_allowance": "Sem Permissão"
   }
 }
