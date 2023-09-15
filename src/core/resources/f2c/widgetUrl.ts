@@ -18,6 +18,7 @@ import { FiatProviderName } from './types';
 export type ProviderWidgetUrlArgs = {
   provider: FiatProviderName;
   depositAddress: Address;
+  defaultExperience?: 'buy' | 'send';
   redirectUri?: string;
 };
 
@@ -28,10 +29,11 @@ const providerWidgetUrlQueryKey = ({
   provider,
   depositAddress,
   redirectUri,
+  defaultExperience,
 }: ProviderWidgetUrlArgs) =>
   createQueryKey(
     'providerWidgetUrl',
-    { provider, depositAddress, redirectUri },
+    { provider, depositAddress, defaultExperience, redirectUri },
     { persisterVersion: 1 },
   );
 
@@ -41,10 +43,11 @@ type ProviderWidgetUrlQueryKey = ReturnType<typeof providerWidgetUrlQueryKey>;
 // Query Function
 
 export async function providerWidgetUrlQueryFunction({
-  queryKey: [{ provider, depositAddress, redirectUri }],
+  queryKey: [{ provider, depositAddress, defaultExperience, redirectUri }],
 }: QueryFunctionArgs<typeof providerWidgetUrlQueryKey>) {
   const query = qs.stringify({
     destinationAddress: depositAddress,
+    defaultExperience,
     redirectUri,
   });
   return f2cHttp.get<{ url: string }>(
@@ -60,7 +63,12 @@ type ProviderWidgetUrlResult = QueryFunctionResult<
 // Query Fetcher
 
 export async function fetchProviderWidgetUrl(
-  { provider, depositAddress, redirectUri }: ProviderWidgetUrlArgs,
+  {
+    provider,
+    depositAddress,
+    defaultExperience,
+    redirectUri,
+  }: ProviderWidgetUrlArgs,
   config: QueryConfig<
     ProviderWidgetUrlResult,
     Error,
@@ -69,7 +77,12 @@ export async function fetchProviderWidgetUrl(
   > = {},
 ) {
   return await queryClient.fetchQuery(
-    providerWidgetUrlQueryKey({ provider, depositAddress, redirectUri }),
+    providerWidgetUrlQueryKey({
+      provider,
+      depositAddress,
+      defaultExperience,
+      redirectUri,
+    }),
     providerWidgetUrlQueryFunction,
     config,
   );

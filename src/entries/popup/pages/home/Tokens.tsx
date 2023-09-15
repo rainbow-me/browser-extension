@@ -269,11 +269,11 @@ type EmptyStateProps = {
 };
 
 function TokensEmptyState({ depositAddress }: EmptyStateProps) {
-
   const handleCoinbase = useCallback(async () => {
     const { data } = await fetchProviderWidgetUrl({
       provider: FiatProviderName.Coinbase,
       depositAddress,
+      defaultExperience: 'send',
     });
     window.open(data.url, '_blank');
   }, [depositAddress]);
