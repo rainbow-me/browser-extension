@@ -1,6 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import { memo, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -8,6 +9,8 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsFilteringSmallBalancesList } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
+import { fetchProviderWidgetUrl } from '~/core/resources/f2c';
+import { FiatProviderName } from '~/core/resources/f2c/types';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -99,7 +102,7 @@ export function Tokens() {
   }
 
   if (!assets?.length) {
-    return <TokensEmptyState />;
+    return <TokensEmptyState depositAddress={currentAddress} />;
   }
 
   return (
@@ -261,7 +264,11 @@ export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
   return <CoinRow asset={asset} topRow={topRow} bottomRow={bottomRow} />;
 });
 
-function TokensEmptyState() {
+type EmptyStateProps = {
+  depositAddress: Address;
+};
+
+function TokensEmptyState({ depositAddress }: EmptyStateProps) {
   return (
     <Inset horizontal="20px">
       <Box paddingBottom="8px">
@@ -304,42 +311,43 @@ function TokensEmptyState() {
       </Box>
 
       <Box paddingBottom="8px">
-        <Link
-          tabIndex={-1}
-          to={ROUTES.BUY}
-          state={{ from: ROUTES.HOME, to: ROUTES.BUY }}
+        <Box
+          background="surfaceSecondaryElevated"
+          borderRadius="16px"
+          borderColor="separatorTertiary"
+          boxShadow="12px"
+          onClick={async () => {
+            const { data } = await fetchProviderWidgetUrl({
+              provider: FiatProviderName.Coinbase,
+              depositAddress,
+            });
+            window.open(data.url, '_blank');
+          }}
         >
-          <Box
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            borderColor="separatorTertiary"
-            boxShadow="12px"
-          >
-            <Inset horizontal="16px" vertical="16px">
-              <Box paddingBottom="12px">
-                <Inline alignVertical="center" alignHorizontal="justify">
-                  <Box>
-                    <Inline alignVertical="center" space="8px">
-                      <CoinbaseIcon />
-                      <Text as="p" size="14pt" color="label" weight="semibold">
-                        {i18n.t('tokens_tab.coinbase_title')}
-                      </Text>
-                    </Inline>
-                  </Box>
-                  <Symbol
-                    size={12}
-                    symbol="arrow.up.forward.circle"
-                    weight="semibold"
-                    color="labelTertiary"
-                  />
-                </Inline>
-              </Box>
-              <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-                {i18n.t('tokens_tab.coinbase_description')}
-              </Text>
-            </Inset>
-          </Box>
-        </Link>
+          <Inset horizontal="16px" vertical="16px">
+            <Box paddingBottom="12px">
+              <Inline alignVertical="center" alignHorizontal="justify">
+                <Box>
+                  <Inline alignVertical="center" space="8px">
+                    <CoinbaseIcon />
+                    <Text as="p" size="14pt" color="label" weight="semibold">
+                      {i18n.t('tokens_tab.coinbase_title')}
+                    </Text>
+                  </Inline>
+                </Box>
+                <Symbol
+                  size={12}
+                  symbol="arrow.up.forward.circle"
+                  weight="semibold"
+                  color="labelTertiary"
+                />
+              </Inline>
+            </Box>
+            <Text as="p" size="11pt" color="labelSecondary" weight="bold">
+              {i18n.t('tokens_tab.coinbase_description')}
+            </Text>
+          </Inset>
+        </Box>
       </Box>
 
       <Box
