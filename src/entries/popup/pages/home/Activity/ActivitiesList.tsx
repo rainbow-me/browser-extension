@@ -144,6 +144,7 @@ const ActivityDescription = ({
             weight="semibold"
             align="right"
             color="labelTertiary"
+            noWrap
           >
             {truncateString(tag, 25)}
           </Text>

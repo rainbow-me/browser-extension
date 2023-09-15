@@ -18,6 +18,7 @@ export interface TextProps {
   webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
   cursor?: TextStyles['cursor'];
   userSelect?: TextStyles['userSelect'];
+  noWrap?: boolean;
 }
 
 export function Text({
@@ -32,6 +33,7 @@ export function Text({
   webkitBackgroundClip,
   cursor = 'default',
   userSelect = 'none',
+  noWrap,
 }: TextProps) {
   return (
     <Box
@@ -48,6 +50,7 @@ export function Text({
           userSelect,
           WebkitBackgroundClip: webkitBackgroundClip,
           transition: 'color 200ms ease-out',
+          whiteSpace: noWrap ? 'nowrap' : undefined,
         }),
         selectionStyle,
       ])}
