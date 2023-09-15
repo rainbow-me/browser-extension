@@ -197,7 +197,7 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
     (navigationType === 'POP' && state?.isBack !== false) || state?.isBack;
 
   const { currentAddress } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address: currentAddress });
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const [urlSearchParams] = useSearchParams();
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 

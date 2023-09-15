@@ -129,7 +129,7 @@ export default function AccountItem({
                 />
               </Box>
             )}
-            <WalletAvatar address={account} size={36} emojiSize="20pt" />
+            <WalletAvatar addressOrName={account} size={36} emojiSize="20pt" />
           </Box>
         </Column>
         <Column>

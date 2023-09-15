@@ -153,7 +153,7 @@ export const CreateWalletPrompt = ({
                     <Inline alignHorizontal="center">
                       {address && (
                         <WalletAvatar
-                          address={address}
+                          addressOrName={address}
                           size={44}
                           emojiSize="20pt"
                         />

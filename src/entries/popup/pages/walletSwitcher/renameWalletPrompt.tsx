@@ -41,7 +41,7 @@ const RenameWallet = ({
         </Inset>
 
         <Stack alignHorizontal="center">
-          <WalletAvatar address={account} size={44} emojiSize="20pt" />
+          <WalletAvatar addressOrName={account} size={44} emojiSize="20pt" />
           <Input
             testId={'wallet-name-input'}
             placeholder={i18n.t(
