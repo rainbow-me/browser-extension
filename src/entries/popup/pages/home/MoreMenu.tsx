@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useAccount, useEnsName } from 'wagmi';
 
-import LockSound from 'static/assets/audio/ui_lock.mp3';
 import { i18n } from '~/core/languages';
 import {
   RAINBOW_FEEDBACK_URL,
@@ -24,6 +23,7 @@ import { ShortcutHint } from '../../components/ShortcutHint/ShortcutHint';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import playSound from '../../utils/playSound';
 
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { address } = useAccount();
@@ -56,7 +56,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           openProfile();
           break;
         case 'lock':
-          new Audio(LockSound).play();
+          playSound('LockSound');
           wallet.lock();
           break;
         case 'qr-code':

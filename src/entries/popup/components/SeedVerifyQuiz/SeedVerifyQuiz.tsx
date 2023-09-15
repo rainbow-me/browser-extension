@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
-import CorrectSeedQuiz from 'static/assets/audio/correct_seed_quiz.mp3';
-import IncorrectSeedQuiz from 'static/assets/audio/incorrect_seed_quiz.mp3';
 import { i18n } from '~/core/languages';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import {
@@ -19,6 +17,7 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
+import playSound from '../../utils/playSound';
 
 const shuffleArray = (array: { word: string; index: number }[]) => {
   const arrayCopy = [...array];
@@ -184,13 +183,13 @@ export function SeedVerifyQuiz({
             selectedWords[2].index === 11
           ) {
             setValidated(true);
-            new Audio(CorrectSeedQuiz).play();
+            playSound('CorrectSeedQuiz');
             setTimeout(() => {
               setWalletBackedUp({ address });
               onQuizValidated();
             }, 1200);
           } else {
-            new Audio(IncorrectSeedQuiz).play();
+            playSound('IncorrectSeedQuiz');
             setIncorrect(true);
           }
         }, 100);

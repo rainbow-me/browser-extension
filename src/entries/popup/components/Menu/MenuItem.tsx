@@ -181,7 +181,7 @@ const MenuItem = ({
           borderBottomRightRadius: 15,
           borderBottomLeftRadius: 15,
         }),
-        minHeight: 50,
+        height: 50,
       }}
       tabIndex={tabIndex}
     >

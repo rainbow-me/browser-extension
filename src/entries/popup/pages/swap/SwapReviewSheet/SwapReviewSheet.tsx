@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { Address } from 'wagmi';
 
-import SendSound from 'static/assets/audio/woosh.mp3';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
@@ -56,6 +55,7 @@ import { getNetworkNativeAssetUniqueId } from '~/entries/popup/hooks/useNativeAs
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { ROUTES } from '~/entries/popup/urls';
+import playSound from '~/entries/popup/utils/playSound';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 import { RainbowError, logger } from '~/logger';
 
@@ -367,7 +367,7 @@ const SwapReviewSheetWithQuote = ({
     }
     resetSwapValues();
     executeSwap();
-    new Audio(SendSound).play();
+    playSound('SendSound');
   }, [
     enoughNativeAssetBalanceForGas,
     executeSwap,
