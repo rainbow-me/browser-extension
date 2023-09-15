@@ -45,11 +45,14 @@ const SelectItem = ({
 };
 
 type SelectContentProps = PropsWithChildren<
-  Pick<SelectPrimitive.SelectContentProps, 'align' | 'onPointerDownOutside'>
+  Pick<SelectPrimitive.SelectContentProps, 'align' | 'onPointerDownOutside'> & {
+    sideOffset: number;
+  }
 >;
+
 const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
   function SelectContent(
-    { children, align = 'start' }: SelectContentProps,
+    { children, align = 'start', sideOffset = 16 }: SelectContentProps,
     ref,
   ) {
     const { currentTheme } = useCurrentThemeStore();
@@ -60,7 +63,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         <SelectPrimitive.Content
           position="popper"
           align={align}
-          sideOffset={16}
+          sideOffset={sideOffset}
           hideWhenDetached
         >
           <AccentColorProvider color={avatar?.color || globalColors.blue60}>
@@ -113,6 +116,7 @@ interface SwitchMenuProps {
   onOpenChange?: (open: boolean) => void;
   open?: boolean;
   onClose?: () => void;
+  sideOffset?: number;
 }
 
 export const SwitchMenu = ({
@@ -127,6 +131,7 @@ export const SwitchMenu = ({
   onOpenChange,
   open,
   onClose,
+  sideOffset = 16,
 }: SwitchMenuProps) => {
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
@@ -167,7 +172,11 @@ export const SwitchMenu = ({
         <Box style={{ cursor: 'default' }}>{renderMenuTrigger}</Box>
       </SelectPrimitive.Trigger>
 
-      <SelectContent align={align} onPointerDownOutside={onClose}>
+      <SelectContent
+        align={align}
+        onPointerDownOutside={onClose}
+        sideOffset={sideOffset}
+      >
         <SelectPrimitive.Group asChild>
           <Box width="full" paddingBottom="4px">
             {title && (

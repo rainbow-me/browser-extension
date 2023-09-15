@@ -256,6 +256,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   width="full"
                   onClick={onImport}
                   testId="add-wallets-button"
+                  tabIndex={0}
                 >
                   {i18n.t('import_wallet_selection.add_wallets')}
                 </Button>
@@ -266,6 +267,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   width="full"
                   onClick={handleEditWallets}
                   testId="edit-wallets-button"
+                  tabIndex={0}
                 >
                   {i18n.t('import_wallet_selection.edit_wallets')}
                 </Button>
