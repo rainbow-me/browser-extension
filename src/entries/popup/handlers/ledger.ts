@@ -54,14 +54,12 @@ export async function signTransactionFromLedger(
 
     if (transaction.gasPrice) {
       baseTx.gasPrice = transaction.gasPrice;
+    } else if (!forceLegacy) {
+      baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
+      baseTx.maxPriorityFeePerGas =
+        transaction.maxPriorityFeePerGas || undefined;
     } else {
-      if (!forceLegacy) {
-        baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
-        baseTx.maxPriorityFeePerGas =
-          transaction.maxPriorityFeePerGas || undefined;
-      } else {
-        baseTx.gasPrice = transaction.maxFeePerGas || undefined;
-      }
+      baseTx.gasPrice = transaction.maxFeePerGas || undefined;
     }
 
     const unsignedTx = serialize(baseTx).substring(2);

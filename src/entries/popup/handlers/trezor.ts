@@ -49,13 +49,11 @@ export async function signTransactionFromTrezor(
 
     if (transaction.gasPrice) {
       baseTx.gasPrice = transaction.gasPrice;
+    } else if (!forceLegacy) {
+      baseTx.maxFeePerGas = transaction.maxFeePerGas;
+      baseTx.maxPriorityFeePerGas = transaction.maxPriorityFeePerGas;
     } else {
-      if (!forceLegacy) {
-        baseTx.maxFeePerGas = transaction.maxFeePerGas;
-        baseTx.maxPriorityFeePerGas = transaction.maxPriorityFeePerGas;
-      } else {
-        baseTx.gasPrice = transaction.maxFeePerGas;
-      }
+      baseTx.gasPrice = transaction.maxFeePerGas;
     }
 
     const nonceHex = ethers.BigNumber.from(transaction.nonce).toHexString();
