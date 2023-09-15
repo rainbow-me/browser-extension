@@ -235,7 +235,7 @@ export function TokenToBuyRow({
           textWeight="bold"
           textSize="12pt"
           textColor="labelSecondary"
-          marginLeft={isFavorite ? '-88px' : '-48px'}
+          marginLeft={isFavorite ? '-120px' : '-80px'}
         >
           <ButtonSymbol
             symbol="star.fill"
