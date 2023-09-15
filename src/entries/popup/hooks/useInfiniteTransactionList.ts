@@ -231,9 +231,11 @@ function watchForPendingTransactionsReportedByRainbowBackend({
 
   const updatedPendingTransactions = pendingTransactions?.filter((tx) => {
     const txNonce = tx.nonce || 0;
-    const latestConfirmedNonce = latestTransactions.get(tx.chainId)?.nonce || 0;
+    const latestTx = latestTransactions.get(tx.chainId);
+    const latestTxNonce = latestTx?.nonce || 0;
     // still pending or backend is not returning confirmation yet
-    return txNonce > latestConfirmedNonce;
+    // if !latestTx means that is the first tx of the wallet
+    return !latestTx || txNonce > latestTxNonce;
   });
 
   setPendingTransactions({
