@@ -9,10 +9,10 @@ import React, {
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
-import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
@@ -64,10 +64,14 @@ export const AppConnectionMenu = ({
   const { isCommandKVisible } = useCommandKStatus();
   const { trackShortcut } = useKeyboardAnalytics();
   const { currentAddress } = useCurrentAddressStore();
-  const { appHost, appLogo, appName } = useAppMetadata({ url });
+  const { data } = useDappMetadata({ url });
   const navigate = useRainbowNavigate();
   const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
   const pressingNetworkShortcut = useRef<boolean>(false);
+
+  const appHost = data?.appHost || '';
+  const appName = data?.appName || '';
+  const appLogo = data?.appLogo || '';
 
   const {
     addSession,

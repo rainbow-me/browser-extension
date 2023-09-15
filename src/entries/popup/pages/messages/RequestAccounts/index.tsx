@@ -4,11 +4,11 @@ import { Address } from 'wagmi';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { initializeMessenger } from '~/core/messengers';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { Row, Rows, Separator } from '~/design-system';
-import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { RainbowError, logger } from '~/logger';
 
 import { RequestAccountsActions } from './RequestAccountsActions';
@@ -29,9 +29,8 @@ export const RequestAccounts = ({
 }: ApproveRequestProps) => {
   const [loading, setLoading] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
-  const { appHostName, appHost, appLogo, appName } = useAppMetadata({
+  const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
-    title: request?.meta?.sender?.tab?.title,
   });
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
     ChainId.mainnet,
@@ -45,14 +44,14 @@ export const RequestAccounts = ({
         address: selectedWallet,
         chainId: selectedChainId,
       });
-      messenger.send(`connect:${appHostName}`, {
+      messenger.send(`connect:${dappMetadata?.appHostName}`, {
         address: selectedWallet,
         chainId: selectedChainId,
       });
       analytics.track(event.dappPromptConnectApproved, {
         chainId: selectedChainId,
-        dappURL: appHost,
-        dappName: appName,
+        dappURL: dappMetadata?.appHost || '',
+        dappName: dappMetadata?.appName,
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
@@ -62,30 +61,35 @@ export const RequestAccounts = ({
       setLoading(false);
     }
   }, [
-    appHostName,
-    appHost,
-    appName,
     approveRequest,
-    selectedChainId,
     selectedWallet,
+    selectedChainId,
+    dappMetadata?.appHostName,
+    dappMetadata?.appHost,
+    dappMetadata?.appName,
   ]);
 
   const onRejectRequest = useCallback(() => {
     rejectRequest();
     analytics.track(event.dappPromptConnectRejected, {
       chainId: selectedChainId,
-      dappURL: appHost,
-      dappName: appName,
+      dappURL: dappMetadata?.appHost || '',
+      dappName: dappMetadata?.appName,
     });
-  }, [appHost, appName, rejectRequest, selectedChainId]);
+  }, [
+    dappMetadata?.appHost,
+    dappMetadata?.appName,
+    rejectRequest,
+    selectedChainId,
+  ]);
 
   return (
     <Rows alignVertical="justify">
       <Row height="content">
         <RequestAccountsInfo
-          appHostName={appHostName}
-          appLogo={appLogo}
-          appName={appName}
+          appHostName={dappMetadata?.appHostName}
+          appLogo={dappMetadata?.appLogo}
+          appName={dappMetadata?.appName}
         />
         <Separator color="separatorTertiary" />
       </Row>
@@ -97,7 +101,7 @@ export const RequestAccounts = ({
           setSelectedChainId={setSelectedChainId}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
-          appName={appName}
+          appName={dappMetadata?.appName}
           loading={loading}
         />
       </Row>
