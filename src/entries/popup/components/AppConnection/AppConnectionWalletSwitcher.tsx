@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
@@ -21,7 +22,6 @@ import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 import { Account, useAccounts } from '../../hooks/useAccounts';
 import { useActiveTab } from '../../hooks/useActiveTab';
-import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import { zIndexes } from '../../utils/zIndexes';
 import ExternalImage from '../ExternalImage/ExternalImage';
@@ -66,7 +66,7 @@ export const AppConnectionWalletSwitcher = () => {
   });
 
   const { url } = useActiveTab();
-  const appMetadata = useAppMetadata({ url });
+  const { data: dappMetadata } = useDappMetadata({ url });
 
   useEffect(() => listenWalletSwitcher(setWalletSwitcher), []);
 
@@ -75,7 +75,7 @@ export const AppConnectionWalletSwitcher = () => {
 
   const { appSession, activeSession, addSession, updateAppSessionAddress } =
     useAppSession({
-      host: appMetadata.appHost,
+      host: dappMetadata?.appHost || '',
     });
 
   const { sortedAccounts } = useAccounts(({ sortedAccounts }) => ({
@@ -136,7 +136,7 @@ export const AppConnectionWalletSwitcher = () => {
                       height="full"
                     >
                       <ExternalImage
-                        src={appMetadata.appLogo}
+                        src={dappMetadata?.appLogo}
                         width="14"
                         height="14"
                       />
@@ -182,14 +182,13 @@ export const AppConnectionWalletSwitcher = () => {
                                 account.address,
                               )}
                               connected={true}
-                              appMetadata={appMetadata}
                             />
                             <Box
                               position="absolute"
                               style={{ top: 10, right: 3 }}
                             >
                               <AppConnectionWalletItemDropdownMenu
-                                appMetadata={appMetadata}
+                                dappMetadata={dappMetadata}
                                 address={account.address}
                               />
                             </Box>
@@ -217,18 +216,18 @@ export const AppConnectionWalletSwitcher = () => {
                           <AppConnectionWalletItem
                             key={account.address}
                             onClick={() => {
-                              addSession({
-                                host: appMetadata.appHost,
-                                address: account.address,
-                                chainId:
-                                  activeSession?.chainId || ChainId.mainnet,
-                                url,
-                              });
+                              dappMetadata?.appHost &&
+                                addSession({
+                                  host: dappMetadata.appHost,
+                                  address: account.address,
+                                  chainId:
+                                    activeSession?.chainId || ChainId.mainnet,
+                                  url,
+                                });
                             }}
                             address={account.address}
                             chainId={ChainId.mainnet}
                             connected={false}
-                            appMetadata={appMetadata}
                           />
                         ))}
                       </AccentColorProviderWrapper>

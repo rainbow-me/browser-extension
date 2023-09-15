@@ -3,6 +3,7 @@ import { Address, useEnsName } from 'wagmi';
 
 import appsConnectedImageMask from 'static/assets/appsConnectedImageMask.svg';
 import { i18n } from '~/core/languages';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { AppSession } from '~/core/state/appSessions';
 import { ChainId } from '~/core/types/chains';
@@ -28,7 +29,6 @@ import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import ExternalImage from '../../components/ExternalImage/ExternalImage';
 import { ConnectedAppNetworkMenu } from '../../components/SwitchMenu/ConnectedAppNetworkMenu';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
-import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import { useAppSessions } from '../../hooks/useAppSessions';
 
@@ -171,13 +171,16 @@ const ConnectedApp = ({
   const { disconnectAppSession, activeSession } = useAppSession({
     host,
   });
-  const { appLogo, appName, appHost } = useAppMetadata({ url });
+  const { data: dappMetadata } = useDappMetadata({ url });
 
   const onMouseEnter = useCallback(() => setDisconnectButtonVisible(true), []);
   const onMouseLeave = useCallback(() => setDisconnectButtonVisible(false), []);
 
   return (
-    <Box paddingHorizontal="8px" testId={`connected-app-${appHost}`}>
+    <Box
+      paddingHorizontal="8px"
+      testId={`connected-app-${dappMetadata?.appHost}`}
+    >
       <Box
         background={{
           default: 'transparent',
@@ -191,7 +194,7 @@ const ConnectedApp = ({
           <Column>
             <ConnectedAppNetworkMenu
               url={url}
-              menuTriggerId={`connected-app-menu-${appHost}`}
+              menuTriggerId={`connected-app-menu-${dappMetadata?.appHost}`}
             >
               <Inset horizontal="12px" vertical="8px">
                 <Inline alignHorizontal="justify" alignVertical="center">
@@ -206,7 +209,7 @@ const ConnectedApp = ({
                       >
                         <ExternalImage
                           mask={appsConnectedImageMask}
-                          src={appLogo}
+                          src={dappMetadata?.appLogo}
                           width="36"
                           height="36"
                         />
@@ -252,7 +255,7 @@ const ConnectedApp = ({
                               weight="semibold"
                               color="label"
                             >
-                              {appName || appHost}
+                              {dappMetadata?.appName || dappMetadata?.appHost}
                             </TextOverflow>
                           </Box>
                           <Inline space="4px" alignVertical="center">
@@ -275,7 +278,7 @@ const ConnectedApp = ({
                               color="labelTertiary"
                               size="12pt"
                               weight="semibold"
-                              testId={`connected-app-${appHost}-${
+                              testId={`connected-app-${dappMetadata?.appHost}-${
                                 ensName || truncateAddress(address)
                               }`}
                             >

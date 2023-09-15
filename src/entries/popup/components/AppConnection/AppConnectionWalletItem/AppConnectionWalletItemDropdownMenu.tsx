@@ -3,11 +3,11 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { DappMetadata } from '~/core/resources/metadata/dapp';
 import { goToNewTab } from '~/core/utils/tabs';
 import { Box, ButtonSymbol, Inline, Text } from '~/design-system';
 import { Symbol } from '~/design-system/components/Symbol/Symbol';
 
-import { AppMetadata } from '../../../hooks/useAppMetadata';
 import { useAppSession } from '../../../hooks/useAppSession';
 import { useKeyboardShortcut } from '../../../hooks/useKeyboardShortcut';
 import { AppInteractionItem } from '../../AppConnectionMenu/AppInteractionItem';
@@ -26,12 +26,12 @@ import ExternalImage from '../../ExternalImage/ExternalImage';
 import { SwitchNetworkMenuSelector } from '../../SwitchMenu/SwitchNetworkMenu';
 
 interface AppConnectionWalletItemDropdownMenuProps {
-  appMetadata: AppMetadata;
+  dappMetadata?: DappMetadata | null;
   address: Address;
 }
 
 export const AppConnectionWalletItemDropdownMenu = ({
-  appMetadata,
+  dappMetadata,
   address,
 }: AppConnectionWalletItemDropdownMenuProps) => {
   const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
@@ -39,7 +39,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { updateSessionChainId, disconnectSession, appSession } = useAppSession(
-    { host: appMetadata.appHost },
+    { host: dappMetadata?.appHost || '' },
   );
 
   const changeChainId = useCallback(
@@ -50,10 +50,11 @@ export const AppConnectionWalletItemDropdownMenu = ({
   );
 
   const disconnect = useCallback(() => {
-    disconnectSession({ address, host: appMetadata.appHost });
+    dappMetadata?.appHost &&
+      disconnectSession({ address, host: dappMetadata?.appHost });
     setSubMenuOpen(false);
     setMenuOpen(false);
-  }, [address, appMetadata.appHost, disconnectSession]);
+  }, [address, dappMetadata?.appHost, disconnectSession]);
 
   const onValueChange = useCallback(
     (value: 'disconnect' | 'switch-networks' | 'open-dapp') => {
@@ -66,13 +67,13 @@ export const AppConnectionWalletItemDropdownMenu = ({
           break;
         case 'open-dapp':
           goToNewTab({
-            url: appMetadata.url,
+            url: dappMetadata?.url,
             active: false,
           });
           break;
       }
     },
-    [appMetadata.url, disconnect, subMenuOpen],
+    [dappMetadata?.url, disconnect, subMenuOpen],
   );
 
   useKeyboardShortcut({
@@ -192,7 +193,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
                     height="full"
                   >
                     <ExternalImage
-                      src={appMetadata.appLogo}
+                      src={dappMetadata?.appLogo}
                       width="18"
                       height="18"
                     />
@@ -201,7 +202,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
                 <Text size="14pt" weight="semibold" color="label">
                   {i18n.t(
                     'app_connection_switcher.wallet_item_dropdown_menu.open_app',
-                    { appName: appMetadata.appName || appMetadata.appHost },
+                    { appName: dappMetadata?.appName || dappMetadata?.appHost },
                   )}
                 </Text>
               </Inline>
