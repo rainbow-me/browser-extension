@@ -18,12 +18,13 @@ export function RampIcon({
         height: height,
         width: width,
         background: '#21BF73',
+        padding: '3px',
       }}
     >
       <svg
         width={'100%'}
         height={'100%'}
-        viewBox={`0 0 ${width} ${height}`}
+        viewBox={`0 0 18 12`}
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
