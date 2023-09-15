@@ -365,8 +365,9 @@ class KeychainManager {
     selectedKeychain: Keychain,
     index: number,
     address: Address,
+    hdPath?: string,
   ) {
-    selectedKeychain.addAccountAtIndex(index, address);
+    selectedKeychain.addAccountAtIndex(index, address, hdPath);
     await privates.get(this).persist();
     return address;
   }
