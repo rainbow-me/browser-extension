@@ -178,7 +178,7 @@ export function WalletDetails() {
         setCurrentAddress(visibleWallets[nextIndex].address);
       }
       // if more accounts in this wallet
-      const otherAccountSameWallet = walletBeforeDeletion.accounts.find(
+      const otherAccountSameWallet = walletBeforeDeletion?.accounts.find(
         (a) => a !== address,
       );
       if (otherAccountSameWallet) {
