@@ -117,6 +117,9 @@
         "recovery_phrase_label": "Groupe de portefeuille",
         "private_key_label": "Clé privée",
         "hardware_wallet_label": "Portefeuille matériel",
+        "backed_up": "Sauvegardé",
+        "not_backed_up": "Non sauvegardé",
+        "back_up_now": "Sauvegarder maintenant",
         "wallet_details": {
           "title": "Détails du portefeuille",
           "view_recovery_phrase": "Afficher la phrase de récupération",
@@ -126,7 +129,9 @@
           "delete_wallet": "Supprimer le portefeuille",
           "view_private_key": "Afficher la clé privée",
           "copy_address": "Copier l'adresse",
-          "hidden": "Masqué"
+          "hidden": "Masqué",
+          "back_up_now": "Sauvegarder maintenant",
+          "last_backed_up": "Dernière sauvegarde en tant que %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "Nommez votre portefeuille",
@@ -173,6 +178,7 @@
       "KRW": "Won sud-coréen",
       "JPY": "Yen japonais",
       "RUB": "Rouble russe",
+      "IDR": "Roupie indonésienne",
       "INR": "Roupie indienne",
       "TRY": "Livre turque",
       "CAD": "Dollar canadien",
@@ -189,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "Interaction avec le contrat",
     "savings": "Épargne",
-    "deposited": "Déposé",
-    "withdrew": "Retiré"
+    "cancelled": "Transaction annulée",
+    "burn": {
+      "pending": "Brûlant",
+      "confirmed": "Brûlé",
+      "failed": "Échec de la combustion"
+    },
+    "cancel": {
+      "pending": "Annulation",
+      "confirmed": "Annulé",
+      "failed": "Échec de l'annulation"
+    },
+    "send": {
+      "pending": "Envoi",
+      "confirmed": "Envoyé",
+      "failed": "Échec de l'envoi"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "Reçu",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "Retrait en cours",
+      "confirmed": "Retiré",
+      "failed": "Échec du retrait"
+    },
+    "deposit": {
+      "pending": "Dépôt en cours",
+      "confirmed": "Déposé",
+      "failed": "Échec du dépôt"
+    },
+    "mint": {
+      "pending": "Frappage en cours",
+      "confirmed": "Frappé",
+      "failed": "Échec du frappage"
+    },
+    "approve": {
+      "pending": "Approbation en cours",
+      "confirmed": "Approuvé",
+      "failed": "Échec de l'approbation"
+    },
+    "contract_interaction": {
+      "pending": "Interaction en attente",
+      "confirmed": "Interagi",
+      "failed": "Échec de l'interaction"
+    },
+    "swap": {
+      "pending": "Échange en cours",
+      "confirmed": "Échangé",
+      "failed": "Échec de l'échange"
+    },
+    "borrow": {
+      "pending": "Emprunter",
+      "confirmed": "Emprunté",
+      "failed": "Échec d'emprunt"
+    },
+    "claim": {
+      "pending": "Réclamer",
+      "confirmed": "Réclamé",
+      "failed": "Échec de réclamation"
+    },
+    "deployment": {
+      "pending": "Déployer",
+      "confirmed": "Déployé",
+      "failed": "Échec du déploiement"
+    },
+    "repay": {
+      "pending": "Rembourser",
+      "confirmed": "Remboursé",
+      "failed": "Échec du remboursement"
+    },
+    "stake": {
+      "pending": "Mise",
+      "confirmed": "Misé",
+      "failed": "Échec de la mise"
+    },
+    "unstake": {
+      "pending": "Retrait de la mise",
+      "confirmed": "Retrait effectué",
+      "failed": "Échec du retrait"
+    },
+    "purchase": {
+      "pending": "En cours d'achat",
+      "confirmed": "Acheté",
+      "failed": "Achat échoué"
+    },
+    "revoke": {
+      "pending": "Révocation en cours",
+      "confirmed": "Révoqué",
+      "failed": "Échec de révocation"
+    },
+    "sale": {
+      "pending": "En cours de vente",
+      "confirmed": "Vendu",
+      "failed": "Échec de la vente"
+    },
+    "bridge": {
+      "pending": "Pontage en cours",
+      "confirmed": "Ponté",
+      "failed": "Échec de pontage"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "Airdropped",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "Emballage en cours",
+      "confirmed": "Emballé",
+      "failed": "Échec de l'emballage"
+    },
+    "unwrap": {
+      "pending": "Désenveloppement en cours",
+      "confirmed": "Désenveloppé",
+      "failed": "Déballage échoué"
+    },
+    "bid": {
+      "pending": "Enchérissant",
+      "confirmed": "Offre",
+      "failed": "Offre échouée"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -437,6 +561,7 @@
       "review": "Revoir",
       "loading": "Chargement",
       "insufficient_liquidity": "Liquidité insuffisante",
+      "fee_on_transfer_token": "Frais sur Transfert de Jeton",
       "no_route": "Aucun itinéraire trouvé",
       "no_quote": "Aucune citation disponible",
       "enter_an_amount": "Entrez un montant"
@@ -481,6 +606,16 @@
           "open_text": "Vous voulez en savoir plus ? ",
           "link_text": "Lire la suite",
           "close_text": " sur les algorithmes de marché automatisés (AMM) et la liquidité des jetons."
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "Frais sur Transfert de Jeton",
+        "description": "Cet échange échouera dans Rainbow parce que le contrat %{tokenName} ajoute des frais supplémentaires",
+        "action_label": "Compris",
+        "footer_text": {
+          "open_text": "Lisez ",
+          "link_text": "notre guide",
+          "close_text": " pour obtenir de l'aide pour échanger ce jeton"
         }
       }
     }
@@ -722,6 +857,12 @@
       "connected": "Connecté"
     }
   },
+  "wallet_backup_reminder": {
+    "title": "Certains de vos portefeuilles ne sont pas sauvegardés",
+    "description": "Certains de vos portefeuilles ne sont pas sauvegardés. Sauvegardez pour que vous puissiez retrouver l'accès à vos portefeuilles si vous perdez l'accès à cet appareil",
+    "button_label_action": "Sauvegarder maintenant",
+    "button_label_cancel": "Rappellez-moi plus tard"
+  },
   "approve_request": {
     "wallet_info_title": "veut se connecter à votre portefeuille",
     "wallet_info_description": "Autoriser %{appName} à afficher l'adresse de vos portefeuilles, les soldes, les activités et demander l'approbation des transactions.",
@@ -850,7 +991,38 @@
     "this_month": "Ce mois-ci",
     "empty_header": "Aucune activité pour le moment",
     "empty_description": "Une fois que vous commencez à utiliser votre portefeuille, vous verrez vos transactions ici.",
-    "loading_more": "Chargement en cours..."
+    "loading_more": "Chargement en cours...",
+    "no_value": "Aucune valeur"
+  },
+  "activity_details": {
+    "you": "Vous",
+    "from": "De",
+    "to": "À",
+    "confirmed_at": "Confirmé à",
+    "confirmations": "Confirmations",
+    "token": "Token",
+    "block": "Bloc",
+    "value": "Valeur",
+    "network": "Réseau",
+    "fee": "Frais de réseau",
+    "base_fee": "Frais de base",
+    "max_base_fee": "Frais de base max",
+    "gas_price": "Prix du gaz",
+    "gas_limit": "Limite de gaz",
+    "gas_used": "Gaz utilisé",
+    "max_priority_fee": "Pourboire mineur",
+    "nonce": "Nonce",
+    "allowance": "Allocation",
+    "unlimited_allowance": "Illimité %{symbol}",
+    "app": "App",
+    "copy_hash": "Copier le hachage de la transaction",
+    "hash_copied": "Hash Copié",
+    "copy_explorer_url": "Copier le Lien",
+    "explorer_copied": "Lien Copié",
+    "exchange_rate": "Échange",
+    "collection": "Collection",
+    "token_contract": "Contrat du jeton",
+    "token_standard": "Standard du jeton"
   },
   "tokens_tab": {
     "coinbase_title": "Dépôt depuis Coinbase",
@@ -905,12 +1077,14 @@
       "market_cap": "Capitalisation boursière",
       "market_cap_explainer": {
         "title": "Capitalisation boursière",
-        "description": "La capitalisation boursière est la valeur marchande totale de l'offre en circulation d'un jeton. Elle est calculée avec un prix moyen d'échange."
+        "description": "La capitalisation boursière est la valeur marchande totale de l'offre en circulation d'un jeton. Elle est calculée avec un prix moyen d'échange.",
+        "action": "Compris"
       },
       "fully_diluted": "Entièrement dilué",
       "fully_diluted_explainer": {
         "title": "Capitalisation boursière entièrement diluée",
-        "description": "La capitalisation boursière maximale possible d'un jeton si l'offre totale était disponible en circulation."
+        "description": "La capitalisation boursière maximale possible d'un jeton si l'offre totale était disponible en circulation.",
+        "action": "Compris"
       },
       "supply": "Approvisionner",
       "max_total_supply": "Approvisionnement total maximal",
@@ -1092,5 +1266,9 @@
       "highlighted": "Contacter Rainbow",
       "after": " pour en demander davantage"
     }
+  },
+  "approvals": {
+    "unlimited": "Illimité",
+    "no_allowance": "Pas d'Allocation"
   }
 }

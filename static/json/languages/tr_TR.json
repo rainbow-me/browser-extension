@@ -117,6 +117,9 @@
         "recovery_phrase_label": "Cüzdan Grubu",
         "private_key_label": "Özel Anahtar",
         "hardware_wallet_label": "Donanım Cüzdanı",
+        "backed_up": "Yedeklendi",
+        "not_backed_up": "Yedeklenmedi",
+        "back_up_now": "Şimdi Yedekle",
         "wallet_details": {
           "title": "Cüzdan Detayları",
           "view_recovery_phrase": "Kurtarma İfadesini Görüntüle",
@@ -126,7 +129,9 @@
           "delete_wallet": "Cüzdanı Sil",
           "view_private_key": "Özel Anahtarı Görüntüle",
           "copy_address": "Adresi Kopyala",
-          "hidden": "Gizli"
+          "hidden": "Gizli",
+          "back_up_now": "Şimdi Yedekle",
+          "last_backed_up": "Son yedekleme %{date}olarak"
         },
         "new_wallet": {
           "name_your_wallet": "Cüzdanınızın Adını Girin",
@@ -173,6 +178,7 @@
       "KRW": "Güney Kore Wonu",
       "JPY": "Japon Yeni",
       "RUB": "Rus Rublesi",
+      "IDR": "Endonezya Rupisi",
       "INR": "Hint Rupisi",
       "TRY": "Türk Lirası",
       "CAD": "Kanada Doları",
@@ -189,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "Sözleşme Etkileşimi",
     "savings": "Tasarruflar",
-    "deposited": "Yatırılan",
-    "withdrew": "Çekilen"
+    "cancelled": "İşlem İptal Edildi",
+    "burn": {
+      "pending": "Yanıyor",
+      "confirmed": "Yandı",
+      "failed": "Yanma Başarısız"
+    },
+    "cancel": {
+      "pending": "İptal Ediliyor",
+      "confirmed": "İptal Edildi",
+      "failed": "İptal Başarısız"
+    },
+    "send": {
+      "pending": "Gönderiliyor",
+      "confirmed": "Gönderildi",
+      "failed": "Gönderme Başarısız"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "Alındı",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "Çekiliyor",
+      "confirmed": "Çekildi",
+      "failed": "Çekme Başarısız"
+    },
+    "deposit": {
+      "pending": "Yatırılıyor",
+      "confirmed": "Yatırıldı",
+      "failed": "Yatırma Başarısız"
+    },
+    "mint": {
+      "pending": "Basılıyor",
+      "confirmed": "Basıldı",
+      "failed": "Basma Başarısız"
+    },
+    "approve": {
+      "pending": "Onaylanıyor",
+      "confirmed": "Onaylandı",
+      "failed": "Onaylama Başarısız"
+    },
+    "contract_interaction": {
+      "pending": "Etkileşim Bekliyor",
+      "confirmed": "Etkileşimde Bulunuldu",
+      "failed": "Etkileşim Başarısız"
+    },
+    "swap": {
+      "pending": "Takas Oluyor",
+      "confirmed": "Takas Oldu",
+      "failed": "Takas Başarısız"
+    },
+    "borrow": {
+      "pending": "Borçlanma",
+      "confirmed": "Borçlandı",
+      "failed": "Borçlanma Başarısız"
+    },
+    "claim": {
+      "pending": "Talep Etme",
+      "confirmed": "Talep Edildi",
+      "failed": "Talep Başarısız"
+    },
+    "deployment": {
+      "pending": "Kurulum",
+      "confirmed": "Kuruldu",
+      "failed": "Kurulum Başarısız"
+    },
+    "repay": {
+      "pending": "Ödeme",
+      "confirmed": "Ödendi",
+      "failed": "Ödeme Başarısız"
+    },
+    "stake": {
+      "pending": "Bahis",
+      "confirmed": "Bahis Yapıldı",
+      "failed": "Bahis Başarısız"
+    },
+    "unstake": {
+      "pending": "Bahisi Çekme",
+      "confirmed": "Bahisi Çekildi",
+      "failed": "Bahisi Çekme Başarısız"
+    },
+    "purchase": {
+      "pending": "Satın Alma",
+      "confirmed": "Satın Alındı",
+      "failed": "Satın Alma Başarısız"
+    },
+    "revoke": {
+      "pending": "İptal etme",
+      "confirmed": "İptal edildi",
+      "failed": "İptal Başarısız"
+    },
+    "sale": {
+      "pending": "Satış",
+      "confirmed": "Satıldı",
+      "failed": "Satış Başarısız"
+    },
+    "bridge": {
+      "pending": "Köprüleme",
+      "confirmed": "Köprülenmiş",
+      "failed": "Köprü Başarısız"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "Hava Atıldı",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "Sarma",
+      "confirmed": "Sarılmış",
+      "failed": "Sarma Başarısız"
+    },
+    "unwrap": {
+      "pending": "Çözülme",
+      "confirmed": "Çözüldü",
+      "failed": "Açılama Hatası"
+    },
+    "bid": {
+      "pending": "Teklif Veriliyor",
+      "confirmed": "Teklif",
+      "failed": "Teklif Hatası"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -437,6 +561,7 @@
       "review": "İncele",
       "loading": "Yükleniyor",
       "insufficient_liquidity": "Yetersiz likidite",
+      "fee_on_transfer_token": "Transfer Token Üzerine Ücret",
       "no_route": "Rota bulunamadı",
       "no_quote": "Teklif mevcut değil",
       "enter_an_amount": "Bir miktar girin"
@@ -481,6 +606,16 @@
           "open_text": "Hala meraklı mısın? ",
           "link_text": "Daha fazla oku",
           "close_text": " hakkında AMM'ler ve token likiditesi."
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "Transfer Token Üzerine Ücret",
+        "description": "Bu swap, %{tokenName} sözleşmesi ekstra ücretler eklediği için Rainbow'da başarısız olacak.",
+        "action_label": "Anladım",
+        "footer_text": {
+          "open_text": "Oku ",
+          "link_text": "rehberimiz",
+          "close_text": " bu tokenı takas etmek için yardım alın!"
         }
       }
     }
@@ -722,6 +857,12 @@
       "connected": "Bağlı"
     }
   },
+  "wallet_backup_reminder": {
+    "title": "Cüzdanlarınızın bazıları yedeklenmiyor",
+    "description": "Cüzdanlarınızın bazıları yedeklenmiyor. Bu cihaza erişimi kaybederseniz cüzdanlarınıza yeniden erişebilmeniz için yedekleyin.",
+    "button_label_action": "Şimdi Yedekle",
+    "button_label_cancel": "Bana Sonra Hatırlat"
+  },
   "approve_request": {
     "wallet_info_title": "Cüzdanınıza bağlanmak istiyor",
     "wallet_info_description": "%{appName} izin verin, cüzdanınızın adresini, bakiyesini, etkinliğini görüntülemesine ve işlemler için onay talep etmesine izin verin.",
@@ -850,7 +991,38 @@
     "this_month": "Bu Ay",
     "empty_header": "Henüz aktivite yok",
     "empty_description": "Cüzdanını kullanmaya başladığınızda, işlemlerinizi burada göreceksiniz.",
-    "loading_more": "Daha fazla yükleniyor..."
+    "loading_more": "Daha fazla yükleniyor...",
+    "no_value": "Değer Yok"
+  },
+  "activity_details": {
+    "you": "Siz",
+    "from": "Kimden",
+    "to": "Kime",
+    "confirmed_at": "Onaylandığı Tarih",
+    "confirmations": "Onaylar",
+    "token": "Jeton",
+    "block": "Blok",
+    "value": "Değer",
+    "network": "Ağ",
+    "fee": "Ağ Ücreti",
+    "base_fee": "Taban Ücret",
+    "max_base_fee": "Maksimum Taban Ücret",
+    "gas_price": "Gas Fiyatı",
+    "gas_limit": "Gas Limiti",
+    "gas_used": "Kullanılan Gas",
+    "max_priority_fee": "Maden İpucu",
+    "nonce": "Nonce",
+    "allowance": "Ödenek",
+    "unlimited_allowance": "Sınırsız %{symbol}",
+    "app": "Uygulama",
+    "copy_hash": "Tx Hash Kopyalandı",
+    "hash_copied": "Hash Kopyalandı",
+    "copy_explorer_url": "Linki Kopyala",
+    "explorer_copied": "Link Kopyalandı",
+    "exchange_rate": "Döviz",
+    "collection": "Koleksiyon",
+    "token_contract": "Token Sözleşmesi",
+    "token_standard": "Token Standartı"
   },
   "tokens_tab": {
     "coinbase_title": "Coinbase'den Yatırma",
@@ -905,12 +1077,14 @@
       "market_cap": "Piyasa Değeri",
       "market_cap_explainer": {
         "title": "Piyasa Değeri",
-        "description": "Piyasa değeri, bir tokenin dolaşımdaki arzının toplam piyasa değeridir. Ortalama bir değişim fiyatıyla hesaplanır."
+        "description": "Piyasa değeri, bir tokenin dolaşımdaki arzının toplam piyasa değeridir. Ortalama bir değişim fiyatıyla hesaplanır.",
+        "action": "Anladım"
       },
       "fully_diluted": "Tam Sular Altında",
       "fully_diluted_explainer": {
         "title": "Tam Sular Altında Piyasa Değeri",
-        "description": "Toplam arz miktarı dolaşımda olsa bir tokenin maksimum potansiyel piyasa değeri."
+        "description": "Toplam arz miktarı dolaşımda olsa bir tokenin maksimum potansiyel piyasa değeri.",
+        "action": "Anladım"
       },
       "supply": "Arz",
       "max_total_supply": "Maksimum Toplam Arz",
@@ -1092,5 +1266,9 @@
       "highlighted": "Rainbow ile İletişime Geçin",
       "after": " daha fazla talep etmek için."
     }
+  },
+  "approvals": {
+    "unlimited": "Sınırsız",
+    "no_allowance": "İzin Yok"
   }
 }

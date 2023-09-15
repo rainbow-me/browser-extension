@@ -117,6 +117,9 @@
         "recovery_phrase_label": "वॉलेट समूह",
         "private_key_label": "निजी कुंजी",
         "hardware_wallet_label": "हार्डवेयर वॉलेट",
+        "backed_up": "बैकअप किया गया",
+        "not_backed_up": "बैकअप नहीं हुआ",
+        "back_up_now": "अब बैकअप करें",
         "wallet_details": {
           "title": "वॉलेट विवरण",
           "view_recovery_phrase": "विभाजन संकेत देखें",
@@ -126,7 +129,9 @@
           "delete_wallet": "वॉलेट हटाएं",
           "view_private_key": "निजी कुंजी देखें",
           "copy_address": "पता प्रतिलिपि करें",
-          "hidden": "छिपा हुआ है"
+          "hidden": "छिपा हुआ है",
+          "back_up_now": "अब बैकअप करें",
+          "last_backed_up": "अंतिम बैकअप के रूप में %{date}"
         },
         "new_wallet": {
           "name_your_wallet": "अपने वॉलेट का नाम दें",
@@ -173,6 +178,7 @@
       "KRW": "दक्षिण कोरियाई वॉन",
       "JPY": "जापानी येन",
       "RUB": "रूसी रूबल",
+      "IDR": "इंडोनेशियाई रुपिया",
       "INR": "भारतीय रुपया",
       "TRY": "तुर्की लीरा",
       "CAD": "कैनेडियन डॉलर",
@@ -189,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "कॉन्ट्रैक्ट इंटरेक्शन",
     "savings": "सेविंग्स",
-    "deposited": "जमा किया",
-    "withdrew": "निकाला"
+    "cancelled": "लेनदेन रद्द",
+    "burn": {
+      "pending": "जला रहा है",
+      "confirmed": "जला दिया गया",
+      "failed": "जलाने में विफल रहा"
+    },
+    "cancel": {
+      "pending": "रद्द कर रहा है",
+      "confirmed": "रद्द कर दिया गया",
+      "failed": "रद्द करने में विफल रहा"
+    },
+    "send": {
+      "pending": "भेज रहा है",
+      "confirmed": "भेज दिया",
+      "failed": "भेजने में विफल"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "प्राप्त किया",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "निकासी कर रहे हैं",
+      "confirmed": "निकासी हो गई",
+      "failed": "निकासी विफल"
+    },
+    "deposit": {
+      "pending": "जमा कर रहे हैं",
+      "confirmed": "जमा हो गया",
+      "failed": "जमा विफल"
+    },
+    "mint": {
+      "pending": "मुद्रित कर रहे हैं",
+      "confirmed": "मुद्रित",
+      "failed": "मुद्रा विफल"
+    },
+    "approve": {
+      "pending": "मंजूरी दे रहे हैं",
+      "confirmed": "मंजूरी दी गई",
+      "failed": "मंजूरी विफल"
+    },
+    "contract_interaction": {
+      "pending": "इंटरैक्शन लंबित",
+      "confirmed": "इंटरैक्ट किया",
+      "failed": "इंटरैक्शन विफल"
+    },
+    "swap": {
+      "pending": "आदान-प्रदान कर रहे हैं",
+      "confirmed": "आदान-प्रदान कर दिया",
+      "failed": "आदान-प्रदान विफल"
+    },
+    "borrow": {
+      "pending": "उधार ले रहा है",
+      "confirmed": "उधार लिया",
+      "failed": "उधार विफल"
+    },
+    "claim": {
+      "pending": "दावा कर रहा है",
+      "confirmed": "दावा किया हुआ",
+      "failed": "दावा विफल"
+    },
+    "deployment": {
+      "pending": "लागू कर रहा है",
+      "confirmed": "लागू हुआ",
+      "failed": "लागू करने में विफल"
+    },
+    "repay": {
+      "pending": "चुकता कर रहा है",
+      "confirmed": "चुकता कर दिया",
+      "failed": "चुकता करने में विफल"
+    },
+    "stake": {
+      "pending": "शेयर जमा कर रहा है",
+      "confirmed": "शेयर जमा किया है",
+      "failed": "शेयर जमा करने में विफल"
+    },
+    "unstake": {
+      "pending": "शेयर निष्काशित कर रहा है",
+      "confirmed": "शेयर निष्काशित कर दिया",
+      "failed": "शेयर निष्काशन में विफल"
+    },
+    "purchase": {
+      "pending": "खरीद रहे हैं",
+      "confirmed": "खरीद लिया",
+      "failed": "खरीदने में विफल"
+    },
+    "revoke": {
+      "pending": "रोकथाम कर रहे हैं",
+      "confirmed": "रद्द कर दिया",
+      "failed": "रोकथाम विफल"
+    },
+    "sale": {
+      "pending": "बेच रहे हैं",
+      "confirmed": "बिक चुका",
+      "failed": "बिक्री विफल"
+    },
+    "bridge": {
+      "pending": "ब्रिजिंग",
+      "confirmed": "ब्रिज किया",
+      "failed": "ब्रिज विफल"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "एयरड्रॉप किया",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "लपेट रहे हैं",
+      "confirmed": "लपेट लिया",
+      "failed": "लपेट विफल"
+    },
+    "unwrap": {
+      "pending": "अनलॉक कर रहे हैं",
+      "confirmed": "अनलॉक किया",
+      "failed": "अनव्रैप विफल रहा"
+    },
+    "bid": {
+      "pending": "बोली लगाना",
+      "confirmed": "बोली",
+      "failed": "बोली विफल रही"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -437,6 +561,7 @@
       "review": "समीक्षा करें",
       "loading": "लोड हो रहा है",
       "insufficient_liquidity": "पर्याप्त लिक्विडिटी नहीं",
+      "fee_on_transfer_token": "स्थानांतरण पर शुल्क टोकन",
       "no_route": "कोई मार्ग नहीं मिला",
       "no_quote": "कोई कोट उपलब्ध नहीं",
       "enter_an_amount": "राशि दर्ज करें"
@@ -481,6 +606,16 @@
           "open_text": "अभी भी जानने के इच्छुक? ",
           "link_text": "और पढ़ें",
           "close_text": " ऍमएम और टोकन नकदीपन के बारे में।"
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "स्थानांतरण पर शुल्क टोकन",
+        "description": "यह स्वैप रेंबो में विफल होगा क्योंकि %{tokenName} अनुबंध अतिरिक्त शुल्क जोड़ता है",
+        "action_label": "समझ गया",
+        "footer_text": {
+          "open_text": "पढ़ें ",
+          "link_text": "हमारा मार्गदर्शन",
+          "close_text": " इस टोकन को स्वैप करने में सहायता के लिए!"
         }
       }
     }
@@ -722,6 +857,12 @@
       "connected": "कनेक्टेड"
     }
   },
+  "wallet_backup_reminder": {
+    "title": "आपके कुछ वॉलेट्स का बैकअप नहीं हुआ है",
+    "description": "आपके कुछ वॉलेट्स का बैकअप नहीं हुआ है। अगर आपने इस यंत्र की पहुंच खो दी है तो अपने वॉलेट्स की पहुंच पाने के लिए बैकअप करें।",
+    "button_label_action": "अब बैकअप करें",
+    "button_label_cancel": "मुझे बाद में याद दिलाएं"
+  },
   "approve_request": {
     "wallet_info_title": "आपके वॉलेट के साथ कनेक्ट करना चाहता है",
     "wallet_info_description": "%{appName} को आपके वॉलेट का पता, शेष राशि, गतिविधि देखने और लेनदेनों की मंज़ूरी अनुरोध करने के लिए अनुमति दें।",
@@ -850,7 +991,38 @@
     "this_month": "इस महीने",
     "empty_header": "अभी तक कोई गतिविधि नहीं",
     "empty_description": "अपने वॉलेट का उपयोग शुरू करने के बाद, आप यहाँ अपने लेन-देन देखेंगे।",
-    "loading_more": "और लोड हो रहा है..."
+    "loading_more": "और लोड हो रहा है...",
+    "no_value": "कोई मूल्य नहीं"
+  },
+  "activity_details": {
+    "you": "तुम",
+    "from": "से",
+    "to": "को",
+    "confirmed_at": "पुष्टि मिली",
+    "confirmations": "पुष्टिकरण",
+    "token": "टोकन",
+    "block": "ब्लॉक",
+    "value": "मूल्य",
+    "network": "नेटवर्क",
+    "fee": "नेटवर्क शुल्क",
+    "base_fee": "मूल शुल्क",
+    "max_base_fee": "अधिकतम मूल शुल्क",
+    "gas_price": "गैस की कीमत",
+    "gas_limit": "गैस सीमा",
+    "gas_used": "गैस का उपयोग",
+    "max_priority_fee": "खननकर्ता का टिप",
+    "nonce": "नॉन्स",
+    "allowance": "अनुमति",
+    "unlimited_allowance": "असीमित %{symbol}",
+    "app": "ऐप",
+    "copy_hash": "ट्रांजैक्शन हैश कॉपी करें",
+    "hash_copied": "हैश कॉपी",
+    "copy_explorer_url": "लिंक कॉपी करें",
+    "explorer_copied": "लिंक कॉपी किया",
+    "exchange_rate": "एक्सचेंज",
+    "collection": "संग्रह",
+    "token_contract": "टोकन अनुबंध",
+    "token_standard": "टोकन मानक"
   },
   "tokens_tab": {
     "coinbase_title": "कॉइनबेस से जमा करें",
@@ -905,12 +1077,14 @@
       "market_cap": "मार्केट कैप",
       "market_cap_explainer": {
         "title": "मार्केट कैप",
-        "description": "मार्केट कैप कोई टोकन के चक्रवर्ती आपूर्ति की कुल मार्केट मूल्य होती है। इसे औसत विनिमय मूल्य के साथ गणना किया जाता है।"
+        "description": "मार्केट कैप कोई टोकन के चक्रवर्ती आपूर्ति की कुल मार्केट मूल्य होती है। इसे औसत विनिमय मूल्य के साथ गणना किया जाता है।",
+        "action": "समझ गया"
       },
       "fully_diluted": "पूरी तरह से जहाँ अर्थपूर्ण",
       "fully_diluted_explainer": {
         "title": "पूरी तरह से जहाँ अर्थपूर्ण मार्केट कैप",
-        "description": "टोकन का अधिकतम संभव मार्केट कैप अगर कुल आपूर्ति पर उपलब्ध होता।"
+        "description": "टोकन का अधिकतम संभव मार्केट कैप अगर कुल आपूर्ति पर उपलब्ध होता।",
+        "action": "समझ गया"
       },
       "supply": "आपूर्ति",
       "max_total_supply": "अधिकतम कुल आपूर्ति",
@@ -1092,5 +1266,9 @@
       "highlighted": "रेनबो से संपर्क करें",
       "after": " अधिक जानकारी के लिए अनुरोध करें।"
     }
+  },
+  "approvals": {
+    "unlimited": "असीमित",
+    "no_allowance": "कोई अनुमति नहीं"
   }
 }
