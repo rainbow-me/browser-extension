@@ -1,5 +1,4 @@
-import { useMotionValueEvent, useScroll } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useAccount, useBalance } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -8,7 +7,6 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { Box, Inline, Inset, Text } from '~/design-system';
-import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
@@ -31,18 +29,6 @@ export function TabBar({
   const { data: balance, isLoading } = useBalance({ address });
   const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const containerRef = useContainerRef();
-  const { scrollY } = useScroll({
-    container: containerRef,
-    layoutEffect: false,
-  });
-  const [tooltipOffset, setTooltipOffset] = useState(scrollY.get() || 0);
-
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    if (latest <= 172) {
-      setTooltipOffset(latest);
-    }
-  });
 
   const displayBalanceComponent = useMemo(
     () =>
@@ -91,7 +77,6 @@ export function TabBar({
             textSize="12pt"
             textColor="labelSecondary"
             marginLeft="0px"
-            marginTop={`${0 - tooltipOffset}px`}
             hint={shortcuts.global.BACK.display}
           >
             <Tabs.Tab
@@ -109,8 +94,7 @@ export function TabBar({
             textWeight="bold"
             textSize="12pt"
             textColor="labelSecondary"
-            marginLeft="128px"
-            marginTop={`${0 - tooltipOffset}px`}
+            marginLeft="38px"
             hint={shortcuts.global.FORWARD.display}
           >
             <Tabs.Tab
@@ -124,14 +108,12 @@ export function TabBar({
         </Tabs>
       </Box>
       <CursorTooltip
-        align="end"
+        align="start"
         arrowAlignment="right"
         text={i18n.t('tooltip.balance')}
         textWeight="bold"
         textSize="12pt"
         textColor="labelSecondary"
-        marginLeft="322px"
-        marginTop={`${0 - tooltipOffset}px`}
       >
         <Inset top="4px">
           {isLoading && (

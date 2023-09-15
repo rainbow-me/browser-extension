@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
-import { ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
@@ -18,6 +18,7 @@ type AccountNameProps = {
   chevron?: boolean;
   disableNav?: boolean;
   tabIndex?: number;
+  renderTooltip?: (content: ReactNode) => ReactNode;
 };
 
 const chevronDownSizes = {
@@ -32,6 +33,7 @@ export function AccountName({
   chevron = true,
   disableNav = false,
   tabIndex,
+  renderTooltip,
 }: AccountNameProps) {
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
@@ -53,6 +55,48 @@ export function AccountName({
       }
     : {};
 
+  const content = (
+    <Columns alignVertical="center" space="4px">
+      {avatar && (
+        <Column width="content">
+          <Box marginRight="-6px">{avatar}</Box>
+        </Column>
+      )}
+      <Column>
+        <Lens
+          tabIndex={tabIndex ?? -1}
+          onKeyDown={handleClick}
+          borderRadius="6px"
+          style={{ padding: avatar ? 0 : 2 }}
+        >
+          <Box display="flex" flexDirection="row" padding="4px">
+            <Box
+              id={`${id ?? ''}-account-name-shuffle`}
+              style={{ paddingRight: 4 }}
+            >
+              <TextOverflow
+                color="label"
+                size={size}
+                weight="heavy"
+                testId="account-name"
+              >
+                {displayName}
+              </TextOverflow>
+            </Box>
+            {chevron && (
+              <Symbol
+                size={chevronDownSizes[size]}
+                symbol="chevron.down"
+                color={hover ? 'label' : 'labelTertiary'}
+                weight="semibold"
+              />
+            )}
+          </Box>
+        </Lens>
+      </Column>
+    </Columns>
+  );
+
   return (
     <Box
       as={motion.div}
@@ -61,45 +105,7 @@ export function AccountName({
       padding="4px"
       {...chevronProps}
     >
-      <Columns alignVertical="center" space="4px">
-        {avatar && (
-          <Column width="content">
-            <Box marginRight="-6px">{avatar}</Box>
-          </Column>
-        )}
-        <Column>
-          <Lens
-            tabIndex={tabIndex ?? -1}
-            onKeyDown={handleClick}
-            borderRadius="6px"
-            style={{ padding: avatar ? 0 : 2 }}
-          >
-            <Box display="flex" flexDirection="row" padding="4px">
-              <Box
-                id={`${id ?? ''}-account-name-shuffle`}
-                style={{ paddingRight: 4 }}
-              >
-                <TextOverflow
-                  color="label"
-                  size={size}
-                  weight="heavy"
-                  testId="account-name"
-                >
-                  {displayName}
-                </TextOverflow>
-              </Box>
-              {chevron && (
-                <Symbol
-                  size={chevronDownSizes[size]}
-                  symbol="chevron.down"
-                  color={hover ? 'label' : 'labelTertiary'}
-                  weight="semibold"
-                />
-              )}
-            </Box>
-          </Lens>
-        </Column>
-      </Columns>
+      {renderTooltip ? renderTooltip(content) : content}
     </Box>
   );
 }

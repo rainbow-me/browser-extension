@@ -222,7 +222,7 @@ const TopNav = memo(function TopNav() {
               textSize="12pt"
               textColor="labelSecondary"
               marginLeft="30px"
-              marginTop="76px"
+              marginTop="72px"
               hint={shortcuts.home.OPEN_MORE_MENU.display}
             >
               <Navbar.SymbolButton
@@ -240,34 +240,37 @@ const TopNav = memo(function TopNav() {
               as={motion.div}
               paddingHorizontal="60px"
             >
-              <CursorTooltip
-                align="center"
-                arrowAlignment="center"
-                text={i18n.t('tooltip.switch_wallet')}
-                textWeight="bold"
-                textSize="12pt"
-                textColor="labelSecondary"
-                marginLeft="72px"
-                marginTop="68px"
-                arrowDirection={'up'}
-                hint={shortcuts.home.GO_TO_WALLETS.display}
-              >
-                <AccountName
-                  id="topNav"
-                  avatar={
-                    address && (
-                      <Box paddingRight="2px">
-                        <WalletAvatar
-                          address={address}
-                          size={16}
-                          emojiSize="10pt"
-                        />
-                      </Box>
-                    )
-                  }
-                  size="16pt"
-                />
-              </CursorTooltip>
+              <AccountName
+                id="topNav"
+                avatar={
+                  address && (
+                    <Box paddingRight="2px">
+                      <WalletAvatar
+                        address={address}
+                        size={16}
+                        emojiSize="10pt"
+                      />
+                    </Box>
+                  )
+                }
+                size="16pt"
+                renderTooltip={(content) => (
+                  <CursorTooltip
+                    align="center"
+                    arrowAlignment="center"
+                    text={i18n.t('tooltip.switch_wallet')}
+                    textWeight="bold"
+                    textSize="12pt"
+                    textColor="labelSecondary"
+                    arrowDirection={'up'}
+                    marginLeft="-620px"
+                    marginTop="-48px"
+                    hint={shortcuts.home.GO_TO_WALLETS.display}
+                  >
+                    {content}
+                  </CursorTooltip>
+                )}
+              />
             </Box>
           )
         }

@@ -48,24 +48,6 @@ export const Header = React.memo(function Header() {
 
   const { address } = useAccount();
 
-  const accountName = (
-    <AccountName
-      avatar={
-        address && (
-          <Box
-            as={motion.div}
-            style={{ opacity: avatarOpacityValue }}
-            paddingRight="2px"
-          >
-            <WalletAvatar address={address} size={20} emojiSize="14pt" />
-          </Box>
-        )
-      }
-      id="header"
-      tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
-    />
-  );
-
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
@@ -103,29 +85,46 @@ export const Header = React.memo(function Header() {
               x,
             }}
           >
-            {tooltipOffset < 92 ? (
-              <CursorTooltip
-                align="start"
-                arrowAlignment="center"
-                text={i18n.t('tooltip.switch_wallet')}
-                textWeight="bold"
-                textSize="12pt"
-                textColor="labelSecondary"
-                marginLeft="22px"
-                marginTop={
-                  tooltipOffset > 46 ? `${55 + (tooltipOffset - 40)}px` : '0px'
-                }
-                arrowDirection={tooltipOffset > 46 ? 'up' : 'down'}
-                hint={shortcuts.home.GO_TO_WALLETS.display}
-              >
-                {accountName}
-              </CursorTooltip>
-            ) : (
-              accountName
-            )}
+            <AccountName
+              avatar={
+                address && (
+                  <Box
+                    as={motion.div}
+                    style={{ opacity: avatarOpacityValue }}
+                    paddingRight="2px"
+                  >
+                    <WalletAvatar
+                      address={address}
+                      size={20}
+                      emojiSize="14pt"
+                    />
+                  </Box>
+                )
+              }
+              id="header"
+              tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
+              renderTooltip={
+                tooltipOffset === 0
+                  ? (content) => (
+                      <CursorTooltip
+                        align="start"
+                        arrowAlignment="center"
+                        text={i18n.t('tooltip.switch_wallet')}
+                        textWeight="bold"
+                        textSize="12pt"
+                        textColor="labelSecondary"
+                        hint={shortcuts.home.GO_TO_WALLETS.display}
+                        marginLeft="-620px"
+                        marginTop="-204px"
+                      >
+                        {content}
+                      </CursorTooltip>
+                    )
+                  : undefined
+              }
+            />
           </Box>
-
-          <ActionButtonsSection tooltipOffset={tooltipOffset} />
+          <ActionButtonsSection />
         </Stack>
       </Inset>
       <Box style={{ minHeight: 32 }} />
@@ -152,7 +151,7 @@ export function AvatarSection() {
   );
 }
 
-function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
+function ActionButtonsSection() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
 
@@ -200,7 +199,6 @@ function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
             testId="header-link-copy"
             tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
             tooltipHint={shortcuts.home.COPY_ADDRESS.display}
-            tooltipOffset={tooltipOffset}
             tooltipText={i18n.t('tooltip.copy_address')}
           />
 
@@ -221,7 +219,6 @@ function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
               }
             }}
             tooltipHint={shortcuts.home.GO_TO_SWAP.display}
-            tooltipOffset={tooltipOffset}
             tooltipText={i18n.t('tooltip.swap')}
           />
 
@@ -230,7 +227,6 @@ function ActionButtonsSection({ tooltipOffset }: { tooltipOffset: number }) {
             text={i18n.t('wallet_header.send')}
             tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
             tooltipHint={shortcuts.home.GO_TO_SEND.display}
-            tooltipOffset={tooltipOffset}
             tooltipText={i18n.t('tooltip.send')}
             testId={'header-link-send'}
             onClick={() => {
@@ -255,7 +251,6 @@ function ActionButton({
   testId,
   tabIndex,
   tooltipHint,
-  tooltipOffset,
   tooltipText,
 }: {
   cursor?: BoxStyles['cursor'];
@@ -265,7 +260,6 @@ function ActionButton({
   testId?: string;
   tabIndex?: number;
   tooltipHint: string;
-  tooltipOffset: number;
   tooltipText: string;
 }) {
   return (
@@ -277,7 +271,7 @@ function ActionButton({
         textWeight="bold"
         textSize="12pt"
         textColor="labelSecondary"
-        marginTop={`${0 - tooltipOffset}px`}
+        marginLeft="18px"
         hint={tooltipHint}
       >
         <ButtonSymbol

@@ -49,7 +49,6 @@ export function TokenToBuyRow({
   asset,
   testId,
   onDropdownChange,
-  tooltipOffset,
 }: TokenToBuyRowProps) {
   const { addFavorite, favorites, removeFavorite } = useFavoritesStore();
   const isFavorite = useMemo(
@@ -238,7 +237,6 @@ export function TokenToBuyRow({
           textSize="12pt"
           textColor="labelSecondary"
           marginLeft={isFavorite ? '-88px' : '-48px'}
-          marginTop={`-${tooltipOffset}px`}
         >
           <ButtonSymbol
             symbol="star.fill"
@@ -263,7 +261,6 @@ export function TokenToBuyRow({
       isFavorite,
       onToggleFavorite,
       testId,
-      tooltipOffset,
     ],
   );
 

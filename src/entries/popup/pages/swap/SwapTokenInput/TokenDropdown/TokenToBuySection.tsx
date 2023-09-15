@@ -83,11 +83,9 @@ const bridgeSectionsColorsByChain = {
 const VerifiedWrappedTooltip = ({
   children,
   id,
-  offset,
 }: {
   children: ReactElement;
   id: string;
-  offset: number;
 }) => {
   if (id !== 'verified') return children;
   return (
@@ -98,7 +96,6 @@ const VerifiedWrappedTooltip = ({
       textColor="labelSecondary"
       arrowAlignment="left"
       align="start"
-      marginTop={`-${offset}px`}
     >
       {children}
     </CursorTooltip>
@@ -150,7 +147,7 @@ export const TokenToBuySection = ({
           </Box>
         ) : null}
         <Box paddingHorizontal="15px">
-          <VerifiedWrappedTooltip id={assetSection.id} offset={tooltipOffset}>
+          <VerifiedWrappedTooltip id={assetSection.id}>
             <Box paddingHorizontal="5px" width="full">
               <Inline space="4px" alignVertical="center">
                 <Symbol
