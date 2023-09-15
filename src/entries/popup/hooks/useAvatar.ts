@@ -25,7 +25,6 @@ const fetchWalletAvatar = async ({
     dominantColor = await fetchDominantColor({ imageUrl: ensAvatar });
   } catch (e) {
     correctEnsAvatar = false;
-    //
   }
   const { color: emojiColor, emoji } = emojiAvatarForAddress(addressOrName);
   const avatar = {
