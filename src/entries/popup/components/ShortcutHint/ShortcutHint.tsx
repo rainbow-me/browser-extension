@@ -22,6 +22,7 @@ export const ShortcutHint = ({
       <Inline alignHorizontal="center" alignVertical="center">
         <Box style={{ marginTop: small ? -1 : 1 }}>
           <Text
+            align="center"
             size={small ? '11pt' : '12pt'}
             color="labelSecondary"
             weight="bold"

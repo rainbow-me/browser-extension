@@ -225,7 +225,7 @@ export const AppConnectionMenu = ({
             textSize="12pt"
             textColor="labelSecondary"
             marginLeft="2px"
-            marginTop="72px"
+            marginTop="30px"
             hint={shortcuts.home.SWITCH_NETWORK.display}
           >
             {children}

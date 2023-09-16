@@ -5,6 +5,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { Box, Inline, TextOverflow, ThemeProvider } from '~/design-system';
 import { AlignHorizontal } from '~/design-system/components/Inline/Inline';
 import { TextStyles } from '~/design-system/styles/core.css';
+import { tooltipAnimation } from '~/design-system/styles/tooltipAnimationStyles.css';
 
 import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 
@@ -42,7 +43,7 @@ export const Tooltip = ({
       case 'left':
         return {
           alignHorizontal: 'left' as AlignHorizontal,
-          left: 6,
+          left: 8,
           right: undefined,
         };
       case 'center':
@@ -55,10 +56,12 @@ export const Tooltip = ({
         return {
           alignHorizontal: 'right' as AlignHorizontal,
           left: undefined,
-          right: 6,
+          right: 8,
         };
     }
   }, [arrowAlignment]);
+
+  const side = arrowDirection === 'down' ? 'top' : 'bottom';
 
   return (
     <TooltipPrimitive.Provider>
@@ -67,14 +70,15 @@ export const Tooltip = ({
         <TooltipPrimitive.Portal>
           <TooltipPrimitive.Content
             align={align}
-            className="TooltipContent"
-            sideOffset={10}
-            alignOffset={alignOffset}
+            className={tooltipAnimation}
+            side={side}
+            sideOffset={12}
+            alignOffset={side === 'top' ? alignOffset : -(alignOffset || 0)}
           >
             <ThemeProvider theme={currentTheme}>
               <Box
-                style={{ maxWidth: windowWidth - 60 }}
-                borderRadius="6px"
+                style={{ maxWidth: windowWidth - 60, overflow: 'hidden' }}
+                borderRadius="8px"
                 boxShadow="24px"
               >
                 <Inline alignHorizontal={alignHorizontal}>
@@ -82,28 +86,31 @@ export const Tooltip = ({
                     background="surfaceSecondaryElevated"
                     backdropFilter="blur(26px)"
                     position="absolute"
-                    borderRadius="2px"
                     marginBottom="-3px"
                     bottom="0"
                     style={{
+                      borderRadius: 2.5,
                       height: 10,
                       width: 10,
                       rotate: '45deg',
                       left,
                       right,
-                      ...(arrowDirection === 'up' ? { top: -4 } : {}),
+                      ...(arrowDirection === 'up' ? { top: -3 } : {}),
                     }}
                   />
                 </Inline>
                 <Box
+                  alignItems="center"
                   background="surfaceSecondaryElevated"
-                  padding="4px"
+                  display="flex"
+                  paddingRight={hint ? '4px' : '6px'}
                   paddingLeft="6px"
-                  borderRadius="6px"
                   backdropFilter="blur(26px)"
+                  style={{ height: 22 }}
                 >
                   <Inline alignVertical="center" space={'6px'}>
                     <TextOverflow
+                      align={hint ? 'left' : 'center'}
                       color={textColor || 'label'}
                       size={textSize || '16pt'}
                       weight={textWeight || 'bold'}

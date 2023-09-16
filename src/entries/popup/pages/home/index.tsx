@@ -223,7 +223,7 @@ const TopNav = memo(function TopNav() {
               textSize="12pt"
               textColor="labelSecondary"
               marginLeft="30px"
-              marginTop="72px"
+              marginTop="30px"
               hint={shortcuts.home.OPEN_MORE_MENU.display}
             >
               <Navbar.SymbolButton
