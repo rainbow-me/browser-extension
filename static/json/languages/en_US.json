@@ -66,6 +66,7 @@
   "settings": {
     "title": "Settings",
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
+    "sounds": "Sounds",
     "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
     "guides_and_support": "Guides & Support",
@@ -1025,7 +1026,9 @@
   },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",
-    "coinbase_description": "Buy or transfer from Coinbase",
+    "coinbase_description": "Transfer your crypto from Coinbase for free",
+    "buy_title": "Buy crypto to fund your wallet",
+    "buy_description": "Choose from trusted providers & payment options",
     "send_from_wallet": "Send from another wallet",
     "send_description_1": "Press",
     "send_description_2": "to copy your address",
@@ -1242,7 +1245,7 @@
     "done": "Done",
     "add_wallet": "Add wallet",
     "add_by_index_title": "Add a wallet by its index",
-    "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger.",
+    "add_by_index_description": "Select the derivation path and enter the index of the wallet you would like to add.",
     "waiting_for_trezor_connect": "Waiting for Trezor Connect",
     "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
     "trezor_success": "Success!",
@@ -1269,5 +1272,14 @@
   "approvals": {
     "unlimited": "Unlimited",
     "no_allowance": "No Allowance"
+  },
+  "buy": {
+    "title": "Buy",
+    "fees_title": "Fees",
+    "instant_title": "Instant",
+    "method_title": "Method",
+    "methods_title": "Method",
+    "network_title": "Network",
+    "networks_title": "Networks"
   }
 }

@@ -385,7 +385,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 7,
+        timesToPress: 8,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       const systemOption = await findElementByText(driver, 'System');

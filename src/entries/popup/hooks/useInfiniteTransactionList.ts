@@ -149,13 +149,27 @@ export default function ({
       !isFetchingNextPage
     ) {
       fetchNextPage();
+    } else if (
+      // BE does not guarantee a particular number of transactions per page
+      // BE grabs a group from our data providers then filters for various reasons
+      // there are rare cases where BE filters out so many transactions on a page
+      // that we end up not filling the list UI, preventing the user from paginating via scroll
+      // so we recursively paginate until we know the UI is full
+      transactionsAfterCutoff.length < 8 &&
+      hasNextPage &&
+      !isFetching &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage();
     }
   }, [
+    data?.pages.length,
     fetchNextPage,
     hasNextPage,
     isFetching,
     isFetchingNextPage,
     transactions.length,
+    transactionsAfterCutoff.length,
     rows,
   ]);
 
@@ -231,9 +245,11 @@ function watchForPendingTransactionsReportedByRainbowBackend({
 
   const updatedPendingTransactions = pendingTransactions?.filter((tx) => {
     const txNonce = tx.nonce || 0;
-    const latestConfirmedNonce = latestTransactions.get(tx.chainId)?.nonce || 0;
+    const latestTx = latestTransactions.get(tx.chainId);
+    const latestTxNonce = latestTx?.nonce || 0;
     // still pending or backend is not returning confirmation yet
-    return txNonce > latestConfirmedNonce;
+    // if !latestTx means that is the first tx of the wallet
+    return !latestTx || txNonce > latestTxNonce;
   });
 
   setPendingTransactions({

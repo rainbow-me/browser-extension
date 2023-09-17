@@ -97,6 +97,7 @@ export function ImportOrCreateWallet() {
                     symbolSide="right"
                     onClick={handleCreateNewWalletClick}
                     testId="create-wallet-button"
+                    tabIndex={0}
                   >
                     {loading ? (
                       <Inline space="8px" alignVertical="center">
@@ -129,6 +130,7 @@ export function ImportOrCreateWallet() {
                     width="full"
                     onClick={handleImportWalletClick}
                     testId="import-wallet-button"
+                    tabIndex={0}
                   >
                     {i18n.t('welcome.import_wallet')}
                   </Button>

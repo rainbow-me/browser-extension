@@ -7,12 +7,13 @@ import { UnsignedTransaction, serialize } from '@ethersproject/transactions';
 import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
+import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { ChainId } from '~/core/types/chains';
+import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 
 import { walletAction } from './walletAction';
 
@@ -45,15 +46,20 @@ export async function signTransactionFromLedger(
         : undefined,
     };
 
+    let forceLegacy = false;
+    // Ledger doesn't support type 2 for these networks yet
+    if (LEGACY_CHAINS_FOR_HW.includes(transaction.chainId as ChainId)) {
+      forceLegacy = true;
+    }
+
     if (transaction.gasPrice) {
       baseTx.gasPrice = transaction.gasPrice;
-    } else {
+    } else if (!forceLegacy) {
       baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
       baseTx.maxPriorityFeePerGas =
         transaction.maxPriorityFeePerGas || undefined;
-      if (transaction.chainId === ChainId.mainnet) {
-        baseTx.type = 2;
-      }
+    } else {
+      baseTx.gasPrice = transaction.maxFeePerGas || undefined;
     }
 
     const unsignedTx = serialize(baseTx).substring(2);

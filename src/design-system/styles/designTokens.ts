@@ -980,6 +980,9 @@ export const symbolNames = selectSymbolNames(
   'xmark.bin.fill',
   'globe',
   'square.grid.2x2',
+  '123.rectangle.fill',
+  'clock.arrow.2.circlepath',
+  'speaker.wave.2.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

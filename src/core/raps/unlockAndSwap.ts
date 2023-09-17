@@ -155,7 +155,7 @@ export const createUnlockAndSwapRap = async (
     meta: swapParameters.meta,
     assetToSell,
     assetToBuy,
-  } as RapSwapActionParameters<'swap'>);
+  } satisfies RapSwapActionParameters<'swap'>);
   actions = actions.concat(swap);
 
   // create the overall rap

@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { Address } from 'wagmi';
 
-import SendSound from 'static/assets/audio/woosh.mp3';
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
@@ -62,6 +61,7 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import usePrevious from '../../hooks/usePrevious';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 import { useWallets } from '../../hooks/useWallets';
+import playSound from '../../utils/playSound';
 
 import { ContactAction } from './ContactPrompt';
 
@@ -292,7 +292,7 @@ export const ReviewSheet = ({
       setSending(true);
       try {
         await onSend();
-        new Audio(SendSound).play();
+        playSound('SendSound');
       } catch (e) {
         setSending(false);
       }

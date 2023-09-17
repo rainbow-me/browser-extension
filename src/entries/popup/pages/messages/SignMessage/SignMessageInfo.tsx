@@ -1,18 +1,18 @@
 import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
-import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
 interface SignMessageProps {
   request: ProviderRequestPayload;
 }
 
 export const SignMessageInfo = ({ request }: SignMessageProps) => {
-  const { appHostName, appLogo } = useAppMetadata({
+  const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
 
@@ -36,8 +36,12 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
                 borderRadius="18px"
                 alignItems="center"
               >
-                {appLogo ? (
-                  <ExternalImage src={appLogo} width="32" height="32" />
+                {dappMetadata?.appLogo ? (
+                  <ExternalImage
+                    src={dappMetadata?.appLogo}
+                    width="32"
+                    height="32"
+                  />
                 ) : null}
               </Box>
             </Inline>
@@ -48,7 +52,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
                 weight="semibold"
                 color="labelSecondary"
               >
-                {appHostName}
+                {dappMetadata?.appHostName}
               </Text>
               <Text align="center" size="20pt" weight="semibold">
                 {i18n.t('approve_request.message_signing_request')}

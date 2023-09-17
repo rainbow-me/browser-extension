@@ -9,17 +9,13 @@ import React, {
 } from 'react';
 import { Address } from 'wagmi';
 
-import SendSound from 'static/assets/audio/woosh.mp3';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import {
-  popupInstanceStore,
-  usePopupInstanceStore,
-} from '~/core/state/popupInstances';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -59,6 +55,7 @@ import { getNetworkNativeAssetUniqueId } from '~/entries/popup/hooks/useNativeAs
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { ROUTES } from '~/entries/popup/urls';
+import playSound from '~/entries/popup/utils/playSound';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 import { RainbowError, logger } from '~/logger';
 
@@ -308,10 +305,10 @@ const SwapReviewSheetWithQuote = ({
         });
       }
     } else {
-      const { saveActiveTab } = popupInstanceStore.getState();
       setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
-      saveActiveTab({ tab: 'activity' });
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, {
+        state: { tab: 'activity' },
+      });
     }
     isBridge
       ? analytics.track(event.bridgeSubmitted, {
@@ -351,10 +348,10 @@ const SwapReviewSheetWithQuote = ({
     assetToSell,
     assetToBuy,
     quote,
-    isBridge,
     sendingSwap,
-    connectedToHardhat,
     flashbotsEnabled,
+    connectedToHardhat,
+    isBridge,
     setSwapAssetsToRefresh,
     navigate,
   ]);
@@ -370,7 +367,7 @@ const SwapReviewSheetWithQuote = ({
     }
     resetSwapValues();
     executeSwap();
-    new Audio(SendSound).play();
+    playSound('SendSound');
   }, [
     enoughNativeAssetBalanceForGas,
     executeSwap,

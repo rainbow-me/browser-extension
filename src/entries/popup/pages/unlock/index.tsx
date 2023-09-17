@@ -1,6 +1,5 @@
 import React, { SetStateAction, useCallback, useState } from 'react';
 
-import UnlockSound from 'static/assets/audio/ui_unlock.mp3';
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
@@ -12,6 +11,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import playSound from '../../utils/playSound';
 import { AvatarSection } from '../home/Header';
 
 export function Unlock() {
@@ -37,7 +37,7 @@ export function Unlock() {
     setLoading(true);
     try {
       if (await wallet.unlock(password)) {
-        new Audio(UnlockSound).play();
+        playSound('UnlockSound');
         navigate(ROUTES.HOME);
       } else {
         setError(i18n.t('passwords.wrong_password'));

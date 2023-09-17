@@ -17,7 +17,7 @@ export const ROUTES = {
   IMPORT__SEED: '/import/seed', // ImportWalletViaSeed
   IMPORT__PRIVATE_KEY: '/import/pkey', // ImportWalletViaPrivateKey
   IMPORT__SELECT: '/import/select', // ImportWalletSelection
-  IMPORT__EDIT: '/import/edit', // EditImportWalletSelection
+  IMPORT__EDIT: '/import/edit', // ImportWalletSelectionEdit
   UNLOCK: '/unlock', // ImportWalletSelection
   SEED_BACKUP_PROMPT: '/seed-backup-prompt', // SeedBackupPrompt
   SEED_REVEAL: '/seed-reveal', // SeedReveal
@@ -62,4 +62,5 @@ export const ROUTES = {
   HW_TREZOR: '/hw/trezor',
   HW_WALLET_LIST: '/hw/wallet-list', // hw/walletList/index
   HW_SUCCESS: '/hw/success',
+  BUY: '/buy',
 } as const;
