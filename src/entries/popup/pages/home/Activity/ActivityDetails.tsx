@@ -101,21 +101,26 @@ const YouOrAddress = ({ address }: { address: Address }) => {
   );
   if (currentAccount === address.toLowerCase())
     return (
-      <Text color="labelSecondary" size="12pt" weight="semibold">
-        {i18n.t('activity_details.you')}
-        <Text size="12pt" weight="semibold" color="labelQuaternary">
-          <Inline alignVertical="center" wrap={false}>
-            (
-            <AddressOrEns
-              address={address}
-              size="12pt"
-              weight="semibold"
-              color="labelQuaternary"
-            />
-            )
-          </Inline>
+      <Inline alignVertical="center" wrap={false} space="2px">
+        <Text color="labelSecondary" size="12pt" weight="semibold">
+          {i18n.t('activity_details.you')}
         </Text>
-      </Text>
+
+        <Inline alignVertical="center" wrap={false}>
+          <Text size="12pt" weight="semibold" color="labelQuaternary">
+            (
+          </Text>
+          <AddressOrEns
+            address={address}
+            size="12pt"
+            weight="semibold"
+            color="labelQuaternary"
+          />
+          <Text size="12pt" weight="semibold" color="labelQuaternary">
+            )
+          </Text>
+        </Inline>
+      </Inline>
     );
 
   return (
