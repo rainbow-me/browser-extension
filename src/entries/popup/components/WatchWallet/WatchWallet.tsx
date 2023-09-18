@@ -81,7 +81,7 @@ function RecommendedAccountRow({
       <Columns>
         <Column>
           <Inline space="8px" alignHorizontal="left" alignVertical="center">
-            <WalletAvatar address={name} size={32} emojiSize={'16pt'} />
+            <WalletAvatar addressOrName={name} size={32} emojiSize={'16pt'} />
             <Box justifyContent="flex-start" width="fit">
               <AddressOrEns
                 size="14pt"

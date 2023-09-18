@@ -330,7 +330,7 @@ export function SpeedUpAndCancelSheet({
                           <Inline alignVertical="center" space="4px">
                             {transaction?.to && (
                               <WalletAvatar
-                                address={transaction.to}
+                                addressOrName={transaction.to}
                                 size={18}
                                 emojiSize="12pt"
                               />

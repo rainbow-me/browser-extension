@@ -98,7 +98,7 @@ export const BottomWallet = React.forwardRef(
             }}
           >
             <WalletAvatar
-              address={selectedWallet}
+              addressOrName={selectedWallet}
               size={18}
               emojiSize={'12pt'}
             />
@@ -199,7 +199,7 @@ export const BottomSwitchWallet = ({
           <Box testId={`switch-wallet-item-${i}`}>
             <Inline space="8px" alignVertical="center">
               <WalletAvatar
-                address={wallet as Address}
+                addressOrName={wallet as Address}
                 size={18}
                 emojiSize={'12pt'}
               />

@@ -135,7 +135,7 @@ const Tabs = memo(function Tabs() {
 
 export const Home = memo(function Home() {
   const { currentAddress } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address: currentAddress });
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
 
   usePendingTransactionWatcher({ address: currentAddress });
@@ -231,7 +231,7 @@ const TopNav = memo(function TopNav() {
                   address && (
                     <Box paddingRight="2px">
                       <WalletAvatar
-                        address={address}
+                        addressOrName={address}
                         size={16}
                         emojiSize="10pt"
                       />

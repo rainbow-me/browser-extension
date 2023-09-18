@@ -24,7 +24,7 @@ const Toggle = ({
   testId,
 }: ToggleProps) => {
   const { currentAddress } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address: currentAddress });
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   return (
     <Box testId={testId}>
       <Switch

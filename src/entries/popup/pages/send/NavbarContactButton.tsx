@@ -77,7 +77,11 @@ const NavbarSaveContactButton = ({
       >
         <Inline space="4px" alignVertical="center">
           {toAddress ? (
-            <WalletAvatar size={16} address={toAddress} emojiSize="11pt" />
+            <WalletAvatar
+              size={16}
+              addressOrName={toAddress}
+              emojiSize="11pt"
+            />
           ) : (
             <Box position="relative" paddingRight="2px">
               <Symbol

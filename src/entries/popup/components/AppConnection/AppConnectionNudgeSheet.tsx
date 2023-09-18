@@ -68,7 +68,7 @@ export const AppConnectionNudgeSheet = ({
           <Stack space="24px" alignHorizontal="center">
             <Box>
               <WalletAvatar
-                address={currentAddress}
+                addressOrName={currentAddress}
                 size={44}
                 background="transparent"
                 mask={appConnectionSheetImageMask}

@@ -62,7 +62,7 @@ export const AccountToImportRows = ({
               >
                 <Column width="content">
                   <WalletAvatar
-                    address={address}
+                    addressOrName={address}
                     size={36}
                     emojiSize={'16pt'}
                   />
