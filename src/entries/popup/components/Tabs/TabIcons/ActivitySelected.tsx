@@ -1,7 +1,6 @@
 import chroma from 'chroma-js';
 import React from 'react';
 
-// import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 const ActivitySelectedIcon = ({
@@ -11,10 +10,7 @@ const ActivitySelectedIcon = ({
   accentColor: string;
   colorMatrixValues: number[];
 }) => {
-  // const { currentTheme } = useCurrentThemeStore();
-  const useDarkForegroundColor =
-    // currentTheme === 'dark' &&
-    chroma.contrast(accentColor, '#fff') < 2.125;
+  const useDarkForegroundColor = chroma.contrast(accentColor, '#fff') < 2.125;
 
   return (
     <svg

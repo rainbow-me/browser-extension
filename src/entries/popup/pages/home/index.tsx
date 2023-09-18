@@ -100,10 +100,7 @@ const Tabs = memo(function Tabs({
   // so we don't have any flicker
   useLayoutEffect(() => {
     const top = prevScrollPosition.current;
-    console.log('prevScrollPosition.current = ' + top);
-    console.log('containerRef.current = ' + containerRef.current);
     if (!top || !containerRef.current) return;
-    console.log('SCROLLING TO TOP');
     containerRef.current.scrollTo({
       top:
         top > COLLAPSED_HEADER_TOP_OFFSET
