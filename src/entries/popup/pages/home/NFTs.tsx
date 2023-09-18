@@ -27,7 +27,6 @@ export function NFTs() {
       flexDirection="column"
       height="full"
       justifyContent="center"
-      // ref={ref}
       style={{ paddingBottom: 60, paddingTop: 60 }}
       width="full"
     >
