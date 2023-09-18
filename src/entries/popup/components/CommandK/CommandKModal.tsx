@@ -77,7 +77,7 @@ export function CommandKModal({
   const { closeCommandK, isCommandKVisible, setFinishedExiting } =
     useCommandKStatus();
   const { currentAddress: address } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
   const { currentTheme } = useCurrentThemeStore();
 
   return (

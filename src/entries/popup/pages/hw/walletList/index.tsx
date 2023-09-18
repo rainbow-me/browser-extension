@@ -311,7 +311,7 @@ const WalletListHW = () => {
                                           alignVertical="center"
                                         >
                                           <WalletAvatar
-                                            address={address as Address}
+                                            addressOrName={address as Address}
                                             size={36}
                                             emojiSize={'16pt'}
                                           />
