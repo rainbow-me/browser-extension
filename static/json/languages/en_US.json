@@ -191,7 +191,8 @@
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
-      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts"
+      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
+      "new_tab_bar_enabled": "New Tab Bar"
     }
   },
   "transactions": {
@@ -982,6 +983,11 @@
     "title": "Create your password",
     "description": "Choose a password to secure & lock your wallet."
   },
+  "tabs": {
+    "activity": "Activity",
+    "tokens": "Tokens",
+    "nfts": "NFTs"
+  },
   "activity": {
     "today": "Today",
     "yesterday": "Yesterday",
@@ -1030,6 +1036,11 @@
     "send_description_1": "Press",
     "send_description_2": "to copy your address",
     "unknown_token": "Unknown Token"
+  },
+  "nfts": {
+    "coming_soon_header": "Coming Soon",
+    "coming_soon_description": "NFTs are coming soon. Stay tuned!",
+    "view_on_web": "View on Web"
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",

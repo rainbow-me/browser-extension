@@ -2,10 +2,14 @@ import EventEmitter from 'events';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box, Inline, Row, Rows, Text } from '~/design-system';
 
+import { ROUTES } from '../../urls';
 import { zIndexes } from '../../utils/zIndexes';
+import { useCommandKStatus } from '../CommandK/useCommandKStatus';
 
 const eventEmitter = new EventEmitter();
 
@@ -25,6 +29,9 @@ export const triggerToast = ({ title, description }: ToastInfo) => {
 };
 
 export const Toast = () => {
+  const { featureFlags } = useFeatureFlagsStore();
+  const { isCommandKVisible } = useCommandKStatus();
+  const location = useLocation();
   const [toastInfo, setToastInfo] = useState<ToastInfo | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -73,7 +80,15 @@ export const Toast = () => {
               borderRadius="26px"
               boxShadow="24px"
               initial={{ scale: 0.5, y: 100 }}
-              animate={{ scale: 1, y: 0 }}
+              animate={{
+                scale: 1,
+                y:
+                  featureFlags.new_tab_bar_enabled &&
+                  location.pathname === ROUTES.HOME &&
+                  !isCommandKVisible
+                    ? -64
+                    : 0,
+              }}
               exit={{ opacity: 0, scale: 0.5, y: 0 }}
               transition={{
                 type: 'spring',
