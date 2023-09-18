@@ -18,7 +18,9 @@ const fetchWalletAvatar = async ({
 }): Promise<WalletAvatar> => {
   const { setWalletAvatar } = walletAvatarStore.getState();
 
-  const ensAvatar = await resolveEnsAvatar({ addressOrName });
+  const ensAvatar = await resolveEnsAvatar({
+    addressOrName: addressOrName?.toLowerCase(),
+  });
   let correctEnsAvatar = true;
   let dominantColor = null;
   try {
