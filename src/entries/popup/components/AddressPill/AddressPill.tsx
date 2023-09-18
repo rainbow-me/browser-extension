@@ -8,7 +8,7 @@ import { useWalletName } from '../../hooks/useWalletName';
 import { Avatar } from '../Avatar/Avatar';
 
 export default function AddressPill({ address }: { address: Address }) {
-  const { avatar, isFetched } = useAvatar({ address });
+  const { data: avatar, isFetched } = useAvatar({ addressOrName: address });
   const { displayName } = useWalletName({ address });
   return (
     <Box

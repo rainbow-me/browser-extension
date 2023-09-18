@@ -69,7 +69,7 @@ const SaveOrEditContact = ({
             <Box style={{ width: 42 }}>
               <Separator color="separatorTertiary" strokeWeight="1px" />
             </Box>
-            <WalletAvatar address={address} size={44} />
+            <WalletAvatar addressOrName={address} size={44} />
             <Stack alignHorizontal="center" space="10px">
               <Box marginVertical="-12px">
                 <Input

@@ -61,13 +61,21 @@ export async function resolve(name: string) {
   }
 }
 
-export async function resolveEnsProfileQueryFunction({
-  queryKey: [{ addressOrName }],
-}: QueryFunctionArgs<typeof ResolveEnsProfileQueryKey>) {
+export const resolveEnsAvatar = ({
+  addressOrName,
+}: {
+  addressOrName?: string;
+}) => {
   if (!addressOrName) return null;
   return isAddress(addressOrName)
     ? reverseResolve(addressOrName)
     : resolve(addressOrName);
+};
+
+export async function resolveEnsProfileQueryFunction({
+  queryKey: [{ addressOrName }],
+}: QueryFunctionArgs<typeof ResolveEnsProfileQueryKey>) {
+  return resolveEnsAvatar({ addressOrName });
 }
 
 // ///////////////////////////////////////////////

@@ -63,7 +63,7 @@ const PyramidAvatar = ({ accounts }: { accounts: Address[] }) => {
                     }}
                   >
                     <WalletAvatar
-                      address={address}
+                      addressOrName={address}
                       size={36}
                       emojiSize="26pt"
                       background="transparent"
