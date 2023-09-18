@@ -132,7 +132,19 @@ export const sendTransaction = async (
     nonce,
   };
 
-  const { type, vendor } = await getWallet(transactionRequest.from as Address);
+  let walletInfo;
+  try {
+    walletInfo = await getWallet(transactionRequest.from as Address);
+  } catch (e) {
+    const re = new RainbowError('sendTransaction::getWallet error');
+    logger.error(re, {
+      message: (e as Error)?.message,
+      from: transactionRequest.from,
+    });
+    throw re;
+  }
+  const { type, vendor } = walletInfo;
+
   // Check the type of account it is
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
