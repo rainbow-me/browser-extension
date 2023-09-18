@@ -65,7 +65,7 @@ export function TabBar({
   onSelectTab: (tab: Tab) => void;
 }) {
   const { currentAddress } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address: currentAddress });
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
 
   // Convert accent color to SVG color matrix values
@@ -218,7 +218,7 @@ function Tab({
 function TabBackground({ selectedTabIndex }: { selectedTabIndex: number }) {
   const { currentTheme } = useCurrentThemeStore();
   const { currentAddress } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address: currentAddress });
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
 
   const xPosition = selectedTabIndex * TAB_WIDTH + (selectedTabIndex + 1) * 6;
 
