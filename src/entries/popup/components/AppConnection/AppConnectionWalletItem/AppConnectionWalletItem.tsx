@@ -150,7 +150,7 @@ export const AppConnectionWalletItem = React.forwardRef(
                   mask={
                     showChainBadge ? appConnectionWalletItemImageMask : null
                   }
-                  address={address}
+                  addressOrName={address}
                   size={36}
                   emojiSize="20pt"
                   background="transparent"

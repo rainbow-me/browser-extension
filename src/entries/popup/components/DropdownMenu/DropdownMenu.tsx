@@ -42,7 +42,7 @@ interface DropdownMenuTriggerProps {
 export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
   const { children, accentColor, asChild } = props;
   const { address } = useAccount();
-  const { avatar } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -123,7 +123,7 @@ export const DropdownMenuContentBody = React.forwardRef<
   } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
-  const { avatar } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
   return (
     <AccentColorProvider
       color={accentColor || avatar?.color || globalColors.blue60}

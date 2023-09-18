@@ -90,7 +90,7 @@ export const Header = React.memo(function Header() {
                     paddingRight="2px"
                   >
                     <WalletAvatar
-                      address={address}
+                      addressOrName={address}
                       size={20}
                       emojiSize="14pt"
                     />
@@ -112,18 +112,17 @@ export const Header = React.memo(function Header() {
 
 export function AvatarSection() {
   const { address } = useAccount();
-  const { avatar, isFetched } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
+
   return (
     <Avatar.Wrapper size={60} color={avatar?.color}>
-      {isFetched ? (
-        <>
-          {avatar?.imageUrl ? (
-            <Avatar.Image size={60} imageUrl={avatar.imageUrl} />
-          ) : (
-            <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
-          )}
-        </>
-      ) : null}
+      <>
+        {avatar?.imageUrl ? (
+          <Avatar.Image size={60} imageUrl={avatar.imageUrl} />
+        ) : (
+          <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
+        )}
+      </>
       <Avatar.Skeleton />
     </Avatar.Wrapper>
   );
@@ -131,7 +130,7 @@ export function AvatarSection() {
 
 function ActionButtonsSection() {
   const { address } = useAccount();
-  const { avatar } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
