@@ -50,7 +50,7 @@ interface ContextMenuTriggerProps {
 export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
   const { children, accentColor, asChild, disabled } = props;
   const { address } = useAccount();
-  const { avatar } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
   const triggerRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -149,7 +149,7 @@ const ContextMenuContentBody = React.forwardRef<
   } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
-  const { avatar } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
   return (
     <AccentColorProvider
       color={accentColor || avatar?.color || globalColors.blue60}
