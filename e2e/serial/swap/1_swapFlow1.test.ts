@@ -602,117 +602,106 @@ it.skip('should be able to see small market warning', async () => {
   expect(swapWarning).toBeTruthy();
 });
 
-it.skipIf(browser === 'firefox')(
-  'should be able to filter assets to buy by network',
-  async () => {
-    // OP
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-buy-token-input-remove`,
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'token-to-buy-networks-trigger',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: `switch-network-item-${ChainId.optimism}`,
-      driver,
-    });
-    await typeOnTextInput({
-      id: 'token-to-buy-search-token-input',
-      driver,
-      text: 'op',
-    });
-    await delayTime('long');
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
-      driver,
-    });
-    // POLYGON
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'token-to-buy-networks-trigger',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: `switch-network-item-${ChainId.polygon}`,
-      driver,
-    });
-    await typeOnTextInput({
-      id: 'token-to-buy-search-token-input',
-      driver,
-      text: 'matic',
-    });
-    await delayTime('long');
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
-      driver,
-    });
-    // ARBITRUM
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.MATIC_POLYGON_ID}-token-to-buy-token-input-remove`,
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'token-to-buy-networks-trigger',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: `switch-network-item-${ChainId.arbitrum}`,
-      driver,
-    });
-    await typeOnTextInput({
-      id: 'token-to-buy-search-token-input',
-      driver,
-      text: 'gmx',
-    });
-    await delayTime('long');
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
-      driver,
-    });
-    // BNB
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'token-to-buy-networks-trigger',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: `switch-network-item-${ChainId.bsc}`,
-      driver,
-    });
-    await typeOnTextInput({
-      id: 'token-to-buy-search-token-input',
-      driver,
-      text: 'uni',
-    });
-    await delayTime('long');
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.UNI_BNB_ID}-verified-token-to-buy-row`,
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.UNI_BNB_ID}-token-to-buy-token-input-remove`,
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: `token-to-buy-search-token-input`,
-      driver,
-    });
-  },
-);
-
-it('should be able to see no route explainer', async () => {
+it('should be able to filter assets to buy by network', async () => {
+  // OP
   await findElementByTestIdAndClick({
-    id: `token-to-buy-search-token-input`,
+    id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
+  await findElementByTestIdAndClick({
+    id: 'token-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `switch-network-item-${ChainId.optimism}`,
+    driver,
+  });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: 'op',
+  });
+  await delayTime('long');
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
+    driver,
+  });
+  // POLYGON
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `switch-network-item-${ChainId.polygon}`,
+    driver,
+  });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: 'matic',
+  });
+  await delayTime('long');
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
+    driver,
+  });
+  // ARBITRUM
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.MATIC_POLYGON_ID}-token-to-buy-token-input-remove`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `switch-network-item-${ChainId.arbitrum}`,
+    driver,
+  });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: 'gmx',
+  });
+  await delayTime('long');
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
+    driver,
+  });
+  // BNB
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `switch-network-item-${ChainId.bsc}`,
+    driver,
+  });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: 'uni',
+  });
+  await delayTime('long');
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.UNI_BNB_ID}-verified-token-to-buy-row`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.UNI_BNB_ID}-token-to-buy-token-input-remove`,
+    driver,
+  });
+});
+
+it('should be able to see no route explainer', async () => {
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
     driver,
