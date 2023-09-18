@@ -681,10 +681,7 @@
     "disclaimer_tos": "Dengan melanjutkan, Anda setuju dengan Rainbow",
     "disclaimer_tos_link": "Syarat Penggunaan",
     "invalid_code": "Kode tidak valid",
-    "join": "Bergabung",
-    "invite_code_explanation": "Rainbow saat ini dalam tahap beta pribadi dan kode undangan diperlukan untuk mendapatkan akses. Jika Anda membutuhkan satu, Anda bisa",
-    "invite_code_explanation_link": "dapatkan disini",
-    "enter_code": "Masukkan kode beta Anda"
+    "join": "Bergabung"
   },
   "seed_backup_prompt": {
     "title": "Sebelum Anda memulai, cadangkan Frasa Pemulihan Rahasia Anda",

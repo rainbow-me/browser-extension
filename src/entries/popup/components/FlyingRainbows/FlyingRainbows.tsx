@@ -12,20 +12,9 @@ import { Box } from '~/design-system';
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import usePrevious from '../../hooks/usePrevious';
 
-import {
-  FlyingRainbowsScreen,
-  RAINBOW_POSITION,
-  RAINBOW_STYLE,
-  RAINBOW_TRANSITION,
-} from './utils';
+import { RAINBOW_POSITION, RAINBOW_STYLE, RAINBOW_TRANSITION } from './utils';
 
-export function FlyingRainbows({
-  children,
-  screen = 'welcome',
-}: {
-  children: React.ReactNode;
-  screen?: FlyingRainbowsScreen | '';
-}) {
+export function FlyingRainbows({ children }: { children: React.ReactNode }) {
   const isFullscreen = useIsFullScreen();
   const rainbowPixelControls = useAnimationControls();
   const rainbowWhiteControls = useAnimationControls();
@@ -35,19 +24,11 @@ export function FlyingRainbows({
   const prevScreen = usePrevious(screen);
 
   useEffect(() => {
-    if (prevScreen === 'invite_code' && screen === 'welcome') {
-      rainbowPixelControls.start(RAINBOW_POSITION.rainbowPixel.welcome);
-      rainbowWhiteControls.start(RAINBOW_POSITION.rainbowWhite.welcome);
-      rainbowOgControls.start(RAINBOW_POSITION.rainbowOg.welcome);
-      rainbowLightControls.start(RAINBOW_POSITION.rainbowLight.welcome);
-      rainbowNeonControls.start(RAINBOW_POSITION.rainbowNeon.welcome);
-    } else if (prevScreen === 'welcome' && screen === 'invite_code') {
-      rainbowPixelControls.start(RAINBOW_POSITION.rainbowPixel.invite_code);
-      rainbowWhiteControls.start(RAINBOW_POSITION.rainbowWhite.invite_code);
-      rainbowOgControls.start(RAINBOW_POSITION.rainbowOg.invite_code);
-      rainbowLightControls.start(RAINBOW_POSITION.rainbowLight.invite_code);
-      rainbowNeonControls.start(RAINBOW_POSITION.rainbowNeon.invite_code);
-    }
+    rainbowPixelControls.start(RAINBOW_POSITION.rainbowPixel.welcome);
+    rainbowWhiteControls.start(RAINBOW_POSITION.rainbowWhite.welcome);
+    rainbowOgControls.start(RAINBOW_POSITION.rainbowOg.welcome);
+    rainbowLightControls.start(RAINBOW_POSITION.rainbowLight.welcome);
+    rainbowNeonControls.start(RAINBOW_POSITION.rainbowNeon.welcome);
   }, [
     prevScreen,
     rainbowLightControls,
@@ -55,10 +36,7 @@ export function FlyingRainbows({
     rainbowOgControls,
     rainbowPixelControls,
     rainbowWhiteControls,
-    screen,
   ]);
-
-  const animationScreen = screen === '' ? 'welcome' : screen;
 
   return (
     <Box
@@ -90,7 +68,7 @@ export function FlyingRainbows({
           src={rainbowWhite}
           position="absolute"
           style={RAINBOW_STYLE.rainbowWhite}
-          initial={RAINBOW_POSITION.rainbowWhite[animationScreen]}
+          initial={RAINBOW_POSITION.rainbowWhite['welcome']}
           animate={rainbowWhiteControls}
           transition={RAINBOW_TRANSITION}
         />
@@ -99,7 +77,7 @@ export function FlyingRainbows({
           src={rainbowPixel}
           position="absolute"
           style={RAINBOW_STYLE.rainbowPixel}
-          initial={RAINBOW_POSITION.rainbowPixel[animationScreen]}
+          initial={RAINBOW_POSITION.rainbowPixel['welcome']}
           animate={rainbowPixelControls}
           transition={RAINBOW_TRANSITION}
         />
@@ -108,7 +86,7 @@ export function FlyingRainbows({
           src={rainbowOg}
           position="absolute"
           style={RAINBOW_STYLE.rainbowOg}
-          initial={RAINBOW_POSITION.rainbowOg[animationScreen]}
+          initial={RAINBOW_POSITION.rainbowOg['welcome']}
           animate={rainbowOgControls}
           transition={RAINBOW_TRANSITION}
         />
@@ -117,7 +95,7 @@ export function FlyingRainbows({
           src={rainbowLight}
           position="absolute"
           style={RAINBOW_STYLE.rainbowLight}
-          initial={RAINBOW_POSITION.rainbowLight[animationScreen]}
+          initial={RAINBOW_POSITION.rainbowLight['welcome']}
           animate={rainbowLightControls}
           transition={RAINBOW_TRANSITION}
         />
@@ -126,7 +104,7 @@ export function FlyingRainbows({
           src={rainbowNeon}
           position="absolute"
           style={RAINBOW_STYLE.rainbowNeon}
-          initial={RAINBOW_POSITION.rainbowNeon[animationScreen]}
+          initial={RAINBOW_POSITION.rainbowNeon['welcome']}
           animate={rainbowNeonControls}
           transition={RAINBOW_TRANSITION}
         />

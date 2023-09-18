@@ -681,10 +681,7 @@
     "disclaimer_tos": "Al continuar, aceptas los",
     "disclaimer_tos_link": "Términos de uso",
     "invalid_code": "Código inválido",
-    "join": "Unirse",
-    "invite_code_explanation": "Rainbow está actualmente en una etapa beta privada y se requiere un código de invitación para acceder. Si necesitas uno, puedes",
-    "invite_code_explanation_link": "obtener uno aquí",
-    "enter_code": "Ingresa tu código beta"
+    "join": "Unirse"
   },
   "seed_backup_prompt": {
     "title": "Antes de comenzar, haz una copia de seguridad de tu Frase de Recuperación Secreta",

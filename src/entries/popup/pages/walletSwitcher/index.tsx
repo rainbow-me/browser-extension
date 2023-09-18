@@ -421,6 +421,7 @@ export function WalletSwitcher() {
           text={i18n.t('wallet_switcher.quick_promo.text')}
           textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
           symbol="sparkle"
+          symbolColor="accent"
           promoType="wallet_switcher"
         />
       </Box>

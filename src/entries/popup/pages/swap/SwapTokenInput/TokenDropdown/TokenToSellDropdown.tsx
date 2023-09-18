@@ -45,7 +45,7 @@ export const TokenToSellDropdown = ({
         <Inline alignHorizontal="justify">
           <Inline space="4px" alignVertical="center">
             <Symbol
-              symbol="record.circle.fill"
+              symbol="circlebadge.2.fill"
               color="labelTertiary"
               weight="semibold"
               size={14}

@@ -25,4 +25,3 @@ export {
   usePendingTransactionsStore,
 } from './pendingTransactions';
 export { pendingRequestStore, usePendingRequestStore } from './requests';
-export { inviteCodeStore, useInviteCodeStore } from './inviteCode';

@@ -18,9 +18,3 @@ If your code relies on a feature flag for checking both paths of the feature fla
 Don't know what to write here? List all the steps you did to test the changes. This might help QA better understand what/how to test.
 
 -->
-
-## Final checklist
-
-- [ ] I have tested my changes in a LavaMoat bundle (`yarn build`).
-- [ ] I have tested my changes in Chrome & Brave.
-- [ ] If your changes are visual, did you check both the light and dark themes?
