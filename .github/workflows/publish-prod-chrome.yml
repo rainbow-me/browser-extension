@@ -2,9 +2,6 @@
 name: Publish to Chrome WebStore (Production)
 
 on:
-  # schedule:
-  # Runs every day at midnight
-  # - cron: '0 0 * * *'
   workflow_dispatch:
 jobs:
   build:
@@ -39,15 +36,17 @@ jobs:
       - name: Archive the build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: rainbowbx-v${{ env.release_version }}.zip
+          name: rainbowbx-chrome-v${{ env.release_version }}.zip
           path: build/
       - name: Zip it
         run: yarn zip
       - name: Submit to the chrome webstore
+        id: ChromeSubmission
         uses: PlasmoHQ/bpp@v3
         with:
           artifact: ./rainbowbx.zip
           keys: ${{ secrets.BPP_KEYS_PROD }}
+      
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
