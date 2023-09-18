@@ -29,8 +29,8 @@ jobs:
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Fetch the current version number
         run: echo "release_version=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
-      - name: Build the extension ready for the stores
-        run: yarn build:webpack
+      - name: Build the extension ready for the Firefox Add Ons Store
+        run: yarn firefox:build
       - name: Update the manifest
         run: yarn update-manifest prod
       - name: Update the manifest for firefox
@@ -43,13 +43,10 @@ jobs:
       - name: Zip it
         run: yarn firefox:zip
       - name: Submit to the firefox addons store
-        id: FirefoxSubmission
-        uses: PlasmoHQ/bpp@v3
+        uses: PlasmoHQ/bpp@v3.5.0
         with:
           artifact: ./rainbowbx.xpi
-          keys: ${{ secrets.BPP_KEYS_PROD }}
-
-
+          keys: ${{ secrets.BPP_KEYS_PROD_FIREFOX }}
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:

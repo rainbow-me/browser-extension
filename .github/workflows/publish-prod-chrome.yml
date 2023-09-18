@@ -29,7 +29,7 @@ jobs:
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Fetch the current version number
         run: echo "release_version=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
-      - name: Build the extension ready for the stores
+      - name: Build the extension ready for the Chrome Webstore
         run: yarn build:webpack
       - name: Update the manifest
         run: yarn update-manifest prod
@@ -41,8 +41,7 @@ jobs:
       - name: Zip it
         run: yarn zip
       - name: Submit to the chrome webstore
-        id: ChromeSubmission
-        uses: PlasmoHQ/bpp@v3
+        uses: PlasmoHQ/bpp@v3.5.0
         with:
           artifact: ./rainbowbx.zip
           keys: ${{ secrets.BPP_KEYS_PROD }}
