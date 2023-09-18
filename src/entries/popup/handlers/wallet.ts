@@ -28,7 +28,7 @@ import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
-import { logger } from '~/logger';
+import { RainbowError, logger } from '~/logger';
 
 import { PathOptions } from '../pages/hw/addByIndexSheet';
 
@@ -348,10 +348,11 @@ export const importAccountAtIndex = async (
         });
 
         if (!result.success) {
-          logger.info('window.TrezorConnect.getAddress failed', {
+          const e = new RainbowError('window.TrezorConnect.getAddress failed');
+          logger.error(e, {
             result: JSON.stringify(result, null, 2),
           });
-          throw new Error('window.TrezorConnect.getAddress failed');
+          throw e;
         }
         address = result.payload.address;
       }
@@ -390,10 +391,13 @@ export const connectTrezor = async () => {
     });
 
     if (!result.success) {
-      logger.info('window.TrezorConnect.ethereumGetPublicKey failed', {
+      const e = new RainbowError(
+        'window.TrezorConnect.ethereumGetPublicKey failed',
+      );
+      logger.error(e, {
         result: JSON.stringify(result, null, 2),
       });
-      throw new Error('window.TrezorConnect.ethereumGetPublicKey failed');
+      throw e;
     }
 
     const hdNode = HDNode.fromExtendedKey(result.payload.xpub);
