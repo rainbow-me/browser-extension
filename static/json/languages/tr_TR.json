@@ -681,10 +681,7 @@
     "disclaimer_tos": "Devam ederek, Rainbow'un",
     "disclaimer_tos_link": "Kullanım Koşulları'na",
     "invalid_code": "uygun olduğunuzu kabul edersiniz",
-    "join": "Geçersiz kod",
-    "invite_code_explanation": "Katıl",
-    "invite_code_explanation_link": "Rainbow şu anda özel bir beta aşamasında ve erişim için davet koduna ihtiyaç duyulmaktadır. Bir tane almanız gerekiyorsa,",
-    "enter_code": "buradan alabilirsiniz"
+    "join": "Geçersiz kod"
   },
   "seed_backup_prompt": {
     "title": "Beta kodunuzu girin",
