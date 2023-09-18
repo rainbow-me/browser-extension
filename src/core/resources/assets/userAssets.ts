@@ -248,10 +248,9 @@ export async function parseUserAssets({
   for (const { asset, quantity, small_balance } of assets) {
     if (!filterAsset(asset) && greaterThan(quantity, 0)) {
       const parsedAsset = parseUserAsset({
-        address: asset?.asset_code,
         asset,
         currency,
-        quantity,
+        balance: quantity,
         smallBalance: small_balance,
       });
       parsedAssetsDict[parsedAsset?.chainId][parsedAsset.uniqueId] =

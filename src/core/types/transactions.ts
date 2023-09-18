@@ -1,185 +1,197 @@
-import { BigNumberish } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { Address } from 'wagmi';
 
-import { ParsedAsset, ZerionAsset } from './assets';
+import {
+  AssetApiResponse,
+  ParsedAsset,
+  ParsedUserAsset,
+  ProtocolType,
+} from './assets';
 import { ChainId, ChainName } from './chains';
+import { TransactionGasParams, TransactionLegacyGasParams } from './gas';
 
-export interface RainbowTransaction {
-  address?: Address;
-  asset?: ParsedAsset | null;
-  balance?: {
-    amount: string;
-    display: string;
-  };
-  data?: string; // for pending tx
-  description?: string;
-  direction?: string;
-  from?: Address;
-  gasLimit?: BigNumberish;
-  gasPrice?: BigNumberish;
-  maxFeePerGas?: BigNumberish;
-  maxPriorityFeePerGas?: BigNumberish;
-  hash?: string;
-  minedAt?: number;
-  name?: string;
-  native?: {
-    amount: string;
-    display: string;
-  };
+export type TransactionStatus = 'pending' | 'confirmed' | 'failed';
+
+export type TxHash = `0x${string}`;
+
+type BaseTransaction = {
+  hash: TxHash;
+  nonce: number; // -2 when not from the wallet user
   chainId: ChainId;
-  nonce?: number;
-  pending?: boolean;
-  protocol?: ProtocolType;
-  status?: TransactionStatus;
-  symbol?: string;
-  title?: string;
-  to?: Address;
-  txTo?: string;
-  type?: TransactionType;
-  value?: BigNumberish; // for pending tx
-  flashbots?: boolean;
-}
-
-export interface ZerionTransaction {
-  address_from: string;
-  address_to: string;
-  block_number: number;
-  changes: ZerionTransactionChange[];
-  contract: string;
-  direction: TransactionDirection;
-  fee: ZerionTransactionFee;
-  hash: string;
-  id: string;
-  meta: ZerionTransactionMeta;
-  mined_at: number;
-  network?: ChainName;
-  nonce: number;
-  protocol: ProtocolType;
-  status: ZerionTransactionStatus;
-  type: TransactionType;
-}
-
-interface ZerionTransactionFee {
-  price: number;
-  value: number;
-}
-
-interface ZerionTransactionMeta {
-  action?: string;
-  application?: string;
-  asset?: ZerionAsset;
-}
-
-export interface ZerionTransactionChange {
-  address_from: string;
-  address_to: string;
-  asset: ZerionAsset;
-  price?: number;
-  value?: number;
-  direction: TransactionDirection;
-}
-
-export enum ZerionTransactionStatus {
-  confirmed = 'confirmed',
-  failed = 'failed',
-  pending = 'pending',
-}
-
-export interface NewTransaction {
-  amount?: string;
-  asset?: ParsedAsset | null;
+  from: Address;
+  to?: Address; // it may not have a to if it's a contract deployment (covalent)
   data?: string;
-  from?: Address;
-  gasLimit?: BigNumberish;
-  gasPrice?: BigNumberish;
-  maxFeePerGas?: BigNumberish;
-  maxPriorityFeePerGas?: BigNumberish;
-  hash?: string;
-  chainId?: ChainId;
-  nonce?: number;
-  protocol?: ProtocolType;
-  status?: TransactionStatus;
-  to?: Address;
-  type?: TransactionType;
-  value?: BigNumberish;
-  txTo?: Address;
-  flashbots?: boolean;
-}
 
-export enum ProtocolType {
-  aave = 'aave',
-  bancor = 'bancor',
-  compound = 'compound',
-  curve = 'curve',
-  disperse_app = 'disperse_app',
-  dsr = 'dsr',
-  dydx = 'dydx',
-  fulcrum = 'fulcrum',
-  iearn = 'iearn',
-  kyber = 'kyber',
-  maker = 'maker',
-  maker_dss = 'maker_dss',
-  one_inch = 'one_inch',
-  pool_together = 'pool_together',
-  ray = 'ray',
-  rainbow = 'rainbow',
-  set = 'set',
-  socket = 'socket',
-  synthetix = 'synthetix',
-  uniswap = 'uniswap',
-  zrx_stacking = 'zrx_stacking',
-  zrx_staking = 'zrx_staking',
-}
-export enum TransactionStatus {
-  approved = 'approved',
-  approving = 'approving',
-  bridging = 'bridging',
-  bridged = 'bridged',
-  cancelled = 'cancelled',
-  cancelling = 'cancelling',
-  contract_interaction = 'contract interaction',
-  confirmed = 'confirmed',
-  deposited = 'deposited',
-  depositing = 'depositing',
-  dropped = 'dropped',
-  failed = 'failed',
-  purchased = 'purchased',
-  purchasing = 'purchasing',
-  received = 'received',
-  receiving = 'receiving',
-  self = 'self',
-  sending = 'sending',
-  sent = 'sent',
-  speeding_up = 'speeding up',
-  swapped = 'swapped',
-  swapping = 'swapping',
-  unknown = 'unknown status',
-  withdrawing = 'withdrawing',
-  withdrew = 'withdrew',
-}
-export enum TransactionType {
-  authorize = 'authorize',
-  borrow = 'borrow',
-  cancel = 'cancel',
-  contract_interaction = 'contract interaction',
-  deployment = 'deployment',
-  deposit = 'deposit',
-  dropped = 'dropped',
-  execution = 'execution',
-  purchase = 'purchase', // Rainbow-specific type
-  receive = 'receive',
-  repay = 'repay',
-  send = 'send',
-  trade = 'trade',
-  withdraw = 'withdraw',
-}
-export enum TransactionDirection {
-  in = 'in',
-  out = 'out',
-  self = 'self',
-}
+  changes?: Array<
+    | {
+        asset: ParsedUserAsset;
+        direction: TransactionDirection;
+        address_from?: Address;
+        address_to?: Address;
+        value?: number | string;
+        price?: number | string;
+      }
+    | undefined
+  >;
+  direction?: TransactionDirection;
+  flashbots?: boolean;
+
+  value?: string; // network asset amount sent with the tx (like eth or matic)
+  fee?: string;
+  native?: {
+    // fee and value but in the user prefered currency terms (USD, EUR, etc)
+    value?: string;
+    fee?: string;
+  };
+
+  type: TransactionType;
+  protocol?: ProtocolType;
+  title: string;
+  description?: string;
+
+  asset?: ParsedAsset; // this is the relevant tx asset, like the asset being sold/approved/withdrawn etc
+  approvalAmount?: 'UNLIMITED' | (string & object);
+  contract?: {
+    name: string;
+    iconUrl?: string;
+  };
+
+  feeType?: 'legacy' | 'eip-1559';
+  gasPrice?: string;
+  gasLimit?: string;
+  baseFee?: string;
+} & Partial<TransactionGasParams & TransactionLegacyGasParams>;
+
+export type PendingTransaction = BaseTransaction & { status: 'pending' };
+export type MinedTransaction = BaseTransaction & {
+  status: 'confirmed' | 'failed';
+  blockNumber: number;
+  minedAt: number;
+  confirmations: number;
+  gasUsed: string;
+};
+
+export type RainbowTransaction = PendingTransaction | MinedTransaction;
+
+export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
+  changes?: Array<
+    | {
+        direction: TransactionDirection;
+        asset: ParsedAsset; // becomes a user asset when the transaction is parsed
+        value?: number | string;
+        price?: number | string;
+      }
+    | undefined
+  >;
+};
+
+const transactionTypesWithChanges = [
+  'sale',
+  'bridge',
+  'airdrop',
+  'wrap',
+  'unwrap',
+  'bid',
+  'burn',
+  'send',
+  'receive',
+  'withdraw',
+  'deposit',
+  'mint',
+  'swap',
+  'borrow',
+  'claim',
+  'repay',
+  'stake',
+  'unstake',
+  'purchase',
+] as const;
+
+export const transactionTypeShouldHaveChanges = (
+  type: TransactionType,
+): type is TransactionWithChangesType =>
+  transactionTypesWithChanges.includes(type);
+
+type TransactionWithChangesType = (typeof transactionTypesWithChanges)[number];
+type TransactionWithoutChangesType =
+  | 'cancel'
+  | 'contract_interaction'
+  | 'deployment'
+  | 'approve'
+  | 'revoke'
+  | 'speed_up';
+
+export type TransactionType =
+  | TransactionWithChangesType
+  | TransactionWithoutChangesType;
+
+export type TransactionDirection = 'in' | 'out' | 'self';
 
 export interface ExecuteRapResponse extends TransactionResponse {
   errorMessage?: string;
 }
+
+export type TransactionApiResponse = {
+  status: TransactionStatus;
+  id: TxHash;
+  hash: TxHash;
+  network: ChainName;
+  protocol?: ProtocolType;
+  direction?: TransactionDirection;
+  address_from?: Address;
+  address_to?: Address;
+  // nonce will ALWAYS be -2 when the transaction is *not* from the wallet user
+  nonce: number;
+  changes: Array<
+    | {
+        asset: AssetApiResponse;
+        value: number | null;
+        direction: TransactionDirection;
+        address_from: Address;
+        address_to: Address;
+        price: number;
+      }
+    | undefined
+  >;
+  fee: {
+    value: number;
+    price: number;
+
+    // Fee Details are only available on the tx by hash endpoint
+    // (won't be available on the consolidated txs list)
+    details?: {
+      type: 0 | 2;
+      type_label: 'legacy' | 'eip-1559';
+      gas_price: number;
+      gas_limit: number;
+      gas_used: number;
+      max_fee: number;
+      max_priority_fee: number;
+      base_fee: number;
+      max_base_fee: number;
+      rollup_fee_details: {
+        l1_fee: number;
+        l1_fee_scalar: number;
+        l1_gas_price: number;
+        l1_gas_used: number;
+        l2_fee: number;
+      };
+    };
+  };
+  block_confirmations?: number; // also only available on the tx by hash endpoint
+  meta: {
+    contract_name?: string;
+    contract_icon_url?: string;
+    type?: TransactionType;
+    action?: string;
+    asset?: AssetApiResponse;
+    quantity?: 'UNLIMITED' | string;
+  };
+  block_number?: number;
+  mined_at?: number;
+};
+
+export type PaginatedTransactionsApiResponse = Omit<
+  TransactionApiResponse,
+  'fee'
+> & { fee: Omit<TransactionApiResponse['fee'], 'details'> };

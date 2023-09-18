@@ -9,6 +9,7 @@ import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
+import { formatDate } from '~/core/utils/formatDate';
 import { getSettingWallets } from '~/core/utils/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -29,7 +30,6 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
-import { formatDate } from '../../../home/TokenDetails/PriceChart';
 import { CreateWalletPrompt } from '../../../walletSwitcher/createWalletPrompt';
 import { RemoveWalletPrompt } from '../../../walletSwitcher/removeWalletPrompt';
 import { RenameWalletPrompt } from '../../../walletSwitcher/renameWalletPrompt';
@@ -178,7 +178,7 @@ export function WalletDetails() {
         setCurrentAddress(visibleWallets[nextIndex].address);
       }
       // if more accounts in this wallet
-      const otherAccountSameWallet = walletBeforeDeletion.accounts.find(
+      const otherAccountSameWallet = walletBeforeDeletion?.accounts.find(
         (a) => a !== address,
       );
       if (otherAccountSameWallet) {

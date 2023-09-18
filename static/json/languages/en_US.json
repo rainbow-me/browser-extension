@@ -66,6 +66,7 @@
   "settings": {
     "title": "Settings",
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
+    "sounds": "Sounds",
     "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
     "guides_and_support": "Guides & Support",
@@ -194,10 +195,128 @@
     }
   },
   "transactions": {
-    "contract_interaction": "Contract Interaction",
     "savings": "Savings",
-    "deposited": "Deposited",
-    "withdrew": "Withdrew"
+    "cancelled": "Transaction Cancelled",
+    "burn": {
+      "pending": "Burning",
+      "confirmed": "Burnned",
+      "failed": "Burn Failed"
+    },
+    "cancel": {
+      "pending": "Canceling",
+      "confirmed": "Cancelled",
+      "failed": "Cancel Failed"
+    },
+    "send": {
+      "pending": "Sending",
+      "confirmed": "Sent",
+      "failed": "Send Failed"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "Received",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "Withdrawing",
+      "confirmed": "Withdrew",
+      "failed": "Withdraw Failed"
+    },
+    "deposit": {
+      "pending": "Depositing",
+      "confirmed": "Deposited",
+      "failed": "Deposit Failed"
+    },
+    "mint": {
+      "pending": "Minting",
+      "confirmed": "Minted",
+      "failed": "Mint Failed"
+    },
+    "approve": {
+      "pending": "Approving",
+      "confirmed": "Approved",
+      "failed": "Approve Failed"
+    },
+    "contract_interaction": {
+      "pending": "Interaction Pending",
+      "confirmed": "Interacted",
+      "failed": "Interaction Failed"
+    },
+    "swap": {
+      "pending": "Swapping",
+      "confirmed": "Swapped",
+      "failed": "Swap Failed"
+    },
+    "borrow": {
+      "pending": "Borrowing",
+      "confirmed": "Borrowed",
+      "failed": "Borrow Failed"
+    },
+    "claim": {
+      "pending": "Claiming",
+      "confirmed": "Claimed",
+      "failed": "Claim Failed"
+    },
+    "deployment": {
+      "pending": "Deploying",
+      "confirmed": "Deployed",
+      "failed": "Deploy Failed"
+    },
+    "repay": {
+      "pending": "Repaying",
+      "confirmed": "Repayed",
+      "failed": "Repay Failed"
+    },
+    "stake": {
+      "pending": "Staking",
+      "confirmed": "Staked",
+      "failed": "Stake Failed"
+    },
+    "unstake": {
+      "pending": "Unstaking",
+      "confirmed": "Unstaked",
+      "failed": "Unstake Failed"
+    },
+    "purchase": {
+      "pending": "Purchasing",
+      "confirmed": "Purchased",
+      "failed": "Purchase Failed"
+    },
+    "revoke": {
+      "pending": "Revoking",
+      "confirmed": "Revoked",
+      "failed": "Revoke Failed"
+    },
+    "sale": {
+      "pending": "Selling",
+      "confirmed": "Sold",
+      "failed": "Sale Failed"
+    },
+    "bridge": {
+      "pending": "Bridging",
+      "confirmed": "Bridged",
+      "failed": "Bridge Failed"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "Airdropped",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "Wrapping",
+      "confirmed": "Wrapped",
+      "failed": "Wrap Failed"
+    },
+    "unwrap": {
+      "pending": "Unwrapping",
+      "confirmed": "Unwrapped",
+      "failed": "Unwrap Failed"
+    },
+    "bid": {
+      "pending": "Bidding",
+      "confirmed": "Bid",
+      "failed": "Bid Failed"
+    }
   },
   "command_k": {
     "action_labels": {
@@ -872,11 +991,44 @@
     "this_month": "This Month",
     "empty_header": "No activity yet",
     "empty_description": "Once you start using your wallet, you will see your transactions here.",
-    "loading_more": "Loading more..."
+    "loading_more": "Loading more...",
+    "no_value": "No value"
+  },
+  "activity_details": {
+    "you": "You",
+    "from": "From",
+    "to": "To",
+    "confirmed_at": "Confirmed at",
+    "confirmations": "Confirmations",
+    "token": "Token",
+    "block": "Block",
+    "value": "Value",
+    "network": "Network",
+    "fee": "Network Fee",
+    "base_fee": "Base Fee",
+    "max_base_fee": "Max Base Fee",
+    "gas_price": "Gas Price",
+    "gas_limit": "Gas Limit",
+    "gas_used": "Gas Used",
+    "max_priority_fee": "Miner Tip",
+    "nonce": "Nonce",
+    "allowance": "Allowance",
+    "unlimited_allowance": "Unlimited %{symbol}",
+    "app": "App",
+    "copy_hash": "Copy Tx Hash",
+    "hash_copied": "Hash Copied",
+    "copy_explorer_url": "Copy Link",
+    "explorer_copied": "Link Copied",
+    "exchange_rate": "Exchange",
+    "collection": "Collection",
+    "token_contract": "Token Contract",
+    "token_standard": "Token Standard"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",
-    "coinbase_description": "Buy or transfer from Coinbase",
+    "coinbase_description": "Transfer your crypto from Coinbase for free",
+    "buy_title": "Buy crypto to fund your wallet",
+    "buy_description": "Choose from trusted providers & payment options",
     "send_from_wallet": "Send from another wallet",
     "send_description_1": "Press",
     "send_description_2": "to copy your address",
@@ -927,12 +1079,14 @@
       "market_cap": "Market Cap",
       "market_cap_explainer": {
         "title": "Market Cap",
-        "description": "A market cap is the total market value of a token's circulating supply. It is calculated with an average exchange price."
+        "description": "A market cap is the total market value of a token's circulating supply. It is calculated with an average exchange price.",
+        "action": "Got it"
       },
       "fully_diluted": "Fully Diluted",
       "fully_diluted_explainer": {
         "title": "Fully Diluted Market Cap",
-        "description": "The maximum possible market cap of a token if the total supply was available in circulation."
+        "description": "The maximum possible market cap of a token if the total supply was available in circulation.",
+        "action": "Got it"
       },
       "supply": "Supply",
       "max_total_supply": "Max Total Supply",
@@ -1091,7 +1245,7 @@
     "done": "Done",
     "add_wallet": "Add wallet",
     "add_by_index_title": "Add a wallet by its index",
-    "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger.",
+    "add_by_index_description": "Select the derivation path and enter the index of the wallet you would like to add.",
     "waiting_for_trezor_connect": "Waiting for Trezor Connect",
     "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
     "trezor_success": "Success!",
@@ -1114,5 +1268,18 @@
       "highlighted": "Contact Rainbow",
       "after": " to request more."
     }
+  },
+  "approvals": {
+    "unlimited": "Unlimited",
+    "no_allowance": "No Allowance"
+  },
+  "buy": {
+    "title": "Buy",
+    "fees_title": "Fees",
+    "instant_title": "Instant",
+    "method_title": "Method",
+    "methods_title": "Method",
+    "network_title": "Network",
+    "networks_title": "Networks"
   }
 }

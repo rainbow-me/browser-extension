@@ -1,6 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import { memo, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -8,6 +9,8 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsFilteringSmallBalancesList } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
+import { fetchProviderWidgetUrl } from '~/core/resources/f2c';
+import { FiatProviderName } from '~/core/resources/f2c/types';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -28,7 +31,9 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
+import { BuyIcon } from '../../components/BuyIcon/BuyIcon';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
+import { Link } from '../../components/Link/Link';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
@@ -97,7 +102,7 @@ export function Tokens() {
   }
 
   if (!assets?.length) {
-    return <TokensEmptyState />;
+    return <TokensEmptyState depositAddress={currentAddress} />;
   }
 
   return (
@@ -138,7 +143,9 @@ export function Tokens() {
             const { key, index, start, size } = virtualItem;
             const token = assets[index];
             const openDetails = () =>
-              navigate(ROUTES.TOKEN_DETAILS(token.uniqueId));
+              navigate(ROUTES.TOKEN_DETAILS(token.uniqueId), {
+                state: { skipTransitionOnRoute: ROUTES.HOME },
+              });
             return (
               <Box
                 key={key}
@@ -257,15 +264,27 @@ export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
   return <CoinRow asset={asset} topRow={topRow} bottomRow={bottomRow} />;
 });
 
-function TokensEmptyState() {
+type EmptyStateProps = {
+  depositAddress: Address;
+};
+
+function TokensEmptyState({ depositAddress }: EmptyStateProps) {
+  const handleCoinbase = useCallback(async () => {
+    const { data } = await fetchProviderWidgetUrl({
+      provider: FiatProviderName.Coinbase,
+      depositAddress,
+      defaultExperience: 'send',
+    });
+    window.open(data.url, '_blank');
+  }, [depositAddress]);
+
   return (
     <Inset horizontal="20px">
       <Box paddingBottom="8px">
-        <a
-          style={{ cursor: 'default' }}
-          href="https://www.coinbase.com/"
-          target="_blank"
-          rel="noreferrer"
+        <Link
+          tabIndex={-1}
+          to={ROUTES.BUY}
+          state={{ from: ROUTES.HOME, to: ROUTES.BUY }}
         >
           <Box
             background="surfaceSecondaryElevated"
@@ -278,9 +297,9 @@ function TokensEmptyState() {
                 <Inline alignVertical="center" alignHorizontal="justify">
                   <Box>
                     <Inline alignVertical="center" space="8px">
-                      <CoinbaseIcon />
+                      <BuyIcon />
                       <Text as="p" size="14pt" color="label" weight="semibold">
-                        {i18n.t('tokens_tab.coinbase_title')}
+                        {i18n.t('tokens_tab.buy_title')}
                       </Text>
                     </Inline>
                   </Box>
@@ -293,11 +312,45 @@ function TokensEmptyState() {
                 </Inline>
               </Box>
               <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-                {i18n.t('tokens_tab.coinbase_description')}
+                {i18n.t('tokens_tab.buy_description')}
               </Text>
             </Inset>
           </Box>
-        </a>
+        </Link>
+      </Box>
+
+      <Box paddingBottom="8px">
+        <Box
+          background="surfaceSecondaryElevated"
+          borderRadius="16px"
+          borderColor="separatorTertiary"
+          boxShadow="12px"
+          onClick={handleCoinbase}
+        >
+          <Inset horizontal="16px" vertical="16px">
+            <Box paddingBottom="12px">
+              <Inline alignVertical="center" alignHorizontal="justify">
+                <Box>
+                  <Inline alignVertical="center" space="8px">
+                    <CoinbaseIcon />
+                    <Text as="p" size="14pt" color="label" weight="semibold">
+                      {i18n.t('tokens_tab.coinbase_title')}
+                    </Text>
+                  </Inline>
+                </Box>
+                <Symbol
+                  size={12}
+                  symbol="arrow.up.forward.circle"
+                  weight="semibold"
+                  color="labelTertiary"
+                />
+              </Inline>
+            </Box>
+            <Text as="p" size="11pt" color="labelSecondary" weight="bold">
+              {i18n.t('tokens_tab.coinbase_description')}
+            </Text>
+          </Inset>
+        </Box>
       </Box>
 
       <Box
@@ -329,6 +382,8 @@ function TokensEmptyState() {
                 verticalAlign: 'middle',
                 textAlign: 'center',
                 lineHeight: '16px',
+                marginLeft: '3px',
+                marginRight: '3px',
               }}
             >
               C

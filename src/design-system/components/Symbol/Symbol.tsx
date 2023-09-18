@@ -31,7 +31,7 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
     },
     ref,
   ) {
-    const symbol = symbols[name as keyof typeof symbols][weight];
+    const symbol = symbols[name][weight];
 
     return (
       <Box

@@ -11,12 +11,17 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import {
-  createCurrencyFormatter,
-  formatCurrency,
-} from '~/core/utils/formatNumber';
+import { formatCurrency } from '~/core/utils/formatNumber';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
-import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Button,
+  Inline,
+  Separator,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import {
   Accordion,
   AccordionContent,
@@ -29,7 +34,35 @@ import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 
-const InfoRow = ({
+export const CopyableValue = ({
+  value,
+  title,
+  children,
+}: {
+  value: string;
+  title: string;
+  children: string;
+}) => (
+  <Box
+    onClick={() => {
+      navigator.clipboard.writeText(value);
+      triggerToast({ title, description: children });
+    }}
+    display="flex"
+    alignItems="center"
+    gap="4px"
+  >
+    {children}{' '}
+    <Symbol
+      size={14}
+      weight="semibold"
+      symbol="doc.on.doc"
+      color="labelQuaternary"
+    />
+  </Box>
+);
+
+export const InfoRow = ({
   symbol,
   label,
   value,
@@ -38,33 +71,37 @@ const InfoRow = ({
   label: ReactNode;
   value: ReactNode;
 }) => (
-  <Box display="flex" justifyContent="space-between">
-    <Inline alignVertical="center" space="4px">
-      <Symbol size={15} symbol={symbol} weight="medium" color="labelTertiary" />
-      <Text color="labelTertiary" size="14pt" weight="semibold">
+  <Box
+    display="flex"
+    alignItems="center"
+    justifyContent="space-between"
+    gap="4px"
+  >
+    <Inline alignVertical="center" space="12px" wrap={false}>
+      <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
+      <Text color="labelTertiary" size="12pt" weight="semibold">
         {label}
       </Text>
     </Inline>
-    <Inline alignVertical="center">
-      <Text
-        color="labelSecondary"
-        size="12pt"
-        weight="semibold"
-        cursor="text"
-        userSelect="all"
-      >
-        {value}
-      </Text>
-    </Inline>
+    <TextOverflow
+      color="labelSecondary"
+      size="12pt"
+      weight="semibold"
+      cursor="text"
+      userSelect="all"
+    >
+      {value}
+    </TextOverflow>
   </Box>
 );
 
 const parseTokenInfo = (token: AboutTokenQuery['token']) => {
-  const { format } = createCurrencyFormatter({
-    notation: 'compact',
-    maximumSignificantDigits: 4,
-  });
   if (!token) return token;
+  const format = (n?: number | string | null) =>
+    formatCurrency(n || 0, {
+      notation: 'compact',
+      maximumSignificantDigits: 4,
+    });
   return {
     allTime: {
       high: format(token.allTime.highValue),
@@ -105,10 +142,10 @@ function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
     false,
   );
   return (
-    <InfoRow
-      symbol="chart.pie"
-      label={
-        <>
+    <>
+      <InfoRow
+        symbol="chart.pie"
+        label={
           <Box
             display="flex"
             alignItems="center"
@@ -123,26 +160,25 @@ function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
               weight="semibold"
             />
           </Box>
-          <ExplainerSheet
-            show={isMarketCapExplainerOpen}
-            title={i18n.t('token_details.about.market_cap_explainer.title')}
-            description={[
-              i18n.t('token_details.about.market_cap_explainer.description'),
-            ]}
-            actionButton={{
-              label: 'Got it',
-              variant: 'tinted',
-              labelColor: 'blue',
-              action: toggleMarketCapExplainer,
-            }}
-            header={{
-              emoji: '📈',
-            }}
-          />
-        </>
-      }
-      value={marketCap}
-    />
+        }
+        value={marketCap}
+      />
+      <ExplainerSheet
+        show={isMarketCapExplainerOpen}
+        title={i18n.t('token_details.about.market_cap_explainer.title')}
+        description={[
+          i18n.t('token_details.about.market_cap_explainer.description'),
+        ]}
+        onClickOutside={toggleMarketCapExplainer}
+        actionButton={{
+          label: i18n.t('token_details.about.market_cap_explainer.action'),
+          variant: 'tinted',
+          labelColor: 'blue',
+          action: toggleMarketCapExplainer,
+        }}
+        header={{ emoji: '📈' }}
+      />
+    </>
   );
 }
 
@@ -153,10 +189,10 @@ function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
   );
 
   return (
-    <InfoRow
-      symbol="chart.pie"
-      label={
-        <>
+    <>
+      <InfoRow
+        symbol="chart.pie"
+        label={
           <Box
             display="flex"
             alignItems="center"
@@ -171,26 +207,25 @@ function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
               weight="semibold"
             />
           </Box>
-          <ExplainerSheet
-            show={isFullyDilutedExplainerOpen}
-            title={i18n.t('token_details.about.fully_diluted_explainer.title')}
-            description={[
-              i18n.t('token_details.about.fully_diluted_explainer.description'),
-            ]}
-            actionButton={{
-              label: 'Got it',
-              variant: 'tinted',
-              labelColor: 'blue',
-              action: toggleFullyDilutedExplainer,
-            }}
-            header={{
-              emoji: '📊',
-            }}
-          />
-        </>
-      }
-      value={fullyDiluted}
-    />
+        }
+        value={fullyDiluted}
+      />
+      <ExplainerSheet
+        show={isFullyDilutedExplainerOpen}
+        title={i18n.t('token_details.about.fully_diluted_explainer.title')}
+        description={[
+          i18n.t('token_details.about.fully_diluted_explainer.description'),
+        ]}
+        onClickOutside={toggleFullyDilutedExplainer}
+        actionButton={{
+          label: i18n.t('token_details.about.fully_diluted_explainer.action'),
+          variant: 'tinted',
+          labelColor: 'blue',
+          action: toggleFullyDilutedExplainer,
+        }}
+        header={{ emoji: '📊' }}
+      />
+    </>
   );
 }
 
@@ -304,25 +339,12 @@ export function About({ token }: { token: ParsedUserAsset }) {
                   symbol="doc.plaintext"
                   label={i18n.t(`token_details.about.token_contract`)}
                   value={
-                    <Box
-                      onClick={() => {
-                        navigator.clipboard.writeText(token.address);
-                        triggerToast({
-                          title: i18n.t('wallet_header.copy_toast'),
-                          description: truncateAddress(token.address),
-                        });
-                      }}
+                    <CopyableValue
+                      title={i18n.t('wallet_header.copy_toast')}
+                      value={token.address}
                     >
-                      <Inline alignVertical="center" space="4px">
-                        {truncateAddress(token.address)}{' '}
-                        <Symbol
-                          size={14}
-                          weight="semibold"
-                          symbol="doc.on.doc"
-                          color="labelQuaternary"
-                        />
-                      </Inline>
-                    </Box>
+                      {truncateAddress(token.address)}
+                    </CopyableValue>
                   }
                 />
               </>

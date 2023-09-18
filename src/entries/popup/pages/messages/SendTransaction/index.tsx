@@ -9,22 +9,18 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import {
-  TransactionGasParams,
-  TransactionLegacyGasParams,
-} from '~/core/types/gas';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
 import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
-import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 
@@ -52,10 +48,10 @@ export function SendTransaction({
 }: ApproveRequestProps) {
   const [waitingForDevice, setWaitingForDevice] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { appHost, appName } = useAppMetadata({
+  const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
-  const { activeSession } = useAppSession({ host: appHost });
+  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { selectedGas } = useGasStore();
   const selectedWallet = activeSession?.address || '';
   const { connectedToHardhat } = useConnectedToHardhatStore();
@@ -85,28 +81,20 @@ export function SendTransaction({
       const result = await wallet.sendTransaction(txData);
       if (result) {
         const transaction = {
-          amount: formatEther(result?.value || ''),
-          asset,
+          asset: asset || undefined,
+          value: formatEther(result?.value || ''),
           data: result.data,
-          value: result.value,
           from: txData.from,
           to: txData.to,
-          hash: result.hash,
+          hash: result.hash as TxHash,
           chainId: txData.chainId,
           nonce: result.nonce,
-          status: TransactionStatus.sending,
-          type: TransactionType.send,
-          gasPrice: (
-            selectedGas.transactionGasParams as TransactionLegacyGasParams
-          )?.gasPrice,
-          maxFeePerGas: (
-            selectedGas.transactionGasParams as TransactionGasParams
-          )?.maxFeePerGas,
-          maxPriorityFeePerGas: (
-            selectedGas.transactionGasParams as TransactionGasParams
-          )?.maxPriorityFeePerGas,
-        };
-        await addNewTransaction({
+          status: 'pending',
+          type: 'send',
+          ...selectedGas.transactionGasParams,
+        } satisfies NewTransaction;
+
+        addNewTransaction({
           address: txData.from as Address,
           chainId: txData.chainId as ChainId,
           transaction,
@@ -116,8 +104,8 @@ export function SendTransaction({
 
         analytics.track(event.dappPromptSendTransactionApproved, {
           chainId: txData.chainId,
-          dappURL: appHost,
-          dappName: appName,
+          dappURL: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
         });
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -135,8 +123,8 @@ export function SendTransaction({
     asset,
     selectedGas.transactionGasParams,
     approveRequest,
-    appHost,
-    appName,
+    dappMetadata?.appHost,
+    dappMetadata?.appName,
   ]);
 
   const onRejectRequest = useCallback(() => {
@@ -144,11 +132,16 @@ export function SendTransaction({
     if (activeSession) {
       analytics.track(event.dappPromptSendTransactionRejected, {
         chainId: activeSession?.chainId,
-        dappURL: appHost,
-        dappName: appName,
+        dappURL: dappMetadata?.appHost || '',
+        dappName: dappMetadata?.appName,
       });
     }
-  }, [rejectRequest, activeSession, appHost, appName]);
+  }, [
+    rejectRequest,
+    activeSession,
+    dappMetadata?.appHost,
+    dappMetadata?.appName,
+  ]);
 
   const isWatchingWallet = useMemo(() => {
     const watchedAddresses = watchedWallets?.map(({ address }) => address);
@@ -189,7 +182,7 @@ export function SendTransaction({
         <SendTransactionActions
           chainId={activeSession?.chainId || ChainId.mainnet}
           waitingForDevice={waitingForDevice}
-          appHost={appHost}
+          appHost={dappMetadata?.appHost || ''}
           selectedWallet={selectedWallet || ('' as Address)}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}

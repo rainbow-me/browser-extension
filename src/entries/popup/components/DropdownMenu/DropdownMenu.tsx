@@ -13,6 +13,7 @@ import {
   Inline,
   Symbol,
   Text,
+  TextOverflow,
   ThemeProvider,
 } from '~/design-system';
 import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
@@ -135,7 +136,7 @@ export const DropdownMenuContentBody = React.forwardRef<
           tabIndex={-1}
           onInteractOutside={onInteractOutside}
           align={align}
-          style={{ width: '204px' }}
+          style={{ minWidth: '204px' }}
           alignItems="center"
           justifyContent="center"
           display="flex"
@@ -145,13 +146,13 @@ export const DropdownMenuContentBody = React.forwardRef<
         >
           <Box
             as={motion.div}
-            initial={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
+            initial={{ scale: 1, minWidth: '204px', opacity: animate ? 0 : 1 }}
             animate={{
               scale: scale ?? 1,
-              width: '204px',
+              minWidth: '204px',
               opacity: 1,
             }}
-            exit={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
+            exit={{ scale: 1, minWidth: '204px', opacity: animate ? 0 : 1 }}
             transition={{ duration: 0.1 }}
             style={{
               boxShadow: boxShadow ?? '0px 10px 30px rgba(0, 0, 0, 0.2)',
@@ -239,7 +240,7 @@ export const DropdownMenuItem = ({
       tabIndex={0}
       style={{ minHeight: '34px' }}
     >
-      <Inline alignVertical="center" space="10px">
+      <Inline alignVertical="center" space="10px" wrap={false}>
         {emoji && (
           <Text size="14pt" weight="semibold">
             {emoji}
@@ -255,9 +256,9 @@ export const DropdownMenuItem = ({
         )}
         {leftComponent}
         {typeof children === 'string' ? (
-          <Text size="14pt" weight="semibold">
+          <TextOverflow size="14pt" weight="semibold">
             {children}
-          </Text>
+          </TextOverflow>
         ) : (
           children
         )}

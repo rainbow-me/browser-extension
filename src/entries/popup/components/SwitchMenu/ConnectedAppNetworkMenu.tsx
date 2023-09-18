@@ -1,6 +1,7 @@
 import { ReactNode, useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import {
   Box,
   Inline,
@@ -13,7 +14,6 @@ import {
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
-import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import {
   ContextMenu,
@@ -42,14 +42,14 @@ export const ConnectedAppNetworkMenu = ({
   menuTriggerId,
   headerHostId,
 }: ConnectedAppNetworkMenuProps) => {
-  const { appHost, appLogo, appName } = useAppMetadata({ url });
+  const { data: dappMetadata } = useDappMetadata({ url });
 
   const {
     updateAppSessionChainId,
     disconnectAppSession,
     appSession,
     activeSession,
-  } = useAppSession({ host: appHost });
+  } = useAppSession({ host: dappMetadata?.appHost });
 
   const changeChainId = useCallback(
     (chainId: string) => {
@@ -81,17 +81,21 @@ export const ConnectedAppNetworkMenu = ({
                     marginRight: 2,
                   }}
                 >
-                  <ExternalImage src={appLogo} width="14" height="14" />
+                  <ExternalImage
+                    src={dappMetadata?.appLogo}
+                    width="14"
+                    height="14"
+                  />
                 </Box>
                 <Box
                   id={`${headerHostId}-${
-                    appSession ? appHost : 'not-connected'
+                    appSession ? dappMetadata?.appHost : 'not-connected'
                   }`}
                 >
                   <Rows space="10px">
                     <Row>
                       <TextOverflow size="14pt" weight="bold" color="label">
-                        {appName || appHost}
+                        {dappMetadata?.appName || dappMetadata?.appHost}
                       </TextOverflow>
                     </Row>
                     {!appSession && (

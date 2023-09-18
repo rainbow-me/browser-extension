@@ -4,6 +4,7 @@ import { Address } from 'wagmi';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
@@ -11,7 +12,6 @@ import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
-import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { RainbowError, logger } from '~/logger';
@@ -48,10 +48,10 @@ export function SignMessage({
 }: ApproveRequestProps) {
   const [loading, setLoading] = useState(false);
   const [waitingForDevice, setWaitingForDevice] = useState(false);
-  const { appHost, appName } = useAppMetadata({
+  const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
-  const { activeSession } = useAppSession({ host: appHost });
+  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { watchedWallets } = useWallets();
 
   const selectedChainId = activeSession?.chainId ?? ChainId.mainnet;
@@ -78,8 +78,8 @@ export function SignMessage({
           requestPayload.address,
         );
         analytics.track(event.dappPromptSignMessageApproved, {
-          dappURL: appHost,
-          dappName: appName,
+          dappURL: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
         });
       } else if (walletAction === 'sign_typed_data') {
         result = await wallet.signTypedData(
@@ -87,8 +87,8 @@ export function SignMessage({
           requestPayload.address,
         );
         analytics.track(event.dappPromptSignTypedDataApproved, {
-          dappURL: appHost,
-          dappName: appName,
+          dappURL: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
         });
       }
       approveRequest(result);
@@ -101,23 +101,34 @@ export function SignMessage({
       setWaitingForDevice(false);
       setLoading(false);
     }
-  }, [appHost, appName, approveRequest, request, selectedWallet]);
+  }, [
+    approveRequest,
+    dappMetadata?.appHost,
+    dappMetadata?.appName,
+    request,
+    selectedWallet,
+  ]);
 
   const onRejectRequest = useCallback(() => {
     rejectRequest();
     const walletAction = getWalletActionMethod(request?.method);
     if (walletAction === 'personal_sign') {
       analytics.track(event.dappPromptSignMessageRejected, {
-        dappURL: appHost,
-        dappName: appName,
+        dappURL: dappMetadata?.appHost || '',
+        dappName: dappMetadata?.appName,
       });
     } else if (walletAction === 'sign_typed_data') {
       analytics.track(event.dappPromptSignTypedDataRejected, {
-        dappURL: appHost,
-        dappName: appName,
+        dappURL: dappMetadata?.appHost || '',
+        dappName: dappMetadata?.appName,
       });
     }
-  }, [appHost, appName, rejectRequest, request]);
+  }, [
+    dappMetadata?.appHost,
+    dappMetadata?.appName,
+    rejectRequest,
+    request?.method,
+  ]);
 
   const isWatchingWallet = useMemo(() => {
     const watchedAddresses = watchedWallets?.map(({ address }) => address);

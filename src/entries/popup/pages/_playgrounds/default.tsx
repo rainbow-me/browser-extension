@@ -166,7 +166,7 @@ export function Default() {
               weight="medium"
               key={tx?.hash}
             >
-              {`${tx?.title} ${tx?.name}: ${tx.native?.display}`}
+              {`${tx?.title} ${tx?.description}: ${tx.native?.value}`}
             </Text>
           );
         })}

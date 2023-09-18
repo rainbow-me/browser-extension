@@ -340,7 +340,6 @@ const OPTIMISM_USD_FROM_METADATA = {
 
 test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
   const eth = parseAsset({
-    address: ETH_FROM_ZERION.asset_code,
     asset: ETH_FROM_ZERION,
     currency: 'USD',
   });
@@ -348,7 +347,6 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
   expect(eth.isNativeAsset).toEqual(true);
 
   const bscEth = parseAsset({
-    address: BSC_ETH_FROM_ZERION.asset_code,
     asset: BSC_ETH_FROM_ZERION,
     currency: 'EUR',
   });
@@ -357,7 +355,6 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
   expect(bscEth.native.price?.display[0]).toEqual('€');
 
   const usd = parseAsset({
-    address: USD_FROM_ZERION.asset_code,
     asset: USD_FROM_ZERION,
     currency: 'USD',
   });
@@ -367,7 +364,6 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
   expect(usd.isNativeAsset).toEqual(false);
 
   const optimismUSD = parseAsset({
-    address: OPTIMISM_USD_FROM_ZERION.asset_code,
     asset: OPTIMISM_USD_FROM_ZERION,
     currency: 'USD',
   });
@@ -380,15 +376,13 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
 
 test('[utils/assets -> parseUserAsset] :: parse zerion asset with user balance', async () => {
   const eth = parseAsset({
-    address: ETH_FROM_ZERION.asset_code,
     asset: ETH_FROM_ZERION,
     currency: 'USD',
   });
   const ethWithQuantity = parseUserAsset({
-    address: ETH_FROM_ZERION.asset_code,
     asset: ETH_FROM_ZERION,
     currency: 'USD',
-    quantity: '38677330754953265',
+    balance: '38677330754953265',
   });
   expect(eth.uniqueId).toEqual(ethWithQuantity.uniqueId);
   expect(ethWithQuantity.native.balance.amount).toEqual(
@@ -397,10 +391,9 @@ test('[utils/assets -> parseUserAsset] :: parse zerion asset with user balance',
   expect(ethWithQuantity.native.balance.display).toEqual('$58.01');
 
   const optimismUSDWithQuantity = parseUserAsset({
-    address: OPTIMISM_USD_FROM_ZERION.asset_code,
     asset: OPTIMISM_USD_FROM_ZERION,
     currency: 'JPY',
-    quantity: '423170978092067929',
+    balance: '423170978092067929',
   });
   expect(optimismUSDWithQuantity.native.balance.amount).toEqual(
     '423594149070.159996929',
@@ -411,15 +404,13 @@ test('[utils/assets -> parseUserAsset] :: parse zerion asset with user balance',
 });
 test('[utils/assets -> parseSearchAsset] :: combine search asset data with optional price socket info and optional address socket info', async () => {
   const eth = parseAsset({
-    address: ETH_FROM_ZERION.asset_code,
     asset: ETH_FROM_ZERION,
     currency: 'USD',
   });
   const ethWithQuantity = parseUserAsset({
-    address: ETH_FROM_ZERION.asset_code,
     asset: ETH_FROM_ZERION,
     currency: 'USD',
-    quantity: '38677330754953265',
+    balance: '38677330754953265',
   });
   const ethFromSearchData = parseSearchAsset({
     searchAsset: ETH_FROM_SEARCH,
@@ -462,15 +453,13 @@ test('[utils/assets -> parseSearchAsset] :: combine search asset data with optio
   expect(ethFromMetadata.isNativeAsset).toBe(true);
 
   const optimismUSD = parseAsset({
-    address: OPTIMISM_USD_FROM_ZERION.asset_code,
     asset: OPTIMISM_USD_FROM_ZERION,
     currency: 'USD',
   });
   const optimismUSDWithQuantity = parseUserAsset({
-    address: OPTIMISM_USD_FROM_ZERION.asset_code,
     asset: OPTIMISM_USD_FROM_ZERION,
     currency: 'USD',
-    quantity: '38677330754953265',
+    balance: '38677330754953265',
   });
   const optimismUSDFromSearch = parseSearchAsset({
     searchAsset: OPTIMISM_USD_FROM_SEARCH,

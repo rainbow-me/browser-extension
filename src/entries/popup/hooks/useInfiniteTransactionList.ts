@@ -17,7 +17,10 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { RainbowTransaction } from '~/core/types/transactions';
+import {
+  PendingTransaction,
+  RainbowTransaction,
+} from '~/core/types/transactions';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -58,16 +61,24 @@ export default function ({
             .map((p) => p.transactions)
             .flat()
             .filter((t) => isLowerCaseMatch(t.from, address))
-            .reduce((latestTxMap, currentTx) => {
-              const currentChain = currentTx?.chainId;
-              if (currentChain) {
-                const latestTx = latestTxMap.get(currentChain);
-                if (!latestTx) {
-                  latestTxMap.set(currentChain, currentTx);
+            .reduce(
+              (latestTxMap, currentTx) => {
+                const currentChain = currentTx?.chainId;
+                if (currentChain) {
+                  const latestTx = latestTxMap.get(currentChain);
+                  if (!latestTx) {
+                    latestTxMap.set(currentChain, currentTx);
+                  }
                 }
-              }
-              return latestTxMap;
-            }, new Map(SUPPORTED_CHAIN_IDS.map((chain) => [chain, null as RainbowTransaction | null])));
+                return latestTxMap;
+              },
+              new Map(
+                SUPPORTED_CHAIN_IDS.map((chain) => [
+                  chain,
+                  null as RainbowTransaction | null,
+                ]),
+              ),
+            );
           watchForPendingTransactionsReportedByRainbowBackend({
             currentAddress: address,
             pendingTransactions,
@@ -89,7 +100,7 @@ export default function ({
   const transactionsAfterCutoff = useMemo(() => {
     if (!cutoff) return transactions;
     const cutoffIndex = transactions.findIndex(
-      (tx) => (tx.minedAt || Infinity) < cutoff,
+      (tx) => tx.status !== 'pending' && tx.minedAt < cutoff,
     );
     if (!cutoffIndex) return transactions;
     return [...transactions].slice(0, cutoffIndex);
@@ -97,9 +108,10 @@ export default function ({
   const formattedTransactions = useMemo(
     () =>
       Object.entries(
-        selectTransactionsByDate(
-          pendingTransactions.concat(transactionsAfterCutoff),
-        ),
+        selectTransactionsByDate([
+          ...pendingTransactions,
+          ...transactionsAfterCutoff,
+        ]),
       ).flat(2),
     [pendingTransactions, transactionsAfterCutoff],
   );
@@ -137,13 +149,27 @@ export default function ({
       !isFetchingNextPage
     ) {
       fetchNextPage();
+    } else if (
+      // BE does not guarantee a particular number of transactions per page
+      // BE grabs a group from our data providers then filters for various reasons
+      // there are rare cases where BE filters out so many transactions on a page
+      // that we end up not filling the list UI, preventing the user from paginating via scroll
+      // so we recursively paginate until we know the UI is full
+      transactionsAfterCutoff.length < 8 &&
+      hasNextPage &&
+      !isFetching &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage();
     }
   }, [
+    data?.pages.length,
     fetchNextPage,
     hasNextPage,
     isFetching,
     isFetchingNextPage,
     transactions.length,
+    transactionsAfterCutoff.length,
     rows,
   ]);
 
@@ -181,7 +207,7 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   latestTransactions,
 }: {
   currentAddress: Address;
-  pendingTransactions: RainbowTransaction[];
+  pendingTransactions: PendingTransaction[];
   latestTransactions: Map<ChainId, RainbowTransaction | null>;
 }) {
   const { setNonce } = nonceStore.getState();
@@ -219,9 +245,11 @@ function watchForPendingTransactionsReportedByRainbowBackend({
 
   const updatedPendingTransactions = pendingTransactions?.filter((tx) => {
     const txNonce = tx.nonce || 0;
-    const latestConfirmedNonce = latestTransactions.get(tx.chainId)?.nonce || 0;
+    const latestTx = latestTransactions.get(tx.chainId);
+    const latestTxNonce = latestTx?.nonce || 0;
     // still pending or backend is not returning confirmation yet
-    return txNonce > latestConfirmedNonce;
+    // if !latestTx means that is the first tx of the wallet
+    return !latestTx || txNonce > latestTxNonce;
   });
 
   setPendingTransactions({

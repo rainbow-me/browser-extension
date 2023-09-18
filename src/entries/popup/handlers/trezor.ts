@@ -7,6 +7,7 @@ import { getProvider } from '@wagmi/core';
 import { Bytes, UnsignedTransaction, ethers } from 'ethers';
 import { Address } from 'wagmi';
 
+import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 import { addHexPrefix } from '~/core/utils/hex';
 
 import { walletAction } from './walletAction';
@@ -39,11 +40,20 @@ export async function signTransactionFromTrezor(
         : '0x0',
     };
 
+    let forceLegacy = false;
+
+    // Trezor doesn't support type 2 for these networks yet
+    if (LEGACY_CHAINS_FOR_HW.includes(transaction.chainId as ChainId)) {
+      forceLegacy = true;
+    }
+
     if (transaction.gasPrice) {
       baseTx.gasPrice = transaction.gasPrice;
-    } else {
+    } else if (!forceLegacy) {
       baseTx.maxFeePerGas = transaction.maxFeePerGas;
       baseTx.maxPriorityFeePerGas = transaction.maxPriorityFeePerGas;
+    } else {
+      baseTx.gasPrice = transaction.maxFeePerGas;
     }
 
     const nonceHex = ethers.BigNumber.from(transaction.nonce).toHexString();
@@ -56,7 +66,7 @@ export async function signTransactionFromTrezor(
     });
 
     if (response.success) {
-      if (transaction.chainId === ChainId.mainnet) {
+      if (baseTx.maxFeePerGas) {
         baseTx.type = 2;
       }
       const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {

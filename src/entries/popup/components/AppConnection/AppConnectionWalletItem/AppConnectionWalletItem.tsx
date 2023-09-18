@@ -23,7 +23,6 @@ import {
 } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 
-import { AppMetadata } from '../../../hooks/useAppMetadata';
 import { useWalletName } from '../../../hooks/useWalletName';
 import { ChainBadge } from '../../ChainBadge/ChainBadge';
 import { WalletAvatar } from '../../WalletAvatar/WalletAvatar';
@@ -36,7 +35,6 @@ interface WalletItemProps {
   chainId: ChainId;
   active?: boolean;
   connected: boolean;
-  appMetadata: AppMetadata;
 }
 
 export const AppConnectionWalletItem = React.forwardRef(

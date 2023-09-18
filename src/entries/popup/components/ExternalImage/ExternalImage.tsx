@@ -51,6 +51,7 @@ const ExternalImage = (
     );
   }
 
+  if (!signedUrl) return null;
   return (
     <img
       {...props}
@@ -60,8 +61,9 @@ const ExternalImage = (
               maskImage: `url(${props.mask})`,
               WebkitMaskImage: `url(${props.mask})`,
               objectFit: 'cover',
+              ...props.style,
             }
-          : { objectFit: 'cover' }
+          : { objectFit: 'cover', ...props.style }
       }
       src={signedUrl}
       onError={handleError}

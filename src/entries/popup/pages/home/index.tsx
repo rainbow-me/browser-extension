@@ -12,9 +12,8 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  useTransition,
 } from 'react';
-import { useAccount } from 'wagmi';
+import { useLocation } from 'react-router';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -47,7 +46,7 @@ import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
-import { Activity } from './Activity';
+import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { AppConnection } from './NetworkMenu';
@@ -60,33 +59,32 @@ const COLLAPSED_HEADER_TOP_OFFSET = 172;
 const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
-function Tabs() {
+const Tabs = memo(function Tabs() {
   const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
+  const { state } = useLocation();
+
   const [activeTab, setActiveTab] = useState<Tab>('tokens');
   const { trackShortcut } = useKeyboardAnalytics();
-
-  const [, startTransition] = useTransition();
 
   const containerRef = useContainerRef();
   const prevScrollPosition = useRef<number | undefined>(undefined);
   const onSelectTab = (tab: Tab) => {
     prevScrollPosition.current = containerRef.current?.scrollTop;
-    startTransition(() => {
-      setActiveTab(tab);
-      saveActiveTab({ tab });
-    });
+    setActiveTab(tab);
+    saveActiveTab({ tab });
   };
 
   useEffect(() => {
     const mountWithSavedTabInPopup = async () => {
       const isPopup = await isNativePopup();
-      if (isPopup) {
+      if (state?.tab) {
+        setActiveTab(state.tab);
+      } else if (isPopup) {
         setActiveTab(popupActiveTab);
       }
     };
     mountWithSavedTabInPopup();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [popupActiveTab, state?.tab]);
 
   // If we are already in a state where the header is collapsed,
   // then ensure we are scrolling to the top when we change tab.
@@ -102,7 +100,7 @@ function Tabs() {
           ? COLLAPSED_HEADER_TOP_OFFSET + 4 // don't know why, but +4 solves a shift :)
           : top,
     });
-  }, [containerRef, activeTab]);
+  }, [containerRef]);
 
   useKeyboardShortcut({
     handler: (e) => {
@@ -129,13 +127,13 @@ function Tabs() {
       <Separator color="separatorTertiary" strokeWeight="1px" />
       <Content>
         {activeTab === 'tokens' && <Tokens />}
-        {activeTab === 'activity' && <Activity />}
+        {activeTab === 'activity' && <Activities />}
       </Content>
     </>
   );
-}
+});
 
-export function Home() {
+export const Home = memo(function Home() {
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
@@ -194,10 +192,10 @@ export function Home() {
       )}
     </AccentColorProvider>
   );
-}
+});
 
 const TopNav = memo(function TopNav() {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   const { scrollY } = useScroll();
   const [isCollapsed, setIsCollapsed] = useState(scrollY.get() > 91);

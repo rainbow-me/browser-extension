@@ -23,6 +23,7 @@ import {
   FeatureFlagTypes,
   useFeatureFlagsStore,
 } from '~/core/state/currentSettings/featureFlags';
+import { useSoundStore } from '~/core/state/sound';
 import { ThemeOption } from '~/core/types/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
@@ -45,6 +46,7 @@ export function Settings() {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { currentLanguage } = useCurrentLanguageStore();
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
+  const { soundsEnabled, toggleSoundsEnabled } = useSoundStore();
   const { featureFlags, setFeatureFlag } = useFeatureFlagsStore();
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
@@ -96,6 +98,11 @@ export function Settings() {
       alert('Popup sandboxed!');
     }
   }, []);
+
+  const toggleSounds = useCallback(
+    () => toggleSoundsEnabled(!soundsEnabled),
+    [soundsEnabled, toggleSoundsEnabled],
+  );
 
   const connectToHardhat = useCallback(() => {
     setConnectedToHardhat(!connectedToHardhat);
@@ -213,6 +220,25 @@ export function Settings() {
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.language.title')} />
             }
+          />
+          <MenuItem
+            titleComponent={<MenuItem.Title text={i18n.t('settings.sounds')} />}
+            leftComponent={
+              <Symbol
+                symbol="speaker.wave.2.fill"
+                weight="medium"
+                size={18}
+                color="labelTertiary"
+              />
+            }
+            rightComponent={
+              <Toggle
+                checked={soundsEnabled}
+                handleChange={toggleSounds}
+                tabIndex={-1}
+              />
+            }
+            onToggle={toggleSounds}
           />
           <Lens
             style={{
@@ -392,7 +418,6 @@ export function Settings() {
             <MenuItem.Description text="Feature Flags" />
             {Object.keys(featureFlags).map((key, i) => (
               <MenuItem
-                last={Object.keys(featureFlags).length - 1 === i}
                 key={i}
                 titleComponent={
                   <MenuItem.Title
@@ -416,6 +441,7 @@ export function Settings() {
               titleComponent={<MenuItem.Title text="Generate FCM Token" />}
               onClick={generateFCMToken}
               testId="generate-fcm-token"
+              last
             />
           </Menu>
         )}

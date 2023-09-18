@@ -11,31 +11,17 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import {
+  PendingTransaction,
+  RainbowTransaction,
+} from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
-  getPendingTransactionData,
   getTransactionFlashbotStatus,
-  getTransactionHash,
   getTransactionReceiptStatus,
 } from '~/core/utils/transactions';
 
 import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
-
-const isPendingTransaction = (status: TransactionStatus) => {
-  return (
-    status === TransactionStatus.approving ||
-    status === TransactionStatus.bridging ||
-    status === TransactionStatus.cancelling ||
-    status === TransactionStatus.depositing ||
-    status === TransactionStatus.purchasing ||
-    status === TransactionStatus.receiving ||
-    status === TransactionStatus.sending ||
-    status === TransactionStatus.speeding_up ||
-    status === TransactionStatus.swapping ||
-    status === TransactionStatus.withdrawing
-  );
-};
 
 export const useWatchPendingTransactions = ({
   address,
@@ -60,36 +46,36 @@ export const useWatchPendingTransactions = ({
     let pendingTransactionReportedByRainbowBackend = false;
     const updatedPendingTransactions = await Promise.all(
       pendingTransactions.map(async (tx) => {
-        let updatedTransaction = { ...tx };
-        const txHash = getTransactionHash(tx);
+        let updatedTransaction: RainbowTransaction = { ...tx };
         try {
           const chainId = tx?.chainId;
           if (chainId) {
             const provider = getProvider({ chainId });
-            if (txHash) {
+            if (tx.hash) {
               const currentTxCountForChainId =
                 await provider.getTransactionCount(address, 'latest');
-              const transactionResponse = await provider.getTransaction(txHash);
+              const transactionResponse = await provider.getTransaction(
+                tx.hash,
+              );
               const nonceAlreadyIncluded =
                 currentTxCountForChainId >
                 (tx?.nonce || transactionResponse?.nonce);
+
               const transactionStatus = await getTransactionReceiptStatus({
-                included: nonceAlreadyIncluded,
-                transaction: tx,
                 transactionResponse,
                 provider,
               });
-              let pendingTransactionData = getPendingTransactionData({
-                transaction: tx,
-                transactionStatus,
-              });
+              let pendingTransactionData = {
+                ...tx,
+                ...transactionStatus,
+              };
 
               if (
                 (transactionResponse?.blockNumber &&
                   transactionResponse?.blockHash) ||
                 nonceAlreadyIncluded
               ) {
-                if (updatedTransaction.type === TransactionType.trade) {
+                if (updatedTransaction.type === 'swap') {
                   swapRefreshAssets(tx.nonce);
                 } else {
                   userAssetsFetchQuery({
@@ -118,7 +104,7 @@ export const useWatchPendingTransactions = ({
                 const currentNonceForChainId =
                   currentTxCountForChainId - 1 || 0;
                 const latestTransactionHashConfirmedByBackend = latest
-                  ? getTransactionHash(latest)
+                  ? latest.hash
                   : null;
 
                 setNonce({
@@ -149,10 +135,13 @@ export const useWatchPendingTransactions = ({
               } else if (tx.flashbots) {
                 const flashbotsTxStatus = await getTransactionFlashbotStatus(
                   updatedTransaction,
-                  txHash,
+                  tx.hash,
                 );
                 if (flashbotsTxStatus) {
-                  pendingTransactionData = flashbotsTxStatus;
+                  pendingTransactionData = {
+                    ...updatedTransaction,
+                    ...flashbotsTxStatus,
+                  } as RainbowTransaction; // review what's the expected flashbots behaviour here
                 }
               }
             }
@@ -175,8 +164,8 @@ export const useWatchPendingTransactions = ({
 
     setPendingTransactions({
       address,
-      pendingTransactions: updatedPendingTransactions.filter((tx) =>
-        isPendingTransaction(tx?.status as TransactionStatus),
+      pendingTransactions: updatedPendingTransactions.filter(
+        (tx): tx is PendingTransaction => tx?.status === 'pending',
       ),
     });
   }, [

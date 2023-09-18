@@ -1,11 +1,12 @@
-import { Contract } from '@ethersproject/contracts';
 import { Provider } from '@ethersproject/providers';
 import isURL from 'validator/lib/isURL';
 import { Address, erc20ABI } from 'wagmi';
+import { getContract } from 'wagmi/actions';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {
   AddressOrEth,
+  AssetApiResponse,
   AssetMetadata,
   ParsedAsset,
   ParsedSearchAsset,
@@ -67,41 +68,52 @@ export const getNativeAssetBalance = ({
   return convertAmountAndPriceToNativeDisplay(value, priceUnit, currency);
 };
 
+const isZerionAsset = (
+  asset: ZerionAsset | AssetApiResponse,
+): asset is ZerionAsset => 'implementations' in asset || !('networks' in asset);
+
 export function parseAsset({
-  address,
   asset,
   currency,
-  chainId: opChainId,
 }: {
-  address: AddressOrEth;
-  asset: ZerionAsset;
+  asset: ZerionAsset | AssetApiResponse;
   currency: SupportedCurrencyKey;
-  chainId?: ChainId;
 }): ParsedAsset {
-  const chainName = asset?.network ?? ChainName.mainnet;
-  const chainId = opChainId || chainIdFromChainName(chainName);
-  const mainnetAddress = asset?.mainnet_address;
+  const address = asset.asset_code;
+  const chainName = asset.network ?? ChainName.mainnet;
+  const chainId = chainIdFromChainName(chainName);
+
+  // ZerionAsset should be removed when we move fully away from websckets/refraction api
+  const mainnetAddress = isZerionAsset(asset)
+    ? asset.mainnet_address ||
+      asset.implementations?.[ChainName.mainnet]?.address ||
+      undefined
+    : asset.networks?.[ChainId.mainnet]?.address;
+
+  const standard = 'interface' in asset ? asset.interface : undefined;
+
   const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
   const parsedAsset = {
     address,
-    colors: asset?.colors,
+    uniqueId,
     chainId,
     chainName,
-    isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
-    name: asset?.name || i18n.t('tokens_tab.unknown_token'),
     mainnetAddress,
+    isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
     native: {
       price: getNativeAssetPrice({
         currency,
         priceData: asset?.price,
       }),
     },
-    price: asset?.price,
-    symbol: asset?.symbol,
-    type: asset?.type ?? 'token',
-    uniqueId,
-    decimals: asset?.decimals,
-    icon_url: asset?.icon_url,
+    name: asset.name || i18n.t('tokens_tab.unknown_token'),
+    price: asset.price,
+    symbol: asset.symbol,
+    type: asset.type,
+    decimals: asset.decimals,
+    icon_url: asset.icon_url,
+    colors: asset.colors,
+    standard,
   };
 
   return parsedAsset;
@@ -142,46 +154,57 @@ export function parseAssetMetadata({
     },
     price: priceData,
     symbol: asset?.symbol,
-    type: 'token',
     uniqueId,
-  };
+  } satisfies ParsedAsset;
   return parsedAsset;
 }
 
 export function parseUserAsset({
-  address,
   asset,
   currency,
-  quantity,
+  balance,
   smallBalance,
 }: {
-  address: AddressOrEth;
-  asset: ZerionAsset;
+  asset: ZerionAsset | AssetApiResponse;
   currency: SupportedCurrencyKey;
-  quantity: string;
+  balance: string;
   smallBalance?: boolean;
-}): ParsedUserAsset {
-  const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
-  const parsedAsset = parseAsset({
-    address,
-    asset,
+}) {
+  const parsedAsset = parseAsset({ asset, currency });
+  return parseUserAssetBalances({
+    asset: parsedAsset,
     currency,
+    balance,
+    smallBalance,
   });
+}
+
+export function parseUserAssetBalances({
+  asset,
+  currency,
+  balance,
+  smallBalance = false,
+}: {
+  asset: ParsedAsset;
+  currency: SupportedCurrencyKey;
+  balance: string;
+  smallBalance?: boolean;
+}) {
+  const { decimals, symbol, price } = asset;
+  const amount = convertRawAmountToDecimalFormat(balance, decimals);
+
   return {
-    ...parsedAsset,
+    ...asset,
     balance: {
       amount,
-      display: convertAmountToBalanceDisplay(amount, {
-        decimals: asset?.decimals,
-        symbol: asset?.symbol,
-      }),
+      display: convertAmountToBalanceDisplay(amount, { decimals, symbol }),
     },
     native: {
-      ...parsedAsset.native,
+      ...asset.native,
       balance: getNativeAssetBalance({
         currency,
-        decimals: asset?.decimals,
-        priceUnit: asset?.price?.value || 0,
+        decimals,
+        priceUnit: price?.value || 0,
         value: amount,
       }),
     },
@@ -248,6 +271,7 @@ export const parseSearchAsset = ({
   icon_url:
     userAsset?.icon_url || assetWithPrice?.icon_url || searchAsset?.icon_url,
   colors: userAsset?.colors || assetWithPrice?.colors || searchAsset?.colors,
+  type: userAsset?.type || assetWithPrice?.type,
 });
 
 export function filterAsset(asset: ZerionAsset) {
@@ -270,24 +294,20 @@ export const fetchAssetBalanceViaProvider = async ({
   currency: SupportedCurrencyKey;
   provider: Provider;
 }) => {
-  if (parsedAsset.isNativeAsset) {
-    const balance = await provider.getBalance(currentAddress);
-    const updatedAsset = parseParsedUserAsset({
-      parsedAsset,
-      currency,
-      quantity: balance.toString(),
-    });
-    return updatedAsset;
-  } else {
-    const contract = new Contract(parsedAsset.address, erc20ABI, provider);
-    const balance = await contract.balanceOf(currentAddress);
-    const updatedAsset = parseParsedUserAsset({
-      parsedAsset,
-      currency,
-      quantity: balance.toString(),
-    });
-    return updatedAsset;
-  }
+  const balance = parsedAsset.isNativeAsset
+    ? await provider.getBalance(currentAddress)
+    : await getContract({
+        address: parsedAsset.address,
+        abi: erc20ABI,
+        signerOrProvider: provider,
+      }).balanceOf(currentAddress);
+
+  const updatedAsset = parseUserAssetBalances({
+    asset: parsedAsset,
+    currency,
+    balance: balance.toString(),
+  });
+  return updatedAsset;
 };
 
 const assetQueryFragment = (

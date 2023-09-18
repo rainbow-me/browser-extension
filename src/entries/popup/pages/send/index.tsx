@@ -19,10 +19,7 @@ import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import {
-  popupInstanceStore,
-  usePopupInstanceStore,
-} from '~/core/state/popupInstances';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -30,7 +27,7 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { handleAssetAccentColor } from '~/core/utils/colors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
@@ -200,8 +197,6 @@ export function Send() {
 
       try {
         const { type } = await getWallet(fromAddress);
-        const { saveActiveTab } = popupInstanceStore.getState();
-
         // Change the label while we wait for confirmation
         if (type === 'HardwareWalletKeychain') {
           setWaitingForDevice(true);
@@ -214,18 +209,24 @@ export function Send() {
           chainId: connectedToHardhat ? ChainId.hardhat : chainId,
           data,
         });
-        if (result) {
-          const transaction = {
-            amount: assetAmount,
+        if (result && asset) {
+          const transaction: NewTransaction = {
+            changes: [
+              {
+                direction: 'out',
+                asset,
+                value: assetAmount,
+              },
+            ],
             asset,
             data: result.data,
-            value: result.value,
+            value: result.value.toString(),
             from: fromAddress,
             to: txToAddress,
-            hash: result.hash,
+            hash: result.hash as TxHash,
             chainId,
-            status: TransactionStatus.sending,
-            type: TransactionType.send,
+            status: 'pending',
+            type: 'send',
             nonce: result.nonce,
             gasPrice: (
               selectedGas.transactionGasParams as TransactionLegacyGasParams
@@ -243,8 +244,9 @@ export function Send() {
             transaction,
           });
           callback?.();
-          saveActiveTab({ tab: 'activity' });
-          navigate(ROUTES.HOME);
+          navigate(ROUTES.HOME, {
+            state: { tab: 'activity' },
+          });
           analytics.track(event.sendSubmitted, {
             assetSymbol: asset?.symbol,
             assetName: asset?.name,

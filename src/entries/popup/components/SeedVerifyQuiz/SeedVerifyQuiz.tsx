@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
-import CorrectSeedQuiz from 'static/assets/audio/correct_seed_quiz.mp3';
-import IncorrectSeedQuiz from 'static/assets/audio/incorrect_seed_quiz.mp3';
 import { i18n } from '~/core/languages';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import {
@@ -15,9 +13,11 @@ import {
   Stack,
   Text,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
+import playSound from '../../utils/playSound';
 
 const shuffleArray = (array: { word: string; index: number }[]) => {
   const arrayCopy = [...array];
@@ -81,10 +81,12 @@ const SeedWordRow = ({
   }, [handleSelect, index, word]);
 
   return (
-    <Box
+    <Lens
       width="fit"
       onClick={onClick}
-      borderColor="separatorTertiary"
+      borderColor={{
+        default: 'separatorTertiary',
+      }}
       borderRadius="8px"
       padding="8px"
       borderWidth="1px"
@@ -122,7 +124,7 @@ const SeedWordRow = ({
           </Text>
         </Box>
       </Inline>
-    </Box>
+    </Lens>
   );
 };
 
@@ -181,13 +183,13 @@ export function SeedVerifyQuiz({
             selectedWords[2].index === 11
           ) {
             setValidated(true);
-            new Audio(CorrectSeedQuiz).play();
+            playSound('CorrectSeedQuiz');
             setTimeout(() => {
               setWalletBackedUp({ address });
               onQuizValidated();
             }, 1200);
           } else {
-            new Audio(IncorrectSeedQuiz).play();
+            playSound('IncorrectSeedQuiz');
             setIncorrect(true);
           }
         }, 100);
@@ -323,6 +325,7 @@ export function SeedVerifyQuiz({
           width="full"
           onClick={handleSkip}
           testId="skip-this-button"
+          tabIndex={0}
         >
           {i18n.t('seed_verify.skip')}
         </Button>

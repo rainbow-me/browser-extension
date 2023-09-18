@@ -45,7 +45,7 @@ const WalletListHW = () => {
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const [accountsToImport, setAccountsToImport] = useState<
-    { address: Address; index: number }[]
+    { address: Address; index: number; hdPath?: string }[]
   >(state.accountsToImport);
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
@@ -124,17 +124,23 @@ const WalletListHW = () => {
     ({
       address,
       index,
+      hdPath,
     }: {
       address?: Address;
       index?: number;
+      hdPath?: string;
     } = {}) => {
-      if (address && index) {
-        const newAccountsToImport = [...accountsToImport];
-        newAccountsToImport.unshift({
-          address: address as Address,
-          index: index as number,
-        });
-        setAccountsToImport(newAccountsToImport);
+      if (address && typeof index !== 'undefined' && hdPath) {
+        const exists = accountsToImport.find((a) => a.address === address);
+        if (!exists) {
+          const newAccountsToImport = [...accountsToImport];
+          newAccountsToImport.unshift({
+            address: address as Address,
+            index: index as number,
+            hdPath: hdPath as string,
+          });
+          setAccountsToImport(newAccountsToImport);
+        }
       }
       setShowAddByIndexSheet(false);
     },
@@ -368,35 +374,36 @@ const WalletListHW = () => {
                           </Box>
                         </Box>
                       </Stack>
-                      {newDevice && Object.values(walletsSummary).length <= 6 && (
-                        <Inline alignHorizontal="center">
-                          <Button
-                            color="surfaceSecondaryElevated"
-                            height="28px"
-                            variant="flat"
-                            onClick={() => {
-                              setShowAddByIndexSheet(true);
-                            }}
-                          >
-                            <Inline space="4px" alignVertical="center">
-                              <Symbol
-                                color="label"
-                                size={12}
-                                symbol={'plus.circle.fill'}
-                                weight="regular"
-                              />
-                              <Text
-                                size="14pt"
-                                weight="regular"
-                                color="label"
-                                align="center"
-                              >
-                                {i18n.t('hw.add_by_index')}
-                              </Text>
-                            </Inline>
-                          </Button>
-                        </Inline>
-                      )}
+                      {newDevice &&
+                        Object.values(walletsSummary).length <= 6 && (
+                          <Inline alignHorizontal="center">
+                            <Button
+                              color="surfaceSecondaryElevated"
+                              height="28px"
+                              variant="flat"
+                              onClick={() => {
+                                setShowAddByIndexSheet(true);
+                              }}
+                            >
+                              <Inline space="4px" alignVertical="center">
+                                <Symbol
+                                  color="label"
+                                  size={12}
+                                  symbol={'plus.circle.fill'}
+                                  weight="regular"
+                                />
+                                <Text
+                                  size="14pt"
+                                  weight="regular"
+                                  color="label"
+                                  align="center"
+                                >
+                                  {i18n.t('hw.add_by_index')}
+                                </Text>
+                              </Inline>
+                            </Button>
+                          </Inline>
+                        )}
                     </Stack>
                   </Box>
                 </Stack>

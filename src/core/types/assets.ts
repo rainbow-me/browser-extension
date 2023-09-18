@@ -13,7 +13,7 @@ export interface ParsedAsset {
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
-    primary: string;
+    primary?: string;
     fallback?: string;
     shadow?: string;
   };
@@ -32,7 +32,9 @@ export interface ParsedAsset {
   uniqueId: UniqueId;
   decimals: number;
   icon_url?: string;
+  type?: AssetType;
   smallBalance?: boolean;
+  standard?: 'erc-721' | 'erc-1155';
 }
 
 export interface ParsedUserAsset extends ParsedAsset {
@@ -65,7 +67,30 @@ export interface ZerionAssetPrice {
   relative_change_24h?: number;
 }
 
-export type AssetType = 'nft' | 'token';
+export type AssetApiResponse = {
+  asset_code: AddressOrEth;
+  decimals: number;
+  icon_url: string;
+  name: string;
+  price: {
+    value: number;
+    changed_at: number;
+    relative_change_24h: number;
+  };
+  symbol: string;
+  colors?: { primary?: string; fallback?: string; shadow?: string };
+  network?: ChainName;
+  networks?: {
+    [chainId in ChainId]?: {
+      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
+      decimals: number;
+    };
+  };
+  type?: AssetType;
+  interface?: 'erc-721' | 'erc-1155';
+};
+
+type AssetType = ProtocolType | 'nft';
 
 export interface ZerionAsset {
   asset_code: AddressOrEth;

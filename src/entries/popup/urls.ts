@@ -1,10 +1,14 @@
 import { UniqueId } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
+import { TxHash } from '~/core/types/transactions';
 
 export const ROUTES = {
   ROOT: '/', // RootHandler
   HOME: '/home', // Home
   TOKEN_DETAILS: (uniqueId: UniqueId | ':uniqueId') =>
-    `/token-details/${uniqueId}`,
+    `/home/token-details/${uniqueId}`,
+  ACTIVITY_DETAILS: (chainId: ChainId | ':chainId', hash: TxHash | ':hash') =>
+    `/home/activity-details/${chainId}/${hash}`,
   CONNECTED: '/connected', // ConnectedApps
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect
@@ -13,7 +17,7 @@ export const ROUTES = {
   IMPORT__SEED: '/import/seed', // ImportWalletViaSeed
   IMPORT__PRIVATE_KEY: '/import/pkey', // ImportWalletViaPrivateKey
   IMPORT__SELECT: '/import/select', // ImportWalletSelection
-  IMPORT__EDIT: '/import/edit', // EditImportWalletSelection
+  IMPORT__EDIT: '/import/edit', // ImportWalletSelectionEdit
   UNLOCK: '/unlock', // ImportWalletSelection
   SEED_BACKUP_PROMPT: '/seed-backup-prompt', // SeedBackupPrompt
   SEED_REVEAL: '/seed-reveal', // SeedReveal
@@ -58,4 +62,5 @@ export const ROUTES = {
   HW_TREZOR: '/hw/trezor',
   HW_WALLET_LIST: '/hw/wallet-list', // hw/walletList/index
   HW_SUCCESS: '/hw/success',
+  BUY: '/buy',
 } as const;

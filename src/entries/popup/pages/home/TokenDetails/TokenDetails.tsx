@@ -293,6 +293,8 @@ export function TokenDetails() {
 
   const { isWatchingWallet } = useWallets();
 
+  const navigate = useRainbowNavigate();
+
   if (!uniqueId || (isFetched && !token)) return <Navigate to={ROUTES.HOME} />;
   if (!token) return null;
 
@@ -318,7 +320,15 @@ export function TokenDetails() {
         style={{ borderTop: 0, borderLeft: 0, borderRight: 0 }}
       >
         <Navbar
-          leftComponent={<Navbar.BackButton />}
+          leftComponent={
+            <Navbar.BackButton
+              onClick={() =>
+                navigate(ROUTES.HOME, {
+                  state: { skipTransitionOnRoute: ROUTES.HOME },
+                })
+              }
+            />
+          }
           rightComponent={
             <Inline alignVertical="center" space="7px">
               <FavoriteButton token={token} />
