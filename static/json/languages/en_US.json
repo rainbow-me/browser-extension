@@ -681,10 +681,7 @@
     "disclaimer_tos": "By proceeding, you agree to Rainbow’s",
     "disclaimer_tos_link": "Terms of Use",
     "invalid_code": "Invalid code",
-    "join": "Join",
-    "invite_code_explanation": "Rainbow is currently in a private beta stage and an invite code is required to gain access. If you need one, you can",
-    "invite_code_explanation_link": "get one here",
-    "enter_code": "Enter your beta code"
+    "join": "Join"
   },
   "seed_backup_prompt": {
     "title": "Before you get started, backup your Secret Recovery Phrase",
