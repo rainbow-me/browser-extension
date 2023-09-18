@@ -59,7 +59,9 @@ export function CoinIcon({
   const address = asset?.address;
   const chain = asset?.chainId || ChainId.mainnet;
   const shadowColor = asset?.colors?.primary || '#808088';
-  const isNft = (asset as ParsedAsset)?.standard === 'erc-721';
+  const isNft =
+    (asset as ParsedAsset)?.standard === 'erc-721' ||
+    (asset as ParsedAsset)?.standard === 'erc-1155';
 
   return (
     <CoinIconWrapper
