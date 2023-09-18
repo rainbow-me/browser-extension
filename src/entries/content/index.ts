@@ -1,6 +1,6 @@
 import { initializeMessenger } from '~/core/messengers';
 import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
-import { isDefaultWalletStore, useInviteCodeStore } from '~/core/state';
+import { isDefaultWalletStore } from '~/core/state';
 require('../../core/utils/lockdown');
 
 const insertInpageScriptIfNeeded = () => {
@@ -19,12 +19,9 @@ insertInpageScriptIfNeeded();
 setupBridgeMessengerRelay();
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
-const IS_DEV = process.env.IS_DEV === 'true';
 
 setTimeout(() => {
   inpageMessenger.send('rainbow_setDefaultProvider', {
-    rainbowAsDefault:
-      (useInviteCodeStore.getState().inviteCodeValidated || IS_DEV) &&
-      isDefaultWalletStore.getState().isDefaultWallet,
+    rainbowAsDefault: isDefaultWalletStore.getState().isDefaultWallet,
   });
 }, 1);

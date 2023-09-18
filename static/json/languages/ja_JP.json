@@ -681,10 +681,7 @@
     "disclaimer_tos": "続行することで、Rainbowの",
     "disclaimer_tos_link": "利用規約",
     "invalid_code": "無効なコード",
-    "join": "参加する",
-    "invite_code_explanation": "Rainbowは現在プライベートベータ版であり、招待コードが必要です。必要な場合は、",
-    "invite_code_explanation_link": "ここで入手してください",
-    "enter_code": "ベータコードを入力してください"
+    "join": "参加する"
   },
   "seed_backup_prompt": {
     "title": "開始する前に、シークレットリカバリーフレーズをバックアップしてください",
