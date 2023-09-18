@@ -681,10 +681,7 @@
     "disclaimer_tos": "Ao prosseguir, você concorda com os",
     "disclaimer_tos_link": "Termos de Uso",
     "invalid_code": "Código inválido",
-    "join": "Participar",
-    "invite_code_explanation": "O Rainbow está atualmente em uma fase de beta privado e um código de convite é necessário para obter acesso. Se você precisar de um, você pode",
-    "invite_code_explanation_link": "obter um aqui",
-    "enter_code": "Digite seu código beta"
+    "join": "Participar"
   },
   "seed_backup_prompt": {
     "title": "Antes de começar, faça um backup de sua Frase de Recuperação Secreta",

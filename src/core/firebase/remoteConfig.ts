@@ -24,7 +24,6 @@ export interface RainbowConfig extends Record<string, any> {
   swaps_enabled: boolean;
   tx_requests_enabled: boolean;
   flashbots_enabled: boolean;
-  invite_code_required: boolean;
   // SWAPS
   default_slippage_bips: {
     [ChainName.mainnet]: number;
@@ -43,7 +42,6 @@ const DEFAULT_CONFIG = {
   swaps_enabled: true,
   tx_requests_enabled: true,
   flashbots_enabled: true,
-  invite_code_required: false,
   // SWAPS
   default_slippage_bips: {
     arbitrum: 200,
@@ -98,8 +96,7 @@ export const init = async () => {
             key === 'BX_send_enabled' ||
             key === 'BX_swaps_enabled' ||
             key === 'BX_tx_requests_enabled' ||
-            key === 'BX_flashbots_enabled' ||
-            key === 'BX_invite_code_required'
+            key === 'BX_flashbots_enabled'
           ) {
             config[realKey] = entry.asBoolean();
           } else {
