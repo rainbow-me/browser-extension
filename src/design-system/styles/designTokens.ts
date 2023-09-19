@@ -987,6 +987,7 @@ export const symbolNames = selectSymbolNames(
   'minus.circle',
   'hare',
   'arrow.turn.left.down',
+  'arrow.turn.right.down',
   'arrow.turn.right.up',
   'cable.connector',
   'person.fill.viewfinder',
