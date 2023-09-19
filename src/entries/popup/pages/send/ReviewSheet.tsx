@@ -472,7 +472,7 @@ export const ReviewSheet = ({
                       </Column>
                       <Column>
                         <Inline alignHorizontal="right">
-                          <WalletAvatar address={toAddress} size={44} />
+                          <WalletAvatar addressOrName={toAddress} size={44} />
                         </Inline>
                       </Column>
                     </Columns>

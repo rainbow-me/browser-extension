@@ -12,6 +12,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { AccentColorProvider, Box } from '~/design-system';
+import { BoxStyles } from '~/design-system/styles/core.css';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
 
@@ -58,6 +59,9 @@ export function CoinIcon({
   const address = asset?.address;
   const chain = asset?.chainId || ChainId.mainnet;
   const shadowColor = asset?.colors?.primary || '#808088';
+  const isNft =
+    (asset as ParsedAsset)?.standard === 'erc-721' ||
+    (asset as ParsedAsset)?.standard === 'erc-1155';
 
   return (
     <CoinIconWrapper
@@ -68,6 +72,7 @@ export function CoinIcon({
       size={size}
       shadowColor={shadowColor}
       chainId={chain}
+      borderRadius={isNft ? nftRadiusBySize[36] : undefined}
     >
       <CloudinaryCoinIcon
         address={address}
@@ -79,6 +84,7 @@ export function CoinIcon({
         <Box
           justifyContent="center"
           flexDirection="column"
+          borderRadius={nftRadiusBySize[36]}
           style={{
             backgroundColor: pseudoRandomArrayItemFromString<string>(
               address || '',
@@ -102,17 +108,19 @@ function ShadowWrapper({
   children,
   color,
   size,
+  borderRadius,
 }: {
   children: ReactNode;
   color: string;
   size: number;
+  borderRadius?: BoxStyles['borderRadius'];
 }) {
   return (
     <AccentColorProvider color={color}>
       <Box
         boxShadow={size < 30 ? '12px accent' : '24px accent'}
         background="transparent"
-        borderRadius="round"
+        borderRadius={borderRadius || 'round'}
         style={{
           width: size,
           height: size,
@@ -134,6 +142,7 @@ function CoinIconWrapper({
   badgePositionBottom,
   badgePositionLeft,
   badgeSize,
+  borderRadius,
 }: {
   chainId: ChainId;
   children: React.ReactNode;
@@ -143,10 +152,15 @@ function CoinIconWrapper({
   badgePositionBottom: number;
   badgePositionLeft: number;
   badgeSize: ChainIconProps['size'];
+  borderRadius?: BoxStyles['borderRadius'];
 }) {
   return (
     <Box position="relative" style={{ height: size, width: size }}>
-      <ShadowWrapper color={shadowColor} size={size}>
+      <ShadowWrapper
+        borderRadius={borderRadius}
+        color={shadowColor}
+        size={size}
+      >
         {children}
       </ShadowWrapper>
       {badge && chainId !== ChainId.mainnet && (
@@ -164,6 +178,13 @@ function CoinIconWrapper({
   );
 }
 
+const nftRadiusBySize = {
+  14: '4px',
+  16: '4px',
+  20: '6px',
+  36: '10px',
+} as const;
+
 function CloudinaryCoinIcon({
   address,
   mainnetAddress,
@@ -178,6 +199,7 @@ function CloudinaryCoinIcon({
   size: number;
   url?: string;
 }) {
+  const [externalError, setExternalError] = useState(false);
   let src = url;
   const eth = ETH_ADDRESS;
 
@@ -185,8 +207,16 @@ function CloudinaryCoinIcon({
     src = EthIcon;
   }
 
-  if (src) {
-    return <ExternalImage src={src} width={size} height={size} />;
+  if (src && !externalError) {
+    return (
+      <ExternalImage
+        src={src}
+        onError={() => setExternalError(true)}
+        width={size}
+        height={size}
+        borderRadius={nftRadiusBySize[36]}
+      />
+    );
   }
 
   return <Fragment>{children}</Fragment>;
@@ -224,12 +254,6 @@ function formatSymbol(symbol: string, width: number) {
   return _cache[key];
 }
 
-const nftRadiusBySize = {
-  14: '4px',
-  16: '4px',
-  20: '6px',
-  36: '10px',
-} as const;
 export const NFTIcon = ({
   asset,
   size,
@@ -252,10 +276,10 @@ export const NFTIcon = ({
     );
   return (
     <Box position="relative" style={{ minWidth: size, height: size }}>
-      <Box
-        as="img"
+      <ExternalImage
         src={asset.icon_url}
-        style={{ height: size, width: size }}
+        height={size}
+        width={size}
         borderRadius={nftRadiusBySize[size]}
         onError={() => setBadSrc(true)}
       />

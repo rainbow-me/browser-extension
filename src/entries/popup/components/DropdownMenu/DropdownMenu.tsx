@@ -42,7 +42,7 @@ interface DropdownMenuTriggerProps {
 export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
   const { children, accentColor, asChild } = props;
   const { address } = useAccount();
-  const { avatar } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -123,7 +123,7 @@ export const DropdownMenuContentBody = React.forwardRef<
   } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
-  const { avatar } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
   return (
     <AccentColorProvider
       color={accentColor || avatar?.color || globalColors.blue60}
@@ -136,7 +136,7 @@ export const DropdownMenuContentBody = React.forwardRef<
           tabIndex={-1}
           onInteractOutside={onInteractOutside}
           align={align}
-          style={{ minWidth: '204px' }}
+          style={{ width: '204px' }}
           alignItems="center"
           justifyContent="center"
           display="flex"
@@ -146,13 +146,13 @@ export const DropdownMenuContentBody = React.forwardRef<
         >
           <Box
             as={motion.div}
-            initial={{ scale: 1, minWidth: '204px', opacity: animate ? 0 : 1 }}
+            initial={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
             animate={{
               scale: scale ?? 1,
-              minWidth: '204px',
+              width: '204px',
               opacity: 1,
             }}
-            exit={{ scale: 1, minWidth: '204px', opacity: animate ? 0 : 1 }}
+            exit={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
             transition={{ duration: 0.1 }}
             style={{
               boxShadow: boxShadow ?? '0px 10px 30px rgba(0, 0, 0, 0.2)',

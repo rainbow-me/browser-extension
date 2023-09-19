@@ -189,7 +189,7 @@ export function WalletSwitcher() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, allWallets, fetchWallets } = useWallets();
-  const { avatar } = useAvatar({ address: currentAddress });
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { featureFlags } = useFeatureFlagsStore();
   const { trackShortcut } = useKeyboardAnalytics();
 
@@ -421,6 +421,7 @@ export function WalletSwitcher() {
           text={i18n.t('wallet_switcher.quick_promo.text')}
           textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
           symbol="sparkle"
+          symbolColor="accent"
           promoType="wallet_switcher"
         />
       </Box>

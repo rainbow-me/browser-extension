@@ -25,6 +25,7 @@ import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
 export const Header = React.memo(function Header() {
+  const { featureFlags } = useFeatureFlagsStore();
   const { scrollYProgress: progress } = useScroll({
     offset: ['0px', '64px', '92px'],
   });
@@ -36,6 +37,7 @@ export const Header = React.memo(function Header() {
   const nameOpacityValue = useTransform(progress, (v) => (v === 1 ? 0 : 1));
 
   const x = useTransform(progress, [0, 0.25, 1], [-12, -12, 0]);
+  const y = useTransform(progress, [0, 1], [0, 2]);
   const avatarOpacityValue = useTransform(progress, [0, 0.25, 1], [0, 0, 1]);
 
   const { address } = useAccount();
@@ -47,22 +49,23 @@ export const Header = React.memo(function Header() {
       flexDirection="column"
       justifyContent="space-between"
       position="relative"
-      paddingTop="44px"
+      paddingTop="40px"
       testId="header"
     >
       <Inset>
-        <Stack alignHorizontal="center" space="8px">
+        <Stack alignHorizontal="center" space="6px">
           <Box
             as={motion.div}
             display="flex"
             justifyContent="center"
+            paddingBottom="2px"
             position="absolute"
             style={{
               opacity: opacityValue,
               scale: scaleValue,
               transformOrigin: 'bottom',
               zIndex: 1,
-              top: -28,
+              top: -27,
             }}
           >
             <AvatarSection />
@@ -75,6 +78,7 @@ export const Header = React.memo(function Header() {
               scale: nameScaleValue,
               opacity: nameOpacityValue,
               x,
+              y,
             }}
           >
             <AccountName
@@ -86,7 +90,7 @@ export const Header = React.memo(function Header() {
                     paddingRight="2px"
                   >
                     <WalletAvatar
-                      address={address}
+                      addressOrName={address}
                       size={20}
                       emojiSize="14pt"
                     />
@@ -101,25 +105,24 @@ export const Header = React.memo(function Header() {
           <ActionButtonsSection />
         </Stack>
       </Inset>
-      <Box style={{ minHeight: 32 }} />
+      <Box style={{ minHeight: featureFlags.new_tab_bar_enabled ? 28 : 32 }} />
     </Box>
   );
 });
 
 export function AvatarSection() {
   const { address } = useAccount();
-  const { avatar, isFetched } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
+
   return (
     <Avatar.Wrapper size={60} color={avatar?.color}>
-      {isFetched ? (
-        <>
-          {avatar?.imageUrl ? (
-            <Avatar.Image size={60} imageUrl={avatar.imageUrl} />
-          ) : (
-            <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
-          )}
-        </>
-      ) : null}
+      <>
+        {avatar?.imageUrl ? (
+          <Avatar.Image size={60} imageUrl={avatar.imageUrl} />
+        ) : (
+          <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
+        )}
+      </>
       <Avatar.Skeleton />
     </Avatar.Wrapper>
   );
@@ -127,7 +130,7 @@ export function AvatarSection() {
 
 function ActionButtonsSection() {
   const { address } = useAccount();
-  const { avatar } = useAvatar({ address });
+  const { data: avatar } = useAvatar({ addressOrName: address });
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
@@ -162,9 +165,9 @@ function ActionButtonsSection() {
   }, []);
 
   return (
-    <Box style={{ height: 56 }}>
+    <Box style={{ height: 54 }}>
       {avatar?.color && (
-        <Inline space="12px">
+        <Inline space="8px">
           <ActionButton
             symbol="square.on.square"
             text={i18n.t('wallet_header.copy')}
@@ -222,25 +225,32 @@ function ActionButton({
   tabIndex?: number;
 }) {
   return (
-    <Stack alignHorizontal="center" space="10px">
-      <ButtonSymbol
-        color="accent"
-        cursor={cursor}
-        height="36px"
-        variant="raised"
-        symbol={symbol}
-        testId={testId}
-        onClick={onClick}
-        tabIndex={tabIndex}
-      />
-      <Text
-        color="labelSecondary"
-        cursor={cursor as TextStyles['cursor']}
-        size="12pt"
-        weight="semibold"
-      >
-        {text}
-      </Text>
-    </Stack>
+    <Box
+      display="flex"
+      justifyContent="center"
+      style={{ width: 44, wordBreak: 'break-all' }}
+    >
+      <Stack alignHorizontal="center" space="10px">
+        <ButtonSymbol
+          color="accent"
+          cursor={cursor}
+          height="36px"
+          variant="raised"
+          symbol={symbol}
+          testId={testId}
+          onClick={onClick}
+          tabIndex={tabIndex}
+        />
+        <Text
+          align="center"
+          color="labelSecondary"
+          cursor={cursor as TextStyles['cursor']}
+          size="12pt"
+          weight="semibold"
+        >
+          {text}
+        </Text>
+      </Stack>
+    </Box>
   );
 }

@@ -22,6 +22,9 @@ import { erc20ABI } from 'wagmi';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
+const browser = process.env.BROWSER || 'chrome';
+const isFirefox = browser === 'firefox';
+
 // consts
 
 const waitUntilTime = 20_000;
@@ -387,6 +390,12 @@ export async function typeOnTextInput({
   text: number | string;
   driver: WebDriver;
 }) {
+  if (isFirefox) {
+    await clearInput({
+      id,
+      driver,
+    });
+  }
   const element = await findElementByTestId({ id, driver });
   await element.sendKeys(text);
 }
@@ -399,7 +408,7 @@ export async function clearInput({
   driver: WebDriver;
 }) {
   const element = await findElementByTestId({ id, driver });
-  await element.clear();
+  return await element.clear();
 }
 
 export async function getTextFromTextInput({

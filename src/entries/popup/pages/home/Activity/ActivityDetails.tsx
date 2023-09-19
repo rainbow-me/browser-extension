@@ -138,7 +138,7 @@ const YouOrAddress = ({ address }: { address: Address }) => {
 const AddressDisplay = ({ address }: { address: Address }) => {
   return (
     <Inline space="6px" alignVertical="center" wrap={false}>
-      <WalletAvatar address={address} size={16} emojiSize="9pt" />
+      <WalletAvatar addressOrName={address} size={16} emojiSize="9pt" />
       <YouOrAddress address={address} />
       <AddressMoreOptions address={address} />
     </Inline>
@@ -161,7 +161,7 @@ const ContractDisplay = ({
       {iconUrl ? (
         <ContractIcon size={16} iconUrl={iconUrl} />
       ) : (
-        <WalletAvatar address={address} size={16} emojiSize="9pt" />
+        <WalletAvatar addressOrName={address} size={16} emojiSize="9pt" />
       )}
       <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
         {name}

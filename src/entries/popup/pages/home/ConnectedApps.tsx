@@ -269,7 +269,7 @@ const ConnectedApp = ({
                               }}
                             >
                               <WalletAvatar
-                                address={address}
+                                addressOrName={address}
                                 size={16}
                                 emojiSize="12pt"
                               />
