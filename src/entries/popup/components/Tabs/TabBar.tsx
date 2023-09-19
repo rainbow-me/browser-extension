@@ -9,6 +9,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { useAvatar } from '../../hooks/useAvatar';
 import { Tab } from '../../pages/home';
+import { zIndexes } from '../../utils/zIndexes';
 import { timingConfig } from '../CommandK/references';
 
 import ActivityIcon from './TabIcons/Activity';
@@ -98,7 +99,7 @@ export function TabBar({
             ? '0 16px 32px 0 rgba(0, 0, 0, 0.5), 0 0 0.5px 0 #000000, 0 -1px 6px 0 rgba(245, 248, 255, 0.05) inset, 0 0.5px 2px 0 rgba(245, 248, 255, 0.1) inset'
             : '0 16px 32px 0 rgba(0, 0, 0, 0.15), 0 0 1px 0 rgba(0, 0, 0, 0.08), 0 -1px 6px 0 rgba(255, 255, 255, 0.8) inset, 0 0.5px 2px 0 rgba(255, 255, 255, 0.8) inset',
         height: height,
-        zIndex: 5,
+        zIndex: zIndexes.TAB_BAR,
       }}
       transition={timingConfig(0.2)}
     >
