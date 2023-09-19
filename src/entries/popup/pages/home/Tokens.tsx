@@ -332,7 +332,7 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
               <Inline alignVertical="center" alignHorizontal="justify">
                 <Box>
                   <Inline alignVertical="center" space="8px">
-                    <CoinbaseIcon />
+                    <CoinbaseIcon showBackground />
                     <Text as="p" size="14pt" color="label" weight="semibold">
                       {i18n.t('tokens_tab.coinbase_title')}
                     </Text>

@@ -1120,6 +1120,7 @@
     "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar"
   },
   "wallet_header": {
+    "buy": "Buy",
     "copy": "Copy",
     "swap": "Swap",
     "send": "Send",
@@ -1285,9 +1286,18 @@
     "title": "Buy",
     "fees_title": "Fees",
     "instant_title": "Instant",
+    "instant_yes": "Yes",
     "method_title": "Method",
     "methods_title": "Method",
+    "methods_title": "Methods",
     "network_title": "Network",
     "networks_title": "Networks"
+    "networks_title": "Networks",
+    "payment_methods": {
+      "apple_pay": "Apple Pay",
+      "bank": "Bank",
+      "card": "Card",
+      "google_pay": "Google Pay"
+    }
   }
 }
