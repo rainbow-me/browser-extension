@@ -69,7 +69,7 @@ export function TabBar({
           <Tabs.Tab
             active={activeTab === 'tokens'}
             onClick={() => onSelectTab('tokens')}
-            symbol="record.circle.fill"
+            symbol="circlebadge.2.fill"
             text="Tokens"
             tabIndex={tabIndexes.WALLET_HEADER_TOKENS_TAB}
           />
@@ -77,12 +77,13 @@ export function TabBar({
             active={activeTab === 'activity'}
             onClick={() => onSelectTab('activity')}
             symbol="bolt.fill"
+            symbolSize={12.75}
             text="Activity"
             tabIndex={tabIndexes.WALLET_HEADER_ACTIVITY_TAB}
           />
         </Tabs>
       </Box>
-      <Inset top="4px">
+      <Inset top="6px">
         {isLoading && (
           <Inline alignVertical="center">
             <Skeleton width="62px" height="11px" />

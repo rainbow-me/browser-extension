@@ -1,32 +1,53 @@
-import { useENSAvatar } from '~/core/resources/metadata/ensAvatar';
+import { useQuery } from '@tanstack/react-query';
+
+import { resolveEnsAvatar } from '~/core/resources/metadata/ensAvatar';
+import {
+  WalletAvatar,
+  useWalletAvatarStore,
+  walletAvatarStore,
+} from '~/core/state/walletAvatar';
 
 import { emojiAvatarForAddress } from '../utils/emojiAvatarForAddress';
 
-import { useDominantColor } from './useDominantColor';
+import { fetchDominantColor } from './useDominantColor';
 
-export function useAvatar({ address }: { address?: string }) {
-  const { data: ensAvatar, isFetched: avatarIsFetched } = useENSAvatar({
-    addressOrName: address,
-  });
+const fetchWalletAvatar = async ({
+  addressOrName,
+}: {
+  addressOrName: string;
+}): Promise<WalletAvatar> => {
+  const { setWalletAvatar } = walletAvatarStore.getState();
 
-  const { data: dominantColor, isError: dominantColorIsError } =
-    useDominantColor({
-      imageUrl: ensAvatar ?? undefined,
-    });
-
-  const { color: emojiColor, emoji } = emojiAvatarForAddress(address);
-
-  const avatarAvailable = ensAvatar && !dominantColorIsError;
-  const avatar = avatarIsFetched
-    ? {
-        color: avatarAvailable ? dominantColor || undefined : emojiColor,
-        imageUrl: avatarAvailable ? ensAvatar : undefined,
-        emoji,
-      }
-    : undefined;
-
-  return {
-    avatar,
-    isFetched: avatarIsFetched,
+  const ensAvatar = await resolveEnsAvatar({ addressOrName });
+  let correctEnsAvatar = true;
+  let dominantColor = null;
+  try {
+    dominantColor = await fetchDominantColor({ imageUrl: ensAvatar });
+  } catch (e) {
+    correctEnsAvatar = false;
+  }
+  const { color: emojiColor, emoji } = emojiAvatarForAddress(addressOrName);
+  const avatar = {
+    color: correctEnsAvatar ? dominantColor || emojiColor : emojiColor,
+    imageUrl: correctEnsAvatar ? ensAvatar || undefined : undefined,
+    emoji,
   };
+  setWalletAvatar({ addressOrName, walletAvatar: avatar });
+  return avatar;
+};
+
+export function useAvatar({ addressOrName }: { addressOrName?: string }) {
+  const { walletAvatar } = useWalletAvatarStore();
+
+  return useQuery(
+    ['walletAvatar', addressOrName],
+    async () =>
+      addressOrName ? fetchWalletAvatar({ addressOrName }) : undefined,
+    {
+      enabled: !!addressOrName,
+      initialData: () => {
+        return addressOrName ? walletAvatar[addressOrName] : undefined;
+      },
+    },
+  );
 }

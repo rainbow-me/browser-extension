@@ -201,7 +201,7 @@ export const SwapSettings = ({
   onDone,
 }: SwapSettingsProps) => {
   const { currentAddress } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address: currentAddress });
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { flashbots_enabled: flashbotsEnabledGlobally } = config;
   const { swapFlashbotsEnabled, setSwapFlashbotsEnabled } =
     useSwapFlashbotsEnabledStore();
