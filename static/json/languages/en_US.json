@@ -827,9 +827,8 @@
   },
   "app_connection_switcher": {
     "banner": {
-      "connect": "Connect",
-      "connect_to": "Connect to %{appName}?",
-      "app_connected": "%{appName} connected"
+      "connect_to": "Connect to %{appName}",
+      "app_connected": "%{appName} Connected"
     },
     "sheet": {
       "connect": "Connect",
