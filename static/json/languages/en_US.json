@@ -976,7 +976,7 @@
     "excellent": "Excellent",
     "8_chars_min": "8 characters min",
     "try_another_password_weak": "This is a weak password that is easy to crack. Try a stronger password.",
-    "try_another_password_common": "This is a common password that is easy to crack. Try a stronger password.",
+    "try_another_password_common": "Make your password even stronger by mixing uppercase and lowercase letters, numbers, and symbols.",
     "too_short": "Password needs to be at least 8 chars long"
   },
   "create_password": {
