@@ -62,7 +62,9 @@ export async function dappMetadataQueryFunction({
     url,
     appHost,
     appHostName,
-    appName: response?.dApp?.name ? capitalize(response?.dApp?.name) : appName,
+    appName: response?.dApp?.name
+      ? capitalize(response?.dApp?.name)
+      : appName || appHost,
     appShortName: response?.dApp?.name
       ? capitalize(response?.dApp?.shortName)
       : appName,
