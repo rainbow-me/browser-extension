@@ -130,6 +130,7 @@ export const AppConnectionNudgeBanner = ({
                     height: 36,
                     width: 36,
                   }}
+                  testId="nudge-banner-connect"
                   tabIndex={0}
                 >
                   <Box
