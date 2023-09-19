@@ -89,11 +89,9 @@ export function Activities() {
                     </Text>
                   </Inset>
                 ) : (
-                  <ActivityContextMenu transaction={tx}>
-                    <Box paddingVertical="4px">
-                      <ActivityRow transaction={tx} />
-                    </Box>
-                  </ActivityContextMenu>
+                  <Box paddingVertical="4px">
+                    <ActivityRow transaction={tx} />
+                  </Box>
                 )}
               </Box>
             );
@@ -172,39 +170,41 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
         )
       }
     >
-      <Box
-        style={{ height: '52px' }}
-        display="flex"
-        alignItems="center"
-        gap="8px"
-        paddingHorizontal="12px"
-        paddingVertical="8px"
-        borderRadius="12px"
-        className={rowTransparentAccentHighlight}
-      >
-        <ActivityIcon transaction={transaction} />
-
+      <ActivityContextMenu transaction={transaction}>
         <Box
+          style={{ height: '52px' }}
           display="flex"
-          justifyContent="space-between"
-          width="full"
-          gap="4px"
+          alignItems="center"
+          gap="8px"
+          paddingHorizontal="12px"
+          paddingVertical="8px"
+          borderRadius="12px"
+          className={rowTransparentAccentHighlight}
         >
+          <ActivityIcon transaction={transaction} />
+
           <Box
             display="flex"
-            flexShrink="1"
-            flexDirection="column"
-            alignItems="flex-start"
-            justifyContent="center"
-            gap="8px"
+            justifyContent="space-between"
+            width="full"
+            gap="4px"
           >
-            <ActivityTypeLabel transaction={transaction} />
-            <ActivityDescription transaction={transaction} />
-          </Box>
+            <Box
+              display="flex"
+              flexShrink="1"
+              flexDirection="column"
+              alignItems="flex-start"
+              justifyContent="center"
+              gap="8px"
+            >
+              <ActivityTypeLabel transaction={transaction} />
+              <ActivityDescription transaction={transaction} />
+            </Box>
 
-          <ActivityValue transaction={transaction} />
+            <ActivityValue transaction={transaction} />
+          </Box>
         </Box>
-      </Box>
+      </ActivityContextMenu>
     </Lens>
   );
 }
