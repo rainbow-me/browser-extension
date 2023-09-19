@@ -138,6 +138,7 @@ export type BackgroundColor =
   | 'fillHorizontal'
   | 'fillSecondary'
   | 'fillTertiary'
+  | 'fillQuaternary'
   | 'white'
   | 'blue'
   | 'green'
@@ -297,6 +298,16 @@ export const backgroundColors: Record<
     },
     dark: {
       color: 'rgba(245, 248, 255, 0.08)',
+      setColorContext: 'dark',
+    },
+  },
+  fillQuaternary: {
+    light: {
+      color: globalColors.grey10,
+      setColorContext: 'light',
+    },
+    dark: {
+      color: 'rgba(245, 248, 255, 0.04)',
       setColorContext: 'dark',
     },
   },
@@ -502,6 +513,7 @@ export type ForegroundColor =
   | 'fill'
   | 'fillSecondary'
   | 'fillTertiary'
+  | 'fillQuaternary'
   | 'scrim'
   | 'scrimSecondary'
   | 'scrimTertiary'
@@ -549,6 +561,7 @@ export const foregroundColors: Record<
   fill: selectBackgroundAsForeground('fill'),
   fillSecondary: selectBackgroundAsForeground('fillSecondary'),
   fillTertiary: selectBackgroundAsForeground('fillTertiary'),
+  fillQuaternary: selectBackgroundAsForeground('fillQuaternary'),
   separator: selectBackgroundAsForeground('separator'),
   separatorSecondary: selectBackgroundAsForeground('separatorSecondary'),
   separatorTertiary: selectBackgroundAsForeground('separatorTertiary'),
@@ -859,6 +872,7 @@ export const symbolNames = selectSymbolNames(
   'circle',
   'checkmark.circle.fill',
   'record.circle.fill',
+  'bolt',
   'bolt.fill',
   'rectangle.and.hand.point.up.left.filled',
   'xmark.circle',
@@ -974,6 +988,7 @@ export const symbolNames = selectSymbolNames(
   'minus.circle',
   'hare',
   'arrow.turn.left.down',
+  'arrow.turn.right.down',
   'arrow.turn.right.up',
   'cable.connector',
   'person.fill.viewfinder',
@@ -984,6 +999,9 @@ export const symbolNames = selectSymbolNames(
   '123.rectangle.fill',
   'clock.arrow.2.circlepath',
   'speaker.wave.2.fill',
+  'creditcard',
+  'creditcard.fill',
+  'building.columns',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

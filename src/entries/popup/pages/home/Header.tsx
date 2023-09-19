@@ -19,6 +19,7 @@ import { triggerToast } from '../../components/Toast/Toast';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useScroll } from '../../hooks/useScroll';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
@@ -131,6 +132,7 @@ export function AvatarSection() {
 function ActionButtonsSection() {
   const { address } = useAccount();
   const { data: avatar } = useAvatar({ addressOrName: address });
+  const navigate = useRainbowNavigate();
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
@@ -168,6 +170,14 @@ function ActionButtonsSection() {
     <Box style={{ height: 54 }}>
       {avatar?.color && (
         <Inline space="8px">
+          <ActionButton
+            symbol="creditcard.fill"
+            testId="header-link-buy"
+            text={i18n.t('wallet_header.buy')}
+            tabIndex={tabIndexes.WALLET_HEADER_BUY_BUTTON}
+            onClick={() => navigate(ROUTES.BUY)}
+          />
+
           <ActionButton
             symbol="square.on.square"
             text={i18n.t('wallet_header.copy')}

@@ -1,14 +1,11 @@
-/* eslint-disable no-nested-ternary */
-import { useMemo, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { fetchProviderWidgetUrl, useProvidersList } from '~/core/resources/f2c';
 import { ProviderConfig } from '~/core/resources/f2c/types';
 import { useCurrentAddressStore } from '~/core/state/currentSettings/currentAddress';
+import { Box, Stack } from '~/design-system';
 
-import { Box } from '~/design-system';
-import { Menu } from '~/entries/popup/components/Menu/Menu';
-import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
-import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+import { ProviderCard } from '../../components/Buy/ProviderCard';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { MoonpayIcon } from '../../components/MoonpayIcon/MoonpayIcon';
 import { RampIcon } from '../../components/RampIcon/RampIcon';
@@ -21,44 +18,40 @@ export function Buy() {
     [data],
   );
 
-  const handleProvider = useCallback(async (provider: ProviderConfig) => {
-    const { data } = await fetchProviderWidgetUrl({
-      provider: provider.id,
-      depositAddress,
-    });
-    window.open(data.url, '_blank');
-  }, [providers, depositAddress]);
+  const handleProvider = useCallback(
+    async (provider: ProviderConfig) => {
+      const { data } = await fetchProviderWidgetUrl({
+        provider: provider.id,
+        depositAddress,
+      });
+      window.open(data.url, '_blank');
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [providers, depositAddress],
+  );
 
   return (
     <Box>
       <Box paddingHorizontal="20px">
-        <MenuContainer>
+        <Stack space="16px">
           {providers?.map((provider, idx) => {
             return (
-              <Menu key={idx}>
-                <MenuItem
-                  testId={`provider-${provider.id}`}
-                  first
-                  titleComponent={
-                    <MenuItem.Title text={provider.content.title} />
-                  }
-                  labelComponent={
-                    <MenuItem.Label text={provider.content.description} />
-                  }
-                  leftComponent={
-                    {
-                      moonpay: <MoonpayIcon />,
-                      ramp: <RampIcon />,
-                      coinbase: <CoinbaseIcon />,
-                    }[provider.id]
-                  }
-                  onClick={() => handleProvider(provider)}
-                  hasRightArrow
-                />
-              </Menu>
+              <ProviderCard
+                logo={
+                  {
+                    moonpay: <MoonpayIcon height={18} width={18} />,
+                    ramp: <RampIcon height={15} width={15} />,
+                    coinbase: <CoinbaseIcon height={20} width={20} />,
+                  }[provider.id]
+                }
+                key={idx}
+                onClick={() => handleProvider(provider)}
+                provider={provider}
+                testId={`provider-${provider.id}`}
+              />
             );
           })}
-        </MenuContainer>
+        </Stack>
       </Box>
     </Box>
   );

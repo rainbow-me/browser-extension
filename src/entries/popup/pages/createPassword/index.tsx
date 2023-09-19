@@ -246,7 +246,6 @@ export function CreatePassword() {
                     borderRadius="8px"
                     borderWidth="1px"
                     borderColor="separatorSecondary"
-                    style={{ height: 50 }}
                   >
                     <Inline space="8px" wrap={false} alignVertical="center">
                       <Box width="fit">

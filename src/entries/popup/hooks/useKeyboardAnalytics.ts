@@ -22,6 +22,7 @@ export type KeyboardEventDescription =
   | 'home.copyAddress'
   | 'home.dismissSheet'
   | 'home.disconnectApp'
+  | 'home.goToBuy'
   | 'home.goToConnectedApps'
   | 'home.goToProfile'
   | 'home.goToSend'
