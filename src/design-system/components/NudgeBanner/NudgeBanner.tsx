@@ -26,6 +26,7 @@ export const NudgeBanner = ({ show, children, zIndex }: NudgeBannerProps) => {
             y: featureFlags.new_tab_bar_enabled ? -64 : 0,
           }}
           as={motion.div}
+          background="surfaceMenu"
           borderColor={currentTheme === 'dark' ? 'buttonStroke' : 'transparent'}
           borderRadius="20px"
           borderWidth="1px"
@@ -44,10 +45,6 @@ export const NudgeBanner = ({ show, children, zIndex }: NudgeBannerProps) => {
           style={{
             alignSelf: 'center',
             backdropFilter: 'blur(26px)',
-            backgroundColor:
-              currentTheme === 'dark'
-                ? 'rgba(53, 54, 58, 0.8)'
-                : 'rgba(255, 255, 255, 0.8)',
             left: 16,
             right: 16,
             willChange: 'transform',
