@@ -13,6 +13,7 @@ import { fetchProviderWidgetUrl } from '~/core/resources/f2c';
 import { FiatProviderName } from '~/core/resources/f2c/types';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { UniqueId } from '~/core/types/assets';
@@ -22,6 +23,7 @@ import {
   Columns,
   Inline,
   Inset,
+  Stack,
   Symbol,
   Text,
 } from '~/design-system';
@@ -31,11 +33,8 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
-import { BuyIcon } from '../../components/BuyIcon/BuyIcon';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
-import { Link } from '../../components/Link/Link';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
-import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -269,6 +268,7 @@ type EmptyStateProps = {
 };
 
 function TokensEmptyState({ depositAddress }: EmptyStateProps) {
+  const { currentTheme } = useCurrentThemeStore();
   const handleCoinbase = useCallback(async () => {
     const { data } = await fetchProviderWidgetUrl({
       provider: FiatProviderName.Coinbase,
@@ -280,118 +280,208 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
 
   return (
     <Inset horizontal="20px">
-      <Box paddingBottom="8px">
-        <Link
-          tabIndex={-1}
-          to={ROUTES.BUY}
-          state={{ from: ROUTES.HOME, to: ROUTES.BUY }}
-        >
-          <Box
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            borderColor="separatorTertiary"
-            boxShadow="12px"
-          >
-            <Inset horizontal="16px" vertical="16px">
-              <Box paddingBottom="12px">
-                <Inline alignVertical="center" alignHorizontal="justify">
-                  <Box>
-                    <Inline alignVertical="center" space="8px">
-                      <BuyIcon />
-                      <Text as="p" size="14pt" color="label" weight="semibold">
-                        {i18n.t('tokens_tab.buy_title')}
-                      </Text>
-                    </Inline>
-                  </Box>
-                  <Symbol
-                    size={12}
-                    symbol="arrow.up.forward.circle"
-                    weight="semibold"
-                    color="labelTertiary"
-                  />
-                </Inline>
-              </Box>
-              <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-                {i18n.t('tokens_tab.buy_description')}
-              </Text>
-            </Inset>
-          </Box>
-        </Link>
-      </Box>
-
-      <Box paddingBottom="8px">
+      <Stack space="12px">
         <Box
           background="surfaceSecondaryElevated"
           borderRadius="16px"
-          borderColor="separatorTertiary"
           boxShadow="12px"
+          cursor="pointer"
           onClick={handleCoinbase}
+          style={{ overflow: 'hidden' }}
         >
-          <Inset horizontal="16px" vertical="16px">
-            <Box paddingBottom="12px">
+          <Box
+            background={{ default: 'transparent', hover: 'fillQuaternary' }}
+            cursor="pointer"
+            height="full"
+            padding="16px"
+            width="full"
+          >
+            <Stack space="12px">
               <Inline alignVertical="center" alignHorizontal="justify">
                 <Box>
-                  <Inline alignVertical="center" space="8px">
-                    <CoinbaseIcon />
-                    <Text as="p" size="14pt" color="label" weight="semibold">
+                  <Inline alignVertical="center" space="7px">
+                    <Box
+                      alignItems="center"
+                      display="flex"
+                      justifyContent="center"
+                      style={{ height: 12, width: 18 }}
+                    >
+                      <CoinbaseIcon showBackground />
+                    </Box>
+                    <Text
+                      as="p"
+                      cursor="pointer"
+                      size="14pt"
+                      color="label"
+                      weight="bold"
+                    >
                       {i18n.t('tokens_tab.coinbase_title')}
                     </Text>
                   </Inline>
                 </Box>
                 <Symbol
+                  cursor="pointer"
                   size={12}
                   symbol="arrow.up.forward.circle"
                   weight="semibold"
                   color="labelTertiary"
                 />
               </Inline>
-            </Box>
-            <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-              {i18n.t('tokens_tab.coinbase_description')}
-            </Text>
-          </Inset>
+              <Box alignItems="center" display="flex" style={{ height: 10 }}>
+                <Text
+                  as="p"
+                  cursor="pointer"
+                  size="11pt"
+                  color="labelTertiary"
+                  weight="bold"
+                >
+                  {i18n.t('tokens_tab.coinbase_description')}
+                </Text>
+              </Box>
+            </Stack>
+          </Box>
         </Box>
-      </Box>
 
-      <Box
-        background="surfacePrimaryElevated"
-        borderRadius="16px"
-        borderColor="separatorTertiary"
-        boxShadow="12px"
-        borderWidth="1px"
-      >
-        <Inset horizontal="16px" vertical="16px">
-          <Box paddingBottom="12px">
-            <Inline alignVertical="center" space="8px">
-              <WalletIcon />
-              <Text as="p" size="14pt" color="label" weight="semibold">
+        <Box
+          borderRadius="16px"
+          padding="16px"
+          style={{
+            boxShadow: `0 0 0 1px ${
+              currentTheme === 'dark'
+                ? 'rgba(245, 248, 255, 0.025)'
+                : 'rgba(9, 17, 31, 0.03)'
+            } inset`,
+          }}
+        >
+          <Stack space="12px">
+            <Inline alignVertical="center" space="7px">
+              <Box
+                alignItems="center"
+                display="flex"
+                justifyContent="center"
+                style={{ height: 12, width: 18 }}
+              >
+                <Symbol
+                  color="accent"
+                  size={16}
+                  symbol="creditcard.fill"
+                  weight="bold"
+                />
+              </Box>
+              <Text as="p" size="14pt" color="label" weight="bold">
+                {i18n.t('tokens_tab.buy_title')}
+              </Text>
+            </Inline>
+            <Box alignItems="center" display="flex" style={{ height: 10 }}>
+              <Text as="p" size="11pt" color="labelTertiary" weight="bold">
+                {i18n.t('tokens_tab.buy_description_1')}
+                <Box
+                  background="fillTertiary"
+                  as="span"
+                  borderWidth="1px"
+                  borderColor="separatorTertiary"
+                  boxShadow="1px"
+                  style={{
+                    display: 'inline-block',
+                    width: '16px',
+                    height: '14px',
+                    borderRadius: '4.5px',
+                    verticalAlign: 'middle',
+                    textAlign: 'center',
+                    lineHeight: '12px',
+                    marginLeft: '4px',
+                    marginRight: '4px',
+                  }}
+                >
+                  {shortcuts.home.BUY.display}
+                </Box>
+                {i18n.t('tokens_tab.buy_description_2')}
+              </Text>
+            </Box>
+          </Stack>
+        </Box>
+
+        <Box
+          borderRadius="16px"
+          padding="16px"
+          style={{
+            boxShadow: `0 0 0 1px ${
+              currentTheme === 'dark'
+                ? 'rgba(245, 248, 255, 0.025)'
+                : 'rgba(9, 17, 31, 0.03)'
+            } inset`,
+          }}
+        >
+          <Stack space="12px">
+            <Inline alignVertical="center" space="7px">
+              <Box
+                alignItems="center"
+                display="flex"
+                justifyContent="center"
+                paddingLeft="2px"
+                style={{ height: 12, width: 18 }}
+              >
+                <Symbol
+                  color="accent"
+                  size={14.5}
+                  symbol="arrow.turn.right.down"
+                  weight="bold"
+                />
+              </Box>
+              <Text as="p" size="14pt" color="label" weight="bold">
                 {i18n.t('tokens_tab.send_from_wallet')}
               </Text>
             </Inline>
-          </Box>
-          <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-            {i18n.t('tokens_tab.send_description_1')}
-            <Box
-              background="fillSecondary"
-              as="span"
-              style={{
-                display: 'inline-block',
-                width: '16px',
-                height: '16px',
-                borderRadius: '4px',
-                verticalAlign: 'middle',
-                textAlign: 'center',
-                lineHeight: '16px',
-                marginLeft: '3px',
-                marginRight: '3px',
-              }}
-            >
-              C
+            <Box alignItems="center" display="flex" style={{ height: 10 }}>
+              <Text as="p" size="11pt" color="labelTertiary" weight="bold">
+                {i18n.t('tokens_tab.send_description_1')}
+                <Box
+                  background="fillTertiary"
+                  as="span"
+                  borderWidth="1px"
+                  borderColor="separatorTertiary"
+                  boxShadow="1px"
+                  style={{
+                    display: 'inline-block',
+                    width: '16px',
+                    height: '14px',
+                    borderRadius: '4.5px',
+                    verticalAlign: 'middle',
+                    textAlign: 'center',
+                    lineHeight: '12px',
+                    marginLeft: '4px',
+                    marginRight: '4px',
+                  }}
+                >
+                  {shortcuts.home.COPY_ADDRESS.display}
+                </Box>
+                {i18n.t('tokens_tab.send_description_2')}
+                <Box
+                  background="fillTertiary"
+                  as="span"
+                  borderWidth="1px"
+                  borderColor="separatorTertiary"
+                  boxShadow="1px"
+                  style={{
+                    display: 'inline-block',
+                    width: '16px',
+                    height: '14px',
+                    borderRadius: '4.5px',
+                    verticalAlign: 'middle',
+                    textAlign: 'center',
+                    lineHeight: '12px',
+                    marginLeft: '4px',
+                    marginRight: '4px',
+                  }}
+                >
+                  {shortcuts.home.GO_TO_QR.display}
+                </Box>
+                {i18n.t('tokens_tab.send_description_3')}
+              </Text>
             </Box>
-            {i18n.t('tokens_tab.send_description_2')}
-          </Text>
-        </Inset>
-      </Box>
+          </Stack>
+        </Box>
+      </Stack>
     </Inset>
   );
 }
