@@ -71,10 +71,8 @@ export const AppConnectionNudgeBanner = ({
             <Columns alignVertical="center" space="10px">
               <Column width="content">
                 <Box
-                  background="fill"
-                  borderColor="separatorSecondary"
+                  background="fillSecondary"
                   borderRadius="10px"
-                  borderWidth="1px"
                   boxShadow="12px"
                   position="relative"
                   style={{
@@ -83,25 +81,11 @@ export const AppConnectionNudgeBanner = ({
                     width: '36px',
                   }}
                 >
-                  <Inline
-                    alignHorizontal="center"
-                    alignVertical="center"
-                    height="full"
-                  >
-                    <Box
-                      style={{
-                        height: '30px',
-                        overflow: 'hidden',
-                        width: '30px',
-                      }}
-                    >
-                      <ExternalImage
-                        height="30"
-                        src={dappMetadata?.appLogo}
-                        width="30"
-                      />
-                    </Box>
-                  </Inline>
+                  <ExternalImage
+                    height="36"
+                    src={dappMetadata?.appLogo}
+                    width="36"
+                  />
                 </Box>
               </Column>
               <Column>
