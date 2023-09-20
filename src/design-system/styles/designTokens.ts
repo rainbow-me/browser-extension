@@ -841,6 +841,7 @@ export const strokeWeights = {
   '0px': 0,
   '0.5px': 0.5,
   '1px': 1,
+  '1.5px': 1.5,
   '2px': 2,
   '3px': 3,
 };
