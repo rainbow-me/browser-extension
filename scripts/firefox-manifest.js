@@ -8,7 +8,7 @@ const manifestFF = {
     },
     browser_specific_settings: {
       "gecko": {
-        "id": "bx@rainbow.me",
+        "id": "browserextension@rainbow.me",
         "strict_min_version": "115.0"
       },
     },
