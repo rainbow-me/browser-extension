@@ -30,7 +30,7 @@ export const supportedLanguages = {
     label: '日本語',
   },
   [Language.PT_BR]: {
-    label: 'Português',
+    label: 'Português brasileiro',
   },
   [Language.ZH_CN]: {
     label: '中文',
