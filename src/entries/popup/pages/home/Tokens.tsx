@@ -38,6 +38,7 @@ import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useSystemSpecificModifierKey } from '../../hooks/useSystemSpecificModifierKey';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
 import { ROUTES } from '../../urls';
 
@@ -52,6 +53,7 @@ export function Tokens() {
     useState(false);
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const { trackShortcut } = useKeyboardAnalytics();
+  const { modifierSymbol } = useSystemSpecificModifierKey();
 
   const {
     data: assets = [],
@@ -117,7 +119,7 @@ export function Tokens() {
       marginTop="-16px"
     >
       <QuickPromo
-        text={i18n.t('command_k.quick_promo.text')}
+        text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
         textBold={i18n.t('command_k.quick_promo.text_bold')}
         style={{
           paddingBottom: 12,

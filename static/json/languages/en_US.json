@@ -426,7 +426,7 @@
       }
     },
     "quick_promo": {
-      "text": "Press ⌘K to open the command menu",
+      "text": "Press %{modifierSymbol}K to open the Magic Menu",
       "text_bold": "Tip:"
     },
     "toolbar": {
