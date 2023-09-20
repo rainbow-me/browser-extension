@@ -39,7 +39,7 @@ export const supportedLanguages = {
     label: 'العربية',
   },
   [Language.PT_BR]: {
-    label: 'Português',
+    label: 'Português brasileiro',
   },
   [Language.RU_RU]: {
     label: 'Русский',
