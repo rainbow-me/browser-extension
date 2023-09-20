@@ -2,9 +2,6 @@
 name: Publish to Chrome WebStore (Production)
 
 on:
-  # schedule:
-  # Runs every day at midnight
-  # - cron: '0 0 * * *'
   workflow_dispatch:
 jobs:
   build:
@@ -32,22 +29,23 @@ jobs:
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Fetch the current version number
         run: echo "release_version=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
-      - name: Build the extension ready for the stores
+      - name: Build the extension ready for the Chrome Webstore
         run: yarn build:webpack
       - name: Update the manifest
         run: yarn update-manifest prod
       - name: Archive the build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: rainbowbx-v${{ env.release_version }}.zip
+          name: rainbowbx-chrome-v${{ env.release_version }}.zip
           path: build/
       - name: Zip it
         run: yarn zip
       - name: Submit to the chrome webstore
-        uses: PlasmoHQ/bpp@v3
+        uses: PlasmoHQ/bpp@v3.5.0
         with:
           artifact: ./rainbowbx.zip
           keys: ${{ secrets.BPP_KEYS_PROD }}
+      
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:

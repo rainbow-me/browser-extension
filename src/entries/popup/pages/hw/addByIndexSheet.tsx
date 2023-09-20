@@ -420,7 +420,7 @@ export const AddByIndexSheet = ({
                           />
                         ) : (
                           <WalletAvatar
-                            address={newAccount.address}
+                            addressOrName={newAccount.address}
                             size={36}
                             emojiSize="20pt"
                           />

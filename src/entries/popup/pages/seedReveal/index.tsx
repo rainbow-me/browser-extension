@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import {
   Bleed,
   Box,
@@ -24,7 +25,7 @@ import { ROUTES } from '../../urls';
 
 export function SeedReveal() {
   const navigate = useRainbowNavigate();
-
+  const { setWalletBackedUp } = useWalletBackupsStore();
   const [seed, setSeed] = useState('');
   const { currentAddress } = useCurrentAddressStore();
 
@@ -37,8 +38,9 @@ export function SeedReveal() {
   }, [currentAddress]);
 
   const handleSavedTheseWords = React.useCallback(() => {
+    setWalletBackedUp({ address: currentAddress });
     navigate(ROUTES.SEED_VERIFY);
-  }, [navigate]);
+  }, [currentAddress, navigate, setWalletBackedUp]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(seed as string);

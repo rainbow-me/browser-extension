@@ -53,7 +53,7 @@ const GroupAvatar = ({ accounts }: { accounts: Address[] }) => {
                 <WalletAvatar
                   size={12}
                   emojiSize="7pt"
-                  address={accounts[0]}
+                  addressOrName={accounts[0]}
                   emojiPaddingLeft="1px"
                   emojiPaddingTop="1px"
                 />
@@ -64,7 +64,7 @@ const GroupAvatar = ({ accounts }: { accounts: Address[] }) => {
                 <WalletAvatar
                   size={12}
                   emojiSize="7pt"
-                  address={accounts[1]}
+                  addressOrName={accounts[1]}
                   emojiPaddingLeft="1px"
                   emojiPaddingTop="1px"
                 />
@@ -79,7 +79,7 @@ const GroupAvatar = ({ accounts }: { accounts: Address[] }) => {
                 <WalletAvatar
                   size={12}
                   emojiSize="7pt"
-                  address={accounts[2]}
+                  addressOrName={accounts[2]}
                   emojiPaddingLeft="1px"
                   emojiPaddingTop="1px"
                 />
@@ -90,7 +90,7 @@ const GroupAvatar = ({ accounts }: { accounts: Address[] }) => {
                 <WalletAvatar
                   size={12}
                   emojiSize="7pt"
-                  address={accounts[3]}
+                  addressOrName={accounts[3]}
                   emojiPaddingLeft="1px"
                   emojiPaddingTop="1px"
                 />

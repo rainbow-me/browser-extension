@@ -6,7 +6,7 @@ import { Avatar } from '../../components/Avatar/Avatar';
 import { useAvatar } from '../../hooks/useAvatar';
 
 export function WalletAvatar({
-  address,
+  addressOrName,
   size,
   emojiSize,
   mask,
@@ -15,7 +15,7 @@ export function WalletAvatar({
   emojiPaddingTop,
   boxShadow,
 }: {
-  address?: string;
+  addressOrName?: string;
   size: number;
   emojiSize?: TextStyles['fontSize'];
   mask?: string;
@@ -24,7 +24,7 @@ export function WalletAvatar({
   emojiPaddingTop?: BoxStyles['paddingTop'];
   boxShadow?: BoxStyles['boxShadow'];
 }) {
-  const { avatar, isFetched } = useAvatar({ address });
+  const { data: avatar, isFetched } = useAvatar({ addressOrName });
 
   return (
     <AccentColorProvider color={avatar?.color || '#000000'}>
@@ -39,7 +39,7 @@ export function WalletAvatar({
           overflow: 'hidden',
         }}
       >
-        {isFetched && address ? (
+        {isFetched && addressOrName ? (
           <>
             {avatar?.imageUrl ? (
               <Avatar.Image

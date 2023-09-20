@@ -6,7 +6,7 @@ import {
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { truncateString } from '~/core/utils/strings';
-import { Box, Inline, Inset, Text } from '~/design-system';
+import { Box, Column, Columns, Inline, Inset, Text } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
@@ -89,11 +89,9 @@ export function Activities() {
                     </Text>
                   </Inset>
                 ) : (
-                  <ActivityContextMenu transaction={tx}>
-                    <Box paddingVertical="4px">
-                      <ActivityRow transaction={tx} />
-                    </Box>
-                  </ActivityContextMenu>
+                  <Box paddingVertical="4px">
+                    <ActivityRow transaction={tx} />
+                  </Box>
                 )}
               </Box>
             );
@@ -126,30 +124,34 @@ const ActivityDescription = ({
   if (nftChangesAmount) tag = nftChangesAmount.toString();
 
   return (
-    <Inline space="4px" alignVertical="center" wrap={false}>
-      <TextOverflow size="14pt" weight="semibold">
-        {description}
-      </TextOverflow>
-      {tag && (
-        <Box
-          paddingHorizontal="5px"
-          paddingVertical="4px"
-          marginVertical="-3px"
-          borderColor="separatorSecondary"
-          borderRadius="6px"
-          borderWidth="1px"
-        >
-          <Text
-            size="11pt"
-            weight="semibold"
-            align="right"
-            color="labelTertiary"
+    <Columns space="4px" alignVertical="center">
+      <Column>
+        <TextOverflow size="14pt" weight="semibold">
+          {description}
+        </TextOverflow>
+      </Column>
+      <Column width="content">
+        {tag && (
+          <Box
+            paddingHorizontal="5px"
+            paddingVertical="4px"
+            marginVertical="-3px"
+            borderColor="separatorSecondary"
+            borderRadius="6px"
+            borderWidth="1px"
           >
-            {truncateString(tag, 25)}
-          </Text>
-        </Box>
-      )}
-    </Inline>
+            <Text
+              size="11pt"
+              weight="semibold"
+              align="right"
+              color="labelTertiary"
+            >
+              {truncateString(tag, 25)}
+            </Text>
+          </Box>
+        )}
+      </Column>
+    </Columns>
   );
 };
 
@@ -168,39 +170,41 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
         )
       }
     >
-      <Box
-        style={{ height: '52px' }}
-        display="flex"
-        alignItems="center"
-        gap="8px"
-        paddingHorizontal="12px"
-        paddingVertical="8px"
-        borderRadius="12px"
-        className={rowTransparentAccentHighlight}
-      >
-        <ActivityIcon transaction={transaction} />
-
+      <ActivityContextMenu transaction={transaction}>
         <Box
+          style={{ height: '52px' }}
           display="flex"
-          justifyContent="space-between"
-          width="full"
-          gap="4px"
+          alignItems="center"
+          gap="8px"
+          paddingHorizontal="12px"
+          paddingVertical="8px"
+          borderRadius="12px"
+          className={rowTransparentAccentHighlight}
         >
+          <ActivityIcon transaction={transaction} />
+
           <Box
             display="flex"
-            flexShrink="1"
-            flexDirection="column"
-            alignItems="flex-start"
-            justifyContent="center"
-            gap="8px"
+            justifyContent="space-between"
+            width="full"
+            gap="4px"
           >
-            <ActivityTypeLabel transaction={transaction} />
-            <ActivityDescription transaction={transaction} />
-          </Box>
+            <Box
+              display="flex"
+              flexShrink="1"
+              flexDirection="column"
+              alignItems="flex-start"
+              justifyContent="center"
+              gap="8px"
+            >
+              <ActivityTypeLabel transaction={transaction} />
+              <ActivityDescription transaction={transaction} />
+            </Box>
 
-          <ActivityValue transaction={transaction} />
+            <ActivityValue transaction={transaction} />
+          </Box>
         </Box>
-      </Box>
+      </ActivityContextMenu>
     </Lens>
   );
 }
@@ -219,15 +223,19 @@ const ActivityTypeLabel = ({
   const color = typeLabelColor[status];
 
   return (
-    <Inline space="4px" wrap={false}>
-      <Box style={{ width: 9, height: 9 }}>
-        <Inline height="full" alignHorizontal="center" alignVertical="center">
-          <ActivityTypeIcon transaction={{ status, type }} />
-        </Inline>
-      </Box>
-      <Text size="12pt" weight="semibold" align="right" color={color}>
-        {truncateString(title, 20)}
-      </Text>
-    </Inline>
+    <Columns space="4px">
+      <Column>
+        <Box style={{ width: 9, height: 9 }}>
+          <Inline height="full" alignHorizontal="center" alignVertical="center">
+            <ActivityTypeIcon transaction={{ status, type }} />
+          </Inline>
+        </Box>
+      </Column>
+      <Column width="content">
+        <Text size="12pt" weight="semibold" align="right" color={color}>
+          {truncateString(title, 20)}
+        </Text>
+      </Column>
+    </Columns>
   );
 };

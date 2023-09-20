@@ -52,12 +52,14 @@ function AvatarWrapper({
 function AvatarContent({
   backgroundColor,
   children,
+  emoji,
   mask,
   paddingLeft,
   paddingTop,
 }: {
   backgroundColor?: string;
   children: React.ReactNode;
+  emoji?: boolean;
   mask?: string;
   paddingLeft?: BoxStyles['paddingLeft'];
   paddingTop?: BoxStyles['paddingTop'];
@@ -67,7 +69,7 @@ function AvatarContent({
       display="flex"
       alignItems="center"
       justifyContent="center"
-      height="full"
+      height={emoji ? 'full' : undefined}
       width="full"
       top="0"
       left="0"
@@ -133,6 +135,7 @@ function AvatarEmoji({
 }) {
   return (
     <AvatarContent
+      emoji
       mask={mask}
       backgroundColor={color}
       paddingLeft={paddingLeft}

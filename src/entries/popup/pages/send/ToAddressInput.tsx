@@ -117,7 +117,7 @@ const WalletRow = ({
     >
       <Columns alignVertical="center" space="8px">
         <Column width="content">
-          <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
+          <WalletAvatar size={36} addressOrName={wallet} emojiSize="20pt" />
         </Column>
         <Column>
           <Stack space="8px">
@@ -350,7 +350,11 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
           testId={'to-address-input'}
           leftComponent={
             <Box borderRadius="18px">
-              <WalletAvatar address={toAddress} size={36} emojiSize="20pt" />
+              <WalletAvatar
+                addressOrName={toAddress}
+                size={36}
+                emojiSize="20pt"
+              />
             </Box>
           }
           centerComponent={

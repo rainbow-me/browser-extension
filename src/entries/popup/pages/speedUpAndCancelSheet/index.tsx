@@ -45,6 +45,7 @@ import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { sendTransaction } from '../../handlers/wallet';
+import { zIndexes } from '../../utils/zIndexes';
 
 const calcGasParamRetryValue = (prevWeiValue?: string) => {
   const prevWeiValueBN = new BigNumber(prevWeiValue || 0);
@@ -230,7 +231,7 @@ export function SpeedUpAndCancelSheet({
   }, []);
 
   return (
-    <Prompt show={true} padding="12px">
+    <Prompt zIndex={zIndexes.SPEED_UP_CANCEL_PROMPT} show={true} padding="12px">
       <Box
         style={{
           height: window.innerHeight - 64,
@@ -330,7 +331,7 @@ export function SpeedUpAndCancelSheet({
                           <Inline alignVertical="center" space="4px">
                             {transaction?.to && (
                               <WalletAvatar
-                                address={transaction.to}
+                                addressOrName={transaction.to}
                                 size={18}
                                 emojiSize="12pt"
                               />

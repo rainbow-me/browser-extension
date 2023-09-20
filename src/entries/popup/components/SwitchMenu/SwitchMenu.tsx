@@ -57,7 +57,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
   ) {
     const { currentTheme } = useCurrentThemeStore();
     const { currentAddress } = useCurrentAddressStore();
-    const { avatar } = useAvatar({ address: currentAddress });
+    const { data: avatar } = useAvatar({ addressOrName: currentAddress });
     return (
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content

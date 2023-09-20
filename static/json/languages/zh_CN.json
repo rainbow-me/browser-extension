@@ -681,10 +681,7 @@
     "disclaimer_tos": "继续操作即表示您同意使用 Rainbow 的",
     "disclaimer_tos_link": "使用条款",
     "invalid_code": "无效代码",
-    "join": "加入",
-    "invite_code_explanation": "Rainbow 目前处于一个私人测试阶段，并且需要邀请码才能访问。如果您需要一个，您可以",
-    "invite_code_explanation_link": "在这里获取",
-    "enter_code": "输入您的测试代码"
+    "join": "加入"
   },
   "seed_backup_prompt": {
     "title": "在开始之前，请备份您的恢复密语",

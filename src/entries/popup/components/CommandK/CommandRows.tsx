@@ -160,7 +160,7 @@ export const ShortcutRow = ({
     if (isAddAsWatchedWalletRow || isSwitchToWalletRow) {
       return (
         <WalletAvatar
-          address={command.address || ''}
+          addressOrName={command.address || ''}
           boxShadow="12px accent"
           emojiPaddingTop="1px"
           emojiSize="10pt"
@@ -336,7 +336,7 @@ export const WalletRow = ({
   const Avatar = React.useMemo(
     () => (
       <WalletAvatar
-        address={address}
+        addressOrName={address}
         boxShadow="12px accent"
         emojiPaddingTop="1px"
         emojiSize="10pt"

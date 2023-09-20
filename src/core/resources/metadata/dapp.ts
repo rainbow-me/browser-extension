@@ -47,25 +47,29 @@ export async function dappMetadataQueryFunction({
   if (!url) return null;
   const { setDappMetadata } = dappMetadataStore.getState();
   const appHostName = url && isValidUrl(url) ? getDappHostname(url) : '';
-  const appName =
+  const hardcodedAppName =
     url && isValidUrl(url)
       ? getHardcodedDappInformation(appHostName)?.name || ''
       : '';
   const response = await metadataClient.dApp({
-    shortName: appName,
+    shortName: hardcodedAppName,
     url,
   });
 
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
   const appLogo = appHost ? getPublicAppIcon(appHost) : undefined;
+  const appName = response?.dApp?.name
+    ? capitalize(response?.dApp?.name)
+    : hardcodedAppName || appHost;
+  const appShortName = response?.dApp?.shortName
+    ? capitalize(response?.dApp?.shortName)
+    : appName;
   const dappMetadata = {
     url,
     appHost,
     appHostName,
-    appName: response?.dApp?.name ? capitalize(response?.dApp?.name) : appName,
-    appShortName: response?.dApp?.name
-      ? capitalize(response?.dApp?.shortName)
-      : appName,
+    appName,
+    appShortName,
     appLogo: response?.dApp?.iconURL || appLogo,
   };
   setDappMetadata({ host: appHost, dappMetadata });

@@ -149,11 +149,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
               <DropdownMenuSeparator />
               <DropdownMenuRadioItem highlightAccentColor value="profile">
                 <Box width="full">
-                  <Inline
-                    alignVertical="center"
-                    alignHorizontal="justify"
-                    space="8px"
-                  >
+                  <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="8px">
                       <Symbol
                         size={12}
@@ -175,11 +171,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem highlightAccentColor value="support">
                 <Box width="full">
-                  <Inline
-                    alignVertical="center"
-                    alignHorizontal="justify"
-                    space="8px"
-                  >
+                  <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="8px">
                       <Symbol
                         size={12}
@@ -201,13 +193,8 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem highlightAccentColor value="feedback">
                 <Box width="full">
-                  <Inline
-                    alignVertical="center"
-                    alignHorizontal="justify"
-                    wrap={false}
-                    space="8px"
-                  >
-                    <Inline alignVertical="center" space="8px" wrap={false}>
+                  <Inline alignVertical="center" alignHorizontal="justify">
+                    <Inline alignVertical="center" space="8px">
                       <Symbol
                         size={12}
                         symbol="message.fill"

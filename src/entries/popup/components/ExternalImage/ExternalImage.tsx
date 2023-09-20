@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import omit from 'lodash/omit';
 import * as React from 'react';
 
 import { Box, Text } from '~/design-system';
 import { TextProps } from '~/design-system/components/Text/Text';
+import { BoxStyles } from '~/design-system/styles/core.css';
 
 import { maybeSignUri } from '../../handlers/imgix';
 
@@ -17,7 +19,11 @@ const getClosestSize = (size: number): TextProps['size'] => {
 const ExternalImage = (
   props: JSX.IntrinsicAttributes &
     React.ClassAttributes<HTMLImageElement> &
-    React.ImgHTMLAttributes<HTMLImageElement> & { mask?: string },
+    React.ImgHTMLAttributes<HTMLImageElement> & {
+      mask?: string;
+      onError?: () => void;
+      borderRadius?: BoxStyles['borderRadius'];
+    },
 ) => {
   const [fallback, setFallback] = React.useState(false);
   const width = Number(props.width) || undefined;
@@ -34,7 +40,8 @@ const ExternalImage = (
 
   const handleError = React.useCallback(() => {
     setFallback(true);
-  }, [setFallback]);
+    props?.onError?.();
+  }, [props]);
 
   if (fallback) {
     return (
@@ -53,21 +60,23 @@ const ExternalImage = (
 
   if (!signedUrl) return null;
   return (
-    <img
-      {...props}
-      style={
-        props.mask
-          ? {
-              maskImage: `url(${props.mask})`,
-              WebkitMaskImage: `url(${props.mask})`,
-              objectFit: 'cover',
-              ...props.style,
-            }
-          : { objectFit: 'cover', ...props.style }
-      }
-      src={signedUrl}
-      onError={handleError}
-    />
+    <Box style={{ overflow: 'clip' }} borderRadius={props.borderRadius}>
+      <img
+        {...omit(props, 'borderRadius')}
+        style={
+          props.mask
+            ? {
+                maskImage: `url(${props.mask})`,
+                WebkitMaskImage: `url(${props.mask})`,
+                objectFit: 'cover',
+                ...props.style,
+              }
+            : { objectFit: 'cover', ...props.style }
+        }
+        src={signedUrl}
+        onError={handleError}
+      />
+    </Box>
   );
 };
 
