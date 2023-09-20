@@ -3,22 +3,27 @@ import React from 'react';
 import { Box } from '~/design-system';
 
 export function MoonpayIcon({
+  showBackground,
   width = 18,
   height = 18,
 }: {
+  showBackground?: boolean;
   width?: number;
   height?: number;
 }) {
   return (
     <Box
-      borderRadius="round"
-      boxShadow="12px"
+      alignItems="center"
+      borderRadius={showBackground ? 'round' : undefined}
+      boxShadow={showBackground ? '12px' : undefined}
+      display="flex"
+      justifyContent="center"
       style={{
         overflow: 'hidden',
         height: height,
         width: width,
-        background: '#7E01FF',
-        padding: '3px',
+        background: showBackground ? '#7E01FF' : undefined,
+        padding: showBackground ? '3px' : undefined,
       }}
     >
       <svg

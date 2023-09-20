@@ -34,9 +34,11 @@ export function Lens({
         e.key === shortcuts.global.SELECT.key ||
         (e.key === shortcuts.global.FORWARD.key && forwardNav)
       ) {
-        e.preventDefault();
         simulateClick(containerRef?.current);
         onKeyDown?.(e);
+        e.preventDefault();
+        e.stopPropagation();
+        return;
       }
       if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
         handleOpenMenu?.();

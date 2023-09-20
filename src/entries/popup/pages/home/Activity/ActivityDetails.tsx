@@ -50,6 +50,7 @@ import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
@@ -668,7 +669,7 @@ function ActivityDetailsSheet({
     });
 
   return (
-    <BottomSheet show>
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar
         leftComponent={<Navbar.CloseButton onClick={backToHome} />}
         titleComponent={<ActivityPill transaction={tx} />}

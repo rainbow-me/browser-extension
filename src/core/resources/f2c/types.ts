@@ -1,3 +1,5 @@
+import { SymbolName } from '~/design-system/styles/designTokens';
+
 export enum FiatProviderName {
   Ramp = 'ramp',
   Coinbase = 'coinbase',
@@ -103,3 +105,10 @@ export type ProviderConfig = {
     )[];
   };
 };
+
+export type PaymentMethodConfig = {
+  name: string;
+  textIcon?: string;
+  symbol?: SymbolName;
+  symbolSize?: number;
+} & ({ textIcon: string } | { symbol: SymbolName; symbolSize: number });
