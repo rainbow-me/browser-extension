@@ -12,7 +12,7 @@ Rainbow is a fun, simple, and secure Ethereum wallet that makes managing your as
 - Built-in Send, Bridge, and Swap to power all of your DeFi needs
 - Keyboard shortcuts for pros to switch wallets like 1  2  3
 - Search and navigate your wallets with ⌘K or Ctrl-K for the Magic Menu
-- Wallet wallets and interact with dApps in Impersonation mode
+- Watch wallets and interact with dApps in Impersonation mode
 
 ...and a lot more.
 
