@@ -43,6 +43,29 @@ announceProvider({
   provider: rainbowProvider as EIP1193Provider,
 });
 
+backgroundMessenger.reply(
+  'wallet_switchEthereumChain',
+  async ({
+    chainId,
+    status,
+    extensionUrl,
+    host,
+  }: {
+    chainId: ChainId;
+    status: IN_DAPP_NOTIFICATION_STATUS;
+    extensionUrl: string;
+    host: string;
+  }) => {
+    if (getDappHost(window.location.href) === host) {
+      injectNotificationIframe({ chainId, status, extensionUrl });
+    }
+  },
+);
+
+backgroundMessenger.reply('rainbow_reload', async () => {
+  window.location.reload();
+});
+
 if (shouldInjectProvider()) {
   Object.defineProperties(window, {
     rainbow: { value: rainbowProvider, configurable: false, writable: false },
@@ -109,29 +132,6 @@ if (shouldInjectProvider()) {
     },
   );
 }
-
-backgroundMessenger.reply(
-  'wallet_switchEthereumChain',
-  async ({
-    chainId,
-    status,
-    extensionUrl,
-    host,
-  }: {
-    chainId: ChainId;
-    status: IN_DAPP_NOTIFICATION_STATUS;
-    extensionUrl: string;
-    host: string;
-  }) => {
-    if (getDappHost(window.location.href) === host) {
-      injectNotificationIframe({ chainId, status, extensionUrl });
-    }
-  },
-);
-
-backgroundMessenger.reply('rainbow_reload', async () => {
-  window.location.reload();
-});
 
 /**
  * Determines if the provider should be injected
