@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -18,9 +18,9 @@ import { TokenToBuySection } from './TokenToBuySection';
 export type TokenToBuyDropdownProps = {
   asset: ParsedSearchAsset | null;
   assets?: AssetToBuySection[];
-  outputChainId: ChainId;
+  outputChainId?: ChainId;
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
-  setOutputChainId: (chainId: ChainId) => void;
+  setOutputChainId?: (chainId: ChainId) => void;
   onDropdownChange: (open: boolean) => void;
 };
 
@@ -32,7 +32,10 @@ export const TokenToBuyDropdown = ({
   setOutputChainId,
   onDropdownChange,
 }: TokenToBuyDropdownProps) => {
-  const isL2 = useMemo(() => isL2Chain(outputChainId), [outputChainId]);
+  const isL2 = useMemo(
+    () => outputChainId && isL2Chain(outputChainId),
+    [outputChainId],
+  );
 
   const assetsCount = useMemo(
     () => assets?.reduce((count, section) => count + section.data.length, 0),
@@ -41,41 +44,43 @@ export const TokenToBuyDropdown = ({
 
   return (
     <Stack space="8px">
-      <Box paddingHorizontal="20px">
-        <Inline alignHorizontal="justify">
-          <Inline space="4px" alignVertical="center">
-            <Symbol
-              symbol="network"
-              color="labelTertiary"
-              weight="semibold"
-              size={14}
+      {setOutputChainId && outputChainId && (
+        <Box paddingHorizontal="20px">
+          <Inline alignHorizontal="justify">
+            <Inline space="4px" alignVertical="center">
+              <Symbol
+                symbol="network"
+                color="labelTertiary"
+                weight="semibold"
+                size={14}
+              />
+              <Text size="14pt" weight="semibold" color="labelTertiary">
+                {i18n.t('swap.tokens_input.filter_by_network')}
+              </Text>
+            </Inline>
+            <SwitchNetworkMenu
+              onOpenChange={onDropdownChange}
+              marginRight="20px"
+              accentColor={asset?.colors?.primary || asset?.colors?.fallback}
+              type="dropdown"
+              chainId={outputChainId}
+              onChainChanged={(chainId) => {
+                setOutputChainId(chainId);
+              }}
+              triggerComponent={
+                <ButtonOverflow testId="token-to-buy-networks-trigger">
+                  <BottomNetwork
+                    selectedChainId={outputChainId}
+                    displaySymbol
+                    symbolSize={12}
+                    symbol="chevron.down"
+                  />
+                </ButtonOverflow>
+              }
             />
-            <Text size="14pt" weight="semibold" color="labelTertiary">
-              {i18n.t('swap.tokens_input.filter_by_network')}
-            </Text>
           </Inline>
-          <SwitchNetworkMenu
-            onOpenChange={onDropdownChange}
-            marginRight="20px"
-            accentColor={asset?.colors?.primary || asset?.colors?.fallback}
-            type="dropdown"
-            chainId={outputChainId}
-            onChainChanged={(chainId) => {
-              setOutputChainId(chainId);
-            }}
-            triggerComponent={
-              <ButtonOverflow testId="token-to-buy-networks-trigger">
-                <BottomNetwork
-                  selectedChainId={outputChainId}
-                  displaySymbol
-                  symbolSize={12}
-                  symbol="chevron.down"
-                />
-              </ButtonOverflow>
-            }
-          />
-        </Inline>
-      </Box>
+        </Box>
+      )}
 
       <Box
         as={motion.div}

@@ -19,7 +19,7 @@ interface TokenToBuyProps {
   assetFilter: string;
   dropdownClosed: boolean;
   dropdownHeight?: number;
-  outputChainId: ChainId;
+  outputChainId?: ChainId;
   placeholder: string;
   zIndex?: number;
   assetToBuyValue: string;
@@ -30,7 +30,7 @@ interface TokenToBuyProps {
   assetToBuyNativeDisplay: { amount: string; display: string } | null;
   assetToSellNativeDisplay: { amount: string; display: string } | null;
   onDropdownOpen: (open: boolean) => void;
-  setOutputChainId: (chainId: ChainId) => void;
+  setOutputChainId?: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToBuyInputValue: (value: string) => void;

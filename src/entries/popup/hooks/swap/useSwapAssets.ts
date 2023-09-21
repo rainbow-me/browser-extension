@@ -32,7 +32,7 @@ const isSameAsset = (
   a2: Pick<ParsedAsset, 'chainId' | 'address'>,
 ) => a1.chainId === a2.chainId && isLowerCaseMatch(a1.address, a2.address);
 
-export const useSwapAssets = () => {
+export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
@@ -92,6 +92,7 @@ export const useSwapAssets = () => {
     outputChainId,
     assetToSell,
     searchQuery: debouncedAssetToBuyFilter,
+    bridge,
   });
 
   const assetAddressesToFetchPrices = useMemo(() => {
@@ -191,11 +192,11 @@ export const useSwapAssets = () => {
     sortMethod,
     assetToSell: parsedAssetToSell,
     assetToBuy: parsedAssetToBuy,
-    outputChainId,
+    outputChainId: bridge ? undefined : outputChainId,
     setSortMethod,
     setAssetToSell,
     setAssetToBuy,
-    setOutputChainId,
+    setOutputChainId: bridge ? undefined : setOutputChainId,
     setAssetToSellFilter,
     setAssetToBuyFilter,
   };

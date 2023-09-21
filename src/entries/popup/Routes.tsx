@@ -656,6 +656,18 @@ const ROUTE_DATA = [
     ),
   },
   {
+    path: ROUTES.BRIDGE,
+    element: (
+      <AnimatedRoute
+        direction="up"
+        title={i18n.t('bridge.title')}
+        protectedRoute
+      >
+        <Swap bridge />
+      </AnimatedRoute>
+    ),
+  },
+  {
     path: ROUTES.SIGN,
     element: (
       <AnimatedRoute

@@ -1,15 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
 import { ReactNode, useReducer } from 'react';
-import { Address } from 'wagmi';
 
-import { metadataClient } from '~/core/graphql';
-import { AboutTokenQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { createQueryKey } from '~/core/react-query';
 import { ETH_ADDRESS } from '~/core/references';
-import { useCurrentCurrencyStore } from '~/core/state';
-import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import { formatCurrency } from '~/core/utils/formatNumber';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
@@ -33,6 +26,8 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
+
+import { useTokenInfo } from './useTokenInfo';
 
 export const CopyableValue = ({
   value,
@@ -94,47 +89,6 @@ export const InfoRow = ({
     </TextOverflow>
   </Box>
 );
-
-const parseTokenInfo = (token: AboutTokenQuery['token']) => {
-  if (!token) return token;
-  const format = (n?: number | string | null) =>
-    formatCurrency(n || 0, {
-      notation: 'compact',
-      maximumSignificantDigits: 4,
-    });
-  return {
-    allTime: {
-      high: format(token.allTime.highValue),
-      low: format(token.allTime.lowValue),
-    },
-    circulatingSupply: format(token.circulatingSupply),
-    fullyDilutedValuation: format(token.fullyDilutedValuation),
-    marketCap: format(token.marketCap),
-    totalSupply: format(token.totalSupply),
-    volume1d: format(token.volume1d),
-    networks: Object.entries(token.networks).map(([chainId, network]) => ({
-      chainId: +chainId as ChainId,
-      ...(network as { address: Address; decimals: number }),
-    })),
-    description: token.description,
-    links: token.links,
-  };
-};
-const useTokenInfo = ({
-  address,
-  chainId,
-}: {
-  address: AddressOrEth;
-  chainId: ChainId;
-}) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const args = { address, chainId, currency: currentCurrency };
-  return useQuery({
-    queryFn: () =>
-      metadataClient.aboutToken(args).then((d) => parseTokenInfo(d.token)),
-    queryKey: createQueryKey('token about info', args),
-  });
-};
 
 function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
   const [isMarketCapExplainerOpen, toggleMarketCapExplainer] = useReducer(

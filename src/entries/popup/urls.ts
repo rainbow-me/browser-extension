@@ -46,6 +46,7 @@ export const ROUTES = {
   SETTINGS__LANGUAGE: '/settings/language', // Language
   SEND: '/send', // Send
   SWAP: '/swap', // Swap
+  BRIDGE: '/bridge', // Bridge
   SIGN: '/sign', // Sign
   WALLETS: '/wallets', // Wallets
   WALLET_SWITCHER: '/wallet-switcher', // WalletSwitcher

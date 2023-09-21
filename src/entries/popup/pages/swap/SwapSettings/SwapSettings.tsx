@@ -1,5 +1,6 @@
 import { Source } from '@rainbow-me/swaps';
 import { AnimatePresence, motion } from 'framer-motion';
+import { I18n } from 'i18n-js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
@@ -24,6 +25,7 @@ import { AccentColorProviderWrapper } from '~/design-system/components/Box/Color
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { TextStyles } from '~/design-system/styles/core.css';
+import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 
 import {
   ExplainerSheet,
@@ -130,67 +132,67 @@ interface SwapSettingsProps {
   }) => void;
 }
 
-const flashbotsExplainerProps = {
+const getFlashbotsExplainerProps = (t: I18n['t']) => ({
   show: true,
   header: {
     emoji: '🤖',
   },
-  description: [i18n.t('swap.settings.explainers.flashbots.description')],
-  title: i18n.t('swap.settings.explainers.flashbots.title'),
+  description: [t('settings.explainers.flashbots.description')],
+  title: t('settings.explainers.flashbots.title'),
   actionButton: {
-    label: i18n.t('swap.settings.explainers.got_it'),
+    label: t('settings.explainers.got_it'),
     labelColor: 'label' as TextStyles['color'],
   },
   footerLinkText: {
-    openText: i18n.t('swap.settings.explainers.flashbots.read_more.open_text'),
-    linkText: i18n.t('swap.settings.explainers.flashbots.read_more.link_text'),
+    openText: t('settings.explainers.flashbots.read_more.open_text'),
+    linkText: t('settings.explainers.flashbots.read_more.link_text'),
     closeText: i18n.t(
       'swap.settings.explainers.flashbots.read_more.close_text',
     ),
     link: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
   },
-};
+});
 
-const routingExplainerProps = {
+const getRoutingExplainerProps = (t: I18n['t']) => ({
   show: true,
   header: {
     emoji: '🔀',
   },
-  description: [i18n.t('swap.settings.explainers.routing.description')],
-  title: i18n.t('swap.settings.explainers.routing.title'),
+  description: [t('settings.explainers.routing.description')],
+  title: t('settings.explainers.routing.title'),
   actionButton: {
-    label: i18n.t('swap.settings.explainers.got_it'),
+    label: t('settings.explainers.got_it'),
     labelColor: 'label' as TextStyles['color'],
   },
   footerLinkText: {
-    openText: i18n.t('swap.settings.explainers.routing.read_more.open_text'),
-    linkText: i18n.t('swap.settings.explainers.routing.read_more.link_text'),
-    closeText: i18n.t('swap.settings.explainers.routing.read_more.close_text'),
+    openText: t('settings.explainers.routing.read_more.open_text'),
+    linkText: t('settings.explainers.routing.read_more.link_text'),
+    closeText: t('settings.explainers.routing.read_more.close_text'),
     link: 'https://learn.rainbow.me/swap-with-confidence-with-rainbow',
   },
-};
+});
 
-const slippageExplainerProps = {
+const getSlippageExplainerProps = (t: I18n['t']) => ({
   show: true,
   header: {
     emoji: '🌊',
   },
   description: [
-    i18n.t('swap.settings.explainers.slippage.description_1'),
-    i18n.t('swap.settings.explainers.slippage.description_2'),
+    t('settings.explainers.slippage.description_1'),
+    t('settings.explainers.slippage.description_2'),
   ],
-  title: i18n.t('swap.settings.explainers.slippage.title'),
+  title: t('settings.explainers.slippage.title'),
   actionButton: {
-    label: i18n.t('swap.settings.explainers.got_it'),
+    label: t('settings.explainers.got_it'),
     labelColor: 'label' as TextStyles['color'],
   },
   footerLinkText: {
-    openText: i18n.t('swap.settings.explainers.slippage.read_more.open_text'),
-    linkText: i18n.t('swap.settings.explainers.slippage.read_more.link_text'),
-    closeText: i18n.t('swap.settings.explainers.slippage.read_more.close_text'),
+    openText: t('settings.explainers.slippage.read_more.open_text'),
+    linkText: t('settings.explainers.slippage.read_more.link_text'),
+    closeText: t('settings.explainers.slippage.read_more.close_text'),
     link: 'https://academy.shrimpy.io/post/what-is-slippage-how-to-avoid-slippage-on-defi-exchanges',
   },
-};
+});
 
 export const SwapSettings = ({
   accentColor,
@@ -214,6 +216,9 @@ export const SwapSettings = ({
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
+
+  // translate based on the context, bridge or swap
+  const t = useTranslationContext();
 
   const setDefaultSettings = useCallback(() => {
     setSource('auto');
@@ -247,6 +252,7 @@ export const SwapSettings = ({
   }, [prevChainId, chainId]);
 
   const showSlippageExplainer = useCallback(() => {
+    const slippageExplainerProps = getSlippageExplainerProps(t);
     showExplainerSheet({
       ...slippageExplainerProps,
       actionButton: {
@@ -255,9 +261,10 @@ export const SwapSettings = ({
       },
       testId: 'swap-slippage',
     });
-  }, [hideExplainerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet, t]);
 
   const showFlashbotsExplainer = useCallback(() => {
+    const flashbotsExplainerProps = getFlashbotsExplainerProps(t);
     showExplainerSheet({
       ...flashbotsExplainerProps,
       actionButton: {
@@ -266,9 +273,10 @@ export const SwapSettings = ({
       },
       testId: 'swap-flashbots',
     });
-  }, [hideExplainerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet, t]);
 
   const showRoutingExplainer = useCallback(() => {
+    const routingExplainerProps = getRoutingExplainerProps(t);
     showExplainerSheet({
       ...routingExplainerProps,
       actionButton: {
@@ -277,7 +285,7 @@ export const SwapSettings = ({
       },
       testId: 'swap-routing',
     });
-  }, [hideExplainerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet, t]);
 
   return (
     <>
@@ -306,7 +314,7 @@ export const SwapSettings = ({
                       size="14pt"
                       weight="heavy"
                     >
-                      {i18n.t('swap.settings.title')}
+                      {t('settings.title')}
                     </Text>
                   </Inline>
                 </Box>
@@ -318,7 +326,7 @@ export const SwapSettings = ({
                     >
                       <Inline alignVertical="center" alignHorizontal="justify">
                         <Label
-                          label={i18n.t('swap.settings.route_swaps')}
+                          label={t('settings.route_swaps')}
                           onClick={showRoutingExplainer}
                           testId="swap-settings-route-label"
                         />
@@ -372,7 +380,7 @@ export const SwapSettings = ({
                           alignHorizontal="justify"
                         >
                           <Label
-                            label={i18n.t('swap.settings.use_flashbots')}
+                            label={t('settings.use_flashbots')}
                             onClick={showFlashbotsExplainer}
                             testId="swap-settings-flashbots-label"
                           />
@@ -392,7 +400,7 @@ export const SwapSettings = ({
                     >
                       <Inline alignVertical="center" alignHorizontal="justify">
                         <Label
-                          label={i18n.t('swap.settings.max_slippage')}
+                          label={t('settings.max_slippage')}
                           onClick={showSlippageExplainer}
                           warning={slippageWarning}
                           testId="swap-settings-slippage-label"
@@ -423,7 +431,7 @@ export const SwapSettings = ({
                     size="14pt"
                     weight="bold"
                   >
-                    {i18n.t('swap.settings.use_defaults')}
+                    {t('settings.use_defaults')}
                   </Text>
                 </Button>
               </Box>
@@ -440,7 +448,7 @@ export const SwapSettings = ({
                   testId="swap-settings-done"
                 >
                   <Text align="center" color="label" size="16pt" weight="bold">
-                    {i18n.t('swap.settings.done')}
+                    {t('settings.done')}
                   </Text>
                 </Button>
               </Box>

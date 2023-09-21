@@ -44,6 +44,7 @@ query aboutToken($chainId: Int!, $address: String!, $currency: String) {
       highValue
       lowValue
     }
+    bridging
     circulatingSupply
     totalSupply
     networks
@@ -99,10 +100,7 @@ query priceChart(
   }
 }
 
-query dApp(
-  $shortName: String!
-  $url: String!
-) {
+query dApp($shortName: String!, $url: String!) {
   dApp(shortName: $shortName, url: $url) {
     name
     status

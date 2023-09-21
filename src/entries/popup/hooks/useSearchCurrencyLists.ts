@@ -58,6 +58,7 @@ export function useSearchCurrencyLists({
   inputChainId,
   outputChainId,
   searchQuery,
+  bridge,
 }: {
   assetToSell: SearchAsset | ParsedSearchAsset | null;
   // should be provided when swap input currency is selected
@@ -65,6 +66,8 @@ export function useSearchCurrencyLists({
   // target chain id of current search
   outputChainId: ChainId;
   searchQuery?: string;
+  // only show same asset on multiple chains
+  bridge?: boolean;
 }) {
   const query = searchQuery?.toLowerCase() || '';
 
@@ -298,6 +301,17 @@ export function useSearchCurrencyLists({
     [getCuratedAssets],
   );
 
+  const bridgeList =
+    bridge &&
+    Object.values(verifiedAssets)
+      ?.flatMap(
+        ({ assets }) =>
+          assets?.filter((t) => {
+            return isLowerCaseMatch(t?.mainnetAddress, assetToSell?.address);
+          }),
+      )
+      .filter(Boolean);
+
   const crosschainExactMatches = Object.values(verifiedAssets)
     ?.map((verifiedList) => {
       return verifiedList.assets?.filter((t) => {
@@ -333,6 +347,11 @@ export function useSearchCurrencyLists({
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
     const sections: AssetToBuySection[] = [];
+    if (bridgeList && bridgeList?.length) {
+      sections.push({ data: bridgeList, id: 'bridge' });
+      return sections;
+    }
+
     if (bridgeAsset) {
       sections.push({
         data: [bridgeAsset],
@@ -394,6 +413,7 @@ export function useSearchCurrencyLists({
     targetVerifiedAssets,
     targetUnverifiedAssets,
     crosschainExactMatches,
+    bridgeList,
   ]);
 
   return {
