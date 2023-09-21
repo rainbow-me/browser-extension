@@ -588,7 +588,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
                   assetToSell={assetToSell}
-                  assets={assetsToBuy.filter((a) => a.id === 'other_networks')}
+                  assets={assetsToBuy}
                   selectAsset={setAssetToBuy}
                   onDropdownOpen={onAssetToBuyInputOpen}
                   dropdownClosed={assetToBuyDropdownClosed}

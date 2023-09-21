@@ -114,6 +114,7 @@ export function parseAsset({
     icon_url: asset.icon_url,
     colors: asset.colors,
     standard,
+    networks: 'networks' in asset ? asset.networks : undefined,
   };
 
   return parsedAsset;
@@ -155,6 +156,7 @@ export function parseAssetMetadata({
     price: priceData,
     symbol: asset?.symbol,
     uniqueId,
+    networks: asset?.networks,
   } satisfies ParsedAsset;
   return parsedAsset;
 }

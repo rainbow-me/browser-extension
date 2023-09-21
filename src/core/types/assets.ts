@@ -35,6 +35,7 @@ export interface ParsedAsset {
   type?: AssetType;
   smallBalance?: boolean;
   standard?: 'erc-721' | 'erc-1155';
+  networks?: AssetApiResponse['networks'];
 }
 
 export interface ParsedUserAsset extends ParsedAsset {
@@ -152,9 +153,12 @@ export type AssetMetadata = {
   iconUrl: string;
   marketCap: number;
   name: string;
-  networks?: Partial<
-    Record<ChainId, { address: AddressOrEth; decimals: number }>
-  >;
+  networks?: {
+    [chainId in ChainId]?: {
+      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
+      decimals: number;
+    };
+  };
   price: {
     value: number;
     relativeChange24h: number;

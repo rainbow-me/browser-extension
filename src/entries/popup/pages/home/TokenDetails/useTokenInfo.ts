@@ -38,21 +38,20 @@ const parseTokenInfo = (token: AboutTokenQuery['token']) => {
 type ParsedTokenInfo = ReturnType<typeof parseTokenInfo>;
 
 export const useTokenInfo = <Select = ParsedTokenInfo>(
-  {
-    address,
-    chainId,
-  }: {
-    address: AddressOrEth;
-    chainId: ChainId;
-  },
+  token: { address: AddressOrEth; chainId: ChainId } | null,
   options?: { select: (t: ParsedTokenInfo) => Select },
 ) => {
   const { currentCurrency } = useCurrentCurrencyStore();
-  const args = { address, chainId, currency: currentCurrency };
+  const args = token && { ...token, currency: currentCurrency };
   return useQuery({
-    queryFn: () =>
-      metadataClient.aboutToken(args).then((d) => parseTokenInfo(d.token)),
+    queryFn: () => {
+      if (!args) return;
+      return metadataClient
+        .aboutToken(args)
+        .then((d) => parseTokenInfo(d.token));
+    },
     queryKey: createQueryKey('token about info', args),
+    enabled: !!token,
     ...options,
   });
 };

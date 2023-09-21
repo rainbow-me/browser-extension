@@ -9,6 +9,7 @@ import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
+import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { BottomNetwork } from '../../../messages/BottomActions';
@@ -42,8 +43,10 @@ export const TokenToBuyDropdown = ({
     [assets],
   );
 
+  const t = useTranslationContext();
+
   return (
-    <Stack space="8px">
+    <Stack space="20px">
       {setOutputChainId && outputChainId && (
         <Box paddingHorizontal="20px">
           <Inline alignHorizontal="justify">
@@ -89,9 +92,9 @@ export const TokenToBuyDropdown = ({
         animate="show"
       >
         <Stack space="16px">
-          {assets?.map((assetSection, i) => (
+          {assets?.map((assetSection) => (
             <TokenToBuySection
-              key={i}
+              key={assetSection.id}
               assetSection={assetSection}
               onSelectAsset={onSelectAsset}
               onDropdownChange={onDropdownChange}
@@ -114,7 +117,7 @@ export const TokenToBuyDropdown = ({
                   weight="semibold"
                   align="center"
                 >
-                  {i18n.t('swap.tokens_input.nothing_found')}
+                  {t('tokens_input.nothing_found')}
                 </Text>
 
                 <Text
@@ -123,8 +126,8 @@ export const TokenToBuyDropdown = ({
                   weight="regular"
                   align="center"
                 >
-                  {i18n.t(
-                    `swap.tokens_input.${
+                  {t(
+                    `tokens_input.${
                       isL2
                         ? 'nothing_found_description_l2'
                         : 'nothing_found_description'

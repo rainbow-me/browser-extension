@@ -303,14 +303,21 @@ export function useSearchCurrencyLists({
 
   const bridgeList =
     bridge &&
-    Object.values(verifiedAssets)
-      ?.flatMap(
-        ({ assets }) =>
-          assets?.filter((t) => {
-            return isLowerCaseMatch(t?.mainnetAddress, assetToSell?.address);
-          }),
-      )
-      .filter(Boolean);
+    assetToSell?.networks &&
+    Object.entries(assetToSell.networks)
+      .map(([chainId, assetOnNetworkOverrides]) => ({
+        ...assetToSell,
+        chainId: chainId as unknown as ChainId, // Object.entries messes the type
+        ...assetOnNetworkOverrides,
+      }))
+      .filter(
+        (a) =>
+          // filter out the asset we're selling already
+          a.address !== assetToSell.address &&
+          a.chainId !== assetToSell.chainId,
+      );
+
+  console.log(assetToSell, bridgeList);
 
   const crosschainExactMatches = Object.values(verifiedAssets)
     ?.map((verifiedList) => {
@@ -347,8 +354,8 @@ export function useSearchCurrencyLists({
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
     const sections: AssetToBuySection[] = [];
-    if (bridgeList && bridgeList?.length) {
-      sections.push({ data: bridgeList, id: 'bridge' });
+    if (bridge) {
+      sections.push({ data: bridgeList || [], id: 'bridge' });
       return sections;
     }
 
@@ -414,6 +421,7 @@ export function useSearchCurrencyLists({
     targetUnverifiedAssets,
     crosschainExactMatches,
     bridgeList,
+    bridge,
   ]);
 
   return {
