@@ -33,6 +33,16 @@ const messenger = initializeMessenger({ connect: 'popup' });
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 const rainbowProvider = new RainbowProvider({ messenger });
 
+announceProvider({
+  info: {
+    icon: RAINBOW_ICON_RAW_SVG,
+    name: 'Rainbow',
+    rdns: 'me.rainbow',
+    uuid: uuid4(),
+  },
+  provider: rainbowProvider as EIP1193Provider,
+});
+
 if (shouldInjectProvider()) {
   Object.defineProperties(window, {
     rainbow: { value: rainbowProvider, configurable: false, writable: false },
@@ -99,16 +109,6 @@ if (shouldInjectProvider()) {
     },
   );
 }
-
-announceProvider({
-  info: {
-    icon: RAINBOW_ICON_RAW_SVG,
-    name: 'Rainbow',
-    rdns: 'me.rainbow',
-    uuid: uuid4(),
-  },
-  provider: window.rainbow as EIP1193Provider,
-});
 
 backgroundMessenger.reply(
   'wallet_switchEthereumChain',
