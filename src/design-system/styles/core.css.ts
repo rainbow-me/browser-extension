@@ -394,7 +394,7 @@ const boxBaseProperties = defineProperties({
     marginLeft: negativeSpace,
     marginRight: negativeSpace,
     marginTop: negativeSpace,
-    opacity: ['1', '0.04', '0.1', '0.2', '0.5', '0.6', '0.75'],
+    opacity: ['1', '0', '0.04', '0.1', '0.2', '0.5', '0.6', '0.75'],
     outline: ['none'],
     paddingBottom: space,
     paddingLeft: space,

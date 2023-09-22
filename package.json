@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.2.25",
+  "version": "1.2.28",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -87,8 +87,8 @@
     "@ethersproject/transactions": "5.7.0",
     "@ethersproject/units": "5.7.0",
     "@ethersproject/wallet": "5.7.0",
-    "@ledgerhq/hw-app-eth": "6.33.4",
-    "@ledgerhq/hw-transport-webhid": "6.27.15",
+    "@ledgerhq/hw-app-eth": "6.34.5",
+    "@ledgerhq/hw-transport-webhid": "6.27.19",
     "@metamask/browser-passworder": "4.1.0",
     "@metamask/eth-sig-util": "7.0.0",
     "@radix-ui/react-accordion": "1.1.2",
@@ -147,7 +147,6 @@
     "zustand": "4.1.5"
   },
   "devDependencies": {
-    "@ledgerhq/cryptoassets": "9.6.0",
     "@foundry-rs/hardhat-anvil": "0.1.7",
     "@lavamoat/allow-scripts": "2.5.1",
     "@lavamoat/preinstall-always-fail": "1.0.3",
@@ -285,7 +284,8 @@
       "web-ext>fx-runner>spawn-sync": false,
       "web-ext>sign-addon>core-js": false,
       "web-ext>ws>bufferutil": false,
-      "web-ext>ws>utf-8-validate": false
+      "web-ext>ws>utf-8-validate": false,
+      "@ledgerhq/domain-service>eip55>keccak": false
     }
   }
 }
