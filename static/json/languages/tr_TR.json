@@ -66,6 +66,7 @@
   "settings": {
     "title": "Ayarlar",
     "use_rainbow_as_default_wallet": "Varsayılan cüzdan olarak Rainbow kullan",
+    "sounds": "Sesler",
     "default_wallet_description": "Uzantı ile bağlantı kurarken uygulamaların Rainbow'u önceliklendirmesine izin verin.",
     "contacts": "Kişiler",
     "guides_and_support": "Kılavuzlar ve Destek",
@@ -178,7 +179,6 @@
       "KRW": "Güney Kore Wonu",
       "JPY": "Japon Yeni",
       "RUB": "Rus Rublesi",
-      "IDR": "Endonezya Rupisi",
       "INR": "Hint Rupisi",
       "TRY": "Türk Lirası",
       "CAD": "Kanada Doları",
@@ -191,7 +191,8 @@
     "feature_flags": {
       "full_watching_wallets": "İzlenen Cüzdanlara Tam Erişim",
       "hw_wallets_enabled": "Donanım Cüzdanı Desteğini Etkinleştir",
-      "command_k_internal_shortcuts_enabled": "⌘K İç Hızlı Kısayollarını Etkinleştir"
+      "command_k_internal_shortcuts_enabled": "⌘K İç Hızlı Kısayollarını Etkinleştir",
+      "new_tab_bar_enabled": "Yeni Sekme Çubuğu"
     }
   },
   "transactions": {
@@ -425,7 +426,7 @@
       }
     },
     "quick_promo": {
-      "text": "Komut menüsünü açmak için ⌘K tuşuna basın",
+      "text": "Sihirli Menü'yü açmak için %{modifierSymbol}K tuşuna basın",
       "text_bold": "İpucu:"
     },
     "toolbar": {
@@ -826,9 +827,8 @@
   },
   "app_connection_switcher": {
     "banner": {
-      "connect": "Bağlan",
-      "connect_to": "%{appName}ile bağlan?",
-      "app_connected": "%{appName} bağlandı"
+      "connect_to": "%{appName}'a Bağlan",
+      "app_connected": "%{appName} Bağlandı"
     },
     "sheet": {
       "connect": "Bağlan",
@@ -975,12 +975,17 @@
     "excellent": "Mükemmel",
     "8_chars_min": "8 karakter minimum",
     "try_another_password_weak": "Bu kolayca kırılabilen zayıf bir şifre. Daha güçlü bir şifre deneyin.",
-    "try_another_password_common": "Bu kolayca kırılabilen yaygın bir şifre. Daha güçlü bir şifre deneyin.",
+    "try_another_password_common": "Parolanızı büyük/küçük harfler, rakamlar ve semboller karıştırarak daha güçlü hale getirin.",
     "too_short": "Şifre en az 8 karakter olmalı"
   },
   "create_password": {
     "title": "Şifrenizi oluşturun",
     "description": "Cüzdanınızı güvence altına almak ve kilitlemek için bir şifre seçin."
+  },
+  "tabs": {
+    "activity": "Aktivite",
+    "tokens": "Tokenler",
+    "nfts": "NFT'ler"
   },
   "activity": {
     "today": "Bugün",
@@ -1023,11 +1028,20 @@
   },
   "tokens_tab": {
     "coinbase_title": "Coinbase'den Yatırma",
-    "coinbase_description": "Coinbase'den Satın Al veya Transfer Yap",
+    "coinbase_description": "Kripto paranızı Coinbase'den ücretsiz olarak transfer edin",
+    "buy_title": "Cüzdanınızı finanse etmek için kripto satın alın",
+    "buy_description_1": "Kopyalamak için",
+    "buy_description_2": "desteklenen ödeme seçeneklerini görmek için",
     "send_from_wallet": "Başka bir cüzdandan gönder",
     "send_description_1": "Kopyalamak için",
-    "send_description_2": "adresinizi kopyalamak için",
+    "send_description_2": "adresinizi kopyalamak ya da",
+    "send_description_3": "QR kod için",
     "unknown_token": "Bilinmeyen Token"
+  },
+  "nfts": {
+    "coming_soon_header": "Yakında",
+    "coming_soon_description": "NFT'ler yakında geliyor. Takipte kalın!",
+    "view_on_web": "Web'de Görüntüle"
   },
   "speed_up_and_cancel": {
     "speed_up": "Hızlandır",
@@ -1107,6 +1121,7 @@
     "pin_rainbow_to_your_toolbar": "Rainbow'u araç çubuğunuza sabitleyin"
   },
   "wallet_header": {
+    "buy": "Satın Al",
     "copy": "Kopyala",
     "swap": "Değiştir",
     "send": "Gönder",
@@ -1240,7 +1255,7 @@
     "done": "Tamamlandı",
     "add_wallet": "Cüzdan Ekle",
     "add_by_index_title": "İndexine göre cüzdan ekle",
-    "add_by_index_description": "Ledger'dan içe aktarmak istediğiniz cüzdan için türetme yolunu girin.",
+    "add_by_index_description": "Türetme yolunu seçin ve eklemek istediğiniz cüzdanın indeksini girin.",
     "waiting_for_trezor_connect": "Trezor Connect için bekleniyor",
     "continue_on_trezor_connect": "Lütfen Trezor Connect penceresindeki talimatları takip edin",
     "trezor_success": "Başarı!",
@@ -1267,5 +1282,21 @@
   "approvals": {
     "unlimited": "Sınırsız",
     "no_allowance": "İzin Yok"
+  },
+  "buy": {
+    "title": "Satın Al",
+    "fees_title": "Ücretler",
+    "instant_title": "Anlık",
+    "instant_yes": "Evet",
+    "method_title": "Yöntem",
+    "methods_title": "Yöntemler",
+    "network_title": "Ağ",
+    "networks_title": "Ağlar",
+    "payment_methods": {
+      "apple_pay": "Apple Pay",
+      "bank": "Banka",
+      "card": "Kart",
+      "google_pay": "Google Pay"
+    }
   }
 }

@@ -66,6 +66,7 @@
   "settings": {
     "title": "Pengaturan",
     "use_rainbow_as_default_wallet": "Gunakan Rainbow sebagai dompet default",
+    "sounds": "Suara",
     "default_wallet_description": "Izinkan Aplikasi untuk mengutamakan Rainbow saat mencari extension untuk terhubung",
     "contacts": "Kontak",
     "guides_and_support": "Panduan & Dukungan",
@@ -178,7 +179,6 @@
       "KRW": "Won Korea Selatan",
       "JPY": "Yen Jepang",
       "RUB": "Rubel Rusia",
-      "IDR": "Rupiah Indonesia",
       "INR": "Rupee India",
       "TRY": "Lira Turki",
       "CAD": "Dolar Kanada",
@@ -191,7 +191,8 @@
     "feature_flags": {
       "full_watching_wallets": "Akses Penuh ke Dompet Tertonton",
       "hw_wallets_enabled": "Aktifkan Dukungan Dompet Perangkat Keras",
-      "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K"
+      "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K",
+      "new_tab_bar_enabled": "Bar Tab Baru"
     }
   },
   "transactions": {
@@ -425,7 +426,7 @@
       }
     },
     "quick_promo": {
-      "text": "Tekan ⌘K untuk membuka menu perintah",
+      "text": "Tekan %{modifierSymbol}K untuk membuka Menu Sihir",
       "text_bold": "Tip:"
     },
     "toolbar": {
@@ -826,9 +827,8 @@
   },
   "app_connection_switcher": {
     "banner": {
-      "connect": "Hubungkan",
-      "connect_to": "Terhubung ke %{appName}?",
-      "app_connected": "%{appName} terhubung"
+      "connect_to": "Hubungkan ke %{appName}",
+      "app_connected": "%{appName} Tersambung"
     },
     "sheet": {
       "connect": "Hubungkan",
@@ -975,12 +975,17 @@
     "excellent": "Luar biasa",
     "8_chars_min": "Min 8 karakter",
     "try_another_password_weak": "Ini adalah kata sandi yang lemah dan mudah ditebak. Coba kata sandi yang lebih kuat",
-    "try_another_password_common": "Ini adalah kata sandi yang umum dan mudah ditebak. Coba kata sandi yang lebih kuat",
+    "try_another_password_common": "Buatlah password Anda lebih kuat dengan mencampur huruf besar dan kecil, angka dan simbol",
     "too_short": "Kata sandi harus setidaknya 8 karakter"
   },
   "create_password": {
     "title": "Buat kata sandi Anda",
     "description": "Pilih kata sandi untuk mengamankan & mengunci dompet Anda"
+  },
+  "tabs": {
+    "activity": "Aktivitas",
+    "tokens": "Tokens",
+    "nfts": "NFTs"
   },
   "activity": {
     "today": "Hari Ini",
@@ -1023,11 +1028,20 @@
   },
   "tokens_tab": {
     "coinbase_title": "Deposit dari Coinbase",
-    "coinbase_description": "Beli atau transfer dari Coinbase",
+    "coinbase_description": "Transfer crypto Anda dari Coinbase secara gratis",
+    "buy_title": "Beli crypto untuk mendanai dompet Anda",
+    "buy_description_1": "Tekan",
+    "buy_description_2": "untuk melihat opsi pembayaran yang didukung",
     "send_from_wallet": "Kirim dari dompet lain",
     "send_description_1": "Tekan",
-    "send_description_2": "untuk menyalin alamat Anda",
+    "send_description_2": "untuk menyalin alamat Anda atau",
+    "send_description_3": "untuk kode QR",
     "unknown_token": "Token Tidak Dikenal"
+  },
+  "nfts": {
+    "coming_soon_header": "Segera Hadir",
+    "coming_soon_description": "NFTs segera hadir. Tetap sintonik!",
+    "view_on_web": "Lihat di Web"
   },
   "speed_up_and_cancel": {
     "speed_up": "Percepat",
@@ -1107,6 +1121,7 @@
     "pin_rainbow_to_your_toolbar": "Sematkan Rainbow ke toolbar Anda"
   },
   "wallet_header": {
+    "buy": "Beli",
     "copy": "Salin",
     "swap": "Tukar",
     "send": "Kirim",
@@ -1240,7 +1255,7 @@
     "done": "Selesai",
     "add_wallet": "Tambah dompet",
     "add_by_index_title": "Tambahkan dompet berdasarkan indeksnya",
-    "add_by_index_description": "Masukkan jalur derivasi untuk dompet yang ingin Anda impor dari Ledger Anda",
+    "add_by_index_description": "Pilih jalur derivasi dan masukkan indeks dari dompet yang ingin Anda tambahkan",
     "waiting_for_trezor_connect": "Menunggu Trezor Connect",
     "continue_on_trezor_connect": "Silakan ikuti petunjuk di jendela Trezor Connect",
     "trezor_success": "Berhasil!",
@@ -1267,5 +1282,21 @@
   "approvals": {
     "unlimited": "Tak Terbatas",
     "no_allowance": "Tanpa Kuota"
+  },
+  "buy": {
+    "title": "Beli",
+    "fees_title": "Biaya",
+    "instant_title": "Instan",
+    "instant_yes": "Ya",
+    "method_title": "Metode",
+    "methods_title": "Metode",
+    "network_title": "Jaringan",
+    "networks_title": "Jaringan",
+    "payment_methods": {
+      "apple_pay": "Apple Pay",
+      "bank": "Bank",
+      "card": "Kartu",
+      "google_pay": "Google Pay"
+    }
   }
 }

@@ -66,6 +66,7 @@
   "settings": {
     "title": "सेटिंग्स",
     "use_rainbow_as_default_wallet": "इसे इंस्टॉलेशन की प्राथमिक वॉलेट के रूप में उपयोग करें",
+    "sounds": "ध्वनियाँ",
     "default_wallet_description": "ऐप्स को आपके विस्तार के लिए अपने साथ जुड़ हैंडलर की तलाश में रेनबो को प्राथमिकता दें।",
     "contacts": "संपर्क",
     "guides_and_support": "गाइड और सहायता",
@@ -178,7 +179,6 @@
       "KRW": "दक्षिण कोरियाई वॉन",
       "JPY": "जापानी येन",
       "RUB": "रूसी रूबल",
-      "IDR": "इंडोनेशियाई रुपिया",
       "INR": "भारतीय रुपया",
       "TRY": "तुर्की लीरा",
       "CAD": "कैनेडियन डॉलर",
@@ -191,7 +191,8 @@
     "feature_flags": {
       "full_watching_wallets": "Watched वॉलेट्स का पूरा उपयोग",
       "hw_wallets_enabled": "हार्डवेयर वॉलेट समर्थन सक्षम करें",
-      "command_k_internal_shortcuts_enabled": "⌘K आंतरिक शॉर्टकट्स सक्षम करें"
+      "command_k_internal_shortcuts_enabled": "⌘K आंतरिक शॉर्टकट्स सक्षम करें",
+      "new_tab_bar_enabled": "नया टैब बार"
     }
   },
   "transactions": {
@@ -425,7 +426,7 @@
       }
     },
     "quick_promo": {
-      "text": "मेनु खोलने के लिए ⌘K दबाएँ",
+      "text": "मैजिक मेन्यू खोलने के लिए %{modifierSymbol}K दबाएं",
       "text_bold": "टिप:"
     },
     "toolbar": {
@@ -826,9 +827,8 @@
   },
   "app_connection_switcher": {
     "banner": {
-      "connect": "कनेक्ट करें",
-      "connect_to": "%{appName}से कनेक्ट करें?",
-      "app_connected": "%{appName} कनेक्ट किया गया"
+      "connect_to": "%{appName}से कनेक्ट करें",
+      "app_connected": "%{appName} जुड़े"
     },
     "sheet": {
       "connect": "कनेक्ट करें",
@@ -975,12 +975,17 @@
     "excellent": "शानदार",
     "8_chars_min": "8 अक्षरों का न्यूनतम",
     "try_another_password_weak": "यह एक कमजोर पासवर्ड है जिसे आसानी से क्रैक किया जा सकता है। एक मजबूत पासवर्ड का प्रयास करें।",
-    "try_another_password_common": "यह एक सामान्य पासवर्ड है जिसे आसानी से क्रैक किया जा सकता है। एक मजबूत पासवर्ड का प्रयास करें।",
+    "try_another_password_common": "अपने पासवर्ड को और मजबूत बनाएं, ऊपरी और निचले केस के अक्षर, अंक और चिन्हों का मिश्रण करके",
     "too_short": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए"
   },
   "create_password": {
     "title": "अपना पासवर्ड बनाएं",
     "description": "अपने वॉलेट को सुरक्षित और ताला लगाने के लिए एक पासवर्ड चुनें।"
+  },
+  "tabs": {
+    "activity": "गतिविधि",
+    "tokens": "टोकन",
+    "nfts": "NFTs"
   },
   "activity": {
     "today": "आज",
@@ -1023,11 +1028,20 @@
   },
   "tokens_tab": {
     "coinbase_title": "कॉइनबेस से जमा करें",
-    "coinbase_description": "कॉइनबेस से खरीदें या स्थानांतरित करें",
+    "coinbase_description": "कॉइनबेस से अपने क्रिप्टो को निःशुल्क स्थानांतरित करें",
+    "buy_title": "अपने वॉलेट को धन राशि प्रदान करने के लिए क्रिप्टो खरीदें",
+    "buy_description_1": "दबाएं",
+    "buy_description_2": "समर्थित भुगतान विकल्प देखने के लिए",
     "send_from_wallet": "दूसरे वॉलेट से भेजें",
     "send_description_1": "दबाएं",
-    "send_description_2": "अपना पता कॉपी करने के लिए",
+    "send_description_2": "अपना पता कॉपी करने के लिए या",
+    "send_description_3": "QR कोड के लिए",
     "unknown_token": "अज्ञात टोकन"
+  },
+  "nfts": {
+    "coming_soon_header": "जल्द आ रहा है",
+    "coming_soon_description": "NFTs जल्द ही आ रहे हैं। बने रहें!",
+    "view_on_web": "वेब पर देखें"
   },
   "speed_up_and_cancel": {
     "speed_up": "गति बढ़ाएं",
@@ -1107,6 +1121,7 @@
     "pin_rainbow_to_your_toolbar": "अपनी टूलबार में रेनबो को दबाएं"
   },
   "wallet_header": {
+    "buy": "खरीदें",
     "copy": "कॉपी करें",
     "swap": "स्वाप करें",
     "send": "भेजें",
@@ -1240,7 +1255,7 @@
     "done": "हो गया",
     "add_wallet": "वॉलेट जोड़ें",
     "add_by_index_title": "इंडेक्स द्वारा वॉलेट जोड़ें",
-    "add_by_index_description": "अपने Ledger से आयात करने के लिए वॉलेट के derivation पथ दर्ज करें।",
+    "add_by_index_description": "उत्पन्नता पथ चुनें और वालेट का सूचकांक दर्ज करें जिसे आप जोड़ना चाहते हैं।",
     "waiting_for_trezor_connect": "Trezor Connect के लिए प्रतीक्षा कर रहे हैं",
     "continue_on_trezor_connect": "Trezor Connect विंडो पर दिए गए निर्देशों का पालन करें",
     "trezor_success": "सफलता!",
@@ -1267,5 +1282,21 @@
   "approvals": {
     "unlimited": "असीमित",
     "no_allowance": "कोई अनुमति नहीं"
+  },
+  "buy": {
+    "title": "खरीदें",
+    "fees_title": "शुल्क",
+    "instant_title": "तुरंत",
+    "instant_yes": "हाँ",
+    "method_title": "विधि",
+    "methods_title": "विधियां",
+    "network_title": "नेटवर्क",
+    "networks_title": "नेटवर्क",
+    "payment_methods": {
+      "apple_pay": "Apple पेमेंट",
+      "bank": "बैंक",
+      "card": "कार्ड",
+      "google_pay": "Google पेमेंट"
+    }
   }
 }
