@@ -85,41 +85,53 @@ export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
   >;
 };
 
-const transactionTypesWithChanges = [
-  'sale',
-  'bridge',
-  'airdrop',
-  'wrap',
-  'unwrap',
-  'bid',
-  'burn',
-  'send',
-  'receive',
-  'withdraw',
-  'deposit',
-  'mint',
-  'swap',
-  'borrow',
-  'claim',
-  'repay',
-  'stake',
-  'unstake',
-  'purchase',
-] as const;
+const transactionTypes = {
+  withoutChanges: [
+    'cancel',
+    'contract_interaction',
+    'deployment',
+    'approve',
+    'revoke',
+    'speed_up',
+  ],
+  withChanges: [
+    'sale',
+    'bridge',
+    'airdrop',
+    'wrap',
+    'unwrap',
+    'bid',
+    'burn',
+    'send',
+    'receive',
+    'withdraw',
+    'deposit',
+    'mint',
+    'swap',
+    'borrow',
+    'claim',
+    'repay',
+    'stake',
+    'unstake',
+    'purchase',
+  ],
+} as const;
+
+export const isValidTransactionType = (
+  type: string | undefined,
+): type is TransactionType =>
+  !!type &&
+  (transactionTypes.withChanges.includes(type) ||
+    transactionTypes.withoutChanges.includes(type));
 
 export const transactionTypeShouldHaveChanges = (
   type: TransactionType,
 ): type is TransactionWithChangesType =>
-  transactionTypesWithChanges.includes(type);
+  transactionTypes.withChanges.includes(type);
 
-type TransactionWithChangesType = (typeof transactionTypesWithChanges)[number];
+type TransactionWithChangesType = (typeof transactionTypes.withChanges)[number];
 type TransactionWithoutChangesType =
-  | 'cancel'
-  | 'contract_interaction'
-  | 'deployment'
-  | 'approve'
-  | 'revoke'
-  | 'speed_up';
+  (typeof transactionTypes.withoutChanges)[number];
 
 export type TransactionType =
   | TransactionWithChangesType

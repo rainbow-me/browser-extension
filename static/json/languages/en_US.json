@@ -426,7 +426,7 @@
       }
     },
     "quick_promo": {
-      "text": "Press ⌘K to open the command menu",
+      "text": "Press %{modifierSymbol}K to open the Magic Menu",
       "text_bold": "Tip:"
     },
     "toolbar": {
@@ -827,9 +827,8 @@
   },
   "app_connection_switcher": {
     "banner": {
-      "connect": "Connect",
-      "connect_to": "Connect to %{appName}?",
-      "app_connected": "%{appName} connected"
+      "connect_to": "Connect to %{appName}",
+      "app_connected": "%{appName} Connected"
     },
     "sheet": {
       "connect": "Connect",
@@ -976,7 +975,7 @@
     "excellent": "Excellent",
     "8_chars_min": "8 characters min",
     "try_another_password_weak": "This is a weak password that is easy to crack. Try a stronger password.",
-    "try_another_password_common": "This is a common password that is easy to crack. Try a stronger password.",
+    "try_another_password_common": "Make your password even stronger by mixing uppercase and lowercase letters, numbers and symbols.",
     "too_short": "Password needs to be at least 8 chars long"
   },
   "create_password": {
@@ -1031,10 +1030,12 @@
     "coinbase_title": "Deposit from Coinbase",
     "coinbase_description": "Transfer your crypto from Coinbase for free",
     "buy_title": "Buy crypto to fund your wallet",
-    "buy_description": "Choose from trusted providers & payment options",
+    "buy_description_1": "Press",
+    "buy_description_2": "to view supported payment options",
     "send_from_wallet": "Send from another wallet",
     "send_description_1": "Press",
-    "send_description_2": "to copy your address",
+    "send_description_2": "to copy your address or",
+    "send_description_3": "for QR code",
     "unknown_token": "Unknown Token"
   },
   "nfts": {
@@ -1120,6 +1121,7 @@
     "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar"
   },
   "wallet_header": {
+    "buy": "Buy",
     "copy": "Copy",
     "swap": "Swap",
     "send": "Send",
@@ -1285,9 +1287,16 @@
     "title": "Buy",
     "fees_title": "Fees",
     "instant_title": "Instant",
+    "instant_yes": "Yes",
     "method_title": "Method",
-    "methods_title": "Method",
+    "methods_title": "Methods",
     "network_title": "Network",
-    "networks_title": "Networks"
+    "networks_title": "Networks",
+    "payment_methods": {
+      "apple_pay": "Apple Pay",
+      "bank": "Bank",
+      "card": "Card",
+      "google_pay": "Google Pay"
+    }
   }
 }

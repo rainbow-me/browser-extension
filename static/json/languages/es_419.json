@@ -975,7 +975,7 @@
     "excellent": "Excelente",
     "8_chars_min": "Mínimo 8 caracteres",
     "try_another_password_weak": "Esta es una contraseña débil que es fácil de romper. Prueba con una contraseña más fuerte.",
-    "try_another_password_common": "Esta es una contraseña común que es fácil de romper. Prueba con una contraseña más fuerte.",
+    "try_another_password_common": "Puedes hacer tu contraseña mas segura mezclando mayúsculas, minúsculas, numeros y símbolos.",
     "too_short": "La contraseña debe tener al menos 8 caracteres"
   },
   "create_password": {

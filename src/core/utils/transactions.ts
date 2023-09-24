@@ -27,6 +27,7 @@ import {
   TransactionApiResponse,
   TransactionDirection,
   TransactionType,
+  isValidTransactionType,
   transactionTypeShouldHaveChanges,
 } from '../types/transactions';
 
@@ -163,7 +164,9 @@ export function parseTransaction({
     value: change.value || undefined,
   }));
 
-  const type = meta.type;
+  const type = isValidTransactionType(meta.type)
+    ? meta.type
+    : 'contract_interaction';
 
   if (
     !type ||
