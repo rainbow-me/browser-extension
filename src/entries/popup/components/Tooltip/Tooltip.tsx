@@ -105,7 +105,7 @@ export const Tooltip = ({
                     minHeight: 22,
                   }}
                   background="surfaceSecondaryElevated"
-                  padding="4px"
+                  padding="7px"
                   paddingHorizontal="6px"
                   backdropFilter="blur(26px)"
                 >
