@@ -20,7 +20,7 @@ import {
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { TextStyles } from '~/design-system/styles/core.css';
@@ -290,7 +290,7 @@ export const SwapSettings = ({
         footerLinkText={explainerSheetParams.footerLinkText}
       />
       <BottomSheet onClickOutside={done} background="scrim" show={show}>
-        <AccentColorProviderWrapper color={settingsAccentColor}>
+        <AccentColorProvider color={settingsAccentColor}>
           <Box paddingHorizontal="20px" paddingBottom="20px">
             <Stack space="10px">
               <Box>
@@ -446,7 +446,7 @@ export const SwapSettings = ({
               </Box>
             </Stack>
           </Box>
-        </AccentColorProviderWrapper>
+        </AccentColorProvider>
       </BottomSheet>
     </>
   );

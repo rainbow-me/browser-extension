@@ -1,17 +1,15 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { handleAssetAccentColor } from '~/core/utils/colors';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -25,7 +23,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { TextStyles } from '~/design-system/styles/core.css';
 
@@ -167,7 +165,6 @@ export function Swap() {
   const { trackShortcut } = useKeyboardAnalytics();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
-  const { currentTheme } = useCurrentThemeStore();
   const [urlSearchParams] = useSearchParams();
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 
@@ -437,14 +434,8 @@ export function Swap() {
     },
   });
 
-  const assetToBuyAccentColor = useMemo(
-    () =>
-      handleAssetAccentColor(
-        currentTheme,
-        assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback,
-      ),
-    [assetToBuy?.colors?.fallback, assetToBuy?.colors?.primary, currentTheme],
-  );
+  const assetToBuyAccentColor =
+    assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback;
 
   return (
     <>
@@ -500,11 +491,10 @@ export function Swap() {
         <Rows alignVertical="justify">
           <Row height="content">
             <Stack space="8px">
-              <AccentColorProviderWrapper
-                color={handleAssetAccentColor(
-                  currentTheme,
-                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback,
-                )}
+              <AccentColorProvider
+                color={
+                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback
+                }
               >
                 <TokenToSellInput
                   dropdownHeight={toSellInputHeight}
@@ -537,7 +527,7 @@ export function Swap() {
                   independentField={independentField}
                   setIndependentField={setIndependentField}
                 />
-              </AccentColorProviderWrapper>
+              </AccentColorProvider>
 
               <Box
                 marginTop="-18px"
@@ -576,7 +566,7 @@ export function Swap() {
                 </Inline>
               </Box>
 
-              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
+              <AccentColorProvider color={assetToBuyAccentColor}>
                 <TokenToBuyInput
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
@@ -603,7 +593,7 @@ export function Swap() {
                   assetToSellNativeDisplay={assetToSellNativeDisplay}
                   setIndependentField={setIndependentField}
                 />
-              </AccentColorProviderWrapper>
+              </AccentColorProvider>
 
               <SwapWarning
                 timeEstimate={timeEstimate}
@@ -613,7 +603,7 @@ export function Swap() {
           </Row>
           <Row height="content">
             {!!assetToBuy && !!assetToSell ? (
-              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
+              <AccentColorProvider color={assetToBuyAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
                     <Row>
@@ -660,7 +650,7 @@ export function Swap() {
                     </Row>
                   </Rows>
                 </Box>
-              </AccentColorProviderWrapper>
+              </AccentColorProvider>
             ) : (
               <Box paddingHorizontal="8px">
                 <Button

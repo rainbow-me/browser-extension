@@ -9,23 +9,26 @@ const hexToRgb = (hex: string) => {
     : null;
 };
 
+const getRgb = (color: string) => {
+  const [r, g, b] = color
+    .substring(color.indexOf('(') + 1, color.length - 1)
+    .split(',');
+  return { r: +r, g: +g, b: +b };
+};
+
 /**
  * Return ETH color if the color provided is too dark for dark mode
  * or too light for light mode
  * @param hex - hex color
  * @returns
  */
-export const handleAssetAccentColor = (
-  theme: 'dark' | 'light',
-  hex?: string,
-) => {
-  if (!hex) return undefined;
-  const rgb = hexToRgb(hex);
+export const handleAccentColor = (theme: 'dark' | 'light', color: string) => {
+  const rgb = color.startsWith('#') ? hexToRgb(color) : getRgb(color);
   if (theme === 'dark' && rgb && rgb?.g < 50) {
     // return ETH color
     return '#808088';
   }
-  return hex;
+  return color;
 };
 
 export const isDarkColor = (hex: string) => {

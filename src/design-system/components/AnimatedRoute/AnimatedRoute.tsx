@@ -31,10 +31,7 @@ import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 import { getActiveElement } from '~/entries/popup/utils/activeElement';
 import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
-import {
-  AccentColorProviderWrapper,
-  AvatarColorProvider,
-} from '../Box/ColorContext';
+import { AccentColorProvider, AvatarColorProvider } from '../Box/ColorContext';
 
 import { animatedRouteStyles } from './AnimatedRoute.css';
 
@@ -221,7 +218,7 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const content = (
-    <AccentColorProviderWrapper
+    <AccentColorProvider
       color={accentColor ? avatar?.color : globalColors.blue60}
     >
       <AvatarColorProvider color={avatar?.color || globalColors.blue60}>
@@ -252,7 +249,7 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
           </Box>
         </containerRefContext.Provider>
       </AvatarColorProvider>
-    </AccentColorProviderWrapper>
+    </AccentColorProvider>
   );
 
   if (protectedRoute) {
