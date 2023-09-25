@@ -106,7 +106,7 @@ export function TabBar({
         </Tabs>
       </Box>
       <CursorTooltip
-        align="start"
+        align="end"
         arrowAlignment="right"
         text={i18n.t('tooltip.balance')}
         textWeight="bold"
