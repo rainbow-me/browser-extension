@@ -6,11 +6,11 @@ import { metadataClient } from '~/core/graphql';
 import { AboutTokenQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
-import { ETH_ADDRESS } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { isNativeAsset } from '~/core/utils/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import {
@@ -246,8 +246,6 @@ export function About({ token }: { token: ParsedUserAsset }) {
 
   const explorer = getTokenBlockExplorer(token);
 
-  const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
-
   return (
     <Accordion
       type="multiple"
@@ -328,7 +326,7 @@ export function About({ token }: { token: ParsedUserAsset }) {
             marginHorizontal="-20px"
           >
             <div />
-            {!isEth && (
+            {!isNativeAsset(token.address, token.chainId) && (
               <>
                 <InfoRow
                   symbol="info.circle"
@@ -384,7 +382,7 @@ export function About({ token }: { token: ParsedUserAsset }) {
                     Homepage
                   </Button>
                 )}
-                {token.address && (
+                {explorer && (
                   <Button
                     symbol="link"
                     onClick={() => window.open(explorer.url, '_blank')}

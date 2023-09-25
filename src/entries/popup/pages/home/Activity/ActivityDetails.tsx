@@ -12,6 +12,7 @@ import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
+import { copy, copyAddress } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { truncateString } from '~/core/utils/strings';
@@ -46,7 +47,6 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
-import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -76,22 +76,14 @@ function AddressMoreOptions({ address }: { address: Address }) {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           symbolLeft="doc.on.doc.fill"
-          onSelect={() => {
-            navigator.clipboard.writeText(address);
-            triggerToast({
-              title: i18n.t('wallet_header.copy_toast'),
-              description: truncateAddress(address),
-            });
-          }}
+          onSelect={() => copyAddress(address)}
         >
-          <Stack space="8px">
-            <Text size="14pt" weight="semibold">
-              {i18n.t('token_details.more_options.copy_address')}
-            </Text>
-            <Text size="11pt" color="labelTertiary" weight="medium">
-              {truncateAddress(address)}
-            </Text>
-          </Stack>
+          <Text size="14pt" weight="semibold">
+            {i18n.t('token_details.more_options.copy_address')}
+          </Text>
+          <Text size="11pt" color="labelTertiary" weight="medium">
+            {truncateAddress(address)}
+          </Text>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -594,42 +586,38 @@ function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           symbolLeft="doc.on.doc.fill"
-          onSelect={() => {
-            navigator.clipboard.writeText(hash);
-            triggerToast({
+          onSelect={() =>
+            copy({
+              value: hash,
               title: i18n.t('activity_details.hash_copied'),
               description: truncateString(hash, 18),
-            });
-          }}
+            })
+          }
         >
-          <Stack space="8px">
-            <Text size="14pt" weight="semibold">
-              {i18n.t('activity_details.copy_hash')}
-            </Text>
-            <TextOverflow size="11pt" color="labelTertiary" weight="medium">
-              {hash}
-            </TextOverflow>
-          </Stack>
+          <Text size="14pt" weight="semibold">
+            {i18n.t('activity_details.copy_hash')}
+          </Text>
+          <TextOverflow size="11pt" color="labelTertiary" weight="medium">
+            {hash}
+          </TextOverflow>
         </DropdownMenuItem>
         {explorerUrl && (
           <DropdownMenuItem
             symbolLeft="doc.on.doc.fill"
             onSelect={() => {
-              navigator.clipboard.writeText(explorerUrl);
-              triggerToast({
+              copy({
                 title: i18n.t('activity_details.explorer_copied'),
                 description: truncateString(explorerUrl, 18),
+                value: explorerUrl,
               });
             }}
           >
-            <Stack space="8px">
-              <Text size="14pt" weight="semibold">
-                {i18n.t('activity_details.copy_explorer_url')}
-              </Text>
-              <TextOverflow size="11pt" color="labelTertiary" weight="medium">
-                {explorerUrl}
-              </TextOverflow>
-            </Stack>
+            <Text size="14pt" weight="semibold">
+              {i18n.t('activity_details.copy_explorer_url')}
+            </Text>
+            <TextOverflow size="11pt" color="labelTertiary" weight="medium">
+              {explorerUrl}
+            </TextOverflow>
           </DropdownMenuItem>
         )}
         <Box paddingVertical="4px">

@@ -7,10 +7,12 @@ import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { hasChildren } from '~/core/utils/react';
 import {
   AccentColorProvider,
   Box,
   Inline,
+  Stack,
   Symbol,
   Text,
   ThemeProvider,
@@ -116,6 +118,7 @@ interface ContextMenuContentProps {
 }
 
 export function ContextMenuContent(props: ContextMenuContentProps) {
+  if (!hasChildren(props.children)) return null;
   return (
     <ContextMenuPrimitive.Portal>
       <ContextMenuContentBody
@@ -277,7 +280,7 @@ export const ContextMenuItem = ({
             {children}
           </Text>
         ) : (
-          children
+          <Stack space="8px">{children}</Stack>
         )}
       </Inline>
       {shortcut && <ShortcutHint hint={shortcut} />}
