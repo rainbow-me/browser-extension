@@ -472,14 +472,13 @@ export function Send() {
         rightComponent={
           !toAddress || isMyWallet(toAddress) ? undefined : (
             <CursorTooltip
-              align="center"
+              align="end"
               arrowAlignment="right"
+              arrowCentered
               text={i18n.t('tooltip.save_to_contacts')}
               textWeight="bold"
               textSize="12pt"
               textColor="labelSecondary"
-              marginLeft="0px"
-              marginTop="66px"
               arrowDirection={'up'}
             >
               <NavbarContactButton

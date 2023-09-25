@@ -206,11 +206,11 @@ function Fee({
               <CursorTooltip
                 align="end"
                 arrowAlignment="right"
+                arrowCentered
                 text={i18n.t('tooltip.gwei_settings')}
                 textWeight="bold"
                 textSize="12pt"
                 textColor="labelSecondary"
-                marginLeft="24px"
                 hint={shortcuts.global.OPEN_CUSTOM_GAS_MENU.display}
               >
                 <Lens

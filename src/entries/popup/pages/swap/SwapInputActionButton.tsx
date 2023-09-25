@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -22,16 +22,6 @@ export const SwapInputActionButton = ({
   onClose: () => void;
   onDropdownAction: () => void;
 }) => {
-  const closeContainerRef = useRef<HTMLButtonElement>(null);
-  const [closeContainerWidth, setCloseContainerWidth] = useState(1);
-
-  // center the tooltip based on symbol length
-  useLayoutEffect(() => {
-    if (closeContainerRef.current) {
-      setCloseContainerWidth(closeContainerRef.current.offsetWidth);
-    }
-  }, [closeContainerRef, showClose]);
-
   return showClose ? (
     <CursorTooltip
       align="center"
@@ -40,8 +30,6 @@ export const SwapInputActionButton = ({
       textWeight="bold"
       textSize="12pt"
       textColor="labelSecondary"
-      marginLeft={`${closeContainerWidth / 2}px`}
-      marginTop="0px"
     >
       <Button
         color="accent"
@@ -50,7 +38,6 @@ export const SwapInputActionButton = ({
         onClick={onClose}
         testId={`${testId}-token-input-remove`}
         tabIndex={0}
-        ref={closeContainerRef}
       >
         <Inline
           space="8px"

@@ -90,7 +90,6 @@ export const TokenToBuyInfo = ({
                 textWeight="bold"
                 arrowAlignment="center"
                 align="center"
-                marginLeft="25px"
               >
                 <Text
                   as="p"

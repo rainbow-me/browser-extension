@@ -434,12 +434,11 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
               <CursorTooltip
                 align="end"
                 arrowAlignment="right"
+                arrowCentered
                 text={i18n.t('tooltip.clear_address')}
                 textWeight="bold"
                 textSize="12pt"
                 textColor="labelSecondary"
-                marginLeft="22px"
-                marginTop="66px"
                 arrowDirection={'up'}
               >
                 <InputActionButton

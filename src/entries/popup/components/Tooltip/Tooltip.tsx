@@ -68,6 +68,7 @@ export const Tooltip = ({
           <TooltipPrimitive.Content
             align={align}
             className="TooltipContent"
+            side={arrowDirection === 'up' ? 'bottom' : 'top'}
             sideOffset={10}
             alignOffset={alignOffset}
           >
@@ -96,10 +97,16 @@ export const Tooltip = ({
                   />
                 </Inline>
                 <Box
+                  style={{
+                    alignItems: 'center',
+                    borderRadius: 6,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    minHeight: 22,
+                  }}
                   background="surfaceSecondaryElevated"
                   padding="4px"
-                  paddingLeft="6px"
-                  borderRadius="6px"
+                  paddingHorizontal="6px"
                   backdropFilter="blur(26px)"
                 >
                   <Inline alignVertical="center" space={'6px'}>

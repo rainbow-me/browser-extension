@@ -223,13 +223,12 @@ export const AppConnectionMenu = ({
           <CursorTooltip
             align="start"
             arrowAlignment="left"
+            arrowCentered
             arrowDirection="up"
             text={i18n.t('tooltip.switch_network')}
             textWeight="bold"
             textSize="12pt"
             textColor="labelSecondary"
-            marginLeft="2px"
-            marginTop="72px"
             hint={shortcuts.home.SWITCH_NETWORK.display}
           >
             {children}

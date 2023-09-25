@@ -43,7 +43,6 @@ import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
-import { isFullScreen } from '../../utils/windows';
 
 import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
@@ -272,12 +271,11 @@ const TopNav = memo(function TopNav() {
               align="end"
               arrowAlignment="right"
               arrowDirection="up"
+              arrowCentered
               text={i18n.t('tooltip.more')}
               textWeight="bold"
               textSize="12pt"
               textColor="labelSecondary"
-              marginLeft="30px"
-              marginTop="72px"
               hint={shortcuts.home.OPEN_MORE_MENU.display}
             >
               <Navbar.SymbolButton
@@ -318,8 +316,6 @@ const TopNav = memo(function TopNav() {
                     textSize="12pt"
                     textColor="labelSecondary"
                     arrowDirection={'up'}
-                    marginLeft={isFullScreen ? '-620px' : '-20px'}
-                    marginTop={isFullScreen ? '-48px' : '40px'}
                     hint={shortcuts.home.GO_TO_WALLETS.display}
                   >
                     {content}

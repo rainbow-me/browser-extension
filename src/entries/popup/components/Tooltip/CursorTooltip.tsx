@@ -2,6 +2,7 @@ import React, {
   ReactNode,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -18,8 +19,7 @@ export const CursorTooltip = ({
   align,
   arrowAlignment,
   arrowDirection,
-  marginTop,
-  marginLeft,
+  arrowCentered,
   text,
   textWeight,
   textSize,
@@ -28,12 +28,11 @@ export const CursorTooltip = ({
   hint,
 }: {
   children: ReactNode;
-  marginTop?: string;
-  marginLeft?: string;
   text: string;
   align?: 'start' | 'center' | 'end';
   arrowAlignment?: 'left' | 'center' | 'right';
   arrowDirection?: 'down' | 'up';
+  arrowCentered?: boolean;
   textSize?: TextStyles['fontSize'];
   textWeight?: TextStyles['fontWeight'];
   textColor?: TextStyles['color'];
@@ -43,16 +42,21 @@ export const CursorTooltip = ({
   const [open, setOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const showTimer = useRef<NodeJS.Timeout>();
-  const [coords, setCoords] = useState({
-    x: 0,
-    y: 0,
-  });
   const childElementWrapperRef = useRef<HTMLDivElement>(null);
-  const setCoordinates = () => {
-    const { x = 0, y = 0 } =
-      childElementWrapperRef.current?.getBoundingClientRect() || {};
-    setCoords({ x, y });
+  const [childWidth, setChildWidth] = useState(0);
+  const checkChildWidth = () => {
+    const width = childElementWrapperRef.current?.offsetWidth;
+    if (width) {
+      setChildWidth(width);
+    }
   };
+  const alignOffset = useMemo(() => {
+    if (!childWidth || !align || !arrowCentered) return 0;
+    if (align !== 'center') {
+      return childWidth / 2 - 12;
+    }
+    return 0;
+  }, [align, arrowCentered, childWidth]);
 
   useEffect(() => {
     if (!isHovering) {
@@ -60,13 +64,13 @@ export const CursorTooltip = ({
     }
   }, [isHovering]);
 
-  useLayoutEffect(() => {
-    setCoordinates();
-  }, []);
-
   useComponentWillUnmount(() => {
     clearTimeout(showTimer.current);
   });
+
+  useLayoutEffect(() => {
+    checkChildWidth();
+  }, []);
 
   if (process.env.IS_TESTING === 'true' && isFirefox) {
     return <Box>{children}</Box>;
@@ -74,49 +78,32 @@ export const CursorTooltip = ({
 
   return (
     <>
-      <Box
-        style={{
-          position: 'fixed',
-          top: coords.y,
-          left: coords.x,
-        }}
+      <Tooltip
+        align={align}
+        alignOffset={alignOffset}
+        arrowAlignment={arrowAlignment}
+        arrowDirection={arrowDirection}
+        text={text}
+        textWeight={textWeight}
+        textSize={textSize}
+        textColor={textColor}
+        open={open}
+        hint={hint}
       >
-        <Tooltip
-          align={align}
-          arrowAlignment={arrowAlignment}
-          arrowDirection={arrowDirection}
-          text={text}
-          textWeight={textWeight}
-          textSize={textSize}
-          textColor={textColor}
-          open={open}
-          hint={hint}
+        <Box
+          ref={childElementWrapperRef}
+          onMouseEnter={() => {
+            setIsHovering(true);
+            showTimer.current = setTimeout(() => setOpen(true), 750);
+          }}
+          onMouseLeave={() => {
+            setIsHovering(false);
+            setOpen(false);
+          }}
         >
-          <Box
-            background="green"
-            style={{
-              position: 'fixed',
-              pointerEvents: 'none',
-              marginTop: marginTop,
-              marginLeft: marginLeft,
-            }}
-          />
-        </Tooltip>
-      </Box>
-      <Box
-        ref={childElementWrapperRef}
-        onMouseEnter={() => {
-          setCoordinates();
-          setIsHovering(true);
-          showTimer.current = setTimeout(() => setOpen(true), 750);
-        }}
-        onMouseLeave={() => {
-          setIsHovering(false);
-          setOpen(false);
-        }}
-      >
-        {children}
-      </Box>
+          {children}
+        </Box>
+      </Tooltip>
     </>
   );
 };

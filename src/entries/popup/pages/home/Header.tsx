@@ -29,7 +29,6 @@ import { useScroll } from '../../hooks/useScroll';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
-import { isFullScreen } from '../../utils/windows';
 
 export const Header = React.memo(function Header() {
   const { featureFlags } = useFeatureFlagsStore();
@@ -116,15 +115,13 @@ export const Header = React.memo(function Header() {
                 tooltipOffset === 0
                   ? (content) => (
                       <CursorTooltip
-                        align="start"
+                        align="center"
                         arrowAlignment="center"
                         text={i18n.t('tooltip.switch_wallet')}
                         textWeight="bold"
                         textSize="12pt"
                         textColor="labelSecondary"
                         hint={shortcuts.home.GO_TO_WALLETS.display}
-                        marginLeft={isFullScreen ? '-620px' : '-20px'}
-                        marginTop={isFullScreen ? '-204px' : '-110px'}
                       >
                         {content}
                       </CursorTooltip>
@@ -309,7 +306,6 @@ function ActionButton({
         textWeight="bold"
         textSize="12pt"
         textColor="labelSecondary"
-        marginLeft="18px"
         hint={tooltipHint}
       >
         <ButtonSymbol

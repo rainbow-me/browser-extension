@@ -117,8 +117,8 @@ export const TokenToSellInfo = ({
             textSize="12pt"
             textWeight="bold"
             arrowAlignment="right"
+            arrowCentered
             align="end"
-            marginLeft="42px"
           >
             <Box
               onClick={setAssetToSellMaxValue}

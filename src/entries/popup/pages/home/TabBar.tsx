@@ -76,7 +76,6 @@ export function TabBar({
             textWeight="bold"
             textSize="12pt"
             textColor="labelSecondary"
-            marginLeft="0px"
             hint={shortcuts.global.BACK.display}
           >
             <Tabs.Tab
@@ -94,7 +93,6 @@ export function TabBar({
             textWeight="bold"
             textSize="12pt"
             textColor="labelSecondary"
-            marginLeft="38px"
             hint={shortcuts.global.FORWARD.display}
           >
             <Tabs.Tab

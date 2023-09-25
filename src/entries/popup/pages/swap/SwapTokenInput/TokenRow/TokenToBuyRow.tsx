@@ -229,13 +229,13 @@ export function TokenToBuyRow({
           </Box>
         ) : null}
         <CursorTooltip
-          align="start"
+          align="end"
           arrowAlignment="right"
+          arrowCentered
           text={i18n.t(isFavorite ? 'tooltip.unfavorite' : 'tooltip.favorite')}
           textWeight="bold"
           textSize="12pt"
           textColor="labelSecondary"
-          marginLeft={isFavorite ? '-120px' : '-80px'}
         >
           <ButtonSymbol
             symbol="star.fill"

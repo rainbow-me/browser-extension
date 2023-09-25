@@ -284,12 +284,11 @@ export const SendTokenInput = React.forwardRef<
           <CursorTooltip
             align="end"
             arrowAlignment="right"
+            arrowCentered
             text={i18n.t('tooltip.clear_token')}
             textWeight="bold"
             textSize="12pt"
             textColor="labelSecondary"
-            marginLeft="22px"
-            marginTop="66px"
             arrowDirection={'up'}
           >
             <InputActionButton
