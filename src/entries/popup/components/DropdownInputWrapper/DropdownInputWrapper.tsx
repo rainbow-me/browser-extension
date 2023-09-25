@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { ReactElement, useRef } from 'react';
+import React, { ReactElement } from 'react';
 
 import {
   Box,
@@ -62,7 +62,6 @@ export const DropdownInputWrapper = ({
   testId,
   borderVisible = true,
 }: DropdownInputWrapperProps) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   return (
     <Box style={{ height: bottomComponent ? 92 : 68 }}>
       <Box width="full" position="relative" style={{ zIndex: zIndex ?? 1 }}>
@@ -142,7 +141,6 @@ export const DropdownInputWrapper = ({
                     }}
                     onScroll={onDropdownScroll}
                     paddingVertical="16px"
-                    ref={scrollContainerRef}
                   >
                     <Stack space="12px">{dropdownComponent}</Stack>
                   </Box>
