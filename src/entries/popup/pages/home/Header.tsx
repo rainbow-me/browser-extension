@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { motion, useMotionValueEvent, useTransform } from 'framer-motion';
+import { motion, useTransform } from 'framer-motion';
 import * as React from 'react';
 import { useAccount } from 'wagmi';
 
@@ -32,7 +32,7 @@ import { tabIndexes } from '../../utils/tabIndexes';
 
 export const Header = React.memo(function Header() {
   const { featureFlags } = useFeatureFlagsStore();
-  const { scrollYProgress: progress, scrollY } = useScroll({
+  const { scrollYProgress: progress } = useScroll({
     offset: ['0px', '64px', '92px'],
   });
 
@@ -45,12 +45,6 @@ export const Header = React.memo(function Header() {
   const x = useTransform(progress, [0, 0.25, 1], [-12, -12, 0]);
   const y = useTransform(progress, [0, 1], [0, 2]);
   const avatarOpacityValue = useTransform(progress, [0, 0.25, 1], [0, 0, 1]);
-
-  const [tooltipOffset, setTooltipOffset] = React.useState(scrollY.get());
-
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    setTooltipOffset(latest);
-  });
 
   const { address } = useAccount();
 
@@ -111,23 +105,19 @@ export const Header = React.memo(function Header() {
               }
               id="header"
               tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
-              renderTooltip={
-                tooltipOffset === 0
-                  ? (content) => (
-                      <CursorTooltip
-                        align="center"
-                        arrowAlignment="center"
-                        text={i18n.t('tooltip.switch_wallet')}
-                        textWeight="bold"
-                        textSize="12pt"
-                        textColor="labelSecondary"
-                        hint={shortcuts.home.GO_TO_WALLETS.display}
-                      >
-                        {content}
-                      </CursorTooltip>
-                    )
-                  : undefined
-              }
+              renderTooltip={(content) => (
+                <CursorTooltip
+                  align="center"
+                  arrowAlignment="center"
+                  text={i18n.t('tooltip.switch_wallet')}
+                  textWeight="bold"
+                  textSize="12pt"
+                  textColor="labelSecondary"
+                  hint={shortcuts.home.GO_TO_WALLETS.display}
+                >
+                  {content}
+                </CursorTooltip>
+              )}
             />
           </Box>
           <ActionButtonsSection />
@@ -265,10 +255,10 @@ function ActionButtonsSection() {
             tooltipText={i18n.t('tooltip.send')}
             testId={'header-link-send'}
             onClick={() => {
-              if (allowSend) {
+              if (shouldNavigateToSend) {
                 navigate(ROUTES.SEND);
               } else {
-                alertWatchingWallet();
+                handleSendFallback();
               }
             }}
           />
