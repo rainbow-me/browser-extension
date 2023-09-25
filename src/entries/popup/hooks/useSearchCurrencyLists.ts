@@ -363,7 +363,7 @@ export function useSearchCurrencyLists({
         });
       }
 
-      if (targetUnverifiedAssets?.length) {
+      if (targetUnverifiedAssets?.length && query.length > 2) {
         sections.push({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             targetUnverifiedAssets,
