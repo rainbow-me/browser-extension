@@ -1,7 +1,7 @@
 import { Address, useEnsName } from 'wagmi';
 
+import { truncateAddress } from '~/core/utils/address';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
-import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 

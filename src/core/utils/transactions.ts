@@ -1,4 +1,5 @@
 import { FixedNumber } from '@ethersproject/bignumber';
+import { AddressZero } from '@ethersproject/constants';
 import { Provider, TransactionResponse } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { getProvider } from '@wagmi/core';
@@ -423,6 +424,7 @@ export const getTokenBlockExplorer = ({
 }: Pick<ParsedUserAsset, 'address' | 'mainnetAddress' | 'chainId'>) => {
   let _address = address;
   if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
+  if (_address === AddressZero) return;
   return {
     url: getTokenBlockExplorerUrl({ address: _address, chainId }),
     name: getBlockExplorerName(chainId),
