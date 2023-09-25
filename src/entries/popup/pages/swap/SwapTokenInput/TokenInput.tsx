@@ -11,6 +11,7 @@ import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { AssetContextMenu } from '~/entries/popup/components/AssetContextMenu';
 import { SwapInputMask } from '~/entries/popup/components/InputMask/SwapInputMask/SwapInputMask';
 import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
@@ -169,9 +170,9 @@ export const TokenInput = React.forwardRef<
         dropdownHeight={dropdownHeight || 376}
         testId={`${testId}-token-input`}
         leftComponent={
-          <Box>
+          <AssetContextMenu asset={asset}>
             <CoinIcon asset={asset ?? undefined} />
-          </Box>
+          </AssetContextMenu>
         }
         centerComponent={
           !asset ? (

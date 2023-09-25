@@ -35,6 +35,7 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
+import { AssetContextMenu } from '~/entries/popup/components/AssetContextMenu';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import {
   CoinIcon,
@@ -503,10 +504,12 @@ const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
           symbol="dollarsign.square"
           label={i18n.t('activity_details.token')}
           value={
-            <Inline alignVertical="center" space="4px">
-              <CoinIcon asset={asset} badge={false} size={16} />
-              {tokenAmount}
-            </Inline>
+            <AssetContextMenu asset={asset}>
+              <Inline alignVertical="center" space="4px">
+                <CoinIcon asset={asset} badge={false} size={16} />
+                {tokenAmount}
+              </Inline>
+            </AssetContextMenu>
           }
         />
       )}
