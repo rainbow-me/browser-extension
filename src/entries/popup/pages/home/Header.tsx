@@ -6,7 +6,9 @@ import { useAccount } from 'wagmi';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
+import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -18,7 +20,10 @@ import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useCurrentWalletTypeAndVendor } from '../../hooks/useCurrentWalletType';
+import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useScroll } from '../../hooks/useScroll';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
@@ -131,6 +136,7 @@ export function AvatarSection() {
 function ActionButtonsSection() {
   const { address } = useAccount();
   const { data: avatar } = useAvatar({ addressOrName: address });
+  const navigate = useRainbowNavigate();
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
@@ -164,10 +170,48 @@ function ActionButtonsSection() {
     triggerAlert({ text: i18n.t('alert.coming_soon') });
   }, []);
 
+  const { type, vendor } = useCurrentWalletTypeAndVendor();
+
+  const isTrezor = React.useMemo(() => {
+    return type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
+  }, [type, vendor]);
+
+  const isFullScreen = useIsFullScreen();
+
+  const shouldNavigateToSend = React.useMemo(() => {
+    // Trezor should always be in a new tab
+    if ((isTrezor && !isFullScreen) || !allowSend) {
+      return false;
+    }
+
+    return true;
+  }, [allowSend, isFullScreen, isTrezor]);
+
+  const handleSendFallback = React.useCallback(() => {
+    if (!allowSend) {
+      alertWatchingWallet();
+    } else {
+      // Trezor needs to be opened in a new tab because of their own popup
+      return (
+        isTrezor &&
+        !isFullScreen &&
+        goToNewTab({ url: POPUP_URL + `#${ROUTES.SEND}?hideBack=true` })
+      );
+    }
+  }, [alertWatchingWallet, allowSend, isFullScreen, isTrezor]);
+
   return (
     <Box style={{ height: 54 }}>
       {avatar?.color && (
         <Inline space="8px">
+          <ActionButton
+            symbol="creditcard.fill"
+            testId="header-link-buy"
+            text={i18n.t('wallet_header.buy')}
+            tabIndex={tabIndexes.WALLET_HEADER_BUY_BUTTON}
+            onClick={() => navigate(ROUTES.BUY)}
+          />
+
           <ActionButton
             symbol="square.on.square"
             text={i18n.t('wallet_header.copy')}
@@ -193,9 +237,11 @@ function ActionButtonsSection() {
           <Link
             tabIndex={-1}
             id="header-link-send"
-            to={allowSend ? ROUTES.SEND : '#'}
+            to={shouldNavigateToSend ? ROUTES.SEND : '#'}
             state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
-            onClick={allowSend ? () => null : alertWatchingWallet}
+            onClick={
+              allowSend ? () => handleSendFallback() : alertWatchingWallet
+            }
           >
             <ActionButton
               symbol="paperplane.fill"

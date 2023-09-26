@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionRequest } from '@ethersproject/providers';
 import { Bytes } from 'ethers';
+import { useEffect } from 'react';
 import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
@@ -67,11 +68,15 @@ export const HWRequestListener = () => {
     }
   };
 
-  bgMessenger.reply('hwRequest', async (data: HWSigningRequest) => {
-    const response = await processHwSigningRequest(data);
-    if (response) {
-      bgMessenger.send('hwResponse', response);
-    }
-  });
+  useEffect(() => {
+    bgMessenger.reply('hwRequest', async (data: HWSigningRequest) => {
+      const response = await processHwSigningRequest(data);
+      if (response) {
+        bgMessenger.send('hwResponse', response);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return null;
 };

@@ -90,6 +90,13 @@ export function useHomeShortcuts() {
       const inputIsFocused = getInputIsFocused();
       if (inputIsFocused) return;
       switch (e.key) {
+        case shortcuts.home.BUY.key:
+          trackShortcut({
+            key: shortcuts.home.BUY.display,
+            type: 'home.goToBuy',
+          });
+          navigate(ROUTES.BUY);
+          break;
         case shortcuts.home.COPY_ADDRESS.key:
           trackShortcut({
             key: shortcuts.home.COPY_ADDRESS.display,

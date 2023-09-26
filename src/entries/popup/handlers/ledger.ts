@@ -5,6 +5,7 @@ import { TransactionRequest } from '@ethersproject/providers';
 import { toUtf8Bytes } from '@ethersproject/strings';
 import { UnsignedTransaction, serialize } from '@ethersproject/transactions';
 import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
+import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
@@ -27,8 +28,13 @@ export async function signTransactionFromLedger(
   let transport;
   try {
     const { from: address } = transaction;
-    transport = await TransportWebHID.create();
-    const appEth = new AppEth(transport);
+    try {
+      transport = await TransportWebHID.openConnected();
+    } catch (e) {
+      transport = await TransportWebHID.create();
+    }
+    const appEth = new AppEth(transport as Transport);
+
     const path = await getPath(address as Address);
 
     const baseTx: UnsignedTransaction = {
@@ -58,6 +64,7 @@ export async function signTransactionFromLedger(
       baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
       baseTx.maxPriorityFeePerGas =
         transaction.maxPriorityFeePerGas || undefined;
+      baseTx.type = 2;
     } else {
       baseTx.gasPrice = transaction.maxFeePerGas || undefined;
     }
@@ -75,6 +82,7 @@ export async function signTransactionFromLedger(
     );
 
     const sig = await appEth.signTransaction(path, unsignedTx, resolution);
+
     const serializedTransaction = serialize(baseTx, {
       r: '0x' + sig.r,
       s: '0x' + sig.s,
@@ -82,11 +90,12 @@ export async function signTransactionFromLedger(
     });
 
     const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
+
     if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
       throw new Error('Transaction was not signed by the right address');
     }
 
-    await transport?.close();
+    await (transport as TransportWebHID)?.close();
     return serializedTransaction;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
@@ -100,7 +109,7 @@ export async function signTransactionFromLedger(
     } else if (e?.message) {
       alert(e.message);
     }
-    await transport?.close();
+    await (transport as TransportWebHID)?.close();
     // bubble up the error
     throw e;
   }
@@ -122,8 +131,13 @@ export async function signMessageByTypeFromLedger(
   address: Address,
   messageType: string,
 ): Promise<string> {
-  const transport = await TransportWebHID.create();
-  const appEth = new AppEth(transport);
+  let transport;
+  try {
+    transport = await TransportWebHID.openConnected();
+  } catch (e) {
+    transport = await TransportWebHID.create();
+  }
+  const appEth = new AppEth(transport as Transport);
   const path = await getPath(address);
   // Personal sign
   if (messageType === 'personal_sign') {
@@ -137,7 +151,7 @@ export async function signMessageByTypeFromLedger(
     const sig = await appEth.signPersonalMessage(path, messageHex);
     sig.r = '0x' + sig.r;
     sig.s = '0x' + sig.s;
-    await transport?.close();
+    await (transport as TransportWebHID)?.close();
     return joinSignature(sig);
     // sign typed data
   } else if (messageType === 'sign_typed_data') {
@@ -148,7 +162,7 @@ export async function signMessageByTypeFromLedger(
       typeof msgData !== 'object' ||
       !(parsedData.types || parsedData.primaryType || parsedData.domain)
     ) {
-      await transport?.close();
+      await (transport as TransportWebHID)?.close();
       throw new Error('unsupported typed data version');
     }
 
@@ -178,10 +192,10 @@ export async function signMessageByTypeFromLedger(
     );
     sig.r = '0x' + sig.r;
     sig.s = '0x' + sig.s;
-    await transport?.close();
+    await (transport as TransportWebHID)?.close();
     return joinSignature(sig);
   } else {
-    await transport?.close();
+    await (transport as TransportWebHID)?.close();
     throw new Error(`Message type ${messageType} not supported`);
   }
 }

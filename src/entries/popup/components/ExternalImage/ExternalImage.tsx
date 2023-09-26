@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import omit from 'lodash/omit';
 import * as React from 'react';
 
 import { Box, Text } from '~/design-system';
@@ -61,7 +62,7 @@ const ExternalImage = (
   return (
     <Box style={{ overflow: 'clip' }} borderRadius={props.borderRadius}>
       <img
-        {...props}
+        {...omit(props, 'borderRadius')}
         style={
           props.mask
             ? {

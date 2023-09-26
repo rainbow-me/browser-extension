@@ -88,6 +88,10 @@ export const shortcuts = {
     },
   },
   home: {
+    BUY: {
+      display: 'B',
+      key: 'b',
+    },
     COPY_ADDRESS: {
       display: 'C',
       key: 'c',

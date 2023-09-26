@@ -50,6 +50,7 @@ import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
@@ -103,21 +104,26 @@ const YouOrAddress = ({ address }: { address: Address }) => {
   );
   if (currentAccount === address.toLowerCase())
     return (
-      <>
-        {i18n.t('activity_details.you')}
-        <Text size="12pt" weight="semibold" color="labelQuaternary">
-          <Inline alignVertical="center">
-            (
-            <AddressOrEns
-              address={address}
-              size="12pt"
-              weight="semibold"
-              color="labelQuaternary"
-            />
-            )
-          </Inline>
+      <Inline alignVertical="center" wrap={false} space="2px">
+        <Text color="labelSecondary" size="12pt" weight="semibold">
+          {i18n.t('activity_details.you')}
         </Text>
-      </>
+
+        <Inline alignVertical="center" wrap={false}>
+          <Text size="12pt" weight="semibold" color="labelQuaternary">
+            (
+          </Text>
+          <AddressOrEns
+            address={address}
+            size="12pt"
+            weight="semibold"
+            color="labelQuaternary"
+          />
+          <Text size="12pt" weight="semibold" color="labelQuaternary">
+            )
+          </Text>
+        </Inline>
+      </Inline>
     );
 
   return (
@@ -132,7 +138,7 @@ const YouOrAddress = ({ address }: { address: Address }) => {
 
 const AddressDisplay = ({ address }: { address: Address }) => {
   return (
-    <Inline space="6px" alignVertical="center">
+    <Inline space="6px" alignVertical="center" wrap={false}>
       <WalletAvatar addressOrName={address} size={16} emojiSize="9pt" />
       <YouOrAddress address={address} />
       <AddressMoreOptions address={address} />
@@ -668,7 +674,7 @@ function ActivityDetailsSheet({
     });
 
   return (
-    <BottomSheet show>
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar
         leftComponent={<Navbar.CloseButton onClick={backToHome} />}
         titleComponent={<ActivityPill transaction={tx} />}

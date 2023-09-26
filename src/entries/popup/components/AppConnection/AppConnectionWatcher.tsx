@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -8,6 +8,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { Box } from '~/design-system';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppSession } from '../../hooks/useAppSession';
@@ -30,7 +31,8 @@ export const AppConnectionWatcher = () => {
     host: dappMetadata?.appHost || '',
   });
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideNudgeBannerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const bannerHoverRef = useRef<boolean>(false);
+  const shouldAnimateOut = useRef<boolean>(false);
 
   const [showNudgeSheet, setShowNudgeSheet] = useState<boolean>(false);
   const [showNudgeBanner, setShowNudgeBanner] = useState<boolean>(false);
@@ -48,13 +50,24 @@ export const AppConnectionWatcher = () => {
         chainId: activeSession?.chainId || ChainId.mainnet,
         url,
       });
-    if (showNudgeBanner) setShowNudgeBanner(false);
+    if (showNudgeBanner) {
+      shouldAnimateOut.current = true;
+      setShowNudgeBanner(false);
+    }
     if (showNudgeSheet) setShowNudgeSheet(false);
+    triggerToast({
+      title: i18n.t('app_connection_switcher.banner.app_connected', {
+        appName: dappMetadata?.appName || dappMetadata?.appHostName,
+      }),
+      description: ChainNameDisplay[activeSession?.chainId || ChainId.mainnet],
+    });
   }, [
     activeSession?.chainId,
     addSession,
     currentAddress,
     dappMetadata?.appHost,
+    dappMetadata?.appHostName,
+    dappMetadata?.appName,
     showNudgeBanner,
     showNudgeSheet,
     url,
@@ -72,19 +85,13 @@ export const AppConnectionWatcher = () => {
     handler: (e: KeyboardEvent) => {
       if (!showNudgeBanner && !showNudgeSheet) return;
       if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
         if (showNudgeBanner) setShowNudgeBanner(false);
         if (showNudgeSheet) setShowNudgeSheet(false);
       } else if (e.key === shortcuts.global.SELECT.key) {
+        e.preventDefault();
         connect();
-        triggerToast({
-          title: i18n.t('app_connection_switcher.banner.app_connected', {
-            appName: dappMetadata?.appName || dappMetadata?.appHostName,
-          }),
-          description:
-            ChainNameDisplay[activeSession?.chainId || ChainId.mainnet],
-        });
       }
-      e.preventDefault();
     },
   });
 
@@ -95,39 +102,54 @@ export const AppConnectionWatcher = () => {
   const firstLoad =
     prevLocationPathname === '/' || prevLocationPathname === ROUTES.UNLOCK;
 
-  const triggerCheck = useCallback(() => {
-    timeoutRef.current = setTimeout(() => {
-      // if there's another active address
-      if (
-        nudgeSheetEnabled &&
-        !appHasInteractedWithNudgeSheet({ host: dappMetadata?.appHost })
-      ) {
-        setShowNudgeSheet(true);
-        if (dappMetadata?.appHost) {
-          setAddressInAppHasInteractedWithNudgeSheet({
-            address: currentAddress,
-            host: dappMetadata?.appHost,
-          });
-          setAppHasInteractedWithNudgeSheet({ host: dappMetadata?.appHost });
-        }
-        // else if the address has not interacted with the nudgeSheet
-      } else if (
-        !addressInAppHasInteractedWithNudgeSheet({
+  const handleBannerTimeout = useCallback(() => {
+    if (bannerHoverRef.current) {
+      timeoutRef.current = setTimeout(handleBannerTimeout, 1000);
+    } else {
+      shouldAnimateOut.current = true;
+      setShowNudgeBanner(false);
+    }
+  }, []);
+
+  const checkAndDisplayBanner = useCallback(() => {
+    // Clear existing timeouts
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (
+      nudgeSheetEnabled &&
+      !appHasInteractedWithNudgeSheet({ host: dappMetadata?.appHost })
+    ) {
+      shouldAnimateOut.current = true;
+      setShowNudgeSheet(true);
+      if (dappMetadata?.appHost) {
+        setAddressInAppHasInteractedWithNudgeSheet({
           address: currentAddress,
           host: dappMetadata?.appHost,
-        })
-      ) {
-        setShowNudgeBanner(true);
-        hideNudgeBannerTimeoutRef.current = setTimeout(() => {
-          setShowNudgeBanner(false);
-        }, 3000);
+        });
+        setAppHasInteractedWithNudgeSheet({ host: dappMetadata?.appHost });
       }
-    }, 1000);
+      return true;
+    } else if (
+      !addressInAppHasInteractedWithNudgeSheet({
+        address: currentAddress,
+        host: dappMetadata?.appHost,
+      })
+    ) {
+      shouldAnimateOut.current = true;
+      setShowNudgeBanner(true);
+      timeoutRef.current = setTimeout(handleBannerTimeout, 4000);
+      return true;
+    }
+    shouldAnimateOut.current = false;
+    return false;
   }, [
     addressInAppHasInteractedWithNudgeSheet,
     appHasInteractedWithNudgeSheet,
     currentAddress,
     dappMetadata?.appHost,
+    handleBannerTimeout,
     nudgeSheetEnabled,
     setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,
@@ -136,25 +158,36 @@ export const AppConnectionWatcher = () => {
   const hide = useCallback(() => {
     setShowNudgeSheet(false);
     setShowNudgeBanner(false);
-    hideNudgeBannerTimeoutRef.current &&
-      clearTimeout(hideNudgeBannerTimeoutRef.current);
-    timeoutRef.current && clearTimeout(timeoutRef.current);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
   }, []);
 
-  useEffect(() => {
-    if (!isLowerCaseMatch(currentAddress, prevCurrentAddress)) {
-      setAccountChangeHappened(true);
+  useLayoutEffect(() => {
+    if (
+      !!prevCurrentAddress &&
+      !isLowerCaseMatch(currentAddress, prevCurrentAddress) &&
+      (!checkAndDisplayBanner() || !differentActiveSession)
+    ) {
+      shouldAnimateOut.current = false;
       hide();
     }
-  }, [currentAddress, hide, prevCurrentAddress]);
+  }, [
+    currentAddress,
+    hide,
+    prevCurrentAddress,
+    checkAndDisplayBanner,
+    differentActiveSession,
+  ]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (location.pathname !== ROUTES.HOME) {
+      shouldAnimateOut.current = true;
       hide();
     }
   }, [hide, location.pathname]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (
       location.pathname === ROUTES.HOME &&
       (firstLoad || accountChangeHappened) &&
@@ -163,24 +196,28 @@ export const AppConnectionWatcher = () => {
       nextInQueue === 'app-connection'
     ) {
       setAccountChangeHappened(false);
-      hide();
-      triggerCheck();
+      checkAndDisplayBanner();
     }
   }, [
     accountChangeHappened,
-    currentAddress,
     differentActiveSession,
     firstLoad,
-    hide,
     location.pathname,
     nextInQueue,
     prevCurrentAddress,
-    triggerCheck,
+    checkAndDisplayBanner,
   ]);
 
   return (
     <>
-      <AppConnectionNudgeBanner show={showNudgeBanner} connect={connect} />
+      <Box opacity={shouldAnimateOut.current === true ? '1' : '0'}>
+        <AppConnectionNudgeBanner
+          show={showNudgeBanner}
+          connect={connect}
+          hide={hide}
+          bannerHoverRef={bannerHoverRef}
+        />
+      </Box>
       <AppConnectionNudgeSheet
         show={showNudgeSheet}
         connect={connect}
