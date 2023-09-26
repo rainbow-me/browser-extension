@@ -827,7 +827,8 @@ export async function importWalletFlowUsingKeyboardNavigation(
     key: 'ARROW_DOWN',
   });
   await executePerformShortcut({ driver, key: 'ENTER' });
-  // need delays
+
+  // make sure wallet list has loaded
   await findElementByTestId({ id: 'add-wallets-button-section', driver });
   if (!isPrivateKey) {
     await executePerformShortcut({
