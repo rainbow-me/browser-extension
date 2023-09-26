@@ -16,7 +16,6 @@ export const useWalletBackups = () => {
   const {
     needsInitialization,
     walletBackups,
-    setWalletBackedUp,
     setWalletAlreadyBackedUp,
     setNeedsInitialization,
     isWalletBackedUp,
@@ -44,7 +43,6 @@ export const useWalletBackups = () => {
     needsInitialization,
     setNeedsInitialization,
     setWalletAlreadyBackedUp,
-    setWalletBackedUp,
     walletBackups,
     walletsFromKeychain,
   ]);
