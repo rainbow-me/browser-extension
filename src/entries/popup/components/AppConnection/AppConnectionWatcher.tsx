@@ -165,6 +165,7 @@ export const AppConnectionWatcher = () => {
 
   useLayoutEffect(() => {
     if (
+      !!prevCurrentAddress &&
       !isLowerCaseMatch(currentAddress, prevCurrentAddress) &&
       (!checkAndDisplayBanner() || !differentActiveSession)
     ) {
