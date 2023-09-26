@@ -24,7 +24,7 @@ export const handleAccentColor = (theme: 'dark' | 'light', color: string) => {
     color,
     backgroundColors.surfacePrimary[theme].color,
   );
-  if (contrast < 4) return chroma(color).luminance(0.3).hex();
+  if (contrast < 3) return chroma(color).luminance(0.3).hex();
   return color;
 };
 
