@@ -11,7 +11,7 @@ import { Address, mainnet } from 'wagmi';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 
-import { IKeychain, PrivateKey } from '../IKeychain';
+import { IKeychain, PrivateKey, TWallet } from '../IKeychain';
 import { RainbowSigner } from '../RainbowSigner';
 import { autoDiscoverAccounts } from '../utils';
 
@@ -30,11 +30,6 @@ export interface SerializedHdKeychain {
   autodiscover?: boolean;
   accountsDeleted?: Array<number>;
 }
-
-type TWallet = Omit<Wallet, 'address' | 'privateKey'> & {
-  address: Address;
-  privateKey: PrivateKey;
-};
 
 const privates = new WeakMap<
   IKeychain,
