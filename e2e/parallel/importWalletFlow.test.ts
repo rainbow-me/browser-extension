@@ -6,7 +6,7 @@ import { afterAll, beforeAll, describe, it } from 'vitest';
 import {
   getExtensionIdByName,
   getRootUrl,
-  importWalletFlowUsingKeyboardNavigation,
+  importWalletFlow,
   initDriverWithOptions,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
@@ -30,10 +30,6 @@ describe('Import wallet with a secret phrase flow', () => {
   afterAll(async () => driver.quit());
 
   it('should be able import a wallet via seed', async () => {
-    await importWalletFlowUsingKeyboardNavigation(
-      driver,
-      rootURL,
-      TEST_VARIABLES.EMPTY_WALLET.SECRET,
-    );
+    await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 });
