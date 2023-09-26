@@ -10,7 +10,6 @@ import React, {
 import { Box } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
-import { useBrowser } from '../../hooks/useBrowser';
 import useComponentWillUnmount from '../../hooks/useComponentWillUnmount';
 
 import { Tooltip } from './Tooltip';
@@ -38,7 +37,6 @@ export const CursorTooltip = ({
   textColor?: TextStyles['color'];
   hint?: string;
 }) => {
-  const { isFirefox } = useBrowser();
   const [open, setOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const showTimer = useRef<NodeJS.Timeout>();
@@ -72,7 +70,7 @@ export const CursorTooltip = ({
     checkChildWidth();
   }, []);
 
-  if (process.env.IS_TESTING === 'true' && isFirefox) {
+  if (process.env.IS_TESTING === 'true') {
     return <Box>{children}</Box>;
   }
 
