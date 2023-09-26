@@ -1316,6 +1316,7 @@
     "flip_tokens": "Flip token positions",
     "favorite": "Add to favorites",
     "unfavorite": "Remove from favorites",
-    "estimated_difference": "Estimated difference in value"
+    "estimated_difference": "Estimated difference in value",
+    "buy_crypto": "Buy and transfer crypto"
   }
 }

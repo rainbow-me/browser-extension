@@ -218,6 +218,16 @@ function ActionButtonsSection() {
       {avatar?.color && (
         <Inline space="12px">
           <ActionButton
+            symbol="creditcard.fill"
+            testId="header-link-buy"
+            text={i18n.t('wallet_header.buy')}
+            tabIndex={tabIndexes.WALLET_HEADER_BUY_BUTTON}
+            onClick={() => navigate(ROUTES.BUY)}
+            tooltipHint={shortcuts.home.BUY.display}
+            tooltipText={i18n.t('tooltip.buy_crypto')}
+          />
+
+          <ActionButton
             symbol="square.on.square"
             text={i18n.t('wallet_header.copy')}
             onClick={handleCopy}
