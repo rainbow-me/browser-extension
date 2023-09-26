@@ -1,13 +1,23 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Signer } from '@ethersproject/abstract-signer';
-import { HDNode } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
-import { Address } from 'wagmi';
+import * as bip39 from '@scure/bip39';
+import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
+import { getProvider } from '@wagmi/core';
+import { HDKey } from 'ethereum-cryptography/hdkey';
+import { bytesToHex } from 'ethereum-cryptography/utils';
+import { Address, mainnet } from 'wagmi';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 
 import { IKeychain, PrivateKey } from '../IKeychain';
+import { RainbowSigner } from '../RainbowSigner';
 import { autoDiscoverAccounts } from '../utils';
+
+export interface RainbowHDKey extends HDKey {
+  address: Address;
+  pkHex: PrivateKey;
+}
 
 type SupportedHDPath = "m/44'/60'/0'/0";
 
@@ -35,7 +45,7 @@ const privates = new WeakMap<
     accountsDeleted: number[];
     hdPath: SupportedHDPath;
     getWalletForAddress(address: Address): Wallet | undefined;
-    deriveWallet(index: number): HDNode;
+    deriveWallet(index: number): RainbowHDKey;
     addAccount(index: number): Wallet;
   }
 >();
@@ -62,19 +72,25 @@ export class HdKeychain implements IKeychain {
               wallet.address.toLowerCase() === address.toLowerCase(),
           )?.wallet;
       },
-      deriveWallet: (index: number): HDNode => {
+      deriveWallet: (index: number): RainbowHDKey => {
         const _privates = privates.get(this)!;
         if (!_privates.mnemonic) throw new Error('No mnemonic');
 
-        const hdNode = HDNode.fromMnemonic(_privates.mnemonic);
-        const derivedWallet = hdNode.derivePath(`${_privates.hdPath}/${index}`);
+        const seed = bip39.mnemonicToSeedSync(_privates.mnemonic);
+        const hdNode = HDKey.fromMasterSeed(seed);
+        const root = hdNode.derive(_privates.hdPath);
+        const derivedWallet = root.deriveChild(index) as RainbowHDKey;
+        const pkeyHex = bytesToHex(derivedWallet.privateKey as Uint8Array);
+        const wallet = new Wallet(pkeyHex) as TWallet;
+        derivedWallet.address = wallet.address;
+        derivedWallet.pkHex = pkeyHex;
         return derivedWallet;
       },
 
       addAccount: (index: number): Wallet => {
         const _privates = privates.get(this)!;
         const derivedWallet = _privates.deriveWallet(index);
-        const wallet = new Wallet(derivedWallet.privateKey) as TWallet;
+        const wallet = new Wallet(derivedWallet.pkHex) as TWallet;
         _privates.wallets.push({ wallet, index: derivedWallet.index });
         return wallet;
       },
@@ -87,9 +103,10 @@ export class HdKeychain implements IKeychain {
 
   getSigner(address: Address): Signer {
     const _privates = privates.get(this)!;
-    const wallet = _privates.getWalletForAddress(address);
-    if (!wallet?._isSigner) throw new Error('Not a signer');
-    return wallet;
+    const provider = getProvider({ chainId: mainnet.id });
+    const wallet = _privates!.getWalletForAddress(address) as TWallet;
+    if (!wallet) throw new Error('Account not found');
+    return new RainbowSigner(provider, wallet.privateKey, wallet.address);
   }
 
   async serialize(): Promise<SerializedHdKeychain> {
@@ -112,9 +129,14 @@ export class HdKeychain implements IKeychain {
     this.imported = !!opts?.imported;
     if (opts?.accountsEnabled) _privates.accountsEnabled = opts.accountsEnabled;
     if (opts?.accountsDeleted) _privates.accountsDeleted = opts.accountsDeleted;
-
-    _privates.mnemonic =
-      opts?.mnemonic || Wallet.createRandom().mnemonic.phrase;
+    if (opts?.mnemonic) {
+      if (!bip39.validateMnemonic(opts.mnemonic, englishWordlist)) {
+        throw new Error('Invalid mnemonic');
+      }
+      _privates.mnemonic = opts.mnemonic;
+    } else {
+      _privates.mnemonic = bip39.generateMnemonic(englishWordlist);
+    }
 
     // If we didn't explicit add a new account, we need attempt to autodiscover the rest
     if (opts?.autodiscover) {

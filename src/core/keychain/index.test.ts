@@ -9,7 +9,11 @@ import {
   TypedMessage,
   recoverTypedSignature,
 } from '@metamask/eth-sig-util';
-import { expect, test } from 'vitest';
+import { beforeAll, expect, test } from 'vitest';
+
+import { delay } from '~/test/utils';
+
+import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
 import { PrivateKey } from './IKeychain';
 
@@ -34,6 +38,11 @@ import {
 
 let privateKey = '';
 let password = '';
+
+beforeAll(async () => {
+  createTestWagmiClient();
+  await delay(3000);
+});
 
 test('[keychain/index] :: should be able to create an HD wallet', async () => {
   await createWallet();
@@ -239,6 +248,7 @@ test('[keychain/index] :: should be able to send transactions', async () => {
     value: parseEther('0.001'),
   };
   const result = await sendTransaction(tx, provider);
+  console.log({ result });
   expect(isHexString(result.hash)).toBe(true);
   const txReceipt = await provider.getTransaction(result.hash);
   const receipt = await txReceipt.wait();
