@@ -33,40 +33,40 @@ const messenger = initializeMessenger({ connect: 'popup' });
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 const rainbowProvider = new RainbowProvider({ messenger });
 
-announceProvider({
-  info: {
-    icon: RAINBOW_ICON_RAW_SVG,
-    name: 'Rainbow',
-    rdns: 'me.rainbow',
-    uuid: uuid4(),
-  },
-  provider: rainbowProvider as EIP1193Provider,
-});
-
-backgroundMessenger.reply(
-  'wallet_switchEthereumChain',
-  async ({
-    chainId,
-    status,
-    extensionUrl,
-    host,
-  }: {
-    chainId: ChainId;
-    status: IN_DAPP_NOTIFICATION_STATUS;
-    extensionUrl: string;
-    host: string;
-  }) => {
-    if (getDappHost(window.location.href) === host) {
-      injectNotificationIframe({ chainId, status, extensionUrl });
-    }
-  },
-);
-
-backgroundMessenger.reply('rainbow_reload', async () => {
-  window.location.reload();
-});
-
 if (shouldInjectProvider()) {
+  announceProvider({
+    info: {
+      icon: RAINBOW_ICON_RAW_SVG,
+      name: 'Rainbow',
+      rdns: 'me.rainbow',
+      uuid: uuid4(),
+    },
+    provider: rainbowProvider as EIP1193Provider,
+  });
+
+  backgroundMessenger.reply(
+    'wallet_switchEthereumChain',
+    async ({
+      chainId,
+      status,
+      extensionUrl,
+      host,
+    }: {
+      chainId: ChainId;
+      status: IN_DAPP_NOTIFICATION_STATUS;
+      extensionUrl: string;
+      host: string;
+    }) => {
+      if (getDappHost(window.location.href) === host) {
+        injectNotificationIframe({ chainId, status, extensionUrl });
+      }
+    },
+  );
+
+  backgroundMessenger.reply('rainbow_reload', async () => {
+    window.location.reload();
+  });
+
   Object.defineProperties(window, {
     rainbow: { value: rainbowProvider, configurable: false, writable: false },
     ethereum: {
