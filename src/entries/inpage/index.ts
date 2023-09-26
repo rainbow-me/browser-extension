@@ -114,11 +114,6 @@ backgroundMessenger.reply(
     extensionUrl: string;
     host: string;
   }) => {
-    console.log(
-      'wallet_switchEthereumChain',
-      host,
-      getDappHost(window.location.href),
-    );
     if (getDappHost(window.location.href) === host) {
       injectNotificationIframe({ chainId, status, extensionUrl });
     }
