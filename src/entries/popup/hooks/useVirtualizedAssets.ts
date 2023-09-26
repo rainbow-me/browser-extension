@@ -1,4 +1,4 @@
-import { Virtualizer, useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef } from 'react';
 
 import {
@@ -17,7 +17,6 @@ export const useVirtualizedAssets = ({
     | ParsedUserAsset[]
     | ParsedSearchAsset[]
     | SearchAsset[];
-  onChange?: (v: Virtualizer<HTMLDivElement, HTMLElement>) => void;
   size?: number;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
