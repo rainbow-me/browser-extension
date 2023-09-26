@@ -4,6 +4,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, it } from 'vitest';
 
 import {
+  checkWalletName,
   getExtensionIdByName,
   getRootUrl,
   importWalletFlow,
@@ -31,5 +32,8 @@ describe('Import wallet with a secret phrase flow', () => {
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
+  });
+  it('should display account name', async () => {
+    await checkWalletName(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.ADDRESS);
   });
 });

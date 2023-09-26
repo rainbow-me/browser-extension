@@ -508,7 +508,6 @@ export async function executePerformShortcut({
 export async function checkExtensionURL(driver: WebDriver, urlValue: string) {
   try {
     await driver.wait(until.urlContains(urlValue), waitUntilTime);
-    console.log('url checked');
   } catch (error) {
     console.error(
       `Error occurred while checking url with the value '${urlValue}':`,
@@ -936,7 +935,6 @@ export const untilDocumentLoaded = async function () {
       );
 
       if (documentReadyState === 'complete') {
-        console.log('document loaded');
         return true;
       }
 
