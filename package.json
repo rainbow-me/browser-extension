@@ -99,7 +99,7 @@
     "@radix-ui/react-polymorphic": "0.0.14",
     "@radix-ui/react-select": "1.2.1",
     "@radix-ui/react-tooltip": "1.0.3",
-    "@rainbow-me/swaps": "0.7.0",
+    "@rainbow-me/swaps": "0.8.0",
     "@scure/bip39": "1.2.1",
     "@segment/analytics-node": "1.0.0-beta.24",
     "@sentry/browser": "7.69.0",
