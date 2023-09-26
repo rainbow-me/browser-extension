@@ -181,59 +181,65 @@ const WalletGroups = ({
           />
         }
       />
-      <Box>
-        <Separator color="separatorTertiary" strokeWeight="1px" />
-      </Box>
-      <Stack space="16px">
-        {wallets.map((wallet, i) => {
-          return (
-            <GroupRow
-              testId={`wallet-group-${i + 1}`}
-              key={i}
-              onClick={() => onCreateNewWalletOnGroup(i)}
-              leftcomponent={<GroupAvatar accounts={wallet.accounts} />}
-              centerComponent={
-                <Stack space="8px">
-                  <Text
-                    size="14pt"
-                    color="label"
-                    align="left"
-                    weight="semibold"
-                  >
-                    {i18n.t('choose_wallet_group.wallet_group', {
-                      number: i + 1,
-                    })}
-                  </Text>
-                  <Inline alignVertical="center" space="4px">
-                    <AddressOrEns
-                      address={wallet.accounts[0]}
-                      size={'12pt'}
-                      weight="regular"
-                      color="labelTertiary"
-                    />
-                    {wallet.accounts.length > 1 && (
-                      <Box
-                        borderWidth="1px"
-                        borderColor="separatorSecondary"
-                        borderRadius="5px"
-                        padding="3px"
+      {wallets.length ? (
+        <Box>
+          <Box>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </Box>
+          <Stack space="16px">
+            {wallets.map((wallet, i) => {
+              return (
+                <GroupRow
+                  testId={`wallet-group-${i + 1}`}
+                  key={i}
+                  onClick={() => onCreateNewWalletOnGroup(i)}
+                  leftcomponent={<GroupAvatar accounts={wallet.accounts} />}
+                  centerComponent={
+                    <Stack space="8px">
+                      <Text
+                        size="14pt"
+                        color="label"
+                        align="left"
+                        weight="semibold"
                       >
-                        <Text
-                          size="10pt"
-                          color="labelQuaternary"
-                          align="left"
-                          weight="bold"
-                        >{`+${wallet.accounts.length - 1}`}</Text>
-                      </Box>
-                    )}
-                  </Inline>
-                </Stack>
-              }
-              rightComponent={i < 9 ? <ShortcutHint hint={`${i + 1}`} /> : null}
-            />
-          );
-        })}
-      </Stack>
+                        {i18n.t('choose_wallet_group.wallet_group', {
+                          number: i + 1,
+                        })}
+                      </Text>
+                      <Inline alignVertical="center" space="4px">
+                        <AddressOrEns
+                          address={wallet.accounts[0]}
+                          size={'12pt'}
+                          weight="regular"
+                          color="labelTertiary"
+                        />
+                        {wallet.accounts.length > 1 && (
+                          <Box
+                            borderWidth="1px"
+                            borderColor="separatorSecondary"
+                            borderRadius="5px"
+                            padding="3px"
+                          >
+                            <Text
+                              size="10pt"
+                              color="labelQuaternary"
+                              align="left"
+                              weight="bold"
+                            >{`+${wallet.accounts.length - 1}`}</Text>
+                          </Box>
+                        )}
+                      </Inline>
+                    </Stack>
+                  }
+                  rightComponent={
+                    i < 9 ? <ShortcutHint hint={`${i + 1}`} /> : null
+                  }
+                />
+              );
+            })}
+          </Stack>
+        </Box>
+      ) : null}
     </Stack>
   );
 };
@@ -254,6 +260,7 @@ const ChooseWalletGroup = () => {
           ![
             KeychainType.ReadOnlyKeychain,
             KeychainType.HardwareWalletKeychain,
+            KeychainType.KeyPairKeychain,
           ].includes(wallet.type),
       );
 
