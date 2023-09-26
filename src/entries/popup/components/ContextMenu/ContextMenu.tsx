@@ -230,6 +230,7 @@ interface ContextMenuItemProps {
   symbolLeft: SymbolName | (string & {});
   color?: TextStyles['color'];
   shortcut?: string;
+  external?: boolean;
 }
 
 const isSymbol = (symbol: string): symbol is SymbolName =>
@@ -241,6 +242,7 @@ export const ContextMenuItem = ({
   symbolLeft,
   color,
   shortcut,
+  external,
 }: ContextMenuItemProps) => {
   return (
     <Box
@@ -284,6 +286,14 @@ export const ContextMenuItem = ({
         )}
       </Inline>
       {shortcut && <ShortcutHint hint={shortcut} />}
+      {external && (
+        <Symbol
+          size={12}
+          symbol="arrow.up.forward.circle"
+          weight="semibold"
+          color="labelTertiary"
+        />
+      )}
     </Box>
   );
 };

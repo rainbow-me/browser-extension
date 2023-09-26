@@ -46,6 +46,7 @@ export const AssetContextMenu = ({
         {explorer && (
           <ContextMenuItem
             symbolLeft="binoculars.fill"
+            external
             onSelect={() => goToNewTab(explorer)}
           >
             {i18n.t('token_details.view_on', {
