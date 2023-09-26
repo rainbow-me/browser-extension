@@ -39,11 +39,7 @@ type AppMetadataQueryKey = ReturnType<typeof AppMetadataQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function dappMetadataQueryFunction({
-  queryKey: [{ url }],
-}: QueryFunctionArgs<
-  typeof AppMetadataQueryKey
->): Promise<DappMetadata | null> {
+export async function fetchDappMetadata({ url }: { url?: string }) {
   if (!url) return null;
   const { setDappMetadata } = dappMetadataStore.getState();
   const appHostName = url && isValidUrl(url) ? getDappHostname(url) : '';
@@ -74,6 +70,13 @@ export async function dappMetadataQueryFunction({
   };
   setDappMetadata({ host: appHost, dappMetadata });
   return dappMetadata;
+}
+export async function dappMetadataQueryFunction({
+  queryKey: [{ url }],
+}: QueryFunctionArgs<
+  typeof AppMetadataQueryKey
+>): Promise<DappMetadata | null> {
+  return fetchDappMetadata({ url });
 }
 
 // ///////////////////////////////////////////////
