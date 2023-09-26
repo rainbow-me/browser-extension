@@ -789,7 +789,6 @@ export async function importWalletFlowUsingKeyboardNavigation(
   if (secondaryWallet) {
     await goToPopup(driver, rootURL);
     await executePerformShortcut({ driver, key: 'w' });
-    // TODO fix: can't navigate to these options via keyboard yet
     await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
     await executePerformShortcut({
       driver,
@@ -828,8 +827,8 @@ export async function importWalletFlowUsingKeyboardNavigation(
     key: 'ARROW_DOWN',
   });
   await executePerformShortcut({ driver, key: 'ENTER' });
-  await checkExtensionURL(driver, '/import/select');
-  await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  // need delays
+  await findElementByTestId({ id: 'add-wallets-button-section', driver });
   if (!isPrivateKey) {
     await executePerformShortcut({
       driver,
