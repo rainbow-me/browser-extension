@@ -1,7 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { metadataClient } from '~/core/graphql';
-import { QueryFunctionArgs, createQueryKey } from '~/core/react-query';
+import {
+  QueryFunctionArgs,
+  createQueryKey,
+  queryClient,
+} from '~/core/react-query';
 import { dappMetadataStore } from '~/core/state/dappMetadata';
 import {
   getDappHost,
@@ -77,6 +81,12 @@ export async function dappMetadataQueryFunction({
   typeof AppMetadataQueryKey
 >): Promise<DappMetadata | null> {
   return fetchDappMetadata({ url });
+}
+
+export async function prefetchDappMetadata({ url }: { url: string }) {
+  queryClient.prefetchQuery(AppMetadataQueryKey({ url }), async () =>
+    fetchDappMetadata({ url }),
+  );
 }
 
 // ///////////////////////////////////////////////
