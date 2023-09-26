@@ -19,7 +19,7 @@ const getRgb = (color: string) => {
 /**
  * Return ETH color if the color provided is too dark for dark mode
  * or too light for light mode
- * @param hex - hex color
+ * @param color - hex or rgb color
  * @returns
  */
 export const handleAccentColor = (theme: 'dark' | 'light', color: string) => {
