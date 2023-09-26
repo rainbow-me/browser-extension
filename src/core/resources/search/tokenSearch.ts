@@ -34,7 +34,6 @@ export type TokenSearchArgs = {
   list: TokenSearchListId;
   threshold: TokenSearchThreshold;
   query: string;
-  disabled?: boolean;
 };
 
 // ///////////////////////////////////////////////
@@ -139,15 +138,7 @@ export async function fetchTokenSearch(
 // Query Hook
 
 export function useTokenSearch(
-  {
-    chainId,
-    fromChainId,
-    keys,
-    list,
-    threshold,
-    query,
-    disabled,
-  }: TokenSearchArgs,
+  { chainId, fromChainId, keys, list, threshold, query }: TokenSearchArgs,
   config: QueryConfig<
     TokenSearchResult,
     Error,
@@ -158,9 +149,6 @@ export function useTokenSearch(
   return useQuery(
     tokenSearchQueryKey({ chainId, fromChainId, keys, list, threshold, query }),
     tokenSearchQueryFunction,
-    {
-      ...config,
-      enabled: !disabled,
-    },
+    config,
   );
 }

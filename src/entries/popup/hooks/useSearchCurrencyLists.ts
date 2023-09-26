@@ -161,15 +161,19 @@ export function useSearchCurrencyLists({
   const {
     data: targetUnverifiedAssets,
     isLoading: targetUnverifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: outputChainId,
-    keys,
-    list: 'highLiquidityAssets',
-    threshold,
-    query,
-    fromChainId,
-    disabled: disableUnverifiedSearch,
-  });
+  } = useTokenSearch(
+    {
+      chainId: outputChainId,
+      keys,
+      list: 'highLiquidityAssets',
+      threshold,
+      query,
+      fromChainId,
+    },
+    {
+      enabled: !disableUnverifiedSearch,
+    },
+  );
 
   const { favorites } = useFavoriteAssets();
 
