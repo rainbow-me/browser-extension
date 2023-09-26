@@ -16,6 +16,7 @@ import {
   useCurrentCurrencyStore,
   useCurrentLanguageStore,
   useIsDefaultWalletStore,
+  useNonceStore,
 } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -53,6 +54,7 @@ export function Settings() {
     useCurrentThemeStore();
   const { connectedToHardhat, setConnectedToHardhat } =
     useConnectedToHardhatStore();
+  const { clearNonces } = useNonceStore();
 
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 
@@ -409,6 +411,12 @@ export function Settings() {
               }
               onClick={connectToHardhat}
               testId="connect-to-hardhat"
+            />
+            <MenuItem
+              last
+              titleComponent={<MenuItem.Title text={'Clear nonces'} />}
+              onClick={clearNonces}
+              testId="clear-nonces"
             />
           </Menu>
         )}
