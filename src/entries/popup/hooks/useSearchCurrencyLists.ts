@@ -67,7 +67,7 @@ export function useSearchCurrencyLists({
   searchQuery?: string;
 }) {
   const query = searchQuery?.toLowerCase() || '';
-  const disableUnverifiedSearch = query.trim().length < 3;
+  const enableUnverifiedSearch = query.trim().length > 2;
 
   const isCrosschainSearch = useMemo(() => {
     return inputChainId && inputChainId !== outputChainId;
@@ -171,7 +171,7 @@ export function useSearchCurrencyLists({
       fromChainId,
     },
     {
-      enabled: !disableUnverifiedSearch,
+      enabled: enableUnverifiedSearch,
     },
   );
 
@@ -369,7 +369,7 @@ export function useSearchCurrencyLists({
         });
       }
 
-      if (targetUnverifiedAssets?.length && !disableUnverifiedSearch) {
+      if (targetUnverifiedAssets?.length && enableUnverifiedSearch) {
         sections.push({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             targetUnverifiedAssets,
