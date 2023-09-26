@@ -400,7 +400,7 @@ export function useSearchCurrencyLists({
     targetVerifiedAssets,
     targetUnverifiedAssets,
     crosschainExactMatches,
-    disableUnverifiedSearch,
+    enableUnverifiedSearch,
   ]);
 
   return {
