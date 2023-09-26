@@ -248,7 +248,6 @@ test('[keychain/index] :: should be able to send transactions', async () => {
     value: parseEther('0.001'),
   };
   const result = await sendTransaction(tx, provider);
-  console.log({ result });
   expect(isHexString(result.hash)).toBe(true);
   const txReceipt = await provider.getTransaction(result.hash);
   const receipt = await txReceipt.wait();

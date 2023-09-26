@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Signer } from '@ethersproject/abstract-signer';
+import { BytesLike } from '@ethersproject/bytes';
 import { Wallet } from '@ethersproject/wallet';
 import * as bip39 from '@scure/bip39';
 import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
@@ -16,7 +17,6 @@ import { autoDiscoverAccounts } from '../utils';
 
 export interface RainbowHDKey extends HDKey {
   address: Address;
-  pkHex: PrivateKey;
 }
 
 type SupportedHDPath = "m/44'/60'/0'/0";
@@ -83,14 +83,15 @@ export class HdKeychain implements IKeychain {
         const pkeyHex = bytesToHex(derivedWallet.privateKey as Uint8Array);
         const wallet = new Wallet(pkeyHex) as TWallet;
         derivedWallet.address = wallet.address;
-        derivedWallet.pkHex = pkeyHex;
         return derivedWallet;
       },
 
       addAccount: (index: number): Wallet => {
         const _privates = privates.get(this)!;
         const derivedWallet = _privates.deriveWallet(index);
-        const wallet = new Wallet(derivedWallet.pkHex) as TWallet;
+        const wallet = new Wallet(
+          derivedWallet.privateKey as BytesLike,
+        ) as TWallet;
         _privates.wallets.push({ wallet, index: derivedWallet.index });
         return wallet;
       },
