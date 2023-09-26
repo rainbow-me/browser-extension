@@ -293,7 +293,8 @@
       "web-ext>sign-addon>core-js": false,
       "web-ext>ws>bufferutil": false,
       "web-ext>ws>utf-8-validate": false,
-      "@ledgerhq/domain-service>eip55>keccak": false
+      "@ledgerhq/domain-service>eip55>keccak": false,
+      "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>keccak": false
     }
   }
 }
