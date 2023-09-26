@@ -78,7 +78,11 @@ module.exports = {
   },
   plugins: [
     ...optionalPlugins,
-    new IgnorePlugin(/^\.\/wordlists\/(?!english)/, /bip39\/src$/),
+    new IgnorePlugin({
+      checkResource(resource) {
+        return /.*\/wordlists\/(?!english).*\.json/.test(resource);
+      },
+    }),
     new Dotenv({ allowEmptyValues: true }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],

@@ -48,7 +48,7 @@ export class RainbowSigner extends ethers.Signer {
   ): Promise<string> {
     // We're converting the ethers v5 transaction request to
     // an ethereum JS transaction object so all the crypto operations
-    // are made using ethereum JS and not ethers v5
+    // are made using EthereumJS instead of ethers v5
     const typedTx = TransactionFactory.fromTxData({
       data: transaction.data?.toString(),
       to: transaction.to,
@@ -81,7 +81,6 @@ export class RainbowSigner extends ethers.Signer {
   }
 
   connect(provider: ethers.providers.Provider): ethers.Signer {
-    // provider is ignored because we don't need it
     return new RainbowSigner(
       provider,
       this.privateKey! as PrivateKey,
