@@ -36,6 +36,7 @@ import {
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { SWAP_INPUT_MASK_ID } from '../../components/InputMask/SwapInputMask/SwapInputMask';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import {
   useSwapActions,
@@ -545,34 +546,44 @@ export function Swap() {
                 style={{ zIndex: assetToSellDropdownClosed ? 3 : 1 }}
               >
                 <Inline alignHorizontal="center">
-                  <ButtonOverflow testId="swap-flip-button">
-                    <Box
-                      boxShadow="12px surfaceSecondaryElevated"
-                      background="surfaceSecondaryElevated"
-                      borderRadius="32px"
-                      borderWidth={'1px'}
-                      borderColor="buttonStroke"
-                      style={{ width: 42, height: 32, zIndex: 10 }}
-                      onClick={flipAssets}
-                    >
-                      <Box width="full" height="full" alignItems="center">
-                        <Inline
-                          height="full"
-                          alignHorizontal="center"
-                          alignVertical="center"
-                        >
-                          <Stack alignHorizontal="center">
-                            <Box marginBottom={isFirefox ? '-9px' : '-4px'}>
-                              <ChevronDown color="labelTertiary" />
-                            </Box>
-                            <Box marginTop="-4px">
-                              <ChevronDown color="labelQuaternary" />
-                            </Box>
-                          </Stack>
-                        </Inline>
+                  <CursorTooltip
+                    align="center"
+                    arrowAlignment="center"
+                    text={i18n.t('tooltip.flip_tokens')}
+                    textWeight="bold"
+                    textSize="12pt"
+                    textColor="labelSecondary"
+                    hint={shortcuts.swap.FLIP_ASSETS.display}
+                  >
+                    <ButtonOverflow testId="swap-flip-button">
+                      <Box
+                        boxShadow="12px surfaceSecondaryElevated"
+                        background="surfaceSecondaryElevated"
+                        borderRadius="32px"
+                        borderWidth={'1px'}
+                        borderColor="buttonStroke"
+                        style={{ width: 42, height: 32, zIndex: 10 }}
+                        onClick={flipAssets}
+                      >
+                        <Box width="full" height="full" alignItems="center">
+                          <Inline
+                            height="full"
+                            alignHorizontal="center"
+                            alignVertical="center"
+                          >
+                            <Stack alignHorizontal="center">
+                              <Box marginBottom={isFirefox ? '-9px' : '-4px'}>
+                                <ChevronDown color="labelTertiary" />
+                              </Box>
+                              <Box marginTop="-4px">
+                                <ChevronDown color="labelQuaternary" />
+                              </Box>
+                            </Stack>
+                          </Inline>
+                        </Box>
                       </Box>
-                    </Box>
-                  </ButtonOverflow>
+                    </ButtonOverflow>
+                  </CursorTooltip>
                 </Inline>
               </Box>
 
