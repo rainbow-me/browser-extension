@@ -9,7 +9,6 @@ import {
   userAssetsSetQueryDefaults,
 } from '~/core/resources/assets/userAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
 
@@ -18,12 +17,10 @@ export const useSwapRefreshAssets = () => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { swapAssetsToRefresh, removeSwapAssetsToRefresh } =
     useSwapAssetsToRefreshStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
   const { data: userAssets } = useUserAssets(
     {
       address: currentAddress,
       currency: currentCurrency,
-      connectedToHardhat,
     },
     { select: selectUserAssetsDictByChain },
   );
@@ -71,13 +68,11 @@ export const useSwapRefreshAssets = () => {
       userAssetsSetQueryData({
         address: currentAddress,
         currency: currentCurrency,
-        connectedToHardhat,
         userAssets: updatedAssets,
       });
       userAssetsSetQueryDefaults({
         address: currentAddress,
         currency: currentCurrency,
-        connectedToHardhat,
         staleTime: USER_ASSETS_STALE_INTERVAL,
       });
 
@@ -85,7 +80,6 @@ export const useSwapRefreshAssets = () => {
         userAssetsSetQueryDefaults({
           address: currentAddress,
           currency: currentCurrency,
-          connectedToHardhat,
           staleTime: 0,
         });
       }, USER_ASSETS_STALE_INTERVAL);
@@ -93,7 +87,6 @@ export const useSwapRefreshAssets = () => {
       removeSwapAssetsToRefresh({ nonce });
     },
     [
-      connectedToHardhat,
       currentAddress,
       currentCurrency,
       removeSwapAssetsToRefresh,

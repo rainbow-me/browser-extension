@@ -6,7 +6,6 @@ import {
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { ParsedUserAsset } from '~/core/types/assets';
 
@@ -20,7 +19,6 @@ import { actionLabels } from './references';
 export const useSearchableTokens = () => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const navigate = useRainbowNavigate();
 
@@ -28,7 +26,6 @@ export const useSearchableTokens = () => {
     {
       address,
       currency,
-      connectedToHardhat,
     },
     {
       select: hideSmallBalances

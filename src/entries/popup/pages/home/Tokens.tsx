@@ -12,7 +12,6 @@ import { useUserAssets } from '~/core/resources/assets';
 import { fetchProviderWidgetUrl } from '~/core/resources/f2c';
 import { FiatProviderName } from '~/core/resources/f2c/types';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
@@ -48,7 +47,6 @@ import { TokenContextMenu } from './TokenDetails/TokenContextMenu';
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
     useState(false);
   const { hideSmallBalances } = useHideSmallBalancesStore();
@@ -63,7 +61,6 @@ export function Tokens() {
     {
       address: currentAddress,
       currency,
-      connectedToHardhat,
     },
     {
       select: hideSmallBalances
