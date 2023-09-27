@@ -343,6 +343,16 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const inputActionButton = (
+      <InputActionButton
+        showClose={!!toAddress}
+        onClose={onActionClose}
+        onDropdownAction={onDropdownAction}
+        dropdownVisible={dropdownVisible}
+        testId={`input-wrapper-close-to-address-input`}
+      />
+    );
+
     return (
       <>
         <DropdownInputWrapper
@@ -441,22 +451,10 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
                 textColor="labelSecondary"
                 arrowDirection={'up'}
               >
-                <InputActionButton
-                  showClose={!!toAddress}
-                  onClose={onActionClose}
-                  onDropdownAction={onDropdownAction}
-                  dropdownVisible={dropdownVisible}
-                  testId={`input-wrapper-close-to-address-input`}
-                />
+                {inputActionButton}
               </CursorTooltip>
             ) : (
-              <InputActionButton
-                showClose={!!toAddress}
-                onClose={onActionClose}
-                onDropdownAction={onDropdownAction}
-                dropdownVisible={dropdownVisible}
-                testId={`input-wrapper-close-to-address-input`}
-              />
+              inputActionButton
             )
           }
         />

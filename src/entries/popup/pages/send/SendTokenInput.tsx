@@ -224,6 +224,16 @@ export const SendTokenInput = React.forwardRef<
     }
   }, [dropdownVisible, onDropdownAction]);
 
+  const inputActionButton = (
+    <InputActionButton
+      showClose={!!asset}
+      onClose={onCloseDropdown}
+      onDropdownAction={onDropdownAction}
+      dropdownVisible={dropdownVisible}
+      testId={`input-wrapper-close-${'token-input'}`}
+    />
+  );
+
   return (
     <DropdownInputWrapper
       zIndex={zIndex || 1}
@@ -291,22 +301,10 @@ export const SendTokenInput = React.forwardRef<
             textColor="labelSecondary"
             arrowDirection={'up'}
           >
-            <InputActionButton
-              showClose={!!asset}
-              onClose={onCloseDropdown}
-              onDropdownAction={onDropdownAction}
-              dropdownVisible={dropdownVisible}
-              testId={`input-wrapper-close-${'token-input'}`}
-            />
+            {inputActionButton}
           </CursorTooltip>
         ) : (
-          <InputActionButton
-            showClose={!!asset}
-            onClose={onCloseDropdown}
-            onDropdownAction={onDropdownAction}
-            dropdownVisible={dropdownVisible}
-            testId={`input-wrapper-close-${'token-input'}`}
-          />
+          inputActionButton
         )
       }
       dropdownComponent={
