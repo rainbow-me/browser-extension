@@ -1,5 +1,4 @@
 import { FixedNumber } from '@ethersproject/bignumber';
-import { AddressZero } from '@ethersproject/constants';
 import { Provider, TransactionResponse } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { getProvider } from '@wagmi/core';
@@ -8,12 +7,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
-import {
-  ETH_ADDRESS,
-  SupportedCurrencyKey,
-  WETH_ADDRESS,
-  smartContractMethods,
-} from '../references';
+import { SupportedCurrencyKey, smartContractMethods } from '../references';
 import {
   currentCurrencyStore,
   nonceStore,
@@ -33,7 +27,7 @@ import {
 } from '../types/transactions';
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
-import { getBlockExplorerHostForChain } from './chains';
+import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
 import { convertStringToHex } from './hex';
 import { capitalize } from './strings';
 
@@ -422,11 +416,9 @@ export const getTokenBlockExplorer = ({
   address,
   chainId,
 }: Pick<ParsedUserAsset, 'address' | 'mainnetAddress' | 'chainId'>) => {
-  let _address = address;
-  if (_address === ETH_ADDRESS) _address = WETH_ADDRESS;
-  if (_address === AddressZero) return;
+  if (isNativeAsset(address, chainId)) return;
   return {
-    url: getTokenBlockExplorerUrl({ address: _address, chainId }),
+    url: getTokenBlockExplorerUrl({ address, chainId }),
     name: getBlockExplorerName(chainId),
   };
 };
