@@ -33,6 +33,7 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { DropdownInputWrapper } from '../../components/DropdownInputWrapper/DropdownInputWrapper';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
@@ -342,6 +343,16 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const inputActionButton = (
+      <InputActionButton
+        showClose={!!toAddress}
+        onClose={onActionClose}
+        onDropdownAction={onDropdownAction}
+        dropdownVisible={dropdownVisible}
+        testId={`input-wrapper-close-to-address-input`}
+      />
+    );
+
     return (
       <>
         <DropdownInputWrapper
@@ -429,13 +440,22 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
           }
           dropdownVisible={dropdownVisible}
           rightComponent={
-            <InputActionButton
-              showClose={!!toAddress}
-              onClose={onActionClose}
-              onDropdownAction={onDropdownAction}
-              dropdownVisible={dropdownVisible}
-              testId={`input-wrapper-close-to-address-input`}
-            />
+            toAddress ? (
+              <CursorTooltip
+                align="end"
+                arrowAlignment="right"
+                arrowCentered
+                text={i18n.t('tooltip.clear_address')}
+                textWeight="bold"
+                textSize="12pt"
+                textColor="labelSecondary"
+                arrowDirection={'up'}
+              >
+                {inputActionButton}
+              </CursorTooltip>
+            ) : (
+              inputActionButton
+            )
           }
         />
       </>
