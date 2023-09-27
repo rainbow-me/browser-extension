@@ -89,7 +89,6 @@ const messengerProviderRequest = async (
 ) => {
   const { addPendingRequest } = pendingRequestStore.getState();
   // Add pending request to global background state.
-  console.log('--- adding pending req addPendingRequest', request);
   addPendingRequest(request);
 
   let ready = await isInitialized();
