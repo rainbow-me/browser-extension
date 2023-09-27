@@ -121,6 +121,7 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
         color="accent"
         symbol="arrow.triangle.swap"
         onClick={() => selectTokenAndNavigate(ROUTES.SWAP)}
+        tabIndex={0}
       >
         {i18n.t('token_details.swap')}
       </Button>
@@ -131,6 +132,7 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
         color="accent"
         symbol="paperplane.fill"
         onClick={() => selectTokenAndNavigate(ROUTES.SEND)}
+        tabIndex={0}
       >
         {i18n.t('token_details.send')}
       </Button>
@@ -197,6 +199,7 @@ function FavoriteButton({ token }: { token: ParsedUserAsset }) {
       variant="transparentHover"
       color={isFavorite ? 'yellow' : 'labelSecondary'}
       onClick={() => (isFavorite ? removeFavorite(token) : addFavorite(token))}
+      tabIndex={0}
     />
   );
 }
@@ -223,6 +226,7 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
             height="32px"
             variant="transparentHover"
             color="labelSecondary"
+            tabIndex={0}
           />
         </div>
       </DropdownMenuTrigger>
@@ -317,6 +321,7 @@ export function TokenDetails() {
         background="surfacePrimaryElevatedSecondary"
         borderColor="separatorTertiary"
         borderWidth="1px"
+        isModal
         style={{ borderTop: 0, borderLeft: 0, borderRight: 0 }}
       >
         <Navbar
