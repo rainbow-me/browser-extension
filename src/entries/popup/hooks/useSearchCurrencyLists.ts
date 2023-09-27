@@ -67,6 +67,7 @@ export function useSearchCurrencyLists({
   searchQuery?: string;
 }) {
   const query = searchQuery?.toLowerCase() || '';
+  const enableUnverifiedSearch = query.trim().length > 2;
 
   const isCrosschainSearch = useMemo(() => {
     return inputChainId && inputChainId !== outputChainId;
@@ -160,14 +161,19 @@ export function useSearchCurrencyLists({
   const {
     data: targetUnverifiedAssets,
     isLoading: targetUnverifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: outputChainId,
-    keys,
-    list: 'highLiquidityAssets',
-    threshold,
-    query,
-    fromChainId,
-  });
+  } = useTokenSearch(
+    {
+      chainId: outputChainId,
+      keys,
+      list: 'highLiquidityAssets',
+      threshold,
+      query,
+      fromChainId,
+    },
+    {
+      enabled: enableUnverifiedSearch,
+    },
+  );
 
   const { favorites } = useFavoriteAssets();
 
@@ -363,7 +369,7 @@ export function useSearchCurrencyLists({
         });
       }
 
-      if (targetUnverifiedAssets?.length) {
+      if (targetUnverifiedAssets?.length && enableUnverifiedSearch) {
         sections.push({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             targetUnverifiedAssets,
@@ -394,6 +400,7 @@ export function useSearchCurrencyLists({
     targetVerifiedAssets,
     targetUnverifiedAssets,
     crosschainExactMatches,
+    enableUnverifiedSearch,
   ]);
 
   return {
