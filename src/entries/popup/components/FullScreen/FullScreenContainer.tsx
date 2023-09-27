@@ -11,7 +11,7 @@ export function FullScreenContainer({
   background,
 }: {
   children: React.ReactNode;
-  background?: string;
+  background?: BackgroundColor;
 }) {
   return (
     <Box
@@ -19,7 +19,7 @@ export function FullScreenContainer({
       flexDirection="column"
       alignItems="center"
       paddingHorizontal="20px"
-      background={background as BackgroundColor}
+      background={background}
       style={{
         minHeight: POPUP_DIMENSIONS.height - NAVBAR_HEIGHT,
         height: '100%',
