@@ -14,7 +14,6 @@ import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -216,7 +215,6 @@ const SwapReviewSheetWithQuote = ({
   hideSwapReview,
 }: SwapReviewSheetWithQuoteProps) => {
   const navigate = useRainbowNavigate();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
@@ -288,7 +286,7 @@ const SwapReviewSheetWithQuote = ({
       rapActionParameters: {
         sellAmount: q.sellAmount?.toString(),
         buyAmount: q.buyAmount?.toString(),
-        chainId: connectedToHardhat ? ChainId.hardhat : assetToSell.chainId,
+        chainId: assetToSell.chainId,
         assetToSell: assetToSell,
         assetToBuy: assetToBuy,
         quote: q,
@@ -350,7 +348,6 @@ const SwapReviewSheetWithQuote = ({
     quote,
     sendingSwap,
     flashbotsEnabled,
-    connectedToHardhat,
     isBridge,
     setSwapAssetsToRefresh,
     navigate,
