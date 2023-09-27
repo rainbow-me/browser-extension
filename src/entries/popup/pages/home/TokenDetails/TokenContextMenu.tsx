@@ -107,6 +107,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
                 description: truncateAddress(token.address),
               });
             }}
+            shortcut={shortcuts.home.COPY_ADDRESS.display}
           >
             {i18n.t('token_details.more_options.copy_address')}
           </ContextMenuItem>
