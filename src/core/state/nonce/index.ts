@@ -26,6 +26,7 @@ export interface CurrentNonceState {
     chainId,
   }: UpdateNonceArgs) => void;
   getNonce: ({ address, chainId }: GetNonceArgs) => NonceData | null;
+  clearNonces: () => void;
 }
 
 export const nonceStore = createStore<CurrentNonceState>(
@@ -53,6 +54,9 @@ export const nonceStore = createStore<CurrentNonceState>(
     getNonce: ({ address, chainId }) => {
       const { nonces } = get();
       return nonces[address]?.[chainId] ?? null;
+    },
+    clearNonces: () => {
+      set({ nonces: {} });
     },
   }),
   {
