@@ -49,6 +49,7 @@ export class RainbowSigner extends ethers.Signer {
     // We're converting the ethers v5 transaction request to
     // an ethereum JS transaction object so all the crypto operations
     // are made using EthereumJS instead of ethers v5
+
     const typedTx = TransactionFactory.fromTxData({
       data: transaction.data?.toString(),
       to: transaction.to,
@@ -68,13 +69,16 @@ export class RainbowSigner extends ethers.Signer {
       nonce: transaction.nonce
         ? ethers.BigNumber.from(transaction.nonce).toHexString()
         : undefined,
-      chainId: '0x01',
+      chainId: transaction.chainId
+        ? ethers.BigNumber.from(transaction.chainId).toHexString()
+        : undefined,
       type: transaction.type
         ? ethers.BigNumber.from(transaction.type).toHexString()
         : undefined,
     });
 
     const signedTx = typedTx.sign(this.#getPrivateKeyBuffer());
+
     const serializedTx = signedTx.serialize();
     const rawSignedTx = bytesToHex(serializedTx);
     return addHexPrefix(rawSignedTx);
