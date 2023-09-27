@@ -39,6 +39,7 @@ import {
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { isLedgerConnectionError } from '../../handlers/ledger';
 import { getWallet, sendTransaction } from '../../handlers/wallet';
@@ -470,13 +471,24 @@ export function Send() {
         leftComponent={<Navbar.CloseButton />}
         rightComponent={
           !toAddress || isMyWallet(toAddress) ? undefined : (
-            <NavbarContactButton
-              onSaveAction={setSaveContactAction}
-              toAddress={toAddress}
-              action={isContact({ address: toAddress }) ? 'edit' : 'save'}
-              enabled={!!toAddress}
-              chainId={asset?.chainId}
-            />
+            <CursorTooltip
+              align="end"
+              arrowAlignment="right"
+              arrowCentered
+              text={i18n.t('tooltip.save_to_contacts')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              arrowDirection={'up'}
+            >
+              <NavbarContactButton
+                onSaveAction={setSaveContactAction}
+                toAddress={toAddress}
+                action={isContact({ address: toAddress }) ? 'edit' : 'save'}
+                enabled={!!toAddress}
+                chainId={asset?.chainId}
+              />
+            </CursorTooltip>
           )
         }
       />
