@@ -34,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
+import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 
 import { RowHighlightWrapper } from './RowHighlightWrapper';
 
@@ -227,15 +228,25 @@ export function TokenToBuyRow({
             </DropdownMenu>
           </Box>
         ) : null}
-        <ButtonSymbol
-          symbol="star.fill"
-          height="24px"
-          variant="plain"
-          color="fillHorizontal"
-          symbolColor={isFavorite ? 'yellow' : 'labelSecondary'}
-          onClick={onToggleFavorite}
-          testId={`${testId}-favorite-button`}
-        />
+        <CursorTooltip
+          align="end"
+          arrowAlignment="right"
+          arrowCentered
+          text={i18n.t(isFavorite ? 'tooltip.unfavorite' : 'tooltip.favorite')}
+          textWeight="bold"
+          textSize="12pt"
+          textColor="labelSecondary"
+        >
+          <ButtonSymbol
+            symbol="star.fill"
+            height="24px"
+            variant="plain"
+            color="fillHorizontal"
+            symbolColor={isFavorite ? 'yellow' : 'labelSecondary'}
+            onClick={onToggleFavorite}
+            testId={`${testId}-favorite-button`}
+          />
+        </CursorTooltip>
       </Inline>
     ),
     [
