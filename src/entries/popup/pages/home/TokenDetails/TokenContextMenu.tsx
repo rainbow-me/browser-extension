@@ -3,6 +3,7 @@ import { ReactNode, useState } from 'react';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -71,12 +72,20 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {allowSwap && (
-          <ContextMenuItem symbolLeft="arrow.triangle.swap" onSelect={onSwap}>
+          <ContextMenuItem
+            symbolLeft="arrow.triangle.swap"
+            onSelect={onSwap}
+            shortcut={shortcuts.home.GO_TO_SWAP.display}
+          >
             {`${i18n.t('token_details.swap')} ${token.symbol}`}
           </ContextMenuItem>
         )}
         {!isWatchingWallet && (
-          <ContextMenuItem symbolLeft="paperplane.fill" onSelect={onSend}>
+          <ContextMenuItem
+            symbolLeft="paperplane.fill"
+            onSelect={onSend}
+            shortcut={shortcuts.home.GO_TO_SEND.display}
+          >
             {`${i18n.t('token_details.send')} ${token.symbol}`}
           </ContextMenuItem>
         )}
