@@ -102,10 +102,6 @@ export const CursorTooltip = ({
 
   const { currentTheme } = useCurrentThemeStore();
 
-  if (process.env.IS_TESTING === 'true') {
-    return <Box>{children}</Box>;
-  }
-
   return (
     <TooltipPrimitive.Provider>
       <TooltipPrimitive.Root open={open}>
