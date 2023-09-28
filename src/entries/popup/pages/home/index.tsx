@@ -12,6 +12,7 @@ import { useLocation } from 'react-router';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
+import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -26,6 +27,7 @@ import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppC
 import { BackupReminder } from '../../components/BackupReminder/BackupReminder';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TabBar as NewTabBar } from '../../components/Tabs/TabBar';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAvatar } from '../../hooks/useAvatar';
@@ -265,11 +267,23 @@ const TopNav = memo(function TopNav() {
         leftComponent={<AppConnection />}
         rightComponent={
           <MoreMenu>
-            <Navbar.SymbolButton
-              symbol="ellipsis"
-              variant="flat"
-              tabIndex={3}
-            />
+            <CursorTooltip
+              align="end"
+              arrowAlignment="right"
+              arrowDirection="up"
+              arrowCentered
+              text={i18n.t('tooltip.more')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              hint={shortcuts.home.OPEN_MORE_MENU.display}
+            >
+              <Navbar.SymbolButton
+                symbol="ellipsis"
+                variant="flat"
+                tabIndex={3}
+              />
+            </CursorTooltip>
           </MoreMenu>
         }
         titleComponent={
@@ -293,6 +307,20 @@ const TopNav = memo(function TopNav() {
                   )
                 }
                 size="16pt"
+                renderTooltip={(content) => (
+                  <CursorTooltip
+                    align="center"
+                    arrowAlignment="center"
+                    text={i18n.t('tooltip.switch_wallet')}
+                    textWeight="bold"
+                    textSize="12pt"
+                    textColor="labelSecondary"
+                    arrowDirection={'up'}
+                    hint={shortcuts.home.GO_TO_WALLETS.display}
+                  >
+                    {content}
+                  </CursorTooltip>
+                )}
               />
             </Box>
           )

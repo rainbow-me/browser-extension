@@ -5,7 +5,6 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import {
   delayTime,
-  findElementAndClick,
   findElementById,
   findElementByIdAndClick,
   findElementByTestId,
@@ -88,7 +87,7 @@ it('should be able to connect to hardhat and go to send flow', async () => {
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
   expect(button).toBeTruthy();
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
-  await findElementAndClick({ id: 'header-link-send', driver });
+  await findElementByTestIdAndClick({ id: 'header-link-send', driver });
 });
 
 it('should be able to save contact on send flow', async () => {
@@ -265,7 +264,7 @@ it('should be able to go to send flow and choose recipient based on suggestions'
     id: 'navbar-button-with-back',
     driver,
   });
-  await findElementAndClick({ id: 'header-link-send', driver });
+  await findElementByTestIdAndClick({ id: 'header-link-send', driver });
   await delayTime('medium');
   await findElementByTestIdAndClick({
     id: 'wallet-1',
