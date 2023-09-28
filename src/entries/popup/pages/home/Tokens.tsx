@@ -161,7 +161,10 @@ export function Tokens() {
               >
                 <TokenContextMenu token={token}>
                   <Box onClick={openDetails}>
-                    <AssetRow uniqueId={token.uniqueId} />
+                    <AssetRow
+                      uniqueId={token.uniqueId}
+                      testId={`coin-row-item-${index}`}
+                    />
                   </Box>
                 </TokenContextMenu>
               </Box>
@@ -175,9 +178,13 @@ export function Tokens() {
 
 type AssetRowProps = {
   uniqueId: UniqueId;
+  testId?: string;
 };
 
-export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
+export const AssetRow = memo(function AssetRow({
+  uniqueId,
+  testId,
+}: AssetRowProps) {
   const { data: asset } = useUserAsset(uniqueId);
   const name = asset?.name;
   const { hideAssetBalances } = useHideAssetBalancesStore();
@@ -243,7 +250,9 @@ export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
     () => (
       <Columns>
         <Column>
-          <Box paddingVertical="4px">{balanceDisplay}</Box>
+          <Box paddingVertical="4px" testId={'asset-name'}>
+            {balanceDisplay}
+          </Box>
         </Column>
         <Column width="content">
           <Box paddingVertical="4px">
@@ -262,7 +271,14 @@ export const AssetRow = memo(function AssetRow({ uniqueId }: AssetRowProps) {
     [balanceDisplay, priceChangeColor, priceChangeDisplay],
   );
 
-  return <CoinRow asset={asset} topRow={topRow} bottomRow={bottomRow} />;
+  return (
+    <CoinRow
+      testId={testId}
+      asset={asset}
+      topRow={topRow}
+      bottomRow={bottomRow}
+    />
+  );
 });
 
 type EmptyStateProps = {
