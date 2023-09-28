@@ -1,4 +1,8 @@
-import { TransactionFactory } from '@ethereumjs/tx';
+import {
+  FeeMarketEIP1559TxData,
+  TransactionFactory,
+  TxData,
+} from '@ethereumjs/tx';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -49,16 +53,10 @@ export class RainbowSigner extends Signer {
     // an ethereum JS transaction object so all the crypto operations
     // are made using EthereumJS instead of ethers v5
 
-    const typedTx = TransactionFactory.fromTxData({
+    const txData = {
       data: transaction.data?.toString(),
       to: transaction.to,
       accessList: [],
-      maxPriorityFeePerGas: transaction.maxPriorityFeePerGas
-        ? BigNumber.from(transaction.maxPriorityFeePerGas).toHexString()
-        : undefined,
-      maxFeePerGas: transaction.maxFeePerGas
-        ? BigNumber.from(transaction.maxFeePerGas).toHexString()
-        : undefined,
       gasLimit: transaction.gasLimit
         ? BigNumber.from(transaction.gasLimit).toHexString()
         : undefined,
@@ -74,7 +72,31 @@ export class RainbowSigner extends Signer {
       type: transaction.type
         ? BigNumber.from(transaction.type).toHexString()
         : undefined,
-    });
+      maxFeePerGas: undefined,
+      maxPriorityFeePerGas: undefined,
+      gasPrice: undefined,
+    } as TxData & FeeMarketEIP1559TxData;
+
+    // Legacy tx support
+    if (transaction.gasPrice) {
+      (txData as TxData).gasPrice = BigNumber.from(
+        transaction.gasPrice,
+      ).toHexString();
+    } else {
+      // EIP-1559 tx support
+      if (transaction.maxFeePerGas) {
+        txData.maxFeePerGas = BigNumber.from(
+          transaction.maxFeePerGas,
+        ).toHexString();
+      }
+      if (txData.maxPriorityFeePerGas) {
+        txData.maxPriorityFeePerGas = BigNumber.from(
+          transaction.maxPriorityFeePerGas,
+        ).toHexString();
+      }
+    }
+
+    const typedTx = TransactionFactory.fromTxData(txData);
 
     const signedTx = typedTx.sign(this.#getPrivateKeyBuffer());
 
