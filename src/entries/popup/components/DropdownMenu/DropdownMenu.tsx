@@ -136,7 +136,7 @@ export const DropdownMenuContentBody = React.forwardRef<
           tabIndex={-1}
           onInteractOutside={onInteractOutside}
           align={align}
-          style={{ width: '204px' }}
+          style={{ minWidth: '204px', maxWidth: '236px' }}
           alignItems="center"
           justifyContent="center"
           display="flex"
@@ -146,13 +146,9 @@ export const DropdownMenuContentBody = React.forwardRef<
         >
           <Box
             as={motion.div}
-            initial={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
-            animate={{
-              scale: scale ?? 1,
-              width: '204px',
-              opacity: 1,
-            }}
-            exit={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
+            initial={{ scale: 1, opacity: animate ? 0 : 1 }}
+            animate={{ scale: scale ?? 1, opacity: 1 }}
+            exit={{ scale: 1, opacity: animate ? 0 : 1 }}
             transition={{ duration: 0.1 }}
             style={{
               boxShadow: boxShadow ?? '0px 10px 30px rgba(0, 0, 0, 0.2)',
@@ -160,8 +156,8 @@ export const DropdownMenuContentBody = React.forwardRef<
               marginLeft: marginLeft ?? '0px',
               marginTop: marginTop ?? '0px',
               top: top ?? '0px',
+              minWidth: '204px',
             }}
-            width="fit"
             backdropFilter={backdropFilter || 'blur(26px)'}
             paddingHorizontal="12px"
             paddingVertical="4px"
@@ -229,6 +225,7 @@ export const DropdownMenuItem = ({
           justifyContent: 'space-between',
           borderRadius: '12px',
           outline: 'none',
+          gap: '4px',
         }),
         accentMenuFocusVisibleStyle,
       ])}
