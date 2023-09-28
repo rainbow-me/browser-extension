@@ -39,7 +39,6 @@ import {
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { SideChainExplainerSheet } from '~/entries/popup/components/SideChainExplainer';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
-import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -169,16 +168,14 @@ function NetworkBanner({
             chainName: ChainNameDisplay[chainId],
           })}
         </Text>
-        <Tooltip text="lalala" textSize="12pt">
-          <Box style={{ marginLeft: 'auto', height: 14 }}>
-            <Symbol
-              symbol="info.circle.fill"
-              color="labelTertiary"
-              size={14}
-              weight="semibold"
-            />
-          </Box>
-        </Tooltip>
+        <Box style={{ marginLeft: 'auto', height: 14 }}>
+          <Symbol
+            symbol="info.circle.fill"
+            color="labelTertiary"
+            size={14}
+            weight="semibold"
+          />
+        </Box>
       </Box>
       <SideChainExplainerSheet
         chainId={chainId}
