@@ -114,15 +114,6 @@ if (shouldInjectProvider()) {
   // defining `providers` on rainbowProvider, since it's undefined on the object itself
   window.rainbow.providers = window.walletRouter.providers;
 
-  Object.defineProperty(window, 'ethereum', {
-    get() {
-      return window.walletRouter.currentProvider;
-    },
-    set(newProvider: Ethereum | RainbowProvider) {
-      window.walletRouter?.addProvider(newProvider);
-    },
-    configurable: false,
-  });
   window.dispatchEvent(new Event('ethereum#initialized'));
 
   backgroundMessenger.reply(

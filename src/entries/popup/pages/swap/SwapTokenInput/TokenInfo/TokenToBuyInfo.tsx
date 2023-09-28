@@ -20,6 +20,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 
 export const TokenToBuyInfo = ({
   assetToBuy,
@@ -82,11 +83,25 @@ export const TokenToBuyInfo = ({
             </Column>
 
             <Column width="content">
-              <Text as="p" size="12pt" weight="medium" color="labelQuaternary">
-                {nativeValueDifferenceDisplay
-                  ? `(${nativeValueDifferenceDisplay})`
-                  : ''}
-              </Text>
+              <CursorTooltip
+                text={i18n.t('tooltip.estimated_difference')}
+                textColor="labelSecondary"
+                textSize="12pt"
+                textWeight="bold"
+                arrowAlignment="center"
+                align="center"
+              >
+                <Text
+                  as="p"
+                  size="12pt"
+                  weight="medium"
+                  color="labelQuaternary"
+                >
+                  {nativeValueDifferenceDisplay
+                    ? `(${nativeValueDifferenceDisplay})`
+                    : ''}
+                </Text>
+              </CursorTooltip>
             </Column>
           </Columns>
         </Column>

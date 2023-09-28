@@ -16,6 +16,7 @@ import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
 
 import { Tab } from '.';
@@ -103,7 +104,16 @@ export function TabHeader({
         )}
 
         {balance && (
-          <Inline alignVertical="center">{displayBalanceComponent}</Inline>
+          <CursorTooltip
+            align="end"
+            arrowAlignment="right"
+            text={i18n.t('tooltip.balance')}
+            textWeight="bold"
+            textSize="12pt"
+            textColor="labelSecondary"
+          >
+            <Inline alignVertical="center">{displayBalanceComponent}</Inline>
+          </CursorTooltip>
         )}
       </Box>
     </Inset>
