@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
-import { isValidMnemonic } from '@ethersproject/hdnode';
-import { wordlists } from 'ethers';
+import * as bip39 from '@scure/bip39';
+import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
 import { motion } from 'framer-motion';
 import React, {
   KeyboardEvent,
@@ -242,7 +242,7 @@ const ImportWalletViaSeed = () => {
     [handleImportWallet],
   );
 
-  const isValidWord = (word: string) => wordlists['en'].getWordIndex(word) > -1;
+  const isValidWord = (word: string) => englishWordlist.indexOf(word) > -1;
 
   const handleBlur = useCallback(
     (index: number) => {
@@ -278,7 +278,10 @@ const ImportWalletViaSeed = () => {
     const totalWords = secrets.filter((word) => !!word).length;
     const wordCountValid = totalWords === 12 || totalWords === 24;
     const noErrors = !globalError && invalidWords.length === 0;
-    const validSeed = isValidMnemonic(secrets.join(' '));
+    const validSeed = bip39.validateMnemonic(
+      secrets.join(' '),
+      englishWordlist,
+    );
     if (noErrors && wordCountValid && validSeed) {
       setIsValid(true);
     } else {
