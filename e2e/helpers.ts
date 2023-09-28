@@ -222,6 +222,13 @@ export async function querySelector(driver: WebDriver, selector: string) {
   return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
+export async function querySelectorWithin(
+  parentElement: WebElement,
+  childSelector: string,
+): Promise<WebElement> {
+  return await parentElement.findElement(By.css(childSelector));
+}
+
 export async function findElementByText(driver: WebDriver, text: string) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const el = await driver.wait(
@@ -300,7 +307,7 @@ export async function isElementFoundByText({
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await driver.wait(
       until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
-      5000,
+      2500,
     );
     console.error(
       `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
