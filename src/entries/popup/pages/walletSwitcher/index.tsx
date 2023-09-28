@@ -118,6 +118,12 @@ const infoButtonOptions = ({
       label: i18n.t('wallet_switcher.copy_address'),
       subLabel: truncateAddress(account.address),
       symbol: 'doc.on.doc.fill',
+    },
+    {
+      label: i18n.t('wallet.edit_appearance'),
+      symbol: 'paintbrush.pointed.fill',
+      onSelect: () => void {},
+      disabled: true,
       separator: !isLastWallet,
     },
   ];
