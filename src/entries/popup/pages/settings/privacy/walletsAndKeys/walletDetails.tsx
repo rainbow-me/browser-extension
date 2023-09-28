@@ -427,11 +427,9 @@ const WalletRow = ({
         : undefined,
   } as unknown as typeof InfoButtonOptions;
 
-  useEffect(() => {
-    if (menuOpen && renameAccount) {
-      setMenuOpen(false);
-    }
-  }, [menuOpen, renameAccount]);
+  if (menuOpen && renameAccount) {
+    setMenuOpen(false);
+  }
 
   return (
     <Box testId={`wallet-item-${numOfWallets}`}>
