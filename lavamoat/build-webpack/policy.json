@@ -180,7 +180,6 @@
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration": true,
         "@vanilla-extract/webpack-plugin>chalk": true,
         "@vanilla-extract/webpack-plugin>loader-utils": true,
-        "ansi-styles": true,
         "chalk": true,
         "eslint>chalk": true,
         "eslint>debug": true,
@@ -199,7 +198,6 @@
         "path": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>chalk>ansi-styles": true,
         "msw>chalk>ansi-styles": true,
         "msw>chalk>supports-color": true
       }
@@ -1200,6 +1198,12 @@
         "mini-css-extract-plugin>schema-utils>ajv": true
       }
     },
+    "msw>chalk": {
+      "packages": {
+        "msw>chalk>ansi-styles": true,
+        "msw>chalk>supports-color": true
+      }
+    },
     "msw>chalk>ansi-styles": {
       "packages": {
         "msw>chalk>ansi-styles>color-convert": true
@@ -1289,17 +1293,11 @@
         "process.stdout": true
       },
       "packages": {
+        "msw>chalk": true,
         "semver": true,
-        "ts-loader>chalk": true,
         "ts-loader>micromatch": true,
         "typescript": true,
         "webpack": true
-      }
-    },
-    "ts-loader>chalk": {
-      "packages": {
-        "msw>chalk>ansi-styles": true,
-        "msw>chalk>supports-color": true
       }
     },
     "ts-loader>micromatch": {
@@ -1619,9 +1617,9 @@
       },
       "packages": {
         "lodash": true,
+        "msw>chalk": true,
         "vitest>acorn-walk": true,
         "webpack-bundle-analyzer>acorn": true,
-        "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
@@ -1633,12 +1631,6 @@
       "globals": {
         "console": true,
         "define": true
-      }
-    },
-    "webpack-bundle-analyzer>chalk": {
-      "packages": {
-        "msw>chalk>ansi-styles": true,
-        "msw>chalk>supports-color": true
       }
     },
     "webpack-bundle-analyzer>gzip-size": {
