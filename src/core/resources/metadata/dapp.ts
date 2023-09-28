@@ -1,7 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { metadataClient } from '~/core/graphql';
-import { QueryFunctionArgs, createQueryKey } from '~/core/react-query';
+import {
+  QueryFunctionArgs,
+  createQueryKey,
+  queryClient,
+} from '~/core/react-query';
 import { dappMetadataStore } from '~/core/state/dappMetadata';
 import {
   getDappHost,
@@ -39,11 +43,7 @@ type AppMetadataQueryKey = ReturnType<typeof AppMetadataQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function dappMetadataQueryFunction({
-  queryKey: [{ url }],
-}: QueryFunctionArgs<
-  typeof AppMetadataQueryKey
->): Promise<DappMetadata | null> {
+export async function fetchDappMetadata({ url }: { url?: string }) {
   if (!url) return null;
   const { setDappMetadata } = dappMetadataStore.getState();
   const appHostName = url && isValidUrl(url) ? getDappHostname(url) : '';
@@ -74,6 +74,19 @@ export async function dappMetadataQueryFunction({
   };
   setDappMetadata({ host: appHost, dappMetadata });
   return dappMetadata;
+}
+export async function dappMetadataQueryFunction({
+  queryKey: [{ url }],
+}: QueryFunctionArgs<
+  typeof AppMetadataQueryKey
+>): Promise<DappMetadata | null> {
+  return fetchDappMetadata({ url });
+}
+
+export async function prefetchDappMetadata({ url }: { url: string }) {
+  queryClient.prefetchQuery(AppMetadataQueryKey({ url }), async () =>
+    fetchDappMetadata({ url }),
+  );
 }
 
 // ///////////////////////////////////////////////
