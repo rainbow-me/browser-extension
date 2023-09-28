@@ -24,14 +24,16 @@ export function CoinRow({
   fallbackText,
   topRow,
   bottomRow,
+  testId,
 }: {
   asset?: ParsedAsset | ParsedUserAsset;
   fallbackText?: string;
   topRow: ReactNode;
   bottomRow: ReactNode;
+  testId?: string;
 }) {
   return (
-    <Box style={{ height: '52px' }}>
+    <Box style={{ height: '52px' }} testId={testId}>
       <RowHighlightWrapper>
         <Inset horizontal="12px" vertical="8px">
           <Rows>
