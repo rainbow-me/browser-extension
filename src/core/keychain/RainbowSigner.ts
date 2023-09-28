@@ -53,7 +53,7 @@ export class RainbowSigner extends Signer {
     // an ethereum JS transaction object so all the crypto operations
     // are made using EthereumJS instead of ethers v5
 
-    const txData = {
+    const txData: TxData & FeeMarketEIP1559TxData = {
       data: transaction.data?.toString(),
       to: transaction.to,
       accessList: [],
@@ -75,7 +75,7 @@ export class RainbowSigner extends Signer {
       maxFeePerGas: undefined,
       maxPriorityFeePerGas: undefined,
       gasPrice: undefined,
-    } as TxData & FeeMarketEIP1559TxData;
+    };
 
     // Legacy tx support
     if (transaction.gasPrice) {
