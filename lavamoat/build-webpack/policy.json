@@ -634,12 +634,6 @@
         "define": true
       }
     },
-    "eslint>chalk": {
-      "packages": {
-        "msw>chalk>ansi-styles": true,
-        "msw>chalk>supports-color": true
-      }
-    },
     "eslint>debug": {
       "builtin": {
         "tty.isatty": true,
@@ -1193,6 +1187,12 @@
         "mini-css-extract-plugin>schema-utils>ajv": true
       }
     },
+    "msw>chalk": {
+      "packages": {
+        "msw>chalk>ansi-styles": true,
+        "msw>chalk>supports-color": true
+      }
+    },
     "msw>chalk>ansi-styles": {
       "packages": {
         "msw>chalk>ansi-styles>color-convert": true
@@ -1282,7 +1282,7 @@
         "process.stdout": true
       },
       "packages": {
-        "eslint>chalk": true,
+        "msw>chalk": true,
         "semver": true,
         "ts-loader>micromatch": true,
         "typescript": true,
@@ -1605,8 +1605,8 @@
         "setImmediate": true
       },
       "packages": {
-        "eslint>chalk": true,
         "lodash": true,
+        "msw>chalk": true,
         "vitest>acorn-walk": true,
         "webpack-bundle-analyzer>acorn": true,
         "webpack-bundle-analyzer>gzip-size": true,
