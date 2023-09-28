@@ -33,6 +33,7 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
+import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 export const CopyableValue = ({
   value,
@@ -229,6 +230,15 @@ function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
   );
 }
 
+function Description(text: string) {
+  const chunks = chunkLinks(text);
+  return (
+    <Text weight="regular" size="14pt" color="labelTertiary">
+      {'foo'}
+    </Text>
+  );
+}
+
 const placeholder = <Skeleton width="40px" height="12px" />;
 export function About({ token }: { token: ParsedUserAsset }) {
   const { data } = useTokenInfo(token);
@@ -366,7 +376,6 @@ export function About({ token }: { token: ParsedUserAsset }) {
             />
 
             <Separator color="separatorTertiary" />
-
             <Text weight="regular" size="14pt" color="labelTertiary">
               {description}
             </Text>
