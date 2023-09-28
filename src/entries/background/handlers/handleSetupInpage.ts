@@ -1,10 +1,18 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-export function handleSetupInpage() {
+const INPAGE_ID = 'inpage';
+export async function handleSetupInpage() {
+  const registeredContentScripts =
+    await chrome.scripting.getRegisteredContentScripts();
+  const inpageRegisteredContentScript = registeredContentScripts.find(
+    (cs) => cs.id === INPAGE_ID,
+  );
   try {
-    if (!navigator.userAgent.toLowerCase().includes('firefox')) {
+    if (
+      !inpageRegisteredContentScript &&
+      !navigator.userAgent.toLowerCase().includes('firefox')
+    ) {
       chrome.scripting.registerContentScripts([
         {
-          id: 'inpage',
+          id: INPAGE_ID,
           matches: ['file://*/*', 'http://*/*', 'https://*/*'],
           js: ['inpage.js'],
           runAt: 'document_start',

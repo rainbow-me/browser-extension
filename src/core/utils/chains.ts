@@ -2,6 +2,8 @@ import {
   arbitrum,
   base,
   bsc,
+  goerli,
+  hardhat,
   mainnet,
   optimism,
   polygon,
@@ -82,6 +84,28 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
     return 'arbiscan.io';
   }
   return 'etherscan.io';
+}
+
+export function getNativeAssetSymbolForChain(chainId?: ChainId) {
+  switch (chainId) {
+    case ChainId.arbitrum:
+      return arbitrum.nativeCurrency.symbol;
+    case ChainId.base:
+      return base.nativeCurrency.symbol;
+    case ChainId.bsc:
+      return bsc.nativeCurrency.symbol;
+    case ChainId.goerli:
+      return goerli.nativeCurrency.symbol;
+    case ChainId.optimism:
+      return optimism.nativeCurrency.symbol;
+    case ChainId.mainnet:
+      return mainnet.nativeCurrency.symbol;
+    case ChainId.polygon:
+      return polygon.nativeCurrency.symbol;
+    case ChainId.hardhat:
+      return hardhat.nativeCurrency.symbol;
+  }
+  return mainnet.nativeCurrency.symbol;
 }
 
 export function isSupportedChainId(chainId: number) {
