@@ -7,6 +7,7 @@ import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
+import { getNativeAssetSymbolForChain } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import {
   add,
@@ -37,6 +38,7 @@ export const useSendValidations = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: asset?.chainId || ChainId.mainnet,
   });
+
   const { data: nativeAsset } = useUserAsset(nativeAssetUniqueId || '');
 
   const [isValidToAddress, setIsValidToAddress] = useState(false);
@@ -124,16 +126,16 @@ export const useSendValidations = ({
       });
     if (!enoughNativeAssetForGas)
       return i18n.t('send.button_label.insufficient_native_asset_for_gas', {
-        symbol: nativeAsset?.symbol,
+        symbol: getNativeAssetSymbolForChain(asset?.chainId || ChainId.mainnet),
       });
     return i18n.t('send.button_label.review');
   }, [
+    asset?.chainId,
     asset?.symbol,
     assetAmount,
     enoughAssetBalance,
     enoughNativeAssetForGas,
     isValidToAddress,
-    nativeAsset?.symbol,
     toAddress,
     toAddressOrName,
   ]);
