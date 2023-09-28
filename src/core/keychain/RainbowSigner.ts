@@ -1,7 +1,7 @@
 import {
   FeeMarketEIP1559TxData,
+  LegacyTxData,
   TransactionFactory,
-  TxData,
 } from '@ethereumjs/tx';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
@@ -53,7 +53,7 @@ export class RainbowSigner extends Signer {
     // an ethereum JS transaction object so all the crypto operations
     // are made using EthereumJS instead of ethers v5
 
-    const txData: TxData & FeeMarketEIP1559TxData = {
+    const txData: LegacyTxData | FeeMarketEIP1559TxData = {
       data: transaction.data?.toString(),
       to: transaction.to,
       accessList: [],
@@ -79,7 +79,7 @@ export class RainbowSigner extends Signer {
 
     // Legacy tx support
     if (transaction.gasPrice) {
-      (txData as TxData).gasPrice = BigNumber.from(
+      (txData as LegacyTxData).gasPrice = BigNumber.from(
         transaction.gasPrice,
       ).toHexString();
     } else {
