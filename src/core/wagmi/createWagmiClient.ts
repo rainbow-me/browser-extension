@@ -1,10 +1,20 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import {
+  arbitrumGoerli,
+  baseGoerli,
+  bscTestnet,
+  optimismGoerli,
+  polygonMumbai,
+  zoraTestnet,
+} from '@wagmi/chains';
+import {
   Chain,
   CreateClientConfig,
   configureChains,
   createClient,
   createStorage,
+  goerli,
+  sepolia,
 } from 'wagmi';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
@@ -43,6 +53,22 @@ const { chains, provider, webSocketProvider } = configureChains(
             return { http: process.env.ZORA_MAINNET_RPC as string };
           case ChainId.bsc:
             return { http: process.env.BSC_MAINNET_RPC as string };
+          case ChainId.goerli:
+            return { http: goerli.rpcUrls.alchemy.http[0] };
+          case ChainId.sepolia:
+            return { http: sepolia.rpcUrls.alchemy.http[0] };
+          case ChainId.optimismGoerli:
+            return { http: optimismGoerli.rpcUrls.default.http[0] };
+          case ChainId.bscTestnet:
+            return { http: bscTestnet.rpcUrls.default.http[0] };
+          case ChainId.polygonMumbai:
+            return { http: polygonMumbai.rpcUrls.default.http[0] };
+          case ChainId.arbitrumGoerli:
+            return { http: arbitrumGoerli.rpcUrls.default.http[0] };
+          case ChainId.baseGoerli:
+            return { http: baseGoerli.rpcUrls.default.http[0] };
+          case ChainId.zoraTestnet:
+            return { http: zoraTestnet.rpcUrls.default.http[0] };
           default:
             return null;
         }

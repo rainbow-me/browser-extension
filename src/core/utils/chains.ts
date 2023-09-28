@@ -1,15 +1,21 @@
 import {
   arbitrum,
+  arbitrumGoerli,
   base,
+  baseGoerli,
   bsc,
+  bscTestnet,
   goerli,
   hardhat,
   mainnet,
   optimism,
+  optimismGoerli,
   polygon,
+  polygonMumbai,
   zora,
+  zoraTestnet,
 } from '@wagmi/chains';
-import type { Chain } from 'wagmi';
+import { type Chain, sepolia } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
@@ -26,6 +32,14 @@ export const SUPPORTED_CHAINS: Chain[] = [
   base,
   zora,
   bsc,
+  goerli,
+  sepolia,
+  optimismGoerli,
+  bscTestnet,
+  polygonMumbai,
+  arbitrumGoerli,
+  baseGoerli,
+  zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(({ id }) => id);
