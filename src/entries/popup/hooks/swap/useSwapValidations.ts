@@ -4,6 +4,7 @@ import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
+import { getNativeAssetSymbolForChain } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import {
   add,
@@ -12,10 +13,7 @@ import {
   lessThan,
 } from '~/core/utils/numbers';
 
-import {
-  getNetworkNativeAssetUniqueId,
-  useNativeAssetForNetwork,
-} from '../useNativeAssetForNetwork';
+import { getNetworkNativeAssetUniqueId } from '../useNativeAssetForNetwork';
 import { useUserAsset } from '../useUserAsset';
 
 export const useSwapValidations = ({
@@ -73,10 +71,6 @@ export const useSwapValidations = ({
     selectedGas?.gasFee?.amount,
   ]);
 
-  const nativeAsset = useNativeAssetForNetwork({
-    chainId: assetToSell?.chainId || ChainId.mainnet,
-  });
-
   const buttonLabel = useMemo(() => {
     if (!enoughAssetBalance)
       return i18n.t('send.button_label.insufficient_asset', {
@@ -84,14 +78,14 @@ export const useSwapValidations = ({
       });
     if (!enoughNativeAssetBalanceForGas)
       return i18n.t('send.button_label.insufficient_native_asset_for_gas', {
-        symbol: nativeAsset?.symbol,
+        symbol: getNativeAssetSymbolForChain(assetToSell?.chainId),
       });
     return '';
   }, [
+    assetToSell?.chainId,
     assetToSell?.symbol,
     enoughAssetBalance,
     enoughNativeAssetBalanceForGas,
-    nativeAsset?.symbol,
   ]);
 
   const enoughAssetsForSwap =

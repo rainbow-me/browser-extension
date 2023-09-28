@@ -9,59 +9,63 @@ export const identifyWalletTypes = async () => {
 
   const wallets = await getWallets();
 
-  const ownedAccounts = wallets
-    .filter(
-      (a) =>
-        a.type === KeychainType.HdKeychain ||
-        a.type === KeychainType.KeyPairKeychain,
-    )
-    .reduce((count, wallet) => count + wallet.accounts.length, 0);
-
-  const watchedAccounts = wallets
-    .filter((a) => a.type === KeychainType.ReadOnlyKeychain)
-    .reduce((count, wallet) => count + wallet.accounts.length, 0);
-
-  const recoveryPhrases = wallets.filter(
-    (a) => a.type === KeychainType.HdKeychain,
-  ).length;
-
-  const importedRecoveryPhrases = wallets.filter(
-    (a) => a.type === KeychainType.HdKeychain && !a.imported,
-  ).length;
-
-  const privateKeys = wallets.filter(
-    (a) => a.type === KeychainType.KeyPairKeychain,
-  ).length;
-
-  const importedPrivateKeys = wallets.filter(
-    (a) => a.type === KeychainType.KeyPairKeychain && !a.imported,
-  ).length;
-
-  const hasImported = importedPrivateKeys > 0 || importedRecoveryPhrases > 0;
-
-  const hardwareWallets = wallets.filter(
-    (a) => a.type === KeychainType.HardwareWalletKeychain,
+  const identify = wallets.reduce(
+    (result, wallet) => {
+      switch (wallet.type) {
+        case KeychainType.HdKeychain:
+          result.ownedAccounts += wallet.accounts.length;
+          result.recoveryPhrases += 1;
+          if (wallet.imported) {
+            result.importedRecoveryPhrases += 1;
+            result.hasImported = true;
+          }
+          break;
+        case KeychainType.KeyPairKeychain:
+          result.ownedAccounts += wallet.accounts.length;
+          result.privateKeys += 1;
+          if (wallet.imported) {
+            result.importedPrivateKeys += 1;
+            result.hasImported = true;
+          }
+          break;
+        case KeychainType.ReadOnlyKeychain:
+          result.watchedAccounts += wallet.accounts.length;
+          break;
+        case KeychainType.HardwareWalletKeychain:
+          result.hardwareAccounts += wallet.accounts.length;
+          if (wallet.vendor === 'Ledger') {
+            result.ledgerDevices += 1;
+          } else if (wallet.vendor === 'Trezor') {
+            result.trezorDevices += 1;
+          }
+          break;
+      }
+      return result;
+    },
+    {
+      ownedAccounts: 0,
+      watchedAccounts: 0,
+      recoveryPhrases: 0,
+      importedRecoveryPhrases: 0,
+      privateKeys: 0,
+      importedPrivateKeys: 0,
+      hasImported: false,
+      hardwareAccounts: 0,
+      ledgerDevices: 0,
+      trezorDevices: 0,
+    },
   );
-
-  const hardwareAccounts = hardwareWallets.reduce(
-    (count, wallet) => count + wallet.accounts.length,
-    0,
-  );
-
-  const ledgerDevices = wallets.filter((a) => a.vendor === 'Ledger').length;
-
-  const trezorDevices = wallets.filter((a) => a.vendor === 'Trezor').length;
 
   analytics.identify({
-    ownedAccounts,
-    hardwareAccounts,
-    watchedAccounts,
-    recoveryPhrases,
-    importedRecoveryPhrases,
-    privateKeys,
-    importedPrivateKeys,
-    ledgerDevices,
-    trezorDevices,
-    hasImported,
+    ownedAccounts: identify.ownedAccounts,
+    hardwareAccounts: identify.hardwareAccounts,
+    watchedAccounts: identify.watchedAccounts,
+    recoveryPhrases: identify.recoveryPhrases,
+    importedRecoveryPhrases: identify.importedRecoveryPhrases,
+    privateKeys: identify.privateKeys,
+    importedPrivateKeys: identify.importedPrivateKeys,
+    ledgerDevices: identify.ledgerDevices,
+    trezorDevices: identify.trezorDevices,
+    hasImported: identify.hasImported,
   });
 };
