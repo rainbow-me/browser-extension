@@ -1,6 +1,12 @@
-export default function chunkLinks(text: string) {
+interface Chunk {
+  type: 'text' | 'link';
+  value: string;
+  href?: string;
+}
+
+export default function chunkLinks(text: string): Chunk[] {
   const linkPattern = /<a href="(.*?)".*?>(.*?)<\/a>/g;
-  const chunks = [];
+  const chunks: Chunk[] = [];
   let lastIndex = 0;
 
   let match;
