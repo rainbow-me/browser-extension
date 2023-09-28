@@ -66,6 +66,7 @@
   "settings": {
     "title": "設定",
     "use_rainbow_as_default_wallet": "Rainbowをデフォルトウォレットとして使用する",
+    "sounds": "サウンド",
     "default_wallet_description": "アプリが接続する拡張機能を探す際にRainbowを優先させることを許可する。",
     "contacts": "連絡先",
     "guides_and_support": "ガイドとサポート",
@@ -178,7 +179,6 @@
       "KRW": "韓国ウォン",
       "JPY": "日本円",
       "RUB": "ロシアルーブル",
-      "IDR": "インドネシアルピア",
       "INR": "インドルピー",
       "TRY": "トルコリラ",
       "CAD": "カナダドル",
@@ -191,7 +191,8 @@
     "feature_flags": {
       "full_watching_wallets": "ウォレットの監視機能を完全に有効にする",
       "hw_wallets_enabled": "ハードウェアウォレットサポートを有効にする",
-      "command_k_internal_shortcuts_enabled": "⌘K の内部ショートカットを有効にする"
+      "command_k_internal_shortcuts_enabled": "⌘K の内部ショートカットを有効にする",
+      "new_tab_bar_enabled": "新しいタブバー"
     }
   },
   "transactions": {
@@ -425,7 +426,7 @@
       }
     },
     "quick_promo": {
-      "text": "⌘Kを押してコマンドメニューを開く",
+      "text": "マジックメニューを開くには %{modifierSymbol}K を押します",
       "text_bold": "ヒント："
     },
     "toolbar": {
@@ -826,9 +827,8 @@
   },
   "app_connection_switcher": {
     "banner": {
-      "connect": "接続",
-      "connect_to": "%{appName}に接続しますか？",
-      "app_connected": "%{appName} が接続されました"
+      "connect_to": "%{appName}に接続する",
+      "app_connected": "%{appName} 接続済み"
     },
     "sheet": {
       "connect": "接続",
@@ -975,12 +975,17 @@
     "excellent": "優れています",
     "8_chars_min": "最小8文字",
     "try_another_password_weak": "これはクラックしやすい弱いパスワードです。より強力なパスワードをお試しください。",
-    "try_another_password_common": "これはクラックしやすい一般的なパスワードです。より強力なパスワードをお試しください。",
+    "try_another_password_common": "大文字と小文字、数字、記号を混ぜてパスワードをより強化します",
     "too_short": "パスワードは8文字以上である必要があります"
   },
   "create_password": {
     "title": "パスワードの作成",
     "description": "ウォレットを保護しロックするためのパスワードを選択してください。"
+  },
+  "tabs": {
+    "activity": "アクティビティ",
+    "tokens": "トークン",
+    "nfts": "NFTs"
   },
   "activity": {
     "today": "今日",
@@ -1023,11 +1028,20 @@
   },
   "tokens_tab": {
     "coinbase_title": "Coinbaseから入金",
-    "coinbase_description": "Coinbaseから購入または送金",
+    "coinbase_description": "Coinbaseから無料で暗号通貨を送金します",
+    "buy_title": "暗号通貨を購入してウォレットを資金提供します",
+    "buy_description_1": "押して",
+    "buy_description_2": "支払いオプションを見るには",
     "send_from_wallet": "他のウォレットから送信",
     "send_description_1": "押して",
-    "send_description_2": "あなたのアドレスをコピーします",
+    "send_description_2": "アドレスをコピーするか",
+    "send_description_3": "QRコードのために",
     "unknown_token": "不明なトークン"
+  },
+  "nfts": {
+    "coming_soon_header": "近日公開",
+    "coming_soon_description": "NFTsは近日公開。お楽しみに！",
+    "view_on_web": "ウェブで見る"
   },
   "speed_up_and_cancel": {
     "speed_up": "スピードアップ",
@@ -1107,6 +1121,7 @@
     "pin_rainbow_to_your_toolbar": "レインボーをツールバーにピン留め"
   },
   "wallet_header": {
+    "buy": "購入",
     "copy": "コピー",
     "swap": "スワップ",
     "send": "送信",
@@ -1240,7 +1255,7 @@
     "done": "完了",
     "add_wallet": "ウォレットを追加する",
     "add_by_index_title": "インデックスでウォレットを追加する",
-    "add_by_index_description": "Ledger からインポートしたいウォレットの派生パスを入力してください。",
+    "add_by_index_description": "導出パスを選択し、追加したいウォレットのインデックスを入力してください",
     "waiting_for_trezor_connect": "Trezor Connect を待っています",
     "continue_on_trezor_connect": "Trezor Connect ウィンドウの指示に従ってください",
     "trezor_success": "成功！",
@@ -1267,5 +1282,41 @@
   "approvals": {
     "unlimited": "無制限",
     "no_allowance": "許可がありません"
+  },
+  "buy": {
+    "title": "購入",
+    "fees_title": "手数料",
+    "instant_title": "インスタント",
+    "instant_yes": "はい",
+    "method_title": "方法",
+    "methods_title": "方法一覧",
+    "network_title": "ネットワーク",
+    "networks_title": "ネットワーク",
+    "payment_methods": {
+      "apple_pay": "Apple Pay",
+      "bank": "銀行",
+      "card": "カード",
+      "google_pay": "Google Pay"
+    }
+  },
+  "tooltip": {
+    "switch_network": "ネットワーク切り替え",
+    "copy_address": "ウォレットアドレスをコピー",
+    "swap": "トークンを交換",
+    "send": "トークンを送信",
+    "more": "その他の項目",
+    "view_tokens": "トークンを見る",
+    "view_activity": "活動を見る",
+    "balance": "合計残高",
+    "switch_wallet": "ウォレット切り替え",
+    "save_to_contacts": "連絡先に保存",
+    "clear_address": "アドレスをクリア",
+    "clear_token": "トークンをクリア",
+    "gwei_settings": "Gwei設定",
+    "flip_tokens": "トークン位置を反転",
+    "favorite": "お気に入りに追加",
+    "unfavorite": "お気に入りから削除",
+    "estimated_difference": "価値の推定差異",
+    "buy_crypto": "暗号通貨の購入と転送"
   }
 }
