@@ -176,16 +176,6 @@ export const DropdownSubMenu = ({
       <DropdownMenuTrigger asChild>
         <Box ref={subMenuElementRef}>{subMenuElement}</Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        animate={false}
-        key="sub-menu-element"
-        border={false}
-        onInteractOutside={(e: Event) => e.preventDefault()}
-        sideOffset={SUBMENU_SIDE_OFFSET}
-        alignOffset={SUBMENU_ALIGN_OFFSET}
-      >
-        {subMenuElement}
-      </DropdownMenuContent>
       <AnimatePresence>
         {subMenuOpen && (
           <DropdownMenuContent
@@ -195,6 +185,8 @@ export const DropdownSubMenu = ({
             sideOffset={SUBMENU_SIDE_OFFSET}
             alignOffset={SUBMENU_ALIGN_OFFSET}
             onInteractOutside={onInteractOutsideContent}
+            align="center"
+            transition={{ duration: subMenuOpen ? 0.08 : 0.2 }}
           >
             <Stack space="4px">
               {subMenuElement}
