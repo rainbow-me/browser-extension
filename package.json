@@ -216,6 +216,7 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "get-func-name": "2.0.1",
     "bn.js": "5.2.1",
     "protobufjs": "7.2.4",
     "@grpc/grpc-js": "1.8.8",
