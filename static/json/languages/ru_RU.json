@@ -1298,5 +1298,25 @@
       "card": "Карта",
       "google_pay": "Google Pay"
     }
+  },
+  "tooltip": {
+    "switch_network": "Сменить сети",
+    "copy_address": "Скопировать адрес кошелька",
+    "swap": "Обменять токены",
+    "send": "Отправить токены",
+    "more": "Больше элементов",
+    "view_tokens": "Просмотр токенов",
+    "view_activity": "Посмотреть активность",
+    "balance": "Общий баланс",
+    "switch_wallet": "Сменить кошельки",
+    "save_to_contacts": "Сохранить в контактах",
+    "clear_address": "Очистить адрес",
+    "clear_token": "Очистить токен",
+    "gwei_settings": "Настройки Gwei",
+    "flip_tokens": "Поменять позиции токенов",
+    "favorite": "Добавить в избранное",
+    "unfavorite": "Удалить из избранного",
+    "estimated_difference": "Оценочное отличие в стоимости",
+    "buy_crypto": "Купить и перевести крипто"
   }
 }

@@ -1298,5 +1298,25 @@
       "card": "Carte",
       "google_pay": "Google Pay"
     }
+  },
+  "tooltip": {
+    "switch_network": "Changer de réseaux",
+    "copy_address": "Copier l'adresse du portefeuille",
+    "swap": "Échanger vos jetons",
+    "send": "Envoyer des jetons",
+    "more": "Plus d'articles",
+    "view_tokens": "Voir les jetons",
+    "view_activity": "Voir l'activité",
+    "balance": "Solde total",
+    "switch_wallet": "Changer de portefeuilles",
+    "save_to_contacts": "Enregistrer dans les contacts",
+    "clear_address": "Effacer l'adresse",
+    "clear_token": "Effacer le jeton",
+    "gwei_settings": "Réglages de Gwei",
+    "flip_tokens": "Inverser positions des jetons",
+    "favorite": "Ajouter aux favoris",
+    "unfavorite": "Retirer des favoris",
+    "estimated_difference": "Différence estimée de valeur",
+    "buy_crypto": "Acheter et transférer des cryptos"
   }
 }

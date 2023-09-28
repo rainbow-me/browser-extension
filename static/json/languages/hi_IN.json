@@ -1298,5 +1298,25 @@
       "card": "कार्ड",
       "google_pay": "Google पेमेंट"
     }
+  },
+  "tooltip": {
+    "switch_network": "नेटवर्क स्विच करें",
+    "copy_address": "वॉलेट पता कॉपी करें",
+    "swap": "अपने टोकन स्वैप करें",
+    "send": "टोकन भेजें",
+    "more": "अधिक आइटम",
+    "view_tokens": "टोकन देखें",
+    "view_activity": "गतिविधि देखें",
+    "balance": "कुल बैलेंस",
+    "switch_wallet": "वॉलेट स्विच करें",
+    "save_to_contacts": "संपर्कों में सहेजें",
+    "clear_address": "पता हटाएं",
+    "clear_token": "टोकन हटाएं",
+    "gwei_settings": "Gwei सेटिंग",
+    "flip_tokens": "टोकन स्थितियां बदलें",
+    "favorite": "पसंदीदा में जोड़ें",
+    "unfavorite": "पसंदीदा से हटाएं",
+    "estimated_difference": "मान में अनुमानित अंतर",
+    "buy_crypto": "क्रिप्टो खरीदें और ट्रांसफर करें"
   }
 }

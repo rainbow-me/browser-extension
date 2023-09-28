@@ -1298,5 +1298,25 @@
       "card": "Cartão",
       "google_pay": "Google Pay"
     }
+  },
+  "tooltip": {
+    "switch_network": "Trocar redes",
+    "copy_address": "Copiar endereço da carteira",
+    "swap": "Trocar seus tokens",
+    "send": "Enviar tokens",
+    "more": "Mais itens",
+    "view_tokens": "Ver tokens",
+    "view_activity": "Ver atividade",
+    "balance": "Saldo total",
+    "switch_wallet": "Trocar carteiras",
+    "save_to_contacts": "Salvar nos contatos",
+    "clear_address": "Limpar endereço",
+    "clear_token": "Limpar token",
+    "gwei_settings": "Configurações Gwei",
+    "flip_tokens": "Inverter posições de tokens",
+    "favorite": "Adicionar aos favoritos",
+    "unfavorite": "Remover dos favoritos",
+    "estimated_difference": "Diferença estimada em valor",
+    "buy_crypto": "Comprar e transferir criptomoedas"
   }
 }

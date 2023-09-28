@@ -1298,5 +1298,25 @@
       "card": "Kartu",
       "google_pay": "Google Pay"
     }
+  },
+  "tooltip": {
+    "switch_network": "Ganti jaringan",
+    "copy_address": "Salin alamat dompet",
+    "swap": "Tukarkan token Anda",
+    "send": "Kirim token",
+    "more": "Lebih banyak item",
+    "view_tokens": "Lihat token",
+    "view_activity": "Lihat aktivitas",
+    "balance": "Total saldo",
+    "switch_wallet": "Ganti dompet",
+    "save_to_contacts": "Simpan ke kontak",
+    "clear_address": "Hapus alamat",
+    "clear_token": "Hapus token",
+    "gwei_settings": "Pengaturan Gwei",
+    "flip_tokens": "Balik posisi token",
+    "favorite": "Tambahkan ke favorit",
+    "unfavorite": "Hapus dari favorit",
+    "estimated_difference": "Perkiraan selisih nilai",
+    "buy_crypto": "Beli dan transfer kripto"
   }
 }

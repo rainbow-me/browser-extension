@@ -1298,5 +1298,25 @@
       "card": "Kart",
       "google_pay": "Google Pay"
     }
+  },
+  "tooltip": {
+    "switch_network": "Ağları değiştir",
+    "copy_address": "Cüzdan adresini kopyala",
+    "swap": "Tokenlerinizi takas edin",
+    "send": "Token gönder",
+    "more": "Daha fazla öğe",
+    "view_tokens": "Tokenleri görüntüle",
+    "view_activity": "Etkinliği görüntüle",
+    "balance": "Toplam bakiye",
+    "switch_wallet": "Cüzdanları değiştir",
+    "save_to_contacts": "Kişilere kaydet",
+    "clear_address": "Adresi temizle",
+    "clear_token": "Tokeni temizle",
+    "gwei_settings": "Gwei Ayarları",
+    "flip_tokens": "Token pozisyonlarını çevir",
+    "favorite": "Favorilere ekle",
+    "unfavorite": "Favorilerden kaldır",
+    "estimated_difference": "Tahmini değer farkı",
+    "buy_crypto": "Kripto satın al ve transfer et"
   }
 }

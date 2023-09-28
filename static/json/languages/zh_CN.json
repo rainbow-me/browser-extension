@@ -1298,5 +1298,25 @@
       "card": "卡",
       "google_pay": "谷歌支付"
     }
+  },
+  "tooltip": {
+    "switch_network": "切换网络",
+    "copy_address": "复制钱包地址",
+    "swap": "交换你的代币",
+    "send": "发送代币",
+    "more": "更多项目",
+    "view_tokens": "查看代币",
+    "view_activity": "查看活动",
+    "balance": "总余额",
+    "switch_wallet": "切换钱包",
+    "save_to_contacts": "保存到联系人",
+    "clear_address": "清除地址",
+    "clear_token": "清除代币",
+    "gwei_settings": "Gwei 设置",
+    "flip_tokens": "翻转代币位置",
+    "favorite": "添加到收藏夹",
+    "unfavorite": "从收藏夹中移除",
+    "estimated_difference": "估计的价值差额",
+    "buy_crypto": "购买并转移加密币"
   }
 }
