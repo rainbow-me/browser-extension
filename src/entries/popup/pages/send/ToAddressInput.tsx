@@ -34,6 +34,7 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { DropdownInputWrapper } from '../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { WalletContextMenu } from '../../components/WalletContextMenu';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
@@ -349,75 +350,83 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
           dropdownHeight={452}
           testId={'to-address-input'}
           leftComponent={
-            <Box borderRadius="18px">
-              <WalletAvatar
-                addressOrName={toAddress}
-                size={36}
-                emojiSize="20pt"
-              />
-            </Box>
+            <WalletContextMenu account={toAddress}>
+              <Box borderRadius="18px">
+                <WalletAvatar
+                  addressOrName={toAddress}
+                  size={36}
+                  emojiSize="20pt"
+                />
+              </Box>
+            </WalletContextMenu>
           }
           centerComponent={
-            <Box as={motion.div} layout>
-              <Stack space="8px">
-                <Box
-                  as={motion.div}
-                  key="input"
-                  onClick={onInputClick}
-                  layout="position"
-                >
+            <WalletContextMenu account={toAddress}>
+              <Box as={motion.div} layout>
+                <Stack space="8px">
+                  <Box
+                    as={motion.div}
+                    key="input"
+                    onClick={onInputClick}
+                    layout="position"
+                  >
+                    <AnimatePresence>
+                      {inputVisible ? (
+                        <Box
+                          as={motion.div}
+                          layout="position"
+                          onClick={onDropdownAction}
+                        >
+                          <Input
+                            testId="to-address-input"
+                            value={toAddressOrName}
+                            placeholder={i18n.t(
+                              'send.input_to_address_placeholder',
+                            )}
+                            onChange={handleToAddressChange}
+                            height="32px"
+                            variant="transparent"
+                            style={{ paddingLeft: 0, paddingRight: 0 }}
+                            innerRef={inputRef}
+                            tabIndex={0}
+                          />
+                        </Box>
+                      ) : (
+                        <Box as={motion.div} layout="position">
+                          <TextOverflow
+                            weight="semibold"
+                            size="14pt"
+                            color="label"
+                            testId="to-address-input-display"
+                          >
+                            {displayName}
+                          </TextOverflow>
+                        </Box>
+                      )}
+                    </AnimatePresence>
+                  </Box>
                   <AnimatePresence>
-                    {inputVisible ? (
+                    {!inputVisible && isNameDefined && (
                       <Box
+                        testId={'recipient-address'}
                         as={motion.div}
+                        key="wallet"
                         layout="position"
                         onClick={onDropdownAction}
                       >
-                        <Input
-                          testId="to-address-input"
-                          value={toAddressOrName}
-                          placeholder={i18n.t(
-                            'send.input_to_address_placeholder',
-                          )}
-                          onChange={handleToAddressChange}
-                          height="32px"
-                          variant="transparent"
-                          style={{ paddingLeft: 0, paddingRight: 0 }}
-                          innerRef={inputRef}
-                          tabIndex={0}
-                        />
-                      </Box>
-                    ) : (
-                      <Box as={motion.div} layout="position">
-                        <TextOverflow
+                        <Text
                           weight="semibold"
-                          size="14pt"
-                          color="label"
-                          testId="to-address-input-display"
+                          size="12pt"
+                          color="labelTertiary"
                         >
-                          {displayName}
-                        </TextOverflow>
+                          {truncateAddress(toAddress)}
+                        </Text>
                       </Box>
                     )}
                   </AnimatePresence>
-                </Box>
-                <AnimatePresence>
-                  {!inputVisible && isNameDefined && (
-                    <Box
-                      testId={'recipient-address'}
-                      as={motion.div}
-                      key="wallet"
-                      layout="position"
-                      onClick={onDropdownAction}
-                    >
-                      <Text weight="semibold" size="12pt" color="labelTertiary">
-                        {truncateAddress(toAddress)}
-                      </Text>
-                    </Box>
-                  )}
-                </AnimatePresence>
-              </Stack>
-            </Box>
+                </Stack>
+              </Box>
+            </WalletContextMenu>
           }
           dropdownComponent={
             <DropdownWalletsList
