@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import makeColorMoreChill from 'make-color-more-chill';
-import Vibrant from 'node-vibrant';
+import Vibrant from 'node-vibrant/lib/bundle';
 
 import {
   colorCacheStore,
