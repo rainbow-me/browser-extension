@@ -1,6 +1,6 @@
 import 'chromedriver';
 import 'geckodriver';
-import { WebDriver } from 'selenium-webdriver';
+import { Key, WebDriver } from 'selenium-webdriver';
 import {
   afterAll,
   afterEach,
@@ -23,9 +23,9 @@ import {
   importWalletFlow,
   initDriverWithOptions,
   isElementFoundByText,
-  navigateBackwardsWithKeyboard,
   navigateToElementWithTestId,
   takeScreenshotOnFailure,
+  transactionStatus,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
@@ -71,13 +71,10 @@ describe('Complete send flow via shortcuts', () => {
   });
 
   it('should be able to connect to hardhat', async () => {
-    await navigateBackwardsWithKeyboard({ driver, timesToPress: 7 });
-    await executePerformShortcut({ driver, key: 'ENTER' });
-
+    await navigateToElementWithTestId({ driver, testId: 'connect-to-hardhat' });
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
-    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 7 });
-    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
   });
 
   it('navigate to send with keyboard shortcut', async () => {
@@ -91,8 +88,7 @@ describe('Complete send flow via shortcuts', () => {
   });
 
   it('navigate to send with keyboard navigation', async () => {
-    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 7 });
-    await executePerformShortcut({ driver, key: 'ENTER' });
+    await navigateToElementWithTestId({ driver, testId: 'header-link-send' });
     await checkExtensionURL(driver, 'send');
   });
 
@@ -188,20 +184,44 @@ describe('Complete send flow via shortcuts', () => {
   });
 
   it('initiate transaction with keyboard navigation', async () => {
-    await driver.actions().sendKeys('1').perform();
+    // delete max input then type 1
+    await driver
+      .actions()
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys(Key.BACK_SPACE)
+      .sendKeys('1')
+      .perform();
     const value = await findElementByTestId({ id: 'send-input-mask', driver });
     const valueNum = await value.getAttribute('value');
     expect(Number(valueNum)).toBe(1);
-    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 5 });
-    await executePerformShortcut({ driver, key: 'ENTER' });
+    await navigateToElementWithTestId({ driver, testId: 'send-review-button' });
     const reviewText = await findElementByText(driver, 'Review & Send');
     expect(reviewText).toBeTruthy();
-    await executePerformShortcut({ driver, key: 'TAB' });
-    await executePerformShortcut({ driver, key: 'ENTER' });
+    await navigateToElementWithTestId({
+      driver,
+      testId: 'review-confirm-button',
+    });
+    const sendTransaction = await transactionStatus();
+    expect(sendTransaction).toBe('success');
   });
 
   it('select asset to send from home using keyboard ', async () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
+    await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 8 });
+    await executePerformShortcut({ driver, key: 'SPACE' });
+    await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'send');
   });
 });
