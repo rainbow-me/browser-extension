@@ -1,7 +1,7 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { DismissableLayerProps } from '@radix-ui/react-menu';
 import clsx from 'clsx';
-import { TargetAndTransition, Transition, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { CSSProperties, ReactNode, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -69,8 +69,6 @@ export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
 
 interface DropdownMenuContentProps {
   animate?: boolean;
-  transition?: Transition;
-  exit?: TargetAndTransition;
   border?: boolean;
   boxShadow?: string;
   children: ReactNode;
@@ -122,8 +120,6 @@ export const DropdownMenuContentBody = React.forwardRef<
     onInteractOutside,
     onPointerDownOutside,
     animate = false,
-    transition,
-    exit,
   } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
@@ -152,8 +148,8 @@ export const DropdownMenuContentBody = React.forwardRef<
             as={motion.div}
             initial={{ scale: 1, opacity: animate ? 0 : 1 }}
             animate={{ scale: scale ?? 1, opacity: 1 }}
-            exit={{ scale: 1, opacity: animate ? 0 : 1, ...exit }}
-            transition={{ duration: 0.1, ...transition }}
+            exit={{ scale: 1, opacity: animate ? 0 : 1 }}
+            transition={{ duration: 0.1 }}
             style={{
               boxShadow: boxShadow ?? '0px 10px 30px rgba(0, 0, 0, 0.2)',
               marginRight: marginRight ?? '0px',
