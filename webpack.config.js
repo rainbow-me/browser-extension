@@ -8,7 +8,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { ProgressPlugin, ProvidePlugin } = require('webpack');
+const { ProgressPlugin, ProvidePlugin, IgnorePlugin } = require('webpack');
 const BundleAnalyzerPlugin =
   require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -78,6 +78,11 @@ module.exports = {
   },
   plugins: [
     ...optionalPlugins,
+    new IgnorePlugin({
+      checkResource(resource) {
+        return /.*\/wordlists\/(?!english).*\.json/.test(resource);
+      },
+    }),
     new Dotenv({ allowEmptyValues: true }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],

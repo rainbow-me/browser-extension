@@ -74,6 +74,8 @@
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
+    "@ethereumjs/tx": "5.0.0",
+    "@ethereumjs/util": "9.0.0",
     "@ethersproject/abstract-signer": "5.7.0",
     "@ethersproject/address": "5.7.0",
     "@ethersproject/bignumber": "5.7.0",
@@ -97,7 +99,8 @@
     "@radix-ui/react-polymorphic": "0.0.14",
     "@radix-ui/react-select": "1.2.1",
     "@radix-ui/react-tooltip": "1.0.3",
-    "@rainbow-me/swaps": "0.7.0",
+    "@rainbow-me/swaps": "0.8.0",
+    "@scure/bip39": "1.2.1",
     "@segment/analytics-node": "1.0.0-beta.24",
     "@sentry/browser": "7.69.0",
     "@sentry/tracing": "7.69.0",
@@ -120,6 +123,7 @@
     "currency.js": "2.0.4",
     "date-fns": "2.29.3",
     "deepmerge": "4.2.2",
+    "ethereum-cryptography": "2.1.2",
     "eventemitter3": "4.0.7",
     "firebase": "9.18.0",
     "framer-motion": "10.2.3",
@@ -219,6 +223,7 @@
   },
   "resolutions": {
     "bn.js": "5.2.1",
+    "@scure/bip39": "1.2.1",
     "protobufjs": "7.2.4",
     "@grpc/grpc-js": "1.8.8",
     "semver": "7.5.2",
@@ -290,7 +295,8 @@
       "web-ext>sign-addon>core-js": false,
       "web-ext>ws>bufferutil": false,
       "web-ext>ws>utf-8-validate": false,
-      "@ledgerhq/domain-service>eip55>keccak": false
+      "@ledgerhq/domain-service>eip55>keccak": false,
+      "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>keccak": false
     }
   }
 }
