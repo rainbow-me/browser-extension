@@ -3,14 +3,17 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Bytes, hexlify, joinSignature } from '@ethersproject/bytes';
 import { TransactionRequest } from '@ethersproject/providers';
 import { toUtf8Bytes } from '@ethersproject/strings';
-import { UnsignedTransaction, serialize } from '@ethersproject/transactions';
+import {
+  UnsignedTransaction,
+  parse,
+  serialize,
+} from '@ethersproject/transactions';
 import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
-import { ethers } from 'ethers';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -89,7 +92,7 @@ export async function signTransactionFromLedger(
       v: BigNumber.from('0x' + sig.v).toNumber(),
     });
 
-    const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
+    const parsedTx = parse(serializedTransaction);
 
     if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
       throw new Error('Transaction was not signed by the right address');

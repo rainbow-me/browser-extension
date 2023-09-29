@@ -1,5 +1,5 @@
+import { isValidAddress } from '@ethereumjs/util';
 import { getProvider } from '@wagmi/core';
-import { isValidAddress } from 'ethereumjs-util';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
