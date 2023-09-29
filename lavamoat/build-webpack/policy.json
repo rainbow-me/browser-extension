@@ -178,7 +178,9 @@
       },
       "packages": {
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration": true,
+        "@vanilla-extract/webpack-plugin>chalk": true,
         "@vanilla-extract/webpack-plugin>loader-utils": true,
+        "chalk": true,
         "eslint>chalk": true,
         "eslint>debug": true,
         "file-loader>loader-utils": true,
@@ -189,6 +191,25 @@
     "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {
       "packages": {
         "$root$": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>chalk": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@vanilla-extract/webpack-plugin>chalk>ansi-styles": true,
+        "@vanilla-extract/webpack-plugin>chalk>supports-color": true,
+        "supports-color": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>chalk>supports-color": {
+      "builtin": {
+        "os": true,
+        "tty": true
+      },
+      "packages": {
+        "msw>chalk>supports-color>has-flag": true
       }
     },
     "@vanilla-extract/webpack-plugin>loader-utils": {
@@ -634,12 +655,6 @@
         "define": true
       }
     },
-    "eslint>chalk": {
-      "packages": {
-        "msw>chalk>ansi-styles": true,
-        "msw>chalk>supports-color": true
-      }
-    },
     "eslint>debug": {
       "builtin": {
         "tty.isatty": true,
@@ -656,7 +671,7 @@
       },
       "packages": {
         "eslint>debug>ms": true,
-        "msw>chalk>supports-color": true
+        "supports-color": true
       }
     },
     "eslint>eslint-scope>esrecurse": {
@@ -1103,7 +1118,7 @@
       "packages": {
         "lavamoat>@babel/highlight>chalk>ansi-styles": true,
         "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true
+        "supports-color": true
       }
     },
     "lavamoat>@babel/highlight>chalk>ansi-styles": {
@@ -1114,26 +1129,6 @@
     "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": {
       "packages": {
         "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>supports-color>has-flag": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
       }
     },
     "lint-staged>execa>merge-stream": {
@@ -1193,32 +1188,9 @@
         "mini-css-extract-plugin>schema-utils>ajv": true
       }
     },
-    "msw>chalk>ansi-styles": {
-      "packages": {
-        "msw>chalk>ansi-styles>color-convert": true
-      }
-    },
     "msw>chalk>ansi-styles>color-convert": {
       "packages": {
         "msw>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "msw>chalk>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "msw>chalk>supports-color>has-flag": true
-      }
-    },
-    "msw>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
       }
     },
     "msw>chokidar>braces": {
@@ -1262,6 +1234,26 @@
         "semver>lru-cache>yallist": true
       }
     },
+    "supports-color": {
+      "builtin": {
+        "os.release": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.versions.node.split": true
+      },
+      "packages": {
+        "supports-color>has-flag": true
+      }
+    },
+    "supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
     "ts-loader": {
       "builtin": {
         "console.Console": true,
@@ -1282,11 +1274,22 @@
         "process.stdout": true
       },
       "packages": {
-        "eslint>chalk": true,
         "semver": true,
+        "ts-loader>chalk": true,
         "ts-loader>micromatch": true,
         "typescript": true,
         "webpack": true
+      }
+    },
+    "ts-loader>chalk": {
+      "packages": {
+        "supports-color": true,
+        "ts-loader>chalk>ansi-styles": true
+      }
+    },
+    "ts-loader>chalk>ansi-styles": {
+      "packages": {
+        "msw>chalk>ansi-styles>color-convert": true
       }
     },
     "ts-loader>micromatch": {
@@ -1605,10 +1608,10 @@
         "setImmediate": true
       },
       "packages": {
-        "eslint>chalk": true,
         "lodash": true,
         "vitest>acorn-walk": true,
         "webpack-bundle-analyzer>acorn": true,
+        "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
@@ -1620,6 +1623,17 @@
       "globals": {
         "console": true,
         "define": true
+      }
+    },
+    "webpack-bundle-analyzer>chalk": {
+      "packages": {
+        "supports-color": true,
+        "webpack-bundle-analyzer>chalk>ansi-styles": true
+      }
+    },
+    "webpack-bundle-analyzer>chalk>ansi-styles": {
+      "packages": {
+        "msw>chalk>ansi-styles>color-convert": true
       }
     },
     "webpack-bundle-analyzer>gzip-size": {
@@ -2032,21 +2046,8 @@
       },
       "packages": {
         "lint-staged>execa>merge-stream": true,
-        "webpack>terser-webpack-plugin": true,
-        "webpack>terser-webpack-plugin>jest-worker>supports-color": true
-      }
-    },
-    "webpack>terser-webpack-plugin>jest-worker>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "msw>chalk>supports-color>has-flag": true
+        "supports-color": true,
+        "webpack>terser-webpack-plugin": true
       }
     },
     "webpack>terser-webpack-plugin>serialize-javascript": {

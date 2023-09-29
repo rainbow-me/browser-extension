@@ -2,11 +2,13 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Mnemonic } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
-import { Address } from 'wagmi';
+import { getProvider } from '@wagmi/core';
+import { Address, mainnet } from 'wagmi';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 
-import { IKeychain, PrivateKey } from '../IKeychain';
+import { IKeychain, PrivateKey, TWallet } from '../IKeychain';
+import { RainbowSigner } from '../RainbowSigner';
 
 export interface SerializedKeypairKeychain {
   type: string;
@@ -29,13 +31,11 @@ export class KeyPairKeychain implements IKeychain {
     this.deserialize(options);
   }
 
-  _getWalletForAddress(): Wallet {
-    return privates.get(this).wallets[0] as Wallet;
-  }
-
   getSigner(address: Address): Signer {
-    const wallet = this._getWalletForAddress();
-    return wallet;
+    const provider = getProvider({ chainId: mainnet.id });
+    const wallet = privates.get(this).wallets[0] as TWallet;
+    if (!wallet) throw new Error('Account not found');
+    return new RainbowSigner(provider, wallet.privateKey, wallet.address);
   }
 
   async serialize(): Promise<SerializedKeypairKeychain> {
@@ -66,7 +66,7 @@ export class KeyPairKeychain implements IKeychain {
   }
 
   async exportAccount(address: Address): Promise<PrivateKey> {
-    const wallet = this._getWalletForAddress();
+    const wallet = privates.get(this).wallets[0];
     return wallet.privateKey;
   }
 

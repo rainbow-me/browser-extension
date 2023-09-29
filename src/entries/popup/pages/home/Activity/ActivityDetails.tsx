@@ -1,3 +1,4 @@
+import { FixedNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
@@ -416,10 +417,12 @@ const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
 
   const amountIn = tokenIn?.balance.amount;
   const amountOut = tokenOut?.balance.amount;
-
   if (!amountIn || !amountOut) return;
 
-  const rate = +amountIn / +amountOut;
+  const fixedAmountIn = FixedNumber.fromString(amountIn);
+  const fixedAmountOut = FixedNumber.fromString(amountOut);
+
+  const rate = fixedAmountOut.divUnsafe(fixedAmountIn).toString();
   if (!rate) return;
 
   return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;
