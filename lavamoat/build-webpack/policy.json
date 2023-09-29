@@ -178,7 +178,9 @@
       },
       "packages": {
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration": true,
+        "@vanilla-extract/webpack-plugin>chalk": true,
         "@vanilla-extract/webpack-plugin>loader-utils": true,
+        "chalk": true,
         "eslint>chalk": true,
         "eslint>debug": true,
         "file-loader>loader-utils": true,
@@ -189,6 +191,17 @@
     "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {
       "packages": {
         "$root$": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>chalk": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@vanilla-extract/webpack-plugin>chalk>ansi-styles": true,
+        "@vanilla-extract/webpack-plugin>chalk>supports-color": true,
+        "msw>chalk>ansi-styles": true,
+        "msw>chalk>supports-color": true
       }
     },
     "@vanilla-extract/webpack-plugin>loader-utils": {
@@ -632,12 +645,6 @@
     "eslint>ajv>uri-js": {
       "globals": {
         "define": true
-      }
-    },
-    "eslint>chalk": {
-      "packages": {
-        "msw>chalk>ansi-styles": true,
-        "msw>chalk>supports-color": true
       }
     },
     "eslint>debug": {
@@ -1193,11 +1200,6 @@
         "mini-css-extract-plugin>schema-utils>ajv": true
       }
     },
-    "msw>chalk>ansi-styles": {
-      "packages": {
-        "msw>chalk>ansi-styles>color-convert": true
-      }
-    },
     "msw>chalk>ansi-styles>color-convert": {
       "packages": {
         "msw>chalk>ansi-styles>color-convert>color-name": true
@@ -1282,11 +1284,22 @@
         "process.stdout": true
       },
       "packages": {
-        "eslint>chalk": true,
         "semver": true,
+        "ts-loader>chalk": true,
         "ts-loader>micromatch": true,
         "typescript": true,
         "webpack": true
+      }
+    },
+    "ts-loader>chalk": {
+      "packages": {
+        "msw>chalk>supports-color": true,
+        "ts-loader>chalk>ansi-styles": true
+      }
+    },
+    "ts-loader>chalk>ansi-styles": {
+      "packages": {
+        "msw>chalk>ansi-styles>color-convert": true
       }
     },
     "ts-loader>micromatch": {
@@ -1605,10 +1618,10 @@
         "setImmediate": true
       },
       "packages": {
-        "eslint>chalk": true,
         "lodash": true,
         "vitest>acorn-walk": true,
         "webpack-bundle-analyzer>acorn": true,
+        "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
@@ -1620,6 +1633,17 @@
       "globals": {
         "console": true,
         "define": true
+      }
+    },
+    "webpack-bundle-analyzer>chalk": {
+      "packages": {
+        "msw>chalk>supports-color": true,
+        "webpack-bundle-analyzer>chalk>ansi-styles": true
+      }
+    },
+    "webpack-bundle-analyzer>chalk>ansi-styles": {
+      "packages": {
+        "msw>chalk>ansi-styles>color-convert": true
       }
     },
     "webpack-bundle-analyzer>gzip-size": {
