@@ -187,6 +187,7 @@ export const DropdownSubMenu = ({
             alignOffset={SUBMENU_ALIGN_OFFSET}
             onInteractOutside={onInteractOutsideContent}
             align="center"
+            exit={{ transition: { delay: 0.1 } }}
           >
             <Stack space="4px">
               <Box style={{ minWidth: subMenuRect?.width }}>
