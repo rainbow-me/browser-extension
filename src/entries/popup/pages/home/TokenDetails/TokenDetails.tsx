@@ -3,14 +3,12 @@ import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { handleAssetAccentColor } from '~/core/utils/colors';
 import {
   FormattedCurrencyParts,
   formatCurrencyParts,
@@ -26,7 +24,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { TextProps } from '~/design-system/components/Text/Text';
 import { Asterisks } from '~/entries/popup/components/Asterisks/Asterisks';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
@@ -210,7 +208,6 @@ export const getCoingeckoUrl = ({
 function MoreOptions({ token }: { token: ParsedUserAsset }) {
   const explorer = getTokenBlockExplorer(token);
   const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
-  const { currentTheme } = useCurrentThemeStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -224,11 +221,8 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <AccentColorProviderWrapper
-          color={handleAssetAccentColor(
-            currentTheme,
-            token.colors?.primary || token.colors?.fallback,
-          )}
+        <AccentColorProvider
+          color={token.colors?.primary || token.colors?.fallback}
         >
           {!isEth && (
             <DropdownMenuItem
@@ -276,7 +270,7 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
           <DropdownMenuItem emoji="🆘">
             {i18n.t('token_details.more_options.report')}
           </DropdownMenuItem> */}
-        </AccentColorProviderWrapper>
+        </AccentColorProvider>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -284,7 +278,6 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
 
 export function TokenDetails() {
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
-  const { currentTheme } = useCurrentThemeStore();
 
   const { data: token, isFetched } = useUserAsset(uniqueId);
 
@@ -302,11 +295,8 @@ export function TokenDetails() {
   const tokenNativeBalance = formatCurrencyParts(token.native.balance.amount);
 
   return (
-    <AccentColorProviderWrapper
-      color={handleAssetAccentColor(
-        currentTheme,
-        token.colors?.primary || token.colors?.fallback,
-      )}
+    <AccentColorProvider
+      color={token.colors?.primary || token.colors?.fallback}
     >
       <Box
         display="flex"
@@ -363,6 +353,6 @@ export function TokenDetails() {
 
         <About token={token} />
       </Box>
-    </AccentColorProviderWrapper>
+    </AccentColorProvider>
   );
 }

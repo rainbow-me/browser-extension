@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ethers } from 'ethers';
+import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { Signer } from '@ethersproject/abstract-signer';
+import { Bytes } from '@ethersproject/bytes';
+import { defineReadOnly } from '@ethersproject/properties';
+import { Provider } from '@ethersproject/providers';
 import { Address } from 'wagmi';
 
 import { initializeMessenger } from '../messengers';
 
-export class HWSigner extends ethers.Signer {
+export class HWSigner extends Signer {
   readonly path: string | undefined;
   readonly privateKey: null | undefined;
   readonly deviceId: string | undefined;
@@ -14,21 +18,21 @@ export class HWSigner extends ethers.Signer {
   readonly messenger: any | undefined;
 
   constructor(
-    provider: ethers.providers.Provider,
+    provider: Provider,
     path: string,
     deviceId: string,
     address: Address,
     vendor: string,
   ) {
     super();
-    ethers.utils.defineReadOnly(this, 'privateKey', null);
-    ethers.utils.defineReadOnly(this, 'path', path);
-    ethers.utils.defineReadOnly(this, 'deviceId', deviceId);
-    ethers.utils.defineReadOnly(this, 'address', address);
-    ethers.utils.defineReadOnly(this, 'vendor', vendor);
-    ethers.utils.defineReadOnly(this, 'provider', provider || null);
+    defineReadOnly(this, 'privateKey', null);
+    defineReadOnly(this, 'path', path);
+    defineReadOnly(this, 'deviceId', deviceId);
+    defineReadOnly(this, 'address', address);
+    defineReadOnly(this, 'vendor', vendor);
+    defineReadOnly(this, 'provider', provider || null);
     const popupMessenger = initializeMessenger({ connect: 'popup' });
-    ethers.utils.defineReadOnly(this, 'messenger', popupMessenger);
+    defineReadOnly(this, 'messenger', popupMessenger);
   }
 
   async getAddress(): Promise<string> {
@@ -55,7 +59,7 @@ export class HWSigner extends ethers.Signer {
     });
   }
 
-  async signMessage(message: ethers.utils.Bytes | string): Promise<string> {
+  async signMessage(message: Bytes | string): Promise<string> {
     return this.fwdHWSignRequest('signMessage', {
       message,
       address: this.address,
@@ -69,13 +73,11 @@ export class HWSigner extends ethers.Signer {
     });
   }
 
-  async signTransaction(
-    transaction: ethers.providers.TransactionRequest,
-  ): Promise<string> {
+  async signTransaction(transaction: TransactionRequest): Promise<string> {
     return this.fwdHWSignRequest('signTransaction', transaction);
   }
 
-  connect(provider: ethers.providers.Provider): ethers.Signer {
+  connect(provider: Provider): Signer {
     return new HWSigner(
       provider,
       this.path!,
