@@ -36,7 +36,7 @@ import {
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
@@ -685,7 +685,7 @@ const SwapReviewSheetWithQuote = ({
         </Box>
         <Separator strokeWeight="1px" color="separatorSecondary" />
         <Box padding="20px">
-          <AccentColorProviderWrapper
+          <AccentColorProvider
             color={assetToBuy.colors?.primary || assetToBuy.colors?.fallback}
           >
             <Box>
@@ -740,7 +740,7 @@ const SwapReviewSheetWithQuote = ({
                 </Row>
               </Rows>
             </Box>
-          </AccentColorProviderWrapper>
+          </AccentColorProvider>
         </Box>
       </BottomSheet>
     </>
