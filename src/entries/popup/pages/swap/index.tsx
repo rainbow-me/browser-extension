@@ -27,6 +27,7 @@ import {
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
@@ -462,6 +463,7 @@ export function Swap() {
             symbolColor="labelSecondary"
             variant="flat"
             testId="swap-settings-navbar-button"
+            tabIndex={0}
           />
         }
       />
@@ -556,7 +558,7 @@ export function Swap() {
                     hint={shortcuts.swap.FLIP_ASSETS.display}
                   >
                     <ButtonOverflow testId="swap-flip-button">
-                      <Box
+                      <Lens
                         boxShadow="12px surfaceSecondaryElevated"
                         background="surfaceSecondaryElevated"
                         borderRadius="32px"
@@ -581,7 +583,7 @@ export function Swap() {
                             </Stack>
                           </Inline>
                         </Box>
-                      </Box>
+                      </Lens>
                     </ButtonOverflow>
                   </CursorTooltip>
                 </Inline>

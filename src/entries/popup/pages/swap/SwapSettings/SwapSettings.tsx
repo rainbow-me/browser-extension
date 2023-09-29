@@ -22,8 +22,10 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { TextStyles } from '~/design-system/styles/core.css';
+import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import {
   ExplainerSheet,
@@ -212,6 +214,8 @@ export const SwapSettings = ({
   const slippageInputRef = useRef(null);
   const settingsAccentColor = accentColor || avatar?.color;
 
+  const routesTriggerRef = useRef(null);
+
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
@@ -322,43 +326,53 @@ export const SwapSettings = ({
                           onClick={showRoutingExplainer}
                           testId="swap-settings-route-label"
                         />
-                        <SwapRouteDropdownMenu
-                          accentColor={settingsAccentColor}
-                          source={source}
-                          setSource={setSource}
+                        <Lens
+                          onKeyDown={() =>
+                            simulateClick(routesTriggerRef?.current)
+                          }
+                          style={{ borderRadius: 6, padding: 4 }}
                         >
-                          <Box
-                            testId={`settings-route-context-trigger-${source}`}
+                          <SwapRouteDropdownMenu
+                            accentColor={settingsAccentColor}
+                            source={source}
+                            setSource={setSource}
                           >
-                            <ButtonOverflow style={{ height: '23px' }}>
-                              <Inline
-                                height="full"
-                                space="4px"
-                                alignVertical="center"
-                              >
-                                <Box style={{ height: '16px', width: '16px' }}>
-                                  <img
-                                    src={aggregatorInfo[source].logo}
-                                    width="100%"
-                                    height="100%"
-                                  />
-                                </Box>
-                                <Text
-                                  color="label"
-                                  size="14pt"
-                                  weight="semibold"
+                            <Box
+                              testId={`settings-route-context-trigger-${source}`}
+                              ref={routesTriggerRef}
+                            >
+                              <ButtonOverflow style={{ height: '23px' }}>
+                                <Inline
+                                  height="full"
+                                  space="4px"
+                                  alignVertical="center"
                                 >
-                                  {aggregatorInfo[source].name}
-                                </Text>
-                                <Symbol
-                                  size={12}
-                                  symbol="chevron.down"
-                                  weight="semibold"
-                                />
-                              </Inline>
-                            </ButtonOverflow>
-                          </Box>
-                        </SwapRouteDropdownMenu>
+                                  <Box
+                                    style={{ height: '16px', width: '16px' }}
+                                  >
+                                    <img
+                                      src={aggregatorInfo[source].logo}
+                                      width="100%"
+                                      height="100%"
+                                    />
+                                  </Box>
+                                  <Text
+                                    color="label"
+                                    size="14pt"
+                                    weight="semibold"
+                                  >
+                                    {aggregatorInfo[source].name}
+                                  </Text>
+                                  <Symbol
+                                    size={12}
+                                    symbol="chevron.down"
+                                    weight="semibold"
+                                  />
+                                </Inline>
+                              </ButtonOverflow>
+                            </Box>
+                          </SwapRouteDropdownMenu>
+                        </Lens>
                       </Inline>
                     </Box>
 
@@ -381,6 +395,7 @@ export const SwapSettings = ({
                             checked={swapFlashbotsEnabled}
                             handleChange={setSwapFlashbotsEnabled}
                             testId="swap-settings-flashbots-toggle"
+                            tabIndex={0}
                           />
                         </Inline>
                       </Box>
@@ -416,6 +431,7 @@ export const SwapSettings = ({
                   variant="plain"
                   onClick={setDefaultSettings}
                   testId="settings-use-defaults-button"
+                  tabIndex={0}
                 >
                   <Text
                     align="center"
@@ -438,6 +454,7 @@ export const SwapSettings = ({
                   variant="flat"
                   onClick={done}
                   testId="swap-settings-done"
+                  tabIndex={0}
                 >
                   <Text align="center" color="label" size="16pt" weight="bold">
                     {i18n.t('swap.settings.done')}
