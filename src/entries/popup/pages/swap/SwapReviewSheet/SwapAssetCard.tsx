@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -15,7 +15,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { transparentAccentColorAsHsl } from '~/design-system/styles/core.css';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 
@@ -51,7 +51,7 @@ export const SwapAssetCard = ({
   );
 
   return (
-    <AccentColorProviderWrapper
+    <AccentColorProvider
       color={asset?.colors?.primary || asset?.colors?.fallback}
     >
       <Box
@@ -93,6 +93,6 @@ export const SwapAssetCard = ({
           </Stack>
         </Box>
       </Box>
-    </AccentColorProviderWrapper>
+    </AccentColorProvider>
   );
 };
