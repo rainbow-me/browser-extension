@@ -435,6 +435,7 @@ const WalletRow = ({
       <AccountItem
         testId={`wallet-${account}`}
         onClick={() => setMenuOpen(true)}
+        onContextMenu={(e) => (e.preventDefault(), setMenuOpen(true))}
         key={account}
         account={account}
         rightComponent={

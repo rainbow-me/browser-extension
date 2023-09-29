@@ -24,6 +24,7 @@ export function Lens({
   forwardNav?: boolean;
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
   onClick?: () => void;
+  onContextMenu?: React.MouseEventHandler<HTMLDivElement>;
   handleOpenMenu?: () => void;
   style?: React.CSSProperties;
 }) {
