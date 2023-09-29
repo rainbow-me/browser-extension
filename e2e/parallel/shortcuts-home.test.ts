@@ -177,7 +177,7 @@ describe.runIf(browser !== 'firefox')(
       // find its shortened name and use it for the search this should
       // make it so this test doesn't break if the token content ever changes
       const firstCoinRowItemSelector = `coin-row-item-0`;
-      const coinRowItemNameSelector = `[data-testid="asset-name"]`;
+      const coinRowItemNameSelector = `[data-testid^="asset-name"]`;
       const firstCoinRowItem = await querySelector(
         driver,
         `[data-testid="${firstCoinRowItemSelector}"]`,
