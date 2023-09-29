@@ -10,6 +10,7 @@ import React, {
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
@@ -28,11 +29,13 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { SymbolStyles, TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { zIndexes } from '../../utils/zIndexes';
 import {
@@ -210,6 +213,19 @@ export const CustomGasSheet = ({
     () => getBaseFeeTrendParams(baseFeeTrend),
     [baseFeeTrend],
   );
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (
+        [shortcuts.global.BACK.key, shortcuts.global.CLOSE.key].includes(e.key)
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeCustomGasSheet();
+      }
+    },
+    condition: () => show,
+  });
 
   const updateCustomMaxBaseFee = useCallback(
     (maxBaseFee: string) => {
@@ -573,7 +589,7 @@ export const CustomGasSheet = ({
             </Box>
 
             <Stack space="2px">
-              <Box
+              <Lens
                 paddingVertical="8px"
                 borderRadius="12px"
                 marginHorizontal="-12px"
@@ -586,6 +602,7 @@ export const CustomGasSheet = ({
                   hover: 'accent',
                 }}
                 onClick={() => onSelectedGasChange(GasSpeed.CUSTOM)}
+                tabIndex={selectedSpeedOption === GasSpeed.CUSTOM ? -1 : 0}
               >
                 <Columns alignVertical="center" alignHorizontal="justify">
                   <Column width="2/5">
@@ -639,7 +656,7 @@ export const CustomGasSheet = ({
                     </Stack>
                   </Column>
                 </Columns>
-              </Box>
+              </Lens>
 
               <Box>
                 <Separator color="separatorTertiary" />
@@ -647,7 +664,7 @@ export const CustomGasSheet = ({
 
               {speeds.map((speed, i) => (
                 <Box key={i}>
-                  <Box
+                  <Lens
                     paddingVertical="8px"
                     borderRadius="12px"
                     marginHorizontal="-12px"
@@ -660,6 +677,7 @@ export const CustomGasSheet = ({
                       hover: 'accent',
                     }}
                     onClick={() => onSelectedGasChange(speed)}
+                    tabIndex={selectedSpeedOption === speed ? -1 : 0}
                   >
                     <Columns alignVertical="center" alignHorizontal="justify">
                       <Column width="2/5">
@@ -715,7 +733,7 @@ export const CustomGasSheet = ({
                         </Stack>
                       </Column>
                     </Columns>
-                  </Box>
+                  </Lens>
                   {i !== speeds.length - 1 && (
                     <Box paddingHorizontal="20px">
                       <Separator color="separatorTertiary" />
@@ -734,6 +752,7 @@ export const CustomGasSheet = ({
                     height="44px"
                     variant="flat"
                     onClick={closeCustomGasSheet}
+                    tabIndex={0}
                   >
                     <Text color="labelSecondary" size="16pt" weight="bold">
                       {i18n.t('custom_gas.cancel')}
@@ -747,6 +766,7 @@ export const CustomGasSheet = ({
                     height="44px"
                     variant="flat"
                     onClick={setCustomGas}
+                    tabIndex={0}
                   >
                     <Text color="label" size="16pt" weight="bold">
                       {i18n.t('custom_gas.set')}
