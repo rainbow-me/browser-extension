@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
@@ -17,7 +17,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 import { Account, useAccounts } from '../../hooks/useAccounts';
@@ -165,7 +165,7 @@ export const AppConnectionWalletSwitcher = () => {
                       </Text>
                     </Box>
                     <Box>
-                      <AccentColorProviderWrapper color="red">
+                      <AccentColorProvider color="red">
                         {connectedAccounts.map((account) => (
                           <Box key={account.address} position="relative">
                             <AppConnectionWalletItem
@@ -194,7 +194,7 @@ export const AppConnectionWalletSwitcher = () => {
                             </Box>
                           </Box>
                         ))}
-                      </AccentColorProviderWrapper>
+                      </AccentColorProvider>
                     </Box>
                   </Stack>
                 </Box>
@@ -211,7 +211,7 @@ export const AppConnectionWalletSwitcher = () => {
                       </Text>
                     </Box>
                     <Box>
-                      <AccentColorProviderWrapper color="green">
+                      <AccentColorProvider color="green">
                         {notConnectedAccounts.map((account) => (
                           <AppConnectionWalletItem
                             key={account.address}
@@ -230,7 +230,7 @@ export const AppConnectionWalletSwitcher = () => {
                             connected={false}
                           />
                         ))}
-                      </AccentColorProviderWrapper>
+                      </AccentColorProvider>
                     </Box>
                   </Stack>
                 </Box>
