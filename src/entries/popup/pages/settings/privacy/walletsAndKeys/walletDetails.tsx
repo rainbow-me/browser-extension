@@ -351,6 +351,7 @@ export function WalletDetails() {
                   hiddenWallets={hiddenWallets}
                   handleViewPrivateKey={handleViewPrivateKey}
                   setRenameAccount={setRenameAccount}
+                  renameAccount={renameAccount}
                   setRemoveAccount={setRemoveAccount}
                   unhideWallet={unhideWallet}
                   type={wallet?.type}
@@ -395,6 +396,7 @@ const WalletRow = ({
   hiddenWallets,
   handleViewPrivateKey,
   setRenameAccount,
+  renameAccount,
   setRemoveAccount,
   unhideWallet,
   type,
@@ -404,6 +406,7 @@ const WalletRow = ({
   hiddenWallets: Record<Address, boolean>;
   handleViewPrivateKey: (account: Address) => void;
   setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
+  renameAccount?: Address;
   setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   unhideWallet: ({ address }: { address: Address }) => void;
   type: KeychainType;
@@ -423,6 +426,10 @@ const WalletRow = ({
         ? handleViewPrivateKey
         : undefined,
   } as unknown as typeof InfoButtonOptions;
+
+  if (menuOpen && renameAccount) {
+    setMenuOpen(false);
+  }
 
   return (
     <Box testId={`wallet-item-${numOfWallets}`}>

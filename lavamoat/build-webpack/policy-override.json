@@ -11,10 +11,21 @@
       },
       "packages": {
         "@vanilla-extract/webpack-plugin>loader-utils": true,
+        "@vanilla-extract/webpack-plugin>chalk": true,
         "file-loader>loader-utils": true,
         "eslint>debug": true,
         "eslint>chalk": true,
-        "vitest>debug": true
+        "vitest>debug": true,
+        "chalk": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>chalk": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@vanilla-extract/webpack-plugin>chalk>ansi-styles": true,
+        "@vanilla-extract/webpack-plugin>chalk>supports-color": true
       }
     },
     "@vanilla-extract/webpack-plugin>loader-utils": {

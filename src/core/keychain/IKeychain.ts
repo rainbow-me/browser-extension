@@ -5,6 +5,11 @@ import { Address } from 'wagmi';
 
 export type PrivateKey = string;
 
+export type TWallet = Omit<Wallet, 'address' | 'privateKey'> & {
+  address: Address;
+  privateKey: PrivateKey;
+};
+
 export interface IKeychain {
   type: string;
   serialize(): Promise<unknown>;
