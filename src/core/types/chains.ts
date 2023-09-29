@@ -69,7 +69,7 @@ export const ChainNameDisplay = {
   [ChainId.goerli]: chain.goerli.name,
   [ChainId.sepolia]: chain.sepolia.name,
   [ChainId.optimismGoerli]: chain.optimismGoerli.name,
-  [ChainId.bscTestnet]: chain.bscTestnet.name,
+  [ChainId.bscTestnet]: 'BSC Testnet',
   [ChainId.polygonMumbai]: chain.polygonMumbai.name,
   [ChainId.arbitrumGoerli]: chain.arbitrumGoerli.name,
   [ChainId.baseGoerli]: chain.baseGoerli.name,
