@@ -89,7 +89,7 @@ export class RainbowSigner extends Signer {
           transaction.maxFeePerGas,
         ).toHexString();
       }
-      if (txData.maxPriorityFeePerGas) {
+      if (transaction.maxPriorityFeePerGas) {
         txData.maxPriorityFeePerGas = BigNumber.from(
           transaction.maxPriorityFeePerGas,
         ).toHexString();
