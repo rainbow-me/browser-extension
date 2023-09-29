@@ -5,7 +5,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as fs from 'node:fs';
 
-import { ethers } from 'ethers';
+import { Contract } from '@ethersproject/contracts';
+import { getDefaultProvider } from '@ethersproject/providers';
 import {
   Builder,
   By,
@@ -622,15 +623,15 @@ export async function switchWallet(
 }
 
 export async function getOnchainBalance(addy: string, contract: string) {
-  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
-  const testContract = new ethers.Contract(contract, erc20ABI, provider);
+  const provider = getDefaultProvider('http://127.0.0.1:8545');
+  const testContract = new Contract(contract, erc20ABI, provider);
   const balance = await testContract.balanceOf(addy);
 
   return balance;
 }
 
 export async function transactionStatus() {
-  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
+  const provider = getDefaultProvider('http://127.0.0.1:8545');
   const blockData = await provider.getBlock('latest');
   const txn = await provider.getTransaction(blockData.transactions[0]);
   const txnData = txn.wait();
