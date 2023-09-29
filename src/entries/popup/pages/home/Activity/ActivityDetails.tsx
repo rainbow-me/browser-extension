@@ -97,21 +97,26 @@ const YouOrAddress = ({ address }: { address: Address }) => {
   );
   if (currentAccount === address.toLowerCase())
     return (
-      <>
-        {i18n.t('activity_details.you')}
-        <Text size="12pt" weight="semibold" color="labelQuaternary">
-          <Inline alignVertical="center">
-            (
-            <AddressOrEns
-              address={address}
-              size="12pt"
-              weight="semibold"
-              color="labelQuaternary"
-            />
-            )
-          </Inline>
+      <Inline alignVertical="center" wrap={false} space="2px">
+        <Text color="labelSecondary" size="12pt" weight="semibold">
+          {i18n.t('activity_details.you')}
         </Text>
-      </>
+
+        <Inline alignVertical="center" wrap={false}>
+          <Text size="12pt" weight="semibold" color="labelQuaternary">
+            (
+          </Text>
+          <AddressOrEns
+            address={address}
+            size="12pt"
+            weight="semibold"
+            color="labelQuaternary"
+          />
+          <Text size="12pt" weight="semibold" color="labelQuaternary">
+            )
+          </Text>
+        </Inline>
+      </Inline>
     );
 
   return (
@@ -126,7 +131,7 @@ const YouOrAddress = ({ address }: { address: Address }) => {
 
 const AddressDisplay = ({ address }: { address: Address }) => {
   return (
-    <Inline space="6px" alignVertical="center">
+    <Inline space="6px" alignVertical="center" wrap={false}>
       <WalletAvatar addressOrName={address} size={16} emojiSize="9pt" />
       <YouOrAddress address={address} />
       <AddressMoreOptions address={address} />
