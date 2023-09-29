@@ -747,6 +747,94 @@ export async function importHardwareWalletFlow(
   await findElementByText(driver, 'Rainbow is ready to use');
 }
 
+export async function importWalletFlowUsingKeyboardNavigation(
+  driver: WebDriver,
+  rootURL: string,
+  walletSecret: string,
+  secondaryWallet = false as boolean,
+) {
+  if (secondaryWallet) {
+    await goToPopup(driver, rootURL);
+    await executePerformShortcut({ driver, key: 'w' });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 3,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  } else {
+    await goToPopup(driver, rootURL);
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  }
+  const isPrivateKey =
+    walletSecret.substring(0, 2) === '0x' && walletSecret.length === 66;
+  await executePerformShortcut({
+    driver,
+    key: 'ARROW_DOWN',
+    timesToPress: isPrivateKey ? 3 : 2,
+  });
+  await executePerformShortcut({ driver, key: 'ENTER' });
+  isPrivateKey
+    ? await fillPrivateKey(driver, walletSecret)
+    : await fillSeedPhrase(driver, walletSecret);
+  await executePerformShortcut({
+    driver,
+    key: 'ARROW_DOWN',
+  });
+  await executePerformShortcut({ driver, key: 'ENTER' });
+
+  // make sure wallet list has loaded
+  await findElementByTestId({ id: 'add-wallets-button-section', driver });
+  if (!isPrivateKey) {
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, '/create-password');
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  }
+  if (secondaryWallet) {
+    await delayTime('medium');
+    const accountHeader = await findElementById({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    expect(accountHeader).toBeTruthy();
+  } else {
+    await driver.actions().sendKeys(testPassword).perform();
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+    });
+    await driver.actions().sendKeys(testPassword).perform();
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await delayTime('long');
+    const welcomeText = await findElementByText(
+      driver,
+      'Rainbow is ready to use',
+    );
+    expect(welcomeText).toBeTruthy();
+  }
+}
+
 export async function importWalletFlow(
   driver: WebDriver,
   rootURL: string,

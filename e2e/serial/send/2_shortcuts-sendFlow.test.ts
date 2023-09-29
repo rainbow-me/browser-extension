@@ -13,6 +13,7 @@ import {
 
 import {
   checkExtensionURL,
+  checkWalletName,
   delayTime,
   executePerformShortcut,
   findElementByTestId,
@@ -20,7 +21,7 @@ import {
   getExtensionIdByName,
   getRootUrl,
   goToPopup,
-  importWalletFlow,
+  importWalletFlowUsingKeyboardNavigation,
   initDriverWithOptions,
   isElementFoundByText,
   navigateToElementWithTestId,
@@ -35,7 +36,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe('Complete send flow via shortcuts', () => {
+describe('Complete send flow via shortcuts and keyboard navigation', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -59,7 +60,15 @@ describe('Complete send flow via shortcuts', () => {
   afterAll(() => driver.quit());
 
   it('should be able import a wallet via pk', async () => {
-    await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
+    await importWalletFlowUsingKeyboardNavigation(
+      driver,
+      rootURL,
+      TEST_VARIABLES.SEED_WALLET.PK,
+    );
+  });
+
+  it('should display account name', async () => {
+    await checkWalletName(driver, rootURL, TEST_VARIABLES.SEED_WALLET.ADDRESS);
   });
 
   it('should be able to go to setings', async () => {
@@ -77,40 +86,38 @@ describe('Complete send flow via shortcuts', () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
   });
 
-  it('navigate to send with keyboard shortcut', async () => {
+  it('should be able to navigate to send with keyboard shortcut', async () => {
     await executePerformShortcut({ driver, key: 's' });
     await checkExtensionURL(driver, 'send');
   });
 
-  it('navigate to go back home with keyboard shortcut', async () => {
+  it('should be able to navigate home with keyboard nav', async () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
     await checkExtensionURL(driver, 'home');
   });
 
-  it('navigate to send with keyboard navigation', async () => {
+  it('should be able to navigate to send with keyboard navigation', async () => {
     await navigateToElementWithTestId({ driver, testId: 'header-link-send' });
     await checkExtensionURL(driver, 'send');
   });
 
-  it('nav to send field and type in address', async () => {
+  it('should be able to nav to send field and type in address', async () => {
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
     await driver.actions().sendKeys('0xtester.eth').perform();
     const shortenedAddress = await findElementByText(driver, '0x2e67…e774');
     expect(shortenedAddress).toBeTruthy();
   });
 
-  it('save contact', async () => {
+  it('should be able to save contact', async () => {
     await executePerformShortcut({ driver, key: 'DECIMAL' });
     await executePerformShortcut({ driver, key: 'TAB' });
     await driver.actions().sendKeys('0xtester.eth').perform();
     await executePerformShortcut({ driver, key: 'TAB' });
     await executePerformShortcut({ driver, key: 'ENTER' });
-
-    // allow time for 'add contact' menu to update
     await delayTime('long');
   });
 
-  it('open contact menu', async () => {
+  it('should be able to open contact menu', async () => {
     await executePerformShortcut({ driver, key: 'DECIMAL' });
     const copyOption = await findElementByText(driver, 'Copy address');
     expect(copyOption).toBeTruthy();
@@ -122,20 +129,20 @@ describe('Complete send flow via shortcuts', () => {
     expect(doNotFindCopyOption).toBe(false);
   });
 
-  it('clear current send address field', async () => {
+  it('should be able to clear current send address field', async () => {
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
     await executePerformShortcut({ driver, key: 'ENTER' });
     const contacts = await findElementByText(driver, 'Contacts');
     expect(contacts).toBeTruthy();
   });
 
-  it('focus address to send with keyboard', async () => {
+  it('should be able to focus address to send with keyboard', async () => {
     await delayTime('long');
     await executePerformShortcut({ driver, key: 'TAB' });
     await executePerformShortcut({ driver, key: 'ENTER' });
   });
 
-  it('focus asset to send with keyboard', async () => {
+  it('should be able to focus asset to send with keyboard', async () => {
     await executePerformShortcut({ driver, key: 'TAB' });
     const ethereum = await findElementByText(driver, 'Ethereum');
     expect(ethereum).toBeTruthy();
@@ -154,7 +161,7 @@ describe('Complete send flow via shortcuts', () => {
     expect(Number(valueNum)).toBe(0);
   });
 
-  it('set max amount', async () => {
+  it('should be able to set max amount', async () => {
     await executePerformShortcut({ driver, key: 'TAB' });
     await executePerformShortcut({ driver, key: 'ENTER' });
     const value = await findElementByTestId({ id: 'send-input-mask', driver });
@@ -162,7 +169,7 @@ describe('Complete send flow via shortcuts', () => {
     expect(Number(valueNum)).toBeGreaterThan(0);
   });
 
-  it('switch currency label', async () => {
+  it('should be able to switch currency label', async () => {
     const placeholderBefore = await findElementByTestId({
       id: 'send-input-mask',
       driver,
@@ -183,7 +190,7 @@ describe('Complete send flow via shortcuts', () => {
     expect(placeholderContent).toContain('USD');
   });
 
-  it('initiate transaction with keyboard navigation', async () => {
+  it('should be able to initiate transaction with keyboard navigation', async () => {
     // delete max input then type 1
     await driver
       .actions()
@@ -215,7 +222,7 @@ describe('Complete send flow via shortcuts', () => {
     expect(sendTransaction).toBe('success');
   });
 
-  it('select asset to send from home using keyboard ', async () => {
+  it('should be able to select asset to send from home using keyboard ', async () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
     await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 8 });
