@@ -1,3 +1,7 @@
+import chroma from 'chroma-js';
+
+import { backgroundColors } from '~/design-system/styles/designTokens';
+
 const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
@@ -12,20 +16,16 @@ const hexToRgb = (hex: string) => {
 /**
  * Return ETH color if the color provided is too dark for dark mode
  * or too light for light mode
- * @param hex - hex color
+ * @param color - hex or rgb color
  * @returns
  */
-export const handleAssetAccentColor = (
-  theme: 'dark' | 'light',
-  hex?: string,
-) => {
-  if (!hex) return undefined;
-  const rgb = hexToRgb(hex);
-  if (theme === 'dark' && rgb && rgb?.g < 50) {
-    // return ETH color
-    return '#808088';
-  }
-  return hex;
+export const handleAccentColor = (theme: 'dark' | 'light', color: string) => {
+  const contrast = chroma.contrast(
+    color,
+    backgroundColors.surfacePrimary[theme].color,
+  );
+  if (contrast < 3) return chroma(color).luminance(0.3).hex();
+  return color;
 };
 
 export const isDarkColor = (hex: string) => {
