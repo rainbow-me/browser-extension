@@ -1,27 +1,3 @@
-/* 
-navigate to send with keyboard shortcut
-
-navigate to send with keyboard navigation
-
-focus asset to send with keyboard
-
-focus address to send to with keyboard
-
-select asset and address to send to with keyboard navigation
-
-open contact menu
-
-save contact with keyboard navigation
-
-set max amount
-
-switch currency label
-
-initiate transaction with keyboard navigation
-
-select asset to send from home using keyboard 
-*/
-
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
@@ -36,17 +12,20 @@ import {
 } from 'vitest';
 
 import {
-  findElementAndClick,
-  findElementByTestIdAndClick,
+  checkExtensionURL,
+  delayTime,
+  executePerformShortcut,
+  findElementByTestId,
   findElementByText,
   getExtensionIdByName,
   getRootUrl,
   goToPopup,
   importWalletFlow,
   initDriverWithOptions,
-  querySelector,
+  isElementFoundByText,
+  navigateBackwardsWithKeyboard,
+  navigateToElementWithTestId,
   takeScreenshotOnFailure,
-  waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
@@ -85,22 +64,144 @@ describe('Complete send flow via shortcuts', () => {
 
   it('should be able to go to setings', async () => {
     await goToPopup(driver, rootURL);
-    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
-    await findElementByTestIdAndClick({ id: 'settings-link', driver });
+    await executePerformShortcut({ driver, key: 'DECIMAL' });
+    await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, 'settings');
   });
 
-  it('should be able to connect to hardhat and go to send flow', async () => {
-    const btn = await querySelector(
-      driver,
-      '[data-testid="connect-to-hardhat"]',
-    );
-    await waitAndClick(btn, driver);
+  it('should be able to connect to hardhat', async () => {
+    await navigateBackwardsWithKeyboard({ driver, timesToPress: 7 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
-    await findElementByTestIdAndClick({
-      id: 'navbar-button-with-back',
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 7 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  });
+
+  it('navigate to send with keyboard shortcut', async () => {
+    await executePerformShortcut({ driver, key: 's' });
+    await checkExtensionURL(driver, 'send');
+  });
+
+  it('navigate to go back home with keyboard shortcut', async () => {
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
+    await checkExtensionURL(driver, 'home');
+  });
+
+  it('navigate to send with keyboard navigation', async () => {
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 7 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, 'send');
+  });
+
+  it('nav to send field and type in address', async () => {
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
+    await driver.actions().sendKeys('0xtester.eth').perform();
+    const shortenedAddress = await findElementByText(driver, '0x2e67…e774');
+    expect(shortenedAddress).toBeTruthy();
+  });
+
+  it('save contact', async () => {
+    await executePerformShortcut({ driver, key: 'DECIMAL' });
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await driver.actions().sendKeys('0xtester.eth').perform();
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+
+    // allow time for 'add contact' menu to update
+    await delayTime('long');
+  });
+
+  it('open contact menu', async () => {
+    await executePerformShortcut({ driver, key: 'DECIMAL' });
+    const copyOption = await findElementByText(driver, 'Copy address');
+    expect(copyOption).toBeTruthy();
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
+    const doNotFindCopyOption = await isElementFoundByText({
+      text: 'Copy address',
       driver,
     });
-    await findElementAndClick({ id: 'header-link-send', driver });
+    expect(doNotFindCopyOption).toBe(false);
+  });
+
+  it('clear current send address field', async () => {
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    const contacts = await findElementByText(driver, 'Contacts');
+    expect(contacts).toBeTruthy();
+  });
+
+  it('focus address to send with keyboard', async () => {
+    await delayTime('long');
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  });
+
+  it('focus asset to send with keyboard', async () => {
+    await executePerformShortcut({ driver, key: 'TAB' });
+    const ethereum = await findElementByText(driver, 'Ethereum');
+    expect(ethereum).toBeTruthy();
+    await navigateToElementWithTestId({
+      driver,
+      testId: 'asset-name-eth_1',
+    });
+    await delayTime('long');
+    const tokenInput = await findElementByTestId({
+      id: 'input-wrapper-dropdown-token-input',
+      driver,
+    });
+    expect(await tokenInput.getText()).toContain('Ethereum');
+    const value = await findElementByTestId({ id: 'send-input-mask', driver });
+    const valueNum = await value.getAttribute('value');
+    expect(Number(valueNum)).toBe(0);
+  });
+
+  it('set max amount', async () => {
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    const value = await findElementByTestId({ id: 'send-input-mask', driver });
+    const valueNum = await value.getAttribute('value');
+    expect(Number(valueNum)).toBeGreaterThan(0);
+  });
+
+  it('switch currency label', async () => {
+    const placeholderBefore = await findElementByTestId({
+      id: 'send-input-mask',
+      driver,
+    });
+    const placeholderBeforeContent =
+      await placeholderBefore.getAttribute('placeholder');
+    console.log(placeholderBeforeContent);
+    expect(placeholderBeforeContent).toContain('ETH');
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await delayTime('long');
+    const placeholder = await findElementByTestId({
+      id: 'send-input-mask',
+      driver,
+    });
+    const placeholderContent = await placeholder.getAttribute('placeholder');
+    console.log(placeholderContent);
+    expect(placeholderContent).toContain('USD');
+  });
+
+  it('initiate transaction with keyboard navigation', async () => {
+    await driver.actions().sendKeys('1').perform();
+    const value = await findElementByTestId({ id: 'send-input-mask', driver });
+    const valueNum = await value.getAttribute('value');
+    expect(Number(valueNum)).toBe(1);
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 5 });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    const reviewText = await findElementByText(driver, 'Review & Send');
+    expect(reviewText).toBeTruthy();
+    await executePerformShortcut({ driver, key: 'TAB' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  });
+
+  it('select asset to send from home using keyboard ', async () => {
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
+    await checkExtensionURL(driver, 'send');
   });
 });

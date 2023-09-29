@@ -488,6 +488,69 @@ export async function performShortcutWithSpecialKey(
 // this helper simplifies test writing by using the length of the key to
 // determine which function to use and then repeat depending on count
 
+export async function navigateBackwardsWithKeyboard({
+  driver,
+  timesToPress = 1,
+}: {
+  driver: WebDriver;
+  timesToPress?: number;
+}): Promise<void> {
+  for (let i = 0; i < timesToPress; i++) {
+    await driver
+      .actions()
+      .keyDown(Key.SHIFT)
+      .keyDown(Key.TAB)
+      .pause(250)
+      .keyUp(Key.SHIFT)
+      .keyUp(Key.TAB)
+      .perform();
+  }
+}
+
+export async function getFocusedElementDataTestIds(
+  driver: WebDriver,
+): Promise<string> {
+  const script = `
+    function getDataTestIdOfElementAndChildren(element) {
+      let dataTestIds = '';
+      const dataTestId = element.getAttribute('data-testid');
+      if (dataTestId) {
+        dataTestIds += dataTestId;
+      }
+      for (const child of element.children) {
+        dataTestIds = dataTestIds.concat(getDataTestIdOfElementAndChildren(child));
+      }
+      return dataTestIds;
+    }
+    const activeElement = document.activeElement;
+    return getDataTestIdOfElementAndChildren(activeElement);
+  `;
+
+  return driver.executeScript(script);
+}
+
+export async function navigateToElementWithTestId({
+  driver,
+  testId,
+}: {
+  driver: WebDriver;
+  testId: string;
+}): Promise<void> {
+  try {
+    await executePerformShortcut({ driver, key: 'TAB' });
+    const testIds = await getFocusedElementDataTestIds(driver);
+    console.log(testIds);
+    if (testIds === testId) {
+      await executePerformShortcut({ driver, key: 'ENTER' });
+    } else {
+      await navigateToElementWithTestId({ driver, testId });
+    }
+  } catch (error) {
+    console.error(`Error occurred while executing shortcut:`, error);
+    throw error;
+  }
+}
+
 export async function executePerformShortcut({
   driver,
   key,
