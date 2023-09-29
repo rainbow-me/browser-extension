@@ -485,28 +485,6 @@ export async function performShortcutWithSpecialKey(
   }
 }
 
-// this helper simplifies test writing by using the length of the key to
-// determine which function to use and then repeat depending on count
-
-export async function navigateBackwardsWithKeyboard({
-  driver,
-  timesToPress = 1,
-}: {
-  driver: WebDriver;
-  timesToPress?: number;
-}): Promise<void> {
-  for (let i = 0; i < timesToPress; i++) {
-    await driver
-      .actions()
-      .keyDown(Key.SHIFT)
-      .keyDown(Key.TAB)
-      .pause(250)
-      .keyUp(Key.SHIFT)
-      .keyUp(Key.TAB)
-      .perform();
-  }
-}
-
 export async function getFocusedElementDataTestIds(
   driver: WebDriver,
 ): Promise<string> {
@@ -539,7 +517,6 @@ export async function navigateToElementWithTestId({
   try {
     await executePerformShortcut({ driver, key: 'TAB' });
     const testIds = await getFocusedElementDataTestIds(driver);
-    console.log(testIds);
     if (testIds === testId) {
       await executePerformShortcut({ driver, key: 'ENTER' });
     } else {
