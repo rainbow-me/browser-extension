@@ -195,9 +195,12 @@ export const DropdownSubMenu = ({
             sideOffset={SUBMENU_SIDE_OFFSET}
             alignOffset={SUBMENU_ALIGN_OFFSET}
             onInteractOutside={onInteractOutsideContent}
+            align="center"
           >
             <Stack space="4px">
-              {subMenuElement}
+              <Box style={{ minWidth: subMenuRect?.width }}>
+                {subMenuElement}
+              </Box>
               <DropdownMenuSeparator />
               <Box
                 as={motion.div}
