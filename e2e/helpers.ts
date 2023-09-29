@@ -778,26 +778,30 @@ export async function importWalletFlowUsingKeyboardNavigation(
     });
     await executePerformShortcut({ driver, key: 'ENTER' });
   }
+
+  // ok
   const isPrivateKey =
     walletSecret.substring(0, 2) === '0x' && walletSecret.length === 66;
+
   await executePerformShortcut({
     driver,
     key: 'ARROW_DOWN',
     timesToPress: isPrivateKey ? 3 : 2,
   });
   await executePerformShortcut({ driver, key: 'ENTER' });
+  // ok
   isPrivateKey
     ? await fillPrivateKey(driver, walletSecret)
     : await fillSeedPhrase(driver, walletSecret);
+
   await executePerformShortcut({
     driver,
     key: 'ARROW_DOWN',
   });
   await executePerformShortcut({ driver, key: 'ENTER' });
-
-  // make sure wallet list has loaded
-  await findElementByTestId({ id: 'add-wallets-button-section', driver });
   if (!isPrivateKey) {
+    await delayTime('very-long');
+    await findElementByTestId({ id: 'add-wallets-button-section', driver });
     await executePerformShortcut({
       driver,
       key: 'ARROW_DOWN',
@@ -807,6 +811,7 @@ export async function importWalletFlowUsingKeyboardNavigation(
     await checkExtensionURL(driver, '/create-password');
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
   }
+  // ok
   if (secondaryWallet) {
     await delayTime('medium');
     const accountHeader = await findElementById({
@@ -815,6 +820,9 @@ export async function importWalletFlowUsingKeyboardNavigation(
     });
     expect(accountHeader).toBeTruthy();
   } else {
+    await checkExtensionURL(driver, '/create-password');
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+
     await driver.actions().sendKeys(testPassword).perform();
     await executePerformShortcut({
       driver,
