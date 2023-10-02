@@ -22,6 +22,7 @@ import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
+import { getDappHost } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
 
 export const SUPPORTED_CHAINS: Chain[] = [
@@ -84,18 +85,9 @@ export function chainNameFromChainId(chainId: ChainId) {
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
-  if (chainId === ChainId.optimism) {
-    return 'optimistic.etherscan.io';
-  } else if (chainId === ChainId.base) {
-    return 'basescan.org';
-  } else if (chainId === ChainId.zora) {
-    return 'explorer.zora.energy';
-  } else if (chainId === ChainId.polygon) {
-    return 'polygonscan.com';
-  } else if (chainId === ChainId.bsc) {
-    return 'bscscan.com';
-  } else if (chainId === ChainId.arbitrum) {
-    return 'arbiscan.io';
+  const chain = getChain({ chainId });
+  if (chain && chain.blockExplorers?.default.url) {
+    return getDappHost(chain.blockExplorers.default.url);
   }
   return 'etherscan.io';
 }
