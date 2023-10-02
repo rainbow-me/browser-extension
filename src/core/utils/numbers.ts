@@ -1,6 +1,6 @@
+import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber';
 import BigNumber from 'bignumber.js';
 import currency from 'currency.js';
-import { BigNumber as EthersBigNumber } from 'ethers';
 import { isNil } from 'lodash';
 
 import { supportedCurrencies } from '~/core/references';
