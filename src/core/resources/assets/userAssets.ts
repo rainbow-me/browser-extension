@@ -24,7 +24,7 @@ import {
   filterAsset,
   parseUserAsset,
 } from '~/core/utils/assets';
-import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
+import { getSupportedChainIds } from '~/core/utils/chains';
 import { greaterThan } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 import {
@@ -114,7 +114,7 @@ async function userAssetsQueryFunction({
     userAssetsQueryKey({ address, currency }),
   )?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
-    const url = `/${SUPPORTED_CHAIN_IDS.join(',')}/${address}/assets`;
+    const url = `/${getSupportedChainIds().join(',')}/${address}/assets`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       params: {
         currency: currency.toLowerCase(),

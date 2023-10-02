@@ -43,7 +43,25 @@ export const SUPPORTED_CHAINS: Chain[] = [
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
-export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(({ id }) => id);
+export const getSupportedChains = () => {
+  const { chains } = getNetwork();
+  return chains;
+};
+
+export const getSupportedChainIds = () => {
+  const { chains } = getNetwork();
+  return chains.filter((chain) => !chain.testnet).map((chain) => chain.id);
+};
+
+export const getSupportedTestnetChains = () => {
+  const { chains } = getNetwork();
+  return chains;
+};
+
+export const getSupportedTestnetChainIds = () => {
+  const { chains } = getNetwork();
+  return chains.filter((chain) => chain.testnet).map((chain) => chain.id);
+};
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -99,6 +117,5 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 }
 
 export function isSupportedChainId(chainId: number) {
-  const supportedChainIds = SUPPORTED_CHAINS.map((chain) => chain.id);
-  return supportedChainIds.includes(chainId);
+  return getSupportedChainIds().includes(chainId);
 }
