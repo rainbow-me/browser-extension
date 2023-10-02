@@ -9,7 +9,7 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
-import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
+import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 import {
   AssetToBuySection,
   AssetToBuySectionId,
@@ -89,7 +89,7 @@ const VerifiedWrappedTooltip = ({
 }) => {
   if (id !== 'verified') return children;
   return (
-    <Tooltip
+    <CursorTooltip
       text={i18n.t('token_search.verified_by_rainbow')}
       textSize="12pt"
       textWeight="medium"
@@ -98,7 +98,7 @@ const VerifiedWrappedTooltip = ({
       align="start"
     >
       {children}
-    </Tooltip>
+    </CursorTooltip>
   );
 };
 

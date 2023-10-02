@@ -1,5 +1,4 @@
 /* eslint-disable no-await-in-loop */
-import { ToBufferInputTypes } from '@ethereumjs/util';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { isAddress } from '@ethersproject/address';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
@@ -89,7 +88,6 @@ const messengerProviderRequest = async (
 ) => {
   const { addPendingRequest } = pendingRequestStore.getState();
   // Add pending request to global background state.
-  console.log('--- adding pending req addPendingRequest', request);
   addPendingRequest(request);
 
   let ready = await isInitialized();
@@ -405,7 +403,7 @@ export const handleProviderRequest = ({
         }
         case 'personal_ecRecover': {
           response = recoverPersonalSignature({
-            data: params?.[0] as ToBufferInputTypes,
+            data: params?.[0] as string,
             signature: params?.[1] as string,
           });
           break;

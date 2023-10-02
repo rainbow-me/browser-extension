@@ -18,7 +18,6 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { AddressOrEth } from '~/core/types/assets';
@@ -28,10 +27,9 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { handleAssetAccentColor } from '~/core/utils/colors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { RainbowError, logger } from '~/logger';
 
 import {
@@ -39,6 +37,7 @@ import {
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { isLedgerConnectionError } from '../../handlers/ledger';
 import { getWallet, sendTransaction } from '../../handlers/wallet';
@@ -76,7 +75,6 @@ export function Send() {
   }>({ show: false, action: 'save' });
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
-  const { currentTheme } = useCurrentThemeStore();
   const navigate = useRainbowNavigate();
 
   const { isContact } = useContactsStore();
@@ -420,14 +418,7 @@ export function Send() {
     },
   });
 
-  const assetAccentColor = useMemo(
-    () =>
-      handleAssetAccentColor(
-        currentTheme,
-        asset?.colors?.primary || asset?.colors?.fallback,
-      ),
-    [asset?.colors?.fallback, asset?.colors?.primary, currentTheme],
-  );
+  const assetAccentColor = asset?.colors?.primary || asset?.colors?.fallback;
 
   return (
     <>
@@ -449,7 +440,7 @@ export function Send() {
               setSaveContactAction({ show: false, action: 'save' })
             }
           />
-          <AccentColorProviderWrapper color={assetAccentColor}>
+          <AccentColorProvider color={assetAccentColor}>
             <ReviewSheet
               show={showReviewSheet}
               onCancel={closeReviewSheet}
@@ -461,7 +452,7 @@ export function Send() {
               onSaveContactAction={setSaveContactAction}
               waitingForDevice={waitingForDevice}
             />
-          </AccentColorProviderWrapper>
+          </AccentColorProvider>
         </>
       )}
       <Navbar
@@ -470,13 +461,24 @@ export function Send() {
         leftComponent={<Navbar.CloseButton />}
         rightComponent={
           !toAddress || isMyWallet(toAddress) ? undefined : (
-            <NavbarContactButton
-              onSaveAction={setSaveContactAction}
-              toAddress={toAddress}
-              action={isContact({ address: toAddress }) ? 'edit' : 'save'}
-              enabled={!!toAddress}
-              chainId={asset?.chainId}
-            />
+            <CursorTooltip
+              align="end"
+              arrowAlignment="right"
+              arrowCentered
+              text={i18n.t('tooltip.save_to_contacts')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              arrowDirection={'up'}
+            >
+              <NavbarContactButton
+                onSaveAction={setSaveContactAction}
+                toAddress={toAddress}
+                action={isContact({ address: toAddress }) ? 'edit' : 'save'}
+                enabled={!!toAddress}
+                chainId={asset?.chainId}
+              />
+            </CursorTooltip>
           )
         }
       />
@@ -503,7 +505,7 @@ export function Send() {
             </Row>
 
             <Row height="content">
-              <AccentColorProviderWrapper color={assetAccentColor}>
+              <AccentColorProvider color={assetAccentColor}>
                 <Box
                   background="surfaceSecondaryElevated"
                   borderRadius="24px"
@@ -534,13 +536,13 @@ export function Send() {
                     />
                   ) : null}
                 </Box>
-              </AccentColorProviderWrapper>
+              </AccentColorProvider>
             </Row>
           </Rows>
 
           <Row height="content">
             {isValidToAddress && !!asset ? (
-              <AccentColorProviderWrapper color={assetAccentColor}>
+              <AccentColorProvider color={assetAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
                     <Row>
@@ -576,7 +578,7 @@ export function Send() {
                     </Row>
                   </Rows>
                 </Box>
-              </AccentColorProviderWrapper>
+              </AccentColorProvider>
             ) : (
               <Box paddingHorizontal="8px">
                 <Button

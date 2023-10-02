@@ -5,7 +5,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as fs from 'node:fs';
 
-import { ethers } from 'ethers';
+import { Contract } from '@ethersproject/contracts';
+import { getDefaultProvider } from '@ethersproject/providers';
 import {
   Builder,
   By,
@@ -221,6 +222,13 @@ export async function querySelector(driver: WebDriver, selector: string) {
   return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
+export async function querySelectorWithin(
+  parentElement: WebElement,
+  childSelector: string,
+): Promise<WebElement> {
+  return await parentElement.findElement(By.css(childSelector));
+}
+
 export async function findElementByText(driver: WebDriver, text: string) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const el = await driver.wait(
@@ -299,7 +307,7 @@ export async function isElementFoundByText({
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await driver.wait(
       until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
-      5000,
+      2500,
     );
     console.error(
       `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
@@ -615,15 +623,15 @@ export async function switchWallet(
 }
 
 export async function getOnchainBalance(addy: string, contract: string) {
-  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
-  const testContract = new ethers.Contract(contract, erc20ABI, provider);
+  const provider = getDefaultProvider('http://127.0.0.1:8545');
+  const testContract = new Contract(contract, erc20ABI, provider);
   const balance = await testContract.balanceOf(addy);
 
   return balance;
 }
 
 export async function transactionStatus() {
-  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
+  const provider = getDefaultProvider('http://127.0.0.1:8545');
   const blockData = await provider.getBlock('latest');
   const txn = await provider.getTransaction(blockData.transactions[0]);
   const txnData = txn.wait();

@@ -11,6 +11,7 @@ import * as Sentry from '@sentry/browser';
 import { Address } from 'wagmi';
 
 import { KeychainType } from '../types/keychainTypes';
+import { isLowerCaseMatch } from '../utils/strings';
 
 import {
   HardwareWalletKeychain,
@@ -296,14 +297,32 @@ class KeychainManager {
         throw new Error(`Duplicate account ${newAccounts[i]}`);
       }
     }
+    return;
+  }
 
+  async checkForImportedDuplicateInKeychain(keychain: Keychain) {
+    const existingAccounts = await this.getAccounts();
+    const newAccounts = await keychain.getAccounts();
+    for (let i = 0; i < newAccounts.length; i++) {
+      const matchingExistingAccount = existingAccounts.find((existingAccount) =>
+        isLowerCaseMatch(existingAccount, newAccounts[i]),
+      );
+      if (matchingExistingAccount) {
+        const existingAccountWallet = await this.getWallet(
+          matchingExistingAccount,
+        );
+        if (existingAccountWallet.type !== KeychainType.ReadOnlyKeychain) {
+          throw new Error(`Duplicate account ${newAccounts[i]}`);
+        }
+      }
+    }
     return;
   }
 
   async addNewKeychain(opts?: unknown): Promise<Keychain> {
     const keychain = new HdKeychain();
     await keychain.init(opts as SerializedHdKeychain);
-    await this.checkForDuplicateInKeychain(keychain);
+    await this.checkForImportedDuplicateInKeychain(keychain);
     this.state.keychains.push(keychain as Keychain);
     this.state.isUnlocked = true;
     await privates.get(this).persist();

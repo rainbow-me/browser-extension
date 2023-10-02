@@ -1,3 +1,4 @@
+import { FixedNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
@@ -104,21 +105,26 @@ const YouOrAddress = ({ address }: { address: Address }) => {
   );
   if (currentAccount === address.toLowerCase())
     return (
-      <>
-        {i18n.t('activity_details.you')}
-        <Text size="12pt" weight="semibold" color="labelQuaternary">
-          <Inline alignVertical="center">
-            (
-            <AddressOrEns
-              address={address}
-              size="12pt"
-              weight="semibold"
-              color="labelQuaternary"
-            />
-            )
-          </Inline>
+      <Inline alignVertical="center" wrap={false} space="2px">
+        <Text color="labelSecondary" size="12pt" weight="semibold">
+          {i18n.t('activity_details.you')}
         </Text>
-      </>
+
+        <Inline alignVertical="center" wrap={false}>
+          <Text size="12pt" weight="semibold" color="labelQuaternary">
+            (
+          </Text>
+          <AddressOrEns
+            address={address}
+            size="12pt"
+            weight="semibold"
+            color="labelQuaternary"
+          />
+          <Text size="12pt" weight="semibold" color="labelQuaternary">
+            )
+          </Text>
+        </Inline>
+      </Inline>
     );
 
   return (
@@ -133,7 +139,7 @@ const YouOrAddress = ({ address }: { address: Address }) => {
 
 const AddressDisplay = ({ address }: { address: Address }) => {
   return (
-    <Inline space="6px" alignVertical="center">
+    <Inline space="6px" alignVertical="center" wrap={false}>
       <WalletAvatar addressOrName={address} size={16} emojiSize="9pt" />
       <YouOrAddress address={address} />
       <AddressMoreOptions address={address} />
@@ -418,10 +424,12 @@ const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
 
   const amountIn = tokenIn?.balance.amount;
   const amountOut = tokenOut?.balance.amount;
-
   if (!amountIn || !amountOut) return;
 
-  const rate = +amountIn / +amountOut;
+  const fixedAmountIn = FixedNumber.fromString(amountIn);
+  const fixedAmountOut = FixedNumber.fromString(amountOut);
+
+  const rate = fixedAmountOut.divUnsafe(fixedAmountIn).toString();
   if (!rate) return;
 
   return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;

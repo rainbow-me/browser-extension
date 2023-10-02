@@ -6,12 +6,10 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { handleAssetAccentColor } from '~/core/utils/colors';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -25,7 +23,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
-import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { TextStyles } from '~/design-system/styles/core.css';
 
@@ -36,6 +34,7 @@ import {
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { SWAP_INPUT_MASK_ID } from '../../components/InputMask/SwapInputMask/SwapInputMask';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import {
   useSwapActions,
@@ -174,7 +173,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const { trackShortcut } = useKeyboardAnalytics();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
-  const { currentTheme } = useCurrentThemeStore();
   const [urlSearchParams] = useSearchParams();
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 
@@ -444,14 +442,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     },
   });
 
-  const assetToBuyAccentColor = useMemo(
-    () =>
-      handleAssetAccentColor(
-        currentTheme,
-        assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback,
-      ),
-    [assetToBuy?.colors?.fallback, assetToBuy?.colors?.primary, currentTheme],
-  );
+  const assetToBuyAccentColor =
+    assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback;
 
   return (
     <TranslationContext value={bridge ? 'bridge' : 'swap'}>
@@ -507,11 +499,10 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         <Rows alignVertical="justify">
           <Row height="content">
             <Stack space="8px">
-              <AccentColorProviderWrapper
-                color={handleAssetAccentColor(
-                  currentTheme,
-                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback,
-                )}
+              <AccentColorProvider
+                color={
+                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback
+                }
               >
                 <TokenToSellInput
                   dropdownHeight={toSellInputHeight}
@@ -544,7 +535,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   independentField={independentField}
                   setIndependentField={setIndependentField}
                 />
-              </AccentColorProviderWrapper>
+              </AccentColorProvider>
 
               <Box
                 marginTop="-18px"
@@ -552,38 +543,48 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                 style={{ zIndex: assetToSellDropdownClosed ? 3 : 1 }}
               >
                 <Inline alignHorizontal="center">
-                  <ButtonOverflow testId="swap-flip-button">
-                    <Box
-                      boxShadow="12px surfaceSecondaryElevated"
-                      background="surfaceSecondaryElevated"
-                      borderRadius="32px"
-                      borderWidth={'1px'}
-                      borderColor="buttonStroke"
-                      style={{ width: 42, height: 32, zIndex: 10 }}
-                      onClick={flipAssets}
-                    >
-                      <Box width="full" height="full" alignItems="center">
-                        <Inline
-                          height="full"
-                          alignHorizontal="center"
-                          alignVertical="center"
-                        >
-                          <Stack alignHorizontal="center">
-                            <Box marginBottom={isFirefox ? '-9px' : '-4px'}>
-                              <ChevronDown color="labelTertiary" />
-                            </Box>
-                            <Box marginTop="-4px">
-                              <ChevronDown color="labelQuaternary" />
-                            </Box>
-                          </Stack>
-                        </Inline>
+                  <CursorTooltip
+                    align="center"
+                    arrowAlignment="center"
+                    text={i18n.t('tooltip.flip_tokens')}
+                    textWeight="bold"
+                    textSize="12pt"
+                    textColor="labelSecondary"
+                    hint={shortcuts.swap.FLIP_ASSETS.display}
+                  >
+                    <ButtonOverflow testId="swap-flip-button">
+                      <Box
+                        boxShadow="12px surfaceSecondaryElevated"
+                        background="surfaceSecondaryElevated"
+                        borderRadius="32px"
+                        borderWidth={'1px'}
+                        borderColor="buttonStroke"
+                        style={{ width: 42, height: 32, zIndex: 10 }}
+                        onClick={flipAssets}
+                      >
+                        <Box width="full" height="full" alignItems="center">
+                          <Inline
+                            height="full"
+                            alignHorizontal="center"
+                            alignVertical="center"
+                          >
+                            <Stack alignHorizontal="center">
+                              <Box marginBottom={isFirefox ? '-9px' : '-4px'}>
+                                <ChevronDown color="labelTertiary" />
+                              </Box>
+                              <Box marginTop="-4px">
+                                <ChevronDown color="labelQuaternary" />
+                              </Box>
+                            </Stack>
+                          </Inline>
+                        </Box>
                       </Box>
-                    </Box>
-                  </ButtonOverflow>
+                    </ButtonOverflow>
+                  </CursorTooltip>
                 </Inline>
               </Box>
 
-              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
+              <AccentColorProvider color={assetToBuyAccentColor}>
                 <TokenToBuyInput
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
@@ -608,7 +609,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   assetToSellNativeDisplay={assetToSellNativeDisplay}
                   setIndependentField={setIndependentField}
                 />
-              </AccentColorProviderWrapper>
+              </AccentColorProvider>
 
               <SwapWarning
                 timeEstimate={timeEstimate}
@@ -618,7 +619,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
           </Row>
           <Row height="content">
             {!!assetToBuy && !!assetToSell ? (
-              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
+              <AccentColorProvider color={assetToBuyAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
                     <Row>
@@ -665,7 +666,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                     </Row>
                   </Rows>
                 </Box>
-              </AccentColorProviderWrapper>
+              </AccentColorProvider>
             ) : (
               <Box paddingHorizontal="8px">
                 <Button

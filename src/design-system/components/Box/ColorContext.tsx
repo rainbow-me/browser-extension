@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { handleAccentColor } from '~/core/utils/colors';
 
 import { accentColorHslVars, avatarColorHslVars } from '../../styles/core.css';
 import {
@@ -152,24 +153,24 @@ function createColorProvider(
   return ColorProvider;
 }
 
-export const AccentColorProvider = createColorProvider(
-  AccentColorContext,
-  'AccentColorProvider',
-  accentColorHslVars,
-);
-
 export const AvatarColorProvider = createColorProvider(
   AvatarColorContext,
   'AvatarColorProvider',
   avatarColorHslVars,
 );
 
-export const AccentColorProviderWrapper = ({
+const RawAccentColorProvider = createColorProvider(
+  AccentColorContext,
+  'AccentColorProvider',
+  accentColorHslVars,
+);
+
+export const AccentColorProvider = ({
   color,
   children,
 }: {
   color?: string;
-  children: ReactNode;
+  children: AccentColorContextProviderProps['children'];
 }) => {
   const { currentTheme } = useCurrentThemeStore();
   const defaultColor =
@@ -177,9 +178,11 @@ export const AccentColorProviderWrapper = ({
       ? foregroundColors.labelQuaternary.dark
       : foregroundColors.labelQuaternary.light;
   return (
-    <AccentColorProvider color={color ?? defaultColor}>
+    <RawAccentColorProvider
+      color={handleAccentColor(currentTheme, color || defaultColor)}
+    >
       {children}
-    </AccentColorProvider>
+    </RawAccentColorProvider>
   );
 };
 
