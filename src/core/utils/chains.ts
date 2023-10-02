@@ -117,5 +117,5 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 }
 
 export function isSupportedChainId(chainId: number) {
-  return getSupportedChainIds().includes(chainId);
+  return SUPPORTED_CHAINS.map((chain) => chain.id).includes(chainId);
 }
