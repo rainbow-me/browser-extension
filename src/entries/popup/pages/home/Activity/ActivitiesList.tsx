@@ -158,7 +158,6 @@ const ActivityDescription = ({
 function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   const navigate = useRainbowNavigate();
 
-  console.log('-- transaction', transaction);
   return (
     <Lens
       borderRadius="12px"
