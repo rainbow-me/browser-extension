@@ -7,6 +7,8 @@ import { RainbowError, logger } from '~/logger';
 import { ProviderRequestPayload } from '../transports/providerRequestTransport';
 import { RPCMethod } from '../types/rpcMethods';
 
+import { sanitizeTypedData } from './ethereum';
+
 export const isSignTypedData = (method: RPCMethod) =>
   method.indexOf('signTypedData') !== -1;
 
@@ -60,9 +62,12 @@ export const getSigningRequestDisplayDetails = (
               msgData = JSON.parse(data) as Bytes;
               // eslint-disable-next-line no-empty
             } catch (e) {}
+
+            const sanitizedMessageData = sanitizeTypedData(msgData);
+
             return {
-              message: JSON.stringify(msgData, null, 2),
-              msgData,
+              message: JSON.stringify(sanitizedMessageData, null, 2),
+              msgData: sanitizedMessageData,
               address: getAddress(address),
               typedData: true,
             };
