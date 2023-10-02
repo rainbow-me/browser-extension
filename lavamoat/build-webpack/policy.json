@@ -199,7 +199,17 @@
       },
       "packages": {
         "@vanilla-extract/webpack-plugin>chalk>ansi-styles": true,
-        "@vanilla-extract/webpack-plugin>chalk>supports-color": true
+        "@vanilla-extract/webpack-plugin>chalk>supports-color": true,
+        "supports-color": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>chalk>supports-color": {
+      "builtin": {
+        "os": true,
+        "tty": true
+      },
+      "packages": {
+        "msw>chalk>supports-color>has-flag": true
       }
     },
     "@vanilla-extract/webpack-plugin>loader-utils": {
