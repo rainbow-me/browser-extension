@@ -1,20 +1,10 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import {
-  arbitrumGoerli,
-  baseGoerli,
-  bscTestnet,
-  optimismGoerli,
-  polygonMumbai,
-  zoraTestnet,
-} from '@wagmi/chains';
-import {
   Chain,
   CreateClientConfig,
   configureChains,
   createClient,
   createStorage,
-  goerli,
-  sepolia,
 } from 'wagmi';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
@@ -54,21 +44,21 @@ const { chains, provider, webSocketProvider } = configureChains(
           case ChainId.bsc:
             return { http: process.env.BSC_MAINNET_RPC as string };
           case ChainId.goerli:
-            return { http: goerli.rpcUrls.alchemy.http[0] };
+            return { http: process.env.ETH_GOERLI_RPC as string };
           case ChainId.sepolia:
-            return { http: sepolia.rpcUrls.alchemy.http[0] };
+            return { http: process.env.ETH_SEPOLIA_RPC as string };
           case ChainId.optimismGoerli:
-            return { http: optimismGoerli.rpcUrls.default.http[0] };
+            return { http: process.env.OPTIMISM_GOERLI_RPC as string };
           case ChainId.bscTestnet:
-            return { http: bscTestnet.rpcUrls.default.http[0] };
+            return { http: process.env.BSC_TESTNET_RPC as string };
           case ChainId.polygonMumbai:
-            return { http: polygonMumbai.rpcUrls.default.http[0] };
+            return { http: process.env.POLYGON_MUMBAI_RPC as string };
           case ChainId.arbitrumGoerli:
-            return { http: arbitrumGoerli.rpcUrls.default.http[0] };
+            return { http: process.env.ARBITRUM_GOERLI_RPC as string };
           case ChainId.baseGoerli:
-            return { http: baseGoerli.rpcUrls.default.http[0] };
+            return { http: process.env.BASE_GOERLI_RPC as string };
           case ChainId.zoraTestnet:
-            return { http: zoraTestnet.rpcUrls.default.http[0] };
+            return { http: process.env.ZORA_GOERLI as string };
           default:
             return null;
         }

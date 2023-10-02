@@ -29,7 +29,6 @@ export const useApproveAppRequestValidations = ({
     );
   }, [nativeAsset?.balance?.amount, selectedGas?.gasFee?.amount]);
 
-  console.log('--- chain', getChain({ chainId: chainIdToUse }));
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
