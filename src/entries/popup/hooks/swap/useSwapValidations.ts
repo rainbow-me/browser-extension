@@ -4,7 +4,7 @@ import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
-import { getNativeAssetSymbolForChain } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import {
   add,
@@ -78,7 +78,8 @@ export const useSwapValidations = ({
       });
     if (!enoughNativeAssetBalanceForGas)
       return i18n.t('send.button_label.insufficient_native_asset_for_gas', {
-        symbol: getNativeAssetSymbolForChain(assetToSell?.chainId),
+        symbol: getChain({ chainId: assetToSell?.chainId || ChainId.mainnet })
+          .nativeCurrency.symbol,
       });
     return '';
   }, [

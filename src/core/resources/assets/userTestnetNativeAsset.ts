@@ -9,12 +9,39 @@ import {
   createQueryKey,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
-import { ETH_MAINNET_ASSET } from '~/test/utils';
+import { getChain } from '~/core/utils/chains';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
-export const USER_ASSETS_STALE_INTERVAL = 30000;
+
+const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
+  const chain = getChain({ chainId });
+  const nativeAssetMock = {
+    address: 'eth',
+    balance: { amount: '', display: '' },
+    chainId: chainId,
+    chainName: ChainNameDisplay[chainId] as ChainName,
+    colors: { primary: '#808088', fallback: '#E8EAF5' },
+    decimals: chain.nativeCurrency.decimals,
+    icon_url: '',
+    isNativeAsset: true,
+    mainnetAddress: undefined,
+    name: chain.nativeCurrency.name,
+    native: {
+      balance: { amount: '', display: '' },
+      price: { change: '', amount: 0, display: '' },
+    },
+    price: {
+      value: 0,
+      relative_change_24h: 0,
+    },
+    symbol: chain.nativeCurrency.symbol,
+    uniqueId: `native_asset_${chain.id}`,
+  } satisfies ParsedUserAsset;
+  return nativeAssetMock;
+};
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -51,18 +78,14 @@ async function userTestnetNativeAssetQueryFunction({
 }: QueryFunctionArgs<typeof userTestnetNativeAssetQueryKey>) {
   try {
     const provider = getProvider({ chainId });
-    const nativeAsset = {
-      ...ETH_MAINNET_ASSET,
-      chainId,
-      chainName: ChainNameDisplay[chainId] as ChainName,
-    };
-    const _parsedAsset = await fetchAssetBalanceViaProvider({
+    const nativeAsset = getNativeAssetMock({ chainId });
+    const parsedAsset = await fetchAssetBalanceViaProvider({
       parsedAsset: nativeAsset,
       currentAddress: address,
       currency,
       provider,
     });
-    return _parsedAsset;
+    return parsedAsset;
   } catch (e) {
     return null;
   }

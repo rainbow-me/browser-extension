@@ -4,7 +4,7 @@ import { i18n } from '~/core/languages';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
-import { getNativeAssetSymbolForChain } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import { lessThan } from '~/core/utils/numbers';
 
@@ -29,10 +29,11 @@ export const useApproveAppRequestValidations = ({
     );
   }, [nativeAsset?.balance?.amount, selectedGas?.gasFee?.amount]);
 
+  console.log('--- chain', getChain({ chainId: chainIdToUse }));
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
-        symbol: getNativeAssetSymbolForChain(chainIdToUse),
+        symbol: getChain({ chainId: chainIdToUse }).nativeCurrency.name,
       });
     return i18n.t('approve_request.send_transaction');
   }, [chainIdToUse, enoughNativeAssetForGas]);

@@ -240,30 +240,24 @@ export async function parseUserAssets({
     const provider = getProvider({ chainId: ChainId.hardhat });
     // force checking for ETH if connected to hardhat
     const mainnetAssets = parsedAssetsDict[ChainId.mainnet];
-    mainnetAssets[ETH_MAINNET_ASSET.uniqueId] = {
-      ...ETH_MAINNET_ASSET,
-    };
+    mainnetAssets[ETH_MAINNET_ASSET.uniqueId] = ETH_MAINNET_ASSET;
     if (process.env.IS_TESTING === 'true') {
-      mainnetAssets[USDC_MAINNET_ASSET.uniqueId] = {
-        ...USDC_MAINNET_ASSET,
-      };
-      mainnetAssets[DAI_MAINNET_ASSET.uniqueId] = {
-        ...DAI_MAINNET_ASSET,
-      };
+      mainnetAssets[USDC_MAINNET_ASSET.uniqueId] = USDC_MAINNET_ASSET;
+      mainnetAssets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
     }
     const mainnetBalanceRequests = Object.values(mainnetAssets).map(
-      async (parsedAsset) => {
-        if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
+      async (asset) => {
+        if (asset.chainId !== ChainId.mainnet) return asset;
         try {
-          const _parsedAsset = await fetchAssetBalanceViaProvider({
-            parsedAsset,
+          const parsedAsset = await fetchAssetBalanceViaProvider({
+            parsedAsset: asset,
             currentAddress: address,
             currency,
             provider,
           });
-          return _parsedAsset;
-        } catch (e) {
           return parsedAsset;
+        } catch (e) {
+          return asset;
         }
       },
     );

@@ -50,6 +50,7 @@ export const SendTransactionActions = ({
       }
     },
   });
+  console.log('--- buttonLabel', buttonLabel);
   return (
     <Inset vertical="20px" horizontal="20px">
       <Stack space="24px">

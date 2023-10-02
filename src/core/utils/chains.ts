@@ -100,13 +100,10 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
   return 'etherscan.io';
 }
 
-export function getNativeAssetSymbolForChain(chainId?: ChainId) {
+export function getChain({ chainId }: { chainId?: ChainId }) {
   const { chains } = getNetwork();
   const chain = chains.find((chain) => chain.id === chainId);
-  if (chain) {
-    return chain.nativeCurrency.symbol;
-  }
-  return mainnet.nativeCurrency.symbol;
+  return chain || mainnet;
 }
 
 export function isSupportedChainId(chainId: number) {

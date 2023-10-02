@@ -7,7 +7,7 @@ import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
-import { getNativeAssetSymbolForChain } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import {
   add,
@@ -126,7 +126,8 @@ export const useSendValidations = ({
       });
     if (!enoughNativeAssetForGas)
       return i18n.t('send.button_label.insufficient_native_asset_for_gas', {
-        symbol: getNativeAssetSymbolForChain(asset?.chainId || ChainId.mainnet),
+        symbol: getChain({ chainId: asset?.chainId || ChainId.mainnet })
+          .nativeCurrency.symbol,
       });
     return i18n.t('send.button_label.review');
   }, [
