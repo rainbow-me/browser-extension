@@ -23,7 +23,7 @@ export const BottomSheet = ({
 }: BottomSheetProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // capture focus on mount so that keystroke events are handled
+  // capture focus on mount so that keyboard events are handled
   useEffect(() => {
     containerRef.current?.focus();
   }, []);
