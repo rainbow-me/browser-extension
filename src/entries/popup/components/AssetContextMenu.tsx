@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { ReactNode } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedAsset } from '~/core/types/assets';
@@ -19,8 +19,11 @@ import {
 export const AssetContextMenu = ({
   children,
   asset,
-}: PropsWithChildren<{ asset?: ParsedAsset | null }>) => {
-  if (!asset) return children;
+}: {
+  children: ReactNode;
+  asset?: ParsedAsset | null;
+}) => {
+  if (!asset) return <>{children}</>;
 
   const explorer = getTokenBlockExplorer(asset);
 

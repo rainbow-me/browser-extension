@@ -5,7 +5,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as fs from 'node:fs';
 
-import { ethers } from 'ethers';
+import { Contract } from '@ethersproject/contracts';
+import { getDefaultProvider } from '@ethersproject/providers';
 import {
   Builder,
   By,
@@ -221,6 +222,13 @@ export async function querySelector(driver: WebDriver, selector: string) {
   return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
+export async function querySelectorWithin(
+  parentElement: WebElement,
+  childSelector: string,
+): Promise<WebElement> {
+  return await parentElement.findElement(By.css(childSelector));
+}
+
 export async function findElementByText(driver: WebDriver, text: string) {
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   const el = await driver.wait(
@@ -299,7 +307,7 @@ export async function isElementFoundByText({
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await driver.wait(
       until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
-      5000,
+      2500,
     );
     console.error(
       `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
@@ -478,8 +486,48 @@ export async function performShortcutWithSpecialKey(
   }
 }
 
-// this helper simplifies test writing by using the length of the key to
-// determine which function to use and then repeat depending on count
+export async function getFocusedElementDataTestIds(
+  driver: WebDriver,
+): Promise<string> {
+  const script = `
+    function getDataTestIdOfElementAndChildren(element) {
+      let dataTestIds = '';
+      const dataTestId = element.getAttribute('data-testid');
+      if (dataTestId) {
+        dataTestIds += dataTestId;
+      }
+      for (const child of element.children) {
+        dataTestIds = dataTestIds.concat(getDataTestIdOfElementAndChildren(child));
+      }
+      return dataTestIds;
+    }
+    const activeElement = document.activeElement;
+    return getDataTestIdOfElementAndChildren(activeElement);
+  `;
+
+  return driver.executeScript(script);
+}
+
+export async function navigateToElementWithTestId({
+  driver,
+  testId,
+}: {
+  driver: WebDriver;
+  testId: string;
+}): Promise<void> {
+  try {
+    await executePerformShortcut({ driver, key: 'TAB' });
+    const testIds = await getFocusedElementDataTestIds(driver);
+    if (testIds === testId) {
+      await executePerformShortcut({ driver, key: 'ENTER' });
+    } else {
+      await navigateToElementWithTestId({ driver, testId });
+    }
+  } catch (error) {
+    console.error(`Error occurred while executing shortcut:`, error);
+    throw error;
+  }
+}
 
 export async function executePerformShortcut({
   driver,
@@ -615,15 +663,15 @@ export async function switchWallet(
 }
 
 export async function getOnchainBalance(addy: string, contract: string) {
-  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
-  const testContract = new ethers.Contract(contract, erc20ABI, provider);
+  const provider = getDefaultProvider('http://127.0.0.1:8545');
+  const testContract = new Contract(contract, erc20ABI, provider);
   const balance = await testContract.balanceOf(addy);
 
   return balance;
 }
 
 export async function transactionStatus() {
-  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
+  const provider = getDefaultProvider('http://127.0.0.1:8545');
   const blockData = await provider.getBlock('latest');
   const txn = await provider.getTransaction(blockData.transactions[0]);
   const txnData = txn.wait();
@@ -698,6 +746,102 @@ export async function importHardwareWalletFlow(
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
   await delayTime('long');
   await findElementByText(driver, 'Rainbow is ready to use');
+}
+
+export async function importWalletFlowUsingKeyboardNavigation(
+  driver: WebDriver,
+  rootURL: string,
+  walletSecret: string,
+  secondaryWallet = false as boolean,
+) {
+  if (secondaryWallet) {
+    await goToPopup(driver, rootURL);
+    await executePerformShortcut({ driver, key: 'w' });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 3,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  } else {
+    await goToPopup(driver, rootURL);
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+  }
+
+  // ok
+  const isPrivateKey =
+    walletSecret.substring(0, 2) === '0x' && walletSecret.length === 66;
+
+  await executePerformShortcut({
+    driver,
+    key: 'ARROW_DOWN',
+    timesToPress: isPrivateKey ? 3 : 2,
+  });
+  await executePerformShortcut({ driver, key: 'ENTER' });
+  // ok
+  isPrivateKey
+    ? await fillPrivateKey(driver, walletSecret)
+    : await fillSeedPhrase(driver, walletSecret);
+
+  await executePerformShortcut({
+    driver,
+    key: 'ARROW_DOWN',
+  });
+  await executePerformShortcut({ driver, key: 'ENTER' });
+  if (!isPrivateKey) {
+    await delayTime('very-long');
+    await findElementByTestId({ id: 'add-wallets-button-section', driver });
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await checkExtensionURL(driver, '/create-password');
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  }
+  // ok
+  if (secondaryWallet) {
+    await delayTime('medium');
+    const accountHeader = await findElementById({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    expect(accountHeader).toBeTruthy();
+  } else {
+    await checkExtensionURL(driver, '/create-password');
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+
+    await driver.actions().sendKeys(testPassword).perform();
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+    });
+    await driver.actions().sendKeys(testPassword).perform();
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+    });
+    await executePerformShortcut({ driver, key: 'ENTER' });
+    await delayTime('long');
+    const welcomeText = await findElementByText(
+      driver,
+      'Rainbow is ready to use',
+    );
+    expect(welcomeText).toBeTruthy();
+  }
 }
 
 export async function importWalletFlow(

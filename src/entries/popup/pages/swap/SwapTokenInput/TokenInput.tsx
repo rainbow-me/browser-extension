@@ -33,8 +33,6 @@ const SwapInputMaskWrapper = ({
       textWeight="semibold"
       textSize="12pt"
       textColor="labelSecondary"
-      marginLeft="20px"
-      marginTop="20px"
     >
       {children}
     </CursorTooltip>

@@ -26,6 +26,7 @@ import {
   EthereumWalletSeed,
   identifyWalletType,
   normalizeTransactionResponsePayload,
+  sanitizeTypedData,
 } from '../utils/ethereum';
 import { addHexPrefix } from '../utils/hex';
 
@@ -305,15 +306,18 @@ export const signTypedData = async ({
   // v4 => same as v3 but also supports which supports arrays and recursive structs.
   // Because v4 is backwards compatible with v3, we're supporting only v4
 
+  let sanitizedData = parsedData;
+
   let version = 'v1';
   if (
     typeof parsedData === 'object' &&
     (parsedData.types || parsedData.primaryType || parsedData.domain)
   ) {
     version = 'v4';
+    sanitizedData = sanitizeTypedData(parsedData);
   }
   return signTypedDataSigUtil({
-    data: parsedData as unknown as TypedMessage<TypedDataTypes>,
+    data: sanitizedData as unknown as TypedMessage<TypedDataTypes>,
     privateKey: pkeyBuffer,
     version: version.toUpperCase() as SignTypedDataVersion,
   });

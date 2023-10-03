@@ -5,6 +5,7 @@ import { useAccount } from 'wagmi';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
@@ -16,8 +17,8 @@ import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
-import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { WalletContextMenu } from '../../components/WalletContextMenu';
 import { useAvatar } from '../../hooks/useAvatar';
@@ -141,10 +142,10 @@ export function AvatarSection() {
 function ActionButtonsSection() {
   const { address } = useAccount();
   const { data: avatar } = useAvatar({ addressOrName: address });
-  const navigate = useRainbowNavigate();
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
+  const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
 
   const handleCopy = React.useCallback(() => {
@@ -208,13 +209,15 @@ function ActionButtonsSection() {
   return (
     <Box style={{ height: 54 }}>
       {avatar?.color && (
-        <Inline space="8px">
+        <Inline space="12px">
           <ActionButton
             symbol="creditcard.fill"
             testId="header-link-buy"
             text={i18n.t('wallet_header.buy')}
             tabIndex={tabIndexes.WALLET_HEADER_BUY_BUTTON}
             onClick={() => navigate(ROUTES.BUY)}
+            tooltipHint={shortcuts.home.BUY.display}
+            tooltipText={i18n.t('tooltip.buy_crypto')}
           />
 
           <ActionButton
@@ -223,37 +226,45 @@ function ActionButtonsSection() {
             onClick={handleCopy}
             testId="header-link-copy"
             tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
+            tooltipHint={shortcuts.home.COPY_ADDRESS.display}
+            tooltipText={i18n.t('tooltip.copy_address')}
           />
 
           <ActionButton
             symbol="arrow.triangle.swap"
-            testId="header-link-swap"
             text={i18n.t('wallet_header.swap')}
             tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
-            onClick={
-              allowSwap
-                ? () => navigateToSwaps()
-                : isWatchingWallet
-                ? alertWatchingWallet
-                : alertComingSoon
-            }
+            testId={'header-link-swap'}
+            onClick={() => {
+              if (!allowSwap) {
+                if (isWatchingWallet) {
+                  alertWatchingWallet();
+                } else {
+                  alertComingSoon();
+                }
+              } else {
+                navigateToSwaps();
+              }
+            }}
+            tooltipHint={shortcuts.home.GO_TO_SWAP.display}
+            tooltipText={i18n.t('tooltip.swap')}
           />
 
-          <Link
-            tabIndex={-1}
-            id="header-link-send"
-            to={shouldNavigateToSend ? ROUTES.SEND : '#'}
-            state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
-            onClick={
-              allowSend ? () => handleSendFallback() : alertWatchingWallet
-            }
-          >
-            <ActionButton
-              symbol="paperplane.fill"
-              text={i18n.t('wallet_header.send')}
-              tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
-            />
-          </Link>
+          <ActionButton
+            symbol="paperplane.fill"
+            text={i18n.t('wallet_header.send')}
+            tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
+            tooltipHint={shortcuts.home.GO_TO_SEND.display}
+            tooltipText={i18n.t('tooltip.send')}
+            testId={'header-link-send'}
+            onClick={() => {
+              if (shouldNavigateToSend) {
+                navigate(ROUTES.SEND);
+              } else {
+                handleSendFallback();
+              }
+            }}
+          />
         </Inline>
       )}
     </Box>
@@ -267,6 +278,8 @@ function ActionButton({
   onClick,
   testId,
   tabIndex,
+  tooltipHint,
+  tooltipText,
 }: {
   cursor?: BoxStyles['cursor'];
   symbol: SymbolProps['symbol'];
@@ -274,14 +287,20 @@ function ActionButton({
   onClick?: () => void;
   testId?: string;
   tabIndex?: number;
+  tooltipHint: string;
+  tooltipText: string;
 }) {
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      style={{ width: 44, wordBreak: 'break-all' }}
-    >
-      <Stack alignHorizontal="center" space="10px">
+    <Stack alignHorizontal="center" space="10px">
+      <CursorTooltip
+        align="center"
+        arrowAlignment="center"
+        text={tooltipText}
+        textWeight="bold"
+        textSize="12pt"
+        textColor="labelSecondary"
+        hint={tooltipHint}
+      >
         <ButtonSymbol
           color="accent"
           cursor={cursor}
@@ -292,16 +311,15 @@ function ActionButton({
           onClick={onClick}
           tabIndex={tabIndex}
         />
-        <Text
-          align="center"
-          color="labelSecondary"
-          cursor={cursor as TextStyles['cursor']}
-          size="12pt"
-          weight="semibold"
-        >
-          {text}
-        </Text>
-      </Stack>
-    </Box>
+      </CursorTooltip>
+      <Text
+        color="labelSecondary"
+        cursor={cursor as TextStyles['cursor']}
+        size="12pt"
+        weight="semibold"
+      >
+        {text}
+      </Text>
+    </Stack>
   );
 }

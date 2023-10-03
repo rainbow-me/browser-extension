@@ -9,6 +9,7 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 interface BottomSheetProps {
   background?: BackgroundColor;
   children: ReactNode;
+  isModal?: boolean;
   show: boolean;
   zIndex?: number;
   onClickOutside?: VoidFunction;
@@ -16,8 +17,9 @@ interface BottomSheetProps {
 
 export const BottomSheet = ({
   background,
-  show,
   children,
+  isModal = true,
+  show,
   zIndex,
   onClickOutside,
 }: BottomSheetProps) => {
@@ -59,7 +61,7 @@ export const BottomSheet = ({
             key="bottom"
             transition={{ duration: 0.3 }}
             layout
-            isModal
+            isModal={isModal}
           >
             <Box
               background="surfacePrimaryElevated"

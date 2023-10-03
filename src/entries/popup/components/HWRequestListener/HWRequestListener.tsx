@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Bytes } from '@ethersproject/bytes';
 import { TransactionRequest } from '@ethersproject/providers';
-import { Bytes } from 'ethers';
 import { useEffect } from 'react';
 import { Address } from 'wagmi';
 

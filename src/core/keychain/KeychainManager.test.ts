@@ -1,15 +1,23 @@
 import { isAddress } from '@ethersproject/address';
 import { isBytesLike } from '@ethersproject/bytes';
 import { Wallet } from '@ethersproject/wallet';
-import { expect, test } from 'vitest';
+import { beforeAll, expect, test } from 'vitest';
+
+import { delay } from '~/test/utils';
 
 import { KeychainType } from '../types/keychainTypes';
+import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
 import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
 
 let privateKey = '';
 let password = '';
+
+beforeAll(async () => {
+  createTestWagmiClient();
+  await delay(3000);
+});
 
 test('[keychain/KeychainManager] :: should be able to create an HD wallet', async () => {
   await keychainManager.addNewKeychain();
@@ -107,7 +115,7 @@ test('[keychain/KeychainManager] :: should be able to import a wallet using a se
 test('[keychain/KeychainManager] :: should be able to get the signer of a specific address', async () => {
   const accounts = await keychainManager.getAccounts();
   const signer = (await keychainManager.getSigner(accounts[0])) as Wallet;
-  expect(signer).toBeInstanceOf(Wallet);
+  expect(signer._isSigner).toBe(true);
   expect(signer.address).toBe(accounts[0]);
   expect(signer.sendTransaction).toBeDefined();
 });

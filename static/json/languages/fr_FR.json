@@ -66,6 +66,7 @@
   "settings": {
     "title": "Paramètres",
     "use_rainbow_as_default_wallet": "Utiliser Rainbow comme portefeuille par défaut",
+    "sounds": "Sons",
     "default_wallet_description": "Autoriser les applications à privilégier Rainbow lorsqu'elles recherchent une extension à laquelle se connecter.",
     "contacts": "Contacts",
     "guides_and_support": "Guides et assistance",
@@ -178,7 +179,6 @@
       "KRW": "Won sud-coréen",
       "JPY": "Yen japonais",
       "RUB": "Rouble russe",
-      "IDR": "Roupie indonésienne",
       "INR": "Roupie indienne",
       "TRY": "Livre turque",
       "CAD": "Dollar canadien",
@@ -191,7 +191,8 @@
     "feature_flags": {
       "full_watching_wallets": "Accès complet aux portefeuilles surveillés",
       "hw_wallets_enabled": "Activer la prise en charge des portefeuilles matériels",
-      "command_k_internal_shortcuts_enabled": "Activer les raccourcis internes ⌘K"
+      "command_k_internal_shortcuts_enabled": "Activer les raccourcis internes ⌘K",
+      "new_tab_bar_enabled": "Nouvelle Barre d'Onglets"
     }
   },
   "transactions": {
@@ -425,7 +426,7 @@
       }
     },
     "quick_promo": {
-      "text": "Appuyez sur ⌘K pour ouvrir le menu des commandes",
+      "text": "Appuyez sur %{modifierSymbol}K pour ouvrir le Menu Magique",
       "text_bold": "Astuce :"
     },
     "toolbar": {
@@ -826,9 +827,8 @@
   },
   "app_connection_switcher": {
     "banner": {
-      "connect": "Connexion",
-      "connect_to": "Se connecter à %{appName}?",
-      "app_connected": "%{appName} connecté"
+      "connect_to": "Connecter à %{appName}",
+      "app_connected": "%{appName} Connecté"
     },
     "sheet": {
       "connect": "Connexion",
@@ -975,12 +975,17 @@
     "excellent": "Excellent",
     "8_chars_min": "8 caractères minimum",
     "try_another_password_weak": "Il s'agit d'un mot de passe faible qui est facile à cracker. Essayez un mot de passe plus fort.",
-    "try_another_password_common": "Il s'agit d'un mot de passe courant qui est facile à cracker. Essayez un mot de passe plus fort.",
+    "try_another_password_common": "Rendez votre mot de passe encore plus fort en mélangeant des lettres majuscules et minuscules, des chiffres et des symboles",
     "too_short": "Le mot de passe doit comporter au moins 8 caractères"
   },
   "create_password": {
     "title": "Créez votre mot de passe",
     "description": "Choisissez un mot de passe pour sécuriser et verrouiller votre portefeuille."
+  },
+  "tabs": {
+    "activity": "Activité",
+    "tokens": "Tokens",
+    "nfts": "NFTs"
   },
   "activity": {
     "today": "Aujourd'hui",
@@ -1023,11 +1028,20 @@
   },
   "tokens_tab": {
     "coinbase_title": "Dépôt depuis Coinbase",
-    "coinbase_description": "Acheter ou transférer depuis Coinbase",
+    "coinbase_description": "Transférez gratuitement votre crypto de Coinbase",
+    "buy_title": "Achetez de la crypto pour alimenter votre portefeuille",
+    "buy_description_1": "Appuyer",
+    "buy_description_2": "pour voir les options de paiement supportées",
     "send_from_wallet": "Envoyer depuis un autre portefeuille",
     "send_description_1": "Appuyer",
-    "send_description_2": "pour copier votre adresse",
+    "send_description_2": "pour copier votre adresse ou",
+    "send_description_3": "pour le code QR",
     "unknown_token": "Token inconnu"
+  },
+  "nfts": {
+    "coming_soon_header": "Bientôt Disponible",
+    "coming_soon_description": "Les NFTs arrivent bientôt. Restez à l'écoute!",
+    "view_on_web": "Voir sur le Web"
   },
   "speed_up_and_cancel": {
     "speed_up": "Accélérer",
@@ -1107,6 +1121,7 @@
     "pin_rainbow_to_your_toolbar": "Épingler Rainbow dans votre barre d'outils"
   },
   "wallet_header": {
+    "buy": "Acheter",
     "copy": "Copier",
     "swap": "Échanger",
     "send": "Envoyer",
@@ -1240,7 +1255,7 @@
     "done": "Terminé",
     "add_wallet": "Ajouter un portefeuille",
     "add_by_index_title": "Ajouter un portefeuille par son indice",
-    "add_by_index_description": "Entrez le chemin de dérivation pour le portefeuille que vous souhaitez importer de votre Ledger.",
+    "add_by_index_description": "Sélectionnez le chemin de dérivation et entrez l'indice du portefeuille que vous souhaitez ajouter.",
     "waiting_for_trezor_connect": "En attente de la connexion à Trezor",
     "continue_on_trezor_connect": "Veuillez suivre les instructions sur la fenêtre de connexion à Trezor",
     "trezor_success": "Succès !",
@@ -1267,5 +1282,41 @@
   "approvals": {
     "unlimited": "Illimité",
     "no_allowance": "Pas d'Allocation"
+  },
+  "buy": {
+    "title": "Acheter",
+    "fees_title": "Frais",
+    "instant_title": "Instantané",
+    "instant_yes": "Oui",
+    "method_title": "Méthode",
+    "methods_title": "Méthodes",
+    "network_title": "Réseau",
+    "networks_title": "Réseaux",
+    "payment_methods": {
+      "apple_pay": "Apple Pay",
+      "bank": "Banque",
+      "card": "Carte",
+      "google_pay": "Google Pay"
+    }
+  },
+  "tooltip": {
+    "switch_network": "Changer de réseaux",
+    "copy_address": "Copier l'adresse du portefeuille",
+    "swap": "Échanger vos jetons",
+    "send": "Envoyer des jetons",
+    "more": "Plus d'articles",
+    "view_tokens": "Voir les jetons",
+    "view_activity": "Voir l'activité",
+    "balance": "Solde total",
+    "switch_wallet": "Changer de portefeuilles",
+    "save_to_contacts": "Enregistrer dans les contacts",
+    "clear_address": "Effacer l'adresse",
+    "clear_token": "Effacer le jeton",
+    "gwei_settings": "Réglages de Gwei",
+    "flip_tokens": "Inverser positions des jetons",
+    "favorite": "Ajouter aux favoris",
+    "unfavorite": "Retirer des favoris",
+    "estimated_difference": "Différence estimée de valeur",
+    "buy_crypto": "Acheter et transférer des cryptos"
   }
 }

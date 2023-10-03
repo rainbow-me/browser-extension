@@ -2,6 +2,7 @@ import { ReactNode, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -70,12 +71,20 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {allowSwap && (
-          <ContextMenuItem symbolLeft="arrow.triangle.swap" onSelect={onSwap}>
+          <ContextMenuItem
+            symbolLeft="arrow.triangle.swap"
+            onSelect={onSwap}
+            shortcut={shortcuts.home.GO_TO_SWAP.display}
+          >
             {`${i18n.t('token_details.swap')} ${token.symbol}`}
           </ContextMenuItem>
         )}
         {!isWatchingWallet && (
-          <ContextMenuItem symbolLeft="paperplane.fill" onSelect={onSend}>
+          <ContextMenuItem
+            symbolLeft="paperplane.fill"
+            onSelect={onSend}
+            shortcut={shortcuts.home.GO_TO_SEND.display}
+          >
             {`${i18n.t('token_details.send')} ${token.symbol}`}
           </ContextMenuItem>
         )}
@@ -91,6 +100,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
           <ContextMenuItem
             symbolLeft="doc.on.doc.fill"
             onSelect={() => copyAddress(token.address)}
+            shortcut={shortcuts.home.COPY_ADDRESS.display}
           >
             <Text size="14pt" weight="semibold">
               {i18n.t('token_details.more_options.copy_address')}

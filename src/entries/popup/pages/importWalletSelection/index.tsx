@@ -8,7 +8,7 @@ export function ImportWalletSelection() {
   return (
     <>
       <ImportWalletNavbar showSortMenu={false} navbarIcon="arrow" />
-      <FullScreenContainer>
+      <FullScreenContainer background="surfaceSecondary">
         <ImportWalletSelectionStep onboarding />
       </FullScreenContainer>
     </>

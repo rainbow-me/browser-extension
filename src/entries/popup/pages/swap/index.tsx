@@ -25,6 +25,7 @@ import {
 } from '~/design-system';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
@@ -34,6 +35,7 @@ import {
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { SWAP_INPUT_MASK_ID } from '../../components/InputMask/SwapInputMask/SwapInputMask';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import {
   useSwapActions,
@@ -452,6 +454,7 @@ export function Swap() {
             symbolColor="labelSecondary"
             variant="flat"
             testId="swap-settings-navbar-button"
+            tabIndex={0}
           />
         }
       />
@@ -535,34 +538,44 @@ export function Swap() {
                 style={{ zIndex: assetToSellDropdownClosed ? 3 : 1 }}
               >
                 <Inline alignHorizontal="center">
-                  <ButtonOverflow testId="swap-flip-button">
-                    <Box
-                      boxShadow="12px surfaceSecondaryElevated"
-                      background="surfaceSecondaryElevated"
-                      borderRadius="32px"
-                      borderWidth={'1px'}
-                      borderColor="buttonStroke"
-                      style={{ width: 42, height: 32, zIndex: 10 }}
-                      onClick={flipAssets}
-                    >
-                      <Box width="full" height="full" alignItems="center">
-                        <Inline
-                          height="full"
-                          alignHorizontal="center"
-                          alignVertical="center"
-                        >
-                          <Stack alignHorizontal="center">
-                            <Box marginBottom={isFirefox ? '-9px' : '-4px'}>
-                              <ChevronDown color="labelTertiary" />
-                            </Box>
-                            <Box marginTop="-4px">
-                              <ChevronDown color="labelQuaternary" />
-                            </Box>
-                          </Stack>
-                        </Inline>
-                      </Box>
-                    </Box>
-                  </ButtonOverflow>
+                  <CursorTooltip
+                    align="center"
+                    arrowAlignment="center"
+                    text={i18n.t('tooltip.flip_tokens')}
+                    textWeight="bold"
+                    textSize="12pt"
+                    textColor="labelSecondary"
+                    hint={shortcuts.swap.FLIP_ASSETS.display}
+                  >
+                    <ButtonOverflow testId="swap-flip-button">
+                      <Lens
+                        boxShadow="12px surfaceSecondaryElevated"
+                        background="surfaceSecondaryElevated"
+                        borderRadius="32px"
+                        borderWidth={'1px'}
+                        borderColor="buttonStroke"
+                        style={{ width: 42, height: 32, zIndex: 10 }}
+                        onClick={flipAssets}
+                      >
+                        <Box width="full" height="full" alignItems="center">
+                          <Inline
+                            height="full"
+                            alignHorizontal="center"
+                            alignVertical="center"
+                          >
+                            <Stack alignHorizontal="center">
+                              <Box marginBottom={isFirefox ? '-9px' : '-4px'}>
+                                <ChevronDown color="labelTertiary" />
+                              </Box>
+                              <Box marginTop="-4px">
+                                <ChevronDown color="labelQuaternary" />
+                              </Box>
+                            </Stack>
+                          </Inline>
+                        </Box>
+                      </Lens>
+                    </ButtonOverflow>
+                  </CursorTooltip>
                 </Inline>
               </Box>
 

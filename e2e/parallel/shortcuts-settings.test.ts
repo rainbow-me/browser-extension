@@ -12,7 +12,7 @@ import {
   findElementByText,
   getExtensionIdByName,
   getRootUrl,
-  importWalletFlow,
+  importWalletFlowUsingKeyboardNavigation,
   initDriverWithOptions,
   isElementFoundByText,
   toggleStatus,
@@ -41,12 +41,13 @@ describe.runIf(browser !== 'firefox')(
     afterAll(async () => driver.quit());
 
     it('should be able import a wallet via seed', async () => {
-      await importWalletFlow(
+      await importWalletFlowUsingKeyboardNavigation(
         driver,
         rootURL,
         TEST_VARIABLES.EMPTY_WALLET.SECRET,
       );
     });
+
     it('should display account name', async () => {
       await checkWalletName(
         driver,
@@ -393,13 +394,11 @@ describe.runIf(browser !== 'firefox')(
       expect(systemOption && lightOption).toBeTruthy();
       await executePerformShortcut({ driver, key: 'ARROW_UP' });
       await executePerformShortcut({ driver, key: 'ENTER' });
-      await executePerformShortcut({ driver, key: 'ESCAPE' });
     });
 
     it('should be able to switch theme to light', async () => {
       await executePerformShortcut({ driver, key: 'ARROW_UP' });
       await executePerformShortcut({ driver, key: 'ENTER' });
-      await executePerformShortcut({ driver, key: 'ESCAPE' });
       const chosenThemeOption = await findElementByText(driver, 'Light');
       expect(chosenThemeOption).toBeTruthy();
     });
