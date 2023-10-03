@@ -114,7 +114,13 @@ export function parseAsset({
     icon_url: asset.icon_url,
     colors: asset.colors,
     standard,
-    networks: 'networks' in asset ? asset.networks : undefined,
+    ...('networks' in asset && { networks: asset.networks }),
+    ...('bridging' in asset && {
+      bridging: {
+        isBridgeable: asset.bridging.bridgeable,
+        networks: asset.bridging.networks,
+      },
+    }),
   };
 
   return parsedAsset;
