@@ -315,28 +315,35 @@ const assetQueryFragment = (
   chainId: ChainId,
   currency: SupportedCurrencyKey,
   index: number,
+  withPrice?: boolean,
 ) => {
+  const priceQuery = withPrice ? 'price { value relativeChange24h }' : '';
   return `Q${index}: token(address: "${address}", chainID: ${chainId}, currency: "${currency}") {
       colors {
         primary
         fallback
         shadow
       }
-      circulatingSupply
       decimals
-      description
-      fullyDilutedValuation
       iconUrl
-      marketCap
       name
       networks
+      symbol
+      ${priceQuery}
+  }`;
+};
+
+const assetPriceQueryFragment = (
+  address: AddressOrEth,
+  chainId: ChainId,
+  currency: SupportedCurrencyKey,
+  index: number,
+) => {
+  return `Q${index}: token(address: "${address}", chainID: ${chainId}, currency: "${currency}") {
       price {
         value
         relativeChange24h
       }
-      symbol
-      totalSupply
-      volume1d
   }`;
 };
 
@@ -354,10 +361,23 @@ export const createAssetQuery = (
   addresses: AddressOrEth[],
   chainId: ChainId,
   currency: SupportedCurrencyKey,
+  withPrice?: boolean,
 ) => {
   return `{
         ${addresses
-          .map((a, i) => assetQueryFragment(a, chainId, currency, i))
+          .map((a, i) => assetQueryFragment(a, chainId, currency, i, withPrice))
+          .join(',')}
+    }`;
+};
+
+export const createPriceAssetQuery = (
+  addresses: AddressOrEth[],
+  chainId: ChainId,
+  currency: SupportedCurrencyKey,
+) => {
+  return `{
+        ${addresses
+          .map((a, i) => assetPriceQueryFragment(a, chainId, currency, i))
           .join(',')}
     }`;
 };
