@@ -52,26 +52,16 @@ export const getSupportedChains = () => {
   );
 };
 
-export const getSupportedChainIds = () => {
-  const { chains } = getNetwork();
-  return chains
-    .filter(
-      (chain) =>
-        !chain.testnet ||
-        (process.env.IS_TESTING === 'true' && chain.id === ChainId.hardhat),
-    )
-    .map((chain) => chain.id);
-};
+export const getSupportedChainIds = () =>
+  getSupportedChains().map((chain) => chain.id);
 
 export const getSupportedTestnetChains = () => {
   const { chains } = getNetwork();
-  return chains.filter((chain) => chain.testnet).map((chain) => chain.id);
+  return chains.filter((chain) => chain.testnet);
 };
 
-export const getSupportedTestnetChainIds = () => {
-  const { chains } = getNetwork();
-  return chains.filter((chain) => chain.testnet).map((chain) => chain.id);
-};
+export const getSupportedTestnetChainIds = () =>
+  getSupportedTestnetChains().map((chain) => chain.id);
 
 /**
  * @desc Checks if the given chain is a Layer 2.
