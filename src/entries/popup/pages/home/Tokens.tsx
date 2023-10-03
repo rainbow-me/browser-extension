@@ -250,7 +250,7 @@ export const AssetRow = memo(function AssetRow({
     () => (
       <Columns>
         <Column>
-          <Box paddingVertical="4px" testId={'asset-name'}>
+          <Box paddingVertical="4px" testId={`asset-name-${uniqueId}`}>
             {balanceDisplay}
           </Box>
         </Column>
@@ -268,7 +268,7 @@ export const AssetRow = memo(function AssetRow({
         </Column>
       </Columns>
     ),
-    [balanceDisplay, priceChangeColor, priceChangeDisplay],
+    [balanceDisplay, priceChangeColor, priceChangeDisplay, uniqueId],
   );
 
   return (

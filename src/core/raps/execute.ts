@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable no-promise-executor-return */
-import { Signer } from 'ethers';
+import { Signer } from '@ethersproject/abstract-signer';
 
 import { RainbowError, logger } from '~/logger';
 

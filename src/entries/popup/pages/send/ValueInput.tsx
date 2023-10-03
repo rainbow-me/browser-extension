@@ -16,6 +16,7 @@ import {
   Stack,
   Symbol,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { SendInputMask } from '../../components/InputMask/SendInputMask/SendInputMask';
@@ -133,7 +134,7 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
                     </TextOverflow>
                   </Column>
                   <Column width="content">
-                    <Box
+                    <Lens
                       testId="value-input-switch"
                       onClick={switchIndependentField}
                       alignItems="flex-end"
@@ -154,7 +155,7 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
                           })}
                         </TextOverflow>
                       </Inline>
-                    </Box>
+                    </Lens>
                   </Column>
                 </Columns>
               </Row>

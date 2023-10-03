@@ -1,10 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import {
+  TransactionRequest,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
+import { Bytes, hexlify } from '@ethersproject/bytes';
+import { toUtf8Bytes } from '@ethersproject/strings';
+import {
+  UnsignedTransaction,
+  parse,
+  serialize,
+} from '@ethersproject/transactions';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import { getProvider } from '@wagmi/core';
-import { Bytes, UnsignedTransaction, ethers } from 'ethers';
 import { Address } from 'wagmi';
 
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
@@ -17,7 +27,7 @@ const getPath = async (address: Address) => {
 };
 
 export async function signTransactionFromTrezor(
-  transaction: ethers.providers.TransactionRequest,
+  transaction: TransactionRequest,
 ): Promise<string> {
   try {
     const { from: address } = transaction;
@@ -31,12 +41,12 @@ export async function signTransactionFromTrezor(
       chainId: transaction.chainId || undefined,
       data: transaction.data || undefined,
       gasLimit: transaction.gasLimit
-        ? ethers.BigNumber.from(transaction.gasLimit).toHexString()
+        ? BigNumber.from(transaction.gasLimit).toHexString()
         : undefined,
-      nonce: ethers.BigNumber.from(transaction.nonce).toNumber(),
+      nonce: BigNumber.from(transaction.nonce).toNumber(),
       to: transaction.to || undefined,
       value: transaction?.value
-        ? ethers.BigNumber.from(transaction.value).toHexString()
+        ? BigNumber.from(transaction.value).toHexString()
         : '0x0',
     };
 
@@ -56,7 +66,7 @@ export async function signTransactionFromTrezor(
       baseTx.gasPrice = transaction.maxFeePerGas;
     }
 
-    const nonceHex = ethers.BigNumber.from(transaction.nonce).toHexString();
+    const nonceHex = BigNumber.from(transaction.nonce).toHexString();
     const response = await window.TrezorConnect.ethereumSignTransaction({
       path,
       transaction: {
@@ -69,13 +79,13 @@ export async function signTransactionFromTrezor(
       if (baseTx.maxFeePerGas) {
         baseTx.type = 2;
       }
-      const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
+      const serializedTransaction = serialize(baseTx, {
         r: response.payload.r,
         s: response.payload.s,
-        v: ethers.BigNumber.from(response.payload.v).toNumber(),
+        v: BigNumber.from(response.payload.v).toNumber(),
       });
 
-      const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
+      const parsedTx = parse(serializedTransaction);
       if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
         throw new Error('Transaction was not signed by the right address');
       }
@@ -97,7 +107,7 @@ export async function signTransactionFromTrezor(
   }
 }
 export async function sendTransactionFromTrezor(
-  transaction: ethers.providers.TransactionRequest,
+  transaction: TransactionRequest,
 ): Promise<TransactionResponse> {
   const serializedTransaction = await signTransactionFromTrezor(transaction);
   const provider = getProvider({
@@ -116,10 +126,10 @@ export async function signMessageByTypeFromTrezor(
   if (messageType === 'personal_sign') {
     if (typeof msgData === 'string') {
       // eslint-disable-next-line no-param-reassign
-      msgData = ethers.utils.toUtf8Bytes(msgData);
+      msgData = toUtf8Bytes(msgData);
     }
 
-    const messageHex = ethers.utils.hexlify(msgData).substring(2);
+    const messageHex = hexlify(msgData).substring(2);
 
     const response = await window.TrezorConnect.ethereumSignMessage({
       path,
