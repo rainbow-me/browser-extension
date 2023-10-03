@@ -668,7 +668,7 @@ function ActivityDetailsSheet({
     });
 
   return (
-    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} isModal={false} show>
       <Navbar
         leftComponent={<Navbar.CloseButton onClick={backToHome} />}
         titleComponent={<ActivityPill transaction={tx} />}
