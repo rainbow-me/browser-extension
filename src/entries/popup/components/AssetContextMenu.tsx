@@ -23,7 +23,7 @@ export const AssetContextMenu = ({
   children: ReactNode;
   asset?: ParsedAsset | null;
 }) => {
-  if (!asset) return children;
+  if (!asset) return <>{children}</>;
 
   const explorer = getTokenBlockExplorer(asset);
 
