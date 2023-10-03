@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { KeyboardEventHandler } from 'react';
 import Switch from 'react-switch';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 
@@ -25,6 +26,11 @@ const Toggle = ({
 }: ToggleProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
+  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === shortcuts.global.SELECT.key) {
+      handleChange(!checked);
+    }
+  };
   return (
     <Box testId={testId}>
       <Switch
@@ -38,8 +44,12 @@ const Toggle = ({
         uncheckedIcon={false}
         checkedIcon={false}
         onColor={accentColor || avatar?.color || '#268FFF'}
-        activeBoxShadow={accentColor || avatar?.color || '#268FFF'}
+        boxShadow={`0px 0px 1px 2px transparent`}
+        activeBoxShadow={`0px 0px 2px 4px ${
+          accentColor || avatar?.color || '#268FFF'
+        }`}
         disabled={disabled}
+        onKeyDown={onKeyDown}
       />
     </Box>
   );

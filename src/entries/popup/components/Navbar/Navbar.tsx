@@ -12,7 +12,11 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { getInputIsFocused, radixIsActive } from '../../utils/activeElement';
+import {
+  getActiveModal,
+  getInputIsFocused,
+  radixIsActive,
+} from '../../utils/activeElement';
 import {
   NAVBAR_LEFT_COMPONENT_ID,
   NAVBAR_RIGHT_COMPONENT_ID,
@@ -182,7 +186,9 @@ function NavbarButtonWithBack({
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       const closeWithEscape =
-        e.key === shortcuts.global.CLOSE.key && !radixIsActive();
+        e.key === shortcuts.global.CLOSE.key &&
+        !radixIsActive() &&
+        !getActiveModal();
       if (
         closeWithEscape ||
         (!getInputIsFocused() && e.key === shortcuts.global.BACK.key)
