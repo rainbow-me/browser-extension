@@ -71,7 +71,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const hasExplorerLink = !isNativeAsset(token?.address, token?.chainId);
   const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
 
-  if (isWatchingWallet && !allowSwap && isEth) return children;
+  if (isWatchingWallet && !allowSwap && isEth) return <>{children}</>;
 
   return (
     <DetailsMenuWrapper closed={true} onOpenChange={onOpenChange}>
