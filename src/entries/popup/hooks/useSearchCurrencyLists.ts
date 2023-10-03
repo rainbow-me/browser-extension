@@ -323,8 +323,6 @@ export function useSearchCurrencyLists({
           a.chainId !== assetToSell.chainId,
       );
 
-  console.log(assetToSell, bridgeList);
-
   const crosschainExactMatches = Object.values(verifiedAssets)
     ?.map((verifiedList) => {
       return verifiedList.assets?.filter((t) => {
