@@ -121,24 +121,6 @@ export const useSendInputs = ({
     setIndependentField(independentField === 'asset' ? 'native' : 'asset');
   }, [assetAmount, dependentAmountDisplay, independentField, setInputValue]);
 
-  const rawMaxAssetBalanceAmount = useMemo(() => {
-    const assetBalanceAmount = convertAmountToRawAmount(
-      asset?.balance?.amount || '0',
-      asset?.decimals || 18,
-    );
-    const rawAssetBalanceAmount =
-      asset?.isNativeAsset &&
-      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, multiply(selectedGas?.gasFee?.amount, 1))
-        : assetBalanceAmount;
-    return rawAssetBalanceAmount;
-  }, [
-    asset?.balance?.amount,
-    asset?.decimals,
-    asset?.isNativeAsset,
-    selectedGas?.gasFee?.amount,
-  ]);
-
   const setMaxAssetAmount = useCallback(() => {
     const assetBalanceAmount = convertAmountToRawAmount(
       asset?.balance?.amount || '0',
@@ -148,7 +130,7 @@ export const useSendInputs = ({
     const rawAssetBalanceAmount =
       asset?.isNativeAsset &&
       lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, selectedGas?.gasFee?.amount)
+        ? minus(assetBalanceAmount, multiply(selectedGas?.gasFee?.amount, 1.5))
         : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
@@ -184,7 +166,6 @@ export const useSendInputs = ({
 
   return {
     assetAmount,
-    rawMaxAssetBalanceAmount,
     independentAmount,
     independentField,
     independentFieldRef,

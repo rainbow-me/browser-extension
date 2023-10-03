@@ -64,7 +64,10 @@ const useGas = ({
   const prevDebouncedMaxBaseFee = usePrevious(debouncedMaxBaseFee);
 
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
-    { transactionRequest: transactionRequest || {}, chainId },
+    {
+      transactionRequest: useDebounce(transactionRequest, 1000) || {},
+      chainId,
+    },
     { enabled: chainNeedsL1SecurityFee(chainId) },
   );
 
@@ -249,6 +252,7 @@ const useGas = ({
   }, [
     enabled,
     gasFeeParamsBySpeed,
+    optimismL1SecurityFee,
     selectedGas,
     selectedSpeed,
     setSelectedGas,

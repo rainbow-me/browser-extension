@@ -103,7 +103,6 @@ export function Send() {
 
   const {
     assetAmount,
-    rawMaxAssetBalanceAmount,
     independentAmount,
     independentField,
     independentFieldRef,
@@ -116,7 +115,6 @@ export function Send() {
 
   const {
     currentCurrency,
-    maxAssetBalanceParams,
     chainId,
     data,
     fromAddress,
@@ -126,7 +124,7 @@ export function Send() {
     txToAddress,
     value,
     setToAddressOrName,
-  } = useSendState({ assetAmount, rawMaxAssetBalanceAmount, asset });
+  } = useSendState({ assetAmount, asset });
 
   const {
     buttonLabel,
@@ -147,11 +145,11 @@ export function Send() {
     return {
       to: txToAddress,
       from: fromAddress,
-      value: maxAssetBalanceParams.value,
+      value,
       chainId,
-      data: maxAssetBalanceParams.data,
+      data,
     };
-  }, [txToAddress, fromAddress, chainId, maxAssetBalanceParams]);
+  }, [txToAddress, fromAddress, value, chainId, data]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
