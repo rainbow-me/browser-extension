@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
-import { Box, ButtonSymbol, Stack, Text } from '~/design-system';
+import { Box, ButtonSymbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { ButtonVariant } from '~/design-system/styles/designTokens';
@@ -82,16 +82,14 @@ const MoreInfoButton = ({
                 leftComponent={option.leftComponent}
                 onSelect={option.onSelect}
               >
-                <Stack space="8px">
-                  <Text size="14pt" weight="semibold" color={option.color}>
-                    {option.label}
+                <Text size="14pt" weight="semibold" color={option.color}>
+                  {option.label}
+                </Text>
+                {option.subLabel && (
+                  <Text size="12pt" color="labelTertiary" weight="regular">
+                    {option.subLabel}
                   </Text>
-                  {option.subLabel && (
-                    <Text size="12pt" color="labelTertiary" weight="regular">
-                      {option.subLabel}
-                    </Text>
-                  )}
-                </Stack>
+                )}
               </DropdownMenuItem>
               {option.separator && (
                 <Box paddingVertical="4px">

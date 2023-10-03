@@ -7,10 +7,12 @@ import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { hasChildren } from '~/core/utils/react';
 import {
   AccentColorProvider,
   Box,
   Inline,
+  Stack,
   Symbol,
   Text,
   TextOverflow,
@@ -88,6 +90,7 @@ interface DropdownMenuContentProps {
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
+  if (!hasChildren(props.children)) return null;
   return (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuContentBody
@@ -257,7 +260,7 @@ export const DropdownMenuItem = ({
             {children}
           </TextOverflow>
         ) : (
-          children
+          <Stack space="8px">{children}</Stack>
         )}
       </Inline>
       {external && (
