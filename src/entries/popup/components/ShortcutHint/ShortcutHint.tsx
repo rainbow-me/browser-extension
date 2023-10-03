@@ -17,7 +17,7 @@ export const ShortcutHint = ({
       padding="4px"
       borderRadius={small ? '4px' : '5px'}
       boxShadow="1px"
-      style={{ width, height }}
+      style={{ minWidth: width, height }}
     >
       <Inline alignHorizontal="center" alignVertical="center">
         <Box style={{ marginTop: small ? -1 : 1 }}>
