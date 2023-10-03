@@ -45,7 +45,11 @@ export const SUPPORTED_CHAINS: Chain[] = [
 
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
-  return chains;
+  return chains.filter(
+    (chain) =>
+      !chain.testnet ||
+      (process.env.IS_TESTING === 'true' && chain.id === ChainId.hardhat),
+  );
 };
 
 export const getSupportedChainIds = () => {
@@ -55,7 +59,7 @@ export const getSupportedChainIds = () => {
 
 export const getSupportedTestnetChains = () => {
   const { chains } = getNetwork();
-  return chains;
+  return chains.filter((chain) => chain.testnet).map((chain) => chain.id);
 };
 
 export const getSupportedTestnetChainIds = () => {

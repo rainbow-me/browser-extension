@@ -4,6 +4,7 @@ import { Chain, useNetwork } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ChainId } from '~/core/types/chains';
+import { getSupportedChains } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -107,53 +108,47 @@ export const SwitchNetworkMenuSelector = ({
 
   return (
     <Box id="switch-network-menu-selector">
-      {chains
-        .filter((chain) => !chain.testnet)
-        .map((chain, i) => {
-          const { id: chainId, name } = chain;
-          return (
-            <MenuRadioItem
-              highlightAccentColor={highlightAccentColor}
-              value={String(chainId)}
-              key={i}
-              selectedValue={selectedValue}
-              onSelect={onNetworkSelect}
-            >
-              <Box width="full">
-                <Columns alignHorizontal="justify" alignVertical="center">
-                  <Column>
-                    <Box testId={`switch-network-item-${chainId}`}>
-                      <Inline space="8px" alignVertical="center">
-                        <ChainBadge chainId={chainId} size="18" />
-                        <Text color="label" size="14pt" weight="semibold">
-                          {name}
-                        </Text>
+      {getSupportedChains().map((chain, i) => {
+        const { id: chainId, name } = chain;
+        return (
+          <MenuRadioItem
+            highlightAccentColor={highlightAccentColor}
+            value={String(chainId)}
+            key={i}
+            selectedValue={selectedValue}
+            onSelect={onNetworkSelect}
+          >
+            <Box width="full">
+              <Columns alignHorizontal="justify" alignVertical="center">
+                <Column>
+                  <Box testId={`switch-network-item-${chainId}`}>
+                    <Inline space="8px" alignVertical="center">
+                      <ChainBadge chainId={chainId} size="18" />
+                      <Text color="label" size="14pt" weight="semibold">
+                        {name}
+                      </Text>
+                    </Inline>
+                  </Box>
+                </Column>
+
+                <Column width="content">
+                  {selectedValue === String(chainId) ? (
+                    <Box style={{ height: '18px', width: '18px' }}>
+                      <Inline alignHorizontal="center" alignVertical="center">
+                        <Inset vertical="3px">
+                          <Symbol weight="bold" symbol="checkmark" size={12} />
+                        </Inset>
                       </Inline>
                     </Box>
-                  </Column>
-
-                  <Column width="content">
-                    {selectedValue === String(chainId) ? (
-                      <Box style={{ height: '18px', width: '18px' }}>
-                        <Inline alignHorizontal="center" alignVertical="center">
-                          <Inset vertical="3px">
-                            <Symbol
-                              weight="bold"
-                              symbol="checkmark"
-                              size={12}
-                            />
-                          </Inset>
-                        </Inline>
-                      </Box>
-                    ) : (
-                      i < 9 && <ShortcutHint hint={`${i + 1}`} />
-                    )}
-                  </Column>
-                </Columns>
-              </Box>
-            </MenuRadioItem>
-          );
-        })}
+                  ) : (
+                    i < 9 && <ShortcutHint hint={`${i + 1}`} />
+                  )}
+                </Column>
+              </Columns>
+            </Box>
+          </MenuRadioItem>
+        );
+      })}
       {showDisconnect && disconnect && (
         <SwitchNetworkMenuDisconnect
           onDisconnect={disconnect}
