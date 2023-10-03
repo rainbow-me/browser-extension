@@ -19,7 +19,7 @@ import {
   getWindowHandle,
   goToPopup,
   goToTestApp,
-  importWalletFlow,
+  importWalletFlowUsingKeyboardNavigation,
   initDriverWithOptions,
   isElementFoundByText,
   querySelector,
@@ -49,8 +49,13 @@ describe.runIf(browser !== 'firefox')(
     afterAll(async () => driver.quit());
 
     it('should be able import a wallet via seed', async () => {
-      await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
+      await importWalletFlowUsingKeyboardNavigation(
+        driver,
+        rootURL,
+        TEST_VARIABLES.SEED_WALLET.PK,
+      );
     });
+
     it('should display account name', async () => {
       await checkWalletName(
         driver,
@@ -172,7 +177,7 @@ describe.runIf(browser !== 'firefox')(
       // find its shortened name and use it for the search this should
       // make it so this test doesn't break if the token content ever changes
       const firstCoinRowItemSelector = `coin-row-item-0`;
-      const coinRowItemNameSelector = `[data-testid="asset-name"]`;
+      const coinRowItemNameSelector = `[data-testid^="asset-name"]`;
       const firstCoinRowItem = await querySelector(
         driver,
         `[data-testid="${firstCoinRowItemSelector}"]`,
