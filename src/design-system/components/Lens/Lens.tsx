@@ -34,7 +34,7 @@ export function Lens({
         e.key === shortcuts.global.SELECT.key ||
         (e.key === shortcuts.global.FORWARD.key && forwardNav)
       ) {
-        simulateClick(containerRef?.current);
+        simulateClick(containerRef?.current, { bubbles: false });
         onKeyDown?.(e);
         e.preventDefault();
         e.stopPropagation();
