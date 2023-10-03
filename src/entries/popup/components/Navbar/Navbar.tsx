@@ -171,6 +171,7 @@ function NavbarButtonWithBack({
   symbolSize,
   testId,
   variant = 'flat',
+  withinModal,
 }: {
   height: ButtonSymbolProps['height'];
   onClick?: () => void;
@@ -178,6 +179,7 @@ function NavbarButtonWithBack({
   symbolSize?: SymbolProps['size'];
   testId?: string;
   variant?: 'flat' | 'transparent' | 'transparentHover';
+  withinModal?: boolean;
 }) {
   const { state } = useLocation();
   const { trackShortcut } = useKeyboardAnalytics();
@@ -188,7 +190,7 @@ function NavbarButtonWithBack({
       const closeWithEscape =
         e.key === shortcuts.global.CLOSE.key &&
         !radixIsActive() &&
-        !getActiveModal();
+        (withinModal || !getActiveModal());
       if (
         closeWithEscape ||
         (!getInputIsFocused() && e.key === shortcuts.global.BACK.key)
@@ -249,10 +251,12 @@ export function NavbarCloseButton({
   onClick,
   testId,
   variant,
+  withinModal,
 }: {
   onClick?: () => void;
   testId?: string;
   variant?: 'flat' | 'transparent' | 'transparentHover';
+  withinModal?: boolean;
 }) {
   return (
     <NavbarButtonWithBack
@@ -262,6 +266,7 @@ export function NavbarCloseButton({
       symbol="xmark"
       testId={testId}
       variant={variant}
+      withinModal={withinModal}
     />
   );
 }
