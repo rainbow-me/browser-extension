@@ -44,7 +44,6 @@ import { ROUTES } from '~/entries/popup/urls';
 
 import { About } from './About';
 import { PriceChart } from './PriceChart';
-import { useTokenInfo } from './useTokenInfo';
 
 const HiddenValue = () => <Asterisks color="labelTertiary" size={10} />;
 
@@ -110,9 +109,8 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
     setSelectedToken(token);
     navigate(to);
   };
-  const { data: isBridgeable } = useTokenInfo(token, {
-    select: (t) => t?.isBridgeable,
-  });
+  const isBridgeable = token.bridging?.isBridgeable;
+
   return (
     <Box display="flex" gap="8px">
       <Button
