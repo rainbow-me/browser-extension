@@ -385,6 +385,7 @@ export const estimateGas = async ({
 }) => {
   try {
     const gasLimit = await provider?.estimateGas(transactionRequest);
+    console.log('estimateGas', transactionRequest);
     return gasLimit?.toString() ?? null;
   } catch (error) {
     return null;
@@ -457,7 +458,7 @@ export const estimateGasWithPadding = async ({
 };
 
 export const calculateL1FeeOptimism = async ({
-  transactionRequest,
+  transactionRequest: txRequest,
   currentGasPrice,
   provider,
 }: {
@@ -465,6 +466,7 @@ export const calculateL1FeeOptimism = async ({
   transactionRequest: TransactionRequest & { gas?: string };
   provider: Provider;
 }): Promise<BigNumberish | undefined> => {
+  const transactionRequest = { ...txRequest };
   try {
     if (transactionRequest?.value) {
       transactionRequest.value = toHex(transactionRequest.value.toString());
