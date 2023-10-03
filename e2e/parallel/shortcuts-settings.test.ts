@@ -393,13 +393,11 @@ describe.runIf(browser !== 'firefox')(
       expect(systemOption && lightOption).toBeTruthy();
       await executePerformShortcut({ driver, key: 'ARROW_UP' });
       await executePerformShortcut({ driver, key: 'ENTER' });
-      await executePerformShortcut({ driver, key: 'ESCAPE' });
     });
 
     it('should be able to switch theme to light', async () => {
       await executePerformShortcut({ driver, key: 'ARROW_UP' });
       await executePerformShortcut({ driver, key: 'ENTER' });
-      await executePerformShortcut({ driver, key: 'ESCAPE' });
       const chosenThemeOption = await findElementByText(driver, 'Light');
       expect(chosenThemeOption).toBeTruthy();
     });
