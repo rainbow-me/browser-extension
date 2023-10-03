@@ -40,6 +40,10 @@ export const SlippageInputMask = ({
     inputRef?.current?.focus();
   }, [inputRef]);
 
+  const onFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
+
   const onBlur = useCallback(() => {
     setIsFocused(false);
   }, []);
@@ -93,6 +97,8 @@ export const SlippageInputMask = ({
             paddingRight: 30,
             caretColor: accentColorAsHsl,
           }}
+          onFocus={onFocus}
+          tabIndex={0}
         />
       </Box>
     </Box>
