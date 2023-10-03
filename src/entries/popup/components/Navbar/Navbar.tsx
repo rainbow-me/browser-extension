@@ -236,13 +236,20 @@ function NavbarButtonWithBack({
   );
 }
 
-export function NavbarBackButton({ onClick }: { onClick?: () => void }) {
+export function NavbarBackButton({
+  onClick,
+  withinModal,
+}: {
+  onClick?: () => void;
+  withinModal?: boolean;
+}) {
   return (
     <NavbarButtonWithBack
       onClick={onClick}
       height="32px"
       symbolSize={14}
       symbol="arrow.left"
+      withinModal={withinModal}
     />
   );
 }
