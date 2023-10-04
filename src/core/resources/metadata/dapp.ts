@@ -96,8 +96,6 @@ export async function dappMetadataQueryFunction({
 }
 
 export async function prefetchDappMetadata({ url }: { url: string }) {
-  const { dappMetadata } = dappMetadataStore.getState();
-  console.log('-- dappMetadata', dappMetadata);
   queryClient.prefetchQuery(DappMetadataQueryKey({ url }), async () =>
     fetchDappMetadata({ url, status: false }),
   );
