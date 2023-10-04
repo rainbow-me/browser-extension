@@ -231,6 +231,7 @@ interface ContextMenuItemProps {
   color?: TextStyles['color'];
   shortcut?: string;
   external?: boolean;
+  disabled?: boolean;
 }
 
 const isSymbol = (symbol: string): symbol is SymbolName =>
@@ -243,7 +244,10 @@ export const ContextMenuItem = ({
   color,
   shortcut,
   external,
+  disabled,
 }: ContextMenuItemProps) => {
+  // eslint-disable-next-line no-param-reassign
+  if (disabled) color = 'labelTertiary';
   return (
     <Box
       as={ContextMenuPrimitive.Item}
@@ -261,8 +265,10 @@ export const ContextMenuItem = ({
       onSelect={onSelect}
       background={{
         default: 'transparent',
-        hover: 'surfaceSecondary',
+        hover: disabled ? 'transparent' : 'surfaceSecondary',
       }}
+      disabled={disabled}
+      tabIndex={disabled ? -1 : 0}
     >
       <Inline alignVertical="center" space="8px">
         {isSymbol(symbolLeft) ? (
@@ -273,12 +279,12 @@ export const ContextMenuItem = ({
             color={color}
           />
         ) : (
-          <Text weight="semibold" size="14pt">
+          <Text color={color} weight="semibold" size="14pt">
             {symbolLeft}
           </Text>
         )}
         {typeof children === 'string' ? (
-          <Text size="14pt" weight="semibold">
+          <Text size="14pt" weight="semibold" color={color}>
             {children}
           </Text>
         ) : (
