@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react';
-// import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
@@ -47,9 +46,6 @@ export const useSwapAssets = () => {
   const prevAssetToSell = usePrevious<ParsedSearchAsset | SearchAsset | null>(
     assetToSell,
   );
-  // const prevAssetToBuy = usePrevious<ParsedSearchAsset | SearchAsset | null>(
-  //   assetToBuy,
-  // );
 
   const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
 
@@ -93,22 +89,6 @@ export const useSwapAssets = () => {
     assetToSell,
     searchQuery: debouncedAssetToBuyFilter,
   });
-
-  // const assetAddressesToFetchPrices = useMemo(() => {
-  //   const assetAddressesFromSearch = searchAssetsToBuySections
-  //     .map((section) => section.data?.map((asset) => asset.address) || [])
-  //     .flat();
-
-  //   const assetToBuyAddress = (assetToBuy?.address ||
-  //     prevAssetToBuy?.address) as Address;
-  //   if (
-  //     assetToBuyAddress &&
-  //     !assetAddressesFromSearch.includes(assetToBuyAddress)
-  //   ) {
-  //     assetAddressesFromSearch.push(assetToBuyAddress);
-  //   }
-  //   return assetAddressesFromSearch;
-  // }, [assetToBuy, prevAssetToBuy, searchAssetsToBuySections]);
 
   const { data: buyPriceData = [] } = useAssets({
     assetAddresses: assetToBuy ? [assetToBuy?.address] : [],
