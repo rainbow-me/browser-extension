@@ -21,6 +21,51 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.36](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.36)
+
+### Added
+
+- When hovering over icons and buttons throughout Rainbow, you will now see tooltips that tell you more about the feature and highlight keyboard shortcuts #930
+
+### Changed
+
+- Filtering unverified asset results in Swap Search for short search strings to speed up search #1001
+- Improvements to Wallet Switcher banner logic #996
+- Support for keyboard navigation in Token Details #1013
+
+### Fixed
+
+- Filtering imported Private Keys from Wallet Group creation flow #988
+- Fixed a scenario where you couldn’t imported the Secret Recovery Phrase for Watched Wallets #987
+- Restored shortcut hints on the Tokens Right-click menu #1011
+- Fixed an issue where the MATIC symbol was missing during the Swap flow when the user did not already own that asset #990
+- Resolved an issue with EIP-6963 support where we announce the provider before attempting EIP-1193 `window.ethereum` injection, which can fail #994
+- Resolved a crash during provider injected that prevented in-dApp notifications during network switching #1005
+- Resolved duplicate inpage id logs during provider injection #999
+- Prefetching dApp metadata before interacting with a dApp’s prompts #1009
+- Fixed inaccuracies with exchange rate field for transactions in Activity Details #1022
+- Fixed an issue with Layer 2 network Sends that caused transaction failures during internal testing due to invalid max priority fees #1025
+- Resolved an issue where the Wallet Details drop-down could overlap with the Rename Wallet modal #1010
+- Fixed background color inconsistencies in the Wallet Selection step of Import during Onboarding #1006
+- Truncating lengthy ENS names on Activity Details #944
+- Improved Context Menu sizing reliability #973
+- Improved layered context menus animations and sizing in the dApp Menu #1018
+
+### Internal
+
+- Added a dev setting to clear nonces #993
+- Cryptography library upgrades beyond Ethers v5, and evaluating path to Viem upgrade #1007
+- Refactored AccentColorProvider component, and deprecated AccentColorProviderWrapper #1003
+- Updated i18n translations #998
+- Resolved an issue with how we count imported wallets in tracking #989
+- Resolved an issue with the Publish GitHub Action #1024
+- Upgraded to Node 18 from 16 for Firefox support #1020
+- Upgraded `deep-object-diff` to resolve dependency audit issues #1000
+- Upgraded `vite`, `vitest`, and `chai` #1015
+
+### Testing
+- e2e coverage of Home shortcuts #942
+
 ## [v1.2.21](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.21)
 
 ### Added
