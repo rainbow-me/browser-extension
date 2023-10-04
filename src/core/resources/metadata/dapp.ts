@@ -43,7 +43,13 @@ type AppMetadataQueryKey = ReturnType<typeof AppMetadataQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function fetchDappMetadata({ url }: { url?: string }) {
+async function fetchDappMetadata({
+  url,
+  status,
+}: {
+  url?: string;
+  status: boolean;
+}) {
   if (!url) return null;
   const { setDappMetadata } = dappMetadataStore.getState();
   const appHostName = url && isValidUrl(url) ? getDappHostname(url) : '';
@@ -51,10 +57,14 @@ export async function fetchDappMetadata({ url }: { url?: string }) {
     url && isValidUrl(url)
       ? getHardcodedDappInformation(appHostName)?.name || ''
       : '';
+
   const response = await metadataClient.dApp({
     shortName: hardcodedAppName,
     url,
+    status,
   });
+
+  console.log('-- response', response);
 
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
   const appLogo = appHost ? getPublicAppIcon(appHost) : undefined;
@@ -80,13 +90,17 @@ export async function dappMetadataQueryFunction({
 }: QueryFunctionArgs<
   typeof AppMetadataQueryKey
 >): Promise<DappMetadata | null> {
-  return fetchDappMetadata({ url });
+  return fetchDappMetadata({ url, status: true });
 }
 
 export async function prefetchDappMetadata({ url }: { url: string }) {
-  queryClient.prefetchQuery(AppMetadataQueryKey({ url }), async () =>
-    fetchDappMetadata({ url }),
-  );
+  const { dappMetadata } = dappMetadataStore.getState();
+  const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
+  if (!dappMetadata[appHost]) {
+    queryClient.prefetchQuery(AppMetadataQueryKey({ url }), async () =>
+      fetchDappMetadata({ url, status: false }),
+    );
+  }
 }
 
 // ///////////////////////////////////////////////

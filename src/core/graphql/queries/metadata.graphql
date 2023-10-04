@@ -102,10 +102,11 @@ query priceChart(
 query dApp(
   $shortName: String!
   $url: String!
+  $status: Boolean!
 ) {
   dApp(shortName: $shortName, url: $url) {
     name
-    status
+    status @include(if: $status)
     colors {
       primary
       fallback
