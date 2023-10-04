@@ -333,20 +333,6 @@ const assetQueryFragment = (
   }`;
 };
 
-const assetPriceQueryFragment = (
-  address: AddressOrEth,
-  chainId: ChainId,
-  currency: SupportedCurrencyKey,
-  index: number,
-) => {
-  return `Q${index}: token(address: "${address}", chainID: ${chainId}, currency: "${currency}") {
-      price {
-        value
-        relativeChange24h
-      }
-  }`;
-};
-
 export const chunkArray = (arr: AddressOrEth[], chunkSize: number) => {
   const result = [];
 
@@ -366,18 +352,6 @@ export const createAssetQuery = (
   return `{
         ${addresses
           .map((a, i) => assetQueryFragment(a, chainId, currency, i, withPrice))
-          .join(',')}
-    }`;
-};
-
-export const createPriceAssetQuery = (
-  addresses: AddressOrEth[],
-  chainId: ChainId,
-  currency: SupportedCurrencyKey,
-) => {
-  return `{
-        ${addresses
-          .map((a, i) => assetPriceQueryFragment(a, chainId, currency, i))
           .join(',')}
     }`;
 };
