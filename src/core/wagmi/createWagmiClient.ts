@@ -58,7 +58,7 @@ const { chains, provider, webSocketProvider } = configureChains(
           case ChainId.baseGoerli:
             return { http: process.env.BASE_GOERLI_RPC as string };
           case ChainId.zoraTestnet:
-            return { http: process.env.ZORA_GOERLI as string };
+            return { http: process.env.ZORA_GOERLI_RPC as string };
           default:
             return null;
         }
