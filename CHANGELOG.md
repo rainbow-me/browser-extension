@@ -66,6 +66,62 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Testing
 - e2e coverage of Home shortcuts #942
 
+## [v1.2.26](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.26)
+
+### Added
+
+- You can now Buy crypto from our On-ramp Partners with the Buy button, and Transfer Crypto for free from Coinbase for new wallets #957 #976
+- Legacy Ledger HD derivation paths are now supported via a drop-down option while pairing your Ledger device #929
+- Indonesian language support is now available in Settings #937
+- You will now see improvements to dApp naming and other metadata, tailored by the Rainbow team. Let us know if we missed any! #955
+- Rainbow is now opensource and licensed under GPLv3 #965
+
+### Changed
+
+- Rainbow has a new look and feel with a new Tab Bar to navigate between Activity, Tokens, and NFTs #962
+- The Command K interface is now the Magic Menu and is available as `⌘K` on macOS, `Ctrl-K` on Windows, and simply `k` across all platforms #982
+- The nudge to Switch Wallets while interacting with a dApp has a new look and feel, and now appears immediately for an even faster switching experience #980
+- You can now disable Sounds with a toggle in Settings #953
+- Keyboard navigation now fully supports the Onboarding flow #924
+- Context menus are now dynamically sized for better localization support #949
+
+### Fixed
+
+- Resolved an issue where connections with Ledger devices was unreliable and blocked interactions like Swaps #983
+- Resolved an issue where the Create Wallet action in the Magic Menu incorrectly routed to the Welcome screen #959
+- Handling a scenario where Home actions wouldn't appear when fetches for an ENS avatar failed #946
+- Fixed a crash when dApp session data is temporarily unavailable #947
+- Fixed a crash on the Lock screen that periodically prevented users from unlocking the extension #947
+- Fixed a crash on the Wallet Details interface when removing a Secret Recovery Phrase attached to multiple wallets #947
+- Improved transaction pagination reliability in Activity for wallets with many filtered transactions, including ProtocolRewards events #960
+- Resolved an issue where keyboard navigation to the Token Details interface clashed and opened the right-click menu #974
+- Adjusted the logic for Backup Reminders to rely on when a user confirms "I've saved these words" #978
+- Prevent resizing animation jitters on presentation of Activity Details with loading skeltons for affected rows #945
+- Resolved a display issue for cross-chain swaps on the Activity pane #948
+- Resolved an issue where you could use the `s` hotkey on Watched wallets #954
+- Resolved a clash where the new Tab Bar would appear over Pending Transaction prompts #979
+- Fixed an alignment inconsistency for Activity transaction cells #969
+- Improved icon fallbacks for NFTs that fail to load for Activity transactions #970
+- Favoring a dApp's hostname when other metadata is unavailable on prompts #971
+- Fixed copy for Stronger Password recommendations during Onboarding #975
+- Resolved an issue where wallet avatars could be clipped when using an Emoji #977
+- Resolved issues with the border radius of remotely fetched images throughout the interface #981
+
+### Removed
+
+- Rainbow is now available to all without an invite code. We've removed this step from Onboarding #963
+
+### Internal
+
+- Refactored the initial load of i18n strings on cold boot #950
+- Refactored wallet avatar fetching and added a cache #958
+- Improved fallbacks and handling of Backend-driven transaction types for contract interaction Activity cells #972
+- Updated i18n translations for Activity Details #951
+- Improved Sentry logging for Send, Import, and Hardware Wallet pairing keychain interactions #961
+- Publish actions are now seperate for Chrome and Firefox stores #964
+- Upgraded `@ledgerhq/hw-app-eth` and `@ledgerhq/hw-transport-webhid` and accompanying patches and Wekpack configuration #983
+- Upgraded `@metamask/eth-sig-util`, `@trezor/connect-plugin-ethereum`, `@ledgerhq/cryptoassets`, `wagmi`, `zustand`, Sentry, Webpack, and LavaMoat packages #956
+
 ## [v1.2.21](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.21)
 
 ### Added
