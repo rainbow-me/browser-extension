@@ -23,6 +23,7 @@ const ExternalImage = (
       mask?: string;
       onError?: () => void;
       borderRadius?: BoxStyles['borderRadius'];
+      maxHeight?: number;
     },
 ) => {
   const [fallback, setFallback] = React.useState(false);
@@ -60,7 +61,13 @@ const ExternalImage = (
 
   if (!signedUrl) return null;
   return (
-    <Box style={{ overflow: 'clip' }} borderRadius={props.borderRadius}>
+    <Box
+      style={{
+        overflow: 'clip',
+        maxHeight: props.maxHeight ? props.maxHeight : '',
+      }}
+      borderRadius={props.borderRadius}
+    >
       <img
         {...omit(props, 'borderRadius')}
         style={

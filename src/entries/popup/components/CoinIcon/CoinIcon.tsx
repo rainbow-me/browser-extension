@@ -282,12 +282,13 @@ export const NFTIcon = ({
         width={size}
         borderRadius={nftRadiusBySize[size]}
         onError={() => setBadSrc(true)}
+        maxHeight={size}
       />
-      <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
-        {badge && chainId !== ChainId.mainnet && (
+      {badge && chainId !== ChainId.mainnet && (
+        <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
           <ChainBadge chainId={chainId} shadow size="16" />
-        )}
-      </Box>
+        </Box>
+      )}
     </Box>
   );
 };
@@ -310,6 +311,7 @@ export const ContractIcon = ({
           src={iconUrl}
           width={size}
           height={size}
+          maxHeight={size}
           loading="lazy"
           style={{ borderRadius: nftRadiusBySize[size] }}
         />
