@@ -101,6 +101,7 @@ type MeteorologyQueryKey = ReturnType<typeof meteorologyQueryKey>;
 async function meteorologyQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof meteorologyQueryKey>) {
+  console.log('-- get meteorology gas');
   const network = getMeteorologyNetworkFromChainId(chainId);
   const parsedResponse = await meteorologyHttp.get(`/${network}`);
   const meteorologyData = parsedResponse.data as

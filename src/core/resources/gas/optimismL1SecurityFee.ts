@@ -51,6 +51,7 @@ async function optimismL1SecurityFeeQueryFunction({
   queryKey: [{ transactionRequest, chainId }],
 }: QueryFunctionArgs<typeof optimismL1SecurityFeeQueryKey>) {
   if (chainNeedsL1SecurityFee(chainId)) {
+    console.log('- get optimism l1 security fee');
     const provider = getProvider({ chainId: ChainId.optimism });
     const gasPrice = await provider.getGasPrice();
     const l1Fee = await calculateL1FeeOptimism({

@@ -34,6 +34,7 @@ type ProviderGasQueryKey = ReturnType<typeof providerGasQueryKey>;
 async function providerGasQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof providerGasQueryKey>) {
+  console.log('-- get provider gas');
   const provider = getProvider({ chainId });
   const gasPrice = await provider.getGasPrice();
   const gweiGasPrice = weiToGwei(gasPrice.toString());
