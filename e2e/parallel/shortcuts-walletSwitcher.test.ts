@@ -32,7 +32,7 @@ const shortenedSecondaryAddress = shortenAddress(
 );
 
 describe.runIf(browser !== 'firefox')(
-  'navigate through settings flows with shortcuts',
+  'navigate through wallet switcher flows with shortcuts and keyboard',
   () => {
     beforeAll(async () => {
       driver = await initDriverWithOptions({
