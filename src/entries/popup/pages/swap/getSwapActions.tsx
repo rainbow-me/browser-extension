@@ -26,7 +26,7 @@ export interface SwapTimeEstimate {
   timeEstimateDisplay: string;
 }
 
-interface UseSwapActionsProps {
+interface GetSwapActionsProps {
   quote?: Quote | CrosschainQuote | QuoteError;
   isLoading: boolean;
   assetToSell?: ParsedSearchAsset | null;
@@ -37,6 +37,7 @@ interface UseSwapActionsProps {
   hideExplainerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
   showSwapReviewSheet: () => void;
+  t: typeof i18n.t;
 }
 
 interface SwapActions {
@@ -50,7 +51,7 @@ interface SwapActions {
   buttonAction: () => void;
 }
 
-export const useSwapActions = ({
+export const getSwapActions = ({
   quote,
   isLoading,
   assetToSell,
@@ -60,13 +61,14 @@ export const useSwapActions = ({
   hideExplainerSheet,
   showExplainerSheet,
   showSwapReviewSheet,
-}: UseSwapActionsProps): SwapActions => {
+  t,
+}: GetSwapActionsProps): SwapActions => {
   if (isLoading) {
     return {
       buttonColor: 'surfaceSecondary',
       buttonLabelColor: 'labelQuaternary',
       buttonDisabled: true,
-      buttonLabel: i18n.t('swap.actions.loading'),
+      buttonLabel: t('swap.actions.loading'),
       buttonIcon: (
         <Box
           width="fit"
@@ -86,7 +88,7 @@ export const useSwapActions = ({
     return {
       buttonColor: 'surfaceSecondary',
       buttonDisabled: true,
-      buttonLabel: i18n.t('swap.actions.enter_an_amount'),
+      buttonLabel: t('swap.actions.enter_an_amount'),
       buttonLabelColor: 'labelQuaternary',
       buttonIcon: null,
       buttonAction: () => null,
@@ -108,7 +110,7 @@ export const useSwapActions = ({
       buttonColor: enoughAssetsForSwap ? 'accent' : 'fillSecondary',
       buttonDisabled: !enoughAssetsForSwap,
       buttonLabel: enoughAssetsForSwap
-        ? i18n.t('swap.actions.review')
+        ? t('swap.actions.review')
         : validationButtonLabel,
       buttonLabelColor: 'label',
       buttonIcon: enoughAssetsForSwap ? (
@@ -139,10 +141,10 @@ export const useSwapActions = ({
                   </Box>
                 ),
               },
-              title: i18n.t('swap.explainers.long_wait.title'),
-              description: [i18n.t('swap.explainers.long_wait.description')],
+              title: t('swap.explainers.long_wait.title'),
+              description: [t('swap.explainers.long_wait.description')],
               actionButton: {
-                label: i18n.t('swap.explainers.long_wait.action_label'),
+                label: t('swap.explainers.long_wait.action_label'),
                 variant: 'tinted',
                 labelColor: 'blue',
                 action: () => {
@@ -166,7 +168,7 @@ export const useSwapActions = ({
       return {
         buttonColor: 'fillSecondary',
         buttonDisabled: false,
-        buttonLabel: i18n.t('swap.actions.insufficient_liquidity'),
+        buttonLabel: t('swap.actions.insufficient_liquidity'),
         buttonLabelColor: 'label',
         buttonIcon: (
           <Symbol
@@ -179,26 +181,24 @@ export const useSwapActions = ({
           showExplainerSheet({
             show: true,
             header: { emoji: '🏦' },
-            title: i18n.t('swap.explainers.insufficient_liquidity.title'),
+            title: t('swap.explainers.insufficient_liquidity.title'),
             description: [
-              i18n.t('swap.explainers.insufficient_liquidity.description'),
+              t('swap.explainers.insufficient_liquidity.description'),
             ],
             footerLinkText: {
-              openText: i18n.t(
-                'swap.explainers.insufficient_liquidity.footer_text.open_text',
+              openText: t(
+                'explainers.insufficient_liquidity.footer_text.open_text',
               ),
-              linkText: i18n.t(
-                'swap.explainers.insufficient_liquidity.footer_text.link_text',
+              linkText: t(
+                'explainers.insufficient_liquidity.footer_text.link_text',
               ),
-              closeText: i18n.t(
-                'swap.explainers.insufficient_liquidity.footer_text.close_text',
+              closeText: t(
+                'explainers.insufficient_liquidity.footer_text.close_text',
               ),
               link: 'https://learn.rainbow.me/a-beginners-guide-to-liquidity-providing',
             },
             actionButton: {
-              label: i18n.t(
-                'swap.explainers.insufficient_liquidity.action_label',
-              ),
+              label: t('swap.explainers.insufficient_liquidity.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
               action: hideExplainerSheet,
@@ -212,7 +212,7 @@ export const useSwapActions = ({
       return {
         buttonColor: 'fillSecondary',
         buttonDisabled: false,
-        buttonLabel: i18n.t('swap.actions.fee_on_transfer_token'),
+        buttonLabel: t('swap.actions.fee_on_transfer_token'),
         buttonLabelColor: 'label',
         buttonIcon: (
           <Symbol
@@ -226,28 +226,26 @@ export const useSwapActions = ({
             show: true,
             header: { icon: <CoinIcon asset={assetToSell} size={32} /> },
 
-            title: i18n.t('swap.explainers.fee_on_transfer_token.title'),
+            title: t('swap.explainers.fee_on_transfer_token.title'),
             description: [
-              i18n.t('swap.explainers.fee_on_transfer_token.description', {
+              t('swap.explainers.fee_on_transfer_token.description', {
                 tokenName: assetToSell?.name,
               }),
             ],
             footerLinkText: {
-              openText: i18n.t(
-                'swap.explainers.fee_on_transfer_token.footer_text.open_text',
+              openText: t(
+                'explainers.fee_on_transfer_token.footer_text.open_text',
               ),
-              linkText: i18n.t(
-                'swap.explainers.fee_on_transfer_token.footer_text.link_text',
+              linkText: t(
+                'explainers.fee_on_transfer_token.footer_text.link_text',
               ),
-              closeText: i18n.t(
-                'swap.explainers.fee_on_transfer_token.footer_text.close_text',
+              closeText: t(
+                'explainers.fee_on_transfer_token.footer_text.close_text',
               ),
               link: 'https://support.rainbow.me/en/articles/8324868-fee-on-transfer-tokens',
             },
             actionButton: {
-              label: i18n.t(
-                'swap.explainers.fee_on_transfer_token.action_label',
-              ),
+              label: t('swap.explainers.fee_on_transfer_token.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
               action: hideExplainerSheet,
@@ -262,7 +260,7 @@ export const useSwapActions = ({
       return {
         buttonColor: 'fillSecondary',
         buttonDisabled: false,
-        buttonLabel: i18n.t('swap.actions.no_route'),
+        buttonLabel: t('swap.actions.no_route'),
         buttonLabelColor: 'label',
         buttonIcon: (
           <Symbol
@@ -290,10 +288,10 @@ export const useSwapActions = ({
                 </Inline>
               ),
             },
-            title: i18n.t('swap.explainers.no_route.title'),
-            description: [i18n.t('swap.explainers.no_route.description')],
+            title: t('swap.explainers.no_route.title'),
+            description: [t('swap.explainers.no_route.description')],
             actionButton: {
-              label: i18n.t('swap.explainers.no_route.action_label'),
+              label: t('swap.explainers.no_route.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
               action: hideExplainerSheet,
@@ -308,7 +306,7 @@ export const useSwapActions = ({
       return {
         buttonColor: 'fillSecondary',
         buttonDisabled: false,
-        buttonLabel: i18n.t('swap.actions.no_quote'),
+        buttonLabel: t('swap.actions.no_quote'),
         buttonLabelColor: 'label',
         buttonIcon: (
           <Symbol
@@ -321,11 +319,11 @@ export const useSwapActions = ({
           showExplainerSheet({
             show: true,
             header: { emoji: '🚧' },
-            title: i18n.t('swap.explainers.no_quote.title'),
-            description: [i18n.t('swap.explainers.no_quote.description')],
+            title: t('swap.explainers.no_quote.title'),
+            description: [t('swap.explainers.no_quote.description')],
 
             actionButton: {
-              label: i18n.t('swap.explainers.no_quote.action_label'),
+              label: t('swap.explainers.no_quote.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
               action: hideExplainerSheet,

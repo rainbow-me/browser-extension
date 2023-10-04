@@ -117,7 +117,7 @@ export const TokenToBuyDropdown = ({
                   weight="semibold"
                   align="center"
                 >
-                  {t('tokens_input.nothing_found')}
+                  {t('swap.tokens_input.nothing_found')}
                 </Text>
 
                 <Text
@@ -127,7 +127,7 @@ export const TokenToBuyDropdown = ({
                   align="center"
                 >
                   {t(
-                    `tokens_input.${
+                    `swap.tokens_input.${
                       isL2
                         ? 'nothing_found_description_l2'
                         : 'nothing_found_description'

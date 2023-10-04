@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 
 import { useTokenSearch } from '~/core/resources/search';
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import {
   SearchAsset,
   TokenSearchAssetKey,
@@ -16,6 +16,7 @@ import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { filterList } from '../utils/search';
 
+import { isSameAsset } from './swap/useSwapAssets';
 import { useFavoriteAssets } from './useFavoriteAssets';
 
 const VERIFIED_ASSETS_PAYLOAD: {
@@ -311,17 +312,22 @@ export function useSearchCurrencyLists({
     bridge &&
     assetToSell?.networks &&
     Object.entries(assetToSell.networks)
-      .map(([chainId, assetOnNetworkOverrides]) => ({
-        ...assetToSell,
-        chainId: chainId as unknown as ChainId, // Object.entries messes the type
-        ...assetOnNetworkOverrides,
-      }))
-      .filter(
-        (a) =>
-          // filter out the asset we're selling already
-          a.address !== assetToSell.address &&
-          a.chainId !== assetToSell.chainId,
-      );
+      .map(([_chainId, assetOnNetworkOverrides]) => {
+        if (!assetOnNetworkOverrides) return;
+        const chainId = _chainId as unknown as ChainId; // Object.entries messes the type
+        const { address, decimals } = assetOnNetworkOverrides;
+        // filter out the asset we're selling already
+        if (isSameAsset(assetToSell, { chainId, address })) return;
+        return {
+          ...assetToSell,
+          chainId,
+          chainName: ChainNameDisplay[chainId],
+          uniqueId: `${address}-${chainId}`,
+          address,
+          decimals,
+        };
+      })
+      .filter(Boolean);
 
   const crosschainExactMatches = Object.values(verifiedAssets)
     ?.map((verifiedList) => {

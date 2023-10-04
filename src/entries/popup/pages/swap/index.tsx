@@ -37,7 +37,6 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import {
-  useSwapActions,
   useSwapAssets,
   useSwapDropdownDimensions,
   useSwapInputs,
@@ -46,7 +45,6 @@ import {
   useSwapSettings,
   useSwapValidations,
 } from '../../hooks/swap';
-import { SwapTimeEstimate } from '../../hooks/swap/useSwapActions';
 import { useSwapNativeAmounts } from '../../hooks/swap/useSwapNativeAmounts';
 import {
   SwapPriceImpact,
@@ -66,6 +64,7 @@ import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
+import { SwapTimeEstimate, getSwapActions } from './getSwapActions';
 
 const SwapWarning = ({
   timeEstimate,
@@ -165,7 +164,13 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const { isFirefox } = useBrowser();
 
   // translate based on the context, bridge or swap
-  const t = useTranslationContext(bridge ? 'bridge' : 'swap');
+  const translationContext = {
+    Action: i18n.t(`swap._actions.${bridge ? 'Bridge' : 'Swap'}`),
+    action: i18n.t(`swap._actions.${bridge ? 'bridge' : 'swap'}`),
+    Actioning: i18n.t(`swap._actions.${bridge ? 'Bridging' : 'Swapping'}`),
+    actioning: i18n.t(`swap._actions.${bridge ? 'bridging' : 'swapping'}`),
+  };
+  const t = useTranslationContext(translationContext);
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
@@ -245,6 +250,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     setAssetToSell,
     setAssetToBuy,
     inputToOpenOnMount,
+    bridge,
   });
 
   const {
@@ -306,7 +312,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     timeEstimate,
     buttonAction,
     status,
-  } = useSwapActions({
+  } = getSwapActions({
     quote,
     isLoading,
     assetToSell,
@@ -316,6 +322,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     showExplainerSheet,
     hideExplainerSheet,
     showSwapReviewSheet,
+    t,
   });
 
   useSwapQuoteHandler({
@@ -446,9 +453,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback;
 
   return (
-    <TranslationContext value={bridge ? 'bridge' : 'swap'}>
+    <TranslationContext value={translationContext}>
       <Navbar
-        title={t('title')}
+        title={t('swap.title')}
         background={'surfaceSecondary'}
         leftComponent={!hideBackButton ? <Navbar.CloseButton /> : undefined}
         rightComponent={
@@ -516,7 +523,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   setAssetFilter={setAssetToSellFilter}
                   sortMethod={sortMethod}
                   zIndex={2}
-                  placeholder={t('input_token_placeholder')}
+                  placeholder={t('swap.input_token_placeholder')}
                   assetToSellMaxValue={assetToSellMaxValue}
                   setAssetToSellMaxValue={setAssetToSellMaxValue}
                   assetToSellValue={
@@ -594,7 +601,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   onDropdownOpen={onAssetToBuyInputOpen}
                   dropdownClosed={assetToBuyDropdownClosed}
                   zIndex={1}
-                  placeholder={t('input_token_to_receive_placeholder')}
+                  placeholder={t('swap.input_token_to_receive_placeholder')}
                   setOutputChainId={setOutputChainId}
                   outputChainId={outputChainId}
                   assetFilter={assetToBuyFilter}
@@ -677,7 +684,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   disabled
                 >
                   <Text color="labelQuaternary" size="14pt" weight="bold">
-                    {t('select_tokens_to_swap')}
+                    {t('swap.select_tokens')}
                   </Text>
                 </Button>
               </Box>

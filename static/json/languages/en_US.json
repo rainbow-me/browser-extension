@@ -483,10 +483,20 @@
     }
   },
   "swap": {
-    "title": "Swap",
-    "input_token_placeholder": "Select a token to swap",
+    "_actions": {
+      "Swap": "Swap",
+      "swap": "swap",
+      "Swapping": "Swapping",
+      "swapping": "swapping",
+      "Bridge": "Bridge",
+      "bridge": "bridge",
+      "Bridging": "Bridging",
+      "bridging": "bridging"
+    },
+    "title": "%{Action}",
+    "input_token_placeholder": "Select a token to %{action}",
     "input_token_to_receive_placeholder": "Select a token to receive",
-    "select_tokens": "Select tokens to swap",
+    "select_tokens": "Select tokens to %{action}",
     "max": "Max",
     "balance": "Balance",
     "tokens_input": {
@@ -498,14 +508,14 @@
       "filter_by_network": "Filter by Network",
       "switch_networks": "Switch Networks",
       "nothing_found": "Nothing found",
-      "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
-      "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap.",
+      "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful %{action}.",
+      "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful %{action}.",
       "output_quotes_disabled": "Output quotes disabled"
     },
     "warnings": {
       "long_wait": {
         "title": "Long wait",
-        "description": "Up to %{time} to swap"
+        "description": "Up to %{time} to %{action}"
       },
       "price_impact": {
         "title": "Small market",
@@ -516,8 +526,8 @@
       "rainbow": "Auto"
     },
     "settings": {
-      "title": "Swap Settings",
-      "route": "Route swaps via",
+      "title": "%{Action} Settings",
+      "route": "Route %{actions} via",
       "use_flashbots": "Use Flashbots",
       "max_slippage": "Max slippage",
       "use_defaults": "Use defaults",
@@ -529,12 +539,12 @@
       "explainers": {
         "slippage": {
           "title": "Slippage",
-          "description_1": "Slippage occurs when the price of a swap changes during the time between you submitting your transaction and its confirmation.",
-          "description_2": "Setting a higher slippage tolerance increases the likelihood your swap will be successful, but may result in you getting a worse price.",
+          "description_1": "Slippage occurs when the price of a %{action} changes during the time between you submitting your transaction and its confirmation.",
+          "description_2": "Setting a higher slippage tolerance increases the likelihood your %{action} will be successful, but may result in you getting a worse price.",
           "read_more": {
             "open_text": "Still curious? ",
             "link_text": "Read more",
-            "close_text": " about slippage and how it affects swaps."
+            "close_text": " about slippage and how it affects %{actions}."
           }
         },
         "flashbots": {
@@ -547,12 +557,12 @@
           }
         },
         "routing": {
-          "title": "Swap Routing",
-          "description": "By default, Rainbow chooses the cheapest route possible for your swap. If you prefer to specifically use either 0x or 1inch, you can do that too.",
+          "title": "%{Action} Routing",
+          "description": "By default, Rainbow chooses the cheapest route possible for your %{action}. If you prefer to specifically use either 0x or 1inch, you can do that too.",
           "read_more": {
             "open_text": "Still curious? ",
             "link_text": "Read more",
-            "close_text": " about our approach to routing swaps."
+            "close_text": " about our approach to routing %{actions}."
           }
         },
         "got_it": "Got it"
@@ -568,37 +578,37 @@
       "enter_an_amount": "Enter an amount"
     },
     "review": {
-      "title": "Review & Swap",
+      "title": "Review & %{Action}",
       "flashbots_on": "On",
       "minimum_received": "Minimum received",
-      "via": "Swapping via",
+      "via": "%{Actioning} via",
       "included_fee": "Included Rainbow fee",
       "use_flashbots": "Use Flashbots",
       "exchange_rate": "Exchange rate",
       "asset_contract": "%{symbol} contract",
       "more_details": "More details",
-      "swap_confirmation": "Swap %{sellSymbol} to %{buySymbol}",
+      "confirmation": "%{Action} %{sellSymbol} to %{buySymbol}",
       "go_back": "Go back"
     },
     "explainers": {
       "long_wait": {
-        "title": "Long wait to swap",
-        "description": "This swap may take a very long time to complete. This is usually due to problems with a cross-chain bridge.",
+        "title": "Long wait to %{action}",
+        "description": "This %{action} may take a very long time to complete. This is usually due to problems with a cross-chain bridge.",
         "action_label": "Continue anyway"
       },
       "no_route": {
         "title": "No routes found",
-        "description": "We couldn’t find a route for this swap. A route may not exist for this swap, or the amount may be too small.",
+        "description": "We couldn’t find a route for this %{action}. A route may not exist for this %{action}, or the amount may be too small.",
         "action_label": "Got it"
       },
       "no_quote": {
         "title": "No quote available",
-        "description": "We couldn’t find quotes for this swap. This could be because there isn’t enough liqudity to swap or because of problems with how the  token is implemented.",
+        "description": "We couldn’t find quotes for this %{action}. This could be because there isn’t enough liqudity to %{action} or because of problems with how the  token is implemented.",
         "action_label": "Continue anyway"
       },
       "insufficient_liquidity": {
         "title": "Insufficient liquidity",
-        "description": "We couldn’t find quotes for this swap because this pair doesn’t have enough liquidity on exchanges.",
+        "description": "We couldn’t find quotes for this %{action} because this pair doesn’t have enough liquidity on exchanges.",
         "action_label": "Got it",
         "footer_text": {
           "open_text": "Still curious? ",
@@ -608,149 +618,23 @@
       },
       "fee_on_transfer_token": {
         "title": "Fee on Transfer Token",
-        "description": "This swap will fail in Rainbow because the %{tokenName} contract adds extra fees.",
+        "description": "This %{action} will fail in Rainbow because the %{tokenName} contract adds extra fees.",
         "action_label": "Got it",
         "footer_text": {
           "open_text": "Read ",
           "link_text": "our guide",
-          "close_text": " for help swapping this token!"
+          "close_text": " for help %{actioning} this token!"
         }
-      }
-    }
-  },
-  "bridge": {
-    "title": "Bridge",
-    "input_token_placeholder": "Select a token to bridge",
-    "input_token_to_receive_placeholder": "Select a token to receive",
-    "select_tokens": "Select tokens to bridge",
-    "max": "Max",
-    "balance": "Balance",
-    "tokens_input": {
-      "tokens": "Tokens",
-      "sort": "Sort",
-      "available": "available",
-      "token_balance": "Token Balance",
-      "networks": "Networks",
-      "filter_by_network": "Filter by Network",
-      "switch_networks": "Switch Networks",
-      "nothing_found": "Nothing found",
-      "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful bridge.",
-      "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful bridge.",
-      "output_quotes_disabled": "Output quotes disabled"
-    },
-    "warnings": {
-      "long_wait": {
-        "title": "Long wait",
-        "description": "Up to %{time} to bridge"
       },
-      "price_impact": {
-        "title": "Small market",
-        "description": "Losing %{impactAmount}"
-      }
-    },
-    "aggregators": {
-      "rainbow": "Auto"
-    },
-    "settings": {
-      "title": "Bridge Settings",
-      "route": "Route bridges via",
-      "use_flashbots": "Use Flashbots",
-      "max_slippage": "Max slippage",
-      "use_defaults": "Use defaults",
-      "done": "Done",
-      "warnings": {
-        "high": "High",
-        "possible_loss": "Possible loss"
-      },
-      "explainers": {
-        "slippage": {
-          "title": "Slippage",
-          "description_1": "Slippage occurs when the price of a bridge changes during the time between you submitting your transaction and its confirmation.",
-          "description_2": "Setting a higher slippage tolerance increases the likelihood your bridge will be successful, but may result in you getting a worse price.",
-          "read_more": {
-            "open_text": "Still curious? ",
-            "link_text": "Read more",
-            "close_text": " about slippage and how it affects bridges."
-          }
-        },
-        "flashbots": {
-          "title": "Flashbots",
-          "description": "Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing.",
-          "read_more": {
-            "open_text": "Still curious? ",
-            "link_text": "Read more",
-            "close_text": " about Flashbots and the protection it offers."
-          }
-        },
-        "routing": {
-          "title": "Bridge Routing",
-          "description": "By default, Rainbow chooses the cheapest route possible for your bridge. If you prefer to specifically use either 0x or 1inch, you can do that too.",
-          "read_more": {
-            "open_text": "Still curious? ",
-            "link_text": "Read more",
-            "close_text": " about our approach to routing bridges."
-          }
-        },
-        "got_it": "Got it"
-      }
-    },
-    "actions": {
-      "review": "Review",
-      "loading": "Loading",
-      "insufficient_liquidity": "Insufficient liquidity",
-      "fee_on_transfer_token": "Fee on Transfer Token",
-      "no_route": "No route found",
-      "no_quote": "No quote available",
-      "enter_an_amount": "Enter an amount"
-    },
-    "review": {
-      "title": "Review & Bridge",
-      "flashbots_on": "On",
-      "minimum_received": "Minimum received",
-      "via": "Bridging via",
-      "included_fee": "Included Rainbow fee",
-      "use_flashbots": "Use Flashbots",
-      "exchange_rate": "Exchange rate",
-      "asset_contract": "%{symbol} contract",
-      "more_details": "More details",
-      "confirmation": "Bridge %{sellSymbol} to %{buySymbol}",
-      "go_back": "Go back"
-    },
-    "explainers": {
-      "long_wait": {
-        "title": "Long wait to bridge",
-        "description": "This bridge may take a very long time to complete. This is usually due to problems with a cross-chain bridge.",
-        "action_label": "Continue anyway"
-      },
-      "no_route": {
-        "title": "No routes found",
-        "description": "We couldn’t find a route for this bridge. A route may not exist for this bridge, or the amount may be too small.",
+      "flashbots": {
+        "title": "Flashbots",
+        "description": "Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing.",
         "action_label": "Got it"
       },
-      "no_quote": {
-        "title": "No quote available",
-        "description": "We couldn’t find quotes for this bridge. This could be because there isn’t enough liqudity to bridge or because of problems with how the  token is implemented.",
-        "action_label": "Continue anyway"
-      },
-      "insufficient_liquidity": {
-        "title": "Insufficient liquidity",
-        "description": "We couldn’t find quotes for this bridge because this pair doesn’t have enough liquidity on exchanges.",
-        "action_label": "Got it",
-        "footer_text": {
-          "open_text": "Still curious? ",
-          "link_text": "Read more",
-          "close_text": " about AMMs and token liquidity."
-        }
-      },
-      "fee_on_transfer_token": {
-        "title": "Fee on Transfer Token",
-        "description": "This bridge will fail in Rainbow because the %{tokenName} contract adds extra fees.",
-        "action_label": "Got it",
-        "footer_text": {
-          "open_text": "Read ",
-          "link_text": "our guide",
-          "close_text": " for help bridging this token!"
-        }
+      "fee": {
+        "title": "Rainbow Fee",
+        "description": "Rainbow takes a %{feePercentage} fee from %{actions}. It’s part of what enables us to give you the best Ethereum experience possible.",
+        "action_label": "Got it"
       }
     }
   },
@@ -1328,18 +1212,6 @@
       "max_base_title": "Max base fee",
       "max_priority_explainer": "The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.",
       "max_priority_title": "Miner tip"
-    },
-    "swap": {
-      "flashbots": {
-        "title": "Flashbots",
-        "description": "Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing.",
-        "action_label": "Got it"
-      },
-      "fee": {
-        "title": "Rainbow Fee",
-        "description": "Rainbow takes a %{feePercentage} fee from swaps. It’s part of what enables us to give you the best Ethereum experience possible.",
-        "action_label": "Got it"
-      }
     }
   },
   "injected_notifications": {
