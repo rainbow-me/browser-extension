@@ -110,18 +110,32 @@ export const useSwapAssets = () => {
   //   return assetAddressesFromSearch;
   // }, [assetToBuy, prevAssetToBuy, searchAssetsToBuySections]);
 
-  const { data: priceData = [] } = useAssets({
+  const { data: buyPriceData = [] } = useAssets({
     assetAddresses: assetToBuy ? [assetToBuy?.address] : [],
+    chainId: outputChainId,
+    currency: currentCurrency,
+  });
+
+  const { data: sellPriceData = [] } = useAssets({
+    assetAddresses: assetToSell ? [assetToSell?.address] : [],
     chainId: outputChainId,
     currency: currentCurrency,
   });
 
   const assetToBuyWithPrice = useMemo(
     () =>
-      Object.values(priceData || {})?.find(
+      Object.values(buyPriceData || {})?.find(
         (asset) => asset.uniqueId === assetToBuy?.uniqueId,
       ),
-    [assetToBuy, priceData],
+    [assetToBuy, buyPriceData],
+  );
+
+  const assetToSellWithPrice = useMemo(
+    () =>
+      Object.values(sellPriceData || {})?.find(
+        (asset) => asset.uniqueId === assetToBuy?.uniqueId,
+      ),
+    [assetToBuy, sellPriceData],
   );
 
   const parsedAssetToBuy = useMemo(() => {
@@ -134,7 +148,7 @@ export const useSwapAssets = () => {
       searchAsset: assetToBuy,
       userAsset,
     });
-  }, [assetToBuy, userAssets, assetToBuyWithPrice]);
+  }, [assetToBuy, assetToBuyWithPrice, userAssets]);
 
   const parsedAssetToSell = useMemo(() => {
     if (!assetToSell) return null;
@@ -142,10 +156,11 @@ export const useSwapAssets = () => {
       isSameAsset(userAsset, assetToSell),
     );
     return parseSearchAsset({
+      assetWithPrice: assetToSellWithPrice,
       searchAsset: assetToSell,
       userAsset,
     });
-  }, [assetToSell, userAssets]);
+  }, [assetToSell, assetToSellWithPrice, userAssets]);
 
   const setAssetToBuy = useCallback(
     (asset: ParsedSearchAsset | null) => {
