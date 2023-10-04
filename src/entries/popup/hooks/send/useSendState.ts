@@ -16,9 +16,11 @@ import { useEns } from '../useEns';
 export const useSendState = ({
   assetAmount,
   asset,
+  rawMaxAssetBalanceAmount,
 }: {
   assetAmount?: string;
   asset: ParsedUserAsset | null;
+  rawMaxAssetBalanceAmount: string;
 }) => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
   const { saveSendAddress } = usePopupInstanceStore();
@@ -60,8 +62,20 @@ export const useSendState = ({
     ) as Address;
   }, [asset?.address, chainId, toAddress]);
 
+  const maxAssetBalanceParams = useMemo(() => {
+    return asset?.isNativeAsset
+      ? { value: rawMaxAssetBalanceAmount }
+      : {
+          data: getDataForTokenTransfer(
+            rawMaxAssetBalanceAmount || '',
+            toAddress || '',
+          ),
+        };
+  }, [asset?.isNativeAsset, rawMaxAssetBalanceAmount, toAddress]);
+
   return {
     asset,
+    maxAssetBalanceParams,
     currentCurrency,
     toAddressOrName,
     chainId,

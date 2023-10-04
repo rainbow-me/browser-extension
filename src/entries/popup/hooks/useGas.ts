@@ -252,7 +252,6 @@ const useGas = ({
   }, [
     enabled,
     gasFeeParamsBySpeed,
-    optimismL1SecurityFee,
     selectedGas,
     selectedSpeed,
     setSelectedGas,
