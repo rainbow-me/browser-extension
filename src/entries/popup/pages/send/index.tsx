@@ -147,11 +147,12 @@ export function Send() {
     return {
       to: txToAddress,
       from: fromAddress,
-      value: maxAssetBalanceParams.value,
+      value,
       chainId,
-      data: maxAssetBalanceParams.data,
+      data,
+      ...maxAssetBalanceParams,
     };
-  }, [txToAddress, fromAddress, chainId, maxAssetBalanceParams]);
+  }, [txToAddress, fromAddress, value, chainId, data, maxAssetBalanceParams]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
