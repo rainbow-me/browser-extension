@@ -22,7 +22,7 @@ export const WalletContextMenu = ({
 }: PropsWithChildren<{ account?: Address }>) => {
   const [isRenamingWallet, setIsRenamingWallet] = useState(false);
 
-  if (!account) return children;
+  if (!account) return <>{children}</>;
 
   const viewOnEtherscan = () =>
     goToNewTab({ url: `https://etherscan.io/address/${account}` });
