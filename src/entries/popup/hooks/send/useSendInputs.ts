@@ -130,7 +130,13 @@ export const useSendInputs = ({
     const rawAssetBalanceAmount =
       asset?.isNativeAsset &&
       lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, multiply(selectedGas?.gasFee?.amount, 1.5))
+        ? toFixedDecimals(
+            minus(
+              assetBalanceAmount,
+              multiply(selectedGas?.gasFee?.amount, 1.3),
+            ),
+            0,
+          )
         : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
