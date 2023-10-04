@@ -43,13 +43,18 @@ export const SUPPORTED_CHAINS: Chain[] = [
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
-export const getSupportedChains = () => {
+export const getSupportedChainsWithHardhat = () => {
   const { chains } = getNetwork();
   return chains.filter(
     (chain) =>
       !chain.testnet ||
       (process.env.IS_TESTING === 'true' && chain.id === ChainId.hardhat),
   );
+};
+
+export const getSupportedChains = () => {
+  const { chains } = getNetwork();
+  return chains.filter((chain) => !chain.testnet);
 };
 
 export const getSupportedChainIds = () =>
