@@ -74,7 +74,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Legacy Ledger HD derivation paths are now supported via a drop-down option while pairing your Ledger device #929
 - Indonesian language support is now available in Settings #937
 - You will now see improvements to dApp naming and other metadata, tailored by the Rainbow team. Let us know if we missed any! #955
-- Rainbow is now opensource and licensed under GPLv3 #965
+- Rainbow is now open source and licensed under GPLv3 #965
 
 ### Changed
 
@@ -96,7 +96,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Improved transaction pagination reliability in Activity for wallets with many filtered transactions, including ProtocolRewards events #960
 - Resolved an issue where keyboard navigation to the Token Details interface clashed and opened the right-click menu #974
 - Adjusted the logic for Backup Reminders to rely on when a user confirms "I've saved these words" #978
-- Prevent resizing animation jitters on presentation of Activity Details with loading skeltons for affected rows #945
+- Prevent resizing animation jitters on presentation of Activity Details with loading skeletons for affected rows #945
 - Resolved a display issue for cross-chain swaps on the Activity pane #948
 - Resolved an issue where you could use the `s` hotkey on Watched wallets #954
 - Resolved a clash where the new Tab Bar would appear over Pending Transaction prompts #979
