@@ -385,7 +385,6 @@ export const estimateGas = async ({
 }) => {
   try {
     const gasLimit = await provider?.estimateGas(transactionRequest);
-    console.log('estimateGas', transactionRequest);
     return gasLimit?.toString() ?? null;
   } catch (error) {
     return null;
