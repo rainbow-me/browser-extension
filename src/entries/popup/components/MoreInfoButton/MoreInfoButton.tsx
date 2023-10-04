@@ -24,6 +24,7 @@ export interface MoreInfoOption {
   separator?: boolean;
   onSelect: () => void;
   color?: TextStyles['color'];
+  disabled?: boolean;
 }
 
 interface MoreInfoButtonProps {
@@ -81,8 +82,13 @@ const MoreInfoButton = ({
                 symbolLeft={option.symbol}
                 leftComponent={option.leftComponent}
                 onSelect={option.onSelect}
+                disabled={option.disabled}
               >
-                <Text size="14pt" weight="semibold" color={option.color}>
+                <Text
+                  size="14pt"
+                  weight="semibold"
+                  color={option.disabled ? 'labelTertiary' : option.color}
+                >
                   {option.label}
                 </Text>
                 {option.subLabel && (
