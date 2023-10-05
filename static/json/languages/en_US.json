@@ -85,6 +85,9 @@
       "light": "Light",
       "dark": "Dark"
     },
+    "networks": {
+      "title": "Networks"
+    },
     "privacy_and_security": {
       "title": "Privacy & Security",
       "analytics": "Analytics",
