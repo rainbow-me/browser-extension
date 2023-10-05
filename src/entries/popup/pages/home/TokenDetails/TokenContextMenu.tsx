@@ -2,17 +2,17 @@ import { ReactNode } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import { isNativeAsset } from '~/core/utils/chains';
+import { copyAddress } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
+import { Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
-import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 
 import {
   ContextMenuContent,
@@ -68,10 +68,9 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const isBridgeable = token.bridging?.isBridgeable;
 
   const explorer = getTokenBlockExplorer(token);
-  const hasExplorerLink = !isNativeAsset(token?.address, token?.chainId);
-  const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
+  const isNative = isNativeAsset(token?.address, token?.chainId);
 
-  if (isWatchingWallet && !allowSwap && isEth) return <>{children}</>;
+  if (isWatchingWallet && !allowSwap && isNative) return <>{children}</>;
 
   return (
     <DetailsMenuWrapper closed={true} onOpenChange={onOpenChange}>
@@ -104,7 +103,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             {`${i18n.t('token_details.send')} ${token.symbol}`}
           </ContextMenuItem>
         )}
-        {hasExplorerLink && (
+        {explorer && (
           <ContextMenuItem
             symbolLeft="binoculars.fill"
             onSelect={() => goToNewTab(explorer)}
@@ -112,19 +111,18 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             {i18n.t('token_details.view_on', { explorer: explorer.name })}
           </ContextMenuItem>
         )}
-        {!isEth && (
+        {!isNative && (
           <ContextMenuItem
             symbolLeft="doc.on.doc.fill"
-            onSelect={() => {
-              navigator.clipboard.writeText(token.address);
-              triggerToast({
-                title: i18n.t('wallet_header.copy_toast'),
-                description: truncateAddress(token.address),
-              });
-            }}
+            onSelect={() => copyAddress(token.address)}
             shortcut={shortcuts.home.COPY_ADDRESS.display}
           >
-            {i18n.t('token_details.more_options.copy_address')}
+            <Text size="14pt" weight="semibold">
+              {i18n.t('token_details.more_options.copy_address')}
+            </Text>
+            <Text size="11pt" color="labelTertiary" weight="medium">
+              {truncateAddress(token.address)}
+            </Text>
           </ContextMenuItem>
         )}
       </ContextMenuContent>

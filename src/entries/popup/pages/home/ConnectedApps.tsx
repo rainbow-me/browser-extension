@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Address, useEnsName } from 'wagmi';
 
 import appsConnectedImageMask from 'static/assets/appsConnectedImageMask.svg';
@@ -7,8 +7,8 @@ import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { AppSession } from '~/core/state/appSessions';
 import { ChainId } from '~/core/types/chains';
+import { truncateAddress } from '~/core/utils/address';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
   Bleed,
   Box,

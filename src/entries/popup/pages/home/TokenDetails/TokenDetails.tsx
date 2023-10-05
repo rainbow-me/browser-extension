@@ -9,6 +9,8 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { isNativeAsset } from '~/core/utils/chains';
+import { copyAddress } from '~/core/utils/copy';
 import {
   FormattedCurrencyParts,
   formatCurrencyParts,
@@ -20,7 +22,6 @@ import {
   ButtonSymbol,
   Inline,
   Separator,
-  Stack,
   Symbol,
   Text,
 } from '~/design-system';
@@ -36,7 +37,6 @@ import {
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { SideChainExplainerSheet } from '~/entries/popup/components/SideChainExplainer';
-import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -120,6 +120,7 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
         color="accent"
         symbol="arrow.triangle.swap"
         onClick={() => selectTokenAndNavigate(ROUTES.SWAP)}
+        tabIndex={0}
       >
         {i18n.t('token_details.swap')}
       </Button>
@@ -142,6 +143,7 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
         color="accent"
         symbol="paperplane.fill"
         onClick={() => selectTokenAndNavigate(ROUTES.SEND)}
+        tabIndex={0}
       >
         {i18n.t('token_details.send')}
       </Button>
@@ -206,6 +208,7 @@ function FavoriteButton({ token }: { token: ParsedUserAsset }) {
       variant="transparentHover"
       color={isFavorite ? 'yellow' : 'labelSecondary'}
       onClick={() => (isFavorite ? removeFavorite(token) : addFavorite(token))}
+      tabIndex={0}
     />
   );
 }
@@ -221,7 +224,7 @@ export const getCoingeckoUrl = ({
 
 function MoreOptions({ token }: { token: ParsedUserAsset }) {
   const explorer = getTokenBlockExplorer(token);
-  const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
+  const isNative = isNativeAsset(token.address, token.chainId);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -231,6 +234,7 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
             height="32px"
             variant="transparentHover"
             color="labelSecondary"
+            tabIndex={0}
           />
         </div>
       </DropdownMenuTrigger>
@@ -238,25 +242,17 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
         <AccentColorProvider
           color={token.colors?.primary || token.colors?.fallback}
         >
-          {!isEth && (
+          {!isNative && (
             <DropdownMenuItem
               symbolLeft="doc.on.doc.fill"
-              onSelect={() => {
-                navigator.clipboard.writeText(token.address);
-                triggerToast({
-                  title: i18n.t('wallet_header.copy_toast'),
-                  description: truncateAddress(token.address),
-                });
-              }}
+              onSelect={() => copyAddress(token.address)}
             >
-              <Stack space="8px">
-                <Text size="14pt" weight="semibold">
-                  {i18n.t('token_details.more_options.copy_address')}
-                </Text>
-                <Text size="11pt" color="labelTertiary" weight="medium">
-                  {truncateAddress(token.address)}
-                </Text>
-              </Stack>
+              <Text size="14pt" weight="semibold">
+                {i18n.t('token_details.more_options.copy_address')}
+              </Text>
+              <Text size="11pt" color="labelTertiary" weight="medium">
+                {truncateAddress(token.address)}
+              </Text>
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
@@ -266,7 +262,7 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
           >
             CoinGecko
           </DropdownMenuItem>
-          {!isEth && (
+          {!isNative && explorer && (
             <DropdownMenuItem
               symbolLeft="binoculars.fill"
               external
@@ -318,6 +314,7 @@ export function TokenDetails() {
         background="surfacePrimaryElevatedSecondary"
         borderColor="separatorTertiary"
         borderWidth="1px"
+        isModal
         style={{ borderTop: 0, borderLeft: 0, borderRight: 0 }}
       >
         <Navbar

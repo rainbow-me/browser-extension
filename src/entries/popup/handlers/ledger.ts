@@ -18,6 +18,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
+import { logger } from '~/logger';
 
 import { walletAction } from './walletAction';
 
@@ -145,8 +146,12 @@ export async function signMessageByTypeFromLedger(
   // Personal sign
   if (messageType === 'personal_sign') {
     if (typeof msgData === 'string') {
-      // eslint-disable-next-line no-param-reassign
-      msgData = toUtf8Bytes(msgData);
+      try {
+        // eslint-disable-next-line no-param-reassign
+        msgData = toUtf8Bytes(msgData);
+      } catch (e) {
+        logger.info('the message is not a utf8 string, will sign as hex');
+      }
     }
 
     const messageHex = hexlify(msgData).substring(2);

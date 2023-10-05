@@ -1,9 +1,10 @@
+import clsx from 'clsx';
 import { ReactNode, useReducer } from 'react';
 
 import { i18n } from '~/core/languages';
-import { ETH_ADDRESS } from '~/core/references';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
+import { isNativeAsset } from '~/core/utils/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import {
@@ -14,6 +15,7 @@ import {
   Symbol,
   Text,
   TextOverflow,
+  textStyles,
 } from '~/design-system';
 import {
   Accordion,
@@ -22,10 +24,12 @@ import {
   AccordionTrigger,
 } from '~/design-system/components/Accordion/Accordion';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
+import { TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
+import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 import { useTokenInfo } from './useTokenInfo';
 
@@ -183,6 +187,49 @@ function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
   );
 }
 
+const LinkInline = ({
+  children,
+  color,
+  weight,
+  href,
+}: {
+  children: ReactNode;
+  color?: TextStyles['color'];
+  highlight?: boolean;
+  weight?: TextStyles['fontWeight'];
+  href: string;
+}) => (
+  <Box
+    rel="noopener noreferrer"
+    target="_blank"
+    href={href}
+    as="a"
+    className={clsx([textStyles({ color, fontWeight: weight })])}
+  >
+    {children}
+  </Box>
+);
+
+function Description({ text = '' }: { text?: string | null }) {
+  if (!text) return null;
+  const chunks = chunkLinks(text);
+  return (
+    <Text color="labelTertiary" size="14pt" weight="regular">
+      {chunks.map((chunk, i) => {
+        if (chunk.type === 'text') {
+          return chunk.value;
+        } else if (chunk.href) {
+          return (
+            <LinkInline key={i} href={chunk.href} color="accent">
+              {chunk.value}
+            </LinkInline>
+          );
+        }
+      })}
+    </Text>
+  );
+}
+
 const placeholder = <Skeleton width="40px" height="12px" />;
 export function About({ token }: { token: ParsedUserAsset }) {
   const { data } = useTokenInfo(token);
@@ -199,8 +246,6 @@ export function About({ token }: { token: ParsedUserAsset }) {
   } = data || {};
 
   const explorer = getTokenBlockExplorer(token);
-
-  const isEth = [token.address, token.mainnetAddress].includes(ETH_ADDRESS);
 
   return (
     <Accordion
@@ -282,7 +327,7 @@ export function About({ token }: { token: ParsedUserAsset }) {
             marginHorizontal="-20px"
           >
             <div />
-            {!isEth && (
+            {!isNativeAsset(token.address, token.chainId) && (
               <>
                 <InfoRow
                   symbol="info.circle"
@@ -320,10 +365,7 @@ export function About({ token }: { token: ParsedUserAsset }) {
             />
 
             <Separator color="separatorTertiary" />
-
-            <Text weight="regular" size="14pt" color="labelTertiary">
-              {description}
-            </Text>
+            <Description text={description} />
 
             {links && (
               <Inline alignVertical="center" space="8px">
@@ -338,7 +380,7 @@ export function About({ token }: { token: ParsedUserAsset }) {
                     Homepage
                   </Button>
                 )}
-                {token.address && (
+                {explorer && (
                   <Button
                     symbol="link"
                     onClick={() => window.open(explorer.url, '_blank')}
