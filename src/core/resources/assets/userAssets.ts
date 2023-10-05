@@ -12,6 +12,7 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { userChainsStore } from '~/core/state/userChains';
 import {
   ParsedAssetsDictByChain,
   ParsedUserAsset,
@@ -113,8 +114,11 @@ async function userAssetsQueryFunction({
   const cachedUserAssets = (cache.find(
     userAssetsQueryKey({ address, currency }),
   )?.state?.data || {}) as ParsedAssetsDictByChain;
+  const { userChains } = userChainsStore.getState();
   try {
-    const url = `/${getSupportedChainIds().join(',')}/${address}/assets`;
+    const url = `/${getSupportedChainIds()
+      .filter((chainId) => userChains[chainId])
+      .join(',')}/${address}/assets`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       params: {
         currency: currency.toLowerCase(),
