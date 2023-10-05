@@ -239,7 +239,7 @@ export const BottomNetwork = ({
             gap: 4,
             padding: 2,
           }}
-          bubbles={true}
+          bubbles
           tabIndex={displaySymbol ? 0 : -1}
         >
           <ChainBadge chainId={selectedChainId} size="18" />
