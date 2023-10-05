@@ -16,11 +16,14 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useErrorStore } from '~/core/state/error';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { isNativePopup } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
+import { RainbowError, logger } from '~/logger';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
@@ -175,24 +178,31 @@ export const Home = memo(function Home() {
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
   const { featureFlags } = useFeatureFlagsStore();
   const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
-
+  const { error, setError } = useErrorStore();
+  const navigate = useRainbowNavigate();
+  const { pendingRequests } = usePendingRequestStore();
+  const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   const [activeTab, setActiveTab] = useState<Tab>(popupActiveTab);
-
   const containerRef = useContainerRef();
   const prevScrollPosition = useRef<number | undefined>(undefined);
+
   const onSelectTab = (tab: Tab) => {
     prevScrollPosition.current = containerRef.current?.scrollTop;
     setActiveTab(tab);
     saveActiveTab({ tab });
   };
 
-  usePendingTransactionWatcher({ address: currentAddress });
+  useEffect(() => {
+    if (error) {
+      triggerAlert({ text: i18n.t('errors.error_encountered') });
+      logger.error(new RainbowError('Error Boundary Did Catch: '), {
+        message: error.message,
+        stack: error.stack,
+      });
+      setError(null);
+    }
+  }, [error, setError]);
 
-  const navigate = useRainbowNavigate();
-
-  const { pendingRequests } = usePendingRequestStore();
-
-  const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   useEffect(() => {
     if (
       pendingRequests?.[0] &&
@@ -208,6 +218,7 @@ export const Home = memo(function Home() {
     removeImportWalletSecrets();
   }, []);
 
+  usePendingTransactionWatcher({ address: currentAddress });
   useHomeShortcuts();
   useRestoreNavigation();
   useSwitchWalletShortcuts();

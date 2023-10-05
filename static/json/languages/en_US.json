@@ -960,6 +960,7 @@
     "copy_to_clipboard": "Copy to clipboard"
   },
   "errors": {
+    "error_encountered": "An error occurred. The Rainbow Browser Extension team has been notified. We apologize for the inconvenience.",
     "no_wallet_name_set": "No wallet name set"
   },
   "common_titles": {
