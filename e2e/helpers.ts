@@ -512,16 +512,8 @@ export async function returnAttributesOfActiveElement(
   driver: WebDriver,
   attribute: string,
 ): Promise<string> {
-  const script = `
-    function getAttributeOfElement(element, attributeName) {
-      return element.getAttribute(attributeName);
-    }
-
-    const activeElement = document.activeElement;
-    return getAttributeOfElement(activeElement, "${attribute}");
-  `;
-
-  return driver.executeScript(script);
+  const activeElement = await driver.switchTo().activeElement();
+  return activeElement.getAttribute(attribute);
 }
 
 export async function navigateToElementWithTestId({
