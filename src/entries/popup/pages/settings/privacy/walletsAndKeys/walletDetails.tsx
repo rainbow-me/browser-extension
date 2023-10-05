@@ -70,6 +70,12 @@ const InfoButtonOptions = ({
       ),
       subLabel: truncateAddress(account),
       symbol: 'doc.on.doc.fill',
+    },
+    {
+      label: i18n.t('wallet.edit_appearance'),
+      symbol: 'paintbrush.pointed.fill',
+      onSelect: () => void {},
+      disabled: true,
       separator: true,
     },
     ...(unhideWallet
@@ -436,6 +442,7 @@ const WalletRow = ({
       <AccountItem
         testId={`wallet-${account}`}
         onClick={() => setMenuOpen(true)}
+        onContextMenu={(e) => (e.preventDefault(), setMenuOpen(true))}
         key={account}
         account={account}
         rightComponent={
