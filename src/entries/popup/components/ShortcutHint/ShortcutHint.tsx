@@ -11,7 +11,7 @@ export const ShortcutHint = ({
 }) => {
   const height = small ? '14px' : '18px';
   const width = small ? '16px' : '18px';
-  const widthKey = hint?.length || 0 > 1 ? 'minWidth' : 'width';
+  const widthKey = (hint?.length || 0) > 1 ? 'minWidth' : 'width';
   return (
     <Box
       background="fillSecondary"
