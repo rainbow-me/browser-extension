@@ -23,7 +23,6 @@ const ExternalImage = (
       mask?: string;
       onError?: () => void;
       borderRadius?: BoxStyles['borderRadius'];
-      maxHeight?: number;
     },
 ) => {
   const [fallback, setFallback] = React.useState(false);
@@ -64,7 +63,7 @@ const ExternalImage = (
     <Box
       style={{
         overflow: 'clip',
-        maxHeight: props.maxHeight ? props.maxHeight : '',
+        maxHeight: props.height,
       }}
       borderRadius={props.borderRadius}
     >

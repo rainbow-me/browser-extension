@@ -282,7 +282,6 @@ export const NFTIcon = ({
         width={size}
         borderRadius={nftRadiusBySize[size]}
         onError={() => setBadSrc(true)}
-        maxHeight={size}
       />
       {badge && chainId !== ChainId.mainnet && (
         <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
@@ -311,7 +310,6 @@ export const ContractIcon = ({
           src={iconUrl}
           width={size}
           height={size}
-          maxHeight={size}
           loading="lazy"
           style={{ borderRadius: nftRadiusBySize[size] }}
         />
