@@ -32,7 +32,7 @@ declare global {
 const messenger = initializeMessenger({ connect: 'popup' });
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
-const rainbowProvider = new RainbowProvider({ messenger });
+const rainbowProvider = new RainbowProvider({ messenger, backgroundMessenger });
 
 if (shouldInjectProvider()) {
   announceProvider({
@@ -67,11 +67,6 @@ if (shouldInjectProvider()) {
   backgroundMessenger.reply('rainbow_reload', async () => {
     window.location.reload();
   });
-
-  backgroundMessenger.send(
-    'rainbow_prefetchDappMetadata',
-    window.location.href,
-  );
 
   Object.defineProperties(window, {
     rainbow: { value: rainbowProvider, configurable: false, writable: false },
