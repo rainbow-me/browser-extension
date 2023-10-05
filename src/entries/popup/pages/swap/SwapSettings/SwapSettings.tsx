@@ -137,7 +137,7 @@ const getFlashbotsExplainerProps = (t: I18n['t']) => ({
   header: {
     emoji: '🤖',
   },
-  description: [t('settings.explainers.flashbots.description')],
+  description: [t('swap.settings.explainers.flashbots.description')],
   title: t('swap.settings.explainers.flashbots.title'),
   actionButton: {
     label: t('swap.settings.explainers.got_it'),
@@ -158,7 +158,7 @@ const getRoutingExplainerProps = (t: I18n['t']) => ({
   header: {
     emoji: '🔀',
   },
-  description: [t('settings.explainers.routing.description')],
+  description: [t('swap.settings.explainers.routing.description')],
   title: t('swap.settings.explainers.routing.title'),
   actionButton: {
     label: t('swap.settings.explainers.got_it'),
@@ -178,8 +178,8 @@ const getSlippageExplainerProps = (t: I18n['t']) => ({
     emoji: '🌊',
   },
   description: [
-    t('settings.explainers.slippage.description_1'),
-    t('settings.explainers.slippage.description_2'),
+    t('swap.settings.explainers.slippage.description_1'),
+    t('swap.settings.explainers.slippage.description_2'),
   ],
   title: t('swap.settings.explainers.slippage.title'),
   actionButton: {

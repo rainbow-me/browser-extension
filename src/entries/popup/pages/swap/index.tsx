@@ -167,6 +167,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const translationContext = {
     Action: i18n.t(`swap._actions.${bridge ? 'Bridge' : 'Swap'}`),
     action: i18n.t(`swap._actions.${bridge ? 'bridge' : 'swap'}`),
+    actions: i18n.t(`swap._actions.${bridge ? 'bridges' : 'swaps'}`),
     Actioning: i18n.t(`swap._actions.${bridge ? 'Bridging' : 'Swapping'}`),
     actioning: i18n.t(`swap._actions.${bridge ? 'bridging' : 'swapping'}`),
   };

@@ -486,10 +486,12 @@
     "_actions": {
       "Swap": "Swap",
       "swap": "swap",
+      "swaps": "swaps",
       "Swapping": "Swapping",
       "swapping": "swapping",
       "Bridge": "Bridge",
       "bridge": "bridge",
+      "bridges": "bridges",
       "Bridging": "Bridging",
       "bridging": "bridging"
     },
