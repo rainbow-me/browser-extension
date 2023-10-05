@@ -60,7 +60,13 @@ const ExternalImage = (
 
   if (!signedUrl) return null;
   return (
-    <Box style={{ overflow: 'clip' }} borderRadius={props.borderRadius}>
+    <Box
+      style={{
+        overflow: 'clip',
+        maxHeight: props.height,
+      }}
+      borderRadius={props.borderRadius}
+    >
       <img
         {...omit(props, 'borderRadius')}
         style={
