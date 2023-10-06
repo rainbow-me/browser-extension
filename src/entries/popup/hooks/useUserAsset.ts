@@ -8,6 +8,16 @@ import { UniqueId } from '~/core/types/assets';
 export function useUserAsset(uniqueId?: UniqueId) {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const noselector = useUserAssets(
+    {
+      address,
+      currency,
+    },
+    {
+      enabled: !!uniqueId,
+    },
+  );
+  console.log('--- noselector', noselector);
 
   return useUserAssets(
     {

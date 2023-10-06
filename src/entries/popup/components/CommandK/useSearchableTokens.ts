@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import {
   selectUserAssetsFilteringSmallBalancesList,
   selectUserAssetsList,
+  selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -28,9 +29,13 @@ export const useSearchableTokens = () => {
       currency,
     },
     {
-      select: hideSmallBalances
-        ? selectUserAssetsFilteringSmallBalancesList
-        : selectUserAssetsList,
+      select: (data) =>
+        selectorFilterByUserChains({
+          data,
+          selector: hideSmallBalances
+            ? selectUserAssetsFilteringSmallBalancesList
+            : selectUserAssetsList,
+        }),
     },
   );
 

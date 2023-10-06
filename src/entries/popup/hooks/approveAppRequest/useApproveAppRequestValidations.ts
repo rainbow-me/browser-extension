@@ -22,6 +22,8 @@ export const useApproveAppRequestValidations = ({
 
   const { nativeAsset } = useNativeAsset({ chainId });
 
+  console.log('nativeAsset', nativeAsset);
+
   const enoughNativeAssetForGas = useMemo(() => {
     return lessThan(
       selectedGas?.gasFee?.amount || '0',

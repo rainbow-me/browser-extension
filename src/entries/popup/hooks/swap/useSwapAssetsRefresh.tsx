@@ -1,7 +1,10 @@
 import { getProvider } from '@wagmi/core';
 import { useCallback, useEffect, useRef } from 'react';
 
-import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
+import {
+  selectUserAssetsDictByChain,
+  selectorFilterByUserChains,
+} from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import {
   USER_ASSETS_STALE_INTERVAL,
@@ -22,7 +25,13 @@ export const useSwapRefreshAssets = () => {
       address: currentAddress,
       currency: currentCurrency,
     },
-    { select: selectUserAssetsDictByChain },
+    {
+      select: (data) =>
+        selectorFilterByUserChains({
+          data,
+          selector: selectUserAssetsDictByChain,
+        }),
+    },
   );
 
   const timeout = useRef<NodeJS.Timeout>();
