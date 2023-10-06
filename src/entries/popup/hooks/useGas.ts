@@ -64,7 +64,10 @@ const useGas = ({
   const prevDebouncedMaxBaseFee = usePrevious(debouncedMaxBaseFee);
 
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
-    { transactionRequest: transactionRequest || {}, chainId },
+    {
+      transactionRequest: useDebounce(transactionRequest || {}, 500),
+      chainId,
+    },
     { enabled: chainNeedsL1SecurityFee(chainId) },
   );
 
@@ -301,7 +304,7 @@ export const useTransactionGas = ({
 }) => {
   const { data: estimatedGasLimit } = useEstimateGasLimit({
     chainId,
-    transactionRequest,
+    transactionRequest: useDebounce(transactionRequest, 500),
   });
 
   return useGas({
