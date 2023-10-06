@@ -43,6 +43,22 @@ const { chains, provider, webSocketProvider } = configureChains(
             return { http: process.env.ZORA_MAINNET_RPC as string };
           case ChainId.bsc:
             return { http: process.env.BSC_MAINNET_RPC as string };
+          case ChainId.goerli:
+            return { http: process.env.ETH_GOERLI_RPC as string };
+          case ChainId.sepolia:
+            return { http: process.env.ETH_SEPOLIA_RPC as string };
+          case ChainId.optimismGoerli:
+            return { http: process.env.OPTIMISM_GOERLI_RPC as string };
+          case ChainId.bscTestnet:
+            return { http: process.env.BSC_TESTNET_RPC as string };
+          case ChainId.polygonMumbai:
+            return { http: process.env.POLYGON_MUMBAI_RPC as string };
+          case ChainId.arbitrumGoerli:
+            return { http: process.env.ARBITRUM_GOERLI_RPC as string };
+          case ChainId.baseGoerli:
+            return { http: process.env.BASE_GOERLI_RPC as string };
+          case ChainId.zoraTestnet:
+            return { http: process.env.ZORA_GOERLI_RPC as string };
           default:
             return null;
         }
