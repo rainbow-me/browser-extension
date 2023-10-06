@@ -356,6 +356,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     swapField: savedField,
     swapTokenToBuy: savedTokenToBuy,
     swapTokenToSell: savedTokenToSell,
+    resetSwapValues,
   } = usePopupInstanceStore();
 
   const [didPopulateSavedTokens, setDidPopulateSavedTokens] = useState(false);
@@ -410,8 +411,15 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         }
       }
     }
+
+    return () => {
+      if (bridge) {
+        // only persist swaps, not bridges
+        resetSwapValues();
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [didPopulateSavedInputValues, didPopulateSavedTokens]);
+  }, [didPopulateSavedInputValues, didPopulateSavedTokens, resetSwapValues]);
 
   useEffect(() => {
     return () => {
