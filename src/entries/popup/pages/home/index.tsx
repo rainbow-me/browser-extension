@@ -29,6 +29,7 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { TabBar as NewTabBar } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { WalletContextMenu } from '../../components/WalletContextMenu';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
@@ -288,41 +289,29 @@ const TopNav = memo(function TopNav() {
         }
         titleComponent={
           isCollapsed && (
-            <Box
-              key="top-nav-account-name"
-              as={motion.div}
-              paddingHorizontal="60px"
-            >
-              <AccountName
-                id="topNav"
-                avatar={
-                  address && (
-                    <Box paddingRight="2px">
-                      <WalletAvatar
-                        addressOrName={address}
-                        size={16}
-                        emojiSize="10pt"
-                      />
-                    </Box>
-                  )
-                }
-                size="16pt"
-                renderTooltip={(content) => (
-                  <CursorTooltip
-                    align="center"
-                    arrowAlignment="center"
-                    text={i18n.t('tooltip.switch_wallet')}
-                    textWeight="bold"
-                    textSize="12pt"
-                    textColor="labelSecondary"
-                    arrowDirection={'up'}
-                    hint={shortcuts.home.GO_TO_WALLETS.display}
-                  >
-                    {content}
-                  </CursorTooltip>
-                )}
-              />
-            </Box>
+            <WalletContextMenu account={address}>
+              <Box
+                key="top-nav-account-name"
+                as={motion.div}
+                paddingHorizontal="60px"
+              >
+                <AccountName
+                  id="topNav"
+                  avatar={
+                    address && (
+                      <Box paddingRight="2px">
+                        <WalletAvatar
+                          addressOrName={address}
+                          size={16}
+                          emojiSize="10pt"
+                        />
+                      </Box>
+                    )
+                  }
+                  size="16pt"
+                />
+              </Box>
+            </WalletContextMenu>
           )
         }
       />

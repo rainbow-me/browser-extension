@@ -46,7 +46,7 @@ import {
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
-import { useAccounts } from '../../hooks/useAccounts';
+import { Account, useAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useBrowser } from '../../hooks/useBrowser';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
@@ -118,6 +118,12 @@ const infoButtonOptions = ({
       label: i18n.t('wallet_switcher.copy_address'),
       subLabel: truncateAddress(account.address),
       symbol: 'doc.on.doc.fill',
+    },
+    {
+      label: i18n.t('wallet.edit_appearance'),
+      symbol: 'paintbrush.pointed.fill',
+      onSelect: () => void {},
+      disabled: true,
       separator: !isLastWallet,
     },
   ];
@@ -177,6 +183,53 @@ interface WalletSearchData extends AddressAndType {
   walletName?: string;
   ensName?: string;
 }
+
+const AccountItemWithMenu = ({
+  account,
+  menuOptions,
+  isSelected,
+  onSelect,
+  index,
+}: {
+  account: Account;
+  onSelect: () => void;
+  isSelected: boolean;
+  menuOptions: MoreInfoOption[];
+  index: number;
+}) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  return (
+    <AccountItem
+      testId={`wallet-account-${index + 1}`}
+      key={account.address}
+      onClick={onSelect}
+      onContextMenu={(e) => (e.preventDefault(), setIsMenuOpen(true))}
+      account={account.address}
+      rightComponent={
+        <Inline alignVertical="center" space="6px">
+          {account.type === KeychainType.ReadOnlyKeychain && (
+            <LabelPill label={i18n.t('wallet_switcher.watching')} />
+          )}
+          {account.type === KeychainType.HardwareWalletKeychain && (
+            <LabelPill
+              dot
+              label={i18n.t(`wallet_switcher.${account.vendor?.toLowerCase()}`)}
+            />
+          )}
+          <MoreInfoButton
+            open={isMenuOpen}
+            onOpen={() => setIsMenuOpen(true)}
+            onClose={() => setIsMenuOpen(false)}
+            testId={`more-info-${index + 1}`}
+            options={menuOptions}
+          />
+        </Inline>
+      }
+      labelType={LabelOption.balance}
+      isSelected={isSelected}
+    />
+  );
+};
 
 export function WalletSwitcher() {
   const { isFirefox } = useBrowser();
@@ -297,37 +350,17 @@ export function WalletSwitcher() {
                   ]
                 }
               >
-                <AccountItem
-                  testId={`wallet-account-${index + 1}`}
-                  key={account.address}
-                  onClick={() => handleSelectAddress(account.address)}
-                  account={account.address}
-                  rightComponent={
-                    <Inline alignVertical="center" space="6px">
-                      {account.type === KeychainType.ReadOnlyKeychain && (
-                        <LabelPill label={i18n.t('wallet_switcher.watching')} />
-                      )}
-                      {account.type === KeychainType.HardwareWalletKeychain && (
-                        <LabelPill
-                          dot
-                          label={i18n.t(
-                            `wallet_switcher.${account.vendor?.toLowerCase()}`,
-                          )}
-                        />
-                      )}
-                      <MoreInfoButton
-                        testId={`more-info-${index + 1}`}
-                        options={infoButtonOptions({
-                          account,
-                          setRenameAccount,
-                          setRemoveAccount,
-                          isLastWallet,
-                        })}
-                      />
-                    </Inline>
-                  }
-                  labelType={LabelOption.balance}
+                <AccountItemWithMenu
+                  account={account}
+                  onSelect={() => handleSelectAddress(account.address)}
                   isSelected={account.address === currentAddress}
+                  index={index}
+                  menuOptions={infoButtonOptions({
+                    account,
+                    setRenameAccount,
+                    setRemoveAccount,
+                    isLastWallet,
+                  })}
                 />
               </Box>
             </Box>

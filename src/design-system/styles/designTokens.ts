@@ -1002,6 +1002,7 @@ export const symbolNames = selectSymbolNames(
   'creditcard',
   'creditcard.fill',
   'building.columns',
+  'paintbrush.pointed.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
