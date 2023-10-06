@@ -7,10 +7,12 @@ import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { hasChildren } from '~/core/utils/react';
 import {
   AccentColorProvider,
   Box,
   Inline,
+  Stack,
   Symbol,
   Text,
   ThemeProvider,
@@ -116,6 +118,7 @@ interface ContextMenuContentProps {
 }
 
 export function ContextMenuContent(props: ContextMenuContentProps) {
+  if (!hasChildren(props.children)) return null;
   return (
     <ContextMenuPrimitive.Portal>
       <ContextMenuContentBody
@@ -227,6 +230,8 @@ interface ContextMenuItemProps {
   symbolLeft: SymbolName | (string & {});
   color?: TextStyles['color'];
   shortcut?: string;
+  external?: boolean;
+  disabled?: boolean;
 }
 
 const isSymbol = (symbol: string): symbol is SymbolName =>
@@ -238,7 +243,11 @@ export const ContextMenuItem = ({
   symbolLeft,
   color,
   shortcut,
+  external,
+  disabled,
 }: ContextMenuItemProps) => {
+  // eslint-disable-next-line no-param-reassign
+  if (disabled) color = 'labelTertiary';
   return (
     <Box
       as={ContextMenuPrimitive.Item}
@@ -256,8 +265,10 @@ export const ContextMenuItem = ({
       onSelect={onSelect}
       background={{
         default: 'transparent',
-        hover: 'surfaceSecondary',
+        hover: disabled ? 'transparent' : 'surfaceSecondary',
       }}
+      disabled={disabled}
+      tabIndex={disabled ? -1 : 0}
     >
       <Inline alignVertical="center" space="8px">
         {isSymbol(symbolLeft) ? (
@@ -268,19 +279,27 @@ export const ContextMenuItem = ({
             color={color}
           />
         ) : (
-          <Text weight="semibold" size="14pt">
+          <Text color={color} weight="semibold" size="14pt">
             {symbolLeft}
           </Text>
         )}
         {typeof children === 'string' ? (
-          <Text size="14pt" weight="semibold">
+          <Text size="14pt" weight="semibold" color={color}>
             {children}
           </Text>
         ) : (
-          children
+          <Stack space="8px">{children}</Stack>
         )}
       </Inline>
       {shortcut && <ShortcutHint hint={shortcut} />}
+      {external && (
+        <Symbol
+          size={12}
+          symbol="arrow.up.forward.circle"
+          weight="semibold"
+          color="labelTertiary"
+        />
+      )}
     </Box>
   );
 };

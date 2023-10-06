@@ -7,9 +7,10 @@ import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
+import { copy } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
-import { Box, Stack, Text } from '~/design-system';
+import { Box, Text } from '~/design-system';
 
 import {
   ContextMenuContent,
@@ -18,7 +19,6 @@ import {
   ContextMenuTrigger,
 } from '../../../components/ContextMenu/ContextMenu';
 import { DetailsMenuWrapper } from '../../../components/DetailsMenu';
-import { triggerToast } from '../../../components/Toast/Toast';
 
 export function ActivityContextMenu({
   children,
@@ -36,10 +36,10 @@ export function ActivityContextMenu({
   const truncatedHash = truncateAddress(transaction.hash);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(transaction.hash);
-    triggerToast({
+    copy({
       title: i18n.t('speed_up_and_cancel.handle_copy_title'),
       description: truncatedHash,
+      value: transaction.hash,
     });
   };
 
@@ -112,14 +112,12 @@ export function ActivityContextMenu({
           onSelect={handleCopy}
           shortcut={shortcuts.activity.COPY_TRANSACTION.display}
         >
-          <Stack space="8px">
-            <Text color="label" size="14pt" weight="semibold">
-              {i18n.t('speed_up_and_cancel.copy_tx_hash')}
-            </Text>
-            <Text color="labelSecondary" size="12pt" weight="semibold">
-              {truncatedHash}
-            </Text>
-          </Stack>
+          <Text color="label" size="14pt" weight="semibold">
+            {i18n.t('speed_up_and_cancel.copy_tx_hash')}
+          </Text>
+          <Text color="labelSecondary" size="12pt" weight="semibold">
+            {truncatedHash}
+          </Text>
         </ContextMenuItem>
       </ContextMenuContent>
     </DetailsMenuWrapper>

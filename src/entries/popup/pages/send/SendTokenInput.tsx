@@ -19,6 +19,7 @@ import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
+import { AssetContextMenu } from '../../components/AssetContextMenu';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { DropdownInputWrapper } from '../../components/DropdownInputWrapper/DropdownInputWrapper';
 import {
@@ -240,9 +241,9 @@ export const SendTokenInput = React.forwardRef<
       dropdownHeight={376}
       testId={'token-input'}
       leftComponent={
-        <Box>
+        <AssetContextMenu asset={asset}>
           <CoinIcon asset={asset ?? undefined} />
-        </Box>
+        </AssetContextMenu>
       }
       centerComponent={
         <Box width="full">

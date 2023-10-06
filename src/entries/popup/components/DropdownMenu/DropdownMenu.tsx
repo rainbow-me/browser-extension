@@ -7,10 +7,12 @@ import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { hasChildren } from '~/core/utils/react';
 import {
   AccentColorProvider,
   Box,
   Inline,
+  Stack,
   Symbol,
   Text,
   TextOverflow,
@@ -88,6 +90,7 @@ interface DropdownMenuContentProps {
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
+  if (!hasChildren(props.children)) return null;
   return (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuContentBody
@@ -198,6 +201,7 @@ type DropdownMenuItemProps = {
   onSelect?: (event: Event) => void;
   external?: boolean;
   color?: TextStyles['color'];
+  disabled?: boolean;
 } & (
   | { symbolLeft?: SymbolName; emoji?: never; leftComponent?: ReactNode }
   | { symbolLeft?: never; emoji?: string; leftComponent?: ReactNode }
@@ -211,7 +215,10 @@ export const DropdownMenuItem = ({
   leftComponent,
   emoji,
   color,
+  disabled,
 }: DropdownMenuItemProps) => {
+  // eslint-disable-next-line no-param-reassign
+  if (disabled) color = 'labelTertiary';
   return (
     <Box
       as={DropdownMenuPrimitive.Item}
@@ -232,9 +239,10 @@ export const DropdownMenuItem = ({
       onSelect={onSelect}
       background={{
         default: 'transparent',
-        hover: 'surfaceSecondary',
+        hover: disabled ? 'transparent' : 'surfaceSecondary',
       }}
-      tabIndex={0}
+      disabled={disabled}
+      tabIndex={disabled ? -1 : 0}
       style={{ minHeight: '34px' }}
     >
       <Inline alignVertical="center" space="10px" wrap={false}>
@@ -253,11 +261,11 @@ export const DropdownMenuItem = ({
         )}
         {leftComponent}
         {typeof children === 'string' ? (
-          <TextOverflow size="14pt" weight="semibold">
+          <TextOverflow size="14pt" weight="semibold" color={color}>
             {children}
           </TextOverflow>
         ) : (
-          children
+          <Stack space="8px">{children}</Stack>
         )}
       </Inline>
       {external && (
