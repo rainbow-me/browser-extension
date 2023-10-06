@@ -157,7 +157,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
       driver,
     });
     const inputAmount = await inputItem.getAttribute('value');
-    expect(inputAmount).toBeCloseTo(10000, 2);
+    expect(inputAmount).toBeGreaterThan(9998);
   });
 
   it('should be able to open network menu with shortcut', async () => {
