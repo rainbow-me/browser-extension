@@ -96,9 +96,17 @@ export async function dappMetadataQueryFunction({
 }
 
 export async function prefetchDappMetadata({ url }: { url: string }) {
-  queryClient.prefetchQuery(DappMetadataQueryKey({ url }), async () =>
-    fetchDappMetadata({ url, status: false }),
-  );
+  const { dappMetadata } = dappMetadataStore.getState();
+  const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
+  if (!dappMetadata[appHost]) {
+    queryClient.prefetchQuery(
+      DappMetadataQueryKey({ url }),
+      async () => fetchDappMetadata({ url, status: false }),
+      {
+        staleTime: 60000,
+      },
+    );
+  }
 }
 
 // ///////////////////////////////////////////////
@@ -113,5 +121,6 @@ export function useDappMetadata({ url }: DappMetadataArgs) {
       return getDappMetadata({ host: appHost });
     },
     enabled: !!url,
+    staleTime: 60000,
   });
 }
