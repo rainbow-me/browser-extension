@@ -204,7 +204,7 @@ export function Send() {
           from: fromAddress,
           to: txToAddress,
           value,
-          chainId: connectedToHardhat ? ChainId.hardhat : chainId,
+          chainId: connectedToHardhat ? ChainId.hardhatOptimism : chainId,
           data,
         });
         if (result && asset) {

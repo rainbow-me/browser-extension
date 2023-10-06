@@ -10,6 +10,10 @@ import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 export function useSwappableAssets(toChainId?: ChainId) {
   const { currentAddress: address } = useCurrentAddressStore();
 
@@ -37,8 +41,8 @@ export function useSwappableAssets(toChainId?: ChainId) {
     data: swappableOptimismAddresses,
     isLoading: swappableOptimismAddressesAreLoading,
   } = useSwappableAddresses({
-    addresses: assetAddressMap[ChainId.optimism],
-    fromChainId: ChainId.optimism,
+    addresses: assetAddressMap[opChainId],
+    fromChainId: opChainId,
     toChainId,
   });
 
@@ -93,7 +97,7 @@ export function useSwappableAssets(toChainId?: ChainId) {
         addresses: swappableMainnetAddresses,
         loading: swappableMainnetAddressesAreLoading,
       },
-      [ChainId.optimism]: {
+      [opChainId]: {
         addresses: swappableOptimismAddresses,
         loading: swappableOptimismAddressesAreLoading,
       },

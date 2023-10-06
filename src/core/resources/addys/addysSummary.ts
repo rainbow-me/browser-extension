@@ -11,9 +11,13 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 enum SummarySupportedChainId {
   mainnet = ChainId.mainnet as number,
-  optimism = ChainId.optimism as number,
+  optimism = opChainId as number,
   polygon = ChainId.polygon as number,
   arbitrum = ChainId.arbitrum as number,
   base = ChainId.base as number,

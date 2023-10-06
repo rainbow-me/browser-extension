@@ -43,6 +43,10 @@ export interface FavoritesState {
   removeFavorite: UpdateFavoritesFn;
 }
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
     favorites: {
@@ -68,7 +72,7 @@ export const favoritesStore = createStore<FavoritesState>(
         USDC_POLYGON_ADDRESS,
         WBTC_POLYGON_ADDRESS,
       ],
-      [ChainId.optimism]: [
+      [opChainId]: [
         ETH_OPTIMISM_ADDRESS,
         OP_ADDRESS,
         WETH_OPTIMISM_ADDRESS,

@@ -12,6 +12,10 @@ import { chainNameFromChainId } from '~/core/utils/chains';
 
 import { getNativeAssets, useNativeAssets } from './useNativeAssets';
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 const getNetworkNativeMainnetAssetAddress = ({
   chainId,
 }: {
@@ -20,7 +24,7 @@ const getNetworkNativeMainnetAssetAddress = ({
   switch (chainId) {
     case ChainId.arbitrum:
     case ChainId.mainnet:
-    case ChainId.optimism:
+    case opChainId:
       return ETH_ADDRESS as Address;
     case ChainId.base:
       return ETH_ADDRESS as Address;
@@ -45,7 +49,7 @@ export const getNetworkNativeAssetUniqueId = ({
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.mainnet:
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
-    case ChainId.optimism:
+    case opChainId:
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.bsc:
       return `${BNB_MAINNET_ADDRESS}_${chainId}` as UniqueId;

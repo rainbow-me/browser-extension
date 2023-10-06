@@ -88,6 +88,10 @@ async function tokenSearchQueryFunction({
   }
 }
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
   return assets
     .map((a) => {
@@ -99,7 +103,7 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
         decimals: networkInfo ? networkInfo.decimals : a.decimals,
         isNativeAsset: [
           `${ETH_ADDRESS}_${ChainId.mainnet}`,
-          `${ETH_ADDRESS}_${ChainId.optimism}`,
+          `${ETH_ADDRESS}_${opChainId}`,
           `${ETH_ADDRESS}_${ChainId.arbitrum}`,
           `${BNB_MAINNET_ADDRESS}_${ChainId.bsc}`,
           `${MATIC_MAINNET_ADDRESS}_${ChainId.polygon}`,

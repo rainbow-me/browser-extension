@@ -2,6 +2,7 @@ import * as chain from '@wagmi/chains';
 import type { Chain } from 'wagmi';
 
 const HARDHAT_CHAIN_ID = 1337;
+const HARDHAT_OP_CHAIN_ID = 1338;
 
 export const hardhat: Chain = {
   id: HARDHAT_CHAIN_ID,
@@ -19,6 +20,22 @@ export const hardhat: Chain = {
   testnet: true,
 };
 
+export const hardhatOptimism: Chain = {
+  id: HARDHAT_OP_CHAIN_ID,
+  name: 'Hardhat OP',
+  network: 'hardhatOptimism',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Hardhat Op',
+    symbol: 'op',
+  },
+  rpcUrls: {
+    public: { http: ['http://127.0.0.1:8545'] },
+    default: { http: ['http://127.0.0.1:8545'] },
+  },
+  testnet: true,
+};
+
 export enum ChainName {
   arbitrum = 'arbitrum',
   base = 'base',
@@ -28,6 +45,7 @@ export enum ChainName {
   zora = 'zora',
   mainnet = 'mainnet',
   hardhat = 'hardhat',
+  hardhatOptimism = 'hardhatOptimism',
   goerli = 'goerli',
   sepolia = 'sepolia',
   optimismGoerli = 'optimismGoerli',
@@ -47,6 +65,7 @@ export enum ChainId {
   polygon = chain.polygon.id,
   zora = chain.zora.id,
   hardhat = HARDHAT_CHAIN_ID,
+  hardhatOptimism = HARDHAT_OP_CHAIN_ID,
   goerli = chain.goerli.id,
   sepolia = chain.sepolia.id,
   optimismGoerli = chain.optimismGoerli.id,
@@ -56,12 +75,15 @@ export enum ChainId {
   baseGoerli = chain.baseGoerli.id,
   zoraTestnet = chain.zoraTestnet.id,
 }
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
 
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
   [ChainId.base]: 'Base',
   [ChainId.bsc]: 'BSC',
-  [ChainId.optimism]: 'Optimism',
+  [opChainId]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
   [ChainId.zora]: 'Zora',
   [ChainId.mainnet]: 'Ethereum',

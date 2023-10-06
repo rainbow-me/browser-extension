@@ -358,12 +358,16 @@ export const getBaseFeeMultiplier = (speed: GasSpeed) => {
   }
 };
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 export const getChainWaitTime = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.bsc:
     case ChainId.polygon:
       return { safeWait: 6, proposedWait: 3, fastWait: 3 };
-    case ChainId.optimism:
+    case opChainId:
       return { safeWait: 20, proposedWait: 20, fastWait: 20 };
     case ChainId.base:
       return { safeWait: 20, proposedWait: 20, fastWait: 20 };
@@ -525,7 +529,7 @@ export const meteorologySupportsChain = (chainId: ChainId) =>
     ChainId.polygon,
     ChainId.base,
     ChainId.arbitrum,
-    ChainId.optimism,
+    opChainId,
     ChainId.zora,
   ].includes(chainId);
 
@@ -534,12 +538,12 @@ export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
     ChainId.mainnet,
     ChainId.base,
     ChainId.arbitrum,
-    ChainId.optimism,
+    opChainId,
     ChainId.zora,
   ].includes(chainId);
 
 export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
-  [ChainId.base, ChainId.optimism, ChainId.zora].includes(chainId);
+  [ChainId.base, opChainId, ChainId.zora].includes(chainId);
 
 export const parseGasFeeParamsBySpeed = ({
   chainId,

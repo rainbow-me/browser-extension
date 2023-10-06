@@ -10,6 +10,10 @@ import {
 } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 const getMeteorologyNetworkFromChainId = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.polygon:
@@ -18,7 +22,7 @@ const getMeteorologyNetworkFromChainId = (chainId: ChainId) => {
       return 'bsc';
     case ChainId.base:
       return 'base';
-    case ChainId.optimism:
+    case opChainId:
       return 'optimism';
     case ChainId.arbitrum:
       return 'arbitrum';

@@ -8,11 +8,15 @@ import { chainNameFromChainId } from '~/core/utils/chains';
 
 import usePrevious from '../usePrevious';
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 export const DEFAULT_SLIPPAGE_BIPS = {
   [ChainId.mainnet]: 100,
   [ChainId.polygon]: 200,
   [ChainId.bsc]: 200,
-  [ChainId.optimism]: 200,
+  [opChainId]: 200,
   [ChainId.base]: 200,
   [ChainId.zora]: 200,
   [ChainId.arbitrum]: 200,
@@ -22,7 +26,7 @@ export const DEFAULT_SLIPPAGE = {
   [ChainId.mainnet]: '1',
   [ChainId.polygon]: '2',
   [ChainId.bsc]: '2',
-  [ChainId.optimism]: '2',
+  [opChainId]: '2',
   [ChainId.base]: '2',
   [ChainId.zora]: '2',
   [ChainId.arbitrum]: '2',

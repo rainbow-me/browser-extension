@@ -63,13 +63,17 @@ export function getPaymentMethodConfigs(
   return methods;
 }
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 export function convertAPINetworkToChainId(
   network: APINetwork,
 ): ChainId | undefined {
   const networkMap = {
     [APINetwork.Ethereum]: ChainId.mainnet,
     [APINetwork.Arbitrum]: ChainId.arbitrum,
-    [APINetwork.Optimism]: ChainId.optimism,
+    [APINetwork.Optimism]: opChainId,
     [APINetwork.Polygon]: ChainId.polygon,
     [APINetwork.Base]: ChainId.base,
     [APINetwork.BSC]: ChainId.bsc,

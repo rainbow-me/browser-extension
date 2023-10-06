@@ -47,11 +47,15 @@ type OptimismL1SecurityFeeQueryKey = ReturnType<
 // ///////////////////////////////////////////////
 // Query Function
 
+const opChainId = process.env.IS_TESTING
+  ? ChainId.hardhatOptimism
+  : ChainId.optimism;
+
 async function optimismL1SecurityFeeQueryFunction({
   queryKey: [{ transactionRequest, chainId }],
 }: QueryFunctionArgs<typeof optimismL1SecurityFeeQueryKey>) {
   if (chainNeedsL1SecurityFee(chainId)) {
-    const provider = getProvider({ chainId: ChainId.optimism });
+    const provider = getProvider({ chainId: opChainId });
     const gasPrice = await provider.getGasPrice();
     const l1Fee = await calculateL1FeeOptimism({
       currentGasPrice: gasPrice.toString(),
