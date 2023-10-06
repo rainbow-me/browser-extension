@@ -121,6 +121,5 @@ export function useDappMetadata({ url }: DappMetadataArgs) {
       return getDappMetadata({ host: appHost });
     },
     enabled: !!url,
-    staleTime: 60000,
   });
 }
