@@ -24,6 +24,7 @@ export function Lens({
   forwardNav?: boolean;
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
   onClick?: () => void;
+  onContextMenu?: React.MouseEventHandler<HTMLDivElement>;
   handleOpenMenu?: () => void;
   style?: React.CSSProperties;
 }) {
@@ -34,7 +35,7 @@ export function Lens({
         e.key === shortcuts.global.SELECT.key ||
         (e.key === shortcuts.global.FORWARD.key && forwardNav)
       ) {
-        simulateClick(containerRef?.current);
+        simulateClick(containerRef?.current, { bubbles: false });
         onKeyDown?.(e);
         e.preventDefault();
         e.stopPropagation();

@@ -65,6 +65,7 @@ export default function AccountItem({
   account,
   rightComponent,
   onClick,
+  onContextMenu,
   labelType,
   isSelected,
   testId,
@@ -72,6 +73,7 @@ export default function AccountItem({
   account: Address;
   rightComponent?: React.ReactNode;
   onClick?: () => void;
+  onContextMenu?: React.MouseEventHandler<HTMLDivElement>;
   isSelected?: boolean;
   labelType?: LabelOption;
   searchTerm?: string;
@@ -91,6 +93,7 @@ export default function AccountItem({
   return (
     <Lens
       handleOpenMenu={onClick}
+      onContextMenu={onContextMenu}
       key={account}
       onClick={onClick}
       paddingHorizontal="14px"

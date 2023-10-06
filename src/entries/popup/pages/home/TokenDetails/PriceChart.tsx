@@ -183,6 +183,7 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
                 height="24px"
                 variant={isSelected ? 'tinted' : 'transparentHover'}
                 color={isSelected ? 'accent' : 'labelTertiary'}
+                tabIndex={0}
               >
                 {i18n.t(`token_details.${time}`)}
               </Button>

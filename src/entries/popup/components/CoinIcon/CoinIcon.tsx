@@ -283,11 +283,11 @@ export const NFTIcon = ({
         borderRadius={nftRadiusBySize[size]}
         onError={() => setBadSrc(true)}
       />
-      <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
-        {badge && chainId !== ChainId.mainnet && (
+      {badge && chainId !== ChainId.mainnet && (
+        <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
           <ChainBadge chainId={chainId} shadow size="16" />
-        )}
-      </Box>
+        </Box>
+      )}
     </Box>
   );
 };
