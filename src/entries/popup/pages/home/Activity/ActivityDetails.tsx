@@ -12,7 +12,7 @@ import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
+import { getSupportedChainIds } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
@@ -358,15 +358,15 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
   );
 }
 
-const isSupportedChain = (chainId?: number | string): chainId is ChainId =>
-  SUPPORTED_CHAIN_IDS.includes(Number(chainId));
-
 export function ActivityDetails() {
   const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
 
-  if (!isSupportedChain(chainId) || !hash) return <Navigate to={ROUTES.HOME} />;
+  if (!chainId || !getSupportedChainIds().includes(Number(chainId)) || !hash)
+    return <Navigate to={ROUTES.HOME} />;
 
-  return <ActivityDetailsSheet hash={hash} chainId={chainId} />;
+  return (
+    <ActivityDetailsSheet hash={hash} chainId={chainId as unknown as ChainId} />
+  );
 }
 
 const SpeedUpOrCancel = ({

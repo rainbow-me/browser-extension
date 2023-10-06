@@ -13,7 +13,10 @@ import { SupportedCurrencyKey } from '~/core/references';
 import { ChainName } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { SUPPORTED_CHAIN_IDS, chainIdFromChainName } from '~/core/utils/chains';
+import {
+  chainIdFromChainName,
+  getSupportedChainIds,
+} from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -86,7 +89,7 @@ export async function consolidatedTransactionsQueryFunction({
 >): Promise<_QueryResult> {
   try {
     const response = await addysHttp.get<TransactionsReceivedMessage>(
-      `/${SUPPORTED_CHAIN_IDS.join(',')}/${address}/transactions`,
+      `/${getSupportedChainIds().join(',')}/${address}/transactions`,
       {
         params: {
           currency: currency.toLowerCase(),

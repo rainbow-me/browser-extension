@@ -7,7 +7,6 @@ import { i18n } from '~/core/languages';
 import { selectUserAssetsBalance } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
@@ -45,9 +44,8 @@ export const AppConnectionWalletItem = React.forwardRef(
     const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
 
     const { currentCurrency: currency } = useCurrentCurrencyStore();
-    const { connectedToHardhat } = useConnectedToHardhatStore();
     const { data: totalAssetsBalance } = useUserAssets(
-      { address, currency, connectedToHardhat },
+      { address, currency },
       { select: selectUserAssetsBalance() },
     );
 

@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { Chain } from 'wagmi';
 
 import { meteorologyHttp } from '~/core/network';
 import {
@@ -11,7 +10,7 @@ import {
 } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
 
-const getMeteorologyNetworkFromChainId = (chainId: Chain['id']) => {
+const getMeteorologyNetworkFromChainId = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.polygon:
       return 'polygon';
@@ -84,7 +83,7 @@ export type MeteorologyLegacyResponse = {
 };
 
 export type MeteorologyArgs = {
-  chainId: Chain['id'];
+  chainId: ChainId;
 };
 
 // ///////////////////////////////////////////////
