@@ -18,6 +18,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhatOpStore } from '~/core/state/currentSettings/connectedToHardhatOp';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { AddressOrEth } from '~/core/types/assets';
@@ -83,6 +84,7 @@ export function Send() {
     allWallets?.some((w) => w.address === address);
 
   const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { connectedToHardhatOp } = useConnectedToHardhatOpStore();
 
   const {
     asset,
@@ -189,6 +191,16 @@ export function Send() {
     saveSendTokenAddressAndChain,
   } = usePopupInstanceStore();
 
+  const chainIdToUse = useCallback(() => {
+    if (connectedToHardhat) {
+      return ChainId.hardhat;
+    } else if (connectedToHardhatOp) {
+      return ChainId.hardhatOptimism;
+    } else {
+      return chainId || ChainId.mainnet;
+    }
+  }, [connectedToHardhat, connectedToHardhatOp, chainId]);
+
   const handleSend = useCallback(
     async (callback?: () => void) => {
       if (!config.send_enabled) return;
@@ -204,7 +216,7 @@ export function Send() {
           from: fromAddress,
           to: txToAddress,
           value,
-          chainId: connectedToHardhat ? ChainId.hardhatOptimism : chainId,
+          chainId: chainIdToUse(),
           data,
         });
         if (result && asset) {
@@ -271,11 +283,11 @@ export function Send() {
       resetSendValues,
       txToAddress,
       value,
-      connectedToHardhat,
-      chainId,
+      chainIdToUse,
       data,
-      assetAmount,
       asset,
+      assetAmount,
+      chainId,
       selectedGas.transactionGasParams,
       navigate,
     ],

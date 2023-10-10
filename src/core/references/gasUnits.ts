@@ -1,9 +1,5 @@
 import { ChainId } from '../types/chains';
 
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
-
 export const gasUnits = {
   basic_approval: '55000',
   basic_deposit: '420000',
@@ -11,7 +7,7 @@ export const gasUnits = {
   basic_swap: {
     [ChainId.mainnet]: '200000',
     [ChainId.arbitrum]: '3500000',
-    [opChainId]: '1000000',
+    [ChainId.optimism]: '1000000',
     [ChainId.base]: '1000000',
     [ChainId.zora]: '1000000',
     [ChainId.bsc]: '600000',

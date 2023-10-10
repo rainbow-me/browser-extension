@@ -25,10 +25,6 @@ import { AddressOrEth } from '../types/assets';
 import { getDappHost } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
 
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
-
 export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
   polygon,
@@ -52,7 +48,8 @@ export const getSupportedChainsWithHardhat = () => {
   return chains.filter(
     (chain) =>
       !chain.testnet ||
-      (process.env.IS_TESTING === 'true' && chain.id === ChainId.hardhat),
+      (process.env.IS_TESTING === 'true' &&
+        (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)),
   );
 };
 
@@ -88,7 +85,7 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
     case ChainId.arbitrum:
     case ChainId.base:
     case ChainId.bsc:
-    case opChainId:
+    case ChainId.optimism:
     case ChainId.polygon:
     case ChainId.zora:
       return true;

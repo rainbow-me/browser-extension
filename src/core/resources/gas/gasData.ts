@@ -4,10 +4,6 @@ import { meteorologySupportsChain } from '~/core/utils/gas';
 import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';
 
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
-
 const getRefetchTime = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.arbitrum:
@@ -16,9 +12,10 @@ const getRefetchTime = (chainId: ChainId) => {
       return 5000;
     case ChainId.base:
     case ChainId.bsc:
-    case opChainId:
+    case ChainId.optimism:
     case ChainId.polygon:
     case ChainId.zora:
+    case ChainId.hardhatOptimism:
     default:
       return 2000;
   }

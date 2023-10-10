@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhatOpStore } from '~/core/state/currentSettings/connectedToHardhatOp';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { getChain } from '~/core/utils/chains';
@@ -18,7 +19,17 @@ export const useApproveAppRequestValidations = ({
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
 }) => {
   const { connectedToHardhat } = useConnectedToHardhatStore();
-  const chainIdToUse = connectedToHardhat ? ChainId.mainnet : chainId;
+  const { connectedToHardhatOp } = useConnectedToHardhatOpStore();
+
+  const chainIdToUse = useCallback(() => {
+    if (connectedToHardhat) {
+      return ChainId.hardhat;
+    } else if (connectedToHardhatOp) {
+      return ChainId.hardhatOptimism;
+    } else {
+      return chainId;
+    }
+  }, [connectedToHardhat, connectedToHardhatOp, chainId]);
 
   const { nativeAsset } = useNativeAsset({ chainId });
 
@@ -32,7 +43,7 @@ export const useApproveAppRequestValidations = ({
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
-        symbol: getChain({ chainId: chainIdToUse }).nativeCurrency.name,
+        symbol: getChain({ chainId: chainIdToUse() }).nativeCurrency.name,
       });
     return i18n.t('approve_request.send_transaction');
   }, [chainIdToUse, enoughNativeAssetForGas]);

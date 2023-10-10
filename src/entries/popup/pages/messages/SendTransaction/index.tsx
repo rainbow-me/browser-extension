@@ -12,6 +12,7 @@ import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhatOpStore } from '~/core/state/currentSettings/connectedToHardhatOp';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
@@ -55,6 +56,7 @@ export function SendTransaction({
   const { selectedGas } = useGasStore();
   const selectedWallet = activeSession?.address || '';
   const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { connectedToHardhatOp } = useConnectedToHardhatOpStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
@@ -71,12 +73,22 @@ export function SendTransaction({
       if (type === 'HardwareWalletKeychain') {
         setWaitingForDevice(true);
       }
+
+      const chainIdToUse = () => {
+        if (connectedToHardhat) {
+          return ChainId.hardhat;
+        } else if (connectedToHardhatOp) {
+          return ChainId.hardhatOptimism;
+        } else {
+          return activeSession?.chainId;
+        }
+      };
       const txData = {
         from: selectedWallet,
         to: txRequest?.to ? getAddress(txRequest?.to) : undefined,
         value: txRequest.value || '0x0',
         data: txRequest.data ?? '0x',
-        chainId: connectedToHardhat ? ChainId.hardhat : activeSession?.chainId,
+        chainId: chainIdToUse(),
       };
       const result = await wallet.sendTransaction(txData);
       if (result) {
@@ -120,6 +132,7 @@ export function SendTransaction({
     activeSession,
     request?.params,
     connectedToHardhat,
+    connectedToHardhatOp,
     asset,
     selectedGas.transactionGasParams,
     approveRequest,
@@ -157,18 +170,26 @@ export function SendTransaction({
     }
   }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
+  const chainIdToUse = useCallback(() => {
+    if (connectedToHardhat) {
+      return ChainId.hardhat;
+    } else if (connectedToHardhatOp) {
+      return ChainId.hardhatOptimism;
+    } else {
+      return activeSession?.chainId || ChainId.mainnet;
+    }
+  }, [connectedToHardhat, connectedToHardhatOp, activeSession?.chainId]);
+
   useEffect(() => {
     if (activeSession) {
       selectAssetAddressAndChain(
-        NATIVE_ASSETS_PER_CHAIN[
-          connectedToHardhat ? ChainId.hardhat : activeSession?.chainId
-        ] as Address,
-        connectedToHardhat ? ChainId.hardhat : activeSession?.chainId,
+        NATIVE_ASSETS_PER_CHAIN[chainIdToUse()] as Address,
+        chainIdToUse(),
       );
     }
   }, [
     activeSession,
-    activeSession?.chainId,
+    chainIdToUse,
     connectedToHardhat,
     selectAssetAddressAndChain,
   ]);

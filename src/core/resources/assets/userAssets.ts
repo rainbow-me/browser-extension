@@ -12,6 +12,7 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { connectedToHardhatOpStore } from '~/core/state/currentSettings/connectedToHardhatOp';
 import {
   ParsedAssetsDictByChain,
   ParsedUserAsset,
@@ -30,6 +31,7 @@ import { RainbowError, logger } from '~/logger';
 import {
   DAI_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
+  OPTIMSIM_MAINNET_ASSET,
   USDC_MAINNET_ASSET,
 } from '~/test/utils';
 
@@ -220,6 +222,8 @@ export async function parseUserAssets({
   currency: SupportedCurrencyKey;
 }) {
   const { connectedToHardhat } = connectedToHardhatStore.getState();
+  const { connectedToHardhatOp } = connectedToHardhatOpStore.getState();
+
   const parsedAssetsDict = chainIds.reduce(
     (dict, currentChainId) => ({ ...dict, [currentChainId]: {} }),
     {},
@@ -271,6 +275,38 @@ export async function parseUserAssets({
       return acc;
     }, {});
     parsedAssetsDict[ChainId.mainnet] = newMainnetAssets;
+  }
+  if (connectedToHardhatOp) {
+    const provider = getProvider({ chainId: ChainId.hardhatOptimism });
+    // force checking for ETH if connected to hardhat
+    const opAssets = parsedAssetsDict[ChainId.optimism];
+    opAssets[OPTIMSIM_MAINNET_ASSET.uniqueId] = OPTIMSIM_MAINNET_ASSET;
+    if (process.env.IS_TESTING === 'true') {
+      opAssets[USDC_MAINNET_ASSET.uniqueId] = USDC_MAINNET_ASSET;
+      opAssets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
+    }
+    const opBalanceRequests = Object.values(opAssets).map(async (asset) => {
+      if (asset.chainId !== ChainId.optimism) return asset;
+      try {
+        const parsedAsset = await fetchAssetBalanceViaProvider({
+          parsedAsset: asset,
+          currentAddress: address,
+          currency,
+          provider,
+        });
+        return parsedAsset;
+      } catch (e) {
+        return asset;
+      }
+    });
+    const newParsedOpAssetsByUniqueId = await Promise.all(opBalanceRequests);
+    const newOpAssets = newParsedOpAssetsByUniqueId.reduce<
+      Record<string, ParsedUserAsset>
+    >((acc, parsedAsset) => {
+      acc[parsedAsset.uniqueId] = parsedAsset;
+      return acc;
+    }, {});
+    parsedAssetsDict[ChainId.optimism] = newOpAssets;
   }
   return parsedAssetsDict;
 }

@@ -18,19 +18,17 @@ import {
 } from '~/design-system';
 
 const HTML_COLOR_SCHEME_PATTERN = /color-scheme:\s*(\w+);/;
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
 
 const ASSET_SOURCE = {
   [ChainId.mainnet]: 'assets/badges/ethereumBadge.png',
-  [opChainId]: 'assets/badges/optimismBadge.png',
+  [ChainId.optimism]: 'assets/badges/optimismBadge.png',
   [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
   [ChainId.polygon]: 'assets/badges/polygonBadge.png',
   [ChainId.base]: 'assets/badges/baseBadge.png',
   [ChainId.zora]: 'assets/badges/zoraBadge.png',
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
   [ChainId.hardhat]: 'assets/badges/hardhatBadge.png',
+  [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge.png',
   [ChainId.goerli]: 'assets/badges/ethereumBadge.png',
   [ChainId.sepolia]: 'assets/badges/ethereumBadge.png',
   [ChainId.optimismGoerli]: 'assets/badges/optimismBadge.png',

@@ -18,10 +18,6 @@ import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets
 
 import { TokenToBuyRow } from '../TokenRow/TokenToBuyRow';
 
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
-
 interface SectionProp {
   background?: TextStyles['background'];
   gradient?: React.ReactNode;
@@ -77,7 +73,7 @@ const sectionProps: { [id in AssetToBuySectionId]: SectionProp } = {
 const bridgeSectionsColorsByChain = {
   [ChainId.mainnet]: 'mainnet' as TextStyles['color'],
   [ChainId.arbitrum]: 'arbitrum' as TextStyles['color'],
-  [opChainId]: 'optimism' as TextStyles['color'],
+  [ChainId.optimism]: 'optimism' as TextStyles['color'],
   [ChainId.polygon]: 'polygon' as TextStyles['color'],
   [ChainId.base]: 'base' as TextStyles['color'],
   [ChainId.zora]: 'zora' as TextStyles['color'],

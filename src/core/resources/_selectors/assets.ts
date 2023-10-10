@@ -32,14 +32,10 @@ export function selectUserAssetsDictByChain(assets: ParsedAssetsDictByChain) {
   return assets;
 }
 
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
-
 export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
   const assetsByNetwork = [
     assets?.[ChainId.mainnet],
-    assets?.[opChainId],
+    assets?.[ChainId.optimism],
     assets?.[ChainId.polygon],
     assets?.[ChainId.arbitrum],
     assets?.[ChainId.base],
@@ -64,7 +60,7 @@ export function selectUserAssetAddressMapByChainId(
     Object.values(list).map((i) => i.address);
   return {
     [ChainId.mainnet]: mapAddresses(assets[ChainId.mainnet]) || [],
-    [opChainId]: mapAddresses(assets[opChainId]) || [],
+    [ChainId.optimism]: mapAddresses(assets[ChainId.optimism]) || [],
     [ChainId.bsc]: mapAddresses(assets[ChainId.bsc]) || [],
     [ChainId.polygon]: mapAddresses(assets[ChainId.polygon]) || [],
     [ChainId.arbitrum]: mapAddresses(assets[ChainId.arbitrum]) || [],

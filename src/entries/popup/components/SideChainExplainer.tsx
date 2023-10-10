@@ -8,13 +8,11 @@ import {
   ExplainerSheetProps,
 } from './ExplainerSheet/ExplainerSheet';
 
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
-
-type SideChain = Exclude<ChainId, 1 | 5 | 1337>;
+type SideChain = Exclude<ChainId, 1 | 5 | 1337 | 1338>;
 export const isSideChain = (chainId: ChainId): chainId is SideChain =>
-  [ChainId.arbitrum, ChainId.polygon, opChainId, ChainId.bsc].includes(chainId);
+  [ChainId.arbitrum, ChainId.polygon, ChainId.optimism, ChainId.bsc].includes(
+    chainId,
+  );
 
 export const getSideChainExplainerParams = (
   chainId: SideChain,

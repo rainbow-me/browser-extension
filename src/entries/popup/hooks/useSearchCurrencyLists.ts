@@ -18,10 +18,6 @@ import { filterList } from '../utils/search';
 
 import { useFavoriteAssets } from './useFavoriteAssets';
 
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
-
 const VERIFIED_ASSETS_PAYLOAD: {
   keys: TokenSearchAssetKey[];
   list: TokenSearchListId;
@@ -108,7 +104,7 @@ export function useSearchCurrencyLists({
     data: optimismVerifiedAssets,
     isLoading: optimismVerifiedAssetsLoading,
   } = useTokenSearch({
-    chainId: opChainId,
+    chainId: ChainId.optimism,
     ...VERIFIED_ASSETS_PAYLOAD,
     fromChainId,
   });
@@ -210,7 +206,7 @@ export function useSearchCurrencyLists({
         assets: mainnetVerifiedAssets,
         loading: mainnetVerifiedAssetsLoading,
       },
-      [opChainId]: {
+      [ChainId.optimism]: {
         assets: optimismVerifiedAssets,
         loading: optimismVerifiedAssetsLoading,
       },
@@ -298,7 +294,7 @@ export function useSearchCurrencyLists({
   const curatedAssets = useMemo(
     () => ({
       [ChainId.mainnet]: getCuratedAssets(ChainId.mainnet),
-      [opChainId]: getCuratedAssets(opChainId),
+      [ChainId.optimism]: getCuratedAssets(ChainId.optimism),
       [ChainId.bsc]: getCuratedAssets(ChainId.bsc),
       [ChainId.polygon]: getCuratedAssets(ChainId.polygon),
       [ChainId.arbitrum]: getCuratedAssets(ChainId.arbitrum),

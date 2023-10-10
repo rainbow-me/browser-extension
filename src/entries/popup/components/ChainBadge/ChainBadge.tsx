@@ -25,19 +25,16 @@ export interface ChainIconProps {
   size: keyof typeof chainBadgeSize | number;
 }
 
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
-
 const networkBadges = {
   [ChainId.mainnet]: EthereumBadge,
   [ChainId.polygon]: PolygonBadge,
-  [opChainId]: OptimismBadge,
+  [ChainId.optimism]: OptimismBadge,
   [ChainId.arbitrum]: ArbitrumBadge,
   [ChainId.base]: BaseBadge,
   [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
   [ChainId.hardhat]: HardhatBadge,
+  [ChainId.hardhatOptimism]: HardhatBadge,
   [ChainId.goerli]: EthereumBadge,
   [ChainId.sepolia]: EthereumBadge,
   [ChainId.optimismGoerli]: OptimismBadge,

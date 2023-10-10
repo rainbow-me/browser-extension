@@ -75,19 +75,17 @@ export enum ChainId {
   baseGoerli = chain.baseGoerli.id,
   zoraTestnet = chain.zoraTestnet.id,
 }
-const opChainId = process.env.IS_TESTING
-  ? ChainId.hardhatOptimism
-  : ChainId.optimism;
 
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
   [ChainId.base]: 'Base',
   [ChainId.bsc]: 'BSC',
-  [opChainId]: 'Optimism',
+  [ChainId.optimism]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
   [ChainId.zora]: 'Zora',
   [ChainId.mainnet]: 'Ethereum',
   [ChainId.hardhat]: 'Hardhat',
+  [ChainId.hardhatOptimism]: 'Hardhat Optimism',
   [ChainId.goerli]: chain.goerli.name,
   [ChainId.sepolia]: chain.sepolia.name,
   [ChainId.optimismGoerli]: chain.optimismGoerli.name,
