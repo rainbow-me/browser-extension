@@ -31,6 +31,7 @@ export const useSwapInputs = ({
   setAssetToBuy,
   selectedGas,
   inputToOpenOnMount,
+  bridge,
 }: {
   assetToSell: ParsedSearchAsset | null;
   assetToBuy: ParsedSearchAsset | null;
@@ -38,6 +39,7 @@ export const useSwapInputs = ({
   setAssetToBuy: (asset: ParsedSearchAsset | null) => void;
   selectedGas: GasFeeParams | GasFeeLegacyParams;
   inputToOpenOnMount: 'sell' | 'buy' | null;
+  bridge: boolean;
 }) => {
   const [assetToSellDropdownClosed, setAssetToSellDropdownClosed] = useState(
     inputToOpenOnMount !== 'sell',
@@ -175,6 +177,7 @@ export const useSwapInputs = ({
   }, [assetToSellMaxValue.amount, setIndependentFieldIfOccupied]);
 
   const flipAssets = useCallback(() => {
+    if (bridge && assetToSell && !assetToBuy) return;
     const isCrosschainSwap =
       assetToSell && assetToBuy && assetToSell.chainId !== assetToBuy.chainId;
     if (isCrosschainSwap) {
@@ -220,6 +223,7 @@ export const useSwapInputs = ({
     setAssetToBuy,
     setAssetToSell,
     setIndependentField,
+    bridge,
   ]);
 
   const assetToSellDisplay = useMemo(

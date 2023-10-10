@@ -17,6 +17,7 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
+import { BoxProps } from '~/design-system/components/Box/Box';
 
 import { AppConnectionWatcher } from './components/AppConnection/AppConnectionWatcher';
 import { CommandK } from './components/CommandK/CommandK';
@@ -83,9 +84,12 @@ import { getInputIsFocused } from './utils/activeElement';
 import { simulateTab } from './utils/simulateTab';
 import { zIndexes } from './utils/zIndexes';
 
-const ChildRoute = (props: React.PropsWithChildren) => (
+const ChildRoute = (
+  props: React.PropsWithChildren & Pick<BoxProps, 'background'>,
+) => (
   <Box
     position="absolute"
+    background={props.background}
     style={{ ...POPUP_DIMENSIONS, zIndex: zIndexes.CHILD_ROUTE }}
   >
     {props.children}
@@ -114,10 +118,10 @@ const ROUTE_DATA = [
       {
         path: ROUTES.TOKEN_DETAILS(':uniqueId'),
         element: (
-          <ChildRoute>
+          <ChildRoute background="surfacePrimaryElevated">
             <AnimatedRoute
               background="surfacePrimaryElevated"
-              direction="base"
+              direction="left"
               protectedRoute
             >
               <TokenDetails />
@@ -652,6 +656,18 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute direction="up" title={i18n.t('swap.title')} protectedRoute>
         <Swap />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.BRIDGE,
+    element: (
+      <AnimatedRoute
+        direction="up"
+        title={i18n.t('bridge.title')}
+        protectedRoute
+      >
+        <Swap bridge />
       </AnimatedRoute>
     ),
   },

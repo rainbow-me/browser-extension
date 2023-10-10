@@ -15,7 +15,7 @@ import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
-import { UniqueId } from '~/core/types/assets';
+import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import {
   Box,
   Column,
@@ -43,6 +43,29 @@ import { ROUTES } from '../../urls';
 
 import { TokensSkeleton } from './Skeletons';
 import { TokenContextMenu } from './TokenDetails/TokenContextMenu';
+
+const TokenRow = memo(function TokenRow({
+  token,
+  testId,
+}: {
+  token: ParsedUserAsset;
+  testId: string;
+}) {
+  const navigate = useRainbowNavigate();
+
+  const openDetails = () =>
+    navigate(ROUTES.TOKEN_DETAILS(token.uniqueId), {
+      state: { skipTransitionOnRoute: ROUTES.HOME },
+    });
+
+  return (
+    <TokenContextMenu token={token}>
+      <Box onClick={openDetails}>
+        <AssetRow uniqueId={token.uniqueId} testId={testId} />
+      </Box>
+    </TokenContextMenu>
+  );
+});
 
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
@@ -93,7 +116,6 @@ export function Tokens() {
   });
 
   useTokensShortcuts();
-  const navigate = useRainbowNavigate();
 
   if (isInitialLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
@@ -138,12 +160,8 @@ export function Tokens() {
       >
         <Box style={{ overflow: 'auto' }}>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
-            const { key, index, start, size } = virtualItem;
+            const { key, size, start, index } = virtualItem;
             const token = assets[index];
-            const openDetails = () =>
-              navigate(ROUTES.TOKEN_DETAILS(token.uniqueId), {
-                state: { skipTransitionOnRoute: ROUTES.HOME },
-              });
             return (
               <Box
                 key={key}
@@ -156,14 +174,7 @@ export function Tokens() {
                 width="full"
                 style={{ height: size, y: start }}
               >
-                <TokenContextMenu token={token}>
-                  <Box onClick={openDetails}>
-                    <AssetRow
-                      uniqueId={token.uniqueId}
-                      testId={`coin-row-item-${index}`}
-                    />
-                  </Box>
-                </TokenContextMenu>
+                <TokenRow token={token} testId={`coin-row-item-${index}`} />
               </Box>
             );
           })}
