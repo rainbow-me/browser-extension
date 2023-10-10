@@ -256,7 +256,7 @@ export function WalletSwitcher() {
     (address: Address) => {
       setCurrentAddress(address);
       navigate(ROUTES.HOME, {
-        state: { isBack: true },
+        state: { isBack: true, tab: 'tokens' },
       });
     },
     [navigate, setCurrentAddress],
