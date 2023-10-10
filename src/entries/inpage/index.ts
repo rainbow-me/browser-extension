@@ -31,7 +31,8 @@ declare global {
 
 const messenger = initializeMessenger({ connect: 'popup' });
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
-const rainbowProvider = new RainbowProvider({ messenger });
+
+const rainbowProvider = new RainbowProvider({ messenger, backgroundMessenger });
 
 if (shouldInjectProvider()) {
   announceProvider({

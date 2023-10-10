@@ -20,6 +20,7 @@ import { Avatar } from '../../components/Avatar/Avatar';
 import { triggerToast } from '../../components/Toast/Toast';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { WalletContextMenu } from '../../components/WalletContextMenu';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentWalletTypeAndVendor } from '../../hooks/useCurrentWalletType';
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
@@ -49,82 +50,74 @@ export const Header = React.memo(function Header() {
   const { address } = useAccount();
 
   return (
-    <Box
-      background="surfacePrimaryElevatedSecondary"
-      display="flex"
-      flexDirection="column"
-      justifyContent="space-between"
-      position="relative"
-      paddingTop="40px"
-      testId="header"
-    >
-      <Inset>
-        <Stack alignHorizontal="center" space="6px">
-          <Box
-            as={motion.div}
-            display="flex"
-            justifyContent="center"
-            paddingBottom="2px"
-            position="absolute"
-            style={{
-              opacity: opacityValue,
-              scale: scaleValue,
-              transformOrigin: 'bottom',
-              zIndex: 1,
-              top: -27,
-            }}
-          >
-            <AvatarSection />
-          </Box>
-          <Box
-            as={motion.div}
-            paddingHorizontal="12px"
-            style={{
-              zIndex: 1,
-              scale: nameScaleValue,
-              opacity: nameOpacityValue,
-              x,
-              y,
-            }}
-          >
-            <AccountName
-              avatar={
-                address && (
-                  <Box
-                    as={motion.div}
-                    style={{ opacity: avatarOpacityValue }}
-                    paddingRight="2px"
-                  >
-                    <WalletAvatar
-                      addressOrName={address}
-                      size={20}
-                      emojiSize="14pt"
-                    />
-                  </Box>
-                )
-              }
-              id="header"
-              tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
-              renderTooltip={(content) => (
-                <CursorTooltip
-                  align="center"
-                  arrowAlignment="center"
-                  text={i18n.t('tooltip.switch_wallet')}
-                  textWeight="bold"
-                  textSize="12pt"
-                  textColor="labelSecondary"
-                  hint={shortcuts.home.GO_TO_WALLETS.display}
-                >
-                  {content}
-                </CursorTooltip>
-              )}
-            />
-          </Box>
-          <ActionButtonsSection />
-        </Stack>
-      </Inset>
-      <Box style={{ minHeight: featureFlags.new_tab_bar_enabled ? 28 : 32 }} />
-    </Box>
+    <WalletContextMenu account={address}>
+      <Box
+        background="surfacePrimaryElevatedSecondary"
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-between"
+        position="relative"
+        paddingTop="40px"
+        testId="header"
+      >
+        <Inset>
+          <Stack alignHorizontal="center" space="6px">
+            <Box
+              as={motion.div}
+              display="flex"
+              justifyContent="center"
+              paddingBottom="2px"
+              position="absolute"
+              style={{
+                opacity: opacityValue,
+                scale: scaleValue,
+                transformOrigin: 'bottom',
+                zIndex: 1,
+                top: -27,
+              }}
+            >
+              <AvatarSection />
+            </Box>
+            <Box
+              as={motion.div}
+              paddingHorizontal="12px"
+              style={{
+                zIndex: 1,
+                scale: nameScaleValue,
+                opacity: nameOpacityValue,
+                x,
+                y,
+              }}
+            >
+              <AccountName
+                avatar={
+                  address && (
+                    <Box
+                      as={motion.div}
+                      style={{ opacity: avatarOpacityValue }}
+                      paddingRight="2px"
+                    >
+                      <WalletAvatar
+                        addressOrName={address}
+                        size={20}
+                        emojiSize="14pt"
+                      />
+                    </Box>
+                  )
+                }
+                id="header"
+                tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
+              />
+            </Box>
+
+            <ActionButtonsSection />
+          </Stack>
+        </Inset>
+        <Box
+          style={{ minHeight: featureFlags.new_tab_bar_enabled ? 28 : 32 }}
+        />
+      </Box>
+    </WalletContextMenu>
   );
 });
 
