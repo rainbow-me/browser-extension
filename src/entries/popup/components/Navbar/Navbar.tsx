@@ -171,6 +171,7 @@ function NavbarButtonWithBack({
   symbolSize,
   testId,
   variant = 'flat',
+  withinModal,
 }: {
   height: ButtonSymbolProps['height'];
   onClick?: () => void;
@@ -178,6 +179,7 @@ function NavbarButtonWithBack({
   symbolSize?: SymbolProps['size'];
   testId?: string;
   variant?: 'flat' | 'transparent' | 'transparentHover';
+  withinModal?: boolean;
 }) {
   const { state } = useLocation();
   const { trackShortcut } = useKeyboardAnalytics();
@@ -188,7 +190,7 @@ function NavbarButtonWithBack({
       const closeWithEscape =
         e.key === shortcuts.global.CLOSE.key &&
         !radixIsActive() &&
-        !getActiveModal();
+        (withinModal || !getActiveModal());
       if (
         closeWithEscape ||
         (!getInputIsFocused() && e.key === shortcuts.global.BACK.key)
@@ -234,13 +236,20 @@ function NavbarButtonWithBack({
   );
 }
 
-export function NavbarBackButton({ onClick }: { onClick?: () => void }) {
+export function NavbarBackButton({
+  onClick,
+  withinModal,
+}: {
+  onClick?: () => void;
+  withinModal?: boolean;
+}) {
   return (
     <NavbarButtonWithBack
       onClick={onClick}
       height="32px"
       symbolSize={14}
       symbol="arrow.left"
+      withinModal={withinModal}
     />
   );
 }
@@ -249,10 +258,12 @@ export function NavbarCloseButton({
   onClick,
   testId,
   variant,
+  withinModal,
 }: {
   onClick?: () => void;
   testId?: string;
   variant?: 'flat' | 'transparent' | 'transparentHover';
+  withinModal?: boolean;
 }) {
   return (
     <NavbarButtonWithBack
@@ -262,6 +273,7 @@ export function NavbarCloseButton({
       symbol="xmark"
       testId={testId}
       variant={variant}
+      withinModal={withinModal}
     />
   );
 }
