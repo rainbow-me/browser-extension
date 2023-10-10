@@ -7,7 +7,7 @@ import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
-import { Box, Inset } from '~/design-system';
+import { Box, Inset, Text } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
@@ -92,6 +92,11 @@ export function SettingsNetworks() {
               )}
             </Box>
           </DraggableContext>
+          <Box paddingHorizontal="16px" paddingVertical="16px">
+            <Text size="12pt" weight="medium" color="labelTertiary">
+              {i18n.t('settings.networks.description')}
+            </Text>
+          </Box>
         </Menu>
       </MenuContainer>
     </Box>
