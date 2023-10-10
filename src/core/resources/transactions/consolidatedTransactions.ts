@@ -10,7 +10,6 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { userChainsStore } from '~/core/state/userChains';
 import { ChainName } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -88,12 +87,9 @@ export async function consolidatedTransactionsQueryFunction({
 }: QueryFunctionArgs<
   typeof consolidatedTransactionsQueryKey
 >): Promise<_QueryResult> {
-  const { userChains } = userChainsStore.getState();
   try {
     const response = await addysHttp.get<TransactionsReceivedMessage>(
-      `/${getSupportedChainIds()
-        .filter((chainId) => userChains[chainId])
-        .join(',')}/${address}/transactions`,
+      `/${getSupportedChainIds().join(',')}/${address}/transactions`,
       {
         params: {
           currency: currency.toLowerCase(),
