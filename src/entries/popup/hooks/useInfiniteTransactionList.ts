@@ -95,7 +95,6 @@ export default function ({
                 ]),
               ),
             );
-          console.log('-- pendingTransactions', pendingTransactions);
           watchForPendingTransactionsReportedByRainbowBackend({
             currentAddress: address,
             pendingTransactions,

@@ -1,9 +1,6 @@
 import { useAccount } from 'wagmi';
 
-import {
-  selectUserAssetWithUniqueId,
-  selectUserAssetsDictByChain,
-} from '~/core/resources/_selectors/assets';
+import { selectUserAssetWithUniqueId } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { UniqueId } from '~/core/types/assets';
@@ -11,18 +8,6 @@ import { UniqueId } from '~/core/types/assets';
 export function useUserAsset(uniqueId?: UniqueId) {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const noselector = useUserAssets(
-    {
-      address,
-      currency,
-    },
-    {
-      enabled: !!uniqueId,
-      select: selectUserAssetsDictByChain,
-    },
-  );
-  console.log('--- noselector', noselector, uniqueId);
-
   return useUserAssets(
     {
       address,

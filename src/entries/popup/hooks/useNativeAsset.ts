@@ -15,7 +15,6 @@ export const useNativeAsset = ({ chainId }: { chainId: ChainId }) => {
     chainId: chainId || ChainId.mainnet,
   });
   const { data: userNativeAsset } = useUserAsset(nativeAssetUniqueId || '');
-  console.log('-- userNativeAsset', userNativeAsset);
   const { data: testnetNativeAssets } = useUserTestnetNativeAsset({
     address: currentAddress,
     currency: currentCurrency,
