@@ -683,6 +683,10 @@ export async function transactionStatus() {
   const blockData = await provider.getBlock('latest');
   const txn = await provider.getTransaction(blockData.transactions[0]);
   const txnData = txn.wait();
+  console.log('provider', await provider);
+  console.log('blockData', await blockData);
+  console.log('txn', await txn);
+  console.log('txnData', await txnData);
 
   // transactionResponse.wait.status returns '1' if txn is successful
   // it returns '0' if the txn is a failure
