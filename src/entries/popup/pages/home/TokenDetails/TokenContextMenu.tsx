@@ -35,8 +35,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { featureFlags } = useFeatureFlagsStore();
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
 
+  // if we are navigating to new page (swap/send) the menu closes automatically,
+  // we don't want deselect the token in that case
+  let isNavigating = false;
   const onOpenChange = (open: boolean) => {
-    if (open) setSelectedToken(token);
+    setSelectedToken(open || isNavigating ? token : undefined);
   };
 
   const navigate = useRainbowNavigate();
@@ -56,12 +59,12 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   };
 
   const onSend = () => {
-    setSelectedToken(token);
+    isNavigating = true;
     navigate(ROUTES.SEND);
   };
 
   const onBridge = () => {
-    setSelectedToken(token);
+    isNavigating = true;
     navigate(ROUTES.BRIDGE);
   };
 
