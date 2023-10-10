@@ -21,7 +21,7 @@ import {
   PendingTransaction,
   RainbowTransaction,
 } from '~/core/types/transactions';
-import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
+import { getSupportedChainIds } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
@@ -73,7 +73,7 @@ export default function ({
                 return latestTxMap;
               },
               new Map(
-                SUPPORTED_CHAIN_IDS.map((chain) => [
+                getSupportedChainIds().map((chain) => [
                   chain,
                   null as RainbowTransaction | null,
                 ]),
@@ -212,8 +212,8 @@ function watchForPendingTransactionsReportedByRainbowBackend({
 }) {
   const { setNonce } = nonceStore.getState();
   const { setPendingTransactions } = pendingTransactionsStore.getState();
-
-  for (const supportedChainId of SUPPORTED_CHAIN_IDS) {
+  const supportedChainIds = getSupportedChainIds();
+  for (const supportedChainId of supportedChainIds) {
     const latestTxConfirmedByBackend = latestTransactions.get(supportedChainId);
     if (latestTxConfirmedByBackend) {
       const latestNonceConfirmedByBackend =

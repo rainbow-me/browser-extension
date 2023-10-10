@@ -457,7 +457,7 @@ export const estimateGasWithPadding = async ({
 };
 
 export const calculateL1FeeOptimism = async ({
-  transactionRequest,
+  transactionRequest: txRequest,
   currentGasPrice,
   provider,
 }: {
@@ -465,6 +465,7 @@ export const calculateL1FeeOptimism = async ({
   transactionRequest: TransactionRequest & { gas?: string };
   provider: Provider;
 }): Promise<BigNumberish | undefined> => {
+  const transactionRequest = { ...txRequest };
   try {
     if (transactionRequest?.value) {
       transactionRequest.value = toHex(transactionRequest.value.toString());
