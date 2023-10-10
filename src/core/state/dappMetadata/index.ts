@@ -21,10 +21,22 @@ export const dappMetadataStore = createStore<DappMetadataState>(
     dappMetadata: {},
     setDappMetadata: ({ host, dappMetadata }) => {
       const { dappMetadata: oldDappMetadata } = get();
+      // filtering metadata older than one week ago
+      const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const filteredOldDappMetadata: Record<string, DappMetadata> =
+        Object.entries(oldDappMetadata).reduce(
+          (acc, [key, metadata]) => {
+            if (metadata.timestamp && metadata.timestamp >= oneWeekAgo) {
+              acc[key] = metadata;
+            }
+            return acc;
+          },
+          {} as Record<string, DappMetadata>,
+        );
       set({
         dappMetadata: {
-          ...oldDappMetadata,
-          [host]: dappMetadata,
+          ...filteredOldDappMetadata,
+          [host]: { ...dappMetadata, timestamp: Date.now() },
         },
       });
     },

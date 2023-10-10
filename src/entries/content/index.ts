@@ -1,6 +1,5 @@
 import { initializeMessenger } from '~/core/messengers';
 import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
-import { prefetchDappMetadata } from '~/core/resources/metadata/dapp';
 import { isDefaultWalletStore } from '~/core/state';
 require('../../core/utils/lockdown');
 
@@ -25,5 +24,4 @@ setTimeout(() => {
   inpageMessenger.send('rainbow_setDefaultProvider', {
     rainbowAsDefault: isDefaultWalletStore.getState().isDefaultWallet,
   });
-  prefetchDappMetadata({ url: window.location.href });
 }, 1);
