@@ -668,9 +668,9 @@ function ActivityDetailsSheet({
     });
 
   return (
-    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} isModal={false} show>
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar
-        leftComponent={<Navbar.CloseButton onClick={backToHome} />}
+        leftComponent={<Navbar.CloseButton onClick={backToHome} withinModal />}
         titleComponent={<ActivityPill transaction={tx} />}
         rightComponent={<MoreOptions transaction={tx} />}
       />
