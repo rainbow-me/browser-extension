@@ -106,6 +106,7 @@ describe.runIf(browser !== 'firefox')(
     it('should be able to navigate to Privacy & Security using keyboard', async () => {
       await delayTime('medium');
       await executePerformShortcut({ driver, key: 'TAB' });
+      await executePerformShortcut({ driver, key: 'TAB' });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'privacy');
     });
