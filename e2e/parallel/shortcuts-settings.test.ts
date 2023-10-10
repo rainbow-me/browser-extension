@@ -105,8 +105,7 @@ describe.runIf(browser !== 'firefox')(
 
     it('should be able to navigate to Privacy & Security using keyboard', async () => {
       await delayTime('medium');
-      await executePerformShortcut({ driver, key: 'TAB' });
-      await executePerformShortcut({ driver, key: 'TAB' });
+      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'privacy');
     });
@@ -162,11 +161,11 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ENTER' });
     });
 
-    it('should be able to naviagate back to Privacy & Security using keyboard ', async () => {
+    it('should be able to navigate back to Privacy & Security using keyboard ', async () => {
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 4 });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'privacy');
     });
