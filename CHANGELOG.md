@@ -21,6 +21,107 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.36](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.36)
+
+### Added
+
+- When hovering over icons and buttons throughout Rainbow, you will now see tooltips that tell you more about the feature and highlight keyboard shortcuts #930
+
+### Changed
+
+- Filtering unverified asset results in Swap Search for short search strings to speed up search #1001
+- Improvements to Wallet Switcher banner logic #996
+- Support for keyboard navigation in Token Details #1013
+
+### Fixed
+
+- Filtering imported Private Keys from Wallet Group creation flow #988
+- Fixed a scenario where you couldn’t imported the Secret Recovery Phrase for Watched Wallets #987
+- Restored shortcut hints on the Tokens Right-click menu #1011
+- Fixed an issue where the MATIC symbol was missing during the Swap flow when the user did not already own that asset #990
+- Resolved an issue with EIP-6963 support where we announce the provider before attempting EIP-1193 `window.ethereum` injection, which can fail #994
+- Resolved a crash during provider injected that prevented in-dApp notifications during network switching #1005
+- Resolved duplicate inpage id logs during provider injection #999
+- Prefetching dApp metadata before interacting with a dApp’s prompts #1009
+- Fixed inaccuracies with exchange rate field for transactions in Activity Details #1022
+- Fixed an issue with Layer 2 network Sends that caused transaction failures during internal testing due to invalid max priority fees #1025
+- Resolved an issue where the Wallet Details drop-down could overlap with the Rename Wallet modal #1010
+- Fixed background color inconsistencies in the Wallet Selection step of Import during Onboarding #1006
+- Truncating lengthy ENS names on Activity Details #944
+- Improved Context Menu sizing reliability #973
+- Improved layered context menus animations and sizing in the dApp Menu #1018
+
+### Internal
+
+- Added a dev setting to clear nonces #993
+- Cryptography library upgrades beyond Ethers v5, and evaluating path to Viem upgrade #1007
+- Refactored AccentColorProvider component, and deprecated AccentColorProviderWrapper #1003
+- Updated i18n translations #998
+- Resolved an issue with how we count imported wallets in tracking #989
+- Resolved an issue with the Publish GitHub Action #1024
+- Upgraded to Node 18 from 16 for Firefox support #1020
+- Upgraded `deep-object-diff` to resolve dependency audit issues #1000
+- Upgraded `vite`, `vitest`, and `chai` #1015
+
+### Testing
+- e2e coverage of Home shortcuts #942
+
+## [v1.2.26](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.26)
+
+### Added
+
+- You can now Buy crypto from our On-ramp Partners with the Buy button, and Transfer Crypto for free from Coinbase for new wallets #957 #976
+- Legacy Ledger HD derivation paths are now supported via a drop-down option while pairing your Ledger device #929
+- Indonesian language support is now available in Settings #937
+- You will now see improvements to dApp naming and other metadata, tailored by the Rainbow team. Let us know if we missed any! #955
+- Rainbow is now open source and licensed under GPLv3 #965
+
+### Changed
+
+- Rainbow has a new look and feel with a new Tab Bar to navigate between Activity, Tokens, and NFTs #962
+- The Command K interface is now the Magic Menu and is available as `⌘K` on macOS, `Ctrl-K` on Windows, and simply `k` across all platforms #982
+- The nudge to Switch Wallets while interacting with a dApp has a new look and feel, and now appears immediately for an even faster switching experience #980
+- You can now disable Sounds with a toggle in Settings #953
+- Keyboard navigation now fully supports the Onboarding flow #924
+- Context menus are now dynamically sized for better localization support #949
+
+### Fixed
+
+- Resolved an issue where connections with Ledger devices was unreliable and blocked interactions like Swaps #983
+- Resolved an issue where the Create Wallet action in the Magic Menu incorrectly routed to the Welcome screen #959
+- Handling a scenario where Home actions wouldn't appear when fetches for an ENS avatar failed #946
+- Fixed a crash when dApp session data is temporarily unavailable #947
+- Fixed a crash on the Lock screen that periodically prevented users from unlocking the extension #947
+- Fixed a crash on the Wallet Details interface when removing a Secret Recovery Phrase attached to multiple wallets #947
+- Improved transaction pagination reliability in Activity for wallets with many filtered transactions, including ProtocolRewards events #960
+- Resolved an issue where keyboard navigation to the Token Details interface clashed and opened the right-click menu #974
+- Adjusted the logic for Backup Reminders to rely on when a user confirms "I've saved these words" #978
+- Prevent resizing animation jitters on presentation of Activity Details with loading skeletons for affected rows #945
+- Resolved a display issue for cross-chain swaps on the Activity pane #948
+- Resolved an issue where you could use the `s` hotkey on Watched wallets #954
+- Resolved a clash where the new Tab Bar would appear over Pending Transaction prompts #979
+- Fixed an alignment inconsistency for Activity transaction cells #969
+- Improved icon fallbacks for NFTs that fail to load for Activity transactions #970
+- Favoring a dApp's hostname when other metadata is unavailable on prompts #971
+- Fixed copy for Stronger Password recommendations during Onboarding #975
+- Resolved an issue where wallet avatars could be clipped when using an Emoji #977
+- Resolved issues with the border radius of remotely fetched images throughout the interface #981
+
+### Removed
+
+- Rainbow is now available to all without an invite code. We've removed this step from Onboarding #963
+
+### Internal
+
+- Refactored the initial load of i18n strings on cold boot #950
+- Refactored wallet avatar fetching and added a cache #958
+- Improved fallbacks and handling of Backend-driven transaction types for contract interaction Activity cells #972
+- Updated i18n translations for Activity Details #951
+- Improved Sentry logging for Send, Import, and Hardware Wallet pairing keychain interactions #961
+- Publish actions are now seperate for Chrome and Firefox stores #964
+- Upgraded `@ledgerhq/hw-app-eth` and `@ledgerhq/hw-transport-webhid` and accompanying patches and Wekpack configuration #983
+- Upgraded `@metamask/eth-sig-util`, `@trezor/connect-plugin-ethereum`, `@ledgerhq/cryptoassets`, `wagmi`, `zustand`, Sentry, Webpack, and LavaMoat packages #956
+
 ## [v1.2.21](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.21)
 
 ### Added
