@@ -19,6 +19,7 @@ import { Space } from '~/design-system/styles/designTokens';
 
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { sortNetworks } from '../../pages/settings/networks';
 import { simulateClick } from '../../utils/simulateClick';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
@@ -62,6 +63,7 @@ export const SwitchNetworkMenuSelector = ({
   const { chains } = useNetwork();
   const { userChains } = useUserChainsStore();
   const { trackShortcut } = useKeyboardAnalytics();
+  const { userChainsOrder } = useUserChainsStore();
 
   const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'
@@ -108,55 +110,58 @@ export const SwitchNetworkMenuSelector = ({
     handler: handleTokenShortcuts,
   });
 
+  const availableChains = useMemo(() => {
+    return sortNetworks(
+      userChainsOrder,
+      getSupportedChainsWithHardhat().filter(
+        (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
+      ),
+    );
+  }, [userChains, userChainsOrder]);
+
   return (
     <Box id="switch-network-menu-selector">
-      {getSupportedChainsWithHardhat()
-        .filter((chain) => userChains[chain.id] || chain.id === ChainId.hardhat)
-        .map((chain, i) => {
-          const { id: chainId, name } = chain;
-          return (
-            <MenuRadioItem
-              highlightAccentColor={highlightAccentColor}
-              value={String(chainId)}
-              key={i}
-              selectedValue={selectedValue}
-              onSelect={onNetworkSelect}
-            >
-              <Box width="full">
-                <Columns alignHorizontal="justify" alignVertical="center">
-                  <Column>
-                    <Box testId={`switch-network-item-${chainId}`}>
-                      <Inline space="8px" alignVertical="center">
-                        <ChainBadge chainId={chainId} size="18" />
-                        <Text color="label" size="14pt" weight="semibold">
-                          {name}
-                        </Text>
+      {availableChains.map((chain, i) => {
+        const { id: chainId, name } = chain;
+        return (
+          <MenuRadioItem
+            highlightAccentColor={highlightAccentColor}
+            value={String(chainId)}
+            key={i}
+            selectedValue={selectedValue}
+            onSelect={onNetworkSelect}
+          >
+            <Box width="full">
+              <Columns alignHorizontal="justify" alignVertical="center">
+                <Column>
+                  <Box testId={`switch-network-item-${chainId}`}>
+                    <Inline space="8px" alignVertical="center">
+                      <ChainBadge chainId={chainId} size="18" />
+                      <Text color="label" size="14pt" weight="semibold">
+                        {name}
+                      </Text>
+                    </Inline>
+                  </Box>
+                </Column>
+
+                <Column width="content">
+                  {selectedValue === String(chainId) ? (
+                    <Box style={{ height: '18px', width: '18px' }}>
+                      <Inline alignHorizontal="center" alignVertical="center">
+                        <Inset vertical="3px">
+                          <Symbol weight="bold" symbol="checkmark" size={12} />
+                        </Inset>
                       </Inline>
                     </Box>
-                  </Column>
-
-                  <Column width="content">
-                    {selectedValue === String(chainId) ? (
-                      <Box style={{ height: '18px', width: '18px' }}>
-                        <Inline alignHorizontal="center" alignVertical="center">
-                          <Inset vertical="3px">
-                            <Symbol
-                              weight="bold"
-                              symbol="checkmark"
-                              size={12}
-                            />
-                          </Inset>
-                        </Inline>
-                      </Box>
-                    ) : (
-                      i < 9 && <ShortcutHint hint={`${i + 1}`} />
-                    )}
-                  </Column>
-                </Columns>
-              </Box>
-            </MenuRadioItem>
-          );
-        })}
+                  ) : (
+                    i < 9 && <ShortcutHint hint={`${i + 1}`} />
+                  )}
+                </Column>
+              </Columns>
+            </Box>
+          </MenuRadioItem>
+        );
+      })}
       {showDisconnect && disconnect && (
         <SwitchNetworkMenuDisconnect
           onDisconnect={disconnect}

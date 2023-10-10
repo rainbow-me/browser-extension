@@ -16,7 +16,7 @@ import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import { DraggableContext, DraggableItem } from '../../components/Draggable';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 
-const sortNetworks = (order: ChainId[], chains: Chain[]) =>
+export const sortNetworks = (order: ChainId[], chains: Chain[]) =>
   chains.sort((a, b) => {
     const aIndex = order.indexOf(a.id);
     const bIndex = order.indexOf(b.id);
