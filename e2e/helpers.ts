@@ -508,6 +508,14 @@ export async function getFocusedElementDataTestIds(
   return driver.executeScript(script);
 }
 
+export async function returnAttributesOfActiveElement(
+  driver: WebDriver,
+  attribute: string,
+): Promise<string> {
+  const activeElement = await driver.switchTo().activeElement();
+  return activeElement.getAttribute(attribute);
+}
+
 export async function navigateToElementWithTestId({
   driver,
   testId,

@@ -55,13 +55,18 @@ export class RainbowProvider extends EventEmitter {
   rainbowIsDefaultProvider = false;
 
   [key: string]: unknown;
+  backgroundMessenger: Messenger | undefined = undefined;
 
-  constructor({ messenger }: { messenger?: Messenger } = {}) {
+  constructor({
+    messenger,
+    backgroundMessenger,
+  }: { messenger?: Messenger; backgroundMessenger?: Messenger } = {}) {
     super();
 
     // RainbowProvider is also used in popup via RainbowConnector
     // here we don't need to listen to anything so we don't need these listeners
     if (isValidUrl(window.location.href)) {
+      this.backgroundMessenger = backgroundMessenger;
       const host = getDappHost(window.location.href);
       messenger?.reply(`accountsChanged:${host}`, async (address) => {
         this.emit('accountsChanged', [address]);
@@ -112,6 +117,10 @@ export class RainbowProvider extends EventEmitter {
     method,
     params,
   }: RequestArguments): Promise<RequestResponse | undefined> {
+    this.backgroundMessenger?.send(
+      'rainbow_prefetchDappMetadata',
+      window.location.href,
+    );
     if (!this.rainbowIsDefaultProvider) {
       const provider = getMetaMaskProvider();
       if (provider) {

@@ -23,37 +23,44 @@ export interface DappMetadata {
   appName: string;
   appShortName: string;
   appLogo?: string;
+  timestamp?: number;
 }
 
 // ///////////////////////////////////////////////
 // Query Types
 
-export type DappMetadataArgs = {
+type DappMetadataArgs = {
   url?: string;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const AppMetadataQueryKey = ({ url }: DappMetadataArgs) =>
+const DappMetadataQueryKey = ({ url }: DappMetadataArgs) =>
   createQueryKey('dappMetadata', { url }, { persisterVersion: 1 });
 
-type AppMetadataQueryKey = ReturnType<typeof AppMetadataQueryKey>;
+type DappMetadataQueryKey = ReturnType<typeof DappMetadataQueryKey>;
 
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function fetchDappMetadata({ url }: { url?: string }) {
-  if (!url) return null;
-  const { setDappMetadata } = dappMetadataStore.getState();
+async function fetchDappMetadata({
+  url,
+  status,
+}: {
+  url: string;
+  status: boolean;
+}) {
   const appHostName = url && isValidUrl(url) ? getDappHostname(url) : '';
   const hardcodedAppName =
     url && isValidUrl(url)
       ? getHardcodedDappInformation(appHostName)?.name || ''
       : '';
+
   const response = await metadataClient.dApp({
     shortName: hardcodedAppName,
     url,
+    status,
   });
 
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
@@ -72,33 +79,47 @@ export async function fetchDappMetadata({ url }: { url?: string }) {
     appShortName,
     appLogo: response?.dApp?.iconURL || appLogo,
   };
-  setDappMetadata({ host: appHost, dappMetadata });
   return dappMetadata;
 }
+
 export async function dappMetadataQueryFunction({
   queryKey: [{ url }],
 }: QueryFunctionArgs<
-  typeof AppMetadataQueryKey
+  typeof DappMetadataQueryKey
 >): Promise<DappMetadata | null> {
-  return fetchDappMetadata({ url });
+  if (!url) return null;
+  const { setDappMetadata } = dappMetadataStore.getState();
+  const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
+  const dappMetadata = await fetchDappMetadata({ url, status: true });
+  setDappMetadata({ host: appHost, dappMetadata });
+  return dappMetadata;
 }
 
 export async function prefetchDappMetadata({ url }: { url: string }) {
-  queryClient.prefetchQuery(AppMetadataQueryKey({ url }), async () =>
-    fetchDappMetadata({ url }),
-  );
+  const { dappMetadata } = dappMetadataStore.getState();
+  const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
+  if (!dappMetadata[appHost]) {
+    queryClient.prefetchQuery(
+      DappMetadataQueryKey({ url }),
+      async () => fetchDappMetadata({ url, status: false }),
+      {
+        staleTime: 60000,
+      },
+    );
+  }
 }
 
 // ///////////////////////////////////////////////
 // Query Hook
 
 export function useDappMetadata({ url }: DappMetadataArgs) {
-  return useQuery(AppMetadataQueryKey({ url }), dappMetadataQueryFunction, {
+  return useQuery(DappMetadataQueryKey({ url }), dappMetadataQueryFunction, {
     cacheTime: 1000 * 60 * 60 * 24,
     initialData: () => {
       const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
       const { getDappMetadata } = dappMetadataStore.getState();
       return getDappMetadata({ host: appHost });
     },
+    enabled: !!url,
   });
 }

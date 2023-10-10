@@ -6,7 +6,6 @@ import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
@@ -29,12 +28,10 @@ export function Default() {
   const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
   const { currentLanguage } = useCurrentLanguageStore();
   const [selectedNetwork, setSelectedNetwork] = useState('ethereum');
-  const { connectedToHardhat } = useConnectedToHardhatStore();
   const { data: userAssets } = useUserAssets(
     {
       address,
       currency: currentCurrency,
-      connectedToHardhat,
     },
     { select: selectUserAssetsList },
   );
