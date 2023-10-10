@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { ReactElement } from 'react';
+import { CSSProperties, ReactElement } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -54,9 +54,11 @@ export const DraggableItem = ({
 export const DraggableContext = ({
   children,
   onDragEnd,
+  height,
 }: {
   children: ReactElement;
   onDragEnd: (result: DropResult) => void;
+  height?: CSSProperties['height'];
 }) => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -65,7 +67,7 @@ export const DraggableContext = ({
           <Box
             {...droppableProps}
             ref={innerRef}
-            style={{ overflowY: 'scroll' }}
+            style={{ overflowY: 'scroll', height }}
           >
             {children}
             {placeholder}

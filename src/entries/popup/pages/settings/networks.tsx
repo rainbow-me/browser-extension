@@ -60,7 +60,7 @@ export function SettingsNetworks() {
 
       <MenuContainer testId="settings-menu-container">
         <Menu>
-          <DraggableContext onDragEnd={onDragEnd}>
+          <DraggableContext onDragEnd={onDragEnd} height="fixed">
             <Box paddingHorizontal="8px" paddingVertical="4px">
               {sortNetworks(userChainsOrder, supportedChains).map(
                 (chain, index) => (
