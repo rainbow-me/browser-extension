@@ -86,7 +86,11 @@
       "dark": "Dark"
     },
     "networks": {
-      "title": "Networks"
+      "title": "Networks",
+      "quick_promo": {
+        "text": "Drag networks to reorder them",
+        "text_bold": "Tip:"
+      }
     },
     "privacy_and_security": {
       "title": "Privacy & Security",

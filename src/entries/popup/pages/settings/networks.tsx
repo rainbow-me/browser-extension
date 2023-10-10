@@ -1,13 +1,15 @@
 import React from 'react';
 
+import { i18n } from '~/core/languages';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getSupportedChains } from '~/core/utils/chains';
-import { Box } from '~/design-system';
+import { Box, Inset } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
+import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 
 export function SettingsNetworks() {
   const { userChains, updateUserChain } = useUserChainsStore();
@@ -15,6 +17,16 @@ export function SettingsNetworks() {
 
   return (
     <Box paddingHorizontal="20px">
+      <Inset bottom="8px">
+        <QuickPromo
+          text={i18n.t('settings.networks.quick_promo.text')}
+          textBold={i18n.t('settings.networks.quick_promo.text_bold')}
+          symbol="sparkle"
+          symbolColor="accent"
+          promoType="network_settings"
+        />
+      </Inset>
+
       <MenuContainer testId="settings-menu-container">
         <Menu>
           {supportedChains.map((chain, index) => (
