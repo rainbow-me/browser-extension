@@ -4,7 +4,6 @@ import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
 import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -44,7 +43,6 @@ const isSameAssetInDiffChains = (
 export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const [assetToSell, setAssetToSellState] = useState<
     ParsedSearchAsset | SearchAsset | null
@@ -73,7 +71,6 @@ export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
     {
       address: currentAddress,
       currency: currentCurrency,
-      connectedToHardhat,
     },
     { select: sortBy(sortMethod) },
   );

@@ -9,7 +9,6 @@ import {
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets/userAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { Box, Inline, Inset, Text } from '~/design-system';
@@ -34,13 +33,11 @@ export function TabHeader({
   const { currentCurrency } = useCurrentCurrencyStore();
 
   const { hideSmallBalances } = useHideSmallBalancesStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const { data: assets = [] } = useUserAssets(
     {
       address,
       currency: currentCurrency,
-      connectedToHardhat,
     },
     {
       select: hideSmallBalances

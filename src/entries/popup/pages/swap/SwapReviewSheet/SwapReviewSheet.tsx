@@ -217,7 +217,6 @@ const SwapReviewSheetWithQuote = ({
   hideSwapReview,
 }: SwapReviewSheetWithQuoteProps) => {
   const navigate = useRainbowNavigate();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
@@ -225,6 +224,7 @@ const SwapReviewSheetWithQuote = ({
   const { setSwapAssetsToRefresh } = useSwapAssetsToRefreshStore();
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
   const { resetSwapValues } = usePopupInstanceStore();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,

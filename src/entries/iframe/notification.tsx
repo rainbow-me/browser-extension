@@ -27,6 +27,15 @@ const ASSET_SOURCE = {
   [ChainId.base]: 'assets/badges/baseBadge.png',
   [ChainId.zora]: 'assets/badges/zoraBadge.png',
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
+  [ChainId.hardhat]: 'assets/badges/hardhatBadge.png',
+  [ChainId.goerli]: 'assets/badges/ethereumBadge.png',
+  [ChainId.sepolia]: 'assets/badges/ethereumBadge.png',
+  [ChainId.optimismGoerli]: 'assets/badges/optimismBadge.png',
+  [ChainId.bscTestnet]: 'assets/badges/bscBadge.png',
+  [ChainId.polygonMumbai]: 'assets/badges/polygonBadge.png',
+  [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge.png',
+  [ChainId.baseGoerli]: 'assets/badges/baseBadge.png',
+  [ChainId.zoraTestnet]: 'assets/badges/zoraBadge.png',
 };
 
 export enum IN_DAPP_NOTIFICATION_STATUS {

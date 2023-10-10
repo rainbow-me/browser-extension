@@ -5,7 +5,6 @@ import { supportedCurrencies } from '~/core/references';
 import { selectUserAssetsBalance } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { truncateAddress } from '~/core/utils/address';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
@@ -34,9 +33,8 @@ export enum LabelOption {
 
 const TotalAssetsBalance = ({ account }: { account: Address }) => {
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
   const { data: totalAssetsBalance, isLoading } = useUserAssets(
-    { address: account, currency, connectedToHardhat },
+    { address: account, currency },
     { select: selectUserAssetsBalance() },
   );
   const userAssetsBalanceDisplay = convertAmountToNativeDisplay(

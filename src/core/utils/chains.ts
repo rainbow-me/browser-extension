@@ -1,21 +1,28 @@
 import {
   arbitrum,
+  arbitrumGoerli,
   base,
+  baseGoerli,
   bsc,
+  bscTestnet,
   goerli,
-  hardhat,
   mainnet,
   optimism,
+  optimismGoerli,
   polygon,
+  polygonMumbai,
   zora,
+  zoraTestnet,
 } from '@wagmi/chains';
-import type { Chain } from 'wagmi';
+import { getNetwork } from '@wagmi/core';
+import { type Chain, sepolia } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
+import { getDappHost } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
 
 export const SUPPORTED_CHAINS: Chain[] = [
@@ -26,9 +33,40 @@ export const SUPPORTED_CHAINS: Chain[] = [
   base,
   zora,
   bsc,
+  goerli,
+  sepolia,
+  optimismGoerli,
+  bscTestnet,
+  polygonMumbai,
+  arbitrumGoerli,
+  baseGoerli,
+  zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
-export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(({ id }) => id);
+export const getSupportedChainsWithHardhat = () => {
+  const { chains } = getNetwork();
+  return chains.filter(
+    (chain) =>
+      !chain.testnet ||
+      (process.env.IS_TESTING === 'true' && chain.id === ChainId.hardhat),
+  );
+};
+
+export const getSupportedChains = () => {
+  const { chains } = getNetwork();
+  return chains.filter((chain) => !chain.testnet);
+};
+
+export const getSupportedChainIds = () =>
+  getSupportedChains().map((chain) => chain.id);
+
+export const getSupportedTestnetChains = () => {
+  const { chains } = getNetwork();
+  return chains.filter((chain) => chain.testnet);
+};
+
+export const getSupportedTestnetChainIds = () =>
+  getSupportedTestnetChains().map((chain) => chain.id);
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -70,45 +108,19 @@ export function chainNameFromChainId(chainId: ChainId) {
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
-  if (chainId === ChainId.optimism) {
-    return 'optimistic.etherscan.io';
-  } else if (chainId === ChainId.base) {
-    return 'basescan.org';
-  } else if (chainId === ChainId.zora) {
-    return 'explorer.zora.energy';
-  } else if (chainId === ChainId.polygon) {
-    return 'polygonscan.com';
-  } else if (chainId === ChainId.bsc) {
-    return 'bscscan.com';
-  } else if (chainId === ChainId.arbitrum) {
-    return 'arbiscan.io';
+  const chain = getChain({ chainId });
+  if (chain && chain.blockExplorers?.default.url) {
+    return getDappHost(chain.blockExplorers.default.url);
   }
   return 'etherscan.io';
 }
 
-export function getNativeAssetSymbolForChain(chainId?: ChainId) {
-  switch (chainId) {
-    case ChainId.arbitrum:
-      return arbitrum.nativeCurrency.symbol;
-    case ChainId.base:
-      return base.nativeCurrency.symbol;
-    case ChainId.bsc:
-      return bsc.nativeCurrency.symbol;
-    case ChainId.goerli:
-      return goerli.nativeCurrency.symbol;
-    case ChainId.optimism:
-      return optimism.nativeCurrency.symbol;
-    case ChainId.mainnet:
-      return mainnet.nativeCurrency.symbol;
-    case ChainId.polygon:
-      return polygon.nativeCurrency.symbol;
-    case ChainId.hardhat:
-      return hardhat.nativeCurrency.symbol;
-  }
-  return mainnet.nativeCurrency.symbol;
+export function getChain({ chainId }: { chainId?: ChainId }) {
+  const { chains } = getNetwork();
+  const chain = chains.find((chain) => chain.id === chainId);
+  return chain || mainnet;
 }
 
 export function isSupportedChainId(chainId: number) {
-  const supportedChainIds = SUPPORTED_CHAINS.map((chain) => chain.id);
-  return supportedChainIds.includes(chainId);
+  return SUPPORTED_CHAINS.map((chain) => chain.id).includes(chainId);
 }

@@ -26,7 +26,6 @@ export type UserAssetsByChainArgs = {
   address: Address;
   chainId: ChainId;
   currency: SupportedCurrencyKey;
-  connectedToHardhat: boolean;
 };
 
 // ///////////////////////////////////////////////
@@ -36,11 +35,10 @@ export const userAssetsByChainQueryKey = ({
   address,
   chainId,
   currency,
-  connectedToHardhat,
 }: UserAssetsByChainArgs) =>
   createQueryKey(
     'userAssetsByChain',
-    { address, chainId, currency, connectedToHardhat },
+    { address, chainId, currency },
     { persisterVersion: 1 },
   );
 
@@ -52,7 +50,7 @@ type UserAssetsByChainQueryKey = ReturnType<typeof userAssetsByChainQueryKey>;
 export async function fetchUserAssetsByChain<
   TSelectData = UserAssetsByChainResult,
 >(
-  { address, chainId, currency, connectedToHardhat }: UserAssetsByChainArgs,
+  { address, chainId, currency }: UserAssetsByChainArgs,
   config: QueryConfig<
     UserAssetsByChainResult,
     Error,
@@ -65,7 +63,6 @@ export async function fetchUserAssetsByChain<
       address,
       chainId,
       currency,
-      connectedToHardhat,
     }),
     userAssetsByChainQueryFunction,
     config,
@@ -76,13 +73,13 @@ export async function fetchUserAssetsByChain<
 // Query Function
 
 export async function userAssetsByChainQueryFunction({
-  queryKey: [{ address, chainId, currency, connectedToHardhat }],
+  queryKey: [{ address, chainId, currency }],
 }: QueryFunctionArgs<typeof userAssetsByChainQueryKey>): Promise<
   Record<string, ParsedUserAsset>
 > {
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = (cache.find(
-    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    userAssetsQueryKey({ address, currency }),
   )?.state?.data || {}) as ParsedAssetsDictByChain;
   const cachedDataForChain = cachedUserAssets?.[chainId];
   try {
@@ -95,7 +92,6 @@ export async function userAssetsByChainQueryFunction({
         address,
         assets,
         chainIds: chainIdsInResponse,
-        connectedToHardhat,
         currency,
       });
 
@@ -124,7 +120,7 @@ type UserAssetsByChainResult = QueryFunctionResult<
 // Query Hook
 
 export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
-  { address, chainId, currency, connectedToHardhat }: UserAssetsByChainArgs,
+  { address, chainId, currency }: UserAssetsByChainArgs,
   config: QueryConfig<
     UserAssetsByChainResult,
     Error,
@@ -137,7 +133,6 @@ export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
       address,
       chainId,
       currency,
-      connectedToHardhat,
     }),
     userAssetsByChainQueryFunction,
     {
