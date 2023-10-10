@@ -471,7 +471,7 @@ const SwapReviewSheetWithQuote = ({
         >
           <Stack space="12px">
             <Navbar
-              title={t(`review.title`)}
+              title={t(`swap.review.title`)}
               titleTestId="swap-review-title-text"
               leftComponent={
                 <Navbar.CloseButton testId="swap-review" onClick={goBack} />
