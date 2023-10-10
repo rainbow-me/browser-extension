@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { Chain, useNetwork } from 'wagmi';
+import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -60,10 +60,18 @@ export const SwitchNetworkMenuSelector = ({
   onNetworkSelect?: (event?: Event) => void;
   onShortcutPress: (chainId: string) => void;
 }) => {
-  const { chains } = useNetwork();
   const { userChains } = useUserChainsStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { userChainsOrder } = useUserChainsStore();
+
+  const availableChains = useMemo(() => {
+    return sortNetworks(
+      userChainsOrder,
+      getSupportedChainsWithHardhat().filter(
+        (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
+      ),
+    );
+  }, [userChains, userChainsOrder]);
 
   const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'
@@ -79,7 +87,7 @@ export const SwitchNetworkMenuSelector = ({
     (e: KeyboardEvent) => {
       const chainNumber = Number(e.key);
       if (chainNumber) {
-        const chain = chains[chainNumber - 1];
+        const chain = availableChains[chainNumber - 1];
         if (chain) {
           trackShortcut({
             key: chainNumber.toString(),
@@ -87,7 +95,10 @@ export const SwitchNetworkMenuSelector = ({
           });
           onShortcutPress(String(chain.id));
           onNetworkSelect?.();
-        } else if (showDisconnect && chainNumber === chains.length + 1) {
+        } else if (
+          showDisconnect &&
+          chainNumber === availableChains.length + 1
+        ) {
           trackShortcut({
             key: chainNumber.toString(),
             type: 'switchNetworkMenu.disconnect',
@@ -97,7 +108,7 @@ export const SwitchNetworkMenuSelector = ({
       }
     },
     [
-      chains,
+      availableChains,
       disconnect,
       onNetworkSelect,
       onShortcutPress,
@@ -109,15 +120,6 @@ export const SwitchNetworkMenuSelector = ({
   useKeyboardShortcut({
     handler: handleTokenShortcuts,
   });
-
-  const availableChains = useMemo(() => {
-    return sortNetworks(
-      userChainsOrder,
-      getSupportedChainsWithHardhat().filter(
-        (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
-      ),
-    );
-  }, [userChains, userChainsOrder]);
 
   return (
     <Box id="switch-network-menu-selector">
@@ -165,7 +167,7 @@ export const SwitchNetworkMenuSelector = ({
       {showDisconnect && disconnect && (
         <SwitchNetworkMenuDisconnect
           onDisconnect={disconnect}
-          shortcutLabel={String(chains.length + 1)}
+          shortcutLabel={String(availableChains.length + 1)}
         />
       )}
     </Box>
@@ -234,8 +236,17 @@ export const SwitchNetworkMenu = ({
   marginRight,
   onOpenChange,
 }: SwitchNetworkMenuProps) => {
-  const { chains } = useNetwork();
   const triggerRef = useRef<HTMLDivElement>(null);
+  const { userChainsOrder, userChains } = useUserChainsStore();
+
+  const availableChains = useMemo(() => {
+    return sortNetworks(
+      userChainsOrder,
+      getSupportedChainsWithHardhat().filter(
+        (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
+      ),
+    );
+  }, [userChains, userChainsOrder]);
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -297,7 +308,7 @@ export const SwitchNetworkMenu = ({
         <MenuRadioGroup
           value={String(chainId)}
           onValueChange={(chainId: string) => {
-            const chain = chains.find(
+            const chain = availableChains.find(
               ({ id }) => String(id) === chainId,
             ) as Chain;
             onChainChanged(chain?.id, chain);
@@ -307,7 +318,7 @@ export const SwitchNetworkMenu = ({
             type={type}
             selectedValue={String(chainId)}
             onShortcutPress={(chainId) => {
-              const chain = chains.find(
+              const chain = availableChains.find(
                 ({ id }) => String(id) === chainId,
               ) as Chain;
               onChainChanged(chain?.id, chain);
