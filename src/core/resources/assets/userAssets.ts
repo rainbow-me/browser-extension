@@ -11,6 +11,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
   ParsedAssetsDictByChain,
   ParsedUserAsset,
@@ -23,7 +24,7 @@ import {
   filterAsset,
   parseUserAsset,
 } from '~/core/utils/assets';
-import { SUPPORTED_CHAIN_IDS } from '~/core/utils/chains';
+import { getSupportedChainIds } from '~/core/utils/chains';
 import { greaterThan } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 import {
@@ -44,42 +45,30 @@ export const USER_ASSETS_STALE_INTERVAL = 30000;
 export type UserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
-  connectedToHardhat: boolean;
 };
 
 type SetUserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
-  connectedToHardhat: boolean;
   userAssets?: UserAssetsResult;
 };
 
 type SetUserDefaultsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
-  connectedToHardhat: boolean;
   staleTime: number;
 };
 
 type FetchUserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
-  connectedToHardhat: boolean;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-export const userAssetsQueryKey = ({
-  address,
-  currency,
-  connectedToHardhat,
-}: UserAssetsArgs) =>
-  createQueryKey(
-    'userAssets',
-    { address, currency, connectedToHardhat },
-    { persisterVersion: 2 },
-  );
+export const userAssetsQueryKey = ({ address, currency }: UserAssetsArgs) =>
+  createQueryKey('userAssets', { address, currency }, { persisterVersion: 2 });
 
 type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
@@ -89,10 +78,9 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 export const userAssetsFetchQuery = ({
   address,
   currency,
-  connectedToHardhat,
 }: FetchUserAssetsArgs) => {
   queryClient.fetchQuery(
-    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    userAssetsQueryKey({ address, currency }),
     userAssetsQueryFunction,
   );
 };
@@ -100,36 +88,33 @@ export const userAssetsFetchQuery = ({
 export const userAssetsSetQueryDefaults = ({
   address,
   currency,
-  connectedToHardhat,
   staleTime,
 }: SetUserDefaultsArgs) => {
-  queryClient.setQueryDefaults(
-    userAssetsQueryKey({ address, currency, connectedToHardhat }),
-    { staleTime },
-  );
+  queryClient.setQueryDefaults(userAssetsQueryKey({ address, currency }), {
+    staleTime,
+  });
 };
 
 export const userAssetsSetQueryData = ({
   address,
   currency,
-  connectedToHardhat,
   userAssets,
 }: SetUserAssetsArgs) => {
   queryClient.setQueryData(
-    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    userAssetsQueryKey({ address, currency }),
     userAssets,
   );
 };
 
 async function userAssetsQueryFunction({
-  queryKey: [{ address, currency, connectedToHardhat }],
+  queryKey: [{ address, currency }],
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = (cache.find(
-    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    userAssetsQueryKey({ address, currency }),
   )?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
-    const url = `/${SUPPORTED_CHAIN_IDS.join(',')}/${address}/assets`;
+    const url = `/${getSupportedChainIds().join(',')}/${address}/assets`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       params: {
         currency: currency.toLowerCase(),
@@ -144,7 +129,6 @@ async function userAssetsQueryFunction({
       userAssetsQueryFunctionRetryByChain({
         address,
         chainIds: chainIdsWithErrorsInResponse,
-        connectedToHardhat,
         currency,
       });
       if (assets.length && chainIdsInResponse.length) {
@@ -152,7 +136,6 @@ async function userAssetsQueryFunction({
           address,
           assets,
           chainIds: chainIdsInResponse,
-          connectedToHardhat,
           currency,
         });
 
@@ -179,19 +162,17 @@ type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
 async function userAssetsQueryFunctionRetryByChain({
   address,
   chainIds,
-  connectedToHardhat,
   currency,
 }: {
   address: Address;
   chainIds: ChainId[];
-  connectedToHardhat: boolean;
   currency: SupportedCurrencyKey;
 }) {
   try {
     const cache = queryClient.getQueryCache();
     const cachedUserAssets =
-      (cache.find(userAssetsQueryKey({ address, currency, connectedToHardhat }))
-        ?.state?.data as ParsedAssetsDictByChain) || {};
+      (cache.find(userAssetsQueryKey({ address, currency }))?.state
+        ?.data as ParsedAssetsDictByChain) || {};
     const retries = [];
     for (const chainIdWithError of chainIds) {
       retries.push(
@@ -199,7 +180,6 @@ async function userAssetsQueryFunctionRetryByChain({
           {
             address,
             chainId: chainIdWithError,
-            connectedToHardhat,
             currency,
           },
           { cacheTime: 0 },
@@ -214,7 +194,7 @@ async function userAssetsQueryFunctionRetryByChain({
       }
     }
     queryClient.setQueryData(
-      userAssetsQueryKey({ address, connectedToHardhat, currency }),
+      userAssetsQueryKey({ address, currency }),
       cachedUserAssets,
     );
   } catch (e) {
@@ -228,7 +208,6 @@ export async function parseUserAssets({
   address,
   assets,
   chainIds,
-  connectedToHardhat,
   currency,
 }: {
   address: Address;
@@ -238,9 +217,9 @@ export async function parseUserAssets({
     asset: ZerionAsset;
   }[];
   chainIds: ChainId[];
-  connectedToHardhat: boolean;
   currency: SupportedCurrencyKey;
 }) {
+  const { connectedToHardhat } = connectedToHardhatStore.getState();
   const parsedAssetsDict = chainIds.reduce(
     (dict, currentChainId) => ({ ...dict, [currentChainId]: {} }),
     {},
@@ -267,18 +246,18 @@ export async function parseUserAssets({
       mainnetAssets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
     }
     const mainnetBalanceRequests = Object.values(mainnetAssets).map(
-      async (parsedAsset) => {
-        if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
+      async (asset) => {
+        if (asset.chainId !== ChainId.mainnet) return asset;
         try {
-          const _parsedAsset = await fetchAssetBalanceViaProvider({
-            parsedAsset,
+          const parsedAsset = await fetchAssetBalanceViaProvider({
+            parsedAsset: asset,
             currentAddress: address,
             currency,
             provider,
           });
-          return _parsedAsset;
-        } catch (e) {
           return parsedAsset;
+        } catch (e) {
+          return asset;
         }
       },
     );
@@ -300,7 +279,7 @@ export async function parseUserAssets({
 // Query Hook
 
 export function useUserAssets<TSelectResult = UserAssetsResult>(
-  { address, currency, connectedToHardhat }: UserAssetsArgs,
+  { address, currency }: UserAssetsArgs,
   config: QueryConfig<
     UserAssetsResult,
     Error,
@@ -309,7 +288,7 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
   > = {},
 ) {
   return useQuery(
-    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+    userAssetsQueryKey({ address, currency }),
     userAssetsQueryFunction,
     {
       ...config,
