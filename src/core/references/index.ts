@@ -1,6 +1,9 @@
 import { AddressZero } from '@ethersproject/constants';
+import { Address } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
+
+import { AddressOrEth } from '../types/assets';
 
 export { ethUnits } from './ethUnits';
 export { gasUnits } from './gasUnits';
@@ -92,15 +95,23 @@ export const WBTC_ARBITRUM_ADDRESS =
 export const SOCKS_ARBITRUM_ADDRESS =
   '0xd803b242d32d71618d0646531c0cc4a5d26d1598';
 
-export const NATIVE_ASSETS_PER_CHAIN = {
-  [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS,
-  [ChainId.bsc]: BSC_BNB_ADDRESS,
+export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS,
-  [ChainId.optimism]: ETH_OPTIMISM_ADDRESS,
-  [ChainId.base]: ETH_BASE_ADDRESS,
-  [ChainId.zora]: ETH_ZORA_ADDRESS,
-  [ChainId.polygon]: MATIC_POLYGON_ADDRESS,
   [ChainId.hardhat]: ETH_ADDRESS,
+  [ChainId.goerli]: ETH_ADDRESS,
+  [ChainId.sepolia]: ETH_ADDRESS,
+  [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS as Address,
+  [ChainId.arbitrumGoerli]: ETH_ARBITRUM_ADDRESS as Address,
+  [ChainId.bsc]: BSC_BNB_ADDRESS as Address,
+  [ChainId.bscTestnet]: BSC_BNB_ADDRESS as Address,
+  [ChainId.optimism]: ETH_OPTIMISM_ADDRESS as Address,
+  [ChainId.optimismGoerli]: ETH_OPTIMISM_ADDRESS as Address,
+  [ChainId.base]: ETH_BASE_ADDRESS as Address,
+  [ChainId.baseGoerli]: ETH_BASE_ADDRESS as Address,
+  [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
+  [ChainId.zoraTestnet]: ETH_ZORA_ADDRESS as Address,
+  [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
+  [ChainId.polygonMumbai]: MATIC_POLYGON_ADDRESS as Address,
 };
 export const OVM_GAS_PRICE_ORACLE =
   '0x420000000000000000000000000000000000000F';

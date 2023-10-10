@@ -1,33 +1,15 @@
-import {
-  arbitrum,
-  base,
-  bsc,
-  mainnet,
-  optimism,
-  polygon,
-  zora,
-} from '@wagmi/chains';
 import { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
+import { getChain } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import { lessThan } from '~/core/utils/numbers';
 
-import { getNetworkNativeAssetUniqueId } from '../useNativeAssetForNetwork';
-import { useUserAsset } from '../useUserAsset';
+import { useNativeAsset } from '../useNativeAsset';
 
-const DEFAULT_NATIVE_ASSET_SYMBOL = {
-  [ChainId.mainnet]: mainnet.nativeCurrency?.symbol,
-  [ChainId.optimism]: optimism.nativeCurrency?.symbol,
-  [ChainId.base]: base.nativeCurrency?.symbol,
-  [ChainId.zora]: zora.nativeCurrency?.symbol,
-  [ChainId.arbitrum]: arbitrum.nativeCurrency?.symbol,
-  [ChainId.polygon]: polygon.nativeCurrency?.symbol,
-  [ChainId.bsc]: bsc.nativeCurrency?.symbol,
-};
 export const useApproveAppRequestValidations = ({
   chainId,
   selectedGas,
@@ -38,10 +20,7 @@ export const useApproveAppRequestValidations = ({
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const chainIdToUse = connectedToHardhat ? ChainId.mainnet : chainId;
 
-  const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
-    chainId: chainIdToUse,
-  });
-  const { data: nativeAsset } = useUserAsset(nativeAssetUniqueId || '');
+  const { nativeAsset } = useNativeAsset({ chainId });
 
   const enoughNativeAssetForGas = useMemo(() => {
     return lessThan(
@@ -53,11 +32,10 @@ export const useApproveAppRequestValidations = ({
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
-        symbol:
-          nativeAsset?.symbol || DEFAULT_NATIVE_ASSET_SYMBOL[chainIdToUse],
+        symbol: getChain({ chainId: chainIdToUse }).nativeCurrency.name,
       });
     return i18n.t('approve_request.send_transaction');
-  }, [chainIdToUse, enoughNativeAssetForGas, nativeAsset?.symbol]);
+  }, [chainIdToUse, enoughNativeAssetForGas]);
 
   return {
     enoughNativeAssetForGas:

@@ -4,6 +4,7 @@ import { Chain, useNetwork } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ChainId } from '~/core/types/chains';
+import { getSupportedChainsWithHardhat } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -107,7 +108,7 @@ export const SwitchNetworkMenuSelector = ({
 
   return (
     <Box id="switch-network-menu-selector">
-      {chains.map((chain, i) => {
+      {getSupportedChainsWithHardhat().map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
           <MenuRadioItem
@@ -140,7 +141,7 @@ export const SwitchNetworkMenuSelector = ({
                       </Inline>
                     </Box>
                   ) : (
-                    <ShortcutHint hint={`${i + 1}`} />
+                    i < 9 && <ShortcutHint hint={`${i + 1}`} />
                   )}
                 </Column>
               </Columns>

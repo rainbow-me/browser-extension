@@ -10,7 +10,6 @@ import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
   PendingTransaction,
   RainbowTransaction,
@@ -33,7 +32,6 @@ export const useWatchPendingTransactions = ({
     usePendingTransactionsStore();
   const { setNonce } = nonceStore.getState();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
   const pendingTransactions = getPendingTransactions({
     address,
   });
@@ -81,7 +79,6 @@ export const useWatchPendingTransactions = ({
                   userAssetsFetchQuery({
                     address,
                     currency: currentCurrency,
-                    connectedToHardhat,
                   });
                 }
 
@@ -170,7 +167,6 @@ export const useWatchPendingTransactions = ({
     });
   }, [
     address,
-    connectedToHardhat,
     currentCurrency,
     pendingTransactions,
     pendingTransactionsByDescendingNonce,
