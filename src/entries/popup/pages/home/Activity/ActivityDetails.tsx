@@ -444,10 +444,11 @@ const getAdditionalDetails = (transaction: RainbowTransaction) => {
           .amount
       : undefined;
 
-  const approval = type === 'approve' && {
-    value: approvalAmount,
-    label: getApprovalLabel(transaction),
-  };
+  const approval = type === 'approve' &&
+    approvalAmount && {
+      value: approvalAmount,
+      label: getApprovalLabel(transaction),
+    };
 
   if (
     !tokenAmount &&
