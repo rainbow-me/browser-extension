@@ -69,7 +69,6 @@ async function fetchDappMetadata({
   const appShortName = response?.dApp?.shortName
     ? capitalize(response?.dApp?.shortName)
     : appName;
-  console.log('response?.dApp?.iconURL', response?.dApp?.iconURL);
   const dappMetadata = {
     url,
     appHost,
