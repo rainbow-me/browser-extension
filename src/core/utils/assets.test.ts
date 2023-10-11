@@ -52,6 +52,10 @@ const ETH_FROM_ZERION = {
   },
   network: ChainName.mainnet,
   mainnet_address: 'eth',
+  bridging: {
+    bridgeable: true,
+    networks: [],
+  },
 } satisfies ZerionAsset;
 
 const ETH_FROM_SEARCH: SearchAsset = {
@@ -155,6 +159,10 @@ const BSC_ETH_FROM_ZERION = {
     fallback: '#E8EAF5',
   },
   mainnet_address: 'eth',
+  bridging: {
+    bridgeable: true,
+    networks: [],
+  },
 } satisfies ZerionAsset;
 
 const USD_FROM_ZERION = {
@@ -215,6 +223,10 @@ const USD_FROM_ZERION = {
   colors: {
     primary: '#2775CA',
     fallback: '#9ABDE8',
+  },
+  bridging: {
+    bridgeable: true,
+    networks: [],
   },
 } satisfies ZerionAsset;
 
@@ -282,6 +294,10 @@ const OPTIMISM_USD_FROM_ZERION = {
     fallback: '#9ABDE8',
   },
   mainnet_address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  bridging: {
+    bridgeable: true,
+    networks: [],
+  },
 } satisfies ZerionAsset;
 
 const OPTIMISM_USD_FROM_METADATA = {

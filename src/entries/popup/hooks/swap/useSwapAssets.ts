@@ -25,12 +25,22 @@ const sortBy = (by: SortMethod) => {
   }
 };
 
-const isSameAsset = (
+export const isSameAsset = (
   a1: Pick<ParsedAsset, 'chainId' | 'address'>,
   a2: Pick<ParsedAsset, 'chainId' | 'address'>,
-) => a1.chainId === a2.chainId && isLowerCaseMatch(a1.address, a2.address);
+) => +a1.chainId === +a2.chainId && isLowerCaseMatch(a1.address, a2.address);
 
-export const useSwapAssets = () => {
+const isSameAssetInDiffChains = (
+  a1?: Pick<ParsedAsset, 'address' | 'networks'> | null,
+  a2?: Pick<ParsedAsset, 'address'> | null,
+) => {
+  if (!a1?.networks || !a2) return false;
+  return Object.values(a1.networks).some(
+    (assetInNetwork) => assetInNetwork?.address === a2.address,
+  );
+};
+
+export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
 
@@ -85,6 +95,7 @@ export const useSwapAssets = () => {
     outputChainId,
     assetToSell,
     searchQuery: debouncedAssetToBuyFilter,
+    bridge,
   });
 
   const { data: buyPriceData = [] } = useAssets({
@@ -159,11 +170,16 @@ export const useSwapAssets = () => {
           prevAssetToSell === undefined ? null : prevAssetToSell,
         );
       }
+      // if it's in bridge mode, the asset to sell changes, and it's not the same asset in different chains,
+      // we clear the asset to buy (because that would be a crosschain swap)
+      if (bridge && !isSameAssetInDiffChains(asset, assetToBuy)) {
+        setAssetToBuyState(null);
+      }
       setAssetToSellState(asset);
       saveSwapTokenToSell({ token: asset });
       asset?.chainId && setOutputChainId(asset?.chainId);
     },
-    [assetToBuy, prevAssetToSell, saveSwapTokenToSell],
+    [assetToBuy, prevAssetToSell, saveSwapTokenToSell, bridge],
   );
 
   return {
@@ -174,11 +190,11 @@ export const useSwapAssets = () => {
     sortMethod,
     assetToSell: parsedAssetToSell,
     assetToBuy: parsedAssetToBuy,
-    outputChainId,
+    outputChainId: bridge ? undefined : outputChainId,
     setSortMethod,
     setAssetToSell,
     setAssetToBuy,
-    setOutputChainId,
+    setOutputChainId: bridge ? undefined : setOutputChainId,
     setAssetToSellFilter,
     setAssetToBuyFilter,
   };

@@ -109,6 +109,8 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
     setSelectedToken(token);
     navigate(to);
   };
+  const isBridgeable = token.bridging?.isBridgeable;
+
   return (
     <Box display="flex" gap="8px">
       <Button
@@ -122,6 +124,18 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
       >
         {i18n.t('token_details.swap')}
       </Button>
+      {isBridgeable && (
+        <Button
+          height="32px"
+          variant="flat"
+          width="full"
+          color="accent"
+          symbol="arrow.turn.up.right"
+          onClick={() => selectTokenAndNavigate(ROUTES.BRIDGE)}
+        >
+          {i18n.t('token_details.bridge')}
+        </Button>
+      )}
       <Button
         height="32px"
         variant="flat"
