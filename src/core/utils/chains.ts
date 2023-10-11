@@ -125,3 +125,27 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 export function isSupportedChainId(chainId: number) {
   return SUPPORTED_CHAINS.map((chain) => chain.id).includes(chainId);
 }
+
+export interface ActiveSession {
+  address: string;
+  chainId: ChainId;
+}
+
+export const chainIdToUse = (
+  connectedToHardhat: boolean,
+  connectedToHardhatOp: boolean,
+  activeSessionChainId?: number | null,
+) => {
+  if (connectedToHardhat) {
+    return ChainId.hardhat;
+  } else if (connectedToHardhatOp) {
+    return ChainId.hardhatOptimism;
+  } else if (
+    activeSessionChainId !== null &&
+    activeSessionChainId !== undefined
+  ) {
+    return activeSessionChainId;
+  } else {
+    return ChainId.mainnet;
+  }
+};

@@ -19,7 +19,6 @@ import {
   useNonceStore,
 } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { useConnectedToHardhatOpStore } from '~/core/state/currentSettings/connectedToHardhatOp';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import {
   FeatureFlagTypes,
@@ -53,10 +52,12 @@ export function Settings() {
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
     useCurrentThemeStore();
-  const { connectedToHardhat, setConnectedToHardhat } =
-    useConnectedToHardhatStore();
-  const { connectedToHardhatOp, setConnectedToHardhatOp } =
-    useConnectedToHardhatOpStore();
+  const {
+    connectedToHardhat,
+    setConnectedToHardhat,
+    connectedToHardhatOp,
+    setConnectedToHardhatOp,
+  } = useConnectedToHardhatStore();
   const { clearNonces } = useNonceStore();
 
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);

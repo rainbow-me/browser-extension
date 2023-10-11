@@ -18,7 +18,6 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { useConnectedToHardhatOpStore } from '~/core/state/currentSettings/connectedToHardhatOp';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { AddressOrEth } from '~/core/types/assets';
@@ -28,6 +27,7 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { chainIdToUse } from '~/core/utils/chains';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
@@ -83,8 +83,8 @@ export function Send() {
   const isMyWallet = (address: Address) =>
     allWallets?.some((w) => w.address === address);
 
-  const { connectedToHardhat } = useConnectedToHardhatStore();
-  const { connectedToHardhatOp } = useConnectedToHardhatOpStore();
+  const { connectedToHardhat, connectedToHardhatOp } =
+    useConnectedToHardhatStore.getState();
 
   const {
     asset,
@@ -191,15 +191,11 @@ export function Send() {
     saveSendTokenAddressAndChain,
   } = usePopupInstanceStore();
 
-  const chainIdToUse = useCallback(() => {
-    if (connectedToHardhat) {
-      return ChainId.hardhat;
-    } else if (connectedToHardhatOp) {
-      return ChainId.hardhatOptimism;
-    } else {
-      return chainId || ChainId.mainnet;
-    }
-  }, [connectedToHardhat, connectedToHardhatOp, chainId]);
+  const returnedChainId = chainIdToUse(
+    connectedToHardhat,
+    connectedToHardhatOp,
+    chainId,
+  );
 
   const handleSend = useCallback(
     async (callback?: () => void) => {
@@ -216,7 +212,7 @@ export function Send() {
           from: fromAddress,
           to: txToAddress,
           value,
-          chainId: chainIdToUse(),
+          chainId: returnedChainId,
           data,
         });
         if (result && asset) {
@@ -283,7 +279,7 @@ export function Send() {
       resetSendValues,
       txToAddress,
       value,
-      chainIdToUse,
+      returnedChainId,
       data,
       asset,
       assetAmount,

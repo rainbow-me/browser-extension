@@ -11,8 +11,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { connectedToHardhatOpStore } from '~/core/state/currentSettings/connectedToHardhatOp';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
   ParsedAssetsDictByChain,
   ParsedUserAsset,
@@ -221,8 +220,8 @@ export async function parseUserAssets({
   chainIds: ChainId[];
   currency: SupportedCurrencyKey;
 }) {
-  const { connectedToHardhat } = connectedToHardhatStore.getState();
-  const { connectedToHardhatOp } = connectedToHardhatOpStore.getState();
+  const { connectedToHardhat, connectedToHardhatOp } =
+    useConnectedToHardhatStore.getState();
 
   const parsedAssetsDict = chainIds.reduce(
     (dict, currentChainId) => ({ ...dict, [currentChainId]: {} }),

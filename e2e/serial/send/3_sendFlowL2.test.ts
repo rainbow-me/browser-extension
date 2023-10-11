@@ -14,6 +14,7 @@ import {
 import {
   checkExtensionURL,
   checkWalletName,
+  delay,
   delayTime,
   executePerformShortcut,
   findElementByTestId,
@@ -96,7 +97,10 @@ describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to nav to send field and type in address', async () => {
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
-    await driver.actions().sendKeys('0xtester.eth').perform();
+    await driver
+      .actions()
+      .sendKeys('0x2e67869829c734ac13723A138a952F7A8B56e774')
+      .perform();
     const shortenedAddress = await findElementByText(driver, '0x2e67…e774');
     expect(shortenedAddress).toBeTruthy();
   });
@@ -134,5 +138,6 @@ describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
     await delayTime('very-long');
     const sendTransaction = await transactionStatus();
     expect(sendTransaction).toBe('success');
+    await delay(100000);
   });
 });
