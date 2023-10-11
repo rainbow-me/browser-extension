@@ -53,6 +53,7 @@ import {
 } from '~/entries/popup/hooks/swap';
 import { getNetworkNativeAssetUniqueId } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { ROUTES } from '~/entries/popup/urls';
 import playSound from '~/entries/popup/utils/playSound';
@@ -258,6 +259,9 @@ const SwapReviewSheetWithQuote = ({
     );
   }, [assetToBuy, assetToSell]);
 
+  // translate based on the context, bridge or swap
+  const t = useTranslationContext();
+
   const isWrapOrUnwrapEth = useMemo(() => {
     return (
       isWrapEth({
@@ -384,56 +388,52 @@ const SwapReviewSheetWithQuote = ({
     showExplainerSheet({
       show: true,
       header: { emoji: '🤖' },
-      title: i18n.t('explainers.swap.flashbots.title'),
-      description: [i18n.t('explainers.swap.flashbots.description')],
+      title: t('swap.explainers.flashbots.title'),
+      description: [t('swap.explainers.flashbots.description')],
       actionButton: {
-        label: i18n.t('explainers.swap.flashbots.action_label'),
+        label: t('swap.explainers.flashbots.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
         action: hideExplainerSheet,
       },
       testId: 'swap-review-flashbots',
     });
-  }, [hideExplainerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet, t]);
 
   const openFeeExplainer = useCallback(() => {
     showExplainerSheet({
       show: true,
       header: { emoji: '🌈' },
-      title: i18n.t('explainers.swap.fee.title'),
+      title: t('swap.explainers.fee.title'),
       description: [
-        i18n.t('explainers.swap.fee.description', {
+        t('swap.explainers.fee.description', {
           feePercentage: includedFee[1],
         }),
       ],
       actionButton: {
-        label: i18n.t('explainers.swap.fee.action_label'),
+        label: t('swap.explainers.fee.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
         action: hideExplainerSheet,
       },
       testId: 'swap-review-fee',
     });
-  }, [hideExplainerSheet, includedFee, showExplainerSheet]);
+  }, [hideExplainerSheet, includedFee, showExplainerSheet, t]);
 
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetBalanceForGas) {
       return validationButtonLabel;
     }
-    return isBridge
-      ? i18n.t('swap.review.bridge_confirmation', {
-          sellSymbol: assetToSell.symbol,
-        })
-      : i18n.t('swap.review.swap_confirmation', {
-          sellSymbol: assetToSell.symbol,
-          buySymbol: assetToBuy.symbol,
-        });
+    return t('swap.review.confirmation', {
+      sellSymbol: assetToSell.symbol,
+      buySymbol: assetToBuy.symbol,
+    });
   }, [
     assetToBuy.symbol,
     assetToSell.symbol,
     enoughNativeAssetBalanceForGas,
-    isBridge,
     validationButtonLabel,
+    t,
   ]);
 
   const buttonColor = useMemo(
@@ -471,9 +471,7 @@ const SwapReviewSheetWithQuote = ({
         >
           <Stack space="12px">
             <Navbar
-              title={i18n.t(
-                `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
-              )}
+              title={t(`swap.review.title`)}
               titleTestId="swap-review-title-text"
               leftComponent={
                 <Navbar.CloseButton testId="swap-review" onClick={goBack} />
@@ -536,7 +534,7 @@ const SwapReviewSheetWithQuote = ({
               <Stack space="4px">
                 <DetailsRow testId="minimum-received">
                   <Label
-                    label={i18n.t('swap.review.minimum_received')}
+                    label={t('swap.review.minimum_received')}
                     testId="swap-review-swapping-route"
                   />
                   <Text size="14pt" weight="semibold" color="label">
@@ -546,11 +544,7 @@ const SwapReviewSheetWithQuote = ({
                 {!isWrapOrUnwrapEth && (
                   <DetailsRow testId="swapping-via">
                     <Label
-                      label={
-                        isBridge
-                          ? i18n.t('swap.review.bridging_via')
-                          : i18n.t('swap.review.swapping_via')
-                      }
+                      label={t('swap.review.via')}
                       testId="swap-review-swapping-route"
                     />
                     {!!swappingRoute && (
@@ -563,7 +557,7 @@ const SwapReviewSheetWithQuote = ({
                 )}
                 <DetailsRow testId="included-fee">
                   <Label
-                    label={i18n.t('swap.review.included_fee')}
+                    label={t('swap.review.included_fee')}
                     testId="swap-review-rnbw-fee-info-button"
                     infoButton
                     onClick={openFeeExplainer}
@@ -577,7 +571,7 @@ const SwapReviewSheetWithQuote = ({
                 {flashbotsEnabled && (
                   <DetailsRow testId="flashbots-enabled">
                     <Label
-                      label={i18n.t('swap.review.use_flashbots')}
+                      label={t('swap.review.use_flashbots')}
                       testId="swap-review-flashbots-info-button"
                       infoButton
                       onClick={openFlashbotsExplainer}
@@ -588,7 +582,7 @@ const SwapReviewSheetWithQuote = ({
                       alignVertical="center"
                     >
                       <Text size="14pt" weight="semibold" color="label">
-                        {i18n.t('swap.review.flashbots_on')}
+                        {t('swap.review.flashbots_on')}
                       </Text>
                       <Symbol
                         symbol="checkmark.shield.fill"
@@ -609,7 +603,7 @@ const SwapReviewSheetWithQuote = ({
                     >
                       <DetailsRow testId="exchange-rate">
                         <Label
-                          label={i18n.t('swap.review.exchange_rate')}
+                          label={t('swap.review.exchange_rate')}
                           testId="swap-review-exchange-rate"
                         />
                         <CarrouselButton
@@ -621,7 +615,7 @@ const SwapReviewSheetWithQuote = ({
                       {!assetToSell.isNativeAsset && (
                         <DetailsRow testId="asset-to-sell-contract">
                           <Label
-                            label={i18n.t('swap.review.asset_contract', {
+                            label={t('swap.review.asset_contract', {
                               symbol: assetToSell.symbol,
                             })}
                             testId="swap-review-asset-to-sell-contract"
@@ -641,7 +635,7 @@ const SwapReviewSheetWithQuote = ({
                       {!assetToBuy.isNativeAsset && (
                         <DetailsRow testId="asset-to-buy-contract">
                           <Label
-                            label={i18n.t('swap.review.asset_contract', {
+                            label={t('swap.review.asset_contract', {
                               symbol: assetToBuy.symbol,
                             })}
                             testId="swap-review-asset-to-buy-contract"
@@ -663,7 +657,7 @@ const SwapReviewSheetWithQuote = ({
                     <Box as={motion.div} key="more-details-hidden" layout>
                       <DetailsRow testId="more-details-hidden">
                         <Label
-                          label={i18n.t('swap.review.more_details')}
+                          label={t('swap.review.more_details')}
                           testId="swap-review-details"
                         />
                         <ButtonSymbol

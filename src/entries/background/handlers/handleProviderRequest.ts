@@ -244,7 +244,6 @@ export const handleProviderRequest = ({
         }
         case 'eth_sendTransaction':
         case 'eth_signTransaction':
-        case 'eth_sign':
         case 'personal_sign':
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
