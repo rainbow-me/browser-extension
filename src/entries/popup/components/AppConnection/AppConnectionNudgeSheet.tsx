@@ -81,7 +81,7 @@ export const AppConnectionNudgeSheet = ({
                   borderRadius: '8px',
                 }}
               >
-                <Box
+                {/* <Box
                   style={{
                     height: '18px',
                     width: '18px',
@@ -91,10 +91,10 @@ export const AppConnectionNudgeSheet = ({
                   background="fill"
                   borderWidth="1px"
                   borderColor="buttonStroke"
-                >
-                  <DappIcon appLogo={dappMetadata?.appLogo} size="14px" />
-                </Box>
+                > */}
+                <DappIcon appLogo={dappMetadata?.appLogo} size="18px" />
               </Box>
+              {/* </Box> */}
             </Box>
             <Stack space="16px" alignHorizontal="center">
               <Stack space="10px" alignHorizontal="center">
