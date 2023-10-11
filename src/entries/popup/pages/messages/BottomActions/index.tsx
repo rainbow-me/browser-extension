@@ -356,12 +356,16 @@ export const AcceptRequestButton = ({
   dappStatus?: DAppStatus;
 }) => {
   const isScamDapp = dappStatus === DAppStatus.Scam;
+  const isVerifiedDapp = dappStatus === DAppStatus.Verified;
+
   const buttonVariant = isScamDapp ? 'transparent' : 'flat';
+  const color = isVerifiedDapp ? 'blue' : 'accent';
+
   return (
     <Button
       autoFocus={autoFocus}
       emoji={waitingForDevice ? '👀' : undefined}
-      color={waitingForDevice ? 'label' : 'accent'}
+      color={waitingForDevice ? 'label' : color}
       height="44px"
       width="full"
       onClick={(!waitingForDevice && onClick) || undefined}
@@ -408,10 +412,11 @@ export const RejectRequestButton = ({
       }
     },
   });
+
   return (
     <Button
       autoFocus={autoFocus}
-      color={isScamDapp ? 'accent' : 'labelSecondary'}
+      color={isScamDapp ? 'red' : 'labelSecondary'}
       height="44px"
       width="full"
       onClick={onClick}
