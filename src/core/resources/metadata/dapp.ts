@@ -63,7 +63,6 @@ async function fetchDappMetadata({
   });
 
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
-  // const appLogo = appHost ? getPublicAppIcon(appHost) : undefined;
   const appName = response?.dApp?.name
     ? capitalize(response?.dApp?.name)
     : hardcodedAppName || appHost;
