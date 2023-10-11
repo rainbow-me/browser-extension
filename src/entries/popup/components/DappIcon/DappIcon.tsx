@@ -32,14 +32,30 @@ export const DappIcon = ({
   if (!appLogo) {
     return (
       <Box
-        style={{ width: size, height: size }}
-        borderRadius="18px"
+        borderRadius={RADIUS_SIZE[size]}
         borderWidth="1px"
         borderColor="separatorTertiary"
         background="fillQuaternary"
+        style={{
+          ...(mask
+            ? {
+                maskImage: `url(${mask})`,
+                WebkitMaskImage: `url(${mask})`,
+              }
+            : {
+                maskImage: 'initial',
+                WebkitMaskImage: 'initial',
+              }),
+          ...{ width: size, height: size },
+        }}
       >
         <Inline alignHorizontal="center" alignVertical="center" height="full">
-          <Symbol symbol="safari.fill" weight="bold" size={SYMBOL_SIZE[size]} />
+          <Symbol
+            symbol="safari.fill"
+            color="labelQuaternary"
+            weight="bold"
+            size={SYMBOL_SIZE[size]}
+          />
         </Inline>
       </Box>
     );

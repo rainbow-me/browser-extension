@@ -25,7 +25,11 @@ export const RequestAccountsInfo = ({
       background="surfacePrimaryElevatedSecondary"
     >
       <Stack space="32px">
-        <DappIcon appLogo={appLogo} size="60px" />
+        <Box width="full">
+          <Inline alignHorizontal="center" alignVertical="center">
+            <DappIcon appLogo={appLogo} size="60px" />
+          </Inline>
+        </Box>
         <Stack space="32px">
           <Text
             size="20pt"
