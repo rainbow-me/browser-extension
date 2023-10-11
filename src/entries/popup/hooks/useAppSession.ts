@@ -22,10 +22,8 @@ export function useAppSession({ host = '' }: { host?: string }) {
   } = useAppSessionsStore();
 
   const activeSession = getActiveSession({ host });
-  const {
-    setAddressInAppHasInteractedWithNudgeSheet,
-    clearAppHasInteractedWithNudgeSheet,
-  } = useAppConnectionWalletSwitcherStore();
+  const { clearAppHasInteractedWithNudgeSheet } =
+    useAppConnectionWalletSwitcherStore();
 
   const updateAppSessionAddress = React.useCallback(
     ({ address }: { address: Address }) => {
@@ -100,11 +98,6 @@ export function useAppSession({ host = '' }: { host?: string }) {
       if (newActiveSession) {
         messenger.send(`accountsChanged:${host}`, newActiveSession?.address);
         messenger.send(`chainChanged:${host}`, newActiveSession?.chainId);
-        setAddressInAppHasInteractedWithNudgeSheet({
-          address,
-          host,
-          interacted: false,
-        });
       } else {
         messenger.send(`disconnect:${host}`, []);
         clearAppHasInteractedWithNudgeSheet({
@@ -112,11 +105,7 @@ export function useAppSession({ host = '' }: { host?: string }) {
         });
       }
     },
-    [
-      clearAppHasInteractedWithNudgeSheet,
-      removeSession,
-      setAddressInAppHasInteractedWithNudgeSheet,
-    ],
+    [clearAppHasInteractedWithNudgeSheet, removeSession],
   );
 
   const disconnectAppSession = React.useCallback(() => {

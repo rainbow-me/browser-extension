@@ -10,24 +10,8 @@ export interface AppConnectionWalletSwitcherStore {
     Record<Address, boolean>
   >;
   nudgeSheetInteractionsByApp: Record<string, boolean>;
-  addressInAppHasInteractedWithNudgeSheet: ({
-    address,
-    host,
-  }: {
-    address: Address;
-    host?: string;
-  }) => boolean;
   appHasInteractedWithNudgeSheet: ({ host }: { host?: string }) => boolean;
   setNudgeSheetDisabled: () => void;
-  setAddressInAppHasInteractedWithNudgeSheet: ({
-    address,
-    host,
-    interacted,
-  }: {
-    address: Address;
-    host: string;
-    interacted?: boolean;
-  }) => void;
   setAppHasInteractedWithNudgeSheet: ({
     host,
     interacted,
@@ -45,13 +29,6 @@ export const appConnectionWalletSwitcherStore =
       nudgeSheetEnabled: true,
       nudgeSheetInteractionsByAddressByApp: {},
       nudgeSheetInteractionsByApp: {},
-      addressInAppHasInteractedWithNudgeSheet: ({ address, host }) => {
-        const nudgeSheetInteractionsByAddressByApp =
-          get().nudgeSheetInteractionsByAddressByApp;
-        return (
-          !!host && !!nudgeSheetInteractionsByAddressByApp?.[host]?.[address]
-        );
-      },
       appHasInteractedWithNudgeSheet: ({ host }) => {
         const nudgeSheetInteractionsByApp = get().nudgeSheetInteractionsByApp;
         return !!host && !!nudgeSheetInteractionsByApp[host];
@@ -59,22 +36,6 @@ export const appConnectionWalletSwitcherStore =
       setNudgeSheetDisabled: () => {
         set({
           nudgeSheetEnabled: false,
-        });
-      },
-      setAddressInAppHasInteractedWithNudgeSheet: ({
-        address,
-        host,
-        interacted = true,
-      }) => {
-        const nudgeSheetInteractionsByAddressByApp =
-          get().nudgeSheetInteractionsByAddressByApp;
-        set({
-          nudgeSheetInteractionsByAddressByApp: {
-            ...nudgeSheetInteractionsByAddressByApp,
-            [host]: {
-              [address]: interacted,
-            },
-          },
         });
       },
       setAppHasInteractedWithNudgeSheet: ({ host, interacted = true }) => {
@@ -112,7 +73,7 @@ export const appConnectionWalletSwitcherStore =
     {
       persist: {
         name: 'appConnectionWalletSwitcherStore',
-        version: 0,
+        version: 1,
       },
     },
   );
