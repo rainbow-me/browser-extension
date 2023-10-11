@@ -893,6 +893,11 @@
     "switch_networks": "Switch Networks",
     "switch_wallets": "Switch Wallets",
     "connect": "Connect to %{appName}",
+    "connect_anyway": "Connect Anyway",
+    "malicious_warning": {
+      "title": "This app is likely malicious",
+      "message": "Signing messages or transactions from this app could result in losing your assets"
+    },
     "message_signing_request": "Message Signing Request",
     "message": "Message",
     "sign_message": "Sign Message",

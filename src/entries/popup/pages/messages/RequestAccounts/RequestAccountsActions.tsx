@@ -1,9 +1,9 @@
-import React from 'react';
 import { Address } from 'wagmi';
 
+import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
-import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
+import { Box, Column, Columns, Stack } from '~/design-system';
 
 import {
   AcceptRequestButton,
@@ -21,6 +21,7 @@ export const RequestAccountsActions = ({
   onRejectRequest,
   appName,
   loading = false,
+  status,
 }: {
   appName?: string;
   selectedWallet: Address;
@@ -30,7 +31,9 @@ export const RequestAccountsActions = ({
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   loading?: boolean;
+  status?: DAppStatus;
 }) => {
+  const isScamDapp = status === DAppStatus.Scam;
   return (
     <Box padding="20px">
       <Stack space="24px">
@@ -48,22 +51,28 @@ export const RequestAccountsActions = ({
             />
           </Column>
         </Columns>
-        <Rows space="8px">
-          <Row>
-            <AcceptRequestButton
-              autoFocus
-              onClick={onAcceptRequest}
-              label={i18n.t('approve_request.connect', { appName })}
-              loading={loading}
-            />
-          </Row>
-          <Row>
-            <RejectRequestButton
-              onClick={onRejectRequest}
-              label={i18n.t('common_actions.cancel')}
-            />
-          </Row>
-        </Rows>
+        <Stack
+          space="8px"
+          flexDirection={isScamDapp ? 'column-reverse' : 'column'}
+        >
+          <AcceptRequestButton
+            dappStatus={status}
+            onClick={onAcceptRequest}
+            autoFocus={!isScamDapp}
+            label={
+              isScamDapp
+                ? i18n.t('approve_request.connect_anyway')
+                : i18n.t('approve_request.connect', { appName })
+            }
+            loading={loading}
+          />
+          <RejectRequestButton
+            dappStatus={status}
+            autoFocus={isScamDapp}
+            onClick={onRejectRequest}
+            label={i18n.t('common_actions.cancel')}
+          />
+        </Stack>
       </Stack>
     </Box>
   );

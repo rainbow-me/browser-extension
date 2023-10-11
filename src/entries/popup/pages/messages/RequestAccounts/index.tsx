@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -90,6 +90,7 @@ export const RequestAccounts = ({
           appHostName={dappMetadata?.appHostName}
           appLogo={dappMetadata?.appLogo}
           appName={dappMetadata?.appName}
+          status={dappMetadata?.status}
         />
         <Separator color="separatorTertiary" />
       </Row>
@@ -103,6 +104,7 @@ export const RequestAccounts = ({
           onRejectRequest={onRejectRequest}
           appName={dappMetadata?.appName}
           loading={loading}
+          status={dappMetadata?.status}
         />
       </Row>
     </Rows>
