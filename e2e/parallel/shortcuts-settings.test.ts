@@ -103,9 +103,17 @@ describe.runIf(browser !== 'firefox')(
       expect(changedToggleStatus).toBe('false');
     });
 
+    it('should be able to navigate to Networks using keyboard', async () => {
+      await delayTime('medium');
+      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 1 });
+      await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+      await checkExtensionURL(driver, 'networks');
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+    });
+
     it('should be able to navigate to Privacy & Security using keyboard', async () => {
       await delayTime('medium');
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
+      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 4 });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'privacy');
     });
@@ -277,7 +285,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'ARROW_DOWN',
-        timesToPress: 4,
+        timesToPress: 5,
       });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'transactions');
@@ -325,7 +333,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 5,
+        timesToPress: 6,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'currency');
@@ -350,7 +358,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 6,
+        timesToPress: 7,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'language');
@@ -369,7 +377,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 6,
+        timesToPress: 7,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'language');
@@ -386,7 +394,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 8,
+        timesToPress: 9,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       const systemOption = await findElementByText(driver, 'System');
