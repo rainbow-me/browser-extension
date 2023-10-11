@@ -130,8 +130,8 @@ export const TokenToBuySection = ({
 
   if (!assetSection.data.length) return null;
   return (
-    <Box testId={`${assetSection.id}-token-to-buy-section`} paddingTop="12px">
-      <Stack space="16px">
+    <Box testId={`${assetSection.id}-token-to-buy-section`}>
+      <Stack space="8px">
         {assetSection.id === 'other_networks' ? (
           <Box borderRadius="12px" style={{ height: '52px' }}>
             <Inset horizontal="20px" vertical="8px">

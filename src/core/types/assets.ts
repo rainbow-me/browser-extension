@@ -35,6 +35,11 @@ export interface ParsedAsset {
   type?: AssetType;
   smallBalance?: boolean;
   standard?: 'erc-721' | 'erc-1155';
+  networks?: AssetApiResponse['networks'];
+  bridging?: {
+    isBridgeable: boolean;
+    networks: { [id in ChainId]?: { bridgeable: boolean } };
+  };
 }
 
 export interface ParsedUserAsset extends ParsedAsset {
@@ -112,6 +117,10 @@ export interface ZerionAsset {
   is_verified?: boolean;
   price?: ZerionAssetPrice;
   network?: ChainName;
+  bridging: {
+    bridgeable: boolean;
+    networks: { [id in ChainId]?: { bridgeable: boolean } };
+  };
 }
 
 // protocols https://github.com/rainbow-me/go-utils-lib/blob/master/pkg/enums/token_type.go#L44
@@ -152,9 +161,12 @@ export type AssetMetadata = {
   iconUrl: string;
   marketCap: number;
   name: string;
-  networks?: Partial<
-    Record<ChainId, { address: AddressOrEth; decimals: number }>
-  >;
+  networks?: {
+    [chainId in ChainId]?: {
+      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
+      decimals: number;
+    };
+  };
   price: {
     value: number;
     relativeChange24h: number;

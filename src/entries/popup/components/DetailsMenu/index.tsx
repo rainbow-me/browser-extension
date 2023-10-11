@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { Box, Inline } from '~/design-system';
 
@@ -43,7 +43,7 @@ export function DetailsMenuWrapper({
 }: {
   children: ReactNode;
   closed: boolean;
-  onOpenChange: () => void;
+  onOpenChange: (open: boolean) => void;
 }) {
   if (closed) {
     return <ContextMenu onOpenChange={onOpenChange}>{children}</ContextMenu>;

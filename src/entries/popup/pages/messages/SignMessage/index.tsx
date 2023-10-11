@@ -31,7 +31,6 @@ const getWalletActionMethod = (
   method: RPCMethod,
 ): 'personal_sign' | 'sign_typed_data' | undefined => {
   switch (method) {
-    case 'eth_sign':
     case 'personal_sign':
       return 'personal_sign';
     case 'eth_signTypedData':

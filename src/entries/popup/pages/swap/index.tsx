@@ -38,7 +38,6 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import {
-  useSwapActions,
   useSwapAssets,
   useSwapDropdownDimensions,
   useSwapInputs,
@@ -47,7 +46,6 @@ import {
   useSwapSettings,
   useSwapValidations,
 } from '../../hooks/swap';
-import { SwapTimeEstimate } from '../../hooks/swap/useSwapActions';
 import { useSwapNativeAmounts } from '../../hooks/swap/useSwapNativeAmounts';
 import {
   SwapPriceImpact,
@@ -57,12 +55,17 @@ import {
 import { useBrowser } from '../../hooks/useBrowser';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import {
+  TranslationContext,
+  useTranslationContext,
+} from '../../hooks/useTranslationContext';
 import { getActiveElement, getInputIsFocused } from '../../utils/activeElement';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
+import { SwapTimeEstimate, getSwapActions } from './getSwapActions';
 
 const SwapWarning = ({
   timeEstimate,
@@ -152,7 +155,7 @@ const SwapWarning = ({
   );
 };
 
-export function Swap() {
+export function Swap({ bridge = false }: { bridge?: boolean }) {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const [showSwapReview, setShowSwapReview] = useState(false);
   const [inReviewSheet, setInReviewSheet] = useState(false);
@@ -160,6 +163,16 @@ export function Swap() {
     'sell' | 'buy' | null
   >(null);
   const { isFirefox } = useBrowser();
+
+  // translate based on the context, bridge or swap
+  const translationContext = {
+    Action: i18n.t(`swap._actions.${bridge ? 'Bridge' : 'Swap'}`),
+    action: i18n.t(`swap._actions.${bridge ? 'bridge' : 'swap'}`),
+    actions: i18n.t(`swap._actions.${bridge ? 'bridges' : 'swaps'}`),
+    Actioning: i18n.t(`swap._actions.${bridge ? 'Bridging' : 'Swapping'}`),
+    actioning: i18n.t(`swap._actions.${bridge ? 'bridging' : 'swapping'}`),
+  };
+  const t = useTranslationContext(translationContext);
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
@@ -194,7 +207,7 @@ export function Swap() {
     setAssetToBuy,
     setAssetToSellFilter,
     setAssetToBuyFilter,
-  } = useSwapAssets();
+  } = useSwapAssets({ bridge });
 
   const { toSellInputHeight, toBuyInputHeight } = useSwapDropdownDimensions({
     assetToSell,
@@ -239,6 +252,7 @@ export function Swap() {
     setAssetToSell,
     setAssetToBuy,
     inputToOpenOnMount,
+    bridge,
   });
 
   const {
@@ -300,7 +314,7 @@ export function Swap() {
     timeEstimate,
     buttonAction,
     status,
-  } = useSwapActions({
+  } = getSwapActions({
     quote,
     isLoading,
     assetToSell,
@@ -310,6 +324,7 @@ export function Swap() {
     showExplainerSheet,
     hideExplainerSheet,
     showSwapReviewSheet,
+    t,
   });
 
   useSwapQuoteHandler({
@@ -341,6 +356,7 @@ export function Swap() {
     swapField: savedField,
     swapTokenToBuy: savedTokenToBuy,
     swapTokenToSell: savedTokenToSell,
+    resetSwapValues,
   } = usePopupInstanceStore();
 
   const [didPopulateSavedTokens, setDidPopulateSavedTokens] = useState(false);
@@ -395,8 +411,15 @@ export function Swap() {
         }
       }
     }
+
+    return () => {
+      if (bridge) {
+        // only persist swaps, not bridges
+        resetSwapValues();
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [didPopulateSavedInputValues, didPopulateSavedTokens]);
+  }, [didPopulateSavedInputValues, didPopulateSavedTokens, resetSwapValues]);
 
   useEffect(() => {
     return () => {
@@ -440,9 +463,9 @@ export function Swap() {
     assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback;
 
   return (
-    <>
+    <TranslationContext value={translationContext}>
       <Navbar
-        title={i18n.t('swap.title')}
+        title={t('swap.title')}
         background={'surfaceSecondary'}
         leftComponent={!hideBackButton ? <Navbar.CloseButton /> : undefined}
         rightComponent={
@@ -511,7 +534,7 @@ export function Swap() {
                   setAssetFilter={setAssetToSellFilter}
                   sortMethod={sortMethod}
                   zIndex={2}
-                  placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
+                  placeholder={t('swap.input_token_placeholder')}
                   assetToSellMaxValue={assetToSellMaxValue}
                   setAssetToSellMaxValue={setAssetToSellMaxValue}
                   assetToSellValue={
@@ -589,9 +612,7 @@ export function Swap() {
                   onDropdownOpen={onAssetToBuyInputOpen}
                   dropdownClosed={assetToBuyDropdownClosed}
                   zIndex={1}
-                  placeholder={i18n.t(
-                    'swap.input_token_to_receive_placeholder',
-                  )}
+                  placeholder={t('swap.input_token_to_receive_placeholder')}
                   setOutputChainId={setOutputChainId}
                   outputChainId={outputChainId}
                   assetFilter={assetToBuyFilter}
@@ -674,7 +695,7 @@ export function Swap() {
                   disabled
                 >
                   <Text color="labelQuaternary" size="14pt" weight="bold">
-                    {i18n.t('swap.select_tokens_to_swap')}
+                    {t('swap.select_tokens')}
                   </Text>
                 </Button>
               </Box>
@@ -682,6 +703,6 @@ export function Swap() {
           </Row>
         </Rows>
       </Box>
-    </>
+    </TranslationContext>
   );
 }
