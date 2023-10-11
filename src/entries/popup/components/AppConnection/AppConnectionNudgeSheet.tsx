@@ -22,7 +22,7 @@ import usePrevious from '../../hooks/usePrevious';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
 import { Checkbox } from '../Checkbox/Checkbox';
-import ExternalImage from '../ExternalImage/ExternalImage';
+import { DappIcon } from '../DappIcon/DappIcon';
 import { Navbar } from '../Navbar/Navbar';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
@@ -92,17 +92,7 @@ export const AppConnectionNudgeSheet = ({
                   borderWidth="1px"
                   borderColor="buttonStroke"
                 >
-                  <Inline
-                    alignHorizontal="center"
-                    alignVertical="center"
-                    height="full"
-                  >
-                    <ExternalImage
-                      src={dappMetadata?.appLogo}
-                      width="14"
-                      height="14"
-                    />
-                  </Inline>
+                  <DappIcon appLogo={dappMetadata?.appLogo} size="14px" />
                 </Box>
               </Box>
             </Box>

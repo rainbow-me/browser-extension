@@ -3,7 +3,7 @@ import React from 'react';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Text } from '~/design-system';
 import { TextInline } from '~/design-system/docs/components/TextInline';
-import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
+import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 
 export const RequestAccountsInfo = ({
   appHostName,
@@ -25,22 +25,7 @@ export const RequestAccountsInfo = ({
       background="surfacePrimaryElevatedSecondary"
     >
       <Stack space="32px">
-        <Inline alignHorizontal="center">
-          <Box
-            style={{
-              width: 60,
-              height: 60,
-              overflow: 'hidden',
-            }}
-            borderRadius="18px"
-            alignItems="center"
-          >
-            {appLogo ? (
-              <ExternalImage src={appLogo} width="60" height="60" />
-            ) : null}
-          </Box>
-        </Inline>
-
+        <DappIcon appLogo={appLogo} size="60px" />
         <Stack space="32px">
           <Text
             size="20pt"
