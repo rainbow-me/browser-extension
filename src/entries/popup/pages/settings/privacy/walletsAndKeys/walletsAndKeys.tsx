@@ -1,5 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router';
 
 import { i18n } from '~/core/languages';
@@ -7,8 +13,14 @@ import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { setSettingWallets } from '~/core/utils/settings';
-import { Box, Button, Inline, Symbol, Text } from '~/design-system';
+import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '~/entries/popup/components/ContextMenu/ContextMenu';
 import { LedgerIcon } from '~/entries/popup/components/LedgerIcon/LedgerIcon';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
@@ -17,6 +29,37 @@ import { TrezorIcon } from '~/entries/popup/components/TrezorIcon/TrezorIcon';
 import { getWallets } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+
+function WalletsAndKeysContextMenu({ children }: PropsWithChildren) {
+  const t = (s: string) =>
+    i18n.t(s, {
+      scope: 'settings.privacy_and_security.wallets_and_keys.context_menu',
+    });
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div>{children}</div>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem symbolLeft="lock.square.fill" onSelect={() => null}>
+          {t('view_secret_phrase')}
+        </ContextMenuItem>
+        <ContextMenuItem symbolLeft="plus.circle.fill" onSelect={() => null}>
+          {t('create_wallet')}
+        </ContextMenuItem>
+        <Separator color="separatorSecondary" />
+        <ContextMenuItem
+          color="red"
+          symbolLeft="eye.slash.circle.fill"
+          onSelect={() => null}
+        >
+          {t('hide_wallets')}
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
 
 export const WalletsAndKeys = () => {
   const navigate = useRainbowNavigate();
@@ -128,88 +171,87 @@ export const WalletsAndKeys = () => {
             !walletBackedUp && !firstNotBackedUpRef.current;
 
           return (
-            <Menu
-              ref={firstNotBackedUp ? firstNotBackedUpRef : undefined}
-              key={idx}
-            >
-              <MenuItem
-                testId={`wallet-group-${idx + 1}`}
-                first
-                titleComponent={
-                  <MenuItem.Title
-                    text={`${i18n.t(
-                      wallet.type === KeychainType.HdKeychain
-                        ? 'settings.privacy_and_security.wallets_and_keys.recovery_phrase_label'
-                        : wallet.type === KeychainType.HardwareWalletKeychain
-                        ? 'settings.privacy_and_security.wallets_and_keys.hardware_wallet_label'
-                        : 'settings.privacy_and_security.wallets_and_keys.private_key_label',
-                    )} ${
-                      wallet.type === KeychainType.HdKeychain
-                        ? walletCountPerType.hd
-                        : wallet.type === KeychainType.HardwareWalletKeychain
-                        ? walletCountPerType.hw
-                        : walletCountPerType.pk
-                    }`}
-                  />
-                }
-                labelComponent={
-                  <Inline alignVertical="center" space="4px">
-                    {importedLabel ? (
-                      <Text
-                        color={walletBackedUp ? 'labelTertiary' : 'red'}
-                        size="12pt"
-                        weight={walletBackedUp ? 'medium' : 'bold'}
-                      >
-                        {importedLabel}
-                      </Text>
-                    ) : null}
-                    <Text color="labelTertiary" size="12pt" weight="medium">
-                      {walletsLabel}
-                    </Text>
-                  </Inline>
-                }
-                onClick={() => handleViewWallet({ wallet })}
-                leftComponent={
-                  wallet.type === KeychainType.HardwareWalletKeychain ? (
-                    wallet.vendor === 'Trezor' ? (
-                      <TrezorIcon />
-                    ) : (
-                      <LedgerIcon />
-                    )
-                  ) : (
-                    <Symbol
-                      symbol={
-                        singleAccount
-                          ? 'lock.square.fill'
-                          : 'lock.square.stack.fill'
-                      }
-                      weight="medium"
-                      size={22}
-                      color="labelTertiary"
+            <WalletsAndKeysContextMenu key={idx}>
+              <Menu ref={firstNotBackedUp ? firstNotBackedUpRef : undefined}>
+                <MenuItem
+                  testId={`wallet-group-${idx + 1}`}
+                  first
+                  titleComponent={
+                    <MenuItem.Title
+                      text={`${i18n.t(
+                        wallet.type === KeychainType.HdKeychain
+                          ? 'settings.privacy_and_security.wallets_and_keys.recovery_phrase_label'
+                          : wallet.type === KeychainType.HardwareWalletKeychain
+                          ? 'settings.privacy_and_security.wallets_and_keys.hardware_wallet_label'
+                          : 'settings.privacy_and_security.wallets_and_keys.private_key_label',
+                      )} ${
+                        wallet.type === KeychainType.HdKeychain
+                          ? walletCountPerType.hd
+                          : wallet.type === KeychainType.HardwareWalletKeychain
+                          ? walletCountPerType.hw
+                          : walletCountPerType.pk
+                      }`}
                     />
-                  )
-                }
-                hasRightArrow
-              />
-              <MenuItem.AccountList accounts={wallet.accounts} />
-              {walletBackedUp?.backedUp ? null : (
-                <Box paddingHorizontal="16px" paddingVertical="16px">
-                  <Inline alignHorizontal="center" alignVertical="center">
-                    <Button
-                      width="full"
-                      color="red"
-                      height="36px"
-                      variant="tinted"
-                      onClick={() => handleBackup({ wallet })}
-                    >
-                      {i18n.t(
-                        'settings.privacy_and_security.wallets_and_keys.back_up_now',
-                      )}
-                    </Button>
-                  </Inline>
-                </Box>
-              )}
-            </Menu>
+                  }
+                  labelComponent={
+                    <Inline alignVertical="center" space="4px">
+                      {importedLabel ? (
+                        <Text
+                          color={walletBackedUp ? 'labelTertiary' : 'red'}
+                          size="12pt"
+                          weight={walletBackedUp ? 'medium' : 'bold'}
+                        >
+                          {importedLabel}
+                        </Text>
+                      ) : null}
+                      <Text color="labelTertiary" size="12pt" weight="medium">
+                        {walletsLabel}
+                      </Text>
+                    </Inline>
+                  }
+                  onClick={() => handleViewWallet({ wallet })}
+                  leftComponent={
+                    wallet.type === KeychainType.HardwareWalletKeychain ? (
+                      wallet.vendor === 'Trezor' ? (
+                        <TrezorIcon />
+                      ) : (
+                        <LedgerIcon />
+                      )
+                    ) : (
+                      <Symbol
+                        symbol={
+                          singleAccount
+                            ? 'lock.square.fill'
+                            : 'lock.square.stack.fill'
+                        }
+                        weight="medium"
+                        size={22}
+                        color="labelTertiary"
+                      />
+                    )
+                  }
+                  hasRightArrow
+                />
+                <MenuItem.AccountList accounts={wallet.accounts} />
+                {walletBackedUp?.backedUp ? null : (
+                  <Box paddingHorizontal="16px" paddingVertical="16px">
+                    <Inline alignHorizontal="center" alignVertical="center">
+                      <Button
+                        width="full"
+                        color="red"
+                        height="36px"
+                        variant="tinted"
+                        onClick={() => handleBackup({ wallet })}
+                      >
+                        {i18n.t(
+                          'settings.privacy_and_security.wallets_and_keys.back_up_now',
+                        )}
+                      </Button>
+                    </Inline>
+                  </Box>
+                )}
+              </Menu>
+            </WalletsAndKeysContextMenu>
           );
         })}
         <Menu>
