@@ -1,6 +1,14 @@
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+import {
+  Bleed,
+  Box,
+  Inline,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { TextInline } from '~/design-system/docs/components/TextInline';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 
@@ -12,7 +20,6 @@ const ThisAppIsLikelyMalicious = () => {
       alignItems="center"
       paddingHorizontal="20px"
       paddingVertical="16px"
-      marginHorizontal="-30px"
       gap="12px"
       borderColor="separatorTertiary"
       borderRadius="20px"
@@ -73,12 +80,15 @@ export const RequestAccountsInfo = ({
 
   return (
     <Box
-      style={{ paddingBottom: isScamDapp ? 20 : 42 }}
+      style={{
+        height: 398,
+        paddingBottom: isScamDapp ? 20 : 42,
+      }}
       paddingHorizontal="50px"
       paddingTop="64px"
       background="surfacePrimaryElevatedSecondary"
     >
-      <Stack space="32px">
+      <Stack space="32px" alignItems="center">
         <Inline alignHorizontal="center">
           <Box
             style={{
@@ -95,7 +105,7 @@ export const RequestAccountsInfo = ({
           </Box>
         </Inline>
 
-        <Stack space="32px">
+        <Stack space="24px">
           <Text
             size="20pt"
             weight="semibold"
@@ -114,14 +124,14 @@ export const RequestAccountsInfo = ({
           </Inline>
         </Stack>
 
-        <Inline alignHorizontal="center">
-          <Box style={{ width: '186px' }}>
-            <Separator color="separatorTertiary" />
-          </Box>
-        </Inline>
+        <Box style={{ width: '186px' }} marginVertical="-4px">
+          <Separator color="separatorTertiary" />
+        </Box>
 
         {isScamDapp ? (
-          <ThisAppIsLikelyMalicious />
+          <Bleed horizontal="30px">
+            <ThisAppIsLikelyMalicious />
+          </Bleed>
         ) : (
           <Text
             align="center"
