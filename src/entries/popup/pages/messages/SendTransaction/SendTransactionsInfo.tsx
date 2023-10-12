@@ -1,12 +1,9 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { event } from '~/analytics/event';
-import config from '~/core/firebase/remoteConfig';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -17,7 +14,6 @@ import {
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
-import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
@@ -30,15 +26,12 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     url: request?.meta?.sender?.url,
   });
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  const { flashbotsEnabled } = useFlashbotsEnabledStore();
+
   const nativeAsset = useNativeAssetForNetwork({
     chainId: activeSession?.chainId || ChainId.mainnet,
   });
   const { currentCurrency } = useCurrentCurrencyStore();
-  const flashbotsEnabledGlobally =
-    config.flashbots_enabled &&
-    flashbotsEnabled &&
-    activeSession?.chainId === ChainId.mainnet;
+
   const txRequest = request?.params?.[0] as TransactionRequest;
 
   const { data: methodName = '' } = useRegistryLookup({
@@ -138,23 +131,6 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                 </Inset>
               </Box>
             </Stack>
-          </Inset>
-
-          <Inset horizontal="20px">
-            <TransactionFee
-              analyticsEvents={{
-                customGasClicked:
-                  event.dappPromptSendTransactionCustomGasClicked,
-                transactionSpeedSwitched:
-                  event.dappPromptSendTransactionSpeedSwitched,
-                transactionSpeedClicked:
-                  event.dappPromptSendTransactionSpeedClicked,
-              }}
-              chainId={activeSession?.chainId || ChainId.mainnet}
-              transactionRequest={request?.params?.[0] as TransactionRequest}
-              plainTriggerBorder
-              flashbotsEnabled={flashbotsEnabledGlobally}
-            />
           </Inset>
         </Stack>
       </Inset>

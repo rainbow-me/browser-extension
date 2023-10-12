@@ -2,6 +2,7 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { formatEther } from '@ethersproject/units';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -10,15 +11,18 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useGasStore } from '~/core/state';
+import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { truncateAddress } from '~/core/utils/address';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { Row, Rows } from '~/design-system';
+import { Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
+import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
 import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
@@ -39,6 +43,37 @@ export interface SelectedNetwork {
   network: string;
   chainId: number;
   name: string;
+}
+
+function AccountSigningWith({
+  selectedWallet,
+  appHost,
+}: {
+  selectedWallet: Address;
+  appHost: string;
+}) {
+  return (
+    <Inline alignVertical="center" space="8px">
+      <WalletAvatar
+        addressOrName={selectedWallet}
+        size={36}
+        emojiSize="20pt / 150%"
+      />
+      <Stack space="10px">
+        <Inline alignVertical="center" space="4px">
+          <Text size="14pt" weight="bold" color="labelTertiary">
+            Signing with
+          </Text>
+          <Text size="14pt" weight="bold">
+            {truncateAddress(selectedWallet)}
+          </Text>
+        </Inline>
+        <Text size="12pt" weight="semibold" color="labelTertiary">
+          balance aaa
+        </Text>
+      </Stack>
+    </Inline>
+  );
 }
 
 export function SendTransaction({
@@ -173,12 +208,40 @@ export function SendTransaction({
     selectAssetAddressAndChain,
   ]);
 
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    activeSession?.chainId === ChainId.mainnet;
+
+  if (!selectedWallet || !dappMetadata) return <Navigate to="/" />;
+
   return (
-    <Rows alignVertical="justify">
-      <Row height="content">
-        <SendTransactionInfo request={request} />
-      </Row>
-      <Row height="content">
+    <Stack>
+      <SendTransactionInfo request={request} />
+      <Stack paddingHorizontal="20px">
+        <Inset vertical="16px">
+          <AccountSigningWith
+            selectedWallet={selectedWallet}
+            appHost={dappMetadata.appHost}
+          />
+        </Inset>
+        <Separator color="separatorTertiary" />
+        <Inset vertical="20px">
+          <TransactionFee
+            analyticsEvents={{
+              customGasClicked: event.dappPromptSendTransactionCustomGasClicked,
+              transactionSpeedSwitched:
+                event.dappPromptSendTransactionSpeedSwitched,
+              transactionSpeedClicked:
+                event.dappPromptSendTransactionSpeedClicked,
+            }}
+            chainId={activeSession?.chainId || ChainId.mainnet}
+            transactionRequest={request?.params?.[0] as TransactionRequest}
+            plainTriggerBorder
+            flashbotsEnabled={flashbotsEnabledGlobally}
+          />
+        </Inset>
         <SendTransactionActions
           chainId={activeSession?.chainId || ChainId.mainnet}
           waitingForDevice={waitingForDevice}
@@ -188,7 +251,7 @@ export function SendTransaction({
           onRejectRequest={onRejectRequest}
           loading={loading}
         />
-      </Row>
-    </Rows>
+      </Stack>
+    </Stack>
   );
 }
