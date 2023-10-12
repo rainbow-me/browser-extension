@@ -317,7 +317,6 @@ export function useSearchCurrencyLists({
         if (!assetOnNetworkOverrides) return;
         const chainId = +_chainId as unknown as ChainId; // Object.entries messes the type
         const { address, decimals } = assetOnNetworkOverrides;
-        console.log(chainId, address);
         // filter out the asset we're selling already
         if (
           isSameAsset(assetToSell, { chainId, address }) ||
