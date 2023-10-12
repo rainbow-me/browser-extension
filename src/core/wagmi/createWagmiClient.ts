@@ -62,7 +62,7 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
 
 const proxyRpcEndpoint = (endpoint: string, chainId: number) => {
   if (process.env.RPC_PROXY_ENABLED === 'true') {
-    return `${process.env.BASE_RPC_PROXY_URL}/${chainId}/${process.env.RPC_PROXY_API_KEY}`;
+    return `${process.env.RPC_PROXY_BASE_URL}/${chainId}/${process.env.RPC_PROXY_API_KEY}`;
   }
   return endpoint;
 };
