@@ -1,2 +1,2 @@
-export { RainbowProvider } from './RainbowProvider';
-export type { ChainIdHex } from './RainbowProvider';
+export { RainbowInjectedProvider } from './RainbowInjectedProvider';
+export type { ChainIdHex } from './RainbowInjectedProvider';
