@@ -99,7 +99,11 @@ export function TokenToSellRow({ uniqueId }: TokenToSellRowProps) {
   );
 
   return (
-    <Lens borderRadius="12px" forceAvatarColor>
+    <Lens
+      borderRadius="12px"
+      forceAvatarColor
+      testId={`sell-row-${uniqueId}-active-element-item`}
+    >
       <Box
         className={rowTransparentAccentHighlight}
         borderRadius="12px"
