@@ -458,7 +458,7 @@ export async function performShortcutWithNormalKey(
   key: string,
 ) {
   try {
-    await delayTime('short');
+    await delayTime('medium');
     await driver.actions().sendKeys(key).perform();
   } catch (error) {
     console.error(
@@ -474,7 +474,7 @@ export async function performShortcutWithSpecialKey(
   specialKey: keyof typeof Key,
 ) {
   try {
-    await delayTime('short');
+    await delayTime('medium');
     const key = Key[specialKey] as string;
     await driver.actions().sendKeys(key).perform();
   } catch (error) {
