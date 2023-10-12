@@ -21,6 +21,43 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.39](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.39)
+
+### Added
+- Normalized anchor links to be clickable in Token Details description #1019
+- Support for keyboard navigation within custom gas menu #1021
+- Support for keyboard navigation in Token Details #1013
+- Support for keyboard navigation within swap settings & Support Flip Assets Selectable with Tab/Arrow #1023
+- Add sanitizeTypeData function with tests to prevent phishing #1028
+- Send/Swap token right-click functionality #1004
+- HEX handling in personal signing for hardware wallets #1035
+- Testnet support #1027
+- Bridge screen added #997
+
+### Changed
+- Wallet context menu additions and adjustments #1017
+- Reduce price/coingecko queries in swap search list #1033
+
+### Fixed
+- Added debounce to some fee calculations #1032
+- Prefetching dApp metadata without status #1038
+- Allowance field now doesn't display on Token Details if allowance is empty #1045
+- `ESC` can now be used to close token details #1058
+- Add a maxHeight to externalImage component #1040
+- 'Del' text no longer exceeds button width #1030
+- Default tab now is Home instead of Activity #1029
+
+### Internal
+- Stricter Sentry filtering on beforeSend #1036
+- Changelog updates for v1.2.26 and v1.2.36 #1039
+- Deprecated `eth_sign` method #1049
+- Version Bumps: v1.2.37 #997, v1.2.38 #1079, v1.2.39 #1081
+
+### Testing
+- e2e: Send Shortcut test #1002
+- e2e: shortcut wallet switcher test #1037
+
+
 ## [v1.2.36](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.36)
 
 ### Added
