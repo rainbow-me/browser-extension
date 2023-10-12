@@ -233,6 +233,9 @@ export const sendTransaction = async (
   if (typeof txPayload.from === 'undefined') {
     throw new Error('Missing from address');
   }
+  console.log('Sending transaction to:', txPayload.to);
+  console.log('txPayload:', txPayload);
+
   const signer = await keychainManager.getSigner(txPayload.from as Address);
   const wallet = signer.connect(provider);
   let response = await wallet.sendTransaction(txPayload);

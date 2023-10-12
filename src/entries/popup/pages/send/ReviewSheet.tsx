@@ -88,6 +88,8 @@ const EditContactDropdown = ({
     address: toAddress,
   });
 
+  console.log('toAddress', toAddress);
+
   const viewOnEtherscan = useCallback(() => {
     const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
     goToNewTab({
@@ -258,6 +260,7 @@ export const ReviewSheet = ({
     }>
   >;
 }) => {
+  console.log('toAddress', toAddress);
   const { visibleOwnedWallets } = useWallets();
   const [sendingOnL2Checks, setSendingOnL2Checks] = useState([false, false]);
   const prevShow = usePrevious(show);

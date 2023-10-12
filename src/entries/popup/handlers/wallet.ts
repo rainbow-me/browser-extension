@@ -104,6 +104,8 @@ export const sendTransaction = async (
     provider,
   });
 
+  console.log('transaction request', transactionRequest);
+
   const nonce =
     transactionRequest.nonce ??
     (await getNextNonce({

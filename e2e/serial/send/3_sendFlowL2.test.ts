@@ -99,9 +99,9 @@ describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
     await driver
       .actions()
-      .sendKeys('0x2e67869829c734ac13723A138a952F7A8B56e774')
+      .sendKeys('0x9126914f62314402cC3f098becfaa7c2Bc23a55C')
       .perform();
-    const shortenedAddress = await findElementByText(driver, '0x2e67…e774');
+    const shortenedAddress = await findElementByText(driver, '0x9126…a55C');
     expect(shortenedAddress).toBeTruthy();
   });
 

@@ -208,6 +208,7 @@ export function Send() {
           setWaitingForDevice(true);
         }
         resetSendValues();
+        console.log('to ???:', txToAddress);
         const result = await sendTransaction({
           from: fromAddress,
           to: txToAddress,
@@ -244,6 +245,7 @@ export function Send() {
               selectedGas.transactionGasParams as TransactionGasParams
             )?.maxPriorityFeePerGas,
           };
+          console.log('transaction xx', transaction);
           await addNewTransaction({
             address: fromAddress,
             chainId,
@@ -350,6 +352,7 @@ export function Send() {
     }
     if (sendAddress && sendAddress.length) {
       setToAddressOrName(sendAddress);
+      console.log(sendAddress);
     }
     if (sendField !== independentField) {
       switchIndependentField();

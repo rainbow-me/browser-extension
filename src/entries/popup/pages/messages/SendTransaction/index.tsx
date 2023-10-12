@@ -87,6 +87,7 @@ export function SendTransaction({
         chainId: returnedChainId,
       };
       const result = await wallet.sendTransaction(txData);
+      console.log('txData - wallet.sendTransaction', txData);
       if (result) {
         const transaction = {
           asset: asset || undefined,
