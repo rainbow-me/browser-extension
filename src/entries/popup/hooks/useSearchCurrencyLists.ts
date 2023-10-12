@@ -320,7 +320,7 @@ export function useSearchCurrencyLists({
         // filter out the asset we're selling already
         if (
           isSameAsset(assetToSell, { chainId, address }) ||
-          SUPPORTED_CHAINS.every((n) => n.id !== chainId)
+          !SUPPORTED_CHAINS.some((n) => n.id === chainId)
         )
           return;
         return {
