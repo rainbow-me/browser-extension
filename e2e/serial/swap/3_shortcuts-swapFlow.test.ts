@@ -182,8 +182,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
   });
 
-  // bug exists on this flow. will un-skip once fixed
-  it.skip('should be able to open network menu with keyboard navigation', async () => {
+  it('should be able to open network menu with keyboard navigation', async () => {
     const switchNetworkLabel = await isElementFoundByText({
       text: 'Switch Networks',
       driver,
@@ -200,9 +199,10 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to select asset to swap from home using keyboard', async () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
+    await executePerformShortcut({ driver, key: 'ESCAPE' });
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 8 });
     await executePerformShortcut({ driver, key: 'SPACE' });
-    await executePerformShortcut({ driver, key: 'ENTER' });
+    await executePerformShortcut({ driver, key: 'x' });
     await checkExtensionURL(driver, 'swap');
     const inputCurrency = await findElementByTestId({
       id: `input-wrapper-dropdown-${ethId}-token-to-sell-token-input`,

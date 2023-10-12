@@ -309,12 +309,12 @@ export async function isElementFoundByText({
       until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
       2500,
     );
-    console.error(
+    console.log(
       `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
     );
   } catch (error) {
     isElementFound = false;
-    console.error(
+    console.log(
       `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
     );
   }
@@ -458,7 +458,7 @@ export async function performShortcutWithNormalKey(
   key: string,
 ) {
   try {
-    await delayTime('medium');
+    await delayTime('short');
     await driver.actions().sendKeys(key).perform();
   } catch (error) {
     console.error(
@@ -474,7 +474,7 @@ export async function performShortcutWithSpecialKey(
   specialKey: keyof typeof Key,
 ) {
   try {
-    await delayTime('medium');
+    await delayTime('short');
     const key = Key[specialKey] as string;
     await driver.actions().sendKeys(key).perform();
   } catch (error) {
@@ -527,6 +527,7 @@ export async function navigateToElementWithTestId({
     await executePerformShortcut({ driver, key: 'TAB' });
     const testIds = await getFocusedElementDataTestIds(driver);
     if (testIds.includes(testId)) {
+      await delayTime('short');
       await executePerformShortcut({ driver, key: 'ENTER' });
     } else {
       await navigateToElementWithTestId({ driver, testId });
