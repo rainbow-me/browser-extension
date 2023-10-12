@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - You can now connect to all major Testnets for Rainbow's supported networks to sign and send testnet transactions. When connecting to or switching networks from a dApp that supports Testnets, you'll automatically be connected to the correct testnet by default, without needing to manage an RPC or network list. #1027
 
 ### Changed
-- Right-click is now available in even more places, like the wallet header to manage your wallet, Send, the Wallet Switcher, and Wallets & Keys menu in the Settings interface #1017
+- Right-click is now available in even more places, like the wallet header to manage your wallet, Send, Swap, the Wallet Switcher, and the Wallets & Keys menu in the Settings interface #1017 #1004
 - The default tab when opening the wallet is now Tokens instead of the Activity pane #1029
 - Links within descriptions for Tokens are now clickable #1019
 - Support for keyboard navigation within the Custom Gas menu #1021
@@ -37,7 +37,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Improved keyboard navigation for the Flip Assets feature in Swap #1023
 
 ### Fixed
-- Resolved an issue with Send/Swap token right-click functionality #1004
 - Improved handling of hex-encoded signature requests for `personal_sign` support for Ledger and Trezor hardware wallets #1035
 - Resolved an issue where Rainbow over-fetched metadata for dApps as users navigated the web. Rainbow now only fetches metadata for dApps that first interact with the Rainbow RPC provider #1038
 - Allowance field no longer appears in Token Details if there is no contract approval allowance to display #1045
