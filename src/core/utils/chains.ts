@@ -120,7 +120,12 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
 export function getChain({ chainId }: { chainId?: ChainId }) {
   const { chains } = getNetwork();
   const chain = chains.find((chain) => chain.id === chainId);
-  return chain || mainnet;
+  return chain || { ...mainnet, testnet: false };
+}
+
+export function isTestnetChainId({ chainId }: { chainId?: ChainId }) {
+  const chain = getChain({ chainId });
+  return !!chain.testnet;
 }
 
 export function isSupportedChainId(chainId: number) {
