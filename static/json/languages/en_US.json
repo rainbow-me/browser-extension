@@ -85,6 +85,14 @@
       "light": "Light",
       "dark": "Dark"
     },
+    "networks": {
+      "title": "Networks",
+      "quick_promo": {
+        "text": "Drag networks to reorder them",
+        "text_bold": "Tip:"
+      },
+      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked."
+    },
     "privacy_and_security": {
       "title": "Privacy & Security",
       "analytics": "Analytics",

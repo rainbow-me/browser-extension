@@ -7,7 +7,7 @@ import {
 import { useUserAssets } from '~/core/resources/assets';
 import { useSwappableAddresses } from '~/core/resources/search/swappableAddresses';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { ParsedUserAsset } from '~/core/types/assets';
+import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
 export function useSwappableAssets(toChainId?: ChainId) {
@@ -20,9 +20,12 @@ export function useSwappableAssets(toChainId?: ChainId) {
     currency,
   });
 
-  const fullUserAssetList = selectUserAssetsList(userAssets);
-
-  const assetAddressMap = selectUserAssetAddressMapByChainId(userAssets);
+  const fullUserAssetList = selectUserAssetsList(
+    userAssets || ({} as ParsedAssetsDictByChain),
+  );
+  const assetAddressMap = selectUserAssetAddressMapByChainId(
+    userAssets || ({} as ParsedAssetsDictByChain),
+  );
 
   const {
     data: swappableMainnetAddresses,
