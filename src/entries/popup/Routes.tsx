@@ -17,6 +17,7 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
+import { BoxProps } from '~/design-system/components/Box/Box';
 
 import { AppConnectionWatcher } from './components/AppConnection/AppConnectionWatcher';
 import { CommandK } from './components/CommandK/CommandK';
@@ -53,6 +54,7 @@ import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
 import { Language } from './pages/settings/language';
+import { SettingsNetworks } from './pages/settings/networks';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
@@ -83,9 +85,12 @@ import { getInputIsFocused } from './utils/activeElement';
 import { simulateTab } from './utils/simulateTab';
 import { zIndexes } from './utils/zIndexes';
 
-const ChildRoute = (props: React.PropsWithChildren) => (
+const ChildRoute = (
+  props: React.PropsWithChildren & Pick<BoxProps, 'background'>,
+) => (
   <Box
     position="absolute"
+    background={props.background}
     style={{ ...POPUP_DIMENSIONS, zIndex: zIndexes.CHILD_ROUTE }}
   >
     {props.children}
@@ -114,10 +119,10 @@ const ROUTE_DATA = [
       {
         path: ROUTES.TOKEN_DETAILS(':uniqueId'),
         element: (
-          <ChildRoute>
+          <ChildRoute background="surfacePrimaryElevated">
             <AnimatedRoute
               background="surfacePrimaryElevated"
-              direction="base"
+              direction="left"
               protectedRoute
             >
               <TokenDetails />
@@ -466,6 +471,21 @@ const ROUTE_DATA = [
     ),
   },
   {
+    path: ROUTES.SETTINGS__NETWORKS,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.networks.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <SettingsNetworks />
+      </AnimatedRoute>
+    ),
+  },
+  {
     path: ROUTES.SETTINGS__PRIVACY__AUTOLOCK,
     element: (
       <AnimatedRoute
@@ -652,6 +672,18 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute direction="up" title={i18n.t('swap.title')} protectedRoute>
         <Swap />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.BRIDGE,
+    element: (
+      <AnimatedRoute
+        direction="up"
+        title={i18n.t('bridge.title')}
+        protectedRoute
+      >
+        <Swap bridge />
       </AnimatedRoute>
     ),
   },

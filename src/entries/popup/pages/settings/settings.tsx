@@ -158,6 +158,24 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
+            testId={'networks-link'}
+            first
+            last
+            leftComponent={
+              <Symbol
+                symbol="network"
+                weight="medium"
+                size={18}
+                color="green"
+              />
+            }
+            hasRightArrow
+            onClick={() => navigate(ROUTES.SETTINGS__NETWORKS)}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.networks.title')} />
+            }
+          />
+          <MenuItem
             testId={'privacy-security-link'}
             first
             last

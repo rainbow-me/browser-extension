@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
@@ -9,7 +9,6 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 interface BottomSheetProps {
   background?: BackgroundColor;
   children: ReactNode;
-  isModal?: boolean;
   show: boolean;
   zIndex?: number;
   onClickOutside?: VoidFunction;
@@ -18,11 +17,17 @@ interface BottomSheetProps {
 export const BottomSheet = ({
   background,
   children,
-  isModal = true,
   show,
   zIndex,
   onClickOutside,
 }: BottomSheetProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // capture focus on mount so that keyboard events are handled
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
+
   return (
     <AnimatePresence>
       {show && (
@@ -45,6 +50,8 @@ export const BottomSheet = ({
             exit={{ opacity: 0 }}
             key="background"
             transition={{ duration: 0.3 }}
+            ref={containerRef}
+            tabIndex={0}
           />
           <Box
             position="absolute"
@@ -61,7 +68,7 @@ export const BottomSheet = ({
             key="bottom"
             transition={{ duration: 0.3 }}
             layout
-            isModal={isModal}
+            isModal
           >
             <Box
               background="surfacePrimaryElevated"

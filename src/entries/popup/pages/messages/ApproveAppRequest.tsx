@@ -81,7 +81,6 @@ export const ApproveAppRequest = () => {
           request={pendingRequest}
         />
       );
-    case 'eth_sign':
     case 'personal_sign':
     case 'eth_signTypedData':
     case 'eth_signTypedData_v3':

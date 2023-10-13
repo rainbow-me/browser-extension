@@ -3,7 +3,7 @@ import { Ethereum } from '@wagmi/core';
 import { EIP1193Provider, announceProvider } from 'mipd';
 
 import { initializeMessenger } from '~/core/messengers';
-import { RainbowProvider } from '~/core/providers';
+import { RainbowInjectedProvider } from '~/core/providers';
 import { RAINBOW_ICON_RAW_SVG } from '~/core/references/rawImages';
 import { ChainId } from '~/core/types/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
@@ -15,23 +15,27 @@ declare global {
   interface Window {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - clashes with Wagmi's Window type https://github.com/wagmi-dev/wagmi/blob/a25ddf534781b2da81ee6aba307b93750efc5595/packages/core/src/types/index.ts#L77
-    ethereum: RainbowProvider | Ethereum;
-    rainbow: RainbowProvider;
-    providers: (RainbowProvider | Ethereum)[];
+    ethereum: RainbowInjectedProvider | Ethereum;
+    rainbow: RainbowInjectedProvider;
+    providers: (RainbowInjectedProvider | Ethereum)[];
     walletRouter: {
-      rainbowProvider: RainbowProvider;
-      lastInjectedProvider?: RainbowProvider | Ethereum;
-      currentProvider: RainbowProvider | Ethereum;
-      providers: (RainbowProvider | Ethereum)[];
+      rainbowInjectedProvider: RainbowInjectedProvider;
+      lastInjectedProvider?: RainbowInjectedProvider | Ethereum;
+      currentProvider: RainbowInjectedProvider | Ethereum;
+      providers: (RainbowInjectedProvider | Ethereum)[];
       setDefaultProvider: (rainbowAsDefault: boolean) => void;
-      addProvider: (provider: RainbowProvider | Ethereum) => void;
+      addProvider: (provider: RainbowInjectedProvider | Ethereum) => void;
     };
   }
 }
 
 const messenger = initializeMessenger({ connect: 'popup' });
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
-const rainbowProvider = new RainbowProvider({ messenger });
+
+const rainbowInjectedProvider = new RainbowInjectedProvider({
+  messenger,
+  backgroundMessenger,
+});
 
 if (shouldInjectProvider()) {
   announceProvider({
@@ -41,7 +45,7 @@ if (shouldInjectProvider()) {
       rdns: 'me.rainbow',
       uuid: uuid4(),
     },
-    provider: rainbowProvider as EIP1193Provider,
+    provider: rainbowInjectedProvider as EIP1193Provider,
   });
 
   backgroundMessenger.reply(
@@ -68,7 +72,11 @@ if (shouldInjectProvider()) {
   });
 
   Object.defineProperties(window, {
-    rainbow: { value: rainbowProvider, configurable: false, writable: false },
+    rainbow: {
+      value: rainbowInjectedProvider,
+      configurable: false,
+      writable: false,
+    },
     ethereum: {
       get() {
         return window.walletRouter.currentProvider;
@@ -80,11 +88,11 @@ if (shouldInjectProvider()) {
     },
     walletRouter: {
       value: {
-        rainbowProvider,
+        rainbowInjectedProvider,
         lastInjectedProvider: window.ethereum,
-        currentProvider: rainbowProvider,
+        currentProvider: rainbowInjectedProvider,
         providers: [
-          rainbowProvider,
+          rainbowInjectedProvider,
           ...(window.ethereum ? [window.ethereum] : []),
         ],
         setDefaultProvider(rainbowAsDefault: boolean) {
@@ -97,11 +105,11 @@ if (shouldInjectProvider()) {
             window.walletRouter.currentProvider = nonDefaultProvider;
           }
         },
-        addProvider(provider: RainbowProvider | Ethereum) {
+        addProvider(provider: RainbowInjectedProvider | Ethereum) {
           if (!window.walletRouter.providers.includes(provider)) {
             window.walletRouter.providers.push(provider);
           }
-          if (rainbowProvider !== provider) {
+          if (rainbowInjectedProvider !== provider) {
             window.walletRouter.lastInjectedProvider = provider;
           }
         },
@@ -111,7 +119,7 @@ if (shouldInjectProvider()) {
     },
   });
 
-  // defining `providers` on rainbowProvider, since it's undefined on the object itself
+  // defining `providers` on rainbowInjectedProvider, since it's undefined on the object itself
   window.rainbow.providers = window.walletRouter.providers;
 
   window.dispatchEvent(new Event('ethereum#initialized'));

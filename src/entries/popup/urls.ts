@@ -25,6 +25,7 @@ export const ROUTES = {
   CREATE_PASSWORD: '/create-password', // CreatePassword
   SETTINGS: '/settings', // Settings
   QR_CODE: '/qr-code', // QR Code
+  SETTINGS__NETWORKS: '/settings/networks', // Networks
   SETTINGS__PRIVACY: '/settings/privacy', // Privacy
   SETTINGS__PRIVACY__AUTOLOCK: '/settings/privacy/autolock', // AutoLockTimer
   SETTINGS__PRIVACY__CHANGE_PASSWORD: '/settings/privacy/change-password', // ChangePassword
@@ -46,6 +47,7 @@ export const ROUTES = {
   SETTINGS__LANGUAGE: '/settings/language', // Language
   SEND: '/send', // Send
   SWAP: '/swap', // Swap
+  BRIDGE: '/bridge', // Bridge
   SIGN: '/sign', // Sign
   WALLETS: '/wallets', // Wallets
   WALLET_SWITCHER: '/wallet-switcher', // WalletSwitcher

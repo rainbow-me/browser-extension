@@ -4,7 +4,10 @@ import { Address } from 'wagmi';
 
 import appConnectionWalletItemImageMask from 'static/assets/appConnectionWalletItemImageMask.svg';
 import { i18n } from '~/core/languages';
-import { selectUserAssetsBalance } from '~/core/resources/_selectors/assets';
+import {
+  selectUserAssetsBalance,
+  selectorFilterByUserChains,
+} from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
@@ -46,7 +49,13 @@ export const AppConnectionWalletItem = React.forwardRef(
     const { currentCurrency: currency } = useCurrentCurrencyStore();
     const { data: totalAssetsBalance } = useUserAssets(
       { address, currency },
-      { select: selectUserAssetsBalance() },
+      {
+        select: (data) =>
+          selectorFilterByUserChains({
+            data,
+            selector: selectUserAssetsBalance,
+          }),
+      },
     );
 
     const userAssetsBalanceDisplay = convertAmountToNativeDisplay(

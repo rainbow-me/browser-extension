@@ -444,10 +444,11 @@ const getAdditionalDetails = (transaction: RainbowTransaction) => {
           .amount
       : undefined;
 
-  const approval = type === 'approve' && {
-    value: approvalAmount,
-    label: getApprovalLabel(transaction),
-  };
+  const approval = type === 'approve' &&
+    approvalAmount && {
+      value: approvalAmount,
+      label: getApprovalLabel(transaction),
+    };
 
   if (
     !tokenAmount &&
@@ -668,9 +669,9 @@ function ActivityDetailsSheet({
     });
 
   return (
-    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} isModal={false} show>
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar
-        leftComponent={<Navbar.CloseButton onClick={backToHome} />}
+        leftComponent={<Navbar.CloseButton onClick={backToHome} withinModal />}
         titleComponent={<ActivityPill transaction={tx} />}
         rightComponent={<MoreOptions transaction={tx} />}
       />

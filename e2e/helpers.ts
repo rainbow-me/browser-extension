@@ -309,12 +309,12 @@ export async function isElementFoundByText({
       until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
       2500,
     );
-    console.error(
+    console.log(
       `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
     );
   } catch (error) {
     isElementFound = false;
-    console.error(
+    console.log(
       `Element with text '${text}' was returned isElementFound status of ${isElementFound}`,
     );
   }
@@ -488,16 +488,16 @@ export async function performShortcutWithSpecialKey(
 
 export async function getFocusedElementDataTestIds(
   driver: WebDriver,
-): Promise<string> {
+): Promise<string[]> {
   const script = `
     function getDataTestIdOfElementAndChildren(element) {
-      let dataTestIds = '';
+      const dataTestIds = [];
       const dataTestId = element.getAttribute('data-testid');
       if (dataTestId) {
-        dataTestIds += dataTestId;
+        dataTestIds.push(dataTestId);
       }
       for (const child of element.children) {
-        dataTestIds = dataTestIds.concat(getDataTestIdOfElementAndChildren(child));
+        dataTestIds.push(...getDataTestIdOfElementAndChildren(child));
       }
       return dataTestIds;
     }
@@ -526,7 +526,8 @@ export async function navigateToElementWithTestId({
   try {
     await executePerformShortcut({ driver, key: 'TAB' });
     const testIds = await getFocusedElementDataTestIds(driver);
-    if (testIds === testId) {
+    if (testIds.includes(testId)) {
+      await delayTime('short');
       await executePerformShortcut({ driver, key: 'ENTER' });
     } else {
       await navigateToElementWithTestId({ driver, testId });
@@ -671,11 +672,16 @@ export async function switchWallet(
 }
 
 export async function getOnchainBalance(addy: string, contract: string) {
-  const provider = getDefaultProvider('http://127.0.0.1:8545');
-  const testContract = new Contract(contract, erc20ABI, provider);
-  const balance = await testContract.balanceOf(addy);
+  try {
+    const provider = getDefaultProvider('http://127.0.0.1:8545');
+    const testContract = new Contract(contract, erc20ABI, provider);
+    const balance = await testContract.balanceOf(addy);
 
-  return balance;
+    return balance;
+  } catch (error) {
+    console.error('Error fetching on-chain balance:', error);
+    throw error;
+  }
 }
 
 export async function transactionStatus() {
