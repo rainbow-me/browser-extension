@@ -61,6 +61,16 @@ export const getSupportedChains = () => {
 export const getSupportedChainIds = () =>
   getSupportedChains().map((chain) => chain.id);
 
+export const getSupportedTestnetChains = () => {
+  const { chains } = getNetwork();
+  return chains.filter((chain) => chain.testnet);
+};
+
+export const getSupportedTestnetChainIds = () =>
+  getSupportedTestnetChains()
+    .filter((chain) => chain.id !== ChainId.hardhat)
+    .map((chain) => chain.id);
+
 /**
  * @desc Checks if the given chain is a Layer 2.
  * @param chain The chain name to check.
