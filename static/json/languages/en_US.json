@@ -130,7 +130,8 @@
         "context_menu": {
           "create_wallet": "Create wallet",
           "view_secret_phrase": "View Secret Phrase",
-          "hide_wallets": "Hide Wallets"
+          "hide_wallets": "Hide Wallets",
+          "unhide_wallets": "Unhide Wallets"
         },
         "wallet_details": {
           "title": "Wallet Details",
