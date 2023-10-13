@@ -121,10 +121,7 @@ export const SwitchNetworkMenuSelector = ({
     handler: handleTokenShortcuts,
   });
 
-  const supportedChainsWithHardhat = useMemo(
-    () => getSupportedChainsWithHardhat(),
-    [],
-  );
+  const supportedChainsWithHardhat = getSupportedChainsWithHardhat();
 
   return (
     <Box id="switch-network-menu-selector">
