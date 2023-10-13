@@ -348,11 +348,16 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const selectAssetToSell = useCallback(
     (asset: ParsedSearchAsset | null) => {
       setAssetToSell(asset);
-      tokenToBuyInputRef.current?.openDropdown();
+      if (!assetToBuy) tokenToBuyInputRef.current?.openDropdown();
       setAssetToSellInputValue('');
       setAssetToBuyInputValue('');
     },
-    [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
+    [
+      setAssetToBuyInputValue,
+      setAssetToSell,
+      setAssetToSellInputValue,
+      assetToBuy,
+    ],
   );
 
   const {
