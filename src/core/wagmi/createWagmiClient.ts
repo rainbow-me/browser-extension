@@ -8,6 +8,7 @@ import {
 } from 'wagmi';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
+import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
 import { Storage } from '../storage';
 import { ChainId, hardhat } from '../types/chains';
@@ -58,13 +59,6 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
     default:
       return null;
   }
-};
-
-const proxyRpcEndpoint = (endpoint: string, chainId: number) => {
-  if (process.env.RPC_PROXY_ENABLED === 'true') {
-    return `${process.env.RPC_PROXY_BASE_URL}/${chainId}/${process.env.RPC_PROXY_API_KEY}`;
-  }
-  return endpoint;
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
