@@ -1,15 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import {
-  DragDropContext,
-  Draggable,
-  DraggableStateSnapshot,
-  DraggingStyle,
-  DropResult,
-  Droppable,
-  NotDraggingStyle,
-} from 'react-beautiful-dnd';
+import { DropResult } from 'react-beautiful-dnd';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -21,6 +12,7 @@ import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
+import { reorder } from '~/core/utils/draggable';
 import {
   AccentColorProvider,
   Box,
@@ -37,6 +29,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 import AccountItem, {
   LabelOption,
 } from '../../components/AccountItem/AccountItem';
+import { DraggableContext, DraggableItem } from '../../components/Draggable';
 import { LabelPill } from '../../components/LabelPill/LabelPill';
 import { Link } from '../../components/Link/Link';
 import {
@@ -56,34 +49,8 @@ import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
-import { accountItem } from './accountItem.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
-
-const reorder = (
-  list: Iterable<unknown>,
-  startIndex: number,
-  endIndex: number,
-) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
-};
-
-const getItemStyle = (
-  style: DraggingStyle | NotDraggingStyle | undefined,
-  { dropAnimation }: Pick<DraggableStateSnapshot, 'dropAnimation'>,
-) => {
-  if (!dropAnimation) return style;
-  const { moveTo, curve } = dropAnimation;
-  return {
-    ...style,
-    transform: `translate(${moveTo.x}px, ${moveTo.y}px) scale(1)`,
-    transition: `all ${curve} .5s`,
-  };
-};
 
 const infoButtonOptions = ({
   account,
@@ -326,46 +293,25 @@ export function WalletSwitcher() {
   const displayedAccounts = useMemo(
     () =>
       filteredAndSortedAccounts.map((account, index) => (
-        <Draggable
+        <DraggableItem
           key={account.address}
-          draggableId={account.address}
+          id={account.address}
           index={index}
           isDragDisabled={isSearching}
         >
-          {(
-            { innerRef, draggableProps, dragHandleProps },
-            { dropAnimation, isDragging },
-          ) => (
-            <Box
-              ref={innerRef}
-              {...draggableProps}
-              {...dragHandleProps}
-              style={getItemStyle(draggableProps.style, { dropAnimation })}
-              tabIndex={-1}
-            >
-              <Box
-                className={
-                  accountItem[
-                    isDragging && !dropAnimation ? 'dragging' : 'idle'
-                  ]
-                }
-              >
-                <AccountItemWithMenu
-                  account={account}
-                  onSelect={() => handleSelectAddress(account.address)}
-                  isSelected={account.address === currentAddress}
-                  index={index}
-                  menuOptions={infoButtonOptions({
-                    account,
-                    setRenameAccount,
-                    setRemoveAccount,
-                    isLastWallet,
-                  })}
-                />
-              </Box>
-            </Box>
-          )}
-        </Draggable>
+          <AccountItemWithMenu
+            account={account}
+            onSelect={() => handleSelectAddress(account.address)}
+            isSelected={account.address === currentAddress}
+            index={index}
+            menuOptions={infoButtonOptions({
+              account,
+              setRenameAccount,
+              setRemoveAccount,
+              isLastWallet,
+            })}
+          />
+        </DraggableItem>
       )),
     [
       currentAddress,
@@ -374,15 +320,6 @@ export function WalletSwitcher() {
       isLastWallet,
       isSearching,
     ],
-  );
-
-  const displayedAccountsComponent = useMemo(
-    () => (
-      <AccentColorProvider color={avatar?.color || globalColors.blue60}>
-        {displayedAccounts}
-      </AccentColorProvider>
-    ),
-    [avatar?.color, displayedAccounts],
   );
 
   const onDragEnd = (result: DropResult) => {
@@ -458,43 +395,21 @@ export function WalletSwitcher() {
           promoType="wallet_switcher"
         />
       </Box>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable">
-          {({ droppableProps, innerRef, placeholder }) => (
-            <Box
-              {...droppableProps}
-              ref={innerRef}
-              style={{ overflowY: 'scroll' }}
-              paddingHorizontal="8px"
-              paddingVertical="4px"
-            >
-              {displayedAccounts.length !== 0 && (
-                <Box
-                  as={motion.div}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 1111,
-                    damping: 50,
-                    mass: 1,
-                  }}
-                  exit={{ opacity: 0 }}
-                >
-                  {displayedAccountsComponent}
-                </Box>
-              )}
-              {isSearching && displayedAccounts.length === 0 && (
-                <NoWalletsWarning
-                  symbol="magnifyingglass.circle.fill"
-                  text={i18n.t('wallet_switcher.no_results')}
-                />
-              )}
-              {placeholder}
-            </Box>
+      <DraggableContext onDragEnd={onDragEnd}>
+        <Box paddingHorizontal="8px" paddingVertical="4px">
+          {displayedAccounts.length !== 0 && (
+            <AccentColorProvider color={avatar?.color || globalColors.blue60}>
+              {displayedAccounts}
+            </AccentColorProvider>
           )}
-        </Droppable>
-      </DragDropContext>
+          {isSearching && displayedAccounts.length === 0 && (
+            <NoWalletsWarning
+              symbol="magnifyingglass.circle.fill"
+              text={i18n.t('wallet_switcher.no_results')}
+            />
+          )}
+        </Box>
+      </DraggableContext>
       <Box
         width="full"
         style={{ marginTop: 'auto' }}

@@ -88,7 +88,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             {`${i18n.t('token_details.swap')} ${token.symbol}`}
           </ContextMenuItem>
         )}
-        {isBridgeable && (
+        {!isWatchingWallet && isBridgeable && (
           <ContextMenuItem
             symbolLeft="arrow.turn.up.right"
             onSelect={onBridge}

@@ -21,6 +21,43 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.39](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.39)
+
+### Added
+- Bridging is easier than ever when right-clicking on a token or choosing to Bridge from the Token Details pane #997
+- You can now connect to all major Testnets for Rainbow's supported networks to sign and send testnet transactions. When connecting to or switching networks from a dApp that supports Testnets, you'll automatically be connected to the correct testnet by default, without needing to manage an RPC or network list. #1027
+
+### Changed
+- Right-click is now available in even more places, like the wallet header to manage your wallet, Send, Swap, the Wallet Switcher, and the Wallets & Keys menu in the Settings interface #1017 #1004
+- The default tab when opening the wallet is now Tokens instead of the Activity pane #1029
+- Links within descriptions for Tokens are now clickable #1019
+- Support for keyboard navigation within the Custom Gas menu #1021
+- Support for keyboard navigation in the Token Details pane #1013
+- Support for keyboard navigation within Swap Settings
+- Improved keyboard navigation for the Flip Assets feature in Swap #1023
+
+### Fixed
+- Improved handling of hex-encoded signature requests for `personal_sign` support for Ledger and Trezor hardware wallets #1035
+- Resolved an issue where Rainbow over-fetched metadata for dApps as users navigated the web. Rainbow now only fetches metadata for dApps that first interact with the Rainbow RPC provider #1038
+- Allowance field no longer appears in Token Details if there is no contract approval allowance to display #1045
+- `ESC` hotkey can now be used to close Token Details #1058
+- Fixed image clipping for token images and NFT previews in the Activity transactions list #1040
+- Improved spacing in the `Del` shortcut hint bubble for the menu to Cancel or Speed up a transaction #1030
+
+### Security
+- Deprecated support for dApps that rely on the vulnerable `eth_sign` method for signatures #1049
+- Sanitizing fields in EIP-712 signature requests to mitigate common phishing attacks #1028
+
+### Internal
+- Added debounce to some fee calculations in Send flow #1032
+- Stricter Sentry filtering on `beforeSend` #1036
+- Reduce price/coingecko queries in swap search list #1033
+
+### Testing
+- e2e: Send Shortcut test #1002
+- e2e: shortcut wallet switcher test #1037
+
+
 ## [v1.2.36](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.36)
 
 ### Added

@@ -5,6 +5,7 @@ import { createStore } from '../internal/createStore';
 export enum promoTypes {
   command_k = 'command_k',
   wallet_switcher = 'wallet_switcher',
+  network_settings = 'network_settings',
 }
 export type PromoTypes = keyof typeof promoTypes;
 
@@ -18,6 +19,7 @@ export const quickPromoStore = createStore<QuickPromoStore>(
     seenPromos: {
       command_k: false,
       wallet_switcher: false,
+      network_settings: false,
     },
     setSeenPromo: (key: PromoTypes) => {
       const seenPromos = get().seenPromos;
@@ -33,7 +35,7 @@ export const quickPromoStore = createStore<QuickPromoStore>(
   {
     persist: {
       name: 'quickPromoStore',
-      version: 0,
+      version: 1,
     },
   },
 );

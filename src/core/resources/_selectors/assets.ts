@@ -1,3 +1,4 @@
+import { userChainsStore } from '~/core/state/userChains';
 import {
   ParsedAssetsDict,
   ParsedAssetsDictByChain,
@@ -9,9 +10,25 @@ import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
 import { add } from '~/core/utils/numbers';
 
 // selectors
-export function selectUserAssetsList(
-  assets: ParsedAssetsDictByChain = {} as ParsedAssetsDictByChain,
-) {
+export function selectorFilterByUserChains<T>({
+  data,
+  selector,
+}: {
+  data: ParsedAssetsDictByChain;
+  selector: (data: ParsedAssetsDictByChain) => T;
+}): T {
+  const { userChains } = userChainsStore.getState();
+  const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
+    const chainKey = Number(key);
+    if (userChains[chainKey]) {
+      acc[chainKey] = data[chainKey];
+    }
+    return acc;
+  }, {} as ParsedAssetsDictByChain);
+  return selector(filteredAssetsDictByChain);
+}
+
+export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
   return Object.values(assets)
     .map((chainAssets) => Object.values(chainAssets))
     .flat()
@@ -54,7 +71,7 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
 }
 
 export function selectUserAssetAddressMapByChainId(
-  assets: ParsedAssetsDictByChain = {} as ParsedAssetsDictByChain,
+  assets: ParsedAssetsDictByChain,
 ) {
   const mapAddresses = (list: ParsedAssetsDict = {}) =>
     Object.values(list).map((i) => i.address);
@@ -77,22 +94,17 @@ export function selectUserAssetWithUniqueId(uniqueId: UniqueId) {
   };
 }
 
-export function selectUserAssetsBalance() {
-  return (assets: ParsedAssetsDictByChain) => {
-    const networksTotalBalance = Object.values(assets).map((assetsOnject) => {
-      const assetsNetwork = Object.values(assetsOnject);
-      const networkBalance = assetsNetwork
-        .map((asset) => asset.native.balance.amount)
-        .reduce(
-          (prevBalance, currBalance) => add(prevBalance, currBalance),
-          '0',
-        );
-      return networkBalance;
-    });
-    const totalAssetsBalance = networksTotalBalance.reduce(
-      (prevBalance, currBalance) => add(prevBalance, currBalance),
-      '0',
-    );
-    return totalAssetsBalance;
-  };
+export function selectUserAssetsBalance(assets: ParsedAssetsDictByChain) {
+  const networksTotalBalance = Object.values(assets).map((assetsOnject) => {
+    const assetsNetwork = Object.values(assetsOnject);
+    const networkBalance = assetsNetwork
+      .map((asset) => asset.native.balance.amount)
+      .reduce((prevBalance, currBalance) => add(prevBalance, currBalance), '0');
+    return networkBalance;
+  });
+  const totalAssetsBalance = networksTotalBalance.reduce(
+    (prevBalance, currBalance) => add(prevBalance, currBalance),
+    '0',
+  );
+  return totalAssetsBalance;
 }
