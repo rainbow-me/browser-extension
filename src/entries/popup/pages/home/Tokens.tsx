@@ -7,7 +7,10 @@ import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
-import { selectUserAssetsFilteringSmallBalancesList } from '~/core/resources/_selectors/assets';
+import {
+  selectUserAssetsFilteringSmallBalancesList,
+  selectorFilterByUserChains,
+} from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { fetchProviderWidgetUrl } from '~/core/resources/f2c';
 import { FiatProviderName } from '~/core/resources/f2c/types';
@@ -86,9 +89,13 @@ export function Tokens() {
       currency,
     },
     {
-      select: hideSmallBalances
-        ? selectUserAssetsFilteringSmallBalancesList
-        : selectUserAssetsList,
+      select: (data) =>
+        selectorFilterByUserChains({
+          data,
+          selector: hideSmallBalances
+            ? selectUserAssetsFilteringSmallBalancesList
+            : selectUserAssetsList,
+        }),
     },
   );
 
