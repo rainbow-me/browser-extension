@@ -11,6 +11,7 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
+import { SUPPORTED_CHAINS } from '~/core/utils/chains';
 import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -314,10 +315,14 @@ export function useSearchCurrencyLists({
     Object.entries(assetToSell.networks)
       .map(([_chainId, assetOnNetworkOverrides]) => {
         if (!assetOnNetworkOverrides) return;
-        const chainId = _chainId as unknown as ChainId; // Object.entries messes the type
+        const chainId = +_chainId as unknown as ChainId; // Object.entries messes the type
         const { address, decimals } = assetOnNetworkOverrides;
         // filter out the asset we're selling already
-        if (isSameAsset(assetToSell, { chainId, address })) return;
+        if (
+          isSameAsset(assetToSell, { chainId, address }) ||
+          !SUPPORTED_CHAINS.some((n) => n.id === chainId)
+        )
+          return;
         return {
           ...assetToSell,
           chainId,
