@@ -184,7 +184,7 @@ export const DropdownSubMenu = ({
         sideOffset={SUBMENU_SIDE_OFFSET}
         alignOffset={SUBMENU_ALIGN_OFFSET}
       >
-        {subMenuElement}
+        <Box style={{ minWidth: subMenuRect?.width }}>{subMenuElement}</Box>
       </DropdownMenuContent>
       <AnimatePresence>
         {subMenuOpen && (

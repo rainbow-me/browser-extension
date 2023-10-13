@@ -16,6 +16,7 @@ import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import {
   PendingTransaction,
@@ -38,6 +39,7 @@ export default function ({
 }: UseInfiniteTransactionListParams) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { userChains } = useUserChainsStore();
   const { getPendingTransactions } = usePendingTransactionsStore();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const pendingTransactions = getPendingTransactions({ address });
@@ -55,6 +57,20 @@ export default function ({
   } = useConsolidatedTransactions(
     { address, currency },
     {
+      select: (data) => {
+        const selectedPages = data.pages.map((page) => {
+          return {
+            ...page,
+            transactions: page.transactions.filter(
+              (transaction) => userChains[transaction.chainId],
+            ),
+          };
+        });
+        return {
+          ...data,
+          pages: selectedPages,
+        };
+      },
       onSuccess: (data) => {
         if (data?.pages) {
           const latestTransactions = data.pages

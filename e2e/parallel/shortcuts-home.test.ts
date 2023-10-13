@@ -188,9 +188,7 @@ describe.runIf(browser !== 'firefox')(
       );
       const coinRowItemAssetNameTextContent = await coinRowItemName.getText();
 
-      const shortenedTokenName = coinRowItemAssetNameTextContent
-        .replace(/[0-9]*\.?[0-9]+/g, '')
-        .trim();
+      const shortenedTokenName = coinRowItemAssetNameTextContent.split(' ')[1];
 
       await executePerformShortcut({ driver, key: 'SPACE' });
       await findElementByText(driver, `Swap ${shortenedTokenName}`);
