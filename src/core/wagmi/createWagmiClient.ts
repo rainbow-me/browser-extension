@@ -64,7 +64,9 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  IS_TESTING ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism) : SUPPORTED_CHAINS,
+  IS_TESTING
+    ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
+    : SUPPORTED_CHAINS,
   [
     jsonRpcProvider({
       rpc: (chain) => {

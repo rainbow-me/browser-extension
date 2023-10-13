@@ -36,7 +36,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
+describe('Complete Hardhat Optimism send flow', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -77,7 +77,7 @@ describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
     await checkExtensionURL(driver, 'settings');
   });
 
-  it('should be able to connect to hardhat', async () => {
+  it('should be able to connect to hardhat Optimism', async () => {
     await navigateToElementWithTestId({
       driver,
       testId: 'connect-to-hardhat-op',
@@ -90,7 +90,7 @@ describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
   });
 
-  it('should be able to navigate to send with keyboard shortcut', async () => {
+  it('should be able to navigate to send', async () => {
     await executePerformShortcut({ driver, key: 's' });
     await checkExtensionURL(driver, 'send');
   });
@@ -105,7 +105,7 @@ describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
     expect(shortenedAddress).toBeTruthy();
   });
 
-  it('should be able to focus asset to send with keyboard', async () => {
+  it('should be able to select asset to send with keyboard', async () => {
     await navigateToElementWithTestId({
       driver,
       testId: 'asset-name-eth_10',
@@ -121,7 +121,7 @@ describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
     expect(Number(valueNum)).toBe(0);
   });
 
-  it('should be able to initiate transaction with keyboard navigation', async () => {
+  it('should be able to initiate Optimisim ETH transaction', async () => {
     await driver.actions().sendKeys('1').perform();
     const value = await findElementByTestId({ id: 'send-input-mask', driver });
     const valueNum = await value.getAttribute('value');
@@ -129,6 +129,7 @@ describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
     await navigateToElementWithTestId({ driver, testId: 'send-review-button' });
     const reviewText = await findElementByText(driver, 'Review & Send');
     expect(reviewText).toBeTruthy();
+    await delayTime('medium');
     await navigateToElementWithTestId({ driver, testId: 'L2-check-1' });
     await navigateToElementWithTestId({ driver, testId: 'L2-check-2' });
     await navigateToElementWithTestId({
@@ -138,6 +139,6 @@ describe('Complete L2 send flow via shortcuts and keyboard navigation', () => {
     await delayTime('very-long');
     const sendTransaction = await transactionStatus();
     expect(sendTransaction).toBe('success');
-    await delay(100000);
+    await delay(10000);
   });
 });

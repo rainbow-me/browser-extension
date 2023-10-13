@@ -90,15 +90,16 @@ export const USDC_MAINNET_ASSET = {
 } satisfies ParsedUserAsset;
 
 export const OPTIMSIM_MAINNET_ASSET = {
-  address: 'eth',
+  address: '0x0000000000000000000000000000000000000000',
   balance: { amount: '10000', display: '10,000.00 ETH' },
   chainId: 10,
   chainName: 'optimism' as ChainName,
   colors: { primary: '#808088', fallback: '#E8EAF5' },
   decimals: 18,
-  icon_url: '',
+  icon_url:
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png',
   isNativeAsset: true,
-  mainnetAddress: undefined,
+  mainnetAddress: 'eth',
   name: 'Ethereum',
   native: {
     balance: { amount: '16341800', display: '$16,341,800.00' },

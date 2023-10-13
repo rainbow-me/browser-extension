@@ -191,7 +191,6 @@ export const handleWallets = () =>
                 chainId: (payload as TransactionRequest).chainId,
               });
             }
-            console.log('payload', payload);
             response = await sendTransaction(
               payload as TransactionRequest,
               provider,
