@@ -128,6 +128,10 @@ export const shortcuts = {
       display: 'L',
       key: 'l',
     },
+    TESTNET_MODE: {
+      display: 'T',
+      key: 't',
+    },
     OPEN_MORE_MENU: {
       display: '.',
       key: '.',

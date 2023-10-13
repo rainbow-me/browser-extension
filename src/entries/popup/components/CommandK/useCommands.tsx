@@ -151,6 +151,15 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 15,
     type: SearchItemType.Shortcut,
   },
+  testnet_mode: {
+    name: getCommandName('testnet_mode'),
+    page: PAGES.HOME,
+    shortcut: shortcuts.home.TESTNET_MODE,
+    symbol: 'sparkle',
+    textIcon: '🕹',
+    symbolSize: 15,
+    type: SearchItemType.Shortcut,
+  },
   connectedApps: {
     actionLabel: actionLabels.open,
     name: getCommandName('connected_apps'),
