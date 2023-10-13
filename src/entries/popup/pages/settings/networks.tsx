@@ -3,11 +3,13 @@ import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
-import { Box, Inset, Text } from '~/design-system';
+import { Box, Inset, Symbol, Text } from '~/design-system';
+import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
@@ -33,6 +35,12 @@ export function SettingsNetworks() {
     updateUserChainsOrder,
   } = useUserChainsStore();
   const supportedChains = getSupportedChains();
+  const {
+    testnetMode,
+    testnetModeShortcutEnabled,
+    setTestnetMode,
+    setTestnetModeShortcutEnabled,
+  } = useTestnetModeStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -61,9 +69,9 @@ export function SettingsNetworks() {
       <MenuContainer testId="settings-menu-container">
         <Menu>
           <DraggableContext onDragEnd={onDragEnd} height="fixed">
-            <Box paddingHorizontal="8px" paddingVertical="4px">
+            <Box paddingHorizontal="1px" paddingVertical="1px">
               {sortNetworks(userChainsOrder, supportedChains).map(
-                (chain, index) => (
+                (chain: Chain, index) => (
                   <DraggableItem
                     key={`${chain.id}`}
                     id={`${chain.id}`}
@@ -71,7 +79,6 @@ export function SettingsNetworks() {
                   >
                     <MenuItem
                       first={index === 0}
-                      last={index === supportedChains.length - 1}
                       leftComponent={
                         <ChainBadge chainId={chain.id} size="18" shadow />
                       }
@@ -97,6 +104,62 @@ export function SettingsNetworks() {
               {i18n.t('settings.networks.description')}
             </Text>
           </Box>
+        </Menu>
+        <Menu>
+          <MenuItem
+            first
+            leftComponent={<MenuItem.TextIcon icon="📚" />}
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.networks.testnet_mode.title')}
+              />
+            }
+            rightComponent={
+              <Toggle
+                testId="testnet-mode-toggle"
+                checked={testnetMode}
+                handleChange={() => setTestnetMode(!testnetMode)}
+                tabIndex={-1}
+              />
+            }
+            onToggle={() => setTestnetMode(!testnetMode)}
+          />
+          <MenuItem.Description
+            text={i18n.t('settings.networks.testnet_mode.toggle_explainer')}
+          />
+          <MenuItem
+            leftComponent={
+              <Symbol
+                symbol="switch.2"
+                weight="medium"
+                size={18}
+                color="labelTertiary"
+              />
+            }
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.networks.testnet_mode.shortcut_title')}
+              />
+            }
+            rightComponent={
+              <Toggle
+                testId="testnet-mode-toggle"
+                checked={testnetModeShortcutEnabled}
+                handleChange={() =>
+                  setTestnetModeShortcutEnabled(!testnetModeShortcutEnabled)
+                }
+                tabIndex={-1}
+              />
+            }
+            onToggle={() =>
+              setTestnetModeShortcutEnabled(!testnetModeShortcutEnabled)
+            }
+          />
+          <MenuItem.Description
+            text={i18n.t(
+              'settings.networks.testnet_mode.shortcut_toggle_explainer',
+            )}
+          />
         </Menu>
       </MenuContainer>
     </Box>
