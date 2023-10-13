@@ -11,7 +11,8 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import {
   ParsedAssetsDictByChain,
   ParsedUserAsset,
@@ -264,7 +265,7 @@ export async function parseUserAssets({
     }
   }
   const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore.getState();
+    connectedToHardhatStore.getState();
   if (connectedToHardhat || connectedToHardhatOp) {
     // separating out these ternaries for readability
     const selectedHardhatChainId = connectedToHardhat
@@ -322,7 +323,7 @@ export async function parseUserAssets({
 // Query Hook
 
 export function useUserAssets<TSelectResult = UserAssetsResult>(
-  { address, currency, testnetMode }: UserAssetsArgs,
+  { address, currency }: UserAssetsArgs,
   config: QueryConfig<
     UserAssetsResult,
     Error,
@@ -330,6 +331,7 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
     UserAssetsQueryKey
   > = {},
 ) {
+  const { testnetMode } = useTestnetModeStore();
   return useQuery(
     userAssetsQueryKey({ address, currency, testnetMode }),
     userAssetsQueryFunction,
