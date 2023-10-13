@@ -121,9 +121,11 @@ export const SwitchNetworkMenuSelector = ({
     handler: handleTokenShortcuts,
   });
 
+  const supportedChainsWithHardhat = getSupportedChainsWithHardhat();
+
   return (
     <Box id="switch-network-menu-selector">
-      {availableChains.map((chain, i) => {
+      {supportedChainsWithHardhat.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
           <MenuRadioItem
@@ -167,7 +169,7 @@ export const SwitchNetworkMenuSelector = ({
       {showDisconnect && disconnect && (
         <SwitchNetworkMenuDisconnect
           onDisconnect={disconnect}
-          shortcutLabel={String(availableChains.length + 1)}
+          shortcutLabel={String(supportedChainsWithHardhat.length + 1)}
         />
       )}
     </Box>
