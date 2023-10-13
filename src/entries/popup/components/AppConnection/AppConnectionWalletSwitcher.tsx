@@ -24,7 +24,7 @@ import { Account, useAccounts } from '../../hooks/useAccounts';
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppSession } from '../../hooks/useAppSession';
 import { zIndexes } from '../../utils/zIndexes';
-import ExternalImage from '../ExternalImage/ExternalImage';
+import { DappIcon } from '../DappIcon/DappIcon';
 import { Navbar } from '../Navbar/Navbar';
 
 import { AppConnectionWalletItem } from './AppConnectionWalletItem/AppConnectionWalletItem';
@@ -122,26 +122,7 @@ export const AppConnectionWalletSwitcher = () => {
               }
               titleComponent={
                 <Inline alignVertical="center" space="4px">
-                  <Box
-                    style={{
-                      height: '14px',
-                      width: '14px',
-                      overflow: 'hidden',
-                    }}
-                    borderRadius="4px"
-                  >
-                    <Inline
-                      alignHorizontal="center"
-                      alignVertical="center"
-                      height="full"
-                    >
-                      <ExternalImage
-                        src={dappMetadata?.appLogo}
-                        width="14"
-                        height="14"
-                      />
-                    </Inline>
-                  </Box>
+                  <DappIcon appLogo={dappMetadata?.appLogo} size="14px" />
                   <Text size="14pt" weight="heavy" align="center">
                     {i18n.t(
                       'app_connection_switcher.wallet_switcher.switch_wallets',
