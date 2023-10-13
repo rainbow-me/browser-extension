@@ -6,6 +6,7 @@ import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { isTestnetChainId } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -129,6 +130,7 @@ const percentDiff = (current = 1, last = 0) =>
   ((current - last) / current) * 100;
 export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
+  const isTestnetToken = isTestnetChainId({ chainId: token.chainId });
 
   const { data } = usePriceChart({
     mainnetAddress: token.mainnetAddress,
@@ -161,36 +163,38 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
         <TokenPrice token={token} />
         <PriceChange changePercentage={changePercent} date={date} />
       </Box>
-      <Box>
-        <Box style={{ height: '222px' }} marginHorizontal="-20px">
-          {data && (
-            <LineChart
-              data={data}
-              onMouseMove={setIndicatorPoint}
-              width={POPUP_DIMENSIONS.width}
-              height={222}
-              paddingY={40}
-            />
-          )}
+      {!isTestnetToken && (
+        <Box>
+          <Box style={{ height: '222px' }} marginHorizontal="-20px">
+            {data && (
+              <LineChart
+                data={data}
+                onMouseMove={setIndicatorPoint}
+                width={POPUP_DIMENSIONS.width}
+                height={222}
+                paddingY={40}
+              />
+            )}
+          </Box>
+          <Box display="flex" justifyContent="center" gap="12px">
+            {chartTimes.map((time) => {
+              const isSelected = time === selectedTime;
+              return (
+                <Button
+                  onClick={() => setSelectedTime(time)}
+                  key={time}
+                  height="24px"
+                  variant={isSelected ? 'tinted' : 'transparentHover'}
+                  color={isSelected ? 'accent' : 'labelTertiary'}
+                  tabIndex={0}
+                >
+                  {i18n.t(`token_details.${time}`)}
+                </Button>
+              );
+            })}
+          </Box>
         </Box>
-        <Box display="flex" justifyContent="center" gap="12px">
-          {chartTimes.map((time) => {
-            const isSelected = time === selectedTime;
-            return (
-              <Button
-                onClick={() => setSelectedTime(time)}
-                key={time}
-                height="24px"
-                variant={isSelected ? 'tinted' : 'transparentHover'}
-                color={isSelected ? 'accent' : 'labelTertiary'}
-                tabIndex={0}
-              >
-                {i18n.t(`token_details.${time}`)}
-              </Button>
-            );
-          })}
-        </Box>
-      </Box>
+      )}
     </>
   );
 }
