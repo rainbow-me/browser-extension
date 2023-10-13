@@ -5,9 +5,9 @@ import { transparentAccentColorAsHsl } from '~/design-system/styles/core.css';
 const baseStyles = {
   borderRadius: '12px',
   transition: 'all .2s ease-in-out',
-}; // satisfies StyleRule;
+};
 
-export const accountItem = styleVariants({
+export const dragabbleItem = styleVariants({
   idle: {
     ...baseStyles,
     ':hover': { backgroundColor: transparentAccentColorAsHsl },

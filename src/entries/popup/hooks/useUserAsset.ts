@@ -8,7 +8,6 @@ import { UniqueId } from '~/core/types/assets';
 export function useUserAsset(uniqueId?: UniqueId) {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-
   return useUserAssets(
     {
       address,
