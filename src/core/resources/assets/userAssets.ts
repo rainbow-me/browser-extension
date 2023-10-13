@@ -45,30 +45,42 @@ export const USER_ASSETS_STALE_INTERVAL = 30000;
 export type UserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
+  testnetMode?: boolean;
 };
 
 type SetUserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
   userAssets?: UserAssetsResult;
+  testnetMode?: boolean;
 };
 
 type SetUserDefaultsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
   staleTime: number;
+  testnetMode?: boolean;
 };
 
 type FetchUserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
+  testnetMode?: boolean;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-export const userAssetsQueryKey = ({ address, currency }: UserAssetsArgs) =>
-  createQueryKey('userAssets', { address, currency }, { persisterVersion: 2 });
+export const userAssetsQueryKey = ({
+  address,
+  currency,
+  testnetMode,
+}: UserAssetsArgs) =>
+  createQueryKey(
+    'userAssets',
+    { address, currency, testnetMode },
+    { persisterVersion: 3 },
+  );
 
 type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
@@ -78,9 +90,10 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 export const userAssetsFetchQuery = ({
   address,
   currency,
+  testnetMode,
 }: FetchUserAssetsArgs) => {
   queryClient.fetchQuery(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address, currency, testnetMode }),
     userAssetsQueryFunction,
   );
 };
@@ -89,29 +102,34 @@ export const userAssetsSetQueryDefaults = ({
   address,
   currency,
   staleTime,
+  testnetMode,
 }: SetUserDefaultsArgs) => {
-  queryClient.setQueryDefaults(userAssetsQueryKey({ address, currency }), {
-    staleTime,
-  });
+  queryClient.setQueryDefaults(
+    userAssetsQueryKey({ address, currency, testnetMode }),
+    {
+      staleTime,
+    },
+  );
 };
 
 export const userAssetsSetQueryData = ({
   address,
   currency,
   userAssets,
+  testnetMode,
 }: SetUserAssetsArgs) => {
   queryClient.setQueryData(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address, currency, testnetMode }),
     userAssets,
   );
 };
 
 async function userAssetsQueryFunction({
-  queryKey: [{ address, currency }],
+  queryKey: [{ address, currency, testnetMode }],
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = (cache.find(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address, currency, testnetMode }),
   )?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
     const url = `/${getSupportedChainIds().join(',')}/${address}/assets`;
@@ -130,6 +148,7 @@ async function userAssetsQueryFunction({
         address,
         chainIds: chainIdsWithErrorsInResponse,
         currency,
+        testnetMode,
       });
       if (assets.length && chainIdsInResponse.length) {
         const parsedAssetsDict = await parseUserAssets({
@@ -163,15 +182,17 @@ async function userAssetsQueryFunctionRetryByChain({
   address,
   chainIds,
   currency,
+  testnetMode,
 }: {
   address: Address;
   chainIds: ChainId[];
   currency: SupportedCurrencyKey;
+  testnetMode?: boolean;
 }) {
   try {
     const cache = queryClient.getQueryCache();
     const cachedUserAssets =
-      (cache.find(userAssetsQueryKey({ address, currency }))?.state
+      (cache.find(userAssetsQueryKey({ address, currency, testnetMode }))?.state
         ?.data as ParsedAssetsDictByChain) || {};
     const retries = [];
     for (const chainIdWithError of chainIds) {
@@ -194,7 +215,7 @@ async function userAssetsQueryFunctionRetryByChain({
       }
     }
     queryClient.setQueryData(
-      userAssetsQueryKey({ address, currency }),
+      userAssetsQueryKey({ address, currency, testnetMode }),
       cachedUserAssets,
     );
   } catch (e) {
@@ -279,7 +300,7 @@ export async function parseUserAssets({
 // Query Hook
 
 export function useUserAssets<TSelectResult = UserAssetsResult>(
-  { address, currency }: UserAssetsArgs,
+  { address, currency, testnetMode }: UserAssetsArgs,
   config: QueryConfig<
     UserAssetsResult,
     Error,
@@ -288,7 +309,7 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
   > = {},
 ) {
   return useQuery(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address, currency, testnetMode }),
     userAssetsQueryFunction,
     {
       ...config,
