@@ -6,6 +6,7 @@ import { supportedCurrencies } from '~/core/references';
 import {
   selectUserAssetsFilteringSmallBalancesList,
   selectUserAssetsList,
+  selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets/userAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -40,9 +41,13 @@ export function TabHeader({
       currency: currentCurrency,
     },
     {
-      select: hideSmallBalances
-        ? selectUserAssetsFilteringSmallBalancesList
-        : selectUserAssetsList,
+      select: (data) =>
+        selectorFilterByUserChains({
+          data,
+          selector: hideSmallBalances
+            ? selectUserAssetsFilteringSmallBalancesList
+            : selectUserAssetsList,
+        }),
     },
   );
 

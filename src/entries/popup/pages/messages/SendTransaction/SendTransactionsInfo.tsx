@@ -16,7 +16,7 @@ import {
 } from '~/core/utils/numbers';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
-import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
+import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
@@ -80,25 +80,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
         <Stack space="10px">
           <Inset bottom="8px">
             <Stack space="16px">
-              <Inline alignHorizontal="center">
-                <Box
-                  style={{
-                    width: 32,
-                    height: 32,
-                    overflow: 'scroll',
-                  }}
-                  borderRadius="18px"
-                  alignItems="center"
-                >
-                  {dappMetadata?.appLogo ? (
-                    <ExternalImage
-                      src={dappMetadata.appLogo}
-                      width="32"
-                      height="32"
-                    />
-                  ) : null}
-                </Box>
-              </Inline>
+              <DappIcon appLogo={dappMetadata?.appLogo} size="32px" />
               <Stack space="12px">
                 <Text
                   align="center"

@@ -11,6 +11,7 @@ import { Symbol } from '~/design-system/components/Symbol/Symbol';
 import { useAppSession } from '../../../hooks/useAppSession';
 import { useKeyboardShortcut } from '../../../hooks/useKeyboardShortcut';
 import { AppInteractionItem } from '../../AppConnectionMenu/AppInteractionItem';
+import { DappIcon } from '../../DappIcon/DappIcon';
 import {
   DropdownMenu,
   DropdownMenuRadioGroup,
@@ -22,7 +23,6 @@ import {
   DropdownMenuContentWithSubMenu,
   DropdownSubMenu,
 } from '../../DropdownMenu/DropdownSubMenu';
-import ExternalImage from '../../ExternalImage/ExternalImage';
 import { SwitchNetworkMenuSelector } from '../../SwitchMenu/SwitchNetworkMenu';
 
 interface AppConnectionWalletItemDropdownMenuProps {
@@ -179,26 +179,7 @@ export const AppConnectionWalletItemDropdownMenu = ({
               onSelect={(e) => e.preventDefault()}
             >
               <Inline space="8px" alignVertical="center">
-                <Box
-                  style={{
-                    height: '18px',
-                    width: '18px',
-                    overflow: 'hidden',
-                  }}
-                  borderRadius="9px"
-                >
-                  <Inline
-                    alignHorizontal="center"
-                    alignVertical="center"
-                    height="full"
-                  >
-                    <ExternalImage
-                      src={dappMetadata?.appLogo}
-                      width="18"
-                      height="18"
-                    />
-                  </Inline>
-                </Box>
+                <DappIcon appLogo={dappMetadata?.appLogo} size="18px" />
                 <Text size="14pt" weight="semibold" color="label">
                   {i18n.t(
                     'app_connection_switcher.wallet_item_dropdown_menu.open_app',

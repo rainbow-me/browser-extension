@@ -1,7 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
-import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
+import {
+  selectUserAssetsListByChainId,
+  selectorFilterByUserChains,
+} from '~/core/resources/_selectors/assets';
 import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
@@ -72,7 +75,10 @@ export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
       address: currentAddress,
       currency: currentCurrency,
     },
-    { select: sortBy(sortMethod) },
+    {
+      select: (data) =>
+        selectorFilterByUserChains({ data, selector: sortBy(sortMethod) }),
+    },
   );
 
   const filteredAssetsToSell = useMemo(() => {

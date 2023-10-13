@@ -23,7 +23,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../ContextMenu/ContextMenu';
-import ExternalImage from '../ExternalImage/ExternalImage';
+import { DappIcon } from '../DappIcon/DappIcon';
 
 import { SwitchNetworkMenuSelector } from './SwitchNetworkMenu';
 
@@ -72,21 +72,7 @@ export const ConnectedAppNetworkMenu = ({
           <Inset top="10px" bottom="14px">
             <Inline alignHorizontal="justify" alignVertical="center">
               <Inline space="10px" alignVertical="center">
-                <Box
-                  style={{
-                    height: 14,
-                    width: 14,
-                    borderRadius: 3.5,
-                    overflow: 'hidden',
-                    marginRight: 2,
-                  }}
-                >
-                  <ExternalImage
-                    src={dappMetadata?.appLogo}
-                    width="14"
-                    height="14"
-                  />
-                </Box>
+                <DappIcon appLogo={dappMetadata?.appLogo} size="14px" />
                 <Box
                   id={`${headerHostId}-${
                     appSession ? dappMetadata?.appHost : 'not-connected'
