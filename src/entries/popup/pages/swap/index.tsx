@@ -1,5 +1,5 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import config from '~/core/firebase/remoteConfig';
@@ -63,6 +63,7 @@ import { getActiveElement, getInputIsFocused } from '../../utils/activeElement';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
+import { TokenInputRef } from './SwapTokenInput/TokenInput';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 import { SwapTimeEstimate, getSwapActions } from './getSwapActions';
@@ -342,9 +343,12 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     onAssetToBuyInputOpen(false);
   }, [onAssetToBuyInputOpen, onAssetToSellInputOpen]);
 
+  const tokenToBuyInputRef = useRef<TokenInputRef>();
+
   const selectAssetToSell = useCallback(
     (asset: ParsedSearchAsset | null) => {
       setAssetToSell(asset);
+      tokenToBuyInputRef.current?.openDropdown();
       setAssetToSellInputValue('');
       setAssetToBuyInputValue('');
     },
@@ -604,6 +608,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
 
               <AccentColorProvider color={assetToBuyAccentColor}>
                 <TokenToBuyInput
+                  ref={tokenToBuyInputRef}
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
                   assetToSell={assetToSell}
