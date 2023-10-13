@@ -1,10 +1,9 @@
 import { motion } from 'framer-motion';
-import React from 'react';
 
-import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
+import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
@@ -39,6 +38,8 @@ export const TokenToSellDropdown = ({
     size: 10,
   });
 
+  const t = useTranslationContext();
+
   return (
     <Stack space="8px">
       <Box paddingHorizontal="20px">
@@ -51,7 +52,7 @@ export const TokenToSellDropdown = ({
               size={14}
             />
             <Text size="14pt" weight="semibold" color="labelTertiary">
-              {i18n.t('swap.tokens_input.tokens')}
+              {t('swap.tokens_input.tokens')}
             </Text>
           </Inline>
           <DropdownMenu onOpenChange={onDropdownChange}>
@@ -68,7 +69,7 @@ export const TokenToSellDropdown = ({
                     size={14}
                   />
                   <Text size="14pt" weight="semibold" color="labelTertiary">
-                    {i18n.t('swap.tokens_input.sort')}
+                    {t('swap.tokens_input.sort')}
                   </Text>
                 </Inline>
               </Box>
@@ -97,7 +98,7 @@ export const TokenToSellDropdown = ({
                       </Bleed>
 
                       <Text size="14pt" weight="semibold" color="label">
-                        {i18n.t('swap.tokens_input.token_balance')}
+                        {t('swap.tokens_input.token_balance')}
                       </Text>
                     </Inline>
                   </Box>
@@ -115,7 +116,7 @@ export const TokenToSellDropdown = ({
                       </Bleed>
 
                       <Text size="14pt" weight="semibold" color="label">
-                        {i18n.t('swap.tokens_input.networks')}
+                        {t('swap.tokens_input.networks')}
                       </Text>
                     </Inline>
                   </Box>
@@ -161,7 +162,7 @@ export const TokenToSellDropdown = ({
                   weight="semibold"
                   align="center"
                 >
-                  {i18n.t('swap.tokens_input.nothing_found')}
+                  {t('swap.tokens_input.nothing_found')}
                 </Text>
 
                 <Text
@@ -170,7 +171,7 @@ export const TokenToSellDropdown = ({
                   weight="regular"
                   align="center"
                 >
-                  {i18n.t('swap.tokens_input.nothing_found_description')}
+                  {t('swap.tokens_input.nothing_found_description')}
                 </Text>
               </Stack>
             </Box>
