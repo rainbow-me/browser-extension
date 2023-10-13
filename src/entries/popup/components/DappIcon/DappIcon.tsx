@@ -15,13 +15,13 @@ const SYMBOL_SIZE = {
 };
 
 const RADIUS_SIZE = {
-  '60px': '18px' as BoxStyles['borderRadius'],
-  '36px': '10px' as BoxStyles['borderRadius'],
-  '32px': '9px' as BoxStyles['borderRadius'],
-  '18px': '6px' as BoxStyles['borderRadius'],
-  '16px': '4px' as BoxStyles['borderRadius'],
-  '14px': '4px' as BoxStyles['borderRadius'],
-};
+  '60px': '18px',
+  '36px': '10px',
+  '32px': '9px',
+  '18px': '6px',
+  '16px': '4px',
+  '14px': '4px',
+} satisfies Record<DappIconSize, BoxStyles['borderRadius']>;
 
 export const DappIcon = ({
   appLogo,
