@@ -108,7 +108,7 @@ export function SettingsNetworks() {
         <Menu>
           <MenuItem
             first
-            leftComponent={<MenuItem.TextIcon icon="📚" />}
+            leftComponent={<MenuItem.TextIcon icon="🕹" />}
             titleComponent={
               <MenuItem.Title
                 text={i18n.t('settings.networks.testnet_mode.title')}

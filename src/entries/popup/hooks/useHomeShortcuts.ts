@@ -7,6 +7,7 @@ import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { truncateAddress } from '~/core/utils/address';
@@ -44,6 +45,8 @@ export function useHomeShortcuts() {
   const { disconnectSession } = useAppSession({ host: dappMetadata?.appHost });
   const { featureFlags } = useFeatureFlagsStore();
   const { isWatchingWallet } = useWallets();
+  const { testnetMode, testnetModeShortcutEnabled, setTestnetMode } =
+    useTestnetModeStore();
 
   const allowSend = useMemo(
     () => !isWatchingWallet || featureFlags.full_watching_wallets,
@@ -80,6 +83,12 @@ export function useHomeShortcuts() {
       }),
     [address, ensName],
   );
+
+  const handleTestnetMode = useCallback(() => {
+    if (testnetModeShortcutEnabled) {
+      setTestnetMode(!testnetMode);
+    }
+  }, [setTestnetMode, testnetMode, testnetModeShortcutEnabled]);
 
   const navigate = useRainbowNavigate();
   const handleHomeShortcuts = useCallback(
@@ -166,6 +175,13 @@ export function useHomeShortcuts() {
           });
           wallet.lock();
           break;
+        case shortcuts.home.TESTNET_MODE.key:
+          trackShortcut({
+            key: shortcuts.home.TESTNET_MODE.display,
+            type: 'home.testnetMode',
+          });
+          handleTestnetMode();
+          break;
         case shortcuts.home.OPEN_MORE_MENU.key:
           if (!activeAppWalletSwitcher) {
             trackShortcut({
@@ -196,14 +212,15 @@ export function useHomeShortcuts() {
       }
     },
     [
-      allowSend,
-      alertWatchingWallet,
-      disconnectFromApp,
-      handleCopy,
+      trackShortcut,
       navigate,
+      handleCopy,
+      allowSend,
       navigateToSwaps,
       openProfile,
-      trackShortcut,
+      handleTestnetMode,
+      alertWatchingWallet,
+      disconnectFromApp,
     ],
   );
   useKeyboardShortcut({

@@ -358,6 +358,7 @@
         "view_nfts": "View NFTs",
         "add_wallet": "Add a Wallet",
         "lock": "Lock Rainbow",
+        "testnet_mode": "Testnet Mode",
         "connected_apps": "Connected Apps",
         "settings": "Settings",
         "my_qr_code": "My QR Code",
@@ -861,7 +862,8 @@
       "rainbow_profile": "Rainbow Profile",
       "guides_and_support": "Guides & Support",
       "share_feedback": "Share Feedback",
-      "lock_rainbow": "Lock Rainbow"
+      "lock_rainbow": "Lock Rainbow",
+      "testnet_mode": "Testnet Mode"
     }
   },
   "app_connection_switcher": {
