@@ -31,7 +31,8 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const navigate = useRainbowNavigate();
-  const { testnetModeShortcutEnabled } = useTestnetModeStore();
+  const { testnetMode, testnetModeShortcutEnabled, setTestnetMode } =
+    useTestnetModeStore();
 
   const openProfile = React.useCallback(
     () =>
@@ -41,6 +42,12 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
     [address, ensName],
   );
 
+  const handleTestnetMode = React.useCallback(() => {
+    if (testnetModeShortcutEnabled) {
+      setTestnetMode(!testnetMode);
+    }
+  }, [setTestnetMode, testnetMode, testnetModeShortcutEnabled]);
+
   const onValueChange = React.useCallback(
     (
       value:
@@ -49,7 +56,8 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         | 'lock'
         | 'qr-code'
         | 'support'
-        | 'feedback',
+        | 'feedback'
+        | 'testnet_mode',
     ) => {
       switch (value) {
         case 'settings':
@@ -71,9 +79,12 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         case 'feedback':
           goToNewTab({ url: RAINBOW_FEEDBACK_URL });
           break;
+        case 'testnet_mode':
+          handleTestnetMode();
+          break;
       }
     },
-    [navigate, openProfile],
+    [navigate, openProfile, handleTestnetMode],
   );
 
   return (
