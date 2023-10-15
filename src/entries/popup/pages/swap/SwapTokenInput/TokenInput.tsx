@@ -65,6 +65,8 @@ interface TokenInputProps {
   onFocus?: () => void;
 }
 
+export type TokenInputRef = { openDropdown: (skipAnimation?: boolean) => void };
+
 export const TokenInput = React.forwardRef<
   { openDropdown: () => void },
   TokenInputProps
