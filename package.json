@@ -73,6 +73,7 @@
     "firefox:run": "yarn web-ext run --source-dir ./build/"
   },
   "dependencies": {
+    "@babel/traverse": "7.23.2",
     "@capsizecss/core": "3.0.0",
     "@cypress/request": "3.0.1",
     "@ethereumjs/tx": "5.0.0",
