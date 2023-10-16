@@ -191,7 +191,7 @@ export function Send() {
     saveSendTokenAddressAndChain,
   } = usePopupInstanceStore();
 
-  const returnedChainId = chainIdToUse(
+  const activeChainId = chainIdToUse(
     connectedToHardhat,
     connectedToHardhatOp,
     chainId,
@@ -212,7 +212,7 @@ export function Send() {
           from: fromAddress,
           to: txToAddress,
           value,
-          chainId: returnedChainId,
+          chainId: activeChainId,
           data,
         });
         if (result && asset) {
@@ -279,7 +279,7 @@ export function Send() {
       resetSendValues,
       txToAddress,
       value,
-      returnedChainId,
+      activeChainId,
       data,
       asset,
       assetAmount,

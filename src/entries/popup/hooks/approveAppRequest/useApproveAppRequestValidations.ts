@@ -20,7 +20,7 @@ export const useApproveAppRequestValidations = ({
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore.getState();
 
-  const returnedChainId = chainIdToUse(
+  const activeChainId = chainIdToUse(
     connectedToHardhat,
     connectedToHardhatOp,
     chainId,
@@ -38,10 +38,10 @@ export const useApproveAppRequestValidations = ({
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
-        symbol: getChain({ chainId: returnedChainId }).nativeCurrency.name,
+        symbol: getChain({ chainId: activeChainId }).nativeCurrency.name,
       });
     return i18n.t('approve_request.send_transaction');
-  }, [enoughNativeAssetForGas, returnedChainId]);
+  }, [enoughNativeAssetForGas, activeChainId]);
 
   return {
     enoughNativeAssetForGas:

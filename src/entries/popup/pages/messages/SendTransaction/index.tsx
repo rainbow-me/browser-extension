@@ -74,7 +74,7 @@ export function SendTransaction({
         setWaitingForDevice(true);
       }
 
-      const returnedChainId = chainIdToUse(
+      const activeChainId = chainIdToUse(
         connectedToHardhat,
         connectedToHardhatOp,
         activeSession?.chainId,
@@ -84,7 +84,7 @@ export function SendTransaction({
         to: txRequest?.to ? getAddress(txRequest?.to) : undefined,
         value: txRequest.value || '0x0',
         data: txRequest.data ?? '0x',
-        chainId: returnedChainId,
+        chainId: activeChainId,
       };
       const result = await wallet.sendTransaction(txData);
       if (result) {
@@ -166,7 +166,7 @@ export function SendTransaction({
     }
   }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
-  const returnedChainId = chainIdToUse(
+  const activeChainId = chainIdToUse(
     connectedToHardhat,
     connectedToHardhatOp,
     activeSession?.chainId,
@@ -175,14 +175,14 @@ export function SendTransaction({
   useEffect(() => {
     if (activeSession) {
       selectAssetAddressAndChain(
-        NATIVE_ASSETS_PER_CHAIN[returnedChainId] as Address,
-        returnedChainId,
+        NATIVE_ASSETS_PER_CHAIN[activeChainId] as Address,
+        activeChainId,
       );
     }
   }, [
     activeSession,
     connectedToHardhat,
-    returnedChainId,
+    activeChainId,
     selectAssetAddressAndChain,
   ]);
 
