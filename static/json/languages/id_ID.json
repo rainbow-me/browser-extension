@@ -8,6 +8,12 @@
   "permissions": {
     "firefox_permission_denied": "Rainbow memerlukan izin untuk mengakses semua situs web untuk berfungsi dengan baik. Harap berikan izin untuk melanjutkan."
   },
+  "wallet": {
+    "rename": "Ganti nama dompet",
+    "edit_appearance": "Edit tampilan",
+    "view_on": "Lihat di %{explorer}",
+    "copy_address": "Salin Alamat"
+  },
   "wallet_switcher": {
     "title": "Dompet",
     "rename_wallet": "Ganti nama dompet",
@@ -483,10 +489,22 @@
     }
   },
   "swap": {
-    "title": "Tukar",
-    "input_token_to_swap_placeholder": "Pilih token untuk ditukar",
+    "_actions": {
+      "Swap": "Tukar",
+      "swap": "tukar",
+      "swaps": "pertukaran",
+      "Swapping": "Menukar",
+      "swapping": "menukar",
+      "Bridge": "Jembatan",
+      "bridge": "jembatan",
+      "bridges": "jembatan",
+      "Bridging": "Membuat Jembatan",
+      "bridging": "menjembatani"
+    },
+    "title": "%{Action}",
+    "input_token_placeholder": "Pilih token untuk %{action}",
     "input_token_to_receive_placeholder": "Pilih token untuk diterima",
-    "select_tokens_to_swap": "Pilih token untuk ditukar",
+    "select_tokens": "Pilih token untuk %{action}",
     "max": "Maks",
     "balance": "Saldo",
     "tokens_input": {
@@ -498,14 +516,14 @@
       "filter_by_network": "Filter berdasarkan Jaringan",
       "switch_networks": "Ganti Jaringan",
       "nothing_found": "Tidak ada yang ditemukan",
-      "nothing_found_description": "Beberapa token tidak memiliki cukup likuiditas untuk melakukan penukaran yang berhasil",
-      "nothing_found_description_l2": "Beberapa token tidak memiliki cukup likuiditas lapis 2 untuk melakukan penukaran yang berhasil",
+      "nothing_found_description": "Beberapa token tidak memiliki cukup likuiditas untuk melakukan %{action}yang sukses.",
+      "nothing_found_description_l2": "Beberapa token tidak memiliki cukup likuiditas layer 2 untuk melakukan %{action}yang sukses.",
       "output_quotes_disabled": "Kutipan keluaran dinonaktifkan"
     },
     "warnings": {
       "long_wait": {
         "title": "Menunggu lama",
-        "description": "Hingga %{time} untuk ditukar"
+        "description": "Sampai %{time} sampai %{action}"
       },
       "price_impact": {
         "title": "Pasar kecil",
@@ -516,8 +534,8 @@
       "rainbow": "Otomatis"
     },
     "settings": {
-      "title": "Pengaturan Tukar",
-      "route_swaps": "Tukar melalui",
+      "title": "%{Action} Pengaturan",
+      "route": "Rute %{actions} melalui",
       "use_flashbots": "Gunakan Flashbots",
       "max_slippage": "Slippage maksimal",
       "use_defaults": "Gunakan default",
@@ -529,12 +547,12 @@
       "explainers": {
         "slippage": {
           "title": "Slippage",
-          "description_1": "Slippage terjadi ketika harga tukar berubah selama waktu antara Anda mengirimkan transaksi dan konfirmasinya.",
-          "description_2": "Mengatur toleransi slippage yang lebih tinggi meningkatkan kemungkinan tukar Anda akan berhasil, tetapi dapat mengakibatkan Anda mendapatkan harga yang lebih buruk.",
+          "description_1": "Slippage terjadi ketika harga %{action} berubah selama waktu antara Anda mengirim transaksi dan konfirmasinya",
+          "description_2": "Mengatur toleransi slippage yang lebih tinggi meningkatkan peluang %{action} Anda akan berhasil, tetapi mungkin menghasilkan harga yang lebih buruk bagi Anda",
           "read_more": {
             "open_text": "Masih penasaran? ",
             "link_text": "Baca lebih lanjut",
-            "close_text": " tentang slippage dan bagaimana ini mempengaruhi pertukaran"
+            "close_text": " tentang slippage dan bagaimana itu mempengaruhi %{actions}"
           }
         },
         "flashbots": {
@@ -547,12 +565,12 @@
           }
         },
         "routing": {
-          "title": "Swap Routing",
-          "description": "Secara default, Rainbow memilih rute termurah untuk swap Anda. Jika Anda lebih memilih untuk secara spesifik menggunakan 0x atau 1inch, Anda juga bisa melakukan itu",
+          "title": "%{Action} Routing",
+          "description": "Secara default, Rainbow memilih rute termurah yang mungkin untuk %{action}Anda. Jika Anda lebih suka menggunakan 0x atau 1inch, Anda juga bisa melakukan itu",
           "read_more": {
             "open_text": "Masih penasaran? ",
             "link_text": "Baca lebih lanjut",
-            "close_text": " tentang pendekatan kami dalam merutekan swap"
+            "close_text": " tentang pendekatan kami terhadap routing %{actions}"
           }
         },
         "got_it": "Mengerti"
@@ -568,40 +586,37 @@
       "enter_an_amount": "Masukkan jumlah"
     },
     "review": {
-      "title_swap": "Tinjau & Tukar",
-      "title_bridge": "Tinjau & Jembatan",
+      "title": "Ulas & %{Action}",
       "flashbots_on": "Aktif",
       "minimum_received": "Minimum yang diterima",
-      "swapping_via": "Menukar via",
-      "bridging_via": "Jembatan via",
+      "via": "%{Actioning} melalui",
       "included_fee": "Termasuk biaya Rainbow",
       "use_flashbots": "Gunakan Flashbots",
       "exchange_rate": "Kurs",
       "asset_contract": "%{symbol} kontrak",
       "more_details": "Detail lebih",
-      "swap_confirmation": "Tukar %{sellSymbol} ke %{buySymbol}",
-      "bridge_confirmation": "Jembatan %{sellSymbol}",
+      "confirmation": "%{Action} %{sellSymbol} ke %{buySymbol}",
       "go_back": "Kembali"
     },
     "explainers": {
       "long_wait": {
-        "title": "Tunggu lama untuk menukar",
-        "description": "Penukaran ini mungkin memerlukan waktu yang sangat lama untuk diselesaikan. Ini biasanya disebabkan oleh masalah dengan jembatan lintas-rantai.",
+        "title": "Lama menunggu ke %{action}",
+        "description": "Ini %{action} mungkin membutuhkan waktu yang sangat lama untuk selesai. Ini biasanya karena masalah dengan jembatan lintas-rantai.",
         "action_label": "Lanjutkan saja"
       },
       "no_route": {
         "title": "Tidak ditemukan rute",
-        "description": "Kami tidak dapat menemukan rute untuk penukaran ini. Rute mungkin tidak ada untuk penukaran ini, atau jumlahnya mungkin terlalu kecil.",
+        "description": "Kami tidak dapat menemukan rute untuk ini %{action}. Rute mungkin tidak ada untuk ini %{action}, atau jumlahnya mungkin terlalu kecil.",
         "action_label": "Mengerti"
       },
       "no_quote": {
         "title": "Tidak ada kutipan yang tersedia",
-        "description": "Kami tidak dapat menemukan kutipan untuk swap ini. Hal ini bisa saja karena tidak ada cukup likuiditas untuk swap atau karena adanya masalah pada implementasi token.",
+        "description": "Kami tidak dapat menemukan kutipan untuk ini %{action}. Ini mungkin karena tidak cukup likuiditas untuk %{action} atau karena permasalahan dalam implementasi token tersebut",
         "action_label": "Lanjutkan saja"
       },
       "insufficient_liquidity": {
         "title": "Kekurangan likuiditas",
-        "description": "Kami tidak dapat menemukan kutipan untuk swap ini karena pasangan ini tidak memiliki cukup likuiditas di bursa.",
+        "description": "Kami tidak dapat menemukan kutipan untuk ini %{action} karena pasangan ini tidak memiliki cukup likuiditas di bursa",
         "action_label": "Mengerti",
         "footer_text": {
           "open_text": "Masih penasaran? ",
@@ -611,13 +626,23 @@
       },
       "fee_on_transfer_token": {
         "title": "Biaya Pada Transfer Token",
-        "description": "Penukaran ini akan gagal di Rainbow karena kontrak %{tokenName} menambahkan biaya ekstra",
+        "description": "Ini %{action} akan gagal di Rainbow karena kontrak %{tokenName} menambahkan biaya tambahan",
         "action_label": "Mengerti",
         "footer_text": {
           "open_text": "Baca ",
           "link_text": "panduan kami",
-          "close_text": " untuk bantuan menukar token ini!"
+          "close_text": " untuk bantuan %{actioning} token ini!"
         }
+      },
+      "flashbots": {
+        "title": "Flashbots",
+        "description": "Flashbots melindungi transaksi Anda dari frontrunning dan serangan sandwich yang mungkin mengakibatkan Anda mendapatkan harga yang lebih buruk atau transaksi Anda gagal",
+        "action_label": "Mengerti"
+      },
+      "fee": {
+        "title": "Biaya Rainbow",
+        "description": "Rainbow mengambil biaya %{feePercentage} dari %{actions}. Hal ini merupakan bagian dari kesempatan kami untuk memberikan Anda pengalaman Ethereum terbaik",
+        "action_label": "Mengerti"
       }
     }
   },
@@ -1063,6 +1088,7 @@
   },
   "token_details": {
     "swap": "Tukar",
+    "bridge": "Jembatan",
     "send": "Kirim",
     "balance": "Saldo",
     "value": "Nilai",
@@ -1194,18 +1220,6 @@
       "max_base_title": "Biaya dasar maksimum",
       "max_priority_explainer": "Tip penambang langsung menuju ke penambang yang mengkonfirmasi transaksi Anda di jaringan.\n\nTip yang lebih tinggi membuat transaksi Anda lebih cenderung dikonfirmasi dengan cepat",
       "max_priority_title": "Tip penambang"
-    },
-    "swap": {
-      "flashbots": {
-        "title": "Flashbots",
-        "description": "Flashbots melindungi transaksi Anda dari frontrunning dan serangan sandwich yang mungkin mengakibatkan Anda mendapatkan harga yang lebih buruk atau transaksi Anda gagal",
-        "action_label": "Mengerti"
-      },
-      "fee": {
-        "title": "Biaya Rainbow",
-        "description": "Rainbow mengambil biaya %{feePercentage} dari tukaran. Ini adalah bagian dari yang memungkinkan kami memberi Anda pengalaman Ethereum terbaik mungkin",
-        "action_label": "Mengerti"
-      }
     }
   },
   "injected_notifications": {
