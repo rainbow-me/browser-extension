@@ -26,7 +26,7 @@ import {
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
-import ExternalImage from '../../components/ExternalImage/ExternalImage';
+import { DappIcon } from '../../components/DappIcon/DappIcon';
 import { ConnectedAppNetworkMenu } from '../../components/SwitchMenu/ConnectedAppNetworkMenu';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAppSession } from '../../hooks/useAppSession';
@@ -200,20 +200,11 @@ const ConnectedApp = ({
                 <Inline alignHorizontal="justify" alignVertical="center">
                   <Columns space="8px">
                     <Column width="content">
-                      <Box
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <ExternalImage
-                          mask={appsConnectedImageMask}
-                          src={dappMetadata?.appLogo}
-                          width="36"
-                          height="36"
-                        />
-                      </Box>
+                      <DappIcon
+                        appLogo={dappMetadata?.appLogo}
+                        size="36px"
+                        mask={appsConnectedImageMask}
+                      />
                       <Box
                         style={{
                           marginLeft: '-7px',

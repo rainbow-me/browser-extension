@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   selectUserAssetsList,
   selectUserAssetsListByChainId,
+  selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -37,7 +38,10 @@ export const useSendAsset = () => {
       address,
       currency: currentCurrency,
     },
-    { select: sortBy(sortMethod) },
+    {
+      select: (data) =>
+        selectorFilterByUserChains({ data, selector: sortBy(sortMethod) }),
+    },
   );
 
   const selectAssetAddressAndChain = useCallback(
