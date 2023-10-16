@@ -4,6 +4,7 @@ import {
   memo,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -16,6 +17,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useErrorStore } from '~/core/state/error';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { goToNewTab, isNativePopup } from '~/core/utils/tabs';
@@ -366,18 +368,22 @@ function TabBar({
 
 function Content({ children }: PropsWithChildren) {
   const { featureFlags } = useFeatureFlagsStore();
+  const { testnetMode } = useTestnetModeStore();
+
+  const bottom = useMemo(() => {
+    if (testnetMode) return '104px';
+    else if (featureFlags.new_tab_bar_enabled) return '64px';
+    return undefined;
+  }, [featureFlags.new_tab_bar_enabled, testnetMode]);
 
   return (
     <Box
       background="surfacePrimaryElevated"
       style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
     >
-      <Box
-        height="full"
-        paddingBottom={featureFlags.new_tab_bar_enabled ? '64px' : undefined}
-      >
-        <Inset top="20px">{children}</Inset>
-      </Box>
+      <Inset top="20px" bottom={bottom}>
+        {children}
+      </Inset>
     </Box>
   );
 }
