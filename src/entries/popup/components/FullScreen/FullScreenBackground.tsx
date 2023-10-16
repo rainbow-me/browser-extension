@@ -1,11 +1,38 @@
 import React from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { Box } from '~/design-system';
+import { Box, Inline, Text } from '~/design-system';
 
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
+import { zIndexes } from '../../utils/zIndexes';
+import { MenuItem } from '../Menu/MenuItem';
 
+const TestnetBar = () => {
+  return (
+    <Box
+      style={{
+        height: '36px',
+        width: POPUP_DIMENSIONS.width,
+        zIndex: zIndexes.SPEED_UP_CANCEL_PROMPT,
+      }}
+      paddingHorizontal="8px"
+    >
+      <Inline
+        height="full"
+        space="4px"
+        alignVertical="center"
+        alignHorizontal="center"
+      >
+        <MenuItem.TextIcon icon="🕹" />
+        <Text align="center" color="green" size="14pt" weight="medium">
+          Testnet Mode
+        </Text>
+      </Inline>
+    </Box>
+  );
+};
 export function FullScreenBackground({
   children,
 }: {
@@ -13,8 +40,20 @@ export function FullScreenBackground({
 }) {
   const { currentTheme } = useCurrentThemeStore();
   const isFullscreen = useIsFullScreen();
+  const { testnetMode } = useTestnetModeStore();
 
-  if (!isFullscreen) return children as JSX.Element;
+  if (!isFullscreen)
+    return (
+      <Box style={{ overflow: 'hidden' }}>
+        {testnetMode && <TestnetBar />}
+        <Box
+          position="relative"
+          style={{ height: POPUP_DIMENSIONS.height - 36 }}
+        >
+          {children}
+        </Box>
+      </Box>
+    );
 
   return (
     <Box
@@ -54,10 +93,11 @@ export function FullScreenBackground({
           width: POPUP_DIMENSIONS.width,
           height: POPUP_DIMENSIONS.height,
           position: 'relative',
-          overflow: 'auto',
+          overflow: 'hidden',
         }}
       >
-        {children}
+        {testnetMode && <TestnetBar />}
+        <Box style={{ overflow: 'auto' }}>{children}</Box>
       </Box>
     </Box>
   );
