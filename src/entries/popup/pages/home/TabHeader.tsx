@@ -86,7 +86,7 @@ export function TabHeader({
         display="flex"
         justifyContent="space-between"
         paddingHorizontal="20px"
-        style={{ maxHeight: 11, textTransform: 'capitalize' }}
+        // style={{ maxHeight: 11, textTransform: 'capitalize' }}
         width="full"
       >
         <Inline alignVertical="bottom" space="6px">
