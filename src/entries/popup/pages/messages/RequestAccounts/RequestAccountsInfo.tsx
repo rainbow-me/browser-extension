@@ -10,7 +10,7 @@ import {
   Text,
 } from '~/design-system';
 import { TextInline } from '~/design-system/docs/components/TextInline';
-import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
+import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 
 const ThisAppIsLikelyMalicious = () => {
   return (
@@ -88,24 +88,13 @@ export const RequestAccountsInfo = ({
       paddingTop="64px"
       background="surfacePrimaryElevatedSecondary"
     >
-      <Stack space="32px" alignItems="center">
-        <Inline alignHorizontal="center">
-          <Box
-            style={{
-              width: 60,
-              height: 60,
-              overflow: 'hidden',
-            }}
-            borderRadius="18px"
-            alignItems="center"
-          >
-            {appLogo ? (
-              <ExternalImage src={appLogo} width="60" height="60" />
-            ) : null}
-          </Box>
-        </Inline>
-
-        <Stack space="24px">
+      <Stack space="32px">
+        <Box width="full">
+          <Inline alignHorizontal="center" alignVertical="center">
+            <DappIcon appLogo={appLogo} size="60px" />
+          </Inline>
+        </Box>
+        <Stack space="32px">
           <Text
             size="20pt"
             weight="semibold"

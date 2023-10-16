@@ -22,6 +22,9 @@ declare global {
       FIREBASE_VAPID_BX: string;
       IMGIX_DOMAIN: string;
       IMGIX_TOKEN: string;
+      RPC_PROXY_ENABLED: string;
+      RPC_PROXY_BASE_URL: string;
+      RPC_PROXY_API_KEY: string;
     }
   }
 }

@@ -14,7 +14,7 @@ import {
 
 import { AppConnectionMenu } from '../../components/AppConnectionMenu/AppConnectionMenu';
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
-import ExternalImage from '../../components/ExternalImage/ExternalImage';
+import { DappIcon } from '../../components/DappIcon/DappIcon';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppSession } from '../../hooks/useAppSession';
@@ -122,21 +122,11 @@ export const AppConnection = () => {
                   </Box>
                 </Box>
               ) : null}
-              <Box
-                style={{
-                  height: 16,
-                  width: 16,
-                  borderRadius: 3,
-                  overflow: 'hidden',
-                }}
-              >
-                <ExternalImage
-                  mask={appSession ? appConnectionImageMask : undefined}
-                  src={dappMetadata?.appLogo}
-                  width="16"
-                  height="16"
-                />
-              </Box>
+              <DappIcon
+                appLogo={dappMetadata?.appLogo}
+                size="16px"
+                mask={appSession ? appConnectionImageMask : undefined}
+              />
             </Inline>
           </Box>
         </Lens>

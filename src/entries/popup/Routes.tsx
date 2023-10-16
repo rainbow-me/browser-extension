@@ -54,6 +54,7 @@ import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
 import { Language } from './pages/settings/language';
+import { SettingsNetworks } from './pages/settings/networks';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
@@ -466,6 +467,21 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <Privacy />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__NETWORKS,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.networks.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <SettingsNetworks />
       </AnimatedRoute>
     ),
   },
