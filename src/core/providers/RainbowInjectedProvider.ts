@@ -29,7 +29,7 @@ export type RequestResponse =
 const getMetaMaskProvider = () => {
   return window.walletRouter.providers.find(
     (provider) =>
-      provider.isMetaMask && !(provider as RainbowProvider).isRainbow,
+      provider.isMetaMask && !(provider as RainbowInjectedProvider).isRainbow,
   );
 };
 
@@ -40,7 +40,7 @@ const getMetaMaskProvider = () => {
  * @link https://eips.ethereum.org/EIPS/eip-1193
  * @link https://eips.ethereum.org/EIPS/eip-1102
  */
-export class RainbowProvider extends EventEmitter {
+export class RainbowInjectedProvider extends EventEmitter {
   chainId: ChainIdHex = '0x1';
   connected = false;
   isRainbow = true;
@@ -48,7 +48,7 @@ export class RainbowProvider extends EventEmitter {
   isMetaMask = true;
   networkVersion = '1';
   selectedAddress: string | undefined;
-  providers: (RainbowProvider | Ethereum)[] | undefined = undefined;
+  providers: (RainbowInjectedProvider | Ethereum)[] | undefined = undefined;
 
   #isUnlocked = true;
   requestId = 0;
@@ -63,7 +63,7 @@ export class RainbowProvider extends EventEmitter {
   }: { messenger?: Messenger; backgroundMessenger?: Messenger } = {}) {
     super();
 
-    // RainbowProvider is also used in popup via RainbowConnector
+    // RainbowInjectedProvider is also used in popup via RainbowConnector
     // here we don't need to listen to anything so we don't need these listeners
     if (isValidUrl(window.location.href)) {
       this.backgroundMessenger = backgroundMessenger;
@@ -88,7 +88,7 @@ export class RainbowProvider extends EventEmitter {
       );
     }
 
-    // EIP-6963 RainbowProvider in announceProvider was losing context
+    // EIP-6963 RainbowInjectedProvider in announceProvider was losing context
     this.bindMethods();
   }
 
@@ -124,8 +124,8 @@ export class RainbowProvider extends EventEmitter {
     if (!this.rainbowIsDefaultProvider) {
       const provider = getMetaMaskProvider();
       if (provider) {
-        // using RainbowProvider as type since wagmi Ethereum type is different
-        const response = await (provider as RainbowProvider).request({
+        // using RainbowInjectedProvider as type since wagmi Ethereum type is different
+        const response = await (provider as RainbowInjectedProvider).request({
           method,
           params,
         });

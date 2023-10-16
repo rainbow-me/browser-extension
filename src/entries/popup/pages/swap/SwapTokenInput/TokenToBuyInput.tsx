@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { forwardRef, useCallback, useRef } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -7,6 +7,7 @@ import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
+import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
 import { TokenToBuyDropdown } from './TokenDropdown/TokenToBuyDropdown';
 import { TokenToBuyInfo } from './TokenInfo/TokenToBuyInfo';
@@ -37,30 +38,33 @@ interface TokenToBuyProps {
   setIndependentField: (field: IndependentField) => void;
 }
 
-export const TokenToBuyInput = ({
-  assetToBuy,
-  assetToSell,
-  assetFilter,
-  assets,
-  assetToBuyNativeDisplay,
-  assetToSellNativeDisplay,
-  dropdownClosed = false,
-  dropdownHeight,
-  outputChainId,
-  placeholder,
-  zIndex,
-  assetToBuyValue,
-  assetToSellValue,
-  inputRef,
-  inputDisabled,
-  openDropdownOnMount,
-  onDropdownOpen,
-  selectAsset,
-  setAssetFilter,
-  setOutputChainId,
-  setAssetToBuyInputValue,
-  setIndependentField,
-}: TokenToBuyProps) => {
+export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
+  {
+    assetToBuy,
+    assetToSell,
+    assetFilter,
+    assets,
+    assetToBuyNativeDisplay,
+    assetToSellNativeDisplay,
+    dropdownClosed = false,
+    dropdownHeight,
+    outputChainId,
+    placeholder,
+    zIndex,
+    assetToBuyValue,
+    assetToSellValue,
+    inputRef,
+    inputDisabled,
+    openDropdownOnMount,
+    onDropdownOpen,
+    selectAsset,
+    setAssetFilter,
+    setOutputChainId,
+    setAssetToBuyInputValue,
+    setIndependentField,
+  }: TokenToBuyProps,
+  ref,
+) {
   const onSelectAssetRef =
     useRef<(address: ParsedSearchAsset | null) => void>();
   const dropdownRef = useRef<{ openDropdown: () => void }>(null);
@@ -141,8 +145,8 @@ export const TokenToBuyInput = ({
       setValue={setAssetToBuyInputValue}
       openDropdownOnMount={openDropdownOnMount}
       inputDisabled={inputDisabled}
-      ref={dropdownRef}
+      ref={mergeRefs(ref, dropdownRef)}
       onFocus={() => setIndependentField('buyField')}
     />
   );
-};
+});
