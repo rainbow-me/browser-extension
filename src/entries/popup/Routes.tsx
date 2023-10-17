@@ -86,10 +86,12 @@ import { simulateTab } from './utils/simulateTab';
 import { zIndexes } from './utils/zIndexes';
 
 const ChildRoute = (
-  props: React.PropsWithChildren & Pick<BoxProps, 'background'>,
+  props: React.PropsWithChildren &
+    Pick<BoxProps, 'background'> &
+    Pick<BoxProps, 'position'>,
 ) => (
   <Box
-    position="absolute"
+    position={props.position}
     background={props.background}
     style={{ ...POPUP_DIMENSIONS, zIndex: zIndexes.CHILD_ROUTE }}
   >
@@ -119,7 +121,7 @@ const ROUTE_DATA = [
       {
         path: ROUTES.TOKEN_DETAILS(':uniqueId'),
         element: (
-          <ChildRoute background="surfacePrimaryElevated">
+          <ChildRoute background="surfacePrimaryElevated" position="absolute">
             <AnimatedRoute
               background="surfacePrimaryElevated"
               direction="left"
