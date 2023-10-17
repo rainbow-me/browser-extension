@@ -15,6 +15,7 @@ import { i18n } from '~/core/languages';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -30,7 +31,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
-import { TESTNET_BAR_HEIGHT } from '../../components/TestnetBar/TestnetBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { SortMethod } from '../../hooks/send/useSendAsset';
 import { AssetRow } from '../home/Tokens';
@@ -241,7 +241,7 @@ export const SendTokenInput = React.forwardRef<
   return (
     <DropdownInputWrapper
       zIndex={zIndex || 1}
-      dropdownHeight={376 - (testnetMode ? TESTNET_BAR_HEIGHT : 0)}
+      dropdownHeight={376 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0)}
       testId={'token-input'}
       leftComponent={
         <AssetContextMenu asset={asset}>

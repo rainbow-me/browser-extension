@@ -16,7 +16,10 @@ import {
 
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import {
+  POPUP_DIMENSIONS,
+  TESTNET_MODE_BAR_HEIGHT,
+} from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import {
   AnimatedRouteConfig,
@@ -27,7 +30,6 @@ import {
 } from '~/design-system/styles/designTokens';
 import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
-import { TESTNET_BAR_HEIGHT } from '~/entries/popup/components/TestnetBar/TestnetBar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 import { ROUTES } from '~/entries/popup/urls';
@@ -35,6 +37,11 @@ import { getActiveElement } from '~/entries/popup/utils/activeElement';
 import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
 import { AccentColorProvider, AvatarColorProvider } from '../Box/ColorContext';
+
+import {
+  animatedRouteStyles,
+  animatedRouteTestnetModeStyles,
+} from './AnimatedRoute.css';
 
 type AnimatedRouteProps = {
   background?: BackgroundColor;
@@ -220,6 +227,13 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  console.log(
+    'maxheight =',
+    POPUP_DIMENSIONS.height -
+      (testnetMode && location.pathname !== ROUTES.UNLOCK
+        ? TESTNET_MODE_BAR_HEIGHT
+        : 0),
+  );
   const content = (
     <AccentColorProvider
       color={accentColor ? avatar?.color : globalColors.blue60}
@@ -238,13 +252,18 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
               maxHeight:
                 POPUP_DIMENSIONS.height -
                 (testnetMode && location.pathname !== ROUTES.UNLOCK
-                  ? TESTNET_BAR_HEIGHT
+                  ? TESTNET_MODE_BAR_HEIGHT
                   : 0),
             }}
             animate={end}
             exit={isBack ? initial : exit}
             transition={transition}
             background={background}
+            className={
+              testnetMode && location.pathname !== ROUTES.UNLOCK
+                ? animatedRouteTestnetModeStyles
+                : animatedRouteStyles
+            }
           >
             {navbar && (
               <Navbar
