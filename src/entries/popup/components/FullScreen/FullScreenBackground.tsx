@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -9,28 +10,37 @@ import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { zIndexes } from '../../utils/zIndexes';
 import { MenuItem } from '../Menu/MenuItem';
 
-const TestnetBar = () => {
+const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
   return (
-    <Box
-      style={{
-        height: '36px',
-        width: POPUP_DIMENSIONS.width,
-        zIndex: zIndexes.SPEED_UP_CANCEL_PROMPT,
-      }}
-      paddingHorizontal="8px"
-    >
-      <Inline
-        height="full"
-        space="4px"
-        alignVertical="center"
-        alignHorizontal="center"
-      >
-        <MenuItem.TextIcon icon="🕹" />
-        <Text align="center" color="green" size="14pt" weight="medium">
-          Testnet Mode
-        </Text>
-      </Inline>
-    </Box>
+    <AnimatePresence initial={false}>
+      {testnetMode && (
+        <Box
+          as={motion.div}
+          key={'testnet-bar'}
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 36 }}
+          exit={{ opacity: 0, height: 0 }}
+          style={{
+            height: '36px',
+            width: POPUP_DIMENSIONS.width,
+            zIndex: zIndexes.SPEED_UP_CANCEL_PROMPT,
+          }}
+          paddingHorizontal="8px"
+        >
+          <Inline
+            height="full"
+            space="4px"
+            alignVertical="center"
+            alignHorizontal="center"
+          >
+            <MenuItem.TextIcon icon="🕹" />
+            <Text align="center" color="green" size="14pt" weight="medium">
+              Testnet Mode
+            </Text>
+          </Inline>
+        </Box>
+      )}
+    </AnimatePresence>
   );
 };
 export function FullScreenBackground({
@@ -45,13 +55,8 @@ export function FullScreenBackground({
   if (!isFullscreen)
     return (
       <Box style={{ overflow: 'hidden' }}>
-        {testnetMode && <TestnetBar />}
-        <Box
-          position="relative"
-          style={{ height: POPUP_DIMENSIONS.height - 36 }}
-        >
-          {children}
-        </Box>
+        <TestnetBar testnetMode={testnetMode} />
+        <Box style={{ overflow: 'auto' }}>{children}</Box>
       </Box>
     );
 
@@ -96,7 +101,7 @@ export function FullScreenBackground({
           overflow: 'hidden',
         }}
       >
-        {testnetMode && <TestnetBar />}
+        <TestnetBar testnetMode={testnetMode} />
         <Box style={{ overflow: 'auto' }}>{children}</Box>
       </Box>
     </Box>
