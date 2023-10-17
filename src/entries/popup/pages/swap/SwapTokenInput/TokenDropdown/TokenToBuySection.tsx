@@ -14,6 +14,7 @@ import {
   AssetToBuySection,
   AssetToBuySectionId,
 } from '~/entries/popup/hooks/useSearchCurrencyLists';
+import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
 import { TokenToBuyRow } from '../TokenRow/TokenToBuyRow';
@@ -113,6 +114,7 @@ export const TokenToBuySection = ({
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   onDropdownChange: (open: boolean) => void;
 }) => {
+  const t = useTranslationContext();
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets: assetSection.data,
     size: 5,
@@ -138,7 +140,7 @@ export const TokenToBuySection = ({
               <Inline space="8px" alignVertical="center">
                 <CoinIcon asset={undefined} />
                 <Text size="14pt" weight="semibold" color={'labelQuaternary'}>
-                  {i18n.t('swap.tokens_input.nothing_found')}
+                  {t('swap.tokens_input.nothing_found')}
                 </Text>
               </Inline>
             </Inset>
