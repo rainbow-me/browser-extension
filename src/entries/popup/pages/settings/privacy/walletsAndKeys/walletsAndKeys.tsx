@@ -313,9 +313,7 @@ export const WalletsAndKeys = () => {
                         variant="tinted"
                         onClick={() => handleBackup({ wallet })}
                       >
-                        {i18n.t(
-                          'settings.privacy_and_security.wallets_and_keys.back_up_now',
-                        )}
+                        {t('back_up_now')}
                       </Button>
                     </Inline>
                   </Box>
@@ -338,12 +336,7 @@ export const WalletsAndKeys = () => {
               />
             }
             titleComponent={
-              <MenuItem.Title
-                text={i18n.t(
-                  'settings.privacy_and_security.wallets_and_keys.create_a_new_wallet',
-                )}
-                color="blue"
-              />
+              <MenuItem.Title text={t('create_a_new_wallet')} color="blue" />
             }
             onClick={handleCreateNewWallet}
           />
