@@ -30,6 +30,7 @@ import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { TESTNET_BAR_HEIGHT } from '~/entries/popup/components/TestnetBar/TestnetBar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
+import { ROUTES } from '~/entries/popup/urls';
 import { getActiveElement } from '~/entries/popup/utils/activeElement';
 import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
@@ -185,6 +186,7 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
   } = props;
   const { state } = useLocation();
   const { testnetMode } = useTestnetModeStore();
+  const location = useLocation();
   const animationDirection: AnimatedRouteDirection =
     state?.direction ?? direction;
   const { initial, end, exit } = animatedRouteValues[animationDirection];
@@ -235,7 +237,9 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
               overflow: 'auto',
               maxHeight:
                 POPUP_DIMENSIONS.height -
-                (testnetMode ? TESTNET_BAR_HEIGHT : 0),
+                (testnetMode && location.pathname !== ROUTES.UNLOCK
+                  ? TESTNET_BAR_HEIGHT
+                  : 0),
             }}
             animate={end}
             exit={isBack ? initial : exit}
