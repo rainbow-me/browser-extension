@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
@@ -13,9 +14,11 @@ import { useNativeAsset } from '../useNativeAsset';
 export const useApproveAppRequestValidations = ({
   chainId,
   selectedGas,
+  dappStatus,
 }: {
   chainId: ChainId;
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
+  dappStatus?: DAppStatus;
 }) => {
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const chainIdToUse = connectedToHardhat ? ChainId.mainnet : chainId;
@@ -30,12 +33,16 @@ export const useApproveAppRequestValidations = ({
   }, [nativeAsset?.balance?.amount, selectedGas?.gasFee?.amount]);
 
   const buttonLabel = useMemo(() => {
+    if (dappStatus === DAppStatus.Scam)
+      return i18n.t('approve_request.send_transaction_anyway');
+
     if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
         symbol: getChain({ chainId: chainIdToUse }).nativeCurrency.name,
       });
+
     return i18n.t('approve_request.send_transaction');
-  }, [chainIdToUse, enoughNativeAssetForGas]);
+  }, [chainIdToUse, enoughNativeAssetForGas, dappStatus]);
 
   return {
     enoughNativeAssetForGas:

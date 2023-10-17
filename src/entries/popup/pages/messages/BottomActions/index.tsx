@@ -3,6 +3,7 @@ import { Address, useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -344,6 +345,7 @@ export const AcceptRequestButton = ({
   label,
   waitingForDevice,
   loading = false,
+  dappStatus,
 }: {
   autoFocus?: boolean;
   disabled?: boolean;
@@ -351,21 +353,32 @@ export const AcceptRequestButton = ({
   label: string;
   waitingForDevice?: boolean;
   loading?: boolean;
+  dappStatus?: DAppStatus;
 }) => {
+  const isScamDapp = dappStatus === DAppStatus.Scam;
+  const isVerifiedDapp = dappStatus === DAppStatus.Verified;
+
+  const buttonVariant = isScamDapp ? 'transparent' : 'flat';
+  const color = isVerifiedDapp ? 'blue' : 'accent';
+
   return (
     <Button
       autoFocus={autoFocus}
       emoji={waitingForDevice ? '👀' : undefined}
-      color={waitingForDevice ? 'label' : 'accent'}
+      color={waitingForDevice ? 'label' : color}
       height="44px"
       width="full"
       onClick={(!waitingForDevice && onClick) || undefined}
       testId="accept-request-button"
-      variant={waitingForDevice || disabled ? 'disabled' : 'flat'}
+      variant={waitingForDevice || disabled ? 'disabled' : buttonVariant}
       disabled={disabled}
       tabIndex={0}
     >
-      <TextOverflow weight="bold" size="16pt" color="label">
+      <TextOverflow
+        weight="bold"
+        size="16pt"
+        color={isScamDapp ? 'red' : 'label'}
+      >
         {loading ? <Spinner size={16} color="label" /> : label}
       </TextOverflow>
     </Button>
@@ -376,11 +389,15 @@ export const RejectRequestButton = ({
   autoFocus,
   onClick,
   label,
+  dappStatus,
 }: {
   autoFocus?: boolean;
   onClick: () => void;
   label: string;
+  dappStatus?: DAppStatus;
 }) => {
+  const isScamDapp = dappStatus === DAppStatus.Scam;
+
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -395,15 +412,16 @@ export const RejectRequestButton = ({
       }
     },
   });
+
   return (
     <Button
       autoFocus={autoFocus}
-      color={'labelSecondary'}
+      color={isScamDapp ? 'red' : 'labelSecondary'}
       height="44px"
       width="full"
       onClick={onClick}
       testId="reject-request-button"
-      variant={'transparent'}
+      variant={isScamDapp ? 'flat' : 'transparent'}
       tabIndex={0}
     >
       {label}
