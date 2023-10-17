@@ -1003,6 +1003,8 @@ export const symbolNames = selectSymbolNames(
   'creditcard.fill',
   'building.columns',
   'paintbrush.pointed.fill',
+  'exclamationmark.octagon.fill',
+  'network.badge.shield.half.filled',
   'safari.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
