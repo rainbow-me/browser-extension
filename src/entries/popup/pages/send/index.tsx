@@ -17,7 +17,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhat } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { AddressOrEth } from '~/core/types/assets';
@@ -83,8 +83,7 @@ export function Send() {
   const isMyWallet = (address: Address) =>
     allWallets?.some((w) => w.address === address);
 
-  const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore.getState();
+  const { connectedToHardhat, connectedToHardhatOp } = useConnectedToHardhat();
 
   const {
     asset,

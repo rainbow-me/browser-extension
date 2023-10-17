@@ -125,12 +125,11 @@ export const chainIdToUse = (
 ) => {
   if (connectedToHardhat) {
     return ChainId.hardhat;
-  } else if (connectedToHardhatOp) {
+  }
+  if (connectedToHardhatOp) {
     return ChainId.hardhatOptimism;
-  } else if (
-    activeSessionChainId !== null &&
-    activeSessionChainId !== undefined
-  ) {
+  }
+  if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
     return activeSessionChainId;
   } else {
     return ChainId.mainnet;

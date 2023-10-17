@@ -24,10 +24,10 @@ export const connectedToHardhatStore = createStore<ConnectedToHardhatState>(
   }),
   {
     persist: {
-      name: 'connectedToHardhatStore',
+      name: 'connectedToHardhat',
       version: 0,
     },
   },
 );
 
-export const useConnectedToHardhatStore = create(connectedToHardhatStore);
+export const useConnectedToHardhat = create(connectedToHardhatStore);

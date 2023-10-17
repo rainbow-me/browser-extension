@@ -89,7 +89,7 @@ export const USDC_MAINNET_ASSET = {
   decimals: 6,
 } satisfies ParsedUserAsset;
 
-export const OPTIMSIM_MAINNET_ASSET = {
+export const OPTIMISM_MAINNET_ASSET = {
   address: '0x0000000000000000000000000000000000000000',
   balance: { amount: '10000', display: '10,000.00 ETH' },
   chainId: 10,

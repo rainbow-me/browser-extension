@@ -14,7 +14,7 @@ import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhat } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -224,7 +224,7 @@ const SwapReviewSheetWithQuote = ({
   const { setSwapAssetsToRefresh } = useSwapAssetsToRefreshStore();
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
   const { resetSwapValues } = usePopupInstanceStore();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { connectedToHardhat } = useConnectedToHardhat();
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,

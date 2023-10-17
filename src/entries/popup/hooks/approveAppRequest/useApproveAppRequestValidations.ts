@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhat } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { chainIdToUse, getChain } from '~/core/utils/chains';
@@ -18,7 +18,7 @@ export const useApproveAppRequestValidations = ({
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
 }) => {
   const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore.getState();
+    useConnectedToHardhat.getState();
 
   const activeChainId = chainIdToUse(
     connectedToHardhat,
