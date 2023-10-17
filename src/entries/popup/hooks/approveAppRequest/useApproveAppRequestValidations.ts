@@ -48,7 +48,7 @@ export const useApproveAppRequestValidations = ({
       });
 
     return i18n.t('approve_request.send_transaction');
-  }, [chainIdToUse, activeChainId, enoughNativeAssetForGas, dappStatus]);
+  }, [activeChainId, enoughNativeAssetForGas, dappStatus]);
 
   return {
     enoughNativeAssetForGas:
