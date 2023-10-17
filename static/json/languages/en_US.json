@@ -94,7 +94,7 @@
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
       "testnet_mode": {
         "title": "Testnet Mode",
-        "toggle_explainer":"Switch your app to Testnet Mode to only view balances and transactions on supported Testnets.",
+        "toggle_explainer": "Switch your app to Testnet Mode to only view balances and transactions on supported Testnets.",
         "shortcut_title": "Show Testnet shortcut",
         "shortcut_toggle_explainer": "Add a shortcut for Testnet Mode in the menu on the wallet screen for easy access."
       }
@@ -1264,6 +1264,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
+    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
     "coming_soon": "Coming Soon!",
     "no_hw_ff": "Hardware wallets are not supported on Firefox. Try a different browser like Chrome or Brave."
   },
