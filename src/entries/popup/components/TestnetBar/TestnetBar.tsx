@@ -11,7 +11,6 @@ import { MenuItem } from '../Menu/MenuItem';
 
 import { TestnetBarBackground } from './TestnetBarBackground';
 
-export const TESTNET_BAR_HEIGHT = 35;
 export const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
   const location = useLocation();
 

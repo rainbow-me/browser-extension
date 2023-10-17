@@ -42,8 +42,8 @@ export default function WarningInfo({
       style={{ height: 535 }}
     >
       <Rows alignVertical="justify">
-        <Row height="content">
-          <Box>
+        <Row>
+          <Box alignItems="center">
             <Stack space="24px">
               <Inline alignHorizontal="center">
                 <Box
@@ -81,15 +81,19 @@ export default function WarningInfo({
                 </Box>
               </Inline>
 
-              <Box alignItems="center" style={{ width: '106px' }}>
-                <Separator color="separatorTertiary" strokeWeight="1px" />
-              </Box>
+              <Inline alignHorizontal="center">
+                <Box alignItems="center" style={{ width: '106px' }}>
+                  <Separator color="separatorTertiary" strokeWeight="1px" />
+                </Box>
+              </Inline>
 
               <Text size="16pt" weight="bold" color="label" align="center">
                 {i18n.t('common_titles.before_you_proceed')}
               </Text>
 
-              <IconAndCopyList iconAndCopyList={iconAndCopyList} />
+              <Box paddingHorizontal="12px">
+                <IconAndCopyList iconAndCopyList={iconAndCopyList} />
+              </Box>
             </Stack>
           </Box>
         </Row>

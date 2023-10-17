@@ -91,7 +91,7 @@ export const WalletsAndKeys = () => {
   }, [containerRef, state?.fromBackupReminder]);
 
   return (
-    <Box as="div" paddingHorizontal="20px">
+    <Box height="full" style={{ height: '100%' }} paddingHorizontal="20px">
       <MenuContainer>
         {wallets.map((wallet, idx) => {
           const walletBackedUp = getWalletBackup({ wallet });

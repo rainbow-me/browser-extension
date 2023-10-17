@@ -67,7 +67,7 @@ export function FullScreenBackground({
         }}
       >
         <TestnetBar testnetMode={testnetMode} />
-        <Box style={{ overflow: 'auto' }}>{children}</Box>
+        <Box style={{ overflow: 'auto ' }}>{children}</Box>
       </Box>
     </Box>
   );
