@@ -3,6 +3,7 @@ import React from 'react';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -20,10 +21,7 @@ export const useNavigateToSwaps = () => {
   const { isWatchingWallet } = useWallets();
   const navigate = useRainbowNavigate();
   const { featureFlags } = useFeatureFlagsStore();
-
-  const alertWatchingWallet = React.useCallback(() => {
-    triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
-  }, []);
+  const { testnetMode } = useTestnetModeStore();
 
   const allowSwap = React.useMemo(
     () =>
@@ -33,8 +31,10 @@ export const useNavigateToSwaps = () => {
   );
 
   return () => {
-    if (!allowSwap) {
-      alertWatchingWallet();
+    if (testnetMode) {
+      triggerAlert({ text: i18n.t('alert.wallet_testing_mode') });
+    } else if (!allowSwap) {
+      triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
     } else {
       return type === KeychainType.HardwareWalletKeychain && !isFullScreen
         ? goToNewTab({ url: POPUP_URL + `#${ROUTES.SWAP}?hideBack=true` })

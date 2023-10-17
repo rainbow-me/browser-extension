@@ -1254,6 +1254,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
+    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
     "coming_soon": "Coming Soon!",
     "no_hw_ff": "Hardware wallets are not supported on Firefox. Try a different browser like Chrome or Brave."
   },
