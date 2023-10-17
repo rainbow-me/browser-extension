@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "Rainbow",
+    "description": "The name of the extension, displayed in the web store."
+  },
+  "appShortName": {
+    "message": "Rainbow",
+    "description": "The short name of the extension, displayed in the toolbar."
+  },
+  "appDescription": {
+    "message": "Rainbow은 재미있고 간단하며 안전한 이더리움 지갑으로, 자산을 관리하는 것을 즐거움으로 만듭니다.",
+    "description": "The description of the extension, displayed in the web store."
+  }
+}
