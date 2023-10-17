@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
+import { copy } from '~/core/utils/copy';
 import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhraseTable';
-import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
 import { setImportWalletSecrets } from '~/entries/popup/handlers/importWalletSecrets';
 import { exportWallet } from '~/entries/popup/handlers/wallet';
@@ -41,14 +41,16 @@ export function RecoveryPhrase() {
     state?.wallet,
   ]);
 
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(seed as string);
-    triggerToast({
-      title: i18n.t(
-        'settings.privacy_and_security.wallets_and_keys.recovery_phrase.phrase_copied',
-      ),
-    });
-  }, [seed]);
+  const handleCopy = useCallback(
+    () =>
+      copy({
+        value: seed,
+        title: i18n.t(
+          'settings.privacy_and_security.wallets_and_keys.recovery_phrase.copied',
+        ),
+      }),
+    [seed],
+  );
 
   useEffect(() => {
     const fetchRecoveryPhrase = async () => {
