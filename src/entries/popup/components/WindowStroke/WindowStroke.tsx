@@ -21,7 +21,7 @@ export const WindowStroke = () => {
 
   const borderColor = React.useMemo(() => {
     if (testnetMode) {
-      return '62, 207, 91';
+      return '0, 87, 35'; // green90
     } else if (isDarkTheme) {
       return '245, 248, 255';
     } else if (isLightFullScreen) {
