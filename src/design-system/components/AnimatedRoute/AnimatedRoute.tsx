@@ -227,13 +227,6 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  console.log(
-    'maxheight =',
-    POPUP_DIMENSIONS.height -
-      (testnetMode && location.pathname !== ROUTES.UNLOCK
-        ? TESTNET_MODE_BAR_HEIGHT
-        : 0),
-  );
   const content = (
     <AccentColorProvider
       color={accentColor ? avatar?.color : globalColors.blue60}
