@@ -21,7 +21,7 @@ export const RequestAccountsActions = ({
   onRejectRequest,
   appName,
   loading = false,
-  status,
+  dappStatus,
 }: {
   appName?: string;
   selectedWallet: Address;
@@ -31,9 +31,9 @@ export const RequestAccountsActions = ({
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   loading?: boolean;
-  status?: DAppStatus;
+  dappStatus?: DAppStatus;
 }) => {
-  const isScamDapp = status === DAppStatus.Scam;
+  const isScamDapp = dappStatus === DAppStatus.Scam;
   return (
     <Box padding="20px">
       <Stack space="24px">
@@ -56,7 +56,7 @@ export const RequestAccountsActions = ({
           flexDirection={isScamDapp ? 'column-reverse' : 'column'}
         >
           <AcceptRequestButton
-            dappStatus={status}
+            dappStatus={dappStatus}
             onClick={onAcceptRequest}
             autoFocus={!isScamDapp}
             label={
@@ -67,7 +67,7 @@ export const RequestAccountsActions = ({
             loading={loading}
           />
           <RejectRequestButton
-            dappStatus={status}
+            dappStatus={dappStatus}
             autoFocus={isScamDapp}
             onClick={onRejectRequest}
             label={i18n.t('common_actions.cancel')}

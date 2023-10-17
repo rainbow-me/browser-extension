@@ -1,11 +1,11 @@
-import React from 'react';
 import { Address } from 'wagmi';
 
+import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { Column, Columns, Inset, Row, Rows, Stack } from '~/design-system';
+import { Column, Columns, Inset, Stack } from '~/design-system';
 import { useApproveAppRequestValidations } from '~/entries/popup/hooks/approveAppRequest/useApproveAppRequestValidations';
 import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
@@ -25,6 +25,7 @@ export const SendTransactionActions = ({
   onRejectRequest,
   waitingForDevice,
   loading = false,
+  dappStatus,
 }: {
   appHost: string;
   chainId: ChainId;
@@ -33,10 +34,11 @@ export const SendTransactionActions = ({
   onRejectRequest: () => void;
   waitingForDevice: boolean;
   loading: boolean;
+  dappStatus?: DAppStatus;
 }) => {
   const { selectedGas } = useGasStore();
   const { enoughNativeAssetForGas, buttonLabel } =
-    useApproveAppRequestValidations({ chainId, selectedGas });
+    useApproveAppRequestValidations({ chainId, selectedGas, dappStatus });
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -50,6 +52,7 @@ export const SendTransactionActions = ({
       }
     },
   });
+  const isScamDapp = dappStatus === DAppStatus.Scam;
 
   return (
     <Inset vertical="20px" horizontal="20px">
@@ -62,28 +65,31 @@ export const SendTransactionActions = ({
             <WalletBalance appHost={appHost} />
           </Column>
         </Columns>
-        <Rows space="8px">
-          <Row>
-            <AcceptRequestButton
-              disabled={!enoughNativeAssetForGas}
-              onClick={onAcceptRequest}
-              label={
-                waitingForDevice
-                  ? i18n.t('approve_request.confirm_hw')
-                  : buttonLabel
-              }
-              waitingForDevice={waitingForDevice}
-              loading={loading}
-            />
-          </Row>
-          <Row>
-            <RejectRequestButton
-              autoFocus
-              onClick={onRejectRequest}
-              label={i18n.t('common_actions.cancel')}
-            />
-          </Row>
-        </Rows>
+
+        <Stack
+          space="8px"
+          flexDirection={isScamDapp ? 'column-reverse' : 'column'}
+        >
+          <AcceptRequestButton
+            dappStatus={dappStatus}
+            onClick={onAcceptRequest}
+            autoFocus={!isScamDapp}
+            label={
+              waitingForDevice
+                ? i18n.t('approve_request.confirm_hw')
+                : buttonLabel
+            }
+            loading={loading}
+            disabled={!enoughNativeAssetForGas}
+            waitingForDevice={waitingForDevice}
+          />
+          <RejectRequestButton
+            dappStatus={dappStatus}
+            autoFocus={isScamDapp}
+            onClick={onRejectRequest}
+            label={i18n.t('common_actions.cancel')}
+          />
+        </Stack>
       </Stack>
     </Inset>
   );

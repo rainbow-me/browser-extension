@@ -909,9 +909,11 @@
     "message_signing_request": "Message Signing Request",
     "message": "Message",
     "sign_message": "Sign Message",
+    "sign_message_anyway": "Sign Anyway",
     "confirm_hw": "Confirm on your device",
     "balance": "Balance",
     "send_transaction": "Send Transaction",
+    "send_transaction_anyway": "Confirm Anyway",
     "contract_deployment": "Contract Deployment",
     "transaction_request": "Transaction Request",
     "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
