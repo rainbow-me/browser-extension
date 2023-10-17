@@ -15,12 +15,14 @@ export const WindowStroke = () => {
   const isFullScreen = useIsFullScreen();
   const location = useLocation();
   const { testnetMode } = useTestnetModeStore();
+  const displayingTestnetBar =
+    testnetMode && location.pathname !== ROUTES.UNLOCK;
 
   const isDarkTheme = currentTheme === 'dark';
   const isLightFullScreen = currentTheme !== 'dark' && isFullScreen;
 
   const borderColor = React.useMemo(() => {
-    if (testnetMode) {
+    if (displayingTestnetBar) {
       return '0, 87, 35'; // green90
     } else if (isDarkTheme) {
       return '245, 248, 255';
@@ -29,16 +31,22 @@ export const WindowStroke = () => {
     } else {
       return '255, 255, 255';
     }
-  }, [isDarkTheme, isLightFullScreen, testnetMode]);
+  }, [displayingTestnetBar, isDarkTheme, isLightFullScreen]);
 
   const boxShadow = React.useMemo(() => {
     const inset = isDarkTheme || !isFullScreen ? 'inset ' : '';
     const opacity =
       isFullScreen || location.pathname === ROUTES.UNLOCK ? 0.06 : 0.03;
     return `${inset}0 0 0 1px rgba(${borderColor}, ${
-      testnetMode ? 1 : opacity
+      displayingTestnetBar ? 1 : opacity
     })`;
-  }, [borderColor, isDarkTheme, isFullScreen, location.pathname, testnetMode]);
+  }, [
+    borderColor,
+    displayingTestnetBar,
+    isDarkTheme,
+    isFullScreen,
+    location.pathname,
+  ]);
 
   return (
     <Box
