@@ -1,0 +1,114 @@
+import { useQuery } from '@tanstack/react-query';
+import { Address } from 'wagmi';
+
+import {
+  fetchNftCollections,
+  fetchNfts,
+  fetchPolygonAllowList,
+} from '~/core/network/nfts';
+import {
+  QueryConfig,
+  QueryFunctionArgs,
+  QueryFunctionResult,
+  createQueryKey,
+  queryClient,
+} from '~/core/react-query';
+import { ChainName } from '~/core/types/chains';
+import { PolygonAllowListDictionary } from '~/core/types/nfts';
+import { chunkArray } from '~/core/utils/assets';
+import { getSupportedChains } from '~/core/utils/chains';
+import {
+  filterSimpleHashNFTs,
+  simpleHashNFTToUniqueAsset,
+} from '~/core/utils/nfts';
+
+const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
+
+// ///////////////////////////////////////////////
+// Query Types
+
+export type NftsArgs = {
+  address: Address;
+};
+
+// ///////////////////////////////////////////////
+// Query Key
+
+const nftsQueryKey = ({ address }: NftsArgs) =>
+  createQueryKey('nfts', { address }, { persisterVersion: 1 });
+
+type NftsQueryKey = ReturnType<typeof nftsQueryKey>;
+
+// ///////////////////////////////////////////////
+// Query Function
+
+async function nftsQueryFunction({
+  queryKey: [{ address }],
+}: QueryFunctionArgs<typeof nftsQueryKey>) {
+  const chains = getSupportedChains().map((chain) => chain.name as ChainName);
+  const polygonAllowList = await polygonAllowListFetcher();
+  const collections = (await fetchNftCollections({ address, chains })).filter(
+    (collection) => {
+      const polygonContractAddressString =
+        collection.collection_details.top_contracts.find((contract) =>
+          contract.includes('polygon'),
+        );
+      const shouldPrefilterPolygonContract =
+        collection.collection_details.top_contracts.length === 1 &&
+        polygonContractAddressString;
+
+      // we can significantly reduce the list size when requesting nfts
+      // by locating collections only available on polygon
+      // and prefiltering at the collection level
+
+      if (shouldPrefilterPolygonContract) {
+        const polygonContractAddress =
+          polygonContractAddressString.split('.')[1];
+        return polygonAllowList[polygonContractAddress.toLowerCase()];
+      } else {
+        return true;
+      }
+    },
+  );
+  const collectionsBatches = chunkArray(
+    collections
+      .filter((collection) => collection.collection_id)
+      .map((collection) => collection.collection_id),
+    40,
+  );
+  const nftRequests = collectionsBatches.map((collectionIds) =>
+    fetchNfts({
+      address,
+      chains,
+      collectionIds,
+    }),
+  );
+  const nftsResponse = (await Promise.all(nftRequests)).flat();
+  const nfts = filterSimpleHashNFTs(nftsResponse, polygonAllowList).map((nft) =>
+    simpleHashNFTToUniqueAsset(nft),
+  );
+  return nfts;
+}
+
+type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;
+
+// ///////////////////////////////////////////////
+// Query Hook
+
+export function useNfts(
+  { address }: NftsArgs,
+  config: QueryConfig<NftsResult, Error, NftsResult, NftsQueryKey> = {},
+) {
+  return useQuery(nftsQueryKey({ address }), nftsQueryFunction, config);
+}
+
+// ///////////////////////////////////////////////
+// Polygon Allow List Fetcher
+
+function polygonAllowListFetcher() {
+  return queryClient.fetchQuery<PolygonAllowListDictionary>(
+    ['137-allowlist'],
+    async () => await fetchPolygonAllowList(),
+    { staleTime: POLYGON_ALLOWLIST_STALE_TIME },
+  );
+}
