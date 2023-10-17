@@ -153,6 +153,7 @@ export function SignMessage({
         onAcceptRequest={onAcceptRequest}
         onRejectRequest={onRejectRequest}
         loading={loading}
+        dappStatus={dappMetadata?.status}
       />
     </Box>
   );

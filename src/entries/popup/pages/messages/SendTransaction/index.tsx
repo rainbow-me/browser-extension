@@ -199,6 +199,7 @@ export function SendTransaction({
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
           loading={loading}
+          dappStatus={dappMetadata?.status}
         />
       </Row>
     </Rows>
