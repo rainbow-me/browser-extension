@@ -5,6 +5,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Inline, Text } from '~/design-system';
+import { globalColors } from '~/design-system/styles/designTokens';
 
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { zIndexes } from '../../utils/zIndexes';
@@ -21,11 +22,14 @@ const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
           animate={{ opacity: 1, height: 36 }}
           exit={{ opacity: 0, height: 0 }}
           style={{
-            height: '36px',
             width: POPUP_DIMENSIONS.width,
             zIndex: zIndexes.SPEED_UP_CANCEL_PROMPT,
+            backgroundColor: 'rgba(62, 207, 91, 0.06)',
+            borderColor: globalColors.green90,
           }}
           paddingHorizontal="8px"
+          paddingVertical="8px"
+          borderWidth="1px"
         >
           <Inline
             height="full"
@@ -34,7 +38,7 @@ const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
             alignHorizontal="center"
           >
             <MenuItem.TextIcon icon="🕹" />
-            <Text align="center" color="green" size="14pt" weight="medium">
+            <Text align="center" color="green" size="14pt" weight="heavy">
               Testnet Mode
             </Text>
           </Inline>
