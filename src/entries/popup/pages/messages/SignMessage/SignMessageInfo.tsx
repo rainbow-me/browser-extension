@@ -4,8 +4,8 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
-import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
-import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
+import { Box, Inset, Separator, Stack, Text } from '~/design-system';
+import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 
 interface SignMessageProps {
   request: ProviderRequestPayload;
@@ -26,25 +26,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
       <Inset top="40px" bottom="20px">
         <Inset bottom="8px">
           <Stack space="16px">
-            <Inline alignHorizontal="center">
-              <Box
-                style={{
-                  width: 32,
-                  height: 32,
-                  overflow: 'hidden',
-                }}
-                borderRadius="18px"
-                alignItems="center"
-              >
-                {dappMetadata?.appLogo ? (
-                  <ExternalImage
-                    src={dappMetadata?.appLogo}
-                    width="32"
-                    height="32"
-                  />
-                ) : null}
-              </Box>
-            </Inline>
+            <DappIcon appLogo={dappMetadata?.appLogo} size="32px" />
             <Stack space="12px">
               <Text
                 align="center"

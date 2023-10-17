@@ -212,6 +212,10 @@ export const shortcuts = {
       display: 'S',
       key: 's',
     },
+    BRIDGE_ASSET: {
+      display: 'B',
+      key: 'b',
+    },
     VIEW_ASSET: {
       display: 'V',
       key: 'v',

@@ -58,6 +58,8 @@ const ExternalImage = (
     );
   }
 
+  console.log('-- signedUrl', props.src, signedUrl);
+
   if (!signedUrl) return null;
   return (
     <Box
@@ -69,16 +71,16 @@ const ExternalImage = (
     >
       <img
         {...omit(props, 'borderRadius')}
-        style={
-          props.mask
+        style={{
+          ...(props.mask
             ? {
                 maskImage: `url(${props.mask})`,
                 WebkitMaskImage: `url(${props.mask})`,
-                objectFit: 'cover',
-                ...props.style,
               }
-            : { objectFit: 'cover', ...props.style }
-        }
+            : {}),
+          objectFit: 'cover',
+          ...props.style,
+        }}
         src={signedUrl}
         onError={handleError}
       />

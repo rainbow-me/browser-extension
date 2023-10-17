@@ -16,6 +16,7 @@ export function Lens({
   handleOpenMenu,
   onKeyDown,
   tabIndex,
+  bubblesOnKeyDown = false,
   ...restProps
 }: BoxProps & {
   children: ReactNode;
@@ -27,6 +28,7 @@ export function Lens({
   onContextMenu?: React.MouseEventHandler<HTMLDivElement>;
   handleOpenMenu?: () => void;
   style?: React.CSSProperties;
+  bubblesOnKeyDown?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleKeyDown = useCallback(
@@ -35,7 +37,7 @@ export function Lens({
         e.key === shortcuts.global.SELECT.key ||
         (e.key === shortcuts.global.FORWARD.key && forwardNav)
       ) {
-        simulateClick(containerRef?.current, { bubbles: false });
+        simulateClick(containerRef?.current, { bubbles: bubblesOnKeyDown });
         onKeyDown?.(e);
         e.preventDefault();
         e.stopPropagation();
@@ -45,7 +47,7 @@ export function Lens({
         handleOpenMenu?.();
       }
     },
-    [forwardNav, handleOpenMenu, onKeyDown],
+    [bubblesOnKeyDown, forwardNav, handleOpenMenu, onKeyDown],
   );
   return (
     <Box

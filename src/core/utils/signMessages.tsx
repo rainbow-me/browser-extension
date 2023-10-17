@@ -17,11 +17,6 @@ export const getSigningRequestDisplayDetails = (
 ) => {
   try {
     switch (payload.method) {
-      case 'eth_sign': {
-        const message = payload?.params?.[1] as string;
-        const address = payload?.params?.[0] as Address;
-        return { message, msgData: message, address: getAddress(address) };
-      }
       case 'personal_sign': {
         let message = payload?.params?.[0] as string;
         let address = payload?.params?.[1] as Address;

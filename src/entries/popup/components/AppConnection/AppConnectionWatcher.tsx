@@ -76,8 +76,6 @@ export const AppConnectionWatcher = () => {
   const {
     nudgeSheetEnabled,
     appHasInteractedWithNudgeSheet,
-    addressInAppHasInteractedWithNudgeSheet,
-    setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,
   } = useAppConnectionWalletSwitcherStore();
 
@@ -124,34 +122,20 @@ export const AppConnectionWatcher = () => {
       shouldAnimateOut.current = true;
       setShowNudgeSheet(true);
       if (dappMetadata?.appHost) {
-        setAddressInAppHasInteractedWithNudgeSheet({
-          address: currentAddress,
-          host: dappMetadata?.appHost,
-        });
         setAppHasInteractedWithNudgeSheet({ host: dappMetadata?.appHost });
       }
       return true;
-    } else if (
-      !addressInAppHasInteractedWithNudgeSheet({
-        address: currentAddress,
-        host: dappMetadata?.appHost,
-      })
-    ) {
+    } else {
       shouldAnimateOut.current = true;
       setShowNudgeBanner(true);
       timeoutRef.current = setTimeout(handleBannerTimeout, 4000);
       return true;
     }
-    shouldAnimateOut.current = false;
-    return false;
   }, [
-    addressInAppHasInteractedWithNudgeSheet,
     appHasInteractedWithNudgeSheet,
-    currentAddress,
     dappMetadata?.appHost,
     handleBannerTimeout,
     nudgeSheetEnabled,
-    setAddressInAppHasInteractedWithNudgeSheet,
     setAppHasInteractedWithNudgeSheet,
   ]);
 

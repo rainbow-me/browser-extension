@@ -2,7 +2,10 @@ import React from 'react';
 import { Address } from 'wagmi';
 
 import { supportedCurrencies } from '~/core/references';
-import { selectUserAssetsBalance } from '~/core/resources/_selectors/assets';
+import {
+  selectUserAssetsBalance,
+  selectorFilterByUserChains,
+} from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -35,10 +38,16 @@ const TotalAssetsBalance = ({ account }: { account: Address }) => {
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { data: totalAssetsBalance, isLoading } = useUserAssets(
     { address: account, currency },
-    { select: selectUserAssetsBalance() },
+    {
+      select: (data) =>
+        selectorFilterByUserChains<string>({
+          data,
+          selector: selectUserAssetsBalance,
+        }),
+    },
   );
   const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
-    totalAssetsBalance || 0,
+    totalAssetsBalance || '0',
     currency,
   );
 

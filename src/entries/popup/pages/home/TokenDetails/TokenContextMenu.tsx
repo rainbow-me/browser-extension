@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
@@ -31,15 +31,19 @@ interface TokenContextMenuProps {
 }
 
 export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
-  const [closed, setClosed] = useState(false);
-  const onOpenChange = () => setClosed(false);
-  const navigateToSwaps = useNavigateToSwaps();
-
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
-  const { setSelectedToken } = useSelectedTokenStore();
+  const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
+
+  // if we are navigating to new page (swap/send) the menu closes automatically,
+  // we don't want deselect the token in that case
+  let isNavigating = false;
+  const onOpenChange = (open: boolean) => {
+    setSelectedToken(open || isNavigating ? token : undefined);
+  };
 
   const navigate = useRainbowNavigate();
+  const navigateToSwaps = useNavigateToSwaps();
 
   const allowSwap =
     (!isWatchingWallet || featureFlags.full_watching_wallets) &&
@@ -52,14 +56,19 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
       triggerAlert({ text: i18n.t('alert.coming_soon') });
       setSelectedToken(); // clear selected token
     }
-    setClosed(true);
   };
 
   const onSend = () => {
-    setSelectedToken(token);
+    isNavigating = true;
     navigate(ROUTES.SEND);
-    setClosed(true);
   };
+
+  const onBridge = () => {
+    isNavigating = true;
+    navigate(ROUTES.BRIDGE);
+  };
+
+  const isBridgeable = token.bridging?.isBridgeable;
 
   const explorer = getTokenBlockExplorer(token);
   const isNative = isNativeAsset(token?.address, token?.chainId);
@@ -67,7 +76,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   if (isWatchingWallet && !allowSwap && isNative) return <>{children}</>;
 
   return (
-    <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
+    <DetailsMenuWrapper closed={true} onOpenChange={onOpenChange}>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {allowSwap && (
@@ -77,6 +86,15 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             shortcut={shortcuts.home.GO_TO_SWAP.display}
           >
             {`${i18n.t('token_details.swap')} ${token.symbol}`}
+          </ContextMenuItem>
+        )}
+        {!isWatchingWallet && isBridgeable && (
+          <ContextMenuItem
+            symbolLeft="arrow.turn.up.right"
+            onSelect={onBridge}
+            shortcut={shortcuts.tokens.BRIDGE_ASSET.display}
+          >
+            {`${i18n.t('token_details.bridge')} ${token.symbol}`}
           </ContextMenuItem>
         )}
         {!isWatchingWallet && (

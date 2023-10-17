@@ -65,6 +65,14 @@ export function useTokensShortcuts() {
             setSelectedToken();
           }
         }
+        if (e.key === shortcuts.tokens.BRIDGE_ASSET.key) {
+          trackShortcut({
+            key: shortcuts.tokens.BRIDGE_ASSET.display,
+            type: 'tokens.goToBridge',
+          });
+          navigate(ROUTES.BRIDGE);
+        }
+
         if (e.key === shortcuts.tokens.SEND_ASSET.key) {
           trackShortcut({
             key: shortcuts.tokens.SEND_ASSET.display,

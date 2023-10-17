@@ -23,7 +23,7 @@ import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useWalletName } from '../../hooks/useWalletName';
 import { zIndexes } from '../../utils/zIndexes';
-import ExternalImage from '../ExternalImage/ExternalImage';
+import { DappIcon } from '../DappIcon/DappIcon';
 
 export const AppConnectionNudgeBanner = ({
   show,
@@ -81,11 +81,7 @@ export const AppConnectionNudgeBanner = ({
                     width: '36px',
                   }}
                 >
-                  <ExternalImage
-                    height="36"
-                    src={dappMetadata?.appLogo}
-                    width="36"
-                  />
+                  <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
                 </Box>
               </Column>
               <Column>

@@ -114,6 +114,13 @@ export function parseAsset({
     icon_url: asset.icon_url,
     colors: asset.colors,
     standard,
+    ...('networks' in asset && { networks: asset.networks }),
+    ...('bridging' in asset && {
+      bridging: {
+        isBridgeable: asset.bridging.bridgeable,
+        networks: asset.bridging.networks,
+      },
+    }),
   };
 
   return parsedAsset;
@@ -155,6 +162,7 @@ export function parseAssetMetadata({
     price: priceData,
     symbol: asset?.symbol,
     uniqueId,
+    networks: asset?.networks,
   } satisfies ParsedAsset;
   return parsedAsset;
 }

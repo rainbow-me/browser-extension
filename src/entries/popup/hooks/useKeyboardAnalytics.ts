@@ -58,6 +58,7 @@ export type KeyboardEventDescription =
   | 'switchNetworkMenu.toggle'
   | 'tokens.goToSend'
   | 'tokens.goToSwap'
+  | 'tokens.goToBridge'
   | 'tokens.refresh'
   | 'tokens.viewAssetOnExplorer'
   | 'walletSwitcher.search';

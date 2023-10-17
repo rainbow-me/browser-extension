@@ -264,7 +264,11 @@ export function TokenToBuyRow({
   );
 
   return (
-    <Lens borderRadius="12px" forceAvatarColor>
+    <Lens
+      borderRadius="12px"
+      forceAvatarColor
+      testId={`${testId}-active-element-item`}
+    >
       <Box
         className={rowTransparentAccentHighlight}
         borderRadius="12px"
