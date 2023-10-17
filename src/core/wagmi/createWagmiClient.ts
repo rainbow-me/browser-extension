@@ -22,7 +22,45 @@ const noopStorage = {
   removeItem: () => null,
 };
 
+// This is to simulate the user adding custom RPC endpoints that we'll be storing in state
+// once we have a proper UI for it
+export const userAddedCustomRpcEndpoints = [
+  {
+    rpc: 'https://rpc.flashbots.net',
+    chainId: 1,
+    name: 'Flashbots Protect',
+    symbol: 'ETH',
+    explorer: 'https://etherscan.io',
+    explorerName: 'Etherscan',
+    active: true,
+  },
+  {
+    rpc: 'https://api.avax.network/ext/bc/C/rpc',
+    chainId: 43114,
+    name: 'Avax',
+    symbol: 'AVAX',
+    explorer: 'https://snowtrace.io',
+    explorerName: 'Snowtrace',
+    active: true,
+  },
+];
+
+const findCustomNetworkForChainId = (chainId: number) => {
+  return userAddedCustomRpcEndpoints.find(
+    (network) => network.chainId === chainId,
+  );
+};
+
+export const isCustomNetwork = (chainId: number) =>
+  !!findCustomNetworkForChainId(chainId);
+
 const getOriginalRpcEndpoint = (chain: Chain) => {
+  // overrides have preference
+  const userAddedNetwork = findCustomNetworkForChainId(chain.id);
+  if (userAddedNetwork) {
+    return { http: userAddedNetwork.rpc };
+  }
+
   switch (chain.id) {
     case ChainId.hardhat:
       return { http: chain.rpcUrls.default.http[0] };

@@ -25,6 +25,7 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { normalizeTransactionResponsePayload } from '~/core/utils/ethereum';
 import { toHex } from '~/core/utils/hex';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
+import { isCustomNetwork } from '~/core/wagmi/createWagmiClient';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 import { RainbowError, logger } from '~/logger';
 
@@ -283,7 +284,9 @@ export const handleProviderRequest = ({
         case 'wallet_addEthereumChain': {
           const proposedChainId = (params?.[0] as { chainId: ChainId })
             ?.chainId;
-          const supportedChainId = isSupportedChainId(Number(proposedChainId));
+          const supportedChainId =
+            isCustomNetwork(Number(proposedChainId)) ||
+            isSupportedChainId(Number(proposedChainId));
           if (!supportedChainId) throw new Error('Chain Id not supported');
           response = null;
           break;
@@ -292,7 +295,9 @@ export const handleProviderRequest = ({
           const proposedChainId = Number(
             (params?.[0] as { chainId: ChainId })?.chainId,
           );
-          const supportedChainId = isSupportedChainId(Number(proposedChainId));
+          const supportedChainId =
+            isCustomNetwork(Number(proposedChainId)) ||
+            isSupportedChainId(Number(proposedChainId));
           const extensionUrl = chrome.runtime.getURL('');
           const activeSession = getActiveSession({ host });
           if (!supportedChainId || !activeSession) {

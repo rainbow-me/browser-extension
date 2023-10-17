@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -279,11 +280,13 @@ const NotificationComponent = ({
             <Columns space="8px">
               <Column width="content">
                 {status === IN_DAPP_NOTIFICATION_STATUS.success ? (
-                  <img
-                    src={`${extensionUrl}${ASSET_SOURCE[chainId]}`}
-                    width={24}
-                    height={24}
-                  />
+                  ASSET_SOURCE[chainId] ? (
+                    <img
+                      src={`${extensionUrl}${ASSET_SOURCE[chainId]}`}
+                      width={24}
+                      height={24}
+                    />
+                  ) : null
                 ) : (
                   <Box
                     height="full"
