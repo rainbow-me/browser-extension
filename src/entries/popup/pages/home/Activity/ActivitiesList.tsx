@@ -6,7 +6,16 @@ import {
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { truncateString } from '~/core/utils/strings';
-import { Box, Column, Columns, Inline, Inset, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Inset,
+  Row,
+  Rows,
+  Text,
+} from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
@@ -125,7 +134,7 @@ const ActivityDescription = ({
 
   return (
     <Columns space="4px" alignVertical="center">
-      <Column>
+      <Column width="content">
         <TextOverflow size="14pt" weight="semibold">
           {description}
         </TextOverflow>
@@ -173,36 +182,33 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
       <ActivityContextMenu transaction={transaction}>
         <Box
           style={{ height: '52px' }}
-          display="flex"
-          alignItems="center"
-          gap="8px"
           paddingHorizontal="12px"
           paddingVertical="8px"
           borderRadius="12px"
           className={rowTransparentAccentHighlight}
         >
-          <ActivityIcon transaction={transaction} />
-
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            width="full"
-            gap="4px"
-          >
-            <Box
-              display="flex"
-              flexShrink="1"
-              flexDirection="column"
-              alignItems="flex-start"
-              justifyContent="center"
-              gap="8px"
-            >
-              <ActivityTypeLabel transaction={transaction} />
-              <ActivityDescription transaction={transaction} />
-            </Box>
-
-            <ActivityValue transaction={transaction} />
-          </Box>
+          <Columns space="8px" alignHorizontal="left">
+            <Column width="content">
+              <ActivityIcon transaction={transaction} />
+            </Column>
+            <Column>
+              <Columns space="4px">
+                <Column width="content">
+                  <Rows space="8px">
+                    <Row>
+                      <ActivityTypeLabel transaction={transaction} />
+                    </Row>
+                    <Row>
+                      <ActivityDescription transaction={transaction} />
+                    </Row>
+                  </Rows>
+                </Column>
+                <Column>
+                  <ActivityValue transaction={transaction} />
+                </Column>
+              </Columns>
+            </Column>
+          </Columns>
         </Box>
       </ActivityContextMenu>
     </Lens>
@@ -223,8 +229,8 @@ const ActivityTypeLabel = ({
   const color = typeLabelColor[status];
 
   return (
-    <Columns space="4px">
-      <Column>
+    <Columns space="4px" alignHorizontal="left">
+      <Column width="content">
         <Box style={{ width: 9, height: 9 }}>
           <Inline height="full" alignHorizontal="center" alignVertical="center">
             <ActivityTypeIcon transaction={{ status, type }} />
