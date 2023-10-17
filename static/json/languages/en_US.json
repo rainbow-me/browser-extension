@@ -994,8 +994,9 @@
     "copy_to_clipboard": "Copy to clipboard"
   },
   "errors": {
-    "error_encountered": "An error occurred. The Rainbow Browser Extension team has been notified. We apologize for the inconvenience.",
-    "no_wallet_name_set": "No wallet name set"
+    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "no_wallet_name_set": "No wallet name set",
+    "report_error": "Report issue"
   },
   "common_titles": {
     "before_you_proceed": "Before you proceed"
@@ -1246,7 +1247,7 @@
   },
   "alert": {
     "ok": "Ok",
-    "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
+    "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
     "coming_soon": "Coming Soon!",
     "no_hw_ff": "Hardware wallets are not supported on Firefox. Try a different browser like Chrome or Brave."
   },
