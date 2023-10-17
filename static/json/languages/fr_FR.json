@@ -8,6 +8,12 @@
   "permissions": {
     "firefox_permission_denied": "Rainbow a besoin de l'autorisation pour accéder à tous les sites Web pour fonctionner correctement. Veuillez accorder l'autorisation pour continuer"
   },
+  "wallet": {
+    "rename": "Renommer le portefeuille",
+    "edit_appearance": "Modifier l'apparence",
+    "view_on": "Voir sur %{explorer}",
+    "copy_address": "Copier l'adresse"
+  },
   "wallet_switcher": {
     "title": "Portefeuilles",
     "rename_wallet": "Renommer le portefeuille",
@@ -483,10 +489,22 @@
     }
   },
   "swap": {
-    "title": "Échanger",
-    "input_token_to_swap_placeholder": "Sélectionnez un jeton à échanger",
+    "_actions": {
+      "Swap": "Échanger",
+      "swap": "échange",
+      "swaps": "échanges",
+      "Swapping": "Échange en cours",
+      "swapping": "échangeant",
+      "Bridge": "Pont",
+      "bridge": "pont",
+      "bridges": "ponts",
+      "Bridging": "Pontage en cours",
+      "bridging": "créer un pont"
+    },
+    "title": "%{Action}",
+    "input_token_placeholder": "Sélectionnez un token pour %{action}",
     "input_token_to_receive_placeholder": "Sélectionnez un jeton à recevoir",
-    "select_tokens_to_swap": "Sélectionnez les jetons à échanger",
+    "select_tokens": "Sélectionnez les tokens pour %{action}",
     "max": "Max",
     "balance": "Solde",
     "tokens_input": {
@@ -498,14 +516,14 @@
       "filter_by_network": "Filtrer par réseau",
       "switch_networks": "Changer de réseaux",
       "nothing_found": "Rien trouvé",
-      "nothing_found_description": "Certains jetons n'ont pas suffisamment de liquidités pour effectuer un échange réussi.",
-      "nothing_found_description_l2": "Certains jetons n'ont pas suffisamment de liquidités de couche 2 pour effectuer un échange réussi.",
+      "nothing_found_description": "Certains tokens n’ont pas assez de liquidités pour effectuer un %{action}réussi",
+      "nothing_found_description_l2": "Certains tokens n'ont pas assez de liquidités en couche 2 pour effectuer un %{action}réussi",
       "output_quotes_disabled": "Cotations de sortie désactivées"
     },
     "warnings": {
       "long_wait": {
         "title": "Attente longue",
-        "description": "Jusqu'à %{time} à échanger"
+        "description": "Jusqu'à %{time} à %{action}"
       },
       "price_impact": {
         "title": "Petit marché",
@@ -516,8 +534,8 @@
       "rainbow": "Auto"
     },
     "settings": {
-      "title": "Paramètres de swap",
-      "route_swaps": "Itinéraire des swaps via",
+      "title": "%{Action} Paramètres",
+      "route": "Itinéraire %{actions} via",
       "use_flashbots": "Utiliser Flashbots",
       "max_slippage": "Glissement maximum",
       "use_defaults": "Utiliser les paramètres par défaut",
@@ -529,12 +547,12 @@
       "explainers": {
         "slippage": {
           "title": "Glissement",
-          "description_1": "Le glissement se produit lorsque le prix d'un échange change entre le moment où vous soumettez votre transaction et sa confirmation.",
-          "description_2": "Définir une tolérance de glissement plus élevée augmente les chances de réussite de votre échange, mais peut entraîner l'obtention d'un prix moins avantageux.",
+          "description_1": "Le glissement se produit lorsque le prix d'un %{action} change pendant le temps entre la soumission de votre transaction et sa confirmation",
+          "description_2": "Définir une tolérance de glissement plus élevée augmente la probabilité que votre %{action} soit réussi, mais peut entraîner un prix moins favorable",
           "read_more": {
             "open_text": "Toujours curieux ? ",
             "link_text": "En savoir plus",
-            "close_text": " sur le glissement et ses effets sur les échanges."
+            "close_text": " à propos du glissement et comment il affecte %{actions}"
           }
         },
         "flashbots": {
@@ -547,12 +565,12 @@
           }
         },
         "routing": {
-          "title": "Routage de l'échange",
-          "description": "Par défaut, Rainbow choisit le chemin le moins cher possible pour votre échange. Si vous préférez utiliser spécifiquement 0x ou 1inch, vous pouvez aussi le faire.",
+          "title": "%{Action} Routage",
+          "description": "Par défaut, Rainbow choisit l'itinéraire le moins cher possible pour votre %{action}. Si vous préférez utiliser spécifiquement 0x ou 1inch, vous pouvez aussi le faire",
           "read_more": {
             "open_text": "Encore curieux ? ",
             "link_text": "En lire plus",
-            "close_text": " à propos de notre approche pour le routage des échanges."
+            "close_text": " à propos de notre approche du routage %{actions}"
           }
         },
         "got_it": "Compris"
@@ -568,40 +586,37 @@
       "enter_an_amount": "Entrez un montant"
     },
     "review": {
-      "title_swap": "Revoir et échanger",
-      "title_bridge": "Revoir et convertir",
+      "title": "Réviser & %{Action}",
       "flashbots_on": "Activé",
       "minimum_received": "Montant minimum reçu",
-      "swapping_via": "Échange via",
-      "bridging_via": "Pontage via",
+      "via": "%{Actioning} via",
       "included_fee": "Frais Rainbow inclus",
       "use_flashbots": "Utiliser Flashbots",
       "exchange_rate": "Taux de change",
       "asset_contract": "%{symbol} contrat",
       "more_details": "Plus de détails",
-      "swap_confirmation": "Convertir %{sellSymbol} en %{buySymbol}",
-      "bridge_confirmation": "Pontage %{sellSymbol}",
+      "confirmation": "%{Action} %{sellSymbol} à %{buySymbol}",
       "go_back": "Retour en arrière"
     },
     "explainers": {
       "long_wait": {
-        "title": "Longue attente pour la conversion",
-        "description": "Cette conversion peut prendre beaucoup de temps à se terminer. Cela est généralement dû à des problèmes avec un pont entre chaînes.",
+        "title": "Longue attente pour %{action}",
+        "description": "Ce %{action} peut prendre beaucoup de temps pour se terminer. Cela est généralement dû à des problèmes avec un pont inter-chaînes.",
         "action_label": "Continuer quand même"
       },
       "no_route": {
         "title": "Aucun itinéraire trouvé",
-        "description": "Nous n'avons pas trouvé d'itinéraire pour cette conversion. Un itinéraire peut ne pas exister pour cette conversion ou le montant peut être trop faible.",
+        "description": "Nous n'avons pas pu trouver de route pour ce %{action}. Une route peut ne pas exister pour ce %{action}, ou le montant peut être trop petit.",
         "action_label": "Compris"
       },
       "no_quote": {
         "title": "Aucune offre disponible",
-        "description": "Nous n'avons pas pu trouver de devises pour cette opération d'échange. Cela peut être dû à un manque de liquidité pour l'échange ou à des problèmes liés à la mise en œuvre du jeton.",
+        "description": "Nous n'avons pas pu trouver de devis pour ce %{action}. Cela pourrait être dû à un manque de liquidité pour %{action} ou à des problèmes liés à la mise en œuvre du token",
         "action_label": "Continuer quand même"
       },
       "insufficient_liquidity": {
         "title": "Liquidité insuffisante",
-        "description": "Nous n'avons pas pu trouver de devises pour cet échange car cette paire n'a pas suffisamment de liquidité sur les plateformes d'échange.",
+        "description": "Nous n'avons pas pu trouver de devis pour ce %{action} car cette paire n'a pas assez de liquidité sur les échanges",
         "action_label": "Compris",
         "footer_text": {
           "open_text": "Vous voulez en savoir plus ? ",
@@ -611,13 +626,23 @@
       },
       "fee_on_transfer_token": {
         "title": "Frais sur Transfert de Jeton",
-        "description": "Cet échange échouera dans Rainbow parce que le contrat %{tokenName} ajoute des frais supplémentaires",
+        "description": "Ce %{action} échouera dans Rainbow parce que le contrat %{tokenName} ajoute des frais supplémentaires",
         "action_label": "Compris",
         "footer_text": {
           "open_text": "Lisez ",
           "link_text": "notre guide",
-          "close_text": " pour obtenir de l'aide pour échanger ce jeton"
+          "close_text": " pour aider %{actioning} ce token"
         }
+      },
+      "flashbots": {
+        "title": "Flashbots",
+        "description": "Flashbots protège vos transactions contre le frontrunning et les attaques sandwich qui pourraient vous donner un prix moins avantageux ou faire échouer votre transaction.",
+        "action_label": "Compris"
+      },
+      "fee": {
+        "title": "Frais Rainbow",
+        "description": "Rainbow prélève une commission %{feePercentage} de %{actions}. C'est ce qui nous permet de vous offrir la meilleure expérience Ethereum possible",
+        "action_label": "Compris"
       }
     }
   },
@@ -1063,6 +1088,7 @@
   },
   "token_details": {
     "swap": "Échanger",
+    "bridge": "Pont",
     "send": "Envoyer",
     "balance": "Solde",
     "value": "Valeur",
@@ -1194,18 +1220,6 @@
       "max_base_title": "Frais de base max.",
       "max_priority_explainer": "Le pourboire du mineur est versé directement au mineur qui confirme votre transaction sur le réseau.\n\nUn pourboire plus élevé rend votre transaction plus susceptible d'être confirmée rapidement.",
       "max_priority_title": "Pourboire du mineur"
-    },
-    "swap": {
-      "flashbots": {
-        "title": "Flashbots",
-        "description": "Flashbots protège vos transactions contre le vol d'avant et les attaques sandwich qui pourraient entraîner un prix plus bas ou l'échec de votre transaction.",
-        "action_label": "Compris"
-      },
-      "fee": {
-        "title": "Frais Rainbow",
-        "description": "Rainbow prélève des frais de %{feePercentage} sur les échanges. C'est ce qui nous permet de vous offrir la meilleure expérience Ethereum possible.",
-        "action_label": "Compris"
-      }
     }
   },
   "injected_notifications": {
