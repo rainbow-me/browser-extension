@@ -43,12 +43,7 @@ export default function ViewSecret({
     >
       <Stack alignHorizontal="center" space="24px">
         <Stack space="12px">
-          <Inline
-            wrap={false}
-            alignVertical="center"
-            alignHorizontal="center"
-            space="5px"
-          >
+          <Inline alignVertical="center" alignHorizontal="center" space="5px">
             <Symbol
               symbol={titleSymbol}
               size={18}
@@ -90,7 +85,7 @@ export default function ViewSecret({
         </Stack>
       </Stack>
 
-      <Box position="absolute" width="full" bottom="0" padding="20px">
+      <Box width="full" bottom="0" padding="20px">
         <Button
           testId={'saved-these-words-button'}
           color="accent"

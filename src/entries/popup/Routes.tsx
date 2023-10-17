@@ -552,7 +552,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         direction="right"
-        navbar
+        // navbar
         navbarIcon="arrow"
         background="surfaceSecondary"
         protectedRoute
