@@ -10,6 +10,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { zIndexes } from '../../utils/zIndexes';
 import { MenuItem } from '../Menu/MenuItem';
+import { TestnetBarBackground } from '../TestnetBarBackground/TestnetBarBackground';
 
 const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
   return (
@@ -37,8 +38,17 @@ const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
             alignVertical="center"
             alignHorizontal="center"
           >
+            <Box
+              position="absolute"
+              style={{
+                overflow: 'clip',
+              }}
+              marginRight="-12px"
+            >
+              <TestnetBarBackground />
+            </Box>
             <MenuItem.TextIcon icon="🕹" />
-            <Text align="center" color="green" size="14pt" weight="heavy">
+            <Text align="center" color="green" size="12pt" weight="heavy">
               Testnet Mode
             </Text>
           </Inline>
