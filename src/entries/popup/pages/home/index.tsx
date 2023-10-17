@@ -18,7 +18,7 @@ import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useErrorStore } from '~/core/state/error';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { isNativePopup } from '~/core/utils/tabs';
+import { goToNewTab, isNativePopup } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
@@ -194,7 +194,14 @@ export const Home = memo(function Home() {
 
   useEffect(() => {
     if (error) {
-      triggerAlert({ text: i18n.t('errors.error_encountered') });
+      triggerAlert({
+        action: () =>
+          goToNewTab({
+            url: 'https://rainbow.me/extension/support?report=true',
+          }),
+        actionText: i18n.t('errors.report_error'),
+        text: i18n.t('errors.error_encountered'),
+      });
       logger.error(new RainbowError('Error Boundary Did Catch: '), {
         message: error.message,
         stack: error.stack,
