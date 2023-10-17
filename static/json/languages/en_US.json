@@ -173,7 +173,8 @@
           "warning_2": "Make sure nobody can view your screen when viewing your Private Key.",
           "warning_3": "Anyone with your Private Key can access your entire wallet.",
           "warning_4": "Rainbow Support will never ask you for your Private Key.",
-          "show": "Show Private Key"
+          "show": "Show Private Key",
+          "copied": "Private Key Copied"
         },
         "recovery_phrase": {
           "title": "Your Recovery Phrase",
@@ -184,7 +185,9 @@
           "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
           "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
           "show": "Show Recovery Phrase",
-          "phrase_copied": "Recovery Phrase Copied"
+          "phrase_copied": "Recovery Phrase Copied",
+          "copied": "Recovery Phrase Copied"
+
         }
       }
     },
