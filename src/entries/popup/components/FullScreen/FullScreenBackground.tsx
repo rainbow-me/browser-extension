@@ -1,67 +1,13 @@
-import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { Box, Inline, Text } from '~/design-system';
-import { globalColors } from '~/design-system/styles/designTokens';
+import { Box } from '~/design-system';
 
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
-import { zIndexes } from '../../utils/zIndexes';
-import { MenuItem } from '../Menu/MenuItem';
-import { TestnetBarBackground } from '../TestnetBarBackground/TestnetBarBackground';
+import { TestnetBar } from '../TestnetBar/TestnetBar';
 
-const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
-  return (
-    <AnimatePresence initial={false}>
-      {testnetMode && (
-        <Box
-          as={motion.div}
-          key={'testnet-bar'}
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: '35px' }}
-          exit={{ opacity: 0, height: 0 }}
-          style={{
-            height: '35px',
-            width: POPUP_DIMENSIONS.width,
-            zIndex: zIndexes.SPEED_UP_CANCEL_PROMPT,
-            backgroundColor: 'rgba(62, 207, 91, 0.06)',
-          }}
-        >
-          <Box
-            height="full"
-            style={{
-              borderColor: globalColors.green90,
-            }}
-            borderBottomWidth="1px"
-          >
-            <Inline
-              height="full"
-              space="4px"
-              alignVertical="center"
-              alignHorizontal="center"
-            >
-              <Box
-                position="absolute"
-                style={{
-                  overflow: 'clip',
-                }}
-                marginRight="-12px"
-              >
-                <TestnetBarBackground />
-              </Box>
-              <MenuItem.TextIcon icon="🕹" />
-              <Text align="center" color="green" size="12pt" weight="heavy">
-                Testnet Mode
-              </Text>
-            </Inline>
-          </Box>
-        </Box>
-      )}
-    </AnimatePresence>
-  );
-};
 export function FullScreenBackground({
   children,
 }: {
