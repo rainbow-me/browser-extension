@@ -20,38 +20,43 @@ const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
           as={motion.div}
           key={'testnet-bar'}
           initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 36 }}
+          animate={{ opacity: 1, height: '35px' }}
           exit={{ opacity: 0, height: 0 }}
           style={{
+            height: '35px',
             width: POPUP_DIMENSIONS.width,
             zIndex: zIndexes.SPEED_UP_CANCEL_PROMPT,
             backgroundColor: 'rgba(62, 207, 91, 0.06)',
-            borderColor: globalColors.green90,
           }}
-          paddingHorizontal="8px"
-          paddingVertical="8px"
-          borderWidth="1px"
         >
-          <Inline
+          <Box
             height="full"
-            space="4px"
-            alignVertical="center"
-            alignHorizontal="center"
+            style={{
+              borderColor: globalColors.green90,
+            }}
+            borderBottomWidth="1px"
           >
-            <Box
-              position="absolute"
-              style={{
-                overflow: 'clip',
-              }}
-              marginRight="-12px"
+            <Inline
+              height="full"
+              space="4px"
+              alignVertical="center"
+              alignHorizontal="center"
             >
-              <TestnetBarBackground />
-            </Box>
-            <MenuItem.TextIcon icon="🕹" />
-            <Text align="center" color="green" size="12pt" weight="heavy">
-              Testnet Mode
-            </Text>
-          </Inline>
+              <Box
+                position="absolute"
+                style={{
+                  overflow: 'clip',
+                }}
+                marginRight="-12px"
+              >
+                <TestnetBarBackground />
+              </Box>
+              <MenuItem.TextIcon icon="🕹" />
+              <Text align="center" color="green" size="12pt" weight="heavy">
+                Testnet Mode
+              </Text>
+            </Inline>
+          </Box>
         </Box>
       )}
     </AnimatePresence>
