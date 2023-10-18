@@ -3,9 +3,13 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
-import { getSupportedChainsWithHardhat } from '~/core/utils/chains';
+import {
+  getSupportedChainsWithHardhat,
+  getSupportedTestnetChains,
+} from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -63,6 +67,7 @@ export const SwitchNetworkMenuSelector = ({
   const { userChains } = useUserChainsStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { userChainsOrder } = useUserChainsStore();
+  const { testnetMode } = useTestnetModeStore();
 
   const availableChains = useMemo(() => {
     return sortNetworks(
@@ -121,11 +126,19 @@ export const SwitchNetworkMenuSelector = ({
     handler: handleTokenShortcuts,
   });
 
-  const supportedChainsWithHardhat = getSupportedChainsWithHardhat();
+  const supportedChains = useMemo(
+    () =>
+      testnetMode
+        ? getSupportedTestnetChains()
+        : getSupportedChainsWithHardhat(),
+    [testnetMode],
+  );
+
+  console.log('-- supportedChains', supportedChains);
 
   return (
     <Box id="switch-network-menu-selector">
-      {supportedChainsWithHardhat.map((chain, i) => {
+      {supportedChains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
           <MenuRadioItem
@@ -169,7 +182,7 @@ export const SwitchNetworkMenuSelector = ({
       {showDisconnect && disconnect && (
         <SwitchNetworkMenuDisconnect
           onDisconnect={disconnect}
-          shortcutLabel={String(supportedChainsWithHardhat.length + 1)}
+          shortcutLabel={String(supportedChains.length + 1)}
         />
       )}
     </Box>
