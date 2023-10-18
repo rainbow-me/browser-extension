@@ -86,6 +86,7 @@
       "dark": "Dark"
     },
     "networks": {
+      "mainnet": "Mainnet",
       "title": "Networks",
       "quick_promo": {
         "text": "Drag networks to reorder them",

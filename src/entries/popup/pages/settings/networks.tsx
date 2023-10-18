@@ -1,11 +1,19 @@
+import {
+  arbitrumGoerli,
+  baseGoerli,
+  bscTestnet,
+  optimismGoerli,
+  polygonMumbai,
+  zoraTestnet,
+} from '@wagmi/chains';
 import React from 'react';
 import { DropResult } from 'react-beautiful-dnd';
-import { Chain } from 'wagmi';
+import { Chain, goerli, sepolia } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
 import { Box, Inset, Symbol, Text } from '~/design-system';
@@ -26,6 +34,35 @@ export const sortNetworks = (order: ChainId[], chains: Chain[]) =>
     if (bIndex === -1) return -1;
     return aIndex - bIndex;
   });
+
+const chainLabelMap: Record<
+  | ChainId.mainnet
+  | ChainId.optimism
+  | ChainId.polygon
+  | ChainId.base
+  | ChainId.bsc
+  | ChainId.zora,
+  string[]
+> = {
+  [ChainId.mainnet]: [
+    ChainNameDisplay[goerli.id],
+    ChainNameDisplay[sepolia.id],
+  ],
+  [ChainId.optimism]: [ChainNameDisplay[optimismGoerli.id]],
+  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumGoerli.id]],
+  [ChainId.polygon]: [ChainNameDisplay[polygonMumbai.id]],
+  [ChainId.base]: [ChainNameDisplay[baseGoerli.id]],
+  [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
+  [ChainId.zora]: [ChainNameDisplay[zoraTestnet.id]],
+};
+
+const chainLabel = ({ chainId }: { chainId: ChainId }) => {
+  const chainLabels = [i18n.t('settings.networks.mainnet')];
+  if (chainLabelMap[chainId]) {
+    chainLabels.push(...chainLabelMap[chainId]);
+  }
+  return chainLabels.join(', ');
+};
 
 export function SettingsNetworks() {
   const {
@@ -87,6 +124,15 @@ export function SettingsNetworks() {
                       }
                       key={chain.name}
                       titleComponent={<MenuItem.Title text={chain.name} />}
+                      labelComponent={
+                        <Text
+                          color={'labelTertiary'}
+                          size="11pt"
+                          weight={'medium'}
+                        >
+                          {chainLabel({ chainId: chain.id })}
+                        </Text>
+                      }
                       onClick={() =>
                         updateUserChain({
                           chainId: chain.id,
