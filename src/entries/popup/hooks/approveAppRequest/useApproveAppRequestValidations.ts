@@ -5,7 +5,7 @@ import { i18n } from '~/core/languages';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
-import { getChain } from '~/core/utils/chains';
+import { chainIdToUse, getChain } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import { lessThan } from '~/core/utils/numbers';
 
@@ -20,8 +20,14 @@ export const useApproveAppRequestValidations = ({
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
   dappStatus?: DAppStatus;
 }) => {
-  const { connectedToHardhat } = useConnectedToHardhatStore();
-  const chainIdToUse = connectedToHardhat ? ChainId.mainnet : chainId;
+  const { connectedToHardhat, connectedToHardhatOp } =
+    useConnectedToHardhatStore.getState();
+
+  const activeChainId = chainIdToUse(
+    connectedToHardhat,
+    connectedToHardhatOp,
+    chainId,
+  );
 
   const { nativeAsset } = useNativeAsset({ chainId });
 
@@ -38,11 +44,11 @@ export const useApproveAppRequestValidations = ({
 
     if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
-        symbol: getChain({ chainId: chainIdToUse }).nativeCurrency.name,
+        symbol: getChain({ chainId: activeChainId }).nativeCurrency.name,
       });
 
     return i18n.t('approve_request.send_transaction');
-  }, [chainIdToUse, enoughNativeAssetForGas, dappStatus]);
+  }, [activeChainId, enoughNativeAssetForGas, dappStatus]);
 
   return {
     enoughNativeAssetForGas:

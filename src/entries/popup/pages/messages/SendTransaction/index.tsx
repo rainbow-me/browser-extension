@@ -16,6 +16,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { chainIdToUse } from '~/core/utils/chains';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -54,7 +55,8 @@ export function SendTransaction({
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { selectedGas } = useGasStore();
   const selectedWallet = activeSession?.address || '';
-  const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { connectedToHardhat, connectedToHardhatOp } =
+    useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
@@ -71,12 +73,18 @@ export function SendTransaction({
       if (type === 'HardwareWalletKeychain') {
         setWaitingForDevice(true);
       }
+
+      const activeChainId = chainIdToUse(
+        connectedToHardhat,
+        connectedToHardhatOp,
+        activeSession?.chainId,
+      );
       const txData = {
         from: selectedWallet,
         to: txRequest?.to ? getAddress(txRequest?.to) : undefined,
         value: txRequest.value || '0x0',
         data: txRequest.data ?? '0x',
-        chainId: connectedToHardhat ? ChainId.hardhat : activeSession?.chainId,
+        chainId: activeChainId,
       };
       const result = await wallet.sendTransaction(txData);
       if (result) {
@@ -120,6 +128,7 @@ export function SendTransaction({
     activeSession,
     request?.params,
     connectedToHardhat,
+    connectedToHardhatOp,
     asset,
     selectedGas.transactionGasParams,
     approveRequest,
@@ -157,19 +166,23 @@ export function SendTransaction({
     }
   }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
+  const activeChainId = chainIdToUse(
+    connectedToHardhat,
+    connectedToHardhatOp,
+    activeSession?.chainId,
+  );
+
   useEffect(() => {
     if (activeSession) {
       selectAssetAddressAndChain(
-        NATIVE_ASSETS_PER_CHAIN[
-          connectedToHardhat ? ChainId.hardhat : activeSession?.chainId
-        ] as Address,
-        connectedToHardhat ? ChainId.hardhat : activeSession?.chainId,
+        NATIVE_ASSETS_PER_CHAIN[activeChainId] as Address,
+        activeChainId,
       );
     }
   }, [
     activeSession,
-    activeSession?.chainId,
     connectedToHardhat,
+    activeChainId,
     selectAssetAddressAndChain,
   ]);
 

@@ -12,7 +12,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
   AddressOrEth,
   ParsedAssetsDictByChain,
@@ -37,6 +37,7 @@ import { RainbowError, logger } from '~/logger';
 import {
   DAI_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
+  OPTIMISM_MAINNET_ASSET,
   USDC_MAINNET_ASSET,
 } from '~/test/utils';
 
@@ -225,7 +226,6 @@ export async function parseUserAssets({
   chainIds: ChainId[];
   currency: SupportedCurrencyKey;
 }) {
-  const { connectedToHardhat } = connectedToHardhatStore.getState();
   const parsedAssetsDict = chainIds.reduce(
     (dict, currentChainId) => ({ ...dict, [currentChainId]: {} }),
     {},
@@ -278,42 +278,59 @@ export async function parseUserAssets({
     );
   }
 
-  if (connectedToHardhat) {
-    const provider = getProvider({ chainId: ChainId.hardhat });
-    // force checking for ETH if connected to hardhat
-    const mainnetAssets = parsedAssetsDict[ChainId.mainnet];
-    mainnetAssets[ETH_MAINNET_ASSET.uniqueId] = ETH_MAINNET_ASSET;
+
+  const { connectedToHardhat, connectedToHardhatOp } =
+    useConnectedToHardhatStore.getState();
+  if (connectedToHardhat || connectedToHardhatOp) {
+    // separating out these ternaries for readability
+    const selectedHardhatChainId = connectedToHardhat
+      ? ChainId.hardhat
+      : ChainId.hardhatOptimism;
+
+    const mainnetOrOptimismChainId = connectedToHardhat
+      ? ChainId.mainnet
+      : ChainId.optimism;
+
+    const ethereumOrOptimismAsset = connectedToHardhat
+      ? ETH_MAINNET_ASSET
+      : OPTIMISM_MAINNET_ASSET;
+
+    const provider = getProvider({ chainId: selectedHardhatChainId });
+
+    // Ensure assets are checked if connected to hardhat
+    const assets = parsedAssetsDict[mainnetOrOptimismChainId];
+    assets[ethereumOrOptimismAsset.uniqueId] = ethereumOrOptimismAsset;
+
     if (process.env.IS_TESTING === 'true') {
-      mainnetAssets[USDC_MAINNET_ASSET.uniqueId] = USDC_MAINNET_ASSET;
-      mainnetAssets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
+      assets[USDC_MAINNET_ASSET.uniqueId] = USDC_MAINNET_ASSET;
+      assets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
     }
-    const mainnetBalanceRequests = Object.values(mainnetAssets).map(
-      async (asset) => {
-        if (asset.chainId !== ChainId.mainnet) return asset;
-        try {
-          const parsedAsset = await fetchAssetBalanceViaProvider({
-            parsedAsset: asset,
-            currentAddress: address,
-            currency,
-            provider,
-          });
-          return parsedAsset;
-        } catch (e) {
-          return asset;
-        }
-      },
-    );
-    const newParsedMainnetAssetsByUniqueId = await Promise.all(
-      mainnetBalanceRequests,
-    );
-    const newMainnetAssets = newParsedMainnetAssetsByUniqueId.reduce<
+
+    const balanceRequests = Object.values(assets).map(async (asset) => {
+      if (asset.chainId !== mainnetOrOptimismChainId) return asset;
+
+      try {
+        const parsedAsset = await fetchAssetBalanceViaProvider({
+          parsedAsset: asset,
+          currentAddress: address,
+          currency,
+          provider,
+        });
+        return parsedAsset;
+      } catch (e) {
+        return asset;
+      }
+    });
+
+    const newParsedAssetsByUniqueId = await Promise.all(balanceRequests);
+    const newAssets = newParsedAssetsByUniqueId.reduce<
       Record<string, ParsedUserAsset>
     >((acc, parsedAsset) => {
       acc[parsedAsset.uniqueId] = parsedAsset;
       return acc;
     }, {});
     // eslint-disable-next-line require-atomic-updates
-    parsedAssetsDict[ChainId.mainnet] = newMainnetAssets;
+    parsedAssetsDict[mainnetOrOptimismChainId] = newAssets;
   }
   return parsedAssetsDict;
 }

@@ -5,6 +5,9 @@ import { createStore } from '~/core/state/internal/createStore';
 export interface ConnectedToHardhatState {
   connectedToHardhat: boolean;
   setConnectedToHardhat: (connectedToHardhat: boolean) => void;
+
+  connectedToHardhatOp: boolean;
+  setConnectedToHardhatOp: (connectedToHardhatOp: boolean) => void;
 }
 
 export const connectedToHardhatStore = createStore<ConnectedToHardhatState>(
@@ -12,6 +15,11 @@ export const connectedToHardhatStore = createStore<ConnectedToHardhatState>(
     connectedToHardhat: false,
     setConnectedToHardhat: (connectedToHardhat) => {
       set({ connectedToHardhat });
+    },
+
+    connectedToHardhatOp: false,
+    setConnectedToHardhatOp: (connectedToHardhatOp) => {
+      set({ connectedToHardhatOp });
     },
   }),
   {

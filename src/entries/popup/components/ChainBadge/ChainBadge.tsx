@@ -34,6 +34,7 @@ const networkBadges = {
   [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
   [ChainId.hardhat]: HardhatBadge,
+  [ChainId.hardhatOptimism]: HardhatBadge,
   [ChainId.goerli]: EthereumBadge,
   [ChainId.sepolia]: EthereumBadge,
   [ChainId.optimismGoerli]: OptimismBadge,
