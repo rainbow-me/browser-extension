@@ -52,8 +52,12 @@ export function Settings() {
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
     useCurrentThemeStore();
-  const { connectedToHardhat, setConnectedToHardhat } =
-    useConnectedToHardhatStore();
+  const {
+    connectedToHardhat,
+    setConnectedToHardhat,
+    connectedToHardhatOp,
+    setConnectedToHardhatOp,
+  } = useConnectedToHardhatStore();
   const { clearNonces } = useNonceStore();
 
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
@@ -109,6 +113,10 @@ export function Settings() {
   const connectToHardhat = useCallback(() => {
     setConnectedToHardhat(!connectedToHardhat);
   }, [setConnectedToHardhat, connectedToHardhat]);
+
+  const connectToHardhatOp = useCallback(() => {
+    setConnectedToHardhatOp(!connectedToHardhatOp);
+  }, [setConnectedToHardhatOp, connectedToHardhatOp]);
 
   const setRainbowAsDefaultWallet = useCallback(
     async (rainbowAsDefault: boolean) => {
@@ -429,6 +437,20 @@ export function Settings() {
               }
               onClick={connectToHardhat}
               testId="connect-to-hardhat"
+            />
+            <MenuItem
+              last
+              titleComponent={
+                <MenuItem.Title
+                  text={
+                    connectedToHardhatOp
+                      ? 'Disconnect from Hardhat Optimism'
+                      : 'Connect to Hardhat Optimism'
+                  }
+                />
+              }
+              onClick={connectToHardhatOp}
+              testId="connect-to-hardhat-op"
             />
             <MenuItem
               last
