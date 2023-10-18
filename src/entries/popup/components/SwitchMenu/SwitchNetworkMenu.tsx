@@ -10,6 +10,7 @@ import {
   getSupportedChainsWithHardhat,
   getSupportedTestnetChains,
 } from '~/core/utils/chains';
+import { sortNetworks } from '~/core/utils/userChains';
 import {
   Box,
   Column,
@@ -23,7 +24,6 @@ import { Space } from '~/design-system/styles/designTokens';
 
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
-import { sortNetworks } from '../../pages/settings/networks';
 import { simulateClick } from '../../utils/simulateClick';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
@@ -70,13 +70,16 @@ export const SwitchNetworkMenuSelector = ({
   const { testnetMode } = useTestnetModeStore();
 
   const availableChains = useMemo(() => {
+    const supportedChains = testnetMode
+      ? getSupportedTestnetChains()
+      : getSupportedChainsWithHardhat();
     return sortNetworks(
       userChainsOrder,
-      getSupportedChainsWithHardhat().filter(
+      supportedChains.filter(
         (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
       ),
     );
-  }, [userChains, userChainsOrder]);
+  }, [testnetMode, userChains, userChainsOrder]);
 
   const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'
@@ -126,19 +129,9 @@ export const SwitchNetworkMenuSelector = ({
     handler: handleTokenShortcuts,
   });
 
-  const supportedChains = useMemo(
-    () =>
-      testnetMode
-        ? getSupportedTestnetChains()
-        : getSupportedChainsWithHardhat(),
-    [testnetMode],
-  );
-
-  console.log('-- supportedChains', supportedChains);
-
   return (
     <Box id="switch-network-menu-selector">
-      {supportedChains.map((chain, i) => {
+      {availableChains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
           <MenuRadioItem
@@ -182,7 +175,7 @@ export const SwitchNetworkMenuSelector = ({
       {showDisconnect && disconnect && (
         <SwitchNetworkMenuDisconnect
           onDisconnect={disconnect}
-          shortcutLabel={String(supportedChains.length + 1)}
+          shortcutLabel={String(availableChains.length + 1)}
         />
       )}
     </Box>

@@ -1,21 +1,18 @@
-import {
-  arbitrumGoerli,
-  baseGoerli,
-  bscTestnet,
-  optimismGoerli,
-  polygonMumbai,
-  zoraTestnet,
-} from '@wagmi/chains';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
-import { Chain, goerli, sepolia } from 'wagmi';
+import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
+import {
+  chainIdMap,
+  chainLabelMap,
+  sortNetworks,
+} from '~/core/utils/userChains';
 import { Box, Inset, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -25,36 +22,6 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import { DraggableContext, DraggableItem } from '../../components/Draggable';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
-
-export const sortNetworks = (order: ChainId[], chains: Chain[]) =>
-  chains.sort((a, b) => {
-    const aIndex = order.indexOf(a.id);
-    const bIndex = order.indexOf(b.id);
-    if (aIndex === -1) return bIndex === -1 ? 0 : 1;
-    if (bIndex === -1) return -1;
-    return aIndex - bIndex;
-  });
-
-const chainLabelMap: Record<
-  | ChainId.mainnet
-  | ChainId.optimism
-  | ChainId.polygon
-  | ChainId.base
-  | ChainId.bsc
-  | ChainId.zora,
-  string[]
-> = {
-  [ChainId.mainnet]: [
-    ChainNameDisplay[goerli.id],
-    ChainNameDisplay[sepolia.id],
-  ],
-  [ChainId.optimism]: [ChainNameDisplay[optimismGoerli.id]],
-  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumGoerli.id]],
-  [ChainId.polygon]: [ChainNameDisplay[polygonMumbai.id]],
-  [ChainId.base]: [ChainNameDisplay[baseGoerli.id]],
-  [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
-  [ChainId.zora]: [ChainNameDisplay[zoraTestnet.id]],
-};
 
 const chainLabel = ({ chainId }: { chainId: ChainId }) => {
   const chainLabels = [i18n.t('settings.networks.mainnet')];
@@ -67,7 +34,7 @@ const chainLabel = ({ chainId }: { chainId: ChainId }) => {
 export function SettingsNetworks() {
   const {
     userChains,
-    updateUserChain,
+    updateUserChains,
     userChainsOrder,
     updateUserChainsOrder,
   } = useUserChainsStore();
@@ -90,6 +57,17 @@ export function SettingsNetworks() {
     );
     updateUserChainsOrder({ userChainsOrder: newUserChainsOrder });
   };
+
+  const updateChain = useCallback(
+    (chain: Chain) => {
+      const chainIdsToUpdate = chainIdMap[chain.id];
+      updateUserChains({
+        chainIds: chainIdsToUpdate,
+        enabled: !userChains[chain.id],
+      });
+    },
+    [updateUserChains, userChains],
+  );
 
   return (
     <Box paddingHorizontal="20px">
@@ -133,12 +111,7 @@ export function SettingsNetworks() {
                           {chainLabel({ chainId: chain.id })}
                         </Text>
                       }
-                      onClick={() =>
-                        updateUserChain({
-                          chainId: chain.id,
-                          enabled: !userChains[chain.id],
-                        })
-                      }
+                      onClick={() => updateChain(chain)}
                     />
                   </DraggableItem>
                 ),
