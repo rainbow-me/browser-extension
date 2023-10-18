@@ -4,7 +4,7 @@ import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -217,6 +217,15 @@ export const staticCommandInfo: CommandInfo = {
     page: PAGES.HOME,
     symbol: 'arrow.up.left.and.arrow.down.right',
     symbolSize: 14,
+    type: SearchItemType.Shortcut,
+  },
+  flashbots: {
+    actionLabel: actionLabels.activateCommand,
+    hideForWatchedWallets: true,
+    name: getCommandName('enable_flashbots'),
+    page: PAGES.HOME,
+    symbol: 'bolt.shield.fill',
+    symbolSize: 15,
     type: SearchItemType.Shortcut,
   },
 
@@ -557,6 +566,8 @@ export const useCommands = (
     goToNewTab({ url: getExplorerUrl(explorer, address) });
   }, []);
 
+  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
+
   const commandOverrides: CommandOverride = React.useMemo(
     () => ({
       // PAGE: HOME
@@ -606,6 +617,13 @@ export const useCommands = (
       },
       viewFullScreen: {
         action: () => goToNewTab({ url: POPUP_URL }),
+      },
+      flashbots: {
+        action: () => setFlashbotsEnabled(!flashbotsEnabled),
+        name: flashbotsEnabled
+          ? getCommandName('disable_flashbots')
+          : getCommandName('enable_flashbots'),
+        symbol: flashbotsEnabled ? 'bolt.shield' : 'bolt.shield.fill',
       },
 
       // PAGE: ADD_WALLET
@@ -775,6 +793,8 @@ export const useCommands = (
       viewWalletOnEtherscan,
       viewTokenOnExplorer,
       isFirefox,
+      flashbotsEnabled,
+      setFlashbotsEnabled,
     ],
   );
 
