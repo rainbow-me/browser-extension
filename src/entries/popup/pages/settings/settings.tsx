@@ -18,7 +18,7 @@ import {
   useIsDefaultWalletStore,
   useNonceStore,
 } from '~/core/state';
-import { useConnectedToHardhat } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import {
   FeatureFlagTypes,
@@ -57,7 +57,7 @@ export function Settings() {
     setConnectedToHardhat,
     connectedToHardhatOp,
     setConnectedToHardhatOp,
-  } = useConnectedToHardhat();
+  } = useConnectedToHardhatStore();
   const { clearNonces } = useNonceStore();
 
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);

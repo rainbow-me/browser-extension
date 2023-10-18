@@ -11,7 +11,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { useConnectedToHardhat } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
   ParsedAssetsDictByChain,
   ParsedUserAsset,
@@ -237,7 +237,7 @@ export async function parseUserAssets({
     }
   }
   const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhat.getState();
+    useConnectedToHardhatStore.getState();
   if (connectedToHardhat || connectedToHardhatOp) {
     // separating out these ternaries for readability
     const selectedHardhatChainId = connectedToHardhat
@@ -286,7 +286,7 @@ export async function parseUserAssets({
       return acc;
     }, {});
 
-    parsedAssetsDict[ChainId.mainnet] = newAssets;
+    parsedAssetsDict[mainnetOrOptimismChainId] = newAssets;
   }
   return parsedAssetsDict;
 }

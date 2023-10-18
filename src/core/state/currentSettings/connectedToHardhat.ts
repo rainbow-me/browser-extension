@@ -30,4 +30,4 @@ export const connectedToHardhatStore = createStore<ConnectedToHardhatState>(
   },
 );
 
-export const useConnectedToHardhat = create(connectedToHardhatStore);
+export const useConnectedToHardhatStore = create(connectedToHardhatStore);

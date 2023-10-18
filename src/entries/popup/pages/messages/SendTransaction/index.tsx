@@ -11,7 +11,7 @@ import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useGasStore } from '~/core/state';
-import { useConnectedToHardhat } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
@@ -55,7 +55,8 @@ export function SendTransaction({
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { selectedGas } = useGasStore();
   const selectedWallet = activeSession?.address || '';
-  const { connectedToHardhat, connectedToHardhatOp } = useConnectedToHardhat();
+  const { connectedToHardhat, connectedToHardhatOp } =
+    useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();

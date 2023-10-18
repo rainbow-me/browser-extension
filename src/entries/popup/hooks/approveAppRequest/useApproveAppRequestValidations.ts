@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { useConnectedToHardhat } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { chainIdToUse, getChain } from '~/core/utils/chains';
@@ -21,7 +21,7 @@ export const useApproveAppRequestValidations = ({
   dappStatus?: DAppStatus;
 }) => {
   const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhat.getState();
+    useConnectedToHardhatStore.getState();
 
   const activeChainId = chainIdToUse(
     connectedToHardhat,
