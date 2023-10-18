@@ -975,7 +975,7 @@ it('should be able to see swap information in review sheet', async () => {
     id: 'swap-review-confirmation-text',
     driver,
   });
-  expect(swapReviewConfirmationText).toBe('Swap ETH to USDC');
+  expect(swapReviewConfirmationText).toBe('Swap ETH to USDC.e');
 
   const swapReviewTitleText = await getTextFromText({
     id: 'swap-review-title-text',
