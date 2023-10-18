@@ -20,3 +20,8 @@ export const clickHeaderRight = () => {
   simulateClick(rightActionButton);
   (rightActionButton as HTMLButtonElement)?.click?.();
 };
+
+export const clickTabBar = () => {
+  const tabBar = document.querySelector('#tab-bar div');
+  simulateClick(tabBar);
+};
