@@ -58,8 +58,6 @@ const ExternalImage = (
     );
   }
 
-  console.log('-- signedUrl', props.src, signedUrl);
-
   if (!signedUrl) return null;
   return (
     <Box
