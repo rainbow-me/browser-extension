@@ -22,7 +22,11 @@ import {
   appConnectionSwitchWalletsPromptIsActive,
   getInputIsFocused,
 } from '../utils/activeElement';
-import { clickHeaderLeft, clickHeaderRight } from '../utils/clickHeader';
+import {
+  clickHeaderLeft,
+  clickHeaderRight,
+  clickTabBar,
+} from '../utils/clickHeader';
 
 import { useActiveTab } from './useActiveTab';
 import { useAppSession } from './useAppSession';
@@ -180,6 +184,8 @@ export function useHomeShortcuts() {
             key: shortcuts.home.TESTNET_MODE.display,
             type: 'home.testnetMode',
           });
+          // in order to close dropdown menus
+          clickTabBar();
           handleTestnetMode();
           break;
         case shortcuts.home.OPEN_MORE_MENU.key:
