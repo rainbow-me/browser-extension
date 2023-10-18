@@ -874,7 +874,7 @@ it('should be able to see swap information in review sheet', async () => {
   });
   expect(ethAssetToSellAssetCard).toBeTruthy();
   const usdcAssetToBuyAssetCard = await findElementByTestId({
-    id: `USDC-asset-to-buy-swap-asset-card`,
+    id: `USDC.e-asset-to-buy-swap-asset-card`,
     driver,
   });
   expect(usdcAssetToBuyAssetCard).toBeTruthy();
