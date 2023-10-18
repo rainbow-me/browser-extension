@@ -1,9 +1,9 @@
-import React from 'react';
 import { Address } from 'wagmi';
 
+import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
-import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
+import { Box, Column, Columns, Stack } from '~/design-system';
 
 import {
   AcceptRequestButton,
@@ -19,6 +19,7 @@ export const SignMessageActions = ({
   onAcceptRequest,
   onRejectRequest,
   loading = false,
+  dappStatus,
 }: {
   waitingForDevice: boolean;
   selectedWallet: Address;
@@ -26,7 +27,9 @@ export const SignMessageActions = ({
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   loading?: boolean;
+  dappStatus?: DAppStatus;
 }) => {
+  const isScamDapp = dappStatus === DAppStatus.Scam;
   return (
     <Box padding="20px">
       <Stack space="24px">
@@ -38,27 +41,33 @@ export const SignMessageActions = ({
             <BottomDisplayNetwork selectedChainId={selectedChainId} />
           </Column>
         </Columns>
-        <Rows space="8px">
-          <Row>
-            <AcceptRequestButton
-              onClick={onAcceptRequest}
-              label={
-                waitingForDevice
-                  ? i18n.t('approve_request.confirm_hw')
-                  : i18n.t('approve_request.sign_message')
-              }
-              waitingForDevice={waitingForDevice}
-              loading={loading}
-            />
-          </Row>
-          <Row>
-            <RejectRequestButton
-              autoFocus
-              onClick={onRejectRequest}
-              label={i18n.t('common_actions.cancel')}
-            />
-          </Row>
-        </Rows>
+        <Stack
+          space="8px"
+          flexDirection={isScamDapp ? 'column-reverse' : 'column'}
+        >
+          <AcceptRequestButton
+            dappStatus={dappStatus}
+            onClick={onAcceptRequest}
+            autoFocus={!isScamDapp}
+            label={
+              waitingForDevice
+                ? i18n.t('approve_request.confirm_hw')
+                : i18n.t(
+                    `approve_request.sign_message${
+                      isScamDapp ? '_anyway' : ''
+                    }`,
+                  )
+            }
+            loading={loading}
+            waitingForDevice={waitingForDevice}
+          />
+          <RejectRequestButton
+            dappStatus={dappStatus}
+            autoFocus={isScamDapp}
+            onClick={onRejectRequest}
+            label={i18n.t('common_actions.cancel')}
+          />
+        </Stack>
       </Stack>
     </Box>
   );

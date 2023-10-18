@@ -12,7 +12,7 @@ A Transport uses a Messenger internally to create a strongly typed & scoped API.
 ```tsx
 import { providerRequestTransport } from '~/core/transports';
 
-window.ethereum = class RainbowProvider {
+window.ethereum = class RainbowInjectedProvider {
   async request({ method, params }) {
     const { result } = await providerRequestTransport.send({ method, params });
     return result;

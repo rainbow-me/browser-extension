@@ -368,7 +368,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 3,
+        timesToPress: 5,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });

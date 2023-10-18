@@ -8,6 +8,12 @@
   "permissions": {
     "firefox_permission_denied": "Rainbowは適切に動作するためにすべてのウェブサイトへのアクセス許可が必要です。続行するには許可を与えてください。"
   },
+  "wallet": {
+    "rename": "ウォレット名の変更",
+    "edit_appearance": "外観を編集",
+    "view_on": "表示 %{explorer}で",
+    "copy_address": "アドレスをコピー"
+  },
   "wallet_switcher": {
     "title": "ウォレット",
     "rename_wallet": "ウォレット名の変更",
@@ -483,10 +489,22 @@
     }
   },
   "swap": {
-    "title": "スワップ",
-    "input_token_to_swap_placeholder": "スワップするトークンを選択してください",
+    "_actions": {
+      "Swap": "スワップ",
+      "swap": "スワップ",
+      "swaps": "スワップ",
+      "Swapping": "交換中",
+      "swapping": "スワップ中",
+      "Bridge": "ブリッジ",
+      "bridge": "ブリッジ",
+      "bridges": "ブリッジ",
+      "Bridging": "ブリッジング中",
+      "bridging": "ブリッジング"
+    },
+    "title": "%{Action}",
+    "input_token_placeholder": "トークンを選択して %{action}",
     "input_token_to_receive_placeholder": "受け取るトークンを選択してください",
-    "select_tokens_to_swap": "スワップするトークンを選択してください",
+    "select_tokens": "トークンを選択して %{action}",
     "max": "最大",
     "balance": "残高",
     "tokens_input": {
@@ -498,14 +516,14 @@
       "filter_by_network": "ネットワークでフィルタリング",
       "switch_networks": "ネットワークを切り替える",
       "nothing_found": "見つかりませんでした",
-      "nothing_found_description": "一部のトークンは十分な流動性を持っていないため、正常なスワップができません。",
-      "nothing_found_description_l2": "一部のトークンはレイヤー2の流動性が十分でないため、正常なスワップができません。",
+      "nothing_found_description": "一部のトークンは成功した %{action}を行うための十分な流動性がありません。",
+      "nothing_found_description_l2": "一部のトークンは、成功した %{action}を実行するための十分なレイヤー2の流動性がありません。",
       "output_quotes_disabled": "出力の見積もりは無効です"
     },
     "warnings": {
       "long_wait": {
         "title": "長い待ち時間",
-        "description": "最大 %{time} までスワップ"
+        "description": "最大 %{time} から %{action}まで"
       },
       "price_impact": {
         "title": "小規模な市場",
@@ -516,8 +534,8 @@
       "rainbow": "オート"
     },
     "settings": {
-      "title": "スワップ設定",
-      "route_swaps": "ルートを介してスワップする",
+      "title": "%{Action} 設定",
+      "route": "経路 %{actions} 経由",
       "use_flashbots": "Flashbotsを使用する",
       "max_slippage": "最大スリッページ",
       "use_defaults": "デフォルトを使用する",
@@ -529,12 +547,12 @@
       "explainers": {
         "slippage": {
           "title": "スリッページ",
-          "description_1": "トランザクションの確認までの間にスワップの価格が変動することがスリッページと呼ばれます。",
-          "description_2": "より高いスリッページ許容度を設定することで、スワップが成功する可能性が高まりますが、より悪い価格となる可能性があります。",
+          "description_1": "%{action} の価格が、取引を提出してから確認されるまでの間に変動すると、スリッページが発生します。",
+          "description_2": "スリッページ許容度を高く設定すると、 %{action} の成功率は上がりますが、それにより悪い価格を引き受ける可能性があります。",
           "read_more": {
             "open_text": "まだ興味がありますか？ ",
             "link_text": "詳しくはこちらを読んでください",
-            "close_text": " スリッページとスワップへの影響について"
+            "close_text": " スリッページとは、 %{actions}にどのように影響するかについて"
           }
         },
         "flashbots": {
@@ -547,12 +565,12 @@
           }
         },
         "routing": {
-          "title": "スワップルーティング",
-          "description": "デフォルトでは、Rainbowはスワップのためにできるだけ安いルートを選択します。0xまたは1inchのいずれかを特に使用したい場合は、それもできます。",
+          "title": "%{Action} ルーティング",
+          "description": "デフォルトでは、Rainbowは %{action}に最も安いルートを選択します。もし0x または 1inchを特に使用したい場合も対応可能です。",
           "read_more": {
             "open_text": "まだ興味がありますか？ ",
             "link_text": "もっと読む",
-            "close_text": " スワップルーティングに関するアプローチについて"
+            "close_text": " 私たちのルーティングへのアプローチについて %{actions}"
           }
         },
         "got_it": "了解"
@@ -568,40 +586,37 @@
       "enter_an_amount": "金額を入力してください"
     },
     "review": {
-      "title_swap": "確認してスワップ",
-      "title_bridge": "レビュー＆ブリッジ",
+      "title": "レビュー & %{Action}",
       "flashbots_on": "オン",
       "minimum_received": "受け取る最小額",
-      "swapping_via": "経由してスワッピング",
-      "bridging_via": "経由してブリッジング",
+      "via": "%{Actioning} 経由",
       "included_fee": "レインボーフィー込み",
       "use_flashbots": "Flashbotsを利用する",
       "exchange_rate": "為替レート",
       "asset_contract": "%{symbol} のコントラクト",
       "more_details": "詳細",
-      "swap_confirmation": "%{sellSymbol} を %{buySymbol}に交換する",
-      "bridge_confirmation": "%{sellSymbol}をブリッジする",
+      "confirmation": "%{Action} %{sellSymbol} から %{buySymbol}へ",
       "go_back": "戻る"
     },
     "explainers": {
       "long_wait": {
-        "title": "スワップには長時間かかることがあります",
-        "description": "このスワップは非常に長い時間がかかることがあります。これは通常、クロスチェーンブリッジに問題があるためです。",
+        "title": "%{action}への長い待ち時間",
+        "description": "この %{action} の完了には非常に長い時間がかかる可能性があります。これは通常、クロスチェーンブリッジに問題があるためです",
         "action_label": "それでも続行"
       },
       "no_route": {
         "title": "ルートが見つかりません",
-        "description": "このスワップのためのルートが見つかりませんでした。このスワップにはルートが存在しないか、金額が小さすぎる可能性があります。",
+        "description": "この %{action}のルートが見つからない。この %{action}のルートが存在しないか、量が少なすぎる可能性がある",
         "action_label": "了解"
       },
       "no_quote": {
         "title": "見積もりは利用できません",
-        "description": "このスワップの見積もりが見つかりませんでした。これはスワップするための十分な流動性がないか、トークンの実装に問題があるためかもしれません。",
+        "description": "この %{action}の引用を見つけることができませんでした。これは、 %{action} するための十分な流動性がないか、トークンの実装に問題があるためかもしれません",
         "action_label": "続行する"
       },
       "insufficient_liquidity": {
         "title": "流動性が不足しています",
-        "description": "このペアには取引所で十分な流動性がないため、このスワップの見積もりが見つかりませんでした。",
+        "description": "この %{action} の引用が見つけられませんでした。これは、取引所に十分な流動性がないためです",
         "action_label": "了解",
         "footer_text": {
           "open_text": "まだ気になりますか？ ",
@@ -611,13 +626,23 @@
       },
       "fee_on_transfer_token": {
         "title": "転送トークンの手数料",
-        "description": "%{tokenName} 契約が追加の手数料を追加するため、Rainbowでこのスワップは失敗します",
+        "description": "この %{action} は、 %{tokenName} 契約が追加手数料を加えるため、Rainbowでは失敗します",
         "action_label": "了解",
         "footer_text": {
           "open_text": "読む ",
           "link_text": "私たちのガイド",
-          "close_text": " このトークンのスワッピングに関するヘルプのために"
+          "close_text": " このトークンに %{actioning} を求めるためのヘルプ"
         }
+      },
+      "flashbots": {
+        "title": "Flashbots",
+        "description": "Flashbotsは、フロントランニングやサンドイッチ攻撃からトランザクションを保護し、悪い価格やトランザクションの失敗を防ぎます。",
+        "action_label": "了解"
+      },
+      "fee": {
+        "title": "Rainbow手数料",
+        "description": "Rainbowは %{actions}から %{feePercentage} の手数料を取ります。これは私たちが最良のEthereum体験を提供できる一因です",
+        "action_label": "了解"
       }
     }
   },
@@ -1063,6 +1088,7 @@
   },
   "token_details": {
     "swap": "スワップ",
+    "bridge": "ブリッジ",
     "send": "送信",
     "balance": "残高",
     "value": "価値",
@@ -1194,18 +1220,6 @@
       "max_base_title": "最大ベース手数料",
       "max_priority_explainer": "マイナーチップは、ネットワーク上でトランザクションを確認するマイナーに直接支払われます。\n\nより高いチップは、トランザクションが迅速に確認される可能性を高めます。",
       "max_priority_title": "マイナーチップ"
-    },
-    "swap": {
-      "flashbots": {
-        "title": "フラッシュボット",
-        "description": "フラッシュボットは、フロントランニングやサンドイッチ攻撃からあなたのトランザクションを保護し、より悪い価格やトランザクションの失敗を防ぎます。",
-        "action_label": "了解しました"
-      },
-      "fee": {
-        "title": "Rainbow手数料",
-        "description": "Rainbowはスワップから %{feePercentage} の手数料を徴収します。これにより、最高のEthereum体験を提供できるようになります。",
-        "action_label": "了解しました"
-      }
     }
   },
   "injected_notifications": {

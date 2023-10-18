@@ -1,27 +1,32 @@
-import React from 'react';
-
+import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { Box, Inline, Separator, Stack, Text } from '~/design-system';
+import { Bleed, Box, Inline, Separator, Stack, Text } from '~/design-system';
 import { TextInline } from '~/design-system/docs/components/TextInline';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
+
+import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
 
 export const RequestAccountsInfo = ({
   appHostName,
   appName,
   appLogo,
+  dappStatus,
 }: {
   appHostName?: string;
   appName?: string;
   appLogo?: string;
+  dappStatus?: DAppStatus;
 }) => {
+  const isScamDapp = dappStatus === DAppStatus.Scam;
+
   return (
     <Box
       style={{
-        paddingLeft: 50,
-        paddingRight: 50,
-        paddingTop: 64,
-        paddingBottom: 42,
+        height: 398,
+        paddingBottom: isScamDapp ? 20 : 42,
       }}
+      paddingHorizontal="50px"
+      paddingTop="64px"
       background="surfacePrimaryElevatedSecondary"
     >
       <Stack space="32px">
@@ -41,21 +46,29 @@ export const RequestAccountsInfo = ({
             {i18n.t('approve_request.wallet_info_title')}
           </Text>
 
-          <Text align="center" color="accent" size="20pt" weight="bold">
-            {appHostName}
-          </Text>
+          <DappHostName hostName={appHostName} dappStatus={dappStatus} />
         </Stack>
-        <Inline alignHorizontal="center">
-          <Box style={{ width: '186px' }}>
-            <Separator color="separatorTertiary" />
-          </Box>
-        </Inline>
 
-        <Text align="center" color="labelTertiary" size="14pt" weight="regular">
-          {i18n.t('approve_request.wallet_info_description', {
-            appName,
-          })}
-        </Text>
+        <Box style={{ width: '186px' }} marginVertical="-4px">
+          <Separator color="separatorTertiary" />
+        </Box>
+
+        {isScamDapp ? (
+          <Bleed horizontal="30px">
+            <ThisDappIsLikelyMalicious />
+          </Bleed>
+        ) : (
+          <Text
+            align="center"
+            color="labelTertiary"
+            size="14pt"
+            weight="regular"
+          >
+            {i18n.t('approve_request.wallet_info_description', {
+              appName,
+            })}
+          </Text>
+        )}
       </Stack>
     </Box>
   );

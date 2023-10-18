@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { metadataClient } from '~/core/graphql';
+import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import {
   QueryFunctionArgs,
   createQueryKey,
@@ -23,6 +24,7 @@ export interface DappMetadata {
   appShortName: string;
   appLogo?: string;
   timestamp?: number;
+  status?: DAppStatus;
 }
 
 // ///////////////////////////////////////////////
@@ -76,6 +78,7 @@ async function fetchDappMetadata({
     appName,
     appShortName,
     appLogo: response?.dApp?.iconURL,
+    status: response.dApp?.status,
   };
   return dappMetadata;
 }
