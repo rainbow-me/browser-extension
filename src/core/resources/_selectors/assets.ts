@@ -8,6 +8,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
 import { add } from '~/core/utils/numbers';
+import { isCustomNetwork } from '~/core/wagmi/createWagmiClient';
 
 // selectors
 export function selectorFilterByUserChains<T>({
@@ -20,7 +21,7 @@ export function selectorFilterByUserChains<T>({
   const { userChains } = userChainsStore.getState();
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
-    if (userChains[chainKey]) {
+    if (userChains[chainKey] || isCustomNetwork(chainKey)) {
       acc[chainKey] = data[chainKey];
     }
     return acc;

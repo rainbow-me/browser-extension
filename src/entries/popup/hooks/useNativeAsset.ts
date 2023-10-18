@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useNetwork } from 'wagmi';
 
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
@@ -15,13 +16,14 @@ export const useNativeAsset = ({ chainId }: { chainId: ChainId }) => {
     chainId: chainId || ChainId.mainnet,
   });
   const { data: userNativeAsset } = useUserAsset(nativeAssetUniqueId || '');
-  const { data: testnetNativeAssets } = useUserTestnetNativeAsset({
+  const { data: testnetNativeAsset } = useUserTestnetNativeAsset({
     address: currentAddress,
     currency: currentCurrency,
     chainId,
   });
+
   const chain = chains.find((chain) => chain.id === chainId);
-  const nativeAsset = chain?.testnet ? testnetNativeAssets : userNativeAsset;
+  const nativeAsset = chain?.testnet ? testnetNativeAsset : userNativeAsset;
 
   return { nativeAsset };
 };

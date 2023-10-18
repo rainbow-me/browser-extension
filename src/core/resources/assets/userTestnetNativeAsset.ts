@@ -11,6 +11,7 @@ import {
 import {
   NATIVE_ASSETS_PER_CHAIN,
   SupportedCurrencyKey,
+  TESTNET_CHAIN_IDS,
 } from '~/core/references';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
@@ -80,6 +81,9 @@ async function userTestnetNativeAssetQueryFunction({
   queryKey: [{ address, currency, chainId }],
 }: QueryFunctionArgs<typeof userTestnetNativeAssetQueryKey>) {
   try {
+    // Don't do anything unless it's a testnet
+    if (!TESTNET_CHAIN_IDS.includes(chainId)) return null;
+
     const provider = getProvider({ chainId });
     const nativeAsset = getNativeAssetMock({ chainId });
     const parsedAsset = await fetchAssetBalanceViaProvider({

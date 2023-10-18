@@ -124,3 +124,15 @@ export const LEGACY_CHAINS_FOR_HW = [
   ChainId.zora,
   ChainId.base,
 ];
+
+export const TESTNET_CHAIN_IDS = [
+  ChainId.mainnet,
+  ChainId.goerli,
+  ChainId.sepolia,
+  ChainId.arbitrumGoerli,
+  ChainId.bscTestnet,
+  ChainId.optimismGoerli,
+  ChainId.baseGoerli,
+  ChainId.zoraTestnet,
+  ChainId.polygonMumbai,
+];
