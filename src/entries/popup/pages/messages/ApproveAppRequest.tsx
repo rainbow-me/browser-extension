@@ -2,7 +2,10 @@ import React, { useCallback, useEffect } from 'react';
 
 import { initializeMessenger } from '~/core/messengers';
 import { usePendingRequestStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
+import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
+import { Box } from '~/design-system';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -13,6 +16,19 @@ import { SendTransaction } from './SendTransaction';
 import { SignMessage } from './SignMessage';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
+
+const ApproveAppRequestWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const { testnetMode } = useTestnetModeStore();
+  return (
+    <Box style={{ marginTop: testnetMode ? -TESTNET_MODE_BAR_HEIGHT : 0 }}>
+      {children}
+    </Box>
+  );
+};
 
 export const ApproveAppRequest = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
@@ -75,30 +91,36 @@ export const ApproveAppRequest = () => {
   switch (pendingRequest?.method) {
     case 'eth_requestAccounts':
       return (
-        <RequestAccounts
-          approveRequest={approveRequest}
-          rejectRequest={rejectRequest}
-          request={pendingRequest}
-        />
+        <ApproveAppRequestWrapper>
+          <RequestAccounts
+            approveRequest={approveRequest}
+            rejectRequest={rejectRequest}
+            request={pendingRequest}
+          />
+        </ApproveAppRequestWrapper>
       );
     case 'personal_sign':
     case 'eth_signTypedData':
     case 'eth_signTypedData_v3':
     case 'eth_signTypedData_v4':
       return (
-        <SignMessage
-          approveRequest={approveRequest}
-          rejectRequest={rejectRequest}
-          request={pendingRequest}
-        />
+        <ApproveAppRequestWrapper>
+          <SignMessage
+            approveRequest={approveRequest}
+            rejectRequest={rejectRequest}
+            request={pendingRequest}
+          />
+        </ApproveAppRequestWrapper>
       );
     case 'eth_sendTransaction':
       return (
-        <SendTransaction
-          approveRequest={approveRequest}
-          rejectRequest={rejectRequest}
-          request={pendingRequest}
-        />
+        <ApproveAppRequestWrapper>
+          <SendTransaction
+            approveRequest={approveRequest}
+            rejectRequest={rejectRequest}
+            request={pendingRequest}
+          />
+        </ApproveAppRequestWrapper>
       );
     default:
       return null;
