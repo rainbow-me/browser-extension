@@ -29,7 +29,7 @@ export interface UserChainsState {
   }) => void;
 }
 
-const chains = SUPPORTED_CHAINS.filter((chain) => !chain.testnet).reduce(
+const chains = SUPPORTED_CHAINS.reduce(
   (acc, chain) => ({
     ...acc,
     [chain.id]: true,
