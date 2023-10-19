@@ -158,6 +158,7 @@ export const staticCommandInfo: CommandInfo = {
     symbol: 'sparkle',
     textIcon: '🕹',
     symbolSize: 15,
+    to: ROUTES.SETTINGS__NETWORKS,
     type: SearchItemType.Shortcut,
   },
   connectedApps: {
