@@ -68,7 +68,10 @@ export const getSupportedTestnetChains = () => {
 
 export const getSupportedTestnetChainIds = () =>
   getSupportedTestnetChains()
-    .filter((chain) => chain.id !== ChainId.hardhat)
+    .filter(
+      (chain) =>
+        chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
+    )
     .map((chain) => chain.id);
 
 /**
