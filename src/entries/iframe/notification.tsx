@@ -28,6 +28,7 @@ const ASSET_SOURCE = {
   [ChainId.zora]: 'assets/badges/zoraBadge.png',
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
   [ChainId.hardhat]: 'assets/badges/hardhatBadge.png',
+  [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge.png',
   [ChainId.goerli]: 'assets/badges/ethereumBadge.png',
   [ChainId.sepolia]: 'assets/badges/ethereumBadge.png',
   [ChainId.optimismGoerli]: 'assets/badges/optimismBadge.png',

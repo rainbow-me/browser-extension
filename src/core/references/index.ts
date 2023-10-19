@@ -105,6 +105,7 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.bsc]: BSC_BNB_ADDRESS as Address,
   [ChainId.bscTestnet]: BSC_BNB_ADDRESS as Address,
   [ChainId.optimism]: ETH_OPTIMISM_ADDRESS as Address,
+  [ChainId.hardhatOptimism]: ETH_OPTIMISM_ADDRESS as Address,
   [ChainId.optimismGoerli]: ETH_OPTIMISM_ADDRESS as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
   [ChainId.baseGoerli]: ETH_BASE_ADDRESS as Address,

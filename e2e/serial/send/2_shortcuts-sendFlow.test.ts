@@ -174,7 +174,6 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     });
     const placeholderBeforeContent =
       await placeholderBefore.getAttribute('placeholder');
-    console.log(placeholderBeforeContent);
     expect(placeholderBeforeContent).toContain('ETH');
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
     await executePerformShortcut({ driver, key: 'ENTER' });
@@ -184,7 +183,6 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
       driver,
     });
     const placeholderContent = await placeholder.getAttribute('placeholder');
-    console.log(placeholderContent);
     expect(placeholderContent).toContain('USD');
   });
 
