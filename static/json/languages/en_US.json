@@ -135,6 +135,12 @@
         "backed_up": "Backed up",
         "not_backed_up": "Not backed up",
         "back_up_now": "Back Up Now",
+        "context_menu": {
+          "create_wallet": "Create wallet",
+          "view_secret_phrase": "View Secret Phrase",
+          "hide_wallets": "Hide Wallets",
+          "unhide_wallets": "Unhide Wallets"
+        },
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
