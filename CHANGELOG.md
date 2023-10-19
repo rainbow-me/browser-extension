@@ -21,6 +21,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.48)
+
+### Added
+
+- Introduced a network settings section within the browser extension settings #1044
+- Implemented a fallback dapp icon and dapp icon component #1050
+- Integrated support for Korean, Thai, and Arabic languages #1052
+- Users will now encounter a warning when attempting to connect to potentially harmful dapps #1051
+
+### Changed
+
+- Improved the wallet switcher banner logic for consistent appearance of the banner #996
+- Routed public provider RPC calls via our Backend proxy #1058
+- Enhanced error handling now reports issues directly to our team, eliminating the need for manual restarts of the app #1042
+
+### Fixed
+
+- The network switcher dropdown in swaps can be navigated using keyboard controls #1043
+- Corrected the display issue where the network switcher in dapp connections showed inaccurate shortcut numbers #1053
+- The bridge screen now filters out unsupported chains for the selected token #1055
+- After filling in the swaps input, the system will automatically transition to output selection #1060
+- Rectified certain incorrect swap/bridge translations #1059
+
+### Internal
+
+- Adjusted CI by allowlisting specific dependencies #1063
+- Removed a log that cluttered the console, enhancing readability #1068
+
+### Testing
+
+- e2e: Tested shortcut swaps #1041
+- e2e: Incorporated Optimism Sends into the testing process #1048
+
+
 ## [v1.2.39](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.39)
 
 ### Added
