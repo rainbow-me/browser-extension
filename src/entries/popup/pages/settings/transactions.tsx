@@ -4,7 +4,11 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
-import { useFlashbotsEnabledStore } from '~/core/state';
+import {
+  useFlashbotsEnabledStore,
+  useNonceStore,
+  usePendingTransactionsStore,
+} from '~/core/state';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
@@ -19,6 +23,8 @@ import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 export function Transactions() {
   const { defaultTxSpeed, setDefaultTxSpeed } = useDefaultTxSpeedStore();
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
+  const { clearNonces } = useNonceStore();
+  const { clearPendingTransactions } = usePendingTransactionsStore();
   const filteredTxSpeedOptionKeys = Object.values(GasSpeed).filter(
     (opt) => opt !== GasSpeed.CUSTOM,
   );
@@ -35,6 +41,11 @@ export function Transactions() {
     },
     [setFlashbotsEnabled],
   );
+
+  const clearTransactions = useCallback(() => {
+    clearNonces();
+    clearPendingTransactions;
+  }, [clearNonces, clearPendingTransactions]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -121,6 +132,20 @@ export function Transactions() {
           />
           <MenuItem.Description
             text={i18n.t('settings.transactions.flashbots_description')}
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            last
+            titleComponent={
+              <MenuItem.Title
+                color="red"
+                text={i18n.t(
+                  'settings.transactions.clear_transactions_and_nonces',
+                )}
+              />
+            }
+            onClick={clearTransactions}
           />
         </Menu>
       </MenuContainer>
