@@ -54,7 +54,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - e2e: Tested shortcut swaps #1041
 - e2e: Incorporated Optimism Sends into the testing process #1048
 
-
 ## [v1.2.39](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.39)
 
 ### Added
