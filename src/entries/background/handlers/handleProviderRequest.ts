@@ -221,7 +221,6 @@ export const handleProviderRequest = ({
     const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
 
-    console.log('- handleProviderRequest', method);
     const rateLimited = await checkRateLimit(host);
     if (rateLimited) {
       return { id, error: <Error>new Error('Rate Limit Exceeded') };
