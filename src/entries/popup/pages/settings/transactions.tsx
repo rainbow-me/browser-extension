@@ -20,6 +20,8 @@ import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
+import { triggerToast } from '../../components/Toast/Toast';
+
 export function Transactions() {
   const { defaultTxSpeed, setDefaultTxSpeed } = useDefaultTxSpeedStore();
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
@@ -44,7 +46,12 @@ export function Transactions() {
 
   const clearTransactions = useCallback(() => {
     clearNonces();
-    clearPendingTransactions;
+    clearPendingTransactions();
+    triggerToast({
+      title: i18n.t(
+        'settings.transactions.clear_transactions_and_nonces_success',
+      ),
+    });
   }, [clearNonces, clearPendingTransactions]);
 
   return (
