@@ -162,7 +162,7 @@ export function SettingsNetworks() {
             }
             rightComponent={
               <Toggle
-                testId="testnet-mode-toggle"
+                testId="testnet-mode-shortcut-toggle"
                 checked={testnetModeShortcutEnabled}
                 handleChange={() =>
                   setTestnetModeShortcutEnabled(!testnetModeShortcutEnabled)
