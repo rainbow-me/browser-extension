@@ -24,6 +24,7 @@ export interface PendingTransactionsState {
     address?: Address;
     pendingTransactions: PendingTransaction[];
   }) => void;
+  clearPendingTransactions: () => void;
 }
 
 export const pendingTransactionsStore = createStore<PendingTransactionsState>(
@@ -53,6 +54,9 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
           },
         });
       }
+    },
+    clearPendingTransactions: () => {
+      set({});
     },
   }),
   {
