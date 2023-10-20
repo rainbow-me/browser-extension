@@ -186,6 +186,8 @@
       "title": "Transactions",
       "default_speed": "Default Speed",
       "use_flashbots": "Use Flashbots",
+      "clear_transactions_and_nonces": "Clear Pending Transactions",
+      "clear_transactions_and_nonces_success": "Pending transactions cleared",
       "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures. Learn more."
     },
     "currency": {
