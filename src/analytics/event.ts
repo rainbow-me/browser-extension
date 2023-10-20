@@ -440,6 +440,8 @@ export type EventProperties = {
   [event.settingsAnalyticsTrackingEnabled]: undefined;
   [event.settingsRainbowDefaultProviderDisabled]: undefined;
   [event.settingsRainbowDefaultProviderEnabled]: undefined;
+  [event.settingsFlashbotsDisabled]: undefined;
+  [event.settingsFlashbotsEnabled]: undefined;
   [event.swapSubmitted]: {
     /**
      * Symbol of the input asset being swapped.
