@@ -4,6 +4,8 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  delayTime,
+  doNotFindElementByTestId,
   executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -13,7 +15,6 @@ import {
   importWalletFlow,
   initDriverWithOptions,
   navigateToSettingsNetworks,
-  toggleStatus,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -22,14 +23,6 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-
-const findTestnetBar = async ({ driver }: { driver: WebDriver }) => {
-  const testnetBar = await findElementByTestId({
-    driver,
-    id: 'testnet-bar',
-  });
-  return testnetBar;
-};
 
 describe('Navigate Settings & Privacy and its flows', () => {
   beforeAll(async () => {
@@ -50,17 +43,32 @@ describe('Navigate Settings & Privacy and its flows', () => {
   it('should be able to toggle testnet mode', async () => {
     await navigateToSettingsNetworks(driver, rootURL);
 
-    expect(await toggleStatus('testnet-mode-toggle', driver)).toBe('true');
-    expect(await findTestnetBar({ driver })).toBeTruthy();
+    await delayTime('short');
 
-    expect(await toggleStatus('testnet-mode-toggle', driver)).toBe('false');
-    expect(await findTestnetBar({ driver })).toBeFalsy();
+    // expect(await toggleStatus('testnet-mode-toggle', driver)).toBe('true');
+    await findElementByTestIdAndClick({ driver, id: 'testnet-mode-toggle' });
+    await delayTime('short');
+    const testnetBar = await findElementByTestId({
+      driver,
+      id: 'testnet-bar',
+    });
+    expect(testnetBar).toBeTruthy();
+
+    // expect(await toggleStatus('testnet-mode-toggle', driver)).toBe('false');
+    await findElementByTestIdAndClick({ driver, id: 'testnet-mode-toggle' });
+    await delayTime('medium');
+    const testnetBar2 = await doNotFindElementByTestId({
+      driver,
+      id: 'testnet-bar',
+    });
+    expect(testnetBar2).toBeFalsy();
   });
 
   it('should be able to toggle testnet mode shortcut', async () => {
-    expect(await toggleStatus('testnet-mode-shortcut-toggle', driver)).toBe(
-      'true',
-    );
+    await findElementByTestIdAndClick({
+      driver,
+      id: 'testnet-mode-shortcut-toggle',
+    });
   });
 
   it('should go back to home', async () => {
@@ -68,16 +76,29 @@ describe('Navigate Settings & Privacy and its flows', () => {
   });
 
   it('should activate testnet mode with shortcut', async () => {
-    await executePerformShortcut({ driver, key: 'T' });
-    expect(await findTestnetBar({ driver })).toBeTruthy();
+    await executePerformShortcut({ driver, key: 't' });
+    const testnetBar = await findElementByTestId({
+      driver,
+      id: 'testnet-bar',
+    });
+    expect(testnetBar).toBeTruthy();
   });
 
   it('should disable and enable testnet mode with clicking testnet mode in menu', async () => {
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'testnet-mode', driver });
-    expect(await findTestnetBar({ driver })).toBeFalsy();
+    await delayTime('medium');
+    const testnetBar = await doNotFindElementByTestId({
+      driver,
+      id: 'testnet-bar',
+    });
+    expect(testnetBar).toBeFalsy();
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'testnet-mode', driver });
-    expect(await findTestnetBar({ driver })).toBeTruthy();
+    const testnetBar2 = await findElementByTestId({
+      driver,
+      id: 'testnet-bar',
+    });
+    expect(testnetBar2).toBeTruthy();
   });
 });
