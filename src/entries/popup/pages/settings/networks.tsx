@@ -87,33 +87,33 @@ export function SettingsNetworks() {
             <Box paddingHorizontal="1px" paddingVertical="1px">
               {sortNetworks(userChainsOrder, supportedChains).map(
                 (chain: Chain, index) => (
-                  <DraggableItem
-                    key={`${chain.id}`}
-                    id={`${chain.id}`}
-                    index={index}
-                  >
-                    <MenuItem
-                      first={index === 0}
-                      leftComponent={
-                        <ChainBadge chainId={chain.id} size="18" shadow />
-                      }
-                      rightComponent={
-                        userChains[chain.id] ? <MenuItem.SelectionIcon /> : null
-                      }
-                      key={chain.name}
-                      titleComponent={<MenuItem.Title text={chain.name} />}
-                      labelComponent={
-                        <Text
-                          color={'labelTertiary'}
-                          size="11pt"
-                          weight={'medium'}
-                        >
-                          {chainLabel({ chainId: chain.id })}
-                        </Text>
-                      }
-                      onClick={() => updateChain(chain)}
-                    />
-                  </DraggableItem>
+                  <Box key={`${chain.id}`} testId={`network-row-${chain.id}`}>
+                    <DraggableItem id={`${chain.id}`} index={index}>
+                      <MenuItem
+                        first={index === 0}
+                        leftComponent={
+                          <ChainBadge chainId={chain.id} size="18" shadow />
+                        }
+                        rightComponent={
+                          userChains[chain.id] ? (
+                            <MenuItem.SelectionIcon />
+                          ) : null
+                        }
+                        key={chain.name}
+                        titleComponent={<MenuItem.Title text={chain.name} />}
+                        labelComponent={
+                          <Text
+                            color={'labelTertiary'}
+                            size="11pt"
+                            weight={'medium'}
+                          >
+                            {chainLabel({ chainId: chain.id })}
+                          </Text>
+                        }
+                        onClick={() => updateChain(chain)}
+                      />
+                    </DraggableItem>
+                  </Box>
                 ),
               )}
             </Box>
