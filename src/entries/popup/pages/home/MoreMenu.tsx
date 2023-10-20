@@ -57,7 +57,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         | 'qr-code'
         | 'support'
         | 'feedback'
-        | 'testnet_mode',
+        | 'testnet-mode',
     ) => {
       switch (value) {
         case 'settings':
@@ -79,7 +79,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         case 'feedback':
           goToNewTab({ url: RAINBOW_FEEDBACK_URL });
           break;
-        case 'testnet_mode':
+        case 'testnet-mode':
           handleTestnetMode();
           break;
       }
@@ -161,10 +161,10 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
               {testnetModeShortcutEnabled && (
                 <DropdownMenuRadioItem
                   highlightAccentColor
-                  value="testnet_mode"
+                  value="testnet-mode"
                 >
                   <HomeMenuRow
-                    testId="testnet_mode"
+                    testId="testnet-mode"
                     leftComponent={<MenuItem.TextIcon icon="🕹" />}
                     centerComponent={
                       <Text size="14pt" weight="semibold">
