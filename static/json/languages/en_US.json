@@ -6,20 +6,20 @@
     "toggle": "Toggle"
   },
   "permissions": {
-    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant the permission in order to continue."
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant permission in order to continue."
   },
   "wallet": {
-    "rename": "Rename wallet",
-    "edit_appearance": "Edit appearance",
+    "rename": "Rename Wallet",
+    "edit_appearance": "Edit Appearance",
     "view_on": "View on %{explorer}",
     "copy_address": "Copy Address"
   },
   "wallet_switcher": {
     "title": "Wallets",
-    "rename_wallet": "Rename wallet",
-    "copy_address": "Copy address",
-    "remove_wallet": "Remove wallet",
-    "hide_wallet": "Hide wallet",
+    "rename_wallet": "Rename Wallet",
+    "copy_address": "Copy Address",
+    "remove_wallet": "Remove Wallet",
+    "hide_wallet": "Hide Wallet",
     "watching": "Watching",
     "ledger": "Ledger",
     "trezor": "Trezor",
@@ -890,7 +890,7 @@
     "wallet_switcher": {
       "switch_wallets": "Switch Wallets",
       "other_wallets": "Other Wallets",
-      "cancel": "Cancel",
+      "done": "Done",
       "connected": "Connected"
     }
   },
@@ -1138,8 +1138,8 @@
       "about_token": "About %{name}",
       "price": "Price",
       "volume": "Volume",
-      "ath": "All time hight",
-      "atl": "All time low",
+      "ath": "All Time High",
+      "atl": "All Time Low",
       "market_cap": "Market Cap",
       "market_cap_explainer": {
         "title": "Market Cap",
