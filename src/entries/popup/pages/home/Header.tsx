@@ -32,7 +32,6 @@ import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
 export const Header = React.memo(function Header() {
-  const { featureFlags } = useFeatureFlagsStore();
   const { scrollYProgress: progress } = useScroll({
     offset: ['0px', '64px', '92px'],
   });
@@ -113,9 +112,7 @@ export const Header = React.memo(function Header() {
             <ActionButtonsSection />
           </Stack>
         </Inset>
-        <Box
-          style={{ minHeight: featureFlags.new_tab_bar_enabled ? 28 : 32 }}
-        />
+        <Box style={{ minHeight: 28 }} />
       </Box>
     </WalletContextMenu>
   );

@@ -15,7 +15,6 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useErrorStore } from '~/core/state/error';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { goToNewTab, isNativePopup } from '~/core/utils/tabs';
@@ -53,13 +52,12 @@ import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { NFTs } from './NFTs';
 import { AppConnection } from './NetworkMenu';
-import { TabBar as TabBar_ } from './TabBar';
+import { Points } from './Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
-export type Tab = 'tokens' | 'activity' | 'nfts';
+export type Tab = 'tokens' | 'activity' | 'nfts' | 'points';
 
-const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
 type TabProps = {
@@ -77,15 +75,11 @@ const Tabs = memo(function Tabs({
   prevScrollPosition,
   setActiveTab,
 }: TabProps) {
-  const { featureFlags } = useFeatureFlagsStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { activeTab: popupActiveTab } = usePopupInstanceStore();
 
   const { state } = useLocation();
 
-  const COLLAPSED_HEADER_TOP_OFFSET = featureFlags.new_tab_bar_enabled
-    ? 157
-    : 160;
 
   useEffect(() => {
     const mountWithSavedTabInPopup = async () => {
@@ -98,6 +92,7 @@ const Tabs = memo(function Tabs({
     };
     mountWithSavedTabInPopup();
   }, [popupActiveTab, setActiveTab, state?.tab]);
+  const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
   // If we are already in a state where the header is collapsed,
   // then ensure we are scrolling to the top when we change tab.
@@ -118,43 +113,30 @@ const Tabs = memo(function Tabs({
 
   useKeyboardShortcut({
     handler: (e) => {
-      if (featureFlags.new_tab_bar_enabled) {
-        if (e.key === shortcuts.global.BACK.key) {
-          trackShortcut({
-            key: shortcuts.global.BACK.display,
-            type: 'home.switchTab',
-          });
-          if (activeTab === 'tokens') {
-            onSelectTab('activity');
-          } else if (activeTab === 'nfts') {
-            onSelectTab('tokens');
-          }
-        }
-        if (e.key === shortcuts.global.FORWARD.key) {
-          trackShortcut({
-            key: shortcuts.global.FORWARD.display,
-            type: 'home.switchTab',
-          });
-          if (activeTab === 'tokens') {
-            onSelectTab('nfts');
-          } else if (activeTab === 'activity') {
-            onSelectTab('tokens');
-          }
-        }
-      } else {
-        if (e.key === shortcuts.global.BACK.key) {
-          trackShortcut({
-            key: shortcuts.global.BACK.display,
-            type: 'home.switchTab',
-          });
+      if (e.key === shortcuts.global.BACK.key) {
+        trackShortcut({
+          key: shortcuts.global.BACK.display,
+          type: 'home.switchTab',
+        });
+        if (activeTab === 'activity') {
           onSelectTab('tokens');
-        }
-        if (e.key === shortcuts.global.FORWARD.key) {
-          trackShortcut({
-            key: shortcuts.global.FORWARD.display,
-            type: 'home.switchTab',
-          });
+        } else if (activeTab === 'nfts') {
           onSelectTab('activity');
+        } else if (activeTab === 'points') {
+          onSelectTab('nfts');
+        }
+      }
+      if (e.key === shortcuts.global.FORWARD.key) {
+        trackShortcut({
+          key: shortcuts.global.FORWARD.display,
+          type: 'home.switchTab',
+        });
+        if (activeTab === 'tokens') {
+          onSelectTab('activity');
+        } else if (activeTab === 'activity') {
+          onSelectTab('nfts');
+        } else if (activeTab === 'nfts') {
+          onSelectTab('points');
         }
       }
     },
@@ -167,6 +149,7 @@ const Tabs = memo(function Tabs({
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
         {activeTab === 'nfts' && <NFTs />}
+        {activeTab === 'points' && <Points />}
       </Content>
     </>
   );
@@ -176,7 +159,6 @@ export const Home = memo(function Home() {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
-  const { featureFlags } = useFeatureFlagsStore();
   const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
   const { error, setError } = useErrorStore();
   const navigate = useRainbowNavigate();
@@ -258,9 +240,7 @@ export const Home = memo(function Home() {
             />
             <AppConnectionWalletSwitcher />
           </motion.div>
-          {featureFlags.new_tab_bar_enabled && (
-            <NewTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
-          )}
+          <NewTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
           <BackupReminder />
           {currentHomeSheet}
         </>
@@ -344,19 +324,13 @@ function TabBar({
   activeTab: Tab;
   setActiveTab: (tab: Tab) => void;
 }) {
-  const { featureFlags } = useFeatureFlagsStore();
-
   return (
     <StickyHeader
       background="surfacePrimaryElevatedSecondary"
-      height={featureFlags.new_tab_bar_enabled ? 39 : TAB_BAR_HEIGHT}
+      height={39}
       topOffset={TOP_NAV_HEIGHT}
     >
-      {featureFlags.new_tab_bar_enabled ? (
-        <TabHeader activeTab={activeTab} onSelectTab={setActiveTab} />
-      ) : (
-        <TabBar_ activeTab={activeTab} onSelectTab={setActiveTab} />
-      )}
+      <TabHeader activeTab={activeTab} onSelectTab={setActiveTab} />
       <Box position="relative" style={{ bottom: 1 }}>
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
@@ -365,17 +339,12 @@ function TabBar({
 }
 
 function Content({ children }: PropsWithChildren) {
-  const { featureFlags } = useFeatureFlagsStore();
-
   return (
     <Box
       background="surfacePrimaryElevated"
       style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
     >
-      <Box
-        height="full"
-        paddingBottom={featureFlags.new_tab_bar_enabled ? '64px' : undefined}
-      >
+      <Box height="full" paddingBottom="64px">
         <Inset top="20px">{children}</Inset>
       </Box>
     </Box>

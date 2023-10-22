@@ -18,13 +18,15 @@ import HomeIcon from './TabIcons/Home';
 import HomeSelected from './TabIcons/HomeSelected';
 import NFTsIcon from './TabIcons/NFTs';
 import NFTsSelected from './TabIcons/NFTsSelected';
+import PointsIcon from './TabIcons/Points';
+import PointsSelected from './TabIcons/PointsSelected';
 
 export const ICON_SIZE = 36;
 
 const TAB_HEIGHT = 32;
 const TAB_WIDTH = 42;
 
-const tabNames = ['activity', 'tokens', 'nfts'];
+const tabNames = ['tokens', 'activity', 'nfts', 'points'];
 
 type TabConfigType = {
   Icon: () => ReactElement;
@@ -40,19 +42,24 @@ type TabConfigType = {
 
 const tabConfig: TabConfigType[] = [
   {
-    Icon: ActivityIcon,
-    SelectedIcon: ActivitySelected,
-    name: 'activity',
-  },
-  {
     Icon: HomeIcon,
     SelectedIcon: HomeSelected,
     name: 'tokens',
   },
   {
+    Icon: ActivityIcon,
+    SelectedIcon: ActivitySelected,
+    name: 'activity',
+  },
+  {
     Icon: NFTsIcon,
     SelectedIcon: NFTsSelected,
     name: 'nfts',
+  },
+  {
+    Icon: PointsIcon,
+    SelectedIcon: PointsSelected,
+    name: 'points',
   },
 ];
 
@@ -108,7 +115,7 @@ export function TabBar({
         alignHorizontal="center"
         alignVertical="center"
         height="full"
-        space="6px"
+        space="4px"
       >
         {tabConfig.map((tab, index) => (
           <Tab
@@ -221,7 +228,8 @@ function TabBackground({ selectedTabIndex }: { selectedTabIndex: number }) {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
 
-  const xPosition = selectedTabIndex * TAB_WIDTH + (selectedTabIndex + 1) * 6;
+  // 6 = tab bar horizontal padding; 4 = space between tabs
+  const xPosition = selectedTabIndex * TAB_WIDTH + (6 + selectedTabIndex * 4);
 
   return (
     <Box

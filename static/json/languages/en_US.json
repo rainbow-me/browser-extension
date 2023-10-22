@@ -213,8 +213,7 @@
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
-      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
-      "new_tab_bar_enabled": "New Tab Bar"
+      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts"
     }
   },
   "transactions": {
@@ -1034,8 +1033,9 @@
   },
   "tabs": {
     "activity": "Activity",
-    "tokens": "Tokens",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "Points",
+    "tokens": "Tokens"
   },
   "activity": {
     "today": "Today",
@@ -1092,6 +1092,10 @@
     "coming_soon_header": "Coming Soon",
     "coming_soon_description": "NFTs are coming soon. Stay tuned!",
     "view_on_web": "View on Web"
+  },
+  "points": {
+    "coming_soon_header": "Coming Soon",
+    "coming_soon_description": "Points are just around the corner.\nStart earning today."
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
