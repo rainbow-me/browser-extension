@@ -61,7 +61,11 @@ export const popupInstanceStore = createStore<PopupInstanceStore>(
   (set, get) => ({
     ...DEFAULT_POPUP_INSTANCE_VALUES,
     resetValues: popupInstanceHandlerFactory(() =>
-      set({ ...DEFAULT_POPUP_INSTANCE_VALUES, activeTab: get().activeTab }),
+      set(
+        get().activeTab === 'nfts' || get().activeTab === 'points'
+          ? DEFAULT_POPUP_INSTANCE_VALUES
+          : { ...DEFAULT_POPUP_INSTANCE_VALUES, activeTab: get().activeTab },
+      ),
     ),
     resetSwapValues: popupInstanceHandlerFactory(() =>
       set({

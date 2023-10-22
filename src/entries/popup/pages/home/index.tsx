@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useLocation } from 'react-router';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -17,7 +16,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { useErrorStore } from '~/core/state/error';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { goToNewTab, isNativePopup } from '~/core/utils/tabs';
+import { goToNewTab } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
@@ -65,7 +64,6 @@ type TabProps = {
   containerRef: React.RefObject<HTMLDivElement>;
   onSelectTab: (tab: Tab) => void;
   prevScrollPosition: React.MutableRefObject<number | undefined>;
-  setActiveTab: (tab: Tab) => void;
 };
 
 const Tabs = memo(function Tabs({
@@ -73,25 +71,9 @@ const Tabs = memo(function Tabs({
   containerRef,
   onSelectTab,
   prevScrollPosition,
-  setActiveTab,
 }: TabProps) {
   const { trackShortcut } = useKeyboardAnalytics();
-  const { activeTab: popupActiveTab } = usePopupInstanceStore();
 
-  const { state } = useLocation();
-
-
-  useEffect(() => {
-    const mountWithSavedTabInPopup = async () => {
-      const isPopup = await isNativePopup();
-      if (state?.tab) {
-        setActiveTab(state.tab);
-      } else if (isPopup) {
-        setActiveTab(popupActiveTab);
-      }
-    };
-    mountWithSavedTabInPopup();
-  }, [popupActiveTab, setActiveTab, state?.tab]);
   const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
   // If we are already in a state where the header is collapsed,
@@ -164,14 +146,22 @@ export const Home = memo(function Home() {
   const navigate = useRainbowNavigate();
   const { pendingRequests } = usePendingRequestStore();
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
-  const [activeTab, setActiveTab] = useState<Tab>(popupActiveTab);
+  const [activeTab, setActiveTab] = useState<Tab>(
+    popupActiveTab === 'nfts' || popupActiveTab === 'points'
+      ? 'tokens'
+      : popupActiveTab,
+  );
   const containerRef = useContainerRef();
   const prevScrollPosition = useRef<number | undefined>(undefined);
 
   const onSelectTab = (tab: Tab) => {
     prevScrollPosition.current = containerRef.current?.scrollTop;
-    setActiveTab(tab);
+    if (popupActiveTab === tab && containerRef.current?.scrollTop !== 0) {
+      containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     saveActiveTab({ tab });
+    setActiveTab(tab);
   };
 
   useEffect(() => {
@@ -236,7 +226,6 @@ export const Home = memo(function Home() {
               containerRef={containerRef}
               onSelectTab={onSelectTab}
               prevScrollPosition={prevScrollPosition}
-              setActiveTab={setActiveTab}
             />
             <AppConnectionWalletSwitcher />
           </motion.div>
