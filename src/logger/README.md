@@ -109,7 +109,7 @@ import { logger } from '@/logger';
 ### `logger.debug`
 
 Debug level is for **local development only,** and is disabled by default. To
-enabled it, set `LOG_LEVEL=debug` before running the Metro server.
+enable it, set `LOG_LEVEL=debug` before running the Metro server.
 
 ```typescript
 logger.debug(message);
@@ -137,7 +137,7 @@ pass a separate environment variable `LOG_DEBUG=swaps`. This variable supports
 multiple contexts using commas like `LOG_DEBUG=swaps,ethers`, and _automatically
 sets the log level to `debug`, regardless of `LOG_LEVEL`._
 
-> For more advanced usage, you we can namespace our debug contexts i.e.
+> For more advanced usage, we can namespace our debug contexts i.e.
 > `swaps:utils` or `swaps:forms`, which can then be targeted individually, or
 > using a wildcard `LOG_LEVEL=swaps:*` to filter for all `swaps:` debug logs.
 
