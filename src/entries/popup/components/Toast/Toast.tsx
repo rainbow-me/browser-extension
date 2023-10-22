@@ -98,7 +98,10 @@ export const Toast = () => {
               }}
               width="fit"
             >
-              <Box paddingVertical="9px" paddingHorizontal="16px">
+              <Box
+                paddingVertical={toastInfo.description ? '9px' : '14px'}
+                paddingHorizontal="16px"
+              >
                 <Rows space="6px">
                   <Row>
                     <Text
