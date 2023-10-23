@@ -28,13 +28,12 @@ export const TestnetModeWatcher = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
+  const dappHost = dappMetadata?.appHost || '';
 
-  const { testnetMode } = useTestnetModeStore();
-  const { activeSession } = useAppSession({
-    host: dappMetadata?.appHost || '',
+  const { testnetMode, setTestnetMode } = useTestnetModeStore();
+  const { activeSession, disconnectSession } = useAppSession({
+    host: dappHost,
   });
-
-  const [closedByUser, setClosedByUser] = useState(false);
 
   const [hint, setHint] = useState<{
     show: boolean;
@@ -44,30 +43,35 @@ export const TestnetModeWatcher = () => {
 
   const closeSheet = () => {
     setHint({ show: false, chainId: ChainId.mainnet });
-    setClosedByUser(true);
+    disconnectSession({
+      address: currentAddress,
+      host: dappHost,
+    });
+  };
+
+  const action = () => {
+    setHint({ show: false, chainId: ChainId.mainnet });
+    setTestnetMode(!testnetMode);
   };
 
   useEffect(() => {
-    if (activeSession && !hint.show && !closedByUser) {
+    if (activeSession && !hint.show) {
       const isCurrentAddressConnected = isLowerCaseMatch(
         activeSession.address,
         currentAddress,
       );
       if (isCurrentAddressConnected) {
         const activeSessionChainId = activeSession?.chainId;
-        if (
-          testnetMode &&
-          !isTestnetChainId({ chainId: activeSessionChainId })
-        ) {
+        const activeChainIsTestnet = isTestnetChainId({
+          chainId: activeSessionChainId,
+        });
+        if (testnetMode && !activeChainIsTestnet) {
           setHint({
             show: true,
             type: 'tesnetModeInMainnet',
             chainId: activeSessionChainId,
           });
-        } else if (
-          !testnetMode &&
-          isTestnetChainId({ chainId: activeSessionChainId })
-        ) {
+        } else if (!testnetMode && activeChainIsTestnet) {
           setHint({
             show: true,
             type: 'notTestnetModeInTestnet',
@@ -76,7 +80,7 @@ export const TestnetModeWatcher = () => {
         }
       }
     }
-  }, [activeSession, closedByUser, currentAddress, hint.show, testnetMode]);
+  }, [activeSession, currentAddress, hint.show, testnetMode]);
 
   return (
     <BottomSheet show={hint.show} zIndex={zIndexes.BOTTOM_SHEET}>
@@ -133,7 +137,7 @@ export const TestnetModeWatcher = () => {
                   width="full"
                   color={'accent'}
                   height="44px"
-                  onClick={() => null}
+                  onClick={action}
                   variant={'flat'}
                   disabled={false}
                   tabIndex={0}

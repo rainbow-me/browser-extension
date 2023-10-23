@@ -129,6 +129,7 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 
 export function isTestnetChainId({ chainId }: { chainId?: ChainId }) {
   const chain = getChain({ chainId });
+  console.log('-- chain', chainId, chain);
   return !!chain.testnet;
 }
 
