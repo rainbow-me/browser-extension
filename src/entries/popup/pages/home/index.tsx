@@ -127,7 +127,9 @@ const Tabs = memo(function Tabs({
   return (
     <>
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-      <Content>
+      <Content
+        disableBottomPadding={activeTab === 'nfts' || activeTab === 'points'}
+      >
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
         {activeTab === 'nfts' && <NFTs />}
@@ -156,7 +158,7 @@ export const Home = memo(function Home() {
 
   const onSelectTab = (tab: Tab) => {
     prevScrollPosition.current = containerRef.current?.scrollTop;
-    if (popupActiveTab === tab && containerRef.current?.scrollTop !== 0) {
+    if (activeTab === tab && containerRef.current?.scrollTop !== 0) {
       containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -327,13 +329,19 @@ function TabBar({
   );
 }
 
-function Content({ children }: PropsWithChildren) {
+function Content({
+  children,
+  disableBottomPadding,
+}: PropsWithChildren<{ disableBottomPadding?: boolean }>) {
   return (
     <Box
       background="surfacePrimaryElevated"
       style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
     >
-      <Box height="full" paddingBottom="64px">
+      <Box
+        height="full"
+        paddingBottom={disableBottomPadding ? undefined : '64px'}
+      >
         <Inset top="20px">{children}</Inset>
       </Box>
     </Box>

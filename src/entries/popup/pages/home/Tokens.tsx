@@ -136,13 +136,12 @@ export function Tokens() {
     <Box
       width="full"
       style={{
-        overflow: 'auto',
-        // prevent coin icon shadow from clipping in empty space when list is small
-        paddingBottom:
-          assetsRowVirtualizer.getVirtualItems().length > 6 ? 8 : 60,
+        // Prevent bottommost coin icon shadow from clipping
+        overflow: 'visible',
       }}
+      paddingBottom="8px"
       paddingTop="2px"
-      marginTop="-16px"
+      marginTop="-14px"
     >
       <QuickPromo
         text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
@@ -161,7 +160,6 @@ export function Tokens() {
         width="full"
         style={{
           height: assetsRowVirtualizer.getTotalSize(),
-          minHeight: '436px',
           position: 'relative',
         }}
       >
