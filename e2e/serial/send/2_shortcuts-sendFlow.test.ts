@@ -220,7 +220,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to select asset to send from home using keyboard ', async () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
-    await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+    await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 8 });
     await executePerformShortcut({ driver, key: 'SPACE' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
