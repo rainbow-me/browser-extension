@@ -121,7 +121,7 @@ export const AppConnectionWalletSwitcher = () => {
                 />
               }
               titleComponent={
-                <Inline alignVertical="center" space="4px">
+                <Inline alignVertical="center" space="6px">
                   <DappIcon appLogo={dappMetadata?.appLogo} size="14px" />
                   <Text size="14pt" weight="heavy" align="center">
                     {i18n.t(
@@ -234,7 +234,7 @@ export const AppConnectionWalletSwitcher = () => {
                   tabIndex={0}
                 >
                   <TextOverflow weight="bold" size="16pt" color="label">
-                    {i18n.t('app_connection_switcher.wallet_switcher.cancel')}
+                    {i18n.t('app_connection_switcher.wallet_switcher.done')}
                   </TextOverflow>
                 </Button>
               </Box>

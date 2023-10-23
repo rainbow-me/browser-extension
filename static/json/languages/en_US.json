@@ -6,20 +6,20 @@
     "toggle": "Toggle"
   },
   "permissions": {
-    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant the permission in order to continue."
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant permission in order to continue."
   },
   "wallet": {
-    "rename": "Rename wallet",
-    "edit_appearance": "Edit appearance",
+    "rename": "Rename Wallet",
+    "edit_appearance": "Edit Appearance",
     "view_on": "View on %{explorer}",
     "copy_address": "Copy Address"
   },
   "wallet_switcher": {
     "title": "Wallets",
-    "rename_wallet": "Rename wallet",
-    "copy_address": "Copy address",
-    "remove_wallet": "Remove wallet",
-    "hide_wallet": "Hide wallet",
+    "rename_wallet": "Rename Wallet",
+    "copy_address": "Copy Address",
+    "remove_wallet": "Remove Wallet",
+    "hide_wallet": "Hide Wallet",
     "watching": "Watching",
     "ledger": "Ledger",
     "trezor": "Trezor",
@@ -34,7 +34,7 @@
     }
   },
   "qr_code": {
-    "copy_address": "Copy address"
+    "copy_address": "Copy Address"
   },
   "add_wallet": {
     "title": "Add another wallet",
@@ -48,13 +48,13 @@
     "watch_address_description": "Watch a public address or ENS name."
   },
   "create_wallet_prompt": {
-    "title": "Name your wallet",
-    "create_wallet": "Create wallet",
+    "title": "Name Your Wallet",
+    "create_wallet": "Create Wallet",
     "create": "Create",
     "input_placeholder": "Name"
   },
   "rename_wallet_prompt": {
-    "rename_wallet": "Rename wallet",
+    "rename_wallet": "Rename Wallet",
     "done": "Done"
   },
   "remove_wallet_prompt": {
@@ -76,8 +76,8 @@
     "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
     "guides_and_support": "Guides & Support",
-    "learn_about_ethereum": "Learn about Ethereum",
-    "follow_us_on_twitter": "Follow us on Twitter",
+    "learn_about_ethereum": "Learn About Ethereum",
+    "follow_us_on_twitter": "Follow Us on Twitter",
     "share_beta_feedback": "Share Beta Feedback",
     "theme": {
       "title": "Theme",
@@ -117,7 +117,7 @@
       },
       "change_password": {
         "title": "Change Password",
-        "header_label": "Change your password"
+        "header_label": "Change Your Password"
       },
       "confirm_password": {
         "title": "Enter your Password",
@@ -125,7 +125,7 @@
       },
       "wallets_and_keys": {
         "title": "Wallets & Keys",
-        "create_a_new_wallet": "Create a new wallet",
+        "create_a_new_wallet": "Create a New Wallet",
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
@@ -136,7 +136,7 @@
         "not_backed_up": "Not backed up",
         "back_up_now": "Back Up Now",
         "context_menu": {
-          "create_wallet": "Create wallet",
+          "create_wallet": "Create Wallet",
           "view_secret_phrase": "View Secret Phrase",
           "hide_wallets": "Hide Wallets",
           "unhide_wallets": "Unhide Wallets"
@@ -144,7 +144,7 @@
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
-          "create_new_wallet": "Create a new Wallet",
+          "create_new_wallet": "Create a New Wallet",
           "rename_wallet": "Rename Wallet",
           "unhide_wallet": "Unhide Wallet",
           "delete_wallet": "Delete Wallet",
@@ -155,7 +155,7 @@
           "last_backed_up": "Last backed up as %{date}"
         },
         "new_wallet": {
-          "name_your_wallet": "Name your wallet",
+          "name_your_wallet": "Name Your Wallet",
           "create": "Create Wallet",
           "input_placeholder": "ex: Wallet 1"
         },
@@ -213,8 +213,7 @@
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
-      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
-      "new_tab_bar_enabled": "New Tab Bar"
+      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts"
     }
   },
   "transactions": {
@@ -222,7 +221,7 @@
     "cancelled": "Transaction Cancelled",
     "burn": {
       "pending": "Burning",
-      "confirmed": "Burnned",
+      "confirmed": "Burned",
       "failed": "Burn Failed"
     },
     "cancel": {
@@ -684,19 +683,19 @@
     }
   },
   "contacts": {
-    "save_contact": "Save contact",
-    "add_to_contacts": "Add to contacts",
-    "edit_contact": "Edit contact",
-    "save_changes": "Save changes",
+    "save_contact": "Save Contact",
+    "add_to_contacts": "Add to Contacts",
+    "edit_contact": "Edit Contact",
+    "save_changes": "Save Changes",
     "cancel": "Cancel",
-    "remove_contact_title": "Remove contact?",
-    "remove_contact_action": "Remove contact",
+    "remove_contact_title": "Remove Contact?",
+    "remove_contact_action": "Remove Contact",
     "remove_contact_description": "Are you sure you want to remove “%{name}” from your contacts?",
     "save": "Save",
-    "copy_address": "Copy address",
+    "copy_address": "Copy Address",
     "view_on_etherscan": "View on Etherscan",
     "view_on_explorer": "View on Explorer",
-    "delete_contact": "Delete contact",
+    "delete_contact": "Delete Contact",
     "contact_address_copied": "Address Copied"
   },
   "sign": {
@@ -891,7 +890,7 @@
     "wallet_switcher": {
       "switch_wallets": "Switch Wallets",
       "other_wallets": "Other Wallets",
-      "cancel": "Cancel",
+      "done": "Done",
       "connected": "Connected"
     }
   },
@@ -1034,8 +1033,9 @@
   },
   "tabs": {
     "activity": "Activity",
-    "tokens": "Tokens",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "Points",
+    "tokens": "Tokens"
   },
   "activity": {
     "today": "Today",
@@ -1093,6 +1093,10 @@
     "coming_soon_description": "NFTs are coming soon. Stay tuned!",
     "view_on_web": "View on Web"
   },
+  "points": {
+    "coming_soon_header": "Coming Soon",
+    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+  },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
     "cancel": "Cancel",
@@ -1134,8 +1138,8 @@
       "about_token": "About %{name}",
       "price": "Price",
       "volume": "Volume",
-      "ath": "All time hight",
-      "atl": "All time low",
+      "ath": "All Time High",
+      "atl": "All Time Low",
       "market_cap": "Market Cap",
       "market_cap_explainer": {
         "title": "Market Cap",

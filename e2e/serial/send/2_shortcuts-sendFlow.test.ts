@@ -117,11 +117,11 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to open contact menu', async () => {
     await executePerformShortcut({ driver, key: 'DECIMAL' });
-    const copyOption = await findElementByText(driver, 'Copy address');
+    const copyOption = await findElementByText(driver, 'Copy Address');
     expect(copyOption).toBeTruthy();
     await executePerformShortcut({ driver, key: 'ESCAPE' });
     const doNotFindCopyOption = await isElementFoundByText({
-      text: 'Copy address',
+      text: 'Copy Address',
       driver,
     });
     expect(doNotFindCopyOption).toBe(false);
@@ -220,7 +220,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to select asset to send from home using keyboard ', async () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
-    await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+    await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 8 });
     await executePerformShortcut({ driver, key: 'SPACE' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
