@@ -170,15 +170,15 @@
           "show": "Show Private Key"
         },
         "recovery_phrase": {
-          "title": "Your Recovery Phrase",
+          "title": "Your Secret Recovery Phrase",
           "subtitle": "Anyone who has these words can access your entire wallet! You should never share them.",
           "saved": "I've saved these words",
-          "warning_1": "Never share your Recovery Phrase or enter it into any apps.",
-          "warning_2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
-          "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
-          "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
+          "warning_1": "Never share your Secret Recovery Phrase or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Secret Recovery Phrase.",
+          "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet.",
+          "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Show Recovery Phrase",
-          "phrase_copied": "Recovery Phrase Copied"
+          "phrase_copied": "Secret Recovery Phrase Copied"
         }
       }
     },
@@ -737,7 +737,7 @@
     "title": "Your Secret Recovery Phrase",
     "write_down_seed_importance": "Anyone who has these words can access your entire wallet! Write them down somewhere safe and never share them!",
     "saved_these_words": "I've saved these words",
-    "phrase_copied": "Recovery Phrase Copied"
+    "phrase_copied": "Secret Recovery Phrase Copied"
   },
   "import_wallet_via_secret": {
     "title": "Import Wallet",
