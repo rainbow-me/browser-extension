@@ -63,9 +63,9 @@ export function DappHostName({
 }) {
   const { badge, color } = getStatusBadge(dappStatus);
   return (
-    <Inline space="6px" alignVertical="center" alignHorizontal="center">
+    <Inline space="5px" alignVertical="center" alignHorizontal="center">
       {badge}
-      <Text align="center" color={color} size="20pt" weight="bold">
+      <Text align="center" color={color} size="16pt" weight="bold">
         {hostName}
       </Text>
     </Inline>
