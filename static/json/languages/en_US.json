@@ -221,7 +221,7 @@
     "cancelled": "Transaction Cancelled",
     "burn": {
       "pending": "Burning",
-      "confirmed": "Burnned",
+      "confirmed": "Burned",
       "failed": "Burn Failed"
     },
     "cancel": {
