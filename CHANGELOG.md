@@ -25,34 +25,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-- Introduced a network settings section within the browser extension settings #1044
-- Implemented a fallback dapp icon and dapp icon component #1050
-- Integrated support for Korean, Thai, and Arabic languages #1052
-- Users will now encounter a warning when attempting to connect to potentially harmful dapps #1051
+- A new Networks menu is available in Settings to hide networks and their assets throughout Rainbow. Yon can also drag to reorder networks to access your favorite chains even faster #1044
+- Users will now encounter warnings when attempting to connect to or sign transactions and messages on dapps that appear to be malicious and harmful #1051
+- Korean, Thai, and Arabic language support is now available in Settings #1052
 
 ### Changed
 
-- Improved the wallet switcher banner logic for consistent appearance of the banner #996
-- Routed public provider RPC calls via our Backend proxy #1058
-- Enhanced error handling now reports issues directly to our team, eliminating the need for manual restarts of the app #1042
+- Improved the consistency and reliability of the switch wallet banner when viewing a different wallet than what is currently connected to the dapp #996
+- Swaps are even faster now with 1 less click when selecting a swap pair #1060
+- The network switcher dropdown filter in Swaps can now be navigated using the keyboard #1043
+- Enhanced error handling and crashes with a new interface to report issues directly to the Rainbow team #1042
 
 ### Fixed
 
-- The network switcher dropdown in swaps can be navigated using keyboard controls #1043
-- Corrected the display issue where the network switcher in dapp connections showed inaccurate shortcut numbers #1053
-- The bridge screen now filters out unsupported chains for the selected token #1055
-- After filling in the swaps input, the system will automatically transition to output selection #1060
-- Rectified certain incorrect swap/bridge translations #1059
+- Corrected an issue where the network switcher for dapps in the top-left displayed inaccurate numbered hotkeys #1053
+- Fixed an issue where some token bridging routes would appear in the Bridge feature for unsupported networks #1055
+- Improved language strings throughout the Swap and Bridge interface #1059
+- Implemented a fallback dapp icon for dapps without a favicon or for icons that fail to load #1050
+- Removed a log that appeared while rendering external images #1068
 
 ### Internal
 
-- Adjusted CI by allowlisting specific dependencies #1063
-- Removed a log that cluttered the console, enhancing readability #1068
+- Introduced public provider routing for RPC calls, and added support for Rainbow's RPC for future use. This is not currently enabled in production #1058
 
 ### Testing
 
-- e2e: Tested shortcut swaps #1041
-- e2e: Incorporated Optimism Sends into the testing process #1048
+- e2e: testing shortcuts in Swaps #1041
+- e2e: Optimism L2 Sends are now covered with tests #1048
 
 ## [v1.2.39](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.39)
 
