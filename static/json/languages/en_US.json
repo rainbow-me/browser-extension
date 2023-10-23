@@ -121,7 +121,7 @@
       },
       "confirm_password": {
         "title": "Enter your Password",
-        "description": "You need to enter your current password to continue."
+        "description": "Continue with your current password."
       },
       "wallets_and_keys": {
         "title": "Wallets & Keys",
