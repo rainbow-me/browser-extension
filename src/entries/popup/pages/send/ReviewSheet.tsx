@@ -30,6 +30,7 @@ import {
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import {
   transformScales,
@@ -539,7 +540,8 @@ export const ReviewSheet = ({
                         />
                       </Column>
                       <Column>
-                        <Box
+                        <Lens
+                          testId="L2-check-1"
                           onClick={() =>
                             setSendingOnL2Checks([
                               !sendingOnL2Checks[0],
@@ -555,7 +557,7 @@ export const ReviewSheet = ({
                           >
                             {i18n.t('send.review.sending_on_l2_check_1')}
                           </Text>
-                        </Box>
+                        </Lens>
                       </Column>
                     </Columns>
                     <Columns space="7px">
@@ -577,7 +579,8 @@ export const ReviewSheet = ({
                         />
                       </Column>
                       <Column>
-                        <Box
+                        <Lens
+                          testId="L2-check-2"
                           onClick={() =>
                             setSendingOnL2Checks([
                               sendingOnL2Checks[0],
@@ -594,7 +597,7 @@ export const ReviewSheet = ({
                               chainName,
                             })}
                           </Text>
-                        </Box>
+                        </Lens>
                       </Column>
                     </Columns>
                   </Stack>

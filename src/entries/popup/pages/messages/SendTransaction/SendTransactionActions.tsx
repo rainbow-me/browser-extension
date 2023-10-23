@@ -1,5 +1,6 @@
 import { Address } from 'wagmi';
 
+import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
@@ -19,6 +20,7 @@ export const SendTransactionActions = ({
   onRejectRequest,
   waitingForDevice,
   loading = false,
+  dappStatus,
 }: {
   appHost: string;
   chainId: ChainId;
@@ -27,10 +29,11 @@ export const SendTransactionActions = ({
   onRejectRequest: () => void;
   waitingForDevice: boolean;
   loading: boolean;
+  dappStatus?: DAppStatus;
 }) => {
   const { selectedGas } = useGasStore();
   const { enoughNativeAssetForGas, buttonLabel } =
-    useApproveAppRequestValidations({ chainId, selectedGas });
+    useApproveAppRequestValidations({ chainId, selectedGas, dappStatus });
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -44,6 +47,7 @@ export const SendTransactionActions = ({
       }
     },
   });
+  const isScamDapp = dappStatus === DAppStatus.Scam;
 
   return (
     <Inline space="12px" wrap={false}>

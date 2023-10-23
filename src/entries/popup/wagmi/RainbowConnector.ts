@@ -6,7 +6,7 @@ import {
 } from '@ethersproject/providers';
 import { Chain, Connector } from 'wagmi';
 
-import { ChainIdHex, RainbowProvider } from '~/core/providers';
+import { ChainIdHex, RainbowInjectedProvider } from '~/core/providers';
 import { currentAddressStore, currentChainIdStore } from '~/core/state';
 
 function normalizeChainId(chainId: ChainIdHex | number | bigint) {
@@ -16,7 +16,7 @@ function normalizeChainId(chainId: ChainIdHex | number | bigint) {
 }
 
 export class RainbowConnector extends Connector<
-  RainbowProvider,
+  RainbowInjectedProvider,
   Record<string, unknown>,
   JsonRpcSigner
 > {
@@ -24,7 +24,7 @@ export class RainbowConnector extends Connector<
   readonly name: string;
   readonly ready = true;
 
-  #provider: RainbowProvider;
+  #provider: RainbowInjectedProvider;
 
   constructor({
     chains,
@@ -35,7 +35,7 @@ export class RainbowConnector extends Connector<
 
     this.id = 'rainbow';
     this.name = 'rainbow';
-    this.#provider = new RainbowProvider();
+    this.#provider = new RainbowInjectedProvider();
   }
 
   async connect() {

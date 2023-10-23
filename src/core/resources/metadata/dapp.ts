@@ -12,7 +12,6 @@ import {
   getDappHost,
   getDappHostname,
   getHardcodedDappInformation,
-  getPublicAppIcon,
   isValidUrl,
 } from '~/core/utils/connectedApps';
 import { capitalize } from '~/core/utils/strings';
@@ -66,7 +65,6 @@ async function fetchDappMetadata({
   });
 
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
-  const appLogo = appHost ? getPublicAppIcon(appHost) : undefined;
   const appName = response?.dApp?.name
     ? capitalize(response?.dApp?.name)
     : hardcodedAppName || appHost;
@@ -79,7 +77,7 @@ async function fetchDappMetadata({
     appHostName,
     appName,
     appShortName,
-    appLogo: response?.dApp?.iconURL || appLogo,
+    appLogo: response?.dApp?.iconURL,
     status: response.dApp?.status,
   };
   return dappMetadata;

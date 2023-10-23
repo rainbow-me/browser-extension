@@ -85,6 +85,14 @@
       "light": "Light",
       "dark": "Dark"
     },
+    "networks": {
+      "title": "Networks",
+      "quick_promo": {
+        "text": "Drag networks to reorder them",
+        "text_bold": "Tip:"
+      },
+      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked."
+    },
     "privacy_and_security": {
       "title": "Privacy & Security",
       "analytics": "Analytics",
@@ -127,6 +135,12 @@
         "backed_up": "Backed up",
         "not_backed_up": "Not backed up",
         "back_up_now": "Back Up Now",
+        "context_menu": {
+          "create_wallet": "Create wallet",
+          "view_secret_phrase": "View Secret Phrase",
+          "hide_wallets": "Hide Wallets",
+          "unhide_wallets": "Unhide Wallets"
+        },
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
@@ -172,6 +186,8 @@
       "title": "Transactions",
       "default_speed": "Default Speed",
       "use_flashbots": "Use Flashbots",
+      "clear_transactions_and_nonces": "Clear Pending Transactions",
+      "clear_transactions_and_nonces_success": "Pending transactions cleared",
       "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures. Learn more."
     },
     "currency": {
@@ -901,9 +917,11 @@
     "message_signing_request": "Message Signing Request",
     "message": "Message",
     "sign_message": "Sign Message",
+    "sign_message_anyway": "Sign Anyway",
     "confirm_hw": "Confirm on your device",
     "balance": "Balance",
-    "send_transaction": "Send Transaction",
+    "send_transaction": "Confirm",
+    "send_transaction_anyway": "Confirm Anyway",
     "contract_deployment": "Contract Deployment",
     "transaction_request": "Transaction Request",
     "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
@@ -984,7 +1002,9 @@
     "copy_to_clipboard": "Copy to clipboard"
   },
   "errors": {
-    "no_wallet_name_set": "No wallet name set"
+    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "no_wallet_name_set": "No wallet name set",
+    "report_error": "Report issue"
   },
   "common_titles": {
     "before_you_proceed": "Before you proceed"
@@ -1235,7 +1255,7 @@
   },
   "alert": {
     "ok": "Ok",
-    "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
+    "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
     "coming_soon": "Coming Soon!",
     "no_hw_ff": "Hardware wallets are not supported on Firefox. Try a different browser like Chrome or Brave."
   },

@@ -11,8 +11,10 @@ import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 interface AlertProps {
-  text: string;
+  action?: () => void;
+  actionText?: string;
   callback?: () => void;
+  text: string;
 }
 
 const eventEmitter = new EventEmitter();
@@ -24,8 +26,13 @@ const listenAlert = (callback: ({ text, callback }: AlertProps) => void) => {
   };
 };
 
-export const triggerAlert = ({ text, callback }: AlertProps) => {
-  eventEmitter.emit('rainbow_alert', { text, callback });
+export const triggerAlert = ({
+  action,
+  actionText,
+  text,
+  callback,
+}: AlertProps) => {
+  eventEmitter.emit('rainbow_alert', { action, actionText, text, callback });
 };
 
 export const Alert = () => {
@@ -35,6 +42,11 @@ export const Alert = () => {
   const visible = !!alert;
 
   useEffect(() => listenAlert(setAlert), []);
+
+  const onAction = () => {
+    alert?.action?.();
+    setAlert(null);
+  };
 
   const onClose = () => {
     alert?.callback?.();
@@ -66,6 +78,22 @@ export const Alert = () => {
               {alert.text}
             </Text>
           </Box>
+          {alert?.action && alert?.actionText && (
+            <Inline alignHorizontal="right">
+              <Button
+                width="full"
+                color="accent"
+                height="28px"
+                variant="flat"
+                onClick={onAction}
+                tabIndex={0}
+              >
+                <Text color="label" size="16pt" weight="bold">
+                  {alert.actionText}
+                </Text>
+              </Button>
+            </Inline>
+          )}
           <Inline alignHorizontal="right">
             <Button
               width="full"

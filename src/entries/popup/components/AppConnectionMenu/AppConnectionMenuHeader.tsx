@@ -8,7 +8,6 @@ import {
   Box,
   Column,
   Columns,
-  Inline,
   Inset,
   Row,
   Rows,
@@ -17,7 +16,7 @@ import {
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
-import ExternalImage from '../ExternalImage/ExternalImage';
+import { DappIcon } from '../DappIcon/DappIcon';
 
 interface AppConnectionMenuHeaderProps {
   opacity: number;
@@ -41,23 +40,7 @@ export const AppConnectionMenuHeader = ({
       <Inset top="10px" bottom="14px">
         <Columns space="8px" alignVertical="center">
           <Column width="content">
-            <Box
-              style={{
-                height: 18,
-                width: 18,
-                borderRadius: 3.5,
-                overflow: 'hidden',
-                marginRight: 2,
-              }}
-            >
-              <Inline
-                height="full"
-                alignHorizontal="center"
-                alignVertical="center"
-              >
-                <ExternalImage src={appLogo} width="16" height="16" />
-              </Inline>
-            </Box>
+            <DappIcon appLogo={appLogo} size="18px" />
           </Column>
           <Column>
             <Box

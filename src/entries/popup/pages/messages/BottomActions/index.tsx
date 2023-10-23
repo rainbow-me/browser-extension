@@ -377,7 +377,7 @@ export const AcceptRequestButton = ({
       <TextOverflow
         weight="bold"
         size="16pt"
-        color={isScamDapp ? 'labelSecondary' : 'label'}
+        color={isScamDapp ? 'red' : 'label'}
       >
         {loading ? <Spinner size={16} color="label" /> : label}
       </TextOverflow>

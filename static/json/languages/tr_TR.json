@@ -8,6 +8,12 @@
   "permissions": {
     "firefox_permission_denied": "Rainbow'ın düzgün çalışabilmesi için tüm web sitelerine erişim iznine ihtiyacı var. Lütfen devam etmek için izni verin."
   },
+  "wallet": {
+    "rename": "Cüzdanı Yeniden Adlandır",
+    "edit_appearance": "Görünümü Düzenle",
+    "view_on": "%{explorer}üzerinde görüntüle",
+    "copy_address": "Adresi Kopyala"
+  },
   "wallet_switcher": {
     "title": "Cüzdanlar",
     "rename_wallet": "Cüzdanı Yeniden Adlandır",
@@ -483,10 +489,22 @@
     }
   },
   "swap": {
-    "title": "Değiştir",
-    "input_token_to_swap_placeholder": "Değiştirmek için bir jeton seç",
+    "_actions": {
+      "Swap": "Takas",
+      "swap": "takas",
+      "swaps": "takaslar",
+      "Swapping": "Takas Oluyor",
+      "swapping": "takas yapılıyor",
+      "Bridge": "Bridge",
+      "bridge": "köprü",
+      "bridges": "köprüler",
+      "Bridging": "Köprüleme",
+      "bridging": "köprü kurma"
+    },
+    "title": "%{Action}",
+    "input_token_placeholder": "Takas etmek için bir token seçin %{action}",
     "input_token_to_receive_placeholder": "Almak için bir jeton seç",
-    "select_tokens_to_swap": "Değiştirmek için jetonları seç",
+    "select_tokens": "Takas etmek için tokenları seçin %{action}",
     "max": "Maks.",
     "balance": "Bakiye",
     "tokens_input": {
@@ -498,14 +516,14 @@
       "filter_by_network": "Ağa göre filtrele",
       "switch_networks": "Ağları Değiştir",
       "nothing_found": "Hiçbir şey bulunamadı",
-      "nothing_found_description": "Bazı jetonlar yeterli likiditeye sahip olmadığından başarılı bir takas gerçekleştirilemiyor.",
-      "nothing_found_description_l2": "Bazı jetonlar yeterli Layer 2 likiditeye sahip olmadığından başarılı bir takas gerçekleştirilemiyor.",
+      "nothing_found_description": "Bazı tokenların başarılı bir %{action}gerçekleştirmek için yeterli likiditeye sahip değil.",
+      "nothing_found_description_l2": "Bazı tokenların başarılı bir %{action}gerçekleştirmek için yeterli katman 2 likiditesi yok.",
       "output_quotes_disabled": "Çıktı alıntıları devre dışı"
     },
     "warnings": {
       "long_wait": {
         "title": "Uzun bekleme",
-        "description": "Takas için en fazla %{time}"
+        "description": "En fazla %{time} ile %{action}arası"
       },
       "price_impact": {
         "title": "Küçük piyasa",
@@ -516,8 +534,8 @@
       "rainbow": "Oto"
     },
     "settings": {
-      "title": "Takas Ayarları",
-      "route_swaps": "Takasları yönlendir",
+      "title": "%{Action} Ayarlar",
+      "route": "Rota %{actions} üzerinden",
       "use_flashbots": "Flashbots kullan",
       "max_slippage": "Maksimum slippage",
       "use_defaults": "Varsayılanları kullan",
@@ -529,12 +547,12 @@
       "explainers": {
         "slippage": {
           "title": "Slippage",
-          "description_1": "Slippage, işleminiz gönderildiğinde ve onaylandığında takas fiyatının değiştiği zaman aralığında meydana gelir.",
-          "description_2": "Daha yüksek slippage toleransı ayarlamak, takasınızın başarılı olma olasılığını artırır, ancak daha kötü bir fiyat elde etmenize neden olabilir.",
+          "description_1": "Kayma, işleminizi gönderdiğiniz zaman ve onayı arasında %{action} fiyatında değişiklik olması durumunda ortaya çıkar.",
+          "description_2": "Daha yüksek bir kayma toleransı ayarlamanız, %{action} işleminizin başarılı olma olasılığını artırır, ancak daha kötü bir fiyata dönüşebilir.",
           "read_more": {
             "open_text": "Hala merak mı ediyorsunuz? ",
             "link_text": "Daha fazla oku",
-            "close_text": " slippage hakkında ve takasları nasıl etkilediğine dair."
+            "close_text": " Kayma hakkında ve bunun %{actions}üzerindeki etkisi."
           }
         },
         "flashbots": {
@@ -547,12 +565,12 @@
           }
         },
         "routing": {
-          "title": "Swap Yönlendirme",
-          "description": "Varsayılan olarak, Rainbow swapınız için mümkün olan en ucuz rota seçimini yapar. Dilerseniz sadece 0x veya 1inch kullanmayı tercih edebilirsiniz.",
+          "title": "%{Action} Yönlendirme",
+          "description": "Varsayılan olarak, Rainbow %{action}işlemi için en ucuz rotayı seçer. 0x veya 1inch'i özellikle kullanmayı tercih ederseniz, bunu da yapabilirsiniz.",
           "read_more": {
             "open_text": "Hâlâ meraklı mısınız? ",
             "link_text": "Daha fazlasını okuyun",
-            "close_text": " swap işlemlerinin yönlendirilmesine yaklaşımımız hakkında"
+            "close_text": " Rotalama yaklaşımımız hakkında %{actions}."
           }
         },
         "got_it": "Anladım"
@@ -568,40 +586,37 @@
       "enter_an_amount": "Bir miktar girin"
     },
     "review": {
-      "title_swap": "İncele ve Swap Yap",
-      "title_bridge": "İncele ve Köprüle",
+      "title": "Gözden Geçir & %{Action}",
       "flashbots_on": "Açık",
       "minimum_received": "Minimum alınan",
-      "swapping_via": "Şu hedefe dönüşüm yapılıyor",
-      "bridging_via": "Şu üzerinden köprüleme yapılıyor",
+      "via": "%{Actioning} üzerinden",
       "included_fee": "Dahil olan Rainbow ücreti",
       "use_flashbots": "Flashbots kullan",
       "exchange_rate": "Döviz kuru",
       "asset_contract": "%{symbol} sözleşme",
       "more_details": "Daha fazla ayrıntı",
-      "swap_confirmation": "%{sellSymbol} ile %{buySymbol}takas et",
-      "bridge_confirmation": "%{sellSymbol}üzerinden köprülüyor",
+      "confirmation": "%{Action} %{sellSymbol} yerine %{buySymbol}",
       "go_back": "Geri git"
     },
     "explainers": {
       "long_wait": {
-        "title": "Uzun süre bekleyin",
-        "description": "Bu takasın tamamlanması çok uzun sürebilir. Bu genellikle zincirler arası bir köprüdeki sorunlardan kaynaklanır.",
+        "title": "%{action}için uzun bekleme",
+        "description": "Bu %{action} tamamlanması çok uzun bir zaman alabilir. Bu genellikle bir cross-chain köprüsündeki problemlerden kaynaklanmaktadır.",
         "action_label": "Yine de devam et"
       },
       "no_route": {
         "title": "Yol bulunamadı",
-        "description": "Bu takas için bir yol bulamadık. Bu takas için bir yol olmayabilir veya miktar çok küçük olabilir.",
+        "description": "Bu %{action}için bir rota bulamadık. Bu %{action}için bir rota mevcut olmayabilir veya miktar çok küçük olabilir.",
         "action_label": "Anladım"
       },
       "no_quote": {
         "title": "Teklif mevcut değil",
-        "description": "Bu takas için teklif bulamadık. Bunun nedeni, takas için yeterli likiditenin olmaması veya tokenin nasıl uygulandığıyla ilgili sorunlardan kaynaklanabilir.",
+        "description": "Bu %{action}için teklif bulamadık. Bu, yeterli likidite olmaması nedeniyle %{action} ya da tokenin nasıl uygulandığına dair problemler nedeniyle olabilir.",
         "action_label": "Yine de devam et"
       },
       "insufficient_liquidity": {
         "title": "Yetersiz likidite",
-        "description": "Bu takas için teklif bulamadık çünkü bu çift borsalarda yeterli likiditeye sahip değil.",
+        "description": "Bu %{action} için teklif bulamadık çünkü bu çiftin borsalarda yeterli likiditesi yok.",
         "action_label": "Anladım",
         "footer_text": {
           "open_text": "Hala meraklı mısın? ",
@@ -611,13 +626,23 @@
       },
       "fee_on_transfer_token": {
         "title": "Transfer Token Üzerine Ücret",
-        "description": "Bu swap, %{tokenName} sözleşmesi ekstra ücretler eklediği için Rainbow'da başarısız olacak.",
+        "description": "Bu %{action} , Rainbow'da başarısız olacak çünkü %{tokenName} kontratı ekstra ücretler ekliyor.",
         "action_label": "Anladım",
         "footer_text": {
           "open_text": "Oku ",
           "link_text": "rehberimiz",
-          "close_text": " bu tokenı takas etmek için yardım alın!"
+          "close_text": " %{actioning} bu tokeni yardım etmek için!"
         }
+      },
+      "flashbots": {
+        "title": "Flashbots",
+        "description": "Flashbots işlemlerinizi önleyici işlemlerden ve sandviç saldırılarından korur; bu, daha kötü bir fiyat elde etmenize veya işleminizin başarısız olmasına neden olabilir.",
+        "action_label": "Anladım"
+      },
+      "fee": {
+        "title": "Rainbow Ücreti",
+        "description": "Rainbow, %{actions}'den %{feePercentage} ücret alır. Bize en iyi Ethereum deneyimini yaşatabilme yeteneğimizin bir parçasıdır.",
+        "action_label": "Anladım"
       }
     }
   },
@@ -1063,6 +1088,7 @@
   },
   "token_details": {
     "swap": "Değiştir",
+    "bridge": "Bridge",
     "send": "Gönder",
     "balance": "Bakiye",
     "value": "Değer",
@@ -1194,18 +1220,6 @@
       "max_base_title": "Maksimum taban ücreti",
       "max_priority_explainer": "Maden işçisi bahisi, işleminizi ağda onaylayan madencinin doğrudan alır.\n\nDaha yüksek bahis, işleminizin daha hızlı onaylanma olasılığını artırır.",
       "max_priority_title": "Maden işçisi bahisi"
-    },
-    "swap": {
-      "flashbots": {
-        "title": "Flashbots",
-        "description": "Flashbots, iyi bir fiyat almanıza veya işleminizin başarısız olmasına neden olabilecek önden alma ve sandwich saldırılarından işlemlerinizi korur.",
-        "action_label": "Anladım"
-      },
-      "fee": {
-        "title": "Rainbow Ücreti",
-        "description": "Rainbow, takas işlemlerinden bir %{feePercentage} ücret alır. Bu, size en iyi Ethereum deneyimini sunmamızı sağlayan unsurlardan biridir.",
-        "action_label": "Anladım"
-      }
     }
   },
   "injected_notifications": {

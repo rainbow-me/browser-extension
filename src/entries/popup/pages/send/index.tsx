@@ -27,6 +27,7 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { chainIdToUse } from '~/core/utils/chains';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
@@ -82,7 +83,8 @@ export function Send() {
   const isMyWallet = (address: Address) =>
     allWallets?.some((w) => w.address === address);
 
-  const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { connectedToHardhat, connectedToHardhatOp } =
+    useConnectedToHardhatStore();
 
   const {
     asset,
@@ -189,6 +191,12 @@ export function Send() {
     saveSendTokenAddressAndChain,
   } = usePopupInstanceStore();
 
+  const activeChainId = chainIdToUse(
+    connectedToHardhat,
+    connectedToHardhatOp,
+    chainId,
+  );
+
   const handleSend = useCallback(
     async (callback?: () => void) => {
       if (!config.send_enabled) return;
@@ -204,7 +212,7 @@ export function Send() {
           from: fromAddress,
           to: txToAddress,
           value,
-          chainId: connectedToHardhat ? ChainId.hardhat : chainId,
+          chainId: activeChainId,
           data,
         });
         if (result && asset) {
@@ -271,11 +279,11 @@ export function Send() {
       resetSendValues,
       txToAddress,
       value,
-      connectedToHardhat,
-      chainId,
+      activeChainId,
       data,
-      assetAmount,
       asset,
+      assetAmount,
+      chainId,
       selectedGas.transactionGasParams,
       navigate,
     ],

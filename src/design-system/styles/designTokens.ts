@@ -1005,6 +1005,7 @@ export const symbolNames = selectSymbolNames(
   'paintbrush.pointed.fill',
   'exclamationmark.octagon.fill',
   'network.badge.shield.half.filled',
+  'safari.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

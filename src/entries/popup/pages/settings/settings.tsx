@@ -52,8 +52,12 @@ export function Settings() {
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
     useCurrentThemeStore();
-  const { connectedToHardhat, setConnectedToHardhat } =
-    useConnectedToHardhatStore();
+  const {
+    connectedToHardhat,
+    setConnectedToHardhat,
+    connectedToHardhatOp,
+    setConnectedToHardhatOp,
+  } = useConnectedToHardhatStore();
   const { clearNonces } = useNonceStore();
 
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
@@ -110,6 +114,10 @@ export function Settings() {
     setConnectedToHardhat(!connectedToHardhat);
   }, [setConnectedToHardhat, connectedToHardhat]);
 
+  const connectToHardhatOp = useCallback(() => {
+    setConnectedToHardhatOp(!connectedToHardhatOp);
+  }, [setConnectedToHardhatOp, connectedToHardhatOp]);
+
   const setRainbowAsDefaultWallet = useCallback(
     async (rainbowAsDefault: boolean) => {
       analytics.track(
@@ -149,6 +157,24 @@ export function Settings() {
           />
         </Menu>
         <Menu>
+          <MenuItem
+            testId={'networks-link'}
+            first
+            last
+            leftComponent={
+              <Symbol
+                symbol="network"
+                weight="medium"
+                size={18}
+                color="green"
+              />
+            }
+            hasRightArrow
+            onClick={() => navigate(ROUTES.SETTINGS__NETWORKS)}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.networks.title')} />
+            }
+          />
           <MenuItem
             testId={'privacy-security-link'}
             first
@@ -411,6 +437,20 @@ export function Settings() {
               }
               onClick={connectToHardhat}
               testId="connect-to-hardhat"
+            />
+            <MenuItem
+              last
+              titleComponent={
+                <MenuItem.Title
+                  text={
+                    connectedToHardhatOp
+                      ? 'Disconnect from Hardhat Optimism'
+                      : 'Connect to Hardhat Optimism'
+                  }
+                />
+              }
+              onClick={connectToHardhatOp}
+              testId="connect-to-hardhat-op"
             />
             <MenuItem
               last

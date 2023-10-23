@@ -90,7 +90,7 @@ export const RequestAccounts = ({
           appHostName={dappMetadata?.appHostName}
           appLogo={dappMetadata?.appLogo}
           appName={dappMetadata?.appName}
-          status={dappMetadata?.status}
+          dappStatus={dappMetadata?.status}
         />
         <Separator color="separatorTertiary" />
       </Row>
@@ -104,7 +104,7 @@ export const RequestAccounts = ({
           onRejectRequest={onRejectRequest}
           appName={dappMetadata?.appName}
           loading={loading}
-          status={dappMetadata?.status}
+          dappStatus={dappMetadata?.status}
         />
       </Row>
     </Rows>
