@@ -47,19 +47,18 @@ export function Activities() {
   return (
     <>
       <Box
-        marginTop={'-20px'}
+        marginTop="-20px"
         width="full"
         style={{
-          overflow: 'auto',
-          // prevent coin icon shadow from clipping in empty space when list is small
-          paddingBottom: transactions.length > 6 ? 8 : 60,
+          // Prevent bottommost coin icon shadow from clipping
+          overflow: 'visible',
         }}
+        paddingBottom="12px"
       >
         <Box
           width="full"
           style={{
             height: activityRowVirtualizer.getTotalSize(),
-            minHeight: '436px',
             position: 'relative',
           }}
         >
