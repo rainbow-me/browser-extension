@@ -152,8 +152,11 @@ describe.runIf(browser !== 'firefox')(
         text: 'Activity',
         driver,
       });
-      await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
-      await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+      await executePerformShortcut({
+        driver,
+        key: 'ARROW_RIGHT',
+        timesToPress: 2,
+      });
       await findElementByText(driver, 'NFTs');
       const tokens = await isElementFoundByText({
         text: 'Tokens',
@@ -165,9 +168,11 @@ describe.runIf(browser !== 'firefox')(
         text: 'NFTs',
         driver,
       });
-      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
-      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
-      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await executePerformShortcut({
+        driver,
+        key: 'ARROW_LEFT',
+        timesToPress: 3,
+      });
       const points = await isElementFoundByText({
         text: 'Points',
         driver,
