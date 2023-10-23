@@ -144,26 +144,35 @@ describe.runIf(browser !== 'firefox')(
 
     it('should be able to use arrows to tab switch', async () => {
       await findElementByText(driver, 'Tokens');
-      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
-      await findElementByText(driver, 'Activity');
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+      await findElementByText(driver, 'Activity');
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
       await findElementByText(driver, 'Tokens');
       const activity = await isElementFoundByText({
         text: 'Activity',
         driver,
       });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+      await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await findElementByText(driver, 'NFTs');
       const tokens = await isElementFoundByText({
         text: 'Tokens',
         driver,
       });
-      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+      await findElementByText(driver, 'Points');
       const nfts = await isElementFoundByText({
         text: 'NFTs',
         driver,
       });
-      expect(activity && tokens && nfts).toBe(false);
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      const points = await isElementFoundByText({
+        text: 'Points',
+        driver,
+      });
+      expect(activity && tokens && nfts && points).toBe(false);
     });
 
     it('should be able to navigate to highlight asset + open context menu with keyboard', async () => {
@@ -206,7 +215,7 @@ describe.runIf(browser !== 'firefox')(
     });
 
     it('should be able to navigate to highlight transaction + open context menu with keyboard', async () => {
-      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await findElementByText(driver, 'Activity');
       await executePerformShortcut({
         driver,

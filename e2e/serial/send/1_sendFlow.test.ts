@@ -248,7 +248,7 @@ it('should be able to rename a wallet from the wallet switcher', async () => {
     driver,
   });
   await findElementByTestIdAndClick({ id: 'more-info-2', driver });
-  await findElementByTextAndClick(driver, 'Rename wallet');
+  await findElementByTextAndClick(driver, 'Rename Wallet');
   await typeOnTextInput({
     id: 'wallet-name-input',
     driver,

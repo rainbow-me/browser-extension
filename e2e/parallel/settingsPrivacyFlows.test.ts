@@ -189,7 +189,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await findElementByTestIdAndClick({ id: 'account-name', driver });
     const numOfWallets = await getNumberOfWallets(driver, 'wallet-account-');
     await findElementByTestIdAndClick({ id: 'more-info-1', driver });
-    await findElementByTextAndClick(driver, 'Hide wallet');
+    await findElementByTextAndClick(driver, 'Hide Wallet');
     await findElementByTestIdAndClick({ id: 'remove-button', driver });
     const numOfWalletsAfterHide = await getNumberOfWallets(
       driver,

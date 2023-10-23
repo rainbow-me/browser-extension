@@ -117,11 +117,11 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to open contact menu', async () => {
     await executePerformShortcut({ driver, key: 'DECIMAL' });
-    const copyOption = await findElementByText(driver, 'Copy address');
+    const copyOption = await findElementByText(driver, 'Copy Address');
     expect(copyOption).toBeTruthy();
     await executePerformShortcut({ driver, key: 'ESCAPE' });
     const doNotFindCopyOption = await isElementFoundByText({
-      text: 'Copy address',
+      text: 'Copy Address',
       driver,
     });
     expect(doNotFindCopyOption).toBe(false);
