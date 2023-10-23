@@ -26,7 +26,6 @@ import { Navbar } from '../../Navbar/Navbar';
 export const TestnetModeWatcher = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
-  console.log('-- url,url', url);
   const { data: dappMetadata } = useDappMetadata({ url });
 
   const { testnetMode } = useTestnetModeStore();
@@ -36,7 +35,6 @@ export const TestnetModeWatcher = () => {
 
   const [closedByUser, setClosedByUser] = useState(false);
 
-  console.log('-- activeSession', activeSession);
   const [hint, setHint] = useState<{
     show: boolean;
     type?: 'tesnetModeInMainnet' | 'notTestnetModeInTestnet';
@@ -49,11 +47,6 @@ export const TestnetModeWatcher = () => {
   };
 
   useEffect(() => {
-    console.log('=--- activeSession', activeSession);
-  }, [activeSession]);
-  console.log('--- ppppppppp');
-  useEffect(() => {
-    console.log('--- ppppppppp');
     if (activeSession && !hint.show && !closedByUser) {
       const isCurrentAddressConnected = isLowerCaseMatch(
         activeSession.address,
@@ -61,7 +54,6 @@ export const TestnetModeWatcher = () => {
       );
       if (isCurrentAddressConnected) {
         const activeSessionChainId = activeSession?.chainId;
-        console.log('settinghint');
         if (testnetMode && !isL2Chain(activeSessionChainId)) {
           setHint({
             show: true,
