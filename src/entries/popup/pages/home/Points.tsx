@@ -106,7 +106,7 @@ export function Points() {
             display="flex"
             justifyContent="center"
             style={{
-              transform: 'translateY(-3px)',
+              transform: 'translateY(-4px)',
             }}
           >
             <Box
