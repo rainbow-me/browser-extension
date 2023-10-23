@@ -875,6 +875,15 @@
       "testnet_mode": "Testnet Mode"
     }
   },
+  "testnet_mode_watcher": {
+    "connect_to":"Connect to %{chainName}",
+    "testnet_mode": "Testnet Mode",
+    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
+    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
+    "disable_and_connect": "Disable and connect",
+    "enable_and_connect": "Enable and connect",
+    "cancel": "Cancel"
+  },
   "app_connection_switcher": {
     "banner": {
       "connect_to": "Connect to %{appName}",

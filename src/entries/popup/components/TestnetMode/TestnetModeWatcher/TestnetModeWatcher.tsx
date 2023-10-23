@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
-import { isL2Chain } from '~/core/utils/chains';
+import { isTestnetChainId } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Box,
@@ -54,13 +55,19 @@ export const TestnetModeWatcher = () => {
       );
       if (isCurrentAddressConnected) {
         const activeSessionChainId = activeSession?.chainId;
-        if (testnetMode && !isL2Chain(activeSessionChainId)) {
+        if (
+          testnetMode &&
+          !isTestnetChainId({ chainId: activeSessionChainId })
+        ) {
           setHint({
             show: true,
             type: 'tesnetModeInMainnet',
             chainId: activeSessionChainId,
           });
-        } else if (!testnetMode && isL2Chain(activeSessionChainId)) {
+        } else if (
+          !testnetMode &&
+          isTestnetChainId({ chainId: activeSessionChainId })
+        ) {
           setHint({
             show: true,
             type: 'notTestnetModeInTestnet',
@@ -84,7 +91,9 @@ export const TestnetModeWatcher = () => {
             <ChainBadge size="45" chainId={hint.chainId} />
             <Stack space="12px" alignHorizontal="center">
               <Text color="label" size="16pt" weight="bold">
-                {`Connect to ${ChainNameDisplay[hint.chainId]}`}
+                {i18n.t('testnet_mode_watcher.connect_to', {
+                  chainName: ChainNameDisplay[hint.chainId],
+                })}
               </Text>
               <Text
                 align="center"
@@ -94,10 +103,18 @@ export const TestnetModeWatcher = () => {
               >
                 🕹️{' '}
                 <TextLink scale={false} color="green">
-                  Testnet Mode
+                  {i18n.t('testnet_mode_watcher.testnet_mode')}
                 </TextLink>{' '}
-                {`is currently active. Would you like to disable it and connect to
-                ${ChainNameDisplay[hint.chainId]}?`}
+                {i18n.t(
+                  `testnet_mode_watcher.${
+                    hint.type === 'tesnetModeInMainnet'
+                      ? 'testnet_mode_active'
+                      : 'testnet_mode_not_active'
+                  }`,
+                  {
+                    chainName: ChainNameDisplay[hint.chainId],
+                  },
+                )}
               </Text>
             </Stack>
             <Box style={{ width: '106px' }}>
@@ -122,7 +139,13 @@ export const TestnetModeWatcher = () => {
                   tabIndex={0}
                   enterCta
                 >
-                  {'Disable and connect'}
+                  {i18n.t(
+                    `testnet_mode_watcher.${
+                      hint.type === 'tesnetModeInMainnet'
+                        ? 'disable_and_connect'
+                        : 'enable_and_connect'
+                    }`,
+                  )}
                 </Button>
                 <Button
                   testId="nudge-sheet-connect-different-wallet"
@@ -135,7 +158,7 @@ export const TestnetModeWatcher = () => {
                   tabIndex={0}
                 >
                   <TextOverflow weight="bold" size="16pt" color="label">
-                    {'Cancel'}
+                    {i18n.t(`testnet_mode_watcher.cancel`)}
                   </TextOverflow>
                 </Button>
               </Stack>
