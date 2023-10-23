@@ -26,13 +26,6 @@ export type RequestResponse =
       result: any;
     };
 
-const getMetaMaskProvider = () => {
-  return window.walletRouter.providers.find(
-    (provider) =>
-      provider.isMetaMask && !(provider as RainbowInjectedProvider).isRainbow,
-  );
-};
-
 /**
  * The provider injected into `window.ethereum`.
  *
@@ -121,17 +114,6 @@ export class RainbowInjectedProvider extends EventEmitter {
       'rainbow_prefetchDappMetadata',
       window.location.href,
     );
-    if (!this.rainbowIsDefaultProvider) {
-      const provider = getMetaMaskProvider();
-      if (provider) {
-        // using RainbowInjectedProvider as type since wagmi Ethereum type is different
-        const response = await (provider as RainbowInjectedProvider).request({
-          method,
-          params,
-        });
-        return response;
-      }
-    }
 
     // eslint-disable-next-line no-plusplus
     const id = this.requestId++;
