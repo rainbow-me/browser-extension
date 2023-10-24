@@ -7,9 +7,10 @@ import {
   useState,
 } from 'react';
 import { useLocation } from 'react-router';
-import { Address } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
@@ -17,21 +18,25 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { setSettingWallets } from '~/core/utils/settings';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
+import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
 } from '~/entries/popup/components/ContextMenu/ContextMenu';
+import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
 import { LedgerIcon } from '~/entries/popup/components/LedgerIcon/LedgerIcon';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { TrezorIcon } from '~/entries/popup/components/TrezorIcon/TrezorIcon';
+import WarningInfo from '~/entries/popup/components/WarningInfo/WarningInfo';
 import { add, getWallets, remove } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
+import * as wallet from '../../../../handlers/wallet';
 import { CreateWalletPrompt } from '../../../walletSwitcher/createWalletPrompt';
 
 const t = (s: string) =>
@@ -55,6 +60,7 @@ function useCreateWalletPrompt() {
     cancel,
   };
 }
+
 function WalletsAndKeysContextMenu({
   children,
   wallet,
@@ -137,10 +143,32 @@ export const WalletsAndKeys = () => {
   const { getWalletBackup } = useWalletBackupsStore();
   const firstNotBackedUpRef = useRef<HTMLDivElement>(null);
   const { state } = useLocation();
+  const [accounts, setAccounts] = useState<Address[]>([]);
+  const { address } = useAccount();
+  const { setCurrentAddress } = useCurrentAddressStore();
+  const [wipingWallets, setWipingWallets] = useState(false);
 
   useEffect(() => {
     setSettingWallets(null);
   }, []);
+  console.log(accounts);
+
+  const updateState = useCallback(async () => {
+    const accounts = await wallet.getAccounts();
+    setAccounts(accounts);
+    if (accounts.length > 0 && !accounts.includes(address as Address)) {
+      setCurrentAddress(accounts[0]);
+    }
+  }, [address, setCurrentAddress]);
+
+  const handleWipeWallet = () => {
+    setWipingWallets(true);
+  };
+
+  const wipe = useCallback(async () => {
+    await wallet.wipe();
+    await updateState();
+  }, [updateState]);
 
   const handleViewWallet = useCallback(
     async ({ wallet }: { wallet: KeychainWallet }) => {
@@ -203,8 +231,29 @@ export const WalletsAndKeys = () => {
     }
   }, [containerRef, state?.fromBackupReminder]);
 
+  const iconAndCopyList: IconAndCopyItem[] = [
+    {
+      icon: {
+        symbol: 'exclamationmark.triangle',
+        color: 'red',
+      },
+      copy: 'this is irreversible. this will delete all wallets and data. make sure to write down any wallet recovery info before proceeding.',
+    },
+  ];
+
   return (
     <Box as="div" paddingHorizontal="20px">
+      <BottomSheet
+        show={wipingWallets}
+        onClickOutside={() => setWipingWallets(false)}
+      >
+        <WarningInfo
+          iconAndCopyList={iconAndCopyList}
+          onProceed={wipe}
+          proceedButtonLabel={'Wipe all data'}
+          proceedButtonSymbol={'trash'}
+        />
+      </BottomSheet>
       <MenuContainer>
         {wallets.map((wallet, idx) => {
           const walletBackedUp = getWalletBackup({ wallet });
@@ -340,6 +389,32 @@ export const WalletsAndKeys = () => {
             }
             onClick={handleCreateNewWallet}
           />
+        </Menu>
+        <Menu>
+          <MenuItem
+            testId={'wipe-wallets'}
+            first
+            last
+            titleComponent={
+              <MenuItem.Title
+                text={'Delete all wallets and data (this is irreversible)'}
+                color="red"
+              />
+            }
+          />
+          <Box paddingHorizontal="16px" paddingVertical="16px">
+            <Inline alignHorizontal="center" alignVertical="center">
+              <Button
+                width="full"
+                color="red"
+                height="36px"
+                variant="tinted"
+                onClick={handleWipeWallet}
+              >
+                {'Delete'}
+              </Button>
+            </Inline>
+          </Box>
         </Menu>
       </MenuContainer>
     </Box>
