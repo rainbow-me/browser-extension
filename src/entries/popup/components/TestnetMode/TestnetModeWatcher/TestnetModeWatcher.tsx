@@ -47,20 +47,16 @@ export const TestnetModeWatcher = ({
   const dappHost = dappMetadata?.appHost || '';
 
   const { testnetMode, setTestnetMode } = useTestnetModeStore();
-  const { activeSession, disconnectSession } = useAppSession({
+  const { activeSession } = useAppSession({
     host: dappHost,
   });
 
   const [hint, setHint] = useState<Hint>(INITIAL_HINT);
 
+  console.log('pendingRequest', pendingRequest);
   const closeSheet = () => {
     setHint(INITIAL_HINT);
     rejectRequest?.();
-    activeSession &&
-      disconnectSession({
-        address: activeSession?.address,
-        host: dappHost,
-      });
   };
 
   const action = () => {
