@@ -36,7 +36,6 @@ export function NFTs() {
     { address },
     { select: selectNftsByCollection },
   );
-  console.log('sort: ', sort);
   const { data: nftsHistory } = useNftsHistory({ address });
   const containerRef = useContainerRef();
   const sections = Object.values(nfts || {});
