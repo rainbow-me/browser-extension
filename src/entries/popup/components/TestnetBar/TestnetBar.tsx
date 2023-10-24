@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLocation } from 'react-router';
 
+import { i18n } from '~/core/languages';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Inline, Text } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -56,7 +57,7 @@ export const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
               </Box>
               <MenuItem.TextIcon icon="🕹" />
               <Text align="center" color="green" size="12pt" weight="heavy">
-                Testnet Mode
+                {i18n.t('menu.home_header_right.testnet_mode')}
               </Text>
             </Inline>
           </Box>

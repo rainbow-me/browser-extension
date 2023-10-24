@@ -186,9 +186,7 @@
           "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
           "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
           "show": "Show Recovery Phrase",
-          "phrase_copied": "Recovery Phrase Copied",
           "copied": "Recovery Phrase Copied"
-
         }
       }
     },
