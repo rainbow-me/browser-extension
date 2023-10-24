@@ -105,9 +105,9 @@ type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useNfts(
+export function useNfts<TSelectResult = NftsResult>(
   { address }: NftsArgs,
-  config: QueryConfig<NftsResult, Error, NftsResult, NftsQueryKey> = {},
+  config: QueryConfig<NftsResult, Error, TSelectResult, NftsQueryKey> = {},
 ) {
   return useQuery(nftsQueryKey({ address }), nftsQueryFunction, config);
 }

@@ -1012,6 +1012,7 @@ export const symbolNames = selectSymbolNames(
   't.square.fill',
   'arcade.stick',
   'hammer.fill',
+  'checklist.unchecked',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

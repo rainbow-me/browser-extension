@@ -50,7 +50,7 @@ import { ROUTES } from '../../urls';
 import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
-import { NFTs } from './NFTs';
+import { NFTs } from './NFTs/NFTs';
 import { AppConnection } from './NetworkMenu';
 import { Points } from './Points';
 import { TabHeader } from './TabHeader';

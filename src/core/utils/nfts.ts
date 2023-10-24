@@ -159,6 +159,7 @@ export function simpleHashNFTToUniqueAsset(
       name: isENS ? 'ENS' : collection.name,
       slug: marketplace?.marketplace_collection_id ?? '',
       twitter_username: collection.twitter_username,
+      collection_id: collection.collection_id,
     },
     description: nft.description,
     external_link: nft.external_url,
