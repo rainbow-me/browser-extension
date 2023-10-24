@@ -3,6 +3,8 @@ import { useBalance } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
+import { selectNftsByCollection } from '~/core/resources/_selectors/nfts';
+import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { Box, Inline, Inset, Text } from '~/design-system';
@@ -13,6 +15,9 @@ import { Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
+
+import DisplayModeDropdown from './NFTs/DisplayModeDropdown';
+import SortdDropdown from './NFTs/SortDropdown';
 
 export function TabHeader({
   activeTab,
@@ -26,6 +31,13 @@ export function TabHeader({
   const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
+  const { data: nfts } = useNfts(
+    { address },
+    { select: selectNftsByCollection },
+  );
+  const nftCount = Object.values(nfts || {})
+    .map((section) => section.assets)
+    .flat().length;
 
   const displayBalanceComponent = useMemo(
     () =>
@@ -62,8 +74,12 @@ export function TabHeader({
         display="flex"
         justifyContent="space-between"
         paddingHorizontal="20px"
-        style={{ maxHeight: 11, textTransform: 'capitalize' }}
+        style={{
+          maxHeight: 11,
+          textTransform: 'capitalize',
+        }}
         width="full"
+        alignItems="center"
       >
         <Inline alignVertical="bottom" space="6px">
           <Text size="16pt" weight="heavy">
@@ -74,6 +90,11 @@ export function TabHeader({
               {visibleTokenCount}
             </Text>
           )}
+          {activeTab === 'nfts' && nftCount > 0 && (
+            <Text color="labelQuaternary" size="14pt" weight="bold">
+              {nftCount}
+            </Text>
+          )}
         </Inline>
         {isLoading && (
           <Inline alignVertical="center">
@@ -81,7 +102,7 @@ export function TabHeader({
           </Inline>
         )}
 
-        {balance && (
+        {activeTab !== 'nfts' && balance && (
           <CursorTooltip
             align="end"
             arrowAlignment="right"
@@ -92,6 +113,12 @@ export function TabHeader({
           >
             <Inline alignVertical="center">{displayBalanceComponent}</Inline>
           </CursorTooltip>
+        )}
+        {activeTab === 'nfts' && (
+          <Inline alignVertical="center" space="8px">
+            <DisplayModeDropdown />
+            <SortdDropdown />
+          </Inline>
         )}
       </Box>
     </Inset>
