@@ -27,7 +27,6 @@ import { FullScreenBackground } from './components/FullScreen/FullScreenBackgrou
 import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalletSelectionEdit';
 import { ImportWalletViaPrivateKey } from './components/ImportWallet/ImportWalletViaPrivateKey';
 import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSeed';
-import { TestnetModeWatcher } from './components/TestnetMode/TestnetModeWatcher/TestnetModeWatcher';
 import { Toast } from './components/Toast/Toast';
 import { UnsupportedBrowserSheet } from './components/UnsupportedBrowserSheet';
 import { WindowStroke } from './components/WindowStroke/WindowStroke';
@@ -871,7 +870,6 @@ const RootLayout = () => {
       <WindowStroke />
       <UnsupportedBrowserSheet />
       <AppConnectionWatcher />
-      <TestnetModeWatcher />
     </FullScreenBackground>
   );
 };

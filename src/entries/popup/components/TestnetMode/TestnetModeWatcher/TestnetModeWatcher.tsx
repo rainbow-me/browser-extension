@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { isTestnetChainId } from '~/core/utils/chains';
-import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Box,
   Button,
@@ -17,17 +16,34 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextLink } from '~/design-system/components/TextLink/TextLink';
-import { useActiveTab } from '~/entries/popup/hooks/useActiveTab';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { ChainBadge } from '../../ChainBadge/ChainBadge';
 import { Navbar } from '../../Navbar/Navbar';
 
-export const TestnetModeWatcher = () => {
-  const { currentAddress } = useCurrentAddressStore();
-  const { url } = useActiveTab();
-  const { data: dappMetadata } = useDappMetadata({ url });
+type Hint = {
+  show: boolean;
+  type: 'tesnetModeInMainnet' | 'notTestnetModeInTestnet';
+  chainId: ChainId;
+};
+
+const INITIAL_HINT: Hint = {
+  show: false,
+  type: 'tesnetModeInMainnet',
+  chainId: ChainId.mainnet,
+};
+
+export const TestnetModeWatcher = ({
+  pendingRequest,
+  rejectRequest,
+}: {
+  pendingRequest?: ProviderRequestPayload;
+  rejectRequest?: () => void;
+}) => {
+  const { data: dappMetadata } = useDappMetadata({
+    url: pendingRequest?.meta?.sender.url,
+  });
   const dappHost = dappMetadata?.appHost || '';
 
   const { testnetMode, setTestnetMode } = useTestnetModeStore();
@@ -35,52 +51,44 @@ export const TestnetModeWatcher = () => {
     host: dappHost,
   });
 
-  const [hint, setHint] = useState<{
-    show: boolean;
-    type?: 'tesnetModeInMainnet' | 'notTestnetModeInTestnet';
-    chainId: ChainId;
-  }>({ show: false, chainId: ChainId.mainnet });
+  const [hint, setHint] = useState<Hint>(INITIAL_HINT);
 
   const closeSheet = () => {
-    setHint({ show: false, chainId: ChainId.mainnet });
-    disconnectSession({
-      address: currentAddress,
-      host: dappHost,
-    });
+    setHint(INITIAL_HINT);
+    rejectRequest?.();
+    activeSession &&
+      disconnectSession({
+        address: activeSession?.address,
+        host: dappHost,
+      });
   };
 
   const action = () => {
-    setHint({ show: false, chainId: ChainId.mainnet });
+    setHint(INITIAL_HINT);
     setTestnetMode(!testnetMode);
   };
 
   useEffect(() => {
     if (activeSession && !hint.show) {
-      const isCurrentAddressConnected = isLowerCaseMatch(
-        activeSession.address,
-        currentAddress,
-      );
-      if (isCurrentAddressConnected) {
-        const activeSessionChainId = activeSession?.chainId;
-        const activeChainIsTestnet = isTestnetChainId({
+      const activeSessionChainId = activeSession?.chainId;
+      const activeChainIsTestnet = isTestnetChainId({
+        chainId: activeSessionChainId,
+      });
+      if (testnetMode && !activeChainIsTestnet) {
+        setHint({
+          show: true,
+          type: 'tesnetModeInMainnet',
           chainId: activeSessionChainId,
         });
-        if (testnetMode && !activeChainIsTestnet) {
-          setHint({
-            show: true,
-            type: 'tesnetModeInMainnet',
-            chainId: activeSessionChainId,
-          });
-        } else if (!testnetMode && activeChainIsTestnet) {
-          setHint({
-            show: true,
-            type: 'notTestnetModeInTestnet',
-            chainId: activeSessionChainId,
-          });
-        }
+      } else if (!testnetMode && activeChainIsTestnet) {
+        setHint({
+          show: true,
+          type: 'notTestnetModeInTestnet',
+          chainId: activeSessionChainId,
+        });
       }
     }
-  }, [activeSession, currentAddress, hint.show, testnetMode]);
+  }, [activeSession, hint.show, testnetMode]);
 
   return (
     <BottomSheet show={hint.show} zIndex={zIndexes.BOTTOM_SHEET}>
