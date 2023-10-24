@@ -59,7 +59,7 @@ export const Header = React.memo(function Header() {
         paddingTop="40px"
         testId="header"
       >
-        <Inset bottom={featureFlags.new_tab_bar_enabled ? '28px' : '32px'}>
+        <Inset bottom="32px">
           <Stack alignHorizontal="center" space="6px">
             <Box
               as={motion.div}
