@@ -13,7 +13,7 @@ import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
 import { ETH_ADDRESS } from '../references';
 import { Storage } from '../storage';
-import { ChainId, hardhat } from '../types/chains';
+import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
 import { SUPPORTED_CHAINS } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -85,6 +85,8 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
   switch (chain.id) {
     case ChainId.hardhat:
       return { http: chain.rpcUrls.default.http[0] };
+    case ChainId.hardhatOptimism:
+      return { http: chain.rpcUrls.default.http[0] };
     case ChainId.mainnet:
       return { http: process.env.ETH_MAINNET_RPC as string };
     case ChainId.optimism:
@@ -121,7 +123,9 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  IS_TESTING ? SUPPORTED_CHAINS.concat(hardhat) : SUPPORTED_CHAINS,
+  IS_TESTING
+    ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
+    : SUPPORTED_CHAINS,
   [
     jsonRpcProvider({
       rpc: (chain) => {

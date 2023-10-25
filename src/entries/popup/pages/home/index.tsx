@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useLocation } from 'react-router';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -15,12 +14,14 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useErrorStore } from '~/core/state/error';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { isNativePopup } from '~/core/utils/tabs';
+import { goToNewTab } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
+import { RainbowError, logger } from '~/logger';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
@@ -50,13 +51,12 @@ import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { NFTs } from './NFTs';
 import { AppConnection } from './NetworkMenu';
-import { TabBar as TabBar_ } from './TabBar';
+import { Points } from './Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
-export type Tab = 'tokens' | 'activity' | 'nfts';
+export type Tab = 'tokens' | 'activity' | 'nfts' | 'points';
 
-const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
 type TabProps = {
@@ -64,7 +64,6 @@ type TabProps = {
   containerRef: React.RefObject<HTMLDivElement>;
   onSelectTab: (tab: Tab) => void;
   prevScrollPosition: React.MutableRefObject<number | undefined>;
-  setActiveTab: (tab: Tab) => void;
 };
 
 const Tabs = memo(function Tabs({
@@ -72,29 +71,10 @@ const Tabs = memo(function Tabs({
   containerRef,
   onSelectTab,
   prevScrollPosition,
-  setActiveTab,
 }: TabProps) {
-  const { featureFlags } = useFeatureFlagsStore();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { activeTab: popupActiveTab } = usePopupInstanceStore();
 
-  const { state } = useLocation();
-
-  const COLLAPSED_HEADER_TOP_OFFSET = featureFlags.new_tab_bar_enabled
-    ? 157
-    : 160;
-
-  useEffect(() => {
-    const mountWithSavedTabInPopup = async () => {
-      const isPopup = await isNativePopup();
-      if (state?.tab) {
-        setActiveTab(state.tab);
-      } else if (isPopup) {
-        setActiveTab(popupActiveTab);
-      }
-    };
-    mountWithSavedTabInPopup();
-  }, [popupActiveTab, setActiveTab, state?.tab]);
+  const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
   // If we are already in a state where the header is collapsed,
   // then ensure we are scrolling to the top when we change tab.
@@ -115,43 +95,30 @@ const Tabs = memo(function Tabs({
 
   useKeyboardShortcut({
     handler: (e) => {
-      if (featureFlags.new_tab_bar_enabled) {
-        if (e.key === shortcuts.global.BACK.key) {
-          trackShortcut({
-            key: shortcuts.global.BACK.display,
-            type: 'home.switchTab',
-          });
-          if (activeTab === 'tokens') {
-            onSelectTab('activity');
-          } else if (activeTab === 'nfts') {
-            onSelectTab('tokens');
-          }
-        }
-        if (e.key === shortcuts.global.FORWARD.key) {
-          trackShortcut({
-            key: shortcuts.global.FORWARD.display,
-            type: 'home.switchTab',
-          });
-          if (activeTab === 'tokens') {
-            onSelectTab('nfts');
-          } else if (activeTab === 'activity') {
-            onSelectTab('tokens');
-          }
-        }
-      } else {
-        if (e.key === shortcuts.global.BACK.key) {
-          trackShortcut({
-            key: shortcuts.global.BACK.display,
-            type: 'home.switchTab',
-          });
+      if (e.key === shortcuts.global.BACK.key) {
+        trackShortcut({
+          key: shortcuts.global.BACK.display,
+          type: 'home.switchTab',
+        });
+        if (activeTab === 'activity') {
           onSelectTab('tokens');
-        }
-        if (e.key === shortcuts.global.FORWARD.key) {
-          trackShortcut({
-            key: shortcuts.global.FORWARD.display,
-            type: 'home.switchTab',
-          });
+        } else if (activeTab === 'nfts') {
           onSelectTab('activity');
+        } else if (activeTab === 'points') {
+          onSelectTab('nfts');
+        }
+      }
+      if (e.key === shortcuts.global.FORWARD.key) {
+        trackShortcut({
+          key: shortcuts.global.FORWARD.display,
+          type: 'home.switchTab',
+        });
+        if (activeTab === 'tokens') {
+          onSelectTab('activity');
+        } else if (activeTab === 'activity') {
+          onSelectTab('nfts');
+        } else if (activeTab === 'nfts') {
+          onSelectTab('points');
         }
       }
     },
@@ -160,10 +127,13 @@ const Tabs = memo(function Tabs({
   return (
     <>
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-      <Content>
+      <Content
+        disableBottomPadding={activeTab === 'nfts' || activeTab === 'points'}
+      >
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
         {activeTab === 'nfts' && <NFTs />}
+        {activeTab === 'points' && <Points />}
       </Content>
     </>
   );
@@ -173,26 +143,47 @@ export const Home = memo(function Home() {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
-  const { featureFlags } = useFeatureFlagsStore();
   const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
-
-  const [activeTab, setActiveTab] = useState<Tab>(popupActiveTab);
-
+  const { error, setError } = useErrorStore();
+  const navigate = useRainbowNavigate();
+  const { pendingRequests } = usePendingRequestStore();
+  const prevPendingRequest = usePrevious(pendingRequests?.[0]);
+  const [activeTab, setActiveTab] = useState<Tab>(
+    popupActiveTab === 'nfts' || popupActiveTab === 'points'
+      ? 'tokens'
+      : popupActiveTab,
+  );
   const containerRef = useContainerRef();
   const prevScrollPosition = useRef<number | undefined>(undefined);
+
   const onSelectTab = (tab: Tab) => {
     prevScrollPosition.current = containerRef.current?.scrollTop;
-    setActiveTab(tab);
+    if (activeTab === tab && containerRef.current?.scrollTop !== 0) {
+      containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     saveActiveTab({ tab });
+    setActiveTab(tab);
   };
 
-  usePendingTransactionWatcher({ address: currentAddress });
+  useEffect(() => {
+    if (error) {
+      triggerAlert({
+        action: () =>
+          goToNewTab({
+            url: 'https://rainbow.me/extension/support?report=true',
+          }),
+        actionText: i18n.t('errors.report_error'),
+        text: i18n.t('errors.error_encountered'),
+      });
+      logger.error(new RainbowError('Error Boundary Did Catch: '), {
+        message: error.message,
+        stack: error.stack,
+      });
+      setError(null);
+    }
+  }, [error, setError]);
 
-  const navigate = useRainbowNavigate();
-
-  const { pendingRequests } = usePendingRequestStore();
-
-  const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   useEffect(() => {
     if (
       pendingRequests?.[0] &&
@@ -208,6 +199,7 @@ export const Home = memo(function Home() {
     removeImportWalletSecrets();
   }, []);
 
+  usePendingTransactionWatcher({ address: currentAddress });
   useHomeShortcuts();
   useRestoreNavigation();
   useSwitchWalletShortcuts();
@@ -236,13 +228,10 @@ export const Home = memo(function Home() {
               containerRef={containerRef}
               onSelectTab={onSelectTab}
               prevScrollPosition={prevScrollPosition}
-              setActiveTab={setActiveTab}
             />
             <AppConnectionWalletSwitcher />
           </motion.div>
-          {featureFlags.new_tab_bar_enabled && (
-            <NewTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
-          )}
+          <NewTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
           <BackupReminder />
           {currentHomeSheet}
         </>
@@ -326,19 +315,13 @@ function TabBar({
   activeTab: Tab;
   setActiveTab: (tab: Tab) => void;
 }) {
-  const { featureFlags } = useFeatureFlagsStore();
-
   return (
     <StickyHeader
       background="surfacePrimaryElevatedSecondary"
-      height={featureFlags.new_tab_bar_enabled ? 39 : TAB_BAR_HEIGHT}
+      height={39}
       topOffset={TOP_NAV_HEIGHT}
     >
-      {featureFlags.new_tab_bar_enabled ? (
-        <TabHeader activeTab={activeTab} onSelectTab={setActiveTab} />
-      ) : (
-        <TabBar_ activeTab={activeTab} onSelectTab={setActiveTab} />
-      )}
+      <TabHeader activeTab={activeTab} onSelectTab={setActiveTab} />
       <Box position="relative" style={{ bottom: 1 }}>
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
@@ -346,9 +329,10 @@ function TabBar({
   );
 }
 
-function Content({ children }: PropsWithChildren) {
-  const { featureFlags } = useFeatureFlagsStore();
-
+function Content({
+  children,
+  disableBottomPadding,
+}: PropsWithChildren<{ disableBottomPadding?: boolean }>) {
   return (
     <Box
       background="surfacePrimaryElevated"
@@ -356,7 +340,7 @@ function Content({ children }: PropsWithChildren) {
     >
       <Box
         height="full"
-        paddingBottom={featureFlags.new_tab_bar_enabled ? '64px' : undefined}
+        paddingBottom={disableBottomPadding ? undefined : '64px'}
       >
         <Inset top="20px">{children}</Inset>
       </Box>

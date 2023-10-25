@@ -32,7 +32,6 @@ import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
 export const Header = React.memo(function Header() {
-  const { featureFlags } = useFeatureFlagsStore();
   const { scrollYProgress: progress } = useScroll({
     offset: ['0px', '64px', '92px'],
   });
@@ -113,9 +112,7 @@ export const Header = React.memo(function Header() {
             <ActionButtonsSection />
           </Stack>
         </Inset>
-        <Box
-          style={{ minHeight: featureFlags.new_tab_bar_enabled ? 28 : 32 }}
-        />
+        <Box style={{ minHeight: 28 }} />
       </Box>
     </WalletContextMenu>
   );
@@ -211,16 +208,6 @@ function ActionButtonsSection() {
       {avatar?.color && (
         <Inline space="12px">
           <ActionButton
-            symbol="creditcard.fill"
-            testId="header-link-buy"
-            text={i18n.t('wallet_header.buy')}
-            tabIndex={tabIndexes.WALLET_HEADER_BUY_BUTTON}
-            onClick={() => navigate(ROUTES.BUY)}
-            tooltipHint={shortcuts.home.BUY.display}
-            tooltipText={i18n.t('tooltip.buy_crypto')}
-          />
-
-          <ActionButton
             symbol="square.on.square"
             text={i18n.t('wallet_header.copy')}
             onClick={handleCopy}
@@ -264,6 +251,16 @@ function ActionButtonsSection() {
                 handleSendFallback();
               }
             }}
+          />
+
+          <ActionButton
+            symbol="creditcard.fill"
+            testId="header-link-buy"
+            text={i18n.t('wallet_header.buy')}
+            tabIndex={tabIndexes.WALLET_HEADER_BUY_BUTTON}
+            onClick={() => navigate(ROUTES.BUY)}
+            tooltipHint={shortcuts.home.BUY.display}
+            tooltipText={i18n.t('tooltip.buy_crypto')}
           />
         </Inline>
       )}
