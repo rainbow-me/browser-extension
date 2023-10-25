@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useNftsStore } from '~/core/state/nfts';
@@ -71,7 +72,7 @@ export default function DisplayModeDropdown() {
                   }
                   centerComponent={
                     <Text size="14pt" weight="semibold">
-                      {'Gallery'}
+                      {i18n.t('nfts.display_mode_gallery')}
                     </Text>
                   }
                   rightComponent={
@@ -88,7 +89,7 @@ export default function DisplayModeDropdown() {
                   }
                   centerComponent={
                     <Text size="14pt" weight="semibold">
-                      {'Collections'}
+                      {i18n.t('nfts.display_mode_collections')}
                     </Text>
                   }
                   rightComponent={
