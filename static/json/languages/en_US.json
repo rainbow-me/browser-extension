@@ -224,7 +224,8 @@
     "feature_flags": {
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
-      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts"
+      "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
+      "custom_rpc": "Custom RPC"
     }
   },
   "transactions": {
