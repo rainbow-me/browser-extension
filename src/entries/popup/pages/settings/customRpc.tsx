@@ -33,7 +33,7 @@ const chainLabel = ({ chainId }: { chainId: ChainId }) => {
   return chainLabels.join(', ');
 };
 
-export function SettingsNetworks() {
+export function SettingsNetworksCustomRPC() {
   const navigate = useRainbowNavigate();
   const {
     userChains,
@@ -174,7 +174,7 @@ export function SettingsNetworks() {
           <MenuItem
             leftComponent={
               <Symbol
-                symbol="t.square.fill"
+                symbol="switch.2"
                 weight="medium"
                 size={18}
                 color="labelTertiary"
