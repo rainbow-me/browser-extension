@@ -86,6 +86,7 @@ export function TabBar({
   return (
     <Box
       alignItems="center"
+      id="tab-bar"
       as={motion.div}
       borderRadius="16px"
       display="flex"
