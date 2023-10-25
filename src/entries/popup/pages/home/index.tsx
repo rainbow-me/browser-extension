@@ -4,6 +4,7 @@ import {
   memo,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -14,6 +15,7 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useErrorStore } from '~/core/state/error';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -333,15 +335,20 @@ function Content({
   children,
   disableBottomPadding,
 }: PropsWithChildren<{ disableBottomPadding?: boolean }>) {
+  const { testnetMode } = useTestnetModeStore();
+
+  const bottom = useMemo(() => {
+    if (testnetMode) return '104px';
+    if (disableBottomPadding) return undefined;
+    return '64px';
+  }, [disableBottomPadding, testnetMode]);
+
   return (
     <Box
       background="surfacePrimaryElevated"
       style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
     >
-      <Box
-        height="full"
-        paddingBottom={disableBottomPadding ? undefined : '64px'}
-      >
+      <Box height="full" paddingBottom={bottom}>
         <Inset top="20px">{children}</Inset>
       </Box>
     </Box>

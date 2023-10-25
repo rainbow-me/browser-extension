@@ -16,8 +16,7 @@ import {
   lessThan,
 } from '~/core/utils/numbers';
 
-import { getNetworkNativeAssetUniqueId } from '../useNativeAssetForNetwork';
-import { useUserAsset } from '../useUserAsset';
+import { useNativeAsset } from '../useNativeAsset';
 
 export const useSendValidations = ({
   asset,
@@ -35,11 +34,9 @@ export const useSendValidations = ({
   const [toAddressIsSmartContract, setToAddressIsSmartContract] =
     useState(false);
 
-  const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
+  const { nativeAsset } = useNativeAsset({
     chainId: asset?.chainId || ChainId.mainnet,
   });
-
-  const { data: nativeAsset } = useUserAsset(nativeAssetUniqueId || '');
 
   const [isValidToAddress, setIsValidToAddress] = useState(false);
 

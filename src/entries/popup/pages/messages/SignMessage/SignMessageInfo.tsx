@@ -5,7 +5,7 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
-import { Box, Inset, Stack, Text } from '~/design-system';
+import { Box, Inline, Inset, Stack, Text } from '~/design-system';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
@@ -37,7 +37,9 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
     >
       <Inset bottom="8px">
         <Stack space="16px" alignItems="center">
-          <DappIcon appLogo={dappMetadata?.appLogo} size="32px" />
+          <Inline alignHorizontal="center">
+            <DappIcon appLogo={dappMetadata?.appLogo} size="32px" />
+          </Inline>
           <Stack space="12px">
             <DappHostName
               hostName={dappMetadata?.appHostName}
