@@ -339,6 +339,7 @@ export interface UniqueAsset {
     size: number | null;
     mime_type: string | null;
   } | null;
+  last_collection_acquisition?: string;
 }
 
 export interface UniqueAssetTrait {

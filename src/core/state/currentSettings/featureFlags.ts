@@ -7,6 +7,8 @@ export enum featureFlagTypes {
   hw_wallets_enabled = 'hw_wallets_enabled',
   command_k_internal_shortcuts_enabled = 'command_k_internal_shortcuts_enabled',
   custom_rpc = 'custom_rpc',
+  new_tab_bar_enabled = 'new_tab_bar_enabled',
+  nfts_enabled = 'nfts_enabled',
 }
 export type FeatureFlagTypes = keyof typeof featureFlagTypes;
 
@@ -22,6 +24,8 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
       hw_wallets_enabled: true,
       command_k_internal_shortcuts_enabled: false,
       custom_rpc: false,
+      new_tab_bar_enabled: true,
+      nfts_enabled: false,
     },
     setFeatureFlag: (key, value) => {
       const { featureFlags } = get();
