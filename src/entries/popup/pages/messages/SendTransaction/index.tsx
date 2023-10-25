@@ -19,8 +19,9 @@ import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { chainIdToUse } from '~/core/utils/chains';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { Inline, Inset, Separator, Stack, Text } from '~/design-system';
+import { Bleed, Box, Inline, Separator, Stack, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
@@ -229,31 +230,33 @@ export function SendTransaction({
   if (!selectedWallet || !dappMetadata) return <Navigate to="/" />;
 
   return (
-    <Stack>
+    <Box
+      display="flex"
+      flexDirection="column"
+      style={{ height: POPUP_DIMENSIONS.height }}
+    >
       <SendTransactionInfo request={request} />
-      <Stack paddingHorizontal="20px">
-        <Inset vertical="16px">
+      <Stack space="20px" padding="20px">
+        <Bleed vertical="4px">
           <AccountSigningWith
             selectedWallet={selectedWallet}
             appHost={dappMetadata.appHost}
           />
-        </Inset>
+        </Bleed>
         <Separator color="separatorTertiary" />
-        <Inset vertical="20px">
-          <TransactionFee
-            analyticsEvents={{
-              customGasClicked: event.dappPromptSendTransactionCustomGasClicked,
-              transactionSpeedSwitched:
-                event.dappPromptSendTransactionSpeedSwitched,
-              transactionSpeedClicked:
-                event.dappPromptSendTransactionSpeedClicked,
-            }}
-            chainId={activeSession?.chainId || ChainId.mainnet}
-            transactionRequest={request?.params?.[0] as TransactionRequest}
-            plainTriggerBorder
-            flashbotsEnabled={flashbotsEnabledGlobally}
-          />
-        </Inset>
+        <TransactionFee
+          analyticsEvents={{
+            customGasClicked: event.dappPromptSendTransactionCustomGasClicked,
+            transactionSpeedSwitched:
+              event.dappPromptSendTransactionSpeedSwitched,
+            transactionSpeedClicked:
+              event.dappPromptSendTransactionSpeedClicked,
+          }}
+          chainId={activeSession?.chainId || ChainId.mainnet}
+          transactionRequest={request?.params?.[0] as TransactionRequest}
+          plainTriggerBorder
+          flashbotsEnabled={flashbotsEnabledGlobally}
+        />
         <SendTransactionActions
           chainId={activeSession?.chainId || ChainId.mainnet}
           waitingForDevice={waitingForDevice}
@@ -265,6 +268,6 @@ export function SendTransaction({
           dappStatus={dappMetadata?.status}
         />
       </Stack>
-    </Stack>
+    </Box>
   );
 }
