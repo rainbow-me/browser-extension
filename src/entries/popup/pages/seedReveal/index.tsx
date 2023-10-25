@@ -45,7 +45,7 @@ export function SeedReveal() {
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(seed as string);
     triggerToast({
-      title: i18n.t('seed_reveal.phrase_copied'),
+      title: i18n.t('seed_reveal.copied'),
     });
   }, [seed]);
 

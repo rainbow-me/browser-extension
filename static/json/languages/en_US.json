@@ -86,12 +86,19 @@
       "dark": "Dark"
     },
     "networks": {
+      "mainnet": "Mainnet",
       "title": "Networks",
       "quick_promo": {
         "text": "Drag networks to reorder them",
         "text_bold": "Tip:"
       },
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked."
+      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "testnet_mode": {
+        "title": "Testnet Mode",
+        "toggle_explainer": "Switch your app to Testnet Mode to only view balances and transactions on supported Testnets.",
+        "shortcut_title": "Show Testnet shortcut",
+        "shortcut_toggle_explainer": "Add a shortcut for Testnet Mode in the menu on the wallet screen for easy access."
+      }
     },
     "privacy_and_security": {
       "title": "Privacy & Security",
@@ -167,7 +174,8 @@
           "warning_2": "Make sure nobody can view your screen when viewing your Private Key.",
           "warning_3": "Anyone with your Private Key can access your entire wallet.",
           "warning_4": "Rainbow Support will never ask you for your Private Key.",
-          "show": "Show Private Key"
+          "show": "Show Private Key",
+          "copied": "Private Key Copied"
         },
         "recovery_phrase": {
           "title": "Your Recovery Phrase",
@@ -178,7 +186,7 @@
           "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
           "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
           "show": "Show Recovery Phrase",
-          "phrase_copied": "Recovery Phrase Copied"
+          "copied": "Recovery Phrase Copied"
         }
       }
     },
@@ -359,6 +367,7 @@
         "view_nfts": "View NFTs",
         "add_wallet": "Add a Wallet",
         "lock": "Lock Rainbow",
+        "testnet_mode": "Testnet Mode",
         "connected_apps": "Connected Apps",
         "settings": "Settings",
         "my_qr_code": "My QR Code",
@@ -862,7 +871,8 @@
       "rainbow_profile": "Rainbow Profile",
       "guides_and_support": "Guides & Support",
       "share_feedback": "Share Feedback",
-      "lock_rainbow": "Lock Rainbow"
+      "lock_rainbow": "Lock Rainbow",
+      "testnet_mode": "Testnet Mode"
     }
   },
   "app_connection_switcher": {
@@ -1260,6 +1270,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
+    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
     "coming_soon": "Coming Soon!",
     "no_hw_ff": "Hardware wallets are not supported on Firefox. Try a different browser like Chrome or Brave."
   },

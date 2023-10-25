@@ -105,17 +105,17 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
       return { http: process.env.ETH_GOERLI_RPC as string };
     case ChainId.sepolia:
       return { http: process.env.ETH_SEPOLIA_RPC as string };
-    case ChainId.optimismGoerli:
+    case ChainId['optimism-goerli']:
       return { http: process.env.OPTIMISM_GOERLI_RPC as string };
-    case ChainId.bscTestnet:
+    case ChainId['bsc-testnet']:
       return { http: process.env.BSC_TESTNET_RPC as string };
-    case ChainId.polygonMumbai:
+    case ChainId['polygon-mumbai']:
       return { http: process.env.POLYGON_MUMBAI_RPC as string };
-    case ChainId.arbitrumGoerli:
+    case ChainId['arbitrum-goerli']:
       return { http: process.env.ARBITRUM_GOERLI_RPC as string };
-    case ChainId.baseGoerli:
+    case ChainId['base-goerli']:
       return { http: process.env.BASE_GOERLI_RPC as string };
-    case ChainId.zoraTestnet:
+    case ChainId['zora-testnet']:
       return { http: process.env.ZORA_GOERLI_RPC as string };
     default:
       return null;

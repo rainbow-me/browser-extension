@@ -12,8 +12,10 @@ import React, {
 } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -153,6 +155,7 @@ export const SendTokenInput = React.forwardRef<
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const { testnetMode } = useTestnetModeStore();
 
   useImperativeHandle(forwardedRef, () => ({
     blur: () => {
@@ -238,7 +241,7 @@ export const SendTokenInput = React.forwardRef<
   return (
     <DropdownInputWrapper
       zIndex={zIndex || 1}
-      dropdownHeight={376}
+      dropdownHeight={376 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0)}
       testId={'token-input'}
       leftComponent={
         <AssetContextMenu asset={asset}>

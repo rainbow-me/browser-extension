@@ -15,7 +15,7 @@ export const copy = ({
 }: {
   value: string;
   title: string;
-  description: string;
+  description?: string;
 }) => {
   navigator.clipboard.writeText(value);
   triggerToast({ title, description });
