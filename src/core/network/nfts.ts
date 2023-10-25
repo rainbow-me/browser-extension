@@ -7,7 +7,8 @@ import {
   SimpleHashNFT,
 } from '../types/nfts';
 
-import { RainbowFetchClient, rainbowFetch } from './internal/rainbowFetch';
+import { RainbowFetchClient } from './internal/rainbowFetch';
+import { nftAllowListClient } from './nftAllowList';
 
 interface SimpleHashCollectionsResponse {
   collections: SimpleHashCollectionDetails[];
@@ -103,10 +104,9 @@ export const fetchNfts = async ({
 
 export const fetchPolygonAllowList =
   async (): Promise<PolygonAllowListDictionary> => {
-    const allowList = await rainbowFetch<{ data: { addresses: string[] } }>(
-      'https://metadata.p.rainbow.me/token-list/137-allowlist.json',
-      { method: 'get' },
-    );
+    const allowList = await nftAllowListClient.get<{
+      data: { addresses: string[] };
+    }>('/137-allowlist.json');
     const polygonAllowListDictionary = allowList.data?.data?.addresses?.reduce(
       (allowListDict, tokenAddress) => {
         allowListDict[tokenAddress] = true;

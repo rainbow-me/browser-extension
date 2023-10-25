@@ -83,7 +83,17 @@ async function nftsQueryFunction({
       collectionIds,
     }),
   );
-  const nftsResponse = (await Promise.all(nftRequests)).flat();
+  const nftsResponse = (await Promise.allSettled(nftRequests))
+    .filter((resData) => resData.status === 'fulfilled')
+    .map((resData) => {
+      // ts forcing the type guard despite filter above
+      if (resData.status === 'fulfilled') {
+        return resData.value;
+      } else {
+        return [];
+      }
+    })
+    .flat();
   const nfts = filterSimpleHashNFTs(nftsResponse, polygonAllowList).map((nft) =>
     simpleHashNFTToUniqueAsset(nft),
   );
