@@ -1,4 +1,3 @@
-import { Zero } from '@ethersproject/constants';
 import { useQuery } from '@tanstack/react-query';
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
@@ -14,25 +13,19 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
-  AddressOrEth,
   ParsedAssetsDictByChain,
   ParsedUserAsset,
   ZerionAsset,
 } from '~/core/types/assets';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 import {
   fetchAssetBalanceViaProvider,
   filterAsset,
   parseUserAsset,
-  parseUserAssetBalances,
 } from '~/core/utils/assets';
 import { getSupportedChainIds } from '~/core/utils/chains';
 import { greaterThan } from '~/core/utils/numbers';
-import {
-  getCustomNetworks,
-  userAddedCustomRpcEndpoints,
-} from '~/core/wagmi/createWagmiClient';
 import { RainbowError, logger } from '~/logger';
 import {
   DAI_MAINNET_ASSET,
@@ -243,41 +236,6 @@ export async function parseUserAssets({
     }
   }
 
-  // TODO - move to a separate hook and join results on TOKENS screen
-  if (userAddedCustomRpcEndpoints.length > 0) {
-    const networks = getCustomNetworks();
-    await Promise.all(
-      networks.map(async (network) => {
-        const provider = getProvider({ chainId: network.chainId });
-        const nativeAssetBalance = await provider.getBalance(address);
-        const customNetworkNativeAssetParsed = parseUserAssetBalances({
-          asset: {
-            address: network.nativeAssetAddress as AddressOrEth,
-            chainId: network.chainId,
-            chainName: network.name as ChainName,
-            isNativeAsset: true,
-            name: network.symbol,
-            symbol: network.symbol,
-            uniqueId: `${network.nativeAssetAddress}_${network.chainId}`,
-            decimals: 18,
-            native: { price: undefined },
-            bridging: { isBridgeable: false, networks: [] },
-            mainnetAddress: Zero.toHexString() as AddressOrEth,
-          },
-          currency,
-          balance: nativeAssetBalance.toString(), // FORMAT?
-        });
-
-        // TODO - add support for custom network tokens here (BX-1073)
-
-        parsedAssetsDict[network.chainId as ChainId] = {
-          [customNetworkNativeAssetParsed.uniqueId]:
-            customNetworkNativeAssetParsed,
-        };
-      }),
-    );
-  }
-
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore.getState();
   if (connectedToHardhat || connectedToHardhatOp) {
@@ -327,7 +285,7 @@ export async function parseUserAssets({
       acc[parsedAsset.uniqueId] = parsedAsset;
       return acc;
     }, {});
-     // eslint-disable-next-line require-atomic-updates
+    // eslint-disable-next-line require-atomic-updates
     parsedAssetsDict[mainnetOrOptimismChainId] = newAssets;
   }
   return parsedAssetsDict;
