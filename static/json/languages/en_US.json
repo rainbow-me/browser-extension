@@ -1103,7 +1103,13 @@
   "nfts": {
     "coming_soon_header": "Coming Soon",
     "coming_soon_description": "NFTs are coming soon. Stay tuned!",
-    "view_on_web": "View on Web"
+    "view_on_web": "View on Web",
+    "display_mode_gallery": "Gallery",
+    "display_mode_collections": "Collections",
+    "sort_option_recent": "Recent",
+    "sort_option_abc": "Abc",
+    "sort_option_recent_long": "Recent",
+    "sort_option_abc_long": "Alphabetical"
   },
   "points": {
     "coming_soon_header": "Coming Soon",

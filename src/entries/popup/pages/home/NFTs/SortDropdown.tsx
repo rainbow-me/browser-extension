@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useNftsStore } from '~/core/state/nfts';
@@ -43,7 +44,9 @@ export default function SortdDropdown() {
                 color="labelSecondary"
               />
               <Text weight="bold" size="14pt" color="label">
-                {sort === 'recent' ? 'Recent' : 'Abc'}
+                {sort === 'recent'
+                  ? i18n.t('nfts.sort_option_recent')
+                  : i18n.t('nfts.sort_option_abc')}
               </Text>
               <Symbol
                 symbol="chevron.down"
@@ -68,7 +71,7 @@ export default function SortdDropdown() {
                   }
                   centerComponent={
                     <Text size="14pt" weight="semibold">
-                      {'Recent'}
+                      {i18n.t('nfts.sort_option_recent_long')}
                     </Text>
                   }
                   rightComponent={
@@ -85,7 +88,7 @@ export default function SortdDropdown() {
                   }
                   centerComponent={
                     <Text size="14pt" weight="semibold">
-                      {'Alphabetical'}
+                      {i18n.t('nfts.sort_option_abc_long')}
                     </Text>
                   }
                   rightComponent={
