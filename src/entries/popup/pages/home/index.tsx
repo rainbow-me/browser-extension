@@ -14,6 +14,7 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
 import { useErrorStore } from '~/core/state/error';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -50,7 +51,7 @@ import { ROUTES } from '../../urls';
 import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
-import { NFTs } from './NFTs/NFTs';
+import { PostReleaseNFTs, PreReleaseNFTs } from './NFTs/NFTs';
 import { AppConnection } from './NetworkMenu';
 import { Points } from './Points';
 import { TabHeader } from './TabHeader';
@@ -75,6 +76,7 @@ const Tabs = memo(function Tabs({
 }: TabProps) {
   const { trackShortcut } = useKeyboardAnalytics();
   const { visibleTokenCount } = useVisibleTokenCount();
+  const { featureFlags } = useFeatureFlagsStore();
 
   const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
@@ -129,10 +131,20 @@ const Tabs = memo(function Tabs({
   return (
     <>
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-      <Content disableBottomPadding={isPlaceholderTab(activeTab)}>
+      <Content
+        disableBottomPadding={
+          isPlaceholderTab(activeTab) ||
+          (activeTab === 'nfts' && featureFlags.nfts_enabled)
+        }
+      >
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
-        {activeTab === 'nfts' && <NFTs />}
+        {activeTab === 'nfts' && featureFlags.nfts_enabled && (
+          <PostReleaseNFTs />
+        )}
+        {activeTab === 'nfts' && !featureFlags.nfts_enabled && (
+          <PreReleaseNFTs />
+        )}
         {activeTab === 'points' && <Points />}
       </Content>
     </>
