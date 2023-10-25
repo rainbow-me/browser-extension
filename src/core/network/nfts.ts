@@ -102,28 +102,6 @@ export const fetchNfts = async ({
   }
 };
 
-export const fetchNftHistory = async ({
-  address,
-  chains,
-}: {
-  address: string;
-  chains: ChainName[];
-}) => {
-  const { data } = await nftApi.get<{ transfers: { collection_id: string }[] }>(
-    '/nfts/transfers/wallets',
-    {
-      params: {
-        wallet_addresses: address,
-        chains: chains.join(','),
-      },
-    },
-  );
-  const isUnique = (value: string, index: number, array: string[]) => {
-    return array.indexOf(value) === index;
-  };
-  return (data?.transfers || []).map((t) => t.collection_id).filter(isUnique);
-};
-
 export const fetchPolygonAllowList =
   async (): Promise<PolygonAllowListDictionary> => {
     const allowList = await nftAllowListClient.get<{
