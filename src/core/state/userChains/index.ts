@@ -15,6 +15,13 @@ export interface UserChainsState {
     chainId: ChainId;
     enabled: boolean;
   }) => void;
+  updateUserChains: ({
+    chainIds,
+    enabled,
+  }: {
+    chainIds: ChainId[];
+    enabled: boolean;
+  }) => void;
   updateUserChainsOrder: ({
     userChainsOrder,
   }: {
@@ -22,7 +29,7 @@ export interface UserChainsState {
   }) => void;
 }
 
-const chains = SUPPORTED_CHAINS.filter((chain) => !chain.testnet).reduce(
+const chains = SUPPORTED_CHAINS.reduce(
   (acc, chain) => ({
     ...acc,
     [chain.id]: true,
@@ -36,6 +43,22 @@ export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({
     userChains: chains,
     userChainsOrder,
+    updateUserChains: ({ chainIds, enabled }) => {
+      const { userChains } = get();
+      const chainsUpdated = chainIds.reduce(
+        (acc, chainId) => {
+          acc[chainId] = enabled;
+          return acc;
+        },
+        {} as Record<ChainId, boolean>,
+      ) satisfies Record<ChainId, boolean>;
+      set({
+        userChains: {
+          ...userChains,
+          ...chainsUpdated,
+        },
+      });
+    },
     updateUserChain: ({ chainId, enabled }) => {
       const { userChains } = get();
       set({

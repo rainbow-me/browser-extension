@@ -21,6 +21,7 @@ import { transitions } from '~/design-system/styles/designTokens';
 
 import { Asterisks } from '../Asterisks/Asterisks';
 import { CoinIcon } from '../CoinIcon/CoinIcon';
+import { MenuItem } from '../Menu/MenuItem';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 import {
@@ -177,6 +178,8 @@ export const ShortcutRow = ({
           size={20}
         />
       );
+    } else if (command.textIcon) {
+      return <MenuItem.TextIcon icon={command.textIcon} />;
     } else {
       return (
         <Symbol
@@ -192,6 +195,7 @@ export const ShortcutRow = ({
     command.asset,
     command.symbol,
     command.symbolSize,
+    command.textIcon,
     isAddAsWatchedWalletRow,
     isSwitchToWalletRow,
     isViewTokenRow,

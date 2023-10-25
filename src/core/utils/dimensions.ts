@@ -3,6 +3,8 @@ export const POPUP_DIMENSIONS = {
   height: 600,
 };
 
+export const TESTNET_MODE_BAR_HEIGHT = 35;
+
 export const INJECTED_NOTIFICATION_DIMENSIONS = {
   // 161 (figma width spec) + 48 (radius shadow) since we need space for the shadow to be visible in the iframe
   width: '209px',

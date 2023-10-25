@@ -7,6 +7,7 @@ import {
   RAINBOW_SUPPORT_URL,
 } from '~/core/references/links';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
@@ -19,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
 import { HomeMenuRow } from '../../components/HomeMenuRow/HomeMenuRow';
+import { MenuItem } from '../../components/Menu/MenuItem';
 import { ShortcutHint } from '../../components/ShortcutHint/ShortcutHint';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -29,6 +31,8 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const navigate = useRainbowNavigate();
+  const { testnetMode, testnetModeShortcutEnabled, setTestnetMode } =
+    useTestnetModeStore();
 
   const openProfile = React.useCallback(
     () =>
@@ -38,6 +42,12 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
     [address, ensName],
   );
 
+  const handleTestnetMode = React.useCallback(() => {
+    if (testnetModeShortcutEnabled) {
+      setTestnetMode(!testnetMode);
+    }
+  }, [setTestnetMode, testnetMode, testnetModeShortcutEnabled]);
+
   const onValueChange = React.useCallback(
     (
       value:
@@ -46,7 +56,8 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         | 'lock'
         | 'qr-code'
         | 'support'
-        | 'feedback',
+        | 'feedback'
+        | 'testnet_mode',
     ) => {
       switch (value) {
         case 'settings':
@@ -68,9 +79,12 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         case 'feedback':
           goToNewTab({ url: RAINBOW_FEEDBACK_URL });
           break;
+        case 'testnet_mode':
+          handleTestnetMode();
+          break;
       }
     },
-    [navigate, openProfile],
+    [navigate, openProfile, handleTestnetMode],
   );
 
   return (
@@ -144,6 +158,27 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                   }
                 />
               </DropdownMenuRadioItem>
+              {testnetModeShortcutEnabled && (
+                <DropdownMenuRadioItem
+                  highlightAccentColor
+                  value="testnet_mode"
+                >
+                  <HomeMenuRow
+                    testId="testnet_mode"
+                    leftComponent={<MenuItem.TextIcon icon="🕹" />}
+                    centerComponent={
+                      <Text size="14pt" weight="semibold">
+                        {i18n.t('menu.home_header_right.testnet_mode')}
+                      </Text>
+                    }
+                    rightComponent={
+                      <ShortcutHint
+                        hint={shortcuts.home.TESTNET_MODE.display}
+                      />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
             </Stack>
             <Stack space="4px">
               <DropdownMenuSeparator />
