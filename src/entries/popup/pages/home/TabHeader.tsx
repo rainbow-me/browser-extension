@@ -3,21 +3,15 @@ import { useBalance } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
-import {
-  selectUserAssetsFilteringSmallBalancesList,
-  selectUserAssetsList,
-  selectorFilterByUserChains,
-} from '~/core/resources/_selectors/assets';
-import { useUserAssets } from '~/core/resources/assets/userAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
-import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
+import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 
 import { Tab } from '.';
 
@@ -32,24 +26,7 @@ export function TabHeader({
   const { data: balance, isLoading } = useBalance({ address });
   const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
-
-  const { hideSmallBalances } = useHideSmallBalancesStore();
-
-  const { data: assets = [] } = useUserAssets(
-    {
-      address,
-      currency: currentCurrency,
-    },
-    {
-      select: (data) =>
-        selectorFilterByUserChains({
-          data,
-          selector: hideSmallBalances
-            ? selectUserAssetsFilteringSmallBalancesList
-            : selectUserAssetsList,
-        }),
-    },
-  );
+  const { visibleTokenCount } = useVisibleTokenCount();
 
   const displayBalanceComponent = useMemo(
     () =>
@@ -93,9 +70,9 @@ export function TabHeader({
           <Text size="16pt" weight="heavy">
             {i18n.t(`tabs.${activeTab}`)}
           </Text>
-          {activeTab === 'tokens' && assets?.length > 0 && (
+          {activeTab === 'tokens' && visibleTokenCount > 0 && (
             <Text color="labelQuaternary" size="14pt" weight="bold">
-              {assets?.length}
+              {visibleTokenCount}
             </Text>
           )}
         </Inline>

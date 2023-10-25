@@ -15,9 +15,9 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
+import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useErrorStore } from '~/core/state/error';
-import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { goToNewTab } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -45,6 +45,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
+import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
@@ -57,9 +58,8 @@ import { Points } from './Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
-export type Tab = 'tokens' | 'activity' | 'nfts' | 'points';
-
-const TOP_NAV_HEIGHT = 65;
+const TABS = ['tokens', 'activity', 'nfts', 'points'];
+export type Tab = (typeof TABS)[number];
 
 type TabProps = {
   activeTab: Tab;
@@ -68,6 +68,14 @@ type TabProps = {
   prevScrollPosition: React.MutableRefObject<number | undefined>;
 };
 
+const isPlaceholderTab = (tab: Tab) => tab === 'nfts' || tab === 'points';
+
+export const isValidTab = (value: unknown): value is Tab => {
+  return typeof value === 'string' && TABS.includes(value);
+};
+
+const TOP_NAV_HEIGHT = 65;
+
 const Tabs = memo(function Tabs({
   activeTab,
   containerRef,
@@ -75,6 +83,7 @@ const Tabs = memo(function Tabs({
   prevScrollPosition,
 }: TabProps) {
   const { trackShortcut } = useKeyboardAnalytics();
+  const { visibleTokenCount } = useVisibleTokenCount();
 
   const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
@@ -88,7 +97,7 @@ const Tabs = memo(function Tabs({
     if (!top || !containerRef.current) return;
     containerRef.current.scrollTo({
       top:
-        top > COLLAPSED_HEADER_TOP_OFFSET
+        top > COLLAPSED_HEADER_TOP_OFFSET && visibleTokenCount > 8
           ? COLLAPSED_HEADER_TOP_OFFSET + 4 // don't know why, but +4 solves a shift :)
           : 0,
     });
@@ -129,9 +138,7 @@ const Tabs = memo(function Tabs({
   return (
     <>
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-      <Content
-        disableBottomPadding={activeTab === 'nfts' || activeTab === 'points'}
-      >
+      <Content disableBottomPadding={isPlaceholderTab(activeTab)}>
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
         {activeTab === 'nfts' && <NFTs />}
@@ -145,16 +152,20 @@ export const Home = memo(function Home() {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
-  const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
   const { error, setError } = useErrorStore();
   const navigate = useRainbowNavigate();
   const { pendingRequests } = usePendingRequestStore();
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
-  const [activeTab, setActiveTab] = useState<Tab>(
-    popupActiveTab === 'nfts' || popupActiveTab === 'points'
-      ? 'tokens'
-      : popupActiveTab,
-  );
+  const { selectedTab, setSelectedTab } = useTabNavigation();
+
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+    if (isPlaceholderTab(selectedTab)) {
+      const pendingTabSwitch = selectedTab;
+      setSelectedTab('tokens');
+      return pendingTabSwitch;
+    } else return selectedTab;
+  });
+
   const containerRef = useContainerRef();
   const prevScrollPosition = useRef<number | undefined>(undefined);
 
@@ -164,8 +175,13 @@ export const Home = memo(function Home() {
       containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    saveActiveTab({ tab });
     setActiveTab(tab);
+    if (isPlaceholderTab(tab)) {
+      // Don’t persist placeholder tabs (NFTs, Points)
+      setSelectedTab('tokens');
+    } else {
+      setSelectedTab(tab);
+    }
   };
 
   useEffect(() => {
