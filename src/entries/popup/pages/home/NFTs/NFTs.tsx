@@ -27,15 +27,16 @@ import {
 } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
+import { useCoolMode } from '~/entries/popup/hooks/useCoolMode';
 
 import ExternalImage from '../../../components/ExternalImage/ExternalImage';
 
 const COLLECTION_IMAGE_SIZE = 16;
 
-export function NFTs() {
+export function PostReleaseNFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { displayMode, sort, sections: sectionsState } = useNftsStore();
-  const { data: nfts } = useNfts(
+  const { data: nfts, isInitialLoading } = useNfts(
     { address },
     { select: selectNftsByCollection },
   );
@@ -110,7 +111,12 @@ export function NFTs() {
       collectionGalleryRowVirtualizer.measure();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sectionsState]);
+  }, [sectionsState, sort]);
+
+  // we don't have a design for loading / empty state yet
+  if (isInitialLoading || Object.values(nfts || {}).length === 0) {
+    return <PreReleaseNFTs />;
+  }
 
   return (
     <Bleed top="10px">
@@ -333,8 +339,8 @@ const NftThumbnail = memo(({ imageSrc }: { imageSrc: string }) => {
 
 NftThumbnail.displayName = 'NftThumbnail';
 
-function PrereleaseNFTs() {
-  // const ref = useCoolMode({ emojis: ['🌈', '🖼️'] });
+export function PreReleaseNFTs() {
+  const ref = useCoolMode({ emojis: ['🌈', '🖼️'] });
   const { currentAddress: address } = useCurrentAddressStore();
   const { data: ensName } = useEnsName({ address });
 
@@ -354,7 +360,7 @@ function PrereleaseNFTs() {
       justifyContent="flex-start"
       marginTop="-20px"
       paddingTop="80px"
-      // ref={ref}
+      ref={ref}
       style={{ height: 336 }}
       width="full"
     >
