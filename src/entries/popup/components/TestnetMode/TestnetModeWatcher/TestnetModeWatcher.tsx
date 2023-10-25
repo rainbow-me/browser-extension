@@ -53,7 +53,6 @@ export const TestnetModeWatcher = ({
 
   const [hint, setHint] = useState<Hint>(INITIAL_HINT);
 
-  console.log('pendingRequest', pendingRequest);
   const closeSheet = () => {
     setHint(INITIAL_HINT);
     rejectRequest?.();
