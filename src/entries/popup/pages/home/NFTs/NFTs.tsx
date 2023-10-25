@@ -1,14 +1,16 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { useEnsName } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { selectNftsByCollection } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
-import { useNftsHistory } from '~/core/resources/nfts/nftsHistory';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
+import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
   Box,
@@ -18,6 +20,7 @@ import {
   Inset,
   Row,
   Rows,
+  Stack,
   Symbol,
   Text,
   TextOverflow,
@@ -36,7 +39,6 @@ export function NFTs() {
     { address },
     { select: selectNftsByCollection },
   );
-  const { data: nftsHistory } = useNftsHistory({ address });
   const containerRef = useContainerRef();
   const sections = Object.values(nfts || {});
   const sortedSections = useMemo(() => {
@@ -54,27 +56,23 @@ export function NFTs() {
       });
     } else {
       return sections.sort((a, b) => {
-        const aIndex = nftsHistory?.indexOf(a.collection.collection_id || '');
-        const bIndex = nftsHistory?.indexOf(b.collection.collection_id || '');
-        const aAbsent = typeof aIndex !== 'number';
-        const bAbsent = typeof bIndex !== 'number';
-        if (!aAbsent && bAbsent) {
-          return -1;
-        }
-        if (aAbsent && !bAbsent) {
-          return 1;
-        }
-        if (aIndex && bIndex) {
-          return aIndex < bIndex ? -1 : 1;
-        }
-        return 0;
+        const earliestDate = new Date(-8640000000000000);
+        const aCollectionAcquisition = a.lastCollectionAcquisition;
+        const bCollectionAcquisition = b.lastCollectionAcquisition;
+        const dateA = aCollectionAcquisition
+          ? new Date(aCollectionAcquisition)
+          : earliestDate;
+        const dateB = bCollectionAcquisition
+          ? new Date(bCollectionAcquisition)
+          : earliestDate;
+        return dateB.getTime() - dateA.getTime();
       });
     }
-  }, [nftsHistory, sections, sort]);
+  }, [sections, sort]);
   const estimateCollectionGalleryRowSize = useCallback(
     (sectionIndex: number) => {
       const COLLECTION_HEADER_HEIGHT = 30;
-      const PADDING = 36;
+      const PADDING = 29;
 
       const collection = sortedSections[sectionIndex];
       const sectionIsOpen = (sectionsState[address] || {})[
@@ -84,7 +82,7 @@ export function NFTs() {
         const assetCount = collection.assets.length;
         const sectionRowCount = Math.ceil(assetCount / 3);
 
-        const thumbnailHeight = sectionRowCount * 108;
+        const thumbnailHeight = sectionRowCount * 96;
         return PADDING + COLLECTION_HEADER_HEIGHT + thumbnailHeight;
       } else {
         return COLLECTION_HEADER_HEIGHT;
@@ -257,7 +255,7 @@ function CollectionSection({
                       size="14pt"
                       weight="bold"
                       color="label"
-                      maxWidth={210}
+                      maxWidth={260}
                     >
                       {section.collection.name}
                     </TextOverflow>
@@ -298,7 +296,7 @@ function CollectionSection({
                 flexDirection: 'row',
                 justifyContent: 'flex-start',
                 gap: 16,
-                paddingBottom: collectionVisible ? 30 : 0,
+                paddingBottom: collectionVisible ? 23 : 0,
                 paddingTop: 6,
               }}
             >
@@ -334,3 +332,106 @@ const NftThumbnail = memo(({ imageSrc }: { imageSrc: string }) => {
 });
 
 NftThumbnail.displayName = 'NftThumbnail';
+
+function PrereleaseNFTs() {
+  // const ref = useCoolMode({ emojis: ['🌈', '🖼️'] });
+  const { currentAddress: address } = useCurrentAddressStore();
+  const { data: ensName } = useEnsName({ address });
+
+  const openProfile = useCallback(
+    () =>
+      goToNewTab({
+        url: getProfileUrl(ensName ?? address),
+      }),
+    [address, ensName],
+  );
+
+  return (
+    <Box
+      alignItems="center"
+      display="flex"
+      flexDirection="column"
+      justifyContent="flex-start"
+      marginTop="-20px"
+      paddingTop="80px"
+      // ref={ref}
+      style={{ height: 336 }}
+      width="full"
+    >
+      <Box paddingBottom="14px">
+        <Stack alignHorizontal="center" space="16px">
+          <Box>
+            <Box
+              animate={{
+                scale: [0.8, 1, 0.8, 1, 0.8],
+                rotate: [0, 90, 180, 270, 360],
+                y: [4, -4, 4, -4, 4],
+              }}
+              as={motion.div}
+              initial={{ scale: 0.75, rotate: 0, y: 4 }}
+              key="sparkleAnimation"
+              transition={{
+                delay: 0.5,
+                duration: 8,
+                ease: [0.2, 0, 0, 1],
+                repeat: Infinity,
+              }}
+            >
+              <Symbol
+                color="yellow"
+                disableSmoothing
+                size={28}
+                symbol="sparkle"
+                weight="heavy"
+              />
+            </Box>
+          </Box>
+          <Text
+            align="center"
+            size="20pt"
+            weight="semibold"
+            color="labelTertiary"
+          >
+            {i18n.t('nfts.coming_soon_header')}
+          </Text>
+        </Stack>
+      </Box>
+      <Inset bottom="10px" horizontal="40px">
+        <Text
+          align="center"
+          color="labelQuaternary"
+          size="12pt"
+          weight="medium"
+        >
+          {i18n.t('nfts.coming_soon_description')}
+        </Text>
+      </Inset>
+      <Lens
+        borderRadius="8px"
+        cursor="pointer"
+        onClick={openProfile}
+        padding="6px"
+        width="fit"
+      >
+        <Inline alignHorizontal="center" alignVertical="center" space="3px">
+          <Text
+            align="center"
+            color="accent"
+            cursor="pointer"
+            size="12pt"
+            weight="heavy"
+          >
+            {i18n.t('nfts.view_on_web')}
+          </Text>
+          <Symbol
+            color="accent"
+            cursor="pointer"
+            size={9.5}
+            symbol="chevron.right"
+            weight="heavy"
+          />
+        </Inline>
+      </Lens>
+    </Box>
+  );
+}

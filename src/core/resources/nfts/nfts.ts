@@ -47,6 +47,7 @@ async function nftsQueryFunction({
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
   const chains = getSupportedChains().map((chain) => chain.name as ChainName);
   const polygonAllowList = await polygonAllowListFetcher();
+  const acquisitionMap: Record<string, string> = {};
   const collections = (await fetchNftCollections({ address, chains })).filter(
     (collection) => {
       const polygonContractAddressString =
@@ -66,6 +67,10 @@ async function nftsQueryFunction({
           polygonContractAddressString.split('.')[1];
         return polygonAllowList[polygonContractAddress.toLowerCase()];
       } else {
+        if (collection.collection_id && collection.last_acquired_date) {
+          acquisitionMap[collection.collection_id] =
+            collection.last_acquired_date;
+        }
         return true;
       }
     },
@@ -97,7 +102,13 @@ async function nftsQueryFunction({
   const nfts = filterSimpleHashNFTs(nftsResponse, polygonAllowList).map((nft) =>
     simpleHashNFTToUniqueAsset(nft),
   );
-  return nfts;
+  return nfts.map((nft) => {
+    if (nft.collection.collection_id) {
+      nft.last_collection_acquisition =
+        acquisitionMap[nft.collection.collection_id];
+    }
+    return nft;
+  });
 }
 
 type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;

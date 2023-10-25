@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useNftsStore } from '~/core/state/nfts';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import {
@@ -13,7 +14,7 @@ import {
 import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow';
 import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
 
-import { gradientBorder } from './NFTs.css';
+import { gradientBorderDark, gradientBorderLight } from './NFTs.css';
 
 export default function DisplayModeDropdown() {
   const { displayMode, setNftDisplayMode } = useNftsStore();
@@ -23,11 +24,14 @@ export default function DisplayModeDropdown() {
     },
     [setNftDisplayMode],
   );
+  const { currentTheme } = useCurrentThemeStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Box
-          className={gradientBorder}
+          className={
+            currentTheme === 'dark' ? gradientBorderDark : gradientBorderLight
+          }
           style={{ display: 'flex', alignItems: 'center' }}
         >
           <Box style={{ paddingRight: 7, paddingLeft: 7 }}>
