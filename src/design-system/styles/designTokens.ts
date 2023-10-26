@@ -1009,6 +1009,7 @@ export const symbolNames = selectSymbolNames(
   'exclamationmark.octagon.fill',
   'network.badge.shield.half.filled',
   'safari.fill',
+  't.square.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
