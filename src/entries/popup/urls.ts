@@ -38,6 +38,8 @@ export const ROUTES = {
     '/settings/privacy/wallets-and-keys/wallet-details/private-key', // PrivateKey
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING:
     '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase-warning', // RecoveryPhraseWarning
+  SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING:
+    '/settings/privacy/wallets-and-keys/wallet-details/wipe-wallet-warning', // WipeWalletWarning
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE:
     '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase', // RecoveryPhrase
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY:

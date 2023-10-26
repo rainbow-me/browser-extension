@@ -68,6 +68,7 @@ import { RecoveryPhraseVerify } from './pages/settings/privacy/walletsAndKeys/re
 import { RecoveryPhraseWarning } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/warning';
 import { WalletDetails } from './pages/settings/privacy/walletsAndKeys/walletDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
+import { WipeWalletWarning } from './pages/settings/privacy/walletsAndKeys/wipeWalletWarning';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
@@ -586,6 +587,20 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <RecoveryPhraseWarning />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        background="surfaceSecondary"
+        protectedRoute
+      >
+        <WipeWalletWarning />
       </AnimatedRoute>
     ),
   },
