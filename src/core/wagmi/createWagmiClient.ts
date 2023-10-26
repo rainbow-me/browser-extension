@@ -1,4 +1,3 @@
-import { Zero } from '@ethersproject/constants';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import {
   Chain,
@@ -11,10 +10,10 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
-import { ETH_ADDRESS } from '../references';
 import { Storage } from '../storage';
 import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
 import { SUPPORTED_CHAINS } from '../utils/chains';
+import { findCustomNetworkForChainId } from '../utils/customNetworks';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -23,57 +22,6 @@ const noopStorage = {
   setItem: () => null,
   removeItem: () => null,
 };
-
-// This is to simulate the user adding custom RPC endpoints that we'll be storing in state
-// once we have a proper UI for it
-export const userAddedCustomRpcEndpoints = [
-  {
-    rpc: 'https://rpc.flashbots.net',
-    chainId: 1,
-    name: 'Flashbots Protect',
-    symbol: 'ETH',
-    explorer: 'https://etherscan.io',
-    explorerName: 'Etherscan',
-    active: true,
-    nativeAssetAddress: ETH_ADDRESS,
-  },
-  {
-    rpc: 'https://api.avax.network/ext/bc/C/rpc',
-    chainId: 43114,
-    name: 'Avax',
-    symbol: 'AVAX',
-    explorer: 'https://snowtrace.io',
-    explorerName: 'Snowtrace',
-    active: true,
-    nativeAssetAddress: Zero.toHexString(),
-  },
-  {
-    rpc: 'https://rpc.gnosis.gateway.fm',
-    chainId: 100,
-    name: 'Gnosis',
-    symbol: 'xDAI',
-    explorer: 'https://gnosisscan.io',
-    explorerName: 'GnosisScan',
-    active: true,
-    nativeAssetAddress: Zero.toHexString(),
-  },
-];
-
-const findCustomNetworkForChainId = (chainId: number) => {
-  return userAddedCustomRpcEndpoints.find(
-    (network) => network.chainId === chainId && network.active,
-  );
-};
-
-export const getCustomNetworks = () =>
-  userAddedCustomRpcEndpoints.filter(
-    (network) =>
-      isCustomNetwork(network.chainId) &&
-      SUPPORTED_CHAINS.every((chain) => chain.id !== network.chainId),
-  );
-
-export const isCustomNetwork = (chainId: number) =>
-  !!findCustomNetworkForChainId(chainId);
 
 const getOriginalRpcEndpoint = (chain: Chain) => {
   // overrides have preference

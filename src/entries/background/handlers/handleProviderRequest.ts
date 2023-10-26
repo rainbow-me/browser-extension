@@ -20,12 +20,12 @@ import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
+import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { normalizeTransactionResponsePayload } from '~/core/utils/ethereum';
 import { toHex } from '~/core/utils/hex';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
-import { isCustomNetwork } from '~/core/wagmi/createWagmiClient';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 import { RainbowError, logger } from '~/logger';
 

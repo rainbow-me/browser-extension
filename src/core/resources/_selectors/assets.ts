@@ -7,8 +7,8 @@ import {
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
+import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { add } from '~/core/utils/numbers';
-import { isCustomNetwork } from '~/core/wagmi/createWagmiClient';
 
 // selectors
 export function selectorFilterByUserChains<T>({
@@ -89,6 +89,13 @@ export function selectUserAssetAddressMapByChainId(
 
 // selector generators
 export function selectUserAssetWithUniqueId(uniqueId: UniqueId) {
+  return (assets: ParsedAssetsDictByChain) => {
+    const { chain } = deriveAddressAndChainWithUniqueId(uniqueId);
+    return assets?.[chain]?.[uniqueId];
+  };
+}
+
+export function selectCustomNetworkAssetWithUniqueId(uniqueId: UniqueId) {
   return (assets: ParsedAssetsDictByChain) => {
     const { chain } = deriveAddressAndChainWithUniqueId(uniqueId);
     return assets?.[chain]?.[uniqueId];

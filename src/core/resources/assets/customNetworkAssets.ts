@@ -17,7 +17,7 @@ import { parseUserAssetBalances } from '~/core/utils/assets';
 import {
   getCustomNetworks,
   userAddedCustomRpcEndpoints,
-} from '~/core/wagmi/createWagmiClient';
+} from '~/core/utils/customNetworks';
 import { RainbowError, logger } from '~/logger';
 
 const CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL = 60000;
