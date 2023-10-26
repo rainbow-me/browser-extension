@@ -53,7 +53,8 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await findElementByTextAndClick(driver, 'View Recovery Phrase');
     await findElementByTextAndClick(driver, 'Show Recovery Phrase');
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await findElementByTextAndClick(driver, 'Continue');
+    await delayTime('long');
+    await findElementByTestIdAndClick({ id: 'continue-button', driver });
 
     // check words exist and match expected seed word
     const requiredWordsIndexes = [4, 8, 12];
@@ -91,7 +92,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await findElementByTextAndClick(driver, 'View Private Key');
     await findElementByTextAndClick(driver, 'Show Private Key');
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await findElementByTextAndClick(driver, 'Continue');
+    await findElementByTestIdAndClick({ id: 'continue-button', driver });
 
     // check words exist and match expected seed word
     const pkey = await findElementByTestId({ id: 'private-key-hash', driver });
@@ -147,7 +148,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await findElementByTestIdAndClick({ id: 'new-wallet-group', driver });
     await findElementByTestIdAndClick({ id: 'show-phrase', driver });
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await findElementByTextAndClick(driver, 'Continue');
+    await findElementByTestIdAndClick({ id: 'continue-button', driver });
 
     await passSecretQuiz(driver);
 
