@@ -12,14 +12,14 @@ interface CustomRPC {
 }
 export interface CustomRPCsState {
   customRPCs: Record<string, CustomRPC>;
-  setCustomRPC: ({ customRPC }: { customRPC: CustomRPC }) => void;
+  addCustomRPC: ({ customRPC }: { customRPC: CustomRPC }) => void;
   removeCustomRPC: ({ rpcUrl }: { rpcUrl: string }) => void;
 }
 
 export const customRPCsStore = createStore<CustomRPCsState>(
   (set, get) => ({
     customRPCs: {},
-    setCustomRPC: ({ customRPC }) => {
+    addCustomRPC: ({ customRPC }) => {
       const { customRPCs } = get();
       set({
         customRPCs: { ...customRPCs, [customRPC.rpcUrl]: customRPC },

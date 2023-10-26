@@ -7,44 +7,49 @@ import { Input } from '~/design-system/components/Input/Input';
 import { maskInput } from '../../components/InputMask/utils';
 
 export function SettingsNetworksCustomRPC() {
-  const { customRPCs, setCustomRPC } = useCustomRPCsStore();
-  const [rpcUrl, setRpcUrl] = useState<string>();
-  const [chainId, setChainId] = useState<number>();
-  const [name, setName] = useState<string>();
-  const [symbol, setSymbol] = useState<string>();
-  const [explorerUrl, setExplorerUrl] = useState<string>();
+  const { customRPCs, addCustomRPC } = useCustomRPCsStore();
+  const [customRPC, setCustomRPC] = useState<{
+    rpcUrl?: string;
+    chainId?: number;
+    name?: string;
+    symbol?: string;
+    explorerUrl?: string;
+  }>({});
 
   const onInputChange = useCallback(
     <T extends string | number>(
       input: React.ChangeEvent<HTMLInputElement>,
       type: 'string' | 'number',
-      setData: (a: T | undefined) => void,
+      data: 'rpcUrl' | 'chainId' | 'name' | 'symbol' | 'explorerUrl',
     ) => {
       const value = input.target.value;
 
       if (type === 'number') {
-        console.log('-- value', value);
         const maskedValue = maskInput({ inputValue: value, decimals: 0 });
-        setData(maskedValue ? (Number(maskedValue) as T) : undefined);
+        setCustomRPC((prev) => ({
+          ...prev,
+          [data]: maskedValue ? (Number(maskedValue) as T) : undefined,
+        }));
       } else {
-        setData(value as T);
+        setCustomRPC((prev) => ({
+          ...prev,
+          [data]: value as T,
+        }));
       }
     },
     [],
   );
 
+  console.log('- customRPC.chainId', customRPC.chainId);
+
   const addCustomRpc = useCallback(() => {
+    const { rpcUrl, chainId, name, symbol } = customRPC;
     if (rpcUrl && chainId && name && symbol) {
-      const customRpc = {
-        rpcUrl,
-        chainId,
-        name,
-        symbol,
-        explorerUrl,
-      };
-      setCustomRPC({ customRPC: customRpc });
+      addCustomRPC({
+        customRPC: { ...customRPC, rpcUrl, chainId, name, symbol },
+      });
     }
-  }, [chainId, explorerUrl, name, rpcUrl, setCustomRPC, symbol]);
+  }, [addCustomRPC, customRPC]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -75,41 +80,41 @@ export function SettingsNetworksCustomRPC() {
         >
           <Stack space="8px">
             <Input
-              onChange={(t) => onInputChange<string>(t, 'string', setRpcUrl)}
+              onChange={(t) => onInputChange<string>(t, 'string', 'rpcUrl')}
               height="32px"
               placeholder="Url"
               variant="surface"
-              value={rpcUrl}
+              value={customRPC.rpcUrl}
             />
             <Input
-              onChange={(t) => onInputChange<number>(t, 'number', setChainId)}
+              onChange={(t) => onInputChange<number>(t, 'number', 'chainId')}
               height="32px"
               placeholder="ChainId"
               variant="surface"
-              value={chainId}
+              value={customRPC.chainId || ''}
             />
             <Input
-              onChange={(t) => onInputChange<string>(t, 'string', setName)}
+              onChange={(t) => onInputChange<string>(t, 'string', 'name')}
               height="32px"
               placeholder="name"
               variant="surface"
-              value={name}
+              value={customRPC.name}
             />
             <Input
-              onChange={(t) => onInputChange<string>(t, 'string', setSymbol)}
+              onChange={(t) => onInputChange<string>(t, 'string', 'symbol')}
               height="32px"
               placeholder="Symbol"
               variant="surface"
-              value={symbol}
+              value={customRPC.symbol}
             />
             <Input
               onChange={(t) =>
-                onInputChange<string>(t, 'string', setExplorerUrl)
+                onInputChange<string>(t, 'string', 'explorerUrl')
               }
               height="32px"
               placeholder="Explorer url"
               variant="surface"
-              value={explorerUrl}
+              value={customRPC.explorerUrl}
             />
             <Inline alignHorizontal="right">
               <Button
