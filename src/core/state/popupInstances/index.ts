@@ -5,14 +5,12 @@ import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativePopup } from '~/core/utils/tabs';
 import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
-import { Tab } from '~/entries/popup/pages/home';
 
 import { createStore } from '../internal/createStore';
 
 type SendAddress = Address | 'eth' | '';
 
 interface PopupInstance {
-  activeTab: Tab;
   sendAddress: Address | string | null;
   sendAmount: string | null;
   sendField: 'asset' | 'native';
@@ -24,7 +22,6 @@ interface PopupInstance {
 }
 
 const DEFAULT_POPUP_INSTANCE_VALUES: PopupInstance = {
-  activeTab: 'tokens',
   sendAddress: null,
   sendAmount: null,
   sendField: 'asset',
@@ -39,7 +36,6 @@ export interface PopupInstanceStore extends PopupInstance {
   resetValues: () => void;
   resetSwapValues: () => void;
   resetSendValues: () => void;
-  saveActiveTab: ({ tab }: { tab: Tab }) => void;
   saveSendAddress: ({ address }: { address: Address | string }) => void;
   saveSendAmount: ({ amount }: { amount: string }) => void;
   saveSendField: ({ field }: { field: 'asset' | 'native' }) => void;
@@ -58,14 +54,10 @@ export interface PopupInstanceStore extends PopupInstance {
 }
 
 export const popupInstanceStore = createStore<PopupInstanceStore>(
-  (set, get) => ({
+  (set) => ({
     ...DEFAULT_POPUP_INSTANCE_VALUES,
     resetValues: popupInstanceHandlerFactory(() =>
-      set(
-        get().activeTab === 'nfts' || get().activeTab === 'points'
-          ? DEFAULT_POPUP_INSTANCE_VALUES
-          : { ...DEFAULT_POPUP_INSTANCE_VALUES, activeTab: get().activeTab },
-      ),
+      set(DEFAULT_POPUP_INSTANCE_VALUES),
     ),
     resetSwapValues: popupInstanceHandlerFactory(() =>
       set({
@@ -83,9 +75,6 @@ export const popupInstanceStore = createStore<PopupInstanceStore>(
         sendTokenAddressAndChain: null,
       }),
     ),
-    saveActiveTab: popupInstanceHandlerFactory(({ tab }) => {
-      set({ activeTab: tab });
-    }),
     saveSendAddress: popupInstanceHandlerFactory(({ address }) => {
       set({ sendAddress: address });
     }),

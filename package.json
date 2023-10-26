@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.2.54",
+  "version": "1.2.55",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -252,7 +252,8 @@
     "vite": "4.4.9",
     "chai": "4.3.10",
     "supports-color": "5.5.0",
-    "postcss": "8.4.31"
+    "postcss": "8.4.31",
+    "crypto-js": "4.2.0"
   },
   "lavamoat": {
     "allowScripts": {

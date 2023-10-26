@@ -176,6 +176,7 @@ export function Privacy() {
           </Menu>
           <Menu>
             <MenuItem
+              testId={'wallets-and-keys'}
               first
               last
               hasRightArrow

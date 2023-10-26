@@ -95,9 +95,9 @@
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
       "testnet_mode": {
         "title": "Testnet Mode",
-        "toggle_explainer": "Switch your app to Testnet Mode to only view balances and transactions on supported Testnets.",
-        "shortcut_title": "Show Testnet shortcut",
-        "shortcut_toggle_explainer": "Add a shortcut for Testnet Mode in the menu on the wallet screen for easy access."
+        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
+        "shortcut_title": "Enable Keyboard Shortcut",
+        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       }
     },
     "privacy_and_security": {
@@ -127,8 +127,8 @@
         "header_label": "Change Your Password"
       },
       "confirm_password": {
-        "title": "Enter Your Password",
-        "description": "You need to enter your current password to continue."
+        "title": "Enter your Password",
+        "description": "Continue with your current password."
       },
       "wallets_and_keys": {
         "title": "Wallets & Keys",
@@ -178,13 +178,13 @@
           "copied": "Private Key Copied"
         },
         "recovery_phrase": {
-          "title": "Your Recovery Phrase",
+          "title": "Your Secret Recovery Phrase",
           "subtitle": "Anyone who has these words can access your entire wallet! You should never share them.",
           "saved": "I've saved these words",
-          "warning_1": "Never share your Recovery Phrase or enter it into any apps.",
-          "warning_2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
-          "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
-          "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
+          "warning_1": "Never share your Secret Recovery Phrase or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Secret Recovery Phrase.",
+          "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet.",
+          "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Show Recovery Phrase",
           "copied": "Recovery Phrase Copied"
         }
@@ -507,7 +507,7 @@
       "cancel": "Cancel",
       "sending_on_network": "Sending on the %{chainName} network",
       "sending_on_l2_check_1": "I’m not sending to an exchange",
-      "sending_on_l2_check_2": "The person I’m sending to has a wallet that support %{chainName}",
+      "sending_on_l2_check_2": "The person I’m sending to has a wallet that supports %{chainName}",
       "complete_checks": "Complete the checks",
       "confirm_hw": "Confirm on your device"
     }
@@ -743,7 +743,7 @@
   },
   "seed_reveal": {
     "title": "Your Secret Recovery Phrase",
-    "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "write_down_seed_importance": "Anyone who has these words can access your entire wallet! You should never share them.",
     "saved_these_words": "I've saved these words",
     "phrase_copied": "Recovery Phrase Copied"
   },

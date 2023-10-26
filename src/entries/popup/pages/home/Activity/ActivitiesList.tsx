@@ -186,12 +186,12 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
           borderRadius="12px"
           className={rowTransparentAccentHighlight}
         >
-          <Columns space="8px" alignHorizontal="left">
+          <Columns space="8px" alignHorizontal="left" alignVertical="center">
             <Column width="content">
               <ActivityIcon transaction={transaction} />
             </Column>
             <Column>
-              <Columns space="4px">
+              <Columns alignVertical="center" space="4px">
                 <Column width="content">
                   <Rows space="8px">
                     <Row>
