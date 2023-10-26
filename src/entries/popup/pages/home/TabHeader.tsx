@@ -6,6 +6,7 @@ import { supportedCurrencies } from '~/core/references';
 import { selectNftsByCollection } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
@@ -35,6 +36,7 @@ export function TabHeader({
     { address },
     { select: selectNftsByCollection },
   );
+  const { featureFlags } = useFeatureFlagsStore();
   const nftCount = Object.values(nfts || {})
     .map((section) => section.assets)
     .flat().length;
@@ -90,11 +92,13 @@ export function TabHeader({
               {visibleTokenCount}
             </Text>
           )}
-          {activeTab === 'nfts' && nftCount > 0 && (
-            <Text color="labelQuaternary" size="14pt" weight="bold">
-              {nftCount}
-            </Text>
-          )}
+          {activeTab === 'nfts' &&
+            featureFlags.nfts_enabled &&
+            nftCount > 0 && (
+              <Text color="labelQuaternary" size="14pt" weight="bold">
+                {nftCount}
+              </Text>
+            )}
         </Inline>
         {isLoading && (
           <Inline alignVertical="center">
@@ -102,7 +106,7 @@ export function TabHeader({
           </Inline>
         )}
 
-        {activeTab !== 'nfts' && balance && (
+        {(activeTab !== 'nfts' || !featureFlags.nfts_enabled) && balance && (
           <CursorTooltip
             align="end"
             arrowAlignment="right"
@@ -114,7 +118,7 @@ export function TabHeader({
             <Inline alignVertical="center">{displayBalanceComponent}</Inline>
           </CursorTooltip>
         )}
-        {activeTab === 'nfts' && (
+        {activeTab === 'nfts' && featureFlags.nfts_enabled && (
           <Inline alignVertical="center" space="8px">
             <DisplayModeDropdown />
             <SortdDropdown />
