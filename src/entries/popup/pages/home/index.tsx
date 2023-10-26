@@ -4,7 +4,6 @@ import {
   memo,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -16,7 +15,6 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useErrorStore } from '~/core/state/error';
 import { goToNewTab } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
@@ -344,20 +342,15 @@ function Content({
   children,
   disableBottomPadding,
 }: PropsWithChildren<{ disableBottomPadding?: boolean }>) {
-  const { testnetMode } = useTestnetModeStore();
-
-  const bottom = useMemo(() => {
-    if (testnetMode) return '104px';
-    if (disableBottomPadding) return undefined;
-    return '64px';
-  }, [disableBottomPadding, testnetMode]);
-
   return (
     <Box
       background="surfacePrimaryElevated"
       style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
     >
-      <Box height="full" paddingBottom={bottom}>
+      <Box
+        height="full"
+        paddingBottom={disableBottomPadding ? undefined : '64px'}
+      >
         <Inset top="20px">{children}</Inset>
       </Box>
     </Box>

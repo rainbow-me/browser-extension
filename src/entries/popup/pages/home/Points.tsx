@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { Box, Inset, Stack, Text } from '~/design-system';
 import {
   backgroundColors,
@@ -108,7 +110,7 @@ export function Points() {
       marginTop="-20px"
       paddingTop="80px"
       ref={ref}
-      style={{ height: 336 }}
+      style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
       width="full"
     >
       <Box paddingBottom="14px">

@@ -95,9 +95,9 @@
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
       "testnet_mode": {
         "title": "Testnet Mode",
-        "toggle_explainer": "Switch your app to Testnet Mode to only view balances and transactions on supported Testnets.",
-        "shortcut_title": "Show Testnet shortcut",
-        "shortcut_toggle_explainer": "Add a shortcut for Testnet Mode in the menu on the wallet screen for easy access."
+        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
+        "shortcut_title": "Enable Keyboard Shortcut",
+        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       }
     },
     "privacy_and_security": {
