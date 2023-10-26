@@ -32,8 +32,8 @@ import { add, getWallets, remove } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
-import * as wallet from '../../../../handlers/wallet';
-import { CreateWalletPrompt } from '../../../walletSwitcher/createWalletPrompt';
+import * as wallet from '../../../handlers/wallet';
+import { CreateWalletPrompt } from '../../walletSwitcher/createWalletPrompt';
 
 const t = (s: string) =>
   i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });

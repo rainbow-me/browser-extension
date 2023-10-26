@@ -6,7 +6,7 @@ import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/
 import WarningInfo from '~/entries/popup/components/WarningInfo/WarningInfo';
 import { ROUTES } from '~/entries/popup/urls';
 
-import { ConfirmPasswordPrompt } from '../../confirmPasswordPrompt';
+import { ConfirmPasswordPrompt } from '../../privacy/confirmPasswordPrompt';
 
 const iconAndCopyList: IconAndCopyItem[] = [
   {
@@ -15,7 +15,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'orange',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.private_key.warning_1',
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning_1',
     ),
   },
   {
@@ -24,7 +24,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'pink',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.private_key.warning_2',
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning_2',
     ),
   },
   {
@@ -33,7 +33,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'red',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.private_key.warning_3',
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning_3',
     ),
   },
   {
@@ -42,11 +42,12 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'blue',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.private_key.warning_4',
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning_4',
     ),
   },
 ];
-export function PrivateKeyWarning() {
+
+export function RecoveryPhraseWarning() {
   const { state } = useLocation();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
 
@@ -63,17 +64,18 @@ export function PrivateKeyWarning() {
         show={showEnterPassword}
         onClose={closePasswordPrompt}
         redirect={
-          ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY
+          ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE
         }
         extraState={{ ...state }}
       />
       <WarningInfo
-        onProceed={openPasswordPrompt}
+        testId={'show-phrase'}
         iconAndCopyList={iconAndCopyList}
+        onProceed={openPasswordPrompt}
         proceedButtonLabel={i18n.t(
-          'settings.privacy_and_security.wallets_and_keys.private_key.show',
+          'settings.privacy_and_security.wallets_and_keys.recovery_phrase.show',
         )}
-        proceedButtonSymbol="key.fill"
+        proceedButtonSymbol="doc.plaintext.fill"
       />
     </>
   );
