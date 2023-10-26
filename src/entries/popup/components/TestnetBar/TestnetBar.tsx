@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useLocation } from 'react-router';
 
 import { i18n } from '~/core/languages';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Inline, Text } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -14,6 +15,7 @@ import { TestnetBarBackground } from './TestnetBarBackground';
 
 export const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
   const location = useLocation();
+  const { currentTheme } = useCurrentThemeStore();
 
   const showTestnetBar = testnetMode && location.pathname !== ROUTES.UNLOCK;
 
@@ -37,9 +39,12 @@ export const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
           <Box
             height="full"
             style={{
-              borderColor: globalColors.green90,
+              borderColor:
+                currentTheme === 'dark'
+                  ? globalColors.green80
+                  : globalColors.green50,
             }}
-            borderBottomWidth="1px"
+            borderBottomWidth="1.5px"
           >
             <Inline
               height="full"
@@ -51,10 +56,11 @@ export const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
                 position="absolute"
                 style={{
                   overflow: 'clip',
+                  marginBottom: 2,
                 }}
                 marginRight="-12px"
               >
-                <TestnetBarBackground />
+                <TestnetBarBackground currentTheme={currentTheme} />
               </Box>
               <MenuItem.TextIcon icon="🕹" />
               <Text align="center" color="green" size="12pt" weight="heavy">

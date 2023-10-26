@@ -23,7 +23,7 @@ export const WindowStroke = () => {
 
   const borderColor = React.useMemo(() => {
     if (displayingTestnetBar) {
-      return '0, 87, 35'; // green90
+      return isDarkTheme ? '9, 117, 45' : '62, 207, 91'; // green80 : green50
     } else if (isDarkTheme) {
       return '245, 248, 255';
     } else if (isLightFullScreen) {
@@ -34,12 +34,13 @@ export const WindowStroke = () => {
   }, [displayingTestnetBar, isDarkTheme, isLightFullScreen]);
 
   const boxShadow = React.useMemo(() => {
-    const inset = isDarkTheme || !isFullScreen ? 'inset ' : '';
+    const inset =
+      isDarkTheme || !isFullScreen || displayingTestnetBar ? 'inset ' : '';
     const opacity =
       isFullScreen || location.pathname === ROUTES.UNLOCK ? 0.06 : 0.03;
-    return `${inset}0 0 0 1px rgba(${borderColor}, ${
-      displayingTestnetBar ? 1 : opacity
-    })`;
+    return `${inset}0 0 0 ${
+      displayingTestnetBar ? 1.5 : 1
+    }px rgba(${borderColor}, ${displayingTestnetBar ? 1 : opacity})`;
   }, [
     borderColor,
     displayingTestnetBar,
