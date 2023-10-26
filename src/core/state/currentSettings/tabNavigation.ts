@@ -1,7 +1,7 @@
 import create from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
-import { Tab } from '~/entries/popup/pages/home';
+import { Tab } from '~/entries/popup/components/Tabs/TabBar';
 
 interface TabNavigationState {
   selectedTab: Tab;

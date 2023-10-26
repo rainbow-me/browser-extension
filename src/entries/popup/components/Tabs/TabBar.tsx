@@ -8,7 +8,6 @@ import { Box, Inline } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { useAvatar } from '../../hooks/useAvatar';
-import { Tab } from '../../pages/home';
 import { zIndexes } from '../../utils/zIndexes';
 import { timingConfig } from '../CommandK/references';
 
@@ -21,12 +20,18 @@ import NFTsSelected from './TabIcons/NFTsSelected';
 import PointsIcon from './TabIcons/Points';
 import PointsSelected from './TabIcons/PointsSelected';
 
+export type Tab = (typeof TABS)[number];
+
 export const ICON_SIZE = 36;
+
+export const isValidTab = (value: unknown): value is Tab => {
+  return typeof value === 'string' && TABS.includes(value);
+};
+
+const TABS = ['tokens', 'activity', 'nfts', 'points'];
 
 const TAB_HEIGHT = 32;
 const TAB_WIDTH = 42;
-
-const tabNames = ['tokens', 'activity', 'nfts', 'points'];
 
 type TabConfigType = {
   Icon: () => ReactElement;
@@ -110,7 +115,7 @@ export function TabBar({
       }}
       transition={timingConfig(0.2)}
     >
-      <TabBackground selectedTabIndex={tabNames.indexOf(activeTab)} />
+      <TabBackground selectedTabIndex={TABS.indexOf(activeTab)} />
       <Inline
         alignHorizontal="center"
         alignVertical="center"
@@ -127,7 +132,7 @@ export function TabBar({
             key={index}
             name={tab.name}
             onSelectTab={onSelectTab}
-            selectedTabIndex={tabNames.indexOf(activeTab)}
+            selectedTabIndex={TABS.indexOf(activeTab)}
           />
         ))}
       </Inline>
