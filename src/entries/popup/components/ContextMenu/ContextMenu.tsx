@@ -232,6 +232,7 @@ interface ContextMenuItemProps {
   shortcut?: string;
   external?: boolean;
   disabled?: boolean;
+  testId?: string;
 }
 
 const isSymbol = (symbol: string): symbol is SymbolName =>
@@ -245,11 +246,13 @@ export const ContextMenuItem = ({
   shortcut,
   external,
   disabled,
+  testId,
 }: ContextMenuItemProps) => {
   // eslint-disable-next-line no-param-reassign
   if (disabled) color = 'labelTertiary';
   return (
     <Box
+      testId={testId}
       as={ContextMenuPrimitive.Item}
       className={accentMenuFocusVisibleStyle}
       paddingVertical="8px"
