@@ -38,16 +38,13 @@ const iconAndCopyList: IconAndCopyItem[] = [
 export function WipeWalletWarning() {
   const { state } = useLocation();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
-  const [accounts, setAccounts] = useState<Address[]>([]);
   const { address } = useAccount();
   const { setCurrentAddress } = useCurrentAddressStore();
-  console.log(accounts);
 
   const openPasswordPrompt = useCallback(() => setShowEnterPassword(true), []);
 
   const updateState = useCallback(async () => {
     const accounts = await wallet.getAccounts();
-    setAccounts(accounts);
     if (accounts.length > 0 && !accounts.includes(address as Address)) {
       setCurrentAddress(accounts[0]);
     }
