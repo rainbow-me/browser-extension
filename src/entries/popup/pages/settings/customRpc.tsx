@@ -4,26 +4,28 @@ import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 
+import { maskInput } from '../../components/InputMask/utils';
+
 export function SettingsNetworksCustomRPC() {
   const { customRPCs, setCustomRPC } = useCustomRPCsStore();
   const [rpcUrl, setRpcUrl] = useState<string>();
   const [chainId, setChainId] = useState<number>();
   const [name, setName] = useState<string>();
-  const [symbol, setSymbol] = useState<string>('');
-  const [explorer, setExplorer] = useState<string>('');
-  const [explorerUrl, setExplorerUrl] = useState<string>('');
-  const [nativeAssetAddress, setNativeAssetAddress] = useState<string>('');
+  const [symbol, setSymbol] = useState<string>();
+  const [explorerUrl, setExplorerUrl] = useState<string>();
 
   const onInputChange = useCallback(
     <T extends string | number>(
       input: React.ChangeEvent<HTMLInputElement>,
       type: 'string' | 'number',
-      setData: (a: T) => void,
+      setData: (a: T | undefined) => void,
     ) => {
       const value = input.target.value;
 
       if (type === 'number') {
-        setData(Number(value) as T);
+        console.log('-- value', value);
+        const maskedValue = maskInput({ inputValue: value, decimals: 0 });
+        setData(maskedValue ? (Number(maskedValue) as T) : undefined);
       } else {
         setData(value as T);
       }
@@ -32,28 +34,17 @@ export function SettingsNetworksCustomRPC() {
   );
 
   const addCustomRpc = useCallback(() => {
-    if (rpcUrl && chainId && name) {
+    if (rpcUrl && chainId && name && symbol) {
       const customRpc = {
         rpcUrl,
         chainId,
         name,
         symbol,
-        explorer,
         explorerUrl,
-        nativeAssetAddress,
       };
       setCustomRPC({ customRPC: customRpc });
     }
-  }, [
-    chainId,
-    explorer,
-    explorerUrl,
-    name,
-    nativeAssetAddress,
-    rpcUrl,
-    setCustomRPC,
-    symbol,
-  ]);
+  }, [chainId, explorerUrl, name, rpcUrl, setCustomRPC, symbol]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -88,46 +79,37 @@ export function SettingsNetworksCustomRPC() {
               height="32px"
               placeholder="Url"
               variant="surface"
+              value={rpcUrl}
             />
             <Input
               onChange={(t) => onInputChange<number>(t, 'number', setChainId)}
               height="32px"
               placeholder="ChainId"
               variant="surface"
+              value={chainId}
             />
             <Input
               onChange={(t) => onInputChange<string>(t, 'string', setName)}
               height="32px"
               placeholder="name"
               variant="surface"
+              value={name}
             />
             <Input
               onChange={(t) => onInputChange<string>(t, 'string', setSymbol)}
               height="32px"
               placeholder="Symbol"
               variant="surface"
-            />
-            <Input
-              onChange={(t) => onInputChange<string>(t, 'string', setExplorer)}
-              height="32px"
-              placeholder="Explorer"
-              variant="surface"
+              value={symbol}
             />
             <Input
               onChange={(t) =>
                 onInputChange<string>(t, 'string', setExplorerUrl)
               }
               height="32px"
-              placeholder="Explorer name"
+              placeholder="Explorer url"
               variant="surface"
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t, 'string', setNativeAssetAddress)
-              }
-              height="32px"
-              placeholder="Native Asset Address"
-              variant="surface"
+              value={explorerUrl}
             />
             <Inline alignHorizontal="right">
               <Button

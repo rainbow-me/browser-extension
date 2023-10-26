@@ -8,9 +8,7 @@ interface CustomRPC {
   name: string;
   symbol: string;
   explorer?: string;
-  explorerName?: string;
   active?: boolean;
-  nativeAssetAddress?: string;
 }
 export interface CustomRPCsState {
   customRPCs: Record<string, CustomRPC>;
