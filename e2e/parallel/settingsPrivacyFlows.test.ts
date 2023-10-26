@@ -53,7 +53,6 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await findElementByTextAndClick(driver, 'View Recovery Phrase');
     await findElementByTextAndClick(driver, 'Show Recovery Phrase');
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await delayTime('long');
     await findElementByTestIdAndClick({ id: 'continue-button', driver });
 
     // check words exist and match expected seed word
