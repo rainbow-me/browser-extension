@@ -48,10 +48,10 @@ describe('Navigate Settings & Privacy and its flows', () => {
   it('should be able to reveal secret', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
-    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
-    await findElementByTextAndClick(driver, 'View Recovery Phrase');
-    await findElementByTextAndClick(driver, 'Show Recovery Phrase');
+    await findElementByTestIdAndClick({ id: 'view-recovery-phrase', driver });
+    await findElementByTestIdAndClick({ id: 'show-phrase', driver });
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
     await findElementByTestIdAndClick({ id: 'continue-button', driver });
 
@@ -72,7 +72,10 @@ describe('Navigate Settings & Privacy and its flows', () => {
     const correctWords: string[] = [words[3], words[7], words[11]];
     expect(requiredWords).toMatchObject(correctWords);
 
-    await findElementByTextAndClick(driver, 'saved these words');
+    await findElementByTestIdAndClick({
+      id: 'saved-these-words-button',
+      driver,
+    });
 
     // make sure it navigates back correctly
     const walletsKeysText = await findElementByText(driver, 'Wallets & Keys');
@@ -82,14 +85,14 @@ describe('Navigate Settings & Privacy and its flows', () => {
   it('should be able to reveal pkey', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
-    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     await findElementByTestIdAndClick({
       id: `wallet-${TEST_VARIABLES.EMPTY_WALLET.ADDRESS}`,
       driver,
     });
     await findElementByTextAndClick(driver, 'View Private Key');
-    await findElementByTextAndClick(driver, 'Show Private Key');
+    await findElementByTestIdAndClick({ id: 'show-pk', driver });
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
     await findElementByTestIdAndClick({ id: 'continue-button', driver });
 
@@ -107,19 +110,21 @@ describe('Navigate Settings & Privacy and its flows', () => {
 
   it('should be able to rename a wallet', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
-    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     await findElementByTestIdAndClick({
       id: `wallet-${TEST_VARIABLES.EMPTY_WALLET.ADDRESS}`,
       driver,
     });
+    await delayTime('medium');
     await findElementByTextAndClick(driver, 'Rename Wallet');
     await typeOnTextInput({
       id: 'wallet-name-input',
       driver,
       text: 'test name',
     });
-    await findElementByTextAndClick(driver, 'Done');
+    await findElementByTestIdAndClick({ id: 'rename-wallet-done', driver });
+
     const testName = await findElementByText(driver, 'test name');
 
     expect(testName).toBeTruthy;
@@ -128,6 +133,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
 
   it('should be able to copy an address', async () => {
     await findElementByTextAndClick(driver, 'test name');
+    await delayTime('medium');
     await findElementByTextAndClick(driver, 'Copy Address');
 
     const copiedText = await findElementByText(driver, 'Address Copied');
@@ -137,7 +143,6 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await delayTime('very-long');
   });
 
-  // bug currently exists on this flow. will remove skip once fixed.
   it('should be able to create a new wallet from a new seed', async () => {
     await findElementByTestIdAndClick({
       id: 'navbar-button-with-back',
@@ -157,7 +162,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       driver,
     });
     await navigateToSettingsPrivacy(driver, rootURL);
-    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     expect(await getNumberOfWallets(driver, 'wallet-group-')).toBe(2);
   });
 
@@ -176,7 +181,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     });
     expect(await accountName.getText()).toBe('new pk wallet');
     await navigateToSettingsPrivacy(driver, rootURL);
-    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     const textContent = await findElementByTestId({
       id: 'wallet-group-1',
       driver,
@@ -189,6 +194,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await findElementByTestIdAndClick({ id: 'account-name', driver });
     const numOfWallets = await getNumberOfWallets(driver, 'wallet-account-');
     await findElementByTestIdAndClick({ id: 'more-info-1', driver });
+    await delayTime('medium');
     await findElementByTextAndClick(driver, 'Hide Wallet');
     await findElementByTestIdAndClick({ id: 'remove-button', driver });
     const numOfWalletsAfterHide = await getNumberOfWallets(
@@ -197,9 +203,10 @@ describe('Navigate Settings & Privacy and its flows', () => {
     );
     expect(numOfWalletsAfterHide).toBe(numOfWallets - 1);
     await navigateToSettingsPrivacy(driver, rootURL);
-    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     await findElementByTextAndClick(driver, 'Hidden');
+    await delayTime('medium');
     await findElementByTextAndClick(driver, 'Unhide Wallet');
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'account-name', driver });
@@ -212,7 +219,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
 
   it('should be able to delete a wallet', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
-    await findElementByTextAndClick(driver, 'Wallets & Keys');
+    await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     const numOfWallets = await getNumberOfWallets(driver, 'wallet-item-');
 
