@@ -7,7 +7,7 @@ import {
 
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
 
-import { isValidTab } from '../pages/home';
+import { isValidTab } from '../components/Tabs/TabBar';
 import { ROUTES } from '../urls';
 
 export function useRainbowNavigate() {

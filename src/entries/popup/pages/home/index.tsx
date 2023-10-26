@@ -29,7 +29,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
 import { BackupReminder } from '../../components/BackupReminder/BackupReminder';
 import { Navbar } from '../../components/Navbar/Navbar';
-import { TabBar as NewTabBar } from '../../components/Tabs/TabBar';
+import { TabBar as NewTabBar, Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { WalletContextMenu } from '../../components/WalletContextMenu';
@@ -58,9 +58,6 @@ import { Points } from './Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
-const TABS = ['tokens', 'activity', 'nfts', 'points'];
-export type Tab = (typeof TABS)[number];
-
 type TabProps = {
   activeTab: Tab;
   containerRef: React.RefObject<HTMLDivElement>;
@@ -69,10 +66,6 @@ type TabProps = {
 };
 
 const isPlaceholderTab = (tab: Tab) => tab === 'nfts' || tab === 'points';
-
-export const isValidTab = (value: unknown): value is Tab => {
-  return typeof value === 'string' && TABS.includes(value);
-};
 
 const TOP_NAV_HEIGHT = 65;
 

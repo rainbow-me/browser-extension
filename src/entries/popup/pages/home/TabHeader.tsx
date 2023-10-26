@@ -9,11 +9,10 @@ import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
+import { Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
-
-import { Tab } from '.';
 
 export function TabHeader({
   activeTab,
