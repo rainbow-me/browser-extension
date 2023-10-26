@@ -365,6 +365,10 @@ const boxBaseProperties = defineProperties({
       borderStyle: 'solid',
       borderWidth,
     })),
+    borderBottomWidth: mapValues(strokeWeights, (borderWidth) => ({
+      borderStyle: 'solid',
+      borderWidth,
+    })),
     bottom: positionSpace,
     cursor: cursorOpts,
     display: ['none', 'flex', 'block', 'inline'],

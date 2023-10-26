@@ -722,6 +722,7 @@ export const space = {
   '65px': 65,
   '72px': 72,
   '80px': 80,
+  '100px': 100,
   '104px': 104,
   '120px': 120,
 } as const;
@@ -764,6 +765,7 @@ export const negativeSpace = {
   '-65px': -65,
   '-72px': -72,
   '-80px': -80,
+  '-100px': -100,
   '-104px': -104,
   '-120px': -120,
 } as const;
@@ -809,6 +811,7 @@ export const spaceToNegativeSpace: Record<
   '65px': '-65px',
   '72px': '-72px',
   '80px': '-80px',
+  '100px': '-100px',
   '104px': '-104px',
   '120px': '-120px',
 };
@@ -1006,6 +1009,7 @@ export const symbolNames = selectSymbolNames(
   'exclamationmark.octagon.fill',
   'network.badge.shield.half.filled',
   'safari.fill',
+  't.square.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

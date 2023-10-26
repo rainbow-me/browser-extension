@@ -86,12 +86,19 @@
       "dark": "Dark"
     },
     "networks": {
+      "mainnet": "Mainnet",
       "title": "Networks",
       "quick_promo": {
         "text": "Drag networks to reorder them",
         "text_bold": "Tip:"
       },
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked."
+      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "testnet_mode": {
+        "title": "Testnet Mode",
+        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
+        "shortcut_title": "Enable Keyboard Shortcut",
+        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+      }
     },
     "privacy_and_security": {
       "title": "Privacy & Security",
@@ -120,8 +127,8 @@
         "header_label": "Change Your Password"
       },
       "confirm_password": {
-        "title": "Enter Your Password",
-        "description": "You need to enter your current password to continue."
+        "title": "Enter your Password",
+        "description": "Continue with your current password."
       },
       "wallets_and_keys": {
         "title": "Wallets & Keys",
@@ -167,18 +174,19 @@
           "warning_2": "Make sure nobody can view your screen when viewing your Private Key.",
           "warning_3": "Anyone with your Private Key can access your entire wallet.",
           "warning_4": "Rainbow Support will never ask you for your Private Key.",
-          "show": "Show Private Key"
+          "show": "Show Private Key",
+          "copied": "Private Key Copied"
         },
         "recovery_phrase": {
-          "title": "Your Recovery Phrase",
+          "title": "Your Secret Recovery Phrase",
           "subtitle": "Anyone who has these words can access your entire wallet! You should never share them.",
           "saved": "I've saved these words",
-          "warning_1": "Never share your Recovery Phrase or enter it into any apps.",
-          "warning_2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
-          "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
-          "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
+          "warning_1": "Never share your Secret Recovery Phrase or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Secret Recovery Phrase.",
+          "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet.",
+          "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Show Recovery Phrase",
-          "phrase_copied": "Recovery Phrase Copied"
+          "copied": "Recovery Phrase Copied"
         }
       }
     },
@@ -359,6 +367,7 @@
         "view_nfts": "View NFTs",
         "add_wallet": "Add a Wallet",
         "lock": "Lock Rainbow",
+        "testnet_mode": "Testnet Mode",
         "connected_apps": "Connected Apps",
         "settings": "Settings",
         "my_qr_code": "My QR Code",
@@ -498,7 +507,7 @@
       "cancel": "Cancel",
       "sending_on_network": "Sending on the %{chainName} network",
       "sending_on_l2_check_1": "I’m not sending to an exchange",
-      "sending_on_l2_check_2": "The person I’m sending to has a wallet that support %{chainName}",
+      "sending_on_l2_check_2": "The person I’m sending to has a wallet that supports %{chainName}",
       "complete_checks": "Complete the checks",
       "confirm_hw": "Confirm on your device"
     }
@@ -734,7 +743,7 @@
   },
   "seed_reveal": {
     "title": "Your Secret Recovery Phrase",
-    "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "write_down_seed_importance": "Anyone who has these words can access your entire wallet! You should never share them.",
     "saved_these_words": "I've saved these words",
     "phrase_copied": "Recovery Phrase Copied"
   },
@@ -862,7 +871,8 @@
       "rainbow_profile": "Rainbow Profile",
       "guides_and_support": "Guides & Support",
       "share_feedback": "Share Feedback",
-      "lock_rainbow": "Lock Rainbow"
+      "lock_rainbow": "Lock Rainbow",
+      "testnet_mode": "Testnet Mode"
     }
   },
   "app_connection_switcher": {
@@ -1260,6 +1270,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
+    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
     "coming_soon": "Coming Soon!",
     "no_hw_ff": "Hardware wallets are not supported on Firefox. Try a different browser like Chrome or Brave."
   },

@@ -15,7 +15,11 @@ import {
 } from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
-import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import {
+  POPUP_DIMENSIONS,
+  TESTNET_MODE_BAR_HEIGHT,
+} from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import {
   AnimatedRouteConfig,
@@ -28,12 +32,16 @@ import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
+import { ROUTES } from '~/entries/popup/urls';
 import { getActiveElement } from '~/entries/popup/utils/activeElement';
 import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
 import { AccentColorProvider, AvatarColorProvider } from '../Box/ColorContext';
 
-import { animatedRouteStyles } from './AnimatedRoute.css';
+import {
+  animatedRouteStyles,
+  animatedRouteTestnetModeStyles,
+} from './AnimatedRoute.css';
 
 type AnimatedRouteProps = {
   background?: BackgroundColor;
@@ -184,6 +192,8 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
     accentColor = true,
   } = props;
   const { state } = useLocation();
+  const { testnetMode } = useTestnetModeStore();
+  const location = useLocation();
   const animationDirection: AnimatedRouteDirection =
     state?.direction ?? direction;
   const { initial, end, exit } = animatedRouteValues[animationDirection];
@@ -230,12 +240,23 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
             flexDirection="column"
             height="full"
             initial={isBack ? exit : initial}
-            style={{ overflow: 'auto', maxHeight: POPUP_DIMENSIONS.height }}
+            style={{
+              overflow: 'auto',
+              maxHeight:
+                POPUP_DIMENSIONS.height -
+                (testnetMode && location.pathname !== ROUTES.UNLOCK
+                  ? TESTNET_MODE_BAR_HEIGHT
+                  : 0),
+            }}
             animate={end}
             exit={isBack ? initial : exit}
             transition={transition}
             background={background}
-            className={animatedRouteStyles}
+            className={
+              testnetMode && location.pathname !== ROUTES.UNLOCK
+                ? animatedRouteTestnetModeStyles
+                : animatedRouteStyles
+            }
           >
             {navbar && (
               <Navbar

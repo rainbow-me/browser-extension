@@ -4,6 +4,8 @@ import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
@@ -14,6 +16,7 @@ export function NFTs() {
   const ref = useCoolMode({ emojis: ['🌈', '🖼️'] });
   const { currentAddress: address } = useCurrentAddressStore();
   const { data: ensName } = useEnsName({ address });
+  const { testnetMode } = useTestnetModeStore();
 
   const openProfile = useCallback(
     () =>
@@ -32,7 +35,7 @@ export function NFTs() {
       marginTop="-20px"
       paddingTop="80px"
       ref={ref}
-      style={{ height: 336 }}
+      style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
       width="full"
     >
       <Box paddingBottom="14px">
