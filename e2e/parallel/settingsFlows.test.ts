@@ -7,7 +7,6 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   findElementByTestId,
   findElementByTestIdAndClick,
-  findElementByTextAndClick,
   getExtensionIdByName,
   getRootUrl,
   goBackTwice,
@@ -84,7 +83,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       driver,
     });
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await findElementByTextAndClick(driver, 'Continue');
+    await findElementByTestIdAndClick({ id: 'continue-button', driver });
     await typeOnTextInput({
       id: 'new-password-input',
       driver,
@@ -95,7 +94,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       driver,
       text: 'test5678',
     });
-    await findElementByTextAndClick(driver, 'Update Password');
+    await findElementByTestIdAndClick({ id: 'update-password', driver });
     await goBackTwice(driver);
     await findElementByTestIdAndClick({
       id: 'home-page-header-right',

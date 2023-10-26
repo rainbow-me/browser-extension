@@ -284,6 +284,7 @@ export function WalletDetails() {
             walletBackedUp && (
               <Menu>
                 <MenuItem
+                  testId={'view-recovery-phrase'}
                   first
                   last
                   titleComponent={
@@ -440,7 +441,11 @@ const WalletRow = ({
   return (
     <Box testId={`wallet-item-${numOfWallets}`}>
       <AccountItem
-        testId={`wallet-${account}`}
+        testId={
+          hiddenWallets[account]
+            ? `hidden-wallet-${account}`
+            : `wallet-${account}`
+        }
         onClick={() => setMenuOpen(true)}
         onContextMenu={(e) => (e.preventDefault(), setMenuOpen(true))}
         key={account}
