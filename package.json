@@ -252,7 +252,8 @@
     "vite": "4.4.9",
     "chai": "4.3.10",
     "supports-color": "5.5.0",
-    "postcss": "8.4.31"
+    "postcss": "8.4.31",
+    "crypto-js": "4.2.0"
   },
   "lavamoat": {
     "allowScripts": {
