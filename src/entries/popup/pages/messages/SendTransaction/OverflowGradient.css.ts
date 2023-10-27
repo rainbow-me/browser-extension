@@ -5,7 +5,7 @@ import { style } from '@vanilla-extract/css';
 export const overflowGradient = style([
   {
     position: 'relative',
-    overflow: 'hidden',
+    // overflow: 'hidden',
     // paddingTop: '38px',
     // marginTop: '-38px',
     // paddingBottom: '38px',

@@ -1,80 +1,37 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import * as Tabs from '@radix-ui/react-tabs';
-import { motion } from 'framer-motion';
-import { PropsWithChildren, ReactNode, useMemo, useState } from 'react';
+import { ReactNode } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
-import { useCurrentCurrencyStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { RainbowTransaction } from '~/core/types/transactions';
 import {
-  convertRawAmountToBalance,
-  convertRawAmountToNativeDisplay,
-} from '~/core/utils/numbers';
-import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
-import { SymbolName } from '~/design-system/styles/designTokens';
+  Bleed,
+  Box,
+  Inline,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
+import { SymbolName, globalColors } from '~/design-system/styles/designTokens';
+import { AddressDisplay } from '~/entries/popup/components/AddressDisplay';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
+import { Tag } from '~/entries/popup/components/Tag';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
+import { TabContent, Tabs } from '../Tabs';
 
 import { overflowGradient } from './OverflowGradient.css';
 
 interface SendTransactionProps {
   request: ProviderRequestPayload;
-}
-
-function TabTrigger({
-  children,
-  value,
-  selectedTab,
-}: PropsWithChildren<{ value: string; selectedTab: string }>) {
-  return (
-    <Tabs.Trigger value={value} asChild>
-      <Box
-        tabIndex={0}
-        margin="-8px"
-        padding="8px"
-        flexGrow="1"
-        flexBasis="0"
-        position="relative"
-      >
-        <Text align="center" size="14pt" weight="bold" color="label">
-          {children}
-        </Text>
-        {selectedTab === value && (
-          <motion.div
-            layoutId="tab-selected-indicator"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              borderRadius: '8px',
-              background: 'rgba(245, 248, 255, 0.12)',
-            }}
-          />
-        )}
-      </Box>
-    </Tabs.Trigger>
-  );
-}
-
-function TabContent({ children, value }: PropsWithChildren<{ value: string }>) {
-  return (
-    <Tabs.Content value={value} asChild>
-      <motion.div
-        initial={{ x: 10, opacity: 0.4 }}
-        animate={{ x: 0, opacity: 1 }}
-      >
-        {children}
-      </motion.div>
-    </Tabs.Content>
-  );
 }
 
 const InfoRow = ({
@@ -110,6 +67,35 @@ const InfoRow = ({
   </Box>
 );
 
+function SimulatedChangeRow({
+  direction,
+  asset,
+}: {
+  direction: 'in' | 'out' | 'self';
+  asset: ParsedAsset;
+}) {
+  const color = direction === 'in' ? 'green' : 'red';
+  const icon =
+    direction === 'in' ? 'arrow.up.circle.fill' : 'arrow.down.circle.fill';
+  const label = direction === 'in' ? 'Received' : 'Sent';
+  return (
+    <Inline space="24px" alignHorizontal="justify">
+      <Inline space="12px">
+        <Symbol size={14} symbol={icon} weight="bold" color={color} />
+        <Text size="14pt" weight="bold" color="label">
+          {label}
+        </Text>
+      </Inline>
+      <Inline space="6px">
+        <CoinIcon asset={asset} size={14} />
+        <Text size="14pt" weight="bold" color={color}>
+          - 1 {asset.symbol}
+        </Text>
+      </Inline>
+    </Inline>
+  );
+}
+
 function SimulationOverview() {
   const nativeAsset = useNativeAssetForNetwork({
     chainId: ChainId.mainnet,
@@ -121,44 +107,10 @@ function SimulationOverview() {
         Simulated Result
       </Text>
 
-      <Inline space="24px" alignHorizontal="justify">
-        <Inline space="12px">
-          <Symbol
-            size={14}
-            symbol="arrow.up.circle.fill"
-            weight="bold"
-            color="red"
-          />
-          <Text size="14pt" weight="bold" color="label">
-            Sent
-          </Text>
-        </Inline>
-        <Inline space="6px">
-          <CoinIcon asset={nativeAsset} size={14} />
-          <Text size="14pt" weight="bold" color="red">
-            - 1 ETH
-          </Text>
-        </Inline>
-      </Inline>
-      <Inline space="24px" alignHorizontal="justify">
-        <Inline space="12px" alignVertical="center">
-          <Symbol
-            size={14}
-            symbol="arrow.down.circle.fill"
-            weight="bold"
-            color="green"
-          />
-          <Text size="14pt" weight="bold" color="label">
-            Received
-          </Text>
-        </Inline>
-        <Inline space="6px" alignVertical="center">
-          <CoinIcon asset={nativeAsset} size={14} />
-          <Text size="14pt" weight="bold" color="green">
-            + 1 Blitmap
-          </Text>
-        </Inline>
-      </Inline>
+      {nativeAsset && <SimulatedChangeRow asset={nativeAsset} direction="in" />}
+      {nativeAsset && (
+        <SimulatedChangeRow asset={nativeAsset} direction="out" />
+      )}
 
       <Separator color="separatorTertiary" />
 
@@ -179,11 +131,24 @@ function SimulationOverview() {
         symbol="app.badge.checkmark"
         label="App"
         value={
-          <Inline space="6px" alignVertical="center">
-            <Text size="12pt" weight="semibold" color="blue">
-              opensea.io
-            </Text>
-          </Inline>
+          <Tag
+            size="12pt"
+            color="blue"
+            style={{ borderColor: globalColors.blueA10 }}
+            bleed
+            left={
+              <Bleed vertical="3px">
+                <Symbol
+                  symbol="checkmark.seal.fill"
+                  size={11}
+                  weight="bold"
+                  color="blue"
+                />
+              </Bleed>
+            }
+          >
+            opensea.io
+          </Tag>
         }
       />
     </Stack>
@@ -193,10 +158,12 @@ function SimulationOverview() {
 function TransactionDetails() {
   return (
     <Box
-      style={{ maxHeight: 230 }}
+      style={{ overflowX: 'visible' }}
       className={overflowGradient}
-      marginTop="-16px"
-      marginBottom="-19px"
+      marginTop="-14px"
+      marginBottom="-20px"
+      marginHorizontal="-20px"
+      paddingHorizontal="20px"
     >
       <Box
         style={{
@@ -205,7 +172,9 @@ function TransactionDetails() {
           paddingBottom: '38px',
           overflow: 'scroll',
         }}
-        gap="20px"
+        paddingHorizontal="20px"
+        marginHorizontal="-20px"
+        gap="16px"
         display="flex"
         flexDirection="column"
       >
@@ -213,9 +182,22 @@ function TransactionDetails() {
         <InfoRow
           symbol="curlybraces"
           label="Function"
-          value="Fullfill Basic Order"
+          value={
+            <Tag size="12pt" color="labelSecondary" bleed>
+              Fullfill Basic Order
+            </Tag>
+          }
         />
-        <InfoRow symbol="doc.plaintext" label="Contract" value="0x7be...d12b" />
+        <InfoRow
+          symbol="doc.plaintext"
+          label="Contract"
+          value={
+            <AddressDisplay
+              address="0x507F0daA42b215273B8a063B092ff3b6d27767aF"
+              hideAvatar
+            />
+          }
+        />
         <InfoRow symbol="person" label="Contract Name" value="Seaport 1.1" />
         <InfoRow
           symbol="calendar"
@@ -225,7 +207,16 @@ function TransactionDetails() {
         <InfoRow
           symbol="doc.text.magnifyingglass"
           label="Source Code"
-          value="verified"
+          value={
+            <Tag
+              size="12pt"
+              color="green"
+              style={{ borderColor: globalColors.greenA10 }}
+              bleed
+            >
+              Verified
+            </Tag>
+          }
         />
       </Box>
     </Box>
@@ -262,39 +253,6 @@ function RequestData({ request }: SendTransactionProps) {
   });
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
 
-  const nativeAsset = useNativeAssetForNetwork({
-    chainId: activeSession?.chainId || ChainId.mainnet,
-  });
-  const { currentCurrency } = useCurrentCurrencyStore();
-
-  const { nativeAssetAmount, nativeCurrencyAmount } = useMemo(() => {
-    if (!nativeAsset)
-      return { nativeAssetAmount: null, nativeCurrencyAmount: null };
-    switch (request.method) {
-      case 'eth_sendTransaction':
-      case 'eth_signTransaction': {
-        const tx = request?.params?.[0] as RainbowTransaction;
-
-        const nativeAssetAmount = convertRawAmountToBalance(
-          tx?.value?.toString() ?? 0,
-          nativeAsset,
-        ).display;
-
-        const nativeCurrencyAmount = convertRawAmountToNativeDisplay(
-          tx?.value?.toString() ?? 0,
-          nativeAsset?.decimals,
-          nativeAsset?.price?.value as number,
-          currentCurrency,
-        ).display;
-        return { nativeAssetAmount, nativeCurrencyAmount };
-      }
-      default:
-        return { nativeAssetAmount: null, nativeCurrencyAmount: null };
-    }
-  }, [request, nativeAsset, currentCurrency]);
-
-  const [tab, setTab] = useState('details');
-
   return (
     <Stack
       space="20px"
@@ -302,47 +260,31 @@ function RequestData({ request }: SendTransactionProps) {
       justifyContent="center"
       height="full"
     >
-      <Tabs.Root defaultValue="details" onValueChange={setTab} asChild>
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap="16px"
-          padding="20px"
-          background="surfaceSecondaryElevated"
-          borderRadius="20px"
-          borderColor="separatorSecondary"
-          borderWidth="1px"
-          width="full"
-          height="full"
-          style={{ maxHeight: 230, overflow: 'hidden' }}
-        >
-          <Tabs.List asChild>
-            <Inline space="16px" alignVertical="center" wrap={false}>
-              <TabTrigger value="overview" selectedTab={tab}>
-                Overview
-              </TabTrigger>
-              <TabTrigger value="details" selectedTab={tab}>
-                Details
-              </TabTrigger>
-              <TabTrigger value="data" selectedTab={tab}>
-                Data
-              </TabTrigger>
-            </Inline>
-          </Tabs.List>
-
-          <Separator color="separatorTertiary" />
-
-          <TabContent value="overview">
+      <Box
+        display="flex"
+        flexDirection="column"
+        gap="16px"
+        padding="20px"
+        background="surfaceSecondaryElevated"
+        borderRadius="20px"
+        borderColor="separatorSecondary"
+        borderWidth="1px"
+        width="full"
+        height="full"
+        style={{ maxHeight: 230, overflow: 'visible' }}
+      >
+        <Tabs tabs={['Overview', 'Details', 'Data']}>
+          <TabContent value="Overview">
             <SimulationOverview />
           </TabContent>
-          <TabContent value="details">
+          <TabContent value="Details">
             <TransactionDetails />
           </TabContent>
-          <TabContent value="data">
+          <TabContent value="Data">
             <TransactionData data={request.params[0]?.data} />
           </TabContent>
-        </Box>
-      </Tabs.Root>
+        </Tabs>
+      </Box>
 
       {dappMetadata?.status === DAppStatus.Scam ? (
         <ThisDappIsLikelyMalicious />

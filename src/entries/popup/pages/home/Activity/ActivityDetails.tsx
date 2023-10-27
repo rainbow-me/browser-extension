@@ -3,17 +3,15 @@ import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { Navigate, useParams } from 'react-router-dom';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { getSupportedChainIds } from '~/core/utils/chains';
-import { copy, copyAddress } from '~/core/utils/copy';
+import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { truncateString } from '~/core/utils/strings';
@@ -22,7 +20,6 @@ import {
   getTransactionBlockExplorerUrl,
 } from '~/core/utils/transactions';
 import {
-  Bleed,
   Box,
   Button,
   ButtonSymbol,
@@ -35,7 +32,7 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
-import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
+import { AddressDisplay } from '~/entries/popup/components/AddressDisplay';
 import { AssetContextMenu } from '~/entries/popup/components/AssetContextMenu';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import {
@@ -49,7 +46,6 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
-import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
@@ -60,111 +56,6 @@ import { CopyableValue, InfoRow } from '../TokenDetails/About';
 import { ActivityPill } from './ActivityPill';
 import { getApprovalLabel } from './ActivityValue';
 import { useTransaction } from './useTransaction';
-
-function AddressMoreOptions({ address }: { address: Address }) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Bleed space="9px">
-          <ButtonSymbol
-            symbol="ellipsis.circle"
-            height="32px"
-            variant="transparent"
-            color="labelTertiary"
-          />
-        </Bleed>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem
-          symbolLeft="doc.on.doc.fill"
-          onSelect={() => copyAddress(address)}
-        >
-          <Text size="14pt" weight="semibold">
-            {i18n.t('token_details.more_options.copy_address')}
-          </Text>
-          <Text size="11pt" color="labelTertiary" weight="medium">
-            {truncateAddress(address)}
-          </Text>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-const YouOrAddress = ({ address }: { address: Address }) => {
-  const currentAccount = useCurrentAddressStore((a) =>
-    a.currentAddress.toLocaleLowerCase(),
-  );
-  if (currentAccount === address.toLowerCase())
-    return (
-      <Inline alignVertical="center" wrap={false} space="2px">
-        <Text color="labelSecondary" size="12pt" weight="semibold">
-          {i18n.t('activity_details.you')}
-        </Text>
-
-        <Inline alignVertical="center" wrap={false}>
-          <Text size="12pt" weight="semibold" color="labelQuaternary">
-            (
-          </Text>
-          <AddressOrEns
-            address={address}
-            size="12pt"
-            weight="semibold"
-            color="labelQuaternary"
-          />
-          <Text size="12pt" weight="semibold" color="labelQuaternary">
-            )
-          </Text>
-        </Inline>
-      </Inline>
-    );
-
-  return (
-    <AddressOrEns
-      address={address}
-      size="12pt"
-      weight="semibold"
-      color="labelQuaternary"
-    />
-  );
-};
-
-const AddressDisplay = ({ address }: { address: Address }) => {
-  return (
-    <Inline space="6px" alignVertical="center" wrap={false}>
-      <WalletAvatar addressOrName={address} size={16} emojiSize="9pt" />
-      <YouOrAddress address={address} />
-      <AddressMoreOptions address={address} />
-    </Inline>
-  );
-};
-
-const ContractDisplay = ({
-  address,
-  contract: { name, iconUrl },
-}: {
-  address: Address;
-  contract: {
-    name: string;
-    iconUrl?: string;
-  };
-}) => {
-  if (!name) return <AddressDisplay address={address} />;
-  return (
-    <Inline space="6px" alignVertical="center">
-      {iconUrl ? (
-        <ContractIcon size={16} iconUrl={iconUrl} />
-      ) : (
-        <WalletAvatar addressOrName={address} size={16} emojiSize="9pt" />
-      )}
-      <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
-        {name}
-      </TextOverflow>
-      <AddressMoreOptions address={address} />
-    </Inline>
-  );
-};
 
 function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
   const { from, to, contract, direction } = transaction;
@@ -177,11 +68,10 @@ function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
         symbol="arrow.down.circle"
         label={i18n.t('activity_details.from')}
         value={
-          isFromAContract ? (
-            <ContractDisplay address={from} contract={contract} />
-          ) : (
-            <AddressDisplay address={from} />
-          )
+          <AddressDisplay
+            address={from}
+            contract={isFromAContract ? contract : undefined}
+          />
         }
       />
       {to && (
@@ -189,11 +79,10 @@ function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
           symbol="paperplane.fill"
           label={i18n.t('activity_details.to')}
           value={
-            isToAContract ? (
-              <ContractDisplay address={to} contract={contract} />
-            ) : (
-              <AddressDisplay address={to} />
-            )
+            <AddressDisplay
+              address={to}
+              contract={isToAContract ? contract : undefined}
+            />
           }
         />
       )}

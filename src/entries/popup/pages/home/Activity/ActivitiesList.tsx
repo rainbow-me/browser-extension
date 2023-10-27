@@ -13,6 +13,7 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { TextColor } from '~/design-system/styles/designTokens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { SpinnerRow } from '~/entries/popup/components/SpinnerRow/SpinnerRow';
+import { Tag } from '~/entries/popup/components/Tag';
 
 import { useActivityShortcuts } from '../../../hooks/useActivityShortcuts';
 import useInfiniteTransactionList from '../../../hooks/useInfiniteTransactionList';
@@ -131,25 +132,7 @@ const ActivityDescription = ({
         </TextOverflow>
       </Column>
       <Column width="content">
-        {tag && (
-          <Box
-            paddingHorizontal="5px"
-            paddingVertical="4px"
-            marginVertical="-3px"
-            borderColor="separatorSecondary"
-            borderRadius="6px"
-            borderWidth="1px"
-          >
-            <Text
-              size="11pt"
-              weight="semibold"
-              align="right"
-              color="labelTertiary"
-            >
-              {truncateString(tag, 25)}
-            </Text>
-          </Box>
-        )}
+        {tag && <Tag>{truncateString(tag, 25)}</Tag>}
       </Column>
     </Columns>
   );
