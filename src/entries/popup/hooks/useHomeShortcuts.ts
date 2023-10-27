@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useEnsName } from 'wagmi';
+import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -10,12 +10,14 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
+import { useWalletNamesStore } from '~/core/state/walletNames';
 import { truncateAddress } from '~/core/utils/address';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
 import { triggerToast } from '../components/Toast/Toast';
 import * as wallet from '../handlers/wallet';
+import { getWallets } from '../handlers/wallet';
 import { ROUTES } from '../urls';
 import {
   appConnectionMenuIsActive,
@@ -51,6 +53,7 @@ export function useHomeShortcuts() {
   const { isWatchingWallet } = useWallets();
   const { testnetMode, testnetModeShortcutEnabled, setTestnetMode } =
     useTestnetModeStore();
+  const { walletNames } = useWalletNamesStore();
 
   const allowSend = useMemo(
     () => !isWatchingWallet || featureFlags.full_watching_wallets,
@@ -72,6 +75,57 @@ export function useHomeShortcuts() {
       description: truncateAddress(address),
     });
   }, [address]);
+
+  interface WalletObj {
+    accounts: Address[];
+    type: 'HdKeychain' | 'HardwareWalletKeychain' | 'ReadOnlyKeychain'; // Add other possible types if there are more
+    vendor?: string;
+  }
+
+  const generateCSV = useCallback(
+    (data: WalletObj[]) => {
+      let csvContent = 'public_address,name,type\n';
+
+      data.forEach(
+        (item: { accounts: string[]; type: string; vendor?: string }) => {
+          const address = item.accounts[0];
+          // If address exists in walletNames, use that name. Otherwise, use defaultName.
+          const name = walletNames[address as Address] || item.accounts[0];
+          const importedType =
+            item.type === 'ReadOnlyKeychain' ? 'Watching' : 'Imported';
+          const type = item.vendor || importedType;
+
+          csvContent += `${address},${name},${type}\n`;
+        },
+      );
+
+      return csvContent;
+    },
+    [walletNames],
+  );
+
+  const handleCopyList = useCallback(async () => {
+    console.log('walletNames', walletNames);
+    const data = await getWallets();
+    console.log('getWallets', data);
+    const csvContent = generateCSV(data as WalletObj[]);
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+
+    chrome.downloads.download(
+      {
+        url: url,
+        filename: 'accounts.csv',
+      },
+      () => {
+        URL.revokeObjectURL(url);
+      },
+    );
+    triggerToast({
+      title: 'Address CSV file created',
+      description: 'downloading...',
+    });
+  }, [generateCSV, walletNames]);
 
   const disconnectFromApp = useCallback(() => {
     disconnectSession({
@@ -116,6 +170,13 @@ export function useHomeShortcuts() {
             type: 'home.copyAddress',
           });
           handleCopy();
+          break;
+        case shortcuts.home.COPY_ADDRESS_LIST.key:
+          trackShortcut({
+            key: shortcuts.home.COPY_ADDRESS_LIST.display,
+            type: 'home.copyAddressList',
+          });
+          handleCopyList();
           break;
         case shortcuts.home.GO_TO_CONNECTED_APPS.key:
           trackShortcut({
@@ -221,6 +282,7 @@ export function useHomeShortcuts() {
       trackShortcut,
       navigate,
       handleCopy,
+      handleCopyList,
       allowSend,
       navigateToSwaps,
       openProfile,
