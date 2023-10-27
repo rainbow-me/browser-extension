@@ -148,6 +148,7 @@ export const ConfirmPasswordPrompt = ({
               </Column>
               <Column>
                 <Button
+                  testId={'continue-button'}
                   variant="flat"
                   height="36px"
                   color="accent"
