@@ -22,7 +22,10 @@ export const customRPCsStore = createStore<CustomRPCsState>(
     addCustomRPC: ({ customRPC }) => {
       const { customRPCs } = get();
       set({
-        customRPCs: { ...customRPCs, [customRPC.rpcUrl]: customRPC },
+        customRPCs: {
+          ...customRPCs,
+          [customRPC.rpcUrl]: { ...customRPC },
+        },
       });
     },
     removeCustomRPC: ({ rpcUrl }) => {
