@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { useCustomRPCsStore } from '~/core/state/customRPC';
+import { CustomRPC, useCustomRPCsStore } from '~/core/state/customRPC';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -142,30 +142,64 @@ export function SettingsCustomRPC() {
     }
   }, [addCustomRPC, customRPC, validateAddCustomRpc]);
 
+  const customRPCsByChainId = useMemo(() => {
+    return Object.values(customRPCs).reduce(
+      (acc, rpc) => {
+        if (!acc[rpc.chainId]) {
+          acc[rpc.chainId] = [];
+        }
+        acc[rpc.chainId].push(rpc);
+        return acc;
+      },
+      {} as Record<number, CustomRPC[]>,
+    );
+  }, [customRPCs]);
+
   return (
     <Box paddingHorizontal="20px">
       <Stack space="20px">
-        <Box>
-          {Object.values(customRPCs).map((customRPC, i) => (
-            <Box
-              key={i}
-              background="surfaceSecondaryElevated"
-              borderRadius="16px"
-              boxShadow="12px"
-              width="full"
-              padding="16px"
-              onClick={() =>
-                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
-                  state: { customRPC },
-                })
-              }
-            >
-              <Text size="14pt" weight="bold" align="center">
-                {JSON.stringify(customRPC)}
+        {Object.keys(customRPCsByChainId).map((chainId: unknown, i) => (
+          <Box
+            key={i}
+            background="surfaceSecondaryElevated"
+            borderRadius="16px"
+            boxShadow="12px"
+            width="full"
+            padding="16px"
+            onClick={() =>
+              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
+                state: {
+                  customRPCGroup:
+                    customRPCsByChainId[
+                      chainId as keyof typeof customRPCsByChainId
+                    ],
+                },
+              })
+            }
+          >
+            <Stack space="16px">
+              <Text size="14pt" weight="bold" align="left">
+                Group chainId: {chainId as string}
               </Text>
-            </Box>
-          ))}
-        </Box>
+              <Stack space="16px">
+                {customRPCsByChainId[
+                  chainId as keyof typeof customRPCsByChainId
+                ].map((customRPC, j) => (
+                  <Box key={j}>
+                    <Inline alignHorizontal="justify">
+                      <Text size="14pt" weight="bold" align="center">
+                        {customRPC.rpcUrl}
+                      </Text>
+                      <Text size="14pt" weight="bold" align="center">
+                        {customRPC.active ? 'Active' : ''}
+                      </Text>
+                    </Inline>
+                  </Box>
+                ))}
+              </Stack>
+            </Stack>
+          </Box>
+        ))}
 
         <Box
           background="surfaceSecondaryElevated"

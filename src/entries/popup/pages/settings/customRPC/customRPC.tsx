@@ -6,32 +6,39 @@ import { Box, Inline, Stack, Text } from '~/design-system';
 
 export function CustomRPC() {
   const { state } = useLocation();
-  const customRPC = state?.customRPC as CustomRPC;
+  const customRPCGroup = state?.customRPCGroup as CustomRPC[];
 
   return (
     <Box paddingHorizontal="20px">
-      <Box
-        background="surfaceSecondaryElevated"
-        borderRadius="16px"
-        boxShadow="12px"
-        width="full"
-        padding="16px"
-      >
-        <Stack space="10px">
-          {Object.keys(customRPC).map((key, i) => (
-            <Box key={i}>
-              <Inline space="4px">
-                <Text size="14pt" weight="bold" align="center">
-                  {`${key}:`}
-                </Text>
-                <Text size="14pt" weight="bold" align="center">
-                  {`${String(customRPC[key as keyof typeof customRPC])}`}
-                </Text>
-              </Inline>
+      <Stack space="16px">
+        {customRPCGroup?.map((customRPC, i) => {
+          return (
+            <Box
+              background="surfaceSecondaryElevated"
+              borderRadius="16px"
+              boxShadow="12px"
+              width="full"
+              padding="16px"
+              key={i}
+            >
+              <Stack space="10px">
+                {Object.keys(customRPC).map((key, i) => (
+                  <Box key={i}>
+                    <Inline space="4px">
+                      <Text size="14pt" weight="bold" align="center">
+                        {`${key}:`}
+                      </Text>
+                      <Text size="14pt" weight="bold" align="center">
+                        {`${String(customRPC[key as keyof typeof customRPC])}`}
+                      </Text>
+                    </Inline>
+                  </Box>
+                ))}
+              </Stack>
             </Box>
-          ))}
-        </Stack>
-      </Box>
+          );
+        })}
+      </Stack>
     </Box>
   );
 }
