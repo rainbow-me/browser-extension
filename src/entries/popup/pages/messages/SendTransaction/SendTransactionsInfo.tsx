@@ -1,6 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { ReactNode } from 'react';
 
+import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -24,7 +25,7 @@ import { Tag } from '~/entries/popup/components/Tag';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
-import { DappHostName } from '../DappScanStatus';
+import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
 import { TabContent, Tabs } from '../Tabs';
 
 import { overflowGradient } from './OverflowGradient.css';
@@ -75,7 +76,7 @@ function SimulatedChangeRow({
 }) {
   const color = direction === 'in' ? 'green' : 'red';
   const icon =
-    direction === 'in' ? 'arrow.up.circle.fill' : 'arrow.down.circle.fill';
+    direction === 'in' ? 'arrow.down.circle.fill' : 'arrow.up.circle.fill';
   const label = direction === 'in' ? 'Received' : 'Sent';
   return (
     <Inline space="24px" alignHorizontal="justify" alignVertical="center">
@@ -106,10 +107,14 @@ function SimulationOverview() {
         Simulated Result
       </Text>
 
-      {nativeAsset && <SimulatedChangeRow asset={nativeAsset} direction="in" />}
-      {nativeAsset && (
-        <SimulatedChangeRow asset={nativeAsset} direction="out" />
-      )}
+      <Stack space="14px">
+        {nativeAsset && (
+          <SimulatedChangeRow asset={nativeAsset} direction="out" />
+        )}
+        {nativeAsset && (
+          <SimulatedChangeRow asset={nativeAsset} direction="out" />
+        )}
+      </Stack>
 
       <Separator color="separatorTertiary" />
 
@@ -287,6 +292,8 @@ function RequestData({ request }: SendTransactionProps) {
         </Tabs>
       </Box>
 
+      <ThisDappIsLikelyMalicious />
+
       {/* {dappMetadata?.status === DAppStatus.Scam ? (
         <ThisDappIsLikelyMalicious />
       ) : null} */}
@@ -308,6 +315,9 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     chainId: activeSession?.chainId || ChainId.mainnet,
     hash: null,
   });
+
+  dappMetadata.status = DAppStatus.Scam;
+  const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
   return (
     <Box
@@ -334,7 +344,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
               align="center"
               size="14pt"
               weight="bold"
-              color="labelSecondary"
+              color={isScamDapp ? 'red' : 'labelSecondary'}
             >
               {methodName}
             </Text>

@@ -47,7 +47,6 @@ export const SendTransactionActions = ({
       }
     },
   });
-  const isScamDapp = dappStatus === DAppStatus.Scam;
 
   return (
     <Inline space="12px" wrap={false}>
@@ -55,6 +54,7 @@ export const SendTransactionActions = ({
         autoFocus
         onClick={onRejectRequest}
         label={i18n.t('common_actions.cancel')}
+        dappStatus={dappStatus}
       />
       <AcceptRequestButton
         disabled={!enoughNativeAssetForGas}
@@ -64,6 +64,7 @@ export const SendTransactionActions = ({
         }
         waitingForDevice={waitingForDevice}
         loading={loading}
+        dappStatus={dappStatus}
       />
     </Inline>
   );

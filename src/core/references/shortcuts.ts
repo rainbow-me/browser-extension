@@ -1,3 +1,11 @@
+import { ModifierKey } from '~/entries/popup/hooks/useKeyboardShortcut';
+
+export type Shortcut = {
+  display: string;
+  key: string;
+  modifier?: ModifierKey;
+};
+
 export const shortcuts = {
   activity: {
     CANCEL_TRANSACTION: {
@@ -230,6 +238,11 @@ export const shortcuts = {
       display: 'Esc',
       key: 'Escape',
     },
+    ACCEPT: {
+      display: '\u23CE',
+      key: 'Enter',
+      modifier: 'ctrlKey',
+    },
   },
   wallet_switcher: {
     SEARCH: {
@@ -237,4 +250,14 @@ export const shortcuts = {
       key: '/',
     },
   },
-} as const;
+} satisfies Record<string, Record<string, Shortcut>>;
+
+export const getModifierKeyDisplay = (modifier: ModifierKey) => {
+  const isMac = navigator.userAgent.includes('Mac');
+  return {
+    ctrlKey: isMac ? '\u2318' : 'Ctrl',
+    command: isMac ? '\u2318' : 'Ctrl',
+    altKey: 'Alt',
+    shiftKey: '\u21E7',
+  }[modifier];
+};

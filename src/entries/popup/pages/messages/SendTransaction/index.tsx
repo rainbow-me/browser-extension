@@ -23,7 +23,6 @@ import { formatNumber } from '~/core/utils/formatNumber';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Bleed, Box, Inline, Separator, Stack, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
-import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
@@ -33,6 +32,7 @@ import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import * as wallet from '../../../handlers/wallet';
+import { WalletName } from '../BottomActions';
 
 import { SendTransactionActions } from './SendTransactionActions';
 import { SendTransactionInfo } from './SendTransactionsInfo';
@@ -90,7 +90,7 @@ function AccountSigningWith({
           <Text size="14pt" weight="bold" color="labelTertiary">
             Signing with
           </Text>
-          <AddressOrEns address={selectedWallet} size="14pt" weight="bold" />
+          <WalletName address={selectedWallet} size="14pt" weight="bold" />
         </Inline>
         <WalletNativeBalance address={address} chainId={chainId} />
       </Stack>
@@ -254,7 +254,7 @@ export function SendTransaction({
     <Box
       display="flex"
       flexDirection="column"
-      style={{ height: POPUP_DIMENSIONS.height }}
+      style={{ height: POPUP_DIMENSIONS.height, overflow: 'hidden' }}
     >
       <SendTransactionInfo request={request} />
       <Stack space="20px" padding="20px">

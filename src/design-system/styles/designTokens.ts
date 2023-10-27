@@ -143,6 +143,7 @@ export type BackgroundColor =
   | 'blue'
   | 'green'
   | 'red'
+  | 'redA10'
   | 'purple'
   | 'pink'
   | 'orange'
@@ -348,6 +349,16 @@ export const backgroundColors: Record<
     },
     dark: {
       color: globalColors.red50,
+      setColorContext: 'dark',
+    },
+  },
+  redA10: {
+    light: {
+      color: globalColors.redA10,
+      setColorContext: 'dark',
+    },
+    dark: {
+      color: globalColors.redA10,
       setColorContext: 'dark',
     },
   },

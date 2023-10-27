@@ -20,7 +20,7 @@ import {
 } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
-import { TextStyles } from '~/design-system/styles/core.css';
+import { TextProps } from '~/design-system/components/Text/Text';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
@@ -42,17 +42,13 @@ import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 
 export const WalletName = ({
   address,
-  color = 'label',
-}: {
-  address: Address;
-  color: TextStyles['color'];
-}) => {
-  const { displayName: walletDisplayName } = useWalletInfo({
-    address,
-  });
+  ...props
+}: { address: Address } & Partial<TextProps>) => {
+  const { displayName } = useWalletInfo({ address });
   return (
-    <TextOverflow color={color} size="14pt" weight="semibold">
-      {walletDisplayName}
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <TextOverflow color="label" size="14pt" weight="semibold" {...props}>
+      {displayName}
     </TextOverflow>
   );
 };
@@ -338,6 +334,29 @@ export const WalletBalance = ({ appHost }: { appHost: string }) => {
   );
 };
 
+const getAcceptRequestButtonStyles = ({
+  waitingForDevice,
+  dappStatus,
+  disabled,
+}: {
+  waitingForDevice?: boolean;
+  disabled?: boolean;
+  dappStatus?: DAppStatus;
+}) => {
+  if (waitingForDevice)
+    return {
+      variant: 'disabled',
+      emoji: '👀',
+      color: 'label',
+      textColor: 'label',
+    } as const;
+
+  const variant = disabled ? 'disabled' : 'flat';
+  if (dappStatus === DAppStatus.Scam)
+    return { variant, color: 'redA10', textColor: 'red' } as const;
+  return { variant, color: 'accent', textColor: 'label' } as const;
+};
+
 export const AcceptRequestButton = ({
   autoFocus,
   disabled,
@@ -355,30 +374,40 @@ export const AcceptRequestButton = ({
   loading?: boolean;
   dappStatus?: DAppStatus;
 }) => {
-  const isScamDapp = dappStatus === DAppStatus.Scam;
-  const isVerifiedDapp = dappStatus === DAppStatus.Verified;
+  const { textColor, ...buttonStyleProps } = getAcceptRequestButtonStyles({
+    waitingForDevice,
+    dappStatus,
+    disabled,
+  });
 
-  const buttonVariant = isScamDapp ? 'transparent' : 'flat';
-  const color = isVerifiedDapp ? 'blue' : 'accent';
+  // useKeyboardShortcut({
+  //   condition: () => ,
+  //   handler: (e: KeyboardEvent) => {
+  //     if (e.key === shortcuts.transaction_request.ACCEPT.key) {
+  //       onClick?.();
+  //     }
+  //   },
+  //   modifierKey: shortcuts.transaction_request.ACCEPT.modifier,
+  // });
 
   return (
     <Button
       autoFocus={autoFocus}
-      emoji={waitingForDevice ? '👀' : undefined}
-      color={waitingForDevice ? 'label' : color}
       height="44px"
       width="full"
       onClick={(!waitingForDevice && onClick) || undefined}
       testId="accept-request-button"
-      variant={waitingForDevice || disabled ? 'disabled' : buttonVariant}
       disabled={disabled}
       tabIndex={0}
+      shortcut={
+        !disabled && !waitingForDevice
+          ? shortcuts.transaction_request.ACCEPT
+          : undefined
+      }
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...buttonStyleProps}
     >
-      <TextOverflow
-        weight="bold"
-        size="16pt"
-        color={isScamDapp ? 'red' : 'label'}
-      >
+      <TextOverflow weight="bold" size="16pt" color={textColor}>
         {loading ? <Spinner size={16} color="label" /> : label}
       </TextOverflow>
     </Button>
@@ -416,12 +445,12 @@ export const RejectRequestButton = ({
   return (
     <Button
       autoFocus={autoFocus}
-      color={isScamDapp ? 'red' : 'labelSecondary'}
+      color={isScamDapp ? 'red' : 'separatorSecondary'}
+      variant="flat"
       height="44px"
       width="full"
       onClick={onClick}
       testId="reject-request-button"
-      variant={isScamDapp ? 'flat' : 'transparent'}
       tabIndex={0}
     >
       {label}
