@@ -1,7 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { ReactNode } from 'react';
 
-import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -25,7 +24,7 @@ import { Tag } from '~/entries/popup/components/Tag';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
-import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
+import { DappHostName } from '../DappScanStatus';
 import { TabContent, Tabs } from '../Tabs';
 
 import { overflowGradient } from './OverflowGradient.css';
@@ -79,14 +78,14 @@ function SimulatedChangeRow({
     direction === 'in' ? 'arrow.up.circle.fill' : 'arrow.down.circle.fill';
   const label = direction === 'in' ? 'Received' : 'Sent';
   return (
-    <Inline space="24px" alignHorizontal="justify">
-      <Inline space="12px">
+    <Inline space="24px" alignHorizontal="justify" alignVertical="center">
+      <Inline space="12px" alignVertical="center">
         <Symbol size={14} symbol={icon} weight="bold" color={color} />
         <Text size="14pt" weight="bold" color="label">
           {label}
         </Text>
       </Inline>
-      <Inline space="6px">
+      <Inline space="6px" alignVertical="center">
         <CoinIcon asset={asset} size={14} />
         <Text size="14pt" weight="bold" color={color}>
           - 1 {asset.symbol}
@@ -167,8 +166,8 @@ function TransactionDetails() {
     >
       <Box
         style={{
-          maxHeight: 174,
-          paddingTop: '16px',
+          maxHeight: 178,
+          paddingTop: '14px',
           paddingBottom: '38px',
           overflow: 'scroll',
         }}
@@ -254,11 +253,14 @@ function RequestData({ request }: SendTransactionProps) {
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
 
   return (
-    <Stack
-      space="20px"
-      alignHorizontal="center"
+    <Box
+      display="flex"
+      flexDirection="column"
+      gap="20px"
+      alignItems="center"
       justifyContent="center"
       height="full"
+      style={{ overflow: 'hidden' }}
     >
       <Box
         display="flex"
@@ -270,8 +272,7 @@ function RequestData({ request }: SendTransactionProps) {
         borderColor="separatorSecondary"
         borderWidth="1px"
         width="full"
-        height="full"
-        style={{ maxHeight: 230, overflow: 'visible' }}
+        style={{ maxHeight: 230, overflow: 'hidden' }}
       >
         <Tabs tabs={['Overview', 'Details', 'Data']}>
           <TabContent value="Overview">
@@ -286,10 +287,10 @@ function RequestData({ request }: SendTransactionProps) {
         </Tabs>
       </Box>
 
-      {dappMetadata?.status === DAppStatus.Scam ? (
+      {/* {dappMetadata?.status === DAppStatus.Scam ? (
         <ThisDappIsLikelyMalicious />
-      ) : null}
-    </Stack>
+      ) : null} */}
+    </Box>
   );
 }
 

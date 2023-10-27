@@ -3,7 +3,7 @@ import { getAddress } from '@ethersproject/address';
 import { formatEther } from '@ethersproject/units';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router';
-import { Address } from 'wagmi';
+import { Address, useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -17,12 +17,14 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { truncateAddress } from '~/core/utils/address';
 import { chainIdToUse } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { formatNumber } from '~/core/utils/formatNumber';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Bleed, Box, Inline, Separator, Stack, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
+import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
@@ -47,12 +49,35 @@ export interface SelectedNetwork {
   name: string;
 }
 
+function WalletNativeBalance({
+  chainId,
+  address,
+}: {
+  chainId: ChainId;
+  address: Address;
+}) {
+  const { data: balance } = useBalance({ address, chainId });
+  if (!balance) return;
+  return (
+    <Inline alignVertical="center" space="6px">
+      <ChainBadge chainId={chainId} size={14} />
+      <Text size="12pt" weight="semibold" color="labelTertiary">
+        {formatNumber(balance.formatted)}
+      </Text>
+    </Inline>
+  );
+}
+
 function AccountSigningWith({
-  selectedWallet, // appHost,
+  selectedWallet,
+  appHost,
 }: {
   selectedWallet: Address;
   appHost: string;
 }) {
+  const { activeSession } = useAppSession({ host: appHost });
+  if (!activeSession) return;
+  const { address, chainId } = activeSession;
   return (
     <Inline alignVertical="center" space="8px">
       <WalletAvatar
@@ -65,13 +90,9 @@ function AccountSigningWith({
           <Text size="14pt" weight="bold" color="labelTertiary">
             Signing with
           </Text>
-          <Text size="14pt" weight="bold">
-            {truncateAddress(selectedWallet)}
-          </Text>
+          <AddressOrEns address={selectedWallet} size="14pt" weight="bold" />
         </Inline>
-        <Text size="12pt" weight="semibold" color="labelTertiary">
-          balance aaa
-        </Text>
+        <WalletNativeBalance address={address} chainId={chainId} />
       </Stack>
     </Inline>
   );
