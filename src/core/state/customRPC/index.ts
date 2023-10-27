@@ -2,7 +2,7 @@ import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
-interface CustomRPC {
+export interface CustomRPC {
   rpcUrl: string;
   chainId: number;
   name: string;

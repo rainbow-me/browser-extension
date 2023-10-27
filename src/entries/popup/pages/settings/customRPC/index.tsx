@@ -4,11 +4,14 @@ import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
 
 export function SettingsCustomRPC() {
+  const navigate = useRainbowNavigate();
   const { customRPCs, addCustomRPC } = useCustomRPCsStore();
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
@@ -151,6 +154,11 @@ export function SettingsCustomRPC() {
               boxShadow="12px"
               width="full"
               padding="16px"
+              onClick={() =>
+                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
+                  state: { customRPC },
+                })
+              }
             >
               <Text size="14pt" weight="bold" align="center">
                 {JSON.stringify(customRPC)}
