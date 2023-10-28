@@ -1,10 +1,13 @@
 import * as React from 'react';
+import { Address } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 
+import { getWallets } from '../../handlers/wallet';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { triggerToast } from '../Toast/Toast';
 
 import { SearchItem, SearchItemType } from './SearchItems';
 import { CommandKPage, PAGES } from './pageConfig';
@@ -427,3 +430,61 @@ export function useKeyboardNavigation(
     };
   }, []);
 }
+
+interface WalletObj {
+  accounts: Address[];
+  type: 'HdKeychain' | 'HardwareWalletKeychain' | 'ReadOnlyKeychain';
+  vendor?: string;
+}
+
+type WalletNames = {
+  [address: string]: string;
+};
+
+const typeMapping: { [key: string]: string } = {
+  ReadOnlyKeychain: 'Watching',
+  HdKeychain: 'Imported',
+};
+
+export const generateCSV = (
+  data: WalletObj[],
+  walletNames: WalletNames,
+): string => {
+  let csvContent = 'public_address,name,type\n';
+
+  data.forEach(({ accounts, type, vendor }) => {
+    const address = accounts[0];
+    const name = walletNames[address as Address] || address;
+
+    let importedType = typeMapping[type];
+
+    if (type === 'HardwareWalletKeychain') {
+      importedType = `Hardware Wallet - ${vendor}`;
+    }
+
+    csvContent += `${address},${name},${importedType}\n`;
+  });
+
+  return csvContent;
+};
+
+export const handleExportWalletList = async (walletNames: WalletNames) => {
+  const data = await getWallets();
+  const csvContent = generateCSV(data as WalletObj[], walletNames);
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+
+  chrome.downloads.download(
+    {
+      url: url,
+      filename: 'rainbow_addresses.csv',
+    },
+    () => {
+      URL.revokeObjectURL(url);
+    },
+  );
+  triggerToast({
+    title: 'Addresses Downloaded',
+    description: 'rainbow_addresses.csv',
+  });
+};

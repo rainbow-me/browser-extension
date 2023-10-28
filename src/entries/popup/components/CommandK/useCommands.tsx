@@ -11,6 +11,7 @@ import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAsse
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useSavedEnsNames } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
+import { useWalletNamesStore } from '~/core/state/walletNames';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
@@ -46,6 +47,7 @@ import { CommandKPageState } from './useCommandKNavigation';
 import { useSearchableENSorAddress } from './useSearchableENSOrAddress';
 import { useSearchableTokens } from './useSearchableTokens';
 import { useSearchableWallets } from './useSearchableWallets';
+import { handleExportWalletList } from './utils';
 
 interface CommandOverride {
   [key: string]: Partial<ShortcutSearchItem>;
@@ -227,6 +229,15 @@ export const staticCommandInfo: CommandInfo = {
     page: PAGES.HOME,
     symbol: 'arrow.up.left.and.arrow.down.right',
     symbolSize: 14,
+    type: SearchItemType.Shortcut,
+  },
+  exportAddressList: {
+    name: 'Export address list to CSV',
+    page: PAGES.HOME,
+    shouldRemainOnActiveRoute: true,
+    searchTags: getSearchTags('export_wallet_list'),
+    symbol: 'doc.on.doc',
+    symbolSize: 15,
     type: SearchItemType.Shortcut,
   },
 
@@ -474,6 +485,7 @@ export const useCommands = (
   const { searchableTokens } = useSearchableTokens();
   const { searchableWallets } = useSearchableWallets(currentPage);
   const { setSelectedToken } = useSelectedTokenStore();
+  const { walletNames } = useWalletNamesStore();
 
   const { hideAssetBalances, setHideAssetBalances } =
     useHideAssetBalancesStore();
@@ -582,6 +594,9 @@ export const useCommands = (
       },
       copyAddress: {
         action: () => handleCopy(address),
+      },
+      exportAddressList: {
+        action: () => handleExportWalletList(walletNames),
       },
       viewNFTs: {
         action: openProfile,
@@ -765,26 +780,27 @@ export const useCommands = (
       },
     }),
     [
-      address,
-      currentTheme,
-      ensName,
-      handleCopy,
-      handleSelectAddress,
-      handleToggleHiddenBalances,
-      handleToggleHiddenSmallBalances,
-      handleWatchWallet,
-      hideAssetBalances,
-      hideSmallBalances,
-      isWatchingWallet,
-      navigate,
       navigateToSwaps,
-      openENSApp,
+      isWatchingWallet,
+      ensName,
+      address,
       openProfile,
+      handleToggleHiddenBalances,
+      hideAssetBalances,
+      handleToggleHiddenSmallBalances,
+      hideSmallBalances,
+      currentTheme,
       previousPageState.selectedCommand,
-      selectTokenAndNavigate,
-      viewWalletOnEtherscan,
-      viewTokenOnExplorer,
+      handleCopy,
+      walletNames,
+      navigate,
       isFirefox,
+      selectTokenAndNavigate,
+      viewTokenOnExplorer,
+      handleWatchWallet,
+      viewWalletOnEtherscan,
+      openENSApp,
+      handleSelectAddress,
     ],
   );
 
