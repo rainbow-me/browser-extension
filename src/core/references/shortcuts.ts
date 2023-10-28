@@ -96,10 +96,6 @@ export const shortcuts = {
       display: 'C',
       key: 'c',
     },
-    COPY_ADDRESS_LIST: {
-      display: 'Z',
-      key: 'z',
-    },
     GO_TO_CONNECTED_APPS: {
       display: 'A',
       key: 'a',
