@@ -1,3 +1,5 @@
+import { RainbowError, logger } from '~/logger';
+
 export const LocalStorage = {
   async clear() {
     await chrome?.storage?.local?.clear();
@@ -35,7 +37,28 @@ export const SessionStorage = {
     await chrome?.storage?.session?.clear();
   },
   async set(key: string, value: unknown) {
-    await chrome?.storage?.session?.set({ [key]: value });
+    try {
+      await chrome?.storage?.session?.set({ [key]: value });
+    } catch (e) {
+      // If we got a quota related error, let's log the size of the keys
+      // that can grow exponentially to see where we are at
+      if ((e as Error)?.message.toLowerCase().indexOf('quota') !== -1) {
+        const queuedEvents = await SessionStorage.get('queuedEvents');
+        const rateLimits = await SessionStorage.get('rateLimits');
+
+        logger.info(
+          'SessionStorage queuedEvents size: ',
+          queuedEvents?.length || 0,
+        );
+        logger.info(
+          'SessionStorage queuedEvents size: ',
+          (rateLimits && Object.keys(rateLimits).length) || 0,
+        );
+      }
+      logger.error(new RainbowError('SessionStorage write error'), {
+        message: (e as Error)?.message,
+      });
+    }
   },
   async get(key: string) {
     const result = await chrome?.storage?.session?.get(key);
