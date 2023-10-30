@@ -83,7 +83,8 @@ export function PostReleaseNFTs() {
         const assetCount = collection.assets.length;
         const sectionRowCount = Math.ceil(assetCount / 3);
 
-        const thumbnailHeight = sectionRowCount * 96;
+        const thumbnailHeight =
+          sectionRowCount * (sectionRowCount > 1 ? 106 : 96);
         return PADDING + COLLECTION_HEADER_HEIGHT + thumbnailHeight;
       } else {
         return COLLECTION_HEADER_HEIGHT;
