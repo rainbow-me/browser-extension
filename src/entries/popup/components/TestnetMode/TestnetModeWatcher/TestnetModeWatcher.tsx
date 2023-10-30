@@ -134,7 +134,7 @@ export const TestnetModeWatcher = ({
             <Box width="full">
               <Stack space="8px">
                 <Button
-                  testId="nudge-sheet-connect"
+                  testId="testnet-mode-enable"
                   symbol="return.left"
                   symbolSide="left"
                   width="full"
