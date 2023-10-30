@@ -307,6 +307,10 @@ describe('App interactions flow', () => {
 
     await delayTime('long');
 
+    await findElementByTestIdAndClick({ driver, id: 'testnet-mode-enable' });
+
+    await delayTime('short');
+
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
     await clickAcceptRequestButton(driver);
