@@ -6,6 +6,5 @@ export const setSettingWallets = (settingsWallet: null | KeychainWallet) => {
 };
 
 export const getSettingWallets = async (): Promise<KeychainWallet> => {
-  const { settingsWallet } = await SessionStorage.get('settingsWallet');
-  return settingsWallet;
+  return SessionStorage.get('settingsWallet');
 };

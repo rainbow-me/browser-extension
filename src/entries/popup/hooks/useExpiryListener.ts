@@ -15,8 +15,8 @@ export function useExpiryListener() {
   const previousAddress = usePrevious(currentAddress);
 
   const checkExpiry = async () => {
-    const expiryEntry = await SessionStorage.get('expiry');
-    const expired = Date.now() > (expiryEntry?.expiry || 0);
+    const expiry = await SessionStorage.get('expiry');
+    const expired = Date.now() > (expiry || 0);
     if (expired) {
       await resetValues();
       await clearLastPage();

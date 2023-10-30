@@ -74,8 +74,7 @@ const useSessionStatus = () => {
         const userStatus = await getUserStatus();
         // to not interfere with onboarding status, only autolock if status is READY
         if (userStatus === 'READY') {
-          const { lastUnlock: lastUnlockFromStorage } =
-            await SessionStorage.get('lastUnlock');
+          const lastUnlockFromStorage = await SessionStorage.get('lastUnlock');
           if (lastUnlockFromStorage) {
             const lastUnlock = new Date(lastUnlockFromStorage);
             const now = new Date();

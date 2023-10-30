@@ -29,7 +29,7 @@ import { useImportWalletSessionSecrets } from './useImportWalletSessionSecrets';
 const derivedAccountsStore = {
   get: () =>
     SessionStorage.get('derivedAccountsFromSecrets').then(
-      (r) => (r && r.derivedAccountsFromSecrets) || {},
+      (derivedAccountsFromSecrets) => derivedAccountsFromSecrets || {},
     ) as Promise<Record<string, Address[]>>,
   set: async (derivedAccountsFromSecrets: Record<string, Address[]>) =>
     SessionStorage.set(

@@ -121,7 +121,7 @@ const messengerProviderRequest = async (
 };
 
 const resetRateLimit = async (host: string, second: boolean) => {
-  const { rateLimits } = await SessionStorage.get('rateLimits');
+  const rateLimits = await SessionStorage.get('rateLimits');
   if (second) {
     if (rateLimits[host]) {
       rateLimits[host].perSecond = 0;
@@ -139,7 +139,7 @@ const resetRateLimit = async (host: string, second: boolean) => {
 const checkRateLimit = async (host: string) => {
   try {
     // Read from session
-    let { rateLimits } = await SessionStorage.get('rateLimits');
+    let rateLimits = await SessionStorage.get('rateLimits');
 
     // Initialize if needed
     if (rateLimits === undefined) {

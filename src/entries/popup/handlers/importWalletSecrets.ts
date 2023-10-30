@@ -3,7 +3,7 @@ import { SessionStorage } from '~/core/storage';
 export const getImportWalletSecrets = async () => {
   try {
     const result = await SessionStorage.get('importWalletSecrets');
-    return (result['importWalletSecrets'] as string[]) || [''];
+    return (result as string[]) || [''];
   } catch (e) {
     console.log('Error while getting import wallet secrets: ', e);
     return [''];

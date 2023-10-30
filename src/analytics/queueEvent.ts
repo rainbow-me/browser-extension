@@ -6,7 +6,7 @@ import { SessionStorage } from '~/core/storage';
 
 export const queueEventTracking = async (eventName: string, meta = {}) => {
   const queuedEvents = await SessionStorage.get('queuedEvents');
-  const events = queuedEvents?.queuedEvents || [];
+  const events = queuedEvents || [];
   const newEvent = {
     eventName,
     meta: {

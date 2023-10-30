@@ -267,9 +267,9 @@ const ChooseWalletGroup = () => {
 
       setWallets(controlledWallets);
 
-      const sessionData = await SessionStorage.get('walletToAdd');
-      if (sessionData.walletToAdd) {
-        setCreateWalletAddress(sessionData.walletToAdd);
+      const walletToAdd = await SessionStorage.get('walletToAdd');
+      if (walletToAdd) {
+        setCreateWalletAddress(walletToAdd);
         SessionStorage.remove('walletToAdd');
       }
     };

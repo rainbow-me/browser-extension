@@ -71,7 +71,7 @@ class KeychainManager {
             this.state.vault = storageState.vault;
           }
 
-          const { encryptionKey } = await privates.get(this).getEncryptionKey();
+          const encryptionKey = await privates.get(this).getEncryptionKey();
           if (encryptionKey) {
             const key = await importKey(encryptionKey);
             const vault = (await decryptWithKey(
@@ -183,7 +183,7 @@ class KeychainManager {
         // Encrypt the serialized keychains
         const pwd = privates.get(this).password;
         const { encryptionKey } = await privates.get(this).getEncryptionKey();
-        const { salt } = await privates.get(this).getSalt();
+        const salt = await privates.get(this).getSalt();
 
         if (serializedKeychains.length > 0) {
           const result = { vault: '', exportedKeyString: '', salt: '' };
