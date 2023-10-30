@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
-import { Box, Inset, Text } from '~/design-system';
+import {
+  chainIdMap,
+  chainLabelMap,
+  sortNetworks,
+} from '~/core/utils/userChains';
+import { Box, Inset, Symbol, Text } from '~/design-system';
+import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
@@ -16,23 +23,28 @@ import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import { DraggableContext, DraggableItem } from '../../components/Draggable';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 
-export const sortNetworks = (order: ChainId[], chains: Chain[]) =>
-  chains.sort((a, b) => {
-    const aIndex = order.indexOf(a.id);
-    const bIndex = order.indexOf(b.id);
-    if (aIndex === -1) return bIndex === -1 ? 0 : 1;
-    if (bIndex === -1) return -1;
-    return aIndex - bIndex;
-  });
+const chainLabel = ({ chainId }: { chainId: ChainId }) => {
+  const chainLabels = [i18n.t('settings.networks.mainnet')];
+  if (chainLabelMap[chainId]) {
+    chainLabels.push(...chainLabelMap[chainId]);
+  }
+  return chainLabels.join(', ');
+};
 
 export function SettingsNetworks() {
   const {
     userChains,
-    updateUserChain,
+    updateUserChains,
     userChainsOrder,
     updateUserChainsOrder,
   } = useUserChainsStore();
   const supportedChains = getSupportedChains();
+  const {
+    testnetMode,
+    testnetModeShortcutEnabled,
+    setTestnetMode,
+    setTestnetModeShortcutEnabled,
+  } = useTestnetModeStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -45,6 +57,17 @@ export function SettingsNetworks() {
     );
     updateUserChainsOrder({ userChainsOrder: newUserChainsOrder });
   };
+
+  const updateChain = useCallback(
+    (chain: Chain) => {
+      const chainIdsToUpdate = chainIdMap[chain.id];
+      updateUserChains({
+        chainIds: chainIdsToUpdate,
+        enabled: !userChains[chain.id],
+      });
+    },
+    [updateUserChains, userChains],
+  );
 
   return (
     <Box paddingHorizontal="20px">
@@ -61,33 +84,36 @@ export function SettingsNetworks() {
       <MenuContainer testId="settings-menu-container">
         <Menu>
           <DraggableContext onDragEnd={onDragEnd} height="fixed">
-            <Box paddingHorizontal="8px" paddingVertical="4px">
+            <Box paddingHorizontal="1px" paddingVertical="1px">
               {sortNetworks(userChainsOrder, supportedChains).map(
-                (chain, index) => (
-                  <DraggableItem
-                    key={`${chain.id}`}
-                    id={`${chain.id}`}
-                    index={index}
-                  >
-                    <MenuItem
-                      first={index === 0}
-                      last={index === supportedChains.length - 1}
-                      leftComponent={
-                        <ChainBadge chainId={chain.id} size="18" shadow />
-                      }
-                      rightComponent={
-                        userChains[chain.id] ? <MenuItem.SelectionIcon /> : null
-                      }
-                      key={chain.name}
-                      titleComponent={<MenuItem.Title text={chain.name} />}
-                      onClick={() =>
-                        updateUserChain({
-                          chainId: chain.id,
-                          enabled: !userChains[chain.id],
-                        })
-                      }
-                    />
-                  </DraggableItem>
+                (chain: Chain, index) => (
+                  <Box key={`${chain.id}`} testId={`network-row-${chain.id}`}>
+                    <DraggableItem id={`${chain.id}`} index={index}>
+                      <MenuItem
+                        first={index === 0}
+                        leftComponent={
+                          <ChainBadge chainId={chain.id} size="18" shadow />
+                        }
+                        rightComponent={
+                          userChains[chain.id] ? (
+                            <MenuItem.SelectionIcon />
+                          ) : null
+                        }
+                        key={chain.name}
+                        titleComponent={<MenuItem.Title text={chain.name} />}
+                        labelComponent={
+                          <Text
+                            color={'labelTertiary'}
+                            size="11pt"
+                            weight={'medium'}
+                          >
+                            {chainLabel({ chainId: chain.id })}
+                          </Text>
+                        }
+                        onClick={() => updateChain(chain)}
+                      />
+                    </DraggableItem>
+                  </Box>
                 ),
               )}
             </Box>
@@ -97,6 +123,62 @@ export function SettingsNetworks() {
               {i18n.t('settings.networks.description')}
             </Text>
           </Box>
+        </Menu>
+        <Menu>
+          <MenuItem
+            first
+            leftComponent={<MenuItem.TextIcon icon="🕹" />}
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.networks.testnet_mode.title')}
+              />
+            }
+            rightComponent={
+              <Toggle
+                testId="testnet-mode-toggle"
+                checked={testnetMode}
+                handleChange={() => setTestnetMode(!testnetMode)}
+                tabIndex={-1}
+              />
+            }
+            onToggle={() => setTestnetMode(!testnetMode)}
+          />
+          <MenuItem.Description
+            text={i18n.t('settings.networks.testnet_mode.toggle_explainer')}
+          />
+          <MenuItem
+            leftComponent={
+              <Symbol
+                symbol="t.square.fill"
+                weight="medium"
+                size={18}
+                color="labelTertiary"
+              />
+            }
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.networks.testnet_mode.shortcut_title')}
+              />
+            }
+            rightComponent={
+              <Toggle
+                testId="testnet-mode-shortcut-toggle"
+                checked={testnetModeShortcutEnabled}
+                handleChange={() =>
+                  setTestnetModeShortcutEnabled(!testnetModeShortcutEnabled)
+                }
+                tabIndex={-1}
+              />
+            }
+            onToggle={() =>
+              setTestnetModeShortcutEnabled(!testnetModeShortcutEnabled)
+            }
+          />
+          <MenuItem.Description
+            text={i18n.t(
+              'settings.networks.testnet_mode.shortcut_toggle_explainer',
+            )}
+          />
         </Menu>
       </MenuContainer>
     </Box>

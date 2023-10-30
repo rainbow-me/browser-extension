@@ -68,6 +68,7 @@ export function PrivateKeyWarning() {
         extraState={{ ...state }}
       />
       <WarningInfo
+        testId={'show-pk'}
         onProceed={openPasswordPrompt}
         iconAndCopyList={iconAndCopyList}
         proceedButtonLabel={i18n.t(

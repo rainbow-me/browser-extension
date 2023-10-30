@@ -10,7 +10,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
-import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
+import { Box, ButtonSymbol, Inline, Stack, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
@@ -59,59 +59,56 @@ export const Header = React.memo(function Header() {
         paddingTop="40px"
         testId="header"
       >
-        <Inset>
-          <Stack alignHorizontal="center" space="6px">
-            <Box
-              as={motion.div}
-              display="flex"
-              justifyContent="center"
-              paddingBottom="2px"
-              position="absolute"
-              style={{
-                opacity: opacityValue,
-                scale: scaleValue,
-                transformOrigin: 'bottom',
-                zIndex: 1,
-                top: -27,
-              }}
-            >
-              <AvatarSection />
-            </Box>
-            <Box
-              as={motion.div}
-              paddingHorizontal="12px"
-              style={{
-                zIndex: 1,
-                scale: nameScaleValue,
-                opacity: nameOpacityValue,
-                x,
-                y,
-              }}
-            >
-              <AccountName
-                avatar={
-                  address && (
-                    <Box
-                      as={motion.div}
-                      style={{ opacity: avatarOpacityValue }}
-                      paddingRight="2px"
-                    >
-                      <WalletAvatar
-                        addressOrName={address}
-                        size={20}
-                        emojiSize="14pt"
-                      />
-                    </Box>
-                  )
-                }
-                id="header"
-                tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
-              />
-            </Box>
-
-            <ActionButtonsSection />
-          </Stack>
-        </Inset>
+        <Stack alignHorizontal="center" space="6px">
+          <Box
+            as={motion.div}
+            display="flex"
+            justifyContent="center"
+            paddingBottom="2px"
+            position="absolute"
+            style={{
+              opacity: opacityValue,
+              scale: scaleValue,
+              transformOrigin: 'bottom',
+              zIndex: 1,
+              top: -27,
+            }}
+          >
+            <AvatarSection />
+          </Box>
+          <Box
+            as={motion.div}
+            paddingHorizontal="12px"
+            style={{
+              zIndex: 1,
+              scale: nameScaleValue,
+              opacity: nameOpacityValue,
+              x,
+              y,
+            }}
+          >
+            <AccountName
+              avatar={
+                address && (
+                  <Box
+                    as={motion.div}
+                    style={{ opacity: avatarOpacityValue }}
+                    paddingRight="2px"
+                  >
+                    <WalletAvatar
+                      addressOrName={address}
+                      size={20}
+                      emojiSize="14pt"
+                    />
+                  </Box>
+                )
+              }
+              id="header"
+              tabIndex={tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
+            />
+          </Box>
+          <ActionButtonsSection />
+        </Stack>
         <Box style={{ minHeight: 28 }} />
       </Box>
     </WalletContextMenu>

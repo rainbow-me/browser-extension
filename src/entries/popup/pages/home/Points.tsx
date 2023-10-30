@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { Box, Inset, Stack, Text } from '~/design-system';
 import {
   backgroundColors,
@@ -15,77 +17,89 @@ import PointsSelectedIcon from '../../components/Tabs/TabIcons/PointsSelected';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCoolMode } from '../../hooks/useCoolMode';
 
+const animationSteps = {
+  one: {
+    scale: 0.9,
+    rotate: -372,
+    x: 0,
+    y: 10.5,
+    transition: { duration: 0.5, ease: [0.2, 0, 0, 1] },
+  },
+  two: {
+    scale: 1.3,
+    rotate: -12,
+    x: 0,
+    y: -16,
+    transition: { duration: 2.5, ease: [0.05, 0.7, 0.1, 1.0] },
+  },
+  three: {
+    scale: 1.2,
+    rotate: -4,
+    x: 4,
+    y: -4,
+    transition: { duration: 2, ease: [0.2, 0, 0, 1] },
+  },
+  four: {
+    scale: 1.1,
+    rotate: -12,
+    x: 0,
+    y: 8,
+    transition: { duration: 2, ease: [0.2, 0, 0, 1] },
+  },
+  five: {
+    scale: 0.9,
+    rotate: -12,
+    x: 0,
+    y: 10.5,
+    transition: { duration: 0.5, ease: [0.2, 0, 0, 1] },
+  },
+  six: {
+    scale: 1.3,
+    rotate: -372,
+    x: 0,
+    y: -16,
+    transition: { duration: 2.5, ease: [0.05, 0.7, 0.1, 1.0] },
+  },
+  seven: {
+    scale: 1.2,
+    rotate: -380,
+    x: -4,
+    y: -4,
+    transition: { duration: 2, ease: [0.2, 0, 0, 1] },
+  },
+  eight: {
+    scale: 1.1,
+    rotate: -372,
+    x: 0,
+    y: 8,
+    transition: { duration: 2, ease: [0.2, 0, 0, 1] },
+  },
+};
+
 export function Points() {
-  const ref = useCoolMode({ emojis: ['🎰', '🌈'] });
+  const ref = useCoolMode({ emojis: ['🌈', '🎰'] });
+  const { currentAddress } = useCurrentAddressStore();
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
+  const { currentTheme } = useCurrentThemeStore();
+  const { testnetMode } = useTestnetModeStore();
 
   const controls = useAnimation();
 
   useEffect(() => {
-    const animate = async () => {
-      await controls.start({
-        scale: 0.9,
-        rotate: -372,
-        x: 0,
-        y: 10.5,
-        transition: { duration: 0.5, ease: [0.2, 0, 0, 1] },
-      });
-      await controls.start({
-        scale: 1.3,
-        rotate: -12,
-        x: 0,
-        y: -16,
-        transition: { duration: 2.5, ease: [0.05, 0.7, 0.1, 1.0] },
-      });
-      await controls.start({
-        scale: 1.2,
-        rotate: -4,
-        x: 4,
-        y: -4,
-        transition: { duration: 2, ease: [0.2, 0, 0, 1] },
-      });
-      await controls.start({
-        scale: 1.1,
-        rotate: -12,
-        x: 0,
-        y: 8,
-        transition: { duration: 2, ease: [0.2, 0, 0, 1] },
-      });
-      await controls.start({
-        scale: 0.9,
-        rotate: -12,
-        x: 0,
-        y: 10.5,
-        transition: { duration: 0.5, ease: [0.2, 0, 0, 1] },
-      });
-      await controls.start({
-        scale: 1.3,
-        rotate: -372,
-        x: 0,
-        y: -16,
-        transition: { duration: 2.5, ease: [0.05, 0.7, 0.1, 1.0] },
-      });
-      await controls.start({
-        scale: 1.2,
-        rotate: -380,
-        x: -4,
-        y: -4,
-        transition: { duration: 2, ease: [0.2, 0, 0, 1] },
-      });
-      await controls.start({
-        scale: 1.1,
-        rotate: -372,
-        x: 0,
-        y: 8,
-        transition: { duration: 2, ease: [0.2, 0, 0, 1] },
-      });
-      animate();
+    const sequenceAnimations = async () => {
+      await controls.start('one');
+      await controls.start('two');
+      await controls.start('three');
+      await controls.start('four');
+      await controls.start('five');
+      await controls.start('six');
+      await controls.start('seven');
+      await controls.start('eight');
+      sequenceAnimations();
     };
-    setTimeout(animate, 1000);
-  }, [controls]);
 
-  const { currentAddress } = useCurrentAddressStore();
-  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
-  const { currentTheme } = useCurrentThemeStore();
+    sequenceAnimations();
+  }, [controls]);
 
   return (
     <Box
@@ -96,7 +110,7 @@ export function Points() {
       marginTop="-20px"
       paddingTop="80px"
       ref={ref}
-      style={{ height: 336 }}
+      style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
       width="full"
     >
       <Box paddingBottom="14px">
@@ -122,6 +136,7 @@ export function Points() {
                 width: 28,
                 willChange: 'transform',
               }}
+              variants={animationSteps}
             >
               <Box
                 position="relative"

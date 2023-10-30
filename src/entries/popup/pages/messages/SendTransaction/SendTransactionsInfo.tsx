@@ -87,7 +87,9 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
         height="full"
       >
         <Stack space="16px" alignItems="center">
-          <DappIcon appLogo={dappMetadata?.appLogo} size="32px" />
+          <Inline alignHorizontal="center">
+            <DappIcon appLogo={dappMetadata?.appLogo} size="32px" />
+          </Inline>
           <Stack space="12px">
             <DappHostName
               hostName={dappMetadata?.appHostName}

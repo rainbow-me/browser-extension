@@ -45,6 +45,7 @@ export interface ShortcutSearchItem extends BaseSearchItem {
   address?: Address;
   hideWhenFullScreen?: boolean;
   symbol: SymbolName;
+  textIcon?: string;
   symbolSize?: number;
   type: SearchItemType.Shortcut;
 }

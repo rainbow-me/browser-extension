@@ -1,7 +1,17 @@
 import React from 'react';
 
 import { i18n } from '~/core/languages';
-import { Box, Button, Rows, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Button,
+  Inline,
+  Row,
+  Rows,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import {
@@ -26,71 +36,85 @@ export default function WarningInfo({
 }: WarningInfoProps) {
   return (
     <Box
-      display="flex"
-      flexDirection="column"
+      height="full"
       alignItems="center"
-      padding="20px"
-      paddingTop="2px"
+      paddingHorizontal="20px"
+      style={{ height: 535 }}
     >
-      <Box
-        borderRadius="round"
-        boxShadow="18px accent"
-        style={{
-          height: 60,
-          width: 60,
-          overflow: 'hidden',
-          position: 'absolute',
-        }}
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          height="full"
-          top="0"
-          left="0"
-          right="0"
-          bottom="0"
-          position="relative"
-          style={{
-            background:
-              'radial-gradient(100% 144.46% at 0% 50%, #FF9233 0%, #FA423C 100%)',
-            zIndex: 1,
-          }}
-        >
-          <Symbol
-            symbol="exclamationmark.triangle.fill"
-            size={26}
-            color="label"
-            weight={'bold'}
-          />
-        </Box>
-      </Box>
-      <Box
-        alignItems="center"
-        style={{ paddingTop: '84px', paddingBottom: '60px' }}
-      >
-        <Text size="16pt" weight="bold" color="label" align="center">
-          {i18n.t('common_titles.before_you_proceed')}
-        </Text>
-      </Box>
-      <IconAndCopyList iconAndCopyList={iconAndCopyList} />
-      <Box width="full" style={{ paddingTop: 76 }}>
-        <Rows alignVertical="top" space="8px">
-          <Button
-            testId={testId}
-            color="orange"
-            height="44px"
-            variant="flat"
-            width="full"
-            symbol={proceedButtonSymbol}
-            blur="26px"
-            onClick={onProceed}
-          >
-            {proceedButtonLabel}
-          </Button>
-        </Rows>
-      </Box>
+      <Rows alignVertical="justify">
+        <Row>
+          <Box alignItems="center">
+            <Stack space="24px">
+              <Inline alignHorizontal="center">
+                <Box
+                  borderRadius="round"
+                  boxShadow="18px accent"
+                  style={{
+                    height: 60,
+                    width: 60,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    height="full"
+                    top="0"
+                    left="0"
+                    right="0"
+                    bottom="0"
+                    position="relative"
+                    style={{
+                      background:
+                        'radial-gradient(100% 144.46% at 0% 50%, #FF9233 0%, #FA423C 100%)',
+                      zIndex: 1,
+                    }}
+                  >
+                    <Symbol
+                      symbol="exclamationmark.triangle.fill"
+                      size={26}
+                      color="label"
+                      weight={'bold'}
+                    />
+                  </Box>
+                </Box>
+              </Inline>
+
+              <Inline alignHorizontal="center">
+                <Box alignItems="center" style={{ width: '106px' }}>
+                  <Separator color="separatorTertiary" strokeWeight="1px" />
+                </Box>
+              </Inline>
+
+              <Text size="16pt" weight="bold" color="label" align="center">
+                {i18n.t('common_titles.before_you_proceed')}
+              </Text>
+
+              <Box paddingHorizontal="12px">
+                <IconAndCopyList iconAndCopyList={iconAndCopyList} />
+              </Box>
+            </Stack>
+          </Box>
+        </Row>
+
+        <Row height="content">
+          <Box width="full" paddingVertical="20px">
+            <Button
+              testId={testId}
+              color="orange"
+              height="44px"
+              variant="flat"
+              width="full"
+              symbol={proceedButtonSymbol}
+              blur="26px"
+              onClick={onProceed}
+            >
+              {proceedButtonLabel}
+            </Button>
+          </Box>
+        </Row>
+      </Rows>
     </Box>
   );
 }

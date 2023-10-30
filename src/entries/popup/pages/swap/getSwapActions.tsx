@@ -234,13 +234,13 @@ export const getSwapActions = ({
             ],
             footerLinkText: {
               openText: t(
-                'explainers.fee_on_transfer_token.footer_text.open_text',
+                'swap.explainers.fee_on_transfer_token.footer_text.open_text',
               ),
               linkText: t(
-                'explainers.fee_on_transfer_token.footer_text.link_text',
+                'swap.explainers.fee_on_transfer_token.footer_text.link_text',
               ),
               closeText: t(
-                'explainers.fee_on_transfer_token.footer_text.close_text',
+                'swap.explainers.fee_on_transfer_token.footer_text.close_text',
               ),
               link: 'https://support.rainbow.me/en/articles/8324868-fee-on-transfer-tokens',
             },
