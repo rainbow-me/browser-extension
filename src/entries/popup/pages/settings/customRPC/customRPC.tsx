@@ -53,7 +53,7 @@ export function CustomRPC() {
                         chainId: customRPC.chainId,
                       })
                     }
-                    selected={chain.activeRpcId === customRPC.rpcUrl}
+                    selected={chain.activeRpcUrl === customRPC.rpcUrl}
                   />
                 </Inline>
                 <Inline alignHorizontal="right">

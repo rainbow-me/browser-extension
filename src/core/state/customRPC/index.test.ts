@@ -11,7 +11,6 @@ const TEST_RPC_1: CustomRPC = {
   name: 'Test RPC 1',
   symbol: 'TR1',
   explorer: 'http://test1.explorer',
-  active: true,
 };
 
 const TEST_RPC_2: CustomRPC = {
@@ -58,7 +57,7 @@ test('should be able to set a custom RPC as active', async () => {
     .setActiveRPC({ chainId: ChainId.mainnet, rpcUrl: TEST_RPC_1.rpcUrl });
 
   const chain = customRPCsStore.getState().customChains[ChainId.mainnet];
-  expect(chain.activeRpcId).toBe(TEST_RPC_1.rpcUrl);
+  expect(chain.activeRpcUrl).toBe(TEST_RPC_1.rpcUrl);
 });
 
 test("should be able to set a custom RPC as active to a different custom RPC in Chain's rpcs", async () => {
@@ -67,7 +66,7 @@ test("should be able to set a custom RPC as active to a different custom RPC in 
     .setActiveRPC({ chainId: ChainId.mainnet, rpcUrl: TEST_RPC_2.rpcUrl });
 
   const chain = customRPCsStore.getState().customChains[ChainId.mainnet];
-  expect(chain.activeRpcId).toBe(TEST_RPC_2.rpcUrl);
+  expect(chain.activeRpcUrl).toBe(TEST_RPC_2.rpcUrl);
 });
 
 // Remove
@@ -79,11 +78,11 @@ test('should be able to remove an existing custom RPC', async () => {
   expect(chain).toBeUndefined();
 });
 
-test('should remove activeRpcId if removed RPC was active and change to another RPC if available', async () => {
+test('should remove activeRpcUrl if removed RPC was active and change to another RPC if available', async () => {
   customRPCsStore.getState().removeCustomRPC({ rpcUrl: TEST_RPC_2.rpcUrl });
 
   const chain = customRPCsStore.getState().customChains[ChainId.mainnet];
-  expect(chain.activeRpcId).toBe(TEST_RPC_1.rpcUrl);
+  expect(chain.activeRpcUrl).toBe(TEST_RPC_1.rpcUrl);
   expect(chain.rpcs.length).toBe(1);
 });
 

@@ -8,11 +8,10 @@ export interface CustomRPC {
   name: string;
   symbol: string;
   explorer?: string;
-  active?: boolean;
 }
 
 export interface CustomChain {
-  activeRpcId: string;
+  activeRpcUrl: string;
   rpcs: CustomRPC[];
 }
 
@@ -37,10 +36,10 @@ export const customRPCsStore = createStore<CustomRPCsState>(
       const customChains = get().customChains;
       const chain = customChains[customRPC.chainId] || {
         rpcs: [],
-        activeRpcId: '',
+        activeRpcUrl: '',
       };
       chain.rpcs.push(customRPC);
-      if (!chain.activeRpcId) chain.activeRpcId = customRPC.rpcUrl;
+      if (!chain.activeRpcUrl) chain.activeRpcUrl = customRPC.rpcUrl;
       set({ customChains: { ...customChains, [customRPC.chainId]: chain } });
     },
     updateCustomRPC: ({ customRPC }) => {
@@ -58,7 +57,7 @@ export const customRPCsStore = createStore<CustomRPCsState>(
       const customChains = get().customChains;
       const chain = customChains[chainId];
       if (chain) {
-        chain.activeRpcId = rpcUrl;
+        chain.activeRpcUrl = rpcUrl;
         set({ customChains: { ...customChains, [chainId]: chain } });
       }
     },
@@ -72,9 +71,9 @@ export const customRPCsStore = createStore<CustomRPCsState>(
         if (index !== -1) {
           chain.rpcs.splice(index, 1);
 
-          // If deleted RPC was active, reset activeRpcId or set to another RPC if available
-          if (chain.activeRpcId === rpcUrl) {
-            chain.activeRpcId = chain.rpcs[0]?.rpcUrl || '';
+          // If deleted RPC was active, reset activeRpcUrl or set to another RPC if available
+          if (chain.activeRpcUrl === rpcUrl) {
+            chain.activeRpcUrl = chain.rpcs[0]?.rpcUrl || '';
           }
 
           // Remove the chain if no RPCs are left

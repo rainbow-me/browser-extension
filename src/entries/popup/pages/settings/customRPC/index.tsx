@@ -176,7 +176,7 @@ export function SettingsCustomRPC() {
                       </Text>
                       <Text size="14pt" weight="bold" align="center">
                         {customRPC.rpcUrl ===
-                        customChains[Number(chainId)].activeRpcId
+                        customChains[Number(chainId)].activeRpcUrl
                           ? 'Active'
                           : ''}
                       </Text>

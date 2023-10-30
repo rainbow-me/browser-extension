@@ -89,7 +89,7 @@ export const getCustomChains = () => {
   const { customChains } = customRPCsStore.getState();
   return Object.values(customChains)
     .map((customChain) =>
-      customChain.rpcs.find((rpc) => rpc.rpcUrl === customChain.activeRpcId),
+      customChain.rpcs.find((rpc) => rpc.rpcUrl === customChain.activeRpcUrl),
     )
     .filter(Boolean);
 };
