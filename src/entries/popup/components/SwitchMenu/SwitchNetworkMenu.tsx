@@ -246,15 +246,17 @@ export const SwitchNetworkMenu = ({
 }: SwitchNetworkMenuProps) => {
   const triggerRef = useRef<HTMLDivElement>(null);
   const { userChainsOrder, userChains } = useUserChainsStore();
+  const { testnetMode } = useTestnetModeStore();
 
   const availableChains = useMemo(() => {
     return sortNetworks(
       userChainsOrder,
-      getSupportedChainsWithHardhat().filter(
-        (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
-      ),
+      (testnetMode
+        ? getSupportedTestnetChains()
+        : getSupportedChainsWithHardhat()
+      ).filter((chain) => userChains[chain.id] || chain.id === ChainId.hardhat),
     );
-  }, [userChains, userChainsOrder]);
+  }, [testnetMode, userChains, userChainsOrder]);
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
