@@ -35,8 +35,6 @@ export function SettingsCustomRPC() {
     explorerUrl: true,
   });
 
-  console.log('-- customChains', customChains);
-
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
       value: string | boolean,
