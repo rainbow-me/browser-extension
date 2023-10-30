@@ -1,8 +1,16 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { motion } from 'framer-motion';
-import { PropsWithChildren, createContext, useContext } from 'react';
+import {
+  CSSProperties,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useState,
+} from 'react';
 
-import { Box, Inline, Text } from '~/design-system';
+import { Box, Inline, Inset, Separator, Symbol, Text } from '~/design-system';
+
+import { overflowGradient } from './SendTransaction/OverflowGradient.css';
 
 function TabTrigger({ value }: { value: string }) {
   const { selectedTab } = useContext(TabContext);
@@ -69,18 +77,123 @@ const TabContext = createContext<{ tabs: string[]; selectedTab: string }>({
   selectedTab: '',
 });
 
+function ScrollableWithGradient({
+  children,
+  expanded,
+  onExpand,
+}: PropsWithChildren<{
+  expanded: boolean;
+  onExpand: VoidFunction;
+}>) {
+  const [isScrollable, setIsScrollable] = useState(false);
+
+  return (
+    <Box
+      className={isScrollable ? overflowGradient : undefined}
+      style={{ overflowX: 'visible', overflowY: 'hidden' }}
+      marginBottom="-20px"
+      marginHorizontal="-20px"
+      paddingHorizontal="20px"
+    >
+      <Box
+        style={{
+          maxHeight: '100%',
+          paddingBottom: isScrollable ? '38px' : '20px',
+          overflow: isScrollable ? 'scroll' : 'visible',
+        }}
+        paddingTop="14px"
+        paddingHorizontal="20px"
+        marginHorizontal="-20px"
+        gap="16px"
+        display="flex"
+        flexDirection="column"
+        ref={(e) => {
+          if (!e) return;
+          setIsScrollable(e.scrollHeight > e.clientHeight);
+        }}
+      >
+        {children}
+        <ViewMoreButton onClick={onExpand} isActive={expanded} />
+      </Box>
+    </Box>
+  );
+}
+
+export function TabFloatingButton(
+  props: PropsWithChildren<{ onClick: VoidFunction; style: CSSProperties }>,
+) {
+  return (
+    <Box
+      as="button"
+      position="absolute"
+      paddingRight="8px"
+      paddingLeft="8px"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      background="fillSecondary"
+      backdropFilter="blur(10px)"
+      boxShadow="12px"
+      borderRadius="8px"
+      borderWidth="1px"
+      borderColor="separatorSecondary"
+      gap="4px"
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+      style={{ height: '28px', ...props.style, zIndex: 3 }}
+    />
+  );
+}
+
+function ViewMoreButton({
+  onClick,
+  isActive,
+}: {
+  onClick: VoidFunction;
+  isActive: boolean;
+}) {
+  return (
+    <TabFloatingButton
+      style={{
+        width: isActive ? 'auto' : '28px',
+        bottom: 12,
+        right: 12,
+      }}
+      onClick={onClick}
+    >
+      <Symbol
+        symbol={
+          isActive
+            ? 'arrow.down.right.and.arrow.up.left'
+            : 'arrow.up.left.and.arrow.down.right'
+        }
+        size={12}
+        color="labelSecondary"
+        weight="bold"
+      />
+      {isActive && (
+        <Text size="14pt" weight="semibold" color="labelSecondary">
+          Close
+        </Text>
+      )}
+    </TabFloatingButton>
+  );
+}
+
 export function Tabs({
   children,
   tabs,
   initialTab = tabs[0],
-  tab,
-  setTab,
+  expanded,
+  onExpand,
 }: PropsWithChildren<{
   tabs: string[];
   initialTab?: string;
-  tab: string;
-  setTab: (t: string) => void;
+  expanded: boolean;
+  onExpand: VoidFunction;
 }>) {
+  const [tab, setTab] = useState('Overview');
+
   return (
     <TabContext.Provider value={{ tabs, selectedTab: tab }}>
       <TabsPrimitive.Root
@@ -89,7 +202,29 @@ export function Tabs({
         orientation="horizontal"
         asChild
       >
-        {children}
+        <Box
+          as={motion.div}
+          layout="preserve-aspect"
+          transition={{ layout: { type: 'spring', duration: 0.5 } }}
+          display="flex"
+          flexDirection="column"
+          padding="20px"
+          background="surfaceSecondaryElevated"
+          borderRadius="20px"
+          borderColor="separatorSecondary"
+          borderWidth="1px"
+          width="full"
+          position="relative"
+          style={{ maxHeight: expanded ? '100%' : 300, overflow: 'hidden' }}
+        >
+          <TabsNav />
+          <Inset top="20px">
+            <Separator color="separatorTertiary" />
+          </Inset>
+          <ScrollableWithGradient expanded={expanded} onExpand={onExpand}>
+            {children}
+          </ScrollableWithGradient>
+        </Box>
       </TabsPrimitive.Root>
     </TabContext.Provider>
   );

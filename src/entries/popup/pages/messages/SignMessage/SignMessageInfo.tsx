@@ -5,20 +5,11 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
-import {
-  Box,
-  Inline,
-  Inset,
-  Separator,
-  Stack,
-  Symbol,
-  Text,
-} from '~/design-system';
+import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
-import { ExpandableScrollAreaWithGradient } from '../SendTransaction/SendTransactionsInfo';
-import { TabContent, Tabs, TabsNav } from '../Tabs';
+import { TabContent, TabFloatingButton, Tabs } from '../Tabs';
 
 interface SignMessageProps {
   request: ProviderRequestPayload;
@@ -69,6 +60,22 @@ function Details() {
   );
 }
 
+function CopyButton({ onClick }: { onClick: VoidFunction }) {
+  return (
+    <TabFloatingButton onClick={onClick} style={{ bottom: 12, left: 12 }}>
+      <Symbol
+        symbol={'square.on.square'}
+        size={12}
+        color="labelSecondary"
+        weight="bold"
+      />
+      <Text size="14pt" weight="semibold" color="labelSecondary">
+        Copy
+      </Text>
+    </TabFloatingButton>
+  );
+}
+
 export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
@@ -80,23 +87,24 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   }, [request]);
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
-  const [tab, setTab] = useState('Overview');
-
+  const [expanded, setExpanded] = useState(false);
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
-      style={{ minHeight: 397, height: '100%' }}
+      style={{ minHeight: 397, overflow: 'hidden' }}
       borderColor="separatorTertiary"
       borderWidth="1px"
+      paddingHorizontal="20px"
+      paddingVertical="20px"
+      position="relative"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      gap="24px"
+      height="full"
     >
-      <Stack
-        space="24px"
-        paddingHorizontal="20px"
-        paddingTop="40px"
-        paddingBottom="16px"
-        height="full"
-      >
-        <Stack space="16px" alignItems="center">
+      {!expanded && (
+        <Stack space="16px" alignItems="center" paddingTop="20px">
           <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
           <Stack space="12px">
             <DappHostName
@@ -113,48 +121,33 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
             </Text>
           </Stack>
         </Stack>
+      )}
 
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap="20px"
-          alignItems="center"
-          height="full"
-          style={{ overflow: 'hidden', height: '100%' }}
+      <Box
+        display="flex"
+        flexDirection="column"
+        gap="20px"
+        alignItems="center"
+        height="full"
+      >
+        <Tabs
+          tabs={['Overview', 'Details']}
+          expanded={expanded}
+          onExpand={() => setExpanded((e) => !e)}
         >
-          <Tabs tabs={['Overview', 'Details']} tab={tab} setTab={setTab}>
-            <Box
-              display="flex"
-              flexDirection="column"
-              padding="20px"
-              background="surfaceSecondaryElevated"
-              borderRadius="20px"
-              borderColor="separatorSecondary"
-              borderWidth="1px"
-              width="full"
-              position="relative"
-              style={{ maxHeight: 300, overflow: 'hidden' }}
-            >
-              <TabsNav />
-              <Inset top="20px">
-                <Separator color="separatorTertiary" />
-              </Inset>
-              <ExpandableScrollAreaWithGradient key={tab} tab={tab}>
-                <TabContent value="Overview">
-                  <Overview message={message} />
-                </TabContent>
-                <TabContent value="Details">
-                  <Details />
-                </TabContent>
-              </ExpandableScrollAreaWithGradient>
-            </Box>
-          </Tabs>
+          <TabContent value="Overview">
+            <Overview message={message} />
+            <CopyButton onClick={() => null} />
+          </TabContent>
+          <TabContent value="Details">
+            <Details />
+          </TabContent>
+        </Tabs>
 
-          {dappMetadata?.status === DAppStatus.Scam ? (
-            <ThisDappIsLikelyMalicious />
-          ) : null}
-        </Box>
-      </Stack>
+        {dappMetadata?.status === DAppStatus.Scam ? (
+          <ThisDappIsLikelyMalicious />
+        ) : null}
+      </Box>
     </Box>
   );
 };

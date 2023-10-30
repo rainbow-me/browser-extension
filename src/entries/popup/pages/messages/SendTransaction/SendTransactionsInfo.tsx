@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
@@ -229,71 +229,6 @@ function TransactionData({ data }: { data: string }) {
         </Text>
       </Box>
     </Box>
-  );
-}
-
-export function ExpandableScrollAreaWithGradient({
-  children,
-  tab,
-}: PropsWithChildren<{ tab: string }>) {
-  const [hasViewMore, setHasViewMore] = useState(false);
-
-  return (
-    <>
-      <Box
-        className={hasViewMore ? overflowGradient : undefined}
-        position="relative"
-        style={{ overflowX: 'visible', overflowY: 'hidden' }}
-        marginBottom="-20px"
-        marginHorizontal="-20px"
-        paddingHorizontal="20px"
-      >
-        <Box
-          style={{
-            maxHeight: '100%',
-            paddingBottom: hasViewMore ? '38px' : '20px',
-            overflow: hasViewMore ? 'scroll' : 'visible',
-          }}
-          paddingTop="14px"
-          paddingHorizontal="20px"
-          marginHorizontal="-20px"
-          gap="16px"
-          display="flex"
-          flexDirection="column"
-          key={tab}
-          ref={(e) => {
-            if (!e) return;
-            setHasViewMore(e.scrollHeight > e.clientHeight);
-          }}
-        >
-          {children}
-        </Box>
-      </Box>
-      {hasViewMore && (
-        <Box
-          as="button"
-          position="absolute"
-          style={{ height: '28px', width: '28px', bottom: 12, right: 12 }}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          background="fillSecondary"
-          backdropFilter="blur(10px)"
-          boxShadow="12px"
-          borderRadius="8px"
-          borderWidth="1px"
-          borderColor="separatorSecondary"
-          // onClick={() => setExpanded((e) => !e)}
-        >
-          <Symbol
-            symbol="arrow.up.left.and.arrow.down.right"
-            size={12}
-            color="labelSecondary"
-            weight="bold"
-          />
-        </Box>
-      )}
-    </>
   );
 }
 

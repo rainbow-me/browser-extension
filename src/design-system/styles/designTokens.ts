@@ -1024,6 +1024,7 @@ export const symbolNames = selectSymbolNames(
   'calendar',
   'signature',
   'waveform.and.magnifyingglass',
+  'arrow.down.right.and.arrow.up.left',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
