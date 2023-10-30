@@ -107,9 +107,7 @@ export function PostReleaseNFTs() {
   });
 
   useEffect(() => {
-    if (displayMode === 'byCollection') {
-      collectionGalleryRowVirtualizer.measure();
-    }
+    collectionGalleryRowVirtualizer.measure();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionsState, sort]);
 
