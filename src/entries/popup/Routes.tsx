@@ -56,6 +56,7 @@ import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
+import { SettingsNetworksCustomRPC } from './pages/settings/customRpc';
 import { Language } from './pages/settings/language';
 import { SettingsNetworks } from './pages/settings/networks';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
@@ -487,6 +488,21 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <SettingsNetworks />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.networks.custom_rpc.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <SettingsNetworksCustomRPC />
       </AnimatedRoute>
     ),
   },
