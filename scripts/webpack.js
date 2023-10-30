@@ -155,6 +155,7 @@ webpack(webpackConfig).run((err, stats) => {
       // BUILD THE UI (POPUP)
       webpack(webpackConfigUI).run((err, stats) => {
         if (err) throw err;
+        replacePopupCssName();
         console.log(stats.toString());
         if(stats.hasErrors()) {
           process.exit(1);
@@ -165,4 +166,4 @@ webpack(webpackConfig).run((err, stats) => {
 }
 });
 
-replacePopupCssName();
+
