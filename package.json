@@ -253,7 +253,9 @@
     "chai": "4.3.10",
     "supports-color": "5.5.0",
     "postcss": "8.4.31",
-    "crypto-js": "4.2.0"
+    "crypto-js": "4.2.0",
+    "yaml": "2.2.2",
+    "browserify-sign": "4.2.2"
   },
   "lavamoat": {
     "allowScripts": {
