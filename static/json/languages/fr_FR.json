@@ -6,11 +6,11 @@
     "toggle": "Basculer"
   },
   "permissions": {
-    "firefox_permission_denied": "Rainbow a besoin de l'autorisation pour accéder à tous les sites Web pour fonctionner correctement. Veuillez accorder l'autorisation pour continuer"
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant permission in order to continue."
   },
   "wallet": {
     "rename": "Renommer le portefeuille",
-    "edit_appearance": "Modifier l'apparence",
+    "edit_appearance": "Edit Appearance",
     "view_on": "Voir sur %{explorer}",
     "copy_address": "Copier l'adresse"
   },
@@ -18,8 +18,8 @@
     "title": "Portefeuilles",
     "rename_wallet": "Renommer le portefeuille",
     "copy_address": "Copier l'adresse",
-    "remove_wallet": "Supprimer le portefeuille",
-    "hide_wallet": "Masquer le portefeuille",
+    "remove_wallet": "Remove Wallet",
+    "hide_wallet": "Hide Wallet",
     "watching": "Observation",
     "ledger": "Ledger",
     "trezor": "Trezor",
@@ -48,7 +48,7 @@
     "watch_address_description": "Regarder une adresse publique ou un nom ENS."
   },
   "create_wallet_prompt": {
-    "title": "Nommer votre portefeuille",
+    "title": "Name Your Wallet",
     "create_wallet": "Créer un portefeuille",
     "create": "Créer",
     "input_placeholder": "Nom"
@@ -76,14 +76,32 @@
     "default_wallet_description": "Autoriser les applications à privilégier Rainbow lorsqu'elles recherchent une extension à laquelle se connecter.",
     "contacts": "Contacts",
     "guides_and_support": "Guides et assistance",
-    "learn_about_ethereum": "En savoir plus sur Ethereum",
-    "follow_us_on_twitter": "Suivez-nous sur Twitter",
+    "learn_about_ethereum": "Learn About Ethereum",
+    "follow_us_on_twitter": "Follow Us on Twitter",
     "share_beta_feedback": "Partagez vos commentaires sur la version bêta",
     "theme": {
       "title": "Thème",
       "system": "Système",
       "light": "Clair",
       "dark": "Sombre"
+    },
+    "networks": {
+      "mainnet": "Mainnet",
+      "title": "Réseaux",
+      "quick_promo": {
+        "text": "Drag networks to reorder them",
+        "text_bold": "Astuce :"
+      },
+      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "testnet_mode": {
+        "title": "Testnet Mode",
+        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
+        "shortcut_title": "Enable Keyboard Shortcut",
+        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+      },
+      "custom_rpc": {
+        "title": "Custom RPC"
+      }
     },
     "privacy_and_security": {
       "title": "Confidentialité et sécurité",
@@ -109,15 +127,15 @@
       },
       "change_password": {
         "title": "Changer le mot de passe",
-        "header_label": "Changez votre mot de passe"
+        "header_label": "Change Your Password"
       },
       "confirm_password": {
         "title": "Saisissez votre mot de passe",
-        "description": "Vous devez saisir votre mot de passe actuel pour continuer."
+        "description": "Continue with your current password."
       },
       "wallets_and_keys": {
         "title": "Portefeuilles et clés",
-        "create_a_new_wallet": "Créer un nouveau portefeuille",
+        "create_a_new_wallet": "Create a New Wallet",
         "imported": "Importé",
         "wallet_single": "Portefeuille",
         "wallet_plural": "Portefeuilles",
@@ -127,10 +145,16 @@
         "backed_up": "Sauvegardé",
         "not_backed_up": "Non sauvegardé",
         "back_up_now": "Sauvegarder maintenant",
+        "context_menu": {
+          "create_wallet": "Créer un portefeuille",
+          "view_secret_phrase": "View Secret Phrase",
+          "hide_wallets": "Hide Wallets",
+          "unhide_wallets": "Unhide Wallets"
+        },
         "wallet_details": {
           "title": "Détails du portefeuille",
           "view_recovery_phrase": "Afficher la phrase de récupération",
-          "create_new_wallet": "Créer un nouveau portefeuille",
+          "create_new_wallet": "Create a New Wallet",
           "rename_wallet": "Renommer le portefeuille",
           "unhide_wallet": "Révéler le portefeuille",
           "delete_wallet": "Supprimer le portefeuille",
@@ -141,7 +165,7 @@
           "last_backed_up": "Dernière sauvegarde en tant que %{date}"
         },
         "new_wallet": {
-          "name_your_wallet": "Nommez votre portefeuille",
+          "name_your_wallet": "Name Your Wallet",
           "create": "Créer un portefeuille",
           "input_placeholder": "ex: Portefeuille 1"
         },
@@ -153,18 +177,19 @@
           "warning_2": "Assurez-vous que personne ne peut voir votre écran lorsque vous consultez votre clé privée.",
           "warning_3": "Quiconque possède votre clé privée peut accéder à l'intégralité de votre portefeuille.",
           "warning_4": "Rainbow Support ne vous demandera jamais votre clé privée.",
-          "show": "Afficher la clé privée"
+          "show": "Afficher la clé privée",
+          "copied": "Private Key Copied"
         },
         "recovery_phrase": {
-          "title": "Votre phrase de récupération",
+          "title": "Votre phrase de récupération secrète",
           "subtitle": "Quiconque possède ces mots peut accéder à l'intégralité de votre portefeuille ! Vous ne devriez jamais les partager.",
           "saved": "J'ai enregistré ces mots",
-          "warning_1": "Ne partagez jamais votre phrase de récupération ou ne l'entrez dans aucune application.",
-          "warning_2": "Assurez-vous que personne ne peut voir votre écran lorsque vous consultez votre phrase de récupération.",
-          "warning_3": "Quiconque possède votre phrase de récupération peut accéder à l'intégralité de votre portefeuille.",
-          "warning_4": "Rainbow Support ne vous demandera jamais votre phrase de récupération.",
+          "warning_1": "Never share your Secret Recovery Phrase or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Secret Recovery Phrase.",
+          "warning_3": "Quiconque possède votre phrase de récupération secrète peut accéder à l'ensemble de votre portefeuille.",
+          "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Afficher la phrase de récupération",
-          "phrase_copied": "Phrase de récupération copiée"
+          "copied": "Phrase de récupération copiée"
         }
       }
     },
@@ -172,6 +197,8 @@
       "title": "Transactions",
       "default_speed": "Vitesse par défaut",
       "use_flashbots": "Utiliser Flashbots",
+      "clear_transactions_and_nonces": "Clear Pending Transactions",
+      "clear_transactions_and_nonces_success": "Pending transactions cleared",
       "flashbots_description": "Flashbots protège vos transactions et réduit la probabilité d'échec des transactions. En savoir plus."
     },
     "currency": {
@@ -198,7 +225,7 @@
       "full_watching_wallets": "Accès complet aux portefeuilles surveillés",
       "hw_wallets_enabled": "Activer la prise en charge des portefeuilles matériels",
       "command_k_internal_shortcuts_enabled": "Activer les raccourcis internes ⌘K",
-      "new_tab_bar_enabled": "Nouvelle Barre d'Onglets"
+      "custom_rpc": "Custom RPC"
     }
   },
   "transactions": {
@@ -206,7 +233,7 @@
     "cancelled": "Transaction annulée",
     "burn": {
       "pending": "Brûlant",
-      "confirmed": "Brûlé",
+      "confirmed": "Burned",
       "failed": "Échec de la combustion"
     },
     "cancel": {
@@ -339,14 +366,15 @@
         "swap": "Échanger",
         "my_wallets": "Mes portefeuilles",
         "my_tokens": "Mes jetons",
-        "my_tokens_watched": "Jetons",
+        "my_tokens_watched": "Tokens",
         "copy_address": "Copier l'adresse",
         "view_nfts": "Voir les NFT",
         "add_wallet": "Ajouter un portefeuille",
         "lock": "Verrouiller Rainbow",
+        "testnet_mode": "Testnet Mode",
         "connected_apps": "Applications connectées",
         "settings": "Paramètres",
-        "my_qr_code": "Mon code QR",
+        "my_qr_code": "Mon Code QR",
         "my_qr_code_watched": "Code QR",
         "create_wallet": "Créer un portefeuille",
         "import_wallet": "Importer un portefeuille",
@@ -364,12 +392,12 @@
         "send_token": "Envoyer le jeton",
         "swap_token": "Échanger le jeton",
         "copy_token_address": "Copier l'adresse du contrat de jeton",
-        "view_token_on_explorer": "Afficher sur l'explorateur",
+        "view_token_on_explorer": "Voir sur l'explorateur",
         "add_as_watched_wallet": "Surveiller ce portefeuille",
         "view_on_ens": "Afficher sur ENS",
         "switch_to_wallet": "Passer à ce portefeuille",
         "copy_wallet_address": "Copier l'adresse",
-        "view_wallet_on_etherscan": "Afficher sur Etherscan"
+        "view_wallet_on_etherscan": "Voir sur Etherscan"
       },
       "search_tags": {
         "swap": "pont",
@@ -464,7 +492,7 @@
     "wallets_list": {
       "contacts": "Contacts",
       "my_wallets": "Mes portefeuilles",
-      "watched_wallets": "À surveiller",
+      "watched_wallets": "Observation",
       "no_results": "Aucun résultat"
     },
     "tokens_input": {
@@ -483,7 +511,7 @@
       "cancel": "Annuler",
       "sending_on_network": "Envoi sur le réseau %{chainName}",
       "sending_on_l2_check_1": "Je n'envoie pas vers un échange",
-      "sending_on_l2_check_2": "La personne à laquelle j'envoie dispose d'un portefeuille prenant en charge %{chainName}",
+      "sending_on_l2_check_2": "The person I’m sending to has a wallet that supports %{chainName}",
       "complete_checks": "Effectuer les vérifications",
       "confirm_hw": "Confirmez sur votre appareil"
     }
@@ -508,10 +536,10 @@
     "max": "Max",
     "balance": "Solde",
     "tokens_input": {
-      "tokens": "Jetons",
+      "tokens": "Tokens",
       "sort": "Trier",
-      "available": "disponibles",
-      "token_balance": "Solde du jeton",
+      "available": "disponible",
+      "token_balance": "Solde du token",
       "networks": "Réseaux",
       "filter_by_network": "Filtrer par réseau",
       "switch_networks": "Changer de réseaux",
@@ -559,8 +587,8 @@
           "title": "Flashbots",
           "description": "Flashbots protège vos transactions contre le frontrunning et les attaques sandwich qui pourraient vous donner un prix moins avantageux ou faire échouer votre transaction.",
           "read_more": {
-            "open_text": "Encore curieux ? ",
-            "link_text": "En lire plus",
+            "open_text": "Toujours curieux ? ",
+            "link_text": "En savoir plus",
             "close_text": " à propos de Flashbots et de la protection qu'elle offre."
           }
         },
@@ -568,8 +596,8 @@
           "title": "%{Action} Routage",
           "description": "Par défaut, Rainbow choisit l'itinéraire le moins cher possible pour votre %{action}. Si vous préférez utiliser spécifiquement 0x ou 1inch, vous pouvez aussi le faire",
           "read_more": {
-            "open_text": "Encore curieux ? ",
-            "link_text": "En lire plus",
+            "open_text": "Toujours curieux ? ",
+            "link_text": "En savoir plus",
             "close_text": " à propos de notre approche du routage %{actions}"
           }
         },
@@ -577,7 +605,7 @@
       }
     },
     "actions": {
-      "review": "Revoir",
+      "review": "Vérifier",
       "loading": "Chargement",
       "insufficient_liquidity": "Liquidité insuffisante",
       "fee_on_transfer_token": "Frais sur Transfert de Jeton",
@@ -610,7 +638,7 @@
         "action_label": "Compris"
       },
       "no_quote": {
-        "title": "Aucune offre disponible",
+        "title": "Aucune citation disponible",
         "description": "Nous n'avons pas pu trouver de devis pour ce %{action}. Cela pourrait être dû à un manque de liquidité pour %{action} ou à des problèmes liés à la mise en œuvre du token",
         "action_label": "Continuer quand même"
       },
@@ -619,8 +647,8 @@
         "description": "Nous n'avons pas pu trouver de devis pour ce %{action} car cette paire n'a pas assez de liquidité sur les échanges",
         "action_label": "Compris",
         "footer_text": {
-          "open_text": "Vous voulez en savoir plus ? ",
-          "link_text": "Lire la suite",
+          "open_text": "Toujours curieux ? ",
+          "link_text": "En savoir plus",
           "close_text": " sur les algorithmes de marché automatisés (AMM) et la liquidité des jetons."
         }
       },
@@ -668,19 +696,19 @@
     }
   },
   "contacts": {
-    "save_contact": "Enregistrer le contact",
-    "add_to_contacts": "Ajouter aux contacts",
-    "edit_contact": "Modifier le contact",
-    "save_changes": "Enregistrer les modifications",
+    "save_contact": "Save Contact",
+    "add_to_contacts": "Add to Contacts",
+    "edit_contact": "Edit Contact",
+    "save_changes": "Save Changes",
     "cancel": "Annuler",
-    "remove_contact_title": "Supprimer le contact ?",
-    "remove_contact_action": "Supprimer le contact",
+    "remove_contact_title": "Remove Contact?",
+    "remove_contact_action": "Remove Contact",
     "remove_contact_description": "Êtes-vous sûr de vouloir supprimer \"%{name}\" de vos contacts ?",
     "save": "Enregistrer",
     "copy_address": "Copier l'adresse",
     "view_on_etherscan": "Voir sur Etherscan",
     "view_on_explorer": "Voir sur l'explorateur",
-    "delete_contact": "Supprimer le contact",
+    "delete_contact": "Delete Contact",
     "contact_address_copied": "Adresse copiée"
   },
   "sign": {
@@ -719,7 +747,7 @@
   },
   "seed_reveal": {
     "title": "Votre phrase de récupération secrète",
-    "write_down_seed_importance": "Conservez ces mots peut accéder à l'ensemble de votre portefeuille ! Gardez-les en lieu sûr et ne les partagez jamais.",
+    "write_down_seed_importance": "Quiconque possède ces mots peut accéder à l'intégralité de votre portefeuille ! Vous ne devriez jamais les partager.",
     "saved_these_words": "J'ai enregistré ces mots",
     "phrase_copied": "Phrase de récupération copiée"
   },
@@ -750,12 +778,12 @@
   "import_or_connect": {
     "title": "Restaurer ou Connecter",
     "explanation": "Toute personne ayant votre Phrase de récupération secrète peut accéder à l'intégralité de votre portefeuille! Conservez-le dans un endroit sûr et ne le partagez avec personne.",
-    "import_wallet": "Importer avec une Phrase de récupération secrète ou une clé privée",
-    "import_wallet_description": "Ajouter un portefeuille en utilisant votre Phrase de récupération secrète ou une clé privée.",
+    "import_wallet": "Importer avec une phrase de récupération secrète ou une clé privée",
+    "import_wallet_description": "Ajouter un portefeuille en utilisant votre phrase de récupération secrète ou une clé privée.",
     "connect_wallet": "Connectez votre portefeuille matériel",
     "connect_wallet_description": "Ajoutez des comptes depuis votre portefeuille matériel.",
-    "watch_address": "Observer une adresse Ethereum",
-    "watch_address_description": "Observer une adresse publique ou un nom ENS."
+    "watch_address": "Surveiller une adresse Ethereum",
+    "watch_address_description": "Regarder une adresse publique ou un nom ENS."
   },
   "import_wallet_selection": {
     "title": "Vos portefeuilles",
@@ -772,7 +800,7 @@
     "account_summary_last_tx": "Dernière tx : %{lastTx} il y a"
   },
   "watch_wallet": {
-    "title": "Regarder une adresse Ethereum",
+    "title": "Surveiller une adresse Ethereum",
     "description": "Entrez une adresse Ethereum ou un nom ENS. Vous devrez l'importer ultérieurement pour envoyer ou signer des transactions.",
     "invalid_address": "Adresse invalide",
     "unsupported_tld": "%{tld} n'est pas pris en charge",
@@ -813,12 +841,12 @@
     },
     "importing_your_wallet": {
       "one": "Importation de votre portefeuille en cours...",
-      "other": "Importation de vos portefeuilles en cours..."
+      "other": "Importation de vos portefeuilles..."
     },
     "sort": {
       "title": "Trier",
       "default": "Par défaut",
-      "token_balance": "Solde du jeton",
+      "token_balance": "Solde du token",
       "last_transaction": "Dernière transaction"
     }
   },
@@ -829,7 +857,7 @@
   },
   "menu": {
     "network": {
-      "title": "Changer de réseau",
+      "title": "Changer de réseaux",
       "disconnect": "Déconnecter"
     },
     "app_connection_menu": {
@@ -845,10 +873,20 @@
       "settings": "Paramètres",
       "qr_code": "Mon Code QR",
       "rainbow_profile": "Profil Rainbow",
-      "guides_and_support": "Guides et Support",
+      "guides_and_support": "Guides et assistance",
       "share_feedback": "Partager un retour",
-      "lock_rainbow": "Verrouiller Rainbow"
+      "lock_rainbow": "Verrouiller Rainbow",
+      "testnet_mode": "Testnet Mode"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "Connect to %{chainName}",
+    "testnet_mode": "Testnet Mode",
+    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
+    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
+    "disable_and_connect": "Disable and connect",
+    "enable_and_connect": "Enable and connect",
+    "cancel": "Annuler"
   },
   "app_connection_switcher": {
     "banner": {
@@ -856,7 +894,7 @@
       "app_connected": "%{appName} Connecté"
     },
     "sheet": {
-      "connect": "Connexion",
+      "connect": "Connecter",
       "connect_different_wallet": "Connecter un portefeuille différent",
       "dont_show_again": "Ne plus afficher cela",
       "allow_to": "Autoriser %{appName} à voir votre adresse de portefeuille, solde, activité et demander l'approbation des transactions.",
@@ -875,7 +913,7 @@
     "wallet_switcher": {
       "switch_wallets": "Changer de portefeuilles",
       "other_wallets": "Autres portefeuilles",
-      "cancel": "Annuler",
+      "done": "Terminé",
       "connected": "Connecté"
     }
   },
@@ -890,15 +928,22 @@
     "wallet_info_description": "Autoriser %{appName} à afficher l'adresse de vos portefeuilles, les soldes, les activités et demander l'approbation des transactions.",
     "wallet": "Portefeuille",
     "network": "Réseau",
-    "switch_networks": "Changer de réseau",
+    "switch_networks": "Changer de réseaux",
     "switch_wallets": "Changer de portefeuilles",
     "connect": "Connecter à %{appName}",
+    "connect_anyway": "Connect Anyway",
+    "malicious_warning": {
+      "title": "This app is likely malicious",
+      "message": "Signing messages or transactions from this app could result in losing your assets"
+    },
     "message_signing_request": "Demande de signature de message",
     "message": "Message",
     "sign_message": "Signer le message",
-    "confirm_hw": "Confirmer sur votre appareil",
+    "sign_message_anyway": "Sign Anyway",
+    "confirm_hw": "Confirmez sur votre appareil",
     "balance": "Solde",
-    "send_transaction": "Envoyer une transaction",
+    "send_transaction": "Confirm",
+    "send_transaction_anyway": "Confirm Anyway",
     "contract_deployment": "Déploiement de contrat",
     "transaction_request": "Demande de transaction",
     "insufficient_native_asset_for_gas": "Insuffisant %{symbol} pour le gaz"
@@ -979,7 +1024,9 @@
     "copy_to_clipboard": "Copier dans le presse-papiers"
   },
   "errors": {
-    "no_wallet_name_set": "Aucun nom de portefeuille défini"
+    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "no_wallet_name_set": "Aucun nom de portefeuille défini",
+    "report_error": "Report issue"
   },
   "common_titles": {
     "before_you_proceed": "Avant de continuer"
@@ -1009,8 +1056,9 @@
   },
   "tabs": {
     "activity": "Activité",
-    "tokens": "Tokens",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "Points",
+    "tokens": "Tokens"
   },
   "activity": {
     "today": "Aujourd'hui",
@@ -1068,11 +1116,15 @@
     "coming_soon_description": "Les NFTs arrivent bientôt. Restez à l'écoute!",
     "view_on_web": "Voir sur le Web"
   },
+  "points": {
+    "coming_soon_header": "Bientôt Disponible",
+    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+  },
   "speed_up_and_cancel": {
     "speed_up": "Accélérer",
     "cancel": "Annuler",
     "view_on_etherscan": "Voir sur Etherscan",
-    "view_on_explorer": "Voir sur Explorer",
+    "view_on_explorer": "Voir sur l'explorateur",
     "copy_tx_hash": "Copier le hachage de la transaction",
     "cancel_explanation": "Cela tentera d'annuler votre transaction en attente. Cela nécessite la diffusion d'une autre transaction.",
     "speed_up_explanation": "Cela accélérera votre transaction en attente en la remplaçant. Il y a une chance que votre transaction originale se confirme en premier.",
@@ -1109,8 +1161,8 @@
       "about_token": "À propos de %{name}",
       "price": "Prix",
       "volume": "Volume",
-      "ath": "Plus haut de tous les temps",
-      "atl": "Plus bas de tous les temps",
+      "ath": "All Time High",
+      "atl": "All Time Low",
       "market_cap": "Capitalisation boursière",
       "market_cap_explainer": {
         "title": "Capitalisation boursière",
@@ -1173,7 +1225,7 @@
       "optimism": {
         "title": "Qu'est-ce qu'Optimism ?",
         "description_1": "L'optimisme est un réseau Layer 2 qui fonctionne au-dessus d'Ethereum, permettant des transactions moins chères et plus rapides tout en bénéficiant toujours de la sécurité sous-jacente d'Ethereum.",
-        "description_2": "Il regroupe de nombreuses transactions ensemble dans un 'roll up' avant de les envoyer de manière permanente sur Ethereum."
+        "description_2": "Il regroupe de nombreuses transactions ensemble dans un \"roll up\" avant de les envoyer en permanence sur Ethereum."
       },
       "polygon": {
         "title": "Qu'est-ce que Polygon?",
@@ -1188,12 +1240,12 @@
       "base": {
         "title": "Qu'est-ce que Base?",
         "description_1": "Base est un réseau Layer 2 qui fonctionne par-dessus Ethereum, permettant des transactions moins chères et plus rapides tout en bénéficiant de la sécurité sous-jacente d'Ethereum",
-        "description_2": "Il regroupe de nombreuses transactions ensemble dans un \"roll up\" avant de les envoyer de manière permanente sur Ethereum"
+        "description_2": "Il regroupe de nombreuses transactions ensemble dans un \"roll up\" avant de les envoyer en permanence sur Ethereum."
       },
       "zora": {
         "title": "Qu'est-ce que Zora?",
         "description_1": "Zora est un réseau de couche 2 qui fonctionne au-dessus d'Ethereum, permettant des transactions moins chères et plus rapides tout en bénéficiant de la sécurité sous-jacente d'Ethereum.",
-        "description_2": "Il regroupe plusieurs transactions ensemble dans un \"roll up\" avant de les envoyer de manière permanente sur Ethereum."
+        "description_2": "Il regroupe de nombreuses transactions ensemble dans un \"roll up\" avant de les envoyer en permanence sur Ethereum."
       },
       "link_button_label": "En savoir plus",
       "action_label": "Compris"
@@ -1214,12 +1266,12 @@
       "current_base_falling": "Les frais baissent en ce moment !",
       "current_base_rising": "Les frais augmentent en ce moment! Il est préférable d'utiliser un frais maximum de base plus élevé pour éviter une transaction bloquée.",
       "current_base_description": "Le frais de base est fixé par le réseau Ethereum et change en fonction de l'activité du réseau.",
-      "current_base_title": "Frais de base actuels",
+      "current_base_title": "Frais d'exécution actuels",
       "max_base_explainer_1": "Il s'agit du frais de base maximum que vous êtes prêt à payer pour cette transaction.",
       "max_base_explainer_2": "Le fait de fixer un frais de base maximum plus élevé empêche votre transaction de rester bloquée si les frais augmentent.",
-      "max_base_title": "Frais de base max.",
+      "max_base_title": "Frais de base maximum",
       "max_priority_explainer": "Le pourboire du mineur est versé directement au mineur qui confirme votre transaction sur le réseau.\n\nUn pourboire plus élevé rend votre transaction plus susceptible d'être confirmée rapidement.",
-      "max_priority_title": "Pourboire du mineur"
+      "max_priority_title": "Pourboire aux mineurs"
     }
   },
   "injected_notifications": {
@@ -1230,7 +1282,8 @@
   },
   "alert": {
     "ok": "Ok",
-    "wallet_watching_mode": "Ce portefeuille est actuellement en mode 'Observation'",
+    "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
+    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
     "coming_soon": "Bientôt disponible !",
     "no_hw_ff": "Les portefeuilles matériels ne sont pas pris en charge sur Firefox. Essayez un autre navigateur comme Chrome ou Brave"
   },
@@ -1248,7 +1301,7 @@
     "exclusivity_ledger_description_2": "Une fois que vous avez fermé l'autre application, veuillez recharger cette page pour réessayer.",
     "needs_app_ledger_title": "Ouvrez l'application ETH",
     "needs_app_ledger_description": "L'application Ethereum doit être ouverte sur votre Ledger pour procéder à la transaction.",
-    "needs_app_ledger_description_2": "Saisissez votre code secret pour déverrouiller votre Ledger. Une fois déverrouillé, ouvrez l'application Ethereum en appuyant simultanément sur les deux boutons.",
+    "needs_app_ledger_description_2": "Entrez votre code PIN pour déverrouiller votre Ledger. Une fois déverrouillé, ouvrez l'application Ethereum en appuyant simultanément sur les deux boutons.",
     "connect_trezor_title": "Terminez la configuration de votre Trezor",
     "connect_trezor_description": "Continuez pour connecter votre Trezor à Rainbow via l'interface web.",
     "learn_more": "En savoir plus.",
