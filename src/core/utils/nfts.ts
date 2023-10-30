@@ -204,3 +204,12 @@ export function simpleHashNFTToUniqueAsset(
     model_properties: nft.model_properties,
   };
 }
+
+export const getUniqueAssetImageThumbnailURL = (asset: UniqueAsset) => {
+  return (
+    asset.image_thumbnail_url ||
+    asset.image_preview_url ||
+    asset.image_original_url ||
+    ''
+  );
+};
