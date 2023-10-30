@@ -1,16 +1,11 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { motion } from 'framer-motion';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, createContext, useContext, useState } from 'react';
 
-import { Box, Inline, Inset, Separator, Text } from '~/design-system';
+import { Box, Inline, Text } from '~/design-system';
 
-function TabTrigger({
-  value,
-  selectedTab,
-}: {
-  value: string;
-  selectedTab: string;
-}) {
+function TabTrigger({ value }: { value: string }) {
+  const { selectedTab } = useContext(TabContext);
   return (
     <TabsPrimitive.Trigger value={value} asChild>
       <Box
@@ -56,23 +51,23 @@ export function TabContent({
   );
 }
 
-function TabsNav({
-  tabs,
-  selectedTab,
-}: {
-  tabs: string[];
-  selectedTab: string;
-}) {
+export function TabsNav() {
+  const { tabs } = useContext(TabContext);
   return (
     <TabsPrimitive.List asChild>
       <Inline space="16px" alignVertical="center" wrap={false}>
         {tabs.map((t) => (
-          <TabTrigger key={t} value={t} selectedTab={selectedTab} />
+          <TabTrigger key={t} value={t} />
         ))}
       </Inline>
     </TabsPrimitive.List>
   );
 }
+
+const TabContext = createContext<{ tabs: string[]; selectedTab: string }>({
+  tabs: [],
+  selectedTab: '',
+});
 
 export function Tabs({
   children,
@@ -82,16 +77,15 @@ export function Tabs({
   const [tab, setTab] = useState(initialTab);
 
   return (
-    <TabsPrimitive.Root
-      defaultValue={initialTab}
-      onValueChange={setTab}
-      orientation="horizontal"
-    >
-      <TabsNav tabs={tabs} selectedTab={tab} />
-      <Inset top="20px" bottom="14px">
-        <Separator color="separatorTertiary" />
-      </Inset>
-      {children}
-    </TabsPrimitive.Root>
+    <TabContext.Provider value={{ tabs, selectedTab: tab }}>
+      <TabsPrimitive.Root
+        defaultValue={initialTab}
+        onValueChange={setTab}
+        orientation="horizontal"
+        asChild
+      >
+        {children}
+      </TabsPrimitive.Root>
+    </TabContext.Provider>
   );
 }

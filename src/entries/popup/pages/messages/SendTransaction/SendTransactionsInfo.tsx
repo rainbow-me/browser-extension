@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
@@ -11,6 +11,7 @@ import {
   Bleed,
   Box,
   Inline,
+  Inset,
   Separator,
   Stack,
   Symbol,
@@ -26,7 +27,7 @@ import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
-import { TabContent, Tabs } from '../Tabs';
+import { TabContent, Tabs, TabsNav } from '../Tabs';
 
 import { overflowGradient } from './OverflowGradient.css';
 
@@ -107,14 +108,15 @@ function SimulationOverview() {
         Simulated Result
       </Text>
 
-      <Stack space="14px">
-        {nativeAsset && (
+      {nativeAsset && (
+        <Stack space="14px">
           <SimulatedChangeRow asset={nativeAsset} direction="out" />
-        )}
-        {nativeAsset && (
           <SimulatedChangeRow asset={nativeAsset} direction="out" />
-        )}
-      </Stack>
+          <SimulatedChangeRow asset={nativeAsset} direction="out" />
+          <SimulatedChangeRow asset={nativeAsset} direction="out" />
+          <SimulatedChangeRow asset={nativeAsset} direction="out" />
+        </Stack>
+      )}
 
       <Separator color="separatorTertiary" />
 
@@ -161,68 +163,47 @@ function SimulationOverview() {
 
 function TransactionDetails() {
   return (
-    <Box
-      style={{ overflowX: 'visible' }}
-      className={overflowGradient}
-      marginTop="-14px"
-      marginBottom="-20px"
-      marginHorizontal="-20px"
-      paddingHorizontal="20px"
-    >
-      <Box
-        style={{
-          maxHeight: 178,
-          paddingTop: '14px',
-          paddingBottom: '38px',
-          overflow: 'scroll',
-        }}
-        paddingHorizontal="20px"
-        marginHorizontal="-20px"
-        gap="16px"
-        display="flex"
-        flexDirection="column"
-      >
-        <InfoRow symbol="number" label="Nonce" value={28} />
-        <InfoRow
-          symbol="curlybraces"
-          label="Function"
-          value={
-            <Tag size="12pt" color="labelSecondary" bleed>
-              Fullfill Basic Order
-            </Tag>
-          }
-        />
-        <InfoRow
-          symbol="doc.plaintext"
-          label="Contract"
-          value={
-            <AddressDisplay
-              address="0x507F0daA42b215273B8a063B092ff3b6d27767aF"
-              hideAvatar
-            />
-          }
-        />
-        <InfoRow symbol="person" label="Contract Name" value="Seaport 1.1" />
-        <InfoRow
-          symbol="calendar"
-          label="Contract Created"
-          value="8 months ago"
-        />
-        <InfoRow
-          symbol="doc.text.magnifyingglass"
-          label="Source Code"
-          value={
-            <Tag
-              size="12pt"
-              color="green"
-              style={{ borderColor: globalColors.greenA10 }}
-              bleed
-            >
-              Verified
-            </Tag>
-          }
-        />
-      </Box>
+    <Box gap="16px" display="flex" flexDirection="column">
+      <InfoRow symbol="number" label="Nonce" value={28} />
+      <InfoRow
+        symbol="curlybraces"
+        label="Function"
+        value={
+          <Tag size="12pt" color="labelSecondary" bleed>
+            Fullfill Basic Order
+          </Tag>
+        }
+      />
+      <InfoRow
+        symbol="doc.plaintext"
+        label="Contract"
+        value={
+          <AddressDisplay
+            address="0x507F0daA42b215273B8a063B092ff3b6d27767aF"
+            hideAvatar
+          />
+        }
+      />
+      <InfoRow symbol="person" label="Contract Name" value="Seaport 1.1" />
+      <InfoRow
+        symbol="calendar"
+        label="Contract Created"
+        value="8 months ago"
+      />
+      <InfoRow
+        symbol="doc.text.magnifyingglass"
+        label="Source Code"
+        value={
+          <Tag
+            size="12pt"
+            color="green"
+            style={{ borderColor: globalColors.greenA10 }}
+            bleed
+          >
+            Verified
+          </Tag>
+        }
+      />
     </Box>
   );
 }
@@ -257,6 +238,9 @@ function RequestData({ request }: SendTransactionProps) {
   });
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
 
+  const [hasViewMore, setHasViewMore] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
   return (
     <Box
       display="flex"
@@ -265,38 +249,91 @@ function RequestData({ request }: SendTransactionProps) {
       alignItems="center"
       justifyContent="center"
       height="full"
-      style={{ overflow: 'hidden' }}
+      style={{ overflow: expanded ? 'scroll' : 'hidden', height: '100%' }}
     >
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap="16px"
-        padding="20px"
-        background="surfaceSecondaryElevated"
-        borderRadius="20px"
-        borderColor="separatorSecondary"
-        borderWidth="1px"
-        width="full"
-        style={{ maxHeight: 230, overflow: 'hidden' }}
-      >
-        <Tabs tabs={['Overview', 'Details', 'Data']}>
-          <TabContent value="Overview">
-            <SimulationOverview />
-          </TabContent>
-          <TabContent value="Details">
-            <TransactionDetails />
-          </TabContent>
-          <TabContent value="Data">
-            <TransactionData data={request.params[0]?.data} />
-          </TabContent>
-        </Tabs>
-      </Box>
+      <Tabs tabs={['Overview', 'Details', 'Data']}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          padding="20px"
+          background="surfaceSecondaryElevated"
+          borderRadius="20px"
+          borderColor="separatorSecondary"
+          borderWidth="1px"
+          width="full"
+          position="relative"
+          style={{ maxHeight: expanded ? 540 : 230, overflow: 'hidden' }}
+        >
+          <TabsNav />
+          <Inset top="20px">
+            <Separator color="separatorTertiary" />
+          </Inset>
+          {/* <Box
+            className={hasViewMore ? overflowGradient : undefined}
+            marginBottom="-20px"
+            marginHorizontal="-20px"
+            paddingHorizontal="20px"
+          > */}
+          <Box
+            style={{
+              maxHeight: '100%',
+              paddingBottom: '38px',
+              // marginBottom: '-20px',
+              overflow: hasViewMore ? 'scroll' : 'visible',
+            }}
+            paddingTop="14px"
+            paddingHorizontal="20px"
+            marginHorizontal="-20px"
+            gap="16px"
+            display="flex"
+            flexDirection="column"
+            ref={(e) => {
+              if (!e) return;
+              console.log(e, e.scrollHeight, e.clientHeight);
+              setHasViewMore(e.scrollHeight > e.clientHeight);
+            }}
+          >
+            <TabContent value="Overview">
+              <SimulationOverview />
+            </TabContent>
+            <TabContent value="Details">
+              <TransactionDetails />
+            </TabContent>
+            <TabContent value="Data">
+              <TransactionData data={request.params[0]?.data} />
+            </TabContent>
+            {/* </Box> */}
+          </Box>
+          {hasViewMore && (
+            <Box
+              as="button"
+              position="absolute"
+              style={{ height: '28px', width: '28px', bottom: 12, right: 12 }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              background="fillSecondary"
+              backdropFilter="blur(10px)"
+              boxShadow="12px"
+              borderRadius="8px"
+              borderWidth="1px"
+              borderColor="separatorSecondary"
+              onClick={() => setExpanded((e) => !e)}
+            >
+              <Symbol
+                symbol="arrow.up.left.and.arrow.down.right"
+                size={12}
+                color="labelSecondary"
+                weight="bold"
+              />
+            </Box>
+          )}
+        </Box>
+      </Tabs>
 
-      <ThisDappIsLikelyMalicious />
-
-      {/* {dappMetadata?.status === DAppStatus.Scam ? (
+      {dappMetadata?.status === DAppStatus.Scam ? (
         <ThisDappIsLikelyMalicious />
-      ) : null} */}
+      ) : null}
     </Box>
   );
 }
@@ -316,7 +353,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     hash: null,
   });
 
-  dappMetadata.status = DAppStatus.Scam;
+  // dappMetadata.status = DAppStatus.Scam;
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
   return (

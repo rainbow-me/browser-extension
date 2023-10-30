@@ -169,6 +169,7 @@ export type ButtonVariant =
   | 'disabled';
 
 export const backdropFilter = {
+  'blur(10px)': 'blur(10px)',
   'blur(12px)': 'blur(12px)',
   'blur(20px)': 'blur(20px)',
   'blur(26px)': 'blur(26px)',

@@ -400,7 +400,7 @@ export const AcceptRequestButton = ({
       disabled={disabled}
       tabIndex={0}
       shortcut={
-        !disabled && !waitingForDevice
+        !disabled && !waitingForDevice && dappStatus !== DAppStatus.Scam
           ? shortcuts.transaction_request.ACCEPT
           : undefined
       }
