@@ -6,11 +6,11 @@
     "toggle": "Alternar"
   },
   "permissions": {
-    "firefox_permission_denied": "Rainbow precisa de permissão para acessar todos os sites para funcionar corretamente. Por favor, conceda a permissão para continuar"
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant permission in order to continue."
   },
   "wallet": {
     "rename": "Renomear carteira",
-    "edit_appearance": "Editar aparência",
+    "edit_appearance": "Edit Appearance",
     "view_on": "Ver no %{explorer}",
     "copy_address": "Copiar endereço"
   },
@@ -18,8 +18,8 @@
     "title": "Carteiras",
     "rename_wallet": "Renomear carteira",
     "copy_address": "Copiar endereço",
-    "remove_wallet": "Remover carteira",
-    "hide_wallet": "Ocultar carteira",
+    "remove_wallet": "Remove Wallet",
+    "hide_wallet": "Hide Wallet",
     "watching": "Assistindo",
     "ledger": "Ledger",
     "trezor": "Trezor",
@@ -48,7 +48,7 @@
     "watch_address_description": "Assista a um endereço público ou nome ENS."
   },
   "create_wallet_prompt": {
-    "title": "Nomeie sua carteira",
+    "title": "Name Your Wallet",
     "create_wallet": "Criar carteira",
     "create": "Criar",
     "input_placeholder": "Nome"
@@ -76,14 +76,32 @@
     "default_wallet_description": "Permitir que os aplicativos priorizem o Rainbow ao procurar uma extensão para se conectar.",
     "contacts": "Contatos",
     "guides_and_support": "Guias e Suporte",
-    "learn_about_ethereum": "Aprenda sobre Ethereum",
-    "follow_us_on_twitter": "Siga-nos no Twitter",
+    "learn_about_ethereum": "Learn About Ethereum",
+    "follow_us_on_twitter": "Follow Us on Twitter",
     "share_beta_feedback": "Compartilhe Feedback Beta",
     "theme": {
       "title": "Tema",
       "system": "Sistema",
       "light": "Claro",
       "dark": "Escuro"
+    },
+    "networks": {
+      "mainnet": "Mainnet",
+      "title": "Redes",
+      "quick_promo": {
+        "text": "Drag networks to reorder them",
+        "text_bold": "Dica:"
+      },
+      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "testnet_mode": {
+        "title": "Testnet Mode",
+        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
+        "shortcut_title": "Enable Keyboard Shortcut",
+        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+      },
+      "custom_rpc": {
+        "title": "Custom RPC"
+      }
     },
     "privacy_and_security": {
       "title": "Privacidade e Segurança",
@@ -109,15 +127,15 @@
       },
       "change_password": {
         "title": "Alterar Senha",
-        "header_label": "Altere sua senha"
+        "header_label": "Change Your Password"
       },
       "confirm_password": {
         "title": "Digite sua senha",
-        "description": "Você precisa digitar sua senha atual para continuar."
+        "description": "Continue with your current password."
       },
       "wallets_and_keys": {
         "title": "Carteiras e Chaves",
-        "create_a_new_wallet": "Crie uma nova carteira",
+        "create_a_new_wallet": "Create a New Wallet",
         "imported": "Importado",
         "wallet_single": "Carteira",
         "wallet_plural": "Carteiras",
@@ -127,21 +145,27 @@
         "backed_up": "Com backup",
         "not_backed_up": "Sem backup",
         "back_up_now": "Fazer Backup Agora",
+        "context_menu": {
+          "create_wallet": "Criar carteira",
+          "view_secret_phrase": "View Secret Phrase",
+          "hide_wallets": "Hide Wallets",
+          "unhide_wallets": "Unhide Wallets"
+        },
         "wallet_details": {
           "title": "Detalhes da Carteira",
           "view_recovery_phrase": "Visualizar frase de recuperação",
-          "create_new_wallet": "Criar uma nova carteira",
+          "create_new_wallet": "Create a New Wallet",
           "rename_wallet": "Renomear carteira",
           "unhide_wallet": "Mostrar carteira oculta",
           "delete_wallet": "Excluir carteira",
-          "view_private_key": "Visualizar chave privada",
+          "view_private_key": "Ver Chave Privada",
           "copy_address": "Copiar endereço",
           "hidden": "Oculto",
           "back_up_now": "Fazer Backup Agora",
           "last_backed_up": "Último backup feito em %{date}"
         },
         "new_wallet": {
-          "name_your_wallet": "Nomeie sua carteira",
+          "name_your_wallet": "Name Your Wallet",
           "create": "Criar carteira",
           "input_placeholder": "ex: Carteira 1"
         },
@@ -153,18 +177,19 @@
           "warning_2": "Certifique-se de que ninguém possa ver sua tela ao visualizar sua Chave Privada.",
           "warning_3": "Qualquer pessoa que tenha sua Chave Privada pode acessar toda a sua carteira.",
           "warning_4": "A equipe de suporte do Rainbow nunca irá solicitar sua Chave Privada.",
-          "show": "Mostrar Chave Privada"
+          "show": "Mostrar Chave Privada",
+          "copied": "Private Key Copied"
         },
         "recovery_phrase": {
-          "title": "Sua Frase de Recuperação",
+          "title": "Sua frase de recuperação secreta",
           "subtitle": "Qualquer pessoa que tenha essas palavras pode acessar toda a sua carteira! Você nunca deve compartilhá-las.",
           "saved": "Eu salvei essas palavras",
-          "warning_1": "Nunca compartilhe sua Frase de Recuperação ou a insira em qualquer aplicativo.",
-          "warning_2": "Certifique-se de que ninguém possa ver sua tela ao visualizar sua Frase de Recuperação.",
-          "warning_3": "Qualquer pessoa que tenha sua Frase de Recuperação pode acessar toda a sua carteira.",
-          "warning_4": "A equipe de suporte do Rainbow nunca irá solicitar sua Frase de Recuperação.",
+          "warning_1": "Never share your Secret Recovery Phrase or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Secret Recovery Phrase.",
+          "warning_3": "Qualquer pessoa com sua frase de recuperação secreta pode acessar toda a sua carteira.",
+          "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Mostrar Frase de Recuperação",
-          "phrase_copied": "Frase de Recuperação Copiada"
+          "copied": "Frase de Recuperação Copiada"
         }
       }
     },
@@ -172,6 +197,8 @@
       "title": "Transações",
       "default_speed": "Velocidade padrão",
       "use_flashbots": "Use Flashbots",
+      "clear_transactions_and_nonces": "Clear Pending Transactions",
+      "clear_transactions_and_nonces_success": "Pending transactions cleared",
       "flashbots_description": "O Flashbots protege suas transações e reduz a probabilidade de falhas nas transações. Saiba mais."
     },
     "currency": {
@@ -198,7 +225,7 @@
       "full_watching_wallets": "Acesso completo às Carteiras Observadas",
       "hw_wallets_enabled": "Habilitar Suporte para Carteiras de Hardware",
       "command_k_internal_shortcuts_enabled": "Habilitar Atalhos Internos ⌘K",
-      "new_tab_bar_enabled": "Nova Barra de Abas"
+      "custom_rpc": "Custom RPC"
     }
   },
   "transactions": {
@@ -206,7 +233,7 @@
     "cancelled": "Transação Cancelada",
     "burn": {
       "pending": "Queimando",
-      "confirmed": "Queimado",
+      "confirmed": "Burned",
       "failed": "Falha na Queima"
     },
     "cancel": {
@@ -340,13 +367,14 @@
         "my_wallets": "Minhas Carteiras",
         "my_tokens": "Meus Tokens",
         "my_tokens_watched": "Tokens",
-        "copy_address": "Copiar Endereço",
+        "copy_address": "Copiar endereço",
         "view_nfts": "Visualizar NFTs",
         "add_wallet": "Adicionar uma Carteira",
         "lock": "Bloquear Rainbow",
+        "testnet_mode": "Testnet Mode",
         "connected_apps": "Aplicativos Conectados",
         "settings": "Configurações",
-        "my_qr_code": "Meu Código QR",
+        "my_qr_code": "Meu código QR",
         "my_qr_code_watched": "Código QR",
         "create_wallet": "Criar uma Carteira",
         "import_wallet": "Importar uma Carteira",
@@ -368,7 +396,7 @@
         "add_as_watched_wallet": "Assistir esta Carteira",
         "view_on_ens": "Ver no ENS",
         "switch_to_wallet": "Trocar para esta Carteira",
-        "copy_wallet_address": "Copiar Endereço",
+        "copy_wallet_address": "Copiar endereço",
         "view_wallet_on_etherscan": "Ver no Etherscan"
       },
       "search_tags": {
@@ -402,7 +430,7 @@
       "title_hidden": "Saldo Pequeno Oculto",
       "title_revealed": "Mostrando Saldos Pequenos"
     },
-    "no_results": "Nenhum resultado",
+    "no_results": "Sem resultados",
     "pages": {
       "add_wallet": {
         "search_placeholder": "Buscar formas de adicionar uma carteira…",
@@ -465,7 +493,7 @@
       "contacts": "Contatos",
       "my_wallets": "Minhas carteiras",
       "watched_wallets": "Assistindo",
-      "no_results": "Nenhum resultado"
+      "no_results": "Sem resultados"
     },
     "tokens_input": {
       "tokens": "Tokens",
@@ -483,7 +511,7 @@
       "cancel": "Cancelar",
       "sending_on_network": "Enviando na rede %{chainName}",
       "sending_on_l2_check_1": "Não estou enviando para uma exchange",
-      "sending_on_l2_check_2": "A pessoa para quem estou enviando possui uma carteira que suporta %{chainName}",
+      "sending_on_l2_check_2": "The person I’m sending to has a wallet that supports %{chainName}",
       "complete_checks": "Concluir as verificações",
       "confirm_hw": "Confirmar em seu dispositivo"
     }
@@ -510,8 +538,8 @@
     "tokens_input": {
       "tokens": "Tokens",
       "sort": "Ordenar",
-      "available": "disponível",
-      "token_balance": "Saldo do token",
+      "available": "disponíveis",
+      "token_balance": "Saldo do Token",
       "networks": "Redes",
       "filter_by_network": "Filtrar por rede",
       "switch_networks": "Alternar redes",
@@ -536,7 +564,7 @@
     "settings": {
       "title": "%{Action} Configurações",
       "route": "Rota %{actions} via",
-      "use_flashbots": "Usar Flashbots",
+      "use_flashbots": "Use Flashbots",
       "max_slippage": "Deslizamento máximo",
       "use_defaults": "Usar padrões",
       "done": "Concluído",
@@ -560,7 +588,7 @@
           "description": "Flashbots protege suas transações contra ataques de frontrunning e sandwich que podem resultar em você obter um preço pior ou falha na sua transação.",
           "read_more": {
             "open_text": "Ainda curioso? ",
-            "link_text": "Leia mais",
+            "link_text": "Ler mais",
             "close_text": " sobre Flashbots e a proteção que ela oferece."
           }
         },
@@ -569,7 +597,7 @@
           "description": "Por padrão, o Rainbow escolhe a rota mais barata possível para o seu %{action}. Se preferir usar especificamente 0x ou 1inch, também pode fazer isso.",
           "read_more": {
             "open_text": "Ainda curioso? ",
-            "link_text": "Leia mais",
+            "link_text": "Ler mais",
             "close_text": " sobre nossa abordagem ao roteamento %{actions}"
           }
         },
@@ -583,7 +611,7 @@
       "fee_on_transfer_token": "Taxa em Token de Transferência",
       "no_route": "Nenhuma rota encontrada",
       "no_quote": "Nenhuma cotação disponível",
-      "enter_an_amount": "Insira um valor"
+      "enter_an_amount": "Digite uma quantia"
     },
     "review": {
       "title": "Revisar & %{Action}",
@@ -591,7 +619,7 @@
       "minimum_received": "Valor mínimo recebido",
       "via": "%{Actioning} via",
       "included_fee": "Taxa Rainbow incluída",
-      "use_flashbots": "Usar Flashbots",
+      "use_flashbots": "Use Flashbots",
       "exchange_rate": "Taxa de câmbio",
       "asset_contract": "%{symbol} contrato",
       "more_details": "Mais detalhes",
@@ -620,7 +648,7 @@
         "action_label": "Entendi",
         "footer_text": {
           "open_text": "Ainda curioso? ",
-          "link_text": "Leia mais",
+          "link_text": "Ler mais",
           "close_text": " sobre AMMs e liquidez de tokens."
         }
       },
@@ -668,19 +696,19 @@
     }
   },
   "contacts": {
-    "save_contact": "Salvar contato",
-    "add_to_contacts": "Adicionar aos contatos",
-    "edit_contact": "Editar contato",
-    "save_changes": "Salvar alterações",
+    "save_contact": "Save Contact",
+    "add_to_contacts": "Add to Contacts",
+    "edit_contact": "Edit Contact",
+    "save_changes": "Save Changes",
     "cancel": "Cancelar",
-    "remove_contact_title": "Remover contato?",
-    "remove_contact_action": "Remover contato",
+    "remove_contact_title": "Remove Contact?",
+    "remove_contact_action": "Remove Contact",
     "remove_contact_description": "Tem certeza que deseja remover “%{name}” dos seus contatos?",
     "save": "Salvar",
     "copy_address": "Copiar endereço",
     "view_on_etherscan": "Ver no Etherscan",
     "view_on_explorer": "Ver no Explorer",
-    "delete_contact": "Excluir contato",
+    "delete_contact": "Delete Contact",
     "contact_address_copied": "Endereço copiado"
   },
   "sign": {
@@ -719,9 +747,9 @@
   },
   "seed_reveal": {
     "title": "Sua frase de recuperação secreta",
-    "write_down_seed_importance": "Armazene essas palavras e acesse toda a sua carteira! Guarde-as em um local seguro e nunca as compartilhe.",
+    "write_down_seed_importance": "Qualquer pessoa que tenha essas palavras pode acessar toda a sua carteira! Você nunca deve compartilhá-las.",
     "saved_these_words": "Eu salvei essas palavras",
-    "phrase_copied": "Frase de recuperação copiada"
+    "phrase_copied": "Frase de Recuperação Copiada"
   },
   "import_wallet_via_secret": {
     "title": "Importar carteira",
@@ -742,7 +770,7 @@
     "couldnt_paste": "Não foi possível colar sua Frase de Recuperação Secreta"
   },
   "import_wallet_via_private_key": {
-    "title": "Importar sua Carteira",
+    "title": "Importar sua carteira",
     "explanation": "Insira sua Chave Privada de 64 caracteres do Rainbow ou de qualquer carteira Ethereum.",
     "placeholder": "Cole sua Chave Privada de outra carteira",
     "import_wallet": "Importar carteira"
@@ -751,11 +779,11 @@
     "title": "Restaurar ou Conectar",
     "explanation": "Qualquer pessoa com sua Frase de Recuperação Secreta pode acessar toda a sua carteira! Guarde-a em algum lugar seguro e não a compartilhe com ninguém.",
     "import_wallet": "Importar com uma Frase de Recuperação Secreta ou Chave Privada",
-    "import_wallet_description": "Adicionar uma carteira usando sua Frase de Recuperação Secreta ou Chave Privada.",
+    "import_wallet_description": "Adicionar uma carteira usando sua Frase de Recuperação Secreta ou uma Chave Privada.",
     "connect_wallet": "Conectar sua carteira de hardware",
     "connect_wallet_description": "Adicionar contas da sua carteira de hardware.",
-    "watch_address": "Observar um endereço Ethereum",
-    "watch_address_description": "Observar um endereço público ou nome ENS."
+    "watch_address": "Assistir a um endereço Ethereum",
+    "watch_address_description": "Assista a um endereço público ou nome ENS."
   },
   "import_wallet_selection": {
     "title": "Suas carteiras",
@@ -772,7 +800,7 @@
     "account_summary_last_tx": "Última tx: %{lastTx} atrás"
   },
   "watch_wallet": {
-    "title": "Assistir endereço Ethereum",
+    "title": "Assistir a um endereço Ethereum",
     "description": "Digite qualquer endereço Ethereum ou nome ENS. Você terá que importá-lo posteriormente para enviar ou assinar transações.",
     "invalid_address": "Endereço inválido",
     "unsupported_tld": "%{tld} não é suportado",
@@ -818,7 +846,7 @@
     "sort": {
       "title": "Ordenar",
       "default": "Padrão",
-      "token_balance": "Saldo de tokens",
+      "token_balance": "Saldo do Token",
       "last_transaction": "Última transação"
     }
   },
@@ -829,7 +857,7 @@
   },
   "menu": {
     "network": {
-      "title": "Mudar de Redes",
+      "title": "Alternar redes",
       "disconnect": "Desconectar"
     },
     "app_connection_menu": {
@@ -847,8 +875,18 @@
       "rainbow_profile": "Perfil do Rainbow",
       "guides_and_support": "Guias e Suporte",
       "share_feedback": "Compartilhar Feedback",
-      "lock_rainbow": "Bloquear Rainbow"
+      "lock_rainbow": "Bloquear Rainbow",
+      "testnet_mode": "Testnet Mode"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "Connect to %{chainName}",
+    "testnet_mode": "Testnet Mode",
+    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
+    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
+    "disable_and_connect": "Disable and connect",
+    "enable_and_connect": "Enable and connect",
+    "cancel": "Cancelar"
   },
   "app_connection_switcher": {
     "banner": {
@@ -873,9 +911,9 @@
       "open_app": "Abrir %{appName}"
     },
     "wallet_switcher": {
-      "switch_wallets": "Trocar Carteiras",
+      "switch_wallets": "Alternar Carteiras",
       "other_wallets": "Outras Carteiras",
-      "cancel": "Cancelar",
+      "done": "Concluído",
       "connected": "Conectado"
     }
   },
@@ -890,18 +928,25 @@
     "wallet_info_description": "Permitir que %{appName} visualize o endereço, o saldo, a atividade da sua carteira e solicite aprovação para transações.",
     "wallet": "Carteira",
     "network": "Rede",
-    "switch_networks": "Alternar Redes",
+    "switch_networks": "Alternar redes",
     "switch_wallets": "Alternar Carteiras",
     "connect": "Conectar-se a %{appName}",
+    "connect_anyway": "Connect Anyway",
+    "malicious_warning": {
+      "title": "This app is likely malicious",
+      "message": "Signing messages or transactions from this app could result in losing your assets"
+    },
     "message_signing_request": "Solicitação de assinatura de mensagem",
     "message": "Mensagem",
     "sign_message": "Assinar Mensagem",
-    "confirm_hw": "Confirmar no seu dispositivo",
+    "sign_message_anyway": "Sign Anyway",
+    "confirm_hw": "Confirmar em seu dispositivo",
     "balance": "Saldo",
-    "send_transaction": "Enviar Transação",
+    "send_transaction": "Confirm",
+    "send_transaction_anyway": "Confirm Anyway",
     "contract_deployment": "Implantação de Contrato",
     "transaction_request": "Solicitação de Transação",
-    "insufficient_native_asset_for_gas": "Saldo insuficiente de %{symbol} para gás"
+    "insufficient_native_asset_for_gas": "Insuficiente %{symbol} para taxa"
   },
   "transaction_fee": {
     "title": "Velocidade de Transação",
@@ -979,7 +1024,9 @@
     "copy_to_clipboard": "Copiar para a área de transferência"
   },
   "errors": {
-    "no_wallet_name_set": "Nenhum nome de carteira definido"
+    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "no_wallet_name_set": "Nenhum nome de carteira definido",
+    "report_error": "Report issue"
   },
   "common_titles": {
     "before_you_proceed": "Antes de prosseguir"
@@ -1009,8 +1056,9 @@
   },
   "tabs": {
     "activity": "Atividade",
-    "tokens": "Tokens",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "Points",
+    "tokens": "Tokens"
   },
   "activity": {
     "today": "Hoje",
@@ -1068,6 +1116,10 @@
     "coming_soon_description": "NFTs estarão disponíveis em breve. Fique atento!",
     "view_on_web": "Ver na Web"
   },
+  "points": {
+    "coming_soon_header": "Em breve",
+    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+  },
   "speed_up_and_cancel": {
     "speed_up": "Acelerar",
     "cancel": "Cancelar",
@@ -1101,7 +1153,7 @@
     "this_token_is_on_network": "Esta %{symbol} está na rede %{chainName}",
     "view_on": "Ver no %{explorer}",
     "more_options": {
-      "copy_address": "Copiar Endereço",
+      "copy_address": "Copiar endereço",
       "hide": "Ocultar Token",
       "report": "Relatar Token"
     },
@@ -1109,8 +1161,8 @@
       "about_token": "Sobre %{name}",
       "price": "Preço",
       "volume": "Volume",
-      "ath": "Máximo Histórico",
-      "atl": "Mínimo Histórico",
+      "ath": "All Time High",
+      "atl": "All Time Low",
       "market_cap": "Valor de Mercado",
       "market_cap_explainer": {
         "title": "Valor de Mercado",
@@ -1173,7 +1225,7 @@
       "optimism": {
         "title": "O que é Optimism?",
         "description_1": "Optimismo é uma rede de Camada 2 que roda em cima do Ethereum, permitindo transações mais baratas e rápidas, enquanto ainda se beneficia da segurança subjacente do Ethereum.",
-        "description_2": "Agrupa muitas transações juntas em um \"roll up\" antes de enviá-las permanentemente para o Ethereum."
+        "description_2": "Ele agrupa várias transações juntas em um \"roll up\" antes de enviá-las para serem registradas permanentemente no Ethereum."
       },
       "polygon": {
         "title": "O que é o Polygon?",
@@ -1188,14 +1240,14 @@
       "base": {
         "title": "O que é Base?",
         "description_1": "Base é uma rede Layer 2 que roda em cima do Ethereum, permitindo transações mais baratas e rápidas, enquanto ainda se beneficia da segurança subjacente do Ethereum.",
-        "description_2": "Ele agrupa muitas transações juntas em um \"roll up\" antes de enviá-las para viver permanentemente no Ethereum."
+        "description_2": "Ele agrupa várias transações juntas em um \"roll up\" antes de enviá-las para serem registradas permanentemente no Ethereum."
       },
       "zora": {
         "title": "O que é Zora?",
         "description_1": "Zora é uma rede Layer 2 que funciona em cima do Ethereum, permitindo transações mais baratas e rápidas ao mesmo tempo em que se beneficia da segurança subjacente do Ethereum.",
-        "description_2": "Agrupa várias transações juntas em um \"roll up\" antes de enviá-las permanentemente para o Ethereum."
+        "description_2": "Ele agrupa várias transações juntas em um \"roll up\" antes de enviá-las para serem registradas permanentemente no Ethereum."
       },
-      "link_button_label": "Leia mais",
+      "link_button_label": "Ler mais",
       "action_label": "Entendi"
     },
     "send": {
@@ -1214,12 +1266,12 @@
       "current_base_falling": "As taxas estão caindo agora!",
       "current_base_rising": "As taxas estão aumentando agora! É melhor usar uma taxa de base máxima mais alta para evitar uma transação travada.",
       "current_base_description": "A taxa básica é definida pela rede Ethereum e muda dependendo de quão ocupada a rede está.",
-      "current_base_title": "Taxa básica atual",
+      "current_base_title": "Taxa base atual",
       "max_base_explainer_1": "Essa é a taxa básica máxima que você está disposto a pagar por esta transação.",
       "max_base_explainer_2": "Definir uma taxa de base máxima mais alta impede que sua transação fique presa se as taxas aumentarem.",
-      "max_base_title": "Taxa de base máxima",
+      "max_base_title": "Taxa base máxima",
       "max_priority_explainer": "A gorjeta para o minerador vai diretamente para o minerador que confirma sua transação na rede.\n\nUma gorjeta mais alta faz com que sua transação tenha mais chances de ser confirmada rapidamente.",
-      "max_priority_title": "Gorjeta para o minerador"
+      "max_priority_title": "Gorjeta para mineradores"
     }
   },
   "injected_notifications": {
@@ -1230,7 +1282,8 @@
   },
   "alert": {
     "ok": "Ok",
-    "wallet_watching_mode": "Esta carteira está atualmente no modo 'Acompanhando'",
+    "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
+    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
     "coming_soon": "Em breve!",
     "no_hw_ff": "Carteiras de hardware não são suportadas no Firefox. Tente um navegador diferente como Chrome ou Brave"
   },
