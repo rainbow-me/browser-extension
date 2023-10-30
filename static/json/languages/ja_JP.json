@@ -6,20 +6,20 @@
     "toggle": "切り替え"
   },
   "permissions": {
-    "firefox_permission_denied": "Rainbowは適切に動作するためにすべてのウェブサイトへのアクセス許可が必要です。続行するには許可を与えてください。"
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant permission in order to continue."
   },
   "wallet": {
-    "rename": "ウォレット名の変更",
-    "edit_appearance": "外観を編集",
+    "rename": "ウォレットの名前を変更",
+    "edit_appearance": "Edit Appearance",
     "view_on": "表示 %{explorer}で",
     "copy_address": "アドレスをコピー"
   },
   "wallet_switcher": {
     "title": "ウォレット",
-    "rename_wallet": "ウォレット名の変更",
+    "rename_wallet": "ウォレットの名前を変更",
     "copy_address": "アドレスをコピー",
-    "remove_wallet": "ウォレットを削除",
-    "hide_wallet": "ウォレットを非表示",
+    "remove_wallet": "Remove Wallet",
+    "hide_wallet": "Hide Wallet",
     "watching": "ウォッチ中",
     "ledger": "Ledger",
     "trezor": "Trezor",
@@ -48,13 +48,13 @@
     "watch_address_description": "公開アドレスまたはENS名を表示する。"
   },
   "create_wallet_prompt": {
-    "title": "ウォレットに名前を付ける",
-    "create_wallet": "ウォレットを作成する",
+    "title": "Name Your Wallet",
+    "create_wallet": "ウォレットを作成",
     "create": "作成する",
     "input_placeholder": "名前"
   },
   "rename_wallet_prompt": {
-    "rename_wallet": "ウォレットの名前を変更する",
+    "rename_wallet": "ウォレットの名前を変更",
     "done": "完了"
   },
   "remove_wallet_prompt": {
@@ -76,14 +76,32 @@
     "default_wallet_description": "アプリが接続する拡張機能を探す際にRainbowを優先させることを許可する。",
     "contacts": "連絡先",
     "guides_and_support": "ガイドとサポート",
-    "learn_about_ethereum": "Ethereumについて学ぶ",
-    "follow_us_on_twitter": "Twitterでフォローする",
+    "learn_about_ethereum": "Learn About Ethereum",
+    "follow_us_on_twitter": "Follow Us on Twitter",
     "share_beta_feedback": "ベータフィードバックを共有する",
     "theme": {
       "title": "テーマ",
       "system": "システム",
       "light": "ライト",
       "dark": "ダーク"
+    },
+    "networks": {
+      "mainnet": "Mainnet",
+      "title": "ネットワーク",
+      "quick_promo": {
+        "text": "Drag networks to reorder them",
+        "text_bold": "ヒント："
+      },
+      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "testnet_mode": {
+        "title": "Testnet Mode",
+        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
+        "shortcut_title": "Enable Keyboard Shortcut",
+        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+      },
+      "custom_rpc": {
+        "title": "Custom RPC"
+      }
     },
     "privacy_and_security": {
       "title": "プライバシーとセキュリティ",
@@ -109,15 +127,15 @@
       },
       "change_password": {
         "title": "パスワードの変更",
-        "header_label": "パスワードを変更してください"
+        "header_label": "Change Your Password"
       },
       "confirm_password": {
         "title": "パスワードを入力してください",
-        "description": "続行するには現在のパスワードを入力する必要があります。"
+        "description": "Continue with your current password."
       },
       "wallets_and_keys": {
         "title": "ウォレットとキー",
-        "create_a_new_wallet": "新しいウォレットを作成する",
+        "create_a_new_wallet": "Create a New Wallet",
         "imported": "インポート済み",
         "wallet_single": "ウォレット",
         "wallet_plural": "ウォレット",
@@ -127,21 +145,27 @@
         "backed_up": "バックアップ済み",
         "not_backed_up": "バックアップされていません",
         "back_up_now": "今すぐバックアップ",
+        "context_menu": {
+          "create_wallet": "ウォレットを作成",
+          "view_secret_phrase": "View Secret Phrase",
+          "hide_wallets": "Hide Wallets",
+          "unhide_wallets": "Unhide Wallets"
+        },
         "wallet_details": {
           "title": "ウォレットの詳細",
           "view_recovery_phrase": "復旧フレーズを表示",
-          "create_new_wallet": "新しいウォレットを作成",
+          "create_new_wallet": "Create a New Wallet",
           "rename_wallet": "ウォレットの名前を変更",
           "unhide_wallet": "ウォレットを表示",
           "delete_wallet": "ウォレットを削除",
-          "view_private_key": "秘密鍵を表示",
+          "view_private_key": "秘密鍵を表示する",
           "copy_address": "アドレスをコピー",
           "hidden": "非表示",
           "back_up_now": "今すぐバックアップ",
           "last_backed_up": "最後にバックアップされたのは %{date}"
         },
         "new_wallet": {
-          "name_your_wallet": "ウォレットに名前を付ける",
+          "name_your_wallet": "Name Your Wallet",
           "create": "ウォレットを作成",
           "input_placeholder": "例: ウォレット1"
         },
@@ -153,18 +177,19 @@
           "warning_2": "プライベートキーを表示するときに、画面を他の人が見られないようにしてください。",
           "warning_3": "プライベートキーを持っている人は、あなたのウォレット全体にアクセスできます。",
           "warning_4": "Rainbowサポートは、あなたのプライベートキーを求めることはありません。",
-          "show": "プライベートキーを表示する"
+          "show": "プライベートキーを表示する",
+          "copied": "Private Key Copied"
         },
         "recovery_phrase": {
-          "title": "リカバリーフレーズ",
+          "title": "あなたの秘密の回復フレーズ",
           "subtitle": "これらの単語を持っている人は、あなたのウォレット全体にアクセスできます！決して共有しないでください。",
           "saved": "これらの単語を保存しました",
-          "warning_1": "リカバリーフレーズを共有したり、アプリに入力したりしないでください。",
-          "warning_2": "リカバリーフレーズを表示するときに、画面を他の人が見られないようにしてください。",
-          "warning_3": "リカバリーフレーズを持っている人は、あなたのウォレット全体にアクセスできます。",
-          "warning_4": "Rainbowサポートは、あなたのリカバリーフレーズを求めることはありません。",
+          "warning_1": "Never share your Secret Recovery Phrase or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Secret Recovery Phrase.",
+          "warning_3": "あなたの秘密の回復フレーズを持つ人はあなたのウォレット全体にアクセスできます。",
+          "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "リカバリーフレーズを表示する",
-          "phrase_copied": "リカバリーフレーズがコピーされました"
+          "copied": "リカバリーフレーズがコピーされました"
         }
       }
     },
@@ -172,6 +197,8 @@
       "title": "取引",
       "default_speed": "デフォルトの速度",
       "use_flashbots": "Flashbots の使用",
+      "clear_transactions_and_nonces": "Clear Pending Transactions",
+      "clear_transactions_and_nonces_success": "Pending transactions cleared",
       "flashbots_description": "Flashbots はトランザクションの保護およびトランザクションの失敗の可能性を減らします。詳細をご覧ください。"
     },
     "currency": {
@@ -198,7 +225,7 @@
       "full_watching_wallets": "ウォレットの監視機能を完全に有効にする",
       "hw_wallets_enabled": "ハードウェアウォレットサポートを有効にする",
       "command_k_internal_shortcuts_enabled": "⌘K の内部ショートカットを有効にする",
-      "new_tab_bar_enabled": "新しいタブバー"
+      "custom_rpc": "Custom RPC"
     }
   },
   "transactions": {
@@ -206,7 +233,7 @@
     "cancelled": "取引がキャンセルされました",
     "burn": {
       "pending": "焼却中",
-      "confirmed": "焼却済み",
+      "confirmed": "Burned",
       "failed": "焼却に失敗しました"
     },
     "cancel": {
@@ -335,7 +362,7 @@
     },
     "commands": {
       "names": {
-        "send": "送信する",
+        "send": "送信",
         "swap": "スワップ",
         "my_wallets": "マイウォレット",
         "my_tokens": "マイトークン",
@@ -344,6 +371,7 @@
         "view_nfts": "NFTを表示",
         "add_wallet": "ウォレットを追加",
         "lock": "Rainbowをロックする",
+        "testnet_mode": "Testnet Mode",
         "connected_apps": "接続されたアプリ",
         "settings": "設定",
         "my_qr_code": "私のQRコード",
@@ -483,7 +511,7 @@
       "cancel": "キャンセル",
       "sending_on_network": "%{chainName} ネットワークで送信中",
       "sending_on_l2_check_1": "取引所には送信していません",
-      "sending_on_l2_check_2": "送信先は %{chainName}をサポートするウォレットを持っています",
+      "sending_on_l2_check_2": "The person I’m sending to has a wallet that supports %{chainName}",
       "complete_checks": "チェックを完了してください",
       "confirm_hw": "デバイスで確認してください"
     }
@@ -536,7 +564,7 @@
     "settings": {
       "title": "%{Action} 設定",
       "route": "経路 %{actions} 経由",
-      "use_flashbots": "Flashbotsを使用する",
+      "use_flashbots": "Flashbots の使用",
       "max_slippage": "最大スリッページ",
       "use_defaults": "デフォルトを使用する",
       "done": "完了",
@@ -560,7 +588,7 @@
           "description": "Flashbotsは、フロントランニングやサンドイッチ攻撃からトランザクションを保護し、悪い価格やトランザクションの失敗を防ぎます。",
           "read_more": {
             "open_text": "まだ興味がありますか？ ",
-            "link_text": "もっと読む",
+            "link_text": "詳しくはこちらを読んでください",
             "close_text": " Flashbotsとその提供する保護について"
           }
         },
@@ -569,7 +597,7 @@
           "description": "デフォルトでは、Rainbowは %{action}に最も安いルートを選択します。もし0x または 1inchを特に使用したい場合も対応可能です。",
           "read_more": {
             "open_text": "まだ興味がありますか？ ",
-            "link_text": "もっと読む",
+            "link_text": "詳しくはこちらを読んでください",
             "close_text": " 私たちのルーティングへのアプローチについて %{actions}"
           }
         },
@@ -591,7 +619,7 @@
       "minimum_received": "受け取る最小額",
       "via": "%{Actioning} 経由",
       "included_fee": "レインボーフィー込み",
-      "use_flashbots": "Flashbotsを利用する",
+      "use_flashbots": "Flashbots の使用",
       "exchange_rate": "為替レート",
       "asset_contract": "%{symbol} のコントラクト",
       "more_details": "詳細",
@@ -610,17 +638,17 @@
         "action_label": "了解"
       },
       "no_quote": {
-        "title": "見積もりは利用できません",
+        "title": "利用可能な見積もりなし",
         "description": "この %{action}の引用を見つけることができませんでした。これは、 %{action} するための十分な流動性がないか、トークンの実装に問題があるためかもしれません",
-        "action_label": "続行する"
+        "action_label": "それでも続行"
       },
       "insufficient_liquidity": {
-        "title": "流動性が不足しています",
+        "title": "流動性不足",
         "description": "この %{action} の引用が見つけられませんでした。これは、取引所に十分な流動性がないためです",
         "action_label": "了解",
         "footer_text": {
-          "open_text": "まだ気になりますか？ ",
-          "link_text": "続きを読む",
+          "open_text": "まだ興味がありますか？ ",
+          "link_text": "詳しくはこちらを読んでください",
           "close_text": " AMMおよびトークンの流動性について"
         }
       },
@@ -668,19 +696,19 @@
     }
   },
   "contacts": {
-    "save_contact": "連絡先を保存",
-    "add_to_contacts": "連絡先に追加",
-    "edit_contact": "連絡先を編集",
-    "save_changes": "変更を保存",
+    "save_contact": "Save Contact",
+    "add_to_contacts": "Add to Contacts",
+    "edit_contact": "Edit Contact",
+    "save_changes": "Save Changes",
     "cancel": "キャンセル",
-    "remove_contact_title": "連絡先を削除しますか？",
-    "remove_contact_action": "連絡先を削除する",
+    "remove_contact_title": "Remove Contact?",
+    "remove_contact_action": "Remove Contact",
     "remove_contact_description": "連絡先の「%{name}」を削除してもよろしいですか？",
     "save": "保存",
     "copy_address": "アドレスをコピー",
     "view_on_etherscan": "Etherscanで表示",
     "view_on_explorer": "エクスプローラーで表示",
-    "delete_contact": "連絡先を削除",
+    "delete_contact": "Delete Contact",
     "contact_address_copied": "アドレスがコピーされました"
   },
   "sign": {
@@ -702,7 +730,7 @@
   "welcome": {
     "title": "Rainbow",
     "subtitle": "Ethereumの新しい世界を探索してください",
-    "create_wallet": "新しいウォレットを作成する",
+    "create_wallet": "新しいウォレットを作成",
     "import_wallet": "ウォレットをインポートまたは接続する",
     "disclaimer_tos": "続行することで、Rainbowの",
     "disclaimer_tos_link": "利用規約",
@@ -719,9 +747,9 @@
   },
   "seed_reveal": {
     "title": "あなたの秘密の回復フレーズ",
-    "write_down_seed_importance": "これらの単語を保管すると、あなたのウォレット全体にアクセスできます！安全な場所に保管し、他の人と共有しないようにしてください。",
+    "write_down_seed_importance": "これらの単語を持っている人は、あなたのウォレット全体にアクセスできます！決して共有しないでください。",
     "saved_these_words": "これらの単語を保存しました",
-    "phrase_copied": "回復フレーズがコピーされました"
+    "phrase_copied": "リカバリーフレーズがコピーされました"
   },
   "import_wallet_via_secret": {
     "title": "ウォレットをインポートする",
@@ -742,7 +770,7 @@
     "couldnt_paste": "シークレットリカバリーフレーズを貼り付けることができませんでした。"
   },
   "import_wallet_via_private_key": {
-    "title": "ウォレットのインポート",
+    "title": "ウォレットをインポートする",
     "explanation": "Rainbowや他のEthereumウォレットから64文字のプライベートキーを入力してください。",
     "placeholder": "他のウォレットからプライベートキーを貼り付けてください。",
     "import_wallet": "ウォレットをインポートする"
@@ -750,12 +778,12 @@
   "import_or_connect": {
     "title": "復元または接続",
     "explanation": "秘密のリカバリーフレーズまたはプライベートキーでインポートしてください。リカバリーフレーズを持つ人はあなたのウォレット全体にアクセスすることができます。安全な場所に保存し、誰とも共有しないでください。",
-    "import_wallet": "秘密のリカバリーフレーズまたはプライベートキーでインポート",
-    "import_wallet_description": "秘密のリカバリーフレーズまたはプライベートキーを使用してウォレットを追加してください。",
+    "import_wallet": "シークレットリカバリーフレーズまたはプライベートキーでインポート",
+    "import_wallet_description": "シークレットリカバリーフレーズまたはプライベートキーを使用してウォレットを追加します。",
     "connect_wallet": "ハードウェアウォレットを接続してください。",
     "connect_wallet_description": "ハードウェアウォレットからアカウントを追加してください。",
     "watch_address": "Ethereumアドレスをウォッチ",
-    "watch_address_description": "パブリックアドレスまたはENS名をウォッチしてください。"
+    "watch_address_description": "公開アドレスまたはENS名を表示する。"
   },
   "import_wallet_selection": {
     "title": "あなたのウォレット",
@@ -772,7 +800,7 @@
     "account_summary_last_tx": "最後のトランザクション： %{lastTx} 前"
   },
   "watch_wallet": {
-    "title": "Ethereumアドレスを監視",
+    "title": "Ethereumアドレスをウォッチ",
     "description": "EthereumアドレスまたはENS名を入力してください。後で送信や署名するために後でインポートする必要があります。",
     "invalid_address": "無効なアドレス",
     "unsupported_tld": "%{tld} はサポートされていません",
@@ -790,7 +818,7 @@
     "too_many_words": "単語が多すぎます",
     "too_many_chars": "文字が多すぎます",
     "add_another": "別のアドレスを追加",
-    "remove": "削除",
+    "remove": "削除する",
     "placeholder": "他のウォレットからのシークレットリカバリー句またはプライベートキーを貼り付けてください",
     "invalid_word": "無効な単語: %{word}",
     "invalid_private_key": "無効なプライベートキー",
@@ -816,7 +844,7 @@
       "other": "ウォレットをインポート中..."
     },
     "sort": {
-      "title": "並べ替え",
+      "title": "ソート",
       "default": "デフォルト",
       "token_balance": "トークン残高",
       "last_transaction": "最後のトランザクション"
@@ -847,8 +875,18 @@
       "rainbow_profile": "Rainbowプロファイル",
       "guides_and_support": "ガイドとサポート",
       "share_feedback": "フィードバックを共有する",
-      "lock_rainbow": "Rainbowをロックする"
+      "lock_rainbow": "Rainbowをロックする",
+      "testnet_mode": "Testnet Mode"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "Connect to %{chainName}",
+    "testnet_mode": "Testnet Mode",
+    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
+    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
+    "disable_and_connect": "Disable and connect",
+    "enable_and_connect": "Enable and connect",
+    "cancel": "キャンセル"
   },
   "app_connection_switcher": {
     "banner": {
@@ -856,26 +894,26 @@
       "app_connected": "%{appName} 接続済み"
     },
     "sheet": {
-      "connect": "接続",
+      "connect": "接続する",
       "connect_different_wallet": "異なるウォレットに接続する",
       "dont_show_again": "これをもう表示しない",
       "allow_to": "ウォレットのアドレス、残高、取引履歴を閲覧し、トランザクションの承認をリクエストするために %{appName} に許可します。",
       "connect_to": "%{appName}に接続しますか？"
     },
     "wallet_item": {
-      "disconnect": "切断",
+      "disconnect": "切断する",
       "switch_connection": "接続を切り替える",
-      "connect": "接続"
+      "connect": "接続する"
     },
     "wallet_item_dropdown_menu": {
-      "connect": "接続",
-      "disconnect": "切断",
+      "connect": "接続する",
+      "disconnect": "切断する",
       "open_app": "%{appName}を開く"
     },
     "wallet_switcher": {
-      "switch_wallets": "ウォレットの切り替え",
-      "other_wallets": "その他のウォレット",
-      "cancel": "キャンセル",
+      "switch_wallets": "ウォレットを切り替える",
+      "other_wallets": "他のウォレット",
+      "done": "完了",
       "connected": "接続されています"
     }
   },
@@ -893,15 +931,22 @@
     "switch_networks": "ネットワークを切り替える",
     "switch_wallets": "ウォレットを切り替える",
     "connect": "%{appName}に接続する",
+    "connect_anyway": "Connect Anyway",
+    "malicious_warning": {
+      "title": "This app is likely malicious",
+      "message": "Signing messages or transactions from this app could result in losing your assets"
+    },
     "message_signing_request": "メッセージ署名リクエスト",
     "message": "メッセージ",
     "sign_message": "メッセージに署名する",
+    "sign_message_anyway": "Sign Anyway",
     "confirm_hw": "デバイスで確認してください",
     "balance": "残高",
-    "send_transaction": "トランザクションを送信する",
+    "send_transaction": "Confirm",
+    "send_transaction_anyway": "Confirm Anyway",
     "contract_deployment": "コントラクトデプロイメント",
     "transaction_request": "トランザクションリクエスト",
-    "insufficient_native_asset_for_gas": "ガスのために不十分な %{symbol}"
+    "insufficient_native_asset_for_gas": "ガスのための不足 %{symbol}"
   },
   "transaction_fee": {
     "title": "トランザクションスピード",
@@ -979,7 +1024,9 @@
     "copy_to_clipboard": "クリップボードにコピー"
   },
   "errors": {
-    "no_wallet_name_set": "ウォレット名が設定されていません"
+    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "no_wallet_name_set": "ウォレット名が設定されていません",
+    "report_error": "Report issue"
   },
   "common_titles": {
     "before_you_proceed": "続行する前に"
@@ -1009,8 +1056,9 @@
   },
   "tabs": {
     "activity": "アクティビティ",
-    "tokens": "トークン",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "Points",
+    "tokens": "トークン"
   },
   "activity": {
     "today": "今日",
@@ -1068,11 +1116,15 @@
     "coming_soon_description": "NFTsは近日公開。お楽しみに！",
     "view_on_web": "ウェブで見る"
   },
+  "points": {
+    "coming_soon_header": "近日公開",
+    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+  },
   "speed_up_and_cancel": {
     "speed_up": "スピードアップ",
     "cancel": "キャンセル",
     "view_on_etherscan": "Etherscanで表示",
-    "view_on_explorer": "エクスプローラで表示",
+    "view_on_explorer": "エクスプローラーで表示",
     "copy_tx_hash": "Txハッシュをコピー",
     "cancel_explanation": "保留中のトランザクションをキャンセルしようとします。別のトランザクションをブロードキャストする必要があります。",
     "speed_up_explanation": "保留中のトランザクションの処理速度を上げます。元のトランザクションが先に確定する可能性があります。",
@@ -1109,8 +1161,8 @@
       "about_token": "%{name}について",
       "price": "価格",
       "volume": "出来高",
-      "ath": "史上最高値",
-      "atl": "史上最低値",
+      "ath": "All Time High",
+      "atl": "All Time Low",
       "market_cap": "時価総額",
       "market_cap_explainer": {
         "title": "時価総額",
@@ -1173,7 +1225,7 @@
       "optimism": {
         "title": "Optimismとは？",
         "description_1": "オプティミズムは、Ethereumの上で動作するLayer 2ネットワークであり、より安価かつ高速なトランザクションが可能ですが、Ethereumの基本的なセキュリティメカニズムを利用しています。",
-        "description_2": "それらをEthereumに永久的に送信する前に、複数のトランザクションを「ロールアップ」という形でまとめます。"
+        "description_2": "それは多くのトランザクションをまとめて\"ロールアップ\"し、それらをEthereumに永久に送信する前にグループ化します。"
       },
       "polygon": {
         "title": "Polygonとは？",
@@ -1188,14 +1240,14 @@
       "base": {
         "title": "ベースとは？",
         "description_1": "ベースは、Ethereumの基盤のセキュリティを活用しながら、より安価かつ高速なトランザクションを可能にする、Ethereum上で動作するLayer 2ネットワークです。",
-        "description_2": "トランザクションを\"ロールアップ\"してからEthereumに永久に記録する前に、多くのトランザクションをまとめて送信します。"
+        "description_2": "それは多くのトランザクションをまとめて\"ロールアップ\"し、それらをEthereumに永久に送信する前にグループ化します。"
       },
       "zora": {
         "title": "ゾーラとは？",
         "description_1": "ZoraはEthereumの上で実行されるLayer 2ネットワークであり、より安価かつ高速なトランザクションを可能にしながら、Ethereumの基礎的なセキュリティの恩恵を受けることができます。",
-        "description_2": "それは複数のトランザクションをまとめて「ロールアップ」し、それらをEthereum上で永久に保存する前に送信します。"
+        "description_2": "それは多くのトランザクションをまとめて\"ロールアップ\"し、それらをEthereumに永久に送信する前にグループ化します。"
       },
-      "link_button_label": "詳細を読む",
+      "link_button_label": "詳しくはこちらを読んでください",
       "action_label": "了解"
     },
     "send": {
@@ -1214,10 +1266,10 @@
       "current_base_falling": "手数料が現在下がっています！",
       "current_base_rising": "手数料が現在上昇しています！トランザクションが詰まらないように、より高い最大ベース手数料を使用することが最善です。",
       "current_base_description": "ベース手数料はEthereumネットワークによって設定され、ネットワークの混雑具合に応じて変化します。",
-      "current_base_title": "現在のベース手数料",
+      "current_base_title": "現在の基本手数料",
       "max_base_explainer_1": "これは、このトランザクションに対して支払いを意思表示する最大ベース手数料です。",
       "max_base_explainer_2": "より高い最大ベース手数料を設定することで、手数料が上昇した場合にトランザクションが詰まるのを防ぎます。",
-      "max_base_title": "最大ベース手数料",
+      "max_base_title": "最大基本手数料",
       "max_priority_explainer": "マイナーチップは、ネットワーク上でトランザクションを確認するマイナーに直接支払われます。\n\nより高いチップは、トランザクションが迅速に確認される可能性を高めます。",
       "max_priority_title": "マイナーチップ"
     }
@@ -1230,7 +1282,8 @@
   },
   "alert": {
     "ok": "OK",
-    "wallet_watching_mode": "このウォレットは現在「ウォッチモード」です",
+    "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
+    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
     "coming_soon": "近日公開予定です！",
     "no_hw_ff": "ハードウェアウォレットはFirefoxではサポートされていません。ChromeまたはBraveのような別のブラウザを試してみてください。"
   },
@@ -1248,7 +1301,7 @@
     "exclusivity_ledger_description_2": "他のアプリを閉じた後、再度試すためにこのページを再読み込みしてください",
     "needs_app_ledger_title": "ETHアプリを開く",
     "needs_app_ledger_description": "トランザクションを続行するには、Ledger上でEthereumアプリを開いている必要があります",
-    "needs_app_ledger_description_2": "Ledgerをロック解除するためのパスコードを入力してください。解除されると、両方のボタンを同時に押してEthereumアプリを開きます。",
+    "needs_app_ledger_description_2": "Ledgerをアンロックするためのパスコードを入力してください。アンロック後、両方のボタンを同時に押してEthereumアプリを開いてください",
     "connect_trezor_title": "Trezorのセットアップを完了する",
     "connect_trezor_description": "TrezorをRainbowにWebインターフェースを介して接続し続けます。",
     "learn_more": "詳しくはこちら",
