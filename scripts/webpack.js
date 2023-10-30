@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require('webpack');
+const fs = require('fs');
+const { join, extname } = require('path');
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const config = require('../webpack.config');
@@ -14,7 +16,49 @@ require('html-webpack-plugin');
 require('file-loader');
 require('ts-loader');
 require('typescript');
+
 const TerserPlugin = require('terser-webpack-plugin');
+
+/**
+ * Synchronously replaces all occurrences of a substring in a file.
+ *
+ * @param {string} filePath - The path to the file.
+ * @param {string} target - The substring to replace.
+ * @param {string} replacement - The string to replace the target with.
+ */
+function replaceInFile(filePath, target, replacement) {
+  // Read the file synchronously
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  
+  // Replace all occurrences of the target substring
+  const updatedContents = fileContents.split(target).join(replacement);
+  
+  // Write the updated contents back to the file
+  fs.writeFileSync(filePath, updatedContents); 
+}
+
+const buildDir = join(__dirname, '../build');
+
+const replacePopupCssName = () => {
+
+  fs.readdir(buildDir, (err, files) => {
+    const popupCssFile = files.find(file => {
+      return extname(file) === '.css' &&
+            file !== 'background.css' &&
+            file !== 'inpage.css';
+    });
+    if (popupCssFile) {
+      console.log('found popup css file', popupCssFile);
+      replaceInFile('build/background.js.map', 'popup.css', popupCssFile);
+      replaceInFile('build/inpage.js.map', 'popup.css', popupCssFile);
+      replaceInFile('build/inpage.js', 'popup.css', popupCssFile);
+      replaceInFile('build/manifest.json', 'popup.css', popupCssFile);
+      console.log('all instances replaced');
+    }
+      
+});
+}
+
 
 const MAX_CYCLES = 8;
 let numCyclesDetected = 0;
@@ -120,3 +164,5 @@ webpack(webpackConfig).run((err, stats) => {
     });
 }
 });
+
+replacePopupCssName();
