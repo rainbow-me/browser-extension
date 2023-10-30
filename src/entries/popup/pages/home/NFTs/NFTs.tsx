@@ -10,6 +10,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
+import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
@@ -162,12 +163,7 @@ export function PostReleaseNFTs() {
                         >
                           {rowData.map((asset, i) => (
                             <NftThumbnail
-                              imageSrc={
-                                asset.image_thumbnail_url ||
-                                asset.image_preview_url ||
-                                asset.image_original_url ||
-                                ''
-                              }
+                              imageSrc={getUniqueAssetImageThumbnailURL(asset)}
                               key={i}
                             />
                           ))}
@@ -305,9 +301,15 @@ function CollectionSection({
                 paddingTop: 6,
               }}
             >
-              {section.assets.map((nft, i) => (
+              {section.assets.map((asset, i) => (
                 <NftThumbnail
-                  imageSrc={nft?.image_thumbnail_url || ''}
+                  imageSrc={
+                    // we hold off on providing the src field until opened so that
+                    // we don't request images for collections that are never opened
+                    collectionVisible
+                      ? getUniqueAssetImageThumbnailURL(asset)
+                      : undefined
+                  }
                   key={i}
                 />
               ))}
@@ -319,7 +321,7 @@ function CollectionSection({
   );
 }
 
-const NftThumbnail = memo(({ imageSrc }: { imageSrc: string }) => {
+const NftThumbnail = memo(({ imageSrc }: { imageSrc?: string }) => {
   return (
     <Box
       style={{ height: 96, width: 96 }}
