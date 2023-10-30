@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { ReactNode, useState } from 'react';
+import { PropsWithChildren, ReactNode, useState } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
@@ -111,10 +111,10 @@ function SimulationOverview() {
       {nativeAsset && (
         <Stack space="14px">
           <SimulatedChangeRow asset={nativeAsset} direction="out" />
+          {/* <SimulatedChangeRow asset={nativeAsset} direction="out" />
           <SimulatedChangeRow asset={nativeAsset} direction="out" />
           <SimulatedChangeRow asset={nativeAsset} direction="out" />
-          <SimulatedChangeRow asset={nativeAsset} direction="out" />
-          <SimulatedChangeRow asset={nativeAsset} direction="out" />
+          <SimulatedChangeRow asset={nativeAsset} direction="out" /> */}
         </Stack>
       )}
 
@@ -232,14 +232,79 @@ function TransactionData({ data }: { data: string }) {
   );
 }
 
+export function ExpandableScrollAreaWithGradient({
+  children,
+  tab,
+}: PropsWithChildren<{ tab: string }>) {
+  const [hasViewMore, setHasViewMore] = useState(false);
+
+  return (
+    <>
+      <Box
+        className={hasViewMore ? overflowGradient : undefined}
+        position="relative"
+        style={{ overflowX: 'visible', overflowY: 'hidden' }}
+        marginBottom="-20px"
+        marginHorizontal="-20px"
+        paddingHorizontal="20px"
+      >
+        <Box
+          style={{
+            maxHeight: '100%',
+            paddingBottom: hasViewMore ? '38px' : '20px',
+            overflow: hasViewMore ? 'scroll' : 'visible',
+          }}
+          paddingTop="14px"
+          paddingHorizontal="20px"
+          marginHorizontal="-20px"
+          gap="16px"
+          display="flex"
+          flexDirection="column"
+          key={tab}
+          ref={(e) => {
+            if (!e) return;
+            setHasViewMore(e.scrollHeight > e.clientHeight);
+          }}
+        >
+          {children}
+        </Box>
+      </Box>
+      {hasViewMore && (
+        <Box
+          as="button"
+          position="absolute"
+          style={{ height: '28px', width: '28px', bottom: 12, right: 12 }}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          background="fillSecondary"
+          backdropFilter="blur(10px)"
+          boxShadow="12px"
+          borderRadius="8px"
+          borderWidth="1px"
+          borderColor="separatorSecondary"
+          // onClick={() => setExpanded((e) => !e)}
+        >
+          <Symbol
+            symbol="arrow.up.left.and.arrow.down.right"
+            size={12}
+            color="labelSecondary"
+            weight="bold"
+          />
+        </Box>
+      )}
+    </>
+  );
+}
+
 function RequestData({ request }: SendTransactionProps) {
   const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
 
-  const [hasViewMore, setHasViewMore] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [tab, setTab] = useState('Overview');
 
   return (
     <Box
@@ -247,11 +312,10 @@ function RequestData({ request }: SendTransactionProps) {
       flexDirection="column"
       gap="20px"
       alignItems="center"
-      justifyContent="center"
       height="full"
       style={{ overflow: expanded ? 'scroll' : 'hidden', height: '100%' }}
     >
-      <Tabs tabs={['Overview', 'Details', 'Data']}>
+      <Tabs tabs={['Overview', 'Details', 'Data']} tab={tab} setTab={setTab}>
         <Box
           display="flex"
           flexDirection="column"
@@ -268,31 +332,7 @@ function RequestData({ request }: SendTransactionProps) {
           <Inset top="20px">
             <Separator color="separatorTertiary" />
           </Inset>
-          {/* <Box
-            className={hasViewMore ? overflowGradient : undefined}
-            marginBottom="-20px"
-            marginHorizontal="-20px"
-            paddingHorizontal="20px"
-          > */}
-          <Box
-            style={{
-              maxHeight: '100%',
-              paddingBottom: '38px',
-              // marginBottom: '-20px',
-              overflow: hasViewMore ? 'scroll' : 'visible',
-            }}
-            paddingTop="14px"
-            paddingHorizontal="20px"
-            marginHorizontal="-20px"
-            gap="16px"
-            display="flex"
-            flexDirection="column"
-            ref={(e) => {
-              if (!e) return;
-              console.log(e, e.scrollHeight, e.clientHeight);
-              setHasViewMore(e.scrollHeight > e.clientHeight);
-            }}
-          >
+          <ExpandableScrollAreaWithGradient key={tab} tab={tab}>
             <TabContent value="Overview">
               <SimulationOverview />
             </TabContent>
@@ -302,32 +342,7 @@ function RequestData({ request }: SendTransactionProps) {
             <TabContent value="Data">
               <TransactionData data={request.params[0]?.data} />
             </TabContent>
-            {/* </Box> */}
-          </Box>
-          {hasViewMore && (
-            <Box
-              as="button"
-              position="absolute"
-              style={{ height: '28px', width: '28px', bottom: 12, right: 12 }}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              background="fillSecondary"
-              backdropFilter="blur(10px)"
-              boxShadow="12px"
-              borderRadius="8px"
-              borderWidth="1px"
-              borderColor="separatorSecondary"
-              onClick={() => setExpanded((e) => !e)}
-            >
-              <Symbol
-                symbol="arrow.up.left.and.arrow.down.right"
-                size={12}
-                color="labelSecondary"
-                weight="bold"
-              />
-            </Box>
-          )}
+          </ExpandableScrollAreaWithGradient>
         </Box>
       </Tabs>
 

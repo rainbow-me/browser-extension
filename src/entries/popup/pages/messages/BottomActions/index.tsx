@@ -380,16 +380,6 @@ export const AcceptRequestButton = ({
     disabled,
   });
 
-  // useKeyboardShortcut({
-  //   condition: () => ,
-  //   handler: (e: KeyboardEvent) => {
-  //     if (e.key === shortcuts.transaction_request.ACCEPT.key) {
-  //       onClick?.();
-  //     }
-  //   },
-  //   modifierKey: shortcuts.transaction_request.ACCEPT.modifier,
-  // });
-
   return (
     <Button
       autoFocus={autoFocus}

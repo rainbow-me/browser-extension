@@ -241,7 +241,7 @@ export const shortcuts = {
     ACCEPT: {
       display: '\u23CE',
       key: 'Enter',
-      modifier: 'ctrlKey',
+      modifier: 'command',
     },
   },
   wallet_switcher: {

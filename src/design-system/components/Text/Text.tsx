@@ -8,7 +8,7 @@ import { selectionStyle } from './Text.css';
 
 export interface TextProps {
   align?: TextStyles['textAlign'];
-  as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'pre';
   children: React.ReactNode;
   color?: TextStyles['color'];
   size: TextStyles['fontSize'];

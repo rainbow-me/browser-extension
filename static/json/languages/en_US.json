@@ -916,7 +916,7 @@
     },
     "message_signing_request": "Message Signing Request",
     "message": "Message",
-    "sign_message": "Sign Message",
+    "sign_message": "Sign",
     "sign_message_anyway": "Sign Anyway",
     "confirm_hw": "Sign on your device",
     "balance": "Balance",

@@ -1,5 +1,3 @@
-import { Address } from 'wagmi';
-
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -13,18 +11,14 @@ import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { AcceptRequestButton, RejectRequestButton } from '../BottomActions';
 
 export const SendTransactionActions = ({
-  appHost,
   chainId,
-  selectedWallet,
   onAcceptRequest,
   onRejectRequest,
   waitingForDevice,
   loading = false,
   dappStatus,
 }: {
-  appHost: string;
   chainId: ChainId;
-  selectedWallet: Address;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   waitingForDevice: boolean;

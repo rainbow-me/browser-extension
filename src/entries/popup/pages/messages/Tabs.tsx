@@ -1,6 +1,6 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { motion } from 'framer-motion';
-import { PropsWithChildren, createContext, useContext, useState } from 'react';
+import { PropsWithChildren, createContext, useContext } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 
@@ -73,9 +73,14 @@ export function Tabs({
   children,
   tabs,
   initialTab = tabs[0],
-}: PropsWithChildren<{ tabs: string[]; initialTab?: string }>) {
-  const [tab, setTab] = useState(initialTab);
-
+  tab,
+  setTab,
+}: PropsWithChildren<{
+  tabs: string[];
+  initialTab?: string;
+  tab: string;
+  setTab: (t: string) => void;
+}>) {
   return (
     <TabContext.Provider value={{ tabs, selectedTab: tab }}>
       <TabsPrimitive.Root
