@@ -10,6 +10,7 @@ import React, {
 
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
 import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
+import { SessionStorage } from '~/core/storage';
 
 import * as wallet from '../handlers/wallet';
 
@@ -59,7 +60,7 @@ const useSessionStatus = () => {
   const updateStatus = useCallback(async () => {
     const newStatus = await getUserStatus();
     setStatus(newStatus);
-    await chrome.storage.session.set({ userStatus: newStatus });
+    await SessionStorage.set('userStatus', newStatus);
   }, []);
 
   useEffect(() => {
@@ -74,7 +75,7 @@ const useSessionStatus = () => {
         // to not interfere with onboarding status, only autolock if status is READY
         if (userStatus === 'READY') {
           const { lastUnlock: lastUnlockFromStorage } =
-            await chrome.storage.session.get('lastUnlock');
+            await SessionStorage.get('lastUnlock');
           if (lastUnlockFromStorage) {
             const lastUnlock = new Date(lastUnlockFromStorage);
             const now = new Date();
@@ -123,6 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setStatus(newValue);
       }
     };
+    // Keeping this as a session storage listener because this gave us a lot of problems in the past
     chrome.storage.session?.onChanged?.addListener(listener);
     return () => chrome.storage.session?.onChanged?.removeListener(listener);
   }, [setStatus, status]);

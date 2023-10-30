@@ -2,8 +2,10 @@
 // / It's REALLY important that no other code is imported here,
 // as this code is used in the background script
 
+import { SessionStorage } from '~/core/storage';
+
 export const queueEventTracking = async (eventName: string, meta = {}) => {
-  const queuedEvents = await chrome.storage.session.get('queuedEvents');
+  const queuedEvents = await SessionStorage.get('queuedEvents');
   const events = queuedEvents?.queuedEvents || [];
   const newEvent = {
     eventName,
@@ -13,5 +15,5 @@ export const queueEventTracking = async (eventName: string, meta = {}) => {
     },
   };
   events.push(newEvent);
-  await chrome.storage.session.set({ queuedEvents: events });
+  await SessionStorage.set('queuedEvents', events);
 };

@@ -10,7 +10,7 @@ import {
 import * as Sentry from '@sentry/browser';
 import { Address } from 'wagmi';
 
-import { LocalStorage } from '../storage';
+import { LocalStorage, SessionStorage } from '../storage';
 import { KeychainType } from '../types/keychainTypes';
 import { isLowerCaseMatch } from '../utils/strings';
 
@@ -217,16 +217,16 @@ class KeychainManager {
       },
 
       setSalt: (val: string | null) => {
-        return chrome.storage.session.set({ salt: val });
+        return SessionStorage.set('salt', val);
       },
       getSalt: () => {
-        return chrome.storage.session.get('salt');
+        return SessionStorage.get('salt');
       },
       setEncryptionKey: (val: string | null) => {
-        return chrome.storage.session.set({ encryptionKey: val });
+        return SessionStorage.set('encryptionKey', val);
       },
       getEncryptionKey: () => {
-        return chrome.storage.session.get('encryptionKey');
+        return SessionStorage.get('encryptionKey');
       },
 
       getLastStorageState: () => {
@@ -420,7 +420,7 @@ class KeychainManager {
     privates.get(this).password = '';
 
     await LocalStorage.set('vault', null);
-    await chrome.storage.session.set({ keychainManager: null });
+    await SessionStorage.set('keychainManager', null);
     await privates.get(this).setEncryptionKey(null);
     await privates.get(this).setSalt(null);
   }

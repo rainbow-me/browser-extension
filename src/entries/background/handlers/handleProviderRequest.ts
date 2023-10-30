@@ -16,6 +16,7 @@ import {
   notificationWindowStore,
   pendingRequestStore,
 } from '~/core/state';
+import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
@@ -120,7 +121,7 @@ const messengerProviderRequest = async (
 };
 
 const resetRateLimit = async (host: string, second: boolean) => {
-  const { rateLimits } = await chrome.storage.session.get('rateLimits');
+  const { rateLimits } = await SessionStorage.get('rateLimits');
   if (second) {
     if (rateLimits[host]) {
       rateLimits[host].perSecond = 0;
@@ -132,13 +133,13 @@ const resetRateLimit = async (host: string, second: boolean) => {
     }
     minuteTimer = null;
   }
-  return chrome.storage.session.set({ rateLimits });
+  return SessionStorage.set('rateLimits', rateLimits);
 };
 
 const checkRateLimit = async (host: string) => {
   try {
     // Read from session
-    let { rateLimits } = await chrome.storage.session.get('rateLimits');
+    let { rateLimits } = await SessionStorage.get('rateLimits');
 
     // Initialize if needed
     if (rateLimits === undefined) {
@@ -177,7 +178,7 @@ const checkRateLimit = async (host: string) => {
     }
 
     // Write to session
-    chrome.storage.session.set({ rateLimits });
+    SessionStorage.set('rateLimits', rateLimits);
 
     // Check rate limits
     if (rateLimits[host].perSecond > MAX_REQUEST_PER_SECOND) {

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNavRestorationStore } from '~/core/state/navRestoration';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import { SessionStorage } from '~/core/storage';
 
 import usePrevious from './usePrevious';
 
@@ -14,7 +15,7 @@ export function useExpiryListener() {
   const previousAddress = usePrevious(currentAddress);
 
   const checkExpiry = async () => {
-    const expiryEntry = await chrome.storage.session.get('expiry');
+    const expiryEntry = await SessionStorage.get('expiry');
     const expired = Date.now() > (expiryEntry?.expiry || 0);
     if (expired) {
       await resetValues();
