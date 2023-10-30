@@ -6,20 +6,20 @@
     "toggle": "สลับ"
   },
   "permissions": {
-    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant permission in order to continue."
+    "firefox_permission_denied": "Rainbow ต้องการสิทธิ์การเข้าถึงทุกเว็บไซต์เพื่อให้การทำงานถูกต้อง กรุณาให้สิทธิ์เพื่อดำเนินการต่อ"
   },
   "wallet": {
-    "rename": "เปลี่ยนชื่อกระเป๋าสตางค์",
-    "edit_appearance": "Edit Appearance",
+    "rename": "เปลี่ยนชื่อกระเป๋าเงิน",
+    "edit_appearance": "แก้ไขการแสดงผล",
     "view_on": "ดูบน %{explorer}",
     "copy_address": "คัดลอกที่อยู่"
   },
   "wallet_switcher": {
     "title": "กระเป๋าเงิน",
-    "rename_wallet": "เปลี่ยนชื่อกระเป๋าสตางค์",
+    "rename_wallet": "เปลี่ยนชื่อกระเป๋าเงิน",
     "copy_address": "คัดลอกที่อยู่",
-    "remove_wallet": "Remove Wallet",
-    "hide_wallet": "Hide Wallet",
+    "remove_wallet": "ลบกระเป๋าเงิน",
+    "hide_wallet": "ซ่อนกระเป๋าเงิน",
     "watching": "กำลังสังเกต",
     "ledger": "Ledger",
     "trezor": "Trezor",
@@ -48,13 +48,13 @@
     "watch_address_description": "รับชมที่อยู่สาธารณะหรือชื่อ ENS"
   },
   "create_wallet_prompt": {
-    "title": "Name Your Wallet",
-    "create_wallet": "สร้างกระเป๋าสตางค์",
+    "title": "ตั้งชื่อกระเป๋าเงินของคุณ",
+    "create_wallet": "สร้างกระเป๋าเงิน",
     "create": "สร้าง",
     "input_placeholder": "ชื่อ"
   },
   "rename_wallet_prompt": {
-    "rename_wallet": "เปลี่ยนชื่อกระเป๋าสตางค์",
+    "rename_wallet": "เปลี่ยนชื่อกระเป๋าเงิน",
     "done": "เสร็จสิ้น"
   },
   "remove_wallet_prompt": {
@@ -76,8 +76,8 @@
     "default_wallet_description": "อนุญาตให้แอปส่งเสริม Rainbow เมื่อค้นหาส่วนขยายที่จะเชื่อมต่อ",
     "contacts": "รายชื่อติดต่อ",
     "guides_and_support": "คู่มือและการสนับสนุน",
-    "learn_about_ethereum": "Learn About Ethereum",
-    "follow_us_on_twitter": "Follow Us on Twitter",
+    "learn_about_ethereum": "เรียนรู้เกี่ยวกับ Ethereum",
+    "follow_us_on_twitter": "ติดตามเราบน Twitter",
     "share_beta_feedback": "แชร์คำติชม Beta",
     "theme": {
       "title": "ธีม",
@@ -127,15 +127,15 @@
       },
       "change_password": {
         "title": "เปลี่ยนรหัสผ่าน",
-        "header_label": "Change Your Password"
+        "header_label": "เปลี่ยนรหัสผ่านของคุณ"
       },
       "confirm_password": {
         "title": "ป้อนรหัสผ่านของคุณ",
-        "description": "Continue with your current password."
+        "description": "คุณต้องป้อนรหัสผ่านปัจจุบันของคุณเพื่อดำเนินการต่อ"
       },
       "wallets_and_keys": {
         "title": "กระเป๋าสตางค์และคีย์",
-        "create_a_new_wallet": "Create a New Wallet",
+        "create_a_new_wallet": "สร้างกระเป๋าเงินใหม่",
         "imported": "นำเข้าแล้ว",
         "wallet_single": "กระเป๋าสตางค์",
         "wallet_plural": "กระเป๋าเงิน",
@@ -154,7 +154,7 @@
         "wallet_details": {
           "title": "รายละเอียดกระเป๋าสตางค์",
           "view_recovery_phrase": "ดูวลีการกู้คืน",
-          "create_new_wallet": "Create a New Wallet",
+          "create_new_wallet": "สร้างกระเป๋าสตางค์ใหม่",
           "rename_wallet": "เปลี่ยนชื่อกระเป๋าสตางค์",
           "unhide_wallet": "เปิดซ่อนกระเป๋าสตางค์",
           "delete_wallet": "ลบกระเป๋าสตางค์",
@@ -165,7 +165,7 @@
           "last_backed_up": "สำรองข้อมูลครั้งล่าสุดเป็น %{date}"
         },
         "new_wallet": {
-          "name_your_wallet": "Name Your Wallet",
+          "name_your_wallet": "ตั้งชื่อกระเป๋าเงินของคุณ",
           "create": "สร้างกระเป๋าสตางค์",
           "input_placeholder": "ตัวอย่าง: กระเป๋าเงิน 1"
         },
@@ -181,13 +181,13 @@
           "copied": "Private Key Copied"
         },
         "recovery_phrase": {
-          "title": "วลีการกู้คืนลับๆ ของคุณ",
+          "title": "วลีกู้คืนของคุณ",
           "subtitle": "ใครที่มีคำเหล่านี้สามารถเข้าถึงกระเป๋าสตางค์ของคุณได้ทั้งหมด! คุณไม่ควรแบ่งปันคำเหล่านี้ให้ใคร",
           "saved": "ฉันได้บันทึกคำเหล่านี้",
-          "warning_1": "Never share your Secret Recovery Phrase or enter it into any apps.",
-          "warning_2": "Make sure nobody can view your screen when viewing your Secret Recovery Phrase.",
-          "warning_3": "ใครก็ตามที่มีวลีการกู้คืนลับๆ ของคุณสามารถเข้าถึงกระเป๋าสตางค์ทั้งหมดของคุณ",
-          "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
+          "warning_1": "อย่าแบ่งปัน Recovery Phrase หรือป้อนลงในแอปใด ๆ",
+          "warning_2": "ตรวจสอบให้แน่ใจว่าไม่มีใครสามารถดูหน้าจอของคุณเมื่อมอง Recovery Phrase",
+          "warning_3": "ใคร ๆ ก็สามารถเข้าถึงกระเป๋าเงินของคุณทั้งหมดหากสามารถเข้าถึง Recovery Phrase ของท่าน",
+          "warning_4": "ทีมงาน Rainbow จะไม่ขอขอ Recovery Phrase ของคุณ",
           "show": "แสดง Recovery Phrase",
           "copied": "คัดลอก Recovery Phrase แล้ว"
         }
@@ -233,7 +233,7 @@
     "cancelled": "ยกเลิกการทำธุรกรรม",
     "burn": {
       "pending": "กำลังทำลาย",
-      "confirmed": "Burned",
+      "confirmed": "ทำลายแล้ว",
       "failed": "การทำลายล้มเหลว"
     },
     "cancel": {
@@ -511,7 +511,7 @@
       "cancel": "ยกเลิก",
       "sending_on_network": "กำลังส่งบนเครือข่าย %{chainName}",
       "sending_on_l2_check_1": "ฉันไม่ได้ส่งไปยังแลกเปลี่ยน",
-      "sending_on_l2_check_2": "The person I’m sending to has a wallet that supports %{chainName}",
+      "sending_on_l2_check_2": "คนที่ฉันส่งถึงมีกระเป๋าสตางค์ที่สนับสนุน %{chainName}",
       "complete_checks": "ตรวจสอบครบถ้วน",
       "confirm_hw": "ยืนยันบนอุปกรณ์ของคุณ"
     }
@@ -696,19 +696,19 @@
     }
   },
   "contacts": {
-    "save_contact": "Save Contact",
-    "add_to_contacts": "Add to Contacts",
-    "edit_contact": "Edit Contact",
-    "save_changes": "Save Changes",
+    "save_contact": "บันทึกผู้ติดต่อ",
+    "add_to_contacts": "เพิ่มลงในรายชื่อผู้ติดต่อ",
+    "edit_contact": "แก้ไขผู้ติดต่อ",
+    "save_changes": "บันทึกการเปลี่ยนแปลง",
     "cancel": "ยกเลิก",
-    "remove_contact_title": "Remove Contact?",
-    "remove_contact_action": "Remove Contact",
+    "remove_contact_title": "ลบผู้ติดต่อ?",
+    "remove_contact_action": "ลบผู้ติดต่อ",
     "remove_contact_description": "แน่ใจหรือว่าคุณต้องการลบ “%{name}” ออกจากรายชื่อผู้ติดต่อของคุณ?",
     "save": "บันทึก",
     "copy_address": "คัดลอกที่อยู่",
     "view_on_etherscan": "ดูบน Etherscan",
     "view_on_explorer": "ดูบน Explorer",
-    "delete_contact": "Delete Contact",
+    "delete_contact": "ลบผู้ติดต่อ",
     "contact_address_copied": "คัดลอกที่อยู่แล้ว"
   },
   "sign": {
@@ -747,7 +747,7 @@
   },
   "seed_reveal": {
     "title": "วลีการกู้คืนลับๆ ของคุณ",
-    "write_down_seed_importance": "ใครที่มีคำเหล่านี้สามารถเข้าถึงกระเป๋าสตางค์ของคุณได้ทั้งหมด! คุณไม่ควรแบ่งปันคำเหล่านี้ให้ใคร",
+    "write_down_seed_importance": "เก็บคำเหล่านี้สามารถเข้าถึงกระเป๋าสตางค์ทั้งหมดของคุณ! เก็บไว้ที่ปลอดภัยและไม่เคยแชร์พวกนั้น",
     "saved_these_words": "ฉันได้บันทึกคำเหล่านี้",
     "phrase_copied": "คัดลอก Recovery Phrase แล้ว"
   },
@@ -867,7 +867,7 @@
       "connect": "เชื่อมต่อ",
       "switch_network": "เปลี่ยนเครือข่าย",
       "switch_wallets": "เปลี่ยน Wallet",
-      "disconnect": "ตัดการเชื่อมต่อ"
+      "disconnect": "ยกเลิกการเชื่อมต่อ"
     },
     "home_header_right": {
       "settings": "การตั้งค่า",
@@ -901,17 +901,17 @@
       "connect_to": "เชื่อมต่อกับ %{appName}?"
     },
     "wallet_item": {
-      "disconnect": "ตัดการเชื่อมต่อ",
+      "disconnect": "ยกเลิกการเชื่อมต่อ",
       "switch_connection": "เปลี่ยนการเชื่อมต่อ",
       "connect": "เชื่อมต่อ"
     },
     "wallet_item_dropdown_menu": {
       "connect": "เชื่อมต่อ",
-      "disconnect": "ตัดการเชื่อมต่อ",
+      "disconnect": "ยกเลิกการเชื่อมต่อ",
       "open_app": "เปิด %{appName}"
     },
     "wallet_switcher": {
-      "switch_wallets": "สลับกระเป๋าสตางค์",
+      "switch_wallets": "สลับกระเป๋าเงิน",
       "other_wallets": "กระเป๋าเงินอื่น ๆ",
       "done": "เสร็จสิ้น",
       "connected": "เชื่อมต่อแล้ว"
@@ -942,7 +942,7 @@
     "sign_message_anyway": "Sign Anyway",
     "confirm_hw": "ยืนยันบนอุปกรณ์ของคุณ",
     "balance": "ยอดคงเหลือ",
-    "send_transaction": "Confirm",
+    "send_transaction": "ส่งธุรกรรม",
     "send_transaction_anyway": "Confirm Anyway",
     "contract_deployment": "การเปิดใช้งานสัญญา",
     "transaction_request": "คำร้องเรียกร้องการทำธุรกรรม",
@@ -1161,11 +1161,11 @@
       "about_token": "เกี่ยวกับ %{name}",
       "price": "ราคา",
       "volume": "ปริมาณ",
-      "ath": "All Time High",
-      "atl": "All Time Low",
+      "ath": "สูงสุดตลอดกาล",
+      "atl": "ต่ำสุดตลอดกาล",
       "market_cap": "มูลค่าตลาด",
       "market_cap_explainer": {
-        "title": "มูลค่าตลาด",
+        "title": "มูลค่าตามตลาด",
         "description": "มูลค่าตลาดคือมูลค่าสินทรัพย์ทั้งหมดของโทเคน คำนวณด้วยราคาเฉลี่ยจากตลาดแลกเปลี่ยน",
         "action": "เข้าใจแล้ว"
       },
@@ -1225,7 +1225,7 @@
       "optimism": {
         "title": "Optimism คืออะไร",
         "description_1": "Optimism เป็น Layer 2 network ที่ทำงานบน Ethereum ทำให้ธุรกรรมถูกและเร็วขึ้น ยังได้รับประโยชน์จากความปลอดภัยหลักของ Ethereum",
-        "description_2": "มันรวมธุรกรรมหลายๆ รายการเข้าด้วยกันใน \"roll up\" ก่อนที่จะส่งไปอยู่ถาวรใน Ethereum"
+        "description_2": "ทำการรวมธุรกรรมหลายๆ รายการใน \"roll up\" ก่อนส่งไปยัง Ethereum อย่างถาวร"
       },
       "polygon": {
         "title": "Polygon คืออะไร",
@@ -1240,12 +1240,12 @@
       "base": {
         "title": "Base คืออะไร?",
         "description_1": "Base คือเครือข่าย Layer 2 ที่ทำงานบน Ethereum ทำให้สามารถทำธุรกรรมที่ถูกและเร็วขึ้น และยังได้รับประโยชน์จากความปลอดภัยของ Ethereum",
-        "description_2": "มันรวมธุรกรรมหลายๆ รายการเข้าด้วยกันใน \"roll up\" ก่อนที่จะส่งไปอยู่ถาวรใน Ethereum"
+        "description_2": "ทำการรวมธุรกรรมหลายๆ รายการใน \"roll up\" ก่อนส่งไปยัง Ethereum อย่างถาวร"
       },
       "zora": {
         "title": "Zora คืออะไร",
         "description_1": "Zora เป็นเครือข่าย Layer 2 ที่ทำงานบน Ethereum, ทำให้การทำธุรกรรมถูกต้นทุนและเร็วขึ้นในขณะที่ยังได้รับประโยชน์จากความปลอดภัยที่ภายใต้ของ Ethereum",
-        "description_2": "มันรวมธุรกรรมหลายๆ รายการเข้าด้วยกันใน \"roll up\" ก่อนที่จะส่งไปอยู่ถาวรใน Ethereum"
+        "description_2": "ทำการรวมธุรกรรมหลายๆ รายการใน \"roll up\" ก่อนส่งไปยัง Ethereum อย่างถาวร"
       },
       "link_button_label": "อ่านเพิ่มเติม",
       "action_label": "เข้าใจแล้ว"
@@ -1282,7 +1282,7 @@
   },
   "alert": {
     "ok": "ตกลง",
-    "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
+    "wallet_watching_mode": "กระเป๋าสตางค์นี้อยู่ในโหมด 'ดู' ณ ตอนนี้",
     "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
     "coming_soon": "เร็ว ๆ นี้!",
     "no_hw_ff": "ไม่รองรับ hardware wallets บน Firefox ลองใช้เบราว์เซอร์อื่นเช่น Chrome หรือ Brave"
