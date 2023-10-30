@@ -1,17 +1,19 @@
 import React from 'react';
 import { useLocation } from 'react-router';
 
-import { CustomRPC } from '~/core/state/customRPC';
-import { Box, Inline, Stack, Text } from '~/design-system';
+import { CustomRPC, useCustomRPCsStore } from '~/core/state/customRPC';
+import { Box, Button, Inline, Stack, Text } from '~/design-system';
+import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 
 export function CustomRPC() {
   const { state } = useLocation();
-  const customRPCGroup = state?.customRPCGroup as CustomRPC[];
+  const { setActiveRPC, customChains, removeCustomRPC } = useCustomRPCsStore();
+  const chain = customChains[state?.chainId as number];
 
   return (
     <Box paddingHorizontal="20px">
       <Stack space="16px">
-        {customRPCGroup?.map((customRPC, i) => {
+        {chain?.rpcs?.map((customRPC, i) => {
           return (
             <Box
               background="surfaceSecondaryElevated"
@@ -34,6 +36,38 @@ export function CustomRPC() {
                     </Inline>
                   </Box>
                 ))}
+                <Inline alignHorizontal="justify">
+                  <Text
+                    align="center"
+                    weight="semibold"
+                    size="12pt"
+                    color="labelSecondary"
+                  >
+                    {'Active'}
+                  </Text>
+                  <Checkbox
+                    borderColor="accent"
+                    onClick={() =>
+                      setActiveRPC({
+                        rpcUrl: customRPC.rpcUrl,
+                        chainId: customRPC.chainId,
+                      })
+                    }
+                    selected={chain.activeRpcId === customRPC.rpcUrl}
+                  />
+                </Inline>
+                <Inline alignHorizontal="right">
+                  <Button
+                    onClick={() =>
+                      removeCustomRPC({ rpcUrl: customRPC.rpcUrl })
+                    }
+                    color="accent"
+                    height="36px"
+                    variant="raised"
+                  >
+                    Remove
+                  </Button>
+                </Inline>
               </Stack>
             </Box>
           );

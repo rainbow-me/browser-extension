@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
-import { CustomRPC, useCustomRPCsStore } from '~/core/state/customRPC';
+import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -12,7 +12,7 @@ import { maskInput } from '../../../components/InputMask/utils';
 
 export function SettingsCustomRPC() {
   const navigate = useRainbowNavigate();
-  const { customRPCs, addCustomRPC } = useCustomRPCsStore();
+  const { customChains, addCustomRPC } = useCustomRPCsStore();
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
     rpcUrl?: string;
@@ -34,6 +34,8 @@ export function SettingsCustomRPC() {
     symbol: true,
     explorerUrl: true,
   });
+
+  console.log('-- customChains', customChains);
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
@@ -142,23 +144,10 @@ export function SettingsCustomRPC() {
     }
   }, [addCustomRPC, customRPC, validateAddCustomRpc]);
 
-  const customRPCsByChainId = useMemo(() => {
-    return Object.values(customRPCs).reduce(
-      (acc, rpc) => {
-        if (!acc[rpc.chainId]) {
-          acc[rpc.chainId] = [];
-        }
-        acc[rpc.chainId].push(rpc);
-        return acc;
-      },
-      {} as Record<number, CustomRPC[]>,
-    );
-  }, [customRPCs]);
-
   return (
     <Box paddingHorizontal="20px">
       <Stack space="20px">
-        {Object.keys(customRPCsByChainId).map((chainId: unknown, i) => (
+        {Object.keys(customChains)?.map((chainId, i) => (
           <Box
             key={i}
             background="surfaceSecondaryElevated"
@@ -169,29 +158,27 @@ export function SettingsCustomRPC() {
             onClick={() =>
               navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
                 state: {
-                  customRPCGroup:
-                    customRPCsByChainId[
-                      chainId as keyof typeof customRPCsByChainId
-                    ],
+                  chainId,
                 },
               })
             }
           >
             <Stack space="16px">
               <Text size="14pt" weight="bold" align="left">
-                Group chainId: {chainId as string}
+                Group chainId: {chainId}
               </Text>
               <Stack space="16px">
-                {customRPCsByChainId[
-                  chainId as keyof typeof customRPCsByChainId
-                ].map((customRPC, j) => (
+                {customChains[Number(chainId)]?.rpcs?.map((customRPC, j) => (
                   <Box key={j}>
                     <Inline alignHorizontal="justify">
                       <Text size="14pt" weight="bold" align="center">
                         {customRPC.rpcUrl}
                       </Text>
                       <Text size="14pt" weight="bold" align="center">
-                        {customRPC.active ? 'Active' : ''}
+                        {customRPC.rpcUrl ===
+                        customChains[Number(chainId)].activeRpcId
+                          ? 'Active'
+                          : ''}
                       </Text>
                     </Inline>
                   </Box>
