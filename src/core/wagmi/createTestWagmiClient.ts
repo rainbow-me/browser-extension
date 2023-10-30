@@ -18,7 +18,7 @@ import {
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { queryClient } from '../react-query';
-import { Storage } from '../storage';
+import { LocalStorage } from '../storage';
 
 const noopStorage = {
   getItem: () => '',
@@ -40,9 +40,9 @@ const { chains, provider, webSocketProvider } = configureChains(
 const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.wagmi',
   storage: {
-    getItem: Storage.get,
-    setItem: Storage.set,
-    removeItem: Storage.remove,
+    getItem: LocalStorage.get,
+    setItem: LocalStorage.set,
+    removeItem: LocalStorage.remove,
   },
 });
 

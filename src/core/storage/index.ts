@@ -1,4 +1,4 @@
-export const Storage = {
+export const LocalStorage = {
   async clear() {
     await chrome?.storage?.local?.clear();
   },
