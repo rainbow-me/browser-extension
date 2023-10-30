@@ -6,20 +6,20 @@
     "toggle": "Alihkan"
   },
   "permissions": {
-    "firefox_permission_denied": "Rainbow memerlukan izin untuk mengakses semua situs web untuk berfungsi dengan baik. Harap berikan izin untuk melanjutkan."
+    "firefox_permission_denied": "Rainbow needs permission to access all websites to work properly. Please grant permission in order to continue."
   },
   "wallet": {
-    "rename": "Ganti nama dompet",
-    "edit_appearance": "Edit tampilan",
+    "rename": "Ganti Nama Dompet",
+    "edit_appearance": "Edit Appearance",
     "view_on": "Lihat di %{explorer}",
     "copy_address": "Salin Alamat"
   },
   "wallet_switcher": {
     "title": "Dompet",
-    "rename_wallet": "Ganti nama dompet",
-    "copy_address": "Salin alamat",
-    "remove_wallet": "Hapus dompet",
-    "hide_wallet": "Sembunyikan dompet",
+    "rename_wallet": "Ganti Nama Dompet",
+    "copy_address": "Salin Alamat",
+    "remove_wallet": "Remove Wallet",
+    "hide_wallet": "Hide Wallet",
     "watching": "Pantau",
     "ledger": "Ledger",
     "trezor": "Trezor",
@@ -34,7 +34,7 @@
     }
   },
   "qr_code": {
-    "copy_address": "Salin alamat"
+    "copy_address": "Salin Alamat"
   },
   "add_wallet": {
     "title": "Tambah dompet lain",
@@ -48,13 +48,13 @@
     "watch_address_description": "Pantau alamat publik atau nama ENS"
   },
   "create_wallet_prompt": {
-    "title": "Beri nama dompet Anda",
-    "create_wallet": "Buat dompet",
+    "title": "Name Your Wallet",
+    "create_wallet": "Buat Dompet",
     "create": "Buat",
     "input_placeholder": "Nama"
   },
   "rename_wallet_prompt": {
-    "rename_wallet": "Ganti nama dompet",
+    "rename_wallet": "Ganti Nama Dompet",
     "done": "Selesai"
   },
   "remove_wallet_prompt": {
@@ -76,14 +76,32 @@
     "default_wallet_description": "Izinkan Aplikasi untuk mengutamakan Rainbow saat mencari extension untuk terhubung",
     "contacts": "Kontak",
     "guides_and_support": "Panduan & Dukungan",
-    "learn_about_ethereum": "Pelajari tentang Ethereum",
-    "follow_us_on_twitter": "Ikuti kami di Twitter",
+    "learn_about_ethereum": "Learn About Ethereum",
+    "follow_us_on_twitter": "Follow Us on Twitter",
     "share_beta_feedback": "Berbagi Masukan Beta",
     "theme": {
       "title": "Tema",
       "system": "Sistem",
       "light": "Terang",
       "dark": "Gelap"
+    },
+    "networks": {
+      "mainnet": "Mainnet",
+      "title": "Jaringan",
+      "quick_promo": {
+        "text": "Drag networks to reorder them",
+        "text_bold": "Tip:"
+      },
+      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "testnet_mode": {
+        "title": "Testnet Mode",
+        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
+        "shortcut_title": "Enable Keyboard Shortcut",
+        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+      },
+      "custom_rpc": {
+        "title": "Custom RPC"
+      }
     },
     "privacy_and_security": {
       "title": "Privasi & Keamanan",
@@ -109,15 +127,15 @@
       },
       "change_password": {
         "title": "Ubah Password",
-        "header_label": "Ubah password Anda"
+        "header_label": "Change Your Password"
       },
       "confirm_password": {
         "title": "Masukkan Password Anda",
-        "description": "Anda perlu memasukkan password saat ini untuk melanjutkan"
+        "description": "Continue with your current password."
       },
       "wallets_and_keys": {
         "title": "Dompet & Kunci",
-        "create_a_new_wallet": "Buat dompet baru",
+        "create_a_new_wallet": "Create a New Wallet",
         "imported": "Diimpor",
         "wallet_single": "Dompet",
         "wallet_plural": "Dompet",
@@ -127,10 +145,16 @@
         "backed_up": "Sudah di-backup",
         "not_backed_up": "Belum di-backup",
         "back_up_now": "Backup Sekarang",
+        "context_menu": {
+          "create_wallet": "Buat Dompet",
+          "view_secret_phrase": "View Secret Phrase",
+          "hide_wallets": "Hide Wallets",
+          "unhide_wallets": "Unhide Wallets"
+        },
         "wallet_details": {
           "title": "Detail Dompet",
           "view_recovery_phrase": "Lihat Frasa Pemulihan",
-          "create_new_wallet": "Buat Dompet Baru",
+          "create_new_wallet": "Create a New Wallet",
           "rename_wallet": "Ganti Nama Dompet",
           "unhide_wallet": "Tampilkan Dompet",
           "delete_wallet": "Hapus Dompet",
@@ -141,7 +165,7 @@
           "last_backed_up": "Terakhir di-backup sebagai %{date}"
         },
         "new_wallet": {
-          "name_your_wallet": "Beri nama dompet Anda",
+          "name_your_wallet": "Name Your Wallet",
           "create": "Buat Dompet",
           "input_placeholder": "contoh: Dompet 1"
         },
@@ -153,18 +177,19 @@
           "warning_2": "Pastikan tidak ada yang bisa melihat layar Anda saat melihat Kunci Pribadi Anda",
           "warning_3": "Siapa saja dengan Kunci Pribadi Anda bisa mengakses seluruh dompet Anda",
           "warning_4": "Dukungan Rainbow tidak akan pernah meminta Kunci Pribadi Anda",
-          "show": "Tampilkan Kunci Pribadi"
+          "show": "Tampilkan Kunci Pribadi",
+          "copied": "Private Key Copied"
         },
         "recovery_phrase": {
-          "title": "Frasa Pemulihan Anda",
+          "title": "Frasa Pemulihan Rahasia Anda",
           "subtitle": "Siapa saja yang memiliki kata-kata ini dapat mengakses seluruh dompet Anda! Anda tidak boleh pernah membagikan mereka",
           "saved": "Saya telah menyimpan kata-kata ini",
-          "warning_1": "Jangan pernah bagikan Frasa Pemulihan Anda atau memasukkannya ke dalam aplikasi apa pun.",
-          "warning_2": "Pastikan tidak ada yang bisa melihat layar Anda saat melihat Frasa Pemulihan Anda.",
-          "warning_3": "Siapa saja dengan Frasa Pemulihan Anda dapat mengakses seluruh dompet Anda.",
-          "warning_4": "Dukungan Rainbow tidak akan pernah meminta Frasa Pemulihan Anda.",
+          "warning_1": "Never share your Secret Recovery Phrase or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Secret Recovery Phrase.",
+          "warning_3": "Siapapun dengan Frasa Pemulihan Rahasia Anda dapat mengakses seluruh dompet Anda",
+          "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Tampilkan Frasa Pemulihan",
-          "phrase_copied": "Frasa Pemulihan Disalin"
+          "copied": "Frasa Pemulihan Disalin"
         }
       }
     },
@@ -172,6 +197,8 @@
       "title": "Transaksi",
       "default_speed": "Kecepatan Standar",
       "use_flashbots": "Gunakan Flashbots",
+      "clear_transactions_and_nonces": "Clear Pending Transactions",
+      "clear_transactions_and_nonces_success": "Pending transactions cleared",
       "flashbots_description": "Flashbots melindungi transaksi Anda dan mengurangi kemungkinan kegagalan transaksi. Pelajari lebih lanjut."
     },
     "currency": {
@@ -198,7 +225,7 @@
       "full_watching_wallets": "Akses Penuh ke Dompet Tertonton",
       "hw_wallets_enabled": "Aktifkan Dukungan Dompet Perangkat Keras",
       "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K",
-      "new_tab_bar_enabled": "Bar Tab Baru"
+      "custom_rpc": "Custom RPC"
     }
   },
   "transactions": {
@@ -206,7 +233,7 @@
     "cancelled": "Transaksi Dibatalkan",
     "burn": {
       "pending": "Membakar",
-      "confirmed": "Terbakar",
+      "confirmed": "Burned",
       "failed": "Gagal Membakar"
     },
     "cancel": {
@@ -344,6 +371,7 @@
         "view_nfts": "Lihat NFTs",
         "add_wallet": "Tambahkan Wallet",
         "lock": "Kunci Rainbow",
+        "testnet_mode": "Testnet Mode",
         "connected_apps": "Aplikasi Terhubung",
         "settings": "Pengaturan",
         "my_qr_code": "Kode QR Saya",
@@ -483,7 +511,7 @@
       "cancel": "Batal",
       "sending_on_network": "Mengirim di jaringan %{chainName}",
       "sending_on_l2_check_1": "Saya tidak mengirim ke bursa",
-      "sending_on_l2_check_2": "Orang yang saya kirimkan memiliki dompet yang mendukung %{chainName}",
+      "sending_on_l2_check_2": "The person I’m sending to has a wallet that supports %{chainName}",
       "complete_checks": "Lengkapi pemeriksaan",
       "confirm_hw": "Konfirmasi di perangkat Anda"
     }
@@ -668,19 +696,19 @@
     }
   },
   "contacts": {
-    "save_contact": "Simpan kontak",
-    "add_to_contacts": "Tambah ke kontak",
-    "edit_contact": "Edit kontak",
-    "save_changes": "Simpan perubahan",
+    "save_contact": "Save Contact",
+    "add_to_contacts": "Add to Contacts",
+    "edit_contact": "Edit Contact",
+    "save_changes": "Save Changes",
     "cancel": "Batal",
-    "remove_contact_title": "Hapus kontak?",
-    "remove_contact_action": "Hapus kontak",
+    "remove_contact_title": "Remove Contact?",
+    "remove_contact_action": "Remove Contact",
     "remove_contact_description": "Apakah anda yakin ingin menghapus “%{name}” dari kontak anda?",
     "save": "Simpan",
-    "copy_address": "Salin alamat",
+    "copy_address": "Salin Alamat",
     "view_on_etherscan": "Lihat di Etherscan",
     "view_on_explorer": "Lihat di Explorer",
-    "delete_contact": "Hapus kontak",
+    "delete_contact": "Delete Contact",
     "contact_address_copied": "Alamat Tersalin"
   },
   "sign": {
@@ -719,7 +747,7 @@
   },
   "seed_reveal": {
     "title": "Frasa Pemulihan Rahasia Anda",
-    "write_down_seed_importance": "Simpan kata-kata ini dapat mengakses seluruh dompet Anda! Simpan di tempat yang aman jangan pernah membaginya",
+    "write_down_seed_importance": "Siapa saja yang memiliki kata-kata ini dapat mengakses seluruh dompet Anda! Anda tidak boleh pernah membagikan mereka",
     "saved_these_words": "Saya telah menyimpan kata-kata ini",
     "phrase_copied": "Frasa Pemulihan Disalin"
   },
@@ -847,8 +875,18 @@
       "rainbow_profile": "Profil Rainbow",
       "guides_and_support": "Panduan & Dukungan",
       "share_feedback": "Bagikan Masukan",
-      "lock_rainbow": "Kunci Rainbow"
+      "lock_rainbow": "Kunci Rainbow",
+      "testnet_mode": "Testnet Mode"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "Connect to %{chainName}",
+    "testnet_mode": "Testnet Mode",
+    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
+    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
+    "disable_and_connect": "Disable and connect",
+    "enable_and_connect": "Enable and connect",
+    "cancel": "Batal"
   },
   "app_connection_switcher": {
     "banner": {
@@ -875,7 +913,7 @@
     "wallet_switcher": {
       "switch_wallets": "Ganti Dompet",
       "other_wallets": "Dompet Lain",
-      "cancel": "Batal",
+      "done": "Selesai",
       "connected": "Terhubung"
     }
   },
@@ -893,12 +931,19 @@
     "switch_networks": "Ganti Jaringan",
     "switch_wallets": "Ganti Dompet",
     "connect": "Hubungkan ke %{appName}",
+    "connect_anyway": "Connect Anyway",
+    "malicious_warning": {
+      "title": "This app is likely malicious",
+      "message": "Signing messages or transactions from this app could result in losing your assets"
+    },
     "message_signing_request": "Permintaan Tanda Tangan Pesan",
     "message": "Pesan",
     "sign_message": "Tandatangani Pesan",
+    "sign_message_anyway": "Sign Anyway",
     "confirm_hw": "Konfirmasi di perangkat Anda",
     "balance": "Saldo",
-    "send_transaction": "Kirim Transaksi",
+    "send_transaction": "Confirm",
+    "send_transaction_anyway": "Confirm Anyway",
     "contract_deployment": "Penerapan Kontrak",
     "transaction_request": "Permintaan Transaksi",
     "insufficient_native_asset_for_gas": "Kurangnya %{symbol} untuk gas"
@@ -979,7 +1024,9 @@
     "copy_to_clipboard": "Salin ke papan klip"
   },
   "errors": {
-    "no_wallet_name_set": "Nama wallet belum diatur"
+    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "no_wallet_name_set": "Nama wallet belum diatur",
+    "report_error": "Report issue"
   },
   "common_titles": {
     "before_you_proceed": "Sebelum Anda melanjutkan"
@@ -1009,8 +1056,9 @@
   },
   "tabs": {
     "activity": "Aktivitas",
-    "tokens": "Tokens",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "Points",
+    "tokens": "Tokens"
   },
   "activity": {
     "today": "Hari Ini",
@@ -1068,6 +1116,10 @@
     "coming_soon_description": "NFTs segera hadir. Tetap sintonik!",
     "view_on_web": "Lihat di Web"
   },
+  "points": {
+    "coming_soon_header": "Segera Hadir",
+    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+  },
   "speed_up_and_cancel": {
     "speed_up": "Percepat",
     "cancel": "Batal",
@@ -1109,8 +1161,8 @@
       "about_token": "Tentang %{name}",
       "price": "Harga",
       "volume": "Volume",
-      "ath": "Tinggi Sepanjang Waktu",
-      "atl": "Rendah Sepanjang Waktu",
+      "ath": "All Time High",
+      "atl": "All Time Low",
       "market_cap": "Kap Pasar",
       "market_cap_explainer": {
         "title": "Kap Pasar",
@@ -1217,7 +1269,7 @@
       "current_base_title": "Biaya dasar saat ini",
       "max_base_explainer_1": "Ini adalah biaya dasar maksimum yang Anda bersedia bayar untuk transaksi ini",
       "max_base_explainer_2": "Mengatur biaya dasar maksimum yang lebih tinggi mencegah transaksi Anda dari macet jika biaya naik",
-      "max_base_title": "Biaya dasar maksimum",
+      "max_base_title": "Biaya dasar maksimal",
       "max_priority_explainer": "Tip penambang langsung menuju ke penambang yang mengkonfirmasi transaksi Anda di jaringan.\n\nTip yang lebih tinggi membuat transaksi Anda lebih cenderung dikonfirmasi dengan cepat",
       "max_priority_title": "Tip penambang"
     }
@@ -1230,7 +1282,8 @@
   },
   "alert": {
     "ok": "Ok",
-    "wallet_watching_mode": "Dompet ini saat ini dalam mode 'Watching'",
+    "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
+    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
     "coming_soon": "Segera Hadir!",
     "no_hw_ff": "Dompet perangkat keras tidak didukung di Firefox. Coba browser lain seperti Chrome atau Brave"
   },
