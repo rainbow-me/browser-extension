@@ -66,9 +66,9 @@ class KeychainManager {
       rehydrate: async () => {
         try {
           // Get the vault from storage
-          const storageState = await privates.get(this).getLastStorageState();
-          if (storageState) {
-            this.state.vault = storageState.vault;
+          const vault = await privates.get(this).getLastStorageState();
+          if (vault) {
+            this.state.vault = vault;
           }
 
           const encryptionKey = await privates.get(this).getEncryptionKey();
@@ -182,7 +182,7 @@ class KeychainManager {
 
         // Encrypt the serialized keychains
         const pwd = privates.get(this).password;
-        const { encryptionKey } = await privates.get(this).getEncryptionKey();
+        const encryptionKey = await privates.get(this).getEncryptionKey();
         const salt = await privates.get(this).getSalt();
 
         if (serializedKeychains.length > 0) {
@@ -266,7 +266,7 @@ class KeychainManager {
     if (this.state.vault) {
       return true;
     } else {
-      const { vault } = await privates.get(this).getLastStorageState();
+      const vault = await privates.get(this).getLastStorageState();
       if (vault) {
         return true;
       }
