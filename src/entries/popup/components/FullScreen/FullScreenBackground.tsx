@@ -6,7 +6,7 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
-import { TestnetBar } from '../TestnetBar/TestnetBar';
+import { TestnetBar } from '../TestnetMode/TestnetBar/TestnetBar';
 
 export function FullScreenBackground({
   children,
