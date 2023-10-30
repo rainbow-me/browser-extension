@@ -40,9 +40,17 @@ export const SessionStorage = {
     try {
       await chrome?.storage?.session?.set({ [key]: value });
     } catch (e) {
-      // If we got a quota related error, let's log the size of the keys
-      // that can grow exponentially to see where we are at
-      if ((e as Error)?.message.toLowerCase().indexOf('quota') !== -1) {
+      // This is where the quota error should show up
+      const chromeError = chrome.runtime.lastError?.message;
+
+      if (
+        chromeError?.indexOf('quota') != -1 ||
+        // We're still checking on both places just in case
+        (e as Error)?.message.toLowerCase().indexOf('quota') !== -1
+      ) {
+        // If we got a quota related error, let's log the size of the keys
+        // that can grow exponentially to see where we are at
+
         const queuedEvents = await SessionStorage.get('queuedEvents');
         const rateLimits = await SessionStorage.get('rateLimits');
 
