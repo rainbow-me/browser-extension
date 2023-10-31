@@ -1,26 +1,33 @@
 import React, { useCallback, useState } from 'react';
 import { useLocation } from 'react-router';
+import { Address } from 'wagmi';
 
 import { CustomRPC, useCustomRPCsStore } from '~/core/state/customRPC';
+import {
+  CustomRPCAsset,
+  useCustomRPCAssetsStore,
+} from '~/core/state/customRPCAssets';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 
+const INITIAL_ASSET = {
+  address: '' as Address,
+  decimals: 18,
+  symbol: '',
+};
+
 export function CustomRPC() {
   const { state } = useLocation();
   const { setActiveRPC, customChains, removeCustomRPC } = useCustomRPCsStore();
-  const chain = customChains[state?.chainId as number];
+  const { customRPCAssets, addCustomRPCAsset, removeCustomRPCAsset } =
+    useCustomRPCAssetsStore();
+  const chainId = state?.chainId as number;
+  const chain = customChains[chainId];
+  const customRPCAssetsForChain = customRPCAssets[chainId];
 
-  const [asset, setAsset] = useState<{
-    address: string;
-    decimals: number;
-    symbol: string;
-  }>({
-    address: '',
-    decimals: 18,
-    symbol: '',
-  });
+  const [asset, setAsset] = useState<CustomRPCAsset>(INITIAL_ASSET);
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
@@ -44,6 +51,11 @@ export function CustomRPC() {
     [],
   );
 
+  const addAsset = useCallback(() => {
+    addCustomRPCAsset({ chainId, customRPCAsset: asset });
+    setAsset(INITIAL_ASSET);
+  }, [addCustomRPCAsset, asset, chainId]);
+
   return (
     <Box paddingHorizontal="20px">
       <Stack space="24px">
@@ -59,7 +71,7 @@ export function CustomRPC() {
                 key={i}
               >
                 <Stack space="10px">
-                  {Object.keys(customRPC).map((key, i) => (
+                  {Object.keys(customRPC)?.map((key, i) => (
                     <Box key={i}>
                       <Inline space="4px">
                         <Text size="14pt" weight="bold" align="center">
@@ -110,6 +122,57 @@ export function CustomRPC() {
             );
           })}
         </Stack>
+
+        {customRPCAssetsForChain?.map((asset, i) => (
+          <Box
+            background="surfaceSecondaryElevated"
+            borderRadius="16px"
+            boxShadow="12px"
+            width="full"
+            padding="16px"
+            key={i}
+          >
+            <Stack space="4px">
+              <Text
+                align="left"
+                weight="semibold"
+                size="9pt"
+                color="labelSecondary"
+              >
+                {asset.address}
+              </Text>
+              <Text
+                align="left"
+                weight="semibold"
+                size="12pt"
+                color="labelSecondary"
+              >
+                {asset.decimals}
+              </Text>
+              <Text
+                align="left"
+                weight="semibold"
+                size="12pt"
+                color="labelSecondary"
+              >
+                {asset.symbol}
+              </Text>
+            </Stack>
+            <Inline alignHorizontal="right">
+              <Button
+                onClick={() =>
+                  removeCustomRPCAsset({ address: asset.address, chainId })
+                }
+                color="accent"
+                height="24px"
+                variant="raised"
+              >
+                Remove Asset
+              </Button>
+            </Inline>
+          </Box>
+        ))}
+
         <Box
           background="surfaceSecondaryElevated"
           borderRadius="16px"
@@ -154,7 +217,7 @@ export function CustomRPC() {
 
             <Inline alignHorizontal="right">
               <Button
-                // onClick={addCustomRpc}
+                onClick={addAsset}
                 color="accent"
                 height="36px"
                 variant="raised"
