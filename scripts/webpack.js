@@ -40,23 +40,26 @@ function replaceInFile(filePath, target, replacement) {
 const buildDir = join(__dirname, '../build');
 
 const replacePopupCssName = () => {
-
-  fs.readdir(buildDir, (err, files) => {
-    const popupCssFile = files.find(file => {
-      return extname(file) === '.css' &&
-            file !== 'background.css' &&
-            file !== 'inpage.css';
+  return new Promise((resolve) => {
+    console.log('replacing popup.css instances');
+      fs.readdir(buildDir, (err, files) => {
+        const popupCssFile = files.find(file => {
+          return extname(file) === '.css' &&
+                file !== 'background.css' &&
+                file !== 'inpage.css';
+        });
+        if (popupCssFile) {
+          replaceInFile('build/background.js.map', 'popup.css', popupCssFile);
+          replaceInFile('build/inpage.js.map', 'popup.css', popupCssFile);
+          replaceInFile('build/inpage.js', 'popup.css', popupCssFile);
+          replaceInFile('build/manifest.json', 'popup.css', popupCssFile);
+          console.log('all instances replaced');
+        } else {
+          console.log('popup.css file not found. Skipping...');
+        }
+        resolve();
     });
-    if (popupCssFile) {
-      console.log('found popup css file', popupCssFile);
-      replaceInFile('build/background.js.map', 'popup.css', popupCssFile);
-      replaceInFile('build/inpage.js.map', 'popup.css', popupCssFile);
-      replaceInFile('build/inpage.js', 'popup.css', popupCssFile);
-      replaceInFile('build/manifest.json', 'popup.css', popupCssFile);
-      console.log('all instances replaced');
-    }
-      
-});
+  });
 }
 
 
@@ -153,13 +156,15 @@ webpack(webpackConfig).run((err, stats) => {
     process.exit(1);
   } else {
       // BUILD THE UI (POPUP)
-      webpack(webpackConfigUI).run((err, stats) => {
+      webpack(webpackConfigUI).run(async (err, stats) => {
         if (err) throw err;
-        replacePopupCssName();
         console.log(stats.toString());
         if(stats.hasErrors()) {
+          console.warn('build failed with errors');
           process.exit(1);
         } else {
+          await replacePopupCssName();
+          console.warn('build has passed without errors');
           process.exit(0);
         }
     });
