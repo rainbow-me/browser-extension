@@ -52,13 +52,25 @@ export function CustomRPC() {
     [],
   );
 
-  const addAsset = useCallback(() => {
-    if (isValidAddress(asset.address) && asset.decimals && asset.symbol) {
-      addCustomRPCAsset({ chainId, customRPCAsset: asset });
-    }
+  const validateAsset = useCallback(
+    (asset: CustomRPCAsset) => {
+      const dataValid =
+        isValidAddress(asset.address) && asset.decimals && asset.symbol;
+      const customRPCAssetsAddresses = customRPCAssetsForChain.map(
+        (asset) => asset.address,
+      );
+      return dataValid && !customRPCAssetsAddresses.includes(asset.address);
+    },
+    [customRPCAssetsForChain],
+  );
 
-    setAsset(INITIAL_ASSET);
-  }, [addCustomRPCAsset, asset, chainId]);
+  const addAsset = useCallback(() => {
+    const validAsset = validateAsset(asset);
+    if (validAsset) {
+      addCustomRPCAsset({ chainId, customRPCAsset: asset });
+      setAsset(INITIAL_ASSET);
+    }
+  }, [addCustomRPCAsset, asset, chainId, validateAsset]);
 
   return (
     <Box paddingHorizontal="20px">
