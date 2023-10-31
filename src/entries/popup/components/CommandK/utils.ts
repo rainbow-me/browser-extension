@@ -463,7 +463,7 @@ export const generateCSV = (
   return csvContent;
 };
 
-export const handleExportWalletList = async (walletNames: WalletNames) => {
+export const handleExportAddresses = async (walletNames: WalletNames) => {
   const data = await getWallets();
   const csvContent = generateCSV(data, walletNames);
   const blob = new Blob([csvContent], { type: 'text/csv' });

@@ -47,7 +47,7 @@ import { CommandKPageState } from './useCommandKNavigation';
 import { useSearchableENSorAddress } from './useSearchableENSOrAddress';
 import { useSearchableTokens } from './useSearchableTokens';
 import { useSearchableWallets } from './useSearchableWallets';
-import { handleExportWalletList } from './utils';
+import { handleExportAddresses } from './utils';
 
 interface CommandOverride {
   [key: string]: Partial<ShortcutSearchItem>;
@@ -231,11 +231,11 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 14,
     type: SearchItemType.Shortcut,
   },
-  exportAddressList: {
+  exportAddresses: {
     name: 'Export Addresses as CSV',
     page: PAGES.HOME,
     shouldRemainOnActiveRoute: true,
-    searchTags: getSearchTags('export_wallet_list'),
+    searchTags: getSearchTags('export_addresses'),
     symbol: 'doc.on.doc',
     symbolSize: 15,
     type: SearchItemType.Shortcut,
@@ -595,8 +595,8 @@ export const useCommands = (
       copyAddress: {
         action: () => handleCopy(address),
       },
-      exportAddressList: {
-        action: () => handleExportWalletList(walletNames),
+      exportAddresses: {
+        action: () => handleExportAddresses(walletNames),
       },
       viewNFTs: {
         action: openProfile,
