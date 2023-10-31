@@ -3,6 +3,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { SessionStorage } from '~/core/storage';
 import {
   Box,
   Button,
@@ -27,14 +28,15 @@ import { useImportWalletSessionSecrets } from './useImportWalletSessionSecrets';
 
 const derivedAccountsStore = {
   get: () =>
-    chrome.storage.session
-      .get({ derivedAccountsFromSecrets: {} })
-      .then((r) => r.derivedAccountsFromSecrets) as Promise<
-      Record<string, Address[]>
-    >,
+    SessionStorage.get('derivedAccountsFromSecrets').then(
+      (derivedAccountsFromSecrets) => derivedAccountsFromSecrets || {},
+    ) as Promise<Record<string, Address[]>>,
   set: async (derivedAccountsFromSecrets: Record<string, Address[]>) =>
-    chrome.storage.session.set({ derivedAccountsFromSecrets }),
-  clear: () => chrome.storage.session.set({ derivedAccountsFromSecrets: {} }),
+    SessionStorage.set(
+      'derivedAccountsFromSecrets',
+      derivedAccountsFromSecrets,
+    ),
+  clear: () => SessionStorage.set('derivedAccountsFromSecrets', {}),
 };
 
 const derivedAccountsFromSecret = async (secret: string) => {
