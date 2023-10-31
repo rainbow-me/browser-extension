@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Address } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
+import { KeychainWallet } from '~/core/types/keychainTypes';
 
 import { getWallets } from '../../handlers/wallet';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
@@ -431,12 +432,6 @@ export function useKeyboardNavigation(
   }, []);
 }
 
-interface WalletObj {
-  accounts: Address[];
-  type: 'HdKeychain' | 'HardwareWalletKeychain' | 'ReadOnlyKeychain';
-  vendor?: string;
-}
-
 type WalletNames = {
   [address: string]: string;
 };
@@ -447,7 +442,7 @@ const typeMapping: { [key: string]: string } = {
 };
 
 export const generateCSV = (
-  data: WalletObj[],
+  data: KeychainWallet[],
   walletNames: WalletNames,
 ): string => {
   let csvContent = 'public_address,name,type\n';
@@ -470,19 +465,15 @@ export const generateCSV = (
 
 export const handleExportWalletList = async (walletNames: WalletNames) => {
   const data = await getWallets();
-  const csvContent = generateCSV(data as WalletObj[], walletNames);
+  const csvContent = generateCSV(data, walletNames);
   const blob = new Blob([csvContent], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
-
-  // Create a temporary anchor to initiate the download
   const tempLink = document.createElement('a');
   tempLink.href = url;
   tempLink.download = 'rainbow_addresses.csv';
   document.body.appendChild(tempLink);
   tempLink.click();
   document.body.removeChild(tempLink);
-
-  // Release the object URL after use
   URL.revokeObjectURL(url);
 
   triggerToast({
