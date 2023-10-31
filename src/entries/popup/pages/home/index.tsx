@@ -128,15 +128,17 @@ const Tabs = memo(function Tabs({
     },
   });
 
+  const getDisableBottomPadding = () => {
+    if (featureFlags.nfts_enabled && activeTab === 'nfts') {
+      return false;
+    }
+    return isPlaceholderTab(activeTab);
+  };
+
   return (
     <>
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-      <Content
-        disableBottomPadding={
-          isPlaceholderTab(activeTab) ||
-          (activeTab === 'nfts' && featureFlags.nfts_enabled)
-        }
-      >
+      <Content disableBottomPadding={getDisableBottomPadding()}>
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
         {activeTab === 'nfts' && featureFlags.nfts_enabled && (
