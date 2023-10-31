@@ -218,7 +218,7 @@ const skipRateLimitCheck = (method: string) =>
     'wallet_switchEthereumChain',
     'eth_requestAccounts',
     'personal_ecRecover',
-  ].includes(method);
+  ].includes(method) || method.startsWith('wallet_');
 
 /**
  * Handles RPC requests from the provider.
@@ -308,7 +308,6 @@ export const handleProviderRequest = ({
           break;
         }
         case 'wallet_switchEthereumChain': {
-          console.log('BX - wallet_switchEthereumChain');
           const proposedChainId = Number(
             (params?.[0] as { chainId: ChainId })?.chainId,
           );
@@ -453,7 +452,6 @@ export const handleProviderRequest = ({
       }
       return { id, result: response };
     } catch (error) {
-      console.log('returning error', error);
       return { id, error: <Error>error };
     }
   });
