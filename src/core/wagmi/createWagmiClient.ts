@@ -10,7 +10,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
-import { Storage } from '../storage';
+import { LocalStorage } from '../storage';
 import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
 import { SUPPORTED_CHAINS } from '../utils/chains';
 import { findCustomNetworkForChainId } from '../utils/customNetworks';
@@ -90,9 +90,9 @@ const { chains, provider, webSocketProvider } = configureChains(
 const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.wagmi',
   storage: {
-    getItem: Storage.get,
-    setItem: Storage.set,
-    removeItem: Storage.remove,
+    getItem: LocalStorage.get,
+    setItem: LocalStorage.set,
+    removeItem: LocalStorage.remove,
   },
 });
 

@@ -4,6 +4,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { SessionStorage } from '~/core/storage';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import {
   Box,
@@ -266,10 +267,10 @@ const ChooseWalletGroup = () => {
 
       setWallets(controlledWallets);
 
-      const sessionData = await chrome.storage.session.get('walletToAdd');
-      if (sessionData.walletToAdd) {
-        setCreateWalletAddress(sessionData.walletToAdd);
-        chrome.storage.session.remove('walletToAdd');
+      const walletToAdd = await SessionStorage.get('walletToAdd');
+      if (walletToAdd) {
+        setCreateWalletAddress(walletToAdd);
+        SessionStorage.remove('walletToAdd');
       }
     };
     fetchWallets();

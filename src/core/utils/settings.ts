@@ -1,12 +1,10 @@
+import { SessionStorage } from '../storage';
 import { KeychainWallet } from '../types/keychainTypes';
 
 export const setSettingWallets = (settingsWallet: null | KeychainWallet) => {
-  chrome.storage.session.set({ settingsWallet });
+  SessionStorage.set('settingsWallet', settingsWallet);
 };
 
 export const getSettingWallets = async (): Promise<KeychainWallet> => {
-  const { settingsWallet } = await chrome.storage.session.get([
-    'settingsWallet',
-  ]);
-  return settingsWallet;
+  return SessionStorage.get('settingsWallet');
 };

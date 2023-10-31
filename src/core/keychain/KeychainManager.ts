@@ -10,6 +10,7 @@ import {
 import * as Sentry from '@sentry/browser';
 import { Address } from 'wagmi';
 
+import { LocalStorage, SessionStorage } from '../storage';
 import { KeychainType } from '../types/keychainTypes';
 import { isLowerCaseMatch } from '../utils/strings';
 
@@ -65,12 +66,12 @@ class KeychainManager {
       rehydrate: async () => {
         try {
           // Get the vault from storage
-          const storageState = await privates.get(this).getLastStorageState();
-          if (storageState) {
-            this.state.vault = storageState.vault;
+          const vault = await privates.get(this).getLastStorageState();
+          if (vault) {
+            this.state.vault = vault;
           }
 
-          const { encryptionKey } = await privates.get(this).getEncryptionKey();
+          const encryptionKey = await privates.get(this).getEncryptionKey();
           if (encryptionKey) {
             const key = await importKey(encryptionKey);
             const vault = (await decryptWithKey(
@@ -181,8 +182,8 @@ class KeychainManager {
 
         // Encrypt the serialized keychains
         const pwd = privates.get(this).password;
-        const { encryptionKey } = await privates.get(this).getEncryptionKey();
-        const { salt } = await privates.get(this).getSalt();
+        const encryptionKey = await privates.get(this).getEncryptionKey();
+        const salt = await privates.get(this).getSalt();
 
         if (serializedKeychains.length > 0) {
           const result = { vault: '', exportedKeyString: '', salt: '' };
@@ -212,24 +213,24 @@ class KeychainManager {
           this.state.vault = '';
         }
         // Store them in the fs
-        await chrome.storage.local.set({ vault: this.state.vault });
+        await LocalStorage.set('vault', this.state.vault);
       },
 
       setSalt: (val: string | null) => {
-        return chrome.storage.session.set({ salt: val });
+        return SessionStorage.set('salt', val);
       },
       getSalt: () => {
-        return chrome.storage.session.get('salt');
+        return SessionStorage.get('salt');
       },
       setEncryptionKey: (val: string | null) => {
-        return chrome.storage.session.set({ encryptionKey: val });
+        return SessionStorage.set('encryptionKey', val);
       },
       getEncryptionKey: () => {
-        return chrome.storage.session.get('encryptionKey');
+        return SessionStorage.get('encryptionKey');
       },
 
       getLastStorageState: () => {
-        return chrome.storage.local.get('vault');
+        return LocalStorage.get('vault');
       },
     });
 
@@ -265,7 +266,7 @@ class KeychainManager {
     if (this.state.vault) {
       return true;
     } else {
-      const { vault } = await privates.get(this).getLastStorageState();
+      const vault = await privates.get(this).getLastStorageState();
       if (vault) {
         return true;
       }
@@ -418,8 +419,8 @@ class KeychainManager {
 
     privates.get(this).password = '';
 
-    await chrome.storage.local.set({ vault: null });
-    await chrome.storage.session.set({ keychainManager: null });
+    await LocalStorage.set('vault', null);
+    await SessionStorage.set('keychainManager', null);
     await privates.get(this).setEncryptionKey(null);
     await privates.get(this).setSalt(null);
   }
