@@ -31,7 +31,7 @@ export function TabHeader({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
   const { featureFlags } = useFeatureFlagsStore();
-  const nftCount = 0;
+  const nftCount = 1;
 
   const displayBalanceComponent = useMemo(
     () =>

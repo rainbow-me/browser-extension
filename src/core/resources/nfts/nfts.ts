@@ -1,4 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import {
+  UseInfiniteQueryResult,
+  useInfiniteQuery,
+} from '@tanstack/react-query';
 import { Address } from 'wagmi';
 
 import {
@@ -7,15 +10,17 @@ import {
   fetchPolygonAllowList,
 } from '~/core/network/nfts';
 import {
-  QueryConfig,
+  InfiniteQueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
 import { ChainName } from '~/core/types/chains';
-import { PolygonAllowListDictionary } from '~/core/types/nfts';
-import { chunkArray } from '~/core/utils/assets';
+import {
+  PolygonAllowListDictionary,
+  SimpleHashCollectionDetails,
+} from '~/core/types/nfts';
 import { getSupportedChains } from '~/core/utils/chains';
 import {
   filterSimpleHashNFTs,
@@ -37,19 +42,25 @@ export type NftsArgs = {
 const nftsQueryKey = ({ address }: NftsArgs) =>
   createQueryKey('nfts', { address }, { persisterVersion: 1 });
 
-type NftsQueryKey = ReturnType<typeof nftsQueryKey>;
-
 // ///////////////////////////////////////////////
 // Query Function
 
 async function nftsQueryFunction({
   queryKey: [{ address }],
+  pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
   const chains = getSupportedChains().map((chain) => chain.name as ChainName);
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
-  const collections = (await fetchNftCollections({ address, chains })).filter(
-    (collection) => {
+  const collectionsResponse = await fetchNftCollections({
+    address,
+    chains,
+    cursor: pageParam,
+  });
+  const collections = collectionsResponse.collections;
+  const nextPage = collectionsResponse.nextPage;
+  const filteredCollections = collections?.filter(
+    (collection: SimpleHashCollectionDetails) => {
       const polygonContractAddressString =
         collection.collection_details.top_contracts.find((contract) =>
           contract.includes('polygon'),
@@ -75,40 +86,17 @@ async function nftsQueryFunction({
       }
     },
   );
-  const collectionsBatches = chunkArray(
-    collections
-      .filter((collection) => collection.collection_id)
-      .map((collection) => collection.collection_id),
-    40,
-  );
-  const nftRequests = collectionsBatches.map((collectionIds) =>
-    fetchNfts({
-      address,
-      chains,
-      collectionIds,
-    }),
-  );
-  const nftsResponse = (await Promise.allSettled(nftRequests))
-    .filter((resData) => resData.status === 'fulfilled')
-    .map((resData) => {
-      // ts forcing the type guard despite filter above
-      if (resData.status === 'fulfilled') {
-        return resData.value;
-      } else {
-        return [];
-      }
-    })
-    .flat();
+  const collectionIds = filteredCollections
+    .filter((c) => c.collection_id)
+    .map((c) => c.collection_id);
+  const nftsResponse = await fetchNfts({ address, chains, collectionIds });
   const nfts = filterSimpleHashNFTs(nftsResponse, polygonAllowList).map((nft) =>
     simpleHashNFTToUniqueAsset(nft),
   );
-  return nfts.map((nft) => {
-    if (nft.collection.collection_id) {
-      nft.last_collection_acquisition =
-        acquisitionMap[nft.collection.collection_id];
-    }
-    return nft;
-  });
+  return {
+    nfts,
+    nextPage,
+  };
 }
 
 type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;
@@ -116,11 +104,29 @@ type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useNfts<TSelectResult = NftsResult>(
+export function useNfts<TSelectData = NftsResult>(
   { address }: NftsArgs,
-  config: QueryConfig<NftsResult, Error, TSelectResult, NftsQueryKey> = {},
+  config: InfiniteQueryConfig<NftsResult, Error, TSelectData> = {},
 ) {
-  return useQuery(nftsQueryKey({ address }), nftsQueryFunction, config);
+  return useInfiniteQuery(nftsQueryKey({ address }), nftsQueryFunction, {
+    ...config,
+    getNextPageParam: (lastPage) => lastPage?.nextPage,
+    refetchInterval: 10000,
+    retry: 3,
+  });
+}
+
+// ///////////////////////////////////////////////
+// Query Utils
+
+export function getNftCount({ address }: NftsArgs) {
+  const nftData: UseInfiniteQueryResult<NftsResult, Error> | undefined =
+    queryClient.getQueryData(nftsQueryKey({ address }));
+  console.log('base data: ', nftData);
+  if (nftData?.data?.pages) {
+    const nfts = nftData?.data?.pages;
+    console.log('NFTS: ', nfts);
+  }
 }
 
 // ///////////////////////////////////////////////
