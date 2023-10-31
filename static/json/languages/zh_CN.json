@@ -86,21 +86,21 @@
       "dark": "暗色"
     },
     "networks": {
-      "mainnet": "Mainnet",
+      "mainnet": "主网",
       "title": "网络",
       "quick_promo": {
-        "text": "Drag networks to reorder them",
+        "text": "拖动网络进行排序",
         "text_bold": "提示："
       },
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "description": "选择要显示的网络和代币。即使没有选中，您也可以连接到Rainbow支持的任何网络。",
       "testnet_mode": {
-        "title": "Testnet Mode",
-        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
-        "shortcut_title": "Enable Keyboard Shortcut",
-        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "测试网络模式",
+        "toggle_explainer": "切换到测试网络模式，只显示测试网络余额和交易。",
+        "shortcut_title": "启用键盘快捷方式",
+        "shortcut_toggle_explainer": "启用测试网络模式快捷方式（T）并向主屏幕的右上方菜单添加一个切换键。"
       },
       "custom_rpc": {
-        "title": "Custom RPC"
+        "title": "自定义RPC"
       }
     },
     "privacy_and_security": {
@@ -147,9 +147,9 @@
         "back_up_now": "立即备份",
         "context_menu": {
           "create_wallet": "创建钱包",
-          "view_secret_phrase": "View Secret Phrase",
-          "hide_wallets": "Hide Wallets",
-          "unhide_wallets": "Unhide Wallets"
+          "view_secret_phrase": "查看密钥短语",
+          "hide_wallets": "隐藏钱包",
+          "unhide_wallets": "取消隐藏钱包"
         },
         "wallet_details": {
           "title": "钱包详情",
@@ -178,7 +178,7 @@
           "warning_3": "任何拥有您的私钥的人都可以访问您的整个钱包。",
           "warning_4": "Rainbow Support永远不会要求您提供私钥。",
           "show": "显示私钥",
-          "copied": "Private Key Copied"
+          "copied": "私钥已复制"
         },
         "recovery_phrase": {
           "title": "您的恢复短语",
@@ -197,8 +197,8 @@
       "title": "交易记录",
       "default_speed": "默认速度",
       "use_flashbots": "使用 Flashbots",
-      "clear_transactions_and_nonces": "Clear Pending Transactions",
-      "clear_transactions_and_nonces_success": "Pending transactions cleared",
+      "clear_transactions_and_nonces": "清除待处理交易",
+      "clear_transactions_and_nonces_success": "待处理交易已清除",
       "flashbots_description": "Flashbots 保护您的交易并降低交易失败的可能性。了解更多信息。"
     },
     "currency": {
@@ -225,7 +225,7 @@
       "full_watching_wallets": "完全访问被监视的钱包",
       "hw_wallets_enabled": "启用硬件钱包支持",
       "command_k_internal_shortcuts_enabled": "启用 ⌘K 内部快捷键",
-      "custom_rpc": "Custom RPC"
+      "custom_rpc": "自定义RPC"
     }
   },
   "transactions": {
@@ -371,7 +371,7 @@
         "view_nfts": "查看NFT",
         "add_wallet": "添加钱包",
         "lock": "锁定彩虹",
-        "testnet_mode": "Testnet Mode",
+        "testnet_mode": "测试网络模式",
         "connected_apps": "连接的应用",
         "settings": "设置",
         "my_qr_code": "我的二维码",
@@ -876,16 +876,16 @@
       "guides_and_support": "指南与支持",
       "share_feedback": "分享反馈",
       "lock_rainbow": "锁定彩虹",
-      "testnet_mode": "Testnet Mode"
+      "testnet_mode": "测试网络模式"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Connect to %{chainName}",
-    "testnet_mode": "Testnet Mode",
-    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
-    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
-    "disable_and_connect": "Disable and connect",
-    "enable_and_connect": "Enable and connect",
+    "connect_to": "连接到 %{chainName}",
+    "testnet_mode": "测试网络模式",
+    "testnet_mode_active": "当前已激活。你想停用它并连接到 %{chainName}吗？",
+    "testnet_mode_not_active": "目前尚未激活。你想启用它并连接到 %{chainName}吗？",
+    "disable_and_connect": "禁用并连接",
+    "enable_and_connect": "启用并连接",
     "cancel": "取消"
   },
   "app_connection_switcher": {
@@ -931,19 +931,19 @@
     "switch_networks": "切换网络",
     "switch_wallets": "切换钱包",
     "connect": "连接到 %{appName}",
-    "connect_anyway": "Connect Anyway",
+    "connect_anyway": "继续连接",
     "malicious_warning": {
-      "title": "This app is likely malicious",
-      "message": "Signing messages or transactions from this app could result in losing your assets"
+      "title": "这个应用可能有恶意",
+      "message": "从这个应用签名消息或交易可能导致你损失资产"
     },
     "message_signing_request": "消息签名请求",
     "message": "消息",
     "sign_message": "签名消息",
-    "sign_message_anyway": "Sign Anyway",
+    "sign_message_anyway": "照样签名",
     "confirm_hw": "在您的设备上确认",
     "balance": "余额",
     "send_transaction": "发送交易",
-    "send_transaction_anyway": "Confirm Anyway",
+    "send_transaction_anyway": "照样确认",
     "contract_deployment": "合约部署",
     "transaction_request": "交易请求",
     "insufficient_native_asset_for_gas": "燃料不足 %{symbol} 用于支付手续费"
@@ -1024,9 +1024,9 @@
     "copy_to_clipboard": "复制到剪贴板"
   },
   "errors": {
-    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "error_encountered": "出现了问题。请将问题分享给我们的团队，我们会尽快修复！",
     "no_wallet_name_set": "未设置钱包名称",
-    "report_error": "Report issue"
+    "report_error": "报告问题"
   },
   "common_titles": {
     "before_you_proceed": "在您继续之前"
@@ -1057,7 +1057,7 @@
   "tabs": {
     "activity": "活动",
     "nfts": "NFTs",
-    "points": "Points",
+    "points": "积分",
     "tokens": "代币"
   },
   "activity": {
@@ -1118,7 +1118,7 @@
   },
   "points": {
     "coming_soon_header": "即将上线",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "积分即将到来。\n立即开始赚取。"
   },
   "speed_up_and_cancel": {
     "speed_up": "加快",
@@ -1283,7 +1283,7 @@
   "alert": {
     "ok": "确定",
     "wallet_watching_mode": "此钱包当前处于'查看'模式",
-    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
+    "wallet_testing_mode": "此钱包目前处于'测试'模式",
     "coming_soon": "即将推出！",
     "no_hw_ff": "火狐浏览器不支持硬件钱包。试试其他浏览器，例如Chrome或Brave。"
   },
