@@ -86,18 +86,18 @@
       "dark": "مظلم"
     },
     "networks": {
-      "mainnet": "Mainnet",
+      "mainnet": "الشبكة الرئيسية",
       "title": "الشبكات",
       "quick_promo": {
-        "text": "Drag networks to reorder them",
+        "text": "اسحب الشبكات لإعادة ترتيبها",
         "text_bold": "نصيحة:"
       },
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "description": "اختر الشبكات والرموز التي ترغب في عرضها. يمكنك الاتصال بأي شبكات تدعمها Rainbow ، حتى لو لم يتم التحقق منها",
       "testnet_mode": {
-        "title": "Testnet Mode",
-        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
-        "shortcut_title": "Enable Keyboard Shortcut",
-        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "وضع Testnet",
+        "toggle_explainer": "التبديل إلى وضع Testnet لعرض أرصدة Testnet والمعاملات فقط",
+        "shortcut_title": "قم بتمكين اختصار لوحة المفاتيح",
+        "shortcut_toggle_explainer": "يتيح وضع اختصار Testnet (T) وإضافة تبديل إلى قائمة الشاشة الرئيسية العلوية اليمنى"
       },
       "custom_rpc": {
         "title": "Custom RPC"
@@ -147,9 +147,9 @@
         "back_up_now": "النسخ الاحتياطي الآن",
         "context_menu": {
           "create_wallet": "إنشاء محفظة",
-          "view_secret_phrase": "View Secret Phrase",
-          "hide_wallets": "Hide Wallets",
-          "unhide_wallets": "Unhide Wallets"
+          "view_secret_phrase": "عرض العبارة السرية",
+          "hide_wallets": "إخفاء المحافظ",
+          "unhide_wallets": "أظهر المحافظ"
         },
         "wallet_details": {
           "title": "تفاصيل المحفظة",
@@ -178,7 +178,7 @@
           "warning_3": "أي شخص لديه مفتاحك الخاص يمكنه الوصول إلى محفظتك بالكامل",
           "warning_4": "لن يطلب منك دعم Rainbow أبدًا مفتاحك الخاص",
           "show": "إظهار المفتاح الخاص",
-          "copied": "Private Key Copied"
+          "copied": "تم نسخ المفتاح الخاص"
         },
         "recovery_phrase": {
           "title": "عبارتك الاستعادية",
@@ -197,8 +197,8 @@
       "title": "المعاملات",
       "default_speed": "السرعة الافتراضية",
       "use_flashbots": "استخدم Flashbots",
-      "clear_transactions_and_nonces": "Clear Pending Transactions",
-      "clear_transactions_and_nonces_success": "Pending transactions cleared",
+      "clear_transactions_and_nonces": "معالجة المعاملات المعلقة",
+      "clear_transactions_and_nonces_success": "تم معالجة المعاملات المعلقة",
       "flashbots_description": "يحمي Flashbots معاملاتك ويقلل من احتمالية فشل المعاملات. تعلم المزيد"
     },
     "currency": {
@@ -371,7 +371,7 @@
         "view_nfts": "عرض NFTs",
         "add_wallet": "أضف محفظة",
         "lock": "قفل الرينبو",
-        "testnet_mode": "Testnet Mode",
+        "testnet_mode": "وضع Testnet",
         "connected_apps": "التطبيقات المتصلة",
         "settings": "الإعدادات",
         "my_qr_code": "رمز الاستجابة السريعة الخاص بي",
@@ -876,16 +876,16 @@
       "guides_and_support": "الدلائل والدعم",
       "share_feedback": "شارك الرأي",
       "lock_rainbow": "قفل راينبو",
-      "testnet_mode": "Testnet Mode"
+      "testnet_mode": "وضع Testnet"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Connect to %{chainName}",
-    "testnet_mode": "Testnet Mode",
-    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
-    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
-    "disable_and_connect": "Disable and connect",
-    "enable_and_connect": "Enable and connect",
+    "connect_to": "الاتصال بـ %{chainName}",
+    "testnet_mode": "وضع Testnet",
+    "testnet_mode_active": "منشط حالياً. هل ترغب في تعطيله والاتصال بـ %{chainName}؟",
+    "testnet_mode_not_active": "غير نشط حالياً. هل ترغب في تمكينه والاتصال بـ %{chainName}؟",
+    "disable_and_connect": "تعطيل والاتصال",
+    "enable_and_connect": "تمكين والاتصال",
     "cancel": "إلغاء"
   },
   "app_connection_switcher": {
@@ -931,19 +931,19 @@
     "switch_networks": "تبديل الشبكات",
     "switch_wallets": "تبديل المحافظ",
     "connect": "اتصل بـ %{appName}",
-    "connect_anyway": "Connect Anyway",
+    "connect_anyway": "الاتصال على أي حال",
     "malicious_warning": {
-      "title": "This app is likely malicious",
-      "message": "Signing messages or transactions from this app could result in losing your assets"
+      "title": "من المحتمل أن هذا التطبيق ضار",
+      "message": "توقيع الرسائل أو المعاملات من هذا التطبيق قد يؤدي إلى فقدان أصولك"
     },
     "message_signing_request": "طلب التوقيع على الرسالة",
     "message": "رسالة",
     "sign_message": "توقيع الرسالة",
-    "sign_message_anyway": "Sign Anyway",
+    "sign_message_anyway": "التوقيع على أي حال",
     "confirm_hw": "تأكيد على جهازك",
     "balance": "الرصيد",
     "send_transaction": "أرسل المعاملة",
-    "send_transaction_anyway": "Confirm Anyway",
+    "send_transaction_anyway": "التأكيد على أي حال",
     "contract_deployment": "نشر العقد",
     "transaction_request": "طلب العملية",
     "insufficient_native_asset_for_gas": "%{symbol} غير كافٍ للغاز"
@@ -1024,9 +1024,9 @@
     "copy_to_clipboard": "نسخ إلى الحافظة"
   },
   "errors": {
-    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "error_encountered": "حدث خطأ. يرجى مشاركة المشكلة مع فريقنا وسنقوم بإصلاحها!",
     "no_wallet_name_set": "لم يتم تحديد اسم المحفظة",
-    "report_error": "Report issue"
+    "report_error": "الإبلاغ عن المشكلة"
   },
   "common_titles": {
     "before_you_proceed": "قبل أن تتابع"
@@ -1057,7 +1057,7 @@
   "tabs": {
     "activity": "النشاط",
     "nfts": "NFTs",
-    "points": "Points",
+    "points": "النقاط",
     "tokens": "رموز"
   },
   "activity": {
@@ -1118,7 +1118,7 @@
   },
   "points": {
     "coming_soon_header": "قريبًا",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "النقاط على بعد خطوة.\nابدأ في الكسب اليوم."
   },
   "speed_up_and_cancel": {
     "speed_up": "تسريع العملية",
@@ -1283,7 +1283,7 @@
   "alert": {
     "ok": "حسنا",
     "wallet_watching_mode": "هذه المحفظة حاليا في وضع 'المشاهدة'",
-    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
+    "wallet_testing_mode": "هذه المحفظة حالياً في وضع 'الاختبار'",
     "coming_soon": "قريبا!",
     "no_hw_ff": "المحافظ الأجهزة غير معتمدة على Firefox. جرب متصفحًا مختلفًا مثل Chrome أو Brave."
   },
