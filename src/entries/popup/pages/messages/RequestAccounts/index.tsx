@@ -6,6 +6,7 @@ import { event } from '~/analytics/event';
 import { initializeMessenger } from '~/core/messengers';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { Row, Rows, Separator } from '~/design-system';
@@ -32,8 +33,9 @@ export const RequestAccounts = ({
   const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
+  const { testnetMode } = useTestnetModeStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
-    ChainId.mainnet,
+    testnetMode ? ChainId.goerli : ChainId.mainnet,
   );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 

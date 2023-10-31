@@ -26,6 +26,7 @@ export const ROUTES = {
   SETTINGS: '/settings', // Settings
   QR_CODE: '/qr-code', // QR Code
   SETTINGS__NETWORKS: '/settings/networks', // Networks
+  SETTINGS__NETWORKS__CUSTOM_RPC: '/settings/networks/custom-rpc', // Networks Custom RPC
   SETTINGS__PRIVACY: '/settings/privacy', // Privacy
   SETTINGS__PRIVACY__AUTOLOCK: '/settings/privacy/autolock', // AutoLockTimer
   SETTINGS__PRIVACY__CHANGE_PASSWORD: '/settings/privacy/change-password', // ChangePassword

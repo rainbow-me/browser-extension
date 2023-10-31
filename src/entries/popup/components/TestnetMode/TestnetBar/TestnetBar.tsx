@@ -7,9 +7,9 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Inline, Text } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
-import { ROUTES } from '../../urls';
-import { zIndexes } from '../../utils/zIndexes';
-import { MenuItem } from '../Menu/MenuItem';
+import { ROUTES } from '../../../urls';
+import { zIndexes } from '../../../utils/zIndexes';
+import { MenuItem } from '../../Menu/MenuItem';
 
 import { TestnetBarBackground } from './TestnetBarBackground';
 

@@ -3,6 +3,7 @@ import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
@@ -22,6 +23,8 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import { DraggableContext, DraggableItem } from '../../components/Draggable';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 
 const chainLabel = ({ chainId }: { chainId: ChainId }) => {
   const chainLabels = [i18n.t('settings.networks.mainnet')];
@@ -32,6 +35,7 @@ const chainLabel = ({ chainId }: { chainId: ChainId }) => {
 };
 
 export function SettingsNetworks() {
+  const navigate = useRainbowNavigate();
   const {
     userChains,
     updateUserChains,
@@ -45,6 +49,7 @@ export function SettingsNetworks() {
     setTestnetMode,
     setTestnetModeShortcutEnabled,
   } = useTestnetModeStore();
+  const { featureFlags } = useFeatureFlagsStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -124,6 +129,30 @@ export function SettingsNetworks() {
             </Text>
           </Box>
         </Menu>
+        {featureFlags.custom_rpc && (
+          <Menu>
+            <MenuItem
+              testId={'custom-rpc-link'}
+              first
+              last
+              leftComponent={
+                <Symbol
+                  symbol="network"
+                  weight="medium"
+                  size={18}
+                  color="green"
+                />
+              }
+              hasRightArrow
+              onClick={() => navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC)}
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.networks.custom_rpc.title')}
+                />
+              }
+            />
+          </Menu>
+        )}
         <Menu>
           <MenuItem
             first

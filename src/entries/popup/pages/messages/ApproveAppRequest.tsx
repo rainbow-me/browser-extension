@@ -4,9 +4,11 @@ import { initializeMessenger } from '~/core/messengers';
 import { usePendingRequestStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
+import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
+import { TestnetModeWatcher } from '../../components/TestnetMode/TestnetModeWatcher/TestnetModeWatcher';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import { isExternalPopup } from '../../utils/windows';
@@ -19,13 +21,21 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 const ApproveAppRequestWrapper = ({
   children,
+  pendingRequest,
+  rejectRequest,
 }: {
   children: React.ReactNode;
+  pendingRequest: ProviderRequestPayload;
+  rejectRequest: () => void;
 }) => {
   const { testnetMode } = useTestnetModeStore();
   return (
     <Box style={{ marginTop: testnetMode ? -TESTNET_MODE_BAR_HEIGHT : 0 }}>
       {children}
+      <TestnetModeWatcher
+        pendingRequest={pendingRequest}
+        rejectRequest={rejectRequest}
+      />
     </Box>
   );
 };
@@ -91,7 +101,10 @@ export const ApproveAppRequest = () => {
   switch (pendingRequest?.method) {
     case 'eth_requestAccounts':
       return (
-        <ApproveAppRequestWrapper>
+        <ApproveAppRequestWrapper
+          pendingRequest={pendingRequest}
+          rejectRequest={rejectRequest}
+        >
           <RequestAccounts
             approveRequest={approveRequest}
             rejectRequest={rejectRequest}
@@ -104,7 +117,10 @@ export const ApproveAppRequest = () => {
     case 'eth_signTypedData_v3':
     case 'eth_signTypedData_v4':
       return (
-        <ApproveAppRequestWrapper>
+        <ApproveAppRequestWrapper
+          pendingRequest={pendingRequest}
+          rejectRequest={rejectRequest}
+        >
           <SignMessage
             approveRequest={approveRequest}
             rejectRequest={rejectRequest}
@@ -114,7 +130,10 @@ export const ApproveAppRequest = () => {
       );
     case 'eth_sendTransaction':
       return (
-        <ApproveAppRequestWrapper>
+        <ApproveAppRequestWrapper
+          pendingRequest={pendingRequest}
+          rejectRequest={rejectRequest}
+        >
           <SendTransaction
             approveRequest={approveRequest}
             rejectRequest={rejectRequest}
