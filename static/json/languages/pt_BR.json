@@ -89,18 +89,18 @@
       "mainnet": "Mainnet",
       "title": "Redes",
       "quick_promo": {
-        "text": "Drag networks to reorder them",
+        "text": "Arraste redes para reordená-las",
         "text_bold": "Dica:"
       },
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "description": "Escolha quais redes e tokens exibir. Você pode se conectar a qualquer rede suportada pelo Rainbow, mesmo que não estejam selecionadas.",
       "testnet_mode": {
-        "title": "Testnet Mode",
-        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
-        "shortcut_title": "Enable Keyboard Shortcut",
-        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "Modo Testnet",
+        "toggle_explainer": "Mude para o Modo Testnet para exibir apenas saldos e transações de testnet.",
+        "shortcut_title": "Ativar Atalho de Teclado",
+        "shortcut_toggle_explainer": "Habilita o atalho do Modo Testnet (T) e adiciona uma alternância no menu superior direito da tela inicial."
       },
       "custom_rpc": {
-        "title": "Custom RPC"
+        "title": "RPC personalizado"
       }
     },
     "privacy_and_security": {
@@ -147,9 +147,9 @@
         "back_up_now": "Fazer Backup Agora",
         "context_menu": {
           "create_wallet": "Criar carteira",
-          "view_secret_phrase": "View Secret Phrase",
-          "hide_wallets": "Hide Wallets",
-          "unhide_wallets": "Unhide Wallets"
+          "view_secret_phrase": "Ver Frase Secreta",
+          "hide_wallets": "Ocultar Carteiras",
+          "unhide_wallets": "Desocultar Carteiras"
         },
         "wallet_details": {
           "title": "Detalhes da Carteira",
@@ -178,7 +178,7 @@
           "warning_3": "Qualquer pessoa que tenha sua Chave Privada pode acessar toda a sua carteira.",
           "warning_4": "A equipe de suporte do Rainbow nunca irá solicitar sua Chave Privada.",
           "show": "Mostrar Chave Privada",
-          "copied": "Private Key Copied"
+          "copied": "Chave Privada Copiada"
         },
         "recovery_phrase": {
           "title": "Sua Frase de Recuperação",
@@ -197,8 +197,8 @@
       "title": "Transações",
       "default_speed": "Velocidade padrão",
       "use_flashbots": "Use Flashbots",
-      "clear_transactions_and_nonces": "Clear Pending Transactions",
-      "clear_transactions_and_nonces_success": "Pending transactions cleared",
+      "clear_transactions_and_nonces": "Limpar Transações Pendentes",
+      "clear_transactions_and_nonces_success": "Transações pendentes limpas",
       "flashbots_description": "O Flashbots protege suas transações e reduz a probabilidade de falhas nas transações. Saiba mais."
     },
     "currency": {
@@ -225,7 +225,7 @@
       "full_watching_wallets": "Acesso completo às Carteiras Observadas",
       "hw_wallets_enabled": "Habilitar Suporte para Carteiras de Hardware",
       "command_k_internal_shortcuts_enabled": "Habilitar Atalhos Internos ⌘K",
-      "custom_rpc": "Custom RPC"
+      "custom_rpc": "RPC personalizado"
     }
   },
   "transactions": {
@@ -371,7 +371,7 @@
         "view_nfts": "Visualizar NFTs",
         "add_wallet": "Adicionar uma Carteira",
         "lock": "Bloquear Rainbow",
-        "testnet_mode": "Testnet Mode",
+        "testnet_mode": "Modo Testnet",
         "connected_apps": "Aplicativos Conectados",
         "settings": "Configurações",
         "my_qr_code": "Meu Código QR",
@@ -876,16 +876,16 @@
       "guides_and_support": "Guias e Suporte",
       "share_feedback": "Compartilhar Feedback",
       "lock_rainbow": "Bloquear Rainbow",
-      "testnet_mode": "Testnet Mode"
+      "testnet_mode": "Modo Testnet"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Connect to %{chainName}",
-    "testnet_mode": "Testnet Mode",
-    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
-    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
-    "disable_and_connect": "Disable and connect",
-    "enable_and_connect": "Enable and connect",
+    "connect_to": "Conectar a %{chainName}",
+    "testnet_mode": "Modo Testnet",
+    "testnet_mode_active": "está atualmente ativo. Você gostaria de desativá-lo e se conectar a %{chainName}?",
+    "testnet_mode_not_active": "não está ativamente ativo. Você gostaria de ativá-lo e se conectar a %{chainName}?",
+    "disable_and_connect": "Desativar e conectar",
+    "enable_and_connect": "Ativar e conectar",
     "cancel": "Cancelar"
   },
   "app_connection_switcher": {
@@ -931,19 +931,19 @@
     "switch_networks": "Alternar Redes",
     "switch_wallets": "Alternar Carteiras",
     "connect": "Conectar-se a %{appName}",
-    "connect_anyway": "Connect Anyway",
+    "connect_anyway": "Conectar mesmo assim",
     "malicious_warning": {
-      "title": "This app is likely malicious",
-      "message": "Signing messages or transactions from this app could result in losing your assets"
+      "title": "Este aplicativo é provavelmente malicioso",
+      "message": "Assinar mensagens ou transações deste aplicativo pode resultar na perda de seus ativos"
     },
     "message_signing_request": "Solicitação de assinatura de mensagem",
     "message": "Mensagem",
     "sign_message": "Assinar Mensagem",
-    "sign_message_anyway": "Sign Anyway",
+    "sign_message_anyway": "Assinar mesmo assim",
     "confirm_hw": "Confirmar no seu dispositivo",
     "balance": "Saldo",
     "send_transaction": "Enviar Transação",
-    "send_transaction_anyway": "Confirm Anyway",
+    "send_transaction_anyway": "Confirmar mesmo assim",
     "contract_deployment": "Implantação de Contrato",
     "transaction_request": "Solicitação de Transação",
     "insufficient_native_asset_for_gas": "Saldo insuficiente de %{symbol} para gás"
@@ -1024,9 +1024,9 @@
     "copy_to_clipboard": "Copiar para a área de transferência"
   },
   "errors": {
-    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "error_encountered": "Algo deu errado. Por favor, compartilhe o problema com nossa equipe e nós iremos corrigi-lo",
     "no_wallet_name_set": "Nenhum nome de carteira definido",
-    "report_error": "Report issue"
+    "report_error": "Reportar problema"
   },
   "common_titles": {
     "before_you_proceed": "Antes de prosseguir"
@@ -1057,7 +1057,7 @@
   "tabs": {
     "activity": "Atividade",
     "nfts": "NFTs",
-    "points": "Points",
+    "points": "Pontos",
     "tokens": "Tokens"
   },
   "activity": {
@@ -1118,7 +1118,7 @@
   },
   "points": {
     "coming_soon_header": "Em breve",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "Os pontos estão logo adiante.\nComece a ganhar hoje"
   },
   "speed_up_and_cancel": {
     "speed_up": "Acelerar",
@@ -1283,7 +1283,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "Esta carteira está atualmente no modo 'Acompanhando'",
-    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
+    "wallet_testing_mode": "Esta carteira está atualmente em modo 'Teste'",
     "coming_soon": "Em breve!",
     "no_hw_ff": "Carteiras de hardware não são suportadas no Firefox. Tente um navegador diferente como Chrome ou Brave"
   },
