@@ -1,3 +1,4 @@
+import { isValidAddress } from '@ethereumjs/util';
 import React, { useCallback, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Address } from 'wagmi';
@@ -52,7 +53,10 @@ export function CustomRPC() {
   );
 
   const addAsset = useCallback(() => {
-    addCustomRPCAsset({ chainId, customRPCAsset: asset });
+    if (isValidAddress(asset.address) && asset.decimals && asset.symbol) {
+      addCustomRPCAsset({ chainId, customRPCAsset: asset });
+    }
+
     setAsset(INITIAL_ASSET);
   }, [addCustomRPCAsset, asset, chainId]);
 
