@@ -20,7 +20,6 @@ export type KeyboardEventDescription =
   | 'gasMenu.open'
   | 'global.switchWallet'
   | 'home.copyAddress'
-  | 'home.copyAddressList'
   | 'home.dismissSheet'
   | 'home.disconnectApp'
   | 'home.goToBuy'

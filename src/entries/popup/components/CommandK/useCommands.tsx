@@ -232,7 +232,7 @@ export const staticCommandInfo: CommandInfo = {
     type: SearchItemType.Shortcut,
   },
   exportAddressList: {
-    name: 'Export address list to CSV',
+    name: 'Export Addresses as CSV',
     page: PAGES.HOME,
     shouldRemainOnActiveRoute: true,
     searchTags: getSearchTags('export_wallet_list'),

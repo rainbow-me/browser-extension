@@ -474,15 +474,17 @@ export const handleExportWalletList = async (walletNames: WalletNames) => {
   const blob = new Blob([csvContent], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
 
-  chrome.downloads.download(
-    {
-      url: url,
-      filename: 'rainbow_addresses.csv',
-    },
-    () => {
-      URL.revokeObjectURL(url);
-    },
-  );
+  // Create a temporary anchor to initiate the download
+  const tempLink = document.createElement('a');
+  tempLink.href = url;
+  tempLink.download = 'rainbow_addresses.csv';
+  document.body.appendChild(tempLink);
+  tempLink.click();
+  document.body.removeChild(tempLink);
+
+  // Release the object URL after use
+  URL.revokeObjectURL(url);
+
   triggerToast({
     title: 'Addresses Downloaded',
     description: 'rainbow_addresses.csv',
