@@ -86,18 +86,18 @@
       "dark": "มืด"
     },
     "networks": {
-      "mainnet": "Mainnet",
+      "mainnet": "เครือข่ายหลัก",
       "title": "เครือข่าย",
       "quick_promo": {
-        "text": "Drag networks to reorder them",
+        "text": "ลากเครือข่ายเพื่อจัดเรียง",
         "text_bold": "เคล็ดลับ:"
       },
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "description": "เลือกเครือข่ายและโทเคนที่จะแสดง คุณสามารถเชื่อมต่อกับเครือข่ายที่ Rainbow รองรับได้ แม้จะไม่ได้เลือก",
       "testnet_mode": {
-        "title": "Testnet Mode",
-        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
-        "shortcut_title": "Enable Keyboard Shortcut",
-        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "โหมด Testnet",
+        "toggle_explainer": "สลับไปยังโหมด Testnet เพื่อแสดงเฉพาะยอดคงเหลือและธุรกรรมของ Testnet",
+        "shortcut_title": "เปิดใช้งานแป้นพิมพ์ลัด",
+        "shortcut_toggle_explainer": "เปิดใช้งานแป้นพิมพ์ลัดโหมด Testnet (T) และเพิ่มสลับเมนูด้านบนขวาของหน้าจอหน้าแรก"
       },
       "custom_rpc": {
         "title": "Custom RPC"
@@ -147,9 +147,9 @@
         "back_up_now": "สำรองข้อมูลทันที",
         "context_menu": {
           "create_wallet": "สร้างกระเป๋าสตางค์",
-          "view_secret_phrase": "View Secret Phrase",
-          "hide_wallets": "Hide Wallets",
-          "unhide_wallets": "Unhide Wallets"
+          "view_secret_phrase": "ดูวลีลับ",
+          "hide_wallets": "ซ่อนวอลเล็ต",
+          "unhide_wallets": "เปิดดูวอลเล็ต"
         },
         "wallet_details": {
           "title": "รายละเอียดกระเป๋าสตางค์",
@@ -178,7 +178,7 @@
           "warning_3": "ใครที่มีคีย์ส่วนตัวของคุณสามารถใช้กระเป๋าสตางค์ของคุณทั้งหมด",
           "warning_4": "ฝ่ายสนับสนุน Rainbow จะไม่ขอคีย์ส่วนตัวของคุณ",
           "show": "แสดงคีย์ส่วนตัว",
-          "copied": "Private Key Copied"
+          "copied": "คัดลอกคีย์ส่วนตัวแล้ว"
         },
         "recovery_phrase": {
           "title": "วลีกู้คืนของคุณ",
@@ -197,8 +197,8 @@
       "title": "การทำธุรกรรม",
       "default_speed": "ความเร็วที่ตั้งค่าเริ่มต้น",
       "use_flashbots": "ใช้ Flashbots",
-      "clear_transactions_and_nonces": "Clear Pending Transactions",
-      "clear_transactions_and_nonces_success": "Pending transactions cleared",
+      "clear_transactions_and_nonces": "ล้างธุรกรรมที่รอดำเนินการ",
+      "clear_transactions_and_nonces_success": "ธุรกรรมที่รอดำเนินการถูกล้างแล้ว",
       "flashbots_description": "Flashbots ช่วยปกป้องการทำธุรกรรมของคุณและลดความเป็นไปได้ของการทำธุรกรรมล้มเหลว อ่านเพิ่มเติม"
     },
     "currency": {
@@ -371,7 +371,7 @@
         "view_nfts": "ดู NFTs",
         "add_wallet": "เพิ่ม Wallet",
         "lock": "ล็อค Rainbow",
-        "testnet_mode": "Testnet Mode",
+        "testnet_mode": "โหมด Testnet",
         "connected_apps": "แอปที่เชื่อมต่อ",
         "settings": "การตั้งค่า",
         "my_qr_code": "QR Code ของฉัน",
@@ -876,16 +876,16 @@
       "guides_and_support": "คู่มือและการสนับสนุน",
       "share_feedback": "แชร์คำติชม",
       "lock_rainbow": "ล็อค Rainbow",
-      "testnet_mode": "Testnet Mode"
+      "testnet_mode": "โหมด Testnet"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Connect to %{chainName}",
-    "testnet_mode": "Testnet Mode",
-    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
-    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
-    "disable_and_connect": "Disable and connect",
-    "enable_and_connect": "Enable and connect",
+    "connect_to": "เชื่อมต่อไปยัง %{chainName}",
+    "testnet_mode": "โหมด Testnet",
+    "testnet_mode_active": "กำลังทำงานอยู่ คุณต้องการปิดการใช้งานและเชื่อมต่อกับ %{chainName}หรือไม่",
+    "testnet_mode_not_active": "ยังไม่ทำงานอยู่ คุณต้องการเปิดใช้งานและเชื่อมต่อกับ %{chainName}หรือไม่",
+    "disable_and_connect": "ปิดใช้งานและเชื่อมต่อ",
+    "enable_and_connect": "เปิดใช้งานและเชื่อมต่อ",
     "cancel": "ยกเลิก"
   },
   "app_connection_switcher": {
@@ -931,19 +931,19 @@
     "switch_networks": "สลับเครือข่าย",
     "switch_wallets": "สลับกระเป๋าสตางค์",
     "connect": "เชื่อมต่อกับ %{appName}",
-    "connect_anyway": "Connect Anyway",
+    "connect_anyway": "เชื่อมต่อแบบไม่รวมเงื่อนไข",
     "malicious_warning": {
-      "title": "This app is likely malicious",
-      "message": "Signing messages or transactions from this app could result in losing your assets"
+      "title": "แอปนี้มีแนวโน้มเป็นมัลแวร์",
+      "message": "การทำธุรกรรมหรือเซ็นข้อความจากแอปนี้อาจทำให้คุณสูญเสียสินทรัพย์"
     },
     "message_signing_request": "คำขอลงนามข้อความ",
     "message": "ข้อความ",
     "sign_message": "ลงนามข้อความ",
-    "sign_message_anyway": "Sign Anyway",
+    "sign_message_anyway": "เซ็นโดยไม่คำนึงเงื่อนไข",
     "confirm_hw": "ยืนยันบนอุปกรณ์ของคุณ",
     "balance": "ยอดคงเหลือ",
     "send_transaction": "ส่งธุรกรรม",
-    "send_transaction_anyway": "Confirm Anyway",
+    "send_transaction_anyway": "ยืนยันโดยไม่คำนึงเงื่อนไข",
     "contract_deployment": "การเปิดใช้งานสัญญา",
     "transaction_request": "คำร้องเรียกร้องการทำธุรกรรม",
     "insufficient_native_asset_for_gas": "%{symbol} ไม่เพียงพอสำหรับแก๊ส"
@@ -1024,9 +1024,9 @@
     "copy_to_clipboard": "คัดลอกไปที่คลิปบอร์ด"
   },
   "errors": {
-    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "error_encountered": "มีบางอย่างผิดพลาด กรุณาแชร์ปัญหานี้กับทีมของเราและเราจะแก้ไข!",
     "no_wallet_name_set": "ไม่ได้ตั้งชื่อวอลเล็ต",
-    "report_error": "Report issue"
+    "report_error": "รายงานปัญหา"
   },
   "common_titles": {
     "before_you_proceed": "ก่อนที่คุณจะดำเนินการต่อ"
@@ -1057,7 +1057,7 @@
   "tabs": {
     "activity": "กิจกรรม",
     "nfts": "NFTs",
-    "points": "Points",
+    "points": "คะแนน",
     "tokens": "โทเคน"
   },
   "activity": {
@@ -1118,7 +1118,7 @@
   },
   "points": {
     "coming_soon_header": "เร็วๆนี้",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "คะแนนอยู่ใกล้แค่เอื้อม\nเริ่มสะสมวันนี้"
   },
   "speed_up_and_cancel": {
     "speed_up": "เร่ง",
@@ -1283,7 +1283,7 @@
   "alert": {
     "ok": "ตกลง",
     "wallet_watching_mode": "กระเป๋าสตางค์นี้อยู่ในโหมด 'ดู' ณ ตอนนี้",
-    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
+    "wallet_testing_mode": "กระเป๋าสตางค์นี้อยู่ในโหมด 'การทดสอบ' ในขณะนี้",
     "coming_soon": "เร็ว ๆ นี้!",
     "no_hw_ff": "ไม่รองรับ hardware wallets บน Firefox ลองใช้เบราว์เซอร์อื่นเช่น Chrome หรือ Brave"
   },
