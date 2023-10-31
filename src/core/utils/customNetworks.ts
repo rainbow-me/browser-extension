@@ -2,22 +2,22 @@
 
 import { Zero } from '@ethersproject/constants';
 
-import { ETH_ADDRESS } from '../references';
+// import { ETH_ADDRESS } from '../references';
 
 import { SUPPORTED_CHAINS } from './chains';
 
 // once we have a proper UI for it
 export const userAddedCustomRpcEndpoints = [
-  {
-    rpc: 'https://rpc.flashbots.net',
-    chainId: 1,
-    name: 'Flashbots Protect',
-    symbol: 'ETH',
-    explorer: 'https://etherscan.io',
-    explorerName: 'Etherscan',
-    active: true,
-    nativeAssetAddress: ETH_ADDRESS,
-  },
+  // {
+  //   rpc: 'https://rpc.flashbots.net',
+  //   chainId: 1,
+  //   name: 'Flashbots Protect',
+  //   symbol: 'ETH',
+  //   explorer: 'https://etherscan.io',
+  //   explorerName: 'Etherscan',
+  //   active: true,
+  //   nativeAssetAddress: ETH_ADDRESS,
+  // },
   {
     rpc: 'https://api.avax.network/ext/bc/C/rpc',
     chainId: 43114,

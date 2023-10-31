@@ -1,3 +1,4 @@
+import { Zero } from '@ethersproject/constants';
 import {
   arbitrum,
   arbitrumGoerli,
@@ -23,6 +24,7 @@ import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost } from './connectedApps';
+import { isCustomNetwork } from './customNetworks';
 import { isLowerCaseMatch } from './strings';
 
 export const SUPPORTED_CHAINS: Chain[] = [
@@ -100,6 +102,9 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
 };
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
+  if (isCustomNetwork(chainId)) {
+    return Zero.toHexString() === address;
+  }
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
 }
 

@@ -13,7 +13,10 @@ import { queryClient } from '../react-query';
 import { LocalStorage } from '../storage';
 import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
 import { SUPPORTED_CHAINS } from '../utils/chains';
-import { findCustomNetworkForChainId } from '../utils/customNetworks';
+import {
+  findCustomNetworkForChainId,
+  userAddedCustomRpcEndpoints,
+} from '../utils/customNetworks';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -70,22 +73,43 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
   }
 };
 
-const { chains, provider, webSocketProvider } = configureChains(
+const allChains = (
   IS_TESTING
     ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
-    : SUPPORTED_CHAINS,
-  [
-    jsonRpcProvider({
-      rpc: (chain) => {
-        const originalRpcEndpoint = getOriginalRpcEndpoint(chain);
-        if (originalRpcEndpoint) {
-          return { http: proxyRpcEndpoint(originalRpcEndpoint.http, chain.id) };
-        }
-        return null;
-      },
+    : SUPPORTED_CHAINS
+).concat(
+  userAddedCustomRpcEndpoints
+    .filter((network) => network.active)
+    .map((network) => {
+      return {
+        id: network.chainId,
+        name: network.name,
+        network: network.name,
+        nativeCurrency: {
+          decimals: 18,
+          name: network.name,
+          symbol: network.symbol,
+        },
+        rpcUrls: {
+          public: { http: [network.rpc] },
+          default: { http: [network.rpc] },
+        },
+        testnet: false,
+      };
     }),
-  ],
 );
+
+const { chains, provider, webSocketProvider } = configureChains(allChains, [
+  jsonRpcProvider({
+    rpc: (chain) => {
+      const originalRpcEndpoint = getOriginalRpcEndpoint(chain);
+      if (originalRpcEndpoint) {
+        return { http: proxyRpcEndpoint(originalRpcEndpoint.http, chain.id) };
+      }
+      return null;
+    },
+  }),
+]);
 
 const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.wagmi',
