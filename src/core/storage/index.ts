@@ -59,7 +59,7 @@ export const SessionStorage = {
           queuedEvents?.length || 0,
         );
         logger.info(
-          'SessionStorage queuedEvents size: ',
+          'SessionStorage rateLimits size: ',
           (rateLimits && Object.keys(rateLimits).length) || 0,
         );
       }
