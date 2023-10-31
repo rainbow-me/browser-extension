@@ -89,18 +89,18 @@
       "mainnet": "Mainnet",
       "title": "Jaringan",
       "quick_promo": {
-        "text": "Drag networks to reorder them",
+        "text": "Seret jaringan untuk mengaturnya",
         "text_bold": "Tip:"
       },
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "description": "Pilih jaringan dan token yang akan ditampilkan. Anda dapat terhubung ke jaringan apa pun yang didukung Rainbow, meskipun mereka tidak dicentang",
       "testnet_mode": {
-        "title": "Testnet Mode",
-        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
-        "shortcut_title": "Enable Keyboard Shortcut",
-        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "Mode Testnet",
+        "toggle_explainer": "Beralih ke Mode Testnet untuk menampilkan saldo dan transaksi testnet saja",
+        "shortcut_title": "Aktifkan Shortcut Keyboard",
+        "shortcut_toggle_explainer": "Mengaktifkan shortcut Mode Testnet (T) dan menambahkan toggle ke menu kanan atas layar utama"
       },
       "custom_rpc": {
-        "title": "Custom RPC"
+        "title": "RPC Kustom"
       }
     },
     "privacy_and_security": {
@@ -147,9 +147,9 @@
         "back_up_now": "Backup Sekarang",
         "context_menu": {
           "create_wallet": "Buat Dompet",
-          "view_secret_phrase": "View Secret Phrase",
-          "hide_wallets": "Hide Wallets",
-          "unhide_wallets": "Unhide Wallets"
+          "view_secret_phrase": "Lihat Frasa Rahasia",
+          "hide_wallets": "Sembunyikan Dompet",
+          "unhide_wallets": "Tampilkan Dompet"
         },
         "wallet_details": {
           "title": "Detail Dompet",
@@ -178,7 +178,7 @@
           "warning_3": "Siapa saja dengan Kunci Pribadi Anda bisa mengakses seluruh dompet Anda",
           "warning_4": "Dukungan Rainbow tidak akan pernah meminta Kunci Pribadi Anda",
           "show": "Tampilkan Kunci Pribadi",
-          "copied": "Private Key Copied"
+          "copied": "Kunci Pribadi Disalin"
         },
         "recovery_phrase": {
           "title": "Frasa Pemulihan Anda",
@@ -197,8 +197,8 @@
       "title": "Transaksi",
       "default_speed": "Kecepatan Standar",
       "use_flashbots": "Gunakan Flashbots",
-      "clear_transactions_and_nonces": "Clear Pending Transactions",
-      "clear_transactions_and_nonces_success": "Pending transactions cleared",
+      "clear_transactions_and_nonces": "Hapus Transaksi Tertunda",
+      "clear_transactions_and_nonces_success": "Transaksi tertunda dihapus",
       "flashbots_description": "Flashbots melindungi transaksi Anda dan mengurangi kemungkinan kegagalan transaksi. Pelajari lebih lanjut."
     },
     "currency": {
@@ -225,7 +225,7 @@
       "full_watching_wallets": "Akses Penuh ke Dompet Tertonton",
       "hw_wallets_enabled": "Aktifkan Dukungan Dompet Perangkat Keras",
       "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K",
-      "custom_rpc": "Custom RPC"
+      "custom_rpc": "RPC Kustom"
     }
   },
   "transactions": {
@@ -371,7 +371,7 @@
         "view_nfts": "Lihat NFTs",
         "add_wallet": "Tambahkan Wallet",
         "lock": "Kunci Rainbow",
-        "testnet_mode": "Testnet Mode",
+        "testnet_mode": "Mode Testnet",
         "connected_apps": "Aplikasi Terhubung",
         "settings": "Pengaturan",
         "my_qr_code": "Kode QR Saya",
@@ -876,16 +876,16 @@
       "guides_and_support": "Panduan & Dukungan",
       "share_feedback": "Bagikan Masukan",
       "lock_rainbow": "Kunci Rainbow",
-      "testnet_mode": "Testnet Mode"
+      "testnet_mode": "Mode Testnet"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Connect to %{chainName}",
-    "testnet_mode": "Testnet Mode",
-    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
-    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
-    "disable_and_connect": "Disable and connect",
-    "enable_and_connect": "Enable and connect",
+    "connect_to": "Hubungkan ke %{chainName}",
+    "testnet_mode": "Mode Testnet",
+    "testnet_mode_active": "sedang aktif. Apakah Anda ingin menonaktifkannya dan terhubung ke %{chainName}?",
+    "testnet_mode_not_active": "tidak aktif. Apakah Anda ingin mengaktifkannya dan terhubung ke %{chainName}?",
+    "disable_and_connect": "Nonaktifkan dan Sambungkan",
+    "enable_and_connect": "Aktifkan dan Sambungkan",
     "cancel": "Batal"
   },
   "app_connection_switcher": {
@@ -931,19 +931,19 @@
     "switch_networks": "Ganti Jaringan",
     "switch_wallets": "Ganti Dompet",
     "connect": "Hubungkan ke %{appName}",
-    "connect_anyway": "Connect Anyway",
+    "connect_anyway": "Sambungkan Tetap",
     "malicious_warning": {
-      "title": "This app is likely malicious",
-      "message": "Signing messages or transactions from this app could result in losing your assets"
+      "title": "App ini kemungkinan berbahaya",
+      "message": "Mengirim pesan atau transaksi dari aplikasi ini bisa berakibat pada kehilangan aset Anda"
     },
     "message_signing_request": "Permintaan Tanda Tangan Pesan",
     "message": "Pesan",
     "sign_message": "Tandatangani Pesan",
-    "sign_message_anyway": "Sign Anyway",
+    "sign_message_anyway": "Tanda Tangani Tetap",
     "confirm_hw": "Konfirmasi di perangkat Anda",
     "balance": "Saldo",
     "send_transaction": "Kirim Transaksi",
-    "send_transaction_anyway": "Confirm Anyway",
+    "send_transaction_anyway": "Konfirmasi Tetap",
     "contract_deployment": "Penerapan Kontrak",
     "transaction_request": "Permintaan Transaksi",
     "insufficient_native_asset_for_gas": "Kurangnya %{symbol} untuk gas"
@@ -1024,9 +1024,9 @@
     "copy_to_clipboard": "Salin ke papan klip"
   },
   "errors": {
-    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "error_encountered": "Ada yang salah. Harap bagikan isu ini dengan tim kami dan kami akan memperbaikinya",
     "no_wallet_name_set": "Nama wallet belum diatur",
-    "report_error": "Report issue"
+    "report_error": "Laporkan isu"
   },
   "common_titles": {
     "before_you_proceed": "Sebelum Anda melanjutkan"
@@ -1057,7 +1057,7 @@
   "tabs": {
     "activity": "Aktivitas",
     "nfts": "NFTs",
-    "points": "Points",
+    "points": "Poin",
     "tokens": "Tokens"
   },
   "activity": {
@@ -1118,7 +1118,7 @@
   },
   "points": {
     "coming_soon_header": "Segera Hadir",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "Poin ada di dekat sana.\nMulai mendapatkan hari ini"
   },
   "speed_up_and_cancel": {
     "speed_up": "Percepat",
@@ -1283,7 +1283,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "Dompet ini saat ini dalam mode 'Watching'",
-    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
+    "wallet_testing_mode": "Dompet ini saat ini dalam mode 'Pengujian'",
     "coming_soon": "Segera Hadir!",
     "no_hw_ff": "Dompet perangkat keras tidak didukung di Firefox. Coba browser lain seperti Chrome atau Brave"
   },
