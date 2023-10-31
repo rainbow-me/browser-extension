@@ -86,21 +86,21 @@
       "dark": "Koyu"
     },
     "networks": {
-      "mainnet": "Mainnet",
+      "mainnet": "Ana Ağ",
       "title": "Ağlar",
       "quick_promo": {
-        "text": "Drag networks to reorder them",
+        "text": "Ağları yeniden sıralamak için sürükleyin",
         "text_bold": "İpucu:"
       },
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "description": "Hangi ağları ve jetonları göstereceğinizi seçin. Rainbow tarafından desteklenen herhangi bir ağa bağlanabilirsiniz, işaretli olmasalar bile.",
       "testnet_mode": {
-        "title": "Testnet Mode",
-        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
-        "shortcut_title": "Enable Keyboard Shortcut",
-        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "Testnet Modu",
+        "toggle_explainer": "Yalnızca testnet bakiyelerini ve işlemlerini görüntülemek için Testnet Moduna geçin.",
+        "shortcut_title": "Klavye Kısayolunu Etkinleştir",
+        "shortcut_toggle_explainer": "Testnet Modu kısayolunu (T) etkinleştirir ve ana ekranın sağ üst menüsüne bir geçiş ekler."
       },
       "custom_rpc": {
-        "title": "Custom RPC"
+        "title": "Özel RPC"
       }
     },
     "privacy_and_security": {
@@ -147,9 +147,9 @@
         "back_up_now": "Şimdi Yedekle",
         "context_menu": {
           "create_wallet": "Cüzdan Oluştur",
-          "view_secret_phrase": "View Secret Phrase",
-          "hide_wallets": "Hide Wallets",
-          "unhide_wallets": "Unhide Wallets"
+          "view_secret_phrase": "Gizli İfadeyi Görüntüle",
+          "hide_wallets": "Cüzdanları Gizle",
+          "unhide_wallets": "Cüzdanları Göster"
         },
         "wallet_details": {
           "title": "Cüzdan Detayları",
@@ -178,7 +178,7 @@
           "warning_3": "Özel Anahtarınızı kullanabilen herkes tüm cüzdanınıza erişebilir.",
           "warning_4": "Rainbow Destek asla özel anahtarınızı sizden istemeyecektir.",
           "show": "Özel Anahtarı Göster",
-          "copied": "Private Key Copied"
+          "copied": "Özel Anahtar Kopyalandı"
         },
         "recovery_phrase": {
           "title": "Kurtarma Cümleniz",
@@ -197,8 +197,8 @@
       "title": "İşlemler",
       "default_speed": "Varsayılan Hız",
       "use_flashbots": "Flashbots Kullan",
-      "clear_transactions_and_nonces": "Clear Pending Transactions",
-      "clear_transactions_and_nonces_success": "Pending transactions cleared",
+      "clear_transactions_and_nonces": "Bekleyen İşlemleri Temizle",
+      "clear_transactions_and_nonces_success": "Bekleyen işlemler temizlendi",
       "flashbots_description": "Flashbots işlemlerinizi korur ve işlem başarısızlığı olasılığını azaltır. Daha fazla bilgi edinin."
     },
     "currency": {
@@ -225,7 +225,7 @@
       "full_watching_wallets": "İzlenen Cüzdanlara Tam Erişim",
       "hw_wallets_enabled": "Donanım Cüzdanı Desteğini Etkinleştir",
       "command_k_internal_shortcuts_enabled": "⌘K İç Hızlı Kısayollarını Etkinleştir",
-      "custom_rpc": "Custom RPC"
+      "custom_rpc": "Özel RPC"
     }
   },
   "transactions": {
@@ -371,7 +371,7 @@
         "view_nfts": "NFT'leri Görüntüle",
         "add_wallet": "Bir Cüzdan Ekle",
         "lock": "Rainbow'u Kilitle",
-        "testnet_mode": "Testnet Mode",
+        "testnet_mode": "Testnet Modu",
         "connected_apps": "Bağlı Uygulamalar",
         "settings": "Ayarlar",
         "my_qr_code": "QR Kodum",
@@ -876,16 +876,16 @@
       "guides_and_support": "Rehberler ve Destek",
       "share_feedback": "Geri Bildirim Paylaş",
       "lock_rainbow": "Rainbow'u Kitle",
-      "testnet_mode": "Testnet Mode"
+      "testnet_mode": "Testnet Modu"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Connect to %{chainName}",
-    "testnet_mode": "Testnet Mode",
-    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
-    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
-    "disable_and_connect": "Disable and connect",
-    "enable_and_connect": "Enable and connect",
+    "connect_to": "Bağlan %{chainName}",
+    "testnet_mode": "Testnet Modu",
+    "testnet_mode_active": "şu an aktif. Devre dışı bırakıp bağlanmak ister misiniz? %{chainName}?",
+    "testnet_mode_not_active": "şu an aktif değil. Etkinleştirmek ve bağlanmak ister misiniz? %{chainName}?",
+    "disable_and_connect": "Devre Dışı Bırak ve Bağlan",
+    "enable_and_connect": "Etkinleştir ve Bağlan",
     "cancel": "İptal"
   },
   "app_connection_switcher": {
@@ -931,19 +931,19 @@
     "switch_networks": "Ağları Değiştir",
     "switch_wallets": "Cüzdanları Değiştir",
     "connect": "%{appName}'a Bağlan",
-    "connect_anyway": "Connect Anyway",
+    "connect_anyway": "Yine de Bağlan",
     "malicious_warning": {
-      "title": "This app is likely malicious",
-      "message": "Signing messages or transactions from this app could result in losing your assets"
+      "title": "Bu uygulama muhtemelen zararlı",
+      "message": "Bu uygulamadan mesajları veya işlemleri imzalamak, varlıklarınızın kaybolmasına neden olabilir"
     },
     "message_signing_request": "İmza İsteği",
     "message": "Mesaj",
     "sign_message": "Mesajı İmzala",
-    "sign_message_anyway": "Sign Anyway",
+    "sign_message_anyway": "Yine de İmzala",
     "confirm_hw": "Cihazınızda Onaylayın",
     "balance": "Bakiye",
     "send_transaction": "İşlem Gönder",
-    "send_transaction_anyway": "Confirm Anyway",
+    "send_transaction_anyway": "Yine de Onayla",
     "contract_deployment": "Akıllı Sözleşme Yayınlama",
     "transaction_request": "İşlem İsteği",
     "insufficient_native_asset_for_gas": "Gaz için yetersiz %{symbol}"
@@ -1024,9 +1024,9 @@
     "copy_to_clipboard": "Panoya kopyala"
   },
   "errors": {
-    "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
+    "error_encountered": "Bir şeyler yanlış gitti. Lütfen sorunu ekibimizle paylaşın ve biz düzeltelim!",
     "no_wallet_name_set": "Cüzdan adı belirtilmemiş",
-    "report_error": "Report issue"
+    "report_error": "Sorunu bildir"
   },
   "common_titles": {
     "before_you_proceed": "Devam etmeden önce"
@@ -1057,7 +1057,7 @@
   "tabs": {
     "activity": "Aktivite",
     "nfts": "NFT'ler",
-    "points": "Points",
+    "points": "Puanlar",
     "tokens": "Tokenler"
   },
   "activity": {
@@ -1118,7 +1118,7 @@
   },
   "points": {
     "coming_soon_header": "Yakında",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "Puanlar tam köşede.\nBugün kazanmaya başlayın."
   },
   "speed_up_and_cancel": {
     "speed_up": "Hızlandır",
@@ -1283,7 +1283,7 @@
   "alert": {
     "ok": "Tamam",
     "wallet_watching_mode": "Bu cüzdan şu anda 'İzleme' modunda",
-    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
+    "wallet_testing_mode": "Bu cüzdan şu anda 'Test' modunda",
     "coming_soon": "Çok yakında!",
     "no_hw_ff": "Donanım cüzdanları Firefox'ta desteklenmiyor. Chrome veya Brave gibi farklı bir tarayıcı deneyin."
   },
