@@ -341,7 +341,7 @@ const assetQueryFragment = (
   }`;
 };
 
-export const chunkArray = (arr: AddressOrEth[], chunkSize: number) => {
+export const chunkArray = <TItem>(arr: TItem[], chunkSize: number) => {
   const result = [];
 
   for (let i = 0; i < arr.length; i += chunkSize) {

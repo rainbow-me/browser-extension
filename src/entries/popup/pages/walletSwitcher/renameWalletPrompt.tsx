@@ -79,6 +79,7 @@ const RenameWallet = ({
           {i18n.t('common_actions.cancel')}
         </Button>
         <Button
+          testId={'rename-wallet-done'}
           color={isValid ? 'accent' : 'labelQuaternary'}
           variant={isValid ? 'flat' : 'disabled'}
           height="36px"

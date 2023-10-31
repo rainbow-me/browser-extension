@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { SessionStorage } from '~/core/storage';
 import { Box } from '~/design-system';
 import { SeedVerifyQuiz } from '~/entries/popup/components/SeedVerifyQuiz/SeedVerifyQuiz';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
@@ -11,9 +12,7 @@ export function RecoveryPhraseVerify() {
   const { state } = useLocation();
 
   const goBackToChooseGroup = useCallback(async () => {
-    await chrome.storage.session.set({
-      walletToAdd: state?.wallet?.accounts?.[0],
-    });
+    await SessionStorage.set('walletToAdd', state?.wallet?.accounts?.[0]);
     navigate(-3);
   }, [navigate, state?.wallet?.accounts]);
 

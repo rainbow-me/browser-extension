@@ -274,7 +274,10 @@ export const AppConnectionMenu = ({
                     subMenuContent={
                       <Stack space="4px">
                         {!appSession ? (
-                          <Box paddingTop="12px">
+                          <Box
+                            testId="app-connection-menu-networks"
+                            paddingTop="12px"
+                          >
                             <Text
                               weight="bold"
                               color="labelTertiary"

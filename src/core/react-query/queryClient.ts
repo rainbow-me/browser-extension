@@ -2,7 +2,7 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientOptions } from '@tanstack/react-query-persist-client';
 
-import { Storage } from '../storage';
+import { LocalStorage } from '../storage';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,9 +21,9 @@ export const queryClient = new QueryClient({
 const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.react-query',
   storage: {
-    getItem: Storage.get,
-    setItem: Storage.set,
-    removeItem: Storage.remove,
+    getItem: LocalStorage.get,
+    setItem: LocalStorage.set,
+    removeItem: LocalStorage.remove,
   },
 });
 

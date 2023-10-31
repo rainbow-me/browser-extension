@@ -3,9 +3,14 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
-import { getSupportedChainsWithHardhat } from '~/core/utils/chains';
+import {
+  getSupportedChainsWithHardhat,
+  getSupportedTestnetChains,
+} from '~/core/utils/chains';
+import { sortNetworks } from '~/core/utils/userChains';
 import {
   Box,
   Column,
@@ -19,7 +24,6 @@ import { Space } from '~/design-system/styles/designTokens';
 
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
-import { sortNetworks } from '../../pages/settings/networks';
 import { simulateClick } from '../../utils/simulateClick';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
@@ -63,15 +67,19 @@ export const SwitchNetworkMenuSelector = ({
   const { userChains } = useUserChainsStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { userChainsOrder } = useUserChainsStore();
+  const { testnetMode } = useTestnetModeStore();
 
   const availableChains = useMemo(() => {
+    const supportedChains = testnetMode
+      ? getSupportedTestnetChains()
+      : getSupportedChainsWithHardhat();
     return sortNetworks(
       userChainsOrder,
-      getSupportedChainsWithHardhat().filter(
+      supportedChains.filter(
         (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
       ),
     );
-  }, [userChains, userChainsOrder]);
+  }, [testnetMode, userChains, userChainsOrder]);
 
   const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'
@@ -121,11 +129,9 @@ export const SwitchNetworkMenuSelector = ({
     handler: handleTokenShortcuts,
   });
 
-  const supportedChainsWithHardhat = getSupportedChainsWithHardhat();
-
   return (
     <Box id="switch-network-menu-selector">
-      {supportedChainsWithHardhat.map((chain, i) => {
+      {availableChains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
           <MenuRadioItem
@@ -169,7 +175,7 @@ export const SwitchNetworkMenuSelector = ({
       {showDisconnect && disconnect && (
         <SwitchNetworkMenuDisconnect
           onDisconnect={disconnect}
-          shortcutLabel={String(supportedChainsWithHardhat.length + 1)}
+          shortcutLabel={String(availableChains.length + 1)}
         />
       )}
     </Box>
@@ -240,15 +246,17 @@ export const SwitchNetworkMenu = ({
 }: SwitchNetworkMenuProps) => {
   const triggerRef = useRef<HTMLDivElement>(null);
   const { userChainsOrder, userChains } = useUserChainsStore();
+  const { testnetMode } = useTestnetModeStore();
 
   const availableChains = useMemo(() => {
     return sortNetworks(
       userChainsOrder,
-      getSupportedChainsWithHardhat().filter(
-        (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
-      ),
+      (testnetMode
+        ? getSupportedTestnetChains()
+        : getSupportedChainsWithHardhat()
+      ).filter((chain) => userChains[chain.id] || chain.id === ChainId.hardhat),
     );
-  }, [userChains, userChainsOrder]);
+  }, [testnetMode, userChains, userChainsOrder]);
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
