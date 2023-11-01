@@ -86,7 +86,14 @@ export function PostReleaseNFTs() {
 
         const thumbnailHeight =
           sectionRowCount * (sectionRowCount > 1 ? 106 : 96);
-        return PADDING + COLLECTION_HEADER_HEIGHT + thumbnailHeight;
+        const finalCellPadding =
+          sectionIndex === sortedSections.length - 1 ? 10 : 0;
+        return (
+          PADDING +
+          COLLECTION_HEADER_HEIGHT +
+          thumbnailHeight +
+          finalCellPadding
+        );
       } else {
         return COLLECTION_HEADER_HEIGHT;
       }

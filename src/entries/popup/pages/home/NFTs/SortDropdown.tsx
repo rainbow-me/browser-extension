@@ -58,7 +58,7 @@ export default function SortdDropdown() {
           </Box>
         </Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent marginRight="16px" marginTop="6px">
         <DropdownMenuRadioGroup
           onValueChange={(value) => onValueChange(value as typeof sort)}
         >

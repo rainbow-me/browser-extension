@@ -55,7 +55,7 @@ export default function DisplayModeDropdown() {
           </Box>
         </Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent marginRight="16px" marginTop="6px">
         <DropdownMenuRadioGroup
           onValueChange={(value) => onValueChange(value as typeof displayMode)}
         >
