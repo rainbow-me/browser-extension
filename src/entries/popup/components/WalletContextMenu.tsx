@@ -61,7 +61,7 @@ export const WalletContextMenu = ({
             onSelect={viewOnEtherscan}
             external
           >
-            {i18n.t('wallet.view_on', { explorer: 'etherscan' })}
+            {i18n.t('wallet.view_on', { explorer: 'Etherscan' })}
           </ContextMenuItem>
 
           <ContextMenuItem symbolLeft="paintbrush.pointed.fill" disabled>

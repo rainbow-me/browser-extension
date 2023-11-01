@@ -9,7 +9,7 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { isNativeAsset } from '~/core/utils/chains';
+import { isNativeAsset, isTestnetChainId } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
   FormattedCurrencyParts,
@@ -24,6 +24,7 @@ import {
   Separator,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { TextProps } from '~/design-system/components/Text/Text';
@@ -67,7 +68,7 @@ function BalanceValue({
           {i18n.t('token_details.balance')}
         </Text>
         <Inline alignVertical="center">
-          <Text
+          <TextOverflow
             size="14pt"
             weight="semibold"
             color={color}
@@ -76,7 +77,7 @@ function BalanceValue({
           >
             {hideAssetBalances ? <HiddenValue /> : balance.value}{' '}
             {balance.symbol}
-          </Text>
+          </TextOverflow>
         </Inline>
       </Box>
       <Box display="flex" flexDirection="column" gap="12px">
@@ -84,7 +85,7 @@ function BalanceValue({
           {i18n.t('token_details.value')}
         </Text>
         <Inline alignVertical="center">
-          <Text
+          <TextOverflow
             size="14pt"
             weight="semibold"
             color={color}
@@ -95,14 +96,20 @@ function BalanceValue({
             {nativeBalance.symbolAtStart && nativeBalance.symbol}
             {hideAssetBalances ? <HiddenValue /> : nativeBalance.value}
             {!nativeBalance.symbolAtStart && nativeBalance.symbol}
-          </Text>
+          </TextOverflow>
         </Inline>
       </Box>
     </Box>
   );
 }
 
-function SwapSend({ token }: { token: ParsedUserAsset }) {
+function SwapSend({
+  token,
+  isTestnetToken,
+}: {
+  token: ParsedUserAsset;
+  isTestnetToken: boolean;
+}) {
   const navigate = useRainbowNavigate();
   const { setSelectedToken } = useSelectedTokenStore();
   const selectTokenAndNavigate = (to: To) => {
@@ -113,17 +120,19 @@ function SwapSend({ token }: { token: ParsedUserAsset }) {
 
   return (
     <Box display="flex" gap="8px">
-      <Button
-        height="32px"
-        variant="flat"
-        width="full"
-        color="accent"
-        symbol="arrow.triangle.swap"
-        onClick={() => selectTokenAndNavigate(ROUTES.SWAP)}
-        tabIndex={0}
-      >
-        {i18n.t('token_details.swap')}
-      </Button>
+      {!isTestnetToken && (
+        <Button
+          height="32px"
+          variant="flat"
+          width="full"
+          color="accent"
+          symbol="arrow.triangle.swap"
+          onClick={() => selectTokenAndNavigate(ROUTES.SWAP)}
+          tabIndex={0}
+        >
+          {i18n.t('token_details.swap')}
+        </Button>
+      )}
       {isBridgeable && (
         <Button
           height="32px"
@@ -174,12 +183,12 @@ function NetworkBanner({
         onClick={toggleExplainer}
       >
         <ChainBadge chainId={chainId} size="14" />
-        <Text size="12pt" weight="semibold" color="labelSecondary">
+        <TextOverflow size="12pt" weight="semibold" color="labelSecondary">
           {i18n.t('token_details.this_token_is_on_network', {
             symbol: tokenSymbol,
             chainName: ChainNameDisplay[chainId],
           })}
-        </Text>
+        </TextOverflow>
         <Box style={{ marginLeft: 'auto', height: 14 }}>
           <Symbol
             symbol="info.circle.fill"
@@ -271,15 +280,6 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
               {i18n.t('token_details.view_on', { explorer: explorer.name })}
             </DropdownMenuItem>
           )}
-
-          {/* <Separator color="separatorSecondary" />
-
-          <DropdownMenuItem emoji="🙈">
-            {i18n.t('token_details.more_options.hide')}
-          </DropdownMenuItem>
-          <DropdownMenuItem emoji="🆘">
-            {i18n.t('token_details.more_options.report')}
-          </DropdownMenuItem> */}
         </AccentColorProvider>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -298,6 +298,8 @@ export function TokenDetails() {
   if (!uniqueId || (isFetched && !token)) return <Navigate to={ROUTES.HOME} />;
   if (!token) return null;
 
+  const isTestnetToken = isTestnetChainId({ chainId: token?.chainId });
+
   const tokenBalance = {
     ...formatCurrencyParts(token.balance.amount),
     symbol: token.symbol,
@@ -309,8 +311,7 @@ export function TokenDetails() {
       color={token.colors?.primary || token.colors?.fallback}
     >
       <Box
-        display="flex"
-        flexDirection="column"
+        height="full"
         background="surfacePrimaryElevatedSecondary"
         borderColor="separatorTertiary"
         borderWidth="1px"
@@ -328,10 +329,12 @@ export function TokenDetails() {
             />
           }
           rightComponent={
-            <Inline alignVertical="center" space="7px">
-              <FavoriteButton token={token} />
-              <MoreOptions token={token} />
-            </Inline>
+            !isTestnetToken ? (
+              <Inline alignVertical="center" space="7px">
+                <FavoriteButton token={token} />
+                <MoreOptions token={token} />
+              </Inline>
+            ) : undefined
           }
         />
         <Box padding="20px" gap="16px" display="flex" flexDirection="column">
@@ -345,25 +348,23 @@ export function TokenDetails() {
           />
 
           {!isWatchingWallet && token.balance.amount !== '0' && (
-            <SwapSend token={token} />
+            <SwapSend token={token} isTestnetToken={isTestnetToken} />
           )}
 
           <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
       </Box>
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap="24px"
-        paddingHorizontal="20px"
-        paddingVertical="24px"
-      >
-        {/* <TokenApprovals /> */}
-
-        {/* <Separator color="separatorTertiary" /> */}
-
-        <About token={token} />
-      </Box>
+      {!isTestnetToken && (
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap="24px"
+          paddingHorizontal="20px"
+          paddingVertical="24px"
+        >
+          <About token={token} />
+        </Box>
+      )}
     </AccentColorProvider>
   );
 }

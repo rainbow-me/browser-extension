@@ -1,4 +1,4 @@
-import { Storage } from '~/core/storage';
+import { LocalStorage } from '~/core/storage';
 
 import * as stores from '../index';
 
@@ -21,12 +21,12 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
       );
       const version = persistOptions.version;
       const newStore = persistOptions.serialize?.({ state, version });
-      await Storage.set(storageName, newStore);
+      await LocalStorage.set(storageName, newStore);
     }
     store.persist.rehydrate();
   };
 
-  Storage.listen(storageName, listener);
+  LocalStorage.listen(storageName, listener);
 }
 
 export function syncStores() {

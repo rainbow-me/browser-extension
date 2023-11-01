@@ -10,8 +10,8 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
-import { Storage } from '../storage';
-import { ChainId, hardhat } from '../types/chains';
+import { LocalStorage } from '../storage';
+import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
 import { SUPPORTED_CHAINS } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -25,6 +25,8 @@ const noopStorage = {
 const getOriginalRpcEndpoint = (chain: Chain) => {
   switch (chain.id) {
     case ChainId.hardhat:
+      return { http: chain.rpcUrls.default.http[0] };
+    case ChainId.hardhatOptimism:
       return { http: chain.rpcUrls.default.http[0] };
     case ChainId.mainnet:
       return { http: process.env.ETH_MAINNET_RPC as string };
@@ -44,17 +46,17 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
       return { http: process.env.ETH_GOERLI_RPC as string };
     case ChainId.sepolia:
       return { http: process.env.ETH_SEPOLIA_RPC as string };
-    case ChainId.optimismGoerli:
+    case ChainId['optimism-goerli']:
       return { http: process.env.OPTIMISM_GOERLI_RPC as string };
-    case ChainId.bscTestnet:
+    case ChainId['bsc-testnet']:
       return { http: process.env.BSC_TESTNET_RPC as string };
-    case ChainId.polygonMumbai:
+    case ChainId['polygon-mumbai']:
       return { http: process.env.POLYGON_MUMBAI_RPC as string };
-    case ChainId.arbitrumGoerli:
+    case ChainId['arbitrum-goerli']:
       return { http: process.env.ARBITRUM_GOERLI_RPC as string };
-    case ChainId.baseGoerli:
+    case ChainId['base-goerli']:
       return { http: process.env.BASE_GOERLI_RPC as string };
-    case ChainId.zoraTestnet:
+    case ChainId['zora-testnet']:
       return { http: process.env.ZORA_GOERLI_RPC as string };
     default:
       return null;
@@ -62,7 +64,9 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  IS_TESTING ? SUPPORTED_CHAINS.concat(hardhat) : SUPPORTED_CHAINS,
+  IS_TESTING
+    ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
+    : SUPPORTED_CHAINS,
   [
     jsonRpcProvider({
       rpc: (chain) => {
@@ -79,9 +83,9 @@ const { chains, provider, webSocketProvider } = configureChains(
 const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.wagmi',
   storage: {
-    getItem: Storage.get,
-    setItem: Storage.set,
-    removeItem: Storage.remove,
+    getItem: LocalStorage.get,
+    setItem: LocalStorage.set,
+    removeItem: LocalStorage.remove,
   },
 });
 

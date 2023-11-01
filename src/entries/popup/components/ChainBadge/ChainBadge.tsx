@@ -34,14 +34,15 @@ const networkBadges = {
   [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
   [ChainId.hardhat]: HardhatBadge,
+  [ChainId.hardhatOptimism]: HardhatBadge,
   [ChainId.goerli]: EthereumBadge,
   [ChainId.sepolia]: EthereumBadge,
-  [ChainId.optimismGoerli]: OptimismBadge,
-  [ChainId.bscTestnet]: BscBadge,
-  [ChainId.polygonMumbai]: PolygonBadge,
-  [ChainId.arbitrumGoerli]: ArbitrumBadge,
-  [ChainId.baseGoerli]: BaseBadge,
-  [ChainId.zoraTestnet]: ZoraBadge,
+  [ChainId['optimism-goerli']]: OptimismBadge,
+  [ChainId['bsc-testnet']]: BscBadge,
+  [ChainId['polygon-mumbai']]: PolygonBadge,
+  [ChainId['arbitrum-goerli']]: ArbitrumBadge,
+  [ChainId['base-goerli']]: BaseBadge,
+  [ChainId['zora-testnet']]: ZoraBadge,
 };
 
 const ChainBadge = ({

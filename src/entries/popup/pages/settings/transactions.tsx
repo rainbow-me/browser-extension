@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
-import { useFlashbotsEnabledStore } from '~/core/state';
+import {
+  useFlashbotsEnabledStore,
+  useNonceStore,
+  usePendingTransactionsStore,
+} from '~/core/state';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
@@ -14,13 +18,27 @@ import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
+import { triggerToast } from '../../components/Toast/Toast';
+
 export function Transactions() {
   const { defaultTxSpeed, setDefaultTxSpeed } = useDefaultTxSpeedStore();
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
+  const { clearNonces } = useNonceStore();
+  const { clearPendingTransactions } = usePendingTransactionsStore();
   const filteredTxSpeedOptionKeys = Object.values(GasSpeed).filter(
     (opt) => opt !== GasSpeed.CUSTOM,
   );
   const [speedDropdownOpen, setSpeedDropdownOpen] = useState(false);
+
+  const clearTransactions = useCallback(() => {
+    clearNonces();
+    clearPendingTransactions();
+    triggerToast({
+      title: i18n.t(
+        'settings.transactions.clear_transactions_and_nonces_success',
+      ),
+    });
+  }, [clearNonces, clearPendingTransactions]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -107,6 +125,20 @@ export function Transactions() {
           />
           <MenuItem.Description
             text={i18n.t('settings.transactions.flashbots_description')}
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            last
+            titleComponent={
+              <MenuItem.Title
+                color="red"
+                text={i18n.t(
+                  'settings.transactions.clear_transactions_and_nonces',
+                )}
+              />
+            }
+            onClick={clearTransactions}
           />
         </Menu>
       </MenuContainer>

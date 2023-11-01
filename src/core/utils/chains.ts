@@ -48,7 +48,8 @@ export const getSupportedChainsWithHardhat = () => {
   return chains.filter(
     (chain) =>
       !chain.testnet ||
-      (process.env.IS_TESTING === 'true' && chain.id === ChainId.hardhat),
+      (process.env.IS_TESTING === 'true' &&
+        (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)),
   );
 };
 
@@ -59,6 +60,19 @@ export const getSupportedChains = () => {
 
 export const getSupportedChainIds = () =>
   getSupportedChains().map((chain) => chain.id);
+
+export const getSupportedTestnetChains = () => {
+  const { chains } = getNetwork();
+  return chains.filter((chain) => chain.testnet);
+};
+
+export const getSupportedTestnetChainIds = () =>
+  getSupportedTestnetChains()
+    .filter(
+      (chain) =>
+        chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
+    )
+    .map((chain) => chain.id);
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -110,9 +124,32 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
 export function getChain({ chainId }: { chainId?: ChainId }) {
   const { chains } = getNetwork();
   const chain = chains.find((chain) => chain.id === chainId);
-  return chain || mainnet;
+  return chain || { ...mainnet, testnet: false };
+}
+
+export function isTestnetChainId({ chainId }: { chainId?: ChainId }) {
+  const chain = getChain({ chainId });
+  return !!chain.testnet;
 }
 
 export function isSupportedChainId(chainId: number) {
   return SUPPORTED_CHAINS.map((chain) => chain.id).includes(chainId);
 }
+
+export const chainIdToUse = (
+  connectedToHardhat: boolean,
+  connectedToHardhatOp: boolean,
+  activeSessionChainId?: number | null,
+) => {
+  if (connectedToHardhat) {
+    return ChainId.hardhat;
+  }
+  if (connectedToHardhatOp) {
+    return ChainId.hardhatOptimism;
+  }
+  if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
+    return activeSessionChainId;
+  } else {
+    return ChainId.mainnet;
+  }
+};

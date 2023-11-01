@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { copy } from '~/core/utils/copy';
 import { Box, Text } from '~/design-system';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
 import { exportAccount } from '~/entries/popup/handlers/wallet';
@@ -23,7 +24,13 @@ export function PrivateKey() {
   }, [navigate, state.fromChooseGroup]);
 
   const handleCopy = useCallback(
-    () => navigator.clipboard.writeText(privKey as string),
+    () =>
+      copy({
+        value: privKey,
+        title: i18n.t(
+          'settings.privacy_and_security.wallets_and_keys.private_key.copied',
+        ),
+      }),
     [privKey],
   );
 

@@ -13,9 +13,11 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { truncateAddress } from '~/core/utils/address';
+import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import {
   Bleed,
   Box,
@@ -267,6 +269,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     } = props;
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const { testnetMode } = useTestnetModeStore();
 
     useImperativeHandle(forwardedRef, () => ({
       blur: () => closeDropdown(),
@@ -358,7 +361,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       <>
         <DropdownInputWrapper
           zIndex={2}
-          dropdownHeight={452}
+          dropdownHeight={452 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0)}
           testId={'to-address-input'}
           leftComponent={
             <WalletContextMenu account={toAddress}>

@@ -12,6 +12,7 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import {
   ParsedAssetsDictByChain,
   ParsedUserAsset,
@@ -24,12 +25,16 @@ import {
   filterAsset,
   parseUserAsset,
 } from '~/core/utils/assets';
-import { getSupportedChainIds } from '~/core/utils/chains';
+import {
+  getSupportedChainIds,
+  getSupportedTestnetChainIds,
+} from '~/core/utils/chains';
 import { greaterThan } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 import {
   DAI_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
+  OPTIMISM_MAINNET_ASSET,
   USDC_MAINNET_ASSET,
 } from '~/test/utils';
 
@@ -45,30 +50,42 @@ export const USER_ASSETS_STALE_INTERVAL = 30000;
 export type UserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
+  testnetMode?: boolean;
 };
 
 type SetUserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
   userAssets?: UserAssetsResult;
+  testnetMode?: boolean;
 };
 
 type SetUserDefaultsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
   staleTime: number;
+  testnetMode?: boolean;
 };
 
 type FetchUserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
+  testnetMode?: boolean;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-export const userAssetsQueryKey = ({ address, currency }: UserAssetsArgs) =>
-  createQueryKey('userAssets', { address, currency }, { persisterVersion: 2 });
+export const userAssetsQueryKey = ({
+  address,
+  currency,
+  testnetMode,
+}: UserAssetsArgs) =>
+  createQueryKey(
+    'userAssets',
+    { address, currency, testnetMode },
+    { persisterVersion: 3 },
+  );
 
 type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
@@ -78,9 +95,10 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 export const userAssetsFetchQuery = ({
   address,
   currency,
+  testnetMode,
 }: FetchUserAssetsArgs) => {
   queryClient.fetchQuery(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address, currency, testnetMode }),
     userAssetsQueryFunction,
   );
 };
@@ -89,32 +107,40 @@ export const userAssetsSetQueryDefaults = ({
   address,
   currency,
   staleTime,
+  testnetMode,
 }: SetUserDefaultsArgs) => {
-  queryClient.setQueryDefaults(userAssetsQueryKey({ address, currency }), {
-    staleTime,
-  });
+  queryClient.setQueryDefaults(
+    userAssetsQueryKey({ address, currency, testnetMode }),
+    {
+      staleTime,
+    },
+  );
 };
 
 export const userAssetsSetQueryData = ({
   address,
   currency,
   userAssets,
+  testnetMode,
 }: SetUserAssetsArgs) => {
   queryClient.setQueryData(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address, currency, testnetMode }),
     userAssets,
   );
 };
 
 async function userAssetsQueryFunction({
-  queryKey: [{ address, currency }],
+  queryKey: [{ address, currency, testnetMode }],
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = (cache.find(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address, currency, testnetMode }),
   )?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
-    const url = `/${getSupportedChainIds().join(',')}/${address}/assets`;
+    const supportedChainIds = testnetMode
+      ? getSupportedTestnetChainIds()
+      : getSupportedChainIds();
+    const url = `/${supportedChainIds.join(',')}/${address}/assets`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       params: {
         currency: currency.toLowerCase(),
@@ -130,6 +156,7 @@ async function userAssetsQueryFunction({
         address,
         chainIds: chainIdsWithErrorsInResponse,
         currency,
+        testnetMode,
       });
       if (assets.length && chainIdsInResponse.length) {
         const parsedAssetsDict = await parseUserAssets({
@@ -163,15 +190,17 @@ async function userAssetsQueryFunctionRetryByChain({
   address,
   chainIds,
   currency,
+  testnetMode,
 }: {
   address: Address;
   chainIds: ChainId[];
   currency: SupportedCurrencyKey;
+  testnetMode?: boolean;
 }) {
   try {
     const cache = queryClient.getQueryCache();
     const cachedUserAssets =
-      (cache.find(userAssetsQueryKey({ address, currency }))?.state
+      (cache.find(userAssetsQueryKey({ address, currency, testnetMode }))?.state
         ?.data as ParsedAssetsDictByChain) || {};
     const retries = [];
     for (const chainIdWithError of chainIds) {
@@ -194,7 +223,7 @@ async function userAssetsQueryFunctionRetryByChain({
       }
     }
     queryClient.setQueryData(
-      userAssetsQueryKey({ address, currency }),
+      userAssetsQueryKey({ address, currency, testnetMode }),
       cachedUserAssets,
     );
   } catch (e) {
@@ -219,7 +248,6 @@ export async function parseUserAssets({
   chainIds: ChainId[];
   currency: SupportedCurrencyKey;
 }) {
-  const { connectedToHardhat } = connectedToHardhatStore.getState();
   const parsedAssetsDict = chainIds.reduce(
     (dict, currentChainId) => ({ ...dict, [currentChainId]: {} }),
     {},
@@ -236,41 +264,57 @@ export async function parseUserAssets({
         parsedAsset;
     }
   }
-  if (connectedToHardhat) {
-    const provider = getProvider({ chainId: ChainId.hardhat });
-    // force checking for ETH if connected to hardhat
-    const mainnetAssets = parsedAssetsDict[ChainId.mainnet];
-    mainnetAssets[ETH_MAINNET_ASSET.uniqueId] = ETH_MAINNET_ASSET;
+  const { connectedToHardhat, connectedToHardhatOp } =
+    connectedToHardhatStore.getState();
+  if (connectedToHardhat || connectedToHardhatOp) {
+    // separating out these ternaries for readability
+    const selectedHardhatChainId = connectedToHardhat
+      ? ChainId.hardhat
+      : ChainId.hardhatOptimism;
+
+    const mainnetOrOptimismChainId = connectedToHardhat
+      ? ChainId.mainnet
+      : ChainId.optimism;
+
+    const ethereumOrOptimismAsset = connectedToHardhat
+      ? ETH_MAINNET_ASSET
+      : OPTIMISM_MAINNET_ASSET;
+
+    const provider = getProvider({ chainId: selectedHardhatChainId });
+
+    // Ensure assets are checked if connected to hardhat
+    const assets = parsedAssetsDict[mainnetOrOptimismChainId];
+    assets[ethereumOrOptimismAsset.uniqueId] = ethereumOrOptimismAsset;
     if (process.env.IS_TESTING === 'true') {
-      mainnetAssets[USDC_MAINNET_ASSET.uniqueId] = USDC_MAINNET_ASSET;
-      mainnetAssets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
+      assets[USDC_MAINNET_ASSET.uniqueId] = USDC_MAINNET_ASSET;
+      assets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
     }
-    const mainnetBalanceRequests = Object.values(mainnetAssets).map(
-      async (asset) => {
-        if (asset.chainId !== ChainId.mainnet) return asset;
-        try {
-          const parsedAsset = await fetchAssetBalanceViaProvider({
-            parsedAsset: asset,
-            currentAddress: address,
-            currency,
-            provider,
-          });
-          return parsedAsset;
-        } catch (e) {
-          return asset;
-        }
-      },
-    );
-    const newParsedMainnetAssetsByUniqueId = await Promise.all(
-      mainnetBalanceRequests,
-    );
-    const newMainnetAssets = newParsedMainnetAssetsByUniqueId.reduce<
+
+    const balanceRequests = Object.values(assets).map(async (asset) => {
+      if (asset.chainId !== mainnetOrOptimismChainId) return asset;
+
+      try {
+        const parsedAsset = await fetchAssetBalanceViaProvider({
+          parsedAsset: asset,
+          currentAddress: address,
+          currency,
+          provider,
+        });
+        return parsedAsset;
+      } catch (e) {
+        return asset;
+      }
+    });
+
+    const newParsedAssetsByUniqueId = await Promise.all(balanceRequests);
+    const newAssets = newParsedAssetsByUniqueId.reduce<
       Record<string, ParsedUserAsset>
     >((acc, parsedAsset) => {
       acc[parsedAsset.uniqueId] = parsedAsset;
       return acc;
     }, {});
-    parsedAssetsDict[ChainId.mainnet] = newMainnetAssets;
+
+    parsedAssetsDict[mainnetOrOptimismChainId] = newAssets;
   }
   return parsedAssetsDict;
 }
@@ -287,8 +331,9 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
     UserAssetsQueryKey
   > = {},
 ) {
+  const { testnetMode } = useTestnetModeStore();
   return useQuery(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address, currency, testnetMode }),
     userAssetsQueryFunction,
     {
       ...config,

@@ -8,7 +8,10 @@ import {
   ExplainerSheetProps,
 } from './ExplainerSheet/ExplainerSheet';
 
-type SideChain = Exclude<ChainId, 1 | 5 | 1337>;
+type SideChain = Exclude<
+  ChainId,
+  ChainId.mainnet | ChainId.goerli | ChainId.hardhat | ChainId.hardhatOptimism
+>;
 export const isSideChain = (chainId: ChainId): chainId is SideChain =>
   [ChainId.arbitrum, ChainId.polygon, ChainId.optimism, ChainId.bsc].includes(
     chainId,

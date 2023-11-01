@@ -6,12 +6,14 @@ import {
   RouterProvider,
   createHashRouter,
   useLocation,
+  useRouteError,
 } from 'react-router-dom';
 
 import { analytics } from '~/analytics';
 import { screen } from '~/analytics/screen';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useErrorStore } from '~/core/state/error';
 import { useNavRestorationStore } from '~/core/state/navRestoration';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
@@ -31,6 +33,7 @@ import { WindowStroke } from './components/WindowStroke/WindowStroke';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
+import { useRainbowNavigate } from './hooks/useRainbowNavigate';
 import { Buy } from './pages/buy';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -53,6 +56,7 @@ import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
+import { SettingsNetworksCustomRPC } from './pages/settings/customRpc';
 import { Language } from './pages/settings/language';
 import { SettingsNetworks } from './pages/settings/networks';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
@@ -86,10 +90,12 @@ import { simulateTab } from './utils/simulateTab';
 import { zIndexes } from './utils/zIndexes';
 
 const ChildRoute = (
-  props: React.PropsWithChildren & Pick<BoxProps, 'background'>,
+  props: React.PropsWithChildren &
+    Pick<BoxProps, 'background'> &
+    Pick<BoxProps, 'position'>,
 ) => (
   <Box
-    position="absolute"
+    position={props.position}
     background={props.background}
     style={{ ...POPUP_DIMENSIONS, zIndex: zIndexes.CHILD_ROUTE }}
   >
@@ -119,7 +125,7 @@ const ROUTE_DATA = [
       {
         path: ROUTES.TOKEN_DETAILS(':uniqueId'),
         element: (
-          <ChildRoute background="surfacePrimaryElevated">
+          <ChildRoute background="surfacePrimaryElevated" position="absolute">
             <AnimatedRoute
               background="surfacePrimaryElevated"
               direction="left"
@@ -482,6 +488,21 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <SettingsNetworks />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.networks.custom_rpc.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <SettingsNetworksCustomRPC />
       </AnimatedRoute>
     ),
   },
@@ -870,7 +891,7 @@ const RootLayout = () => {
 };
 
 const router = createHashRouter([
-  { element: <RootLayout />, children: ROUTE_DATA },
+  { element: <RootLayout />, children: ROUTE_DATA, errorElement: <Rerouter /> },
 ]);
 
 export function Routes() {
@@ -919,3 +940,17 @@ const useGlobalShortcuts = () => {
     },
   });
 };
+
+function Rerouter() {
+  const error = useRouteError() as Error;
+  const navigate = useRainbowNavigate();
+  const { setError } = useErrorStore();
+
+  React.useEffect(() => {
+    setError(error);
+    navigate(ROUTES.HOME, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return null;
+}

@@ -623,6 +623,17 @@ export async function navigateToSettingsPrivacy(
   await delayTime('medium');
 }
 
+export async function navigateToSettingsNetworks(
+  driver: WebDriver,
+  rootURL: string,
+) {
+  await goToPopup(driver, rootURL, '#/home');
+  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+  await findElementByTestIdAndClick({ id: 'settings-link', driver });
+  await findElementByTestIdAndClick({ id: 'networks-link', driver });
+  await delayTime('medium');
+}
+
 export async function toggleStatus(id: string, driver: WebDriver) {
   const toggleInput = await driver.wait(
     until.elementLocated(By.css(`[data-testid="${id}"] input`)),
@@ -687,13 +698,10 @@ export async function getOnchainBalance(addy: string, contract: string) {
 export async function transactionStatus() {
   const provider = getDefaultProvider('http://127.0.0.1:8545');
   const blockData = await provider.getBlock('latest');
-  const txn = await provider.getTransaction(blockData.transactions[0]);
-  const txnData = txn.wait();
-
-  // transactionResponse.wait.status returns '1' if txn is successful
-  // it returns '0' if the txn is a failure
-  const txnStatus = (await txnData).status === 1 ? 'success' : 'failure';
-
+  const txnReceipt = await provider.getTransactionReceipt(
+    blockData.transactions[0],
+  );
+  const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
   return txnStatus;
 }
 

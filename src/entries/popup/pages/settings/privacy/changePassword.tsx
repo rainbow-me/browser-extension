@@ -234,6 +234,7 @@ export function ChangePassword() {
               <Row>
                 <Button
                   color={isValid && isMatching ? 'accent' : 'labelQuaternary'}
+                  testId={'update-password'}
                   height="44px"
                   variant={isValid && isMatching ? 'flat' : 'disabled'}
                   width="full"

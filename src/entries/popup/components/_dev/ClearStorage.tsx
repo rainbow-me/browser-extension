@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Storage } from '~/core/storage';
+import { LocalStorage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
 
 export function ClearStorage() {
@@ -9,7 +9,7 @@ export function ClearStorage() {
       as="button"
       background="accent"
       boxShadow="24px accent"
-      onClick={Storage.clear}
+      onClick={LocalStorage.clear}
       padding="16px"
       style={{ borderRadius: 999 }}
     >

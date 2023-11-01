@@ -270,7 +270,7 @@ export function About({ token }: { token: ParsedUserAsset }) {
               label={
                 <Inline alignVertical="center" space="4px">
                   {i18n.t(`token_details.about.volume`)}
-                  <Text color="labelQuaternary" size="14pt" weight="semibold">
+                  <Text color="labelQuaternary" size="12pt" weight="semibold">
                     (24H)
                   </Text>
                 </Inline>
