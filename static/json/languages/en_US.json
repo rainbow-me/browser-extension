@@ -1357,5 +1357,26 @@
     "unfavorite": "Remove from favorites",
     "estimated_difference": "Estimated difference in value",
     "buy_crypto": "Buy and transfer crypto"
-  }
+  },
+  "simulation": {
+    "title": "Simulated Result",
+    "loading": "Simulating...",
+    "error": "Simulation Failed",
+    "no_changes": "No Changes Detected",
+    "received": "Received",
+    "sent": "Sent",
+    "approved": "Approved",
+
+    "function": "Function",
+    "contract": "Contract",
+    "contract_name": "Contract Name",
+    "contract_created_at": "Contract Created",
+    "source_code": "Source Code",
+    "signature": {
+      "message": "Message"
+    }
+  },
+  "chain": "Chain",
+  "nonce": "Nonce",
+  "copy": "Copy"
 }

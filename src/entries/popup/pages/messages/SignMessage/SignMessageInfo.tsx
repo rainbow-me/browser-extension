@@ -16,23 +16,29 @@ interface SignMessageProps {
   request: ProviderRequestPayload;
 }
 
+export function SimulationNoChangesDetected() {
+  return (
+    <Inline space="8px" alignVertical="center">
+      <Symbol
+        symbol="waveform.and.magnifyingglass"
+        color="labelTertiary"
+        size={16}
+        weight="medium"
+      />
+      <Text size="14pt" weight="semibold" color="labelTertiary">
+        {i18n.t('simulation.no_changes')}
+      </Text>
+    </Inline>
+  );
+}
+
 function Overview({ message }: { message?: string }) {
   return (
     <Stack space="16px">
       <Text size="12pt" weight="semibold" color="labelTertiary">
-        Simulated Result
+        {i18n.t('simulation.title')}
       </Text>
-      <Inline space="8px" alignVertical="center">
-        <Symbol
-          symbol="waveform.and.magnifyingglass"
-          color="labelTertiary"
-          size={16}
-          weight="medium"
-        />
-        <Text size="14pt" weight="semibold" color="labelTertiary">
-          No Changes Detected
-        </Text>
-      </Inline>
+      <SimulationNoChangesDetected />
 
       <Separator color="separatorTertiary" />
 
@@ -40,7 +46,7 @@ function Overview({ message }: { message?: string }) {
         <Inline space="8px" alignVertical="center">
           <Symbol symbol="signature" size={16} weight="medium" />
           <Text size="14pt" weight="semibold" color="label">
-            Message
+            {i18n.t('simulation.signature.message')}
           </Text>
         </Inline>
         <Text as="pre" size="12pt" weight="semibold" color="labelTertiary">
@@ -71,7 +77,7 @@ function CopyButton({ onClick }: { onClick: VoidFunction }) {
         weight="bold"
       />
       <Text size="14pt" weight="semibold" color="labelSecondary">
-        Copy
+        {i18n.t('copy')}
       </Text>
     </TabFloatingButton>
   );
@@ -89,8 +95,6 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
   const [expanded, setExpanded] = useState(false);
-
-  typedData;
 
   return (
     <Box

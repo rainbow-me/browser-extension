@@ -9,17 +9,10 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { formatDate } from '~/core/utils/formatDate';
 import { formatNumber } from '~/core/utils/formatNumber';
-import {
-  Bleed,
-  Box,
-  Inline,
-  Separator,
-  Stack,
-  Symbol,
-  Text,
-} from '~/design-system';
+import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import {
   SymbolName,
   TextColor,
@@ -34,6 +27,7 @@ import { Tag } from '~/entries/popup/components/Tag';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
+import { SimulationNoChangesDetected } from '../SignMessage/SignMessageInfo';
 import { TabContent, Tabs } from '../Tabs';
 import {
   TransactionSimulation,
@@ -120,8 +114,9 @@ function SimulationOverview({
   request: TransactionRequest;
   domain: string;
 }) {
+  const chainId = request.chainId || ChainId.mainnet;
   const { data: simulation, status } = useSimulateTransaction({
-    chainId: request.chainId || ChainId.mainnet,
+    chainId,
     transaction: {
       from: request.from || '',
       to: request.to || '',
@@ -131,19 +126,17 @@ function SimulationOverview({
     domain,
   });
 
-  console.log(simulation);
-
   return (
     <Stack space="16px">
       <Text size="12pt" weight="semibold" color="labelTertiary">
-        Simulated Result
+        {i18n.t('simulation.title')}
       </Text>
 
       {status === 'loading' && (
         <Inline alignVertical="center" space="8px">
           <Spinner size={16} color="blue" />
           <Text size="14pt" weight="semibold" color="blue">
-            Simulating...
+            {i18n.t('simulation.loading')}
           </Text>
         </Inline>
       )}
@@ -152,155 +145,193 @@ function SimulationOverview({
         <Inline alignVertical="center" space="8px">
           <Symbol symbol="xmark.circle" size={16} color="red" weight="bold" />
           <Text size="14pt" weight="semibold" color="red">
-            Error Simulating
+            {i18n.t('simulation.error')}
           </Text>
         </Inline>
       )}
 
-      {/* const color = direction === 'in' ? 'green' : 'red';
-  const icon =
-    direction === 'in' ? 'arrow.down.circle.fill' : 'arrow.up.circle.fill';
-  const label = direction === 'in' ? 'Received' : 'Sent'; */}
-
-      {status === 'success' && (
-        <Stack space="14px">
-          {simulation.in.map(({ asset, quantity }) => (
-            <SimulatedChangeRow
-              key={asset.address}
-              asset={asset}
-              quantity={quantity}
-              color="green"
-              symbol={
-                <Symbol
-                  size={14}
-                  symbol="arrow.up.circle.fill"
-                  weight="bold"
-                  color="green"
-                />
-              }
-              label="Received"
-            />
-          ))}
-          {simulation.out.map(({ asset, quantity }) => (
-            <SimulatedChangeRow
-              key={asset.address}
-              asset={asset}
-              quantity={quantity}
-              color="red"
-              symbol={
-                <Symbol
-                  size={14}
-                  symbol="arrow.down.circle.fill"
-                  weight="bold"
-                  color="red"
-                />
-              }
-              label="Sent"
-            />
-          ))}
-          {simulation.approvals.map(({ asset, quantityAllowed }) => (
-            <SimulatedChangeRow
-              key={asset.address}
-              asset={asset}
-              quantity={quantityAllowed}
-              color="label"
-              symbol={
-                <Symbol
-                  size={14}
-                  symbol="checkmark.seal.fill"
-                  weight="bold"
-                  color="blue"
-                />
-              }
-              label="Approve"
-            />
-          ))}
-        </Stack>
-      )}
+      {status === 'success' &&
+        (!simulation.hasChanges ? (
+          <SimulationNoChangesDetected />
+        ) : (
+          <Stack space="14px">
+            {simulation.in.map(({ asset, quantity }) => (
+              <SimulatedChangeRow
+                key={asset.address}
+                asset={asset}
+                quantity={quantity}
+                color="green"
+                symbol={
+                  <Symbol
+                    size={14}
+                    symbol="arrow.up.circle.fill"
+                    weight="bold"
+                    color="green"
+                  />
+                }
+                label={i18n.t('simulation.received')}
+              />
+            ))}
+            {simulation.out.map(({ asset, quantity }) => (
+              <SimulatedChangeRow
+                key={asset.address}
+                asset={asset}
+                quantity={quantity}
+                color="red"
+                symbol={
+                  <Symbol
+                    size={14}
+                    symbol="arrow.down.circle.fill"
+                    weight="bold"
+                    color="red"
+                  />
+                }
+                label={i18n.t('simulation.sent')}
+              />
+            ))}
+            {simulation.approvals.map(({ asset, quantityAllowed }) => (
+              <SimulatedChangeRow
+                key={asset.address}
+                asset={asset}
+                quantity={quantityAllowed}
+                color="label"
+                symbol={
+                  <Symbol
+                    size={14}
+                    symbol="checkmark.seal.fill"
+                    weight="bold"
+                    color="blue"
+                  />
+                }
+                label={i18n.t('simulation.approved')}
+              />
+            ))}
+          </Stack>
+        ))}
 
       <Separator color="separatorTertiary" />
 
-      <InfoRow
-        symbol="network"
-        label="Chain"
-        value={
-          <Inline space="6px" alignVertical="center">
-            <ChainBadge chainId={1} size={14} />
-            <Text size="12pt" weight="semibold" color="labelSecondary">
-              ETH
-            </Text>
-          </Inline>
-        }
-      />
+      {ChainNameDisplay[chainId] && (
+        <InfoRow
+          symbol="network"
+          label={i18n.t('chain')}
+          value={
+            <Inline space="6px" alignVertical="center">
+              <ChainBadge chainId={chainId} size={14} />
+              <Text size="12pt" weight="semibold" color="labelSecondary">
+                {ChainNameDisplay[chainId]}
+              </Text>
+            </Inline>
+          }
+        />
+      )}
 
-      <InfoRow
+      {/* <InfoRow
         symbol="app.badge.checkmark"
         label="App"
         value={
           <Tag
             size="12pt"
-            color="blue"
+            color={isSourceCodeVerified ? 'blue' : 'labelSecondary'}
             style={{ borderColor: globalColors.blueA10 }}
             bleed
             left={
-              <Bleed vertical="3px">
-                <Symbol
-                  symbol="checkmark.seal.fill"
-                  size={11}
-                  weight="bold"
-                  color="blue"
-                />
-              </Bleed>
+              isSourceCodeVerified && (
+                <Bleed vertical="3px">
+                  <Symbol
+                    symbol="checkmark.seal.fill"
+                    size={11}
+                    weight="bold"
+                    color="blue"
+                  />
+                </Bleed>
+              )
             }
           >
-            opensea.io
+            {}
           </Tag>
         }
-      />
+      /> */}
     </Stack>
   );
 }
 
-function TransactionDetails() {
+function TransactionDetails({
+  request,
+  domain,
+}: {
+  request: TransactionRequest;
+  domain: string;
+}) {
+  const chainId = request.chainId || ChainId.mainnet;
+  const { data: simulation, status } = useSimulateTransaction({
+    chainId,
+    transaction: {
+      from: request.from || '',
+      to: request.to || '',
+      value: request.value?.toString() || '0',
+      data: request.data?.toString() || '',
+    },
+    domain,
+  });
+
+  const metaTo = simulation?.meta.to;
+
+  const nonce = request.nonce?.toString();
+  const functionName = metaTo?.function;
+  const contract = metaTo?.address;
+  const contractName = metaTo?.name;
+  const isSourceCodeVerified = metaTo?.sourceCodeStatus === 'VERIFIED';
+  const contractCreatedAt = metaTo?.created;
+
   return (
     <Box gap="16px" display="flex" flexDirection="column">
-      <InfoRow symbol="number" label="Nonce" value={28} />
-      <InfoRow
-        symbol="curlybraces"
-        label="Function"
-        value={
-          <Tag size="12pt" color="labelSecondary" bleed>
-            Fullfill Basic Order
-          </Tag>
-        }
-      />
-      <InfoRow
-        symbol="doc.plaintext"
-        label="Contract"
-        value={
-          <AddressDisplay
-            address="0x507F0daA42b215273B8a063B092ff3b6d27767aF"
-            hideAvatar
-          />
-        }
-      />
-      <InfoRow symbol="person" label="Contract Name" value="Seaport 1.1" />
-      <InfoRow
-        symbol="calendar"
-        label="Contract Created"
-        value="8 months ago"
-      />
+      {!!nonce && (
+        <InfoRow symbol="number" label={i18n.t('nonce')} value={nonce} />
+      )}
+      {functionName && (
+        <InfoRow
+          symbol="curlybraces"
+          label={i18n.t('simulation.function')}
+          value={
+            <Tag size="12pt" color="labelSecondary" bleed>
+              {functionName}
+            </Tag>
+          }
+        />
+      )}
+      {contract && (
+        <InfoRow
+          symbol="doc.plaintext"
+          label={i18n.t('simulation.contract')}
+          value={<AddressDisplay address={contract} hideAvatar />}
+        />
+      )}
+      {contractName && (
+        <InfoRow
+          symbol="person"
+          label={i18n.t('simulation.contract_name')}
+          value={contractName}
+        />
+      )}
+      {contractCreatedAt && (
+        <InfoRow
+          symbol="calendar"
+          label={i18n.t('simulation.contract_created_at')}
+          value={formatDate(contractCreatedAt)}
+        />
+      )}
       <InfoRow
         symbol="doc.text.magnifyingglass"
-        label="Source Code"
+        label={i18n.t('simulation.source_code')}
         value={
           <Tag
             size="12pt"
-            color="green"
+            color={isSourceCodeVerified ? 'green' : 'labelSecondary'}
             style={{ borderColor: globalColors.greenA10 }}
             bleed
           >
-            Verified
+            {isSourceCodeVerified ? 'Verified' : 'Unverified'}
           </Tag>
         }
       />
@@ -406,7 +437,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
               <SimulationOverview domain={dappUrl} request={txRequest} />
             </TabContent>
             <TabContent value="Details">
-              <TransactionDetails />
+              <TransactionDetails domain={dappUrl} request={txRequest} />
             </TabContent>
             <TabContent value="Data">
               <TransactionData data={txData} />

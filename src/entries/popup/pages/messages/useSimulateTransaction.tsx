@@ -81,6 +81,10 @@ export const useSimulateTransaction = ({
           asset: parseSimulationAsset(approval.asset, chainId),
         })),
         meta: simulation.meta,
+        hasChanges:
+          simulation.in.length > 0 ||
+          simulation.out.length > 0 ||
+          simulation.approvals.length > 0,
       };
     },
   });
@@ -99,6 +103,7 @@ export type TransactionSimulation = {
       sourceCodeStatus: 'UNKNOWN';
     };
   };
+  hasChanges: boolean;
 };
 
 type SimulationAsset = {
@@ -149,7 +154,7 @@ type TransactionSimulationResponse = {
             iconURL: string;
             function: string;
             created: null;
-            sourceCodeStatus: 'UNKNOWN';
+            sourceCodeStatus: 'UNKNOWN' | 'VERIFIED';
           };
         };
       };
