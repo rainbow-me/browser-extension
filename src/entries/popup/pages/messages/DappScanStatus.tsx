@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -33,23 +34,26 @@ export function ThisDappIsLikelyMalicious() {
   );
 }
 
-const VerifiedBadge = () => (
-  <Symbol size={17} symbol="checkmark.seal.fill" weight="bold" color="blue" />
+const VerifiedBadge = ({ size = 17 }: { size?: number }) => (
+  <Symbol size={size} symbol="checkmark.seal.fill" weight="bold" color="blue" />
 );
-const ScamBadge = () => (
+const ScamBadge = ({ size = 17 }: { size?: number }) => (
   <Symbol
-    size={17}
+    size={size}
     symbol="network.badge.shield.half.filled"
     weight="bold"
     color="red"
   />
 );
 
-const getStatusBadge = (status: DAppStatus | undefined) => {
+export const getDappStatusBadge = (
+  status: DAppStatus | undefined,
+  props?: { size: number },
+) => {
   if (status === DAppStatus.Scam)
-    return { badge: <ScamBadge />, color: 'red' } as const;
+    return { badge: <ScamBadge {...props} />, color: 'red' } as const;
   if (status === DAppStatus.Verified)
-    return { badge: <VerifiedBadge />, color: 'blue' } as const;
+    return { badge: <VerifiedBadge {...props} />, color: 'blue' } as const;
 
   return { badge: null, color: 'labelSecondary' } as const;
 };
@@ -61,7 +65,7 @@ export function DappHostName({
   hostName?: string;
   dappStatus?: DAppStatus;
 }) {
-  const { badge, color } = getStatusBadge(dappStatus);
+  const { badge, color } = getDappStatusBadge(dappStatus, { size: 17 });
   return (
     <Inline space="5px" alignVertical="center" alignHorizontal="center">
       {badge}

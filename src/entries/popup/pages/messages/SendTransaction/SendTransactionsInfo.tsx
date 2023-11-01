@@ -3,16 +3,26 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { ReactNode, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { useDappMetadata } from '~/core/resources/metadata/dapp';
+import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
+import { useNonceStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatNumber } from '~/core/utils/formatNumber';
-import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+import {
+  Bleed,
+  Box,
+  Inline,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import {
   SymbolName,
   TextColor,
@@ -26,7 +36,11 @@ import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { Tag } from '~/entries/popup/components/Tag';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
-import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
+import {
+  DappHostName,
+  ThisDappIsLikelyMalicious,
+  getDappStatusBadge,
+} from '../DappScanStatus';
 import { SimulationNoChangesDetected } from '../SignMessage/SignMessageInfo';
 import { TabContent, Tabs } from '../Tabs';
 import {
@@ -110,11 +124,19 @@ function SimulatedChangeRow({
 function SimulationOverview({
   simulation,
   status,
+  metadata,
 }: {
   simulation: TransactionSimulation | undefined;
   status: 'loading' | 'error' | 'success';
+  metadata: DappMetadata | null;
 }) {
   const chainId = simulation?.chainId;
+
+  const { badge, color } = getDappStatusBadge(
+    metadata?.status || DAppStatus.Unverified,
+    { size: 12 },
+  );
+
   return (
     <Stack space="16px">
       <Text size="12pt" weight="semibold" color="labelTertiary">
@@ -215,46 +237,39 @@ function SimulationOverview({
         />
       )}
 
-      {/* <InfoRow
-        symbol="app.badge.checkmark"
-        label="App"
-        value={
-          <Tag
-            size="12pt"
-            color={isSourceCodeVerified ? 'blue' : 'labelSecondary'}
-            style={{ borderColor: globalColors.blueA10 }}
-            bleed
-            left={
-              isSourceCodeVerified && (
-                <Bleed vertical="3px">
-                  <Symbol
-                    symbol="checkmark.seal.fill"
-                    size={11}
-                    weight="bold"
-                    color="blue"
-                  />
-                </Bleed>
-              )
-            }
-          >
-            {}
-          </Tag>
-        }
-      /> */}
+      {metadata && (
+        <InfoRow
+          symbol="app.badge.checkmark"
+          label="App"
+          value={
+            <Tag
+              size="12pt"
+              color={color}
+              style={{ borderColor: globalColors.blueA10 }}
+              bleed
+              left={badge && <Bleed vertical="3px">{badge}</Bleed>}
+            >
+              {metadata.appName}
+            </Tag>
+          }
+        />
+      )}
     </Stack>
   );
 }
 
 function TransactionDetails({
   simulation,
-  request,
+  session,
 }: {
   simulation: TransactionSimulation | undefined;
-  request: TransactionRequest;
+  session: { address: Address; chainId: ChainId };
 }) {
   const metaTo = simulation?.meta.to;
 
-  const nonce = request.nonce?.toString();
+  const { getNonce } = useNonceStore();
+  const { currentNonce: nonce } = getNonce(session) || {};
+
   const functionName = metaTo?.function;
   const contract = metaTo?.address;
   const contractName = metaTo?.name;
@@ -376,67 +391,84 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
-      style={{ minHeight: 397, height: '100%' }}
+      style={{ minHeight: 397, overflow: 'hidden' }}
       borderColor="separatorTertiary"
       borderWidth="1px"
+      paddingHorizontal="20px"
+      paddingVertical="20px"
+      position="relative"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      gap="24px"
+      height="full"
     >
-      <Stack
-        space="24px"
-        paddingHorizontal="20px"
-        paddingTop="40px"
-        paddingBottom="16px"
-        height="full"
+      <Box
+        as={motion.div}
+        style={{
+          maxHeight: expanded ? 0 : '100%',
+          overflow: expanded ? 'hidden' : 'unset',
+          paddingTop: expanded ? 0 : '20px',
+          opacity: expanded ? 0 : 1,
+        }}
+        transition={{ duration: 1 }}
+        display="flex"
+        flexDirection="column"
+        gap="16px"
+        alignItems="center"
       >
-        <motion.div
-          style={{ height: expanded ? 'auto' : 0, overflow: 'hidden' }}
-        >
-          <Stack space="16px" alignItems="center">
-            <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
-            <Stack space="12px">
-              <DappHostName
-                hostName={dappMetadata?.appHostName}
-                dappStatus={dappMetadata?.status}
-              />
-              <Text
-                align="center"
-                size="14pt"
-                weight="bold"
-                color={isScamDapp ? 'red' : 'labelSecondary'}
-              >
-                {methodName}
-              </Text>
-            </Stack>
-          </Stack>
-        </motion.div>
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap="20px"
-          alignItems="center"
-          height="full"
-          style={{ overflow: expanded ? 'scroll' : 'hidden', height: '100%' }}
-        >
-          <Tabs
-            tabs={['Overview', 'Details', 'Data']}
-            expanded={expanded}
-            onExpand={() => setExpanded((e) => !e)}
+        <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
+        <Stack space="12px">
+          <DappHostName
+            hostName={dappMetadata?.appHostName}
+            dappStatus={dappMetadata?.status}
+          />
+          <Text
+            align="center"
+            size="14pt"
+            weight="bold"
+            color={isScamDapp ? 'red' : 'labelSecondary'}
           >
-            <TabContent value="Overview">
-              <SimulationOverview simulation={simulation} status={status} />
-            </TabContent>
-            <TabContent value="Details">
-              <TransactionDetails simulation={simulation} request={txRequest} />
-            </TabContent>
-            <TabContent value="Data">
-              <TransactionData data={txData} />
-            </TabContent>
-          </Tabs>
+            {methodName}
+          </Text>
+        </Stack>
+      </Box>
 
-          {dappMetadata?.status === DAppStatus.Scam ? (
-            <ThisDappIsLikelyMalicious />
-          ) : null}
-        </Box>
-      </Stack>
+      <Box
+        display="flex"
+        flexDirection="column"
+        gap="20px"
+        alignItems="center"
+        height="full"
+        style={{ overflow: 'hidden' }}
+      >
+        <Tabs
+          tabs={['Overview', 'Details', 'Data']}
+          expanded={expanded}
+          onExpand={() => setExpanded((e) => !e)}
+        >
+          <TabContent value="Overview">
+            <SimulationOverview
+              simulation={simulation}
+              status={status}
+              metadata={dappMetadata}
+            />
+          </TabContent>
+          <TabContent value="Details">
+            <TransactionDetails
+              session={activeSession!}
+              simulation={simulation}
+            />
+          </TabContent>
+          <TabContent value="Data">
+            <TransactionData data={txData} />
+          </TabContent>
+        </Tabs>
+
+        {dappMetadata?.status === DAppStatus.Scam ? (
+          <ThisDappIsLikelyMalicious />
+        ) : null}
+      </Box>
     </Box>
   );
 }

@@ -100,7 +100,7 @@ function ScrollableWithGradient({
           maxHeight: '100%',
           overflow: isScrollable ? 'scroll' : 'visible',
         }}
-        paddingBottom="52px"
+        paddingBottom={isScrollable || expanded ? '52px' : '20px'}
         paddingTop="14px"
         paddingHorizontal="20px"
         marginHorizontal="-20px"
@@ -207,7 +207,13 @@ export function Tabs({
         <Box
           as={motion.div}
           layout="preserve-aspect"
-          transition={{ layout: { type: 'spring', duration: 0.5 } }}
+          transition={{
+            layout: {
+              type: 'spring',
+              bounce: 0.2,
+              duration: expanded ? 0.6 : 1,
+            },
+          }}
           display="flex"
           flexDirection="column"
           padding="20px"

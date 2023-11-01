@@ -116,8 +116,6 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
     domain: dappUrl,
   });
 
-  console.log(simulation);
-
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
@@ -133,25 +131,36 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
       gap="24px"
       height="full"
     >
-      <motion.div style={{ height: expanded ? 0 : 'auto' }}>
-        <Stack space="16px" alignItems="center" paddingTop="20px">
-          <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
-          <Stack space="12px">
-            <DappHostName
-              hostName={dappMetadata?.appHostName}
-              dappStatus={dappMetadata?.status}
-            />
-            <Text
-              align="center"
-              size="14pt"
-              weight="bold"
-              color={isScamDapp ? 'red' : 'labelSecondary'}
-            >
-              {i18n.t('approve_request.message_signing_request')}
-            </Text>
-          </Stack>
+      <Box
+        as={motion.div}
+        style={{
+          maxHeight: expanded ? 0 : '100%',
+          overflow: expanded ? 'hidden' : 'unset',
+          paddingTop: expanded ? 0 : '20px',
+          opacity: expanded ? 0 : 1,
+        }}
+        transition={{ duration: 1 }}
+        display="flex"
+        flexDirection="column"
+        gap="16px"
+        alignItems="center"
+      >
+        <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
+        <Stack space="12px">
+          <DappHostName
+            hostName={dappMetadata?.appHostName}
+            dappStatus={dappMetadata?.status}
+          />
+          <Text
+            align="center"
+            size="14pt"
+            weight="bold"
+            color={isScamDapp ? 'red' : 'labelSecondary'}
+          >
+            {i18n.t('approve_request.message_signing_request')}
+          </Text>
         </Stack>
-      </motion.div>
+      </Box>
 
       <Box
         display="flex"
@@ -159,6 +168,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
         gap="20px"
         alignItems="center"
         height="full"
+        style={{ overflow: 'hidden' }}
       >
         <Tabs
           tabs={['Overview', 'Details']}
