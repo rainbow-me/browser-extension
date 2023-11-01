@@ -16,6 +16,11 @@ import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
 import { ChainId, ChainNameDisplay } from '../types/chains';
 
+import {
+  getSupportedChainsWithHardhat,
+  getSupportedTestnetChains,
+} from './chains';
+
 export const chainIdMap: Record<
   | ChainId.mainnet
   | ChainId.optimism
@@ -65,4 +70,32 @@ export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
     return aIndex - bIndex;
   });
   return ordered;
+};
+
+export const filterUserNetworks = ({
+  testnetMode,
+  userChains,
+  userChainsOrder,
+}: {
+  testnetMode: boolean;
+  userChains: Record<ChainId, boolean>;
+  userChainsOrder: ChainId[];
+}) => {
+  const supportedChains = testnetMode
+    ? getSupportedTestnetChains()
+    : getSupportedChainsWithHardhat();
+
+  const availableChains = Object.keys(userChains)
+    .filter((chainId) => userChains[Number(chainId)] === true)
+    .map((chainId) => Number(chainId));
+
+  const allAvailableUserChains = availableChains
+    .map((chainId) => chainIdMap[chainId])
+    .flat();
+
+  const chains = supportedChains.filter((chain) =>
+    allAvailableUserChains.includes(chain.id),
+  );
+
+  return sortNetworks(userChainsOrder, chains);
 };
