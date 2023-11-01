@@ -15,6 +15,7 @@ import {
   Stack,
   Symbol,
   Text,
+  TextOverflow,
   ThemeProvider,
 } from '~/design-system';
 import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
@@ -273,7 +274,7 @@ export const ContextMenuItem = ({
       disabled={disabled}
       tabIndex={disabled ? -1 : 0}
     >
-      <Inline alignVertical="center" space="8px">
+      <Inline alignVertical="center" space="8px" wrap={false}>
         {isSymbol(symbolLeft) ? (
           <Symbol
             size={16}
@@ -287,9 +288,9 @@ export const ContextMenuItem = ({
           </Text>
         )}
         {typeof children === 'string' ? (
-          <Text size="14pt" weight="semibold" color={color}>
+          <TextOverflow size="14pt" weight="semibold" color={color}>
             {children}
-          </Text>
+          </TextOverflow>
         ) : (
           <Stack space="8px">{children}</Stack>
         )}
