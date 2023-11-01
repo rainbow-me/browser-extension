@@ -68,6 +68,7 @@ export const useSimulateTransaction = ({
       const { simulation } = response.simulateTransactions[0];
 
       return {
+        chainId,
         in: simulation.in.map(({ asset, quantity }) => ({
           quantity,
           asset: parseSimulationAsset(asset, chainId),
@@ -92,18 +93,15 @@ export const useSimulateTransaction = ({
 export type TransactionSimulation = {
   in: { asset: ParsedAsset; quantity: string }[];
   out: { asset: ParsedAsset; quantity: string }[];
-  approvals: [];
-  meta: {
-    to: {
-      address: Address;
-      name: string;
-      iconURL: string;
-      function: string;
-      created: null;
-      sourceCodeStatus: 'UNKNOWN';
-    };
-  };
+  approvals: {
+    asset: ParsedAsset;
+    spender: SimulationApprovalSpender;
+    quantityAllowed: 'UNLIMITED' | (string & {});
+    quantityAtRisk: string;
+  }[];
+  meta: SimulationMeta;
   hasChanges: boolean;
+  chainId: ChainId;
 };
 
 type SimulationAsset = {
@@ -123,6 +121,24 @@ type SimulationChange = {
   asset: SimulationAsset;
   quantity: string;
 };
+type SimulationApprovalSpender = {
+  address: Address;
+  name: string;
+  iconURL: string;
+  function: string;
+  created: string;
+  sourceCodeStatus: 'VERIFIED';
+};
+type SimulationMeta = {
+  to: {
+    address: Address;
+    name: string;
+    iconURL: string;
+    function: string;
+    created: null;
+    sourceCodeStatus: 'UNKNOWN' | 'VERIFIED';
+  };
+};
 
 type TransactionSimulationResponse = {
   simulateTransactions: [
@@ -136,27 +152,11 @@ type TransactionSimulationResponse = {
         out: SimulationChange[];
         approvals: {
           asset: SimulationAsset;
-          spender: {
-            address: Address;
-            name: string;
-            iconURL: string;
-            function: string;
-            created: string;
-            sourceCodeStatus: 'VERIFIED';
-          };
+          spender: SimulationApprovalSpender;
           quantityAllowed: 'UNLIMITED' | (string & {});
           quantityAtRisk: string;
         }[];
-        meta: {
-          to: {
-            address: Address;
-            name: string;
-            iconURL: string;
-            function: string;
-            created: null;
-            sourceCodeStatus: 'UNKNOWN' | 'VERIFIED';
-          };
-        };
+        meta: SimulationMeta;
       };
     },
   ];

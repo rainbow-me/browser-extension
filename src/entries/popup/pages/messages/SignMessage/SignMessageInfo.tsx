@@ -1,3 +1,4 @@
+import { TransactionRequest } from '@ethersproject/providers';
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 
@@ -5,12 +6,15 @@ import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { ChainId } from '~/core/types/chains';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
+import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
 import { TabContent, TabFloatingButton, Tabs } from '../Tabs';
+import { useSimulateTransaction } from '../useSimulateTransaction';
 
 interface SignMessageProps {
   request: ProviderRequestPayload;
@@ -84,9 +88,8 @@ function CopyButton({ onClick }: { onClick: VoidFunction }) {
 }
 
 export const SignMessageInfo = ({ request }: SignMessageProps) => {
-  const { data: dappMetadata } = useDappMetadata({
-    url: request?.meta?.sender?.url,
-  });
+  const dappUrl = request?.meta?.sender?.url || '';
+  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
 
   const { message, typedData } = useMemo(() => {
     const { message, typedData } = getSigningRequestDisplayDetails(request);
@@ -95,6 +98,25 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
   const [expanded, setExpanded] = useState(false);
+
+  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
+
+  const txRequest = request?.params?.[0] as TransactionRequest;
+
+  const chainId = activeSession?.chainId || ChainId.mainnet;
+
+  const { data: simulation, status } = useSimulateTransaction({
+    chainId,
+    transaction: {
+      from: txRequest.from || '',
+      to: txRequest.to || '',
+      value: txRequest.value?.toString() || '0',
+      data: txRequest.data?.toString() || '',
+    },
+    domain: dappUrl,
+  });
+
+  console.log(simulation);
 
   return (
     <Box

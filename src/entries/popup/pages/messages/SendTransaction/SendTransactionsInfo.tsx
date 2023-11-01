@@ -108,24 +108,13 @@ function SimulatedChangeRow({
 }
 
 function SimulationOverview({
-  request,
-  domain,
+  simulation,
+  status,
 }: {
-  request: TransactionRequest;
-  domain: string;
+  simulation: TransactionSimulation | undefined;
+  status: 'loading' | 'error' | 'success';
 }) {
-  const chainId = request.chainId || ChainId.mainnet;
-  const { data: simulation, status } = useSimulateTransaction({
-    chainId,
-    transaction: {
-      from: request.from || '',
-      to: request.to || '',
-      value: request.value?.toString() || '0',
-      data: request.data?.toString() || '',
-    },
-    domain,
-  });
-
+  const chainId = simulation?.chainId;
   return (
     <Stack space="16px">
       <Text size="12pt" weight="semibold" color="labelTertiary">
@@ -151,7 +140,7 @@ function SimulationOverview({
       )}
 
       {status === 'success' &&
-        (!simulation.hasChanges ? (
+        (!simulation?.hasChanges ? (
           <SimulationNoChangesDetected />
         ) : (
           <Stack space="14px">
@@ -211,7 +200,7 @@ function SimulationOverview({
 
       <Separator color="separatorTertiary" />
 
-      {ChainNameDisplay[chainId] && (
+      {chainId && ChainNameDisplay[chainId] && (
         <InfoRow
           symbol="network"
           label={i18n.t('chain')}
@@ -257,24 +246,12 @@ function SimulationOverview({
 }
 
 function TransactionDetails({
+  simulation,
   request,
-  domain,
 }: {
+  simulation: TransactionSimulation | undefined;
   request: TransactionRequest;
-  domain: string;
 }) {
-  const chainId = request.chainId || ChainId.mainnet;
-  const { data: simulation, status } = useSimulateTransaction({
-    chainId,
-    transaction: {
-      from: request.from || '',
-      to: request.to || '',
-      value: request.value?.toString() || '0',
-      data: request.data?.toString() || '',
-    },
-    domain,
-  });
-
   const metaTo = simulation?.meta.to;
 
   const nonce = request.nonce?.toString();
@@ -385,6 +362,17 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
   // dappMetadata.status = DAppStatus.Scam;
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
+  const { data: simulation, status } = useSimulateTransaction({
+    chainId,
+    transaction: {
+      from: txRequest.from || '',
+      to: txRequest.to || '',
+      value: txRequest.value?.toString() || '0',
+      data: txRequest.data?.toString() || '',
+    },
+    domain: dappUrl,
+  });
+
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
@@ -434,10 +422,10 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
             onExpand={() => setExpanded((e) => !e)}
           >
             <TabContent value="Overview">
-              <SimulationOverview domain={dappUrl} request={txRequest} />
+              <SimulationOverview simulation={simulation} status={status} />
             </TabContent>
             <TabContent value="Details">
-              <TransactionDetails domain={dappUrl} request={txRequest} />
+              <TransactionDetails simulation={simulation} request={txRequest} />
             </TabContent>
             <TabContent value="Data">
               <TransactionData data={txData} />

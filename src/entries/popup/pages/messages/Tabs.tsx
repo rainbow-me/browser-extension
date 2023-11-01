@@ -98,9 +98,9 @@ function ScrollableWithGradient({
       <Box
         style={{
           maxHeight: '100%',
-          paddingBottom: isScrollable ? '38px' : '20px',
           overflow: isScrollable ? 'scroll' : 'visible',
         }}
+        paddingBottom="52px"
         paddingTop="14px"
         paddingHorizontal="20px"
         marginHorizontal="-20px"
