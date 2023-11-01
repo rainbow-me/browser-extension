@@ -86,16 +86,11 @@ export function PostReleaseNFTs() {
 
         const thumbnailHeight =
           sectionRowCount * (sectionRowCount > 1 ? 106 : 96);
-        const finalCellPadding =
-          sectionIndex === sortedSections.length - 1 ? 10 : 0;
-        return (
-          PADDING +
-          COLLECTION_HEADER_HEIGHT +
-          thumbnailHeight +
-          finalCellPadding
-        );
+        return PADDING + COLLECTION_HEADER_HEIGHT + thumbnailHeight;
       } else {
-        return COLLECTION_HEADER_HEIGHT;
+        const finalCellPadding =
+          !sectionIsOpen && sectionIndex === sortedSections.length - 1 ? 12 : 0;
+        return COLLECTION_HEADER_HEIGHT + finalCellPadding;
       }
     },
     [address, sortedSections, sectionsState],
@@ -197,6 +192,7 @@ export function PostReleaseNFTs() {
                 .map((virtualItem) => {
                   const { key, size, start, index } = virtualItem;
                   const section = sortedSections[index];
+                  const isLast = index === sortedSections.length - 1;
                   return (
                     <Box
                       key={key}
@@ -207,7 +203,7 @@ export function PostReleaseNFTs() {
                       ref={collectionGalleryRowVirtualizer.measureElement}
                       data-index={index}
                     >
-                      <CollectionSection section={section} />
+                      <CollectionSection isLast={isLast} section={section} />
                     </Box>
                   );
                 })}
@@ -221,8 +217,10 @@ export function PostReleaseNFTs() {
 
 function CollectionSection({
   section,
+  isLast,
 }: {
   section: { assets: UniqueAsset[]; collection: UniqueAsset['collection'] };
+  isLast: boolean;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { sections, toggleGallerySectionOpen } = useNftsStore();
@@ -240,7 +238,12 @@ function CollectionSection({
       <Row>
         <Lens onClick={setCollectionVisible} borderRadius="6px">
           <Inset horizontal="4px">
-            <Box paddingVertical="7px">
+            <Box
+              style={{
+                paddingTop: 7,
+                paddingBottom: isLast && !collectionVisible ? 19 : 7,
+              }}
+            >
               <Columns alignVertical="center">
                 <Column>
                   <Inline alignVertical="center" space="7px">
