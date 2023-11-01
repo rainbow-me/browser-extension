@@ -41,7 +41,7 @@ export function AccountSigningWith({
 }: {
   selectedWallet: Address;
   appHost: string;
-  noFee: boolean;
+  noFee?: boolean;
 }) {
   const { activeSession } = useAppSession({ host: appHost });
   if (!activeSession) return;

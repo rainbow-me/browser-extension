@@ -113,7 +113,9 @@ function ScrollableWithGradient({
         }}
       >
         {children}
-        <ViewMoreButton onClick={onExpand} isActive={expanded} />
+        {(isScrollable || expanded) && (
+          <ViewMoreButton onClick={onExpand} isActive={expanded} />
+        )}
       </Box>
     </Box>
   );
@@ -192,7 +194,7 @@ export function Tabs({
   expanded: boolean;
   onExpand: VoidFunction;
 }>) {
-  const [tab, setTab] = useState('Overview');
+  const [tab, setTab] = useState(initialTab);
 
   return (
     <TabContext.Provider value={{ tabs, selectedTab: tab }}>

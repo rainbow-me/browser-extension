@@ -229,8 +229,6 @@ export function SendTransaction({
         <SendTransactionActions
           chainId={activeSession?.chainId || ChainId.mainnet}
           waitingForDevice={waitingForDevice}
-          appHost={dappMetadata?.appHost || ''}
-          selectedWallet={selectedWallet || ('' as Address)}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
           loading={loading}

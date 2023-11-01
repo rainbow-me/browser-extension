@@ -77,7 +77,7 @@ export type AssetApiResponse = {
   decimals: number;
   icon_url: string;
   name: string;
-  price: {
+  price?: {
     value: number;
     changed_at: number;
     relative_change_24h: number;

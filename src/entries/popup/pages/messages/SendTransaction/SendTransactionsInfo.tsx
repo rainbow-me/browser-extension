@@ -1,33 +1,44 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { formatUnits } from '@ethersproject/units';
+import { motion } from 'framer-motion';
 import { ReactNode, useState } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
+import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { formatNumber } from '~/core/utils/formatNumber';
 import {
   Bleed,
   Box,
   Inline,
-  Inset,
   Separator,
   Stack,
   Symbol,
   Text,
 } from '~/design-system';
-import { SymbolName, globalColors } from '~/design-system/styles/designTokens';
+import {
+  SymbolName,
+  TextColor,
+  globalColors,
+} from '~/design-system/styles/designTokens';
 import { AddressDisplay } from '~/entries/popup/components/AddressDisplay';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
+import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { Tag } from '~/entries/popup/components/Tag';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
-import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
-import { TabContent, Tabs, TabsNav } from '../Tabs';
+import { TabContent, Tabs } from '../Tabs';
+import {
+  TransactionSimulation,
+  useSimulateTransaction,
+} from '../useSimulateTransaction';
 
 import { overflowGradient } from './OverflowGradient.css';
 
@@ -69,20 +80,22 @@ const InfoRow = ({
 );
 
 function SimulatedChangeRow({
-  direction,
   asset,
+  quantity,
+  symbol,
+  color,
+  label,
 }: {
-  direction: 'in' | 'out' | 'self';
-  asset: ParsedAsset;
+  asset: TransactionSimulation['in'][0]['asset'];
+  quantity: (string & {}) | 'UNLIMITED';
+  symbol: ReactNode;
+  color: TextColor;
+  label: string;
 }) {
-  const color = direction === 'in' ? 'green' : 'red';
-  const icon =
-    direction === 'in' ? 'arrow.down.circle.fill' : 'arrow.up.circle.fill';
-  const label = direction === 'in' ? 'Received' : 'Sent';
   return (
     <Inline space="24px" alignHorizontal="justify" alignVertical="center">
       <Inline space="12px" alignVertical="center">
-        <Symbol size={14} symbol={icon} weight="bold" color={color} />
+        {symbol}
         <Text size="14pt" weight="bold" color="label">
           {label}
         </Text>
@@ -90,17 +103,35 @@ function SimulatedChangeRow({
       <Inline space="6px" alignVertical="center">
         <CoinIcon asset={asset} size={14} />
         <Text size="14pt" weight="bold" color={color}>
-          - 1 {asset.symbol}
+          {quantity === 'UNLIMITED'
+            ? i18n.t('approvals.unlimited')
+            : formatNumber(formatUnits(quantity, asset.decimals))}{' '}
+          {asset.symbol}
         </Text>
       </Inline>
     </Inline>
   );
 }
 
-function SimulationOverview() {
-  const nativeAsset = useNativeAssetForNetwork({
-    chainId: ChainId.mainnet,
+function SimulationOverview({
+  request,
+  domain,
+}: {
+  request: TransactionRequest;
+  domain: string;
+}) {
+  const { data: simulation, status } = useSimulateTransaction({
+    chainId: request.chainId || ChainId.mainnet,
+    transaction: {
+      from: request.from || '',
+      to: request.to || '',
+      value: request.value?.toString() || '0',
+      data: request.data?.toString() || '',
+    },
+    domain,
   });
+
+  console.log(simulation);
 
   return (
     <Stack space="16px">
@@ -108,13 +139,82 @@ function SimulationOverview() {
         Simulated Result
       </Text>
 
-      {nativeAsset && (
+      {status === 'loading' && (
+        <Inline alignVertical="center" space="8px">
+          <Spinner size={16} color="blue" />
+          <Text size="14pt" weight="semibold" color="blue">
+            Simulating...
+          </Text>
+        </Inline>
+      )}
+
+      {status === 'error' && (
+        <Inline alignVertical="center" space="8px">
+          <Symbol symbol="xmark.circle" size={16} color="red" weight="bold" />
+          <Text size="14pt" weight="semibold" color="red">
+            Error Simulating
+          </Text>
+        </Inline>
+      )}
+
+      {/* const color = direction === 'in' ? 'green' : 'red';
+  const icon =
+    direction === 'in' ? 'arrow.down.circle.fill' : 'arrow.up.circle.fill';
+  const label = direction === 'in' ? 'Received' : 'Sent'; */}
+
+      {status === 'success' && (
         <Stack space="14px">
-          <SimulatedChangeRow asset={nativeAsset} direction="out" />
-          {/* <SimulatedChangeRow asset={nativeAsset} direction="out" />
-          <SimulatedChangeRow asset={nativeAsset} direction="out" />
-          <SimulatedChangeRow asset={nativeAsset} direction="out" />
-          <SimulatedChangeRow asset={nativeAsset} direction="out" /> */}
+          {simulation.in.map(({ asset, quantity }) => (
+            <SimulatedChangeRow
+              key={asset.address}
+              asset={asset}
+              quantity={quantity}
+              color="green"
+              symbol={
+                <Symbol
+                  size={14}
+                  symbol="arrow.up.circle.fill"
+                  weight="bold"
+                  color="green"
+                />
+              }
+              label="Received"
+            />
+          ))}
+          {simulation.out.map(({ asset, quantity }) => (
+            <SimulatedChangeRow
+              key={asset.address}
+              asset={asset}
+              quantity={quantity}
+              color="red"
+              symbol={
+                <Symbol
+                  size={14}
+                  symbol="arrow.down.circle.fill"
+                  weight="bold"
+                  color="red"
+                />
+              }
+              label="Sent"
+            />
+          ))}
+          {simulation.approvals.map(({ asset, quantityAllowed }) => (
+            <SimulatedChangeRow
+              key={asset.address}
+              asset={asset}
+              quantity={quantityAllowed}
+              color="label"
+              symbol={
+                <Symbol
+                  size={14}
+                  symbol="checkmark.seal.fill"
+                  weight="bold"
+                  color="blue"
+                />
+              }
+              label="Approve"
+            />
+          ))}
         </Stack>
       )}
 
@@ -232,76 +332,24 @@ function TransactionData({ data }: { data: string }) {
   );
 }
 
-function RequestData({ request }: SendTransactionProps) {
-  const { data: dappMetadata } = useDappMetadata({
-    url: request?.meta?.sender?.url,
-  });
-  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-
-  const [expanded, setExpanded] = useState(false);
-  const [tab, setTab] = useState('Overview');
-
-  return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      gap="20px"
-      alignItems="center"
-      height="full"
-      style={{ overflow: expanded ? 'scroll' : 'hidden', height: '100%' }}
-    >
-      <Tabs tabs={['Overview', 'Details', 'Data']} tab={tab} setTab={setTab}>
-        <Box
-          display="flex"
-          flexDirection="column"
-          padding="20px"
-          background="surfaceSecondaryElevated"
-          borderRadius="20px"
-          borderColor="separatorSecondary"
-          borderWidth="1px"
-          width="full"
-          position="relative"
-          style={{ maxHeight: expanded ? 540 : 230, overflow: 'hidden' }}
-        >
-          <TabsNav />
-          <Inset top="20px">
-            <Separator color="separatorTertiary" />
-          </Inset>
-          <ExpandableScrollAreaWithGradient key={tab} tab={tab}>
-            <TabContent value="Overview">
-              <SimulationOverview />
-            </TabContent>
-            <TabContent value="Details">
-              <TransactionDetails />
-            </TabContent>
-            <TabContent value="Data">
-              <TransactionData data={request.params[0]?.data} />
-            </TabContent>
-          </ExpandableScrollAreaWithGradient>
-        </Box>
-      </Tabs>
-
-      {dappMetadata?.status === DAppStatus.Scam ? (
-        <ThisDappIsLikelyMalicious />
-      ) : null}
-    </Box>
-  );
-}
-
 export function SendTransactionInfo({ request }: SendTransactionProps) {
-  const { data: dappMetadata } = useDappMetadata({
-    url: request?.meta?.sender?.url,
-  });
+  const dappUrl = request?.meta?.sender?.url || '';
+  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
 
   const txRequest = request?.params?.[0] as TransactionRequest;
+  const txData = txRequest?.data?.toString() || '';
+
+  const chainId = activeSession?.chainId || ChainId.mainnet;
 
   const { data: methodName = '' } = useRegistryLookup({
     data: (txRequest?.data as string) || null,
     to: txRequest?.to || null,
-    chainId: activeSession?.chainId || ChainId.mainnet,
+    chainId,
     hash: null,
   });
+
+  const [expanded, setExpanded] = useState(false);
 
   // dappMetadata.status = DAppStatus.Scam;
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
@@ -320,24 +368,55 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
         paddingBottom="16px"
         height="full"
       >
-        <Stack space="16px" alignItems="center">
-          <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
-          <Stack space="12px">
-            <DappHostName
-              hostName={dappMetadata?.appHostName}
-              dappStatus={dappMetadata?.status}
-            />
-            <Text
-              align="center"
-              size="14pt"
-              weight="bold"
-              color={isScamDapp ? 'red' : 'labelSecondary'}
-            >
-              {methodName}
-            </Text>
+        <motion.div
+          style={{ height: expanded ? 'auto' : 0, overflow: 'hidden' }}
+        >
+          <Stack space="16px" alignItems="center">
+            <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
+            <Stack space="12px">
+              <DappHostName
+                hostName={dappMetadata?.appHostName}
+                dappStatus={dappMetadata?.status}
+              />
+              <Text
+                align="center"
+                size="14pt"
+                weight="bold"
+                color={isScamDapp ? 'red' : 'labelSecondary'}
+              >
+                {methodName}
+              </Text>
+            </Stack>
           </Stack>
-        </Stack>
-        <RequestData request={request} />
+        </motion.div>
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap="20px"
+          alignItems="center"
+          height="full"
+          style={{ overflow: expanded ? 'scroll' : 'hidden', height: '100%' }}
+        >
+          <Tabs
+            tabs={['Overview', 'Details', 'Data']}
+            expanded={expanded}
+            onExpand={() => setExpanded((e) => !e)}
+          >
+            <TabContent value="Overview">
+              <SimulationOverview domain={dappUrl} request={txRequest} />
+            </TabContent>
+            <TabContent value="Details">
+              <TransactionDetails />
+            </TabContent>
+            <TabContent value="Data">
+              <TransactionData data={txData} />
+            </TabContent>
+          </Tabs>
+
+          {dappMetadata?.status === DAppStatus.Scam ? (
+            <ThisDappIsLikelyMalicious />
+          ) : null}
+        </Box>
       </Stack>
     </Box>
   );

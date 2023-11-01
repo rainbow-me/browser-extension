@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
@@ -88,6 +89,9 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
   const [expanded, setExpanded] = useState(false);
+
+  typedData;
+
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
@@ -103,7 +107,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
       gap="24px"
       height="full"
     >
-      {!expanded && (
+      <motion.div style={{ height: expanded ? 0 : 'auto' }}>
         <Stack space="16px" alignItems="center" paddingTop="20px">
           <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
           <Stack space="12px">
@@ -121,7 +125,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
             </Text>
           </Stack>
         </Stack>
-      )}
+      </motion.div>
 
       <Box
         display="flex"
