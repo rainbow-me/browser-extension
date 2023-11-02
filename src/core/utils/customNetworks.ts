@@ -1,8 +1,6 @@
 // This is to simulate the user adding custom RPC endpoints that we'll be storing in state
 
-import { userAddedCustomRpcEndpoints } from '../references';
-
-import { SUPPORTED_CHAINS } from './chains';
+import { SUPPORTED_CHAINS, userAddedCustomRpcEndpoints } from '../references';
 
 export const findCustomNetworkForChainId = (chainId: number) => {
   return userAddedCustomRpcEndpoints.find(

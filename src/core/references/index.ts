@@ -1,7 +1,23 @@
 import { AddressZero } from '@ethersproject/constants';
-import { Address } from 'wagmi';
+import {
+  arbitrum,
+  arbitrumGoerli,
+  base,
+  baseGoerli,
+  bsc,
+  bscTestnet,
+  goerli,
+  mainnet,
+  optimism,
+  optimismGoerli,
+  polygon,
+  polygonMumbai,
+  zora,
+  zoraTestnet,
+} from '@wagmi/chains';
+import { Address, type Chain, sepolia } from 'wagmi';
 
-import { ChainId } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -171,3 +187,31 @@ export const userAddedCustomRpcEndpoints = [
     nativeAssetAddress: AddressZero,
   },
 ];
+
+export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  zora,
+  bsc,
+].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
+
+export const SUPPORTED_CHAINS: Chain[] = [
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  zora,
+  bsc,
+  goerli,
+  sepolia,
+  optimismGoerli,
+  bscTestnet,
+  polygonMumbai,
+  arbitrumGoerli,
+  baseGoerli,
+  zoraTestnet,
+].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
