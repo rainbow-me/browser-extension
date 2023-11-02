@@ -22,7 +22,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { SymbolName, globalColors } from '~/design-system/styles/designTokens';
+import { SymbolName } from '~/design-system/styles/designTokens';
 import { AddressDisplay } from '~/entries/popup/components/AddressDisplay';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
@@ -127,7 +127,6 @@ function Overview({
             <Tag
               size="12pt"
               color={color}
-              style={{ borderColor: globalColors.blueA10 }}
               bleed
               left={badge && <Bleed vertical="3px">{badge}</Bleed>}
             >
@@ -202,10 +201,9 @@ function TransactionDetails({
           <Tag
             size="12pt"
             color={isSourceCodeVerified ? 'green' : 'labelSecondary'}
-            style={{ borderColor: globalColors.greenA10 }}
             bleed
           >
-            {isSourceCodeVerified ? 'Verified' : 'Unverified'}
+            {isSourceCodeVerified ? i18n.t('verified') : i18n.t('unverified')}
           </Tag>
         }
       />

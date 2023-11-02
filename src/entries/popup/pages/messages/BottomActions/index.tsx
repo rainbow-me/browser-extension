@@ -351,10 +351,17 @@ const getAcceptRequestButtonStyles = ({
       textColor: 'label',
     } as const;
 
-  const variant = disabled ? 'disabled' : 'flat';
   if (dappStatus === DAppStatus.Scam)
-    return { variant, color: 'redA10', textColor: 'red' } as const;
-  return { variant, color: 'accent', textColor: 'label' } as const;
+    return {
+      variant: disabled ? 'disabled' : 'tinted',
+      color: 'red',
+      textColor: 'red',
+    } as const;
+  return {
+    variant: disabled ? 'disabled' : 'flat',
+    color: 'accent',
+    textColor: 'label',
+  } as const;
 };
 
 export const AcceptRequestButton = ({

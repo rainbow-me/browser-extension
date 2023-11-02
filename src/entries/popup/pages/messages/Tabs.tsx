@@ -11,7 +11,7 @@ import {
 import { i18n } from '~/core/languages';
 import { Box, Inline, Inset, Separator, Symbol, Text } from '~/design-system';
 
-import { overflowGradient } from './SendTransaction/OverflowGradient.css';
+import { overflowGradient } from './OverflowGradient.css';
 
 function TabTrigger({ value }: { value: string }) {
   const { selectedTab } = useContext(TabContext);
@@ -177,7 +177,7 @@ function ViewMoreButton({
       />
       {isActive && (
         <Text size="14pt" weight="semibold" color="labelSecondary">
-          Close
+          {i18n.t('close')}
         </Text>
       )}
     </TabFloatingButton>

@@ -2,6 +2,13 @@ import { CSSProperties, PropsWithChildren, ReactNode } from 'react';
 
 import { Box, TextOverflow } from '~/design-system';
 import { TextProps } from '~/design-system/components/Text/Text';
+import { globalColors } from '~/design-system/styles/designTokens';
+
+const getTagStyles = (color: TextProps['color']) => {
+  if (color === 'red') return { borderColor: globalColors.redA10 };
+  if (color === 'blue') return { borderColor: globalColors.blueA10 };
+  if (color === 'green') return { borderColor: globalColors.greenA10 };
+};
 
 export function Tag({
   children,
@@ -29,7 +36,7 @@ export function Tag({
       display="flex"
       gap="4px"
       alignItems="center"
-      style={style}
+      style={{ ...getTagStyles(color), ...style }}
     >
       {left}
       <TextOverflow size={size} weight="semibold" align="right" color={color}>

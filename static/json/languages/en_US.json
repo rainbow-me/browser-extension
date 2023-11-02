@@ -880,7 +880,7 @@
     }
   },
   "testnet_mode_watcher": {
-    "connect_to":"Connect to %{chainName}",
+    "connect_to": "Connect to %{chainName}",
     "testnet_mode": "Testnet Mode",
     "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
     "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
@@ -949,7 +949,9 @@
     "send_transaction_anyway": "Sign Anyway",
     "contract_deployment": "Contract Deployment",
     "transaction_request": "Transaction Request",
-    "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
+    "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas",
+    "signing_with": "Signing with",
+    "no_fee_to_sign": "No fee to sign"
   },
   "transaction_fee": {
     "title": "Transaction Speed",
@@ -1414,5 +1416,8 @@
   },
   "chain": "Chain",
   "nonce": "Nonce",
-  "copy": "Copy"
+  "copy": "Copy",
+  "close": "Close",
+  "verified": "Verified",
+  "unverified": "Unverified"
 }
