@@ -24,7 +24,7 @@ function WalletNativeBalance({
   address: Address;
 }) {
   const { data: balance } = useBalance({ address, chainId });
-  if (!balance) return;
+  if (!balance) return null;
   return (
     <Inline alignVertical="center" space="6px">
       <ChainBadge chainId={chainId} size={14} />
@@ -45,7 +45,7 @@ export function AccountSigningWith({
   noFee?: boolean;
 }) {
   const { activeSession } = useAppSession({ host: appHost });
-  if (!activeSession) return;
+  if (!activeSession) return null;
   const { address, chainId } = activeSession;
   return (
     <Inline alignVertical="center" space="8px">
