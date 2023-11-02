@@ -21,6 +21,7 @@ import { type Chain, sepolia } from 'wagmi';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 
+import { customRPCsStore } from '../state/customRPC';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost } from './connectedApps';
@@ -85,6 +86,15 @@ export const getSupportedTestnetChainIds = () =>
         chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
     )
     .map((chain) => chain.id);
+
+export const getCustomChains = () => {
+  const { customChains } = customRPCsStore.getState();
+  return Object.values(customChains)
+    .map((customChain) =>
+      customChain.rpcs.find((rpc) => rpc.rpcUrl === customChain.activeRpcUrl),
+    )
+    .filter(Boolean);
+};
 
 /**
  * @desc Checks if the given chain is a Layer 2.
