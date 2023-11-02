@@ -445,19 +445,23 @@ export const generateCSV = (
   data: KeychainWallet[],
   walletNames: WalletNames,
 ): string => {
-  let csvContent = 'public_address,name,type\n';
+  let csvContent = 'public_address,name,type,parent_wallet\n';
 
   data.forEach(({ accounts, type, vendor }) => {
-    const address = accounts[0];
-    const name = walletNames[address as Address] || address;
+    const primaryAddress = accounts[0];
+    const primaryName =
+      walletNames[primaryAddress as Address] || primaryAddress;
 
-    let importedType = typeMapping[type];
+    accounts.forEach((address, index) => {
+      const name = walletNames[address as Address] || address;
+      let importedType = typeMapping[type];
 
-    if (type === 'HardwareWalletKeychain') {
-      importedType = `Hardware Wallet - ${vendor}`;
-    }
-
-    csvContent += `${address},${name},${importedType}\n`;
+      if (type === 'HardwareWalletKeychain') {
+        importedType = `Hardware Wallet - ${vendor}`;
+      }
+      const parent = index === 0 ? '-' : primaryName;
+      csvContent += `${address},${name},${importedType},${parent}\n`;
+    });
   });
 
   return csvContent;
