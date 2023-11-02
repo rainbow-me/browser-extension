@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useLocation } from 'react-router';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -15,10 +14,9 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
 import { useErrorStore } from '~/core/state/error';
-import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { goToNewTab, isNativePopup } from '~/core/utils/tabs';
+import { goToNewTab } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
@@ -29,7 +27,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
 import { BackupReminder } from '../../components/BackupReminder/BackupReminder';
 import { Navbar } from '../../components/Navbar/Navbar';
-import { TabBar as NewTabBar } from '../../components/Tabs/TabBar';
+import { TabBar as NewTabBar, Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { WalletContextMenu } from '../../components/WalletContextMenu';
@@ -45,6 +43,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
+import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
@@ -53,51 +52,31 @@ import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { NFTs } from './NFTs';
 import { AppConnection } from './NetworkMenu';
-import { TabBar as TabBar_ } from './TabBar';
+import { Points } from './Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
-
-export type Tab = 'tokens' | 'activity' | 'nfts';
-
-const TAB_BAR_HEIGHT = 34;
-const TOP_NAV_HEIGHT = 65;
 
 type TabProps = {
   activeTab: Tab;
   containerRef: React.RefObject<HTMLDivElement>;
   onSelectTab: (tab: Tab) => void;
   prevScrollPosition: React.MutableRefObject<number | undefined>;
-  setActiveTab: (tab: Tab) => void;
 };
+
+const isPlaceholderTab = (tab: Tab) => tab === 'nfts' || tab === 'points';
+
+const TOP_NAV_HEIGHT = 65;
 
 const Tabs = memo(function Tabs({
   activeTab,
   containerRef,
   onSelectTab,
   prevScrollPosition,
-  setActiveTab,
 }: TabProps) {
-  const { featureFlags } = useFeatureFlagsStore();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { activeTab: popupActiveTab } = usePopupInstanceStore();
+  const { visibleTokenCount } = useVisibleTokenCount();
 
-  const { state } = useLocation();
-
-  const COLLAPSED_HEADER_TOP_OFFSET = featureFlags.new_tab_bar_enabled
-    ? 157
-    : 160;
-
-  useEffect(() => {
-    const mountWithSavedTabInPopup = async () => {
-      const isPopup = await isNativePopup();
-      if (state?.tab) {
-        setActiveTab(state.tab);
-      } else if (isPopup) {
-        setActiveTab(popupActiveTab);
-      }
-    };
-    mountWithSavedTabInPopup();
-  }, [popupActiveTab, setActiveTab, state?.tab]);
+  const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
   // If we are already in a state where the header is collapsed,
   // then ensure we are scrolling to the top when we change tab.
@@ -109,7 +88,7 @@ const Tabs = memo(function Tabs({
     if (!top || !containerRef.current) return;
     containerRef.current.scrollTo({
       top:
-        top > COLLAPSED_HEADER_TOP_OFFSET
+        top > COLLAPSED_HEADER_TOP_OFFSET && visibleTokenCount > 8
           ? COLLAPSED_HEADER_TOP_OFFSET + 4 // don't know why, but +4 solves a shift :)
           : 0,
     });
@@ -118,43 +97,30 @@ const Tabs = memo(function Tabs({
 
   useKeyboardShortcut({
     handler: (e) => {
-      if (featureFlags.new_tab_bar_enabled) {
-        if (e.key === shortcuts.global.BACK.key) {
-          trackShortcut({
-            key: shortcuts.global.BACK.display,
-            type: 'home.switchTab',
-          });
-          if (activeTab === 'tokens') {
-            onSelectTab('activity');
-          } else if (activeTab === 'nfts') {
-            onSelectTab('tokens');
-          }
-        }
-        if (e.key === shortcuts.global.FORWARD.key) {
-          trackShortcut({
-            key: shortcuts.global.FORWARD.display,
-            type: 'home.switchTab',
-          });
-          if (activeTab === 'tokens') {
-            onSelectTab('nfts');
-          } else if (activeTab === 'activity') {
-            onSelectTab('tokens');
-          }
-        }
-      } else {
-        if (e.key === shortcuts.global.BACK.key) {
-          trackShortcut({
-            key: shortcuts.global.BACK.display,
-            type: 'home.switchTab',
-          });
+      if (e.key === shortcuts.global.BACK.key) {
+        trackShortcut({
+          key: shortcuts.global.BACK.display,
+          type: 'home.switchTab',
+        });
+        if (activeTab === 'activity') {
           onSelectTab('tokens');
-        }
-        if (e.key === shortcuts.global.FORWARD.key) {
-          trackShortcut({
-            key: shortcuts.global.FORWARD.display,
-            type: 'home.switchTab',
-          });
+        } else if (activeTab === 'nfts') {
           onSelectTab('activity');
+        } else if (activeTab === 'points') {
+          onSelectTab('nfts');
+        }
+      }
+      if (e.key === shortcuts.global.FORWARD.key) {
+        trackShortcut({
+          key: shortcuts.global.FORWARD.display,
+          type: 'home.switchTab',
+        });
+        if (activeTab === 'tokens') {
+          onSelectTab('activity');
+        } else if (activeTab === 'activity') {
+          onSelectTab('nfts');
+        } else if (activeTab === 'nfts') {
+          onSelectTab('points');
         }
       }
     },
@@ -163,10 +129,11 @@ const Tabs = memo(function Tabs({
   return (
     <>
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-      <Content>
+      <Content disableBottomPadding={isPlaceholderTab(activeTab)}>
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
         {activeTab === 'nfts' && <NFTs />}
+        {activeTab === 'points' && <Points />}
       </Content>
     </>
   );
@@ -176,20 +143,36 @@ export const Home = memo(function Home() {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
-  const { featureFlags } = useFeatureFlagsStore();
-  const { activeTab: popupActiveTab, saveActiveTab } = usePopupInstanceStore();
   const { error, setError } = useErrorStore();
   const navigate = useRainbowNavigate();
   const { pendingRequests } = usePendingRequestStore();
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
-  const [activeTab, setActiveTab] = useState<Tab>(popupActiveTab);
+  const { selectedTab, setSelectedTab } = useTabNavigation();
+
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+    if (isPlaceholderTab(selectedTab)) {
+      const pendingTabSwitch = selectedTab;
+      setSelectedTab('tokens');
+      return pendingTabSwitch;
+    } else return selectedTab;
+  });
+
   const containerRef = useContainerRef();
   const prevScrollPosition = useRef<number | undefined>(undefined);
 
   const onSelectTab = (tab: Tab) => {
     prevScrollPosition.current = containerRef.current?.scrollTop;
+    if (activeTab === tab && containerRef.current?.scrollTop !== 0) {
+      containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     setActiveTab(tab);
-    saveActiveTab({ tab });
+    if (isPlaceholderTab(tab)) {
+      // Don’t persist placeholder tabs (NFTs, Points)
+      setSelectedTab('tokens');
+    } else {
+      setSelectedTab(tab);
+    }
   };
 
   useEffect(() => {
@@ -254,13 +237,10 @@ export const Home = memo(function Home() {
               containerRef={containerRef}
               onSelectTab={onSelectTab}
               prevScrollPosition={prevScrollPosition}
-              setActiveTab={setActiveTab}
             />
             <AppConnectionWalletSwitcher />
           </motion.div>
-          {featureFlags.new_tab_bar_enabled && (
-            <NewTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
-          )}
+          <NewTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
           <BackupReminder />
           {currentHomeSheet}
         </>
@@ -344,19 +324,13 @@ function TabBar({
   activeTab: Tab;
   setActiveTab: (tab: Tab) => void;
 }) {
-  const { featureFlags } = useFeatureFlagsStore();
-
   return (
     <StickyHeader
       background="surfacePrimaryElevatedSecondary"
-      height={featureFlags.new_tab_bar_enabled ? 39 : TAB_BAR_HEIGHT}
+      height={39}
       topOffset={TOP_NAV_HEIGHT}
     >
-      {featureFlags.new_tab_bar_enabled ? (
-        <TabHeader activeTab={activeTab} onSelectTab={setActiveTab} />
-      ) : (
-        <TabBar_ activeTab={activeTab} onSelectTab={setActiveTab} />
-      )}
+      <TabHeader activeTab={activeTab} onSelectTab={setActiveTab} />
       <Box position="relative" style={{ bottom: 1 }}>
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
@@ -364,9 +338,10 @@ function TabBar({
   );
 }
 
-function Content({ children }: PropsWithChildren) {
-  const { featureFlags } = useFeatureFlagsStore();
-
+function Content({
+  children,
+  disableBottomPadding,
+}: PropsWithChildren<{ disableBottomPadding?: boolean }>) {
   return (
     <Box
       background="surfacePrimaryElevated"
@@ -374,7 +349,7 @@ function Content({ children }: PropsWithChildren) {
     >
       <Box
         height="full"
-        paddingBottom={featureFlags.new_tab_bar_enabled ? '64px' : undefined}
+        paddingBottom={disableBottomPadding ? undefined : '64px'}
       >
         <Inset top="20px">{children}</Inset>
       </Box>

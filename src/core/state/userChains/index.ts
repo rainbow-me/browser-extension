@@ -1,41 +1,81 @@
 import create from 'zustand';
 
 import { ChainId } from '~/core/types/chains';
-import { SUPPORTED_CHAINS } from '~/core/utils/chains';
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/utils/chains';
 
 import { createStore } from '../internal/createStore';
 
+type MainnetChainId =
+  | ChainId.mainnet
+  | ChainId.optimism
+  | ChainId.polygon
+  | ChainId.arbitrum
+  | ChainId.bsc
+  | ChainId.zora
+  | ChainId.base;
+
 export interface UserChainsState {
-  userChains: Record<ChainId, boolean>;
-  userChainsOrder: ChainId[];
+  /**
+   * Mainnet chains in network settings
+   */
+  userChains: Record<MainnetChainId, boolean>;
+  /**
+   * Mainnet chains ordered from network settings
+   */
+  userChainsOrder: MainnetChainId[];
   updateUserChain: ({
     chainId,
     enabled,
   }: {
-    chainId: ChainId;
+    chainId: MainnetChainId;
+    enabled: boolean;
+  }) => void;
+  updateUserChains: ({
+    chainIds,
+    enabled,
+  }: {
+    chainIds: MainnetChainId[];
     enabled: boolean;
   }) => void;
   updateUserChainsOrder: ({
     userChainsOrder,
   }: {
-    userChainsOrder: ChainId[];
+    userChainsOrder: MainnetChainId[];
   }) => void;
 }
 
-const chains = SUPPORTED_CHAINS.filter((chain) => !chain.testnet).reduce(
+const chains = SUPPORTED_MAINNET_CHAINS.reduce(
   (acc, chain) => ({
     ...acc,
     [chain.id]: true,
   }),
-  {} as Record<ChainId, boolean>,
+  {} as Record<MainnetChainId, boolean>,
 );
 
-const userChainsOrder = Object.keys(chains).map((id) => Number(id) as ChainId);
+const userChainsOrder = Object.keys(chains).map(
+  (id) => Number(id) as MainnetChainId,
+);
 
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({
     userChains: chains,
     userChainsOrder,
+    updateUserChains: ({ chainIds, enabled }) => {
+      const { userChains } = get();
+      const chainsUpdated = chainIds.reduce(
+        (acc, chainId) => {
+          acc[chainId] = enabled;
+          return acc;
+        },
+        {} as Record<MainnetChainId, boolean>,
+      ) satisfies Record<MainnetChainId, boolean>;
+      set({
+        userChains: {
+          ...userChains,
+          ...chainsUpdated,
+        },
+      });
+    },
     updateUserChain: ({ chainId, enabled }) => {
       const { userChains } = get();
       set({
@@ -54,7 +94,7 @@ export const userChainsStore = createStore<UserChainsState>(
   {
     persist: {
       name: 'userChains',
-      version: 0,
+      version: 1,
     },
   },
 );

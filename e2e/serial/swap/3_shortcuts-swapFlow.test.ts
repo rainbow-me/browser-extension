@@ -107,7 +107,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to navigate to swap with keyboard navigation', async () => {
-    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 6 });
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 5 });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'swap');
   });

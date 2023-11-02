@@ -1,10 +1,12 @@
 import React from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
+import { TestnetBar } from '../TestnetMode/TestnetBar/TestnetBar';
 
 export function FullScreenBackground({
   children,
@@ -13,8 +15,15 @@ export function FullScreenBackground({
 }) {
   const { currentTheme } = useCurrentThemeStore();
   const isFullscreen = useIsFullScreen();
+  const { testnetMode } = useTestnetModeStore();
 
-  if (!isFullscreen) return children as JSX.Element;
+  if (!isFullscreen)
+    return (
+      <Box style={{ overflow: 'hidden' }}>
+        <TestnetBar testnetMode={testnetMode} />
+        <Box style={{ overflow: 'auto' }}>{children}</Box>
+      </Box>
+    );
 
   return (
     <Box
@@ -54,10 +63,11 @@ export function FullScreenBackground({
           width: POPUP_DIMENSIONS.width,
           height: POPUP_DIMENSIONS.height,
           position: 'relative',
-          overflow: 'auto',
+          overflow: 'hidden',
         }}
       >
-        {children}
+        <TestnetBar testnetMode={testnetMode} />
+        <Box style={{ overflow: 'auto ' }}>{children}</Box>
       </Box>
     </Box>
   );

@@ -25,6 +25,16 @@ import { AddressOrEth } from '../types/assets';
 import { getDappHost } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
 
+export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  zora,
+  bsc,
+].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
+
 export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
   polygon,
@@ -60,6 +70,19 @@ export const getSupportedChains = () => {
 
 export const getSupportedChainIds = () =>
   getSupportedChains().map((chain) => chain.id);
+
+export const getSupportedTestnetChains = () => {
+  const { chains } = getNetwork();
+  return chains.filter((chain) => !!chain.testnet);
+};
+
+export const getSupportedTestnetChainIds = () =>
+  getSupportedTestnetChains()
+    .filter(
+      (chain) =>
+        chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
+    )
+    .map((chain) => chain.id);
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -111,7 +134,12 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
 export function getChain({ chainId }: { chainId?: ChainId }) {
   const { chains } = getNetwork();
   const chain = chains.find((chain) => chain.id === chainId);
-  return chain || mainnet;
+  return chain || { ...mainnet, testnet: false };
+}
+
+export function isTestnetChainId({ chainId }: { chainId?: ChainId }) {
+  const chain = getChain({ chainId });
+  return !!chain.testnet;
 }
 
 export function isSupportedChainId(chainId: number) {

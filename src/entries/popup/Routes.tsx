@@ -56,6 +56,7 @@ import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
+import { SettingsNetworksCustomRPC } from './pages/settings/customRpc';
 import { Language } from './pages/settings/language';
 import { SettingsNetworks } from './pages/settings/networks';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
@@ -89,10 +90,12 @@ import { simulateTab } from './utils/simulateTab';
 import { zIndexes } from './utils/zIndexes';
 
 const ChildRoute = (
-  props: React.PropsWithChildren & Pick<BoxProps, 'background'>,
+  props: React.PropsWithChildren &
+    Pick<BoxProps, 'background'> &
+    Pick<BoxProps, 'position'>,
 ) => (
   <Box
-    position="absolute"
+    position={props.position}
     background={props.background}
     style={{ ...POPUP_DIMENSIONS, zIndex: zIndexes.CHILD_ROUTE }}
   >
@@ -122,7 +125,7 @@ const ROUTE_DATA = [
       {
         path: ROUTES.TOKEN_DETAILS(':uniqueId'),
         element: (
-          <ChildRoute background="surfacePrimaryElevated">
+          <ChildRoute background="surfacePrimaryElevated" position="absolute">
             <AnimatedRoute
               background="surfacePrimaryElevated"
               direction="left"
@@ -485,6 +488,21 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <SettingsNetworks />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.networks.custom_rpc.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <SettingsNetworksCustomRPC />
       </AnimatedRoute>
     ),
   },

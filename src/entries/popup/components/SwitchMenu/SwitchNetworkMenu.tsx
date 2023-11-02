@@ -3,9 +3,7 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
-import { getSupportedChainsWithHardhat } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -19,7 +17,7 @@ import { Space } from '~/design-system/styles/designTokens';
 
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
-import { sortNetworks } from '../../pages/settings/networks';
+import { useUserChains } from '../../hooks/useUserChains';
 import { simulateClick } from '../../utils/simulateClick';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
@@ -60,18 +58,8 @@ export const SwitchNetworkMenuSelector = ({
   onNetworkSelect?: (event?: Event) => void;
   onShortcutPress: (chainId: string) => void;
 }) => {
-  const { userChains } = useUserChainsStore();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { userChainsOrder } = useUserChainsStore();
-
-  const availableChains = useMemo(() => {
-    return sortNetworks(
-      userChainsOrder,
-      getSupportedChainsWithHardhat().filter(
-        (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
-      ),
-    );
-  }, [userChains, userChainsOrder]);
+  const { chains } = useUserChains();
 
   const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'
@@ -87,7 +75,7 @@ export const SwitchNetworkMenuSelector = ({
     (e: KeyboardEvent) => {
       const chainNumber = Number(e.key);
       if (chainNumber) {
-        const chain = availableChains[chainNumber - 1];
+        const chain = chains[chainNumber - 1];
         if (chain) {
           trackShortcut({
             key: chainNumber.toString(),
@@ -95,10 +83,7 @@ export const SwitchNetworkMenuSelector = ({
           });
           onShortcutPress(String(chain.id));
           onNetworkSelect?.();
-        } else if (
-          showDisconnect &&
-          chainNumber === availableChains.length + 1
-        ) {
+        } else if (showDisconnect && chainNumber === chains.length + 1) {
           trackShortcut({
             key: chainNumber.toString(),
             type: 'switchNetworkMenu.disconnect',
@@ -108,7 +93,7 @@ export const SwitchNetworkMenuSelector = ({
       }
     },
     [
-      availableChains,
+      chains,
       disconnect,
       onNetworkSelect,
       onShortcutPress,
@@ -121,11 +106,9 @@ export const SwitchNetworkMenuSelector = ({
     handler: handleTokenShortcuts,
   });
 
-  const supportedChainsWithHardhat = getSupportedChainsWithHardhat();
-
   return (
     <Box id="switch-network-menu-selector">
-      {supportedChainsWithHardhat.map((chain, i) => {
+      {chains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
           <MenuRadioItem
@@ -169,7 +152,7 @@ export const SwitchNetworkMenuSelector = ({
       {showDisconnect && disconnect && (
         <SwitchNetworkMenuDisconnect
           onDisconnect={disconnect}
-          shortcutLabel={String(supportedChainsWithHardhat.length + 1)}
+          shortcutLabel={String(chains.length + 1)}
         />
       )}
     </Box>
@@ -239,16 +222,7 @@ export const SwitchNetworkMenu = ({
   onOpenChange,
 }: SwitchNetworkMenuProps) => {
   const triggerRef = useRef<HTMLDivElement>(null);
-  const { userChainsOrder, userChains } = useUserChainsStore();
-
-  const availableChains = useMemo(() => {
-    return sortNetworks(
-      userChainsOrder,
-      getSupportedChainsWithHardhat().filter(
-        (chain) => userChains[chain.id] || chain.id === ChainId.hardhat,
-      ),
-    );
-  }, [userChains, userChainsOrder]);
+  const { chains } = useUserChains();
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -310,7 +284,7 @@ export const SwitchNetworkMenu = ({
         <MenuRadioGroup
           value={String(chainId)}
           onValueChange={(chainId: string) => {
-            const chain = availableChains.find(
+            const chain = chains.find(
               ({ id }) => String(id) === chainId,
             ) as Chain;
             onChainChanged(chain?.id, chain);
@@ -320,7 +294,7 @@ export const SwitchNetworkMenu = ({
             type={type}
             selectedValue={String(chainId)}
             onShortcutPress={(chainId) => {
-              const chain = availableChains.find(
+              const chain = chains.find(
                 ({ id }) => String(id) === chainId,
               ) as Chain;
               onChainChanged(chain?.id, chain);

@@ -86,7 +86,7 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'settings');
     });
 
-    it('should be able to toggle Set Rainbow As Default Wallet via keybaord', async () => {
+    it('should be able to toggle Set Rainbow As Default Wallet via keyboard', async () => {
       await delayTime('medium');
       const defaultToggleStatus = await toggleStatus(
         'set-rainbow-default-toggle',

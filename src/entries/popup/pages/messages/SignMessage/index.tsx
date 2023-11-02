@@ -5,6 +5,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 // import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
@@ -52,6 +53,7 @@ export function SignMessage({
   const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
+  const { featureFlags } = useFeatureFlagsStore();
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { watchedWallets } = useWallets();
 
@@ -137,13 +139,13 @@ export function SignMessage({
   }, [selectedWallet, watchedWallets]);
 
   useEffect(() => {
-    if (isWatchingWallet) {
+    if (!featureFlags.full_watching_wallets && isWatchingWallet) {
       triggerAlert({
         text: i18n.t('alert.wallet_watching_mode'),
         callback: rejectRequest,
       });
     }
-  }, [isWatchingWallet, rejectRequest]);
+  }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
   if (!selectedWallet || !dappMetadata) return <Navigate to="/" />;
 

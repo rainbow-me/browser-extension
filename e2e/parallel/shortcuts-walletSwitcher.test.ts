@@ -150,10 +150,10 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'w' });
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
       await executePerformShortcut({ driver, key: 'SPACE' });
-      await findElementByText(driver, 'Rename wallet');
+      await findElementByText(driver, 'Rename Wallet');
       await executePerformShortcut({ driver, key: 'ESCAPE' });
       const renameWallet = await isElementFoundByText({
-        text: 'Rename wallet',
+        text: 'Rename Wallet',
         driver,
       });
       expect(renameWallet).toBe(false);

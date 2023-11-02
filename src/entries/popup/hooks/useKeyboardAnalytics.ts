@@ -31,6 +31,7 @@ export type KeyboardEventDescription =
   | 'home.goToWallets'
   | 'home.goToQr'
   | 'home.lock'
+  | 'home.testnetMode'
   | 'home.openMoreMenu'
   | 'home.openAppConnectionMenu'
   | 'home.switchTab'

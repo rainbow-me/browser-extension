@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode } from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box } from '~/design-system';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
@@ -14,7 +13,6 @@ interface NudgeBannerProps {
 
 export const NudgeBanner = ({ show, children, zIndex }: NudgeBannerProps) => {
   const { currentTheme } = useCurrentThemeStore();
-  const { featureFlags } = useFeatureFlagsStore();
 
   return (
     <AnimatePresence initial={false}>
@@ -23,7 +21,7 @@ export const NudgeBanner = ({ show, children, zIndex }: NudgeBannerProps) => {
           animate={{
             opacity: 1,
             scale: 1,
-            y: featureFlags.new_tab_bar_enabled ? -64 : 0,
+            y: -64,
           }}
           as={motion.div}
           background="surfaceMenu"
@@ -35,7 +33,7 @@ export const NudgeBanner = ({ show, children, zIndex }: NudgeBannerProps) => {
           exit={{
             opacity: 0,
             scale: 0.9,
-            y: featureFlags.new_tab_bar_enabled ? -64 : 0,
+            y: -64,
           }}
           flexGrow="1"
           initial={false}

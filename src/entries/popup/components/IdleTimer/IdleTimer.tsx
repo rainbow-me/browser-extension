@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { SessionStorage } from '~/core/storage';
+
 function debounce(func: CallableFunction, delay: number) {
   let timeId: NodeJS.Timeout | undefined;
   return function (...args: unknown[]) {
@@ -13,7 +15,7 @@ function debounce(func: CallableFunction, delay: number) {
 }
 
 const recordActivity = debounce(() => {
-  chrome.storage.session.set({ lastUnlock: new Date().toJSON() });
+  SessionStorage.set('lastUnlock', new Date().toJSON());
 }, 1000);
 
 export const IdleTimer = () => {

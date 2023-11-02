@@ -18,6 +18,7 @@ import {
   WalletExecuteRapProps,
 } from '~/core/raps/references';
 import { gasStore } from '~/core/state';
+import { SessionStorage } from '~/core/storage';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
@@ -230,21 +231,21 @@ export const signTypedData = async (
 
 export const lock = async () => {
   await walletAction('lock', {});
-  await chrome.storage.session.set({ userStatus: 'LOCKED' });
+  await SessionStorage.set('userStatus', 'LOCKED');
   return;
 };
 
 export const unlock = async (password: string): Promise<boolean> => {
   const res = await walletAction('unlock', password);
   if (res) {
-    await chrome.storage.session.set({ userStatus: 'READY' });
+    await SessionStorage.set('userStatus', 'READY');
   }
   return res as boolean;
 };
 
 export const wipe = async () => {
   await walletAction('wipe', {});
-  await chrome.storage.session.set({ userStatus: 'NEW' });
+  await SessionStorage.set('userStatus', 'NEW');
   return;
 };
 export const testSandbox = async () => {
@@ -260,7 +261,7 @@ export const updatePassword = async (password: string, newPassword: string) => {
   // We have a password
   // It's unlocked
   // Then it's ready to use
-  await chrome.storage.session.set({ userStatus: 'READY' });
+  await SessionStorage.set('userStatus', 'READY');
   return ret as boolean;
 };
 
@@ -305,7 +306,7 @@ export const create = async () => {
   if (passwordSet) {
     newStatus = 'READY';
   }
-  await chrome.storage.session.set({ userStatus: newStatus });
+  await SessionStorage.set('userStatus', newStatus);
   return address as Address;
 };
 
@@ -318,7 +319,7 @@ export const importWithSecret = async (seed: string) => {
   if (passwordSet) {
     newStatus = 'READY';
   }
-  await chrome.storage.session.set({ userStatus: newStatus });
+  await SessionStorage.set('userStatus', newStatus);
   return address as Address;
 };
 
@@ -541,7 +542,7 @@ export const importAccountsFromHW = async (
   const { passwordSet } = await getStatus();
   if (!passwordSet) {
     // we probably need to set a password
-    await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
+    await SessionStorage.set('userStatus', 'NEEDS_PASSWORD');
   }
   return address;
 };

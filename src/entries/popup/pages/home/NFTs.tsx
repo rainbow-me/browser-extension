@@ -4,13 +4,19 @@ import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 
+import { useCoolMode } from '../../hooks/useCoolMode';
+
 export function NFTs() {
+  const ref = useCoolMode({ emojis: ['🌈', '🖼️'] });
   const { currentAddress: address } = useCurrentAddressStore();
   const { data: ensName } = useEnsName({ address });
+  const { testnetMode } = useTestnetModeStore();
 
   const openProfile = useCallback(
     () =>
@@ -25,9 +31,11 @@ export function NFTs() {
       alignItems="center"
       display="flex"
       flexDirection="column"
-      height="full"
-      justifyContent="center"
-      style={{ paddingBottom: 60, paddingTop: 60 }}
+      justifyContent="flex-start"
+      marginTop="-20px"
+      paddingTop="80px"
+      ref={ref}
+      style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
       width="full"
     >
       <Box paddingBottom="14px">
@@ -78,7 +86,13 @@ export function NFTs() {
           {i18n.t('nfts.coming_soon_description')}
         </Text>
       </Inset>
-      <Lens cursor="pointer" onClick={openProfile} padding="6px" width="fit">
+      <Lens
+        borderRadius="8px"
+        cursor="pointer"
+        onClick={openProfile}
+        padding="6px"
+        width="fit"
+      >
         <Inline alignHorizontal="center" alignVertical="center" space="3px">
           <Text
             align="center"

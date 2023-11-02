@@ -8,7 +8,6 @@ import { Box, Inline } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { useAvatar } from '../../hooks/useAvatar';
-import { Tab } from '../../pages/home';
 import { zIndexes } from '../../utils/zIndexes';
 import { timingConfig } from '../CommandK/references';
 
@@ -18,13 +17,21 @@ import HomeIcon from './TabIcons/Home';
 import HomeSelected from './TabIcons/HomeSelected';
 import NFTsIcon from './TabIcons/NFTs';
 import NFTsSelected from './TabIcons/NFTsSelected';
+import PointsIcon from './TabIcons/Points';
+import PointsSelected from './TabIcons/PointsSelected';
+
+export type Tab = (typeof TABS)[number];
 
 export const ICON_SIZE = 36;
 
+export const isValidTab = (value: unknown): value is Tab => {
+  return typeof value === 'string' && TABS.includes(value);
+};
+
+const TABS = ['tokens', 'activity', 'nfts', 'points'];
+
 const TAB_HEIGHT = 32;
 const TAB_WIDTH = 42;
-
-const tabNames = ['activity', 'tokens', 'nfts'];
 
 type TabConfigType = {
   Icon: () => ReactElement;
@@ -40,19 +47,24 @@ type TabConfigType = {
 
 const tabConfig: TabConfigType[] = [
   {
-    Icon: ActivityIcon,
-    SelectedIcon: ActivitySelected,
-    name: 'activity',
-  },
-  {
     Icon: HomeIcon,
     SelectedIcon: HomeSelected,
     name: 'tokens',
   },
   {
+    Icon: ActivityIcon,
+    SelectedIcon: ActivitySelected,
+    name: 'activity',
+  },
+  {
     Icon: NFTsIcon,
     SelectedIcon: NFTsSelected,
     name: 'nfts',
+  },
+  {
+    Icon: PointsIcon,
+    SelectedIcon: PointsSelected,
+    name: 'points',
   },
 ];
 
@@ -79,6 +91,7 @@ export function TabBar({
   return (
     <Box
       alignItems="center"
+      id="tab-bar"
       as={motion.div}
       borderRadius="16px"
       display="flex"
@@ -103,12 +116,12 @@ export function TabBar({
       }}
       transition={timingConfig(0.2)}
     >
-      <TabBackground selectedTabIndex={tabNames.indexOf(activeTab)} />
+      <TabBackground selectedTabIndex={TABS.indexOf(activeTab)} />
       <Inline
         alignHorizontal="center"
         alignVertical="center"
         height="full"
-        space="6px"
+        space="4px"
       >
         {tabConfig.map((tab, index) => (
           <Tab
@@ -120,7 +133,7 @@ export function TabBar({
             key={index}
             name={tab.name}
             onSelectTab={onSelectTab}
-            selectedTabIndex={tabNames.indexOf(activeTab)}
+            selectedTabIndex={TABS.indexOf(activeTab)}
           />
         ))}
       </Inline>
@@ -221,7 +234,8 @@ function TabBackground({ selectedTabIndex }: { selectedTabIndex: number }) {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
 
-  const xPosition = selectedTabIndex * TAB_WIDTH + (selectedTabIndex + 1) * 6;
+  // 6 = tab bar horizontal padding; 4 = space between tabs
+  const xPosition = selectedTabIndex * TAB_WIDTH + (6 + selectedTabIndex * 4);
 
   return (
     <Box
