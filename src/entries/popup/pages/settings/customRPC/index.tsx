@@ -4,12 +4,17 @@ import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 
-import { maskInput } from '../../components/InputMask/utils';
+import { Checkbox } from '../../../components/Checkbox/Checkbox';
+import { maskInput } from '../../../components/InputMask/utils';
 
-export function SettingsNetworksCustomRPC() {
-  const { customRPCs, addCustomRPC } = useCustomRPCsStore();
+export function SettingsCustomRPC() {
+  const navigate = useRainbowNavigate();
+  const { customChains, addCustomRPC } = useCustomRPCsStore();
   const [customRPC, setCustomRPC] = useState<{
+    active?: boolean;
     rpcUrl?: string;
     chainId?: number;
     name?: string;
@@ -31,14 +36,12 @@ export function SettingsNetworksCustomRPC() {
   });
 
   const onInputChange = useCallback(
-    <T extends string | number>(
-      input: React.ChangeEvent<HTMLInputElement>,
-      type: 'string' | 'number',
-      data: 'rpcUrl' | 'chainId' | 'name' | 'symbol' | 'explorerUrl',
+    <T extends string | number | boolean>(
+      value: string | boolean,
+      type: 'string' | 'number' | 'boolean',
+      data: 'rpcUrl' | 'chainId' | 'name' | 'symbol' | 'explorerUrl' | 'active',
     ) => {
-      const value = input.target.value;
-
-      if (type === 'number') {
+      if (type === 'number' && typeof value === 'string') {
         const maskedValue = maskInput({ inputValue: value, decimals: 0 });
         setCustomRPC((prev) => ({
           ...prev,
@@ -142,22 +145,46 @@ export function SettingsNetworksCustomRPC() {
   return (
     <Box paddingHorizontal="20px">
       <Stack space="20px">
-        <Box>
-          {Object.values(customRPCs).map((customRPC, i) => (
-            <Box
-              key={i}
-              background="surfaceSecondaryElevated"
-              borderRadius="16px"
-              boxShadow="12px"
-              width="full"
-              padding="16px"
-            >
-              <Text size="14pt" weight="bold" align="center">
-                {JSON.stringify(customRPC)}
+        {Object.keys(customChains)?.map((chainId, i) => (
+          <Box
+            key={i}
+            background="surfaceSecondaryElevated"
+            borderRadius="16px"
+            boxShadow="12px"
+            width="full"
+            padding="16px"
+            onClick={() =>
+              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
+                state: {
+                  chainId,
+                },
+              })
+            }
+          >
+            <Stack space="16px">
+              <Text size="14pt" weight="bold" align="left">
+                Group chainId: {chainId}
               </Text>
-            </Box>
-          ))}
-        </Box>
+              <Stack space="16px">
+                {customChains[Number(chainId)]?.rpcs?.map((customRPC, j) => (
+                  <Box key={j}>
+                    <Inline alignHorizontal="justify">
+                      <Text size="14pt" weight="bold" align="center">
+                        {customRPC.rpcUrl}
+                      </Text>
+                      <Text size="14pt" weight="bold" align="center">
+                        {customRPC.rpcUrl ===
+                        customChains[Number(chainId)].activeRpcUrl
+                          ? 'Active'
+                          : ''}
+                      </Text>
+                    </Inline>
+                  </Box>
+                ))}
+              </Stack>
+            </Stack>
+          </Box>
+        ))}
 
         <Box
           background="surfaceSecondaryElevated"
@@ -168,7 +195,9 @@ export function SettingsNetworksCustomRPC() {
         >
           <Stack space="8px">
             <Input
-              onChange={(t) => onInputChange<string>(t, 'string', 'rpcUrl')}
+              onChange={(t) =>
+                onInputChange<string>(t.target.value, 'string', 'rpcUrl')
+              }
               height="32px"
               placeholder="Url"
               variant="surface"
@@ -177,7 +206,9 @@ export function SettingsNetworksCustomRPC() {
               borderColor={validations.rpcUrl ? 'accent' : 'red'}
             />
             <Input
-              onChange={(t) => onInputChange<number>(t, 'number', 'chainId')}
+              onChange={(t) =>
+                onInputChange<number>(t.target.value, 'number', 'chainId')
+              }
               height="32px"
               placeholder="ChainId"
               variant="surface"
@@ -186,7 +217,9 @@ export function SettingsNetworksCustomRPC() {
               borderColor={validations.chainId ? 'accent' : 'red'}
             />
             <Input
-              onChange={(t) => onInputChange<string>(t, 'string', 'name')}
+              onChange={(t) =>
+                onInputChange<string>(t.target.value, 'string', 'name')
+              }
               height="32px"
               placeholder="name"
               variant="surface"
@@ -195,7 +228,9 @@ export function SettingsNetworksCustomRPC() {
               borderColor={validations.name ? 'accent' : 'red'}
             />
             <Input
-              onChange={(t) => onInputChange<string>(t, 'string', 'symbol')}
+              onChange={(t) =>
+                onInputChange<string>(t.target.value, 'string', 'symbol')
+              }
               height="32px"
               placeholder="Symbol"
               variant="surface"
@@ -205,7 +240,7 @@ export function SettingsNetworksCustomRPC() {
             />
             <Input
               onChange={(t) =>
-                onInputChange<string>(t, 'string', 'explorerUrl')
+                onInputChange<string>(t.target.value, 'string', 'explorerUrl')
               }
               height="32px"
               placeholder="Explorer url"
@@ -214,6 +249,29 @@ export function SettingsNetworksCustomRPC() {
               onBlur={onExplorerUrlBlur}
               borderColor={validations.explorerUrl ? 'accent' : 'red'}
             />
+            <Box padding="10px">
+              <Inline alignHorizontal="justify">
+                <Text
+                  align="center"
+                  weight="semibold"
+                  size="12pt"
+                  color="labelSecondary"
+                >
+                  {'Active'}
+                </Text>
+                <Checkbox
+                  borderColor="accent"
+                  onClick={() =>
+                    onInputChange<boolean>(
+                      !customRPC.active,
+                      'boolean',
+                      'active',
+                    )
+                  }
+                  selected={!!customRPC.active}
+                />
+              </Inline>
+            </Box>
             <Inline alignHorizontal="right">
               <Button
                 onClick={addCustomRpc}
