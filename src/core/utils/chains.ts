@@ -20,10 +20,21 @@ import { type Chain, sepolia } from 'wagmi';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 
+import { customRPCsStore } from '../state/customRPC';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
+
+export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  zora,
+  bsc,
+].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
@@ -63,7 +74,7 @@ export const getSupportedChainIds = () =>
 
 export const getSupportedTestnetChains = () => {
   const { chains } = getNetwork();
-  return chains.filter((chain) => chain.testnet);
+  return chains.filter((chain) => !!chain.testnet);
 };
 
 export const getSupportedTestnetChainIds = () =>
@@ -73,6 +84,15 @@ export const getSupportedTestnetChainIds = () =>
         chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
     )
     .map((chain) => chain.id);
+
+export const getCustomChains = () => {
+  const { customChains } = customRPCsStore.getState();
+  return Object.values(customChains)
+    .map((customChain) =>
+      customChain.rpcs.find((rpc) => rpc.rpcUrl === customChain.activeRpcUrl),
+    )
+    .filter(Boolean);
+};
 
 /**
  * @desc Checks if the given chain is a Layer 2.

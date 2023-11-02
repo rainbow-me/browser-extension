@@ -9,11 +9,7 @@ import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
-import {
-  chainIdMap,
-  chainLabelMap,
-  sortNetworks,
-} from '~/core/utils/userChains';
+import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -38,9 +34,9 @@ export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
   const {
     userChains,
-    updateUserChains,
     userChainsOrder,
     updateUserChainsOrder,
+    updateUserChain,
   } = useUserChainsStore();
   const supportedChains = getSupportedChains();
   const {
@@ -65,13 +61,12 @@ export function SettingsNetworks() {
 
   const updateChain = useCallback(
     (chain: Chain) => {
-      const chainIdsToUpdate = chainIdMap[chain.id];
-      updateUserChains({
-        chainIds: chainIdsToUpdate,
+      updateUserChain({
+        chainId: chain.id,
         enabled: !userChains[chain.id],
       });
     },
-    [updateUserChains, userChains],
+    [updateUserChain, userChains],
   );
 
   return (

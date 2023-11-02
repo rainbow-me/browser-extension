@@ -8,6 +8,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
 import { add } from '~/core/utils/numbers';
+import { chainIdMap } from '~/core/utils/userChains';
 
 // selectors
 export function selectorFilterByUserChains<T>({
@@ -18,9 +19,12 @@ export function selectorFilterByUserChains<T>({
   selector: (data: ParsedAssetsDictByChain) => T;
 }): T {
   const { userChains } = userChainsStore.getState();
+  const allUserChainIds = Object.keys(userChains)
+    .map((chainId) => chainIdMap[Number(chainId)])
+    .flat();
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
-    if (userChains[chainKey]) {
+    if (allUserChainIds.includes(chainKey)) {
       acc[chainKey] = data[chainKey];
     }
     return acc;
