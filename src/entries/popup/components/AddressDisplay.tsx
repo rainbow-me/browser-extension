@@ -85,7 +85,7 @@ const YouOrAddress = ({ address }: { address: Address }) => {
       address={address}
       size="12pt"
       weight="semibold"
-      color="labelQuaternary"
+      color="labelSecondary"
     />
   );
 };

@@ -1,5 +1,5 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   CSSProperties,
   PropsWithChildren,
@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react';
 
+import { i18n } from '~/core/languages';
 import { Box, Inline, Inset, Separator, Symbol, Text } from '~/design-system';
 
 import { overflowGradient } from './SendTransaction/OverflowGradient.css';
@@ -28,14 +29,13 @@ function TabTrigger({ value }: { value: string }) {
           {value}
         </Text>
         {selectedTab === value && (
-          <motion.div
+          <Box
+            as={motion.div}
             layoutId="selected-tab-indicator"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              borderRadius: '8px',
-              background: 'rgba(245, 248, 255, 0.12)',
-            }}
+            style={{ inset: 0 }}
+            position="absolute"
+            borderRadius="8px"
+            background="separator"
           />
         )}
       </Box>
@@ -182,6 +182,22 @@ function ViewMoreButton({
   );
 }
 
+export function CopyButton({ onClick }: { onClick: VoidFunction }) {
+  return (
+    <TabFloatingButton onClick={onClick} style={{ bottom: 12, left: 12 }}>
+      <Symbol
+        symbol={'square.on.square'}
+        size={12}
+        color="labelSecondary"
+        weight="bold"
+      />
+      <Text size="14pt" weight="semibold" color="labelSecondary">
+        {i18n.t('copy')}
+      </Text>
+    </TabFloatingButton>
+  );
+}
+
 export function Tabs({
   children,
   tabs,
@@ -229,9 +245,15 @@ export function Tabs({
           <Inset top="20px">
             <Separator color="separatorTertiary" />
           </Inset>
-          <ScrollableWithGradient expanded={expanded} onExpand={onExpand}>
-            {children}
-          </ScrollableWithGradient>
+          <AnimatePresence mode="wait">
+            <ScrollableWithGradient
+              key={tab}
+              expanded={expanded}
+              onExpand={onExpand}
+            >
+              {children}
+            </ScrollableWithGradient>
+          </AnimatePresence>
         </Box>
       </TabsPrimitive.Root>
     </TabContext.Provider>

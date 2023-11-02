@@ -1,6 +1,6 @@
 import { CSSProperties, PropsWithChildren, ReactNode } from 'react';
 
-import { Box, Text } from '~/design-system';
+import { Box, TextOverflow } from '~/design-system';
 import { TextProps } from '~/design-system/components/Text/Text';
 
 export function Tag({
@@ -32,9 +32,9 @@ export function Tag({
       style={style}
     >
       {left}
-      <Text size={size} weight="semibold" align="right" color={color}>
+      <TextOverflow size={size} weight="semibold" align="right" color={color}>
         {children}
-      </Text>
+      </TextOverflow>
     </Box>
   );
 }

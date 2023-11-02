@@ -88,6 +88,7 @@ export const useSimulateTransaction = ({
           simulation.approvals.length > 0,
       };
     },
+    staleTime: 60 * 1000, // 1 min
   });
 };
 export type TransactionSimulation = {

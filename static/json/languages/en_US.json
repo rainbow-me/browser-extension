@@ -914,6 +914,7 @@
       "title": "This app is likely malicious",
       "message": "Signing messages or transactions from this app could result in losing your assets"
     },
+    "dangerous_request": "Dangerous Request",
     "message_signing_request": "Message Signing Request",
     "message": "Message",
     "sign_message": "Sign",
@@ -1374,6 +1375,11 @@
     "source_code": "Source Code",
     "signature": {
       "message": "Message"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "details": "Details",
+      "data": "Data"
     }
   },
   "chain": "Chain",

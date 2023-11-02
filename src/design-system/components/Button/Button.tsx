@@ -64,9 +64,12 @@ function ButtonShortcut({
   return (
     <Inline alignVertical="center" space="3px" wrap={false}>
       {shortcut.modifier && (
-        <ShortcutHint hint={getModifierKeyDisplay(shortcut.modifier)} />
+        <ShortcutHint
+          hint={getModifierKeyDisplay(shortcut.modifier)}
+          variant="flat"
+        />
       )}
-      <ShortcutHint hint={shortcut.display} />
+      <ShortcutHint hint={shortcut.display} variant="flat" />
     </Inline>
   );
 }

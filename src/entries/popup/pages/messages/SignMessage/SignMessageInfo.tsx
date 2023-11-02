@@ -13,7 +13,7 @@ import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
-import { TabContent, TabFloatingButton, Tabs } from '../Tabs';
+import { CopyButton, TabContent, Tabs } from '../Tabs';
 import { useSimulateTransaction } from '../useSimulateTransaction';
 
 interface SignMessageProps {
@@ -71,22 +71,6 @@ function Details() {
   );
 }
 
-function CopyButton({ onClick }: { onClick: VoidFunction }) {
-  return (
-    <TabFloatingButton onClick={onClick} style={{ bottom: 12, left: 12 }}>
-      <Symbol
-        symbol={'square.on.square'}
-        size={12}
-        color="labelSecondary"
-        weight="bold"
-      />
-      <Text size="14pt" weight="semibold" color="labelSecondary">
-        {i18n.t('copy')}
-      </Text>
-    </TabFloatingButton>
-  );
-}
-
 export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const dappUrl = request?.meta?.sender?.url || '';
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
@@ -105,7 +89,11 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
 
   const chainId = activeSession?.chainId || ChainId.mainnet;
 
-  const { data: simulation, status } = useSimulateTransaction({
+  const {
+    data: simulation,
+    status,
+    isFetching,
+  } = useSimulateTransaction({
     chainId,
     transaction: {
       from: txRequest.from || '',
@@ -115,6 +103,8 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
     },
     domain: dappUrl,
   });
+
+  const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
 
   return (
     <Box
@@ -131,63 +121,52 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
       gap="24px"
       height="full"
     >
-      <Box
-        as={motion.div}
+      <motion.div
         style={{
           maxHeight: expanded ? 0 : '100%',
           overflow: expanded ? 'hidden' : 'unset',
           paddingTop: expanded ? 0 : '20px',
           opacity: expanded ? 0 : 1,
         }}
-        transition={{ duration: 1 }}
-        display="flex"
-        flexDirection="column"
-        gap="16px"
-        alignItems="center"
       >
-        <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
-        <Stack space="12px">
-          <DappHostName
-            hostName={dappMetadata?.appHostName}
-            dappStatus={dappMetadata?.status}
-          />
-          <Text
-            align="center"
-            size="14pt"
-            weight="bold"
-            color={isScamDapp ? 'red' : 'labelSecondary'}
-          >
-            {i18n.t('approve_request.message_signing_request')}
-          </Text>
+        <Stack space="16px" alignItems="center">
+          <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
+          <Stack space="12px">
+            <DappHostName
+              hostName={dappMetadata?.appHostName}
+              dappStatus={dappMetadata?.status}
+            />
+            <Text
+              align="center"
+              size="14pt"
+              weight="bold"
+              color={isScamDapp ? 'red' : 'labelSecondary'}
+            >
+              {isScamDapp
+                ? i18n.t('approve_request.dangerous_request')
+                : i18n.t('approve_request.message_signing_request')}
+            </Text>
+          </Stack>
         </Stack>
-      </Box>
+      </motion.div>
 
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap="20px"
-        alignItems="center"
-        height="full"
-        style={{ overflow: 'hidden' }}
+      <Tabs
+        tabs={[tabLabel('overview'), tabLabel('details')]}
+        expanded={expanded}
+        onExpand={() => setExpanded((e) => !e)}
       >
-        <Tabs
-          tabs={['Overview', 'Details']}
-          expanded={expanded}
-          onExpand={() => setExpanded((e) => !e)}
-        >
-          <TabContent value="Overview">
-            <Overview message={message} />
-            <CopyButton onClick={() => null} />
-          </TabContent>
-          <TabContent value="Details">
-            <Details />
-          </TabContent>
-        </Tabs>
+        <TabContent value={tabLabel('overview')}>
+          <Overview message={message} />
+          <CopyButton onClick={() => null} />
+        </TabContent>
+        <TabContent value={tabLabel('details')}>
+          <Details />
+        </TabContent>
+      </Tabs>
 
-        {dappMetadata?.status === DAppStatus.Scam ? (
-          <ThisDappIsLikelyMalicious />
-        ) : null}
-      </Box>
+      {dappMetadata?.status === DAppStatus.Scam ? (
+        <ThisDappIsLikelyMalicious />
+      ) : null}
     </Box>
   );
 };

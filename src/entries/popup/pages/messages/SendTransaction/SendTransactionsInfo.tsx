@@ -8,7 +8,6 @@ import { Address } from 'wagmi';
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
 import { useNonceStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
@@ -42,13 +41,11 @@ import {
   getDappStatusBadge,
 } from '../DappScanStatus';
 import { SimulationNoChangesDetected } from '../SignMessage/SignMessageInfo';
-import { TabContent, Tabs } from '../Tabs';
+import { CopyButton, TabContent, Tabs } from '../Tabs';
 import {
   TransactionSimulation,
   useSimulateTransaction,
 } from '../useSimulateTransaction';
-
-import { overflowGradient } from './OverflowGradient.css';
 
 interface SendTransactionProps {
   request: ProviderRequestPayload;
@@ -67,7 +64,7 @@ const InfoRow = ({
     display="flex"
     alignItems="center"
     justifyContent="space-between"
-    gap="4px"
+    gap="16px"
   >
     <Inline alignVertical="center" space="12px" wrap={false}>
       <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
@@ -270,7 +267,7 @@ function TransactionDetails({
   const { getNonce } = useNonceStore();
   const { currentNonce: nonce } = getNonce(session) || {};
 
-  const functionName = metaTo?.function;
+  const functionName = metaTo?.function.split('(')[0];
   const contract = metaTo?.address;
   const contractName = metaTo?.name;
   const isSourceCodeVerified = metaTo?.sourceCodeStatus === 'VERIFIED';
@@ -333,25 +330,9 @@ function TransactionDetails({
 
 function TransactionData({ data }: { data: string }) {
   return (
-    <Box
-      style={{ maxHeight: 230 }}
-      className={overflowGradient}
-      marginTop="-16px"
-      marginBottom="-20px"
-    >
-      <Box
-        style={{
-          maxHeight: 174,
-          paddingTop: '16px',
-          paddingBottom: '38px',
-          overflow: 'scroll',
-        }}
-      >
-        <Text size="12pt" weight="medium" color="labelSecondary">
-          <span style={{ wordWrap: 'break-word' }}>{data}</span>
-        </Text>
-      </Box>
-    </Box>
+    <Text size="12pt" weight="medium" color="labelSecondary">
+      <span style={{ wordWrap: 'break-word' }}>{data}</span>
+    </Text>
   );
 }
 
@@ -365,19 +346,16 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
 
   const chainId = activeSession?.chainId || ChainId.mainnet;
 
-  const { data: methodName = '' } = useRegistryLookup({
-    data: (txRequest?.data as string) || null,
-    to: txRequest?.to || null,
-    chainId,
-    hash: null,
-  });
-
   const [expanded, setExpanded] = useState(false);
 
   // dappMetadata.status = DAppStatus.Scam;
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
-  const { data: simulation, status } = useSimulateTransaction({
+  const {
+    data: simulation,
+    status,
+    isRefetching,
+  } = useSimulateTransaction({
     chainId,
     transaction: {
       from: txRequest.from || '',
@@ -387,6 +365,8 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     },
     domain: dappUrl,
   });
+
+  const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
 
   return (
     <Box
@@ -403,72 +383,60 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
       gap="24px"
       height="full"
     >
-      <Box
-        as={motion.div}
+      <motion.div
         style={{
           maxHeight: expanded ? 0 : '100%',
           overflow: expanded ? 'hidden' : 'unset',
           paddingTop: expanded ? 0 : '20px',
           opacity: expanded ? 0 : 1,
         }}
-        transition={{ duration: 1 }}
-        display="flex"
-        flexDirection="column"
-        gap="16px"
-        alignItems="center"
       >
-        <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
-        <Stack space="12px">
-          <DappHostName
-            hostName={dappMetadata?.appHostName}
-            dappStatus={dappMetadata?.status}
-          />
-          <Text
-            align="center"
-            size="14pt"
-            weight="bold"
-            color={isScamDapp ? 'red' : 'labelSecondary'}
-          >
-            {methodName}
-          </Text>
+        <Stack space="16px" alignItems="center">
+          <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
+          <Stack space="12px">
+            <DappHostName
+              hostName={dappMetadata?.appHostName}
+              dappStatus={dappMetadata?.status}
+            />
+            <Text
+              align="center"
+              size="14pt"
+              weight="bold"
+              color={isScamDapp ? 'red' : 'labelSecondary'}
+            >
+              {isScamDapp
+                ? i18n.t('approve_request.dangerous_request')
+                : i18n.t('approve_request.transaction_request')}
+            </Text>
+          </Stack>
         </Stack>
-      </Box>
+      </motion.div>
 
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap="20px"
-        alignItems="center"
-        height="full"
-        style={{ overflow: 'hidden' }}
+      <Tabs
+        tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
+        expanded={expanded}
+        onExpand={() => setExpanded((e) => !e)}
       >
-        <Tabs
-          tabs={['Overview', 'Details', 'Data']}
-          expanded={expanded}
-          onExpand={() => setExpanded((e) => !e)}
-        >
-          <TabContent value="Overview">
-            <SimulationOverview
-              simulation={simulation}
-              status={status}
-              metadata={dappMetadata}
-            />
-          </TabContent>
-          <TabContent value="Details">
-            <TransactionDetails
-              session={activeSession!}
-              simulation={simulation}
-            />
-          </TabContent>
-          <TabContent value="Data">
-            <TransactionData data={txData} />
-          </TabContent>
-        </Tabs>
+        <TabContent value={tabLabel('overview')}>
+          <SimulationOverview
+            simulation={simulation}
+            status={status === 'error' && isRefetching ? 'loading' : status}
+            metadata={dappMetadata}
+          />
+        </TabContent>
+        <TabContent value={tabLabel('details')}>
+          <TransactionDetails
+            session={activeSession!}
+            simulation={simulation}
+          />
+        </TabContent>
+        <TabContent value={tabLabel('data')}>
+          <TransactionData data={txData} />
+          <CopyButton onClick={() => null} />
+        </TabContent>
+      </Tabs>
 
-        {dappMetadata?.status === DAppStatus.Scam ? (
-          <ThisDappIsLikelyMalicious />
-        ) : null}
-      </Box>
+      {isScamDapp && <ThisDappIsLikelyMalicious />}
     </Box>
   );
 }
