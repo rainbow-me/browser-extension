@@ -16,7 +16,6 @@ import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
-import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import {
   PendingTransaction,
@@ -27,6 +26,7 @@ import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
+import { useUserChains } from './useUserChains';
 
 const PAGES_TO_CACHE_LIMIT = 2;
 
@@ -39,7 +39,7 @@ export default function ({
 }: UseInfiniteTransactionListParams) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { userChains } = useUserChainsStore();
+  const { chains } = useUserChains();
   const { getPendingTransactions } = usePendingTransactionsStore();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const pendingTransactions = getPendingTransactions({ address });
@@ -61,8 +61,8 @@ export default function ({
         const selectedPages = data.pages.map((page) => {
           return {
             ...page,
-            transactions: page.transactions.filter(
-              (transaction) => userChains[transaction.chainId],
+            transactions: page.transactions.filter((transaction) =>
+              chains.map((chain) => chain.id).includes(transaction.chainId),
             ),
           };
         });
