@@ -16,6 +16,11 @@ import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
 import { ChainId, ChainNameDisplay } from '../types/chains';
 
+import {
+  getSupportedChainsWithHardhat,
+  getSupportedTestnetChains,
+} from './chains';
+
 export const chainIdMap: Record<
   | ChainId.mainnet
   | ChainId.optimism
@@ -57,11 +62,40 @@ export const chainLabelMap: Record<
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
   const allChainsOrder = order.map((chainId) => chainIdMap[chainId]).flat();
-  return chains.sort((a, b) => {
+  const ordered = chains.sort((a, b) => {
     const aIndex = allChainsOrder.indexOf(a.id);
     const bIndex = allChainsOrder.indexOf(b.id);
     if (aIndex === -1) return bIndex === -1 ? 0 : 1;
     if (bIndex === -1) return -1;
     return aIndex - bIndex;
   });
+  return ordered;
+};
+
+export const filterUserNetworks = ({
+  testnetMode,
+  userChains,
+  userChainsOrder,
+}: {
+  testnetMode: boolean;
+  userChains: Record<ChainId, boolean>;
+  userChainsOrder: ChainId[];
+}) => {
+  const supportedChains = testnetMode
+    ? getSupportedTestnetChains()
+    : getSupportedChainsWithHardhat();
+
+  const availableChains = Object.keys(userChains)
+    .filter((chainId) => userChains[Number(chainId)] === true)
+    .map((chainId) => Number(chainId));
+
+  const allAvailableUserChains = availableChains
+    .map((chainId) => chainIdMap[chainId])
+    .flat();
+
+  const chains = supportedChains.filter((chain) =>
+    allAvailableUserChains.includes(chain.id),
+  );
+
+  return sortNetworks(userChainsOrder, chains);
 };
