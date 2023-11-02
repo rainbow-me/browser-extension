@@ -1,4 +1,4 @@
-import { Zero } from '@ethersproject/constants';
+import { AddressZero } from '@ethersproject/constants';
 import {
   arbitrum,
   arbitrumGoerli,
@@ -123,7 +123,7 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomNetwork(chainId)) {
-    return Zero.toHexString() === address;
+    return AddressZero === address;
   }
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
 }

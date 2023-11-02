@@ -1,4 +1,4 @@
-import { Zero } from '@ethersproject/constants';
+import { AddressZero } from '@ethersproject/constants';
 import { useQuery } from '@tanstack/react-query';
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
@@ -10,14 +10,14 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { SupportedCurrencyKey } from '~/core/references';
+import {
+  SupportedCurrencyKey,
+  userAddedCustomRpcEndpoints,
+} from '~/core/references';
 import { AddressOrEth, ParsedAssetsDictByChain } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { parseUserAssetBalances } from '~/core/utils/assets';
-import {
-  getCustomNetworks,
-  userAddedCustomRpcEndpoints,
-} from '~/core/utils/customNetworks';
+import { getCustomNetworks } from '~/core/utils/customNetworks';
 import { RainbowError, logger } from '~/logger';
 
 const CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL = 60000;
@@ -127,7 +127,7 @@ async function customNetworkAssetsFunction({
                 decimals: 18,
                 native: { price: undefined },
                 bridging: { isBridgeable: false, networks: [] },
-                mainnetAddress: Zero.toHexString() as AddressOrEth,
+                mainnetAddress: AddressZero as AddressOrEth,
               },
               currency,
               balance: nativeAssetBalance.toString(), // FORMAT?

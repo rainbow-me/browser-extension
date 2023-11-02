@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { Zero } from '@ethersproject/constants';
+import { AddressZero } from '@ethersproject/constants';
 import { useNetwork } from 'wagmi';
 
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
@@ -26,7 +26,7 @@ export const useNativeAsset = ({ chainId }: { chainId: ChainId }) => {
   });
 
   const { data: customNetworkNativeAsset } = useCustomNetworkAsset(
-    `${Zero.toHexString()}_${chainId}`,
+    `${AddressZero}_${chainId}`,
   );
 
   const chain = chains.find((chain) => chain.id === chainId);

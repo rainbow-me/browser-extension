@@ -137,3 +137,37 @@ export const TESTNET_CHAIN_IDS = [
   ChainId['zora-testnet'],
   ChainId['polygon-mumbai'],
 ];
+
+// once we have a proper UI for it
+export const userAddedCustomRpcEndpoints = [
+  {
+    rpc: 'https://rpc.flashbots.net',
+    chainId: 1,
+    name: 'Flashbots Protect',
+    symbol: 'ETH',
+    explorer: 'https://etherscan.io',
+    explorerName: 'Etherscan',
+    active: false,
+    nativeAssetAddress: ETH_ADDRESS,
+  },
+  {
+    rpc: 'https://api.avax.network/ext/bc/C/rpc',
+    chainId: 43114,
+    name: 'Avax',
+    symbol: 'AVAX',
+    explorer: 'https://snowtrace.io',
+    explorerName: 'Snowtrace',
+    active: true,
+    nativeAssetAddress: AddressZero,
+  },
+  {
+    rpc: 'https://rpc.gnosis.gateway.fm',
+    chainId: 100,
+    name: 'Gnosis',
+    symbol: 'xDAI',
+    explorer: 'https://gnosisscan.io',
+    explorerName: 'GnosisScan',
+    active: true,
+    nativeAssetAddress: AddressZero,
+  },
+];
