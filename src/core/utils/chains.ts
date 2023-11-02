@@ -27,6 +27,16 @@ import { getDappHost } from './connectedApps';
 import { isCustomNetwork } from './customNetworks';
 import { isLowerCaseMatch } from './strings';
 
+export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  zora,
+  bsc,
+].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
+
 export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
   polygon,
@@ -65,7 +75,7 @@ export const getSupportedChainIds = () =>
 
 export const getSupportedTestnetChains = () => {
   const { chains } = getNetwork();
-  return chains.filter((chain) => chain.testnet);
+  return chains.filter((chain) => !!chain.testnet);
 };
 
 export const getSupportedTestnetChainIds = () =>

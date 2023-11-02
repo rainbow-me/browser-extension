@@ -205,6 +205,22 @@ const checkRateLimit = async (host: string) => {
   }
 };
 
+const skipRateLimitCheck = (method: string) =>
+  [
+    'eth_chainId',
+    'eth_accounts',
+    'eth_sendTransaction',
+    'eth_signTransaction',
+    'personal_sign',
+    'eth_signTypedData',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+    'wallet_addEthereumChain',
+    'wallet_switchEthereumChain',
+    'eth_requestAccounts',
+    'personal_ecRecover',
+  ].includes(method) || method.startsWith('wallet_');
+
 /**
  * Handles RPC requests from the provider.
  */
@@ -223,9 +239,11 @@ export const handleProviderRequest = ({
     const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
 
-    const rateLimited = await checkRateLimit(host);
-    if (rateLimited) {
-      return { id, error: <Error>new Error('Rate Limit Exceeded') };
+    if (!skipRateLimitCheck(method)) {
+      const rateLimited = await checkRateLimit(host);
+      if (rateLimited) {
+        return { id, error: <Error>new Error('Rate Limit Exceeded') };
+      }
     }
 
     try {
