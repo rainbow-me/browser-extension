@@ -4,6 +4,7 @@ import create from 'zustand';
 import { createStore } from '../internal/createStore';
 
 export interface CustomRPCAsset {
+  name: string;
   address: Address;
   decimals: number;
   symbol: string;

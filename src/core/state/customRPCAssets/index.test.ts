@@ -6,18 +6,21 @@ const TEST_CHAIN_ID_1 = 1;
 const TEST_CHAIN_ID_2 = 2;
 
 const TEST_ASSET_1: CustomRPCAsset = {
+  name: 'Address1',
   address: '0xAddress1',
   decimals: 18,
   symbol: 'TOKEN1',
 };
 
 const TEST_ASSET_2: CustomRPCAsset = {
+  name: 'Address2',
   address: '0xAddress2',
   decimals: 6,
   symbol: 'TOKEN2',
 };
 
 const TEST_ASSET_3: CustomRPCAsset = {
+  name: 'Address3',
   address: '0xAddress3',
   decimals: 18,
   symbol: 'TOKEN3',

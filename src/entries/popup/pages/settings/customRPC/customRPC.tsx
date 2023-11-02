@@ -14,6 +14,7 @@ import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 
 const INITIAL_ASSET = {
+  name: '',
   address: '' as Address,
   decimals: 18,
   symbol: '',
@@ -34,7 +35,7 @@ export function CustomRPC() {
     <T extends string | number | boolean>(
       value: string | boolean,
       type: 'string' | 'number' | 'boolean',
-      data: 'address' | 'decimals' | 'symbol',
+      data: 'address' | 'decimals' | 'symbol' | 'name',
     ) => {
       if (type === 'number' && typeof value === 'string') {
         const maskedValue = maskInput({ inputValue: value, decimals: 0 });
@@ -199,14 +200,21 @@ export function CustomRPC() {
           <Stack space="8px">
             <Input
               onChange={(t) =>
+                onInputChange<string>(t.target.value, 'string', 'name')
+              }
+              height="32px"
+              placeholder="Name"
+              variant="surface"
+              value={asset.name}
+            />
+            <Input
+              onChange={(t) =>
                 onInputChange<string>(t.target.value, 'string', 'address')
               }
               height="32px"
               placeholder="Address"
               variant="surface"
               value={asset.address}
-              // onBlur={onRpcUrlBlur}
-              // borderColor={validations.rpcUrl ? 'accent' : 'red'}
             />
             <Input
               onChange={(t) =>
@@ -216,8 +224,6 @@ export function CustomRPC() {
               placeholder="Decimals"
               variant="surface"
               value={asset.decimals}
-              // onBlur={onChainIdBlur}
-              // borderColor={validations.chainId ? 'accent' : 'red'}
             />
             <Input
               onChange={(t) =>
@@ -227,8 +233,6 @@ export function CustomRPC() {
               placeholder="name"
               variant="surface"
               value={asset.symbol}
-              // onBlur={onNameBlur}
-              // borderColor={validations.name ? 'accent' : 'red'}
             />
 
             <Inline alignHorizontal="right">
