@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { ReactNode, useState } from 'react';
 import { Address } from 'wagmi';
@@ -11,8 +10,9 @@ import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useNonceStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
-import { formatNumber } from '~/core/utils/formatNumber';
+import { truncateString } from '~/core/utils/strings';
 import {
   Bleed,
   Box,
@@ -22,16 +22,10 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import {
-  SymbolName,
-  TextColor,
-  globalColors,
-} from '~/design-system/styles/designTokens';
+import { SymbolName, globalColors } from '~/design-system/styles/designTokens';
 import { AddressDisplay } from '~/entries/popup/components/AddressDisplay';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
-import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
-import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { Tag } from '~/entries/popup/components/Tag';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
@@ -40,7 +34,7 @@ import {
   ThisDappIsLikelyMalicious,
   getDappStatusBadge,
 } from '../DappScanStatus';
-import { SimulationNoChangesDetected } from '../SignMessage/SignMessageInfo';
+import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import {
   TransactionSimulation,
@@ -84,41 +78,7 @@ const InfoRow = ({
   </Box>
 );
 
-function SimulatedChangeRow({
-  asset,
-  quantity,
-  symbol,
-  color,
-  label,
-}: {
-  asset: TransactionSimulation['in'][0]['asset'];
-  quantity: (string & {}) | 'UNLIMITED';
-  symbol: ReactNode;
-  color: TextColor;
-  label: string;
-}) {
-  return (
-    <Inline space="24px" alignHorizontal="justify" alignVertical="center">
-      <Inline space="12px" alignVertical="center">
-        {symbol}
-        <Text size="14pt" weight="bold" color="label">
-          {label}
-        </Text>
-      </Inline>
-      <Inline space="6px" alignVertical="center">
-        <CoinIcon asset={asset} size={14} />
-        <Text size="14pt" weight="bold" color={color}>
-          {quantity === 'UNLIMITED'
-            ? i18n.t('approvals.unlimited')
-            : formatNumber(formatUnits(quantity, asset.decimals))}{' '}
-          {asset.symbol}
-        </Text>
-      </Inline>
-    </Inline>
-  );
-}
-
-function SimulationOverview({
+function Overview({
   simulation,
   status,
   metadata,
@@ -140,82 +100,7 @@ function SimulationOverview({
         {i18n.t('simulation.title')}
       </Text>
 
-      {status === 'loading' && (
-        <Inline alignVertical="center" space="8px">
-          <Spinner size={16} color="blue" />
-          <Text size="14pt" weight="semibold" color="blue">
-            {i18n.t('simulation.loading')}
-          </Text>
-        </Inline>
-      )}
-
-      {status === 'error' && (
-        <Inline alignVertical="center" space="8px">
-          <Symbol symbol="xmark.circle" size={16} color="red" weight="bold" />
-          <Text size="14pt" weight="semibold" color="red">
-            {i18n.t('simulation.error')}
-          </Text>
-        </Inline>
-      )}
-
-      {status === 'success' &&
-        (!simulation?.hasChanges ? (
-          <SimulationNoChangesDetected />
-        ) : (
-          <Stack space="14px">
-            {simulation.in.map(({ asset, quantity }) => (
-              <SimulatedChangeRow
-                key={asset.address}
-                asset={asset}
-                quantity={quantity}
-                color="green"
-                symbol={
-                  <Symbol
-                    size={14}
-                    symbol="arrow.up.circle.fill"
-                    weight="bold"
-                    color="green"
-                  />
-                }
-                label={i18n.t('simulation.received')}
-              />
-            ))}
-            {simulation.out.map(({ asset, quantity }) => (
-              <SimulatedChangeRow
-                key={asset.address}
-                asset={asset}
-                quantity={quantity}
-                color="red"
-                symbol={
-                  <Symbol
-                    size={14}
-                    symbol="arrow.down.circle.fill"
-                    weight="bold"
-                    color="red"
-                  />
-                }
-                label={i18n.t('simulation.sent')}
-              />
-            ))}
-            {simulation.approvals.map(({ asset, quantityAllowed }) => (
-              <SimulatedChangeRow
-                key={asset.address}
-                asset={asset}
-                quantity={quantityAllowed}
-                color="label"
-                symbol={
-                  <Symbol
-                    size={14}
-                    symbol="checkmark.seal.fill"
-                    weight="bold"
-                    color="blue"
-                  />
-                }
-                label={i18n.t('simulation.approved')}
-              />
-            ))}
-          </Stack>
-        ))}
+      <SimulationOverview simulation={simulation} status={status} />
 
       <Separator color="separatorTertiary" />
 
@@ -348,7 +233,6 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
 
   const [expanded, setExpanded] = useState(false);
 
-  // dappMetadata.status = DAppStatus.Scam;
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
   const {
@@ -418,7 +302,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
         onExpand={() => setExpanded((e) => !e)}
       >
         <TabContent value={tabLabel('overview')}>
-          <SimulationOverview
+          <Overview
             simulation={simulation}
             status={status === 'error' && isRefetching ? 'loading' : status}
             metadata={dappMetadata}
@@ -432,11 +316,19 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
         </TabContent>
         <TabContent value={tabLabel('data')}>
           <TransactionData data={txData} />
-          <CopyButton onClick={() => null} />
+          <CopyButton
+            onClick={() =>
+              copy({
+                value: txData,
+                title: i18n.t('approve_request.transaction_data_copied'),
+                description: truncateString(txData, 20),
+              })
+            }
+          />
         </TabContent>
       </Tabs>
 
-      {isScamDapp && <ThisDappIsLikelyMalicious />}
+      {!expanded && isScamDapp && <ThisDappIsLikelyMalicious />}
     </Box>
   );
 }

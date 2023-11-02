@@ -1,4 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { motion } from 'framer-motion';
+
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -6,6 +8,9 @@ import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 export function ThisDappIsLikelyMalicious() {
   return (
     <Box
+      as={motion.div}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
       display="flex"
       flexDirection="row"
       alignItems="center"

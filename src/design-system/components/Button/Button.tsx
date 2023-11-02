@@ -4,6 +4,7 @@ import { Shortcut, getModifierKeyDisplay } from '~/core/references/shortcuts';
 import { BoxStyles } from '~/design-system/styles/core.css';
 import { Radius } from '~/design-system/styles/designTokens';
 import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
+import { useKeyboardPressedKeys } from '~/entries/popup/hooks/useKeyboardPressedKeys';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { Box } from '../Box/Box';
@@ -61,15 +62,20 @@ function ButtonShortcut({
     modifierKey: shortcut.modifier,
   });
 
+  const pressed = useKeyboardPressedKeys();
+
   return (
     <Inline alignVertical="center" space="3px" wrap={false}>
       {shortcut.modifier && (
         <ShortcutHint
           hint={getModifierKeyDisplay(shortcut.modifier)}
-          variant="flat"
+          variant={pressed[shortcut.modifier] ? 'pressed' : 'flat'}
         />
       )}
-      <ShortcutHint hint={shortcut.display} variant="flat" />
+      <ShortcutHint
+        hint={shortcut.display}
+        variant={pressed[shortcut.key] ? 'pressed' : 'flat'}
+      />
     </Inline>
   );
 }

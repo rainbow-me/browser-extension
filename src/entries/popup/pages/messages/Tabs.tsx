@@ -126,7 +126,9 @@ export function TabFloatingButton(
 ) {
   return (
     <Box
-      as="button"
+      as={motion.button}
+      whileHover={{ scale: 1.04 }}
+      whileTap={{ scale: 0.98 }}
       position="absolute"
       paddingRight="8px"
       paddingLeft="8px"
@@ -186,7 +188,7 @@ export function CopyButton({ onClick }: { onClick: VoidFunction }) {
   return (
     <TabFloatingButton onClick={onClick} style={{ bottom: 12, left: 12 }}>
       <Symbol
-        symbol={'square.on.square'}
+        symbol="square.on.square"
         size={12}
         color="labelSecondary"
         weight="bold"

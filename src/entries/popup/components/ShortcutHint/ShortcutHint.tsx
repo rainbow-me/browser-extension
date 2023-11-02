@@ -10,6 +10,11 @@ const shortcutHintVariants = {
     borderColor: 'fill',
     borderWidth: '1.5px',
   },
+  pressed: {
+    background: 'fill',
+    borderColor: 'fillTertiary',
+    borderWidth: '1.5px',
+  },
 } as const;
 
 export const ShortcutHint = ({
@@ -34,15 +39,19 @@ export const ShortcutHint = ({
       {...props}
     >
       <Inline alignHorizontal="center" alignVertical="center">
-        {/* <Box style={{ marginTop: small ? -1 : 1 }}> */}
-        <Text
-          size={small ? '11pt' : '12pt'}
-          color="labelSecondary"
-          weight="bold"
+        <Box
+          style={
+            variant === 'elevated' ? { marginTop: small ? -1 : 1 } : undefined
+          }
         >
-          {hint}
-        </Text>
-        {/* </Box> */}
+          <Text
+            size={small ? '11pt' : '12pt'}
+            color="labelSecondary"
+            weight="bold"
+          >
+            {hint}
+          </Text>
+        </Box>
       </Inline>
     </Box>
   );

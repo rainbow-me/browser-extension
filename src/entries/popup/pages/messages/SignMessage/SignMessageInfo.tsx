@@ -7,42 +7,41 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
+import { copy } from '~/core/utils/copy';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
+import { truncateString } from '~/core/utils/strings';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
+import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
-import { useSimulateTransaction } from '../useSimulateTransaction';
+import {
+  TransactionSimulation,
+  useSimulateTransaction,
+} from '../useSimulateTransaction';
 
 interface SignMessageProps {
   request: ProviderRequestPayload;
 }
 
-export function SimulationNoChangesDetected() {
-  return (
-    <Inline space="8px" alignVertical="center">
-      <Symbol
-        symbol="waveform.and.magnifyingglass"
-        color="labelTertiary"
-        size={16}
-        weight="medium"
-      />
-      <Text size="14pt" weight="semibold" color="labelTertiary">
-        {i18n.t('simulation.no_changes')}
-      </Text>
-    </Inline>
-  );
-}
-
-function Overview({ message }: { message?: string }) {
+function Overview({
+  message,
+  simulation,
+  status,
+}: {
+  message?: string;
+  simulation: TransactionSimulation | undefined;
+  status: 'loading' | 'error' | 'success';
+}) {
   return (
     <Stack space="16px">
       <Text size="12pt" weight="semibold" color="labelTertiary">
         {i18n.t('simulation.title')}
       </Text>
-      <SimulationNoChangesDetected />
+
+      <SimulationOverview simulation={simulation} status={status} />
 
       <Separator color="separatorTertiary" />
 
@@ -75,7 +74,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const dappUrl = request?.meta?.sender?.url || '';
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
 
-  const { message, typedData } = useMemo(() => {
+  const { message } = useMemo(() => {
     const { message, typedData } = getSigningRequestDisplayDetails(request);
     return { message, typedData };
   }, [request]);
@@ -92,7 +91,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const {
     data: simulation,
     status,
-    isFetching,
+    isRefetching,
   } = useSimulateTransaction({
     chainId,
     transaction: {
@@ -156,17 +155,27 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
         onExpand={() => setExpanded((e) => !e)}
       >
         <TabContent value={tabLabel('overview')}>
-          <Overview message={message} />
-          <CopyButton onClick={() => null} />
+          <Overview
+            message={message}
+            simulation={simulation}
+            status={status === 'error' && isRefetching ? 'loading' : status}
+          />
+          <CopyButton
+            onClick={() =>
+              copy({
+                value: message || '',
+                title: i18n.t('approve_request.message_copied'),
+                description: truncateString(message, 20),
+              })
+            }
+          />
         </TabContent>
         <TabContent value={tabLabel('details')}>
           <Details />
         </TabContent>
       </Tabs>
 
-      {dappMetadata?.status === DAppStatus.Scam ? (
-        <ThisDappIsLikelyMalicious />
-      ) : null}
+      {!expanded && isScamDapp && <ThisDappIsLikelyMalicious />}
     </Box>
   );
 };

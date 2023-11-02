@@ -917,6 +917,8 @@
     "dangerous_request": "Dangerous Request",
     "message_signing_request": "Message Signing Request",
     "message": "Message",
+    "message_copied": "Message Copied",
+    "transaction_data_copied": "Transaction Data Copied",
     "sign_message": "Sign",
     "sign_message_anyway": "Sign Anyway",
     "confirm_hw": "Sign on your device",
