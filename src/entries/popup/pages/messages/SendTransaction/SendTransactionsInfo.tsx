@@ -211,11 +211,29 @@ function TransactionDetails({
   );
 }
 
-function TransactionData({ data }: { data: string }) {
+function TransactionData({
+  data,
+  expanded,
+}: {
+  data: string;
+  expanded: boolean;
+}) {
   return (
-    <Text size="12pt" weight="medium" color="labelSecondary">
-      <span style={{ wordWrap: 'break-word' }}>{data}</span>
-    </Text>
+    <Box paddingBottom="32px">
+      <Text size="12pt" weight="medium" color="labelSecondary">
+        <span style={{ wordWrap: 'break-word' }}>{data}</span>
+      </Text>
+      <CopyButton
+        withLabel={expanded}
+        onClick={() =>
+          copy({
+            value: data,
+            title: i18n.t('approve_request.transaction_data_copied'),
+            description: truncateString(data, 20),
+          })
+        }
+      />
+    </Box>
   );
 }
 
@@ -313,16 +331,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
           />
         </TabContent>
         <TabContent value={tabLabel('data')}>
-          <TransactionData data={txData} />
-          <CopyButton
-            onClick={() =>
-              copy({
-                value: txData,
-                title: i18n.t('approve_request.transaction_data_copied'),
-                description: truncateString(txData, 20),
-              })
-            }
-          />
+          <TransactionData data={txData} expanded={expanded} />
         </TabContent>
       </Tabs>
 

@@ -161,6 +161,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
             status={status === 'error' && isRefetching ? 'loading' : status}
           />
           <CopyButton
+            withLabel={expanded}
             onClick={() =>
               copy({
                 value: message || '',

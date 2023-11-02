@@ -129,6 +129,9 @@ export function TabFloatingButton(
       as={motion.button}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.98 }}
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay: 0.3 }}
       position="absolute"
       paddingRight="8px"
       paddingLeft="8px"
@@ -184,7 +187,13 @@ function ViewMoreButton({
   );
 }
 
-export function CopyButton({ onClick }: { onClick: VoidFunction }) {
+export function CopyButton({
+  withLabel,
+  onClick,
+}: {
+  withLabel: boolean;
+  onClick: VoidFunction;
+}) {
   return (
     <TabFloatingButton onClick={onClick} style={{ bottom: 12, left: 12 }}>
       <Symbol
@@ -193,9 +202,11 @@ export function CopyButton({ onClick }: { onClick: VoidFunction }) {
         color="labelSecondary"
         weight="bold"
       />
-      <Text size="14pt" weight="semibold" color="labelSecondary">
-        {i18n.t('copy')}
-      </Text>
+      {withLabel && (
+        <Text size="14pt" weight="semibold" color="labelSecondary">
+          {i18n.t('copy')}
+        </Text>
+      )}
     </TabFloatingButton>
   );
 }
