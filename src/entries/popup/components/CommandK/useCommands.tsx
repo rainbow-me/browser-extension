@@ -153,6 +153,15 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 15,
     type: SearchItemType.Shortcut,
   },
+  developerTools: {
+    name: getCommandName('developer_tools'),
+    page: PAGES.HOME,
+    searchTags: getSearchTags('developer_tools'),
+    shouldRemainOnActiveRoute: true,
+    symbol: 'hammer.fill',
+    symbolSize: 15.75,
+    type: SearchItemType.Shortcut,
+  },
   testnetMode: {
     name: getCommandName('testnet_mode'),
     page: PAGES.HOME,
@@ -487,7 +496,8 @@ export const useCommands = (
   const { setSelectedToken } = useSelectedTokenStore();
 
   const { setTestnetMode, testnetMode } = useTestnetModeStore();
-  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
+  const { developerToolsEnabled, setDeveloperToolsEnabled } =
+    useDeveloperToolsEnabledStore();
   const { hideAssetBalances, setHideAssetBalances } =
     useHideAssetBalancesStore();
   const { hideSmallBalances, setHideSmallBalances } =
@@ -500,6 +510,11 @@ export const useCommands = (
       description: truncateAddress(address),
     });
   }, []);
+
+  const handleToggleDeveloperTools = React.useCallback(() => {
+    const current = developerToolsEnabled;
+    setDeveloperToolsEnabled(!current);
+  }, [setDeveloperToolsEnabled, developerToolsEnabled]);
 
   const handleToggleTestnetMode = React.useCallback(() => {
     const current = testnetMode;
@@ -606,6 +621,12 @@ export const useCommands = (
       },
       lock: {
         action: () => wallet.lock(),
+      },
+      developerTools: {
+        action: handleToggleDeveloperTools,
+        name: developerToolsEnabled
+          ? getCommandName('developer_tools_enabled')
+          : getCommandName('developer_tools_disabled'),
       },
       testnetMode: {
         action: handleToggleTestnetMode,
@@ -804,6 +825,7 @@ export const useCommands = (
       handleSelectAddress,
       handleToggleHiddenBalances,
       handleToggleHiddenSmallBalances,
+      handleToggleDeveloperTools,
       handleToggleTestnetMode,
       handleWatchWallet,
       hideAssetBalances,
