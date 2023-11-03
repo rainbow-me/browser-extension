@@ -10,7 +10,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
 
 import {
   DropdownMenu,
@@ -168,9 +168,26 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                     testId="testnet-mode"
                     leftComponent={<MenuItem.TextIcon icon="🕹" />}
                     centerComponent={
-                      <Text size="14pt" weight="semibold">
-                        {i18n.t('menu.home_header_right.testnet_mode')}
-                      </Text>
+                      <Rows space="6px">
+                        <Row>
+                          <Text size="14pt" weight="semibold">
+                            {i18n.t('menu.home_header_right.testnet_mode')}
+                          </Text>
+                        </Row>
+                        <Row>
+                          <Text
+                            size="11pt"
+                            color="labelTertiary"
+                            weight="medium"
+                          >
+                            {testnetMode
+                              ? i18n.t('menu.home_header_right.testnet_mode_on')
+                              : i18n.t(
+                                  'menu.home_header_right.testnet_mode_off',
+                                )}
+                          </Text>
+                        </Row>
+                      </Rows>
                     }
                     rightComponent={
                       <ShortcutHint

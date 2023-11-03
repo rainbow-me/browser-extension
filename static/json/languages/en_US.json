@@ -883,7 +883,9 @@
       "guides_and_support": "Guides & Support",
       "share_feedback": "Share Feedback",
       "lock_rainbow": "Lock Rainbow",
-      "testnet_mode": "Testnet Mode"
+      "testnet_mode": "Testnet Mode",
+      "testnet_mode_off": "Off",
+      "testnet_mode_on": "On"
     }
   },
   "testnet_mode_watcher": {
