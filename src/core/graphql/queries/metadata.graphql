@@ -157,6 +157,10 @@ query simulateTransactions(
       result
       description
     }
+    error {
+      message
+      type
+    }
     simulation {
       in {
         ...change

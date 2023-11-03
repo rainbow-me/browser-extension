@@ -10,7 +10,10 @@ import { TextColor } from '~/design-system/styles/designTokens';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { Spinner } from '../../components/Spinner/Spinner';
 
-import { TransactionSimulation } from './useSimulateTransaction';
+import {
+  SimulationError,
+  TransactionSimulation,
+} from './useSimulateTransaction';
 
 export function SimulationNoChangesDetected() {
   return (
@@ -65,9 +68,11 @@ function SimulatedChangeRow({
 export function SimulationOverview({
   simulation,
   status,
+  error,
 }: {
   simulation: TransactionSimulation | undefined;
   status: 'loading' | 'error' | 'success';
+  error: SimulationError | null;
 }) {
   return (
     <>
@@ -84,7 +89,9 @@ export function SimulationOverview({
         <Inline alignVertical="center" space="8px">
           <Symbol symbol="xmark.circle" size={16} color="red" weight="bold" />
           <Text size="14pt" weight="semibold" color="red">
-            {i18n.t('simulation.error')}
+            {error === 'REVERT'
+              ? i18n.t('simulation.reverted')
+              : i18n.t('simulation.error')}
           </Text>
         </Inline>
       )}

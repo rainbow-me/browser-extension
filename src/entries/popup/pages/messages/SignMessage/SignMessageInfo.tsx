@@ -18,6 +18,7 @@ import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
 import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import {
+  SimulationError,
   TransactionSimulation,
   useSimulateTransaction,
 } from '../useSimulateTransaction';
@@ -30,10 +31,12 @@ function Overview({
   message,
   simulation,
   status,
+  error,
 }: {
   message?: string;
   simulation: TransactionSimulation | undefined;
   status: 'loading' | 'error' | 'success';
+  error: SimulationError | null;
 }) {
   return (
     <Stack space="16px">
@@ -41,7 +44,11 @@ function Overview({
         {i18n.t('simulation.title')}
       </Text>
 
-      <SimulationOverview simulation={simulation} status={status} />
+      <SimulationOverview
+        simulation={simulation}
+        status={status}
+        error={error}
+      />
 
       <Separator color="separatorTertiary" />
 
@@ -91,6 +98,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const {
     data: simulation,
     status,
+    error,
     isRefetching,
   } = useSimulateTransaction({
     chainId,
@@ -116,7 +124,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
       position="relative"
       display="flex"
       flexDirection="column"
-      justifyContent="center"
+      justifyContent="flex-start"
       gap="24px"
       height="full"
     >
@@ -159,6 +167,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
             message={message}
             simulation={simulation}
             status={status === 'error' && isRefetching ? 'loading' : status}
+            error={error}
           />
           <CopyButton
             withLabel={expanded}

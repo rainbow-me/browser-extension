@@ -37,6 +37,7 @@ import {
 import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import {
+  SimulationError,
   TransactionSimulation,
   useSimulateTransaction,
 } from '../useSimulateTransaction';
@@ -81,10 +82,12 @@ const InfoRow = ({
 function Overview({
   simulation,
   status,
+  error,
   metadata,
 }: {
   simulation: TransactionSimulation | undefined;
   status: 'loading' | 'error' | 'success';
+  error: SimulationError | null;
   metadata: DappMetadata | null;
 }) {
   const chainId = simulation?.chainId;
@@ -100,7 +103,11 @@ function Overview({
         {i18n.t('simulation.title')}
       </Text>
 
-      <SimulationOverview simulation={simulation} status={status} />
+      <SimulationOverview
+        simulation={simulation}
+        status={status}
+        error={error}
+      />
 
       <Separator color="separatorTertiary" />
 
@@ -254,6 +261,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
   const {
     data: simulation,
     status,
+    error,
     isRefetching,
   } = useSimulateTransaction({
     chainId,
@@ -279,7 +287,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
       position="relative"
       display="flex"
       flexDirection="column"
-      justifyContent="center"
+      justifyContent="flex-start"
       gap="24px"
       height="full"
     >
@@ -321,6 +329,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
           <Overview
             simulation={simulation}
             status={status === 'error' && isRefetching ? 'loading' : status}
+            error={error}
             metadata={dappMetadata}
           />
         </TabContent>

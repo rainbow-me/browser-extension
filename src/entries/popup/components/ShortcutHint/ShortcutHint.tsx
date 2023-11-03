@@ -10,11 +10,6 @@ const shortcutHintVariants = {
     borderColor: 'fill',
     borderWidth: '1.5px',
   },
-  pressed: {
-    background: 'fill',
-    borderColor: 'fillTertiary',
-    borderWidth: '1.5px',
-  },
 } as const;
 
 export const ShortcutHint = ({

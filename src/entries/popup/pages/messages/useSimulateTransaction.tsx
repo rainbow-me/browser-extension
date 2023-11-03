@@ -52,7 +52,7 @@ export const useSimulateTransaction = ({
   transaction: Transaction;
   domain: string;
 }) => {
-  return useQuery({
+  return useQuery<TransactionSimulation, SimulationError>({
     queryKey: createQueryKey('simulateTransaction', {
       transaction,
       chainId,
@@ -65,7 +65,9 @@ export const useSimulateTransaction = ({
         domain,
       })) as TransactionSimulationResponse;
 
-      const { simulation } = response.simulateTransactions[0];
+      const { simulation, error } = response.simulateTransactions[0];
+
+      if (error) throw error.type;
 
       return {
         chainId,
@@ -104,7 +106,9 @@ export type TransactionSimulation = {
   hasChanges: boolean;
   chainId: ChainId;
 };
+export type SimulationError = 'REVERT' | 'UNSUPPORTED';
 
+type SourceCodeStatus = 'VERIFIED' | 'UNKNOWN';
 type SimulationAsset = {
   assetCode: AddressOrEth;
   decimals: number;
@@ -115,7 +119,7 @@ type SimulationAsset = {
   type: 'TOKEN';
   interface: 'ERC20';
   tokenId: '';
-  status: 'VERIFIED';
+  status: SourceCodeStatus;
 };
 
 type SimulationChange = {
@@ -128,7 +132,7 @@ type SimulationApprovalSpender = {
   iconURL: string;
   function: string;
   created: string;
-  sourceCodeStatus: 'VERIFIED';
+  sourceCodeStatus: SourceCodeStatus;
 };
 type SimulationMeta = {
   to: {
@@ -137,7 +141,7 @@ type SimulationMeta = {
     iconURL: string;
     function: string;
     created: null;
-    sourceCodeStatus: 'UNKNOWN' | 'VERIFIED';
+    sourceCodeStatus: SourceCodeStatus;
   };
 };
 
@@ -147,6 +151,10 @@ type TransactionSimulationResponse = {
       scanning: {
         result: 'OK';
         description: '';
+      };
+      error: {
+        message: string;
+        type: SimulationError;
       };
       simulation: {
         in: SimulationChange[];

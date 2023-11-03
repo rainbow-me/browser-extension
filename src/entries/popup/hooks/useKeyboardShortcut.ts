@@ -35,6 +35,7 @@ export function useKeyboardShortcut({
 
   const modifiedHandler = useCallback(
     (e: KeyboardEvent) => {
+      console.log('useKeyboardShortcut down');
       // If a modifierKey is specified, check if it's being held down
       if (systemSpecificModifierKey && !e[systemSpecificModifierKey]) {
         return;
