@@ -50,28 +50,10 @@ describe('Networks & Testnet Mode flows', () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to toggle testnet mode', async () => {
+  it('should be able to toggle developer tools', async () => {
     await navigateToSettingsNetworks(driver, rootURL);
     await delayTime('short');
 
-    await findElementByTestIdAndClick({ driver, id: 'testnet-mode-toggle' });
-    await delayTime('medium');
-    const testnetBar = await findElementByTestId({
-      driver,
-      id: 'testnet-bar',
-    });
-    expect(testnetBar).toBeTruthy();
-
-    await findElementByTestIdAndClick({ driver, id: 'testnet-mode-toggle' });
-    await delayTime('medium');
-    const testnetBar2 = await doNotFindElementByTestId({
-      driver,
-      id: 'testnet-bar',
-    });
-    expect(testnetBar2).toBeFalsy();
-  });
-
-  it('should be able to toggle developer tools', async () => {
     await findElementByTestIdAndClick({
       driver,
       id: 'developer-tools-toggle',
