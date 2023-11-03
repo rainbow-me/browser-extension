@@ -207,10 +207,7 @@ export function SendTransaction({
       <SendTransactionInfo request={request} />
       <Stack space="20px" padding="20px">
         <Bleed vertical="4px">
-          <AccountSigningWith
-            selectedWallet={selectedWallet}
-            appHost={dappMetadata.appHost}
-          />
+          <AccountSigningWith session={activeSession} />
         </Bleed>
         <Separator color="separatorTertiary" />
         <TransactionFee

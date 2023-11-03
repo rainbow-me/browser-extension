@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -145,8 +144,6 @@ export function SignMessage({
     }
   }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
-  if (!selectedWallet || !dappMetadata) return <Navigate to="/" />;
-
   return (
     <Box
       display="flex"
@@ -156,11 +153,7 @@ export function SignMessage({
       <SignMessageInfo request={request} />
       <Stack space="20px" padding="20px">
         <Bleed vertical="4px">
-          <AccountSigningWith
-            selectedWallet={selectedWallet}
-            appHost={dappMetadata.appHost}
-            noFee
-          />
+          <AccountSigningWith session={activeSession} noFee />
         </Bleed>
         <SignMessageActions
           waitingForDevice={waitingForDevice}

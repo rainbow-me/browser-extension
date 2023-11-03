@@ -6,7 +6,6 @@ import { formatNumber } from '~/core/utils/formatNumber';
 import { Inline, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
-import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { WalletName } from './BottomActions';
 
@@ -36,30 +35,26 @@ function WalletNativeBalance({
 }
 
 export function AccountSigningWith({
-  selectedWallet,
-  appHost,
+  session,
   noFee,
 }: {
-  selectedWallet: Address;
-  appHost: string;
+  session: {
+    address: `0x${string}`;
+    chainId: ChainId;
+  } | null;
   noFee?: boolean;
 }) {
-  const { activeSession } = useAppSession({ host: appHost });
-  if (!activeSession) return null;
-  const { address, chainId } = activeSession;
+  if (!session) return null;
+  const { address, chainId } = session;
   return (
     <Inline alignVertical="center" space="8px">
-      <WalletAvatar
-        addressOrName={selectedWallet}
-        size={36}
-        emojiSize="20pt / 150%"
-      />
+      <WalletAvatar addressOrName={address} size={36} emojiSize="20pt / 150%" />
       <Stack space="10px">
         <Inline alignVertical="center" space="4px">
           <Text size="14pt" weight="bold" color="labelTertiary">
             {i18n.t('approve_request.signing_with')}
           </Text>
-          <WalletName address={selectedWallet} size="14pt" weight="bold" />
+          <WalletName address={address} size="14pt" weight="bold" />
         </Inline>
         {noFee ? (
           <Text size="12pt" weight="semibold" color="labelTertiary">
