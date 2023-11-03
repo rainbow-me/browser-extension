@@ -98,13 +98,15 @@ export function SettingsNetworks() {
                         key={chain.name}
                         titleComponent={<MenuItem.Title text={chain.name} />}
                         labelComponent={
-                          <Text
-                            color={'labelTertiary'}
-                            size="11pt"
-                            weight={'medium'}
-                          >
-                            {chainLabel({ chainId: chain.id })}
-                          </Text>
+                          developerToolsEnabled ? (
+                            <Text
+                              color={'labelTertiary'}
+                              size="11pt"
+                              weight={'medium'}
+                            >
+                              {chainLabel({ chainId: chain.id })}
+                            </Text>
+                          ) : null
                         }
                         onClick={() => updateChain(chain)}
                       />
