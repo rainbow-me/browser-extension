@@ -71,10 +71,10 @@ describe('Networks & Testnet Mode flows', () => {
     expect(testnetBar2).toBeFalsy();
   });
 
-  it('should be able to toggle testnet mode shortcut', async () => {
+  it('should be able to toggle developer tools', async () => {
     await findElementByTestIdAndClick({
       driver,
-      id: 'testnet-mode-shortcut-toggle',
+      id: 'developer-tools-toggle',
     });
   });
 
