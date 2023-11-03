@@ -1012,6 +1012,7 @@ export const symbolNames = selectSymbolNames(
   'bolt.shield',
   'bolt.shield.fill',
   't.square.fill',
+  'arcade.stick',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

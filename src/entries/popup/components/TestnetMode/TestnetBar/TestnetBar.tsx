@@ -13,11 +13,23 @@ import { MenuItem } from '../../Menu/MenuItem';
 
 import { TestnetBarBackground } from './TestnetBarBackground';
 
+export const shouldShowTestnetBar = ({
+  testnetMode,
+  pathname,
+}: {
+  testnetMode: boolean;
+  pathname: string;
+}) =>
+  testnetMode && !!pathname && pathname !== '/' && pathname !== ROUTES.UNLOCK;
+
 export const TestnetBar = ({ testnetMode }: { testnetMode: boolean }) => {
   const location = useLocation();
   const { currentTheme } = useCurrentThemeStore();
 
-  const showTestnetBar = testnetMode && location.pathname !== ROUTES.UNLOCK;
+  const showTestnetBar = shouldShowTestnetBar({
+    testnetMode,
+    pathname: location.pathname,
+  });
 
   return (
     <AnimatePresence initial={false}>
