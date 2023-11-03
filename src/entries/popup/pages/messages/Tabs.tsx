@@ -9,9 +9,13 @@ import {
 } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box, Inline, Inset, Separator, Symbol, Text } from '~/design-system';
 
-import { overflowGradient } from './OverflowGradient.css';
+import {
+  overflowGradientDark,
+  overflowGradientLight,
+} from './OverflowGradient.css';
 
 function TabTrigger({ value }: { value: string }) {
   const { selectedTab } = useContext(TabContext);
@@ -86,6 +90,9 @@ function ScrollableWithGradient({
   onExpand: VoidFunction;
 }>) {
   const [isScrollable, setIsScrollable] = useState(false);
+  const { currentTheme } = useCurrentThemeStore();
+  const overflowGradient =
+    currentTheme === 'dark' ? overflowGradientDark : overflowGradientLight;
 
   return (
     <Box
