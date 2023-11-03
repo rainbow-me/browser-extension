@@ -148,7 +148,7 @@ export function SettingsNetworks() {
           <MenuItem
             leftComponent={
               <Symbol
-                symbol="t.square.fill"
+                symbol="hammer.fill"
                 weight="medium"
                 size={18}
                 color="labelTertiary"
