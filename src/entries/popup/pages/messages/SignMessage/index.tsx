@@ -7,7 +7,6 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-// import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
@@ -57,7 +56,6 @@ export function SignMessage({
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { watchedWallets } = useWallets();
 
-  // const selectedChainId = activeSession?.chainId ?? ChainId.mainnet;
   const selectedWallet = activeSession?.address;
 
   const onAcceptRequest = useCallback(async () => {
