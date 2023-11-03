@@ -83,9 +83,9 @@ async function userTestnetNativeAssetQueryFunction({
   try {
     // Don't do anything unless it's a testnet
     if (
-      !TESTNET_CHAIN_IDS.includes(chainId) ||
-      chainId === ChainId.hardhat ||
-      chainId === ChainId.hardhatOptimism
+      !TESTNET_CHAIN_IDS.includes(chainId) &&
+      chainId !== ChainId.hardhat &&
+      chainId !== ChainId.hardhatOptimism
     )
       return null;
 
