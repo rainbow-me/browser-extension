@@ -82,7 +82,12 @@ async function userTestnetNativeAssetQueryFunction({
 }: QueryFunctionArgs<typeof userTestnetNativeAssetQueryKey>) {
   try {
     // Don't do anything unless it's a testnet
-    if (!TESTNET_CHAIN_IDS.includes(chainId)) return null;
+    if (
+      !TESTNET_CHAIN_IDS.includes(chainId) ||
+      chainId === ChainId.hardhat ||
+      chainId === ChainId.hardhatOptimism
+    )
+      return null;
 
     const provider = getProvider({ chainId });
     const nativeAsset = getNativeAssetMock({ chainId });
