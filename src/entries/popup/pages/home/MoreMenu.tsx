@@ -166,7 +166,11 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                 >
                   <HomeMenuRow
                     testId="testnet-mode"
-                    leftComponent={<MenuItem.TextIcon icon="🕹" />}
+                    leftComponent={
+                      <Box marginLeft="-2px" marginRight="-2px">
+                        <MenuItem.TextIcon icon="🕹" />
+                      </Box>
+                    }
                     centerComponent={
                       <Rows space="6px">
                         <Row>
