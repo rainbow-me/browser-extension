@@ -242,8 +242,8 @@ export const staticCommandInfo: CommandInfo = {
   flashbots: {
     actionLabel: actionLabels.activateCommand,
     hideForWatchedWallets: true,
+    shouldRemainOnActiveRoute: true,
     name: getCommandName('enable_flashbots'),
-    page: PAGES.HOME,
     symbol: 'bolt.shield.fill',
     symbolSize: 15,
     type: SearchItemType.Shortcut,

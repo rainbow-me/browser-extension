@@ -33,7 +33,7 @@ export const flashbotsEnabledStore = createStore<FlashbotsEnabledState>(
   {
     persist: {
       name: 'flashbotsEnabled',
-      version: 0,
+      version: 1,
     },
   },
 );
