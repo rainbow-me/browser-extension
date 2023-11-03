@@ -1018,6 +1018,7 @@ export const symbolNames = selectSymbolNames(
   'waveform.and.magnifyingglass',
   'arrow.down.right.and.arrow.up.left',
   't.square.fill',
+  'arcade.stick',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
