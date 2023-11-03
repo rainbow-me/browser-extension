@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { formatUnits } from '@ethersproject/units';
 import { ReactNode } from 'react';
 
@@ -39,6 +38,7 @@ function SimulatedChangeRow({
   label,
 }: {
   asset: TransactionSimulation['in'][0]['asset'];
+  // eslint-disable-next-line @typescript-eslint/ban-types
   quantity: (string & {}) | 'UNLIMITED';
   symbol: ReactNode;
   color: TextColor;

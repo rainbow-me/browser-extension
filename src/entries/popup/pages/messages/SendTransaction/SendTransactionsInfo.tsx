@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { motion } from 'framer-motion';
 import { ReactNode, useState } from 'react';

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'wagmi';
 
@@ -99,6 +98,7 @@ export type TransactionSimulation = {
   approvals: {
     asset: ParsedAsset;
     spender: SimulationApprovalSpender;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     quantityAllowed: 'UNLIMITED' | (string & {});
     quantityAtRisk: string;
   }[];
@@ -162,6 +162,7 @@ type TransactionSimulationResponse = {
         approvals: {
           asset: SimulationAsset;
           spender: SimulationApprovalSpender;
+          // eslint-disable-next-line @typescript-eslint/ban-types
           quantityAllowed: 'UNLIMITED' | (string & {});
           quantityAtRisk: string;
         }[];
