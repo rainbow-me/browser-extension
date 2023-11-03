@@ -159,7 +159,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                   }
                 />
               </DropdownMenuRadioItem>
-              {developerToolsEnabled && (
+              {(developerToolsEnabled || testnetMode) && (
                 <DropdownMenuRadioItem
                   highlightAccentColor
                   value="testnet-mode"

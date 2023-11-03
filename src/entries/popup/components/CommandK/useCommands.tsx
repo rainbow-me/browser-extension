@@ -633,7 +633,7 @@ export const useCommands = (
         name: testnetMode
           ? getCommandName('testnet_mode_enabled')
           : getCommandName('testnet_mode_disabled'),
-        hidden: !developerToolsEnabled,
+        hidden: testnetMode ? false : !developerToolsEnabled,
       },
       networkSettings: {
         action: () =>

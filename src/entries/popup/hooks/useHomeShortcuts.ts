@@ -90,7 +90,7 @@ export function useHomeShortcuts() {
   );
 
   const handleTestnetMode = useCallback(() => {
-    if (developerToolsEnabled) {
+    if (developerToolsEnabled || testnetMode) {
       setTestnetMode(!testnetMode);
     }
   }, [setTestnetMode, testnetMode, developerToolsEnabled]);
