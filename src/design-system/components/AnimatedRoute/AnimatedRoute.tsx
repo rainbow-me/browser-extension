@@ -30,9 +30,9 @@ import {
 } from '~/design-system/styles/designTokens';
 import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
+import { shouldShowTestnetBar } from '~/entries/popup/components/TestnetMode/TestnetBar/TestnetBar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
-import { ROUTES } from '~/entries/popup/urls';
 import { getActiveElement } from '~/entries/popup/utils/activeElement';
 import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
@@ -244,7 +244,10 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
               overflow: 'auto',
               maxHeight:
                 POPUP_DIMENSIONS.height -
-                (testnetMode && location.pathname !== ROUTES.UNLOCK
+                (shouldShowTestnetBar({
+                  testnetMode,
+                  pathname: location.pathname,
+                })
                   ? TESTNET_MODE_BAR_HEIGHT
                   : 0),
             }}
@@ -253,7 +256,10 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
             transition={transition}
             background={background}
             className={
-              testnetMode && location.pathname !== ROUTES.UNLOCK
+              shouldShowTestnetBar({
+                testnetMode,
+                pathname: location.pathname,
+              })
                 ? animatedRouteTestnetModeStyles
                 : animatedRouteStyles
             }
