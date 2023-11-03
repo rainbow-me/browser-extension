@@ -6,6 +6,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
@@ -486,6 +487,7 @@ export const useCommands = (
   const { setSelectedToken } = useSelectedTokenStore();
 
   const { setTestnetMode, testnetMode } = useTestnetModeStore();
+  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
   const { hideAssetBalances, setHideAssetBalances } =
     useHideAssetBalancesStore();
   const { hideSmallBalances, setHideSmallBalances } =
@@ -610,6 +612,7 @@ export const useCommands = (
         name: testnetMode
           ? getCommandName('testnet_mode_enabled')
           : getCommandName('testnet_mode_disabled'),
+        hidden: !developerToolsEnabled,
       },
       networkSettings: {
         action: () =>
@@ -795,6 +798,7 @@ export const useCommands = (
     [
       address,
       currentTheme,
+      developerToolsEnabled,
       ensName,
       handleCopy,
       handleSelectAddress,
