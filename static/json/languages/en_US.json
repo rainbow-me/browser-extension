@@ -93,11 +93,9 @@
         "text_bold": "Tip:"
       },
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
-      "testnet_mode": {
-        "title": "Testnet Mode",
-        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
-        "shortcut_title": "Enable Keyboard Shortcut",
-        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+      "developer_tools": {
+        "title": "Enable Developer Tools",
+        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
         "title": "Custom RPC"

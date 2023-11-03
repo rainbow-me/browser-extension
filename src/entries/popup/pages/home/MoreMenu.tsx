@@ -7,6 +7,7 @@ import {
   RAINBOW_SUPPORT_URL,
 } from '~/core/references/links';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -31,8 +32,8 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const navigate = useRainbowNavigate();
-  const { testnetMode, testnetModeShortcutEnabled, setTestnetMode } =
-    useTestnetModeStore();
+  const { testnetMode, setTestnetMode } = useTestnetModeStore();
+  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
 
   const openProfile = React.useCallback(
     () =>
@@ -43,10 +44,10 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   );
 
   const handleTestnetMode = React.useCallback(() => {
-    if (testnetModeShortcutEnabled) {
+    if (developerToolsEnabled) {
       setTestnetMode(!testnetMode);
     }
-  }, [setTestnetMode, testnetMode, testnetModeShortcutEnabled]);
+  }, [setTestnetMode, testnetMode, developerToolsEnabled]);
 
   const onValueChange = React.useCallback(
     (
@@ -158,7 +159,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                   }
                 />
               </DropdownMenuRadioItem>
-              {testnetModeShortcutEnabled && (
+              {developerToolsEnabled && (
                 <DropdownMenuRadioItem
                   highlightAccentColor
                   value="testnet-mode"
