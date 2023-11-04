@@ -157,7 +157,6 @@ export const staticCommandInfo: CommandInfo = {
     name: getCommandName('developer_tools'),
     page: PAGES.HOME,
     searchTags: getSearchTags('developer_tools'),
-    shouldRemainOnActiveRoute: true,
     symbol: 'hammer.fill',
     symbolSize: 15.75,
     type: SearchItemType.Shortcut,
@@ -512,9 +511,15 @@ export const useCommands = (
   }, []);
 
   const handleToggleDeveloperTools = React.useCallback(() => {
-    const current = developerToolsEnabled;
-    setDeveloperToolsEnabled(!current);
-  }, [setDeveloperToolsEnabled, developerToolsEnabled]);
+    const status = developerToolsEnabled ? 'disabled' : 'enabled';
+    triggerToast({
+      title: i18n.t(`command_k.developer_tools_toast.title_${status}`),
+      description: developerToolsEnabled
+        ? undefined
+        : i18n.t('command_k.developer_tools_toast.description_enabled'),
+    });
+    setDeveloperToolsEnabled(!developerToolsEnabled);
+  }, [developerToolsEnabled, setDeveloperToolsEnabled]);
 
   const handleToggleTestnetMode = React.useCallback(() => {
     const current = testnetMode;
@@ -627,6 +632,7 @@ export const useCommands = (
         name: developerToolsEnabled
           ? getCommandName('developer_tools_enabled')
           : getCommandName('developer_tools_disabled'),
+        shouldRemainOnActiveRoute: developerToolsEnabled,
       },
       testnetMode: {
         action: handleToggleTestnetMode,

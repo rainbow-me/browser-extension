@@ -409,7 +409,7 @@
         "my_tokens_watched": "my",
         "view_nfts": "gallery, profile",
         "testnet_mode": "toggle, networks, testnets",
-        "developer_tools": "toggle, networks, developer",
+        "developer_tools": "toggle, networks, developer, testnets",
         "settings": "preferences",
         "network_settings": "testnets, developer, networks",
         "my_qr_code_watched": "my",
@@ -424,6 +424,11 @@
     },
     "command_rows": {
       "no_value": "No Value"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Press T to toggle Testnet Mode",
+      "title_disabled": "Developer Tools Disabled",
+      "title_enabled": "Developer Tools Enabled"
     },
     "hide_balances_toast": {
       "description_hidden": "Your balances are obscured",
