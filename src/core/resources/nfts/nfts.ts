@@ -1,7 +1,4 @@
-import {
-  UseInfiniteQueryResult,
-  useInfiniteQuery,
-} from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { Address } from 'wagmi';
 
 import {
@@ -20,6 +17,7 @@ import { ChainName } from '~/core/types/chains';
 import {
   PolygonAllowListDictionary,
   SimpleHashCollectionDetails,
+  UniqueAsset,
 } from '~/core/types/nfts';
 import { getSupportedChains } from '~/core/utils/chains';
 import {
@@ -120,12 +118,22 @@ export function useNfts<TSelectData = NftsResult>(
 // Query Utils
 
 export function getNftCount({ address }: NftsArgs) {
-  const nftData: UseInfiniteQueryResult<NftsResult, Error> | undefined =
-    queryClient.getQueryData(nftsQueryKey({ address }));
-  console.log('base data: ', nftData);
-  if (nftData?.data?.pages) {
-    const nfts = nftData?.data?.pages;
-    console.log('NFTS: ', nfts);
+  const nftData:
+    | {
+        pages: {
+          nfts: UniqueAsset[];
+          nextPage?: string;
+        }[];
+        pageParams: (string | null)[];
+      }
+    | undefined = queryClient.getQueryData(nftsQueryKey({ address }));
+  if (nftData?.pages) {
+    const nfts = nftData?.pages
+      .map((page: { nfts: UniqueAsset[]; nextPage?: string }) => page.nfts)
+      .flat();
+    return nfts?.length || 0;
+  } else {
+    return 0;
   }
 }
 

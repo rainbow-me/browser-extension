@@ -5,6 +5,7 @@ import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useNfts } from '~/core/resources/nfts';
+import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
@@ -37,7 +38,14 @@ const COLLECTION_IMAGE_SIZE = 16;
 export function PostReleaseNFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { displayMode, sort, sections: sectionsState } = useNftsStore();
-  const { data, isInitialLoading } = useNfts({ address });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    isInitialLoading,
+  } = useNfts({ address });
   const nftData = useMemo(() => {
     const nfts = data?.pages?.map((page) => page.nfts).flat();
     return {
@@ -45,7 +53,6 @@ export function PostReleaseNFTs() {
       nfts:
         nfts?.reduce(
           (collections, nft) => {
-            console.log('current nft: ', nft);
             const currentCollectionId = nft.collection.collection_id;
             if (currentCollectionId) {
               const existingCollection = collections[currentCollectionId];
@@ -72,7 +79,7 @@ export function PostReleaseNFTs() {
         ) || {},
     };
   }, [data]);
-  const { nfts, nextPage } = nftData || {};
+  const { nfts } = nftData || {};
   const containerRef = useContainerRef();
   const sections = Object.values(nfts || {});
   const sortedSections = useMemo(() => {
@@ -113,7 +120,7 @@ export function PostReleaseNFTs() {
         collection?.collection?.collection_id || ''
       ];
       if (sectionIsOpen) {
-        const assetCount = collection.assets.length;
+        const assetCount = collection.assets?.length;
         const sectionRowCount = Math.ceil(assetCount / 3);
 
         const thumbnailHeight =
@@ -121,7 +128,9 @@ export function PostReleaseNFTs() {
         return PADDING + COLLECTION_HEADER_HEIGHT + thumbnailHeight;
       } else {
         const finalCellPadding =
-          !sectionIsOpen && sectionIndex === sortedSections.length - 1 ? 12 : 0;
+          !sectionIsOpen && sectionIndex === sortedSections?.length - 1
+            ? 12
+            : 0;
         return COLLECTION_HEADER_HEIGHT + finalCellPadding;
       }
     },
@@ -136,7 +145,7 @@ export function PostReleaseNFTs() {
   const groupedAssets = sortedSections.map((section) => section.assets).flat();
   const groupedAssetRowData = chunkArray(groupedAssets, 3);
   const groupedGalleryRowVirtualizer = useVirtualizer({
-    count: groupedAssetRowData.length,
+    count: groupedAssetRowData?.length,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 112,
     overscan: 12,
@@ -147,7 +156,24 @@ export function PostReleaseNFTs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionsState, sort]);
 
-  useEffect(() => {}, [data?.pages.length]);
+  useEffect(() => {
+    const nftCount = getNftCount({ address });
+    if (
+      hasNextPage &&
+      !isFetching &&
+      !isFetchingNextPage &&
+      nftCount < NFTS_LIMIT
+    ) {
+      fetchNextPage();
+    }
+  }, [
+    address,
+    data?.pages?.length,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  ]);
 
   // we don't have a design for loading / empty state yet
   if (isInitialLoading || Object.values(nfts || {}).length === 0) {

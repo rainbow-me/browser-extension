@@ -3,6 +3,7 @@ import { useBalance } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
+import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -31,7 +32,7 @@ export function TabHeader({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
   const { featureFlags } = useFeatureFlagsStore();
-  const nftCount = 1;
+  const nftCount = getNftCount({ address });
 
   const displayBalanceComponent = useMemo(
     () =>
