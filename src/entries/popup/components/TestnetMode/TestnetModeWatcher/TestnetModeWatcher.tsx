@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -17,6 +18,7 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextLink } from '~/design-system/components/TextLink/TextLink';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { ChainBadge } from '../../ChainBadge/ChainBadge';
@@ -60,6 +62,16 @@ export const TestnetModeWatcher = ({
     setHint(INITIAL_HINT);
     setTestnetMode(!testnetMode);
   };
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (!hint.show) return;
+      if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
+        closeSheet();
+      }
+    },
+  });
 
   useEffect(() => {
     if (activeSession && !hint.show) {
