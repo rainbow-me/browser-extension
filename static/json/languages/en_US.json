@@ -894,10 +894,10 @@
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Connect to %{chainName}",
+    "connect_to": "Switching to %{chainName}?",
     "testnet_mode": "Testnet Mode",
-    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
-    "disable_and_connect": "Disable and connect",
+    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
+    "disable_and_connect": "Disable and Switch",
     "cancel": "Cancel"
   },
   "app_connection_switcher": {
