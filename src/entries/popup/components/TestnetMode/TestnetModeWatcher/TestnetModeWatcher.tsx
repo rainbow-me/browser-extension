@@ -128,6 +128,7 @@ export const TestnetModeWatcher = ({
                   variant={'flat'}
                   disabled={false}
                   tabIndex={0}
+                  autoFocus={true}
                   enterCta
                 >
                   {i18n.t(`testnet_mode_watcher.disable_and_connect`)}
