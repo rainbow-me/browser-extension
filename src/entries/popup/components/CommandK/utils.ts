@@ -441,7 +441,7 @@ const typeMapping: { [key: string]: string } = {
   HdKeychain: 'Imported',
 };
 
-export const generateCSV = (
+const generateCSV = (
   data: KeychainWallet[],
   walletNames: WalletNames,
 ): string => {
