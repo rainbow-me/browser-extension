@@ -93,11 +93,9 @@
         "text_bold": "ヒント："
       },
       "description": "表示するネットワークとトークンを選択します。チェックがない場合でも、Rainbowがサポートする任意のネットワークに接続できます",
-      "testnet_mode": {
-        "title": "テストネットモード",
-        "toggle_explainer": "テストネットモードに切り替えて、テストネットの残高と取引のみを表示します",
-        "shortcut_title": "キーボードショートカットを有効にする",
-        "shortcut_toggle_explainer": "テストネットモードのショートカット（T）を有効にし、ホーム画面の右上のメニューに切り替えを追加します"
+      "developer_tools": {
+        "title": "Enable Developer Tools",
+        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
         "title": "カスタムRPC"
@@ -371,9 +369,15 @@
         "view_nfts": "NFTを表示",
         "add_wallet": "ウォレットを追加",
         "lock": "Rainbowをロックする",
-        "testnet_mode": "テストネットモード",
         "connected_apps": "接続されたアプリ",
+        "developer_tools": "Toggle Developer Tools",
+        "developer_tools_disabled": "Enable Developer Tools",
+        "developer_tools_enabled": "Disable Developer Tools",
+        "testnet_mode": "Toggle Testnet Mode",
+        "testnet_mode_disabled": "Enable Testnet Mode",
+        "testnet_mode_enabled": "Disable Testnet Mode",
         "settings": "設定",
+        "network_settings": "Network Settings",
         "my_qr_code": "私のQRコード",
         "my_qr_code_watched": "QRコード",
         "create_wallet": "ウォレットを作成",
@@ -404,7 +408,10 @@
         "my_wallets": "切り替え",
         "my_tokens_watched": "マイ",
         "view_nfts": "ギャラリー、プロフィール",
+        "testnet_mode": "toggle, networks, testnets",
+        "developer_tools": "toggle, networks, developer, testnets",
         "settings": "設定",
+        "network_settings": "testnets, developer, networks",
         "my_qr_code_watched": "マイ",
         "create_wallet": "追加、新規",
         "import_wallet": "追加、シークレットリカバリ、シードフレーズ、プライベートキー",
@@ -417,6 +424,11 @@
     },
     "command_rows": {
       "no_value": "価値なし"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Press T to toggle Testnet Mode",
+      "title_disabled": "Developer Tools Disabled",
+      "title_enabled": "Developer Tools Enabled"
     },
     "hide_balances_toast": {
       "description_hidden": "あなたの残高は見えません",
@@ -876,16 +888,16 @@
       "guides_and_support": "ガイドとサポート",
       "share_feedback": "フィードバックを共有する",
       "lock_rainbow": "Rainbowをロックする",
-      "testnet_mode": "テストネットモード"
+      "testnet_mode": "テストネットモード",
+      "testnet_mode_off": "Off",
+      "testnet_mode_on": "オン"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "に接続します %{chainName}",
+    "connect_to": "Switching to %{chainName}?",
     "testnet_mode": "テストネットモード",
-    "testnet_mode_active": "現在アクティブです。無効にして、 %{chainName}に接続しますか？",
-    "testnet_mode_not_active": "現在アクティブではありません。有効にして、 %{chainName}に接続しますか？",
-    "disable_and_connect": "無効にして接続",
-    "enable_and_connect": "有効にして接続",
+    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
+    "disable_and_connect": "Disable and Switch",
     "cancel": "キャンセル"
   },
   "app_connection_switcher": {
@@ -1283,7 +1295,7 @@
   "alert": {
     "ok": "OK",
     "wallet_watching_mode": "このウォレットは現在「ウォッチモード」です",
-    "wallet_testing_mode": "このウォレットは現在 'テスト' モードです",
+    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "近日公開予定です！",
     "no_hw_ff": "ハードウェアウォレットはFirefoxではサポートされていません。ChromeまたはBraveのような別のブラウザを試してみてください。"
   },
