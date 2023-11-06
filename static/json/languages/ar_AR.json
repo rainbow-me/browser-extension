@@ -93,11 +93,9 @@
         "text_bold": "نصيحة:"
       },
       "description": "اختر الشبكات والرموز التي ترغب في عرضها. يمكنك الاتصال بأي شبكات تدعمها Rainbow ، حتى لو لم يتم التحقق منها",
-      "testnet_mode": {
-        "title": "وضع Testnet",
-        "toggle_explainer": "التبديل إلى وضع Testnet لعرض أرصدة Testnet والمعاملات فقط",
-        "shortcut_title": "قم بتمكين اختصار لوحة المفاتيح",
-        "shortcut_toggle_explainer": "يتيح وضع اختصار Testnet (T) وإضافة تبديل إلى قائمة الشاشة الرئيسية العلوية اليمنى"
+      "developer_tools": {
+        "title": "Enable Developer Tools",
+        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
         "title": "Custom RPC"
@@ -371,9 +369,15 @@
         "view_nfts": "عرض NFTs",
         "add_wallet": "أضف محفظة",
         "lock": "قفل الرينبو",
-        "testnet_mode": "وضع Testnet",
         "connected_apps": "التطبيقات المتصلة",
+        "developer_tools": "Toggle Developer Tools",
+        "developer_tools_disabled": "Enable Developer Tools",
+        "developer_tools_enabled": "Disable Developer Tools",
+        "testnet_mode": "Toggle Testnet Mode",
+        "testnet_mode_disabled": "Enable Testnet Mode",
+        "testnet_mode_enabled": "Disable Testnet Mode",
         "settings": "الإعدادات",
+        "network_settings": "Network Settings",
         "my_qr_code": "رمز الاستجابة السريعة الخاص بي",
         "my_qr_code_watched": "رمز الاستجابة السريعة",
         "create_wallet": "إنشاء محفظة",
@@ -404,7 +408,10 @@
         "my_wallets": "التبديل",
         "my_tokens_watched": "يا",
         "view_nfts": "صالة عرض, الملف الشخصي",
+        "testnet_mode": "toggle, networks, testnets",
+        "developer_tools": "toggle, networks, developer, testnets",
         "settings": "التفضيلات",
+        "network_settings": "testnets, developer, networks",
         "my_qr_code_watched": "يا",
         "create_wallet": "إضافة, جديد",
         "import_wallet": "إضافة, استعادة سرية, عبارة البذور, المفتاح الخاص",
@@ -417,6 +424,11 @@
     },
     "command_rows": {
       "no_value": "لا قيمة"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Press T to toggle Testnet Mode",
+      "title_disabled": "Developer Tools Disabled",
+      "title_enabled": "Developer Tools Enabled"
     },
     "hide_balances_toast": {
       "description_hidden": "رصيدك مخفي",
@@ -876,16 +888,16 @@
       "guides_and_support": "الدلائل والدعم",
       "share_feedback": "شارك الرأي",
       "lock_rainbow": "قفل راينبو",
-      "testnet_mode": "وضع Testnet"
+      "testnet_mode": "وضع Testnet",
+      "testnet_mode_off": "Off",
+      "testnet_mode_on": "تشغيل"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "الاتصال بـ %{chainName}",
+    "connect_to": "Switching to %{chainName}?",
     "testnet_mode": "وضع Testnet",
-    "testnet_mode_active": "منشط حالياً. هل ترغب في تعطيله والاتصال بـ %{chainName}؟",
-    "testnet_mode_not_active": "غير نشط حالياً. هل ترغب في تمكينه والاتصال بـ %{chainName}؟",
-    "disable_and_connect": "تعطيل والاتصال",
-    "enable_and_connect": "تمكين والاتصال",
+    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
+    "disable_and_connect": "Disable and Switch",
     "cancel": "إلغاء"
   },
   "app_connection_switcher": {
@@ -1283,7 +1295,7 @@
   "alert": {
     "ok": "حسنا",
     "wallet_watching_mode": "هذه المحفظة حاليا في وضع 'المشاهدة'",
-    "wallet_testing_mode": "هذه المحفظة حالياً في وضع 'الاختبار'",
+    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "قريبا!",
     "no_hw_ff": "المحافظ الأجهزة غير معتمدة على Firefox. جرب متصفحًا مختلفًا مثل Chrome أو Brave."
   },
