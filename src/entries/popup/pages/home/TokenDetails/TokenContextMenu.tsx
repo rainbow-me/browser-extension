@@ -51,8 +51,10 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
 
   const onSwap = () => {
     setSelectedToken(token);
-    if (allowSwap) navigateToSwaps();
-    else {
+    if (allowSwap) {
+      isNavigating = true;
+      navigateToSwaps();
+    } else {
       triggerAlert({ text: i18n.t('alert.coming_soon') });
       setSelectedToken(); // clear selected token
     }
