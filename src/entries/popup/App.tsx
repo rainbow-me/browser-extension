@@ -41,6 +41,12 @@ export function App() {
 
   useExpiryListener();
 
+  React.useEffect(() => {
+    if (prevChains?.length && prevChains?.length !== customChains.length) {
+      backgroundMessenger.send('rainbow_updateWagmiClient', null);
+    }
+  }, [customChains.length, prevChains?.length]);
+
   const wagmiClient = React.useMemo(
     () =>
       createWagmiClient({
