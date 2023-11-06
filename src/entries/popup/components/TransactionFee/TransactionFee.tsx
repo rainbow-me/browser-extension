@@ -157,8 +157,6 @@ function Fee({
     },
   });
 
-  console.log(gasFeeParamsForSelectedSpeed);
-
   return (
     <Box>
       <CustomGasSheet

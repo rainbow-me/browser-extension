@@ -7,7 +7,6 @@ import { createQueryKey } from '~/core/react-query';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isTestnetChainId } from '~/core/utils/chains';
-import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -58,7 +57,15 @@ function PriceChange({
   );
 }
 
-function TokenPrice({ token }: { token: ParsedUserAsset }) {
+function TokenPrice({
+  token,
+  hasPriceData,
+  fallbackPrice,
+}: {
+  token: ParsedUserAsset;
+  hasPriceData: boolean;
+  fallbackPrice?: number;
+}) {
   return (
     <Box display="flex" justifyContent="space-between" gap="10px">
       <CoinIcon asset={token} size={40} badge={false} />
@@ -69,9 +76,9 @@ function TokenPrice({ token }: { token: ParsedUserAsset }) {
         gap="10px"
       >
         <Text size="16pt" weight="heavy" cursor="text" userSelect="all">
-          {isCustomNetwork(token.chainId)
+          {!hasPriceData
             ? i18n.t('token_details.not_available')
-            : formatCurrency(token.native.price?.amount)}
+            : formatCurrency(token.native.price?.amount || fallbackPrice)}
         </Text>
         <Box style={{ maxWidth: '150px' }}>
           <TextOverflow color="accent" size="14pt" weight="heavy">
@@ -133,10 +140,7 @@ const percentDiff = (current = 1, last = 0) =>
   ((current - last) / current) * 100;
 export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
-  const hasPriceData = !(
-    isTestnetChainId({ chainId: token.chainId }) ||
-    isCustomNetwork(token.chainId)
-  );
+  const shouldHaveData = !isTestnetChainId({ chainId: token.chainId });
 
   const { data } = usePriceChart({
     mainnetAddress: token.mainnetAddress,
@@ -145,10 +149,12 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
     time: selectedTime,
   });
 
+  const lastPrice = data && data[data.length - 1]?.price;
+
   const todayPoint = {
     date: new Date(),
     changePercent: data
-      ? percentDiff(data[data.length - 1].price, data[1].price)
+      ? percentDiff(lastPrice, data[1].price)
       : token.price?.relative_change_24h,
   };
 
@@ -157,16 +163,22 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
       if (!point || !data) return todayPoint;
       return {
         date: new Date(point.timestamp * 1000),
-        changePercent: percentDiff(data[data.length - 1].price, point.price),
+        changePercent: percentDiff(lastPrice, point.price),
       };
     },
     todayPoint,
   );
 
+  const hasPriceData = shouldHaveData && !!data;
+
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <TokenPrice token={token} />
+        <TokenPrice
+          hasPriceData={hasPriceData}
+          token={token}
+          fallbackPrice={lastPrice}
+        />
         <PriceChange changePercentage={changePercent} date={date} />
       </Box>
       {hasPriceData && (
