@@ -113,7 +113,9 @@ export const userChainsStore = createStore<UserChainsState>(
         userChains: {
           ...userChains,
         },
-        userChainsOrder,
+        userChainsOrder: {
+          ...userChainsOrder,
+        },
       });
     },
   }),
