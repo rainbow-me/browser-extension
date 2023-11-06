@@ -93,11 +93,9 @@
         "text_bold": "Astuce :"
       },
       "description": "Choisissez quels réseaux et tokens afficher. Vous pouvez vous connecter à tous les réseaux pris en charge par Rainbow, même s'ils ne sont pas cochés",
-      "testnet_mode": {
-        "title": "Mode Testnet",
-        "toggle_explainer": "Basculer en mode Testnet pour afficher uniquement les soldes et transactions de testnet",
-        "shortcut_title": "Activer le raccourci clavier",
-        "shortcut_toggle_explainer": "Active le raccourci du Mode Testnet (T) et ajoute une bascule au menu supérieur droit de l'écran d'accueil"
+      "developer_tools": {
+        "title": "Enable Developer Tools",
+        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
         "title": "RPC personnalisé"
@@ -371,9 +369,15 @@
         "view_nfts": "Voir les NFT",
         "add_wallet": "Ajouter un portefeuille",
         "lock": "Verrouiller Rainbow",
-        "testnet_mode": "Mode Testnet",
         "connected_apps": "Applications connectées",
+        "developer_tools": "Toggle Developer Tools",
+        "developer_tools_disabled": "Enable Developer Tools",
+        "developer_tools_enabled": "Disable Developer Tools",
+        "testnet_mode": "Toggle Testnet Mode",
+        "testnet_mode_disabled": "Enable Testnet Mode",
+        "testnet_mode_enabled": "Disable Testnet Mode",
         "settings": "Paramètres",
+        "network_settings": "Network Settings",
         "my_qr_code": "Mon code QR",
         "my_qr_code_watched": "Code QR",
         "create_wallet": "Créer un portefeuille",
@@ -404,7 +408,10 @@
         "my_wallets": "changer",
         "my_tokens_watched": "mes",
         "view_nfts": "galerie, profil",
+        "testnet_mode": "toggle, networks, testnets",
+        "developer_tools": "toggle, networks, developer, testnets",
         "settings": "préférences",
+        "network_settings": "testnets, developer, networks",
         "my_qr_code_watched": "mes",
         "create_wallet": "ajouter, nouveau",
         "import_wallet": "ajouter, récupération secrète, phrase de récupération, clé privée",
@@ -417,6 +424,11 @@
     },
     "command_rows": {
       "no_value": "Aucune valeur"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Press T to toggle Testnet Mode",
+      "title_disabled": "Developer Tools Disabled",
+      "title_enabled": "Developer Tools Enabled"
     },
     "hide_balances_toast": {
       "description_hidden": "Vos soldes sont masqués",
@@ -876,16 +888,16 @@
       "guides_and_support": "Guides et Support",
       "share_feedback": "Partager un retour",
       "lock_rainbow": "Verrouiller Rainbow",
-      "testnet_mode": "Mode Testnet"
+      "testnet_mode": "Mode Testnet",
+      "testnet_mode_off": "Off",
+      "testnet_mode_on": "Activé"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Connectez à %{chainName}",
+    "connect_to": "Switching to %{chainName}?",
     "testnet_mode": "Mode Testnet",
-    "testnet_mode_active": "est actuellement actif. Voulez-vous le désactiver et vous connecter à %{chainName}?",
-    "testnet_mode_not_active": "n'est pas actuellement actif. Voulez-vous l'activer et vous connecter à %{chainName}?",
-    "disable_and_connect": "Désactiver et connecter",
-    "enable_and_connect": "Activer et connecter",
+    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
+    "disable_and_connect": "Disable and Switch",
     "cancel": "Annuler"
   },
   "app_connection_switcher": {
@@ -1283,7 +1295,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "Ce portefeuille est actuellement en mode 'Observation'",
-    "wallet_testing_mode": "Ce portefeuille est actuellement en mode 'Test'",
+    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "Bientôt disponible !",
     "no_hw_ff": "Les portefeuilles matériels ne sont pas pris en charge sur Firefox. Essayez un autre navigateur comme Chrome ou Brave"
   },
