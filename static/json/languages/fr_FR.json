@@ -94,8 +94,8 @@
       },
       "description": "Choisissez quels réseaux et tokens afficher. Vous pouvez vous connecter à tous les réseaux pris en charge par Rainbow, même s'ils ne sont pas cochés",
       "developer_tools": {
-        "title": "Enable Developer Tools",
-        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "Activer les outils de développement",
+        "toggle_explainer": "Active le raccourci du mode Testnet (T) et ajoute un interrupteur au menu du haut à droite de l'écran d'accueil."
       },
       "custom_rpc": {
         "title": "RPC personnalisé"
@@ -370,14 +370,14 @@
         "add_wallet": "Ajouter un portefeuille",
         "lock": "Verrouiller Rainbow",
         "connected_apps": "Applications connectées",
-        "developer_tools": "Toggle Developer Tools",
-        "developer_tools_disabled": "Enable Developer Tools",
-        "developer_tools_enabled": "Disable Developer Tools",
-        "testnet_mode": "Toggle Testnet Mode",
-        "testnet_mode_disabled": "Enable Testnet Mode",
-        "testnet_mode_enabled": "Disable Testnet Mode",
+        "developer_tools": "Basculer les outils de développement",
+        "developer_tools_disabled": "Activer les outils de développement",
+        "developer_tools_enabled": "Désactiver les outils de développement",
+        "testnet_mode": "Basculer le mode Testnet",
+        "testnet_mode_disabled": "Activer le mode Testnet",
+        "testnet_mode_enabled": "Désactiver le mode Testnet",
         "settings": "Paramètres",
-        "network_settings": "Network Settings",
+        "network_settings": "Paramètres réseau",
         "my_qr_code": "Mon code QR",
         "my_qr_code_watched": "Code QR",
         "create_wallet": "Créer un portefeuille",
@@ -408,10 +408,10 @@
         "my_wallets": "changer",
         "my_tokens_watched": "mes",
         "view_nfts": "galerie, profil",
-        "testnet_mode": "toggle, networks, testnets",
-        "developer_tools": "toggle, networks, developer, testnets",
+        "testnet_mode": "basculer, réseaux, testnets",
+        "developer_tools": "basculer, réseaux, développeur, testnets",
         "settings": "préférences",
-        "network_settings": "testnets, developer, networks",
+        "network_settings": "testnets, développeur, réseaux",
         "my_qr_code_watched": "mes",
         "create_wallet": "ajouter, nouveau",
         "import_wallet": "ajouter, récupération secrète, phrase de récupération, clé privée",
@@ -426,9 +426,9 @@
       "no_value": "Aucune valeur"
     },
     "developer_tools_toast": {
-      "description_enabled": "Press T to toggle Testnet Mode",
-      "title_disabled": "Developer Tools Disabled",
-      "title_enabled": "Developer Tools Enabled"
+      "description_enabled": "Appuyez sur T pour basculer le mode Testnet",
+      "title_disabled": "Outils de développement désactivés",
+      "title_enabled": "Outils de Développement Activés"
     },
     "hide_balances_toast": {
       "description_hidden": "Vos soldes sont masqués",
@@ -889,15 +889,15 @@
       "share_feedback": "Partager un retour",
       "lock_rainbow": "Verrouiller Rainbow",
       "testnet_mode": "Mode Testnet",
-      "testnet_mode_off": "Off",
+      "testnet_mode_off": "Éteint",
       "testnet_mode_on": "Activé"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Switching to %{chainName}?",
+    "connect_to": "Passer à %{chainName}?",
     "testnet_mode": "Mode Testnet",
-    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
-    "disable_and_connect": "Disable and Switch",
+    "testnet_mode_active": "est actuellement actif. Voulez-vous le désactiver et interagir avec %{chainName} à la place?",
+    "disable_and_connect": "Désactiver et Changer",
     "cancel": "Annuler"
   },
   "app_connection_switcher": {
@@ -1295,7 +1295,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "Ce portefeuille est actuellement en mode 'Observation'",
-    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
+    "wallet_testing_mode": "Les Testnets ne sont pas pris en charge par Swap. Désactivez le mode Testnet pour continuer.",
     "coming_soon": "Bientôt disponible !",
     "no_hw_ff": "Les portefeuilles matériels ne sont pas pris en charge sur Firefox. Essayez un autre navigateur comme Chrome ou Brave"
   },
