@@ -1,5 +1,8 @@
+/* eslint-disable no-nested-ternary */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { formatEther } from '@ethersproject/units';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import { BigNumberish } from 'ethers';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { analytics } from '~/analytics';
@@ -13,6 +16,10 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
+import {
+  getCustomNetworks,
+  isCustomNetwork,
+} from '~/core/utils/customNetworks';
 import {
   Box,
   Column,
@@ -120,6 +127,17 @@ function Fee({
     [analyticsEvents?.transactionSpeedClicked],
   );
 
+  const convertToNativeGasFee = useCallback(
+    (weiValue: BigNumberish | undefined, chainId: ChainId) => {
+      if (!weiValue) return '';
+      const customNetwork = getCustomNetworks().find(
+        (network) => network.chainId === chainId,
+      );
+      return `${formatEther(weiValue)} ${customNetwork?.symbol}`;
+    },
+    [],
+  );
+
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
@@ -138,6 +156,8 @@ function Fee({
       }
     },
   });
+
+  console.log(gasFeeParamsForSelectedSpeed);
 
   return (
     <Box>
@@ -168,6 +188,12 @@ function Fee({
                   <TextOverflow weight="semibold" color="label" size="14pt">
                     {isLoading
                       ? '~'
+                      : isCustomNetwork(chainId)
+                      ? convertToNativeGasFee(
+                          gasFeeParamsForSelectedSpeed?.gasFee
+                            .amount as BigNumberish,
+                          chainId,
+                        )
                       : `${gasFeeParamsForSelectedSpeed?.gasFee.display}`}
                   </TextOverflow>
                 </Column>

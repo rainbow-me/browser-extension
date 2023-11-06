@@ -69,7 +69,9 @@ function TokenPrice({ token }: { token: ParsedUserAsset }) {
         gap="10px"
       >
         <Text size="16pt" weight="heavy" cursor="text" userSelect="all">
-          {formatCurrency(token.native.price?.amount)}
+          {isCustomNetwork(token.chainId)
+            ? i18n.t('token_details.not_available')
+            : formatCurrency(token.native.price?.amount)}
         </Text>
         <Box style={{ maxWidth: '150px' }}>
           <TextOverflow color="accent" size="14pt" weight="heavy">

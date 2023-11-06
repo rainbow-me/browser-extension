@@ -1,9 +1,10 @@
 import { AnimationControls, motion } from 'framer-motion';
-import React, { useImperativeHandle } from 'react';
+import React, { useImperativeHandle, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
 import { ParsedUserAsset } from '~/core/types/assets';
+import { isCustomNetwork } from '~/core/utils/customNetworks';
 import {
   Box,
   Button,
@@ -66,6 +67,11 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
       focus: () => independentFieldRef.current?.focus(),
       isFocused: () => independentFieldRef.current === document.activeElement,
     }));
+
+    const isCustomNetworkAsset = useMemo(
+      () => isCustomNetwork(asset.chainId),
+      [asset],
+    );
 
     return (
       <Box paddingBottom="20px" paddingHorizontal="20px">
@@ -130,32 +136,40 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
                       weight="bold"
                       color={`${asset ? 'label' : 'labelTertiary'}`}
                     >
-                      {dependentAmount.display}
+                      {isCustomNetworkAsset
+                        ? i18n.t('token_details.not_available')
+                        : dependentAmount.display}
                     </TextOverflow>
                   </Column>
                   <Column width="content">
-                    <Lens
-                      testId="value-input-switch"
-                      onClick={switchIndependentField}
-                      alignItems="flex-end"
-                    >
-                      <Inline alignVertical="center" space="4px">
-                        <Symbol
-                          color="accent"
-                          size={14}
-                          weight="bold"
-                          symbol="arrow.up.arrow.down"
-                        />
-                        <TextOverflow color="accent" size="12pt" weight="bold">
-                          {i18n.t('send.switch_to', {
-                            currency:
-                              independentField === 'asset'
-                                ? currentCurrency
-                                : asset?.symbol,
-                          })}
-                        </TextOverflow>
-                      </Inline>
-                    </Lens>
+                    {!isCustomNetworkAsset && (
+                      <Lens
+                        testId="value-input-switch"
+                        onClick={switchIndependentField}
+                        alignItems="flex-end"
+                      >
+                        <Inline alignVertical="center" space="4px">
+                          <Symbol
+                            color="accent"
+                            size={14}
+                            weight="bold"
+                            symbol="arrow.up.arrow.down"
+                          />
+                          <TextOverflow
+                            color="accent"
+                            size="12pt"
+                            weight="bold"
+                          >
+                            {i18n.t('send.switch_to', {
+                              currency:
+                                independentField === 'asset'
+                                  ? currentCurrency
+                                  : asset?.symbol,
+                            })}
+                          </TextOverflow>
+                        </Inline>
+                      </Lens>
+                    )}
                   </Column>
                 </Columns>
               </Row>
