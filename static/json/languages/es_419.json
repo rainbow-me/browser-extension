@@ -93,11 +93,9 @@
         "text_bold": "Consejo:"
       },
       "description": "Elige qué redes y tokens mostrar. Puedes conectarte a cualquier red compatible con Rainbow, incluso si no están marcados.",
-      "testnet_mode": {
-        "title": "Modo Testnet",
-        "toggle_explainer": "Cambia al modo Testnet para mostrar solo saldos y transacciones de testnet.",
-        "shortcut_title": "Habilitar atajo de teclado",
-        "shortcut_toggle_explainer": "Habilita el atajo de Modo Testnet (T) y añade un conmutador en el menú superior derecho de la pantalla inicial."
+      "developer_tools": {
+        "title": "Enable Developer Tools",
+        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
         "title": "RPC Personalizado"
@@ -371,9 +369,15 @@
         "view_nfts": "Ver NFTs",
         "add_wallet": "Agregar un monedero",
         "lock": "Bloquear Rainbow",
-        "testnet_mode": "Modo Testnet",
         "connected_apps": "Aplicaciones Conectadas",
+        "developer_tools": "Toggle Developer Tools",
+        "developer_tools_disabled": "Enable Developer Tools",
+        "developer_tools_enabled": "Disable Developer Tools",
+        "testnet_mode": "Toggle Testnet Mode",
+        "testnet_mode_disabled": "Enable Testnet Mode",
+        "testnet_mode_enabled": "Disable Testnet Mode",
         "settings": "Configuración",
+        "network_settings": "Network Settings",
         "my_qr_code": "Mi Código QR",
         "my_qr_code_watched": "Código QR",
         "create_wallet": "Crear una Billetera",
@@ -404,7 +408,10 @@
         "my_wallets": "cambiar",
         "my_tokens_watched": "mis",
         "view_nfts": "galería, perfil",
+        "testnet_mode": "toggle, networks, testnets",
+        "developer_tools": "toggle, networks, developer, testnets",
         "settings": "preferencias",
+        "network_settings": "testnets, developer, networks",
         "my_qr_code_watched": "mis",
         "create_wallet": "agregar, nuevo",
         "import_wallet": "agregar, recuperación secreta, frase de recuperación, clave privada",
@@ -417,6 +424,11 @@
     },
     "command_rows": {
       "no_value": "Sin Valor"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Press T to toggle Testnet Mode",
+      "title_disabled": "Developer Tools Disabled",
+      "title_enabled": "Developer Tools Enabled"
     },
     "hide_balances_toast": {
       "description_hidden": "Tus saldos están ocultos",
@@ -876,16 +888,16 @@
       "guides_and_support": "Guías y soporte",
       "share_feedback": "Compartir comentarios",
       "lock_rainbow": "Bloquear Rainbow",
-      "testnet_mode": "Modo Testnet"
+      "testnet_mode": "Modo Testnet",
+      "testnet_mode_off": "Off",
+      "testnet_mode_on": "Encendido"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Conéctate a %{chainName}",
+    "connect_to": "Switching to %{chainName}?",
     "testnet_mode": "Modo Testnet",
-    "testnet_mode_active": "está activo actualmente. ¿Deseas desactivarlo y conectar a %{chainName}?",
-    "testnet_mode_not_active": "no está activo actualmente. ¿Deseas activarlo y conectar a %{chainName}?",
-    "disable_and_connect": "Desactivar y conectar",
-    "enable_and_connect": "Activar y conectar",
+    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
+    "disable_and_connect": "Disable and Switch",
     "cancel": "Cancelar"
   },
   "app_connection_switcher": {
@@ -1283,7 +1295,7 @@
   "alert": {
     "ok": "Aceptar",
     "wallet_watching_mode": "Esta billetera está actualmente en modo 'Observación'",
-    "wallet_testing_mode": "Esta cartera está actualmente en modo 'Pruebas'",
+    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "¡Próximamente!",
     "no_hw_ff": "Las carteras de hardware no son compatibles con Firefox. Intenta con un navegador diferente como Chrome o Brave"
   },
