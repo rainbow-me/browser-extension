@@ -223,7 +223,9 @@
       "full_watching_wallets": "Acesso completo às Carteiras Observadas",
       "hw_wallets_enabled": "Habilitar Suporte para Carteiras de Hardware",
       "command_k_internal_shortcuts_enabled": "Habilitar Atalhos Internos ⌘K",
-      "custom_rpc": "RPC personalizado"
+      "custom_rpc": "RPC personalizado",
+      "new_tab_bar_enabled": "Nova Barra de Abas",
+      "nfts_enabled": "NFTs Enabled"
     }
   },
   "transactions": {
@@ -1126,7 +1128,13 @@
   "nfts": {
     "coming_soon_header": "Em breve",
     "coming_soon_description": "NFTs estarão disponíveis em breve. Fique atento!",
-    "view_on_web": "Ver na Web"
+    "view_on_web": "Ver na Web",
+    "display_mode_gallery": "Gallery",
+    "display_mode_collections": "Collections",
+    "sort_option_recent": "Recent",
+    "sort_option_abc": "Abc",
+    "sort_option_recent_long": "Recent",
+    "sort_option_abc_long": "Alphabetical"
   },
   "points": {
     "coming_soon_header": "Em breve",
