@@ -10,9 +10,10 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
+import { SUPPORTED_CHAINS, userAddedCustomRpcEndpoints } from '../references';
 import { LocalStorage } from '../storage';
 import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
-import { SUPPORTED_CHAINS } from '../utils/chains';
+import { findCustomNetworkForChainId } from '../utils/customNetworks';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -23,6 +24,12 @@ const noopStorage = {
 };
 
 const getOriginalRpcEndpoint = (chain: Chain) => {
+  // overrides have preference
+  const userAddedNetwork = findCustomNetworkForChainId(chain.id);
+  if (userAddedNetwork) {
+    return { http: userAddedNetwork.rpc };
+  }
+
   switch (chain.id) {
     case ChainId.hardhat:
       return { http: chain.rpcUrls.default.http[0] };
@@ -63,22 +70,43 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
   }
 };
 
-const { chains, provider, webSocketProvider } = configureChains(
+const allChains = (
   IS_TESTING
     ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
-    : SUPPORTED_CHAINS,
-  [
-    jsonRpcProvider({
-      rpc: (chain) => {
-        const originalRpcEndpoint = getOriginalRpcEndpoint(chain);
-        if (originalRpcEndpoint) {
-          return { http: proxyRpcEndpoint(originalRpcEndpoint.http, chain.id) };
-        }
-        return null;
-      },
+    : SUPPORTED_CHAINS
+).concat(
+  userAddedCustomRpcEndpoints
+    .filter((network) => network.active)
+    .map((network) => {
+      return {
+        id: network.chainId,
+        name: network.name,
+        network: network.name,
+        nativeCurrency: {
+          decimals: 18,
+          name: network.name,
+          symbol: network.symbol,
+        },
+        rpcUrls: {
+          public: { http: [network.rpc] },
+          default: { http: [network.rpc] },
+        },
+        testnet: false,
+      };
     }),
-  ],
 );
+
+const { chains, provider, webSocketProvider } = configureChains(allChains, [
+  jsonRpcProvider({
+    rpc: (chain) => {
+      const originalRpcEndpoint = getOriginalRpcEndpoint(chain);
+      if (originalRpcEndpoint) {
+        return { http: proxyRpcEndpoint(originalRpcEndpoint.http, chain.id) };
+      }
+      return null;
+    },
+  }),
+]);
 
 const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.wagmi',

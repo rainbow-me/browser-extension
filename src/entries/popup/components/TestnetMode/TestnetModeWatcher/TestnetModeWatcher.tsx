@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -17,6 +18,7 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextLink } from '~/design-system/components/TextLink/TextLink';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { ChainBadge } from '../../ChainBadge/ChainBadge';
@@ -24,13 +26,11 @@ import { Navbar } from '../../Navbar/Navbar';
 
 type Hint = {
   show: boolean;
-  type: 'tesnetModeInMainnet' | 'notTestnetModeInTestnet';
   chainId: ChainId;
 };
 
 const INITIAL_HINT: Hint = {
   show: false,
-  type: 'tesnetModeInMainnet',
   chainId: ChainId.mainnet,
 };
 
@@ -63,6 +63,16 @@ export const TestnetModeWatcher = ({
     setTestnetMode(!testnetMode);
   };
 
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (!hint.show) return;
+      if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
+        closeSheet();
+      }
+    },
+  });
+
   useEffect(() => {
     if (activeSession && !hint.show) {
       const activeSessionChainId = activeSession?.chainId;
@@ -72,13 +82,6 @@ export const TestnetModeWatcher = ({
       if (testnetMode && !activeChainIsTestnet) {
         setHint({
           show: true,
-          type: 'tesnetModeInMainnet',
-          chainId: activeSessionChainId,
-        });
-      } else if (!testnetMode && activeChainIsTestnet) {
-        setHint({
-          show: true,
-          type: 'notTestnetModeInTestnet',
           chainId: activeSessionChainId,
         });
       }
@@ -112,16 +115,9 @@ export const TestnetModeWatcher = ({
                 <TextLink scale={false} color="green">
                   {i18n.t('testnet_mode_watcher.testnet_mode')}
                 </TextLink>{' '}
-                {i18n.t(
-                  `testnet_mode_watcher.${
-                    hint.type === 'tesnetModeInMainnet'
-                      ? 'testnet_mode_active'
-                      : 'testnet_mode_not_active'
-                  }`,
-                  {
-                    chainName: ChainNameDisplay[hint.chainId],
-                  },
-                )}
+                {i18n.t(`testnet_mode_watcher.testnet_mode_active`, {
+                  chainName: ChainNameDisplay[hint.chainId],
+                })}
               </Text>
             </Stack>
             <Box style={{ width: '106px' }}>
@@ -144,15 +140,10 @@ export const TestnetModeWatcher = ({
                   variant={'flat'}
                   disabled={false}
                   tabIndex={0}
+                  autoFocus={true}
                   enterCta
                 >
-                  {i18n.t(
-                    `testnet_mode_watcher.${
-                      hint.type === 'tesnetModeInMainnet'
-                        ? 'disable_and_connect'
-                        : 'enable_and_connect'
-                    }`,
-                  )}
+                  {i18n.t(`testnet_mode_watcher.disable_and_connect`)}
                 </Button>
                 <Button
                   testId="nudge-sheet-connect-different-wallet"

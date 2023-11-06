@@ -1,7 +1,7 @@
 import create from 'zustand';
 
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/utils/chains';
 
 import { createStore } from '../internal/createStore';
 

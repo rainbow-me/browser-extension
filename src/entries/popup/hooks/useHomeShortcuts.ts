@@ -6,6 +6,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
@@ -49,8 +50,8 @@ export function useHomeShortcuts() {
   const { disconnectSession } = useAppSession({ host: dappMetadata?.appHost });
   const { featureFlags } = useFeatureFlagsStore();
   const { isWatchingWallet } = useWallets();
-  const { testnetMode, testnetModeShortcutEnabled, setTestnetMode } =
-    useTestnetModeStore();
+  const { testnetMode, setTestnetMode } = useTestnetModeStore();
+  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
 
   const allowSend = useMemo(
     () => !isWatchingWallet || featureFlags.full_watching_wallets,
@@ -89,10 +90,10 @@ export function useHomeShortcuts() {
   );
 
   const handleTestnetMode = useCallback(() => {
-    if (testnetModeShortcutEnabled) {
+    if (developerToolsEnabled || testnetMode) {
       setTestnetMode(!testnetMode);
     }
-  }, [setTestnetMode, testnetMode, testnetModeShortcutEnabled]);
+  }, [setTestnetMode, testnetMode, developerToolsEnabled]);
 
   const navigate = useRainbowNavigate();
   const handleHomeShortcuts = useCallback(

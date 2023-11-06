@@ -6,9 +6,11 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSavedEnsNames } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { useWalletNamesStore } from '~/core/state/walletNames';
@@ -153,14 +155,22 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 15,
     type: SearchItemType.Shortcut,
   },
-  testnet_mode: {
+  developerTools: {
+    name: getCommandName('developer_tools'),
+    page: PAGES.HOME,
+    searchTags: getSearchTags('developer_tools'),
+    symbol: 'hammer.fill',
+    symbolSize: 15.75,
+    type: SearchItemType.Shortcut,
+  },
+  testnetMode: {
     name: getCommandName('testnet_mode'),
     page: PAGES.HOME,
+    searchTags: getSearchTags('testnet_mode'),
     shortcut: shortcuts.home.TESTNET_MODE,
-    symbol: 'sparkle',
-    textIcon: '🕹',
-    symbolSize: 15,
-    to: ROUTES.SETTINGS__NETWORKS,
+    shouldRemainOnActiveRoute: true,
+    symbol: 'arcade.stick',
+    symbolSize: 15.75,
     type: SearchItemType.Shortcut,
   },
   connectedApps: {
@@ -182,6 +192,15 @@ export const staticCommandInfo: CommandInfo = {
     symbol: 'gearshape.fill',
     symbolSize: 15,
     to: ROUTES.SETTINGS,
+    type: SearchItemType.Shortcut,
+  },
+  networkSettings: {
+    actionLabel: actionLabels.open,
+    name: getCommandName('network_settings'),
+    page: PAGES.HOME,
+    searchTags: getSearchTags('network_settings'),
+    symbol: 'network',
+    symbolSize: 14.75,
     type: SearchItemType.Shortcut,
   },
   myQRCode: {
@@ -487,6 +506,9 @@ export const useCommands = (
   const { setSelectedToken } = useSelectedTokenStore();
   const { walletNames } = useWalletNamesStore();
 
+  const { setTestnetMode, testnetMode } = useTestnetModeStore();
+  const { developerToolsEnabled, setDeveloperToolsEnabled } =
+    useDeveloperToolsEnabledStore();
   const { hideAssetBalances, setHideAssetBalances } =
     useHideAssetBalancesStore();
   const { hideSmallBalances, setHideSmallBalances } =
@@ -499,6 +521,22 @@ export const useCommands = (
       description: truncateAddress(address),
     });
   }, []);
+
+  const handleToggleDeveloperTools = React.useCallback(() => {
+    const status = developerToolsEnabled ? 'disabled' : 'enabled';
+    triggerToast({
+      title: i18n.t(`command_k.developer_tools_toast.title_${status}`),
+      description: developerToolsEnabled
+        ? undefined
+        : i18n.t('command_k.developer_tools_toast.description_enabled'),
+    });
+    setDeveloperToolsEnabled(!developerToolsEnabled);
+  }, [developerToolsEnabled, setDeveloperToolsEnabled]);
+
+  const handleToggleTestnetMode = React.useCallback(() => {
+    const current = testnetMode;
+    setTestnetMode(!current);
+  }, [setTestnetMode, testnetMode]);
 
   const handleToggleHiddenBalances = React.useCallback(() => {
     const status = hideAssetBalances ? 'revealed' : 'hidden';
@@ -603,6 +641,26 @@ export const useCommands = (
       },
       lock: {
         action: () => wallet.lock(),
+      },
+      developerTools: {
+        action: handleToggleDeveloperTools,
+        name: developerToolsEnabled
+          ? getCommandName('developer_tools_enabled')
+          : getCommandName('developer_tools_disabled'),
+        shouldRemainOnActiveRoute: developerToolsEnabled,
+      },
+      testnetMode: {
+        action: handleToggleTestnetMode,
+        name: testnetMode
+          ? getCommandName('testnet_mode_enabled')
+          : getCommandName('testnet_mode_disabled'),
+        hidden: testnetMode ? false : !developerToolsEnabled,
+      },
+      networkSettings: {
+        action: () =>
+          navigate(ROUTES.SETTINGS__NETWORKS, {
+            state: { direction: 'upRight', navbarIcon: 'ex' },
+          }),
       },
       myQRCode: {
         name: isWatchingWallet
@@ -782,11 +840,14 @@ export const useCommands = (
     [
       address,
       currentTheme,
+      developerToolsEnabled,
       ensName,
       handleCopy,
       handleSelectAddress,
       handleToggleHiddenBalances,
       handleToggleHiddenSmallBalances,
+      handleToggleDeveloperTools,
+      handleToggleTestnetMode,
       handleWatchWallet,
       hideAssetBalances,
       hideSmallBalances,
@@ -798,8 +859,9 @@ export const useCommands = (
       openProfile,
       previousPageState.selectedCommand,
       selectTokenAndNavigate,
-      viewWalletOnEtherscan,
+      testnetMode,
       viewTokenOnExplorer,
+      viewWalletOnEtherscan,
       walletNames,
     ],
   );

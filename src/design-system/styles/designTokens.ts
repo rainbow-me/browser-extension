@@ -1010,6 +1010,10 @@ export const symbolNames = selectSymbolNames(
   'network.badge.shield.half.filled',
   'safari.fill',
   't.square.fill',
+  'arcade.stick',
+  'hammer.fill',
+  'checklist.unchecked',
+  'list.bullet',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
