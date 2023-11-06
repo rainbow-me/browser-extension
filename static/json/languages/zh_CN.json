@@ -94,8 +94,8 @@
       },
       "description": "选择要显示的网络和代币。即使没有选中，您也可以连接到Rainbow支持的任何网络。",
       "developer_tools": {
-        "title": "Enable Developer Tools",
-        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "启用开发者工具",
+        "toggle_explainer": "启用测试网络模式快捷键(T)，并在主屏幕右上角菜单添加一个切换按钮"
       },
       "custom_rpc": {
         "title": "自定义RPC"
@@ -370,14 +370,14 @@
         "add_wallet": "添加钱包",
         "lock": "锁定彩虹",
         "connected_apps": "连接的应用",
-        "developer_tools": "Toggle Developer Tools",
-        "developer_tools_disabled": "Enable Developer Tools",
-        "developer_tools_enabled": "Disable Developer Tools",
-        "testnet_mode": "Toggle Testnet Mode",
-        "testnet_mode_disabled": "Enable Testnet Mode",
-        "testnet_mode_enabled": "Disable Testnet Mode",
+        "developer_tools": "切换开发者工具",
+        "developer_tools_disabled": "启用开发者工具",
+        "developer_tools_enabled": "禁用开发者工具",
+        "testnet_mode": "切换测试网模式",
+        "testnet_mode_disabled": "启用测试网络模式",
+        "testnet_mode_enabled": "禁用测试网络模式",
         "settings": "设置",
-        "network_settings": "Network Settings",
+        "network_settings": "网络设置",
         "my_qr_code": "我的二维码",
         "my_qr_code_watched": "二维码",
         "create_wallet": "创建钱包",
@@ -408,10 +408,10 @@
         "my_wallets": "切换",
         "my_tokens_watched": "我的",
         "view_nfts": "画廊、个人资料",
-        "testnet_mode": "toggle, networks, testnets",
-        "developer_tools": "toggle, networks, developer, testnets",
+        "testnet_mode": "切换，网络，测试网",
+        "developer_tools": "切换，网络，开发者，测试网",
         "settings": "偏好设置",
-        "network_settings": "testnets, developer, networks",
+        "network_settings": "测试网，开发者，网络",
         "my_qr_code_watched": "我的",
         "create_wallet": "添加、新建",
         "import_wallet": "添加、私钥安全恢复、助记词",
@@ -426,9 +426,9 @@
       "no_value": "无数值"
     },
     "developer_tools_toast": {
-      "description_enabled": "Press T to toggle Testnet Mode",
-      "title_disabled": "Developer Tools Disabled",
-      "title_enabled": "Developer Tools Enabled"
+      "description_enabled": "按 T 切换测试网模式",
+      "title_disabled": "开发者工具已禁用",
+      "title_enabled": "开启开发者工具"
     },
     "hide_balances_toast": {
       "description_hidden": "您的余额已隐藏",
@@ -889,15 +889,15 @@
       "share_feedback": "分享反馈",
       "lock_rainbow": "锁定彩虹",
       "testnet_mode": "测试网络模式",
-      "testnet_mode_off": "Off",
+      "testnet_mode_off": "关",
       "testnet_mode_on": "开启"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Switching to %{chainName}?",
+    "connect_to": "切换到 %{chainName}?",
     "testnet_mode": "测试网络模式",
-    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
-    "disable_and_connect": "Disable and Switch",
+    "testnet_mode_active": "现在正在运行。您想禁用它并与 %{chainName} 进行交互吗？",
+    "disable_and_connect": "禁用并切换",
     "cancel": "取消"
   },
   "app_connection_switcher": {
@@ -1295,7 +1295,7 @@
   "alert": {
     "ok": "确定",
     "wallet_watching_mode": "此钱包当前处于'查看'模式",
-    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
+    "wallet_testing_mode": "Swap不支持测试网。要继续，请禁用测试网模式。",
     "coming_soon": "即将推出！",
     "no_hw_ff": "火狐浏览器不支持硬件钱包。试试其他浏览器，例如Chrome或Brave。"
   },
