@@ -94,8 +94,8 @@
       },
       "description": "اختر الشبكات والرموز التي ترغب في عرضها. يمكنك الاتصال بأي شبكات تدعمها Rainbow ، حتى لو لم يتم التحقق منها",
       "developer_tools": {
-        "title": "Enable Developer Tools",
-        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "تفعيل أدوات المطور",
+        "toggle_explainer": "تفعيل اختصار وضع الاختبار (T) وإضافة مفتاح لقائمة الشاشة الرئيسية في أعلى اليمين."
       },
       "custom_rpc": {
         "title": "Custom RPC"
@@ -370,14 +370,14 @@
         "add_wallet": "أضف محفظة",
         "lock": "قفل الرينبو",
         "connected_apps": "التطبيقات المتصلة",
-        "developer_tools": "Toggle Developer Tools",
-        "developer_tools_disabled": "Enable Developer Tools",
-        "developer_tools_enabled": "Disable Developer Tools",
-        "testnet_mode": "Toggle Testnet Mode",
-        "testnet_mode_disabled": "Enable Testnet Mode",
-        "testnet_mode_enabled": "Disable Testnet Mode",
+        "developer_tools": "تبديل أدوات المطور",
+        "developer_tools_disabled": "تفعيل أدوات المطور",
+        "developer_tools_enabled": "تعطيل أدوات المطور",
+        "testnet_mode": "تبديل وضع الاختبار",
+        "testnet_mode_disabled": "تفعيل وضع الاختبار",
+        "testnet_mode_enabled": "تعطيل وضع الاختبار",
         "settings": "الإعدادات",
-        "network_settings": "Network Settings",
+        "network_settings": "اعدادات الشبكة",
         "my_qr_code": "رمز الاستجابة السريعة الخاص بي",
         "my_qr_code_watched": "رمز الاستجابة السريعة",
         "create_wallet": "إنشاء محفظة",
@@ -408,10 +408,10 @@
         "my_wallets": "التبديل",
         "my_tokens_watched": "يا",
         "view_nfts": "صالة عرض, الملف الشخصي",
-        "testnet_mode": "toggle, networks, testnets",
-        "developer_tools": "toggle, networks, developer, testnets",
+        "testnet_mode": "تبديل، شبكات، شبكات الاختبار",
+        "developer_tools": "تبديل، شبكات، مطور، شبكات الاختبار",
         "settings": "التفضيلات",
-        "network_settings": "testnets, developer, networks",
+        "network_settings": "شبكات الاختبار، مطور، شبكات",
         "my_qr_code_watched": "يا",
         "create_wallet": "إضافة, جديد",
         "import_wallet": "إضافة, استعادة سرية, عبارة البذور, المفتاح الخاص",
@@ -426,9 +426,9 @@
       "no_value": "لا قيمة"
     },
     "developer_tools_toast": {
-      "description_enabled": "Press T to toggle Testnet Mode",
-      "title_disabled": "Developer Tools Disabled",
-      "title_enabled": "Developer Tools Enabled"
+      "description_enabled": "اضغط T لتبديل وضع الاختبار",
+      "title_disabled": "تم تعطيل أدوات المطور",
+      "title_enabled": "تم تفعيل أدوات المطور"
     },
     "hide_balances_toast": {
       "description_hidden": "رصيدك مخفي",
@@ -889,15 +889,15 @@
       "share_feedback": "شارك الرأي",
       "lock_rainbow": "قفل راينبو",
       "testnet_mode": "وضع Testnet",
-      "testnet_mode_off": "Off",
+      "testnet_mode_off": "أيقاف",
       "testnet_mode_on": "تشغيل"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Switching to %{chainName}?",
+    "connect_to": "التبديل إلى %{chainName}؟",
     "testnet_mode": "وضع Testnet",
-    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
-    "disable_and_connect": "Disable and Switch",
+    "testnet_mode_active": "نشط حاليا. هل تود تعطيله والتفاعل مع %{chainName} بدلاً من ذلك؟",
+    "disable_and_connect": "تعطيل والتبديل",
     "cancel": "إلغاء"
   },
   "app_connection_switcher": {
@@ -1295,7 +1295,7 @@
   "alert": {
     "ok": "حسنا",
     "wallet_watching_mode": "هذه المحفظة حاليا في وضع 'المشاهدة'",
-    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
+    "wallet_testing_mode": "لا يتم دعم الشبكات التجريبية بواسطة Swap. قم بتعطيل وضع الشبكة التجريبية للمتابعة.",
     "coming_soon": "قريبا!",
     "no_hw_ff": "المحافظ الأجهزة غير معتمدة على Firefox. جرب متصفحًا مختلفًا مثل Chrome أو Brave."
   },
