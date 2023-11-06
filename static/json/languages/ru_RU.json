@@ -93,11 +93,9 @@
         "text_bold": "Совет:"
       },
       "description": "Выберите, какие сети и токены отображать. Вы можете подключиться к любым сетям, поддерживаемым Rainbow, даже если они не отмечены.",
-      "testnet_mode": {
-        "title": "Тестовый режим",
-        "toggle_explainer": "Переключитесь на тестовый режим для отображения только тестовых балансов и транзакций.",
-        "shortcut_title": "Включить комбинацию клавиш",
-        "shortcut_toggle_explainer": "Включает комбинацию клавиш тестового режима (T) и добавляет переключатель в верхнее правое меню главного экрана."
+      "developer_tools": {
+        "title": "Enable Developer Tools",
+        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
         "title": "Пользовательский RPC"
@@ -371,9 +369,15 @@
         "view_nfts": "Просмотреть NFT",
         "add_wallet": "Добавить кошелек",
         "lock": "Заблокировать Rainbow",
-        "testnet_mode": "Тестовый режим",
         "connected_apps": "Подключенные приложения",
+        "developer_tools": "Toggle Developer Tools",
+        "developer_tools_disabled": "Enable Developer Tools",
+        "developer_tools_enabled": "Disable Developer Tools",
+        "testnet_mode": "Toggle Testnet Mode",
+        "testnet_mode_disabled": "Enable Testnet Mode",
+        "testnet_mode_enabled": "Disable Testnet Mode",
         "settings": "Настройки",
+        "network_settings": "Network Settings",
         "my_qr_code": "Мой QR-код",
         "my_qr_code_watched": "QR-код",
         "create_wallet": "Создать кошелек",
@@ -404,7 +408,10 @@
         "my_wallets": "Переключение",
         "my_tokens_watched": "мои",
         "view_nfts": "галерея, профиль",
+        "testnet_mode": "toggle, networks, testnets",
+        "developer_tools": "toggle, networks, developer, testnets",
         "settings": "настройки",
+        "network_settings": "testnets, developer, networks",
         "my_qr_code_watched": "мои",
         "create_wallet": "добавить, новый",
         "import_wallet": "добавить, восстановление секрета, фраза восстановления, приватный ключ",
@@ -417,6 +424,11 @@
     },
     "command_rows": {
       "no_value": "Нет значения"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Press T to toggle Testnet Mode",
+      "title_disabled": "Developer Tools Disabled",
+      "title_enabled": "Developer Tools Enabled"
     },
     "hide_balances_toast": {
       "description_hidden": "Ваши балансы скрыты",
@@ -876,16 +888,16 @@
       "guides_and_support": "Руководства и поддержка",
       "share_feedback": "Отправить отзыв",
       "lock_rainbow": "Заблокировать Rainbow",
-      "testnet_mode": "Тестовый режим"
+      "testnet_mode": "Тестовый режим",
+      "testnet_mode_off": "Off",
+      "testnet_mode_on": "Вкл."
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Подключиться к %{chainName}",
+    "connect_to": "Switching to %{chainName}?",
     "testnet_mode": "Тестовый режим",
-    "testnet_mode_active": "в настоящее время активно. Вы хотите его отключить и подключиться к %{chainName}?",
-    "testnet_mode_not_active": "в настоящее время не активно. Вы хотите его включить и подключиться к %{chainName}?",
-    "disable_and_connect": "Отключить и подключить",
-    "enable_and_connect": "Включить и подключить",
+    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
+    "disable_and_connect": "Disable and Switch",
     "cancel": "Отмена"
   },
   "app_connection_switcher": {
@@ -1283,7 +1295,7 @@
   "alert": {
     "ok": "ОК",
     "wallet_watching_mode": "Этот кошелек в настоящее время находится в режиме 'Наблюдение'",
-    "wallet_testing_mode": "Этот кошелек в данный момент в режиме 'Тестирования'",
+    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "Скоро!",
     "no_hw_ff": "Аппаратные кошельки не поддерживаются в Firefox. Попробуйте другой браузер, например, Chrome или Brave"
   },
