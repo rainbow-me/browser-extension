@@ -94,8 +94,8 @@
       },
       "description": "चुनें कि कौन से नेटवर्क और टोकन प्रदर्शित करें। आप Rainbow द्वारा समर्थित किसी भी नेटवर्क से कनेक्ट कर सकते हैं, भले ही वे अनचेक्ड हों।",
       "developer_tools": {
-        "title": "Enable Developer Tools",
-        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "डेवलपर टूल सक्षम करें",
+        "toggle_explainer": "टेस्टनेट मोड शॉर्टकट (T) सक्षम करता है और होम स्क्रीन के शीर्ष-दाईं मेनू में एक टॉगल जोड़ता है"
       },
       "custom_rpc": {
         "title": "कस्टम RPC"
@@ -370,14 +370,14 @@
         "add_wallet": "वॉलेट जोड़ें",
         "lock": "रेनबोल लॉक करें",
         "connected_apps": "कनेक्टेड एप्स",
-        "developer_tools": "Toggle Developer Tools",
-        "developer_tools_disabled": "Enable Developer Tools",
-        "developer_tools_enabled": "Disable Developer Tools",
-        "testnet_mode": "Toggle Testnet Mode",
-        "testnet_mode_disabled": "Enable Testnet Mode",
-        "testnet_mode_enabled": "Disable Testnet Mode",
+        "developer_tools": "डेवलपर टूल टॉगल करें",
+        "developer_tools_disabled": "डेवलपर टूल सक्षम करें",
+        "developer_tools_enabled": "डेवलपर टूल अक्षम करें",
+        "testnet_mode": "टेस्टनेट मोड टॉगल करें",
+        "testnet_mode_disabled": "टेस्टनेट मोड सक्षम करें",
+        "testnet_mode_enabled": "टेस्टनेट मोड अक्षम करें",
         "settings": "सेटिंग्स",
-        "network_settings": "Network Settings",
+        "network_settings": "नेटवर्क सेटिंग्स",
         "my_qr_code": "मेरा क्यूआर कोड",
         "my_qr_code_watched": "क्यूआर कोड",
         "create_wallet": "वॉलेट बनाएं",
@@ -408,10 +408,10 @@
         "my_wallets": "स्विच",
         "my_tokens_watched": "मेरा",
         "view_nfts": "गैलरी, प्रोफ़ाइल",
-        "testnet_mode": "toggle, networks, testnets",
-        "developer_tools": "toggle, networks, developer, testnets",
+        "testnet_mode": "टॉगल, नेटवर्क्स, टेस्टनेट्स",
+        "developer_tools": "टॉगल, नेटवर्क्स, डेवलपर, टेस्टनेट्स",
         "settings": "प्राथमिकताएं",
-        "network_settings": "testnets, developer, networks",
+        "network_settings": "टेस्टनेट्स, डेवलपर, नेटवर्क्स",
         "my_qr_code_watched": "मेरा",
         "create_wallet": "जोड़ें, नया",
         "import_wallet": "जोड़ें, गुप्त बचाव, बीज शब्द, निजी कुंजी",
@@ -426,9 +426,9 @@
       "no_value": "कोई मूल्य नहीं"
     },
     "developer_tools_toast": {
-      "description_enabled": "Press T to toggle Testnet Mode",
-      "title_disabled": "Developer Tools Disabled",
-      "title_enabled": "Developer Tools Enabled"
+      "description_enabled": "T दबाएं टेस्टनेट मोड टॉगल करने के लिए",
+      "title_disabled": "डेवलपर टूल अक्षम",
+      "title_enabled": "विकासक उपकरण सक्षम"
     },
     "hide_balances_toast": {
       "description_hidden": "आपके शेष राशि छिपी हुई है",
@@ -889,15 +889,15 @@
       "share_feedback": "फ़ीडबैक साझा करें",
       "lock_rainbow": "रेनबो लॉक करें",
       "testnet_mode": "परीक्षण नेटवर्क मोड",
-      "testnet_mode_off": "Off",
+      "testnet_mode_off": "बंद",
       "testnet_mode_on": "शुरू"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Switching to %{chainName}?",
+    "connect_to": "स्विच करें %{chainName}?",
     "testnet_mode": "परीक्षण नेटवर्क मोड",
-    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
-    "disable_and_connect": "Disable and Switch",
+    "testnet_mode_active": "वर्तमान में सक्रिय है। क्या आप इसे बंद करना चाहेंगे और बजाय %{chainName} से संवाद करना चाहेंगे?",
+    "disable_and_connect": "अक्षम करें और स्विच करें",
     "cancel": "रद्द करें"
   },
   "app_connection_switcher": {
@@ -1295,7 +1295,7 @@
   "alert": {
     "ok": "ठीक है",
     "wallet_watching_mode": "यह वॉलेट वर्तमान में 'देख रहा है' मोड में है",
-    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
+    "wallet_testing_mode": "टेस्टनेट्स का समर्थन स्व्याप नहीं करता। जारी रखने के लिए टेस्टनेट मोड को अक्षम करें।",
     "coming_soon": "जल्द ही आ रहा है!",
     "no_hw_ff": "हार्डवेयर वॉलेट्स Firefox पर समर्थित नहीं हैं। Chrome या Brave जैसे अन्य ब्राउज़र का प्रयास करें।"
   },
