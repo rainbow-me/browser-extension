@@ -94,8 +94,8 @@
       },
       "description": "Hangi ağları ve jetonları göstereceğinizi seçin. Rainbow tarafından desteklenen herhangi bir ağa bağlanabilirsiniz, işaretli olmasalar bile.",
       "developer_tools": {
-        "title": "Enable Developer Tools",
-        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "Geliştirici Araçları'nı Etkinleştir",
+        "toggle_explainer": "Testnet Mode kısayolunu (T) etkinleştirir ve ana ekranın sağ üst menüsüne bir düğme ekler"
       },
       "custom_rpc": {
         "title": "Özel RPC"
@@ -370,14 +370,14 @@
         "add_wallet": "Bir Cüzdan Ekle",
         "lock": "Rainbow'u Kilitle",
         "connected_apps": "Bağlı Uygulamalar",
-        "developer_tools": "Toggle Developer Tools",
-        "developer_tools_disabled": "Enable Developer Tools",
-        "developer_tools_enabled": "Disable Developer Tools",
-        "testnet_mode": "Toggle Testnet Mode",
-        "testnet_mode_disabled": "Enable Testnet Mode",
-        "testnet_mode_enabled": "Disable Testnet Mode",
+        "developer_tools": "Geliştirici Araçları'nı Değiştir",
+        "developer_tools_disabled": "Geliştirici Araçları'nı Etkinleştir",
+        "developer_tools_enabled": "Geliştirici Araçları'nı Devre Dışı Bırak",
+        "testnet_mode": "Testnet Mode'u Değiştir",
+        "testnet_mode_disabled": "Testnet Mode'u Etkinleştir",
+        "testnet_mode_enabled": "Testnet Mode'u Devre Dışı Bırak",
         "settings": "Ayarlar",
-        "network_settings": "Network Settings",
+        "network_settings": "Ağ Ayarları",
         "my_qr_code": "QR Kodum",
         "my_qr_code_watched": "QR Kodu",
         "create_wallet": "Cüzdan Oluştur",
@@ -408,10 +408,10 @@
         "my_wallets": "değiştir",
         "my_tokens_watched": "benim",
         "view_nfts": "galeri, profil",
-        "testnet_mode": "toggle, networks, testnets",
-        "developer_tools": "toggle, networks, developer, testnets",
+        "testnet_mode": "değiştir, ağlar, testnets",
+        "developer_tools": "değiştir, ağlar, geliştirici, testnets",
         "settings": "tercihler",
-        "network_settings": "testnets, developer, networks",
+        "network_settings": "testnets, geliştirici, ağlar",
         "my_qr_code_watched": "benim",
         "create_wallet": "ekle, yeni",
         "import_wallet": "ekle, gizli kurtarma, seed cümlesi, özel anahtar",
@@ -426,9 +426,9 @@
       "no_value": "Değer Yok"
     },
     "developer_tools_toast": {
-      "description_enabled": "Press T to toggle Testnet Mode",
-      "title_disabled": "Developer Tools Disabled",
-      "title_enabled": "Developer Tools Enabled"
+      "description_enabled": "T tuşuna basarak Testnet Mode'u değiştir",
+      "title_disabled": "Geliştirici Araçları Devre Dışı",
+      "title_enabled": "Geliştirici Araçları Etkin"
     },
     "hide_balances_toast": {
       "description_hidden": "Bakiyeleriniz gizlenmiştir",
@@ -889,15 +889,15 @@
       "share_feedback": "Geri Bildirim Paylaş",
       "lock_rainbow": "Rainbow'u Kitle",
       "testnet_mode": "Testnet Modu",
-      "testnet_mode_off": "Off",
+      "testnet_mode_off": "Kapalı",
       "testnet_mode_on": "Açık"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Switching to %{chainName}?",
+    "connect_to": "%{chainName}'ye geçmek istiyor musunuz?",
     "testnet_mode": "Testnet Modu",
-    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
-    "disable_and_connect": "Disable and Switch",
+    "testnet_mode_active": "şu anda aktif. Kapatıp %{chainName} ile etkileşime geçmek ister misiniz?",
+    "disable_and_connect": "Kapat ve Değiştir",
     "cancel": "İptal"
   },
   "app_connection_switcher": {
@@ -1295,7 +1295,7 @@
   "alert": {
     "ok": "Tamam",
     "wallet_watching_mode": "Bu cüzdan şu anda 'İzleme' modunda",
-    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
+    "wallet_testing_mode": "Testnet'ler Swap tarafından desteklenmemektedir. Devam etmek için Testnet Modunu devre dışı bırakın.",
     "coming_soon": "Çok yakında!",
     "no_hw_ff": "Donanım cüzdanları Firefox'ta desteklenmiyor. Chrome veya Brave gibi farklı bir tarayıcı deneyin."
   },
