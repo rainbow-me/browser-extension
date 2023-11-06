@@ -1,13 +1,14 @@
 import { isValidAddress } from '@ethereumjs/util';
 import React, { useCallback, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Address } from 'wagmi';
+import { Address, Chain } from 'wagmi';
 
-import { useCustomRPCsStore } from '~/core/state/customRPC';
+import { CustomChain, useCustomRPCsStore } from '~/core/state/customRPC';
 import {
   CustomRPCAsset,
   useCustomRPCAssetsStore,
 } from '~/core/state/customRPCAssets';
+import { useUserChainsStore } from '~/core/state/userChains';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
@@ -25,6 +26,8 @@ export function CustomRPC() {
   const { setActiveRPC, customChains, removeCustomRPC } = useCustomRPCsStore();
   const { customRPCAssets, addCustomRPCAsset, removeCustomRPCAsset } =
     useCustomRPCAssetsStore();
+  const { removeUserChain } = useUserChainsStore();
+
   const chainId = state?.chainId as number;
   const customChain = customChains[chainId];
   const customRPCAssetsForChain = customRPCAssets[chainId];
@@ -72,6 +75,18 @@ export function CustomRPC() {
       setAsset(INITIAL_ASSET);
     }
   }, [addCustomRPCAsset, asset, chainId, validateAsset]);
+
+  const removeCustomChain = useCallback(
+    ({ chain }: { chain: Chain; customChain: CustomChain }) => {
+      if (customChain.chains.length === 1) {
+        removeUserChain({ chainId });
+      }
+      removeCustomRPC({
+        rpcUrl: chain.rpcUrls.default.http[0],
+      });
+    },
+    [chainId, customChain.chains.length, removeCustomRPC, removeUserChain],
+  );
 
   return (
     <Box paddingHorizontal="20px">
@@ -125,11 +140,7 @@ export function CustomRPC() {
                   </Inline>
                   <Inline alignHorizontal="right">
                     <Button
-                      onClick={() =>
-                        removeCustomRPC({
-                          rpcUrl: chain.rpcUrls.default.http[0],
-                        })
-                      }
+                      onClick={() => removeCustomChain({ customChain, chain })}
                       color="accent"
                       height="36px"
                       variant="raised"

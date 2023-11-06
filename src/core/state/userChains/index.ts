@@ -22,7 +22,7 @@ export interface UserChainsState {
   /**
    * Mainnet chains ordered from network settings
    */
-  userChainsOrder: MainnetChainId[];
+  userChainsOrder: (MainnetChainId | number)[];
   updateUserChain: ({
     chainId,
     enabled,
@@ -42,6 +42,8 @@ export interface UserChainsState {
   }: {
     userChainsOrder: (MainnetChainId | number)[];
   }) => void;
+  addUserChain: ({ chainId }: { chainId: ChainId }) => void;
+  removeUserChain: ({ chainId }: { chainId: ChainId }) => void;
 }
 
 const chains = SUPPORTED_MAINNET_CHAINS.reduce(
@@ -88,6 +90,32 @@ export const userChainsStore = createStore<UserChainsState>(
     updateUserChainsOrder: ({ userChainsOrder }) => {
       set({
         userChainsOrder,
+      });
+    },
+    addUserChain: ({ chainId }) => {
+      const { userChains, userChainsOrder } = get();
+      set({
+        userChains: {
+          ...userChains,
+          [chainId]: true,
+        },
+        userChainsOrder: userChainsOrder.concat([chainId]),
+      });
+    },
+    removeUserChain: ({ chainId }) => {
+      const { userChains, userChainsOrder } = get();
+      delete userChains[chainId];
+      const position = userChainsOrder.findIndex((id) => chainId === id);
+      if (position !== -1) {
+        userChainsOrder.splice(position, 1);
+      }
+      set({
+        userChains: {
+          ...userChains,
+        },
+        userChainsOrder: {
+          ...userChainsOrder,
+        },
       });
     },
   }),

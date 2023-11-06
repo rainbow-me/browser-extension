@@ -14,8 +14,7 @@ import { maskInput } from '../../../components/InputMask/utils';
 export function SettingsCustomRPC() {
   const navigate = useRainbowNavigate();
   const { customChains, addCustomRPC } = useCustomRPCsStore();
-  const { updateUserChain, updateUserChainsOrder, userChainsOrder } =
-    useUserChainsStore();
+  const { addUserChain } = useUserChainsStore();
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
     rpcUrl?: string;
@@ -153,19 +152,9 @@ export function SettingsCustomRPC() {
           },
         },
       });
-      updateUserChain({ chainId, enabled: true });
-      updateUserChainsOrder({
-        userChainsOrder: userChainsOrder.concat([chainId]),
-      });
+      addUserChain({ chainId });
     }
-  }, [
-    addCustomRPC,
-    customRPC,
-    updateUserChain,
-    updateUserChainsOrder,
-    userChainsOrder,
-    validateAddCustomRpc,
-  ]);
+  }, [addCustomRPC, addUserChain, customRPC, validateAddCustomRpc]);
 
   return (
     <Box paddingHorizontal="20px">
