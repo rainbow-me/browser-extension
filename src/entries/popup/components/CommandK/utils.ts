@@ -433,7 +433,7 @@ export function useKeyboardNavigation(
 }
 
 type WalletNames = {
-  [address: string]: string;
+  [address: Address]: string;
 };
 
 const typeMapping: { [key: string]: string } = {
