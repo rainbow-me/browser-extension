@@ -1,7 +1,23 @@
 import { AddressZero } from '@ethersproject/constants';
-import { Address } from 'wagmi';
+import {
+  arbitrum,
+  arbitrumGoerli,
+  base,
+  baseGoerli,
+  bsc,
+  bscTestnet,
+  goerli,
+  mainnet,
+  optimism,
+  optimismGoerli,
+  polygon,
+  polygonMumbai,
+  zora,
+  zoraTestnet,
+} from '@wagmi/chains';
+import { Address, type Chain, sepolia } from 'wagmi';
 
-import { ChainId } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -125,3 +141,77 @@ export const LEGACY_CHAINS_FOR_HW = [
   ChainId.zora,
   ChainId.base,
 ];
+
+export const TESTNET_CHAIN_IDS = [
+  ChainId.mainnet,
+  ChainId.goerli,
+  ChainId.sepolia,
+  ChainId['arbitrum-goerli'],
+  ChainId['bsc-testnet'],
+  ChainId['optimism-goerli'],
+  ChainId['base-goerli'],
+  ChainId['zora-testnet'],
+  ChainId['polygon-mumbai'],
+];
+
+// once we have a proper UI for it
+export const userAddedCustomRpcEndpoints = [
+  {
+    rpc: 'https://rpc.flashbots.net',
+    chainId: 1,
+    name: 'Flashbots Protect',
+    symbol: 'ETH',
+    explorer: 'https://etherscan.io',
+    explorerName: 'Etherscan',
+    active: false,
+    nativeAssetAddress: ETH_ADDRESS,
+  },
+  {
+    rpc: 'https://api.avax.network/ext/bc/C/rpc',
+    chainId: 43114,
+    name: 'Avax',
+    symbol: 'AVAX',
+    explorer: 'https://snowtrace.io',
+    explorerName: 'Snowtrace',
+    active: true,
+    nativeAssetAddress: AddressZero,
+  },
+  {
+    rpc: 'https://rpc.gnosis.gateway.fm',
+    chainId: 100,
+    name: 'Gnosis',
+    symbol: 'xDAI',
+    explorer: 'https://gnosisscan.io',
+    explorerName: 'GnosisScan',
+    active: true,
+    nativeAssetAddress: AddressZero,
+  },
+];
+
+export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  zora,
+  bsc,
+].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
+
+export const SUPPORTED_CHAINS: Chain[] = [
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  zora,
+  bsc,
+  goerli,
+  sepolia,
+  optimismGoerli,
+  bscTestnet,
+  polygonMumbai,
+  arbitrumGoerli,
+  baseGoerli,
+  zoraTestnet,
+].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));

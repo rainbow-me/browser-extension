@@ -6,6 +6,7 @@ import {
   selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
+import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -44,6 +45,17 @@ export const useSendAsset = () => {
     },
   );
 
+  const { data: customNetworkAssets = [] } = useCustomNetworkAssets(
+    {
+      address,
+      currency: currentCurrency,
+    },
+    {
+      select: (data) =>
+        selectorFilterByUserChains({ data, selector: sortBy(sortMethod) }),
+    },
+  );
+
   const selectAssetAddressAndChain = useCallback(
     (address: AddressOrEth | '', chainId: ChainId) => {
       setSelectedAssetAddress(address);
@@ -52,20 +64,25 @@ export const useSendAsset = () => {
     [],
   );
 
+  const allAssets = useMemo(
+    () => [...assets, ...customNetworkAssets],
+    [assets, customNetworkAssets],
+  );
+
   const asset = useMemo(
     () =>
-      assets?.find(
+      allAssets?.find(
         ({ address, chainId }) =>
           isLowerCaseMatch(address, selectedAssetAddress) &&
           chainId === selectedAssetChain,
       ) || null,
-    [assets, selectedAssetAddress, selectedAssetChain],
+    [allAssets, selectedAssetAddress, selectedAssetChain],
   );
 
   return {
     selectAssetAddressAndChain,
     asset,
-    assets,
+    assets: allAssets,
     sortMethod,
     setSortMethod,
   };

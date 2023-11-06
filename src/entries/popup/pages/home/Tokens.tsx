@@ -12,6 +12,7 @@ import {
   selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
+import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { fetchProviderWidgetUrl } from '~/core/resources/f2c';
 import { FiatProviderName } from '~/core/resources/f2c/types';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -19,7 +20,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import {
   Box,
   Column,
@@ -33,7 +34,6 @@ import {
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
-import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
@@ -65,7 +65,7 @@ const TokenRow = memo(function TokenRow({
   return (
     <TokenContextMenu token={token}>
       <Box onClick={openDetails}>
-        <AssetRow uniqueId={token.uniqueId} testId={testId} />
+        <AssetRow asset={token} testId={testId} />
       </Box>
     </TokenContextMenu>
   );
@@ -100,9 +100,33 @@ export function Tokens() {
     },
   );
 
+  const {
+    data: customNetworkAssets = [],
+    refetch: refetchCustomNetworkAssets,
+  } = useCustomNetworkAssets(
+    {
+      address: currentAddress,
+      currency,
+    },
+    {
+      select: (data) =>
+        selectorFilterByUserChains({
+          data,
+          selector: hideSmallBalances
+            ? selectUserAssetsFilteringSmallBalancesList
+            : selectUserAssetsList,
+        }),
+    },
+  );
+
+  const allAssets = useMemo(
+    () => [...assets, ...customNetworkAssets],
+    [assets, customNetworkAssets],
+  );
+
   const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
-    count: assets?.length || 0,
+    count: allAssets?.length || 0,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
     overscan: 20,
@@ -116,7 +140,7 @@ export function Tokens() {
           type: 'tokens.refresh',
         });
         setManuallyRefetchingTokens(true);
-        await refetchUserAssets();
+        await Promise.all([refetchUserAssets(), refetchCustomNetworkAssets()]);
         setManuallyRefetchingTokens(false);
       }
     },
@@ -129,7 +153,7 @@ export function Tokens() {
     return <TokensSkeleton />;
   }
 
-  if (!assets?.length) {
+  if (!allAssets?.length) {
     return <TokensEmptyState depositAddress={currentAddress} />;
   }
 
@@ -167,7 +191,7 @@ export function Tokens() {
         <Box style={{ overflow: 'auto' }}>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
-            const token = assets[index];
+            const token = allAssets[index];
             return (
               <Box
                 key={key}
@@ -191,16 +215,16 @@ export function Tokens() {
 }
 
 type AssetRowProps = {
-  uniqueId: UniqueId;
+  asset: ParsedUserAsset;
   testId?: string;
 };
 
 export const AssetRow = memo(function AssetRow({
-  uniqueId,
+  asset,
   testId,
 }: AssetRowProps) {
-  const { data: asset } = useUserAsset(uniqueId);
   const name = asset?.name;
+  const uniqueId = asset?.uniqueId;
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { currentCurrency } = useCurrentCurrencyStore();
 

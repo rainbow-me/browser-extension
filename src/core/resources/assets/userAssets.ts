@@ -29,6 +29,7 @@ import {
   getSupportedChainIds,
   getSupportedTestnetChainIds,
 } from '~/core/utils/chains';
+import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { greaterThan } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 import {
@@ -139,7 +140,7 @@ async function userAssetsQueryFunction({
   try {
     const supportedChainIds = testnetMode
       ? getSupportedTestnetChainIds()
-      : getSupportedChainIds();
+      : getSupportedChainIds().filter((chainId) => !isCustomNetwork(chainId));
     const url = `/${supportedChainIds.join(',')}/${address}/assets`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       params: {
@@ -171,7 +172,6 @@ async function userAssetsQueryFunction({
             parsedAssetsDict[missingChainId] = cachedUserAssets[missingChainId];
           }
         }
-
         return parsedAssetsDict;
       }
     }
@@ -264,6 +264,7 @@ export async function parseUserAssets({
         parsedAsset;
     }
   }
+
   const { connectedToHardhat, connectedToHardhatOp } =
     connectedToHardhatStore.getState();
   if (connectedToHardhat || connectedToHardhatOp) {
@@ -313,7 +314,7 @@ export async function parseUserAssets({
       acc[parsedAsset.uniqueId] = parsedAsset;
       return acc;
     }, {});
-
+    // eslint-disable-next-line require-atomic-updates
     parsedAssetsDict[mainnetOrOptimismChainId] = newAssets;
   }
   return parsedAssetsDict;

@@ -7,6 +7,7 @@ import { createQueryKey } from '~/core/react-query';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isTestnetChainId } from '~/core/utils/chains';
+import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -130,7 +131,10 @@ const percentDiff = (current = 1, last = 0) =>
   ((current - last) / current) * 100;
 export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
-  const isTestnetToken = isTestnetChainId({ chainId: token.chainId });
+  const hasPriceData = !(
+    isTestnetChainId({ chainId: token.chainId }) ||
+    isCustomNetwork(token.chainId)
+  );
 
   const { data } = usePriceChart({
     mainnetAddress: token.mainnetAddress,
@@ -163,7 +167,7 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
         <TokenPrice token={token} />
         <PriceChange changePercentage={changePercent} date={date} />
       </Box>
-      {!isTestnetToken && (
+      {hasPriceData && (
         <Box>
           <Box style={{ height: '222px' }} marginHorizontal="-20px">
             {data && (

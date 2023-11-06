@@ -7,6 +7,7 @@ import {
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
+import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { add } from '~/core/utils/numbers';
 import { chainIdMap } from '~/core/utils/userChains';
 
@@ -24,7 +25,7 @@ export function selectorFilterByUserChains<T>({
     .flat();
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
-    if (allUserChainIds.includes(chainKey)) {
+    if (allUserChainIds.includes(chainKey) || isCustomNetwork(chainKey)) {
       acc[chainKey] = data[chainKey];
     }
     return acc;
@@ -92,6 +93,13 @@ export function selectUserAssetAddressMapByChainId(
 
 // selector generators
 export function selectUserAssetWithUniqueId(uniqueId: UniqueId) {
+  return (assets: ParsedAssetsDictByChain) => {
+    const { chain } = deriveAddressAndChainWithUniqueId(uniqueId);
+    return assets?.[chain]?.[uniqueId];
+  };
+}
+
+export function selectCustomNetworkAssetWithUniqueId(uniqueId: UniqueId) {
   return (assets: ParsedAssetsDictByChain) => {
     const { chain } = deriveAddressAndChainWithUniqueId(uniqueId);
     return assets?.[chain]?.[uniqueId];
