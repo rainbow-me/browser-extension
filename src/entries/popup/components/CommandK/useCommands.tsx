@@ -6,6 +6,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
@@ -150,6 +151,14 @@ export const staticCommandInfo: CommandInfo = {
     shortcut: shortcuts.home.LOCK,
     symbol: 'lock.open.fill',
     symbolSize: 15,
+    type: SearchItemType.Shortcut,
+  },
+  developerTools: {
+    name: getCommandName('developer_tools'),
+    page: PAGES.HOME,
+    searchTags: getSearchTags('developer_tools'),
+    symbol: 'hammer.fill',
+    symbolSize: 15.75,
     type: SearchItemType.Shortcut,
   },
   testnetMode: {
@@ -486,6 +495,8 @@ export const useCommands = (
   const { setSelectedToken } = useSelectedTokenStore();
 
   const { setTestnetMode, testnetMode } = useTestnetModeStore();
+  const { developerToolsEnabled, setDeveloperToolsEnabled } =
+    useDeveloperToolsEnabledStore();
   const { hideAssetBalances, setHideAssetBalances } =
     useHideAssetBalancesStore();
   const { hideSmallBalances, setHideSmallBalances } =
@@ -498,6 +509,17 @@ export const useCommands = (
       description: truncateAddress(address),
     });
   }, []);
+
+  const handleToggleDeveloperTools = React.useCallback(() => {
+    const status = developerToolsEnabled ? 'disabled' : 'enabled';
+    triggerToast({
+      title: i18n.t(`command_k.developer_tools_toast.title_${status}`),
+      description: developerToolsEnabled
+        ? undefined
+        : i18n.t('command_k.developer_tools_toast.description_enabled'),
+    });
+    setDeveloperToolsEnabled(!developerToolsEnabled);
+  }, [developerToolsEnabled, setDeveloperToolsEnabled]);
 
   const handleToggleTestnetMode = React.useCallback(() => {
     const current = testnetMode;
@@ -605,11 +627,19 @@ export const useCommands = (
       lock: {
         action: () => wallet.lock(),
       },
+      developerTools: {
+        action: handleToggleDeveloperTools,
+        name: developerToolsEnabled
+          ? getCommandName('developer_tools_enabled')
+          : getCommandName('developer_tools_disabled'),
+        shouldRemainOnActiveRoute: developerToolsEnabled,
+      },
       testnetMode: {
         action: handleToggleTestnetMode,
         name: testnetMode
           ? getCommandName('testnet_mode_enabled')
           : getCommandName('testnet_mode_disabled'),
+        hidden: testnetMode ? false : !developerToolsEnabled,
       },
       networkSettings: {
         action: () =>
@@ -795,11 +825,13 @@ export const useCommands = (
     [
       address,
       currentTheme,
+      developerToolsEnabled,
       ensName,
       handleCopy,
       handleSelectAddress,
       handleToggleHiddenBalances,
       handleToggleHiddenSmallBalances,
+      handleToggleDeveloperTools,
       handleToggleTestnetMode,
       handleWatchWallet,
       hideAssetBalances,

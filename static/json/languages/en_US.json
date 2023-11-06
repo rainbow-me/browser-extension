@@ -93,11 +93,9 @@
         "text_bold": "Tip:"
       },
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
-      "testnet_mode": {
-        "title": "Testnet Mode",
-        "toggle_explainer": "Switch to Testnet Mode to display only testnet balances and transactions.",
-        "shortcut_title": "Enable Keyboard Shortcut",
-        "shortcut_toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+      "developer_tools": {
+        "title": "Enable Developer Tools",
+        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
         "title": "Custom RPC"
@@ -372,6 +370,9 @@
         "add_wallet": "Add a Wallet",
         "lock": "Lock Rainbow",
         "connected_apps": "Connected Apps",
+        "developer_tools": "Toggle Developer Tools",
+        "developer_tools_disabled": "Enable Developer Tools",
+        "developer_tools_enabled": "Disable Developer Tools",
         "testnet_mode": "Toggle Testnet Mode",
         "testnet_mode_disabled": "Enable Testnet Mode",
         "testnet_mode_enabled": "Disable Testnet Mode",
@@ -407,7 +408,8 @@
         "my_wallets": "switch",
         "my_tokens_watched": "my",
         "view_nfts": "gallery, profile",
-        "testnet_mode": "toggle, networks, developer, testnets",
+        "testnet_mode": "toggle, networks, testnets",
+        "developer_tools": "toggle, networks, developer, testnets",
         "settings": "preferences",
         "network_settings": "testnets, developer, networks",
         "my_qr_code_watched": "my",
@@ -422,6 +424,11 @@
     },
     "command_rows": {
       "no_value": "No Value"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Press T to toggle Testnet Mode",
+      "title_disabled": "Developer Tools Disabled",
+      "title_enabled": "Developer Tools Enabled"
     },
     "hide_balances_toast": {
       "description_hidden": "Your balances are obscured",
@@ -881,16 +888,16 @@
       "guides_and_support": "Guides & Support",
       "share_feedback": "Share Feedback",
       "lock_rainbow": "Lock Rainbow",
-      "testnet_mode": "Testnet Mode"
+      "testnet_mode": "Testnet Mode",
+      "testnet_mode_off": "Off",
+      "testnet_mode_on": "On"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Connect to %{chainName}",
+    "connect_to": "Switching to %{chainName}?",
     "testnet_mode": "Testnet Mode",
-    "testnet_mode_active": "is currently active. Would you like to disable it and connect to %{chainName}?",
-    "testnet_mode_not_active": "is not currently active. Would you like to enable it and connect to %{chainName}?",
-    "disable_and_connect": "Disable and connect",
-    "enable_and_connect": "Enable and connect",
+    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
+    "disable_and_connect": "Disable and Switch",
     "cancel": "Cancel"
   },
   "app_connection_switcher": {
@@ -1288,7 +1295,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
-    "wallet_testing_mode": "This wallet is currently in 'Testing' mode",
+    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "Coming Soon!",
     "no_hw_ff": "Hardware wallets are not supported on Firefox. Try a different browser like Chrome or Brave."
   },

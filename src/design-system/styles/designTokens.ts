@@ -1011,6 +1011,7 @@ export const symbolNames = selectSymbolNames(
   'safari.fill',
   't.square.fill',
   'arcade.stick',
+  'hammer.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
