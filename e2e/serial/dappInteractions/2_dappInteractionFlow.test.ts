@@ -305,10 +305,6 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('long');
-
-    await findElementByTestIdAndClick({ driver, id: 'testnet-mode-enable' });
-
     await delayTime('short');
 
     const address = await findElementByText(driver, shortenedAddress);

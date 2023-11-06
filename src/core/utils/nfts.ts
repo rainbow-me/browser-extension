@@ -159,6 +159,7 @@ export function simpleHashNFTToUniqueAsset(
       name: isENS ? 'ENS' : collection.name,
       slug: marketplace?.marketplace_collection_id ?? '',
       twitter_username: collection.twitter_username,
+      collection_id: collection.collection_id,
     },
     description: nft.description,
     external_link: nft.external_url,
@@ -203,3 +204,12 @@ export function simpleHashNFTToUniqueAsset(
     model_properties: nft.model_properties,
   };
 }
+
+export const getUniqueAssetImageThumbnailURL = (asset: UniqueAsset) => {
+  return (
+    asset.image_thumbnail_url ||
+    asset.image_preview_url ||
+    asset.image_original_url ||
+    ''
+  );
+};

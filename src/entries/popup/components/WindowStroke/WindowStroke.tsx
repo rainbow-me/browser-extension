@@ -9,14 +9,17 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { ROUTES } from '../../urls';
+import { shouldShowTestnetBar } from '../TestnetMode/TestnetBar/TestnetBar';
 
 export const WindowStroke = () => {
   const { currentTheme } = useCurrentThemeStore();
   const isFullScreen = useIsFullScreen();
   const location = useLocation();
   const { testnetMode } = useTestnetModeStore();
-  const displayingTestnetBar =
-    testnetMode && location.pathname !== ROUTES.UNLOCK;
+  const displayingTestnetBar = shouldShowTestnetBar({
+    testnetMode,
+    pathname: location.pathname,
+  });
 
   const isDarkTheme = currentTheme === 'dark';
   const isLightFullScreen = currentTheme !== 'dark' && isFullScreen;

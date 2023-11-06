@@ -109,7 +109,7 @@ export const fetchPolygonAllowList =
     }>('/137-allowlist.json');
     const polygonAllowListDictionary = allowList.data?.data?.addresses?.reduce(
       (allowListDict, tokenAddress) => {
-        allowListDict[tokenAddress] = true;
+        allowListDict[tokenAddress.toLowerCase()] = true;
         return allowListDict;
       },
       {} as PolygonAllowListDictionary,

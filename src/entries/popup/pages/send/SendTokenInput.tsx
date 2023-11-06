@@ -346,7 +346,7 @@ export const SendTokenInput = React.forwardRef<
                 >
                   <RowHighlightWrapper>
                     <Box marginHorizontal="-8px">
-                      <AssetRow uniqueId={asset?.uniqueId} />
+                      <AssetRow asset={asset} />
                     </Box>
                   </RowHighlightWrapper>
                 </Box>
