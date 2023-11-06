@@ -202,6 +202,7 @@ export function simpleHashNFTToUniqueAsset(
     audio_properties: nft.audio_properties,
     model_url: nft.model_url,
     model_properties: nft.model_properties,
+    last_sale: nft.last_sale,
   };
 }
 

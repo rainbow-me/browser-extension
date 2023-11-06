@@ -1,7 +1,7 @@
 import { UniqueAsset } from '~/core/types/nfts';
 
 export const selectNftsByCollection = (nfts: UniqueAsset[]) => {
-  return nfts.reduce(
+  return nfts?.reduce(
     (collections, nft) => {
       const currentCollectionId = nft.collection.collection_id;
       if (currentCollectionId) {

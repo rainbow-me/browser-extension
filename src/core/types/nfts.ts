@@ -255,14 +255,6 @@ export const uniqueTokenFormats = {
 } as const;
 export type UniqueTokenFormat = keyof typeof uniqueTokenFormats;
 
-interface UniqueAssetLastSale {
-  total_price: string;
-  payment_token?: {
-    symbol: string;
-    usd_price: string;
-  };
-}
-
 export interface UniqueAsset {
   animation_url?: string | null;
   description?: string | null;
@@ -271,7 +263,19 @@ export interface UniqueAsset {
   image_preview_url?: string | null;
   image_thumbnail_url?: string | null;
   image_url?: string | null;
-  last_sale?: UniqueAssetLastSale | null;
+  last_sale?: {
+    from_address: string | null;
+    to_address: string | null;
+    quantity: number | null;
+    timestamp: string;
+    transaction: string;
+    marketplace_id: SimpleHashMarketplaceId;
+    marketplace_name: string;
+    is_bundle_sale: boolean;
+    payment_token: SimpleHashPaymentToken | null;
+    unit_price: number | null;
+    total_price: number | null;
+  } | null;
   name: string;
   permalink: string;
   traits: UniqueAssetTrait[];
