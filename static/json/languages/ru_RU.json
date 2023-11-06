@@ -94,8 +94,8 @@
       },
       "description": "Выберите, какие сети и токены отображать. Вы можете подключиться к любым сетям, поддерживаемым Rainbow, даже если они не отмечены.",
       "developer_tools": {
-        "title": "Enable Developer Tools",
-        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "Включить инструменты разработчика",
+        "toggle_explainer": "Включает ярлык режима Testnet (T) и добавляет переключатель в верхнее правое меню главного экрана"
       },
       "custom_rpc": {
         "title": "Пользовательский RPC"
@@ -370,14 +370,14 @@
         "add_wallet": "Добавить кошелек",
         "lock": "Заблокировать Rainbow",
         "connected_apps": "Подключенные приложения",
-        "developer_tools": "Toggle Developer Tools",
-        "developer_tools_disabled": "Enable Developer Tools",
-        "developer_tools_enabled": "Disable Developer Tools",
-        "testnet_mode": "Toggle Testnet Mode",
-        "testnet_mode_disabled": "Enable Testnet Mode",
-        "testnet_mode_enabled": "Disable Testnet Mode",
+        "developer_tools": "Переключить инструменты разработчика",
+        "developer_tools_disabled": "Включить инструменты разработчика",
+        "developer_tools_enabled": "Отключить инструменты разработчика",
+        "testnet_mode": "Переключить режим Testnet",
+        "testnet_mode_disabled": "Включить режим Testnet",
+        "testnet_mode_enabled": "Отключить режим Testnet",
         "settings": "Настройки",
-        "network_settings": "Network Settings",
+        "network_settings": "Настройки сети",
         "my_qr_code": "Мой QR-код",
         "my_qr_code_watched": "QR-код",
         "create_wallet": "Создать кошелек",
@@ -408,10 +408,10 @@
         "my_wallets": "Переключение",
         "my_tokens_watched": "мои",
         "view_nfts": "галерея, профиль",
-        "testnet_mode": "toggle, networks, testnets",
-        "developer_tools": "toggle, networks, developer, testnets",
+        "testnet_mode": "переключатель, сети, тестовые сети",
+        "developer_tools": "переключатель, сети, разработчик, тестовые сети",
         "settings": "настройки",
-        "network_settings": "testnets, developer, networks",
+        "network_settings": "тестовые сети, разработчик, сети",
         "my_qr_code_watched": "мои",
         "create_wallet": "добавить, новый",
         "import_wallet": "добавить, восстановление секрета, фраза восстановления, приватный ключ",
@@ -426,9 +426,9 @@
       "no_value": "Нет значения"
     },
     "developer_tools_toast": {
-      "description_enabled": "Press T to toggle Testnet Mode",
-      "title_disabled": "Developer Tools Disabled",
-      "title_enabled": "Developer Tools Enabled"
+      "description_enabled": "Нажмите T для переключения режима Testnet",
+      "title_disabled": "Инструменты разработчика отключены",
+      "title_enabled": "Инструменты разработчика включены"
     },
     "hide_balances_toast": {
       "description_hidden": "Ваши балансы скрыты",
@@ -889,15 +889,15 @@
       "share_feedback": "Отправить отзыв",
       "lock_rainbow": "Заблокировать Rainbow",
       "testnet_mode": "Тестовый режим",
-      "testnet_mode_off": "Off",
+      "testnet_mode_off": "Выкл",
       "testnet_mode_on": "Вкл."
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Switching to %{chainName}?",
+    "connect_to": "Переключиться на %{chainName}?",
     "testnet_mode": "Тестовый режим",
-    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
-    "disable_and_connect": "Disable and Switch",
+    "testnet_mode_active": "в настоящее время активен. Хотите отключить его и взаимодействовать с %{chainName} вместо этого?",
+    "disable_and_connect": "Отключить и Переключить",
     "cancel": "Отмена"
   },
   "app_connection_switcher": {
@@ -1295,7 +1295,7 @@
   "alert": {
     "ok": "ОК",
     "wallet_watching_mode": "Этот кошелек в настоящее время находится в режиме 'Наблюдение'",
-    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
+    "wallet_testing_mode": "Тестнеты не поддерживаются Swap. Отключите режим тестнета, чтобы продолжить.",
     "coming_soon": "Скоро!",
     "no_hw_ff": "Аппаратные кошельки не поддерживаются в Firefox. Попробуйте другой браузер, например, Chrome или Brave"
   },
