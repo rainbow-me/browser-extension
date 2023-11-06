@@ -8,6 +8,7 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
+import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
 import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
@@ -24,16 +25,26 @@ import { AuthProvider } from './hooks/useAuth';
 import { useCustomNetwork } from './hooks/useCustomNetwork';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
+import usePrevious from './hooks/usePrevious';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
+const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
   const { deviceId } = useDeviceIdStore();
   const { customChains } = useCustomNetwork();
+  const prevChains = usePrevious(customChains);
+
   useExpiryListener();
+
+  React.useEffect(() => {
+    if (prevChains?.length && prevChains?.length !== customChains.length) {
+      backgroundMessenger.send('rainbow_updateWagmiClient', null);
+    }
+  }, [customChains.length, prevChains?.length]);
 
   const wagmiClient = React.useMemo(
     () =>
