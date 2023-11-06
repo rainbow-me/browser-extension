@@ -18,7 +18,7 @@ export function SimulationNoChangesDetected() {
   return (
     <Inline space="8px" alignVertical="center">
       <Symbol
-        symbol="waveform.and.magnifyingglass"
+        symbol="waveform.badge.magnifyingglass"
         color="labelTertiary"
         size={16}
         weight="medium"

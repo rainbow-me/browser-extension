@@ -1015,7 +1015,7 @@ export const symbolNames = selectSymbolNames(
   'curlybraces',
   'calendar',
   'signature',
-  'waveform.and.magnifyingglass',
+  'waveform.badge.magnifyingglass',
   'arrow.down.right.and.arrow.up.left',
   't.square.fill',
   'arcade.stick',

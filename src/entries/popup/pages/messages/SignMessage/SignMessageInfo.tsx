@@ -59,7 +59,13 @@ function Overview({
             {i18n.t('simulation.signature.message')}
           </Text>
         </Inline>
-        <Text as="pre" size="12pt" weight="semibold" color="labelTertiary">
+        <Text
+          as="pre"
+          size="12pt"
+          weight="semibold"
+          color="labelTertiary"
+          whiteSpace="pre-wrap"
+        >
           {message}
         </Text>
       </Stack>
