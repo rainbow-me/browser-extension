@@ -39,7 +39,9 @@ export default function DisplayModeDropdown() {
             <Inline alignVertical="center" space="6px">
               <Symbol
                 symbol={
-                  displayMode === 'grouped' ? 'square.grid.2x2' : 'list.bullet'
+                  displayMode === 'grouped'
+                    ? 'square.grid.2x2'
+                    : 'checklist.unchecked'
                 }
                 weight="bold"
                 size={13}
@@ -85,7 +87,11 @@ export default function DisplayModeDropdown() {
               <DropdownMenuRadioItem highlightAccentColor value="byCollection">
                 <HomeMenuRow
                   leftComponent={
-                    <Symbol size={12} symbol="list.bullet" weight="semibold" />
+                    <Symbol
+                      size={12}
+                      symbol="checklist.unchecked"
+                      weight="semibold"
+                    />
                   }
                   centerComponent={
                     <Text size="14pt" weight="semibold">
