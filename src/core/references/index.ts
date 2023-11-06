@@ -142,18 +142,6 @@ export const LEGACY_CHAINS_FOR_HW = [
   ChainId.base,
 ];
 
-export const TESTNET_CHAIN_IDS = [
-  ChainId.mainnet,
-  ChainId.goerli,
-  ChainId.sepolia,
-  ChainId['arbitrum-goerli'],
-  ChainId['bsc-testnet'],
-  ChainId['optimism-goerli'],
-  ChainId['base-goerli'],
-  ChainId['zora-testnet'],
-  ChainId['polygon-mumbai'],
-];
-
 // once we have a proper UI for it
 export const userAddedCustomRpcEndpoints = [
   {

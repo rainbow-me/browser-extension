@@ -4,7 +4,9 @@ export const useCustomNetwork = () => {
   const { customChains } = useCustomRPCsStore();
   const chains = Object.values(customChains)
     .map((customChain) =>
-      customChain.rpcs.find((rpc) => rpc.rpcUrl === customChain.activeRpcUrl),
+      customChain.chains.find(
+        (chain) => chain.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+      ),
     )
     .filter(Boolean);
   return {

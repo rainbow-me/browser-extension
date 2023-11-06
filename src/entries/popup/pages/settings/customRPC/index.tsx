@@ -137,7 +137,18 @@ export function SettingsCustomRPC() {
     const valid = validateAddCustomRpc();
     if (valid && rpcUrl && chainId && name && symbol) {
       addCustomRPC({
-        customRPC: { ...customRPC, rpcUrl, chainId, name, symbol },
+        chain: {
+          ...customRPC,
+          rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+          id: chainId,
+          name,
+          network: name,
+          nativeCurrency: {
+            symbol,
+            decimals: 18,
+            name: symbol,
+          },
+        },
       });
     }
   }, [addCustomRPC, customRPC, validateAddCustomRpc]);
@@ -166,14 +177,14 @@ export function SettingsCustomRPC() {
                 Group chainId: {chainId}
               </Text>
               <Stack space="16px">
-                {customChains[Number(chainId)]?.rpcs?.map((customRPC, j) => (
+                {customChains[Number(chainId)]?.chains?.map((chain, j) => (
                   <Box key={j}>
                     <Inline alignHorizontal="justify">
                       <Text size="14pt" weight="bold" align="center">
-                        {customRPC.rpcUrl}
+                        {chain.rpcUrls.default.http[0]}
                       </Text>
                       <Text size="14pt" weight="bold" align="center">
-                        {customRPC.rpcUrl ===
+                        {chain.rpcUrls.default.http[0] ===
                         customChains[Number(chainId)].activeRpcUrl
                           ? 'Active'
                           : ''}
