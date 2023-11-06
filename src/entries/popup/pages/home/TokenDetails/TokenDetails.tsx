@@ -11,6 +11,7 @@ import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { isNativeAsset, isTestnetChainId } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
+import { findCustomNetworkForChainId } from '~/core/utils/customNetworks';
 import {
   FormattedCurrencyParts,
   formatCurrencyParts,
@@ -38,6 +39,7 @@ import {
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { SideChainExplainerSheet } from '~/entries/popup/components/SideChainExplainer';
+import { useCustomNetworkAsset } from '~/entries/popup/hooks/useCustomNetworkAsset';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -105,10 +107,10 @@ function BalanceValue({
 
 function SwapSend({
   token,
-  isTestnetToken,
+  isSwappable,
 }: {
   token: ParsedUserAsset;
-  isTestnetToken: boolean;
+  isSwappable: boolean;
 }) {
   const navigate = useRainbowNavigate();
   const { setSelectedToken } = useSelectedTokenStore();
@@ -120,7 +122,7 @@ function SwapSend({
 
   return (
     <Box display="flex" gap="8px">
-      {!isTestnetToken && (
+      {isSwappable && (
         <Button
           height="32px"
           variant="flat"
@@ -169,6 +171,10 @@ function NetworkBanner({
 }) {
   const [isExplainerOpen, toggleExplainer] = useReducer((s) => !s, false);
   if (chainId === ChainId.mainnet) return null;
+
+  const chainName =
+    ChainNameDisplay[chainId] || findCustomNetworkForChainId(chainId)?.name;
+
   return (
     <>
       <Box
@@ -186,7 +192,7 @@ function NetworkBanner({
         <TextOverflow size="12pt" weight="semibold" color="labelSecondary">
           {i18n.t('token_details.this_token_is_on_network', {
             symbol: tokenSymbol,
-            chainName: ChainNameDisplay[chainId],
+            chainName,
           })}
         </TextOverflow>
         <Box style={{ marginLeft: 'auto', height: 14 }}>
@@ -289,16 +295,27 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
 export function TokenDetails() {
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
 
-  const { data: token, isFetched } = useUserAsset(uniqueId);
+  const { data: userAsset, isFetched } = useUserAsset(uniqueId);
+  const { data: customAsset, isFetched: isCustomAssetFetched } =
+    useCustomNetworkAsset(uniqueId);
 
   const { isWatchingWallet } = useWallets();
 
   const navigate = useRainbowNavigate();
 
-  if (!uniqueId || (isFetched && !token)) return <Navigate to={ROUTES.HOME} />;
+  if (
+    !uniqueId ||
+    (isFetched && !userAsset && isCustomAssetFetched && !customAsset)
+  ) {
+    return <Navigate to={ROUTES.HOME} />;
+  }
+
+  const token = userAsset || customAsset;
   if (!token) return null;
 
-  const isTestnetToken = isTestnetChainId({ chainId: token?.chainId });
+  const isSwappable = !(
+    isTestnetChainId({ chainId: token?.chainId }) || !!customAsset
+  );
 
   const tokenBalance = {
     ...formatCurrencyParts(token.balance.amount),
@@ -329,7 +346,7 @@ export function TokenDetails() {
             />
           }
           rightComponent={
-            !isTestnetToken ? (
+            !isSwappable ? (
               <Inline alignVertical="center" space="7px">
                 <FavoriteButton token={token} />
                 <MoreOptions token={token} />
@@ -348,13 +365,13 @@ export function TokenDetails() {
           />
 
           {!isWatchingWallet && token.balance.amount !== '0' && (
-            <SwapSend token={token} isTestnetToken={isTestnetToken} />
+            <SwapSend token={token} isSwappable={isSwappable} />
           )}
 
           <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
       </Box>
-      {!isTestnetToken && (
+      {!isSwappable && (
         <Box
           display="flex"
           flexDirection="column"

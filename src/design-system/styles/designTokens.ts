@@ -1013,6 +1013,9 @@ export const symbolNames = selectSymbolNames(
   'bolt.shield.fill',
   't.square.fill',
   'arcade.stick',
+  'hammer.fill',
+  'checklist.unchecked',
+  'list.bullet',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
