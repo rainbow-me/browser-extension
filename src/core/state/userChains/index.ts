@@ -40,7 +40,7 @@ export interface UserChainsState {
   updateUserChainsOrder: ({
     userChainsOrder,
   }: {
-    userChainsOrder: MainnetChainId[];
+    userChainsOrder: (MainnetChainId | number)[];
   }) => void;
 }
 

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { useCustomRPCsStore } from '~/core/state/customRPC';
+import { useUserChainsStore } from '~/core/state/userChains';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -13,6 +14,8 @@ import { maskInput } from '../../../components/InputMask/utils';
 export function SettingsCustomRPC() {
   const navigate = useRainbowNavigate();
   const { customChains, addCustomRPC } = useCustomRPCsStore();
+  const { updateUserChain, updateUserChainsOrder, userChainsOrder } =
+    useUserChainsStore();
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
     rpcUrl?: string;
@@ -150,8 +153,19 @@ export function SettingsCustomRPC() {
           },
         },
       });
+      updateUserChain({ chainId, enabled: true });
+      updateUserChainsOrder({
+        userChainsOrder: userChainsOrder.concat([chainId]),
+      });
     }
-  }, [addCustomRPC, customRPC, validateAddCustomRpc]);
+  }, [
+    addCustomRPC,
+    customRPC,
+    updateUserChain,
+    updateUserChainsOrder,
+    userChainsOrder,
+    validateAddCustomRpc,
+  ]);
 
   return (
     <Box paddingHorizontal="20px">
