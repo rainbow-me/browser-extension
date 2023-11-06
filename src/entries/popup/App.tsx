@@ -41,12 +41,6 @@ export function App() {
 
   useExpiryListener();
 
-  React.useEffect(() => {
-    if (!isEqual(prevChains, customChains)) {
-      backgroundMessenger.send('rainbow_updateWagmiClient', null);
-    }
-  }, [prevChains, customChains]);
-
   const wagmiClient = React.useMemo(
     () =>
       createWagmiClient({
@@ -57,6 +51,12 @@ export function App() {
       }),
     [customChains],
   );
+
+  React.useEffect(() => {
+    if (!isEqual(prevChains, customChains)) {
+      backgroundMessenger.send('rainbow_updateWagmiClient', null);
+    }
+  }, [prevChains, customChains]);
 
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
