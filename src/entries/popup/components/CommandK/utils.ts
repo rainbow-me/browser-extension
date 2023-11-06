@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Address } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
-import { KeychainWallet } from '~/core/types/keychainTypes';
+import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 
 import { getWallets } from '../../handlers/wallet';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
@@ -437,8 +437,10 @@ type WalletNames = {
 };
 
 const typeMapping: { [key: string]: string } = {
-  ReadOnlyKeychain: 'Watching',
-  HdKeychain: 'Imported',
+  [KeychainType.ReadOnlyKeychain]: 'Watching',
+  [KeychainType.HdKeychain]: 'Secret Recovery Phrase',
+  [KeychainType.KeyPairKeychain]: 'Private Key',
+  [KeychainType.HardwareWalletKeychain]: 'Hardware Wallet',
 };
 
 const generateCSV = (
@@ -447,18 +449,15 @@ const generateCSV = (
 ): string => {
   let csvContent = 'public_address,name,type,parent_wallet\n';
 
-  data.forEach(({ accounts, type, vendor }) => {
+  data.forEach(({ accounts, type }) => {
     const primaryAddress = accounts[0];
     const primaryName =
       walletNames[primaryAddress as Address] || primaryAddress;
 
     accounts.forEach((address, index) => {
       const name = walletNames[address as Address] || address;
-      let importedType = typeMapping[type];
+      const importedType = typeMapping[type];
 
-      if (type === 'HardwareWalletKeychain') {
-        importedType = `Hardware Wallet - ${vendor}`;
-      }
       const parent = index === 0 ? '-' : primaryName;
       csvContent += `${address},${name},${importedType},${parent}\n`;
     });
