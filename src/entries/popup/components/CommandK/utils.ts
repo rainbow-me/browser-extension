@@ -438,7 +438,7 @@ type WalletNames = {
 
 const typeMapping: { [key: string]: string } = {
   [KeychainType.ReadOnlyKeychain]: 'Watching',
-  [KeychainType.HdKeychain]: 'Secret Recovery Phrase',
+  [KeychainType.HdKeychain]: 'Recovery Phrase',
   [KeychainType.KeyPairKeychain]: 'Private Key',
   [KeychainType.HardwareWalletKeychain]: 'Hardware Wallet',
 };
