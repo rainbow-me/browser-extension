@@ -10,10 +10,13 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
-import { SUPPORTED_CHAINS, userAddedCustomRpcEndpoints } from '../references';
+import { SUPPORTED_CHAINS } from '../references';
 import { LocalStorage } from '../storage';
 import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
-import { findCustomNetworkForChainId } from '../utils/customNetworks';
+import {
+  findCustomNetworkForChainId,
+  getCustomNetworks,
+} from '../utils/customNetworks';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -27,7 +30,7 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
   // overrides have preference
   const userAddedNetwork = findCustomNetworkForChainId(chain.id);
   if (userAddedNetwork) {
-    return { http: userAddedNetwork.rpc };
+    return { http: userAddedNetwork.rpcUrls.default.http[0] };
   }
 
   switch (chain.id) {
@@ -75,25 +78,16 @@ const allChains = (
     ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
     : SUPPORTED_CHAINS
 ).concat(
-  userAddedCustomRpcEndpoints
-    .filter((network) => network.active)
-    .map((network) => {
-      return {
-        id: network.chainId,
-        name: network.name,
-        network: network.name,
-        nativeCurrency: {
-          decimals: 18,
-          name: network.name,
-          symbol: network.symbol,
-        },
-        rpcUrls: {
-          public: { http: [network.rpc] },
-          default: { http: [network.rpc] },
-        },
-        testnet: false,
-      };
-    }),
+  getCustomNetworks().map((chain) => {
+    return {
+      id: chain.id,
+      name: chain.name,
+      network: chain.name,
+      nativeCurrency: chain.nativeCurrency,
+      rpcUrls: chain.rpcUrls,
+      testnet: false,
+    };
+  }),
 );
 
 const { chains, provider, webSocketProvider } = configureChains(allChains, [

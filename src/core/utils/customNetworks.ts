@@ -1,19 +1,21 @@
-// This is to simulate the user adding custom RPC endpoints that we'll be storing in state
+import { customRPCsStore } from '../state/customRPC';
 
-import { SUPPORTED_CHAINS, userAddedCustomRpcEndpoints } from '../references';
-
-export const findCustomNetworkForChainId = (chainId: number) => {
-  return userAddedCustomRpcEndpoints.find(
-    (network) => network.chainId === chainId && network.active,
-  );
+export const getCustomNetworks = () => {
+  const { customChains } = customRPCsStore.getState();
+  const chains = Object.values(customChains)
+    .map((customChain) =>
+      customChain.chains.find(
+        (chain) => chain.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+      ),
+    )
+    .filter(Boolean);
+  return chains;
 };
 
-export const getCustomNetworks = () =>
-  userAddedCustomRpcEndpoints.filter(
-    (network) =>
-      isCustomNetwork(network.chainId) &&
-      SUPPORTED_CHAINS.every((chain) => chain.id !== network.chainId),
-  );
+export const findCustomNetworkForChainId = (chainId: number) => {
+  const customNetworks = getCustomNetworks();
+  return customNetworks.find((network) => network.id === chainId);
+};
 
 export const isCustomNetwork = (chainId: number) =>
   !!findCustomNetworkForChainId(chainId);
