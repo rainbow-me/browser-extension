@@ -93,11 +93,9 @@
         "text_bold": "Dica:"
       },
       "description": "Escolha quais redes e tokens exibir. Você pode se conectar a qualquer rede suportada pelo Rainbow, mesmo que não estejam selecionadas.",
-      "testnet_mode": {
-        "title": "Modo Testnet",
-        "toggle_explainer": "Mude para o Modo Testnet para exibir apenas saldos e transações de testnet.",
-        "shortcut_title": "Ativar Atalho de Teclado",
-        "shortcut_toggle_explainer": "Habilita o atalho do Modo Testnet (T) e adiciona uma alternância no menu superior direito da tela inicial."
+      "developer_tools": {
+        "title": "Enable Developer Tools",
+        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
         "title": "RPC personalizado"
@@ -371,9 +369,15 @@
         "view_nfts": "Visualizar NFTs",
         "add_wallet": "Adicionar uma Carteira",
         "lock": "Bloquear Rainbow",
-        "testnet_mode": "Modo Testnet",
         "connected_apps": "Aplicativos Conectados",
+        "developer_tools": "Toggle Developer Tools",
+        "developer_tools_disabled": "Enable Developer Tools",
+        "developer_tools_enabled": "Disable Developer Tools",
+        "testnet_mode": "Toggle Testnet Mode",
+        "testnet_mode_disabled": "Enable Testnet Mode",
+        "testnet_mode_enabled": "Disable Testnet Mode",
         "settings": "Configurações",
+        "network_settings": "Network Settings",
         "my_qr_code": "Meu Código QR",
         "my_qr_code_watched": "Código QR",
         "create_wallet": "Criar uma Carteira",
@@ -404,7 +408,10 @@
         "my_wallets": "alternar",
         "my_tokens_watched": "meus",
         "view_nfts": "galeria, perfil",
+        "testnet_mode": "toggle, networks, testnets",
+        "developer_tools": "toggle, networks, developer, testnets",
         "settings": "preferências",
+        "network_settings": "testnets, developer, networks",
         "my_qr_code_watched": "meus",
         "create_wallet": "adicionar, novo",
         "import_wallet": "adicionar, recuperação secreta, frase de segurança, chave privada",
@@ -417,6 +424,11 @@
     },
     "command_rows": {
       "no_value": "Sem Valor"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Press T to toggle Testnet Mode",
+      "title_disabled": "Developer Tools Disabled",
+      "title_enabled": "Developer Tools Enabled"
     },
     "hide_balances_toast": {
       "description_hidden": "Seus saldos estão ocultos",
@@ -876,16 +888,16 @@
       "guides_and_support": "Guias e Suporte",
       "share_feedback": "Compartilhar Feedback",
       "lock_rainbow": "Bloquear Rainbow",
-      "testnet_mode": "Modo Testnet"
+      "testnet_mode": "Modo Testnet",
+      "testnet_mode_off": "Off",
+      "testnet_mode_on": "Ligado"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Conectar a %{chainName}",
+    "connect_to": "Switching to %{chainName}?",
     "testnet_mode": "Modo Testnet",
-    "testnet_mode_active": "está atualmente ativo. Você gostaria de desativá-lo e se conectar a %{chainName}?",
-    "testnet_mode_not_active": "não está ativamente ativo. Você gostaria de ativá-lo e se conectar a %{chainName}?",
-    "disable_and_connect": "Desativar e conectar",
-    "enable_and_connect": "Ativar e conectar",
+    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
+    "disable_and_connect": "Disable and Switch",
     "cancel": "Cancelar"
   },
   "app_connection_switcher": {
@@ -1283,7 +1295,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "Esta carteira está atualmente no modo 'Acompanhando'",
-    "wallet_testing_mode": "Esta carteira está atualmente em modo 'Teste'",
+    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "Em breve!",
     "no_hw_ff": "Carteiras de hardware não são suportadas no Firefox. Tente um navegador diferente como Chrome ou Brave"
   },
