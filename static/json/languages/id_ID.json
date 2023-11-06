@@ -94,8 +94,8 @@
       },
       "description": "Pilih jaringan dan token yang akan ditampilkan. Anda dapat terhubung ke jaringan apa pun yang didukung Rainbow, meskipun mereka tidak dicentang",
       "developer_tools": {
-        "title": "Enable Developer Tools",
-        "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
+        "title": "Aktifkan Alat Pengembang",
+        "toggle_explainer": "Mengaktifkan shortcut Mode Testnet (T) dan menambahkan toggle ke menu atas-kanan layar utama."
       },
       "custom_rpc": {
         "title": "RPC Kustom"
@@ -370,14 +370,14 @@
         "add_wallet": "Tambahkan Wallet",
         "lock": "Kunci Rainbow",
         "connected_apps": "Aplikasi Terhubung",
-        "developer_tools": "Toggle Developer Tools",
-        "developer_tools_disabled": "Enable Developer Tools",
-        "developer_tools_enabled": "Disable Developer Tools",
-        "testnet_mode": "Toggle Testnet Mode",
-        "testnet_mode_disabled": "Enable Testnet Mode",
-        "testnet_mode_enabled": "Disable Testnet Mode",
+        "developer_tools": "TombolAlat Pengembang",
+        "developer_tools_disabled": "Aktifkan Alat Pengembang",
+        "developer_tools_enabled": "Nonaktifkan Alat Pengembang",
+        "testnet_mode": "Tombol Mode Testnet",
+        "testnet_mode_disabled": "Aktifkan Mode Testnet",
+        "testnet_mode_enabled": "Nonaktifkan Mode Testnet",
         "settings": "Pengaturan",
-        "network_settings": "Network Settings",
+        "network_settings": "Pengaturan Jaringan",
         "my_qr_code": "Kode QR Saya",
         "my_qr_code_watched": "Kode QR",
         "create_wallet": "Buat Wallet",
@@ -408,10 +408,10 @@
         "my_wallets": "beralih",
         "my_tokens_watched": "saya",
         "view_nfts": "galeri, profil",
-        "testnet_mode": "toggle, networks, testnets",
-        "developer_tools": "toggle, networks, developer, testnets",
+        "testnet_mode": "tombol, jaringan, testnet",
+        "developer_tools": "tombol, jaringan, pengembang, testnet",
         "settings": "preferensi",
-        "network_settings": "testnets, developer, networks",
+        "network_settings": "testnet, pengembang, jaringan",
         "my_qr_code_watched": "saya",
         "create_wallet": "tambah, baru",
         "import_wallet": "tambah, pemulihan rahasia, frasa benih, kunci privat",
@@ -426,9 +426,9 @@
       "no_value": "Tak Ada Nilai"
     },
     "developer_tools_toast": {
-      "description_enabled": "Press T to toggle Testnet Mode",
-      "title_disabled": "Developer Tools Disabled",
-      "title_enabled": "Developer Tools Enabled"
+      "description_enabled": "Tekan T untuk mengganti Mode Testnet",
+      "title_disabled": "Alat Pengembang Dinonaktifkan",
+      "title_enabled": "Alat Pengembangan Diaktifkan"
     },
     "hide_balances_toast": {
       "description_hidden": "Saldo Anda tersembunyi",
@@ -889,15 +889,15 @@
       "share_feedback": "Bagikan Masukan",
       "lock_rainbow": "Kunci Rainbow",
       "testnet_mode": "Mode Testnet",
-      "testnet_mode_off": "Off",
+      "testnet_mode_off": "Mati",
       "testnet_mode_on": "Aktif"
     }
   },
   "testnet_mode_watcher": {
-    "connect_to": "Switching to %{chainName}?",
+    "connect_to": "Beralih ke %{chainName}?",
     "testnet_mode": "Mode Testnet",
-    "testnet_mode_active": "is currently active. Would you like to disable it and interact with %{chainName} instead?",
-    "disable_and_connect": "Disable and Switch",
+    "testnet_mode_active": "saat ini aktif. Apakah Anda ingin menonaktifkannya dan berinteraksi dengan %{chainName} sebagai gantinya?",
+    "disable_and_connect": "Nonaktifkan dan Beralih",
     "cancel": "Batal"
   },
   "app_connection_switcher": {
@@ -1295,7 +1295,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "Dompet ini saat ini dalam mode 'Watching'",
-    "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
+    "wallet_testing_mode": "Testnet tidak didukung oleh Swap. Nonaktifkan Mode Testnet untuk melanjutkan.",
     "coming_soon": "Segera Hadir!",
     "no_hw_ff": "Dompet perangkat keras tidak didukung di Firefox. Coba browser lain seperti Chrome atau Brave"
   },
