@@ -381,12 +381,41 @@ export const getAssetMetadata = async ({
     contract.symbol(),
     contract.name(),
   ]);
-  const extractValue = <T>(result: PromiseSettledResult<T>): T | undefined =>
-    result.status === 'fulfilled' ? result.value : undefined;
 
   return {
-    decimals: extractValue<number>(decimals),
-    symbol: extractValue<string>(symbol),
-    name: extractValue<string>(name),
+    decimals: extractFulfilledValue<number>(decimals),
+    symbol: extractFulfilledValue<string>(symbol),
+    name: extractFulfilledValue<string>(name),
   };
 };
+
+export const getAssetBalance = async ({
+  // parsedAsset,
+  assetAddress,
+  currentAddress,
+  // currency,
+  provider,
+}: {
+  // parsedAsset: ParsedUserAsset;
+  assetAddress: Address;
+  currentAddress: Address;
+  // currency: SupportedCurrencyKey;
+  provider: Provider;
+}) => {
+  const balance = await getContract({
+    address: assetAddress,
+    abi: erc20ABI,
+    signerOrProvider: provider,
+  }).balanceOf(currentAddress);
+
+  // const updatedAsset = parseUserAssetBalances({
+  //   asset: parsedAsset,
+  //   currency,
+  //   balance: balance.toString(),
+  // });
+  return balance.toString();
+};
+
+export const extractFulfilledValue = <T>(
+  result: PromiseSettledResult<T>,
+): T | undefined => (result.status === 'fulfilled' ? result.value : undefined);
