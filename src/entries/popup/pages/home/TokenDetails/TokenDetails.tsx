@@ -371,7 +371,7 @@ export function TokenDetails() {
           <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
       </Box>
-      {!isSwappable && (
+      {isSwappable && (
         <Box
           display="flex"
           flexDirection="column"
