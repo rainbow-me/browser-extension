@@ -1,5 +1,5 @@
 import { isValidAddress } from '@ethereumjs/util';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Address, Chain } from 'wagmi';
 
@@ -21,7 +21,7 @@ const INITIAL_ASSET = {
   symbol: '',
 };
 
-export function CustomRPC() {
+export function CustomChain() {
   const { state } = useLocation();
   const { setActiveRPC, customChains, removeCustomRPC } = useCustomRPCsStore();
   const { customRPCAssets, addCustomRPCAsset, removeCustomRPCAsset } =
@@ -30,7 +30,10 @@ export function CustomRPC() {
 
   const chainId = state?.chainId as number;
   const customChain = customChains[chainId];
-  const customRPCAssetsForChain = customRPCAssets[chainId];
+  const customRPCAssetsForChain = useMemo(
+    () => customRPCAssets[chainId] || [],
+    [chainId, customRPCAssets],
+  );
 
   const [asset, setAsset] = useState<CustomRPCAsset>(INITIAL_ASSET);
 
@@ -244,7 +247,7 @@ export function CustomRPC() {
                 onInputChange<string>(t.target.value, 'string', 'symbol')
               }
               height="32px"
-              placeholder="name"
+              placeholder="Symbol"
               variant="surface"
               value={asset.symbol}
             />

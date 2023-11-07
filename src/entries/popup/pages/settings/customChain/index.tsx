@@ -11,7 +11,7 @@ import { ROUTES } from '~/entries/popup/urls';
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
 
-export function SettingsCustomRPC() {
+export function SettingsCustomChain() {
   const navigate = useRainbowNavigate();
   const { customChains, addCustomRPC } = useCustomRPCsStore();
   const { addUserChain } = useUserChainsStore();
