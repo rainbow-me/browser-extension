@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { AddressZero } from '@ethersproject/constants';
 import { formatEther } from '@ethersproject/units';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { BigNumberish } from 'ethers';
@@ -34,6 +35,7 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { Space } from '~/design-system/styles/designTokens';
 
+import { useCustomNetworkAsset } from '../../hooks/useCustomNetworkAsset';
 import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
@@ -157,6 +159,22 @@ function Fee({
     },
   });
 
+  const { data: customNetworkAsset, isFetched: isCustomAssetFetched } =
+    useCustomNetworkAsset(`${AddressZero}_${chainId}`);
+
+  const nativeCurrencyGasFeeSupported = useCallback(
+    (chainId: ChainId) => {
+      if (isCustomNetwork(chainId) && isCustomAssetFetched) {
+        // If we don't have the price we need to default to native asset fee
+        if (customNetworkAsset?.native?.balance?.amount === '0') {
+          return false;
+        }
+      }
+      return true;
+    },
+    [customNetworkAsset, isCustomAssetFetched],
+  );
+
   return (
     <Box>
       <CustomGasSheet
@@ -186,7 +204,7 @@ function Fee({
                   <TextOverflow weight="semibold" color="label" size="14pt">
                     {isLoading
                       ? '~'
-                      : isCustomNetwork(chainId)
+                      : !nativeCurrencyGasFeeSupported(chainId)
                       ? convertToNativeGasFee(
                           gasFeeParamsForSelectedSpeed?.gasFee
                             .amount as BigNumberish,

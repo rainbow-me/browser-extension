@@ -72,7 +72,7 @@ function BalanceValue({
     nativeBalance: FormattedCurrencyParts,
     chainId: ParsedUserAsset['chainId'],
   ) => {
-    if (isCustomNetwork(chainId)) {
+    if (isCustomNetwork(chainId) && nativeBalance.value === '0') {
       return '-';
     } else {
       const val = hideAssetBalances ? <HiddenValue /> : nativeBalance.value;

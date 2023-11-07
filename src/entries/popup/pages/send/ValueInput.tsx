@@ -73,6 +73,10 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
       [asset],
     );
 
+    const isNativeCurrencySupportedForThisAsset = useMemo(() => {
+      return isCustomNetworkAsset && asset?.native?.balance?.amount != '0';
+    }, [isCustomNetworkAsset, asset]);
+
     return (
       <Box paddingBottom="20px" paddingHorizontal="20px">
         <Stack space="16px">
@@ -136,13 +140,13 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
                       weight="bold"
                       color={`${asset ? 'label' : 'labelTertiary'}`}
                     >
-                      {isCustomNetworkAsset
+                      {!isNativeCurrencySupportedForThisAsset
                         ? i18n.t('token_details.not_available')
                         : dependentAmount.display}
                     </TextOverflow>
                   </Column>
                   <Column width="content">
-                    {!isCustomNetworkAsset && (
+                    {isNativeCurrencySupportedForThisAsset && (
                       <Lens
                         testId="value-input-switch"
                         onClick={switchIndependentField}

@@ -13,6 +13,7 @@ import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
+import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
 import {
@@ -268,6 +269,10 @@ export const ReviewSheet = ({
     address: toAddress,
   });
 
+  const shouldHideAmount =
+    isCustomNetwork(asset?.chainId as ChainId) &&
+    asset?.native?.balance?.amount === '0';
+
   const sendingOnL2 = useMemo(
     () => isL2Chain(asset?.chainId || ChainId.mainnet),
     [asset?.chainId],
@@ -372,7 +377,9 @@ export const ReviewSheet = ({
                                 weight="bold"
                                 color="labelTertiary"
                               >
-                                {secondaryAmountDisplay}
+                                {shouldHideAmount
+                                  ? i18n.t('token_details.not_available')
+                                  : secondaryAmountDisplay}
                               </TextOverflow>
                             </Row>
                           </Rows>

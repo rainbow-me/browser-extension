@@ -251,6 +251,7 @@ export const AssetRow = memo(function AssetRow({
       ),
     [asset?.balance?.display, asset?.symbol, hideAssetBalances],
   );
+
   const nativeBalanceDisplay = useMemo(
     () =>
       hideAssetBalances ? (
@@ -260,7 +261,8 @@ export const AssetRow = memo(function AssetRow({
           </TextOverflow>
           <Asterisks color="label" size={10} />
         </Inline>
-      ) : isCustomNetwork(asset.chainId) ? null : (
+      ) : isCustomNetwork(asset.chainId) &&
+        asset?.native?.balance?.amount === '0' ? null : (
         <Text size="14pt" weight="semibold" align="right">
           {asset?.native?.balance?.display}
         </Text>
@@ -269,6 +271,7 @@ export const AssetRow = memo(function AssetRow({
       hideAssetBalances,
       currentCurrency,
       asset.chainId,
+      asset?.native?.balance?.amount,
       asset?.native?.balance?.display,
     ],
   );
