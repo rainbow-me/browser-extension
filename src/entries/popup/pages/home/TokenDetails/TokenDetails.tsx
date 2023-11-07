@@ -9,12 +9,13 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { isNativeAsset, isTestnetChainId } from '~/core/utils/chains';
-import { copyAddress } from '~/core/utils/copy';
 import {
-  findCustomNetworkForChainId,
-  isCustomNetwork,
-} from '~/core/utils/customNetworks';
+  findCustomChainForChainId,
+  isCustomChain,
+  isNativeAsset,
+  isTestnetChainId,
+} from '~/core/utils/chains';
+import { copyAddress } from '~/core/utils/copy';
 import {
   FormattedCurrencyParts,
   formatCurrencyParts,
@@ -72,7 +73,7 @@ function BalanceValue({
     nativeBalance: FormattedCurrencyParts,
     chainId: ParsedUserAsset['chainId'],
   ) => {
-    if (isCustomNetwork(chainId) && nativeBalance.value === '0') {
+    if (isCustomChain(chainId) && nativeBalance.value === '0') {
       return '-';
     } else {
       const val = hideAssetBalances ? <HiddenValue /> : nativeBalance.value;
@@ -191,7 +192,7 @@ function NetworkBanner({
   if (chainId === ChainId.mainnet) return null;
 
   const chainName =
-    ChainNameDisplay[chainId] || findCustomNetworkForChainId(chainId)?.name;
+    ChainNameDisplay[chainId] || findCustomChainForChainId(chainId)?.name;
 
   return (
     <>

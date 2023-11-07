@@ -17,10 +17,7 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
-import {
-  getCustomNetworks,
-  isCustomNetwork,
-} from '~/core/utils/customNetworks';
+import { getCustomChains, isCustomChain } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -132,10 +129,10 @@ function Fee({
   const convertToNativeGasFee = useCallback(
     (weiValue: BigNumberish | undefined, chainId: ChainId) => {
       if (!weiValue) return '';
-      const customNetwork = getCustomNetworks().find(
-        (network) => network.chainId === chainId,
+      const customNetwork = getCustomChains().customChains.find(
+        (chain) => chain.id === chainId,
       );
-      return `${formatEther(weiValue)} ${customNetwork?.symbol}`;
+      return `${formatEther(weiValue)} ${customNetwork?.nativeCurrency.symbol}`;
     },
     [],
   );
@@ -164,7 +161,7 @@ function Fee({
 
   const nativeCurrencyGasFeeSupported = useCallback(
     (chainId: ChainId) => {
-      if (isCustomNetwork(chainId) && isCustomAssetFetched) {
+      if (isCustomChain(chainId) && isCustomAssetFetched) {
         // If we don't have the price we need to default to native asset fee
         if (customNetworkAsset?.native?.balance?.amount === '0') {
           return false;

@@ -7,7 +7,7 @@ import {
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
-import { isCustomNetwork } from '~/core/utils/customNetworks';
+import { isCustomChain } from '~/core/utils/chains';
 import { add } from '~/core/utils/numbers';
 import { chainIdMap } from '~/core/utils/userChains';
 
@@ -25,7 +25,7 @@ export function selectorFilterByUserChains<T>({
     .flat();
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
-    if (allUserChainIds.includes(chainKey) || isCustomNetwork(chainKey)) {
+    if (allUserChainIds.includes(chainKey) || isCustomChain(chainKey)) {
       acc[chainKey] = data[chainKey];
     }
     return acc;

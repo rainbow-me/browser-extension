@@ -22,7 +22,7 @@ import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAsse
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { isCustomNetwork } from '~/core/utils/customNetworks';
+import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -261,7 +261,7 @@ export const AssetRow = memo(function AssetRow({
           </TextOverflow>
           <Asterisks color="label" size={10} />
         </Inline>
-      ) : isCustomNetwork(asset.chainId) &&
+      ) : isCustomChain(asset.chainId) &&
         asset?.native?.balance?.amount === '0' ? null : (
         <Text size="14pt" weight="semibold" align="right">
           {asset?.native?.balance?.display}

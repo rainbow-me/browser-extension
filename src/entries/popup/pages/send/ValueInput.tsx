@@ -4,7 +4,7 @@ import React, { useImperativeHandle, useMemo } from 'react';
 import { i18n } from '~/core/languages';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { isCustomNetwork } from '~/core/utils/customNetworks';
+import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
   Button,
@@ -69,7 +69,7 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
     }));
 
     const isCustomNetworkAsset = useMemo(
-      () => isCustomNetwork(asset.chainId),
+      () => isCustomChain(asset.chainId),
       [asset],
     );
 

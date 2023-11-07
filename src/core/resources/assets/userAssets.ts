@@ -28,8 +28,8 @@ import {
 import {
   getSupportedChainIds,
   getSupportedTestnetChainIds,
+  isCustomChain,
 } from '~/core/utils/chains';
-import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { greaterThan } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 import {
@@ -140,7 +140,7 @@ async function userAssetsQueryFunction({
   try {
     const supportedChainIds = testnetMode
       ? getSupportedTestnetChainIds()
-      : getSupportedChainIds().filter((chainId) => !isCustomNetwork(chainId));
+      : getSupportedChainIds().filter((chainId) => !isCustomChain(chainId));
     const url = `/${supportedChainIds.join(',')}/${address}/assets`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       params: {
