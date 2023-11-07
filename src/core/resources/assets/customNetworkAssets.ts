@@ -25,7 +25,10 @@ import {
   parseAssetMetadata,
   parseUserAssetBalances,
 } from '~/core/utils/assets';
-import { getCustomChains } from '~/core/utils/chains';
+import {
+  customChainIdsToAssetNames,
+  getCustomChains,
+} from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 import { ASSETS_TIMEOUT_DURATION } from './assets';
@@ -107,6 +110,17 @@ export const CustomNetworkAssetsSetQueryData = ({
   );
 };
 
+const getCustomChainIconUrl = (chainId: ChainId, address: AddressOrEth) => {
+  const baseUrl =
+    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
+
+  if (address === AddressZero) {
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
+  } else {
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
+  }
+};
+
 async function customNetworkAssetsFunction({
   queryKey: [{ address, currency }],
 }: QueryFunctionArgs<typeof customNetworkAssetsKey>) {
@@ -141,6 +155,7 @@ async function customNetworkAssetsFunction({
               price: { value: 0 },
               bridging: { isBridgeable: false, networks: [] },
               mainnetAddress: AddressZero as AddressOrEth,
+              icon_url: getCustomChainIconUrl(chain.id, AddressZero),
             } as ParsedAsset;
 
             // Now we'll try to fetch the prices for all the assets in this network
@@ -182,6 +197,12 @@ async function customNetworkAssetsFunction({
               currency,
               balance: nativeAssetBalance.toString(),
             });
+
+            console.log(
+              parsedAssetsDict[chain.id as ChainId][
+                customNetworkNativeAssetParsed.uniqueId
+              ],
+            );
           }),
         );
       }

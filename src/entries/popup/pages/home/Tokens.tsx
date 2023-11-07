@@ -120,7 +120,7 @@ export function Tokens() {
         }),
     },
   );
-
+  console.log(assets[0]);
   const allAssets = useMemo(
     () => [...assets, ...customNetworkAssets],
     [assets, customNetworkAssets],
