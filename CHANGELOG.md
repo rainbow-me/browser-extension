@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
-## [1.2.64](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.64)
+## [v1.2.64](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.64)
 
 ### Added
 
@@ -54,14 +54,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Expanded end-to-end test coverage for networks and Testnet Mode #1075
 - Adopting `findByTestId` in e2e tests for reliability #1093
 
-## [1.2.56](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.56)
+## [v1.2.56](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.56)
 
 ### Fixed
 
 - Resolved a crash when quickly switching tabs #1089
 - Fixed tab selection and restoration when using Rainbow in Full Screen #1089
 
-## [1.2.54](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.54)
+## [v1.2.54](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.54)
 
 ### Added
 
