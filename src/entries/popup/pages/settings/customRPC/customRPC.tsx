@@ -1,13 +1,14 @@
 import { isValidAddress } from '@ethereumjs/util';
 import React, { useCallback, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Address } from 'wagmi';
+import { Address, Chain } from 'wagmi';
 
-import { CustomRPC, useCustomRPCsStore } from '~/core/state/customRPC';
+import { CustomChain, useCustomRPCsStore } from '~/core/state/customRPC';
 import {
   CustomRPCAsset,
   useCustomRPCAssetsStore,
 } from '~/core/state/customRPCAssets';
+import { useUserChainsStore } from '~/core/state/userChains';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
@@ -25,8 +26,10 @@ export function CustomRPC() {
   const { setActiveRPC, customChains, removeCustomRPC } = useCustomRPCsStore();
   const { customRPCAssets, addCustomRPCAsset, removeCustomRPCAsset } =
     useCustomRPCAssetsStore();
+  const { removeUserChain } = useUserChainsStore();
+
   const chainId = state?.chainId as number;
-  const chain = customChains[chainId];
+  const customChain = customChains[chainId];
   const customRPCAssetsForChain = customRPCAssets[chainId];
 
   const [asset, setAsset] = useState<CustomRPCAsset>(INITIAL_ASSET);
@@ -73,11 +76,23 @@ export function CustomRPC() {
     }
   }, [addCustomRPCAsset, asset, chainId, validateAsset]);
 
+  const removeCustomChain = useCallback(
+    ({ chain }: { chain: Chain; customChain: CustomChain }) => {
+      if (customChain.chains.length === 1) {
+        removeUserChain({ chainId });
+      }
+      removeCustomRPC({
+        rpcUrl: chain.rpcUrls.default.http[0],
+      });
+    },
+    [chainId, customChain.chains.length, removeCustomRPC, removeUserChain],
+  );
+
   return (
     <Box paddingHorizontal="20px">
       <Stack space="24px">
         <Stack space="16px">
-          {chain?.rpcs?.map((customRPC, i) => {
+          {customChain?.chains?.map((chain, i) => {
             return (
               <Box
                 background="surfaceSecondaryElevated"
@@ -88,16 +103,14 @@ export function CustomRPC() {
                 key={i}
               >
                 <Stack space="10px">
-                  {Object.keys(customRPC)?.map((key, i) => (
+                  {Object.keys(chain)?.map((key, i) => (
                     <Box key={i}>
                       <Inline space="4px">
                         <Text size="14pt" weight="bold" align="center">
                           {`${key}:`}
                         </Text>
                         <Text size="14pt" weight="bold" align="center">
-                          {`${String(
-                            customRPC[key as keyof typeof customRPC],
-                          )}`}
+                          {`${String(chain[key as keyof typeof chain])}`}
                         </Text>
                       </Inline>
                     </Box>
@@ -115,18 +128,19 @@ export function CustomRPC() {
                       borderColor="accent"
                       onClick={() =>
                         setActiveRPC({
-                          rpcUrl: customRPC.rpcUrl,
-                          chainId: customRPC.chainId,
+                          rpcUrl: chain.rpcUrls.default.http[0],
+                          chainId: chain.id,
                         })
                       }
-                      selected={chain.activeRpcUrl === customRPC.rpcUrl}
+                      selected={
+                        customChain.activeRpcUrl ===
+                        chain.rpcUrls.default.http[0]
+                      }
                     />
                   </Inline>
                   <Inline alignHorizontal="right">
                     <Button
-                      onClick={() =>
-                        removeCustomRPC({ rpcUrl: customRPC.rpcUrl })
-                      }
+                      onClick={() => removeCustomChain({ customChain, chain })}
                       color="accent"
                       height="36px"
                       variant="raised"
