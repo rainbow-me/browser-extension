@@ -1,4 +1,5 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { isEqual } from 'lodash';
 import * as React from 'react';
 import { WagmiConfig } from 'wagmi';
 
@@ -41,10 +42,10 @@ export function App() {
   useExpiryListener();
 
   React.useEffect(() => {
-    if (prevChains?.length && prevChains?.length !== customChains.length) {
+    if (!isEqual(prevChains, customChains)) {
       backgroundMessenger.send('rainbow_updateWagmiClient', null);
     }
-  }, [customChains.length, prevChains?.length]);
+  }, [prevChains, customChains]);
 
   const wagmiClient = React.useMemo(
     () =>
