@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Address } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
+import { Account } from '~/entries/popup/hooks/useAccounts';
 
 import { getWallets } from '../../handlers/wallet';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
@@ -432,10 +432,6 @@ export function useKeyboardNavigation(
   }, []);
 }
 
-type WalletNames = {
-  [address: Address]: string;
-};
-
 const typeMapping: { [key: string]: string } = {
   [KeychainType.ReadOnlyKeychain]: 'Watching',
   [KeychainType.HdKeychain]: 'Recovery Phrase',
@@ -445,13 +441,15 @@ const typeMapping: { [key: string]: string } = {
 
 const generateCSV = (
   wallets: KeychainWallet[],
-  walletNames: WalletNames,
+  accountsWithNames: Account[],
 ): string => {
   let csvContent = 'public_address,name,type,wallet_group\n';
 
   wallets.forEach(({ accounts, type }, i) => {
     accounts.forEach((address) => {
-      const name = walletNames[address as Address] || address;
+      const { walletName, ensName } =
+        accountsWithNames.find((a) => a.address === address) || {};
+      const name = walletName || ensName || address;
       const walletType = typeMapping[type];
       const walletGroup =
         type === KeychainType.HdKeychain ? `Wallet Group ${i}` : '-';
@@ -462,9 +460,9 @@ const generateCSV = (
   return csvContent;
 };
 
-export const handleExportAddresses = async (walletNames: WalletNames) => {
+export const handleExportAddresses = async (accounts: Account[]) => {
   const wallets = await getWallets();
-  const csvContent = generateCSV(wallets, walletNames);
+  const csvContent = generateCSV(wallets, accounts);
   const blob = new Blob([csvContent], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
   const tempLink = document.createElement('a');

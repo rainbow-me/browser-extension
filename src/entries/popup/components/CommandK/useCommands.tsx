@@ -13,7 +13,6 @@ import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmal
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSavedEnsNames } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { useWalletNamesStore } from '~/core/state/walletNames';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
@@ -26,6 +25,7 @@ import {
 } from '~/core/utils/tabs';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import * as wallet from '~/entries/popup/handlers/wallet';
+import { useAccounts } from '~/entries/popup/hooks/useAccounts';
 import { useNavigateToSwaps } from '~/entries/popup/hooks/useNavigateToSwaps';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -504,7 +504,7 @@ export const useCommands = (
   const { searchableTokens } = useSearchableTokens();
   const { searchableWallets } = useSearchableWallets(currentPage);
   const { setSelectedToken } = useSelectedTokenStore();
-  const { walletNames } = useWalletNamesStore();
+  const { sortedAccounts } = useAccounts();
 
   const { setTestnetMode, testnetMode } = useTestnetModeStore();
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
@@ -634,7 +634,7 @@ export const useCommands = (
         action: () => handleCopy(address),
       },
       exportAddresses: {
-        action: () => handleExportAddresses(walletNames),
+        action: () => handleExportAddresses(sortedAccounts),
       },
       viewNFTs: {
         action: openProfile,
@@ -859,10 +859,10 @@ export const useCommands = (
       openProfile,
       previousPageState.selectedCommand,
       selectTokenAndNavigate,
+      sortedAccounts,
       testnetMode,
       viewTokenOnExplorer,
       viewWalletOnEtherscan,
-      walletNames,
     ],
   );
 
