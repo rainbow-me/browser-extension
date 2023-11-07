@@ -1,5 +1,6 @@
 import { isValidAddress } from '@ethereumjs/util';
-import React, { useCallback, useMemo, useState } from 'react';
+import { getProvider } from '@wagmi/core';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Address, Chain } from 'wagmi';
 
@@ -9,6 +10,7 @@ import {
   useCustomRPCAssetsStore,
 } from '~/core/state/customRPCAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
+import { getAssetMetadata } from '~/core/utils/assets';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
@@ -28,7 +30,7 @@ export function CustomChain() {
     useCustomRPCAssetsStore();
   const { removeUserChain } = useUserChainsStore();
 
-  const chainId = state?.chainId as number;
+  const chainId = state?.chainId;
   const customChain = customChains[chainId];
   const customRPCAssetsForChain = useMemo(
     () => customRPCAssets[chainId] || [],
@@ -70,6 +72,25 @@ export function CustomChain() {
     },
     [customRPCAssetsForChain],
   );
+
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      if (!!chainId && isValidAddress(asset.address)) {
+        const provider = getProvider({ chainId: Number(chainId) });
+        const metadata = await getAssetMetadata({
+          address: asset.address,
+          provider,
+        });
+        setAsset({
+          address: asset.address,
+          symbol: metadata.symbol || INITIAL_ASSET.symbol,
+          decimals: metadata.decimals || INITIAL_ASSET.decimals,
+          name: metadata.name || INITIAL_ASSET.name,
+        });
+      }
+    };
+    fetchMetadata();
+  }, [asset.address, chainId]);
 
   const addAsset = useCallback(() => {
     const validAsset = validateAsset(asset);
@@ -217,21 +238,21 @@ export function CustomChain() {
           <Stack space="8px">
             <Input
               onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'name')
-              }
-              height="32px"
-              placeholder="Name"
-              variant="surface"
-              value={asset.name}
-            />
-            <Input
-              onChange={(t) =>
                 onInputChange<string>(t.target.value, 'string', 'address')
               }
               height="32px"
               placeholder="Address"
               variant="surface"
               value={asset.address}
+            />
+            <Input
+              onChange={(t) =>
+                onInputChange<string>(t.target.value, 'string', 'name')
+              }
+              height="32px"
+              placeholder="Name"
+              variant="surface"
+              value={asset.name}
             />
             <Input
               onChange={(t) =>

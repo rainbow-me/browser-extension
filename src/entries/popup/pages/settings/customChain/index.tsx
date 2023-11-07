@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { Chain } from 'wagmi';
 
 import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
@@ -138,19 +139,19 @@ export function SettingsCustomChain() {
     const { rpcUrl, chainId, name, symbol } = customRPC;
     const valid = validateAddCustomRpc();
     if (valid && rpcUrl && chainId && name && symbol) {
-      addCustomRPC({
-        chain: {
-          ...customRPC,
-          rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
-          id: chainId,
-          name,
-          network: name,
-          nativeCurrency: {
-            symbol,
-            decimals: 18,
-            name: symbol,
-          },
+      const chain: Chain = {
+        id: chainId,
+        name,
+        network: name,
+        nativeCurrency: {
+          symbol,
+          decimals: 18,
+          name: symbol,
         },
+        rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+      };
+      addCustomRPC({
+        chain,
       });
       addUserChain({ chainId });
     }

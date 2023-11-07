@@ -363,3 +363,30 @@ export const createAssetQuery = (
           .join(',')}
     }`;
 };
+
+export const getAssetMetadata = async ({
+  address,
+  provider,
+}: {
+  address: Address;
+  provider: Provider;
+}) => {
+  const contract = await getContract({
+    address,
+    abi: erc20ABI,
+    signerOrProvider: provider,
+  });
+  const [decimals, symbol, name] = await Promise.allSettled([
+    contract.decimals(),
+    contract.symbol(),
+    contract.name(),
+  ]);
+  const extractValue = <T>(result: PromiseSettledResult<T>): T | undefined =>
+    result.status === 'fulfilled' ? result.value : undefined;
+
+  return {
+    decimals: extractValue<number>(decimals),
+    symbol: extractValue<string>(symbol),
+    name: extractValue<string>(name),
+  };
+};
