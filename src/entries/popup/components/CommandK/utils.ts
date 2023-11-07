@@ -444,22 +444,18 @@ const typeMapping: { [key: string]: string } = {
 };
 
 const generateCSV = (
-  data: KeychainWallet[],
+  wallets: KeychainWallet[],
   walletNames: WalletNames,
 ): string => {
-  let csvContent = 'public_address,name,type,parent_wallet\n';
+  let csvContent = 'public_address,name,type,wallet_group\n';
 
-  data.forEach(({ accounts, type }) => {
-    const primaryAddress = accounts[0];
-    const primaryName =
-      walletNames[primaryAddress as Address] || primaryAddress;
-
-    accounts.forEach((address, index) => {
+  wallets.forEach(({ accounts, type }, i) => {
+    accounts.forEach((address) => {
       const name = walletNames[address as Address] || address;
-      const importedType = typeMapping[type];
-
-      const parent = index === 0 ? '-' : primaryName;
-      csvContent += `${address},${name},${importedType},${parent}\n`;
+      const walletType = typeMapping[type];
+      const walletGroup =
+        type === KeychainType.HdKeychain ? `Wallet Group ${i}` : '-';
+      csvContent += `${address},${name},${walletType},${walletGroup}\n`;
     });
   });
 
