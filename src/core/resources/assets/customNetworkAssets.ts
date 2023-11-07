@@ -10,14 +10,11 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import {
-  SupportedCurrencyKey,
-  userAddedCustomRpcEndpoints,
-} from '~/core/references';
+import { SupportedCurrencyKey } from '~/core/references';
 import { AddressOrEth, ParsedAssetsDictByChain } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { parseUserAssetBalances } from '~/core/utils/assets';
-import { getCustomNetworks } from '~/core/utils/customNetworks';
+import { getCustomChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 const CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL = 60000;
@@ -109,21 +106,21 @@ async function customNetworkAssetsFunction({
     // @ts-ignore
     const parsedAssetsDict: ParsedAssetsDictByChain = {};
     if (address) {
-      if (userAddedCustomRpcEndpoints.length > 0) {
-        const networks = getCustomNetworks();
+      const { customChains } = getCustomChains();
+      if (customChains.length > 0) {
         await Promise.all(
-          networks.map(async (network) => {
-            const provider = getProvider({ chainId: network.chainId });
+          customChains.map(async (chain) => {
+            const provider = getProvider({ chainId: chain.id });
             const nativeAssetBalance = await provider.getBalance(address);
             const customNetworkNativeAssetParsed = parseUserAssetBalances({
               asset: {
-                address: network.nativeAssetAddress as AddressOrEth,
-                chainId: network.chainId,
-                chainName: network.name as ChainName,
+                address: AddressZero,
+                chainId: chain.id,
+                chainName: chain.name as ChainName,
                 isNativeAsset: true,
-                name: network.symbol,
-                symbol: network.symbol,
-                uniqueId: `${network.nativeAssetAddress}_${network.chainId}`,
+                name: chain.nativeCurrency.symbol,
+                symbol: chain.nativeCurrency.symbol,
+                uniqueId: `${AddressZero}_${chain.id}`,
                 decimals: 18,
                 native: { price: undefined },
                 bridging: { isBridgeable: false, networks: [] },
@@ -135,7 +132,7 @@ async function customNetworkAssetsFunction({
 
             // TODO - add support for custom network tokens here (BX-1073)
 
-            parsedAssetsDict[network.chainId as ChainId] = {
+            parsedAssetsDict[chain.id as ChainId] = {
               [customNetworkNativeAssetParsed.uniqueId]:
                 customNetworkNativeAssetParsed,
             };

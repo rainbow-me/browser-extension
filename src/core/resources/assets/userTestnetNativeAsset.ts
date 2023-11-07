@@ -11,12 +11,11 @@ import {
 import {
   NATIVE_ASSETS_PER_CHAIN,
   SupportedCurrencyKey,
-  TESTNET_CHAIN_IDS,
 } from '~/core/references';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
-import { getChain } from '~/core/utils/chains';
+import { getChain, isTestnetChainId } from '~/core/utils/chains';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
@@ -83,7 +82,7 @@ async function userTestnetNativeAssetQueryFunction({
   try {
     // Don't do anything unless it's a testnet
     if (
-      !TESTNET_CHAIN_IDS.includes(chainId) &&
+      !isTestnetChainId({ chainId }) &&
       chainId !== ChainId.hardhat &&
       chainId !== ChainId.hardhatOptimism
     )
