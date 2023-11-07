@@ -85,6 +85,22 @@
       "light": "亮色",
       "dark": "暗色"
     },
+    "networks": {
+      "mainnet": "主网",
+      "title": "网络",
+      "quick_promo": {
+        "text": "拖动网络进行排序",
+        "text_bold": "提示："
+      },
+      "description": "选择要显示的网络和代币。即使没有选中，您也可以连接到Rainbow支持的任何网络。",
+      "developer_tools": {
+        "title": "启用开发者工具",
+        "toggle_explainer": "启用测试网络模式快捷键(T)，并在主屏幕右上角菜单添加一个切换按钮"
+      },
+      "custom_rpc": {
+        "title": "自定义RPC"
+      }
+    },
     "privacy_and_security": {
       "title": "隐私与安全",
       "analytics": "数据分析",
@@ -127,6 +143,12 @@
         "backed_up": "已备份",
         "not_backed_up": "未备份",
         "back_up_now": "立即备份",
+        "context_menu": {
+          "create_wallet": "创建钱包",
+          "view_secret_phrase": "查看密钥短语",
+          "hide_wallets": "隐藏钱包",
+          "unhide_wallets": "取消隐藏钱包"
+        },
         "wallet_details": {
           "title": "钱包详情",
           "view_recovery_phrase": "查看恢复短语",
@@ -153,7 +175,8 @@
           "warning_2": "确保在查看您的私钥时没有人能够查看您的屏幕。",
           "warning_3": "任何拥有您的私钥的人都可以访问您的整个钱包。",
           "warning_4": "Rainbow Support永远不会要求您提供私钥。",
-          "show": "显示私钥"
+          "show": "显示私钥",
+          "copied": "私钥已复制"
         },
         "recovery_phrase": {
           "title": "您的恢复短语",
@@ -164,7 +187,7 @@
           "warning_3": "任何拥有您的恢复短语的人都可以访问您的整个钱包。",
           "warning_4": "Rainbow Support永远不会要求您提供恢复短语。",
           "show": "显示恢复短语",
-          "phrase_copied": "恢复短语已复制"
+          "copied": "恢复短语已复制"
         }
       }
     },
@@ -172,6 +195,8 @@
       "title": "交易记录",
       "default_speed": "默认速度",
       "use_flashbots": "使用 Flashbots",
+      "clear_transactions_and_nonces": "清除待处理交易",
+      "clear_transactions_and_nonces_success": "待处理交易已清除",
       "flashbots_description": "Flashbots 保护您的交易并降低交易失败的可能性。了解更多信息。"
     },
     "currency": {
@@ -198,7 +223,9 @@
       "full_watching_wallets": "完全访问被监视的钱包",
       "hw_wallets_enabled": "启用硬件钱包支持",
       "command_k_internal_shortcuts_enabled": "启用 ⌘K 内部快捷键",
-      "new_tab_bar_enabled": "新的选项栏"
+      "custom_rpc": "自定义RPC",
+      "new_tab_bar_enabled": "新的选项栏",
+      "nfts_enabled": "已启用 NFT"
     }
   },
   "transactions": {
@@ -345,7 +372,14 @@
         "add_wallet": "添加钱包",
         "lock": "锁定彩虹",
         "connected_apps": "连接的应用",
+        "developer_tools": "切换开发者工具",
+        "developer_tools_disabled": "启用开发者工具",
+        "developer_tools_enabled": "禁用开发者工具",
+        "testnet_mode": "切换测试网模式",
+        "testnet_mode_disabled": "启用测试网络模式",
+        "testnet_mode_enabled": "禁用测试网络模式",
         "settings": "设置",
+        "network_settings": "网络设置",
         "my_qr_code": "我的二维码",
         "my_qr_code_watched": "二维码",
         "create_wallet": "创建钱包",
@@ -376,7 +410,10 @@
         "my_wallets": "切换",
         "my_tokens_watched": "我的",
         "view_nfts": "画廊、个人资料",
+        "testnet_mode": "切换，网络，测试网",
+        "developer_tools": "切换，网络，开发者，测试网",
         "settings": "偏好设置",
+        "network_settings": "测试网，开发者，网络",
         "my_qr_code_watched": "我的",
         "create_wallet": "添加、新建",
         "import_wallet": "添加、私钥安全恢复、助记词",
@@ -389,6 +426,11 @@
     },
     "command_rows": {
       "no_value": "无数值"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "按 T 切换测试网模式",
+      "title_disabled": "开发者工具已禁用",
+      "title_enabled": "开启开发者工具"
     },
     "hide_balances_toast": {
       "description_hidden": "您的余额已隐藏",
@@ -847,8 +889,18 @@
       "rainbow_profile": "彩虹资料",
       "guides_and_support": "指南与支持",
       "share_feedback": "分享反馈",
-      "lock_rainbow": "锁定彩虹"
+      "lock_rainbow": "锁定彩虹",
+      "testnet_mode": "测试网络模式",
+      "testnet_mode_off": "关",
+      "testnet_mode_on": "开启"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "切换到 %{chainName}?",
+    "testnet_mode": "测试网络模式",
+    "testnet_mode_active": "现在正在运行。您想禁用它并与 %{chainName} 进行交互吗？",
+    "disable_and_connect": "禁用并切换",
+    "cancel": "取消"
   },
   "app_connection_switcher": {
     "banner": {
@@ -875,7 +927,7 @@
     "wallet_switcher": {
       "switch_wallets": "切换钱包",
       "other_wallets": "其他钱包",
-      "cancel": "取消",
+      "done": "完成",
       "connected": "已连接"
     }
   },
@@ -893,12 +945,19 @@
     "switch_networks": "切换网络",
     "switch_wallets": "切换钱包",
     "connect": "连接到 %{appName}",
+    "connect_anyway": "继续连接",
+    "malicious_warning": {
+      "title": "这个应用可能有恶意",
+      "message": "从这个应用签名消息或交易可能导致你损失资产"
+    },
     "message_signing_request": "消息签名请求",
     "message": "消息",
     "sign_message": "签名消息",
+    "sign_message_anyway": "照样签名",
     "confirm_hw": "在您的设备上确认",
     "balance": "余额",
     "send_transaction": "发送交易",
+    "send_transaction_anyway": "照样确认",
     "contract_deployment": "合约部署",
     "transaction_request": "交易请求",
     "insufficient_native_asset_for_gas": "燃料不足 %{symbol} 用于支付手续费"
@@ -979,7 +1038,9 @@
     "copy_to_clipboard": "复制到剪贴板"
   },
   "errors": {
-    "no_wallet_name_set": "未设置钱包名称"
+    "error_encountered": "出现了问题。请将问题分享给我们的团队，我们会尽快修复！",
+    "no_wallet_name_set": "未设置钱包名称",
+    "report_error": "报告问题"
   },
   "common_titles": {
     "before_you_proceed": "在您继续之前"
@@ -1009,8 +1070,9 @@
   },
   "tabs": {
     "activity": "活动",
-    "tokens": "代币",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "积分",
+    "tokens": "代币"
   },
   "activity": {
     "today": "今天",
@@ -1066,7 +1128,17 @@
   "nfts": {
     "coming_soon_header": "即将上线",
     "coming_soon_description": "NFT 即将上线， 敬请期待！",
-    "view_on_web": "在Web上查看"
+    "view_on_web": "在Web上查看",
+    "display_mode_gallery": "画廊",
+    "display_mode_collections": "集合",
+    "sort_option_recent": "最近的",
+    "sort_option_abc": "Abc",
+    "sort_option_recent_long": "最近的",
+    "sort_option_abc_long": "按字母顺序"
+  },
+  "points": {
+    "coming_soon_header": "即将上线",
+    "coming_soon_description": "积分即将到来。\n立即开始赚取。"
   },
   "speed_up_and_cancel": {
     "speed_up": "加快",
@@ -1231,6 +1303,7 @@
   "alert": {
     "ok": "确定",
     "wallet_watching_mode": "此钱包当前处于'查看'模式",
+    "wallet_testing_mode": "Swap不支持测试网。要继续，请禁用测试网模式。",
     "coming_soon": "即将推出！",
     "no_hw_ff": "火狐浏览器不支持硬件钱包。试试其他浏览器，例如Chrome或Brave。"
   },

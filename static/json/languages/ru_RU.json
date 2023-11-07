@@ -85,6 +85,22 @@
       "light": "Светлая",
       "dark": "Тёмная"
     },
+    "networks": {
+      "mainnet": "Основная сеть",
+      "title": "Сети",
+      "quick_promo": {
+        "text": "Перетаскивайте сети для изменения их порядка",
+        "text_bold": "Совет:"
+      },
+      "description": "Выберите, какие сети и токены отображать. Вы можете подключиться к любым сетям, поддерживаемым Rainbow, даже если они не отмечены.",
+      "developer_tools": {
+        "title": "Включить инструменты разработчика",
+        "toggle_explainer": "Включает ярлык режима Testnet (T) и добавляет переключатель в верхнее правое меню главного экрана"
+      },
+      "custom_rpc": {
+        "title": "Пользовательский RPC"
+      }
+    },
     "privacy_and_security": {
       "title": "Конфиденциальность и безопасность",
       "analytics": "Аналитика",
@@ -127,6 +143,12 @@
         "backed_up": "Резервное копирование выполнено",
         "not_backed_up": "Резервное копирование не выполнено",
         "back_up_now": "Сделать резервную копию сейчас",
+        "context_menu": {
+          "create_wallet": "Создать кошелек",
+          "view_secret_phrase": "Просмотреть секретную фразу",
+          "hide_wallets": "Скрыть кошельки",
+          "unhide_wallets": "Показать кошельки"
+        },
         "wallet_details": {
           "title": "Детали Кошелька",
           "view_recovery_phrase": "Просмотреть фразу восстановления",
@@ -153,7 +175,8 @@
           "warning_2": "Убедитесь, что никто не может видеть ваш экран при просмотре вашего приватного ключа.",
           "warning_3": "Любой, у кого есть ваш приватный ключ, может получить доступ ко всему вашему кошельку.",
           "warning_4": "Служба поддержки Rainbow никогда не попросит ваш приватный ключ.",
-          "show": "Показать приватный ключ"
+          "show": "Показать приватный ключ",
+          "copied": "Приватный ключ скопирован"
         },
         "recovery_phrase": {
           "title": "Ваша фраза для восстановления",
@@ -164,7 +187,7 @@
           "warning_3": "Любой, у кого есть ваша фраза для восстановления, может получить доступ ко всему вашему кошельку.",
           "warning_4": "Служба поддержки Rainbow никогда не попросит вашу фразу для восстановления.",
           "show": "Показать фразу для восстановления",
-          "phrase_copied": "Фраза для восстановления скопирована"
+          "copied": "Фраза для восстановления скопирована"
         }
       }
     },
@@ -172,6 +195,8 @@
       "title": "Транзакции",
       "default_speed": "Скорость по умолчанию",
       "use_flashbots": "Использовать Flashbots",
+      "clear_transactions_and_nonces": "Очистить Ожидающие Транзакции",
+      "clear_transactions_and_nonces_success": "Ожидающие транзакции очищены",
       "flashbots_description": "Flashbots защищает ваши транзакции и уменьшает вероятность сбоев. Узнать больше."
     },
     "currency": {
@@ -198,7 +223,9 @@
       "full_watching_wallets": "Полный доступ к отслеживаемым кошелькам",
       "hw_wallets_enabled": "Включить поддержку аппаратных кошельков",
       "command_k_internal_shortcuts_enabled": "Включить внутренние ярлыки ⌘K",
-      "new_tab_bar_enabled": "Новая панель вкладок"
+      "custom_rpc": "Пользовательский RPC",
+      "new_tab_bar_enabled": "Новая панель вкладок",
+      "nfts_enabled": "NFTs Включено"
     }
   },
   "transactions": {
@@ -345,7 +372,14 @@
         "add_wallet": "Добавить кошелек",
         "lock": "Заблокировать Rainbow",
         "connected_apps": "Подключенные приложения",
+        "developer_tools": "Переключить инструменты разработчика",
+        "developer_tools_disabled": "Включить инструменты разработчика",
+        "developer_tools_enabled": "Отключить инструменты разработчика",
+        "testnet_mode": "Переключить режим Testnet",
+        "testnet_mode_disabled": "Включить режим Testnet",
+        "testnet_mode_enabled": "Отключить режим Testnet",
         "settings": "Настройки",
+        "network_settings": "Настройки сети",
         "my_qr_code": "Мой QR-код",
         "my_qr_code_watched": "QR-код",
         "create_wallet": "Создать кошелек",
@@ -376,7 +410,10 @@
         "my_wallets": "Переключение",
         "my_tokens_watched": "мои",
         "view_nfts": "галерея, профиль",
+        "testnet_mode": "переключатель, сети, тестовые сети",
+        "developer_tools": "переключатель, сети, разработчик, тестовые сети",
         "settings": "настройки",
+        "network_settings": "тестовые сети, разработчик, сети",
         "my_qr_code_watched": "мои",
         "create_wallet": "добавить, новый",
         "import_wallet": "добавить, восстановление секрета, фраза восстановления, приватный ключ",
@@ -389,6 +426,11 @@
     },
     "command_rows": {
       "no_value": "Нет значения"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Нажмите T для переключения режима Testnet",
+      "title_disabled": "Инструменты разработчика отключены",
+      "title_enabled": "Инструменты разработчика включены"
     },
     "hide_balances_toast": {
       "description_hidden": "Ваши балансы скрыты",
@@ -847,8 +889,18 @@
       "rainbow_profile": "Профиль Rainbow",
       "guides_and_support": "Руководства и поддержка",
       "share_feedback": "Отправить отзыв",
-      "lock_rainbow": "Заблокировать Rainbow"
+      "lock_rainbow": "Заблокировать Rainbow",
+      "testnet_mode": "Тестовый режим",
+      "testnet_mode_off": "Выкл",
+      "testnet_mode_on": "Вкл."
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "Переключиться на %{chainName}?",
+    "testnet_mode": "Тестовый режим",
+    "testnet_mode_active": "в настоящее время активен. Хотите отключить его и взаимодействовать с %{chainName} вместо этого?",
+    "disable_and_connect": "Отключить и Переключить",
+    "cancel": "Отмена"
   },
   "app_connection_switcher": {
     "banner": {
@@ -875,7 +927,7 @@
     "wallet_switcher": {
       "switch_wallets": "Переключить кошельки",
       "other_wallets": "Другие кошельки",
-      "cancel": "Отмена",
+      "done": "Готово",
       "connected": "Подключено"
     }
   },
@@ -893,12 +945,19 @@
     "switch_networks": "Сменить сеть",
     "switch_wallets": "Сменить кошелек",
     "connect": "Подключиться к %{appName}",
+    "connect_anyway": "Подключиться Все Равно",
+    "malicious_warning": {
+      "title": "Это приложение вероятно вредоносное",
+      "message": "Подписывая сообщения или транзакции от этого приложения, вы можете потерять свои средства"
+    },
     "message_signing_request": "Запрос на подпись сообщения",
     "message": "Сообщение",
     "sign_message": "Подписать сообщение",
+    "sign_message_anyway": "Подписать Все Равно",
     "confirm_hw": "Подтвердите на вашем устройстве",
     "balance": "Баланс",
     "send_transaction": "Отправить транзакцию",
+    "send_transaction_anyway": "Подтвердить Все Равно",
     "contract_deployment": "Развертывание контракта",
     "transaction_request": "Запрос на транзакцию",
     "insufficient_native_asset_for_gas": "Недостаточно %{symbol} для газа"
@@ -979,7 +1038,9 @@
     "copy_to_clipboard": "Скопировать в буфер обмена"
   },
   "errors": {
-    "no_wallet_name_set": "Не указано имя кошелька"
+    "error_encountered": "Что-то пошло не так. Пожалуйста, сообщите о проблеме нашей команде и мы это исправим!",
+    "no_wallet_name_set": "Не указано имя кошелька",
+    "report_error": "Сообщить о проблеме"
   },
   "common_titles": {
     "before_you_proceed": "Перед тем, как продолжить"
@@ -1009,8 +1070,9 @@
   },
   "tabs": {
     "activity": "Активность",
-    "tokens": "Токены",
-    "nfts": "NFT"
+    "nfts": "NFT",
+    "points": "Поинты",
+    "tokens": "Токены"
   },
   "activity": {
     "today": "Сегодня",
@@ -1066,7 +1128,17 @@
   "nfts": {
     "coming_soon_header": "Скоро будет",
     "coming_soon_description": "NFT скоро будут. Оставайтесь на связи!",
-    "view_on_web": "Посмотреть на Веб"
+    "view_on_web": "Посмотреть на Веб",
+    "display_mode_gallery": "Галерея",
+    "display_mode_collections": "Коллекции",
+    "sort_option_recent": "Недавние",
+    "sort_option_abc": "Абв",
+    "sort_option_recent_long": "Недавние",
+    "sort_option_abc_long": "Алфавитный"
+  },
+  "points": {
+    "coming_soon_header": "Скоро будет",
+    "coming_soon_description": "Поинты уже почти у вас.\nНачните зарабатывать сегодня."
   },
   "speed_up_and_cancel": {
     "speed_up": "Ускорить",
@@ -1231,6 +1303,7 @@
   "alert": {
     "ok": "ОК",
     "wallet_watching_mode": "Этот кошелек в настоящее время находится в режиме 'Наблюдение'",
+    "wallet_testing_mode": "Тестнеты не поддерживаются Swap. Отключите режим тестнета, чтобы продолжить.",
     "coming_soon": "Скоро!",
     "no_hw_ff": "Аппаратные кошельки не поддерживаются в Firefox. Попробуйте другой браузер, например, Chrome или Brave"
   },
