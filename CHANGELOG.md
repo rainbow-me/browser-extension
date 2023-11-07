@@ -25,28 +25,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-- Introduced testnet mode which is now accessible through the developer options in the settings (#1057, #1113, #1109, #1106)
-- Implemented a testnet mode approval sheet #1083
-- Enhanced configuration options for custom RPC settings and assets in preparation for the upcoming custom RPC feature (#1090, #1100, #1113)
-- The initial groundwork for NFT support has been merged with the useNfts feature #1067
-- Refactoring of local storage usage has been completed to improve space efficiency #1102
+- Testnet Mode is now available to safely interact with testnets and view testnet assets. Enable Developer Tools today in the Networks menu in Settings or with the Magic Menu, and toggle Testnet Mode with the `t` hotkey or by using the menu at the top-right of the wallet interface (#1057, #1113, #1109, #1106, #1108, #1110)
+- When attempting to sign a mainnet transaction while Testnet Mode is active, you will now encounter a warning for extra workflow safety #1083
+
+### Changed
+
+- Network Settings are now accessible through the Magic Menu #1108
 
 ### Fixed
 
-- The network change popup now displays with improved consistency #1101
-- Updated SF Symbols and made adjustments to ⌘K command #1108
-- The testnet bar is now correctly hidden during the lockscreen #1110
-- Overflow issues in the token context menu have been resolved #1098
-- Translations related to fee on transfer have been accurately updated #1084
-- Community feedback has led to the correction of various typos and improvements in strings #1081
+- Resolved an issue where the Network Changed notification had stopped appearing in dapps #1101
+- Fixed an overflow issues in the Token Right-click menu for tokens with long names #1098
+- Fixed missing strings for the Fee on Transfer Token explainer in Swaps #1084
+- Improvements to various strings and translations thanks to community feedback #1081
 
 ### Internal
 
-- A series of end-to-end test fixes and package upgrades have been merged, enhancing consistency and addressing known vulnerabilities (#1093, #1091, #1107, #1099)
+- Developer settings for Custom RPCs and Custom Assets for the upcoming Custom Networks feature (#1090, #1100)
+- Merged the groundwork for NFT support with the `useNfts` fetch hook #1067
+- Refactored local storage usage with a wrapper and logging to investigate storage quota overflows #1102
+- Patching [GHSA-xwcq-pm8m-c4vf](https://github.com/advisories/GHSA-xwcq-pm8m-c4vf) with `crypto-js` resolution for the Ledger integration #1091
+- Patching vulnerabilities by bumping `yaml` and `browserify-sign` #1099
+- Upgraded SF Symbols to v5 #1108
+- Upgraded `chromedriver` for the latest Chrome support #1107
 
 ### Testing
 
-- Expanded end-to-end test coverage for networks and testnet mode#1075
+- Expanded end-to-end test coverage for networks and Testnet Mode #1075
+- Adopting `findByTestId` in e2e tests for reliability #1093
 
 ## [1.2.56](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.56)
 
