@@ -18,8 +18,8 @@ import {
   chainIdFromChainName,
   getSupportedChainIds,
   getSupportedTestnetChainIds,
+  isCustomChain,
 } from '~/core/utils/chains';
-import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -96,7 +96,7 @@ export async function consolidatedTransactionsQueryFunction({
   try {
     const supportedChainIds = testnetMode
       ? getSupportedTestnetChainIds()
-      : getSupportedChainIds().filter((chainId) => !isCustomNetwork(chainId));
+      : getSupportedChainIds().filter((chainId) => !isCustomChain(chainId));
     const response = await addysHttp.get<TransactionsReceivedMessage>(
       `/${supportedChainIds.join(',')}/${address}/transactions`,
       {

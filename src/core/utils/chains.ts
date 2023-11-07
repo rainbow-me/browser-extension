@@ -9,7 +9,6 @@ import { customRPCsStore } from '../state/customRPC';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost } from './connectedApps';
-import { isCustomNetwork } from './customNetworks';
 import { isLowerCaseMatch } from './strings';
 
 export const getSupportedChainsWithHardhat = () => {
@@ -45,14 +44,24 @@ export const getSupportedTestnetChainIds = () =>
 
 export const getCustomChains = () => {
   const { customChains } = customRPCsStore.getState();
-  return Object.values(customChains)
-    .map((customChain) =>
-      customChain.chains.find(
-        (rpc) => rpc.rpcUrls.default.http[0] === customChain.activeRpcUrl,
-      ),
-    )
-    .filter(Boolean);
+  return {
+    customChains: Object.values(customChains)
+      .map((customChain) =>
+        customChain.chains.find(
+          (rpc) => rpc.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+        ),
+      )
+      .filter(Boolean),
+  };
 };
+
+export const findCustomChainForChainId = (chainId: number) => {
+  const { customChains } = getCustomChains();
+  return customChains.find((network) => network.id === chainId);
+};
+
+export const isCustomChain = (chainId: number) =>
+  !!findCustomChainForChainId(chainId);
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -80,7 +89,7 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
 };
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
-  if (isCustomNetwork(chainId)) {
+  if (isCustomChain(chainId)) {
     return AddressZero === address;
   }
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);

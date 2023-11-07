@@ -14,7 +14,7 @@ import { SupportedCurrencyKey } from '~/core/references';
 import { AddressOrEth, ParsedAssetsDictByChain } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { parseUserAssetBalances } from '~/core/utils/assets';
-import { getCustomNetworks } from '~/core/utils/customNetworks';
+import { getCustomChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 const CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL = 60000;
@@ -106,7 +106,7 @@ async function customNetworkAssetsFunction({
     // @ts-ignore
     const parsedAssetsDict: ParsedAssetsDictByChain = {};
     if (address) {
-      const customChains = getCustomNetworks();
+      const { customChains } = getCustomChains();
       if (customChains.length > 0) {
         await Promise.all(
           customChains.map(async (chain) => {

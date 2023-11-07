@@ -13,7 +13,7 @@ import { queryClient } from '../react-query';
 import { SUPPORTED_CHAINS } from '../references';
 import { LocalStorage } from '../storage';
 import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
-import { findCustomNetworkForChainId } from '../utils/customNetworks';
+import { findCustomChainForChainId } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -25,7 +25,7 @@ const noopStorage = {
 
 const getOriginalRpcEndpoint = (chain: Chain) => {
   // overrides have preference
-  const userAddedNetwork = findCustomNetworkForChainId(chain.id);
+  const userAddedNetwork = findCustomChainForChainId(chain.id);
   if (userAddedNetwork) {
     return { http: userAddedNetwork.rpcUrls.default.http[0] };
   }

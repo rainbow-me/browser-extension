@@ -20,7 +20,7 @@ require('../../core/utils/lockdown');
 initializeSentry('background');
 
 const updateWagmiClient = () => {
-  const customChains = getCustomChains();
+  const { customChains } = getCustomChains();
   createWagmiClient({ customChains });
 };
 
