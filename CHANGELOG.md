@@ -52,7 +52,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
-- Reworked the tab switching logic to allow for more robust navigation; addressed the crash related to tab switching and fixed circular imports #1089
+- Resolved a crash when quickly switching tabs #1089
+- Fixed tab selection and restoration when using Rainbow in Full Screen #1089
 
 ## [1.2.54](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.54)
 
