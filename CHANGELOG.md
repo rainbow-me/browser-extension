@@ -21,6 +21,51 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [1.2.64](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.64)
+
+### Added
+
+- Introduced testnet mode which is now accessible through the developer options in the settings (#1057, #1113, #1109, #1106)
+- Implemented a testnet mode approval sheet #1083
+- Enhanced configuration options for custom RPC settings and assets in preparation for the upcoming custom RPC feature (#1090, #1100, #1113)
+- The initial groundwork for NFT support has been merged with the useNfts feature #1067
+- Refactoring of local storage usage has been completed to improve space efficiency #1102
+
+### Fixed
+
+- The network change popup now displays with improved consistency #1101
+- Updated SF Symbols and made adjustments to ⌘K command #1108
+- The testnet bar is now correctly hidden during the lockscreen #1110
+- Overflow issues in the token context menu have been resolved #1098
+- Translations related to fee on transfer have been accurately updated #1084
+- Community feedback has led to the correction of various typos and improvements in strings #1081
+
+### Internal
+
+- A series of end-to-end test fixes and package upgrades have been merged, enhancing consistency and addressing known vulnerabilities (#1093, #1091, #1107, #1099)
+
+### Testing
+
+- Expanded end-to-end test coverage for networks and testnet mode#1075
+
+## [1.2.56](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.56)
+
+### Fixed
+
+- Reworked the tab switching logic to allow for more robust navigation; addressed the crash related to tab switching and fixed circular imports #1089
+
+## [1.2.54](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.54)
+
+### Added
+
+- Launched Rainbow Points v0 #1078
+- Added a new settings button for clearing pending transactions and nonces #1072
+- Introduced the ability to access wallet and key sub-items through a context menu #1054
+
+### Fixed
+
+- Resolved an issue where the extension would not default to the MetaMask provider when the default wallet toggle was off #1079
+
 ## [v1.2.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.48)
 
 ### Added
