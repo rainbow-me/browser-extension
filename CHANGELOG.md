@@ -58,13 +58,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-- Launched Rainbow Points v0 #1078
-- Added a new settings button for clearing pending transactions and nonces #1072
-- Introduced the ability to access wallet and key sub-items through a context menu #1054
+- A preview of Rainbow Points is here. True believers are always rewarded. #1078
+- Users can now clear troublesome pending transactions with a new button in the Transactions menu in Settings #1072
+
+### Changed
+
+- Right-click is now available in the Wallets & Keys menu in Settings to make wallet management even easier #1054
 
 ### Fixed
 
-- Resolved an issue where the extension would not default to the MetaMask provider when the default wallet toggle was off #1079
+- Resolved an issue where Rainbow would not be available to dapps that supports EIP-6963 or `window.ethereum.providers` when the default wallet toggle was disabled #1079
 
 ## [v1.2.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.48)
 
