@@ -9,9 +9,12 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { isNativeAsset, isTestnetChainId } from '~/core/utils/chains';
+import {
+  findCustomChainForChainId,
+  isNativeAsset,
+  isTestnetChainId,
+} from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
-import { findCustomNetworkForChainId } from '~/core/utils/customNetworks';
 import {
   FormattedCurrencyParts,
   formatCurrencyParts,
@@ -173,7 +176,7 @@ function NetworkBanner({
   if (chainId === ChainId.mainnet) return null;
 
   const chainName =
-    ChainNameDisplay[chainId] || findCustomNetworkForChainId(chainId)?.name;
+    ChainNameDisplay[chainId] || findCustomChainForChainId(chainId)?.name;
 
   return (
     <>
@@ -371,7 +374,7 @@ export function TokenDetails() {
           <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
       </Box>
-      {!isSwappable && (
+      {isSwappable && (
         <Box
           display="flex"
           flexDirection="column"
