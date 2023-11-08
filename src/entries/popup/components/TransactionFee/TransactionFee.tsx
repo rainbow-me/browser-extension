@@ -1,9 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { AddressZero } from '@ethersproject/constants';
-import { formatEther } from '@ethersproject/units';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import { BigNumberish } from 'ethers';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { analytics } from '~/analytics';
@@ -17,7 +14,6 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
-import { getCustomChains, isCustomChain } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -32,7 +28,6 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { Space } from '~/design-system/styles/designTokens';
 
-import { useCustomNetworkAsset } from '../../hooks/useCustomNetworkAsset';
 import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
@@ -126,17 +121,6 @@ function Fee({
     [analyticsEvents?.transactionSpeedClicked],
   );
 
-  const convertToNativeGasFee = useCallback(
-    (weiValue: BigNumberish | undefined, chainId: ChainId) => {
-      if (!weiValue) return '';
-      const customNetwork = getCustomChains().customChains.find(
-        (chain) => chain.id === chainId,
-      );
-      return `${formatEther(weiValue)} ${customNetwork?.nativeCurrency.symbol}`;
-    },
-    [],
-  );
-
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
@@ -155,22 +139,6 @@ function Fee({
       }
     },
   });
-
-  const { data: customNetworkAsset, isFetched: isCustomAssetFetched } =
-    useCustomNetworkAsset(`${AddressZero}_${chainId}`);
-
-  const nativeCurrencyGasFeeSupported = useCallback(
-    (chainId: ChainId) => {
-      if (isCustomChain(chainId) && isCustomAssetFetched) {
-        // If we don't have the price we need to default to native asset fee
-        if (customNetworkAsset?.native?.balance?.amount === '0') {
-          return false;
-        }
-      }
-      return true;
-    },
-    [customNetworkAsset, isCustomAssetFetched],
-  );
 
   return (
     <Box>
@@ -201,12 +169,6 @@ function Fee({
                   <TextOverflow weight="semibold" color="label" size="14pt">
                     {isLoading
                       ? '~'
-                      : !nativeCurrencyGasFeeSupported(chainId)
-                      ? convertToNativeGasFee(
-                          gasFeeParamsForSelectedSpeed?.gasFee
-                            .amount as BigNumberish,
-                          chainId,
-                        )
                       : `${gasFeeParamsForSelectedSpeed?.gasFee.display}`}
                   </TextOverflow>
                 </Column>
