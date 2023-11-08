@@ -6,8 +6,7 @@ import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { isTestnetChainId } from '~/core/utils/chains';
-import { isCustomNetwork } from '~/core/utils/customNetworks';
+import { isCustomChain, isTestnetChainId } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -132,8 +131,7 @@ const percentDiff = (current = 1, last = 0) =>
 export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
   const hasPriceData = !(
-    isTestnetChainId({ chainId: token.chainId }) ||
-    isCustomNetwork(token.chainId)
+    isTestnetChainId({ chainId: token.chainId }) || isCustomChain(token.chainId)
   );
 
   const { data } = usePriceChart({

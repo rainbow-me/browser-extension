@@ -61,7 +61,7 @@ export const chainLabelMap: Record<
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
-  const allChainsOrder = order.map((chainId) => chainIdMap[chainId]).flat();
+  const allChainsOrder = order?.map((chainId) => chainIdMap[chainId])?.flat();
   const ordered = chains.sort((a, b) => {
     const aIndex = allChainsOrder.indexOf(a.id);
     const bIndex = allChainsOrder.indexOf(b.id);

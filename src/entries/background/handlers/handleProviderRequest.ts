@@ -19,9 +19,8 @@ import {
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { isSupportedChainId } from '~/core/utils/chains';
+import { isCustomChain, isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
-import { isCustomNetwork } from '~/core/utils/customNetworks';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { normalizeTransactionResponsePayload } from '~/core/utils/ethereum';
@@ -307,7 +306,7 @@ export const handleProviderRequest = ({
           const proposedChainId = (params?.[0] as { chainId: ChainId })
             ?.chainId;
           const supportedChainId =
-            isCustomNetwork(Number(proposedChainId)) ||
+            isCustomChain(Number(proposedChainId)) ||
             isSupportedChainId(Number(proposedChainId));
           if (!supportedChainId) throw new Error('Chain Id not supported');
           response = null;
@@ -318,7 +317,7 @@ export const handleProviderRequest = ({
             (params?.[0] as { chainId: ChainId })?.chainId,
           );
           const supportedChainId =
-            isCustomNetwork(Number(proposedChainId)) ||
+            isCustomChain(Number(proposedChainId)) ||
             isSupportedChainId(Number(proposedChainId));
           const extensionUrl = chrome.runtime.getURL('');
           const activeSession = getActiveSession({ host });

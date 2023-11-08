@@ -1,24 +1,17 @@
+import { Chain } from '@wagmi/chains';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
-export interface CustomRPC {
-  rpcUrl: string;
-  chainId: number;
-  name: string;
-  symbol: string;
-  explorer?: string;
-}
-
 export interface CustomChain {
   activeRpcUrl: string;
-  rpcs: CustomRPC[];
+  chains: Chain[];
 }
 
 export interface CustomRPCsState {
   customChains: Record<number, CustomChain>;
-  addCustomRPC: ({ customRPC }: { customRPC: CustomRPC }) => void;
-  updateCustomRPC: ({ customRPC }: { customRPC: CustomRPC }) => void;
+  addCustomRPC: ({ chain }: { chain: Chain }) => void;
+  updateCustomRPC: ({ chain }: { chain: Chain }) => void;
   setActiveRPC: ({
     rpcUrl,
     chainId,
@@ -32,33 +25,36 @@ export interface CustomRPCsState {
 export const customRPCsStore = createStore<CustomRPCsState>(
   (set, get) => ({
     customChains: {},
-    addCustomRPC: ({ customRPC }) => {
+    addCustomRPC: ({ chain }) => {
       const customChains = get().customChains;
-      const chain = customChains[customRPC.chainId] || {
-        rpcs: [],
+      const customChain = customChains[chain.id] || {
+        chains: [],
         activeRpcUrl: '',
       };
-      chain.rpcs.push(customRPC);
-      if (!chain.activeRpcUrl) chain.activeRpcUrl = customRPC.rpcUrl;
-      set({ customChains: { ...customChains, [customRPC.chainId]: chain } });
+      customChain.chains.push(chain);
+      if (!customChain.activeRpcUrl)
+        customChain.activeRpcUrl = chain.rpcUrls.default.http[0];
+      set({ customChains: { ...customChains, [chain.id]: customChain } });
     },
-    updateCustomRPC: ({ customRPC }) => {
+    updateCustomRPC: ({ chain }) => {
       const customChains = get().customChains;
-      const chain = customChains[customRPC.chainId];
-      const index = chain?.rpcs.findIndex(
-        (rpc) => rpc.rpcUrl === customRPC.rpcUrl,
+      const customChain = customChains[chain.id];
+      const index = customChain?.chains.findIndex(
+        (rpc) => rpc.rpcUrls.default === chain.rpcUrls.default,
       );
       if (index !== -1) {
-        chain.rpcs[index] = customRPC;
-        set({ customChains: { ...customChains, [customRPC.chainId]: chain } });
+        customChain.chains[index] = chain;
+        set({
+          customChains: { ...customChains, [chain.id]: customChain },
+        });
       }
     },
     setActiveRPC: ({ rpcUrl, chainId }) => {
       const customChains = get().customChains;
-      const chain = customChains[chainId];
-      if (chain) {
-        chain.activeRpcUrl = rpcUrl;
-        set({ customChains: { ...customChains, [chainId]: chain } });
+      const customChain = customChains[chainId];
+      if (customChain) {
+        customChain.activeRpcUrl = rpcUrl;
+        set({ customChains: { ...customChains, [chainId]: customChain } });
       }
     },
 
@@ -66,21 +62,24 @@ export const customRPCsStore = createStore<CustomRPCsState>(
       const customChains = get().customChains;
       const updatedCustomChains = { ...customChains };
 
-      Object.entries(customChains).forEach(([chainId, chain]) => {
-        const index = chain.rpcs.findIndex((rpc) => rpc.rpcUrl === rpcUrl);
+      Object.entries(customChains).forEach(([chainId, customChain]) => {
+        const index = customChain.chains.findIndex((chain) =>
+          chain.rpcUrls.default.http.includes(rpcUrl),
+        );
         if (index !== -1) {
-          chain.rpcs.splice(index, 1);
+          customChain.chains.splice(index, 1);
 
           // If deleted RPC was active, reset activeRpcUrl or set to another RPC if available
-          if (chain.activeRpcUrl === rpcUrl) {
-            chain.activeRpcUrl = chain.rpcs[0]?.rpcUrl || '';
+          if (customChain.activeRpcUrl === rpcUrl) {
+            customChain.activeRpcUrl =
+              customChain.chains[0]?.rpcUrls.default.http[0] || '';
           }
 
           // Remove the chain if no RPCs are left
-          if (!chain.rpcs.length) {
+          if (!customChain.chains.length) {
             delete updatedCustomChains[Number(chainId)];
           } else {
-            updatedCustomChains[Number(chainId)] = chain;
+            updatedCustomChains[Number(chainId)] = customChain;
           }
         }
       });
