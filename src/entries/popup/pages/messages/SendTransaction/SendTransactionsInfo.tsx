@@ -1,19 +1,16 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ReactNode, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useGasStore, useNonceStore } from '~/core/state';
-import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import { useNonceStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { copy } from '~/core/utils/copy';
-import { toWei } from '~/core/utils/ethereum';
 import { formatDate } from '~/core/utils/formatDate';
-import { lessThan } from '~/core/utils/numbers';
 import { truncateString } from '~/core/utils/strings';
 import {
   Bleed,
@@ -42,10 +39,12 @@ import {
   getDappStatusBadge,
 } from '../DappScanStatus';
 import { SimulationOverview } from '../Simulation';
-import { CopyButton } from '../Tabs';
+import { CopyButton, TabContent, Tabs } from '../Tabs';
+import { useHasEnoughGas } from '../useHasEnoughGas';
 import {
   SimulationError,
-  TransactionSimulation
+  TransactionSimulation,
+  useSimulateTransaction,
 } from '../useSimulateTransaction';
 
 interface SendTransactionProps {
@@ -255,13 +254,70 @@ function TransactionData({
   );
 }
 
+function TransactionInfo({
+  request,
+  dappUrl,
+  dappMetadata,
+  expanded,
+  onExpand,
+}: {
+  request: TransactionRequest;
+  dappUrl: string;
+  dappMetadata: DappMetadata | null;
+  expanded: boolean;
+  onExpand: VoidFunction;
+}) {
+  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
+  const chainId = activeSession?.chainId || ChainId.mainnet;
+  const txData = request?.data?.toString() || '';
+
+  const {
+    data: simulation,
+    status,
+    error,
+    isRefetching,
+  } = useSimulateTransaction({
+    chainId,
+    transaction: {
+      from: request.from || '',
+      to: request.to || '',
+      value: request.value?.toString() || '0',
+      data: request.data?.toString() || '',
+    },
+    domain: dappUrl,
+  });
+
+  const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
+
+  return (
+    <Tabs
+      tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
+      expanded={expanded}
+      onExpand={onExpand}
+    >
+      <TabContent value={tabLabel('overview')}>
+        <Overview
+          simulation={simulation}
+          status={status === 'error' && isRefetching ? 'loading' : status}
+          error={error}
+          metadata={dappMetadata}
+        />
+      </TabContent>
+      <TabContent value={tabLabel('details')}>
+        <TransactionDetails session={activeSession!} simulation={simulation} />
+      </TabContent>
+      <TabContent value={tabLabel('data')}>
+        <TransactionData data={txData} expanded={expanded} />
+      </TabContent>
+    </Tabs>
+  );
+}
+
 function InsuficientGasFunds({
-  address,
-  chainId,
+  session: { chainId },
   onRejectRequest,
 }: {
-  address: Address;
-  chainId: ChainId;
+  session: { address: Address; chainId: ChainId };
   onRejectRequest: VoidFunction;
 }) {
   const chainName = ChainNameDisplay[chainId];
@@ -269,12 +325,13 @@ function InsuficientGasFunds({
 
   const token = `${chainName} ${nativeAsset?.symbol}`;
 
-  const { saveSendAddress, saveSwapTokenToSell, saveSwapTokenToBuy } =
-    usePopupInstanceStore();
   const navigate = useRainbowNavigate();
 
   return (
     <Box
+      as={motion.div}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
       display="flex"
       flexDirection="column"
       padding="20px"
@@ -306,10 +363,6 @@ function InsuficientGasFunds({
           variant="transparent"
           color="blue"
           onClick={() => {
-            if (nativeAsset) {
-              // saveSwapTokenToSell({ token: nativeAsset });
-              // saveSwapTokenToBuy({ token: nativeAsset });
-            }
             navigate(ROUTES.BRIDGE);
             onRejectRequest();
             triggerToast({
@@ -339,7 +392,6 @@ function InsuficientGasFunds({
           variant="transparent"
           color="blue"
           onClick={() => {
-            saveSendAddress({ address });
             navigate(ROUTES.WALLET_SWITCHER);
             onRejectRequest();
             triggerToast({
@@ -364,17 +416,6 @@ function InsuficientGasFunds({
     </Box>
   );
 }
-}
-
-export const useHasEnoughtGas = (chainId: ChainId) => {
-  const { nativeAsset } = useNativeAsset({ chainId });
-  const { selectedGas } = useGasStore();
-
-  return lessThan(
-    selectedGas?.gasFee?.amount || '0',
-    toWei(nativeAsset?.balance?.amount || '0'),
-  );
-};
 
 export function SendTransactionInfo({
   request,
@@ -392,7 +433,7 @@ export function SendTransactionInfo({
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
-  const hasEnoughtGas = useHasEnoughtGas(chainId);
+  const hasEnoughtGas = useHasEnoughGas(chainId);
 
   return (
     <Box
@@ -438,24 +479,24 @@ export function SendTransactionInfo({
         </Stack>
       </motion.div>
 
-      <AnimatePresence>
-        {hasEnoughtGas ? (
-          <TransactionInfo
-            request={txRequest}
-            dappMetadata={dappMetadata}
-            dappUrl={dappUrl}
-            expanded={expanded}
-            onExpand={() => setExpanded((e) => !e)}
-          />
-        ) : (
+      {hasEnoughtGas ? (
+        <TransactionInfo
+          request={txRequest}
+          dappMetadata={dappMetadata}
+          dappUrl={dappUrl}
+          expanded={expanded}
+          onExpand={() => setExpanded((e) => !e)}
+        />
+      ) : (
+        activeSession && (
           <InsuficientGasFunds
-            chainId={chainId}
+            session={activeSession}
             onRejectRequest={() =>
               onRejectRequest({ preventWindowClose: true })
             }
           />
-        )}
-      </AnimatePresence>
+        )
+      )}
 
       {!expanded && isScamDapp && <ThisDappIsLikelyMalicious />}
     </Box>

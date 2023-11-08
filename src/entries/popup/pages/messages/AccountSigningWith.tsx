@@ -7,7 +7,7 @@ import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvat
 import { useNativeAsset } from '../../hooks/useNativeAsset';
 
 import { WalletName } from './BottomActions';
-import { useHasEnoughtGas } from './SendTransaction/SendTransactionsInfo';
+import { useHasEnoughGas } from './useHasEnoughGas';
 
 export interface SelectedNetwork {
   network: string;
@@ -19,7 +19,7 @@ function WalletNativeBalance({ chainId }: { chainId: ChainId }) {
   const { nativeAsset } = useNativeAsset({ chainId });
   const balance = nativeAsset?.balance;
 
-  const hasEnoughtGas = useHasEnoughtGas(chainId);
+  const hasEnoughtGas = useHasEnoughGas(chainId);
 
   if (!balance) return null;
 
@@ -71,7 +71,7 @@ export function AccountSigningWith({
             {i18n.t('approve_request.no_fee_to_sign')}
           </Text>
         ) : (
-          <WalletNativeBalance address={address} chainId={chainId} />
+          <WalletNativeBalance chainId={chainId} />
         )}
       </Stack>
     </Inline>

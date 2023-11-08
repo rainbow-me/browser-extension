@@ -1,7 +1,6 @@
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { Inline } from '~/design-system';
 import { useApproveAppRequestValidations } from '~/entries/popup/hooks/approveAppRequest/useApproveAppRequestValidations';
@@ -25,9 +24,9 @@ export const SendTransactionActions = ({
   loading: boolean;
   dappStatus?: DAppStatus;
 }) => {
-  const { selectedGas } = useGasStore();
   const { enoughNativeAssetForGas, buttonLabel } =
-    useApproveAppRequestValidations({ chainId, selectedGas, dappStatus });
+    useApproveAppRequestValidations({ chainId, dappStatus });
+
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
