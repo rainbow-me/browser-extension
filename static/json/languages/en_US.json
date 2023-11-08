@@ -403,7 +403,8 @@
         "view_on_ens": "View on ENS",
         "switch_to_wallet": "Switch to This Wallet",
         "copy_wallet_address": "Copy Address",
-        "view_wallet_on_etherscan": "View on Etherscan"
+        "view_wallet_on_etherscan": "View on Etherscan",
+        "export_addresses_as_CSV": "Export Addresses as CSV"
       },
       "search_tags": {
         "swap": "bridge",
@@ -479,6 +480,18 @@
     },
     "toolbar": {
       "actions_hint": "Actions"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "Watching",
+        "recovery_phrase": "Recovery Phrase",
+        "private_key": "Private Key",
+        "hardware_wallet": "Hardware Wallet"
+      },
+      "toast": {
+        "title": "Addresses Downloaded",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {

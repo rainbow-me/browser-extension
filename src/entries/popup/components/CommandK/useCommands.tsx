@@ -251,7 +251,7 @@ export const staticCommandInfo: CommandInfo = {
     type: SearchItemType.Shortcut,
   },
   exportAddresses: {
-    name: 'Export Addresses as CSV',
+    name: i18n.t(`command_k.commands.names.export_addresses_as_CSV`),
     page: PAGES.HOME,
     shouldRemainOnActiveRoute: true,
     searchTags: getSearchTags('export_addresses'),

@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { Account } from '~/entries/popup/hooks/useAccounts';
@@ -433,10 +434,18 @@ export function useKeyboardNavigation(
 }
 
 const typeMapping: { [key: string]: string } = {
-  [KeychainType.ReadOnlyKeychain]: 'Watching',
-  [KeychainType.HdKeychain]: 'Recovery Phrase',
-  [KeychainType.KeyPairKeychain]: 'Private Key',
-  [KeychainType.HardwareWalletKeychain]: 'Hardware Wallet',
+  [KeychainType.ReadOnlyKeychain]: i18n.t(
+    `command_k.export_public_addresses.keychain_type.watching`,
+  ),
+  [KeychainType.HdKeychain]: i18n.t(
+    `command_k.export_public_addresses.keychain_type.recovery_phrase`,
+  ),
+  [KeychainType.KeyPairKeychain]: i18n.t(
+    `command_k.export_public_addresses.keychain_type.private_key`,
+  ),
+  [KeychainType.HardwareWalletKeychain]: i18n.t(
+    `command_k.export_public_addresses.keychain_type.hardware_wallet`,
+  ),
 };
 
 const generateCSV = (
@@ -474,7 +483,7 @@ export const handleExportAddresses = async (accounts: Account[]) => {
   URL.revokeObjectURL(url);
 
   triggerToast({
-    title: 'Addresses Downloaded',
-    description: 'rainbow_addresses.csv',
+    title: i18n.t(`command_k.export_public_addresses.toast.title`),
+    description: i18n.t(`command_k.export_public_addresses.toast.description`),
   });
 };
