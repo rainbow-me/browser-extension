@@ -363,7 +363,7 @@ function InsuficientGasFunds({
           variant="transparent"
           color="blue"
           onClick={() => {
-            navigate(ROUTES.BRIDGE);
+            navigate(ROUTES.BRIDGE, { replace: true });
             onRejectRequest();
             triggerToast({
               title: 'Transaction Request Rejected',
@@ -392,7 +392,7 @@ function InsuficientGasFunds({
           variant="transparent"
           color="blue"
           onClick={() => {
-            navigate(ROUTES.WALLET_SWITCHER);
+            navigate(ROUTES.WALLET_SWITCHER, { replace: true });
             onRejectRequest();
             triggerToast({
               title: 'Transaction Request Rejected',
