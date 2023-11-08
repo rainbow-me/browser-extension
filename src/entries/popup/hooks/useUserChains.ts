@@ -25,7 +25,7 @@ export const useUserChains = () => {
       .map((chainId) => Number(chainId));
 
     const allAvailableUserChains = availableChains
-      .map((chainId) => chainIdMap[chainId])
+      .map((chainId) => chainIdMap[chainId] || [chainId])
       .flat();
 
     const checkIfTesting = (chainId: ChainId) => {
