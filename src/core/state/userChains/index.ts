@@ -5,42 +5,33 @@ import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
 
-type MainnetChainId =
-  | ChainId.mainnet
-  | ChainId.optimism
-  | ChainId.polygon
-  | ChainId.arbitrum
-  | ChainId.bsc
-  | ChainId.zora
-  | ChainId.base;
-
 export interface UserChainsState {
   /**
    * Mainnet chains in network settings
    */
-  userChains: Record<MainnetChainId, boolean>;
+  userChains: Record<number, boolean>;
   /**
    * Mainnet chains ordered from network settings
    */
-  userChainsOrder: (MainnetChainId | number)[];
+  userChainsOrder: (number | number)[];
   updateUserChain: ({
     chainId,
     enabled,
   }: {
-    chainId: MainnetChainId;
+    chainId: number;
     enabled: boolean;
   }) => void;
   updateUserChains: ({
     chainIds,
     enabled,
   }: {
-    chainIds: MainnetChainId[];
+    chainIds: number[];
     enabled: boolean;
   }) => void;
   updateUserChainsOrder: ({
     userChainsOrder,
   }: {
-    userChainsOrder: (MainnetChainId | number)[];
+    userChainsOrder: (number | number)[];
   }) => void;
   addUserChain: ({ chainId }: { chainId: ChainId }) => void;
   removeUserChain: ({ chainId }: { chainId: ChainId }) => void;
@@ -51,12 +42,10 @@ const chains = SUPPORTED_MAINNET_CHAINS.reduce(
     ...acc,
     [chain.id]: true,
   }),
-  {} as Record<MainnetChainId, boolean>,
+  {} as Record<number, boolean>,
 );
 
-const userChainsOrder = Object.keys(chains).map(
-  (id) => Number(id) as MainnetChainId,
-);
+const userChainsOrder = Object.keys(chains).map((id) => Number(id) as number);
 
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({
@@ -69,8 +58,8 @@ export const userChainsStore = createStore<UserChainsState>(
           acc[chainId] = enabled;
           return acc;
         },
-        {} as Record<MainnetChainId, boolean>,
-      ) satisfies Record<MainnetChainId, boolean>;
+        {} as Record<number, boolean>,
+      ) satisfies Record<number, boolean>;
       set({
         userChains: {
           ...userChains,
