@@ -11,6 +11,24 @@ import { AddressOrEth } from '../types/assets';
 import { getDappHost } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export const customChainIdsToAssetNames: Record<ChainId, string> = {
+  43114: 'avalanchex',
+  100: 'xdai',
+  324: 'zksync',
+  1313161554: 'aurora',
+  42220: 'celo',
+  250: 'fantom',
+  1666600000: 'harmony',
+  59144: 'linea',
+  25: 'cronos',
+  2222: 'kavaevm',
+  8217: 'klaytn',
+  314: 'filecoin',
+  534352: 'scroll',
+};
+
 export const getSupportedChainsWithHardhat = () => {
   const { chains } = getNetwork();
   return chains.filter(

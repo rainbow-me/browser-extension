@@ -1,3 +1,5 @@
+import { AddressZero } from '@ethersproject/constants';
+
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge@3x.png';
 import BaseBadge from 'static/assets/badges/baseBadge@3x.png';
 import BscBadge from 'static/assets/badges/bscBadge@3x.png';
@@ -6,8 +8,12 @@ import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
 import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
+import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
 import { ChainId } from '~/core/types/chains';
+import { customChainIdsToAssetNames } from '~/core/utils/chains';
 import { Box } from '~/design-system';
+
+import ExternalImage from '../ExternalImage/ExternalImage';
 
 const chainBadgeSize = {
   '60': 60,
@@ -50,7 +56,11 @@ const ChainBadge = ({
   shadow = false,
   size = '18',
 }: ChainIconProps) => {
-  if (!Object.keys(networkBadges).includes(`${chainId}`)) return null;
+  if (
+    !Object.keys(networkBadges).includes(`${chainId}`) &&
+    !customChainIdsToAssetNames[chainId]
+  )
+    return null;
 
   const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
 
@@ -68,14 +78,25 @@ const ChainBadge = ({
         boxShadow,
       }}
     >
-      <img
-        src={networkBadges[chainId]}
-        width="100%"
-        height="100%"
-        loading="lazy"
-        style={{ userSelect: 'none' }}
-        draggable={false}
-      />
+      {customChainIdsToAssetNames[chainId] ? (
+        <ExternalImage
+          src={getCustomChainIconUrl(chainId, AddressZero)}
+          width="100%"
+          height="100%"
+          loading="lazy"
+          style={{ userSelect: 'none' }}
+          draggable={false}
+        />
+      ) : (
+        <img
+          src={networkBadges[chainId]}
+          width="100%"
+          height="100%"
+          loading="lazy"
+          style={{ userSelect: 'none' }}
+          draggable={false}
+        />
+      )}
     </Box>
   );
 };

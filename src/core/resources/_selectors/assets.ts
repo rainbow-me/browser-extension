@@ -102,13 +102,6 @@ export function selectUserAssetWithUniqueId(uniqueId: UniqueId) {
   };
 }
 
-export function selectCustomNetworkAssetWithUniqueId(uniqueId: UniqueId) {
-  return (assets: ParsedAssetsDictByChain) => {
-    const { chain } = deriveAddressAndChainWithUniqueId(uniqueId);
-    return assets?.[chain]?.[uniqueId];
-  };
-}
-
 export function selectUserAssetsBalance(assets: ParsedAssetsDictByChain) {
   const networksTotalBalance = Object.values(assets).map((assetsOnject) => {
     const assetsNetwork = Object.values(assetsOnject);
