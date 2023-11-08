@@ -276,6 +276,7 @@ export const parseGasFeeParams = ({
       )
     : convertRawAmountToBalance(totalWei, {
         decimals: nativeAsset?.decimals || 18,
+        symbol: nativeAsset?.symbol,
       });
   const gasFee = { amount: totalWei, display: nativeDisplay.display };
 
@@ -341,6 +342,7 @@ export const parseGasFeeLegacyParams = ({
       )
     : convertRawAmountToBalance(totalWei, {
         decimals: nativeAsset?.decimals || 18,
+        symbol: nativeAsset?.symbol,
       });
 
   const gasFee = { amount: totalWei, display: nativeDisplay.display };
