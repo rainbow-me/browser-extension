@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
+import { requestMetadata } from '~/core/graphql';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -14,17 +15,26 @@ import { SupportedCurrencyKey } from '~/core/references';
 import { customRPCAssetsStore } from '~/core/state/customRPCAssets';
 import {
   AddressOrEth,
+  AssetMetadata,
   ParsedAssetsDict,
   ParsedUserAsset,
+  ZerionAssetPrice,
 } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import {
+  createAssetQuery,
   extractFulfilledValue,
   getAssetBalance,
+  parseAssetMetadata,
   parseUserAssetBalances,
 } from '~/core/utils/assets';
-import { getCustomChains } from '~/core/utils/chains';
+import {
+  customChainIdsToAssetNames,
+  getCustomChains,
+} from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
+
+import { ASSETS_TIMEOUT_DURATION } from './assets';
 
 const CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL = 60000;
 export const CUSTOM_NETWORK_ASSETS_STALE_INTERVAL = 30000;
@@ -103,6 +113,20 @@ export const CustomNetworkAssetsSetQueryData = ({
   );
 };
 
+export const getCustomChainIconUrl = (
+  chainId: ChainId,
+  address: AddressOrEth,
+) => {
+  const baseUrl =
+    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
+
+  if (address === AddressZero) {
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
+  } else {
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
+  }
+};
+
 async function customNetworkAssetsFunction({
   queryKey: [{ address, currency }],
 }: QueryFunctionArgs<typeof customNetworkAssetsKey>) {
@@ -131,8 +155,10 @@ async function customNetworkAssetsFunction({
           uniqueId: `${AddressZero}_${chain.id}`,
           decimals: 18,
           native: { price: undefined },
+          price: { value: 0 },
           bridging: { isBridgeable: false, networks: [] },
           mainnetAddress: AddressZero as AddressOrEth,
+          icon_url: getCustomChainIconUrl(chain.id, AddressZero),
         },
         currency,
         balance: nativeAssetBalance.toString(),
@@ -166,9 +192,42 @@ async function customNetworkAssetsFunction({
         });
       });
 
+      const allCustomNetworkAssets = [
+        customNetworkNativeAssetParsed,
+        ...chainParsedAssets,
+      ];
+
+      // Now we'll try to fetch the prices for all the assets in this network
+      const batchedQuery = allCustomNetworkAssets.map(({ address }) => address);
+      const results: Record<string, AssetMetadata>[] = (await requestMetadata(
+        createAssetQuery(batchedQuery, chain.id, currency, true),
+        {
+          timeout: ASSETS_TIMEOUT_DURATION,
+        },
+      )) as Record<string, AssetMetadata>[];
+
+      const assets = Object.values(results).flat();
+      assets.forEach((asset, i) => {
+        const a = asset as unknown as AssetMetadata;
+        const address = a.networks?.[chain.id]?.address as AddressOrEth;
+        const parsedAsset = parseAssetMetadata({
+          address,
+          asset: a,
+          chainId: chain.id,
+          currency,
+        });
+        if (parsedAsset?.native.price) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          allCustomNetworkAssets[i].native.price = parsedAsset.native.price;
+          allCustomNetworkAssets[i].price =
+            parsedAsset?.price as ZerionAssetPrice;
+        }
+      });
+
       return {
         chainId: chain.id,
-        assets: [customNetworkNativeAssetParsed, ...chainParsedAssets],
+        assets: allCustomNetworkAssets,
       };
     });
     const assetsResults = (await Promise.allSettled(assetsPromises))
@@ -194,6 +253,7 @@ async function customNetworkAssetsFunction({
     logger.error(new RainbowError('customNetworkAssetsFunction: '), {
       message: (e as Error)?.message,
     });
+
     return cachedCustomNetworkAssets;
   }
 }

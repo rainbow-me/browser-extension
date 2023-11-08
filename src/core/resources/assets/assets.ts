@@ -23,7 +23,7 @@ import {
 } from '~/core/utils/assets';
 import { RainbowError, logger } from '~/logger';
 
-const ASSETS_TIMEOUT_DURATION = 10000;
+export const ASSETS_TIMEOUT_DURATION = 10000;
 const ASSETS_REFETCH_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
