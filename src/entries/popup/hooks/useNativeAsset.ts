@@ -5,7 +5,7 @@ import { useNetwork } from 'wagmi';
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { isCustomNetwork } from '~/core/utils/customNetworks';
+import { isCustomChain } from '~/core/utils/chains';
 
 import { useCustomNetworkAsset } from './useCustomNetworkAsset';
 import { getNetworkNativeAssetUniqueId } from './useNativeAssetForNetwork';
@@ -30,7 +30,7 @@ export const useNativeAsset = ({ chainId }: { chainId: ChainId }) => {
   );
 
   const chain = chains.find((chain) => chain.id === chainId);
-  const isChainIdCustomNetwork = isCustomNetwork(chainId);
+  const isChainIdCustomNetwork = isCustomChain(chainId);
   const nativeAsset = isChainIdCustomNetwork
     ? customNetworkNativeAsset
     : chain?.testnet
