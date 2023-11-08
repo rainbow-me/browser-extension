@@ -59,6 +59,12 @@ export function App() {
   );
 
   React.useEffect(() => {
+    if (!isEqual(prevChains, customChains)) {
+      backgroundMessenger.send('rainbow_updateWagmiClient', null);
+    }
+  }, [prevChains, customChains]);
+
+  React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
     if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
       initializeSentry('popup');
