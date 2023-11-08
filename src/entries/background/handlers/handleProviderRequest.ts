@@ -285,7 +285,10 @@ export const handleProviderRequest = ({
                 domain: { chainId },
               } = data as { domain: { chainId: string } };
 
-              if (Number(chainId) !== Number(activeSession?.chainId)) {
+              if (
+                chainId !== undefined &&
+                Number(chainId) !== Number(activeSession?.chainId)
+              ) {
                 throw new Error('ChainId mismatch');
               }
             }
