@@ -10,12 +10,11 @@ import { ChainId } from '~/core/types/chains';
 import { copy } from '~/core/utils/copy';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { truncateString } from '~/core/utils/strings';
-import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
-import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import {
   SimulationError,
@@ -29,9 +28,6 @@ interface SignMessageProps {
 
 function Overview({
   message,
-  simulation,
-  status,
-  error,
 }: {
   message?: string;
   simulation: TransactionSimulation | undefined;
@@ -40,17 +36,17 @@ function Overview({
 }) {
   return (
     <Stack space="16px">
-      <Text size="12pt" weight="semibold" color="labelTertiary">
+      {/* <Text size="12pt" weight="semibold" color="labelTertiary">
         {i18n.t('simulation.title')}
-      </Text>
+      </Text> */}
 
-      <SimulationOverview
+      {/* <SimulationOverview
         simulation={simulation}
         status={status}
         error={error}
       />
 
-      <Separator color="separatorTertiary" />
+      <Separator color="separatorTertiary" /> */}
 
       <Stack space="20px">
         <Inline space="8px" alignVertical="center">
@@ -69,16 +65,6 @@ function Overview({
           {message}
         </Text>
       </Stack>
-    </Stack>
-  );
-}
-
-function Details() {
-  return (
-    <Stack space="16px">
-      <Text size="12pt" weight="semibold" color="labelTertiary">
-        Details
-      </Text>
     </Stack>
   );
 }
@@ -164,7 +150,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
       </motion.div>
 
       <Tabs
-        tabs={[tabLabel('overview'), tabLabel('details')]}
+        tabs={[tabLabel('overview')]}
         expanded={expanded}
         onExpand={() => setExpanded((e) => !e)}
       >
@@ -185,9 +171,6 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
               })
             }
           />
-        </TabContent>
-        <TabContent value={tabLabel('details')}>
-          <Details />
         </TabContent>
       </Tabs>
 

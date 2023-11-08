@@ -97,7 +97,7 @@ function Overview({
   );
 
   return (
-    <Stack space="16px">
+    <Stack space="16px" paddingTop="14px">
       <Text size="12pt" weight="semibold" color="labelTertiary">
         {i18n.t('simulation.title')}
       </Text>
@@ -164,7 +164,7 @@ function TransactionDetails({
   const contractCreatedAt = metaTo?.created;
 
   return (
-    <Box gap="16px" display="flex" flexDirection="column">
+    <Box gap="16px" display="flex" flexDirection="column" paddingTop="14px">
       {!!nonce && (
         <InfoRow symbol="number" label={i18n.t('nonce')} value={nonce} />
       )}
@@ -225,7 +225,7 @@ function TransactionData({
   expanded: boolean;
 }) {
   return (
-    <Box paddingBottom="32px">
+    <Box paddingBottom="32px" paddingTop="14px">
       <Text size="12pt" weight="medium" color="labelSecondary">
         <span style={{ wordWrap: 'break-word' }}>{data}</span>
       </Text>

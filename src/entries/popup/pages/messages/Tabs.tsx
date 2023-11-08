@@ -66,13 +66,18 @@ export function TabContent({
 export function TabsNav() {
   const { tabs } = useContext(TabContext);
   return (
-    <TabsPrimitive.List asChild>
-      <Inline space="16px" alignVertical="center" wrap={false}>
-        {tabs.map((t) => (
-          <TabTrigger key={t} value={t} />
-        ))}
-      </Inline>
-    </TabsPrimitive.List>
+    <>
+      <TabsPrimitive.List asChild>
+        <Inline space="16px" alignVertical="center" wrap={false}>
+          {tabs.map((t) => (
+            <TabTrigger key={t} value={t} />
+          ))}
+        </Inline>
+      </TabsPrimitive.List>
+      <Inset top="20px">
+        <Separator color="separatorTertiary" />
+      </Inset>
+    </>
   );
 }
 
@@ -107,8 +112,7 @@ function ScrollableWithGradient({
           maxHeight: '100%',
           overflow: isScrollable ? 'scroll' : 'visible',
         }}
-        paddingBottom={isScrollable || expanded ? '52px' : '20px'}
-        paddingTop="14px"
+        paddingBottom="52px"
         paddingHorizontal="20px"
         marginHorizontal="-20px"
         gap="16px"
@@ -261,10 +265,7 @@ export function Tabs({
           position="relative"
           style={{ maxHeight: expanded ? '100%' : 300, overflow: 'hidden' }}
         >
-          <TabsNav />
-          <Inset top="20px">
-            <Separator color="separatorTertiary" />
-          </Inset>
+          {tabs.length > 1 && <TabsNav />}
           <AnimatePresence mode="wait">
             <ScrollableWithGradient
               key={tab}
