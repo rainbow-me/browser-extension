@@ -110,7 +110,10 @@ export const CustomNetworkAssetsSetQueryData = ({
   );
 };
 
-const getCustomChainIconUrl = (chainId: ChainId, address: AddressOrEth) => {
+export const getCustomChainIconUrl = (
+  chainId: ChainId,
+  address: AddressOrEth,
+) => {
   const baseUrl =
     'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
 
