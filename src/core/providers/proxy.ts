@@ -1,8 +1,9 @@
+import config from '../firebase/remoteConfig';
 import { ChainId } from '../types/chains';
 
 export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {
   if (
-    process.env.RPC_PROXY_ENABLED === 'true' &&
+    config.rpc_proxy_enabled &&
     endpoint !== 'http://127.0.0.1:8545' &&
     endpoint !== 'http://localhost:8545'
   ) {
