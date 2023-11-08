@@ -390,16 +390,12 @@ export const getAssetMetadata = async ({
 };
 
 export const getAssetBalance = async ({
-  // parsedAsset,
   assetAddress,
   currentAddress,
-  // currency,
   provider,
 }: {
-  // parsedAsset: ParsedUserAsset;
   assetAddress: Address;
   currentAddress: Address;
-  // currency: SupportedCurrencyKey;
   provider: Provider;
 }) => {
   const balance = await getContract({
@@ -408,11 +404,6 @@ export const getAssetBalance = async ({
     signerOrProvider: provider,
   }).balanceOf(currentAddress);
 
-  // const updatedAsset = parseUserAssetBalances({
-  //   asset: parsedAsset,
-  //   currency,
-  //   balance: balance.toString(),
-  // });
   return balance.toString();
 };
 
