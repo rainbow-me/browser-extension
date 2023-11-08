@@ -476,7 +476,9 @@ export const handleExportAddresses = async (accounts: Account[]) => {
   const url = URL.createObjectURL(blob);
   const tempLink = document.createElement('a');
   tempLink.href = url;
-  tempLink.download = 'rainbow_addresses.csv';
+  tempLink.download = i18n.t(
+    `command_k.export_public_addresses.toast.description`,
+  );
   document.body.appendChild(tempLink);
   tempLink.click();
   document.body.removeChild(tempLink);

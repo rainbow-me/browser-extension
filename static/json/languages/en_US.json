@@ -404,7 +404,7 @@
         "switch_to_wallet": "Switch to This Wallet",
         "copy_wallet_address": "Copy Address",
         "view_wallet_on_etherscan": "View on Etherscan",
-        "export_addresses_as_CSV": "Export Addresses as CSV"
+        "export_addresses_as_csv": "Export Addresses as CSV"
       },
       "search_tags": {
         "swap": "bridge",
