@@ -74,7 +74,10 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
     );
 
     const isNativeCurrencySupportedForThisAsset = useMemo(() => {
-      return isCustomNetworkAsset && asset?.native?.balance?.amount != '0';
+      return (
+        !isCustomNetworkAsset ||
+        (isCustomNetworkAsset && asset?.native?.balance?.amount != '0')
+      );
     }, [isCustomNetworkAsset, asset]);
 
     return (
