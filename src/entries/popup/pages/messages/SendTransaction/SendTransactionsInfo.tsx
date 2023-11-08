@@ -15,6 +15,7 @@ import { truncateString } from '~/core/utils/strings';
 import {
   Bleed,
   Box,
+  Button,
   Inline,
   Separator,
   Stack,
@@ -243,19 +244,96 @@ function TransactionData({
   );
 }
 
-export function SendTransactionInfo({ request }: SendTransactionProps) {
-  const dappUrl = request?.meta?.sender?.url || '';
-  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
+function InsuficientGasFunds({ chainId }: { chainId: ChainId }) {
+  const chainName = ChainNameDisplay[chainId];
+  const token = `${chainName} ETH`; // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      padding="20px"
+      paddingBottom="2px"
+      background="surfaceSecondaryElevated"
+      borderRadius="20px"
+      borderColor="separatorSecondary"
+      borderWidth="1px"
+      width="full"
+      gap="16px"
+    >
+      <Inline alignVertical="center" space="12px">
+        <ChainBadge chainId={chainId} size={16} />
+        <Text size="14pt" weight="bold">
+          {i18n.t('approve_request.insufficient_gas_funds', { token })}
+        </Text>
+      </Inline>
+      <Text size="12pt" weight="medium" color="labelQuaternary">
+        {i18n.t('approve_request.insufficient_gas_funds_description', {
+          token,
+        })}
+      </Text>
+      <Stack marginHorizontal="-8px">
+        <Separator color="separatorTertiary" />
+
+        <Button
+          paddingHorizontal="8px"
+          height="44px"
+          variant="transparent"
+          color="blue"
+        >
+          <Inline alignVertical="center" space="12px" wrap={false}>
+            <Symbol
+              size={16}
+              symbol="arrow.turn.up.right"
+              color="blue"
+              weight="bold"
+            />
+            <Text size="14pt" weight="bold" color="blue">
+              Bridge to {chainName}
+            </Text>
+          </Inline>
+        </Button>
+
+        <Separator color="separatorTertiary" />
+
+        <Button
+          paddingHorizontal="8px"
+          height="44px"
+          variant="transparent"
+          color="blue"
+        >
+          <Inline alignVertical="center" space="12px" wrap={false}>
+            <Symbol
+              size={16}
+              symbol="paperplane.fill"
+              color="blue"
+              weight="bold"
+            />
+            <Text size="14pt" weight="bold" color="blue">
+              Send from another wallet
+            </Text>
+          </Inline>
+        </Button>
+      </Stack>
+    </Box>
+  );
+}
+
+function TransactionInfo({
+  request,
+  dappUrl,
+  dappMetadata,
+  expanded,
+  onExpand,
+}: {
+  request: TransactionRequest;
+  dappUrl: string;
+  dappMetadata: DappMetadata | null;
+  expanded: boolean;
+  onExpand: VoidFunction;
+}) {
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-
-  const txRequest = request?.params?.[0] as TransactionRequest;
-  const txData = txRequest?.data?.toString() || '';
-
   const chainId = activeSession?.chainId || ChainId.mainnet;
-
-  const [expanded, setExpanded] = useState(false);
-
-  const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
+  const txData = request?.data?.toString() || '';
 
   const {
     data: simulation,
@@ -265,15 +343,52 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
   } = useSimulateTransaction({
     chainId,
     transaction: {
-      from: txRequest.from || '',
-      to: txRequest.to || '',
-      value: txRequest.value?.toString() || '0',
-      data: txRequest.data?.toString() || '',
+      from: request.from || '',
+      to: request.to || '',
+      value: request.value?.toString() || '0',
+      data: request.data?.toString() || '',
     },
     domain: dappUrl,
   });
 
   const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
+
+  return (
+    <Tabs
+      tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
+      expanded={expanded}
+      onExpand={onExpand}
+    >
+      <TabContent value={tabLabel('overview')}>
+        <Overview
+          simulation={simulation}
+          status={status === 'error' && isRefetching ? 'loading' : status}
+          error={error}
+          metadata={dappMetadata}
+        />
+      </TabContent>
+      <TabContent value={tabLabel('details')}>
+        <TransactionDetails session={activeSession!} simulation={simulation} />
+      </TabContent>
+      <TabContent value={tabLabel('data')}>
+        <TransactionData data={txData} expanded={expanded} />
+      </TabContent>
+    </Tabs>
+  );
+}
+
+export function SendTransactionInfo({ request }: SendTransactionProps) {
+  const dappUrl = request?.meta?.sender?.url || '';
+  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
+
+  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
+  const chainId = activeSession?.chainId || ChainId.mainnet;
+
+  const txRequest = request?.params?.[0] as TransactionRequest;
+
+  const [expanded, setExpanded] = useState(false);
+
+  const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
   return (
     <Box
@@ -319,29 +434,14 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
         </Stack>
       </motion.div>
 
-      <Tabs
-        tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
+      <InsuficientGasFunds chainId={chainId} />
+      {/* <TransactionInfo
+        request={txRequest}
+        dappMetadata={dappMetadata}
+        dappUrl={dappUrl}
         expanded={expanded}
         onExpand={() => setExpanded((e) => !e)}
-      >
-        <TabContent value={tabLabel('overview')}>
-          <Overview
-            simulation={simulation}
-            status={status === 'error' && isRefetching ? 'loading' : status}
-            error={error}
-            metadata={dappMetadata}
-          />
-        </TabContent>
-        <TabContent value={tabLabel('details')}>
-          <TransactionDetails
-            session={activeSession!}
-            simulation={simulation}
-          />
-        </TabContent>
-        <TabContent value={tabLabel('data')}>
-          <TransactionData data={txData} expanded={expanded} />
-        </TabContent>
-      </Tabs>
+      /> */}
 
       {!expanded && isScamDapp && <ThisDappIsLikelyMalicious />}
     </Box>

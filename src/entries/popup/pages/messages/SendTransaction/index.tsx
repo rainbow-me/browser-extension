@@ -2,7 +2,6 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { formatEther } from '@ethersproject/units';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Navigate } from 'react-router';
 import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -195,8 +194,6 @@ export function SendTransaction({
     config.flashbots_enabled &&
     flashbotsEnabled &&
     activeSession?.chainId === ChainId.mainnet;
-
-  if (!selectedWallet || !dappMetadata) return <Navigate to="/" />;
 
   return (
     <Box

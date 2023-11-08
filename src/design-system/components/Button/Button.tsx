@@ -31,6 +31,7 @@ export type ButtonProps = {
   borderRadius?: Radius;
   paddingLeft?: BoxStyles['paddingLeft'];
   paddingRight?: BoxStyles['paddingRight'];
+  paddingHorizontal?: BoxStyles['paddingHorizontal'];
   tabIndex?: number;
   disabled?: boolean;
   enterCta?: boolean;
@@ -112,8 +113,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       // eslint-disable-next-line react/jsx-props-no-spreading
       <ButtonWrapper height={height} {...props} testId={testId} ref={ref}>
         <Box
-          paddingLeft={props.paddingLeft || paddingHorizontal}
-          paddingRight={props.paddingRight || paddingHorizontal}
+          paddingLeft={
+            props.paddingLeft || props.paddingHorizontal || paddingHorizontal
+          }
+          paddingRight={
+            props.paddingRight || props.paddingHorizontal || paddingHorizontal
+          }
         >
           <Inline alignVertical="center" space={gap} wrap={false}>
             {typeof children === 'string' ? (

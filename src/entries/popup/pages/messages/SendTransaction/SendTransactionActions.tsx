@@ -50,16 +50,19 @@ export const SendTransactionActions = ({
         label={i18n.t('common_actions.cancel')}
         dappStatus={dappStatus}
       />
-      <AcceptRequestButton
-        disabled={!enoughNativeAssetForGas}
-        onClick={onAcceptRequest}
-        label={
-          waitingForDevice ? i18n.t('approve_request.confirm_hw') : buttonLabel
-        }
-        waitingForDevice={waitingForDevice}
-        loading={loading}
-        dappStatus={dappStatus}
-      />
+      {enoughNativeAssetForGas && (
+        <AcceptRequestButton
+          onClick={onAcceptRequest}
+          label={
+            waitingForDevice
+              ? i18n.t('approve_request.confirm_hw')
+              : buttonLabel
+          }
+          waitingForDevice={waitingForDevice}
+          loading={loading}
+          dappStatus={dappStatus}
+        />
+      )}
     </Inline>
   );
 };

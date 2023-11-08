@@ -954,7 +954,10 @@
     "send_transaction_anyway": "Sign Anyway",
     "contract_deployment": "Contract Deployment",
     "transaction_request": "Transaction Request",
-    "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas",
+    "insufficient_gas_funds": "You need more %{token}",
+    "insufficient_gas_funds_description": "You need a bit more %{token} to pay for this transaction. Get more below to continue with this request.",
+    "no_gas_funds": "You need some %{token}",
+    "no_gas_funds_description": "You’ll need %{token} to pay for this transaction. Get some %{token} below to continue with this request.",
     "signing_with": "Signing with",
     "no_fee_to_sign": "No fee to sign"
   },
