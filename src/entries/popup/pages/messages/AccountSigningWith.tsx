@@ -1,13 +1,13 @@
-import { Address, useBalance } from 'wagmi';
-
 import { i18n } from '~/core/languages';
-import { ChainId } from '~/core/types/chains';
-import { formatNumber } from '~/core/utils/formatNumber';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { Inline, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
+import { useNativeAsset } from '../../hooks/useNativeAsset';
+
 import { WalletName } from './BottomActions';
+import { useHasEnoughtGas } from './SendTransaction/SendTransactionsInfo';
 
 export interface SelectedNetwork {
   network: string;
@@ -15,20 +15,30 @@ export interface SelectedNetwork {
   name: string;
 }
 
-function WalletNativeBalance({
-  chainId,
-  address,
-}: {
-  chainId: ChainId;
-  address: Address;
-}) {
-  const { data: balance } = useBalance({ address, chainId });
+function WalletNativeBalance({ chainId }: { chainId: ChainId }) {
+  const { nativeAsset } = useNativeAsset({ chainId });
+  const balance = nativeAsset?.balance;
+
+  const hasEnoughtGas = useHasEnoughtGas(chainId);
+
   if (!balance) return null;
+
   return (
     <Inline alignVertical="center" space="6px">
       <ChainBadge chainId={chainId} size={14} />
-      <Text size="12pt" weight="semibold" color="labelTertiary">
-        {formatNumber(balance.formatted)}
+      <Text
+        size="12pt"
+        weight="bold"
+        color={hasEnoughtGas ? 'labelTertiary' : 'red'}
+      >
+        {+balance.amount > 0
+          ? balance.display
+          : i18n.t('approve_request.no_token', { token: nativeAsset.symbol })}
+      </Text>
+      <Text size="12pt" weight="semibold" color="labelQuaternary">
+        {i18n.t('approve_request.on_chain', {
+          chain: ChainNameDisplay[chainId],
+        })}
       </Text>
     </Inline>
   );

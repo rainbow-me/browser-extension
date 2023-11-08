@@ -957,6 +957,8 @@
     "insufficient_gas_funds": "You need more %{token}",
     "insufficient_gas_funds_description": "You need a bit more %{token} to pay for this transaction. Get more below to continue with this request.",
     "no_gas_funds": "You need some %{token}",
+    "no_token": "No %{token}",
+    "on_chain": "no %{chain}",
     "no_gas_funds_description": "You’ll need %{token} to pay for this transaction. Get some %{token} below to continue with this request.",
     "signing_with": "Signing with",
     "no_fee_to_sign": "No fee to sign"
