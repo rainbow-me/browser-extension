@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -29,7 +30,7 @@ import {
 } from '~/core/utils/gas';
 
 import { useDebounce } from './useDebounce';
-import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
+import { useNativeAsset } from './useNativeAsset';
 import usePrevious from './usePrevious';
 
 const useGas = ({
@@ -51,7 +52,7 @@ const useGas = ({
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
-  const nativeAsset = useNativeAssetForNetwork({ chainId });
+  const { nativeAsset } = useNativeAsset({ chainId });
   const prevDefaultSpeed = usePrevious(defaultSpeed);
 
   const [internalMaxPriorityFee, setInternalMaxPriorityFee] = useState('');
@@ -94,7 +95,8 @@ const useGas = ({
       !gasData ||
       prevDebouncedMaxBaseFee === debouncedMaxBaseFee ||
       !enabled ||
-      chainId !== ChainId.mainnet
+      chainId !== ChainId.mainnet ||
+      !nativeAsset
     )
       return;
 
@@ -141,7 +143,8 @@ const useGas = ({
       !gasData ||
       prevDebouncedMaxPriorityFee === debouncedMaxPriorityFee ||
       !enabled ||
-      chainId !== ChainId.mainnet
+      chainId !== ChainId.mainnet ||
+      !nativeAsset
     )
       return;
     const { data } = gasData as MeteorologyResponse;
@@ -202,17 +205,19 @@ const useGas = ({
       !isLoading &&
       ((gasData as MeteorologyResponse)?.data?.currentBaseFee ||
         (gasData as MeteorologyLegacyResponse)?.data?.legacy)
-        ? parseGasFeeParamsBySpeed({
-            chainId,
-            data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
-            gasLimit:
-              debouncedEstimatedGasLimit || `${gasUnits.basic_transfer}`,
-            nativeAsset,
-            currency: currentCurrency,
-            optimismL1SecurityFee,
-            flashbotsEnabled,
-            additionalTime,
-          })
+        ? nativeAsset
+          ? parseGasFeeParamsBySpeed({
+              chainId,
+              data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
+              gasLimit:
+                debouncedEstimatedGasLimit || `${gasUnits.basic_transfer}`,
+              nativeAsset,
+              currency: currentCurrency,
+              optimismL1SecurityFee,
+              flashbotsEnabled,
+              additionalTime,
+            })
+          : null
         : null;
 
     if (customGasModified && newGasFeeParamsBySpeed) {

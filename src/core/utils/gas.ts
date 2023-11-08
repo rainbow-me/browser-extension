@@ -274,10 +274,9 @@ export const parseGasFeeParams = ({
         nativeAsset?.price?.value,
         currency,
       )
-    : convertRawAmountToBalance(
-        totalWei,
-        supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
-      );
+    : convertRawAmountToBalance(totalWei, {
+        decimals: nativeAsset?.decimals || 18,
+      });
   const gasFee = { amount: totalWei, display: nativeDisplay.display };
 
   return {
@@ -334,11 +333,15 @@ export const parseGasFeeLegacyParams = ({
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
   ).amount;
 
-  const nativeDisplay = convertAmountAndPriceToNativeDisplayWithThreshold(
-    nativeTotalWei,
-    nativeAsset?.price?.value || 0,
-    currency,
-  );
+  const nativeDisplay = nativeAsset?.price?.value
+    ? convertAmountAndPriceToNativeDisplayWithThreshold(
+        nativeTotalWei,
+        nativeAsset?.price?.value,
+        currency,
+      )
+    : convertRawAmountToBalance(totalWei, {
+        decimals: nativeAsset?.decimals || 18,
+      });
 
   const gasFee = { amount: totalWei, display: nativeDisplay.display };
 
