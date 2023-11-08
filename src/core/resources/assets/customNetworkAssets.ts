@@ -12,16 +12,19 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { customRPCAssetsStore } from '~/core/state/customRPCAssets';
 import {
   AddressOrEth,
   AssetMetadata,
-  ParsedAsset,
-  ParsedAssetsDictByChain,
+  ParsedAssetsDict,
+  ParsedUserAsset,
   ZerionAssetPrice,
 } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import {
   createAssetQuery,
+  extractFulfilledValue,
+  getAssetBalance,
   parseAssetMetadata,
   parseUserAssetBalances,
 } from '~/core/utils/assets';
@@ -40,24 +43,24 @@ export const CUSTOM_NETWORK_ASSETS_STALE_INTERVAL = 30000;
 // Query Types
 
 export type CustomNetworkAssetsArgs = {
-  address?: Address;
+  address: Address;
   currency: SupportedCurrencyKey;
 };
 
 type SetCustomNetworkAssetsArgs = {
-  address?: Address;
+  address: Address;
   currency: SupportedCurrencyKey;
   customNetworkAssets?: CustomNetworkAssetsResult;
 };
 
 type SetUserDefaultsArgs = {
-  address?: Address;
+  address: Address;
   currency: SupportedCurrencyKey;
   staleTime: number;
 };
 
 type FetchCustomNetworkAssetsArgs = {
-  address?: Address;
+  address: Address;
   currency: SupportedCurrencyKey;
 };
 
@@ -130,84 +133,122 @@ async function customNetworkAssetsFunction({
   const cache = queryClient.getQueryCache();
   const cachedCustomNetworkAssets = (cache.find(
     customNetworkAssetsKey({ address, currency }),
-  )?.state?.data || {}) as ParsedAssetsDictByChain;
-  try {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const parsedAssetsDict: ParsedAssetsDictByChain = {};
-    if (address) {
-      const { customChains } = getCustomChains();
-      if (customChains.length > 0) {
-        await Promise.all(
-          customChains.map(async (chain) => {
-            parsedAssetsDict[chain.id as ChainId] = {};
-            const provider = getProvider({ chainId: chain.id });
-            const nativeAssetBalance = await provider.getBalance(address);
-            const customNetworkNativeAssetParsed = {
-              address: AddressZero,
-              chainId: chain.id,
-              chainName: chain.name as ChainName,
-              isNativeAsset: true,
-              name: chain.nativeCurrency.symbol,
-              symbol: chain.nativeCurrency.symbol,
-              uniqueId: `${AddressZero}_${chain.id}`,
-              decimals: 18,
-              native: {
-                price: undefined,
-              },
-              price: { value: 0 },
-              bridging: { isBridgeable: false, networks: [] },
-              mainnetAddress: AddressZero as AddressOrEth,
-              icon_url: getCustomChainIconUrl(chain.id, AddressZero),
-            } as ParsedAsset;
-
-            // Now we'll try to fetch the prices for all the assets in this network
-            // TODO: also add the assets that were added by the user.
-            const batchedQuery = [AddressZero] as AddressOrEth[];
-
-            const results: Record<string, AssetMetadata>[] =
-              (await requestMetadata(
-                createAssetQuery(batchedQuery, chain.id, currency, true),
-                {
-                  timeout: ASSETS_TIMEOUT_DURATION,
-                },
-              )) as Record<string, AssetMetadata>[];
-
-            const assets = Object.values(results).flat();
-            assets.forEach((asset) => {
-              const a = asset as unknown as AssetMetadata;
-              const address = a.networks?.[chain.id]?.address as AddressOrEth;
-              const parsedAsset = parseAssetMetadata({
-                address,
-                asset: a,
-                chainId: chain.id,
-                currency,
-              });
-              if (parsedAsset?.native.price) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                customNetworkNativeAssetParsed.native.price =
-                  parsedAsset.native.price;
-                customNetworkNativeAssetParsed.price =
-                  parsedAsset?.price as ZerionAssetPrice;
-              }
-            });
-
-            parsedAssetsDict[chain.id as ChainId][
-              customNetworkNativeAssetParsed.uniqueId
-            ] = parseUserAssetBalances({
-              asset: customNetworkNativeAssetParsed,
-              currency,
-              balance: nativeAssetBalance.toString(),
-            });
-          }),
-        );
-      }
-
-      return parsedAssetsDict;
-    }
-
+  )?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
+  const { customChains } = getCustomChains();
+  if (customChains.length === 0) {
     return cachedCustomNetworkAssets;
+  }
+  const { customRPCAssets } = customRPCAssetsStore.getState();
+
+  try {
+    const assetsPromises = customChains.map(async (chain) => {
+      const provider = getProvider({ chainId: chain.id });
+      const nativeAssetBalance = await provider.getBalance(address);
+      const customNetworkNativeAssetParsed = parseUserAssetBalances({
+        asset: {
+          address: AddressZero,
+          chainId: chain.id,
+          chainName: chain.name as ChainName,
+          isNativeAsset: true,
+          name: chain.nativeCurrency.symbol,
+          symbol: chain.nativeCurrency.symbol,
+          uniqueId: `${AddressZero}_${chain.id}`,
+          decimals: 18,
+          native: { price: undefined },
+          price: { value: 0 },
+          bridging: { isBridgeable: false, networks: [] },
+          mainnetAddress: AddressZero as AddressOrEth,
+          icon_url: getCustomChainIconUrl(chain.id, AddressZero),
+        },
+        currency,
+        balance: nativeAssetBalance.toString(),
+      });
+
+      const chainAssets = customRPCAssets[chain.id] || [];
+      const chainParsedAssetBalances = await Promise.allSettled(
+        chainAssets.map((asset) =>
+          getAssetBalance({
+            assetAddress: asset.address,
+            currentAddress: address,
+            provider,
+          }),
+        ),
+      );
+
+      const chainParsedAssets = chainParsedAssetBalances.map((balance, i) => {
+        const fulfilledBalance = extractFulfilledValue(balance);
+        return parseUserAssetBalances({
+          asset: {
+            ...chainAssets[i],
+            chainId: chain.id,
+            chainName: chain.name as ChainName,
+            uniqueId: `${chainAssets[i].address}_${chain.id}`,
+            mainnetAddress: undefined,
+            isNativeAsset: false,
+            native: { price: undefined },
+          },
+          currency,
+          balance: fulfilledBalance || '0',
+        });
+      });
+
+      const allCustomNetworkAssets = [
+        customNetworkNativeAssetParsed,
+        ...chainParsedAssets,
+      ];
+
+      // Now we'll try to fetch the prices for all the assets in this network
+      const batchedQuery = allCustomNetworkAssets.map(({ address }) => address);
+      const results: Record<string, AssetMetadata>[] = (await requestMetadata(
+        createAssetQuery(batchedQuery, chain.id, currency, true),
+        {
+          timeout: ASSETS_TIMEOUT_DURATION,
+        },
+      )) as Record<string, AssetMetadata>[];
+
+      const assets = Object.values(results).flat();
+      assets.forEach((asset, i) => {
+        const a = asset as unknown as AssetMetadata;
+        const address = a.networks?.[chain.id]?.address as AddressOrEth;
+        const parsedAsset = parseAssetMetadata({
+          address,
+          asset: a,
+          chainId: chain.id,
+          currency,
+        });
+        if (parsedAsset?.native.price) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          allCustomNetworkAssets[i].native.price = parsedAsset.native.price;
+          allCustomNetworkAssets[i].price =
+            parsedAsset?.price as ZerionAssetPrice;
+        }
+      });
+
+      return {
+        chainId: chain.id,
+        assets: allCustomNetworkAssets,
+      };
+    });
+    const assetsResults = (await Promise.allSettled(assetsPromises))
+      .map((assets) => extractFulfilledValue(assets))
+      .filter(Boolean);
+    const parsedAssetsDict: Record<ChainId | number, ParsedAssetsDict> =
+      assetsResults.reduce(
+        (acc, { chainId, assets }) => {
+          acc[Number(chainId)] = assets.reduce(
+            (chainAcc, asset) => {
+              chainAcc[asset.uniqueId] = asset;
+              return chainAcc;
+            },
+            {} as Record<string, ParsedUserAsset>,
+          );
+          return acc;
+        },
+        {} as Record<ChainId | number, ParsedAssetsDict>,
+      );
+
+    return parsedAssetsDict;
   } catch (e) {
     logger.error(new RainbowError('customNetworkAssetsFunction: '), {
       message: (e as Error)?.message,

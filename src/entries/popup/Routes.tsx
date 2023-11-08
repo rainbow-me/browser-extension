@@ -56,8 +56,8 @@ import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
-import { SettingsCustomRPC } from './pages/settings/customRPC';
-import { CustomRPC } from './pages/settings/customRPC/customRPC';
+import { SettingsCustomChain } from './pages/settings/customChain';
+import { CustomChain } from './pages/settings/customChain/customChain';
 import { Language } from './pages/settings/language';
 import { SettingsNetworks } from './pages/settings/networks';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
@@ -503,7 +503,7 @@ const ROUTE_DATA = [
         protectedRoute
         background="surfaceSecondary"
       >
-        <SettingsCustomRPC />
+        <SettingsCustomChain />
       </AnimatedRoute>
     ),
   },
@@ -518,7 +518,7 @@ const ROUTE_DATA = [
         protectedRoute
         background="surfaceSecondary"
       >
-        <CustomRPC />
+        <CustomChain />
       </AnimatedRoute>
     ),
   },

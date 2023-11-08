@@ -21,8 +21,11 @@ export function selectorFilterByUserChains<T>({
 }): T {
   const { userChains } = userChainsStore.getState();
   const allUserChainIds = Object.keys(userChains)
-    .map((chainId) => chainIdMap[Number(chainId)])
-    .flat();
+    .map((chainId) =>
+      userChains[Number(chainId)] ? chainIdMap[Number(chainId)] : undefined,
+    )
+    .flat()
+    .filter(Boolean);
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
     if (allUserChainIds.includes(chainKey) || isCustomChain(chainKey)) {

@@ -5,7 +5,7 @@ import { ChainId } from '~/core/types/chains';
 
 import { customRPCsStore } from '.';
 
-// Dummy CustomRPC data
+// Dummy CustomChain data
 const TEST_RPC_1: Chain = {
   rpcUrls: {
     default: { http: ['http://test1.rpc'] },
