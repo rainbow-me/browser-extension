@@ -200,12 +200,6 @@ async function customNetworkAssetsFunction({
               currency,
               balance: nativeAssetBalance.toString(),
             });
-
-            console.log(
-              parsedAssetsDict[chain.id as ChainId][
-                customNetworkNativeAssetParsed.uniqueId
-              ],
-            );
           }),
         );
       }
