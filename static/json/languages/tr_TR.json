@@ -85,6 +85,22 @@
       "light": "Açık",
       "dark": "Koyu"
     },
+    "networks": {
+      "mainnet": "Ana Ağ",
+      "title": "Ağlar",
+      "quick_promo": {
+        "text": "Ağları yeniden sıralamak için sürükleyin",
+        "text_bold": "İpucu:"
+      },
+      "description": "Hangi ağları ve jetonları göstereceğinizi seçin. Rainbow tarafından desteklenen herhangi bir ağa bağlanabilirsiniz, işaretli olmasalar bile.",
+      "developer_tools": {
+        "title": "Geliştirici Araçları'nı Etkinleştir",
+        "toggle_explainer": "Testnet Mode kısayolunu (T) etkinleştirir ve ana ekranın sağ üst menüsüne bir düğme ekler"
+      },
+      "custom_rpc": {
+        "title": "Özel RPC"
+      }
+    },
     "privacy_and_security": {
       "title": "Gizlilik ve Güvenlik",
       "analytics": "Analitikler",
@@ -127,6 +143,12 @@
         "backed_up": "Yedeklendi",
         "not_backed_up": "Yedeklenmedi",
         "back_up_now": "Şimdi Yedekle",
+        "context_menu": {
+          "create_wallet": "Cüzdan Oluştur",
+          "view_secret_phrase": "Gizli İfadeyi Görüntüle",
+          "hide_wallets": "Cüzdanları Gizle",
+          "unhide_wallets": "Cüzdanları Göster"
+        },
         "wallet_details": {
           "title": "Cüzdan Detayları",
           "view_recovery_phrase": "Kurtarma İfadesini Görüntüle",
@@ -153,7 +175,8 @@
           "warning_2": "Özel Anahtarınızı görüntülerken ekranınızı kimse göremezden emin olun.",
           "warning_3": "Özel Anahtarınızı kullanabilen herkes tüm cüzdanınıza erişebilir.",
           "warning_4": "Rainbow Destek asla özel anahtarınızı sizden istemeyecektir.",
-          "show": "Özel Anahtarı Göster"
+          "show": "Özel Anahtarı Göster",
+          "copied": "Özel Anahtar Kopyalandı"
         },
         "recovery_phrase": {
           "title": "Kurtarma Cümleniz",
@@ -164,7 +187,7 @@
           "warning_3": "Kurtarma Cümlenizle herhangi biri tüm cüzdanınıza erişebilir.",
           "warning_4": "Rainbow Destek asla kurtarma cümlenizi sizden istemeyecektir.",
           "show": "Kurtarma Cümlesini Göster",
-          "phrase_copied": "Kurtarma Cümlesi Kopyalandı"
+          "copied": "Kurtarma Cümlesi Kopyalandı"
         }
       }
     },
@@ -172,6 +195,8 @@
       "title": "İşlemler",
       "default_speed": "Varsayılan Hız",
       "use_flashbots": "Flashbots Kullan",
+      "clear_transactions_and_nonces": "Bekleyen İşlemleri Temizle",
+      "clear_transactions_and_nonces_success": "Bekleyen işlemler temizlendi",
       "flashbots_description": "Flashbots işlemlerinizi korur ve işlem başarısızlığı olasılığını azaltır. Daha fazla bilgi edinin."
     },
     "currency": {
@@ -198,7 +223,9 @@
       "full_watching_wallets": "İzlenen Cüzdanlara Tam Erişim",
       "hw_wallets_enabled": "Donanım Cüzdanı Desteğini Etkinleştir",
       "command_k_internal_shortcuts_enabled": "⌘K İç Hızlı Kısayollarını Etkinleştir",
-      "new_tab_bar_enabled": "Yeni Sekme Çubuğu"
+      "custom_rpc": "Özel RPC",
+      "new_tab_bar_enabled": "Yeni Sekme Çubuğu",
+      "nfts_enabled": "NFT'ler Etkin"
     }
   },
   "transactions": {
@@ -345,7 +372,14 @@
         "add_wallet": "Bir Cüzdan Ekle",
         "lock": "Rainbow'u Kilitle",
         "connected_apps": "Bağlı Uygulamalar",
+        "developer_tools": "Geliştirici Araçları'nı Değiştir",
+        "developer_tools_disabled": "Geliştirici Araçları'nı Etkinleştir",
+        "developer_tools_enabled": "Geliştirici Araçları'nı Devre Dışı Bırak",
+        "testnet_mode": "Testnet Mode'u Değiştir",
+        "testnet_mode_disabled": "Testnet Mode'u Etkinleştir",
+        "testnet_mode_enabled": "Testnet Mode'u Devre Dışı Bırak",
         "settings": "Ayarlar",
+        "network_settings": "Ağ Ayarları",
         "my_qr_code": "QR Kodum",
         "my_qr_code_watched": "QR Kodu",
         "create_wallet": "Cüzdan Oluştur",
@@ -376,7 +410,10 @@
         "my_wallets": "değiştir",
         "my_tokens_watched": "benim",
         "view_nfts": "galeri, profil",
+        "testnet_mode": "değiştir, ağlar, testnets",
+        "developer_tools": "değiştir, ağlar, geliştirici, testnets",
         "settings": "tercihler",
+        "network_settings": "testnets, geliştirici, ağlar",
         "my_qr_code_watched": "benim",
         "create_wallet": "ekle, yeni",
         "import_wallet": "ekle, gizli kurtarma, seed cümlesi, özel anahtar",
@@ -389,6 +426,11 @@
     },
     "command_rows": {
       "no_value": "Değer Yok"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "T tuşuna basarak Testnet Mode'u değiştir",
+      "title_disabled": "Geliştirici Araçları Devre Dışı",
+      "title_enabled": "Geliştirici Araçları Etkin"
     },
     "hide_balances_toast": {
       "description_hidden": "Bakiyeleriniz gizlenmiştir",
@@ -847,8 +889,18 @@
       "rainbow_profile": "Rainbow Profili",
       "guides_and_support": "Rehberler ve Destek",
       "share_feedback": "Geri Bildirim Paylaş",
-      "lock_rainbow": "Rainbow'u Kitle"
+      "lock_rainbow": "Rainbow'u Kitle",
+      "testnet_mode": "Testnet Modu",
+      "testnet_mode_off": "Kapalı",
+      "testnet_mode_on": "Açık"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "%{chainName}'ye geçmek istiyor musunuz?",
+    "testnet_mode": "Testnet Modu",
+    "testnet_mode_active": "şu anda aktif. Kapatıp %{chainName} ile etkileşime geçmek ister misiniz?",
+    "disable_and_connect": "Kapat ve Değiştir",
+    "cancel": "İptal"
   },
   "app_connection_switcher": {
     "banner": {
@@ -875,7 +927,7 @@
     "wallet_switcher": {
       "switch_wallets": "Cüzdanları Değiştir",
       "other_wallets": "Diğer Cüzdanlar",
-      "cancel": "İptal",
+      "done": "Tamam",
       "connected": "Bağlı"
     }
   },
@@ -893,12 +945,19 @@
     "switch_networks": "Ağları Değiştir",
     "switch_wallets": "Cüzdanları Değiştir",
     "connect": "%{appName}'a Bağlan",
+    "connect_anyway": "Yine de Bağlan",
+    "malicious_warning": {
+      "title": "Bu uygulama muhtemelen zararlı",
+      "message": "Bu uygulamadan mesajları veya işlemleri imzalamak, varlıklarınızın kaybolmasına neden olabilir"
+    },
     "message_signing_request": "İmza İsteği",
     "message": "Mesaj",
     "sign_message": "Mesajı İmzala",
+    "sign_message_anyway": "Yine de İmzala",
     "confirm_hw": "Cihazınızda Onaylayın",
     "balance": "Bakiye",
     "send_transaction": "İşlem Gönder",
+    "send_transaction_anyway": "Yine de Onayla",
     "contract_deployment": "Akıllı Sözleşme Yayınlama",
     "transaction_request": "İşlem İsteği",
     "insufficient_native_asset_for_gas": "Gaz için yetersiz %{symbol}"
@@ -979,7 +1038,9 @@
     "copy_to_clipboard": "Panoya kopyala"
   },
   "errors": {
-    "no_wallet_name_set": "Cüzdan adı belirtilmemiş"
+    "error_encountered": "Bir şeyler yanlış gitti. Lütfen sorunu ekibimizle paylaşın ve biz düzeltelim!",
+    "no_wallet_name_set": "Cüzdan adı belirtilmemiş",
+    "report_error": "Sorunu bildir"
   },
   "common_titles": {
     "before_you_proceed": "Devam etmeden önce"
@@ -1009,8 +1070,9 @@
   },
   "tabs": {
     "activity": "Aktivite",
-    "tokens": "Tokenler",
-    "nfts": "NFT'ler"
+    "nfts": "NFT'ler",
+    "points": "Puanlar",
+    "tokens": "Tokenler"
   },
   "activity": {
     "today": "Bugün",
@@ -1066,7 +1128,17 @@
   "nfts": {
     "coming_soon_header": "Yakında",
     "coming_soon_description": "NFT'ler yakında geliyor. Takipte kalın!",
-    "view_on_web": "Web'de Görüntüle"
+    "view_on_web": "Web'de Görüntüle",
+    "display_mode_gallery": "Galeri",
+    "display_mode_collections": "Koleksiyonlar",
+    "sort_option_recent": "Son",
+    "sort_option_abc": "Abc",
+    "sort_option_recent_long": "Son",
+    "sort_option_abc_long": "Alfabetik"
+  },
+  "points": {
+    "coming_soon_header": "Yakında",
+    "coming_soon_description": "Puanlar tam köşede.\nBugün kazanmaya başlayın."
   },
   "speed_up_and_cancel": {
     "speed_up": "Hızlandır",
@@ -1231,6 +1303,7 @@
   "alert": {
     "ok": "Tamam",
     "wallet_watching_mode": "Bu cüzdan şu anda 'İzleme' modunda",
+    "wallet_testing_mode": "Testnet'ler Swap tarafından desteklenmemektedir. Devam etmek için Testnet Modunu devre dışı bırakın.",
     "coming_soon": "Çok yakında!",
     "no_hw_ff": "Donanım cüzdanları Firefox'ta desteklenmiyor. Chrome veya Brave gibi farklı bir tarayıcı deneyin."
   },
