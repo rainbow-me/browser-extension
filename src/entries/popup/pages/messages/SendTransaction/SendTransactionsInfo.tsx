@@ -7,9 +7,10 @@ import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useNonceStore } from '~/core/state';
+import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
-import { copy } from '~/core/utils/copy';
+import { copy, copyAddress } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { truncateString } from '~/core/utils/strings';
 import {
@@ -314,7 +315,7 @@ function TransactionInfo({
 }
 
 function InsuficientGasFunds({
-  session: { chainId },
+  session: { chainId, address },
   onRejectRequest,
 }: {
   session: { address: Address; chainId: ChainId };
@@ -326,6 +327,10 @@ function InsuficientGasFunds({
   const token = `${chainName} ${nativeAsset?.symbol}`;
 
   const navigate = useRainbowNavigate();
+
+  const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
+
+  if (!nativeAsset) return null;
 
   return (
     <Box
@@ -346,13 +351,19 @@ function InsuficientGasFunds({
       <Inline alignVertical="center" space="12px">
         <ChainBadge chainId={chainId} size={16} />
         <Text size="14pt" weight="bold">
-          {i18n.t('approve_request.insufficient_gas_funds', { token })}
+          {+nativeAsset.balance.amount > 0
+            ? i18n.t('approve_request.insufficient_gas_funds', { token })
+            : i18n.t('approve_request.no_gas_funds', { token })}
         </Text>
       </Inline>
       <Text size="12pt" weight="medium" color="labelQuaternary">
-        {i18n.t('approve_request.insufficient_gas_funds_description', {
-          token,
-        })}
+        {+nativeAsset.balance.amount > 0
+          ? i18n.t('approve_request.insufficient_gas_funds_description', {
+              token,
+            })
+          : i18n.t('approve_request.no_gas_funds_description', {
+              token,
+            })}
       </Text>
       <Stack marginHorizontal="-8px">
         <Separator color="separatorTertiary" />
@@ -363,11 +374,12 @@ function InsuficientGasFunds({
           variant="transparent"
           color="blue"
           onClick={() => {
+            setSelectedToken(nativeAsset);
             navigate(ROUTES.BRIDGE, { replace: true });
             onRejectRequest();
             triggerToast({
-              title: 'Transaction Request Rejected',
-              description: 'Bridge some gas funds and try again',
+              title: i18n.t('approve_request.request_rejected'),
+              description: i18n.t('approve_request.bridge_and_try_again'),
             });
           }}
         >
@@ -379,7 +391,7 @@ function InsuficientGasFunds({
               weight="bold"
             />
             <Text size="14pt" weight="bold" color="blue">
-              Bridge to {chainName}
+              {i18n.t('approve_request.bridge_to', { chain: chainName })}
             </Text>
           </Inline>
         </Button>
@@ -391,24 +403,17 @@ function InsuficientGasFunds({
           height="44px"
           variant="transparent"
           color="blue"
-          onClick={() => {
-            navigate(ROUTES.WALLET_SWITCHER, { replace: true });
-            onRejectRequest();
-            triggerToast({
-              title: 'Transaction Request Rejected',
-              description: 'Send some gas funds and try again',
-            });
-          }}
+          onClick={() => copyAddress(address)}
         >
           <Inline alignVertical="center" space="12px" wrap={false}>
             <Symbol
               size={16}
-              symbol="paperplane.fill"
+              symbol="square.on.square"
               color="blue"
               weight="bold"
             />
             <Text size="14pt" weight="bold" color="blue">
-              Send from another wallet
+              {i18n.t('approve_request.copy_deposit_address')}
             </Text>
           </Inline>
         </Button>
