@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
+import { Chain } from 'wagmi';
 
 import { useCustomRPCsStore } from '~/core/state/customRPC';
+import { useUserChainsStore } from '~/core/state/userChains';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -10,9 +12,10 @@ import { ROUTES } from '~/entries/popup/urls';
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
 
-export function SettingsCustomRPC() {
+export function SettingsCustomChain() {
   const navigate = useRainbowNavigate();
   const { customChains, addCustomRPC } = useCustomRPCsStore();
+  const { addUserChain } = useUserChainsStore();
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
     rpcUrl?: string;
@@ -136,11 +139,23 @@ export function SettingsCustomRPC() {
     const { rpcUrl, chainId, name, symbol } = customRPC;
     const valid = validateAddCustomRpc();
     if (valid && rpcUrl && chainId && name && symbol) {
+      const chain: Chain = {
+        id: chainId,
+        name,
+        network: name,
+        nativeCurrency: {
+          symbol,
+          decimals: 18,
+          name: symbol,
+        },
+        rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+      };
       addCustomRPC({
-        customRPC: { ...customRPC, rpcUrl, chainId, name, symbol },
+        chain,
       });
+      addUserChain({ chainId });
     }
-  }, [addCustomRPC, customRPC, validateAddCustomRpc]);
+  }, [addCustomRPC, addUserChain, customRPC, validateAddCustomRpc]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -166,14 +181,14 @@ export function SettingsCustomRPC() {
                 Group chainId: {chainId}
               </Text>
               <Stack space="16px">
-                {customChains[Number(chainId)]?.rpcs?.map((customRPC, j) => (
+                {customChains[Number(chainId)]?.chains?.map((chain, j) => (
                   <Box key={j}>
                     <Inline alignHorizontal="justify">
                       <Text size="14pt" weight="bold" align="center">
-                        {customRPC.rpcUrl}
+                        {chain.rpcUrls.default.http[0]}
                       </Text>
                       <Text size="14pt" weight="bold" align="center">
-                        {customRPC.rpcUrl ===
+                        {chain.rpcUrls.default.http[0] ===
                         customChains[Number(chainId)].activeRpcUrl
                           ? 'Active'
                           : ''}

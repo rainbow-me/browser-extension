@@ -7,6 +7,7 @@ import {
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
+import { isCustomChain } from '~/core/utils/chains';
 import { add } from '~/core/utils/numbers';
 import { chainIdMap } from '~/core/utils/userChains';
 
@@ -20,11 +21,14 @@ export function selectorFilterByUserChains<T>({
 }): T {
   const { userChains } = userChainsStore.getState();
   const allUserChainIds = Object.keys(userChains)
-    .map((chainId) => chainIdMap[Number(chainId)])
-    .flat();
+    .map((chainId) =>
+      userChains[Number(chainId)] ? chainIdMap[Number(chainId)] : undefined,
+    )
+    .flat()
+    .filter(Boolean);
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
-    if (allUserChainIds.includes(chainKey)) {
+    if (allUserChainIds.includes(chainKey) || isCustomChain(chainKey)) {
       acc[chainKey] = data[chainKey];
     }
     return acc;

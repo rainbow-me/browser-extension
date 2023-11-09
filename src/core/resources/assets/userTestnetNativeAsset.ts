@@ -15,7 +15,7 @@ import {
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
-import { getChain } from '~/core/utils/chains';
+import { getChain, isTestnetChainId } from '~/core/utils/chains';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
@@ -80,6 +80,14 @@ async function userTestnetNativeAssetQueryFunction({
   queryKey: [{ address, currency, chainId }],
 }: QueryFunctionArgs<typeof userTestnetNativeAssetQueryKey>) {
   try {
+    // Don't do anything unless it's a testnet
+    if (
+      !isTestnetChainId({ chainId }) &&
+      chainId !== ChainId.hardhat &&
+      chainId !== ChainId.hardhatOptimism
+    )
+      return null;
+
     const provider = getProvider({ chainId });
     const nativeAsset = getNativeAssetMock({ chainId });
     const parsedAsset = await fetchAssetBalanceViaProvider({

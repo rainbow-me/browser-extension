@@ -3,8 +3,8 @@ import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
@@ -39,12 +39,8 @@ export function SettingsNetworks() {
     updateUserChain,
   } = useUserChainsStore();
   const supportedChains = getSupportedChains();
-  const {
-    testnetMode,
-    testnetModeShortcutEnabled,
-    setTestnetMode,
-    setTestnetModeShortcutEnabled,
-  } = useTestnetModeStore();
+  const { developerToolsEnabled, setDeveloperToolsEnabled } =
+    useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
 
   const onDragEnd = (result: DropResult) => {
@@ -102,13 +98,15 @@ export function SettingsNetworks() {
                         key={chain.name}
                         titleComponent={<MenuItem.Title text={chain.name} />}
                         labelComponent={
-                          <Text
-                            color={'labelTertiary'}
-                            size="11pt"
-                            weight={'medium'}
-                          >
-                            {chainLabel({ chainId: chain.id })}
-                          </Text>
+                          developerToolsEnabled ? (
+                            <Text
+                              color={'labelTertiary'}
+                              size="11pt"
+                              weight={'medium'}
+                            >
+                              {chainLabel({ chainId: chain.id })}
+                            </Text>
+                          ) : null
                         }
                         onClick={() => updateChain(chain)}
                       />
@@ -127,7 +125,7 @@ export function SettingsNetworks() {
         {featureFlags.custom_rpc && (
           <Menu>
             <MenuItem
-              testId={'custom-rpc-link'}
+              testId={'custom-chain-link'}
               first
               last
               leftComponent={
@@ -150,30 +148,9 @@ export function SettingsNetworks() {
         )}
         <Menu>
           <MenuItem
-            first
-            leftComponent={<MenuItem.TextIcon icon="🕹" />}
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('settings.networks.testnet_mode.title')}
-              />
-            }
-            rightComponent={
-              <Toggle
-                testId="testnet-mode-toggle"
-                checked={testnetMode}
-                handleChange={() => setTestnetMode(!testnetMode)}
-                tabIndex={-1}
-              />
-            }
-            onToggle={() => setTestnetMode(!testnetMode)}
-          />
-          <MenuItem.Description
-            text={i18n.t('settings.networks.testnet_mode.toggle_explainer')}
-          />
-          <MenuItem
             leftComponent={
               <Symbol
-                symbol="t.square.fill"
+                symbol="hammer.fill"
                 weight="medium"
                 size={18}
                 color="labelTertiary"
@@ -181,27 +158,23 @@ export function SettingsNetworks() {
             }
             titleComponent={
               <MenuItem.Title
-                text={i18n.t('settings.networks.testnet_mode.shortcut_title')}
+                text={i18n.t('settings.networks.developer_tools.title')}
               />
             }
             rightComponent={
               <Toggle
-                testId="testnet-mode-shortcut-toggle"
-                checked={testnetModeShortcutEnabled}
+                testId="developer-tools-toggle"
+                checked={developerToolsEnabled}
                 handleChange={() =>
-                  setTestnetModeShortcutEnabled(!testnetModeShortcutEnabled)
+                  setDeveloperToolsEnabled(!developerToolsEnabled)
                 }
                 tabIndex={-1}
               />
             }
-            onToggle={() =>
-              setTestnetModeShortcutEnabled(!testnetModeShortcutEnabled)
-            }
+            onToggle={() => setDeveloperToolsEnabled(!developerToolsEnabled)}
           />
           <MenuItem.Description
-            text={i18n.t(
-              'settings.networks.testnet_mode.shortcut_toggle_explainer',
-            )}
+            text={i18n.t('settings.networks.developer_tools.toggle_explainer')}
           />
         </Menu>
       </MenuContainer>

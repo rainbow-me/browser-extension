@@ -11,7 +11,6 @@ const rotate = keyframes({
 
 export const spinnerStyle = style([
   {
-    // backgroundColor: globalColors.blue50,
     maskImage,
     WebkitMaskImage: maskImage,
     animationName: rotate,

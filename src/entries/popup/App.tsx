@@ -1,4 +1,5 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { isEqual } from 'lodash';
 import * as React from 'react';
 import { WagmiConfig } from 'wagmi';
 
@@ -8,6 +9,7 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
+import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
 import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
@@ -21,23 +23,46 @@ import { HWRequestListener } from './components/HWRequestListener/HWRequestListe
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
 import { AuthProvider } from './hooks/useAuth';
+import { useCustomNetwork } from './hooks/useCustomNetwork';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
+import usePrevious from './hooks/usePrevious';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
-
-const wagmiClient = createWagmiClient({
-  autoConnect: true,
-  connectors: ({ chains }) => [new RainbowConnector({ chains })],
-  persist: true,
-});
+const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
   const { deviceId } = useDeviceIdStore();
+  const { customChains } = useCustomNetwork();
+  const prevChains = usePrevious(customChains);
+
   useExpiryListener();
+
+  React.useEffect(() => {
+    if (!isEqual(prevChains, customChains)) {
+      backgroundMessenger.send('rainbow_updateWagmiClient', null);
+    }
+  }, [prevChains, customChains]);
+
+  const wagmiClient = React.useMemo(
+    () =>
+      createWagmiClient({
+        autoConnect: true,
+        connectors: ({ chains }) => [new RainbowConnector({ chains })],
+        persist: true,
+        customChains: customChains,
+      }),
+    [customChains],
+  );
+
+  React.useEffect(() => {
+    if (!isEqual(prevChains, customChains)) {
+      backgroundMessenger.send('rainbow_updateWagmiClient', null);
+    }
+  }, [prevChains, customChains]);
 
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode

@@ -10,9 +10,10 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
+import { SUPPORTED_CHAINS } from '../references';
 import { LocalStorage } from '../storage';
 import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
-import { SUPPORTED_CHAINS } from '../utils/chains';
+import { findCustomChainForChainId } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -23,6 +24,12 @@ const noopStorage = {
 };
 
 const getOriginalRpcEndpoint = (chain: Chain) => {
+  // overrides have preference
+  const userAddedNetwork = findCustomChainForChainId(chain.id);
+  if (userAddedNetwork) {
+    return { http: userAddedNetwork.rpcUrls.default.http[0] };
+  }
+
   switch (chain.id) {
     case ChainId.hardhat:
       return { http: chain.rpcUrls.default.http[0] };
@@ -63,11 +70,12 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
   }
 };
 
-const { chains, provider, webSocketProvider } = configureChains(
-  IS_TESTING
-    ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
-    : SUPPORTED_CHAINS,
-  [
+const supportedChains = IS_TESTING
+  ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
+  : SUPPORTED_CHAINS;
+
+export const configureChainsForWagmiClient = (chains: Chain[]) =>
+  configureChains(chains, [
     jsonRpcProvider({
       rpc: (chain) => {
         const originalRpcEndpoint = getOriginalRpcEndpoint(chain);
@@ -77,8 +85,7 @@ const { chains, provider, webSocketProvider } = configureChains(
         return null;
       },
     }),
-  ],
-);
+  ]);
 
 const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.wagmi',
@@ -93,14 +100,24 @@ export function createWagmiClient({
   autoConnect,
   connectors,
   persist,
+  customChains,
 }: {
   autoConnect?: CreateClientConfig['autoConnect'];
   connectors?: (opts: { chains: Chain[] }) => CreateClientConfig['connectors'];
   persist?: boolean;
+  customChains?: Chain[];
 } = {}) {
+  const { chains, provider, webSocketProvider } = configureChainsForWagmiClient(
+    supportedChains.concat(customChains || []),
+  );
+
   return createClient({
     autoConnect,
-    connectors: connectors ? connectors({ chains }) : undefined,
+    connectors: connectors
+      ? connectors({
+          chains,
+        })
+      : undefined,
     persister: persist ? asyncStoragePersister : undefined,
     provider,
     // Passing `undefined` will use wagmi's default storage (window.localStorage).

@@ -1,47 +1,40 @@
 import create from 'zustand';
 
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/utils/chains';
 
 import { createStore } from '../internal/createStore';
-
-type MainnetChainId =
-  | ChainId.mainnet
-  | ChainId.optimism
-  | ChainId.polygon
-  | ChainId.arbitrum
-  | ChainId.bsc
-  | ChainId.zora
-  | ChainId.base;
 
 export interface UserChainsState {
   /**
    * Mainnet chains in network settings
    */
-  userChains: Record<MainnetChainId, boolean>;
+  userChains: Record<number, boolean>;
   /**
    * Mainnet chains ordered from network settings
    */
-  userChainsOrder: MainnetChainId[];
+  userChainsOrder: (number | number)[];
   updateUserChain: ({
     chainId,
     enabled,
   }: {
-    chainId: MainnetChainId;
+    chainId: number;
     enabled: boolean;
   }) => void;
   updateUserChains: ({
     chainIds,
     enabled,
   }: {
-    chainIds: MainnetChainId[];
+    chainIds: number[];
     enabled: boolean;
   }) => void;
   updateUserChainsOrder: ({
     userChainsOrder,
   }: {
-    userChainsOrder: MainnetChainId[];
+    userChainsOrder: (number | number)[];
   }) => void;
+  addUserChain: ({ chainId }: { chainId: ChainId }) => void;
+  removeUserChain: ({ chainId }: { chainId: ChainId }) => void;
 }
 
 const chains = SUPPORTED_MAINNET_CHAINS.reduce(
@@ -49,12 +42,10 @@ const chains = SUPPORTED_MAINNET_CHAINS.reduce(
     ...acc,
     [chain.id]: true,
   }),
-  {} as Record<MainnetChainId, boolean>,
+  {} as Record<number, boolean>,
 );
 
-const userChainsOrder = Object.keys(chains).map(
-  (id) => Number(id) as MainnetChainId,
-);
+const userChainsOrder = Object.keys(chains).map((id) => Number(id) as number);
 
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({
@@ -67,8 +58,8 @@ export const userChainsStore = createStore<UserChainsState>(
           acc[chainId] = enabled;
           return acc;
         },
-        {} as Record<MainnetChainId, boolean>,
-      ) satisfies Record<MainnetChainId, boolean>;
+        {} as Record<number, boolean>,
+      ) satisfies Record<number, boolean>;
       set({
         userChains: {
           ...userChains,
@@ -87,6 +78,30 @@ export const userChainsStore = createStore<UserChainsState>(
     },
     updateUserChainsOrder: ({ userChainsOrder }) => {
       set({
+        userChainsOrder,
+      });
+    },
+    addUserChain: ({ chainId }) => {
+      const { userChains, userChainsOrder } = get();
+      set({
+        userChains: {
+          ...userChains,
+          [chainId]: true,
+        },
+        userChainsOrder: userChainsOrder.concat([chainId]),
+      });
+    },
+    removeUserChain: ({ chainId }) => {
+      const { userChains, userChainsOrder } = get();
+      delete userChains[chainId];
+      const position = userChainsOrder.findIndex((id) => chainId === id);
+      if (position !== -1) {
+        userChainsOrder.splice(position, 1);
+      }
+      set({
+        userChains: {
+          ...userChains,
+        },
         userChainsOrder,
       });
     },

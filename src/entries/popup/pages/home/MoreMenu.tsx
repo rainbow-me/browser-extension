@@ -7,9 +7,10 @@ import {
   RAINBOW_SUPPORT_URL,
 } from '~/core/references/links';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
 
 import {
   DropdownMenu,
@@ -31,8 +32,8 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const navigate = useRainbowNavigate();
-  const { testnetMode, testnetModeShortcutEnabled, setTestnetMode } =
-    useTestnetModeStore();
+  const { testnetMode, setTestnetMode } = useTestnetModeStore();
+  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
 
   const openProfile = React.useCallback(
     () =>
@@ -43,10 +44,10 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   );
 
   const handleTestnetMode = React.useCallback(() => {
-    if (testnetModeShortcutEnabled) {
+    if (developerToolsEnabled) {
       setTestnetMode(!testnetMode);
     }
-  }, [setTestnetMode, testnetMode, testnetModeShortcutEnabled]);
+  }, [setTestnetMode, testnetMode, developerToolsEnabled]);
 
   const onValueChange = React.useCallback(
     (
@@ -158,18 +159,39 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                   }
                 />
               </DropdownMenuRadioItem>
-              {testnetModeShortcutEnabled && (
+              {(developerToolsEnabled || testnetMode) && (
                 <DropdownMenuRadioItem
                   highlightAccentColor
                   value="testnet-mode"
                 >
                   <HomeMenuRow
                     testId="testnet-mode"
-                    leftComponent={<MenuItem.TextIcon icon="🕹" />}
+                    leftComponent={
+                      <Box marginLeft="-2px" marginRight="-2px">
+                        <MenuItem.TextIcon icon="🕹" />
+                      </Box>
+                    }
                     centerComponent={
-                      <Text size="14pt" weight="semibold">
-                        {i18n.t('menu.home_header_right.testnet_mode')}
-                      </Text>
+                      <Rows space="6px">
+                        <Row>
+                          <Text size="14pt" weight="semibold">
+                            {i18n.t('menu.home_header_right.testnet_mode')}
+                          </Text>
+                        </Row>
+                        <Row>
+                          <Text
+                            size="11pt"
+                            color="labelTertiary"
+                            weight="medium"
+                          >
+                            {testnetMode
+                              ? i18n.t('menu.home_header_right.testnet_mode_on')
+                              : i18n.t(
+                                  'menu.home_header_right.testnet_mode_off',
+                                )}
+                          </Text>
+                        </Row>
+                      </Rows>
                     }
                     rightComponent={
                       <ShortcutHint

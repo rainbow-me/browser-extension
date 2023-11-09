@@ -1019,6 +1019,9 @@ export const symbolNames = selectSymbolNames(
   'arrow.down.right.and.arrow.up.left',
   't.square.fill',
   'arcade.stick',
+  'hammer.fill',
+  'checklist.unchecked',
+  'list.bullet',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

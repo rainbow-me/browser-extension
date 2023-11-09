@@ -1,24 +1,9 @@
-import {
-  arbitrum,
-  arbitrumGoerli,
-  base,
-  baseGoerli,
-  bsc,
-  bscTestnet,
-  goerli,
-  mainnet,
-  optimism,
-  optimismGoerli,
-  polygon,
-  polygonMumbai,
-  zora,
-  zoraTestnet,
-} from '@wagmi/chains';
+import { AddressZero } from '@ethersproject/constants';
 import { getNetwork } from '@wagmi/core';
-import { type Chain, sepolia } from 'wagmi';
+import { mainnet } from 'wagmi';
 
-import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
-import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
+import { NATIVE_ASSETS_PER_CHAIN, SUPPORTED_CHAINS } from '~/core/references';
+import { ChainId, ChainName } from '~/core/types/chains';
 
 import { customRPCsStore } from '../state/customRPC';
 import { AddressOrEth } from '../types/assets';
@@ -26,33 +11,23 @@ import { AddressOrEth } from '../types/assets';
 import { getDappHost } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
 
-export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base,
-  zora,
-  bsc,
-].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
-
-export const SUPPORTED_CHAINS: Chain[] = [
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base,
-  zora,
-  bsc,
-  goerli,
-  sepolia,
-  optimismGoerli,
-  bscTestnet,
-  polygonMumbai,
-  arbitrumGoerli,
-  baseGoerli,
-  zoraTestnet,
-].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export const customChainIdsToAssetNames: Record<ChainId, string> = {
+  43114: 'avalanchex',
+  100: 'xdai',
+  324: 'zksync',
+  1313161554: 'aurora',
+  42220: 'celo',
+  250: 'fantom',
+  1666600000: 'harmony',
+  59144: 'linea',
+  25: 'cronos',
+  2222: 'kavaevm',
+  8217: 'klaytn',
+  314: 'filecoin',
+  534352: 'scroll',
+};
 
 export const getSupportedChainsWithHardhat = () => {
   const { chains } = getNetwork();
@@ -87,12 +62,24 @@ export const getSupportedTestnetChainIds = () =>
 
 export const getCustomChains = () => {
   const { customChains } = customRPCsStore.getState();
-  return Object.values(customChains)
-    .map((customChain) =>
-      customChain.rpcs.find((rpc) => rpc.rpcUrl === customChain.activeRpcUrl),
-    )
-    .filter(Boolean);
+  return {
+    customChains: Object.values(customChains)
+      .map((customChain) =>
+        customChain.chains.find(
+          (rpc) => rpc.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+        ),
+      )
+      .filter(Boolean),
+  };
 };
+
+export const findCustomChainForChainId = (chainId: number) => {
+  const { customChains } = getCustomChains();
+  return customChains.find((network) => network.id === chainId);
+};
+
+export const isCustomChain = (chainId: number) =>
+  !!findCustomChainForChainId(chainId);
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -120,6 +107,9 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
 };
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
+  if (isCustomChain(chainId)) {
+    return AddressZero === address;
+  }
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
 }
 

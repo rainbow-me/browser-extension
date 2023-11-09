@@ -4,6 +4,7 @@ import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
+import { getCustomChains } from '~/core/utils/chains';
 import { createWagmiClient } from '~/core/wagmi';
 
 import { handleDisconnect } from './handlers/handleDisconnect';
@@ -18,10 +19,14 @@ require('../../core/utils/lockdown');
 
 initializeSentry('background');
 
+const updateWagmiClient = () => {
+  const { customChains } = getCustomChains();
+  createWagmiClient({ customChains });
+};
+
 const popupMessenger = initializeMessenger({ connect: 'popup' });
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
-createWagmiClient();
 handleInstallExtension();
 handleProviderRequest({ popupMessenger, inpageMessenger });
 handleTabAndWindowUpdates();
@@ -33,3 +38,11 @@ syncStores();
 uuid4();
 initFCM();
 handleKeepAlive();
+
+setTimeout(() => {
+  updateWagmiClient();
+}, 100);
+
+popupMessenger.reply('rainbow_updateWagmiClient', async () => {
+  updateWagmiClient();
+});

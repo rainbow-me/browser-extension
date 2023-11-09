@@ -18,6 +18,7 @@ import {
   chainIdFromChainName,
   getSupportedChainIds,
   getSupportedTestnetChainIds,
+  isCustomChain,
 } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
@@ -95,7 +96,7 @@ export async function consolidatedTransactionsQueryFunction({
   try {
     const supportedChainIds = testnetMode
       ? getSupportedTestnetChainIds()
-      : getSupportedChainIds();
+      : getSupportedChainIds().filter((chainId) => !isCustomChain(chainId));
     const response = await addysHttp.get<TransactionsReceivedMessage>(
       `/${supportedChainIds.join(',')}/${address}/transactions`,
       {

@@ -12,8 +12,7 @@ import {
   Columns,
   Inline,
   Inset,
-  Row,
-  Rows,
+  Stack,
   Text,
 } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
@@ -133,16 +132,12 @@ const ActivityDescription = ({
   if (nftChangesAmount) tag = nftChangesAmount.toString();
 
   return (
-    <Columns space="4px" alignVertical="center">
-      <Column width="content">
-        <TextOverflow size="14pt" weight="semibold">
-          {description}
-        </TextOverflow>
-      </Column>
-      <Column width="content">
-        {tag && <Tag>{truncateString(tag, 25)}</Tag>}
-      </Column>
-    </Columns>
+    <Inline space="4px" alignVertical="center" wrap={false}>
+      <TextOverflow size="14pt" weight="semibold">
+        {description}
+      </TextOverflow>
+      {tag && <Tag>{truncateString(tag, 25)}</Tag>}
+    </Inline>
   );
 };
 
@@ -168,29 +163,24 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
           paddingVertical="8px"
           borderRadius="12px"
           className={rowTransparentAccentHighlight}
+          gap="8px"
+          display="flex"
+          alignItems="center"
         >
-          <Columns space="8px" alignHorizontal="left" alignVertical="center">
-            <Column width="content">
-              <ActivityIcon transaction={transaction} />
-            </Column>
-            <Column>
-              <Columns alignVertical="center" space="4px">
-                <Column width="content">
-                  <Rows space="8px">
-                    <Row>
-                      <ActivityTypeLabel transaction={transaction} />
-                    </Row>
-                    <Row>
-                      <ActivityDescription transaction={transaction} />
-                    </Row>
-                  </Rows>
-                </Column>
-                <Column>
-                  <ActivityValue transaction={transaction} />
-                </Column>
-              </Columns>
-            </Column>
-          </Columns>
+          <ActivityIcon transaction={transaction} />
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            gap="4px"
+            width="full"
+          >
+            <Stack space="8px">
+              <ActivityTypeLabel transaction={transaction} />
+              <ActivityDescription transaction={transaction} />
+            </Stack>
+            <ActivityValue transaction={transaction} />
+          </Box>
         </Box>
       </ActivityContextMenu>
     </Lens>

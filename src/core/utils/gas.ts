@@ -268,11 +268,16 @@ export const parseGasFeeParams = ({
     totalWei,
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
   ).amount;
-  const nativeDisplay = convertAmountAndPriceToNativeDisplayWithThreshold(
-    nativeTotalWei,
-    nativeAsset?.price?.value || 0,
-    currency,
-  );
+  const nativeDisplay = nativeAsset?.price?.value
+    ? convertAmountAndPriceToNativeDisplayWithThreshold(
+        nativeTotalWei,
+        nativeAsset?.price?.value,
+        currency,
+      )
+    : convertRawAmountToBalance(totalWei, {
+        decimals: nativeAsset?.decimals || 18,
+        symbol: nativeAsset?.symbol,
+      });
   const gasFee = { amount: totalWei, display: nativeDisplay.display };
 
   return {
@@ -297,7 +302,7 @@ export const parseGasFeeLegacyParams = ({
 }: {
   gwei: string;
   speed: GasSpeed;
-  waitTime: number;
+  waitTime: number | null;
   gasLimit: string;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
@@ -310,10 +315,12 @@ export const parseGasFeeLegacyParams = ({
   const display = parseGasFeeParam({ wei }).display;
 
   const estimatedTime = {
-    amount: waitTime,
-    display: `${waitTime >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
-      Number(multiply(waitTime, 1000)),
-    )}`,
+    amount: waitTime || 0,
+    display: waitTime
+      ? `${waitTime >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
+          Number(multiply(waitTime, 1000)),
+        )}`
+      : '',
   };
   const transactionGasParams = {
     gasPrice: toHex(gasPrice.amount),
@@ -327,11 +334,16 @@ export const parseGasFeeLegacyParams = ({
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
   ).amount;
 
-  const nativeDisplay = convertAmountAndPriceToNativeDisplayWithThreshold(
-    nativeTotalWei,
-    nativeAsset?.price?.value || 0,
-    currency,
-  );
+  const nativeDisplay = nativeAsset?.price?.value
+    ? convertAmountAndPriceToNativeDisplayWithThreshold(
+        nativeTotalWei,
+        nativeAsset?.price?.value,
+        currency,
+      )
+    : convertRawAmountToBalance(totalWei, {
+        decimals: nativeAsset?.decimals || 18,
+        symbol: nativeAsset?.symbol,
+      });
 
   const gasFee = { amount: totalWei, display: nativeDisplay.display };
 
@@ -372,7 +384,7 @@ export const getChainWaitTime = (chainId: ChainId) => {
     case ChainId.arbitrum:
       return { safeWait: 8, proposedWait: 8, fastWait: 8 };
     default:
-      return { safeWait: 8, proposedWait: 8, fastWait: 8 };
+      return null;
   }
 };
 
@@ -625,7 +637,7 @@ export const parseGasFeeParamsBySpeed = ({
     }: {
       speed: GasSpeed;
       gwei: string;
-      waitTime: number;
+      waitTime: number | null;
     }) =>
       parseGasFeeLegacyParams({
         gwei,
@@ -641,22 +653,30 @@ export const parseGasFeeParamsBySpeed = ({
       custom: parseGasFeeParamsSpeed({
         gwei: response?.data.legacy.fastGasPrice,
         speed: GasSpeed.CUSTOM,
-        waitTime: chainWaitTime.fastWait + additionalTime,
+        waitTime: chainWaitTime
+          ? chainWaitTime.fastWait + additionalTime
+          : null,
       }),
       urgent: parseGasFeeParamsSpeed({
         gwei: response?.data.legacy.fastGasPrice,
         speed: GasSpeed.URGENT,
-        waitTime: chainWaitTime.fastWait + additionalTime,
+        waitTime: chainWaitTime
+          ? chainWaitTime.fastWait + additionalTime
+          : null,
       }),
       fast: parseGasFeeParamsSpeed({
         gwei: response?.data.legacy.proposeGasPrice,
         speed: GasSpeed.FAST,
-        waitTime: chainWaitTime.proposedWait + additionalTime,
+        waitTime: chainWaitTime
+          ? chainWaitTime.proposedWait + additionalTime
+          : null,
       }),
       normal: parseGasFeeParamsSpeed({
         gwei: response?.data.legacy.safeGasPrice,
         speed: GasSpeed.NORMAL,
-        waitTime: chainWaitTime.safeWait + additionalTime,
+        waitTime: chainWaitTime
+          ? chainWaitTime.safeWait + additionalTime
+          : null,
       }),
     };
   }

@@ -19,7 +19,7 @@ import {
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { isSupportedChainId } from '~/core/utils/chains';
+import { isCustomChain, isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -285,7 +285,10 @@ export const handleProviderRequest = ({
                 domain: { chainId },
               } = data as { domain: { chainId: string } };
 
-              if (Number(chainId) !== Number(activeSession?.chainId)) {
+              if (
+                chainId !== undefined &&
+                Number(chainId) !== Number(activeSession?.chainId)
+              ) {
                 throw new Error('ChainId mismatch');
               }
             }
@@ -302,7 +305,9 @@ export const handleProviderRequest = ({
         case 'wallet_addEthereumChain': {
           const proposedChainId = (params?.[0] as { chainId: ChainId })
             ?.chainId;
-          const supportedChainId = isSupportedChainId(Number(proposedChainId));
+          const supportedChainId =
+            isCustomChain(Number(proposedChainId)) ||
+            isSupportedChainId(Number(proposedChainId));
           if (!supportedChainId) throw new Error('Chain Id not supported');
           response = null;
           break;
@@ -311,7 +316,9 @@ export const handleProviderRequest = ({
           const proposedChainId = Number(
             (params?.[0] as { chainId: ChainId })?.chainId,
           );
-          const supportedChainId = isSupportedChainId(Number(proposedChainId));
+          const supportedChainId =
+            isCustomChain(Number(proposedChainId)) ||
+            isSupportedChainId(Number(proposedChainId));
           const extensionUrl = chrome.runtime.getURL('');
           const activeSession = getActiveSession({ host });
           if (!supportedChainId || !activeSession) {

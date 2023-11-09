@@ -4,6 +4,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ChainNameDisplay } from '~/core/types/chains';
+import { getChain } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -58,7 +59,9 @@ export const AppConnectionMenuHeader = ({
                   <Text size="11pt" weight="bold">
                     {!activeSession
                       ? i18n.t('menu.app_connection_menu.not_connected')
-                      : ChainNameDisplay[activeSession.chainId] || ''}
+                      : ChainNameDisplay[activeSession.chainId] ||
+                        getChain({ chainId: activeSession.chainId }).name ||
+                        ''}
                   </Text>
                 </Row>
               </Rows>
