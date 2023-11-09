@@ -1,13 +1,11 @@
 import { isValidAddress } from '@ethereumjs/util';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Address, Chain } from 'wagmi';
 
+import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { CustomChain, useCustomRPCsStore } from '~/core/state/customRPC';
-import {
-  CustomRPCAsset,
-  useCustomRPCAssetsStore,
-} from '~/core/state/customRPCAssets';
+import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -17,22 +15,30 @@ import { maskInput } from '~/entries/popup/components/InputMask/utils';
 const INITIAL_ASSET = {
   name: '',
   address: '' as Address,
-  decimals: 18,
+  decimals: undefined,
   symbol: '',
 };
 
-export function CustomRPC() {
+export function CustomChain() {
   const { state } = useLocation();
   const { setActiveRPC, customChains, removeCustomRPC } = useCustomRPCsStore();
   const { customRPCAssets, addCustomRPCAsset, removeCustomRPCAsset } =
     useCustomRPCAssetsStore();
   const { removeUserChain } = useUserChainsStore();
 
-  const chainId = state?.chainId as number;
+  const chainId = state?.chainId;
   const customChain = customChains[chainId];
-  const customRPCAssetsForChain = customRPCAssets[chainId];
+  const customRPCAssetsForChain = useMemo(
+    () => customRPCAssets[chainId] || [],
+    [chainId, customRPCAssets],
+  );
 
-  const [asset, setAsset] = useState<CustomRPCAsset>(INITIAL_ASSET);
+  const [asset, setAsset] = useState(INITIAL_ASSET);
+
+  const { data: assetMetadata = INITIAL_ASSET } = useAssetMetadata(
+    { assetAddress: asset.address, chainId },
+    { enabled: !!asset.address },
+  );
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
@@ -56,25 +62,40 @@ export function CustomRPC() {
     [],
   );
 
-  const validateAsset = useCallback(
-    (asset: CustomRPCAsset) => {
-      const dataValid =
-        isValidAddress(asset.address) && asset.decimals && asset.symbol;
-      const customRPCAssetsAddresses = customRPCAssetsForChain.map(
-        (asset) => asset.address,
-      );
-      return dataValid && !customRPCAssetsAddresses.includes(asset.address);
-    },
-    [customRPCAssetsForChain],
-  );
-
   const addAsset = useCallback(() => {
-    const validAsset = validateAsset(asset);
-    if (validAsset) {
-      addCustomRPCAsset({ chainId, customRPCAsset: asset });
+    const assetToAdd = {
+      name: asset.name || assetMetadata.name || '',
+      address: asset.address,
+      symbol: asset.symbol ? asset.symbol : assetMetadata.symbol || '',
+      decimals: asset.decimals ? asset.decimals : assetMetadata.decimals || 0,
+    };
+
+    const customRPCAssetsAddresses = customRPCAssetsForChain.map(
+      (asset) => asset.address,
+    );
+
+    if (
+      assetToAdd.address &&
+      assetToAdd.name &&
+      assetToAdd.decimals &&
+      assetToAdd.symbol &&
+      isValidAddress(assetToAdd.address) &&
+      !customRPCAssetsAddresses.includes(assetToAdd.address)
+    ) {
+      console.log('adding assetToAdd', assetToAdd);
+      addCustomRPCAsset({
+        chainId,
+        customRPCAsset: assetToAdd,
+      });
       setAsset(INITIAL_ASSET);
     }
-  }, [addCustomRPCAsset, asset, chainId, validateAsset]);
+  }, [
+    addCustomRPCAsset,
+    asset,
+    assetMetadata,
+    chainId,
+    customRPCAssetsForChain,
+  ]);
 
   const removeCustomChain = useCallback(
     ({ chain }: { chain: Chain; customChain: CustomChain }) => {
@@ -214,15 +235,6 @@ export function CustomRPC() {
           <Stack space="8px">
             <Input
               onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'name')
-              }
-              height="32px"
-              placeholder="Name"
-              variant="surface"
-              value={asset.name}
-            />
-            <Input
-              onChange={(t) =>
                 onInputChange<string>(t.target.value, 'string', 'address')
               }
               height="32px"
@@ -232,21 +244,30 @@ export function CustomRPC() {
             />
             <Input
               onChange={(t) =>
+                onInputChange<string>(t.target.value, 'string', 'name')
+              }
+              height="32px"
+              placeholder="Name"
+              variant="surface"
+              value={asset.name || assetMetadata?.name}
+            />
+            <Input
+              onChange={(t) =>
                 onInputChange<number>(t.target.value, 'number', 'decimals')
               }
               height="32px"
               placeholder="Decimals"
               variant="surface"
-              value={asset.decimals}
+              value={asset.decimals || assetMetadata?.decimals}
             />
             <Input
               onChange={(t) =>
                 onInputChange<string>(t.target.value, 'string', 'symbol')
               }
               height="32px"
-              placeholder="name"
+              placeholder="Symbol"
               variant="surface"
-              value={asset.symbol}
+              value={asset.symbol || assetMetadata?.symbol}
             />
 
             <Inline alignHorizontal="right">

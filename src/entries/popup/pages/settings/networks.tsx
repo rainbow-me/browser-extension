@@ -125,7 +125,7 @@ export function SettingsNetworks() {
         {featureFlags.custom_rpc && (
           <Menu>
             <MenuItem
-              testId={'custom-rpc-link'}
+              testId={'custom-chain-link'}
               first
               last
               leftComponent={
