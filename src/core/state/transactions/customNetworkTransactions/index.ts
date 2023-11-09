@@ -40,11 +40,11 @@ export const customNetworkTransactionsStore =
       customNetworkTransactions: {},
       getCustomNetworkTransactions: ({ address }) => {
         const { customNetworkTransactions } = get();
-        const addressTransactions = customNetworkTransactions[address];
+        const addressTransactions = customNetworkTransactions[address] || {};
         return Object.values(addressTransactions)
           .map((transactions) => transactions)
-          .flat()
-          .sort((a, b) => (a.minedAt > b.minedAt ? 0 : 1));
+          .flat();
+        // .sort((a, b) => (a.minedAt > b.minedAt ? 0 : 1));
       },
       addCustomNetworkTransactions: ({ address, chainId, transaction }) => {
         const { customNetworkTransactions } = get();
@@ -52,10 +52,12 @@ export const customNetworkTransactionsStore =
         const addressChainIdTransactions = addressTransactions[chainId] || [];
         addressChainIdTransactions.push(transaction);
         set({
-          ...customNetworkTransactions,
-          [address]: {
-            ...addressTransactions,
-            [chainId]: addressChainIdTransactions,
+          customNetworkTransactions: {
+            ...customNetworkTransactions,
+            [address]: {
+              ...addressTransactions,
+              [chainId]: addressChainIdTransactions,
+            },
           },
         });
       },
@@ -64,9 +66,11 @@ export const customNetworkTransactionsStore =
         const addressTransactions = customNetworkTransactions[address] || {};
         delete addressTransactions[chainId];
         set({
-          ...customNetworkTransactions,
-          [address]: {
-            ...addressTransactions,
+          customNetworkTransactions: {
+            ...customNetworkTransactions,
+            [address]: {
+              ...addressTransactions,
+            },
           },
         });
       },

@@ -16,6 +16,7 @@ import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { ChainId } from '~/core/types/chains';
 import {
   PendingTransaction,
@@ -23,6 +24,7 @@ import {
 } from '~/core/types/transactions';
 import { getSupportedChainIds } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { chainIdMap } from '~/core/utils/userChains';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
@@ -43,6 +45,16 @@ export default function ({
   const { getPendingTransactions } = usePendingTransactionsStore();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const pendingTransactions = getPendingTransactions({ address });
+  const { customNetworkTransactions } = useCustomNetworkTransactionsStore();
+
+  const currentAddressCustomNetworkTransactions = useMemo(
+    () => Object.values(customNetworkTransactions[address] || {}).flat(),
+    [address, customNetworkTransactions],
+  );
+
+  const chainsToInclude = chains
+    .map((chain) => chainIdMap[chain.id] || chain.id)
+    .flat();
 
   const {
     data,
@@ -58,12 +70,23 @@ export default function ({
     { address, currency },
     {
       select: (data) => {
+        let prevCutoff = Infinity;
         const selectedPages = data.pages.map((page) => {
+          const customNetworkTransactionsForPage =
+            currentAddressCustomNetworkTransactions.filter(
+              (transaction) =>
+                transaction.minedAt > (page?.cutoff || 0) &&
+                transaction.minedAt < prevCutoff &&
+                chainsToInclude.includes(transaction.chainId),
+            );
+          prevCutoff = page.cutoff || prevCutoff;
           return {
             ...page,
-            transactions: page.transactions.filter((transaction) =>
-              chains.map((chain) => chain.id).includes(transaction.chainId),
-            ),
+            transactions: page.transactions
+              .filter((transaction) => {
+                return chainsToInclude.includes(transaction.chainId);
+              })
+              .concat(customNetworkTransactionsForPage),
           };
         });
         return {
@@ -113,14 +136,16 @@ export default function ({
     () => pages?.flatMap((p) => p.transactions) || [],
     [pages],
   );
+
   const transactionsAfterCutoff = useMemo(() => {
     if (!cutoff) return transactions;
     const cutoffIndex = transactions.findIndex(
       (tx) => tx.status !== 'pending' && tx.minedAt < cutoff,
     );
-    if (!cutoffIndex) return transactions;
+    if (!cutoffIndex || cutoffIndex === -1) return transactions;
     return [...transactions].slice(0, cutoffIndex);
   }, [cutoff, transactions]);
+
   const formattedTransactions = useMemo(
     () =>
       Object.entries(

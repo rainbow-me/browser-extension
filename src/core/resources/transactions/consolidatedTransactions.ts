@@ -1,5 +1,4 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Address } from 'abitype';
 
 import { addysHttp } from '~/core/network/addys';
 import {
@@ -12,7 +11,6 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { customNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { ChainName } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -96,8 +94,6 @@ export async function consolidatedTransactionsQueryFunction({
   typeof consolidatedTransactionsQueryKey
 >): Promise<_QueryResult> {
   try {
-    const { getCustomNetworkTransactions } =
-      customNetworkTransactionsStore.getState();
     const supportedChainIds = testnetMode
       ? getSupportedTestnetChainIds()
       : getSupportedChainIds().filter((chainId) => !isCustomChain(chainId));
@@ -116,19 +112,16 @@ export async function consolidatedTransactionsQueryFunction({
       response?.data,
       currency,
     );
-    const customNetworkTransactions = getCustomNetworkTransactions({
-      address: address as Address,
-    });
 
     return {
       cutoff: response?.data?.meta?.cut_off,
       nextPage: response?.data?.meta?.next_page_cursor,
-      transactions: consolidatedTransactions.concat(customNetworkTransactions),
+      transactions: consolidatedTransactions,
     };
   } catch (e) {
     // we don't bother with fetching cache and returning stale data here because we probably have previous page data already
     logger.error(new RainbowError('consolidatedTransactionsQueryFunction: '), {
-      message: (e as Error)?.message,
+      message: e,
     });
     return { transactions: [] };
   }
