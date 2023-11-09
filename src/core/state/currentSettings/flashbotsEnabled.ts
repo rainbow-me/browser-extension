@@ -33,16 +33,7 @@ export const flashbotsEnabledStore = createStore<FlashbotsEnabledState>(
   {
     persist: {
       name: 'flashbotsEnabled',
-      version: 1,
-      migrate(_persistedState, version) {
-        const persistedState = _persistedState as FlashbotsEnabledState;
-        if (version === 0)
-          return {
-            ...persistedState,
-            swapFlashbotsEnabled: persistedState.flashbotsEnabled,
-          };
-        return persistedState;
-      },
+      version: 0,
     },
   },
 );
