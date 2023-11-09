@@ -85,6 +85,22 @@
       "light": "Claro",
       "dark": "Oscuro"
     },
+    "networks": {
+      "mainnet": "Mainnet",
+      "title": "Redes",
+      "quick_promo": {
+        "text": "Arrastra las redes para reordenarlas",
+        "text_bold": "Consejo:"
+      },
+      "description": "Elige qué redes y tokens mostrar. Puedes conectarte a cualquier red compatible con Rainbow, incluso si no están marcados.",
+      "developer_tools": {
+        "title": "Habilitar Herramientas de Desarrollo",
+        "toggle_explainer": "Habilita el atajo de Modo Testnet (T) y añade un interruptor en el menú superior derecho de la pantalla de inicio."
+      },
+      "custom_rpc": {
+        "title": "RPC Personalizado"
+      }
+    },
     "privacy_and_security": {
       "title": "Privacidad y seguridad",
       "analytics": "Analítica",
@@ -127,6 +143,12 @@
         "backed_up": "Respaldado",
         "not_backed_up": "No respaldado",
         "back_up_now": "Respaldar ahora",
+        "context_menu": {
+          "create_wallet": "Crear Billetera",
+          "view_secret_phrase": "Ver Frase Secreta",
+          "hide_wallets": "Ocultar Carteras",
+          "unhide_wallets": "Desocultar Carteras"
+        },
         "wallet_details": {
           "title": "Detalles de la Billetera",
           "view_recovery_phrase": "Ver frase de recuperación",
@@ -153,7 +175,8 @@
           "warning_2": "Asegúrese de que nadie pueda ver su pantalla al ver su Clave Privada.",
           "warning_3": "Cualquier persona con su Clave Privada puede acceder a toda su billetera.",
           "warning_4": "Rainbow Support nunca le pedirá su Clave Privada.",
-          "show": "Mostrar Clave Privada"
+          "show": "Mostrar Clave Privada",
+          "copied": "Clave Privada Copiada"
         },
         "recovery_phrase": {
           "title": "Su Frase de Recuperación",
@@ -164,7 +187,7 @@
           "warning_3": "Cualquier persona con su Frase de Recuperación puede acceder a toda su billetera.",
           "warning_4": "Rainbow Support nunca le pedirá su Frase de Recuperación.",
           "show": "Mostrar Frase de Recuperación",
-          "phrase_copied": "Frase de Recuperación Copiada"
+          "copied": "Frase de Recuperación Copiada"
         }
       }
     },
@@ -172,6 +195,8 @@
       "title": "Transacciones",
       "default_speed": "Velocidad predeterminada",
       "use_flashbots": "Usar Flashbots",
+      "clear_transactions_and_nonces": "Borrar Transacciones Pendientes",
+      "clear_transactions_and_nonces_success": "Transacciones pendientes borradas",
       "flashbots_description": "Flashbots protege tus transacciones y reduce la probabilidad de fallas en las transacciones. Obtén más información."
     },
     "currency": {
@@ -198,7 +223,9 @@
       "full_watching_wallets": "Acceso completo a billeteras vigiladas",
       "hw_wallets_enabled": "Habilitar soporte para billeteras de hardware",
       "command_k_internal_shortcuts_enabled": "Habilitar accesos directos internos ⌘K",
-      "new_tab_bar_enabled": "Nueva barra de pestañas"
+      "custom_rpc": "RPC Personalizado",
+      "new_tab_bar_enabled": "Nueva barra de pestañas",
+      "nfts_enabled": "NFTs Habilitados"
     }
   },
   "transactions": {
@@ -345,7 +372,14 @@
         "add_wallet": "Agregar un monedero",
         "lock": "Bloquear Rainbow",
         "connected_apps": "Aplicaciones Conectadas",
+        "developer_tools": "Alternar Herramientas de Desarrollo",
+        "developer_tools_disabled": "Habilitar Herramientas de Desarrollo",
+        "developer_tools_enabled": "Deshabilitar Herramientas de Desarrollo",
+        "testnet_mode": "Alternar Modo Testnet",
+        "testnet_mode_disabled": "Habilitar Modo Testnet",
+        "testnet_mode_enabled": "Deshabilitar Modo Testnet",
         "settings": "Configuración",
+        "network_settings": "Configuración de Red",
         "my_qr_code": "Mi Código QR",
         "my_qr_code_watched": "Código QR",
         "create_wallet": "Crear una Billetera",
@@ -376,7 +410,10 @@
         "my_wallets": "cambiar",
         "my_tokens_watched": "mis",
         "view_nfts": "galería, perfil",
+        "testnet_mode": "alternar, redes, testnets",
+        "developer_tools": "alternar, redes, desarrollador, testnets",
         "settings": "preferencias",
+        "network_settings": "testnets, desarrollador, redes",
         "my_qr_code_watched": "mis",
         "create_wallet": "agregar, nuevo",
         "import_wallet": "agregar, recuperación secreta, frase de recuperación, clave privada",
@@ -389,6 +426,11 @@
     },
     "command_rows": {
       "no_value": "Sin Valor"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Presiona T para alternar el Modo Testnet",
+      "title_disabled": "Herramientas de Desarrollo Deshabilitadas",
+      "title_enabled": "Herramientas de Desarrollo Habilitadas"
     },
     "hide_balances_toast": {
       "description_hidden": "Tus saldos están ocultos",
@@ -847,8 +889,18 @@
       "rainbow_profile": "Perfil Rainbow",
       "guides_and_support": "Guías y soporte",
       "share_feedback": "Compartir comentarios",
-      "lock_rainbow": "Bloquear Rainbow"
+      "lock_rainbow": "Bloquear Rainbow",
+      "testnet_mode": "Modo Testnet",
+      "testnet_mode_off": "Apagado",
+      "testnet_mode_on": "Encendido"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "Cambiando a %{chainName}?",
+    "testnet_mode": "Modo Testnet",
+    "testnet_mode_active": "está actualmente activo. ¿Desea desactivarlo e interactuar con %{chainName} en su lugar?",
+    "disable_and_connect": "Desactivar y Cambiar",
+    "cancel": "Cancelar"
   },
   "app_connection_switcher": {
     "banner": {
@@ -875,7 +927,7 @@
     "wallet_switcher": {
       "switch_wallets": "Cambiar Billeteras",
       "other_wallets": "Otras Billeteras",
-      "cancel": "Cancelar",
+      "done": "Hecho",
       "connected": "Conectado"
     }
   },
@@ -893,12 +945,19 @@
     "switch_networks": "Cambiar redes",
     "switch_wallets": "Cambiar billeteras",
     "connect": "Conectar a %{appName}",
+    "connect_anyway": "Conectar de todos modos",
+    "malicious_warning": {
+      "title": "Esta aplicación probablemente es maliciosa",
+      "message": "Firmar mensajes o transacciones desde esta app podría resultar en la pérdida de tus activos"
+    },
     "message_signing_request": "Solicitud de firma de mensaje",
     "message": "Mensaje",
     "sign_message": "Firmar mensaje",
+    "sign_message_anyway": "Firmar de todos modos",
     "confirm_hw": "Confirmar en tu dispositivo",
     "balance": "Saldo",
     "send_transaction": "Enviar transacción",
+    "send_transaction_anyway": "Confirmar de todos modos",
     "contract_deployment": "Despliegue de contrato",
     "transaction_request": "Solicitud de transacción",
     "insufficient_native_asset_for_gas": "Insuficiente %{symbol} para gas"
@@ -979,7 +1038,9 @@
     "copy_to_clipboard": "Copiar al portapapeles"
   },
   "errors": {
-    "no_wallet_name_set": "No se ha establecido un nombre de monedero"
+    "error_encountered": "Algo salió mal. Por favor comparte el problema con nuestro equipo y lo solucionaremos",
+    "no_wallet_name_set": "No se ha establecido un nombre de monedero",
+    "report_error": "Reportar problema"
   },
   "common_titles": {
     "before_you_proceed": "Antes de continuar"
@@ -1009,8 +1070,9 @@
   },
   "tabs": {
     "activity": "Actividad",
-    "tokens": "Tokens",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "Puntos",
+    "tokens": "Tokens"
   },
   "activity": {
     "today": "Hoy",
@@ -1066,7 +1128,17 @@
   "nfts": {
     "coming_soon_header": "Próximamente",
     "coming_soon_description": "Los NFTs llegarán pronto. ¡Mantente en sintonía!",
-    "view_on_web": "Ver en Web"
+    "view_on_web": "Ver en Web",
+    "display_mode_gallery": "Galería",
+    "display_mode_collections": "Colecciones",
+    "sort_option_recent": "Reciente",
+    "sort_option_abc": "Abc",
+    "sort_option_recent_long": "Reciente",
+    "sort_option_abc_long": "Alfabético"
+  },
+  "points": {
+    "coming_soon_header": "Próximamente",
+    "coming_soon_description": "Los puntos están a la vuelta de la esquina.\nEmpieza a ganar hoy"
   },
   "speed_up_and_cancel": {
     "speed_up": "Acelerar",
@@ -1231,6 +1303,7 @@
   "alert": {
     "ok": "Aceptar",
     "wallet_watching_mode": "Esta billetera está actualmente en modo 'Observación'",
+    "wallet_testing_mode": "Las redes de prueba no son compatibles con el intercambio. Desactive el Modo de prueba para continuar.",
     "coming_soon": "¡Próximamente!",
     "no_hw_ff": "Las carteras de hardware no son compatibles con Firefox. Intenta con un navegador diferente como Chrome o Brave"
   },

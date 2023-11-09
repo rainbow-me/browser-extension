@@ -85,6 +85,22 @@
       "light": "Terang",
       "dark": "Gelap"
     },
+    "networks": {
+      "mainnet": "Mainnet",
+      "title": "Jaringan",
+      "quick_promo": {
+        "text": "Seret jaringan untuk mengaturnya",
+        "text_bold": "Tip:"
+      },
+      "description": "Pilih jaringan dan token yang akan ditampilkan. Anda dapat terhubung ke jaringan apa pun yang didukung Rainbow, meskipun mereka tidak dicentang",
+      "developer_tools": {
+        "title": "Aktifkan Alat Pengembang",
+        "toggle_explainer": "Mengaktifkan shortcut Mode Testnet (T) dan menambahkan toggle ke menu atas-kanan layar utama."
+      },
+      "custom_rpc": {
+        "title": "RPC Kustom"
+      }
+    },
     "privacy_and_security": {
       "title": "Privasi & Keamanan",
       "analytics": "Analitik",
@@ -127,6 +143,12 @@
         "backed_up": "Sudah di-backup",
         "not_backed_up": "Belum di-backup",
         "back_up_now": "Backup Sekarang",
+        "context_menu": {
+          "create_wallet": "Buat Dompet",
+          "view_secret_phrase": "Lihat Frasa Rahasia",
+          "hide_wallets": "Sembunyikan Dompet",
+          "unhide_wallets": "Tampilkan Dompet"
+        },
         "wallet_details": {
           "title": "Detail Dompet",
           "view_recovery_phrase": "Lihat Frasa Pemulihan",
@@ -153,7 +175,8 @@
           "warning_2": "Pastikan tidak ada yang bisa melihat layar Anda saat melihat Kunci Pribadi Anda",
           "warning_3": "Siapa saja dengan Kunci Pribadi Anda bisa mengakses seluruh dompet Anda",
           "warning_4": "Dukungan Rainbow tidak akan pernah meminta Kunci Pribadi Anda",
-          "show": "Tampilkan Kunci Pribadi"
+          "show": "Tampilkan Kunci Pribadi",
+          "copied": "Kunci Pribadi Disalin"
         },
         "recovery_phrase": {
           "title": "Frasa Pemulihan Anda",
@@ -164,7 +187,7 @@
           "warning_3": "Siapa saja dengan Frasa Pemulihan Anda dapat mengakses seluruh dompet Anda.",
           "warning_4": "Dukungan Rainbow tidak akan pernah meminta Frasa Pemulihan Anda.",
           "show": "Tampilkan Frasa Pemulihan",
-          "phrase_copied": "Frasa Pemulihan Disalin"
+          "copied": "Frasa Pemulihan Disalin"
         }
       }
     },
@@ -172,6 +195,8 @@
       "title": "Transaksi",
       "default_speed": "Kecepatan Standar",
       "use_flashbots": "Gunakan Flashbots",
+      "clear_transactions_and_nonces": "Hapus Transaksi Tertunda",
+      "clear_transactions_and_nonces_success": "Transaksi tertunda dihapus",
       "flashbots_description": "Flashbots melindungi transaksi Anda dan mengurangi kemungkinan kegagalan transaksi. Pelajari lebih lanjut."
     },
     "currency": {
@@ -198,7 +223,9 @@
       "full_watching_wallets": "Akses Penuh ke Dompet Tertonton",
       "hw_wallets_enabled": "Aktifkan Dukungan Dompet Perangkat Keras",
       "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K",
-      "new_tab_bar_enabled": "Bar Tab Baru"
+      "custom_rpc": "RPC Kustom",
+      "new_tab_bar_enabled": "Bar Tab Baru",
+      "nfts_enabled": "NFTs Diaktifkan"
     }
   },
   "transactions": {
@@ -345,7 +372,14 @@
         "add_wallet": "Tambahkan Wallet",
         "lock": "Kunci Rainbow",
         "connected_apps": "Aplikasi Terhubung",
+        "developer_tools": "TombolAlat Pengembang",
+        "developer_tools_disabled": "Aktifkan Alat Pengembang",
+        "developer_tools_enabled": "Nonaktifkan Alat Pengembang",
+        "testnet_mode": "Tombol Mode Testnet",
+        "testnet_mode_disabled": "Aktifkan Mode Testnet",
+        "testnet_mode_enabled": "Nonaktifkan Mode Testnet",
         "settings": "Pengaturan",
+        "network_settings": "Pengaturan Jaringan",
         "my_qr_code": "Kode QR Saya",
         "my_qr_code_watched": "Kode QR",
         "create_wallet": "Buat Wallet",
@@ -376,7 +410,10 @@
         "my_wallets": "beralih",
         "my_tokens_watched": "saya",
         "view_nfts": "galeri, profil",
+        "testnet_mode": "tombol, jaringan, testnet",
+        "developer_tools": "tombol, jaringan, pengembang, testnet",
         "settings": "preferensi",
+        "network_settings": "testnet, pengembang, jaringan",
         "my_qr_code_watched": "saya",
         "create_wallet": "tambah, baru",
         "import_wallet": "tambah, pemulihan rahasia, frasa benih, kunci privat",
@@ -389,6 +426,11 @@
     },
     "command_rows": {
       "no_value": "Tak Ada Nilai"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Tekan T untuk mengganti Mode Testnet",
+      "title_disabled": "Alat Pengembang Dinonaktifkan",
+      "title_enabled": "Alat Pengembangan Diaktifkan"
     },
     "hide_balances_toast": {
       "description_hidden": "Saldo Anda tersembunyi",
@@ -847,8 +889,18 @@
       "rainbow_profile": "Profil Rainbow",
       "guides_and_support": "Panduan & Dukungan",
       "share_feedback": "Bagikan Masukan",
-      "lock_rainbow": "Kunci Rainbow"
+      "lock_rainbow": "Kunci Rainbow",
+      "testnet_mode": "Mode Testnet",
+      "testnet_mode_off": "Mati",
+      "testnet_mode_on": "Aktif"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "Beralih ke %{chainName}?",
+    "testnet_mode": "Mode Testnet",
+    "testnet_mode_active": "saat ini aktif. Apakah Anda ingin menonaktifkannya dan berinteraksi dengan %{chainName} sebagai gantinya?",
+    "disable_and_connect": "Nonaktifkan dan Beralih",
+    "cancel": "Batal"
   },
   "app_connection_switcher": {
     "banner": {
@@ -875,7 +927,7 @@
     "wallet_switcher": {
       "switch_wallets": "Ganti Dompet",
       "other_wallets": "Dompet Lain",
-      "cancel": "Batal",
+      "done": "Selesai",
       "connected": "Terhubung"
     }
   },
@@ -893,12 +945,19 @@
     "switch_networks": "Ganti Jaringan",
     "switch_wallets": "Ganti Dompet",
     "connect": "Hubungkan ke %{appName}",
+    "connect_anyway": "Sambungkan Tetap",
+    "malicious_warning": {
+      "title": "App ini kemungkinan berbahaya",
+      "message": "Mengirim pesan atau transaksi dari aplikasi ini bisa berakibat pada kehilangan aset Anda"
+    },
     "message_signing_request": "Permintaan Tanda Tangan Pesan",
     "message": "Pesan",
     "sign_message": "Tandatangani Pesan",
+    "sign_message_anyway": "Tanda Tangani Tetap",
     "confirm_hw": "Konfirmasi di perangkat Anda",
     "balance": "Saldo",
     "send_transaction": "Kirim Transaksi",
+    "send_transaction_anyway": "Konfirmasi Tetap",
     "contract_deployment": "Penerapan Kontrak",
     "transaction_request": "Permintaan Transaksi",
     "insufficient_native_asset_for_gas": "Kurangnya %{symbol} untuk gas"
@@ -979,7 +1038,9 @@
     "copy_to_clipboard": "Salin ke papan klip"
   },
   "errors": {
-    "no_wallet_name_set": "Nama wallet belum diatur"
+    "error_encountered": "Ada yang salah. Harap bagikan isu ini dengan tim kami dan kami akan memperbaikinya",
+    "no_wallet_name_set": "Nama wallet belum diatur",
+    "report_error": "Laporkan isu"
   },
   "common_titles": {
     "before_you_proceed": "Sebelum Anda melanjutkan"
@@ -1009,8 +1070,9 @@
   },
   "tabs": {
     "activity": "Aktivitas",
-    "tokens": "Tokens",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "Poin",
+    "tokens": "Tokens"
   },
   "activity": {
     "today": "Hari Ini",
@@ -1066,7 +1128,17 @@
   "nfts": {
     "coming_soon_header": "Segera Hadir",
     "coming_soon_description": "NFTs segera hadir. Tetap sintonik!",
-    "view_on_web": "Lihat di Web"
+    "view_on_web": "Lihat di Web",
+    "display_mode_gallery": "Galeri",
+    "display_mode_collections": "Koleksi",
+    "sort_option_recent": "Terbaru",
+    "sort_option_abc": "Abc",
+    "sort_option_recent_long": "Terbaru",
+    "sort_option_abc_long": "Abjad"
+  },
+  "points": {
+    "coming_soon_header": "Segera Hadir",
+    "coming_soon_description": "Poin ada di dekat sana.\nMulai mendapatkan hari ini"
   },
   "speed_up_and_cancel": {
     "speed_up": "Percepat",
@@ -1231,6 +1303,7 @@
   "alert": {
     "ok": "Ok",
     "wallet_watching_mode": "Dompet ini saat ini dalam mode 'Watching'",
+    "wallet_testing_mode": "Testnet tidak didukung oleh Swap. Nonaktifkan Mode Testnet untuk melanjutkan.",
     "coming_soon": "Segera Hadir!",
     "no_hw_ff": "Dompet perangkat keras tidak didukung di Firefox. Coba browser lain seperti Chrome atau Brave"
   },

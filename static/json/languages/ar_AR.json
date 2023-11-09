@@ -85,6 +85,22 @@
       "light": "مضيء",
       "dark": "مظلم"
     },
+    "networks": {
+      "mainnet": "الشبكة الرئيسية",
+      "title": "الشبكات",
+      "quick_promo": {
+        "text": "اسحب الشبكات لإعادة ترتيبها",
+        "text_bold": "نصيحة:"
+      },
+      "description": "اختر الشبكات والرموز التي ترغب في عرضها. يمكنك الاتصال بأي شبكات تدعمها Rainbow ، حتى لو لم يتم التحقق منها",
+      "developer_tools": {
+        "title": "تفعيل أدوات المطور",
+        "toggle_explainer": "تفعيل اختصار وضع الاختبار (T) وإضافة مفتاح لقائمة الشاشة الرئيسية في أعلى اليمين."
+      },
+      "custom_rpc": {
+        "title": "Custom RPC"
+      }
+    },
     "privacy_and_security": {
       "title": "الخصوصية والأمان",
       "analytics": "التحليلات",
@@ -127,6 +143,12 @@
         "backed_up": "تم النسخ الاحتياطي",
         "not_backed_up": "لم يتم النسخ الاحتياطي",
         "back_up_now": "النسخ الاحتياطي الآن",
+        "context_menu": {
+          "create_wallet": "إنشاء محفظة",
+          "view_secret_phrase": "عرض العبارة السرية",
+          "hide_wallets": "إخفاء المحافظ",
+          "unhide_wallets": "أظهر المحافظ"
+        },
         "wallet_details": {
           "title": "تفاصيل المحفظة",
           "view_recovery_phrase": "عرض عبارة الاسترداد",
@@ -153,7 +175,8 @@
           "warning_2": "تأكد أن لا أحد يمكنه مشاهدة شاشتك عند عرض مفتاحك الخاص",
           "warning_3": "أي شخص لديه مفتاحك الخاص يمكنه الوصول إلى محفظتك بالكامل",
           "warning_4": "لن يطلب منك دعم Rainbow أبدًا مفتاحك الخاص",
-          "show": "إظهار المفتاح الخاص"
+          "show": "إظهار المفتاح الخاص",
+          "copied": "تم نسخ المفتاح الخاص"
         },
         "recovery_phrase": {
           "title": "عبارتك الاستعادية",
@@ -164,7 +187,7 @@
           "warning_3": "أي شخص يملك عبارة الاستعادة الخاصة بك يمكنه الوصول إلى محفظتك بأكملها",
           "warning_4": "دعم Rainbow لن يطلب منك عبارة الاستعادة الخاصة بك أبدا",
           "show": "إظهار عبارة الاستعادة",
-          "phrase_copied": "تم نسخ عبارة الاستعادة"
+          "copied": "تم نسخ عبارة الاستعادة"
         }
       }
     },
@@ -172,6 +195,8 @@
       "title": "المعاملات",
       "default_speed": "السرعة الافتراضية",
       "use_flashbots": "استخدم Flashbots",
+      "clear_transactions_and_nonces": "معالجة المعاملات المعلقة",
+      "clear_transactions_and_nonces_success": "تم معالجة المعاملات المعلقة",
       "flashbots_description": "يحمي Flashbots معاملاتك ويقلل من احتمالية فشل المعاملات. تعلم المزيد"
     },
     "currency": {
@@ -198,7 +223,9 @@
       "full_watching_wallets": "الوصول الكامل إلى المحافظ المراقبة",
       "hw_wallets_enabled": "تفعيل دعم المحفظة الأجهزة",
       "command_k_internal_shortcuts_enabled": "تفعيل الاختصارات الداخلية ⌘K",
-      "new_tab_bar_enabled": "شريط التبويب الجديد"
+      "custom_rpc": "Custom RPC",
+      "new_tab_bar_enabled": "شريط التبويب الجديد",
+      "nfts_enabled": "تم تفعيل NFTs"
     }
   },
   "transactions": {
@@ -345,7 +372,14 @@
         "add_wallet": "أضف محفظة",
         "lock": "قفل الرينبو",
         "connected_apps": "التطبيقات المتصلة",
+        "developer_tools": "تبديل أدوات المطور",
+        "developer_tools_disabled": "تفعيل أدوات المطور",
+        "developer_tools_enabled": "تعطيل أدوات المطور",
+        "testnet_mode": "تبديل وضع الاختبار",
+        "testnet_mode_disabled": "تفعيل وضع الاختبار",
+        "testnet_mode_enabled": "تعطيل وضع الاختبار",
         "settings": "الإعدادات",
+        "network_settings": "اعدادات الشبكة",
         "my_qr_code": "رمز الاستجابة السريعة الخاص بي",
         "my_qr_code_watched": "رمز الاستجابة السريعة",
         "create_wallet": "إنشاء محفظة",
@@ -376,7 +410,10 @@
         "my_wallets": "التبديل",
         "my_tokens_watched": "يا",
         "view_nfts": "صالة عرض, الملف الشخصي",
+        "testnet_mode": "تبديل، شبكات، شبكات الاختبار",
+        "developer_tools": "تبديل، شبكات، مطور، شبكات الاختبار",
         "settings": "التفضيلات",
+        "network_settings": "شبكات الاختبار، مطور، شبكات",
         "my_qr_code_watched": "يا",
         "create_wallet": "إضافة, جديد",
         "import_wallet": "إضافة, استعادة سرية, عبارة البذور, المفتاح الخاص",
@@ -389,6 +426,11 @@
     },
     "command_rows": {
       "no_value": "لا قيمة"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "اضغط T لتبديل وضع الاختبار",
+      "title_disabled": "تم تعطيل أدوات المطور",
+      "title_enabled": "تم تفعيل أدوات المطور"
     },
     "hide_balances_toast": {
       "description_hidden": "رصيدك مخفي",
@@ -847,8 +889,18 @@
       "rainbow_profile": "ملف راينبو الشخصي",
       "guides_and_support": "الدلائل والدعم",
       "share_feedback": "شارك الرأي",
-      "lock_rainbow": "قفل راينبو"
+      "lock_rainbow": "قفل راينبو",
+      "testnet_mode": "وضع Testnet",
+      "testnet_mode_off": "أيقاف",
+      "testnet_mode_on": "تشغيل"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "التبديل إلى %{chainName}؟",
+    "testnet_mode": "وضع Testnet",
+    "testnet_mode_active": "نشط حاليا. هل تود تعطيله والتفاعل مع %{chainName} بدلاً من ذلك؟",
+    "disable_and_connect": "تعطيل والتبديل",
+    "cancel": "إلغاء"
   },
   "app_connection_switcher": {
     "banner": {
@@ -875,7 +927,7 @@
     "wallet_switcher": {
       "switch_wallets": "تبديل المحافظ",
       "other_wallets": "محافظ أخرى",
-      "cancel": "إلغاء",
+      "done": "تم",
       "connected": "متصل"
     }
   },
@@ -893,12 +945,19 @@
     "switch_networks": "تبديل الشبكات",
     "switch_wallets": "تبديل المحافظ",
     "connect": "اتصل بـ %{appName}",
+    "connect_anyway": "الاتصال على أي حال",
+    "malicious_warning": {
+      "title": "من المحتمل أن هذا التطبيق ضار",
+      "message": "توقيع الرسائل أو المعاملات من هذا التطبيق قد يؤدي إلى فقدان أصولك"
+    },
     "message_signing_request": "طلب التوقيع على الرسالة",
     "message": "رسالة",
     "sign_message": "توقيع الرسالة",
+    "sign_message_anyway": "التوقيع على أي حال",
     "confirm_hw": "تأكيد على جهازك",
     "balance": "الرصيد",
     "send_transaction": "أرسل المعاملة",
+    "send_transaction_anyway": "التأكيد على أي حال",
     "contract_deployment": "نشر العقد",
     "transaction_request": "طلب العملية",
     "insufficient_native_asset_for_gas": "%{symbol} غير كافٍ للغاز"
@@ -979,7 +1038,9 @@
     "copy_to_clipboard": "نسخ إلى الحافظة"
   },
   "errors": {
-    "no_wallet_name_set": "لم يتم تحديد اسم المحفظة"
+    "error_encountered": "حدث خطأ. يرجى مشاركة المشكلة مع فريقنا وسنقوم بإصلاحها!",
+    "no_wallet_name_set": "لم يتم تحديد اسم المحفظة",
+    "report_error": "الإبلاغ عن المشكلة"
   },
   "common_titles": {
     "before_you_proceed": "قبل أن تتابع"
@@ -1009,8 +1070,9 @@
   },
   "tabs": {
     "activity": "النشاط",
-    "tokens": "رموز",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "النقاط",
+    "tokens": "رموز"
   },
   "activity": {
     "today": "اليوم",
@@ -1066,7 +1128,17 @@
   "nfts": {
     "coming_soon_header": "قريبًا",
     "coming_soon_description": "لـNFTs قادمة قريبا. ترقب!",
-    "view_on_web": "عرض على الويب"
+    "view_on_web": "عرض على الويب",
+    "display_mode_gallery": "المعرض",
+    "display_mode_collections": "المجموعات",
+    "sort_option_recent": "الأخير",
+    "sort_option_abc": "Abc",
+    "sort_option_recent_long": "الأخير",
+    "sort_option_abc_long": "أبجدي"
+  },
+  "points": {
+    "coming_soon_header": "قريبًا",
+    "coming_soon_description": "النقاط على بعد خطوة.\nابدأ في الكسب اليوم."
   },
   "speed_up_and_cancel": {
     "speed_up": "تسريع العملية",
@@ -1231,6 +1303,7 @@
   "alert": {
     "ok": "حسنا",
     "wallet_watching_mode": "هذه المحفظة حاليا في وضع 'المشاهدة'",
+    "wallet_testing_mode": "لا يتم دعم الشبكات التجريبية بواسطة Swap. قم بتعطيل وضع الشبكة التجريبية للمتابعة.",
     "coming_soon": "قريبا!",
     "no_hw_ff": "المحافظ الأجهزة غير معتمدة على Firefox. جرب متصفحًا مختلفًا مثل Chrome أو Brave."
   },
