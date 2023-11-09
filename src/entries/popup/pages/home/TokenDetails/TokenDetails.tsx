@@ -11,6 +11,7 @@ import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import {
   findCustomChainForChainId,
+  isCustomChain,
   isNativeAsset,
   isTestnetChainId,
 } from '~/core/utils/chains';
@@ -56,15 +57,32 @@ const HiddenValue = () => <Asterisks color="labelTertiary" size={10} />;
 function BalanceValue({
   balance,
   nativeBalance,
+  chainId,
 }: {
   balance: FormattedCurrencyParts;
   nativeBalance: FormattedCurrencyParts;
+  chainId: ParsedUserAsset['chainId'];
 }) {
   const { hideAssetBalances } = useHideAssetBalancesStore();
 
   const color: TextProps['color'] = hideAssetBalances
     ? 'labelTertiary'
     : 'label';
+
+  const getPrice = (
+    nativeBalance: FormattedCurrencyParts,
+    chainId: ParsedUserAsset['chainId'],
+  ) => {
+    if (isCustomChain(chainId) && nativeBalance.value === '0') {
+      return '-';
+    } else {
+      const val = hideAssetBalances ? <HiddenValue /> : nativeBalance.value;
+      return (
+        (nativeBalance.symbolAtStart && nativeBalance.symbol + val) ||
+        val + nativeBalance.symbol
+      );
+    }
+  };
 
   return (
     <Box display="flex" justifyContent="space-between" gap="10px">
@@ -98,9 +116,7 @@ function BalanceValue({
             cursor="text"
             userSelect="all"
           >
-            {nativeBalance.symbolAtStart && nativeBalance.symbol}
-            {hideAssetBalances ? <HiddenValue /> : nativeBalance.value}
-            {!nativeBalance.symbolAtStart && nativeBalance.symbol}
+            {getPrice(nativeBalance, chainId)}
           </TextOverflow>
         </Inline>
       </Box>
@@ -365,6 +381,7 @@ export function TokenDetails() {
           <BalanceValue
             balance={tokenBalance}
             nativeBalance={tokenNativeBalance}
+            chainId={token.chainId}
           />
 
           {!isWatchingWallet && token.balance.amount !== '0' && (

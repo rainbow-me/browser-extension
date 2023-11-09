@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import { memo, useCallback, useMemo, useState } from 'react';
@@ -21,6 +22,7 @@ import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAsse
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedUserAsset } from '~/core/types/assets';
+import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -249,6 +251,7 @@ export const AssetRow = memo(function AssetRow({
       ),
     [asset?.balance?.display, asset?.symbol, hideAssetBalances],
   );
+
   const nativeBalanceDisplay = useMemo(
     () =>
       hideAssetBalances ? (
@@ -258,12 +261,19 @@ export const AssetRow = memo(function AssetRow({
           </TextOverflow>
           <Asterisks color="label" size={10} />
         </Inline>
-      ) : (
+      ) : isCustomChain(asset.chainId) &&
+        asset?.native?.balance?.amount === '0' ? null : (
         <Text size="14pt" weight="semibold" align="right">
           {asset?.native?.balance?.display}
         </Text>
       ),
-    [asset?.native?.balance?.display, hideAssetBalances, currentCurrency],
+    [
+      hideAssetBalances,
+      currentCurrency,
+      asset.chainId,
+      asset?.native?.balance?.amount,
+      asset?.native?.balance?.display,
+    ],
   );
 
   const topRow = useMemo(
