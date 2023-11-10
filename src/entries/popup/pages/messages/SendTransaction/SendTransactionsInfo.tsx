@@ -5,8 +5,9 @@ import { Address } from 'wagmi';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
+import { useUserAssets } from '~/core/resources/assets';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useNonceStore } from '~/core/state';
+import { useCurrentCurrencyStore, useNonceStore } from '~/core/state';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
@@ -324,6 +325,26 @@ function InsuficientGasFunds({
   const chainName = ChainNameDisplay[chainId];
   const { nativeAsset } = useNativeAsset({ chainId });
 
+  const { currentCurrency } = useCurrentCurrencyStore();
+  const { data: hasBridgeableBalance } = useUserAssets(
+    { address, currency: currentCurrency },
+    {
+      select(data) {
+        const nativeNetworks = nativeAsset?.networks;
+        if (!nativeNetworks) return false;
+        const bridgeableChains = Object.keys(nativeNetworks);
+        // has a balance on any other chain we could bridge from?
+        return bridgeableChains.some((chain) => {
+          if (+chain === chainId) return false; // skip current chain
+          const addressOnChain = nativeNetworks[+chain]?.address;
+          if (!addressOnChain) return false;
+          const balanceOnChain = data[+chain][addressOnChain].balance;
+          return +balanceOnChain.amount > 0;
+        });
+      },
+    },
+  );
+
   const token = `${chainName} ${nativeAsset?.symbol}`;
 
   const navigate = useRainbowNavigate();
@@ -368,33 +389,62 @@ function InsuficientGasFunds({
       <Stack marginHorizontal="-8px">
         <Separator color="separatorTertiary" />
 
-        <Button
-          paddingHorizontal="8px"
-          height="44px"
-          variant="transparent"
-          color="blue"
-          onClick={() => {
-            setSelectedToken(nativeAsset);
-            navigate(ROUTES.BRIDGE, { replace: true });
-            onRejectRequest();
-            triggerToast({
-              title: i18n.t('approve_request.request_rejected'),
-              description: i18n.t('approve_request.bridge_and_try_again'),
-            });
-          }}
-        >
-          <Inline alignVertical="center" space="12px" wrap={false}>
-            <Symbol
-              size={16}
-              symbol="arrow.turn.up.right"
-              color="blue"
-              weight="bold"
-            />
-            <Text size="14pt" weight="bold" color="blue">
-              {i18n.t('approve_request.bridge_to', { chain: chainName })}
-            </Text>
-          </Inline>
-        </Button>
+        {hasBridgeableBalance ? (
+          <Button
+            paddingHorizontal="8px"
+            height="44px"
+            variant="transparent"
+            color="blue"
+            onClick={() => {
+              setSelectedToken(nativeAsset);
+              navigate(ROUTES.BRIDGE, { replace: true });
+              onRejectRequest();
+              triggerToast({
+                title: i18n.t('approve_request.request_rejected'),
+                description: i18n.t('approve_request.bridge_and_try_again'),
+              });
+            }}
+          >
+            <Inline alignVertical="center" space="12px" wrap={false}>
+              <Symbol
+                size={16}
+                symbol="arrow.turn.up.right"
+                color="blue"
+                weight="bold"
+              />
+              <Text size="14pt" weight="bold" color="blue">
+                {i18n.t('approve_request.bridge_to', { chain: chainName })}
+              </Text>
+            </Inline>
+          </Button>
+        ) : (
+          <Button
+            paddingHorizontal="8px"
+            height="44px"
+            variant="transparent"
+            color="blue"
+            onClick={() => {
+              navigate(ROUTES.BUY, { replace: true });
+              onRejectRequest();
+              triggerToast({
+                title: i18n.t('approve_request.request_rejected'),
+                description: i18n.t('approve_request.buy_and_try_again'),
+              });
+            }}
+          >
+            <Inline alignVertical="center" space="12px" wrap={false}>
+              <Symbol
+                size={16}
+                symbol="creditcard.fill"
+                color="blue"
+                weight="bold"
+              />
+              <Text size="14pt" weight="bold" color="blue">
+                {i18n.t('approve_request.buy', { token })}
+              </Text>
+            </Inline>
+          </Button>
+        )}
 
         <Separator color="separatorTertiary" />
 

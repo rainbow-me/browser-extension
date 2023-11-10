@@ -968,13 +968,15 @@
     "no_gas_funds": "You need some %{token}",
     "no_gas_funds_description": "You’ll need %{token} to pay for this transaction. Get some %{token} below to continue with this request.",
     "no_token": "No %{token}",
-    "on_chain": "no %{chain}",
+    "on_chain": "on %{chain}",
     "copy_deposit_address": "Copy wallet address to deposit",
     "bridge_to": "Bridge to %{chain}",
     "signing_with": "Signing with",
     "no_fee_to_sign": "No fee to sign",
     "request_rejected": "Transaction Request Rejected",
-    "bridge_and_try_again": "Bridge some gas funds and try again"
+    "bridge_and_try_again": "Bridge some gas funds and try again",
+    "buy_and_try_again": "Buy some gas funds and try again",
+    "buy": "Buy %{token}"
   },
   "transaction_fee": {
     "title": "Transaction Speed",
