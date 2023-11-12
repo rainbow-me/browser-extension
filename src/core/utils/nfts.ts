@@ -149,6 +149,7 @@ export function simpleHashNFTToUniqueAsset(
       name: nft.contract.name || undefined,
       schema_name: standard,
       symbol: nft.contract.symbol || undefined,
+      deployed_by: nft.contract.deployed_by,
     },
     background: nft.background_color,
     collection: {

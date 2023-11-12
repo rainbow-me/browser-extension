@@ -1022,6 +1022,10 @@ export const symbolNames = selectSymbolNames(
   'hammer.fill',
   'checklist.unchecked',
   'list.bullet',
+  'square.and.arrow.up',
+  'arrow.down.circle.fill',
+  'arrow.up.right.circle',
+  'arrow.up.right.square.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

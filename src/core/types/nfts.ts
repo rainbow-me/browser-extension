@@ -286,6 +286,7 @@ export interface UniqueAsset {
     schema_name?: string;
     symbol?: string;
     total_supply?: number | null;
+    deployed_by: string | null;
   };
   background: string | null;
   collection: {

@@ -10,7 +10,7 @@ export const HomeMenuRow = ({
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;
-  rightComponent: ReactElement | null;
+  rightComponent?: ReactElement | null;
   testId?: string;
 }) => {
   return (
@@ -20,7 +20,9 @@ export const HomeMenuRow = ({
         <Column>
           <Columns alignVertical="center" space="8px">
             <Column>{centerComponent}</Column>
-            <Column width="content">{rightComponent}</Column>
+            {rightComponent && (
+              <Column width="content">{rightComponent}</Column>
+            )}
           </Columns>
         </Column>
       </Columns>
