@@ -10,16 +10,10 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainName } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
-import {
-  chainIdFromChainName,
-  getSupportedChainIds,
-  getSupportedTestnetChainIds,
-  isCustomChain,
-} from '~/core/utils/chains';
+import { chainIdFromChainName } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -32,7 +26,8 @@ const CONSOLIDATED_TRANSACTIONS_TIMEOUT = 20000;
 export type ConsolidatedTransactionsArgs = {
   address: string;
   currency: SupportedCurrencyKey;
-  testnetMode?: boolean;
+  testnetMode: boolean;
+  userChainIds: number[];
 };
 
 // ///////////////////////////////////////////////
@@ -42,10 +37,11 @@ export const consolidatedTransactionsQueryKey = ({
   address,
   currency,
   testnetMode,
+  userChainIds,
 }: ConsolidatedTransactionsArgs) =>
   createQueryKey(
     'consolidatedTransactions',
-    { address, currency, testnetMode },
+    { address, currency, testnetMode, userChainIds },
     { persisterVersion: 1 },
   );
 
@@ -59,7 +55,12 @@ type ConsolidatedTransactionsQueryKey = ReturnType<
 export async function fetchConsolidatedTransactions<
   TSelectData = ConsolidatedTransactionsResult,
 >(
-  { address, currency, testnetMode }: ConsolidatedTransactionsArgs,
+  {
+    address,
+    currency,
+    testnetMode,
+    userChainIds,
+  }: ConsolidatedTransactionsArgs,
   config: QueryConfig<
     ConsolidatedTransactionsResult,
     Error,
@@ -72,6 +73,7 @@ export async function fetchConsolidatedTransactions<
       address,
       currency,
       testnetMode,
+      userChainIds,
     }),
     consolidatedTransactionsQueryFunction,
     config,
@@ -88,17 +90,14 @@ type _QueryResult = {
 };
 
 export async function consolidatedTransactionsQueryFunction({
-  queryKey: [{ address, currency, testnetMode }],
+  queryKey: [{ address, currency, userChainIds }],
   pageParam,
 }: QueryFunctionArgs<
   typeof consolidatedTransactionsQueryKey
 >): Promise<_QueryResult> {
   try {
-    const supportedChainIds = testnetMode
-      ? getSupportedTestnetChainIds()
-      : getSupportedChainIds().filter((chainId) => !isCustomChain(chainId));
     const response = await addysHttp.get<TransactionsReceivedMessage>(
-      `/${supportedChainIds.join(',')}/${address}/transactions`,
+      `/${userChainIds.join(',')}/${address}/transactions`,
       {
         params: {
           currency: currency.toLowerCase(),
@@ -158,19 +157,24 @@ async function parseConsolidatedTransactions(
 export function useConsolidatedTransactions<
   TSelectData = ConsolidatedTransactionsResult,
 >(
-  { address, currency }: ConsolidatedTransactionsArgs,
+  {
+    address,
+    currency,
+    userChainIds,
+    testnetMode,
+  }: ConsolidatedTransactionsArgs,
   config: InfiniteQueryConfig<
     ConsolidatedTransactionsResult,
     Error,
     TSelectData
   > = {},
 ) {
-  const { testnetMode } = useTestnetModeStore();
   return useInfiniteQuery(
     consolidatedTransactionsQueryKey({
       address,
       currency,
       testnetMode,
+      userChainIds,
     }),
     consolidatedTransactionsQueryFunction,
     {

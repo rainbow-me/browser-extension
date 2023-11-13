@@ -9,9 +9,11 @@ import {
   consolidatedTransactionsQueryKey,
 } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId } from '~/core/types/chains';
 import { TransactionApiResponse, TxHash } from '~/core/types/transactions';
 import { parseTransaction } from '~/core/utils/transactions';
+import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { RainbowError, logger } from '~/logger';
 
 type ConsolidatedTransactionsResult = QueryFunctionResult<
@@ -59,10 +61,14 @@ export function useTransaction({
   const queryClient = useQueryClient();
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { testnetMode } = useTestnetModeStore();
+  const { chains } = useUserChains();
 
   const paginatedTransactionsKey = consolidatedTransactionsQueryKey({
     address,
     currency,
+    testnetMode,
+    userChainIds: chains.map((chain) => chain.id),
   });
 
   const params = {
