@@ -592,14 +592,15 @@ const NFTDropdownMenu = ({
                       <Text size="14pt" weight="semibold" cursor="copy">
                         {i18n.t('nfts.details.copy_token_id')}
                       </Text>
-                      <Text
+                      <TextOverflow
                         size="11pt"
                         weight="semibold"
                         color="labelTertiary"
                         cursor="copy"
+                        maxWidth={140}
                       >
                         {nft?.id}
-                      </Text>
+                      </TextOverflow>
                     </Stack>
                   }
                 />
@@ -820,6 +821,7 @@ export const NFTInfoRow = ({
             symbol={valueSymbol}
             weight="medium"
             color="labelTertiary"
+            cursor="pointer"
           />
         )}
       </Inline>
