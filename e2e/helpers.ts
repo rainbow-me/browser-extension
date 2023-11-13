@@ -44,6 +44,55 @@ const BINARY_PATHS = {
   },
 };
 
+export async function manageExtensionTabs(
+  driver: WebDriver,
+  desiredURL: string,
+) {
+  let extensionTabFound = false;
+  const allHandles = await driver.getAllWindowHandles();
+
+  for (const handle of allHandles) {
+    await driver.switchTo().window(handle);
+    const currentUrl = await driver.getCurrentUrl();
+
+    if (currentUrl.startsWith(desiredURL)) {
+      if (!extensionTabFound) {
+        extensionTabFound = true;
+      } else {
+        await driver.close();
+      }
+    } else {
+      await driver.close();
+    }
+  }
+
+  if (extensionTabFound) {
+    const remainingHandles = await driver.getAllWindowHandles();
+    await driver.switchTo().window(remainingHandles[0]);
+  }
+}
+
+const addPermissionForAllWebsites = async (driver: WebDriver) => {
+  await driver.get('about:addons');
+  await manageExtensionTabs(driver, 'about:addons');
+  const sidebarBtn = await querySelector(driver, `[title="Extensions"]`);
+  await sidebarBtn.click();
+  const moreBtn = await querySelector(driver, `[action="more-options"]`);
+  await moreBtn.click();
+  const manageBtn = await querySelector(
+    driver,
+    `[data-l10n-id="manage-addon-button"]`,
+  );
+  await manageBtn.click();
+  await findElementByIdAndClick({
+    id: 'details-deck-button-permissions',
+    driver,
+  });
+  await driver.executeScript(
+    `document.querySelectorAll('[class="permission-info"]')[0].children[0].click();`,
+  );
+};
+
 export const getRootUrl = () => {
   const browser = process.env.BROWSER || 'chrome';
   if (browser === 'firefox') {
@@ -155,27 +204,6 @@ export async function initDriverWithOptions(opts: {
   driver.browser = opts.browser;
   return driver;
 }
-
-const addPermissionForAllWebsites = async (driver: WebDriver) => {
-  // Add the permission to access all websites
-  await driver.get('about:addons');
-  const sidebarBtn = await querySelector(driver, `[title="Extensions"]`);
-  await sidebarBtn.click();
-  const moreBtn = await querySelector(driver, `[action="more-options"]`);
-  await moreBtn.click();
-  const manageBtn = await querySelector(
-    driver,
-    `[data-l10n-id="manage-addon-button"]`,
-  );
-  await manageBtn.click();
-  await findElementByIdAndClick({
-    id: 'details-deck-button-permissions',
-    driver,
-  });
-  await driver.executeScript(
-    `document.querySelectorAll('[class="permission-info"]')[0].children[0].click();`,
-  );
-};
 
 export async function getExtensionIdByName(
   driver: WebDriver,
