@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -505,34 +505,36 @@ export function SendTransactionInfo({
       gap="24px"
       height="full"
     >
-      <motion.div
-        style={{
-          maxHeight: expanded ? 0 : '100%',
-          overflow: expanded ? 'hidden' : 'unset',
-          paddingTop: expanded ? 0 : '20px',
-          opacity: expanded ? 0 : 1,
-        }}
-      >
-        <Stack space="16px" alignItems="center">
-          <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
-          <Stack space="12px">
-            <DappHostName
-              hostName={dappMetadata?.appHostName}
-              dappStatus={dappMetadata?.status}
-            />
-            <Text
-              align="center"
-              size="14pt"
-              weight="bold"
-              color={isScamDapp ? 'red' : 'labelSecondary'}
-            >
-              {isScamDapp
-                ? i18n.t('approve_request.dangerous_request')
-                : i18n.t('approve_request.transaction_request')}
-            </Text>
-          </Stack>
-        </Stack>
-      </motion.div>
+      <AnimatePresence mode="popLayout">
+        {!expanded && (
+          <motion.div
+            style={{ paddingTop: 20 }}
+            initial={{ opacity: 0, scale: 0.9, y: -8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -8 }}
+          >
+            <Stack space="16px" alignItems="center">
+              <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
+              <Stack space="12px">
+                <DappHostName
+                  hostName={dappMetadata?.appHostName}
+                  dappStatus={dappMetadata?.status}
+                />
+                <Text
+                  align="center"
+                  size="14pt"
+                  weight="bold"
+                  color={isScamDapp ? 'red' : 'labelSecondary'}
+                >
+                  {isScamDapp
+                    ? i18n.t('approve_request.dangerous_request')
+                    : i18n.t('approve_request.transaction_request')}
+                </Text>
+              </Stack>
+            </Stack>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {hasEnoughtGas ? (
         <TransactionInfo

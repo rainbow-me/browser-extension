@@ -101,9 +101,9 @@ export function SimulationOverview({
           <SimulationNoChangesDetected />
         ) : (
           <Stack space="14px">
-            {simulation.in.map(({ asset, quantity }) => (
+            {simulation.in.map(({ asset, quantity }, i) => (
               <SimulatedChangeRow
-                key={asset.address}
+                key={`${asset.address}${i}`}
                 asset={asset}
                 quantity={quantity}
                 color="green"
@@ -118,9 +118,9 @@ export function SimulationOverview({
                 label={i18n.t('simulation.received')}
               />
             ))}
-            {simulation.out.map(({ asset, quantity }) => (
+            {simulation.out.map(({ asset, quantity }, i) => (
               <SimulatedChangeRow
-                key={asset.address}
+                key={`${asset.address}${i}`}
                 asset={asset}
                 quantity={quantity}
                 color="red"
@@ -135,9 +135,9 @@ export function SimulationOverview({
                 label={i18n.t('simulation.sent')}
               />
             ))}
-            {simulation.approvals.map(({ asset, quantityAllowed }) => (
+            {simulation.approvals.map(({ asset, quantityAllowed }, i) => (
               <SimulatedChangeRow
-                key={asset.address}
+                key={`${asset.address}${i}`}
                 asset={asset}
                 quantity={quantityAllowed}
                 color="label"

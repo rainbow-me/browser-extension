@@ -22,6 +22,9 @@ function TabTrigger({ value }: { value: string }) {
   return (
     <TabsPrimitive.Trigger value={value} asChild>
       <Box
+        as={motion.div}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.99 }}
         tabIndex={0}
         margin="-8px"
         padding="8px"

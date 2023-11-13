@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'wagmi';
 
-import { metadataClient } from '~/core/graphql';
+import { metadataPostClient } from '~/core/graphql';
 import { Transaction } from '~/core/graphql/__generated__/metadata';
 import { createQueryKey } from '~/core/react-query';
 import { currentCurrencyStore } from '~/core/state';
@@ -58,7 +58,7 @@ export const useSimulateTransaction = ({
       domain,
     }),
     queryFn: async () => {
-      const response = (await metadataClient.simulateTransactions({
+      const response = (await metadataPostClient.simulateTransactions({
         chainId,
         transactions: [transaction],
         domain,

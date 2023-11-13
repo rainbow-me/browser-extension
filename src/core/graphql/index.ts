@@ -10,6 +10,7 @@ const { config } = require('./config.js');
 
 export const metadataRequester = getFetchRequester(config.metadata.schema);
 export const metadataClient = getMetadataSdk(metadataRequester);
+
 export const requestMetadata = (
   q: string,
   options?: Pick<RainbowFetchRequestOpts, 'timeout' | 'headers'>,
@@ -20,3 +21,10 @@ export const requestMetadata = (
     `,
     options || {},
   );
+
+// POST requests bypass CDN caching
+export const metadataPostRequester = getFetchRequester({
+  ...config.metadata.schema,
+  method: 'POST',
+});
+export const metadataPostClient = getMetadataSdk(metadataPostRequester);
