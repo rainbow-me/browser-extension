@@ -197,7 +197,7 @@ export default function NFTDetails() {
                 {nft?.description && (
                   <NFTAccordionDescriptionSection nft={nft} />
                 )}
-                {nft?.traits && (
+                {nft?.traits && nft?.traits.length > 0 && (
                   <NFTAccordionTraitsSection traits={nft.traits} />
                 )}
                 <Separator color="separatorTertiary" />
