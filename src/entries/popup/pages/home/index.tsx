@@ -64,8 +64,6 @@ type TabProps = {
   prevScrollPosition: React.MutableRefObject<number | undefined>;
 };
 
-const isPlaceholderTab = (tab: Tab) => tab === 'nfts' || tab === 'points';
-
 const TOP_NAV_HEIGHT = 65;
 
 const Tabs = memo(function Tabs({
@@ -77,6 +75,12 @@ const Tabs = memo(function Tabs({
   const { trackShortcut } = useKeyboardAnalytics();
   const { visibleTokenCount } = useVisibleTokenCount();
   const { featureFlags } = useFeatureFlagsStore();
+  const isPlaceholderTab = (tab: Tab) => {
+    if (tab === 'nfts' && featureFlags.nfts_enabled) {
+      return false;
+    }
+    return tab === 'nfts' || tab === 'points';
+  };
 
   const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
@@ -162,6 +166,13 @@ export const Home = memo(function Home() {
   const { pendingRequests } = usePendingRequestStore();
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   const { selectedTab, setSelectedTab } = useTabNavigation();
+  const { featureFlags } = useFeatureFlagsStore();
+  const isPlaceholderTab = (tab: Tab) => {
+    if (tab === 'nfts' && featureFlags.nfts_enabled) {
+      return false;
+    }
+    return tab === 'nfts' || tab === 'points';
+  };
 
   const [activeTab, setActiveTab] = useState<Tab>(() => {
     if (isPlaceholderTab(selectedTab)) {
