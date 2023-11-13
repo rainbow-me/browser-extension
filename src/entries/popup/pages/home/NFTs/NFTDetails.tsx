@@ -4,6 +4,7 @@ import { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Address, useEnsName } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { selectNftsByCollection } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -61,6 +62,13 @@ import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
+const getOpenseaUrl = ({ nft }: { nft?: UniqueAsset | null }) => {
+  const networkUrlString =
+    nft?.network === 'mainnet' ? 'ethereum' : nft?.network;
+  const openseaUrl = `https://opensea.io/assets/${networkUrlString}/${nft?.asset_contract.address}/${nft?.id}`;
+  return openseaUrl;
+};
+
 export default function NFTDetails() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { collectionId, nftId } = useParams<{
@@ -77,7 +85,6 @@ export default function NFTDetails() {
       (asset: UniqueAsset) => asset.id === nftId,
     );
   }, [collectionId, nftId, nfts]);
-  console.log('nft', nft);
   const { data: dominantColor } = useDominantColor({
     imageUrl: nft?.image_url || undefined,
   });
@@ -99,7 +106,11 @@ export default function NFTDetails() {
             }}
           >
             <Box paddingHorizontal="20px">
-              <Box borderRadius="16px" style={{ height: 320, width: 320 }}>
+              <Box
+                background="surfaceSecondary"
+                borderRadius="16px"
+                style={{ height: 320, width: 320 }}
+              >
                 <ExternalImage
                   src={nft?.image_url || ''}
                   height={320}
@@ -241,7 +252,7 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
         <Column>
           <Stack space="12px">
             <Text weight="semibold" size="14pt" color="labelTertiary">
-              {'Last Sales Price'}
+              {i18n.t('nfts.details.last_sales_price')}
             </Text>
             {lastSaleDisplay ? (
               <Text weight="bold" size="14pt" color="label">
@@ -249,7 +260,7 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
               </Text>
             ) : (
               <Text weight="bold" size="14pt" color="labelTertiary">
-                {'None'}
+                {i18n.t('nfts.details.none')}
               </Text>
             )}
           </Stack>
@@ -263,7 +274,7 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
                 color="labelTertiary"
                 align="right"
               >
-                {'Floor Price'}
+                {i18n.t('nfts.details.floor_price')}
               </Text>
               <Symbol
                 symbol="info.circle"
@@ -283,7 +294,7 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
                 color="labelTertiary"
                 align="right"
               >
-                {'None'}
+                {i18n.t('nfts.details.none')}
               </Text>
             )}
           </Stack>
@@ -319,7 +330,7 @@ const NFTAccordionTraitsSection = ({
 }) => {
   return (
     <AccordionItem value="properties">
-      <AccordionTrigger>{'Properties'}</AccordionTrigger>
+      <AccordionTrigger>{i18n.t('nfts.details.properties')}</AccordionTrigger>
       <AccordionContent gap="24px">
         <div />
         <Box
@@ -376,33 +387,33 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
   const copyTokenContract = useCallback((contractAddress: Address) => {
     navigator.clipboard.writeText(contractAddress as string);
     triggerToast({
-      title: 'Address Copied',
+      title: i18n.t('nfts.details.address_copied'),
       description: truncateAddress(contractAddress),
     });
   }, []);
   return (
     <AccordionItem value="about">
-      <AccordionTrigger>{'About'}</AccordionTrigger>
+      <AccordionTrigger>{i18n.t('nfts.details.about')}</AccordionTrigger>
       <AccordionContent gap="24px">
         <div />
         {nft?.floorPriceEth && (
           <NFTInfoRow
             symbol="dollarsign.square"
-            label={'Floor Price'}
+            label={i18n.t('nfts.details.floor_price')}
             value={nft?.floorPriceEth}
           />
         )}
         {nft?.asset_contract.schema_name && (
           <NFTInfoRow
             symbol="info.circle"
-            label={'Token Standard'}
+            label={i18n.t('nfts.details.token_standard')}
             value={nft?.asset_contract.schema_name}
           />
         )}
         {nft?.asset_contract?.address && (
           <NFTInfoRow
             symbol="doc.plaintext"
-            label={'Token Contract'}
+            label={i18n.t('nfts.details.token_contract')}
             value={truncateAddress(
               nft?.asset_contract?.address as AddressOrEth,
             )}
@@ -415,7 +426,7 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
         {nft?.asset_contract?.deployed_by && (
           <NFTInfoRow
             symbol="doc.plaintext"
-            label={'Contract Creator'}
+            label={i18n.t('nfts.details.contract_creator')}
             value={
               creatorEnsName ||
               truncateAddress(nft?.asset_contract.deployed_by as AddressOrEth)
@@ -441,7 +452,7 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
                 color="labelTertiary"
               />
               <Text color="labelTertiary" size="12pt" weight="semibold">
-                {'Chain'}
+                {i18n.t('nfts.details.chain')}
               </Text>
             </Inline>
             <Inline alignVertical="center" space="6px">
@@ -476,14 +487,15 @@ const NFTNavbar = ({ nft }: { nft?: UniqueAsset | null }) => {
       rightComponent={
         <Box>
           <Inline alignVertical="center" space="8px">
-            <Box paddingBottom="1px">
+            {/** Share Button Placeholder */}
+            {/* <Box paddingBottom="1px">
               <Navbar.SymbolButton
                 symbolSize={14}
                 symbol="square.and.arrow.up"
                 height="32px"
                 variant="transparent"
               />
-            </Box>
+            </Box> */}
             <NFTDropdownMenu nft={nft}>
               <Navbar.SymbolButton
                 symbolSize={15}
@@ -509,7 +521,8 @@ const NFTDropdownMenu = ({
   const hasContractAddress = !!nft?.asset_contract.address;
   const hasNetwork = !!nft?.network;
 
-  const explorerTitle = nft?.network === 'mainnet' ? 'Etherscan' : 'Explorer';
+  const explorerTitle =
+    nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
   const blockExplorerUrl = `https://${getBlockExplorerHostForChain(
     chainIdFromChainName(nft?.network as ChainName),
   )}/nft/${nft?.asset_contract.address}/${nft?.id}`;
@@ -521,7 +534,7 @@ const NFTDropdownMenu = ({
   const copyId = useCallback(() => {
     navigator.clipboard.writeText(nft?.id as string);
     triggerToast({
-      title: 'ID Copied',
+      title: i18n.t('nfts.details.id_copied'),
       description: nft?.id,
     });
   }, [nft?.id]);
@@ -577,7 +590,7 @@ const NFTDropdownMenu = ({
                   centerComponent={
                     <Stack space="6px">
                       <Text size="14pt" weight="semibold" cursor="copy">
-                        {'Copy Token ID'}
+                        {i18n.t('nfts.details.copy_token_id')}
                       </Text>
                       <Text
                         size="11pt"
@@ -610,7 +623,7 @@ const NFTDropdownMenu = ({
                       <Box paddingVertical="6px" cursor="pointer">
                         <Text size="14pt" weight="semibold" cursor="pointer">
                           <a href={nft?.image_url} download ref={downloadLink}>
-                            {'Download'}
+                            {i18n.t('nfts.details.download')}
                           </a>
                         </Text>
                       </Box>
@@ -694,7 +707,8 @@ const NFTEtherscanLinkButton = ({
   const blockExplorerUrl = `https://${getBlockExplorerHostForChain(
     chainIdFromChainName(network as ChainName),
   )}/token/${contractAddress}`;
-  const title = network === 'mainnet' ? 'Etherscan' : 'Explorer';
+  const title =
+    network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
   return <NFTLinkButton symbol="link" title={title} url={blockExplorerUrl} />;
 };
 
@@ -812,10 +826,3 @@ export const NFTInfoRow = ({
     </Box>
   </Box>
 );
-
-const getOpenseaUrl = ({ nft }: { nft?: UniqueAsset | null }) => {
-  const networkUrlString =
-    nft?.network === 'mainnet' ? 'ethereum' : nft?.network;
-  const openseaUrl = `https://opensea.io/assets/${networkUrlString}/${nft?.asset_contract.address}/${nft?.id}`;
-  return openseaUrl;
-};
