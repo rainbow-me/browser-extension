@@ -255,7 +255,8 @@
     "postcss": "8.4.31",
     "crypto-js": "4.2.0",
     "yaml": "2.2.2",
-    "browserify-sign": "4.2.2"
+    "browserify-sign": "4.2.2",
+    "axios": "1.6.0"
   },
   "lavamoat": {
     "allowScripts": {
