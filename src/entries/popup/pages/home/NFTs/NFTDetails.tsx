@@ -203,18 +203,11 @@ export default function NFTDetails() {
                 <NFTAccordionAboutSection nft={nft} />
               </Box>
             </Accordion>
-            <Box paddingVertical="24px">
-              <Separator color="separatorTertiary" />
-            </Box>
-            {nft?.description && (
-              <Box paddingBottom="18px">
-                <NFTDescription text={nft.description} />
-              </Box>
-            )}
             <Box
               display="flex"
               flexDirection="row"
               paddingBottom="20px"
+              paddingTop="24px"
               gap="8px"
               flexWrap="wrap"
             >
@@ -473,6 +466,14 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
               </TextOverflow>
             </Inline>
           </Box>
+        )}
+        {nft?.description && (
+          <>
+            <Separator color="separatorTertiary" />
+            <Box paddingBottom="18px">
+              <NFTDescription text={nft.description} />
+            </Box>
+          </>
         )}
       </AccordionContent>
     </AccordionItem>
