@@ -179,6 +179,7 @@ export default function NFTDetails() {
                   variant="flat"
                   borderRadius="round"
                   symbol="arrow.up.right.square.fill"
+                  onClick={() => goToNewTab({ url: getOpenseaUrl({ nft }) })}
                 >
                   {'OpenSea'}
                 </Button>
