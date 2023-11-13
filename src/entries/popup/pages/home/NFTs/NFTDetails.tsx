@@ -114,7 +114,7 @@ export default function NFTDetails() {
           >
             <Box paddingHorizontal="20px">
               <Box
-                background="surfaceSecondary"
+                background="fillQuaternary"
                 borderRadius="16px"
                 style={{ height: 320, width: 320 }}
               >
