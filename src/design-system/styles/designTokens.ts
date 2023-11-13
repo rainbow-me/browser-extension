@@ -1026,6 +1026,8 @@ export const symbolNames = selectSymbolNames(
   'arrow.down.circle.fill',
   'arrow.up.right.circle',
   'arrow.up.right.square.fill',
+  'at.circle.fill',
+  'ellipsis.bubble.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

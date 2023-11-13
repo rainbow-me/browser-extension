@@ -1178,7 +1178,9 @@
       "id_copied": "ID Copied",
       "copy_token_id": "Copy Token ID",
       "download": "Download",
-      "explorer": "Explorer"
+      "explorer": "Explorer",
+      "view_collection": "View Collection",
+      "collection_website": "Collection Website"
     }
   },
   "points": {

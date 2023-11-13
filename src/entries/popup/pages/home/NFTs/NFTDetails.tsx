@@ -62,11 +62,18 @@ import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
-const getOpenseaUrl = ({ nft }: { nft?: UniqueAsset | null }) => {
+const getOpenseaUrl = ({
+  nft,
+  collectionPage,
+}: {
+  nft?: UniqueAsset | null;
+  collectionPage?: boolean;
+}) => {
   const networkUrlString =
     nft?.network === 'mainnet' ? 'ethereum' : nft?.network;
-  const openseaUrl = `https://opensea.io/assets/${networkUrlString}/${nft?.asset_contract.address}/${nft?.id}`;
-  return openseaUrl;
+  const openseaNftUrl = `https://opensea.io/assets/${networkUrlString}/${nft?.asset_contract.address}/${nft?.id}`;
+  const openseaCollectionUrl = `https://opensea.io/assets/${networkUrlString}/${nft?.asset_contract.address}`;
+  return collectionPage ? openseaCollectionUrl : openseaNftUrl;
 };
 
 export default function NFTDetails() {
@@ -121,35 +128,45 @@ export default function NFTDetails() {
               <Box paddingTop="20px" paddingBottom="16px">
                 <Columns>
                   <Column>
-                    <Box paddingBottom="12px">
-                      <Text color="label" weight="bold" size="20pt">
-                        {nft?.name}
-                      </Text>
-                    </Box>
-                    <Inline alignVertical="center" space="7px">
-                      <Box
-                        borderRadius="round"
-                        style={{
-                          overflow: 'none',
-                          height: 16,
-                          width: 16,
-                        }}
-                      >
-                        <ExternalImage
-                          src={nft?.collection.image_url || ''}
-                          height={16}
-                          width={16}
-                          borderRadius="round"
-                        />
+                    <NFTCollectionDropdownMenu nft={nft}>
+                      <Box paddingBottom="12px">
+                        <Text color="label" weight="bold" size="20pt">
+                          {nft?.name}
+                        </Text>
                       </Box>
-                      <TextOverflow
-                        size="12pt"
-                        weight="bold"
-                        color="labelTertiary"
-                      >
-                        {nft?.collection.name}
-                      </TextOverflow>
-                    </Inline>
+                      <Inline alignVertical="center" space="7px">
+                        <Box
+                          borderRadius="round"
+                          style={{
+                            overflow: 'none',
+                            height: 16,
+                            width: 16,
+                          }}
+                        >
+                          <ExternalImage
+                            src={nft?.collection.image_url || ''}
+                            height={16}
+                            width={16}
+                            borderRadius="round"
+                          />
+                        </Box>
+                        <TextOverflow
+                          size="12pt"
+                          weight="bold"
+                          color="labelTertiary"
+                          maxWidth={256}
+                        >
+                          {nft?.collection.name}
+                        </TextOverflow>
+                        <Symbol
+                          color="labelTertiary"
+                          cursor="pointer"
+                          size={10}
+                          symbol="chevron.right"
+                          weight="bold"
+                        />
+                      </Inline>
+                    </NFTCollectionDropdownMenu>
                   </Column>
                   <Column width="content">
                     <Box
@@ -164,7 +181,7 @@ export default function NFTDetails() {
                           symbol="ellipsis.circle"
                           color="accent"
                           weight="bold"
-                          size={14}
+                          size={16}
                         />
                       </NFTDropdownMenu>
                     </Box>
@@ -198,9 +215,11 @@ export default function NFTDetails() {
                   <NFTAccordionDescriptionSection nft={nft} />
                 )}
                 {nft?.traits && nft?.traits.length > 0 && (
-                  <NFTAccordionTraitsSection traits={nft.traits} />
+                  <>
+                    <NFTAccordionTraitsSection traits={nft.traits} />
+                    <Separator color="separatorTertiary" />
+                  </>
                 )}
-                <Separator color="separatorTertiary" />
                 <NFTAccordionAboutSection nft={nft} />
               </Box>
             </Accordion>
@@ -237,7 +256,7 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
       return `${convertRawAmountToDecimalFormat(
         nft.last_sale.unit_price,
         nft.last_sale.payment_token.decimals,
-      )} ${nft?.last_sale?.payment_token?.symbol}`;
+      )} ${nft?.last_sale?.payment_token?.symbol || 'ETH'}`;
     }
   }, [nft]);
   return (
@@ -684,6 +703,194 @@ const NFTDropdownMenu = ({
                   }
                 />
               </DropdownMenuRadioItem>
+            </Stack>
+          </Stack>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const NFTCollectionDropdownMenu = ({
+  children,
+  nft,
+}: {
+  children: ReactNode;
+  nft?: UniqueAsset | null;
+}) => {
+  const marketplaceUrl = nft?.marketplaceCollectionUrl;
+  const marketplaceName = nft?.marketplaceName;
+  const externalUrl = nft?.collection?.external_url;
+  const twitterUrl = nft?.collection?.twitter_username;
+  const discordUrl = nft?.collection.discord_url;
+
+  const externalUrlDisplay = externalUrl
+    ?.replace('https://', '')
+    .replace('http://', '')
+    .replace('www.', '');
+
+  if (!marketplaceUrl && !externalUrl && !twitterUrl && !discordUrl) {
+    return <Box>{children}</Box>;
+  }
+
+  const onValueChange = (
+    value: 'marketplace' | 'external' | 'twitter' | 'discord',
+  ) => {
+    switch (value) {
+      case 'marketplace':
+        goToNewTab({ url: marketplaceUrl || '' });
+        break;
+      case 'external':
+        goToNewTab({ url: externalUrl || '' });
+        break;
+      case 'twitter':
+        goToNewTab({ url: `https://www.twitter.com/${twitterUrl}` || '' });
+        break;
+      case 'discord':
+        goToNewTab({ url: discordUrl || '' });
+    }
+  };
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger accentColor={nft?.predominantColor} asChild>
+        <Box position="relative">{children}</Box>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        marginRight="16px"
+        marginTop="6px"
+        accentColor={nft?.predominantColor}
+      >
+        <DropdownMenuRadioGroup
+          onValueChange={(value) =>
+            onValueChange(
+              value as 'marketplace' | 'external' | 'twitter' | 'discord',
+            )
+          }
+        >
+          <Stack space="4px">
+            <Stack>
+              {marketplaceUrl && (
+                <DropdownMenuRadioItem highlightAccentColor value="marketplace">
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol
+                        size={18}
+                        symbol="square.grid.2x2"
+                        weight="semibold"
+                      />
+                    }
+                    centerComponent={
+                      <Stack space="6px">
+                        <Text size="14pt" weight="semibold">
+                          {i18n.t('nfts.details.view_collection')}
+                        </Text>
+                        <TextOverflow
+                          size="11pt"
+                          weight="semibold"
+                          color="labelTertiary"
+                        >
+                          {marketplaceName}
+                        </TextOverflow>
+                      </Stack>
+                    }
+                    rightComponent={
+                      <Symbol
+                        symbol="arrow.up.right.circle"
+                        weight="regular"
+                        size={12}
+                        color="labelTertiary"
+                      />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
+              {externalUrl && (
+                <DropdownMenuRadioItem highlightAccentColor value="external">
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol size={18} symbol="safari" weight="semibold" />
+                    }
+                    centerComponent={
+                      <Stack space="6px">
+                        <Text size="14pt" weight="semibold">
+                          {i18n.t('nfts.details.collection_website')}
+                        </Text>
+                        <TextOverflow
+                          size="11pt"
+                          weight="semibold"
+                          color="labelTertiary"
+                        >
+                          {externalUrlDisplay}
+                        </TextOverflow>
+                      </Stack>
+                    }
+                    rightComponent={
+                      <Symbol
+                        symbol="arrow.up.right.circle"
+                        weight="regular"
+                        size={12}
+                        color="labelTertiary"
+                      />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
+              {twitterUrl && (
+                <DropdownMenuRadioItem highlightAccentColor value="twitter">
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol
+                        size={18}
+                        symbol="at.circle.fill"
+                        weight="semibold"
+                      />
+                    }
+                    centerComponent={
+                      <Box paddingVertical="6px">
+                        <Text size="14pt" weight="semibold">
+                          {'Twitter'}
+                        </Text>
+                      </Box>
+                    }
+                    rightComponent={
+                      <Symbol
+                        symbol="arrow.up.right.circle"
+                        weight="regular"
+                        size={12}
+                        color="labelTertiary"
+                      />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
+              {discordUrl && (
+                <DropdownMenuRadioItem highlightAccentColor value="discord">
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol
+                        size={18}
+                        symbol="ellipsis.bubble.fill"
+                        weight="semibold"
+                      />
+                    }
+                    centerComponent={
+                      <Box paddingVertical="6px">
+                        <Text size="14pt" weight="semibold">
+                          {'Discord'}
+                        </Text>
+                      </Box>
+                    }
+                    rightComponent={
+                      <Symbol
+                        symbol="arrow.up.right.circle"
+                        weight="regular"
+                        size={12}
+                        color="labelTertiary"
+                      />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
             </Stack>
           </Stack>
         </DropdownMenuRadioGroup>
