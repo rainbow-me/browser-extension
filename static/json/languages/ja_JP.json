@@ -85,6 +85,22 @@
       "light": "ライト",
       "dark": "ダーク"
     },
+    "networks": {
+      "mainnet": "メインネット",
+      "title": "ネットワーク",
+      "quick_promo": {
+        "text": "ネットワークをドラッグして並べ替え",
+        "text_bold": "ヒント："
+      },
+      "description": "表示するネットワークとトークンを選択します。チェックがない場合でも、Rainbowがサポートする任意のネットワークに接続できます",
+      "developer_tools": {
+        "title": "デベロッパーツールを有効にする",
+        "toggle_explainer": "テストネットモードのショートカット(T)を有効にし、ホーム画面の右上のメニューに切り替えを追加します"
+      },
+      "custom_rpc": {
+        "title": "カスタムRPC"
+      }
+    },
     "privacy_and_security": {
       "title": "プライバシーとセキュリティ",
       "analytics": "アナリティクス",
@@ -127,6 +143,12 @@
         "backed_up": "バックアップ済み",
         "not_backed_up": "バックアップされていません",
         "back_up_now": "今すぐバックアップ",
+        "context_menu": {
+          "create_wallet": "ウォレットを作成",
+          "view_secret_phrase": "秘密コードを表示",
+          "hide_wallets": "ウォレットを非表示",
+          "unhide_wallets": "ウォレットを再表示"
+        },
         "wallet_details": {
           "title": "ウォレットの詳細",
           "view_recovery_phrase": "復旧フレーズを表示",
@@ -153,7 +175,8 @@
           "warning_2": "プライベートキーを表示するときに、画面を他の人が見られないようにしてください。",
           "warning_3": "プライベートキーを持っている人は、あなたのウォレット全体にアクセスできます。",
           "warning_4": "Rainbowサポートは、あなたのプライベートキーを求めることはありません。",
-          "show": "プライベートキーを表示する"
+          "show": "プライベートキーを表示する",
+          "copied": "秘密キーをコピーしました"
         },
         "recovery_phrase": {
           "title": "リカバリーフレーズ",
@@ -164,7 +187,7 @@
           "warning_3": "リカバリーフレーズを持っている人は、あなたのウォレット全体にアクセスできます。",
           "warning_4": "Rainbowサポートは、あなたのリカバリーフレーズを求めることはありません。",
           "show": "リカバリーフレーズを表示する",
-          "phrase_copied": "リカバリーフレーズがコピーされました"
+          "copied": "リカバリーフレーズがコピーされました"
         }
       }
     },
@@ -172,6 +195,8 @@
       "title": "取引",
       "default_speed": "デフォルトの速度",
       "use_flashbots": "Flashbots の使用",
+      "clear_transactions_and_nonces": "保留中のトランザクションをクリア",
+      "clear_transactions_and_nonces_success": "保留中のトランザクションがクリアされました",
       "flashbots_description": "Flashbots はトランザクションの保護およびトランザクションの失敗の可能性を減らします。詳細をご覧ください。"
     },
     "currency": {
@@ -198,7 +223,9 @@
       "full_watching_wallets": "ウォレットの監視機能を完全に有効にする",
       "hw_wallets_enabled": "ハードウェアウォレットサポートを有効にする",
       "command_k_internal_shortcuts_enabled": "⌘K の内部ショートカットを有効にする",
-      "new_tab_bar_enabled": "新しいタブバー"
+      "custom_rpc": "カスタムRPC",
+      "new_tab_bar_enabled": "新しいタブバー",
+      "nfts_enabled": "NFT有効"
     }
   },
   "transactions": {
@@ -345,7 +372,14 @@
         "add_wallet": "ウォレットを追加",
         "lock": "Rainbowをロックする",
         "connected_apps": "接続されたアプリ",
+        "developer_tools": "デベロッパーツールを切り替える",
+        "developer_tools_disabled": "デベロッパーツールを有効にする",
+        "developer_tools_enabled": "デベロッパーツールを無効にする",
+        "testnet_mode": "テストネットモードを切り替える",
+        "testnet_mode_disabled": "テストネットモードを有効にする",
+        "testnet_mode_enabled": "テストネットモードを無効にする",
         "settings": "設定",
+        "network_settings": "ネットワーク設定",
         "my_qr_code": "私のQRコード",
         "my_qr_code_watched": "QRコード",
         "create_wallet": "ウォレットを作成",
@@ -376,7 +410,10 @@
         "my_wallets": "切り替え",
         "my_tokens_watched": "マイ",
         "view_nfts": "ギャラリー、プロフィール",
+        "testnet_mode": "切り替え、ネットワーク、テストネット",
+        "developer_tools": "切り替え、ネットワーク、開発者、テストネット",
         "settings": "設定",
+        "network_settings": "テストネット、開発者、ネットワーク",
         "my_qr_code_watched": "マイ",
         "create_wallet": "追加、新規",
         "import_wallet": "追加、シークレットリカバリ、シードフレーズ、プライベートキー",
@@ -389,6 +426,11 @@
     },
     "command_rows": {
       "no_value": "価値なし"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Tを押してテストネットモードを切り替える",
+      "title_disabled": "デベロッパーツール無効",
+      "title_enabled": "開発者ツールが有効化されています"
     },
     "hide_balances_toast": {
       "description_hidden": "あなたの残高は見えません",
@@ -847,8 +889,18 @@
       "rainbow_profile": "Rainbowプロファイル",
       "guides_and_support": "ガイドとサポート",
       "share_feedback": "フィードバックを共有する",
-      "lock_rainbow": "Rainbowをロックする"
+      "lock_rainbow": "Rainbowをロックする",
+      "testnet_mode": "テストネットモード",
+      "testnet_mode_off": "オフ",
+      "testnet_mode_on": "オン"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "%{chainName}に切り替えますか？",
+    "testnet_mode": "テストネットモード",
+    "testnet_mode_active": "現在アクティブです。それを無効にして、代わりに %{chainName} を使用しますか？",
+    "disable_and_connect": "無効化して切り替え",
+    "cancel": "キャンセル"
   },
   "app_connection_switcher": {
     "banner": {
@@ -875,7 +927,7 @@
     "wallet_switcher": {
       "switch_wallets": "ウォレットの切り替え",
       "other_wallets": "その他のウォレット",
-      "cancel": "キャンセル",
+      "done": "完了",
       "connected": "接続されています"
     }
   },
@@ -893,12 +945,19 @@
     "switch_networks": "ネットワークを切り替える",
     "switch_wallets": "ウォレットを切り替える",
     "connect": "%{appName}に接続する",
+    "connect_anyway": "とにかく接続",
+    "malicious_warning": {
+      "title": "このアプリは危険性がある可能性があります",
+      "message": "このアプリからメッセージまたはトランザクションに署名すると、資産を失う可能性があります"
+    },
     "message_signing_request": "メッセージ署名リクエスト",
     "message": "メッセージ",
     "sign_message": "メッセージに署名する",
+    "sign_message_anyway": "とにかく署名",
     "confirm_hw": "デバイスで確認してください",
     "balance": "残高",
     "send_transaction": "トランザクションを送信する",
+    "send_transaction_anyway": "とにかく確認",
     "contract_deployment": "コントラクトデプロイメント",
     "transaction_request": "トランザクションリクエスト",
     "insufficient_native_asset_for_gas": "ガスのために不十分な %{symbol}"
@@ -979,7 +1038,9 @@
     "copy_to_clipboard": "クリップボードにコピー"
   },
   "errors": {
-    "no_wallet_name_set": "ウォレット名が設定されていません"
+    "error_encountered": "何か問題が発生しました。私たちのチームに問題を共有してください、すぐに対応します！",
+    "no_wallet_name_set": "ウォレット名が設定されていません",
+    "report_error": "問題を報告する"
   },
   "common_titles": {
     "before_you_proceed": "続行する前に"
@@ -1009,8 +1070,9 @@
   },
   "tabs": {
     "activity": "アクティビティ",
-    "tokens": "トークン",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "ポイント",
+    "tokens": "トークン"
   },
   "activity": {
     "today": "今日",
@@ -1066,7 +1128,17 @@
   "nfts": {
     "coming_soon_header": "近日公開",
     "coming_soon_description": "NFTsは近日公開。お楽しみに！",
-    "view_on_web": "ウェブで見る"
+    "view_on_web": "ウェブで見る",
+    "display_mode_gallery": "ギャラリー",
+    "display_mode_collections": "コレクション",
+    "sort_option_recent": "最近",
+    "sort_option_abc": "Abc",
+    "sort_option_recent_long": "最近",
+    "sort_option_abc_long": "アルファベット順"
+  },
+  "points": {
+    "coming_soon_header": "近日公開",
+    "coming_soon_description": "ポイントはすぐ近くにあります。\n今日から獲得を始めましょう。"
   },
   "speed_up_and_cancel": {
     "speed_up": "スピードアップ",
@@ -1231,6 +1303,7 @@
   "alert": {
     "ok": "OK",
     "wallet_watching_mode": "このウォレットは現在「ウォッチモード」です",
+    "wallet_testing_mode": "テストネットはSwapに対応していません。続行するにはテストネットモードを無効化してください。",
     "coming_soon": "近日公開予定です！",
     "no_hw_ff": "ハードウェアウォレットはFirefoxではサポートされていません。ChromeまたはBraveのような別のブラウザを試してみてください。"
   },
