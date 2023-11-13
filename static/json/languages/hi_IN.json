@@ -85,6 +85,22 @@
       "light": "रोशनी",
       "dark": "अंधेरा"
     },
+    "networks": {
+      "mainnet": "मुख्य नेटवर्क",
+      "title": "नेटवर्क",
+      "quick_promo": {
+        "text": "नेटवर्क को पुनर्क्रमित करने के लिए खींचें",
+        "text_bold": "युक्ति:"
+      },
+      "description": "चुनें कि कौन से नेटवर्क और टोकन प्रदर्शित करें। आप Rainbow द्वारा समर्थित किसी भी नेटवर्क से कनेक्ट कर सकते हैं, भले ही वे अनचेक्ड हों।",
+      "developer_tools": {
+        "title": "डेवलपर टूल सक्षम करें",
+        "toggle_explainer": "टेस्टनेट मोड शॉर्टकट (T) सक्षम करता है और होम स्क्रीन के शीर्ष-दाईं मेनू में एक टॉगल जोड़ता है"
+      },
+      "custom_rpc": {
+        "title": "कस्टम RPC"
+      }
+    },
     "privacy_and_security": {
       "title": "गोपनीयता और सुरक्षा",
       "analytics": "विश्लेषणिकी",
@@ -127,6 +143,12 @@
         "backed_up": "बैकअप किया गया",
         "not_backed_up": "बैकअप नहीं हुआ",
         "back_up_now": "अब बैकअप करें",
+        "context_menu": {
+          "create_wallet": "वॉलेट बनाएं",
+          "view_secret_phrase": "गुप्त वाक्यांश देखें",
+          "hide_wallets": "वॉलेट छुपाएं",
+          "unhide_wallets": "वॉलेट दिखाएं"
+        },
         "wallet_details": {
           "title": "वॉलेट विवरण",
           "view_recovery_phrase": "विभाजन संकेत देखें",
@@ -153,7 +175,8 @@
           "warning_2": "यह सुनिश्चित करें कि कोई भी आपकी प्राइवेट कुंजी देखकर आपकी स्क्रीन नहीं देख सकता।",
           "warning_3": "कोई भी आपकी प्राइवेट कुंजी के साथ आपकी पूरी वॉलेट तक पहुंच सकता है।",
           "warning_4": "रेनबो समर्थन कभी भी आपसे आपकी प्राइवेट कुंजी के बारे में पूछगछ नहीं करेगा।",
-          "show": "प्राइवेट कुंजी दिखाएं"
+          "show": "प्राइवेट कुंजी दिखाएं",
+          "copied": "निजी कुंजी कॉपी की गई"
         },
         "recovery_phrase": {
           "title": "आपकी पुनर्प्राप्ति वाक्य",
@@ -164,7 +187,7 @@
           "warning_3": "कोई भी आपकी पुनर्प्राप्ति वाक्य के साथ आपकी पूरी वॉलेट तक पहुंच सकता है।",
           "warning_4": "रेनबो समर्थन कभी भी आपसे आपकी पुनर्प्राप्ति वाक्य के बारे में पूछगछ नहीं करेगा।",
           "show": "पुनर्प्राप्ति वाक्य दिखाएं",
-          "phrase_copied": "पुनर्प्राप्ति वाक्य कॉपी किया गया"
+          "copied": "पुनर्प्राप्ति वाक्य कॉपी किया गया"
         }
       }
     },
@@ -172,6 +195,8 @@
       "title": "लेनदेन",
       "default_speed": "डिफ़ॉल्ट गति",
       "use_flashbots": "फ़्लैशबॉट्स का उपयोग करें",
+      "clear_transactions_and_nonces": "लंबित लेन-देन साफ करें",
+      "clear_transactions_and_nonces_success": "लंबित लेन-देन साफ",
       "flashbots_description": "फ़्लैशबॉट्स आपकी लेनदेनों की सुरक्षा करता है और लेनदेन असफल होने की संभावना को कम करता है। अधिक जानें।"
     },
     "currency": {
@@ -198,7 +223,9 @@
       "full_watching_wallets": "Watched वॉलेट्स का पूरा उपयोग",
       "hw_wallets_enabled": "हार्डवेयर वॉलेट समर्थन सक्षम करें",
       "command_k_internal_shortcuts_enabled": "⌘K आंतरिक शॉर्टकट्स सक्षम करें",
-      "new_tab_bar_enabled": "नया टैब बार"
+      "custom_rpc": "कस्टम RPC",
+      "new_tab_bar_enabled": "नया टैब बार",
+      "nfts_enabled": "NFTs सक्षम"
     }
   },
   "transactions": {
@@ -345,7 +372,14 @@
         "add_wallet": "वॉलेट जोड़ें",
         "lock": "रेनबोल लॉक करें",
         "connected_apps": "कनेक्टेड एप्स",
+        "developer_tools": "डेवलपर टूल टॉगल करें",
+        "developer_tools_disabled": "डेवलपर टूल सक्षम करें",
+        "developer_tools_enabled": "डेवलपर टूल अक्षम करें",
+        "testnet_mode": "टेस्टनेट मोड टॉगल करें",
+        "testnet_mode_disabled": "टेस्टनेट मोड सक्षम करें",
+        "testnet_mode_enabled": "टेस्टनेट मोड अक्षम करें",
         "settings": "सेटिंग्स",
+        "network_settings": "नेटवर्क सेटिंग्स",
         "my_qr_code": "मेरा क्यूआर कोड",
         "my_qr_code_watched": "क्यूआर कोड",
         "create_wallet": "वॉलेट बनाएं",
@@ -376,7 +410,10 @@
         "my_wallets": "स्विच",
         "my_tokens_watched": "मेरा",
         "view_nfts": "गैलरी, प्रोफ़ाइल",
+        "testnet_mode": "टॉगल, नेटवर्क्स, टेस्टनेट्स",
+        "developer_tools": "टॉगल, नेटवर्क्स, डेवलपर, टेस्टनेट्स",
         "settings": "प्राथमिकताएं",
+        "network_settings": "टेस्टनेट्स, डेवलपर, नेटवर्क्स",
         "my_qr_code_watched": "मेरा",
         "create_wallet": "जोड़ें, नया",
         "import_wallet": "जोड़ें, गुप्त बचाव, बीज शब्द, निजी कुंजी",
@@ -389,6 +426,11 @@
     },
     "command_rows": {
       "no_value": "कोई मूल्य नहीं"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "T दबाएं टेस्टनेट मोड टॉगल करने के लिए",
+      "title_disabled": "डेवलपर टूल अक्षम",
+      "title_enabled": "विकासक उपकरण सक्षम"
     },
     "hide_balances_toast": {
       "description_hidden": "आपके शेष राशि छिपी हुई है",
@@ -847,8 +889,18 @@
       "rainbow_profile": "रेनबो प्रोफ़ाइल",
       "guides_and_support": "गाइड और सहायता",
       "share_feedback": "फ़ीडबैक साझा करें",
-      "lock_rainbow": "रेनबो लॉक करें"
+      "lock_rainbow": "रेनबो लॉक करें",
+      "testnet_mode": "परीक्षण नेटवर्क मोड",
+      "testnet_mode_off": "बंद",
+      "testnet_mode_on": "शुरू"
     }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "स्विच करें %{chainName}?",
+    "testnet_mode": "परीक्षण नेटवर्क मोड",
+    "testnet_mode_active": "वर्तमान में सक्रिय है। क्या आप इसे बंद करना चाहेंगे और बजाय %{chainName} से संवाद करना चाहेंगे?",
+    "disable_and_connect": "अक्षम करें और स्विच करें",
+    "cancel": "रद्द करें"
   },
   "app_connection_switcher": {
     "banner": {
@@ -875,7 +927,7 @@
     "wallet_switcher": {
       "switch_wallets": "वॉलेट बदलें",
       "other_wallets": "अन्य वॉलेट",
-      "cancel": "रद्द करें",
+      "done": "हो गया",
       "connected": "कनेक्टेड"
     }
   },
@@ -893,12 +945,19 @@
     "switch_networks": "नेटवर्क स्विच करें",
     "switch_wallets": "वॉलेट स्विच करें",
     "connect": "%{appName}से कनेक्ट करें",
+    "connect_anyway": "फिर भी कनेक्ट करें",
+    "malicious_warning": {
+      "title": "यह ऐप शायद हानिकरक है",
+      "message": "इस ऐप से संदेश या लेन-देन हस्ताक्षरण करने के परिणामस्वरूप आपकी संपत्ति खो सकती है"
+    },
     "message_signing_request": "संदेश हस्ताक्षर अनुरोध",
     "message": "संदेश",
     "sign_message": "संदेश हस्ताक्षर करें",
+    "sign_message_anyway": "फिर भी हस्ताक्षर करें",
     "confirm_hw": "अपनी डिवाइस पर पुष्टि करें",
     "balance": "शेष राशि",
     "send_transaction": "लेनदेन भेजें",
+    "send_transaction_anyway": "फिर भी पुष्टि करें",
     "contract_deployment": "कॉन्ट्रैक्ट डिप्लॉयमेंट",
     "transaction_request": "लेनदेन अनुरोध",
     "insufficient_native_asset_for_gas": "गैस के लिए पर्याप्त %{symbol} नहीं"
@@ -979,7 +1038,9 @@
     "copy_to_clipboard": "क्लिपबोर्ड पर कॉपी करें"
   },
   "errors": {
-    "no_wallet_name_set": "कोई वॉलेट नाम निर्धारित नहीं है"
+    "error_encountered": "कुछ गलत हो गया। कृपया हमारी टीम के साथ समस्या साझा करें और हम इसे ठीक करेंगे!",
+    "no_wallet_name_set": "कोई वॉलेट नाम निर्धारित नहीं है",
+    "report_error": "समस्या रिपोर्ट करें"
   },
   "common_titles": {
     "before_you_proceed": "जारी रखने से पहले"
@@ -1009,8 +1070,9 @@
   },
   "tabs": {
     "activity": "गतिविधि",
-    "tokens": "टोकन",
-    "nfts": "NFTs"
+    "nfts": "NFTs",
+    "points": "अंक",
+    "tokens": "टोकन"
   },
   "activity": {
     "today": "आज",
@@ -1066,7 +1128,17 @@
   "nfts": {
     "coming_soon_header": "जल्द आ रहा है",
     "coming_soon_description": "NFTs जल्द ही आ रहे हैं। बने रहें!",
-    "view_on_web": "वेब पर देखें"
+    "view_on_web": "वेब पर देखें",
+    "display_mode_gallery": "गैलरी",
+    "display_mode_collections": "संग्रह",
+    "sort_option_recent": "हाल ही में",
+    "sort_option_abc": "एबीसी",
+    "sort_option_recent_long": "हाल ही में",
+    "sort_option_abc_long": "वर्णमाला"
+  },
+  "points": {
+    "coming_soon_header": "जल्द आ रहा है",
+    "coming_soon_description": "अंक बस कोने के पास हैं।\nआज ही कमाना शुरू करें।"
   },
   "speed_up_and_cancel": {
     "speed_up": "गति बढ़ाएं",
@@ -1231,6 +1303,7 @@
   "alert": {
     "ok": "ठीक है",
     "wallet_watching_mode": "यह वॉलेट वर्तमान में 'देख रहा है' मोड में है",
+    "wallet_testing_mode": "टेस्टनेट्स का समर्थन स्व्याप नहीं करता। जारी रखने के लिए टेस्टनेट मोड को अक्षम करें।",
     "coming_soon": "जल्द ही आ रहा है!",
     "no_hw_ff": "हार्डवेयर वॉलेट्स Firefox पर समर्थित नहीं हैं। Chrome या Brave जैसे अन्य ब्राउज़र का प्रयास करें।"
   },
