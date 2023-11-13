@@ -107,7 +107,7 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
 };
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
-  if (isCustomChain(chainId) || isTestnetChainId({ chainId })) {
+  if (isCustomChain(chainId)) {
     return AddressZero === address;
   }
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
