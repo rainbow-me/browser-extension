@@ -218,6 +218,7 @@ const skipRateLimitCheck = (method: string) =>
     'eth_signTypedData',
     'eth_signTypedData_v3',
     'eth_signTypedData_v4',
+    'wallet_watchAsset',
     'wallet_addEthereumChain',
     'wallet_switchEthereumChain',
     'eth_requestAccounts',
@@ -392,6 +393,64 @@ export const handleProviderRequest = ({
             }
           }
           break;
+        }
+        case 'wallet_watchAsset': {
+          const { featureFlags } = featureFlagsStore.getState();
+          if (!featureFlags.custom_rpc) {
+            throw new Error('Method not supported');
+          } else {
+            console.log('wallet_watchAsset', params);
+            const {
+              type,
+              options: { address, symbol, decimals },
+            } = params as unknown as {
+              type: string;
+              options: {
+                address: Address;
+                symbol?: string;
+                decimals?: number;
+              };
+            };
+
+            if (type !== 'ERC20') {
+              throw new Error('Method supported only for ERC20');
+            }
+
+            if (!address) {
+              throw new Error('Address is required');
+            }
+
+            const activeSession = getActiveSession({ host });
+            if (!activeSession) {
+              throw new Error('No active session');
+            }
+
+            const { chainId } = activeSession;
+
+            console.log('sending ', {
+              address,
+              symbol,
+              decimals,
+              chainId,
+            });
+
+            response = await messengerProviderRequest(popupMessenger, {
+              method,
+              id,
+              params: [
+                {
+                  address,
+                  symbol,
+                  decimals,
+                  chainId,
+                },
+              ],
+              meta,
+            });
+            // PER EIP - true if the token was added, false otherwise.
+            response = !!response;
+            break;
+          }
         }
         case 'wallet_switchEthereumChain': {
           const proposedChainId = Number(
