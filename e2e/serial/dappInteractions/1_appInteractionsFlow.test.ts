@@ -34,6 +34,7 @@ import {
   initDriverWithOptions,
   querySelector,
   shortenAddress,
+  switchToWindow,
   switchWallet,
   takeScreenshotOnFailure,
   typeOnTextInput,
@@ -241,7 +242,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
       dappHandler,
     });
 
-    await driver.switchTo().window(popupHandler);
+    await switchToWindow(driver, popupHandler);
 
     // switch account
     await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
@@ -256,7 +257,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await delayTime('medium');
     await clickAcceptRequestButton(driver);
 
-    await driver.switchTo().window(dappHandler);
+    await switchToWindow(driver, dappHandler);
     const topButton = await querySelector(
       driver,
       '[data-testid="rk-account-button"]',
@@ -314,13 +315,13 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchToWindow(driver, popupHandler);
 
     await delayTime('medium');
     await clickAcceptRequestButton(driver);
 
     await delayTime('medium');
-    await driver.switchTo().window(dappHandler);
+    await switchToWindow(driver, dappHandler);
     const signatureTextSelector = await querySelector(
       driver,
       '[id="signTxSignature"]',
@@ -344,11 +345,11 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchToWindow(driver, popupHandler);
     await delayTime('medium');
     await clickAcceptRequestButton(driver);
     await delayTime('medium');
-    await driver.switchTo().window(dappHandler);
+    await switchToWindow(driver, dappHandler);
     const signatureTextSelector = await querySelector(
       driver,
       '[id="signTypedDataSignature"]',
@@ -382,11 +383,11 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchToWindow(driver, popupHandler);
     await delayTime('very-long');
     await clickAcceptRequestButton(driver);
     await delayTime('long');
-    await driver.switchTo().window(dappHandler);
+    await switchToWindow(driver, dappHandler);
   });
 
   it('should be able to disconnect from connected dapps', async () => {

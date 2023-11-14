@@ -24,6 +24,7 @@ import {
   isElementFoundByText,
   querySelector,
   querySelectorWithin,
+  switchToWindow,
   waitAndClick,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
@@ -86,12 +87,12 @@ describe.runIf(browser !== 'firefox')(
         dappHandler,
       });
 
-      await driver.switchTo().window(popupHandler);
+      await switchToWindow(driver, popupHandler);
 
       await delayTime('medium');
       await clickAcceptRequestButton(driver);
 
-      await driver.switchTo().window(dappHandler);
+      await switchToWindow(driver, dappHandler);
       const topButton = await querySelector(
         driver,
         '[data-testid="rk-account-button"]',

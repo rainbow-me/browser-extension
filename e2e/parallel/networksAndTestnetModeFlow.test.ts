@@ -24,6 +24,7 @@ import {
   initDriverWithOptions,
   navigateToSettingsNetworks,
   querySelector,
+  switchToWindow,
   waitAndClick,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
@@ -87,11 +88,11 @@ describe('Networks & Testnet Mode flows', () => {
       dappHandler,
     });
 
-    await driver.switchTo().window(popupHandler);
+    await switchToWindow(driver, popupHandler);
 
     await clickAcceptRequestButton(driver);
 
-    await driver.switchTo().window(dappHandler);
+    await switchToWindow(driver, dappHandler);
     const topButton = await querySelector(
       driver,
       '[data-testid="rk-account-button"]',

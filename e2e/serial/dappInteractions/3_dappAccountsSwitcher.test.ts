@@ -32,6 +32,7 @@ import {
   initDriverWithOptions,
   querySelector,
   shortenAddress,
+  switchToWindow,
   switchWallet,
   takeScreenshotOnFailure,
   typeOnTextInput,
@@ -206,7 +207,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
       dappHandler,
     });
 
-    await driver.switchTo().window(popupHandler);
+    await switchToWindow(driver, popupHandler);
 
     // switch account
     await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
@@ -221,7 +222,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     await delayTime('medium');
     await clickAcceptRequestButton(driver);
 
-    await driver.switchTo().window(dappHandler);
+    await switchToWindow(driver, dappHandler);
     const topButton = await querySelector(
       driver,
       '[data-testid="rk-account-button"]',
@@ -325,10 +326,10 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
       dappHandler,
     });
 
-    await driver.switchTo().window(popupHandler);
+    await switchToWindow(driver, popupHandler);
     await clickAcceptRequestButton(driver);
 
-    await driver.switchTo().window(dappHandler);
+    await switchToWindow(driver, dappHandler);
     const topButton = await querySelector(
       driver,
       '[data-testid="rk-account-button"]',

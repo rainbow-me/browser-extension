@@ -155,6 +155,25 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
   return windowHandle;
 }
 
+export async function switchToWindow(
+  driver: WebDriver,
+  windowHandle: string,
+  timeout = waitUntilTime,
+) {
+  try {
+    await driver.wait(async () => {
+      const handles = await driver.getAllWindowHandles();
+      return handles.includes(windowHandle);
+    }, timeout);
+
+    await driver.switchTo().window(windowHandle);
+    return true;
+  } catch (error) {
+    console.error(`Error switching to window: ${windowHandle}`, error);
+    throw error;
+  }
+}
+
 // setup functions
 
 export async function initDriverWithOptions(opts: {
@@ -177,8 +196,8 @@ export async function initDriverWithOptions(opts: {
       .addArguments(...args.slice(1))
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
-      .addExtensions('rainbowbx.xpi')
-      .headless();
+      .addExtensions('rainbowbx.xpi');
+    // .headless();
 
     const service = new firefox.ServiceBuilder().setStdio('inherit');
 
