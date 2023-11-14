@@ -540,7 +540,7 @@ export const ReviewSheet = ({
                           selected={sendingOnL2Checks[0]}
                           backgroundSelected="blue"
                           borderColorSelected="blue"
-                          borderColor="separator"
+                          borderColor="labelTertiary"
                           onClick={() =>
                             setSendingOnL2Checks([
                               !sendingOnL2Checks[0],
@@ -579,7 +579,7 @@ export const ReviewSheet = ({
                           selected={sendingOnL2Checks[1]}
                           backgroundSelected="blue"
                           borderColorSelected="blue"
-                          borderColor="separator"
+                          borderColor="labelTertiary"
                           onClick={() =>
                             setSendingOnL2Checks([
                               sendingOnL2Checks[0],
