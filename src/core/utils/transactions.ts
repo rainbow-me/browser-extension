@@ -291,7 +291,11 @@ export async function getTransactionReceiptStatus({
 
   if (!receipt) return { status: 'pending' as const };
   return {
-    status: receipt.status === 0 ? ('confirmed' as const) : ('failed' as const),
+    status: receipt.status === 1 ? ('confirmed' as const) : ('failed' as const),
+    title:
+      receipt.status === 1
+        ? i18n.t('transactions.send.confirmed')
+        : i18n.t('transactions.send.failed'),
     blockNumber: receipt?.blockNumber,
     minedAt: Math.floor(Date.now() / 1000),
     confirmations: receipt?.confirmations,

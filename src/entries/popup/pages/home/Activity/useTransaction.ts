@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Hash, getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { addysHttp } from '~/core/network/addys';
 import { QueryFunctionResult, createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
@@ -136,7 +137,7 @@ const getCustomChainTransaction = async ({
         data: transaction.data,
         value: transaction.value.toString(),
         type: 'send',
-        title: 'Sent',
+        title: i18n.t('transactions.send.confirmed'),
         baseFee: block?.baseFeePerGas?.toString(),
         maxFeePerGas: transaction.maxFeePerGas?.toString(),
         maxPriorityFeePerGas: transaction.maxPriorityFeePerGas?.toString(),
@@ -152,7 +153,7 @@ const getCustomChainTransaction = async ({
         data: transaction.data,
         value: transaction.value.toString(),
         type: 'send',
-        title: 'Sent',
+        title: i18n.t('transactions.send.pending'),
       } satisfies PendingTransaction);
   return parsedTransaction;
 };
