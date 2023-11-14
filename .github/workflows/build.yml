@@ -87,7 +87,7 @@ jobs:
         continue-on-error: true
         run: |
             export BROWSER=firefox
-            export OS=mac
+            export OS=linux
             export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
             yarn firefox:manifest && yarn firefox:zip
             yarn vitest:parallel --retry=5
