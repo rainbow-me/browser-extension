@@ -19,6 +19,7 @@ import {
   notificationWindowStore,
   pendingRequestStore,
 } from '~/core/state';
+import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -302,82 +303,93 @@ export const handleProviderRequest = ({
           break;
         }
         case 'wallet_addEthereumChain': {
-          const {
-            chainId,
-            rpcUrls: [rpcUrl],
-            nativeCurrency: { name, symbol, decimals },
-            blockExplorerUrls: [blockExplorerUrl],
-          } = params?.[0] as {
-            chainId: string;
-            rpcUrls: string[];
-            chainName: string;
-            iconUrls: string[];
-            nativeCurrency: {
-              name: string;
-              symbol: string;
-              decimals: number;
+          const { featureFlags } = featureFlagsStore.getState();
+          if (!featureFlags.custom_rpc) {
+            const proposedChainId = (params?.[0] as { chainId: ChainId })
+              ?.chainId;
+            const supportedChainId =
+              isCustomChain(Number(proposedChainId)) ||
+              isSupportedChainId(Number(proposedChainId));
+            if (!supportedChainId) throw new Error('Chain Id not supported');
+            response = null;
+          } else {
+            const {
+              chainId,
+              rpcUrls: [rpcUrl],
+              nativeCurrency: { name, symbol, decimals },
+              blockExplorerUrls: [blockExplorerUrl],
+            } = params?.[0] as {
+              chainId: string;
+              rpcUrls: string[];
+              chainName: string;
+              iconUrls: string[];
+              nativeCurrency: {
+                name: string;
+                symbol: string;
+                decimals: number;
+              };
+              blockExplorerUrls: string[];
             };
-            blockExplorerUrls: string[];
-          };
 
-          // Validate chain Id
-          if (!isHexString(chainId) || !isHexPrefixed(chainId)) {
-            throw new Error(
-              `Expected 0x-prefixed, unpadded, non-zero hexadecimal string "chainId". Received: ${chainId}`,
-            );
-          } else if (Number(chainId) > Number.MAX_SAFE_INTEGER) {
-            throw new Error(
-              `Invalid chain ID "${chainId}": numerical value greater than max safe value. Received: ${chainId}`,
-            );
-            // Validate symbol and name
-          } else if (!rpcUrl) {
-            throw new Error(
-              `Expected non-empty array[string] "rpcUrls". Received: ${rpcUrl}`,
-            );
-          } else if (!name || !symbol) {
-            throw new Error(
-              'Expected non-empty string "nativeCurrency.name", "nativeCurrency.symbol"',
-            );
-            // Validarte decimals
-          } else if (
-            !Number.isInteger(decimals) ||
-            decimals < 0 ||
-            decimals > 36
-          ) {
-            throw new Error(
-              `Expected non-negative integer "nativeCurrency.decimals" less than 37. Received: ${decimals}`,
-            );
-            // Validate symbol length
-          } else if (symbol.length < 2 || symbol.length > 6) {
-            throw new Error(
-              `Expected 2-6 character string 'nativeCurrency.symbol'. Received: ${symbol}`,
-            );
-            // Validate symbol against existing chains
-          } else if (isSupportedChainId(Number(chainId))) {
-            const knownChain = SUPPORTED_CHAINS.find(
-              (chain) => chain.id === Number(chainId),
-            );
-            if (knownChain?.nativeCurrency.symbol !== symbol) {
+            // Validate chain Id
+            if (!isHexString(chainId) || !isHexPrefixed(chainId)) {
               throw new Error(
-                `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received: ${symbol}`,
+                `Expected 0x-prefixed, unpadded, non-zero hexadecimal string "chainId". Received: ${chainId}`,
+              );
+            } else if (Number(chainId) > Number.MAX_SAFE_INTEGER) {
+              throw new Error(
+                `Invalid chain ID "${chainId}": numerical value greater than max safe value. Received: ${chainId}`,
+              );
+              // Validate symbol and name
+            } else if (!rpcUrl) {
+              throw new Error(
+                `Expected non-empty array[string] "rpcUrls". Received: ${rpcUrl}`,
+              );
+            } else if (!name || !symbol) {
+              throw new Error(
+                'Expected non-empty string "nativeCurrency.name", "nativeCurrency.symbol"',
+              );
+              // Validarte decimals
+            } else if (
+              !Number.isInteger(decimals) ||
+              decimals < 0 ||
+              decimals > 36
+            ) {
+              throw new Error(
+                `Expected non-negative integer "nativeCurrency.decimals" less than 37. Received: ${decimals}`,
+              );
+              // Validate symbol length
+            } else if (symbol.length < 2 || symbol.length > 6) {
+              throw new Error(
+                `Expected 2-6 character string 'nativeCurrency.symbol'. Received: ${symbol}`,
+              );
+              // Validate symbol against existing chains
+            } else if (isSupportedChainId(Number(chainId))) {
+              const knownChain = SUPPORTED_CHAINS.find(
+                (chain) => chain.id === Number(chainId),
+              );
+              if (knownChain?.nativeCurrency.symbol !== symbol) {
+                throw new Error(
+                  `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received: ${symbol}`,
+                );
+              }
+              // Validate blockExplorerUrl
+            } else if (!blockExplorerUrl) {
+              throw new Error(
+                `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrl}`,
               );
             }
-            // Validate blockExplorerUrl
-          } else if (!blockExplorerUrl) {
-            throw new Error(
-              `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrl}`,
-            );
-          }
 
-          response = await messengerProviderRequest(popupMessenger, {
-            method,
-            id,
-            params,
-            meta,
-          });
-          // PER EIP - return null if the network was added otherwise throw
-          if (response !== null) {
-            throw new Error('User rejected the request.');
+            response = await messengerProviderRequest(popupMessenger, {
+              method,
+              id,
+              params,
+              meta,
+            });
+            // PER EIP - return null if the network was added otherwise throw
+            if (response !== null) {
+              throw new Error('User rejected the request.');
+            }
           }
           break;
         }
