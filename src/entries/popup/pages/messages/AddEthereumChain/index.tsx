@@ -5,10 +5,8 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCustomRPCsStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { ChainId } from '~/core/types/chains';
 import { Row, Rows, Separator } from '~/design-system';
 import { RainbowError, logger } from '~/logger';
 
@@ -50,10 +48,6 @@ export const AddEthereumChain = ({
     blockExplorerUrls: string[];
   };
 
-  const { testnetMode } = useTestnetModeStore();
-  const [selectedChainId] = useState<ChainId>(
-    testnetMode ? ChainId.goerli : ChainId.mainnet,
-  );
   const { addCustomRPC } = useCustomRPCsStore();
   const { addUserChain } = useUserChainsStore();
 
@@ -146,7 +140,6 @@ export const AddEthereumChain = ({
       </Row>
       <Row height="content">
         <AddEthereumChainActions
-          selectedChainId={selectedChainId}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
           loading={loading}

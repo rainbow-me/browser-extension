@@ -1,6 +1,5 @@
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { ChainId } from '~/core/types/chains';
 import { Box, Stack } from '~/design-system';
 
 import { AcceptRequestButton, RejectRequestButton } from '../BottomActions';
@@ -12,7 +11,6 @@ export const AddEthereumChainActions = ({
   dappStatus,
 }: {
   appName?: string;
-  selectedChainId: ChainId;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   loading?: boolean;
