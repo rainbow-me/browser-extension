@@ -55,41 +55,13 @@ export const useInfiniteTransactionList = ({
     isInitialLoading,
     refetch,
     status,
-  } = useConsolidatedTransactions(
-    {
-      address,
-      currency,
-      userChainIds,
-      testnetMode,
-    },
-    {
-      select: (data) => {
-        let prevCutoff = Infinity;
-        const selectedPages = data.pages.map((page) => {
-          const customNetworkTransactionsForPage =
-            currentAddressCustomNetworkTransactions.filter(
-              (transaction) =>
-                transaction.minedAt > (page?.cutoff || 0) &&
-                transaction.minedAt < prevCutoff &&
-                userChainIds.includes(transaction.chainId),
-            );
-          prevCutoff = page.cutoff || prevCutoff;
-          return {
-            ...page,
-            transactions: page.transactions
-              .filter((transaction) =>
-                userChainIds.includes(transaction.chainId),
-              )
-              .concat(customNetworkTransactionsForPage),
-          };
-        });
-        return {
-          ...data,
-          pages: selectedPages,
-        };
-      },
-    },
-  );
+  } = useConsolidatedTransactions({
+    address,
+    currency,
+    userChainIds,
+    testnetMode,
+  });
+
   const pages = data?.pages;
   const cutoff =
     data?.pages && data?.pages?.length
@@ -101,13 +73,18 @@ export const useInfiniteTransactionList = ({
   );
 
   const transactionsAfterCutoff = useMemo(() => {
-    if (!cutoff) return transactions;
-    const cutoffIndex = transactions.findIndex(
+    const allTransactions = transactions.concat(
+      currentAddressCustomNetworkTransactions,
+    );
+    if (!cutoff) return allTransactions;
+    const cutoffIndex = allTransactions.findIndex(
       (tx) => tx.status !== 'pending' && tx.minedAt < cutoff,
     );
-    if (!cutoffIndex || cutoffIndex === -1) return transactions;
-    return [...transactions].slice(0, cutoffIndex);
-  }, [cutoff, transactions]);
+    if (!cutoffIndex || cutoffIndex === -1) return allTransactions;
+
+    const transactionsAfterCutoff = [...allTransactions].slice(0, cutoffIndex);
+    return transactionsAfterCutoff;
+  }, [currentAddressCustomNetworkTransactions, cutoff, transactions]);
 
   const formattedTransactions = useMemo(
     () =>

@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { Address } from 'wagmi';
 
 import { addysHttp } from '~/core/network/addys';
 import {
@@ -24,7 +25,7 @@ const CONSOLIDATED_TRANSACTIONS_TIMEOUT = 20000;
 // Query Types
 
 export type ConsolidatedTransactionsArgs = {
-  address: string;
+  address: Address;
   currency: SupportedCurrencyKey;
   testnetMode: boolean;
   userChainIds: number[];
