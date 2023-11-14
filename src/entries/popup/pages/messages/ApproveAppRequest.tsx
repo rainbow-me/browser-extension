@@ -13,6 +13,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import { isExternalPopup } from '../../utils/windows';
 
+import { AddEthereumChain } from './AddEthereumChain';
 import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
 import { SignMessage } from './SignMessage';
@@ -99,6 +100,19 @@ export const ApproveAppRequest = () => {
   }, [handleRequestAction, pendingRequest?.id]);
 
   switch (pendingRequest?.method) {
+    case 'wallet_addEthereumChain':
+      return (
+        <ApproveAppRequestWrapper
+          pendingRequest={pendingRequest}
+          rejectRequest={rejectRequest}
+        >
+          <AddEthereumChain
+            approveRequest={approveRequest}
+            rejectRequest={rejectRequest}
+            request={pendingRequest}
+          />
+        </ApproveAppRequestWrapper>
+      );
     case 'eth_requestAccounts':
       return (
         <ApproveAppRequestWrapper

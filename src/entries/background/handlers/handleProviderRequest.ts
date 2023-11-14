@@ -1,6 +1,8 @@
 /* eslint-disable no-await-in-loop */
+import { isHexPrefixed } from '@ethereumjs/util';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { isAddress } from '@ethersproject/address';
+import { isHexString } from '@ethersproject/bytes';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
@@ -11,6 +13,7 @@ import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
+import { SUPPORTED_CHAINS } from '~/core/references';
 import {
   appSessionsStore,
   notificationWindowStore,
@@ -267,49 +270,115 @@ export const handleProviderRequest = ({
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
-          {
-            // If we need to validate the input before showing the UI, it should go here.
-            if (method === 'eth_signTypedData_v4') {
-              // we don't trust the params order
-              let dataParam = params?.[1];
-              if (!isAddress(params?.[0] as Address)) {
-                dataParam = params?.[0];
-              }
-
-              const data =
-                typeof dataParam === 'string'
-                  ? JSON.parse(dataParam)
-                  : dataParam;
-
-              const {
-                domain: { chainId },
-              } = data as { domain: { chainId: string } };
-
-              if (
-                chainId !== undefined &&
-                Number(chainId) !== Number(activeSession?.chainId)
-              ) {
-                throw new Error('ChainId mismatch');
-              }
+          // If we need to validate the input before showing the UI, it should go here.
+          if (method === 'eth_signTypedData_v4') {
+            // we don't trust the params order
+            let dataParam = params?.[1];
+            if (!isAddress(params?.[0] as Address)) {
+              dataParam = params?.[0];
             }
 
-            response = await messengerProviderRequest(popupMessenger, {
-              method,
-              id,
-              params,
-              meta,
-            });
+            const data =
+              typeof dataParam === 'string' ? JSON.parse(dataParam) : dataParam;
+
+            const {
+              domain: { chainId },
+            } = data as { domain: { chainId: string } };
+
+            if (
+              chainId !== undefined &&
+              Number(chainId) !== Number(activeSession?.chainId)
+            ) {
+              throw new Error('ChainId mismatch');
+            }
           }
+
+          response = await messengerProviderRequest(popupMessenger, {
+            method,
+            id,
+            params,
+            meta,
+          });
           break;
         }
         case 'wallet_addEthereumChain': {
-          const proposedChainId = (params?.[0] as { chainId: ChainId })
-            ?.chainId;
-          const supportedChainId =
-            isCustomChain(Number(proposedChainId)) ||
-            isSupportedChainId(Number(proposedChainId));
-          if (!supportedChainId) throw new Error('Chain Id not supported');
-          response = null;
+          const {
+            chainId,
+            rpcUrls: [rpcUrl],
+            nativeCurrency: { name, symbol, decimals },
+            blockExplorerUrls: [blockExplorerUrl],
+          } = params?.[0] as {
+            chainId: string;
+            rpcUrls: string[];
+            chainName: string;
+            iconUrls: string[];
+            nativeCurrency: {
+              name: string;
+              symbol: string;
+              decimals: number;
+            };
+            blockExplorerUrls: string[];
+          };
+
+          // Validate chain Id
+          if (!isHexString(chainId) || !isHexPrefixed(chainId)) {
+            throw new Error(
+              `Expected 0x-prefixed, unpadded, non-zero hexadecimal string "chainId". Received: ${chainId}`,
+            );
+          } else if (Number(chainId) > Number.MAX_SAFE_INTEGER) {
+            throw new Error(
+              `Invalid chain ID "${chainId}": numerical value greater than max safe value. Received: ${chainId}`,
+            );
+            // Validate symbol and name
+          } else if (!rpcUrl) {
+            throw new Error(
+              `Expected non-empty array[string] "rpcUrls". Received: ${rpcUrl}`,
+            );
+          } else if (!name || !symbol) {
+            throw new Error(
+              'Expected non-empty string "nativeCurrency.name", "nativeCurrency.symbol"',
+            );
+            // Validarte decimals
+          } else if (
+            !Number.isInteger(decimals) ||
+            decimals < 0 ||
+            decimals > 36
+          ) {
+            throw new Error(
+              `Expected non-negative integer "nativeCurrency.decimals" less than 37. Received: ${decimals}`,
+            );
+            // Validate symbol length
+          } else if (symbol.length < 2 || symbol.length > 6) {
+            throw new Error(
+              `Expected 2-6 character string 'nativeCurrency.symbol'. Received: ${symbol}`,
+            );
+            // Validate symbol against existing chains
+          } else if (isSupportedChainId(Number(chainId))) {
+            const knownChain = SUPPORTED_CHAINS.find(
+              (chain) => chain.id === Number(chainId),
+            );
+            if (knownChain?.nativeCurrency.symbol !== symbol) {
+              throw new Error(
+                `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received: ${symbol}`,
+              );
+            }
+            // Validate blockExplorerUrl
+          } else if (!blockExplorerUrl) {
+            throw new Error(
+              `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrl}`,
+            );
+          }
+
+          response = await messengerProviderRequest(popupMessenger, {
+            method,
+            id,
+            params,
+            meta,
+          });
+          // PER EIP - return null if the network was added otherwise throw
+          if (response !== null) {
+            throw new Error('User rejected the request.');
+          }
           break;
         }
         case 'wallet_switchEthereumChain': {
