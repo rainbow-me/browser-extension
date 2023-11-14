@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Hash, getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
 import { addysHttp } from '~/core/network/addys';
@@ -11,7 +12,13 @@ import {
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId } from '~/core/types/chains';
-import { TransactionApiResponse, TxHash } from '~/core/types/transactions';
+import {
+  MinedTransaction,
+  PendingTransaction,
+  TransactionApiResponse,
+  TxHash,
+} from '~/core/types/transactions';
+import { isCustomChain } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { RainbowError, logger } from '~/logger';
@@ -51,12 +58,14 @@ const fetchTransaction = async ({
 
 type PaginatedTransactions = { pages: ConsolidatedTransactionsResult[] };
 
-export function useTransaction({
+export function useBackendTransaction({
   hash,
   chainId,
+  enabled,
 }: {
-  hash?: TxHash;
+  hash: TxHash;
   chainId: ChainId;
+  enabled: boolean;
 }) {
   const queryClient = useQueryClient();
   const { currentAddress: address } = useCurrentAddressStore();
@@ -81,7 +90,7 @@ export function useTransaction({
   return useQuery({
     queryKey: createQueryKey('transaction', params),
     queryFn: () => fetchTransaction(params),
-    enabled: !!hash && !!address && !!chainId,
+    enabled: !!hash && !!address && !!chainId && enabled,
     initialData: () => {
       const queryData = queryClient.getQueryData<PaginatedTransactions>(
         paginatedTransactionsKey,
@@ -96,3 +105,107 @@ export function useTransaction({
       queryClient.getQueryState(paginatedTransactionsKey)?.dataUpdatedAt,
   });
 }
+
+const getCustomChainTransaction = async ({
+  chainId,
+  hash,
+}: {
+  chainId: number;
+  hash: Hash;
+}) => {
+  const provider = getProvider({ chainId });
+  const transaction = await provider.getTransaction(hash);
+  if (!transaction) return undefined;
+
+  const block = transaction?.blockHash
+    ? await provider.getBlock(transaction?.blockHash)
+    : undefined;
+
+  const parsedTransaction = transaction.blockNumber
+    ? ({
+        status: 'confirmed',
+        blockNumber: transaction.blockNumber || 0,
+        minedAt: block?.timestamp || 0,
+        confirmations: transaction.confirmations,
+        gasUsed: transaction.gasLimit.toString(),
+        hash: transaction.hash as `0x${string}`,
+        nonce: transaction.nonce,
+        chainId: transaction.chainId,
+        from: transaction.from as `0x${string}`,
+        to: transaction.to as `0x${string}`,
+        data: transaction.data,
+        value: transaction.value.toString(),
+        type: 'send',
+        title: 'Sent',
+        baseFee: block?.baseFeePerGas?.toString(),
+        maxFeePerGas: transaction.maxFeePerGas?.toString(),
+        maxPriorityFeePerGas: transaction.maxPriorityFeePerGas?.toString(),
+        gasPrice: transaction.gasPrice?.toString(),
+      } satisfies MinedTransaction)
+    : ({
+        status: 'pending',
+        hash: transaction.hash as `0x${string}`,
+        nonce: transaction.nonce,
+        chainId: transaction.chainId,
+        from: transaction.from as `0x${string}`,
+        to: transaction.to as `0x${string}`,
+        data: transaction.data,
+        value: transaction.value.toString(),
+        type: 'send',
+        title: 'Sent',
+      } satisfies PendingTransaction);
+  return parsedTransaction;
+};
+
+export function useCustomChainTransaction({
+  hash,
+  chainId,
+  enabled,
+}: {
+  hash: TxHash;
+  chainId: ChainId;
+  enabled: boolean;
+}) {
+  return useQuery({
+    queryKey: createQueryKey('providerTransaction', { chainId, hash }),
+    queryFn: () => getCustomChainTransaction({ chainId, hash }),
+    enabled: !!hash && !!chainId && enabled,
+  });
+}
+
+export const useTransaction = ({
+  chainId,
+  hash,
+}: {
+  chainId: number;
+  hash: `0x${string}`;
+}) => {
+  const customChain = isCustomChain(chainId);
+  const {
+    data: backendTransaction,
+    isLoading: backendTransactionIsLoading,
+    isFetched: backendTransactionIsFetched,
+  } = useBackendTransaction({
+    hash,
+    chainId,
+    enabled: !customChain,
+  });
+  const {
+    data: providerTransaction,
+    isLoading: providerTransactionIsLoading,
+    isFetched: providerTransactionIsFetched,
+  } = useCustomChainTransaction({
+    hash,
+    chainId,
+    enabled: customChain,
+  });
+  return {
+    data: customChain ? providerTransaction : backendTransaction,
+    isLoading: customChain
+      ? providerTransactionIsLoading
+      : backendTransactionIsLoading,
+    isFetched: customChain
+      ? providerTransactionIsFetched
+      : backendTransactionIsFetched,
+  };
+};

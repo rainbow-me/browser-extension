@@ -394,7 +394,9 @@ export function getTransactionBlockExplorerUrl({
 }) {
   if (!isString(hash)) return;
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
-  return `https://${blockExplorerHost}/tx/${hash}`;
+  return blockExplorerHost
+    ? `https://${blockExplorerHost}/tx/${hash}`
+    : undefined;
 }
 
 export function getTokenBlockExplorerUrl({
@@ -409,7 +411,9 @@ export function getTokenBlockExplorerUrl({
 }
 
 export function getBlockExplorerName(chainId: ChainId) {
-  return capitalize(getBlockExplorerHostForChain(chainId).split('.').at?.(-2));
+  return capitalize(
+    (getBlockExplorerHostForChain(chainId) || '').split('.').at?.(-2),
+  );
 }
 
 export const getTokenBlockExplorer = ({

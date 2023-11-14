@@ -71,16 +71,17 @@ export function TokenToBuyRow({
     ),
     [asset?.name, asset?.symbol],
   );
+  const explorer = getBlockExplorerHostForChain(
+    asset?.chainId || ChainId.mainnet,
+  );
 
   const viewOnExplorer = useCallback(() => {
-    const explorer = getBlockExplorerHostForChain(
-      asset?.chainId || ChainId.mainnet,
-    );
-    goToNewTab({
-      url: getExplorerUrl(explorer, asset?.address),
-      active: false,
-    });
-  }, [asset?.address, asset?.chainId]);
+    explorer &&
+      goToNewTab({
+        url: getExplorerUrl(explorer, asset?.address),
+        active: false,
+      });
+  }, [asset?.address, explorer]);
 
   const onValueChange = useCallback(
     (value: string) => {
@@ -183,43 +184,45 @@ export function TokenToBuyRow({
                           </Box>
                         </DropdownMenuRadioItem>
 
-                        <DropdownMenuRadioItem value="view">
-                          <Box width="full">
-                            <Inline
-                              alignVertical="center"
-                              alignHorizontal="justify"
-                            >
-                              <Inline alignVertical="center" space="8px">
-                                <Inline alignVertical="center">
-                                  <Symbol
-                                    size={18}
-                                    symbol="binoculars.fill"
-                                    weight="semibold"
-                                  />
+                        {explorer && (
+                          <DropdownMenuRadioItem value="view">
+                            <Box width="full">
+                              <Inline
+                                alignVertical="center"
+                                alignHorizontal="justify"
+                              >
+                                <Inline alignVertical="center" space="8px">
+                                  <Inline alignVertical="center">
+                                    <Symbol
+                                      size={18}
+                                      symbol="binoculars.fill"
+                                      weight="semibold"
+                                    />
+                                  </Inline>
+                                  <Text size="14pt" weight="semibold">
+                                    {i18n.t(
+                                      `contacts.${
+                                        isL2Chain(
+                                          asset?.chainId || ChainId.mainnet,
+                                        )
+                                          ? 'view_on_explorer'
+                                          : 'view_on_etherscan'
+                                      }`,
+                                    )}
+                                  </Text>
                                 </Inline>
-                                <Text size="14pt" weight="semibold">
-                                  {i18n.t(
-                                    `contacts.${
-                                      isL2Chain(
-                                        asset?.chainId || ChainId.mainnet,
-                                      )
-                                        ? 'view_on_explorer'
-                                        : 'view_on_etherscan'
-                                    }`,
-                                  )}
-                                </Text>
+                                <Bleed vertical="8px">
+                                  <Symbol
+                                    size={14}
+                                    symbol="arrow.up.forward.circle"
+                                    weight="semibold"
+                                    color="labelTertiary"
+                                  />
+                                </Bleed>
                               </Inline>
-                              <Bleed vertical="8px">
-                                <Symbol
-                                  size={14}
-                                  symbol="arrow.up.forward.circle"
-                                  weight="semibold"
-                                  color="labelTertiary"
-                                />
-                              </Bleed>
-                            </Inline>
-                          </Box>
-                        </DropdownMenuRadioItem>
+                            </Box>
+                          </DropdownMenuRadioItem>
+                        )}
                       </DropdownMenuRadioGroup>
                     </Box>
                   </Stack>
@@ -256,10 +259,11 @@ export function TokenToBuyRow({
       asset?.address,
       asset?.chainId,
       onDropdownChange,
+      testId,
       onValueChange,
+      explorer,
       isFavorite,
       onToggleFavorite,
-      testId,
     ],
   );
 

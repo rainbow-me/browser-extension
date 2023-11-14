@@ -601,7 +601,7 @@ export const useCommands = (
       return;
     }
     const explorer = getBlockExplorerHostForChain(asset.chainId);
-    goToNewTab({ url: getExplorerUrl(explorer, asset.address) });
+    explorer && goToNewTab({ url: getExplorerUrl(explorer, asset.address) });
   }, []);
 
   const handleWatchWallet = React.useCallback(
@@ -623,7 +623,7 @@ export const useCommands = (
 
   const viewWalletOnEtherscan = React.useCallback((address: Address) => {
     const explorer = getBlockExplorerHostForChain(ChainId.mainnet);
-    goToNewTab({ url: getExplorerUrl(explorer, address) });
+    explorer && goToNewTab({ url: getExplorerUrl(explorer, address) });
   }, []);
 
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
