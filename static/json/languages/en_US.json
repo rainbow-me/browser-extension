@@ -940,12 +940,16 @@
   "approve_request": {
     "wallet_info_title": "wants to connect to your wallet",
     "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions.",
+    "add_chain_info_description": "If you approve it, this network could be used within the Rainbow Browser Extension.",
     "wallet": "Wallet",
     "network": "Network",
     "switch_networks": "Switch Networks",
     "switch_wallets": "Switch Wallets",
+    "allow_to_add_network": "wants to add a network",
     "connect": "Connect to %{appName}",
     "connect_anyway": "Connect Anyway",
+    "approve": "Approve",
+    "approve_anyway": "Approve Anyway",
     "malicious_warning": {
       "title": "This app is likely malicious",
       "message": "Signing messages or transactions from this app could result in losing your assets"
@@ -961,6 +965,15 @@
     "contract_deployment": "Contract Deployment",
     "transaction_request": "Transaction Request",
     "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
+  },
+  "add_chain": {
+    "name": "Name",
+    "chain_id": "Chain ID",
+    "currency_symbol": "Currency Symbol",
+    "currency_name": "Currency Name",
+    "currency_decimals": "Currency Decimals",
+    "rpc_url": "RPC url",
+    "block_explorer_url": "Block Explorer url"
   },
   "transaction_fee": {
     "title": "Transaction Speed",
