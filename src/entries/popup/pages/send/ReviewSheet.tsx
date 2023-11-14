@@ -559,7 +559,9 @@ export const ReviewSheet = ({
                             weight="bold"
                             color="labelSecondary"
                           >
-                            {i18n.t('send.review.sending_on_l2_check_1')}
+                            {i18n.t('send.review.sending_on_l2_check_1', {
+                              chainName,
+                            })}
                           </Text>
                         </Lens>
                       </Column>
