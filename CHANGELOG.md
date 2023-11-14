@@ -21,6 +21,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.71](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.71)
+
+### Added
+
+- Display of NFTs in gallery and collection mode, including NFT sorting feature, both behind a feature flag #1082
+- Initial work on custom network support, with no impact on UI or existing functionality #1071
+- Enhanced custom chain support #1123
+- Chore: i18n updates, translations now available for Networks settings, Developer Tools and Testnet Mode, Malicious dApp warnings, Wallet management right-click menus, Clear transactions, Points, NFTs, Custom Networks placeholders #1122 
+- Support for custom networks assets #1120
+
+### Changed
+
+- Management of RPC proxy flag, default value updated to `on` #1125
+
+### Fixed
+
+- Fixed scenarios where native asset price for a token is unavailable #1111
+- Restoration of token details in about section #1115
+- Fix for activity history text overflow issues #1116
+- Ensuring swap prepopulates with the selected token when navigating from the asset context menu #1118
+- Validation of chainid only if available #1121
+- Asset filtering by networks now functioning correctly #1124
+- Testnet native asset sends #1130
+
+### Internal
+
+- Bumped chromedriver from 119.0.0 to 119.0.1 #1126
+- Bumped Axios #1131
+
 ## [v1.2.64](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.64)
 
 ### Added
