@@ -167,6 +167,7 @@ export async function initDriverWithOptions(opts: {
     // '--auto-open-devtools-for-tabs',
     '--log-level=0',
     '--enable-logging',
+    // '--headless',
   ];
 
   if (opts.browser === 'firefox') {
@@ -176,7 +177,8 @@ export async function initDriverWithOptions(opts: {
       .addArguments(...args.slice(1))
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
-      .addExtensions('rainbowbx.xpi');
+      .addExtensions('rainbowbx.xpi')
+      .headless();
 
     const service = new firefox.ServiceBuilder().setStdio('inherit');
 
