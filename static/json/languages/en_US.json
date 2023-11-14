@@ -525,7 +525,7 @@
       "cancel": "Cancel",
       "sending_on_network": "Sending on the %{chainName} network",
       "sending_on_l2_check_1": "The address I’m sending to supports %{chainName}",
-      "complete_checks": "Complete the checks",
+      "complete_checks": "Complete the check",
       "confirm_hw": "Confirm on your device"
     }
   },
