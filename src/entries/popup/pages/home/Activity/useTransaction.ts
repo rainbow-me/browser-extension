@@ -158,7 +158,7 @@ const getCustomChainTransaction = async ({
   return parsedTransaction;
 };
 
-export function useCustomChainTransaction({
+export function useCustomNetworkTransaction({
   hash,
   chainId,
   enabled,
@@ -195,7 +195,7 @@ export const useTransaction = ({
     data: providerTransaction,
     isLoading: providerTransactionIsLoading,
     isFetched: providerTransactionIsFetched,
-  } = useCustomChainTransaction({
+  } = useCustomNetworkTransaction({
     hash,
     chainId,
     enabled: customChain,

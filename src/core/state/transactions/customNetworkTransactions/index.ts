@@ -44,7 +44,6 @@ export const customNetworkTransactionsStore =
         return Object.values(addressTransactions)
           .map((transactions) => transactions)
           .flat();
-        // .sort((a, b) => (a.minedAt > b.minedAt ? 0 : 1));
       },
       addCustomNetworkTransactions: ({ address, chainId, transaction }) => {
         const { customNetworkTransactions } = get();
