@@ -553,7 +553,7 @@ const textProperties = defineProperties({
     WebkitBackgroundClip: ['border-box', 'text'],
     userSelect: userSelectOpts,
     textOverflow: ['ellipsis'],
-    whiteSpace: ['nowrap'],
+    whiteSpace: ['nowrap', 'pre-wrap'],
     overflow: ['hidden'],
     transition: ['color 200ms ease-out'],
   },
