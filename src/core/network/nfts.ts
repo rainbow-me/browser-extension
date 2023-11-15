@@ -30,36 +30,35 @@ const nftApi = new RainbowFetchClient({
 export const fetchNftCollections = async ({
   address,
   chains,
+  cursor,
 }: {
   address: string;
   chains: ChainName[];
+  cursor?: string;
 }) => {
   try {
-    let cursor: string | null = 'none';
-    let collections: SimpleHashCollectionDetails[] = [];
-    while (cursor) {
-      const response: {
-        data: SimpleHashCollectionsResponse;
-        headers: Headers;
-        status: number;
-      } =
-        // eslint-disable-next-line no-await-in-loop
-        await nftApi.get('/nfts/collections_by_wallets_v2', {
-          params: {
-            chains: chains.join(','),
-            ...(cursor && cursor !== 'none' ? { cursor } : {}),
-            wallet_addresses: address,
-          },
-        });
-      collections = [...collections, ...(response.data?.collections || [])];
-      cursor = response.data?.next_cursor;
-    }
-    return collections;
+    const response: {
+      data: SimpleHashCollectionsResponse;
+      headers: Headers;
+      status: number;
+    } =
+      // eslint-disable-next-line no-await-in-loop
+      await nftApi.get('/nfts/collections_by_wallets_v2', {
+        params: {
+          chains: chains.join(','),
+          ...(cursor ? { cursor } : {}),
+          wallet_addresses: address,
+        },
+      });
+    return {
+      collections: response?.data?.collections || [],
+      nextPage: response.data?.next_cursor,
+    };
   } catch (e) {
     logger.error(new RainbowError('Fetch NFT Collections: '), {
       message: (e as Error)?.message,
     });
-    return [];
+    return { collections: [], nextPage: undefined };
   }
 };
 
