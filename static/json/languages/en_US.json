@@ -404,6 +404,7 @@
         "switch_to_wallet": "Switch to This Wallet",
         "copy_wallet_address": "Copy Address",
         "view_wallet_on_etherscan": "View on Etherscan",
+        "export_addresses_as_csv": "Export Addresses as CSV",
         "enable_flashbots": "Enable Flashbots",
         "disable_flashbots": "Disable Flashbots"
       },
@@ -481,6 +482,18 @@
     },
     "toolbar": {
       "actions_hint": "Actions"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "Watching",
+        "recovery_phrase": "Recovery Phrase",
+        "private_key": "Private Key",
+        "hardware_wallet": "Hardware Wallet"
+      },
+      "toast": {
+        "title": "Addresses Downloaded",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {

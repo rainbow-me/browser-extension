@@ -1,10 +1,15 @@
 import * as React from 'react';
 
+import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
+import { Account } from '~/entries/popup/hooks/useAccounts';
 
+import { getWallets } from '../../handlers/wallet';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { triggerToast } from '../Toast/Toast';
 
 import { SearchItem, SearchItemType } from './SearchItems';
 import { CommandKPage, PAGES } from './pageConfig';
@@ -427,3 +432,60 @@ export function useKeyboardNavigation(
     };
   }, []);
 }
+
+const typeMapping: { [key: string]: string } = {
+  [KeychainType.ReadOnlyKeychain]: i18n.t(
+    `command_k.export_public_addresses.keychain_type.watching`,
+  ),
+  [KeychainType.HdKeychain]: i18n.t(
+    `command_k.export_public_addresses.keychain_type.recovery_phrase`,
+  ),
+  [KeychainType.KeyPairKeychain]: i18n.t(
+    `command_k.export_public_addresses.keychain_type.private_key`,
+  ),
+  [KeychainType.HardwareWalletKeychain]: i18n.t(
+    `command_k.export_public_addresses.keychain_type.hardware_wallet`,
+  ),
+};
+
+const generateCSV = (
+  wallets: KeychainWallet[],
+  accountsWithNames: Account[],
+): string => {
+  let csvContent = 'public_address,name,type,wallet_group\n';
+
+  wallets.forEach(({ accounts, type }, i) => {
+    accounts.forEach((address) => {
+      const { walletName, ensName } =
+        accountsWithNames.find((a) => a.address === address) || {};
+      const name = walletName || ensName || address;
+      const walletType = typeMapping[type];
+      const walletGroup =
+        type === KeychainType.HdKeychain ? `Wallet Group ${i}` : '-';
+      csvContent += `${address},${name},${walletType},${walletGroup}\n`;
+    });
+  });
+
+  return csvContent;
+};
+
+export const handleExportAddresses = async (accounts: Account[]) => {
+  const wallets = await getWallets();
+  const csvContent = generateCSV(wallets, accounts);
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const tempLink = document.createElement('a');
+  tempLink.href = url;
+  tempLink.download = i18n.t(
+    `command_k.export_public_addresses.toast.description`,
+  );
+  document.body.appendChild(tempLink);
+  tempLink.click();
+  document.body.removeChild(tempLink);
+  URL.revokeObjectURL(url);
+
+  triggerToast({
+    title: i18n.t(`command_k.export_public_addresses.toast.title`),
+    description: i18n.t(`command_k.export_public_addresses.toast.description`),
+  });
+};
