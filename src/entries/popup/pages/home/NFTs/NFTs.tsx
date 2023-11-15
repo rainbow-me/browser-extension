@@ -4,6 +4,7 @@ import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -29,6 +30,8 @@ import {
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { useCoolMode } from '~/entries/popup/hooks/useCoolMode';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 
 import ExternalImage from '../../../components/ExternalImage/ExternalImage';
 
@@ -47,39 +50,13 @@ export function PostReleaseNFTs() {
     isInitialLoading,
   } = useNfts({ address });
   const nftData = useMemo(() => {
-    const nfts = data?.pages?.map((page) => page.nfts).flat();
     return {
       ...data,
-      nfts:
-        nfts?.reduce(
-          (collections, nft) => {
-            const currentCollectionId = nft.collection.collection_id;
-            if (currentCollectionId) {
-              const existingCollection = collections[currentCollectionId];
-              if (existingCollection) {
-                existingCollection.assets.push(nft);
-              } else {
-                collections[currentCollectionId] = {
-                  assets: [nft],
-                  collection: nft.collection,
-                  lastCollectionAcquisition: nft.last_collection_acquisition,
-                };
-              }
-            }
-            return collections;
-          },
-          {} as Record<
-            string,
-            {
-              assets: UniqueAsset[];
-              collection: UniqueAsset['collection'];
-              lastCollectionAcquisition?: string;
-            }
-          >,
-        ) || {},
+      nfts: selectNftCollections(data),
     };
   }, [data]);
   const { nfts } = nftData || {};
+  const navigate = useRainbowNavigate();
   const containerRef = useContainerRef();
   const sections = Object.values(nfts || {});
   const sortedSections = useMemo(() => {
@@ -150,6 +127,11 @@ export function PostReleaseNFTs() {
     estimateSize: () => 112,
     overscan: 12,
   });
+  const onAssetClick = (asset: UniqueAsset) => {
+    navigate(
+      ROUTES.NFT_DETAILS(asset?.collection.collection_id || '', asset?.id),
+    );
+  };
 
   useEffect(() => {
     collectionGalleryRowVirtualizer.measure();
@@ -227,6 +209,7 @@ export function PostReleaseNFTs() {
                             <NftThumbnail
                               imageSrc={getUniqueAssetImageThumbnailURL(asset)}
                               key={i}
+                              onClick={() => onAssetClick(asset)}
                             />
                           ))}
                         </Box>
@@ -263,7 +246,11 @@ export function PostReleaseNFTs() {
                       ref={collectionGalleryRowVirtualizer.measureElement}
                       data-index={index}
                     >
-                      <CollectionSection isLast={isLast} section={section} />
+                      <CollectionSection
+                        isLast={isLast}
+                        section={section}
+                        onAssetClick={onAssetClick}
+                      />
                     </Box>
                   );
                 })}
@@ -278,9 +265,11 @@ export function PostReleaseNFTs() {
 function CollectionSection({
   section,
   isLast,
+  onAssetClick,
 }: {
   section: { assets: UniqueAsset[]; collection: UniqueAsset['collection'] };
   isLast: boolean;
+  onAssetClick: (asset: UniqueAsset) => void;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { sections, toggleGallerySectionOpen } = useNftsStore();
@@ -371,18 +360,21 @@ function CollectionSection({
                 paddingTop: 6,
               }}
             >
-              {section.assets.map((asset, i) => (
-                <NftThumbnail
-                  imageSrc={
-                    // we hold off on providing the src field until opened so that
-                    // we don't request images for collections that are never opened
-                    collectionVisible
-                      ? getUniqueAssetImageThumbnailURL(asset)
-                      : undefined
-                  }
-                  key={i}
-                />
-              ))}
+              {section.assets.map((asset, i) => {
+                return (
+                  <NftThumbnail
+                    imageSrc={
+                      // we hold off on providing the src field until opened so that
+                      // we don't request images for collections that are never opened
+                      collectionVisible
+                        ? getUniqueAssetImageThumbnailURL(asset)
+                        : undefined
+                    }
+                    key={i}
+                    onClick={() => onAssetClick(asset)}
+                  />
+                );
+              })}
             </Box>
           )}
         </Inset>
@@ -391,22 +383,25 @@ function CollectionSection({
   );
 }
 
-const NftThumbnail = memo(({ imageSrc }: { imageSrc?: string }) => {
-  return (
-    <Box
-      style={{ height: 96, width: 96 }}
-      borderRadius="10px"
-      background="fillQuaternary"
-    >
-      <ExternalImage
+const NftThumbnail = memo(
+  ({ imageSrc, onClick }: { imageSrc?: string; onClick: () => void }) => {
+    return (
+      <Box
+        style={{ height: 96, width: 96 }}
         borderRadius="10px"
-        src={imageSrc}
-        height={96}
-        width={96}
-      />
-    </Box>
-  );
-});
+        background="fillQuaternary"
+        onClick={onClick}
+      >
+        <ExternalImage
+          borderRadius="10px"
+          src={imageSrc}
+          height={96}
+          width={96}
+        />
+      </Box>
+    );
+  },
+);
 
 NftThumbnail.displayName = 'NftThumbnail';
 
