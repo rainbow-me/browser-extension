@@ -94,7 +94,7 @@ describe('Networks & Testnet Mode flows', () => {
       dappHandler,
     });
 
-    console.log('-- 12 popupHandler', popupHandler);
+    console.log('-- 12 dappHandler, popupHandler', dappHandler, popupHandler);
     await driver.switchTo().window(popupHandler);
 
     console.log('-- 13');
