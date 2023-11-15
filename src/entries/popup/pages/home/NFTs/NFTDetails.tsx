@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { selectNftsByCollection } from '~/core/resources/_selectors/nfts';
+import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { AddressOrEth } from '~/core/types/assets';
@@ -83,16 +83,14 @@ export default function NFTDetails() {
     collectionId: string;
     nftId: string;
   }>();
-  const { data: nfts } = useNfts(
-    { address },
-    { select: selectNftsByCollection },
-  );
+  const { data } = useNfts({ address });
+  const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
-    return nfts?.[collectionId]?.assets?.find(
+    return collections?.[collectionId]?.assets?.find(
       (asset: UniqueAsset) => asset.id === nftId,
     );
-  }, [collectionId, nftId, nfts]);
+  }, [collectionId, collections, nftId]);
   const { data: dominantColor } = useDominantColor({
     imageUrl: nft?.image_url || undefined,
   });

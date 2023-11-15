@@ -4,6 +4,7 @@ import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -49,36 +50,9 @@ export function PostReleaseNFTs() {
     isInitialLoading,
   } = useNfts({ address });
   const nftData = useMemo(() => {
-    const nfts = data?.pages?.map((page) => page.nfts).flat();
     return {
       ...data,
-      nfts:
-        nfts?.reduce(
-          (collections, nft) => {
-            const currentCollectionId = nft.collection.collection_id;
-            if (currentCollectionId) {
-              const existingCollection = collections[currentCollectionId];
-              if (existingCollection) {
-                existingCollection.assets.push(nft);
-              } else {
-                collections[currentCollectionId] = {
-                  assets: [nft],
-                  collection: nft.collection,
-                  lastCollectionAcquisition: nft.last_collection_acquisition,
-                };
-              }
-            }
-            return collections;
-          },
-          {} as Record<
-            string,
-            {
-              assets: UniqueAsset[];
-              collection: UniqueAsset['collection'];
-              lastCollectionAcquisition?: string;
-            }
-          >,
-        ) || {},
+      nfts: selectNftCollections(data),
     };
   }, [data]);
   const { nfts } = nftData || {};
