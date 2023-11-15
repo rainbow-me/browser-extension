@@ -59,3 +59,7 @@ globalStyle('.home-tab-wrapper:focus-visible', {
   outlineOffset: '2px',
   outlineColor: 'transparent',
 });
+
+globalStyle('a:link, a:visited', {
+  color: 'inherit',
+});

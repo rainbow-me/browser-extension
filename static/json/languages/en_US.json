@@ -1176,7 +1176,25 @@
     "sort_option_recent": "Recent",
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "Recent",
-    "sort_option_abc_long": "Alphabetical"
+    "sort_option_abc_long": "Alphabetical",
+    "details": {
+      "last_sales_price": "Last Sales Price",
+      "none": "None",
+      "floor_price": "Floor Price",
+      "properties": "Properties",
+      "address_copied": "Address Copied",
+      "about": "About",
+      "token_standard": "Token Standard",
+      "token_contract": "Token Contract",
+      "contract_creator": "Contract Creator",
+      "chain": "Chain",
+      "id_copied": "ID Copied",
+      "copy_token_id": "Copy Token ID",
+      "download": "Download",
+      "explorer": "Explorer",
+      "view_collection": "View Collection",
+      "collection_website": "Collection Website"
+    }
   },
   "points": {
     "coming_soon_header": "Coming Soon",
