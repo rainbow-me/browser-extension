@@ -53,7 +53,7 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
   afterAll(async () => await driver.quit());
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  beforeEach(async (context: any) => {
+  beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
   });
 
