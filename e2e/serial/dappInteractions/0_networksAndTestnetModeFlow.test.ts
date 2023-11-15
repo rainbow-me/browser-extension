@@ -25,8 +25,8 @@ import {
   navigateToSettingsNetworks,
   querySelector,
   waitAndClick,
-} from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
+} from '../../helpers';
+import { TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
