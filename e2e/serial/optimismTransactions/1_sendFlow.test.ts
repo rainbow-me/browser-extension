@@ -131,7 +131,6 @@ describe('Complete Hardhat Optimism send flow', () => {
     expect(reviewText).toBeTruthy();
     await delayTime('medium');
     await navigateToElementWithTestId({ driver, testId: 'L2-check-1' });
-    await navigateToElementWithTestId({ driver, testId: 'L2-check-2' });
     await navigateToElementWithTestId({
       driver,
       testId: 'review-confirm-button',

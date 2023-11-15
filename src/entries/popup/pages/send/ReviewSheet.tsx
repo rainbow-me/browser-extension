@@ -263,7 +263,7 @@ export const ReviewSheet = ({
   >;
 }) => {
   const { visibleOwnedWallets } = useWallets();
-  const [sendingOnL2Checks, setSendingOnL2Checks] = useState([false, false]);
+  const [sendingOnL2Checks, setSendingOnL2Checks] = useState(false);
   const prevShow = usePrevious(show);
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
@@ -293,7 +293,7 @@ export const ReviewSheet = ({
 
   const sendEnabled = useMemo(() => {
     if (!sendingOnL2) return true;
-    return sendingOnL2Checks[0] && sendingOnL2Checks[1];
+    return sendingOnL2Checks;
   }, [sendingOnL2, sendingOnL2Checks]);
 
   const handleSend = useCallback(async () => {
@@ -321,7 +321,7 @@ export const ReviewSheet = ({
 
   useEffect(() => {
     if (prevShow && !show) {
-      setSendingOnL2Checks([false, false]);
+      setSendingOnL2Checks(false);
     }
   }, [prevShow, show]);
 
@@ -537,15 +537,12 @@ export const ReviewSheet = ({
                           width="16px"
                           height="16px"
                           borderRadius="6px"
-                          selected={sendingOnL2Checks[0]}
+                          selected={sendingOnL2Checks}
                           backgroundSelected="blue"
                           borderColorSelected="blue"
-                          borderColor="separator"
+                          borderColor="labelTertiary"
                           onClick={() =>
-                            setSendingOnL2Checks([
-                              !sendingOnL2Checks[0],
-                              sendingOnL2Checks[1],
-                            ])
+                            setSendingOnL2Checks(!sendingOnL2Checks)
                           }
                         />
                       </Column>
@@ -553,10 +550,7 @@ export const ReviewSheet = ({
                         <Lens
                           testId="L2-check-1"
                           onClick={() =>
-                            setSendingOnL2Checks([
-                              !sendingOnL2Checks[0],
-                              sendingOnL2Checks[1],
-                            ])
+                            setSendingOnL2Checks(!sendingOnL2Checks)
                           }
                         >
                           <Text
@@ -565,45 +559,7 @@ export const ReviewSheet = ({
                             weight="bold"
                             color="labelSecondary"
                           >
-                            {i18n.t('send.review.sending_on_l2_check_1')}
-                          </Text>
-                        </Lens>
-                      </Column>
-                    </Columns>
-                    <Columns space="7px">
-                      <Column width="content">
-                        <Checkbox
-                          width="16px"
-                          height="16px"
-                          borderRadius="6px"
-                          selected={sendingOnL2Checks[1]}
-                          backgroundSelected="blue"
-                          borderColorSelected="blue"
-                          borderColor="separator"
-                          onClick={() =>
-                            setSendingOnL2Checks([
-                              sendingOnL2Checks[0],
-                              !sendingOnL2Checks[1],
-                            ])
-                          }
-                        />
-                      </Column>
-                      <Column>
-                        <Lens
-                          testId="L2-check-2"
-                          onClick={() =>
-                            setSendingOnL2Checks([
-                              sendingOnL2Checks[0],
-                              !sendingOnL2Checks[1],
-                            ])
-                          }
-                        >
-                          <Text
-                            size="12pt"
-                            weight="bold"
-                            color="labelSecondary"
-                          >
-                            {i18n.t('send.review.sending_on_l2_check_2', {
+                            {i18n.t('send.review.sending_on_l2_check_1', {
                               chainName,
                             })}
                           </Text>
