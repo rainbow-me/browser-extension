@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import { useCommandKStatus } from '../components/CommandK/useCommandKStatus';
 
-type ModifierKey = 'ctrlKey' | 'altKey' | 'shiftKey' | 'command';
+export type ModifierKey = 'ctrlKey' | 'altKey' | 'shiftKey' | 'command';
 
 interface KeyboardShortcutConfig {
   condition?: () => boolean;

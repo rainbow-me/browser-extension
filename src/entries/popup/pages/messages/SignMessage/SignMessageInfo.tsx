@@ -1,95 +1,181 @@
-import { useMemo } from 'react';
+import { TransactionRequest } from '@ethersproject/providers';
+import { motion } from 'framer-motion';
+import { useMemo, useState } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { ChainId } from '~/core/types/chains';
+import { copy } from '~/core/utils/copy';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
-import { Box, Inline, Inset, Stack, Text } from '~/design-system';
+import { truncateString } from '~/core/utils/strings';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
+import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
+import { CopyButton, TabContent, Tabs } from '../Tabs';
+import {
+  SimulationError,
+  TransactionSimulation,
+  useSimulateTransaction,
+} from '../useSimulateTransaction';
 
 interface SignMessageProps {
   request: ProviderRequestPayload;
 }
 
-export const SignMessageInfo = ({ request }: SignMessageProps) => {
-  const { data: dappMetadata } = useDappMetadata({
-    url: request?.meta?.sender?.url,
-  });
+function Overview({
+  message,
+}: {
+  message?: string;
+  simulation: TransactionSimulation | undefined;
+  status: 'loading' | 'error' | 'success';
+  error: SimulationError | null;
+}) {
+  return (
+    <Stack space="16px">
+      {/* <Text size="12pt" weight="semibold" color="labelTertiary">
+        {i18n.t('simulation.title')}
+      </Text> */}
 
-  const { message, typedData } = useMemo(() => {
+      {/* <SimulationOverview
+        simulation={simulation}
+        status={status}
+        error={error}
+      />
+
+      <Separator color="separatorTertiary" /> */}
+
+      <Stack space="20px">
+        <Inline space="8px" alignVertical="center">
+          <Symbol symbol="signature" size={16} weight="medium" />
+          <Text size="14pt" weight="semibold" color="label">
+            {i18n.t('simulation.signature.message')}
+          </Text>
+        </Inline>
+        <Text
+          testId="sign-message-text"
+          as="pre"
+          size="12pt"
+          weight="semibold"
+          color="labelTertiary"
+          whiteSpace="pre-wrap"
+        >
+          {message}
+        </Text>
+      </Stack>
+    </Stack>
+  );
+}
+
+export const SignMessageInfo = ({ request }: SignMessageProps) => {
+  const dappUrl = request?.meta?.sender?.url || '';
+  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
+
+  const { message } = useMemo(() => {
     const { message, typedData } = getSigningRequestDisplayDetails(request);
     return { message, typedData };
   }, [request]);
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
+  const [expanded, setExpanded] = useState(false);
+
+  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
+
+  const txRequest = request?.params?.[0] as TransactionRequest;
+
+  const chainId = activeSession?.chainId || ChainId.mainnet;
+
+  const {
+    data: simulation,
+    status,
+    error,
+    isRefetching,
+  } = useSimulateTransaction({
+    chainId,
+    transaction: {
+      from: txRequest.from || '',
+      to: txRequest.to || '',
+      value: txRequest.value?.toString() || '0',
+      data: txRequest.data?.toString() || '',
+    },
+    domain: dappUrl,
+  });
+
+  const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
 
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
-      style={{ height: 410 }}
+      style={{ minHeight: 397, overflow: 'hidden' }}
       borderColor="separatorTertiary"
       borderWidth="1px"
-      paddingTop="40px"
-      paddingBottom="20px"
+      paddingHorizontal="20px"
+      paddingVertical="20px"
+      position="relative"
+      display="flex"
+      flexDirection="column"
+      justifyContent="flex-start"
+      gap="24px"
+      height="full"
     >
-      <Inset bottom="8px">
+      <motion.div
+        style={{
+          maxHeight: expanded ? 0 : '100%',
+          overflow: expanded ? 'hidden' : 'unset',
+          paddingTop: expanded ? 0 : '20px',
+          opacity: expanded ? 0 : 1,
+        }}
+      >
         <Stack space="16px" alignItems="center">
-          <Inline alignHorizontal="center">
-            <DappIcon appLogo={dappMetadata?.appLogo} size="32px" />
-          </Inline>
+          <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
           <Stack space="12px">
             <DappHostName
               hostName={dappMetadata?.appHostName}
               dappStatus={dappMetadata?.status}
             />
-            <Text align="center" size="14pt" weight="bold">
-              {i18n.t('approve_request.message_signing_request')}
+            <Text
+              align="center"
+              size="14pt"
+              weight="bold"
+              color={isScamDapp ? 'red' : 'labelSecondary'}
+            >
+              {isScamDapp
+                ? i18n.t('approve_request.dangerous_request')
+                : i18n.t('approve_request.message_signing_request')}
             </Text>
           </Stack>
         </Stack>
-      </Inset>
+      </motion.div>
 
-      <Inset horizontal="20px" top="32px" bottom="12px">
-        <Text align="left" size="14pt" weight="semibold" color="labelTertiary">
-          {i18n.t('approve_request.message')}
-        </Text>
-      </Inset>
-
-      <Stack
-        space="12px"
-        paddingHorizontal="20px"
-        alignItems="center"
-        height="full"
+      <Tabs
+        tabs={[tabLabel('overview')]}
+        expanded={expanded}
+        onExpand={() => setExpanded((e) => !e)}
       >
-        <Box
-          background="surfacePrimaryElevated"
-          borderRadius="16px"
-          borderColor="separatorSecondary"
-          borderWidth="1px"
-          width="full"
-          style={{
-            height: isScamDapp ? 110 : 189,
-            overflowX: 'auto',
-            overflowY: 'auto',
-            wordBreak: 'break-all',
-            whiteSpace: 'pre-wrap',
-          }}
-          padding="20px"
-        >
-          <Text
-            weight="regular"
-            color="label"
-            size="14pt"
-            testId="sign-message-text"
-          >
-            {typedData ? <pre>{message}</pre> : message}
-          </Text>
-        </Box>
-        {isScamDapp ? <ThisDappIsLikelyMalicious /> : null}
-      </Stack>
+        <TabContent value={tabLabel('overview')}>
+          <Overview
+            message={message}
+            simulation={simulation}
+            status={status === 'error' && isRefetching ? 'loading' : status}
+            error={error}
+          />
+          <CopyButton
+            withLabel={expanded}
+            onClick={() =>
+              copy({
+                value: message || '',
+                title: i18n.t('approve_request.message_copied'),
+                description: truncateString(message, 20),
+              })
+            }
+          />
+        </TabContent>
+      </Tabs>
+
+      {!expanded && isScamDapp && <ThisDappIsLikelyMalicious />}
     </Box>
   );
 };

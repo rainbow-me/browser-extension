@@ -15,6 +15,14 @@ export const event = {
    */
   bridgeSubmitted: 'bridge.submitted',
   /**
+   * Called when the user approves a network add request from the active dApp.
+   */
+  dappAddEthereumChainPromptApproved: 'dapp.prompt.add_ethereum_chain.approved',
+  /**
+   * Called when the user rejects a network add request from the active dApp.
+   */
+  dappAddEthereumChainPromptRejected: 'dapp.prompt.add_ethereum_chain.rejected',
+  /**
    * Called when the user approves a connection request from the active dApp.
    */
   dappPromptConnectApproved: 'dapp.prompt.connect.approved',
@@ -226,6 +234,52 @@ export type EventProperties = {
      * The estimated USD value of the swap.
      */
     tradeAmountUSD: number;
+  };
+  [event.dappAddEthereumChainPromptApproved]: {
+    /**
+     * `chainId` of the network suggested by the dApp.
+     */
+    chainId: number;
+    /**
+     * `rpcUrl` of the network suggested by the dApp.
+     */
+    rpcUrl: string;
+    /**
+     * `blockExplorer` of the network suggested by the dApp.
+     */
+    blockExplorerUrl: string;
+    /**
+     * Full url of the dApp requesting a connection.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     * This will help us spot malformed dApp names to add to our overrides.
+     */
+    dappName?: string;
+  };
+  [event.dappAddEthereumChainPromptRejected]: {
+    /**
+     * `chainId` of the network suggested by the dApp.
+     */
+    chainId: number;
+    /**
+     * `rpcUrl` of the network suggested by the dApp.
+     */
+    rpcUrl: string;
+    /**
+     * `blockExplorerUrl` of the network suggested by the dApp.
+     */
+    blockExplorerUrl: string;
+    /**
+     * Full url of the dApp requesting a connection.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     * This will help us spot malformed dApp names to add to our overrides.
+     */
+    dappName?: string;
   };
   [event.dappPromptConnectApproved]: {
     /**

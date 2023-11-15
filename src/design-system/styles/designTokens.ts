@@ -168,6 +168,7 @@ export type ButtonVariant =
   | 'disabled';
 
 export const backdropFilter = {
+  'blur(10px)': 'blur(10px)',
   'blur(12px)': 'blur(12px)',
   'blur(20px)': 'blur(20px)',
   'blur(26px)': 'blur(26px)',
@@ -1009,6 +1010,13 @@ export const symbolNames = selectSymbolNames(
   'exclamationmark.octagon.fill',
   'network.badge.shield.half.filled',
   'safari.fill',
+  'arrow.up.circle.fill',
+  'arrow.down.circle.fill',
+  'curlybraces',
+  'calendar',
+  'signature',
+  'waveform.badge.magnifyingglass',
+  'arrow.down.right.and.arrow.up.left',
   't.square.fill',
   'arcade.stick',
   'hammer.fill',

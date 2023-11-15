@@ -13,6 +13,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import { isExternalPopup } from '../../utils/windows';
 
+import { AddEthereumChain } from './AddEthereumChain';
 import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
 import { SignMessage } from './SignMessage';
@@ -64,26 +65,33 @@ export const ApproveAppRequest = () => {
     }
   }, [pendingRequests.length, navigate]);
 
-  const handleRequestAction = useCallback(() => {
-    removePendingRequest(pendingRequest?.id);
-    const notificationWindow =
-      notificationWindows?.[
-        Number(pendingRequest?.meta?.sender?.tab?.id)?.toString()
-      ];
-    if (pendingRequests.length <= 1 && notificationWindow?.id) {
-      notificationWindow?.id && chrome.windows.remove(notificationWindow?.id);
-      setTimeout(() => {
-        navigate(ROUTES.HOME);
-      }, 50);
-    }
-  }, [
-    removePendingRequest,
-    pendingRequest?.id,
-    pendingRequest?.meta?.sender?.tab?.id,
-    notificationWindows,
-    pendingRequests.length,
-    navigate,
-  ]);
+  const handleRequestAction = useCallback(
+    ({ preventWindowClose = false }: { preventWindowClose?: boolean } = {}) => {
+      removePendingRequest(pendingRequest?.id);
+      const notificationWindow =
+        notificationWindows?.[
+          Number(pendingRequest?.meta?.sender?.tab?.id)?.toString()
+        ];
+      if (
+        !preventWindowClose &&
+        pendingRequests.length <= 1 &&
+        notificationWindow?.id
+      ) {
+        notificationWindow?.id && chrome.windows.remove(notificationWindow?.id);
+        setTimeout(() => {
+          navigate(ROUTES.HOME);
+        }, 50);
+      }
+    },
+    [
+      removePendingRequest,
+      pendingRequest?.id,
+      pendingRequest?.meta?.sender?.tab?.id,
+      notificationWindows,
+      pendingRequests.length,
+      navigate,
+    ],
+  );
 
   const approveRequest = useCallback(
     async (payload?: unknown) => {
@@ -93,12 +101,28 @@ export const ApproveAppRequest = () => {
     [handleRequestAction, pendingRequest?.id],
   );
 
-  const rejectRequest = useCallback(() => {
-    backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
-    handleRequestAction();
-  }, [handleRequestAction, pendingRequest?.id]);
+  const rejectRequest = useCallback(
+    ({ preventWindowClose }: { preventWindowClose?: boolean } = {}) => {
+      backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
+      handleRequestAction({ preventWindowClose });
+    },
+    [handleRequestAction, pendingRequest?.id],
+  );
 
   switch (pendingRequest?.method) {
+    case 'wallet_addEthereumChain':
+      return (
+        <ApproveAppRequestWrapper
+          pendingRequest={pendingRequest}
+          rejectRequest={rejectRequest}
+        >
+          <AddEthereumChain
+            approveRequest={approveRequest}
+            rejectRequest={rejectRequest}
+            request={pendingRequest}
+          />
+        </ApproveAppRequestWrapper>
+      );
     case 'eth_requestAccounts':
       return (
         <ApproveAppRequestWrapper

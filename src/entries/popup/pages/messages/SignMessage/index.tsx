@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -7,10 +6,10 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
-import { Box } from '~/design-system';
+import { Bleed, Box, Stack } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
@@ -18,6 +17,7 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../../handlers/wallet';
+import { AccountSigningWith } from '../AccountSigningWith';
 
 import { SignMessageActions } from './SignMessageActions';
 import { SignMessageInfo } from './SignMessageInfo';
@@ -55,7 +55,6 @@ export function SignMessage({
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { watchedWallets } = useWallets();
 
-  const selectedChainId = activeSession?.chainId ?? ChainId.mainnet;
   const selectedWallet = activeSession?.address;
 
   const onAcceptRequest = useCallback(async () => {
@@ -146,17 +145,24 @@ export function SignMessage({
   }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
   return (
-    <Box style={{ overflowY: 'hidden' }} width="full" height="full">
+    <Box
+      display="flex"
+      flexDirection="column"
+      style={{ height: POPUP_DIMENSIONS.height, overflow: 'hidden' }}
+    >
       <SignMessageInfo request={request} />
-      <SignMessageActions
-        waitingForDevice={waitingForDevice}
-        selectedWallet={selectedWallet || ('' as Address)}
-        selectedChainId={selectedChainId}
-        onAcceptRequest={onAcceptRequest}
-        onRejectRequest={onRejectRequest}
-        loading={loading}
-        dappStatus={dappMetadata?.status}
-      />
+      <Stack space="20px" padding="20px">
+        <Bleed vertical="4px">
+          <AccountSigningWith session={activeSession} noFee />
+        </Bleed>
+        <SignMessageActions
+          waitingForDevice={waitingForDevice}
+          onAcceptRequest={onAcceptRequest}
+          onRejectRequest={onRejectRequest}
+          loading={loading}
+          dappStatus={dappMetadata?.status}
+        />
+      </Stack>
     </Box>
   );
 }
