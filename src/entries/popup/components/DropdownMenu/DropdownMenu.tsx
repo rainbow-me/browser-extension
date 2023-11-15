@@ -281,6 +281,7 @@ export const DropdownMenuItem = ({
 };
 
 interface DropdownMenuRadioItemProps {
+  cursor?: BoxStyles['cursor'];
   children: ReactNode;
   value: string;
   selectedValue?: string;
@@ -291,6 +292,7 @@ interface DropdownMenuRadioItemProps {
 
 export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
   const {
+    cursor,
     children,
     value,
     selectedValue,
@@ -329,6 +331,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
       }}
       borderColor={isSelectedValue ? 'buttonStrokeSecondary' : 'transparent'}
       borderWidth="1px"
+      cursor={cursor}
     >
       {children}
     </Box>
