@@ -682,6 +682,33 @@ export async function switchWallet(
   await delayTime('long');
 }
 
+export async function connectToTestDapp(driver: WebDriver) {
+  await goToTestApp(driver);
+  const dappHandler = await getWindowHandle({ driver });
+
+  const button = await findElementByText(driver, 'Connect Wallet');
+  expect(button).toBeTruthy();
+  await waitAndClick(button, driver);
+
+  const modalTitle = await findElementByText(driver, 'Connect a Wallet');
+  expect(modalTitle).toBeTruthy();
+
+  const mmButton = await querySelector(
+    driver,
+    '[data-testid="rk-wallet-option-rainbow"]',
+  );
+  await waitAndClick(mmButton, driver);
+
+  const { popupHandler } = await getAllWindowHandles({
+    driver,
+    dappHandler,
+  });
+
+  await driver.switchTo().window(popupHandler);
+
+  return { dappHandler, popupHandler };
+}
+
 export async function getOnchainBalance(addy: string, contract: string) {
   try {
     const provider = getDefaultProvider('http://127.0.0.1:8545');
