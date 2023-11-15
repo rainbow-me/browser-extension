@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode, forwardRef } from 'react';
 
 import { BoxStyles } from '~/design-system/styles/core.css';
 
@@ -29,16 +29,20 @@ interface InlineProps {
   children?: ReactNode;
 }
 
-export function Inline({
-  children,
-  alignHorizontal = 'left',
-  alignVertical,
-  height,
-  wrap = true,
-  space,
-}: InlineProps) {
+export const Inline = forwardRef<HTMLDivElement, InlineProps>(function Inline(
+  {
+    children,
+    alignHorizontal = 'left',
+    alignVertical,
+    height,
+    wrap = true,
+    space,
+  },
+  ref,
+) {
   return (
     <Box
+      ref={ref}
       display="flex"
       flexDirection="row"
       height={height}
@@ -50,4 +54,4 @@ export function Inline({
       {children}
     </Box>
   );
-}
+});
