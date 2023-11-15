@@ -60,10 +60,6 @@ describe('Networks & Testnet Mode flows', () => {
     });
   });
 
-  it('should go back to home', async () => {
-    await goBackTwice(driver);
-  });
-
   it('should be able to connect to bx test dapp', async () => {
     await delayTime('long');
     await goToTestApp(driver);
