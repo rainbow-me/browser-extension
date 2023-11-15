@@ -537,9 +537,8 @@
       "send_to": "Send to %{toName}",
       "cancel": "Cancel",
       "sending_on_network": "Sending on the %{chainName} network",
-      "sending_on_l2_check_1": "I’m not sending to an exchange",
-      "sending_on_l2_check_2": "The person I’m sending to has a wallet that supports %{chainName}",
-      "complete_checks": "Complete the checks",
+      "sending_on_l2_check_1": "The address I’m sending to supports %{chainName}",
+      "complete_checks": "Complete the check",
       "confirm_hw": "Confirm on your device"
     }
   },
