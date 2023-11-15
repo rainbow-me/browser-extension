@@ -7,18 +7,16 @@ import {
   checkExtensionURL,
   checkWalletName,
   clickAcceptRequestButton,
+  connectToTestDapp,
   delayTime,
   doNotFindElementByTestId,
   executePerformShortcut,
   findElementByTestId,
   findElementByText,
   findElementByTextAndClick,
-  getAllWindowHandles,
   getExtensionIdByName,
   getRootUrl,
-  getWindowHandle,
   goToPopup,
-  goToTestApp,
   importWalletFlowUsingKeyboardNavigation,
   initDriverWithOptions,
   isElementFoundByText,
@@ -65,28 +63,7 @@ describe.runIf(browser !== 'firefox')(
     });
 
     it('should be able to connect to bx test dapp', async () => {
-      await goToTestApp(driver);
-      const dappHandler = await getWindowHandle({ driver });
-
-      const button = await findElementByText(driver, 'Connect Wallet');
-      expect(button).toBeTruthy();
-      await waitAndClick(button, driver);
-
-      const modalTitle = await findElementByText(driver, 'Connect a Wallet');
-      expect(modalTitle).toBeTruthy();
-
-      const mmButton = await querySelector(
-        driver,
-        '[data-testid="rk-wallet-option-rainbow"]',
-      );
-      await waitAndClick(mmButton, driver);
-
-      const { popupHandler } = await getAllWindowHandles({
-        driver,
-        dappHandler,
-      });
-
-      await driver.switchTo().window(popupHandler);
+      const { dappHandler } = await connectToTestDapp(driver);
 
       await delayTime('medium');
       await clickAcceptRequestButton(driver);
