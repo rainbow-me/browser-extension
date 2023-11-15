@@ -1,153 +1,561 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { useMemo } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ReactNode, useState } from 'react';
+import { Address } from 'wagmi';
 
-import { event } from '~/analytics/event';
-import config from '~/core/firebase/remoteConfig';
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
-import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
-import { useCurrentCurrencyStore } from '~/core/state';
-import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
+import { i18n } from '~/core/languages';
+import { useUserAssets } from '~/core/resources/assets';
+import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
+import { useCurrentCurrencyStore, useNonceStore } from '~/core/state';
+import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { ChainId } from '~/core/types/chains';
-import { RainbowTransaction } from '~/core/types/transactions';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { copy, copyAddress } from '~/core/utils/copy';
+import { formatDate } from '~/core/utils/formatDate';
+import { truncateString } from '~/core/utils/strings';
 import {
-  convertRawAmountToBalance,
-  convertRawAmountToNativeDisplay,
-} from '~/core/utils/numbers';
-import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
+  Bleed,
+  Box,
+  Button,
+  Inline,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
+import { SymbolName } from '~/design-system/styles/designTokens';
+import { AddressDisplay } from '~/entries/popup/components/AddressDisplay';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
-import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
+import { Tag } from '~/entries/popup/components/Tag';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
-import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
+import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 
-import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
+import {
+  DappHostName,
+  ThisDappIsLikelyMalicious,
+  getDappStatusBadge,
+} from '../DappScanStatus';
+import { SimulationOverview } from '../Simulation';
+import { CopyButton, TabContent, Tabs } from '../Tabs';
+import { useHasEnoughGas } from '../useHasEnoughGas';
+import {
+  SimulationError,
+  TransactionSimulation,
+  useSimulateTransaction,
+} from '../useSimulateTransaction';
 
 interface SendTransactionProps {
   request: ProviderRequestPayload;
+  onRejectRequest: ({
+    preventWindowClose,
+  }: {
+    preventWindowClose?: boolean;
+  }) => void;
 }
 
-export function SendTransactionInfo({ request }: SendTransactionProps) {
-  const { data: dappMetadata } = useDappMetadata({
-    url: request?.meta?.sender?.url,
-  });
-  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  const { flashbotsEnabled } = useFlashbotsEnabledStore();
-  const nativeAsset = useNativeAssetForNetwork({
-    chainId: activeSession?.chainId || ChainId.mainnet,
-  });
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const flashbotsEnabledGlobally =
-    config.flashbots_enabled &&
-    flashbotsEnabled &&
-    activeSession?.chainId === ChainId.mainnet;
-  const txRequest = request?.params?.[0] as TransactionRequest;
+const InfoRow = ({
+  symbol,
+  label,
+  value,
+}: {
+  symbol: SymbolName;
+  label: ReactNode;
+  value: ReactNode;
+}) => (
+  <Box
+    display="flex"
+    alignItems="center"
+    justifyContent="space-between"
+    gap="16px"
+  >
+    <Inline alignVertical="center" space="12px" wrap={false}>
+      <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
+      <Text color="labelTertiary" size="12pt" weight="semibold">
+        {label}
+      </Text>
+    </Inline>
+    <Text
+      color="labelSecondary"
+      size="12pt"
+      weight="semibold"
+      cursor="text"
+      userSelect="all"
+    >
+      {value}
+    </Text>
+  </Box>
+);
 
-  const { data: methodName = '' } = useRegistryLookup({
-    data: (txRequest?.data as string) || null,
-    to: txRequest?.to || null,
-    chainId: activeSession?.chainId || ChainId.mainnet,
-    hash: null,
-  });
+function Overview({
+  simulation,
+  status,
+  error,
+  metadata,
+}: {
+  simulation: TransactionSimulation | undefined;
+  status: 'loading' | 'error' | 'success';
+  error: SimulationError | null;
+  metadata: DappMetadata | null;
+}) {
+  const chainId = simulation?.chainId;
 
-  const { nativeAssetAmount, nativeCurrencyAmount } = useMemo(() => {
-    if (!nativeAsset)
-      return { nativeAssetAmount: null, nativeCurrencyAmount: null };
-    switch (request.method) {
-      case 'eth_sendTransaction':
-      case 'eth_signTransaction': {
-        const tx = request?.params?.[0] as RainbowTransaction;
-
-        const nativeAssetAmount = convertRawAmountToBalance(
-          tx?.value?.toString() ?? 0,
-          nativeAsset,
-        ).display;
-
-        const nativeCurrencyAmount = convertRawAmountToNativeDisplay(
-          tx?.value?.toString() ?? 0,
-          nativeAsset?.decimals,
-          nativeAsset?.price?.value as number,
-          currentCurrency,
-        ).display;
-        return { nativeAssetAmount, nativeCurrencyAmount };
-      }
-      default:
-        return { nativeAssetAmount: null, nativeCurrencyAmount: null };
-    }
-  }, [request, nativeAsset, currentCurrency]);
+  const { badge, color } = getDappStatusBadge(
+    metadata?.status || DAppStatus.Unverified,
+    { size: 12 },
+  );
 
   return (
-    <Box background="surfacePrimaryElevatedSecondary" style={{ height: 410 }}>
-      <Stack
-        space="10px"
-        paddingHorizontal="20px"
-        paddingTop="40px"
-        paddingBottom="16px"
-        height="full"
-      >
-        <Stack space="16px" alignItems="center">
-          <Inline alignHorizontal="center">
-            <DappIcon appLogo={dappMetadata?.appLogo} size="32px" />
-          </Inline>
-          <Stack space="12px">
-            <DappHostName
-              hostName={dappMetadata?.appHostName}
-              dappStatus={dappMetadata?.status}
-            />
-            <Text align="center" size="20pt" weight="semibold">
-              {methodName}
-            </Text>
-          </Stack>
-        </Stack>
-        <Stack
-          space="20px"
-          alignHorizontal="center"
-          justifyContent="center"
-          height="full"
-        >
-          <Stack space="16px" alignHorizontal="center">
-            <Text align="center" size="32pt" weight="heavy" color="label">
-              {nativeCurrencyAmount || ''}
-            </Text>
-            <Box background="surfacePrimaryElevated" borderRadius="18px">
-              <Inset vertical="6px" left="8px" right="10px">
-                <Inline
-                  space="4px"
-                  alignVertical="center"
-                  alignHorizontal="center"
-                >
-                  <ChainBadge
-                    chainId={nativeAsset?.chainId || ChainId.mainnet}
-                    size="18"
-                  />
-                  <Text size="14pt" weight="semibold" color="label">
-                    {nativeAssetAmount || ''}
-                  </Text>
-                </Inline>
-              </Inset>
-            </Box>
-          </Stack>
-          {dappMetadata?.status === DAppStatus.Scam ? (
-            <ThisDappIsLikelyMalicious />
-          ) : null}
-        </Stack>
+    <Stack space="16px" paddingTop="14px">
+      <Text size="12pt" weight="semibold" color="labelTertiary">
+        {i18n.t('simulation.title')}
+      </Text>
 
-        <TransactionFee
-          analyticsEvents={{
-            customGasClicked: event.dappPromptSendTransactionCustomGasClicked,
-            transactionSpeedSwitched:
-              event.dappPromptSendTransactionSpeedSwitched,
-            transactionSpeedClicked:
-              event.dappPromptSendTransactionSpeedClicked,
-          }}
-          chainId={activeSession?.chainId || ChainId.mainnet}
-          transactionRequest={request?.params?.[0] as TransactionRequest}
-          plainTriggerBorder
-          flashbotsEnabled={flashbotsEnabledGlobally}
-        />
-      </Stack>
+      <SimulationOverview
+        simulation={simulation}
+        status={status}
+        error={error}
+      />
+
       <Separator color="separatorTertiary" />
+
+      {chainId && ChainNameDisplay[chainId] && (
+        <InfoRow
+          symbol="network"
+          label={i18n.t('chain')}
+          value={
+            <Inline space="6px" alignVertical="center">
+              <ChainBadge chainId={chainId} size={14} />
+              <Text size="12pt" weight="semibold" color="labelSecondary">
+                {ChainNameDisplay[chainId]}
+              </Text>
+            </Inline>
+          }
+        />
+      )}
+
+      {metadata && (
+        <InfoRow
+          symbol="app.badge.checkmark"
+          label="App"
+          value={
+            <Tag
+              size="12pt"
+              color={color}
+              bleed
+              left={badge && <Bleed vertical="3px">{badge}</Bleed>}
+            >
+              {metadata.appName}
+            </Tag>
+          }
+        />
+      )}
+    </Stack>
+  );
+}
+
+function TransactionDetails({
+  simulation,
+  session,
+}: {
+  simulation: TransactionSimulation | undefined;
+  session: { address: Address; chainId: ChainId };
+}) {
+  const metaTo = simulation?.meta.to;
+
+  const { getNonce } = useNonceStore();
+  const { currentNonce: nonce } = getNonce(session) || {};
+
+  const functionName = metaTo?.function.split('(')[0];
+  const contract = metaTo?.address;
+  const contractName = metaTo?.name;
+  const isSourceCodeVerified = metaTo?.sourceCodeStatus === 'VERIFIED';
+  const contractCreatedAt = metaTo?.created;
+
+  return (
+    <Box gap="16px" display="flex" flexDirection="column" paddingTop="14px">
+      {!!nonce && (
+        <InfoRow symbol="number" label={i18n.t('nonce')} value={nonce} />
+      )}
+      {functionName && (
+        <InfoRow
+          symbol="curlybraces"
+          label={i18n.t('simulation.function')}
+          value={
+            <Tag size="12pt" color="labelSecondary" bleed>
+              {functionName}
+            </Tag>
+          }
+        />
+      )}
+      {contract && (
+        <InfoRow
+          symbol="doc.plaintext"
+          label={i18n.t('simulation.contract')}
+          value={<AddressDisplay address={contract} hideAvatar />}
+        />
+      )}
+      {contractName && (
+        <InfoRow
+          symbol="person"
+          label={i18n.t('simulation.contract_name')}
+          value={contractName}
+        />
+      )}
+      {contractCreatedAt && (
+        <InfoRow
+          symbol="calendar"
+          label={i18n.t('simulation.contract_created_at')}
+          value={formatDate(contractCreatedAt)}
+        />
+      )}
+      <InfoRow
+        symbol="doc.text.magnifyingglass"
+        label={i18n.t('simulation.source_code')}
+        value={
+          <Tag
+            size="12pt"
+            color={isSourceCodeVerified ? 'green' : 'labelSecondary'}
+            bleed
+          >
+            {isSourceCodeVerified ? i18n.t('verified') : i18n.t('unverified')}
+          </Tag>
+        }
+      />
+    </Box>
+  );
+}
+
+function TransactionData({
+  data,
+  expanded,
+}: {
+  data: string;
+  expanded: boolean;
+}) {
+  return (
+    <Box paddingBottom="32px" paddingTop="14px">
+      <Text size="12pt" weight="medium" color="labelSecondary">
+        <span style={{ wordWrap: 'break-word' }}>{data}</span>
+      </Text>
+      <CopyButton
+        withLabel={expanded}
+        onClick={() =>
+          copy({
+            value: data,
+            title: i18n.t('approve_request.transaction_data_copied'),
+            description: truncateString(data, 20),
+          })
+        }
+      />
+    </Box>
+  );
+}
+
+function TransactionInfo({
+  request,
+  dappUrl,
+  dappMetadata,
+  expanded,
+  onExpand,
+}: {
+  request: TransactionRequest;
+  dappUrl: string;
+  dappMetadata: DappMetadata | null;
+  expanded: boolean;
+  onExpand: VoidFunction;
+}) {
+  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
+  const chainId = activeSession?.chainId || ChainId.mainnet;
+  const txData = request?.data?.toString() || '';
+
+  const {
+    data: simulation,
+    status,
+    error,
+    isRefetching,
+  } = useSimulateTransaction({
+    chainId,
+    transaction: {
+      from: request.from || '',
+      to: request.to || '',
+      value: request.value?.toString() || '0',
+      data: request.data?.toString() || '',
+    },
+    domain: dappUrl,
+  });
+
+  const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
+
+  return (
+    <Tabs
+      tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
+      expanded={expanded}
+      onExpand={onExpand}
+    >
+      <TabContent value={tabLabel('overview')}>
+        <Overview
+          simulation={simulation}
+          status={status === 'error' && isRefetching ? 'loading' : status}
+          error={error}
+          metadata={dappMetadata}
+        />
+      </TabContent>
+      <TabContent value={tabLabel('details')}>
+        <TransactionDetails session={activeSession!} simulation={simulation} />
+      </TabContent>
+      <TabContent value={tabLabel('data')}>
+        <TransactionData data={txData} expanded={expanded} />
+      </TabContent>
+    </Tabs>
+  );
+}
+
+function InsuficientGasFunds({
+  session: { chainId, address },
+  onRejectRequest,
+}: {
+  session: { address: Address; chainId: ChainId };
+  onRejectRequest: VoidFunction;
+}) {
+  const chainName = ChainNameDisplay[chainId];
+  const { nativeAsset } = useNativeAsset({ chainId });
+
+  const { currentCurrency } = useCurrentCurrencyStore();
+  const { data: hasBridgeableBalance } = useUserAssets(
+    { address, currency: currentCurrency },
+    {
+      select(data) {
+        const nativeNetworks = nativeAsset?.networks;
+        if (!nativeNetworks) return false;
+        const bridgeableChains = Object.keys(nativeNetworks);
+        // has a balance on any other chain we could bridge from?
+        return bridgeableChains.some((chain) => {
+          if (+chain === chainId) return false; // skip current chain
+          const addressOnChain = nativeNetworks[+chain]?.address;
+          if (!addressOnChain) return false;
+          const balanceOnChain = data[+chain][addressOnChain].balance;
+          return +balanceOnChain.amount > 0;
+        });
+      },
+    },
+  );
+
+  const token = `${chainName} ${nativeAsset?.symbol}`;
+
+  const navigate = useRainbowNavigate();
+
+  const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
+
+  if (!nativeAsset) return null;
+
+  return (
+    <Box
+      as={motion.div}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      display="flex"
+      flexDirection="column"
+      padding="20px"
+      paddingBottom="2px"
+      background="surfaceSecondaryElevated"
+      borderRadius="20px"
+      borderColor="separatorSecondary"
+      borderWidth="1px"
+      width="full"
+      gap="16px"
+    >
+      <Inline alignVertical="center" space="12px">
+        <ChainBadge chainId={chainId} size={16} />
+        <Text size="14pt" weight="bold">
+          {+nativeAsset.balance.amount > 0
+            ? i18n.t('approve_request.insufficient_gas_funds', { token })
+            : i18n.t('approve_request.no_gas_funds', { token })}
+        </Text>
+      </Inline>
+      <Text size="12pt" weight="medium" color="labelQuaternary">
+        {+nativeAsset.balance.amount > 0
+          ? i18n.t('approve_request.insufficient_gas_funds_description', {
+              token,
+            })
+          : i18n.t('approve_request.no_gas_funds_description', {
+              token,
+            })}
+      </Text>
+      <Stack marginHorizontal="-8px">
+        <Separator color="separatorTertiary" />
+
+        {hasBridgeableBalance ? (
+          <Button
+            paddingHorizontal="8px"
+            height="44px"
+            variant="transparent"
+            color="blue"
+            onClick={() => {
+              setSelectedToken(nativeAsset);
+              navigate(ROUTES.BRIDGE, { replace: true });
+              onRejectRequest();
+              triggerToast({
+                title: i18n.t('approve_request.request_rejected'),
+                description: i18n.t('approve_request.bridge_and_try_again'),
+              });
+            }}
+          >
+            <Inline alignVertical="center" space="12px" wrap={false}>
+              <Symbol
+                size={16}
+                symbol="arrow.turn.up.right"
+                color="blue"
+                weight="bold"
+              />
+              <Text size="14pt" weight="bold" color="blue">
+                {i18n.t('approve_request.bridge_to', { chain: chainName })}
+              </Text>
+            </Inline>
+          </Button>
+        ) : (
+          <Button
+            paddingHorizontal="8px"
+            height="44px"
+            variant="transparent"
+            color="blue"
+            onClick={() => {
+              navigate(ROUTES.BUY, { replace: true });
+              onRejectRequest();
+              triggerToast({
+                title: i18n.t('approve_request.request_rejected'),
+                description: i18n.t('approve_request.buy_and_try_again'),
+              });
+            }}
+          >
+            <Inline alignVertical="center" space="12px" wrap={false}>
+              <Symbol
+                size={16}
+                symbol="creditcard.fill"
+                color="blue"
+                weight="bold"
+              />
+              <Text size="14pt" weight="bold" color="blue">
+                {i18n.t('approve_request.buy', { token })}
+              </Text>
+            </Inline>
+          </Button>
+        )}
+
+        <Separator color="separatorTertiary" />
+
+        <Button
+          paddingHorizontal="8px"
+          height="44px"
+          variant="transparent"
+          color="blue"
+          onClick={() => copyAddress(address)}
+        >
+          <Inline alignVertical="center" space="12px" wrap={false}>
+            <Symbol
+              size={16}
+              symbol="square.on.square"
+              color="blue"
+              weight="bold"
+            />
+            <Text size="14pt" weight="bold" color="blue">
+              {i18n.t('approve_request.copy_deposit_address')}
+            </Text>
+          </Inline>
+        </Button>
+      </Stack>
+    </Box>
+  );
+}
+
+export function SendTransactionInfo({
+  request,
+  onRejectRequest,
+}: SendTransactionProps) {
+  const dappUrl = request?.meta?.sender?.url || '';
+  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
+
+  const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
+  const chainId = activeSession?.chainId || ChainId.mainnet;
+
+  const txRequest = request?.params?.[0] as TransactionRequest;
+
+  const [expanded, setExpanded] = useState(false);
+
+  const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
+
+  const hasEnoughtGas = useHasEnoughGas(chainId);
+
+  return (
+    <Box
+      background="surfacePrimaryElevatedSecondary"
+      style={{ minHeight: 397, overflow: 'hidden' }}
+      borderColor="separatorTertiary"
+      borderWidth="1px"
+      paddingHorizontal="20px"
+      paddingVertical="20px"
+      position="relative"
+      display="flex"
+      flexDirection="column"
+      justifyContent="flex-start"
+      gap="24px"
+      height="full"
+    >
+      <AnimatePresence mode="popLayout">
+        {!expanded && (
+          <motion.div
+            style={{ paddingTop: 20 }}
+            initial={{ opacity: 0, scale: 0.9, y: -8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -8 }}
+          >
+            <Stack space="16px" alignItems="center">
+              <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
+              <Stack space="12px">
+                <DappHostName
+                  hostName={dappMetadata?.appHostName}
+                  dappStatus={dappMetadata?.status}
+                />
+                <Text
+                  align="center"
+                  size="14pt"
+                  weight="bold"
+                  color={isScamDapp ? 'red' : 'labelSecondary'}
+                >
+                  {isScamDapp
+                    ? i18n.t('approve_request.dangerous_request')
+                    : i18n.t('approve_request.transaction_request')}
+                </Text>
+              </Stack>
+            </Stack>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {hasEnoughtGas ? (
+        <TransactionInfo
+          request={txRequest}
+          dappMetadata={dappMetadata}
+          dappUrl={dappUrl}
+          expanded={expanded}
+          onExpand={() => setExpanded((e) => !e)}
+        />
+      ) : (
+        activeSession && (
+          <InsuficientGasFunds
+            session={activeSession}
+            onRejectRequest={() =>
+              onRejectRequest({ preventWindowClose: true })
+            }
+          />
+        )
+      )}
+
+      {!expanded && isScamDapp && <ThisDappIsLikelyMalicious />}
     </Box>
   );
 }

@@ -1,7 +1,10 @@
 import React, { forwardRef } from 'react';
 
+import { Shortcut, getModifierKeyDisplay } from '~/core/references/shortcuts';
 import { BoxStyles } from '~/design-system/styles/core.css';
 import { Radius } from '~/design-system/styles/designTokens';
+import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { Box } from '../Box/Box';
 import { Inline } from '../Inline/Inline';
@@ -28,9 +31,11 @@ export type ButtonProps = {
   borderRadius?: Radius;
   paddingLeft?: BoxStyles['paddingLeft'];
   paddingRight?: BoxStyles['paddingRight'];
+  paddingHorizontal?: BoxStyles['paddingHorizontal'];
   tabIndex?: number;
   disabled?: boolean;
   enterCta?: boolean;
+  shortcut?: Shortcut;
 } & ButtonVariantProps &
   (
     | {
@@ -43,6 +48,33 @@ export type ButtonProps = {
       }
   );
 
+function ButtonShortcut({
+  shortcut,
+  onTrigger,
+}: {
+  onTrigger: VoidFunction;
+  shortcut: Shortcut;
+}) {
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcut.key) onTrigger();
+    },
+    modifierKey: shortcut.modifier,
+  });
+
+  return (
+    <Inline alignVertical="center" space="3px" wrap={false}>
+      {shortcut.modifier && (
+        <ShortcutHint
+          hint={getModifierKeyDisplay(shortcut.modifier)}
+          variant="flat"
+        />
+      )}
+      <ShortcutHint hint={shortcut.display} variant="flat" />
+    </Inline>
+  );
+}
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -52,6 +84,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       symbol,
       symbolSide,
       testId,
+      shortcut,
       ...props
     }: ButtonProps,
     ref,
@@ -80,25 +113,37 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       // eslint-disable-next-line react/jsx-props-no-spreading
       <ButtonWrapper height={height} {...props} testId={testId} ref={ref}>
         <Box
-          paddingLeft={props.paddingLeft || paddingHorizontal}
-          paddingRight={props.paddingRight || paddingHorizontal}
+          paddingLeft={
+            props.paddingLeft || props.paddingHorizontal || paddingHorizontal
+          }
+          paddingRight={
+            props.paddingRight || props.paddingHorizontal || paddingHorizontal
+          }
         >
-          {typeof children === 'string' ? (
-            <Inline alignVertical="center" space={gap}>
-              {emoji && (
+          <Inline alignVertical="center" space={gap} wrap={false}>
+            {typeof children === 'string' ? (
+              <>
+                {emoji && (
+                  <Text color={textColor} size={textSize} weight="bold">
+                    {emoji}
+                  </Text>
+                )}
+                {symbolSide !== 'right' && symbolComponent}
                 <Text color={textColor} size={textSize} weight="bold">
-                  {emoji}
+                  {children}
                 </Text>
-              )}
-              {symbolSide !== 'right' && symbolComponent}
-              <Text color={textColor} size={textSize} weight="bold">
-                {children}
-              </Text>
-              {symbolSide === 'right' && symbolComponent}
-            </Inline>
-          ) : (
-            children
-          )}
+                {symbolSide === 'right' && symbolComponent}
+              </>
+            ) : (
+              children
+            )}
+            {shortcut && (
+              <ButtonShortcut
+                shortcut={shortcut}
+                onTrigger={() => !props.disabled && props.onClick?.()}
+              />
+            )}
+          </Inline>
         </Box>
       </ButtonWrapper>
     );
