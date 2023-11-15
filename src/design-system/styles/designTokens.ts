@@ -1011,7 +1011,6 @@ export const symbolNames = selectSymbolNames(
   'network.badge.shield.half.filled',
   'safari.fill',
   'arrow.up.circle.fill',
-  'arrow.down.circle.fill',
   'curlybraces',
   'calendar',
   'signature',
