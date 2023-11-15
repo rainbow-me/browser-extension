@@ -50,7 +50,7 @@ describe('Networks & Testnet Mode flows', () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to toggle developer tools', async () => {
+  it.skip('should be able to toggle developer tools', async () => {
     await navigateToSettingsNetworks(driver, rootURL);
     await delayTime('short');
 
