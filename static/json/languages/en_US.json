@@ -403,7 +403,9 @@
         "view_on_ens": "View on ENS",
         "switch_to_wallet": "Switch to This Wallet",
         "copy_wallet_address": "Copy Address",
-        "view_wallet_on_etherscan": "View on Etherscan"
+        "view_wallet_on_etherscan": "View on Etherscan",
+        "enable_flashbots": "Enable Flashbots",
+        "disable_flashbots": "Disable Flashbots"
       },
       "search_tags": {
         "swap": "bridge",

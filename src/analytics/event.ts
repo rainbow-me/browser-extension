@@ -492,6 +492,8 @@ export type EventProperties = {
     chainId: number;
   };
   [event.settingsAnalyticsTrackingEnabled]: undefined;
+  [event.settingsFlashbotsDisabled]: undefined;
+  [event.settingsFlashbotsEnabled]: undefined;
   [event.settingsRainbowDefaultProviderDisabled]: undefined;
   [event.settingsRainbowDefaultProviderEnabled]: undefined;
   [event.swapSubmitted]: {
