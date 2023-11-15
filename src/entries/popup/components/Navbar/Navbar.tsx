@@ -31,6 +31,7 @@ type NavbarProps = {
   titleTestId?: string;
   titleComponent?: React.ReactNode;
   background?: BackgroundColor;
+  style?: React.CSSProperties;
 };
 
 export function Navbar({
@@ -40,6 +41,7 @@ export function Navbar({
   titleTestId,
   titleComponent,
   background,
+  style = {},
 }: NavbarProps) {
   return (
     <Box
@@ -53,6 +55,7 @@ export function Navbar({
         height: NAVBAR_HEIGHT,
         minHeight: NAVBAR_HEIGHT,
         zIndex: zIndexes.NAVBAR,
+        ...style,
       }}
     >
       {leftComponent && (
@@ -239,9 +242,11 @@ function NavbarButtonWithBack({
 export function NavbarBackButton({
   onClick,
   withinModal,
+  variant,
 }: {
   onClick?: () => void;
   withinModal?: boolean;
+  variant?: 'flat' | 'transparent' | 'transparentHover';
 }) {
   return (
     <NavbarButtonWithBack
@@ -250,6 +255,7 @@ export function NavbarBackButton({
       symbolSize={14}
       symbol="arrow.left"
       withinModal={withinModal}
+      variant={variant}
     />
   );
 }

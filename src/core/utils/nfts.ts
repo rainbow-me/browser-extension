@@ -149,6 +149,7 @@ export function simpleHashNFTToUniqueAsset(
       name: nft.contract.name || undefined,
       schema_name: standard,
       symbol: nft.contract.symbol || undefined,
+      deployed_by: nft.contract.deployed_by,
     },
     background: nft.background_color,
     collection: {
@@ -202,6 +203,7 @@ export function simpleHashNFTToUniqueAsset(
     audio_properties: nft.audio_properties,
     model_url: nft.model_url,
     model_properties: nft.model_properties,
+    last_sale: nft.last_sale,
   };
 }
 

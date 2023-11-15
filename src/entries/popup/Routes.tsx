@@ -39,6 +39,7 @@ import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ActivityDetails } from './pages/home/Activity/ActivityDetails';
 import { ConnectedApps } from './pages/home/ConnectedApps';
+import NFTDetails from './pages/home/NFTs/NFTDetails';
 import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
 import { ConnectLedger } from './pages/hw/ledger';
@@ -146,6 +147,14 @@ const ROUTE_DATA = [
         ),
       },
     ],
+  },
+  {
+    path: ROUTES.NFT_DETAILS(':collectionId', ':nftId'),
+    element: (
+      <AnimatedRoute direction="right">
+        <NFTDetails />
+      </AnimatedRoute>
+    ),
   },
   {
     path: ROUTES.APPROVE_APP_REQUEST,

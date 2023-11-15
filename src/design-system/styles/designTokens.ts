@@ -1011,7 +1011,6 @@ export const symbolNames = selectSymbolNames(
   'network.badge.shield.half.filled',
   'safari.fill',
   'arrow.up.circle.fill',
-  'arrow.down.circle.fill',
   'curlybraces',
   'calendar',
   'signature',
@@ -1022,6 +1021,12 @@ export const symbolNames = selectSymbolNames(
   'hammer.fill',
   'checklist.unchecked',
   'list.bullet',
+  'square.and.arrow.up',
+  'arrow.down.circle.fill',
+  'arrow.up.right.circle',
+  'arrow.up.right.square.fill',
+  'at.circle.fill',
+  'ellipsis.bubble.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
