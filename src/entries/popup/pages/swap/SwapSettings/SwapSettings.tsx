@@ -5,8 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
-import { useSwapFlashbotsEnabledStore } from '~/core/state/currentSettings/swapFlashbotsEnabled';
+import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { divide } from '~/core/utils/numbers';
 import {
@@ -208,7 +207,7 @@ export const SwapSettings = ({
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { flashbots_enabled: flashbotsEnabledGlobally } = config;
   const { swapFlashbotsEnabled, setSwapFlashbotsEnabled } =
-    useSwapFlashbotsEnabledStore();
+    useFlashbotsEnabledStore();
   const prevChainId = usePrevious(chainId);
   const [source, setSource] = useState<Source | 'auto'>('auto');
   const [slippage, setSlippage] = useState<string>(defaultSlippage);
