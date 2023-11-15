@@ -56,6 +56,7 @@ function Overview({
           </Text>
         </Inline>
         <Text
+          testId="sign-message-text"
           as="pre"
           size="12pt"
           weight="semibold"
