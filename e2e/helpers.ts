@@ -184,8 +184,8 @@ export async function initDriverWithOptions(opts: {
   const args = [
     'load-extension=build/',
     // '--auto-open-devtools-for-tabs',
-    '--log-level=0',
-    '--enable-logging',
+    // '--log-level=0',
+    // '--enable-logging',
     // '--headless',
   ];
 
