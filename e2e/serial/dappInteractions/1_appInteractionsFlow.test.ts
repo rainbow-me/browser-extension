@@ -18,6 +18,7 @@ import { ChainId } from '~/core/types/chains';
 
 import {
   clickAcceptRequestButton,
+  connectToTestDapp,
   delayTime,
   fillPrivateKey,
   findElementByIdAndClick,
@@ -219,29 +220,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
   });
 
   it('should be able to connect to bx test dapp', async () => {
-    await delayTime('long');
-    await goToTestApp(driver);
-    const dappHandler = await getWindowHandle({ driver });
-
-    const button = await findElementByText(driver, 'Connect Wallet');
-    expect(button).toBeTruthy();
-    await waitAndClick(button, driver);
-
-    const modalTitle = await findElementByText(driver, 'Connect a Wallet');
-    expect(modalTitle).toBeTruthy();
-
-    const mmButton = await querySelector(
-      driver,
-      '[data-testid="rk-wallet-option-rainbow"]',
-    );
-    await waitAndClick(mmButton, driver);
-
-    const { popupHandler } = await getAllWindowHandles({
-      driver,
-      dappHandler,
-    });
-
-    await driver.switchTo().window(popupHandler);
+    const { dappHandler } = await connectToTestDapp(driver);
 
     // switch account
     await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
