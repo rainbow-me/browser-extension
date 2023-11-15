@@ -51,20 +51,6 @@ describe('Networks & Testnet Mode flows', () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to toggle developer tools', async () => {
-    await navigateToSettingsNetworks(driver, rootURL);
-    await delayTime('short');
-
-    await findElementByTestIdAndClick({
-      driver,
-      id: 'developer-tools-toggle',
-    });
-  });
-
-  it('should go back to home', async () => {
-    await goBackTwice(driver);
-  });
-
   it('should be able to connect to bx test dapp', async () => {
     await delayTime('long');
     await goToTestApp(driver);
@@ -104,6 +90,20 @@ describe('Networks & Testnet Mode flows', () => {
     const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
     expect(ensLabel).toBeTruthy();
     await goToPopup(driver, rootURL, '#/home');
+  });
+
+  it('should be able to toggle developer tools', async () => {
+    await navigateToSettingsNetworks(driver, rootURL);
+    await delayTime('short');
+
+    await findElementByTestIdAndClick({
+      driver,
+      id: 'developer-tools-toggle',
+    });
+  });
+
+  it('should go back to home', async () => {
+    await goBackTwice(driver);
   });
 
   it('should enable and disable testnet mode clicking testnet mode in menu', async () => {
