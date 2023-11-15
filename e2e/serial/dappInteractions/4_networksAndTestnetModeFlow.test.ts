@@ -1,7 +1,15 @@
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -21,6 +29,7 @@ import {
   initDriverWithOptions,
   navigateToSettingsNetworks,
   querySelector,
+  takeScreenshotOnFailure,
   waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
@@ -42,6 +51,16 @@ describe('Networks & Testnet Mode flows', () => {
     rootURL += extensionId;
   });
   afterAll(async () => await driver.quit());
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  beforeEach(async (context: any) => {
+    context.driver = driver;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  afterEach(async (context: any) => {
+    await takeScreenshotOnFailure(context);
+  });
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
