@@ -953,27 +953,56 @@
   "approve_request": {
     "wallet_info_title": "wants to connect to your wallet",
     "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions.",
+    "add_chain_info_description": "If you approve it, this network could be used within the Rainbow Browser Extension.",
     "wallet": "Wallet",
     "network": "Network",
     "switch_networks": "Switch Networks",
     "switch_wallets": "Switch Wallets",
+    "allow_to_add_network": "wants to add a network",
     "connect": "Connect to %{appName}",
     "connect_anyway": "Connect Anyway",
+    "approve": "Approve",
+    "approve_anyway": "Approve Anyway",
     "malicious_warning": {
       "title": "This app is likely malicious",
       "message": "Signing messages or transactions from this app could result in losing your assets"
     },
+    "dangerous_request": "Dangerous Request",
     "message_signing_request": "Message Signing Request",
     "message": "Message",
-    "sign_message": "Sign Message",
+    "message_copied": "Message Copied",
+    "transaction_data_copied": "Transaction Data Copied",
+    "sign_message": "Sign",
     "sign_message_anyway": "Sign Anyway",
-    "confirm_hw": "Confirm on your device",
+    "confirm_hw": "Sign on your device",
     "balance": "Balance",
-    "send_transaction": "Confirm",
-    "send_transaction_anyway": "Confirm Anyway",
+    "send_transaction": "Sign",
+    "send_transaction_anyway": "Sign Anyway",
     "contract_deployment": "Contract Deployment",
     "transaction_request": "Transaction Request",
-    "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
+    "insufficient_gas_funds": "You need more %{token}",
+    "insufficient_gas_funds_description": "You need a bit more %{token} to pay for this transaction. Get more below to continue with this request.",
+    "no_gas_funds": "You need some %{token}",
+    "no_gas_funds_description": "You’ll need %{token} to pay for this transaction. Get some %{token} below to continue with this request.",
+    "no_token": "No %{token}",
+    "on_chain": "on %{chain}",
+    "copy_deposit_address": "Copy wallet address to deposit",
+    "bridge_to": "Bridge to %{chain}",
+    "signing_with": "Signing with",
+    "no_fee_to_sign": "No fee to sign",
+    "request_rejected": "Transaction Request Rejected",
+    "bridge_and_try_again": "Bridge some gas funds and try again",
+    "buy_and_try_again": "Buy some gas funds and try again",
+    "buy": "Buy %{token}"
+  },
+  "add_chain": {
+    "name": "Name",
+    "chain_id": "Chain ID",
+    "currency_symbol": "Currency Symbol",
+    "currency_name": "Currency Name",
+    "currency_decimals": "Currency Decimals",
+    "rpc_url": "RPC url",
+    "block_explorer_url": "Block Explorer url"
   },
   "transaction_fee": {
     "title": "Transaction Speed",
@@ -1419,5 +1448,35 @@
     "unfavorite": "Remove from favorites",
     "estimated_difference": "Estimated difference in value",
     "buy_crypto": "Buy and transfer crypto"
-  }
+  },
+  "simulation": {
+    "title": "Simulated Result",
+    "loading": "Simulating...",
+    "error": "Simulation Failed",
+    "no_changes": "No Changes Detected",
+    "received": "Received",
+    "sent": "Sent",
+    "approved": "Approved",
+    "reverted": "Transaction Reverted",
+
+    "function": "Function",
+    "contract": "Contract",
+    "contract_name": "Contract Name",
+    "contract_created_at": "Contract Created",
+    "source_code": "Source Code",
+    "signature": {
+      "message": "Message"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "details": "Details",
+      "data": "Data"
+    }
+  },
+  "chain": "Chain",
+  "nonce": "Nonce",
+  "copy": "Copy",
+  "close": "Close",
+  "verified": "Verified",
+  "unverified": "Unverified"
 }

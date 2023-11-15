@@ -10,22 +10,25 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useGasStore } from '~/core/state';
+import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { Row, Rows } from '~/design-system';
+import { Bleed, Box, Separator, Stack } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
 import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import * as wallet from '../../../handlers/wallet';
+import { AccountSigningWith } from '../AccountSigningWith';
 
 import { SendTransactionActions } from './SendTransactionActions';
 import { SendTransactionInfo } from './SendTransactionsInfo';
@@ -186,23 +189,46 @@ export function SendTransaction({
     selectAssetAddressAndChain,
   ]);
 
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    activeSession?.chainId === ChainId.mainnet;
+
   return (
-    <Rows alignVertical="justify">
-      <Row height="content">
-        <SendTransactionInfo request={request} />
-      </Row>
-      <Row height="content">
+    <Box
+      display="flex"
+      flexDirection="column"
+      style={{ height: POPUP_DIMENSIONS.height, overflow: 'hidden' }}
+    >
+      <SendTransactionInfo request={request} onRejectRequest={rejectRequest} />
+      <Stack space="20px" padding="20px">
+        <Bleed vertical="4px">
+          <AccountSigningWith session={activeSession} />
+        </Bleed>
+        <Separator color="separatorTertiary" />
+        <TransactionFee
+          analyticsEvents={{
+            customGasClicked: event.dappPromptSendTransactionCustomGasClicked,
+            transactionSpeedSwitched:
+              event.dappPromptSendTransactionSpeedSwitched,
+            transactionSpeedClicked:
+              event.dappPromptSendTransactionSpeedClicked,
+          }}
+          chainId={activeSession?.chainId || ChainId.mainnet}
+          transactionRequest={request?.params?.[0] as TransactionRequest}
+          plainTriggerBorder
+          flashbotsEnabled={flashbotsEnabledGlobally}
+        />
         <SendTransactionActions
           chainId={activeSession?.chainId || ChainId.mainnet}
           waitingForDevice={waitingForDevice}
-          appHost={dappMetadata?.appHost || ''}
-          selectedWallet={selectedWallet || ('' as Address)}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
           loading={loading}
           dappStatus={dappMetadata?.status}
         />
-      </Row>
-    </Rows>
+      </Stack>
+    </Box>
   );
 }

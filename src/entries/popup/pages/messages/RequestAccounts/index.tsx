@@ -9,6 +9,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
+import { getDappHostname } from '~/core/utils/connectedApps';
 import { Row, Rows, Separator } from '~/design-system';
 import { RainbowError, logger } from '~/logger';
 
@@ -30,9 +31,11 @@ export const RequestAccounts = ({
 }: ApproveRequestProps) => {
   const [loading, setLoading] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
-  const { data: dappMetadata } = useDappMetadata({
-    url: request?.meta?.sender?.url,
-  });
+  const dappUrl = request?.meta?.sender?.url;
+  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
+  const appName =
+    dappMetadata?.appName || (dappUrl ? getDappHostname(dappUrl) : '');
+
   const { testnetMode } = useTestnetModeStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
     testnetMode ? ChainId.goerli : ChainId.mainnet,
@@ -91,7 +94,7 @@ export const RequestAccounts = ({
         <RequestAccountsInfo
           appHostName={dappMetadata?.appHostName}
           appLogo={dappMetadata?.appLogo}
-          appName={dappMetadata?.appName}
+          appName={appName}
           dappStatus={dappMetadata?.status}
         />
         <Separator color="separatorTertiary" />
@@ -104,7 +107,7 @@ export const RequestAccounts = ({
           setSelectedChainId={setSelectedChainId}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
-          appName={dappMetadata?.appName}
+          appName={appName}
           loading={loading}
           dappStatus={dappMetadata?.status}
         />
