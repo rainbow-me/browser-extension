@@ -21,6 +21,90 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.71](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.71)
+
+### Added
+
+- Display of NFTs in gallery and collection mode, including NFT sorting feature, both behind a feature flag #1082
+- Initial work on custom network support, with no impact on UI or existing functionality #1071
+- Enhanced custom chain support #1123
+- Chore: i18n updates, translations now available for Networks settings, Developer Tools and Testnet Mode, Malicious dApp warnings, Wallet management right-click menus, Clear transactions, Points, NFTs, Custom Networks placeholders #1122 
+- Support for custom networks assets #1120
+
+### Changed
+
+- Management of RPC proxy flag, default value updated to `on` #1125
+
+### Fixed
+
+- Fixed scenarios where native asset price for a token is unavailable #1111
+- Restoration of token details in about section #1115
+- Fix for activity history text overflow issues #1116
+- Ensuring swap prepopulates with the selected token when navigating from the asset context menu #1118
+- Validation of chainid only if available #1121
+- Asset filtering by networks now functioning correctly #1124
+- Testnet native asset sends #1130
+
+### Internal
+
+- Bumped chromedriver from 119.0.0 to 119.0.1 #1126
+- Bumped Axios #1131
+
+## [v1.2.64](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.64)
+
+### Added
+
+- Testnet Mode is now available to safely interact with testnets and view testnet assets. Enable Developer Tools today in the Networks menu in Settings or with the Magic Menu, and toggle Testnet Mode with the `t` hotkey or by using the menu at the top-right of the wallet interface (#1057, #1113, #1109, #1106, #1108, #1110)
+- When attempting to sign a mainnet transaction while Testnet Mode is active, you will now encounter a warning for extra workflow safety #1083
+
+### Changed
+
+- Network Settings are now accessible through the Magic Menu #1108
+
+### Fixed
+
+- Resolved an issue where the Network Changed notification had stopped appearing in dapps #1101
+- Fixed an overflow issues in the Token Right-click menu for tokens with long names #1098
+- Fixed missing strings for the Fee on Transfer Token explainer in Swaps #1084
+- Improvements to various strings and translations thanks to community feedback #1081
+
+### Internal
+
+- Developer settings for Custom RPCs and Custom Assets for the upcoming Custom Networks feature (#1090, #1100)
+- Merged the groundwork for NFT support with the `useNfts` fetch hook #1067
+- Refactored local storage usage with a wrapper and logging to investigate storage quota overflows #1102
+- Patching [GHSA-xwcq-pm8m-c4vf](https://github.com/advisories/GHSA-xwcq-pm8m-c4vf) with `crypto-js` resolution for the Ledger integration #1091
+- Patching vulnerabilities by bumping `yaml` and `browserify-sign` #1099
+- Upgraded SF Symbols to v5 #1108
+- Upgraded `chromedriver` for the latest Chrome support #1107
+
+### Testing
+
+- Expanded end-to-end test coverage for networks and Testnet Mode #1075
+- Adopting `findByTestId` in e2e tests for reliability #1093
+
+## [v1.2.56](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.56)
+
+### Fixed
+
+- Resolved a crash when quickly switching tabs #1089
+- Fixed tab selection and restoration when using Rainbow in Full Screen #1089
+
+## [v1.2.54](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.54)
+
+### Added
+
+- A preview of Rainbow Points is here. True believers are always rewarded. #1078
+- Users can now clear troublesome pending transactions with a new button in the Transactions menu in Settings #1072
+
+### Changed
+
+- Right-click is now available in the Wallets & Keys menu in Settings to make wallet management even easier #1054
+
+### Fixed
+
+- Resolved an issue where Rainbow would not be available to dapps that supports EIP-6963 or `window.ethereum.providers` when the default wallet toggle was disabled #1079
+
 ## [v1.2.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.48)
 
 ### Added
