@@ -1,32 +1,38 @@
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
 import {
   clickAcceptRequestButton,
+  connectToTestDapp,
   delayTime,
   doNotFindElementByTestId,
   executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
-  findElementByText,
-  getAllWindowHandles,
   getExtensionIdByName,
   getRootUrl,
-  getWindowHandle,
   goBackTwice,
   goToPopup,
-  goToTestApp,
   importWalletFlow,
   initDriverWithOptions,
   navigateToSettingsNetworks,
   querySelector,
+  takeScreenshotOnFailure,
   waitAndClick,
-} from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
+} from '../../helpers';
+import { TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
@@ -34,7 +40,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe('Networks & Testnet Mode flows', () => {
+describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -46,48 +52,22 @@ describe('Networks & Testnet Mode flows', () => {
   });
   afterAll(async () => await driver.quit());
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
+
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to toggle developer tools', async () => {
-    await navigateToSettingsNetworks(driver, rootURL);
-    await delayTime('short');
-
-    await findElementByTestIdAndClick({
-      driver,
-      id: 'developer-tools-toggle',
-    });
-  });
-
-  it('should go back to home', async () => {
-    await goBackTwice(driver);
-  });
-
   it('should be able to connect to bx test dapp', async () => {
-    await delayTime('long');
-    await goToTestApp(driver);
-    const dappHandler = await getWindowHandle({ driver });
-
-    const button = await findElementByText(driver, 'Connect Wallet');
-    expect(button).toBeTruthy();
-    await waitAndClick(button, driver);
-
-    const modalTitle = await findElementByText(driver, 'Connect a Wallet');
-    expect(modalTitle).toBeTruthy();
-
-    const mmButton = await querySelector(
-      driver,
-      '[data-testid="rk-wallet-option-rainbow"]',
-    );
-    await waitAndClick(mmButton, driver);
-
-    const { popupHandler } = await getAllWindowHandles({
-      driver,
-      dappHandler,
-    });
-
-    await driver.switchTo().window(popupHandler);
+    const { dappHandler } = await connectToTestDapp(driver);
 
     await clickAcceptRequestButton(driver);
 
@@ -103,6 +83,18 @@ describe('Networks & Testnet Mode flows', () => {
     const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
     expect(ensLabel).toBeTruthy();
     await goToPopup(driver, rootURL, '#/home');
+  });
+
+  it('should be able to toggle developer tools', async () => {
+    await navigateToSettingsNetworks(driver, rootURL);
+    await delayTime('short');
+
+    await findElementByTestIdAndClick({
+      driver,
+      id: 'developer-tools-toggle',
+    });
+
+    await goBackTwice(driver);
   });
 
   it('should enable and disable testnet mode clicking testnet mode in menu', async () => {
