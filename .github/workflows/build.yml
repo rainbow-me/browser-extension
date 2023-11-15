@@ -73,7 +73,7 @@ jobs:
   firefox-e2e-parallel:
     runs-on: ubuntu-latest
     timeout-minutes: 16
-    needs: [build]
+    needs: [chrome-e2e-parallel]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 4
@@ -100,44 +100,44 @@ jobs:
       - name: Fail if any tests failed
         if: steps.FFE2eParallel.outcome == 'failure'
         run: exit 1
-  # firefox-e2e-swap:
-  #   runs-on: swaps-runner-bx
-  #   timeout-minutes: 25
-  #   needs: [build]
-  #   env:
-  #     DISPLAY: :0
-  #     VITEST_SEGFAULT_RETRY: 4
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: ./.github/actions/firefoxTestsSetup
-  #       with:
-  #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-  #     - name: Run e2e Swap (Firefox)
-  #       id: FFE2eSwap
-  #       continue-on-error: true
-  #       uses: nick-fields/retry@v2
-  #       with:
-  #         timeout_minutes: 25
-  #         max_attempts: 2
-  #         command: |
-  #           export BROWSER=firefox
-  #           export OS=linux
-  #           export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
-  #           yarn firefox:manifest && yarn firefox:zip
-  #           yarn vitest:swap --retry=5
-  #     - name: Upload deps artifacts
-  #       if: steps.FFE2eSwap.outcome == 'failure'
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: screenshots
-  #         path: screenshots/
-  #     - name: Fail if any tests failed
-  #       if: steps.FFE2eSwap.outcome == 'failure'
-  #       run: exit 1
+  firefox-e2e-swap:
+    runs-on: swaps-runner-bx
+    timeout-minutes: 25
+    needs: [chrome-e2e-swap]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 4
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/firefoxTestsSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e Swap (Firefox)
+        id: FFE2eSwap
+        continue-on-error: true
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 25
+          max_attempts: 2
+          command: |
+            export BROWSER=firefox
+            export OS=linux
+            export FIREFOX_BIN=/opt/hostedtoolcache/firefox/latest-devedition/x64/firefox
+            yarn firefox:manifest && yarn firefox:zip
+            yarn vitest:swap --retry=5
+      - name: Upload deps artifacts
+        if: steps.FFE2eSwap.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.FFE2eSwap.outcome == 'failure'
+        run: exit 1
   firefox-e2e-send:
     runs-on: send-runner-bx
     timeout-minutes: 16
-    needs: [build]
+    needs: [chrome-e2e-send]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 4
@@ -171,7 +171,7 @@ jobs:
   firefox-e2e-dappInteractions:
     runs-on: dapp-interactions-runner-bx
     timeout-minutes: 25
-    needs: [build]
+    needs: [chrome-e2e-dappInteractions]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 4

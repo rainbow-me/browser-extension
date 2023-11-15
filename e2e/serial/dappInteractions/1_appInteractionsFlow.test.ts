@@ -80,7 +80,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe.runIf(browser !== 'firefox')('App interactions flow', () => {
+describe('App interactions flow', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -91,13 +91,11 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     rootURL += extensionId;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  beforeEach(async (context: any) => {
+  beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  afterEach(async (context: any) => {
+  afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);
   });
 
