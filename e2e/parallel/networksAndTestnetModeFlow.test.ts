@@ -88,6 +88,8 @@ describe('Networks & Testnet Mode flows', () => {
     console.log('-- 10');
     await waitAndClick(mmButton, driver);
 
+    await delayTime('very-long');
+
     console.log('-- 11');
     const { popupHandler } = await getAllWindowHandles({
       driver,
