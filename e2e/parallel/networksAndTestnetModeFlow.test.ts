@@ -61,44 +61,65 @@ describe('Networks & Testnet Mode flows', () => {
   });
 
   it('should be able to connect to bx test dapp', async () => {
+    console.log('-- 1');
     await delayTime('long');
+    console.log('-- 2');
     await goToTestApp(driver);
+    console.log('-- 3');
     const dappHandler = await getWindowHandle({ driver });
 
+    console.log('-- 4');
     const button = await findElementByText(driver, 'Connect Wallet');
+    console.log('-- 5');
     expect(button).toBeTruthy();
+    console.log('-- 6');
     await waitAndClick(button, driver);
 
+    console.log('-- 7');
     const modalTitle = await findElementByText(driver, 'Connect a Wallet');
+    console.log('-- 8');
     expect(modalTitle).toBeTruthy();
 
+    console.log('-- 9');
     const mmButton = await querySelector(
       driver,
       '[data-testid="rk-wallet-option-rainbow"]',
     );
+    console.log('-- 10');
     await waitAndClick(mmButton, driver);
 
+    console.log('-- 11');
     const { popupHandler } = await getAllWindowHandles({
       driver,
       dappHandler,
     });
 
+    console.log('-- 12');
     await driver.switchTo().window(popupHandler);
 
+    console.log('-- 13');
     await clickAcceptRequestButton(driver);
 
+    console.log('-- 14');
     await driver.switchTo().window(dappHandler);
+    console.log('-- 15');
     const topButton = await querySelector(
       driver,
       '[data-testid="rk-account-button"]',
     );
 
+    console.log('-- 16');
     expect(topButton).toBeTruthy();
+    console.log('-- 17');
     await waitAndClick(topButton, driver);
 
+    console.log('-- 18');
     const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
+    console.log('-- 19');
     expect(ensLabel).toBeTruthy();
+    console.log('-- 20');
     await goToPopup(driver, rootURL, '#/home');
+    console.log('-- 21');
   });
 
   it('should enable and disable testnet mode clicking testnet mode in menu', async () => {
