@@ -8,7 +8,7 @@ import { selectionStyle } from './Text.css';
 
 export interface TextProps {
   align?: TextStyles['textAlign'];
-  as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'pre';
   children: React.ReactNode;
   color?: TextStyles['color'];
   size: TextStyles['fontSize'];
@@ -18,6 +18,7 @@ export interface TextProps {
   webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
   cursor?: TextStyles['cursor'];
   userSelect?: TextStyles['userSelect'];
+  whiteSpace?: TextStyles['whiteSpace'];
 }
 
 export function Text({
@@ -32,6 +33,7 @@ export function Text({
   webkitBackgroundClip,
   cursor = 'default',
   userSelect = 'none',
+  whiteSpace,
 }: TextProps) {
   return (
     <Box
@@ -48,6 +50,7 @@ export function Text({
           userSelect,
           WebkitBackgroundClip: webkitBackgroundClip,
           transition: 'color 200ms ease-out',
+          whiteSpace,
         }),
         selectionStyle,
       ])}
