@@ -16,6 +16,7 @@ import {
   chainIdFromChainName,
   getBlockExplorerHostForChain,
 } from '~/core/utils/chains';
+import { copyAddress } from '~/core/utils/copy';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { capitalize } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -380,12 +381,8 @@ const NFTAccordionTraitsSection = ({
 };
 
 const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
-  const network = useMemo(() => {
-    if (nft?.network === 'mainnet') {
-      return 'Ethereum';
-    }
-    return nft?.network && capitalize(nft.network);
-  }, [nft?.network]);
+  const network =
+    nft?.network === 'mainnet' ? 'Ethereum' : capitalize(nft?.network);
   const deployedBy = nft?.asset_contract?.deployed_by;
   const { data: creatorEnsName } = useEnsName({
     address: (deployedBy as Address) || undefined,
@@ -397,13 +394,6 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
       }),
     [],
   );
-  const copyTokenContract = useCallback((contractAddress: Address) => {
-    navigator.clipboard.writeText(contractAddress as string);
-    triggerToast({
-      title: i18n.t('nfts.details.address_copied'),
-      description: truncateAddress(contractAddress),
-    });
-  }, []);
   return (
     <AccordionItem value="about">
       <AccordionTrigger>{i18n.t('nfts.details.about')}</AccordionTrigger>
@@ -431,9 +421,7 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
               nft?.asset_contract?.address as AddressOrEth,
             )}
             valueSymbol="doc.on.doc"
-            onClick={() =>
-              copyTokenContract(nft.asset_contract.address as Address)
-            }
+            onClick={() => copyAddress(nft.asset_contract.address as Address)}
           />
         )}
         {nft?.asset_contract?.deployed_by && (
