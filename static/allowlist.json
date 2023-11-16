@@ -38,6 +38,8 @@
     "https://testnet.rpc.zora.energy",
     "https://eth-sepolia.g.alchemy.com/v2",
     "https://eth-goerli.g.alchemy.com/v2",
+    "https://arb-sepolia.g.alchemy.com/v2/",
+    "https://proportionate-newest-mountain.arbitrum-goerli.quiknode.pro",
     "https://nftp.rainbow.me/"
   ]
 }
