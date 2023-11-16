@@ -1,7 +1,10 @@
 import React, { forwardRef } from 'react';
 
+import { Box, Inline } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { BoxStyles } from '~/design-system/styles/core.css';
+
+import { Spinner } from '../Spinner/Spinner';
 
 interface FormInputProps {
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
@@ -9,21 +12,31 @@ interface FormInputProps {
   placeholder?: string;
   value?: string;
   borderColor?: BoxStyles['borderColor'];
+  loading?: boolean;
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
-  ({ onChange, onBlur, placeholder, value, borderColor }, ref) => {
+  ({ onChange, onBlur, placeholder, value, borderColor, loading }, ref) => {
     return (
-      <Input
-        innerRef={ref}
-        onChange={onChange}
-        height="32px"
-        placeholder={placeholder}
-        variant="surface"
-        value={value}
-        onBlur={onBlur}
-        borderColor={borderColor}
-      />
+      <Box position="relative">
+        <Inline alignVertical="center">
+          <Input
+            innerRef={ref}
+            onChange={onChange}
+            height="32px"
+            placeholder={placeholder}
+            variant="surface"
+            value={value}
+            onBlur={onBlur}
+            borderColor={borderColor}
+          />
+          {loading && (
+            <Box position="absolute" right="8px">
+              <Spinner color="accent" size={16} />
+            </Box>
+          )}
+        </Inline>
+      </Box>
     );
   },
 );

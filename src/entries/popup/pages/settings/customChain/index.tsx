@@ -1,5 +1,5 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import { proxyRpcEndpoint } from '~/core/providers';
@@ -9,6 +9,7 @@ import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
+import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -40,6 +41,7 @@ export function SettingsCustomChain() {
     symbol: true,
     explorerUrl: true,
   });
+  const [validatingRpcUrl, setValidatingRpcUrl] = useState(false);
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
@@ -71,21 +73,39 @@ export function SettingsCustomChain() {
         setCustomRPC((prev) => ({ ...prev, chainId: network.chainId }));
         return { chainId: network.chainId };
       } catch (e) {
+        setCustomRPC((prev) => ({ ...prev, chainId: undefined }));
         return null;
       }
     }
     return null;
   }, []);
 
-  const onRPCUrlChange = useCallback(
-    async (rpcUrl: string) => {
-      onInputChange<string>(rpcUrl, 'string', 'rpcUrl');
-      const chainIdFromRpcUrl = await getChainIdFromRPCUrl(rpcUrl);
+  const debuncedRpcUrl = useDebounce(customRPC.rpcUrl, 500);
+
+  useEffect(() => {
+    const update = async () => {
+      setValidatingRpcUrl(true);
+      const chainIdFromRpcUrl = await getChainIdFromRPCUrl(debuncedRpcUrl);
       if (chainIdFromRpcUrl?.chainId) {
         onInputChange<number>(chainIdFromRpcUrl.chainId, 'number', 'chainId');
       }
+      setValidatingRpcUrl(false);
+      setValidations((prev) => ({
+        ...prev,
+        rpcUrl:
+          !!customRPC.rpcUrl &&
+          isValidUrl(customRPC.rpcUrl) &&
+          !!chainIdFromRpcUrl?.chainId,
+      }));
+    };
+    update();
+  }, [customRPC.rpcUrl, debuncedRpcUrl, getChainIdFromRPCUrl, onInputChange]);
+
+  const onRPCUrlChange = useCallback(
+    async (rpcUrl: string) => {
+      onInputChange<string>(rpcUrl, 'string', 'rpcUrl');
     },
-    [getChainIdFromRPCUrl, onInputChange],
+    [onInputChange],
   );
 
   const validateRpcUrl = useCallback(
@@ -97,7 +117,9 @@ export function SettingsCustomChain() {
   );
 
   const onRpcUrlBlur = useCallback(async () => {
+    console.log('-- validatingutl');
     const validUrl = await validateRpcUrl();
+    console.log('-- validUrl', validUrl);
     setValidations((prev) => ({ ...prev, rpcUrl: validUrl }));
   }, [validateRpcUrl]);
 
@@ -221,6 +243,7 @@ export function SettingsCustomChain() {
             value={customRPC.rpcUrl}
             onBlur={onRpcUrlBlur}
             borderColor={validations.rpcUrl ? 'accent' : 'red'}
+            loading={validatingRpcUrl}
           />
           <FormInput
             onChange={(t) =>
