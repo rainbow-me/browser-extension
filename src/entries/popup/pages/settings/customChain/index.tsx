@@ -1,6 +1,8 @@
+import { JsonRpcProvider } from '@ethersproject/providers';
 import React, { useCallback, useState } from 'react';
 import { Chain } from 'wagmi';
 
+import { proxyRpcEndpoint } from '~/core/providers';
 import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { isValidUrl } from '~/core/utils/connectedApps';
@@ -60,13 +62,29 @@ export function SettingsCustomChain() {
     [],
   );
 
+  const validateRpcUrlNetwork = useCallback(async (rpcUrl = '') => {
+    if (isValidUrl(rpcUrl)) {
+      const provider = new JsonRpcProvider(proxyRpcEndpoint(rpcUrl, 0));
+      try {
+        const network = await provider.getNetwork();
+        setCustomRPC((prev) => ({ ...prev, chainId: network.chainId }));
+        return { chainId: network.chainId };
+      } catch (e) {
+        return null;
+      }
+    }
+  }, []);
+
   const validateRpcUrl = useCallback(
-    () => !!customRPC.rpcUrl && isValidUrl(customRPC.rpcUrl),
-    [customRPC.rpcUrl],
+    async () =>
+      !!customRPC.rpcUrl &&
+      isValidUrl(customRPC.rpcUrl) &&
+      !!(await validateRpcUrlNetwork(customRPC.rpcUrl)),
+    [customRPC.rpcUrl, validateRpcUrlNetwork],
   );
 
-  const onRpcUrlBlur = useCallback(() => {
-    const validUrl = validateRpcUrl();
+  const onRpcUrlBlur = useCallback(async () => {
+    const validUrl = await validateRpcUrl();
     setValidations((prev) => ({ ...prev, rpcUrl: validUrl }));
   }, [validateRpcUrl]);
 
@@ -108,12 +126,12 @@ export function SettingsCustomChain() {
     setValidations((prev) => ({ ...prev, explorerUrl: validExplorerUrl }));
   }, [validateExplorerUrl]);
 
-  const validateAddCustomRpc = useCallback(() => {
+  const validateAddCustomRpc = useCallback(async () => {
     const valid = Object.values(validations).reduce(
       (prev, current) => prev && current,
       true,
     );
-    const validRpcUrl = validateRpcUrl();
+    const validRpcUrl = await validateRpcUrl();
     const validChainId = validateChainId();
     const validName = validateName();
     const validSymbol = validateSymbol();
@@ -135,9 +153,9 @@ export function SettingsCustomChain() {
     validations,
   ]);
 
-  const addCustomRpc = useCallback(() => {
+  const addCustomRpc = useCallback(async () => {
     const { rpcUrl, chainId, name, symbol } = customRPC;
-    const valid = validateAddCustomRpc();
+    const valid = await validateAddCustomRpc();
     if (valid && rpcUrl && chainId && name && symbol) {
       const chain: Chain = {
         id: chainId,
