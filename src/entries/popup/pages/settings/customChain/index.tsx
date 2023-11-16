@@ -7,7 +7,8 @@ import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
-import { Input } from '~/design-system/components/Input/Input';
+import { Form } from '~/entries/popup/components/Form/Form';
+import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -213,102 +214,80 @@ export function SettingsCustomChain() {
           </Box>
         ))}
 
-        <Box
-          background="surfaceSecondaryElevated"
-          borderRadius="16px"
-          boxShadow="12px"
-          width="full"
-          padding="16px"
-        >
-          <Stack space="8px">
-            <Input
-              onChange={(t) => onRPCUrlChange(t.target.value)}
-              height="32px"
-              placeholder="Url"
-              variant="surface"
-              value={customRPC.rpcUrl}
-              onBlur={onRpcUrlBlur}
-              borderColor={validations.rpcUrl ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<number>(t.target.value, 'number', 'chainId')
-              }
-              height="32px"
-              placeholder="ChainId"
-              variant="surface"
-              value={customRPC.chainId || ''}
-              onBlur={onChainIdBlur}
-              borderColor={validations.chainId ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'name')
-              }
-              height="32px"
-              placeholder="name"
-              variant="surface"
-              value={customRPC.name}
-              onBlur={onNameBlur}
-              borderColor={validations.name ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'symbol')
-              }
-              height="32px"
-              placeholder="Symbol"
-              variant="surface"
-              value={customRPC.symbol}
-              onBlur={onSymbolBlur}
-              borderColor={validations.symbol ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'explorerUrl')
-              }
-              height="32px"
-              placeholder="Explorer url"
-              variant="surface"
-              value={customRPC.explorerUrl}
-              onBlur={onExplorerUrlBlur}
-              borderColor={validations.explorerUrl ? 'accent' : 'red'}
-            />
-            <Box padding="10px">
-              <Inline alignHorizontal="justify">
-                <Text
-                  align="center"
-                  weight="semibold"
-                  size="12pt"
-                  color="labelSecondary"
-                >
-                  {'Active'}
-                </Text>
-                <Checkbox
-                  borderColor="accent"
-                  onClick={() =>
-                    onInputChange<boolean>(
-                      !customRPC.active,
-                      'boolean',
-                      'active',
-                    )
-                  }
-                  selected={!!customRPC.active}
-                />
-              </Inline>
-            </Box>
-            <Inline alignHorizontal="right">
-              <Button
-                onClick={addCustomRpc}
-                color="accent"
-                height="36px"
-                variant="raised"
+        <Form>
+          <FormInput
+            onChange={(t) => onRPCUrlChange(t.target.value)}
+            placeholder="Url"
+            value={customRPC.rpcUrl}
+            onBlur={onRpcUrlBlur}
+            borderColor={validations.rpcUrl ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<number>(t.target.value, 'number', 'chainId')
+            }
+            placeholder="ChainId"
+            value={customRPC.chainId ? String(customRPC.chainId) : ''}
+            onBlur={onChainIdBlur}
+            borderColor={validations.chainId ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'name')
+            }
+            placeholder="name"
+            value={customRPC.name}
+            onBlur={onNameBlur}
+            borderColor={validations.name ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'symbol')
+            }
+            placeholder="Symbol"
+            value={customRPC.symbol}
+            onBlur={onSymbolBlur}
+            borderColor={validations.symbol ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'explorerUrl')
+            }
+            placeholder="Explorer url"
+            value={customRPC.explorerUrl}
+            onBlur={onExplorerUrlBlur}
+            borderColor={validations.explorerUrl ? 'accent' : 'red'}
+          />
+          <Box padding="10px">
+            <Inline alignHorizontal="justify">
+              <Text
+                align="center"
+                weight="semibold"
+                size="12pt"
+                color="labelSecondary"
               >
-                Add
-              </Button>
+                {'Active'}
+              </Text>
+              <Checkbox
+                borderColor="accent"
+                onClick={() =>
+                  onInputChange<boolean>(!customRPC.active, 'boolean', 'active')
+                }
+                selected={!!customRPC.active}
+              />
             </Inline>
-          </Stack>
-        </Box>
+          </Box>
+          <Inline alignHorizontal="right">
+            <Button
+              onClick={addCustomRpc}
+              color="accent"
+              height="36px"
+              variant="raised"
+            >
+              Add
+            </Button>
+          </Inline>
+        </Form>
       </Stack>
     </Box>
   );
