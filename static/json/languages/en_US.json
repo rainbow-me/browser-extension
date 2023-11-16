@@ -1507,7 +1507,8 @@
     "chain_id": "Chain ID",
     "symbol": "Symbol",
     "decimals": "Decimals",
-    "address": "Address"
+    "address": "Address",
+    "not_found": "We couldn't find this asset on the selected network. Please choose the right network below"
   }
 }
 >>>>>>> 21f5871ba (watch asset wip)

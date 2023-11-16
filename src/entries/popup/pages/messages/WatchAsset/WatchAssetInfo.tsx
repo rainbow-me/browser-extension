@@ -104,8 +104,7 @@ export const WatchAssetInfo = ({
               color="labelSecondary"
               align="center"
             >
-              We couldnt find this asset on the selected network. Please choose
-              the right network below
+              {i18n.t('watch_asset.not_found')}
             </Text>
             <Box paddingTop="10px">
               <Inline alignHorizontal="center" alignVertical="center">

@@ -85,6 +85,7 @@ export const WatchAsset = ({
     try {
       const provider = getProvider({ chainId: Number(selectedChainId) });
       const assetWithMetadata = asset;
+      // get the contract and fetch the missing information
       const tokenContract = await getContract({
         address: assetWithMetadata.address,
         abi: erc20ABI,
@@ -105,6 +106,7 @@ export const WatchAsset = ({
         chainId: Number(selectedChainId),
       }).name || '') as ChainName;
 
+      // Get the balance onchain
       const parsedAsset = await fetchAssetBalanceViaProvider({
         parsedAsset: assetWithMetadata,
         currentAddress,
@@ -112,6 +114,7 @@ export const WatchAsset = ({
         provider,
       });
 
+      // Attempt to get the price through the backend
       const assetWithPrice = await fetchAssetWithPrice({
         parsedAsset,
         currency: currentCurrency,
