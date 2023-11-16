@@ -177,3 +177,36 @@ export const getChainMetadataRPCUrl = async ({
   }
   return null;
 };
+
+export const deriveChainIdByHostname = (hostname: string) => {
+  switch (hostname) {
+    case 'etherscan.io':
+      return ChainId.mainnet;
+    case 'goerli.etherscan.io':
+      return ChainId.goerli;
+    case 'arbiscan.io':
+      return ChainId.arbitrum;
+    case 'explorer-mumbai.maticvigil.com':
+    case 'explorer-mumbai.matic.today':
+    case 'mumbai.polygonscan.com':
+      return ChainId['polygon-mumbai'];
+    case 'polygonscan.com':
+      return ChainId.polygon;
+    case 'optimistic.etherscan.io':
+      return ChainId.optimism;
+    case 'bscscan.com':
+      return ChainId.bsc;
+    case 'ftmscan.com':
+      return 250;
+    case 'explorer.celo.org':
+      return 42220;
+    case 'explorer.harmony.one':
+      return 1666600000;
+    case 'explorer.avax.network':
+    case 'subnets.avax.network':
+    case 'snowtrace.io':
+      return 43114;
+    default:
+      return ChainId.mainnet;
+  }
+};

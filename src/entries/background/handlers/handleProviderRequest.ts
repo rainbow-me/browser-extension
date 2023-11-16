@@ -23,7 +23,11 @@ import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { isCustomChain, isSupportedChainId } from '~/core/utils/chains';
+import {
+  deriveChainIdByHostname,
+  isCustomChain,
+  isSupportedChainId,
+} from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -396,10 +400,9 @@ export const handleProviderRequest = ({
         }
         case 'wallet_watchAsset': {
           const { featureFlags } = featureFlagsStore.getState();
-          if (!featureFlags.custom_rpc) {
+          if (!featureFlags.custom_rpc && process.env.IS_TESTING === 'false') {
             throw new Error('Method not supported');
           } else {
-            console.log('wallet_watchAsset', params);
             const {
               type,
               options: { address, symbol, decimals },
@@ -421,18 +424,12 @@ export const handleProviderRequest = ({
             }
 
             const activeSession = getActiveSession({ host });
-            if (!activeSession) {
-              throw new Error('No active session');
+            let chainId = null;
+            if (activeSession) {
+              chainId = activeSession?.chainId;
+            } else {
+              chainId = deriveChainIdByHostname(host);
             }
-
-            const { chainId } = activeSession;
-
-            console.log('sending ', {
-              address,
-              symbol,
-              decimals,
-              chainId,
-            });
 
             response = await messengerProviderRequest(popupMessenger, {
               method,

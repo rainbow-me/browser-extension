@@ -1,95 +1,46 @@
-import { getProvider } from '@wagmi/core';
-
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
-
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { ChainName } from '~/core/types/chains';
-import { getChain } from '~/core/utils/chains';
+import { ParsedUserAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { Bleed, Box, Inline, Separator, Stack, Text } from '~/design-system';
 import { TextInline } from '~/design-system/docs/components/TextInline';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
+import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 
 import { AssetRow } from '../../home/Tokens';
+import { BottomNetwork } from '../BottomActions';
 import { ThisDappIsLikelyMalicious } from '../DappScanStatus';
-import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
 
 export const WatchAssetInfo = ({
   appName,
   appLogo,
   dappStatus,
-  suggestedAsset: { chainId, symbol, decimals, assetAddress },
+  asset,
+  selectedChainId,
+  setSelectedChainId,
+  wrongNetwork,
 }: {
   appHostName?: string;
   appName?: string;
   appLogo?: string;
   dappStatus?: DAppStatus;
-  suggestedAsset: {
-    chainId: number;
-    symbol: string;
-    decimals: number;
-    assetAddress: Address;
-  };
+  selectedChainId: ChainId;
+  setSelectedChainId: (chainId: ChainId) => void;
+  asset: ParsedUserAsset;
+  wrongNetwork: boolean;
 }) => {
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const provider = getProvider({ chainId });
   const isScamDapp = dappStatus === DAppStatus.Scam;
-
-  const logo = useMemo(
-    () => getCustomChainIconUrl(chainId, assetAddress),
-    [chainId, assetAddress],
-  );
-
-  const [asset, setAsset] = useState({
-    address: assetAddress,
-    chainId,
-    chainName: (getChain({ chainId }).name || '') as ChainName,
-    decimals,
-    symbol,
-    isNativeAsset: false,
-    name: symbol,
-    uniqueId: `${assetAddress}_${chainId}`,
-    native: {
-      price: undefined,
-      balance: { amount: '0', display: '0' },
-    },
-    price: { value: 0 },
-    bridging: { isBridgeable: false, networks: [] },
-    icon_url: logo,
-    balance: { amount: '0', display: '0' },
-  });
-
-  const fetchAssetData = useCallback(async () => {
-    const parsedAsset = await fetchAssetBalanceViaProvider({
-      parsedAsset: asset,
-      currentAddress,
-      currency: currentCurrency,
-      provider,
-    });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    setAsset(parsedAsset);
-  }, [asset, currentAddress, currentCurrency, provider]);
-
-  useEffect(() => {
-    fetchAssetData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <Box
       style={{
-        paddingBottom: isScamDapp ? 20 : 42,
+        paddingBottom: isScamDapp ? 20 : 10,
+        minHeight: 475,
       }}
       paddingHorizontal="30px"
       paddingTop="64px"
       background="surfacePrimaryElevatedSecondary"
     >
-      <Stack space="32px">
+      <Stack space="20px">
         <Box width="full">
           <Inline alignHorizontal="center" alignVertical="center">
             <DappIcon appLogo={appLogo} size="60px" />
@@ -130,19 +81,62 @@ export const WatchAssetInfo = ({
           </Text>
         )}
         <Box
-          padding="16px"
+          padding="10px"
           borderRadius="24px"
           borderColor={'buttonStrokeSecondary'}
           borderWidth="1px"
           style={{
-            height: '120px',
-            overflow: 'auto',
+            height: '75px',
           }}
         >
-          <Box>
-            <AssetRow asset={asset} />
-          </Box>
+          <AssetRow asset={asset} />
         </Box>
+        {wrongNetwork && (
+          <Box
+            borderColor={'red'}
+            borderRadius="24px"
+            borderWidth="1px"
+            padding="16px"
+          >
+            <Text
+              size="12pt"
+              weight="regular"
+              color="labelSecondary"
+              align="center"
+            >
+              We couldnt find this asset on the selected network. Please choose
+              the right network below
+            </Text>
+            <Box paddingTop="10px">
+              <Inline alignHorizontal="center" alignVertical="center">
+                <Box paddingRight="10px">
+                  <Text
+                    align="right"
+                    size="12pt"
+                    weight="semibold"
+                    color="labelSecondary"
+                  >
+                    {i18n.t('approve_request.network')}
+                  </Text>
+                </Box>
+
+                <SwitchNetworkMenu
+                  type="dropdown"
+                  chainId={selectedChainId}
+                  onChainChanged={(chainId) => {
+                    setSelectedChainId(chainId);
+                  }}
+                  triggerComponent={
+                    <BottomNetwork
+                      selectedChainId={selectedChainId}
+                      displaySymbol
+                    />
+                  }
+                />
+              </Inline>
+            </Box>
+          </Box>
+        )}
       </Stack>
     </Box>
   );

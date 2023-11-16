@@ -9,12 +9,14 @@ export const WatchAssetActions = ({
   onRejectRequest,
   loading = false,
   dappStatus,
+  disabled,
 }: {
   appName?: string;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   loading?: boolean;
   dappStatus?: DAppStatus;
+  disabled: boolean;
 }) => {
   const isScamDapp = dappStatus === DAppStatus.Scam;
   return (
@@ -34,6 +36,7 @@ export const WatchAssetActions = ({
                 : i18n.t('approve_request.approve')
             }
             loading={loading}
+            disabled={disabled}
           />
           <RejectRequestButton
             dappStatus={dappStatus}
