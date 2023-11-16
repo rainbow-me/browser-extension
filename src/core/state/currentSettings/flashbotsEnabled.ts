@@ -1,6 +1,5 @@
 import create from 'zustand';
 
-import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { createStore } from '~/core/state/internal/createStore';
 
@@ -15,16 +14,20 @@ export const flashbotsEnabledStore = createStore<FlashbotsEnabledState>(
   (set) => ({
     flashbotsEnabled: false,
     setFlashbotsEnabled: (newFlashbotsEnabled) => {
-      analytics.track(
-        newFlashbotsEnabled
-          ? event.settingsFlashbotsEnabled
-          : event.settingsFlashbotsDisabled,
+      import('~/analytics').then(({ analytics }) =>
+        analytics.track(
+          newFlashbotsEnabled
+            ? event.settingsFlashbotsEnabled
+            : event.settingsFlashbotsDisabled,
+        ),
       );
-      set({ flashbotsEnabled: newFlashbotsEnabled });
-      // swapFlashbotsEnabled is just a way to override when flashbotsEnabledGlobally is false
-      // specifically for the swap page
-      // so if we enable it globally we can just set it to true
-      if (newFlashbotsEnabled) set({ swapFlashbotsEnabled: true });
+      set({
+        flashbotsEnabled: newFlashbotsEnabled,
+        // swapFlashbotsEnabled is just a way to override when flashbotsEnabled is false
+        // specifically for the swap page
+        // so if we enable it globally we can just set it to true
+        ...(newFlashbotsEnabled && { swapFlashbotsEnabled: true }),
+      });
     },
     swapFlashbotsEnabled: false,
     setSwapFlashbotsEnabled: (newSwapFlashbotsEnabled) =>
