@@ -42,7 +42,7 @@ export function SettingsCustomChain() {
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
-      value: string | boolean,
+      value: string | boolean | number,
       type: 'string' | 'number' | 'boolean',
       data: 'rpcUrl' | 'chainId' | 'name' | 'symbol' | 'explorerUrl' | 'active',
     ) => {
@@ -62,7 +62,7 @@ export function SettingsCustomChain() {
     [],
   );
 
-  const validateRpcUrlNetwork = useCallback(async (rpcUrl = '') => {
+  const getChainIdFromRPCUrl = useCallback(async (rpcUrl = '') => {
     if (isValidUrl(rpcUrl)) {
       const provider = new JsonRpcProvider(proxyRpcEndpoint(rpcUrl, 0));
       try {
@@ -73,14 +73,26 @@ export function SettingsCustomChain() {
         return null;
       }
     }
+    return null;
   }, []);
+
+  const onRPCUrlChange = useCallback(
+    async (rpcUrl: string) => {
+      onInputChange<string>(rpcUrl, 'string', 'rpcUrl');
+      const chainIdFromRpcUrl = await getChainIdFromRPCUrl(rpcUrl);
+      if (chainIdFromRpcUrl?.chainId) {
+        onInputChange<number>(chainIdFromRpcUrl.chainId, 'number', 'chainId');
+      }
+    },
+    [getChainIdFromRPCUrl, onInputChange],
+  );
 
   const validateRpcUrl = useCallback(
     async () =>
       !!customRPC.rpcUrl &&
       isValidUrl(customRPC.rpcUrl) &&
-      !!(await validateRpcUrlNetwork(customRPC.rpcUrl)),
-    [customRPC.rpcUrl, validateRpcUrlNetwork],
+      !!(await getChainIdFromRPCUrl(customRPC.rpcUrl)),
+    [customRPC.rpcUrl, getChainIdFromRPCUrl],
   );
 
   const onRpcUrlBlur = useCallback(async () => {
@@ -126,32 +138,14 @@ export function SettingsCustomChain() {
     setValidations((prev) => ({ ...prev, explorerUrl: validExplorerUrl }));
   }, [validateExplorerUrl]);
 
-  const validateAddCustomRpc = useCallback(async () => {
-    const valid = Object.values(validations).reduce(
-      (prev, current) => prev && current,
-      true,
-    );
-    const validRpcUrl = await validateRpcUrl();
-    const validChainId = validateChainId();
-    const validName = validateName();
-    const validSymbol = validateSymbol();
-    const validExplorerUrl = validateExplorerUrl();
-    return (
-      valid &&
-      validRpcUrl &&
-      validChainId &&
-      validName &&
-      validSymbol &&
-      validExplorerUrl
-    );
-  }, [
-    validateChainId,
-    validateExplorerUrl,
-    validateName,
-    validateRpcUrl,
-    validateSymbol,
-    validations,
-  ]);
+  const validateAddCustomRpc = useCallback(
+    async () =>
+      Object.values(validations).reduce(
+        (prev, current) => prev && current,
+        true,
+      ),
+    [validations],
+  );
 
   const addCustomRpc = useCallback(async () => {
     const { rpcUrl, chainId, name, symbol } = customRPC;
@@ -228,9 +222,7 @@ export function SettingsCustomChain() {
         >
           <Stack space="8px">
             <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'rpcUrl')
-              }
+              onChange={(t) => onRPCUrlChange(t.target.value)}
               height="32px"
               placeholder="Url"
               variant="surface"
