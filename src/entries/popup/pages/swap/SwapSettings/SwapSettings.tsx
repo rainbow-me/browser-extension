@@ -205,7 +205,7 @@ export const SwapSettings = ({
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
 
-  const { flashbotsEnabled, swapFlashbotsEnabled, setSwapFlashbotsEnabled } =
+  const { swapFlashbotsEnabled, setSwapFlashbotsEnabled } =
     useFlashbotsEnabledStore();
 
   const prevChainId = usePrevious(chainId);
@@ -382,31 +382,25 @@ export const SwapSettings = ({
                       </Inline>
                     </Box>
 
-                    {/* if flashbots is not enabled globally we show the option to toggle it just for swaps */}
-                    {!flashbotsEnabled && (
-                      <Box
-                        testId="swap-settings-flashbots-row"
-                        style={{ height: '32px' }}
-                      >
-                        <Inline
-                          alignVertical="center"
-                          alignHorizontal="justify"
-                        >
-                          <Label
-                            label={t('swap.settings.use_flashbots')}
-                            onClick={showFlashbotsExplainer}
-                            testId="swap-settings-flashbots-label"
-                          />
-                          <Toggle
-                            accentColor={settingsAccentColor}
-                            checked={swapFlashbotsEnabled}
-                            handleChange={setSwapFlashbotsEnabled}
-                            testId="swap-settings-flashbots-toggle"
-                            tabIndex={0}
-                          />
-                        </Inline>
-                      </Box>
-                    )}
+                    <Box
+                      testId="swap-settings-flashbots-row"
+                      style={{ height: '32px' }}
+                    >
+                      <Inline alignVertical="center" alignHorizontal="justify">
+                        <Label
+                          label={t('swap.settings.use_flashbots')}
+                          onClick={showFlashbotsExplainer}
+                          testId="swap-settings-flashbots-label"
+                        />
+                        <Toggle
+                          accentColor={settingsAccentColor}
+                          checked={swapFlashbotsEnabled}
+                          handleChange={setSwapFlashbotsEnabled}
+                          testId="swap-settings-flashbots-toggle"
+                          tabIndex={0}
+                        />
+                      </Inline>
+                    </Box>
 
                     <Box
                       testId="swap-settings-slippage-row"
