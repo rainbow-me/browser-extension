@@ -27,6 +27,18 @@ export function CustomChain() {
     useCustomRPCAssetsStore();
   const { removeUserChain } = useUserChainsStore();
 
+  const [validations, setValidations] = useState<{
+    address: boolean;
+    decimals: boolean;
+    name?: boolean;
+    symbol?: boolean;
+  }>({
+    address: true,
+    decimals: true,
+    name: true,
+    symbol: true,
+  });
+
   const chainId = state?.chainId;
   const customChain = customChains[chainId];
   const customRPCAssetsForChain = useMemo(
@@ -43,6 +55,45 @@ export function CustomChain() {
     { assetAddress: asset.address, chainId },
     { enabled: isValidAddress(asset.address) },
   );
+
+  const onAddressBlur = useCallback(() => {
+    const validAddress = asset.address && isValidAddress(asset.address);
+    setValidations((validations) => ({
+      ...validations,
+      address: validAddress,
+    }));
+  }, [asset.address]);
+
+  const onDecimalsBlur = useCallback(() => {
+    const decimals = asset.decimals || assetMetadata.decimals;
+    const validDecimals =
+      decimals !== undefined &&
+      !isNaN(parseInt(String(decimals), 10)) &&
+      decimals <= 18;
+
+    setValidations((validations) => ({
+      ...validations,
+      decimals: validDecimals,
+    }));
+  }, [asset.decimals, assetMetadata.decimals]);
+
+  const onNameBlur = useCallback(() => {
+    const name = asset.name || assetMetadata.name;
+    const validName = !!name && name.length > 0;
+    setValidations((validations) => ({
+      ...validations,
+      name: validName,
+    }));
+  }, [asset.name, assetMetadata.name]);
+
+  const onSymbolBlur = useCallback(() => {
+    const symbol = asset.symbol || assetMetadata.symbol;
+    const validSymbol = !!symbol && symbol.length > 0;
+    setValidations((validations) => ({
+      ...validations,
+      symbol: validSymbol,
+    }));
+  }, [asset.symbol, assetMetadata.symbol]);
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
@@ -66,6 +117,15 @@ export function CustomChain() {
     [],
   );
 
+  const validateAddCustomAsset = useCallback(
+    () =>
+      Object.values(validations).reduce(
+        (prev, current) => prev && current,
+        true,
+      ),
+    [validations],
+  );
+
   const addAsset = useCallback(() => {
     const assetToAdd = {
       name: asset.name || assetMetadata.name || '',
@@ -78,14 +138,9 @@ export function CustomChain() {
       (asset) => asset.address,
     );
 
-    if (
-      assetToAdd.address &&
-      assetToAdd.name &&
-      assetToAdd.decimals &&
-      assetToAdd.symbol &&
-      isValidAddress(assetToAdd.address) &&
-      !customRPCAssetsAddresses.includes(assetToAdd.address)
-    ) {
+    const validAsset = validateAddCustomAsset();
+
+    if (validAsset && !customRPCAssetsAddresses.includes(assetToAdd.address)) {
       addCustomRPCAsset({
         chainId,
         customRPCAsset: assetToAdd,
@@ -94,10 +149,16 @@ export function CustomChain() {
     }
   }, [
     addCustomRPCAsset,
-    asset,
-    assetMetadata,
+    asset.address,
+    asset.decimals,
+    asset.name,
+    asset.symbol,
+    assetMetadata.decimals,
+    assetMetadata.name,
+    assetMetadata.symbol,
     chainId,
     customRPCAssetsForChain,
+    validateAddCustomAsset,
   ]);
 
   const removeCustomChain = useCallback(
@@ -236,6 +297,7 @@ export function CustomChain() {
             placeholder="Address"
             value={asset.address}
             loading={assetMetadataIsFetching}
+            onBlur={onAddressBlur}
           />
           <FormInput
             onChange={(t) =>
@@ -243,6 +305,7 @@ export function CustomChain() {
             }
             placeholder="Name"
             value={asset.name || assetMetadata?.name}
+            onBlur={onNameBlur}
           />
           <FormInput
             onChange={(t) =>
@@ -250,6 +313,7 @@ export function CustomChain() {
             }
             placeholder="Decimals"
             value={asset.decimals || assetMetadata?.decimals}
+            onBlur={onDecimalsBlur}
           />
           <FormInput
             onChange={(t) =>
@@ -257,6 +321,7 @@ export function CustomChain() {
             }
             placeholder="Symbol"
             value={asset.symbol || assetMetadata?.symbol}
+            onBlur={onSymbolBlur}
           />
 
           <Inline alignHorizontal="right">

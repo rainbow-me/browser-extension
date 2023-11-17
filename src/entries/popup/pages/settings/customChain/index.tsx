@@ -104,7 +104,7 @@ export function SettingsCustomChain() {
   }, [customRPC.explorerUrl]);
 
   const validateAddCustomRpc = useCallback(
-    async () =>
+    () =>
       Object.values(validations).reduce(
         (prev, current) => prev && current,
         true,
@@ -115,7 +115,7 @@ export function SettingsCustomChain() {
   const addCustomRpc = useCallback(async () => {
     const { rpcUrl, chainId: customChainId, name, symbol } = customRPC;
     const chainId = customChainId || chainMetadata?.chainId;
-    const valid = await validateAddCustomRpc();
+    const valid = validateAddCustomRpc();
 
     if (valid && rpcUrl && chainId && name && symbol) {
       const chain: Chain = {
