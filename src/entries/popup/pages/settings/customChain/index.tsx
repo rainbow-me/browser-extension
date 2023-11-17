@@ -222,11 +222,7 @@ export function SettingsCustomChain() {
               onInputChange<number>(t.target.value, 'number', 'chainId')
             }
             placeholder="ChainId"
-            value={
-              customRPC.chainId
-                ? String(customRPC.chainId)
-                : String(chainMetadata?.chainId || '')
-            }
+            value={customRPC.chainId || chainMetadata?.chainId || ''}
             onBlur={onChainIdBlur}
             borderColor={validations.chainId ? 'accent' : 'red'}
           />

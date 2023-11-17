@@ -10,7 +10,7 @@ interface FormInputProps {
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   placeholder?: string;
-  value?: string;
+  value?: string | number;
   borderColor?: BoxStyles['borderColor'];
   loading?: boolean;
 }

@@ -8,8 +8,9 @@ import { CustomChain, useCustomRPCsStore } from '~/core/state/customRPC';
 import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
-import { Input } from '~/design-system/components/Input/Input';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
+import { Form } from '~/entries/popup/components/Form/Form';
+import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 
 const INITIAL_ASSET = {
@@ -35,7 +36,10 @@ export function CustomChain() {
 
   const [asset, setAsset] = useState(INITIAL_ASSET);
 
-  const { data: assetMetadata = INITIAL_ASSET } = useAssetMetadata(
+  const {
+    data: assetMetadata = INITIAL_ASSET,
+    isFetching: assetMetadataIsFetching,
+  } = useAssetMetadata(
     { assetAddress: asset.address, chainId },
     { enabled: isValidAddress(asset.address) },
   );
@@ -224,63 +228,48 @@ export function CustomChain() {
           </Box>
         ))}
 
-        <Box
-          background="surfaceSecondaryElevated"
-          borderRadius="16px"
-          boxShadow="12px"
-          width="full"
-          padding="16px"
-        >
-          <Stack space="8px">
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'address')
-              }
-              height="32px"
-              placeholder="Address"
-              variant="surface"
-              value={asset.address}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'name')
-              }
-              height="32px"
-              placeholder="Name"
-              variant="surface"
-              value={asset.name || assetMetadata?.name}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<number>(t.target.value, 'number', 'decimals')
-              }
-              height="32px"
-              placeholder="Decimals"
-              variant="surface"
-              value={asset.decimals || assetMetadata?.decimals}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'symbol')
-              }
-              height="32px"
-              placeholder="Symbol"
-              variant="surface"
-              value={asset.symbol || assetMetadata?.symbol}
-            />
+        <Form>
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'address')
+            }
+            placeholder="Address"
+            value={asset.address}
+            loading={assetMetadataIsFetching}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'name')
+            }
+            placeholder="Name"
+            value={asset.name || assetMetadata?.name}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<number>(t.target.value, 'number', 'decimals')
+            }
+            placeholder="Decimals"
+            value={asset.decimals || assetMetadata?.decimals}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'symbol')
+            }
+            placeholder="Symbol"
+            value={asset.symbol || assetMetadata?.symbol}
+          />
 
-            <Inline alignHorizontal="right">
-              <Button
-                onClick={addAsset}
-                color="accent"
-                height="36px"
-                variant="raised"
-              >
-                Add
-              </Button>
-            </Inline>
-          </Stack>
-        </Box>
+          <Inline alignHorizontal="right">
+            <Button
+              onClick={addAsset}
+              color="accent"
+              height="36px"
+              variant="raised"
+            >
+              Add
+            </Button>
+          </Inline>
+        </Form>
       </Stack>
     </Box>
   );
