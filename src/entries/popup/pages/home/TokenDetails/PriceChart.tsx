@@ -60,10 +60,12 @@ function PriceChange({
 function TokenPrice({
   token,
   hasPriceData,
+  isLoading,
   fallbackPrice,
 }: {
   token: ParsedUserAsset;
   hasPriceData: boolean;
+  isLoading: boolean;
   fallbackPrice?: number;
 }) {
   return (
@@ -76,7 +78,7 @@ function TokenPrice({
         gap="10px"
       >
         <Text size="16pt" weight="heavy" cursor="text" userSelect="all">
-          {!hasPriceData
+          {!isLoading && !hasPriceData
             ? i18n.t('token_details.not_available')
             : formatCurrency(token.native.price?.amount || fallbackPrice)}
         </Text>
@@ -142,7 +144,7 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
   const shouldHaveData = !isTestnetChainId({ chainId: token.chainId });
 
-  const { data } = usePriceChart({
+  const { data, isLoading } = usePriceChart({
     mainnetAddress: token.mainnetAddress,
     address: token.address,
     chainId: token.chainId,
@@ -176,6 +178,7 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <TokenPrice
           hasPriceData={hasPriceData}
+          isLoading={isLoading}
           token={token}
           fallbackPrice={lastPrice}
         />
