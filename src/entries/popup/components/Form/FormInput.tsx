@@ -26,9 +26,12 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
             height="32px"
             placeholder={placeholder}
             variant="surface"
-            value={value}
+            value={value || ''}
             onBlur={onBlur}
             borderColor={borderColor}
+            style={{
+              paddingRight: 30,
+            }}
           />
           {loading && (
             <Box position="absolute" right="8px">

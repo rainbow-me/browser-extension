@@ -1,5 +1,6 @@
 import { isValidAddress } from '@ethereumjs/util';
-import React, { useCallback, useMemo, useState } from 'react';
+import { isEqual } from 'lodash';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Address, Chain } from 'wagmi';
 
@@ -12,6 +13,7 @@ import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
+import usePrevious from '~/entries/popup/hooks/usePrevious';
 
 const INITIAL_ASSET = {
   name: '',
@@ -51,49 +53,73 @@ export function CustomChain() {
   const {
     data: assetMetadata = INITIAL_ASSET,
     isFetching: assetMetadataIsFetching,
+    isFetched: assetMetadataIsFetched,
   } = useAssetMetadata(
     { assetAddress: asset.address, chainId },
     { enabled: isValidAddress(asset.address) },
   );
 
-  const onAddressBlur = useCallback(() => {
-    const validAddress = asset.address && isValidAddress(asset.address);
-    setValidations((validations) => ({
-      ...validations,
-      address: validAddress,
-    }));
-  }, [asset.address]);
+  const prevAssetMetadata = usePrevious(assetMetadata);
 
-  const onDecimalsBlur = useCallback(() => {
+  const validateAddress = useCallback(
+    () => asset.address && isValidAddress(asset.address),
+    [asset.address],
+  );
+
+  const onAddressBlur = useCallback(
+    () =>
+      setValidations((validations) => ({
+        ...validations,
+        address: validateAddress(),
+      })),
+    [validateAddress],
+  );
+
+  const validateDecimals = useCallback(() => {
     const decimals = asset.decimals || assetMetadata.decimals;
-    const validDecimals =
+    return (
       decimals !== undefined &&
       !isNaN(parseInt(String(decimals), 10)) &&
-      decimals <= 18;
-
-    setValidations((validations) => ({
-      ...validations,
-      decimals: validDecimals,
-    }));
+      decimals <= 18
+    );
   }, [asset.decimals, assetMetadata.decimals]);
 
-  const onNameBlur = useCallback(() => {
+  const onDecimalsBlur = useCallback(
+    () =>
+      setValidations((validations) => ({
+        ...validations,
+        decimals: validateDecimals(),
+      })),
+    [validateDecimals],
+  );
+
+  const validateName = useCallback(() => {
     const name = asset.name || assetMetadata.name;
-    const validName = !!name && name.length > 0;
-    setValidations((validations) => ({
-      ...validations,
-      name: validName,
-    }));
+    return !!name && name.length > 0;
   }, [asset.name, assetMetadata.name]);
 
-  const onSymbolBlur = useCallback(() => {
+  const onNameBlur = useCallback(
+    () =>
+      setValidations((validations) => ({
+        ...validations,
+        name: validateName(),
+      })),
+    [validateName],
+  );
+
+  const validateSymbol = useCallback(() => {
     const symbol = asset.symbol || assetMetadata.symbol;
-    const validSymbol = !!symbol && symbol.length > 0;
-    setValidations((validations) => ({
-      ...validations,
-      symbol: validSymbol,
-    }));
+    return !!symbol && symbol.length > 0;
   }, [asset.symbol, assetMetadata.symbol]);
+
+  const onSymbolBlur = useCallback(
+    () =>
+      setValidations((validations) => ({
+        ...validations,
+        symbol: validateSymbol(),
+      })),
+    [validateSymbol],
+  );
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
@@ -117,14 +143,19 @@ export function CustomChain() {
     [],
   );
 
-  const validateAddCustomAsset = useCallback(
-    () =>
-      Object.values(validations).reduce(
-        (prev, current) => prev && current,
-        true,
-      ),
-    [validations],
-  );
+  const validateAddCustomAsset = useCallback(() => {
+    const validAddress = validateAddress();
+    const validName = validateName();
+    const validDecimals = validateDecimals();
+    const validSymbol = validateSymbol();
+    setValidations({
+      address: validAddress,
+      decimals: validDecimals,
+      name: validName,
+      symbol: validSymbol,
+    });
+    return validAddress && validName && validDecimals && validSymbol;
+  }, [validateAddress, validateDecimals, validateName, validateSymbol]);
 
   const addAsset = useCallback(() => {
     const assetToAdd = {
@@ -172,6 +203,17 @@ export function CustomChain() {
     },
     [chainId, customChain.chains.length, removeCustomRPC, removeUserChain],
   );
+
+  useEffect(() => {
+    if (!isEqual(assetMetadata, prevAssetMetadata) && assetMetadataIsFetched) {
+      validateAddCustomAsset();
+    }
+  }, [
+    assetMetadata,
+    assetMetadataIsFetched,
+    prevAssetMetadata,
+    validateAddCustomAsset,
+  ]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -298,6 +340,7 @@ export function CustomChain() {
             value={asset.address}
             loading={assetMetadataIsFetching}
             onBlur={onAddressBlur}
+            borderColor={validations.address ? 'accent' : 'red'}
           />
           <FormInput
             onChange={(t) =>
@@ -306,6 +349,7 @@ export function CustomChain() {
             placeholder="Name"
             value={asset.name || assetMetadata?.name}
             onBlur={onNameBlur}
+            borderColor={validations.name ? 'accent' : 'red'}
           />
           <FormInput
             onChange={(t) =>
@@ -314,6 +358,7 @@ export function CustomChain() {
             placeholder="Decimals"
             value={asset.decimals || assetMetadata?.decimals}
             onBlur={onDecimalsBlur}
+            borderColor={validations.decimals ? 'accent' : 'red'}
           />
           <FormInput
             onChange={(t) =>
@@ -322,6 +367,7 @@ export function CustomChain() {
             placeholder="Symbol"
             value={asset.symbol || assetMetadata?.symbol}
             onBlur={onSymbolBlur}
+            borderColor={validations.symbol ? 'accent' : 'red'}
           />
 
           <Inline alignHorizontal="right">

@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import { isEqual } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
@@ -9,6 +10,7 @@ import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
+import usePrevious from '~/entries/popup/hooks/usePrevious';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -46,10 +48,12 @@ export function SettingsCustomChain() {
     data: chainMetadata,
     isFetching: chainMetadataIsFetching,
     isError: chainMetadataIsError,
+    isFetched: chainMetadataIsFetched,
   } = useChainMetadata(
     { rpcUrl: debuncedRpcUrl },
     { enabled: !!debuncedRpcUrl && isValidUrl(debuncedRpcUrl) },
   );
+  const prevChainMetadata = usePrevious(chainMetadata);
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
@@ -73,51 +77,109 @@ export function SettingsCustomChain() {
     [],
   );
 
-  const onRpcUrlBlur = useCallback(async () => {
-    const validUrl =
+  const validateExplorerRpcUrl = useCallback(
+    () =>
       !!customRPC.rpcUrl &&
       isValidUrl(customRPC.rpcUrl) &&
-      !!chainMetadata?.chainId;
-    setValidations((prev) => ({ ...prev, rpcUrl: validUrl }));
-  }, [chainMetadata?.chainId, customRPC.rpcUrl]);
-
-  const onChainIdBlur = useCallback(() => {
-    const chainId = customRPC.chainId || chainMetadata?.chainId;
-    const validChainId = !!chainId && !isNaN(parseInt(chainId.toString(), 10));
-    setValidations((prev) => ({ ...prev, chainId: validChainId }));
-  }, [chainMetadata?.chainId, customRPC.chainId]);
-
-  const onNameBlur = useCallback(() => {
-    const validName = !!customRPC.name;
-    setValidations((prev) => ({ ...prev, name: validName }));
-  }, [customRPC.name]);
-
-  const onSymbolBlur = useCallback(() => {
-    const validSymbol = !!customRPC.symbol;
-    setValidations((prev) => ({ ...prev, symbol: validSymbol }));
-  }, [customRPC.symbol]);
-
-  const onExplorerUrlBlur = useCallback(() => {
-    const validExplorerUrl =
-      !!customRPC.explorerUrl && isValidUrl(customRPC.explorerUrl);
-    setValidations((prev) => ({ ...prev, explorerUrl: validExplorerUrl }));
-  }, [customRPC.explorerUrl]);
-
-  const validateAddCustomRpc = useCallback(
-    () =>
-      Object.values(validations).reduce(
-        (prev, current) => prev && current,
-        true,
-      ),
-    [validations],
+      !!chainMetadata?.chainId,
+    [chainMetadata?.chainId, customRPC.rpcUrl],
   );
 
+  const onRpcUrlBlur = useCallback(
+    async () =>
+      setValidations((prev) => ({ ...prev, rpcUrl: validateExplorerRpcUrl() })),
+    [validateExplorerRpcUrl],
+  );
+
+  const validateChainId = useCallback(() => {
+    const chainId = customRPC.chainId || chainMetadata?.chainId;
+    return !!chainId && !isNaN(parseInt(chainId.toString(), 10));
+  }, [chainMetadata?.chainId, customRPC.chainId]);
+
+  const onChainIdBlur = useCallback(
+    () => setValidations((prev) => ({ ...prev, chainId: validateChainId() })),
+    [validateChainId],
+  );
+
+  const validateName = useCallback(() => !!customRPC.name, [customRPC.name]);
+
+  const onNameBlur = useCallback(
+    () => setValidations((prev) => ({ ...prev, name: validateName() })),
+    [validateName],
+  );
+
+  const validateSymbol = useCallback(
+    () => !!customRPC.symbol,
+    [customRPC.symbol],
+  );
+
+  const onSymbolBlur = useCallback(
+    () => setValidations((prev) => ({ ...prev, symbol: validateSymbol() })),
+    [validateSymbol],
+  );
+
+  const validateExplorerUrl = useCallback(
+    () => !!customRPC.explorerUrl && isValidUrl(customRPC.explorerUrl),
+    [customRPC.explorerUrl],
+  );
+
+  const onExplorerUrlBlur = useCallback(
+    () =>
+      setValidations((prev) => ({
+        ...prev,
+        explorerUrl: validateExplorerUrl(),
+      })),
+    [validateExplorerUrl],
+  );
+
+  const validateAddCustomRpc = useCallback(() => {
+    const validRpcUrl = validateExplorerRpcUrl();
+    const validChainId = validateChainId();
+    const validName = validateName();
+    const validSymbol = validateSymbol();
+    const validExplorerUrl = validateExplorerUrl();
+    setValidations({
+      rpcUrl: validRpcUrl,
+      chainId: validChainId,
+      name: validName,
+      symbol: validSymbol,
+      explorerUrl: validExplorerUrl,
+    });
+    return (
+      validRpcUrl &&
+      validChainId &&
+      validName &&
+      validSymbol &&
+      validExplorerUrl
+    );
+  }, [
+    validateChainId,
+    validateExplorerRpcUrl,
+    validateExplorerUrl,
+    validateName,
+    validateSymbol,
+  ]);
+
+  const validateCustomRpcMetadata = useCallback(() => {
+    const validRpcUrl = validateExplorerRpcUrl();
+    const validChainId = validateChainId();
+    setValidations((validations) => ({
+      ...validations,
+      rpcUrl: validRpcUrl,
+      chainId: validChainId,
+    }));
+    return validRpcUrl && validChainId;
+  }, [validateChainId, validateExplorerRpcUrl]);
+
   const addCustomRpc = useCallback(async () => {
-    const { rpcUrl, chainId: customChainId, name, symbol } = customRPC;
-    const chainId = customChainId || chainMetadata?.chainId;
+    const rpcUrl = customRPC.rpcUrl;
+    const chainId = customRPC.chainId || chainMetadata?.chainId;
+    const name = customRPC.name;
+    const symbol = customRPC.symbol;
+    const explorerUrl = customRPC.explorerUrl;
     const valid = validateAddCustomRpc();
 
-    if (valid && rpcUrl && chainId && name && symbol) {
+    if (valid && rpcUrl && chainId && name && symbol && explorerUrl) {
       const chain: Chain = {
         id: chainId,
         name,
@@ -140,6 +202,18 @@ export function SettingsCustomChain() {
     chainMetadata?.chainId,
     customRPC,
     validateAddCustomRpc,
+  ]);
+
+  useEffect(() => {
+    if (!isEqual(chainMetadata, prevChainMetadata) && chainMetadataIsFetched) {
+      validateCustomRpcMetadata();
+    }
+  }, [
+    chainMetadata,
+    chainMetadataIsFetched,
+    prevChainMetadata,
+    validateAddCustomRpc,
+    validateCustomRpcMetadata,
   ]);
 
   return (
