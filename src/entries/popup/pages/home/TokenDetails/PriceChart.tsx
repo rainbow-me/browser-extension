@@ -32,13 +32,12 @@ const parsePriceChange = (
   return { color: 'labelSecondary', symbol: '' };
 };
 
-function PriceChange({
-  changePercentage = 0,
-  date,
-}: {
+type PriceChange = {
   changePercentage?: number;
   date: Date;
-}) {
+};
+
+function PriceChange({ changePercentage = 0, date }: PriceChange) {
   const { color, symbol } = parsePriceChange(+changePercentage.toFixed(2));
   return (
     <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end">
@@ -138,6 +137,16 @@ const usePriceChart = ({
 
 const percentDiff = (current = 1, last = 0) =>
   ((current - last) / current) * 100;
+
+const now = new Date();
+const chartTimeToTimestamp = {
+  hour: new Date(now.setHours(new Date().getHours() - 1)),
+  day: new Date(now.setHours(new Date().getDay() - 1)),
+  week: new Date(now.setDate(new Date().getDay() - 7)),
+  month: new Date(now.setMonth(new Date().getMonth() - 1)),
+  year: new Date(now.setFullYear(new Date().getFullYear() - 1)),
+} satisfies Record<ChartTime, Date>;
+
 export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
   const shouldHaveData = !isTestnetChainId({ chainId: token.chainId });
@@ -150,24 +159,23 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
   });
 
   const lastPrice = data && data[data.length - 1]?.price;
-
-  const todayPoint = {
-    date: new Date(),
-    changePercent: data
-      ? percentDiff(lastPrice, data[1].price)
-      : token.price?.relative_change_24h,
+  const selectedTimePriceChange = {
+    date: chartTimeToTimestamp[selectedTime],
+    changePercentage: percentDiff(lastPrice, data?.[0]?.price),
   };
 
-  const [{ changePercent, date }, setIndicatorPoint] = useReducer(
-    (s, point?: ChartPoint) => {
-      if (!point || !data) return todayPoint;
-      return {
-        date: new Date(point.timestamp * 1000),
-        changePercent: percentDiff(lastPrice, point.price),
-      };
-    },
-    todayPoint,
-  );
+  const [indicatorPointPriceChange, setIndicatorPoint] = useReducer<
+    (s: PriceChange | null, point: ChartPoint | undefined) => PriceChange | null
+  >((s, point) => {
+    if (!point || !data) return null;
+    return {
+      date: new Date(point.timestamp * 1000),
+      changePercentage: percentDiff(lastPrice, point.price),
+    };
+  }, null);
+
+  const { changePercentage, date } =
+    indicatorPointPriceChange || selectedTimePriceChange;
 
   const hasPriceData = shouldHaveData && !!data;
 
@@ -179,7 +187,7 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
           token={token}
           fallbackPrice={lastPrice}
         />
-        <PriceChange changePercentage={changePercent} date={date} />
+        <PriceChange changePercentage={changePercentage} date={date} />
       </Box>
       {hasPriceData && (
         <Box>
