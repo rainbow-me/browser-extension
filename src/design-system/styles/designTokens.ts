@@ -1010,6 +1010,8 @@ export const symbolNames = selectSymbolNames(
   'exclamationmark.octagon.fill',
   'network.badge.shield.half.filled',
   'safari.fill',
+  'bolt.shield',
+  'bolt.shield.fill',
   'arrow.up.circle.fill',
   'curlybraces',
   'calendar',

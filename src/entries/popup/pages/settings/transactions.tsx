@@ -1,7 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import { analytics } from '~/analytics';
-import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import {
@@ -31,18 +29,6 @@ export function Transactions() {
     (opt) => opt !== GasSpeed.CUSTOM,
   );
   const [speedDropdownOpen, setSpeedDropdownOpen] = useState(false);
-
-  const setGlobalFlashbotsEnabled = useCallback(
-    async (globalFlashbotsEnabled: boolean) => {
-      analytics.track(
-        globalFlashbotsEnabled
-          ? event.settingsRainbowDefaultProviderEnabled
-          : event.settingsRainbowDefaultProviderDisabled,
-      );
-      setFlashbotsEnabled(globalFlashbotsEnabled);
-    },
-    [setFlashbotsEnabled],
-  );
 
   const clearTransactions = useCallback(() => {
     clearNonces();
@@ -127,7 +113,7 @@ export function Transactions() {
                 tabIndex={-1}
                 testId="flashbots-transactions-toggle"
                 checked={flashbotsEnabled}
-                handleChange={setGlobalFlashbotsEnabled}
+                handleChange={setFlashbotsEnabled}
               />
             }
             titleComponent={
@@ -135,7 +121,7 @@ export function Transactions() {
                 text={i18n.t('settings.transactions.use_flashbots')}
               />
             }
-            onToggle={() => setGlobalFlashbotsEnabled(!flashbotsEnabled)}
+            onToggle={() => setFlashbotsEnabled(!flashbotsEnabled)}
           />
           <MenuItem.Description
             text={i18n.t('settings.transactions.flashbots_description')}
