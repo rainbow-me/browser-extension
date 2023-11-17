@@ -19,7 +19,6 @@ import { ChainId, ChainName } from '~/core/types/chains';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
-import { ASSETS_TIMEOUT_DURATION } from '../resources/assets/assets';
 import { SearchAsset } from '../types/search';
 
 import {
@@ -429,7 +428,7 @@ export const fetchAssetWithPrice = async ({
       true,
     ),
     {
-      timeout: ASSETS_TIMEOUT_DURATION,
+      timeout: 10000,
     },
   )) as Record<string, AssetMetadata>[];
 
