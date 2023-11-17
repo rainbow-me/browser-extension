@@ -1,14 +1,16 @@
 import { AddressZero } from '@ethersproject/constants';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN, SUPPORTED_CHAINS } from '~/core/references';
 import { ChainId, ChainName } from '~/core/types/chains';
 
+import { proxyRpcEndpoint } from '../providers';
 import { customRPCsStore } from '../state/customRPC';
 import { AddressOrEth } from '../types/assets';
 
-import { getDappHost } from './connectedApps';
+import { getDappHost, isValidUrl } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -161,4 +163,17 @@ export const chainIdToUse = (
   } else {
     return ChainId.mainnet;
   }
+};
+
+export const getChainMetadataRPCUrl = async ({
+  rpcUrl,
+}: {
+  rpcUrl?: string;
+}) => {
+  if (rpcUrl && isValidUrl(rpcUrl)) {
+    const provider = new JsonRpcProvider(proxyRpcEndpoint(rpcUrl, 0));
+    const network = await provider.getNetwork();
+    return { chainId: network.chainId };
+  }
+  return null;
 };

@@ -1,8 +1,7 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Chain } from 'wagmi';
 
-import { proxyRpcEndpoint } from '~/core/providers';
+import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { isValidUrl } from '~/core/utils/connectedApps';
@@ -41,7 +40,16 @@ export function SettingsCustomChain() {
     symbol: true,
     explorerUrl: true,
   });
-  const [validatingRpcUrl, setValidatingRpcUrl] = useState(false);
+  const debuncedRpcUrl = useDebounce(customRPC.rpcUrl, 500);
+
+  const {
+    data: chainMetadata,
+    isFetching: chainMetadataIsFetching,
+    isError: chainMetadataIsError,
+  } = useChainMetadata(
+    { rpcUrl: debuncedRpcUrl },
+    { enabled: !!debuncedRpcUrl && isValidUrl(debuncedRpcUrl) },
+  );
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
@@ -65,42 +73,6 @@ export function SettingsCustomChain() {
     [],
   );
 
-  const getChainIdFromRPCUrl = useCallback(async (rpcUrl = '') => {
-    if (isValidUrl(rpcUrl)) {
-      const provider = new JsonRpcProvider(proxyRpcEndpoint(rpcUrl, 0));
-      try {
-        const network = await provider.getNetwork();
-        setCustomRPC((prev) => ({ ...prev, chainId: network.chainId }));
-        return { chainId: network.chainId };
-      } catch (e) {
-        setCustomRPC((prev) => ({ ...prev, chainId: undefined }));
-        return null;
-      }
-    }
-    return null;
-  }, []);
-
-  const debuncedRpcUrl = useDebounce(customRPC.rpcUrl, 500);
-
-  useEffect(() => {
-    const update = async () => {
-      setValidatingRpcUrl(true);
-      const chainIdFromRpcUrl = await getChainIdFromRPCUrl(debuncedRpcUrl);
-      if (chainIdFromRpcUrl?.chainId) {
-        onInputChange<number>(chainIdFromRpcUrl.chainId, 'number', 'chainId');
-      }
-      setValidatingRpcUrl(false);
-      setValidations((prev) => ({
-        ...prev,
-        rpcUrl:
-          !!customRPC.rpcUrl &&
-          isValidUrl(customRPC.rpcUrl) &&
-          !!chainIdFromRpcUrl?.chainId,
-      }));
-    };
-    update();
-  }, [customRPC.rpcUrl, debuncedRpcUrl, getChainIdFromRPCUrl, onInputChange]);
-
   const onRPCUrlChange = useCallback(
     async (rpcUrl: string) => {
       onInputChange<string>(rpcUrl, 'string', 'rpcUrl');
@@ -112,14 +84,12 @@ export function SettingsCustomChain() {
     async () =>
       !!customRPC.rpcUrl &&
       isValidUrl(customRPC.rpcUrl) &&
-      !!(await getChainIdFromRPCUrl(customRPC.rpcUrl)),
-    [customRPC.rpcUrl, getChainIdFromRPCUrl],
+      !!chainMetadata?.chainId,
+    [chainMetadata?.chainId, customRPC.rpcUrl],
   );
 
   const onRpcUrlBlur = useCallback(async () => {
-    console.log('-- validatingutl');
     const validUrl = await validateRpcUrl();
-    console.log('-- validUrl', validUrl);
     setValidations((prev) => ({ ...prev, rpcUrl: validUrl }));
   }, [validateRpcUrl]);
 
@@ -242,15 +212,21 @@ export function SettingsCustomChain() {
             placeholder="Url"
             value={customRPC.rpcUrl}
             onBlur={onRpcUrlBlur}
-            borderColor={validations.rpcUrl ? 'accent' : 'red'}
-            loading={validatingRpcUrl}
+            borderColor={
+              validations.rpcUrl && !chainMetadataIsError ? 'accent' : 'red'
+            }
+            loading={chainMetadataIsFetching}
           />
           <FormInput
             onChange={(t) =>
               onInputChange<number>(t.target.value, 'number', 'chainId')
             }
             placeholder="ChainId"
-            value={customRPC.chainId ? String(customRPC.chainId) : ''}
+            value={
+              customRPC.chainId
+                ? String(customRPC.chainId)
+                : String(chainMetadata?.chainId || '')
+            }
             onBlur={onChainIdBlur}
             borderColor={validations.chainId ? 'accent' : 'red'}
           />

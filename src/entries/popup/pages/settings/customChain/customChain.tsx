@@ -37,7 +37,7 @@ export function CustomChain() {
 
   const { data: assetMetadata = INITIAL_ASSET } = useAssetMetadata(
     { assetAddress: asset.address, chainId },
-    { enabled: !!asset.address },
+    { enabled: isValidAddress(asset.address) },
   );
 
   const onInputChange = useCallback(
@@ -82,7 +82,6 @@ export function CustomChain() {
       isValidAddress(assetToAdd.address) &&
       !customRPCAssetsAddresses.includes(assetToAdd.address)
     ) {
-      console.log('adding assetToAdd', assetToAdd);
       addCustomRPCAsset({
         chainId,
         customRPCAsset: assetToAdd,
