@@ -3,10 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { I18n } from 'i18n-js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
-import { useSwapFlashbotsEnabledStore } from '~/core/state/currentSettings/swapFlashbotsEnabled';
+import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { divide } from '~/core/utils/numbers';
 import {
@@ -206,9 +204,10 @@ export const SwapSettings = ({
 }: SwapSettingsProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
-  const { flashbots_enabled: flashbotsEnabledGlobally } = config;
+
   const { swapFlashbotsEnabled, setSwapFlashbotsEnabled } =
-    useSwapFlashbotsEnabledStore();
+    useFlashbotsEnabledStore();
+
   const prevChainId = usePrevious(chainId);
   const [source, setSource] = useState<Source | 'auto'>('auto');
   const [slippage, setSlippage] = useState<string>(defaultSlippage);
@@ -228,8 +227,7 @@ export const SwapSettings = ({
     setSource('auto');
     const defaultSlippage = getDefaultSlippage(chainId);
     setSlippage(defaultSlippage);
-    setSwapFlashbotsEnabled(false);
-  }, [chainId, setSwapFlashbotsEnabled]);
+  }, [chainId]);
 
   const done = useCallback(() => {
     try {
@@ -384,30 +382,25 @@ export const SwapSettings = ({
                       </Inline>
                     </Box>
 
-                    {flashbotsEnabledGlobally && (
-                      <Box
-                        testId="swap-settings-flashbots-row"
-                        style={{ height: '32px' }}
-                      >
-                        <Inline
-                          alignVertical="center"
-                          alignHorizontal="justify"
-                        >
-                          <Label
-                            label={t('swap.settings.use_flashbots')}
-                            onClick={showFlashbotsExplainer}
-                            testId="swap-settings-flashbots-label"
-                          />
-                          <Toggle
-                            accentColor={settingsAccentColor}
-                            checked={swapFlashbotsEnabled}
-                            handleChange={setSwapFlashbotsEnabled}
-                            testId="swap-settings-flashbots-toggle"
-                            tabIndex={0}
-                          />
-                        </Inline>
-                      </Box>
-                    )}
+                    <Box
+                      testId="swap-settings-flashbots-row"
+                      style={{ height: '32px' }}
+                    >
+                      <Inline alignVertical="center" alignHorizontal="justify">
+                        <Label
+                          label={t('swap.settings.use_flashbots')}
+                          onClick={showFlashbotsExplainer}
+                          testId="swap-settings-flashbots-label"
+                        />
+                        <Toggle
+                          accentColor={settingsAccentColor}
+                          checked={swapFlashbotsEnabled}
+                          handleChange={setSwapFlashbotsEnabled}
+                          testId="swap-settings-flashbots-toggle"
+                          tabIndex={0}
+                        />
+                      </Inline>
+                    </Box>
 
                     <Box
                       testId="swap-settings-slippage-row"

@@ -9,10 +9,10 @@ export {
   useCurrentLanguageStore,
 } from './currentLanguage';
 export {
-  isDefaultWalletStore,
-  useIsDefaultWalletStore,
-} from './isDefaultWallet';
-export {
   flashbotsEnabledStore,
   useFlashbotsEnabledStore,
 } from './flashbotsEnabled';
+export {
+  isDefaultWalletStore,
+  useIsDefaultWalletStore,
+} from './isDefaultWallet';
