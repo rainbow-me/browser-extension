@@ -1,17 +1,17 @@
 export { appSessionsStore, useAppSessionsStore } from './appSessions';
 export {
-  isDefaultWalletStore,
   currentAddressStore,
   currentChainIdStore,
   currentCurrencyStore,
   currentLanguageStore,
   flashbotsEnabledStore,
-  useIsDefaultWalletStore,
+  isDefaultWalletStore,
   useCurrentAddressStore,
   useCurrentChainIdStore,
   useCurrentCurrencyStore,
   useCurrentLanguageStore,
   useFlashbotsEnabledStore,
+  useIsDefaultWalletStore,
 } from './currentSettings';
 export { deviceIdStore, useDeviceIdStore } from './device';
 export { gasStore, useGasStore } from './gas';
