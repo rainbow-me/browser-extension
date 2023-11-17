@@ -1,5 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { avalanche, celo, fantom, harmonyOne } from '@wagmi/chains';
 import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
@@ -197,15 +198,15 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'bscscan.com':
       return ChainId.bsc;
     case 'ftmscan.com':
-      return 250;
+      return fantom.id;
     case 'explorer.celo.org':
-      return 42220;
+      return celo.id;
     case 'explorer.harmony.one':
-      return 1666600000;
+      return harmonyOne.id;
     case 'explorer.avax.network':
     case 'subnets.avax.network':
     case 'snowtrace.io':
-      return 43114;
+      return avalanche.id;
     default:
       return ChainId.mainnet;
   }
