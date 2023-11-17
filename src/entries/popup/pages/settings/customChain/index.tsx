@@ -73,63 +73,35 @@ export function SettingsCustomChain() {
     [],
   );
 
-  const onRPCUrlChange = useCallback(
-    async (rpcUrl: string) => {
-      onInputChange<string>(rpcUrl, 'string', 'rpcUrl');
-    },
-    [onInputChange],
-  );
-
-  const validateRpcUrl = useCallback(
-    async () =>
+  const onRpcUrlBlur = useCallback(async () => {
+    const validUrl =
       !!customRPC.rpcUrl &&
       isValidUrl(customRPC.rpcUrl) &&
-      !!chainMetadata?.chainId,
-    [chainMetadata?.chainId, customRPC.rpcUrl],
-  );
-
-  const onRpcUrlBlur = useCallback(async () => {
-    const validUrl = await validateRpcUrl();
+      !!chainMetadata?.chainId;
     setValidations((prev) => ({ ...prev, rpcUrl: validUrl }));
-  }, [validateRpcUrl]);
-
-  const validateChainId = useCallback(
-    () =>
-      !!customRPC.chainId && !isNaN(parseInt(customRPC.chainId.toString(), 10)),
-    [customRPC.chainId],
-  );
+  }, [chainMetadata?.chainId, customRPC.rpcUrl]);
 
   const onChainIdBlur = useCallback(() => {
-    const validChainId = validateChainId();
+    const chainId = customRPC.chainId || chainMetadata?.chainId;
+    const validChainId = !!chainId && !isNaN(parseInt(chainId.toString(), 10));
     setValidations((prev) => ({ ...prev, chainId: validChainId }));
-  }, [validateChainId]);
-
-  const validateName = useCallback(() => !!customRPC.name, [customRPC.name]);
+  }, [chainMetadata?.chainId, customRPC.chainId]);
 
   const onNameBlur = useCallback(() => {
-    const validName = validateName();
+    const validName = !!customRPC.name;
     setValidations((prev) => ({ ...prev, name: validName }));
-  }, [validateName]);
-
-  const validateSymbol = useCallback(
-    () => !!customRPC.symbol,
-    [customRPC.symbol],
-  );
+  }, [customRPC.name]);
 
   const onSymbolBlur = useCallback(() => {
-    const validSymbol = validateSymbol();
+    const validSymbol = !!customRPC.symbol;
     setValidations((prev) => ({ ...prev, symbol: validSymbol }));
-  }, [validateSymbol]);
-
-  const validateExplorerUrl = useCallback(
-    () => !!customRPC.explorerUrl && isValidUrl(customRPC.explorerUrl),
-    [customRPC.explorerUrl],
-  );
+  }, [customRPC.symbol]);
 
   const onExplorerUrlBlur = useCallback(() => {
-    const validExplorerUrl = validateExplorerUrl();
+    const validExplorerUrl =
+      !!customRPC.explorerUrl && isValidUrl(customRPC.explorerUrl);
     setValidations((prev) => ({ ...prev, explorerUrl: validExplorerUrl }));
-  }, [validateExplorerUrl]);
+  }, [customRPC.explorerUrl]);
 
   const validateAddCustomRpc = useCallback(
     async () =>
@@ -141,8 +113,10 @@ export function SettingsCustomChain() {
   );
 
   const addCustomRpc = useCallback(async () => {
-    const { rpcUrl, chainId, name, symbol } = customRPC;
+    const { rpcUrl, chainId: customChainId, name, symbol } = customRPC;
+    const chainId = customChainId || chainMetadata?.chainId;
     const valid = await validateAddCustomRpc();
+
     if (valid && rpcUrl && chainId && name && symbol) {
       const chain: Chain = {
         id: chainId,
@@ -160,7 +134,13 @@ export function SettingsCustomChain() {
       });
       addUserChain({ chainId });
     }
-  }, [addCustomRPC, addUserChain, customRPC, validateAddCustomRpc]);
+  }, [
+    addCustomRPC,
+    addUserChain,
+    chainMetadata?.chainId,
+    customRPC,
+    validateAddCustomRpc,
+  ]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -208,7 +188,9 @@ export function SettingsCustomChain() {
 
         <Form>
           <FormInput
-            onChange={(t) => onRPCUrlChange(t.target.value)}
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'rpcUrl')
+            }
             placeholder="Url"
             value={customRPC.rpcUrl}
             onBlur={onRpcUrlBlur}
