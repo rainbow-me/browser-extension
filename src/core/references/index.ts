@@ -17,7 +17,13 @@ import {
 } from '@wagmi/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import {
+  ChainId,
+  ChainNameDisplay,
+  arbitrumSepolia,
+  holeski,
+  optimismSepolia,
+} from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -116,13 +122,16 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.hardhat]: AddressZero,
   [ChainId.goerli]: AddressZero,
   [ChainId.sepolia]: AddressZero,
+  [ChainId.holesky]: AddressZero,
   [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS as Address,
   [ChainId['arbitrum-goerli']]: AddressZero as Address,
+  [ChainId['arbitrum-sepolia']]: AddressZero as Address,
   [ChainId.bsc]: BSC_BNB_ADDRESS as Address,
   [ChainId['bsc-testnet']]: AddressZero as Address,
   [ChainId.optimism]: ETH_OPTIMISM_ADDRESS as Address,
-  [ChainId.hardhatOptimism]: AddressZero as Address,
+  [ChainId['hardhat-optimism']]: AddressZero as Address,
   [ChainId['optimism-goerli']]: AddressZero as Address,
+  [ChainId['optimism-sepolia']]: AddressZero as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
   [ChainId['base-goerli']]: AddressZero as Address,
   [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
@@ -157,26 +166,32 @@ export const SUPPORTED_CHAINS: Chain[] = [
   polygon,
   optimism,
   arbitrum,
+  holeski,
   base,
   zora,
   bsc,
   goerli,
   sepolia,
   optimismGoerli,
+  optimismSepolia,
   bscTestnet,
   polygonMumbai,
   arbitrumGoerli,
+  arbitrumSepolia,
   baseGoerli,
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] = [
+  holeski.id,
   goerli.id,
   sepolia.id,
   optimismGoerli.id,
+  optimismSepolia.id,
   bscTestnet.id,
   polygonMumbai.id,
   arbitrumGoerli.id,
+  arbitrumSepolia.id,
   baseGoerli.id,
   zoraTestnet.id,
 ];

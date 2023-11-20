@@ -84,7 +84,7 @@ async function userTestnetNativeAssetQueryFunction({
     if (
       !isTestnetChainId({ chainId }) &&
       chainId !== ChainId.hardhat &&
-      chainId !== ChainId.hardhatOptimism
+      chainId !== ChainId['hardhat-optimism']
     )
       return null;
 

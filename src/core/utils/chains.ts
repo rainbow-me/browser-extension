@@ -35,7 +35,8 @@ export const getSupportedChainsWithHardhat = () => {
     (chain) =>
       !chain.testnet ||
       (process.env.IS_TESTING === 'true' &&
-        (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)),
+        (chain.id === ChainId.hardhat ||
+          chain.id === ChainId['hardhat-optimism'])),
   );
 };
 
@@ -56,7 +57,8 @@ export const getSupportedTestnetChainIds = () =>
   getSupportedTestnetChains()
     .filter(
       (chain) =>
-        chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
+        chain.id !== ChainId.hardhat &&
+        chain.id !== ChainId['hardhat-optimism'],
     )
     .map((chain) => chain.id);
 
@@ -154,7 +156,7 @@ export const chainIdToUse = (
     return ChainId.hardhat;
   }
   if (connectedToHardhatOp) {
-    return ChainId.hardhatOptimism;
+    return ChainId['hardhat-optimism'];
   }
   if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
     return activeSessionChainId;

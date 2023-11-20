@@ -15,7 +15,7 @@ const getRefetchTime = (chainId: ChainId) => {
     case ChainId.optimism:
     case ChainId.polygon:
     case ChainId.zora:
-    case ChainId.hardhatOptimism:
+    case ChainId['hardhat-optimism']:
     default:
       return 2000;
   }

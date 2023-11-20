@@ -31,7 +31,7 @@ export const useUserChains = () => {
     const checkIfTesting = (chainId: ChainId) => {
       if (IS_TESTING) {
         return testnetMode
-          ? chainId === ChainId.hardhatOptimism
+          ? chainId === ChainId['hardhat-optimism']
           : chainId === ChainId.hardhat;
       }
       return false;

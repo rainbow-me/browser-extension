@@ -33,7 +33,7 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
   switch (chain.id) {
     case ChainId.hardhat:
       return { http: chain.rpcUrls.default.http[0] };
-    case ChainId.hardhatOptimism:
+    case ChainId['hardhat-optimism']:
       return { http: chain.rpcUrls.default.http[0] };
     case ChainId.mainnet:
       return { http: process.env.ETH_MAINNET_RPC as string };
@@ -53,14 +53,18 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
       return { http: process.env.ETH_GOERLI_RPC as string };
     case ChainId.sepolia:
       return { http: process.env.ETH_SEPOLIA_RPC as string };
+    case ChainId.holesky:
+      return { http: process.env.ETH_HOLESKY_RPC as string };
     case ChainId['optimism-goerli']:
       return { http: process.env.OPTIMISM_GOERLI_RPC as string };
+    case ChainId['optimism-sepolia']:
+      return { http: process.env.OPTIMISM_SEPOLIA_RPC as string };
     case ChainId['bsc-testnet']:
       return { http: process.env.BSC_TESTNET_RPC as string };
     case ChainId['polygon-mumbai']:
       return { http: process.env.POLYGON_MUMBAI_RPC as string };
-    case ChainId['arbitrum-goerli']:
-      return { http: process.env.ARBITRUM_GOERLI_RPC as string };
+    case ChainId['arbitrum-sepolia']:
+      return { http: process.env.ARBITRUM_SEPOLIA_RPC as string };
     case ChainId['base-goerli']:
       return { http: process.env.BASE_GOERLI_RPC as string };
     case ChainId['zora-testnet']:
