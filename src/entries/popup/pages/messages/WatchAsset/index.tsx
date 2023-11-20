@@ -61,41 +61,52 @@ export const WatchAsset = ({
     [selectedChainId, assetAddress],
   );
 
-  const [asset, setAsset] = useState<ParsedUserAsset>({
-    address: assetAddress,
-    chainId: Number(chainId),
-    chainName: (getChain({ chainId: Number(chainId) }).name || '') as ChainName,
-    decimals,
-    symbol,
-    isNativeAsset: false,
-    name: symbol,
-    uniqueId: `${assetAddress}_${chainId}`,
-    native: {
-      price: undefined,
-      balance: { amount: '0', display: '0' },
-    },
-    price: { value: 0 },
-    bridging: { isBridgeable: false, networks: [] },
-    icon_url: logo,
-    balance: { amount: '0', display: '0' },
-  });
+  const { data: assetMetadata, isError: wrongNetwork } = useAssetMetadata(
+    { assetAddress, chainId: selectedChainId },
+    { enabled: !!assetAddress },
+  );
 
-  const { data: assetMetadata = asset, isError: wrongNetwork } =
-    useAssetMetadata(
-      { assetAddress: asset.address as Address, chainId: selectedChainId },
-      { enabled: !!asset.address },
-    );
+  const [assetWithPrice, setAssetWithPrice] = useState<ParsedUserAsset>();
 
-  useEffect(() => {
-    if (assetMetadata) {
-      setAsset({
-        ...asset,
-        name: assetMetadata.name ?? '',
-        decimals: assetMetadata.decimals ?? 18,
-        symbol: assetMetadata.symbol ?? '',
-      });
-    }
-  }, [asset, assetMetadata]);
+  const asset = useMemo(
+    () => ({
+      address: assetAddress,
+      chainId: Number(selectedChainId),
+      chainName: (getChain({ chainId: Number(selectedChainId) }).name ||
+        '') as ChainName,
+      decimals: assetMetadata?.decimals || decimals,
+      symbol: assetMetadata?.symbol || symbol,
+      isNativeAsset: false,
+      name: assetMetadata?.name || symbol,
+      uniqueId: `${assetAddress}_${chainId}`,
+      native: assetWithPrice?.native || {
+        price: undefined,
+        balance: { amount: '0', display: '0' },
+      },
+      price: assetWithPrice?.price || { value: 0 },
+      bridging: { isBridgeable: false, networks: [] },
+      icon_url: logo,
+      balance: assetWithPrice?.balance || { amount: '0', display: '0' },
+    }),
+    [
+      assetAddress,
+      assetMetadata?.decimals,
+      assetMetadata?.name,
+      assetMetadata?.symbol,
+      assetWithPrice?.balance,
+      assetWithPrice?.native,
+      assetWithPrice?.price,
+      chainId,
+      decimals,
+      logo,
+      selectedChainId,
+      symbol,
+    ],
+  );
+
+  const isWrongNetwork = useMemo(() => {
+    return wrongNetwork || !asset.name;
+  }, [asset, wrongNetwork]);
 
   const fetchAssetData = useCallback(async () => {
     const provider = getProvider({ chainId: Number(selectedChainId) });
@@ -116,9 +127,9 @@ export const WatchAsset = ({
     });
 
     if (assetWithPrice) {
-      setAsset(assetWithPrice);
+      setAssetWithPrice(assetWithPrice);
     } else {
-      setAsset(parsedAsset);
+      setAssetWithPrice(parsedAsset);
     }
   }, [asset, currentAddress, currentCurrency, selectedChainId]);
 
@@ -215,7 +226,7 @@ export const WatchAsset = ({
           asset={asset}
           selectedChainId={selectedChainId}
           setSelectedChainId={setSelectedChainId}
-          wrongNetwork={wrongNetwork}
+          wrongNetwork={isWrongNetwork}
         />
         <Separator color="separatorTertiary" />
       </Row>
@@ -225,7 +236,7 @@ export const WatchAsset = ({
           onRejectRequest={onRejectRequest}
           loading={loading}
           dappStatus={dappMetadata?.status}
-          disabled={wrongNetwork}
+          disabled={isWrongNetwork}
         />
       </Row>
     </Rows>

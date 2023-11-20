@@ -17,6 +17,8 @@ import { isLowerCaseMatch } from './strings';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
+  1: 'ethereum',
+  10: 'optimism',
   43114: 'avalanchex',
   100: 'xdai',
   324: 'zksync',
