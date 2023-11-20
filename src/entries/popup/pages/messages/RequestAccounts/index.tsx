@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -32,9 +32,20 @@ export const RequestAccounts = ({
   const [loading, setLoading] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
   const dappUrl = request?.meta?.sender?.url;
-  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
-  const appName =
-    dappMetadata?.appName || (dappUrl ? getDappHostname(dappUrl) : '');
+  const { data: dappMetadata } = useDappMetadata({ url: undefined });
+
+  const appName = useMemo(() => {
+    try {
+      if (dappMetadata?.appName) {
+        return dappMetadata.appName;
+      } else if (dappUrl) {
+        return getDappHostname(dappUrl);
+      }
+    } catch (e) {
+      //
+    }
+    return '';
+  }, [dappMetadata?.appName, dappUrl]);
 
   const { testnetMode } = useTestnetModeStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
