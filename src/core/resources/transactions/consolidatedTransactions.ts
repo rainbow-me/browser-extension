@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { Address } from 'wagmi';
 
 import { addysHttp } from '~/core/network/addys';
 import {
@@ -10,16 +11,10 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainName } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
-import {
-  chainIdFromChainName,
-  getSupportedChainIds,
-  getSupportedTestnetChainIds,
-  isCustomChain,
-} from '~/core/utils/chains';
+import { chainIdFromChainName } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -30,9 +25,10 @@ const CONSOLIDATED_TRANSACTIONS_TIMEOUT = 20000;
 // Query Types
 
 export type ConsolidatedTransactionsArgs = {
-  address?: string;
+  address: Address;
   currency: SupportedCurrencyKey;
-  testnetMode?: boolean;
+  testnetMode: boolean;
+  userChainIds: number[];
 };
 
 // ///////////////////////////////////////////////
@@ -42,10 +38,11 @@ export const consolidatedTransactionsQueryKey = ({
   address,
   currency,
   testnetMode,
+  userChainIds,
 }: ConsolidatedTransactionsArgs) =>
   createQueryKey(
     'consolidatedTransactions',
-    { address, currency, testnetMode },
+    { address, currency, testnetMode, userChainIds },
     { persisterVersion: 1 },
   );
 
@@ -59,7 +56,12 @@ type ConsolidatedTransactionsQueryKey = ReturnType<
 export async function fetchConsolidatedTransactions<
   TSelectData = ConsolidatedTransactionsResult,
 >(
-  { address, currency, testnetMode }: ConsolidatedTransactionsArgs,
+  {
+    address,
+    currency,
+    testnetMode,
+    userChainIds,
+  }: ConsolidatedTransactionsArgs,
   config: QueryConfig<
     ConsolidatedTransactionsResult,
     Error,
@@ -72,6 +74,7 @@ export async function fetchConsolidatedTransactions<
       address,
       currency,
       testnetMode,
+      userChainIds,
     }),
     consolidatedTransactionsQueryFunction,
     config,
@@ -88,17 +91,14 @@ type _QueryResult = {
 };
 
 export async function consolidatedTransactionsQueryFunction({
-  queryKey: [{ address, currency, testnetMode }],
+  queryKey: [{ address, currency, userChainIds }],
   pageParam,
 }: QueryFunctionArgs<
   typeof consolidatedTransactionsQueryKey
 >): Promise<_QueryResult> {
   try {
-    const supportedChainIds = testnetMode
-      ? getSupportedTestnetChainIds()
-      : getSupportedChainIds().filter((chainId) => !isCustomChain(chainId));
     const response = await addysHttp.get<TransactionsReceivedMessage>(
-      `/${supportedChainIds.join(',')}/${address}/transactions`,
+      `/${userChainIds.join(',')}/${address}/transactions`,
       {
         params: {
           currency: currency.toLowerCase(),
@@ -108,18 +108,20 @@ export async function consolidatedTransactionsQueryFunction({
         timeout: CONSOLIDATED_TRANSACTIONS_TIMEOUT,
       },
     );
+    const consolidatedTransactions = await parseConsolidatedTransactions(
+      response?.data,
+      currency,
+    );
+
     return {
       cutoff: response?.data?.meta?.cut_off,
       nextPage: response?.data?.meta?.next_page_cursor,
-      transactions: await parseConsolidatedTransactions(
-        response?.data,
-        currency,
-      ),
+      transactions: consolidatedTransactions,
     };
   } catch (e) {
     // we don't bother with fetching cache and returning stale data here because we probably have previous page data already
     logger.error(new RainbowError('consolidatedTransactionsQueryFunction: '), {
-      message: (e as Error)?.message,
+      message: e,
     });
     return { transactions: [] };
   }
@@ -156,19 +158,24 @@ async function parseConsolidatedTransactions(
 export function useConsolidatedTransactions<
   TSelectData = ConsolidatedTransactionsResult,
 >(
-  { address, currency }: ConsolidatedTransactionsArgs,
+  {
+    address,
+    currency,
+    userChainIds,
+    testnetMode,
+  }: ConsolidatedTransactionsArgs,
   config: InfiniteQueryConfig<
     ConsolidatedTransactionsResult,
     Error,
     TSelectData
   > = {},
 ) {
-  const { testnetMode } = useTestnetModeStore();
   return useInfiniteQuery(
     consolidatedTransactionsQueryKey({
       address,
       currency,
       testnetMode,
+      userChainIds,
     }),
     consolidatedTransactionsQueryFunction,
     {

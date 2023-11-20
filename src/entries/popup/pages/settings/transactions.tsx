@@ -8,6 +8,7 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
+import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
@@ -25,6 +26,8 @@ export function Transactions() {
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
   const { clearNonces } = useNonceStore();
   const { clearPendingTransactions } = usePendingTransactionsStore();
+  const { clearAllCustomNetworkTransactions } =
+    useCustomNetworkTransactionsStore();
   const filteredTxSpeedOptionKeys = Object.values(GasSpeed).filter(
     (opt) => opt !== GasSpeed.CUSTOM,
   );
@@ -33,12 +36,17 @@ export function Transactions() {
   const clearTransactions = useCallback(() => {
     clearNonces();
     clearPendingTransactions();
+    clearAllCustomNetworkTransactions();
     triggerToast({
       title: i18n.t(
         'settings.transactions.clear_transactions_and_nonces_success',
       ),
     });
-  }, [clearNonces, clearPendingTransactions]);
+  }, [
+    clearAllCustomNetworkTransactions,
+    clearNonces,
+    clearPendingTransactions,
+  ]);
 
   return (
     <Box paddingHorizontal="20px">

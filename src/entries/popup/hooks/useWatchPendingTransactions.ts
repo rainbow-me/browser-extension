@@ -10,10 +10,13 @@ import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import {
+  MinedTransaction,
   PendingTransaction,
   RainbowTransaction,
 } from '~/core/types/transactions';
+import { isCustomChain } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   getTransactionFlashbotStatus,
@@ -35,6 +38,7 @@ export const useWatchPendingTransactions = ({
   const pendingTransactions = getPendingTransactions({
     address,
   });
+  const { addCustomNetworkTransactions } = useCustomNetworkTransactionsStore();
   const pendingTransactionsByDescendingNonce = pendingTransactions
     .filter((tx) => isLowerCaseMatch(tx?.from, address))
     .sort(({ nonce: n1 }, { nonce: n2 }) => (n2 ?? 0) - (n1 ?? 0));
@@ -82,16 +86,19 @@ export const useWatchPendingTransactions = ({
                   });
                 }
 
-                const latestTransactionsConfirmedByBackend =
-                  await fetchTransactions(
-                    {
-                      address,
-                      chainId,
-                      currency: currentCurrency,
-                      transactionsLimit: 1,
-                    },
-                    { cacheTime: 0 },
-                  );
+                const latestTransactionsConfirmedByBackend = !isCustomChain(
+                  chainId,
+                )
+                  ? await fetchTransactions(
+                      {
+                        address,
+                        chainId,
+                        currency: currentCurrency,
+                        transactionsLimit: 1,
+                      },
+                      { cacheTime: 0 },
+                    )
+                  : null;
                 const latest = latestTransactionsConfirmedByBackend?.[0];
 
                 const latestPendingNonceForChainId =
@@ -159,13 +166,38 @@ export const useWatchPendingTransactions = ({
       });
     }
 
+    const { newPendingTransactions, minedTransactions } =
+      updatedPendingTransactions.reduce(
+        (acc, tx) => {
+          if (tx?.status === 'pending') {
+            acc.newPendingTransactions.push(tx);
+          } else {
+            acc.minedTransactions.push(tx);
+          }
+          return acc;
+        },
+        {
+          newPendingTransactions: [] as PendingTransaction[],
+          minedTransactions: [] as MinedTransaction[],
+        },
+      );
+
+    minedTransactions.forEach((minedTransaction) => {
+      if (isCustomChain(minedTransaction.chainId)) {
+        addCustomNetworkTransactions({
+          address,
+          chainId: minedTransaction.chainId,
+          transaction: minedTransaction,
+        });
+      }
+    });
+
     setPendingTransactions({
       address,
-      pendingTransactions: updatedPendingTransactions.filter(
-        (tx): tx is PendingTransaction => tx?.status === 'pending',
-      ),
+      pendingTransactions: newPendingTransactions,
     });
   }, [
+    addCustomNetworkTransactions,
     address,
     currentCurrency,
     pendingTransactions,

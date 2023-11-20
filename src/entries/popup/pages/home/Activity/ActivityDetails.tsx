@@ -1,6 +1,6 @@
 import { FixedNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
-import { formatUnits } from '@ethersproject/units';
+import { formatEther, formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { Navigate, useParams } from 'react-router-dom';
 
@@ -10,6 +10,7 @@ import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
+import { getChain } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
@@ -45,6 +46,7 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
+import { useCustomNetwork } from '~/entries/popup/hooks/useCustomNetwork';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
@@ -213,7 +215,9 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
 }
 
 function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const { nonce, native } = tx;
+  const { nonce, native, value } = tx;
+  const { customChains } = useCustomNetwork();
+  const chain = getChain({ chainId: tx.chainId });
 
   return (
     <Stack space="24px">
@@ -224,13 +228,21 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
           value={formatCurrency(native.value)}
         />
       )}
+      {!(native?.value && +native?.value) && value && (
+        <InfoRow
+          symbol="dollarsign.square"
+          label={i18n.t('activity_details.value')}
+          value={`${formatEther(value)} ${chain.nativeCurrency.symbol}`}
+        />
+      )}
       <InfoRow
         symbol="point.3.filled.connected.trianglepath.dotted"
         label={i18n.t('activity_details.network')}
         value={
           <Inline alignVertical="center" space="4px">
             <ChainBadge chainId={tx.chainId} size={12} />
-            {ChainNameDisplay[tx.chainId]}
+            {ChainNameDisplay[tx.chainId] ||
+              customChains.find((chain) => chain.id === tx.chainId)?.name}
           </Inline>
         }
       />
@@ -251,9 +263,7 @@ export function ActivityDetails() {
 
   if (!chainId || !hash) return <Navigate to={ROUTES.HOME} />;
 
-  return (
-    <ActivityDetailsSheet hash={hash} chainId={chainId as unknown as ChainId} />
-  );
+  return <ActivityDetailsSheet hash={hash} chainId={Number(chainId)} />;
 }
 
 const SpeedUpOrCancel = ({
@@ -314,7 +324,8 @@ const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
 
   return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;
 };
-const getAdditionalDetails = (transaction: RainbowTransaction) => {
+const getAdditionalDetails = (transaction?: RainbowTransaction) => {
+  if (!transaction) return;
   const exchangeRate = getExchangeRate(transaction);
   const { asset, changes, approvalAmount, contract, type } = transaction;
   const nft = changes?.find((c) => c?.asset.type === 'nft')?.asset;
@@ -501,34 +512,37 @@ function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
           </TextOverflow>
         </DropdownMenuItem>
         {explorerUrl && (
-          <DropdownMenuItem
-            symbolLeft="doc.on.doc.fill"
-            onSelect={() => {
-              copy({
-                title: i18n.t('activity_details.explorer_copied'),
-                description: truncateString(explorerUrl, 18),
-                value: explorerUrl,
-              });
-            }}
-          >
-            <Text size="14pt" weight="semibold">
-              {i18n.t('activity_details.copy_explorer_url')}
-            </Text>
-            <TextOverflow size="11pt" color="labelTertiary" weight="medium">
-              {explorerUrl}
-            </TextOverflow>
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem
+              symbolLeft="doc.on.doc.fill"
+              onSelect={() => {
+                copy({
+                  title: i18n.t('activity_details.explorer_copied'),
+                  description: truncateString(explorerUrl, 18),
+                  value: explorerUrl,
+                });
+              }}
+            >
+              <Text size="14pt" weight="semibold">
+                {i18n.t('activity_details.copy_explorer_url')}
+              </Text>
+              <TextOverflow size="11pt" color="labelTertiary" weight="medium">
+                {explorerUrl}
+              </TextOverflow>
+            </DropdownMenuItem>
+
+            <Box paddingVertical="4px">
+              <Separator color="separatorSecondary" />
+            </Box>
+            <DropdownMenuItem
+              symbolLeft="binoculars.fill"
+              external
+              onSelect={() => window.open(explorerUrl, '_blank')}
+            >
+              {i18n.t('token_details.view_on', { explorer: explorerHost })}
+            </DropdownMenuItem>
+          </>
         )}
-        <Box paddingVertical="4px">
-          <Separator color="separatorSecondary" />
-        </Box>
-        <DropdownMenuItem
-          symbolLeft="binoculars.fill"
-          external
-          onSelect={() => window.open(explorerUrl, '_blank')}
-        >
-          {i18n.t('token_details.view_on', { explorer: explorerHost })}
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -541,12 +555,8 @@ function ActivityDetailsSheet({
   hash: TxHash;
   chainId: ChainId;
 }) {
-  const { data: tx, isFetched } = useTransaction({ hash, chainId });
-
+  const { data: tx, isLoading } = useTransaction({ hash, chainId });
   const navigate = useRainbowNavigate();
-
-  if (isFetched && !tx) return <Navigate to={ROUTES.HOME} />;
-  if (!tx) return null;
 
   const additionalDetails = getAdditionalDetails(tx);
 
@@ -557,24 +567,34 @@ function ActivityDetailsSheet({
 
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
-      <Navbar
-        leftComponent={<Navbar.CloseButton onClick={backToHome} withinModal />}
-        titleComponent={<ActivityPill transaction={tx} />}
-        rightComponent={<MoreOptions transaction={tx} />}
-      />
-      <Separator color="separatorTertiary" />
+      {isLoading || !tx ? (
+        <Box />
+      ) : (
+        <>
+          <Navbar
+            leftComponent={
+              <Navbar.CloseButton onClick={backToHome} withinModal />
+            }
+            titleComponent={<ActivityPill transaction={tx} />}
+            rightComponent={<MoreOptions transaction={tx} />}
+          />
+          <Separator color="separatorTertiary" />
 
-      <Stack
-        separator={<Separator color="separatorTertiary" />}
-        padding="20px"
-        gap="20px"
-      >
-        <ToFrom transaction={tx} />
-        {additionalDetails && <AdditionalDetails details={additionalDetails} />}
-        <ConfirmationData transaction={tx} />
-        <NetworkData transaction={tx} />
-        {tx.status === 'pending' && <SpeedUpOrCancel transaction={tx} />}
-      </Stack>
+          <Stack
+            separator={<Separator color="separatorTertiary" />}
+            padding="20px"
+            gap="20px"
+          >
+            <ToFrom transaction={tx} />
+            {additionalDetails && (
+              <AdditionalDetails details={additionalDetails} />
+            )}
+            <ConfirmationData transaction={tx} />
+            <NetworkData transaction={tx} />
+            {tx.status === 'pending' && <SpeedUpOrCancel transaction={tx} />}
+          </Stack>
+        </>
+      )}
     </BottomSheet>
   );
 }

@@ -5,8 +5,8 @@ import create from 'zustand';
 import { NewTransaction, PendingTransaction } from '~/core/types/transactions';
 import { parseNewTransaction } from '~/core/utils/transactions';
 
-import { currentCurrencyStore } from '../currentSettings';
-import { createStore } from '../internal/createStore';
+import { currentCurrencyStore } from '../../currentSettings';
+import { createStore } from '../../internal/createStore';
 
 export interface PendingTransactionsState {
   [key: Address]: {

@@ -125,10 +125,9 @@ export function chainNameFromChainId(chainId: ChainId) {
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
   const chain = getChain({ chainId });
-  if (chain && chain.blockExplorers?.default.url) {
-    return getDappHost(chain.blockExplorers.default.url);
-  }
-  return 'etherscan.io';
+  return chain?.blockExplorers
+    ? getDappHost(chain.blockExplorers.default.url)
+    : undefined;
 }
 
 export function getChain({ chainId }: { chainId?: ChainId }) {

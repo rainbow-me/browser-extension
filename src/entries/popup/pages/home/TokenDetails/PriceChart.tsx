@@ -109,7 +109,7 @@ const fetchPriceChart = async (
   const priceChart = await metadataClient
     .priceChart({ address, chainId, ...getChartTimeArg(time) })
     .then((d) => d.token?.priceCharts[time] as PriceChartTimeData);
-  return priceChart.points?.reduce((result, point) => {
+  return priceChart?.points?.reduce((result, point) => {
     result.push({ timestamp: point[0], price: point[1] });
     return result;
   }, [] as ChartData[]);

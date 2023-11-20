@@ -32,6 +32,7 @@ import {
   customChainIdsToAssetNames,
   getCustomChains,
 } from '~/core/utils/chains';
+import { isZero } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 
 import { ASSETS_TIMEOUT_DURATION } from './assets';
@@ -144,25 +145,28 @@ async function customNetworkAssetsFunction({
     const assetsPromises = customChains.map(async (chain) => {
       const provider = getProvider({ chainId: chain.id });
       const nativeAssetBalance = await provider.getBalance(address);
-      const customNetworkNativeAssetParsed = parseUserAssetBalances({
-        asset: {
-          address: AddressZero,
-          chainId: chain.id,
-          chainName: chain.name as ChainName,
-          isNativeAsset: true,
-          name: chain.nativeCurrency.symbol,
-          symbol: chain.nativeCurrency.symbol,
-          uniqueId: `${AddressZero}_${chain.id}`,
-          decimals: 18,
-          native: { price: undefined },
-          price: { value: 0 },
-          bridging: { isBridgeable: false, networks: [] },
-          mainnetAddress: AddressZero as AddressOrEth,
-          icon_url: getCustomChainIconUrl(chain.id, AddressZero),
-        },
-        currency,
-        balance: nativeAssetBalance.toString(),
-      });
+      const customNetworkNativeAssetParsed =
+        nativeAssetBalance && !isZero(nativeAssetBalance.toString())
+          ? parseUserAssetBalances({
+              asset: {
+                address: AddressZero,
+                chainId: chain.id,
+                chainName: chain.name as ChainName,
+                isNativeAsset: true,
+                name: chain.nativeCurrency.symbol,
+                symbol: chain.nativeCurrency.symbol,
+                uniqueId: `${AddressZero}_${chain.id}`,
+                decimals: 18,
+                native: { price: undefined },
+                price: { value: 0 },
+                bridging: { isBridgeable: false, networks: [] },
+                mainnetAddress: AddressZero as AddressOrEth,
+                icon_url: getCustomChainIconUrl(chain.id, AddressZero),
+              },
+              currency,
+              balance: nativeAssetBalance.toString(),
+            })
+          : null;
 
       const chainAssets = customRPCAssets[chain.id] || [];
       const chainParsedAssetBalances = await Promise.allSettled(
@@ -175,27 +179,30 @@ async function customNetworkAssetsFunction({
         ),
       );
 
-      const chainParsedAssets = chainParsedAssetBalances.map((balance, i) => {
-        const fulfilledBalance = extractFulfilledValue(balance);
-        return parseUserAssetBalances({
-          asset: {
-            ...chainAssets[i],
-            chainId: chain.id,
-            chainName: chain.name as ChainName,
-            uniqueId: `${chainAssets[i].address}_${chain.id}`,
-            mainnetAddress: undefined,
-            isNativeAsset: false,
-            native: { price: undefined },
-          },
-          currency,
-          balance: fulfilledBalance || '0',
-        });
-      });
+      const chainParsedAssets = chainParsedAssetBalances
+        .map((balance, i) => {
+          const fulfilledBalance = extractFulfilledValue(balance);
+          return fulfilledBalance && !isZero(fulfilledBalance)
+            ? parseUserAssetBalances({
+                asset: {
+                  ...chainAssets[i],
+                  chainId: chain.id,
+                  chainName: chain.name as ChainName,
+                  uniqueId: `${chainAssets[i].address}_${chain.id}`,
+                  mainnetAddress: undefined,
+                  isNativeAsset: false,
+                  native: { price: undefined },
+                },
+                currency,
+                balance: fulfilledBalance || '0',
+              })
+            : null;
+        })
+        .filter(Boolean);
 
-      const allCustomNetworkAssets = [
-        customNetworkNativeAssetParsed,
-        ...chainParsedAssets,
-      ];
+      const allCustomNetworkAssets = customNetworkNativeAssetParsed
+        ? [customNetworkNativeAssetParsed, ...chainParsedAssets]
+        : chainParsedAssets;
 
       // Now we'll try to fetch the prices for all the assets in this network
       const batchedQuery = allCustomNetworkAssets.map(({ address }) => address);

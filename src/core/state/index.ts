@@ -23,6 +23,6 @@ export {
 export {
   pendingTransactionsStore,
   usePendingTransactionsStore,
-} from './pendingTransactions';
+} from './transactions/pendingTransactions';
 export { pendingRequestStore, usePendingRequestStore } from './requests';
 export { customRPCsStore, useCustomRPCsStore } from './customRPC';
