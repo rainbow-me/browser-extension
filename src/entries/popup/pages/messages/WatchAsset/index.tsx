@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address, erc20ABI } from 'wagmi';
-import { getContract, getProvider } from 'wagmi/actions';
+import { Address } from 'wagmi';
+import { getProvider } from 'wagmi/actions';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -60,8 +61,6 @@ export const WatchAsset = ({
     [selectedChainId, assetAddress],
   );
 
-  const [wrongNetwork, setWrongNetwork] = useState(true);
-
   const [asset, setAsset] = useState<ParsedUserAsset>({
     address: assetAddress,
     chainId: Number(chainId),
@@ -81,63 +80,47 @@ export const WatchAsset = ({
     balance: { amount: '0', display: '0' },
   });
 
-  const fetchAssetData = useCallback(async () => {
-    try {
-      const provider = getProvider({ chainId: Number(selectedChainId) });
-      const assetWithMetadata = asset;
-      // get the contract and fetch the missing information
-      const tokenContract = await getContract({
-        address: assetWithMetadata.address,
-        abi: erc20ABI,
-        signerOrProvider: provider,
+  const { data: assetMetadata = asset, isError: wrongNetwork } =
+    useAssetMetadata(
+      { assetAddress: asset.address as Address, chainId: selectedChainId },
+      { enabled: !!asset.address },
+    );
+
+  useEffect(() => {
+    if (assetMetadata) {
+      setAsset({
+        ...asset,
+        name: assetMetadata.name ?? '',
+        decimals: assetMetadata.decimals ?? 18,
+        symbol: assetMetadata.symbol ?? '',
       });
-      if (!decimals) {
-        const tokenDecimals = await tokenContract.decimals();
-        assetWithMetadata.decimals = tokenDecimals;
-      }
-      if (!symbol) {
-        const tokenSymbol = await tokenContract.symbol();
-        assetWithMetadata.symbol = tokenSymbol;
-      }
-      const tokenName = await tokenContract.name();
-      assetWithMetadata.name = tokenName;
-      assetWithMetadata.chainId = Number(selectedChainId);
-      assetWithMetadata.chainName = (getChain({
-        chainId: Number(selectedChainId),
-      }).name || '') as ChainName;
-
-      // Get the balance onchain
-      const parsedAsset = await fetchAssetBalanceViaProvider({
-        parsedAsset: assetWithMetadata,
-        currentAddress,
-        currency: currentCurrency,
-        provider,
-      });
-
-      // Attempt to get the price through the backend
-      const assetWithPrice = await fetchAssetWithPrice({
-        parsedAsset,
-        currency: currentCurrency,
-      });
-
-      if (assetWithPrice) {
-        setAsset(assetWithPrice);
-      } else {
-        setAsset(parsedAsset);
-      }
-
-      setWrongNetwork(false);
-    } catch (e) {
-      setWrongNetwork(true);
     }
-  }, [
-    asset,
-    currentAddress,
-    currentCurrency,
-    decimals,
-    selectedChainId,
-    symbol,
-  ]);
+  }, [asset, assetMetadata]);
+
+  const fetchAssetData = useCallback(async () => {
+    const provider = getProvider({ chainId: Number(selectedChainId) });
+    const assetWithMetadata = asset;
+
+    // Get the balance onchain
+    const parsedAsset = await fetchAssetBalanceViaProvider({
+      parsedAsset: assetWithMetadata,
+      currentAddress,
+      currency: currentCurrency,
+      provider,
+    });
+
+    // Attempt to get the price through the backend
+    const assetWithPrice = await fetchAssetWithPrice({
+      parsedAsset,
+      currency: currentCurrency,
+    });
+
+    if (assetWithPrice) {
+      setAsset(assetWithPrice);
+    } else {
+      setAsset(parsedAsset);
+    }
+  }, [asset, currentAddress, currentCurrency, selectedChainId]);
 
   useEffect(() => {
     fetchAssetData();
