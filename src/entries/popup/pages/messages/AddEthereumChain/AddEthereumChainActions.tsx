@@ -27,7 +27,6 @@ export const AddEthereumChainActions = ({
           <AcceptRequestButton
             dappStatus={dappStatus}
             onClick={onAcceptRequest}
-            autoFocus={!isScamDapp}
             label={
               isScamDapp
                 ? i18n.t('approve_request.approve_anyway')

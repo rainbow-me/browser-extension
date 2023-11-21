@@ -365,7 +365,6 @@ const getAcceptRequestButtonStyles = ({
 };
 
 export const AcceptRequestButton = ({
-  autoFocus,
   disabled,
   onClick,
   label,
@@ -373,7 +372,6 @@ export const AcceptRequestButton = ({
   loading = false,
   dappStatus,
 }: {
-  autoFocus?: boolean;
   disabled?: boolean;
   onClick: () => void;
   label: string;
@@ -389,7 +387,6 @@ export const AcceptRequestButton = ({
 
   return (
     <Button
-      autoFocus={autoFocus}
       height="44px"
       width="full"
       onClick={(!waitingForDevice && onClick) || undefined}

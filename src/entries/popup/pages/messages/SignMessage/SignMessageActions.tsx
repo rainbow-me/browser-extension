@@ -29,7 +29,6 @@ export const SignMessageActions = ({
       <AcceptRequestButton
         dappStatus={dappStatus}
         onClick={onAcceptRequest}
-        autoFocus={!isScamDapp}
         label={
           waitingForDevice
             ? i18n.t('approve_request.confirm_hw')
