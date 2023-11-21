@@ -34,7 +34,7 @@ const parsePriceChange = (
 
 type PriceChange = {
   changePercentage?: number;
-  date: Date;
+  date: number;
 };
 
 function PriceChange({ changePercentage = 0, date }: PriceChange) {
@@ -142,12 +142,12 @@ const percentDiff = (current = 1, last = 0) =>
 
 const now = new Date();
 const chartTimeToTimestamp = {
-  hour: new Date(now.setHours(new Date().getHours() - 1)),
-  day: new Date(now.setHours(new Date().getDay() - 1)),
-  week: new Date(now.setDate(new Date().getDay() - 7)),
-  month: new Date(now.setMonth(new Date().getMonth() - 1)),
-  year: new Date(now.setFullYear(new Date().getFullYear() - 1)),
-} satisfies Record<ChartTime, Date>;
+  hour: new Date().setHours(now.getHours() - 1),
+  day: new Date().setHours(now.getDay() - 1),
+  week: new Date().setDate(now.getDay() - 7),
+  month: new Date().setMonth(now.getMonth() - 1),
+  year: new Date().setFullYear(now.getFullYear() - 1),
+} satisfies Record<ChartTime, number>;
 
 export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
@@ -171,7 +171,7 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
   >((s, point) => {
     if (!point || !data) return null;
     return {
-      date: new Date(point.timestamp * 1000),
+      date: point.timestamp * 1000,
       changePercentage: percentDiff(lastPrice, point.price),
     };
   }, null);
