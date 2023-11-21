@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import gridPlusLogo from 'static/assets/hw/grid-plus-logo.png';
 import ledgerLogo from 'static/assets/hw/ledger-logo.png';
 import trezorLogo from 'static/assets/hw/trezor-logo.png';
 import { i18n } from '~/core/languages';
@@ -64,12 +65,26 @@ export function ChooseHW() {
           <OnboardMenu.Separator />
           <OnboardMenu.Item
             testId={'trezor-option'}
-            last
             titleImage={
               <img src={trezorLogo} alt="Trezor logo" width="95" height="24 " />
             }
             onClick={handleTrezorChoice}
             subtitle={i18n.t('hw.trezor_support')}
+          />
+          <OnboardMenu.Separator />
+          <OnboardMenu.Item
+            testId={'gridplus-option'}
+            last
+            titleImage={
+              <img
+                src={gridPlusLogo}
+                alt="GridPlus logo"
+                width="64"
+                height="24 "
+              />
+            }
+            onClick={() => console.log('Start GridPlus pairing')}
+            subtitle={i18n.t('hw.gridplus_support')}
           />
         </OnboardMenu>
       </Box>
