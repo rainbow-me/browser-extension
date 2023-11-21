@@ -111,21 +111,26 @@ export const ApproveAppRequest = () => {
   );
 
   switch (pendingRequest?.method) {
-<<<<<<< HEAD
     case 'wallet_addEthereumChain':
-=======
-    case 'wallet_watchAsset':
->>>>>>> 21f5871ba (watch asset wip)
       return (
         <ApproveAppRequestWrapper
           pendingRequest={pendingRequest}
           rejectRequest={rejectRequest}
         >
-<<<<<<< HEAD
           <AddEthereumChain
-=======
+            approveRequest={approveRequest}
+            rejectRequest={rejectRequest}
+            request={pendingRequest}
+          />
+        </ApproveAppRequestWrapper>
+      );
+    case 'wallet_watchAsset':
+      return (
+        <ApproveAppRequestWrapper
+          pendingRequest={pendingRequest}
+          rejectRequest={rejectRequest}
+        >
           <WatchAsset
->>>>>>> 21f5871ba (watch asset wip)
             approveRequest={approveRequest}
             rejectRequest={rejectRequest}
             request={pendingRequest}
