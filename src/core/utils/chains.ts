@@ -1,5 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { avalanche, celo, fantom, harmonyOne } from '@wagmi/chains';
 import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
@@ -176,4 +177,37 @@ export const getChainMetadataRPCUrl = async ({
     return { chainId: network.chainId };
   }
   return null;
+};
+
+export const deriveChainIdByHostname = (hostname: string) => {
+  switch (hostname) {
+    case 'etherscan.io':
+      return ChainId.mainnet;
+    case 'goerli.etherscan.io':
+      return ChainId.goerli;
+    case 'arbiscan.io':
+      return ChainId.arbitrum;
+    case 'explorer-mumbai.maticvigil.com':
+    case 'explorer-mumbai.matic.today':
+    case 'mumbai.polygonscan.com':
+      return ChainId['polygon-mumbai'];
+    case 'polygonscan.com':
+      return ChainId.polygon;
+    case 'optimistic.etherscan.io':
+      return ChainId.optimism;
+    case 'bscscan.com':
+      return ChainId.bsc;
+    case 'ftmscan.com':
+      return fantom.id;
+    case 'explorer.celo.org':
+      return celo.id;
+    case 'explorer.harmony.one':
+      return harmonyOne.id;
+    case 'explorer.avax.network':
+    case 'subnets.avax.network':
+    case 'snowtrace.io':
+      return avalanche.id;
+    default:
+      return ChainId.mainnet;
+  }
 };
