@@ -1470,7 +1470,6 @@
     "estimated_difference": "Estimated difference in value",
     "buy_crypto": "Buy and transfer crypto"
   },
-<<<<<<< HEAD
   "simulation": {
     "title": "Simulated Result",
     "loading": "Simulating...",
@@ -1500,9 +1499,7 @@
   "copy": "Copy",
   "close": "Close",
   "verified": "Verified",
-  "unverified": "Unverified"
-}
-=======
+  "unverified": "Unverified",
   "watch_asset": {
     "chain_id": "Chain ID",
     "symbol": "Symbol",
@@ -1511,4 +1508,4 @@
     "not_found": "We couldn't find this asset on the selected network. Please choose the right network below"
   }
 }
->>>>>>> 21f5871ba (watch asset wip)
+
