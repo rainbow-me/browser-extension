@@ -271,7 +271,7 @@ export async function parseUserAssets({
     // separating out these ternaries for readability
     const selectedHardhatChainId = connectedToHardhat
       ? ChainId.hardhat
-      : ChainId['hardhat-optimism'];
+      : ChainId.hardhatOptimism;
 
     const mainnetOrOptimismChainId = connectedToHardhat
       ? ChainId.mainnet

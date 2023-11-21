@@ -12,7 +12,7 @@ import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
 import { SUPPORTED_CHAINS } from '../references';
 import { LocalStorage } from '../storage';
-import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
+import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
 import { findCustomChainForChainId } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -33,7 +33,7 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
   switch (chain.id) {
     case ChainId.hardhat:
       return { http: chain.rpcUrls.default.http[0] };
-    case ChainId['hardhat-optimism']:
+    case ChainId.hardhatOptimism:
       return { http: chain.rpcUrls.default.http[0] };
     case ChainId.mainnet:
       return { http: process.env.ETH_MAINNET_RPC as string };
@@ -55,19 +55,21 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
       return { http: process.env.ETH_SEPOLIA_RPC as string };
     case ChainId.holesky:
       return { http: process.env.ETH_HOLESKY_RPC as string };
-    case ChainId['optimism-goerli']:
+    case ChainId.optimismGoerli:
       return { http: process.env.OPTIMISM_GOERLI_RPC as string };
-    case ChainId['optimism-sepolia']:
+    case ChainId.optimismSepolia:
       return { http: process.env.OPTIMISM_SEPOLIA_RPC as string };
-    case ChainId['bsc-testnet']:
+    case ChainId.bscTestnet:
       return { http: process.env.BSC_TESTNET_RPC as string };
-    case ChainId['polygon-mumbai']:
+    case ChainId.polygonMumbai:
       return { http: process.env.POLYGON_MUMBAI_RPC as string };
-    case ChainId['arbitrum-sepolia']:
+    case ChainId.arbitrumSepolia:
       return { http: process.env.ARBITRUM_SEPOLIA_RPC as string };
-    case ChainId['base-goerli']:
+    case ChainId.arbitrumGoerli:
+      return { http: process.env.ARBITRUM_GOERLI_RPC as string };
+    case ChainId.baseGoerli:
       return { http: process.env.BASE_GOERLI_RPC as string };
-    case ChainId['zora-testnet']:
+    case ChainId.zoraTestnet:
       return { http: process.env.ZORA_GOERLI_RPC as string };
     default:
       return null;
@@ -75,7 +77,7 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
 };
 
 const supportedChains = IS_TESTING
-  ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
+  ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
   : SUPPORTED_CHAINS;
 
 export const configureChainsForWagmiClient = (chains: Chain[]) =>

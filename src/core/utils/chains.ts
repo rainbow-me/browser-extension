@@ -3,7 +3,7 @@ import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN, SUPPORTED_CHAINS } from '~/core/references';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 
 import { customRPCsStore } from '../state/customRPC';
 import { AddressOrEth } from '../types/assets';
@@ -35,8 +35,7 @@ export const getSupportedChainsWithHardhat = () => {
     (chain) =>
       !chain.testnet ||
       (process.env.IS_TESTING === 'true' &&
-        (chain.id === ChainId.hardhat ||
-          chain.id === ChainId['hardhat-optimism'])),
+        (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)),
   );
 };
 
@@ -57,8 +56,7 @@ export const getSupportedTestnetChainIds = () =>
   getSupportedTestnetChains()
     .filter(
       (chain) =>
-        chain.id !== ChainId.hardhat &&
-        chain.id !== ChainId['hardhat-optimism'],
+        chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
     )
     .map((chain) => chain.id);
 
@@ -116,7 +114,7 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
 }
 
 export function chainIdFromChainName(chainName: ChainName) {
-  return ChainId[chainName];
+  return chainNameToIdMapping[chainName];
 }
 
 export function chainNameFromChainId(chainId: ChainId) {
@@ -156,7 +154,7 @@ export const chainIdToUse = (
     return ChainId.hardhat;
   }
   if (connectedToHardhatOp) {
-    return ChainId['hardhat-optimism'];
+    return ChainId.hardhatOptimism;
   }
   if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
     return activeSessionChainId;
