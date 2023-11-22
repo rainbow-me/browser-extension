@@ -161,7 +161,6 @@ export const chainIdToUse = (
   }
   if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
     return activeSessionChainId;
-  } else {
-    return ChainId.mainnet;
   }
+  return ChainId.mainnet;
 };
