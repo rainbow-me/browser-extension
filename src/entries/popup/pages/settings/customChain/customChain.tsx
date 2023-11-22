@@ -1,5 +1,6 @@
 import { isValidAddress } from '@ethereumjs/util';
-import React, { useCallback, useMemo, useState } from 'react';
+import { isEqual } from 'lodash';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Address, Chain } from 'wagmi';
 
@@ -8,9 +9,11 @@ import { CustomChain, useCustomRPCsStore } from '~/core/state/customRPC';
 import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
-import { Input } from '~/design-system/components/Input/Input';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
+import { Form } from '~/entries/popup/components/Form/Form';
+import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
+import usePrevious from '~/entries/popup/hooks/usePrevious';
 
 const INITIAL_ASSET = {
   name: '',
@@ -26,6 +29,18 @@ export function CustomChain() {
     useCustomRPCAssetsStore();
   const { removeUserChain } = useUserChainsStore();
 
+  const [validations, setValidations] = useState<{
+    address: boolean;
+    decimals: boolean;
+    name?: boolean;
+    symbol?: boolean;
+  }>({
+    address: true,
+    decimals: true,
+    name: true,
+    symbol: true,
+  });
+
   const chainId = state?.chainId;
   const customChain = customChains[chainId];
   const customRPCAssetsForChain = useMemo(
@@ -35,9 +50,75 @@ export function CustomChain() {
 
   const [asset, setAsset] = useState(INITIAL_ASSET);
 
-  const { data: assetMetadata = INITIAL_ASSET } = useAssetMetadata(
+  const {
+    data: assetMetadata = INITIAL_ASSET,
+    isFetching: assetMetadataIsFetching,
+    isFetched: assetMetadataIsFetched,
+  } = useAssetMetadata(
     { assetAddress: asset.address, chainId },
-    { enabled: !!asset.address },
+    { enabled: isValidAddress(asset.address) },
+  );
+
+  const prevAssetMetadata = usePrevious(assetMetadata);
+
+  const validateAddress = useCallback(
+    () => asset.address && isValidAddress(asset.address),
+    [asset.address],
+  );
+
+  const onAddressBlur = useCallback(
+    () =>
+      setValidations((validations) => ({
+        ...validations,
+        address: validateAddress(),
+      })),
+    [validateAddress],
+  );
+
+  const validateDecimals = useCallback(() => {
+    const decimals = asset.decimals || assetMetadata.decimals;
+    return (
+      decimals !== undefined &&
+      !isNaN(parseInt(String(decimals), 10)) &&
+      decimals <= 18
+    );
+  }, [asset.decimals, assetMetadata.decimals]);
+
+  const onDecimalsBlur = useCallback(
+    () =>
+      setValidations((validations) => ({
+        ...validations,
+        decimals: validateDecimals(),
+      })),
+    [validateDecimals],
+  );
+
+  const validateName = useCallback(() => {
+    const name = asset.name || assetMetadata.name;
+    return !!name && name.length > 0;
+  }, [asset.name, assetMetadata.name]);
+
+  const onNameBlur = useCallback(
+    () =>
+      setValidations((validations) => ({
+        ...validations,
+        name: validateName(),
+      })),
+    [validateName],
+  );
+
+  const validateSymbol = useCallback(() => {
+    const symbol = asset.symbol || assetMetadata.symbol;
+    return !!symbol && symbol.length > 0;
+  }, [asset.symbol, assetMetadata.symbol]);
+
+  const onSymbolBlur = useCallback(
+    () =>
+      setValidations((validations) => ({
+        ...validations,
+        symbol: validateSymbol(),
+      })),
+    [validateSymbol],
   );
 
   const onInputChange = useCallback(
@@ -62,6 +143,20 @@ export function CustomChain() {
     [],
   );
 
+  const validateAddCustomAsset = useCallback(() => {
+    const validAddress = validateAddress();
+    const validName = validateName();
+    const validDecimals = validateDecimals();
+    const validSymbol = validateSymbol();
+    setValidations({
+      address: validAddress,
+      decimals: validDecimals,
+      name: validName,
+      symbol: validSymbol,
+    });
+    return validAddress && validName && validDecimals && validSymbol;
+  }, [validateAddress, validateDecimals, validateName, validateSymbol]);
+
   const addAsset = useCallback(() => {
     const assetToAdd = {
       name: asset.name || assetMetadata.name || '',
@@ -74,15 +169,9 @@ export function CustomChain() {
       (asset) => asset.address,
     );
 
-    if (
-      assetToAdd.address &&
-      assetToAdd.name &&
-      assetToAdd.decimals &&
-      assetToAdd.symbol &&
-      isValidAddress(assetToAdd.address) &&
-      !customRPCAssetsAddresses.includes(assetToAdd.address)
-    ) {
-      console.log('adding assetToAdd', assetToAdd);
+    const validAsset = validateAddCustomAsset();
+
+    if (validAsset && !customRPCAssetsAddresses.includes(assetToAdd.address)) {
       addCustomRPCAsset({
         chainId,
         customRPCAsset: assetToAdd,
@@ -91,10 +180,16 @@ export function CustomChain() {
     }
   }, [
     addCustomRPCAsset,
-    asset,
-    assetMetadata,
+    asset.address,
+    asset.decimals,
+    asset.name,
+    asset.symbol,
+    assetMetadata.decimals,
+    assetMetadata.name,
+    assetMetadata.symbol,
     chainId,
     customRPCAssetsForChain,
+    validateAddCustomAsset,
   ]);
 
   const removeCustomChain = useCallback(
@@ -108,6 +203,17 @@ export function CustomChain() {
     },
     [chainId, customChain.chains.length, removeCustomRPC, removeUserChain],
   );
+
+  useEffect(() => {
+    if (!isEqual(assetMetadata, prevAssetMetadata) && assetMetadataIsFetched) {
+      validateAddCustomAsset();
+    }
+  }, [
+    assetMetadata,
+    assetMetadataIsFetched,
+    prevAssetMetadata,
+    validateAddCustomAsset,
+  ]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -225,63 +331,56 @@ export function CustomChain() {
           </Box>
         ))}
 
-        <Box
-          background="surfaceSecondaryElevated"
-          borderRadius="16px"
-          boxShadow="12px"
-          width="full"
-          padding="16px"
-        >
-          <Stack space="8px">
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'address')
-              }
-              height="32px"
-              placeholder="Address"
-              variant="surface"
-              value={asset.address}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'name')
-              }
-              height="32px"
-              placeholder="Name"
-              variant="surface"
-              value={asset.name || assetMetadata?.name}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<number>(t.target.value, 'number', 'decimals')
-              }
-              height="32px"
-              placeholder="Decimals"
-              variant="surface"
-              value={asset.decimals || assetMetadata?.decimals}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'symbol')
-              }
-              height="32px"
-              placeholder="Symbol"
-              variant="surface"
-              value={asset.symbol || assetMetadata?.symbol}
-            />
+        <Form>
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'address')
+            }
+            placeholder="Address"
+            value={asset.address}
+            loading={assetMetadataIsFetching}
+            onBlur={onAddressBlur}
+            borderColor={validations.address ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'name')
+            }
+            placeholder="Name"
+            value={asset.name || assetMetadata?.name}
+            onBlur={onNameBlur}
+            borderColor={validations.name ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<number>(t.target.value, 'number', 'decimals')
+            }
+            placeholder="Decimals"
+            value={asset.decimals || assetMetadata?.decimals}
+            onBlur={onDecimalsBlur}
+            borderColor={validations.decimals ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'symbol')
+            }
+            placeholder="Symbol"
+            value={asset.symbol || assetMetadata?.symbol}
+            onBlur={onSymbolBlur}
+            borderColor={validations.symbol ? 'accent' : 'red'}
+          />
 
-            <Inline alignHorizontal="right">
-              <Button
-                onClick={addAsset}
-                color="accent"
-                height="36px"
-                variant="raised"
-              >
-                Add
-              </Button>
-            </Inline>
-          </Stack>
-        </Box>
+          <Inline alignHorizontal="right">
+            <Button
+              onClick={addAsset}
+              color="accent"
+              height="36px"
+              variant="raised"
+            >
+              Add
+            </Button>
+          </Inline>
+        </Form>
       </Stack>
     </Box>
   );

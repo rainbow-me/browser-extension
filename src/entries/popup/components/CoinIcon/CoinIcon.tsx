@@ -1,5 +1,5 @@
 import { upperCase } from 'lodash';
-import React, { Fragment, ReactNode, useState } from 'react';
+import React, { Fragment, ReactNode, useEffect, useState } from 'react';
 
 import EthIcon from 'static/assets/ethIcon.png';
 import { ETH_ADDRESS } from '~/core/references';
@@ -76,7 +76,6 @@ export function CoinIcon({
     >
       <CloudinaryCoinIcon
         address={address}
-        chainId={chain}
         mainnetAddress={mainnetAddress}
         url={asset?.icon_url}
         size={size}
@@ -193,7 +192,6 @@ function CloudinaryCoinIcon({
   url,
 }: {
   address?: AddressOrEth;
-  chainId: ChainId;
   mainnetAddress?: AddressOrEth;
   children: React.ReactNode;
   size: number;
@@ -206,6 +204,10 @@ function CloudinaryCoinIcon({
   if (address === eth || mainnetAddress === eth) {
     src = EthIcon;
   }
+
+  useEffect(() => {
+    setExternalError(false);
+  }, [src]);
 
   if (src && !externalError) {
     return (
