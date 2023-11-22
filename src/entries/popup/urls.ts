@@ -67,6 +67,7 @@ export const ROUTES = {
   HW_CHOOSE: '/hw/choose',
   HW_LEDGER: '/hw/ledger',
   HW_TREZOR: '/hw/trezor',
+  HW_GRIDPLUS: '/hw/gridplus',
   HW_WALLET_LIST: '/hw/wallet-list', // hw/walletList/index
   HW_SUCCESS: '/hw/success',
   BUY: '/buy',

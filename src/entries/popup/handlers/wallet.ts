@@ -523,6 +523,10 @@ export const connectLedger = async () => {
   }
 };
 
+export const connectGridPlus = async () => {
+  console.log('>>>START G+ FLOW');
+};
+
 export const importAccountsFromHW = async (
   accountsToImport: {
     address: string;
@@ -531,7 +535,7 @@ export const importAccountsFromHW = async (
   }[],
   accountsEnabled: number,
   deviceId: string,
-  vendor: 'Ledger' | 'Trezor',
+  vendor: 'Ledger' | 'Trezor' | 'GridPlus',
 ) => {
   const address = await walletAction('import_hw', {
     deviceId,

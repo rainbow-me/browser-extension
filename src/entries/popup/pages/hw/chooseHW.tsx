@@ -42,6 +42,18 @@ export function ChooseHW() {
     }
   }, [isFullScreen, navigate, state]);
 
+  const handleGridPlusChoice = useCallback(() => {
+    if (!isFullScreen) {
+      goToNewTab({
+        url: POPUP_URL + `#${ROUTES.HW_GRIDPLUS}`,
+      });
+    } else {
+      navigate(ROUTES.HW_GRIDPLUS, {
+        state: { direction: state?.direction, navbarIcon: state?.navbarIcon },
+      });
+    }
+  }, [isFullScreen, navigate, state]);
+
   return (
     <Box height="full">
       <Box
@@ -83,7 +95,7 @@ export function ChooseHW() {
                 height="24 "
               />
             }
-            onClick={() => console.log('Start GridPlus pairing')}
+            onClick={handleGridPlusChoice}
             subtitle={i18n.t('hw.gridplus_support')}
           />
         </OnboardMenu>

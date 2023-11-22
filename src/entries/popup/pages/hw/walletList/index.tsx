@@ -33,7 +33,7 @@ import { AddByIndexSheet } from '../addByIndexSheet';
 
 import { AccountIndex } from './AccountIndex';
 
-type Vendor = 'Ledger' | 'Trezor';
+type Vendor = 'Ledger' | 'Trezor' | 'GridPlus';
 
 const WalletListHW = () => {
   const [showAddByIndexSheet, setShowAddByIndexSheet] =

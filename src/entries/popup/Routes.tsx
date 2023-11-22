@@ -42,6 +42,7 @@ import { ConnectedApps } from './pages/home/ConnectedApps';
 import NFTDetails from './pages/home/NFTs/NFTDetails';
 import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
+import { ConnectGridPlus } from './pages/hw/gridplus';
 import { ConnectLedger } from './pages/hw/ledger';
 import { SuccessHW } from './pages/hw/success';
 import { ConnectTrezor } from './pages/hw/trezor';
@@ -297,6 +298,19 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <ConnectTrezor />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.HW_GRIDPLUS,
+    element: (
+      <AnimatedRoute
+        protectedRoute={['NEW', 'READY']}
+        direction="up"
+        navbar
+        background="surfaceSecondary"
+      >
+        <ConnectGridPlus />
       </AnimatedRoute>
     ),
   },
