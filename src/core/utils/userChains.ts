@@ -18,7 +18,7 @@ import {
   ChainId,
   ChainNameDisplay,
   chainArbitrumSepolia,
-  chainHoleski,
+  chainHolesky,
   chainOptimismSepolia,
 } from '../types/chains';
 
@@ -36,7 +36,7 @@ export const chainIdMap: Record<
   | ChainId.zora,
   ChainId[]
 > = {
-  [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, chainHoleski.id],
+  [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, chainHolesky.id],
   [ChainId.optimism]: [optimism.id, optimismGoerli.id, chainOptimismSepolia.id],
   [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id, chainArbitrumSepolia.id],
   [ChainId.polygon]: [polygon.id, polygonMumbai.id],
@@ -57,7 +57,7 @@ export const chainLabelMap: Record<
   [ChainId.mainnet]: [
     ChainNameDisplay[goerli.id],
     ChainNameDisplay[sepolia.id],
-    ChainNameDisplay[chainHoleski.id],
+    ChainNameDisplay[chainHolesky.id],
   ],
   [ChainId.optimism]: [
     ChainNameDisplay[optimismGoerli.id],

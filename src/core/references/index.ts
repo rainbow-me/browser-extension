@@ -21,7 +21,7 @@ import {
   ChainId,
   ChainNameDisplay,
   chainArbitrumSepolia,
-  chainHoleski,
+  chainHolesky,
   chainOptimismSepolia,
 } from '~/core/types/chains';
 
@@ -166,7 +166,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
   polygon,
   optimism,
   arbitrum,
-  chainHoleski,
+  chainHolesky,
   base,
   zora,
   bsc,
@@ -183,7 +183,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] = [
-  chainHoleski.id,
+  chainHolesky.id,
   goerli.id,
   sepolia.id,
   optimismGoerli.id,

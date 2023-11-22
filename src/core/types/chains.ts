@@ -3,7 +3,7 @@ import type { Chain } from 'wagmi';
 
 const HARDHAT_CHAIN_ID = 1337;
 const HARDHAT_OP_CHAIN_ID = 1338;
-const HOLESKI_CHAIN_ID = 17000;
+const HOLESKY_CHAIN_ID = 17000;
 const OPTIMISM_SEPOLIA_CHAIN_ID = 11155420;
 const ARBITRUM_SEPOLIA_CHAIN_ID = 421614;
 
@@ -39,13 +39,13 @@ export const chainHardhatOptimism: Chain = {
   testnet: true,
 };
 
-export const chainHoleski: Chain = {
-  id: HOLESKI_CHAIN_ID,
+export const chainHolesky: Chain = {
+  id: HOLESKY_CHAIN_ID,
   name: 'Holesky',
   network: 'holesky',
   nativeCurrency: {
     decimals: 18,
-    name: 'Holeski Ether',
+    name: 'Holesky Ether',
     symbol: 'ETH',
   },
   rpcUrls: {
@@ -96,7 +96,7 @@ export enum ChainName {
   polygon = 'polygon',
   zora = 'zora',
   mainnet = 'mainnet',
-  holeski = 'holeski',
+  holesky = 'holesky',
   hardhat = 'hardhat',
   hardhatOptimism = 'hardhat-optimism',
   goerli = 'goerli',
@@ -122,7 +122,7 @@ export enum ChainId {
   hardhatOptimism = chainHardhatOptimism.id,
   goerli = chain.goerli.id,
   sepolia = chain.sepolia.id,
-  holesky = chainHoleski.id,
+  holesky = chainHolesky.id,
   optimismGoerli = chain.optimismGoerli.id,
   optimismSepolia = chainOptimismSepolia.id,
   bscTestnet = chain.bscTestnet.id,
@@ -142,7 +142,7 @@ export const chainNameToIdMapping: { [key in ChainName]: ChainId } = {
   [ChainName.polygon]: ChainId.polygon,
   [ChainName.zora]: ChainId.zora,
   [ChainName.mainnet]: ChainId.mainnet,
-  [ChainName.holeski]: ChainId.holesky,
+  [ChainName.holesky]: ChainId.holesky,
   [ChainName.hardhat]: ChainId.hardhat,
   [ChainName.hardhatOptimism]: ChainId.hardhatOptimism,
   [ChainName.goerli]: ChainId.goerli,
@@ -168,7 +168,7 @@ export const ChainNameDisplay = {
   [ChainId.hardhatOptimism]: chainHardhatOptimism.name,
   [ChainId.goerli]: chain.goerli.name,
   [ChainId.sepolia]: chain.sepolia.name,
-  [ChainId.holesky]: chainHoleski.name,
+  [ChainId.holesky]: chainHolesky.name,
   [ChainId.optimismGoerli]: chain.optimismGoerli.name,
   [ChainId.optimismSepolia]: chainOptimismSepolia.name,
   [ChainId.bscTestnet]: 'BSC Testnet',
@@ -176,5 +176,5 @@ export const ChainNameDisplay = {
   [ChainId.arbitrumGoerli]: chain.arbitrumGoerli.name,
   [ChainId.arbitrumSepolia]: chainArbitrumSepolia.name,
   [ChainId.baseGoerli]: chain.baseGoerli.name,
-  [ChainId.zoraTestnet]: chain.zoraTestnet.name,
+  [ChainId.zoraTestnet]: 'Zora Goerli',
 } as const;
