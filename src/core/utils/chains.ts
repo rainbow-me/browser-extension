@@ -3,7 +3,12 @@ import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN, SUPPORTED_CHAINS } from '~/core/references';
-import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
+import {
+  ChainId,
+  ChainName,
+  chainIdToNameMapping,
+  chainNameToIdMapping,
+} from '~/core/types/chains';
 
 import { customRPCsStore } from '../state/customRPC';
 import { AddressOrEth } from '../types/assets';
@@ -117,10 +122,8 @@ export function chainIdFromChainName(chainName: ChainName) {
   return chainNameToIdMapping[chainName];
 }
 
-export function chainNameFromChainId(chainId: ChainId) {
-  return Object.keys(ChainId)[
-    Object.values(ChainId).indexOf(chainId)
-  ] as ChainName;
+export function chainNameFromChainId(chainId: ChainId): ChainName {
+  return chainIdToNameMapping[chainId];
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {

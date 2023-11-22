@@ -156,6 +156,29 @@ export const chainNameToIdMapping: { [key in ChainName]: ChainId } = {
   [ChainName.zoraTestnet]: ChainId.zoraTestnet,
 };
 
+export const chainIdToNameMapping: { [key in ChainId]: ChainName } = {
+  [ChainId.arbitrum]: ChainName.arbitrum,
+  [ChainId.arbitrumSepolia]: ChainName.arbitrumSepolia,
+  [ChainId.base]: ChainName.base,
+  [ChainId.bsc]: ChainName.bsc,
+  [ChainId.optimism]: ChainName.optimism,
+  [ChainId.polygon]: ChainName.polygon,
+  [ChainId.zora]: ChainName.zora,
+  [ChainId.mainnet]: ChainName.mainnet,
+  [ChainId.holesky]: ChainName.holesky,
+  [ChainId.hardhat]: ChainName.hardhat,
+  [ChainId.hardhatOptimism]: ChainName.hardhatOptimism,
+  [ChainId.goerli]: ChainName.goerli,
+  [ChainId.sepolia]: ChainName.sepolia,
+  [ChainId.optimismGoerli]: ChainName.optimismGoerli,
+  [ChainId.optimismSepolia]: ChainName.optimismSepolia,
+  [ChainId.bscTestnet]: ChainName.bscTestnet,
+  [ChainId.polygonMumbai]: ChainName.polygonMumbai,
+  [ChainId.arbitrumGoerli]: ChainName.arbitrumGoerli,
+  [ChainId.baseGoerli]: ChainName.baseGoerli,
+  [ChainId.zoraTestnet]: ChainName.zoraTestnet,
+};
+
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
   [ChainId.base]: 'Base',
