@@ -37,12 +37,17 @@ import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 import { RainbowError, logger } from '~/logger';
 
-const MACOS_TITLE_BAR_HEIGHT = 28;
-
 const MAX_REQUEST_PER_SECOND = 10;
 const MAX_REQUEST_PER_MINUTE = 90;
 let minuteTimer: NodeJS.Timeout | null = null;
 let secondTimer: NodeJS.Timeout | null = null;
+
+const getPopupTitleBarHeight = (platform: string) => {
+  if (platform.includes('Mac')) return 28;
+  if (platform.includes('Win')) return 30;
+  if (platform.includes('Linux')) return 32;
+  return 28;
+};
 
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
@@ -50,7 +55,8 @@ const createNewWindow = async (tabId: string) => {
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
     type: 'popup',
-    height: POPUP_DIMENSIONS.height + MACOS_TITLE_BAR_HEIGHT,
+    height:
+      POPUP_DIMENSIONS.height + getPopupTitleBarHeight(navigator.userAgent),
     width: POPUP_DIMENSIONS.width,
     left:
       (currentWindow.left || 0) +
