@@ -29,7 +29,6 @@ export const WatchAssetActions = ({
           <AcceptRequestButton
             dappStatus={dappStatus}
             onClick={onAcceptRequest}
-            autoFocus={!isScamDapp}
             label={
               isScamDapp
                 ? i18n.t('approve_request.approve_anyway')
@@ -40,7 +39,6 @@ export const WatchAssetActions = ({
           />
           <RejectRequestButton
             dappStatus={dappStatus}
-            autoFocus={isScamDapp}
             onClick={onRejectRequest}
             label={i18n.t('common_actions.cancel')}
           />

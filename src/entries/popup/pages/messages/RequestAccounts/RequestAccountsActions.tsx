@@ -67,7 +67,6 @@ export const RequestAccountsActions = ({
           />
           <RejectRequestButton
             dappStatus={dappStatus}
-            autoFocus={isScamDapp}
             onClick={onRejectRequest}
             label={i18n.t('common_actions.cancel')}
           />
