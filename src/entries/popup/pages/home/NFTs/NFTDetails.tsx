@@ -1035,51 +1035,39 @@ export const NFTInfoRow = ({
         {label}
       </Text>
     </Inline>
-    <Box
-      style={{
-        paddingRight: onClick ? 2 : 0,
-      }}
-    >
-      <Lens
-        onClick={onClick}
-        cursor="pointer"
-        tabIndex={onClick ? 0 : -1}
-        padding="2px"
-        borderRadius="6px"
-      >
-        <Bleed vertical="2px">
-          <Inline alignVertical="center" space="6px">
-            <Inline>
-              <TextOverflow
-                color="labelSecondary"
-                size="12pt"
-                weight="semibold"
-                cursor="text"
-                userSelect="all"
-              >
-                {value}
-              </TextOverflow>
-              <Text
-                color="labelQuaternary"
-                size="12pt"
-                weight="semibold"
-                cursor="text"
-              >
-                {subValue}
-              </Text>
-            </Inline>
-            {valueSymbol && (
-              <Symbol
-                size={14}
-                symbol={valueSymbol}
-                weight="medium"
-                color="labelTertiary"
-                cursor="pointer"
-              />
-            )}
+    <Box onClick={onClick} cursor="pointer" padding="2px">
+      <Bleed vertical="2px">
+        <Inline alignVertical="center" space="6px">
+          <Inline space="2px">
+            <TextOverflow
+              color="labelSecondary"
+              size="12pt"
+              weight="semibold"
+              cursor="text"
+              userSelect="all"
+            >
+              {value}
+            </TextOverflow>
+            <Text
+              color="labelQuaternary"
+              size="12pt"
+              weight="semibold"
+              cursor="text"
+            >
+              {subValue}
+            </Text>
           </Inline>
-        </Bleed>
-      </Lens>
+          {valueSymbol && (
+            <Symbol
+              size={14}
+              symbol={valueSymbol}
+              weight="medium"
+              color="labelTertiary"
+              cursor="pointer"
+            />
+          )}
+        </Inline>
+      </Bleed>
     </Box>
   </Box>
 );
