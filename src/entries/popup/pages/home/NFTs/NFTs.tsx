@@ -385,7 +385,7 @@ function CollectionSection({
 const NftThumbnail = memo(
   ({ imageSrc, onClick }: { imageSrc?: string; onClick: () => void }) => {
     return (
-      <Box
+      <Lens
         style={{ height: 96, width: 96 }}
         borderRadius="10px"
         background="fillQuaternary"
@@ -397,7 +397,7 @@ const NftThumbnail = memo(
           height={96}
           width={96}
         />
-      </Box>
+      </Lens>
     );
   },
 );
