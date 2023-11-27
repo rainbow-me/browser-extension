@@ -38,7 +38,7 @@ export default function SortdDropdown() {
           <Box style={{ paddingRight: 7, paddingLeft: 7 }}>
             <Inline alignVertical="center" space="6px">
               <Symbol
-                symbol="clock"
+                symbol={sort === 'recent' ? 'clock' : 'list.bullet'}
                 weight="bold"
                 size={13}
                 color="labelSecondary"
