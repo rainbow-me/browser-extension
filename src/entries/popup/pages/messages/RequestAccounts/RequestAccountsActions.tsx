@@ -58,7 +58,6 @@ export const RequestAccountsActions = ({
           <AcceptRequestButton
             dappStatus={dappStatus}
             onClick={onAcceptRequest}
-            autoFocus={!isScamDapp}
             label={
               isScamDapp
                 ? i18n.t('approve_request.connect_anyway')
@@ -68,7 +67,6 @@ export const RequestAccountsActions = ({
           />
           <RejectRequestButton
             dappStatus={dappStatus}
-            autoFocus={isScamDapp}
             onClick={onRejectRequest}
             label={i18n.t('common_actions.cancel')}
           />

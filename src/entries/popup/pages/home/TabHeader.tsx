@@ -17,7 +17,7 @@ import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 
 import DisplayModeDropdown from './NFTs/DisplayModeDropdown';
-import SortdDropdown from './NFTs/SortDropdown';
+import SortDropdown from './NFTs/SortDropdown';
 
 export function TabHeader({
   activeTab,
@@ -114,7 +114,7 @@ export function TabHeader({
         {activeTab === 'nfts' && featureFlags.nfts_enabled && (
           <Inline alignVertical="center" space="8px">
             <DisplayModeDropdown />
-            <SortdDropdown />
+            <SortDropdown />
           </Inline>
         )}
       </Box>

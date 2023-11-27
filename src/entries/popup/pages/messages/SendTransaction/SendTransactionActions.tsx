@@ -44,7 +44,6 @@ export const SendTransactionActions = ({
   return (
     <Inline space="12px" wrap={false}>
       <RejectRequestButton
-        autoFocus
         onClick={onRejectRequest}
         label={i18n.t('common_actions.cancel')}
         dappStatus={dappStatus}
