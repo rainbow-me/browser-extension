@@ -404,6 +404,28 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
             value={nft?.floorPriceEth}
           />
         )}
+        {nft?.collection.total_quantity &&
+          nft.collection.distinct_owner_count && (
+            <>
+              {nft?.floorPriceEth && <Separator color="separatorTertiary" />}
+              <NFTInfoRow
+                symbol="person"
+                label={i18n.t('nfts.details.owners')}
+                value={nft.collection.total_quantity}
+              />
+              <NFTInfoRow
+                symbol="percent"
+                label={i18n.t('nfts.details.unique_owners')}
+                subValue={`(${Math.floor(
+                  (nft.collection.distinct_owner_count /
+                    nft.collection.total_quantity) *
+                    100,
+                )}%)`}
+                value={nft.collection.distinct_owner_count}
+              />
+              <Separator color="separatorTertiary" />
+            </>
+          )}
         {nft?.asset_contract.schema_name && (
           <NFTInfoRow
             symbol="info.circle"
@@ -979,12 +1001,14 @@ export const NFTInfoRow = ({
   label,
   onClick,
   value,
+  subValue,
   valueSymbol,
 }: {
   symbol: SymbolName;
   label: ReactNode;
   onClick?: () => void;
   value: ReactNode;
+  subValue?: string;
   valueSymbol?: SymbolName;
 }) => (
   <Box
@@ -1001,15 +1025,25 @@ export const NFTInfoRow = ({
     </Inline>
     <Box onClick={onClick} cursor="pointer">
       <Inline alignVertical="center" space="6px">
-        <TextOverflow
-          color="labelSecondary"
-          size="12pt"
-          weight="semibold"
-          cursor="text"
-          userSelect="all"
-        >
-          {value}
-        </TextOverflow>
+        <Inline space="2px">
+          <TextOverflow
+            color="labelSecondary"
+            size="12pt"
+            weight="semibold"
+            cursor="text"
+            userSelect="all"
+          >
+            {value}
+          </TextOverflow>
+          <Text
+            color="labelQuaternary"
+            size="12pt"
+            weight="semibold"
+            cursor="text"
+          >
+            {subValue}
+          </Text>
+        </Inline>
         {valueSymbol && (
           <Symbol
             size={14}
