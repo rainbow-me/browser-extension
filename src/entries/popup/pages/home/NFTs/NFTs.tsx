@@ -177,7 +177,6 @@ export function PostReleaseNFTs() {
             width="full"
             style={{
               height: groupedGalleryRowVirtualizer.getTotalSize(),
-              minHeight: '436px',
               position: 'relative',
             }}
           >
@@ -226,7 +225,6 @@ export function PostReleaseNFTs() {
             width="full"
             style={{
               height: collectionGalleryRowVirtualizer.getTotalSize(),
-              minHeight: '436px',
               position: 'relative',
             }}
           >
@@ -430,7 +428,7 @@ export function NFTEmptyState() {
       marginTop="-20px"
       paddingTop="80px"
       ref={ref}
-      style={{ height: 336 }}
+      style={{ height: 336 - (nftsEnabled ? 64 : 0) }}
       width="full"
     >
       <Box paddingBottom="14px">
