@@ -32,12 +32,15 @@ const ASSET_SOURCE = {
   [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge.png',
   [ChainId.goerli]: 'assets/badges/ethereumBadge.png',
   [ChainId.sepolia]: 'assets/badges/ethereumBadge.png',
-  [ChainId['optimism-goerli']]: 'assets/badges/optimismBadge.png',
-  [ChainId['bsc-testnet']]: 'assets/badges/bscBadge.png',
-  [ChainId['polygon-mumbai']]: 'assets/badges/polygonBadge.png',
-  [ChainId['arbitrum-goerli']]: 'assets/badges/arbitrumBadge.png',
-  [ChainId['base-goerli']]: 'assets/badges/baseBadge.png',
-  [ChainId['zora-testnet']]: 'assets/badges/zoraBadge.png',
+  [ChainId.holesky]: 'assets/badges/ethereumBadge.png',
+  [ChainId.optimismGoerli]: 'assets/badges/optimismBadge.png',
+  [ChainId.optimismSepolia]: 'assets/badges/optimismBadge.png',
+  [ChainId.bscTestnet]: 'assets/badges/bscBadge.png',
+  [ChainId.polygonMumbai]: 'assets/badges/polygonBadge.png',
+  [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge.png',
+  [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge.png',
+  [ChainId.baseGoerli]: 'assets/badges/baseBadge.png',
+  [ChainId.zoraTestnet]: 'assets/badges/zoraBadge.png',
 };
 
 export enum IN_DAPP_NOTIFICATION_STATUS {
