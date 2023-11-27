@@ -819,6 +819,7 @@ export const spaceToNegativeSpace: Record<
 
 export const positionSpace = {
   '0': 0,
+  '8px': '8px',
   '16px': '16px',
 } as const;
 

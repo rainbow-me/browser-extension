@@ -324,6 +324,37 @@ describe('App interactions flow', () => {
     expect(txnStatus).toBe('success');
   });
 
+  it.runIf(browser !== 'firefox')(
+    'should be able to add a token to the wallet',
+    async () => {
+      const dappHandler = await getWindowHandle({ driver });
+      await driver.switchTo().window(dappHandler);
+
+      if (process.env.BROWSER === 'firefox') {
+        await driver.navigate().refresh();
+      }
+
+      const button = await findElementById({ id: 'watchAsset', driver });
+      await waitAndClick(button, driver);
+
+      const { popupHandler } = await getAllWindowHandles({
+        driver,
+        dappHandler,
+      });
+
+      await driver.switchTo().window(popupHandler);
+
+      await delayTime('short');
+
+      await clickAcceptRequestButton(driver);
+      await delayTime('long');
+
+      await driver.switchTo().window(dappHandler);
+      await delayTime('medium');
+      // Currently we can't check anything else after adding the prompt cause hardhat isn't a custom newtork.
+    },
+  );
+
   it('should be able to transfer token', async () => {
     // get token contract address
     await delayTime('medium');

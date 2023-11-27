@@ -952,9 +952,11 @@
     "button_label_cancel": "Remind Me Later"
   },
   "approve_request": {
+    "allow_to_add_asset": "wants to suggest a token",
     "wallet_info_title": "wants to connect to your wallet",
     "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions.",
     "add_chain_info_description": "If you approve it, this network could be used within the Rainbow Browser Extension.",
+    "watch_asset_info_description": "If you approve it, this asset could be used within the Rainbow Browser Extension.",
     "wallet": "Wallet",
     "network": "Network",
     "switch_networks": "Switch Networks",
@@ -1497,5 +1499,13 @@
   "copy": "Copy",
   "close": "Close",
   "verified": "Verified",
-  "unverified": "Unverified"
+  "unverified": "Unverified",
+  "watch_asset": {
+    "chain_id": "Chain ID",
+    "symbol": "Symbol",
+    "decimals": "Decimals",
+    "address": "Address",
+    "not_found": "We couldn't find this asset on the selected network. Please choose the right network below"
+  }
 }
+

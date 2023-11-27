@@ -1,11 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import { isEqual } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Chain } from 'wagmi';
 
+import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
-import { Input } from '~/design-system/components/Input/Input';
+import { Form } from '~/entries/popup/components/Form/Form';
+import { FormInput } from '~/entries/popup/components/Form/FormInput';
+import { useDebounce } from '~/entries/popup/hooks/useDebounce';
+import usePrevious from '~/entries/popup/hooks/usePrevious';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -37,10 +42,22 @@ export function SettingsCustomChain() {
     symbol: true,
     explorerUrl: true,
   });
+  const debuncedRpcUrl = useDebounce(customRPC.rpcUrl, 500);
+
+  const {
+    data: chainMetadata,
+    isFetching: chainMetadataIsFetching,
+    isError: chainMetadataIsError,
+    isFetched: chainMetadataIsFetched,
+  } = useChainMetadata(
+    { rpcUrl: debuncedRpcUrl },
+    { enabled: !!debuncedRpcUrl && isValidUrl(debuncedRpcUrl) },
+  );
+  const prevChainMetadata = usePrevious(chainMetadata);
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
-      value: string | boolean,
+      value: string | boolean | number,
       type: 'string' | 'number' | 'boolean',
       data: 'rpcUrl' | 'chainId' | 'name' | 'symbol' | 'explorerUrl' | 'active',
     ) => {
@@ -60,66 +77,75 @@ export function SettingsCustomChain() {
     [],
   );
 
-  const validateRpcUrl = useCallback(
-    () => !!customRPC.rpcUrl && isValidUrl(customRPC.rpcUrl),
-    [customRPC.rpcUrl],
-  );
-
-  const onRpcUrlBlur = useCallback(() => {
-    const validUrl = validateRpcUrl();
-    setValidations((prev) => ({ ...prev, rpcUrl: validUrl }));
-  }, [validateRpcUrl]);
-
-  const validateChainId = useCallback(
+  const validateExplorerRpcUrl = useCallback(
     () =>
-      !!customRPC.chainId && !isNaN(parseInt(customRPC.chainId.toString(), 10)),
-    [customRPC.chainId],
+      !!customRPC.rpcUrl &&
+      isValidUrl(customRPC.rpcUrl) &&
+      !!chainMetadata?.chainId,
+    [chainMetadata?.chainId, customRPC.rpcUrl],
   );
 
-  const onChainIdBlur = useCallback(() => {
-    const validChainId = validateChainId();
-    setValidations((prev) => ({ ...prev, chainId: validChainId }));
-  }, [validateChainId]);
+  const onRpcUrlBlur = useCallback(
+    async () =>
+      setValidations((prev) => ({ ...prev, rpcUrl: validateExplorerRpcUrl() })),
+    [validateExplorerRpcUrl],
+  );
+
+  const validateChainId = useCallback(() => {
+    const chainId = customRPC.chainId || chainMetadata?.chainId;
+    return !!chainId && !isNaN(parseInt(chainId.toString(), 10));
+  }, [chainMetadata?.chainId, customRPC.chainId]);
+
+  const onChainIdBlur = useCallback(
+    () => setValidations((prev) => ({ ...prev, chainId: validateChainId() })),
+    [validateChainId],
+  );
 
   const validateName = useCallback(() => !!customRPC.name, [customRPC.name]);
 
-  const onNameBlur = useCallback(() => {
-    const validName = validateName();
-    setValidations((prev) => ({ ...prev, name: validName }));
-  }, [validateName]);
+  const onNameBlur = useCallback(
+    () => setValidations((prev) => ({ ...prev, name: validateName() })),
+    [validateName],
+  );
 
   const validateSymbol = useCallback(
     () => !!customRPC.symbol,
     [customRPC.symbol],
   );
 
-  const onSymbolBlur = useCallback(() => {
-    const validSymbol = validateSymbol();
-    setValidations((prev) => ({ ...prev, symbol: validSymbol }));
-  }, [validateSymbol]);
+  const onSymbolBlur = useCallback(
+    () => setValidations((prev) => ({ ...prev, symbol: validateSymbol() })),
+    [validateSymbol],
+  );
 
   const validateExplorerUrl = useCallback(
     () => !!customRPC.explorerUrl && isValidUrl(customRPC.explorerUrl),
     [customRPC.explorerUrl],
   );
 
-  const onExplorerUrlBlur = useCallback(() => {
-    const validExplorerUrl = validateExplorerUrl();
-    setValidations((prev) => ({ ...prev, explorerUrl: validExplorerUrl }));
-  }, [validateExplorerUrl]);
+  const onExplorerUrlBlur = useCallback(
+    () =>
+      setValidations((prev) => ({
+        ...prev,
+        explorerUrl: validateExplorerUrl(),
+      })),
+    [validateExplorerUrl],
+  );
 
   const validateAddCustomRpc = useCallback(() => {
-    const valid = Object.values(validations).reduce(
-      (prev, current) => prev && current,
-      true,
-    );
-    const validRpcUrl = validateRpcUrl();
+    const validRpcUrl = validateExplorerRpcUrl();
     const validChainId = validateChainId();
     const validName = validateName();
     const validSymbol = validateSymbol();
     const validExplorerUrl = validateExplorerUrl();
+    setValidations({
+      rpcUrl: validRpcUrl,
+      chainId: validChainId,
+      name: validName,
+      symbol: validSymbol,
+      explorerUrl: validExplorerUrl,
+    });
     return (
-      valid &&
       validRpcUrl &&
       validChainId &&
       validName &&
@@ -128,17 +154,32 @@ export function SettingsCustomChain() {
     );
   }, [
     validateChainId,
+    validateExplorerRpcUrl,
     validateExplorerUrl,
     validateName,
-    validateRpcUrl,
     validateSymbol,
-    validations,
   ]);
 
-  const addCustomRpc = useCallback(() => {
-    const { rpcUrl, chainId, name, symbol } = customRPC;
+  const validateCustomRpcMetadata = useCallback(() => {
+    const validRpcUrl = validateExplorerRpcUrl();
+    const validChainId = validateChainId();
+    setValidations((validations) => ({
+      ...validations,
+      rpcUrl: validRpcUrl,
+      chainId: validChainId,
+    }));
+    return validRpcUrl && validChainId;
+  }, [validateChainId, validateExplorerRpcUrl]);
+
+  const addCustomRpc = useCallback(async () => {
+    const rpcUrl = customRPC.rpcUrl;
+    const chainId = customRPC.chainId || chainMetadata?.chainId;
+    const name = customRPC.name;
+    const symbol = customRPC.symbol;
+    const explorerUrl = customRPC.explorerUrl;
     const valid = validateAddCustomRpc();
-    if (valid && rpcUrl && chainId && name && symbol) {
+
+    if (valid && rpcUrl && chainId && name && symbol && explorerUrl) {
       const chain: Chain = {
         id: chainId,
         name,
@@ -155,7 +196,25 @@ export function SettingsCustomChain() {
       });
       addUserChain({ chainId });
     }
-  }, [addCustomRPC, addUserChain, customRPC, validateAddCustomRpc]);
+  }, [
+    addCustomRPC,
+    addUserChain,
+    chainMetadata?.chainId,
+    customRPC,
+    validateAddCustomRpc,
+  ]);
+
+  useEffect(() => {
+    if (!isEqual(chainMetadata, prevChainMetadata) && chainMetadataIsFetched) {
+      validateCustomRpcMetadata();
+    }
+  }, [
+    chainMetadata,
+    chainMetadataIsFetched,
+    prevChainMetadata,
+    validateAddCustomRpc,
+    validateCustomRpcMetadata,
+  ]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -201,104 +260,85 @@ export function SettingsCustomChain() {
           </Box>
         ))}
 
-        <Box
-          background="surfaceSecondaryElevated"
-          borderRadius="16px"
-          boxShadow="12px"
-          width="full"
-          padding="16px"
-        >
-          <Stack space="8px">
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'rpcUrl')
-              }
-              height="32px"
-              placeholder="Url"
-              variant="surface"
-              value={customRPC.rpcUrl}
-              onBlur={onRpcUrlBlur}
-              borderColor={validations.rpcUrl ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<number>(t.target.value, 'number', 'chainId')
-              }
-              height="32px"
-              placeholder="ChainId"
-              variant="surface"
-              value={customRPC.chainId || ''}
-              onBlur={onChainIdBlur}
-              borderColor={validations.chainId ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'name')
-              }
-              height="32px"
-              placeholder="name"
-              variant="surface"
-              value={customRPC.name}
-              onBlur={onNameBlur}
-              borderColor={validations.name ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'symbol')
-              }
-              height="32px"
-              placeholder="Symbol"
-              variant="surface"
-              value={customRPC.symbol}
-              onBlur={onSymbolBlur}
-              borderColor={validations.symbol ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'explorerUrl')
-              }
-              height="32px"
-              placeholder="Explorer url"
-              variant="surface"
-              value={customRPC.explorerUrl}
-              onBlur={onExplorerUrlBlur}
-              borderColor={validations.explorerUrl ? 'accent' : 'red'}
-            />
-            <Box padding="10px">
-              <Inline alignHorizontal="justify">
-                <Text
-                  align="center"
-                  weight="semibold"
-                  size="12pt"
-                  color="labelSecondary"
-                >
-                  {'Active'}
-                </Text>
-                <Checkbox
-                  borderColor="accent"
-                  onClick={() =>
-                    onInputChange<boolean>(
-                      !customRPC.active,
-                      'boolean',
-                      'active',
-                    )
-                  }
-                  selected={!!customRPC.active}
-                />
-              </Inline>
-            </Box>
-            <Inline alignHorizontal="right">
-              <Button
-                onClick={addCustomRpc}
-                color="accent"
-                height="36px"
-                variant="raised"
+        <Form>
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'rpcUrl')
+            }
+            placeholder="Url"
+            value={customRPC.rpcUrl}
+            onBlur={onRpcUrlBlur}
+            borderColor={
+              validations.rpcUrl && !chainMetadataIsError ? 'accent' : 'red'
+            }
+            loading={chainMetadataIsFetching}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<number>(t.target.value, 'number', 'chainId')
+            }
+            placeholder="ChainId"
+            value={customRPC.chainId || chainMetadata?.chainId || ''}
+            onBlur={onChainIdBlur}
+            borderColor={validations.chainId ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'name')
+            }
+            placeholder="name"
+            value={customRPC.name}
+            onBlur={onNameBlur}
+            borderColor={validations.name ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'symbol')
+            }
+            placeholder="Symbol"
+            value={customRPC.symbol}
+            onBlur={onSymbolBlur}
+            borderColor={validations.symbol ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'explorerUrl')
+            }
+            placeholder="Explorer url"
+            value={customRPC.explorerUrl}
+            onBlur={onExplorerUrlBlur}
+            borderColor={validations.explorerUrl ? 'accent' : 'red'}
+          />
+          <Box padding="10px">
+            <Inline alignHorizontal="justify">
+              <Text
+                align="center"
+                weight="semibold"
+                size="12pt"
+                color="labelSecondary"
               >
-                Add
-              </Button>
+                {'Active'}
+              </Text>
+              <Checkbox
+                borderColor="accent"
+                onClick={() =>
+                  onInputChange<boolean>(!customRPC.active, 'boolean', 'active')
+                }
+                selected={!!customRPC.active}
+              />
             </Inline>
-          </Stack>
-        </Box>
+          </Box>
+          <Inline alignHorizontal="right">
+            <Button
+              onClick={addCustomRpc}
+              color="accent"
+              height="36px"
+              variant="raised"
+            >
+              Add
+            </Button>
+          </Inline>
+        </Form>
       </Stack>
     </Box>
   );

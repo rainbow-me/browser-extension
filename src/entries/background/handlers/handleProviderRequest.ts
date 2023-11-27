@@ -23,7 +23,11 @@ import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { isCustomChain, isSupportedChainId } from '~/core/utils/chains';
+import {
+  deriveChainIdByHostname,
+  isCustomChain,
+  isSupportedChainId,
+} from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -218,6 +222,7 @@ const skipRateLimitCheck = (method: string) =>
     'eth_signTypedData',
     'eth_signTypedData_v3',
     'eth_signTypedData_v4',
+    'wallet_watchAsset',
     'wallet_addEthereumChain',
     'wallet_switchEthereumChain',
     'eth_requestAccounts',
@@ -392,6 +397,57 @@ export const handleProviderRequest = ({
             }
           }
           break;
+        }
+        case 'wallet_watchAsset': {
+          const { featureFlags } = featureFlagsStore.getState();
+          if (!featureFlags.custom_rpc && process.env.IS_TESTING === 'false') {
+            throw new Error('Method not supported');
+          } else {
+            const {
+              type,
+              options: { address, symbol, decimals },
+            } = params as unknown as {
+              type: string;
+              options: {
+                address: Address;
+                symbol?: string;
+                decimals?: number;
+              };
+            };
+
+            if (type !== 'ERC20') {
+              throw new Error('Method supported only for ERC20');
+            }
+
+            if (!address) {
+              throw new Error('Address is required');
+            }
+
+            const activeSession = getActiveSession({ host });
+            let chainId = null;
+            if (activeSession) {
+              chainId = activeSession?.chainId;
+            } else {
+              chainId = deriveChainIdByHostname(host);
+            }
+
+            response = await messengerProviderRequest(popupMessenger, {
+              method,
+              id,
+              params: [
+                {
+                  address,
+                  symbol,
+                  decimals,
+                  chainId,
+                },
+              ],
+              meta,
+            });
+            // PER EIP - true if the token was added, false otherwise.
+            response = !!response;
+            break;
+          }
         }
         case 'wallet_switchEthereumChain': {
           const proposedChainId = Number(
