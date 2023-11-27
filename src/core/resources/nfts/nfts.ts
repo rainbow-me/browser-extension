@@ -19,7 +19,7 @@ import {
   SimpleHashCollectionDetails,
   UniqueAsset,
 } from '~/core/types/nfts';
-import { getSupportedChains } from '~/core/utils/chains';
+import { getBackendSupportedChains } from '~/core/utils/chains';
 import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
@@ -47,7 +47,9 @@ async function nftsQueryFunction({
   queryKey: [{ address }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
-  const chains = getSupportedChains().map((chain) => chain.name as ChainName);
+  const chains = getBackendSupportedChains({ testnetMode: false }).map(
+    ({ name }) => name as ChainName,
+  );
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({
