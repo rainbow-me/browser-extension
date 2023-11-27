@@ -173,7 +173,7 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     });
     expect(foundEthereum).toBeFalsy();
     const foundOptimism = await doNotFindElementByTestId({
-      id: `switch-network-item-${ChainId['optimism-goerli']}`,
+      id: `switch-network-item-${ChainId.optimismGoerli}`,
       driver,
     });
     expect(foundOptimism).toBeTruthy();

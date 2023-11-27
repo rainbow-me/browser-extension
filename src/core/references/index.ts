@@ -17,7 +17,13 @@ import {
 } from '@wagmi/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import {
+  ChainId,
+  ChainNameDisplay,
+  chainArbitrumSepolia,
+  chainHolesky,
+  chainOptimismSepolia,
+} from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -112,23 +118,26 @@ export const SOCKS_ARBITRUM_ADDRESS =
   '0xd803b242d32d71618d0646531c0cc4a5d26d1598';
 
 export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
-  [ChainId.mainnet]: ETH_ADDRESS,
-  [ChainId.hardhat]: AddressZero,
-  [ChainId.goerli]: AddressZero,
-  [ChainId.sepolia]: AddressZero,
+  [ChainId.mainnet]: ETH_ADDRESS as Address,
+  [ChainId.hardhat]: AddressZero as Address,
+  [ChainId.goerli]: AddressZero as Address,
+  [ChainId.sepolia]: AddressZero as Address,
+  [ChainId.holesky]: AddressZero as Address,
   [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS as Address,
-  [ChainId['arbitrum-goerli']]: AddressZero as Address,
+  [ChainId.arbitrumGoerli]: AddressZero as Address,
+  [ChainId.arbitrumSepolia]: AddressZero as Address,
   [ChainId.bsc]: BSC_BNB_ADDRESS as Address,
-  [ChainId['bsc-testnet']]: AddressZero as Address,
+  [ChainId.bscTestnet]: AddressZero as Address,
   [ChainId.optimism]: ETH_OPTIMISM_ADDRESS as Address,
   [ChainId.hardhatOptimism]: AddressZero as Address,
-  [ChainId['optimism-goerli']]: AddressZero as Address,
+  [ChainId.optimismGoerli]: AddressZero as Address,
+  [ChainId.optimismSepolia]: AddressZero as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
-  [ChainId['base-goerli']]: AddressZero as Address,
+  [ChainId.baseGoerli]: AddressZero as Address,
   [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
-  [ChainId['zora-testnet']]: AddressZero as Address,
+  [ChainId.zoraTestnet]: AddressZero as Address,
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
-  [ChainId['polygon-mumbai']]: AddressZero as Address,
+  [ChainId.polygonMumbai]: AddressZero as Address,
 };
 export const OVM_GAS_PRICE_ORACLE =
   '0x420000000000000000000000000000000000000F';
@@ -157,26 +166,32 @@ export const SUPPORTED_CHAINS: Chain[] = [
   polygon,
   optimism,
   arbitrum,
+  chainHolesky,
   base,
   zora,
   bsc,
   goerli,
   sepolia,
   optimismGoerli,
+  chainOptimismSepolia,
   bscTestnet,
   polygonMumbai,
   arbitrumGoerli,
+  chainArbitrumSepolia,
   baseGoerli,
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] = [
+  chainHolesky.id,
   goerli.id,
   sepolia.id,
   optimismGoerli.id,
+  chainOptimismSepolia.id,
   bscTestnet.id,
   polygonMumbai.id,
   arbitrumGoerli.id,
+  chainArbitrumSepolia.id,
   baseGoerli.id,
   zoraTestnet.id,
 ];
