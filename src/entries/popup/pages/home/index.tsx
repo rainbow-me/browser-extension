@@ -51,7 +51,7 @@ import { ROUTES } from '../../urls';
 import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
-import { PostReleaseNFTs, PreReleaseNFTs } from './NFTs/NFTs';
+import { NFTEmptyState, PostReleaseNFTs } from './NFTs/NFTs';
 import { AppConnection } from './NetworkMenu';
 import { Points } from './Points';
 import { TabHeader } from './TabHeader';
@@ -149,7 +149,7 @@ const Tabs = memo(function Tabs({
           <PostReleaseNFTs />
         )}
         {activeTab === 'nfts' && !featureFlags.nfts_enabled && (
-          <PreReleaseNFTs />
+          <NFTEmptyState />
         )}
         {activeTab === 'points' && <Points />}
       </Content>
