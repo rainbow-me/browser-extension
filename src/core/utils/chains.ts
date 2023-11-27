@@ -5,7 +5,12 @@ import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN, SUPPORTED_CHAINS } from '~/core/references';
-import { ChainId, ChainName } from '~/core/types/chains';
+import {
+  ChainId,
+  ChainName,
+  chainIdToNameMapping,
+  chainNameToIdMapping,
+} from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
 import { customRPCsStore } from '../state/customRPC';
@@ -55,13 +60,16 @@ export const getSupportedTestnetChains = () => {
   return chains.filter((chain) => !!chain.testnet);
 };
 
-export const getSupportedTestnetChainIds = () =>
-  getSupportedTestnetChains()
-    .filter(
-      (chain) =>
-        chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
-    )
-    .map((chain) => chain.id);
+export const getBackendSupportedChains = ({
+  testnetMode,
+}: {
+  testnetMode?: boolean;
+}) => {
+  const chains = testnetMode
+    ? getSupportedTestnetChains()
+    : getSupportedChains();
+  return chains.filter(({ id }) => !isCustomChain(id));
+};
 
 export const getCustomChains = () => {
   const { customChains } = customRPCsStore.getState();
@@ -117,13 +125,11 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
 }
 
 export function chainIdFromChainName(chainName: ChainName) {
-  return ChainId[chainName];
+  return chainNameToIdMapping[chainName];
 }
 
-export function chainNameFromChainId(chainId: ChainId) {
-  return Object.keys(ChainId)[
-    Object.values(ChainId).indexOf(chainId)
-  ] as ChainName;
+export function chainNameFromChainId(chainId: ChainId): ChainName {
+  return chainIdToNameMapping[chainId];
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
@@ -161,9 +167,8 @@ export const chainIdToUse = (
   }
   if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
     return activeSessionChainId;
-  } else {
-    return ChainId.mainnet;
   }
+  return ChainId.mainnet;
 };
 
 export const getChainMetadataRPCUrl = async ({
@@ -190,7 +195,7 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'explorer-mumbai.maticvigil.com':
     case 'explorer-mumbai.matic.today':
     case 'mumbai.polygonscan.com':
-      return ChainId['polygon-mumbai'];
+      return ChainId.polygonMumbai;
     case 'polygonscan.com':
       return ChainId.polygon;
     case 'optimistic.etherscan.io':
