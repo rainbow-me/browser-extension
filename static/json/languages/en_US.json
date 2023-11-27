@@ -1196,7 +1196,9 @@
       "download": "Download",
       "explorer": "Explorer",
       "view_collection": "View Collection",
-      "collection_website": "Collection Website"
+      "collection_website": "Collection Website",
+      "owners": "Owners",
+      "unique_owners": "Unique Owners"
     }
   },
   "points": {

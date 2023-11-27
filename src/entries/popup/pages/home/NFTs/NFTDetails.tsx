@@ -410,12 +410,12 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
               {nft?.floorPriceEth && <Separator color="separatorTertiary" />}
               <NFTInfoRow
                 symbol="person"
-                label={'Owners'}
+                label={i18n.t('nfts.details.owners')}
                 value={nft.collection.total_quantity}
               />
               <NFTInfoRow
                 symbol="percent"
-                label={'Unique Owners'}
+                label={i18n.t('nfts.details.unique_owners')}
                 subValue={`(${Math.floor(
                   (nft.collection.distinct_owner_count /
                     nft.collection.total_quantity) *
