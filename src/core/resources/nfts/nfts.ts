@@ -47,7 +47,7 @@ async function nftsQueryFunction({
   queryKey: [{ address }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
-  const chains = getBackendSupportedChains().map(
+  const chains = getBackendSupportedChains({ testnetMode: false }).map(
     ({ name }) => name as ChainName,
   );
   const polygonAllowList = await polygonAllowListFetcher();

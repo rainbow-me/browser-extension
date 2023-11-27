@@ -17,7 +17,6 @@ import {
 import {
   getBackendSupportedChains,
   getSupportedChainIds,
-  getSupportedTestnetChainIds,
 } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -28,9 +27,9 @@ export const useTransactionListForPendingTxs = () => {
   const pendingTransactions = getPendingTransactions({ address });
   const { testnetMode } = useTestnetModeStore();
 
-  const supportedChainIds = testnetMode
-    ? getSupportedTestnetChainIds()
-    : getBackendSupportedChains().map(({ id }) => id);
+  const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
+    ({ id }) => id,
+  );
 
   useConsolidatedTransactions(
     {

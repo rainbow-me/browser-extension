@@ -55,21 +55,21 @@ export const getSupportedChains = () => {
 export const getSupportedChainIds = () =>
   getSupportedChains().map((chain) => chain.id);
 
-export const getBackendSupportedChains = () =>
-  getSupportedChains().filter(({ id }) => !isCustomChain(id));
-
 export const getSupportedTestnetChains = () => {
   const { chains } = getNetwork();
   return chains.filter((chain) => !!chain.testnet);
 };
 
-export const getSupportedTestnetChainIds = () =>
-  getSupportedTestnetChains()
-    .filter(
-      (chain) =>
-        chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
-    )
-    .map((chain) => chain.id);
+export const getBackendSupportedChains = ({
+  testnetMode,
+}: {
+  testnetMode?: boolean;
+}) => {
+  const chains = testnetMode
+    ? getSupportedTestnetChains()
+    : getSupportedChains();
+  return chains.filter(({ id }) => !isCustomChain(id));
+};
 
 export const getCustomChains = () => {
   const { customChains } = customRPCsStore.getState();
