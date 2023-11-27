@@ -192,7 +192,7 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'explorer-mumbai.maticvigil.com':
     case 'explorer-mumbai.matic.today':
     case 'mumbai.polygonscan.com':
-      return ChainId['polygon-mumbai'];
+      return ChainId.polygonMumbai;
     case 'polygonscan.com':
       return ChainId.polygon;
     case 'optimistic.etherscan.io':

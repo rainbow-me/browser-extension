@@ -118,11 +118,11 @@ export const SOCKS_ARBITRUM_ADDRESS =
   '0xd803b242d32d71618d0646531c0cc4a5d26d1598';
 
 export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
-  [ChainId.mainnet]: ETH_ADDRESS,
-  [ChainId.hardhat]: AddressZero,
-  [ChainId.goerli]: AddressZero,
-  [ChainId.sepolia]: AddressZero,
-  [ChainId.holesky]: AddressZero,
+  [ChainId.mainnet]: ETH_ADDRESS as Address,
+  [ChainId.hardhat]: AddressZero as Address,
+  [ChainId.goerli]: AddressZero as Address,
+  [ChainId.sepolia]: AddressZero as Address,
+  [ChainId.holesky]: AddressZero as Address,
   [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS as Address,
   [ChainId.arbitrumGoerli]: AddressZero as Address,
   [ChainId.arbitrumSepolia]: AddressZero as Address,

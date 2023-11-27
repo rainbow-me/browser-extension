@@ -133,7 +133,9 @@ export enum ChainId {
   zoraTestnet = chain.zoraTestnet.id,
 }
 
-export const chainNameToIdMapping: { [key in ChainName]: ChainId } = {
+export const chainNameToIdMapping: {
+  [key in ChainName]: ChainId;
+} = {
   [ChainName.arbitrum]: ChainId.arbitrum,
   [ChainName.arbitrumSepolia]: ChainId.arbitrumSepolia,
   [ChainName.base]: ChainId.base,
@@ -156,7 +158,9 @@ export const chainNameToIdMapping: { [key in ChainName]: ChainId } = {
   [ChainName.zoraTestnet]: ChainId.zoraTestnet,
 };
 
-export const chainIdToNameMapping: { [key in ChainId]: ChainName } = {
+export const chainIdToNameMapping: {
+  [key in ChainId]: ChainName;
+} = {
   [ChainId.arbitrum]: ChainName.arbitrum,
   [ChainId.arbitrumSepolia]: ChainName.arbitrumSepolia,
   [ChainId.base]: ChainName.base,
