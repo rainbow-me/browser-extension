@@ -55,6 +55,9 @@ export const getSupportedChains = () => {
 export const getSupportedChainIds = () =>
   getSupportedChains().map((chain) => chain.id);
 
+export const getBackendSupportedChains = () =>
+  getSupportedChains().filter(({ id }) => !isCustomChain(id));
+
 export const getSupportedTestnetChains = () => {
   const { chains } = getNetwork();
   return chains.filter((chain) => !!chain.testnet);

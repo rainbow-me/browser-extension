@@ -15,9 +15,9 @@ import {
   RainbowTransaction,
 } from '~/core/types/transactions';
 import {
+  getBackendSupportedChains,
   getSupportedChainIds,
   getSupportedTestnetChainIds,
-  isCustomChain,
 } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -30,7 +30,7 @@ export const useTransactionListForPendingTxs = () => {
 
   const supportedChainIds = testnetMode
     ? getSupportedTestnetChainIds()
-    : getSupportedChainIds().filter((chainId) => !isCustomChain(chainId));
+    : getBackendSupportedChains().map(({ id }) => id);
 
   useConsolidatedTransactions(
     {
