@@ -291,7 +291,11 @@ export async function getTransactionReceiptStatus({
 
   if (!receipt) return { status: 'pending' as const };
   return {
-    status: receipt.status === 0 ? ('confirmed' as const) : ('failed' as const),
+    status: receipt.status === 1 ? ('confirmed' as const) : ('failed' as const),
+    title:
+      receipt.status === 1
+        ? i18n.t('transactions.send.confirmed')
+        : i18n.t('transactions.send.failed'),
     blockNumber: receipt?.blockNumber,
     minedAt: Math.floor(Date.now() / 1000),
     confirmations: receipt?.confirmations,
@@ -394,7 +398,9 @@ export function getTransactionBlockExplorerUrl({
 }) {
   if (!isString(hash)) return;
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
-  return `https://${blockExplorerHost}/tx/${hash}`;
+  return blockExplorerHost
+    ? `https://${blockExplorerHost}/tx/${hash}`
+    : undefined;
 }
 
 export function getTokenBlockExplorerUrl({
@@ -409,7 +415,9 @@ export function getTokenBlockExplorerUrl({
 }
 
 export function getBlockExplorerName(chainId: ChainId) {
-  return capitalize(getBlockExplorerHostForChain(chainId).split('.').at?.(-2));
+  return capitalize(
+    (getBlockExplorerHostForChain(chainId) || '').split('.').at?.(-2),
+  );
 }
 
 export const getTokenBlockExplorer = ({

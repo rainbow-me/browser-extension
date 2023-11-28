@@ -119,6 +119,7 @@ const EditContactDropdown = ({
   >;
 }) => {
   const contact = useContact({ address: toAddress });
+  const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(toAddress as string);
@@ -129,11 +130,11 @@ const EditContactDropdown = ({
   }, [toAddress]);
 
   const viewOnEtherscan = useCallback(() => {
-    const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
-    goToNewTab({
-      url: getExplorerUrl(explorer, toAddress),
-    });
-  }, [chainId, toAddress]);
+    explorer &&
+      goToNewTab({
+        url: getExplorerUrl(explorer, toAddress),
+      });
+  }, [explorer, toAddress]);
 
   const onValueChange = useCallback(
     (value: string) => {
@@ -194,40 +195,42 @@ const EditContactDropdown = ({
                   </Box>
                 </DropdownMenuRadioItem>
 
-                <DropdownMenuRadioItem value={'view'}>
-                  <Box
-                    testId="navbar-contact-button-edit-view"
-                    width="full"
-                    paddingVertical="2px"
-                  >
-                    <Inline alignVertical="center" alignHorizontal="justify">
-                      <Inline alignVertical="center" space="8px">
-                        <Inline alignVertical="center">
-                          <Symbol
-                            size={18}
-                            symbol="binoculars.fill"
-                            weight="semibold"
-                          />
+                {explorer && (
+                  <DropdownMenuRadioItem value={'view'}>
+                    <Box
+                      testId="navbar-contact-button-edit-view"
+                      width="full"
+                      paddingVertical="2px"
+                    >
+                      <Inline alignVertical="center" alignHorizontal="justify">
+                        <Inline alignVertical="center" space="8px">
+                          <Inline alignVertical="center">
+                            <Symbol
+                              size={18}
+                              symbol="binoculars.fill"
+                              weight="semibold"
+                            />
+                          </Inline>
+                          <Text size="14pt" weight="semibold">
+                            {i18n.t(
+                              `contacts.${
+                                chainId && isL2Chain(chainId)
+                                  ? 'view_on_explorer'
+                                  : 'view_on_etherscan'
+                              }`,
+                            )}
+                          </Text>
                         </Inline>
-                        <Text size="14pt" weight="semibold">
-                          {i18n.t(
-                            `contacts.${
-                              chainId && isL2Chain(chainId)
-                                ? 'view_on_explorer'
-                                : 'view_on_etherscan'
-                            }`,
-                          )}
-                        </Text>
+                        <Symbol
+                          size={14}
+                          symbol="arrow.up.forward.circle"
+                          weight="semibold"
+                          color="labelTertiary"
+                        />
                       </Inline>
-                      <Symbol
-                        size={14}
-                        symbol="arrow.up.forward.circle"
-                        weight="semibold"
-                        color="labelTertiary"
-                      />
-                    </Inline>
-                  </Box>
-                </DropdownMenuRadioItem>
+                    </Box>
+                  </DropdownMenuRadioItem>
+                )}
               </Box>
               <Stack space="4px">
                 <DropdownMenuSeparator />

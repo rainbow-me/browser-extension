@@ -141,6 +141,7 @@ export function TabFloatingButton(
   return (
     <Box
       as={motion.button}
+      tabIndex={-1}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.98 }}
       initial={{ scale: 0.8, opacity: 0 }}

@@ -22,6 +22,7 @@ import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAsse
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedUserAsset } from '~/core/types/assets';
+import { truncateAddress } from '~/core/utils/address';
 import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
@@ -225,7 +226,7 @@ export const AssetRow = memo(function AssetRow({
   asset,
   testId,
 }: AssetRowProps) {
-  const name = asset?.name;
+  const name = asset?.name || asset?.symbol || truncateAddress(asset.address);
   const uniqueId = asset?.uniqueId;
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { currentCurrency } = useCurrentCurrencyStore();

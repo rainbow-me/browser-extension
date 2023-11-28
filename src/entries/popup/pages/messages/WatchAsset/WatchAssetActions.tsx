@@ -4,17 +4,19 @@ import { Box, Stack } from '~/design-system';
 
 import { AcceptRequestButton, RejectRequestButton } from '../BottomActions';
 
-export const AddEthereumChainActions = ({
+export const WatchAssetActions = ({
   onAcceptRequest,
   onRejectRequest,
   loading = false,
   dappStatus,
+  disabled,
 }: {
   appName?: string;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   loading?: boolean;
   dappStatus?: DAppStatus;
+  disabled: boolean;
 }) => {
   const isScamDapp = dappStatus === DAppStatus.Scam;
   return (
@@ -33,6 +35,7 @@ export const AddEthereumChainActions = ({
                 : i18n.t('approve_request.approve')
             }
             loading={loading}
+            disabled={disabled}
           />
           <RejectRequestButton
             dappStatus={dappStatus}

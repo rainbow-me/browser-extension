@@ -819,6 +819,7 @@ export const spaceToNegativeSpace: Record<
 
 export const positionSpace = {
   '0': 0,
+  '8px': '8px',
   '16px': '16px',
 } as const;
 
@@ -1029,6 +1030,7 @@ export const symbolNames = selectSymbolNames(
   'arrow.up.right.square.fill',
   'at.circle.fill',
   'ellipsis.bubble.fill',
+  'percent',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

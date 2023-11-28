@@ -22,9 +22,10 @@ import { TextColor } from '~/design-system/styles/designTokens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { SpinnerRow } from '~/entries/popup/components/SpinnerRow/SpinnerRow';
 import { Tag } from '~/entries/popup/components/Tag';
+import { useInfiniteTransactionList } from '~/entries/popup/hooks/useInfiniteTransactionList';
+import { useTransactionListForPendingTxs } from '~/entries/popup/hooks/useTransactionListForPendingTxs';
 
 import { useActivityShortcuts } from '../../../hooks/useActivityShortcuts';
-import useInfiniteTransactionList from '../../../hooks/useInfiniteTransactionList';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../../urls';
 import { ActivitySkeleton } from '../Skeletons';
@@ -45,6 +46,7 @@ export function Activities() {
   } = useInfiniteTransactionList({
     getScrollElement: () => containerRef.current,
   });
+  useTransactionListForPendingTxs();
   const containerRef = useContainerRef();
 
   useActivityShortcuts();

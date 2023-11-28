@@ -1,6 +1,5 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { queryClient } from '~/core/react-query';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -10,19 +9,12 @@ import {
   useConsolidatedTransactions,
 } from '~/core/resources/transactions/consolidatedTransactions';
 import {
-  nonceStore,
-  pendingTransactionsStore,
   useCurrentAddressStore,
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
-import {
-  PendingTransaction,
-  RainbowTransaction,
-} from '~/core/types/transactions';
-import { getSupportedChainIds } from '~/core/utils/chains';
-import { isLowerCaseMatch } from '~/core/utils/strings';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
@@ -34,15 +26,24 @@ interface UseInfiniteTransactionListParams {
   getScrollElement: () => HTMLDivElement | null;
 }
 
-export default function ({
+export const useInfiniteTransactionList = ({
   getScrollElement,
-}: UseInfiniteTransactionListParams) {
+}: UseInfiniteTransactionListParams) => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { chains } = useUserChains();
   const { getPendingTransactions } = usePendingTransactionsStore();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const pendingTransactions = getPendingTransactions({ address });
+  const { customNetworkTransactions } = useCustomNetworkTransactionsStore();
+
+  const currentAddressCustomNetworkTransactions = useMemo(
+    () => Object.values(customNetworkTransactions[address] || {}).flat(),
+    [address, customNetworkTransactions],
+  );
+
+  const { testnetMode } = useTestnetModeStore();
+  const { chains } = useUserChains();
+  const userChainIds = chains.map((chain) => chain.id);
 
   const {
     data,
@@ -54,56 +55,13 @@ export default function ({
     isInitialLoading,
     refetch,
     status,
-  } = useConsolidatedTransactions(
-    { address, currency },
-    {
-      select: (data) => {
-        const selectedPages = data.pages.map((page) => {
-          return {
-            ...page,
-            transactions: page.transactions.filter((transaction) =>
-              chains.map((chain) => chain.id).includes(transaction.chainId),
-            ),
-          };
-        });
-        return {
-          ...data,
-          pages: selectedPages,
-        };
-      },
-      onSuccess: (data) => {
-        if (data?.pages) {
-          const latestTransactions = data.pages
-            .map((p) => p.transactions)
-            .flat()
-            .filter((t) => isLowerCaseMatch(t.from, address))
-            .reduce(
-              (latestTxMap, currentTx) => {
-                const currentChain = currentTx?.chainId;
-                if (currentChain) {
-                  const latestTx = latestTxMap.get(currentChain);
-                  if (!latestTx) {
-                    latestTxMap.set(currentChain, currentTx);
-                  }
-                }
-                return latestTxMap;
-              },
-              new Map(
-                getSupportedChainIds().map((chain) => [
-                  chain,
-                  null as RainbowTransaction | null,
-                ]),
-              ),
-            );
-          watchForPendingTransactionsReportedByRainbowBackend({
-            currentAddress: address,
-            pendingTransactions,
-            latestTransactions,
-          });
-        }
-      },
-    },
-  );
+  } = useConsolidatedTransactions({
+    address,
+    currency,
+    userChainIds,
+    testnetMode,
+  });
+
   const pages = data?.pages;
   const cutoff =
     data?.pages && data?.pages?.length
@@ -113,14 +71,21 @@ export default function ({
     () => pages?.flatMap((p) => p.transactions) || [],
     [pages],
   );
+
   const transactionsAfterCutoff = useMemo(() => {
-    if (!cutoff) return transactions;
-    const cutoffIndex = transactions.findIndex(
+    const allTransactions = transactions.concat(
+      currentAddressCustomNetworkTransactions,
+    );
+    if (!cutoff) return allTransactions;
+    const cutoffIndex = allTransactions.findIndex(
       (tx) => tx.status !== 'pending' && tx.minedAt < cutoff,
     );
-    if (!cutoffIndex) return transactions;
-    return [...transactions].slice(0, cutoffIndex);
-  }, [cutoff, transactions]);
+    if (!cutoffIndex || cutoffIndex === -1) return allTransactions;
+
+    const transactionsAfterCutoff = [...allTransactions].slice(0, cutoffIndex);
+    return transactionsAfterCutoff;
+  }, [currentAddressCustomNetworkTransactions, cutoff, transactions]);
+
   const formattedTransactions = useMemo(
     () =>
       Object.entries(
@@ -144,14 +109,19 @@ export default function ({
   const cleanupPages = useCallback(() => {
     if (data && data?.pages) {
       queryClient.setQueryData(
-        consolidatedTransactionsQueryKey({ address, currency }),
+        consolidatedTransactionsQueryKey({
+          address,
+          currency,
+          userChainIds,
+          testnetMode,
+        }),
         {
           ...data,
           pages: [...data.pages].slice(0, PAGES_TO_CACHE_LIMIT),
         },
       );
     }
-  }, [address, currency, data]);
+  }, [address, currency, data, testnetMode, userChainIds]);
 
   useComponentWillUnmount(cleanupPages);
 
@@ -215,61 +185,4 @@ export default function ({
     virtualizer: infiniteRowVirtualizer,
     isRefetching: manuallyRefetching,
   };
-}
-
-function watchForPendingTransactionsReportedByRainbowBackend({
-  currentAddress,
-  pendingTransactions,
-  latestTransactions,
-}: {
-  currentAddress: Address;
-  pendingTransactions: PendingTransaction[];
-  latestTransactions: Map<ChainId, RainbowTransaction | null>;
-}) {
-  const { setNonce } = nonceStore.getState();
-  const { setPendingTransactions } = pendingTransactionsStore.getState();
-  const supportedChainIds = getSupportedChainIds();
-  for (const supportedChainId of supportedChainIds) {
-    const latestTxConfirmedByBackend = latestTransactions.get(supportedChainId);
-    if (latestTxConfirmedByBackend) {
-      const latestNonceConfirmedByBackend =
-        latestTxConfirmedByBackend.nonce || 0;
-      const [latestPendingTx] = pendingTransactions.filter(
-        (tx) => tx?.chainId === supportedChainId,
-      );
-
-      let currentNonce;
-      if (latestPendingTx) {
-        const latestPendingNonce = latestPendingTx?.nonce || 0;
-        const latestTransactionIsPending =
-          latestPendingNonce > latestNonceConfirmedByBackend;
-        currentNonce = latestTransactionIsPending
-          ? latestPendingNonce
-          : latestNonceConfirmedByBackend;
-      } else {
-        currentNonce = latestNonceConfirmedByBackend;
-      }
-
-      setNonce({
-        address: currentAddress,
-        chainId: supportedChainId,
-        currentNonce,
-        latestConfirmedNonce: latestNonceConfirmedByBackend,
-      });
-    }
-  }
-
-  const updatedPendingTransactions = pendingTransactions?.filter((tx) => {
-    const txNonce = tx.nonce || 0;
-    const latestTx = latestTransactions.get(tx.chainId);
-    const latestTxNonce = latestTx?.nonce || 0;
-    // still pending or backend is not returning confirmation yet
-    // if !latestTx means that is the first tx of the wallet
-    return !latestTx || txNonce > latestTxNonce;
-  });
-
-  setPendingTransactions({
-    address: currentAddress,
-    pendingTransactions: updatedPendingTransactions,
-  });
-}
+};
