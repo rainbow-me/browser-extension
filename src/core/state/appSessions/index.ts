@@ -19,12 +19,11 @@ interface V0AppSession {
   url: string;
 }
 
+export type ActiveSession = { address: Address; chainId: ChainId } | null;
+
 export interface AppSessionsStore<T extends AppSession | V0AppSession> {
   appSessions: Record<string, T>;
-  getActiveSession: ({ host }: { host: string }) => {
-    address: Address;
-    chainId: ChainId;
-  } | null;
+  getActiveSession: ({ host }: { host: string }) => ActiveSession;
   addSession: ({
     host,
     address,

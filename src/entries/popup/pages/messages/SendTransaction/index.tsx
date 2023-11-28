@@ -221,7 +221,7 @@ export function SendTransaction({
           flashbotsEnabled={flashbotsEnabledGlobally}
         />
         <SendTransactionActions
-          chainId={activeSession?.chainId || ChainId.mainnet}
+          session={activeSession}
           waitingForDevice={waitingForDevice}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}

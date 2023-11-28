@@ -480,7 +480,6 @@ export function SendTransactionInfo({
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
 
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  const chainId = activeSession?.chainId || ChainId.mainnet;
 
   const txRequest = request?.params?.[0] as TransactionRequest;
 
@@ -488,7 +487,7 @@ export function SendTransactionInfo({
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
-  const hasEnoughtGas = useHasEnoughGas(chainId);
+  const hasEnoughtGas = useHasEnoughGas(activeSession);
 
   return (
     <Box

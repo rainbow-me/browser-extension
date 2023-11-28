@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { AddressZero } from '@ethersproject/constants';
-import { useNetwork } from 'wagmi';
+import { Address, useNetwork } from 'wagmi';
 
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -11,7 +11,13 @@ import { useCustomNetworkAsset } from './useCustomNetworkAsset';
 import { getNetworkNativeAssetUniqueId } from './useNativeAssetForNetwork';
 import { useUserAsset } from './useUserAsset';
 
-export const useNativeAsset = ({ chainId }: { chainId: ChainId }) => {
+export const useNativeAsset = ({
+  address,
+  chainId,
+}: {
+  address?: Address;
+  chainId: ChainId;
+}) => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { chains } = useNetwork();
@@ -20,7 +26,7 @@ export const useNativeAsset = ({ chainId }: { chainId: ChainId }) => {
   });
   const { data: userNativeAsset } = useUserAsset(nativeAssetUniqueId || '');
   const { data: testnetNativeAsset } = useUserTestnetNativeAsset({
-    address: currentAddress,
+    address: address || currentAddress,
     currency: currentCurrency,
     chainId,
   });

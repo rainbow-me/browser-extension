@@ -2,17 +2,17 @@ import { useMemo } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
+import { ActiveSession } from '~/core/state/appSessions';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { ChainId } from '~/core/types/chains';
 import { chainIdToUse, getChain } from '~/core/utils/chains';
 
 import { useHasEnoughGas } from '../../pages/messages/useHasEnoughGas';
 
 export const useApproveAppRequestValidations = ({
-  chainId,
+  session,
   dappStatus,
 }: {
-  chainId: ChainId;
+  session: ActiveSession;
   dappStatus?: DAppStatus;
 }) => {
   const { connectedToHardhat, connectedToHardhatOp } =
@@ -21,10 +21,10 @@ export const useApproveAppRequestValidations = ({
   const activeChainId = chainIdToUse(
     connectedToHardhat,
     connectedToHardhatOp,
-    chainId,
+    session?.chainId,
   );
 
-  const enoughNativeAssetForGas = useHasEnoughGas(activeChainId);
+  const enoughNativeAssetForGas = useHasEnoughGas(session);
 
   const buttonLabel = useMemo(() => {
     if (dappStatus === DAppStatus.Scam)
