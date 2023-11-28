@@ -42,17 +42,27 @@ const MAX_REQUEST_PER_MINUTE = 90;
 let minuteTimer: NodeJS.Timeout | null = null;
 let secondTimer: NodeJS.Timeout | null = null;
 
+const getPopupTitleBarHeight = (platform: string) => {
+  if (platform.includes('Mac')) return 28;
+  if (platform.includes('Win')) return 30;
+  if (platform.includes('Linux')) return 32;
+  return 28;
+};
+
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
     type: 'popup',
-    height: POPUP_DIMENSIONS.height + 25,
-    width: 360,
+    height:
+      POPUP_DIMENSIONS.height + getPopupTitleBarHeight(navigator.userAgent),
+    width: POPUP_DIMENSIONS.width,
     left:
-      (currentWindow.width || POPUP_DIMENSIONS.width) - POPUP_DIMENSIONS.width,
-    top: 0,
+      (currentWindow.left || 0) +
+      (currentWindow.width || POPUP_DIMENSIONS.width) -
+      POPUP_DIMENSIONS.width,
+    top: currentWindow.top || 0,
   });
   setNotificationWindow(tabId, window);
 };
