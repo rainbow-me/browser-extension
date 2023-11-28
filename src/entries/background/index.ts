@@ -19,9 +19,9 @@ require('../../core/utils/lockdown');
 
 initializeSentry('background');
 
-const updateWagmiClient = () => {
+const updateWagmiClient = ({ useProxy }: { useProxy?: boolean }) => {
   const { customChains } = getCustomChains();
-  createWagmiClient({ customChains });
+  createWagmiClient({ customChains, useProxy });
 };
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });
@@ -40,9 +40,12 @@ initFCM();
 handleKeepAlive();
 
 setTimeout(() => {
-  updateWagmiClient();
+  updateWagmiClient({ useProxy: true });
 }, 100);
 
-popupMessenger.reply('rainbow_updateWagmiClient', async () => {
-  updateWagmiClient();
-});
+popupMessenger.reply(
+  'rainbow_updateWagmiClient',
+  async ({ useProxy }: { useProxy?: boolean }) => {
+    updateWagmiClient({ useProxy });
+  },
+);
