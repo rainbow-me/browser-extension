@@ -24,7 +24,10 @@ export const useNativeAsset = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: chainId || ChainId.mainnet,
   });
-  const { data: userNativeAsset } = useUserAsset(nativeAssetUniqueId || '');
+  const { data: userNativeAsset } = useUserAsset(
+    nativeAssetUniqueId || '',
+    address || currentAddress,
+  );
   const { data: testnetNativeAsset } = useUserTestnetNativeAsset({
     address: address || currentAddress,
     currency: currentCurrency,

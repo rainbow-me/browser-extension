@@ -323,7 +323,7 @@ function InsuficientGasFunds({
   onRejectRequest: VoidFunction;
 }) {
   const chainName = ChainNameDisplay[chainId];
-  const { nativeAsset } = useNativeAsset({ chainId });
+  const { nativeAsset } = useNativeAsset({ chainId, address });
 
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: hasBridgeableBalance } = useUserAssets(

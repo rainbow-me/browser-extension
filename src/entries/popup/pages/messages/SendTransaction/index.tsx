@@ -216,6 +216,7 @@ export function SendTransaction({
               event.dappPromptSendTransactionSpeedClicked,
           }}
           chainId={activeSession?.chainId || ChainId.mainnet}
+          address={activeSession?.address}
           transactionRequest={request?.params?.[0] as TransactionRequest}
           plainTriggerBorder
           flashbotsEnabled={flashbotsEnabledGlobally}
