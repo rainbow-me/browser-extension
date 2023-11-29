@@ -100,7 +100,6 @@ export default function NFTDetails() {
   }, [collectionId, collections, nftId]);
   const {
     ensAddress,
-    ensName,
     ensBio,
     ensCover,
     ensTwitter,
@@ -109,14 +108,6 @@ export default function NFTDetails() {
   } = useEns({
     addressOrName: nft?.name || '',
     enableProfile: nft?.familyName === 'ENS',
-  });
-  console.log({
-    ensAddress,
-    ensName,
-    ensBio,
-    ensCover,
-    ensTwitter,
-    ensWebsite,
   });
   const { data: dominantColor } = useDominantColor({
     imageUrl: nft?.image_url || undefined,
