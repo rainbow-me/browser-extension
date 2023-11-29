@@ -54,6 +54,7 @@ export function App() {
         connectors: ({ chains }) => [new RainbowConnector({ chains })],
         persist: true,
         customChains: customChains,
+        useProxy: config.rpc_proxy_enabled,
       }),
     [customChains],
   );

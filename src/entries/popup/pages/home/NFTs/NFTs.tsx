@@ -30,6 +30,7 @@ import {
 } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
+import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { useCoolMode } from '~/entries/popup/hooks/useCoolMode';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -48,7 +49,7 @@ export function PostReleaseNFTs() {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-    isInitialLoading,
+    isLoading,
   } = useNfts({ address });
   const nftData = useMemo(() => {
     return {
@@ -159,7 +160,7 @@ export function PostReleaseNFTs() {
   ]);
 
   // we don't have a design for loading / empty state yet
-  if (isInitialLoading || Object.values(nfts || {}).length === 0) {
+  if (!isLoading && Object.values(nfts || {}).length === 0) {
     return <NFTEmptyState />;
   }
 
@@ -173,92 +174,183 @@ export function PostReleaseNFTs() {
         paddingHorizontal="12px"
       >
         {displayMode === 'grouped' && (
-          <Box
-            width="full"
-            style={{
-              height: groupedGalleryRowVirtualizer.getTotalSize(),
-              position: 'relative',
-            }}
-          >
-            <Box style={{ overflow: 'auto' }}>
-              {groupedGalleryRowVirtualizer
-                .getVirtualItems()
-                .map((virtualItem) => {
-                  const { key, size, start, index } = virtualItem;
-                  const rowData = groupedAssetRowData[index];
-                  return (
-                    <Box
-                      key={key}
-                      as={motion.div}
-                      position="absolute"
-                      width="full"
-                      style={{ height: size, y: start }}
-                    >
-                      <Inset horizontal="8px">
+          <>
+            {isLoading ? (
+              <Box width="full">
+                <Inset horizontal="8px">
+                  <GroupedNFTsSkeleton />
+                </Inset>
+              </Box>
+            ) : (
+              <Box
+                width="full"
+                style={{
+                  height: groupedGalleryRowVirtualizer.getTotalSize(),
+                  minHeight: '436px',
+                  position: 'relative',
+                }}
+              >
+                <Box style={{ overflow: 'auto' }}>
+                  {groupedGalleryRowVirtualizer
+                    .getVirtualItems()
+                    .map((virtualItem) => {
+                      const { key, size, start, index } = virtualItem;
+                      const rowData = groupedAssetRowData[index];
+                      return (
                         <Box
-                          style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            gap: 16,
-                            paddingBottom: 16,
-                          }}
+                          key={key}
+                          as={motion.div}
+                          position="absolute"
+                          width="full"
+                          style={{ height: size, y: start }}
                         >
-                          {rowData.map((asset, i) => (
-                            <NftThumbnail
-                              imageSrc={getUniqueAssetImageThumbnailURL(asset)}
-                              key={i}
-                              onClick={() => onAssetClick(asset)}
-                            />
-                          ))}
+                          <Inset horizontal="8px">
+                            <Box
+                              style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                gap: 16,
+                                paddingBottom: 16,
+                              }}
+                            >
+                              {rowData.map((asset, i) => (
+                                <NftThumbnail
+                                  imageSrc={getUniqueAssetImageThumbnailURL(
+                                    asset,
+                                  )}
+                                  key={i}
+                                  onClick={() => onAssetClick(asset)}
+                                />
+                              ))}
+                            </Box>
+                          </Inset>
                         </Box>
-                      </Inset>
-                    </Box>
-                  );
-                })}
-            </Box>
-          </Box>
+                      );
+                    })}
+                </Box>
+              </Box>
+            )}
+          </>
         )}
         {displayMode === 'byCollection' && (
-          <Box
-            width="full"
-            style={{
-              height: collectionGalleryRowVirtualizer.getTotalSize(),
-              position: 'relative',
-            }}
-          >
-            <Box style={{ overflow: 'auto' }}>
-              {collectionGalleryRowVirtualizer
-                .getVirtualItems()
-                .map((virtualItem) => {
-                  const { key, size, start, index } = virtualItem;
-                  const section = sortedSections[index];
-                  const isLast = index === sortedSections.length - 1;
-                  return (
-                    <Box
-                      key={key}
-                      as={motion.div}
-                      position="absolute"
-                      width="full"
-                      style={{ height: size, y: start }}
-                      ref={collectionGalleryRowVirtualizer.measureElement}
-                      data-index={index}
-                    >
-                      <CollectionSection
-                        isLast={isLast}
-                        section={section}
-                        onAssetClick={onAssetClick}
-                      />
-                    </Box>
-                  );
-                })}
-            </Box>
-          </Box>
+          <>
+            {isLoading ? (
+              <Box width="full">
+                <Inset horizontal="8px">
+                  <CollectionNFTsSkeleton />
+                </Inset>
+              </Box>
+            ) : (
+              <Box
+                width="full"
+                style={{
+                  height: collectionGalleryRowVirtualizer.getTotalSize(),
+                  minHeight: '436px',
+                  position: 'relative',
+                }}
+              >
+                <Box style={{ overflow: 'auto' }}>
+                  {collectionGalleryRowVirtualizer
+                    .getVirtualItems()
+                    .map((virtualItem) => {
+                      const { key, size, start, index } = virtualItem;
+                      const section = sortedSections[index];
+                      const isLast = index === sortedSections.length - 1;
+                      return (
+                        <Box
+                          key={key}
+                          as={motion.div}
+                          position="absolute"
+                          width="full"
+                          style={{ height: size, y: start }}
+                          ref={collectionGalleryRowVirtualizer.measureElement}
+                          data-index={index}
+                        >
+                          <CollectionSection
+                            isLast={isLast}
+                            section={section}
+                            onAssetClick={onAssetClick}
+                          />
+                        </Box>
+                      );
+                    })}
+                </Box>
+              </Box>
+            )}
+          </>
         )}
       </Box>
     </Bleed>
   );
+}
+
+function GroupedNFTsSkeleton() {
+  return (
+    <Box
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        gap: 16,
+        paddingBottom: 16,
+      }}
+    >
+      {Array.from({ length: 9 }).map((_, i) => {
+        return (
+          <Skeleton
+            key={i}
+            height={'96px'}
+            style={{ borderRadius: 10 }}
+            width={'96px'}
+          />
+        );
+      })}
+    </Box>
+  );
+}
+
+function CollectionNFTsSkeleton() {
+  return (
+    <Stack space="7px">
+      {Array.from({ length: 15 }).map((_, i) => (
+        <Box key={i}>
+          <Columns alignVertical="center">
+            <Column>
+              <Inline alignVertical="center" space="7px">
+                <Skeleton
+                  circle
+                  height={`${COLLECTION_IMAGE_SIZE}px`}
+                  width={`${COLLECTION_IMAGE_SIZE}px`}
+                  style={{
+                    overflow: 'none',
+                  }}
+                />
+                <CollectionNameSkeleton />
+              </Inline>
+            </Column>
+            <Column width="content">
+              <Inline alignVertical="center">
+                <Symbol
+                  symbol="chevron.down"
+                  weight="bold"
+                  size={12}
+                  color="labelQuaternary"
+                />
+              </Inline>
+            </Column>
+          </Columns>
+        </Box>
+      ))}
+    </Stack>
+  );
+}
+
+function CollectionNameSkeleton() {
+  const width = useMemo(() => Math.random() * 230 + 30, []);
+  return <Skeleton height="14px" width={`${width}px`} />;
 }
 
 function CollectionSection({
@@ -385,7 +477,7 @@ function CollectionSection({
 const NftThumbnail = memo(
   ({ imageSrc, onClick }: { imageSrc?: string; onClick: () => void }) => {
     return (
-      <Box
+      <Lens
         style={{ height: 96, width: 96 }}
         borderRadius="10px"
         background="fillQuaternary"
@@ -397,7 +489,7 @@ const NftThumbnail = memo(
           height={96}
           width={96}
         />
-      </Box>
+      </Lens>
     );
   },
 );

@@ -87,7 +87,12 @@ const ChainBadge = ({
           width="100%"
           height="100%"
           loading="lazy"
-          style={{ userSelect: 'none' }}
+          style={{
+            userSelect: 'none',
+            height: iconSize,
+            width: iconSize,
+            borderRadius: iconSize,
+          }}
           draggable={false}
         />
       ) : (
@@ -96,7 +101,9 @@ const ChainBadge = ({
           width="100%"
           height="100%"
           loading="lazy"
-          style={{ userSelect: 'none' }}
+          style={{
+            userSelect: 'none',
+          }}
           draggable={false}
         />
       )}

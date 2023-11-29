@@ -80,13 +80,20 @@ const supportedChains = IS_TESTING
   ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
   : SUPPORTED_CHAINS;
 
-export const configureChainsForWagmiClient = (chains: Chain[]) =>
+export const configureChainsForWagmiClient = (
+  chains: Chain[],
+  useProxy?: boolean,
+) =>
   configureChains(chains, [
     jsonRpcProvider({
       rpc: (chain) => {
         const originalRpcEndpoint = getOriginalRpcEndpoint(chain);
         if (originalRpcEndpoint) {
-          return { http: proxyRpcEndpoint(originalRpcEndpoint.http, chain.id) };
+          return {
+            http: useProxy
+              ? proxyRpcEndpoint(originalRpcEndpoint.http, chain.id)
+              : originalRpcEndpoint.http,
+          };
         }
         return null;
       },
@@ -107,14 +114,17 @@ export function createWagmiClient({
   connectors,
   persist,
   customChains,
+  useProxy,
 }: {
   autoConnect?: CreateClientConfig['autoConnect'];
   connectors?: (opts: { chains: Chain[] }) => CreateClientConfig['connectors'];
   persist?: boolean;
   customChains?: Chain[];
+  useProxy?: boolean;
 } = {}) {
   const { chains, provider, webSocketProvider } = configureChainsForWagmiClient(
     supportedChains.concat(customChains || []),
+    useProxy,
   );
 
   return createClient({
