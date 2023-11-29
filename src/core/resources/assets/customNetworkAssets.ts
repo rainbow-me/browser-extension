@@ -12,6 +12,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { customRPCAssetsStore } from '~/core/state/customRPCAssets';
 import {
   AddressOrEth,
@@ -46,23 +47,27 @@ export const CUSTOM_NETWORK_ASSETS_STALE_INTERVAL = 30000;
 export type CustomNetworkAssetsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
+  testnetMode?: boolean;
 };
 
 type SetCustomNetworkAssetsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
   customNetworkAssets?: CustomNetworkAssetsResult;
+  testnetMode?: boolean;
 };
 
 type SetUserDefaultsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
   staleTime: number;
+  testnetMode?: boolean;
 };
 
 type FetchCustomNetworkAssetsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
+  testnetMode?: boolean;
 };
 
 // ///////////////////////////////////////////////
@@ -71,11 +76,12 @@ type FetchCustomNetworkAssetsArgs = {
 export const customNetworkAssetsKey = ({
   address,
   currency,
+  testnetMode,
 }: CustomNetworkAssetsArgs) =>
   createQueryKey(
     'CustomNetworkAssets',
-    { address, currency },
-    { persisterVersion: 2 },
+    { address, currency, testnetMode },
+    { persisterVersion: 3 },
   );
 
 type customNetworkAssetsKey = ReturnType<typeof customNetworkAssetsKey>;
@@ -86,9 +92,10 @@ type customNetworkAssetsKey = ReturnType<typeof customNetworkAssetsKey>;
 export const CustomNetworkAssetsFetchQuery = ({
   address,
   currency,
+  testnetMode,
 }: FetchCustomNetworkAssetsArgs) => {
   queryClient.fetchQuery(
-    customNetworkAssetsKey({ address, currency }),
+    customNetworkAssetsKey({ address, currency, testnetMode }),
     customNetworkAssetsFunction,
   );
 };
@@ -97,19 +104,24 @@ export const CustomNetworkAssetsSetQueryDefaults = ({
   address,
   currency,
   staleTime,
+  testnetMode,
 }: SetUserDefaultsArgs) => {
-  queryClient.setQueryDefaults(customNetworkAssetsKey({ address, currency }), {
-    staleTime,
-  });
+  queryClient.setQueryDefaults(
+    customNetworkAssetsKey({ address, currency, testnetMode }),
+    {
+      staleTime,
+    },
+  );
 };
 
 export const CustomNetworkAssetsSetQueryData = ({
   address,
   currency,
   customNetworkAssets,
+  testnetMode,
 }: SetCustomNetworkAssetsArgs) => {
   queryClient.setQueryData(
-    customNetworkAssetsKey({ address, currency }),
+    customNetworkAssetsKey({ address, currency, testnetMode }),
     customNetworkAssets,
   );
 };
@@ -129,13 +141,18 @@ export const getCustomChainIconUrl = (
 };
 
 async function customNetworkAssetsFunction({
-  queryKey: [{ address, currency }],
+  queryKey: [{ address, currency, testnetMode }],
 }: QueryFunctionArgs<typeof customNetworkAssetsKey>) {
   const cache = queryClient.getQueryCache();
   const cachedCustomNetworkAssets = (cache.find(
-    customNetworkAssetsKey({ address, currency }),
+    customNetworkAssetsKey({ address, currency, testnetMode }),
   )?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
-  const { customChains } = getCustomChains();
+
+  const { customChains: chains } = getCustomChains();
+
+  const customChains = chains.filter((chain) =>
+    testnetMode ? chain.testnet : !chain.testnet,
+  );
   if (customChains.length === 0) {
     return cachedCustomNetworkAssets;
   }
@@ -283,8 +300,9 @@ export function useCustomNetworkAssets<
     customNetworkAssetsKey
   > = {},
 ) {
+  const { testnetMode } = useTestnetModeStore();
   return useQuery(
-    customNetworkAssetsKey({ address, currency }),
+    customNetworkAssetsKey({ address, currency, testnetMode }),
     customNetworkAssetsFunction,
     {
       ...config,
