@@ -15,6 +15,7 @@ import {
 } from '~/design-system';
 import { Space } from '~/design-system/styles/designTokens';
 
+import { useCustomNetwork } from '../../hooks/useCustomNetwork';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useUserChains } from '../../hooks/useUserChains';
@@ -49,6 +50,7 @@ export const SwitchNetworkMenuSelector = ({
   disconnect,
   onNetworkSelect,
   onShortcutPress,
+  onlySwapSupportedNetworks = false,
 }: {
   selectedValue?: string;
   highlightAccentColor?: boolean;
@@ -57,9 +59,18 @@ export const SwitchNetworkMenuSelector = ({
   disconnect?: () => void;
   onNetworkSelect?: (event?: Event) => void;
   onShortcutPress: (chainId: string) => void;
+  onlySwapSupportedNetworks?: boolean;
 }) => {
   const { trackShortcut } = useKeyboardAnalytics();
-  const { chains } = useUserChains();
+  const { chains: userChains } = useUserChains();
+  const { customChains } = useCustomNetwork();
+
+  const chains = useMemo(() => {
+    const customChainsIds = customChains.map((chain) => chain.id);
+    return onlySwapSupportedNetworks
+      ? userChains.filter((chain) => !customChainsIds.includes(chain.id))
+      : userChains;
+  }, [customChains, onlySwapSupportedNetworks, userChains]);
 
   const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'
@@ -209,6 +220,7 @@ interface SwitchNetworkMenuProps {
   type: 'dropdown' | 'context';
   marginRight?: Space;
   onOpenChange?: (open: boolean) => void;
+  onlySwapSupportedNetworks?: boolean;
 }
 
 export const SwitchNetworkMenu = ({
@@ -220,6 +232,7 @@ export const SwitchNetworkMenu = ({
   type,
   marginRight,
   onOpenChange,
+  onlySwapSupportedNetworks,
 }: SwitchNetworkMenuProps) => {
   const triggerRef = useRef<HTMLDivElement>(null);
   const { chains } = useUserChains();
@@ -301,6 +314,7 @@ export const SwitchNetworkMenu = ({
             }}
             showDisconnect={!!onDisconnect}
             disconnect={onDisconnect}
+            onlySwapSupportedNetworks={onlySwapSupportedNetworks}
           />
         </MenuRadioGroup>
       </MenuContent>

@@ -17,13 +17,16 @@ import {
   getBlockExplorerHostForChain,
 } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
+import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { capitalize } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
 import {
   AccentColorProvider,
+  Bleed,
   Box,
   Button,
+  ButtonSymbol,
   Column,
   Columns,
   Inline,
@@ -39,6 +42,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '~/design-system/components/Accordion/Accordion';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import {
   TextStyles,
@@ -118,7 +122,7 @@ export default function NFTDetails() {
                 style={{ height: 320, width: 320 }}
               >
                 <ExternalImage
-                  src={nft?.image_url || ''}
+                  src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
                   height={320}
                   width={320}
                   borderRadius="16px"
@@ -133,38 +137,42 @@ export default function NFTDetails() {
                           {nft?.name}
                         </Text>
                       </Box>
-                      <Inline alignVertical="center" space="7px">
-                        <Box
-                          borderRadius="round"
-                          style={{
-                            overflow: 'none',
-                            height: 16,
-                            width: 16,
-                          }}
-                        >
-                          <ExternalImage
-                            src={nft?.collection.image_url || ''}
-                            height={16}
-                            width={16}
-                            borderRadius="round"
-                          />
-                        </Box>
-                        <TextOverflow
-                          size="12pt"
-                          weight="bold"
-                          color="labelTertiary"
-                          maxWidth={256}
-                        >
-                          {nft?.collection.name}
-                        </TextOverflow>
-                        <Symbol
-                          color="labelTertiary"
-                          cursor="pointer"
-                          size={10}
-                          symbol="chevron.right"
-                          weight="bold"
-                        />
-                      </Inline>
+                      <Lens borderRadius="6px" bubblesOnKeyDown padding="2px">
+                        <Bleed vertical="2px" horizontal="2px">
+                          <Inline alignVertical="center" space="7px">
+                            <Box
+                              borderRadius="round"
+                              style={{
+                                overflow: 'none',
+                                height: 16,
+                                width: 16,
+                              }}
+                            >
+                              <ExternalImage
+                                src={nft?.collection.image_url || ''}
+                                height={16}
+                                width={16}
+                                borderRadius="round"
+                              />
+                            </Box>
+                            <TextOverflow
+                              size="12pt"
+                              weight="bold"
+                              color="labelTertiary"
+                              maxWidth={256}
+                            >
+                              {nft?.collection.name}
+                            </TextOverflow>
+                            <Symbol
+                              color="labelTertiary"
+                              cursor="pointer"
+                              size={10}
+                              symbol="chevron.right"
+                              weight="bold"
+                            />
+                          </Inline>
+                        </Bleed>
+                      </Lens>
                     </NFTCollectionDropdownMenu>
                   </Column>
                   <Column width="content">
@@ -176,11 +184,12 @@ export default function NFTDetails() {
                       }}
                     >
                       <NFTDropdownMenu nft={nft}>
-                        <Symbol
+                        <ButtonSymbol
                           symbol="ellipsis.circle"
                           color="accent"
-                          weight="bold"
-                          size={16}
+                          height={'32px'}
+                          variant="transparent"
+                          tabIndex={0}
                         />
                       </NFTDropdownMenu>
                     </Box>
@@ -196,6 +205,7 @@ export default function NFTDetails() {
                   borderRadius="round"
                   symbol="arrow.up.right.square.fill"
                   onClick={() => goToNewTab({ url: getOpenseaUrl({ nft }) })}
+                  tabIndex={0}
                 >
                   {'OpenSea'}
                 </Button>
@@ -531,6 +541,7 @@ const NFTNavbar = ({ nft }: { nft?: UniqueAsset | null }) => {
                 symbol="ellipsis.circle"
                 height="32px"
                 variant="transparent"
+                tabIndex={0}
               />
             </NFTDropdownMenu>
           </Inline>
@@ -947,6 +958,7 @@ const NFTLinkButton = ({
       symbol={symbol}
       height="32px"
       onClick={() => goToNewTab({ url })}
+      tabIndex={0}
     >
       {title}
     </Button>
@@ -1023,37 +1035,39 @@ export const NFTInfoRow = ({
         {label}
       </Text>
     </Inline>
-    <Box onClick={onClick} cursor="pointer">
-      <Inline alignVertical="center" space="6px">
-        <Inline space="2px">
-          <TextOverflow
-            color="labelSecondary"
-            size="12pt"
-            weight="semibold"
-            cursor="text"
-            userSelect="all"
-          >
-            {value}
-          </TextOverflow>
-          <Text
-            color="labelQuaternary"
-            size="12pt"
-            weight="semibold"
-            cursor="text"
-          >
-            {subValue}
-          </Text>
+    <Box onClick={onClick} cursor="pointer" padding="2px">
+      <Bleed vertical="2px">
+        <Inline alignVertical="center" space="6px">
+          <Inline space="2px">
+            <TextOverflow
+              color="labelSecondary"
+              size="12pt"
+              weight="semibold"
+              cursor="text"
+              userSelect="all"
+            >
+              {value}
+            </TextOverflow>
+            <Text
+              color="labelQuaternary"
+              size="12pt"
+              weight="semibold"
+              cursor="text"
+            >
+              {subValue}
+            </Text>
+          </Inline>
+          {valueSymbol && (
+            <Symbol
+              size={14}
+              symbol={valueSymbol}
+              weight="medium"
+              color="labelTertiary"
+              cursor="pointer"
+            />
+          )}
         </Inline>
-        {valueSymbol && (
-          <Symbol
-            size={14}
-            symbol={valueSymbol}
-            weight="medium"
-            color="labelTertiary"
-            cursor="pointer"
-          />
-        )}
-      </Inline>
+      </Bleed>
     </Box>
   </Box>
 );
