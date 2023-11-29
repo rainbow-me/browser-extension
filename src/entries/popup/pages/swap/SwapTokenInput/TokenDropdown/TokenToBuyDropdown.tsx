@@ -80,6 +80,7 @@ export const TokenToBuyDropdown = ({
                   />
                 </ButtonOverflow>
               }
+              onlySwapSupportedNetworks
             />
           </Inline>
         </Box>

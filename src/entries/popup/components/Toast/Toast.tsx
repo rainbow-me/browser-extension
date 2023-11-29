@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { Box, Inline, Row, Rows, Text } from '~/design-system';
+import { Box, Inline, Row, Rows, Text, TextOverflow } from '~/design-system';
 
 import { ROUTES } from '../../urls';
 import { zIndexes } from '../../utils/zIndexes';
@@ -115,14 +115,15 @@ export const Toast = () => {
                   </Row>
                   {toastInfo.description && (
                     <Row>
-                      <Text
+                      <TextOverflow
                         color="labelTertiary"
                         size="11pt"
                         weight="medium"
                         align="center"
+                        maxWidth={260}
                       >
                         {toastInfo.description}
-                      </Text>
+                      </TextOverflow>
                     </Row>
                   )}
                 </Rows>

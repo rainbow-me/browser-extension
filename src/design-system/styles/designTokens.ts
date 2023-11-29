@@ -1031,6 +1031,8 @@ export const symbolNames = selectSymbolNames(
   'at.circle.fill',
   'ellipsis.bubble.fill',
   'percent',
+  'photo',
+  'person.crop.rectangle.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
