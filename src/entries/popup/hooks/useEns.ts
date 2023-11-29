@@ -37,8 +37,15 @@ export const useEns = ({
       : ensAddress || undefined,
     ensAvatar: ensProfile?.avatar,
     ensBio: ensProfile?.description,
-    ensHeader: ensProfile?.header,
+    ensCover: ensProfile?.header,
     ensTwitter: ensProfile?.['com.twitter'],
     ensWebsite: ensProfile?.url,
+    hasProperties: Boolean(
+      ensProfile?.avatar ||
+        ensProfile?.description ||
+        ensProfile?.header ||
+        ensProfile?.['com.twitter'] ||
+        ensProfile?.url,
+    ),
   };
 };

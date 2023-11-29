@@ -68,6 +68,8 @@ import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
+import { BirdIcon } from './BirdIcon';
+
 const getOpenseaUrl = ({
   nft,
   collectionPage,
@@ -96,16 +98,23 @@ export default function NFTDetails() {
       (asset: UniqueAsset) => asset.id === nftId,
     );
   }, [collectionId, collections, nftId]);
-  const { ensAddress, ensName, ensBio, ensHeader, ensTwitter, ensWebsite } =
-    useEns({
-      addressOrName: nft?.name || '',
-      enableProfile: nft?.familyName === 'ENS',
-    });
+  const {
+    ensAddress,
+    ensName,
+    ensBio,
+    ensCover,
+    ensTwitter,
+    ensWebsite,
+    hasProperties,
+  } = useEns({
+    addressOrName: nft?.name || '',
+    enableProfile: nft?.familyName === 'ENS',
+  });
   console.log({
     ensAddress,
     ensName,
     ensBio,
-    ensHeader,
+    ensCover,
     ensTwitter,
     ensWebsite,
   });
@@ -230,14 +239,23 @@ export default function NFTDetails() {
           <Box paddingHorizontal="20px" paddingTop="24px">
             <Accordion
               type="multiple"
-              defaultValue={['description', 'properties', 'about']}
+              defaultValue={['profile', 'description', 'properties', 'about']}
               asChild
             >
               <Box display="flex" flexDirection="column" gap="24px">
-                {nft?.description && (
+                {hasProperties && (
+                  <NFTAccordionSectionEnsProfile
+                    cover={ensCover}
+                    bio={ensBio}
+                    address={ensAddress}
+                    twitter={ensTwitter}
+                    website={ensWebsite}
+                  />
+                )}
+                {!hasProperties && nft?.description && (
                   <NFTAccordionDescriptionSection nft={nft} />
                 )}
-                {nft?.traits && nft?.traits.length > 0 && (
+                {!hasProperties && nft?.traits && nft?.traits.length > 0 && (
                   <>
                     <NFTAccordionTraitsSection traits={nft.traits} />
                     <Separator color="separatorTertiary" />
@@ -315,7 +333,7 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
               <Symbol
                 symbol="info.circle"
                 color="labelTertiary"
-                size={10}
+                size={11}
                 weight="semibold"
               />
             </Inline>
@@ -340,6 +358,78 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
   );
 };
 
+const NFTAccordionSectionEnsProfile = ({
+  cover,
+  bio,
+  address,
+  twitter,
+  website,
+}: {
+  cover?: string;
+  bio?: string;
+  address?: string;
+  twitter?: string;
+  website?: string;
+}) => {
+  const visitTwitter = () => {
+    goToNewTab({
+      url: `https://www.twitter.com/${twitter}`,
+    });
+  };
+  const visitWebsite = () => {
+    const fragment = website
+      ?.replace('https://', '')
+      .replace('http://', '')
+      .replace('www.', '');
+    goToNewTab({
+      url: `https://www.${fragment}`,
+    });
+  };
+  return (
+    <>
+      <AccordionItem value="profile">
+        <AccordionTrigger>
+          {i18n.t('nfts.details.ens_profile_info')}
+        </AccordionTrigger>
+        <AccordionContent gap="24px">
+          <div />
+          {cover && <ENSProfileInfoCover src={cover} />}
+          {bio && <ENSProfileInfoBio bio={bio} />}
+          {address && (
+            <NFTInfoRow
+              symbol={'person.crop.rectangle.fill'}
+              label={i18n.t('nfts.details.ens_address')}
+              value={truncateAddress(address as AddressOrEth)}
+              valueSymbol={'doc.on.doc'}
+              onClick={() => copyAddress(address as Address)}
+            />
+          )}
+          {twitter && (
+            <NFTInfoRow
+              symbol={'person.crop.rectangle.fill'}
+              label={'Twitter'}
+              value={twitter}
+              valueSymbol={'arrow.up.right.circle'}
+              symbolOverride={<BirdIcon />}
+              onClick={visitTwitter}
+            />
+          )}
+          {website && (
+            <NFTInfoRow
+              symbol={'safari'}
+              label={i18n.t('nfts.details.ens_website')}
+              value={website}
+              valueSymbol={'arrow.up.right.circle'}
+              onClick={visitWebsite}
+            />
+          )}
+        </AccordionContent>
+      </AccordionItem>
+      <Separator color="separatorTertiary" />
+    </>
+  );
+};
+
 const NFTAccordionDescriptionSection = ({
   nft,
 }: {
@@ -348,7 +438,9 @@ const NFTAccordionDescriptionSection = ({
   return (
     <>
       <AccordionItem value="description">
-        <AccordionTrigger>{'Description'}</AccordionTrigger>
+        <AccordionTrigger>
+          {i18n.t('nfts.details.description')}
+        </AccordionTrigger>
         <AccordionContent gap="24px">
           <div />
           <NFTDescription text={nft?.description} />
@@ -386,10 +478,22 @@ const NFTAccordionTraitsSection = ({
             >
               <Box paddingVertical="12px" paddingHorizontal="10px">
                 <Stack space="6px">
-                  <Text color="labelSecondary" size="11pt" weight="semibold">
+                  <Text
+                    color="labelSecondary"
+                    size="11pt"
+                    weight="semibold"
+                    userSelect="all"
+                    cursor="text"
+                  >
                     {String(trait.trait_type || '').toUpperCase()}
                   </Text>
-                  <Text color="label" size="14pt" weight="bold">
+                  <Text
+                    color="label"
+                    size="14pt"
+                    weight="bold"
+                    userSelect="all"
+                    cursor="text"
+                  >
                     {String(trait.value || '').toUpperCase()}
                   </Text>
                 </Stack>
@@ -418,7 +522,8 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
   );
   return (
     <AccordionItem value="about">
-      <AccordionTrigger>{i18n.t('nfts.details.about')}</AccordionTrigger>
+      <AccordionTrigger>{`${i18n.t('nfts.details.about')} ${nft?.collection
+        .name}`}</AccordionTrigger>
       <AccordionContent gap="24px">
         <div />
         {nft?.floorPriceEth && (
@@ -1022,6 +1127,65 @@ function NFTDescription({ text = '' }: { text?: string | null }) {
   );
 }
 
+export const ENSProfileInfoCover = ({ src }: { src?: string }) => (
+  <Box
+    display="flex"
+    alignItems="flex-start"
+    justifyContent="space-between"
+    gap="4px"
+  >
+    <Inline alignVertical="center" space="12px" wrap={false}>
+      <Symbol
+        size={14}
+        symbol={'photo'}
+        weight="medium"
+        color="labelTertiary"
+      />
+      <Text color="labelTertiary" size="12pt" weight="semibold">
+        {i18n.t('nfts.details.ens_cover')}
+      </Text>
+    </Inline>
+    <Box borderRadius="12px">
+      <ExternalImage src={src} height={64} width={241} borderRadius="12px" />
+    </Box>
+  </Box>
+);
+
+export const ENSProfileInfoBio = ({ bio }: { bio?: string }) => (
+  <Box
+    display="flex"
+    alignItems="flex-start"
+    justifyContent="space-between"
+    gap="4px"
+  >
+    <Inline alignVertical="center" space="12px" wrap={false}>
+      <Symbol
+        size={14}
+        symbol={'info.circle'}
+        weight="medium"
+        color="labelTertiary"
+      />
+      <Text color="labelTertiary" size="12pt" weight="semibold">
+        {i18n.t('nfts.details.ens_bio')}
+      </Text>
+    </Inline>
+    <Box
+      style={{
+        minHeight: 64,
+        width: 236,
+        borderRadius: 12,
+      }}
+      background={'fillTertiary'}
+    >
+      <Box paddingVertical="9px" paddingHorizontal="12px">
+        <Text size="12pt" weight="bold" color="labelSecondary">
+          {bio}
+        </Text>
+      </Box>
+    </Box>
+  </Box>
+);
+
 export const NFTInfoRow = ({
   symbol,
   label,
@@ -1029,6 +1193,7 @@ export const NFTInfoRow = ({
   value,
   subValue,
   valueSymbol,
+  symbolOverride,
 }: {
   symbol: SymbolName;
   label: ReactNode;
@@ -1036,6 +1201,7 @@ export const NFTInfoRow = ({
   value: ReactNode;
   subValue?: string;
   valueSymbol?: SymbolName;
+  symbolOverride?: ReactNode;
 }) => (
   <Box
     display="flex"
@@ -1044,44 +1210,50 @@ export const NFTInfoRow = ({
     gap="4px"
   >
     <Inline alignVertical="center" space="12px" wrap={false}>
-      <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
+      {!symbolOverride && (
+        <Symbol
+          size={14}
+          symbol={symbol}
+          weight="medium"
+          color="labelTertiary"
+        />
+      )}
+      {!!symbolOverride && symbolOverride}
       <Text color="labelTertiary" size="12pt" weight="semibold">
         {label}
       </Text>
     </Inline>
     <Box onClick={onClick} cursor="pointer" padding="2px">
-      <Bleed vertical="2px">
-        <Inline alignVertical="center" space="6px">
-          <Inline space="2px">
-            <TextOverflow
-              color="labelSecondary"
-              size="12pt"
-              weight="semibold"
-              cursor="text"
-              userSelect="all"
-            >
-              {value}
-            </TextOverflow>
-            <Text
-              color="labelQuaternary"
-              size="12pt"
-              weight="semibold"
-              cursor="text"
-            >
-              {subValue}
-            </Text>
-          </Inline>
-          {valueSymbol && (
-            <Symbol
-              size={14}
-              symbol={valueSymbol}
-              weight="medium"
-              color="labelTertiary"
-              cursor="pointer"
-            />
-          )}
+      <Inline alignVertical="center" space="6px">
+        <Inline space="2px">
+          <TextOverflow
+            color="labelSecondary"
+            size="12pt"
+            weight="semibold"
+            cursor={valueSymbol ? 'pointer' : 'text'}
+            userSelect={valueSymbol ? 'none' : 'all'}
+          >
+            {value}
+          </TextOverflow>
+          <Text
+            color="labelQuaternary"
+            size="12pt"
+            weight="semibold"
+            cursor="text"
+          >
+            {subValue}
+          </Text>
         </Inline>
-      </Bleed>
+        {valueSymbol && (
+          <Symbol
+            size={14}
+            symbol={valueSymbol}
+            weight="medium"
+            color="labelTertiary"
+            cursor="pointer"
+          />
+        )}
+      </Inline>
     </Box>
   </Box>
 );

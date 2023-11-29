@@ -83,7 +83,6 @@ export async function resolveEnsProfile(name: string) {
       name,
       fields: ensProfileFields,
     });
-    console.log('RESPONSE: ', response);
     const fields = response.resolveENSProfile?.fields;
 
     // keys that are not set in the profile will be returned as empty strings
@@ -120,8 +119,6 @@ type EnsProfileResult = QueryFunctionResult<typeof fetchEnsProfile>;
 export async function resolveEnsProfileQueryFunction({
   queryKey: [{ addressOrName }],
 }: QueryFunctionArgs<typeof EnsProfileQueryKey>) {
-  const foo = await fetchEnsProfile({ addressOrName });
-  console.log('foo: ', foo, addressOrName);
   return fetchEnsProfile({ addressOrName });
 }
 
