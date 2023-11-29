@@ -43,9 +43,7 @@ export function App() {
 
   React.useEffect(() => {
     if (!isEqual(prevChains, customChains)) {
-      backgroundMessenger.send('rainbow_updateWagmiClient', {
-        useProxy: config.rpc_proxy_enabled,
-      });
+      backgroundMessenger.send('rainbow_updateWagmiClient', null);
     }
   }, [prevChains, customChains]);
 
@@ -63,9 +61,7 @@ export function App() {
 
   React.useEffect(() => {
     if (!isEqual(prevChains, customChains)) {
-      backgroundMessenger.send('rainbow_updateWagmiClient', {
-        useProxy: config.rpc_proxy_enabled,
-      });
+      backgroundMessenger.send('rainbow_updateWagmiClient', null);
     }
   }, [prevChains, customChains]);
 
