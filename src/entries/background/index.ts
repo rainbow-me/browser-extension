@@ -1,6 +1,7 @@
 import { uuid4 } from '@sentry/utils';
 
 import { initFCM } from '~/core/firebase/fcm';
+import config from '~/core/firebase/remoteConfig';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
@@ -21,7 +22,7 @@ initializeSentry('background');
 
 const updateWagmiClient = () => {
   const { customChains } = getCustomChains();
-  createWagmiClient({ customChains });
+  createWagmiClient({ customChains, useProxy: config.rpc_proxy_enabled });
 };
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });

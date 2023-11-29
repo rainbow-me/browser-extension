@@ -365,7 +365,6 @@ const getAcceptRequestButtonStyles = ({
 };
 
 export const AcceptRequestButton = ({
-  autoFocus,
   disabled,
   onClick,
   label,
@@ -373,7 +372,6 @@ export const AcceptRequestButton = ({
   loading = false,
   dappStatus,
 }: {
-  autoFocus?: boolean;
   disabled?: boolean;
   onClick: () => void;
   label: string;
@@ -386,10 +384,10 @@ export const AcceptRequestButton = ({
     dappStatus,
     disabled,
   });
+  const isScamDapp = dappStatus === DAppStatus.Scam;
 
   return (
     <Button
-      autoFocus={autoFocus}
       height="44px"
       width="full"
       onClick={(!waitingForDevice && onClick) || undefined}
@@ -397,8 +395,8 @@ export const AcceptRequestButton = ({
       disabled={disabled}
       tabIndex={0}
       shortcut={
-        !disabled && !waitingForDevice && dappStatus !== DAppStatus.Scam
-          ? shortcuts.transaction_request.ACCEPT
+        !disabled && !waitingForDevice && !isScamDapp
+          ? { ...shortcuts.transaction_request.ACCEPT, type: 'request.accept' }
           : undefined
       }
       // eslint-disable-next-line react/jsx-props-no-spreading
@@ -412,36 +410,18 @@ export const AcceptRequestButton = ({
 };
 
 export const RejectRequestButton = ({
-  autoFocus,
   onClick,
   label,
   dappStatus,
 }: {
-  autoFocus?: boolean;
   onClick: () => void;
   label: string;
   dappStatus?: DAppStatus;
 }) => {
   const isScamDapp = dappStatus === DAppStatus.Scam;
 
-  const { trackShortcut } = useKeyboardAnalytics();
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.connect.CANCEL.key) {
-        if (!radixIsActive()) {
-          trackShortcut({
-            key: shortcuts.connect.CANCEL.display,
-            type: 'connect.cancel',
-          });
-          onClick?.();
-        }
-      }
-    },
-  });
-
   return (
     <Button
-      autoFocus={autoFocus}
       color={isScamDapp ? 'red' : 'separatorSecondary'}
       variant="flat"
       height="44px"
@@ -449,6 +429,12 @@ export const RejectRequestButton = ({
       onClick={onClick}
       testId="reject-request-button"
       tabIndex={0}
+      shortcut={{
+        ...shortcuts.transaction_request.CANCEL,
+        disabled: radixIsActive,
+        type: 'request.cancel',
+        hideHint: !isScamDapp,
+      }}
     >
       {label}
     </Button>

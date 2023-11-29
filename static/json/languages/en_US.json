@@ -952,9 +952,11 @@
     "button_label_cancel": "Remind Me Later"
   },
   "approve_request": {
+    "allow_to_add_asset": "wants to suggest a token",
     "wallet_info_title": "wants to connect to your wallet",
     "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions.",
     "add_chain_info_description": "If you approve it, this network could be used within the Rainbow Browser Extension.",
+    "watch_asset_info_description": "If you approve it, this asset could be used within the Rainbow Browser Extension.",
     "wallet": "Wallet",
     "network": "Network",
     "switch_networks": "Switch Networks",
@@ -1170,7 +1172,9 @@
   },
   "nfts": {
     "coming_soon_header": "Coming Soon",
+    "empty_state_header": "NFTs",
     "coming_soon_description": "NFTs are coming soon. Stay tuned!",
+    "empty_state_description": "Your NFTs will appear here!",
     "view_on_web": "View on Web",
     "display_mode_gallery": "Gallery",
     "display_mode_collections": "Collections",
@@ -1194,7 +1198,9 @@
       "download": "Download",
       "explorer": "Explorer",
       "view_collection": "View Collection",
-      "collection_website": "Collection Website"
+      "collection_website": "Collection Website",
+      "owners": "Owners",
+      "unique_owners": "Unique Owners"
     }
   },
   "points": {
@@ -1497,5 +1503,13 @@
   "copy": "Copy",
   "close": "Close",
   "verified": "Verified",
-  "unverified": "Unverified"
+  "unverified": "Unverified",
+  "watch_asset": {
+    "chain_id": "Chain ID",
+    "symbol": "Symbol",
+    "decimals": "Decimals",
+    "address": "Address",
+    "not_found": "We couldn't find this asset on the selected network. Please choose the right network below"
+  }
 }
+
