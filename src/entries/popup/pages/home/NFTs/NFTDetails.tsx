@@ -65,6 +65,7 @@ import {
 } from '~/entries/popup/components/Navbar/Navbar';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
+import { useEns } from '~/entries/popup/hooks/useEns';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 const getOpenseaUrl = ({
@@ -95,6 +96,19 @@ export default function NFTDetails() {
       (asset: UniqueAsset) => asset.id === nftId,
     );
   }, [collectionId, collections, nftId]);
+  const { ensAddress, ensName, ensBio, ensHeader, ensTwitter, ensWebsite } =
+    useEns({
+      addressOrName: nft?.name || '',
+      enableProfile: nft?.familyName === 'ENS',
+    });
+  console.log({
+    ensAddress,
+    ensName,
+    ensBio,
+    ensHeader,
+    ensTwitter,
+    ensWebsite,
+  });
   const { data: dominantColor } = useDominantColor({
     imageUrl: nft?.image_url || undefined,
   });
