@@ -1186,6 +1186,7 @@
       "last_sales_price": "Last Sales Price",
       "none": "None",
       "floor_price": "Floor Price",
+      "description": "Description",
       "properties": "Properties",
       "address_copied": "Address Copied",
       "about": "About",
@@ -1200,7 +1201,12 @@
       "view_collection": "View Collection",
       "collection_website": "Collection Website",
       "owners": "Owners",
-      "unique_owners": "Unique Owners"
+      "unique_owners": "Unique Owners",
+      "ens_profile_info": "Profile Info",
+      "ens_bio": "Bio",
+      "ens_cover": "Cover",
+      "ens_address": "ETH Address",
+      "ens_website": "Website"
     }
   },
   "points": {
