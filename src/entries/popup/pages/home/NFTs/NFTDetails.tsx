@@ -469,24 +469,26 @@ const NFTAccordionTraitsSection = ({
             >
               <Box paddingVertical="12px" paddingHorizontal="10px">
                 <Stack space="6px">
-                  <Text
+                  <TextOverflow
                     color="labelSecondary"
                     size="11pt"
                     weight="semibold"
                     userSelect="all"
                     cursor="text"
+                    maxWidth={300}
                   >
                     {String(trait.trait_type || '').toUpperCase()}
-                  </Text>
-                  <Text
+                  </TextOverflow>
+                  <TextOverflow
                     color="label"
                     size="14pt"
                     weight="bold"
                     userSelect="all"
                     cursor="text"
+                    maxWidth={300}
                   >
                     {String(trait.value || '').toUpperCase()}
-                  </Text>
+                  </TextOverflow>
                 </Stack>
               </Box>
             </Box>
