@@ -403,7 +403,10 @@
         "view_on_ens": "عرض على ENS",
         "switch_to_wallet": "التبديل إلى هذه المحفظة",
         "copy_wallet_address": "نسخ العنوان",
-        "view_wallet_on_etherscan": "عرض على Etherscan"
+        "view_wallet_on_etherscan": "عرض على Etherscan",
+        "export_addresses_as_csv": "تصدير العناوين كملف CSV",
+        "enable_flashbots": "تمكين Flashbots",
+        "disable_flashbots": "تعطيل Flashbots"
       },
       "search_tags": {
         "swap": "الجسر",
@@ -479,6 +482,18 @@
     },
     "toolbar": {
       "actions_hint": "الأعمال"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "مشاهدة",
+        "recovery_phrase": "عبارة الاستعادة",
+        "private_key": "المفتاح الخاص",
+        "hardware_wallet": "محفظة الأجهزة"
+      },
+      "toast": {
+        "title": "تم تنزيل العناوين",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {
@@ -525,7 +540,6 @@
       "cancel": "إلغاء",
       "sending_on_network": "الإرسال على شبكة %{chainName}",
       "sending_on_l2_check_1": "أنا لا أرسل إلى بورصة",
-      "sending_on_l2_check_2": "الشخص الذي أرسل إليه لديه محفظة تدعم %{chainName}",
       "complete_checks": "أكمل الفحوصات",
       "confirm_hw": "تأكيد على جهازك"
     }
@@ -938,20 +952,29 @@
     "button_label_cancel": "ذكرني لاحقا"
   },
   "approve_request": {
+    "allow_to_add_asset": "يرغب بإقتراح رمز",
     "wallet_info_title": "يرغب في الاتصال بمحفظتك",
     "wallet_info_description": "اسمح لـ %{appName} بعرض عنوان محفظتك، رصيدك، نشاطك وطلب الموافقة على المعاملات.",
+    "add_chain_info_description": "إذا قمت بالموافقة عليه، يمكن استخدام هذا الشبكة داخل امتداد متصفح Rainbow.",
+    "watch_asset_info_description": "إذا قمت بالموافقة عليه، يمكن استخدام هذا الأصل داخل امتداد متصفح Rainbow.",
     "wallet": "محفظة",
     "network": "الشبكة",
     "switch_networks": "تبديل الشبكات",
     "switch_wallets": "تبديل المحافظ",
+    "allow_to_add_network": "يود إضافة شبكة",
     "connect": "اتصل بـ %{appName}",
     "connect_anyway": "الاتصال على أي حال",
+    "approve": "الموافقة",
+    "approve_anyway": "الموافقة على أي حال",
     "malicious_warning": {
       "title": "من المحتمل أن هذا التطبيق ضار",
       "message": "توقيع الرسائل أو المعاملات من هذا التطبيق قد يؤدي إلى فقدان أصولك"
     },
+    "dangerous_request": "طلب خطير",
     "message_signing_request": "طلب التوقيع على الرسالة",
     "message": "رسالة",
+    "message_copied": "تم نسخ الرسالة",
+    "transaction_data_copied": "تم نسخ بيانات المعاملة",
     "sign_message": "توقيع الرسالة",
     "sign_message_anyway": "التوقيع على أي حال",
     "confirm_hw": "تأكيد على جهازك",
@@ -960,7 +983,29 @@
     "send_transaction_anyway": "التأكيد على أي حال",
     "contract_deployment": "نشر العقد",
     "transaction_request": "طلب العملية",
-    "insufficient_native_asset_for_gas": "%{symbol} غير كافٍ للغاز"
+    "insufficient_gas_funds": "أنت بحاجة إلى المزيد %{token}",
+    "insufficient_gas_funds_description": "أنت بحاجة إلى القليل أكثر %{token} لدفع هذه المعاملة. احصل على المزيد أدناه لمتابعة هذا الطلب.",
+    "no_gas_funds": "أنت بحاجة إلى بعض %{token}",
+    "no_gas_funds_description": "ستحتاج إلى %{token} لدفع هذه المعاملة. احصل على بعض %{token} أدناه لمتابعة هذا الطلب.",
+    "no_token": "لا %{token}",
+    "on_chain": "على %{chain}",
+    "copy_deposit_address": "نسخ عنوان المحفظة لإيداع",
+    "bridge_to": "الجسر إلى %{chain}",
+    "signing_with": "التوقيع بواسطة",
+    "no_fee_to_sign": "لا توجد رسوم للتوقيع",
+    "request_rejected": "تم رفض طلب المعاملة",
+    "bridge_and_try_again": "تم ربط بعض أموال الغاز وحاول مرة أخرى",
+    "buy_and_try_again": "اشتري بعض أموال الغاز وحاول مرة أخرى",
+    "buy": "اشترِ %{token}"
+  },
+  "add_chain": {
+    "name": "الاسم",
+    "chain_id": "معرّف الشبكة",
+    "currency_symbol": "رمز العملة",
+    "currency_name": "اسم العملة",
+    "currency_decimals": "عشريات العملة",
+    "rpc_url": "عنوان RPC",
+    "block_explorer_url": "عنوان مستكشف الكتل"
   },
   "transaction_fee": {
     "title": "سرعة العملية",
@@ -1127,14 +1172,36 @@
   },
   "nfts": {
     "coming_soon_header": "قريبًا",
+    "empty_state_header": "NFTs",
     "coming_soon_description": "لـNFTs قادمة قريبا. ترقب!",
+    "empty_state_description": "ستظهر NFTs الخاصة بك هنا!",
     "view_on_web": "عرض على الويب",
     "display_mode_gallery": "المعرض",
     "display_mode_collections": "المجموعات",
     "sort_option_recent": "الأخير",
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "الأخير",
-    "sort_option_abc_long": "أبجدي"
+    "sort_option_abc_long": "أبجدي",
+    "details": {
+      "last_sales_price": "سعر البيع الأخير",
+      "none": "لا شيء",
+      "floor_price": "سعر الأرضية",
+      "properties": "الخصائص",
+      "address_copied": "العنوان المنسوخ",
+      "about": "حول",
+      "token_standard": "معايير الرمز",
+      "token_contract": "عقد الرمز",
+      "contract_creator": "منشئ العقد",
+      "chain": "السلسلة",
+      "id_copied": "تم نسخ الهوية",
+      "copy_token_id": "نسخ معرف الرمز",
+      "download": "تنزيل",
+      "explorer": "مستكشف",
+      "view_collection": "عرض المجموعة",
+      "collection_website": "موقع المجموعة",
+      "owners": "المالكون",
+      "unique_owners": "أصحاب فريدين"
+    }
   },
   "points": {
     "coming_soon_header": "قريبًا",
@@ -1172,6 +1239,7 @@
     "approvals": "موافقات الرمز",
     "this_token_is_on_network": "هذا %{symbol} موجود على الشبكة %{chainName}",
     "view_on": "عرض على %{explorer}",
+    "not_available": "السعر غير متوفر",
     "more_options": {
       "copy_address": "نسخ العنوان",
       "hide": "إخفاء الرمز",
@@ -1405,5 +1473,42 @@
     "unfavorite": "إزالة من المفضلة",
     "estimated_difference": "الفرق المقدر في القيمة",
     "buy_crypto": "شراء وتحويل العملة المشفرة"
+  },
+  "simulation": {
+    "title": "نتيجة محاكاة",
+    "loading": "جارٍ المحاكاة...",
+    "error": "فشلت المحاكاة",
+    "no_changes": "لم يتم اكتشاف أي تغييرات",
+    "received": "مستلمة",
+    "sent": "تم الإرسال",
+    "approved": "تمت الموافقة",
+    "reverted": "تم استرداد العملية",
+    "function": "وظيفة",
+    "contract": "عقد",
+    "contract_name": "اسم العقد",
+    "contract_created_at": "العقد المُنشأ",
+    "source_code": "شفرة المصدر",
+    "signature": {
+      "message": "رسالة"
+    },
+    "tabs": {
+      "overview": "نظرة عامة",
+      "details": "تفاصيل",
+      "data": "بيانات"
+    }
+  },
+  "chain": "السلسلة",
+  "nonce": "التردد",
+  "copy": "نسخ",
+  "close": "إغلاق",
+  "verified": "تم التحقق منه",
+  "unverified": "غير متحقق منه",
+  "watch_asset": {
+    "chain_id": "معرّف الشبكة",
+    "symbol": "رمز",
+    "decimals": "الكسور",
+    "address": "عنوان",
+    "not_found": "لم نتمكن من العثور على هذا الأصل على الشبكة المحددة. يرجى اختيار الشبكة الصحيحة أدناه"
   }
 }
+
