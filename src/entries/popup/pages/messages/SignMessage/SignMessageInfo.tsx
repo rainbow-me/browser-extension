@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/providers';
 import { motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
@@ -10,11 +10,12 @@ import { ChainId } from '~/core/types/chains';
 import { copy } from '~/core/utils/copy';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { truncateString } from '~/core/utils/strings';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
+import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import {
   SimulationError,
@@ -28,25 +29,34 @@ interface SignMessageProps {
 
 function Overview({
   message,
+  typedData,
+  simulation,
+  status,
+  error,
 }: {
-  message?: string;
+  message: string | undefined;
+  typedData: boolean;
   simulation: TransactionSimulation | undefined;
   status: 'loading' | 'error' | 'success';
   error: SimulationError | null;
 }) {
   return (
     <Stack space="16px">
-      {/* <Text size="12pt" weight="semibold" color="labelTertiary">
-        {i18n.t('simulation.title')}
-      </Text> */}
+      {typedData && (
+        <>
+          <Text size="12pt" weight="semibold" color="labelTertiary">
+            {i18n.t('simulation.title')}
+          </Text>
 
-      {/* <SimulationOverview
-        simulation={simulation}
-        status={status}
-        error={error}
-      />
+          <SimulationOverview
+            simulation={simulation}
+            status={status}
+            error={error}
+          />
 
-      <Separator color="separatorTertiary" /> */}
+          <Separator color="separatorTertiary" />
+        </>
+      )}
 
       <Stack space="20px">
         <Inline space="8px" alignVertical="center">
@@ -74,10 +84,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const dappUrl = request?.meta?.sender?.url || '';
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
 
-  const { message } = useMemo(() => {
-    const { message, typedData } = getSigningRequestDisplayDetails(request);
-    return { message, typedData };
-  }, [request]);
+  const { message, typedData } = getSigningRequestDisplayDetails(request);
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
   const [expanded, setExpanded] = useState(false);
@@ -158,6 +165,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
         <TabContent value={tabLabel('overview')}>
           <Overview
             message={message}
+            typedData={!!typedData}
             simulation={simulation}
             status={status === 'error' && isRefetching ? 'loading' : status}
             error={error}
