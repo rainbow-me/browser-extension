@@ -21,6 +21,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.88](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.88)
+
+### Added
+
+- Added Testnet support for Holesky, Arbitrum Sepolia, Optimism Sepolia networks #1147
+
+### Changed
+
+- Improved translations for Magic Menu actions, and Transaction Simulation and Decoding #1160
+
+### Fixed
+
+- Fixed dApp prompt positioning when using multiple windows and monitors #1151
+- Improved keyboard navigation consistency on dApp signature requests. Press `⌘+↵` to sign a message or transaction, `esc` to reject, and `tab` to navigate options #1148
+- Fixed an issue with native token balance resolution where you may sometimes see an incorrect "Insufficient ETH" error when switching between multiple dApps and wallets #1157
+- Fixed a rendering issue with price change estimates for Token Charts when the time window is changed #1145
+- Fixed a community reported issue where Rainbow's Firebase infrastructure would be incorrectly injected into dApps and trigger unnecessary network calls #1159
+
+### Internal
+
+- Added Support for `wallet_watchAsset` RPC call #1141
+- Added Custom RPC Settings form validatin to test RPC endpoints #1144
+- Added NFT Gallery loading and empty states #1152 #1155
+- Added NFT Keyboard Navigation and sorting Shortcuts #1154
+- Added Owners and Distinct Owners fields in NFT Details #1153
+- Added ENS Profile resolution to NFT Details variant for ENS domains #1161
+- Filtering Custom Network assets in Testnet Mode #1158
+- Filtering Custom Networks from the Swap UI #1150
+- Fixed a fetching clash between NFTs and Custom RPC assets #1156
+
 ## [v1.2.71](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.71)
 
 ### Added
