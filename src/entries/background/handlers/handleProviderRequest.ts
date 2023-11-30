@@ -555,14 +555,14 @@ export const handleProviderRequest = ({
         }
         case 'eth_estimateGas': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.estimateGas(
-            params?.[0] as TransactionRequest,
-          );
+          response = (
+            await provider.estimateGas(params?.[0] as TransactionRequest)
+          ).toString();
           break;
         }
         case 'eth_gasPrice': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.getGasPrice();
+          response = (await provider.getGasPrice()).toString();
           break;
         }
         case 'eth_getCode': {
