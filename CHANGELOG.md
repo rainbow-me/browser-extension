@@ -82,32 +82,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.2.71](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.71)
 
-### Added
-
-- Display of NFTs in gallery and collection mode, including NFT sorting feature, both behind a feature flag #1082
-- Initial work on custom network support, with no impact on UI or existing functionality #1071
-- Enhanced custom chain support #1123
-- Chore: i18n updates, translations now available for Networks settings, Developer Tools and Testnet Mode, Malicious dApp warnings, Wallet management right-click menus, Clear transactions, Points, NFTs, Custom Networks placeholders #1122 
-- Support for custom networks assets #1120
-
 ### Changed
 
-- Management of RPC proxy flag, default value updated to `on` #1125
+- Turned on support for Rainbow's RPC to improve transaction reliability, protect your privacy, and allow Custom Networks and RPCs in the near future #1125
+- Improved translations for Networks settings, Developer Tools and Testnet Mode, Malicious dApp warnings, Wallet management right-click menus, Clear transactions, and Points #1122 
 
 ### Fixed
 
-- Fixed scenarios where native asset price for a token is unavailable #1111
-- Restoration of token details in about section #1115
-- Fix for activity history text overflow issues #1116
-- Ensuring swap prepopulates with the selected token when navigating from the asset context menu #1118
-- Validation of chainid only if available #1121
-- Asset filtering by networks now functioning correctly #1124
-- Testnet native asset sends #1130
+- Resolved an issue where the About section for Tokens would sometimes be missing #1115
+- Ensuring a Swap pair prepopulates with the correct token when right-clicking a token to Swap #1118
+- Resolved an issue with Token filtering when a chain was hidden in Networks settings #1124
+- Fixed an issue with Send flow for Testnets that would cause native asset transfer transactions to be malformed #1130
+- Resolved an issue where EIP-712 signature requests did not trigger a Dapp Prompt when `chainid` was unavailable #1121
+- Fixed a UI overflow in Activity for transactions with lengthy names #1116
 
 ### Internal
 
-- Bumped chromedriver from 119.0.0 to 119.0.1 #1126
-- Bumped Axios #1131
+- Added NFT Gallery and NFT sorting feature #1082
+- Added low-level Custom Network support #1071
+- Added Custom Network asset and price, symbol discovery #1120 #1111
+- Added Asset Price and Chart fetching, and Chain icons for Custom Networks #1123
+- Bumped `chromedriver` from `119.0.0` to `119.0.1` #1126
+- Bumped `axios` to `1.6.1` #1131
 
 ## [v1.2.64](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.64)
 
