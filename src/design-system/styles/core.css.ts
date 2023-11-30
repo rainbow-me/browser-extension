@@ -468,6 +468,7 @@ const symbolProperties = defineProperties({
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
+    boxShadow: shadowVars,
     cursor: cursorOpts,
     opacity: {
       boxed: 0.76,

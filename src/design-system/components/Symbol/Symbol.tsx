@@ -68,7 +68,7 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
             cursor={cursor}
             viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
             fill="none"
-            className={symbolStyles({ color })}
+            className={symbolStyles({ color, boxShadow: '12px accent' })}
             ref={ref}
             style={{
               width: disableSmoothing ? size : size * 2,

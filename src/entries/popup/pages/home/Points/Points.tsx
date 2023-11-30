@@ -1,10 +1,14 @@
 import { PropsWithChildren } from 'react';
 
+import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
-import { Box, Inline, Separator, Stack, Text } from '~/design-system';
+import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+import { StackProps } from '~/design-system/components/Stack/Stack';
+import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
+import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
-function Card({ children }: PropsWithChildren) {
+function Card({ children, ...props }: PropsWithChildren<StackProps>) {
   return (
     <Stack
       paddingVertical="16px"
@@ -14,14 +18,40 @@ function Card({ children }: PropsWithChildren) {
       gap="12px"
       width="full"
       boxShadow="12px surfaceSecondaryElevated"
+      {...props}
     >
       {children}
     </Stack>
   );
 }
 
+function Leaderboard() {
+  const { currentAddress } = useCurrentAddressStore();
+
+  return (
+    <Card
+      paddingVertical="10px"
+      paddingHorizontal="16px"
+      separator={<Separator color="separatorTertiary" />}
+    >
+      {Array.from({ length: 10 }).map(() => (
+        <Inline wrap={false} space="12px" alignVertical="center">
+          <WalletAvatar
+            size={32}
+            addressOrName={currentAddress}
+            emojiSize="16pt"
+          />
+          <AddressOrEns address={currentAddress} size="14pt" weight="bold" />
+        </Inline>
+      ))}
+    </Card>
+  );
+}
+
 export function Points() {
   const { testnetMode } = useTestnetModeStore();
+
+  const { currentAddress } = useCurrentAddressStore();
 
   return (
     <Box
@@ -84,15 +114,26 @@ export function Points() {
           </Text>
 
           <Inline wrap={false} space="12px">
-            <Card>
+            <Card paddingVertical="12px">
               <Text size="20pt" weight="bold" align="center">
                 A4B-2YK
               </Text>
             </Card>
 
-            <Card>
+            <Card
+              paddingVertical="12px"
+              flexDirection="row"
+              alignItems="center"
+            >
+              <Symbol
+                symbol="square.on.square"
+                color="accent"
+                shadow="12px accent"
+                weight="bold"
+                size={16}
+              />
               <Text
-                size="20pt"
+                size="16pt"
                 weight="bold"
                 color="accent"
                 textShadow="12px accent"
@@ -111,9 +152,32 @@ export function Points() {
 
         <Separator color="separatorTertiary" />
 
-        <Text size="16pt" weight="bold">
-          Leaderboard
-        </Text>
+        <Stack gap="16px">
+          <Text size="16pt" weight="bold">
+            Leaderboard
+          </Text>
+
+          <Card
+            paddingVertical="12px"
+            paddingHorizontal="16px"
+            flexDirection="row"
+          >
+            <Inline wrap={false} space="12px" alignVertical="center">
+              <WalletAvatar
+                size={32}
+                addressOrName={currentAddress}
+                emojiSize="16pt"
+              />
+              <AddressOrEns
+                address={currentAddress}
+                size="14pt"
+                weight="bold"
+              />
+            </Inline>
+          </Card>
+
+          <Leaderboard />
+        </Stack>
       </Stack>
     </Box>
   );
