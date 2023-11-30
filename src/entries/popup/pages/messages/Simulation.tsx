@@ -6,7 +6,7 @@ import { formatNumber } from '~/core/utils/formatNumber';
 import { Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextColor } from '~/design-system/styles/designTokens';
 
-import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
+import { CoinIcon, NFTIcon } from '../../components/CoinIcon/CoinIcon';
 import { Spinner } from '../../components/Spinner/Spinner';
 
 import {
@@ -53,7 +53,11 @@ function SimulatedChangeRow({
         </Text>
       </Inline>
       <Inline space="6px" alignVertical="center">
-        <CoinIcon asset={asset} size={14} />
+        {asset?.type === 'nft' ? (
+          <NFTIcon asset={asset} size={14} />
+        ) : (
+          <CoinIcon asset={asset} size={14} />
+        )}
         <Text size="14pt" weight="bold" color={color}>
           {quantity === 'UNLIMITED'
             ? i18n.t('approvals.unlimited')

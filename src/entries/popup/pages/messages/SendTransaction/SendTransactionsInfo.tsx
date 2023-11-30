@@ -37,7 +37,7 @@ import { ROUTES } from '~/entries/popup/urls';
 
 import {
   DappHostName,
-  ThisDappIsLikelyMalicious,
+  MaliciousRequestWarning,
   getDappStatusBadge,
 } from '../DappScanStatus';
 import { SimulationOverview } from '../Simulation';
@@ -292,26 +292,42 @@ function TransactionInfo({
   const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
 
   return (
-    <Tabs
-      tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
-      expanded={expanded}
-      onExpand={onExpand}
-    >
-      <TabContent value={tabLabel('overview')}>
-        <Overview
-          simulation={simulation}
-          status={status === 'error' && isRefetching ? 'loading' : status}
-          error={error}
-          metadata={dappMetadata}
+    <>
+      <Tabs
+        tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
+        expanded={expanded}
+        onExpand={onExpand}
+      >
+        <TabContent value={tabLabel('overview')}>
+          <Overview
+            simulation={simulation}
+            status={status === 'error' && isRefetching ? 'loading' : status}
+            error={error}
+            metadata={dappMetadata}
+          />
+        </TabContent>
+        <TabContent value={tabLabel('details')}>
+          <TransactionDetails
+            session={activeSession!}
+            simulation={simulation}
+          />
+        </TabContent>
+        <TabContent value={tabLabel('data')}>
+          <TransactionData data={txData} expanded={expanded} />
+        </TabContent>
+      </Tabs>
+
+      {!expanded && simulation && simulation.scanning.result !== 'OK' && (
+        <MaliciousRequestWarning
+          title={i18n.t('approve_request.malicious_transaction_warning.title')}
+          description={
+            simulation.scanning.description ||
+            i18n.t('approve_request.malicious_transaction_warning.description')
+          }
+          symbol="exclamationmark.octagon.fill"
         />
-      </TabContent>
-      <TabContent value={tabLabel('details')}>
-        <TransactionDetails session={activeSession!} simulation={simulation} />
-      </TabContent>
-      <TabContent value={tabLabel('data')}>
-        <TransactionData data={txData} expanded={expanded} />
-      </TabContent>
-    </Tabs>
+      )}
+    </>
   );
 }
 
@@ -553,8 +569,6 @@ export function SendTransactionInfo({
           />
         )
       )}
-
-      {!expanded && isScamDapp && <ThisDappIsLikelyMalicious />}
     </Box>
   );
 }

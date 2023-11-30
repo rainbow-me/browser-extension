@@ -970,6 +970,10 @@
       "title": "This app is likely malicious",
       "message": "Signing messages or transactions from this app could result in losing your assets"
     },
+    "malicious_transaction_warning": {
+      "title": "This transaction is likely malicious",
+      "message": "Signing could result in losing your assets"
+    },
     "dangerous_request": "Dangerous Request",
     "message_signing_request": "Message Signing Request",
     "message": "Message",
@@ -1518,4 +1522,3 @@
     "not_found": "We couldn't find this asset on the selected network. Please choose the right network below"
   }
 }
-

@@ -64,12 +64,13 @@ export const useSimulateTransaction = ({
         domain,
       })) as TransactionSimulationResponse;
 
-      const { simulation, error } = response.simulateTransactions[0];
+      const { simulation, error, scanning } = response.simulateTransactions[0];
 
       if (error) throw error.type;
 
       return {
         chainId,
+        scanning,
         in: simulation.in.map(({ asset, quantity }) => ({
           quantity,
           asset: parseSimulationAsset(asset, chainId),
@@ -102,6 +103,7 @@ export type TransactionSimulation = {
     quantityAllowed: 'UNLIMITED' | (string & {});
     quantityAtRisk: string;
   }[];
+  scanning: TransactionSimulationResponse['simulateTransactions'][0]['scanning'];
   meta: SimulationMeta;
   hasChanges: boolean;
   chainId: ChainId;
@@ -149,8 +151,8 @@ type TransactionSimulationResponse = {
   simulateTransactions: [
     {
       scanning: {
-        result: 'OK';
-        description: '';
+        result: 'OK' | 'WARNING' | 'MALICIOUS';
+        description: string;
       };
       error: {
         message: string;
