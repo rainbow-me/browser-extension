@@ -344,12 +344,6 @@ const EnsRegistrationSection = ({
               >
                 {i18n.t('nfts.details.expires_in')}
               </Text>
-              <Symbol
-                symbol="info.circle"
-                color="labelTertiary"
-                size={11}
-                weight="semibold"
-              />
             </Inline>
             <Text weight="bold" size="14pt" color="label">
               {expiryDate}
