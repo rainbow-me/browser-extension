@@ -53,7 +53,7 @@ import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { NFTEmptyState, PostReleaseNFTs } from './NFTs/NFTs';
 import { AppConnection } from './NetworkMenu';
-import { Points } from './Points';
+import { Points } from './Points/Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 

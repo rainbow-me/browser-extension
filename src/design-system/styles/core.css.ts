@@ -556,6 +556,9 @@ const textProperties = defineProperties({
     whiteSpace: ['nowrap', 'pre-wrap'],
     overflow: ['hidden'],
     transition: ['color 200ms ease-out'],
+    textShadow: {
+      '12px accent': `0px 0px 12px ${accentColorAsHsl}`,
+    },
   },
 });
 

@@ -77,7 +77,12 @@ export function TabHeader({
         alignItems="center"
       >
         <Inline alignVertical="bottom" space="6px">
-          <Text size="16pt" weight="heavy">
+          <Text
+            size="16pt"
+            weight="heavy"
+            textShadow={activeTab === 'points' ? '12px accent' : undefined}
+            color={activeTab === 'points' ? 'accent' : 'label'}
+          >
             {i18n.t(`tabs.${activeTab}`)}
           </Text>
           {activeTab === 'tokens' && visibleTokenCount > 0 && (
