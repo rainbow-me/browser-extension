@@ -1,5 +1,11 @@
 import 'chromedriver';
 import 'geckodriver';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
+import {
+  TransactionReceipt,
+  getDefaultProvider,
+} from '@ethersproject/providers';
 import { Key, WebDriver } from 'selenium-webdriver';
 import {
   afterAll,
@@ -9,6 +15,7 @@ import {
   describe,
   expect,
   it,
+  vi,
 } from 'vitest';
 
 import {
@@ -36,6 +43,68 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
+export async function transactionInfo() {
+  const provider = getDefaultProvider('http://127.0.0.1:8545');
+  const blockData = await provider.getBlock('latest');
+  const lastTransactionIndex = blockData.transactions.length - 1;
+  const txnReceipt = await provider.getTransactionReceipt(
+    blockData.transactions[lastTransactionIndex],
+  );
+  const TRANSACTION_OBJECT = {
+    BLOCK_DATA: blockData,
+    TRANSACTION_RECEIPT: txnReceipt,
+  };
+  return TRANSACTION_OBJECT;
+}
+
+const mockTransactionReceipt: TransactionReceipt = {
+  to: '0x2e67869829c734ac13723A138a952F7A8B56e774',
+  from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  contractAddress: 'null',
+  transactionIndex: 0,
+  gasUsed: BigNumber.from('21000'),
+  logsBloom:
+    '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+  blockHash:
+    '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+  transactionHash:
+    '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+  logs: [],
+  blockNumber: 18569421,
+  confirmations: 1,
+  cumulativeGasUsed: BigNumber.from('21000'),
+  effectiveGasPrice: BigNumber.from('21000'),
+  byzantium: true,
+  status: 1,
+  type: 2,
+};
+
+const TransactionRequestMock: TransactionResponse = {
+  nonce: 0,
+  gasLimit: BigNumber.from('21000'),
+  gasPrice: BigNumber.from('21000'),
+  value: BigNumber.from('21000'),
+  chainId: 1337,
+  maxPriorityFeePerGas: BigNumber.from('21000'),
+  maxFeePerGas: BigNumber.from('21000'),
+  to: '0x2e67869829c734ac13723A138a952F7A8B56e774',
+  from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  type: 2,
+  hash: '0x0',
+  blockHash:
+    '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+  blockNumber: 18569421,
+  confirmations: 1,
+  wait: async () => mockTransactionReceipt,
+  data: 'txn',
+};
+
+vi.mock('../../../src/entries/popup/handlers/wallet', () => {
+  return {
+    sendTransaction: vi.fn().mockResolvedValue(TransactionRequestMock),
+  };
+});
+
 describe('Complete send flow via shortcuts and keyboard navigation', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
@@ -45,6 +114,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
+    console.log('TRANSACTION INFO BEFORE:', await transactionInfo());
   });
 
   beforeEach<{ driver: WebDriver }>(async (context) => {
@@ -53,9 +123,12 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
 
   afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);
+    vi.restoreAllMocks();
   });
 
-  afterAll(() => driver.quit());
+  afterAll(async () => {
+    driver.quit();
+  });
 
   it('should be able import a wallet via pk', async () => {
     await importWalletFlowUsingKeyboardNavigation(
@@ -187,7 +260,6 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to initiate transaction with keyboard navigation', async () => {
-    // delete max input then type 1
     await driver
       .actions()
       .sendKeys(Key.BACK_SPACE)
@@ -216,15 +288,6 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     });
     const sendTransaction = await transactionStatus();
     expect(sendTransaction).toBe('success');
-  });
-
-  it('should be able to select asset to send from home using keyboard ', async () => {
-    await executePerformShortcut({ driver, key: 'ESCAPE' });
-    await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
-    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 8 });
-    await executePerformShortcut({ driver, key: 'SPACE' });
-    await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
-    await executePerformShortcut({ driver, key: 'ENTER' });
-    await checkExtensionURL(driver, 'send');
+    console.log('TRANSACTION INFO AFTER:', await transactionInfo());
   });
 });

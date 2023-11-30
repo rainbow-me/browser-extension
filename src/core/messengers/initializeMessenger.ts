@@ -12,6 +12,7 @@ const messengersForConnection = {
   'popup <-> contentScript': tabMessenger,
   'background <-> contentScript': tabMessenger,
   'contentScript <-> inpage': windowMessenger,
+  // 'test <-> background': mockMessenger,
 } as const;
 
 type InitializeMessengerArgs = {
