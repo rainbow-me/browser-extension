@@ -165,6 +165,7 @@ type TransactionSimulationResponse = {
           // eslint-disable-next-line @typescript-eslint/ban-types
           quantityAllowed: 'UNLIMITED' | (string & {});
           quantityAtRisk: string;
+          expiration: string;
         }[];
         meta: SimulationMeta;
       };

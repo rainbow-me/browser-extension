@@ -177,6 +177,7 @@ query simulateTransactions(
         }
         quantityAllowed
         quantityAtRisk
+        expiration
       }
       meta {
         to {
