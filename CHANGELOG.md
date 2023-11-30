@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Internal
 
-- Added Support for `wallet_watchAsset` RPC call #1141
+- Added support for `wallet_watchAsset` RPC call #1141
 - Added Custom RPC Settings form validatin to test RPC endpoints #1144
 - Added NFT Gallery loading and empty states #1152 #1155
 - Added NFT Keyboard Navigation and sorting Shortcuts #1154
@@ -50,6 +50,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Filtering Custom Network assets in Testnet Mode #1158
 - Filtering Custom Networks from the Swap UI #1150
 - Fixed a fetching clash between NFTs and Custom RPC assets #1156
+
+## [v1.2.78](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.78)
+
+### Added
+
+- Canary is now available to help you easily preview and simulate your transactions — all automatic and super fast. When Rainbow detects a transaction or dapp that appears malicious, Canary will warn you before you submit a bad transaction and lose your funds #1085
+- Added an "Enable Flashbots" toggle in the Magic Menu to submit all Mainnet transactions to Flashbots #1070
+- Added an "Export Addresses as CSV" feature in the Magic Menu to export information about your wallets to improve your wallet management workflow and help you out during Tax Season #1097
+
+### Changed
+
+- Simplified the network support checkbox confirmations during the Send flow #1135
+
+### Fixed
+
+- Fixed a "price not available" rendering issue on Token Charts when fetching the latest price #1143
+
+### Internal
+
+- Added NFT Details interface for NFTs #1128
+- Added support for `wallet_addEthereumChain` RPC call #1133
+- Added transaction persistence for transaction submitted on Custom Networks #1134
+- Optimize NFT Gallery with Infinite Query refactor #1129
+- Whitelisted RPCs for Ethereum Holesky and Optimism Sepolia #1142
+- Whitelisted RPCs for Arbitrum Goerli and Arbitrum Sepolia #1139
+
+### Testing
+
+- Disabled Testnet testing in Firefox #1137
 
 ## [v1.2.71](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.71)
 
