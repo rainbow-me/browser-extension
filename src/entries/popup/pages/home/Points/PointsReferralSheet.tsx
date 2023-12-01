@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
+import { KeyboardEventHandler, useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -69,10 +69,13 @@ export const PointsReferralSheet = () => {
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
 
-  const navigateToOnboarding = () =>
-    navigate(ROUTES.POINTS_ONBOARDING, {
-      state: { referralCode: referralCode.replace('-', '') },
-    });
+  const navigateToOnboarding = useCallback(
+    () =>
+      navigate(ROUTES.POINTS_ONBOARDING, {
+        state: { referralCode: referralCode.replace('-', '') },
+      }),
+    [navigate, referralCode],
+  );
 
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,6 +83,15 @@ export const PointsReferralSheet = () => {
       setReferralCode(maskedValue);
     },
     [],
+  );
+
+  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      if (e.key === 'Enter' && validReferralCode) {
+        navigateToOnboarding();
+      }
+    },
+    [navigateToOnboarding, validReferralCode],
   );
 
   return (
@@ -178,9 +190,7 @@ export const PointsReferralSheet = () => {
                           : accentColorAsHsl,
                         paddingRight: validReferralCode ? 14 : 0,
                       }}
-                      onKeyDown={() =>
-                        validReferralCode && navigateToOnboarding()
-                      }
+                      onKeyDown={onKeyDown}
                     />
                     <AnimatePresence initial={false}>
                       {validReferralCode && (

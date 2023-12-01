@@ -287,14 +287,17 @@ const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 1, // delay between each child animation
+      delayChildren: 1, // Delay before starting to animate children
+      staggerChildren: 1, // Delay between each child animation
     },
   },
 };
 
 const itemVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1 },
+  visible: {
+    opacity: 1,
+  },
 };
 
 export const PointsOnboardingSheet = () => {
