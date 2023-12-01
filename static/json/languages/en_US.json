@@ -1206,7 +1206,12 @@
       "ens_bio": "Bio",
       "ens_cover": "Cover",
       "ens_address": "ETH Address",
-      "ens_website": "Website"
+      "ens_website": "Website",
+      "explainer": {
+        "floor_price_description": "A collection's floor price is the lowest asking price across all the items currently for sale in a collection.",
+        "floor_price_title": "Collection floor price",
+        "floor_price_action_label": "Got it"
+      }
     }
   },
   "points": {

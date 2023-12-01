@@ -57,6 +57,10 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow';
 import {
@@ -112,6 +116,24 @@ export default function NFTDetails() {
   const { data: dominantColor } = useDominantColor({
     imageUrl: nft?.image_url || undefined,
   });
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
+    useExplainerSheetParams();
+  const showFloorPriceExplainerSheet = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: {
+        emoji: '📈',
+      },
+      description: [i18n.t('nfts.details.explainer.floor_price_description')],
+      title: i18n.t('nfts.details.explainer.floor_price_title'),
+      actionButton: {
+        label: i18n.t('nfts.details.explainer.floor_price_action_label'),
+        action: hideExplainerSheet,
+        labelColor: 'label',
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Box background="surfacePrimary">
       <AccentColorProvider
@@ -224,7 +246,10 @@ export default function NFTDetails() {
                   {'OpenSea'}
                 </Button>
               </Box>
-              <NFTPriceSection nft={nft} />
+              <NFTPriceSection
+                nft={nft}
+                showFloorPriceExplainerSheet={showFloorPriceExplainerSheet}
+              />
             </Box>
           </Box>
           <Box paddingHorizontal="20px" paddingTop="24px">
@@ -252,7 +277,10 @@ export default function NFTDetails() {
                     <Separator color="separatorTertiary" />
                   </>
                 )}
-                <NFTAccordionAboutSection nft={nft} />
+                <NFTAccordionAboutSection
+                  nft={nft}
+                  showFloorPriceExplainerSheet={showFloorPriceExplainerSheet}
+                />
               </Box>
             </Accordion>
             <Box
@@ -277,12 +305,25 @@ export default function NFTDetails() {
             </Box>
           </Box>
         </Box>
+        <ExplainerSheet
+          show={explainerSheetParams.show}
+          header={explainerSheetParams.header}
+          title={explainerSheetParams.title}
+          description={explainerSheetParams.description}
+          actionButton={explainerSheetParams.actionButton}
+        />
       </AccentColorProvider>
     </Box>
   );
 }
 
-const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
+const NFTPriceSection = ({
+  nft,
+  showFloorPriceExplainerSheet,
+}: {
+  nft?: UniqueAsset | null;
+  showFloorPriceExplainerSheet: () => void;
+}) => {
   const lastSaleDisplay = useMemo(() => {
     if (nft?.last_sale?.unit_price && nft?.last_sale?.payment_token?.decimals) {
       return `${convertRawAmountToDecimalFormat(
@@ -321,12 +362,14 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
               >
                 {i18n.t('nfts.details.floor_price')}
               </Text>
-              <Symbol
-                symbol="info.circle"
-                color="labelTertiary"
-                size={11}
-                weight="semibold"
-              />
+              <Box onClick={showFloorPriceExplainerSheet}>
+                <Symbol
+                  symbol="info.circle"
+                  color="labelTertiary"
+                  size={11}
+                  weight="semibold"
+                />
+              </Box>
             </Inline>
             {nft?.floorPriceEth ? (
               <Text weight="bold" size="14pt" color="label" align="right">
@@ -499,7 +542,13 @@ const NFTAccordionTraitsSection = ({
   );
 };
 
-const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
+const NFTAccordionAboutSection = ({
+  nft,
+  showFloorPriceExplainerSheet,
+}: {
+  nft?: UniqueAsset | null;
+  showFloorPriceExplainerSheet: () => void;
+}) => {
   const network =
     nft?.network === 'mainnet' ? 'Ethereum' : capitalize(nft?.network);
   const deployedBy = nft?.asset_contract?.deployed_by;
@@ -523,7 +572,9 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
           <NFTInfoRow
             symbol="dollarsign.square"
             label={i18n.t('nfts.details.floor_price')}
-            value={nft?.floorPriceEth}
+            labelSymbol="info.circle"
+            value={`${nft?.floorPriceEth} ETH`}
+            onClickLabel={showFloorPriceExplainerSheet}
           />
         )}
         {nft?.collection.total_quantity &&
@@ -1183,18 +1234,22 @@ export const NFTInfoRow = ({
   symbol,
   label,
   onClick,
+  onClickLabel,
   value,
   subValue,
   valueSymbol,
   symbolOverride,
+  labelSymbol,
 }: {
   symbol: SymbolName;
   label: ReactNode;
   onClick?: () => void;
+  onClickLabel?: () => void;
   value: ReactNode;
   subValue?: string;
   valueSymbol?: SymbolName;
   symbolOverride?: ReactNode;
+  labelSymbol?: SymbolName;
 }) => (
   <Box
     display="flex"
@@ -1202,20 +1257,32 @@ export const NFTInfoRow = ({
     justifyContent="space-between"
     gap="4px"
   >
-    <Inline alignVertical="center" space="12px" wrap={false}>
-      {!symbolOverride && (
-        <Symbol
-          size={14}
-          symbol={symbol}
-          weight="medium"
-          color="labelTertiary"
-        />
-      )}
-      {!!symbolOverride && symbolOverride}
-      <Text color="labelTertiary" size="12pt" weight="semibold">
-        {label}
-      </Text>
-    </Inline>
+    <Box onClick={onClickLabel}>
+      <Inline alignVertical="center" space="12px" wrap={false}>
+        {!symbolOverride && (
+          <Symbol
+            size={14}
+            symbol={symbol}
+            weight="medium"
+            color="labelTertiary"
+          />
+        )}
+        {!!symbolOverride && symbolOverride}
+        <Inline space="3px" alignVertical="center">
+          <Text color="labelTertiary" size="12pt" weight="semibold">
+            {label}
+          </Text>
+          {labelSymbol && (
+            <Symbol
+              size={10}
+              symbol={labelSymbol}
+              weight="medium"
+              color="labelTertiary"
+            />
+          )}
+        </Inline>
+      </Inline>
+    </Box>
     <Box onClick={onClick} cursor="pointer" padding="2px">
       <Inline alignVertical="center" space="6px">
         <Inline space="2px">
