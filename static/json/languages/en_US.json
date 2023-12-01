@@ -1218,7 +1218,9 @@
   },
   "points": {
     "coming_soon_header": "Coming Soon",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "Points are just around the corner.\nStart earning today.",
+    "header": "Claim your points",
+    "description": "Points are here. Find out how many you’ve been awarded."
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -1496,7 +1498,6 @@
     "sent": "Sent",
     "approved": "Approved",
     "reverted": "Transaction Reverted",
-
     "function": "Function",
     "contract": "Contract",
     "contract_name": "Contract Name",
