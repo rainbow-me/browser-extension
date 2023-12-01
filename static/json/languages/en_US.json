@@ -1211,7 +1211,14 @@
   },
   "points": {
     "coming_soon_header": "Coming Soon",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "Points are just around the corner.\nStart earning today.",
+
+    "your_rank": "Your Rank",
+    "next_drop": "Next Drop",
+    "leaderboard": "Leaderboard",
+    "referral_code": "Referral Code",
+    "referral_code_description": "Earn points for referring friends once they swap $100 through Rainbow",
+    "out_of": "Out of %{total}"
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -1507,6 +1514,7 @@
   "chain": "Chain",
   "nonce": "Nonce",
   "copy": "Copy",
+  "copy_link": "Copy Link",
   "close": "Close",
   "verified": "Verified",
   "unverified": "Unverified",
@@ -1518,4 +1526,3 @@
     "not_found": "We couldn't find this asset on the selected network. Please choose the right network below"
   }
 }
-

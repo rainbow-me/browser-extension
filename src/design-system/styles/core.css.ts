@@ -176,7 +176,10 @@ interface ShadowDefinition {
 }
 
 export type ShadowSize = '1px' | '12px' | '18px' | '24px' | '30px';
-export type Shadow = ShadowSize | `${ShadowSize} ${ShadowColor}`;
+export type Shadow =
+  | ShadowSize
+  | `${ShadowSize} ${ShadowColor}`
+  | '12px accent text';
 
 function coloredShadows<Size extends ShadowSize>(
   size: Size,
@@ -229,7 +232,16 @@ const shadowTokens: Record<Shadow, ShadowDefinition> = {
       `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
     ].join(', '),
   })),
-
+  '12px accent text': {
+    light: `0px 0px 12px ${getColorAsHsl({
+      alpha: 0.8,
+      vars: accentColorHslVars,
+    })}`,
+    dark: `0px 0px 12px ${getColorAsHsl({
+      alpha: 0.8,
+      vars: accentColorHslVars,
+    })}`,
+  },
   '18px': {
     light: [
       `0 6px 18px ${getShadowColor('shadowFar', 'light', 0.08)}`,
@@ -468,7 +480,7 @@ const symbolProperties = defineProperties({
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
-    boxShadow: shadowVars,
+    textShadow: shadowVars,
     cursor: cursorOpts,
     opacity: {
       boxed: 0.76,
@@ -557,9 +569,10 @@ const textProperties = defineProperties({
     whiteSpace: ['nowrap', 'pre-wrap'],
     overflow: ['hidden'],
     transition: ['color 200ms ease-out'],
-    textShadow: {
-      '12px accent': `0px 0px 12px ${accentColorAsHsl}`,
-    },
+    textShadow: shadowVars,
+    //  {
+    //   '12px accent': `0px 0px 12px ${accentColorAsHsl}`,
+    // },
   },
 });
 
