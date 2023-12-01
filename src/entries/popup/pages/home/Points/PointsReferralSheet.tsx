@@ -135,7 +135,7 @@ export const PointsReferralSheet = () => {
             </Box>
 
             <Stack alignHorizontal="center" space="16px">
-              <Inset bottom="10px" horizontal="40px">
+              <Inset bottom="10px" top="10px" horizontal="40px">
                 <Stack space="16px">
                   <Text
                     align="center"
@@ -176,6 +176,9 @@ export const PointsReferralSheet = () => {
                           : accentColorAsHsl,
                         paddingRight: validReferralCode ? 14 : 0,
                       }}
+                      onKeyDown={() =>
+                        validReferralCode && navigateToOnboarding()
+                      }
                     />
                     <AnimatePresence initial={false}>
                       {validReferralCode && (
