@@ -12,6 +12,8 @@ export const PointsReferralSheet = () => {
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
 
+  const navigateToOnboarding = () => navigate(ROUTES.POINTS_ONBOARDING);
+
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Button
@@ -21,6 +23,14 @@ export const PointsReferralSheet = () => {
         variant="raised"
       >
         {'Go back'}
+      </Button>
+      <Button
+        onClick={navigateToOnboarding}
+        color="accent"
+        height="36px"
+        variant="raised"
+      >
+        {'Go to onboarding'}
       </Button>
     </BottomSheet>
   );
