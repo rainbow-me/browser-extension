@@ -1225,7 +1225,8 @@
     "get_started": "Get Started",
     "use_referral_code": "Use Referral Code",
     "referral_header": "Enter your referral code",
-    "referral_description": "Enter a referral code below to claim your bonus reward."
+    "referral_description": "Enter a referral code below to claim your bonus reward.",
+    "referral_code_invalid": "Invalid Code"
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
