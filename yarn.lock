@@ -9717,10 +9717,10 @@ idb@7.0.1:
   resolved "https://registry.yarnpkg.com/idb/-/idb-7.0.1.tgz#d2875b3a2f205d854ee307f6d196f246fea590a7"
   integrity sha512-UUxlE7vGWK5RfB/fDwEGgRf84DY/ieqNha6msMV99UsEMQhJ1RwbCd8AYBj3QMgnE3VZnfQvm4oKVCJTYlqIgg==
 
-idna-uts46-hx@5.1.2:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/idna-uts46-hx/-/idna-uts46-hx-5.1.2.tgz#307cb604174690f8f4bba96588b199201bea1524"
-  integrity sha512-lLQOVOuJOq5uH5NWd5bnkXtpUY5uEQBVw918cC6ePmoEwa54EB/+c4rEKQ0HIspceomILY0WSap8mh0vSBHpoA==
+idna-uts46-hx@3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/idna-uts46-hx/-/idna-uts46-hx-3.5.0.tgz#fad856b480bce4ff7477e7e0a42b5a39a8a4bcdc"
+  integrity sha512-0gMFl+zjvA8ZOohPQmLiWcd2Ad60AB9oKzqvLucEC5TyDzHl5mIB6ralW6h8BayVRm4ZmAVYnlI1pCYD2O7lBw==
   dependencies:
     punycode "^2.1.1"
 
