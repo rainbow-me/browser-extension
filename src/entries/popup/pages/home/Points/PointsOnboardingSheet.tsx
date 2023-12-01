@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { metadataPostClient } from '~/core/graphql';
+import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { convertAmountToNativeDisplayWithThreshold } from '~/core/utils/numbers';
 import {
@@ -45,9 +46,9 @@ const fadeVariants = {
 const getErrorString = (error: string) => {
   switch (error) {
     case EXISTING_USER_ERROR:
-      return 'Existing user';
+      return i18n.t('points.error.existing_user');
     case INVALID_REFERRAL_CODE_ERROR:
-      return 'Invalid referral code';
+      return i18n.t('points.error.invalid_referral_code');
     default:
       return '';
   }
@@ -68,7 +69,7 @@ const consoleLoadingRows = ({
       weight="semibold"
       color="labelTertiary"
     >
-      {'> Authorization required'}
+      {`> ${i18n.t('points.onboarding.authorization_required')}`}
     </Text>,
     <Text
       key={'loading-2'}
@@ -77,7 +78,7 @@ const consoleLoadingRows = ({
       weight="semibold"
       color="labelTertiary"
     >
-      {'> Sign in with your wallet'}
+      {`> ${i18n.t('points.onboarding.sign_in_with_your_wallet')}`}
     </Text>,
     accessGranted ? (
       <Text
@@ -87,7 +88,7 @@ const consoleLoadingRows = ({
         weight="semibold"
         color="green"
       >
-        {'> Access granted'}
+        {`> ${i18n.t('points.onboarding.access_granted')}`}
       </Text>
     ) : undefined,
     error ? (
@@ -116,14 +117,14 @@ const calculatingPointsRows = ({
   return [
     <Box key={'points-1'} paddingBottom="30px">
       <Text align="left" size="16pt" weight="semibold" color="labelTertiary">
-        {'> Calculating points'}
+        {`> ${i18n.t('points.onboarding.calculating_points')}`}
       </Text>
     </Box>,
     <AccentColorProvider key={'points-2'} color="#00BFC6">
       <Box paddingBottom="15px">
         <Inline alignHorizontal="justify">
           <Text align="left" size="14pt" weight="bold" color="accent">
-            {'Rainbow Swaps:'}
+            {`${i18n.t('points.onboarding.rainbow_swaps')}`}
           </Text>
           <Text align="left" size="14pt" weight="bold" color="accent">
             {convertAmountToNativeDisplayWithThreshold(
@@ -138,7 +139,7 @@ const calculatingPointsRows = ({
       <Box paddingBottom="15px">
         <Inline alignHorizontal="justify">
           <Text align="left" size="14pt" weight="semibold" color="accent">
-            {'Rainbow NFTs Owned:'}
+            {`${i18n.t('points.onboarding.rainbow_nfts_owned')}`}
           </Text>
           <Text align="left" size="14pt" weight="semibold" color="accent">
             {`${userOnboardingCategories?.['nft-collections'].data.owned_collections} of ${userOnboardingCategories?.['nft-collections'].data.total_collections}`}
@@ -150,7 +151,7 @@ const calculatingPointsRows = ({
       <Box paddingBottom="15px">
         <Inline alignHorizontal="justify">
           <Text align="left" size="14pt" weight="semibold" color="accent">
-            {'Wallet Balance:'}
+            {`${i18n.t('points.onboarding.wallet_balance')}`}
           </Text>
           <Text align="left" size="14pt" weight="semibold" color="accent">
             {convertAmountToNativeDisplayWithThreshold(
@@ -165,7 +166,7 @@ const calculatingPointsRows = ({
       <Box paddingBottom="15px">
         <Inline alignHorizontal="justify">
           <Text align="left" size="14pt" weight="semibold" color="accent">
-            {'MetaMask Swaps:'}
+            {`${i18n.t('points.onboarding.metamask_swaps')}`}
           </Text>
           <Text align="left" size="14pt" weight="semibold" color="accent">
             {convertAmountToNativeDisplayWithThreshold(
@@ -180,7 +181,7 @@ const calculatingPointsRows = ({
       <Box paddingBottom="30px">
         <Inline alignHorizontal="justify">
           <Text align="left" size="14pt" weight="semibold" color="accent">
-            {'Bonus Reward:'}
+            {`${i18n.t('points.onboarding.bonus_reward')}`}
           </Text>
           <Text align="left" size="14pt" weight="semibold" color="accent">
             + {userOnboardingCategories?.['bonus'].earnings.total}
@@ -190,7 +191,7 @@ const calculatingPointsRows = ({
     </AccentColorProvider>,
     <Box key={'points-7'} paddingBottom="15px">
       <Text align="left" size="16pt" weight="semibold" color="labelTertiary">
-        {'> Calculation complete'}
+        {`> ${i18n.t('points.onboarding.calculation_complete')}`}
       </Text>
     </Box>,
     userOnboarding.earnings.total ? (
@@ -198,7 +199,7 @@ const calculatingPointsRows = ({
         <Box paddingBottom="30px">
           <Inline alignHorizontal="justify">
             <Text align="left" size="14pt" weight="semibold" color="accent">
-              {'Points Earned:'}
+              {`> ${i18n.t('points.onboarding.points_earned')}`}
             </Text>
             <Text align="left" size="14pt" weight="semibold" color="accent">
               {userOnboarding.earnings.total}
@@ -221,7 +222,7 @@ const registeringPointsRows = ({
     <AccentColorProvider key={'points-1'} color="green">
       <Box paddingBottom="30px">
         <Text align="left" size="16pt" weight="semibold" color="accent">
-          {'> Registration complete'}
+          {`> ${i18n.t('points.onboarding.registration_complete')}`}
         </Text>
       </Box>
     </AccentColorProvider>,
@@ -229,7 +230,7 @@ const registeringPointsRows = ({
       <Box paddingBottom="30px">
         <Inline alignHorizontal="justify">
           <Text align="left" size="14pt" weight="semibold" color="accent">
-            {'Bonus Points:'}
+            {i18n.t('points.onboarding.bonus_points')}
           </Text>
           <Text align="left" size="14pt" weight="semibold" color="accent">
             {userOnboardingCategories['bonus'].earnings.total}
@@ -244,7 +245,7 @@ const registeringPointsRows = ({
       weight="semibold"
       color="labelTertiary"
     >
-      {'To claim the rest of your bonus points, get some ETH through Rainbow.'}
+      {i18n.t('points.onboarding.claim_description')}
     </Text>,
   ];
 };
@@ -358,7 +359,7 @@ export const PointsOnboardingSheet = () => {
                   weight="semibold"
                   color="labelTertiary"
                 >
-                  {'Account:'}
+                  {i18n.t('points.onboarding.account')}
                 </Text>
                 <Text align="left" size="14pt" weight="semibold" color="accent">
                   {displayName}
@@ -420,7 +421,7 @@ export const PointsOnboardingSheet = () => {
                   variant="stroked"
                 >
                   <Text align="center" size="14pt" weight="heavy" color="green">
-                    {'Sign In'}
+                    {i18n.t('points.onboarding.sign_in')}
                   </Text>
                   {validatingSignature && <Spinner color="green" />}
                 </Button>
@@ -464,7 +465,7 @@ export const PointsOnboardingSheet = () => {
                         weight="heavy"
                         color="accent"
                       >
-                        {'Get some ETH'}
+                        {i18n.t('points.onboarding.get_eth')}
                       </Text>
                     </Inline>
                   </Button>

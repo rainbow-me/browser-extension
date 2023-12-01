@@ -1226,7 +1226,30 @@
     "use_referral_code": "Use Referral Code",
     "referral_header": "Enter your referral code",
     "referral_description": "Enter a referral code below to claim your bonus reward.",
-    "referral_code_invalid": "Invalid Code"
+    "referral_code_invalid": "Invalid Code",
+    "onboarding": {
+      "authorization_required": "Authorization required",
+      "sign_in_with_your_wallet": "Sign in with your wallet",
+      "access_granted": "Access granted",
+      "calculating_points": "Calculating points",
+      "rainbow_swaps": "Rainbow Swaps:",
+      "rainbow_nfts_owned": "Rainbow NFTs Owned:",
+      "wallet_balance": "Wallet Balance:",
+      "metamask_swaps": "MetaMask Swaps:",
+      "bonus_reward": "Bonus Reward:",
+      "calculation_complete": "Calculation complete",
+      "points_earned": "Points Earned:",
+      "registration_complete": "Registration complete",
+      "bonus_points": "Bonus Points:",
+      "claim_description": "To claim the rest of your bonus points, get some ETH through Rainbow.",
+      "account": "Account:",
+      "sign_in": "Sign In",
+      "get_eth": "Get some ETH"
+    },
+    "error": {
+      "existing_user": "Existing user",
+      "invalid_referral_code": "Invalid referral code"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
