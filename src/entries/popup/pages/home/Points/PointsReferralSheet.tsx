@@ -1,11 +1,45 @@
-import { Button } from '~/design-system';
+import { useCallback, useState } from 'react';
+
+import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { Box, Button, Inset, Stack, Text } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { Input } from '~/design-system/components/Input/Input';
+import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import {
+  backgroundColors,
+  globalColors,
+} from '~/design-system/styles/designTokens';
+import { ICON_SIZE } from '~/entries/popup/components/Tabs/TabBar';
+import PointsSelectedIcon from '~/entries/popup/components/Tabs/TabIcons/PointsSelected';
+import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+const maskAsciiInput = (inputValue: string): string => {
+  // Define a regular expression for printable ASCII characters
+  const asciiRegex = /[\x20-\x7E]/g;
+
+  // Remove non-ASCII characters
+  let filteredInput = inputValue.match(asciiRegex)?.join('') || '';
+
+  // Automatically insert a hyphen after the third character if not already present
+  if (filteredInput.length > 3 && filteredInput[3] !== '-') {
+    filteredInput = filteredInput.slice(0, 3) + '-' + filteredInput.slice(3);
+  }
+
+  // Ensure the input doesn't exceed the maximum length of 7 (including hyphen)
+  return filteredInput.substring(0, 7).toUpperCase();
+};
+
 export const PointsReferralSheet = () => {
   const navigate = useRainbowNavigate();
+  const { currentAddress } = useCurrentAddressStore();
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
+  const { currentTheme } = useCurrentThemeStore();
+  const [referralCode, setReferralCode] = useState('');
 
   const backToHome = () =>
     navigate(ROUTES.HOME, {
@@ -14,24 +48,124 @@ export const PointsReferralSheet = () => {
 
   const navigateToOnboarding = () => navigate(ROUTES.POINTS_ONBOARDING);
 
+  const handleOnChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const maskedValue = maskAsciiInput(e.target.value);
+      setReferralCode(maskedValue);
+    },
+    [],
+  );
+
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
-      <Button
-        onClick={backToHome}
-        color="accent"
-        height="36px"
-        variant="raised"
+      <Box
+        alignItems="center"
+        display="flex"
+        flexDirection="column"
+        justifyContent="flex-start"
+        marginTop="-20px"
+        paddingTop={'40px'}
+        width="full"
       >
-        {'Go back'}
-      </Button>
-      <Button
-        onClick={navigateToOnboarding}
-        color="accent"
-        height="36px"
-        variant="raised"
-      >
-        {'Go to onboarding'}
-      </Button>
+        <Stack space="14px">
+          <Box
+            alignItems="center"
+            display="flex"
+            justifyContent="center"
+            style={{
+              transform: 'translateY(-4px)',
+            }}
+          >
+            <Box
+              alignItems="center"
+              display="flex"
+              justifyContent="center"
+              key="pointsAnimation"
+              style={{
+                height: 28,
+                width: 28,
+                willChange: 'transform',
+              }}
+            >
+              <Box
+                position="relative"
+                style={{
+                  height: ICON_SIZE,
+                  transform: 'scale(0.5)',
+                  transformOrigin: 'top left',
+                  width: ICON_SIZE,
+                  willChange: 'transform',
+                }}
+              >
+                <PointsSelectedIcon
+                  accentColor={avatar?.color || globalColors.blue50}
+                  colorMatrixValues={null}
+                  tintBackdrop={
+                    currentTheme === 'dark'
+                      ? backgroundColors.surfacePrimaryElevated.dark.color
+                      : backgroundColors.surfacePrimaryElevated.light.color
+                  }
+                  tintOpacity={currentTheme === 'dark' ? 0.2 : 0}
+                />
+              </Box>
+            </Box>
+          </Box>
+        </Stack>
+      </Box>
+      <Stack alignHorizontal="center" space="16px">
+        <Inset bottom="10px" horizontal="40px">
+          <Stack space="16px">
+            <Text
+              align="center"
+              size="20pt"
+              weight="semibold"
+              color="labelTertiary"
+            >
+              {i18n.t('points.referral_header')}
+            </Text>
+            <Text
+              align="center"
+              color="labelQuaternary"
+              size="12pt"
+              weight="medium"
+            >
+              {i18n.t('points.referral_description')}
+            </Text>
+          </Stack>
+        </Inset>
+
+        <Box style={{ width: '90px' }}>
+          <Input
+            height="32px"
+            placeholder="XXX-XXX"
+            variant="bordered"
+            borderColor="accent"
+            selectionColor="accent"
+            value={referralCode}
+            onChange={handleOnChange}
+            style={{
+              caretColor: accentColorAsHsl,
+            }}
+          />
+        </Box>
+
+        <Button
+          onClick={backToHome}
+          color="accent"
+          height="36px"
+          variant="raised"
+        >
+          {'Go back'}
+        </Button>
+        <Button
+          onClick={navigateToOnboarding}
+          color="accent"
+          height="36px"
+          variant="raised"
+        >
+          {'Go to onboarding'}
+        </Button>
+      </Stack>
     </BottomSheet>
   );
 };

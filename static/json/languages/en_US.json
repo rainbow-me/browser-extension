@@ -1223,7 +1223,9 @@
     "header": "Claim your points",
     "description": "Points are here. Find out how many you’ve been awarded.",
     "get_started": "Get Started",
-    "use_referral_code": "Use Referral Code"
+    "use_referral_code": "Use Referral Code",
+    "referral_header": "Enter your referral code",
+    "referral_description": "Enter a referral code below to claim your bonus reward."
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
