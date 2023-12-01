@@ -1,8 +1,10 @@
+import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { metadataPostClient } from '~/core/graphql';
 import { useCurrentAddressStore } from '~/core/state';
+import { convertAmountToNativeDisplayWithThreshold } from '~/core/utils/numbers';
 import {
   AccentColorProvider,
   Box,
@@ -16,6 +18,7 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
+import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWalletName } from '~/entries/popup/hooks/useWalletName';
 import { ROUTES } from '~/entries/popup/urls';
@@ -110,119 +113,188 @@ const DUMMY_USER = {
   earnings: { total: 100 },
 };
 
-const ConsoleLoading = ({
+const consoleLoadingRows = ({
   accessGranted,
   error,
 }: {
   accessGranted: boolean;
   error?: string | null;
 }) => {
-  return (
-    <Box>
-      <Stack space="8px">
-        <Text align="left" size="14pt" weight="semibold" color="labelTertiary">
-          {'> Authorization required'}
-        </Text>
-        <Text align="left" size="14pt" weight="semibold" color="labelTertiary">
-          {'> Sign in with your wallet'}
-        </Text>
-        {accessGranted && (
-          <Text align="left" size="14pt" weight="semibold" color="green">
-            {'> Access granted'}
-          </Text>
-        )}
-        {error && (
-          <Text align="left" size="14pt" weight="semibold" color="red">
-            {`> ${getErrorString(error)}`}
-          </Text>
-        )}
-      </Stack>
-    </Box>
-  );
+  return [
+    <Text
+      key={'loading-1'}
+      align="left"
+      size="14pt"
+      weight="semibold"
+      color="labelTertiary"
+    >
+      {'> Authorization required'}
+    </Text>,
+    <Text
+      key={'loading-2'}
+      align="left"
+      size="14pt"
+      weight="semibold"
+      color="labelTertiary"
+    >
+      {'> Sign in with your wallet'}
+    </Text>,
+    accessGranted ? (
+      <Text
+        key={'loading-3'}
+        align="left"
+        size="14pt"
+        weight="semibold"
+        color="green"
+      >
+        {'> Access granted'}
+      </Text>
+    ) : undefined,
+    error ? (
+      <Text
+        key={'loading-4'}
+        align="left"
+        size="14pt"
+        weight="semibold"
+        color="red"
+      >
+        {`> ${getErrorString(error)}`}
+      </Text>
+    ) : undefined,
+  ].filter(Boolean);
 };
 
-const ConsoleCalculatingPoints = ({
+const consoleCalculatingPointsRows = ({
   userOnboarding,
 }: {
   userOnboarding: USER_POINTS_ONBOARDING;
 }) => {
-  const userCategories = userOnboarding.categories.reduce(
+  const userCategories = userOnboarding?.categories?.reduce(
     (acc, current) => {
       acc[current.type] = current;
       return acc;
     },
     {} as Record<CATEGORY_TYPE, USER_POINTS_CATEGORY>,
   );
-  return (
-    <Box>
-      <Stack space="15px">
-        <Text align="left" size="16pt" weight="semibold" color="labelTertiary">
-          {'> Calculating points'}
-        </Text>
+  return [
+    <Box key={'points-1'} paddingBottom="30px">
+      <Text align="left" size="16pt" weight="semibold" color="labelTertiary">
+        {'> Calculating points'}
+      </Text>
+    </Box>,
+    userCategories?.['rainbow-swaps'].data.usd_amount ? (
+      <AccentColorProvider key={'points-2'} color="#00BFC6">
+        <Box paddingBottom="15px">
+          <Inline alignHorizontal="justify">
+            <Text align="left" size="14pt" weight="bold" color="accent">
+              {'Rainbow Swaps:'}
+            </Text>
+            <Text align="left" size="14pt" weight="bold" color="accent">
+              {convertAmountToNativeDisplayWithThreshold(
+                userCategories?.['rainbow-swaps'].data.usd_amount,
+                'USD',
+              )}
+            </Text>
+          </Inline>
+        </Box>
+      </AccentColorProvider>
+    ) : undefined,
+    userCategories?.['nft-collections'].data.owned_collections ? (
+      <AccentColorProvider key={'points-3'} color="#57EA5F">
+        <Box paddingBottom="15px">
+          <Inline alignHorizontal="justify">
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              {'Rainbow NFTs Owned:'}
+            </Text>
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              {`${userCategories?.['nft-collections'].data.owned_collections} of ${userCategories?.['nft-collections'].data.total_collections}`}
+            </Text>
+          </Inline>
+        </Box>
+      </AccentColorProvider>
+    ) : undefined,
+    userCategories?.['historic-balance'].data.usd_amount ? (
+      <AccentColorProvider key={'points-4'} color="#F5D700">
+        <Box paddingBottom="15px">
+          <Inline alignHorizontal="justify">
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              {'Wallet Balance:'}
+            </Text>
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              {convertAmountToNativeDisplayWithThreshold(
+                userCategories?.['historic-balance'].data.usd_amount,
+                'USD',
+              )}
+            </Text>
+          </Inline>
+        </Box>
+      </AccentColorProvider>
+    ) : undefined,
+    userCategories?.['metamask-swaps'].data.usd_amount ? (
+      <AccentColorProvider key={'points-5'} color="#F24527">
+        <Box paddingBottom="15px">
+          <Inline alignHorizontal="justify">
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              {'MetaMask Swaps:'}
+            </Text>
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              {convertAmountToNativeDisplayWithThreshold(
+                userCategories?.['metamask-swaps'].data.usd_amount,
+                'USD',
+              )}
+            </Text>
+          </Inline>
+        </Box>
+      </AccentColorProvider>
+    ) : undefined,
+    userCategories?.['bonus'].earnings.total ? (
+      <AccentColorProvider key={'points-6'} color="#C54EAB">
+        <Box paddingBottom="30px">
+          <Inline alignHorizontal="justify">
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              {'Bonus Reward:'}
+            </Text>
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              + {userCategories?.['bonus'].earnings.total}
+            </Text>
+          </Inline>
+        </Box>
+      </AccentColorProvider>
+    ) : undefined,
+    <Box key={'points-7'} paddingBottom="15px">
+      <Text align="left" size="16pt" weight="semibold" color="labelTertiary">
+        {'> Calculation complete'}
+      </Text>
+    </Box>,
+    userOnboarding.earnings.total ? (
+      <AccentColorProvider key={'points-8'} color="#FFFFFF">
+        <Box paddingBottom="30px">
+          <Inline alignHorizontal="justify">
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              {'Points Earned:'}
+            </Text>
+            <Text align="left" size="14pt" weight="semibold" color="accent">
+              {userOnboarding.earnings.total}
+            </Text>
+          </Inline>
+        </Box>
+      </AccentColorProvider>
+    ) : undefined,
+  ].filter(Boolean);
+};
 
-        {userCategories['rainbow-swaps'].data.usd_amount && (
-          <AccentColorProvider color="#00BFC6">
-            <Inline alignHorizontal="justify">
-              <Text align="left" size="14pt" weight="bold" color="accent">
-                {'Rainbow Swaps:'}
-              </Text>
-              <Text align="left" size="14pt" weight="bold" color="accent">
-                {userCategories['rainbow-swaps'].data.usd_amount}
-              </Text>
-            </Inline>
-          </AccentColorProvider>
-        )}
-        {userCategories['nft-collections'].data.owned_collections && (
-          <AccentColorProvider color="#57EA5F">
-            <Inline alignHorizontal="justify">
-              <Text align="left" size="14pt" weight="semibold" color="accent">
-                {'Rainbow NFTs Owned:'}
-              </Text>
-              <Text align="left" size="14pt" weight="semibold" color="accent">
-                {`${userCategories['nft-collections'].data.owned_collections} of ${userCategories['nft-collections'].data.total_collections}`}
-              </Text>
-            </Inline>
-          </AccentColorProvider>
-        )}
-        {userCategories['historic-balance'].data.usd_amount && (
-          <AccentColorProvider color="#F5D700">
-            <Inline alignHorizontal="justify">
-              <Text align="left" size="14pt" weight="semibold" color="accent">
-                {'Wallet Balance:'}
-              </Text>
-              <Text align="left" size="14pt" weight="semibold" color="accent">
-                {userCategories['historic-balance'].data.usd_amount}
-              </Text>
-            </Inline>
-          </AccentColorProvider>
-        )}
-        {userCategories['metamask-swaps'].data.usd_amount && (
-          <AccentColorProvider color="#F24527">
-            <Inline alignHorizontal="justify">
-              <Text align="left" size="14pt" weight="semibold" color="accent">
-                {'MetaMask Swaps:'}
-              </Text>
-              <Text align="left" size="14pt" weight="semibold" color="accent">
-                {userCategories['metamask-swaps'].data.usd_amount}
-              </Text>
-            </Inline>
-          </AccentColorProvider>
-        )}
-        {userCategories['bonus'].earnings.total && (
-          <AccentColorProvider color="#C54EAB">
-            <Inline alignHorizontal="justify">
-              <Text align="left" size="14pt" weight="semibold" color="accent">
-                {'Bonus Reward:'}
-              </Text>
-              <Text align="left" size="14pt" weight="semibold" color="accent">
-                {userCategories['bonus'].earnings.total}
-              </Text>
-            </Inline>
-          </AccentColorProvider>
-        )}
-      </Stack>
-    </Box>
-  );
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 1, // delay between each child animation
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
 };
 
 export const PointsOnboardingSheet = () => {
@@ -233,9 +305,11 @@ export const PointsOnboardingSheet = () => {
   const [validatingSignature, setValidatingSignature] = useState(false);
   const [accessGranted, setAccessGranted] = useState(false);
   const [error, setError] = useState<null | string>();
-  const [userOnboardingInfo, setUserOnboardingInfo] =
+  const [userOnboarding, setUserOnboarding] =
     useState<USER_POINTS_ONBOARDING>(DUMMY_USER);
+  const debouncedAccessGranted = useDebounce(accessGranted, 1000);
 
+  console.log('--- accessGranted', accessGranted);
   const { data } = usePointsChallenge({
     address: currentAddress,
     referralCode: state.referralCode,
@@ -259,14 +333,15 @@ export const PointsOnboardingSheet = () => {
           signature,
           referral: state.referralCode,
         });
-        if (valid.onboardPoints?.user) {
-          setUserOnboardingInfo(
+        console.log('-- valid.onboardPoints?.user', valid.onboardPoints?.user);
+        if (valid.onboardPoints?.error) {
+          const error = valid.onboardPoints.error.type;
+          setError(error);
+        } else if (valid.onboardPoints?.user) {
+          setUserOnboarding(
             valid.onboardPoints.user.onboarding as USER_POINTS_ONBOARDING,
           );
           setAccessGranted(true);
-        } else if (valid.onboardPoints?.error) {
-          const error = valid.onboardPoints.error.type;
-          setError(error);
         }
       } catch (e) {
         //
@@ -282,45 +357,79 @@ export const PointsOnboardingSheet = () => {
       <Box style={{ height: '400px' }} height="full" padding="20px">
         <Rows alignVertical="justify">
           <Row>
-            <Stack space="8px">
+            <Stack space="15px">
               <Inline space="4px">
                 <Text
                   align="left"
-                  size="14pt"
+                  size="16pt"
                   weight="semibold"
                   color="labelTertiary"
                 >
-                  {'Account: '}
+                  {'Account:'}
                 </Text>
                 <Text align="left" size="14pt" weight="semibold" color="accent">
                   {displayName}
                 </Text>
               </Inline>
-              {!accessGranted ? (
-                <ConsoleLoading error={error} accessGranted={accessGranted} />
-              ) : (
-                <ConsoleCalculatingPoints userOnboarding={userOnboardingInfo} />
+
+              {!debouncedAccessGranted && (
+                <Box
+                  as={motion.div}
+                  initial="hidden"
+                  animate="visible"
+                  variants={containerVariants}
+                >
+                  <Stack space="15px">
+                    {consoleLoadingRows({ accessGranted, error }).map(
+                      (item, i) => (
+                        <Box as={motion.div} key={i} variants={itemVariants}>
+                          {item}
+                        </Box>
+                      ),
+                    )}
+                  </Stack>
+                </Box>
+              )}
+              {debouncedAccessGranted && (
+                <Box
+                  as={motion.div}
+                  initial="hidden"
+                  animate="visible"
+                  variants={containerVariants}
+                >
+                  <Stack space="15px">
+                    {consoleCalculatingPointsRows({ userOnboarding }).map(
+                      (item, i) => (
+                        <Box as={motion.div} key={i} variants={itemVariants}>
+                          {item}
+                        </Box>
+                      ),
+                    )}
+                  </Stack>
+                </Box>
               )}
             </Stack>
           </Row>
-          <Row height="content">
-            <Box>
-              <Button
-                disabled={!data?.pointsOnboardChallenge}
-                width="full"
-                borderRadius="4px"
-                onClick={signChallenge}
-                color="green"
-                height="36px"
-                variant="stroked"
-              >
-                <Text align="center" size="14pt" weight="heavy" color="green">
-                  {'Sign In'}
-                </Text>
-                {validatingSignature && <Spinner color="green" />}
-              </Button>
-            </Box>
-          </Row>
+          {!debouncedAccessGranted && (
+            <Row height="content">
+              <Box>
+                <Button
+                  disabled={!data?.pointsOnboardChallenge}
+                  width="full"
+                  borderRadius="4px"
+                  onClick={signChallenge}
+                  color="green"
+                  height="36px"
+                  variant="stroked"
+                >
+                  <Text align="center" size="14pt" weight="heavy" color="green">
+                    {'Sign In'}
+                  </Text>
+                  {validatingSignature && <Spinner color="green" />}
+                </Button>
+              </Box>
+            </Row>
+          )}
         </Rows>
       </Box>
     </BottomSheet>
