@@ -7,7 +7,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
-import { Box, Inset, Stack, Text } from '~/design-system';
+import { Box, Button, Inset, Stack, Text } from '~/design-system';
 import {
   backgroundColors,
   globalColors,
@@ -17,6 +17,8 @@ import { ICON_SIZE } from '../../components/Tabs/TabBar';
 import PointsSelectedIcon from '../../components/Tabs/TabIcons/PointsSelected';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCoolMode } from '../../hooks/useCoolMode';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 
 const animationSteps = {
   one: {
@@ -103,27 +105,46 @@ const PointsContentPlaceholder = () => {
 };
 
 const PointsContent = () => {
+  const navigate = useRainbowNavigate();
   return (
-    <Inset bottom="10px" horizontal="80px">
-      <Stack space="16px">
-        <Text
-          align="center"
-          size="20pt"
-          weight="semibold"
-          color="labelTertiary"
-        >
-          {i18n.t('points.header')}
-        </Text>
-        <Text
-          align="center"
-          color="labelQuaternary"
-          size="12pt"
-          weight="medium"
-        >
-          {i18n.t('points.description')}
-        </Text>
-      </Stack>
-    </Inset>
+    <Stack alignHorizontal="center" space="16px">
+      <Inset bottom="10px" horizontal="80px">
+        <Stack space="16px">
+          <Text
+            align="center"
+            size="20pt"
+            weight="semibold"
+            color="labelTertiary"
+          >
+            {i18n.t('points.header')}
+          </Text>
+          <Text
+            align="center"
+            color="labelQuaternary"
+            size="12pt"
+            weight="medium"
+          >
+            {i18n.t('points.description')}
+          </Text>
+        </Stack>
+      </Inset>
+      <Button
+        onClick={() => navigate(ROUTES.POINTS_ONBOARDING)}
+        color="accent"
+        height="36px"
+        variant="raised"
+      >
+        {i18n.t('points.get_started')}
+      </Button>
+      <Button
+        onClick={() => navigate(ROUTES.POINTS_REFERRAL)}
+        color="accent"
+        height="36px"
+        variant="tinted"
+      >
+        {i18n.t('points.use_referral_code')}
+      </Button>
+    </Stack>
   );
 };
 
@@ -159,7 +180,7 @@ export function Points() {
       flexDirection="column"
       justifyContent="flex-start"
       marginTop="-20px"
-      paddingTop="80px"
+      paddingTop={featureFlags.points ? '40px' : '80px'}
       ref={ref}
       style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
       width="full"
