@@ -30,12 +30,11 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+import { INVALID_REFERRAL_CODE_ERROR } from './references';
 import {
   useReferralValidation,
   validateAsciiCodeFormat,
 } from './useReferralCodeValidation';
-
-const INVALID_REFERRAL_CODE = 'INVALID_REFERRAL_CODE';
 
 const maskAsciiInput = (inputValue: string): string => {
   const asciiRegex = /[\x20-\x7E]/g;
@@ -62,7 +61,7 @@ export const PointsReferralSheet = () => {
 
   const invalidReferralCode =
     validCodeFormat &&
-    data?.onboardPoints?.error?.type === INVALID_REFERRAL_CODE;
+    data?.onboardPoints?.error?.type === INVALID_REFERRAL_CODE_ERROR;
   const validReferralCode = validCodeFormat && data?.onboardPoints === null;
 
   const backToHome = () =>
@@ -70,7 +69,10 @@ export const PointsReferralSheet = () => {
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
 
-  const navigateToOnboarding = () => navigate(ROUTES.POINTS_ONBOARDING);
+  const navigateToOnboarding = () =>
+    navigate(ROUTES.POINTS_ONBOARDING, {
+      state: { referralCode: referralCode.replace('-', '') },
+    });
 
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

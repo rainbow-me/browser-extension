@@ -16,15 +16,14 @@ export const useReferralValidation = ({
   address: Address;
   referralCode: string;
 }) => {
-  console.log('-- referralCode', referralCode);
   return useQuery({
     queryFn: () => {
-      return metadataPostClient.validateReferralCode({
+      return metadataPostClient.validatePointsReferralCode({
         address,
         referral: referralCode?.replace('-', ''),
       });
     },
-    queryKey: createQueryKey('token about info', {
+    queryKey: createQueryKey('referral code validation', {
       address,
       referralCode: referralCode?.replace('-', ''),
     }),

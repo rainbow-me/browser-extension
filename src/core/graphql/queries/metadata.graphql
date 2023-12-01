@@ -187,10 +187,41 @@ query simulateTransactions(
   }
 }
 
-mutation validateReferralCode($address: String!, $referral: String) {
+mutation validatePointsReferralCode($address: String!, $referral: String) {
   onboardPoints(address: $address, signature: "", referral: $referral) {
     error {
       type
     }
   }
+}
+
+mutation validatePointsSignature($address: String!, $signature: String!, $referral: String) {
+  onboardPoints(address: $address, signature: $signature, referral: $referral) {
+    error {
+      type
+    }
+    user {
+      onboarding {
+          earnings {
+            total
+          }
+          categories {
+            data {
+              usd_amount
+              total_collections
+              owned_collections
+            }
+            type
+            display_type
+            earnings {
+              total
+            }
+          }
+        }
+      }
+  }
+}
+
+query getPointsOnboardChallenge($address: String!, $referral: String) {
+  pointsOnboardChallenge(address: $address, referral: $referral) 
 }
