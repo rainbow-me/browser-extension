@@ -186,3 +186,11 @@ query simulateTransactions(
     }
   }
 }
+
+mutation validateReferralCode($address: String!, $referral: String) {
+  onboardPoints(address: $address, signature: "", referral: $referral) {
+    error {
+      type
+    }
+  }
+}

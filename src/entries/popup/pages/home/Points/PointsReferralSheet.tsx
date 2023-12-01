@@ -1,9 +1,10 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { Box, Button, Inset, Stack, Text } from '~/design-system';
+import { Box, Button, Inline, Inset, Stack, Text } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { Input } from '~/design-system/components/Input/Input';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
@@ -11,6 +12,7 @@ import {
   backgroundColors,
   globalColors,
 } from '~/design-system/styles/designTokens';
+import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 import { ICON_SIZE } from '~/entries/popup/components/Tabs/TabBar';
 import PointsSelectedIcon from '~/entries/popup/components/Tabs/TabIcons/PointsSelected';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
@@ -18,19 +20,19 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+import {
+  useReferralValidation,
+  validateAsciiCodeFormat,
+} from './useReferralCodeValidation';
+
+const INVALID_REFERRAL_CODE = 'INVALID_REFERRAL_CODE';
+
 const maskAsciiInput = (inputValue: string): string => {
-  // Define a regular expression for printable ASCII characters
   const asciiRegex = /[\x20-\x7E]/g;
-
-  // Remove non-ASCII characters
   let filteredInput = inputValue.match(asciiRegex)?.join('') || '';
-
-  // Automatically insert a hyphen after the third character if not already present
   if (filteredInput.length > 3 && filteredInput[3] !== '-') {
     filteredInput = filteredInput.slice(0, 3) + '-' + filteredInput.slice(3);
   }
-
-  // Ensure the input doesn't exceed the maximum length of 7 (including hyphen)
   return filteredInput.substring(0, 7).toUpperCase();
 };
 
@@ -40,6 +42,18 @@ export const PointsReferralSheet = () => {
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
   const [referralCode, setReferralCode] = useState('');
+
+  const { data } = useReferralValidation({
+    address: currentAddress,
+    referralCode,
+  });
+
+  const validCodeFormat = validateAsciiCodeFormat(referralCode);
+
+  const invalidReferralCode =
+    validCodeFormat &&
+    data?.onboardPoints?.error?.type === INVALID_REFERRAL_CODE;
+  const validReferralCode = validCodeFormat && data?.onboardPoints === null;
 
   const backToHome = () =>
     navigate(ROUTES.HOME, {
@@ -134,37 +148,62 @@ export const PointsReferralSheet = () => {
           </Stack>
         </Inset>
 
-        <Box style={{ width: '90px' }}>
-          <Input
-            height="32px"
-            placeholder="XXX-XXX"
-            variant="bordered"
-            borderColor="accent"
-            selectionColor="accent"
-            value={referralCode}
-            onChange={handleOnChange}
-            style={{
-              caretColor: accentColorAsHsl,
-            }}
-          />
+        <Box
+          position="relative"
+          style={{ width: validReferralCode ? '110px' : '90px' }}
+        >
+          <Inline alignVertical="center">
+            <Input
+              height="32px"
+              placeholder="XXX-XXX"
+              variant="bordered"
+              borderColor={invalidReferralCode ? 'red' : 'accent'}
+              selectionColor={invalidReferralCode ? 'red' : 'accent'}
+              value={referralCode}
+              onChange={handleOnChange}
+              style={{
+                caretColor: invalidReferralCode
+                  ? globalColors.red50
+                  : accentColorAsHsl,
+                paddingRight: validReferralCode ? 14 : 0,
+              }}
+            />
+            <AnimatePresence initial={false}>
+              {validReferralCode && (
+                <Box
+                  as={motion.div}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  key="check"
+                  position="absolute"
+                  right="8px"
+                >
+                  <Checkbox borderColor="accent" selected />
+                </Box>
+              )}
+            </AnimatePresence>
+          </Inline>
         </Box>
 
-        <Button
-          onClick={backToHome}
-          color="accent"
-          height="36px"
-          variant="raised"
-        >
-          {'Go back'}
-        </Button>
-        <Button
-          onClick={navigateToOnboarding}
-          color="accent"
-          height="36px"
-          variant="raised"
-        >
-          {'Go to onboarding'}
-        </Button>
+        <Inline alignVertical="center">
+          <Button
+            onClick={backToHome}
+            color="accent"
+            height="36px"
+            variant="raised"
+          >
+            {'Go back'}
+          </Button>
+          <Button
+            onClick={navigateToOnboarding}
+            color="accent"
+            height="36px"
+            variant="raised"
+          >
+            {'Go to onboarding'}
+          </Button>
+        </Inline>
       </Stack>
     </BottomSheet>
   );
