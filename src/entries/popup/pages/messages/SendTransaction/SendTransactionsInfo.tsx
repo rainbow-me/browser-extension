@@ -320,10 +320,7 @@ function TransactionInfo({
       {!expanded && simulation && simulation.scanning.result !== 'OK' && (
         <MaliciousRequestWarning
           title={i18n.t('approve_request.malicious_transaction_warning.title')}
-          description={
-            simulation.scanning.description ||
-            i18n.t('approve_request.malicious_transaction_warning.description')
-          }
+          description={simulation.scanning.description}
           symbol="exclamationmark.octagon.fill"
         />
       )}

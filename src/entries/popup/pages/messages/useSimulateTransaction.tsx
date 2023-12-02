@@ -3,6 +3,7 @@ import { Address } from 'wagmi';
 
 import { metadataPostClient } from '~/core/graphql';
 import { Transaction } from '~/core/graphql/__generated__/metadata';
+import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
 import { currentCurrencyStore } from '~/core/state';
 import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
@@ -42,6 +43,20 @@ const parseSimulationAsset = (asset: SimulationAsset, chainId: ChainId) => {
   });
 };
 
+const parseScanningDescription = (description: Lowercase<string>) => {
+  const t = (tab: string) =>
+    i18n.t(tab, { scope: 'approve_request.malicious_transaction_warning' });
+
+  if (description.includes('losing trade, mint price is too high'))
+    return t('minting_is_a_losing_trade');
+
+  if (description.includes('malicious address')) return t('malicious_address');
+
+  if (description.includes('malicious entity')) return t('malicious_entity');
+
+  return t('you_can_lose_everything');
+};
+
 export const useSimulateTransaction = ({
   chainId,
   transaction,
@@ -70,7 +85,12 @@ export const useSimulateTransaction = ({
 
       return {
         chainId,
-        scanning,
+        scanning: {
+          result: scanning.result,
+          description: parseScanningDescription(
+            scanning.description.toLowerCase() as Lowercase<string>,
+          ),
+        },
         in: simulation.in.map(({ asset, quantity }) => ({
           quantity,
           asset: parseSimulationAsset(asset, chainId),

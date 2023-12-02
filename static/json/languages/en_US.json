@@ -971,8 +971,11 @@
       "message": "Signing messages or transactions from this app could result in losing your assets"
     },
     "malicious_transaction_warning": {
-      "title": "This transaction is likely malicious",
-      "message": "Signing could result in losing your assets"
+      "title": "This transaction looks suspicious",
+      "malicious_address": "A malicious address is involved in this transaction. Signing may result in losses",
+      "malicious_entity": "A malicious entity is involved in this transaction. Signing may result in losses",
+      "minting_is_a_losing_trade": "A scam contract is involved in this transaction. Minting is a losing trade",
+      "you_can_lose_everything": "Signing this transaction could result in losing access to everything in your wallet"
     },
     "dangerous_request": "Dangerous Request",
     "message_signing_request": "Message Signing Request",

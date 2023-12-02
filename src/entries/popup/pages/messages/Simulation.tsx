@@ -54,7 +54,7 @@ function SimulatedChangeRow({
       </Inline>
       <Inline space="6px" alignVertical="center">
         {asset?.type === 'nft' ? (
-          <NFTIcon asset={asset} size={14} />
+          <NFTIcon asset={asset} size={16} />
         ) : (
           <CoinIcon asset={asset} size={14} />
         )}
@@ -78,6 +78,7 @@ export function SimulationOverview({
   status: 'loading' | 'error' | 'success';
   error: SimulationError | null;
 }) {
+  const isMalicious = simulation?.scanning.result !== 'OK';
   return (
     <>
       {status === 'loading' && (
@@ -150,7 +151,7 @@ export function SimulationOverview({
                     size={14}
                     symbol="checkmark.seal.fill"
                     weight="bold"
-                    color="blue"
+                    color={isMalicious ? 'red' : 'blue'}
                   />
                 }
                 label={i18n.t('simulation.approved')}
