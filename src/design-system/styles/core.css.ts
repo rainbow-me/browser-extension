@@ -480,7 +480,9 @@ const symbolProperties = defineProperties({
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
-    textShadow: shadowVars,
+    filter: {
+      'shadow 12px accent': `drop-shadow(${shadowTokens['12px accent text'].light})`,
+    },
     cursor: cursorOpts,
     opacity: {
       boxed: 0.76,
@@ -570,9 +572,6 @@ const textProperties = defineProperties({
     overflow: ['hidden'],
     transition: ['color 200ms ease-out'],
     textShadow: shadowVars,
-    //  {
-    //   '12px accent': `0px 0px 12px ${accentColorAsHsl}`,
-    // },
   },
 });
 

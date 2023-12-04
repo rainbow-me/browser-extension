@@ -1,16 +1,21 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { useQuery } from '@tanstack/react-query';
+import { formatDistanceToNowStrict } from 'date-fns';
 import { PropsWithChildren, ReactElement } from 'react';
 import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import { StackProps } from '~/design-system/components/Stack/Stack';
-import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
+import { TextProps } from '~/design-system/components/Text/Text';
+import {
+  SymbolName,
+  linearGradients,
+} from '~/design-system/styles/designTokens';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
@@ -33,7 +38,7 @@ function Card({ children, ...props }: PropsWithChildren<StackProps>) {
 
 const leaderboardPosition = (
   position: number,
-): { symbol: ReactElement; color: TextColor } => {
+): { symbol: ReactElement } & Partial<TextProps> => {
   if (position > 3 && position <= 50)
     return {
       symbol: (
@@ -54,8 +59,10 @@ const leaderboardPosition = (
           🥇
         </Text>
       ),
-      color: 'yellow',
-    }; // hsla(50, 100%, 67%, 1), hsla(43, 100%, 41%, 1)
+      webkitBackgroundClip: 'text',
+      background: 'gold',
+      color: 'transparent',
+    };
   if (position === 2)
     return {
       symbol: (
@@ -63,8 +70,10 @@ const leaderboardPosition = (
           🥈
         </Text>
       ),
-      color: 'yellow',
-    }; // hsla(212, 60%, 99%, 1), hsla(212, 15%, 74%, 1)
+      webkitBackgroundClip: 'text',
+      background: 'silver',
+      color: 'transparent',
+    };
   if (position === 3)
     return {
       symbol: (
@@ -72,8 +81,10 @@ const leaderboardPosition = (
           🥉
         </Text>
       ),
-      color: 'yellow',
-    }; // hsla(31, 72%, 55%, 1), hsla(25, 65%, 41%, 1)
+      webkitBackgroundClip: 'text',
+      background: 'bronze',
+      color: 'transparent',
+    };
 
   return {
     symbol: (
@@ -143,7 +154,9 @@ function Leaderboard() {
         {leaderboard.accounts
           ?.slice(0, 10)
           .map(({ address, earnings }, index) => {
-            const { color, symbol } = leaderboardPosition(index + 1);
+            const { symbol, ...amountTextProps } = leaderboardPosition(
+              index + 1,
+            );
             return (
               <Inline
                 key={address}
@@ -161,7 +174,7 @@ function Leaderboard() {
                   <AddressOrEns address={address} size="14pt" weight="bold" />
                 </Inline>
                 <Inline wrap={false} space="8px" alignVertical="center">
-                  <Text size="12pt" weight="bold" color={color}>
+                  <Text size="12pt" weight="bold" {...amountTextProps}>
                     {formatNumber(earnings.total)}
                   </Text>
                   {symbol}
@@ -174,14 +187,28 @@ function Leaderboard() {
   );
 }
 
+function TextWithMoreInfo({ children }: PropsWithChildren) {
+  return (
+    <Inline wrap={false} space="4px" alignVertical="center">
+      <Text size="14pt" weight="semibold" color="labelSecondary">
+        {children}
+      </Text>
+      <Symbol
+        weight="bold"
+        symbol="info.circle.fill"
+        color="labelQuaternary"
+        size={12}
+      />
+    </Inline>
+  );
+}
+
 function ReferralCode() {
   const { data } = usePoints();
 
   return (
     <Stack gap="12px">
-      <Text size="14pt" weight="semibold" color="labelSecondary">
-        {i18n.t('points.referral_code')}
-      </Text>
+      <TextWithMoreInfo>{i18n.t('points.referral_code')}</TextWithMoreInfo>
 
       <Inline wrap={false} space="12px">
         <Card paddingVertical="12px">
@@ -194,7 +221,7 @@ function ReferralCode() {
           <Symbol
             symbol="square.on.square"
             color="accent"
-            shadow="12px accent text"
+            filter="shadow 12px accent"
             weight="bold"
             size={16}
           />
@@ -224,16 +251,13 @@ function YourRankAndNextDrop() {
   const { meta, leaderboard, user } = data;
 
   const nextDistribution = new Date(meta.distribution.next * 1000);
-  const nextDistributionIn = new Date(
-    nextDistribution.getTime() - Date.now(),
-  ).toLocaleDateString(undefined, { day: 'numeric', hour: 'numeric' });
+  const nextDistributionIn = formatDistanceToNowStrict(nextDistribution);
 
   return (
     <Inline wrap={false} space="12px">
       <Card>
-        <Text size="14pt" weight="semibold" color="labelSecondary">
-          {i18n.t('points.next_drop')}
-        </Text>
+        <TextWithMoreInfo>{i18n.t('points.next_drop')}</TextWithMoreInfo>
+
         <Text size="20pt" weight="bold">
           {nextDistributionIn}
         </Text>
@@ -248,9 +272,7 @@ function YourRankAndNextDrop() {
       </Card>
 
       <Card>
-        <Text size="14pt" weight="semibold" color="labelSecondary">
-          {i18n.t('points.your_rank')}
-        </Text>
+        <TextWithMoreInfo>{i18n.t('points.your_rank')}</TextWithMoreInfo>
         <Text size="20pt" weight="bold">
           #{user.stats.position.current}
         </Text>
@@ -273,30 +295,41 @@ function YourPoints() {
   const { data } = usePoints();
 
   return (
-    <Stack paddingBottom="24px">
+    <Stack space="12px">
       <Text size="26pt" weight="heavy">
         {formatNumber(data?.user.earnings.total)}
+      </Text>
+      <Box
+        borderRadius="round"
+        style={{ background: linearGradients.points, height: 10, width: 140 }}
+      />
+      <Text
+        size="12pt"
+        weight="bold"
+        background="points"
+        color="transparent"
+        webkitBackgroundClip="text"
+      >
+        Out of 2,374,201 current total points
       </Text>
     </Stack>
   );
 }
 
 export function Points() {
-  const { testnetMode } = useTestnetModeStore();
-
-  const { currentAddress } = useCurrentAddressStore();
-
   return (
-    <Box display="flex" flexDirection="column" padding="20px" width="full">
-      <YourPoints />
-
-      <Separator color="separatorTertiary" />
-
+    <Box
+      display="flex"
+      flexDirection="column"
+      paddingHorizontal="20px"
+      width="full"
+    >
       <Stack
         gap="20px"
         paddingBottom="120px"
         separator={<Separator color="separatorTertiary" />}
       >
+        <YourPoints />
         <YourRankAndNextDrop />
         <ReferralCode />
         <Leaderboard />
