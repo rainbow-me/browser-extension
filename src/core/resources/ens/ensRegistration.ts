@@ -56,8 +56,8 @@ const fetchRegistration = async (ensName: string) => {
 
   return {
     registration: {
-      expiryDate: data?.expiryDate as string,
-      registrationDate: data?.registrationDate as string,
+      expiryDate: data?.expiryDate as string | undefined,
+      registrationDate: data?.registrationDate as string | undefined,
     },
   };
 };

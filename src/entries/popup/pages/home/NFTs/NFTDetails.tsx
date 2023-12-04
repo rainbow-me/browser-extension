@@ -300,8 +300,8 @@ const EnsRegistrationSection = ({
   registration,
 }: {
   registration?: {
-    expiryDate: string;
-    registrationDate: string;
+    expiryDate: string | undefined;
+    registrationDate: string | undefined;
   };
 }) => {
   const expiryDate = useMemo(() => {
