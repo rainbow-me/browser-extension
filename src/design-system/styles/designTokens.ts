@@ -688,15 +688,15 @@ export const linearGradients = {
     linear-gradient(0deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12)),
     linear-gradient(0deg, color(display-p3 1.000 1.000 1.000 / 0.12), color(display-p3 1.000 1.000 1.000 / 0.12))
   `,
-  gold: `
+  ['🥇']: `
     linear-gradient(90deg, #FFE329 0%, #DA9200 100%),
     linear-gradient(90deg, color(display-p3 1.000 0.894 0.337) 0%, color(display-p3 0.812 0.584 0.000) 100%)
   `,
-  silver: `
+  ['🥈']: `
     linear-gradient(90deg, #FAFCFE 0%, #B1BCC8 100%),
     linear-gradient(90deg, color(display-p3 0.984 0.988 0.996) 0%, color(display-p3 0.702 0.737 0.780) 100%)
   `,
-  bronze: `
+  ['🥉']: `
     linear-gradient(90deg, #EB8A15 0%, #BA5A0A 100%),
     linear-gradient(90deg, color(display-p3 0.871 0.561 0.220) 0%, color(display-p3 0.682 0.373 0.145) 100%)
   `,
