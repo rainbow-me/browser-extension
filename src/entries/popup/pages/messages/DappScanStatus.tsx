@@ -4,8 +4,17 @@ import { motion } from 'framer-motion';
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { SymbolName } from '~/design-system/styles/designTokens';
 
-export function ThisDappIsLikelyMalicious() {
+export function MaliciousRequestWarning({
+  symbol,
+  title,
+  description,
+}: {
+  symbol: SymbolName;
+  title: string;
+  description: string;
+}) {
   return (
     <Box
       as={motion.div}
@@ -21,21 +30,26 @@ export function ThisDappIsLikelyMalicious() {
       borderRadius="20px"
       borderWidth="2px"
     >
-      <Symbol
-        symbol="exclamationmark.octagon.fill"
-        size={20}
-        weight="heavy"
-        color="red"
-      />
+      <Symbol symbol={symbol} size={20} weight="heavy" color="red" />
       <Stack space="8px">
         <Text size="14pt" weight="bold">
-          {i18n.t('approve_request.malicious_warning.title')}
+          {title}
         </Text>
         <Text color="labelTertiary" size="12pt" weight="semibold">
-          {i18n.t('approve_request.malicious_warning.message')}
+          {description}
         </Text>
       </Stack>
     </Box>
+  );
+}
+
+export function ThisDappIsLikelyMalicious() {
+  return (
+    <MaliciousRequestWarning
+      symbol="exclamationmark.octagon.fill"
+      title={i18n.t('approve_request.malicious_warning.title')}
+      description={i18n.t('approve_request.malicious_warning.message')}
+    />
   );
 }
 
