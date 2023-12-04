@@ -808,6 +808,22 @@
         "process.nextTick": true
       }
     },
+    "gridplus-sdk>secp256k1>node-gyp-build": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readdirSync": true,
+        "os.arch": true,
+        "os.platform": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "__non_webpack_require__": true,
+        "__webpack_require__": true,
+        "process": true
+      }
+    },
     "happy-dom>he": {
       "globals": {
         "define": true
@@ -1445,23 +1461,7 @@
       },
       "native": true,
       "packages": {
-        "web-ext>ws>bufferutil>node-gyp-build": true
-      }
-    },
-    "web-ext>ws>bufferutil>node-gyp-build": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readdirSync": true,
-        "os.arch": true,
-        "os.platform": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "__non_webpack_require__": true,
-        "__webpack_require__": true,
-        "process": true
+        "gridplus-sdk>secp256k1>node-gyp-build": true
       }
     },
     "web-ext>ws>utf-8-validate": {
@@ -1470,7 +1470,7 @@
       },
       "native": true,
       "packages": {
-        "web-ext>ws>bufferutil>node-gyp-build": true
+        "gridplus-sdk>secp256k1>node-gyp-build": true
       }
     },
     "webpack": {
