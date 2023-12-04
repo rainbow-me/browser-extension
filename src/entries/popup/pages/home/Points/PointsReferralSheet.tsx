@@ -184,7 +184,6 @@ export const PointsReferralSheet = () => {
                       placeholder="XXX-XXX"
                       variant="bordered"
                       borderColor={invalidReferralCode ? 'red' : 'accent'}
-                      selectionColor={invalidReferralCode ? 'red' : 'accent'}
                       value={referralCode}
                       onChange={handleOnChange}
                       style={{
