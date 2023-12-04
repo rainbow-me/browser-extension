@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { fetchAddresses } from 'gridplus-sdk';
 import { FormEvent, useEffect, useState } from 'react';
 
@@ -27,7 +28,7 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
   }, []);
   return (
     <Box
-      as="form"
+      as={motion.form}
       display="flex"
       flexDirection="column"
       onSubmit={onSubmit}

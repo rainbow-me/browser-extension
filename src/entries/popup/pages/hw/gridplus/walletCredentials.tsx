@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { setup } from 'gridplus-sdk';
 import { FormEvent, useEffect } from 'react';
 
@@ -38,7 +39,7 @@ export const WalletCredentials = ({
   }, [appName]);
   return (
     <Box
-      as="form"
+      as={motion.form}
       display="flex"
       flexDirection="column"
       onSubmit={onSubmit}

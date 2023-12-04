@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { pair } from 'gridplus-sdk';
 import { FormEvent } from 'react';
 
@@ -16,7 +17,7 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
   };
   return (
     <Box
-      as="form"
+      as={motion.form}
       display="flex"
       flexDirection="column"
       onSubmit={onSubmit}
