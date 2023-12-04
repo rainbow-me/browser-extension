@@ -72,7 +72,10 @@ export const PointsReferralSheet = () => {
   const navigateToOnboarding = useCallback(
     () =>
       navigate(ROUTES.POINTS_ONBOARDING, {
-        state: { referralCode: referralCode.replace('-', '') },
+        state: {
+          skipTransitionOnRoute: ROUTES.HOME,
+          referralCode: referralCode.replace('-', ''),
+        },
       }),
     [navigate, referralCode],
   );

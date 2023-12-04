@@ -129,7 +129,11 @@ const PointsContent = () => {
         </Stack>
       </Inset>
       <Button
-        onClick={() => navigate(ROUTES.POINTS_ONBOARDING)}
+        onClick={() =>
+          navigate(ROUTES.POINTS_ONBOARDING, {
+            state: { skipTransitionOnRoute: ROUTES.HOME },
+          })
+        }
         color="accent"
         height="36px"
         variant="raised"
@@ -137,7 +141,11 @@ const PointsContent = () => {
         {i18n.t('points.get_started')}
       </Button>
       <Button
-        onClick={() => navigate(ROUTES.POINTS_REFERRAL)}
+        onClick={() =>
+          navigate(ROUTES.POINTS_REFERRAL, {
+            state: { skipTransitionOnRoute: ROUTES.HOME },
+          })
+        }
         color="accent"
         height="36px"
         variant="tinted"
