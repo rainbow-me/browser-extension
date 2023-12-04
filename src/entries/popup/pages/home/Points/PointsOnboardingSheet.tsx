@@ -17,6 +17,8 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { AnimatedRows } from '~/design-system/components/AnimatedText/AnimatedRows';
+import { AnimatedText } from '~/design-system/components/AnimatedText/AnimatedText';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
@@ -221,9 +223,9 @@ const registeringPointsRows = ({
   return [
     <AccentColorProvider key={'points-1'} color="green">
       <Box paddingBottom="30px">
-        <Text align="left" size="16pt" weight="semibold" color="accent">
+        <AnimatedText key={'points-1'} size="16pt" weight="semibold">
           {`> ${i18n.t('points.onboarding.registration_complete')}`}
-        </Text>
+        </AnimatedText>
       </Box>
     </AccentColorProvider>,
     <AccentColorProvider key={'points-2'} color="#C54EAB">
@@ -254,8 +256,8 @@ const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      delayChildren: 1, // Delay before starting to animate children
-      staggerChildren: 1, // Delay between each child animation
+      delayChildren: 3, // Delay before starting to animate children
+      staggerChildren: 3, // Delay between each child animation
     },
   },
 };
@@ -367,22 +369,12 @@ export const PointsOnboardingSheet = () => {
               </Inline>
 
               {!debouncedAccessGranted && (
-                <Box
-                  as={motion.div}
-                  initial="hidden"
-                  animate="visible"
-                  variants={containerVariants}
-                >
-                  <Stack space="15px">
-                    {consoleLoadingRows({ accessGranted, error }).map(
-                      (item, i) => (
-                        <Box as={motion.div} key={i} variants={itemVariants}>
-                          {item}
-                        </Box>
-                      ),
-                    )}
-                  </Stack>
-                </Box>
+                <AnimatedRows
+                  id="animated-text"
+                  rows={consoleLoadingRows({ accessGranted, error }).map(
+                    (item) => item,
+                  )}
+                />
               )}
               {debouncedAccessGranted && (
                 <Box
