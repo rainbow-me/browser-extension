@@ -970,6 +970,13 @@
       "title": "This app is likely malicious",
       "message": "Signing messages or transactions from this app could result in losing your assets"
     },
+    "malicious_transaction_warning": {
+      "title": "This transaction looks suspicious",
+      "malicious_address": "A malicious address is involved in this transaction. Signing may result in losses",
+      "malicious_entity": "A malicious entity is involved in this transaction. Signing may result in losses",
+      "minting_is_a_losing_trade": "A scam contract is involved in this transaction. Minting is a losing trade",
+      "you_can_lose_everything": "Signing this transaction could result in losing access to everything in your wallet"
+    },
     "dangerous_request": "Dangerous Request",
     "message_signing_request": "Message Signing Request",
     "message": "Message",
@@ -1206,7 +1213,9 @@
       "ens_bio": "Bio",
       "ens_cover": "Cover",
       "ens_address": "ETH Address",
-      "ens_website": "Website"
+      "ens_website": "Website",
+      "registered_on": "Registered on",
+      "expires_in": "Expires in"
     }
   },
   "points": {
@@ -1518,4 +1527,3 @@
     "not_found": "We couldn't find this asset on the selected network. Please choose the right network below"
   }
 }
-
