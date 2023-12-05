@@ -3,6 +3,7 @@ import React, { ReactElement, useMemo } from 'react';
 
 import { BoxStyles } from '~/design-system/styles/core.css';
 
+import { Box } from '../Box/Box';
 import { Stack } from '../Stack/Stack';
 
 export const AnimatedTextRows = ({
@@ -40,7 +41,8 @@ export const AnimatedTextRows = ({
   return (
     <Stack space={space}>
       {rows.map((row, rowIndex) => (
-        <motion.div
+        <Box
+          as={motion.div}
           key={id ? `${id}-row-${rowIndex}` : `row-${rowIndex}`}
           custom={customDelay !== undefined ? customDelay : rowDelays[rowIndex]}
           variants={rowVariants}
@@ -48,7 +50,7 @@ export const AnimatedTextRows = ({
           animate="visible"
         >
           {row}
-        </motion.div>
+        </Box>
       ))}
     </Stack>
   );

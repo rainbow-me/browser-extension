@@ -36,7 +36,12 @@ import {
   USER_POINTS_ONBOARDING,
 } from './references';
 import { usePointsChallenge } from './usePointsChallenge';
-import { getDelayForRow, getDelayForRows, getErrorString } from './utils';
+import {
+  DUMMY_USER,
+  getDelayForRow,
+  getDelayForRows,
+  getErrorString,
+} from './utils';
 
 const fadeVariants = {
   initial: { opacity: 0 },
@@ -50,10 +55,10 @@ export const PointsOnboardingSheet = () => {
   const { displayName } = useWalletName({ address: currentAddress });
   const { state } = useLocation();
   const [validatingSignature, setValidatingSignature] = useState(false);
-  const [accessGranted, setAccessGranted] = useState(false);
+  const [accessGranted, setAccessGranted] = useState(true);
   const [error, setError] = useState<null | string>();
   const [userOnboarding, setUserOnboarding] =
-    useState<USER_POINTS_ONBOARDING>();
+    useState<USER_POINTS_ONBOARDING>(DUMMY_USER);
   const debouncedAccessGranted = useDebounce(accessGranted, 3000);
 
   const userOnboardingCategories = useMemo(() => {
@@ -504,6 +509,7 @@ export const PointsOnboardingSheet = () => {
                   id="animated-loading-rows"
                   rows={consoleLoadingRows}
                   rowsText={loadingRowsText}
+                  space="15px"
                 />
               )}
               {debouncedAccessGranted && (
@@ -518,6 +524,7 @@ export const PointsOnboardingSheet = () => {
                       ? calculatingPointsRows
                       : registeringPointsRows
                   }
+                  space="15px"
                 />
               )}
             </Stack>
