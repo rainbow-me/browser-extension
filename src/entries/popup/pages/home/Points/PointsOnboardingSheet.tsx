@@ -36,12 +36,7 @@ import {
   USER_POINTS_ONBOARDING,
 } from './references';
 import { usePointsChallenge } from './usePointsChallenge';
-import {
-  DUMMY_USER,
-  getDelayForRow,
-  getDelayForRows,
-  getErrorString,
-} from './utils';
+import { getDelayForRow, getDelayForRows, getErrorString } from './utils';
 
 const fadeVariants = {
   initial: { opacity: 0 },
@@ -55,10 +50,10 @@ export const PointsOnboardingSheet = () => {
   const { displayName } = useWalletName({ address: currentAddress });
   const { state } = useLocation();
   const [validatingSignature, setValidatingSignature] = useState(false);
-  const [accessGranted, setAccessGranted] = useState(true);
+  const [accessGranted, setAccessGranted] = useState(false);
   const [error, setError] = useState<null | string>();
   const [userOnboarding, setUserOnboarding] =
-    useState<USER_POINTS_ONBOARDING>(DUMMY_USER);
+    useState<USER_POINTS_ONBOARDING>();
   const debouncedAccessGranted = useDebounce(accessGranted, 3000);
 
   const userOnboardingCategories = useMemo(() => {
