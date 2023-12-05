@@ -1,11 +1,21 @@
 import { Variants, motion } from 'framer-motion';
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 
-export const AnimatedTextRows: React.FC<{
-  rows: ReactNode[];
+import { BoxStyles } from '~/design-system/styles/core.css';
+
+import { Stack } from '../Stack/Stack';
+
+export const AnimatedTextRows = ({
+  rows,
+  rowsText,
+  id,
+  space,
+}: {
+  rows: ReactElement[];
   rowsText: string[];
+  space?: BoxStyles['gap'];
   id?: string;
-}> = ({ rows, rowsText, id }) => {
+}) => {
   const charDisplayDuration = 0.1;
 
   const rowDelays = useMemo(() => {
@@ -26,7 +36,7 @@ export const AnimatedTextRows: React.FC<{
   };
 
   return (
-    <motion.div initial="hidden" animate="visible">
+    <Stack space={space}>
       {rows.map((row, rowIndex) => (
         <motion.div
           key={id ? `${id}-row-${rowIndex}` : `row-${rowIndex}`}
@@ -38,6 +48,6 @@ export const AnimatedTextRows: React.FC<{
           {row}
         </motion.div>
       ))}
-    </motion.div>
+    </Stack>
   );
 };

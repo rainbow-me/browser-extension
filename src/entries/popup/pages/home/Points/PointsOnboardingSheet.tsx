@@ -31,6 +31,7 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 import * as wallet from '../../../handlers/wallet';
 
 import {
+  CATEGORY_DISPLAY_TYPE,
   CATEGORY_TYPE,
   EXISTING_USER_ERROR,
   INVALID_REFERRAL_CODE_ERROR,
@@ -57,6 +58,28 @@ const getErrorString = (error: string) => {
 };
 
 const characterTypingTime = 0.1;
+
+const getDelayForRow = (rows: string[], row: number) => {
+  const characters = rows.reduce((total, str, index) => {
+    if (index <= row) {
+      return total + str.length;
+    }
+    return total;
+  }, 0);
+  return characters * characterTypingTime;
+};
+
+const getDelayForRows = (
+  rows: string[][],
+  row: number,
+  column: number,
+): number => {
+  console.log('rows.flat()', rows.flat());
+  const delay = getDelayForRow(rows.flat(), row * 2 + column - 1);
+  console.log(row, column, row * 2 + column - 1, delay);
+  return delay;
+};
+
 const loadingRowsText = ({
   accessGranted,
   error,
@@ -72,16 +95,6 @@ const loadingRowsText = ({
     accessGranted ? `> ${i18n.t('points.onboarding.access_granted')}` : null,
     error ? `> ${getErrorString(error)}` : null,
   ].filter(Boolean);
-
-const getDelayForRow = (rows: string[], row: number) => {
-  const characters = rows.reduce((total, currentString, index) => {
-    if (index <= row) {
-      return total + currentString.length;
-    }
-    return total;
-  }, 0);
-  return characters * characterTypingTime;
-};
 
 const consoleLoadingRows = ({
   accessGranted,
@@ -138,6 +151,53 @@ const consoleLoadingRows = ({
   ].filter(Boolean);
 };
 
+const calculatingPointsRowsText = ({
+  userOnboarding,
+  userOnboardingCategories,
+}: {
+  userOnboarding?: USER_POINTS_ONBOARDING;
+  userOnboardingCategories?: Record<CATEGORY_TYPE, USER_POINTS_CATEGORY>;
+}) =>
+  [
+    [`> ${i18n.t('points.onboarding.calculating_points')}`, ''],
+    [
+      `${i18n.t('points.onboarding.rainbow_swaps')}`,
+      `${convertAmountToNativeDisplayWithThreshold(
+        userOnboardingCategories?.['rainbow-swaps'].data.usd_amount || 0,
+        'USD',
+      )}`,
+    ],
+    [
+      `${i18n.t('points.onboarding.rainbow_nfts_owned')}`,
+      `${userOnboardingCategories?.['nft-collections'].data.owned_collections} of ${userOnboardingCategories?.['nft-collections'].data.total_collections}`,
+    ],
+    [
+      `${i18n.t('points.onboarding.wallet_balance')}`,
+      `${convertAmountToNativeDisplayWithThreshold(
+        userOnboardingCategories?.['historic-balance'].data.usd_amount || 0,
+        'USD',
+      )}`,
+    ],
+    [
+      `${i18n.t('points.onboarding.metamask_swaps')}`,
+      `${convertAmountToNativeDisplayWithThreshold(
+        userOnboardingCategories?.['metamask-swaps'].data.usd_amount || 0,
+        'USD',
+      )}`,
+    ],
+    [
+      `${i18n.t('points.onboarding.bonus_reward')}`,
+      `+ ${userOnboardingCategories?.['bonus'].earnings.total}`,
+    ],
+    [`> ${i18n.t('points.onboarding.calculation_complete')}`, ''],
+    userOnboarding?.earnings.total
+      ? [
+          `${i18n.t('points.onboarding.points_earned')}`,
+          `${userOnboarding?.earnings.total}`,
+        ]
+      : null,
+  ].filter(Boolean);
+
 const calculatingPointsRows = ({
   userOnboarding,
   userOnboardingCategories,
@@ -145,98 +205,338 @@ const calculatingPointsRows = ({
   userOnboarding?: USER_POINTS_ONBOARDING;
   userOnboardingCategories?: Record<CATEGORY_TYPE, USER_POINTS_CATEGORY>;
 }) => {
-  if (!userOnboarding || !userOnboardingCategories) return null;
-
   return [
     <Box key={'points-1'} paddingBottom="30px">
-      <Text align="left" size="16pt" weight="semibold" color="labelTertiary">
-        {`> ${i18n.t('points.onboarding.calculating_points')}`}
-      </Text>
+      <AnimatedText
+        align="left"
+        size="16pt"
+        weight="semibold"
+        color="labelTertiary"
+        delay={0}
+      >
+        {
+          calculatingPointsRowsText({
+            userOnboarding,
+            userOnboardingCategories,
+          })[0][0]
+        }
+      </AnimatedText>
     </Box>,
     <AccentColorProvider key={'points-2'} color="#00BFC6">
       <Box paddingBottom="15px">
         <Inline alignHorizontal="justify">
-          <Text align="left" size="14pt" weight="bold" color="accent">
-            {`${i18n.t('points.onboarding.rainbow_swaps')}`}
-          </Text>
-          <Text align="left" size="14pt" weight="bold" color="accent">
-            {convertAmountToNativeDisplayWithThreshold(
-              userOnboardingCategories?.['rainbow-swaps'].data.usd_amount,
-              'USD',
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="bold"
+            color="accent"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              1,
+              0,
             )}
-          </Text>
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[1][0]
+            }
+          </AnimatedText>
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="bold"
+            color="accent"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              1,
+              1,
+            )}
+            direction="rightToLeft"
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[1][1]
+            }
+          </AnimatedText>
         </Inline>
       </Box>
     </AccentColorProvider>,
     <AccentColorProvider key={'points-3'} color="#57EA5F">
       <Box paddingBottom="15px">
         <Inline alignHorizontal="justify">
-          <Text align="left" size="14pt" weight="semibold" color="accent">
-            {`${i18n.t('points.onboarding.rainbow_nfts_owned')}`}
-          </Text>
-          <Text align="left" size="14pt" weight="semibold" color="accent">
-            {`${userOnboardingCategories?.['nft-collections'].data.owned_collections} of ${userOnboardingCategories?.['nft-collections'].data.total_collections}`}
-          </Text>
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="semibold"
+            color="accent"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              2,
+              0,
+            )}
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[2][0]
+            }
+          </AnimatedText>
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="semibold"
+            color="accent"
+            direction="rightToLeft"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              2,
+              1,
+            )}
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[2][1]
+            }
+          </AnimatedText>
         </Inline>
       </Box>
     </AccentColorProvider>,
     <AccentColorProvider key={'points-4'} color="#F5D700">
       <Box paddingBottom="15px">
         <Inline alignHorizontal="justify">
-          <Text align="left" size="14pt" weight="semibold" color="accent">
-            {`${i18n.t('points.onboarding.wallet_balance')}`}
-          </Text>
-          <Text align="left" size="14pt" weight="semibold" color="accent">
-            {convertAmountToNativeDisplayWithThreshold(
-              userOnboardingCategories?.['historic-balance'].data.usd_amount,
-              'USD',
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="semibold"
+            color="accent"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              3,
+              0,
             )}
-          </Text>
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[3][0]
+            }
+          </AnimatedText>
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="semibold"
+            color="accent"
+            direction="rightToLeft"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              3,
+              1,
+            )}
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[3][1]
+            }
+          </AnimatedText>
         </Inline>
       </Box>
     </AccentColorProvider>,
     <AccentColorProvider key={'points-5'} color="#F24527">
       <Box paddingBottom="15px">
         <Inline alignHorizontal="justify">
-          <Text align="left" size="14pt" weight="semibold" color="accent">
-            {`${i18n.t('points.onboarding.metamask_swaps')}`}
-          </Text>
-          <Text align="left" size="14pt" weight="semibold" color="accent">
-            {convertAmountToNativeDisplayWithThreshold(
-              userOnboardingCategories?.['metamask-swaps'].data.usd_amount,
-              'USD',
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="semibold"
+            color="accent"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              4,
+              0,
             )}
-          </Text>
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[4][0]
+            }
+          </AnimatedText>
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="semibold"
+            color="accent"
+            direction="rightToLeft"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              4,
+              1,
+            )}
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[4][1]
+            }
+          </AnimatedText>
         </Inline>
       </Box>
     </AccentColorProvider>,
     <AccentColorProvider key={'points-6'} color="#C54EAB">
       <Box paddingBottom="30px">
         <Inline alignHorizontal="justify">
-          <Text align="left" size="14pt" weight="semibold" color="accent">
-            {`${i18n.t('points.onboarding.bonus_reward')}`}
-          </Text>
-          <Text align="left" size="14pt" weight="semibold" color="accent">
-            + {userOnboardingCategories?.['bonus'].earnings.total}
-          </Text>
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="semibold"
+            color="accent"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              5,
+              0,
+            )}
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[5][0]
+            }
+          </AnimatedText>
+          <AnimatedText
+            align="left"
+            size="14pt"
+            weight="semibold"
+            color="accent"
+            direction="rightToLeft"
+            delay={getDelayForRows(
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              }),
+              5,
+              1,
+            )}
+          >
+            {
+              calculatingPointsRowsText({
+                userOnboarding,
+                userOnboardingCategories,
+              })[5][1]
+            }
+          </AnimatedText>
         </Inline>
       </Box>
     </AccentColorProvider>,
     <Box key={'points-7'} paddingBottom="15px">
-      <Text align="left" size="16pt" weight="semibold" color="labelTertiary">
-        {`> ${i18n.t('points.onboarding.calculation_complete')}`}
-      </Text>
+      <AnimatedText
+        align="left"
+        size="16pt"
+        weight="semibold"
+        color="labelTertiary"
+        delay={getDelayForRows(
+          calculatingPointsRowsText({
+            userOnboarding,
+            userOnboardingCategories,
+          }),
+          6,
+          0,
+        )}
+      >
+        {
+          calculatingPointsRowsText({
+            userOnboarding,
+            userOnboardingCategories,
+          })[6][0]
+        }
+      </AnimatedText>
     </Box>,
-    userOnboarding.earnings.total ? (
+    userOnboarding?.earnings.total ? (
       <AccentColorProvider key={'points-8'} color="#FFFFFF">
         <Box paddingBottom="30px">
           <Inline alignHorizontal="justify">
-            <Text align="left" size="14pt" weight="semibold" color="accent">
-              {`> ${i18n.t('points.onboarding.points_earned')}`}
-            </Text>
-            <Text align="left" size="14pt" weight="semibold" color="accent">
-              {userOnboarding.earnings.total}
-            </Text>
+            <AnimatedText
+              align="left"
+              size="14pt"
+              weight="semibold"
+              color="accent"
+              delay={getDelayForRows(
+                calculatingPointsRowsText({
+                  userOnboarding,
+                  userOnboardingCategories,
+                }),
+                7,
+                0,
+              )}
+            >
+              {
+                calculatingPointsRowsText({
+                  userOnboarding,
+                  userOnboardingCategories,
+                })[7][0]
+              }
+            </AnimatedText>
+            <AnimatedText
+              align="left"
+              size="14pt"
+              weight="semibold"
+              color="accent"
+              direction="rightToLeft"
+              delay={getDelayForRows(
+                calculatingPointsRowsText({
+                  userOnboarding,
+                  userOnboardingCategories,
+                }),
+                7,
+                1,
+              )}
+            >
+              {
+                calculatingPointsRowsText({
+                  userOnboarding,
+                  userOnboardingCategories,
+                })[7][1]
+              }
+            </AnimatedText>
           </Inline>
         </Box>
       </AccentColorProvider>
@@ -249,8 +549,6 @@ const registeringPointsRows = ({
 }: {
   userOnboardingCategories?: Record<CATEGORY_TYPE, USER_POINTS_CATEGORY>;
 }) => {
-  if (!userOnboardingCategories) return null;
-
   return [
     <AccentColorProvider key={'points-1'} color="green">
       <Box paddingBottom="30px">
@@ -266,7 +564,7 @@ const registeringPointsRows = ({
             {i18n.t('points.onboarding.bonus_points')}
           </Text>
           <Text align="left" size="14pt" weight="semibold" color="accent">
-            {userOnboardingCategories['bonus'].earnings.total}
+            {userOnboardingCategories?.['bonus'].earnings.total}
           </Text>
         </Inline>
       </Box>
@@ -283,21 +581,70 @@ const registeringPointsRows = ({
   ];
 };
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      delayChildren: 1, // Delay before starting to animate children
-      staggerChildren: 1, // Delay between each child animation
+const DUMMY_USER = {
+  categories: [
+    {
+      data: {
+        owned_collections: 0,
+        total_collections: 0,
+        usd_amount: 1,
+      },
+      type: 'metamask-swaps' as CATEGORY_TYPE,
+      display_type: 'USD_AMOUNT' as CATEGORY_DISPLAY_TYPE,
+      earnings: { total: 0 },
     },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-  },
+    {
+      data: {
+        owned_collections: 0,
+        total_collections: 0,
+        usd_amount: 1,
+      },
+      type: 'rainbow-bridges' as CATEGORY_TYPE,
+      display_type: 'USD_AMOUNT' as CATEGORY_DISPLAY_TYPE,
+      earnings: { total: 0 },
+    },
+    {
+      data: {
+        owned_collections: 1,
+        total_collections: 10,
+        usd_amount: 1,
+      },
+      type: 'nft-collections' as CATEGORY_TYPE,
+      display_type: 'NFT_COLLECTION' as CATEGORY_DISPLAY_TYPE,
+      earnings: { total: 0 },
+    },
+    {
+      data: {
+        owned_collections: 0,
+        total_collections: 0,
+        usd_amount: 1,
+      },
+      type: 'historic-balance' as CATEGORY_TYPE,
+      display_type: 'USD_AMOUNT' as CATEGORY_DISPLAY_TYPE,
+      earnings: { total: 0 },
+    },
+    {
+      data: {
+        owned_collections: 0,
+        total_collections: 0,
+        usd_amount: 1,
+      },
+      type: 'bonus' as CATEGORY_TYPE,
+      display_type: 'BONUS' as CATEGORY_DISPLAY_TYPE,
+      earnings: { total: 1 },
+    },
+    {
+      data: {
+        owned_collections: 0,
+        total_collections: 0,
+        usd_amount: 1,
+      },
+      type: 'rainbow-swaps' as CATEGORY_TYPE,
+      display_type: 'USD_AMOUNT' as CATEGORY_DISPLAY_TYPE,
+      earnings: { total: 0 },
+    },
+  ],
+  earnings: { total: 100 },
 };
 
 export const PointsOnboardingSheet = () => {
@@ -309,7 +656,7 @@ export const PointsOnboardingSheet = () => {
   const [accessGranted, setAccessGranted] = useState(false);
   const [error, setError] = useState<null | string>();
   const [userOnboarding, setUserOnboarding] =
-    useState<USER_POINTS_ONBOARDING>();
+    useState<USER_POINTS_ONBOARDING>(DUMMY_USER);
   const debouncedAccessGranted = useDebounce(accessGranted, 1000);
 
   const userOnboardingCategories = useMemo(() => {
@@ -381,7 +728,7 @@ export const PointsOnboardingSheet = () => {
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar leftComponent={<Navbar.BackButton onClick={backToHome} />} />
-      <Box style={{ height: '400px' }} height="full" padding="20px">
+      <Box style={{ height: '500px' }} height="full" padding="20px">
         <Rows alignVertical="justify">
           <Row>
             <Stack space="15px">
@@ -399,36 +746,29 @@ export const PointsOnboardingSheet = () => {
                 </Text>
               </Inline>
 
-              {!debouncedAccessGranted && (
+              {debouncedAccessGranted && (
                 <AnimatedTextRows
-                  id="animated-text"
-                  rows={consoleLoadingRows({ accessGranted, error }).map(
-                    (item) => item,
-                  )}
+                  id="animated-loading-rows"
+                  rows={consoleLoadingRows({ accessGranted, error })}
                   rowsText={loadingRowsText({ accessGranted, error })}
                 />
               )}
-              {debouncedAccessGranted && (
-                <Box
-                  as={motion.div}
-                  initial="hidden"
-                  animate="visible"
-                  variants={containerVariants}
-                >
-                  <Stack space="15px">
-                    {(userHasEarnings
+              {!debouncedAccessGranted && (
+                <AnimatedTextRows
+                  id="animated-calculating-rows"
+                  rowsText={calculatingPointsRowsText({
+                    userOnboarding,
+                    userOnboardingCategories,
+                  }).flat()}
+                  rows={
+                    userHasEarnings
                       ? calculatingPointsRows({
                           userOnboarding,
                           userOnboardingCategories,
-                        })
+                        })?.filter(Boolean)
                       : registeringPointsRows({ userOnboardingCategories })
-                    )?.map((item, i) => (
-                      <Box as={motion.div} key={i} variants={itemVariants}>
-                        {item}
-                      </Box>
-                    ))}
-                  </Stack>
-                </Box>
+                  }
+                />
               )}
             </Stack>
           </Row>
