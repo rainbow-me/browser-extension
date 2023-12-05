@@ -56,6 +56,33 @@ const getErrorString = (error: string) => {
   }
 };
 
+const characterTypingTime = 0.1;
+const loadingRowsText = ({
+  accessGranted,
+  error,
+}: {
+  accessGranted: boolean;
+  error?: string | null;
+}) =>
+  [
+    `> ${i18n.t('points.onboarding.authorization_required')}`,
+    `> ${i18n.t('points.onboarding.sign_in_with_your_wallet')}`,
+    `> ${i18n.t('points.onboarding.sign_in_with_your_wallet')}`,
+    `> ${i18n.t('points.onboarding.access_granted')}`,
+    accessGranted ? `> ${i18n.t('points.onboarding.access_granted')}` : null,
+    error ? `> ${getErrorString(error)}` : null,
+  ].filter(Boolean);
+
+const getDelayForRow = (rows: string[], row: number) => {
+  const characters = rows.reduce((total, currentString, index) => {
+    if (index <= row) {
+      return total + currentString.length;
+    }
+    return total;
+  }, 0);
+  return characters * characterTypingTime;
+};
+
 const consoleLoadingRows = ({
   accessGranted,
   error,
@@ -64,45 +91,49 @@ const consoleLoadingRows = ({
   error?: string | null;
 }) => {
   return [
-    <Text
+    <AnimatedText
       key={'loading-1'}
       align="left"
       size="14pt"
       weight="semibold"
       color="labelTertiary"
+      delay={0}
     >
-      {`> ${i18n.t('points.onboarding.authorization_required')}`}
-    </Text>,
-    <Text
+      {loadingRowsText({ accessGranted, error })[0]}
+    </AnimatedText>,
+    <AnimatedText
       key={'loading-2'}
       align="left"
       size="14pt"
       weight="semibold"
       color="labelTertiary"
+      delay={getDelayForRow(loadingRowsText({ accessGranted, error }), 0)}
     >
-      {`> ${i18n.t('points.onboarding.sign_in_with_your_wallet')}`}
-    </Text>,
+      {loadingRowsText({ accessGranted, error })[1]}
+    </AnimatedText>,
     accessGranted ? (
-      <Text
+      <AnimatedText
         key={'loading-3'}
         align="left"
         size="14pt"
         weight="semibold"
         color="green"
+        delay={getDelayForRow(loadingRowsText({ accessGranted, error }), 1)}
       >
-        {`> ${i18n.t('points.onboarding.access_granted')}`}
-      </Text>
+        {loadingRowsText({ accessGranted, error })[2]}
+      </AnimatedText>
     ) : undefined,
     error ? (
-      <Text
+      <AnimatedText
         key={'loading-4'}
         align="left"
         size="14pt"
         weight="semibold"
         color="red"
+        delay={getDelayForRow(loadingRowsText({ accessGranted, error }), 2)}
       >
-        {`> ${getErrorString(error)}`}
-      </Text>
+        {loadingRowsText({ accessGranted, error })[3]}
+      </AnimatedText>
     ) : undefined,
   ].filter(Boolean);
 };
@@ -223,9 +254,9 @@ const registeringPointsRows = ({
   return [
     <AccentColorProvider key={'points-1'} color="green">
       <Box paddingBottom="30px">
-        <AnimatedText key={'points-1'} size="16pt" weight="semibold">
+        <Text align="left" size="16pt" weight="semibold" color="accent">
           {`> ${i18n.t('points.onboarding.registration_complete')}`}
-        </AnimatedText>
+        </Text>
       </Box>
     </AccentColorProvider>,
     <AccentColorProvider key={'points-2'} color="#C54EAB">
@@ -256,8 +287,8 @@ const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      delayChildren: 3, // Delay before starting to animate children
-      staggerChildren: 3, // Delay between each child animation
+      delayChildren: 1, // Delay before starting to animate children
+      staggerChildren: 1, // Delay between each child animation
     },
   },
 };
@@ -374,6 +405,7 @@ export const PointsOnboardingSheet = () => {
                   rows={consoleLoadingRows({ accessGranted, error }).map(
                     (item) => item,
                   )}
+                  rowsText={loadingRowsText({ accessGranted, error })}
                 />
               )}
               {debouncedAccessGranted && (

@@ -1,51 +1,28 @@
 import { Variants, motion } from 'framer-motion';
-import React, { ReactElement, useMemo } from 'react';
-
-import { TextProps } from '../Text/Text';
+import React, { ReactNode, useMemo } from 'react';
 
 export const AnimatedTextRows: React.FC<{
-  rows: ReactElement<TextProps>[];
+  rows: ReactNode[];
+  rowsText: string[];
   id?: string;
-}> = ({ rows, id }) => {
-  const charAnimationDuration = 0.0;
-  const staggerDuration = 0.1;
+}> = ({ rows, rowsText, id }) => {
+  const charDisplayDuration = 0.1;
 
   const rowDelays = useMemo(() => {
     let totalDuration = 0;
-    return rows.map((row) => {
+    return rowsText.map((text) => {
       const delay = totalDuration;
-      const rowLength =
-        typeof row.props.children === 'string' ? row.props.children.length : 0;
-      totalDuration += rowLength * staggerDuration + charAnimationDuration;
+      totalDuration += text.length * charDisplayDuration;
       return delay;
     });
-  }, [rows]);
+  }, [rowsText]);
 
-  const rowVariants = (delay: number): Variants => ({
+  const rowVariants: Variants = {
     hidden: { opacity: 0 },
-    visible: {
+    visible: (delay: number) => ({
       opacity: 1,
-      transition: {
-        staggerChildren: staggerDuration,
-        delayChildren: delay,
-      },
-    },
-  });
-
-  const charVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  };
-
-  const animateRowChildren = (children: React.ReactNode, key: string) => {
-    if (typeof children === 'string') {
-      return children.split('').map((char, index) => (
-        <motion.span key={key + index} variants={charVariants}>
-          {char}
-        </motion.span>
-      ));
-    }
-    return children;
+      transition: { delay, delayChildren: delay },
+    }),
   };
 
   return (
@@ -53,15 +30,12 @@ export const AnimatedTextRows: React.FC<{
       {rows.map((row, rowIndex) => (
         <motion.div
           key={id ? `${id}-row-${rowIndex}` : `row-${rowIndex}`}
-          variants={rowVariants(rowDelays[rowIndex])}
+          custom={rowDelays[rowIndex]}
+          variants={rowVariants}
+          initial="hidden"
+          animate="visible"
         >
-          {React.cloneElement(row, {
-            ...row.props,
-            children: animateRowChildren(
-              row.props.children,
-              id ? `${id}-row-${rowIndex}` : `row-${rowIndex}`,
-            ),
-          })}
+          {row}
         </motion.div>
       ))}
     </motion.div>
