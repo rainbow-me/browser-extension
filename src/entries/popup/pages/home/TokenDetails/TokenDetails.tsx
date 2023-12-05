@@ -365,7 +365,7 @@ export function TokenDetails() {
             />
           }
           rightComponent={
-            !isSwappable ? (
+            isSwappable ? (
               <Inline alignVertical="center" space="7px">
                 <FavoriteButton token={token} />
                 <MoreOptions token={token} />

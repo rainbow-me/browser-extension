@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.2.93",
+  "version": "1.2.94",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -132,6 +132,7 @@
     "framer-motion": "10.2.3",
     "graphql-request": "5.2.0",
     "i18n-js": "4.1.1",
+    "idna-uts46-hx": "3.5.0",
     "imgix-core-js": "2.3.2",
     "lodash": "4.17.21",
     "make-color-more-chill": "0.2.2",
