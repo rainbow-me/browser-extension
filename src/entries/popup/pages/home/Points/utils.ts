@@ -7,7 +7,9 @@ import {
   INVALID_REFERRAL_CODE_ERROR,
 } from './references';
 
-export const getErrorString = (error: string) => {
+export const CHARACTER_TYPING_SPEED = 0.1;
+
+export const getErrorString = (error?: string | null) => {
   switch (error) {
     case EXISTING_USER_ERROR:
       return i18n.t('points.error.existing_user');
@@ -18,8 +20,6 @@ export const getErrorString = (error: string) => {
   }
 };
 
-export const characterTypingTime = 0.1;
-
 export const getDelayForRow = (rows: string[], row: number) => {
   const characters = rows.reduce((total, str, index) => {
     if (index <= row) {
@@ -27,7 +27,7 @@ export const getDelayForRow = (rows: string[], row: number) => {
     }
     return total;
   }, 0);
-  return characters * characterTypingTime;
+  return characters * CHARACTER_TYPING_SPEED;
 };
 
 export const getDelayForRows = (
@@ -36,7 +36,6 @@ export const getDelayForRows = (
   column: number,
 ): number => {
   const delay = getDelayForRow(rows.flat(), row * 2 + column - 1);
-  console.log(row, column, row * 2 + column - 1, delay);
   return delay;
 };
 

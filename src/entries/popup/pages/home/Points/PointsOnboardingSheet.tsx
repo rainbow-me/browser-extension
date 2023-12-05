@@ -54,7 +54,7 @@ export const PointsOnboardingSheet = () => {
   const [error, setError] = useState<null | string>();
   const [userOnboarding, setUserOnboarding] =
     useState<USER_POINTS_ONBOARDING>();
-  const debouncedAccessGranted = useDebounce(accessGranted, 1000);
+  const debouncedAccessGranted = useDebounce(accessGranted, 3000);
 
   const userOnboardingCategories = useMemo(() => {
     const userCategories = userOnboarding?.categories?.reduce(
@@ -79,7 +79,7 @@ export const PointsOnboardingSheet = () => {
 
   const showRegisteredCallToAction = useDebounce(
     accessGranted && !userHasEarnings,
-    4000,
+    6000,
   );
 
   const { data } = usePointsChallenge({
@@ -127,14 +127,10 @@ export const PointsOnboardingSheet = () => {
       [
         `> ${i18n.t('points.onboarding.authorization_required')}`,
         `> ${i18n.t('points.onboarding.sign_in_with_your_wallet')}`,
-        `> ${i18n.t('points.onboarding.sign_in_with_your_wallet')}`,
         `> ${i18n.t('points.onboarding.access_granted')}`,
-        accessGranted
-          ? `> ${i18n.t('points.onboarding.access_granted')}`
-          : null,
-        error ? `> ${getErrorString(error)}` : null,
+        `> ${getErrorString(error)}`,
       ].filter(Boolean),
-    [accessGranted, error],
+    [error],
   );
 
   const consoleLoadingRows = useMemo(
@@ -156,7 +152,9 @@ export const PointsOnboardingSheet = () => {
           size="14pt"
           weight="semibold"
           color="labelTertiary"
-          delay={getDelayForRow(loadingRowsText, 0)}
+          delay={
+            accessGranted || error ? 0 : getDelayForRow(loadingRowsText, 0)
+          }
         >
           {loadingRowsText[1]}
         </AnimatedText>,
@@ -167,7 +165,9 @@ export const PointsOnboardingSheet = () => {
             size="14pt"
             weight="semibold"
             color="green"
-            delay={getDelayForRow(loadingRowsText, 1)}
+            delay={
+              accessGranted || error ? 0 : getDelayForRow(loadingRowsText, 1)
+            }
           >
             {loadingRowsText[2]}
           </AnimatedText>
@@ -179,7 +179,7 @@ export const PointsOnboardingSheet = () => {
             size="14pt"
             weight="semibold"
             color="red"
-            delay={getDelayForRow(loadingRowsText, 2)}
+            delay={0}
           >
             {loadingRowsText[3]}
           </AnimatedText>
@@ -287,6 +287,7 @@ export const PointsOnboardingSheet = () => {
         size="14pt"
         weight="semibold"
         color="labelTertiary"
+        customTypingSpeed={0.05}
         delay={getDelayForRows(registeringPointsRowsText, 2, 0)}
       >
         {registeringPointsRowsText[2][0]}
@@ -499,6 +500,7 @@ export const PointsOnboardingSheet = () => {
 
               {!debouncedAccessGranted && (
                 <AnimatedTextRows
+                  customDelay={accessGranted || error ? 0 : undefined}
                   id="animated-loading-rows"
                   rows={consoleLoadingRows}
                   rowsText={loadingRowsText}
@@ -507,10 +509,13 @@ export const PointsOnboardingSheet = () => {
               {debouncedAccessGranted && (
                 <AnimatedTextRows
                   id="animated-calculating-rows"
-                  rowsText={calculatingPointsRowsText.flat()}
+                  rowsText={(userHasEarnings
+                    ? calculatingPointsRowsText
+                    : registeringPointsRowsText
+                  ).flat()}
                   rows={
                     userHasEarnings
-                      ? calculatingPointsRows?.filter(Boolean)
+                      ? calculatingPointsRows
                       : registeringPointsRows
                   }
                 />

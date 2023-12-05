@@ -10,10 +10,12 @@ export const AnimatedTextRows = ({
   rowsText,
   id,
   space,
+  customDelay,
 }: {
   rows: ReactElement[];
   rowsText: string[];
   space?: BoxStyles['gap'];
+  customDelay?: number;
   id?: string;
 }) => {
   const charDisplayDuration = 0.1;
@@ -40,7 +42,7 @@ export const AnimatedTextRows = ({
       {rows.map((row, rowIndex) => (
         <motion.div
           key={id ? `${id}-row-${rowIndex}` : `row-${rowIndex}`}
-          custom={rowDelays[rowIndex]}
+          custom={customDelay !== undefined ? customDelay : rowDelays[rowIndex]}
           variants={rowVariants}
           initial="hidden"
           animate="visible"

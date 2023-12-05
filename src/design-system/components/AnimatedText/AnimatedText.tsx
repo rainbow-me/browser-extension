@@ -1,6 +1,8 @@
 import { Variants, motion } from 'framer-motion';
 import React from 'react';
 
+import { CHARACTER_TYPING_SPEED } from '~/entries/popup/pages/home/Points/utils';
+
 import { Text, TextProps } from '../Text/Text';
 
 type AnimationDirection = 'rightToLeft' | 'leftToRight';
@@ -10,11 +12,13 @@ export const AnimatedText = ({
   children,
   delay = 0,
   direction = 'leftToRight',
+  customTypingSpeed,
   ...textProps
 }: TextProps & {
   id?: string;
   delay?: number;
   direction?: AnimationDirection;
+  customTypingSpeed?: number;
 }) => {
   if (typeof children !== 'string') {
     console.error('AnimatedText expects a string as children');
@@ -24,11 +28,16 @@ export const AnimatedText = ({
   const characters = children.split('');
   const totalCharacters = characters.length;
 
+  const typingSpeed =
+    customTypingSpeed !== undefined
+      ? customTypingSpeed
+      : CHARACTER_TYPING_SPEED;
+
   const containerVariants: Variants = {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.1, // Stagger time between animations
+        staggerChildren: typingSpeed,
       },
     },
   };
@@ -40,7 +49,8 @@ export const AnimatedText = ({
       transition: {
         delay:
           delay +
-          (direction === 'rightToLeft' ? totalCharacters - i - 1 : i) * 0.1,
+          (direction === 'rightToLeft' ? totalCharacters - i - 1 : i) *
+            typingSpeed,
       },
     }),
   };
@@ -50,7 +60,7 @@ export const AnimatedText = ({
     <Text {...textProps}>
       <motion.div
         key={id}
-        id={id || ''}
+        id={id}
         initial="hidden"
         animate="visible"
         variants={containerVariants}
