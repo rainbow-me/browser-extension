@@ -1252,10 +1252,12 @@
       "points_earned": "Points Earned:",
       "registration_complete": "Registration complete",
       "bonus_points": "Bonus Points:",
-      "claim_description": "To claim the rest of your bonus points, get some ETH through Rainbow.",
+      "claim_description_buy": "To claim the rest of your bonus points, get some ETH through Rainbow.",
+      "claim_description_swap": "To claim the rest of your bonus points, swap at least $100 through Rainbow.",
       "account": "Account:",
       "sign_in": "Sign In",
-      "get_eth": "Get some ETH"
+      "get_eth": "Get some ETH",
+      "try_swap": "Try a Swap"
     },
     "error": {
       "existing_user": "Existing user",

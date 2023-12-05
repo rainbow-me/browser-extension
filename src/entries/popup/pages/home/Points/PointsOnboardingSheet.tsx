@@ -4,8 +4,16 @@ import { useLocation } from 'react-router-dom';
 
 import { metadataPostClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
-import { convertAmountToNativeDisplayWithThreshold } from '~/core/utils/numbers';
+import {
+  selectUserAssetsBalance,
+  selectorFilterByUserChains,
+} from '~/core/resources/_selectors/assets';
+import { useUserAssets } from '~/core/resources/assets';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import {
+  convertAmountToNativeDisplayWithThreshold,
+  isZero,
+} from '~/core/utils/numbers';
 import {
   AccentColorProvider,
   Box,
@@ -56,6 +64,21 @@ export const PointsOnboardingSheet = () => {
     useState<USER_POINTS_ONBOARDING>();
   const debouncedAccessGranted = useDebounce(accessGranted, 3000);
 
+  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { data: totalAssetsBalance } = useUserAssets(
+    { address: currentAddress, currency },
+    {
+      select: (data) =>
+        selectorFilterByUserChains<string>({
+          data,
+          selector: selectUserAssetsBalance,
+        }),
+    },
+  );
+
+  const registrationAction =
+    totalAssetsBalance && isZero(totalAssetsBalance) ? 'buy' : 'swap';
+
   const userOnboardingCategories = useMemo(() => {
     const userCategories = userOnboarding?.categories?.reduce(
       (acc, current) => {
@@ -91,6 +114,16 @@ export const PointsOnboardingSheet = () => {
     navigate(ROUTES.HOME, {
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
+
+  const goToBuy = () => {
+    backToHome();
+    navigate(ROUTES.BUY);
+  };
+
+  const goToSwap = () => {
+    backToHome();
+    navigate(ROUTES.SWAP);
+  };
 
   const signChallenge = useCallback(async () => {
     if (data?.pointsOnboardChallenge) {
@@ -237,9 +270,18 @@ export const PointsOnboardingSheet = () => {
         `${i18n.t('points.onboarding.bonus_points')}`,
         `${userOnboardingCategories?.['bonus'].earnings.total}`,
       ],
-      [i18n.t('points.onboarding.claim_description'), ''],
+      [
+        i18n.t(
+          `points.onboarding.${
+            registrationAction === 'swap'
+              ? 'claim_description_swap'
+              : 'claim_description_buy'
+          }`,
+        ),
+        '',
+      ],
     ],
-    [userOnboardingCategories],
+    [registrationAction, userOnboardingCategories],
   );
   const registeringPointsRows = useMemo(
     () => [
@@ -559,7 +601,7 @@ export const PointsOnboardingSheet = () => {
                     disabled={!data?.pointsOnboardChallenge}
                     width="full"
                     borderRadius="12px"
-                    onClick={signChallenge}
+                    onClick={registrationAction === 'swap' ? goToSwap : goToBuy}
                     color="accent"
                     height="36px"
                     variant="stroked"
@@ -581,7 +623,13 @@ export const PointsOnboardingSheet = () => {
                         weight="heavy"
                         color="accent"
                       >
-                        {i18n.t('points.onboarding.get_eth')}
+                        {i18n.t(
+                          `points.onboarding.${
+                            registrationAction === 'swap'
+                              ? 'try_swap'
+                              : 'get_eth'
+                          }`,
+                        )}
                       </Text>
                     </Inline>
                   </Button>
