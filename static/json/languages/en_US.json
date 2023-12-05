@@ -880,7 +880,7 @@
   },
   "seed_verify": {
     "title": "Verify your Secret Recovery Phrase",
-    "explanation": "Select the 4th, 8th, and 12th words in order your  Secret Recovery Phrase displays them.",
+    "explanation": "Select the 4th, 8th, and 12th words in the order your Secret Recovery Phrase displays them.",
     "skip": "Skip this"
   },
   "menu": {
