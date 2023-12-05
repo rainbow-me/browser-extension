@@ -1,17 +1,19 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { useQuery } from '@tanstack/react-query';
 import { formatDistanceToNowStrict } from 'date-fns';
+import { MotionProps, motion } from 'framer-motion';
 import { PropsWithChildren } from 'react';
 import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
-import { StackProps } from '~/design-system/components/Stack/Stack';
 import {
   SymbolName,
   linearGradients,
@@ -19,20 +21,27 @@ import {
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
-function Card({ children, ...props }: PropsWithChildren<StackProps>) {
+function Card({
+  children,
+  ...props
+}: PropsWithChildren<BoxProps & MotionProps>) {
   return (
-    <Stack
+    <Box
+      as={motion.div}
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      gap="12px"
       paddingVertical="16px"
       paddingHorizontal="18px"
       borderRadius="16px"
       background="surfaceSecondaryElevated"
-      gap="12px"
       width="full"
       boxShadow="12px surfaceSecondaryElevated"
       {...props}
     >
       {children}
-    </Stack>
+    </Box>
   );
 }
 
@@ -43,20 +52,22 @@ const LeaderboardPositionNumberDisplay = ({
   const medal = (['🥇', '🥈', '🥉'] as const)[position - 1];
 
   if (medal)
-    <Inline wrap={false} space="8px" alignVertical="center">
-      <Text
-        size="12pt"
-        weight="bold"
-        webkitBackgroundClip="text"
-        background={medal}
-        color="transparent"
-      >
-        {children}
-      </Text>
-      <Text size="16pt" weight="bold">
-        {medal}
-      </Text>
-    </Inline>;
+    return (
+      <Inline wrap={false} space="8px" alignVertical="center">
+        <Text
+          size="12pt"
+          weight="bold"
+          webkitBackgroundClip="text"
+          background={medal}
+          color="transparent"
+        >
+          {children}
+        </Text>
+        <Text size="16pt" weight="bold">
+          {medal}
+        </Text>
+      </Inline>
+    );
 
   if (position > 3 && position <= 50)
     return (
@@ -79,7 +90,7 @@ const LeaderboardPositionNumberDisplay = ({
         {children}
       </Text>
       <Text size="10pt" weight="bold" color="labelTertiary">
-        #{children}
+        #{position}
       </Text>
     </Inline>
   );
@@ -135,34 +146,32 @@ function Leaderboard() {
           #{user.stats.position.current}
         </Text>
       </Card>
-      <Card
-        paddingVertical="10px"
-        paddingHorizontal="16px"
-        separator={<Separator color="separatorTertiary" />}
-      >
-        {leaderboard.accounts
-          ?.slice(0, 10)
-          .map(({ address, earnings }, index) => (
-            <Inline
-              key={address}
-              wrap={false}
-              space="12px"
-              alignVertical="center"
-              alignHorizontal="justify"
-            >
-              <Inline wrap={false} space="12px" alignVertical="center">
-                <WalletAvatar
-                  size={32}
-                  addressOrName={address}
-                  emojiSize="16pt"
-                />
-                <AddressOrEns address={address} size="14pt" weight="bold" />
+      <Card paddingVertical="10px" paddingHorizontal="16px">
+        <Stack separator={<Separator color="separatorTertiary" />} space="12px">
+          {leaderboard.accounts
+            ?.slice(0, 10)
+            .map(({ address, earnings }, index) => (
+              <Inline
+                key={address}
+                wrap={false}
+                space="12px"
+                alignVertical="center"
+                alignHorizontal="justify"
+              >
+                <Inline wrap={false} space="12px" alignVertical="center">
+                  <WalletAvatar
+                    size={32}
+                    addressOrName={address}
+                    emojiSize="16pt"
+                  />
+                  <AddressOrEns address={address} size="14pt" weight="bold" />
+                </Inline>
+                <LeaderboardPositionNumberDisplay position={index + 1}>
+                  {formatNumber(earnings.total)}
+                </LeaderboardPositionNumberDisplay>
               </Inline>
-              <LeaderboardPositionNumberDisplay position={index + 1}>
-                {formatNumber(earnings.total)}
-              </LeaderboardPositionNumberDisplay>
-            </Inline>
-          ))}
+            ))}
+        </Stack>
       </Card>
     </Stack>
   );
@@ -195,9 +204,21 @@ function ReferralCode() {
       <Inline wrap={false} space="12px">
         {data ? (
           <>
-            <Card paddingVertical="12px">
+            <Card
+              paddingVertical="12px"
+              whileTap={{ scale: 0.98 }}
+              whileFocus={{ scale: 1.02 }}
+              whileHover={{ scale: 1.02 }}
+              onTap={() =>
+                copy({
+                  value: data.user.referralCode,
+                  title: i18n.t('points.copied_referral_code'),
+                  description: data.user.referralCode,
+                })
+              }
+            >
               <Text size="20pt" weight="bold" align="center">
-                {data?.user.referralCode}
+                {data.user.referralCode}
               </Text>
             </Card>
 
@@ -205,6 +226,16 @@ function ReferralCode() {
               paddingVertical="12px"
               flexDirection="row"
               alignItems="center"
+              whileTap={{ scale: 0.98 }}
+              whileFocus={{ scale: 1.02 }}
+              whileHover={{ scale: 1.02 }}
+              onTap={() =>
+                copy({
+                  value: data.user.referralCode, // TODO: change to link
+                  title: i18n.t('points.copied_referral_link'),
+                  description: data.user.referralCode, // TODO: change to link
+                })
+              }
             >
               <Symbol
                 symbol="square.on.square"
@@ -297,10 +328,28 @@ function YourRankAndNextDrop() {
   );
 }
 
+const mapToRange = (
+  num: number,
+  inputRange = [0, 3_000_000],
+  outputRange = [30, 300],
+) => {
+  const [inMin, inMax] = inputRange;
+  const [outMin, outMax] = outputRange;
+  const result = ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+  return result > outMax ? outMax : result;
+};
+
 function YourPoints() {
   const { data } = usePoints();
 
-  if (!data) return null; // add skeleton
+  if (!data)
+    return (
+      <Stack space="12px">
+        <Skeleton height="24px" width="90px" />
+        <Skeleton layoutId="points-bar" height="12px" width="140px" />
+        <Skeleton height="8px" width="200px" />
+      </Stack>
+    );
 
   const { leaderboard, user } = data;
 
@@ -310,8 +359,14 @@ function YourPoints() {
         {formatNumber(user.earnings.total)}
       </Text>
       <Box
+        as={motion.div}
+        layoutId="points-bar"
         borderRadius="round"
-        style={{ background: linearGradients.points, height: 10, width: 140 }}
+        style={{
+          background: linearGradients.points,
+          height: 10,
+          width: mapToRange(user.earnings.total, [0, 2_500_000], [30, 300]),
+        }}
       />
       <Text
         size="12pt"
@@ -321,7 +376,7 @@ function YourPoints() {
         webkitBackgroundClip="text"
       >
         {i18n.t('points.out_of_current_total_points', {
-          total: leaderboard.stats.total_points,
+          total: formatNumber(leaderboard.stats.total_points),
         })}
       </Text>
     </Stack>
