@@ -21,6 +21,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.2.94](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.94)
+
+### Fixed
+
+- Resolved reliability issues with malicious transaction detection upon dapp requests, and improved readability of Rainbow Canary warnings #1168
+- Fixed a formatting issue with `eth_estimateGas` and `eth_gasPrice` RPC calls for dapps that could trigger an error and cause dapps to be unreliable #1163
+
+### Internal
+
+- Added "Registered on" and "Expires in" rows in NFT Details for ENS assets #1166
+- Fixed missing Flashbots toggle store migration to improve developer workflow on rehydrations #1171
+
 ## [v1.2.88](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.88)
 
 ### Added
