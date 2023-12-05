@@ -192,8 +192,8 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
         />
         <PriceChange changePercentage={changePercentage} date={date} />
       </Box>
-      {hasPriceData && (
-        <Box>
+      {shouldHaveData && (
+        <>
           <Box style={{ height: '222px' }} marginHorizontal="-20px">
             {data && (
               <LineChart
@@ -222,7 +222,7 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
               );
             })}
           </Box>
-        </Box>
+        </>
       )}
     </>
   );
