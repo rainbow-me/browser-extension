@@ -1213,7 +1213,9 @@
       "ens_bio": "Bio",
       "ens_cover": "Cover",
       "ens_address": "ETH Address",
-      "ens_website": "Website"
+      "ens_website": "Website",
+      "registered_on": "Registered on",
+      "expires_in": "Expires in"
     }
   },
   "points": {
