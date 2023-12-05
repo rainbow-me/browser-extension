@@ -96,9 +96,7 @@ const LeaderboardPositionNumberDisplay = ({
   );
 };
 
-const usePoints = (
-  address: Address = '0x52c717ce5a6b483a890bcdc3114ff140e679b43f',
-) => {
+const usePoints = (address: Address) => {
   return useQuery({
     queryKey: ['points', address],
     queryFn: async () => {
@@ -110,8 +108,7 @@ const usePoints = (
 
 function Leaderboard() {
   const { currentAddress } = useCurrentAddressStore();
-
-  const { data } = usePoints();
+  const { data } = usePoints(currentAddress);
   if (!data) return null;
 
   const { user, leaderboard } = data;
@@ -195,7 +192,8 @@ function TextWithMoreInfo({ children }: PropsWithChildren) {
 }
 
 function ReferralCode() {
-  const { data } = usePoints();
+  const { currentAddress } = useCurrentAddressStore();
+  const { data } = usePoints(currentAddress);
 
   return (
     <Stack gap="12px">
@@ -231,9 +229,9 @@ function ReferralCode() {
               whileHover={{ scale: 1.02 }}
               onTap={() =>
                 copy({
-                  value: data.user.referralCode, // TODO: change to link
+                  value: `https://rainbow.me/points?ref=${data.user.referralCode}`,
                   title: i18n.t('points.copied_referral_link'),
-                  description: data.user.referralCode, // TODO: change to link
+                  description: `rainbow.me/points?ref=${data.user.referralCode}`,
                 })
               }
             >
@@ -275,7 +273,8 @@ function CardSkeleton({ height }: { height: string }) {
 }
 
 function YourRankAndNextDrop() {
-  const { data } = usePoints();
+  const { currentAddress } = useCurrentAddressStore();
+  const { data } = usePoints(currentAddress);
 
   if (!data)
     return (
@@ -340,14 +339,15 @@ const mapToRange = (
 };
 
 function YourPoints() {
-  const { data } = usePoints();
+  const { currentAddress } = useCurrentAddressStore();
+  const { data } = usePoints(currentAddress);
 
   if (!data)
     return (
       <Stack space="12px">
-        <Skeleton height="24px" width="90px" />
-        <Skeleton layoutId="points-bar" height="12px" width="140px" />
-        <Skeleton height="8px" width="200px" />
+        <Skeleton height="18px" width="90px" />
+        <Skeleton height="10px" width="40px" />
+        <Skeleton height="9px" width="200px" />
       </Stack>
     );
 
@@ -360,13 +360,13 @@ function YourPoints() {
       </Text>
       <Box
         as={motion.div}
-        layoutId="points-bar"
         borderRadius="round"
-        style={{
-          background: linearGradients.points,
-          height: 10,
-          width: mapToRange(user.earnings.total, [0, 2_500_000], [30, 300]),
+        initial={{ width: 40 }}
+        transition={{ duration: 1 }}
+        animate={{
+          width: mapToRange(user.earnings.total, [0, 2_000_000], [40, 300]),
         }}
+        style={{ height: 10, background: linearGradients.points }}
       />
       <Text
         size="12pt"
