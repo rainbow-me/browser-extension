@@ -339,15 +339,15 @@ export const ReviewSheet = ({
 
   return (
     <>
+      <ExplainerSheet
+        show={explainerSheetParams.show}
+        header={explainerSheetParams.header}
+        title={explainerSheetParams.title}
+        description={explainerSheetParams.description}
+        actionButton={explainerSheetParams.actionButton}
+        linkButton={explainerSheetParams.linkButton}
+      />
       <BottomSheet show={show}>
-        <ExplainerSheet
-          show={explainerSheetParams.show}
-          header={explainerSheetParams.header}
-          title={explainerSheetParams.title}
-          description={explainerSheetParams.description}
-          actionButton={explainerSheetParams.actionButton}
-          linkButton={explainerSheetParams.linkButton}
-        />
         <Box
           style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
           background="surfacePrimaryElevatedSecondary"

@@ -125,7 +125,7 @@ export const ExplainerSheet = ({
       zIndex={zIndexes.EXPLAINER_BOTTOM_SHEET}
       show={show}
     >
-      <Box testId={`explainer-sheet-${testId}`}>
+      <Box testId={`explainer-sheet-${testId}`} isExplainerSheet isModal>
         <Box paddingVertical="44px" paddingHorizontal="32px">
           <Stack alignHorizontal="center" space="20px">
             {header?.emoji ? (
@@ -184,6 +184,7 @@ export const ExplainerSheet = ({
                 <Box width="full" alignItems="center">
                   <Inline alignHorizontal="center">
                     <Button
+                      tabIndex={0}
                       width="full"
                       color="fill"
                       height="44px"
@@ -205,6 +206,7 @@ export const ExplainerSheet = ({
             )}
             <Row>
               <Button
+                tabIndex={0}
                 width="full"
                 color="blue"
                 height="44px"
@@ -238,7 +240,12 @@ export const ExplainerSheet = ({
               <Row>
                 <Box width="full" alignItems="center">
                   <Inline alignHorizontal="center">
-                    <Button color="transparent" height="44px" variant="tinted">
+                    <Button
+                      color="transparent"
+                      height="44px"
+                      variant="tinted"
+                      tabIndex={0}
+                    >
                       <Text
                         align="center"
                         weight="bold"
