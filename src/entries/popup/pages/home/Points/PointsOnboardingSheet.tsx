@@ -222,48 +222,77 @@ export const PointsOnboardingSheet = () => {
           `+ ${userOnboardingCategories?.['bonus'].earnings.total}`,
         ],
         [`> ${i18n.t('points.onboarding.calculation_complete')}`, ''],
-        userOnboarding?.earnings.total
-          ? [
-              `${i18n.t('points.onboarding.points_earned')}`,
-              `${userOnboarding?.earnings.total}`,
-            ]
-          : null,
+        [
+          `${i18n.t('points.onboarding.points_earned')}`,
+          `${userOnboarding?.earnings.total || 0}`,
+        ],
       ].filter(Boolean),
     [userOnboarding?.earnings.total, userOnboardingCategories],
   );
 
+  const registeringPointsRowsText = useMemo(
+    () => [
+      [`> ${i18n.t('points.onboarding.registration_complete')}`, ''],
+      [
+        `${i18n.t('points.onboarding.bonus_points')}`,
+        `${userOnboardingCategories?.['bonus'].earnings.total}`,
+      ],
+      [i18n.t('points.onboarding.claim_description'), ''],
+    ],
+    [userOnboardingCategories],
+  );
   const registeringPointsRows = useMemo(
     () => [
       <AccentColorProvider key={'points-1'} color="green">
         <Box paddingBottom="30px">
-          <Text align="left" size="16pt" weight="semibold" color="accent">
-            {`> ${i18n.t('points.onboarding.registration_complete')}`}
-          </Text>
+          <AnimatedText
+            align="left"
+            size="16pt"
+            weight="semibold"
+            color="accent"
+            delay={0}
+          >
+            {registeringPointsRowsText[0][0]}
+          </AnimatedText>
         </Box>
       </AccentColorProvider>,
       <AccentColorProvider key={'points-2'} color="#C54EAB">
         <Box paddingBottom="30px">
           <Inline alignHorizontal="justify">
-            <Text align="left" size="14pt" weight="semibold" color="accent">
-              {i18n.t('points.onboarding.bonus_points')}
-            </Text>
-            <Text align="left" size="14pt" weight="semibold" color="accent">
-              {userOnboardingCategories?.['bonus'].earnings.total}
-            </Text>
+            <AnimatedText
+              align="left"
+              size="14pt"
+              weight="semibold"
+              color="accent"
+              delay={getDelayForRows(registeringPointsRowsText, 1, 0)}
+            >
+              {registeringPointsRowsText[1][0]}
+            </AnimatedText>
+            <AnimatedText
+              align="left"
+              size="14pt"
+              weight="semibold"
+              color="accent"
+              direction="rightToLeft"
+              delay={getDelayForRows(registeringPointsRowsText, 1, 1)}
+            >
+              {registeringPointsRowsText[1][1]}
+            </AnimatedText>
           </Inline>
         </Box>
       </AccentColorProvider>,
-      <Text
+      <AnimatedText
         key={'points-2'}
         align="left"
         size="14pt"
         weight="semibold"
         color="labelTertiary"
+        delay={getDelayForRows(registeringPointsRowsText, 2, 0)}
       >
-        {i18n.t('points.onboarding.claim_description')}
-      </Text>,
+        {registeringPointsRowsText[2][0]}
+      </AnimatedText>,
     ],
-    [userOnboardingCategories],
+    [registeringPointsRowsText],
   );
 
   const calculatingPointsRows = useMemo(
