@@ -17,8 +17,8 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { AnimatedRows } from '~/design-system/components/AnimatedText/AnimatedRows';
 import { AnimatedText } from '~/design-system/components/AnimatedText/AnimatedText';
+import { AnimatedTextRows } from '~/design-system/components/AnimatedText/AnimatedTextRows';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
@@ -369,7 +369,7 @@ export const PointsOnboardingSheet = () => {
               </Inline>
 
               {!debouncedAccessGranted && (
-                <AnimatedRows
+                <AnimatedTextRows
                   id="animated-text"
                   rows={consoleLoadingRows({ accessGranted, error }).map(
                     (item) => item,
