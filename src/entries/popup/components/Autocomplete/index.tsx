@@ -22,7 +22,7 @@ export interface AutocompleteProps {
   onSelect: (value: string) => void;
   onBlur: () => void;
   onFocus: () => void;
-  borderColor?: string;
+  borderColor?: BoxStyles['borderColor'];
   placeholder?: string;
   open: boolean;
 }
