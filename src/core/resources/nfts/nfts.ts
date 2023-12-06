@@ -13,7 +13,6 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-// import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainName } from '~/core/types/chains';
 import {
   PolygonAllowListDictionary,
@@ -49,7 +48,6 @@ async function nftsQueryFunction({
   queryKey: [{ address }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
-  // const { connectedToHardhat } = connectedToHardhatStore.getState();
   if (process.env.IS_TESTING) {
     return NFTS_TEST_DATA;
   }
