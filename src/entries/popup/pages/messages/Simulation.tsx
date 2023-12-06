@@ -2,8 +2,8 @@ import { formatUnits } from '@ethersproject/units';
 import { ReactNode } from 'react';
 
 import { i18n } from '~/core/languages';
-import { formatNumber } from '~/core/utils/formatNumber';
-import { Inline, Stack, Symbol, Text } from '~/design-system';
+import { createNumberFormatter } from '~/core/utils/formatNumber';
+import { Inline, Stack, Symbol, Text, TextOverflow } from '~/design-system';
 import { TextColor } from '~/design-system/styles/designTokens';
 
 import { CoinIcon, NFTIcon } from '../../components/CoinIcon/CoinIcon';
@@ -30,6 +30,10 @@ export function SimulationNoChangesDetected() {
   );
 }
 
+const { format: formatNumber } = createNumberFormatter({
+  notation: 'compact',
+});
+
 function SimulatedChangeRow({
   asset,
   quantity,
@@ -52,18 +56,22 @@ function SimulatedChangeRow({
           {label}
         </Text>
       </Inline>
-      <Inline space="6px" alignVertical="center">
+      <Inline wrap={false} space="12px" alignVertical="center">
         {asset?.type === 'nft' ? (
           <NFTIcon asset={asset} size={16} />
         ) : (
           <CoinIcon asset={asset} size={14} />
         )}
-        <Text size="14pt" weight="bold" color={color}>
-          {quantity === 'UNLIMITED'
-            ? i18n.t('approvals.unlimited')
-            : formatNumber(formatUnits(quantity, asset.decimals))}{' '}
-          {asset.symbol}
-        </Text>
+        <Inline wrap={false} space="4px" alignVertical="center">
+          <TextOverflow size="14pt" weight="bold" color={color}>
+            {quantity === 'UNLIMITED'
+              ? i18n.t('approvals.unlimited')
+              : formatNumber(formatUnits(quantity, asset.decimals))}{' '}
+          </TextOverflow>
+          <Text size="14pt" weight="bold" color={color}>
+            {asset.symbol}
+          </Text>
+        </Inline>
       </Inline>
     </Inline>
   );

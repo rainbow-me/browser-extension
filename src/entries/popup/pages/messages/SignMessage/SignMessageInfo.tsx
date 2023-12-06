@@ -40,7 +40,7 @@ function Overview({
   error: SimulationError | null;
 }) {
   return (
-    <Stack space="16px">
+    <Stack space="16px" paddingTop="14px" marginTop="-14px">
       {typedData && (
         <>
           <Text size="12pt" weight="semibold" color="labelTertiary">
@@ -64,16 +64,24 @@ function Overview({
             {i18n.t('simulation.signature.message')}
           </Text>
         </Inline>
-        <Text
-          testId="sign-message-text"
-          as="pre"
-          size="12pt"
-          weight="semibold"
-          color="labelTertiary"
-          whiteSpace="pre-wrap"
+        <Box
+          style={{ overflowX: 'scroll', overflowY: 'hidden' }}
+          paddingHorizontal="20px"
+          marginHorizontal="-20px"
+          paddingVertical="8px" // this is just to no clip the ending of the message
+          marginVertical="-8px" // since overflowY is hidden
         >
-          {message}
-        </Text>
+          <Text
+            testId="sign-message-text"
+            as="pre"
+            size="12pt"
+            weight="semibold"
+            color="labelTertiary"
+            whiteSpace="pre-wrap"
+          >
+            {message}
+          </Text>
+        </Box>
       </Stack>
     </Stack>
   );
