@@ -122,9 +122,10 @@ export const ExplainerSheet = ({
 
   // capture focus on mount so that keyboard events are handled
   useEffect(() => {
-    containerRef.current?.focus();
-  }, []);
-
+    if (show) {
+      containerRef.current?.focus();
+    }
+  }, [show]);
   return (
     <BottomSheet
       onClickOutside={onClickOutside || actionButton?.action}
