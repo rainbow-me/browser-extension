@@ -4,9 +4,10 @@ import { useEffect } from 'react';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
-import { Box, Inset, Stack, Text } from '~/design-system';
+import { Box, Button, Inset, Stack, Text } from '~/design-system';
 import {
   backgroundColors,
   globalColors,
@@ -16,6 +17,8 @@ import { ICON_SIZE } from '../../components/Tabs/TabBar';
 import PointsSelectedIcon from '../../components/Tabs/TabIcons/PointsSelected';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCoolMode } from '../../hooks/useCoolMode';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 
 const animationSteps = {
   one: {
@@ -76,12 +79,90 @@ const animationSteps = {
   },
 };
 
+const PointsContentPlaceholder = () => {
+  return (
+    <Inset bottom="10px" horizontal="80px">
+      <Stack space="16px">
+        <Text
+          align="center"
+          size="20pt"
+          weight="semibold"
+          color="labelTertiary"
+        >
+          {i18n.t('points.coming_soon_header')}
+        </Text>
+        <Text
+          align="center"
+          color="labelQuaternary"
+          size="12pt"
+          weight="medium"
+        >
+          {i18n.t('points.coming_soon_description')}
+        </Text>
+      </Stack>
+    </Inset>
+  );
+};
+
+const PointsContent = () => {
+  const navigate = useRainbowNavigate();
+  return (
+    <Stack alignHorizontal="center" space="16px">
+      <Inset bottom="10px" horizontal="80px">
+        <Stack space="16px">
+          <Text
+            align="center"
+            size="20pt"
+            weight="semibold"
+            color="labelTertiary"
+          >
+            {i18n.t('points.header')}
+          </Text>
+          <Text
+            align="center"
+            color="labelQuaternary"
+            size="12pt"
+            weight="medium"
+          >
+            {i18n.t('points.description')}
+          </Text>
+        </Stack>
+      </Inset>
+      <Button
+        onClick={() =>
+          navigate(ROUTES.POINTS_ONBOARDING, {
+            state: { skipTransitionOnRoute: ROUTES.HOME },
+          })
+        }
+        color="accent"
+        height="36px"
+        variant="raised"
+      >
+        {i18n.t('points.get_started')}
+      </Button>
+      <Button
+        onClick={() =>
+          navigate(ROUTES.POINTS_REFERRAL, {
+            state: { skipTransitionOnRoute: ROUTES.HOME },
+          })
+        }
+        color="accent"
+        height="36px"
+        variant="tinted"
+      >
+        {i18n.t('points.use_referral_code')}
+      </Button>
+    </Stack>
+  );
+};
+
 export function Points() {
   const ref = useCoolMode({ emojis: ['🌈', '🎰'] });
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
   const { testnetMode } = useTestnetModeStore();
+  const { featureFlags } = useFeatureFlagsStore();
 
   const controls = useAnimation();
 
@@ -97,7 +178,6 @@ export function Points() {
       await controls.start('eight');
       sequenceAnimations();
     };
-
     sequenceAnimations();
   }, [controls]);
 
@@ -108,79 +188,60 @@ export function Points() {
       flexDirection="column"
       justifyContent="flex-start"
       marginTop="-20px"
-      paddingTop="80px"
+      paddingTop={featureFlags.points ? '40px' : '80px'}
       ref={ref}
       style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
       width="full"
     >
-      <Box paddingBottom="14px">
-        <Stack alignHorizontal="center" space="16px">
+      <Stack space="14px">
+        <Box
+          alignItems="center"
+          display="flex"
+          justifyContent="center"
+          style={{
+            transform: 'translateY(-4px)',
+          }}
+        >
           <Box
+            as={motion.div}
+            animate={controls}
             alignItems="center"
             display="flex"
+            initial={{ scale: 1.1, rotate: -372, x: 0, y: 8 }}
             justifyContent="center"
+            key="pointsAnimation"
             style={{
-              transform: 'translateY(-4px)',
+              height: 28,
+              width: 28,
+              willChange: 'transform',
             }}
+            variants={animationSteps}
           >
             <Box
-              as={motion.div}
-              animate={controls}
-              alignItems="center"
-              display="flex"
-              initial={{ scale: 1.1, rotate: -372, x: 0, y: 8 }}
-              justifyContent="center"
-              key="pointsAnimation"
+              position="relative"
               style={{
-                height: 28,
-                width: 28,
+                height: ICON_SIZE,
+                transform: 'scale(0.5)',
+                transformOrigin: 'top left',
+                width: ICON_SIZE,
                 willChange: 'transform',
               }}
-              variants={animationSteps}
             >
-              <Box
-                position="relative"
-                style={{
-                  height: ICON_SIZE,
-                  transform: 'scale(0.5)',
-                  transformOrigin: 'top left',
-                  width: ICON_SIZE,
-                  willChange: 'transform',
-                }}
-              >
-                <PointsSelectedIcon
-                  accentColor={avatar?.color || globalColors.blue50}
-                  colorMatrixValues={null}
-                  tintBackdrop={
-                    currentTheme === 'dark'
-                      ? backgroundColors.surfacePrimaryElevated.dark.color
-                      : backgroundColors.surfacePrimaryElevated.light.color
-                  }
-                  tintOpacity={currentTheme === 'dark' ? 0.2 : 0}
-                />
-              </Box>
+              <PointsSelectedIcon
+                accentColor={avatar?.color || globalColors.blue50}
+                colorMatrixValues={null}
+                tintBackdrop={
+                  currentTheme === 'dark'
+                    ? backgroundColors.surfacePrimaryElevated.dark.color
+                    : backgroundColors.surfacePrimaryElevated.light.color
+                }
+                tintOpacity={currentTheme === 'dark' ? 0.2 : 0}
+              />
             </Box>
           </Box>
-          <Text
-            align="center"
-            size="20pt"
-            weight="semibold"
-            color="labelTertiary"
-          >
-            {i18n.t('points.coming_soon_header')}
-          </Text>
-        </Stack>
-      </Box>
-      <Inset bottom="10px" horizontal="80px">
-        <Text
-          align="center"
-          color="labelQuaternary"
-          size="12pt"
-          weight="medium"
-        >
-          {i18n.t('points.coming_soon_description')}
-        </Text>
-      </Inset>
+        </Box>
+        {featureFlags.points ? <PointsContent /> : <PointsContentPlaceholder />}
+      </Stack>
     </Box>
   );
 }
