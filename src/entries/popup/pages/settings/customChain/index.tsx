@@ -1,12 +1,14 @@
 import { isEqual } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Chain } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
+import { Autocomplete } from '~/entries/popup/components/Autocomplete';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
@@ -17,10 +19,36 @@ import { ROUTES } from '~/entries/popup/urls';
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
 
+const KNOWN_NETWORKS = {
+  [i18n.t('settings.networks.custom_rpc.networks')]: [
+    {
+      name: 'Avalanche',
+      value: {
+        rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+        chainId: 43114,
+        decimals: 18,
+        symbol: 'AVAX',
+        explorerUrl: 'https://cchain.explorer.avax.network',
+      },
+    },
+    {
+      name: 'PulseChain',
+      value: {
+        rpcUrl: 'https://rpc.pulsechain.com',
+        chainId: 369,
+        decimals: 18,
+        symbol: 'PULSE',
+        explorerUrl: 'https://pulsechain.com',
+      },
+    },
+  ],
+};
+
 export function SettingsCustomChain() {
   const navigate = useRainbowNavigate();
   const { customChains, addCustomRPC } = useCustomRPCsStore();
   const { addUserChain } = useUserChainsStore();
+  const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
     rpcUrl?: string;
@@ -43,6 +71,7 @@ export function SettingsCustomChain() {
     explorerUrl: true,
   });
   const debuncedRpcUrl = useDebounce(customRPC.rpcUrl, 500);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const {
     data: chainMetadata,
@@ -101,12 +130,14 @@ export function SettingsCustomChain() {
     [validateChainId],
   );
 
-  const validateName = useCallback(() => !!customRPC.name, [customRPC.name]);
+  const validateName = useCallback(() => {
+    return !!inputRef.current?.value;
+  }, []);
 
-  const onNameBlur = useCallback(
-    () => setValidations((prev) => ({ ...prev, name: validateName() })),
-    [validateName],
-  );
+  const onNameBlur = useCallback(() => {
+    setValidations((prev) => ({ ...prev, name: validateName() }));
+    open && setOpen(false);
+  }, [open, validateName]);
 
   const validateSymbol = useCallback(
     () => !!customRPC.symbol,
@@ -216,6 +247,34 @@ export function SettingsCustomChain() {
     validateCustomRpcMetadata,
   ]);
 
+  const handleNetworkSelect = useCallback(
+    (networkName: string) => {
+      const network = KNOWN_NETWORKS.Networks.find(
+        (network) => network.name === networkName,
+      );
+      if (network) {
+        setCustomRPC((prev) => ({
+          ...prev,
+          ...network.value,
+          name: networkName,
+          active: true,
+        }));
+
+        // All these are previously validated by us
+        // when adding the network to the list
+        setValidations({
+          rpcUrl: true,
+          chainId: true,
+          name: true,
+          symbol: true,
+          explorerUrl: true,
+        });
+      }
+      open && setOpen(false);
+    },
+    [open],
+  );
+
   return (
     <Box paddingHorizontal="20px">
       <Stack space="20px">
@@ -261,11 +320,23 @@ export function SettingsCustomChain() {
         ))}
 
         <Form>
+          <Autocomplete
+            open={open}
+            onFocus={() => setOpen(true)}
+            onBlur={onNameBlur}
+            data={KNOWN_NETWORKS}
+            value={customRPC.name || ''}
+            borderColor={validations.name ? 'accent' : 'red'}
+            placeholder={i18n.t('settings.networks.custom_rpc.network_name')}
+            onChange={(value) => onInputChange<string>(value, 'string', 'name')}
+            onSelect={handleNetworkSelect}
+            ref={inputRef}
+          />
           <FormInput
             onChange={(t) =>
               onInputChange<string>(t.target.value, 'string', 'rpcUrl')
             }
-            placeholder="Url"
+            placeholder={i18n.t('settings.networks.custom_rpc.rpc_url')}
             value={customRPC.rpcUrl}
             onBlur={onRpcUrlBlur}
             borderColor={
@@ -277,25 +348,16 @@ export function SettingsCustomChain() {
             onChange={(t) =>
               onInputChange<number>(t.target.value, 'number', 'chainId')
             }
-            placeholder="ChainId"
+            placeholder={i18n.t('settings.networks.custom_rpc.chain_id')}
             value={customRPC.chainId || chainMetadata?.chainId || ''}
             onBlur={onChainIdBlur}
             borderColor={validations.chainId ? 'accent' : 'red'}
           />
           <FormInput
             onChange={(t) =>
-              onInputChange<string>(t.target.value, 'string', 'name')
-            }
-            placeholder="name"
-            value={customRPC.name}
-            onBlur={onNameBlur}
-            borderColor={validations.name ? 'accent' : 'red'}
-          />
-          <FormInput
-            onChange={(t) =>
               onInputChange<string>(t.target.value, 'string', 'symbol')
             }
-            placeholder="Symbol"
+            placeholder={i18n.t('settings.networks.custom_rpc.symbol')}
             value={customRPC.symbol}
             onBlur={onSymbolBlur}
             borderColor={validations.symbol ? 'accent' : 'red'}
@@ -304,7 +366,9 @@ export function SettingsCustomChain() {
             onChange={(t) =>
               onInputChange<string>(t.target.value, 'string', 'explorerUrl')
             }
-            placeholder="Explorer url"
+            placeholder={i18n.t(
+              'settings.networks.custom_rpc.block_explorer_url',
+            )}
             value={customRPC.explorerUrl}
             onBlur={onExplorerUrlBlur}
             borderColor={validations.explorerUrl ? 'accent' : 'red'}
@@ -317,7 +381,7 @@ export function SettingsCustomChain() {
                 size="12pt"
                 color="labelSecondary"
               >
-                {'Active'}
+                {i18n.t('settings.networks.custom_rpc.active')}
               </Text>
               <Checkbox
                 borderColor="accent"
@@ -335,7 +399,7 @@ export function SettingsCustomChain() {
               height="36px"
               variant="raised"
             >
-              Add
+              {i18n.t('settings.networks.custom_rpc.add_network')}
             </Button>
           </Inline>
         </Form>
