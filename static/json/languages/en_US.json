@@ -99,6 +99,7 @@
       },
       "custom_rpc": {
         "title": "Custom RPC",
+        "networks": "Networks",
         "network_name": "Network Name",
         "rpc_url": "RPC URL",
         "chain_id": "Chain ID",

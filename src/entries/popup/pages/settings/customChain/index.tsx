@@ -20,7 +20,7 @@ import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
 
 const KNOWN_NETWORKS = {
-  Networks: [
+  [i18n.t('settings.networks.custom_rpc.networks')]: [
     {
       name: 'Avalanche',
       value: {
