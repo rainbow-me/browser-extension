@@ -171,6 +171,9 @@ export const Home = memo(function Home() {
     if (tab === 'nfts' && featureFlags.nfts_enabled) {
       return false;
     }
+    if (tab === 'points' && featureFlags.points) {
+      return false;
+    }
     return tab === 'nfts' || tab === 'points';
   };
 
