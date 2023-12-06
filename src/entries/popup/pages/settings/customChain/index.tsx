@@ -2,6 +2,7 @@ import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Chain } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
@@ -326,7 +327,7 @@ export function SettingsCustomChain() {
             data={KNOWN_NETWORKS}
             value={customRPC.name || ''}
             borderColor={validations.name ? 'accent' : 'red'}
-            placeholder="Network name"
+            placeholder={i18n.t('settings.networks.custom_rpc.network_name')}
             onChange={(value) => onInputChange<string>(value, 'string', 'name')}
             onSelect={handleNetworkSelect}
             ref={inputRef}
@@ -335,7 +336,7 @@ export function SettingsCustomChain() {
             onChange={(t) =>
               onInputChange<string>(t.target.value, 'string', 'rpcUrl')
             }
-            placeholder="Url"
+            placeholder={i18n.t('settings.networks.custom_rpc.rpc_url')}
             value={customRPC.rpcUrl}
             onBlur={onRpcUrlBlur}
             borderColor={
@@ -347,7 +348,7 @@ export function SettingsCustomChain() {
             onChange={(t) =>
               onInputChange<number>(t.target.value, 'number', 'chainId')
             }
-            placeholder="ChainId"
+            placeholder={i18n.t('settings.networks.custom_rpc.chain_id')}
             value={customRPC.chainId || chainMetadata?.chainId || ''}
             onBlur={onChainIdBlur}
             borderColor={validations.chainId ? 'accent' : 'red'}
@@ -356,7 +357,7 @@ export function SettingsCustomChain() {
             onChange={(t) =>
               onInputChange<string>(t.target.value, 'string', 'symbol')
             }
-            placeholder="Symbol"
+            placeholder={i18n.t('settings.networks.custom_rpc.symbol')}
             value={customRPC.symbol}
             onBlur={onSymbolBlur}
             borderColor={validations.symbol ? 'accent' : 'red'}
@@ -365,7 +366,9 @@ export function SettingsCustomChain() {
             onChange={(t) =>
               onInputChange<string>(t.target.value, 'string', 'explorerUrl')
             }
-            placeholder="Explorer url"
+            placeholder={i18n.t(
+              'settings.networks.custom_rpc.block_explorer_url',
+            )}
             value={customRPC.explorerUrl}
             onBlur={onExplorerUrlBlur}
             borderColor={validations.explorerUrl ? 'accent' : 'red'}
@@ -378,7 +381,7 @@ export function SettingsCustomChain() {
                 size="12pt"
                 color="labelSecondary"
               >
-                {'Active'}
+                {i18n.t('settings.networks.custom_rpc.active')}
               </Text>
               <Checkbox
                 borderColor="accent"
@@ -396,7 +399,7 @@ export function SettingsCustomChain() {
               height="36px"
               variant="raised"
             >
-              Add
+              {i18n.t('settings.networks.custom_rpc.add_network')}
             </Button>
           </Inline>
         </Form>
