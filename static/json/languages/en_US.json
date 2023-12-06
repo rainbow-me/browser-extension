@@ -225,7 +225,8 @@
       "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
       "custom_rpc": "Custom RPC",
       "new_tab_bar_enabled": "New Tab Bar",
-      "nfts_enabled": "NFTs Enabled"
+      "nfts_enabled": "NFTs Enabled",
+      "points": "Points"
     }
   },
   "transactions": {
@@ -880,7 +881,7 @@
   },
   "seed_verify": {
     "title": "Verify your Secret Recovery Phrase",
-    "explanation": "Select the 4th, 8th, and 12th words in order your  Secret Recovery Phrase displays them.",
+    "explanation": "Select the 4th, 8th, and 12th words in the order your Secret Recovery Phrase displays them.",
     "skip": "Skip this"
   },
   "menu": {
@@ -1230,7 +1231,39 @@
     "copied_referral_code": "Referral code copied!",
     "copied_referral_link": "Referral link copied!",
     "out_of": "Out of %{total}",
-    "out_of_current_total_points": "Out of %{total} current total points"
+    "out_of_current_total_points": "Out of %{total} current total points",
+
+    "header": "Claim your points",
+    "description": "Points are here. Find out how many you’ve been awarded.",
+    "get_started": "Get Started",
+    "use_referral_code": "Use Referral Code",
+    "referral_header": "Enter your referral code",
+    "referral_description": "Enter a referral code below to claim your bonus reward.",
+    "referral_code_invalid": "Invalid Code",
+
+    "onboarding": {
+      "authorization_required": "Authorization required",
+      "sign_in_with_your_wallet": "Sign in with your wallet",
+      "access_granted": "Access granted",
+      "calculating_points": "Calculating points",
+      "rainbow_swaps": "Rainbow Swaps:",
+      "rainbow_nfts_owned": "Rainbow NFTs Owned:",
+      "wallet_balance": "Wallet Balance:",
+      "metamask_swaps": "MetaMask Swaps:",
+      "bonus_reward": "Bonus Reward:",
+      "calculation_complete": "Calculation complete",
+      "points_earned": "Points Earned:",
+      "registration_complete": "Registration complete",
+      "bonus_points": "Bonus Points:",
+      "claim_description": "To claim the rest of your bonus points, get some ETH through Rainbow.",
+      "account": "Account:",
+      "sign_in": "Sign In",
+      "get_eth": "Get some ETH"
+    },
+    "error": {
+      "existing_user": "Existing user",
+      "invalid_referral_code": "Invalid referral code"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -1508,7 +1541,6 @@
     "sent": "Sent",
     "approved": "Approved",
     "reverted": "Transaction Reverted",
-
     "function": "Function",
     "contract": "Contract",
     "contract_name": "Contract Name",
