@@ -1,5 +1,4 @@
-import { TransactionRequest } from '@ethersproject/providers';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
@@ -14,13 +13,13 @@ import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
-import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
+import { DappHostName, MaliciousRequestWarning } from '../DappScanStatus';
 import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import {
   SimulationError,
   TransactionSimulation,
-  useSimulateTransaction,
+  useSimulateMessage,
 } from '../useSimulateTransaction';
 
 interface SignMessageProps {
@@ -91,8 +90,6 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
 
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
 
-  const txRequest = request?.params?.[0] as TransactionRequest;
-
   const chainId = activeSession?.chainId || ChainId.mainnet;
 
   const {
@@ -100,13 +97,12 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
     status,
     error,
     isRefetching,
-  } = useSimulateTransaction({
+  } = useSimulateMessage({
     chainId,
-    transaction: {
-      from: txRequest.from || '',
-      to: txRequest.to || '',
-      value: txRequest.value?.toString() || '0',
-      data: txRequest.data?.toString() || '',
+    address: activeSession?.address,
+    message: {
+      method: request.method,
+      params: (request.params || []) as string[],
     },
     domain: dappUrl,
   });
@@ -128,34 +124,36 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
       gap="24px"
       height="full"
     >
-      <motion.div
-        style={{
-          maxHeight: expanded ? 0 : '100%',
-          overflow: expanded ? 'hidden' : 'unset',
-          paddingTop: expanded ? 0 : '20px',
-          opacity: expanded ? 0 : 1,
-        }}
-      >
-        <Stack space="16px" alignItems="center">
-          <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
-          <Stack space="12px">
-            <DappHostName
-              hostName={dappMetadata?.appHostName}
-              dappStatus={dappMetadata?.status}
-            />
-            <Text
-              align="center"
-              size="14pt"
-              weight="bold"
-              color={isScamDapp ? 'red' : 'labelSecondary'}
-            >
-              {isScamDapp
-                ? i18n.t('approve_request.dangerous_request')
-                : i18n.t('approve_request.message_signing_request')}
-            </Text>
-          </Stack>
-        </Stack>
-      </motion.div>
+      <AnimatePresence mode="popLayout">
+        {!expanded && (
+          <motion.div
+            style={{ paddingTop: 20 }}
+            initial={{ opacity: 0, scale: 0.9, y: -8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -8 }}
+          >
+            <Stack space="16px" alignItems="center">
+              <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
+              <Stack space="12px">
+                <DappHostName
+                  hostName={dappMetadata?.appHostName}
+                  dappStatus={dappMetadata?.status}
+                />
+                <Text
+                  align="center"
+                  size="14pt"
+                  weight="bold"
+                  color={isScamDapp ? 'red' : 'labelSecondary'}
+                >
+                  {isScamDapp
+                    ? i18n.t('approve_request.dangerous_request')
+                    : i18n.t('approve_request.message_signing_request')}
+                </Text>
+              </Stack>
+            </Stack>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Tabs
         tabs={[tabLabel('overview')]}
@@ -183,7 +181,13 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
         </TabContent>
       </Tabs>
 
-      {!expanded && isScamDapp && <ThisDappIsLikelyMalicious />}
+      {!expanded && simulation && simulation.scanning.result !== 'OK' && (
+        <MaliciousRequestWarning
+          title={i18n.t('approve_request.malicious_transaction_warning.title')}
+          description={simulation.scanning.description}
+          symbol="exclamationmark.octagon.fill"
+        />
+      )}
     </Box>
   );
 };
