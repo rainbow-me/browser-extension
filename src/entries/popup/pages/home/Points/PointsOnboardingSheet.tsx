@@ -28,6 +28,11 @@ import {
 import { AnimatedText } from '~/design-system/components/AnimatedText/AnimatedText';
 import { AnimatedTextRows } from '~/design-system/components/AnimatedText/AnimatedTextRows';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import {
+  accentColorAsHsl,
+  transparentAccentColorAsHsl20,
+  transparentAccentColorAsHsl60,
+} from '~/design-system/styles/core.css';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
@@ -170,6 +175,7 @@ export const PointsOnboardingSheet = () => {
     () =>
       [
         <AnimatedText
+          textShadow="12px label text"
           key={'loading-1'}
           align="left"
           size="14pt"
@@ -180,6 +186,7 @@ export const PointsOnboardingSheet = () => {
           {loadingRowsText[0]}
         </AnimatedText>,
         <AnimatedText
+          textShadow="12px label text"
           key={'loading-2'}
           align="left"
           size="14pt"
@@ -193,6 +200,7 @@ export const PointsOnboardingSheet = () => {
         </AnimatedText>,
         accessGranted ? (
           <AnimatedText
+            textShadow="12px label text"
             key={'loading-3'}
             align="left"
             size="14pt"
@@ -207,6 +215,7 @@ export const PointsOnboardingSheet = () => {
         ) : undefined,
         error ? (
           <AnimatedText
+            textShadow="12px label text"
             key={'loading-4'}
             align="left"
             size="14pt"
@@ -285,9 +294,10 @@ export const PointsOnboardingSheet = () => {
   );
   const registeringPointsRows = useMemo(
     () => [
-      <AccentColorProvider key={'points-1'} color="green">
+      <AccentColorProvider key={'points-1'} color="#00D348">
         <Box paddingBottom="30px">
           <AnimatedText
+            textShadow="12px accent text"
             align="left"
             size="16pt"
             weight="semibold"
@@ -302,6 +312,7 @@ export const PointsOnboardingSheet = () => {
         <Box paddingBottom="30px">
           <Inline alignHorizontal="justify">
             <AnimatedText
+              textShadow="12px accent text"
               align="left"
               size="14pt"
               weight="semibold"
@@ -311,6 +322,7 @@ export const PointsOnboardingSheet = () => {
               {registeringPointsRowsText[1][0]}
             </AnimatedText>
             <AnimatedText
+              textShadow="12px accent text"
               align="left"
               size="14pt"
               weight="semibold"
@@ -324,6 +336,7 @@ export const PointsOnboardingSheet = () => {
         </Box>
       </AccentColorProvider>,
       <AnimatedText
+        textShadow="12px label text"
         key={'points-2'}
         align="left"
         size="14pt"
@@ -343,6 +356,7 @@ export const PointsOnboardingSheet = () => {
       [
         <Box key={'points-1'} paddingBottom="30px">
           <AnimatedText
+            textShadow="12px label text"
             align="left"
             size="16pt"
             weight="semibold"
@@ -356,6 +370,7 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="15px">
             <Inline alignHorizontal="justify">
               <AnimatedText
+                textShadow="12px label text"
                 align="left"
                 size="14pt"
                 weight="bold"
@@ -365,6 +380,7 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[1][0]}
               </AnimatedText>
               <AnimatedText
+                textShadow="12px label text"
                 align="left"
                 size="14pt"
                 weight="bold"
@@ -381,6 +397,7 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="15px">
             <Inline alignHorizontal="justify">
               <AnimatedText
+                textShadow="12px accent text"
                 align="left"
                 size="14pt"
                 weight="semibold"
@@ -390,6 +407,7 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[2][0]}
               </AnimatedText>
               <AnimatedText
+                textShadow="12px accent text"
                 align="left"
                 size="14pt"
                 weight="semibold"
@@ -406,6 +424,7 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="15px">
             <Inline alignHorizontal="justify">
               <AnimatedText
+                textShadow="12px accent text"
                 align="left"
                 size="14pt"
                 weight="semibold"
@@ -415,6 +434,7 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[3][0]}
               </AnimatedText>
               <AnimatedText
+                textShadow="12px accent text"
                 align="left"
                 size="14pt"
                 weight="semibold"
@@ -431,6 +451,7 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="15px">
             <Inline alignHorizontal="justify">
               <AnimatedText
+                textShadow="12px accent text"
                 align="left"
                 size="14pt"
                 weight="semibold"
@@ -440,6 +461,7 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[4][0]}
               </AnimatedText>
               <AnimatedText
+                textShadow="12px accent text"
                 align="left"
                 size="14pt"
                 weight="semibold"
@@ -456,6 +478,7 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="30px">
             <Inline alignHorizontal="justify">
               <AnimatedText
+                textShadow="12px accent text"
                 align="left"
                 size="14pt"
                 weight="semibold"
@@ -465,6 +488,7 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[5][0]}
               </AnimatedText>
               <AnimatedText
+                textShadow="12px accent text"
                 align="left"
                 size="14pt"
                 weight="semibold"
@@ -479,6 +503,7 @@ export const PointsOnboardingSheet = () => {
         </AccentColorProvider>,
         <Box key={'points-7'} paddingBottom="15px">
           <AnimatedText
+            textShadow="12px label text"
             align="left"
             size="16pt"
             weight="semibold"
@@ -493,6 +518,7 @@ export const PointsOnboardingSheet = () => {
             <Box paddingBottom="30px">
               <Inline alignHorizontal="justify">
                 <AnimatedText
+                  textShadow="12px accent text"
                   align="left"
                   size="14pt"
                   weight="semibold"
@@ -502,6 +528,7 @@ export const PointsOnboardingSheet = () => {
                   {calculatingPointsRowsText[7][0]}
                 </AnimatedText>
                 <AnimatedText
+                  textShadow="12px accent text"
                   align="left"
                   size="14pt"
                   weight="semibold"
@@ -528,6 +555,7 @@ export const PointsOnboardingSheet = () => {
             <Stack space="15px">
               <Inline space="4px">
                 <Text
+                  textShadow="12px label text"
                   align="left"
                   size="16pt"
                   weight="semibold"
@@ -535,7 +563,13 @@ export const PointsOnboardingSheet = () => {
                 >
                   {i18n.t('points.onboarding.account')}
                 </Text>
-                <Text align="left" size="14pt" weight="semibold" color="accent">
+                <Text
+                  textShadow="12px accent text"
+                  align="left"
+                  size="14pt"
+                  weight="semibold"
+                  color="accent"
+                >
                   {displayName}
                 </Text>
               </Inline>
@@ -568,22 +602,38 @@ export const PointsOnboardingSheet = () => {
           </Row>
           {!debouncedAccessGranted && (
             <Row height="content">
-              <Box>
+              <AccentColorProvider color="#00D348">
                 <Button
                   disabled={!data?.pointsOnboardChallenge}
                   width="full"
                   borderRadius="12px"
                   onClick={signChallenge}
-                  color="green"
+                  color="accent"
                   height="36px"
-                  variant="stroked"
+                  variant="shadow"
                 >
-                  <Text align="center" size="14pt" weight="heavy" color="green">
+                  <Text
+                    textShadow="12px accent text"
+                    align="center"
+                    size="14pt"
+                    weight="heavy"
+                    color="accent"
+                  >
                     {i18n.t('points.onboarding.sign_in')}
                   </Text>
-                  {validatingSignature && <Spinner color="green" />}
+                  {validatingSignature && (
+                    <Box
+                      style={{
+                        boxShadow: `0px 0px 12px 0px ${accentColorAsHsl}`,
+                        backgroundColor: transparentAccentColorAsHsl20,
+                      }}
+                      borderRadius="10px"
+                    >
+                      <Spinner color="accent" />
+                    </Box>
+                  )}
                 </Button>
-              </Box>
+              </AccentColorProvider>
             </Row>
           )}
           <Row height="content">
@@ -604,24 +654,33 @@ export const PointsOnboardingSheet = () => {
                     onClick={registrationAction === 'swap' ? goToSwap : goToBuy}
                     color="accent"
                     height="36px"
-                    variant="stroked"
+                    variant="shadow"
                   >
                     <Inline
                       alignHorizontal="center"
                       alignVertical="center"
                       space="4px"
                     >
-                      <Symbol
-                        size={18}
-                        color="accent"
-                        weight="medium"
-                        symbol="plus.circle.fill"
-                      />
+                      <Box
+                        style={{
+                          boxShadow: `0px 0px 12px 0px ${transparentAccentColorAsHsl60}`,
+                        }}
+                        borderRadius="10px"
+                        background="transparent"
+                      >
+                        <Symbol
+                          size={18}
+                          color="accent"
+                          weight="medium"
+                          symbol="plus.circle.fill"
+                        />
+                      </Box>
                       <Text
                         align="center"
                         size="14pt"
                         weight="heavy"
                         color="accent"
+                        textShadow="12px accent text"
                       >
                         {i18n.t(
                           `points.onboarding.${
