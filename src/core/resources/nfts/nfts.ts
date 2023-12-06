@@ -13,6 +13,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+// import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainName } from '~/core/types/chains';
 import {
   PolygonAllowListDictionary,
@@ -24,6 +25,7 @@ import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
 } from '~/core/utils/nfts';
+import { NFTS_TEST_DATA } from '~/test/utils';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
@@ -47,6 +49,10 @@ async function nftsQueryFunction({
   queryKey: [{ address }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
+  // const { connectedToHardhat } = connectedToHardhatStore.getState();
+  if (process.env.IS_TESTING) {
+    return NFTS_TEST_DATA;
+  }
   const chains = getBackendSupportedChains({ testnetMode: false }).map(
     ({ name }) => name as ChainName,
   );
@@ -138,7 +144,7 @@ export function useNfts<TSelectData = NftsResult>(
   return useInfiniteQuery(nftsQueryKey({ address }), nftsQueryFunction, {
     ...config,
     getNextPageParam: (lastPage) => lastPage?.nextPage,
-    refetchInterval: 10000,
+    refetchInterval: 600000,
     retry: 3,
   });
 }

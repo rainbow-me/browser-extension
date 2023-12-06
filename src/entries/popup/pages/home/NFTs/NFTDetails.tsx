@@ -1144,6 +1144,7 @@ const NFTLinkButton = ({
       height="32px"
       onClick={() => goToNewTab({ url })}
       tabIndex={0}
+      testId={`nft-link-button-${title}`}
     >
       {title}
     </Button>

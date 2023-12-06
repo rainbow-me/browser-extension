@@ -482,6 +482,7 @@ const NftThumbnail = memo(
         borderRadius="10px"
         background="fillQuaternary"
         onClick={onClick}
+        testId={`nft-thumbnail-${imageSrc}`}
       >
         <ExternalImage
           borderRadius="10px"
