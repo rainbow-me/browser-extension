@@ -345,7 +345,12 @@ const EnsRegistrationSection = ({
                 {i18n.t('nfts.details.expires_in')}
               </Text>
             </Inline>
-            <Text weight="bold" size="14pt" color="label">
+            <Text
+              weight="bold"
+              size="14pt"
+              color="label"
+              testId="ens-expiry-value"
+            >
               {expiryDate}
             </Text>
           </Stack>
