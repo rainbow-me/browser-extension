@@ -9805,6 +9805,13 @@ idb@7.0.1:
   resolved "https://registry.yarnpkg.com/idb/-/idb-7.0.1.tgz#d2875b3a2f205d854ee307f6d196f246fea590a7"
   integrity sha512-UUxlE7vGWK5RfB/fDwEGgRf84DY/ieqNha6msMV99UsEMQhJ1RwbCd8AYBj3QMgnE3VZnfQvm4oKVCJTYlqIgg==
 
+idna-uts46-hx@3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/idna-uts46-hx/-/idna-uts46-hx-3.5.0.tgz#fad856b480bce4ff7477e7e0a42b5a39a8a4bcdc"
+  integrity sha512-0gMFl+zjvA8ZOohPQmLiWcd2Ad60AB9oKzqvLucEC5TyDzHl5mIB6ralW6h8BayVRm4ZmAVYnlI1pCYD2O7lBw==
+  dependencies:
+    punycode "^2.1.1"
+
 ieee754@^1.1.13, ieee754@^1.1.4, ieee754@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
@@ -15567,10 +15574,10 @@ vite-node@0.34.5:
     picocolors "^1.0.0"
     vite "^3.0.0 || ^4.0.0 || ^5.0.0-0"
 
-vite@4.4.9, "vite@^3.0.0 || ^4.0.0 || ^5.0.0-0", "vite@^3.1.0 || ^4.0.0 || ^5.0.0-0":
-  version "4.4.9"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-4.4.9.tgz#1402423f1a2f8d66fd8d15e351127c7236d29d3d"
-  integrity sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==
+vite@4.5.1, "vite@^3.0.0 || ^4.0.0 || ^5.0.0-0", "vite@^3.1.0 || ^4.0.0 || ^5.0.0-0":
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-4.5.1.tgz#3370986e1ed5dbabbf35a6c2e1fb1e18555b968a"
+  integrity sha512-AXXFaAJ8yebyqzoNB9fu2pHoo/nWX+xZlaRwoeYUxEqBO+Zj4msE5G+BhGBll9lYEKv9Hfks52PAF2X7qDYXQA==
   dependencies:
     esbuild "^0.18.10"
     postcss "^8.4.27"
