@@ -68,7 +68,7 @@ function Overview({
           style={{ overflowX: 'scroll', overflowY: 'hidden' }}
           paddingHorizontal="20px"
           marginHorizontal="-20px"
-          paddingVertical="8px" // this is just to no clip the ending of the message
+          paddingVertical="8px" // this is to not clip the ending of the message
           marginVertical="-8px" // since overflowY is hidden
         >
           <Text

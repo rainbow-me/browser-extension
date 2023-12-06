@@ -49,14 +49,19 @@ function SimulatedChangeRow({
   label: string;
 }) {
   return (
-    <Inline space="24px" alignHorizontal="justify" alignVertical="center">
-      <Inline space="12px" alignVertical="center">
+    <Inline
+      wrap={false}
+      space="24px"
+      alignHorizontal="justify"
+      alignVertical="center"
+    >
+      <Inline wrap={false} space="12px" alignVertical="center">
         {symbol}
         <Text size="14pt" weight="bold" color="label">
           {label}
         </Text>
       </Inline>
-      <Inline wrap={false} space="12px" alignVertical="center">
+      <Inline wrap={false} space="6px" alignVertical="center">
         {asset?.type === 'nft' ? (
           <NFTIcon asset={asset} size={16} />
         ) : (
