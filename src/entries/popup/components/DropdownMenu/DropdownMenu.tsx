@@ -104,7 +104,7 @@ export function DropdownMenuContent(props: DropdownMenuContentProps) {
 export const DropdownMenuContentBody = React.forwardRef<
   HTMLDivElement,
   DropdownMenuContentProps
->((props: DropdownMenuContentProps, ref) => {
+>(function DropdownMenuContentBody(props: DropdownMenuContentProps, ref) {
   const {
     border,
     boxShadow,
@@ -177,8 +177,6 @@ export const DropdownMenuContentBody = React.forwardRef<
     </AccentColorProvider>
   );
 });
-
-DropdownMenuContentBody.displayName = 'DropdownMenuContentBody';
 
 interface DropdownMenuLabelProps {
   children: ReactNode;

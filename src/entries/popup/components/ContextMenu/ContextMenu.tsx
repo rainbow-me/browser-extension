@@ -133,7 +133,7 @@ export function ContextMenuContent(props: ContextMenuContentProps) {
 const ContextMenuContentBody = React.forwardRef<
   HTMLDivElement,
   ContextMenuContentProps
->((props: ContextMenuContentProps, ref) => {
+>(function ContextMenuContentBody(props: ContextMenuContentProps, ref) {
   const {
     animate,
     border,
@@ -205,8 +205,6 @@ const ContextMenuContentBody = React.forwardRef<
     </AccentColorProvider>
   );
 });
-
-ContextMenuContentBody.displayName = 'ContextMenuContentBody';
 
 interface ContextMenuLabelProps {
   children: ReactNode;

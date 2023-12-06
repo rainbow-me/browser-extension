@@ -141,7 +141,7 @@ interface SendTokenInputProps {
 export const SendTokenInput = React.forwardRef<
   InputRefAPI,
   SendTokenInputProps
->((props, forwardedRef) => {
+>(function SendTokenInput(props, forwardedRef) {
   const {
     asset,
     assets,
@@ -384,5 +384,3 @@ export const SendTokenInput = React.forwardRef<
     />
   );
 });
-
-SendTokenInput.displayName = 'SendTokenInput';

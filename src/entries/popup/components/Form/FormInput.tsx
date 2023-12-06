@@ -16,7 +16,10 @@ interface FormInputProps {
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
-  ({ onChange, onBlur, placeholder, value, borderColor, loading }, ref) => {
+  function FormInput(
+    { onChange, onBlur, placeholder, value, borderColor, loading },
+    ref,
+  ) {
     return (
       <Box position="relative">
         <Inline alignVertical="center">
@@ -43,7 +46,5 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     );
   },
 );
-
-FormInput.displayName = 'FormInput';
 
 export { FormInput };

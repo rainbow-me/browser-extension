@@ -345,5 +345,3 @@ export const WalletsAndKeys = () => {
     </Box>
   );
 };
-
-WalletsAndKeys.displayName = 'WalletsAndKeys';

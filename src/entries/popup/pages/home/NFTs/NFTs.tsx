@@ -474,27 +474,29 @@ function CollectionSection({
   );
 }
 
-const NftThumbnail = memo(
-  ({ imageSrc, onClick }: { imageSrc?: string; onClick: () => void }) => {
-    return (
-      <Lens
-        style={{ height: 96, width: 96 }}
+const NftThumbnail = memo(function NftThumbnail({
+  imageSrc,
+  onClick,
+}: {
+  imageSrc?: string;
+  onClick: () => void;
+}) {
+  return (
+    <Lens
+      style={{ height: 96, width: 96 }}
+      borderRadius="10px"
+      background="fillQuaternary"
+      onClick={onClick}
+    >
+      <ExternalImage
         borderRadius="10px"
-        background="fillQuaternary"
-        onClick={onClick}
-      >
-        <ExternalImage
-          borderRadius="10px"
-          src={imageSrc}
-          height={96}
-          width={96}
-        />
-      </Lens>
-    );
-  },
-);
-
-NftThumbnail.displayName = 'NftThumbnail';
+        src={imageSrc}
+        height={96}
+        width={96}
+      />
+    </Lens>
+  );
+});
 
 export function NFTEmptyState() {
   const ref = useCoolMode({ emojis: ['🌈', '🖼️'] });
