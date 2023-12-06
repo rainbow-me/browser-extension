@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { goToNewTab } from '~/core/utils/tabs';
 import {
@@ -117,6 +117,12 @@ export const ExplainerSheet = ({
         url: link,
         active: false,
       });
+  }, []);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // capture focus on mount so that keyboard events are handled
+  useEffect(() => {
+    containerRef.current?.focus();
   }, []);
 
   return (
@@ -241,10 +247,10 @@ export const ExplainerSheet = ({
                 <Box width="full" alignItems="center">
                   <Inline alignHorizontal="center">
                     <Button
+                      tabIndex={0}
                       color="transparent"
                       height="44px"
                       variant="tinted"
-                      tabIndex={0}
                     >
                       <Text
                         align="center"
