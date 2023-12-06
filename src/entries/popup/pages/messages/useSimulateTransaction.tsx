@@ -150,7 +150,6 @@ export const useSimulateMessage = ({
         message,
         domain,
       })) as MessageSimulationResponse;
-      console.log(response);
 
       return parseSimulation(response.simulateMessage, chainId);
     },
