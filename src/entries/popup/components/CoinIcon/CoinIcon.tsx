@@ -59,7 +59,7 @@ export function CoinIcon({
     (asset as ParsedAsset)?.standard === 'erc-721' ||
     (asset as ParsedAsset)?.standard === 'erc-1155';
 
-  return (
+  return asset ? (
     <CoinIconWrapper
       badge={badge}
       badgePositionBottom={badgePositionBottom}
@@ -78,6 +78,17 @@ export function CoinIcon({
         size={size}
       />
     </CoinIconWrapper>
+  ) : (
+    <Box
+      background="fillQuaternary"
+      borderColor="separatorTertiary"
+      borderWidth="1px"
+      style={{
+        borderRadius: isNft ? nftRadiusBySize[size === 20 ? 20 : 36] : size / 2,
+        height: size,
+        width: size,
+      }}
+    />
   );
 }
 
@@ -261,7 +272,6 @@ export const NFTIcon = ({
     <Box position="relative" style={{ minWidth: size, height: size }}>
       <ExternalImage
         borderRadius={nftRadiusBySize[size]}
-        loading="lazy"
         src={asset.icon_url}
         height={size}
         width={size}
