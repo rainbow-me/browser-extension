@@ -106,6 +106,7 @@
         "symbol": "Symbol",
         "decimals": "Decimals",
         "active": "Active",
+        "testnet": "Testnet",
         "block_explorer_url": "Block Explorer URL",
         "add_network": "Add Network"        
       }

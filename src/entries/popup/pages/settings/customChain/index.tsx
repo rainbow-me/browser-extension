@@ -29,6 +29,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://nova.arbiscan.io',
+        testnet: false,
       },
     },
     {
@@ -39,6 +40,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'AVAX',
         explorerUrl: 'https://cchain.explorer.avax.network',
+        testnet: false,
       },
     },
     {
@@ -49,6 +51,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://aurorascan.dev',
+        testnet: false,
       },
     },
     {
@@ -59,6 +62,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'CANTO',
         explorerUrl: 'https://tuber.build',
+        testnet: false,
       },
     },
     {
@@ -69,6 +73,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'CELO',
         explorerUrl: 'https://explorer.celo.org/mainnet',
+        testnet: false,
       },
     },
     {
@@ -79,6 +84,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETC',
         explorerUrl: 'https://blockscout.com/etc/mainnet',
+        testnet: false,
       },
     },
     {
@@ -89,6 +95,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'FTM',
         explorerUrl: 'https://ftmscan.com',
+        testnet: false,
       },
     },
     {
@@ -99,6 +106,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'FIL',
         explorerUrl: 'https://filfox.info/en',
+        testnet: false,
       },
     },
     {
@@ -109,6 +117,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'xDAI',
         explorerUrl: 'https://gnosisscan.io',
+        testnet: false,
       },
     },
     {
@@ -119,6 +128,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://lineascan.build',
+        testnet: false,
       },
     },
     {
@@ -129,6 +139,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'MNT',
         explorerUrl: 'https://explorer.mantle.xyz',
+        testnet: false,
       },
     },
     {
@@ -139,6 +150,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'METIS',
         explorerUrl: 'https://andromeda-explorer.metis.io',
+        testnet: false,
       },
     },
     {
@@ -149,6 +161,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://zkevm.polygonscan.com',
+        testnet: false,
       },
     },
     {
@@ -159,6 +172,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'PULSE',
         explorerUrl: 'https://pulsechain.com',
+        testnet: false,
       },
     },
     {
@@ -169,6 +183,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://scrollscan.com',
+        testnet: false,
       },
     },
     {
@@ -179,6 +194,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://explorer.zksync.io',
+        testnet: false,
       },
     },
   ],
@@ -191,6 +207,7 @@ export function SettingsCustomChain() {
   const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
+    testnet?: boolean;
     rpcUrl?: string;
     chainId?: number;
     name?: string;
@@ -228,7 +245,14 @@ export function SettingsCustomChain() {
     <T extends string | number | boolean>(
       value: string | boolean | number,
       type: 'string' | 'number' | 'boolean',
-      data: 'rpcUrl' | 'chainId' | 'name' | 'symbol' | 'explorerUrl' | 'active',
+      data:
+        | 'rpcUrl'
+        | 'chainId'
+        | 'name'
+        | 'symbol'
+        | 'explorerUrl'
+        | 'active'
+        | 'testnet',
     ) => {
       if (type === 'number' && typeof value === 'string') {
         const maskedValue = maskInput({ inputValue: value, decimals: 0 });
@@ -345,9 +369,7 @@ export function SettingsCustomChain() {
   const addCustomRpc = useCallback(async () => {
     const rpcUrl = customRPC.rpcUrl;
     const chainId = customRPC.chainId || chainMetadata?.chainId;
-    const name = customRPC.name;
-    const symbol = customRPC.symbol;
-    const explorerUrl = customRPC.explorerUrl;
+    const { name, symbol, testnet, explorerUrl } = customRPC;
     const valid = validateAddCustomRpc();
 
     if (valid && rpcUrl && chainId && name && symbol && explorerUrl) {
@@ -361,6 +383,7 @@ export function SettingsCustomChain() {
           name: symbol,
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+        testnet,
       };
       addCustomRPC({
         chain,
@@ -398,6 +421,7 @@ export function SettingsCustomChain() {
           ...network.value,
           name: networkName,
           active: true,
+          testnet: false,
         }));
 
         // All these are previously validated by us
@@ -529,6 +553,29 @@ export function SettingsCustomChain() {
                   onInputChange<boolean>(!customRPC.active, 'boolean', 'active')
                 }
                 selected={!!customRPC.active}
+              />
+            </Inline>
+          </Box>
+          <Box padding="10px">
+            <Inline alignHorizontal="justify">
+              <Text
+                align="center"
+                weight="semibold"
+                size="12pt"
+                color="labelSecondary"
+              >
+                {i18n.t('settings.networks.custom_rpc.testnet')}
+              </Text>
+              <Checkbox
+                borderColor="accent"
+                onClick={() =>
+                  onInputChange<boolean>(
+                    !customRPC.testnet,
+                    'boolean',
+                    'testnet',
+                  )
+                }
+                selected={!!customRPC.testnet}
               />
             </Inline>
           </Box>
