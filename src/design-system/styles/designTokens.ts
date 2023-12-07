@@ -694,8 +694,8 @@ export const linearGradients = {
     linear-gradient(90deg, color(display-p3 1.000 0.894 0.337) 0%, color(display-p3 0.812 0.584 0.000) 100%)
   `,
   ['🥈']: `
-    linear-gradient(90deg, #FAFCFE 0%, #B1BCC8 100%),
-    linear-gradient(90deg, color(display-p3 0.984 0.988 0.996) 0%, color(display-p3 0.702 0.737 0.780) 100%)
+    linear-gradient(90deg, #D0DBE7 0%, #B1BCC8 100%),
+    linear-gradient(90deg, color(display-p3 0.82 0.86 0.91) 0%, color(display-p3 0.702 0.737 0.780) 100%)
   `,
   ['🥉']: `
     linear-gradient(90deg, #EB8A15 0%, #BA5A0A 100%),

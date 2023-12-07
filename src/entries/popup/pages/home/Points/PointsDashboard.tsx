@@ -2,7 +2,7 @@
 
 import { formatDistanceToNowStrict } from 'date-fns';
 import { MotionProps, motion } from 'framer-motion';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useReducer } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -263,6 +263,24 @@ function CardSkeleton({ height }: { height: string }) {
   return <Skeleton height={height} width="100%" style={{ borderRadius: 16 }} />;
 }
 
+function NextDistributionIn({ nextDistribution }: { nextDistribution: Date }) {
+  const [nextDistributionIn, recalcNextDistributionDistance] = useReducer(
+    () => formatDistanceToNowStrict(nextDistribution),
+    formatDistanceToNowStrict(nextDistribution),
+  );
+
+  useEffect(() => {
+    const interval = setInterval(recalcNextDistributionDistance, 1000);
+    return () => clearInterval(interval);
+  }, [nextDistribution]);
+
+  return (
+    <Text size="20pt" weight="bold">
+      {nextDistributionIn}
+    </Text>
+  );
+}
+
 function YourRankAndNextDrop() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
@@ -278,16 +296,13 @@ function YourRankAndNextDrop() {
   const { meta, leaderboard, user } = data;
 
   const nextDistribution = new Date(meta.distribution.next * 1000);
-  const nextDistributionIn = formatDistanceToNowStrict(nextDistribution);
 
   return (
     <Inline wrap={false} space="12px">
       <Card>
         <TextWithMoreInfo>{i18n.t('points.next_drop')}</TextWithMoreInfo>
 
-        <Text size="20pt" weight="bold">
-          {nextDistributionIn}
-        </Text>
+        <NextDistributionIn nextDistribution={nextDistribution} />
         <Text
           size="10pt"
           weight="bold"

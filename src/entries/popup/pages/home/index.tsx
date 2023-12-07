@@ -45,6 +45,7 @@ import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
+import { useWallets } from '../../hooks/useWallets';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
@@ -138,6 +139,11 @@ const Tabs = memo(function Tabs({
     }
     return isPlaceholderTab(activeTab);
   };
+
+  const { isWatchingWallet } = useWallets();
+  if (activeTab === 'points' && isWatchingWallet) {
+    onSelectTab('tokens');
+  }
 
   return (
     <>

@@ -204,6 +204,26 @@ mutation validatePointsSignature(
     error {
       type
     }
+    meta {
+      distribution {
+        next
+      }
+      status
+    }
+    leaderboard {
+      stats {
+        total_users
+        total_points
+      }
+      accounts {
+        address
+        earnings {
+          total
+        }
+        ens
+        avatarURL
+      }
+    }
     user {
       onboarding {
         earnings {
@@ -220,6 +240,15 @@ mutation validatePointsSignature(
           earnings {
             total
           }
+        }
+      }
+      referralCode
+      earnings {
+        total
+      }
+      stats {
+        position {
+          current
         }
       }
     }

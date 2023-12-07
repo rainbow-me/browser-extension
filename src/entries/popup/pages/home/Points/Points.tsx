@@ -269,8 +269,10 @@ function ClaimYourPoints() {
 
 export function Points() {
   const { currentAddress } = useCurrentAddressStore();
-  const { error } = usePoints(currentAddress);
+  const { data, isInitialLoading } = usePoints(currentAddress);
 
-  if (error === 'NON_EXISTING_USER') return <ClaimYourPoints />;
+  if (isInitialLoading) return null;
+
+  if (data?.error?.type === 'NON_EXISTING_USER') return <ClaimYourPoints />;
   return <PointsDashboard />;
 }
