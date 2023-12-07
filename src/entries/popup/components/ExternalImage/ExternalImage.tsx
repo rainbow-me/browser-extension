@@ -1,87 +1,100 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import omit from 'lodash/omit';
 import * as React from 'react';
+import { Img, useImage } from 'react-image';
 
-import { Box, Text } from '~/design-system';
-import { TextProps } from '~/design-system/components/Text/Text';
+import { Box, Symbol } from '~/design-system';
 import { BoxStyles } from '~/design-system/styles/core.css';
 
 import { maybeSignUri } from '../../handlers/imgix';
 
-const getClosestSize = (size: number): TextProps['size'] => {
-  const allowedSizes = [11, 12, 14, 16, 20, 23, 26, 32, 44];
-  const closestSize = allowedSizes.reduce((prev, curr) => {
-    return Math.abs(curr - size) < Math.abs(prev - size) ? curr : prev;
+type ExternalImageProps = JSX.IntrinsicAttributes &
+  React.ClassAttributes<HTMLImageElement> &
+  React.ImgHTMLAttributes<HTMLImageElement> & {
+    borderRadius?: BoxStyles['borderRadius'];
+    customFallback?: React.ReactElement;
+    mask?: string;
+  };
+
+const ExternalImage = (props: ExternalImageProps) => {
+  const signedUrl = React.useMemo(() => {
+    return maybeSignUri(props.src, {
+      h: Number(props.height),
+      w: Number(props.width),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.src]);
+
+  const { src, isLoading, error } = useImage({
+    srcList: signedUrl || '',
+    useSuspense: false,
   });
-  return `${closestSize}pt` as TextProps['size'];
-};
 
-const ExternalImage = (
-  props: JSX.IntrinsicAttributes &
-    React.ClassAttributes<HTMLImageElement> &
-    React.ImgHTMLAttributes<HTMLImageElement> & {
-      mask?: string;
-      onError?: () => void;
-      borderRadius?: BoxStyles['borderRadius'];
-    },
-) => {
-  const [fallback, setFallback] = React.useState(false);
-  const width = Number(props.width) || undefined;
-  const height = Number(props.height) || undefined;
-
-  const signedUrl = React.useMemo(
-    () =>
-      maybeSignUri(props.src, {
-        w: width,
-        h: height,
-      }),
-    [height, props.src, width],
-  );
-
-  const handleError = React.useCallback(() => {
-    setFallback(true);
-    props?.onError?.();
-  }, [props]);
-
-  if (fallback) {
-    return (
-      <Box
-        style={{ width, height }}
-        alignItems="center"
-        justifyContent="center"
-        display="flex"
-      >
-        <Text size={getClosestSize(Number(width || height))} weight="bold">
-          {'👽'}
-        </Text>
-      </Box>
-    );
-  }
-
-  if (!signedUrl) return null;
   return (
     <Box
-      style={{
-        overflow: 'clip',
-        maxHeight: props.height,
-      }}
+      alignItems="center"
       borderRadius={props.borderRadius}
+      display="flex"
+      justifyContent="center"
+      style={{
+        height: props.height,
+        overflow: error ? 'visible' : 'clip',
+        width: props.width,
+      }}
     >
-      <img
-        {...omit(props, 'borderRadius')}
-        style={{
-          ...(props.mask
-            ? {
-                maskImage: `url(${props.mask})`,
-                WebkitMaskImage: `url(${props.mask})`,
-              }
-            : {}),
-          objectFit: 'cover',
-          ...props.style,
-        }}
-        src={signedUrl}
-        onError={handleError}
-      />
+      {/* eslint-disable-next-line no-nested-ternary */}
+      {isLoading ? (
+        <Box background="fillQuaternary" height="full" width="full" />
+      ) : // eslint-disable-next-line no-nested-ternary
+      error ? (
+        props.customFallback ? (
+          <Box
+            alignItems="center"
+            display="flex"
+            height="full"
+            justifyContent="center"
+            width="full"
+          >
+            {props.customFallback}
+          </Box>
+        ) : (
+          <Box
+            alignItems="center"
+            background="fillQuaternary"
+            borderColor="separatorTertiary"
+            borderRadius={props.borderRadius}
+            borderWidth="1px"
+            display="flex"
+            height="full"
+            justifyContent="center"
+            width="full"
+          >
+            <Box opacity="0.5">
+              <Symbol
+                color="labelQuaternary"
+                size={Math.min(Number(props.width) / 2.2, 24)}
+                symbol="photo.fill"
+                weight="bold"
+              />
+            </Box>
+          </Box>
+        )
+      ) : (
+        <Img
+          height={props.height}
+          loading="lazy"
+          style={{
+            ...(props.mask
+              ? {
+                  maskImage: `url(${props.mask})`,
+                  WebkitMaskImage: `url(${props.mask})`,
+                }
+              : {}),
+            objectFit: 'cover',
+            ...props.style,
+          }}
+          src={src || ''}
+          width={props.width}
+        />
+      )}
     </Box>
   );
 };

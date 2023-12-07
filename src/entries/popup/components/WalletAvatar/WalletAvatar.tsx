@@ -32,14 +32,14 @@ export function WalletAvatar({
         borderRadius="round"
         boxShadow={boxShadow}
         position="relative"
-        background={background ?? 'fillSecondary'}
+        background={background}
         style={{
           height: size,
           width: size,
           overflow: 'hidden',
         }}
       >
-        {isFetched && addressOrName ? (
+        {addressOrName ? (
           <>
             {avatar?.imageUrl ? (
               <Avatar.Image
