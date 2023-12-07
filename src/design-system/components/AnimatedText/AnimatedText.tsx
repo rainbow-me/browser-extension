@@ -9,6 +9,37 @@ import { Text, TextProps } from '../Text/Text';
 
 type AnimationDirection = 'rightToLeft' | 'leftToRight';
 
+const rainbowColors = {
+  blue: { text: '#31BCC4', shadow: 'rgba(49, 188, 196, 0.8)' },
+  green: { text: '#57EA5F', shadow: 'rgba(87, 234, 95, 0.8)' },
+  yellow: { text: '#F0D83F', shadow: 'rgba(240, 216, 63, 0.8)' },
+  red: { text: '#DF5337', shadow: 'rgba(223, 83, 55, 0.8)' },
+  purple: { text: '#B756A7', shadow: 'rgba(183, 86, 167, 0.8)' },
+};
+
+const generateRainbowColors = (
+  text: string,
+): Array<{ text: string; shadow: string }> | undefined => {
+  let colorIndex = 0;
+  let repeatCount = 0;
+  const colorKeys: string[] = Object.keys(rainbowColors);
+  const colors: Array<{ text: string; shadow: string }> = [];
+  const repeatLength: number = Math.floor(text.length / (colorKeys.length * 2));
+
+  text.split('').forEach(() => {
+    if (repeatCount >= repeatLength + Math.round(Math.random())) {
+      repeatCount = 0;
+      colorIndex = (colorIndex + 1) % colorKeys.length;
+    }
+    colors.push(
+      rainbowColors[colorKeys[colorIndex] as keyof typeof rainbowColors],
+    );
+    repeatCount += 1;
+  });
+
+  return colors;
+};
+
 const RainbowTextWrapper = ({
   children,
   characters,
@@ -28,12 +59,14 @@ export const AnimatedText = ({
   delay = 0,
   direction = 'leftToRight',
   customTypingSpeed,
+  rainbowColor,
   ...textProps
 }: TextProps & {
   id?: string;
   delay?: number;
   direction?: AnimationDirection;
   customTypingSpeed?: number;
+  rainbowColor?: boolean;
 }) => {
   if (typeof children !== 'string') {
     console.error('AnimatedText expects a string as children');
@@ -41,7 +74,6 @@ export const AnimatedText = ({
   }
 
   const characters = children.split('');
-  console.log('characters', characters);
   const totalCharacters = characters.length;
 
   const typingSpeed =
@@ -71,6 +103,8 @@ export const AnimatedText = ({
     }),
   };
 
+  const colors = generateRainbowColors(characters.join(''));
+
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Text {...textProps}>
@@ -89,8 +123,15 @@ export const AnimatedText = ({
               key={(id || '') + i}
               custom={i}
               variants={charVariants}
+              boxShadow="12px blue"
+              style={{
+                color: rainbowColor ? colors?.[i]?.text : '',
+                textShadow: rainbowColor
+                  ? `0px 0px 12px ${colors?.[i]?.shadow}`
+                  : undefined,
+              }}
             >
-              {char === '\\' ? `${char}` : char}
+              {char}
             </Box>
           ))}
         </RainbowTextWrapper>

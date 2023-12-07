@@ -51,6 +51,7 @@ import {
 import { usePointsChallenge } from './usePointsChallenge';
 import {
   RAINBOW_TEXT,
+  RAINBOW_TEXT_WELCOME,
   getDelayForRow,
   getDelayForRows,
   getErrorString,
@@ -179,11 +180,52 @@ export const PointsOnboardingSheet = () => {
         `${RAINBOW_TEXT.row6}`,
         `${RAINBOW_TEXT.row7}`,
         `${RAINBOW_TEXT.row8}`,
-        `${RAINBOW_TEXT.row9}`,
+        `${RAINBOW_TEXT_WELCOME.row1}`,
         `> ${getErrorString(error)}`,
       ].filter(Boolean),
     [error],
   );
+
+  const rainbowText = useMemo(() => {
+    const rnbwText = Object.values(RAINBOW_TEXT).map((val, i) => {
+      return (
+        <Box key={`loading-${i}`} paddingLeft="16px">
+          <AnimatedText
+            key={`loading-${i}`}
+            align="left"
+            size="15pt"
+            weight="bold"
+            delay={getDelayForRow(loadingRowsText, 2 + i)}
+            rainbowColor
+          >
+            {val}
+          </AnimatedText>
+        </Box>
+      );
+    });
+
+    const welcomeText = (
+      <Box key={`loading-welcome`} paddingLeft="16px">
+        <AccentColorProvider color="#fff">
+          <AnimatedText
+            textShadow="12px accent text"
+            align="left"
+            size="15pt"
+            weight="bold"
+            color="accent"
+            delay={getDelayForRow(
+              loadingRowsText,
+              2 + Object.values(RAINBOW_TEXT).length,
+            )}
+          >
+            {RAINBOW_TEXT_WELCOME.row1}
+          </AnimatedText>
+        </AccentColorProvider>
+      </Box>
+    );
+
+    return rnbwText.concat(welcomeText);
+  }, [loadingRowsText]);
 
   const consoleLoadingRows = useMemo(
     () =>
@@ -215,12 +257,12 @@ export const PointsOnboardingSheet = () => {
         // accessGranted ? (
         <AccentColorProvider key={'loading-3'} color="#00D348">
           <AnimatedText
-            textShadow="12px label text"
+            textShadow="12px accent text"
             key={'loading-3'}
             align="left"
             size="15pt"
             weight="bold"
-            color="green"
+            color="accent"
             delay={
               accessGranted || error ? 0 : getDelayForRow(loadingRowsText, 1)
             }
@@ -229,21 +271,9 @@ export const PointsOnboardingSheet = () => {
           </AnimatedText>
         </AccentColorProvider>,
         // ) : undefined,
-        Object.values(RAINBOW_TEXT).map((val, i) => (
-          <Box key={`loading-${i}`} paddingLeft="16px">
-            <AnimatedText
-              textShadow="12px label text"
-              key={`loading-${i}`}
-              align="left"
-              size="15pt"
-              weight="bold"
-              color="green"
-              delay={getDelayForRow(loadingRowsText, 2 + i)}
-            >
-              {val}
-            </AnimatedText>
-          </Box>
-        )),
+        <Box key={`loading-4-`} paddingTop="30px">
+          <Stack space="15px">{rainbowText}</Stack>
+        </Box>,
         error ? (
           <AnimatedText
             textShadow="12px label text"
@@ -260,7 +290,7 @@ export const PointsOnboardingSheet = () => {
       ]
         .flat()
         .filter(Boolean),
-    [accessGranted, error, loadingRowsText],
+    [accessGranted, error, loadingRowsText, rainbowText],
   );
 
   const calculatingPointsRowsText = useMemo(
