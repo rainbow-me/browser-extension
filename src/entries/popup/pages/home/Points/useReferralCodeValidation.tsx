@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'wagmi';
 
-import { metadataPostClient } from '~/core/graphql';
+import { metadataClient } from '~/core/graphql';
 import { createQueryKey } from '~/core/react-query';
 
 export const validateAsciiCodeFormat = (inputValue: string): boolean => {
@@ -18,9 +18,8 @@ export const useReferralValidation = ({
 }) => {
   return useQuery({
     queryFn: () => {
-      return metadataPostClient.validatePointsReferralCode({
-        address,
-        referral: referralCode?.replace('-', ''),
+      return metadataClient.validateReferral({
+        code: referralCode?.replace('-', ''),
       });
     },
     queryKey: createQueryKey('referral code validation', {

@@ -226,6 +226,16 @@ mutation validatePointsSignature(
   }
 }
 
+query validateReferral($code: String!) {
+  validateReferral(referral: $code) {
+    valid
+    error {
+      type
+      message
+    }
+  }
+}
+
 query getPointsOnboardChallenge($address: String!, $referral: String) {
   pointsOnboardChallenge(address: $address, referral: $referral)
 }

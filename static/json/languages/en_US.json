@@ -98,7 +98,16 @@
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
-        "title": "Custom RPC"
+        "title": "Custom RPC",
+        "networks": "Networks",
+        "network_name": "Network Name",
+        "rpc_url": "RPC URL",
+        "chain_id": "Chain ID",
+        "symbol": "Symbol",
+        "decimals": "Decimals",
+        "active": "Active",
+        "block_explorer_url": "Block Explorer URL",
+        "add_network": "Add Network"        
       }
     },
     "privacy_and_security": {
@@ -1255,10 +1264,12 @@
       "points_earned": "Points Earned:",
       "registration_complete": "Registration complete",
       "bonus_points": "Bonus Points:",
-      "claim_description": "To claim the rest of your bonus points, get some ETH through Rainbow.",
+      "claim_description_buy": "To claim the rest of your bonus points, get some ETH through Rainbow.",
+      "claim_description_swap": "To claim the rest of your bonus points, swap at least $100 through Rainbow.",
       "account": "Account:",
       "sign_in": "Sign In",
-      "get_eth": "Get some ETH"
+      "get_eth": "Get some ETH",
+      "try_swap": "Try a Swap"
     },
     "error": {
       "existing_user": "Existing user",
