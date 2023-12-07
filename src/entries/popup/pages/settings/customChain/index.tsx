@@ -22,6 +22,16 @@ import { maskInput } from '../../../components/InputMask/utils';
 const KNOWN_NETWORKS = {
   [i18n.t('settings.networks.custom_rpc.networks')]: [
     {
+      name: 'Arbitrum Nova',
+      value: {
+        rpcUrl: 'https://nova.arbitrum.io/rpc',
+        chainId: 42_170,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://nova.arbiscan.io',
+      },
+    },
+    {
       name: 'Avalanche',
       value: {
         rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
@@ -62,6 +72,16 @@ const KNOWN_NETWORKS = {
       },
     },
     {
+      name: 'Ethereum Classic',
+      value: {
+        rpcUrl: 'https://etc.rivet.link',
+        chainId: 61,
+        decimals: 18,
+        symbol: 'ETC',
+        explorerUrl: 'https://blockscout.com/etc/mainnet',
+      },
+    },
+    {
       name: 'Fantom',
       value: {
         rpcUrl: 'https://rpc.ankr.com/fantom',
@@ -69,6 +89,16 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'FTM',
         explorerUrl: 'https://ftmscan.com',
+      },
+    },
+    {
+      name: 'Filecoin',
+      value: {
+        rpcUrl: 'https://api.node.glif.io/rpc/v1',
+        chainId: 314,
+        decimals: 18,
+        symbol: 'FIL',
+        explorerUrl: 'https://filfox.info/en',
       },
     },
     {
@@ -99,6 +129,16 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'MNT',
         explorerUrl: 'https://explorer.mantle.xyz',
+      },
+    },
+    {
+      name: 'Metis',
+      value: {
+        rpcUrl: 'https://andromeda.metis.io/?owner=1088',
+        chainId: 1_088,
+        decimals: 18,
+        symbol: 'METIS',
+        explorerUrl: 'https://andromeda-explorer.metis.io',
       },
     },
     {
