@@ -234,7 +234,7 @@ const shadowTokens: Record<Shadow, ShadowDefinition> = {
   })),
   '12px accent text': {
     light: `0px 0px 12px ${getColorAsHsl({
-      alpha: 0.8,
+      alpha: 0.6,
       vars: accentColorHslVars,
     })}`,
     dark: `0px 0px 12px ${getColorAsHsl({
@@ -570,7 +570,7 @@ const textProperties = defineProperties({
     textOverflow: ['ellipsis'],
     whiteSpace: ['nowrap', 'pre-wrap'],
     overflow: ['hidden'],
-    transition: ['color 200ms ease-out'],
+    transition: ['color 200ms ease-out, text-shadow 1s ease'],
     textShadow: shadowVars,
   },
 });
