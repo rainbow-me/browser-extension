@@ -49,7 +49,12 @@ import {
   USER_POINTS_ONBOARDING,
 } from './references';
 import { usePointsChallenge } from './usePointsChallenge';
-import { getDelayForRow, getDelayForRows, getErrorString } from './utils';
+import {
+  RAINBOW_TEXT,
+  getDelayForRow,
+  getDelayForRows,
+  getErrorString,
+} from './utils';
 
 const fadeVariants = {
   initial: { opacity: 0 },
@@ -166,6 +171,15 @@ export const PointsOnboardingSheet = () => {
         `> ${i18n.t('points.onboarding.authorization_required')}`,
         `> ${i18n.t('points.onboarding.sign_in_with_your_wallet')}`,
         `> ${i18n.t('points.onboarding.access_granted')}`,
+        `${RAINBOW_TEXT.row1}`,
+        `${RAINBOW_TEXT.row2}`,
+        `${RAINBOW_TEXT.row3}`,
+        `${RAINBOW_TEXT.row4}`,
+        `${RAINBOW_TEXT.row5}`,
+        `${RAINBOW_TEXT.row6}`,
+        `${RAINBOW_TEXT.row7}`,
+        `${RAINBOW_TEXT.row8}`,
+        `${RAINBOW_TEXT.row9}`,
         `> ${getErrorString(error)}`,
       ].filter(Boolean),
     [error],
@@ -178,8 +192,8 @@ export const PointsOnboardingSheet = () => {
           textShadow="12px label text"
           key={'loading-1'}
           align="left"
-          size="14pt"
-          weight="semibold"
+          size="15pt"
+          weight="bold"
           color="labelTertiary"
           delay={0}
         >
@@ -189,8 +203,8 @@ export const PointsOnboardingSheet = () => {
           textShadow="12px label text"
           key={'loading-2'}
           align="left"
-          size="14pt"
-          weight="semibold"
+          size="15pt"
+          weight="bold"
           color="labelTertiary"
           delay={
             accessGranted || error ? 0 : getDelayForRow(loadingRowsText, 0)
@@ -198,13 +212,14 @@ export const PointsOnboardingSheet = () => {
         >
           {loadingRowsText[1]}
         </AnimatedText>,
-        accessGranted ? (
+        // accessGranted ? (
+        <AccentColorProvider key={'loading-3'} color="#00D348">
           <AnimatedText
             textShadow="12px label text"
             key={'loading-3'}
             align="left"
-            size="14pt"
-            weight="semibold"
+            size="15pt"
+            weight="bold"
             color="green"
             delay={
               accessGranted || error ? 0 : getDelayForRow(loadingRowsText, 1)
@@ -212,21 +227,39 @@ export const PointsOnboardingSheet = () => {
           >
             {loadingRowsText[2]}
           </AnimatedText>
-        ) : undefined,
+        </AccentColorProvider>,
+        // ) : undefined,
+        Object.values(RAINBOW_TEXT).map((val, i) => (
+          <Box key={`loading-${i}`} paddingLeft="16px">
+            <AnimatedText
+              textShadow="12px label text"
+              key={`loading-${i}`}
+              align="left"
+              size="15pt"
+              weight="bold"
+              color="green"
+              delay={getDelayForRow(loadingRowsText, 2 + i)}
+            >
+              {val}
+            </AnimatedText>
+          </Box>
+        )),
         error ? (
           <AnimatedText
             textShadow="12px label text"
             key={'loading-4'}
             align="left"
-            size="14pt"
-            weight="semibold"
+            size="15pt"
+            weight="bold"
             color="red"
             delay={0}
           >
             {loadingRowsText[3]}
           </AnimatedText>
         ) : undefined,
-      ].filter(Boolean),
+      ]
+        .flat()
+        .filter(Boolean),
     [accessGranted, error, loadingRowsText],
   );
 
@@ -300,7 +333,7 @@ export const PointsOnboardingSheet = () => {
             textShadow="12px accent text"
             align="left"
             size="16pt"
-            weight="semibold"
+            weight="bold"
             color="accent"
             delay={0}
           >
@@ -314,8 +347,8 @@ export const PointsOnboardingSheet = () => {
             <AnimatedText
               textShadow="12px accent text"
               align="left"
-              size="14pt"
-              weight="semibold"
+              size="15pt"
+              weight="bold"
               color="accent"
               delay={getDelayForRows(registeringPointsRowsText, 1, 0)}
             >
@@ -324,8 +357,8 @@ export const PointsOnboardingSheet = () => {
             <AnimatedText
               textShadow="12px accent text"
               align="left"
-              size="14pt"
-              weight="semibold"
+              size="15pt"
+              weight="bold"
               color="accent"
               direction="rightToLeft"
               delay={getDelayForRows(registeringPointsRowsText, 1, 1)}
@@ -339,10 +372,9 @@ export const PointsOnboardingSheet = () => {
         textShadow="12px label text"
         key={'points-2'}
         align="left"
-        size="14pt"
-        weight="semibold"
+        size="15pt"
+        weight="bold"
         color="labelTertiary"
-        customTypingSpeed={0.05}
         delay={getDelayForRows(registeringPointsRowsText, 2, 0)}
       >
         {registeringPointsRowsText[2][0]}
@@ -359,7 +391,7 @@ export const PointsOnboardingSheet = () => {
             textShadow="12px label text"
             align="left"
             size="16pt"
-            weight="semibold"
+            weight="bold"
             color="labelTertiary"
             delay={0}
           >
@@ -372,7 +404,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px label text"
                 align="left"
-                size="14pt"
+                size="15pt"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 1, 0)}
@@ -382,7 +414,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px label text"
                 align="left"
-                size="14pt"
+                size="15pt"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 1, 1)}
@@ -399,8 +431,8 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent text"
                 align="left"
-                size="14pt"
-                weight="semibold"
+                size="15pt"
+                weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 2, 0)}
               >
@@ -409,8 +441,8 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent text"
                 align="left"
-                size="14pt"
-                weight="semibold"
+                size="15pt"
+                weight="bold"
                 color="accent"
                 direction="rightToLeft"
                 delay={getDelayForRows(calculatingPointsRowsText, 2, 1)}
@@ -426,8 +458,8 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent text"
                 align="left"
-                size="14pt"
-                weight="semibold"
+                size="15pt"
+                weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 3, 0)}
               >
@@ -436,8 +468,8 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent text"
                 align="left"
-                size="14pt"
-                weight="semibold"
+                size="15pt"
+                weight="bold"
                 color="accent"
                 direction="rightToLeft"
                 delay={getDelayForRows(calculatingPointsRowsText, 3, 1)}
@@ -453,8 +485,8 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent text"
                 align="left"
-                size="14pt"
-                weight="semibold"
+                size="15pt"
+                weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 4, 0)}
               >
@@ -463,8 +495,8 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent text"
                 align="left"
-                size="14pt"
-                weight="semibold"
+                size="15pt"
+                weight="bold"
                 color="accent"
                 direction="rightToLeft"
                 delay={getDelayForRows(calculatingPointsRowsText, 4, 1)}
@@ -480,8 +512,8 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent text"
                 align="left"
-                size="14pt"
-                weight="semibold"
+                size="15pt"
+                weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 5, 0)}
               >
@@ -490,8 +522,8 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent text"
                 align="left"
-                size="14pt"
-                weight="semibold"
+                size="15pt"
+                weight="bold"
                 color="accent"
                 direction="rightToLeft"
                 delay={getDelayForRows(calculatingPointsRowsText, 5, 1)}
@@ -506,7 +538,7 @@ export const PointsOnboardingSheet = () => {
             textShadow="12px label text"
             align="left"
             size="16pt"
-            weight="semibold"
+            weight="bold"
             color="labelTertiary"
             delay={getDelayForRows(calculatingPointsRowsText, 6, 0)}
           >
@@ -520,8 +552,8 @@ export const PointsOnboardingSheet = () => {
                 <AnimatedText
                   textShadow="12px accent text"
                   align="left"
-                  size="14pt"
-                  weight="semibold"
+                  size="15pt"
+                  weight="bold"
                   color="accent"
                   delay={getDelayForRows(calculatingPointsRowsText, 7, 0)}
                 >
@@ -530,8 +562,8 @@ export const PointsOnboardingSheet = () => {
                 <AnimatedText
                   textShadow="12px accent text"
                   align="left"
-                  size="14pt"
-                  weight="semibold"
+                  size="15pt"
+                  weight="bold"
                   color="accent"
                   direction="rightToLeft"
                   delay={getDelayForRows(calculatingPointsRowsText, 7, 1)}
@@ -558,7 +590,7 @@ export const PointsOnboardingSheet = () => {
                   textShadow="12px label text"
                   align="left"
                   size="16pt"
-                  weight="semibold"
+                  weight="bold"
                   color="labelTertiary"
                 >
                   {i18n.t('points.onboarding.account')}
@@ -566,8 +598,8 @@ export const PointsOnboardingSheet = () => {
                 <Text
                   textShadow="12px accent text"
                   align="left"
-                  size="14pt"
-                  weight="semibold"
+                  size="15pt"
+                  weight="bold"
                   color="accent"
                 >
                   {displayName}
@@ -615,7 +647,7 @@ export const PointsOnboardingSheet = () => {
                   <Text
                     textShadow="12px accent text"
                     align="center"
-                    size="14pt"
+                    size="15pt"
                     weight="heavy"
                     color="accent"
                   >
@@ -677,7 +709,7 @@ export const PointsOnboardingSheet = () => {
                       </Box>
                       <Text
                         align="center"
-                        size="14pt"
+                        size="15pt"
                         weight="heavy"
                         color="accent"
                         textShadow="12px accent text"
