@@ -1,5 +1,5 @@
 import { motion, useAnimation } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -8,6 +8,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { Box, Button, Inset, Stack, Text } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import {
   backgroundColors,
   globalColors,
@@ -18,6 +19,7 @@ import PointsSelectedIcon from '../../components/Tabs/TabIcons/PointsSelected';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCoolMode } from '../../hooks/useCoolMode';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 const animationSteps = {
@@ -106,6 +108,18 @@ const PointsContentPlaceholder = () => {
 
 const PointsContent = () => {
   const navigate = useRainbowNavigate();
+  const { isWatchingWallet } = useWallets();
+  const { featureFlags } = useFeatureFlagsStore();
+
+  const allowOnboarding = useMemo(
+    () => !isWatchingWallet || featureFlags.full_watching_wallets,
+    [featureFlags.full_watching_wallets, isWatchingWallet],
+  );
+  const alertWatchingWallet = () =>
+    triggerAlert({
+      text: i18n.t('alert.wallet_watching_mode'),
+    });
+
   return (
     <Stack alignHorizontal="center" space="16px">
       <Inset bottom="10px" horizontal="80px">
@@ -130,9 +144,11 @@ const PointsContent = () => {
       </Inset>
       <Button
         onClick={() =>
-          navigate(ROUTES.POINTS_ONBOARDING, {
-            state: { skipTransitionOnRoute: ROUTES.HOME },
-          })
+          allowOnboarding
+            ? navigate(ROUTES.POINTS_ONBOARDING, {
+                state: { skipTransitionOnRoute: ROUTES.HOME },
+              })
+            : alertWatchingWallet()
         }
         color="accent"
         height="36px"
@@ -142,9 +158,11 @@ const PointsContent = () => {
       </Button>
       <Button
         onClick={() =>
-          navigate(ROUTES.POINTS_REFERRAL, {
-            state: { skipTransitionOnRoute: ROUTES.HOME },
-          })
+          allowOnboarding
+            ? navigate(ROUTES.POINTS_REFERRAL, {
+                state: { skipTransitionOnRoute: ROUTES.HOME },
+              })
+            : alertWatchingWallet()
         }
         color="accent"
         height="36px"

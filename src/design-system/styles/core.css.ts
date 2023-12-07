@@ -156,6 +156,16 @@ export const transparentAccentColorAsHsl = getColorAsHsl({
   vars: accentColorHslVars,
 });
 
+export const transparentAccentColorAsHsl20 = getColorAsHsl({
+  alpha: 0.2,
+  vars: accentColorHslVars,
+});
+
+export const transparentAccentColorAsHsl60 = getColorAsHsl({
+  alpha: 0.6,
+  vars: accentColorHslVars,
+});
+
 export const avatarColorAsHsl = getColorAsHsl({ vars: avatarColorHslVars });
 export const transparentAvatarColorAsHsl = getColorAsHsl({
   alpha: 0.1,
@@ -176,7 +186,11 @@ interface ShadowDefinition {
 }
 
 export type ShadowSize = '1px' | '12px' | '18px' | '24px' | '30px';
-export type Shadow = ShadowSize | `${ShadowSize} ${ShadowColor}`;
+export type Shadow =
+  | ShadowSize
+  | `${ShadowSize} ${ShadowColor}`
+  | '12px accent text'
+  | '12px label text';
 
 function coloredShadows<Size extends ShadowSize>(
   size: Size,
@@ -229,7 +243,20 @@ const shadowTokens: Record<Shadow, ShadowDefinition> = {
       `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
     ].join(', '),
   })),
-
+  '12px accent text': {
+    light: `0px 0px 12px ${getColorAsHsl({
+      alpha: 0.8,
+      vars: accentColorHslVars,
+    })}`,
+    dark: `0px 0px 12px ${getColorAsHsl({
+      alpha: 0.8,
+      vars: accentColorHslVars,
+    })}`,
+  },
+  '12px label text': {
+    light: `0px 0px 12px rgba(27, 29, 31, 0.45)`,
+    dark: `0px 0px 12px rgba(244, 248, 255, 0.45)`,
+  },
   '18px': {
     light: [
       `0 6px 18px ${getShadowColor('shadowFar', 'light', 0.08)}`,
@@ -468,6 +495,9 @@ const symbolProperties = defineProperties({
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
+    filter: {
+      'shadow 12px accent': `drop-shadow(${shadowTokens['12px accent text'].light})`,
+    },
     cursor: cursorOpts,
     opacity: {
       boxed: 0.76,
@@ -556,6 +586,7 @@ const textProperties = defineProperties({
     whiteSpace: ['nowrap', 'pre-wrap'],
     overflow: ['hidden'],
     transition: ['color 200ms ease-out'],
+    textShadow: shadowVars,
   },
 });
 
