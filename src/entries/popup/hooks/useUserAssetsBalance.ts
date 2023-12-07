@@ -7,11 +7,7 @@ import {
 import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useCurrentCurrencyStore } from '~/core/state';
-import {
-  add,
-  convertAmountToNativeDisplay,
-  toBigNumber,
-} from '~/core/utils/numbers';
+import { add, convertAmountToNativeDisplay } from '~/core/utils/numbers';
 
 export function useUserAssetsBalance() {
   const { address } = useAccount();
