@@ -2,7 +2,7 @@ import { i18n } from '~/core/languages';
 
 import { EXISTING_USER_ERROR, INVALID_REFERRAL_CODE_ERROR } from './references';
 
-export const CHARACTER_TYPING_SPEED = 0.1;
+export const CHARACTER_TYPING_SPEED = 0.02;
 
 export const getErrorString = (error?: string | null) => {
   switch (error) {

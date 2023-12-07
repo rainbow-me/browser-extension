@@ -2,6 +2,7 @@ import { Variants, motion } from 'framer-motion';
 import React, { ReactElement, useMemo } from 'react';
 
 import { BoxStyles } from '~/design-system/styles/core.css';
+import { CHARACTER_TYPING_SPEED } from '~/entries/popup/pages/home/Points/utils';
 
 import { Box } from '../Box/Box';
 import { Stack } from '../Stack/Stack';
@@ -19,13 +20,11 @@ export const AnimatedTextRows = ({
   customDelay?: number;
   id?: string;
 }) => {
-  const charDisplayDuration = 0.1;
-
   const rowDelays = useMemo(() => {
     let totalDuration = 0;
     return rowsText.map((text) => {
       const delay = totalDuration;
-      totalDuration += text.length * charDisplayDuration;
+      totalDuration += text.length * CHARACTER_TYPING_SPEED;
       return delay;
     });
   }, [rowsText]);
