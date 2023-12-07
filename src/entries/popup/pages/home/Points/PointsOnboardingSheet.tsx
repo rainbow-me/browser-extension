@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { metadataPostClient } from '~/core/graphql';
+import { GetPointsOnboardChallengeQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import {
   selectUserAssetsBalance,
@@ -61,6 +62,135 @@ const fadeVariants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { delay: 0.5 } },
   exit: { opacity: 0, transition: { delay: 0.5 } },
+};
+
+const SiginAction = ({
+  data,
+  validatingSignature,
+  signChallenge,
+}: {
+  data?: GetPointsOnboardChallengeQuery;
+  validatingSignature: boolean;
+  signChallenge: () => void;
+}) => {
+  return (
+    <Box
+      as={motion.div}
+      variants={fadeVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      key="signin_action-button"
+    >
+      <AccentColorProvider color="#00D348">
+        <Button
+          disabled={!data?.pointsOnboardChallenge}
+          width="full"
+          borderRadius="12px"
+          onClick={signChallenge}
+          color="accent"
+          height="36px"
+          variant="shadow"
+        >
+          <Text
+            textShadow="12px accent text"
+            align="center"
+            size="15pt"
+            weight="heavy"
+            color="accent"
+          >
+            {i18n.t('points.onboarding.sign_in')}
+          </Text>
+          {validatingSignature && (
+            <Box
+              style={{
+                boxShadow: `0px 0px 12px 0px ${accentColorAsHsl}`,
+                backgroundColor: transparentAccentColorAsHsl20,
+              }}
+              borderRadius="10px"
+            >
+              <Spinner color="accent" />
+            </Box>
+          )}
+        </Button>
+      </AccentColorProvider>
+    </Box>
+  );
+};
+
+const RegistrationAction = ({
+  data,
+  registrationAction,
+}: {
+  data?: GetPointsOnboardChallengeQuery;
+  registrationAction: 'swap' | 'buy';
+}) => {
+  const navigate = useRainbowNavigate();
+
+  const goToBuy = () => {
+    navigate(ROUTES.HOME, {
+      state: { skipTransitionOnRoute: ROUTES.HOME },
+    });
+    navigate(ROUTES.BUY);
+  };
+
+  const goToSwap = () => {
+    navigate(ROUTES.HOME, {
+      state: { skipTransitionOnRoute: ROUTES.HOME },
+    });
+    navigate(ROUTES.SWAP);
+  };
+
+  return (
+    <Box
+      as={motion.div}
+      variants={fadeVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      key="action-button"
+    >
+      <Button
+        disabled={!data?.pointsOnboardChallenge}
+        width="full"
+        borderRadius="12px"
+        onClick={registrationAction === 'swap' ? goToSwap : goToBuy}
+        color="accent"
+        height="36px"
+        variant="shadow"
+      >
+        <Inline alignHorizontal="center" alignVertical="center" space="4px">
+          <Box
+            style={{
+              boxShadow: `0px 0px 12px 0px ${transparentAccentColorAsHsl60}`,
+            }}
+            borderRadius="10px"
+            background="transparent"
+          >
+            <Symbol
+              size={18}
+              color="accent"
+              weight="medium"
+              symbol="plus.circle.fill"
+            />
+          </Box>
+          <Text
+            align="center"
+            size="15pt"
+            weight="heavy"
+            color="accent"
+            textShadow="12px accent text"
+          >
+            {i18n.t(
+              `points.onboarding.${
+                registrationAction === 'swap' ? 'try_swap' : 'get_eth'
+              }`,
+            )}
+          </Text>
+        </Inline>
+      </Button>
+    </Box>
+  );
 };
 
 export const PointsOnboardingSheet = () => {
@@ -125,16 +255,6 @@ export const PointsOnboardingSheet = () => {
     navigate(ROUTES.HOME, {
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
-
-  const goToBuy = () => {
-    backToHome();
-    navigate(ROUTES.BUY);
-  };
-
-  const goToSwap = () => {
-    backToHome();
-    navigate(ROUTES.SWAP);
-  };
 
   const signChallenge = useCallback(async () => {
     if (data?.pointsOnboardChallenge) {
@@ -668,107 +788,17 @@ export const PointsOnboardingSheet = () => {
           <Row height="content">
             <AnimatePresence mode="wait" initial={false}>
               {!accessGranted && (
-                <Box
-                  as={motion.div}
-                  variants={fadeVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  key="signin_action-button"
-                >
-                  <AccentColorProvider color="#00D348">
-                    <Button
-                      disabled={!data?.pointsOnboardChallenge}
-                      width="full"
-                      borderRadius="12px"
-                      onClick={signChallenge}
-                      color="accent"
-                      height="36px"
-                      variant="shadow"
-                    >
-                      <Text
-                        textShadow="12px accent text"
-                        align="center"
-                        size="15pt"
-                        weight="heavy"
-                        color="accent"
-                      >
-                        {i18n.t('points.onboarding.sign_in')}
-                      </Text>
-                      {validatingSignature && (
-                        <Box
-                          style={{
-                            boxShadow: `0px 0px 12px 0px ${accentColorAsHsl}`,
-                            backgroundColor: transparentAccentColorAsHsl20,
-                          }}
-                          borderRadius="10px"
-                        >
-                          <Spinner color="accent" />
-                        </Box>
-                      )}
-                    </Button>
-                  </AccentColorProvider>
-                </Box>
+                <SiginAction
+                  data={data}
+                  signChallenge={signChallenge}
+                  validatingSignature={validatingSignature}
+                />
               )}
-            </AnimatePresence>
-          </Row>
-          <Row height="content">
-            <AnimatePresence mode="wait" initial={false}>
               {showRegisteredCallToAction && (
-                <Box
-                  as={motion.div}
-                  variants={fadeVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  key="action-button"
-                >
-                  <Button
-                    disabled={!data?.pointsOnboardChallenge}
-                    width="full"
-                    borderRadius="12px"
-                    onClick={registrationAction === 'swap' ? goToSwap : goToBuy}
-                    color="accent"
-                    height="36px"
-                    variant="shadow"
-                  >
-                    <Inline
-                      alignHorizontal="center"
-                      alignVertical="center"
-                      space="4px"
-                    >
-                      <Box
-                        style={{
-                          boxShadow: `0px 0px 12px 0px ${transparentAccentColorAsHsl60}`,
-                        }}
-                        borderRadius="10px"
-                        background="transparent"
-                      >
-                        <Symbol
-                          size={18}
-                          color="accent"
-                          weight="medium"
-                          symbol="plus.circle.fill"
-                        />
-                      </Box>
-                      <Text
-                        align="center"
-                        size="15pt"
-                        weight="heavy"
-                        color="accent"
-                        textShadow="12px accent text"
-                      >
-                        {i18n.t(
-                          `points.onboarding.${
-                            registrationAction === 'swap'
-                              ? 'try_swap'
-                              : 'get_eth'
-                          }`,
-                        )}
-                      </Text>
-                    </Inline>
-                  </Button>
-                </Box>
+                <RegistrationAction
+                  data={data}
+                  registrationAction={registrationAction}
+                />
               )}
             </AnimatePresence>
           </Row>
