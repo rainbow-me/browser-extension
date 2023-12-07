@@ -165,7 +165,8 @@ export type ButtonVariant =
   | 'transparentHover'
   | 'plain'
   | 'square'
-  | 'disabled';
+  | 'disabled'
+  | 'shadow';
 
 export const backdropFilter = {
   'blur(10px)': 'blur(10px)',

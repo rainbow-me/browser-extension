@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.2.95",
+  "version": "1.2.96",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -123,6 +123,7 @@
     "check-password-strength": "2.0.7",
     "chroma-js": "2.4.2",
     "clsx": "1.2.1",
+    "cmdk": "0.2.0",
     "currency.js": "2.0.4",
     "date-fns": "2.29.3",
     "deepmerge": "4.2.2",
