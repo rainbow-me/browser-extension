@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { goToNewTab } from '~/core/utils/tabs';
 import {
@@ -118,21 +118,13 @@ export const ExplainerSheet = ({
         active: false,
       });
   }, []);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // capture focus on mount so that keyboard events are handled
-  useEffect(() => {
-    if (show) {
-      containerRef.current?.focus();
-    }
-  }, [show]);
   return (
     <BottomSheet
       onClickOutside={onClickOutside || actionButton?.action}
       zIndex={zIndexes.EXPLAINER_BOTTOM_SHEET}
       show={show}
     >
-      <Box testId={`explainer-sheet-${testId}`} isExplainerSheet isModal>
+      <Box testId={`explainer-sheet-${testId}`} isExplainerSheet>
         <Box paddingVertical="44px" paddingHorizontal="32px">
           <Stack alignHorizontal="center" space="20px">
             {header?.emoji ? (
