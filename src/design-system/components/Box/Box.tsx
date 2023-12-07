@@ -123,7 +123,7 @@ export const Box = forwardRef(
           className,
         )}
         data-is-modally-presented={isModal || undefined}
-        is-explainer-sheet={isExplainerSheet || undefined}
+        data-is-explainer-sheet={isExplainerSheet || undefined}
         data-testid={testId}
         // Since Box is a primitive component, it needs to spread props
         // eslint-disable-next-line react/jsx-props-no-spreading

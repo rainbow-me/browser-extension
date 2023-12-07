@@ -2,7 +2,7 @@ export const getActiveElement = () => document.activeElement;
 export const getActiveModal = () =>
   document.querySelector('div[data-is-modally-presented]');
 export const getExplainerSheet = () =>
-  document.querySelector('div[is-explainer-sheet]');
+  document.querySelector('div[data-is-explainer-sheet]');
 export const getInputIsFocused = () => {
   const tagName = getActiveElement()?.tagName || '';
   return ['INPUT', 'TEXTAREA'].includes(tagName);
