@@ -75,7 +75,12 @@ const InfoRow = ({
   >
     <Inline alignVertical="center" space="12px" wrap={false}>
       <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
-      <Text color="labelTertiary" size="12pt" weight="semibold">
+      <Text
+        color="labelTertiary"
+        size="12pt"
+        weight="semibold"
+        whiteSpace="nowrap"
+      >
         {label}
       </Text>
     </Inline>
@@ -203,7 +208,7 @@ function TransactionDetails({
         <InfoRow
           symbol="person"
           label={i18n.t('simulation.contract_name')}
-          value={contractName}
+          value={'uniswap v3 positions nft-v1'}
         />
       )}
       {contractCreatedAt && (
