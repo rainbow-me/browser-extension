@@ -103,6 +103,7 @@ const SaveOrEditContact = ({
             onClick={onSave}
             tabIndex={2}
             testId="contact-prompt-confirm"
+            autoFocus
           >
             {i18n.t(
               `contacts.${
