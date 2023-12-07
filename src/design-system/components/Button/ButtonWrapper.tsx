@@ -7,6 +7,7 @@ import {
   TextStyles,
   accentColorAsHsl,
   foregroundColorVars,
+  transparentAccentColorAsHsl20,
 } from '../../styles/core.css';
 import {
   BackgroundColor,
@@ -115,6 +116,9 @@ export const stylesForHeightAndVariant = ({
       boxShadow: shadowValue('30px', color),
     },
     square: {},
+    shadow: {
+      boxShadow: shadowValue('30px', color),
+    },
   },
   '36px': {
     raised: { boxShadow: shadowValue('24px', color) },
@@ -129,6 +133,9 @@ export const stylesForHeightAndVariant = ({
       boxShadow: shadowValue('24px', color),
     },
     square: {},
+    shadow: {
+      boxShadow: shadowValue('24px', color),
+    },
   },
   '32px': {
     raised: { boxShadow: shadowValue('24px', color) },
@@ -143,6 +150,9 @@ export const stylesForHeightAndVariant = ({
       boxShadow: shadowValue('24px', color),
     },
     square: {},
+    shadow: {
+      boxShadow: shadowValue('24px', color),
+    },
   },
   '30px': {
     raised: { boxShadow: shadowValue('24px', color) },
@@ -157,6 +167,9 @@ export const stylesForHeightAndVariant = ({
       boxShadow: shadowValue('24px', color),
     },
     square: {},
+    shadow: {
+      boxShadow: shadowValue('24px', color),
+    },
   },
   '28px': {
     raised: { boxShadow: shadowValue('12px', color) },
@@ -171,6 +184,9 @@ export const stylesForHeightAndVariant = ({
       boxShadow: shadowValue('12px', color),
     },
     square: {},
+    shadow: {
+      boxShadow: shadowValue('12px', color),
+    },
   },
   '24px': {
     raised: { boxShadow: shadowValue('12px', color) },
@@ -185,6 +201,9 @@ export const stylesForHeightAndVariant = ({
       boxShadow: shadowValue('12px', color),
     },
     square: {},
+    shadow: {
+      boxShadow: shadowValue('12px', color),
+    },
   },
 });
 
@@ -199,6 +218,7 @@ export const stylesForVariant = ({
     textColor?: 'accent' | TextColor;
     borderColor?: BoxStyles['borderColor'];
     borderWidth?: BoxStyles['borderWidth'];
+    backgroundColor?: string;
   }
 > => ({
   raised: {
@@ -221,6 +241,12 @@ export const stylesForVariant = ({
     borderColor: color as ButtonColor,
     borderWidth: '2px',
     textColor: 'labelSecondary',
+  },
+  shadow: {
+    borderColor: color as ButtonColor,
+    borderWidth: '2px',
+    textColor: 'labelSecondary',
+    backgroundColor: transparentAccentColorAsHsl20,
   },
   transparent: {
     textColor: color as TextColor,
@@ -266,9 +292,10 @@ export const ButtonWrapper = forwardRef<HTMLButtonElement, ButtonWrapperProps>(
       color: color as ButtonColor,
     })[height][variant];
 
-    const { background, borderColor, borderWidth } = stylesForVariant({
-      color: color ?? 'accent',
-    })[variant];
+    const { background, borderColor, borderWidth, backgroundColor } =
+      stylesForVariant({
+        color: color ?? 'accent',
+      })[variant];
 
     let outlineColor = undefined;
     // Only apply outline to buttons with tabIndex
@@ -281,6 +308,7 @@ export const ButtonWrapper = forwardRef<HTMLButtonElement, ButtonWrapperProps>(
     const styles = {
       ...((blur && { backdropFilter: `blur(${blur})` }) || {}),
       outlineColor,
+      ...(backgroundColor ? { backgroundColor } : {}),
     };
 
     return (
