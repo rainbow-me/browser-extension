@@ -394,7 +394,6 @@ export const PointsOnboardingSheet = () => {
               weight="bold"
               color="accent"
               direction="rightToLeft"
-              // customTypingSpeed={0.2}
               delay={getDelayForRows(registeringPointsRowsText, 1, 1)}
             >
               {registeringPointsRowsText[1][1]}
@@ -451,7 +450,6 @@ export const PointsOnboardingSheet = () => {
                 size="15pt"
                 weight="bold"
                 color="accent"
-                // customTypingSpeed={0.2}
                 delay={getDelayForRows(calculatingPointsRowsText, 1, 1)}
                 direction="rightToLeft"
               >
@@ -480,7 +478,6 @@ export const PointsOnboardingSheet = () => {
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
-                // customTypingSpeed={0.2}
                 delay={getDelayForRows(calculatingPointsRowsText, 2, 1)}
               >
                 {calculatingPointsRowsText[2][1]}
@@ -508,7 +505,6 @@ export const PointsOnboardingSheet = () => {
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
-                // customTypingSpeed={0.2}
                 delay={getDelayForRows(calculatingPointsRowsText, 3, 1)}
               >
                 {calculatingPointsRowsText[3][1]}
@@ -536,7 +532,6 @@ export const PointsOnboardingSheet = () => {
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
-                // customTypingSpeed={0.2}
                 delay={getDelayForRows(calculatingPointsRowsText, 4, 1)}
               >
                 {calculatingPointsRowsText[4][1]}
@@ -564,7 +559,6 @@ export const PointsOnboardingSheet = () => {
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
-                // customTypingSpeed={0.2}
                 delay={getDelayForRows(calculatingPointsRowsText, 5, 1)}
               >
                 {calculatingPointsRowsText[5][1]}
@@ -605,7 +599,6 @@ export const PointsOnboardingSheet = () => {
                   weight="bold"
                   color="accent"
                   direction="rightToLeft"
-                  // customTypingSpeed={0.2}
                   delay={getDelayForRows(calculatingPointsRowsText, 7, 1)}
                 >
                   {calculatingPointsRowsText[7][1]}
