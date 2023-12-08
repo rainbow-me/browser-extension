@@ -19,3 +19,10 @@ export const gradientBorderLight = style([
     border: '1px solid transparent',
   },
 ]);
+
+export const fadeOutMask = style([
+  {
+    WebkitMaskImage:
+      'linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.3), rgba(0,0,0,0))',
+  },
+]);
