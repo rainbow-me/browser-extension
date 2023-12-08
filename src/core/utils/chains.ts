@@ -68,7 +68,7 @@ export const getBackendSupportedChains = ({
   const chains = testnetMode
     ? getSupportedTestnetChains()
     : getSupportedChains();
-  return chains.filter(({ id }) => !isCustomChain(id));
+  return chains;
 };
 
 export const getCustomChains = () => {
