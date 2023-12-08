@@ -11,7 +11,7 @@ const alignHorizontalToAlignItems = {
 } as const;
 type AlignHorizontal = keyof typeof alignHorizontalToAlignItems;
 
-interface StackProps extends BoxProps {
+export interface StackProps extends BoxProps {
   space?: Space;
   alignHorizontal?: AlignHorizontal;
   children?: ReactNode;
