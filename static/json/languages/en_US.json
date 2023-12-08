@@ -1231,6 +1231,17 @@
   "points": {
     "coming_soon_header": "Coming Soon",
     "coming_soon_description": "Points are just around the corner.\nStart earning today.",
+
+    "your_rank": "Your Rank",
+    "next_drop": "Next Drop",
+    "leaderboard": "Leaderboard",
+    "referral_code": "Referral Code",
+    "referral_code_description": "Earn points for referring friends once they swap $100 through Rainbow",
+    "copied_referral_code": "Referral code copied!",
+    "copied_referral_link": "Referral link copied!",
+    "out_of": "Out of %{total}",
+    "out_of_current_total_points": "Out of %{total} current total points",
+
     "header": "Claim your points",
     "description": "Points are here. Find out how many you’ve been awarded.",
     "get_started": "Get Started",
@@ -1238,6 +1249,7 @@
     "referral_header": "Enter your referral code",
     "referral_description": "Enter a referral code below to claim your bonus reward.",
     "referral_code_invalid": "Invalid Code",
+
     "onboarding": {
       "authorization_required": "Authorization required",
       "sign_in_with_your_wallet": "Sign in with your wallet",
@@ -1557,6 +1569,7 @@
   "chain": "Chain",
   "nonce": "Nonce",
   "copy": "Copy",
+  "copy_link": "Copy Link",
   "close": "Close",
   "verified": "Verified",
   "unverified": "Unverified",

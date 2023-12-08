@@ -245,7 +245,7 @@ const shadowTokens: Record<Shadow, ShadowDefinition> = {
   })),
   '12px accent text': {
     light: `0px 0px 12px ${getColorAsHsl({
-      alpha: 0.8,
+      alpha: 0.6,
       vars: accentColorHslVars,
     })}`,
     dark: `0px 0px 12px ${getColorAsHsl({
@@ -565,6 +565,7 @@ const textProperties = defineProperties({
       '14pt': defineType(14, 19, 0.48),
       '14pt / 135%': defineType(14, '135%', 0.48),
       '14pt / 155%': defineType(14, '150%', 0.48),
+      '15pt': defineType(15, 20, 0.41),
       '16pt': defineType(16, 21, 0.35),
       '16pt / 135%': defineType(16, '135%', 0.35),
       '16pt / 155%': defineType(16, '150%', 0.35),
@@ -585,7 +586,7 @@ const textProperties = defineProperties({
     textOverflow: ['ellipsis'],
     whiteSpace: ['nowrap', 'pre-wrap'],
     overflow: ['hidden'],
-    transition: ['color 200ms ease-out'],
+    transition: ['color 200ms ease-out, text-shadow 1s ease'],
     textShadow: shadowVars,
   },
 });
