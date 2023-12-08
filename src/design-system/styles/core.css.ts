@@ -565,6 +565,7 @@ const textProperties = defineProperties({
       '14pt': defineType(14, 19, 0.48),
       '14pt / 135%': defineType(14, '135%', 0.48),
       '14pt / 155%': defineType(14, '150%', 0.48),
+      '15pt': defineType(15, 20, 0.41),
       '16pt': defineType(16, 21, 0.35),
       '16pt / 135%': defineType(16, '135%', 0.35),
       '16pt / 155%': defineType(16, '150%', 0.35),
