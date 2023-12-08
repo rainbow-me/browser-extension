@@ -195,30 +195,63 @@ mutation validatePointsReferralCode($address: String!, $referral: String) {
   }
 }
 
-mutation validatePointsSignature($address: String!, $signature: String!, $referral: String) {
+mutation validatePointsSignature(
+  $address: String!
+  $signature: String!
+  $referral: String
+) {
   onboardPoints(address: $address, signature: $signature, referral: $referral) {
     error {
       type
     }
+    meta {
+      distribution {
+        next
+      }
+      status
+    }
+    leaderboard {
+      stats {
+        total_users
+        total_points
+      }
+      accounts {
+        address
+        earnings {
+          total
+        }
+        ens
+        avatarURL
+      }
+    }
     user {
       onboarding {
+        earnings {
+          total
+        }
+        categories {
+          data {
+            usd_amount
+            total_collections
+            owned_collections
+          }
+          type
+          display_type
           earnings {
             total
           }
-          categories {
-            data {
-              usd_amount
-              total_collections
-              owned_collections
-            }
-            type
-            display_type
-            earnings {
-              total
-            }
-          }
         }
       }
+      referralCode
+      earnings {
+        total
+      }
+      stats {
+        position {
+          current
+        }
+      }
+    }
   }
 }
 
@@ -233,5 +266,45 @@ query validateReferral($code: String!) {
 }
 
 query getPointsOnboardChallenge($address: String!, $referral: String) {
-  pointsOnboardChallenge(address: $address, referral: $referral) 
+  pointsOnboardChallenge(address: $address, referral: $referral)
+}
+
+query points($address: String!) {
+  points(address: $address) {
+    error {
+      message
+      type
+    }
+    meta {
+      distribution {
+        next
+      }
+      status
+    }
+    leaderboard {
+      stats {
+        total_users
+        total_points
+      }
+      accounts {
+        address
+        earnings {
+          total
+        }
+        ens
+        avatarURL
+      }
+    }
+    user {
+      referralCode
+      earnings {
+        total
+      }
+      stats {
+        position {
+          current
+        }
+      }
+    }
+  }
 }
