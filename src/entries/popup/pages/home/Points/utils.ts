@@ -30,6 +30,23 @@ export const getDelayForRows = (
   row: number,
   column: number,
 ): number => {
-  const delay = getDelayForRow(rows.flat(), row * 2 + column - 1);
+  const delay =
+    getDelayForRow(rows.flat(), row * 2 + column - 1) +
+    (column % 2 !== 0 ? 0.5 : 0) +
+    1 * row;
   return delay;
+};
+
+export const RAINBOW_TEXT = {
+  row1: '\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',
+  row2: '\u00A0\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',
+  row3: '\u00A0\u00A0\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',
+  row4: '\u00A0\u00A0\u00A0\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',
+  row5: '\u00A0\u00A0\u00A0\u00A0\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',
+  row6: '\u00A0\u00A0\u00A0\u00A0\u00A0\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',
+  row7: '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',
+  row8: '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',
+};
+export const RAINBOW_TEXT_WELCOME = {
+  row1: 'WELCOME TO POINTS',
 };

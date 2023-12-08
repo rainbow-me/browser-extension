@@ -1,17 +1,18 @@
-import { useAccount } from 'wagmi';
+import { Address } from 'wagmi';
 
 import {
   selectUserAssetsBalance,
   selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
-import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
+import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { add, convertAmountToNativeDisplay } from '~/core/utils/numbers';
 
 export function useUserAssetsBalance() {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: totalAssetsBalance } = useUserAssets(
+  const { data: totalAssetsBalanceKnownNetworks } = useUserAssets(
     {
       address,
       currency,
@@ -20,6 +21,26 @@ export function useUserAssetsBalance() {
       select: (data) =>
         selectorFilterByUserChains({ data, selector: selectUserAssetsBalance }),
     },
+  );
+
+  const { data: totalAssetsBalanceCustomNetworks = [] } =
+    useCustomNetworkAssets(
+      {
+        address: address as Address,
+        currency,
+      },
+      {
+        select: (data) =>
+          selectorFilterByUserChains({
+            data,
+            selector: selectUserAssetsBalance,
+          }),
+      },
+    );
+
+  const totalAssetsBalance = add(
+    totalAssetsBalanceKnownNetworks as string,
+    totalAssetsBalanceCustomNetworks as string,
   );
 
   return {
