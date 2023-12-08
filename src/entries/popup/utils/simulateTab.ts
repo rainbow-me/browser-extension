@@ -6,9 +6,6 @@ export const simulateTab = (forwards: boolean) => {
     const modal = getActiveModal();
     const explainer = getExplainerSheet();
     const target = explainer || modal || document;
-    console.log('modal:', modal);
-    console.log('explainer:', explainer);
-    console.log('target:', target);
 
     const tabbableArray = Array.from(
       target.querySelectorAll('[tabindex]:not([tabindex="-1"])'),
