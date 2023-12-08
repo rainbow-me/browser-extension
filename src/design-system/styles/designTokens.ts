@@ -683,6 +683,24 @@ export type FontWeight = keyof typeof fontWeights;
 export const linearGradients = {
   rainbow:
     'radial-gradient(100% 276.79% at 100% 49.98%, #FFB114 0%, #FF54BB 63.54%, #00F0FF 100%)',
+  points: `
+    radial-gradient(80.71% 706.25% at 23.21% 100%, #00BFC6 0%, #00EE45 25%, #FFD400 50%, #F24527 75%, #C54EAB 100%),
+    radial-gradient(80.71% 706.25% at 23.21% 100%, color(display-p3 0.192 0.737 0.769) 0%, color(display-p3 0.341 0.918 0.373) 25%, color(display-p3 1.000 0.839 0.000) 50%, color(display-p3 0.875 0.325 0.216) 75%, color(display-p3 0.718 0.337 0.655) 100%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12)),
+    linear-gradient(0deg, color(display-p3 1.000 1.000 1.000 / 0.12), color(display-p3 1.000 1.000 1.000 / 0.12))
+  `,
+  ['🥇']: `
+    linear-gradient(90deg, #FFE329 0%, #DA9200 100%),
+    linear-gradient(90deg, color(display-p3 1.000 0.894 0.337) 0%, color(display-p3 0.812 0.584 0.000) 100%)
+  `,
+  ['🥈']: `
+    linear-gradient(90deg, #D0DBE7 0%, #B1BCC8 100%),
+    linear-gradient(90deg, color(display-p3 0.82 0.86 0.91) 0%, color(display-p3 0.702 0.737 0.780) 100%)
+  `,
+  ['🥉']: `
+    linear-gradient(90deg, #EB8A15 0%, #BA5A0A 100%),
+    linear-gradient(90deg, color(display-p3 0.871 0.561 0.220) 0%, color(display-p3 0.682 0.373 0.145) 100%)
+  `,
 } as const;
 export type LinearGradient = keyof typeof linearGradients;
 
@@ -1043,6 +1061,56 @@ export const symbolNames = selectSymbolNames(
   'percent',
   'photo',
   'person.crop.rectangle.fill',
+  '1.circle',
+  '2.circle',
+  '3.circle',
+  '4.circle',
+  '5.circle',
+  '6.circle',
+  '7.circle',
+  '8.circle',
+  '9.circle',
+  '10.circle',
+  '11.circle',
+  '12.circle',
+  '13.circle',
+  '14.circle',
+  '15.circle',
+  '16.circle',
+  '17.circle',
+  '18.circle',
+  '19.circle',
+  '20.circle',
+  '21.circle',
+  '22.circle',
+  '23.circle',
+  '24.circle',
+  '25.circle',
+  '26.circle',
+  '27.circle',
+  '28.circle',
+  '29.circle',
+  '30.circle',
+  '31.circle',
+  '32.circle',
+  '33.circle',
+  '34.circle',
+  '35.circle',
+  '36.circle',
+  '37.circle',
+  '38.circle',
+  '39.circle',
+  '40.circle',
+  '41.circle',
+  '42.circle',
+  '43.circle',
+  '44.circle',
+  '45.circle',
+  '46.circle',
+  '47.circle',
+  '48.circle',
+  '49.circle',
+  '50.circle',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

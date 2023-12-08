@@ -22,6 +22,16 @@ import { maskInput } from '../../../components/InputMask/utils';
 const KNOWN_NETWORKS = {
   [i18n.t('settings.networks.custom_rpc.networks')]: [
     {
+      name: 'Arbitrum Nova',
+      value: {
+        rpcUrl: 'https://nova.arbitrum.io/rpc',
+        chainId: 42_170,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://nova.arbiscan.io',
+      },
+    },
+    {
       name: 'Avalanche',
       value: {
         rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
@@ -32,6 +42,116 @@ const KNOWN_NETWORKS = {
       },
     },
     {
+      name: 'Aurora',
+      value: {
+        rpcUrl: 'https://mainnet.aurora.dev',
+        chainId: 1313161554,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://aurorascan.dev',
+      },
+    },
+    {
+      name: 'Canto',
+      value: {
+        rpcUrl: 'https://canto.gravitychain.io',
+        chainId: 7_700,
+        decimals: 18,
+        symbol: 'CANTO',
+        explorerUrl: 'https://tuber.build',
+      },
+    },
+    {
+      name: 'Celo',
+      value: {
+        rpcUrl: 'https://forno.celo.org',
+        chainId: 42_220,
+        decimals: 18,
+        symbol: 'CELO',
+        explorerUrl: 'https://explorer.celo.org/mainnet',
+      },
+    },
+    {
+      name: 'Ethereum Classic',
+      value: {
+        rpcUrl: 'https://etc.rivet.link',
+        chainId: 61,
+        decimals: 18,
+        symbol: 'ETC',
+        explorerUrl: 'https://blockscout.com/etc/mainnet',
+      },
+    },
+    {
+      name: 'Fantom',
+      value: {
+        rpcUrl: 'https://rpc.ankr.com/fantom',
+        chainId: 42_220,
+        decimals: 18,
+        symbol: 'FTM',
+        explorerUrl: 'https://ftmscan.com',
+      },
+    },
+    {
+      name: 'Filecoin',
+      value: {
+        rpcUrl: 'https://api.node.glif.io/rpc/v1',
+        chainId: 314,
+        decimals: 18,
+        symbol: 'FIL',
+        explorerUrl: 'https://filfox.info/en',
+      },
+    },
+    {
+      name: 'Gnosis',
+      value: {
+        rpcUrl: 'https://rpc.gnosischain.com',
+        chainId: 100,
+        decimals: 18,
+        symbol: 'xDAI',
+        explorerUrl: 'https://gnosisscan.io',
+      },
+    },
+    {
+      name: 'Linea',
+      value: {
+        rpcUrl: 'https://rpc.linea.build',
+        chainId: 59_144,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://lineascan.build',
+      },
+    },
+    {
+      name: 'Mantle',
+      value: {
+        rpcUrl: 'https://rpc.mantle.xyz',
+        chainId: 5000,
+        decimals: 18,
+        symbol: 'MNT',
+        explorerUrl: 'https://explorer.mantle.xyz',
+      },
+    },
+    {
+      name: 'Metis',
+      value: {
+        rpcUrl: 'https://andromeda.metis.io/?owner=1088',
+        chainId: 1_088,
+        decimals: 18,
+        symbol: 'METIS',
+        explorerUrl: 'https://andromeda-explorer.metis.io',
+      },
+    },
+    {
+      name: 'Polygon zkEVM',
+      value: {
+        rpcUrl: 'https://zkevm-rpc.com',
+        chainId: 1101,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://zkevm.polygonscan.com',
+      },
+    },
+    {
       name: 'PulseChain',
       value: {
         rpcUrl: 'https://rpc.pulsechain.com',
@@ -39,6 +159,26 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'PULSE',
         explorerUrl: 'https://pulsechain.com',
+      },
+    },
+    {
+      name: 'Scroll',
+      value: {
+        rpcUrl: 'https://rpc.scroll.io',
+        chainId: 534_352,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://scrollscan.com',
+      },
+    },
+    {
+      name: 'zkSync',
+      value: {
+        rpcUrl: 'https://mainnet.era.zksync.io',
+        chainId: 324,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://explorer.zksync.io',
       },
     },
   ],

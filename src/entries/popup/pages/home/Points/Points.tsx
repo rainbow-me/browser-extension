@@ -13,14 +13,17 @@ import {
   backgroundColors,
   globalColors,
 } from '~/design-system/styles/designTokens';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 
-import { ICON_SIZE } from '../../components/Tabs/TabBar';
-import PointsSelectedIcon from '../../components/Tabs/TabIcons/PointsSelected';
-import { useAvatar } from '../../hooks/useAvatar';
-import { useCoolMode } from '../../hooks/useCoolMode';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWallets } from '../../hooks/useWallets';
-import { ROUTES } from '../../urls';
+import { ICON_SIZE } from '../../../components/Tabs/TabBar';
+import PointsSelectedIcon from '../../../components/Tabs/TabIcons/PointsSelected';
+import { useAvatar } from '../../../hooks/useAvatar';
+import { useCoolMode } from '../../../hooks/useCoolMode';
+import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../../urls';
+
+import { PointsDashboard } from './PointsDashboard';
+import { usePoints } from './usePoints';
 
 const animationSteps = {
   one: {
@@ -174,7 +177,7 @@ const PointsContent = () => {
   );
 };
 
-export function Points() {
+function ClaimYourPoints() {
   const ref = useCoolMode({ emojis: ['🌈', '🎰'] });
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
@@ -262,4 +265,14 @@ export function Points() {
       </Stack>
     </Box>
   );
+}
+
+export function Points() {
+  const { currentAddress } = useCurrentAddressStore();
+  const { data, isInitialLoading } = usePoints(currentAddress);
+
+  if (isInitialLoading) return null;
+
+  if (data?.error?.type === 'NON_EXISTING_USER') return <ClaimYourPoints />;
+  return <PointsDashboard />;
 }

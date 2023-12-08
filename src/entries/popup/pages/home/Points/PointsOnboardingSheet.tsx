@@ -49,6 +49,7 @@ import {
   USER_POINTS_CATEGORY,
   USER_POINTS_ONBOARDING,
 } from './references';
+import { seedPointsQueryCache } from './usePoints';
 import { usePointsChallenge } from './usePointsChallenge';
 import {
   RAINBOW_TEXT,
@@ -273,6 +274,7 @@ export const PointsOnboardingSheet = () => {
           const error = valid.onboardPoints.error.type;
           setError(error);
         } else if (valid.onboardPoints?.user) {
+          seedPointsQueryCache(currentAddress, valid.onboardPoints);
           setUserOnboarding(
             valid.onboardPoints.user.onboarding as USER_POINTS_ONBOARDING,
           );
