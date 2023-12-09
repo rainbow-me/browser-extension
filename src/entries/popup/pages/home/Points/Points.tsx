@@ -1,6 +1,7 @@
 import { motion, useAnimation } from 'framer-motion';
 import { useEffect, useMemo } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -209,7 +210,9 @@ function ClaimYourPoints() {
       flexDirection="column"
       justifyContent="flex-start"
       marginTop="-20px"
-      paddingTop={featureFlags.points ? '40px' : '80px'}
+      paddingTop={
+        featureFlags.points || config.points_enabled ? '40px' : '80px'
+      }
       ref={ref}
       style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
       width="full"
@@ -261,7 +264,11 @@ function ClaimYourPoints() {
             </Box>
           </Box>
         </Box>
-        {featureFlags.points ? <PointsContent /> : <PointsContentPlaceholder />}
+        {featureFlags.points || config.points_enabled ? (
+          <PointsContent />
+        ) : (
+          <PointsContentPlaceholder />
+        )}
       </Stack>
     </Box>
   );
