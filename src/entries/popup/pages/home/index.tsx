@@ -11,6 +11,7 @@ import {
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
@@ -177,7 +178,7 @@ export const Home = memo(function Home() {
     if (tab === 'nfts' && featureFlags.nfts_enabled) {
       return false;
     }
-    if (tab === 'points' && featureFlags.points) {
+    if (tab === 'points' && (featureFlags.points || config.points_enabled)) {
       return false;
     }
     return tab === 'nfts' || tab === 'points';
