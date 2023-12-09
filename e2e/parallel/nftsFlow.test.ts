@@ -14,7 +14,6 @@ import {
   goToPopup,
   importWalletFlow,
   initDriverWithOptions,
-  toggleStatus,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -40,37 +39,9 @@ describe('Visit NFTs Gallery and Details Pages', () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to navigate to the nfts tab (prerelease)', async () => {
+  it('should be able to navigate to NFT details', async () => {
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'bottom-tab-nfts', driver });
-    const nftPrereleaseText = await findElementByText(
-      driver,
-      'NFTs are coming soon. Stay tuned!',
-    );
-    expect(nftPrereleaseText).toBeTruthy();
-  });
-
-  it('should be able to enable the nft feature flag', async () => {
-    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
-    await findElementByTestIdAndClick({ id: 'settings-link', driver });
-    await findElementByTestIdAndClick({
-      id: 'feature-flag-nfts_enabled',
-      driver,
-    });
-    expect(await toggleStatus('feature-flag-nfts_enabled', driver)).toBe(
-      'true',
-    );
-  });
-
-  it('should be able to return nfts tab and view nfts', async () => {
-    await findElementByTestIdAndClick({
-      id: 'navbar-button-with-back',
-      driver,
-    });
-    await findElementByTestIdAndClick({ id: 'bottom-tab-nfts', driver });
-  });
-
-  it('should be able to navigate to NFT details', async () => {
     await delayTime('short');
     await findElementByTestIdAndClick({
       id: 'nft-thumbnail-https://lh3.googleusercontent.com/ICZJsSKEfLTquCvn1o-W7wD75EdtCksjf3bMtm2IQsYdw7K8-_de9gGQBXJE09fHy33OtBBrgWqMUAfX2ve6ZsW200JnLrX-m3s=s1000-0',
