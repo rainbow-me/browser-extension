@@ -1,11 +1,13 @@
 import { DropdownMenuRadioGroup } from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
+import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';
+import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { AddressOrEth } from '~/core/types/assets';
@@ -113,6 +115,12 @@ export default function NFTDetails() {
     addressOrName: nft?.name || '',
     enableProfile: nft?.familyName === 'ENS',
   });
+  const { data: ensRegistrationData } = useEnsRegistration(
+    { name: nft?.name || '' },
+    {
+      enabled: !!(nft?.name && nft?.familyName === 'ENS'),
+    },
+  );
   const { data: dominantColor } = useDominantColor({
     imageUrl: nft?.image_url || undefined,
   });
@@ -246,10 +254,16 @@ export default function NFTDetails() {
                   {'OpenSea'}
                 </Button>
               </Box>
-              <NFTPriceSection
-                nft={nft}
-                showFloorPriceExplainerSheet={showFloorPriceExplainerSheet}
-              />
+              {ensRegistrationData ? (
+                <EnsRegistrationSection
+                  registration={ensRegistrationData.registration}
+                />
+              ) : (
+                <NFTPriceSection
+                  nft={nft}
+                  showFloorPriceExplainerSheet={showFloorPriceExplainerSheet}
+                />
+              )}
             </Box>
           </Box>
           <Box paddingHorizontal="20px" paddingTop="24px">
@@ -316,6 +330,65 @@ export default function NFTDetails() {
     </Box>
   );
 }
+
+const EnsRegistrationSection = ({
+  registration,
+}: {
+  registration?: {
+    expiryDate: string | undefined;
+    registrationDate: string | undefined;
+  };
+}) => {
+  const expiryDate = useMemo(() => {
+    const dateStr = registration?.expiryDate;
+    if (dateStr) {
+      const date = new Date(parseInt(dateStr) * 1000);
+      return formatDistanceStrict(new Date(), date);
+    }
+    return '';
+  }, [registration]);
+  const registrationDate = useMemo(() => {
+    const dateStr = registration?.registrationDate;
+    if (dateStr) {
+      const date = new Date(parseInt(dateStr) * 1000);
+      return format(date, 'MMM d, Y');
+    }
+    return '';
+  }, [registration]);
+  return (
+    <Box paddingBottom="20px">
+      <Columns>
+        <Column>
+          <Stack space="12px">
+            <Text weight="semibold" size="14pt" color="labelTertiary">
+              {i18n.t('nfts.details.registered_on')}
+            </Text>
+            <Text weight="bold" size="14pt" color="label">
+              {registrationDate}
+            </Text>
+          </Stack>
+        </Column>
+        <Column>
+          <Stack space="12px" alignHorizontal="right">
+            <Inline alignVertical="center" space="4px">
+              <Text
+                weight="semibold"
+                size="14pt"
+                color="labelTertiary"
+                align="right"
+              >
+                {i18n.t('nfts.details.expires_in')}
+              </Text>
+            </Inline>
+            <Text weight="bold" size="14pt" color="label">
+              {expiryDate}
+            </Text>
+          </Stack>
+        </Column>
+      </Columns>
+    </Box>
+  );
+};
 
 const NFTPriceSection = ({
   nft,

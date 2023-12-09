@@ -98,7 +98,16 @@
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
-        "title": "Custom RPC"
+        "title": "Custom RPC",
+        "networks": "Networks",
+        "network_name": "Network Name",
+        "rpc_url": "RPC URL",
+        "chain_id": "Chain ID",
+        "symbol": "Symbol",
+        "decimals": "Decimals",
+        "active": "Active",
+        "block_explorer_url": "Block Explorer URL",
+        "add_network": "Add Network"
       }
     },
     "privacy_and_security": {
@@ -225,7 +234,8 @@
       "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
       "custom_rpc": "Custom RPC",
       "new_tab_bar_enabled": "New Tab Bar",
-      "nfts_enabled": "NFTs Enabled"
+      "nfts_enabled": "NFTs Enabled",
+      "points": "Points"
     }
   },
   "transactions": {
@@ -880,7 +890,7 @@
   },
   "seed_verify": {
     "title": "Verify your Secret Recovery Phrase",
-    "explanation": "Select the 4th, 8th, and 12th words in order your  Secret Recovery Phrase displays them.",
+    "explanation": "Select the 4th, 8th, and 12th words in the order your Secret Recovery Phrase displays them.",
     "skip": "Skip this"
   },
   "menu": {
@@ -969,6 +979,13 @@
     "malicious_warning": {
       "title": "This app is likely malicious",
       "message": "Signing messages or transactions from this app could result in losing your assets"
+    },
+    "malicious_transaction_warning": {
+      "title": "This transaction looks suspicious",
+      "malicious_address": "A malicious address is involved in this transaction. Signing may result in losses",
+      "malicious_entity": "A malicious entity is involved in this transaction. Signing may result in losses",
+      "minting_is_a_losing_trade": "A scam contract is involved in this transaction. Minting is a losing trade",
+      "you_can_lose_everything": "Signing this transaction could result in losing access to everything in your wallet"
     },
     "dangerous_request": "Dangerous Request",
     "message_signing_request": "Message Signing Request",
@@ -1207,6 +1224,8 @@
       "ens_cover": "Cover",
       "ens_address": "ETH Address",
       "ens_website": "Website",
+      "registered_on": "Registered on",
+      "expires_in": "Expires in",
       "explainer": {
         "floor_price_description": "A collection's floor price is the lowest asking price across all the items currently for sale in a collection.",
         "floor_price_title": "Collection floor price",
@@ -1216,7 +1235,48 @@
   },
   "points": {
     "coming_soon_header": "Coming Soon",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "Points are just around the corner.\nStart earning today.",
+    "your_rank": "Your Rank",
+    "next_drop": "Next Drop",
+    "leaderboard": "Leaderboard",
+    "referral_code": "Referral Code",
+    "referral_code_description": "Earn points for referring friends once they swap $100 through Rainbow",
+    "copied_referral_code": "Referral code copied!",
+    "copied_referral_link": "Referral link copied!",
+    "out_of": "Out of %{total}",
+    "out_of_current_total_points": "Out of %{total} current total points",
+    "header": "Claim your points",
+    "description": "Points are here. Find out how many you’ve been awarded.",
+    "get_started": "Get Started",
+    "use_referral_code": "Use Referral Code",
+    "referral_header": "Enter your referral code",
+    "referral_description": "Enter a referral code below to claim your bonus reward.",
+    "referral_code_invalid": "Invalid Code",
+    "onboarding": {
+      "authorization_required": "Authorization required",
+      "sign_in_with_your_wallet": "Sign in with your wallet",
+      "access_granted": "Access granted",
+      "calculating_points": "Calculating points",
+      "rainbow_swaps": "Rainbow Swaps:",
+      "rainbow_nfts_owned": "Rainbow NFTs Owned:",
+      "wallet_balance": "Wallet Balance:",
+      "metamask_swaps": "MetaMask Swaps:",
+      "bonus_reward": "Bonus Reward:",
+      "calculation_complete": "Calculation complete",
+      "points_earned": "Points Earned:",
+      "registration_complete": "Registration complete",
+      "bonus_points": "Bonus Points:",
+      "claim_description_buy": "To claim the rest of your bonus points, get some ETH through Rainbow.",
+      "claim_description_swap": "To claim the rest of your bonus points, swap at least $100 through Rainbow.",
+      "account": "Account:",
+      "sign_in": "Sign In",
+      "get_eth": "Get some ETH",
+      "try_swap": "Try a Swap"
+    },
+    "error": {
+      "existing_user": "Existing user",
+      "invalid_referral_code": "Invalid referral code"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -1494,7 +1554,6 @@
     "sent": "Sent",
     "approved": "Approved",
     "reverted": "Transaction Reverted",
-
     "function": "Function",
     "contract": "Contract",
     "contract_name": "Contract Name",
@@ -1512,6 +1571,7 @@
   "chain": "Chain",
   "nonce": "Nonce",
   "copy": "Copy",
+  "copy_link": "Copy Link",
   "close": "Close",
   "verified": "Verified",
   "unverified": "Unverified",
@@ -1523,4 +1583,3 @@
     "not_found": "We couldn't find this asset on the selected network. Please choose the right network below"
   }
 }
-

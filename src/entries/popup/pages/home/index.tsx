@@ -45,6 +45,7 @@ import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
+import { useWallets } from '../../hooks/useWallets';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
@@ -53,7 +54,7 @@ import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { NFTEmptyState, PostReleaseNFTs } from './NFTs/NFTs';
 import { AppConnection } from './NetworkMenu';
-import { Points } from './Points';
+import { Points } from './Points/Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
@@ -139,6 +140,11 @@ const Tabs = memo(function Tabs({
     return isPlaceholderTab(activeTab);
   };
 
+  const { isWatchingWallet } = useWallets();
+  if (activeTab === 'points' && isWatchingWallet) {
+    onSelectTab('tokens');
+  }
+
   return (
     <>
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
@@ -169,6 +175,9 @@ export const Home = memo(function Home() {
   const { featureFlags } = useFeatureFlagsStore();
   const isPlaceholderTab = (tab: Tab) => {
     if (tab === 'nfts' && featureFlags.nfts_enabled) {
+      return false;
+    }
+    if (tab === 'points' && featureFlags.points) {
       return false;
     }
     return tab === 'nfts' || tab === 'points';

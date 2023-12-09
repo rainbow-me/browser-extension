@@ -14,6 +14,7 @@ import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 
 const INITIAL_ASSET = {
   name: '',
@@ -28,6 +29,7 @@ export function CustomChain() {
   const { customRPCAssets, addCustomRPCAsset, removeCustomRPCAsset } =
     useCustomRPCAssetsStore();
   const { removeUserChain } = useUserChainsStore();
+  const navigate = useRainbowNavigate();
 
   const [validations, setValidations] = useState<{
     address: boolean;
@@ -194,14 +196,21 @@ export function CustomChain() {
 
   const removeCustomChain = useCallback(
     ({ chain }: { chain: Chain; customChain: CustomChain }) => {
-      if (customChain.chains.length === 1) {
+      if (customChain?.chains.length === 1) {
         removeUserChain({ chainId });
       }
       removeCustomRPC({
         rpcUrl: chain.rpcUrls.default.http[0],
       });
+      navigate(-1);
     },
-    [chainId, customChain.chains.length, removeCustomRPC, removeUserChain],
+    [
+      chainId,
+      customChain?.chains.length,
+      navigate,
+      removeCustomRPC,
+      removeUserChain,
+    ],
   );
 
   useEffect(() => {

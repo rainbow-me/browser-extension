@@ -1,0 +1,10 @@
+query getRegistration($id: ID!) {
+  registration(id: $id) {
+    id
+    registrationDate
+    expiryDate
+    registrant {
+      id
+    }
+  }
+}
