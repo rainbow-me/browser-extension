@@ -19,6 +19,7 @@ export interface TextProps {
   cursor?: TextStyles['cursor'];
   userSelect?: TextStyles['userSelect'];
   whiteSpace?: TextStyles['whiteSpace'];
+  textShadow?: TextStyles['textShadow'];
 }
 
 export function Text({
@@ -34,6 +35,7 @@ export function Text({
   cursor = 'default',
   userSelect = 'none',
   whiteSpace,
+  textShadow,
 }: TextProps) {
   return (
     <Box
@@ -49,8 +51,9 @@ export function Text({
           background,
           userSelect,
           WebkitBackgroundClip: webkitBackgroundClip,
-          transition: 'color 200ms ease-out',
+          transition: 'color 200ms ease-out, text-shadow 1s ease',
           whiteSpace,
+          textShadow,
         }),
         selectionStyle,
       ])}
