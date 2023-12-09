@@ -3,10 +3,10 @@ import { style } from '@vanilla-extract/css';
 import { textStyles } from '~/design-system';
 
 const fallbackTextBaseStyles = textStyles({
+  color: 'labelWhite',
   fontFamily: 'rounded',
   fontWeight: 'bold',
   textAlign: 'center',
-  color: 'label',
 });
 
 export const fallbackTextStyleTiny = style([
