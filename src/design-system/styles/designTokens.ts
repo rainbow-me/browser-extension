@@ -504,6 +504,7 @@ export type ForegroundColor =
   | 'labelSecondary'
   | 'labelTertiary'
   | 'labelQuaternary'
+  | 'labelWhite'
   | 'transparent'
   | 'blue'
   | 'green'
@@ -551,6 +552,10 @@ export const foregroundColors: Record<
   labelQuaternary: {
     light: globalColors.grey60,
     dark: globalColors.white60,
+  },
+  labelWhite: {
+    light: globalColors.white100,
+    dark: globalColors.white100,
   },
   transparent: selectBackgroundAsForeground('transparent'),
   blue: selectBackgroundAsForeground('blue'),
@@ -660,6 +665,7 @@ export const textColors = selectForegroundColors(
   'labelSecondary',
   'labelTertiary',
   'labelQuaternary',
+  'labelWhite',
   'mainnet',
   'arbitrum',
   'optimism',
@@ -1061,6 +1067,7 @@ export const symbolNames = selectSymbolNames(
   'percent',
   'photo',
   'person.crop.rectangle.fill',
+  'photo.fill',
   '1.circle',
   '2.circle',
   '3.circle',
