@@ -107,7 +107,7 @@
         "decimals": "Decimals",
         "active": "Active",
         "block_explorer_url": "Block Explorer URL",
-        "add_network": "Add Network"        
+        "add_network": "Add Network"
       }
     },
     "privacy_and_security": {
@@ -1225,13 +1225,17 @@
       "ens_address": "ETH Address",
       "ens_website": "Website",
       "registered_on": "Registered on",
-      "expires_in": "Expires in"
+      "expires_in": "Expires in",
+      "explainer": {
+        "floor_price_description": "A collection's floor price is the lowest asking price across all the items currently for sale in a collection.",
+        "floor_price_title": "Collection floor price",
+        "floor_price_action_label": "Got it"
+      }
     }
   },
   "points": {
     "coming_soon_header": "Coming Soon",
     "coming_soon_description": "Points are just around the corner.\nStart earning today.",
-
     "your_rank": "Your Rank",
     "next_drop": "Next Drop",
     "leaderboard": "Leaderboard",
@@ -1241,7 +1245,6 @@
     "copied_referral_link": "Referral link copied!",
     "out_of": "Out of %{total}",
     "out_of_current_total_points": "Out of %{total} current total points",
-
     "header": "Claim your points",
     "description": "Points are here. Find out how many you’ve been awarded.",
     "get_started": "Get Started",
@@ -1249,7 +1252,6 @@
     "referral_header": "Enter your referral code",
     "referral_description": "Enter a referral code below to claim your bonus reward.",
     "referral_code_invalid": "Invalid Code",
-
     "onboarding": {
       "authorization_required": "Authorization required",
       "sign_in_with_your_wallet": "Sign in with your wallet",
