@@ -29,6 +29,8 @@ function Card({
   return (
     <Box
       as={motion.div}
+      initial={{ scale: 0.98, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
       display="flex"
       flexDirection="column"
       justifyContent="center"
@@ -125,12 +127,7 @@ function Leaderboard() {
           />
           <AddressOrEns address={currentAddress} size="14pt" weight="bold" />
         </Inline>
-        <Text
-          size="16pt"
-          weight="bold"
-          color="accent"
-          textShadow="12px accent text"
-        >
+        <Text size="16pt" weight="bold" color="accent" textShadow="12px accent">
           #{user.stats.position.current}
         </Text>
       </Card>
@@ -237,7 +234,7 @@ function ReferralCode() {
                 size="16pt"
                 weight="bold"
                 color="accent"
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="center"
               >
                 {i18n.t('copy_link')}
@@ -303,12 +300,7 @@ function YourRankAndNextDrop() {
         <TextWithMoreInfo>{i18n.t('points.next_drop')}</TextWithMoreInfo>
 
         <NextDistributionIn nextDistribution={nextDistribution} />
-        <Text
-          size="10pt"
-          weight="bold"
-          color="accent"
-          textShadow="12px accent text"
-        >
+        <Text size="10pt" weight="bold" color="accent" textShadow="12px accent">
           {formatDate(nextDistribution)}
         </Text>
       </Card>
@@ -318,12 +310,7 @@ function YourRankAndNextDrop() {
         <Text size="20pt" weight="bold">
           #{user.stats.position.current}
         </Text>
-        <Text
-          size="10pt"
-          weight="bold"
-          color="accent"
-          textShadow="12px accent text"
-        >
+        <Text size="10pt" weight="bold" color="accent" textShadow="12px accent">
           {i18n.t('points.out_of', {
             total: leaderboard.stats.total_users,
           })}
@@ -360,7 +347,14 @@ function YourPoints() {
   const { leaderboard, user } = data;
 
   return (
-    <Stack space="12px">
+    <Box
+      as={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      display="flex"
+      flexDirection="column"
+      gap="12px"
+    >
       <Text size="26pt" weight="heavy">
         {formatNumber(user.earnings.total)}
       </Text>
@@ -385,7 +379,7 @@ function YourPoints() {
           total: formatNumber(leaderboard.stats.total_points),
         })}
       </Text>
-    </Stack>
+    </Box>
   );
 }
 

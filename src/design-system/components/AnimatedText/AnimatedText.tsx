@@ -1,5 +1,5 @@
 import { Variants, motion } from 'framer-motion';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { CHARACTER_TYPING_SPEED } from '~/entries/popup/pages/home/Points/utils';
 
@@ -123,7 +123,7 @@ export const AnimatedText = ({
               key={(id || '') + i}
               custom={i}
               variants={charVariants}
-              boxShadow="12px blue"
+              // textShadow="12px accent"
               style={{
                 color: rainbowColor ? colors?.[i]?.text : '',
                 textShadow: rainbowColor
