@@ -180,6 +180,7 @@ function Tab({
         onSelectTab(name);
       }}
       style={{ height: TAB_HEIGHT, width: TAB_WIDTH }}
+      testId={`bottom-tab-${name}`}
     >
       <Box
         alignItems="center"
