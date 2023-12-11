@@ -30,6 +30,7 @@ import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { RainbowError, logger } from '~/logger';
 
@@ -270,6 +271,10 @@ export function Send() {
           message: (e as Error)?.message,
         });
         console.log('error sending transaction', e);
+        triggerAlert({
+          text: i18n.t('errors.sending_transaction'),
+          description: (e as Error)?.message,
+        });
       } finally {
         setWaitingForDevice(false);
       }
