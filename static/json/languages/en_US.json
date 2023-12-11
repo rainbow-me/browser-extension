@@ -98,7 +98,7 @@
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
-        "title": "Custom RPC",
+        "title": "Add Network",
         "networks": "Networks",
         "network_name": "Network Name",
         "rpc_url": "RPC URL",
@@ -107,7 +107,13 @@
         "decimals": "Decimals",
         "active": "Active",
         "block_explorer_url": "Block Explorer URL",
-        "add_network": "Add Network"
+        "add_network": "Add Network",
+        "add_asset": "Add Asset"
+      },
+      "rpc_endpoints": "RPC Endpoints",
+      "enabled": "Enabled",
+      "watch_asset": {
+        "title": "Watch Asset"
       }
     },
     "privacy_and_security": {

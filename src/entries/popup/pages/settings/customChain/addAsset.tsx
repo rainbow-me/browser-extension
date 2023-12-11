@@ -2,19 +2,15 @@ import { isValidAddress } from '@ethereumjs/util';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Address, Chain } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
-import { CustomChain, useCustomRPCsStore } from '~/core/state/customRPC';
 import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
-import { useUserChainsStore } from '~/core/state/userChains';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
-import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
-import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 
 const INITIAL_ASSET = {
   name: '',
@@ -23,13 +19,10 @@ const INITIAL_ASSET = {
   symbol: '',
 };
 
-export function CustomChain() {
+export function AddAsset() {
   const { state } = useLocation();
-  const { setActiveRPC, customChains, removeCustomRPC } = useCustomRPCsStore();
   const { customRPCAssets, addCustomRPCAsset, removeCustomRPCAsset } =
     useCustomRPCAssetsStore();
-  const { removeUserChain } = useUserChainsStore();
-  const navigate = useRainbowNavigate();
 
   const [validations, setValidations] = useState<{
     address: boolean;
@@ -44,7 +37,6 @@ export function CustomChain() {
   });
 
   const chainId = state?.chainId;
-  const customChain = customChains[chainId];
   const customRPCAssetsForChain = useMemo(
     () => customRPCAssets[chainId] || [],
     [chainId, customRPCAssets],
@@ -194,24 +186,24 @@ export function CustomChain() {
     validateAddCustomAsset,
   ]);
 
-  const removeCustomChain = useCallback(
-    ({ chain }: { chain: Chain; customChain: CustomChain }) => {
-      if (customChain?.chains.length === 1) {
-        removeUserChain({ chainId });
-      }
-      removeCustomRPC({
-        rpcUrl: chain.rpcUrls.default.http[0],
-      });
-      navigate(-1);
-    },
-    [
-      chainId,
-      customChain?.chains.length,
-      navigate,
-      removeCustomRPC,
-      removeUserChain,
-    ],
-  );
+  // const removeCustomChain = useCallback(
+  //   ({ chain }: { chain: Chain; customChain: CustomChain }) => {
+  //     if (customChain?.chains.length === 1) {
+  //       removeUserChain({ chainId });
+  //     }
+  //     removeCustomRPC({
+  //       rpcUrl: chain.rpcUrls.default.http[0],
+  //     });
+  //     navigate(-1);
+  //   },
+  //   [
+  //     chainId,
+  //     customChain?.chains.length,
+  //     navigate,
+  //     removeCustomRPC,
+  //     removeUserChain,
+  //   ],
+  // );
 
   useEffect(() => {
     if (!isEqual(assetMetadata, prevAssetMetadata) && assetMetadataIsFetched) {
@@ -227,7 +219,7 @@ export function CustomChain() {
   return (
     <Box paddingHorizontal="20px">
       <Stack space="24px">
-        <Stack space="16px">
+        {/* <Stack space="16px">
           {customChain?.chains?.map((chain, i) => {
             return (
               <Box
@@ -288,7 +280,7 @@ export function CustomChain() {
               </Box>
             );
           })}
-        </Stack>
+        </Stack> */}
 
         {customRPCAssetsForChain?.map((asset, i) => (
           <Box

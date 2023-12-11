@@ -1,6 +1,9 @@
 import { Chain } from '@wagmi/chains';
 import create from 'zustand';
 
+import { ChainId } from '~/core/types/chains';
+import { getDefaultRPC } from '~/core/wagmi/createWagmiClient';
+
 import { createStore } from '../internal/createStore';
 
 export interface CustomChain {
@@ -12,12 +15,13 @@ export interface CustomRPCsState {
   customChains: Record<number, CustomChain>;
   addCustomRPC: ({ chain }: { chain: Chain }) => void;
   updateCustomRPC: ({ chain }: { chain: Chain }) => void;
+  setDefaultRPC: ({ chainId }: { chainId: ChainId }) => void;
   setActiveRPC: ({
     rpcUrl,
     chainId,
   }: {
-    rpcUrl: string;
-    chainId: number;
+    rpcUrl?: string;
+    chainId: ChainId;
   }) => void;
   removeCustomRPC: ({ rpcUrl }: { rpcUrl: string }) => void;
 }
@@ -53,11 +57,18 @@ export const customRPCsStore = createStore<CustomRPCsState>(
       const customChains = get().customChains;
       const customChain = customChains[chainId];
       if (customChain) {
-        customChain.activeRpcUrl = rpcUrl;
+        customChain.activeRpcUrl = rpcUrl || '';
         set({ customChains: { ...customChains, [chainId]: customChain } });
       }
     },
-
+    setDefaultRPC: ({ chainId }: { chainId: ChainId }) => {
+      const customChains = get().customChains;
+      const customChain = customChains[chainId];
+      if (customChain) {
+        customChain.activeRpcUrl = getDefaultRPC(chainId)?.http || '';
+        set({ customChains: { ...customChains, [chainId]: customChain } });
+      }
+    },
     removeCustomRPC: ({ rpcUrl }) => {
       const customChains = get().customChains;
       const updatedCustomChains = { ...customChains };

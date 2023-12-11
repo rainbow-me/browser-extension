@@ -13,8 +13,6 @@ import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
-import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { ROUTES } from '~/entries/popup/urls';
 
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
@@ -185,8 +183,7 @@ const KNOWN_NETWORKS = {
 };
 
 export function SettingsCustomChain() {
-  const navigate = useRainbowNavigate();
-  const { customChains, addCustomRPC } = useCustomRPCsStore();
+  const { addCustomRPC } = useCustomRPCsStore();
   const { addUserChain } = useUserChainsStore();
   const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
@@ -418,7 +415,7 @@ export function SettingsCustomChain() {
   return (
     <Box paddingHorizontal="20px">
       <Stack space="20px">
-        {Object.keys(customChains)?.map((chainId, i) => (
+        {/* {Object.keys(customChains)?.map((chainId, i) => (
           <Box
             key={i}
             background="surfaceSecondaryElevated"
@@ -457,7 +454,7 @@ export function SettingsCustomChain() {
               </Stack>
             </Stack>
           </Box>
-        ))}
+        ))} */}
 
         <Form>
           <Autocomplete

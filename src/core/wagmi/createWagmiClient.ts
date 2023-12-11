@@ -23,18 +23,8 @@ const noopStorage = {
   removeItem: () => null,
 };
 
-const getOriginalRpcEndpoint = (chain: Chain) => {
-  // overrides have preference
-  const userAddedNetwork = findCustomChainForChainId(chain.id);
-  if (userAddedNetwork) {
-    return { http: userAddedNetwork.rpcUrls.default.http[0] };
-  }
-
-  switch (chain.id) {
-    case ChainId.hardhat:
-      return { http: chain.rpcUrls.default.http[0] };
-    case ChainId.hardhatOptimism:
-      return { http: chain.rpcUrls.default.http[0] };
+export const getDefaultRPC = (chainId: ChainId) => {
+  switch (chainId) {
     case ChainId.mainnet:
       return { http: process.env.ETH_MAINNET_RPC as string };
     case ChainId.optimism:
@@ -74,6 +64,22 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
     default:
       return null;
   }
+};
+
+export const getOriginalRpcEndpoint = (chain: Chain) => {
+  // overrides have preference
+  const userAddedNetwork = findCustomChainForChainId(chain.id);
+  if (userAddedNetwork) {
+    return { http: userAddedNetwork.rpcUrls.default.http[0] };
+  }
+
+  if (chain.id === ChainId.hardhat) {
+    return { http: chain.rpcUrls.default.http[0] };
+  } else if (chain.id == ChainId.hardhatOptimism) {
+    return { http: chain.rpcUrls.default.http[0] };
+  }
+
+  return getDefaultRPC(chain.id);
 };
 
 const supportedChains = IS_TESTING

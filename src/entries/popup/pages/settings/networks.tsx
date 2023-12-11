@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { SUPPORTED_CHAINS } from '~/core/references';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useUserChainsStore } from '~/core/state/userChains';
@@ -32,12 +33,7 @@ const chainLabel = ({ chainId }: { chainId: ChainId }) => {
 
 export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
-  const {
-    userChains,
-    userChainsOrder,
-    updateUserChainsOrder,
-    updateUserChain,
-  } = useUserChainsStore();
+  const { userChainsOrder, updateUserChainsOrder } = useUserChainsStore();
   const supportedChains = getSupportedChains();
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
@@ -55,14 +51,19 @@ export function SettingsNetworks() {
     updateUserChainsOrder({ userChainsOrder: newUserChainsOrder });
   };
 
-  const updateChain = useCallback(
-    (chain: Chain) => {
-      updateUserChain({
-        chainId: chain.id,
-        enabled: !userChains[chain.id],
-      });
-    },
-    [updateUserChain, userChains],
+  const allNetworks = useMemo(
+    () =>
+      sortNetworks(userChainsOrder, supportedChains).map((chain) => {
+        const chainId = chain.id;
+        // Always use the name of the supported network if it exists
+        return {
+          ...chain,
+          name:
+            SUPPORTED_CHAINS.find(({ id }) => id === chainId)?.name ||
+            chain.name,
+        };
+      }),
+    [supportedChains, userChainsOrder],
   );
 
   return (
@@ -78,50 +79,6 @@ export function SettingsNetworks() {
       </Inset>
 
       <MenuContainer testId="settings-menu-container">
-        <Menu>
-          <DraggableContext onDragEnd={onDragEnd} height="fixed">
-            <Box paddingHorizontal="1px" paddingVertical="1px">
-              {sortNetworks(userChainsOrder, supportedChains).map(
-                (chain: Chain, index) => (
-                  <Box key={`${chain.id}`} testId={`network-row-${chain.id}`}>
-                    <DraggableItem id={`${chain.id}`} index={index}>
-                      <MenuItem
-                        first={index === 0}
-                        leftComponent={
-                          <ChainBadge chainId={chain.id} size="18" shadow />
-                        }
-                        rightComponent={
-                          userChains[chain.id] ? (
-                            <MenuItem.SelectionIcon />
-                          ) : null
-                        }
-                        key={chain.name}
-                        titleComponent={<MenuItem.Title text={chain.name} />}
-                        labelComponent={
-                          developerToolsEnabled ? (
-                            <Text
-                              color={'labelTertiary'}
-                              size="11pt"
-                              weight={'medium'}
-                            >
-                              {chainLabel({ chainId: chain.id })}
-                            </Text>
-                          ) : null
-                        }
-                        onClick={() => updateChain(chain)}
-                      />
-                    </DraggableItem>
-                  </Box>
-                ),
-              )}
-            </Box>
-          </DraggableContext>
-          <Box paddingHorizontal="16px" paddingVertical="16px">
-            <Text size="12pt" weight="medium" color="labelTertiary">
-              {i18n.t('settings.networks.description')}
-            </Text>
-          </Box>
-        </Menu>
         {featureFlags.custom_rpc && (
           <Menu>
             <MenuItem
@@ -146,6 +103,48 @@ export function SettingsNetworks() {
             />
           </Menu>
         )}
+        <Menu>
+          <DraggableContext onDragEnd={onDragEnd} height="fixed">
+            <Box paddingHorizontal="1px" paddingVertical="1px">
+              {allNetworks.map((chain: Chain, index) => (
+                <Box key={`${chain.id}`} testId={`network-row-${chain.id}`}>
+                  <DraggableItem id={`${chain.id}`} index={index}>
+                    <MenuItem
+                      first={index === 0}
+                      leftComponent={
+                        <ChainBadge chainId={chain.id} size="18" shadow />
+                      }
+                      onClick={() =>
+                        navigate(ROUTES.SETTINGS__NETWORKS__RPCS, {
+                          state: { chainId: chain.id, title: chain.name },
+                        })
+                      }
+                      key={chain.name}
+                      hasRightArrow
+                      titleComponent={<MenuItem.Title text={chain.name} />}
+                      labelComponent={
+                        developerToolsEnabled ? (
+                          <Text
+                            color={'labelTertiary'}
+                            size="11pt"
+                            weight={'medium'}
+                          >
+                            {chainLabel({ chainId: chain.id })}
+                          </Text>
+                        ) : null
+                      }
+                    />
+                  </DraggableItem>
+                </Box>
+              ))}
+            </Box>
+          </DraggableContext>
+          <Box paddingHorizontal="16px" paddingVertical="16px">
+            <Text size="12pt" weight="medium" color="labelTertiary">
+              {i18n.t('settings.networks.description')}
+            </Text>
+          </Box>
+        </Menu>
         <Menu>
           <MenuItem
             leftComponent={
