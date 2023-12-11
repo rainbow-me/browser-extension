@@ -289,7 +289,6 @@ export const PointsOnboardingSheet = () => {
           signature,
           referral: state.referralCode,
         });
-      console.log(onboardPoints);
       if (!onboardPoints) throw ''; // sometimes the server just returns null, like when the signature is invalid
       if (onboardPoints.error) throw onboardPoints.error.type;
       return onboardPoints;
@@ -309,7 +308,6 @@ export const PointsOnboardingSheet = () => {
         return wallet.personalSign(data.pointsOnboardChallenge, currentAddress);
       },
       onSuccess: (signature) => {
-        console.log('signature', signature);
         if (!signature) return;
         validateSignature({ signature });
       },
