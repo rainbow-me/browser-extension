@@ -175,7 +175,7 @@ const shareRows = [
     textShadow="12px labelTertiary"
     key={shareRowsText[0]}
     align="left"
-    size="15pt"
+    size="14pt mono"
     weight="bold"
     color="labelTertiary"
     delay={0}
@@ -186,7 +186,7 @@ const shareRows = [
     textShadow="12px accent"
     key={shareRowsText[1]}
     align="left"
-    size="15pt"
+    size="14pt mono"
     weight="bold"
     color="accent"
   >
@@ -196,7 +196,7 @@ const shareRows = [
     textShadow="12px accent"
     key={shareRowsText[2]}
     align="left"
-    size="15pt"
+    size="14pt mono"
     weight="bold"
     color="accent"
   >
@@ -215,7 +215,7 @@ const doneRows = [
     <AnimatedText
       textShadow="12px accent"
       align="left"
-      size="15pt"
+      size="14pt mono"
       weight="bold"
       color="accent"
       delay={0}
@@ -227,8 +227,8 @@ const doneRows = [
     textShadow="12px labelTertiary"
     key={doneRowsText[1]}
     align="left"
-    size="15pt"
-    weight="bold"
+    size="14pt mono"
+    weight="semibold"
     color="labelTertiary"
   >
     {doneRowsText[1]}
@@ -237,8 +237,8 @@ const doneRows = [
     textShadow="12px labelTertiary"
     key={doneRowsText[2]}
     align="left"
-    size="15pt"
-    weight="bold"
+    size="14pt mono"
+    weight="semibold"
     color="labelTertiary"
   >
     {doneRowsText[2]}
@@ -247,8 +247,8 @@ const doneRows = [
     textShadow="12px labelTertiary"
     key={doneRowsText[3]}
     align="left"
-    size="15pt"
-    weight="bold"
+    size="14pt mono"
+    weight="semibold"
     color="labelTertiary"
   >
     {doneRowsText[4]}
@@ -289,6 +289,7 @@ export const PointsOnboardingSheet = () => {
           signature,
           referral: state.referralCode,
         });
+      console.log(onboardPoints);
       if (!onboardPoints) throw ''; // sometimes the server just returns null, like when the signature is invalid
       if (onboardPoints.error) throw onboardPoints.error.type;
       return onboardPoints;
@@ -308,6 +309,7 @@ export const PointsOnboardingSheet = () => {
         return wallet.personalSign(data.pointsOnboardChallenge, currentAddress);
       },
       onSuccess: (signature) => {
+        console.log('signature', signature);
         if (!signature) return;
         validateSignature({ signature });
       },
@@ -349,11 +351,10 @@ export const PointsOnboardingSheet = () => {
   const rainbowText = useMemo(() => {
     const rnbwText = Object.values(RAINBOW_TEXT).map((val, i) => {
       return (
-        <Box key={`loading-${i}`} paddingLeft="16px">
+        <Box key={`loading-${i}`}>
           <AnimatedText
-            key={`loading-${i}`}
             align="left"
-            size="15pt"
+            size="14pt mono"
             weight="bold"
             delay={getDelayForRow(loadingRowsText, 2 + i)}
             rainbowColor
@@ -370,7 +371,7 @@ export const PointsOnboardingSheet = () => {
           <AnimatedText
             textShadow="12px accent"
             align="left"
-            size="15pt"
+            size="14pt mono"
             weight="bold"
             color="accent"
             customTypingSpeed={0.15}
@@ -395,8 +396,8 @@ export const PointsOnboardingSheet = () => {
           textShadow="12px labelTertiary"
           key={'loading-1'}
           align="left"
-          size="15pt"
-          weight="bold"
+          size="14pt mono"
+          weight="semibold"
           color="labelTertiary"
           delay={0}
         >
@@ -406,8 +407,8 @@ export const PointsOnboardingSheet = () => {
           textShadow="12px labelTertiary"
           key={'loading-2'}
           align="left"
-          size="15pt"
-          weight="bold"
+          size="14pt mono"
+          weight="semibold"
           color="labelTertiary"
           delay={
             accessGranted || error ? 0 : getDelayForRow(loadingRowsText, 0)
@@ -421,7 +422,7 @@ export const PointsOnboardingSheet = () => {
               textShadow="12px accent"
               key={'loading-3'}
               align="left"
-              size="15pt"
+              size="14pt mono"
               weight="bold"
               color="accent"
               delay={
@@ -442,7 +443,7 @@ export const PointsOnboardingSheet = () => {
             textShadow="12px label"
             key={'loading-4'}
             align="left"
-            size="15pt"
+            size="14pt mono"
             weight="bold"
             color="red"
             delay={0}
@@ -505,7 +506,7 @@ export const PointsOnboardingSheet = () => {
           <AnimatedText
             textShadow="12px label"
             align="left"
-            size="16pt"
+            size="14pt mono"
             weight="bold"
             color="labelTertiary"
             delay={0}
@@ -519,7 +520,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px label"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 1, 0)}
@@ -529,7 +530,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px label"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 1, 1)}
@@ -546,7 +547,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 2, 0)}
@@ -556,7 +557,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
@@ -573,7 +574,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 3, 0)}
@@ -583,7 +584,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
@@ -600,7 +601,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 4, 0)}
@@ -610,7 +611,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
@@ -627,7 +628,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 5, 0)}
@@ -637,7 +638,7 @@ export const PointsOnboardingSheet = () => {
               <AnimatedText
                 textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
@@ -652,7 +653,7 @@ export const PointsOnboardingSheet = () => {
           <AnimatedText
             textShadow="12px label"
             align="left"
-            size="16pt"
+            size="14pt mono"
             weight="bold"
             color="labelTertiary"
             delay={getDelayForRows(calculatingPointsRowsText, 6, 0)}
@@ -667,7 +668,7 @@ export const PointsOnboardingSheet = () => {
                 <AnimatedText
                   textShadow="12px accent"
                   align="left"
-                  size="15pt"
+                  size="14pt mono"
                   weight="bold"
                   color="accent"
                   delay={getDelayForRows(calculatingPointsRowsText, 7, 0)}
@@ -677,7 +678,7 @@ export const PointsOnboardingSheet = () => {
                 <AnimatedText
                   textShadow="12px accent"
                   align="left"
-                  size="15pt"
+                  size="14pt mono"
                   weight="bold"
                   color="accent"
                   direction="rightToLeft"
@@ -716,22 +717,24 @@ export const PointsOnboardingSheet = () => {
         <Rows alignVertical="justify">
           <Row>
             <Stack space="15px">
-              <Inline space="4px">
+              <Inline space="4px" alignVertical="center" wrap={false}>
                 <Text
-                  textShadow="12px label"
+                  textShadow="12px labelTertiary"
                   align="left"
-                  size="16pt"
-                  weight="bold"
+                  size="14pt mono"
+                  weight="semibold"
                   color="labelTertiary"
+                  fontFamily="mono"
                 >
                   {i18n.t('points.onboarding.account')}
                 </Text>
                 <Text
                   textShadow="12px accent"
                   align="left"
-                  size="15pt"
+                  size="14pt mono"
                   weight="bold"
                   color="accent"
+                  fontFamily="mono"
                 >
                   {displayName}
                 </Text>

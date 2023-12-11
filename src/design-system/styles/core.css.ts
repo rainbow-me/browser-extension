@@ -37,6 +37,8 @@ import {
   textColors,
   userSelectOpts,
 } from './designTokens';
+import SFMonoBold from './fonts/SFMono-bold.woff2';
+import SFMonoSemibold from './fonts/SFMono-semibold.woff2';
 import SFRoundedBold from './fonts/subset-SFRounded-Bold.woff2';
 import SFRoundedHeavy from './fonts/subset-SFRounded-Heavy.woff2';
 import SFRoundedMedium from './fonts/subset-SFRounded-Medium.woff2';
@@ -557,6 +559,18 @@ export type SymbolStyles = Parameters<typeof symbolStyles>[0];
   });
 });
 
+[
+  [SFMonoSemibold, 600],
+  [SFMonoBold, 700],
+].forEach(([fontPath, fontWeight]) => {
+  globalFontFace('SFMono', {
+    src: `url('${fontPath}') format('woff2')`,
+    fontWeight,
+    fontStyle: 'normal',
+    fontDisplay: 'block',
+  });
+});
+
 const fontMetrics = {
   capHeight: 1443,
   ascent: 1950,
@@ -588,7 +602,7 @@ const textProperties = defineProperties({
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
     cursor: cursorOpts,
-    fontFamily: { rounded: 'SFRounded, system-ui' },
+    fontFamily: { rounded: 'SFRounded, system-ui', mono: 'SFMono' },
     fontSize: {
       '7pt': defineType(7, 11, 0.64),
       '9pt': defineType(9, 11, 0.56),
@@ -596,6 +610,7 @@ const textProperties = defineProperties({
       '11pt': defineType(11, 13, 0.56),
       '12pt': defineType(12, 15, 0.52),
       '14pt': defineType(14, 19, 0.48),
+      '14pt mono': defineType(14, 19, 0),
       '14pt / 135%': defineType(14, '135%', 0.48),
       '14pt / 155%': defineType(14, '150%', 0.48),
       '15pt': defineType(15, 20, 0.41),
