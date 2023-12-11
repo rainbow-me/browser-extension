@@ -260,8 +260,6 @@ export const CustomGasSheet = ({
 
   const updateCustomMaxPriorityFee = useCallback(
     (maxPriorityFee: string) => {
-      console.log('- flashbotsEnabled', flashbotsEnabled);
-      console.log('- Number(maxPriorityFee)', Number(maxPriorityFee));
       if (flashbotsEnabled && Number(maxPriorityFee) < 6) {
         return;
       }
