@@ -1,17 +1,19 @@
+import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { metadataPostClient } from '~/core/graphql';
-import { GetPointsOnboardChallengeQuery } from '~/core/graphql/__generated__/metadata';
-import { i18n } from '~/core/languages';
 import {
-  selectUserAssetsBalance,
-  selectorFilterByUserChains,
-} from '~/core/resources/_selectors/assets';
-import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { convertAmountToNativeDisplay, isZero } from '~/core/utils/numbers';
+  GetPointsOnboardChallengeQuery,
+  PointsErrorType,
+  PointsOnboardingCategory,
+  ValidatePointsSignatureMutation,
+} from '~/core/graphql/__generated__/metadata';
+import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
+import { KeychainType } from '~/core/types/keychainTypes';
+import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   AccentColorProvider,
   Box,
@@ -31,6 +33,7 @@ import {
 } from '~/design-system/styles/core.css';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
+import { useCurrentWalletTypeAndVendor } from '~/entries/popup/hooks/useCurrentWalletType';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWalletName } from '~/entries/popup/hooks/useWalletName';
@@ -39,11 +42,6 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import * as wallet from '../../../handlers/wallet';
 
-import {
-  CATEGORY_TYPE,
-  USER_POINTS_CATEGORY,
-  USER_POINTS_ONBOARDING,
-} from './references';
 import { seedPointsQueryCache } from './usePoints';
 import { usePointsChallenge } from './usePointsChallenge';
 import {
@@ -62,13 +60,17 @@ const fadeVariants = {
 
 const SiginAction = ({
   data,
+  isWaitingForSignature,
   validatingSignature,
   signChallenge,
 }: {
   data?: GetPointsOnboardChallengeQuery;
+  isWaitingForSignature?: boolean;
   validatingSignature: boolean;
   signChallenge: () => void;
 }) => {
+  const { type } = useCurrentWalletTypeAndVendor();
+  const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;
   return (
     <Box
       as={motion.div}
@@ -95,9 +97,11 @@ const SiginAction = ({
             weight="heavy"
             color="accent"
           >
-            {i18n.t('points.onboarding.sign_in')}
+            {isWaitingForSignature && isHardwareWallet
+              ? i18n.t('approve_request.confirm_hw')
+              : i18n.t('points.onboarding.sign_in')}
           </Text>
-          {validatingSignature && (
+          {(isWaitingForSignature || validatingSignature) && (
             <Box
               style={{
                 boxShadow: `0px 0px 12px 0px ${accentColorAsHsl}`,
@@ -156,27 +160,59 @@ export const PointsOnboardingSheet = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress });
   const { state } = useLocation();
-  const [validatingSignature, setValidatingSignature] = useState(false);
-  const [accessGranted, setAccessGranted] = useState(false);
-  const [error, setError] = useState<null | string>();
-  const [userOnboarding, setUserOnboarding] =
-    useState<USER_POINTS_ONBOARDING>();
-  const debouncedAccessGranted = useDebounce(accessGranted, 9000);
 
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: totalAssetsBalance } = useUserAssets(
-    { address: currentAddress, currency },
-    {
-      select: (data) =>
-        selectorFilterByUserChains<string>({
-          data,
-          selector: selectUserAssetsBalance,
-        }),
+  const { data } = usePointsChallenge({
+    address: currentAddress,
+    referralCode: state.referralCode,
+  });
+
+  const backToHome = () =>
+    navigate(ROUTES.HOME, {
+      state: { skipTransitionOnRoute: ROUTES.HOME },
+    });
+
+  const {
+    data: validSignatureResponse,
+    error,
+    mutate: validateSignature,
+    isLoading: validatingSignature,
+    isSuccess: accessGranted,
+  } = useMutation<
+    ValidatePointsSignatureMutation['onboardPoints'],
+    PointsErrorType,
+    { signature: string }
+  >({
+    mutationFn: async ({ signature }) => {
+      const { onboardPoints } =
+        await metadataPostClient.validatePointsSignature({
+          address: currentAddress,
+          signature,
+          referral: state.referralCode,
+        });
+      if (onboardPoints?.error) throw onboardPoints.error.type;
+      return onboardPoints;
     },
-  );
+    onSuccess: (data) => {
+      if (!data) return;
+      seedPointsQueryCache(currentAddress, data);
+    },
+  });
 
-  const registrationAction =
-    totalAssetsBalance && isZero(totalAssetsBalance) ? 'buy' : 'swap';
+  const userOnboarding = validSignatureResponse?.user.onboarding;
+
+  const { mutate: signChallenge, isLoading: isWaitingForSignature } =
+    useMutation({
+      mutationFn: async () => {
+        if (!data) return;
+        return wallet.personalSign(data.pointsOnboardChallenge, currentAddress);
+      },
+      onSuccess: (signature) => {
+        if (!signature) return;
+        validateSignature({ signature });
+      },
+    });
+
+  const debouncedAccessGranted = useDebounce(accessGranted, 9000);
 
   const userOnboardingCategories = useMemo(() => {
     const userCategories = userOnboarding?.categories?.reduce(
@@ -184,7 +220,7 @@ export const PointsOnboardingSheet = () => {
         acc[current.type] = current;
         return acc;
       },
-      {} as Record<CATEGORY_TYPE, USER_POINTS_CATEGORY>,
+      {} as Record<string, PointsOnboardingCategory>,
     );
     return userCategories;
   }, [userOnboarding?.categories]);
@@ -203,47 +239,6 @@ export const PointsOnboardingSheet = () => {
     accessGranted && !userHasEarnings,
     13000,
   );
-
-  const { data } = usePointsChallenge({
-    address: currentAddress,
-    referralCode: state.referralCode,
-  });
-
-  const backToHome = () =>
-    navigate(ROUTES.HOME, {
-      state: { skipTransitionOnRoute: ROUTES.HOME },
-    });
-
-  const signChallenge = useCallback(async () => {
-    if (data?.pointsOnboardChallenge) {
-      setValidatingSignature(true);
-      try {
-        const signature = await wallet.personalSign(
-          data?.pointsOnboardChallenge,
-          currentAddress,
-        );
-        const valid = await metadataPostClient.validatePointsSignature({
-          address: currentAddress,
-          signature,
-          referral: state.referralCode,
-        });
-        if (valid.onboardPoints?.error) {
-          const error = valid.onboardPoints.error.type;
-          setError(error);
-        } else if (valid.onboardPoints?.user) {
-          seedPointsQueryCache(currentAddress, valid.onboardPoints);
-          setUserOnboarding(
-            valid.onboardPoints.user.onboarding as USER_POINTS_ONBOARDING,
-          );
-          setAccessGranted(true);
-        }
-      } catch (e) {
-        //
-      } finally {
-        setValidatingSignature(false);
-      }
-    }
-  }, [currentAddress, data?.pointsOnboardChallenge, state.referralCode]);
 
   const loadingRowsText = useMemo(
     () =>
@@ -665,6 +660,7 @@ export const PointsOnboardingSheet = () => {
                 <SiginAction
                   data={data}
                   signChallenge={signChallenge}
+                  isWaitingForSignature={isWaitingForSignature}
                   validatingSignature={validatingSignature}
                 />
               )}
