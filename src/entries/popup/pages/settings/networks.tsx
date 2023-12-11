@@ -38,6 +38,7 @@ export function SettingsNetworks() {
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
+  const { userChains } = useUserChainsStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -68,18 +69,8 @@ export function SettingsNetworks() {
 
   return (
     <Box paddingHorizontal="20px">
-      <Inset bottom="8px">
-        <QuickPromo
-          text={i18n.t('settings.networks.quick_promo.text')}
-          textBold={i18n.t('settings.networks.quick_promo.text_bold')}
-          symbol="sparkle"
-          symbolColor="accent"
-          promoType="network_settings"
-        />
-      </Inset>
-
-      <MenuContainer testId="settings-menu-container">
-        {featureFlags.custom_rpc && (
+      {featureFlags.custom_rpc && (
+        <MenuContainer>
           <Menu>
             <MenuItem
               testId={'custom-chain-link'}
@@ -87,10 +78,10 @@ export function SettingsNetworks() {
               last
               leftComponent={
                 <Symbol
-                  symbol="network"
+                  symbol="plus.circle.fill"
                   weight="medium"
                   size={18}
-                  color="green"
+                  color="accent"
                 />
               }
               hasRightArrow
@@ -102,7 +93,20 @@ export function SettingsNetworks() {
               }
             />
           </Menu>
-        )}
+        </MenuContainer>
+      )}
+
+      <Inset bottom="8px">
+        <QuickPromo
+          text={i18n.t('settings.networks.quick_promo.text')}
+          textBold={i18n.t('settings.networks.quick_promo.text_bold')}
+          symbol="sparkle"
+          symbolColor="accent"
+          promoType="network_settings"
+        />
+      </Inset>
+
+      <MenuContainer testId="settings-menu-container">
         <Menu>
           <DraggableContext onDragEnd={onDragEnd} height="fixed">
             <Box paddingHorizontal="1px" paddingVertical="1px">
@@ -129,7 +133,9 @@ export function SettingsNetworks() {
                             size="11pt"
                             weight={'medium'}
                           >
-                            {chainLabel({ chainId: chain.id })}
+                            {userChains[chain.id]
+                              ? chainLabel({ chainId: chain.id })
+                              : i18n.t('settings.networks.disabled')}
                           </Text>
                         ) : null
                       }
@@ -176,6 +182,41 @@ export function SettingsNetworks() {
             text={i18n.t('settings.networks.developer_tools.toggle_explainer')}
           />
         </Menu>
+        {/* {developerToolsEnabled && (
+          <Menu>
+            {allNetworks.map((chain: Chain, index) => (
+              <Box key={`${chain.id}`} testId={`network-row-${chain.id}`}>
+                <DraggableItem id={`${chain.id}`} index={index}>
+                  <MenuItem
+                    first={index === 0}
+                    leftComponent={
+                      <ChainBadge chainId={chain.id} size="18" shadow />
+                    }
+                    onClick={() =>
+                      navigate(ROUTES.SETTINGS__NETWORKS__RPCS, {
+                        state: { chainId: chain.id, title: chain.name },
+                      })
+                    }
+                    key={chain.name}
+                    hasRightArrow
+                    titleComponent={<MenuItem.Title text={chain.name} />}
+                    labelComponent={
+                      developerToolsEnabled ? (
+                        <Text
+                          color={'labelTertiary'}
+                          size="11pt"
+                          weight={'medium'}
+                        >
+                          {chainLabel({ chainId: chain.id })}
+                        </Text>
+                      ) : null
+                    }
+                  />
+                </DraggableItem>
+              </Box>
+            ))}
+          </Menu>
+        )} */}
       </MenuContainer>
     </Box>
   );

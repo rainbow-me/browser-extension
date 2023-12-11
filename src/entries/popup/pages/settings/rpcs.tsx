@@ -144,10 +144,10 @@ export function SettingsNetworksRPCs() {
             last
             leftComponent={
               <Symbol
-                symbol="network"
+                symbol="plus.circle.fill"
                 weight="medium"
                 size={18}
-                color="green"
+                color="accent"
               />
             }
             hasRightArrow

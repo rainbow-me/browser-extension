@@ -92,6 +92,7 @@
         "text": "Drag networks to reorder them",
         "text_bold": "Tip:"
       },
+      "disabled": "Disabled",
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
       "developer_tools": {
         "title": "Enable Developer Tools",
@@ -108,7 +109,7 @@
         "active": "Active",
         "block_explorer_url": "Block Explorer URL",
         "add_network": "Add Network",
-        "add_asset": "Add Asset"
+        "add_asset": "Add Custom Token"
       },
       "rpc_endpoints": "RPC Endpoints",
       "enabled": "Enabled",
