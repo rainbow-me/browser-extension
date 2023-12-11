@@ -24,43 +24,45 @@ export function WalletAvatar({
   emojiPaddingTop?: BoxStyles['paddingTop'];
   boxShadow?: BoxStyles['boxShadow'];
 }) {
-  const { data: avatar, isFetched } = useAvatar({ addressOrName });
+  const { data: avatar } = useAvatar({ addressOrName });
 
   return (
     <AccentColorProvider color={avatar?.color || '#000000'}>
-      <Box
-        borderRadius="round"
-        boxShadow={boxShadow}
-        position="relative"
-        background={background ?? 'fillSecondary'}
-        style={{
-          height: size,
-          width: size,
-          overflow: 'hidden',
-        }}
-      >
-        {isFetched && addressOrName ? (
-          <>
-            {avatar?.imageUrl ? (
-              <Avatar.Image
-                mask={mask}
-                size={size}
-                imageUrl={avatar.imageUrl}
-              />
-            ) : (
-              <Avatar.Emoji
-                color={avatar?.color}
-                emoji={avatar?.emoji}
-                size={emojiSize}
-                mask={mask}
-                paddingLeft={emojiPaddingLeft}
-                paddingTop={emojiPaddingTop}
-              />
-            )}
-          </>
-        ) : null}
-        <Avatar.Skeleton />
-      </Box>
+      {addressOrName ? (
+        <Box
+          borderRadius="round"
+          boxShadow={boxShadow}
+          position="relative"
+          background={background}
+          style={{
+            height: size,
+            width: size,
+            overflow: 'hidden',
+          }}
+        >
+          {avatar?.imageUrl ? (
+            <Avatar.Image mask={mask} size={size} imageUrl={avatar.imageUrl} />
+          ) : (
+            <Avatar.Emoji
+              color={avatar?.color}
+              emoji={avatar?.emoji}
+              size={emojiSize}
+              mask={mask}
+              paddingLeft={emojiPaddingLeft}
+              paddingTop={emojiPaddingTop}
+            />
+          )}
+          <Avatar.Skeleton />
+        </Box>
+      ) : (
+        <Box
+          background="fillQuaternary"
+          borderColor="separatorTertiary"
+          borderRadius="round"
+          borderWidth="1px"
+          style={{ height: size, width: size }}
+        />
+      )}
     </AccentColorProvider>
   );
 }

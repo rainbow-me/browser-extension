@@ -24,7 +24,7 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
       hw_wallets_enabled: true,
       command_k_internal_shortcuts_enabled: false,
       custom_rpc: false,
-      nfts_enabled: false,
+      nfts_enabled: true,
       points: false,
     },
     setFeatureFlag: (key, value) => {
@@ -39,7 +39,7 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
   {
     persist: {
       name: 'featureFlagsStore',
-      version: 8,
+      version: 9,
     },
   },
 );
