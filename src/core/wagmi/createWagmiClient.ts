@@ -122,8 +122,12 @@ export function createWagmiClient({
   customChains?: Chain[];
   useProxy?: boolean;
 } = {}) {
+  const customChainIds = customChains?.map((chain) => chain.id);
+  const activeSupportedChains = supportedChains?.filter(
+    (supportedChain) => !customChainIds?.includes(supportedChain.id),
+  );
   const { chains, provider, webSocketProvider } = configureChainsForWagmiClient(
-    supportedChains.concat(customChains || []),
+    activeSupportedChains.concat(customChains || []),
     useProxy,
   );
 

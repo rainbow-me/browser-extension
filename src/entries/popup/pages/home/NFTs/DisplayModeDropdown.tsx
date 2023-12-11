@@ -56,6 +56,7 @@ export default function DisplayModeDropdown() {
               currentTheme === 'dark' ? gradientBorderDark : gradientBorderLight
             }
             style={{ display: 'flex', alignItems: 'center' }}
+            testId={'nfts-displaymode-dropdown'}
           >
             <Box style={{ paddingRight: 7, paddingLeft: 7 }}>
               <Inline alignVertical="center" space="6px">
@@ -117,7 +118,11 @@ export default function DisplayModeDropdown() {
                     />
                   }
                   centerComponent={
-                    <Text size="14pt" weight="semibold">
+                    <Text
+                      size="14pt"
+                      weight="semibold"
+                      testId={'nfts-displaymode-option-byCollection'}
+                    >
                       {i18n.t('nfts.display_mode_collections')}
                     </Text>
                   }

@@ -94,6 +94,8 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                 width: '100%',
                 boxShadow: '2px 12px 12px rgba(0, 0, 0, 0.65)',
                 borderRadius: defaultBorderRadius,
+                maxHeight: '380px',
+                overflow: 'scroll',
               }}
             >
               <Command.List>

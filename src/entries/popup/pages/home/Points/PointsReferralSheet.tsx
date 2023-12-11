@@ -61,8 +61,8 @@ export const PointsReferralSheet = () => {
 
   const invalidReferralCode =
     validCodeFormat &&
-    data?.onboardPoints?.error?.type === INVALID_REFERRAL_CODE_ERROR;
-  const validReferralCode = validCodeFormat && data?.onboardPoints === null;
+    data?.validateReferral?.error?.type === INVALID_REFERRAL_CODE_ERROR;
+  const validReferralCode = validCodeFormat && data?.validateReferral?.valid;
 
   const backToHome = () =>
     navigate(ROUTES.HOME, {
