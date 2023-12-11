@@ -21,6 +21,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.0](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.0)
+
+### Added
+
+- You can now view all of your NFTs and NFT collections in Rainbow, just like the app. Head over to the new NFTs tab to view your Gallery and explore your NFTs with rich insights, including Floor Prices, Unique Owners, Rarity, and more #1182
+- Rainbow Points are here. True believers are always rewarded. [Learn more](https://rainbow.me/points) #1165 #1170 #1184 #1174 #1189
+
+### Changed
+
+- Drastically improved image fetching and rendering for Tokens, NFTs, and Avatars to make Rainbow feel even faster #1183
+
+### Fixed
+
+- Resolved interface shift when loading Tokens and Token Charts #1164
+- Improved Onboarding Secret Recovery Phrase verification language #1172
+
+### Internal
+
+- Added Floor Price Explainer for NFT Details #1169
+- Added autocomplete for a list of Networks in the Custom Networks flow #1177 #1179
+- Now providing all `chainIds` in Backend requests #1187
+- Now counting Custom Network assets in the token count, aggregated balance, and properly sorting the assets #1186
+- Resolved an issue with `chainId` conflicts for Custom Networks and the Networks menu filtering #1185
+- Upgraded `vite` to `4.5.1` to resolve CI checks #1176
+
 ## [v1.2.94](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.94)
 
 ### Fixed
