@@ -179,6 +179,13 @@ function TextWithMoreInfo({ children }: PropsWithChildren) {
   );
 }
 
+export const copyReferralCode = (referralCode: string) =>
+  copy({
+    value: `https://rainbow.me/points?ref=${referralCode}`,
+    title: i18n.t('points.copied_referral_link'),
+    description: `rainbow.me/points?ref=${referralCode}`,
+  });
+
 function ReferralCode() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
@@ -215,13 +222,7 @@ function ReferralCode() {
               whileTap={{ scale: 0.98 }}
               whileFocus={{ scale: 1.02 }}
               whileHover={{ scale: 1.02 }}
-              onTap={() =>
-                copy({
-                  value: `https://rainbow.me/points?ref=${data.user.referralCode}`,
-                  title: i18n.t('points.copied_referral_link'),
-                  description: `rainbow.me/points?ref=${data.user.referralCode}`,
-                })
-              }
+              onTap={() => copyReferralCode(data.user.referralCode)}
             >
               <Symbol
                 symbol="square.on.square"

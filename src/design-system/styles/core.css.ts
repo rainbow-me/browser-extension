@@ -516,7 +516,6 @@ const boxColorProperties = defineProperties({
       ] as const),
     },
     boxShadow: shadowVars,
-    textShadow: textShadowVars,
   },
 });
 

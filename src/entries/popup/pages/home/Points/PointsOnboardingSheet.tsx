@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { PropsWithChildren, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { metadataPostClient } from '~/core/graphql';
@@ -31,6 +31,7 @@ import {
   accentColorAsHsl,
   transparentAccentColorAsHsl20,
 } from '~/design-system/styles/core.css';
+import { ButtonVariant } from '~/design-system/styles/designTokens';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { useCurrentWalletTypeAndVendor } from '~/entries/popup/hooks/useCurrentWalletType';
@@ -42,6 +43,7 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import * as wallet from '../../../handlers/wallet';
 
+import { copyReferralCode } from './PointsDashboard';
 import { seedPointsQueryCache } from './usePoints';
 import { usePointsChallenge } from './usePointsChallenge';
 import {
@@ -118,42 +120,140 @@ const SiginAction = ({
   );
 };
 
-const RegistrationAction = ({
-  data,
-}: {
-  data?: GetPointsOnboardChallengeQuery;
-}) => {
+const OnboardingButton = ({
+  disabled,
+  onClick,
+  children,
+  variant = 'shadow',
+  color = 'accent',
+}: PropsWithChildren<{
+  disabled?: boolean;
+  onClick: VoidFunction;
+  variant?: ButtonVariant;
+  color?: 'accent' | 'labelTertiary';
+}>) => {
   return (
     <Box
       as={motion.div}
       variants={fadeVariants}
+      transition={{ delay: 2 }}
       initial="initial"
       animate="animate"
       exit="exit"
-      key="action-button"
+      width="full"
     >
       <Button
-        disabled={!data?.pointsOnboardChallenge}
+        disabled={disabled}
         width="full"
         borderRadius="12px"
-        // onClick={registrationAction === 'swap' ? goToSwap : goToBuy}
-        color="accent"
+        onClick={onClick}
+        color={color}
         height="36px"
-        variant="shadow"
+        variant={variant}
       >
         <Text
           align="center"
           size="15pt"
           weight="heavy"
-          color="accent"
-          textShadow="12px accent"
+          color={color}
+          textShadow={`12px ${color}`}
         >
-          Continue
+          {children}
         </Text>
       </Button>
     </Box>
   );
 };
+
+const shareRowsText = [
+  `> ${i18n.t('points.onboarding.referral_link_ready')}`,
+  `${i18n.t('points.onboarding.share_and_earn')}`,
+  `${i18n.t('points.onboarding.plus_percent_of_refers')}`,
+];
+const shareRows = [
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={shareRowsText[0]}
+    align="left"
+    size="15pt"
+    weight="bold"
+    color="labelTertiary"
+    delay={0}
+  >
+    {shareRowsText[0]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px accent"
+    key={shareRowsText[1]}
+    align="left"
+    size="15pt"
+    weight="bold"
+    color="accent"
+  >
+    {shareRowsText[1]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px accent"
+    key={shareRowsText[2]}
+    align="left"
+    size="15pt"
+    weight="bold"
+    color="accent"
+  >
+    {shareRowsText[2]}
+  </AnimatedText>,
+];
+
+const doneRowsText = [
+  `> ${i18n.t('points.onboarding.registration_complete')}`,
+  `${i18n.t('points.onboarding.all_set')}`,
+  `${i18n.t('points.onboarding.keep_earning_by')}`,
+  `${i18n.t('points.onboarding.the_more_you_use')}`,
+];
+const doneRows = [
+  <AccentColorProvider key={doneRowsText[0]} color="#00EE45">
+    <AnimatedText
+      textShadow="12px accent"
+      align="left"
+      size="15pt"
+      weight="bold"
+      color="accent"
+      delay={0}
+    >
+      {doneRowsText[0]}
+    </AnimatedText>
+  </AccentColorProvider>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={doneRowsText[1]}
+    align="left"
+    size="15pt"
+    weight="bold"
+    color="labelTertiary"
+  >
+    {doneRowsText[1]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={doneRowsText[2]}
+    align="left"
+    size="15pt"
+    weight="bold"
+    color="labelTertiary"
+  >
+    {doneRowsText[2]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={doneRowsText[3]}
+    align="left"
+    size="15pt"
+    weight="bold"
+    color="labelTertiary"
+  >
+    {doneRowsText[4]}
+  </AnimatedText>,
+];
 
 export const PointsOnboardingSheet = () => {
   const navigate = useRainbowNavigate();
@@ -168,7 +268,7 @@ export const PointsOnboardingSheet = () => {
 
   const backToHome = () =>
     navigate(ROUTES.HOME, {
-      state: { skipTransitionOnRoute: ROUTES.HOME },
+      state: { tab: 'points', skipTransitionOnRoute: ROUTES.HOME },
     });
 
   const {
@@ -189,7 +289,8 @@ export const PointsOnboardingSheet = () => {
           signature,
           referral: state.referralCode,
         });
-      if (onboardPoints?.error) throw onboardPoints.error.type;
+      if (!onboardPoints) throw ''; // sometimes the server just returns null, like when the signature is invalid
+      if (onboardPoints.error) throw onboardPoints.error.type;
       return onboardPoints;
     },
     onSuccess: (data) => {
@@ -224,21 +325,6 @@ export const PointsOnboardingSheet = () => {
     );
     return userCategories;
   }, [userOnboarding?.categories]);
-
-  const userHasEarnings = useMemo(() => {
-    const userHasEarnings =
-      userOnboardingCategories?.['rainbow-swaps'].data.usd_amount &&
-      userOnboardingCategories?.['nft-collections'].data.owned_collections &&
-      userOnboardingCategories?.['historic-balance'].data.usd_amount &&
-      userOnboardingCategories?.['metamask-swaps'].data.usd_amount &&
-      userOnboardingCategories?.['bonus'].earnings.total;
-    return userHasEarnings;
-  }, [userOnboardingCategories]);
-
-  const showRegisteredCallToAction = useDebounce(
-    accessGranted && !userHasEarnings,
-    13000,
-  );
 
   const loadingRowsText = useMemo(
     () =>
@@ -607,6 +693,22 @@ export const PointsOnboardingSheet = () => {
     [calculatingPointsRowsText, userOnboarding],
   );
 
+  const [step, setStep] = useState<
+    'welcome' | 'calculating' | 'share' | 'done'
+  >('welcome');
+
+  if (debouncedAccessGranted && step === 'welcome') setStep('calculating');
+
+  const onShare = () => {
+    setStep('done');
+    metadataPostClient.redeemCodeForPoints({
+      address: currentAddress,
+      redemptionCode: 'TWITTERSHARED',
+    });
+    const referralCode = validSignatureResponse?.user.referralCode;
+    if (referralCode) copyReferralCode(referralCode);
+  };
+
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar leftComponent={<Navbar.CloseButton onClick={backToHome} />} />
@@ -635,7 +737,7 @@ export const PointsOnboardingSheet = () => {
                 </Text>
               </Inline>
 
-              {!debouncedAccessGranted && (
+              {step === 'welcome' && (
                 <AnimatedTextRows
                   customDelay={accessGranted || error ? 0 : undefined}
                   id="animated-loading-rows"
@@ -644,7 +746,7 @@ export const PointsOnboardingSheet = () => {
                   space="15px"
                 />
               )}
-              {debouncedAccessGranted && (
+              {step === 'calculating' && (
                 <AnimatedTextRows
                   id="animated-calculating-rows"
                   rowsText={calculatingPointsRowsText.flat()}
@@ -652,11 +754,27 @@ export const PointsOnboardingSheet = () => {
                   space="15px"
                 />
               )}
+              {step === 'share' && (
+                <AnimatedTextRows
+                  id="animated-share-rows"
+                  rows={shareRows}
+                  rowsText={shareRowsText}
+                  space="44px"
+                />
+              )}
+              {step === 'done' && (
+                <AnimatedTextRows
+                  id="animated-done-rows"
+                  rows={doneRows}
+                  rowsText={doneRowsText}
+                  space="35px"
+                />
+              )}
             </Stack>
           </Row>
           <Row height="content">
             <AnimatePresence mode="wait" initial={false}>
-              {!accessGranted && (
+              {step === 'welcome' && !accessGranted && (
                 <SiginAction
                   data={data}
                   signChallenge={signChallenge}
@@ -664,7 +782,30 @@ export const PointsOnboardingSheet = () => {
                   validatingSignature={validatingSignature}
                 />
               )}
-              {showRegisteredCallToAction && <RegistrationAction data={data} />}
+              {step === 'calculating' && (
+                <OnboardingButton onClick={() => setStep('share')}>
+                  {i18n.t('common_actions.continue')}
+                </OnboardingButton>
+              )}
+              {step === 'share' && (
+                <Inline space="15px" wrap={false}>
+                  <OnboardingButton
+                    onClick={() => setStep('done')}
+                    color="labelTertiary"
+                    variant="stroked"
+                  >
+                    {i18n.t('skip')}
+                  </OnboardingButton>
+                  <OnboardingButton onClick={onShare}>
+                    {i18n.t('points.onboarding.share')}
+                  </OnboardingButton>
+                </Inline>
+              )}
+              {step === 'done' && (
+                <OnboardingButton onClick={backToHome}>
+                  {i18n.t('done')}
+                </OnboardingButton>
+              )}
             </AnimatePresence>
           </Row>
         </Rows>
