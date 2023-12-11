@@ -306,11 +306,13 @@ export const useTransactionGas = ({
   address,
   defaultSpeed,
   transactionRequest,
+  flashbotsEnabled,
 }: {
   chainId: ChainId;
   address?: Address;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
+  flashbotsEnabled?: boolean;
 }) => {
   const { data: estimatedGasLimit } = useEstimateGasLimit({
     chainId,
@@ -323,6 +325,7 @@ export const useTransactionGas = ({
     defaultSpeed,
     estimatedGasLimit,
     transactionRequest,
+    flashbotsEnabled,
     enabled: true,
   });
 };
