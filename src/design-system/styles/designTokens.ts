@@ -504,6 +504,7 @@ export type ForegroundColor =
   | 'labelSecondary'
   | 'labelTertiary'
   | 'labelQuaternary'
+  | 'labelWhite'
   | 'transparent'
   | 'blue'
   | 'green'
@@ -551,6 +552,10 @@ export const foregroundColors: Record<
   labelQuaternary: {
     light: globalColors.grey60,
     dark: globalColors.white60,
+  },
+  labelWhite: {
+    light: globalColors.white100,
+    dark: globalColors.white100,
   },
   transparent: selectBackgroundAsForeground('transparent'),
   blue: selectBackgroundAsForeground('blue'),
@@ -660,6 +665,7 @@ export const textColors = selectForegroundColors(
   'labelSecondary',
   'labelTertiary',
   'labelQuaternary',
+  'labelWhite',
   'mainnet',
   'arbitrum',
   'optimism',
@@ -705,7 +711,9 @@ export const linearGradients = {
 export type LinearGradient = keyof typeof linearGradients;
 
 export const space = {
+  '0px': 0,
   '1px': 1,
+  '1.5px': 1.5,
   '2px': 2,
   '3px': 3,
   '4px': 4,
@@ -740,6 +748,7 @@ export const space = {
   '60px': 60,
   '64px': 64,
   '65px': 65,
+  '68px': 68,
   '72px': 72,
   '80px': 80,
   '100px': 100,
@@ -748,7 +757,9 @@ export const space = {
 } as const;
 
 export const negativeSpace = {
+  '-0px': 0,
   '-1px': -1,
+  '-1.5px': -1.5,
   '-2px': -2,
   '-3px': -3,
   '-4px': -4,
@@ -783,6 +794,7 @@ export const negativeSpace = {
   '-60px': -60,
   '-64px': -64,
   '-65px': -65,
+  '-68px': -68,
   '-72px': -72,
   '-80px': -80,
   '-100px': -100,
@@ -794,7 +806,9 @@ export const spaceToNegativeSpace: Record<
   keyof typeof space,
   keyof typeof negativeSpace
 > = {
+  '0px': '-0px',
   '1px': '-1px',
+  '1.5px': '-1.5px',
   '2px': '-2px',
   '3px': '-3px',
   '4px': '-4px',
@@ -829,6 +843,7 @@ export const spaceToNegativeSpace: Record<
   '60px': '-60px',
   '64px': '-64px',
   '65px': '-65px',
+  '68px': '-68px',
   '72px': '-72px',
   '80px': '-80px',
   '100px': '-100px',
@@ -1052,6 +1067,7 @@ export const symbolNames = selectSymbolNames(
   'percent',
   'photo',
   'person.crop.rectangle.fill',
+  'photo.fill',
   '1.circle',
   '2.circle',
   '3.circle',
