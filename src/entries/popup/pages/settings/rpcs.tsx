@@ -291,80 +291,87 @@ export function SettingsNetworksRPCs() {
         </Menu>
       </MenuContainer>
 
-      <Menu>
-        <Box padding="20px">
-          <Stack space="14px">
-            <Text align="left" color="label" size="14pt" weight="medium">
-              Tokens
-            </Text>
+      {Object.values(customNetworkAssetsForChain || {}).length && (
+        <Menu>
+          <Box padding="20px">
+            <Stack space="14px">
+              <Text align="left" color="label" size="14pt" weight="medium">
+                {i18n.t('settings.networks.custom_rpc.tokens')}
+              </Text>
 
-            <Box width="full">
-              {Object.values(customNetworkAssetsForChain || {})?.map(
-                (asset, i) => (
-                  <ContextMenu key={i}>
-                    <ContextMenuTrigger>
-                      <Box marginHorizontal="-12px">
-                        <RowHighlightWrapper>
-                          <Inline
-                            alignVertical="center"
-                            alignHorizontal="center"
-                            wrap={false}
-                          >
-                            <Box style={{ height: '52px' }} width="full">
-                              <Inset horizontal="12px" vertical="8px">
-                                <Rows>
-                                  <Row>
-                                    <Columns alignVertical="center" space="8px">
-                                      <Column width="content">
-                                        <CoinIcon asset={asset} />
-                                      </Column>
-                                      <Column>
-                                        <Text
-                                          align="left"
-                                          color="label"
-                                          size="14pt"
-                                          weight="medium"
-                                        >
-                                          {asset.name}
-                                        </Text>
-                                      </Column>
-                                    </Columns>
-                                  </Row>
-                                </Rows>
-                              </Inset>
-                            </Box>
-                            <MoreInfoButton
-                              options={options({
-                                address: asset.address as Address,
-                              })}
-                            />
-                          </Inline>
-                        </RowHighlightWrapper>
-                      </Box>
-                    </ContextMenuTrigger>
-                    <ContextMenuContent>
-                      <ContextMenuItem
-                        symbolLeft="trash.fill"
-                        color="red"
-                        onSelect={() =>
-                          removeCustomRPCAsset({
-                            chainId,
-                            address: asset.address as Address,
-                          })
-                        }
-                      >
-                        <Text color="red" size="14pt" weight="semibold">
-                          {i18n.t('settings.networks.custom_rpc.remove_token')}
-                        </Text>
-                      </ContextMenuItem>
-                    </ContextMenuContent>
-                  </ContextMenu>
-                ),
-              )}
-            </Box>
-          </Stack>
-        </Box>
-      </Menu>
+              <Box width="full">
+                {Object.values(customNetworkAssetsForChain || {})?.map(
+                  (asset, i) => (
+                    <ContextMenu key={i}>
+                      <ContextMenuTrigger>
+                        <Box marginHorizontal="-12px">
+                          <RowHighlightWrapper>
+                            <Inline
+                              alignVertical="center"
+                              alignHorizontal="center"
+                              wrap={false}
+                            >
+                              <Box style={{ height: '52px' }} width="full">
+                                <Inset horizontal="12px" vertical="8px">
+                                  <Rows>
+                                    <Row>
+                                      <Columns
+                                        alignVertical="center"
+                                        space="8px"
+                                      >
+                                        <Column width="content">
+                                          <CoinIcon asset={asset} />
+                                        </Column>
+                                        <Column>
+                                          <Text
+                                            align="left"
+                                            color="label"
+                                            size="14pt"
+                                            weight="medium"
+                                          >
+                                            {asset.name}
+                                          </Text>
+                                        </Column>
+                                      </Columns>
+                                    </Row>
+                                  </Rows>
+                                </Inset>
+                              </Box>
+                              <MoreInfoButton
+                                options={options({
+                                  address: asset.address as Address,
+                                })}
+                              />
+                            </Inline>
+                          </RowHighlightWrapper>
+                        </Box>
+                      </ContextMenuTrigger>
+                      <ContextMenuContent>
+                        <ContextMenuItem
+                          symbolLeft="trash.fill"
+                          color="red"
+                          onSelect={() =>
+                            removeCustomRPCAsset({
+                              chainId,
+                              address: asset.address as Address,
+                            })
+                          }
+                        >
+                          <Text color="red" size="14pt" weight="semibold">
+                            {i18n.t(
+                              'settings.networks.custom_rpc.remove_token',
+                            )}
+                          </Text>
+                        </ContextMenuItem>
+                      </ContextMenuContent>
+                    </ContextMenu>
+                  ),
+                )}
+              </Box>
+            </Stack>
+          </Box>
+        </Menu>
+      )}
     </Box>
   );
 }
