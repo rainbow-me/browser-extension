@@ -222,7 +222,6 @@ export function PostReleaseNFTs() {
                                   )}
                                   key={i}
                                   onClick={() => onAssetClick(asset)}
-                                  index={i}
                                 />
                               ))}
                             </Box>
@@ -384,7 +383,6 @@ function CollectionSection({
                 paddingTop: 7,
                 paddingBottom: isLast && !collectionVisible ? 19 : 7,
               }}
-              testId={`nfts-collection-section-${section.collection.name}`}
             >
               <Columns alignVertical="center">
                 <Column>
@@ -465,7 +463,6 @@ function CollectionSection({
                     }
                     key={i}
                     onClick={() => onAssetClick(asset)}
-                    index={i}
                   />
                 );
               })}
@@ -478,22 +475,13 @@ function CollectionSection({
 }
 
 const NftThumbnail = memo(
-  ({
-    imageSrc,
-    onClick,
-    index,
-  }: {
-    imageSrc?: string;
-    onClick: () => void;
-    index: number;
-  }) => {
+  ({ imageSrc, onClick }: { imageSrc?: string; onClick: () => void }) => {
     return (
       <Lens
         style={{ height: 96, width: 96 }}
         borderRadius="10px"
         background="fillQuaternary"
         onClick={onClick}
-        testId={`nft-thumbnail-${imageSrc}-${index}`}
       >
         <ExternalImage
           borderRadius="10px"
