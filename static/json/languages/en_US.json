@@ -110,7 +110,9 @@
         "testnet": "Testnet",
         "block_explorer_url": "Block Explorer URL",
         "add_network": "Add Network",
-        "add_asset": "Add Custom Token"
+        "add_asset": "Add Custom Token",
+        "network_added": "Network Added!",
+        "network_added_correctly": "%{networkName} has been added correctly!"
       },
       "rpc_endpoints": "RPC Endpoints",
       "enabled": "Enabled",

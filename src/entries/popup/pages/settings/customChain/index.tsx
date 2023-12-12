@@ -11,6 +11,7 @@ import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Autocomplete } from '~/entries/popup/components/Autocomplete';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
 
@@ -19,6 +20,17 @@ import { maskInput } from '../../../components/InputMask/utils';
 
 const KNOWN_NETWORKS = {
   [i18n.t('settings.networks.custom_rpc.networks')]: [
+    {
+      name: 'Anvil Mainnet Fork',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
     {
       name: 'Arbitrum Nova',
       value: {
@@ -383,10 +395,21 @@ export function SettingsCustomChain() {
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
       };
+      if (customRPC.testnet) {
+        chain.testnet = true;
+      }
       addCustomRPC({
         chain,
       });
       addUserChain({ chainId });
+      triggerToast({
+        title: i18n.t('settings.networks.custom_rpc.network_added'),
+        description: i18n.t(
+          'settings.networks.custom_rpc.network_added_correctly',
+          { networkName: name },
+        ),
+      });
+      setCustomRPC({});
     }
   }, [
     addCustomRPC,
