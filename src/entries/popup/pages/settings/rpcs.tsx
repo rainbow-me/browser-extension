@@ -14,6 +14,12 @@ import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '../../components/ContextMenu/ContextMenu';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -22,7 +28,8 @@ export function SettingsNetworksRPCs() {
     state: { chainId },
   } = useLocation();
   const navigate = useRainbowNavigate();
-  const { customChains, setActiveRPC, setDefaultRPC } = useCustomRPCsStore();
+  const { customChains, setActiveRPC, setDefaultRPC, removeCustomRPC } =
+    useCustomRPCsStore();
 
   const { userChains, updateUserChain } = useUserChainsStore();
 
@@ -60,9 +67,7 @@ export function SettingsNetworksRPCs() {
     const customChain = chains.find(
       (chain: Chain) => chain.id === (chainId as number),
     );
-    console.log('custom chain!', customChain);
     return typeof customChain === 'undefined';
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   console.log('is default rpc?', isDefaultRPC());
@@ -113,26 +118,51 @@ export function SettingsNetworksRPCs() {
             )}
             {customChains[Number(chainId)]?.chains?.map((chain, index) => (
               <Box key={`${chain.name}`} testId={`network-row-${chain.name}`}>
-                <MenuItem
-                  first={!suportedChain && index === 0}
-                  leftComponent={
-                    <ChainBadge chainId={chain.id} size="18" shadow />
-                  }
-                  onClick={() => handleRPCClick(chain.rpcUrls.default.http[0])}
-                  key={chain.name}
-                  rightComponent={
-                    chain.rpcUrls.default.http[0] ===
-                    customChains[Number(chainId)].activeRpcUrl ? (
-                      <MenuItem.SelectionIcon />
-                    ) : null
-                  }
-                  titleComponent={<MenuItem.Title text={chain.name} />}
-                  labelComponent={
-                    <Text color={'labelTertiary'} size="11pt" weight={'medium'}>
-                      {chain.rpcUrls.default.http[0]}
-                    </Text>
-                  }
-                />
+                <ContextMenu>
+                  <ContextMenuTrigger>
+                    <MenuItem
+                      first={!suportedChain && index === 0}
+                      leftComponent={
+                        <ChainBadge chainId={chain.id} size="18" shadow />
+                      }
+                      onClick={() =>
+                        handleRPCClick(chain.rpcUrls.default.http[0])
+                      }
+                      key={chain.name}
+                      rightComponent={
+                        chain.rpcUrls.default.http[0] ===
+                        customChains[Number(chainId)].activeRpcUrl ? (
+                          <MenuItem.SelectionIcon />
+                        ) : null
+                      }
+                      titleComponent={<MenuItem.Title text={chain.name} />}
+                      labelComponent={
+                        <Text
+                          color={'labelTertiary'}
+                          size="11pt"
+                          weight={'medium'}
+                        >
+                          {chain.rpcUrls.default.http[0]}
+                        </Text>
+                      }
+                    />
+                  </ContextMenuTrigger>
+                  <ContextMenuContent>
+                    <ContextMenuItem
+                      symbolLeft="trash.fill"
+                      color="red"
+                      onSelect={() =>
+                        removeCustomRPC({
+                          rpcUrl: chain.rpcUrls.default.http[0],
+                        })
+                      }
+                    >
+                      <Text color="red" size="14pt" weight="semibold">
+                        {'Remove RPC'}
+                      </Text>
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                </ContextMenu>
               </Box>
             ))}
           </Box>
