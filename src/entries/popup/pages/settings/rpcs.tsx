@@ -229,36 +229,37 @@ export function SettingsNetworksRPCs() {
           </Box>
         </Menu>
 
-        <Menu>
-          <MenuItem
-            testId={'custom-chain-link'}
-            first
-            last
-            leftComponent={
-              <Symbol
-                symbol="plus.circle.fill"
-                weight="medium"
-                size={18}
-                color="accent"
-              />
-            }
-            hasRightArrow
-            onClick={() =>
-              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
-                state: {
-                  chain: activeRPC,
-                },
-              })
-            }
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('settings.networks.custom_rpc.add_rpc', {
-                  rpcName: activeRPC?.name,
-                })}
-              />
-            }
-          />
-        </Menu>
+        {activeRPC?.name && (
+          <Menu>
+            <MenuItem
+              first
+              last
+              leftComponent={
+                <Symbol
+                  symbol="plus.circle.fill"
+                  weight="medium"
+                  size={18}
+                  color="accent"
+                />
+              }
+              hasRightArrow
+              onClick={() =>
+                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
+                  state: {
+                    chain: activeRPC,
+                  },
+                })
+              }
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.networks.custom_rpc.add_rpc', {
+                    rpcName: activeRPC?.name,
+                  })}
+                />
+              }
+            />
+          </Menu>
+        )}
 
         <Menu>
           <MenuItem
