@@ -68,7 +68,6 @@ export function SettingsNetworksRPCs() {
 
   const customNetworkAssetsForChain = customNetworkAssets[chainId];
 
-  console.log('-- customNetworkAssetsForChain', customNetworkAssetsForChain);
   const navigate = useRainbowNavigate();
   const { customChains, setActiveRPC, setDefaultRPC, removeCustomRPC } =
     useCustomRPCsStore();
@@ -119,7 +118,7 @@ export function SettingsNetworksRPCs() {
 
   const options = ({ address }: { address: Address }): MoreInfoOption[] => [
     {
-      label: 'Remove Token',
+      label: i18n.t('settings.networks.custom_rpc.remove_token'),
       color: 'red',
       symbol: 'trash.fill',
       onSelect: () =>
@@ -220,7 +219,7 @@ export function SettingsNetworksRPCs() {
                       }
                     >
                       <Text color="red" size="14pt" weight="semibold">
-                        {'Remove RPC'}
+                        {i18n.t('settings.networks.custom_rpc.remove_rpc')}
                       </Text>
                     </ContextMenuItem>
                   </ContextMenuContent>
@@ -354,7 +353,7 @@ export function SettingsNetworksRPCs() {
                         }
                       >
                         <Text color="red" size="14pt" weight="semibold">
-                          {'Remove Token'}
+                          {i18n.t('settings.networks.custom_rpc.remove_token')}
                         </Text>
                       </ContextMenuItem>
                     </ContextMenuContent>

@@ -111,7 +111,9 @@
         "block_explorer_url": "Block Explorer URL",
         "add_network": "Add Network",
         "add_rpc": "Add %{rpcName} RPC",
-        "add_asset": "Add Custom Token"
+        "add_asset": "Add Custom Token",
+        "remove_token": "Remove Token",
+        "remove_rpc": "Remove RPC"
       },
       "rpc_endpoints": "RPC Endpoints",
       "enabled": "Enabled",
