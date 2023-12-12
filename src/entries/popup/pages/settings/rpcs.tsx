@@ -31,6 +31,11 @@ export function SettingsNetworksRPCs() {
   const { customChains, setActiveRPC, setDefaultRPC, removeCustomRPC } =
     useCustomRPCsStore();
 
+  const customChain = customChains[Number(chainId)];
+  const activeRPC = customChain.chains.find(
+    (chain) => chain.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+  );
+
   const { userChains, updateUserChain } = useUserChainsStore();
 
   const handleToggleChain = useCallback(
@@ -116,7 +121,7 @@ export function SettingsNetworksRPCs() {
                 }
               />
             )}
-            {customChains[Number(chainId)]?.chains?.map((chain, index) => (
+            {customChain?.chains?.map((chain, index) => (
               <Box key={`${chain.name}`} testId={`network-row-${chain.name}`}>
                 <ContextMenu>
                   <ContextMenuTrigger>
@@ -131,7 +136,7 @@ export function SettingsNetworksRPCs() {
                       key={chain.name}
                       rightComponent={
                         chain.rpcUrls.default.http[0] ===
-                        customChains[Number(chainId)].activeRpcUrl ? (
+                        customChain.activeRpcUrl ? (
                           <MenuItem.SelectionIcon />
                         ) : null
                       }
@@ -191,6 +196,36 @@ export function SettingsNetworksRPCs() {
             titleComponent={
               <MenuItem.Title
                 text={i18n.t('settings.networks.custom_rpc.add_asset')}
+              />
+            }
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            testId={'custom-chain-link'}
+            first
+            last
+            leftComponent={
+              <Symbol
+                symbol="plus.circle.fill"
+                weight="medium"
+                size={18}
+                color="accent"
+              />
+            }
+            hasRightArrow
+            onClick={() =>
+              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
+                state: {
+                  chain: activeRPC,
+                },
+              })
+            }
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.networks.custom_rpc.add_rpc', {
+                  rpcName: activeRPC?.name,
+                })}
               />
             }
           />

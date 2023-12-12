@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -200,6 +201,9 @@ const KNOWN_NETWORKS = {
 };
 
 export function SettingsCustomChain() {
+  const {
+    state: { chain },
+  }: { state: { chain?: Chain } } = useLocation();
   const { addCustomRPC } = useCustomRPCsStore();
   const navigate = useRainbowNavigate();
   const { addUserChain } = useUserChainsStore();
@@ -212,7 +216,13 @@ export function SettingsCustomChain() {
     name?: string;
     symbol?: string;
     explorerUrl?: string;
-  }>({});
+  }>({
+    testnet: chain?.testnet,
+    chainId: chain?.id,
+    name: chain?.name,
+    symbol: chain?.nativeCurrency.symbol,
+    explorerUrl: chain?.blockExplorers?.default.url,
+  });
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
     chainId: boolean;
