@@ -13,6 +13,7 @@ import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
@@ -200,6 +201,7 @@ const KNOWN_NETWORKS = {
 
 export function SettingsCustomChain() {
   const { addCustomRPC } = useCustomRPCsStore();
+  const navigate = useRainbowNavigate();
   const { addUserChain } = useUserChainsStore();
   const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
@@ -311,7 +313,7 @@ export function SettingsCustomChain() {
   );
 
   const validateExplorerUrl = useCallback(
-    () => !!customRPC.explorerUrl && isValidUrl(customRPC.explorerUrl),
+    () => (customRPC.explorerUrl ? isValidUrl(customRPC.explorerUrl) : true),
     [customRPC.explorerUrl],
   );
 
@@ -330,6 +332,7 @@ export function SettingsCustomChain() {
     const validName = validateName();
     const validSymbol = validateSymbol();
     const validExplorerUrl = validateExplorerUrl();
+    console.log('- validExplorerUrl', validExplorerUrl);
     setValidations({
       rpcUrl: validRpcUrl,
       chainId: validChainId,
@@ -368,10 +371,9 @@ export function SettingsCustomChain() {
     const chainId = customRPC.chainId || chainMetadata?.chainId;
     const name = customRPC.name;
     const symbol = customRPC.symbol;
-    const explorerUrl = customRPC.explorerUrl;
     const valid = validateAddCustomRpc();
 
-    if (valid && rpcUrl && chainId && name && symbol && explorerUrl) {
+    if (valid && rpcUrl && chainId && name && symbol) {
       const chain: Chain = {
         id: chainId,
         name,
@@ -383,16 +385,22 @@ export function SettingsCustomChain() {
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
       };
+      console.log('=- addCustomRPC');
       addCustomRPC({
         chain,
       });
       addUserChain({ chainId });
+      navigate(-1);
     }
   }, [
     addCustomRPC,
     addUserChain,
     chainMetadata?.chainId,
-    customRPC,
+    customRPC.chainId,
+    customRPC.name,
+    customRPC.rpcUrl,
+    customRPC.symbol,
+    navigate,
     validateAddCustomRpc,
   ]);
 
