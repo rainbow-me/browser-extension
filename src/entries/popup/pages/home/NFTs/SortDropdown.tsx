@@ -56,6 +56,7 @@ export default function SortdDropdown() {
               currentTheme === 'dark' ? gradientBorderDark : gradientBorderLight
             }
             style={{ display: 'flex', alignItems: 'center' }}
+            testId={'nfts-sort-dropdown'}
           >
             <Box style={{ paddingRight: 7, paddingLeft: 7 }}>
               <Inline alignVertical="center" space="6px">
@@ -110,7 +111,11 @@ export default function SortdDropdown() {
                     <Symbol size={12} symbol="list.bullet" weight="semibold" />
                   }
                   centerComponent={
-                    <Text size="14pt" weight="semibold">
+                    <Text
+                      size="14pt"
+                      weight="semibold"
+                      testId={'nfts-sort-option-abc'}
+                    >
                       {i18n.t('nfts.sort_option_abc_long')}
                     </Text>
                   }

@@ -24,6 +24,7 @@ import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
 } from '~/core/utils/nfts';
+import { NFTS_TEST_DATA } from '~/test/utils';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
@@ -47,6 +48,9 @@ async function nftsQueryFunction({
   queryKey: [{ address }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
+  if (process.env.IS_TESTING === 'true') {
+    return NFTS_TEST_DATA;
+  }
   const chains = getBackendSupportedChains({ testnetMode: false }).map(
     ({ name }) => name as ChainName,
   );
@@ -104,7 +108,9 @@ async function nftsQueryFunction({
       };
       return c.collection_id;
     });
-  const nftsResponse = await fetchNfts({ address, chains, collectionIds });
+  const nftsResponse = collectionIds?.length
+    ? await fetchNfts({ address, chains, collectionIds })
+    : [];
   const nfts = filterSimpleHashNFTs(nftsResponse, polygonAllowList).map(
     (nft) => {
       const uniqueAsset = simpleHashNFTToUniqueAsset(nft);
@@ -138,7 +144,7 @@ export function useNfts<TSelectData = NftsResult>(
   return useInfiniteQuery(nftsQueryKey({ address }), nftsQueryFunction, {
     ...config,
     getNextPageParam: (lastPage) => lastPage?.nextPage,
-    refetchInterval: 10000,
+    refetchInterval: 600000,
     retry: 3,
   });
 }
