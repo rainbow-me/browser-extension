@@ -718,8 +718,10 @@ export const PointsOnboardingSheet = () => {
         points: formatNumber(userOnboarding.earnings.total - metamaskBonus, {
           maximumSignificantDigits: 6,
         }),
+        metamaskBonus: formatNumber(metamaskBonus, {
+          maximumSignificantDigits: 6,
+        }),
         referralCode,
-        metamaskBonus,
       },
     );
     goToNewTab({
