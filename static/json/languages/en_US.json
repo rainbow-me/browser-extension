@@ -1276,6 +1276,8 @@
       "share_and_earn": "Tweet your referral link and get an extra 250 points",
       "plus_percent_of_refers": "Plus you’ll earn 10% of the points earned by anyone you refer",
       "share": "Share to X",
+      "share_tweet": "🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈\n\nI just had %{points} Rainbow Points dropped into my wallet\nEverybody has at least 100 points waiting for them, but you might have more!\n\nClaim your drop: https://rainbow.me/points?ref=%{referralCode}\n\n🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈",
+      "share_tweet_with_metamask_bonus": "🌈🌈🌈\n\nI just had %{points} Rainbow Points dropped into my wallet — plus an extra %{metamaskBonus} Points as a bonus for migrating my MetaMask wallet into Rainbow 🦊 🔫\n\nEverybody has at least 100 points waiting for them, but you might have more! Claim your drop: https://rainbow.me/points?ref=%{referralCode}\n\n🌈🌈🌈",
 
       "registration_complete": "Registration complete",
       "all_set": "You’re all set!",

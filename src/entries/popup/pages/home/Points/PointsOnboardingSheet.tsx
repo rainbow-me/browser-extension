@@ -44,7 +44,7 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import * as wallet from '../../../handlers/wallet';
 
-import { copyReferralCode } from './PointsDashboard';
+import { copyReferralLink } from './PointsDashboard';
 import { seedPointsQueryCache } from './usePoints';
 import { usePointsChallenge } from './usePointsChallenge';
 import {
@@ -350,7 +350,7 @@ export const PointsOnboardingSheet = () => {
   const rainbowText = useMemo(() => {
     const rnbwText = Object.values(RAINBOW_TEXT).map((val, i) => {
       return (
-        <Box key={`loading-${i}`}>
+        <Box key={`loading-${i}`} paddingLeft="4px">
           <AnimatedText
             align="left"
             size="14pt mono"
@@ -365,24 +365,22 @@ export const PointsOnboardingSheet = () => {
     });
 
     const welcomeText = (
-      <Box key={`loading-welcome`} paddingLeft="64px">
-        <AccentColorProvider color="#fff">
-          <AnimatedText
-            textShadow="12px accent"
-            align="left"
-            size="14pt mono"
-            weight="bold"
-            color="accent"
-            customTypingSpeed={0.15}
-            delay={getDelayForRow(
-              loadingRowsText,
-              2 + Object.values(RAINBOW_TEXT).length,
-            )}
-          >
-            {RAINBOW_TEXT_WELCOME.row1}
-          </AnimatedText>
-        </AccentColorProvider>
-      </Box>
+      <AccentColorProvider color="#fff" key={`loading-welcome`}>
+        <AnimatedText
+          textShadow="12px accent"
+          align="center"
+          size="14pt mono"
+          weight="bold"
+          color="accent"
+          customTypingSpeed={0.15}
+          delay={getDelayForRow(
+            loadingRowsText,
+            2 + Object.values(RAINBOW_TEXT).length,
+          )}
+        >
+          {RAINBOW_TEXT_WELCOME.row1}
+        </AnimatedText>
+      </AccentColorProvider>
     );
 
     return rnbwText.concat(welcomeText);
@@ -700,18 +698,31 @@ export const PointsOnboardingSheet = () => {
   if (debouncedAccessGranted && step === 'welcome') setStep('calculating');
 
   const onShare = () => {
+    if (!validSignatureResponse || !userOnboarding) return;
     setStep('done');
     metadataPostClient.redeemCodeForPoints({
       address: currentAddress,
       redemptionCode: 'TWITTERSHARED',
     });
-    const referralCode = validSignatureResponse?.user.referralCode;
-    if (referralCode) copyReferralCode(referralCode);
-    const tweet = encodeURIComponent(`
-      
-      https://rainbow.me/points?ref=${referralCode}
-    `);
-    goToNewTab({ url: `https://twitter.com/intent/tweet?text=${tweet}` });
+    const referralCode = validSignatureResponse.user.referralCode;
+    const metamaskBonus =
+      userOnboarding.categories?.find((c) => c.type === 'metamask-swaps')
+        ?.earnings.total || 0;
+
+    const tweet = i18n.t(
+      metamaskBonus
+        ? 'points.onboarding.share_tweet_with_metamask_bonus'
+        : 'points.onboarding.share_tweet',
+      {
+        points: userOnboarding.earnings.total - metamaskBonus,
+        referralCode,
+        metamaskBonus,
+      },
+    );
+    goToNewTab({
+      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`,
+    });
+    copyReferralLink(referralCode);
   };
 
   return (

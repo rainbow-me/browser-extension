@@ -181,7 +181,7 @@ function TextWithMoreInfo({ children }: PropsWithChildren) {
   );
 }
 
-export const copyReferralCode = (referralCode: string) =>
+export const copyReferralLink = (referralCode: string) =>
   copy({
     value: `https://rainbow.me/points?ref=${referralCode}`,
     title: i18n.t('points.copied_referral_link'),
@@ -224,7 +224,7 @@ function ReferralCode() {
               whileTap={{ scale: 0.98 }}
               whileFocus={{ scale: 1.02 }}
               whileHover={{ scale: 1.02 }}
-              onTap={() => copyReferralCode(data.user.referralCode)}
+              onTap={() => copyReferralLink(data.user.referralCode)}
             >
               <Symbol
                 symbol="square.on.square"
