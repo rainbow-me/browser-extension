@@ -14,6 +14,7 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
+import { goToNewTab } from '~/core/utils/tabs';
 import {
   AccentColorProvider,
   Box,
@@ -289,7 +290,7 @@ export const PointsOnboardingSheet = () => {
           signature,
           referral: state.referralCode,
         });
-      if (!onboardPoints) throw ''; // sometimes the server just returns null, like when the signature is invalid
+      if (!onboardPoints) throw 'validatePointsSignature: Unexpected error'; // sometimes the server just returns null, like when the signature is invalid
       if (onboardPoints.error) throw onboardPoints.error.type;
       return onboardPoints;
     },
@@ -706,6 +707,11 @@ export const PointsOnboardingSheet = () => {
     });
     const referralCode = validSignatureResponse?.user.referralCode;
     if (referralCode) copyReferralCode(referralCode);
+    const tweet = encodeURIComponent(`
+      
+      https://rainbow.me/points?ref=${referralCode}
+    `);
+    goToNewTab({ url: `https://twitter.com/intent/tweet?text=${tweet}` });
   };
 
   return (
