@@ -13,6 +13,7 @@ import {
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { KeychainType } from '~/core/types/keychainTypes';
+import { formatNumber } from '~/core/utils/formatNumber';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import { goToNewTab } from '~/core/utils/tabs';
 import {
@@ -714,7 +715,9 @@ export const PointsOnboardingSheet = () => {
         ? 'points.onboarding.share_tweet_with_metamask_bonus'
         : 'points.onboarding.share_tweet',
       {
-        points: userOnboarding.earnings.total - metamaskBonus,
+        points: formatNumber(userOnboarding.earnings.total - metamaskBonus, {
+          maximumSignificantDigits: 6,
+        }),
         referralCode,
         metamaskBonus,
       },
