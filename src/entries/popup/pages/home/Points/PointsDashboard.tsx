@@ -152,7 +152,9 @@ function Leaderboard() {
                   <AddressOrEns address={address} size="14pt" weight="bold" />
                 </Inline>
                 <LeaderboardPositionNumberDisplay position={index + 1}>
-                  {formatNumber(earnings.total)}
+                  {formatNumber(earnings.total, {
+                    maximumSignificantDigits: 8,
+                  })}
                 </LeaderboardPositionNumberDisplay>
               </Inline>
             ))}
@@ -357,7 +359,7 @@ function YourPoints() {
       gap="12px"
     >
       <Text size="26pt" weight="heavy">
-        {formatNumber(user.earnings.total)}
+        {formatNumber(user.earnings.total, { maximumSignificantDigits: 8 })}
       </Text>
       <Box
         as={motion.div}
