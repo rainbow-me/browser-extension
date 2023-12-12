@@ -49,6 +49,7 @@ export type CustomNetworkAssetsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
+  filterZeroBalance?: boolean;
 };
 
 type SetCustomNetworkAssetsArgs = {
@@ -56,6 +57,7 @@ type SetCustomNetworkAssetsArgs = {
   currency: SupportedCurrencyKey;
   customNetworkAssets?: CustomNetworkAssetsResult;
   testnetMode?: boolean;
+  filterZeroBalance?: boolean;
 };
 
 type SetUserDefaultsArgs = {
@@ -63,6 +65,7 @@ type SetUserDefaultsArgs = {
   currency: SupportedCurrencyKey;
   staleTime: number;
   testnetMode?: boolean;
+  filterZeroBalance?: boolean;
 };
 
 type FetchCustomNetworkAssetsArgs = {
@@ -78,10 +81,11 @@ export const customNetworkAssetsKey = ({
   address,
   currency,
   testnetMode,
+  filterZeroBalance,
 }: CustomNetworkAssetsArgs) =>
   createQueryKey(
     'CustomNetworkAssets',
-    { address, currency, testnetMode },
+    { address, currency, testnetMode, filterZeroBalance },
     { persisterVersion: 3 },
   );
 
@@ -106,9 +110,15 @@ export const CustomNetworkAssetsSetQueryDefaults = ({
   currency,
   staleTime,
   testnetMode,
+  filterZeroBalance,
 }: SetUserDefaultsArgs) => {
   queryClient.setQueryDefaults(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+    }),
     {
       staleTime,
     },
@@ -120,9 +130,15 @@ export const CustomNetworkAssetsSetQueryData = ({
   currency,
   customNetworkAssets,
   testnetMode,
+  filterZeroBalance,
 }: SetCustomNetworkAssetsArgs) => {
   queryClient.setQueryData(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+    }),
     customNetworkAssets,
   );
 };
@@ -142,7 +158,7 @@ export const getCustomChainIconUrl = (
 };
 
 async function customNetworkAssetsFunction({
-  queryKey: [{ address, currency, testnetMode }],
+  queryKey: [{ address, currency, testnetMode, filterZeroBalance }],
 }: QueryFunctionArgs<typeof customNetworkAssetsKey>) {
   const cache = queryClient.getQueryCache();
   const cachedCustomNetworkAssets = (cache.find(
@@ -202,7 +218,8 @@ async function customNetworkAssetsFunction({
       const chainParsedAssets = chainParsedAssetBalances
         .map((balance, i) => {
           const fulfilledBalance = extractFulfilledValue(balance);
-          return fulfilledBalance && !isZero(fulfilledBalance)
+          return fulfilledBalance &&
+            (filterZeroBalance ? !isZero(fulfilledBalance) : true)
             ? parseUserAssetBalances({
                 asset: {
                   ...chainAssets[i],
@@ -303,7 +320,7 @@ type CustomNetworkAssetsResult = QueryFunctionResult<
 export function useCustomNetworkAssets<
   TSelectResult = CustomNetworkAssetsResult,
 >(
-  { address, currency }: CustomNetworkAssetsArgs,
+  { address, currency, filterZeroBalance = true }: CustomNetworkAssetsArgs,
   config: QueryConfig<
     CustomNetworkAssetsResult,
     Error,
@@ -313,7 +330,12 @@ export function useCustomNetworkAssets<
 ) {
   const { testnetMode } = useTestnetModeStore();
   return useQuery(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+    }),
     customNetworkAssetsFunction,
     {
       ...config,

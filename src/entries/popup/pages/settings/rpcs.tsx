@@ -1,38 +1,80 @@
 import React, { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Chain } from 'wagmi';
+import { Address, Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS } from '~/core/references';
-import { useCustomRPCsStore } from '~/core/state';
+import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
+import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
+import {
+  useCurrentAddressStore,
+  useCurrentCurrencyStore,
+  useCustomRPCsStore,
+} from '~/core/state';
+import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getCustomChains } from '~/core/utils/chains';
-import { Box, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Inset,
+  Row,
+  Rows,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
+import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
 } from '../../components/ContextMenu/ContextMenu';
+import {
+  MoreInfoButton,
+  MoreInfoOption,
+} from '../../components/MoreInfoButton/MoreInfoButton';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { RowHighlightWrapper } from '../send/RowHighlightWrapper';
 
 export function SettingsNetworksRPCs() {
+  const { currentAddress } = useCurrentAddressStore();
+  const { currentCurrency } = useCurrentCurrencyStore();
   const {
     state: { chainId },
   } = useLocation();
+  const { removeCustomRPCAsset } = useCustomRPCAssetsStore();
+
+  const { data: customNetworkAssets = {} } = useCustomNetworkAssets(
+    {
+      filterZeroBalance: false,
+      address: currentAddress,
+      currency: currentCurrency,
+    },
+    {
+      select: selectUserAssetsDictByChain,
+    },
+  );
+
+  const customNetworkAssetsForChain = customNetworkAssets[chainId];
+
+  console.log('-- customNetworkAssetsForChain', customNetworkAssetsForChain);
   const navigate = useRainbowNavigate();
   const { customChains, setActiveRPC, setDefaultRPC, removeCustomRPC } =
     useCustomRPCsStore();
 
   const customChain = customChains[Number(chainId)];
-  const activeRPC = customChain.chains.find(
+  const activeRPC = customChain?.chains.find(
     (chain) => chain.rpcUrls.default.http[0] === customChain.activeRpcUrl,
   );
 
@@ -75,10 +117,25 @@ export function SettingsNetworksRPCs() {
     return typeof customChain === 'undefined';
   };
 
+  const options = ({ address }: { address: Address }): MoreInfoOption[] => [
+    {
+      label: 'Remove Token',
+      color: 'red',
+      symbol: 'trash.fill',
+      onSelect: () =>
+        removeCustomRPCAsset({
+          chainId,
+          address,
+        }),
+      disabled: false,
+      separator: false,
+    },
+  ];
+
   console.log('is default rpc?', isDefaultRPC());
 
   return (
-    <Box paddingHorizontal="20px">
+    <Box paddingHorizontal="20px" paddingBottom="20px">
       <MenuContainer testId="settings-menu-container">
         <Menu>
           <MenuItem
@@ -122,7 +179,7 @@ export function SettingsNetworksRPCs() {
               />
             )}
             {customChain?.chains?.map((chain, index) => (
-              <Box key={`${chain.name}`} testId={`network-row-${chain.name}`}>
+              <Box key={`${chain.name}`} width="full">
                 <ContextMenu>
                   <ContextMenuTrigger>
                     <MenuItem
@@ -172,34 +229,7 @@ export function SettingsNetworksRPCs() {
             ))}
           </Box>
         </Menu>
-        <Menu>
-          <MenuItem
-            testId={'custom-chain-link'}
-            first
-            last
-            leftComponent={
-              <Symbol
-                symbol="plus.circle.fill"
-                weight="medium"
-                size={18}
-                color="accent"
-              />
-            }
-            hasRightArrow
-            onClick={() =>
-              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
-                state: {
-                  chainId,
-                },
-              })
-            }
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('settings.networks.custom_rpc.add_asset')}
-              />
-            }
-          />
-        </Menu>
+
         <Menu>
           <MenuItem
             testId={'custom-chain-link'}
@@ -230,7 +260,111 @@ export function SettingsNetworksRPCs() {
             }
           />
         </Menu>
+
+        <Menu>
+          <MenuItem
+            testId={'custom-chain-link'}
+            first
+            last
+            leftComponent={
+              <Symbol
+                symbol="plus.circle.fill"
+                weight="medium"
+                size={18}
+                color="accent"
+              />
+            }
+            hasRightArrow
+            onClick={() =>
+              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
+                state: {
+                  chainId,
+                },
+              })
+            }
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.networks.custom_rpc.add_asset')}
+              />
+            }
+          />
+        </Menu>
       </MenuContainer>
+
+      <Menu>
+        <Box padding="20px">
+          <Stack space="14px">
+            <Text align="left" color="label" size="14pt" weight="medium">
+              Tokens
+            </Text>
+
+            <Box width="full">
+              {Object.values(customNetworkAssetsForChain || {})?.map(
+                (asset, i) => (
+                  <ContextMenu key={i}>
+                    <ContextMenuTrigger>
+                      <Box marginHorizontal="-12px">
+                        <RowHighlightWrapper>
+                          <Inline
+                            alignVertical="center"
+                            alignHorizontal="center"
+                            wrap={false}
+                          >
+                            <Box style={{ height: '52px' }} width="full">
+                              <Inset horizontal="12px" vertical="8px">
+                                <Rows>
+                                  <Row>
+                                    <Columns alignVertical="center" space="8px">
+                                      <Column width="content">
+                                        <CoinIcon asset={asset} />
+                                      </Column>
+                                      <Column>
+                                        <Text
+                                          align="left"
+                                          color="label"
+                                          size="14pt"
+                                          weight="medium"
+                                        >
+                                          {asset.name}
+                                        </Text>
+                                      </Column>
+                                    </Columns>
+                                  </Row>
+                                </Rows>
+                              </Inset>
+                            </Box>
+                            <MoreInfoButton
+                              options={options({
+                                address: asset.address as Address,
+                              })}
+                            />
+                          </Inline>
+                        </RowHighlightWrapper>
+                      </Box>
+                    </ContextMenuTrigger>
+                    <ContextMenuContent>
+                      <ContextMenuItem
+                        symbolLeft="trash.fill"
+                        color="red"
+                        onSelect={() =>
+                          removeCustomRPCAsset({
+                            chainId,
+                            address: asset.address as Address,
+                          })
+                        }
+                      >
+                        <Text color="red" size="14pt" weight="semibold">
+                          {'Remove Token'}
+                        </Text>
+                      </ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
+                ),
+              )}
+            </Box>
+          </Stack>
+        </Box>
+      </Menu>
     </Box>
   );
 }
