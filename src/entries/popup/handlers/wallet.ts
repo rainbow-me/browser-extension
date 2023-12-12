@@ -279,7 +279,7 @@ export const getStatus = async () =>
   }>('status', {});
 
 export const create = async () => {
-  const result = await walletAction<Address>('create', {});
+  const address = await walletAction<Address>('create', {});
 
   // we probably need to set a password
   let newStatus = 'NEEDS_PASSWORD';
@@ -289,11 +289,11 @@ export const create = async () => {
     newStatus = 'READY';
   }
   await SessionStorage.set('userStatus', newStatus);
-  return result;
+  return address;
 };
 
 export const importWithSecret = async (seed: string) => {
-  const result = await walletAction<Address>('import', seed);
+  const address = await walletAction<Address>('import', seed);
   // we probably need to set a password
   let newStatus = 'NEEDS_PASSWORD';
   const { passwordSet } = await getStatus();
@@ -302,7 +302,7 @@ export const importWithSecret = async (seed: string) => {
     newStatus = 'READY';
   }
   await SessionStorage.set('userStatus', newStatus);
-  return result;
+  return address;
 };
 
 export const remove = async (address: Address) =>
