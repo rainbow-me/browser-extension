@@ -134,7 +134,7 @@ function Leaderboard() {
       <Card paddingVertical="10px" paddingHorizontal="16px">
         <Stack separator={<Separator color="separatorTertiary" />} space="12px">
           {leaderboard.accounts
-            ?.slice(0, 10)
+            ?.slice(0, 100)
             .map(({ address, earnings }, index) => (
               <Inline
                 key={address}
