@@ -2,7 +2,7 @@ import { Chain } from '@wagmi/chains';
 import create from 'zustand';
 
 import { ChainId } from '~/core/types/chains';
-import { getDefaultRPC } from '~/core/wagmi/createWagmiClient';
+import { getDefaultRPC } from '~/core/utils/chains';
 
 import { createStore } from '../internal/createStore';
 
