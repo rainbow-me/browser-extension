@@ -48,7 +48,7 @@ async function nftsQueryFunction({
   queryKey: [{ address }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
-  if (process.env.IS_TESTING) {
+  if (process.env.IS_TESTING === 'true') {
     return NFTS_TEST_DATA;
   }
   const chains = getBackendSupportedChains({ testnetMode: false }).map(
