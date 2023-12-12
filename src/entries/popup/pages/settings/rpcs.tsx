@@ -5,8 +5,13 @@ import { Chain } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS } from '~/core/references';
 import { useCustomRPCsStore } from '~/core/state';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { getCustomChains } from '~/core/utils/chains';
+import {
+  getCustomChains,
+  getSupportedTestnetChains,
+} from '~/core/utils/chains';
+import { chainIdMap } from '~/core/utils/userChains';
 import { Box, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -23,6 +28,7 @@ export function SettingsNetworksRPCs() {
   } = useLocation();
   const navigate = useRainbowNavigate();
   const { customChains, setActiveRPC, setDefaultRPC } = useCustomRPCsStore();
+  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
 
   const { userChains, updateUserChain } = useUserChainsStore();
 
@@ -65,7 +71,18 @@ export function SettingsNetworksRPCs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
-  console.log('is default rpc?', isDefaultRPC());
+  const mainnetChains =
+    customChains[Number(chainId)]?.chains?.filter((chain) => !chain.testnet) ||
+    [];
+
+  const customTestnetChains =
+    customChains[Number(chainId)]?.chains?.filter((chain) => chain.testnet) ||
+    [];
+  const supportedTestnetChains = getSupportedTestnetChains().filter((chain) => {
+    return chainIdMap[chainId].includes(chain.id) && chain.id !== chainId;
+  });
+
+  const testnetChains = [...customTestnetChains, ...supportedTestnetChains];
 
   return (
     <Box paddingHorizontal="20px">
@@ -111,7 +128,7 @@ export function SettingsNetworksRPCs() {
                 }
               />
             )}
-            {customChains[Number(chainId)]?.chains?.map((chain, index) => (
+            {mainnetChains.map((chain, index) => (
               <Box key={`${chain.name}`} testId={`network-row-${chain.name}`}>
                 <MenuItem
                   first={!suportedChain && index === 0}
@@ -165,6 +182,46 @@ export function SettingsNetworksRPCs() {
             }
           />
         </Menu>
+        {developerToolsEnabled && (
+          <Menu>
+            <MenuItem.Description text={i18n.t('settings.networks.testnets')} />
+            <Box paddingHorizontal="1px" paddingVertical="1px">
+              {testnetChains.map((chain, index) => (
+                <Box key={`${chain.name}`} testId={`network-row-${chain.name}`}>
+                  <MenuItem
+                    first={!suportedChain && index === 0}
+                    leftComponent={
+                      <ChainBadge chainId={chain.id} size="18" shadow />
+                    }
+                    onClick={() =>
+                      handleRPCClick(chain.rpcUrls.default.http[0])
+                    }
+                    key={chain.name}
+                    rightComponent={
+                      chain.rpcUrls.default.http[0] ===
+                      customChains[Number(chainId)].activeRpcUrl ? (
+                        <MenuItem.SelectionIcon />
+                      ) : null
+                    }
+                    titleComponent={<MenuItem.Title text={chain.name} />}
+                    labelComponent={
+                      <Text
+                        color={'labelTertiary'}
+                        size="11pt"
+                        weight={'medium'}
+                      >
+                        {chainIdMap[chainId].includes(chain.id) &&
+                        chain.id !== chainId
+                          ? `Rainbow's default`
+                          : chain.rpcUrls.default.http[0]}
+                      </Text>
+                    }
+                  />
+                </Box>
+              ))}
+            </Box>
+          </Menu>
+        )}
       </MenuContainer>
     </Box>
   );
