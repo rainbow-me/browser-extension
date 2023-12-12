@@ -67,6 +67,12 @@ export function SettingsNetworks() {
     [supportedChains, userChainsOrder],
   );
 
+  console.log({
+    allNetworks,
+    userChainsOrder,
+    supportedChains,
+  });
+
   return (
     <Box paddingHorizontal="20px">
       {featureFlags.custom_rpc && (

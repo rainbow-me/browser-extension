@@ -266,7 +266,7 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
           >
             {navbar && (
               <Navbar
-                title={state.title || title || ''}
+                title={state?.title || title || ''}
                 background={navbarBackground}
                 leftComponent={leftNavbarIcon}
                 rightComponent={rightNavbarComponent}

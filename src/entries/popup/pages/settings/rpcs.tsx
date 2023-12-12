@@ -56,6 +56,10 @@ export function SettingsNetworksRPCs() {
     [chainId, setActiveRPC, setDefaultRPC],
   );
 
+  const handleTestnetClick = useCallback((rpcUrl: string): void => {
+    console.log('rpcUrl', rpcUrl);
+  }, []);
+
   const suportedChain = useMemo(
     () => SUPPORTED_CHAINS.find(({ id }) => id === chainId),
     [chainId],
@@ -139,7 +143,7 @@ export function SettingsNetworksRPCs() {
                   key={chain.name}
                   rightComponent={
                     chain.rpcUrls.default.http[0] ===
-                    customChains[Number(chainId)].activeRpcUrl ? (
+                    customChains[Number(chainId)]?.activeRpcUrl ? (
                       <MenuItem.SelectionIcon />
                     ) : null
                   }
@@ -194,12 +198,12 @@ export function SettingsNetworksRPCs() {
                       <ChainBadge chainId={chain.id} size="18" shadow />
                     }
                     onClick={() =>
-                      handleRPCClick(chain.rpcUrls.default.http[0])
+                      handleTestnetClick(chain.rpcUrls.default.http[0])
                     }
                     key={chain.name}
                     rightComponent={
                       chain.rpcUrls.default.http[0] ===
-                      customChains[Number(chainId)].activeRpcUrl ? (
+                      customChains[Number(chainId)]?.activeRpcUrl ? (
                         <MenuItem.SelectionIcon />
                       ) : null
                     }

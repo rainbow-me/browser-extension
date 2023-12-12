@@ -4,7 +4,11 @@ import { avalanche, celo, fantom, harmonyOne } from '@wagmi/chains';
 import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
-import { NATIVE_ASSETS_PER_CHAIN, SUPPORTED_CHAINS } from '~/core/references';
+import {
+  NATIVE_ASSETS_PER_CHAIN,
+  SUPPORTED_CHAINS,
+  SUPPORTED_MAINNET_CHAINS,
+} from '~/core/references';
 import {
   ChainId,
   ChainName,
@@ -49,7 +53,14 @@ export const getSupportedChainsWithHardhat = () => {
 
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
-  return chains.filter((chain) => !chain.testnet);
+  console.log(SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id));
+  console.log(chains);
+  return chains.filter(
+    (chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id).includes(chain.id)),
+  );
 };
 
 export const getSupportedChainIds = () =>
