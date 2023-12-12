@@ -88,6 +88,7 @@
     "networks": {
       "mainnet": "Mainnet",
       "title": "Networks",
+      "testnets": "Testnets",
       "quick_promo": {
         "text": "Drag networks to reorder them",
         "text_bold": "Tip:"
@@ -112,6 +113,8 @@
         "add_network": "Add Network",
         "add_rpc": "Add %{rpcName} RPC",
         "add_asset": "Add Custom Token",
+        "network_added": "Network Added!",
+        "network_added_correctly": "%{networkName} has been added correctly!",
         "remove_token": "Remove Token",
         "remove_rpc": "Remove RPC",
         "tokens": "Tokens"

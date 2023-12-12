@@ -11,9 +11,14 @@ import {
   useCurrentCurrencyStore,
   useCustomRPCsStore,
 } from '~/core/state';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { getCustomChains } from '~/core/utils/chains';
+import {
+  getCustomChains,
+  getSupportedTestnetChains,
+} from '~/core/utils/chains';
+import { chainIdMap } from '~/core/utils/userChains';
 import {
   Box,
   Column,
@@ -69,6 +74,7 @@ export function SettingsNetworksRPCs() {
   const customNetworkAssetsForChain = customNetworkAssets[chainId];
 
   const navigate = useRainbowNavigate();
+  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
   const { customChains, setActiveRPC, setDefaultRPC, removeCustomRPC } =
     useCustomRPCsStore();
 
@@ -103,6 +109,10 @@ export function SettingsNetworksRPCs() {
     [chainId, setActiveRPC, setDefaultRPC],
   );
 
+  const handleTestnetClick = useCallback((rpcUrl: string): void => {
+    console.log('rpcUrl', rpcUrl);
+  }, []);
+
   const suportedChain = useMemo(
     () => SUPPORTED_CHAINS.find(({ id }) => id === chainId),
     [chainId],
@@ -116,6 +126,9 @@ export function SettingsNetworksRPCs() {
     return typeof customChain === 'undefined';
   };
 
+  const mainnetChains =
+    customChains[Number(chainId)]?.chains?.filter((chain) => !chain.testnet) ||
+    [];
   const options = ({ address }: { address: Address }): MoreInfoOption[] => [
     {
       label: i18n.t('settings.networks.custom_rpc.remove_token'),
@@ -131,7 +144,14 @@ export function SettingsNetworksRPCs() {
     },
   ];
 
-  console.log('is default rpc?', isDefaultRPC());
+  const customTestnetChains =
+    customChains[Number(chainId)]?.chains?.filter((chain) => chain.testnet) ||
+    [];
+  const supportedTestnetChains = getSupportedTestnetChains().filter((chain) => {
+    return chainIdMap[chainId].includes(chain.id) && chain.id !== chainId;
+  });
+
+  const testnetChains = [...customTestnetChains, ...supportedTestnetChains];
 
   return (
     <Box paddingHorizontal="20px" paddingBottom="20px">
@@ -177,7 +197,7 @@ export function SettingsNetworksRPCs() {
                 }
               />
             )}
-            {customChain?.chains?.map((chain, index) => (
+            {mainnetChains.map((chain, index) => (
               <Box key={`${chain.name}`} width="full">
                 <ContextMenu>
                   <ContextMenuTrigger>
@@ -289,6 +309,46 @@ export function SettingsNetworksRPCs() {
             }
           />
         </Menu>
+        {developerToolsEnabled && (
+          <Menu>
+            <MenuItem.Description text={i18n.t('settings.networks.testnets')} />
+            <Box paddingHorizontal="1px" paddingVertical="1px">
+              {testnetChains.map((chain, index) => (
+                <Box key={`${chain.name}`} testId={`network-row-${chain.name}`}>
+                  <MenuItem
+                    first={!suportedChain && index === 0}
+                    leftComponent={
+                      <ChainBadge chainId={chain.id} size="18" shadow />
+                    }
+                    onClick={() =>
+                      handleTestnetClick(chain.rpcUrls.default.http[0])
+                    }
+                    key={chain.name}
+                    rightComponent={
+                      chain.rpcUrls.default.http[0] ===
+                      customChains[Number(chainId)]?.activeRpcUrl ? (
+                        <MenuItem.SelectionIcon />
+                      ) : null
+                    }
+                    titleComponent={<MenuItem.Title text={chain.name} />}
+                    labelComponent={
+                      <Text
+                        color={'labelTertiary'}
+                        size="11pt"
+                        weight={'medium'}
+                      >
+                        {chainIdMap[chainId].includes(chain.id) &&
+                        chain.id !== chainId
+                          ? `Rainbow's default`
+                          : chain.rpcUrls.default.http[0]}
+                      </Text>
+                    }
+                  />
+                </Box>
+              ))}
+            </Box>
+          </Menu>
+        )}
       </MenuContainer>
 
       {Object.values(customNetworkAssetsForChain || {}).length && (
