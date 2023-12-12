@@ -80,7 +80,7 @@ export function TabHeader({
           <Text
             size="16pt"
             weight="heavy"
-            textShadow={activeTab === 'points' ? '12px accent text' : undefined}
+            textShadow={activeTab === 'points' ? '12px accent' : undefined}
             color={activeTab === 'points' ? 'accent' : 'label'}
           >
             {i18n.t(`tabs.${activeTab}`)}
