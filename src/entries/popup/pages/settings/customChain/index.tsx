@@ -32,6 +32,39 @@ const KNOWN_NETWORKS = {
       },
     },
     {
+      name: 'Anvil (Dev)',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 31337,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
+      name: 'Hardhat Mainnet Fork',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
+      name: 'Hardhat (Dev)',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 31337,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
       name: 'Arbitrum Nova',
       value: {
         rpcUrl: 'https://nova.arbitrum.io/rpc',
