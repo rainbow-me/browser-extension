@@ -5,7 +5,7 @@ import { initializeMessenger } from '~/core/messengers';
 const messenger = initializeMessenger({ connect: 'background' });
 
 export const walletAction = async <T>(action: string, payload: unknown) => {
-  const { result, error }: { result: T; error?: Error } = await messenger.send(
+  const { result, error }: { result: T; error?: string } = await messenger.send(
     'wallet_action',
     {
       action,
@@ -13,6 +13,6 @@ export const walletAction = async <T>(action: string, payload: unknown) => {
     },
     { id: uuid4() },
   );
-  if (error) throw error;
+  if (error) throw new Error(error);
   return result;
 };

@@ -265,16 +265,15 @@ export function Send() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         if (!isLedgerConnectionError(e)) {
-          alert('Transaction failed');
+          triggerAlert({
+            text: i18n.t('errors.sending_transaction'),
+            description: (e as Error)?.message,
+          });
         }
         logger.error(new RainbowError('send: error executing send'), {
           message: (e as Error)?.message,
         });
         console.log('error sending transaction', e);
-        triggerAlert({
-          text: i18n.t('errors.sending_transaction'),
-          description: (e as Error)?.message,
-        });
       } finally {
         setWaitingForDevice(false);
       }

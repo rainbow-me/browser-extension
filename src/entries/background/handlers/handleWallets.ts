@@ -241,7 +241,7 @@ export const handleWallets = () =>
         }
         return { result: response };
       } catch (error) {
-        return { error: <Error>error };
+        return { error: (error as Error).message };
       }
     },
   );

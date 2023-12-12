@@ -31,9 +31,16 @@ export const triggerAlert = ({
   action,
   actionText,
   text,
+  description,
   callback,
 }: AlertProps) => {
-  eventEmitter.emit('rainbow_alert', { action, actionText, text, callback });
+  eventEmitter.emit('rainbow_alert', {
+    action,
+    actionText,
+    text,
+    description,
+    callback,
+  });
 };
 
 export const Alert = () => {
