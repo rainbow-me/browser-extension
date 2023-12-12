@@ -29,6 +29,8 @@ function Card({
   return (
     <Box
       as={motion.div}
+      initial={{ scale: 0.98, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
       display="flex"
       flexDirection="column"
       justifyContent="center"
@@ -125,19 +127,14 @@ function Leaderboard() {
           />
           <AddressOrEns address={currentAddress} size="14pt" weight="bold" />
         </Inline>
-        <Text
-          size="16pt"
-          weight="bold"
-          color="accent"
-          textShadow="12px accent text"
-        >
+        <Text size="16pt" weight="bold" color="accent" textShadow="12px accent">
           #{user.stats.position.current}
         </Text>
       </Card>
       <Card paddingVertical="10px" paddingHorizontal="16px">
         <Stack separator={<Separator color="separatorTertiary" />} space="12px">
           {leaderboard.accounts
-            ?.slice(0, 10)
+            ?.slice(0, 100)
             .map(({ address, earnings }, index) => (
               <Inline
                 key={address}
@@ -155,7 +152,9 @@ function Leaderboard() {
                   <AddressOrEns address={address} size="14pt" weight="bold" />
                 </Inline>
                 <LeaderboardPositionNumberDisplay position={index + 1}>
-                  {formatNumber(earnings.total)}
+                  {formatNumber(earnings.total, {
+                    maximumSignificantDigits: 8,
+                  })}
                 </LeaderboardPositionNumberDisplay>
               </Inline>
             ))}
@@ -181,6 +180,13 @@ function TextWithMoreInfo({ children }: PropsWithChildren) {
     </Inline>
   );
 }
+
+export const copyReferralCode = (referralCode: string) =>
+  copy({
+    value: `https://rainbow.me/points?ref=${referralCode}`,
+    title: i18n.t('points.copied_referral_link'),
+    description: `rainbow.me/points?ref=${referralCode}`,
+  });
 
 function ReferralCode() {
   const { currentAddress } = useCurrentAddressStore();
@@ -218,13 +224,7 @@ function ReferralCode() {
               whileTap={{ scale: 0.98 }}
               whileFocus={{ scale: 1.02 }}
               whileHover={{ scale: 1.02 }}
-              onTap={() =>
-                copy({
-                  value: `https://rainbow.me/points?ref=${data.user.referralCode}`,
-                  title: i18n.t('points.copied_referral_link'),
-                  description: `rainbow.me/points?ref=${data.user.referralCode}`,
-                })
-              }
+              onTap={() => copyReferralCode(data.user.referralCode)}
             >
               <Symbol
                 symbol="square.on.square"
@@ -237,7 +237,7 @@ function ReferralCode() {
                 size="16pt"
                 weight="bold"
                 color="accent"
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="center"
               >
                 {i18n.t('copy_link')}
@@ -303,12 +303,7 @@ function YourRankAndNextDrop() {
         <TextWithMoreInfo>{i18n.t('points.next_drop')}</TextWithMoreInfo>
 
         <NextDistributionIn nextDistribution={nextDistribution} />
-        <Text
-          size="10pt"
-          weight="bold"
-          color="accent"
-          textShadow="12px accent text"
-        >
+        <Text size="10pt" weight="bold" color="accent" textShadow="12px accent">
           {formatDate(nextDistribution)}
         </Text>
       </Card>
@@ -318,12 +313,7 @@ function YourRankAndNextDrop() {
         <Text size="20pt" weight="bold">
           #{user.stats.position.current}
         </Text>
-        <Text
-          size="10pt"
-          weight="bold"
-          color="accent"
-          textShadow="12px accent text"
-        >
+        <Text size="10pt" weight="bold" color="accent" textShadow="12px accent">
           {i18n.t('points.out_of', {
             total: leaderboard.stats.total_users,
           })}
@@ -360,9 +350,16 @@ function YourPoints() {
   const { leaderboard, user } = data;
 
   return (
-    <Stack space="12px">
+    <Box
+      as={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      display="flex"
+      flexDirection="column"
+      gap="12px"
+    >
       <Text size="26pt" weight="heavy">
-        {formatNumber(user.earnings.total)}
+        {formatNumber(user.earnings.total, { maximumSignificantDigits: 8 })}
       </Text>
       <Box
         as={motion.div}
@@ -385,7 +382,7 @@ function YourPoints() {
           total: formatNumber(leaderboard.stats.total_points),
         })}
       </Text>
-    </Stack>
+    </Box>
   );
 }
 
