@@ -70,10 +70,37 @@ export const DappIcon = ({
         width: size,
         overflow: 'hidden',
       }}
-      borderRadius={RADIUS_SIZE[size]}
     >
       <Inline alignHorizontal="center" alignVertical="center" height="full">
-        <ExternalImage mask={mask} src={appLogo} width={size} height={size} />
+        <ExternalImage
+          borderRadius={RADIUS_SIZE[size]}
+          customFallback={
+            <Box
+              alignItems="center"
+              background="fillQuaternary"
+              borderColor="separatorTertiary"
+              borderRadius={RADIUS_SIZE[size]}
+              borderWidth="1px"
+              display="flex"
+              height="full"
+              justifyContent="center"
+              width="full"
+            >
+              <Box opacity="0.5">
+                <Symbol
+                  color="labelQuaternary"
+                  size={Math.min(parseFloat(size) / 2.3, 24)}
+                  symbol="safari.fill"
+                  weight="heavy"
+                />
+              </Box>
+            </Box>
+          }
+          mask={mask}
+          src={appLogo}
+          width={size}
+          height={size}
+        />
       </Inline>
     </Box>
   );

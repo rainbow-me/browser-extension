@@ -46,7 +46,9 @@ export function useAvatar({ addressOrName }: { addressOrName?: string }) {
     {
       enabled: !!addressOrName,
       initialData: () => {
-        return addressOrName ? walletAvatar[addressOrName] : undefined;
+        return addressOrName && walletAvatar
+          ? walletAvatar[addressOrName]
+          : undefined;
       },
     },
   );

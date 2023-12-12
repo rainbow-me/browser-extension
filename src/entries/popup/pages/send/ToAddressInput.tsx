@@ -365,13 +365,11 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
           testId={'to-address-input'}
           leftComponent={
             <WalletContextMenu account={toAddress}>
-              <Box borderRadius="18px">
-                <WalletAvatar
-                  addressOrName={toAddress}
-                  size={36}
-                  emojiSize="20pt"
-                />
-              </Box>
+              <WalletAvatar
+                addressOrName={toAddress}
+                size={36}
+                emojiSize="20pt"
+              />
             </WalletContextMenu>
           }
           centerComponent={
