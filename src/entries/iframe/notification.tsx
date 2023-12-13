@@ -61,9 +61,14 @@ export const Notification = ({
   const [ref, setRef] = useState<HTMLIFrameElement>();
   const [iframeLoaded, setIframeLoaded] = useState<boolean>(false);
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
+  const [isVisible, setIsVisible] = useState(true);
 
   const onRef = (ref: HTMLIFrameElement) => {
     setRef(ref);
+  };
+
+  const handleDismiss = () => {
+    setIsVisible(false);
   };
 
   const container = ref?.contentDocument?.body;
@@ -194,7 +199,7 @@ export const Notification = ({
     }
   }, [extensionUrl, ref?.contentDocument]);
 
-  return (
+  return isVisible ? (
     <iframe
       style={{
         top: INJECTED_NOTIFICATION_DIMENSIONS.top,
@@ -216,11 +221,12 @@ export const Notification = ({
             status={status}
             extensionUrl={extensionUrl}
             iframeLoaded={iframeLoaded}
+            onDismiss={handleDismiss}
           />,
           container,
         )}
     </iframe>
-  );
+  ) : null;
 };
 
 const NotificationComponent = ({
@@ -229,12 +235,14 @@ const NotificationComponent = ({
   status,
   extensionUrl,
   iframeLoaded,
+  onDismiss,
 }: {
   chainId: ChainId;
   siteTheme: 'dark' | 'light';
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
   iframeLoaded: boolean;
+  onDismiss: () => void;
 }) => {
   const { title, description } = useMemo(() => {
     switch (status) {
@@ -266,6 +274,7 @@ const NotificationComponent = ({
           height: INJECTED_NOTIFICATION_DIMENSIONS.height,
           width: INJECTED_NOTIFICATION_DIMENSIONS.width,
         }}
+        onClick={onDismiss}
       >
         <Inline height="full" alignVertical="center" alignHorizontal="center">
           <Box

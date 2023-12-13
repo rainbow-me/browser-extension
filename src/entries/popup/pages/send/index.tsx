@@ -15,7 +15,7 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useGasStore } from '~/core/state';
+import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
@@ -197,6 +197,12 @@ export function Send() {
     connectedToHardhatOp,
     chainId,
   );
+
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    asset?.chainId === ChainId.mainnet;
 
   const handleSend = useCallback(
     async (callback?: () => void) => {
@@ -562,6 +568,7 @@ export function Send() {
                         chainId={chainId}
                         transactionRequest={transactionRequestForGas}
                         accentColor={assetAccentColor}
+                        flashbotsEnabled={flashbotsEnabledGlobally}
                       />
                     </Row>
                     <Row>
