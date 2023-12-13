@@ -7,7 +7,6 @@ import { SUPPORTED_CHAINS } from '~/core/references';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { ChainId } from '~/core/types/chains';
 import { getMainChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
 import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
@@ -23,10 +22,14 @@ import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
-const chainLabel = ({ chainId }: { chainId: ChainId }) => {
-  const chainLabels = [i18n.t('settings.networks.mainnet')];
-  if (chainLabelMap[chainId]) {
-    chainLabels.push(...chainLabelMap[chainId]);
+const chainLabel = ({ chain }: { chain: Chain }) => {
+  const chainLabels = [
+    chain.testnet
+      ? i18n.t('settings.networks.testnet')
+      : i18n.t('settings.networks.mainnet'),
+  ];
+  if (chainLabelMap[chain.id]) {
+    chainLabels.push(...chainLabelMap[chain.id]);
   }
   return chainLabels.join(', ');
 };
@@ -140,7 +143,7 @@ export function SettingsNetworks() {
                             weight={'medium'}
                           >
                             {userChains[chain.id]
-                              ? chainLabel({ chainId: chain.id })
+                              ? chainLabel({ chain })
                               : i18n.t('settings.networks.disabled')}
                           </Text>
                         ) : null
