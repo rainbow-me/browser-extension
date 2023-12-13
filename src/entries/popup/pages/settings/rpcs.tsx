@@ -330,26 +330,41 @@ export function SettingsNetworksRPCs() {
             <Box paddingHorizontal="1px" paddingVertical="1px">
               {testnetChains.map((chain, index) => (
                 <Box key={`${chain.name}`} testId={`network-row-${chain.name}`}>
-                  <MenuItem
-                    first={!suportedChain && index === 0}
-                    leftComponent={
-                      <ChainBadge chainId={chain.id} size="18" shadow />
-                    }
-                    key={chain.name}
-                    titleComponent={<MenuItem.Title text={chain.name} />}
-                    labelComponent={
-                      <Text
-                        color={'labelTertiary'}
-                        size="11pt"
-                        weight={'medium'}
+                  <ContextMenu>
+                    <ContextMenuTrigger>
+                      <MenuItem
+                        first={!suportedChain && index === 0}
+                        leftComponent={
+                          <ChainBadge chainId={chain.id} size="18" shadow />
+                        }
+                        key={chain.name}
+                        titleComponent={<MenuItem.Title text={chain.name} />}
+                        labelComponent={
+                          <Text
+                            color={'labelTertiary'}
+                            size="11pt"
+                            weight={'medium'}
+                          >
+                            {chainIdMap[chainId]?.includes(chain.id) &&
+                            chain.id !== chainId
+                              ? `Rainbow's default`
+                              : chain.rpcUrls.default.http[0]}
+                          </Text>
+                        }
+                      />
+                    </ContextMenuTrigger>
+                    <ContextMenuContent>
+                      <ContextMenuItem
+                        symbolLeft="trash.fill"
+                        color="red"
+                        onSelect={() => handleRemoveRPC(chain)}
                       >
-                        {chainIdMap[chainId]?.includes(chain.id) &&
-                        chain.id !== chainId
-                          ? `Rainbow's default`
-                          : chain.rpcUrls.default.http[0]}
-                      </Text>
-                    }
-                  />
+                        <Text color="red" size="14pt" weight="semibold">
+                          {i18n.t('settings.networks.custom_rpc.remove_rpc')}
+                        </Text>
+                      </ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
                 </Box>
               ))}
             </Box>
