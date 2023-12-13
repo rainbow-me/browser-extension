@@ -35,6 +35,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
@@ -303,9 +304,12 @@ const SwapReviewSheetWithQuote = ({
     if (errorMessage) {
       setSendingSwap(false);
       if (errorMessage !== 'handled') {
-        alert('Swap failed');
         logger.error(new RainbowError('swap: error executing swap'), {
           message: errorMessage,
+        });
+        triggerAlert({
+          text: i18n.t('errors.executing_swap'),
+          description: errorMessage,
         });
       }
     } else {
