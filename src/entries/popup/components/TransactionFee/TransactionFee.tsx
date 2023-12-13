@@ -281,6 +281,7 @@ export function TransactionFee({
     address,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     transactionRequest,
+    flashbotsEnabled: !!flashbotsEnabled,
   });
   return (
     <Fee
