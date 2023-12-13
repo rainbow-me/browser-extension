@@ -278,8 +278,12 @@ export function Points() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isInitialLoading } = usePoints(currentAddress);
 
+  const { featureFlags } = useFeatureFlagsStore();
+  const isPointsEnabled = featureFlags.points || config.points_enabled;
+
   if (isInitialLoading) return null;
 
-  if (data?.error?.type === 'NON_EXISTING_USER') return <ClaimYourPoints />;
+  if (!isPointsEnabled || data?.error?.type === 'NON_EXISTING_USER')
+    return <ClaimYourPoints />;
   return <PointsDashboard />;
 }
