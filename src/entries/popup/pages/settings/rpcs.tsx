@@ -154,10 +154,6 @@ export function SettingsNetworksRPCs() {
 
   const testnetChains = [...customTestnetChains, ...supportedTestnetChains];
 
-  console.log(
-    '-- activeCustomRPC?.name || suportedChain?.name',
-    activeCustomRPC?.name || suportedChain?.name,
-  );
   return (
     <Box paddingHorizontal="20px" paddingBottom="20px">
       <MenuContainer testId="settings-menu-container">
@@ -254,7 +250,7 @@ export function SettingsNetworksRPCs() {
           </Box>
         </Menu>
 
-        {(activeCustomRPC?.name || suportedChain?.name) && (
+        {activeCustomRPC?.name || suportedChain?.name ? (
           <Menu>
             <MenuItem
               first
@@ -284,7 +280,7 @@ export function SettingsNetworksRPCs() {
               }
             />
           </Menu>
-        )}
+        ) : null}
 
         <Menu>
           <MenuItem
@@ -314,7 +310,7 @@ export function SettingsNetworksRPCs() {
             }
           />
         </Menu>
-        {developerToolsEnabled && testnetChains.length && (
+        {developerToolsEnabled && testnetChains.length ? (
           <Menu>
             <MenuItem.Description text={i18n.t('settings.networks.testnets')} />
             <Box paddingHorizontal="1px" paddingVertical="1px">
@@ -342,7 +338,7 @@ export function SettingsNetworksRPCs() {
                         size="11pt"
                         weight={'medium'}
                       >
-                        {chainIdMap[chainId].includes(chain.id) &&
+                        {chainIdMap[chainId]?.includes(chain.id) &&
                         chain.id !== chainId
                           ? `Rainbow's default`
                           : chain.rpcUrls.default.http[0]}
@@ -353,10 +349,10 @@ export function SettingsNetworksRPCs() {
               ))}
             </Box>
           </Menu>
-        )}
+        ) : null}
       </MenuContainer>
 
-      {Object.values(customNetworkAssetsForChain || {}).length && (
+      {Object.values(customNetworkAssetsForChain || {}).length ? (
         <Menu>
           <Box padding="20px">
             <Stack space="14px">
@@ -436,7 +432,7 @@ export function SettingsNetworksRPCs() {
             </Stack>
           </Box>
         </Menu>
-      )}
+      ) : null}
     </Box>
   );
 }

@@ -63,7 +63,9 @@ export const getMainChains = () => {
   );
   const supportedChainIds = SUPPORTED_CHAINS.map((chain) => chain.id);
   const customMainChains = chains.filter(
-    (chain) => !supportedChainIds.includes(chain.id),
+    (chain) =>
+      !supportedChainIds.includes(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
   );
   return mainSupportedChains.concat(customMainChains);
 };
