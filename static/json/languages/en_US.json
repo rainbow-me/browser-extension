@@ -1037,7 +1037,8 @@
     "currency_name": "Currency Name",
     "currency_decimals": "Currency Decimals",
     "rpc_url": "RPC url",
-    "block_explorer_url": "Block Explorer url"
+    "block_explorer_url": "Block Explorer url",
+    "testnet": "Testnet"
   },
   "transaction_fee": {
     "title": "Transaction Speed",
