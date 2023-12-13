@@ -110,10 +110,6 @@ export function SettingsNetworksRPCs() {
     [chainId, setActiveRPC, setDefaultRPC],
   );
 
-  const handleTestnetClick = useCallback((rpcUrl: string): void => {
-    console.log('rpcUrl', rpcUrl);
-  }, []);
-
   const suportedChain = useMemo(
     () => SUPPORTED_CHAINS.find(({ id }) => id === chainId),
     [chainId],
@@ -127,9 +123,13 @@ export function SettingsNetworksRPCs() {
     return typeof customChain === 'undefined';
   };
 
-  const mainnetChains =
-    customChains[Number(chainId)]?.chains?.filter((chain) => !chain.testnet) ||
-    [];
+  const mainnetChains = useMemo(
+    () =>
+      customChains[Number(chainId)]?.chains?.filter(
+        (chain) => !chain.testnet,
+      ) || [],
+    [chainId, customChains],
+  );
   const options = ({ address }: { address: Address }): MoreInfoOption[] => [
     {
       label: i18n.t('settings.networks.custom_rpc.remove_token'),
@@ -145,14 +145,31 @@ export function SettingsNetworksRPCs() {
     },
   ];
 
-  const customTestnetChains =
-    customChains[Number(chainId)]?.chains?.filter((chain) => chain.testnet) ||
-    [];
-  const supportedTestnetChains = getSupportedTestnetChains().filter((chain) => {
-    return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
-  });
+  const testnetChains = useMemo(() => {
+    const customTestnetChains =
+      customChains[Number(chainId)]?.chains?.filter((chain) => chain.testnet) ||
+      [];
+    const supportedTestnetChains = getSupportedTestnetChains().filter(
+      (chain) => {
+        return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
+      },
+    );
+    return [...customTestnetChains, ...supportedTestnetChains];
+  }, [chainId, customChains]);
 
-  const testnetChains = [...customTestnetChains, ...supportedTestnetChains];
+  const handleRemoveRPC = useCallback(
+    (chain: Chain) => {
+      const allChainsCount = [...mainnetChains, ...testnetChains].length;
+      removeCustomRPC({
+        rpcUrl: chain.rpcUrls.default.http[0],
+      });
+      // If there's no default chain & only had one chain, go back
+      if (!suportedChain && allChainsCount === 1) {
+        navigate(-1);
+      }
+    },
+    [mainnetChains, navigate, removeCustomRPC, suportedChain, testnetChains],
+  );
 
   return (
     <Box paddingHorizontal="20px" paddingBottom="20px">
@@ -174,81 +191,79 @@ export function SettingsNetworksRPCs() {
             onToggle={() => handleToggleChain(!userChains[chainId])}
           />
         </Menu>
-        <Menu>
-          <MenuItem.Description
-            text={i18n.t('settings.networks.rpc_endpoints')}
-          />
-          <Box paddingHorizontal="1px" paddingVertical="1px">
-            {suportedChain && (
-              <MenuItem
-                first={true}
-                leftComponent={
-                  <ChainBadge chainId={chainId} size="18" shadow />
-                }
-                onClick={() => handleRPCClick('')}
-                key={'default'}
-                rightComponent={
-                  isDefaultRPC() ? <MenuItem.SelectionIcon /> : null
-                }
-                titleComponent={<MenuItem.Title text={'Default'} />}
-                labelComponent={
-                  <Text color={'labelTertiary'} size="11pt" weight={'medium'}>
-                    {`Rainbow's default RPC`}
-                  </Text>
-                }
-              />
-            )}
-            {mainnetChains.map((chain, index) => (
-              <Box key={`${chain.name}`} width="full">
-                <ContextMenu>
-                  <ContextMenuTrigger>
-                    <MenuItem
-                      first={!suportedChain && index === 0}
-                      leftComponent={
-                        <ChainBadge chainId={chain.id} size="18" shadow />
-                      }
-                      onClick={() =>
-                        handleRPCClick(chain.rpcUrls.default.http[0])
-                      }
-                      key={chain.name}
-                      rightComponent={
-                        chain.rpcUrls.default.http[0] ===
-                        customChain.activeRpcUrl ? (
-                          <MenuItem.SelectionIcon />
-                        ) : null
-                      }
-                      titleComponent={<MenuItem.Title text={chain.name} />}
-                      labelComponent={
-                        <Text
-                          color={'labelTertiary'}
-                          size="11pt"
-                          weight={'medium'}
-                        >
-                          {chain.rpcUrls.default.http[0]}
+        {(suportedChain || mainnetChains.length) && (
+          <Menu>
+            <MenuItem.Description
+              text={i18n.t('settings.networks.rpc_endpoints')}
+            />
+            <Box paddingHorizontal="1px" paddingVertical="1px">
+              {suportedChain && (
+                <MenuItem
+                  first={true}
+                  leftComponent={
+                    <ChainBadge chainId={chainId} size="18" shadow />
+                  }
+                  onClick={() => handleRPCClick('')}
+                  key={'default'}
+                  rightComponent={
+                    isDefaultRPC() ? <MenuItem.SelectionIcon /> : null
+                  }
+                  titleComponent={<MenuItem.Title text={'Default'} />}
+                  labelComponent={
+                    <Text color={'labelTertiary'} size="11pt" weight={'medium'}>
+                      {`Rainbow's default RPC`}
+                    </Text>
+                  }
+                />
+              )}
+              {mainnetChains.map((chain, index) => (
+                <Box key={`${chain.name}`} width="full">
+                  <ContextMenu>
+                    <ContextMenuTrigger>
+                      <MenuItem
+                        first={!suportedChain && index === 0}
+                        leftComponent={
+                          <ChainBadge chainId={chain.id} size="18" shadow />
+                        }
+                        onClick={() =>
+                          handleRPCClick(chain.rpcUrls.default.http[0])
+                        }
+                        key={chain.name}
+                        rightComponent={
+                          chain.rpcUrls.default.http[0] ===
+                          customChain.activeRpcUrl ? (
+                            <MenuItem.SelectionIcon />
+                          ) : null
+                        }
+                        titleComponent={<MenuItem.Title text={chain.name} />}
+                        labelComponent={
+                          <Text
+                            color={'labelTertiary'}
+                            size="11pt"
+                            weight={'medium'}
+                          >
+                            {chain.rpcUrls.default.http[0]}
+                          </Text>
+                        }
+                      />
+                    </ContextMenuTrigger>
+                    <ContextMenuContent>
+                      <ContextMenuItem
+                        symbolLeft="trash.fill"
+                        color="red"
+                        onSelect={() => handleRemoveRPC(chain)}
+                      >
+                        <Text color="red" size="14pt" weight="semibold">
+                          {i18n.t('settings.networks.custom_rpc.remove_rpc')}
                         </Text>
-                      }
-                    />
-                  </ContextMenuTrigger>
-                  <ContextMenuContent>
-                    <ContextMenuItem
-                      symbolLeft="trash.fill"
-                      color="red"
-                      onSelect={() =>
-                        removeCustomRPC({
-                          rpcUrl: chain.rpcUrls.default.http[0],
-                        })
-                      }
-                    >
-                      <Text color="red" size="14pt" weight="semibold">
-                        {i18n.t('settings.networks.custom_rpc.remove_rpc')}
-                      </Text>
-                    </ContextMenuItem>
-                  </ContextMenuContent>
-                </ContextMenu>
-              </Box>
-            ))}
-          </Box>
-        </Menu>
+                      </ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
+                </Box>
+              ))}
+            </Box>
+          </Menu>
+        )}
 
         {activeCustomRPC?.name || suportedChain?.name ? (
           <Menu>
@@ -321,16 +336,7 @@ export function SettingsNetworksRPCs() {
                     leftComponent={
                       <ChainBadge chainId={chain.id} size="18" shadow />
                     }
-                    onClick={() =>
-                      handleTestnetClick(chain.rpcUrls.default.http[0])
-                    }
                     key={chain.name}
-                    rightComponent={
-                      chain.rpcUrls.default.http[0] ===
-                      customChains[Number(chainId)]?.activeRpcUrl ? (
-                        <MenuItem.SelectionIcon />
-                      ) : null
-                    }
                     titleComponent={<MenuItem.Title text={chain.name} />}
                     labelComponent={
                       <Text

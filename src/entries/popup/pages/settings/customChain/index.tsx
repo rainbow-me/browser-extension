@@ -199,6 +199,16 @@ const KNOWN_NETWORKS = {
       },
     },
     {
+      name: 'Moonbeam',
+      value: {
+        rpcUrl: 'https://moonbeam.public.blastapi.io',
+        chainId: 1284,
+        decimals: 18,
+        symbol: 'GLMR',
+        explorerUrl: 'https://moonscan.io',
+      },
+    },
+    {
       name: 'Polygon zkEVM',
       value: {
         rpcUrl: 'https://zkevm-rpc.com',
@@ -387,7 +397,6 @@ export function SettingsCustomChain() {
     const validName = validateName();
     const validSymbol = validateSymbol();
     const validExplorerUrl = validateExplorerUrl();
-    console.log('- validExplorerUrl', validExplorerUrl);
     setValidations({
       rpcUrl: validRpcUrl,
       chainId: validChainId,

@@ -15,7 +15,7 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useGasStore } from '~/core/state';
+import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
@@ -30,6 +30,7 @@ import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { RainbowError, logger } from '~/logger';
 
@@ -197,6 +198,12 @@ export function Send() {
     chainId,
   );
 
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    asset?.chainId === ChainId.mainnet;
+
   const handleSend = useCallback(
     async (callback?: () => void) => {
       if (!config.send_enabled) return;
@@ -264,7 +271,10 @@ export function Send() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         if (!isLedgerConnectionError(e)) {
-          alert('Transaction failed');
+          triggerAlert({
+            text: i18n.t('errors.sending_transaction'),
+            description: (e as Error)?.message,
+          });
         }
         logger.error(new RainbowError('send: error executing send'), {
           message: (e as Error)?.message,
@@ -558,6 +568,7 @@ export function Send() {
                         chainId={chainId}
                         transactionRequest={transactionRequestForGas}
                         accentColor={assetAccentColor}
+                        flashbotsEnabled={flashbotsEnabledGlobally}
                       />
                     </Row>
                     <Row>
