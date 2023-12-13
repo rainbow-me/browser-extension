@@ -24,7 +24,7 @@ export const usePoints = (address: Address) => {
   const query = useQuery({
     queryKey: ['points', address],
     queryFn: () => fetchPoints(address),
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 60 * 5he,
   });
 
   useEffect(() => {
