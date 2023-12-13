@@ -53,14 +53,19 @@ export const getSupportedChainsWithHardhat = () => {
 
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
-  console.log(SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id));
-  console.log(chains);
-  return chains.filter(
-    (chain) =>
-      !chain.testnet ||
-      (chain.testnet &&
-        SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id).includes(chain.id)),
+  return chains.filter((chain) => !chain.testnet);
+};
+
+export const getMainChains = () => {
+  const { chains } = getNetwork();
+  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
+    (chain) => !chain.testnet,
   );
+  const supportedChainIds = SUPPORTED_CHAINS.map((chain) => chain.id);
+  const customMainChains = chains.filter(
+    (chain) => !supportedChainIds.includes(chain.id),
+  );
+  return mainSupportedChains.concat(customMainChains);
 };
 
 export const getSupportedChainIds = () =>

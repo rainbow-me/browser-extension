@@ -8,7 +8,7 @@ import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/deve
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
-import { getSupportedChains } from '~/core/utils/chains';
+import { getMainChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
 import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Symbol, Text } from '~/design-system';
@@ -34,7 +34,7 @@ const chainLabel = ({ chainId }: { chainId: ChainId }) => {
 export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
   const { userChainsOrder, updateUserChainsOrder } = useUserChainsStore();
-  const supportedChains = getSupportedChains();
+  const mainChains = getMainChains();
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
@@ -54,7 +54,7 @@ export function SettingsNetworks() {
 
   const allNetworks = useMemo(
     () =>
-      sortNetworks(userChainsOrder, supportedChains).map((chain) => {
+      sortNetworks(userChainsOrder, mainChains).map((chain) => {
         const chainId = chain.id;
         // Always use the name of the supported network if it exists
         return {
@@ -64,13 +64,13 @@ export function SettingsNetworks() {
             chain.name,
         };
       }),
-    [supportedChains, userChainsOrder],
+    [mainChains, userChainsOrder],
   );
 
   console.log({
     allNetworks,
     userChainsOrder,
-    supportedChains,
+    mainChains,
   });
 
   return (
