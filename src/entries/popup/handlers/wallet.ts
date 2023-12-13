@@ -237,7 +237,8 @@ export const unlock = async (password: string): Promise<boolean> => {
 
 export const wipe = async () => {
   await walletAction('wipe', {});
-  return walletAction('test_sandbox', {});
+  await SessionStorage.set('userStatus', 'NEW');
+  return;
 };
 
 export const testSandbox = async () => walletAction('test_sandbox', {});
