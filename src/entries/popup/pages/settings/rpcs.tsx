@@ -71,7 +71,7 @@ export function SettingsNetworksRPCs() {
     },
   );
 
-  const customNetworkAssetsForChain = customNetworkAssets[chainId];
+  const customNetworkAssetsForChain = customNetworkAssets?.[chainId];
 
   const navigate = useRainbowNavigate();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
@@ -148,7 +148,7 @@ export function SettingsNetworksRPCs() {
     customChains[Number(chainId)]?.chains?.filter((chain) => chain.testnet) ||
     [];
   const supportedTestnetChains = getSupportedTestnetChains().filter((chain) => {
-    return chainIdMap[chainId].includes(chain.id) && chain.id !== chainId;
+    return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
   });
 
   const testnetChains = [...customTestnetChains, ...supportedTestnetChains];
