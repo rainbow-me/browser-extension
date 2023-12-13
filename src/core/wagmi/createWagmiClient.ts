@@ -10,10 +10,10 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
-import { SUPPORTED_CHAINS } from '../references';
+import { SUPPORTED_CHAINS, getDefaultRPC } from '../references';
 import { LocalStorage } from '../storage';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
-import { findCustomChainForChainId, getDefaultRPC } from '../utils/chains';
+import { findCustomChainForChainId } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
