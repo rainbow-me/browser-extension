@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.5](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.5)
+
+### Internal
+
+- Resolved an issue with Rainbow Points feature flag coverage #1195
+
 ## [v1.3.0](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.0)
 
 ### Added
