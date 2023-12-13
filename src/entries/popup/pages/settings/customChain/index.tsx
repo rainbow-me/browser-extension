@@ -199,6 +199,16 @@ const KNOWN_NETWORKS = {
       },
     },
     {
+      name: 'Moonbeam',
+      value: {
+        rpcUrl: 'https://moonbeam.public.blastapi.io',
+        chainId: 1284,
+        decimals: 18,
+        symbol: 'GLMR',
+        explorerUrl: 'https://moonscan.io',
+      },
+    },
+    {
       name: 'Polygon zkEVM',
       value: {
         rpcUrl: 'https://zkevm-rpc.com',

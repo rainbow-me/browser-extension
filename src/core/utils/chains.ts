@@ -1,6 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { avalanche, celo, fantom, harmonyOne } from '@wagmi/chains';
+import { avalanche, celo, fantom, harmonyOne, moonbeam } from '@wagmi/chains';
 import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
@@ -39,6 +39,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   8217: 'klaytn',
   314: 'filecoin',
   534352: 'scroll',
+  1284: 'moonbeam',
 };
 
 export const getSupportedChainsWithHardhat = () => {
@@ -53,12 +54,22 @@ export const getSupportedChainsWithHardhat = () => {
 
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
+  return chains.filter((chain) => !chain.testnet);
+};
+
+export const getMainChains = () => {
+  const { chains } = getNetwork();
+  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
+    (chain) => !chain.testnet,
+  );
+  const supportedChainIds = SUPPORTED_CHAINS.map((chain) => chain.id);
+  const customMainChains = chains.filter(
   return chains.filter(
     (chain) =>
-      !chain.testnet ||
-      (chain.testnet &&
-        SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id).includes(chain.id)),
+      !supportedChainIds.includes(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
   );
+  return mainSupportedChains.concat(customMainChains);
 };
 
 export const getSupportedChainIds = () =>
@@ -221,6 +232,8 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'subnets.avax.network':
     case 'snowtrace.io':
       return avalanche.id;
+    case 'moonscan.io':
+      return moonbeam.id;
     default:
       return ChainId.mainnet;
   }

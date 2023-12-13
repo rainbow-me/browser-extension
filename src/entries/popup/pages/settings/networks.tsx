@@ -8,8 +8,7 @@ import { SUPPORTED_CHAINS } from '~/core/references';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { ChainId } from '~/core/types/chains';
-import { getSupportedChains } from '~/core/utils/chains';
+import { getMainChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
 import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Symbol, Text } from '~/design-system';
@@ -45,6 +44,7 @@ const chainLabel = ({
 export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
   const { userChainsOrder, updateUserChainsOrder } = useUserChainsStore();
+  const mainChains = getMainChains();
   const supportedChains = getSupportedChains();
 
   // This is the list of testnets that the user has added and there's no mainnet chain associated
@@ -92,6 +92,7 @@ export function SettingsNetworks() {
       ),
     [supportedChains, testnetsOnly, userChainsOrder],
   );
+
 
   return (
     <Box paddingHorizontal="20px">
