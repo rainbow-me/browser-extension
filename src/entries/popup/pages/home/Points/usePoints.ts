@@ -19,6 +19,7 @@ export const seedPointsQueryCache = async (
   queryClient.setQueryData(['points', address], data);
 };
 
+let nextDropTimeout: NodeJS.Timeout | undefined;
 export const usePoints = (address: Address) => {
   const query = useQuery({
     queryKey: ['points', address],
@@ -31,8 +32,12 @@ export const usePoints = (address: Address) => {
     if (!nextDistribution) return;
     const nextDistributionIn = nextDistribution * 1000 - Date.now();
 
-    const timeout = setTimeout(() => query.refetch(), nextDistributionIn);
-    return () => clearTimeout(timeout);
+    nextDropTimeout ??= setTimeout(() => query.refetch(), nextDistributionIn);
+
+    return () => {
+      clearTimeout(nextDropTimeout);
+      nextDropTimeout = undefined;
+    };
   }, [query]);
 
   return query;
