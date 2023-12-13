@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- When joining Rainbow Points, you now easily share your referral link to X #1203
+- When joining Rainbow Points, you can now easily share your referral link to X #1203
 - Explainer pop-ups can now be navigated more easily with your keyboard. Press an info button and use `tab`, `esc`, and `return` to get around even faster #1175
 
 ## [v1.3.6](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.6)
