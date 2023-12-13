@@ -380,7 +380,12 @@ const EnsRegistrationSection = ({
                 {i18n.t('nfts.details.expires_in')}
               </Text>
             </Inline>
-            <Text weight="bold" size="14pt" color="label">
+            <Text
+              weight="bold"
+              size="14pt"
+              color="label"
+              testId="ens-expiry-value"
+            >
               {expiryDate}
             </Text>
           </Stack>
@@ -1195,6 +1200,7 @@ const NFTLinkButton = ({
       height="32px"
       onClick={() => goToNewTab({ url })}
       tabIndex={0}
+      testId={`nft-link-button-${title}`}
     >
       {title}
     </Button>

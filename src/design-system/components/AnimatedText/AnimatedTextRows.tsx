@@ -1,5 +1,5 @@
 import { Variants, motion } from 'framer-motion';
-import React, { ReactElement, useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 
 import { BoxStyles } from '~/design-system/styles/core.css';
 import { CHARACTER_TYPING_SPEED } from '~/entries/popup/pages/home/Points/utils';
