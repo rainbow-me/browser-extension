@@ -16,7 +16,9 @@ import pick from 'lodash/pick';
 import {
   BackgroundColor,
   ColorContext,
+  ForegroundColor,
   ShadowColor,
+  TextColor,
   backdropFilter,
   backgroundColors,
   buttonColors,
@@ -35,6 +37,8 @@ import {
   textColors,
   userSelectOpts,
 } from './designTokens';
+import SFMonoBold from './fonts/SFMono-bold.woff2';
+import SFMonoSemibold from './fonts/SFMono-semibold.woff2';
 import SFRoundedBold from './fonts/subset-SFRounded-Bold.woff2';
 import SFRoundedHeavy from './fonts/subset-SFRounded-Heavy.woff2';
 import SFRoundedMedium from './fonts/subset-SFRounded-Medium.woff2';
@@ -186,11 +190,7 @@ interface ShadowDefinition {
 }
 
 export type ShadowSize = '1px' | '12px' | '18px' | '24px' | '30px';
-export type Shadow =
-  | ShadowSize
-  | `${ShadowSize} ${ShadowColor}`
-  | '12px accent text'
-  | '12px label text';
+export type Shadow = ShadowSize | `${ShadowSize} ${ShadowColor}`;
 
 function coloredShadows<Size extends ShadowSize>(
   size: Size,
@@ -243,20 +243,6 @@ const shadowTokens: Record<Shadow, ShadowDefinition> = {
       `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
     ].join(', '),
   })),
-  '12px accent text': {
-    light: `0px 0px 12px ${getColorAsHsl({
-      alpha: 0.6,
-      vars: accentColorHslVars,
-    })}`,
-    dark: `0px 0px 12px ${getColorAsHsl({
-      alpha: 0.8,
-      vars: accentColorHslVars,
-    })}`,
-  },
-  '12px label text': {
-    light: `0px 0px 12px rgba(27, 29, 31, 0.45)`,
-    dark: `0px 0px 12px rgba(244, 248, 255, 0.45)`,
-  },
   '18px': {
     light: [
       `0 6px 18px ${getShadowColor('shadowFar', 'light', 0.08)}`,
@@ -327,6 +313,47 @@ export const shadowVars = createThemeContract(
 
 export const shadows = Object.keys(shadowVars) as (keyof typeof shadowVars)[];
 
+function getTextShadowColor(
+  color: 'accent' | ForegroundColor,
+  theme: ColorContext,
+  alpha: number,
+) {
+  return color === 'accent'
+    ? getColorAsHsl({ alpha, vars: accentColorHslVars })
+    : chroma(foregroundColors[color][theme]).alpha(alpha).css();
+}
+
+function coloredTextShadows<Size extends ShadowSize>(
+  size: Size,
+  getShadowForColor: (color: TextColor | 'accent') => ShadowDefinition,
+): Record<`${Size} ${TextColor | 'accent'}`, ShadowDefinition> {
+  return Object.assign(
+    {},
+    ...([...textColors, 'accent'] as const).map((color) => ({
+      [`${size} ${color}`]: getShadowForColor(color),
+    })),
+  );
+}
+
+const textShadowTokens = {
+  ...coloredTextShadows('12px', (color) => ({
+    light: `0 0px 12px ${getTextShadowColor(color, 'light', 0.6)}`,
+    dark: `0 0px 12px ${getTextShadowColor(color, 'dark', 0.8)}`,
+  })),
+  '12px label': {
+    light: `0px 0px 12px rgba(27, 29, 31, 0.45)`,
+    dark: `0px 0px 12px rgba(244, 248, 255, 0.45)`,
+  },
+};
+
+export const textShadowVars = createThemeContract(
+  mapValues(textShadowTokens, () => null),
+);
+
+export const textShadows = Object.keys(
+  textShadowVars,
+) as (keyof typeof textShadowVars)[];
+
 globalStyle(`html.${rootThemeClasses.lightTheme}`, {
   backgroundColor: backgroundColors.surfacePrimaryElevated.light.color,
   vars: assignVars(
@@ -358,6 +385,10 @@ globalStyle(
         shadowVars,
         mapValues(shadowTokens, (x) => x.light),
       ),
+      ...assignVars(
+        textShadowVars,
+        mapValues(textShadowTokens, (x) => x.dark),
+      ),
     },
   },
 );
@@ -376,6 +407,10 @@ globalStyle(
       ...assignVars(
         shadowVars,
         mapValues(shadowTokens, (x) => x.dark),
+      ),
+      ...assignVars(
+        textShadowVars,
+        mapValues(textShadowTokens, (x) => x.dark),
       ),
     },
   },
@@ -496,7 +531,7 @@ const symbolProperties = defineProperties({
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
     filter: {
-      'shadow 12px accent': `drop-shadow(${shadowTokens['12px accent text'].light})`,
+      'shadow 12px accent': `drop-shadow(${textShadowTokens['12px accent'].light})`,
     },
     cursor: cursorOpts,
     opacity: {
@@ -517,6 +552,18 @@ export type SymbolStyles = Parameters<typeof symbolStyles>[0];
   [SFRoundedHeavy, 800],
 ].forEach(([fontPath, fontWeight]) => {
   globalFontFace('SFRounded', {
+    src: `url('${fontPath}') format('woff2')`,
+    fontWeight,
+    fontStyle: 'normal',
+    fontDisplay: 'block',
+  });
+});
+
+[
+  [SFMonoSemibold, 600],
+  [SFMonoBold, 700],
+].forEach(([fontPath, fontWeight]) => {
+  globalFontFace('SFMono', {
     src: `url('${fontPath}') format('woff2')`,
     fontWeight,
     fontStyle: 'normal',
@@ -555,7 +602,7 @@ const textProperties = defineProperties({
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
     cursor: cursorOpts,
-    fontFamily: { rounded: 'SFRounded, system-ui' },
+    fontFamily: { rounded: 'SFRounded, system-ui', mono: 'SFMono' },
     fontSize: {
       '7pt': defineType(7, 11, 0.64),
       '9pt': defineType(9, 11, 0.56),
@@ -563,6 +610,7 @@ const textProperties = defineProperties({
       '11pt': defineType(11, 13, 0.56),
       '12pt': defineType(12, 15, 0.52),
       '14pt': defineType(14, 19, 0.48),
+      '14pt mono': defineType(14, 19, 0),
       '14pt / 135%': defineType(14, '135%', 0.48),
       '14pt / 155%': defineType(14, '150%', 0.48),
       '15pt': defineType(15, 20, 0.41),
@@ -587,7 +635,7 @@ const textProperties = defineProperties({
     whiteSpace: ['nowrap', 'pre-wrap'],
     overflow: ['hidden'],
     transition: ['color 200ms ease-out, text-shadow 1s ease'],
-    textShadow: shadowVars,
+    textShadow: textShadowVars,
   },
 });
 
