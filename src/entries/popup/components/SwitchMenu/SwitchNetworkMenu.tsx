@@ -31,6 +31,7 @@ import {
   ContextMenuTrigger,
 } from '../ContextMenu/ContextMenu';
 import {
+  DROPDOWN_MENU_ITEM_HEIGHT,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
@@ -41,6 +42,8 @@ import {
 } from '../DropdownMenu/DropdownMenu';
 import { SWAP_INPUT_MASK_ID } from '../InputMask/SwapInputMask/SwapInputMask';
 import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
+
+const MENU_SELECTOR_MAX_HEIGHT = DROPDOWN_MENU_ITEM_HEIGHT * 5.5;
 
 export const SwitchNetworkMenuSelector = ({
   selectedValue,
@@ -118,7 +121,12 @@ export const SwitchNetworkMenuSelector = ({
   });
 
   return (
-    <Box id="switch-network-menu-selector">
+    <Box
+      id="switch-network-menu-selector"
+      paddingHorizontal="8px"
+      marginHorizontal="-8px"
+      style={{ maxHeight: MENU_SELECTOR_MAX_HEIGHT, overflow: 'scroll' }}
+    >
       {chains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
