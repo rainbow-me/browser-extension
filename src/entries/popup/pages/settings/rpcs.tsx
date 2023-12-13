@@ -79,7 +79,8 @@ export function SettingsNetworksRPCs() {
     useCustomRPCsStore();
 
   const customChain = customChains[Number(chainId)];
-  const activeRPC = customChain?.chains.find(
+
+  const activeCustomRPC = customChain?.chains.find(
     (chain) => chain.rpcUrls.default.http[0] === customChain.activeRpcUrl,
   );
 
@@ -153,6 +154,10 @@ export function SettingsNetworksRPCs() {
 
   const testnetChains = [...customTestnetChains, ...supportedTestnetChains];
 
+  console.log(
+    '-- activeCustomRPC?.name || suportedChain?.name',
+    activeCustomRPC?.name || suportedChain?.name,
+  );
   return (
     <Box paddingHorizontal="20px" paddingBottom="20px">
       <MenuContainer testId="settings-menu-container">
@@ -249,7 +254,7 @@ export function SettingsNetworksRPCs() {
           </Box>
         </Menu>
 
-        {activeRPC?.name && (
+        {(activeCustomRPC?.name || suportedChain?.name) && (
           <Menu>
             <MenuItem
               first
@@ -266,14 +271,14 @@ export function SettingsNetworksRPCs() {
               onClick={() =>
                 navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
                   state: {
-                    chain: activeRPC,
+                    chain: activeCustomRPC || suportedChain,
                   },
                 })
               }
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('settings.networks.custom_rpc.add_rpc', {
-                    rpcName: activeRPC?.name,
+                    rpcName: activeCustomRPC?.name || suportedChain?.name,
                   })}
                 />
               }
