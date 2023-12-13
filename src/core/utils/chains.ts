@@ -53,8 +53,6 @@ export const getSupportedChainsWithHardhat = () => {
 
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
-  console.log(SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id));
-  console.log(chains);
   return chains.filter(
     (chain) =>
       !chain.testnet ||

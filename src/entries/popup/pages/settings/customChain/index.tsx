@@ -387,7 +387,6 @@ export function SettingsCustomChain() {
     const validName = validateName();
     const validSymbol = validateSymbol();
     const validExplorerUrl = validateExplorerUrl();
-    console.log('- validExplorerUrl', validExplorerUrl);
     setValidations({
       rpcUrl: validRpcUrl,
       chainId: validChainId,

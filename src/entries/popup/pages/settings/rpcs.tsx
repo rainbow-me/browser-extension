@@ -109,10 +109,6 @@ export function SettingsNetworksRPCs() {
     [chainId, setActiveRPC, setDefaultRPC],
   );
 
-  const handleTestnetClick = useCallback((rpcUrl: string): void => {
-    console.log('rpcUrl', rpcUrl);
-  }, []);
-
   const suportedChain = useMemo(
     () => SUPPORTED_CHAINS.find(({ id }) => id === chainId),
     [chainId],
@@ -319,9 +315,6 @@ export function SettingsNetworksRPCs() {
                     first={!suportedChain && index === 0}
                     leftComponent={
                       <ChainBadge chainId={chain.id} size="18" shadow />
-                    }
-                    onClick={() =>
-                      handleTestnetClick(chain.rpcUrls.default.http[0])
                     }
                     key={chain.name}
                     rightComponent={
