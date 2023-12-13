@@ -241,8 +241,7 @@ export const handleWallets = () =>
         }
         return { result: response };
       } catch (error) {
-        console.log('Error handling wallet action', action, error);
-        return { action, error: <Error>error };
+        return { error: (error as Error).message };
       }
     },
   );
