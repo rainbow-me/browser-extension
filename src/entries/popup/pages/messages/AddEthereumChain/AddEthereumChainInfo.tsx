@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import {
@@ -31,6 +29,8 @@ export const AddEthereumChainInfo = ({
     rpcUrl,
     blockExplorerUrl,
   },
+  testnet,
+  setTestnet,
 }: {
   appHostName?: string;
   appName?: string;
@@ -45,10 +45,9 @@ export const AddEthereumChainInfo = ({
     rpcUrl: string;
     blockExplorerUrl: string;
   };
+  testnet: boolean;
+  setTestnet: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [testnet, setTestnet] = useState(
-    chainName.toLowerCase().includes('testnet'),
-  );
   const isScamDapp = dappStatus === DAppStatus.Scam;
 
   return (

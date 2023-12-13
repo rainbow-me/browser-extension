@@ -48,6 +48,10 @@ export const AddEthereumChain = ({
     blockExplorerUrls: string[];
   };
 
+  const [testnet, setTestnet] = useState(
+    chainName.toLowerCase().includes('testnet'),
+  );
+
   const { addCustomRPC } = useCustomRPCsStore();
   const { addUserChain } = useUserChainsStore();
 
@@ -65,6 +69,7 @@ export const AddEthereumChain = ({
           name: name || symbol,
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+        testnet,
       };
       addCustomRPC({
         chain,
@@ -92,6 +97,7 @@ export const AddEthereumChain = ({
     name,
     symbol,
     rpcUrl,
+    testnet,
     addCustomRPC,
     addUserChain,
     approveRequest,
@@ -135,6 +141,8 @@ export const AddEthereumChain = ({
             rpcUrl,
             blockExplorerUrl,
           }}
+          testnet={testnet}
+          setTestnet={setTestnet}
         />
         <Separator color="separatorTertiary" />
       </Row>
