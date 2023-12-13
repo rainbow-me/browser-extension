@@ -87,6 +87,7 @@
     },
     "networks": {
       "mainnet": "Mainnet",
+      "testnet": "Testnet",
       "title": "Networks",
       "testnets": "Testnets",
       "quick_promo": {

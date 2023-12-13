@@ -1,3 +1,4 @@
+import { getNetwork } from '@wagmi/core';
 import React, { useMemo } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'wagmi';
@@ -23,8 +24,18 @@ import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
-const chainLabel = ({ chainId }: { chainId: ChainId }) => {
-  const chainLabels = [i18n.t('settings.networks.mainnet')];
+const chainLabel = ({
+  chainId,
+  testnet,
+}: {
+  chainId: ChainId;
+  testnet?: boolean;
+}) => {
+  const chainLabels = [
+    testnet
+      ? i18n.t('settings.networks.testnet')
+      : i18n.t('settings.networks.mainnet'),
+  ];
   if (chainLabelMap[chainId]) {
     chainLabels.push(...chainLabelMap[chainId]);
   }
@@ -35,6 +46,19 @@ export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
   const { userChainsOrder, updateUserChainsOrder } = useUserChainsStore();
   const supportedChains = getSupportedChains();
+
+  // This is the list of testnets that the user has added and there's no mainnet chain associated
+  // We still need to show them in the list
+  const testnetsOnly = useMemo(() => {
+    const { chains } = getNetwork();
+    return chains.filter(
+      (chain: Chain) =>
+        chain.testnet &&
+        !supportedChains.map((chain) => chain.id).includes(chain.id) &&
+        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id),
+    );
+  }, [supportedChains]);
+
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
@@ -54,17 +78,19 @@ export function SettingsNetworks() {
 
   const allNetworks = useMemo(
     () =>
-      sortNetworks(userChainsOrder, supportedChains).map((chain) => {
-        const chainId = chain.id;
-        // Always use the name of the supported network if it exists
-        return {
-          ...chain,
-          name:
-            SUPPORTED_CHAINS.find(({ id }) => id === chainId)?.name ||
-            chain.name,
-        };
-      }),
-    [supportedChains, userChainsOrder],
+      sortNetworks(userChainsOrder, [...supportedChains, ...testnetsOnly]).map(
+        (chain) => {
+          const chainId = chain.id;
+          // Always use the name of the supported network if it exists
+          return {
+            ...chain,
+            name:
+              SUPPORTED_CHAINS.find(({ id }) => id === chainId)?.name ||
+              chain.name,
+          };
+        },
+      ),
+    [supportedChains, testnetsOnly, userChainsOrder],
   );
 
   console.log({
@@ -140,7 +166,10 @@ export function SettingsNetworks() {
                             weight={'medium'}
                           >
                             {userChains[chain.id]
-                              ? chainLabel({ chainId: chain.id })
+                              ? chainLabel({
+                                  chainId: chain.id,
+                                  testnet: chain.testnet,
+                                })
                               : i18n.t('settings.networks.disabled')}
                           </Text>
                         ) : null
