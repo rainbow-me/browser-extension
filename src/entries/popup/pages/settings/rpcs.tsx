@@ -309,7 +309,7 @@ export function SettingsNetworksRPCs() {
             }
           />
         </Menu>
-        {developerToolsEnabled && (
+        {developerToolsEnabled && testnetChains.length && (
           <Menu>
             <MenuItem.Description text={i18n.t('settings.networks.testnets')} />
             <Box paddingHorizontal="1px" paddingVertical="1px">
