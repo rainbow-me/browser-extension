@@ -1,4 +1,3 @@
-import { getNetwork } from '@wagmi/core';
 import React, { useMemo } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'wagmi';
@@ -8,6 +7,7 @@ import { SUPPORTED_CHAINS } from '~/core/references';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useUserChainsStore } from '~/core/state/userChains';
+import { ChainId } from '~/core/types/chains';
 import { getMainChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
 import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
@@ -45,19 +45,6 @@ export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
   const { userChainsOrder, updateUserChainsOrder } = useUserChainsStore();
   const mainChains = getMainChains();
-  const supportedChains = getSupportedChains();
-
-  // This is the list of testnets that the user has added and there's no mainnet chain associated
-  // We still need to show them in the list
-  const testnetsOnly = useMemo(() => {
-    const { chains } = getNetwork();
-    return chains.filter(
-      (chain: Chain) =>
-        chain.testnet &&
-        !supportedChains.map((chain) => chain.id).includes(chain.id) &&
-        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id),
-    );
-  }, [supportedChains]);
 
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
@@ -78,21 +65,18 @@ export function SettingsNetworks() {
 
   const allNetworks = useMemo(
     () =>
-      sortNetworks(userChainsOrder, [...supportedChains, ...testnetsOnly]).map(
-        (chain) => {
-          const chainId = chain.id;
-          // Always use the name of the supported network if it exists
-          return {
-            ...chain,
-            name:
-              SUPPORTED_CHAINS.find(({ id }) => id === chainId)?.name ||
-              chain.name,
-          };
-        },
-      ),
-    [supportedChains, testnetsOnly, userChainsOrder],
+      sortNetworks(userChainsOrder, mainChains).map((chain) => {
+        const chainId = chain.id;
+        // Always use the name of the supported network if it exists
+        return {
+          ...chain,
+          name:
+            SUPPORTED_CHAINS.find(({ id }) => id === chainId)?.name ||
+            chain.name,
+        };
+      }),
+    [mainChains, userChainsOrder],
   );
-
 
   return (
     <Box paddingHorizontal="20px">

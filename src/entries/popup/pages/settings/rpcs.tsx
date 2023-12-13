@@ -191,7 +191,7 @@ export function SettingsNetworksRPCs() {
             onToggle={() => handleToggleChain(!userChains[chainId])}
           />
         </Menu>
-        {(suportedChain || mainnetChains.length) && (
+        {suportedChain || mainnetChains.length ? (
           <Menu>
             <MenuItem.Description
               text={i18n.t('settings.networks.rpc_endpoints')}
@@ -263,7 +263,7 @@ export function SettingsNetworksRPCs() {
               ))}
             </Box>
           </Menu>
-        )}
+        ) : null}
 
         {activeCustomRPC?.name || suportedChain?.name ? (
           <Menu>

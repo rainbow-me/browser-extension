@@ -1,6 +1,13 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { avalanche, celo, fantom, harmonyOne, moonbeam } from '@wagmi/chains';
+import {
+  Chain,
+  avalanche,
+  celo,
+  fantom,
+  harmonyOne,
+  moonbeam,
+} from '@wagmi/chains';
 import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
@@ -59,17 +66,35 @@ export const getSupportedChains = () => {
 
 export const getMainChains = () => {
   const { chains } = getNetwork();
+  // All the mainnets we support
   const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
     (chain) => !chain.testnet,
   );
-  const supportedChainIds = SUPPORTED_CHAINS.map((chain) => chain.id);
-  const customMainChains = chains.filter(
-  return chains.filter(
+
+  // The chain ID of all the mainnets we support
+  const supportedChainIds = mainSupportedChains.map((chain) => chain.id);
+
+  // All the chains that the user added
+  const customMainChains = chains?.filter(
     (chain) =>
       !supportedChainIds.includes(chain.id) &&
-      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+      !(
+        (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)
+        // list of testnets added by the user for networks we don't support
+      ),
   );
-  return mainSupportedChains.concat(customMainChains);
+
+  const customChainsIncludingTestnets = customMainChains.filter(
+    (chain: Chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        !mainSupportedChains
+          .map((chain: Chain) => chain.id)
+          .includes(chain.id) &&
+        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id)),
+  );
+
+  return mainSupportedChains.concat(customChainsIncludingTestnets);
 };
 
 export const getSupportedChainIds = () =>
