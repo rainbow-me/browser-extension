@@ -21,6 +21,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.6](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.6)
+
+### Added
+
+- Rainbow Points are here. True believers are always rewarded. [Learn more](https://rainbow.me/points) #1165 #1170 #1184 #1174 #1189 #1193
+
+### Changed
+
+- The Network Changed notification on dapps can now be dismissed with a click #1192
+
+### Fixed
+
+- Fixed an issue that would sometimes cause duplicate Polygon NFTs to appear in your gallery #1197
+
+### Internal
+
+- Resolved an issue with NFT fetching introduced by e2e tests for NFTs #1196
+
+### Testing
+
+- e2e coverage for NFT Gallery and NFT Details #1178
+
 ## [v1.3.5](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.5)
 
 ### Internal
@@ -32,7 +54,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - You can now view all of your NFTs and NFT collections in Rainbow, just like the app. Head over to the new NFTs tab to view your Gallery and explore your NFTs with rich insights, including Floor Prices, Unique Owners, Rarity, and more #1182
-- Rainbow Points are here. True believers are always rewarded. [Learn more](https://rainbow.me/points) #1165 #1170 #1184 #1174 #1189
 
 ### Changed
 
