@@ -182,7 +182,7 @@ export function SettingsNetworksRPCs() {
             }
             rightComponent={
               <Toggle
-                testId="set-rainbow-default-toggle"
+                testId="disable-network-toggle"
                 checked={userChains[chainId]}
                 handleChange={handleToggleChain}
                 tabIndex={-1}
