@@ -21,28 +21,26 @@ export const WatchAssetActions = ({
   const isScamDapp = dappStatus === DAppStatus.Scam;
   return (
     <Box padding="20px">
-      <Stack space="24px">
-        <Stack
-          space="8px"
-          flexDirection={isScamDapp ? 'column-reverse' : 'column'}
-        >
-          <AcceptRequestButton
-            dappStatus={dappStatus}
-            onClick={onAcceptRequest}
-            label={
-              isScamDapp
-                ? i18n.t('approve_request.approve_anyway')
-                : i18n.t('approve_request.approve')
-            }
-            loading={loading}
-            disabled={disabled}
-          />
-          <RejectRequestButton
-            dappStatus={dappStatus}
-            onClick={onRejectRequest}
-            label={i18n.t('common_actions.cancel')}
-          />
-        </Stack>
+      <Stack
+        space="8px"
+        flexDirection={isScamDapp ? 'column-reverse' : 'column'}
+      >
+        <AcceptRequestButton
+          dappStatus={dappStatus}
+          onClick={onAcceptRequest}
+          label={
+            isScamDapp
+              ? i18n.t('approve_request.approve_anyway')
+              : i18n.t('approve_request.approve')
+          }
+          loading={loading}
+          disabled={disabled}
+        />
+        <RejectRequestButton
+          dappStatus={dappStatus}
+          onClick={onRejectRequest}
+          label={i18n.t('common_actions.cancel')}
+        />
       </Stack>
     </Box>
   );

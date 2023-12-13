@@ -54,12 +54,22 @@ export const getSupportedChainsWithHardhat = () => {
 
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
+  return chains.filter((chain) => !chain.testnet);
+};
+
+export const getMainChains = () => {
+  const { chains } = getNetwork();
+  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
+    (chain) => !chain.testnet,
+  );
+  const supportedChainIds = SUPPORTED_CHAINS.map((chain) => chain.id);
+  const customMainChains = chains.filter(
   return chains.filter(
     (chain) =>
-      !chain.testnet ||
-      (chain.testnet &&
-        SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id).includes(chain.id)),
+      !supportedChainIds.includes(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
   );
+  return mainSupportedChains.concat(customMainChains);
 };
 
 export const getSupportedChainIds = () =>

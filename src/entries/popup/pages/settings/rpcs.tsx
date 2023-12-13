@@ -79,7 +79,8 @@ export function SettingsNetworksRPCs() {
     useCustomRPCsStore();
 
   const customChain = customChains[Number(chainId)];
-  const activeRPC = customChain?.chains.find(
+
+  const activeCustomRPC = customChain?.chains.find(
     (chain) => chain.rpcUrls.default.http[0] === customChain.activeRpcUrl,
   );
 
@@ -264,7 +265,7 @@ export function SettingsNetworksRPCs() {
           </Menu>
         )}
 
-        {activeRPC?.name && (
+        {activeCustomRPC?.name || suportedChain?.name ? (
           <Menu>
             <MenuItem
               first
@@ -281,20 +282,20 @@ export function SettingsNetworksRPCs() {
               onClick={() =>
                 navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
                   state: {
-                    chain: activeRPC,
+                    chain: activeCustomRPC || suportedChain,
                   },
                 })
               }
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('settings.networks.custom_rpc.add_rpc', {
-                    rpcName: activeRPC?.name,
+                    rpcName: activeCustomRPC?.name || suportedChain?.name,
                   })}
                 />
               }
             />
           </Menu>
-        )}
+        ) : null}
 
         <Menu>
           <MenuItem
@@ -324,7 +325,7 @@ export function SettingsNetworksRPCs() {
             }
           />
         </Menu>
-        {developerToolsEnabled && testnetChains.length && (
+        {developerToolsEnabled && testnetChains.length ? (
           <Menu>
             <MenuItem.Description text={i18n.t('settings.networks.testnets')} />
             <Box paddingHorizontal="1px" paddingVertical="1px">
@@ -354,10 +355,10 @@ export function SettingsNetworksRPCs() {
               ))}
             </Box>
           </Menu>
-        )}
+        ) : null}
       </MenuContainer>
 
-      {Object.values(customNetworkAssetsForChain || {}).length && (
+      {Object.values(customNetworkAssetsForChain || {}).length ? (
         <Menu>
           <Box padding="20px">
             <Stack space="14px">
@@ -437,7 +438,7 @@ export function SettingsNetworksRPCs() {
             </Stack>
           </Box>
         </Menu>
-      )}
+      ) : null}
     </Box>
   );
 }
