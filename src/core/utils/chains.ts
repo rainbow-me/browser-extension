@@ -1,6 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { avalanche, celo, fantom, harmonyOne } from '@wagmi/chains';
+import { avalanche, celo, fantom, harmonyOne, moonbeam } from '@wagmi/chains';
 import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
@@ -39,6 +39,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   8217: 'klaytn',
   314: 'filecoin',
   534352: 'scroll',
+  1284: 'moonbeam',
 };
 
 export const getSupportedChainsWithHardhat = () => {
@@ -221,6 +222,8 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'subnets.avax.network':
     case 'snowtrace.io':
       return avalanche.id;
+    case 'moonscan.io':
+      return moonbeam.id;
     default:
       return ChainId.mainnet;
   }

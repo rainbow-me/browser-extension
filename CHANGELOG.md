@@ -21,6 +21,65 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.7](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.7)
+
+### Changed
+
+- When joining Rainbow Points, you can now easily share your referral link to X #1203
+- Explainer pop-ups can now be navigated more easily with your keyboard. Press an info button and use `tab`, `esc`, and `return` to get around even faster #1175
+
+## [v1.3.6](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.6)
+
+### Added
+
+- Rainbow Points are here. True believers are always rewarded. [Learn more](https://rainbow.me/points) #1165 #1170 #1184 #1174 #1189 #1193
+
+### Changed
+
+- The Network Changed notification on dapps can now be dismissed with a click #1192
+
+### Fixed
+
+- Fixed an issue that would sometimes cause duplicate Polygon NFTs to appear in your gallery #1197
+
+### Internal
+
+- Resolved an issue with NFT fetching introduced by e2e tests for NFTs #1196
+
+### Testing
+
+- e2e coverage for NFT Gallery and NFT Details #1178
+
+## [v1.3.5](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.5)
+
+### Internal
+
+- Resolved an issue with Rainbow Points feature flag coverage #1195
+
+## [v1.3.0](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.0)
+
+### Added
+
+- You can now view all of your NFTs and NFT collections in Rainbow, just like the app. Head over to the new NFTs tab to view your Gallery and explore your NFTs with rich insights, including Floor Prices, Unique Owners, Rarity, and more #1182
+
+### Changed
+
+- Drastically improved image fetching and rendering for Tokens, NFTs, and Avatars to make Rainbow feel even faster #1183
+
+### Fixed
+
+- Resolved interface shift when loading Tokens and Token Charts #1164
+- Improved Onboarding Secret Recovery Phrase verification language #1172
+
+### Internal
+
+- Added Floor Price Explainer for NFT Details #1169
+- Added autocomplete for a list of Networks in the Custom Networks flow #1177 #1179
+- Now providing all `chainIds` in Backend requests #1187
+- Now counting Custom Network assets in the token count, aggregated balance, and properly sorting the assets #1186
+- Resolved an issue with `chainId` conflicts for Custom Networks and the Networks menu filtering #1185
+- Upgraded `vite` to `4.5.1` to resolve CI checks #1176
+
 ## [v1.2.94](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.94)
 
 ### Fixed
