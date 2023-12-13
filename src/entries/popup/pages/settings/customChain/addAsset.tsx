@@ -6,7 +6,7 @@ import { Address } from 'wagmi';
 
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
-import { Box, Button, Inline, Stack, Text } from '~/design-system';
+import { Box, Button, Inline, Stack } from '~/design-system';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
@@ -21,8 +21,7 @@ const INITIAL_ASSET = {
 
 export function AddAsset() {
   const { state } = useLocation();
-  const { customRPCAssets, addCustomRPCAsset, removeCustomRPCAsset } =
-    useCustomRPCAssetsStore();
+  const { customRPCAssets, addCustomRPCAsset } = useCustomRPCAssetsStore();
 
   const [validations, setValidations] = useState<{
     address: boolean;
@@ -219,119 +218,6 @@ export function AddAsset() {
   return (
     <Box paddingHorizontal="20px">
       <Stack space="24px">
-        {/* <Stack space="16px">
-          {customChain?.chains?.map((chain, i) => {
-            return (
-              <Box
-                background="surfaceSecondaryElevated"
-                borderRadius="16px"
-                boxShadow="12px"
-                width="full"
-                padding="16px"
-                key={i}
-              >
-                <Stack space="10px">
-                  {Object.keys(chain)?.map((key, i) => (
-                    <Box key={i}>
-                      <Inline space="4px">
-                        <Text size="14pt" weight="bold" align="center">
-                          {`${key}:`}
-                        </Text>
-                        <Text size="14pt" weight="bold" align="center">
-                          {`${String(chain[key as keyof typeof chain])}`}
-                        </Text>
-                      </Inline>
-                    </Box>
-                  ))}
-                  <Inline alignHorizontal="justify">
-                    <Text
-                      align="center"
-                      weight="semibold"
-                      size="12pt"
-                      color="labelSecondary"
-                    >
-                      {'Active'}
-                    </Text>
-                    <Checkbox
-                      borderColor="accent"
-                      onClick={() =>
-                        setActiveRPC({
-                          rpcUrl: chain.rpcUrls.default.http[0],
-                          chainId: chain.id,
-                        })
-                      }
-                      selected={
-                        customChain.activeRpcUrl ===
-                        chain.rpcUrls.default.http[0]
-                      }
-                    />
-                  </Inline>
-                  <Inline alignHorizontal="right">
-                    <Button
-                      onClick={() => removeCustomChain({ customChain, chain })}
-                      color="accent"
-                      height="36px"
-                      variant="raised"
-                    >
-                      Remove
-                    </Button>
-                  </Inline>
-                </Stack>
-              </Box>
-            );
-          })}
-        </Stack> */}
-
-        {customRPCAssetsForChain?.map((asset, i) => (
-          <Box
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            boxShadow="12px"
-            width="full"
-            padding="16px"
-            key={i}
-          >
-            <Stack space="4px">
-              <Text
-                align="left"
-                weight="semibold"
-                size="9pt"
-                color="labelSecondary"
-              >
-                {asset.address}
-              </Text>
-              <Text
-                align="left"
-                weight="semibold"
-                size="12pt"
-                color="labelSecondary"
-              >
-                {asset.decimals}
-              </Text>
-              <Text
-                align="left"
-                weight="semibold"
-                size="12pt"
-                color="labelSecondary"
-              >
-                {asset.symbol}
-              </Text>
-            </Stack>
-            <Inline alignHorizontal="right">
-              <Button
-                onClick={() =>
-                  removeCustomRPCAsset({ address: asset.address, chainId })
-                }
-                color="accent"
-                height="24px"
-                variant="raised"
-              >
-                Remove Asset
-              </Button>
-            </Inline>
-          </Box>
-        ))}
-
         <Form>
           <FormInput
             onChange={(t) =>

@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -14,6 +15,7 @@ import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
@@ -244,7 +246,11 @@ const KNOWN_NETWORKS = {
 };
 
 export function SettingsCustomChain() {
+  const {
+    state: { chain },
+  }: { state: { chain?: Chain } } = useLocation();
   const { addCustomRPC } = useCustomRPCsStore();
+  const navigate = useRainbowNavigate();
   const { addUserChain } = useUserChainsStore();
   const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
@@ -255,7 +261,13 @@ export function SettingsCustomChain() {
     name?: string;
     symbol?: string;
     explorerUrl?: string;
-  }>({});
+  }>({
+    testnet: chain?.testnet,
+    chainId: chain?.id,
+    name: chain?.name,
+    symbol: chain?.nativeCurrency.symbol,
+    explorerUrl: chain?.blockExplorers?.default.url,
+  });
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
     chainId: boolean;
@@ -356,7 +368,7 @@ export function SettingsCustomChain() {
   );
 
   const validateExplorerUrl = useCallback(
-    () => !!customRPC.explorerUrl && isValidUrl(customRPC.explorerUrl),
+    () => (customRPC.explorerUrl ? isValidUrl(customRPC.explorerUrl) : true),
     [customRPC.explorerUrl],
   );
 
@@ -375,6 +387,7 @@ export function SettingsCustomChain() {
     const validName = validateName();
     const validSymbol = validateSymbol();
     const validExplorerUrl = validateExplorerUrl();
+    console.log('- validExplorerUrl', validExplorerUrl);
     setValidations({
       rpcUrl: validRpcUrl,
       chainId: validChainId,
@@ -413,10 +426,9 @@ export function SettingsCustomChain() {
     const chainId = customRPC.chainId || chainMetadata?.chainId;
     const name = customRPC.name;
     const symbol = customRPC.symbol;
-    const explorerUrl = customRPC.explorerUrl;
     const valid = validateAddCustomRpc();
 
-    if (valid && rpcUrl && chainId && name && symbol && explorerUrl) {
+    if (valid && rpcUrl && chainId && name && symbol) {
       const chain: Chain = {
         id: chainId,
         name,
@@ -443,12 +455,20 @@ export function SettingsCustomChain() {
         ),
       });
       setCustomRPC({});
+      setTimeout(() => {
+        navigate(-1);
+      }, 1500);
     }
   }, [
     addCustomRPC,
     addUserChain,
     chainMetadata?.chainId,
-    customRPC,
+    customRPC.chainId,
+    customRPC.name,
+    customRPC.rpcUrl,
+    customRPC.symbol,
+    customRPC.testnet,
+    navigate,
     validateAddCustomRpc,
   ]);
 

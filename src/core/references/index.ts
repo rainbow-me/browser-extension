@@ -195,3 +195,46 @@ export const SUPPORTED_TESTNET_CHAIN_IDS: number[] = [
   baseGoerli.id,
   zoraTestnet.id,
 ];
+
+export const getDefaultRPC = (chainId: ChainId) => {
+  switch (chainId) {
+    case ChainId.mainnet:
+      return { http: process.env.ETH_MAINNET_RPC as string };
+    case ChainId.optimism:
+      return { http: process.env.OPTIMISM_MAINNET_RPC as string };
+    case ChainId.arbitrum:
+      return { http: process.env.ARBITRUM_MAINNET_RPC as string };
+    case ChainId.polygon:
+      return { http: process.env.POLYGON_MAINNET_RPC as string };
+    case ChainId.base:
+      return { http: process.env.BASE_MAINNET_RPC as string };
+    case ChainId.zora:
+      return { http: process.env.ZORA_MAINNET_RPC as string };
+    case ChainId.bsc:
+      return { http: process.env.BSC_MAINNET_RPC as string };
+    case ChainId.goerli:
+      return { http: process.env.ETH_GOERLI_RPC as string };
+    case ChainId.sepolia:
+      return { http: process.env.ETH_SEPOLIA_RPC as string };
+    case ChainId.holesky:
+      return { http: process.env.ETH_HOLESKY_RPC as string };
+    case ChainId.optimismGoerli:
+      return { http: process.env.OPTIMISM_GOERLI_RPC as string };
+    case ChainId.optimismSepolia:
+      return { http: process.env.OPTIMISM_SEPOLIA_RPC as string };
+    case ChainId.bscTestnet:
+      return { http: process.env.BSC_TESTNET_RPC as string };
+    case ChainId.polygonMumbai:
+      return { http: process.env.POLYGON_MUMBAI_RPC as string };
+    case ChainId.arbitrumSepolia:
+      return { http: process.env.ARBITRUM_SEPOLIA_RPC as string };
+    case ChainId.arbitrumGoerli:
+      return { http: process.env.ARBITRUM_GOERLI_RPC as string };
+    case ChainId.baseGoerli:
+      return { http: process.env.BASE_GOERLI_RPC as string };
+    case ChainId.zoraTestnet:
+      return { http: process.env.ZORA_GOERLI_RPC as string };
+    default:
+      return null;
+  }
+};
