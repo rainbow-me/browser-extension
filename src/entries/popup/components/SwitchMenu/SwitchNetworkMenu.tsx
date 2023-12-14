@@ -12,6 +12,7 @@ import {
   Inset,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { Space } from '~/design-system/styles/designTokens';
 
@@ -140,12 +141,15 @@ export const SwitchNetworkMenuSelector = ({
             <Box width="full">
               <Columns alignHorizontal="justify" alignVertical="center">
                 <Column>
-                  <Box testId={`switch-network-item-${chainId}`}>
-                    <Inline space="8px" alignVertical="center">
+                  <Box
+                    testId={`switch-network-item-${chainId}`}
+                    style={{ maxWidth: 180 }}
+                  >
+                    <Inline space="8px" alignVertical="center" wrap={false}>
                       <ChainBadge chainId={chainId} size="18" />
-                      <Text color="label" size="14pt" weight="semibold">
+                      <TextOverflow color="label" size="14pt" weight="semibold">
                         {name}
-                      </Text>
+                      </TextOverflow>
                     </Inline>
                   </Box>
                 </Column>
