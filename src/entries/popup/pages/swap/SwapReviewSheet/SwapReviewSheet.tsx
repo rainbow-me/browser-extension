@@ -307,9 +307,10 @@ const SwapReviewSheetWithQuote = ({
         logger.error(new RainbowError('swap: error executing swap'), {
           message: errorMessage,
         });
+        const extractedError = errorMessage.split('[')[0];
         triggerAlert({
           text: i18n.t('errors.executing_swap'),
-          description: errorMessage,
+          description: extractedError,
         });
       }
     } else {
