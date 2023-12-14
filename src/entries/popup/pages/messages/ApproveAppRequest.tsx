@@ -32,7 +32,12 @@ const ApproveAppRequestWrapper = ({
 }) => {
   const { testnetMode } = useTestnetModeStore();
   return (
-    <Box style={{ marginTop: testnetMode ? -TESTNET_MODE_BAR_HEIGHT : 0 }}>
+    <Box
+      style={{
+        marginTop: testnetMode ? -TESTNET_MODE_BAR_HEIGHT : 0,
+      }}
+      height="full"
+    >
       {children}
       <TestnetModeWatcher
         pendingRequest={pendingRequest}
