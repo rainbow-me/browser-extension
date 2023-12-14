@@ -14,7 +14,13 @@ import {
 } from '@wagmi/chains';
 import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay } from '../types/chains';
+import {
+  ChainId,
+  ChainNameDisplay,
+  chainArbitrumSepolia,
+  chainHolesky,
+  chainOptimismSepolia,
+} from '../types/chains';
 
 import {
   getSupportedChainsWithHardhat,
@@ -30,9 +36,9 @@ export const chainIdMap: Record<
   | ChainId.zora,
   ChainId[]
 > = {
-  [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id],
-  [ChainId.optimism]: [optimism.id, optimismGoerli.id],
-  [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id],
+  [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, chainHolesky.id],
+  [ChainId.optimism]: [optimism.id, optimismGoerli.id, chainOptimismSepolia.id],
+  [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id, chainArbitrumSepolia.id],
   [ChainId.polygon]: [polygon.id, polygonMumbai.id],
   [ChainId.base]: [base.id, baseGoerli.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
@@ -51,9 +57,16 @@ export const chainLabelMap: Record<
   [ChainId.mainnet]: [
     ChainNameDisplay[goerli.id],
     ChainNameDisplay[sepolia.id],
+    ChainNameDisplay[chainHolesky.id],
   ],
-  [ChainId.optimism]: [ChainNameDisplay[optimismGoerli.id]],
-  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumGoerli.id]],
+  [ChainId.optimism]: [
+    ChainNameDisplay[optimismGoerli.id],
+    ChainNameDisplay[chainOptimismSepolia.id],
+  ],
+  [ChainId.arbitrum]: [
+    ChainNameDisplay[arbitrumGoerli.id],
+    ChainNameDisplay[chainArbitrumSepolia.id],
+  ],
   [ChainId.polygon]: [ChainNameDisplay[polygonMumbai.id]],
   [ChainId.base]: [ChainNameDisplay[baseGoerli.id]],
   [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
@@ -61,7 +74,9 @@ export const chainLabelMap: Record<
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
-  const allChainsOrder = order?.map((chainId) => chainIdMap[chainId])?.flat();
+  const allChainsOrder = order
+    ?.map((chainId) => chainIdMap[chainId] || [chainId])
+    ?.flat();
   const ordered = chains.sort((a, b) => {
     const aIndex = allChainsOrder.indexOf(a.id);
     const bIndex = allChainsOrder.indexOf(b.id);

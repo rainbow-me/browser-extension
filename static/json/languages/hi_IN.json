@@ -403,7 +403,10 @@
         "view_on_ens": "ENS पर देखें",
         "switch_to_wallet": "इस वॉलेट में स्विच करें",
         "copy_wallet_address": "पता कॉपी करें",
-        "view_wallet_on_etherscan": "Etherscan पर देखें"
+        "view_wallet_on_etherscan": "Etherscan पर देखें",
+        "export_addresses_as_csv": "CSV के रूप में पते निर्यात करें",
+        "enable_flashbots": "Flashbots सक्षम करें",
+        "disable_flashbots": "Flashbots अक्षम करें"
       },
       "search_tags": {
         "swap": "सेतु",
@@ -479,6 +482,18 @@
     },
     "toolbar": {
       "actions_hint": "कार्रवाइयाँ"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "देख रहे हैं",
+        "recovery_phrase": "वसूली वाक्य",
+        "private_key": "निजी कुंजी",
+        "hardware_wallet": "हार्डवेयर वॉलेट"
+      },
+      "toast": {
+        "title": "पते डाउनलोड किए गए",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {
@@ -525,7 +540,6 @@
       "cancel": "रद्द करें",
       "sending_on_network": "%{chainName} नेटवर्क पर भेज रहा है",
       "sending_on_l2_check_1": "मैं एक एक्सचेंज पर नहीं भेज रहा हूँ",
-      "sending_on_l2_check_2": "मुझे भेजने जा रहे व्यक्ति के पास %{chainName}वॉलेट है",
       "complete_checks": "जाँचों को पूरा करें",
       "confirm_hw": "अपनी डिवाइस पर पुष्टि करें"
     }
@@ -938,20 +952,29 @@
     "button_label_cancel": "मुझे बाद में याद दिलाएं"
   },
   "approve_request": {
+    "allow_to_add_asset": "एक टोकन सुझाएँ चाहता है",
     "wallet_info_title": "आपके वॉलेट के साथ कनेक्ट करना चाहता है",
     "wallet_info_description": "%{appName} को आपके वॉलेट का पता, शेष राशि, गतिविधि देखने और लेनदेनों की मंज़ूरी अनुरोध करने के लिए अनुमति दें।",
+    "add_chain_info_description": "यदि आप इसे मंजूर करते हैं, तो इस नेटवर्क का उपयोग रेनबो ब्राउज़र एक्सटेंशन के भीतर किया जा सकता है।",
+    "watch_asset_info_description": "अगर आप इसे मंजूर करते हैं, तो यह एसेट Rainbow Browser Extension में उपयोग किया जा सकता है।",
     "wallet": "वॉलेट",
     "network": "नेटवर्क",
     "switch_networks": "नेटवर्क स्विच करें",
     "switch_wallets": "वॉलेट स्विच करें",
+    "allow_to_add_network": "नेटवर्क जोड़ना चाहता है",
     "connect": "%{appName}से कनेक्ट करें",
     "connect_anyway": "फिर भी कनेक्ट करें",
+    "approve": "मंजूर करें",
+    "approve_anyway": "फिर भी मंजूर करें",
     "malicious_warning": {
       "title": "यह ऐप शायद हानिकरक है",
       "message": "इस ऐप से संदेश या लेन-देन हस्ताक्षरण करने के परिणामस्वरूप आपकी संपत्ति खो सकती है"
     },
+    "dangerous_request": "आपत्तिजनक अनुरोध",
     "message_signing_request": "संदेश हस्ताक्षर अनुरोध",
     "message": "संदेश",
+    "message_copied": "संदेश कॉपी किया गया",
+    "transaction_data_copied": "लेन-देन डेटा कॉपी किया गया",
     "sign_message": "संदेश हस्ताक्षर करें",
     "sign_message_anyway": "फिर भी हस्ताक्षर करें",
     "confirm_hw": "अपनी डिवाइस पर पुष्टि करें",
@@ -960,7 +983,29 @@
     "send_transaction_anyway": "फिर भी पुष्टि करें",
     "contract_deployment": "कॉन्ट्रैक्ट डिप्लॉयमेंट",
     "transaction_request": "लेनदेन अनुरोध",
-    "insufficient_native_asset_for_gas": "गैस के लिए पर्याप्त %{symbol} नहीं"
+    "insufficient_gas_funds": "आपको और चाहिए %{token}",
+    "insufficient_gas_funds_description": "इस लेनदेन के लिए भुगतान करने के लिए आपको थोड़ी ज्यादा %{token} की आवश्यकता है। इस अनुरोध के साथ जारी रखने के लिए नीचे और प्राप्त करें।",
+    "no_gas_funds": "आपको कुछ %{token}की ज़रूरत है",
+    "no_gas_funds_description": "इस लेनदेन के लिए भुगतान करने के लिए आपको %{token} की जरूरत होगी। इस अनुरोध के साथ जारी रखने के लिए नीचे कुछ %{token} प्राप्त करें।",
+    "no_token": "कोई %{token}नहीं।",
+    "on_chain": "पर %{chain}",
+    "copy_deposit_address": "जमा करने के लिए बटुए का पता कॉपी करें",
+    "bridge_to": "ब्रिज तक %{chain}",
+    "signing_with": "के साथ हस्ताक्षर करना",
+    "no_fee_to_sign": "साइन करने के लिए कोई शुल्क नहीं",
+    "request_rejected": "लेन-देन अनुरोध को मंजूर नहीं किया गया",
+    "bridge_and_try_again": "कुछ गैस फंड ब्रिज करें और पुनः प्रयास करें",
+    "buy_and_try_again": "कुछ गैस फंड खरीदें और पुनः प्रयास करें",
+    "buy": "खरीदें %{token}"
+  },
+  "add_chain": {
+    "name": "नाम",
+    "chain_id": "चेन आईडी",
+    "currency_symbol": "मुद्रा प्रतीक",
+    "currency_name": "मुद्रा नाम",
+    "currency_decimals": "मुद्रा दशमलव",
+    "rpc_url": "RPC URL",
+    "block_explorer_url": "ब्लॉक एक्सप्लोरर URL"
   },
   "transaction_fee": {
     "title": "लेनदेन की गति",
@@ -1127,14 +1172,36 @@
   },
   "nfts": {
     "coming_soon_header": "जल्द आ रहा है",
+    "empty_state_header": "NFTs",
     "coming_soon_description": "NFTs जल्द ही आ रहे हैं। बने रहें!",
+    "empty_state_description": "आपके NFTs यहां दिखाई देंगे!",
     "view_on_web": "वेब पर देखें",
     "display_mode_gallery": "गैलरी",
     "display_mode_collections": "संग्रह",
     "sort_option_recent": "हाल ही में",
     "sort_option_abc": "एबीसी",
     "sort_option_recent_long": "हाल ही में",
-    "sort_option_abc_long": "वर्णमाला"
+    "sort_option_abc_long": "वर्णमाला",
+    "details": {
+      "last_sales_price": "अंतिम बिक्री कीमत",
+      "none": "कोई नहीं",
+      "floor_price": "फ़्लोर की कीमत",
+      "properties": "गुण",
+      "address_copied": "पता कॉपी किया गया",
+      "about": "के बारे में",
+      "token_standard": "टोकन मानक",
+      "token_contract": "टोकन अनुबंध",
+      "contract_creator": "संविधान सृजक",
+      "chain": "श्रृंखला",
+      "id_copied": "ID कॉपी किया गया",
+      "copy_token_id": "टोकन आईडी कॉपी करें",
+      "download": "डाउनलोड करें",
+      "explorer": "एक्सप्लोरर",
+      "view_collection": "कलेक्शन देखें",
+      "collection_website": "कलेक्शन वेबसाइट",
+      "owners": "मालिक",
+      "unique_owners": "अद्वितीय मालिकों"
+    }
   },
   "points": {
     "coming_soon_header": "जल्द आ रहा है",
@@ -1172,6 +1239,7 @@
     "approvals": "टोकन  अनुमोदन",
     "this_token_is_on_network": "यह %{symbol} इस %{chainName} नेटवर्क पर है",
     "view_on": "%{explorer}पर देखें",
+    "not_available": "मूल्य उपलब्ध नहीं है",
     "more_options": {
       "copy_address": "पता कॉपी करें",
       "hide": "टोकन छिपाएँ",
@@ -1405,5 +1473,42 @@
     "unfavorite": "पसंदीदा से हटाएं",
     "estimated_difference": "मान में अनुमानित अंतर",
     "buy_crypto": "क्रिप्टो खरीदें और ट्रांसफर करें"
+  },
+  "simulation": {
+    "title": "नकली परिणाम",
+    "loading": "नकली जारी है...",
+    "error": "नकली विफल हुई",
+    "no_changes": "कोई परिवर्तन नहीं पाया गया",
+    "received": "प्राप्त किया",
+    "sent": "भेज दिया",
+    "approved": "मंजूरी दी गई",
+    "reverted": "लेन-देन वापस लिए गए",
+    "function": "कार्य",
+    "contract": "संविदा",
+    "contract_name": "संविदा का नाम",
+    "contract_created_at": "कलेक्शन बनाया गया",
+    "source_code": "स्रोत कोड",
+    "signature": {
+      "message": "संदेश"
+    },
+    "tabs": {
+      "overview": "अवलोकन",
+      "details": "विवरण",
+      "data": "डेटा"
+    }
+  },
+  "chain": "श्रृंखला",
+  "nonce": "नॉन्स",
+  "copy": "कॉपी करें",
+  "close": "बंद करें",
+  "verified": "सत्यापित",
+  "unverified": "अप्रमाणित",
+  "watch_asset": {
+    "chain_id": "चेन आईडी",
+    "symbol": "प्रतीक",
+    "decimals": "दशमलव",
+    "address": "पता",
+    "not_found": "हमें इस एसेट को चुने गए नेटवर्क पर नहीं मिला। कृपया नीचे सही नेटवर्क चुनें।"
   }
 }
+

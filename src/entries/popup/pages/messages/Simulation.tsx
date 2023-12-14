@@ -6,7 +6,7 @@ import { formatNumber } from '~/core/utils/formatNumber';
 import { Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextColor } from '~/design-system/styles/designTokens';
 
-import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
+import { CoinIcon, NFTIcon } from '../../components/CoinIcon/CoinIcon';
 import { Spinner } from '../../components/Spinner/Spinner';
 
 import {
@@ -53,7 +53,11 @@ function SimulatedChangeRow({
         </Text>
       </Inline>
       <Inline space="6px" alignVertical="center">
-        <CoinIcon asset={asset} size={14} />
+        {asset?.type === 'nft' ? (
+          <NFTIcon asset={asset} size={16} />
+        ) : (
+          <CoinIcon asset={asset} size={14} />
+        )}
         <Text size="14pt" weight="bold" color={color}>
           {quantity === 'UNLIMITED'
             ? i18n.t('approvals.unlimited')
@@ -74,6 +78,7 @@ export function SimulationOverview({
   status: 'loading' | 'error' | 'success';
   error: SimulationError | null;
 }) {
+  const isMalicious = simulation?.scanning.result !== 'OK';
   return (
     <>
       {status === 'loading' && (
@@ -146,7 +151,7 @@ export function SimulationOverview({
                     size={14}
                     symbol="checkmark.seal.fill"
                     weight="bold"
-                    color="blue"
+                    color={isMalicious ? 'red' : 'blue'}
                   />
                 }
                 label={i18n.t('simulation.approved')}

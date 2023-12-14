@@ -1,16 +1,16 @@
-import { useAccount } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { selectUserAssetWithUniqueId } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { UniqueId } from '~/core/types/assets';
 
-export function useUserAsset(uniqueId?: UniqueId) {
-  const { address } = useAccount();
+export function useUserAsset(uniqueId?: UniqueId, address?: Address) {
+  const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   return useUserAssets(
     {
-      address,
+      address: address || currentAddress,
       currency,
     },
     {

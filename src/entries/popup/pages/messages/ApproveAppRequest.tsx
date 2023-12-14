@@ -17,6 +17,7 @@ import { AddEthereumChain } from './AddEthereumChain';
 import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
 import { SignMessage } from './SignMessage';
+import { WatchAsset } from './WatchAsset';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
@@ -31,7 +32,12 @@ const ApproveAppRequestWrapper = ({
 }) => {
   const { testnetMode } = useTestnetModeStore();
   return (
-    <Box style={{ marginTop: testnetMode ? -TESTNET_MODE_BAR_HEIGHT : 0 }}>
+    <Box
+      style={{
+        marginTop: testnetMode ? -TESTNET_MODE_BAR_HEIGHT : 0,
+      }}
+      height="full"
+    >
       {children}
       <TestnetModeWatcher
         pendingRequest={pendingRequest}
@@ -117,6 +123,19 @@ export const ApproveAppRequest = () => {
           rejectRequest={rejectRequest}
         >
           <AddEthereumChain
+            approveRequest={approveRequest}
+            rejectRequest={rejectRequest}
+            request={pendingRequest}
+          />
+        </ApproveAppRequestWrapper>
+      );
+    case 'wallet_watchAsset':
+      return (
+        <ApproveAppRequestWrapper
+          pendingRequest={pendingRequest}
+          rejectRequest={rejectRequest}
+        >
+          <WatchAsset
             approveRequest={approveRequest}
             rejectRequest={rejectRequest}
             request={pendingRequest}

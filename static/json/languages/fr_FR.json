@@ -403,7 +403,10 @@
         "view_on_ens": "Afficher sur ENS",
         "switch_to_wallet": "Passer à ce portefeuille",
         "copy_wallet_address": "Copier l'adresse",
-        "view_wallet_on_etherscan": "Afficher sur Etherscan"
+        "view_wallet_on_etherscan": "Afficher sur Etherscan",
+        "export_addresses_as_csv": "Exporter les adresses au format CSV",
+        "enable_flashbots": "Activer Flashbots",
+        "disable_flashbots": "Désactiver Flashbots"
       },
       "search_tags": {
         "swap": "pont",
@@ -479,6 +482,18 @@
     },
     "toolbar": {
       "actions_hint": "Actions"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "Observation",
+        "recovery_phrase": "Phrase de récupération",
+        "private_key": "Clé privée",
+        "hardware_wallet": "Portefeuille matériel"
+      },
+      "toast": {
+        "title": "Adresses téléchargées",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {
@@ -510,7 +525,7 @@
       "no_results": "Aucun résultat"
     },
     "tokens_input": {
-      "tokens": "Tokens",
+      "tokens": "Jetons",
       "sort": "Trier",
       "available": "disponible",
       "token_balance": "Solde du token",
@@ -525,7 +540,6 @@
       "cancel": "Annuler",
       "sending_on_network": "Envoi sur le réseau %{chainName}",
       "sending_on_l2_check_1": "Je n'envoie pas vers un échange",
-      "sending_on_l2_check_2": "La personne à laquelle j'envoie dispose d'un portefeuille prenant en charge %{chainName}",
       "complete_checks": "Effectuer les vérifications",
       "confirm_hw": "Confirmez sur votre appareil"
     }
@@ -938,20 +952,29 @@
     "button_label_cancel": "Rappellez-moi plus tard"
   },
   "approve_request": {
+    "allow_to_add_asset": "veut suggérer un jeton",
     "wallet_info_title": "veut se connecter à votre portefeuille",
     "wallet_info_description": "Autoriser %{appName} à afficher l'adresse de vos portefeuilles, les soldes, les activités et demander l'approbation des transactions.",
+    "add_chain_info_description": "Si vous l'approuvez, ce réseau pourrait être utilisé dans l'extension Rainbow du navigateur.",
+    "watch_asset_info_description": "Si vous l'approuvez, cet actif pourrait être utilisé dans l'extension Rainbow Browser.",
     "wallet": "Portefeuille",
     "network": "Réseau",
     "switch_networks": "Changer de réseau",
     "switch_wallets": "Changer de portefeuilles",
+    "allow_to_add_network": "veut ajouter un réseau",
     "connect": "Connecter à %{appName}",
     "connect_anyway": "Connecter de toute façon",
+    "approve": "Approuver",
+    "approve_anyway": "Approuver quand même",
     "malicious_warning": {
       "title": "Cette application est probablement malveillante",
       "message": "Signer des messages ou des transactions depuis cette application pourrait entraîner la perte de vos actifs"
     },
+    "dangerous_request": "Demande dangereuse",
     "message_signing_request": "Demande de signature de message",
     "message": "Message",
+    "message_copied": "Message Copié",
+    "transaction_data_copied": "Données de la transaction copiées",
     "sign_message": "Signer le message",
     "sign_message_anyway": "Signer de toute façon",
     "confirm_hw": "Confirmer sur votre appareil",
@@ -960,7 +983,29 @@
     "send_transaction_anyway": "Confirmer de toute façon",
     "contract_deployment": "Déploiement de contrat",
     "transaction_request": "Demande de transaction",
-    "insufficient_native_asset_for_gas": "Insuffisant %{symbol} pour le gaz"
+    "insufficient_gas_funds": "Vous avez besoin de plus %{token}",
+    "insufficient_gas_funds_description": "Vous avez besoin d'un peu plus %{token} pour payer cette transaction. Obtenez-en plus ci-dessous pour continuer avec cette demande.",
+    "no_gas_funds": "Il vous faut un peu de %{token}",
+    "no_gas_funds_description": "Vous aurez besoin de %{token} pour payer cette transaction. Obtenez un peu de %{token} ci-dessous pour continuer avec cette demande",
+    "no_token": "Pas de %{token}",
+    "on_chain": "sur %{chain}",
+    "copy_deposit_address": "Copier l'adresse du portefeuille pour déposer",
+    "bridge_to": "Pont vers %{chain}",
+    "signing_with": "Signature avec",
+    "no_fee_to_sign": "Pas de frais pour signer",
+    "request_rejected": "Demande de transaction rejetée",
+    "bridge_and_try_again": "Transférez des fonds de gaz et réessayez",
+    "buy_and_try_again": "Achetez quelques fonds de gaz et réessayez",
+    "buy": "Acheter %{token}"
+  },
+  "add_chain": {
+    "name": "Nom",
+    "chain_id": "ID de la chaîne",
+    "currency_symbol": "Symbole de devise",
+    "currency_name": "Nom de la devise",
+    "currency_decimals": "Décimales de la devise",
+    "rpc_url": "URL RPC",
+    "block_explorer_url": "URL de l'explorateur de blocs"
   },
   "transaction_fee": {
     "title": "Vitesse de transaction",
@@ -1072,7 +1117,7 @@
     "activity": "Activité",
     "nfts": "NFTs",
     "points": "Points",
-    "tokens": "Tokens"
+    "tokens": "Jetons"
   },
   "activity": {
     "today": "Aujourd'hui",
@@ -1127,14 +1172,36 @@
   },
   "nfts": {
     "coming_soon_header": "Bientôt Disponible",
+    "empty_state_header": "NFTs",
     "coming_soon_description": "Les NFTs arrivent bientôt. Restez à l'écoute!",
+    "empty_state_description": "Vos NFT apparaîtront ici !",
     "view_on_web": "Voir sur le Web",
     "display_mode_gallery": "Galerie",
     "display_mode_collections": "Collections",
     "sort_option_recent": "Récent",
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "Récent",
-    "sort_option_abc_long": "Alphabétique"
+    "sort_option_abc_long": "Alphabétique",
+    "details": {
+      "last_sales_price": "Prix de vente précédent",
+      "none": "Aucun",
+      "floor_price": "Prix plancher",
+      "properties": "Propriétés",
+      "address_copied": "Adresse copiée",
+      "about": "À propos",
+      "token_standard": "Standard du jeton",
+      "token_contract": "Contrat du jeton",
+      "contract_creator": "Créateur du contrat",
+      "chain": "Chaîne",
+      "id_copied": "ID Copié",
+      "copy_token_id": "Copier l'ID du jeton",
+      "download": "Télécharger",
+      "explorer": "Explorateur",
+      "view_collection": "Voir la collection",
+      "collection_website": "Site de collection",
+      "owners": "Propriétaires",
+      "unique_owners": "Propriétaires uniques"
+    }
   },
   "points": {
     "coming_soon_header": "Bientôt Disponible",
@@ -1172,6 +1239,7 @@
     "approvals": "Approbations de jetons",
     "this_token_is_on_network": "Cette %{symbol} est sur le réseau %{chainName}",
     "view_on": "Voir sur %{explorer}",
+    "not_available": "Prix indisponible",
     "more_options": {
       "copy_address": "Copier l'adresse",
       "hide": "Cacher le jeton",
@@ -1405,5 +1473,42 @@
     "unfavorite": "Retirer des favoris",
     "estimated_difference": "Différence estimée de valeur",
     "buy_crypto": "Acheter et transférer des cryptos"
+  },
+  "simulation": {
+    "title": "Résultat simulé",
+    "loading": "Simulation en cours...",
+    "error": "Simulation échouée",
+    "no_changes": "Aucun changement détecté",
+    "received": "Reçu",
+    "sent": "Envoyé",
+    "approved": "Approuvé",
+    "reverted": "Transaction Rejetée",
+    "function": "Fonction",
+    "contract": "Contrat",
+    "contract_name": "Nom du Contrat",
+    "contract_created_at": "Contrat créé",
+    "source_code": "Code source",
+    "signature": {
+      "message": "Message"
+    },
+    "tabs": {
+      "overview": "Aperçu",
+      "details": "Détails",
+      "data": "Données"
+    }
+  },
+  "chain": "Chaîne",
+  "nonce": "Nonce",
+  "copy": "Copier",
+  "close": "Fermer",
+  "verified": "Vérifié",
+  "unverified": "Non vérifié",
+  "watch_asset": {
+    "chain_id": "ID de la chaîne",
+    "symbol": "Symbole",
+    "decimals": "Décimales",
+    "address": "Adresse",
+    "not_found": "Nous n'avons pas pu trouver cet actif sur le réseau sélectionné. Veuillez choisir le réseau approprié ci-dessous"
   }
 }
+

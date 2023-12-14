@@ -160,6 +160,22 @@ export const shortcuts = {
       display: 'W',
       key: 'w',
     },
+    NFT_DISPLAY_MODE_GROUPED: {
+      display: '1',
+      key: '1',
+    },
+    NFT_DISPLAY_MODE_COLLECTION: {
+      display: '2',
+      key: '2',
+    },
+    NFT_SORT_RECENT: {
+      display: '1',
+      key: '1',
+    },
+    NFT_SORT_ABC: {
+      display: '2',
+      key: '2',
+    },
   },
   wallets: {
     CHOOSE_WALLET_GROUP_NEW: {

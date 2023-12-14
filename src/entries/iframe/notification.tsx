@@ -32,12 +32,15 @@ const ASSET_SOURCE = {
   [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge.png',
   [ChainId.goerli]: 'assets/badges/ethereumBadge.png',
   [ChainId.sepolia]: 'assets/badges/ethereumBadge.png',
-  [ChainId['optimism-goerli']]: 'assets/badges/optimismBadge.png',
-  [ChainId['bsc-testnet']]: 'assets/badges/bscBadge.png',
-  [ChainId['polygon-mumbai']]: 'assets/badges/polygonBadge.png',
-  [ChainId['arbitrum-goerli']]: 'assets/badges/arbitrumBadge.png',
-  [ChainId['base-goerli']]: 'assets/badges/baseBadge.png',
-  [ChainId['zora-testnet']]: 'assets/badges/zoraBadge.png',
+  [ChainId.holesky]: 'assets/badges/ethereumBadge.png',
+  [ChainId.optimismGoerli]: 'assets/badges/optimismBadge.png',
+  [ChainId.optimismSepolia]: 'assets/badges/optimismBadge.png',
+  [ChainId.bscTestnet]: 'assets/badges/bscBadge.png',
+  [ChainId.polygonMumbai]: 'assets/badges/polygonBadge.png',
+  [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge.png',
+  [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge.png',
+  [ChainId.baseGoerli]: 'assets/badges/baseBadge.png',
+  [ChainId.zoraTestnet]: 'assets/badges/zoraBadge.png',
 };
 
 export enum IN_DAPP_NOTIFICATION_STATUS {
@@ -58,9 +61,14 @@ export const Notification = ({
   const [ref, setRef] = useState<HTMLIFrameElement>();
   const [iframeLoaded, setIframeLoaded] = useState<boolean>(false);
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
+  const [isVisible, setIsVisible] = useState(true);
 
   const onRef = (ref: HTMLIFrameElement) => {
     setRef(ref);
+  };
+
+  const handleDismiss = () => {
+    setIsVisible(false);
   };
 
   const container = ref?.contentDocument?.body;
@@ -191,7 +199,7 @@ export const Notification = ({
     }
   }, [extensionUrl, ref?.contentDocument]);
 
-  return (
+  return isVisible ? (
     <iframe
       style={{
         top: INJECTED_NOTIFICATION_DIMENSIONS.top,
@@ -213,11 +221,12 @@ export const Notification = ({
             status={status}
             extensionUrl={extensionUrl}
             iframeLoaded={iframeLoaded}
+            onDismiss={handleDismiss}
           />,
           container,
         )}
     </iframe>
-  );
+  ) : null;
 };
 
 const NotificationComponent = ({
@@ -226,12 +235,14 @@ const NotificationComponent = ({
   status,
   extensionUrl,
   iframeLoaded,
+  onDismiss,
 }: {
   chainId: ChainId;
   siteTheme: 'dark' | 'light';
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
   iframeLoaded: boolean;
+  onDismiss: () => void;
 }) => {
   const { title, description } = useMemo(() => {
     switch (status) {
@@ -263,6 +274,7 @@ const NotificationComponent = ({
           height: INJECTED_NOTIFICATION_DIMENSIONS.height,
           width: INJECTED_NOTIFICATION_DIMENSIONS.width,
         }}
+        onClick={onDismiss}
       >
         <Inline height="full" alignVertical="center" alignHorizontal="center">
           <Box

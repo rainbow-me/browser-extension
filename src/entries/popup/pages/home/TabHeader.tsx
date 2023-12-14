@@ -17,7 +17,7 @@ import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 
 import DisplayModeDropdown from './NFTs/DisplayModeDropdown';
-import SortdDropdown from './NFTs/SortDropdown';
+import SortDropdown from './NFTs/SortDropdown';
 
 export function TabHeader({
   activeTab,
@@ -77,7 +77,12 @@ export function TabHeader({
         alignItems="center"
       >
         <Inline alignVertical="bottom" space="6px">
-          <Text size="16pt" weight="heavy">
+          <Text
+            size="16pt"
+            weight="heavy"
+            textShadow={activeTab === 'points' ? '12px accent' : undefined}
+            color={activeTab === 'points' ? 'accent' : 'label'}
+          >
             {i18n.t(`tabs.${activeTab}`)}
           </Text>
           {activeTab === 'tokens' && visibleTokenCount > 0 && (
@@ -114,7 +119,7 @@ export function TabHeader({
         {activeTab === 'nfts' && featureFlags.nfts_enabled && (
           <Inline alignVertical="center" space="8px">
             <DisplayModeDropdown />
-            <SortdDropdown />
+            <SortDropdown />
           </Inline>
         )}
       </Box>

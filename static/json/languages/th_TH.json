@@ -403,7 +403,10 @@
         "view_on_ens": "ดูบน ENS",
         "switch_to_wallet": "สลับไปยังกระเป๋าสตางค์นี้",
         "copy_wallet_address": "คัดลอกที่อยู่",
-        "view_wallet_on_etherscan": "ดูบน Etherscan"
+        "view_wallet_on_etherscan": "ดูบน Etherscan",
+        "export_addresses_as_csv": "ส่งออกที่อยู่เป็น CSV",
+        "enable_flashbots": "เปิดใช้งาน Flashbots",
+        "disable_flashbots": "ปิดการใช้งาน Flashbots"
       },
       "search_tags": {
         "swap": "สะพาน",
@@ -479,6 +482,18 @@
     },
     "toolbar": {
       "actions_hint": "การดำเนินการ"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "กำลังสังเกต",
+        "recovery_phrase": "วลีกู้คืน",
+        "private_key": "คีย์ส่วนตัว",
+        "hardware_wallet": "กระเป๋าสตางค์ฮาร์ดแวร์"
+      },
+      "toast": {
+        "title": "ดาวน์โหลดที่อยู่แล้ว",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {
@@ -525,7 +540,6 @@
       "cancel": "ยกเลิก",
       "sending_on_network": "กำลังส่งบนเครือข่าย %{chainName}",
       "sending_on_l2_check_1": "ฉันไม่ได้ส่งไปยังแลกเปลี่ยน",
-      "sending_on_l2_check_2": "คนที่ฉันส่งถึงมีกระเป๋าสตางค์ที่สนับสนุน %{chainName}",
       "complete_checks": "ตรวจสอบครบถ้วน",
       "confirm_hw": "ยืนยันบนอุปกรณ์ของคุณ"
     }
@@ -938,20 +952,29 @@
     "button_label_cancel": "แจ้งฉันใหม่ภายหลัง"
   },
   "approve_request": {
+    "allow_to_add_asset": "ต้องการแนะนำการใช้โทเค็น",
     "wallet_info_title": "ต้องการเชื่อมต่อกับกระเป๋าสตางค์ของคุณ",
     "wallet_info_description": "อนุญาติ %{appName} เพื่อดูที่อยู่กระเป๋าสตางค์, ยอดเงิน, กิจกรรมและขออนุมัติสำหรับการทำธุรกรรม",
+    "add_chain_info_description": "หากคุณอนุมัติก็ใช้งานได้ในส่วนต่อขยายของเบราว์เซอร์ Rainbow",
+    "watch_asset_info_description": "หากคุณอนุมัติ สินทรัพย์เหล่านี้สามารถใช้งานได้ในส่วนขยายเบราว์เซอร์ Rainbow",
     "wallet": "กระเป๋าสตางค์",
     "network": "เครือข่าย",
     "switch_networks": "สลับเครือข่าย",
     "switch_wallets": "สลับกระเป๋าสตางค์",
+    "allow_to_add_network": "ต้องการเพิ่มเครือข่าย",
     "connect": "เชื่อมต่อกับ %{appName}",
     "connect_anyway": "เชื่อมต่อแบบไม่รวมเงื่อนไข",
+    "approve": "อนุมัติ",
+    "approve_anyway": "อนุมัติในทุกกรณี",
     "malicious_warning": {
       "title": "แอปนี้มีแนวโน้มเป็นมัลแวร์",
       "message": "การทำธุรกรรมหรือเซ็นข้อความจากแอปนี้อาจทำให้คุณสูญเสียสินทรัพย์"
     },
+    "dangerous_request": "คำขอที่เสี่ยงต่อความปลอดภัย",
     "message_signing_request": "คำขอลงนามข้อความ",
     "message": "ข้อความ",
+    "message_copied": "คัดลอกข้อความแล้ว",
+    "transaction_data_copied": "คัดลอกข้อมูลธุรกรรมแล้ว",
     "sign_message": "ลงนามข้อความ",
     "sign_message_anyway": "เซ็นโดยไม่คำนึงเงื่อนไข",
     "confirm_hw": "ยืนยันบนอุปกรณ์ของคุณ",
@@ -960,7 +983,29 @@
     "send_transaction_anyway": "ยืนยันโดยไม่คำนึงเงื่อนไข",
     "contract_deployment": "การเปิดใช้งานสัญญา",
     "transaction_request": "คำร้องเรียกร้องการทำธุรกรรม",
-    "insufficient_native_asset_for_gas": "%{symbol} ไม่เพียงพอสำหรับแก๊ส"
+    "insufficient_gas_funds": "คุณต้องมีเพิ่มเติม %{token}",
+    "insufficient_gas_funds_description": "คุณต้องมีเพิ่มเติมขึ้น %{token} เพื่อชำระสำหรับการทำธุรกรรมนี้ รับเพิ่มเติมด้านล่างเพื่อดำเนินการกับคำขอนี้",
+    "no_gas_funds": "คุณต้องมีบางส่วนของ %{token}",
+    "no_gas_funds_description": "คุณจะต้องมี %{token} เพื่อชำระสำหรับการทำธุรกรรมนี้ รับบางส่วน %{token} ด้านล่างเพื่อดำเนินการกับคำขอนี้",
+    "no_token": "ไม่มี %{token}",
+    "on_chain": "บน %{chain}",
+    "copy_deposit_address": "คัดลอกที่อยู่กระเป๋าเงินเพื่อฝาก",
+    "bridge_to": "สะพานไปยัง %{chain}",
+    "signing_with": "กำลังลงลายมือด้วย",
+    "no_fee_to_sign": "ไม่มีค่าธรรมเนียมในการเซ็นต์",
+    "request_rejected": "คำขอธุรกรรมถูกปฏิเสธ",
+    "bridge_and_try_again": "ส่งเงินม้วนธรรมเนียมไปสักหน่วยและลองอีกครั้ง",
+    "buy_and_try_again": "ซื้อม้วนธรรมเนียมไปสักหน่วยและลองอีกครั้ง",
+    "buy": "ซื้อ %{token}"
+  },
+  "add_chain": {
+    "name": "ชื่อ",
+    "chain_id": "รหัสเครือข่าย",
+    "currency_symbol": "สัญลักษณ์สกุลเงิน",
+    "currency_name": "ชื่อสกุลเงิน",
+    "currency_decimals": "จำนวนทศนิยมของสกุลเงิน",
+    "rpc_url": "URL RPC",
+    "block_explorer_url": "URL Block Explorer"
   },
   "transaction_fee": {
     "title": "ความเร็วของธุรกรรม",
@@ -1127,14 +1172,36 @@
   },
   "nfts": {
     "coming_soon_header": "เร็วๆนี้",
+    "empty_state_header": "NFTs",
     "coming_soon_description": "NFTs เร็ว ๆ นี้ คอยติดตาม!",
+    "empty_state_description": "NFTs ของคุณจะปรากฎที่นี่!",
     "view_on_web": "ดูในเว็บ",
     "display_mode_gallery": "แกลเลอรี",
     "display_mode_collections": "คอลเลกชัน",
     "sort_option_recent": "ล่าสุด",
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "ล่าสุด",
-    "sort_option_abc_long": "ตามตัวอักษร"
+    "sort_option_abc_long": "ตามตัวอักษร",
+    "details": {
+      "last_sales_price": "ราคาขายล่าสุด",
+      "none": "ไม่มี",
+      "floor_price": "ราคาฟลอร์",
+      "properties": "คุณสมบัติ",
+      "address_copied": "คัดลอกที่อยู่แล้ว",
+      "about": "เกี่ยวกับ",
+      "token_standard": "มาตรฐานโทเค็น",
+      "token_contract": "สัญญาโทเค็น",
+      "contract_creator": "ผู้สร้างสัญญา",
+      "chain": "เชื่อมโยง",
+      "id_copied": "คัดลอก ID แล้ว",
+      "copy_token_id": "คัดลอกรหัสโทเค็น",
+      "download": "ดาวน์โหลด",
+      "explorer": "เบราว์เซอร์",
+      "view_collection": "ดูคลัง",
+      "collection_website": "เว็บไซต์คลัง",
+      "owners": "เจ้าของ",
+      "unique_owners": "เจ้าของที่ไม่ซ้ำหน้า"
+    }
   },
   "points": {
     "coming_soon_header": "เร็วๆนี้",
@@ -1172,6 +1239,7 @@
     "approvals": "การอนุมัติโทเคน",
     "this_token_is_on_network": "%{symbol} นี้อยู่บนเครือข่าย %{chainName}",
     "view_on": "ดูบน %{explorer}",
+    "not_available": "ราคาไม่สามารถใช้ได้",
     "more_options": {
       "copy_address": "คัดลอกที่อยู่",
       "hide": "ซ่อนโทเคน",
@@ -1405,5 +1473,42 @@
     "unfavorite": "ลบออกจากรายการโปรด",
     "estimated_difference": "ความแตกต่างในมูลค่าที่ประมาณการ",
     "buy_crypto": "ซื้อและโอนคริปโต"
+  },
+  "simulation": {
+    "title": "ผลลัพธ์จำลอง",
+    "loading": "กำลังจำลอง...",
+    "error": "การจำลองล้มเหลว",
+    "no_changes": "ไม่พบการเปลี่ยนแปลง",
+    "received": "ได้รับแล้ว",
+    "sent": "ส่งแล้ว",
+    "approved": "อนุมัติแล้ว",
+    "reverted": "ธุรกรรมถูกยกเลิก",
+    "function": "ฟังก์ชัน",
+    "contract": "สัญญา",
+    "contract_name": "ชื่อสัญญา",
+    "contract_created_at": "สร้างสัญญาแล้ว",
+    "source_code": "รหัสต้นฉบับ",
+    "signature": {
+      "message": "ข้อความ"
+    },
+    "tabs": {
+      "overview": "ภาพรวม",
+      "details": "รายละเอียด",
+      "data": "ข้อมูล"
+    }
+  },
+  "chain": "เชื่อมโยง",
+  "nonce": "Nonce",
+  "copy": "คัดลอก",
+  "close": "ปิด",
+  "verified": "ได้รับการตรวจสอบ",
+  "unverified": "ไม่ได้รับการตรวจสอบ",
+  "watch_asset": {
+    "chain_id": "รหัสเครือข่าย",
+    "symbol": "สัญลักษณ์",
+    "decimals": "ทศนิยม",
+    "address": "ที่อยู่",
+    "not_found": "เราไม่พบสินทรัพย์เหล่านี้ในเครือข่ายที่เลือก โปรดเลือกเครือข่ายที่ถูกต้องด้านล่าง"
   }
 }
+

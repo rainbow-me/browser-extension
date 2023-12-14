@@ -3,8 +3,11 @@ import type { Chain } from 'wagmi';
 
 const HARDHAT_CHAIN_ID = 1337;
 const HARDHAT_OP_CHAIN_ID = 1338;
+const HOLESKY_CHAIN_ID = 17000;
+const OPTIMISM_SEPOLIA_CHAIN_ID = 11155420;
+const ARBITRUM_SEPOLIA_CHAIN_ID = 421614;
 
-export const hardhat: Chain = {
+export const chainHardhat: Chain = {
   id: HARDHAT_CHAIN_ID,
   name: 'Hardhat',
   network: 'hardhat',
@@ -20,10 +23,10 @@ export const hardhat: Chain = {
   testnet: true,
 };
 
-export const hardhatOptimism: Chain = {
+export const chainHardhatOptimism: Chain = {
   id: HARDHAT_OP_CHAIN_ID,
   name: 'Hardhat OP',
-  network: 'hardhatOptimism',
+  network: 'hardhat-optimism',
   nativeCurrency: {
     decimals: 18,
     name: 'Hardhat Op',
@@ -36,19 +39,70 @@ export const hardhatOptimism: Chain = {
   testnet: true,
 };
 
+export const chainHolesky: Chain = {
+  id: HOLESKY_CHAIN_ID,
+  name: 'Holesky',
+  network: 'holesky',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Holesky Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    public: { http: [''] },
+    default: { http: [''] },
+  },
+  testnet: true,
+};
+
+export const chainArbitrumSepolia: Chain = {
+  id: ARBITRUM_SEPOLIA_CHAIN_ID,
+  name: 'Arbitrum Sepolia',
+  network: 'arbitrum-sepolia',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Arbitrum Sepolia Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    public: { http: [''] },
+    default: { http: [''] },
+  },
+  testnet: true,
+};
+
+export const chainOptimismSepolia: Chain = {
+  id: OPTIMISM_SEPOLIA_CHAIN_ID,
+  name: 'Optimism Sepolia',
+  network: 'optimism-sepolia',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Optimism Sepolia Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    public: { http: [''] },
+    default: { http: [''] },
+  },
+  testnet: true,
+};
+
 export enum ChainName {
   arbitrum = 'arbitrum',
+  arbitrumSepolia = 'arbitrum-sepolia',
   base = 'base',
   bsc = 'bsc',
   optimism = 'optimism',
   polygon = 'polygon',
   zora = 'zora',
   mainnet = 'mainnet',
+  holesky = 'holesky',
   hardhat = 'hardhat',
-  hardhatOptimism = 'hardhatOptimism',
+  hardhatOptimism = 'hardhat-optimism',
   goerli = 'goerli',
   sepolia = 'sepolia',
   optimismGoerli = 'optimism-goerli',
+  optimismSepolia = 'optimism-sepolia',
   bscTestnet = 'bsc-testnet',
   polygonMumbai = 'polygon-mumbai',
   arbitrumGoerli = 'arbitrum-goerli',
@@ -65,16 +119,69 @@ export enum ChainId {
   polygon = chain.polygon.id,
   zora = chain.zora.id,
   hardhat = HARDHAT_CHAIN_ID,
-  hardhatOptimism = HARDHAT_OP_CHAIN_ID,
+  hardhatOptimism = chainHardhatOptimism.id,
   goerli = chain.goerli.id,
   sepolia = chain.sepolia.id,
-  'optimism-goerli' = chain.optimismGoerli.id,
-  'bsc-testnet' = chain.bscTestnet.id,
-  'polygon-mumbai' = chain.polygonMumbai.id,
-  'arbitrum-goerli' = chain.arbitrumGoerli.id,
-  'base-goerli' = chain.baseGoerli.id,
-  'zora-testnet' = chain.zoraTestnet.id,
+  holesky = chainHolesky.id,
+  optimismGoerli = chain.optimismGoerli.id,
+  optimismSepolia = chainOptimismSepolia.id,
+  bscTestnet = chain.bscTestnet.id,
+  polygonMumbai = chain.polygonMumbai.id,
+  arbitrumGoerli = chain.arbitrumGoerli.id,
+  arbitrumSepolia = chainArbitrumSepolia.id,
+  baseGoerli = chain.baseGoerli.id,
+  zoraTestnet = chain.zoraTestnet.id,
 }
+
+export const chainNameToIdMapping: {
+  [key in ChainName]: ChainId;
+} = {
+  [ChainName.arbitrum]: ChainId.arbitrum,
+  [ChainName.arbitrumSepolia]: ChainId.arbitrumSepolia,
+  [ChainName.base]: ChainId.base,
+  [ChainName.bsc]: ChainId.bsc,
+  [ChainName.optimism]: ChainId.optimism,
+  [ChainName.polygon]: ChainId.polygon,
+  [ChainName.zora]: ChainId.zora,
+  [ChainName.mainnet]: ChainId.mainnet,
+  [ChainName.holesky]: ChainId.holesky,
+  [ChainName.hardhat]: ChainId.hardhat,
+  [ChainName.hardhatOptimism]: ChainId.hardhatOptimism,
+  [ChainName.goerli]: ChainId.goerli,
+  [ChainName.sepolia]: ChainId.sepolia,
+  [ChainName.optimismGoerli]: ChainId.optimismGoerli,
+  [ChainName.optimismSepolia]: ChainId.optimismSepolia,
+  [ChainName.bscTestnet]: ChainId.bscTestnet,
+  [ChainName.polygonMumbai]: ChainId.polygonMumbai,
+  [ChainName.arbitrumGoerli]: ChainId.arbitrumGoerli,
+  [ChainName.baseGoerli]: ChainId.baseGoerli,
+  [ChainName.zoraTestnet]: ChainId.zoraTestnet,
+};
+
+export const chainIdToNameMapping: {
+  [key in ChainId]: ChainName;
+} = {
+  [ChainId.arbitrum]: ChainName.arbitrum,
+  [ChainId.arbitrumSepolia]: ChainName.arbitrumSepolia,
+  [ChainId.base]: ChainName.base,
+  [ChainId.bsc]: ChainName.bsc,
+  [ChainId.optimism]: ChainName.optimism,
+  [ChainId.polygon]: ChainName.polygon,
+  [ChainId.zora]: ChainName.zora,
+  [ChainId.mainnet]: ChainName.mainnet,
+  [ChainId.holesky]: ChainName.holesky,
+  [ChainId.hardhat]: ChainName.hardhat,
+  [ChainId.hardhatOptimism]: ChainName.hardhatOptimism,
+  [ChainId.goerli]: ChainName.goerli,
+  [ChainId.sepolia]: ChainName.sepolia,
+  [ChainId.optimismGoerli]: ChainName.optimismGoerli,
+  [ChainId.optimismSepolia]: ChainName.optimismSepolia,
+  [ChainId.bscTestnet]: ChainName.bscTestnet,
+  [ChainId.polygonMumbai]: ChainName.polygonMumbai,
+  [ChainId.arbitrumGoerli]: ChainName.arbitrumGoerli,
+  [ChainId.baseGoerli]: ChainName.baseGoerli,
+  [ChainId.zoraTestnet]: ChainName.zoraTestnet,
+};
 
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
@@ -85,13 +192,16 @@ export const ChainNameDisplay = {
   [ChainId.zora]: 'Zora',
   [ChainId.mainnet]: 'Ethereum',
   [ChainId.hardhat]: 'Hardhat',
-  [ChainId.hardhatOptimism]: 'Hardhat Optimism',
+  [ChainId.hardhatOptimism]: chainHardhatOptimism.name,
   [ChainId.goerli]: chain.goerli.name,
   [ChainId.sepolia]: chain.sepolia.name,
-  [ChainId['optimism-goerli']]: chain.optimismGoerli.name,
-  [ChainId['bsc-testnet']]: 'BSC Testnet',
-  [ChainId['polygon-mumbai']]: chain.polygonMumbai.name,
-  [ChainId['arbitrum-goerli']]: chain.arbitrumGoerli.name,
-  [ChainId['base-goerli']]: chain.baseGoerli.name,
-  [ChainId['zora-testnet']]: chain.zoraTestnet.name,
+  [ChainId.holesky]: chainHolesky.name,
+  [ChainId.optimismGoerli]: chain.optimismGoerli.name,
+  [ChainId.optimismSepolia]: chainOptimismSepolia.name,
+  [ChainId.bscTestnet]: 'BSC Testnet',
+  [ChainId.polygonMumbai]: chain.polygonMumbai.name,
+  [ChainId.arbitrumGoerli]: chain.arbitrumGoerli.name,
+  [ChainId.arbitrumSepolia]: chainArbitrumSepolia.name,
+  [ChainId.baseGoerli]: chain.baseGoerli.name,
+  [ChainId.zoraTestnet]: 'Zora Goerli',
 } as const;

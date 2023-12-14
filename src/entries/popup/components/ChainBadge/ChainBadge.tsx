@@ -10,9 +10,11 @@ import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
 import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
 import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
 import { ChainId } from '~/core/types/chains';
-import { customChainIdsToAssetNames } from '~/core/utils/chains';
-import { Box } from '~/design-system';
+import { customChainIdsToAssetNames, getChain } from '~/core/utils/chains';
+import { Box, Text } from '~/design-system';
+import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 
+import { pseudoRandomArrayItemFromString } from '../../utils/pseudoRandomArrayItemFromString';
 import ExternalImage from '../ExternalImage/ExternalImage';
 
 const chainBadgeSize = {
@@ -43,12 +45,15 @@ const networkBadges = {
   [ChainId.hardhatOptimism]: HardhatBadge,
   [ChainId.goerli]: EthereumBadge,
   [ChainId.sepolia]: EthereumBadge,
-  [ChainId['optimism-goerli']]: OptimismBadge,
-  [ChainId['bsc-testnet']]: BscBadge,
-  [ChainId['polygon-mumbai']]: PolygonBadge,
-  [ChainId['arbitrum-goerli']]: ArbitrumBadge,
-  [ChainId['base-goerli']]: BaseBadge,
-  [ChainId['zora-testnet']]: ZoraBadge,
+  [ChainId.holesky]: EthereumBadge,
+  [ChainId.optimismGoerli]: OptimismBadge,
+  [ChainId.optimismSepolia]: OptimismBadge,
+  [ChainId.bscTestnet]: BscBadge,
+  [ChainId.polygonMumbai]: PolygonBadge,
+  [ChainId.arbitrumGoerli]: ArbitrumBadge,
+  [ChainId.arbitrumSepolia]: ArbitrumBadge,
+  [ChainId.baseGoerli]: BaseBadge,
+  [ChainId.zoraTestnet]: ZoraBadge,
 };
 
 const ChainBadge = ({
@@ -56,18 +61,49 @@ const ChainBadge = ({
   shadow = false,
   size = '18',
 }: ChainIconProps) => {
-  if (
-    !Object.keys(networkBadges).includes(`${chainId}`) &&
-    !customChainIdsToAssetNames[chainId]
-  )
-    return null;
-
-  const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
-
   let boxShadow;
   if (shadow) {
     boxShadow = '0px 4px 12px 0px rgba(0, 0, 0, 0.3)';
   }
+  const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
+
+  if (
+    !Object.keys(networkBadges).includes(`${chainId}`) &&
+    !customChainIdsToAssetNames[chainId]
+  ) {
+    const chain = getChain({ chainId });
+    return (
+      <Box
+        borderRadius="round"
+        style={{
+          height: iconSize,
+          width: iconSize,
+          borderRadius: iconSize,
+          boxShadow,
+          backgroundColor: pseudoRandomArrayItemFromString<string>(
+            chain.name || '',
+            emojiColors,
+          ),
+        }}
+      >
+        <Box
+          height="full"
+          alignItems="center"
+          flexDirection="row"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text size="9pt" color="labelWhite" weight="bold" align="center">
+            {chain.name.substring(0, 1).toUpperCase()}
+          </Text>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <Box
       borderRadius="round"
@@ -84,7 +120,12 @@ const ChainBadge = ({
           width="100%"
           height="100%"
           loading="lazy"
-          style={{ userSelect: 'none' }}
+          style={{
+            userSelect: 'none',
+            height: iconSize,
+            width: iconSize,
+            borderRadius: iconSize,
+          }}
           draggable={false}
         />
       ) : (
@@ -93,7 +134,9 @@ const ChainBadge = ({
           width="100%"
           height="100%"
           loading="lazy"
-          style={{ userSelect: 'none' }}
+          style={{
+            userSelect: 'none',
+          }}
           draggable={false}
         />
       )}

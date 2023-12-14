@@ -8,6 +8,7 @@ import { Box, Inline } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { useAvatar } from '../../hooks/useAvatar';
+import { useWallets } from '../../hooks/useWallets';
 import { zIndexes } from '../../utils/zIndexes';
 import { timingConfig } from '../CommandK/references';
 
@@ -88,6 +89,8 @@ export function TabBar({
     return currentTheme === 'dark' ? [0, 0, 0] : rgbValues;
   }, [avatar?.color, currentTheme]);
 
+  const { isWatchingWallet } = useWallets();
+
   return (
     <Box
       alignItems="center"
@@ -123,19 +126,22 @@ export function TabBar({
         height="full"
         space="4px"
       >
-        {tabConfig.map((tab, index) => (
-          <Tab
-            Icon={tab.Icon}
-            SelectedIcon={tab.SelectedIcon}
-            accentColor={avatar?.color || globalColors.blue50}
-            colorMatrixValues={colorMatrixValues}
-            index={index}
-            key={index}
-            name={tab.name}
-            onSelectTab={onSelectTab}
-            selectedTabIndex={TABS.indexOf(activeTab)}
-          />
-        ))}
+        {tabConfig.map((tab, index) => {
+          if (tab.name === 'points' && isWatchingWallet) return null;
+          return (
+            <Tab
+              Icon={tab.Icon}
+              SelectedIcon={tab.SelectedIcon}
+              accentColor={avatar?.color || globalColors.blue50}
+              colorMatrixValues={colorMatrixValues}
+              index={index}
+              key={index}
+              name={tab.name}
+              onSelectTab={onSelectTab}
+              selectedTabIndex={TABS.indexOf(activeTab)}
+            />
+          );
+        })}
       </Inline>
     </Box>
   );
@@ -174,6 +180,7 @@ function Tab({
         onSelectTab(name);
       }}
       style={{ height: TAB_HEIGHT, width: TAB_WIDTH }}
+      testId={`bottom-tab-${name}`}
     >
       <Box
         alignItems="center"

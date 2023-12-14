@@ -533,6 +533,9 @@ export const calculateL1FeeOptimism = async ({
 export const meteorologySupportsChain = (chainId: ChainId) =>
   [
     ChainId.bsc,
+    ChainId.sepolia,
+    ChainId.goerli,
+    ChainId.holesky,
     ChainId.mainnet,
     ChainId.polygon,
     ChainId.base,
@@ -544,6 +547,9 @@ export const meteorologySupportsChain = (chainId: ChainId) =>
 export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
   [
     ChainId.mainnet,
+    ChainId.sepolia,
+    ChainId.goerli,
+    ChainId.holesky,
     ChainId.base,
     ChainId.arbitrum,
     ChainId.optimism,

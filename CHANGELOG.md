@@ -21,34 +21,160 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
-## [v1.2.71](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.71)
-
-### Added
-
-- Display of NFTs in gallery and collection mode, including NFT sorting feature, both behind a feature flag #1082
-- Initial work on custom network support, with no impact on UI or existing functionality #1071
-- Enhanced custom chain support #1123
-- Chore: i18n updates, translations now available for Networks settings, Developer Tools and Testnet Mode, Malicious dApp warnings, Wallet management right-click menus, Clear transactions, Points, NFTs, Custom Networks placeholders #1122 
-- Support for custom networks assets #1120
+## [v1.3.7](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.7)
 
 ### Changed
 
-- Management of RPC proxy flag, default value updated to `on` #1125
+- When joining Rainbow Points, you can now easily share your referral link to X #1203
+- Explainer pop-ups can now be navigated more easily with your keyboard. Press an info button and use `tab`, `esc`, and `return` to get around even faster #1175
+
+## [v1.3.6](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.6)
+
+### Added
+
+- Rainbow Points are here. True believers are always rewarded. [Learn more](https://rainbow.me/points) #1165 #1170 #1184 #1174 #1189 #1193
+
+### Changed
+
+- The Network Changed notification on dapps can now be dismissed with a click #1192
 
 ### Fixed
 
-- Fixed scenarios where native asset price for a token is unavailable #1111
-- Restoration of token details in about section #1115
-- Fix for activity history text overflow issues #1116
-- Ensuring swap prepopulates with the selected token when navigating from the asset context menu #1118
-- Validation of chainid only if available #1121
-- Asset filtering by networks now functioning correctly #1124
-- Testnet native asset sends #1130
+- Fixed an issue that would sometimes cause duplicate Polygon NFTs to appear in your gallery #1197
 
 ### Internal
 
-- Bumped chromedriver from 119.0.0 to 119.0.1 #1126
-- Bumped Axios #1131
+- Resolved an issue with NFT fetching introduced by e2e tests for NFTs #1196
+
+### Testing
+
+- e2e coverage for NFT Gallery and NFT Details #1178
+
+## [v1.3.5](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.5)
+
+### Internal
+
+- Resolved an issue with Rainbow Points feature flag coverage #1195
+
+## [v1.3.0](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.0)
+
+### Added
+
+- You can now view all of your NFTs and NFT collections in Rainbow, just like the app. Head over to the new NFTs tab to view your Gallery and explore your NFTs with rich insights, including Floor Prices, Unique Owners, Rarity, and more #1182
+
+### Changed
+
+- Drastically improved image fetching and rendering for Tokens, NFTs, and Avatars to make Rainbow feel even faster #1183
+
+### Fixed
+
+- Resolved interface shift when loading Tokens and Token Charts #1164
+- Improved Onboarding Secret Recovery Phrase verification language #1172
+
+### Internal
+
+- Added Floor Price Explainer for NFT Details #1169
+- Added autocomplete for a list of Networks in the Custom Networks flow #1177 #1179
+- Now providing all `chainIds` in Backend requests #1187
+- Now counting Custom Network assets in the token count, aggregated balance, and properly sorting the assets #1186
+- Resolved an issue with `chainId` conflicts for Custom Networks and the Networks menu filtering #1185
+- Upgraded `vite` to `4.5.1` to resolve CI checks #1176
+
+## [v1.2.94](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.94)
+
+### Fixed
+
+- Resolved reliability issues with malicious transaction detection upon dapp requests, and improved readability of Rainbow Canary warnings #1168
+- Fixed a formatting issue with `eth_estimateGas` and `eth_gasPrice` RPC calls for dapps that could trigger an error and cause dapps to be unreliable #1163
+
+### Internal
+
+- Added "Registered on" and "Expires in" rows in NFT Details for ENS assets #1166
+- Fixed missing Flashbots toggle store migration to improve developer workflow on rehydrations #1171
+
+## [v1.2.88](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.88)
+
+### Added
+
+- Added Testnet support for Holesky, Arbitrum Sepolia, Optimism Sepolia networks #1147
+
+### Changed
+
+- Improved translations for Magic Menu actions, and Transaction Simulation and Decoding #1160
+
+### Fixed
+
+- Fixed dApp prompt positioning when using multiple windows and monitors #1151
+- Improved keyboard navigation consistency on dApp signature requests. Press `⌘+↵` to sign a message or transaction, `esc` to reject, and `tab` to navigate options #1148
+- Fixed an issue with native token balance resolution where you may sometimes see an incorrect "Insufficient ETH" error when switching between multiple dApps and wallets #1157
+- Fixed a rendering issue with price change estimates for Token Charts when the time window is changed #1145
+- Fixed a community reported issue where Rainbow's Firebase infrastructure would be incorrectly injected into dApps and trigger unnecessary network calls #1159
+
+### Internal
+
+- Added support for `wallet_watchAsset` RPC call #1141
+- Added Custom RPC Settings form validatin to test RPC endpoints #1144
+- Added NFT Gallery loading and empty states #1152 #1155
+- Added NFT Keyboard Navigation and sorting Shortcuts #1154
+- Added Owners and Distinct Owners fields in NFT Details #1153
+- Added ENS Profile resolution to NFT Details variant for ENS domains #1161
+- Filtering Custom Network assets in Testnet Mode #1158
+- Filtering Custom Networks from the Swap UI #1150
+- Fixed a fetching clash between NFTs and Custom RPC assets #1156
+
+## [v1.2.78](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.78)
+
+### Added
+
+- Canary is now available to help you easily preview and simulate your transactions — all automatic and super fast. When Rainbow detects a transaction or dapp that appears malicious, Canary will warn you before you submit a bad transaction and lose your funds #1085
+- Added an "Enable Flashbots" toggle in the Magic Menu to submit all Mainnet transactions to Flashbots #1070
+- Added an "Export Addresses as CSV" feature in the Magic Menu to export information about your wallets to improve your wallet management workflow and help you out during Tax Season #1097
+
+### Changed
+
+- Simplified the network support checkbox confirmations during the Send flow #1135
+
+### Fixed
+
+- Fixed a "price not available" rendering issue on Token Charts when fetching the latest price #1143
+
+### Internal
+
+- Added NFT Details interface for NFTs #1128
+- Added support for `wallet_addEthereumChain` RPC call #1133
+- Added transaction persistence for transaction submitted on Custom Networks #1134
+- Optimize NFT Gallery with Infinite Query refactor #1129
+- Whitelisted RPCs for Ethereum Holesky and Optimism Sepolia #1142
+- Whitelisted RPCs for Arbitrum Goerli and Arbitrum Sepolia #1139
+
+### Testing
+
+- Disabled Testnet testing in Firefox #1137
+
+## [v1.2.71](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.71)
+
+### Changed
+
+- Turned on support for Rainbow's RPC to improve transaction reliability, protect your privacy, and allow Custom Networks and RPCs in the near future #1125
+- Improved translations for Networks settings, Developer Tools and Testnet Mode, Malicious dApp warnings, Wallet management right-click menus, Clear transactions, and Points #1122 
+
+### Fixed
+
+- Resolved an issue where the About section for Tokens would sometimes be missing #1115
+- Ensuring a Swap pair prepopulates with the correct token when right-clicking a token to Swap #1118
+- Resolved an issue with Token filtering when a chain was hidden in Networks settings #1124
+- Fixed an issue with Send flow for Testnets that would cause native asset transfer transactions to be malformed #1130
+- Resolved an issue where EIP-712 signature requests did not trigger a Dapp Prompt when `chainid` was unavailable #1121
+- Fixed a UI overflow in Activity for transactions with lengthy names #1116
+
+### Internal
+
+- Added NFT Gallery and NFT sorting feature #1082
+- Added low-level Custom Network support #1071
+- Added Custom Network asset and price, symbol discovery #1120 #1111
+- Added Asset Price and Chart fetching, and Chain icons for Custom Networks #1123
+- Bumped `chromedriver` from `119.0.0` to `119.0.1` #1126
+- Bumped `axios` to `1.6.1` #1131
 
 ## [v1.2.64](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.64)
 

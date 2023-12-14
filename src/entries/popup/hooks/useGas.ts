@@ -2,6 +2,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { gasUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
@@ -35,6 +36,7 @@ import usePrevious from './usePrevious';
 
 const useGas = ({
   chainId,
+  address,
   defaultSpeed = GasSpeed.NORMAL,
   estimatedGasLimit,
   transactionRequest,
@@ -43,6 +45,7 @@ const useGas = ({
   additionalTime,
 }: {
   chainId: ChainId;
+  address?: Address;
   defaultSpeed?: GasSpeed;
   estimatedGasLimit?: string;
   transactionRequest: TransactionRequest | null;
@@ -52,7 +55,7 @@ const useGas = ({
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
-  const { nativeAsset } = useNativeAsset({ chainId });
+  const { nativeAsset } = useNativeAsset({ chainId, address });
   const prevDefaultSpeed = usePrevious(defaultSpeed);
 
   const [internalMaxPriorityFee, setInternalMaxPriorityFee] = useState('');
@@ -300,12 +303,16 @@ const useGas = ({
 
 export const useTransactionGas = ({
   chainId,
+  address,
   defaultSpeed,
   transactionRequest,
+  flashbotsEnabled,
 }: {
   chainId: ChainId;
+  address?: Address;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
+  flashbotsEnabled?: boolean;
 }) => {
   const { data: estimatedGasLimit } = useEstimateGasLimit({
     chainId,
@@ -314,9 +321,11 @@ export const useTransactionGas = ({
 
   return useGas({
     chainId,
+    address,
     defaultSpeed,
     estimatedGasLimit,
     transactionRequest,
+    flashbotsEnabled,
     enabled: true,
   });
 };

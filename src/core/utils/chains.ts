@@ -1,14 +1,33 @@
 import { AddressZero } from '@ethersproject/constants';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import {
+  Chain,
+  avalanche,
+  celo,
+  fantom,
+  harmonyOne,
+  moonbeam,
+} from '@wagmi/chains';
 import { getNetwork } from '@wagmi/core';
 import { mainnet } from 'wagmi';
 
-import { NATIVE_ASSETS_PER_CHAIN, SUPPORTED_CHAINS } from '~/core/references';
-import { ChainId, ChainName } from '~/core/types/chains';
+import {
+  NATIVE_ASSETS_PER_CHAIN,
+  SUPPORTED_CHAINS,
+  SUPPORTED_MAINNET_CHAINS,
+} from '~/core/references';
+import {
+  ChainId,
+  ChainName,
+  chainIdToNameMapping,
+  chainNameToIdMapping,
+} from '~/core/types/chains';
 
+import { proxyRpcEndpoint } from '../providers';
 import { customRPCsStore } from '../state/customRPC';
 import { AddressOrEth } from '../types/assets';
 
-import { getDappHost } from './connectedApps';
+import { getDappHost, isValidUrl } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -27,6 +46,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   8217: 'klaytn',
   314: 'filecoin',
   534352: 'scroll',
+  1284: 'moonbeam',
 };
 
 export const getSupportedChainsWithHardhat = () => {
@@ -44,6 +64,36 @@ export const getSupportedChains = () => {
   return chains.filter((chain) => !chain.testnet);
 };
 
+export const getMainChains = () => {
+  const { chains } = getNetwork();
+  // All the mainnets we support
+  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
+    (chain) => !chain.testnet,
+  );
+
+  // The chain ID of all the mainnets we support
+  const supportedChainIds = mainSupportedChains.map((chain) => chain.id);
+
+  // All the chains that the user added
+  const customMainChains = chains?.filter(
+    (chain) =>
+      !supportedChainIds.includes(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+  );
+
+  const customChainsIncludingTestnets = customMainChains.filter(
+    (chain: Chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        !mainSupportedChains
+          .map((chain: Chain) => chain.id)
+          .includes(chain.id) &&
+        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id)),
+  );
+
+  return mainSupportedChains.concat(customChainsIncludingTestnets);
+};
+
 export const getSupportedChainIds = () =>
   getSupportedChains().map((chain) => chain.id);
 
@@ -52,13 +102,16 @@ export const getSupportedTestnetChains = () => {
   return chains.filter((chain) => !!chain.testnet);
 };
 
-export const getSupportedTestnetChainIds = () =>
-  getSupportedTestnetChains()
-    .filter(
-      (chain) =>
-        chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
-    )
-    .map((chain) => chain.id);
+export const getBackendSupportedChains = ({
+  testnetMode,
+}: {
+  testnetMode?: boolean;
+}) => {
+  const chains = testnetMode
+    ? getSupportedTestnetChains()
+    : getSupportedChains();
+  return chains;
+};
 
 export const getCustomChains = () => {
   const { customChains } = customRPCsStore.getState();
@@ -114,13 +167,11 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
 }
 
 export function chainIdFromChainName(chainName: ChainName) {
-  return ChainId[chainName];
+  return chainNameToIdMapping[chainName];
 }
 
-export function chainNameFromChainId(chainId: ChainId) {
-  return Object.keys(ChainId)[
-    Object.values(ChainId).indexOf(chainId)
-  ] as ChainName;
+export function chainNameFromChainId(chainId: ChainId): ChainName {
+  return chainIdToNameMapping[chainId];
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
@@ -158,7 +209,54 @@ export const chainIdToUse = (
   }
   if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
     return activeSessionChainId;
-  } else {
-    return ChainId.mainnet;
+  }
+  return ChainId.mainnet;
+};
+
+export const getChainMetadataRPCUrl = async ({
+  rpcUrl,
+}: {
+  rpcUrl?: string;
+}) => {
+  if (rpcUrl && isValidUrl(rpcUrl)) {
+    const provider = new JsonRpcProvider(proxyRpcEndpoint(rpcUrl, 0));
+    const network = await provider.getNetwork();
+    return { chainId: network.chainId };
+  }
+  return null;
+};
+
+export const deriveChainIdByHostname = (hostname: string) => {
+  switch (hostname) {
+    case 'etherscan.io':
+      return ChainId.mainnet;
+    case 'goerli.etherscan.io':
+      return ChainId.goerli;
+    case 'arbiscan.io':
+      return ChainId.arbitrum;
+    case 'explorer-mumbai.maticvigil.com':
+    case 'explorer-mumbai.matic.today':
+    case 'mumbai.polygonscan.com':
+      return ChainId.polygonMumbai;
+    case 'polygonscan.com':
+      return ChainId.polygon;
+    case 'optimistic.etherscan.io':
+      return ChainId.optimism;
+    case 'bscscan.com':
+      return ChainId.bsc;
+    case 'ftmscan.com':
+      return fantom.id;
+    case 'explorer.celo.org':
+      return celo.id;
+    case 'explorer.harmony.one':
+      return harmonyOne.id;
+    case 'explorer.avax.network':
+    case 'subnets.avax.network':
+    case 'snowtrace.io':
+      return avalanche.id;
+    case 'moonscan.io':
+      return moonbeam.id;
+    default:
+      return ChainId.mainnet;
   }
 };

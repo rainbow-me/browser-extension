@@ -12,9 +12,11 @@ import {
   Inset,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { Space } from '~/design-system/styles/designTokens';
 
+import { useCustomNetwork } from '../../hooks/useCustomNetwork';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useUserChains } from '../../hooks/useUserChains';
@@ -30,6 +32,7 @@ import {
   ContextMenuTrigger,
 } from '../ContextMenu/ContextMenu';
 import {
+  DROPDOWN_MENU_ITEM_HEIGHT,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
@@ -41,6 +44,8 @@ import {
 import { SWAP_INPUT_MASK_ID } from '../InputMask/SwapInputMask/SwapInputMask';
 import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 
+const MENU_SELECTOR_MAX_HEIGHT = DROPDOWN_MENU_ITEM_HEIGHT * 5.5;
+
 export const SwitchNetworkMenuSelector = ({
   selectedValue,
   highlightAccentColor,
@@ -49,6 +54,7 @@ export const SwitchNetworkMenuSelector = ({
   disconnect,
   onNetworkSelect,
   onShortcutPress,
+  onlySwapSupportedNetworks = false,
 }: {
   selectedValue?: string;
   highlightAccentColor?: boolean;
@@ -57,9 +63,18 @@ export const SwitchNetworkMenuSelector = ({
   disconnect?: () => void;
   onNetworkSelect?: (event?: Event) => void;
   onShortcutPress: (chainId: string) => void;
+  onlySwapSupportedNetworks?: boolean;
 }) => {
   const { trackShortcut } = useKeyboardAnalytics();
-  const { chains } = useUserChains();
+  const { chains: userChains } = useUserChains();
+  const { customChains } = useCustomNetwork();
+
+  const chains = useMemo(() => {
+    const customChainsIds = customChains.map((chain) => chain.id);
+    return onlySwapSupportedNetworks
+      ? userChains.filter((chain) => !customChainsIds.includes(chain.id))
+      : userChains;
+  }, [customChains, onlySwapSupportedNetworks, userChains]);
 
   const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'
@@ -107,7 +122,12 @@ export const SwitchNetworkMenuSelector = ({
   });
 
   return (
-    <Box id="switch-network-menu-selector">
+    <Box
+      id="switch-network-menu-selector"
+      paddingHorizontal="8px"
+      marginHorizontal="-8px"
+      style={{ maxHeight: MENU_SELECTOR_MAX_HEIGHT, overflow: 'scroll' }}
+    >
       {chains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
@@ -121,12 +141,15 @@ export const SwitchNetworkMenuSelector = ({
             <Box width="full">
               <Columns alignHorizontal="justify" alignVertical="center">
                 <Column>
-                  <Box testId={`switch-network-item-${chainId}`}>
-                    <Inline space="8px" alignVertical="center">
+                  <Box
+                    testId={`switch-network-item-${chainId}`}
+                    style={{ maxWidth: 180 }}
+                  >
+                    <Inline space="8px" alignVertical="center" wrap={false}>
                       <ChainBadge chainId={chainId} size="18" />
-                      <Text color="label" size="14pt" weight="semibold">
+                      <TextOverflow color="label" size="14pt" weight="semibold">
                         {name}
-                      </Text>
+                      </TextOverflow>
                     </Inline>
                   </Box>
                 </Column>
@@ -209,6 +232,7 @@ interface SwitchNetworkMenuProps {
   type: 'dropdown' | 'context';
   marginRight?: Space;
   onOpenChange?: (open: boolean) => void;
+  onlySwapSupportedNetworks?: boolean;
 }
 
 export const SwitchNetworkMenu = ({
@@ -220,6 +244,7 @@ export const SwitchNetworkMenu = ({
   type,
   marginRight,
   onOpenChange,
+  onlySwapSupportedNetworks,
 }: SwitchNetworkMenuProps) => {
   const triggerRef = useRef<HTMLDivElement>(null);
   const { chains } = useUserChains();
@@ -301,6 +326,7 @@ export const SwitchNetworkMenu = ({
             }}
             showDisconnect={!!onDisconnect}
             disconnect={onDisconnect}
+            onlySwapSupportedNetworks={onlySwapSupportedNetworks}
           />
         </MenuRadioGroup>
       </MenuContent>

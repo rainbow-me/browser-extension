@@ -403,7 +403,10 @@
         "view_on_ens": "Просмотр в ENS",
         "switch_to_wallet": "Переключиться на этот кошелек",
         "copy_wallet_address": "Скопировать адрес",
-        "view_wallet_on_etherscan": "Просмотр в Etherscan"
+        "view_wallet_on_etherscan": "Просмотр в Etherscan",
+        "export_addresses_as_csv": "Экспортировать адреса в формате CSV",
+        "enable_flashbots": "Включить Flashbots",
+        "disable_flashbots": "Отключить Flashbots"
       },
       "search_tags": {
         "swap": "Мост",
@@ -479,6 +482,18 @@
     },
     "toolbar": {
       "actions_hint": "Действия"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "Наблюдение",
+        "recovery_phrase": "Фраза восстановления",
+        "private_key": "Приватный Ключ",
+        "hardware_wallet": "Аппаратный Кошелек"
+      },
+      "toast": {
+        "title": "Скачаны адреса",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {
@@ -525,7 +540,6 @@
       "cancel": "Отмена",
       "sending_on_network": "Отправка по сети %{chainName}",
       "sending_on_l2_check_1": "Я не отправляю на биржу",
-      "sending_on_l2_check_2": "У человека, которому я отправляю, есть кошелек, который поддерживает %{chainName}",
       "complete_checks": "Завершите проверки",
       "confirm_hw": "Подтвердите на вашем устройстве"
     }
@@ -938,20 +952,29 @@
     "button_label_cancel": "Напомнить мне позже"
   },
   "approve_request": {
+    "allow_to_add_asset": "хочет предложить токен",
     "wallet_info_title": "хочет получить доступ к вашему кошельку",
     "wallet_info_description": "Разрешить %{appName} просматривать адреса, балансы и операции вашего кошелька, а также запрашивать подтверждение для транзакций.",
+    "add_chain_info_description": "Если вы это разрешите, эта сеть может использоваться в расширении Rainbow Browser.",
+    "watch_asset_info_description": "Если вы одобрите его, этот актив может быть использован в расширении браузера Rainbow.",
     "wallet": "Кошелек",
     "network": "Сеть",
     "switch_networks": "Сменить сеть",
     "switch_wallets": "Сменить кошелек",
+    "allow_to_add_network": "хочет добавить сеть",
     "connect": "Подключиться к %{appName}",
     "connect_anyway": "Подключиться Все Равно",
+    "approve": "Разрешить",
+    "approve_anyway": "Разрешить в любом случае",
     "malicious_warning": {
       "title": "Это приложение вероятно вредоносное",
       "message": "Подписывая сообщения или транзакции от этого приложения, вы можете потерять свои средства"
     },
+    "dangerous_request": "Опасный запрос",
     "message_signing_request": "Запрос на подпись сообщения",
     "message": "Сообщение",
+    "message_copied": "Сообщение скопировано",
+    "transaction_data_copied": "Данные транзакции скопированы",
     "sign_message": "Подписать сообщение",
     "sign_message_anyway": "Подписать Все Равно",
     "confirm_hw": "Подтвердите на вашем устройстве",
@@ -960,7 +983,29 @@
     "send_transaction_anyway": "Подтвердить Все Равно",
     "contract_deployment": "Развертывание контракта",
     "transaction_request": "Запрос на транзакцию",
-    "insufficient_native_asset_for_gas": "Недостаточно %{symbol} для газа"
+    "insufficient_gas_funds": "Вам нужно больше %{token}",
+    "insufficient_gas_funds_description": "Вам нужно немного больше %{token} для оплаты этой транзакции. Получите больше ниже, чтобы продолжить с этим запросом.",
+    "no_gas_funds": "Вам нужно немного %{token}",
+    "no_gas_funds_description": "Вам понадобится %{token} для оплаты этой транзакции. Получите немного %{token} ниже, чтобы продолжить с этим запросом.",
+    "no_token": "Нет %{token}",
+    "on_chain": "на %{chain}",
+    "copy_deposit_address": "Скопировать адрес кошелька для депозита",
+    "bridge_to": "Мост к %{chain}",
+    "signing_with": "Подписание с помощью",
+    "no_fee_to_sign": "Без комиссии для подписи",
+    "request_rejected": "Запрос на транзакцию отклонен",
+    "bridge_and_try_again": "Подключите немного средств для оплаты транзакционных расходов и повторите попытку",
+    "buy_and_try_again": "Приобретите немного средств для оплаты транзакционных расходов и повторите попытку",
+    "buy": "Купить %{token}"
+  },
+  "add_chain": {
+    "name": "Название",
+    "chain_id": "Идентификатор сети",
+    "currency_symbol": "Символ валюты",
+    "currency_name": "Наименование валюты",
+    "currency_decimals": "Количество знаков после запятой",
+    "rpc_url": "URL RPC",
+    "block_explorer_url": "URL исследователя блока"
   },
   "transaction_fee": {
     "title": "Скорость транзакции",
@@ -1127,14 +1172,36 @@
   },
   "nfts": {
     "coming_soon_header": "Скоро будет",
+    "empty_state_header": "NFT",
     "coming_soon_description": "NFT скоро будут. Оставайтесь на связи!",
+    "empty_state_description": "Ваши NFT появятся здесь!",
     "view_on_web": "Посмотреть на Веб",
     "display_mode_gallery": "Галерея",
     "display_mode_collections": "Коллекции",
     "sort_option_recent": "Недавние",
     "sort_option_abc": "Абв",
     "sort_option_recent_long": "Недавние",
-    "sort_option_abc_long": "Алфавитный"
+    "sort_option_abc_long": "Алфавитный",
+    "details": {
+      "last_sales_price": "Последняя цена продажи",
+      "none": "Нет",
+      "floor_price": "Минимальная цена",
+      "properties": "Свойства",
+      "address_copied": "Адрес скопирован",
+      "about": "Описание",
+      "token_standard": "Стандарт токена",
+      "token_contract": "Контракт токена",
+      "contract_creator": "Создатель контракта",
+      "chain": "Сеть",
+      "id_copied": "Скопировано ID",
+      "copy_token_id": "Скопировать ID токена",
+      "download": "Загрузить",
+      "explorer": "Исследователь",
+      "view_collection": "Просмотр коллекции",
+      "collection_website": "Веб-сайт коллекции",
+      "owners": "Владельцы",
+      "unique_owners": "Уникальные владельцы"
+    }
   },
   "points": {
     "coming_soon_header": "Скоро будет",
@@ -1172,6 +1239,7 @@
     "approvals": "Разрешения для токенов",
     "this_token_is_on_network": "Этот %{symbol} находится в сети %{chainName}",
     "view_on": "Посмотреть на %{explorer}",
+    "not_available": "Цена недоступна",
     "more_options": {
       "copy_address": "Скопировать адрес",
       "hide": "Скрыть токен",
@@ -1405,5 +1473,42 @@
     "unfavorite": "Удалить из избранного",
     "estimated_difference": "Оценочное отличие в стоимости",
     "buy_crypto": "Купить и перевести крипто"
+  },
+  "simulation": {
+    "title": "Симулированый результат",
+    "loading": "Симуляция...",
+    "error": "Ошибка в симуляции",
+    "no_changes": "Изменений не обнаружено",
+    "received": "Получено",
+    "sent": "Отправлено",
+    "approved": "Утверждено",
+    "reverted": "Транзакция отменена",
+    "function": "Функция",
+    "contract": "Контракт",
+    "contract_name": "Имя контракта",
+    "contract_created_at": "Контракт создан",
+    "source_code": "Исходный код",
+    "signature": {
+      "message": "Сообщение"
+    },
+    "tabs": {
+      "overview": "Обзор",
+      "details": "Детали",
+      "data": "Данные"
+    }
+  },
+  "chain": "Сеть",
+  "nonce": "Нонс",
+  "copy": "Копировать",
+  "close": "Закрыть",
+  "verified": "Проверенные",
+  "unverified": "Непроверенные",
+  "watch_asset": {
+    "chain_id": "Идентификатор сети",
+    "symbol": "Символ",
+    "decimals": "Десятичные знаки",
+    "address": "Адрес",
+    "not_found": "Мы не смогли найти этот актив на выбранной сети. Пожалуйста, выберите правильную сеть ниже"
   }
 }
+

@@ -1,5 +1,5 @@
 import { upperCase } from 'lodash';
-import React, { Fragment, ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 
 import EthIcon from 'static/assets/ethIcon.png';
 import { ETH_ADDRESS } from '~/core/references';
@@ -11,7 +11,7 @@ import {
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
-import { AccentColorProvider, Box } from '~/design-system';
+import { AccentColorProvider, Box, Symbol } from '~/design-system';
 import { BoxStyles } from '~/design-system/styles/core.css';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
@@ -28,7 +28,6 @@ import {
   fallbackTextStyleXSmall,
   fallbackTextStyleXXSmall,
 } from './CoinIcon.css';
-import { ContractInteractionIcon } from './ContractInteractionIcon';
 
 export function CoinIcon({
   asset,
@@ -52,9 +51,6 @@ export function CoinIcon({
   badgePositionLeft?: number;
   badgeSize?: ChainIconProps['size'];
 }) {
-  const sym = asset?.symbol || fallbackText || '';
-
-  const formattedSymbol = formatSymbol(sym, size);
   const mainnetAddress = asset?.mainnetAddress;
   const address = asset?.address;
   const chain = asset?.chainId || ChainId.mainnet;
@@ -63,7 +59,7 @@ export function CoinIcon({
     (asset as ParsedAsset)?.standard === 'erc-721' ||
     (asset as ParsedAsset)?.standard === 'erc-1155';
 
-  return (
+  return asset ? (
     <CoinIconWrapper
       badge={badge}
       badgePositionBottom={badgePositionBottom}
@@ -72,35 +68,27 @@ export function CoinIcon({
       size={size}
       shadowColor={shadowColor}
       chainId={chain}
-      borderRadius={isNft ? nftRadiusBySize[36] : undefined}
+      borderRadius={isNft ? nftRadiusBySize[size === 20 ? 20 : 36] : undefined}
     >
       <CloudinaryCoinIcon
         address={address}
-        chainId={chain}
+        fallbackText={asset?.symbol || fallbackText}
         mainnetAddress={mainnetAddress}
         url={asset?.icon_url}
         size={size}
-      >
-        <Box
-          justifyContent="center"
-          flexDirection="column"
-          borderRadius={nftRadiusBySize[36]}
-          style={{
-            backgroundColor: pseudoRandomArrayItemFromString<string>(
-              address || '',
-              emojiColors,
-            ),
-            height: size,
-            width: size,
-            display: 'flex',
-          }}
-        >
-          <Box as={'p'} className={getFallbackTextStyle(size, sym)}>
-            {upperCase(formattedSymbol)}
-          </Box>
-        </Box>
-      </CloudinaryCoinIcon>
+      />
     </CoinIconWrapper>
+  ) : (
+    <Box
+      background="fillQuaternary"
+      borderColor="separatorTertiary"
+      borderWidth="1px"
+      style={{
+        borderRadius: isNft ? nftRadiusBySize[size === 20 ? 20 : 36] : size / 2,
+        height: size,
+        width: size,
+      }}
+    />
   );
 }
 
@@ -187,19 +175,17 @@ const nftRadiusBySize = {
 
 function CloudinaryCoinIcon({
   address,
+  fallbackText,
   mainnetAddress,
-  children,
   size = 36,
   url,
 }: {
   address?: AddressOrEth;
-  chainId: ChainId;
+  fallbackText?: string;
   mainnetAddress?: AddressOrEth;
-  children: React.ReactNode;
   size: number;
   url?: string;
 }) {
-  const [externalError, setExternalError] = useState(false);
   let src = url;
   const eth = ETH_ADDRESS;
 
@@ -207,19 +193,36 @@ function CloudinaryCoinIcon({
     src = EthIcon;
   }
 
-  if (src && !externalError) {
-    return (
-      <ExternalImage
-        src={src}
-        onError={() => setExternalError(true)}
-        width={size}
-        height={size}
-        borderRadius={nftRadiusBySize[36]}
-      />
-    );
-  }
+  const formattedSymbol = fallbackText ? formatSymbol(fallbackText, size) : '';
 
-  return <Fragment>{children}</Fragment>;
+  return (
+    <ExternalImage
+      customFallback={
+        <Box
+          display="flex"
+          justifyContent="center"
+          flexDirection="column"
+          borderRadius={nftRadiusBySize[size === 20 ? 20 : 36]}
+          style={{
+            backgroundColor: pseudoRandomArrayItemFromString<string>(
+              address || '',
+              emojiColors,
+            ),
+            height: size,
+            width: size,
+          }}
+        >
+          <Box as={'p'} className={getFallbackTextStyle(size, formattedSymbol)}>
+            {upperCase(formattedSymbol)}
+          </Box>
+        </Box>
+      }
+      src={src}
+      width={size}
+      height={size}
+      borderRadius={nftRadiusBySize[size === 20 ? 20 : 36]}
+    />
+  );
 }
 
 function getFallbackTextStyle(size: number, text: string) {
@@ -264,24 +267,14 @@ export const NFTIcon = ({
   badge?: boolean;
 }) => {
   const chainId = asset.chainId;
-  const [badSrc, setBadSrc] = useState(false);
-  if (!asset.icon_url || badSrc)
-    return (
-      <CoinIcon
-        asset={asset}
-        fallbackText={asset.name}
-        size={size}
-        badge={badge}
-      />
-    );
+
   return (
     <Box position="relative" style={{ minWidth: size, height: size }}>
       <ExternalImage
+        borderRadius={nftRadiusBySize[size]}
         src={asset.icon_url}
         height={size}
         width={size}
-        borderRadius={nftRadiusBySize[size]}
-        onError={() => setBadSrc(true)}
       />
       {badge && chainId !== ChainId.mainnet && (
         <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
@@ -304,18 +297,35 @@ export const ContractIcon = ({
   chainId?: ChainId;
 }) => {
   return (
-    <Box position="relative" style={{ maxHeight: size, maxWidth: size }}>
-      {iconUrl ? (
-        <ExternalImage
-          src={iconUrl}
-          width={size}
-          height={size}
-          loading="lazy"
-          style={{ borderRadius: nftRadiusBySize[size] }}
-        />
-      ) : (
-        <ContractInteractionIcon size={size} />
-      )}
+    <Box position="relative" style={{ height: size, width: size }}>
+      <ExternalImage
+        borderRadius={nftRadiusBySize[size]}
+        customFallback={
+          <Box
+            alignItems="center"
+            background="fillQuaternary"
+            borderColor="separatorTertiary"
+            borderRadius={nftRadiusBySize[size]}
+            borderWidth="1px"
+            display="flex"
+            height="full"
+            justifyContent="center"
+            width="full"
+          >
+            <Box opacity="0.5">
+              <Symbol
+                color="labelQuaternary"
+                size={Math.min(size / 2.3, 24)}
+                symbol="safari.fill"
+                weight="heavy"
+              />
+            </Box>
+          </Box>
+        }
+        src={iconUrl}
+        width={size}
+        height={size}
+      />
       {badge && chainId && chainId !== ChainId.mainnet && (
         <Box position="absolute" bottom="0" style={{ zIndex: 2, left: '-6px' }}>
           <ChainBadge chainId={chainId} shadow size="16" />

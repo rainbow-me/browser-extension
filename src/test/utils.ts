@@ -1,5 +1,6 @@
 import { ParsedAsset, ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
+import { UniqueAsset } from '~/core/types/nfts';
 
 export const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 export const TEST_PK_1 =
@@ -181,6 +182,225 @@ export const WETH_MAINNET_ASSET = {
   symbol: 'WETH',
   uniqueId: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2_1',
 } satisfies ParsedAsset;
+
+export const NFTS_TEST_DATA = {
+  nfts: [
+    {
+      asset_contract: {
+        address: '0x6171f829e107f70b58d67594c6b62a7d3eb7f23b',
+        name: 'Rainbow World',
+        schema_name: 'ERC721',
+        symbol: 'RBWRLD',
+        deployed_by: '0x2B70937AeaCf490b48e1973bD2A40Ba1233569f9',
+      },
+      background: null,
+      collection: {
+        description:
+          'Generative. Interactive. Customizable. Enter the Character Creator to bring your Citizen to life at [https://adworld.game/create](https://adworld.game/create)',
+        discord_url: 'https://discord.gg/adworld',
+        external_url: 'https://adworld.game',
+        image_url:
+          'https://i.seadn.io/gcs/files/600f3a5b99c5c525550c907de03cd9a8.gif?auto=format&w=3840',
+        name: 'Rainbow World',
+        slug: 'rainbow-world-2',
+        twitter_username: 'AdWorldGame',
+        collection_id: '46ce3ffab75609b0af7ff4d791236d9f',
+      },
+      description:
+        'Bring your citizen to life at [adworld.game](https://adworld.game/create)',
+      external_link: null,
+      familyImage:
+        'https://i.seadn.io/gcs/files/600f3a5b99c5c525550c907de03cd9a8.gif?auto=format&w=3840',
+      familyName: 'Rainbow World',
+      fullUniqueId: 'base_0x6171f829e107f70b58d67594c6b62a7d3eb7f23b_296',
+      id: '296',
+      image_original_url:
+        'https://storage.googleapis.com/rainbow_world/296/output_45.png',
+      image_preview_url:
+        'https://lh3.googleusercontent.com/ICZJsSKEfLTquCvn1o-W7wD75EdtCksjf3bMtm2IQsYdw7K8-_de9gGQBXJE09fHy33OtBBrgWqMUAfX2ve6ZsW200JnLrX-m3s=s1000',
+      image_thumbnail_url:
+        'https://lh3.googleusercontent.com/ICZJsSKEfLTquCvn1o-W7wD75EdtCksjf3bMtm2IQsYdw7K8-_de9gGQBXJE09fHy33OtBBrgWqMUAfX2ve6ZsW200JnLrX-m3s=s1000',
+      image_url:
+        'https://cdn.simplehash.com/assets/d4171c85078b61288c0367e21b9dfb608d0143faae09efc75f74ac35a83f21ee.png',
+      isPoap: false,
+      isSendable: true,
+      lastSalePaymentToken: 'ETH',
+      lowResUrl:
+        'https://lh3.googleusercontent.com/ICZJsSKEfLTquCvn1o-W7wD75EdtCksjf3bMtm2IQsYdw7K8-_de9gGQBXJE09fHy33OtBBrgWqMUAfX2ve6ZsW200JnLrX-m3s=s1000',
+      marketplaceCollectionUrl: 'https://opensea.io/collection/rainbow-world-2',
+      marketplaceId: 'opensea',
+      marketplaceName: 'OpenSea',
+      name: 'Citizen 297',
+      network: 'base',
+      permalink:
+        'https://opensea.io/assets/base/0x6171f829e107f70b58d67594c6b62a7d3eb7f23b/296',
+      predominantColor: '#bc9248',
+      traits: [
+        {
+          trait_type: 'Body',
+          value: 'AlpineMiki',
+          display_type: null,
+        },
+        {
+          trait_type: 'Face',
+          value: 'CoreyBarlage',
+          display_type: null,
+        },
+        {
+          trait_type: 'Gloves',
+          value: 'AllNighter',
+          display_type: null,
+        },
+        {
+          trait_type: 'Bottom',
+          value: 'ThornPants',
+          display_type: null,
+        },
+        {
+          trait_type: 'Shoes',
+          value: 'TokiBear',
+          display_type: null,
+        },
+        {
+          trait_type: 'Top',
+          value: 'BatAnthemInCMajor',
+          display_type: null,
+        },
+        {
+          trait_type: 'Background',
+          value: 'RainbowFieldForever',
+          display_type: null,
+        },
+        {
+          trait_type: 'Material',
+          value: 'Orange',
+          display_type: null,
+        },
+      ],
+      uniqueId: '0x6171f829e107f70b58d67594c6b62a7d3eb7f23b_296',
+      urlSuffixForAsset: '0x6171f829e107f70b58d67594c6b62a7d3eb7f23b/296',
+      video_url: null,
+      video_properties: null,
+      audio_url: null,
+      audio_properties: null,
+      model_url: null,
+      model_properties: null,
+      last_sale: {
+        from_address: '0x87eDc43c1DA8294627ACc99759b27D2fbF46c52c',
+        to_address: '0x5e087b61Aad29559E31565079FCdAbe384B44614',
+        quantity: 1,
+        quantity_string: '1',
+        timestamp: '2023-09-12T02:59:17',
+        transaction:
+          '0x9b2294288e7b1bec133c09755a3b1fcc943d8424224b219f464d3c6c40f65d78',
+        marketplace_id: 'opensea',
+        marketplace_name: 'OpenSea',
+        is_bundle_sale: false,
+        payment_token: {
+          payment_token_id: 'base.native',
+          name: 'Ether',
+          symbol: 'ETH',
+          address: null,
+          decimals: 18,
+        },
+        unit_price: 17900000000000000,
+        total_price: 17900000000000000,
+        unit_price_usd_cents: 2787,
+      },
+    },
+    {
+      asset_contract: {
+        address: '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
+        schema_name: 'ERC721',
+        deployed_by: '0x4Fe4e666Be5752f1FdD210F4Ab5DE2Cc26e3E0e8',
+      },
+      background: null,
+      collection: {
+        description:
+          'Ethereum Name Service (ENS) domains are secure domain names for the decentralized world. ENS domains provide a way for users to map human readable names to blockchain and non-blockchain resources, like Ethereum addresses, IPFS hashes, or website URLs. ENS domains can be bought and sold on secondary markets.',
+        discord_url: null,
+        external_url: 'https://ens.domains',
+        image_url:
+          'https://lh3.googleusercontent.com/yXNjPUCCTHyvYNarrb81ln31I6hUIaoPzlGU8kki-OohiWuqxfrIkMaOdLzcO4iGuXcvE5mgCZ-ds9tZotEJi3hdkNusheEK_w2V',
+        name: 'ENS',
+        slug: 'ens',
+        twitter_username: 'ensdomains',
+        collection_id: 'e34baafc65deb66d52d11be5d44f523e',
+      },
+      description: 'testmar27.eth, an ENS name.',
+      external_link: 'https://app.ens.domains/name/testmar27.eth',
+      familyImage:
+        'https://lh3.googleusercontent.com/yXNjPUCCTHyvYNarrb81ln31I6hUIaoPzlGU8kki-OohiWuqxfrIkMaOdLzcO4iGuXcvE5mgCZ-ds9tZotEJi3hdkNusheEK_w2V',
+      familyName: 'ENS',
+      fullUniqueId:
+        'mainnet_0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85_17627305285561126799416501961378146331191582482615029650457618209605971899862',
+      id: '17627305285561126799416501961378146331191582482615029650457618209605971899862',
+      image_original_url:
+        'https://metadata.ens.domains/mainnet/0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85/0x26f8b383da3c46bc50adeccd5094a701a79ccf02ce75838eb5bbb2eea17475d6/image',
+      image_preview_url:
+        'https://lh3.googleusercontent.com/O_dtxR4ggdzoCNEAZ89s7w5eBiu8rP5TELBQcuFZyIHc-raU2qj48LSkJmEKeN64JaGa7m9X5EFYUreCCJBlx9lXW0rgjrZUL0E=s1000',
+      image_thumbnail_url:
+        'https://lh3.googleusercontent.com/O_dtxR4ggdzoCNEAZ89s7w5eBiu8rP5TELBQcuFZyIHc-raU2qj48LSkJmEKeN64JaGa7m9X5EFYUreCCJBlx9lXW0rgjrZUL0E=s1000',
+      image_url:
+        'https://cdn.simplehash.com/assets/8329e91e6b7af8b380e19ad0315c055f54a850a20ec791ab0aa131ed4b83450b.svg',
+      isPoap: false,
+      isSendable: true,
+      lowResUrl:
+        'https://lh3.googleusercontent.com/O_dtxR4ggdzoCNEAZ89s7w5eBiu8rP5TELBQcuFZyIHc-raU2qj48LSkJmEKeN64JaGa7m9X5EFYUreCCJBlx9lXW0rgjrZUL0E=s1000',
+      marketplaceCollectionUrl: 'https://opensea.io/collection/ens',
+      marketplaceId: 'opensea',
+      marketplaceName: 'OpenSea',
+      name: 'testmar27.eth',
+      network: 'mainnet',
+      permalink:
+        'https://opensea.io/assets/ethereum/0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85/17627305285561126799416501961378146331191582482615029650457618209605971899862',
+      predominantColor: '#5b99f3',
+      traits: [
+        {
+          trait_type: 'Created Date',
+          value: '1679945795000',
+          display_type: 'date',
+        },
+        {
+          trait_type: 'Length',
+          value: '9',
+          display_type: 'number',
+        },
+        {
+          trait_type: 'Segment Length',
+          value: '9',
+          display_type: 'number',
+        },
+        {
+          trait_type: 'Character Set',
+          value: 'alphanumeric',
+          display_type: 'string',
+        },
+        {
+          trait_type: 'Registration Date',
+          value: '1679945795000',
+          display_type: 'date',
+        },
+        {
+          trait_type: 'Expiration Date',
+          value: '1711481795000',
+          display_type: 'date',
+        },
+      ],
+      uniqueId: 'testmar27.eth',
+      urlSuffixForAsset:
+        '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85/17627305285561126799416501961378146331191582482615029650457618209605971899862',
+      video_url: null,
+      video_properties: null,
+      audio_url: null,
+      audio_properties: null,
+      model_url: null,
+      model_properties: null,
+      last_sale: null,
+    },
+  ],
+  nextPage: null,
+} as { nfts: UniqueAsset[]; nextPage: null };
 
 export async function delay(ms: number) {
   // eslint-disable-next-line no-promise-executor-return

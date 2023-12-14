@@ -50,8 +50,8 @@ const signMessageByType = async (
   msgData: string | Bytes,
   address: Address,
   type: 'personal_sign' | 'sign_typed_data',
-) => {
-  return walletAction(type, {
+): Promise<string> => {
+  return walletAction<string>(type, {
     address,
     msgData,
   });
@@ -179,7 +179,7 @@ export async function executeRap<T extends RapTypes>({
     rapActionParameters: { ...rapActionParameters, nonce },
     type,
   };
-  return walletAction('execute_rap', params) as unknown as ExecuteRapResponse;
+  return walletAction<ExecuteRapResponse>('execute_rap', params);
 }
 
 export const personalSign = async (
@@ -191,17 +191,13 @@ export const personalSign = async (
     switch (vendor) {
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
-      case 'Trezor': {
+      case 'Trezor':
         return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
-      }
+      default:
+        throw new Error('Unsupported hardware wallet');
     }
-    return '';
   } else {
-    return (await signMessageByType(
-      msgData,
-      address,
-      'personal_sign',
-    )) as string;
+    return signMessageByType(msgData, address, 'personal_sign');
   }
 };
 
@@ -221,11 +217,7 @@ export const signTypedData = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    return (await signMessageByType(
-      msgData,
-      address,
-      'sign_typed_data',
-    )) as string;
+    return signMessageByType(msgData, address, 'sign_typed_data');
   }
 };
 
@@ -236,11 +228,11 @@ export const lock = async () => {
 };
 
 export const unlock = async (password: string): Promise<boolean> => {
-  const res = await walletAction('unlock', password);
-  if (res) {
+  const result = await walletAction<boolean>('unlock', password);
+  if (result) {
     await SessionStorage.set('userStatus', 'READY');
   }
-  return res as boolean;
+  return result;
 };
 
 export const wipe = async () => {
@@ -248,12 +240,11 @@ export const wipe = async () => {
   await SessionStorage.set('userStatus', 'NEW');
   return;
 };
-export const testSandbox = async () => {
-  return await walletAction('test_sandbox', {});
-};
+
+export const testSandbox = async () => walletAction('test_sandbox', {});
 
 export const updatePassword = async (password: string, newPassword: string) => {
-  const ret = await walletAction('update_password', {
+  const result = await walletAction<boolean>('update_password', {
     password,
     newPassword,
   });
@@ -262,42 +253,34 @@ export const updatePassword = async (password: string, newPassword: string) => {
   // It's unlocked
   // Then it's ready to use
   await SessionStorage.set('userStatus', 'READY');
-  return ret as boolean;
+  return result;
 };
 
-export const deriveAccountsFromSecret = async (secret: string) => {
-  return (await walletAction(
-    'derive_accounts_from_secret',
-    secret,
-  )) as Address[];
-};
+export const deriveAccountsFromSecret = async (secret: string) =>
+  walletAction<Address[]>('derive_accounts_from_secret', secret);
 
-export const verifyPassword = async (password: string) => {
-  return (await walletAction('verify_password', password)) as boolean;
-};
+export const verifyPassword = async (password: string) =>
+  walletAction<boolean>('verify_password', password);
 
-export const getAccounts = async () => {
-  return (await walletAction('get_accounts', {})) as Address[];
-};
-export const getWallets = async () => {
-  return (await walletAction('get_wallets', {})) as KeychainWallet[];
-};
+export const getAccounts = async () =>
+  walletAction<Address[]>('get_accounts', {});
 
-export const getWallet = async (address: Address) => {
-  return (await walletAction('get_wallet', address)) as KeychainWallet;
-};
+export const getWallets = async () =>
+  walletAction<KeychainWallet[]>('get_wallets', {});
 
-export const getStatus = async () => {
-  return (await walletAction('status', {})) as {
+export const getWallet = async (address: Address) =>
+  walletAction<KeychainWallet>('get_wallet', address);
+
+export const getStatus = async () =>
+  walletAction<{
     unlocked: boolean;
     hasVault: boolean;
     passwordSet: boolean;
     ready: boolean;
-  };
-};
+  }>('status', {});
 
 export const create = async () => {
-  const address = await walletAction('create', {});
+  const address = await walletAction<Address>('create', {});
 
   // we probably need to set a password
   let newStatus = 'NEEDS_PASSWORD';
@@ -307,11 +290,11 @@ export const create = async () => {
     newStatus = 'READY';
   }
   await SessionStorage.set('userStatus', newStatus);
-  return address as Address;
+  return address;
 };
 
 export const importWithSecret = async (seed: string) => {
-  const address = await walletAction('import', seed);
+  const address = await walletAction<Address>('import', seed);
   // we probably need to set a password
   let newStatus = 'NEEDS_PASSWORD';
   const { passwordSet } = await getStatus();
@@ -320,29 +303,26 @@ export const importWithSecret = async (seed: string) => {
     newStatus = 'READY';
   }
   await SessionStorage.set('userStatus', newStatus);
-  return address as Address;
+  return address;
 };
 
-export const remove = async (address: Address) => {
-  return walletAction('remove', address);
-};
-export const add = async (sibling: Address) => {
-  return (await walletAction('add', sibling)) as Address;
-};
+export const remove = async (address: Address) =>
+  walletAction('remove', address);
 
-export const exportWallet = async (address: Address, password: string) => {
-  return (await walletAction('export_wallet', {
+export const add = async (sibling: Address) =>
+  walletAction<Address>('add', sibling);
+
+export const exportWallet = async (address: Address, password: string) =>
+  walletAction<Mnemonic['phrase']>('export_wallet', {
     address,
     password,
-  })) as Mnemonic['phrase'];
-};
+  });
 
-export const exportAccount = async (address: Address, password: string) => {
-  return (await walletAction('export_account', {
+export const exportAccount = async (address: Address, password: string) =>
+  walletAction<PrivateKey>('export_account', {
     address,
     password,
-  })) as PrivateKey;
-};
+  });
 
 export const importAccountAtIndex = async (
   type: string | 'Trezor' | 'Ledger',

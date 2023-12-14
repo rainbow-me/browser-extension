@@ -17,6 +17,7 @@ import {
 } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 
+import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
 import { SearchAsset } from '../types/search';
 
@@ -30,6 +31,7 @@ import {
   convertAmountToBalanceDisplay,
   convertAmountToNativeDisplay,
   convertAmountToPercentageDisplay,
+  convertAmountToRawAmount,
   convertRawAmountToDecimalFormat,
 } from './numbers';
 
@@ -410,3 +412,58 @@ export const getAssetBalance = async ({
 export const extractFulfilledValue = <T>(
   result: PromiseSettledResult<T>,
 ): T | undefined => (result.status === 'fulfilled' ? result.value : undefined);
+
+export const fetchAssetWithPrice = async ({
+  parsedAsset,
+  currency,
+}: {
+  parsedAsset: ParsedUserAsset;
+  currency: SupportedCurrencyKey;
+}): Promise<ParsedUserAsset | null> => {
+  const results: Record<string, AssetMetadata>[] = (await requestMetadata(
+    createAssetQuery(
+      [parsedAsset.address],
+      parsedAsset.chainId,
+      currency,
+      true,
+    ),
+    {
+      timeout: 10000,
+    },
+  )) as Record<string, AssetMetadata>[];
+
+  const assets = Object.values(results).flat();
+  const asset = assets[0];
+  const parsedAssetWithPrice = parseAssetMetadata({
+    address: parsedAsset.address,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    asset,
+    chainId: parsedAsset.chainId,
+    currency,
+  });
+  if (parsedAssetWithPrice?.native.price) {
+    const assetToReturn = {
+      ...parsedAsset,
+      native: {
+        ...parsedAsset.native,
+        price: parsedAssetWithPrice.native.price,
+      },
+      price: {
+        value: parsedAssetWithPrice.native.price.amount,
+      },
+      icon_url: parsedAssetWithPrice.icon_url,
+    } as ParsedAsset;
+
+    return parseUserAssetBalances({
+      asset: assetToReturn,
+      currency,
+      balance: convertAmountToRawAmount(
+        parsedAsset.balance.amount,
+        parsedAsset.decimals,
+      ),
+      smallBalance: false,
+    });
+  }
+  return null;
+};

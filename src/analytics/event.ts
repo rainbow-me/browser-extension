@@ -1,5 +1,7 @@
 /* eslint sort-keys: "error"*/
 
+import { Address } from 'wagmi';
+
 import { KeyboardEventDescription } from '~/entries/popup/hooks/useKeyboardAnalytics';
 
 import { screen } from './screen';
@@ -101,6 +103,14 @@ export const event = {
    * with the Cancel button in the dApp Sign Message prompt.
    */
   dappPromptSignTypedDataRejected: 'dapp.prompt.sign_typed_data.rejected',
+  /**
+   * Called when the user approves the addition of a token from a dApp.
+   */
+  dappPromptWatchAssetApproved: 'dapp.prompt.watch_asset.approved',
+  /**
+   * Called when the user rejects the addition of a token from a dApp.
+   */
+  dappPromptWatchAssetRejected: 'dapp.prompt.watch_asset.rejected',
   /**
    * Called when the user switches networks from the dApp with a `switchNetwork` event.
    */
@@ -281,6 +291,33 @@ export type EventProperties = {
      */
     dappName?: string;
   };
+  [event.dappPromptWatchAssetApproved]: {
+    /**
+     * `chainId` of the asset suggested by the dApp.
+     */
+    chainId: number;
+    /**
+     * `decimals` of the asset suggested by the dApp.
+     */
+    decimals: number;
+    /**
+     * `symbol` of the asset suggested by the dApp.
+     */
+    symbol: string;
+    /**
+     * `address` of the asset suggested by the dApp.
+     */
+    address: Address;
+    /**
+     * Full url of the dApp suggesting a token.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     * This will help us spot malformed dApp names to add to our overrides.
+     */
+    dappName?: string;
+  };
   [event.dappPromptConnectApproved]: {
     /**
      * `chainId` of the default network the dApp requested.
@@ -302,6 +339,33 @@ export type EventProperties = {
      * `chainId` of the network the user selected in the prompt.
      */
     chainId: number;
+  };
+  [event.dappPromptWatchAssetRejected]: {
+    /**
+     * `chainId` of the asset suggested by the dApp.
+     */
+    chainId: number;
+    /**
+     * `decimals` of the asset suggested by the dApp.
+     */
+    decimals: number;
+    /**
+     * `symbol` of the asset suggested by the dApp.
+     */
+    symbol: string;
+    /**
+     * `address` of the asset suggested by the dApp.
+     */
+    address: Address;
+    /**
+     * Full url of the dApp suggesting a token.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     * This will help us spot malformed dApp names to add to our overrides.
+     */
+    dappName?: string;
   };
   [event.dappPromptConnectRejected]: {
     /**

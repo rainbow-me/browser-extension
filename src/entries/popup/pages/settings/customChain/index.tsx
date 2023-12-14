@@ -1,29 +1,283 @@
-import React, { useCallback, useState } from 'react';
+import { isEqual } from 'lodash';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import { Chain } from 'wagmi';
 
+import { i18n } from '~/core/languages';
+import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
-import { Input } from '~/design-system/components/Input/Input';
+import { Autocomplete } from '~/entries/popup/components/Autocomplete';
+import { Form } from '~/entries/popup/components/Form/Form';
+import { FormInput } from '~/entries/popup/components/Form/FormInput';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
+import { useDebounce } from '~/entries/popup/hooks/useDebounce';
+import usePrevious from '~/entries/popup/hooks/usePrevious';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { ROUTES } from '~/entries/popup/urls';
 
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
 
+const KNOWN_NETWORKS = {
+  [i18n.t('settings.networks.custom_rpc.networks')]: [
+    {
+      name: 'Anvil Mainnet Fork',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
+      name: 'Anvil (Dev)',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 31337,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
+      name: 'Hardhat Mainnet Fork',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
+      name: 'Hardhat (Dev)',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 31337,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
+      name: 'Arbitrum Nova',
+      value: {
+        rpcUrl: 'https://nova.arbitrum.io/rpc',
+        chainId: 42_170,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://nova.arbiscan.io',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Avalanche',
+      value: {
+        rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+        chainId: 43114,
+        decimals: 18,
+        symbol: 'AVAX',
+        explorerUrl: 'https://cchain.explorer.avax.network',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Aurora',
+      value: {
+        rpcUrl: 'https://mainnet.aurora.dev',
+        chainId: 1313161554,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://aurorascan.dev',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Canto',
+      value: {
+        rpcUrl: 'https://canto.gravitychain.io',
+        chainId: 7_700,
+        decimals: 18,
+        symbol: 'CANTO',
+        explorerUrl: 'https://tuber.build',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Celo',
+      value: {
+        rpcUrl: 'https://forno.celo.org',
+        chainId: 42_220,
+        decimals: 18,
+        symbol: 'CELO',
+        explorerUrl: 'https://explorer.celo.org/mainnet',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Ethereum Classic',
+      value: {
+        rpcUrl: 'https://etc.rivet.link',
+        chainId: 61,
+        decimals: 18,
+        symbol: 'ETC',
+        explorerUrl: 'https://blockscout.com/etc/mainnet',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Fantom',
+      value: {
+        rpcUrl: 'https://rpc.ankr.com/fantom',
+        chainId: 42_220,
+        decimals: 18,
+        symbol: 'FTM',
+        explorerUrl: 'https://ftmscan.com',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Filecoin',
+      value: {
+        rpcUrl: 'https://api.node.glif.io/rpc/v1',
+        chainId: 314,
+        decimals: 18,
+        symbol: 'FIL',
+        explorerUrl: 'https://filfox.info/en',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Gnosis',
+      value: {
+        rpcUrl: 'https://rpc.gnosischain.com',
+        chainId: 100,
+        decimals: 18,
+        symbol: 'xDAI',
+        explorerUrl: 'https://gnosisscan.io',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Linea',
+      value: {
+        rpcUrl: 'https://rpc.linea.build',
+        chainId: 59_144,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://lineascan.build',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Mantle',
+      value: {
+        rpcUrl: 'https://rpc.mantle.xyz',
+        chainId: 5000,
+        decimals: 18,
+        symbol: 'MNT',
+        explorerUrl: 'https://explorer.mantle.xyz',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Metis',
+      value: {
+        rpcUrl: 'https://andromeda.metis.io/?owner=1088',
+        chainId: 1_088,
+        decimals: 18,
+        symbol: 'METIS',
+        explorerUrl: 'https://andromeda-explorer.metis.io',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Moonbeam',
+      value: {
+        rpcUrl: 'https://moonbeam.public.blastapi.io',
+        chainId: 1284,
+        decimals: 18,
+        symbol: 'GLMR',
+        explorerUrl: 'https://moonscan.io',
+      },
+    },
+    {
+      name: 'Polygon zkEVM',
+      value: {
+        rpcUrl: 'https://zkevm-rpc.com',
+        chainId: 1101,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://zkevm.polygonscan.com',
+        testnet: false,
+      },
+    },
+    {
+      name: 'PulseChain',
+      value: {
+        rpcUrl: 'https://rpc.pulsechain.com',
+        chainId: 369,
+        decimals: 18,
+        symbol: 'PULSE',
+        explorerUrl: 'https://pulsechain.com',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Scroll',
+      value: {
+        rpcUrl: 'https://rpc.scroll.io',
+        chainId: 534_352,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://scrollscan.com',
+        testnet: false,
+      },
+    },
+    {
+      name: 'zkSync',
+      value: {
+        rpcUrl: 'https://mainnet.era.zksync.io',
+        chainId: 324,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://explorer.zksync.io',
+        testnet: false,
+      },
+    },
+  ],
+};
+
 export function SettingsCustomChain() {
+  const {
+    state: { chain },
+  }: { state: { chain?: Chain } } = useLocation();
+  const { addCustomRPC } = useCustomRPCsStore();
   const navigate = useRainbowNavigate();
-  const { customChains, addCustomRPC } = useCustomRPCsStore();
   const { addUserChain } = useUserChainsStore();
+  const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
+    testnet?: boolean;
     rpcUrl?: string;
     chainId?: number;
     name?: string;
     symbol?: string;
     explorerUrl?: string;
-  }>({});
+  }>({
+    testnet: chain?.testnet,
+    chainId: chain?.id,
+    name: chain?.name,
+    symbol: chain?.nativeCurrency.symbol,
+    explorerUrl: chain?.blockExplorers?.default.url,
+  });
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
     chainId: boolean;
@@ -37,12 +291,32 @@ export function SettingsCustomChain() {
     symbol: true,
     explorerUrl: true,
   });
+  const debuncedRpcUrl = useDebounce(customRPC.rpcUrl, 500);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    data: chainMetadata,
+    isFetching: chainMetadataIsFetching,
+    isError: chainMetadataIsError,
+    isFetched: chainMetadataIsFetched,
+  } = useChainMetadata(
+    { rpcUrl: debuncedRpcUrl },
+    { enabled: !!debuncedRpcUrl && isValidUrl(debuncedRpcUrl) },
+  );
+  const prevChainMetadata = usePrevious(chainMetadata);
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
-      value: string | boolean,
+      value: string | boolean | number,
       type: 'string' | 'number' | 'boolean',
-      data: 'rpcUrl' | 'chainId' | 'name' | 'symbol' | 'explorerUrl' | 'active',
+      data:
+        | 'rpcUrl'
+        | 'chainId'
+        | 'name'
+        | 'symbol'
+        | 'explorerUrl'
+        | 'active'
+        | 'testnet',
     ) => {
       if (type === 'number' && typeof value === 'string') {
         const maskedValue = maskInput({ inputValue: value, decimals: 0 });
@@ -60,66 +334,77 @@ export function SettingsCustomChain() {
     [],
   );
 
-  const validateRpcUrl = useCallback(
-    () => !!customRPC.rpcUrl && isValidUrl(customRPC.rpcUrl),
-    [customRPC.rpcUrl],
-  );
-
-  const onRpcUrlBlur = useCallback(() => {
-    const validUrl = validateRpcUrl();
-    setValidations((prev) => ({ ...prev, rpcUrl: validUrl }));
-  }, [validateRpcUrl]);
-
-  const validateChainId = useCallback(
+  const validateExplorerRpcUrl = useCallback(
     () =>
-      !!customRPC.chainId && !isNaN(parseInt(customRPC.chainId.toString(), 10)),
-    [customRPC.chainId],
+      !!customRPC.rpcUrl &&
+      isValidUrl(customRPC.rpcUrl) &&
+      !!chainMetadata?.chainId,
+    [chainMetadata?.chainId, customRPC.rpcUrl],
   );
 
-  const onChainIdBlur = useCallback(() => {
-    const validChainId = validateChainId();
-    setValidations((prev) => ({ ...prev, chainId: validChainId }));
-  }, [validateChainId]);
+  const onRpcUrlBlur = useCallback(
+    async () =>
+      setValidations((prev) => ({ ...prev, rpcUrl: validateExplorerRpcUrl() })),
+    [validateExplorerRpcUrl],
+  );
 
-  const validateName = useCallback(() => !!customRPC.name, [customRPC.name]);
+  const validateChainId = useCallback(() => {
+    const chainId = customRPC.chainId || chainMetadata?.chainId;
+    return !!chainId && !isNaN(parseInt(chainId.toString(), 10));
+  }, [chainMetadata?.chainId, customRPC.chainId]);
+
+  const onChainIdBlur = useCallback(
+    () => setValidations((prev) => ({ ...prev, chainId: validateChainId() })),
+    [validateChainId],
+  );
+
+  const validateName = useCallback(() => {
+    return !!inputRef.current?.value;
+  }, []);
 
   const onNameBlur = useCallback(() => {
-    const validName = validateName();
-    setValidations((prev) => ({ ...prev, name: validName }));
-  }, [validateName]);
+    setValidations((prev) => ({ ...prev, name: validateName() }));
+    open && setOpen(false);
+  }, [open, validateName]);
 
   const validateSymbol = useCallback(
     () => !!customRPC.symbol,
     [customRPC.symbol],
   );
 
-  const onSymbolBlur = useCallback(() => {
-    const validSymbol = validateSymbol();
-    setValidations((prev) => ({ ...prev, symbol: validSymbol }));
-  }, [validateSymbol]);
+  const onSymbolBlur = useCallback(
+    () => setValidations((prev) => ({ ...prev, symbol: validateSymbol() })),
+    [validateSymbol],
+  );
 
   const validateExplorerUrl = useCallback(
-    () => !!customRPC.explorerUrl && isValidUrl(customRPC.explorerUrl),
+    () => (customRPC.explorerUrl ? isValidUrl(customRPC.explorerUrl) : true),
     [customRPC.explorerUrl],
   );
 
-  const onExplorerUrlBlur = useCallback(() => {
-    const validExplorerUrl = validateExplorerUrl();
-    setValidations((prev) => ({ ...prev, explorerUrl: validExplorerUrl }));
-  }, [validateExplorerUrl]);
+  const onExplorerUrlBlur = useCallback(
+    () =>
+      setValidations((prev) => ({
+        ...prev,
+        explorerUrl: validateExplorerUrl(),
+      })),
+    [validateExplorerUrl],
+  );
 
   const validateAddCustomRpc = useCallback(() => {
-    const valid = Object.values(validations).reduce(
-      (prev, current) => prev && current,
-      true,
-    );
-    const validRpcUrl = validateRpcUrl();
+    const validRpcUrl = validateExplorerRpcUrl();
     const validChainId = validateChainId();
     const validName = validateName();
     const validSymbol = validateSymbol();
     const validExplorerUrl = validateExplorerUrl();
+    setValidations({
+      rpcUrl: validRpcUrl,
+      chainId: validChainId,
+      name: validName,
+      symbol: validSymbol,
+      explorerUrl: validExplorerUrl,
+    });
     return (
-      valid &&
       validRpcUrl &&
       validChainId &&
       validName &&
@@ -128,16 +413,30 @@ export function SettingsCustomChain() {
     );
   }, [
     validateChainId,
+    validateExplorerRpcUrl,
     validateExplorerUrl,
     validateName,
-    validateRpcUrl,
     validateSymbol,
-    validations,
   ]);
 
-  const addCustomRpc = useCallback(() => {
-    const { rpcUrl, chainId, name, symbol } = customRPC;
+  const validateCustomRpcMetadata = useCallback(() => {
+    const validRpcUrl = validateExplorerRpcUrl();
+    const validChainId = validateChainId();
+    setValidations((validations) => ({
+      ...validations,
+      rpcUrl: validRpcUrl,
+      chainId: validChainId,
+    }));
+    return validRpcUrl && validChainId;
+  }, [validateChainId, validateExplorerRpcUrl]);
+
+  const addCustomRpc = useCallback(async () => {
+    const rpcUrl = customRPC.rpcUrl;
+    const chainId = customRPC.chainId || chainMetadata?.chainId;
+    const name = customRPC.name;
+    const symbol = customRPC.symbol;
     const valid = validateAddCustomRpc();
+
     if (valid && rpcUrl && chainId && name && symbol) {
       const chain: Chain = {
         id: chainId,
@@ -150,155 +449,188 @@ export function SettingsCustomChain() {
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
       };
+      if (customRPC.testnet) {
+        chain.testnet = true;
+      }
       addCustomRPC({
         chain,
       });
       addUserChain({ chainId });
+      triggerToast({
+        title: i18n.t('settings.networks.custom_rpc.network_added'),
+        description: i18n.t(
+          'settings.networks.custom_rpc.network_added_correctly',
+          { networkName: name },
+        ),
+      });
+      setCustomRPC({});
+      setTimeout(() => {
+        navigate(-1);
+      }, 1500);
     }
-  }, [addCustomRPC, addUserChain, customRPC, validateAddCustomRpc]);
+  }, [
+    addCustomRPC,
+    addUserChain,
+    chainMetadata?.chainId,
+    customRPC.chainId,
+    customRPC.name,
+    customRPC.rpcUrl,
+    customRPC.symbol,
+    customRPC.testnet,
+    navigate,
+    validateAddCustomRpc,
+  ]);
+
+  useEffect(() => {
+    if (!isEqual(chainMetadata, prevChainMetadata) && chainMetadataIsFetched) {
+      validateCustomRpcMetadata();
+    }
+  }, [
+    chainMetadata,
+    chainMetadataIsFetched,
+    prevChainMetadata,
+    validateAddCustomRpc,
+    validateCustomRpcMetadata,
+  ]);
+
+  const handleNetworkSelect = useCallback(
+    (networkName: string) => {
+      const network = KNOWN_NETWORKS.Networks.find(
+        (network) => network.name === networkName,
+      );
+      if (network) {
+        setCustomRPC((prev) => ({
+          ...prev,
+          ...network.value,
+          name: networkName,
+          active: true,
+        }));
+
+        // All these are previously validated by us
+        // when adding the network to the list
+        setValidations({
+          rpcUrl: true,
+          chainId: true,
+          name: true,
+          symbol: true,
+          explorerUrl: true,
+        });
+      }
+      open && setOpen(false);
+    },
+    [open],
+  );
 
   return (
     <Box paddingHorizontal="20px">
       <Stack space="20px">
-        {Object.keys(customChains)?.map((chainId, i) => (
-          <Box
-            key={i}
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            boxShadow="12px"
-            width="full"
-            padding="16px"
-            onClick={() =>
-              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
-                state: {
-                  chainId,
-                },
-              })
+        <Form>
+          <Autocomplete
+            open={open}
+            onFocus={() => setOpen(true)}
+            onBlur={onNameBlur}
+            data={KNOWN_NETWORKS}
+            value={customRPC.name || ''}
+            borderColor={validations.name ? 'accent' : 'red'}
+            placeholder={i18n.t('settings.networks.custom_rpc.network_name')}
+            onChange={(value) => onInputChange<string>(value, 'string', 'name')}
+            onSelect={handleNetworkSelect}
+            ref={inputRef}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'rpcUrl')
             }
-          >
-            <Stack space="16px">
-              <Text size="14pt" weight="bold" align="left">
-                Group chainId: {chainId}
-              </Text>
-              <Stack space="16px">
-                {customChains[Number(chainId)]?.chains?.map((chain, j) => (
-                  <Box key={j}>
-                    <Inline alignHorizontal="justify">
-                      <Text size="14pt" weight="bold" align="center">
-                        {chain.rpcUrls.default.http[0]}
-                      </Text>
-                      <Text size="14pt" weight="bold" align="center">
-                        {chain.rpcUrls.default.http[0] ===
-                        customChains[Number(chainId)].activeRpcUrl
-                          ? 'Active'
-                          : ''}
-                      </Text>
-                    </Inline>
-                  </Box>
-                ))}
-              </Stack>
-            </Stack>
-          </Box>
-        ))}
-
-        <Box
-          background="surfaceSecondaryElevated"
-          borderRadius="16px"
-          boxShadow="12px"
-          width="full"
-          padding="16px"
-        >
-          <Stack space="8px">
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'rpcUrl')
-              }
-              height="32px"
-              placeholder="Url"
-              variant="surface"
-              value={customRPC.rpcUrl}
-              onBlur={onRpcUrlBlur}
-              borderColor={validations.rpcUrl ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<number>(t.target.value, 'number', 'chainId')
-              }
-              height="32px"
-              placeholder="ChainId"
-              variant="surface"
-              value={customRPC.chainId || ''}
-              onBlur={onChainIdBlur}
-              borderColor={validations.chainId ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'name')
-              }
-              height="32px"
-              placeholder="name"
-              variant="surface"
-              value={customRPC.name}
-              onBlur={onNameBlur}
-              borderColor={validations.name ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'symbol')
-              }
-              height="32px"
-              placeholder="Symbol"
-              variant="surface"
-              value={customRPC.symbol}
-              onBlur={onSymbolBlur}
-              borderColor={validations.symbol ? 'accent' : 'red'}
-            />
-            <Input
-              onChange={(t) =>
-                onInputChange<string>(t.target.value, 'string', 'explorerUrl')
-              }
-              height="32px"
-              placeholder="Explorer url"
-              variant="surface"
-              value={customRPC.explorerUrl}
-              onBlur={onExplorerUrlBlur}
-              borderColor={validations.explorerUrl ? 'accent' : 'red'}
-            />
-            <Box padding="10px">
-              <Inline alignHorizontal="justify">
-                <Text
-                  align="center"
-                  weight="semibold"
-                  size="12pt"
-                  color="labelSecondary"
-                >
-                  {'Active'}
-                </Text>
-                <Checkbox
-                  borderColor="accent"
-                  onClick={() =>
-                    onInputChange<boolean>(
-                      !customRPC.active,
-                      'boolean',
-                      'active',
-                    )
-                  }
-                  selected={!!customRPC.active}
-                />
-              </Inline>
-            </Box>
-            <Inline alignHorizontal="right">
-              <Button
-                onClick={addCustomRpc}
-                color="accent"
-                height="36px"
-                variant="raised"
+            placeholder={i18n.t('settings.networks.custom_rpc.rpc_url')}
+            value={customRPC.rpcUrl}
+            onBlur={onRpcUrlBlur}
+            borderColor={
+              validations.rpcUrl && !chainMetadataIsError ? 'accent' : 'red'
+            }
+            loading={chainMetadataIsFetching}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<number>(t.target.value, 'number', 'chainId')
+            }
+            placeholder={i18n.t('settings.networks.custom_rpc.chain_id')}
+            value={customRPC.chainId || chainMetadata?.chainId || ''}
+            onBlur={onChainIdBlur}
+            borderColor={validations.chainId ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'symbol')
+            }
+            placeholder={i18n.t('settings.networks.custom_rpc.symbol')}
+            value={customRPC.symbol}
+            onBlur={onSymbolBlur}
+            borderColor={validations.symbol ? 'accent' : 'red'}
+          />
+          <FormInput
+            onChange={(t) =>
+              onInputChange<string>(t.target.value, 'string', 'explorerUrl')
+            }
+            placeholder={i18n.t(
+              'settings.networks.custom_rpc.block_explorer_url',
+            )}
+            value={customRPC.explorerUrl}
+            onBlur={onExplorerUrlBlur}
+            borderColor={validations.explorerUrl ? 'accent' : 'red'}
+          />
+          <Box padding="10px">
+            <Inline alignHorizontal="justify">
+              <Text
+                align="center"
+                weight="semibold"
+                size="12pt"
+                color="labelSecondary"
               >
-                Add
-              </Button>
+                {i18n.t('settings.networks.custom_rpc.active')}
+              </Text>
+              <Checkbox
+                borderColor="accent"
+                onClick={() =>
+                  onInputChange<boolean>(!customRPC.active, 'boolean', 'active')
+                }
+                selected={!!customRPC.active}
+              />
             </Inline>
-          </Stack>
-        </Box>
+          </Box>
+          <Box padding="10px">
+            <Inline alignHorizontal="justify">
+              <Text
+                align="center"
+                weight="semibold"
+                size="12pt"
+                color="labelSecondary"
+              >
+                {i18n.t('settings.networks.custom_rpc.testnet')}
+              </Text>
+              <Checkbox
+                borderColor="accent"
+                onClick={() =>
+                  onInputChange<boolean>(
+                    !customRPC.testnet,
+                    'boolean',
+                    'testnet',
+                  )
+                }
+                selected={!!customRPC.testnet}
+              />
+            </Inline>
+          </Box>
+          <Inline alignHorizontal="right">
+            <Button
+              onClick={addCustomRpc}
+              color="accent"
+              height="36px"
+              variant="raised"
+            >
+              {i18n.t('settings.networks.custom_rpc.add_network')}
+            </Button>
+          </Inline>
+        </Form>
       </Stack>
     </Box>
   );

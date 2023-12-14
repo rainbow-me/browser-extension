@@ -403,7 +403,10 @@
         "view_on_ens": "Ver no ENS",
         "switch_to_wallet": "Trocar para esta Carteira",
         "copy_wallet_address": "Copiar Endereço",
-        "view_wallet_on_etherscan": "Ver no Etherscan"
+        "view_wallet_on_etherscan": "Ver no Etherscan",
+        "export_addresses_as_csv": "Exportar endereços como CSV",
+        "enable_flashbots": "Ativar Flashbots",
+        "disable_flashbots": "Desativar Flashbots"
       },
       "search_tags": {
         "swap": "ponte",
@@ -479,6 +482,18 @@
     },
     "toolbar": {
       "actions_hint": "Ações"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "Assistindo",
+        "recovery_phrase": "Frase de Recuperação",
+        "private_key": "Chave Privada",
+        "hardware_wallet": "Carteira de Hardware"
+      },
+      "toast": {
+        "title": "Endereços baixados",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {
@@ -525,7 +540,6 @@
       "cancel": "Cancelar",
       "sending_on_network": "Enviando na rede %{chainName}",
       "sending_on_l2_check_1": "Não estou enviando para uma exchange",
-      "sending_on_l2_check_2": "A pessoa para quem estou enviando possui uma carteira que suporta %{chainName}",
       "complete_checks": "Concluir as verificações",
       "confirm_hw": "Confirmar em seu dispositivo"
     }
@@ -938,20 +952,29 @@
     "button_label_cancel": "Lembre-me Depois"
   },
   "approve_request": {
+    "allow_to_add_asset": "Deseja sugerir um token",
     "wallet_info_title": "deseja conectar-se à sua carteira",
     "wallet_info_description": "Permitir que %{appName} visualize o endereço, o saldo, a atividade da sua carteira e solicite aprovação para transações.",
+    "add_chain_info_description": "Se você aprovar, esta rede poderá ser usada no Rainbow Browser Extension.",
+    "watch_asset_info_description": "Se você aprovar, este ativo poderá ser usado dentro da Extensão do Navegador Rainbow.",
     "wallet": "Carteira",
     "network": "Rede",
     "switch_networks": "Alternar Redes",
     "switch_wallets": "Alternar Carteiras",
+    "allow_to_add_network": "deseja adicionar uma rede",
     "connect": "Conectar-se a %{appName}",
     "connect_anyway": "Conectar mesmo assim",
+    "approve": "Aprovar",
+    "approve_anyway": "Aprovar de qualquer maneira",
     "malicious_warning": {
       "title": "Este aplicativo é provavelmente malicioso",
       "message": "Assinar mensagens ou transações deste aplicativo pode resultar na perda de seus ativos"
     },
+    "dangerous_request": "Solicitação perigosa",
     "message_signing_request": "Solicitação de assinatura de mensagem",
     "message": "Mensagem",
+    "message_copied": "Mensagem copiada",
+    "transaction_data_copied": "Dados da transação copiados",
     "sign_message": "Assinar Mensagem",
     "sign_message_anyway": "Assinar mesmo assim",
     "confirm_hw": "Confirmar no seu dispositivo",
@@ -960,7 +983,29 @@
     "send_transaction_anyway": "Confirmar mesmo assim",
     "contract_deployment": "Implantação de Contrato",
     "transaction_request": "Solicitação de Transação",
-    "insufficient_native_asset_for_gas": "Saldo insuficiente de %{symbol} para gás"
+    "insufficient_gas_funds": "Você precisa de mais %{token}",
+    "insufficient_gas_funds_description": "Você precisar de um pouco mais %{token} para pagar esta transação. Obtenha mais abaixo para prosseguir com este pedido.",
+    "no_gas_funds": "Você precisa de algum %{token}",
+    "no_gas_funds_description": "Você precisará de %{token} para pagar esta transação. Adquira algum %{token} abaixo para continuar com este pedido.",
+    "no_token": "Nenhum %{token}",
+    "on_chain": "em %{chain}",
+    "copy_deposit_address": "Copiar endereço da carteira para depósito",
+    "bridge_to": "Ponte para %{chain}",
+    "signing_with": "Assinatura com",
+    "no_fee_to_sign": "Sem taxa para assinar",
+    "request_rejected": "Solicitação de transação rejeitada",
+    "bridge_and_try_again": "Conecte alguns fundos de gás e tente novamente",
+    "buy_and_try_again": "Compre alguns fundos de gás e tente novamente",
+    "buy": "Comprar %{token}"
+  },
+  "add_chain": {
+    "name": "Nome",
+    "chain_id": "ID da rede",
+    "currency_symbol": "Símbolo da moeda",
+    "currency_name": "Nome da moeda",
+    "currency_decimals": "Casas decimais da moeda",
+    "rpc_url": "URL do RPC",
+    "block_explorer_url": "URL do explorador de blocos"
   },
   "transaction_fee": {
     "title": "Velocidade de Transação",
@@ -1127,14 +1172,36 @@
   },
   "nfts": {
     "coming_soon_header": "Em breve",
+    "empty_state_header": "NFTs",
     "coming_soon_description": "NFTs estarão disponíveis em breve. Fique atento!",
+    "empty_state_description": "Seus NFTs aparecerão aqui!",
     "view_on_web": "Ver na Web",
     "display_mode_gallery": "Galeria",
     "display_mode_collections": "Coleções",
     "sort_option_recent": "Recentes",
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "Recentes",
-    "sort_option_abc_long": "Alfabético"
+    "sort_option_abc_long": "Alfabético",
+    "details": {
+      "last_sales_price": "Último preço de venda",
+      "none": "Nenhum",
+      "floor_price": "Preço mínimo",
+      "properties": "Propriedades",
+      "address_copied": "Endereço copiado",
+      "about": "Sobre",
+      "token_standard": "Padrão do Token",
+      "token_contract": "Contrato do Token",
+      "contract_creator": "Criador do contrato",
+      "chain": "Rede",
+      "id_copied": "ID Copiado",
+      "copy_token_id": "Copiar ID do Token",
+      "download": "Baixar",
+      "explorer": "Explorador",
+      "view_collection": "Ver coleção",
+      "collection_website": "Website da coleção",
+      "owners": "Proprietários",
+      "unique_owners": "Proprietários únicos"
+    }
   },
   "points": {
     "coming_soon_header": "Em breve",
@@ -1172,6 +1239,7 @@
     "approvals": "Aprovações de Tokens",
     "this_token_is_on_network": "Esta %{symbol} está na rede %{chainName}",
     "view_on": "Ver no %{explorer}",
+    "not_available": "Preço não disponível",
     "more_options": {
       "copy_address": "Copiar Endereço",
       "hide": "Ocultar Token",
@@ -1405,5 +1473,42 @@
     "unfavorite": "Remover dos favoritos",
     "estimated_difference": "Diferença estimada em valor",
     "buy_crypto": "Comprar e transferir criptomoedas"
+  },
+  "simulation": {
+    "title": "Resultado simulado",
+    "loading": "Simulando...",
+    "error": "Falha na simulação",
+    "no_changes": "Nenhuma alteração detectada",
+    "received": "Recebido",
+    "sent": "Enviado",
+    "approved": "Aprovado",
+    "reverted": "Transação revertida",
+    "function": "Função",
+    "contract": "Contrato",
+    "contract_name": "Nome do contrato",
+    "contract_created_at": "Contrato criado em",
+    "source_code": "Código-fonte",
+    "signature": {
+      "message": "Mensagem"
+    },
+    "tabs": {
+      "overview": "Visão geral",
+      "details": "Detalhes",
+      "data": "Dados"
+    }
+  },
+  "chain": "Rede",
+  "nonce": "Nonce",
+  "copy": "Copiar",
+  "close": "Fechar",
+  "verified": "Verificado",
+  "unverified": "Não verificado",
+  "watch_asset": {
+    "chain_id": "ID da rede",
+    "symbol": "Símbolo",
+    "decimals": "Decimais",
+    "address": "Endereço",
+    "not_found": "Não conseguimos encontrar este ativo na rede selecionada. Por favor, escolha a rede certa abaixo"
   }
 }
+

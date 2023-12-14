@@ -403,7 +403,10 @@
         "view_on_ens": "ENS에서 보기",
         "switch_to_wallet": "이 지갑으로 전환",
         "copy_wallet_address": "주소 복사",
-        "view_wallet_on_etherscan": "Etherscan에서 보기"
+        "view_wallet_on_etherscan": "Etherscan에서 보기",
+        "export_addresses_as_csv": "주소를 CSV로 내보내기",
+        "enable_flashbots": "플래시봇 활성화",
+        "disable_flashbots": "플래시봇 비활성화"
       },
       "search_tags": {
         "swap": "브릿지",
@@ -479,6 +482,18 @@
     },
     "toolbar": {
       "actions_hint": "액션"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "감시 중",
+        "recovery_phrase": "복구 구문",
+        "private_key": "개인 키",
+        "hardware_wallet": "하드웨어 지갑"
+      },
+      "toast": {
+        "title": "주소 다운로드됨",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {
@@ -525,7 +540,6 @@
       "cancel": "취소",
       "sending_on_network": "%{chainName} 네트워크에서 전송 중",
       "sending_on_l2_check_1": "거래소로 보내지 않습니다",
-      "sending_on_l2_check_2": "저는 보내는 사람이 %{chainName}을 지원하는 지갑이 있다",
       "complete_checks": "체크를 완료하다",
       "confirm_hw": "장치에서 확인하세요"
     }
@@ -938,20 +952,29 @@
     "button_label_cancel": "나중에 알림"
   },
   "approve_request": {
+    "allow_to_add_asset": "토큰 제안을 원합니다",
     "wallet_info_title": "당신의 지갑에 연결하려고 함",
     "wallet_info_description": "당신의 지갑 주소, 잔액, 활동을 보고 트랜잭션 승인을 요청하도록 %{appName} 에게 허용하십시오.",
+    "add_chain_info_description": "승인하면 이 네트워크는 Rainbow 브라우저 확장 프로그램에서 사용될 수 있습니다.",
+    "watch_asset_info_description": "승인하면, 이 자산은 Rainbow 브라우저 확장 프로그램 내에서 사용될 수 있습니다.",
     "wallet": "지갑",
     "network": "네트워크",
     "switch_networks": "네트워크 전환",
     "switch_wallets": "지갑 변경",
+    "allow_to_add_network": "네트워크 추가를 원합니다",
     "connect": "%{appName}에 연결",
     "connect_anyway": "그래도 연결",
+    "approve": "승인",
+    "approve_anyway": "어쨌든 승인",
     "malicious_warning": {
       "title": "이 앱은 악성일 확률이 높다",
       "message": "이 앱에서 메시지나 트랜잭션을 서명하면 자산이 손실될 수 있습니다"
     },
+    "dangerous_request": "위험한 요청",
     "message_signing_request": "메시지 서명 요청",
     "message": "메시지",
+    "message_copied": "메시지가 복사됨",
+    "transaction_data_copied": "거래 데이터 복사됨",
     "sign_message": "메시지 서명",
     "sign_message_anyway": "그래도 서명",
     "confirm_hw": "장치에서 확인",
@@ -960,7 +983,29 @@
     "send_transaction_anyway": "그래도 확인",
     "contract_deployment": "계약 배포",
     "transaction_request": "트랜잭션 요청",
-    "insufficient_native_asset_for_gas": "가스 대한 %{symbol} 부족"
+    "insufficient_gas_funds": "당신은 더 많은 %{token}이 필요합니다",
+    "insufficient_gas_funds_description": "이 거래를 위해 조금 더 %{token} 이 필요합니다. 이 요청을 계속하려면 다음에서 더 얻으세요.",
+    "no_gas_funds": "당신은 일부 %{token}이 필요합니다",
+    "no_gas_funds_description": "이 거래를 위해 %{token} 이 필요합니다. 이 요청을 계속하려면 다음에서 %{token} 을 얻으세요.",
+    "no_token": "%{token}없음",
+    "on_chain": "%{chain}위에",
+    "copy_deposit_address": "지갑 주소를 복사하여 입금하십시오",
+    "bridge_to": "%{chain}로 브리지",
+    "signing_with": "사인 중",
+    "no_fee_to_sign": "사인하는 데 요금 없음",
+    "request_rejected": "거래 요청 거부됨",
+    "bridge_and_try_again": "일부 가스 펀드를 다리 놓고 다시 시도하세요",
+    "buy_and_try_again": "일부 가스 펀드를 구입하고 다시 시도하세요",
+    "buy": "%{token}사기"
+  },
+  "add_chain": {
+    "name": "이름",
+    "chain_id": "체인 ID",
+    "currency_symbol": "통화 기호",
+    "currency_name": "통화 이름",
+    "currency_decimals": "통화 소수점",
+    "rpc_url": "RPC url",
+    "block_explorer_url": "블록 익스플로러 URL"
   },
   "transaction_fee": {
     "title": "트랜잭션 속도",
@@ -1127,14 +1172,36 @@
   },
   "nfts": {
     "coming_soon_header": "곧 출시 예정",
+    "empty_state_header": "NFTs",
     "coming_soon_description": "NFT는 곧 출시됩니다. 기대해 주세요!",
+    "empty_state_description": "당신의 NFT들이 여기에 표시됩니다!",
     "view_on_web": "웹에서 보기",
     "display_mode_gallery": "갤러리",
     "display_mode_collections": "컬렉션",
     "sort_option_recent": "최근",
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "최근",
-    "sort_option_abc_long": "알파벳순"
+    "sort_option_abc_long": "알파벳순",
+    "details": {
+      "last_sales_price": "마지막 판매 가격",
+      "none": "없음",
+      "floor_price": "최저 가격",
+      "properties": "속성",
+      "address_copied": "주소 복사됨",
+      "about": "소개",
+      "token_standard": "토큰 표준",
+      "token_contract": "토큰 계약",
+      "contract_creator": "계약 생성자",
+      "chain": "블록체인",
+      "id_copied": "ID 복사됨",
+      "copy_token_id": "토큰 ID 복사",
+      "download": "다운로드",
+      "explorer": "탐색기",
+      "view_collection": "컬렉션 보기",
+      "collection_website": "컬렉션 웹사이트",
+      "owners": "소유자",
+      "unique_owners": "고유 소유자"
+    }
   },
   "points": {
     "coming_soon_header": "곧 출시 예정",
@@ -1172,6 +1239,7 @@
     "approvals": "토큰 승인",
     "this_token_is_on_network": "이 %{symbol} 는 %{chainName} 네트워크에 있습니다",
     "view_on": "%{explorer}에서 보기",
+    "not_available": "가격을 확인할 수 없습니다",
     "more_options": {
       "copy_address": "주소 복사",
       "hide": "토큰 숨기기",
@@ -1405,5 +1473,42 @@
     "unfavorite": "즐겨찾기에서 제거",
     "estimated_difference": "추정 가치 차이",
     "buy_crypto": "크립토 구매 및 전송"
+  },
+  "simulation": {
+    "title": "시뮬레이션 결과",
+    "loading": "시뮬레이션 중...",
+    "error": "시뮬레이션 실패",
+    "no_changes": "변경 사항 없음",
+    "received": "받음",
+    "sent": "보냄",
+    "approved": "승인 완료",
+    "reverted": "거래 취소됨",
+    "function": "함수",
+    "contract": "계약",
+    "contract_name": "계약 이름",
+    "contract_created_at": "계약 생성됨",
+    "source_code": "소스 코드",
+    "signature": {
+      "message": "메시지"
+    },
+    "tabs": {
+      "overview": "개요",
+      "details": "세부 정보",
+      "data": "데이터"
+    }
+  },
+  "chain": "블록체인",
+  "nonce": "논스",
+  "copy": "복사",
+  "close": "닫기",
+  "verified": "인증됨",
+  "unverified": "인증되지 않음",
+  "watch_asset": {
+    "chain_id": "체인 ID",
+    "symbol": "심볼",
+    "decimals": "소수점",
+    "address": "주소",
+    "not_found": "선택한 네트워크에서 이 자산을 찾을 수 없습니다. 아래에서 올바른 네트워크를 선택하세요"
   }
 }
+

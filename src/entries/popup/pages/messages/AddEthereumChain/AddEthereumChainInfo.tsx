@@ -11,6 +11,7 @@ import {
   Text,
 } from '~/design-system';
 import { TextInline } from '~/design-system/docs/components/TextInline';
+import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 
 import { ThisDappIsLikelyMalicious } from '../DappScanStatus';
@@ -28,6 +29,8 @@ export const AddEthereumChainInfo = ({
     rpcUrl,
     blockExplorerUrl,
   },
+  testnet,
+  setTestnet,
 }: {
   appHostName?: string;
   appName?: string;
@@ -42,19 +45,22 @@ export const AddEthereumChainInfo = ({
     rpcUrl: string;
     blockExplorerUrl: string;
   };
+  testnet: boolean;
+  setTestnet: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const isScamDapp = dappStatus === DAppStatus.Scam;
 
   return (
     <Box
       style={{
-        paddingBottom: isScamDapp ? 20 : 42,
+        minHeight: 462,
       }}
       paddingHorizontal="30px"
       paddingTop="64px"
       background="surfacePrimaryElevatedSecondary"
+      height="full"
     >
-      <Stack space="32px">
+      <Stack space="20px">
         <Box width="full">
           <Inline alignHorizontal="center" alignVertical="center">
             <DappIcon appLogo={appLogo} size="60px" />
@@ -79,7 +85,7 @@ export const AddEthereumChainInfo = ({
           </Box>
         </Box>
         {isScamDapp ? (
-          <Bleed horizontal="30px">
+          <Bleed horizontal="30px" vertical="6px">
             <ThisDappIsLikelyMalicious />
           </Bleed>
         ) : (
@@ -182,6 +188,18 @@ export const AddEthereumChainInfo = ({
           </Box>
         </Box>
       </Stack>
+      <Box paddingVertical="12px" paddingHorizontal="20px">
+        <Inline alignHorizontal="justify" alignVertical="center">
+          <Text size="14pt" weight="bold">
+            {i18n.t('add_chain.testnet')}:
+          </Text>
+          <Checkbox
+            borderColor="accent"
+            onClick={() => setTestnet((testnet) => !testnet)}
+            selected={testnet}
+          />
+        </Inline>
+      </Box>
     </Box>
   );
 };

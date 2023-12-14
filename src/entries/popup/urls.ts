@@ -11,6 +11,8 @@ export const ROUTES = {
     `/home/activity-details/${chainId}/${hash}`,
   NFT_DETAILS: (collectionId: string, nftId: string) =>
     `/home/nft-details/${collectionId}/${nftId}`,
+  POINTS_REFERRAL: '/home/points-referral',
+  POINTS_ONBOARDING: '/home/points-onboarding',
   CONNECTED: '/connected', // ConnectedApps
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect
@@ -28,6 +30,7 @@ export const ROUTES = {
   SETTINGS: '/settings', // Settings
   QR_CODE: '/qr-code', // QR Code
   SETTINGS__NETWORKS: '/settings/networks', // Networks
+  SETTINGS__NETWORKS__RPCS: '/settings/networks/rpcs', // RPCs per network
   SETTINGS__NETWORKS__CUSTOM_RPC: '/settings/networks/custom-chain', // Networks Custom Chain
   SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS:
     '/settings/networks/custom-chain/details', // Networks Custom Chain details

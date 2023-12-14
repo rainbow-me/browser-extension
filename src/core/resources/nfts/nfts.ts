@@ -19,11 +19,12 @@ import {
   SimpleHashCollectionDetails,
   UniqueAsset,
 } from '~/core/types/nfts';
-import { getSupportedChains } from '~/core/utils/chains';
+import { getBackendSupportedChains } from '~/core/utils/chains';
 import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
 } from '~/core/utils/nfts';
+import { NFTS_TEST_DATA } from '~/test/utils';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
@@ -47,7 +48,12 @@ async function nftsQueryFunction({
   queryKey: [{ address }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
-  const chains = getSupportedChains().map((chain) => chain.name as ChainName);
+  if (process.env.IS_TESTING === 'true') {
+    return NFTS_TEST_DATA;
+  }
+  const chains = getBackendSupportedChains({ testnetMode: false }).map(
+    ({ name }) => name as ChainName,
+  );
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({
@@ -84,12 +90,41 @@ async function nftsQueryFunction({
       }
     },
   );
+  const collectionOwnerMap: Record<
+    string,
+    {
+      distinct_nft_count: number;
+      distinct_owner_count: number;
+      total_quantity: number;
+    }
+  > = {};
   const collectionIds = filteredCollections
     .filter((c) => c.collection_id)
-    .map((c) => c.collection_id);
-  const nftsResponse = await fetchNfts({ address, chains, collectionIds });
-  const nfts = filterSimpleHashNFTs(nftsResponse, polygonAllowList).map((nft) =>
-    simpleHashNFTToUniqueAsset(nft),
+    .map((c) => {
+      collectionOwnerMap[c.collection_id] = {
+        distinct_nft_count: c.collection_details.distinct_nft_count,
+        distinct_owner_count: c.collection_details.distinct_owner_count,
+        total_quantity: c.collection_details.total_quantity,
+      };
+      return c.collection_id;
+    });
+  const nftsResponse = collectionIds?.length
+    ? await fetchNfts({ address, chains, collectionIds })
+    : [];
+  const nfts = filterSimpleHashNFTs(nftsResponse, polygonAllowList).map(
+    (nft) => {
+      const uniqueAsset = simpleHashNFTToUniqueAsset(nft);
+      const collectionOwnersData =
+        collectionOwnerMap[nft.collection.collection_id || ''];
+      if (collectionOwnersData) {
+        return {
+          ...uniqueAsset,
+          collection: { ...uniqueAsset.collection, ...collectionOwnersData },
+        };
+      } else {
+        return uniqueAsset;
+      }
+    },
   );
   return {
     nfts,
@@ -109,7 +144,7 @@ export function useNfts<TSelectData = NftsResult>(
   return useInfiniteQuery(nftsQueryKey({ address }), nftsQueryFunction, {
     ...config,
     getNextPageParam: (lastPage) => lastPage?.nextPage,
-    refetchInterval: 10000,
+    refetchInterval: 600000,
     retry: 3,
   });
 }

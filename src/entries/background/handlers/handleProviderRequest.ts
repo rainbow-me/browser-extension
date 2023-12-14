@@ -23,7 +23,11 @@ import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { isCustomChain, isSupportedChainId } from '~/core/utils/chains';
+import {
+  deriveChainIdByHostname,
+  isCustomChain,
+  isSupportedChainId,
+} from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -38,17 +42,27 @@ const MAX_REQUEST_PER_MINUTE = 90;
 let minuteTimer: NodeJS.Timeout | null = null;
 let secondTimer: NodeJS.Timeout | null = null;
 
+const getPopupTitleBarHeight = (platform: string) => {
+  if (platform.includes('Mac')) return 28;
+  if (platform.includes('Win')) return 30;
+  if (platform.includes('Linux')) return 32;
+  return 28;
+};
+
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
     type: 'popup',
-    height: POPUP_DIMENSIONS.height + 25,
-    width: 360,
+    height:
+      POPUP_DIMENSIONS.height + getPopupTitleBarHeight(navigator.userAgent),
+    width: POPUP_DIMENSIONS.width,
     left:
-      (currentWindow.width || POPUP_DIMENSIONS.width) - POPUP_DIMENSIONS.width,
-    top: 0,
+      (currentWindow.left || 0) +
+      (currentWindow.width || POPUP_DIMENSIONS.width) -
+      POPUP_DIMENSIONS.width,
+    top: currentWindow.top || 0,
   });
   setNotificationWindow(tabId, window);
 };
@@ -218,6 +232,7 @@ const skipRateLimitCheck = (method: string) =>
     'eth_signTypedData',
     'eth_signTypedData_v3',
     'eth_signTypedData_v4',
+    'wallet_watchAsset',
     'wallet_addEthereumChain',
     'wallet_switchEthereumChain',
     'eth_requestAccounts',
@@ -393,6 +408,57 @@ export const handleProviderRequest = ({
           }
           break;
         }
+        case 'wallet_watchAsset': {
+          const { featureFlags } = featureFlagsStore.getState();
+          if (!featureFlags.custom_rpc && process.env.IS_TESTING === 'false') {
+            throw new Error('Method not supported');
+          } else {
+            const {
+              type,
+              options: { address, symbol, decimals },
+            } = params as unknown as {
+              type: string;
+              options: {
+                address: Address;
+                symbol?: string;
+                decimals?: number;
+              };
+            };
+
+            if (type !== 'ERC20') {
+              throw new Error('Method supported only for ERC20');
+            }
+
+            if (!address) {
+              throw new Error('Address is required');
+            }
+
+            const activeSession = getActiveSession({ host });
+            let chainId = null;
+            if (activeSession) {
+              chainId = activeSession?.chainId;
+            } else {
+              chainId = deriveChainIdByHostname(host);
+            }
+
+            response = await messengerProviderRequest(popupMessenger, {
+              method,
+              id,
+              params: [
+                {
+                  address,
+                  symbol,
+                  decimals,
+                  chainId,
+                },
+              ],
+              meta,
+            });
+            // PER EIP - true if the token was added, false otherwise.
+            response = !!response;
+            break;
+          }
+        }
         case 'wallet_switchEthereumChain': {
           const proposedChainId = Number(
             (params?.[0] as { chainId: ChainId })?.chainId,
@@ -489,14 +555,14 @@ export const handleProviderRequest = ({
         }
         case 'eth_estimateGas': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.estimateGas(
-            params?.[0] as TransactionRequest,
-          );
+          response = (
+            await provider.estimateGas(params?.[0] as TransactionRequest)
+          ).toString();
           break;
         }
         case 'eth_gasPrice': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.getGasPrice();
+          response = (await provider.getGasPrice()).toString();
           break;
         }
         case 'eth_getCode': {

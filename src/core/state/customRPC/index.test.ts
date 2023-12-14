@@ -67,6 +67,12 @@ test('should be able to add a new custom RPC', async () => {
   expect(chain.chains).toContainEqual(TEST_RPC_1);
 });
 
+test('should not be able to add a repeated custom RPC', async () => {
+  customRPCsStore.getState().addCustomRPC({ chain: TEST_RPC_1 });
+  const chain = customRPCsStore.getState().customChains[TEST_RPC_1.id];
+  expect(chain.chains).toEqual([TEST_RPC_1]);
+});
+
 test('should be able to add a new custom RPC to a Chain group already created', async () => {
   customRPCsStore.getState().addCustomRPC({ chain: TEST_RPC_2 });
   const chain = customRPCsStore.getState().customChains[TEST_RPC_2.id];
