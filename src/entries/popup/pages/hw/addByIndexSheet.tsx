@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
 import { i18n } from '~/core/languages';

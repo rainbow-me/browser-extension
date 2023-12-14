@@ -1,7 +1,6 @@
 import { isValidAddress } from '@ethereumjs/util';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address, getProvider } from '@wagmi/core';
 
 import {
   QueryConfig,

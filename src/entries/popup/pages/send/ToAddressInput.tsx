@@ -1,4 +1,5 @@
 import { isAddress } from '@ethersproject/address';
+import { Address } from '@wagmi/core';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   InputHTMLAttributes,
@@ -9,7 +10,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';

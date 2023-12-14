@@ -1,12 +1,12 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+import { Chain } from '@wagmi/core';
+import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
 import {
-  Chain,
   CreateClientConfig,
   configureChains,
   createClient,
   createStorage,
 } from 'wagmi';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';

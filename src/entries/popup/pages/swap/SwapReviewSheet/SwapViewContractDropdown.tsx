@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import React, { ReactNode, useCallback } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';

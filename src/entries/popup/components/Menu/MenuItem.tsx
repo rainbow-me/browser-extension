@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import React, { useCallback, useState } from 'react';
-import { Address } from 'wagmi';
 
 import {
   Box,

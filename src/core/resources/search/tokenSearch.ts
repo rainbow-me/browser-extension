@@ -1,7 +1,7 @@
 import { isAddress } from '@ethersproject/address';
 import { useQuery } from '@tanstack/react-query';
+import { Address } from '@wagmi/core';
 import qs from 'qs';
-import { Address } from 'wagmi';
 
 import { tokenSearchHttp } from '~/core/network/tokenSearch';
 import {

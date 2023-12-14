@@ -4,10 +4,10 @@ import { BytesLike } from '@ethersproject/bytes';
 import { Wallet } from '@ethersproject/wallet';
 import * as bip39 from '@scure/bip39';
 import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
-import { getProvider } from '@wagmi/core';
+import { Address, getProvider } from '@wagmi/core';
 import { HDKey } from 'ethereum-cryptography/hdkey';
 import { bytesToHex } from 'ethereum-cryptography/utils';
-import { Address, mainnet } from 'wagmi';
+import { mainnet } from 'viem/chains';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 

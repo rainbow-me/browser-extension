@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { AddressZero } from '@ethersproject/constants';
-import { Address, useNetwork } from 'wagmi';
+import { Address } from '@wagmi/core';
+import { useNetwork } from 'wagmi';
 
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';

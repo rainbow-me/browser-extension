@@ -1,9 +1,9 @@
 import { isAddress } from '@ethersproject/address';
+import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';

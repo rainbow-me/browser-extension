@@ -1,13 +1,8 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { Address } from '@wagmi/core';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo } from 'react';
-import {
-  Address,
-  useAccount,
-  useBalance,
-  useEnsName,
-  useTransaction,
-} from 'wagmi';
+import { useAccount, useBalance, useEnsName, useTransaction } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';

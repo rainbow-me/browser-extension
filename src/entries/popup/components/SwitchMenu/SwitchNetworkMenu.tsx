@@ -1,5 +1,5 @@
+import { Chain } from '@wagmi/core';
 import React, { useCallback, useMemo, useRef } from 'react';
-import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';

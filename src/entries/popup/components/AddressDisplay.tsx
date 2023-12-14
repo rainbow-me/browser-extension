@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';

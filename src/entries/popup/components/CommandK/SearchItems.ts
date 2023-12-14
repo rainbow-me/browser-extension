@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { ParsedUserAsset, ZerionAssetPrice } from '~/core/types/assets';
 import { SymbolName } from '~/design-system/styles/designTokens';

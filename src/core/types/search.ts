@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { AddressOrEth, ParsedAsset, UniqueId } from './assets';
 import { ChainId } from './chains';

@@ -13,8 +13,7 @@ import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address, getProvider } from '@wagmi/core';
 
 import { i18n } from '~/core/languages';
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';

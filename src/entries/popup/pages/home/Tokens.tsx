@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import { useVirtualizer } from '@tanstack/react-virtual';
+import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import { memo, useCallback, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';

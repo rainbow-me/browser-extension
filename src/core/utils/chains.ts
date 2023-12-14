@@ -7,9 +7,9 @@ import {
   celo,
   fantom,
   harmonyOne,
+  mainnet,
   moonbeam,
 } from 'viem/chains';
-import { mainnet } from 'wagmi';
 
 import {
   NATIVE_ASSETS_PER_CHAIN,

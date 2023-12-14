@@ -1,9 +1,8 @@
 import { FixedNumber } from '@ethersproject/bignumber';
 import { Provider, TransactionResponse } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
-import { getProvider } from '@wagmi/core';
+import { Address, getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
-import { Address } from 'wagmi';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';

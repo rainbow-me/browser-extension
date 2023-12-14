@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 export const HARDWARE_WALLETS = {
   MOCK_ACCOUNT: {

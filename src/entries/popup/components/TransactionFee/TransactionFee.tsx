@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import { Address } from '@wagmi/core';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { EventProperties } from '~/analytics/event';

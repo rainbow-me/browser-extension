@@ -1,6 +1,6 @@
+import { Address } from '@wagmi/core';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import appConnectionWalletItemImageMask from 'static/assets/appConnectionWalletItemImageMask.svg';
 import { i18n } from '~/core/languages';

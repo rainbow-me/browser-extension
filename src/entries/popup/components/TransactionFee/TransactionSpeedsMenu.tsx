@@ -1,5 +1,5 @@
+import { Chain } from '@wagmi/core';
 import React, { useImperativeHandle, useRef } from 'react';
-import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';

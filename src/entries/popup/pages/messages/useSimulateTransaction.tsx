@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { metadataPostClient } from '~/core/graphql';
 import { Transaction } from '~/core/graphql/__generated__/metadata';

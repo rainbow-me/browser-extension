@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import { useMemo } from 'react';
-import { Address } from 'wagmi';
 
 import {
   BNB_MAINNET_ADDRESS,

@@ -1,8 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Wallet } from '@ethersproject/wallet';
-import { getProvider } from '@wagmi/core';
+import { Address, getProvider } from '@wagmi/core';
 import { mainnet } from 'viem/chains';
-import { Address } from 'wagmi';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 

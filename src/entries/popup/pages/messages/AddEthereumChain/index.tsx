@@ -1,5 +1,5 @@
+import { Chain } from '@wagmi/core';
 import { useCallback, useState } from 'react';
-import { Chain } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

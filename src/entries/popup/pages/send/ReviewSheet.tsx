@@ -1,3 +1,4 @@
+import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, {
   useCallback,
@@ -6,7 +7,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';

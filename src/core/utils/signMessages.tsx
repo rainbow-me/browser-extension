@@ -1,6 +1,6 @@
 import { getAddress, isAddress } from '@ethersproject/address';
 import { Bytes, isHexString } from '@ethersproject/bytes';
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { RainbowError, logger } from '~/logger';
 

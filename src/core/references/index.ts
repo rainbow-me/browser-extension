@@ -1,4 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
+import { Address, type Chain } from '@wagmi/core';
 import {
   arbitrum,
   arbitrumGoerli,
@@ -12,10 +13,10 @@ import {
   optimismGoerli,
   polygon,
   polygonMumbai,
+  sepolia,
   zora,
   zoraTestnet,
 } from 'viem/chains';
-import { Address, type Chain, sepolia } from 'wagmi';
 
 import {
   ChainId,

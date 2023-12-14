@@ -1,8 +1,8 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { formatEther } from '@ethersproject/units';
+import { Address } from '@wagmi/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

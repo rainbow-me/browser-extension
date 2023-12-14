@@ -1,6 +1,6 @@
+import { Address } from '@wagmi/core';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { useCallback } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import {

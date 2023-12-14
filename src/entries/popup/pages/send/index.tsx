@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { Address } from '@wagmi/core';
 import { useAnimationControls } from 'framer-motion';
 import {
   ChangeEvent,
@@ -8,7 +9,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

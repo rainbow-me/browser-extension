@@ -7,6 +7,7 @@ import * as fs from 'node:fs';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
+import { erc20ABI } from '@wagmi/core';
 import {
   Builder,
   By,
@@ -19,7 +20,6 @@ import {
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
 import { expect } from 'vitest';
-import { erc20ABI } from 'wagmi';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 

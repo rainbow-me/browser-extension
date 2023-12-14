@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Bytes } from '@ethersproject/bytes';
 import { TransactionRequest } from '@ethersproject/providers';
+import { Address } from '@wagmi/core';
 import { useEffect } from 'react';
-import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 

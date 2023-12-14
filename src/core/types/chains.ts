@@ -1,5 +1,5 @@
+import type { Chain } from '@wagmi/core';
 import * as chain from 'viem/chains';
-import type { Chain } from 'wagmi';
 
 const HARDHAT_CHAIN_ID = 1337;
 const HARDHAT_OP_CHAIN_ID = 1338;

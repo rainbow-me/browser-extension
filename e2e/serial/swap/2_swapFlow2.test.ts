@@ -2,9 +2,9 @@ import 'chromedriver';
 import 'geckodriver';
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import { erc20ABI } from '@wagmi/core';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
-import { erc20ABI } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
 

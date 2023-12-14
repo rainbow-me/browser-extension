@@ -1,8 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { ChainId } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Chain } from 'wagmi';
+import { Chain, getProvider } from '@wagmi/core';
 
 import {
   QueryConfig,

@@ -1,7 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Mnemonic } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 export type PrivateKey = string;
 

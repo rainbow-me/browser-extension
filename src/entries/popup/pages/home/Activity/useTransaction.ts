@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Hash, getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address, Hash, getProvider } from '@wagmi/core';
 
 import { i18n } from '~/core/languages';
 import { addysHttp } from '~/core/network/addys';

@@ -1,5 +1,5 @@
+import { Chain } from '@wagmi/core';
 import { expect, test } from 'vitest';
-import { Chain } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
 

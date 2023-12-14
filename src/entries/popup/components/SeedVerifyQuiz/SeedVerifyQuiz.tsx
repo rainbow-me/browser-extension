@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';

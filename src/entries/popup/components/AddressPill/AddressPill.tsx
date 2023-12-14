@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import React from 'react';
-import { Address } from 'wagmi';
 
 import { Box, Inline, TextOverflow } from '~/design-system';
 

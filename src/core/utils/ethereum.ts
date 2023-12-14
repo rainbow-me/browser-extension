@@ -2,8 +2,8 @@ import { isAddress } from '@ethersproject/address';
 import { Mnemonic, isValidMnemonic } from '@ethersproject/hdnode';
 import { TransactionResponse } from '@ethersproject/providers';
 import { parseEther } from '@ethersproject/units';
+import { Address } from '@wagmi/core';
 import omit from 'lodash/omit';
-import { Address } from 'wagmi';
 
 import { PrivateKey } from '../keychain/IKeychain';
 import { ethUnits } from '../references';

@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import qs from 'qs';
-import { Address } from 'wagmi';
 
 import { f2cHttp } from '~/core/network';
 import {

@@ -1,6 +1,5 @@
+import { Address, getProvider } from '@wagmi/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
-import { getProvider } from 'wagmi/actions';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

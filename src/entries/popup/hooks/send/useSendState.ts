@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import { useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';

@@ -1,7 +1,6 @@
 import { Provider } from '@ethersproject/providers';
+import { Address, erc20ABI, getContract } from '@wagmi/core';
 import isURL from 'validator/lib/isURL';
-import { Address, erc20ABI } from 'wagmi';
-import { getContract } from 'wagmi/actions';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import {

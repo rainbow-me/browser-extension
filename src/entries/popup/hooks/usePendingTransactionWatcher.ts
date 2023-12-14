@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { usePoll } from './usePoll';
 import { useWatchPendingTransactions } from './useWatchPendingTransactions';

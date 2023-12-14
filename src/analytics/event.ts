@@ -1,6 +1,6 @@
 /* eslint sort-keys: "error"*/
 
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { KeyboardEventDescription } from '~/entries/popup/hooks/useKeyboardAnalytics';
 

@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import { useCallback, useMemo } from 'react';
-import { Address } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { truncateAddress } from '~/core/utils/address';

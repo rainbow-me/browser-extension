@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import {

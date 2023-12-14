@@ -1,5 +1,5 @@
 import { isAddress } from '@ethersproject/address';
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 import create from 'zustand';
 
 import { NewTransaction, PendingTransaction } from '~/core/types/transactions';

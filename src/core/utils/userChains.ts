@@ -1,3 +1,4 @@
+import { Chain } from '@wagmi/core';
 import {
   arbitrum,
   arbitrumGoerli,
@@ -5,14 +6,16 @@ import {
   baseGoerli,
   bsc,
   bscTestnet,
+  goerli,
+  mainnet,
   optimism,
   optimismGoerli,
   polygon,
   polygonMumbai,
+  sepolia,
   zora,
   zoraTestnet,
 } from 'viem/chains';
-import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
 import {
   ChainId,

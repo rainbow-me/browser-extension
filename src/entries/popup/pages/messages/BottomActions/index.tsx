@@ -1,5 +1,6 @@
+import { Address } from '@wagmi/core';
 import React, { useCallback, useImperativeHandle, useRef } from 'react';
-import { Address, useBalance } from 'wagmi';
+import { useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

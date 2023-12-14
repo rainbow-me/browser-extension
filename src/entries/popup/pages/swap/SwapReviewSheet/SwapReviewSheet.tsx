@@ -1,4 +1,5 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, {
   useCallback,
@@ -7,7 +8,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

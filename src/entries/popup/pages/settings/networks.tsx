@@ -1,6 +1,6 @@
+import { Chain } from '@wagmi/core';
 import React, { useMemo } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
-import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS } from '~/core/references';

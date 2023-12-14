@@ -1,4 +1,5 @@
 /* eslint-disable no-nested-ternary */
+import { Address } from '@wagmi/core';
 import {
   PropsWithChildren,
   useCallback,
@@ -7,7 +8,6 @@ import {
   useState,
 } from 'react';
 import { useLocation } from 'react-router';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';

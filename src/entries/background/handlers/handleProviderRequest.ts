@@ -6,8 +6,7 @@ import { isHexString } from '@ethersproject/bytes';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
-import { Address, UserRejectedRequestError } from 'wagmi';
+import { Address, UserRejectedRequestError, getProvider } from '@wagmi/core';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';

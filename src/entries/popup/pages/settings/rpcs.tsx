@@ -1,6 +1,6 @@
+import { Address, Chain } from '@wagmi/core';
 import React, { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address, Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS } from '~/core/references';

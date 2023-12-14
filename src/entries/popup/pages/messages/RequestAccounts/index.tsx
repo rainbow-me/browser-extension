@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import { useCallback, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

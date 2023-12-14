@@ -1,5 +1,6 @@
+import { Address } from '@wagmi/core';
 import { CSSProperties } from 'react';
-import { Address, useEnsName } from 'wagmi';
+import { useEnsName } from 'wagmi';
 
 import { truncateAddress } from '~/core/utils/address';
 import { isENSAddressFormat } from '~/core/utils/ethereum';

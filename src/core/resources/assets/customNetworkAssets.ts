@@ -1,7 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address, getProvider } from '@wagmi/core';
 
 import { requestMetadata } from '~/core/graphql';
 import {

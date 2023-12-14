@@ -3,7 +3,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { isAddress } from '@ethersproject/address';
 import { Mnemonic } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 import { logger } from '~/logger';

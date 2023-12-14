@@ -1,6 +1,6 @@
+import { Address } from '@wagmi/core';
 import { useMemo, useReducer, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';

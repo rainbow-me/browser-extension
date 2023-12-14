@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';

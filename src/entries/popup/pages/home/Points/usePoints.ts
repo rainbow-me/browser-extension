@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
+import { Address } from '@wagmi/core';
 import { useEffect } from 'react';
-import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
 import { ValidatePointsSignatureMutation } from '~/core/graphql/__generated__/metadata';

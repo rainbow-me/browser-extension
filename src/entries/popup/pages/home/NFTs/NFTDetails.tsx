@@ -1,9 +1,10 @@
 import { DropdownMenuRadioGroup } from '@radix-ui/react-dropdown-menu';
+import { Address } from '@wagmi/core';
 import clsx from 'clsx';
 import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Address, useEnsName } from 'wagmi';
+import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';

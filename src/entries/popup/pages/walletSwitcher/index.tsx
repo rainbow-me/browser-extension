@@ -1,7 +1,7 @@
+import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';

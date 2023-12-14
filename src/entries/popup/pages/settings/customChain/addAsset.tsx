@@ -1,8 +1,8 @@
 import { isValidAddress } from '@ethereumjs/util';
+import { Address } from '@wagmi/core';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Address } from 'wagmi';
 
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';

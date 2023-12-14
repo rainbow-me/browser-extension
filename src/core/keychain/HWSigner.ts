@@ -5,7 +5,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { Bytes } from '@ethersproject/bytes';
 import { defineReadOnly } from '@ethersproject/properties';
 import { Provider } from '@ethersproject/providers';
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { initializeMessenger } from '../messengers';
 

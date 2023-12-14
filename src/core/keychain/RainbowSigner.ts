@@ -10,8 +10,8 @@ import { Bytes } from '@ethersproject/bytes';
 import { defineReadOnly } from '@ethersproject/properties';
 import { Provider } from '@ethersproject/providers';
 import { personalSign } from '@metamask/eth-sig-util';
+import { Address } from '@wagmi/core';
 import { bytesToHex } from 'ethereum-cryptography/utils';
-import { Address } from 'wagmi';
 
 import { addHexPrefix } from '../utils/hex';
 

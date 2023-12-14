@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { selectUserAssetWithUniqueId } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';

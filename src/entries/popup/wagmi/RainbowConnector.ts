@@ -4,7 +4,7 @@ import {
   JsonRpcSigner,
   Web3Provider,
 } from '@ethersproject/providers';
-import { Chain, Connector } from 'wagmi';
+import { Chain, Connector } from '@wagmi/core';
 
 import { ChainIdHex, RainbowInjectedProvider } from '~/core/providers';
 import { currentAddressStore, currentChainIdStore } from '~/core/state';

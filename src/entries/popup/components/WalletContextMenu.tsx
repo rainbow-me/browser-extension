@@ -1,5 +1,5 @@
+import { Address } from '@wagmi/core';
 import { PropsWithChildren, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/address';

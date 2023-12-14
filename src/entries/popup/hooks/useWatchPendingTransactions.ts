@@ -1,6 +1,5 @@
-import { getProvider } from '@wagmi/core';
+import { Address, getProvider } from '@wagmi/core';
 import { useCallback } from 'react';
-import { Address } from 'wagmi';
 
 import { queryClient } from '~/core/react-query';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';

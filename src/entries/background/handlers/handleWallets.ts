@@ -5,8 +5,7 @@ import {
 } from '@ethersproject/abstract-signer';
 import { Bytes } from '@ethersproject/bytes';
 import { ChainId } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address, getProvider } from '@wagmi/core';
 
 import {
   addAccountAtIndex,

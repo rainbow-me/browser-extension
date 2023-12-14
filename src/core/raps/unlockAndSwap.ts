@@ -6,7 +6,7 @@ import {
   RAINBOW_ROUTER_CONTRACT_ADDRESS,
   WRAPPED_ASSET,
 } from '@rainbow-me/swaps';
-import { Address } from 'wagmi';
+import { Address } from '@wagmi/core';
 
 import { ETH_ADDRESS } from '../references';
 import { isNativeAsset } from '../utils/chains';
