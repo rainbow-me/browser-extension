@@ -129,9 +129,10 @@ export function SendTransaction({
           message: (e as Error)?.message,
         },
       );
+      const extractedError = (e as Error).message.split('[')[0];
       triggerAlert({
         text: i18n.t('errors.sending_transaction'),
-        description: (e as Error)?.message,
+        description: extractedError,
       });
     } finally {
       setWaitingForDevice(false);
