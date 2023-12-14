@@ -117,7 +117,6 @@
     "@vanilla-extract/css-utils": "0.1.2",
     "@vanilla-extract/dynamic": "2.0.2",
     "@vanilla-extract/sprinkles": "1.5.0",
-    "@wagmi/chains": "1.8.0",
     "bignumber.js": "9.0.1",
     "buffer": "6.0.3",
     "check-password-strength": "2.0.7",

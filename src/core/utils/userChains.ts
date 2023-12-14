@@ -11,7 +11,7 @@ import {
   polygonMumbai,
   zora,
   zoraTestnet,
-} from '@wagmi/chains';
+} from 'viem/chains';
 import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
 import {

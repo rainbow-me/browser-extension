@@ -1,7 +1,7 @@
 import { Wallet } from '@ethersproject/wallet';
 import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
-import { mainnet } from '@wagmi/chains';
 import { getProvider } from '@wagmi/core';
+import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import {

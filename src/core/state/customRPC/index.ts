@@ -1,4 +1,4 @@
-import { Chain } from '@wagmi/chains';
+import { Chain } from 'viem/chains';
 import create from 'zustand';
 
 import { getDefaultRPC } from '~/core/references';

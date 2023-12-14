@@ -14,7 +14,7 @@ import {
   polygonMumbai,
   zora,
   zoraTestnet,
-} from '@wagmi/chains';
+} from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
 import {

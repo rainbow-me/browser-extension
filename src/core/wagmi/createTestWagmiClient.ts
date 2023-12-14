@@ -7,7 +7,7 @@ import {
   optimism,
   polygon,
   zora,
-} from '@wagmi/chains';
+} from 'viem/chains';
 import {
   Chain,
   CreateClientConfig,
