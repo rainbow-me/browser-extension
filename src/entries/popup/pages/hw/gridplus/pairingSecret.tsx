@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { pair } from 'gridplus-sdk';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 
 import { Box, Button, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -10,9 +10,13 @@ export type PairingSecretProps = {
 };
 
 export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const [formData, setFormData] = useState({
+    pairingCode: '',
+  });
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    pair('1234');
+    const result = await pair(formData.pairingCode);
+    console.log('>>>RES', result);
     onAfterPair && onAfterPair();
   };
   return (
@@ -36,8 +40,11 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
           height="40px"
           variant="bordered"
           placeholder="Pairing Code"
+          onChange={(e) =>
+            setFormData({ ...formData, pairingCode: e.target.value })
+          }
+          value={formData.pairingCode}
         />
-        {/* {!!errors.pairingCode && <p>{errors.pairingCode.message}</p>} */}
       </Box>
       <Button height="36px" variant="flat" color="fill">
         Pair Device

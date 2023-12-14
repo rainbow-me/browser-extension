@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { setup } from 'gridplus-sdk';
-import { FormEvent, useEffect } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Text } from '~/design-system';
@@ -15,21 +15,26 @@ export const WalletCredentials = ({
   appName,
   onAfterSetup,
 }: WalletCredentialsProps) => {
+  const [formData, setFormData] = useState({
+    deviceId: '',
+    password: '',
+  });
   const getStoredClient = () => localStorage.getItem('storedClient') || '';
 
   const setStoredClient = (storedClient: string | null) => {
     if (!storedClient) return;
     localStorage.setItem('storedClient', storedClient);
   };
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // setup({
-    //   deviceId: data.deviceId,
-    //   password: data.password,
-    //   name: appName,
-    //   getStoredClient,
-    //   setStoredClient,
-    // });
+    const result = await setup({
+      deviceId: formData.deviceId,
+      password: formData.password,
+      name: appName,
+      getStoredClient,
+      setStoredClient,
+    });
+    console.log('>>>RES', result);
     onAfterSetup && onAfterSetup();
   };
   useEffect(() => {
@@ -58,8 +63,11 @@ export const WalletCredentials = ({
           height="40px"
           id="deviceId"
           placeholder="Enter Device ID"
+          onChange={(e) =>
+            setFormData({ ...formData, deviceId: e.target.value })
+          }
+          value={formData.deviceId}
         />
-        {/* {!!errors.deviceId && <p>{errors.deviceId.message}</p>} */}
       </Box>
       <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
         <Text size="14pt" weight="semibold">
@@ -71,8 +79,11 @@ export const WalletCredentials = ({
           id="password"
           type="password"
           placeholder="Enter Password"
+          onChange={(e) =>
+            setFormData({ ...formData, password: e.target.value })
+          }
+          value={formData.password}
         />
-        {/* {!!errors.password && <p>{errors.password.message}</p>} */}
       </Box>
       <Button height="36px" variant="flat" color="fill">
         Connect

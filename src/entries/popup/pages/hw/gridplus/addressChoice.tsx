@@ -26,6 +26,7 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
     };
     fetchWalletAddresses();
   }, []);
+  console.log('>>>ADDRS', addresses);
   return (
     <Box
       as={motion.form}
