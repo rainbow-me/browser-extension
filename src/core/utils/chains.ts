@@ -78,10 +78,7 @@ export const getMainChains = () => {
   const customMainChains = chains?.filter(
     (chain) =>
       !supportedChainIds.includes(chain.id) &&
-      !(
-        (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)
-        // list of testnets added by the user for networks we don't support
-      ),
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
   );
 
   const customChainsIncludingTestnets = customMainChains.filter(
