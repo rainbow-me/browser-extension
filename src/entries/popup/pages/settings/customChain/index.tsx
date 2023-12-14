@@ -524,47 +524,6 @@ export function SettingsCustomChain() {
   return (
     <Box paddingHorizontal="20px">
       <Stack space="20px">
-        {/* {Object.keys(customChains)?.map((chainId, i) => (
-          <Box
-            key={i}
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            boxShadow="12px"
-            width="full"
-            padding="16px"
-            onClick={() =>
-              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
-                state: {
-                  chainId,
-                },
-              })
-            }
-          >
-            <Stack space="16px">
-              <Text size="14pt" weight="bold" align="left">
-                Group chainId: {chainId}
-              </Text>
-              <Stack space="16px">
-                {customChains[Number(chainId)]?.chains?.map((chain, j) => (
-                  <Box key={j}>
-                    <Inline alignHorizontal="justify">
-                      <Text size="14pt" weight="bold" align="center">
-                        {chain.rpcUrls.default.http[0]}
-                      </Text>
-                      <Text size="14pt" weight="bold" align="center">
-                        {chain.rpcUrls.default.http[0] ===
-                        customChains[Number(chainId)].activeRpcUrl
-                          ? 'Active'
-                          : ''}
-                      </Text>
-                    </Inline>
-                  </Box>
-                ))}
-              </Stack>
-            </Stack>
-          </Box>
-        ))} */}
-
         <Form>
           <Autocomplete
             open={open}

@@ -185,25 +185,6 @@ export function AddAsset() {
     validateAddCustomAsset,
   ]);
 
-  // const removeCustomChain = useCallback(
-  //   ({ chain }: { chain: Chain; customChain: CustomChain }) => {
-  //     if (customChain?.chains.length === 1) {
-  //       removeUserChain({ chainId });
-  //     }
-  //     removeCustomRPC({
-  //       rpcUrl: chain.rpcUrls.default.http[0],
-  //     });
-  //     navigate(-1);
-  //   },
-  //   [
-  //     chainId,
-  //     customChain?.chains.length,
-  //     navigate,
-  //     removeCustomRPC,
-  //     removeUserChain,
-  //   ],
-  // );
-
   useEffect(() => {
     if (!isEqual(assetMetadata, prevAssetMetadata) && assetMetadataIsFetched) {
       validateAddCustomAsset();
