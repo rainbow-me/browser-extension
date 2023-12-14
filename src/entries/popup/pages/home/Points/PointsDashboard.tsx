@@ -3,14 +3,24 @@
 import { formatDistanceToNowStrict } from 'date-fns';
 import { MotionProps, motion } from 'framer-motion';
 import { PropsWithChildren, useEffect, useReducer } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatNumber } from '~/core/utils/formatNumber';
-import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Inline,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import {
@@ -135,7 +145,7 @@ function Leaderboard() {
         <Stack separator={<Separator color="separatorTertiary" />} space="12px">
           {leaderboard.accounts
             ?.slice(0, 100)
-            .map(({ address, earnings }, index) => (
+            .map(({ address, earnings, ens }, index) => (
               <Inline
                 key={address}
                 wrap={false}
@@ -149,7 +159,9 @@ function Leaderboard() {
                     addressOrName={address}
                     emojiSize="16pt"
                   />
-                  <AddressOrEns address={address} size="14pt" weight="bold" />
+                  <TextOverflow size="14pt" weight="bold">
+                    {ens || truncateAddress(address as Address)}
+                  </TextOverflow>
                 </Inline>
                 <LeaderboardPositionNumberDisplay position={index + 1}>
                   {formatNumber(earnings.total, {
