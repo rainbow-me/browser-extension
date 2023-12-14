@@ -39,6 +39,7 @@ export type BoxProps = Omit<BoxStyles, 'background'> & {
       };
   className?: ClassValue;
   isModal?: boolean;
+  isExplainerSheet?: boolean;
   testId?: string;
   onKeyDown?: React.KeyboardEventHandler;
   tabIndex?: number;
@@ -47,12 +48,19 @@ export type BoxProps = Omit<BoxStyles, 'background'> & {
 type PolymorphicBox = Polymorphic.ForwardRefComponent<'div', BoxProps>;
 
 export const Box = forwardRef(function Box(
-  { as: Component = 'div', className, isModal, testId, ...props },
+  {
+    as: Component = 'div',
+    className,
+    isModal,
+    isExplainerSheet,
+    testId,
+    ...props
+  },
   ref,
 ) {
-  let hasBoxStyles = false;
-  const boxStyleOptions: BoxStyles = {};
-  const restProps: Record<string, unknown> = {};
+    let hasBoxStyles = false;
+    const boxStyleOptions: BoxStyles = {};
+    const restProps: Record<string, unknown> = {};
 
   for (const key in props) {
     if (boxStyles.properties.has(key as keyof BoxStyles)) {
@@ -101,26 +109,26 @@ export const Box = forwardRef(function Box(
                   ].setColorContext) === 'light'
                 ? themeClasses.lightTheme.lightContext
                 : themeClasses.lightTheme.darkContext,
-
-              (darkThemeBackgroundColor === 'accent'
-                ? accentColorContext
-                : backgroundColors[darkThemeBackgroundColor][
-                    darkThemeColorContext
-                  ].setColorContext) === 'light'
-                ? themeClasses.darkTheme.lightContext
-                : themeClasses.darkTheme.darkContext,
-            ]
-          : null,
-        className,
-      )}
-      data-is-modally-presented={isModal || undefined}
-      data-testid={testId}
-      // Since Box is a primitive component, it needs to spread props
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      {...restProps}
-      tabIndex={tabIndex}
-    />
-  );
+                (darkThemeBackgroundColor === 'accent'
+                  ? accentColorContext
+                  : backgroundColors[darkThemeBackgroundColor][
+                      darkThemeColorContext
+                    ].setColorContext) === 'light'
+                  ? themeClasses.darkTheme.lightContext
+                  : themeClasses.darkTheme.darkContext,
+              ]
+            : null,
+          className,
+        )}
+        data-is-modally-presented={isModal || undefined}
+        data-is-explainer-sheet={isExplainerSheet || undefined}
+        data-testid={testId}
+        // Since Box is a primitive component, it needs to spread props
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...restProps}
+        tabIndex={tabIndex}
+      />
+    );
 
   return props.background ? (
     <ColorContextProvider background={props.background}>

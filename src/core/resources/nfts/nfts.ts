@@ -108,7 +108,9 @@ async function nftsQueryFunction({
       };
       return c.collection_id;
     });
-  const nftsResponse = await fetchNfts({ address, chains, collectionIds });
+  const nftsResponse = collectionIds?.length
+    ? await fetchNfts({ address, chains, collectionIds })
+    : [];
   const nfts = filterSimpleHashNFTs(nftsResponse, polygonAllowList).map(
     (nft) => {
       const uniqueAsset = simpleHashNFTToUniqueAsset(nft);
