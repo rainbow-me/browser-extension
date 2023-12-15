@@ -225,7 +225,9 @@ export function SettingsNetworksRPCs() {
                         leftComponent={
                           <ChainBadge chainId={chain.id} size="18" shadow />
                         }
-                        onClick={() => chain.rpcUrls.default.http[0]}
+                        onClick={() =>
+                          handleRPCClick(chain.rpcUrls.default.http[0])
+                        }
                         key={chain.name}
                         rightComponent={
                           chain.rpcUrls.default.http[0] ===
