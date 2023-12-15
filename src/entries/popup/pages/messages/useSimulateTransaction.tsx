@@ -145,15 +145,9 @@ export const useSimulateMessage = ({
       if (!address) throw new Error('useSimulateMessage: Missing `address`');
 
       const response = (await metadataPostClient.simulateMessage({
-        chainId: 1,
-        address: '0x7a3d05c70581bd345fe117c06e45f9669205384f',
-        message: {
-          params: [
-            '0x7a3d05c70581bd345fe117c06e45f9669205384f',
-            '{"types":{"PermitSingle":[{"name":"details","type":"PermitDetails"},{"name":"spender","type":"address"},{"name":"sigDeadline","type":"uint256"}],"PermitDetails":[{"name":"token","type":"address"},{"name":"amount","type":"uint160"},{"name":"expiration","type":"uint48"},{"name":"nonce","type":"uint48"}],"EIP712Domain":[{"name":"name","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}]},"domain":{"name":"Permit2","chainId":"1","verifyingContract":"0x000000000022d473030f116ddee9f6b43ac78ba3"},"primaryType":"PermitSingle","message":{"details":{"token":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","amount":"1461501637330902918203684832716283019655932542975","expiration":"1702752424","nonce":"0"},"spender":"0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad","sigDeadline":"1700162224"}}',
-          ],
-          method: 'eth_signTypedData_v4',
-        },
+        chainId,
+        address,
+        message,
         domain,
       })) as MessageSimulationResponse;
 
