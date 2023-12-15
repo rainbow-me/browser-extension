@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "Mainnet",
+      "testnet": "Testnet",
       "title": "Networks",
+      "testnets": "Testnets",
       "quick_promo": {
         "text": "Drag networks to reorder them",
         "text_bold": "Tip:"
       },
+      "disabled": "Disabled",
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
       "developer_tools": {
         "title": "Enable Developer Tools",
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
-        "title": "Custom RPC"
+        "title": "Add Network",
+        "networks": "Networks",
+        "network_name": "Network Name",
+        "rpc_url": "RPC URL",
+        "chain_id": "Chain ID",
+        "symbol": "Symbol",
+        "decimals": "Decimals",
+        "active": "Active",
+        "testnet": "Testnet",
+        "block_explorer_url": "Block Explorer URL",
+        "add_network": "Add Network",
+        "add_rpc": "Add %{rpcName} RPC",
+        "add_asset": "Add Custom Token",
+        "network_added": "Network Added!",
+        "network_added_correctly": "%{networkName} has been added correctly!",
+        "remove_token": "Remove Token",
+        "remove_rpc": "Remove RPC",
+        "tokens": "Tokens",
+        "cant_connect": "Can't connect to this RPC endpoint!",
+        "rpc_not_responding": "The provided url is not responding"
+      },
+      "rpc_endpoints": "RPC Endpoints",
+      "enabled": "Enabled",
+      "watch_asset": {
+        "title": "Watch Asset"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
       "custom_rpc": "Custom RPC",
       "new_tab_bar_enabled": "New Tab Bar",
-      "nfts_enabled": "NFTs Enabled"
+      "nfts_enabled": "NFTs Enabled",
+      "points": "Points"
     }
   },
   "transactions": {
@@ -1012,7 +1040,8 @@
     "currency_name": "Currency Name",
     "currency_decimals": "Currency Decimals",
     "rpc_url": "RPC url",
-    "block_explorer_url": "Block Explorer url"
+    "block_explorer_url": "Block Explorer url",
+    "testnet": "Testnet"
   },
   "transaction_fee": {
     "title": "Transaction Speed",
@@ -1092,7 +1121,9 @@
   "errors": {
     "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
     "no_wallet_name_set": "No wallet name set",
-    "report_error": "Report issue"
+    "report_error": "Report issue",
+    "sending_transaction": "Error sending transaction",
+    "executing_swap": "Error executing swap"
   },
   "common_titles": {
     "before_you_proceed": "Before you proceed"
@@ -1215,12 +1246,67 @@
       "ens_address": "ETH Address",
       "ens_website": "Website",
       "registered_on": "Registered on",
-      "expires_in": "Expires in"
+      "expires_in": "Expires in",
+      "explainer": {
+        "floor_price_description": "A collection's floor price is the lowest asking price across all the items currently for sale in a collection.",
+        "floor_price_title": "Collection floor price",
+        "floor_price_action_label": "Got it"
+      }
     }
   },
   "points": {
     "coming_soon_header": "Coming Soon",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "coming_soon_description": "Points are just around the corner.\nStart earning today.",
+    "your_rank": "Your Rank",
+    "next_drop": "Next Drop",
+    "leaderboard": "Leaderboard",
+    "referral_code": "Referral Code",
+    "referral_code_description": "Earn points for referring friends once they swap $100 through Rainbow",
+    "copied_referral_code": "Referral code copied!",
+    "copied_referral_link": "Referral link copied!",
+    "out_of": "Out of %{total}",
+    "out_of_current_total_points": "Out of %{total} current total points",
+    "header": "Claim your points",
+    "description": "Points are here. Find out how many you’ve been awarded.",
+    "get_started": "Get Started",
+    "use_referral_code": "Use Referral Code",
+    "referral_header": "Enter your referral code",
+    "referral_description": "Enter a referral code below to claim your bonus reward.",
+    "referral_code_invalid": "Invalid Code",
+    "onboarding": {
+      "authorization_required": "Authorization required",
+      "sign_in_with_your_wallet": "Sign in with your wallet",
+      "access_granted": "Access granted",
+      "calculating_points": "Calculating points",
+      "rainbow_swaps": "Rainbow Swaps:",
+      "rainbow_nfts_owned": "Rainbow NFTs Owned:",
+      "wallet_balance": "Wallet Balance:",
+      "metamask_swaps": "MetaMask Swaps:",
+      "bonus_reward": "Bonus Reward:",
+      "calculation_complete": "Calculation complete",
+      "points_earned": "Points Earned:",
+      "bonus_points": "Bonus Points:",
+      "claim_description_buy": "To claim the rest of your bonus points, get some ETH through Rainbow.",
+      "claim_description_swap": "To claim the rest of your bonus points, swap at least $100 through Rainbow.",
+      "account": "Account:",
+      "sign_in": "Sign In",
+      "get_eth": "Get some ETH",
+      "try_swap": "Try a Swap",
+      "referral_link_ready": "Your referral link is ready",
+      "share_and_earn": "Tweet your referral link and get an extra 250 points",
+      "plus_percent_of_refers": "Plus you’ll earn 10% of the points earned by anyone you refer",
+      "share": "Share to X",
+      "share_tweet": "I just had %{points} Rainbow Points dropped into my wallet\nEverybody has at least 100 points waiting for them, but you might have more!\n\nClaim your drop: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "I just had %{points} Rainbow Points dropped into my wallet — and an extra %{metamaskBonus} Points as a bonus for migrating my MetaMask wallet into Rainbow 🦊 🔫\n\nEverybody has at least 100 points waiting for them, but you might have more! Claim your drop: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "Registration complete",
+      "all_set": "You’re all set!",
+      "keep_earning_by": "Keep earning points by swapping, bridging, minting, referring friends, and more",
+      "the_more_you_use": "The more you use Rainbow, the more you’ll be rewarded"
+    },
+    "error": {
+      "existing_user": "Existing user",
+      "invalid_referral_code": "Invalid referral code"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -1498,7 +1584,6 @@
     "sent": "Sent",
     "approved": "Approved",
     "reverted": "Transaction Reverted",
-
     "function": "Function",
     "contract": "Contract",
     "contract_name": "Contract Name",
@@ -1516,9 +1601,12 @@
   "chain": "Chain",
   "nonce": "Nonce",
   "copy": "Copy",
+  "copy_link": "Copy Link",
   "close": "Close",
   "verified": "Verified",
   "unverified": "Unverified",
+  "skip": "Skip",
+  "done": "Done",
   "watch_asset": {
     "chain_id": "Chain ID",
     "symbol": "Symbol",

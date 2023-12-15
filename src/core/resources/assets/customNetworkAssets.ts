@@ -19,7 +19,6 @@ import {
   AssetMetadata,
   ParsedAssetsDict,
   ParsedUserAsset,
-  ZerionAssetPrice,
 } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import {
@@ -33,8 +32,9 @@ import {
   customChainIdsToAssetNames,
   getCustomChains,
 } from '~/core/utils/chains';
-import { isZero } from '~/core/utils/numbers';
+import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
+import { ETH_MAINNET_ASSET } from '~/test/utils';
 
 import { ASSETS_TIMEOUT_DURATION } from './assets';
 
@@ -48,6 +48,7 @@ export type CustomNetworkAssetsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
+  filterZeroBalance?: boolean;
 };
 
 type SetCustomNetworkAssetsArgs = {
@@ -55,6 +56,7 @@ type SetCustomNetworkAssetsArgs = {
   currency: SupportedCurrencyKey;
   customNetworkAssets?: CustomNetworkAssetsResult;
   testnetMode?: boolean;
+  filterZeroBalance?: boolean;
 };
 
 type SetUserDefaultsArgs = {
@@ -62,6 +64,7 @@ type SetUserDefaultsArgs = {
   currency: SupportedCurrencyKey;
   staleTime: number;
   testnetMode?: boolean;
+  filterZeroBalance?: boolean;
 };
 
 type FetchCustomNetworkAssetsArgs = {
@@ -77,10 +80,11 @@ export const customNetworkAssetsKey = ({
   address,
   currency,
   testnetMode,
+  filterZeroBalance,
 }: CustomNetworkAssetsArgs) =>
   createQueryKey(
     'CustomNetworkAssets',
-    { address, currency, testnetMode },
+    { address, currency, testnetMode, filterZeroBalance },
     { persisterVersion: 3 },
   );
 
@@ -105,9 +109,15 @@ export const CustomNetworkAssetsSetQueryDefaults = ({
   currency,
   staleTime,
   testnetMode,
+  filterZeroBalance,
 }: SetUserDefaultsArgs) => {
   queryClient.setQueryDefaults(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+    }),
     {
       staleTime,
     },
@@ -119,9 +129,15 @@ export const CustomNetworkAssetsSetQueryData = ({
   currency,
   customNetworkAssets,
   testnetMode,
+  filterZeroBalance,
 }: SetCustomNetworkAssetsArgs) => {
   queryClient.setQueryData(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+    }),
     customNetworkAssets,
   );
 };
@@ -133,7 +149,7 @@ export const getCustomChainIconUrl = (
   const baseUrl =
     'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
 
-  if (address === AddressZero) {
+  if (address === AddressZero || address === ETH_MAINNET_ASSET.address) {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
   } else {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
@@ -141,7 +157,7 @@ export const getCustomChainIconUrl = (
 };
 
 async function customNetworkAssetsFunction({
-  queryKey: [{ address, currency, testnetMode }],
+  queryKey: [{ address, currency, testnetMode, filterZeroBalance }],
 }: QueryFunctionArgs<typeof customNetworkAssetsKey>) {
   const cache = queryClient.getQueryCache();
   const cachedCustomNetworkAssets = (cache.find(
@@ -161,24 +177,26 @@ async function customNetworkAssetsFunction({
   try {
     const assetsPromises = customChains.map(async (chain) => {
       const provider = getProvider({ chainId: chain.id });
+      const nativeAssetAddress =
+        chain.id === ChainId.mainnet ? ETH_MAINNET_ASSET.address : AddressZero;
       const nativeAssetBalance = await provider.getBalance(address);
       const customNetworkNativeAssetParsed =
         nativeAssetBalance && !isZero(nativeAssetBalance.toString())
           ? parseUserAssetBalances({
               asset: {
-                address: AddressZero,
+                address: nativeAssetAddress,
                 chainId: chain.id,
                 chainName: chain.name as ChainName,
                 isNativeAsset: true,
                 name: chain.nativeCurrency.symbol,
                 symbol: chain.nativeCurrency.symbol,
-                uniqueId: `${AddressZero}_${chain.id}`,
+                uniqueId: `${nativeAssetAddress}_${chain.id}`,
                 decimals: 18,
                 native: { price: undefined },
                 price: { value: 0 },
                 bridging: { isBridgeable: false, networks: [] },
-                mainnetAddress: AddressZero as AddressOrEth,
-                icon_url: getCustomChainIconUrl(chain.id, AddressZero),
+                mainnetAddress: nativeAssetAddress as AddressOrEth,
+                icon_url: getCustomChainIconUrl(chain.id, nativeAssetAddress),
               },
               currency,
               balance: nativeAssetBalance.toString(),
@@ -199,7 +217,8 @@ async function customNetworkAssetsFunction({
       const chainParsedAssets = chainParsedAssetBalances
         .map((balance, i) => {
           const fulfilledBalance = extractFulfilledValue(balance);
-          return fulfilledBalance && !isZero(fulfilledBalance)
+          return fulfilledBalance &&
+            (filterZeroBalance ? !isZero(fulfilledBalance) : true)
             ? parseUserAssetBalances({
                 asset: {
                   ...chainAssets[i],
@@ -243,9 +262,15 @@ async function customNetworkAssetsFunction({
         if (parsedAsset?.native.price) {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          allCustomNetworkAssets[i].native.price = parsedAsset.native.price;
-          allCustomNetworkAssets[i].price =
-            parsedAsset?.price as ZerionAssetPrice;
+          const assetWithPriceAndNativeBalance = parseUserAssetBalances({
+            asset: allCustomNetworkAssets[i],
+            currency,
+            balance: convertDecimalFormatToRawAmount(
+              allCustomNetworkAssets[i].balance.amount,
+              allCustomNetworkAssets[i].decimals,
+            ),
+          });
+          allCustomNetworkAssets[i] = assetWithPriceAndNativeBalance;
         }
       });
 
@@ -271,7 +296,6 @@ async function customNetworkAssetsFunction({
         },
         {} as Record<ChainId | number, ParsedAssetsDict>,
       );
-
     return parsedAssetsDict;
   } catch (e) {
     logger.error(new RainbowError('customNetworkAssetsFunction: '), {
@@ -292,7 +316,7 @@ type CustomNetworkAssetsResult = QueryFunctionResult<
 export function useCustomNetworkAssets<
   TSelectResult = CustomNetworkAssetsResult,
 >(
-  { address, currency }: CustomNetworkAssetsArgs,
+  { address, currency, filterZeroBalance = true }: CustomNetworkAssetsArgs,
   config: QueryConfig<
     CustomNetworkAssetsResult,
     Error,
@@ -302,7 +326,12 @@ export function useCustomNetworkAssets<
 ) {
   const { testnetMode } = useTestnetModeStore();
   return useQuery(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+    }),
     customNetworkAssetsFunction,
     {
       ...config,

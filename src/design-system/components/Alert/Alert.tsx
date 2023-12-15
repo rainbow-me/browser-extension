@@ -15,6 +15,7 @@ interface AlertProps {
   actionText?: string;
   callback?: () => void;
   text: string;
+  description?: string;
 }
 
 const eventEmitter = new EventEmitter();
@@ -30,9 +31,16 @@ export const triggerAlert = ({
   action,
   actionText,
   text,
+  description,
   callback,
 }: AlertProps) => {
-  eventEmitter.emit('rainbow_alert', { action, actionText, text, callback });
+  eventEmitter.emit('rainbow_alert', {
+    action,
+    actionText,
+    text,
+    description,
+    callback,
+  });
 };
 
 export const Alert = () => {
@@ -74,9 +82,16 @@ export const Alert = () => {
       <Box padding="20px">
         <Stack space="20px">
           <Box style={{ wordBreak: 'break-word' }}>
-            <Text align="center" color="label" size="14pt" weight="medium">
-              {alert.text}
-            </Text>
+            <Stack space="12px">
+              <Text align="center" color="label" size="14pt" weight="medium">
+                {alert.text}
+              </Text>
+              {alert.description && (
+                <Text align="center" color="label" size="12pt" weight="regular">
+                  {alert.description}
+                </Text>
+              )}
+            </Stack>
           </Box>
           {alert?.action && alert?.actionText && (
             <Inline alignHorizontal="right">

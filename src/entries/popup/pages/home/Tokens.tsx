@@ -123,7 +123,12 @@ export function Tokens() {
   );
 
   const allAssets = useMemo(
-    () => [...assets, ...customNetworkAssets],
+    () =>
+      [...assets, ...customNetworkAssets].sort(
+        (a: ParsedUserAsset, b: ParsedUserAsset) =>
+          parseFloat(b?.native?.balance?.amount) -
+          parseFloat(a?.native?.balance?.amount),
+      ),
     [assets, customNetworkAssets],
   );
 

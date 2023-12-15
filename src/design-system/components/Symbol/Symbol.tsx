@@ -17,6 +17,7 @@ export type SymbolProps = {
   weight: FontWeight;
   size: number;
   gradient?: React.ReactNode;
+  filter?: SymbolStyles['filter'];
 };
 
 export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
@@ -30,6 +31,7 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
       weight,
       size,
       gradient,
+      filter,
     },
     ref,
   ) {
@@ -68,7 +70,7 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
             cursor={cursor}
             viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
             fill="none"
-            className={symbolStyles({ color })}
+            className={symbolStyles({ color, filter })}
             ref={ref}
             style={{
               width: disableSmoothing ? size : size * 2,
