@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion';
 import { fetchAddresses } from 'gridplus-sdk';
 import { FormEvent, useEffect, useState } from 'react';
+import { Address } from 'wagmi';
 
+import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Text } from '~/design-system';
+import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 
 export type AddressesData = {
-  addresses: string[];
+  addresses: Address[];
 };
 
 export type AddressChoiceProps = {
@@ -31,11 +34,11 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
   };
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSelected(formData.selectedAddresses);
+    onSelected(formData.selectedAddresses as Address[]);
   };
   useEffect(() => {
     const fetchWalletAddresses = async () => {
-      const fetchedAddresses = await fetchAddresses();
+      const fetchedAddresses = (await fetchAddresses()) as Address[];
       setAddresses(fetchedAddresses);
     };
     fetchWalletAddresses();
@@ -52,24 +55,20 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
       <Text size="20pt" weight="semibold">
         Choose Addresses
       </Text>
-      <ul>
+      <Box display="flex" flexDirection="column" gap="16px">
         {addresses.map((address) => (
-          <li key={address}>
-            <input
-              id={`addr_${address}`}
-              type="checkbox"
-              value={address}
+          <Box key={address} display="flex" gap="8px" alignItems="center">
+            <Checkbox
+              borderColor="blue"
               onClick={() => toggleAddress(address)}
+              selected={formData.selectedAddresses.includes(address)}
             />
-            <label
-              htmlFor={`addr_${address}`}
-              onClick={() => toggleAddress(address)}
-            >
-              {address}
-            </label>
-          </li>
+            <Text size="14pt" weight="bold">
+              {truncateAddress(address)}
+            </Text>
+          </Box>
         ))}
-      </ul>
+      </Box>
       <Button height="36px" variant="flat" color="fill">
         Export Addresses
       </Button>
