@@ -274,9 +274,9 @@ export function SettingsCustomChain() {
   }>({
     testnet: chain?.testnet,
     chainId: chain?.id,
-    name: chain?.name,
     symbol: chain?.nativeCurrency.symbol,
     explorerUrl: chain?.blockExplorers?.default.url,
+    active: !chain, // True only if adding a new network
   });
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
