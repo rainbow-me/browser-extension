@@ -19,7 +19,6 @@ import {
   AssetMetadata,
   ParsedAssetsDict,
   ParsedUserAsset,
-  ZerionAssetPrice,
 } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import {
@@ -33,7 +32,7 @@ import {
   customChainIdsToAssetNames,
   getCustomChains,
 } from '~/core/utils/chains';
-import { isZero } from '~/core/utils/numbers';
+import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 import { ETH_MAINNET_ASSET } from '~/test/utils';
 
@@ -263,18 +262,15 @@ async function customNetworkAssetsFunction({
         if (parsedAsset?.native.price) {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          allCustomNetworkAssets[i].native.price = parsedAsset.native.price;
-          allCustomNetworkAssets[i].price =
-            parsedAsset?.price as ZerionAssetPrice;
-          // Now we have the price, we have to calculate the native balance
-          if (allCustomNetworkAssets[i].isNativeAsset) {
-            const assetWithPriceAndNativeBalance = parseUserAssetBalances({
-              asset: allCustomNetworkAssets[i],
-              currency,
-              balance: nativeAssetBalance.toString(),
-            });
-            allCustomNetworkAssets[i] = assetWithPriceAndNativeBalance;
-          }
+          const assetWithPriceAndNativeBalance = parseUserAssetBalances({
+            asset: allCustomNetworkAssets[i],
+            currency,
+            balance: convertDecimalFormatToRawAmount(
+              allCustomNetworkAssets[i].balance.amount,
+              allCustomNetworkAssets[i].decimals,
+            ),
+          });
+          allCustomNetworkAssets[i] = assetWithPriceAndNativeBalance;
         }
       });
 
