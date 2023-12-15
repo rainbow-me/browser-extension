@@ -136,7 +136,7 @@ const KNOWN_NETWORKS = {
       name: 'Fantom',
       value: {
         rpcUrl: 'https://rpc.ankr.com/fantom',
-        chainId: 42_220,
+        chainId: 250,
         decimals: 18,
         symbol: 'FTM',
         explorerUrl: 'https://ftmscan.com',

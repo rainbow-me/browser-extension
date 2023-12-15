@@ -281,6 +281,9 @@ export function SettingsNetworksRPCs() {
                 navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
                   state: {
                     chain: activeCustomRPC || supportedChain,
+                    title: i18n.t('settings.networks.custom_rpc.add_rpc', {
+                      rpcName: activeCustomRPC?.name || supportedChain?.name,
+                    }),
                   },
                 })
               }
