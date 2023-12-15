@@ -8,7 +8,7 @@ import { Input } from '~/design-system/components/Input/Input';
 
 export type WalletCredentialsProps = {
   appName: string;
-  onAfterSetup?: () => void;
+  onAfterSetup?: (result: boolean) => void;
 };
 
 export const WalletCredentials = ({
@@ -34,8 +34,7 @@ export const WalletCredentials = ({
       getStoredClient,
       setStoredClient,
     });
-    console.log('>>>RES', result);
-    onAfterSetup && onAfterSetup();
+    onAfterSetup && onAfterSetup(result);
   };
   useEffect(() => {
     if (getStoredClient()) {

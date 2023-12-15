@@ -13,11 +13,25 @@ export type AddressChoiceProps = {
 };
 
 export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
+  const [formData, setFormData] = useState({
+    selectedAddresses: [] as string[],
+  });
   const [addresses, setAddresses] = useState<AddressesData['addresses']>([]);
+  const toggleAddress = (address: string) => {
+    const selected = formData.selectedAddresses.includes(address);
+    if (selected)
+      return setFormData({
+        selectedAddresses: formData.selectedAddresses.filter(
+          (currentAddress) => currentAddress !== address,
+        ),
+      });
+    return setFormData({
+      selectedAddresses: [...formData.selectedAddresses, address],
+    });
+  };
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // onSelected(data.addresses);
-    onSelected([]);
+    onSelected(formData.selectedAddresses);
   };
   useEffect(() => {
     const fetchWalletAddresses = async () => {
@@ -26,7 +40,6 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
     };
     fetchWalletAddresses();
   }, []);
-  console.log('>>>ADDRS', addresses);
   return (
     <Box
       as={motion.form}
@@ -42,8 +55,18 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
       <ul>
         {addresses.map((address) => (
           <li key={address}>
-            <input id={`addr_${address}`} type="checkbox" value={address} />
-            <label htmlFor={`addr_${address}`}>{address}</label>
+            <input
+              id={`addr_${address}`}
+              type="checkbox"
+              value={address}
+              onClick={() => toggleAddress(address)}
+            />
+            <label
+              htmlFor={`addr_${address}`}
+              onClick={() => toggleAddress(address)}
+            >
+              {address}
+            </label>
           </li>
         ))}
       </ul>

@@ -10,13 +10,18 @@ export type PairingSecretProps = {
 };
 
 export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
+  const [formState, setFormState] = useState({
+    error: false,
+  });
   const [formData, setFormData] = useState({
     pairingCode: '',
   });
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const result = await pair(formData.pairingCode);
-    console.log('>>>RES', result);
+    if (!result) {
+      return setFormState({ error: true });
+    }
     onAfterPair && onAfterPair();
   };
   return (
@@ -45,6 +50,11 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
           }
           value={formData.pairingCode}
         />
+        {formState.error && (
+          <Text size="14pt" weight="semibold">
+            Wrong pairing code
+          </Text>
+        )}
       </Box>
       <Button height="36px" variant="flat" color="fill">
         Pair Device

@@ -503,10 +503,6 @@ export const connectLedger = async () => {
   }
 };
 
-export const connectGridPlus = async () => {
-  console.log('>>>START G+ FLOW');
-};
-
 export const importAccountsFromHW = async (
   accountsToImport: {
     address: string;

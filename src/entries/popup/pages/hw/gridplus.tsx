@@ -33,7 +33,12 @@ const GridPlusRouting = ({
       return (
         <WalletCredentials
           appName="Rainbow"
-          onAfterSetup={() => setStep(GridplusStep.PAIRING_SECRET)}
+          onAfterSetup={(result) =>
+            // If wallet is already trusted, user can skip to Address Choice
+            result
+              ? setStep(GridplusStep.ADDRESS_CHOICE)
+              : setStep(GridplusStep.PAIRING_SECRET)
+          }
         />
       );
     case GridplusStep.PAIRING_SECRET:
@@ -56,10 +61,15 @@ export function ConnectGridPlus() {
     GridplusStep.WALLET_CREDENTIALS,
   );
   const onFinish = (addresses: string[]) => {
-    console.log('>>>ADDRS', addresses);
+    const accountsToImport = addresses.map((address, i) => ({
+      address,
+      index: i,
+    }));
     navigate(ROUTES.HW_WALLET_LIST, {
       state: {
-        // ...res,
+        accountsToImport,
+        deviceId: 'Test',
+        accountsEnabled: accountsToImport.length,
         vendor: 'GridPlus',
         direction: state?.direction,
         navbarIcon: state?.navbarIcon,
