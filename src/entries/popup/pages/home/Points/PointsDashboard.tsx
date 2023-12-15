@@ -140,7 +140,7 @@ function Leaderboard() {
           <AddressOrEns address={currentAddress} size="14pt" weight="bold" />
         </Inline>
         <Text size="16pt" weight="bold" color="accent" textShadow="12px accent">
-          #{user.stats.position.current}
+          #{formatNumber(user.stats.position.current)}
         </Text>
       </Card>
       <Card paddingVertical="10px" paddingHorizontal="16px">
