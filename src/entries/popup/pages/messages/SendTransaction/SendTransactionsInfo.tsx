@@ -208,7 +208,7 @@ function TransactionDetails({
         <InfoRow
           symbol="person"
           label={i18n.t('simulation.contract_name')}
-          value={'uniswap v3 positions nft-v1'}
+          value={contractName}
         />
       )}
       {contractCreatedAt && (

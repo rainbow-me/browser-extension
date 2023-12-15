@@ -69,7 +69,7 @@ function SimulatedChangeRow({
         )}
         <Inline wrap={false} space="4px" alignVertical="center">
           <TextOverflow size="14pt" weight="bold" color={color}>
-            {quantity === 'UNLIMITED'
+            {quantity === 'UNLIMITED' || +quantity > 999e12 // say unlimited if more than 999T
               ? i18n.t('approvals.unlimited')
               : formatNumber(formatUnits(quantity, asset.decimals))}{' '}
           </TextOverflow>
