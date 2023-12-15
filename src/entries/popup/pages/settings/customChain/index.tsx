@@ -334,7 +334,7 @@ export function SettingsCustomChain() {
     [],
   );
 
-  const validateExplorerRpcUrl = useCallback(
+  const validateRpcUrl = useCallback(
     () =>
       !!customRPC.rpcUrl &&
       isValidUrl(customRPC.rpcUrl) &&
@@ -342,10 +342,19 @@ export function SettingsCustomChain() {
     [chainMetadata?.chainId, customRPC.rpcUrl],
   );
 
+  useEffect(() => {
+    if (chainMetadataIsError) {
+      triggerToast({
+        title: i18n.t('settings.networks.custom_rpc.cant_connect'),
+        description: i18n.t('settings.networks.custom_rpc.rpc_not_responding'),
+      });
+    }
+  }, [chainMetadataIsError]);
+
   const onRpcUrlBlur = useCallback(
     async () =>
-      setValidations((prev) => ({ ...prev, rpcUrl: validateExplorerRpcUrl() })),
-    [validateExplorerRpcUrl],
+      setValidations((prev) => ({ ...prev, rpcUrl: validateRpcUrl() })),
+    [validateRpcUrl],
   );
 
   const validateChainId = useCallback(() => {
@@ -392,7 +401,7 @@ export function SettingsCustomChain() {
   );
 
   const validateAddCustomRpc = useCallback(() => {
-    const validRpcUrl = validateExplorerRpcUrl();
+    const validRpcUrl = validateRpcUrl();
     const validChainId = validateChainId();
     const validName = validateName();
     const validSymbol = validateSymbol();
@@ -413,14 +422,14 @@ export function SettingsCustomChain() {
     );
   }, [
     validateChainId,
-    validateExplorerRpcUrl,
+    validateRpcUrl,
     validateExplorerUrl,
     validateName,
     validateSymbol,
   ]);
 
   const validateCustomRpcMetadata = useCallback(() => {
-    const validRpcUrl = validateExplorerRpcUrl();
+    const validRpcUrl = validateRpcUrl();
     const validChainId = validateChainId();
     setValidations((validations) => ({
       ...validations,
@@ -428,7 +437,7 @@ export function SettingsCustomChain() {
       chainId: validChainId,
     }));
     return validRpcUrl && validChainId;
-  }, [validateChainId, validateExplorerRpcUrl]);
+  }, [validateChainId, validateRpcUrl]);
 
   const addCustomRpc = useCallback(async () => {
     const rpcUrl = customRPC.rpcUrl;
