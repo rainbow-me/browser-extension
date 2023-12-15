@@ -10,7 +10,15 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
-import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Inline,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import {
@@ -312,14 +320,19 @@ function YourRankAndNextDrop() {
 
       <Card>
         <TextWithMoreInfo>{i18n.t('points.your_rank')}</TextWithMoreInfo>
-        <Text size="20pt" weight="bold">
+        <TextOverflow size="20pt" weight="bold">
           #{formatNumber(user.stats.position.current)}
-        </Text>
-        <Text size="10pt" weight="bold" color="accent" textShadow="12px accent">
+        </TextOverflow>
+        <TextOverflow
+          size="10pt"
+          weight="bold"
+          color="accent"
+          textShadow="12px accent"
+        >
           {i18n.t('points.out_of', {
             total: formatNumber(leaderboard.stats.total_users),
           })}
-        </Text>
+        </TextOverflow>
       </Card>
     </Inline>
   );
