@@ -118,7 +118,9 @@
         "network_added_correctly": "%{networkName} has been added correctly!",
         "remove_token": "Remove Token",
         "remove_rpc": "Remove RPC",
-        "tokens": "Tokens"
+        "tokens": "Tokens",
+        "cant_connect": "Can't connect to this RPC endpoint!",
+        "rpc_not_responding": "The provided url is not responding"
       },
       "rpc_endpoints": "RPC Endpoints",
       "enabled": "Enabled",
