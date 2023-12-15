@@ -289,7 +289,7 @@ export function SettingsNetworksRPCs() {
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('settings.networks.custom_rpc.add_rpc', {
-                    rpcName: activeCustomRPC?.name || supportedChain?.name,
+                    rpcName: supportedChain?.name || activeCustomRPC?.name,
                   })}
                 />
               }
