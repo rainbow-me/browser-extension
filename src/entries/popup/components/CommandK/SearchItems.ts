@@ -1,12 +1,14 @@
 import { Address } from 'wagmi';
 
 import { ParsedUserAsset, ZerionAssetPrice } from '~/core/types/assets';
+import { UniqueAsset } from '~/core/types/nfts';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { CommandKPage } from './pageConfig';
 
 export enum SearchItemType {
   ENSOrAddressResult,
+  Nft,
   Shortcut,
   Token,
   Wallet,
@@ -41,6 +43,12 @@ export interface ENSOrAddressSearchItem extends BaseSearchItem {
   type: SearchItemType.ENSOrAddressResult;
 }
 
+export interface NftSearchItem extends BaseSearchItem {
+  nft: UniqueAsset;
+  selectedWalletAddress: Address;
+  type: SearchItemType.Nft;
+}
+
 export interface ShortcutSearchItem extends BaseSearchItem {
   address?: Address;
   hideWhenFullScreen?: boolean;
@@ -73,6 +81,7 @@ export interface WalletSearchItem extends BaseSearchItem {
 
 export type SearchItem =
   | ENSOrAddressSearchItem
+  | NftSearchItem
   | ShortcutSearchItem
   | TokenSearchItem
   | WalletSearchItem;

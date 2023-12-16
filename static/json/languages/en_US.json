@@ -491,12 +491,21 @@
         "search_placeholder": "Search tokens…",
         "section_title": "My Tokens"
       },
+      "my_nfts": {
+        "empty_label": "No NFTs found",
+        "search_placeholder": "Search NFTs…",
+        "section_title": "My NFTs"
+      },
       "my_wallets": {
         "search_placeholder": "Select a wallet to switch to…",
         "section_title": "My Wallets"
       },
       "token_detail": {
         "search_placeholder": "Search token actions…",
+        "section_title": "Actions"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "Search NFT actions…",
         "section_title": "Actions"
       },
       "wallet_detail": {

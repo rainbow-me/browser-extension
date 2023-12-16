@@ -37,6 +37,7 @@ import { triggerToast } from '../Toast/Toast';
 
 import {
   ENSOrAddressSearchItem,
+  NftSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
@@ -47,6 +48,7 @@ import { CommandKPage, PAGES } from './pageConfig';
 import { actionLabels } from './references';
 import { CommandKPageState } from './useCommandKNavigation';
 import { useSearchableENSorAddress } from './useSearchableENSOrAddress';
+import { useSearchableNfts } from './useSearchableNfts';
 import { useSearchableTokens } from './useSearchableTokens';
 import { useSearchableWallets } from './useSearchableWallets';
 import { handleExportAddresses } from './utils';
@@ -451,6 +453,7 @@ const compileCommandList = (
   overrides: CommandOverride,
   staticInfo: CommandInfo,
   tokens: TokenSearchItem[],
+  nfts: NftSearchItem[],
   walletSearchResult: ENSOrAddressSearchItem[],
   wallets: WalletSearchItem[],
 ): SearchItem[] => {
@@ -471,7 +474,7 @@ const compileCommandList = (
       onClick: overrides[key]?.action,
     }));
 
-  return [...shortcuts, ...tokens, ...walletSearchResult, ...wallets];
+  return [...shortcuts, ...tokens, ...nfts, ...walletSearchResult, ...wallets];
 };
 
 const isENSOrAddressCommand = (
@@ -511,6 +514,7 @@ export const useCommands = (
     setSelectedCommandNeedsUpdate,
   );
   const { searchableTokens } = useSearchableTokens();
+  const { searchableNfts } = useSearchableNfts();
   const { searchableWallets } = useSearchableWallets(currentPage);
   const { setSelectedToken } = useSelectedTokenStore();
   const { sortedAccounts } = useAccounts();
@@ -894,6 +898,7 @@ export const useCommands = (
         commandOverrides,
         staticCommandInfo,
         searchableTokens,
+        searchableNfts,
         searchableENSOrAddress,
         searchableWallets,
       ),
@@ -903,6 +908,7 @@ export const useCommands = (
       featureFlags.full_watching_wallets,
       commandOverrides,
       searchableTokens,
+      searchableNfts,
       searchableENSOrAddress,
       searchableWallets,
     ],
