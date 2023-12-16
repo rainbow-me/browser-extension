@@ -188,6 +188,8 @@ export const copyReferralLink = (referralCode: string) =>
     description: `rainbow.me/points?ref=${referralCode}`,
   });
 
+const formatReferralCode = (referralCode: string) =>
+  referralCode.slice(0, 3) + '-' + referralCode.slice(-3);
 function ReferralCode() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
@@ -208,12 +210,12 @@ function ReferralCode() {
                 copy({
                   value: data.user.referralCode,
                   title: i18n.t('points.copied_referral_code'),
-                  description: data.user.referralCode,
+                  description: formatReferralCode(data.user.referralCode),
                 })
               }
             >
               <Text size="20pt" weight="bold" align="center">
-                {data.user.referralCode}
+                {formatReferralCode(data.user.referralCode)}
               </Text>
             </Card>
 
