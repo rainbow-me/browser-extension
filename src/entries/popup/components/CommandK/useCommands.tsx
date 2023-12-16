@@ -130,9 +130,9 @@ export const staticCommandInfo: CommandInfo = {
   },
   viewNFTs: {
     actionLabel: actionLabels.openInNewTab,
-    name: getCommandName('view_nfts'),
+    name: getCommandName('view_profile'),
     page: PAGES.HOME,
-    searchTags: getSearchTags('view_nfts'),
+    searchTags: getSearchTags('view_profile'),
     shortcut: shortcuts.home.GO_TO_PROFILE,
     shouldRemainOnActiveRoute: true,
     symbol: 'sparkle',
@@ -382,9 +382,9 @@ export const staticCommandInfo: CommandInfo = {
   viewUnownedWalletNFTs: {
     actionLabel: actionLabels.openInNewTab,
     hideFromMainSearch: true,
-    name: getCommandName('view_nfts'),
+    name: getCommandName('view_profile'),
     page: PAGES.UNOWNED_WALLET_DETAIL,
-    searchTags: getSearchTags('view_nfts'),
+    searchTags: getSearchTags('view_profile'),
     shouldRemainOnActiveRoute: true,
     symbol: 'sparkle',
     symbolSize: 15,
