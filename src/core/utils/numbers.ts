@@ -462,5 +462,14 @@ export const convertRawAmountToDecimalFormat = (
 ): string =>
   new BigNumber(value).dividedBy(new BigNumber(10).pow(decimals)).toFixed();
 
+/**
+ * @desc convert from decimal format to raw amount
+ */
+export const convertDecimalFormatToRawAmount = (
+  value: string,
+  decimals = 18,
+): string =>
+  new BigNumber(value).multipliedBy(new BigNumber(10).pow(decimals)).toFixed(0);
+
 export const fromWei = (number: BigNumberish): string =>
   convertRawAmountToDecimalFormat(number, 18);
