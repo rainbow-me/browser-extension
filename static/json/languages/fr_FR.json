@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "Réseau principal",
+      "testnet": "Testnet",
       "title": "Réseaux",
+      "testnets": "Réseaux de test",
       "quick_promo": {
         "text": "Glissez les réseaux pour les réorganiser",
         "text_bold": "Astuce :"
       },
+      "disabled": "Désactivé",
       "description": "Choisissez quels réseaux et tokens afficher. Vous pouvez vous connecter à tous les réseaux pris en charge par Rainbow, même s'ils ne sont pas cochés",
       "developer_tools": {
         "title": "Activer les outils de développement",
         "toggle_explainer": "Active le raccourci du mode Testnet (T) et ajoute un interrupteur au menu du haut à droite de l'écran d'accueil."
       },
       "custom_rpc": {
-        "title": "RPC personnalisé"
+        "title": "Ajouter un réseau",
+        "networks": "Réseaux",
+        "network_name": "Nom du réseau",
+        "rpc_url": "URL RPC",
+        "chain_id": "ID de la chaîne",
+        "symbol": "Symbole",
+        "decimals": "Décimales",
+        "active": "Actif",
+        "testnet": "Testnet",
+        "block_explorer_url": "URL de l'explorateur de blocs",
+        "add_network": "Ajouter un réseau",
+        "add_rpc": "Ajouter un RPC %{rpcName}",
+        "add_asset": "Ajouter un jeton personnalisé",
+        "network_added": "Réseau ajouté !",
+        "network_added_correctly": "%{networkName} a été ajouté correctement !",
+        "remove_token": "Supprimer jeton",
+        "remove_rpc": "Supprimer RPC",
+        "tokens": "Jetons",
+        "cant_connect": "Impossible de se connecter à ce point de terminaison RPC !",
+        "rpc_not_responding": "L'URL fournie ne répond pas"
+      },
+      "rpc_endpoints": "Points de terminaison RPC",
+      "enabled": "Activé",
+      "watch_asset": {
+        "title": "Surveiller actif"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "Activer les raccourcis internes ⌘K",
       "custom_rpc": "RPC personnalisé",
       "new_tab_bar_enabled": "Nouvelle Barre d'Onglets",
-      "nfts_enabled": "NFTs Activés"
+      "nfts_enabled": "NFTs Activés",
+      "points": "Points"
     }
   },
   "transactions": {
@@ -880,7 +908,7 @@
   },
   "seed_verify": {
     "title": "Vérifiez votre phase de récupération secrète",
-    "explanation": "Sélectionnez les 4e, 8e et 12e mots dans l'ordre où votre phrase de récupération secrète les affiche.",
+    "explanation": "Sélectionnez les mots 4ème, 8ème et 12ème dans l'ordre affiché par votre phrase de récupération secrète",
     "skip": "Ignorer"
   },
   "menu": {
@@ -970,6 +998,13 @@
       "title": "Cette application est probablement malveillante",
       "message": "Signer des messages ou des transactions depuis cette application pourrait entraîner la perte de vos actifs"
     },
+    "malicious_transaction_warning": {
+      "title": "Cette transaction semble suspecte",
+      "malicious_address": "Une adresse malveillante est impliquée dans cette transaction. La signature peut entraîner des pertes",
+      "malicious_entity": "Une entité malveillante est impliquée dans cette transaction. La signature peut entraîner des pertes",
+      "minting_is_a_losing_trade": "Un contrat d'arnaque est impliqué dans cette transaction. La frappe est une opération perdante",
+      "you_can_lose_everything": "Signer cette transaction pourrait entraîner la perte de l'accès à tout ce qui est dans votre portefeuille"
+    },
     "dangerous_request": "Demande dangereuse",
     "message_signing_request": "Demande de signature de message",
     "message": "Message",
@@ -1005,7 +1040,8 @@
     "currency_name": "Nom de la devise",
     "currency_decimals": "Décimales de la devise",
     "rpc_url": "URL RPC",
-    "block_explorer_url": "URL de l'explorateur de blocs"
+    "block_explorer_url": "URL de l'explorateur de blocs",
+    "testnet": "Testnet"
   },
   "transaction_fee": {
     "title": "Vitesse de transaction",
@@ -1085,7 +1121,9 @@
   "errors": {
     "error_encountered": "Quelque chose a mal tourné. Veuillez partager le problème avec notre équipe et nous le corrigerons",
     "no_wallet_name_set": "Aucun nom de portefeuille défini",
-    "report_error": "Signaler un problème"
+    "report_error": "Signaler un problème",
+    "sending_transaction": "Erreur d'envoi de la transaction",
+    "executing_swap": "Erreur lors de l'échange"
   },
   "common_titles": {
     "before_you_proceed": "Avant de continuer"
@@ -1186,6 +1224,7 @@
       "last_sales_price": "Prix de vente précédent",
       "none": "Aucun",
       "floor_price": "Prix plancher",
+      "description": "Description",
       "properties": "Propriétés",
       "address_copied": "Adresse copiée",
       "about": "À propos",
@@ -1200,12 +1239,74 @@
       "view_collection": "Voir la collection",
       "collection_website": "Site de collection",
       "owners": "Propriétaires",
-      "unique_owners": "Propriétaires uniques"
+      "unique_owners": "Propriétaires uniques",
+      "ens_profile_info": "Informations du profil",
+      "ens_bio": "Bio",
+      "ens_cover": "Image de couverture",
+      "ens_address": "Adresse ETH",
+      "ens_website": "Site Web",
+      "registered_on": "Enregistré le",
+      "expires_in": "Expire dans",
+      "explainer": {
+        "floor_price_description": "Le prix plancher d'une collection est le prix de vente le plus bas parmi tous les articles actuellement en vente dans une collection",
+        "floor_price_title": "Prix plancher de la collection",
+        "floor_price_action_label": "Compris"
+      }
     }
   },
   "points": {
     "coming_soon_header": "Bientôt Disponible",
-    "coming_soon_description": "Des points sont à portée de main.\nCommencez à gagner aujourd'hui"
+    "coming_soon_description": "Des points sont à portée de main.\nCommencez à gagner aujourd'hui",
+    "your_rank": "Votre classement",
+    "next_drop": "Prochaine distribution",
+    "leaderboard": "Classement",
+    "referral_code": "Code de parrainage",
+    "referral_code_description": "Gagnez des points en parrainant des amis après un échange de $100 via Rainbow",
+    "copied_referral_code": "Code de parrainage copié !",
+    "copied_referral_link": "Lien de parrainage copié !",
+    "out_of": "Sur un total de %{total}",
+    "out_of_current_total_points": "Sur %{total} points totaux actuels",
+    "header": "Réclamez vos points",
+    "description": "Les points sont là. Découvrez combien vous avez reçu.",
+    "get_started": "Commencer",
+    "use_referral_code": "Utiliser un code de parrainage",
+    "referral_header": "Entrez votre code de parrainage",
+    "referral_description": "Entrez un code de parrainage ci-dessous pour réclamer votre bonus.",
+    "referral_code_invalid": "Code invalide",
+    "onboarding": {
+      "authorization_required": "Autorisation requise",
+      "sign_in_with_your_wallet": "Se connecter avec votre portefeuille",
+      "access_granted": "Accès accordé",
+      "calculating_points": "Calcul des points",
+      "rainbow_swaps": "Échanges Rainbow :",
+      "rainbow_nfts_owned": "NFTs Rainbow possédés :",
+      "wallet_balance": "Solde du portefeuille :",
+      "metamask_swaps": "Transactions MetaMask :",
+      "bonus_reward": "Récompense bonus :",
+      "calculation_complete": "Calcul terminé",
+      "points_earned": "Points gagnés :",
+      "bonus_points": "Points bonus :",
+      "claim_description_buy": "Pour réclamer le reste de vos points bonus, obtenez de l'ETH via Rainbow.",
+      "claim_description_swap": "Pour réclamer le reste de vos points bonus, échangez au moins 100 $ via Rainbow.",
+      "account": "Compte :",
+      "sign_in": "Connexion",
+      "get_eth": "Obtenir des ETH",
+      "try_swap": "Essayer un échange",
+      "referral_link_ready": "Votre lien de parrainage est prêt",
+      "share_and_earn": "Tweetez votre lien de parrainage et obtenez 250 points supplémentaires",
+      "plus_percent_of_refers": "De plus, gagnez 10% des points obtenus par chaque personne que vous parrainez",
+      "share": "Partager sur X",
+      "share_tweet": "Je viens de recevoir %{points} Points Rainbow déposés dans mon portefeuille\nTout le monde a au moins 100 points en attente, mais vous pourriez en avoir plus !\n\nRéclamez votre drop : https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "Je viens de recevoir %{points} Points Rainbow dans mon portefeuille — et %{metamaskBonus} points supplémentaires en bonus pour avoir migré mon portefeuille MetaMask vers Rainbow 🦊 🔫\n\nTout le monde a au moins 100 points en attente, mais vous pourriez en avoir plus ! Réclamez votre drop : https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "Inscription terminée",
+      "all_set": "Tout est prêt !",
+      "keep_earning_by": "Continuez à gagner des points en échangeant, en utilisant des ponts, en frappant des pièces, en parrainant des amis, et plus encore",
+      "the_more_you_use": "Plus vous utilisez Rainbow, plus vous serez récompensé"
+    },
+    "error": {
+      "existing_user": "Utilisateur existant",
+      "invalid_referral_code": "Code de parrainage invalide"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Accélérer",
@@ -1500,9 +1601,12 @@
   "chain": "Chaîne",
   "nonce": "Nonce",
   "copy": "Copier",
+  "copy_link": "Copier le Lien",
   "close": "Fermer",
   "verified": "Vérifié",
   "unverified": "Non vérifié",
+  "skip": "Passer",
+  "done": "Terminé",
   "watch_asset": {
     "chain_id": "ID de la chaîne",
     "symbol": "Symbole",
@@ -1511,4 +1615,3 @@
     "not_found": "Nous n'avons pas pu trouver cet actif sur le réseau sélectionné. Veuillez choisir le réseau approprié ci-dessous"
   }
 }
-
