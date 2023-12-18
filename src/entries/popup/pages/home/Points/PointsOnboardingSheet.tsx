@@ -265,7 +265,7 @@ export const PointsOnboardingSheet = () => {
 
   const { data } = usePointsChallenge({
     address: currentAddress,
-    referralCode: state.referralCode,
+    referralCode: state?.referralCode,
   });
 
   const backToHome = () => {
