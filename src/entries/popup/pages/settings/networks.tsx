@@ -199,9 +199,7 @@ export function SettingsNetworks() {
                       </ContextMenuTrigger>
                       <ContextMenuContent>
                         <ContextMenuItem
-                          symbolLeft={
-                            userChains[chain.id] ? 'circle' : 'circle.fill'
-                          }
+                          symbolLeft={'switch.2'}
                           onSelect={() =>
                             enableNetwork({
                               chainId: chain.id,
