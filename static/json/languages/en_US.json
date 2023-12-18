@@ -443,7 +443,7 @@
         "my_wallets": "switch",
         "my_tokens_watched": "my",
         "my_nfts_watched": "my",
-        "view_profile": "nfts, gallery, profile",
+        "view_profile": "profile, gallery, ens, nfts",
         "testnet_mode": "toggle, networks, testnets",
         "developer_tools": "toggle, networks, developer, testnets",
         "settings": "preferences",
