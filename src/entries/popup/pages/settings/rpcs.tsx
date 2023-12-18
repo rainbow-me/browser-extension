@@ -28,6 +28,7 @@ import {
   Stack,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -239,7 +240,7 @@ export function SettingsNetworksRPCs() {
                         }
                         titleComponent={<MenuItem.Title text={chain.name} />}
                         labelComponent={
-                          <Text
+                          <TextOverflow
                             color={'labelTertiary'}
                             size="11pt"
                             weight={'medium'}
@@ -252,7 +253,7 @@ export function SettingsNetworksRPCs() {
                                   'settings.networks.custom_rpc.default_rpc',
                                 )
                               : chain.rpcUrls.default.http[0]}
-                          </Text>
+                          </TextOverflow>
                         }
                       />
                     </ContextMenuTrigger>
