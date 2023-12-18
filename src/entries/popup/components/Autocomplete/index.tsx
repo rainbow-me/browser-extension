@@ -28,7 +28,7 @@ export interface AutocompleteProps {
 }
 
 export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
-  (
+  function Autocomplete(
     {
       data,
       value,
@@ -41,7 +41,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       open,
     }: AutocompleteProps,
     ref,
-  ) => {
+  ) {
     const {
       borderRadius: defaultBorderRadius,
       fontSize: defaultFontSize,
@@ -153,5 +153,3 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
     );
   },
 );
-
-Autocomplete.displayName = 'Autocomplete';

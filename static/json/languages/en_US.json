@@ -1317,7 +1317,8 @@
     },
     "error": {
       "existing_user": "Existing user",
-      "invalid_referral_code": "Invalid referral code"
+      "invalid_referral_code": "Invalid referral code",
+      "unexpected": "Something unexpected happened, try again in a few minutes"
     }
   },
   "speed_up_and_cancel": {

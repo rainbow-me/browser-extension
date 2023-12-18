@@ -45,7 +45,7 @@ interface ValueInputProps {
 }
 
 export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
-  (
+  function ValueInput(
     {
       asset,
       currentCurrency,
@@ -59,7 +59,7 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
       inputAnimationControls,
     }: ValueInputProps,
     forwardedRef,
-  ) => {
+  ) {
     const truncatedAssetSymbol = asset?.symbol?.slice(0, 5) ?? '';
 
     useImperativeHandle(forwardedRef, () => ({
@@ -187,5 +187,3 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
     );
   },
 );
-
-ValueInput.displayName = 'ValueInput';
