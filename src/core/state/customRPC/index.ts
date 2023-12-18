@@ -1,4 +1,13 @@
-import { Chain } from '@wagmi/chains';
+import {
+  Chain,
+  arbitrum,
+  base,
+  bsc,
+  optimism,
+  polygon,
+  zora,
+} from '@wagmi/chains';
+import { mainnet } from 'wagmi';
 import create from 'zustand';
 
 import { getDefaultRPC } from '~/core/references';
@@ -26,9 +35,28 @@ export interface CustomRPCsState {
   removeCustomRPC: ({ rpcUrl }: { rpcUrl: string }) => void;
 }
 
+const getInitialCustomChains = () => {
+  const customChains: Record<number, CustomChain> = {};
+  [mainnet, polygon, optimism, arbitrum, base, zora, bsc].forEach((chain) => {
+    const rpcUrl = getDefaultRPC(chain.id)?.http || '';
+    const rnbwChain = {
+      ...chain,
+      rpcUrls: {
+        default: { http: [rpcUrl] },
+        public: { http: [rpcUrl] },
+      },
+    };
+    customChains[chain.id] = {
+      activeRpcUrl: rpcUrl,
+      chains: [rnbwChain],
+    };
+  });
+  return customChains;
+};
+
 export const customRPCsStore = createStore<CustomRPCsState>(
   (set, get) => ({
-    customChains: {},
+    customChains: getInitialCustomChains(),
     addCustomRPC: ({ chain }) => {
       const customChains = get().customChains;
       const customChain = customChains[chain.id] || {

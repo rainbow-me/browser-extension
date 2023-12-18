@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Address, Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { SUPPORTED_CHAINS } from '~/core/references';
+import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import {
@@ -15,10 +15,7 @@ import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/deve
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
-import {
-  getCustomChains,
-  getSupportedTestnetChains,
-} from '~/core/utils/chains';
+import { getSupportedTestnetChains } from '~/core/utils/chains';
 import { chainIdMap } from '~/core/utils/userChains';
 import {
   Box,
@@ -118,21 +115,38 @@ export function SettingsNetworksRPCs() {
     [chainId],
   );
 
-  const isDefaultRPC = () => {
-    const { customChains: chains } = getCustomChains();
-    const customChain = chains.find(
-      (chain: Chain) => chain.id === (chainId as number),
-    );
-    return typeof customChain === 'undefined';
+  const isDefaultRPC = ({
+    rpcUrl,
+    chainId,
+  }: {
+    rpcUrl: string;
+    chainId: number;
+  }) => {
+    const defaultRPC = getDefaultRPC(chainId);
+    if (!defaultRPC) return false;
+    return rpcUrl === defaultRPC.http;
   };
 
   const mainnetChains = useMemo(
     () =>
       customChains[Number(chainId)]?.chains?.filter(
-        (chain) => !chain.testnet,
-      ) || [],
+        (chain) => {
+          console.log(
+            '-- getDefaultRPC(chainId)?.http',
+            getDefaultRPC(chainId)?.http,
+          );
+          console.log('-- http[0]', chain.rpcUrls.default.http[0]);
+          console.log(
+            '-- http[0] equeallll',
+            getDefaultRPC(chainId)?.http === chain.rpcUrls.default.http[0],
+          );
+          return !chain.testnet;
+        },
+        [chainId, customChains],
+      ),
     [chainId, customChains],
   );
+
   const options = ({ address }: { address: Address }): MoreInfoOption[] => [
     {
       label: i18n.t('settings.networks.custom_rpc.remove_token'),
@@ -215,25 +229,6 @@ export function SettingsNetworksRPCs() {
               text={i18n.t('settings.networks.rpc_endpoints')}
             />
             <Box paddingHorizontal="1px" paddingVertical="1px">
-              {supportedChain && (
-                <MenuItem
-                  first={true}
-                  leftComponent={
-                    <ChainBadge chainId={chainId} size="18" shadow />
-                  }
-                  onClick={handleRPCClick}
-                  key={'default'}
-                  rightComponent={
-                    isDefaultRPC() ? <MenuItem.SelectionIcon /> : null
-                  }
-                  titleComponent={<MenuItem.Title text={'Default'} />}
-                  labelComponent={
-                    <Text color={'labelTertiary'} size="11pt" weight={'medium'}>
-                      {`Rainbow's default RPC`}
-                    </Text>
-                  }
-                />
-              )}
               {mainnetChains.map((chain, index) => (
                 <Box key={`${chain.name}`} width="full">
                   <ContextMenu>
@@ -260,7 +255,12 @@ export function SettingsNetworksRPCs() {
                             size="11pt"
                             weight={'medium'}
                           >
-                            {chain.rpcUrls.default.http[0]}
+                            {isDefaultRPC({
+                              chainId: chain.id,
+                              rpcUrl: chain.rpcUrls.default.http[0],
+                            })
+                              ? `Rainbow's default RPC`
+                              : chain.rpcUrls.default.http[0]}
                           </Text>
                         }
                       />
