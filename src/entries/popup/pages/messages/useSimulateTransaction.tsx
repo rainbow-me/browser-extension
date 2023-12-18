@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Address } from 'wagmi';
 
 import { metadataPostClient } from '~/core/graphql';
-import { Transaction } from '~/core/graphql/__generated__/metadata';
+import { Message, Transaction } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
 import { currentCurrencyStore } from '~/core/state';
@@ -57,6 +57,44 @@ const parseScanningDescription = (description: Lowercase<string>) => {
   return t('you_can_lose_everything');
 };
 
+function parseSimulation(
+  {
+    simulation,
+    error,
+    scanning,
+  }: TransactionSimulationResponse['simulateTransactions'][0],
+  chainId: ChainId,
+) {
+  if (error) throw error.type;
+
+  return {
+    chainId,
+    scanning: {
+      result: scanning.result,
+      description: parseScanningDescription(
+        scanning.description.toLowerCase() as Lowercase<string>,
+      ),
+    },
+    in: simulation.in.map(({ asset, quantity }) => ({
+      quantity,
+      asset: parseSimulationAsset(asset, chainId),
+    })),
+    out: simulation.out.map(({ asset, quantity }) => ({
+      quantity,
+      asset: parseSimulationAsset(asset, chainId),
+    })),
+    approvals: simulation.approvals.map((approval) => ({
+      ...approval,
+      asset: parseSimulationAsset(approval.asset, chainId),
+    })),
+    meta: simulation.meta,
+    hasChanges:
+      simulation.in.length > 0 ||
+      simulation.out.length > 0 ||
+      simulation.approvals.length > 0,
+  };
+}
+
 export const useSimulateTransaction = ({
   chainId,
   transaction,
@@ -79,40 +117,46 @@ export const useSimulateTransaction = ({
         domain,
       })) as TransactionSimulationResponse;
 
-      const { simulation, error, scanning } = response.simulateTransactions[0];
-
-      if (error) throw error.type;
-
-      return {
-        chainId,
-        scanning: {
-          result: scanning.result,
-          description: parseScanningDescription(
-            scanning.description.toLowerCase() as Lowercase<string>,
-          ),
-        },
-        in: simulation.in.map(({ asset, quantity }) => ({
-          quantity,
-          asset: parseSimulationAsset(asset, chainId),
-        })),
-        out: simulation.out.map(({ asset, quantity }) => ({
-          quantity,
-          asset: parseSimulationAsset(asset, chainId),
-        })),
-        approvals: simulation.approvals.map((approval) => ({
-          ...approval,
-          asset: parseSimulationAsset(approval.asset, chainId),
-        })),
-        meta: simulation.meta,
-        hasChanges:
-          simulation.in.length > 0 ||
-          simulation.out.length > 0 ||
-          simulation.approvals.length > 0,
-      };
+      return parseSimulation(response.simulateTransactions[0], chainId);
     },
     staleTime: 60 * 1000, // 1 min
   });
 };
+
+export const useSimulateMessage = ({
+  chainId,
+  address,
+  message,
+  domain,
+}: {
+  chainId: ChainId;
+  address?: Address;
+  message: Message;
+  domain: string;
+}) => {
+  return useQuery<TransactionSimulation, SimulationError>({
+    queryKey: createQueryKey('simulateMessage', {
+      message,
+      address,
+      chainId,
+      domain,
+    }),
+    queryFn: async () => {
+      if (!address) throw new Error('useSimulateMessage: Missing `address`');
+
+      const response = (await metadataPostClient.simulateMessage({
+        chainId,
+        address,
+        message,
+        domain,
+      })) as MessageSimulationResponse;
+
+      return parseSimulation(response.simulateMessage, chainId);
+    },
+    staleTime: 60 * 1000, // 1 min
+  });
+};
+
 export type TransactionSimulation = {
   in: { asset: ParsedAsset; quantity: string }[];
   out: { asset: ParsedAsset; quantity: string }[];
@@ -187,9 +231,36 @@ type TransactionSimulationResponse = {
           // eslint-disable-next-line @typescript-eslint/ban-types
           quantityAllowed: 'UNLIMITED' | (string & {});
           quantityAtRisk: string;
+          expiration: string;
         }[];
         meta: SimulationMeta;
       };
     },
   ];
+};
+
+type MessageSimulationResponse = {
+  simulateMessage: {
+    scanning: {
+      result: 'OK' | 'WARNING' | 'MALICIOUS';
+      description: string;
+    };
+    error: {
+      message: string;
+      type: SimulationError;
+    };
+    simulation: {
+      in: SimulationChange[];
+      out: SimulationChange[];
+      approvals: {
+        asset: SimulationAsset;
+        spender: SimulationApprovalSpender;
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        quantityAllowed: 'UNLIMITED' | (string & {});
+        quantityAtRisk: string;
+        expiration: string;
+      }[];
+      meta: SimulationMeta;
+    };
+  };
 };
