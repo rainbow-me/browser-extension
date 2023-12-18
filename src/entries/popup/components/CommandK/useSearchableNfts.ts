@@ -38,6 +38,7 @@ export const useSearchableNFTs = () => {
       page: PAGES.MY_NFTS,
       selectedWalletAddress: address,
       type: SearchItemType.NFT,
+      downrank: true,
       nft,
     }));
   }, [address, data, navigate]);
