@@ -9,7 +9,7 @@ export const usePointsChallenge = ({
   referralCode,
 }: {
   address: Address;
-  referralCode: string;
+  referralCode: string | undefined;
 }) => {
   return useQuery({
     queryFn: () => {

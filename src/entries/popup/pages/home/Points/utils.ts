@@ -11,7 +11,7 @@ export const getErrorString = (error?: string | null) => {
     case INVALID_REFERRAL_CODE_ERROR:
       return i18n.t('points.error.invalid_referral_code');
     default:
-      return '';
+      return i18n.t('points.error.unexpected');
   }
 };
 

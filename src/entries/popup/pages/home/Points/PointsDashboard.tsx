@@ -9,18 +9,27 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
-import { formatNumber } from '~/core/utils/formatNumber';
-import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+import { createNumberFormatter } from '~/core/utils/formatNumber';
+import {
+  Box,
+  Inline,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
-import {
-  SymbolName,
-  linearGradients,
-} from '~/design-system/styles/designTokens';
+import { linearGradients } from '~/design-system/styles/designTokens';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
 import { usePoints } from './usePoints';
+
+const { format: formatNumber } = createNumberFormatter({
+  maximumSignificantDigits: 8,
+});
 
 function Card({
   children,
@@ -72,21 +81,6 @@ const LeaderboardPositionNumberDisplay = ({
       </Inline>
     );
 
-  if (position > 3 && position <= 50)
-    return (
-      <Inline wrap={false} space="8px" alignVertical="center">
-        <Text size="12pt" weight="bold" color="labelTertiary">
-          {children}
-        </Text>
-        <Symbol
-          symbol={`${position}.circle` as SymbolName}
-          size={14}
-          color="labelTertiary"
-          weight="bold"
-        />
-      </Inline>
-    );
-
   return (
     <Inline wrap={false} space="8px" alignVertical="center">
       <Text size="12pt" weight="bold" color="labelTertiary">
@@ -128,7 +122,7 @@ function Leaderboard() {
           <AddressOrEns address={currentAddress} size="14pt" weight="bold" />
         </Inline>
         <Text size="16pt" weight="bold" color="accent" textShadow="12px accent">
-          #{user.stats.position.current}
+          #{formatNumber(user.stats.position.current)}
         </Text>
       </Card>
       <Card paddingVertical="10px" paddingHorizontal="16px">
@@ -152,9 +146,7 @@ function Leaderboard() {
                   <AddressOrEns address={address} size="14pt" weight="bold" />
                 </Inline>
                 <LeaderboardPositionNumberDisplay position={index + 1}>
-                  {formatNumber(earnings.total, {
-                    maximumSignificantDigits: 8,
-                  })}
+                  {formatNumber(earnings.total)}
                 </LeaderboardPositionNumberDisplay>
               </Inline>
             ))}
@@ -188,6 +180,8 @@ export const copyReferralLink = (referralCode: string) =>
     description: `rainbow.me/points?ref=${referralCode}`,
   });
 
+const formatReferralCode = (referralCode: string) =>
+  referralCode.slice(0, 3) + '-' + referralCode.slice(-3);
 function ReferralCode() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
@@ -208,12 +202,12 @@ function ReferralCode() {
                 copy({
                   value: data.user.referralCode,
                   title: i18n.t('points.copied_referral_code'),
-                  description: data.user.referralCode,
+                  description: formatReferralCode(data.user.referralCode),
                 })
               }
             >
               <Text size="20pt" weight="bold" align="center">
-                {data.user.referralCode}
+                {formatReferralCode(data.user.referralCode)}
               </Text>
             </Card>
 
@@ -310,14 +304,19 @@ function YourRankAndNextDrop() {
 
       <Card>
         <TextWithMoreInfo>{i18n.t('points.your_rank')}</TextWithMoreInfo>
-        <Text size="20pt" weight="bold">
-          #{user.stats.position.current}
-        </Text>
-        <Text size="10pt" weight="bold" color="accent" textShadow="12px accent">
+        <TextOverflow size="20pt" weight="bold">
+          #{formatNumber(user.stats.position.current)}
+        </TextOverflow>
+        <TextOverflow
+          size="10pt"
+          weight="bold"
+          color="accent"
+          textShadow="12px accent"
+        >
           {i18n.t('points.out_of', {
-            total: leaderboard.stats.total_users,
+            total: formatNumber(leaderboard.stats.total_users),
           })}
-        </Text>
+        </TextOverflow>
       </Card>
     </Inline>
   );
@@ -359,7 +358,7 @@ function YourPoints() {
       gap="12px"
     >
       <Text size="26pt" weight="heavy">
-        {formatNumber(user.earnings.total, { maximumSignificantDigits: 8 })}
+        {formatNumber(user.earnings.total)}
       </Text>
       <Box
         as={motion.div}

@@ -48,7 +48,7 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 import * as wallet from '../../../handlers/wallet';
 
 import { copyReferralLink } from './PointsDashboard';
-import { seedPointsQueryCache } from './usePoints';
+import { fetchPointsQuery, seedPointsQueryCache } from './usePoints';
 import { usePointsChallenge } from './usePointsChallenge';
 import {
   RAINBOW_TEXT,
@@ -323,13 +323,21 @@ export const PointsOnboardingSheet = () => {
 
   const { data } = usePointsChallenge({
     address: currentAddress,
-    referralCode: state.referralCode,
+    referralCode: state?.referralCode,
   });
 
-  const backToHome = () =>
+  const backToHome = () => {
+    if (!!error && error !== PointsErrorType.ExistingUser) {
+      // if some unexpected error happened that stopped the user from onboarding,
+      // and was not "existing user" error, then we should try to refetch its points query
+      // sometimes it goes thru but the server returns something weird
+      // and when the user try onboarding again it errors with "existing user"
+      fetchPointsQuery(currentAddress);
+    }
     navigate(ROUTES.HOME, {
       state: { tab: 'points', skipTransitionOnRoute: ROUTES.HOME },
     });
+  };
 
   const {
     data: validSignatureResponse,

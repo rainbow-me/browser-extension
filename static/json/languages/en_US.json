@@ -101,7 +101,7 @@
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
-        "title": "Add Network",
+        "title": "Add Custom RPC",
         "networks": "Networks",
         "network_name": "Network Name",
         "rpc_url": "RPC URL",
@@ -1309,7 +1309,8 @@
     },
     "error": {
       "existing_user": "Existing user",
-      "invalid_referral_code": "Invalid referral code"
+      "invalid_referral_code": "Invalid referral code",
+      "unexpected": "Something unexpected happened, try again in a few minutes"
     }
   },
   "speed_up_and_cancel": {
