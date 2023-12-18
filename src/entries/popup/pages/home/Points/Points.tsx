@@ -98,7 +98,7 @@ const PointsContentPlaceholder = () => {
           weight="semibold"
           color="labelTertiary"
         >
-          {i18n.t('points.coming_soon_header')}
+          {i18n.t('points.check_back_soon_header')}
         </Text>
         <Text
           align="center"
@@ -106,7 +106,7 @@ const PointsContentPlaceholder = () => {
           size="12pt"
           weight="medium"
         >
-          {i18n.t('points.coming_soon_description')}
+          {i18n.t('points.check_back_soon_description')}
         </Text>
       </Stack>
     </Inset>

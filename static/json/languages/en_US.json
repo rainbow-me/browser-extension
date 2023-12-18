@@ -1254,8 +1254,8 @@
     }
   },
   "points": {
-    "coming_soon_header": "Coming Soon",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today.",
+    "check_back_soon_header": "Check Back Soon",
+    "check_back_soon_description": "Points are currently unavailable.\nCheck back soon to continue using Rainbow Points.",
     "your_rank": "Your Rank",
     "unranked": "Unranked",
     "points_to_rank": "%{rank_cutoff} points to rank",
