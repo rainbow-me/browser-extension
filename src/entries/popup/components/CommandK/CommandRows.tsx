@@ -160,7 +160,7 @@ export const NftRow = ({
   const NftBadge = React.useMemo(() => {
     const tokenId = parseInt(command.nft?.id);
     const hasTokenId = !isNaN(tokenId) && tokenId < 999999999;
-    return hasTokenId ? (
+    return (
       <Box
         alignItems="center"
         borderColor="separatorSecondary"
@@ -180,10 +180,10 @@ export const NftRow = ({
           size="12pt"
           weight="semibold"
         >
-          {`#${tokenId}`}
+          {hasTokenId ? `#${tokenId}` : 'NFT'}
         </Text>
       </Box>
-    ) : undefined;
+    );
   }, [command.nft]);
 
   return (
