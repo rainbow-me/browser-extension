@@ -22,7 +22,7 @@ export const useSearchableNfts = () => {
     return nfts.map<NftSearchItem>((nft) => ({
       action: () =>
         navigate(
-          ROUTES.NFT_DETAILS(nft.collection.collection_id || '', nft.uniqueId),
+          ROUTES.NFT_DETAILS(nft.collection.collection_id || '', nft.id),
         ),
       actionLabel: actionLabels.open,
       actionPage: PAGES.NFT_TOKEN_DETAIL,
