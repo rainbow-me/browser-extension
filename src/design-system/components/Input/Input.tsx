@@ -32,6 +32,7 @@ export type InputProps = {
   onChange?: InputHTMLAttributes<HTMLInputElement>['onChange'];
   onFocus?: InputHTMLAttributes<HTMLInputElement>['onFocus'];
   onKeyDown?: InputHTMLAttributes<HTMLInputElement>['onKeyDown'];
+  onPaste?: InputHTMLAttributes<HTMLInputElement>['onPaste'];
   placeholder?: string;
   borderColor?: BoxStyles['borderColor'];
   borderRadius?: BoxStyles['borderRadius'];
