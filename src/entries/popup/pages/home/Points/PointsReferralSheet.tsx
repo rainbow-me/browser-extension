@@ -88,6 +88,16 @@ export const PointsReferralSheet = () => {
     [],
   );
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    let value = e.clipboardData.getData('text');
+    if (value.length > 6) {
+      const ref = value.split('ref=')[1]?.slice(0, 6);
+      if (ref) value = ref;
+    }
+    const maskedValue = maskAsciiInput(value);
+    setReferralCode(maskedValue);
+  };
+
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
     (e) => {
       if (e.key === 'Enter' && validReferralCode) {
@@ -186,6 +196,7 @@ export const PointsReferralSheet = () => {
                       borderColor={invalidReferralCode ? 'red' : 'accent'}
                       value={referralCode}
                       onChange={handleOnChange}
+                      onPaste={handlePaste}
                       style={{
                         caretColor: invalidReferralCode
                           ? globalColors.red50
