@@ -3,13 +3,15 @@
 import { formatDistanceToNowStrict } from 'date-fns';
 import { MotionProps, motion } from 'framer-motion';
 import { PropsWithChildren, useEffect, useReducer } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
-import { createNumberFormatter } from '~/core/utils/formatNumber';
+import { formatNumber } from '~/core/utils/formatNumber';
 import {
   Box,
   Inline,
@@ -26,10 +28,6 @@ import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorE
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
 import { usePoints } from './usePoints';
-
-const { format: formatNumber } = createNumberFormatter({
-  maximumSignificantDigits: 8,
-});
 
 function Card({
   children,
@@ -129,7 +127,7 @@ function Leaderboard() {
         <Stack separator={<Separator color="separatorTertiary" />} space="12px">
           {leaderboard.accounts
             ?.slice(0, 100)
-            .map(({ address, earnings }, index) => (
+            .map(({ address, earnings, ens, avatarURL }, index) => (
               <Inline
                 key={address}
                 wrap={false}
@@ -140,10 +138,13 @@ function Leaderboard() {
                 <Inline wrap={false} space="12px" alignVertical="center">
                   <WalletAvatar
                     size={32}
+                    avatarUrl={avatarURL}
                     addressOrName={address}
                     emojiSize="16pt"
                   />
-                  <AddressOrEns address={address} size="14pt" weight="bold" />
+                  <TextOverflow size="14pt" weight="bold">
+                    {ens || truncateAddress(address as Address)}
+                  </TextOverflow>
                 </Inline>
                 <LeaderboardPositionNumberDisplay position={index + 1}>
                   {formatNumber(earnings.total)}
