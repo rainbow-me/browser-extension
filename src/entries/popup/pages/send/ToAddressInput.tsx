@@ -256,7 +256,7 @@ interface ToAddressProps {
 }
 
 export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
-  (props, forwardedRef) => {
+  function ToAddressInput(props, forwardedRef) {
     const {
       toAddressOrName,
       toEnsName,
@@ -472,5 +472,3 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     );
   },
 );
-
-ToAddressInput.displayName = 'ToAddressInput';
