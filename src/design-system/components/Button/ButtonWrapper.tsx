@@ -270,7 +270,7 @@ export const stylesForVariant = ({
 });
 
 export const ButtonWrapper = forwardRef<HTMLButtonElement, ButtonWrapperProps>(
-  (
+  function ButtonWrapper(
     {
       autoFocus,
       children,
@@ -287,7 +287,7 @@ export const ButtonWrapper = forwardRef<HTMLButtonElement, ButtonWrapperProps>(
       testId,
     }: ButtonWrapperProps,
     ref,
-  ) => {
+  ) {
     const { boxShadow } = stylesForHeightAndVariant({
       color: color as ButtonColor,
     })[height][variant];
@@ -364,5 +364,3 @@ export const ButtonWrapper = forwardRef<HTMLButtonElement, ButtonWrapperProps>(
     );
   },
 );
-
-ButtonWrapper.displayName = 'ButtonWrapper';

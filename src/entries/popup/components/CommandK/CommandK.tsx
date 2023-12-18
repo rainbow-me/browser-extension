@@ -242,106 +242,102 @@ interface CommandKInputProps {
   setSkipBackAnimation: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const CommandKInput = React.memo(
-  ({
-    currentPage,
+export const CommandKInput = React.memo(function CommandKInput({
+  currentPage,
+  didScrollOrNavigate,
+  filteredCommands,
+  goBack,
+  handleBlur,
+  handleExecuteCommand,
+  inputRef,
+  isFetching,
+  listRef,
+  searchQuery,
+  selectedCommand,
+  selectedCommandIndex,
+  setDidScrollOrNavigate,
+  setSearchQuery,
+  setSelectedCommand,
+  setSelectedCommandNeedsUpdate,
+  setSkipBackAnimation,
+}: CommandKInputProps) {
+  const { currentTheme } = useCurrentThemeStore();
+
+  const onSearchQueryChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const updatedSearchQuery = e.target.value;
+      setSearchQuery(updatedSearchQuery);
+      setSelectedCommandNeedsUpdate(true);
+      if (!didScrollOrNavigate) {
+        setDidScrollOrNavigate(true);
+      }
+      listRef.current?.scrollTo({
+        top: 0,
+        behavior: SCROLL_TO_BEHAVIOR,
+      });
+    },
+    [
+      didScrollOrNavigate,
+      listRef,
+      setDidScrollOrNavigate,
+      setSearchQuery,
+      setSelectedCommandNeedsUpdate,
+    ],
+  );
+
+  useKeyboardNavigation(
     didScrollOrNavigate,
     filteredCommands,
-    goBack,
-    handleBlur,
     handleExecuteCommand,
-    inputRef,
-    isFetching,
     listRef,
-    searchQuery,
     selectedCommand,
     selectedCommandIndex,
     setDidScrollOrNavigate,
-    setSearchQuery,
     setSelectedCommand,
-    setSelectedCommandNeedsUpdate,
-    setSkipBackAnimation,
-  }: CommandKInputProps) => {
-    const { currentTheme } = useCurrentThemeStore();
+  );
 
-    const onSearchQueryChange = React.useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        const updatedSearchQuery = e.target.value;
-        setSearchQuery(updatedSearchQuery);
-        setSelectedCommandNeedsUpdate(true);
-        if (!didScrollOrNavigate) {
-          setDidScrollOrNavigate(true);
-        }
-        listRef.current?.scrollTo({
-          top: 0,
-          behavior: SCROLL_TO_BEHAVIOR,
-        });
-      },
-      [
-        didScrollOrNavigate,
-        listRef,
-        setDidScrollOrNavigate,
-        setSearchQuery,
-        setSelectedCommandNeedsUpdate,
-      ],
-    );
-
-    useKeyboardNavigation(
-      didScrollOrNavigate,
-      filteredCommands,
-      handleExecuteCommand,
-      listRef,
-      selectedCommand,
-      selectedCommandIndex,
-      setDidScrollOrNavigate,
-      setSelectedCommand,
-    );
-
-    return (
-      <Box position="relative">
-        <SearchInputIcon
-          currentPage={currentPage}
-          goBack={goBack}
-          setSkipBackAnimation={setSkipBackAnimation}
-        />
-        <Input
-          aria-activedescendant={selectedCommand?.id}
-          aria-labelledby={selectedCommand?.name}
-          autoFocus
-          borderRadius="0"
-          enableAccentCaretStyle
-          enableAccentSelectionStyle
-          fontSize="16pt"
-          height="56px"
-          innerRef={inputRef}
-          onBlur={handleBlur}
-          onChange={onSearchQueryChange}
-          placeholder={currentPage.searchPlaceholder}
-          role="combobox"
-          spellCheck={false}
-          style={{
-            caretColor: accentColorAsHsl,
-            paddingLeft: 46,
-            paddingRight: 18,
-          }}
-          tabIndex={0}
-          testId="command-k-input"
-          value={searchQuery}
-          variant="transparent"
-        />
-        <Box
-          opacity={currentTheme === 'dark' ? '0.5' : '0.6'}
-          position="relative"
-        >
-          <Separator color="separatorSecondary" />
-          <AnimatedLoadingBar isFetching={isFetching} />
-        </Box>
+  return (
+    <Box position="relative">
+      <SearchInputIcon
+        currentPage={currentPage}
+        goBack={goBack}
+        setSkipBackAnimation={setSkipBackAnimation}
+      />
+      <Input
+        aria-activedescendant={selectedCommand?.id}
+        aria-labelledby={selectedCommand?.name}
+        autoFocus
+        borderRadius="0"
+        enableAccentCaretStyle
+        enableAccentSelectionStyle
+        fontSize="16pt"
+        height="56px"
+        innerRef={inputRef}
+        onBlur={handleBlur}
+        onChange={onSearchQueryChange}
+        placeholder={currentPage.searchPlaceholder}
+        role="combobox"
+        spellCheck={false}
+        style={{
+          caretColor: accentColorAsHsl,
+          paddingLeft: 46,
+          paddingRight: 18,
+        }}
+        tabIndex={0}
+        testId="command-k-input"
+        value={searchQuery}
+        variant="transparent"
+      />
+      <Box
+        opacity={currentTheme === 'dark' ? '0.5' : '0.6'}
+        position="relative"
+      >
+        <Separator color="separatorSecondary" />
+        <AnimatedLoadingBar isFetching={isFetching} />
       </Box>
-    );
-  },
-);
-
-CommandKInput.displayName = 'CommandKInput';
+    </Box>
+  );
+});
 
 function SearchInputIcon({
   currentPage,
