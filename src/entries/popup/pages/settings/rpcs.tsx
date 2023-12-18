@@ -130,18 +130,7 @@ export function SettingsNetworksRPCs() {
   const mainnetChains = useMemo(
     () =>
       customChains[Number(chainId)]?.chains?.filter(
-        (chain) => {
-          console.log(
-            '-- getDefaultRPC(chainId)?.http',
-            getDefaultRPC(chainId)?.http,
-          );
-          console.log('-- http[0]', chain.rpcUrls.default.http[0]);
-          console.log(
-            '-- http[0] equeallll',
-            getDefaultRPC(chainId)?.http === chain.rpcUrls.default.http[0],
-          );
-          return !chain.testnet;
-        },
+        (chain) => !chain.testnet,
         [chainId, customChains],
       ),
     [chainId, customChains],
@@ -259,7 +248,9 @@ export function SettingsNetworksRPCs() {
                               chainId: chain.id,
                               rpcUrl: chain.rpcUrls.default.http[0],
                             })
-                              ? `Rainbow's default RPC`
+                              ? i18n.t(
+                                  'settings.networks.custom_rpc.default_rpc',
+                                )
                               : chain.rpcUrls.default.http[0]}
                           </Text>
                         }
@@ -372,7 +363,7 @@ export function SettingsNetworksRPCs() {
                           >
                             {chainIdMap[chainId]?.includes(chain.id) &&
                             chain.id !== chainId
-                              ? `Rainbow's default`
+                              ? i18n.t('settings.networks.custom_rpc.default')
                               : chain.rpcUrls.default.http[0]}
                           </Text>
                         }

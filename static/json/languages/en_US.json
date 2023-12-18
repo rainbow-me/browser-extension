@@ -121,7 +121,9 @@
         "remove_network": "Remove Network",
         "tokens": "Tokens",
         "cant_connect": "Can't connect to this RPC endpoint!",
-        "rpc_not_responding": "The provided url is not responding"
+        "rpc_not_responding": "The provided url is not responding",
+        "rainbow_default_rpc": "Rainbow's default RPC",
+        "rainbow_default": "Rainbow's default"
       },
       "rpc_endpoints": "RPC Endpoints",
       "enabled": "Enabled",
