@@ -130,10 +130,25 @@ export function SettingsNetworksRPCs() {
 
   const mainnetChains = useMemo(
     () =>
-      customChains[Number(chainId)]?.chains?.filter(
-        (chain) => !chain.testnet,
-        [chainId, customChains],
-      ),
+      customChains[Number(chainId)]?.chains
+        ?.filter((chain) => !chain.testnet, [chainId, customChains])
+        .sort((a, b) => {
+          if (
+            isDefaultRPC({
+              chainId: a.id,
+              rpcUrl: a.rpcUrls.default.http[0],
+            })
+          )
+            return -1;
+          if (
+            isDefaultRPC({
+              chainId: b.id,
+              rpcUrl: b.rpcUrls.default.http[0],
+            })
+          )
+            return -1;
+          return 0;
+        }),
     [chainId, customChains],
   );
 
