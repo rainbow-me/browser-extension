@@ -514,40 +514,45 @@ export const ReviewSheet = ({
           {notSendingOnEthereum && (
             <Box paddingHorizontal="16px" paddingBottom="20px">
               <Stack space="20px">
-                {isSideChain(chain?.id || ChainId.mainnet) ? (
-                  <Box
-                    as={motion.div}
-                    background="fillSecondary"
-                    padding="8px"
-                    width="full"
-                    borderRadius="12px"
-                    onClick={showL2Explainer}
-                    initial={{ zIndex: 0 }}
-                    whileHover={{ scale: transformScales['1.04'] }}
-                    whileTap={{ scale: transformScales['0.96'] }}
-                    transition={transitions.bounce}
-                  >
-                    <Inline alignVertical="center" alignHorizontal="justify">
-                      <Inline alignVertical="center" space="8px" wrap={false}>
-                        <ChainBadge
-                          chainId={asset?.chainId || ChainId.mainnet}
-                          size="16"
-                        />
-                        <Text size="12pt" weight="bold" color="labelSecondary">
-                          {i18n.t('send.review.sending_on_network', {
-                            chainName,
-                          })}
-                        </Text>
-                      </Inline>
+                <Box
+                  as={motion.div}
+                  background="fillSecondary"
+                  padding="8px"
+                  width="full"
+                  borderRadius="12px"
+                  onClick={() =>
+                    isSideChain(chain?.id || ChainId.mainnet)
+                      ? showL2Explainer()
+                      : null
+                  }
+                  initial={{ zIndex: 0 }}
+                  whileHover={{ scale: transformScales['1.04'] }}
+                  whileTap={{ scale: transformScales['0.96'] }}
+                  transition={transitions.bounce}
+                >
+                  <Inline alignVertical="center" alignHorizontal="justify">
+                    <Inline alignVertical="center" space="8px" wrap={false}>
+                      <ChainBadge
+                        chainId={asset?.chainId || ChainId.mainnet}
+                        size="16"
+                      />
+                      <Text size="12pt" weight="bold" color="labelSecondary">
+                        {i18n.t('send.review.sending_on_network', {
+                          chainName,
+                        })}
+                      </Text>
+                    </Inline>
+                    {isSideChain(chain?.id || ChainId.mainnet) ? (
                       <Symbol
                         weight="bold"
                         symbol="info.circle.fill"
                         size={12}
                         color="labelTertiary"
                       />
-                    </Inline>
-                  </Box>
-                ) : null}
+                    ) : null}
+                  </Inline>
+                </Box>
+
                 <Box paddingHorizontal="7px">
                   <Stack space="12px">
                     <Columns alignVertical="center" space="7px">
