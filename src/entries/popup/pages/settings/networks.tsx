@@ -7,6 +7,7 @@ import { SUPPORTED_CHAINS, SUPPORTED_CHAIN_IDS } from '~/core/references';
 import { useCustomRPCsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getMainChains } from '~/core/utils/chains';
@@ -57,6 +58,7 @@ export function SettingsNetworks() {
   const { featureFlags } = useFeatureFlagsStore();
   const { userChains, updateUserChain } = useUserChainsStore();
   const { customChains, removeCustomRPC } = useCustomRPCsStore();
+  const { removeCustomRPCAssets } = useCustomRPCAssetsStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -99,14 +101,15 @@ export function SettingsNetworks() {
     ({ chainId }: { chainId: number }) => {
       const customChain = customChains[chainId];
       if (customChain) {
-        customChain.chains.forEach((chain) =>
+        customChain.chains.forEach((chain) => {
           removeCustomRPC({
             rpcUrl: chain.rpcUrls.default.http[0],
-          }),
-        );
+          });
+          removeCustomRPCAssets({ chainId });
+        });
       }
     },
-    [customChains, removeCustomRPC],
+    [customChains, removeCustomRPC, removeCustomRPCAssets],
   );
 
   return (
