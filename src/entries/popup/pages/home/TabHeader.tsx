@@ -5,7 +5,6 @@ import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
@@ -31,7 +30,6 @@ export function TabHeader({
   const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
-  const { featureFlags } = useFeatureFlagsStore();
   const nftCount = getNftCount({ address });
 
   const displayBalanceComponent = useMemo(
@@ -90,13 +88,11 @@ export function TabHeader({
               {visibleTokenCount}
             </Text>
           )}
-          {activeTab === 'nfts' &&
-            featureFlags.nfts_enabled &&
-            nftCount > 0 && (
-              <Text color="labelQuaternary" size="14pt" weight="bold">
-                {nftCount}
-              </Text>
-            )}
+          {activeTab === 'nfts' && nftCount > 0 && (
+            <Text color="labelQuaternary" size="14pt" weight="bold">
+              {nftCount}
+            </Text>
+          )}
         </Inline>
         {isLoading && (
           <Inline alignVertical="center">
@@ -104,7 +100,7 @@ export function TabHeader({
           </Inline>
         )}
 
-        {(activeTab !== 'nfts' || !featureFlags.nfts_enabled) && balance && (
+        {activeTab !== 'nfts' && balance && (
           <CursorTooltip
             align="end"
             arrowAlignment="right"
@@ -116,7 +112,7 @@ export function TabHeader({
             <Inline alignVertical="center">{displayBalanceComponent}</Inline>
           </CursorTooltip>
         )}
-        {activeTab === 'nfts' && featureFlags.nfts_enabled && (
+        {activeTab === 'nfts' && (
           <Inline alignVertical="center" space="8px">
             <DisplayModeDropdown />
             <SortDropdown />

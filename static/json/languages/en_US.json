@@ -1210,9 +1210,7 @@
     "unknown_token": "Unknown Token"
   },
   "nfts": {
-    "coming_soon_header": "Coming Soon",
     "empty_state_header": "NFTs",
-    "coming_soon_description": "NFTs are coming soon. Stay tuned!",
     "empty_state_description": "Your NFTs will appear here!",
     "view_on_web": "View on Web",
     "display_mode_gallery": "Gallery",
