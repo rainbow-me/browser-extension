@@ -139,7 +139,7 @@ export const customRPCsStore = createStore<CustomRPCsState>(
   {
     persist: {
       name: 'customRPCs',
-      version: 0,
+      version: 1,
     },
   },
 );
