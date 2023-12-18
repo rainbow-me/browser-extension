@@ -128,7 +128,7 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 15,
     type: SearchItemType.Shortcut,
   },
-  viewNFTs: {
+  viewProfile: {
     actionLabel: actionLabels.openInNewTab,
     name: getCommandName('view_profile'),
     page: PAGES.HOME,
@@ -651,7 +651,7 @@ export const useCommands = (
       exportAddresses: {
         action: () => handleExportAddresses(sortedAccounts),
       },
-      viewNFTs: {
+      viewProfile: {
         action: openProfile,
       },
       lock: {
