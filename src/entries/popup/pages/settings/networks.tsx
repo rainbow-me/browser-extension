@@ -4,6 +4,7 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS, SUPPORTED_CHAIN_IDS } from '~/core/references';
+import { useCustomRPCsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useUserChainsStore } from '~/core/state/userChains';
@@ -51,11 +52,11 @@ export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
   const { userChainsOrder, updateUserChainsOrder } = useUserChainsStore();
   const mainChains = getMainChains();
-
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
   const { userChains, updateUserChain } = useUserChainsStore();
+  const { customChains, removeCustomRPC } = useCustomRPCsStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -92,6 +93,20 @@ export function SettingsNetworks() {
       });
     },
     [updateUserChain],
+  );
+
+  const handleRemoveNetwork = useCallback(
+    ({ chainId }: { chainId: number }) => {
+      const customChain = customChains[chainId];
+      if (customChain) {
+        customChain.chains.forEach((chain) =>
+          removeCustomRPC({
+            rpcUrl: chain.rpcUrls.default.http[0],
+          }),
+        );
+      }
+    },
+    [customChains, removeCustomRPC],
   );
 
   return (
@@ -199,7 +214,9 @@ export function SettingsNetworks() {
                           <ContextMenuItem
                             symbolLeft="trash.fill"
                             color="red"
-                            // onSelect={() => handleRemoveRPC(chain)}
+                            onSelect={() =>
+                              handleRemoveNetwork({ chainId: chain.id })
+                            }
                           >
                             <Text color="red" size="14pt" weight="semibold">
                               {i18n.t(
