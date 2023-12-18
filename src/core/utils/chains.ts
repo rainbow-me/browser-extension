@@ -14,6 +14,7 @@ import { mainnet } from 'wagmi';
 import {
   NATIVE_ASSETS_PER_CHAIN,
   SUPPORTED_CHAINS,
+  SUPPORTED_CHAIN_IDS,
   SUPPORTED_MAINNET_CHAINS,
 } from '~/core/references';
 import {
@@ -160,7 +161,7 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
 };
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
-  if (isCustomChain(chainId)) {
+  if (!SUPPORTED_CHAIN_IDS.includes(chainId) && isCustomChain(chainId)) {
     return AddressZero === address;
   }
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);

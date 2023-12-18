@@ -140,6 +140,40 @@ export const customRPCsStore = createStore<CustomRPCsState>(
     persist: {
       name: 'customRPCs',
       version: 1,
+      migrate(persistedState, version) {
+        const state = persistedState as CustomRPCsState;
+        if (version === 0) {
+          const prevCustomChains = state.customChains;
+          const prevCustomChainIds = Object.keys(prevCustomChains);
+          const initialState = getInitialCustomChains();
+          const initialStateChainIds = Object.keys(initialState);
+          const customChains: Record<number, CustomChain> = {};
+
+          prevCustomChainIds.forEach((customChainId) => {
+            customChains[Number(customChainId)] = {
+              ...prevCustomChains[Number(customChainId)],
+            };
+            if (initialStateChainIds.includes(customChainId)) {
+              customChains[Number(customChainId)].chains.concat(
+                initialState[Number(customChainId)].chains,
+              );
+              customChains[Number(customChainId)].activeRpcUrl =
+                initialState[Number(customChainId)].activeRpcUrl;
+            }
+          });
+
+          initialStateChainIds.forEach((chainId) => {
+            if (!Object.keys(customChains).includes(chainId)) {
+              customChains[Number(chainId)] = initialState[Number(chainId)];
+            }
+          });
+          return {
+            ...state,
+            customChains,
+          };
+        }
+        return state;
+      },
     },
   },
 );

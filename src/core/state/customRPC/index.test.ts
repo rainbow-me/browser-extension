@@ -1,7 +1,6 @@
+import { celo, fantom } from '@wagmi/chains';
 import { expect, test } from 'vitest';
 import { Chain } from 'wagmi';
-
-import { ChainId } from '~/core/types/chains';
 
 import { customRPCsStore } from '.';
 
@@ -11,7 +10,7 @@ const TEST_RPC_1: Chain = {
     default: { http: ['http://test1.rpc'] },
     public: { http: ['http://test1.rpc'] },
   },
-  id: ChainId.mainnet,
+  id: fantom.id,
   name: 'Test RPC 1',
   network: 'rpc-1',
   nativeCurrency: {
@@ -29,7 +28,7 @@ const TEST_RPC_2: Chain = {
     default: { http: ['http://test2.rpc'] },
     public: { http: ['http://test2.rpc'] },
   },
-  id: ChainId.mainnet,
+  id: fantom.id,
   name: 'Test RPC 2',
   network: 'rpc-2',
   nativeCurrency: {
@@ -47,7 +46,7 @@ const TEST_RPC_3: Chain = {
     default: { http: ['http://test3.rpc'] },
     public: { http: ['http://test3.rpc'] },
   },
-  id: ChainId.optimism,
+  id: celo.id,
   name: 'Test RPC 3',
   network: 'rpc-3',
   nativeCurrency: {
@@ -92,21 +91,21 @@ test('should be able to update an existing custom RPC', async () => {
 // Set Active
 test('should be able to set a custom RPC as active', async () => {
   customRPCsStore.getState().setActiveRPC({
-    chainId: ChainId.mainnet,
+    chainId: fantom.id,
     rpcUrl: TEST_RPC_1.rpcUrls.default.http[0],
   });
 
-  const chain = customRPCsStore.getState().customChains[ChainId.mainnet];
+  const chain = customRPCsStore.getState().customChains[fantom.id];
   expect(chain.activeRpcUrl).toBe(TEST_RPC_1.rpcUrls.default.http[0]);
 });
 
 test("should be able to set a custom RPC as active to a different custom RPC in Chain's rpcs", async () => {
   customRPCsStore.getState().setActiveRPC({
-    chainId: ChainId.mainnet,
+    chainId: fantom.id,
     rpcUrl: TEST_RPC_2.rpcUrls.default.http[0],
   });
 
-  const chain = customRPCsStore.getState().customChains[ChainId.mainnet];
+  const chain = customRPCsStore.getState().customChains[fantom.id];
   expect(chain.activeRpcUrl).toBe(TEST_RPC_2.rpcUrls.default.http[0]);
 });
 
@@ -126,7 +125,7 @@ test('should remove activeRpcUrl if removed RPC was active and change to another
     .getState()
     .removeCustomRPC({ rpcUrl: TEST_RPC_2.rpcUrls.default.http[0] });
 
-  const chain = customRPCsStore.getState().customChains[ChainId.mainnet];
+  const chain = customRPCsStore.getState().customChains[fantom.id];
   expect(chain.activeRpcUrl).toBe(TEST_RPC_1.rpcUrls.default.http[0]);
   expect(chain.chains.length).toBe(1);
 });
