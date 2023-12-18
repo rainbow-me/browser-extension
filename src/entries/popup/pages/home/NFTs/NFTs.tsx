@@ -37,7 +37,7 @@ import ExternalImage from '../../../components/ExternalImage/ExternalImage';
 const NFTS_LIMIT = 2000;
 const COLLECTION_IMAGE_SIZE = 16;
 
-export function PostReleaseNFTs() {
+export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { displayMode, sort, sections: sectionsState } = useNftsStore();
   const {

@@ -52,7 +52,7 @@ import { ROUTES } from '../../urls';
 import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
-import { PostReleaseNFTs } from './NFTs/NFTs';
+import { NFTs } from './NFTs/NFTs';
 import { AppConnection } from './NetworkMenu';
 import { Points } from './Points/Points';
 import { TabHeader } from './TabHeader';
@@ -151,7 +151,7 @@ const Tabs = memo(function Tabs({
       <Content disableBottomPadding={getDisableBottomPadding()}>
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
-        {activeTab === 'nfts' && <PostReleaseNFTs />}
+        {activeTab === 'nfts' && <NFTs />}
         {activeTab === 'points' && <Points />}
       </Content>
     </>
