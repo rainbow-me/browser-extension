@@ -654,6 +654,13 @@ export const useCommands = (
         searchTags: isWatchingWallet ? getSearchTags('my_tokens_watched') : [],
         selectedWallet: ensName || truncateAddress(address),
       },
+      myNFTs: {
+        name: isWatchingWallet
+          ? getCommandName('my_nfts_watched')
+          : getCommandName('my_nfts'),
+        searchTags: isWatchingWallet ? getSearchTags('my_nfts_watched') : [],
+        selectedWallet: ensName || truncateAddress(address),
+      },
       copyAddress: {
         action: () => handleCopy(address),
       },

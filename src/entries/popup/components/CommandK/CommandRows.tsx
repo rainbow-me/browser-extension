@@ -261,7 +261,9 @@ export const ShortcutRow = ({
 
   const shouldShowWalletName =
     command.selectedWallet &&
-    (command.id === 'myTokens' || command.id === 'myQRCode');
+    (command.id === 'myTokens' ||
+      command.id === 'myNFTs' ||
+      command.id === 'myQRCode');
 
   return (
     <CommandRow
