@@ -133,6 +133,7 @@ export const findCustomChainForChainId = (chainId: number) => {
 };
 
 export const isCustomChain = (chainId: number) =>
+  !SUPPORTED_CHAIN_IDS.includes(chainId) &&
   !!findCustomChainForChainId(chainId);
 
 /**
@@ -161,7 +162,7 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
 };
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
-  if (!SUPPORTED_CHAIN_IDS.includes(chainId) && isCustomChain(chainId)) {
+  if (isCustomChain(chainId)) {
     return AddressZero === address;
   }
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
