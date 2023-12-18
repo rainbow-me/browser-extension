@@ -441,6 +441,7 @@
         "swap": "bridge",
         "my_wallets": "switch",
         "my_tokens_watched": "my",
+        "my_nfts": "my, nfts",
         "view_profile": "nfts, gallery, profile",
         "testnet_mode": "toggle, networks, testnets",
         "developer_tools": "toggle, networks, developer, testnets",
