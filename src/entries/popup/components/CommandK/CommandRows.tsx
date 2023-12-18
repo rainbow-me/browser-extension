@@ -170,7 +170,6 @@ export const NFTRow = ({
         paddingHorizontal="4px"
         style={{
           height: 20,
-          opacity: tokenId ? '1' : '0.625',
           whiteSpace: 'nowrap',
         }}
       >
