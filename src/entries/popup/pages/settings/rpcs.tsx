@@ -250,7 +250,7 @@ export function SettingsNetworksRPCs() {
                               rpcUrl: chain.rpcUrls.default.http[0],
                             })
                               ? i18n.t(
-                                  'settings.networks.custom_rpc.default_rpc',
+                                  'settings.networks.custom_rpc.rainbow_default_rpc',
                                 )
                               : chain.rpcUrls.default.http[0]}
                           </TextOverflow>
@@ -364,7 +364,9 @@ export function SettingsNetworksRPCs() {
                           >
                             {chainIdMap[chainId]?.includes(chain.id) &&
                             chain.id !== chainId
-                              ? i18n.t('settings.networks.custom_rpc.default')
+                              ? i18n.t(
+                                  'settings.networks.custom_rpc.rainbow_default',
+                                )
                               : chain.rpcUrls.default.http[0]}
                           </Text>
                         }
