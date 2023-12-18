@@ -8,7 +8,7 @@ import { CommandKPage } from './pageConfig';
 
 export enum SearchItemType {
   ENSOrAddressResult,
-  Nft,
+  NFT,
   Shortcut,
   Token,
   Wallet,
@@ -43,10 +43,10 @@ export interface ENSOrAddressSearchItem extends BaseSearchItem {
   type: SearchItemType.ENSOrAddressResult;
 }
 
-export interface NftSearchItem extends BaseSearchItem {
+export interface NFTSearchItem extends BaseSearchItem {
   nft: UniqueAsset;
   selectedWalletAddress: Address;
-  type: SearchItemType.Nft;
+  type: SearchItemType.NFT;
 }
 
 export interface ShortcutSearchItem extends BaseSearchItem {
@@ -81,7 +81,7 @@ export interface WalletSearchItem extends BaseSearchItem {
 
 export type SearchItem =
   | ENSOrAddressSearchItem
-  | NftSearchItem
+  | NFTSearchItem
   | ShortcutSearchItem
   | TokenSearchItem
   | WalletSearchItem;

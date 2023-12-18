@@ -32,7 +32,7 @@ import {
 } from './CommandKStyles.css';
 import {
   ENSOrAddressSearchItem,
-  NftSearchItem,
+  NFTSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
@@ -141,23 +141,23 @@ export const CommandRow = ({
   );
 };
 
-type NftRowProps = {
-  command: NftSearchItem;
+type NFTRowProps = {
+  command: NFTSearchItem;
   handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
   selected: boolean;
 };
 
-export const NftRow = ({
+export const NFTRow = ({
   command,
   handleExecuteCommand,
   selected,
-}: NftRowProps) => {
+}: NFTRowProps) => {
   const _NftIcon = React.useMemo(
     () => <NFTIcon asset={command.nft} size={20} badge={false} />,
     [command.nft],
   );
 
-  const NftBadge = React.useMemo(() => {
+  const NFTBadge = React.useMemo(() => {
     const tokenId = parseInt(command.nft?.id);
     const hasTokenId = !isNaN(tokenId) && tokenId < 999999999;
     return (
@@ -193,7 +193,7 @@ export const NftRow = ({
       name={command.name}
       selected={selected}
       LeftComponent={_NftIcon}
-      RightComponent={NftBadge}
+      RightComponent={NFTBadge}
     />
   );
 };

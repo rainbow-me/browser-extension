@@ -37,7 +37,7 @@ import { triggerToast } from '../Toast/Toast';
 
 import {
   ENSOrAddressSearchItem,
-  NftSearchItem,
+  NFTSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
@@ -48,7 +48,7 @@ import { CommandKPage, PAGES } from './pageConfig';
 import { actionLabels } from './references';
 import { CommandKPageState } from './useCommandKNavigation';
 import { useSearchableENSorAddress } from './useSearchableENSOrAddress';
-import { useSearchableNfts } from './useSearchableNfts';
+import { useSearchableNFTs } from './useSearchableNFTs';
 import { useSearchableTokens } from './useSearchableTokens';
 import { useSearchableWallets } from './useSearchableWallets';
 import { handleExportAddresses } from './utils';
@@ -462,7 +462,7 @@ const compileCommandList = (
   overrides: CommandOverride,
   staticInfo: CommandInfo,
   tokens: TokenSearchItem[],
-  nfts: NftSearchItem[],
+  nfts: NFTSearchItem[],
   walletSearchResult: ENSOrAddressSearchItem[],
   wallets: WalletSearchItem[],
 ): SearchItem[] => {
@@ -523,7 +523,7 @@ export const useCommands = (
     setSelectedCommandNeedsUpdate,
   );
   const { searchableTokens } = useSearchableTokens();
-  const { searchableNfts } = useSearchableNfts();
+  const { searchableNFTs } = useSearchableNFTs();
   const { searchableWallets } = useSearchableWallets(currentPage);
   const { setSelectedToken } = useSelectedTokenStore();
   const { sortedAccounts } = useAccounts();
@@ -907,7 +907,7 @@ export const useCommands = (
         commandOverrides,
         staticCommandInfo,
         searchableTokens,
-        searchableNfts,
+        searchableNFTs,
         searchableENSOrAddress,
         searchableWallets,
       ),
@@ -917,7 +917,7 @@ export const useCommands = (
       featureFlags.full_watching_wallets,
       commandOverrides,
       searchableTokens,
-      searchableNfts,
+      searchableNFTs,
       searchableENSOrAddress,
       searchableWallets,
     ],

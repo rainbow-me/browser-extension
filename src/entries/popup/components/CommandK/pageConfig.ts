@@ -39,7 +39,7 @@ export const PAGES: { [KEY: string]: Page } = {
   },
   NFT_TOKEN_DETAIL: {
     listTitle: (command: SearchItem) =>
-      command.type === SearchItemType.Nft
+      command.type === SearchItemType.NFT
         ? command.name
         : i18n.t('command_k.pages.my_nfts.section_title'),
     searchPlaceholder: i18n.t(

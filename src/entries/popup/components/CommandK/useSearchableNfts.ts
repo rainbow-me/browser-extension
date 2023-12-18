@@ -7,7 +7,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
-import { NftSearchItem, SearchItemType } from './SearchItems';
+import { NFTSearchItem, SearchItemType } from './SearchItems';
 import { PAGES } from './pageConfig';
 import { actionLabels } from './references';
 
@@ -18,15 +18,15 @@ const parseNftName = (name: string, id: string) => {
     .join(' ');
 };
 
-export const useSearchableNfts = () => {
+export const useSearchableNFTs = () => {
   const { currentAddress: address } = useCurrentAddressStore();
   const navigate = useRainbowNavigate();
 
   const { data } = useNfts({ address });
 
-  const searchableNfts = useMemo(() => {
+  const searchableNFTs = useMemo(() => {
     const nfts = selectNfts(data) || [];
-    return nfts.map<NftSearchItem>((nft) => ({
+    return nfts.map<NFTSearchItem>((nft) => ({
       action: () =>
         navigate(
           ROUTES.NFT_DETAILS(nft.collection.collection_id || '', nft.id),
@@ -37,10 +37,10 @@ export const useSearchableNfts = () => {
       name: parseNftName(nft.name, nft.id),
       page: PAGES.MY_NFTS,
       selectedWalletAddress: address,
-      type: SearchItemType.Nft,
+      type: SearchItemType.NFT,
       nft,
     }));
   }, [address, data, navigate]);
 
-  return { searchableNfts };
+  return { searchableNFTs };
 };
