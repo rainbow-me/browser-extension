@@ -35,6 +35,7 @@ export const useSearchableNFTs = () => {
       actionPage: PAGES.NFT_TOKEN_DETAIL,
       id: nft.uniqueId,
       name: parseNftName(nft.name, nft.id),
+      searchTags: [nft.name, nft.collection.name],
       page: PAGES.MY_NFTS,
       selectedWalletAddress: address,
       type: SearchItemType.NFT,
