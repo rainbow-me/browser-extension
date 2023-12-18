@@ -154,9 +154,9 @@ export const customRPCsStore = createStore<CustomRPCsState>(
               ...prevCustomChains[Number(customChainId)],
             };
             if (initialStateChainIds.includes(customChainId)) {
-              customChains[Number(customChainId)].chains.concat(
-                initialState[Number(customChainId)].chains,
-              );
+              customChains[Number(customChainId)].chains = customChains[
+                Number(customChainId)
+              ].chains.concat(initialState[Number(customChainId)].chains);
               customChains[Number(customChainId)].activeRpcUrl =
                 initialState[Number(customChainId)].activeRpcUrl;
             }
