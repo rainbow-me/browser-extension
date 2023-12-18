@@ -96,10 +96,16 @@ export function SettingsNetworks() {
                 />
               }
               hasRightArrow
-              onClick={() => navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC)}
+              onClick={() =>
+                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
+                  state: {
+                    title: i18n.t('settings.networks.custom_rpc.add_network'),
+                  },
+                })
+              }
               titleComponent={
                 <MenuItem.Title
-                  text={i18n.t('settings.networks.custom_rpc.title')}
+                  text={i18n.t('settings.networks.custom_rpc.add_network')}
                 />
               }
             />
