@@ -1,3 +1,4 @@
+import { getNetwork } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, {
   useCallback,
@@ -271,23 +272,29 @@ export const ReviewSheet = ({
   const prevShow = usePrevious(show);
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
+  const { chains } = getNetwork();
+  const chain = useMemo(
+    () => chains.find((c) => c.id === asset?.chainId),
+    [asset?.chainId, chains],
+  );
 
   const { displayName: walletDisplayName } = useWalletInfo({
     address: toAddress,
   });
 
   const shouldHideAmount =
-    isCustomChain(asset?.chainId as ChainId) &&
+    isCustomChain(chain?.id as ChainId) &&
     asset?.native?.balance?.amount === '0';
 
   const notSendingOnEthereum = useMemo(
     () =>
-      isL2Chain(asset?.chainId || ChainId.mainnet) ||
-      isCustomChain(asset?.chainId || ChainId.mainnet),
-    [asset?.chainId],
+      isL2Chain(chain?.id || ChainId.mainnet) ||
+      isCustomChain(chain?.id || ChainId.mainnet),
+    [chain?.id],
   );
 
-  const chainName = ChainNameDisplay[asset?.chainId || ChainId.mainnet];
+  const chainName =
+    ChainNameDisplay[asset?.chainId || ChainId.mainnet] || chain?.name;
 
   const isToWalletOwner = useMemo(
     () =>
@@ -507,38 +514,40 @@ export const ReviewSheet = ({
           {notSendingOnEthereum && (
             <Box paddingHorizontal="16px" paddingBottom="20px">
               <Stack space="20px">
-                <Box
-                  as={motion.div}
-                  background="fillSecondary"
-                  padding="8px"
-                  width="full"
-                  borderRadius="12px"
-                  onClick={showL2Explainer}
-                  initial={{ zIndex: 0 }}
-                  whileHover={{ scale: transformScales['1.04'] }}
-                  whileTap={{ scale: transformScales['0.96'] }}
-                  transition={transitions.bounce}
-                >
-                  <Inline alignVertical="center" alignHorizontal="justify">
-                    <Inline alignVertical="center" space="8px">
-                      <ChainBadge
-                        chainId={asset?.chainId || ChainId.mainnet}
-                        size="16"
+                {isSideChain(chain?.id || ChainId.mainnet) ? (
+                  <Box
+                    as={motion.div}
+                    background="fillSecondary"
+                    padding="8px"
+                    width="full"
+                    borderRadius="12px"
+                    onClick={showL2Explainer}
+                    initial={{ zIndex: 0 }}
+                    whileHover={{ scale: transformScales['1.04'] }}
+                    whileTap={{ scale: transformScales['0.96'] }}
+                    transition={transitions.bounce}
+                  >
+                    <Inline alignVertical="center" alignHorizontal="justify">
+                      <Inline alignVertical="center" space="8px" wrap={false}>
+                        <ChainBadge
+                          chainId={asset?.chainId || ChainId.mainnet}
+                          size="16"
+                        />
+                        <Text size="12pt" weight="bold" color="labelSecondary">
+                          {i18n.t('send.review.sending_on_network', {
+                            chainName,
+                          })}
+                        </Text>
+                      </Inline>
+                      <Symbol
+                        weight="bold"
+                        symbol="info.circle.fill"
+                        size={12}
+                        color="labelTertiary"
                       />
-                      <Text size="12pt" weight="bold" color="labelSecondary">
-                        {i18n.t('send.review.sending_on_network', {
-                          chainName,
-                        })}
-                      </Text>
                     </Inline>
-                    <Symbol
-                      weight="bold"
-                      symbol="info.circle.fill"
-                      size={12}
-                      color="labelTertiary"
-                    />
-                  </Inline>
-                </Box>
+                  </Box>
+                ) : null}
                 <Box paddingHorizontal="7px">
                   <Stack space="12px">
                     <Columns alignVertical="center" space="7px">

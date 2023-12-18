@@ -192,7 +192,7 @@ function NetworkBanner({
   if (chainId === ChainId.mainnet) return null;
 
   const chainName =
-    ChainNameDisplay[chainId] || findCustomChainForChainId(chainId)?.name;
+    ChainNameDisplay[chainId] || findCustomChainForChainId(chainId)?.name || '';
 
   return (
     <>
