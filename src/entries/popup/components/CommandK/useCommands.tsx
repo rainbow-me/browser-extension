@@ -119,6 +119,15 @@ export const staticCommandInfo: CommandInfo = {
     toPage: PAGES.MY_TOKENS,
     type: SearchItemType.Shortcut,
   },
+  myNFTs: {
+    actionLabel: actionLabels.view,
+    name: getCommandName('my_nfts'),
+    page: PAGES.HOME,
+    symbol: 'photo',
+    symbolSize: 16.25,
+    toPage: PAGES.MY_NFTS,
+    type: SearchItemType.Shortcut,
+  },
   copyAddress: {
     name: getCommandName('copy_address'),
     page: PAGES.HOME,
