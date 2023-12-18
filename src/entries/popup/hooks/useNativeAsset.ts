@@ -2,6 +2,7 @@
 import { AddressZero } from '@ethersproject/constants';
 import { Address, useNetwork } from 'wagmi';
 
+import { SUPPORTED_CHAIN_IDS } from '~/core/references';
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
@@ -40,7 +41,8 @@ export const useNativeAsset = ({
   });
 
   const chain = chains.find((chain) => chain.id === chainId);
-  const isChainIdCustomNetwork = isCustomChain(chainId);
+  const isChainIdCustomNetwork =
+    !SUPPORTED_CHAIN_IDS.includes(chainId) && isCustomChain(chainId);
   const nativeAsset = isChainIdCustomNetwork
     ? customNetworkNativeAsset
     : chain?.testnet
