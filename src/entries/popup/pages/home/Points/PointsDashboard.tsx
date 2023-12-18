@@ -13,10 +13,7 @@ import { formatNumber } from '~/core/utils/formatNumber';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
-import {
-  SymbolName,
-  linearGradients,
-} from '~/design-system/styles/designTokens';
+import { linearGradients } from '~/design-system/styles/designTokens';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
@@ -69,21 +66,6 @@ const LeaderboardPositionNumberDisplay = ({
         <Text size="16pt" weight="bold">
           {medal}
         </Text>
-      </Inline>
-    );
-
-  if (position > 3 && position <= 50)
-    return (
-      <Inline wrap={false} space="8px" alignVertical="center">
-        <Text size="12pt" weight="bold" color="labelTertiary">
-          {children}
-        </Text>
-        <Symbol
-          symbol={`${position}.circle` as SymbolName}
-          size={14}
-          color="labelTertiary"
-          weight="bold"
-        />
       </Inline>
     );
 
