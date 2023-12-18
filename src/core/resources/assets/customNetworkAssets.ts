@@ -189,9 +189,12 @@ async function customNetworkAssetsFunction({
           chain.id === ChainId.mainnet
             ? ETH_MAINNET_ASSET.address
             : AddressZero;
-        const nativeAssetBalance = await provider.getBalance(address);
+        const nativeAssetBalance = (
+          await provider.getBalance(address)
+        )?.toString();
         const customNetworkNativeAssetParsed =
-          nativeAssetBalance && !isZero(nativeAssetBalance.toString())
+          nativeAssetBalance &&
+          (filterZeroBalance ? !isZero(nativeAssetBalance) : true)
             ? parseUserAssetBalances({
                 asset: {
                   address: nativeAssetAddress,
@@ -209,7 +212,7 @@ async function customNetworkAssetsFunction({
                   icon_url: getCustomChainIconUrl(chain.id, nativeAssetAddress),
                 },
                 currency,
-                balance: nativeAssetBalance.toString(),
+                balance: nativeAssetBalance,
               })
             : null;
 

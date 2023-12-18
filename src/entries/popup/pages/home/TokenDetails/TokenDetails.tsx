@@ -316,7 +316,7 @@ export function TokenDetails() {
 
   const { data: userAsset, isFetched } = useUserAsset(uniqueId);
   const { data: customAsset, isFetched: isCustomAssetFetched } =
-    useCustomNetworkAsset(uniqueId);
+    useCustomNetworkAsset({ uniqueId });
 
   const { isWatchingWallet } = useWallets();
 

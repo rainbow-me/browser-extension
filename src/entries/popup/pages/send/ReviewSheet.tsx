@@ -266,7 +266,8 @@ export const ReviewSheet = ({
   >;
 }) => {
   const { visibleOwnedWallets } = useWallets();
-  const [sendingOnL2Checks, setSendingOnL2Checks] = useState(false);
+  const [notSendingOnEthereumChecks, setNotSendingOnEthereumChecks] =
+    useState(false);
   const prevShow = usePrevious(show);
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
@@ -279,8 +280,10 @@ export const ReviewSheet = ({
     isCustomChain(asset?.chainId as ChainId) &&
     asset?.native?.balance?.amount === '0';
 
-  const sendingOnL2 = useMemo(
-    () => isL2Chain(asset?.chainId || ChainId.mainnet),
+  const notSendingOnEthereum = useMemo(
+    () =>
+      isL2Chain(asset?.chainId || ChainId.mainnet) ||
+      isCustomChain(asset?.chainId || ChainId.mainnet),
     [asset?.chainId],
   );
 
@@ -294,10 +297,10 @@ export const ReviewSheet = ({
     [toAddress, visibleOwnedWallets],
   );
 
-  const sendEnabled = useMemo(() => {
-    if (!sendingOnL2) return true;
-    return sendingOnL2Checks;
-  }, [sendingOnL2, sendingOnL2Checks]);
+  const sendEnabled = useMemo(
+    () => !notSendingOnEthereum || notSendingOnEthereumChecks,
+    [notSendingOnEthereum, notSendingOnEthereumChecks],
+  );
 
   const handleSend = useCallback(async () => {
     if (sendEnabled && !sending) {
@@ -326,7 +329,7 @@ export const ReviewSheet = ({
 
   useEffect(() => {
     if (prevShow && !show) {
-      setSendingOnL2Checks(false);
+      setNotSendingOnEthereumChecks(false);
     }
   }, [prevShow, show]);
 
@@ -494,12 +497,14 @@ export const ReviewSheet = ({
                     </Columns>
                   </Row>
                 </Rows>
-                {sendingOnL2 && <Separator color="separatorTertiary" />}
+                {notSendingOnEthereum && (
+                  <Separator color="separatorTertiary" />
+                )}
               </Stack>
             </Box>
           </Stack>
 
-          {sendingOnL2 && (
+          {notSendingOnEthereum && (
             <Box paddingHorizontal="16px" paddingBottom="20px">
               <Stack space="20px">
                 <Box
@@ -542,12 +547,14 @@ export const ReviewSheet = ({
                           width="16px"
                           height="16px"
                           borderRadius="6px"
-                          selected={sendingOnL2Checks}
+                          selected={notSendingOnEthereumChecks}
                           backgroundSelected="blue"
                           borderColorSelected="blue"
                           borderColor="labelTertiary"
                           onClick={() =>
-                            setSendingOnL2Checks(!sendingOnL2Checks)
+                            setNotSendingOnEthereumChecks(
+                              !notSendingOnEthereumChecks,
+                            )
                           }
                         />
                       </Column>
@@ -555,7 +562,9 @@ export const ReviewSheet = ({
                         <Lens
                           testId="L2-check-1"
                           onClick={() =>
-                            setSendingOnL2Checks(!sendingOnL2Checks)
+                            setNotSendingOnEthereumChecks(
+                              !notSendingOnEthereumChecks,
+                            )
                           }
                         >
                           <Text
