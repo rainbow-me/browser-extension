@@ -25,6 +25,24 @@ declare global {
       RPC_PROXY_ENABLED: string;
       RPC_PROXY_BASE_URL: string;
       RPC_PROXY_API_KEY: string;
+      ETH_MAINNET_RPC: string;
+      OPTIMISM_MAINNET_RPC: string;
+      ARBITRUM_MAINNET_RPC: string;
+      POLYGON_MAINNET_RPC: string;
+      BASE_MAINNET_RPC: string;
+      ZORA_MAINNET_RPC: string;
+      BSC_MAINNET_RPC: string;
+      ETH_GOERLI_RPC: string;
+      ETH_SEPOLIA_RPC: string;
+      ETH_HOLESKY_RPC: string;
+      OPTIMISM_GOERLI_RPC: string;
+      OPTIMISM_SEPOLIA_RPC: string;
+      BSC_TESTNET_RPC: string;
+      POLYGON_MUMBAI_RPC: string;
+      ARBITRUM_SEPOLIA_RPC: string;
+      ARBITRUM_GOERLI_RPC: string;
+      BASE_GOERLI_RPC: string;
+      ZORA_GOERLI_RPC: string;
     }
   }
 }

@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -11,16 +12,60 @@ import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Autocomplete } from '~/entries/popup/components/Autocomplete';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { ROUTES } from '~/entries/popup/urls';
 
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
 
 const KNOWN_NETWORKS = {
   [i18n.t('settings.networks.custom_rpc.networks')]: [
+    {
+      name: 'Anvil Mainnet Fork',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
+      name: 'Anvil (Dev)',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 31337,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
+      name: 'Hardhat Mainnet Fork',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
+    {
+      name: 'Hardhat (Dev)',
+      value: {
+        rpcUrl: 'http://127.0.0.1:8545',
+        chainId: 31337,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: true,
+      },
+    },
     {
       name: 'Arbitrum Nova',
       value: {
@@ -29,6 +74,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://nova.arbiscan.io',
+        testnet: false,
       },
     },
     {
@@ -39,6 +85,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'AVAX',
         explorerUrl: 'https://cchain.explorer.avax.network',
+        testnet: false,
       },
     },
     {
@@ -49,6 +96,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://aurorascan.dev',
+        testnet: false,
       },
     },
     {
@@ -59,6 +107,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'CANTO',
         explorerUrl: 'https://tuber.build',
+        testnet: false,
       },
     },
     {
@@ -69,6 +118,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'CELO',
         explorerUrl: 'https://explorer.celo.org/mainnet',
+        testnet: false,
       },
     },
     {
@@ -79,16 +129,18 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETC',
         explorerUrl: 'https://blockscout.com/etc/mainnet',
+        testnet: false,
       },
     },
     {
       name: 'Fantom',
       value: {
         rpcUrl: 'https://rpc.ankr.com/fantom',
-        chainId: 42_220,
+        chainId: 250,
         decimals: 18,
         symbol: 'FTM',
         explorerUrl: 'https://ftmscan.com',
+        testnet: false,
       },
     },
     {
@@ -99,6 +151,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'FIL',
         explorerUrl: 'https://filfox.info/en',
+        testnet: false,
       },
     },
     {
@@ -109,6 +162,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'xDAI',
         explorerUrl: 'https://gnosisscan.io',
+        testnet: false,
       },
     },
     {
@@ -119,6 +173,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://lineascan.build',
+        testnet: false,
       },
     },
     {
@@ -129,6 +184,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'MNT',
         explorerUrl: 'https://explorer.mantle.xyz',
+        testnet: false,
       },
     },
     {
@@ -139,6 +195,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'METIS',
         explorerUrl: 'https://andromeda-explorer.metis.io',
+        testnet: false,
       },
     },
     {
@@ -159,6 +216,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://zkevm.polygonscan.com',
+        testnet: false,
       },
     },
     {
@@ -169,6 +227,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'PULSE',
         explorerUrl: 'https://pulsechain.com',
+        testnet: false,
       },
     },
     {
@@ -179,6 +238,7 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://scrollscan.com',
+        testnet: false,
       },
     },
     {
@@ -189,24 +249,35 @@ const KNOWN_NETWORKS = {
         decimals: 18,
         symbol: 'ETH',
         explorerUrl: 'https://explorer.zksync.io',
+        testnet: false,
       },
     },
   ],
 };
 
 export function SettingsCustomChain() {
+  const {
+    state: { chain },
+  }: { state: { chain?: Chain } } = useLocation();
+  const { addCustomRPC } = useCustomRPCsStore();
   const navigate = useRainbowNavigate();
-  const { customChains, addCustomRPC } = useCustomRPCsStore();
   const { addUserChain } = useUserChainsStore();
   const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
+    testnet?: boolean;
     rpcUrl?: string;
     chainId?: number;
     name?: string;
     symbol?: string;
     explorerUrl?: string;
-  }>({});
+  }>({
+    testnet: chain?.testnet,
+    chainId: chain?.id,
+    symbol: chain?.nativeCurrency.symbol,
+    explorerUrl: chain?.blockExplorers?.default.url,
+    active: !chain, // True only if adding a new network
+  });
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
     chainId: boolean;
@@ -238,7 +309,14 @@ export function SettingsCustomChain() {
     <T extends string | number | boolean>(
       value: string | boolean | number,
       type: 'string' | 'number' | 'boolean',
-      data: 'rpcUrl' | 'chainId' | 'name' | 'symbol' | 'explorerUrl' | 'active',
+      data:
+        | 'rpcUrl'
+        | 'chainId'
+        | 'name'
+        | 'symbol'
+        | 'explorerUrl'
+        | 'active'
+        | 'testnet',
     ) => {
       if (type === 'number' && typeof value === 'string') {
         const maskedValue = maskInput({ inputValue: value, decimals: 0 });
@@ -256,7 +334,7 @@ export function SettingsCustomChain() {
     [],
   );
 
-  const validateExplorerRpcUrl = useCallback(
+  const validateRpcUrl = useCallback(
     () =>
       !!customRPC.rpcUrl &&
       isValidUrl(customRPC.rpcUrl) &&
@@ -264,10 +342,19 @@ export function SettingsCustomChain() {
     [chainMetadata?.chainId, customRPC.rpcUrl],
   );
 
+  useEffect(() => {
+    if (chainMetadataIsError) {
+      triggerToast({
+        title: i18n.t('settings.networks.custom_rpc.cant_connect'),
+        description: i18n.t('settings.networks.custom_rpc.rpc_not_responding'),
+      });
+    }
+  }, [chainMetadataIsError]);
+
   const onRpcUrlBlur = useCallback(
     async () =>
-      setValidations((prev) => ({ ...prev, rpcUrl: validateExplorerRpcUrl() })),
-    [validateExplorerRpcUrl],
+      setValidations((prev) => ({ ...prev, rpcUrl: validateRpcUrl() })),
+    [validateRpcUrl],
   );
 
   const validateChainId = useCallback(() => {
@@ -300,7 +387,7 @@ export function SettingsCustomChain() {
   );
 
   const validateExplorerUrl = useCallback(
-    () => !!customRPC.explorerUrl && isValidUrl(customRPC.explorerUrl),
+    () => (customRPC.explorerUrl ? isValidUrl(customRPC.explorerUrl) : true),
     [customRPC.explorerUrl],
   );
 
@@ -314,7 +401,7 @@ export function SettingsCustomChain() {
   );
 
   const validateAddCustomRpc = useCallback(() => {
-    const validRpcUrl = validateExplorerRpcUrl();
+    const validRpcUrl = validateRpcUrl();
     const validChainId = validateChainId();
     const validName = validateName();
     const validSymbol = validateSymbol();
@@ -335,14 +422,14 @@ export function SettingsCustomChain() {
     );
   }, [
     validateChainId,
-    validateExplorerRpcUrl,
+    validateRpcUrl,
     validateExplorerUrl,
     validateName,
     validateSymbol,
   ]);
 
   const validateCustomRpcMetadata = useCallback(() => {
-    const validRpcUrl = validateExplorerRpcUrl();
+    const validRpcUrl = validateRpcUrl();
     const validChainId = validateChainId();
     setValidations((validations) => ({
       ...validations,
@@ -350,17 +437,16 @@ export function SettingsCustomChain() {
       chainId: validChainId,
     }));
     return validRpcUrl && validChainId;
-  }, [validateChainId, validateExplorerRpcUrl]);
+  }, [validateChainId, validateRpcUrl]);
 
   const addCustomRpc = useCallback(async () => {
     const rpcUrl = customRPC.rpcUrl;
     const chainId = customRPC.chainId || chainMetadata?.chainId;
     const name = customRPC.name;
     const symbol = customRPC.symbol;
-    const explorerUrl = customRPC.explorerUrl;
     const valid = validateAddCustomRpc();
 
-    if (valid && rpcUrl && chainId && name && symbol && explorerUrl) {
+    if (valid && rpcUrl && chainId && name && symbol) {
       const chain: Chain = {
         id: chainId,
         name,
@@ -372,16 +458,35 @@ export function SettingsCustomChain() {
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
       };
+      if (customRPC.testnet) {
+        chain.testnet = true;
+      }
       addCustomRPC({
         chain,
       });
       addUserChain({ chainId });
+      triggerToast({
+        title: i18n.t('settings.networks.custom_rpc.network_added'),
+        description: i18n.t(
+          'settings.networks.custom_rpc.network_added_correctly',
+          { networkName: name },
+        ),
+      });
+      setCustomRPC({});
+      setTimeout(() => {
+        navigate(-1);
+      }, 1500);
     }
   }, [
     addCustomRPC,
     addUserChain,
     chainMetadata?.chainId,
-    customRPC,
+    customRPC.chainId,
+    customRPC.name,
+    customRPC.rpcUrl,
+    customRPC.symbol,
+    customRPC.testnet,
+    navigate,
     validateAddCustomRpc,
   ]);
 
@@ -428,47 +533,6 @@ export function SettingsCustomChain() {
   return (
     <Box paddingHorizontal="20px">
       <Stack space="20px">
-        {Object.keys(customChains)?.map((chainId, i) => (
-          <Box
-            key={i}
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            boxShadow="12px"
-            width="full"
-            padding="16px"
-            onClick={() =>
-              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
-                state: {
-                  chainId,
-                },
-              })
-            }
-          >
-            <Stack space="16px">
-              <Text size="14pt" weight="bold" align="left">
-                Group chainId: {chainId}
-              </Text>
-              <Stack space="16px">
-                {customChains[Number(chainId)]?.chains?.map((chain, j) => (
-                  <Box key={j}>
-                    <Inline alignHorizontal="justify">
-                      <Text size="14pt" weight="bold" align="center">
-                        {chain.rpcUrls.default.http[0]}
-                      </Text>
-                      <Text size="14pt" weight="bold" align="center">
-                        {chain.rpcUrls.default.http[0] ===
-                        customChains[Number(chainId)].activeRpcUrl
-                          ? 'Active'
-                          : ''}
-                      </Text>
-                    </Inline>
-                  </Box>
-                ))}
-              </Stack>
-            </Stack>
-          </Box>
-        ))}
-
         <Form>
           <Autocomplete
             open={open}
@@ -539,6 +603,29 @@ export function SettingsCustomChain() {
                   onInputChange<boolean>(!customRPC.active, 'boolean', 'active')
                 }
                 selected={!!customRPC.active}
+              />
+            </Inline>
+          </Box>
+          <Box padding="10px">
+            <Inline alignHorizontal="justify">
+              <Text
+                align="center"
+                weight="semibold"
+                size="12pt"
+                color="labelSecondary"
+              >
+                {i18n.t('settings.networks.custom_rpc.testnet')}
+              </Text>
+              <Checkbox
+                borderColor="accent"
+                onClick={() =>
+                  onInputChange<boolean>(
+                    !customRPC.testnet,
+                    'boolean',
+                    'testnet',
+                  )
+                }
+                selected={!!customRPC.testnet}
               />
             </Inline>
           </Box>

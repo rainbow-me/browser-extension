@@ -139,6 +139,14 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
       driver,
       id: `network-row-${ChainId.mainnet}`,
     });
+    await findElementByTestIdAndClick({
+      driver,
+      id: `disable-network-toggle`,
+    });
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
   });
 
   it('should go back to home and check ethereum networks are not available in dapp menu', async () => {

@@ -269,7 +269,7 @@ export const AnimatedRoute = forwardRef(function AnimatedRoute(
           >
             {navbar && (
               <Navbar
-                title={title || ''}
+                title={state?.title || title || ''}
                 background={navbarBackground}
                 leftComponent={leftNavbarIcon}
                 rightComponent={rightNavbarComponent}
