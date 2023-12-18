@@ -27,7 +27,7 @@ export const useSearchableNfts = () => {
       actionLabel: actionLabels.open,
       actionPage: PAGES.NFT_TOKEN_DETAIL,
       id: nft.uniqueId,
-      name: nft.collection?.name || nft.name,
+      name: nft.name || nft.collection?.name,
       page: PAGES.MY_NFTS,
       selectedWalletAddress: address,
       type: SearchItemType.Nft,
