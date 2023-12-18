@@ -11,6 +11,13 @@ import { NftSearchItem, SearchItemType } from './SearchItems';
 import { PAGES } from './pageConfig';
 import { actionLabels } from './references';
 
+const parseNftName = (name: string, id: string) => {
+  return name
+    .split(' ')
+    .filter((word) => !word.includes(id) && word !== '')
+    .join(' ');
+};
+
 export const useSearchableNfts = () => {
   const { currentAddress: address } = useCurrentAddressStore();
   const navigate = useRainbowNavigate();
@@ -27,7 +34,7 @@ export const useSearchableNfts = () => {
       actionLabel: actionLabels.open,
       actionPage: PAGES.NFT_TOKEN_DETAIL,
       id: nft.uniqueId,
-      name: nft.name || nft.collection?.name,
+      name: parseNftName(nft.name, nft.id),
       page: PAGES.MY_NFTS,
       selectedWalletAddress: address,
       type: SearchItemType.Nft,
