@@ -225,7 +225,9 @@ export function SettingsNetworksRPCs() {
                         leftComponent={
                           <ChainBadge chainId={chain.id} size="18" shadow />
                         }
-                        onClick={() => chain.rpcUrls.default.http[0]}
+                        onClick={() =>
+                          handleRPCClick(chain.rpcUrls.default.http[0])
+                        }
                         key={chain.name}
                         rightComponent={
                           chain.rpcUrls.default.http[0] ===
@@ -281,13 +283,16 @@ export function SettingsNetworksRPCs() {
                 navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
                   state: {
                     chain: activeCustomRPC || supportedChain,
+                    title: i18n.t('settings.networks.custom_rpc.add_rpc', {
+                      rpcName: activeCustomRPC?.name || supportedChain?.name,
+                    }),
                   },
                 })
               }
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('settings.networks.custom_rpc.add_rpc', {
-                    rpcName: activeCustomRPC?.name || supportedChain?.name,
+                    rpcName: supportedChain?.name || activeCustomRPC?.name,
                   })}
                 />
               }
