@@ -23,10 +23,7 @@ import {
 } from '~/design-system';
 import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
-import {
-  SymbolName,
-  linearGradients,
-} from '~/design-system/styles/designTokens';
+import { linearGradients } from '~/design-system/styles/designTokens';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
@@ -79,21 +76,6 @@ const LeaderboardPositionNumberDisplay = ({
         <Text size="16pt" weight="bold">
           {medal}
         </Text>
-      </Inline>
-    );
-
-  if (position > 3 && position <= 50)
-    return (
-      <Inline wrap={false} space="8px" alignVertical="center">
-        <Text size="12pt" weight="bold" color="labelTertiary">
-          {children}
-        </Text>
-        <Symbol
-          symbol={`${position}.circle` as SymbolName}
-          size={14}
-          color="labelTertiary"
-          weight="bold"
-        />
       </Inline>
     );
 
@@ -201,6 +183,8 @@ export const copyReferralLink = (referralCode: string) =>
     description: `rainbow.me/points?ref=${referralCode}`,
   });
 
+const formatReferralCode = (referralCode: string) =>
+  referralCode.slice(0, 3) + '-' + referralCode.slice(-3);
 function ReferralCode() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
@@ -221,12 +205,12 @@ function ReferralCode() {
                 copy({
                   value: data.user.referralCode,
                   title: i18n.t('points.copied_referral_code'),
-                  description: data.user.referralCode,
+                  description: formatReferralCode(data.user.referralCode),
                 })
               }
             >
               <Text size="20pt" weight="bold" align="center">
-                {data.user.referralCode}
+                {formatReferralCode(data.user.referralCode)}
               </Text>
             </Card>
 
