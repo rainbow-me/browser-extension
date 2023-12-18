@@ -189,7 +189,6 @@ function ClaimYourPoints() {
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
   const { testnetMode } = useTestnetModeStore();
-  const { featureFlags } = useFeatureFlagsStore();
 
   const controls = useAnimation();
 
@@ -215,9 +214,7 @@ function ClaimYourPoints() {
       flexDirection="column"
       justifyContent="flex-start"
       marginTop="-20px"
-      paddingTop={
-        featureFlags.points || config.points_enabled ? '40px' : '80px'
-      }
+      paddingTop={config.points_enabled ? '40px' : '80px'}
       ref={ref}
       style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
       width="full"
@@ -269,7 +266,7 @@ function ClaimYourPoints() {
             </Box>
           </Box>
         </Box>
-        {featureFlags.points || config.points_enabled ? (
+        {config.points_enabled ? (
           <PointsContent />
         ) : (
           <PointsContentPlaceholder />
@@ -283,12 +280,9 @@ export function Points() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isInitialLoading } = usePoints(currentAddress);
 
-  const { featureFlags } = useFeatureFlagsStore();
-  const isPointsEnabled = featureFlags.points || config.points_enabled;
-
   if (isInitialLoading) return null;
 
-  if (!isPointsEnabled || data?.error?.type === 'NON_EXISTING_USER')
+  if (!config.points_enabled || data?.error?.type === 'NON_EXISTING_USER')
     return <ClaimYourPoints />;
   return <PointsDashboard />;
 }
