@@ -334,6 +334,10 @@ export function SettingsCustomChain() {
   );
   const prevChainMetadata = usePrevious(chainMetadata);
 
+  useEffect(() => {
+    saveCustomNetworkDraft(draftKey, customRPC);
+  }, [draftKey, customRPC, saveCustomNetworkDraft]);
+
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
       value: string | boolean | number,
@@ -349,26 +353,18 @@ export function SettingsCustomChain() {
     ) => {
       if (type === 'number' && typeof value === 'string') {
         const maskedValue = maskInput({ inputValue: value, decimals: 0 });
-        setCustomRPC((prev) => {
-          const newState = {
-            ...prev,
-            [data]: maskedValue ? (Number(maskedValue) as T) : undefined,
-          };
-          saveCustomNetworkDraft(draftKey, newState);
-          return newState;
-        });
+        setCustomRPC((prev) => ({
+          ...prev,
+          [data]: maskedValue ? (Number(maskedValue) as T) : undefined,
+        }));
       } else {
-        setCustomRPC((prev) => {
-          const newState = {
-            ...prev,
-            [data]: value as T,
-          };
-          saveCustomNetworkDraft(draftKey, newState);
-          return newState;
-        });
+        setCustomRPC((prev) => ({
+          ...prev,
+          [data]: value as T,
+        }));
       }
     },
-    [draftKey, saveCustomNetworkDraft],
+    [],
   );
 
   const validateRpcUrl = useCallback(
@@ -522,7 +518,6 @@ export function SettingsCustomChain() {
         });
       }
       setCustomRPC({});
-      saveCustomNetworkDraft(draftKey, undefined);
       navigate(-1);
     }
   }, [
@@ -536,10 +531,8 @@ export function SettingsCustomChain() {
     customRPC.rpcUrl,
     customRPC.symbol,
     customRPC.testnet,
-    draftKey,
     navigate,
     setActiveRPC,
-    saveCustomNetworkDraft,
     validateAddCustomRpc,
   ]);
 
@@ -561,16 +554,12 @@ export function SettingsCustomChain() {
         (network) => network.name === networkName,
       );
       if (network) {
-        setCustomRPC((prev) => {
-          const newState = {
-            ...prev,
-            ...network.value,
-            name: networkName,
-            active: true,
-          };
-          saveCustomNetworkDraft(draftKey, newState);
-          return newState;
-        });
+        setCustomRPC((prev) => ({
+          ...prev,
+          ...network.value,
+          name: networkName,
+          active: true,
+        }));
 
         // All these are previously validated by us
         // when adding the network to the list
@@ -584,7 +573,7 @@ export function SettingsCustomChain() {
       }
       open && setOpen(false);
     },
-    [draftKey, open, saveCustomNetworkDraft],
+    [open],
   );
 
   return (

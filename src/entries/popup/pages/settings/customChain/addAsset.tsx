@@ -132,26 +132,18 @@ export function AddAsset() {
     ) => {
       if (type === 'number' && typeof value === 'string') {
         const maskedValue = maskInput({ inputValue: value, decimals: 0 });
-        setAsset((prev) => {
-          const newState = {
-            ...prev,
-            [data]: maskedValue ? (Number(maskedValue) as T) : undefined,
-          };
-          saveCustomTokenDraft(chainId, newState);
-          return newState;
-        });
+        setAsset((prev) => ({
+          ...prev,
+          [data]: maskedValue ? (Number(maskedValue) as T) : undefined,
+        }));
       } else {
-        setAsset((prev) => {
-          const newState = {
-            ...prev,
-            [data]: value as T,
-          };
-          saveCustomTokenDraft(chainId, newState);
-          return newState;
-        });
+        setAsset((prev) => ({
+          ...prev,
+          [data]: value as T,
+        }));
       }
     },
-    [chainId, saveCustomTokenDraft],
+    [],
   );
 
   const validateAddCustomAsset = useCallback(() => {
@@ -188,7 +180,6 @@ export function AddAsset() {
         rainbowChainAsset: assetToAdd,
       });
       setAsset(INITIAL_ASSET);
-      saveCustomTokenDraft(chainId, undefined);
     }
   }, [
     addRainbowChainAsset,
@@ -201,9 +192,12 @@ export function AddAsset() {
     assetMetadata.symbol,
     chainId,
     customRPCAssetsForChain,
-    saveCustomTokenDraft,
     validateAddCustomAsset,
   ]);
+
+  useEffect(() => {
+    saveCustomTokenDraft(chainId, asset);
+  }, [asset, chainId, saveCustomTokenDraft]);
 
   useEffect(() => {
     if (!isEqual(assetMetadata, prevAssetMetadata) && assetMetadataIsFetched) {
