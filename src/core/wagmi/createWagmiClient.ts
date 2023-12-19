@@ -82,7 +82,6 @@ export function createWagmiClient({
   rainbowChains?: Chain[];
   useProxy?: boolean;
 } = {}) {
-  console.log('--- rainbowChains', rainbowChains);
   const { chains, provider, webSocketProvider } = configureChainsForWagmiClient(
     rainbowChains,
     useProxy,
