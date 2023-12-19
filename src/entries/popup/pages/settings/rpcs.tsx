@@ -142,7 +142,7 @@ export function SettingsNetworksRPCs() {
               rpcUrl: b.rpcUrls.default.http[0],
             })
           )
-            return -1;
+            return 1;
           return 0;
         }),
     [chainId, rainbowChains],
