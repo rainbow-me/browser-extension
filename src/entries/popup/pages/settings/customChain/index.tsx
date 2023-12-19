@@ -7,7 +7,7 @@ import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { isValidUrl } from '~/core/utils/connectedApps';
+import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Autocomplete } from '~/entries/popup/components/Autocomplete';
 import { Form } from '~/entries/popup/components/Form/Form';
@@ -457,6 +457,14 @@ export function SettingsCustomChain() {
           name: symbol,
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+        blockExplorers: {
+          default: {
+            name: customRPC.explorerUrl
+              ? getDappHostname(customRPC.explorerUrl)
+              : '',
+            url: customRPC.explorerUrl || '',
+          },
+        },
       };
       if (customRPC.testnet) {
         chain.testnet = true;
@@ -482,6 +490,7 @@ export function SettingsCustomChain() {
     addUserChain,
     chainMetadata?.chainId,
     customRPC.chainId,
+    customRPC.explorerUrl,
     customRPC.name,
     customRPC.rpcUrl,
     customRPC.symbol,
