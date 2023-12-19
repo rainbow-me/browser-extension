@@ -3,13 +3,20 @@ import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAss
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { UniqueId } from '~/core/types/assets';
 
-export function useCustomNetworkAsset(uniqueId?: UniqueId) {
+export function useCustomNetworkAsset({
+  uniqueId,
+  filterZeroBalance,
+}: {
+  uniqueId?: UniqueId;
+  filterZeroBalance?: boolean;
+}) {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   return useCustomNetworkAssets(
     {
       address: currentAddress,
       currency,
+      filterZeroBalance,
     },
     {
       select: uniqueId ? selectUserAssetWithUniqueId(uniqueId) : undefined,
