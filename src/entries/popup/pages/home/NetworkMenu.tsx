@@ -5,7 +5,7 @@ import appConnectionImageMask from 'static/assets/appConnectionImageMask.svg';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
-import { Bleed, Box, Inline, Symbol } from '~/design-system';
+import { Box, Inline, Symbol } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import {
   transformScales,
@@ -93,18 +93,12 @@ export const AppConnection = () => {
                 </Box>
               </Box>
               {appSession ? (
-                <Box
-                  position="absolute"
-                  style={{
-                    marginRight: 16,
-                    marginTop: 8,
-                  }}
-                >
+                <Box position="absolute">
                   <Box
+                    position="relative"
                     style={{
-                      height: 10,
-                      width: 10,
-                      borderRadius: 5,
+                      marginRight: 16,
+                      marginTop: 8,
                     }}
                   >
                     <Inline
@@ -112,12 +106,12 @@ export const AppConnection = () => {
                       alignVertical="center"
                       height="full"
                     >
-                      <Bleed top="7px">
+                      <Box>
                         <ChainBadge
                           chainId={activeSession?.chainId || ChainId.mainnet}
                           size="8"
                         />
-                      </Bleed>
+                      </Box>
                     </Inline>
                   </Box>
                 </Box>

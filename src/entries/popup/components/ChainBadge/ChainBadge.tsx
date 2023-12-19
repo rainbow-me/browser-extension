@@ -96,7 +96,12 @@ const ChainBadge = ({
             justifyContent: 'center',
           }}
         >
-          <Text size="9pt" color="labelWhite" weight="bold" align="center">
+          <Text
+            size={Number(size) < 12 ? '7pt' : '9pt'}
+            color="labelWhite"
+            weight="bold"
+            align="center"
+          >
             {chain.name.substring(0, 1).toUpperCase()}
           </Text>
         </Box>
@@ -108,7 +113,6 @@ const ChainBadge = ({
     <Box
       borderRadius="round"
       style={{
-        height: iconSize,
         width: iconSize,
         borderRadius: iconSize,
         boxShadow,
@@ -117,8 +121,8 @@ const ChainBadge = ({
       {customChainIdsToAssetNames[chainId] ? (
         <ExternalImage
           src={getCustomChainIconUrl(chainId, AddressZero)}
-          width="100%"
-          height="100%"
+          width={iconSize}
+          height={iconSize}
           loading="lazy"
           style={{
             userSelect: 'none',
@@ -131,8 +135,8 @@ const ChainBadge = ({
       ) : (
         <img
           src={networkBadges[chainId]}
-          width="100%"
-          height="100%"
+          width={iconSize}
+          height={iconSize}
           loading="lazy"
           style={{
             userSelect: 'none',
