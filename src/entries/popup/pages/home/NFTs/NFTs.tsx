@@ -34,6 +34,8 @@ import { ROUTES } from '~/entries/popup/urls';
 
 import ExternalImage from '../../../components/ExternalImage/ExternalImage';
 
+import { fadeOutMask } from './NFTs.css';
+
 const NFTS_LIMIT = 2000;
 const COLLECTION_IMAGE_SIZE = 16;
 
@@ -137,8 +139,10 @@ export function NFTs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionsState, sort]);
 
+  const nftCount = getNftCount({ address });
+  const isPaginating = hasNextPage && nftCount < NFTS_LIMIT;
+
   useEffect(() => {
-    const nftCount = getNftCount({ address });
     if (
       hasNextPage &&
       !isFetching &&
@@ -154,9 +158,9 @@ export function NFTs() {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
+    nftCount,
   ]);
 
-  // we don't have a design for loading / empty state yet
   if (!isLoading && Object.values(nfts || {}).length === 0) {
     return <NFTEmptyState />;
   }
@@ -183,7 +187,6 @@ export function NFTs() {
                 width="full"
                 style={{
                   height: groupedGalleryRowVirtualizer.getTotalSize(),
-                  minHeight: '436px',
                   position: 'relative',
                 }}
               >
@@ -222,12 +225,31 @@ export function NFTs() {
                                   index={i}
                                 />
                               ))}
+                              {rowData.length < 3 &&
+                                isPaginating &&
+                                Array.from({ length: 3 - rowData.length }).map(
+                                  (_, i) => {
+                                    return (
+                                      <Skeleton
+                                        key={i}
+                                        height={'96px'}
+                                        style={{ borderRadius: 10 }}
+                                        width={'96px'}
+                                      />
+                                    );
+                                  },
+                                )}
                             </Box>
                           </Inset>
                         </Box>
                       );
                     })}
                 </Box>
+              </Box>
+            )}
+            {isPaginating && (
+              <Box width="full" className={fadeOutMask} paddingHorizontal="8px">
+                <GroupedNFTsSkeleton skeletonLength={3} />
               </Box>
             )}
           </>
@@ -245,8 +267,8 @@ export function NFTs() {
                 width="full"
                 style={{
                   height: collectionGalleryRowVirtualizer.getTotalSize(),
-                  minHeight: '436px',
                   position: 'relative',
+                  marginBottom: isPaginating ? -6 : 0,
                 }}
               >
                 <Box style={{ overflow: 'auto' }}>
@@ -277,6 +299,11 @@ export function NFTs() {
                 </Box>
               </Box>
             )}
+            {isPaginating && (
+              <Box width="full" className={fadeOutMask} paddingHorizontal="4px">
+                <CollectionNFTsSkeleton skeletonLength={4} />
+              </Box>
+            )}
           </>
         )}
       </Box>
@@ -284,7 +311,11 @@ export function NFTs() {
   );
 }
 
-function GroupedNFTsSkeleton() {
+function GroupedNFTsSkeleton({
+  skeletonLength = 9,
+}: {
+  skeletonLength?: number;
+}) {
   return (
     <Box
       style={{
@@ -296,7 +327,7 @@ function GroupedNFTsSkeleton() {
         paddingBottom: 16,
       }}
     >
-      {Array.from({ length: 9 }).map((_, i) => {
+      {Array.from({ length: skeletonLength }).map((_, i) => {
         return (
           <Skeleton
             key={i}
@@ -310,11 +341,15 @@ function GroupedNFTsSkeleton() {
   );
 }
 
-function CollectionNFTsSkeleton() {
+function CollectionNFTsSkeleton({
+  skeletonLength = 15,
+}: {
+  skeletonLength?: number;
+}) {
   return (
     <Stack space="7px">
-      {Array.from({ length: 15 }).map((_, i) => (
-        <Box key={i}>
+      {Array.from({ length: skeletonLength }).map((_, i) => (
+        <Box key={i} paddingBottom="5px">
           <Columns alignVertical="center">
             <Column>
               <Inline alignVertical="center" space="7px">
@@ -332,7 +367,7 @@ function CollectionNFTsSkeleton() {
             <Column width="content">
               <Inline alignVertical="center">
                 <Symbol
-                  symbol="chevron.down"
+                  symbol="chevron.right"
                   weight="bold"
                   size={12}
                   color="labelQuaternary"
