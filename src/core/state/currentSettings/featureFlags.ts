@@ -35,7 +35,7 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
   {
     persist: {
       name: 'featureFlagsStore',
-      version: 9,
+      version: 10,
     },
   },
 );
