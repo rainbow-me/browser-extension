@@ -6,6 +6,7 @@ import { supportedCurrencies } from '~/core/references';
 import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
@@ -30,7 +31,8 @@ export function TabHeader({
   const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
-  const nftCount = getNftCount({ address });
+  const { testnetMode } = useTestnetModeStore();
+  const nftCount = getNftCount({ address, testnetMode });
 
   const displayBalanceComponent = useMemo(
     () =>

@@ -7,6 +7,7 @@ import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
@@ -42,6 +43,7 @@ const COLLECTION_IMAGE_SIZE = 16;
 export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { displayMode, sort, sections: sectionsState } = useNftsStore();
+  const { testnetMode } = useTestnetModeStore();
   const {
     data,
     fetchNextPage,
@@ -49,7 +51,7 @@ export function NFTs() {
     isFetching,
     isFetchingNextPage,
     isLoading,
-  } = useNfts({ address });
+  } = useNfts({ address, testnetMode });
   const nftData = useMemo(() => {
     return {
       ...data,
@@ -139,7 +141,7 @@ export function NFTs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionsState, sort]);
 
-  const nftCount = getNftCount({ address });
+  const nftCount = getNftCount({ address, testnetMode });
   const isPaginating = hasNextPage && nftCount < NFTS_LIMIT;
 
   useEffect(() => {
