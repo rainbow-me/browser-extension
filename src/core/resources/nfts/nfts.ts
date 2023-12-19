@@ -19,7 +19,10 @@ import {
   SimpleHashCollectionDetails,
   UniqueAsset,
 } from '~/core/types/nfts';
-import { getBackendSupportedChains } from '~/core/utils/chains';
+import {
+  getBackendSupportedChains,
+  getSimpleHashSupportedChainNames,
+} from '~/core/utils/chains';
 import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
@@ -51,9 +54,12 @@ async function nftsQueryFunction({
   if (process.env.IS_TESTING === 'true') {
     return NFTS_TEST_DATA;
   }
-  const chains = getBackendSupportedChains({ testnetMode: false }).map(
-    ({ name }) => name as ChainName,
-  );
+  const simpleHashSupportedChains = getSimpleHashSupportedChainNames();
+  const chains = getBackendSupportedChains({ testnetMode: false })
+    .map(({ name }) => name as ChainName)
+    .filter((chainName) =>
+      simpleHashSupportedChains.includes(chainName.toLowerCase()),
+    );
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({
