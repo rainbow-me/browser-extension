@@ -182,21 +182,22 @@ export const SUPPORTED_CHAINS: Chain[] = [
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
-export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
-
-export const SUPPORTED_TESTNET_CHAIN_IDS: number[] = [
-  chainHolesky.id,
-  goerli.id,
-  sepolia.id,
-  optimismGoerli.id,
-  chainOptimismSepolia.id,
-  bscTestnet.id,
-  polygonMumbai.id,
-  arbitrumGoerli.id,
-  chainArbitrumSepolia.id,
-  baseGoerli.id,
-  zoraTestnet.id,
+export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
+  chainHolesky,
+  goerli,
+  sepolia,
+  optimismGoerli,
+  chainOptimismSepolia,
+  bscTestnet,
+  polygonMumbai,
+  arbitrumGoerli,
+  chainArbitrumSepolia,
+  baseGoerli,
+  zoraTestnet,
 ];
+
+export const SUPPORTED_TESTNET_CHAIN_IDS: number[] =
+  SUPPORTED_TESTNET_CHAINS.map((tn) => tn.id);
 
 export const getDefaultRPC = (chainId: ChainId) => {
   switch (chainId) {
