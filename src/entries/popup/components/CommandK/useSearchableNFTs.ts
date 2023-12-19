@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { selectNfts } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -21,8 +22,9 @@ const parseNftName = (name: string, id: string) => {
 export const useSearchableNFTs = () => {
   const { currentAddress: address } = useCurrentAddressStore();
   const navigate = useRainbowNavigate();
+  const { testnetMode } = useTestnetModeStore();
 
-  const { data } = useNfts({ address });
+  const { data } = useNfts({ address, testnetMode });
 
   const searchableNFTs = useMemo(() => {
     const nfts = selectNfts(data) || [];
