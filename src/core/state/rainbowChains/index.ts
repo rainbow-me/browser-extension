@@ -15,7 +15,7 @@ export interface RainbowChain {
   chains: Chain[];
 }
 
-export interface rainbowChainstate {
+export interface RainbowChainsState {
   rainbowChains: Record<number, RainbowChain>;
   addCustomRPC: ({ chain }: { chain: Chain }) => boolean;
   updateCustomRPC: ({ chain }: { chain: Chain }) => void;
@@ -55,7 +55,7 @@ const getInitialRainbowChains = () => {
   return rainbowChains;
 };
 
-export const rainbowChainsStore = createStore<rainbowChainstate>(
+export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: getInitialRainbowChains(),
     addCustomRPC: ({ chain }) => {
