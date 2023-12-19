@@ -5,7 +5,7 @@ import { useLocation } from 'react-router';
 import { Address } from 'wagmi';
 
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
-import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
+import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { Box, Button, Inline, Stack } from '~/design-system';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
@@ -21,7 +21,8 @@ const INITIAL_ASSET = {
 
 export function AddAsset() {
   const { state } = useLocation();
-  const { customRPCAssets, addCustomRPCAsset } = useCustomRPCAssetsStore();
+  const { rainbowChainAssets, addRainbowChainAsset } =
+    useRainbowChainAssetsStore();
 
   const [validations, setValidations] = useState<{
     address: boolean;
@@ -37,8 +38,8 @@ export function AddAsset() {
 
   const chainId = state?.chainId;
   const customRPCAssetsForChain = useMemo(
-    () => customRPCAssets[chainId] || [],
-    [chainId, customRPCAssets],
+    () => rainbowChainAssets[chainId] || [],
+    [chainId, rainbowChainAssets],
   );
 
   const [asset, setAsset] = useState(INITIAL_ASSET);
@@ -165,14 +166,14 @@ export function AddAsset() {
     const validAsset = validateAddCustomAsset();
 
     if (validAsset && !customRPCAssetsAddresses.includes(assetToAdd.address)) {
-      addCustomRPCAsset({
+      addRainbowChainAsset({
         chainId,
-        customRPCAsset: assetToAdd,
+        rainbowChainAsset: assetToAdd,
       });
       setAsset(INITIAL_ASSET);
     }
   }, [
-    addCustomRPCAsset,
+    addRainbowChainAsset,
     asset.address,
     asset.decimals,
     asset.name,

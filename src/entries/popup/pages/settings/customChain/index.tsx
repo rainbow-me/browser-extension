@@ -5,7 +5,7 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
-import { useCustomRPCsStore } from '~/core/state/customRPC';
+import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
@@ -281,7 +281,7 @@ export function SettingsCustomChain() {
   const {
     state: { chain },
   }: { state: { chain?: Chain } } = useLocation();
-  const { addCustomRPC } = useCustomRPCsStore();
+  const { addCustomRPC, setActiveRPC } = useRainbowChainsStore();
   const navigate = useRainbowNavigate();
   const { addUserChain } = useUserChainsStore();
   const [open, setOpen] = useState(false);
@@ -487,10 +487,8 @@ export function SettingsCustomChain() {
             url: customRPC.explorerUrl || '',
           },
         },
+        testnet: customRPC.testnet,
       };
-      if (customRPC.testnet) {
-        chain.testnet = true;
-      }
       addCustomRPC({
         chain,
       });
@@ -502,15 +500,20 @@ export function SettingsCustomChain() {
           { networkName: name },
         ),
       });
+      if (customRPC.active) {
+        setActiveRPC({
+          rpcUrl,
+          chainId,
+        });
+      }
       setCustomRPC({});
-      setTimeout(() => {
-        navigate(-1);
-      }, 1500);
+      navigate(-1);
     }
   }, [
     addCustomRPC,
     addUserChain,
     chainMetadata?.chainId,
+    customRPC.active,
     customRPC.chainId,
     customRPC.explorerUrl,
     customRPC.name,
@@ -518,6 +521,7 @@ export function SettingsCustomChain() {
     customRPC.symbol,
     customRPC.testnet,
     navigate,
+    setActiveRPC,
     validateAddCustomRpc,
   ]);
 

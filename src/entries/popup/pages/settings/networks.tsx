@@ -4,10 +4,10 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS, SUPPORTED_CHAIN_IDS } from '~/core/references';
-import { useCustomRPCsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
+import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
+import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getMainChains } from '~/core/utils/chains';
@@ -57,8 +57,8 @@ export function SettingsNetworks() {
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
   const { userChains, updateUserChain } = useUserChainsStore();
-  const { customChains, removeCustomRPC } = useCustomRPCsStore();
-  const { removeCustomRPCAssets } = useCustomRPCAssetsStore();
+  const { rainbowChains, removeCustomRPC } = useRainbowChainsStore();
+  const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -99,17 +99,17 @@ export function SettingsNetworks() {
 
   const handleRemoveNetwork = useCallback(
     ({ chainId }: { chainId: number }) => {
-      const customChain = customChains[chainId];
+      const customChain = rainbowChains[chainId];
       if (customChain) {
         customChain.chains.forEach((chain) => {
           removeCustomRPC({
             rpcUrl: chain.rpcUrls.default.http[0],
           });
-          removeCustomRPCAssets({ chainId });
+          removeRainbowChainAssets({ chainId });
         });
       }
     },
-    [customChains, removeCustomRPC, removeCustomRPCAssets],
+    [rainbowChains, removeCustomRPC, removeRainbowChainAssets],
   );
 
   return (
@@ -188,9 +188,9 @@ export function SettingsNetworks() {
                               >
                                 {userChains[chain.id]
                                   ? chainLabel({
-                                      chainId: chain.id,
-                                      testnet: chain.testnet,
-                                    })
+                                    chainId: chain.id,
+                                    testnet: chain.testnet,
+                                  })
                                   : i18n.t('settings.networks.disabled')}
                               </Text>
                             ) : null
