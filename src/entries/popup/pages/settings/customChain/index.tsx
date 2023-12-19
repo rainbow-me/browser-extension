@@ -277,8 +277,6 @@ const KNOWN_NETWORKS = {
   ],
 };
 
-const parseURL = (url: string | undefined) =>
-  url && (url.startsWith('http') ? url : `https://${url}`);
 export function SettingsCustomChain() {
   const {
     state: { chain },
@@ -317,7 +315,7 @@ export function SettingsCustomChain() {
   });
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const debouncedRpcUrl = useDebounce(parseURL(customRPC.rpcUrl), 1000);
+  const debouncedRpcUrl = useDebounce(customRPC.rpcUrl, 1000);
   const {
     data: chainMetadata,
     isFetching: chainMetadataIsFetching,
