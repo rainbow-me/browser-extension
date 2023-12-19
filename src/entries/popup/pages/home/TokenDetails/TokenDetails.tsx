@@ -10,7 +10,7 @@ import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import {
-  findCustomChainForChainId,
+  findRainbowChainForChainId,
   isCustomChain,
   isNativeAsset,
   isTestnetChainId,
@@ -192,7 +192,9 @@ function NetworkBanner({
   if (chainId === ChainId.mainnet) return null;
 
   const chainName =
-    ChainNameDisplay[chainId] || findCustomChainForChainId(chainId)?.name || '';
+    ChainNameDisplay[chainId] ||
+    findRainbowChainForChainId(chainId)?.name ||
+    '';
 
   return (
     <>

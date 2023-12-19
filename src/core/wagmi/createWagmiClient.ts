@@ -13,7 +13,7 @@ import { queryClient } from '../react-query';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '../references';
 import { LocalStorage } from '../storage';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
-import { findCustomChainForChainId } from '../utils/chains';
+import { findRainbowChainForChainId } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -25,7 +25,7 @@ const noopStorage = {
 
 export const getOriginalRpcEndpoint = (chain: Chain) => {
   // overrides have preference
-  const userAddedNetwork = findCustomChainForChainId(chain.id);
+  const userAddedNetwork = findRainbowChainForChainId(chain.id);
   if (userAddedNetwork) {
     return { http: userAddedNetwork.rpcUrls.default.http[0] };
   }
@@ -73,21 +73,17 @@ export function createWagmiClient({
   autoConnect,
   connectors,
   persist,
-  customChains,
+  rainbowChains = supportedChains,
   useProxy,
 }: {
   autoConnect?: CreateClientConfig['autoConnect'];
   connectors?: (opts: { chains: Chain[] }) => CreateClientConfig['connectors'];
   persist?: boolean;
-  customChains?: Chain[];
+  rainbowChains?: Chain[];
   useProxy?: boolean;
 } = {}) {
-  const customChainIds = customChains?.map((chain) => chain.id);
-  const activeSupportedChains = supportedChains?.filter(
-    (supportedChain) => !customChainIds?.includes(supportedChain.id),
-  );
   const { chains, provider, webSocketProvider } = configureChainsForWagmiClient(
-    activeSupportedChains.concat(customChains || []),
+    rainbowChains,
     useProxy,
   );
 

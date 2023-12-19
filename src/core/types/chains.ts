@@ -14,7 +14,7 @@ export const chainHardhat: Chain = {
   nativeCurrency: {
     decimals: 18,
     name: 'Hardhat',
-    symbol: 'eth',
+    symbol: 'ETH',
   },
   rpcUrls: {
     public: { http: ['http://127.0.0.1:8545'] },
@@ -29,8 +29,8 @@ export const chainHardhatOptimism: Chain = {
   network: 'hardhat-optimism',
   nativeCurrency: {
     decimals: 18,
-    name: 'Hardhat Op',
-    symbol: 'op',
+    name: 'Hardhat OP',
+    symbol: 'ETH',
   },
   rpcUrls: {
     public: { http: ['http://127.0.0.1:8545'] },

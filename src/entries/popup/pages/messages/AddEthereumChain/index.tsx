@@ -4,7 +4,7 @@ import { Chain } from 'wagmi';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCustomRPCsStore } from '~/core/state';
+import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { Row, Rows, Separator } from '~/design-system';
@@ -52,7 +52,7 @@ export const AddEthereumChain = ({
     chainName.toLowerCase().includes('testnet'),
   );
 
-  const { addCustomRPC } = useCustomRPCsStore();
+  const { addCustomRPC } = useRainbowChainsStore();
   const { addUserChain } = useUserChainsStore();
 
   const onAcceptRequest = useCallback(() => {

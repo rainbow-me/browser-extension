@@ -121,7 +121,9 @@
         "remove_network": "Remove Network",
         "tokens": "Tokens",
         "cant_connect": "Can't connect to this RPC endpoint!",
-        "rpc_not_responding": "The provided url is not responding"
+        "rpc_not_responding": "The provided url is not responding",
+        "rainbow_default_rpc": "Rainbow's default RPC",
+        "rainbow_default": "Rainbow's default"
       },
       "rpc_endpoints": "RPC Endpoints",
       "enabled": "Enabled",
@@ -251,10 +253,7 @@
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
       "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
-      "custom_rpc": "Custom RPC",
-      "new_tab_bar_enabled": "New Tab Bar",
-      "nfts_enabled": "NFTs Enabled",
-      "points": "Points"
+      "custom_rpc": "Custom RPC"
     }
   },
   "transactions": {
@@ -1222,9 +1221,7 @@
     "unknown_token": "Unknown Token"
   },
   "nfts": {
-    "coming_soon_header": "Coming Soon",
     "empty_state_header": "NFTs",
-    "coming_soon_description": "NFTs are coming soon. Stay tuned!",
     "empty_state_description": "Your NFTs will appear here!",
     "view_on_web": "View on Web",
     "display_mode_gallery": "Gallery",
@@ -1268,8 +1265,8 @@
     }
   },
   "points": {
-    "coming_soon_header": "Coming Soon",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today.",
+    "check_back_soon_header": "Check Back Soon",
+    "check_back_soon_description": "Points are currently unavailable.\nCheck back soon to continue using Rainbow Points.",
     "your_rank": "Your Rank",
     "unranked": "Unranked",
     "points_to_rank": "%{rank_cutoff} points to rank",

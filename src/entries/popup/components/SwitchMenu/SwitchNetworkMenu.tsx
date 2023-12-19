@@ -4,6 +4,7 @@ import { Chain } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ChainId } from '~/core/types/chains';
+import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -16,7 +17,6 @@ import {
 } from '~/design-system';
 import { Space } from '~/design-system/styles/designTokens';
 
-import { useCustomNetwork } from '../../hooks/useCustomNetwork';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useUserChains } from '../../hooks/useUserChains';
@@ -67,14 +67,12 @@ export const SwitchNetworkMenuSelector = ({
 }) => {
   const { trackShortcut } = useKeyboardAnalytics();
   const { chains: userChains } = useUserChains();
-  const { customChains } = useCustomNetwork();
 
   const chains = useMemo(() => {
-    const customChainsIds = customChains.map((chain) => chain.id);
     return onlySwapSupportedNetworks
-      ? userChains.filter((chain) => !customChainsIds.includes(chain.id))
+      ? userChains.filter((chain) => !isCustomChain(chain.id))
       : userChains;
-  }, [customChains, onlySwapSupportedNetworks, userChains]);
+  }, [onlySwapSupportedNetworks, userChains]);
 
   const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'

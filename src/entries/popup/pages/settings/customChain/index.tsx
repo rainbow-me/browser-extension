@@ -5,9 +5,10 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
-import { useCustomRPCsStore } from '~/core/state/customRPC';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { isValidUrl } from '~/core/utils/connectedApps';
+import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Autocomplete } from '~/entries/popup/components/Autocomplete';
 import { Form } from '~/entries/popup/components/Form/Form';
@@ -281,9 +282,13 @@ export function SettingsCustomChain() {
   const {
     state: { chain },
   }: { state: { chain?: Chain } } = useLocation();
-  const { addCustomRPC } = useCustomRPCsStore();
+  const { addCustomRPC, setActiveRPC } = useRainbowChainsStore();
   const navigate = useRainbowNavigate();
   const { addUserChain } = useUserChainsStore();
+  const { customNetworkDrafts, saveCustomNetworkDraft } =
+    usePopupInstanceStore();
+  const draftKey = chain?.id ?? 'new';
+  const savedDraft = customNetworkDrafts[draftKey];
   const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
@@ -293,13 +298,15 @@ export function SettingsCustomChain() {
     name?: string;
     symbol?: string;
     explorerUrl?: string;
-  }>({
-    testnet: chain?.testnet,
-    chainId: chain?.id,
-    symbol: chain?.nativeCurrency.symbol,
-    explorerUrl: chain?.blockExplorers?.default.url,
-    active: !chain, // True only if adding a new network
-  });
+  }>(
+    savedDraft || {
+      testnet: chain?.testnet,
+      chainId: chain?.id,
+      symbol: chain?.nativeCurrency.symbol,
+      explorerUrl: chain?.blockExplorers?.default.url,
+      active: !chain, // True only if adding a new network
+    },
+  );
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
     chainId: boolean;
@@ -326,6 +333,10 @@ export function SettingsCustomChain() {
     { enabled: !!debuncedRpcUrl && isValidUrl(debuncedRpcUrl) },
   );
   const prevChainMetadata = usePrevious(chainMetadata);
+
+  useEffect(() => {
+    saveCustomNetworkDraft(draftKey, customRPC);
+  }, [draftKey, customRPC, saveCustomNetworkDraft]);
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
@@ -479,10 +490,16 @@ export function SettingsCustomChain() {
           name: symbol,
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+        blockExplorers: {
+          default: {
+            name: customRPC.explorerUrl
+              ? getDappHostname(customRPC.explorerUrl)
+              : '',
+            url: customRPC.explorerUrl || '',
+          },
+        },
+        testnet: customRPC.testnet,
       };
-      if (customRPC.testnet) {
-        chain.testnet = true;
-      }
       addCustomRPC({
         chain,
       });
@@ -494,21 +511,28 @@ export function SettingsCustomChain() {
           { networkName: name },
         ),
       });
+      if (customRPC.active) {
+        setActiveRPC({
+          rpcUrl,
+          chainId,
+        });
+      }
       setCustomRPC({});
-      setTimeout(() => {
-        navigate(-1);
-      }, 1500);
+      navigate(-1);
     }
   }, [
     addCustomRPC,
     addUserChain,
     chainMetadata?.chainId,
+    customRPC.active,
     customRPC.chainId,
+    customRPC.explorerUrl,
     customRPC.name,
     customRPC.rpcUrl,
     customRPC.symbol,
     customRPC.testnet,
     navigate,
+    setActiveRPC,
     validateAddCustomRpc,
   ]);
 
