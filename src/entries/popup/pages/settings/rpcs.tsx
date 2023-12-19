@@ -60,7 +60,8 @@ export function SettingsNetworksRPCs() {
   const {
     state: { chainId },
   } = useLocation();
-  const { removeCustomRPCAsset } = useCustomRPCAssetsStore();
+  const { removeCustomRPCAsset, removeCustomRPCAssets } =
+    useCustomRPCAssetsStore();
 
   const { data: customNetworkAssets = {} } = useCustomNetworkAssets(
     {
@@ -171,6 +172,21 @@ export function SettingsNetworksRPCs() {
       }
     },
     [mainnetChains, navigate, removeCustomRPC, supportedChain, testnetChains],
+  );
+
+  const handleRemoveNetwork = useCallback(
+    ({ chainId }: { chainId: number }) => {
+      const customChain = customChains[chainId];
+      if (customChain) {
+        customChain.chains.forEach((chain) => {
+          removeCustomRPC({
+            rpcUrl: chain.rpcUrls.default.http[0],
+          });
+          removeCustomRPCAssets({ chainId });
+        });
+      }
+    },
+    [customChains, removeCustomRPC, removeCustomRPCAssets],
   );
 
   return (
@@ -463,6 +479,22 @@ export function SettingsNetworksRPCs() {
           </Box>
         </Menu>
       ) : null}
+      <Menu>
+        <MenuItem
+          first
+          last
+          leftComponent={
+            <Symbol symbol="trash.fill" weight="medium" size={18} color="red" />
+          }
+          onClick={() => handleRemoveNetwork({ chainId })}
+          titleComponent={
+            <MenuItem.Title
+              color="red"
+              text={i18n.t('settings.networks.custom_rpc.remove_network')}
+            />
+          }
+        />
+      </Menu>
     </Box>
   );
 }

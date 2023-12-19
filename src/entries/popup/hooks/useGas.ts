@@ -100,8 +100,9 @@ const useGas = ({
       !enabled ||
       chainId !== ChainId.mainnet ||
       !nativeAsset
-    )
+    ) {
       return;
+    }
 
     const { data } = gasData as MeteorologyResponse;
     const currentBaseFee = data.currentBaseFee;
@@ -318,7 +319,6 @@ export const useTransactionGas = ({
     chainId,
     transactionRequest: useDebounce(transactionRequest, 500),
   });
-
   return useGas({
     chainId,
     address,

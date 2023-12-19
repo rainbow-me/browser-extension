@@ -3,14 +3,24 @@
 import { formatDistanceToNowStrict } from 'date-fns';
 import { MotionProps, motion } from 'framer-motion';
 import { PropsWithChildren, useEffect, useReducer } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatNumber } from '~/core/utils/formatNumber';
-import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Inline,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { linearGradients } from '~/design-system/styles/designTokens';
@@ -109,15 +119,26 @@ function Leaderboard() {
           />
           <AddressOrEns address={currentAddress} size="14pt" weight="bold" />
         </Inline>
-        <Text size="16pt" weight="bold" color="accent" textShadow="12px accent">
-          #{user.stats.position.current}
-        </Text>
+        {user.stats.position.unranked ? (
+          <Text size="16pt" weight="bold" color="labelQuaternary">
+            {i18n.t('points.unranked')}
+          </Text>
+        ) : (
+          <Text
+            size="16pt"
+            weight="bold"
+            color="accent"
+            textShadow="12px accent"
+          >
+            #{formatNumber(user.stats.position.current)}
+          </Text>
+        )}
       </Card>
       <Card paddingVertical="10px" paddingHorizontal="16px">
         <Stack separator={<Separator color="separatorTertiary" />} space="12px">
           {leaderboard.accounts
             ?.slice(0, 100)
-            .map(({ address, earnings }, index) => (
+            .map(({ address, earnings, ens, avatarURL }, index) => (
               <Inline
                 key={address}
                 wrap={false}
@@ -128,15 +149,16 @@ function Leaderboard() {
                 <Inline wrap={false} space="12px" alignVertical="center">
                   <WalletAvatar
                     size={32}
+                    avatarUrl={avatarURL}
                     addressOrName={address}
                     emojiSize="16pt"
                   />
-                  <AddressOrEns address={address} size="14pt" weight="bold" />
+                  <TextOverflow size="14pt" weight="bold">
+                    {ens || truncateAddress(address as Address)}
+                  </TextOverflow>
                 </Inline>
                 <LeaderboardPositionNumberDisplay position={index + 1}>
-                  {formatNumber(earnings.total, {
-                    maximumSignificantDigits: 8,
-                  })}
+                  {formatNumber(earnings.total)}
                 </LeaderboardPositionNumberDisplay>
               </Inline>
             ))}
@@ -294,14 +316,39 @@ function YourRankAndNextDrop() {
 
       <Card>
         <TextWithMoreInfo>{i18n.t('points.your_rank')}</TextWithMoreInfo>
-        <Text size="20pt" weight="bold">
-          #{user.stats.position.current}
-        </Text>
-        <Text size="10pt" weight="bold" color="accent" textShadow="12px accent">
-          {i18n.t('points.out_of', {
-            total: leaderboard.stats.total_users,
-          })}
-        </Text>
+        {user.stats.position.unranked ? (
+          <>
+            <TextOverflow size="20pt" weight="bold" color="labelTertiary">
+              {i18n.t('points.unranked')}
+            </TextOverflow>
+            <TextOverflow
+              size="10pt"
+              weight="bold"
+              color="accent"
+              textShadow="12px accent"
+            >
+              {i18n.t('points.points_to_rank', {
+                rank_cutoff: leaderboard.stats.rank_cutoff,
+              })}
+            </TextOverflow>
+          </>
+        ) : (
+          <>
+            <TextOverflow size="20pt" weight="bold">
+              #{formatNumber(user.stats.position.current)}
+            </TextOverflow>
+            <TextOverflow
+              size="10pt"
+              weight="bold"
+              color="accent"
+              textShadow="12px accent"
+            >
+              {i18n.t('points.out_of', {
+                total: formatNumber(leaderboard.stats.total_users),
+              })}
+            </TextOverflow>
+          </>
+        )}
       </Card>
     </Inline>
   );
@@ -343,7 +390,7 @@ function YourPoints() {
       gap="12px"
     >
       <Text size="26pt" weight="heavy">
-        {formatNumber(user.earnings.total, { maximumSignificantDigits: 8 })}
+        {formatNumber(user.earnings.total)}
       </Text>
       <Box
         as={motion.div}

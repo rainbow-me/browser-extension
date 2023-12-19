@@ -7,13 +7,16 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
+import { POPUP_URL, goToNewTab, isNativePopup } from '~/core/utils/tabs';
 import { Box, Button, Inset, Stack, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import {
   backgroundColors,
   globalColors,
 } from '~/design-system/styles/designTokens';
+import { useCurrentWalletTypeAndVendor } from '~/entries/popup/hooks/useCurrentWalletType';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import { ICON_SIZE } from '../../../components/Tabs/TabBar';
@@ -124,6 +127,20 @@ const PointsContent = () => {
       text: i18n.t('alert.wallet_watching_mode'),
     });
 
+  const { type } = useCurrentWalletTypeAndVendor();
+  const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;
+
+  const pointsNavigate = async (to: string) => {
+    if (!allowOnboarding) return alertWatchingWallet();
+
+    if (isHardwareWallet && (await isNativePopup())) {
+      goToNewTab({ url: POPUP_URL + `#${to}` });
+      return;
+    }
+
+    navigate(to, { state: { skipTransitionOnRoute: ROUTES.HOME } });
+  };
+
   return (
     <Stack alignHorizontal="center" space="16px">
       <Inset bottom="10px" horizontal="80px">
@@ -147,13 +164,7 @@ const PointsContent = () => {
         </Stack>
       </Inset>
       <Button
-        onClick={() =>
-          allowOnboarding
-            ? navigate(ROUTES.POINTS_ONBOARDING, {
-                state: { skipTransitionOnRoute: ROUTES.HOME },
-              })
-            : alertWatchingWallet()
-        }
+        onClick={() => pointsNavigate(ROUTES.POINTS_ONBOARDING)}
         color="accent"
         height="36px"
         variant="raised"
@@ -161,13 +172,7 @@ const PointsContent = () => {
         {i18n.t('points.get_started')}
       </Button>
       <Button
-        onClick={() =>
-          allowOnboarding
-            ? navigate(ROUTES.POINTS_REFERRAL, {
-                state: { skipTransitionOnRoute: ROUTES.HOME },
-              })
-            : alertWatchingWallet()
-        }
+        onClick={() => pointsNavigate(ROUTES.POINTS_REFERRAL)}
         color="accent"
         height="36px"
         variant="tinted"

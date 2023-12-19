@@ -19,6 +19,9 @@ export const seedPointsQueryCache = async (
   queryClient.setQueryData(['points', address], data);
 };
 
+export const fetchPointsQuery = async (address: Address) =>
+  queryClient.fetchQuery(['points', address], () => fetchPoints(address));
+
 let nextDropTimeout: NodeJS.Timeout | undefined;
 export const usePoints = (address: Address) => {
   const query = useQuery({

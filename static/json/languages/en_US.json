@@ -118,6 +118,7 @@
         "network_added_correctly": "%{networkName} has been added correctly!",
         "remove_token": "Remove Token",
         "remove_rpc": "Remove RPC",
+        "remove_network": "Remove Network",
         "tokens": "Tokens",
         "cant_connect": "Can't connect to this RPC endpoint!",
         "rpc_not_responding": "The provided url is not responding"
@@ -1258,6 +1259,8 @@
     "coming_soon_header": "Coming Soon",
     "coming_soon_description": "Points are just around the corner.\nStart earning today.",
     "your_rank": "Your Rank",
+    "unranked": "Unranked",
+    "points_to_rank": "%{rank_cutoff} points to rank",
     "next_drop": "Next Drop",
     "leaderboard": "Leaderboard",
     "referral_code": "Referral Code",
@@ -1301,11 +1304,16 @@
       "registration_complete": "Registration complete",
       "all_set": "You’re all set!",
       "keep_earning_by": "Keep earning points by swapping, bridging, minting, referring friends, and more",
-      "the_more_you_use": "The more you use Rainbow, the more you’ll be rewarded"
+      "the_more_you_use": "The more you use Rainbow, the more you’ll be rewarded",
+      "balance_required": "Wallet balance required",
+      "ensure_you_have_a_balance_on": "To continue, ensure you have an ETH balance on one of the following networks:",
+      "or_alternatively_balance_on": "Or alternatively, a MATIC balance on Polygon or a BNB balance on BSC",
+      "fund_my_wallet": "Fund My Wallet"
     },
     "error": {
       "existing_user": "Existing user",
-      "invalid_referral_code": "Invalid referral code"
+      "invalid_referral_code": "Invalid referral code",
+      "unexpected": "Something unexpected happened, try again in a few minutes"
     }
   },
   "speed_up_and_cancel": {
