@@ -25,7 +25,7 @@ import {
 } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
-import { rainbowChainsStore } from '../state';
+import { rainbowChainsStore } from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost, isValidUrl } from './connectedApps';

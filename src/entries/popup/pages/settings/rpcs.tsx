@@ -6,14 +6,11 @@ import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
-import {
-  useCurrentAddressStore,
-  useCurrentCurrencyStore,
-  useRainbowChainsStore,
-} from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
+import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
+import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getSupportedTestnetChains } from '~/core/utils/chains';
 import { chainIdMap } from '~/core/utils/userChains';
@@ -58,8 +55,8 @@ export function SettingsNetworksRPCs() {
   const {
     state: { chainId },
   } = useLocation();
-  const { removeCustomRPCAsset, removeCustomRPCAssets } =
-    useCustomRPCAssetsStore();
+  const { removeRainbowChainAsset, removeRainbowChainAssets } =
+    useRainbowChainAssetsStore();
 
   const { data: customNetworkAssets = {} } = useCustomNetworkAssets(
     {
@@ -79,10 +76,10 @@ export function SettingsNetworksRPCs() {
   const { rainbowChains, setActiveRPC, removeCustomRPC } =
     useRainbowChainsStore();
 
-  const customChain = rainbowChains[Number(chainId)];
+  const rainbowChain = rainbowChains[Number(chainId)];
 
-  const activeCustomRPC = customChain?.chains.find(
-    (chain) => chain.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+  const activeCustomRPC = rainbowChain?.chains.find(
+    (chain) => chain.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
   );
 
   const { userChains, updateUserChain } = useUserChainsStore();
@@ -154,7 +151,7 @@ export function SettingsNetworksRPCs() {
       color: 'red',
       symbol: 'trash.fill',
       onSelect: () =>
-        removeCustomRPCAsset({
+        removeRainbowChainAsset({
           chainId,
           address,
         }),
@@ -192,17 +189,17 @@ export function SettingsNetworksRPCs() {
 
   const handleRemoveNetwork = useCallback(
     ({ chainId }: { chainId: number }) => {
-      const customChain = customChains[chainId];
-      if (customChain) {
-        customChain.chains.forEach((chain) => {
+      const rainbowChain = rainbowChains[chainId];
+      if (rainbowChain) {
+        rainbowChain.chains.forEach((chain) => {
           removeCustomRPC({
             rpcUrl: chain.rpcUrls.default.http[0],
           });
-          removeCustomRPCAssets({ chainId });
+          removeRainbowChainAssets({ chainId });
         });
       }
     },
-    [customChains, removeCustomRPC, removeCustomRPCAssets],
+    [rainbowChains, removeCustomRPC, removeRainbowChainAssets],
   );
 
   return (
@@ -246,7 +243,7 @@ export function SettingsNetworksRPCs() {
                         key={chain.name}
                         rightComponent={
                           chain.rpcUrls.default.http[0] ===
-                          customChain.activeRpcUrl ? (
+                            rainbowChain.activeRpcUrl ? (
                             <MenuItem.SelectionIcon />
                           ) : null
                         }
@@ -262,8 +259,8 @@ export function SettingsNetworksRPCs() {
                               rpcUrl: chain.rpcUrls.default.http[0],
                             })
                               ? i18n.t(
-                                  'settings.networks.custom_rpc.rainbow_default_rpc',
-                                )
+                                'settings.networks.custom_rpc.rainbow_default_rpc',
+                              )
                               : chain.rpcUrls.default.http[0]}
                           </TextOverflow>
                         }
@@ -288,7 +285,7 @@ export function SettingsNetworksRPCs() {
         ) : null}
 
         {featureFlags.custom_rpc &&
-        (activeCustomRPC?.name || supportedChain?.name) ? (
+          (activeCustomRPC?.name || supportedChain?.name) ? (
           <Menu>
             <MenuItem
               first
@@ -375,10 +372,10 @@ export function SettingsNetworksRPCs() {
                             weight={'medium'}
                           >
                             {chainIdMap[chainId]?.includes(chain.id) &&
-                            chain.id !== chainId
+                              chain.id !== chainId
                               ? i18n.t(
-                                  'settings.networks.custom_rpc.rainbow_default',
-                                )
+                                'settings.networks.custom_rpc.rainbow_default',
+                              )
                               : chain.rpcUrls.default.http[0]}
                           </Text>
                         }
@@ -404,7 +401,7 @@ export function SettingsNetworksRPCs() {
       </MenuContainer>
 
       {featureFlags.custom_rpc &&
-      Object.values(customNetworkAssetsForChain || {}).length ? (
+        Object.values(customNetworkAssetsForChain || {}).length ? (
         <Menu>
           <Box padding="20px">
             <Stack space="14px">
@@ -464,7 +461,7 @@ export function SettingsNetworksRPCs() {
                           symbolLeft="trash.fill"
                           color="red"
                           onSelect={() =>
-                            removeCustomRPCAsset({
+                            removeRainbowChainAsset({
                               chainId,
                               address: asset.address as Address,
                             })

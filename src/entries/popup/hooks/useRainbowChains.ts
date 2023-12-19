@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useRainbowChainsStore } from '~/core/state';
+import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 
 export const useRainbowChains = () => {
   const { rainbowChains } = useRainbowChainsStore();
