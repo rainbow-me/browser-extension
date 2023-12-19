@@ -9,7 +9,7 @@ import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAss
 import {
   useCurrentAddressStore,
   useCurrentCurrencyStore,
-  useCustomRPCsStore,
+  useRainbowChainsStore,
 } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -76,10 +76,10 @@ export function SettingsNetworksRPCs() {
 
   const navigate = useRainbowNavigate();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
-  const { customChains, setActiveRPC, setDefaultRPC, removeCustomRPC } =
-    useCustomRPCsStore();
+  const { rainbowChains, setActiveRPC, removeCustomRPC } =
+    useRainbowChainsStore();
 
-  const customChain = customChains[Number(chainId)];
+  const customChain = rainbowChains[Number(chainId)];
 
   const activeCustomRPC = customChain?.chains.find(
     (chain) => chain.rpcUrls.default.http[0] === customChain.activeRpcUrl,
@@ -98,17 +98,13 @@ export function SettingsNetworksRPCs() {
   );
 
   const handleRPCClick = useCallback(
-    (rpcUrl?: string): void => {
-      if (rpcUrl) {
-        setActiveRPC({
-          rpcUrl,
-          chainId: chainId,
-        });
-      } else {
-        setDefaultRPC({ chainId });
-      }
+    (rpcUrl: string): void => {
+      setActiveRPC({
+        rpcUrl,
+        chainId: chainId,
+      });
     },
-    [chainId, setActiveRPC, setDefaultRPC],
+    [chainId, setActiveRPC],
   );
 
   const supportedChain = useMemo(
@@ -130,8 +126,8 @@ export function SettingsNetworksRPCs() {
 
   const mainnetChains = useMemo(
     () =>
-      customChains[Number(chainId)]?.chains
-        ?.filter((chain) => !chain.testnet, [chainId, customChains])
+      rainbowChains[Number(chainId)]?.chains
+        ?.filter((chain) => !chain.testnet, [chainId, rainbowChains])
         .sort((a, b) => {
           if (
             isDefaultRPC({
@@ -149,7 +145,7 @@ export function SettingsNetworksRPCs() {
             return -1;
           return 0;
         }),
-    [chainId, customChains],
+    [chainId, rainbowChains],
   );
 
   const options = ({ address }: { address: Address }): MoreInfoOption[] => [
@@ -169,15 +165,16 @@ export function SettingsNetworksRPCs() {
 
   const testnetChains = useMemo(() => {
     const customTestnetChains =
-      customChains[Number(chainId)]?.chains?.filter((chain) => chain.testnet) ||
-      [];
+      rainbowChains[Number(chainId)]?.chains?.filter(
+        (chain) => chain.testnet,
+      ) || [];
     const supportedTestnetChains = getSupportedTestnetChains().filter(
       (chain) => {
         return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
       },
     );
     return [...customTestnetChains, ...supportedTestnetChains];
-  }, [chainId, customChains]);
+  }, [chainId, rainbowChains]);
 
   const handleRemoveRPC = useCallback(
     (chain: Chain) => {

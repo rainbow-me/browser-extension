@@ -33,7 +33,7 @@ import {
 } from '~/core/utils/assets';
 import {
   customChainIdsToAssetNames,
-  getCustomChains,
+  getRainbowChains,
 } from '~/core/utils/chains';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
@@ -167,7 +167,7 @@ async function customNetworkAssetsFunction({
     customNetworkAssetsKey({ address, currency, testnetMode }),
   )?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
-  const { customChains: chains } = getCustomChains();
+  const { rainbowChains: chains } = getRainbowChains();
 
   const customChains = chains.filter((chain) =>
     testnetMode ? chain.testnet : !chain.testnet,

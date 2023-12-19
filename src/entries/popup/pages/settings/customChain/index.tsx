@@ -5,7 +5,7 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
-import { useCustomRPCsStore } from '~/core/state/customRPC';
+import { useRainbowChainsStore } from '~/core/state';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
@@ -281,7 +281,7 @@ export function SettingsCustomChain() {
   const {
     state: { chain },
   }: { state: { chain?: Chain } } = useLocation();
-  const { addCustomRPC } = useCustomRPCsStore();
+  const { addCustomRPC } = useRainbowChainsStore();
   const navigate = useRainbowNavigate();
   const { addUserChain } = useUserChainsStore();
   const [open, setOpen] = useState(false);

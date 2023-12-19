@@ -25,7 +25,7 @@ import {
 } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
-import { customRPCsStore } from '../state/customRPC';
+import { rainbowChainsStore } from '../state';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost, isValidUrl } from './connectedApps';
@@ -114,27 +114,27 @@ export const getBackendSupportedChains = ({
   return chains;
 };
 
-export const getCustomChains = () => {
-  const { customChains } = customRPCsStore.getState();
+export const getRainbowChains = () => {
+  const { rainbowChains } = rainbowChainsStore.getState();
   return {
-    customChains: Object.values(customChains)
-      .map((customChain) =>
-        customChain.chains.find(
-          (rpc) => rpc.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+    rainbowChains: Object.values(rainbowChains)
+      .map((rainbowChain) =>
+        rainbowChain.chains.find(
+          (rpc) => rpc.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
         ),
       )
       .filter(Boolean),
   };
 };
 
-export const findCustomChainForChainId = (chainId: number) => {
-  const { customChains } = getCustomChains();
-  return customChains.find((network) => network.id === chainId);
+export const findRainbowChainForChainId = (chainId: number) => {
+  const { rainbowChains } = getRainbowChains();
+  return rainbowChains.find((chain) => chain.id === chainId);
 };
 
 export const isCustomChain = (chainId: number) =>
   !SUPPORTED_CHAIN_IDS.includes(chainId) &&
-  !!findCustomChainForChainId(chainId);
+  !!findRainbowChainForChainId(chainId);
 
 /**
  * @desc Checks if the given chain is a Layer 2.

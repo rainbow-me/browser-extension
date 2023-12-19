@@ -46,7 +46,7 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
-import { useCustomNetwork } from '~/entries/popup/hooks/useCustomNetwork';
+import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
@@ -216,7 +216,7 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
 
 function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
   const { nonce, native, value } = tx;
-  const { customChains } = useCustomNetwork();
+  const { rainbowChains } = useRainbowChains();
   const chain = getChain({ chainId: tx.chainId });
 
   return (
@@ -242,7 +242,7 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
           <Inline alignVertical="center" space="4px">
             <ChainBadge chainId={tx.chainId} size={12} />
             {ChainNameDisplay[tx.chainId] ||
-              customChains.find((chain) => chain.id === tx.chainId)?.name}
+              rainbowChains.find((chain) => chain.id === tx.chainId)?.name}
           </Inline>
         }
       />
