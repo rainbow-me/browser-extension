@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "메인넷",
+      "testnet": "테스트넷",
       "title": "네트워크",
+      "testnets": "테스트넷들",
       "quick_promo": {
         "text": "네트워크를 드래그하여 순서를 변경하십시오",
         "text_bold": "팁:"
       },
+      "disabled": "비활성화됨",
       "description": "표시할 네트워크와 토큰을 선택합니다. Rainbow에서 지원하는 모든 네트워크에 연결할 수 있습니다, 확인하지 않은 경우에도.",
       "developer_tools": {
         "title": "개발자 도구 활성화",
         "toggle_explainer": "테스트넷 모드 단축키 (T)를 활성화하고 홈 화면 상단 오른쪽 메뉴에 토글을 추가합니다"
       },
       "custom_rpc": {
-        "title": "사용자 정의 RPC"
+        "title": "네트워크 추가",
+        "networks": "네트워크",
+        "network_name": "네트워크 이름",
+        "rpc_url": "RPC URL",
+        "chain_id": "체인 ID",
+        "symbol": "심볼",
+        "decimals": "소수점",
+        "active": "활성화",
+        "testnet": "테스트넷",
+        "block_explorer_url": "블록 탐색기 URL",
+        "add_network": "네트워크 추가",
+        "add_rpc": "%{rpcName} RPC 추가",
+        "add_asset": "커스텀 토큰 추가",
+        "network_added": "네트워크 추가됨!",
+        "network_added_correctly": "%{networkName} 이(가) 정상적으로 추가되었습니다!",
+        "remove_token": "토큰 제거",
+        "remove_rpc": "RPC 제거",
+        "tokens": "토큰",
+        "cant_connect": "이 RPC 엔드포인트에 연결할 수 없습니다!",
+        "rpc_not_responding": "제공된 URL이 응답하지 않습니다"
+      },
+      "rpc_endpoints": "RPC 엔드포인트",
+      "enabled": "활성화됨",
+      "watch_asset": {
+        "title": "자산 관찰"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "⌘K 내부 단축키 활성화",
       "custom_rpc": "사용자 정의 RPC",
       "new_tab_bar_enabled": "새 탭 바",
-      "nfts_enabled": "NFT 활성화됨"
+      "nfts_enabled": "NFT 활성화됨",
+      "points": "포인트"
     }
   },
   "transactions": {
@@ -880,7 +908,7 @@
   },
   "seed_verify": {
     "title": "비밀 복구 문구 확인",
-    "explanation": "비밀 복구 문구에서 4번째, 8번째, 12번째 단어를 순서대로 선택하세요.",
+    "explanation": "비밀 복구 문구가 표시하는 순서대로 4번, 8번, 12번 단어를 선택하세요.",
     "skip": "이건 건너뛰기"
   },
   "menu": {
@@ -970,6 +998,13 @@
       "title": "이 앱은 악성일 확률이 높다",
       "message": "이 앱에서 메시지나 트랜잭션을 서명하면 자산이 손실될 수 있습니다"
     },
+    "malicious_transaction_warning": {
+      "title": "이 거래는 의심스러워 보입니다",
+      "malicious_address": "이 거래에 악의적 주소가 관련되어 있습니다. 서명하면 손실이 발생할 수 있습니다",
+      "malicious_entity": "이 거래에 악의적 개체가 관련되어 있습니다. 서명하면 손실이 발생할 수 있습니다",
+      "minting_is_a_losing_trade": "이 거래에 사기 계약이 관련되어 있습니다. 민팅은 손실 거래입니다",
+      "you_can_lose_everything": "이 거래에 서명하면 지갑의 모든 것에 대한 접근을 잃을 수 있습니다"
+    },
     "dangerous_request": "위험한 요청",
     "message_signing_request": "메시지 서명 요청",
     "message": "메시지",
@@ -1005,7 +1040,8 @@
     "currency_name": "통화 이름",
     "currency_decimals": "통화 소수점",
     "rpc_url": "RPC url",
-    "block_explorer_url": "블록 익스플로러 URL"
+    "block_explorer_url": "블록 익스플로러 URL",
+    "testnet": "테스트넷"
   },
   "transaction_fee": {
     "title": "트랜잭션 속도",
@@ -1085,7 +1121,9 @@
   "errors": {
     "error_encountered": "문제가 발생했습니다. 우리 팀에 문제를 알려주시면 해결하겠습니다!",
     "no_wallet_name_set": "지갑 이름이 설정되지 않았습니다",
-    "report_error": "문제 신고"
+    "report_error": "문제 신고",
+    "sending_transaction": "트랜잭션 전송 오류",
+    "executing_swap": "스왑 실행 오류"
   },
   "common_titles": {
     "before_you_proceed": "계속하기 전에"
@@ -1186,6 +1224,7 @@
       "last_sales_price": "마지막 판매 가격",
       "none": "없음",
       "floor_price": "최저 가격",
+      "description": "설명",
       "properties": "속성",
       "address_copied": "주소 복사됨",
       "about": "소개",
@@ -1200,12 +1239,74 @@
       "view_collection": "컬렉션 보기",
       "collection_website": "컬렉션 웹사이트",
       "owners": "소유자",
-      "unique_owners": "고유 소유자"
+      "unique_owners": "고유 소유자",
+      "ens_profile_info": "프로필 정보",
+      "ens_bio": "소개",
+      "ens_cover": "커버",
+      "ens_address": "이더리움 주소",
+      "ens_website": "웹사이트",
+      "registered_on": "등록 일자",
+      "expires_in": "만료 기간",
+      "explainer": {
+        "floor_price_description": "컬렉션의 최저 가격은 해당 컬렉션에서 현재 판매 중인 모든 품목 중에서 가장 낮은 요구 가격입니다.",
+        "floor_price_title": "컬렉션 최저 가격",
+        "floor_price_action_label": "확인"
+      }
     }
   },
   "points": {
     "coming_soon_header": "곧 출시 예정",
-    "coming_soon_description": "포인트는 바로 앞에 있습니다.\n오늘 바로 적립하세요."
+    "coming_soon_description": "포인트는 바로 앞에 있습니다.\n오늘 바로 적립하세요.",
+    "your_rank": "당신의 순위",
+    "next_drop": "다음 드랍",
+    "leaderboard": "리더보드",
+    "referral_code": "추천 코드",
+    "referral_code_description": "친구를 추천하고 Rainbow를 통해 $100을 교환하면 포인트를 얻을 수 있습니다",
+    "copied_referral_code": "추천 코드가 복사되었습니다!",
+    "copied_referral_link": "추천 링크가 복사되었습니다!",
+    "out_of": "%{total}중에서",
+    "out_of_current_total_points": "현재 총 포인트 중 %{total}",
+    "header": "포인트를 청구하세요",
+    "description": "포인트가 도착했습니다. 얼마나 많은 포인트를 받았는지 알아보세요.",
+    "get_started": "시작하기",
+    "use_referral_code": "추천 코드 사용",
+    "referral_header": "당신의 추천 코드를 입력하세요",
+    "referral_description": "아래에 추천 코드를 입력하여 보너스 보상을 청구하세요.",
+    "referral_code_invalid": "잘못된 코드",
+    "onboarding": {
+      "authorization_required": "승인 필요",
+      "sign_in_with_your_wallet": "지갑으로 로그인",
+      "access_granted": "접근 승인됨",
+      "calculating_points": "포인트 계산 중",
+      "rainbow_swaps": "Rainbow 스왑:",
+      "rainbow_nfts_owned": "소유한 Rainbow NFT:",
+      "wallet_balance": "지갑 잔액:",
+      "metamask_swaps": "MetaMask 스왑:",
+      "bonus_reward": "보너스 보상:",
+      "calculation_complete": "계산 완료",
+      "points_earned": "획득한 포인트:",
+      "bonus_points": "보너스 포인트:",
+      "claim_description_buy": "나머지 보너스 포인트를 청구하려면 Rainbow를 통해 조금의 ETH를 구하세요.",
+      "claim_description_swap": "나머지 보너스 포인트를 청구하려면 Rainbow를 통해 최소 $100을 스왑하세요.",
+      "account": "계정:",
+      "sign_in": "로그인",
+      "get_eth": "ETH 구하기",
+      "try_swap": "스왑 시도",
+      "referral_link_ready": "추천 링크가 준비되었습니다",
+      "share_and_earn": "추천 링크를 트윗하고 추가로 250 포인트를 얻으세요",
+      "plus_percent_of_refers": "추천인을 통해 얻은 포인트의 10%도 얻을 수 있습니다",
+      "share": "X에 공유",
+      "share_tweet": "내 지갑에 레인보우 포인트 %{points} 가 추가되었어요\n모든 사용자는 최소 100포인트를 받을 수 있지만, 더 많을 수도 있어요!\n\n포인트 받기: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "내 지갑에 레인보우 포인트 %{points} 가 추가되었고, 레인보우로 메타마스크 지갑을 이전한 보너스로 %{metamaskBonus} 포인트를 더 받았어요 🦊 🔫\n\n모든 사용자는 최소 100포인트를 받을 수 있지만, 더 많을 수도 있어요! 포인트 받기: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "등록 완료",
+      "all_set": "모든 설정이 완료되었습니다!",
+      "keep_earning_by": "스왑, 브리징, 민팅, 친구 추천 등으로 계속해서 포인트를 얻으세요",
+      "the_more_you_use": "Rainbow를 더 많이 사용할수록 더 많은 보상을 받게 됩니다"
+    },
+    "error": {
+      "existing_user": "기존 사용자",
+      "invalid_referral_code": "잘못된 추천 코드"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "가속",
@@ -1500,9 +1601,12 @@
   "chain": "블록체인",
   "nonce": "논스",
   "copy": "복사",
+  "copy_link": "링크 복사",
   "close": "닫기",
   "verified": "인증됨",
   "unverified": "인증되지 않음",
+  "skip": "건너뛰기",
+  "done": "완료",
   "watch_asset": {
     "chain_id": "체인 ID",
     "symbol": "심볼",
@@ -1511,4 +1615,3 @@
     "not_found": "선택한 네트워크에서 이 자산을 찾을 수 없습니다. 아래에서 올바른 네트워크를 선택하세요"
   }
 }
-

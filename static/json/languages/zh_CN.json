@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "主网",
+      "testnet": "测试网",
       "title": "网络",
+      "testnets": "测试网络",
       "quick_promo": {
         "text": "拖动网络进行排序",
         "text_bold": "提示："
       },
+      "disabled": "已禁用",
       "description": "选择要显示的网络和代币。即使没有选中，您也可以连接到Rainbow支持的任何网络。",
       "developer_tools": {
         "title": "启用开发者工具",
         "toggle_explainer": "启用测试网络模式快捷键(T)，并在主屏幕右上角菜单添加一个切换按钮"
       },
       "custom_rpc": {
-        "title": "自定义RPC"
+        "title": "添加网络",
+        "networks": "网络",
+        "network_name": "网络名称",
+        "rpc_url": "RPC 链接",
+        "chain_id": "链ID",
+        "symbol": "符号",
+        "decimals": "小数",
+        "active": "激活",
+        "testnet": "测试网",
+        "block_explorer_url": "区块浏览器网址",
+        "add_network": "添加网络",
+        "add_rpc": "添加 %{rpcName} RPC",
+        "add_asset": "添加自定义代币",
+        "network_added": "网络已添加！",
+        "network_added_correctly": "%{networkName} 已正确添加！",
+        "remove_token": "移除代币",
+        "remove_rpc": "移除RPC",
+        "tokens": "代币",
+        "cant_connect": "无法连接到此RPC端点！",
+        "rpc_not_responding": "提供的URL无响应"
+      },
+      "rpc_endpoints": "RPC端点",
+      "enabled": "已启用",
+      "watch_asset": {
+        "title": "关注资产"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "启用 ⌘K 内部快捷键",
       "custom_rpc": "自定义RPC",
       "new_tab_bar_enabled": "新的选项栏",
-      "nfts_enabled": "已启用 NFT"
+      "nfts_enabled": "已启用 NFT",
+      "points": "积分"
     }
   },
   "transactions": {
@@ -880,7 +908,7 @@
   },
   "seed_verify": {
     "title": "验证您的密钥恢复短语",
-    "explanation": "按照您的密钥恢复短语显示的顺序选择第4个，第8个和第12个单词。",
+    "explanation": "按照助记词显示顺序，选择第4、8和12个单词",
     "skip": "跳过此步骤"
   },
   "menu": {
@@ -970,6 +998,13 @@
       "title": "这个应用可能有恶意",
       "message": "从这个应用签名消息或交易可能导致你损失资产"
     },
+    "malicious_transaction_warning": {
+      "title": "此交易看起来可疑",
+      "malicious_address": "此交易涉及恶意地址，签名可能导致损失",
+      "malicious_entity": "此交易涉及恶意实体，签名可能导致损失",
+      "minting_is_a_losing_trade": "此交易涉及诈骗合约，铸币是亏损交易",
+      "you_can_lose_everything": "签名此交易可能导致你失去钱包中的所有资产"
+    },
     "dangerous_request": "危险的请求",
     "message_signing_request": "消息签名请求",
     "message": "消息",
@@ -1005,7 +1040,8 @@
     "currency_name": "货币名称",
     "currency_decimals": "货币小数",
     "rpc_url": "RPC url",
-    "block_explorer_url": "区块浏览器url"
+    "block_explorer_url": "区块浏览器url",
+    "testnet": "测试网"
   },
   "transaction_fee": {
     "title": "交易速度",
@@ -1085,7 +1121,9 @@
   "errors": {
     "error_encountered": "出现了问题。请将问题分享给我们的团队，我们会尽快修复！",
     "no_wallet_name_set": "未设置钱包名称",
-    "report_error": "报告问题"
+    "report_error": "报告问题",
+    "sending_transaction": "发送交易错误",
+    "executing_swap": "执行兑换错误"
   },
   "common_titles": {
     "before_you_proceed": "在您继续之前"
@@ -1186,6 +1224,7 @@
       "last_sales_price": "最后销售价格",
       "none": "无",
       "floor_price": "最低价格",
+      "description": "描述",
       "properties": "属性",
       "address_copied": "地址已复制",
       "about": "关于",
@@ -1200,12 +1239,74 @@
       "view_collection": "查看集合",
       "collection_website": "集合网站",
       "owners": "所有者",
-      "unique_owners": "唯一所有者"
+      "unique_owners": "唯一所有者",
+      "ens_profile_info": "个人资料信息",
+      "ens_bio": "简介",
+      "ens_cover": "封面",
+      "ens_address": "ETH地址",
+      "ens_website": "网站",
+      "registered_on": "注册时间",
+      "expires_in": "到期时间",
+      "explainer": {
+        "floor_price_description": "一个收藏品的底价是该收藏中所有待售物品的最低要价",
+        "floor_price_title": "藏品底价",
+        "floor_price_action_label": "知道了"
+      }
     }
   },
   "points": {
     "coming_soon_header": "即将上线",
-    "coming_soon_description": "积分即将到来。\n立即开始赚取。"
+    "coming_soon_description": "积分即将到来。\n立即开始赚取。",
+    "your_rank": "您的排名",
+    "next_drop": "下一轮空投",
+    "leaderboard": "排行榜",
+    "referral_code": "推荐码",
+    "referral_code_description": "邀请朋友通过Rainbow完成100美元交换可赚取积分",
+    "copied_referral_code": "推荐码已复制！",
+    "copied_referral_link": "推荐链接已复制！",
+    "out_of": "共 %{total}分之",
+    "out_of_current_total_points": "共 %{total} 当前总积分",
+    "header": "领取您的积分",
+    "description": "积分已到账。查看您获得了多少积分。",
+    "get_started": "开始",
+    "use_referral_code": "使用推荐码",
+    "referral_header": "输入您的推荐码",
+    "referral_description": "输入推荐码以下领取您的奖励",
+    "referral_code_invalid": "无效码",
+    "onboarding": {
+      "authorization_required": "需要授权",
+      "sign_in_with_your_wallet": "使用您的钱包登录",
+      "access_granted": "授权成功",
+      "calculating_points": "计算积分中",
+      "rainbow_swaps": "彩虹交换:",
+      "rainbow_nfts_owned": "彩虹NFT拥有：",
+      "wallet_balance": "钱包余额：",
+      "metamask_swaps": "MetaMask 交换：",
+      "bonus_reward": "额外奖励：",
+      "calculation_complete": "计算完成",
+      "points_earned": "获得积分：",
+      "bonus_points": "额外积分：",
+      "claim_description_buy": "要领取剩余的额外积分，请通过彩虹购买一些ETH。",
+      "claim_description_swap": "要领取剩余的额外积分，请通过彩虹兑换至少100美元。",
+      "account": "账户：",
+      "sign_in": "登录",
+      "get_eth": "获取一些ETH",
+      "try_swap": "尝试兑换",
+      "referral_link_ready": "你的推荐链接已准备就绪",
+      "share_and_earn": "推特分享你的推荐链接可额外获得250积分",
+      "plus_percent_of_refers": "另外，你还会赚取你推荐的任何人所赚取积分的10%",
+      "share": "分享到X",
+      "share_tweet": "我刚刚在我的钱包里获得了 %{points} 彩虹积分\n每个人都至少有100积分等着他们，你可能还有更多！\n\n领取你的积分：https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "我刚刚在我的钱包里获得了 %{points} 彩虹积分 — 还有额外的 %{metamaskBonus} 积分作为将我的MetaMask钱包迁移到Rainbow的奖励 🦊 🔫\n\n每个人都至少有100积分等着他们，你可能还有更多！领取你的掉落：https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "注册完成",
+      "all_set": "一切就绪！",
+      "keep_earning_by": "继续通过兑换、桥接、铸造、推荐朋友等方式赚取积分",
+      "the_more_you_use": "越多使用Rainbow，越多奖励"
+    },
+    "error": {
+      "existing_user": "现有用户",
+      "invalid_referral_code": "无效的推荐码"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "加快",
@@ -1500,9 +1601,12 @@
   "chain": "链",
   "nonce": "随机数",
   "copy": "复制",
+  "copy_link": "复制链接",
   "close": "关闭",
   "verified": "已验证",
   "unverified": "未验证",
+  "skip": "跳过",
+  "done": "完成",
   "watch_asset": {
     "chain_id": "链ID",
     "symbol": "符号",
@@ -1511,4 +1615,3 @@
     "not_found": "我们在选定的网络中找不到此资产。请在下面选择正确的网络"
   }
 }
-
