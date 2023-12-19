@@ -192,7 +192,7 @@ function NetworkBanner({
   if (chainId === ChainId.mainnet) return null;
 
   const chainName =
-    ChainNameDisplay[chainId] || findCustomChainForChainId(chainId)?.name;
+    ChainNameDisplay[chainId] || findCustomChainForChainId(chainId)?.name || '';
 
   return (
     <>
@@ -316,7 +316,7 @@ export function TokenDetails() {
 
   const { data: userAsset, isFetched } = useUserAsset(uniqueId);
   const { data: customAsset, isFetched: isCustomAssetFetched } =
-    useCustomNetworkAsset(uniqueId);
+    useCustomNetworkAsset({ uniqueId });
 
   const { isWatchingWallet } = useWallets();
 

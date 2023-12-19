@@ -1259,6 +1259,8 @@
     "coming_soon_header": "Coming Soon",
     "coming_soon_description": "Points are just around the corner.\nStart earning today.",
     "your_rank": "Your Rank",
+    "unranked": "Unranked",
+    "points_to_rank": "%{rank_cutoff} points to rank",
     "next_drop": "Next Drop",
     "leaderboard": "Leaderboard",
     "referral_code": "Referral Code",
