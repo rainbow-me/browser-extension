@@ -77,7 +77,7 @@ function TokenPrice({
         gap="10px"
       >
         <Text size="16pt" weight="heavy" cursor="text" userSelect="all">
-          {!isLoading && !hasPriceData
+          {!isLoading && !hasPriceData && !fallbackPrice
             ? i18n.t('token_details.not_available')
             : formatCurrency(token.native.price?.amount || fallbackPrice)}
         </Text>
@@ -129,7 +129,7 @@ const usePriceChart = ({
       const chart = await fetchPriceChart(time, chainId, address);
       if (!chart && mainnetAddress)
         return fetchPriceChart(time, ChainId.mainnet, mainnetAddress);
-      return chart;
+      return chart || null;
     },
     queryKey: createQueryKey('price chart', { address, chainId, time }),
     keepPreviousData: true,
@@ -160,10 +160,12 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
     time: selectedTime,
   });
 
-  const lastPrice = data && data[data.length - 1]?.price;
+  const lastPrice =
+    (data && data[data.length - 1]?.price) || token.price?.value;
   const selectedTimePriceChange = {
     date: chartTimeToTimestamp[selectedTime],
-    changePercentage: percentDiff(lastPrice, data?.[0]?.price),
+    changePercentage:
+      percentDiff(lastPrice, data?.[0]?.price || token.price?.value) || 0,
   };
 
   const [indicatorPointPriceChange, setIndicatorPoint] = useReducer<
@@ -192,7 +194,7 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
         />
         <PriceChange changePercentage={changePercentage} date={date} />
       </Box>
-      {shouldHaveData && (
+      {((shouldHaveData && isLoading) || hasPriceData) && (
         <>
           <Box style={{ height: '222px' }} marginHorizontal="-20px">
             {data && (

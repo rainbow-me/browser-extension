@@ -182,6 +182,8 @@ export const SUPPORTED_CHAINS: Chain[] = [
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
+export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
+
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] = [
   chainHolesky.id,
   goerli.id,
@@ -195,3 +197,46 @@ export const SUPPORTED_TESTNET_CHAIN_IDS: number[] = [
   baseGoerli.id,
   zoraTestnet.id,
 ];
+
+export const getDefaultRPC = (chainId: ChainId) => {
+  switch (chainId) {
+    case ChainId.mainnet:
+      return { http: process.env.ETH_MAINNET_RPC };
+    case ChainId.optimism:
+      return { http: process.env.OPTIMISM_MAINNET_RPC };
+    case ChainId.arbitrum:
+      return { http: process.env.ARBITRUM_MAINNET_RPC };
+    case ChainId.polygon:
+      return { http: process.env.POLYGON_MAINNET_RPC };
+    case ChainId.base:
+      return { http: process.env.BASE_MAINNET_RPC };
+    case ChainId.zora:
+      return { http: process.env.ZORA_MAINNET_RPC };
+    case ChainId.bsc:
+      return { http: process.env.BSC_MAINNET_RPC };
+    case ChainId.goerli:
+      return { http: process.env.ETH_GOERLI_RPC };
+    case ChainId.sepolia:
+      return { http: process.env.ETH_SEPOLIA_RPC };
+    case ChainId.holesky:
+      return { http: process.env.ETH_HOLESKY_RPC };
+    case ChainId.optimismGoerli:
+      return { http: process.env.OPTIMISM_GOERLI_RPC };
+    case ChainId.optimismSepolia:
+      return { http: process.env.OPTIMISM_SEPOLIA_RPC };
+    case ChainId.bscTestnet:
+      return { http: process.env.BSC_TESTNET_RPC };
+    case ChainId.polygonMumbai:
+      return { http: process.env.POLYGON_MUMBAI_RPC };
+    case ChainId.arbitrumSepolia:
+      return { http: process.env.ARBITRUM_SEPOLIA_RPC };
+    case ChainId.arbitrumGoerli:
+      return { http: process.env.ARBITRUM_GOERLI_RPC };
+    case ChainId.baseGoerli:
+      return { http: process.env.BASE_GOERLI_RPC };
+    case ChainId.zoraTestnet:
+      return { http: process.env.ZORA_GOERLI_RPC };
+    default:
+      return null;
+  }
+};

@@ -87,18 +87,21 @@
     },
     "networks": {
       "mainnet": "Mainnet",
+      "testnet": "Testnet",
       "title": "Networks",
+      "testnets": "Testnets",
       "quick_promo": {
         "text": "Drag networks to reorder them",
         "text_bold": "Tip:"
       },
+      "disabled": "Disabled",
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
       "developer_tools": {
         "title": "Enable Developer Tools",
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
-        "title": "Custom RPC",
+        "title": "Add Custom RPC",
         "networks": "Networks",
         "network_name": "Network Name",
         "rpc_url": "RPC URL",
@@ -106,8 +109,26 @@
         "symbol": "Symbol",
         "decimals": "Decimals",
         "active": "Active",
+        "testnet": "Testnet",
         "block_explorer_url": "Block Explorer URL",
-        "add_network": "Add Network"
+        "add_network": "Add Network",
+        "add_rpc": "Add %{rpcName} RPC",
+        "add_asset": "Add Custom Token",
+        "network_added": "Network Added!",
+        "network_added_correctly": "%{networkName} has been added correctly!",
+        "remove_token": "Remove Token",
+        "remove_rpc": "Remove RPC",
+        "remove_network": "Remove Network",
+        "tokens": "Tokens",
+        "cant_connect": "Can't connect to this RPC endpoint!",
+        "rpc_not_responding": "The provided url is not responding",
+        "rainbow_default_rpc": "Rainbow's default RPC",
+        "rainbow_default": "Rainbow's default"
+      },
+      "rpc_endpoints": "RPC Endpoints",
+      "enabled": "Enabled",
+      "watch_asset": {
+        "title": "Watch Asset"
       }
     },
     "privacy_and_security": {
@@ -1022,7 +1043,8 @@
     "currency_name": "Currency Name",
     "currency_decimals": "Currency Decimals",
     "rpc_url": "RPC url",
-    "block_explorer_url": "Block Explorer url"
+    "block_explorer_url": "Block Explorer url",
+    "testnet": "Testnet"
   },
   "transaction_fee": {
     "title": "Transaction Speed",
@@ -1102,7 +1124,9 @@
   "errors": {
     "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
     "no_wallet_name_set": "No wallet name set",
-    "report_error": "Report issue"
+    "report_error": "Report issue",
+    "sending_transaction": "Error sending transaction",
+    "executing_swap": "Error executing swap"
   },
   "common_titles": {
     "before_you_proceed": "Before you proceed"
@@ -1237,6 +1261,8 @@
     "coming_soon_header": "Coming Soon",
     "coming_soon_description": "Points are just around the corner.\nStart earning today.",
     "your_rank": "Your Rank",
+    "unranked": "Unranked",
+    "points_to_rank": "%{rank_cutoff} points to rank",
     "next_drop": "Next Drop",
     "leaderboard": "Leaderboard",
     "referral_code": "Referral Code",
@@ -1280,11 +1306,16 @@
       "registration_complete": "Registration complete",
       "all_set": "You’re all set!",
       "keep_earning_by": "Keep earning points by swapping, bridging, minting, referring friends, and more",
-      "the_more_you_use": "The more you use Rainbow, the more you’ll be rewarded"
+      "the_more_you_use": "The more you use Rainbow, the more you’ll be rewarded",
+      "balance_required": "Wallet balance required",
+      "ensure_you_have_a_balance_on": "To continue, ensure you have an ETH balance on one of the following networks:",
+      "or_alternatively_balance_on": "Or alternatively, a MATIC balance on Polygon or a BNB balance on BSC",
+      "fund_my_wallet": "Fund My Wallet"
     },
     "error": {
       "existing_user": "Existing user",
-      "invalid_referral_code": "Invalid referral code"
+      "invalid_referral_code": "Invalid referral code",
+      "unexpected": "Something unexpected happened, try again in a few minutes"
     }
   },
   "speed_up_and_cancel": {

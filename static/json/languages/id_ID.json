@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "Mainnet",
+      "testnet": "Testnet",
       "title": "Jaringan",
+      "testnets": "Testnet",
       "quick_promo": {
         "text": "Seret jaringan untuk mengaturnya",
         "text_bold": "Tip:"
       },
+      "disabled": "Nonaktif",
       "description": "Pilih jaringan dan token yang akan ditampilkan. Anda dapat terhubung ke jaringan apa pun yang didukung Rainbow, meskipun mereka tidak dicentang",
       "developer_tools": {
         "title": "Aktifkan Alat Pengembang",
         "toggle_explainer": "Mengaktifkan shortcut Mode Testnet (T) dan menambahkan toggle ke menu atas-kanan layar utama."
       },
       "custom_rpc": {
-        "title": "RPC Kustom"
+        "title": "Tambah Jaringan",
+        "networks": "Jaringan",
+        "network_name": "Nama Jaringan",
+        "rpc_url": "URL RPC",
+        "chain_id": "ID Jaringan",
+        "symbol": "Simbol",
+        "decimals": "Desimal",
+        "active": "Aktif",
+        "testnet": "Testnet",
+        "block_explorer_url": "URL Eksplorer Blok",
+        "add_network": "Tambah Jaringan",
+        "add_rpc": "Tambah RPC %{rpcName}",
+        "add_asset": "Tambah Token Khusus",
+        "network_added": "Jaringan Ditambahkan!",
+        "network_added_correctly": "%{networkName} berhasil ditambahkan!",
+        "remove_token": "Hapus Token",
+        "remove_rpc": "Hapus RPC",
+        "tokens": "Tokens",
+        "cant_connect": "Tidak dapat terhubung ke endpoint RPC ini!",
+        "rpc_not_responding": "URL yang diberikan tidak merespons"
+      },
+      "rpc_endpoints": "Endpoint RPC",
+      "enabled": "Diaktifkan",
+      "watch_asset": {
+        "title": "Pantau Aset"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K",
       "custom_rpc": "RPC Kustom",
       "new_tab_bar_enabled": "Bar Tab Baru",
-      "nfts_enabled": "NFTs Diaktifkan"
+      "nfts_enabled": "NFTs Diaktifkan",
+      "points": "Poin"
     }
   },
   "transactions": {
@@ -880,7 +908,7 @@
   },
   "seed_verify": {
     "title": "Verifikasi Frasa Pemulihan Rahasia Anda",
-    "explanation": "Pilih kata ke-4, ke-8, dan ke-12 sesuai urutan tampilan Frasa Pemulihan Rahasia Anda",
+    "explanation": "Pilih kata ke-4, 8, dan 12 dalam urutan yang ditampilkan oleh Frasa Pemulihan Rahasia Anda.",
     "skip": "Lewati ini"
   },
   "menu": {
@@ -970,6 +998,13 @@
       "title": "App ini kemungkinan berbahaya",
       "message": "Mengirim pesan atau transaksi dari aplikasi ini bisa berakibat pada kehilangan aset Anda"
     },
+    "malicious_transaction_warning": {
+      "title": "Transaksi ini terlihat mencurigakan",
+      "malicious_address": "Ada alamat jahat yang terlibat dalam transaksi ini. Penandatanganan dapat mengakibatkan kerugian",
+      "malicious_entity": "Ada entitas jahat yang terlibat dalam transaksi ini. Penandatanganan dapat mengakibatkan kerugian",
+      "minting_is_a_losing_trade": "Kontrak penipuan terlibat dalam transaksi ini. Pencetakan akan merugikan",
+      "you_can_lose_everything": "Menandatangani transaksi ini bisa mengakibatkan kehilangan akses ke semua yang ada di dalam dompet Anda"
+    },
     "dangerous_request": "Permintaan Berbahaya",
     "message_signing_request": "Permintaan Tanda Tangan Pesan",
     "message": "Pesan",
@@ -1005,7 +1040,8 @@
     "currency_name": "Nama Mata Uang",
     "currency_decimals": "Desimal Mata Uang",
     "rpc_url": "URL RPC",
-    "block_explorer_url": "URL Penjelajah Blok"
+    "block_explorer_url": "URL Penjelajah Blok",
+    "testnet": "Testnet"
   },
   "transaction_fee": {
     "title": "Kecepatan Transaksi",
@@ -1085,7 +1121,9 @@
   "errors": {
     "error_encountered": "Ada yang salah. Harap bagikan isu ini dengan tim kami dan kami akan memperbaikinya",
     "no_wallet_name_set": "Nama wallet belum diatur",
-    "report_error": "Laporkan isu"
+    "report_error": "Laporkan isu",
+    "sending_transaction": "Kesalahan mengirim transaksi",
+    "executing_swap": "Kesalahan melakukan tukar"
   },
   "common_titles": {
     "before_you_proceed": "Sebelum Anda melanjutkan"
@@ -1186,6 +1224,7 @@
       "last_sales_price": "Harga Terakhir Terjual",
       "none": "Tidak ada",
       "floor_price": "Harga Terendah",
+      "description": "Deskripsi",
       "properties": "Properti",
       "address_copied": "Alamat Tersalin",
       "about": "Tentang",
@@ -1200,12 +1239,74 @@
       "view_collection": "Tampilkan Koleksi",
       "collection_website": "Situs Koleksi",
       "owners": "Pemilik",
-      "unique_owners": "Pemilik Unik"
+      "unique_owners": "Pemilik Unik",
+      "ens_profile_info": "Info Profil",
+      "ens_bio": "Bio",
+      "ens_cover": "Sampul",
+      "ens_address": "Alamat ETH",
+      "ens_website": "Situs Web",
+      "registered_on": "Terdaftar pada",
+      "expires_in": "Berakhir dalam",
+      "explainer": {
+        "floor_price_description": "Harga lantai koleksi adalah harga penawaran terendah dari semua item yang sedang dijual dalam sebuah koleksi.",
+        "floor_price_title": "Harga Dasar Koleksi",
+        "floor_price_action_label": "Mengerti"
+      }
     }
   },
   "points": {
     "coming_soon_header": "Segera Hadir",
-    "coming_soon_description": "Poin ada di dekat sana.\nMulai mendapatkan hari ini"
+    "coming_soon_description": "Poin ada di dekat sana.\nMulai mendapatkan hari ini",
+    "your_rank": "Peringkat Anda",
+    "next_drop": "Drop Selanjutnya",
+    "leaderboard": "Papan Peringkat",
+    "referral_code": "Kode Referal",
+    "referral_code_description": "Dapatkan poin dengan merujuk teman setelah mereka menukar $100 melalui Rainbow",
+    "copied_referral_code": "Kode referal disalin!",
+    "copied_referral_link": "Link referal disalin!",
+    "out_of": "Dari %{total}",
+    "out_of_current_total_points": "Dari total %{total} poin saat ini",
+    "header": "Klaim poin Anda",
+    "description": "Poin ada di sini. Cari tahu berapa yang Anda dapat.",
+    "get_started": "Mulai",
+    "use_referral_code": "Gunakan Kode Referal",
+    "referral_header": "Masukkan kode referal Anda",
+    "referral_description": "Masukkan kode referal di bawah ini untuk klaim bonus anda.",
+    "referral_code_invalid": "Kode Tidak Valid",
+    "onboarding": {
+      "authorization_required": "Butuh Otorisasi",
+      "sign_in_with_your_wallet": "Masuk dengan dompet Anda",
+      "access_granted": "Akses diberikan",
+      "calculating_points": "Menghitung poin",
+      "rainbow_swaps": "Rainbow Swaps:",
+      "rainbow_nfts_owned": "NFT Rainbow yang Dimiliki:",
+      "wallet_balance": "Saldo Dompet:",
+      "metamask_swaps": "Pertukaran MetaMask:",
+      "bonus_reward": "Hadiah Bonus:",
+      "calculation_complete": "Perhitungan selesai",
+      "points_earned": "Poin yang Didapat:",
+      "bonus_points": "Poin Bonus:",
+      "claim_description_buy": "Untuk mengklaim sisa poin bonus Anda, dapatkan ETH melalui Rainbow.",
+      "claim_description_swap": "Untuk mengklaim sisa poin bonus Anda, tukarkan minimal $100 melalui Rainbow.",
+      "account": "Akun:",
+      "sign_in": "Masuk",
+      "get_eth": "Dapatkan ETH",
+      "try_swap": "Coba Swap",
+      "referral_link_ready": "Link rujukan Anda siap",
+      "share_and_earn": "Tweet link rujukan dan dapatkan 250 poin tambahan",
+      "plus_percent_of_refers": "Plus Anda akan mendapatkan 10% poin dari setiap orang yang Anda rujuk",
+      "share": "Bagikan ke X",
+      "share_tweet": "Saya baru saja mendapat %{points} Rainbow Points masuk ke dompet saya\nSetiap orang memiliki setidaknya 100 poin yang menunggu, tapi mungkin kamu memiliki lebih!\n\nKlaim drop kamu: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "Saya baru saja mendapat %{points} Rainbow Points masuk ke dalam dompet saya — dan tambahan %{metamaskBonus} Points sebagai bonus karena memindahkan dompet MetaMask saya ke Rainbow 🦊 🔫\n\nSetiap orang memiliki setidaknya 100 poin yang menunggu, tapi mungkin kamu memiliki lebih! Klaim drop kamu: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "Pendaftaran selesai",
+      "all_set": "Anda telah siap!",
+      "keep_earning_by": "Terus mendapatkan poin dengan swapping, bridging, minting, merujuk teman, dan lainnya",
+      "the_more_you_use": "Semakin sering Anda menggunakan Rainbow, semakin banyak hadiah yang akan Anda dapatkan"
+    },
+    "error": {
+      "existing_user": "Pengguna lama",
+      "invalid_referral_code": "Kode referal tidak valid"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Percepat",
@@ -1500,9 +1601,12 @@
   "chain": "Rantai",
   "nonce": "Nonce",
   "copy": "Salin",
+  "copy_link": "Salin Tautan",
   "close": "Tutup",
   "verified": "Terverifikasi",
   "unverified": "Tidak Terverifikasi",
+  "skip": "Lewati",
+  "done": "Selesai",
   "watch_asset": {
     "chain_id": "ID Jaringan",
     "symbol": "Simbol",
@@ -1511,4 +1615,3 @@
     "not_found": "Kami tidak dapat menemukan aset ini pada jaringan yang dipilih. Harap pilih jaringan yang tepat di bawah"
   }
 }
-

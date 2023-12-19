@@ -100,8 +100,9 @@ const useGas = ({
       !enabled ||
       chainId !== ChainId.mainnet ||
       !nativeAsset
-    )
+    ) {
       return;
+    }
 
     const { data } = gasData as MeteorologyResponse;
     const currentBaseFee = data.currentBaseFee;
@@ -306,23 +307,25 @@ export const useTransactionGas = ({
   address,
   defaultSpeed,
   transactionRequest,
+  flashbotsEnabled,
 }: {
   chainId: ChainId;
   address?: Address;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
+  flashbotsEnabled?: boolean;
 }) => {
   const { data: estimatedGasLimit } = useEstimateGasLimit({
     chainId,
     transactionRequest: useDebounce(transactionRequest, 500),
   });
-
   return useGas({
     chainId,
     address,
     defaultSpeed,
     estimatedGasLimit,
     transactionRequest,
+    flashbotsEnabled,
     enabled: true,
   });
 };

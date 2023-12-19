@@ -4,7 +4,7 @@ import { Chain } from 'wagmi';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCustomRPCsStore } from '~/core/state';
+import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { Row, Rows, Separator } from '~/design-system';
@@ -48,7 +48,11 @@ export const AddEthereumChain = ({
     blockExplorerUrls: string[];
   };
 
-  const { addCustomRPC } = useCustomRPCsStore();
+  const [testnet, setTestnet] = useState(
+    chainName.toLowerCase().includes('testnet'),
+  );
+
+  const { addCustomRPC } = useRainbowChainsStore();
   const { addUserChain } = useUserChainsStore();
 
   const onAcceptRequest = useCallback(() => {
@@ -65,6 +69,7 @@ export const AddEthereumChain = ({
           name: name || symbol,
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+        testnet,
       };
       addCustomRPC({
         chain,
@@ -92,6 +97,7 @@ export const AddEthereumChain = ({
     name,
     symbol,
     rpcUrl,
+    testnet,
     addCustomRPC,
     addUserChain,
     approveRequest,
@@ -135,6 +141,8 @@ export const AddEthereumChain = ({
             rpcUrl,
             blockExplorerUrl,
           }}
+          testnet={testnet}
+          setTestnet={setTestnet}
         />
         <Separator color="separatorTertiary" />
       </Row>

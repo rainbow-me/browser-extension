@@ -26,6 +26,7 @@ import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/le
 import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
+import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../../handlers/wallet';
 import { AccountSigningWith } from '../AccountSigningWith';
@@ -122,6 +123,17 @@ export function SendTransaction({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       showLedgerDisconnectedAlertIfNeeded(e);
+      logger.error(
+        new RainbowError('send: error executing send dapp approval'),
+        {
+          message: (e as Error)?.message,
+        },
+      );
+      const extractedError = (e as Error).message.split('[')[0];
+      triggerAlert({
+        text: i18n.t('errors.sending_transaction'),
+        description: extractedError,
+      });
     } finally {
       setWaitingForDevice(false);
       setLoading(false);

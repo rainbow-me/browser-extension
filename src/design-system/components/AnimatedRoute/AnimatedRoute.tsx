@@ -178,7 +178,10 @@ const containerRefContext = createContext<RefObject<HTMLDivElement>>({
 });
 export const useContainerRef = () => useContext(containerRefContext);
 
-export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
+export const AnimatedRoute = forwardRef(function AnimatedRoute(
+  props: AnimatedRouteProps,
+  ref,
+) {
   const {
     background,
     children,
@@ -266,7 +269,7 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
           >
             {navbar && (
               <Navbar
-                title={title || ''}
+                title={state?.title || title || ''}
                 background={navbarBackground}
                 leftComponent={leftNavbarIcon}
                 rightComponent={rightNavbarComponent}
@@ -286,5 +289,3 @@ export const AnimatedRoute = forwardRef((props: AnimatedRouteProps, ref) => {
   }
   return content;
 });
-
-AnimatedRoute.displayName = 'AnimatedRoute';

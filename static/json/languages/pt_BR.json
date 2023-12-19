@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "Mainnet",
+      "testnet": "Rede de Teste",
       "title": "Redes",
+      "testnets": "Redes de Teste",
       "quick_promo": {
         "text": "Arraste redes para reordená-las",
         "text_bold": "Dica:"
       },
+      "disabled": "Desativado",
       "description": "Escolha quais redes e tokens exibir. Você pode se conectar a qualquer rede suportada pelo Rainbow, mesmo que não estejam selecionadas.",
       "developer_tools": {
         "title": "Ativar Ferramentas de Desenvolvedor",
         "toggle_explainer": "Ativa o atalho Modo Testnet (T) e adiciona uma chave na tela inicial, menu superior direito"
       },
       "custom_rpc": {
-        "title": "RPC personalizado"
+        "title": "Adicionar Rede",
+        "networks": "Redes",
+        "network_name": "Nome da Rede",
+        "rpc_url": "URL RPC",
+        "chain_id": "ID da rede",
+        "symbol": "Símbolo",
+        "decimals": "Decimais",
+        "active": "Ativo",
+        "testnet": "Rede de Teste",
+        "block_explorer_url": "URL do Explorador de Blocos",
+        "add_network": "Adicionar Rede",
+        "add_rpc": "Adicionar %{rpcName} RPC",
+        "add_asset": "Adicionar Token Personalizado",
+        "network_added": "Rede Adicionada!",
+        "network_added_correctly": "%{networkName} foi adicionado corretamente!",
+        "remove_token": "Remover Token",
+        "remove_rpc": "Remover RPC",
+        "tokens": "Tokens",
+        "cant_connect": "Não foi possível conectar a este ponto de extremidade RPC!",
+        "rpc_not_responding": "A URL fornecida não está respondendo"
+      },
+      "rpc_endpoints": "Pontos finais RPC",
+      "enabled": "Habilitado",
+      "watch_asset": {
+        "title": "Observar Ativo"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "Habilitar Atalhos Internos ⌘K",
       "custom_rpc": "RPC personalizado",
       "new_tab_bar_enabled": "Nova Barra de Abas",
-      "nfts_enabled": "NFTs Habilitados"
+      "nfts_enabled": "NFTs Habilitados",
+      "points": "Pontos"
     }
   },
   "transactions": {
@@ -880,7 +908,7 @@
   },
   "seed_verify": {
     "title": "Verifique sua Frase de Recuperação Secreta",
-    "explanation": "Selecione a 4ª, 8ª e 12ª palavras na ordem em que sua Frase de Recuperação Secreta as exibe.",
+    "explanation": "Selecione as palavras 4ª, 8ª e 12ª na ordem que aparecem na sua Frase Secreta de Recuperação.",
     "skip": "Pular isso"
   },
   "menu": {
@@ -970,6 +998,13 @@
       "title": "Este aplicativo é provavelmente malicioso",
       "message": "Assinar mensagens ou transações deste aplicativo pode resultar na perda de seus ativos"
     },
+    "malicious_transaction_warning": {
+      "title": "Esta transação parece suspeita",
+      "malicious_address": "Um endereço malicioso está envolvido nesta transação. Assinar pode resultar em perdas",
+      "malicious_entity": "Uma entidade maliciosa está envolvida nesta transação. Assinar pode resultar em perdas",
+      "minting_is_a_losing_trade": "Um contrato fraudulento está envolvido nesta transação. Cunhar é uma troca perdida",
+      "you_can_lose_everything": "Assinar esta transação pode resultar na perda de acesso ao conteúdo da sua carteira"
+    },
     "dangerous_request": "Solicitação perigosa",
     "message_signing_request": "Solicitação de assinatura de mensagem",
     "message": "Mensagem",
@@ -1005,7 +1040,8 @@
     "currency_name": "Nome da moeda",
     "currency_decimals": "Casas decimais da moeda",
     "rpc_url": "URL do RPC",
-    "block_explorer_url": "URL do explorador de blocos"
+    "block_explorer_url": "URL do explorador de blocos",
+    "testnet": "Rede de Teste"
   },
   "transaction_fee": {
     "title": "Velocidade de Transação",
@@ -1085,7 +1121,9 @@
   "errors": {
     "error_encountered": "Algo deu errado. Por favor, compartilhe o problema com nossa equipe e nós iremos corrigi-lo",
     "no_wallet_name_set": "Nenhum nome de carteira definido",
-    "report_error": "Reportar problema"
+    "report_error": "Reportar problema",
+    "sending_transaction": "Erro ao enviar transação",
+    "executing_swap": "Erro ao executar troca"
   },
   "common_titles": {
     "before_you_proceed": "Antes de prosseguir"
@@ -1186,6 +1224,7 @@
       "last_sales_price": "Último preço de venda",
       "none": "Nenhum",
       "floor_price": "Preço mínimo",
+      "description": "Descrição",
       "properties": "Propriedades",
       "address_copied": "Endereço copiado",
       "about": "Sobre",
@@ -1200,12 +1239,74 @@
       "view_collection": "Ver coleção",
       "collection_website": "Website da coleção",
       "owners": "Proprietários",
-      "unique_owners": "Proprietários únicos"
+      "unique_owners": "Proprietários únicos",
+      "ens_profile_info": "Informações do Perfil",
+      "ens_bio": "Biografia",
+      "ens_cover": "Capa",
+      "ens_address": "Endereço ETH",
+      "ens_website": "Website",
+      "registered_on": "Registrado em",
+      "expires_in": "Expira em",
+      "explainer": {
+        "floor_price_description": "O preço mínimo de uma coleção é o menor preço solicitado entre todos os itens à venda na coleção.",
+        "floor_price_title": "Preço mínimo da coleção",
+        "floor_price_action_label": "Entendi"
+      }
     }
   },
   "points": {
     "coming_soon_header": "Em breve",
-    "coming_soon_description": "Os pontos estão logo adiante.\nComece a ganhar hoje"
+    "coming_soon_description": "Os pontos estão logo adiante.\nComece a ganhar hoje",
+    "your_rank": "Sua Classificação",
+    "next_drop": "Próximo Lançamento",
+    "leaderboard": "Classificação Geral",
+    "referral_code": "Código de Referência",
+    "referral_code_description": "Ganhe pontos indicando amigos que trocarem $100 através do Rainbow",
+    "copied_referral_code": "Código de referência copiado!",
+    "copied_referral_link": "Link de referência copiado!",
+    "out_of": "De um total de %{total}",
+    "out_of_current_total_points": "De um total de %{total} pontos atuais",
+    "header": "Resgate seus pontos",
+    "description": "Pontos estão disponíveis. Descubra quantos você recebeu.",
+    "get_started": "Começar",
+    "use_referral_code": "Usar Código de Referência",
+    "referral_header": "Digite seu código de referência",
+    "referral_description": "Digite um código de referência abaixo para reivindicar sua recompensa bônus.",
+    "referral_code_invalid": "Código Inválido",
+    "onboarding": {
+      "authorization_required": "Autorização necessária",
+      "sign_in_with_your_wallet": "Entrar com sua carteira",
+      "access_granted": "Acesso concedido",
+      "calculating_points": "Calculando pontos",
+      "rainbow_swaps": "Trocas no Rainbow:",
+      "rainbow_nfts_owned": "NFTs no Rainbow:",
+      "wallet_balance": "Saldo da Carteira:",
+      "metamask_swaps": "Trocas no MetaMask:",
+      "bonus_reward": "Recompensa Bônus:",
+      "calculation_complete": "Cálculo completo",
+      "points_earned": "Pontos Obtidos:",
+      "bonus_points": "Pontos Bônus:",
+      "claim_description_buy": "Para resgatar o restante dos seus pontos bônus, compre ETH através do Rainbow.",
+      "claim_description_swap": "Para reivindicar o restante dos seus pontos bônus, troque pelo menos $100 através do Rainbow.",
+      "account": "Conta:",
+      "sign_in": "Entrar",
+      "get_eth": "Comprar ETH",
+      "try_swap": "Experimente uma Troca",
+      "referral_link_ready": "Seu link de referência está pronto",
+      "share_and_earn": "Tuite seu link de referência e ganhe 250 pontos extras",
+      "plus_percent_of_refers": "Além disso, você ganha 10% dos pontos de cada pessoa que indicar",
+      "share": "Compartilhar em X",
+      "share_tweet": "Acabei de receber %{points} Rainbow Points na minha carteira\nTodos têm pelo menos 100 pontos à espera, mas você pode ter mais!\n\nReivindique seu prêmio: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "Acabei de receber %{points} Rainbow Points na minha carteira — e um bônus extra de %{metamaskBonus} Pontos por migrar minha carteira MetaMask para Rainbow 🦊 🔫\n\nTodos têm pelo menos 100 pontos à espera, mas você pode ter mais! Reivindique seu prêmio: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "Registro completo",
+      "all_set": "Tudo pronto!",
+      "keep_earning_by": "Continue acumulando pontos através de trocas, pontes, cunhagem, indicando amigos e mais",
+      "the_more_you_use": "Quanto mais você usar o Rainbow, mais será recompensado"
+    },
+    "error": {
+      "existing_user": "Usuário existente",
+      "invalid_referral_code": "Código de referência inválido"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Acelerar",
@@ -1500,9 +1601,12 @@
   "chain": "Rede",
   "nonce": "Nonce",
   "copy": "Copiar",
+  "copy_link": "Copiar Link",
   "close": "Fechar",
   "verified": "Verificado",
   "unverified": "Não verificado",
+  "skip": "Pular",
+  "done": "Concluído",
   "watch_asset": {
     "chain_id": "ID da rede",
     "symbol": "Símbolo",
@@ -1511,4 +1615,3 @@
     "not_found": "Não conseguimos encontrar este ativo na rede selecionada. Por favor, escolha a rede certa abaixo"
   }
 }
-

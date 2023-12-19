@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "メインネット",
+      "testnet": "テストネット",
       "title": "ネットワーク",
+      "testnets": "複数テストネット",
       "quick_promo": {
         "text": "ネットワークをドラッグして並べ替え",
         "text_bold": "ヒント："
       },
+      "disabled": "無効",
       "description": "表示するネットワークとトークンを選択します。チェックがない場合でも、Rainbowがサポートする任意のネットワークに接続できます",
       "developer_tools": {
         "title": "デベロッパーツールを有効にする",
         "toggle_explainer": "テストネットモードのショートカット(T)を有効にし、ホーム画面の右上のメニューに切り替えを追加します"
       },
       "custom_rpc": {
-        "title": "カスタムRPC"
+        "title": "ネットワーク追加",
+        "networks": "ネットワーク",
+        "network_name": "ネットワーク名",
+        "rpc_url": "RPC URL",
+        "chain_id": "チェーンID",
+        "symbol": "記号",
+        "decimals": "桁数",
+        "active": "有効",
+        "testnet": "テストネット",
+        "block_explorer_url": "ブロックエクスプローラーURL",
+        "add_network": "ネットワーク追加",
+        "add_rpc": "RPCを追加 %{rpcName}",
+        "add_asset": "カスタムトークンを追加",
+        "network_added": "ネットワークを追加しました！",
+        "network_added_correctly": "%{networkName} は正しく追加されました！",
+        "remove_token": "トークンを削除",
+        "remove_rpc": "RPCを削除",
+        "tokens": "トークン",
+        "cant_connect": "このRPCエンドポイントに接続できません！",
+        "rpc_not_responding": "指定されたURLが応答しません"
+      },
+      "rpc_endpoints": "RPCエンドポイント",
+      "enabled": "有効",
+      "watch_asset": {
+        "title": "アセットを監視"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "⌘K の内部ショートカットを有効にする",
       "custom_rpc": "カスタムRPC",
       "new_tab_bar_enabled": "新しいタブバー",
-      "nfts_enabled": "NFT有効"
+      "nfts_enabled": "NFT有効",
+      "points": "ポイント"
     }
   },
   "transactions": {
@@ -880,7 +908,7 @@
   },
   "seed_verify": {
     "title": "秘密の復旧フレーズを確認してください",
-    "explanation": "表示される復旧フレーズの4番目、8番目、および12番目の単語を選択します",
+    "explanation": "バックアップフレーズの4, 8, 12番目の単語を選択してください",
     "skip": "スキップする"
   },
   "menu": {
@@ -970,6 +998,13 @@
       "title": "このアプリは危険性がある可能性があります",
       "message": "このアプリからメッセージまたはトランザクションに署名すると、資産を失う可能性があります"
     },
+    "malicious_transaction_warning": {
+      "title": "この取引は怪しい可能性があります",
+      "malicious_address": "悪意のあるアドレスがこの取引に関与しています。署名すると損失が生じる可能性があります",
+      "malicious_entity": "悪意のあるエンティティがこの取引に関与しています。署名すると損失が生じる可能性があります",
+      "minting_is_a_losing_trade": "詐欺契約がこの取引に関与しています。ミンティングは損失を意味します",
+      "you_can_lose_everything": "この取引を署名すると、ウォレット内の全てを失う可能性があります"
+    },
     "dangerous_request": "危険なリクエスト",
     "message_signing_request": "メッセージ署名リクエスト",
     "message": "メッセージ",
@@ -1005,7 +1040,8 @@
     "currency_name": "通貨名",
     "currency_decimals": "通貨の桁数",
     "rpc_url": "RPC URL",
-    "block_explorer_url": "ブロックエクスプローラURL"
+    "block_explorer_url": "ブロックエクスプローラURL",
+    "testnet": "テストネット"
   },
   "transaction_fee": {
     "title": "トランザクションスピード",
@@ -1085,7 +1121,9 @@
   "errors": {
     "error_encountered": "何か問題が発生しました。私たちのチームに問題を共有してください、すぐに対応します！",
     "no_wallet_name_set": "ウォレット名が設定されていません",
-    "report_error": "問題を報告する"
+    "report_error": "問題を報告する",
+    "sending_transaction": "取引の送信エラー",
+    "executing_swap": "スワップ実行エラー"
   },
   "common_titles": {
     "before_you_proceed": "続行する前に"
@@ -1186,6 +1224,7 @@
       "last_sales_price": "最終取引価格",
       "none": "なし",
       "floor_price": "底値",
+      "description": "説明",
       "properties": "プロパティ",
       "address_copied": "アドレスがコピーされました",
       "about": "詳細",
@@ -1200,12 +1239,74 @@
       "view_collection": "コレクションを表示",
       "collection_website": "コレクションのウェブサイト",
       "owners": "所有者",
-      "unique_owners": "ユニークな所有者"
+      "unique_owners": "ユニークな所有者",
+      "ens_profile_info": "プロフィール情報",
+      "ens_bio": "経歴",
+      "ens_cover": "カバー",
+      "ens_address": "ETHアドレス",
+      "ens_website": "ウェブサイト",
+      "registered_on": "登録日",
+      "expires_in": "有効期限",
+      "explainer": {
+        "floor_price_description": "コレクションの床価格は、現在販売中のアイテムの中で最も低い希望価格を指します。",
+        "floor_price_title": "コレクションの床価格",
+        "floor_price_action_label": "了解"
+      }
     }
   },
   "points": {
     "coming_soon_header": "近日公開",
-    "coming_soon_description": "ポイントはすぐ近くにあります。\n今日から獲得を始めましょう。"
+    "coming_soon_description": "ポイントはすぐ近くにあります。\n今日から獲得を始めましょう。",
+    "your_rank": "ランク",
+    "next_drop": "次のドロップ",
+    "leaderboard": "リーダーボード",
+    "referral_code": "紹介コード",
+    "referral_code_description": "友達を紹介してRainbowで$100をスワップするとポイントが獲得できます",
+    "copied_referral_code": "紹介コードをコピーしました！",
+    "copied_referral_link": "紹介リンクをコピーしました！",
+    "out_of": "%{total}点満点中",
+    "out_of_current_total_points": "現在の合計点中 %{total} 点満点",
+    "header": "ポイントを請求する",
+    "description": "ポイントがここにあります。何ポイント獲得したか確認してください。",
+    "get_started": "始める",
+    "use_referral_code": "紹介コードを使用する",
+    "referral_header": "紹介コードを入力してください",
+    "referral_description": "以下に紹介コードを入力してボーナス報酬を請求してください。",
+    "referral_code_invalid": "無効なコード",
+    "onboarding": {
+      "authorization_required": "認証が必要です",
+      "sign_in_with_your_wallet": "ウォレットでサインイン",
+      "access_granted": "アクセス許可",
+      "calculating_points": "ポイント計算中",
+      "rainbow_swaps": "Rainbowスワップ：",
+      "rainbow_nfts_owned": "所持しているRainbow NFT：",
+      "wallet_balance": "ウォレット残高：",
+      "metamask_swaps": "MetaMaskスワップ：",
+      "bonus_reward": "ボーナス報酬：",
+      "calculation_complete": "計算完了",
+      "points_earned": "獲得ポイント：",
+      "bonus_points": "ボーナスポイント：",
+      "claim_description_buy": "残りのボーナスポイントを請求するには、Rainbowを通じてETHを獲得してください。",
+      "claim_description_swap": "残りのボーナスポイントを請求するには、Rainbowで最低$100をスワップしてください。",
+      "account": "アカウント：",
+      "sign_in": "サインイン",
+      "get_eth": "ETHを獲得",
+      "try_swap": "スワップを試す",
+      "referral_link_ready": "紹介リンクの準備ができました",
+      "share_and_earn": "紹介リンクをツイートしてさらに250ポイントを獲得",
+      "plus_percent_of_refers": "さらに、紹介した人が獲得したポイントの10％を獲得します",
+      "share": "Xに共有",
+      "share_tweet": "ウォレットにレインボーポイントが %{points} 点追加されました\n皆には最低でも100点が待っていますが、あなたはそれ以上かもしれません！\n\nドロップを請求: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "ウォレットにレインボーポイントが %{points} 点追加されました — そして MetaMaskウォレットをレインボーに移行したボーナスで追加 %{metamaskBonus} 点 🦊 🔫\n\n皆には最低でも100点が待っていますが、あなたはそれ以上かもしれません！ドロップを請求: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "登録完了",
+      "all_set": "準備ができました！",
+      "keep_earning_by": "スワップ、ブリッジング、ミンティング、友達紹介などをすることでポイントを獲得し続けることができます",
+      "the_more_you_use": "Rainbowを使えば使うほど報酬が増えます"
+    },
+    "error": {
+      "existing_user": "既存のユーザー",
+      "invalid_referral_code": "紹介コードが無効です"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "スピードアップ",
@@ -1500,9 +1601,12 @@
   "chain": "チェーン",
   "nonce": "ノンス",
   "copy": "コピー",
+  "copy_link": "リンクをコピー",
   "close": "閉じる",
   "verified": "確認済み",
   "unverified": "未確認",
+  "skip": "スキップ",
+  "done": "完了",
   "watch_asset": {
     "chain_id": "チェーンID",
     "symbol": "記号",
@@ -1511,4 +1615,3 @@
     "not_found": "選択したネットワークでこの資産が見つかりませんでした。以下から適切なネットワークを選択してください"
   }
 }
-
