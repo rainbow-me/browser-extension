@@ -333,6 +333,7 @@ query points($address: String!) {
       stats {
         total_users
         total_points
+        rank_cutoff
       }
       accounts {
         address
@@ -350,6 +351,7 @@ query points($address: String!) {
       }
       stats {
         position {
+          unranked
           current
         }
       }

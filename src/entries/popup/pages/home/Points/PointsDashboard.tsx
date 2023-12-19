@@ -119,9 +119,20 @@ function Leaderboard() {
           />
           <AddressOrEns address={currentAddress} size="14pt" weight="bold" />
         </Inline>
-        <Text size="16pt" weight="bold" color="accent" textShadow="12px accent">
-          #{formatNumber(user.stats.position.current)}
-        </Text>
+        {user.stats.position.unranked ? (
+          <Text size="16pt" weight="bold" color="labelQuaternary">
+            {i18n.t('points.unranked')}
+          </Text>
+        ) : (
+          <Text
+            size="16pt"
+            weight="bold"
+            color="accent"
+            textShadow="12px accent"
+          >
+            #{formatNumber(user.stats.position.current)}
+          </Text>
+        )}
       </Card>
       <Card paddingVertical="10px" paddingHorizontal="16px">
         <Stack separator={<Separator color="separatorTertiary" />} space="12px">
@@ -305,19 +316,39 @@ function YourRankAndNextDrop() {
 
       <Card>
         <TextWithMoreInfo>{i18n.t('points.your_rank')}</TextWithMoreInfo>
-        <TextOverflow size="20pt" weight="bold">
-          #{formatNumber(user.stats.position.current)}
-        </TextOverflow>
-        <TextOverflow
-          size="10pt"
-          weight="bold"
-          color="accent"
-          textShadow="12px accent"
-        >
-          {i18n.t('points.out_of', {
-            total: formatNumber(leaderboard.stats.total_users),
-          })}
-        </TextOverflow>
+        {user.stats.position.unranked ? (
+          <>
+            <TextOverflow size="20pt" weight="bold" color="labelTertiary">
+              {i18n.t('points.unranked')}
+            </TextOverflow>
+            <TextOverflow
+              size="10pt"
+              weight="bold"
+              color="accent"
+              textShadow="12px accent"
+            >
+              {i18n.t('points.points_to_rank', {
+                rank_cutoff: leaderboard.stats.rank_cutoff,
+              })}
+            </TextOverflow>
+          </>
+        ) : (
+          <>
+            <TextOverflow size="20pt" weight="bold">
+              #{formatNumber(user.stats.position.current)}
+            </TextOverflow>
+            <TextOverflow
+              size="10pt"
+              weight="bold"
+              color="accent"
+              textShadow="12px accent"
+            >
+              {i18n.t('points.out_of', {
+                total: formatNumber(leaderboard.stats.total_users),
+              })}
+            </TextOverflow>
+          </>
+        )}
       </Card>
     </Inline>
   );

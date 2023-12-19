@@ -33,6 +33,7 @@ export interface CustomRPCAssetsState {
     chainId: number;
     address: Address;
   }) => void;
+  removeCustomRPCAssets: ({ chainId }: { chainId: number }) => void;
 }
 
 export const customRPCAssetsStore = createStore<CustomRPCAssetsState>(
@@ -81,6 +82,15 @@ export const customRPCAssetsStore = createStore<CustomRPCAssetsState>(
           },
         });
       }
+    },
+    removeCustomRPCAssets: ({ chainId }) => {
+      const { customRPCAssets } = get();
+      delete customRPCAssets[chainId];
+      set({
+        customRPCAssets: {
+          ...customRPCAssets,
+        },
+      });
     },
   }),
   {
