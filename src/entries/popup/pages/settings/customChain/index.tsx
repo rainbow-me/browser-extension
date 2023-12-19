@@ -7,7 +7,7 @@ import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useCustomRPCsStore } from '~/core/state/customRPC';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { isValidUrl } from '~/core/utils/connectedApps';
+import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Autocomplete } from '~/entries/popup/components/Autocomplete';
 import { Form } from '~/entries/popup/components/Form/Form';
@@ -136,10 +136,32 @@ const KNOWN_NETWORKS = {
       name: 'Fantom',
       value: {
         rpcUrl: 'https://rpc.ankr.com/fantom',
-        chainId: 42_220,
+        chainId: 250,
         decimals: 18,
         symbol: 'FTM',
         explorerUrl: 'https://ftmscan.com',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Flashbots Protect',
+      value: {
+        rpcUrl: 'https://rpc.flashbots.net',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Flashbots Protect (Fast)',
+      value: {
+        rpcUrl: 'https://rpc.flashbots.net/fast',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
         testnet: false,
       },
     },
@@ -274,9 +296,9 @@ export function SettingsCustomChain() {
   }>({
     testnet: chain?.testnet,
     chainId: chain?.id,
-    name: chain?.name,
     symbol: chain?.nativeCurrency.symbol,
     explorerUrl: chain?.blockExplorers?.default.url,
+    active: !chain, // True only if adding a new network
   });
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
@@ -457,6 +479,14 @@ export function SettingsCustomChain() {
           name: symbol,
         },
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+        blockExplorers: {
+          default: {
+            name: customRPC.explorerUrl
+              ? getDappHostname(customRPC.explorerUrl)
+              : '',
+            url: customRPC.explorerUrl || '',
+          },
+        },
       };
       if (customRPC.testnet) {
         chain.testnet = true;
@@ -482,6 +512,7 @@ export function SettingsCustomChain() {
     addUserChain,
     chainMetadata?.chainId,
     customRPC.chainId,
+    customRPC.explorerUrl,
     customRPC.name,
     customRPC.rpcUrl,
     customRPC.symbol,

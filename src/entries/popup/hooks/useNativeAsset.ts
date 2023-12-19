@@ -34,9 +34,10 @@ export const useNativeAsset = ({
     chainId,
   });
 
-  const { data: customNetworkNativeAsset } = useCustomNetworkAsset(
-    `${AddressZero}_${chainId}`,
-  );
+  const { data: customNetworkNativeAsset } = useCustomNetworkAsset({
+    uniqueId: `${AddressZero}_${chainId}`,
+    filterZeroBalance: false,
+  });
 
   const chain = chains.find((chain) => chain.id === chainId);
   const isChainIdCustomNetwork = isCustomChain(chainId);

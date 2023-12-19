@@ -34,14 +34,16 @@ export const customRPCsStore = createStore<CustomRPCsState>(
       const customChain = customChains[chain.id] || {
         chains: [],
         activeRpcUrl: '',
+        blockExplorers: [],
       };
       const currentRpcs = customChain.chains.map(
         (chain) => chain.rpcUrls.default.http[0],
       );
       if (!currentRpcs.includes(chain.rpcUrls.default.http[0])) {
         customChain.chains.push(chain);
-        if (!customChain.activeRpcUrl)
+        if (!customChain.activeRpcUrl) {
           customChain.activeRpcUrl = chain.rpcUrls.default.http[0];
+        }
         set({ customChains: { ...customChains, [chain.id]: customChain } });
         return true;
       } else {
