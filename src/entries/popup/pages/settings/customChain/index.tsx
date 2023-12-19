@@ -5,6 +5,7 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
@@ -284,6 +285,10 @@ export function SettingsCustomChain() {
   const { addCustomRPC, setActiveRPC } = useRainbowChainsStore();
   const navigate = useRainbowNavigate();
   const { addUserChain } = useUserChainsStore();
+  const { customNetworkDrafts, saveCustomNetworkDraft } =
+    usePopupInstanceStore();
+  const draftKey = chain?.id ?? 'new';
+  const savedDraft = customNetworkDrafts[draftKey];
   const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
@@ -293,13 +298,15 @@ export function SettingsCustomChain() {
     name?: string;
     symbol?: string;
     explorerUrl?: string;
-  }>({
-    testnet: chain?.testnet,
-    chainId: chain?.id,
-    symbol: chain?.nativeCurrency.symbol,
-    explorerUrl: chain?.blockExplorers?.default.url,
-    active: !chain, // True only if adding a new network
-  });
+  }>(
+    savedDraft || {
+      testnet: chain?.testnet,
+      chainId: chain?.id,
+      symbol: chain?.nativeCurrency.symbol,
+      explorerUrl: chain?.blockExplorers?.default.url,
+      active: !chain, // True only if adding a new network
+    },
+  );
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
     chainId: boolean;
@@ -342,18 +349,26 @@ export function SettingsCustomChain() {
     ) => {
       if (type === 'number' && typeof value === 'string') {
         const maskedValue = maskInput({ inputValue: value, decimals: 0 });
-        setCustomRPC((prev) => ({
-          ...prev,
-          [data]: maskedValue ? (Number(maskedValue) as T) : undefined,
-        }));
+        setCustomRPC((prev) => {
+          const newState = {
+            ...prev,
+            [data]: maskedValue ? (Number(maskedValue) as T) : undefined,
+          };
+          saveCustomNetworkDraft(draftKey, newState);
+          return newState;
+        });
       } else {
-        setCustomRPC((prev) => ({
-          ...prev,
-          [data]: value as T,
-        }));
+        setCustomRPC((prev) => {
+          const newState = {
+            ...prev,
+            [data]: value as T,
+          };
+          saveCustomNetworkDraft(draftKey, newState);
+          return newState;
+        });
       }
     },
-    [],
+    [draftKey, saveCustomNetworkDraft],
   );
 
   const validateRpcUrl = useCallback(
@@ -507,6 +522,7 @@ export function SettingsCustomChain() {
         });
       }
       setCustomRPC({});
+      saveCustomNetworkDraft(draftKey, undefined);
       navigate(-1);
     }
   }, [
@@ -520,8 +536,10 @@ export function SettingsCustomChain() {
     customRPC.rpcUrl,
     customRPC.symbol,
     customRPC.testnet,
+    draftKey,
     navigate,
     setActiveRPC,
+    saveCustomNetworkDraft,
     validateAddCustomRpc,
   ]);
 
@@ -543,12 +561,16 @@ export function SettingsCustomChain() {
         (network) => network.name === networkName,
       );
       if (network) {
-        setCustomRPC((prev) => ({
-          ...prev,
-          ...network.value,
-          name: networkName,
-          active: true,
-        }));
+        setCustomRPC((prev) => {
+          const newState = {
+            ...prev,
+            ...network.value,
+            name: networkName,
+            active: true,
+          };
+          saveCustomNetworkDraft(draftKey, newState);
+          return newState;
+        });
 
         // All these are previously validated by us
         // when adding the network to the list
@@ -562,7 +584,7 @@ export function SettingsCustomChain() {
       }
       open && setOpen(false);
     },
-    [open],
+    [draftKey, open, saveCustomNetworkDraft],
   );
 
   return (
