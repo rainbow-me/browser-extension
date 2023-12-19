@@ -144,6 +144,28 @@ const KNOWN_NETWORKS = {
       },
     },
     {
+      name: 'Flashbots Protect',
+      value: {
+        rpcUrl: 'https://rpc.flashbots.net',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: false,
+      },
+    },
+    {
+      name: 'Flashbots Protect (Fast)',
+      value: {
+        rpcUrl: 'https://rpc.flashbots.net/fast',
+        chainId: 1,
+        decimals: 18,
+        symbol: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        testnet: false,
+      },
+    },
+    {
       name: 'Filecoin',
       value: {
         rpcUrl: 'https://api.node.glif.io/rpc/v1',

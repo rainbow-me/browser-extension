@@ -12,6 +12,7 @@ import {
   useCustomRPCsStore,
 } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import {
@@ -53,12 +54,14 @@ import { ROUTES } from '../../urls';
 import { RowHighlightWrapper } from '../send/RowHighlightWrapper';
 
 export function SettingsNetworksRPCs() {
+  const { featureFlags } = useFeatureFlagsStore();
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const {
     state: { chainId },
   } = useLocation();
-  const { removeCustomRPCAsset } = useCustomRPCAssetsStore();
+  const { removeCustomRPCAsset, removeCustomRPCAssets } =
+    useCustomRPCAssetsStore();
 
   const { data: customNetworkAssets = {} } = useCustomNetworkAssets(
     {
@@ -171,6 +174,21 @@ export function SettingsNetworksRPCs() {
     [mainnetChains, navigate, removeCustomRPC, supportedChain, testnetChains],
   );
 
+  const handleRemoveNetwork = useCallback(
+    ({ chainId }: { chainId: number }) => {
+      const customChain = customChains[chainId];
+      if (customChain) {
+        customChain.chains.forEach((chain) => {
+          removeCustomRPC({
+            rpcUrl: chain.rpcUrls.default.http[0],
+          });
+          removeCustomRPCAssets({ chainId });
+        });
+      }
+    },
+    [customChains, removeCustomRPC, removeCustomRPCAssets],
+  );
+
   return (
     <Box paddingHorizontal="20px" paddingBottom="20px">
       <MenuContainer testId="settings-menu-container">
@@ -265,7 +283,8 @@ export function SettingsNetworksRPCs() {
           </Menu>
         ) : null}
 
-        {activeCustomRPC?.name || supportedChain?.name ? (
+        {featureFlags.custom_rpc &&
+        (activeCustomRPC?.name || supportedChain?.name) ? (
           <Menu>
             <MenuItem
               first
@@ -300,34 +319,36 @@ export function SettingsNetworksRPCs() {
           </Menu>
         ) : null}
 
-        <Menu>
-          <MenuItem
-            testId={'custom-chain-link'}
-            first
-            last
-            leftComponent={
-              <Symbol
-                symbol="plus.circle.fill"
-                weight="medium"
-                size={18}
-                color="accent"
-              />
-            }
-            hasRightArrow
-            onClick={() =>
-              navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
-                state: {
-                  chainId,
-                },
-              })
-            }
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('settings.networks.custom_rpc.add_asset')}
-              />
-            }
-          />
-        </Menu>
+        {featureFlags.custom_rpc && (
+          <Menu>
+            <MenuItem
+              testId={'custom-chain-link'}
+              first
+              last
+              leftComponent={
+                <Symbol
+                  symbol="plus.circle.fill"
+                  weight="medium"
+                  size={18}
+                  color="accent"
+                />
+              }
+              hasRightArrow
+              onClick={() =>
+                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
+                  state: {
+                    chainId,
+                  },
+                })
+              }
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.networks.custom_rpc.add_asset')}
+                />
+              }
+            />
+          </Menu>
+        )}
         {developerToolsEnabled && testnetChains.length ? (
           <Menu>
             <MenuItem.Description text={i18n.t('settings.networks.testnets')} />
@@ -376,7 +397,8 @@ export function SettingsNetworksRPCs() {
         ) : null}
       </MenuContainer>
 
-      {Object.values(customNetworkAssetsForChain || {}).length ? (
+      {featureFlags.custom_rpc &&
+      Object.values(customNetworkAssetsForChain || {}).length ? (
         <Menu>
           <Box padding="20px">
             <Stack space="14px">
@@ -457,6 +479,22 @@ export function SettingsNetworksRPCs() {
           </Box>
         </Menu>
       ) : null}
+      <Menu>
+        <MenuItem
+          first
+          last
+          leftComponent={
+            <Symbol symbol="trash.fill" weight="medium" size={18} color="red" />
+          }
+          onClick={() => handleRemoveNetwork({ chainId })}
+          titleComponent={
+            <MenuItem.Title
+              color="red"
+              text={i18n.t('settings.networks.custom_rpc.remove_network')}
+            />
+          }
+        />
+      </Menu>
     </Box>
   );
 }
