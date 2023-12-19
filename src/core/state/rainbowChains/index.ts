@@ -2,7 +2,11 @@ import { Chain } from '@wagmi/chains';
 import create from 'zustand';
 
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
-import { ChainId } from '~/core/types/chains';
+import {
+  ChainId,
+  chainHardhat,
+  chainHardhatOptimism,
+} from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
 
@@ -25,9 +29,15 @@ export interface rainbowChainstate {
   removeCustomRPC: ({ rpcUrl }: { rpcUrl: string }) => void;
 }
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+const supportedChains = IS_TESTING
+  ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
+  : SUPPORTED_CHAINS;
+
 const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
-  SUPPORTED_CHAINS.forEach((chain) => {
+  supportedChains.forEach((chain) => {
     const rpcUrl = getDefaultRPC(chain.id)?.http || '';
     const rnbwChain = {
       ...chain,
