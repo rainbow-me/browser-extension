@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Chain } from 'wagmi';
 
@@ -320,17 +320,17 @@ export function SettingsCustomChain() {
     symbol: true,
     explorerUrl: true,
   });
-  const debuncedRpcUrl = useDebounce(customRPC.rpcUrl, 500);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const debouncedRpcUrl = useDebounce(customRPC.rpcUrl, 1000);
   const {
     data: chainMetadata,
     isFetching: chainMetadataIsFetching,
     isError: chainMetadataIsError,
     isFetched: chainMetadataIsFetched,
   } = useChainMetadata(
-    { rpcUrl: debuncedRpcUrl },
-    { enabled: !!debuncedRpcUrl && isValidUrl(debuncedRpcUrl) },
+    { rpcUrl: debouncedRpcUrl },
+    { enabled: !!debouncedRpcUrl && isValidUrl(debouncedRpcUrl) },
   );
   const prevChainMetadata = usePrevious(chainMetadata);
 
