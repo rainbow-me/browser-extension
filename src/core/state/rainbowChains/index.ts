@@ -38,7 +38,8 @@ const supportedChains = IS_TESTING
 const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
   supportedChains.forEach((chain) => {
-    const rpcUrl = getDefaultRPC(chain.id)?.http || '';
+    const rpcUrl =
+      getDefaultRPC(chain.id)?.http || chain.rpcUrls.default.http[0];
     const rnbwChain = {
       ...chain,
       rpcUrls: {
