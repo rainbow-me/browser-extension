@@ -8,7 +8,7 @@ import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
+import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
@@ -50,7 +50,8 @@ export const WatchAsset = ({
     decimals: number;
     address: Address;
   };
-  const { customRPCAssets, addCustomRPCAsset } = useCustomRPCAssetsStore();
+  const { rainbowChainAssets, addRainbowChainAsset } =
+    useRainbowChainAssetsStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
     Number(chainId),
   );
@@ -142,10 +143,11 @@ export const WatchAsset = ({
     try {
       setLoading(true);
 
-      const customAssetsForChain = customRPCAssets[Number(chainId)] || [];
+      const rainbowChainAssetsForChain =
+        rainbowChainAssets[Number(chainId)] || [];
 
       if (
-        !customAssetsForChain
+        !rainbowChainAssetsForChain
           .map(({ address }: { address: Address }) => address)
           .includes(asset.address)
       ) {
@@ -156,9 +158,9 @@ export const WatchAsset = ({
           decimals: asset.decimals || 18,
         };
 
-        addCustomRPCAsset({
+        addRainbowChainAsset({
           chainId: Number(chainId),
-          customRPCAsset: assetToAdd,
+          rainbowChainAsset: assetToAdd,
         });
       }
 
@@ -180,7 +182,7 @@ export const WatchAsset = ({
       setLoading(false);
     }
   }, [
-    customRPCAssets,
+    rainbowChainAssets,
     chainId,
     asset.address,
     asset.name,
@@ -192,7 +194,7 @@ export const WatchAsset = ({
     assetAddress,
     dappMetadata?.appHost,
     dappMetadata?.appName,
-    addCustomRPCAsset,
+    addRainbowChainAsset,
   ]);
 
   const onRejectRequest = useCallback(() => {

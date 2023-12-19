@@ -7,13 +7,16 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
+import { POPUP_URL, goToNewTab, isNativePopup } from '~/core/utils/tabs';
 import { Box, Button, Inset, Stack, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import {
   backgroundColors,
   globalColors,
 } from '~/design-system/styles/designTokens';
+import { useCurrentWalletTypeAndVendor } from '~/entries/popup/hooks/useCurrentWalletType';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import { ICON_SIZE } from '../../../components/Tabs/TabBar';
@@ -95,7 +98,7 @@ const PointsContentPlaceholder = () => {
           weight="semibold"
           color="labelTertiary"
         >
-          {i18n.t('points.coming_soon_header')}
+          {i18n.t('points.check_back_soon_header')}
         </Text>
         <Text
           align="center"
@@ -103,7 +106,7 @@ const PointsContentPlaceholder = () => {
           size="12pt"
           weight="medium"
         >
-          {i18n.t('points.coming_soon_description')}
+          {i18n.t('points.check_back_soon_description')}
         </Text>
       </Stack>
     </Inset>
@@ -123,6 +126,20 @@ const PointsContent = () => {
     triggerAlert({
       text: i18n.t('alert.wallet_watching_mode'),
     });
+
+  const { type } = useCurrentWalletTypeAndVendor();
+  const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;
+
+  const pointsNavigate = async (to: string) => {
+    if (!allowOnboarding) return alertWatchingWallet();
+
+    if (isHardwareWallet && (await isNativePopup())) {
+      goToNewTab({ url: POPUP_URL + `#${to}` });
+      return;
+    }
+
+    navigate(to, { state: { skipTransitionOnRoute: ROUTES.HOME } });
+  };
 
   return (
     <Stack alignHorizontal="center" space="16px">
@@ -147,13 +164,7 @@ const PointsContent = () => {
         </Stack>
       </Inset>
       <Button
-        onClick={() =>
-          allowOnboarding
-            ? navigate(ROUTES.POINTS_ONBOARDING, {
-                state: { skipTransitionOnRoute: ROUTES.HOME },
-              })
-            : alertWatchingWallet()
-        }
+        onClick={() => pointsNavigate(ROUTES.POINTS_ONBOARDING)}
         color="accent"
         height="36px"
         variant="raised"
@@ -161,13 +172,7 @@ const PointsContent = () => {
         {i18n.t('points.get_started')}
       </Button>
       <Button
-        onClick={() =>
-          allowOnboarding
-            ? navigate(ROUTES.POINTS_REFERRAL, {
-                state: { skipTransitionOnRoute: ROUTES.HOME },
-              })
-            : alertWatchingWallet()
-        }
+        onClick={() => pointsNavigate(ROUTES.POINTS_REFERRAL)}
         color="accent"
         height="36px"
         variant="tinted"
@@ -184,7 +189,6 @@ function ClaimYourPoints() {
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
   const { testnetMode } = useTestnetModeStore();
-  const { featureFlags } = useFeatureFlagsStore();
 
   const controls = useAnimation();
 
@@ -210,9 +214,7 @@ function ClaimYourPoints() {
       flexDirection="column"
       justifyContent="flex-start"
       marginTop="-20px"
-      paddingTop={
-        featureFlags.points || config.points_enabled ? '40px' : '80px'
-      }
+      paddingTop={config.points_enabled ? '40px' : '80px'}
       ref={ref}
       style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
       width="full"
@@ -264,7 +266,7 @@ function ClaimYourPoints() {
             </Box>
           </Box>
         </Box>
-        {featureFlags.points || config.points_enabled ? (
+        {config.points_enabled ? (
           <PointsContent />
         ) : (
           <PointsContentPlaceholder />
@@ -278,12 +280,9 @@ export function Points() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isInitialLoading } = usePoints(currentAddress);
 
-  const { featureFlags } = useFeatureFlagsStore();
-  const isPointsEnabled = featureFlags.points || config.points_enabled;
-
   if (isInitialLoading) return null;
 
-  if (!isPointsEnabled || data?.error?.type === 'NON_EXISTING_USER')
+  if (!config.points_enabled || data?.error?.type === 'NON_EXISTING_USER')
     return <ClaimYourPoints />;
   return <PointsDashboard />;
 }

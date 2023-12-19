@@ -75,7 +75,12 @@ const InfoRow = ({
   >
     <Inline alignVertical="center" space="12px" wrap={false}>
       <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
-      <Text color="labelTertiary" size="12pt" weight="semibold">
+      <Text
+        color="labelTertiary"
+        size="12pt"
+        weight="semibold"
+        whiteSpace="nowrap"
+      >
         {label}
       </Text>
     </Inline>

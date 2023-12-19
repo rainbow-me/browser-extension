@@ -10,6 +10,7 @@ import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
@@ -96,7 +97,8 @@ export default function NFTDetails() {
     collectionId: string;
     nftId: string;
   }>();
-  const { data } = useNfts({ address });
+  const { testnetMode } = useTestnetModeStore();
+  const { data } = useNfts({ address, testnetMode });
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;

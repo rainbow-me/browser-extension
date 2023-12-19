@@ -24,7 +24,10 @@ import {
 } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
-import { customRPCsStore } from '../state/customRPC';
+import {
+  RAINBOW_CHAINS_SUPPORTED,
+  rainbowChainsStore,
+} from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost, isValidUrl } from './connectedApps';
@@ -102,6 +105,59 @@ export const getSupportedTestnetChains = () => {
   return chains.filter((chain) => !!chain.testnet);
 };
 
+export const getSimpleHashSupportedChainNames = () => {
+  return [
+    'ethereum',
+    'solana',
+    'bitcoin',
+    'polygon',
+    'arbitrum',
+    'arbitrum-nova',
+    'avalanche',
+    'base',
+    'bsc',
+    'celo',
+    'flow',
+    'gnosis',
+    'godwoken',
+    'linea',
+    'loot',
+    'manta',
+    'optimism',
+    'palm',
+    'polygon-zkvem',
+    'scroll',
+    'zksync-era',
+    'zora',
+    'ethereum-rinkeby',
+    'ethereum-sepolia',
+    'solana-devnet',
+    'polygon-mumbai',
+    'arbitrum-goerli',
+    'arbitrum-sepolia',
+    'astria-devnet',
+    'avalanche-fuji',
+    'base-goerli',
+    'base-sepolia',
+    'bsc-testnet',
+    'frame-testnet',
+    'godwoken-testnet',
+    'linea-testnet',
+    'manta-testnet',
+    'modular-games-testnet',
+    'optimism-goerli',
+    'optimism-sepolia',
+    'palm-testnet',
+    'palm-testnet-edge',
+    'polygon-zkevm-testnet',
+    'scroll-testnet',
+    'scroll-sepoloia',
+    'zksync-era-testnet',
+    'zora-testnet',
+    'zora-sepolia',
+  ];
+};
+
 export const getBackendSupportedChains = ({
   testnetMode,
 }: {
@@ -113,26 +169,27 @@ export const getBackendSupportedChains = ({
   return chains;
 };
 
-export const getCustomChains = () => {
-  const { customChains } = customRPCsStore.getState();
+export const getRainbowChains = () => {
+  const { rainbowChains } = rainbowChainsStore.getState();
   return {
-    customChains: Object.values(customChains)
-      .map((customChain) =>
-        customChain.chains.find(
-          (rpc) => rpc.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+    rainbowChains: Object.values(rainbowChains)
+      .map((rainbowChain) =>
+        rainbowChain.chains.find(
+          (rpc) => rpc.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
         ),
       )
       .filter(Boolean),
   };
 };
 
-export const findCustomChainForChainId = (chainId: number) => {
-  const { customChains } = getCustomChains();
-  return customChains.find((network) => network.id === chainId);
+export const findRainbowChainForChainId = (chainId: number) => {
+  const { rainbowChains } = getRainbowChains();
+  return rainbowChains.find((chain) => chain.id === chainId);
 };
 
 export const isCustomChain = (chainId: number) =>
-  !!findCustomChainForChainId(chainId);
+  !RAINBOW_CHAINS_SUPPORTED.map((chain) => chain.id).includes(chainId) &&
+  !!findRainbowChainForChainId(chainId);
 
 /**
  * @desc Checks if the given chain is a Layer 2.

@@ -40,7 +40,10 @@ interface WalletItemProps {
 }
 
 export const AppConnectionWalletItem = React.forwardRef(
-  (props: WalletItemProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+  function AppConnectionWalletItem(
+    props: WalletItemProps,
+    ref: React.ForwardedRef<HTMLDivElement>,
+  ) {
     const { address, onClick, chainId, active, connected } = props;
     const [hovering, setHovering] = useState(false);
     const { displayName } = useWalletName({ address });
@@ -218,5 +221,3 @@ export const AppConnectionWalletItem = React.forwardRef(
     );
   },
 );
-
-AppConnectionWalletItem.displayName = 'AppConnectionWalletItem';
