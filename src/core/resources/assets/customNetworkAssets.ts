@@ -16,7 +16,7 @@ import {
   SupportedCurrencyKey,
 } from '~/core/references';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { customRPCAssetsStore } from '~/core/state/customRPCAssets';
+import { rainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import {
   AddressOrEth,
   AssetMetadata,
@@ -33,7 +33,7 @@ import {
 } from '~/core/utils/assets';
 import {
   customChainIdsToAssetNames,
-  getCustomChains,
+  getRainbowChains,
 } from '~/core/utils/chains';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
@@ -167,7 +167,7 @@ async function customNetworkAssetsFunction({
     customNetworkAssetsKey({ address, currency, testnetMode }),
   )?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
-  const { customChains: chains } = getCustomChains();
+  const { rainbowChains: chains } = getRainbowChains();
 
   const customChains = chains.filter((chain) =>
     testnetMode ? chain.testnet : !chain.testnet,
@@ -175,7 +175,7 @@ async function customNetworkAssetsFunction({
   if (customChains.length === 0) {
     return cachedCustomNetworkAssets;
   }
-  const { customRPCAssets } = customRPCAssetsStore.getState();
+  const { rainbowChainAssets } = rainbowChainAssetsStore.getState();
 
   try {
     const assetsPromises = customChains
@@ -216,7 +216,7 @@ async function customNetworkAssetsFunction({
               })
             : null;
 
-        const chainAssets = customRPCAssets[chain.id] || [];
+        const chainAssets = rainbowChainAssets[chain.id] || [];
         const chainParsedAssetBalances = await Promise.allSettled(
           chainAssets.map((asset) =>
             getAssetBalance({

@@ -23,10 +23,10 @@ import { HWRequestListener } from './components/HWRequestListener/HWRequestListe
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
 import { AuthProvider } from './hooks/useAuth';
-import { useCustomNetwork } from './hooks/useCustomNetwork';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
+import { useRainbowChains } from './hooks/useRainbowChains';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 
@@ -36,16 +36,16 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
   const { deviceId } = useDeviceIdStore();
-  const { customChains } = useCustomNetwork();
-  const prevChains = usePrevious(customChains);
+  const { rainbowChains } = useRainbowChains();
+  const prevChains = usePrevious(rainbowChains);
 
   useExpiryListener();
 
   React.useEffect(() => {
-    if (!isEqual(prevChains, customChains)) {
+    if (!isEqual(prevChains, rainbowChains)) {
       backgroundMessenger.send('rainbow_updateWagmiClient', null);
     }
-  }, [prevChains, customChains]);
+  }, [prevChains, rainbowChains]);
 
   const wagmiClient = React.useMemo(
     () =>
@@ -53,17 +53,17 @@ export function App() {
         autoConnect: true,
         connectors: ({ chains }) => [new RainbowConnector({ chains })],
         persist: true,
-        customChains: customChains,
+        rainbowChains,
         useProxy: config.rpc_proxy_enabled,
       }),
-    [customChains],
+    [rainbowChains],
   );
 
   React.useEffect(() => {
-    if (!isEqual(prevChains, customChains)) {
+    if (!isEqual(prevChains, rainbowChains)) {
       backgroundMessenger.send('rainbow_updateWagmiClient', null);
     }
-  }, [prevChains, customChains]);
+  }, [prevChains, rainbowChains]);
 
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
