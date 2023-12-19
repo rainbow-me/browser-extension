@@ -492,12 +492,6 @@ export function SettingsCustomChain() {
       addCustomRPC({
         chain,
       });
-      if (customRPC.active) {
-        setActiveRPC({
-          rpcUrl,
-          chainId,
-        });
-      }
       addUserChain({ chainId });
       triggerToast({
         title: i18n.t('settings.networks.custom_rpc.network_added'),
@@ -506,10 +500,14 @@ export function SettingsCustomChain() {
           { networkName: name },
         ),
       });
+      if (customRPC.active) {
+        setActiveRPC({
+          rpcUrl,
+          chainId,
+        });
+      }
       setCustomRPC({});
-      setTimeout(() => {
-        navigate(-1);
-      }, 1500);
+      navigate(-1);
     }
   }, [
     addCustomRPC,
