@@ -1,19 +1,16 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
-import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
 import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
-import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
   Box,
@@ -42,7 +39,7 @@ import { fadeOutMask } from './NFTs.css';
 const NFTS_LIMIT = 2000;
 const COLLECTION_IMAGE_SIZE = 16;
 
-export function PostReleaseNFTs() {
+export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { displayMode, sort, sections: sectionsState } = useNftsStore();
   const {
@@ -513,46 +510,34 @@ function CollectionSection({
 }
 
 const NftThumbnail = memo(function NftThumbnail({
-    imageSrc,
-    onClick,
-    index,
-  }: {
-    imageSrc?: string;
-    onClick: () => void;
-    index: number;
+  imageSrc,
+  onClick,
+  index,
+}: {
+  imageSrc?: string;
+  onClick: () => void;
+  index: number;
 }) {
-    return (
-      <Lens
-        style={{ height: 96, width: 96 }}
+  return (
+    <Lens
+      style={{ height: 96, width: 96 }}
+      borderRadius="10px"
+      background="fillQuaternary"
+      onClick={onClick}
+      testId={`nft-thumbnail-${imageSrc}-${index}`}
+    >
+      <ExternalImage
         borderRadius="10px"
-        background="fillQuaternary"
-        onClick={onClick}
-        testId={`nft-thumbnail-${imageSrc}-${index}`}
-      >
-        <ExternalImage
-          borderRadius="10px"
-          src={imageSrc}
-          height={96}
-          width={96}
-        />
-      </Lens>
-    );
+        src={imageSrc}
+        height={96}
+        width={96}
+      />
+    </Lens>
+  );
 });
 
 export function NFTEmptyState() {
   const ref = useCoolMode({ emojis: ['🌈', '🖼️'] });
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { data: ensName } = useEnsName({ address });
-  const { featureFlags } = useFeatureFlagsStore();
-  const nftsEnabled = featureFlags.nfts_enabled;
-
-  const openProfile = useCallback(
-    () =>
-      goToNewTab({
-        url: getProfileUrl(ensName ?? address),
-      }),
-    [address, ensName],
-  );
 
   return (
     <Box
@@ -563,7 +548,7 @@ export function NFTEmptyState() {
       marginTop="-20px"
       paddingTop="80px"
       ref={ref}
-      style={{ height: 336 - (nftsEnabled ? 64 : 0) }}
+      style={{ height: 336 - 64 }}
       width="full"
     >
       <Box paddingBottom="14px">
@@ -600,9 +585,7 @@ export function NFTEmptyState() {
             weight="semibold"
             color="labelTertiary"
           >
-            {nftsEnabled
-              ? i18n.t('nfts.empty_state_header')
-              : i18n.t('nfts.coming_soon_header')}
+            {i18n.t('nfts.empty_state_header')}
           </Text>
         </Stack>
       </Box>
@@ -613,39 +596,9 @@ export function NFTEmptyState() {
           size="12pt"
           weight="medium"
         >
-          {nftsEnabled
-            ? i18n.t('nfts.empty_state_description')
-            : i18n.t('nfts.coming_soon_description')}
+          {i18n.t('nfts.empty_state_description')}
         </Text>
       </Inset>
-      {!nftsEnabled && (
-        <Lens
-          borderRadius="8px"
-          cursor="pointer"
-          onClick={openProfile}
-          padding="6px"
-          width="fit"
-        >
-          <Inline alignHorizontal="center" alignVertical="center" space="3px">
-            <Text
-              align="center"
-              color="accent"
-              cursor="pointer"
-              size="12pt"
-              weight="heavy"
-            >
-              {i18n.t('nfts.view_on_web')}
-            </Text>
-            <Symbol
-              color="accent"
-              cursor="pointer"
-              size={9.5}
-              symbol="chevron.right"
-              weight="heavy"
-            />
-          </Inline>
-        </Lens>
-      )}
     </Box>
   );
 }
