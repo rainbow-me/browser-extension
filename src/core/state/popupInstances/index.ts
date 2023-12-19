@@ -9,8 +9,32 @@ import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 import { createStore } from '../internal/createStore';
 
 type SendAddress = Address | 'eth' | '';
+interface CustomNetworkDraft {
+  active?: boolean;
+  testnet?: boolean;
+  rpcUrl?: string;
+  chainId?: number;
+  name?: string;
+  symbol?: string;
+  explorerUrl?: string;
+}
+interface CustomTokenDraft {
+  address?: Address;
+  decimals?: number;
+  name?: string;
+  symbol?: string;
+}
+type CustomNetworkDrafts = {
+  ['new']: CustomNetworkDraft | undefined;
+  [key: number]: CustomNetworkDraft | undefined;
+};
+type CustomTokenDrafts = {
+  [key: number]: CustomTokenDraft | undefined;
+};
 
 interface PopupInstance {
+  customNetworkDrafts: CustomNetworkDrafts;
+  customTokenDrafts: CustomTokenDrafts;
   sendAddress: Address | string | null;
   sendAmount: string | null;
   sendField: 'asset' | 'native';
@@ -22,6 +46,10 @@ interface PopupInstance {
 }
 
 const DEFAULT_POPUP_INSTANCE_VALUES: PopupInstance = {
+  customNetworkDrafts: {
+    new: undefined,
+  },
+  customTokenDrafts: {},
   sendAddress: null,
   sendAmount: null,
   sendField: 'asset',
@@ -36,6 +64,11 @@ export interface PopupInstanceStore extends PopupInstance {
   resetValues: () => void;
   resetSwapValues: () => void;
   resetSendValues: () => void;
+  saveCustomNetworkDraft: (
+    key: string | number,
+    draft?: CustomNetworkDraft,
+  ) => void;
+  saveCustomTokenDraft: (key: number, draft?: CustomTokenDraft) => void;
   saveSendAddress: ({ address }: { address: Address | string }) => void;
   saveSendAmount: ({ amount }: { amount: string }) => void;
   saveSendField: ({ field }: { field: 'asset' | 'native' }) => void;
@@ -54,7 +87,7 @@ export interface PopupInstanceStore extends PopupInstance {
 }
 
 export const popupInstanceStore = createStore<PopupInstanceStore>(
-  (set) => ({
+  (set, get) => ({
     ...DEFAULT_POPUP_INSTANCE_VALUES,
     resetValues: popupInstanceHandlerFactory(() =>
       set(DEFAULT_POPUP_INSTANCE_VALUES),
@@ -74,6 +107,26 @@ export const popupInstanceStore = createStore<PopupInstanceStore>(
         sendField: 'asset',
         sendTokenAddressAndChain: null,
       }),
+    ),
+    saveCustomNetworkDraft: popupInstanceHandlerFactory(
+      (key, customNetworkDraft) => {
+        set({
+          customNetworkDrafts: {
+            ...get().customNetworkDrafts,
+            [key]: customNetworkDraft,
+          },
+        });
+      },
+    ),
+    saveCustomTokenDraft: popupInstanceHandlerFactory(
+      (key, customTokenDraft) => {
+        set({
+          customTokenDrafts: {
+            ...get().customTokenDrafts,
+            [key]: customTokenDraft,
+          },
+        });
+      },
     ),
     saveSendAddress: popupInstanceHandlerFactory(({ address }) => {
       set({ sendAddress: address });
@@ -108,7 +161,7 @@ export const popupInstanceStore = createStore<PopupInstanceStore>(
   {
     persist: {
       name: 'popupInstance',
-      version: 0,
+      version: 1,
     },
   },
 );
