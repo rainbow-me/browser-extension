@@ -182,6 +182,8 @@ export const SUPPORTED_CHAINS: Chain[] = [
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
+export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
+
 export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   chainHolesky,
   goerli,
