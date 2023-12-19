@@ -281,7 +281,7 @@ export function SettingsCustomChain() {
   const {
     state: { chain },
   }: { state: { chain?: Chain } } = useLocation();
-  const { addCustomRPC } = useRainbowChainsStore();
+  const { addCustomRPC, setActiveRPC } = useRainbowChainsStore();
   const navigate = useRainbowNavigate();
   const { addUserChain } = useUserChainsStore();
   const [open, setOpen] = useState(false);
@@ -487,13 +487,17 @@ export function SettingsCustomChain() {
             url: customRPC.explorerUrl || '',
           },
         },
+        testnet: customRPC.testnet,
       };
-      if (customRPC.testnet) {
-        chain.testnet = true;
-      }
       addCustomRPC({
         chain,
       });
+      if (customRPC.active) {
+        setActiveRPC({
+          rpcUrl,
+          chainId,
+        });
+      }
       addUserChain({ chainId });
       triggerToast({
         title: i18n.t('settings.networks.custom_rpc.network_added'),
@@ -511,6 +515,7 @@ export function SettingsCustomChain() {
     addCustomRPC,
     addUserChain,
     chainMetadata?.chainId,
+    customRPC.active,
     customRPC.chainId,
     customRPC.explorerUrl,
     customRPC.name,
@@ -518,6 +523,7 @@ export function SettingsCustomChain() {
     customRPC.symbol,
     customRPC.testnet,
     navigate,
+    setActiveRPC,
     validateAddCustomRpc,
   ]);
 
