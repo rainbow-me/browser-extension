@@ -31,13 +31,13 @@ export interface rainbowChainstate {
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
-const supportedChains = IS_TESTING
+export const RAINBOW_CHAINS_SUPPORTED = IS_TESTING
   ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
   : SUPPORTED_CHAINS;
 
 const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
-  supportedChains.forEach((chain) => {
+  RAINBOW_CHAINS_SUPPORTED.forEach((chain) => {
     const rpcUrl =
       getDefaultRPC(chain.id)?.http || chain.rpcUrls.default.http[0];
     const rnbwChain = {

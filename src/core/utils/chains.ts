@@ -14,7 +14,6 @@ import { mainnet } from 'wagmi';
 import {
   NATIVE_ASSETS_PER_CHAIN,
   SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
   SUPPORTED_MAINNET_CHAINS,
 } from '~/core/references';
 import {
@@ -25,7 +24,10 @@ import {
 } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
-import { rainbowChainsStore } from '../state/rainbowChains';
+import {
+  RAINBOW_CHAINS_SUPPORTED,
+  rainbowChainsStore,
+} from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost, isValidUrl } from './connectedApps';
@@ -133,7 +135,7 @@ export const findRainbowChainForChainId = (chainId: number) => {
 };
 
 export const isCustomChain = (chainId: number) =>
-  !SUPPORTED_CHAIN_IDS.includes(chainId) &&
+  !RAINBOW_CHAINS_SUPPORTED.map((chain) => chain.id).includes(chainId) &&
   !!findRainbowChainForChainId(chainId);
 
 /**
