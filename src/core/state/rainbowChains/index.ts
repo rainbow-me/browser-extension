@@ -1,16 +1,7 @@
-import {
-  Chain,
-  arbitrum,
-  base,
-  bsc,
-  optimism,
-  polygon,
-  zora,
-} from '@wagmi/chains';
-import { mainnet } from 'wagmi';
+import { Chain } from '@wagmi/chains';
 import create from 'zustand';
 
-import { getDefaultRPC } from '~/core/references';
+import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
@@ -36,7 +27,7 @@ export interface rainbowChainstate {
 
 const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
-  [mainnet, polygon, optimism, arbitrum, base, zora, bsc].forEach((chain) => {
+  SUPPORTED_CHAINS.forEach((chain) => {
     const rpcUrl = getDefaultRPC(chain.id)?.http || '';
     const rnbwChain = {
       ...chain,
