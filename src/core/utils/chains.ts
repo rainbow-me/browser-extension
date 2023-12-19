@@ -50,6 +50,11 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   314: 'filecoin',
   534352: 'scroll',
   1284: 'moonbeam',
+  7700: 'nativecanto',
+  61: 'classic',
+  5000: 'mantle',
+  1088: 'metis',
+  1101: 'polygonzkevm',
 };
 
 export const getSupportedChainsWithHardhat = () => {
