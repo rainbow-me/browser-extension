@@ -5,6 +5,7 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
@@ -284,6 +285,10 @@ export function SettingsCustomChain() {
   const { addCustomRPC, setActiveRPC } = useRainbowChainsStore();
   const navigate = useRainbowNavigate();
   const { addUserChain } = useUserChainsStore();
+  const { customNetworkDrafts, saveCustomNetworkDraft } =
+    usePopupInstanceStore();
+  const draftKey = chain?.id ?? 'new';
+  const savedDraft = customNetworkDrafts[draftKey];
   const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
@@ -293,13 +298,15 @@ export function SettingsCustomChain() {
     name?: string;
     symbol?: string;
     explorerUrl?: string;
-  }>({
-    testnet: chain?.testnet,
-    chainId: chain?.id,
-    symbol: chain?.nativeCurrency.symbol,
-    explorerUrl: chain?.blockExplorers?.default.url,
-    active: !chain, // True only if adding a new network
-  });
+  }>(
+    savedDraft || {
+      testnet: chain?.testnet,
+      chainId: chain?.id,
+      symbol: chain?.nativeCurrency.symbol,
+      explorerUrl: chain?.blockExplorers?.default.url,
+      active: !chain, // True only if adding a new network
+    },
+  );
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
     chainId: boolean;
@@ -326,6 +333,10 @@ export function SettingsCustomChain() {
     { enabled: !!debouncedRpcUrl && isValidUrl(debouncedRpcUrl) },
   );
   const prevChainMetadata = usePrevious(chainMetadata);
+
+  useEffect(() => {
+    saveCustomNetworkDraft(draftKey, customRPC);
+  }, [draftKey, customRPC, saveCustomNetworkDraft]);
 
   const onInputChange = useCallback(
     <T extends string | number | boolean>(
