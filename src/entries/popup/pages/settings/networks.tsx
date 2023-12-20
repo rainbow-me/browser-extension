@@ -4,10 +4,10 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS, SUPPORTED_CHAIN_IDS } from '~/core/references';
+import { useRainbowChainsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getMainChains } from '~/core/utils/chains';
@@ -188,9 +188,9 @@ export function SettingsNetworks() {
                               >
                                 {userChains[chain.id]
                                   ? chainLabel({
-                                    chainId: chain.id,
-                                    testnet: chain.testnet,
-                                  })
+                                      chainId: chain.id,
+                                      testnet: chain.testnet,
+                                    })
                                   : i18n.t('settings.networks.disabled')}
                               </Text>
                             ) : null
