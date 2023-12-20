@@ -184,11 +184,11 @@ export function SettingsNetworksRPCs() {
 
   const handleRemoveRPC = useCallback(
     (chain: Chain) => {
-      const allChainsCount = [...mainnetChains, ...testnetChains].length;
       removeCustomRPC({
         rpcUrl: chain.rpcUrls.default.http[0],
       });
       // If there's no default chain & only had one chain, go back
+      const allChainsCount = [...mainnetChains, ...testnetChains].length;
       if (!supportedChain && allChainsCount === 1) {
         navigate(-1);
       }
@@ -207,8 +207,9 @@ export function SettingsNetworksRPCs() {
           removeRainbowChainAssets({ chainId });
         });
       }
+      navigate(-1);
     },
-    [rainbowChains, removeCustomRPC, removeRainbowChainAssets],
+    [navigate, rainbowChains, removeCustomRPC, removeRainbowChainAssets],
   );
 
   return (
@@ -231,7 +232,7 @@ export function SettingsNetworksRPCs() {
             onToggle={() => handleToggleChain(!userChains[chainId])}
           />
         </Menu>
-        {supportedChain || mainnetChains.length ? (
+        {supportedChain || mainnetChains?.length ? (
           <Menu>
             <MenuItem.Description
               text={i18n.t('settings.networks.rpc_endpoints')}
@@ -359,7 +360,7 @@ export function SettingsNetworksRPCs() {
             />
           </Menu>
         )}
-        {developerToolsEnabled && testnetChains.length ? (
+        {developerToolsEnabled && testnetChains?.length ? (
           <Menu>
             <MenuItem.Description text={i18n.t('settings.networks.testnets')} />
             <Box paddingHorizontal="1px" paddingVertical="1px">
@@ -408,14 +409,14 @@ export function SettingsNetworksRPCs() {
           </Menu>
         ) : null}
 
-        {featureFlags.custom_rpc && customNetworkAssetsForChain.length ? (
-          <Menu>
-            <Box padding="20px">
-              <Stack space="14px">
-                <Text align="left" color="label" size="14pt" weight="medium">
-                  {i18n.t('settings.networks.custom_rpc.tokens')}
-                </Text>
-
+      {featureFlags.custom_rpc &&
+      Object.values(customNetworkAssetsForChain || {}).length ? (
+        <Menu>
+          <Box padding="20px">
+            <Stack space="14px">
+              <Text align="left" color="label" size="14pt" weight="medium">
+                {i18n.t('settings.networks.custom_rpc.tokens')}
+              </Text>
                 <Box width="full">
                   {customNetworkAssetsForChain?.map((asset, i) => (
                     <ContextMenu key={i}>
