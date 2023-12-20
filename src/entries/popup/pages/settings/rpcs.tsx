@@ -6,11 +6,14 @@ import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useCurrentCurrencyStore,
+  useRainbowChainsStore,
+} from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getSupportedTestnetChains } from '~/core/utils/chains';
 import { chainIdMap } from '~/core/utils/userChains';
