@@ -18,6 +18,7 @@ import {
   appSessionsStore,
   notificationWindowStore,
   pendingRequestStore,
+  rainbowChainsStore,
 } from '~/core/state';
 import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { SessionStorage } from '~/core/storage';
@@ -468,8 +469,12 @@ export const handleProviderRequest = ({
           const extensionUrl = chrome.runtime.getURL('');
           const activeSession = getActiveSession({ host });
           if (!supportedChainId || !activeSession) {
+            const chain = rainbowChainsStore
+              .getState()
+              .getActiveChain({ chainId: proposedChainId });
             inpageMessenger?.send('wallet_switchEthereumChain', {
               chainId: proposedChainId,
+              chainName: chain?.name || 'NO NAME',
               status: !supportedChainId
                 ? IN_DAPP_NOTIFICATION_STATUS.unsupported_network
                 : IN_DAPP_NOTIFICATION_STATUS.no_active_session,
@@ -486,8 +491,12 @@ export const handleProviderRequest = ({
               chainId: proposedChainId,
               host,
             });
+            const chain = rainbowChainsStore
+              .getState()
+              .getActiveChain({ chainId: proposedChainId });
             inpageMessenger?.send('wallet_switchEthereumChain', {
               chainId: proposedChainId,
+              chainName: chain?.name,
               status: IN_DAPP_NOTIFICATION_STATUS.success,
               extensionUrl,
               host,
