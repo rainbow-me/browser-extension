@@ -266,6 +266,7 @@ export const handleProviderRequest = ({
 
     try {
       let response = null;
+      console.log('-- method', method);
 
       switch (method) {
         case 'eth_chainId': {
@@ -325,7 +326,7 @@ export const handleProviderRequest = ({
             const supportedChainId =
               isCustomChain(Number(proposedChainId)) ||
               isSupportedChainId(Number(proposedChainId));
-            if (!supportedChainId) throw new Error('Chain Id not supported');
+            if (supportedChainId) throw new Error('Chain Id already supported');
             response = null;
           } else {
             const {
