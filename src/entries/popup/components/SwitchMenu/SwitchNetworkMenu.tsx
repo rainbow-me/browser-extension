@@ -44,7 +44,7 @@ import {
 import { SWAP_INPUT_MASK_ID } from '../InputMask/SwapInputMask/SwapInputMask';
 import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 
-const MENU_SELECTOR_MAX_HEIGHT = DROPDOWN_MENU_ITEM_HEIGHT * 5.5;
+const MENU_SELECTOR_MAX_HEIGHT = DROPDOWN_MENU_ITEM_HEIGHT * 6;
 
 export const SwitchNetworkMenuSelector = ({
   selectedValue,

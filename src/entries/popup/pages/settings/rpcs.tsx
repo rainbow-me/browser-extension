@@ -3,14 +3,21 @@ import { useLocation } from 'react-router-dom';
 import { Address, Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
+import {
+  SUPPORTED_CHAINS,
+  SUPPORTED_CHAIN_IDS,
+  getDefaultRPC,
+} from '~/core/references';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useCurrentCurrencyStore,
+  useRainbowChainsStore,
+} from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getSupportedTestnetChains } from '~/core/utils/chains';
 import { chainIdMap } from '~/core/utils/userChains';
@@ -69,7 +76,9 @@ export function SettingsNetworksRPCs() {
     },
   );
 
-  const customNetworkAssetsForChain = customNetworkAssets?.[chainId];
+  const customNetworkAssetsForChain = Object.values(
+    customNetworkAssets?.[chainId] || {},
+  ).filter((asset) => !asset.isNativeAsset);
 
   const navigate = useRainbowNavigate();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
@@ -399,7 +408,6 @@ export function SettingsNetworksRPCs() {
             </Box>
           </Menu>
         ) : null}
-      </MenuContainer>
 
       {featureFlags.custom_rpc &&
       Object.values(customNetworkAssetsForChain || {}).length ? (
@@ -409,10 +417,8 @@ export function SettingsNetworksRPCs() {
               <Text align="left" color="label" size="14pt" weight="medium">
                 {i18n.t('settings.networks.custom_rpc.tokens')}
               </Text>
-
-              <Box width="full">
-                {Object.values(customNetworkAssetsForChain || {})?.map(
-                  (asset, i) => (
+                <Box width="full">
+                  {customNetworkAssetsForChain?.map((asset, i) => (
                     <ContextMenu key={i}>
                       <ContextMenuTrigger>
                         <Box marginHorizontal="-12px">
@@ -476,29 +482,37 @@ export function SettingsNetworksRPCs() {
                         </ContextMenuItem>
                       </ContextMenuContent>
                     </ContextMenu>
-                  ),
-                )}
-              </Box>
-            </Stack>
-          </Box>
-        </Menu>
-      ) : null}
-      <Menu>
-        <MenuItem
-          first
-          last
-          leftComponent={
-            <Symbol symbol="trash.fill" weight="medium" size={18} color="red" />
-          }
-          onClick={() => handleRemoveNetwork({ chainId })}
-          titleComponent={
-            <MenuItem.Title
-              color="red"
-              text={i18n.t('settings.networks.custom_rpc.remove_network')}
+                  ))}
+                </Box>
+              </Stack>
+            </Box>
+          </Menu>
+        ) : null}
+
+        {!SUPPORTED_CHAIN_IDS.includes(chainId) ? (
+          <Menu>
+            <MenuItem
+              first
+              last
+              leftComponent={
+                <Symbol
+                  symbol="trash.fill"
+                  weight="medium"
+                  size={18}
+                  color="red"
+                />
+              }
+              onClick={() => handleRemoveNetwork({ chainId })}
+              titleComponent={
+                <MenuItem.Title
+                  color="red"
+                  text={i18n.t('settings.networks.custom_rpc.remove_network')}
+                />
+              }
             />
-          }
-        />
-      </Menu>
+          </Menu>
+        ) : null}
+      </MenuContainer>
     </Box>
   );
 }
