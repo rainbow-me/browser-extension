@@ -175,11 +175,13 @@ export function SettingsNetworksRPCs() {
 
   const handleRemoveRPC = useCallback(
     (chain: Chain) => {
-      const allChainsCount = [...mainnetChains, ...testnetChains].length;
+      console.log('removing');
+
       removeCustomRPC({
         rpcUrl: chain.rpcUrls.default.http[0],
       });
       // If there's no default chain & only had one chain, go back
+      const allChainsCount = [...mainnetChains, ...testnetChains].length;
       if (!supportedChain && allChainsCount === 1) {
         navigate(-1);
       }
@@ -198,8 +200,9 @@ export function SettingsNetworksRPCs() {
           removeRainbowChainAssets({ chainId });
         });
       }
+      navigate(-1);
     },
-    [rainbowChains, removeCustomRPC, removeRainbowChainAssets],
+    [navigate, rainbowChains, removeCustomRPC, removeRainbowChainAssets],
   );
 
   return (
@@ -222,7 +225,7 @@ export function SettingsNetworksRPCs() {
             onToggle={() => handleToggleChain(!userChains[chainId])}
           />
         </Menu>
-        {supportedChain || mainnetChains.length ? (
+        {supportedChain || mainnetChains?.length ? (
           <Menu>
             <MenuItem.Description
               text={i18n.t('settings.networks.rpc_endpoints')}
@@ -243,7 +246,7 @@ export function SettingsNetworksRPCs() {
                         key={chain.name}
                         rightComponent={
                           chain.rpcUrls.default.http[0] ===
-                            rainbowChain.activeRpcUrl ? (
+                          rainbowChain.activeRpcUrl ? (
                             <MenuItem.SelectionIcon />
                           ) : null
                         }
@@ -259,8 +262,8 @@ export function SettingsNetworksRPCs() {
                               rpcUrl: chain.rpcUrls.default.http[0],
                             })
                               ? i18n.t(
-                                'settings.networks.custom_rpc.rainbow_default_rpc',
-                              )
+                                  'settings.networks.custom_rpc.rainbow_default_rpc',
+                                )
                               : chain.rpcUrls.default.http[0]}
                           </TextOverflow>
                         }
@@ -285,7 +288,7 @@ export function SettingsNetworksRPCs() {
         ) : null}
 
         {featureFlags.custom_rpc &&
-          (activeCustomRPC?.name || supportedChain?.name) ? (
+        (activeCustomRPC?.name || supportedChain?.name) ? (
           <Menu>
             <MenuItem
               first
@@ -350,7 +353,7 @@ export function SettingsNetworksRPCs() {
             />
           </Menu>
         )}
-        {developerToolsEnabled && testnetChains.length ? (
+        {developerToolsEnabled && testnetChains?.length ? (
           <Menu>
             <MenuItem.Description text={i18n.t('settings.networks.testnets')} />
             <Box paddingHorizontal="1px" paddingVertical="1px">
@@ -372,10 +375,10 @@ export function SettingsNetworksRPCs() {
                             weight={'medium'}
                           >
                             {chainIdMap[chainId]?.includes(chain.id) &&
-                              chain.id !== chainId
+                            chain.id !== chainId
                               ? i18n.t(
-                                'settings.networks.custom_rpc.rainbow_default',
-                              )
+                                  'settings.networks.custom_rpc.rainbow_default',
+                                )
                               : chain.rpcUrls.default.http[0]}
                           </Text>
                         }
@@ -401,7 +404,7 @@ export function SettingsNetworksRPCs() {
       </MenuContainer>
 
       {featureFlags.custom_rpc &&
-        Object.values(customNetworkAssetsForChain || {}).length ? (
+      Object.values(customNetworkAssetsForChain || {}).length ? (
         <Menu>
           <Box padding="20px">
             <Stack space="14px">
