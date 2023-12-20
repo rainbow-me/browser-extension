@@ -241,7 +241,11 @@ export function SettingsNetworksRPCs() {
               {mainnetChains.map((chain, index) => (
                 <Box key={`${chain.name}`} width="full">
                   <ContextMenu>
-                    <ContextMenuTrigger>
+                    <ContextMenuTrigger
+                      disabled={
+                        mainnetChains[index].name === supportedChain?.name
+                      }
+                    >
                       <MenuItem
                         first={!supportedChain && index === 0}
                         leftComponent={
@@ -367,7 +371,12 @@ export function SettingsNetworksRPCs() {
               {testnetChains.map((chain, index) => (
                 <Box key={`${chain.name}`} testId={`network-row-${chain.name}`}>
                   <ContextMenu>
-                    <ContextMenuTrigger>
+                    <ContextMenuTrigger
+                      disabled={
+                        chainIdMap[chainId]?.includes(chain.id) &&
+                        chain.id !== chainId
+                      }
+                    >
                       <MenuItem
                         first={!supportedChain && index === 0}
                         leftComponent={
@@ -409,14 +418,14 @@ export function SettingsNetworksRPCs() {
           </Menu>
         ) : null}
 
-      {featureFlags.custom_rpc &&
-      Object.values(customNetworkAssetsForChain || {}).length ? (
-        <Menu>
-          <Box padding="20px">
-            <Stack space="14px">
-              <Text align="left" color="label" size="14pt" weight="medium">
-                {i18n.t('settings.networks.custom_rpc.tokens')}
-              </Text>
+        {featureFlags.custom_rpc &&
+        Object.values(customNetworkAssetsForChain || {}).length ? (
+          <Menu>
+            <Box padding="20px">
+              <Stack space="14px">
+                <Text align="left" color="label" size="14pt" weight="medium">
+                  {i18n.t('settings.networks.custom_rpc.tokens')}
+                </Text>
                 <Box width="full">
                   {customNetworkAssetsForChain?.map((asset, i) => (
                     <ContextMenu key={i}>
