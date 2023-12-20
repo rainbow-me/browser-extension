@@ -238,58 +238,68 @@ export function SettingsNetworksRPCs() {
               text={i18n.t('settings.networks.rpc_endpoints')}
             />
             <Box paddingHorizontal="1px" paddingVertical="1px">
-              {mainnetChains.map((chain, index) => (
-                <Box key={`${chain.name}`} width="full">
-                  <ContextMenu>
-                    <ContextMenuTrigger>
-                      <MenuItem
-                        first={!supportedChain && index === 0}
-                        leftComponent={
-                          <ChainBadge chainId={chain.id} size="18" shadow />
-                        }
-                        onClick={() =>
-                          handleRPCClick(chain.rpcUrls.default.http[0])
-                        }
-                        key={chain.name}
-                        rightComponent={
-                          chain.rpcUrls.default.http[0] ===
-                          rainbowChain.activeRpcUrl ? (
-                            <MenuItem.SelectionIcon />
-                          ) : null
-                        }
-                        titleComponent={<MenuItem.Title text={chain.name} />}
-                        labelComponent={
-                          <TextOverflow
-                            color={'labelTertiary'}
-                            size="11pt"
-                            weight={'medium'}
-                          >
-                            {isDefaultRPC({
-                              chainId: chain.id,
-                              rpcUrl: chain.rpcUrls.default.http[0],
-                            })
-                              ? i18n.t(
-                                  'settings.networks.custom_rpc.rainbow_default_rpc',
-                                )
-                              : chain.rpcUrls.default.http[0]}
-                          </TextOverflow>
-                        }
-                      />
-                    </ContextMenuTrigger>
-                    <ContextMenuContent>
-                      <ContextMenuItem
-                        symbolLeft="trash.fill"
-                        color="red"
-                        onSelect={() => handleRemoveRPC(chain)}
+              {mainnetChains.map((chain, index) => {
+                const menuItem = (
+                  <MenuItem
+                    first={!supportedChain && index === 0}
+                    leftComponent={
+                      <ChainBadge chainId={chain.id} size="18" shadow />
+                    }
+                    onClick={() =>
+                      handleRPCClick(chain.rpcUrls.default.http[0])
+                    }
+                    key={chain.name}
+                    rightComponent={
+                      chain.rpcUrls.default.http[0] ===
+                      rainbowChain.activeRpcUrl ? (
+                        <MenuItem.SelectionIcon />
+                      ) : null
+                    }
+                    titleComponent={<MenuItem.Title text={chain.name} />}
+                    labelComponent={
+                      <TextOverflow
+                        color={'labelTertiary'}
+                        size="11pt"
+                        weight={'medium'}
                       >
-                        <Text color="red" size="14pt" weight="semibold">
-                          {i18n.t('settings.networks.custom_rpc.remove_rpc')}
-                        </Text>
-                      </ContextMenuItem>
-                    </ContextMenuContent>
-                  </ContextMenu>
-                </Box>
-              ))}
+                        {isDefaultRPC({
+                          chainId: chain.id,
+                          rpcUrl: chain.rpcUrls.default.http[0],
+                        })
+                          ? i18n.t(
+                              'settings.networks.custom_rpc.rainbow_default_rpc',
+                            )
+                          : chain.rpcUrls.default.http[0]}
+                      </TextOverflow>
+                    }
+                  />
+                );
+
+                if (mainnetChains[index].name === supportedChain?.name) {
+                  return menuItem;
+                } else {
+                  return (
+                    <Box key={`${chain.name}`} width="full">
+                      <ContextMenu>
+                        <ContextMenuTrigger>{menuItem}</ContextMenuTrigger>
+                        <ContextMenuContent>
+                          <ContextMenuItem
+                            symbolLeft="trash.fill"
+                            color="red"
+                            onSelect={() => handleRemoveRPC(chain)}
+                          >
+                            <Text color="red" size="14pt" weight="semibold">
+                              {i18n.t(
+                                'settings.networks.custom_rpc.remove_rpc',
+                              )}
+                            </Text>
+                          </ContextMenuItem>
+                        </ContextMenuContent>
+                      </ContextMenu>
+                    </Box>
+                  );
+                }
+              })}
             </Box>
           </Menu>
         ) : null}
@@ -409,14 +419,14 @@ export function SettingsNetworksRPCs() {
           </Menu>
         ) : null}
 
-      {featureFlags.custom_rpc &&
-      Object.values(customNetworkAssetsForChain || {}).length ? (
-        <Menu>
-          <Box padding="20px">
-            <Stack space="14px">
-              <Text align="left" color="label" size="14pt" weight="medium">
-                {i18n.t('settings.networks.custom_rpc.tokens')}
-              </Text>
+        {featureFlags.custom_rpc &&
+        Object.values(customNetworkAssetsForChain || {}).length ? (
+          <Menu>
+            <Box padding="20px">
+              <Stack space="14px">
+                <Text align="left" color="label" size="14pt" weight="medium">
+                  {i18n.t('settings.networks.custom_rpc.tokens')}
+                </Text>
                 <Box width="full">
                   {customNetworkAssetsForChain?.map((asset, i) => (
                     <ContextMenu key={i}>
