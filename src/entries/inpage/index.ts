@@ -52,17 +52,19 @@ if (shouldInjectProvider()) {
     'wallet_switchEthereumChain',
     async ({
       chainId,
+      chainName,
       status,
       extensionUrl,
       host,
     }: {
       chainId: ChainId;
+      chainName?: string;
       status: IN_DAPP_NOTIFICATION_STATUS;
       extensionUrl: string;
       host: string;
     }) => {
       if (getDappHost(window.location.href) === host) {
-        injectNotificationIframe({ chainId, status, extensionUrl });
+        injectNotificationIframe({ chainId, chainName, status, extensionUrl });
       }
     },
   );

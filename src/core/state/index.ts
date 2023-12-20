@@ -25,3 +25,4 @@ export {
   usePendingTransactionsStore,
 } from './transactions/pendingTransactions';
 export { pendingRequestStore, usePendingRequestStore } from './requests';
+export { rainbowChainsStore, useRainbowChainsStore } from './rainbowChains';
