@@ -19,6 +19,7 @@ import {
 import {
   ChainId,
   ChainName,
+  ChainNameDisplay,
   chainIdToNameMapping,
   chainNameToIdMapping,
 } from '~/core/types/chains';
@@ -192,6 +193,11 @@ export const getRainbowChains = () => {
 export const findRainbowChainForChainId = (chainId: number) => {
   const { rainbowChains } = getRainbowChains();
   return rainbowChains.find((chain) => chain.id === chainId);
+};
+
+export const getChainName = ({ chainId }: { chainId: number }) => {
+  const chain = getChain({ chainId });
+  return ChainNameDisplay[chainId] || chain.name;
 };
 
 export const isCustomChain = (chainId: number) =>

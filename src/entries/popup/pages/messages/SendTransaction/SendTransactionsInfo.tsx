@@ -10,7 +10,8 @@ import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentCurrencyStore, useNonceStore } from '~/core/state';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
+import { getChainName } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { truncateString } from '~/core/utils/strings';
@@ -107,12 +108,12 @@ function Overview({
   error: SimulationError | null;
   metadata: DappMetadata | null;
 }) {
-  const chainId = simulation?.chainId;
-
+  const chainId = simulation?.chainId || ChainId.mainnet;
   const { badge, color } = getDappStatusBadge(
     metadata?.status || DAppStatus.Unverified,
     { size: 12 },
   );
+  const chainName = getChainName({ chainId });
 
   return (
     <Stack space="16px" paddingTop="14px">
@@ -128,7 +129,7 @@ function Overview({
 
       <Separator color="separatorTertiary" />
 
-      {chainId && ChainNameDisplay[chainId] && (
+      {chainId && chainName && (
         <InfoRow
           symbol="network"
           label={i18n.t('chain')}
@@ -136,7 +137,7 @@ function Overview({
             <Inline space="6px" alignVertical="center">
               <ChainBadge chainId={chainId} size={14} />
               <Text size="12pt" weight="semibold" color="labelSecondary">
-                {ChainNameDisplay[chainId]}
+                {chainName}
               </Text>
             </Inline>
           }
@@ -340,8 +341,8 @@ function InsuficientGasFunds({
   session: { address: Address; chainId: ChainId };
   onRejectRequest: VoidFunction;
 }) {
-  const chainName = ChainNameDisplay[chainId];
   const { nativeAsset } = useNativeAsset({ chainId, address });
+  const chainName = getChainName({ chainId });
 
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: hasBridgeableBalance } = useUserAssets(

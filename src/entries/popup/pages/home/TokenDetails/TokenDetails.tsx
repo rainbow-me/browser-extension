@@ -7,10 +7,10 @@ import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAsse
 import { useFavoritesStore } from '~/core/state/favorites';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import {
-  findRainbowChainForChainId,
+  getChainName,
   isCustomChain,
   isNativeAsset,
   isTestnetChainId,
@@ -189,12 +189,9 @@ function NetworkBanner({
   chainId: ChainId;
 }) {
   const [isExplainerOpen, toggleExplainer] = useReducer((s) => !s, false);
-  if (chainId === ChainId.mainnet) return null;
+  const chainName = getChainName({ chainId });
 
-  const chainName =
-    ChainNameDisplay[chainId] ||
-    findRainbowChainForChainId(chainId)?.name ||
-    '';
+  if (chainId === ChainId.mainnet) return null;
 
   return (
     <>
