@@ -62,7 +62,6 @@ export const Notification = ({
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
 }) => {
-  console.log('NOTIFICATION GETTING', chainName, chainId);
   const [ref, setRef] = useState<HTMLIFrameElement>();
   const [iframeLoaded, setIframeLoaded] = useState<boolean>(false);
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
