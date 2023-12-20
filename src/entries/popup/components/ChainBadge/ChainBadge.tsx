@@ -9,8 +9,9 @@ import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
 import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
 import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
+import { rainbowChainsStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { customChainIdsToAssetNames, getChain } from '~/core/utils/chains';
+import { customChainIdsToAssetNames } from '~/core/utils/chains';
 import { Box, Text } from '~/design-system';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 
@@ -71,7 +72,7 @@ const ChainBadge = ({
     !Object.keys(networkBadges).includes(`${chainId}`) &&
     !customChainIdsToAssetNames[chainId]
   ) {
-    const chain = getChain({ chainId });
+    const chain = rainbowChainsStore.getState().getActiveChain({ chainId });
     return (
       <Box
         borderRadius="round"
@@ -81,7 +82,7 @@ const ChainBadge = ({
           borderRadius: iconSize,
           boxShadow,
           backgroundColor: pseudoRandomArrayItemFromString<string>(
-            chain.name || '',
+            chain?.name || '',
             emojiColors,
           ),
         }}
@@ -102,7 +103,7 @@ const ChainBadge = ({
             weight="bold"
             align="center"
           >
-            {chain.name.substring(0, 1).toUpperCase()}
+            {chain?.name.substring(0, 1).toUpperCase()}
           </Text>
         </Box>
       </Box>

@@ -12,10 +12,12 @@ const DELAY_DURATION = 2000;
 
 export const injectNotificationIframe = async ({
   chainId,
+  chainName,
   status,
   extensionUrl,
 }: {
   chainId: ChainId;
+  chainName?: string;
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
 }) => {
@@ -32,7 +34,9 @@ export const injectNotificationIframe = async ({
   document.body.appendChild(notificationElement);
   const domContainer = document.getElementById(ELEMENT_ID) as Element;
   const root = createRoot(domContainer);
-  root.render(createElement(Notification, { chainId, status, extensionUrl }));
+  root.render(
+    createElement(Notification, { chainId, chainName, status, extensionUrl }),
+  );
 
   setTimeout(() => {
     document?.getElementById(ELEMENT_ID)?.remove();

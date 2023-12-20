@@ -18,6 +18,8 @@ import {
   ThemeProvider,
 } from '~/design-system';
 
+import { ChainBadge } from '../popup/components/ChainBadge/ChainBadge';
+
 const HTML_COLOR_SCHEME_PATTERN = /color-scheme:\s*(\w+);/;
 
 const ASSET_SOURCE = {
@@ -51,13 +53,16 @@ export enum IN_DAPP_NOTIFICATION_STATUS {
 
 export const Notification = ({
   chainId,
+  chainName,
   status,
   extensionUrl,
 }: {
   chainId: ChainId;
+  chainName?: string;
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
 }) => {
+  console.log('NOTIFICATION GETTING', chainName, chainId);
   const [ref, setRef] = useState<HTMLIFrameElement>();
   const [iframeLoaded, setIframeLoaded] = useState<boolean>(false);
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
@@ -218,6 +223,7 @@ export const Notification = ({
           <NotificationComponent
             siteTheme={siteTheme}
             chainId={chainId}
+            chainName={chainName}
             status={status}
             extensionUrl={extensionUrl}
             iframeLoaded={iframeLoaded}
@@ -231,6 +237,7 @@ export const Notification = ({
 
 const NotificationComponent = ({
   chainId,
+  chainName,
   siteTheme,
   status,
   extensionUrl,
@@ -238,6 +245,7 @@ const NotificationComponent = ({
   onDismiss,
 }: {
   chainId: ChainId;
+  chainName?: string;
   siteTheme: 'dark' | 'light';
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
@@ -249,7 +257,7 @@ const NotificationComponent = ({
       case IN_DAPP_NOTIFICATION_STATUS.success:
         return {
           title: i18n.t(`injected_notifications.network_changed`),
-          description: ChainNameDisplay[chainId],
+          description: ChainNameDisplay[chainId] || chainName,
         };
       case IN_DAPP_NOTIFICATION_STATUS.unsupported_network:
         return {
@@ -263,7 +271,7 @@ const NotificationComponent = ({
           description: i18n.t('injected_notifications.no_active_session'),
         };
     }
-  }, [chainId, status]);
+  }, [chainId, chainName, status]);
 
   return iframeLoaded ? (
     <ThemeProvider theme={siteTheme}>
@@ -299,7 +307,9 @@ const NotificationComponent = ({
                       width={24}
                       height={24}
                     />
-                  ) : null
+                  ) : (
+                    <ChainBadge chainId={chainId} size={24} />
+                  )
                 ) : (
                   <Box
                     height="full"

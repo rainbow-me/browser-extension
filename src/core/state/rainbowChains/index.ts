@@ -17,6 +17,7 @@ export interface RainbowChain {
 
 export interface RainbowChainsState {
   rainbowChains: Record<number, RainbowChain>;
+  getActiveChain: ({ chainId }: { chainId: number }) => Chain | undefined;
   addCustomRPC: ({ chain }: { chain: Chain }) => boolean;
   updateCustomRPC: ({ chain }: { chain: Chain }) => void;
   setActiveRPC: ({
@@ -58,6 +59,14 @@ const getInitialRainbowChains = () => {
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: getInitialRainbowChains(),
+    getActiveChain: ({ chainId }) => {
+      const rainbowChains = get().rainbowChains;
+      const rainbowChain = rainbowChains[chainId];
+      const chain = rainbowChain?.chains?.find(
+        (chain) => chain.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
+      );
+      return chain;
+    },
     addCustomRPC: ({ chain }) => {
       const rainbowChains = get().rainbowChains;
       const rainbowChain = rainbowChains[chain.id] || {
