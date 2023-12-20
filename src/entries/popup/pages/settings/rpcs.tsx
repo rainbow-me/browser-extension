@@ -175,8 +175,6 @@ export function SettingsNetworksRPCs() {
 
   const handleRemoveRPC = useCallback(
     (chain: Chain) => {
-      console.log('removing');
-
       removeCustomRPC({
         rpcUrl: chain.rpcUrls.default.http[0],
       });
