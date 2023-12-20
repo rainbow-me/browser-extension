@@ -3,7 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { Address, Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
+import {
+  SUPPORTED_CHAINS,
+  SUPPORTED_CHAIN_IDS,
+  getDefaultRPC,
+} from '~/core/references';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -69,7 +73,9 @@ export function SettingsNetworksRPCs() {
     },
   );
 
-  const customNetworkAssetsForChain = customNetworkAssets?.[chainId];
+  const customNetworkAssetsForChain = Object.values(
+    customNetworkAssets?.[chainId] || {},
+  ).filter((asset) => !asset.isNativeAsset);
 
   const navigate = useRainbowNavigate();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
@@ -243,7 +249,7 @@ export function SettingsNetworksRPCs() {
                         key={chain.name}
                         rightComponent={
                           chain.rpcUrls.default.http[0] ===
-                            rainbowChain.activeRpcUrl ? (
+                          rainbowChain.activeRpcUrl ? (
                             <MenuItem.SelectionIcon />
                           ) : null
                         }
@@ -259,8 +265,8 @@ export function SettingsNetworksRPCs() {
                               rpcUrl: chain.rpcUrls.default.http[0],
                             })
                               ? i18n.t(
-                                'settings.networks.custom_rpc.rainbow_default_rpc',
-                              )
+                                  'settings.networks.custom_rpc.rainbow_default_rpc',
+                                )
                               : chain.rpcUrls.default.http[0]}
                           </TextOverflow>
                         }
@@ -285,7 +291,7 @@ export function SettingsNetworksRPCs() {
         ) : null}
 
         {featureFlags.custom_rpc &&
-          (activeCustomRPC?.name || supportedChain?.name) ? (
+        (activeCustomRPC?.name || supportedChain?.name) ? (
           <Menu>
             <MenuItem
               first
@@ -372,10 +378,10 @@ export function SettingsNetworksRPCs() {
                             weight={'medium'}
                           >
                             {chainIdMap[chainId]?.includes(chain.id) &&
-                              chain.id !== chainId
+                            chain.id !== chainId
                               ? i18n.t(
-                                'settings.networks.custom_rpc.rainbow_default',
-                              )
+                                  'settings.networks.custom_rpc.rainbow_default',
+                                )
                               : chain.rpcUrls.default.http[0]}
                           </Text>
                         }
@@ -398,20 +404,17 @@ export function SettingsNetworksRPCs() {
             </Box>
           </Menu>
         ) : null}
-      </MenuContainer>
 
-      {featureFlags.custom_rpc &&
-        Object.values(customNetworkAssetsForChain || {}).length ? (
-        <Menu>
-          <Box padding="20px">
-            <Stack space="14px">
-              <Text align="left" color="label" size="14pt" weight="medium">
-                {i18n.t('settings.networks.custom_rpc.tokens')}
-              </Text>
+        {featureFlags.custom_rpc && customNetworkAssetsForChain.length ? (
+          <Menu>
+            <Box padding="20px">
+              <Stack space="14px">
+                <Text align="left" color="label" size="14pt" weight="medium">
+                  {i18n.t('settings.networks.custom_rpc.tokens')}
+                </Text>
 
-              <Box width="full">
-                {Object.values(customNetworkAssetsForChain || {})?.map(
-                  (asset, i) => (
+                <Box width="full">
+                  {customNetworkAssetsForChain?.map((asset, i) => (
                     <ContextMenu key={i}>
                       <ContextMenuTrigger>
                         <Box marginHorizontal="-12px">
@@ -475,29 +478,37 @@ export function SettingsNetworksRPCs() {
                         </ContextMenuItem>
                       </ContextMenuContent>
                     </ContextMenu>
-                  ),
-                )}
-              </Box>
-            </Stack>
-          </Box>
-        </Menu>
-      ) : null}
-      <Menu>
-        <MenuItem
-          first
-          last
-          leftComponent={
-            <Symbol symbol="trash.fill" weight="medium" size={18} color="red" />
-          }
-          onClick={() => handleRemoveNetwork({ chainId })}
-          titleComponent={
-            <MenuItem.Title
-              color="red"
-              text={i18n.t('settings.networks.custom_rpc.remove_network')}
+                  ))}
+                </Box>
+              </Stack>
+            </Box>
+          </Menu>
+        ) : null}
+
+        {!SUPPORTED_CHAIN_IDS.includes(chainId) ? (
+          <Menu>
+            <MenuItem
+              first
+              last
+              leftComponent={
+                <Symbol
+                  symbol="trash.fill"
+                  weight="medium"
+                  size={18}
+                  color="red"
+                />
+              }
+              onClick={() => handleRemoveNetwork({ chainId })}
+              titleComponent={
+                <MenuItem.Title
+                  color="red"
+                  text={i18n.t('settings.networks.custom_rpc.remove_network')}
+                />
+              }
             />
-          }
-        />
-      </Menu>
+          </Menu>
+        ) : null}
+      </MenuContainer>
     </Box>
   );
 }

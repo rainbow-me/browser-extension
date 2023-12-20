@@ -326,7 +326,6 @@ export const handleProviderRequest = ({
               isCustomChain(Number(proposedChainId)) ||
               isSupportedChainId(Number(proposedChainId));
             if (!supportedChainId) throw new Error('Chain Id not supported');
-            response = null;
           } else {
             const {
               chainId,
