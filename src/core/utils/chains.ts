@@ -55,6 +55,8 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   5000: 'mantle',
   1088: 'metis',
   1101: 'polygonzkevm',
+  42170: 'arbitrumnova',
+  369: 'pulsechain',
 };
 
 export const getSupportedChainsWithHardhat = () => {
