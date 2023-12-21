@@ -256,7 +256,7 @@ export function SettingsNetworksRPCs() {
                       <MenuItem
                         first={!supportedChain && index === 0}
                         leftComponent={
-                          <ChainBadge chainId={chain.id} size="16" shadow />
+                          <ChainBadge chainId={chain.id} size="18" shadow />
                         }
                         onClick={() =>
                           handleRPCClick(chain.rpcUrls.default.http[0])
