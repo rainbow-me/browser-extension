@@ -180,9 +180,6 @@ export function SettingsNetworks() {
                   alignItems="center"
                   justifyContent="center"
                   key={`${chain.id}`}
-                  // margin="-2px"
-                  // padding="2px"
-                  // style={{ height: 55 }}
                   testId={`network-row-${chain.id}`}
                   width="full"
                 >
@@ -196,14 +193,11 @@ export function SettingsNetworks() {
                       alignItems="center"
                       justifyContent="center"
                       position="relative"
-                      // padding="2px"
-                      // style={{ height: 46 }}
                     >
                       <ContextMenu>
                         <ContextMenuTrigger>
                           <MenuItem
                             disabled={!userChains[chain.id]}
-                            // height={46}
                             first={index === 0}
                             leftComponent={
                               <ChainBadge chainId={chain.id} size="18" shadow />
