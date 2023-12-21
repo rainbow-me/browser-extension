@@ -337,7 +337,7 @@ function YourRankAndNextDrop() {
             <TextOverflow size="20pt" weight="bold">
               #{formatNumber(user.stats.position.current)}
             </TextOverflow>
-            <TextOverflow
+            <Text
               size="10pt"
               weight="bold"
               color="accent"
@@ -346,7 +346,7 @@ function YourRankAndNextDrop() {
               {i18n.t('points.out_of', {
                 total: formatNumber(leaderboard.stats.total_users),
               })}
-            </TextOverflow>
+            </Text>
           </>
         )}
       </Card>
