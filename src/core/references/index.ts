@@ -13,6 +13,7 @@ import {
   polygon,
   polygonMumbai,
   zora,
+  zoraSepolia,
   zoraTestnet,
 } from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
@@ -136,6 +137,7 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.baseGoerli]: AddressZero as Address,
   [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
   [ChainId.zoraTestnet]: AddressZero as Address,
+  [ChainId.zoraSepolia]: AddressZero as Address,
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
   [ChainId.polygonMumbai]: AddressZero as Address,
 };
@@ -179,6 +181,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
   arbitrumGoerli,
   chainArbitrumSepolia,
   baseGoerli,
+  zoraSepolia,
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
@@ -196,6 +199,7 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   chainArbitrumSepolia,
   baseGoerli,
   zoraTestnet,
+  zoraSepolia,
 ];
 
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] =
@@ -239,6 +243,8 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.BASE_GOERLI_RPC };
     case ChainId.zoraTestnet:
       return { http: process.env.ZORA_GOERLI_RPC };
+    case ChainId.zoraSepolia:
+      return { http: process.env.ZORA_SEPOLIA_RPC };
     default:
       return null;
   }
