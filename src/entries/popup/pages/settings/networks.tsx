@@ -80,8 +80,6 @@ export function SettingsNetworks() {
     updateUserChainsOrder({ userChainsOrder: newUserChainsOrder });
   };
 
-  console.log('- userChains', userChains);
-  console.log('- userChainsOrder', userChainsOrder);
   const allNetworks = useMemo(
     () =>
       sortNetworks(userChainsOrder, mainChains).map((chain) => {
