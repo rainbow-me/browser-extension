@@ -70,6 +70,7 @@ export function SettingsNetworksRPCs() {
   const { data: customNetworkAssets = {} } = useCustomNetworkAssets(
     {
       filterZeroBalance: false,
+      filterNativeAsset: true,
       address: currentAddress,
       currency: currentCurrency,
     },
