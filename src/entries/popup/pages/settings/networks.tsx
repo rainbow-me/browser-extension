@@ -7,13 +7,14 @@ import { SUPPORTED_CHAINS, SUPPORTED_CHAIN_IDS } from '~/core/references';
 import { useRainbowChainsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getMainChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
 import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
-import { Box, Inset, Symbol, Text } from '~/design-system';
+import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
@@ -53,6 +54,8 @@ export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
   const { userChainsOrder, updateUserChainsOrder } = useUserChainsStore();
   const mainChains = getMainChains();
+  const { seenPromos, setSeenPromo } = useQuickPromoStore();
+
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
@@ -62,6 +65,8 @@ export function SettingsNetworks() {
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
+    if (!seenPromos[promoTypes.network_settings])
+      setSeenPromo(promoTypes.network_settings);
     if (!destination) return;
     if (destination.index === source.index) return;
     const newUserChainsOrder = reorder(
@@ -126,20 +131,24 @@ export function SettingsNetworks() {
                   symbol="plus.circle.fill"
                   weight="medium"
                   size={18}
-                  color="accent"
+                  color="blue"
                 />
               }
-              hasRightArrow
               onClick={() =>
                 navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
                   state: {
-                    title: i18n.t('settings.networks.custom_rpc.add_network'),
+                    title: i18n.t(
+                      'settings.networks.custom_rpc.add_custom_network',
+                    ),
                   },
                 })
               }
               titleComponent={
                 <MenuItem.Title
-                  text={i18n.t('settings.networks.custom_rpc.add_network')}
+                  color="blue"
+                  text={i18n.t(
+                    'settings.networks.custom_rpc.add_custom_network',
+                  )}
                 />
               }
             />
@@ -147,87 +156,131 @@ export function SettingsNetworks() {
         </MenuContainer>
       )}
 
-      <Inset bottom="8px">
-        <QuickPromo
-          text={i18n.t('settings.networks.quick_promo.text')}
-          textBold={i18n.t('settings.networks.quick_promo.text_bold')}
-          symbol="sparkle"
-          symbolColor="accent"
-          promoType="network_settings"
-        />
-      </Inset>
+      {!seenPromos[promoTypes.network_settings] && (
+        <Inset bottom="20px">
+          <QuickPromo
+            text={i18n.t('settings.networks.quick_promo.text')}
+            textBold={i18n.t('settings.networks.quick_promo.text_bold')}
+            symbol="sparkle"
+            symbolColor="accent"
+            promoType="network_settings"
+          />
+        </Inset>
+      )}
 
-      <MenuContainer testId="settings-menu-container">
+      <MenuContainer testId="network-settings-menu-container">
         <Menu>
           <DraggableContext onDragEnd={onDragEnd} height="fixed">
-            <Box paddingHorizontal="1px" paddingVertical="1px">
+            <Box>
               {allNetworks.map((chain: Chain, index) => (
-                <Box key={`${chain.id}`} testId={`network-row-${chain.id}`}>
-                  <DraggableItem id={`${chain.id}`} index={index}>
-                    <ContextMenu>
-                      <ContextMenuTrigger>
-                        <MenuItem
-                          first={index === 0}
-                          leftComponent={
-                            <ChainBadge chainId={chain.id} size="18" shadow />
-                          }
-                          onClick={() =>
-                            navigate(ROUTES.SETTINGS__NETWORKS__RPCS, {
-                              state: { chainId: chain.id, title: chain.name },
-                            })
-                          }
-                          key={chain.name}
-                          hasRightArrow
-                          titleComponent={<MenuItem.Title text={chain.name} />}
-                          labelComponent={
-                            developerToolsEnabled ? (
-                              <Text
-                                color={'labelTertiary'}
-                                size="11pt"
-                                weight={'medium'}
-                              >
-                                {userChains[chain.id]
-                                  ? chainLabel({
-                                      chainId: chain.id,
-                                      testnet: chain.testnet,
-                                    })
-                                  : i18n.t('settings.networks.disabled')}
-                              </Text>
-                            ) : null
-                          }
-                        />
-                      </ContextMenuTrigger>
-                      <ContextMenuContent>
-                        <ContextMenuItem
-                          symbolLeft={'switch.2'}
-                          onSelect={() =>
-                            enableNetwork({
-                              chainId: chain.id,
-                              enabled: !userChains[chain.id],
-                            })
-                          }
-                        >
-                          <Text size="14pt" weight="semibold">
-                            {userChains[chain.id] ? 'Disable' : 'Enable'}
-                          </Text>
-                        </ContextMenuItem>
-                        {!SUPPORTED_CHAIN_IDS.includes(chain.id) ? (
+                <Box
+                  alignItems="center"
+                  justifyContent="center"
+                  key={`${chain.id}`}
+                  padding="2px"
+                  testId={`network-row-${chain.id}`}
+                  width="full"
+                >
+                  <DraggableItem
+                    borderRadius={14}
+                    id={`${chain.id}`}
+                    index={index}
+                  >
+                    <Box
+                      alignItems="center"
+                      justifyContent="center"
+                      position="relative"
+                      style={{ height: 46 }}
+                    >
+                      <ContextMenu>
+                        <ContextMenuTrigger>
+                          <MenuItem
+                            disabled={!userChains[chain.id]}
+                            height={46}
+                            first={index === 0}
+                            leftComponent={
+                              <ChainBadge chainId={chain.id} size="18" shadow />
+                            }
+                            onClick={() =>
+                              navigate(ROUTES.SETTINGS__NETWORKS__RPCS, {
+                                state: { chainId: chain.id, title: chain.name },
+                              })
+                            }
+                            paddingHorizontal="14px"
+                            key={chain.name}
+                            hasRightArrow
+                            titleComponent={
+                              <MenuItem.Title text={chain.name} />
+                            }
+                            labelComponent={
+                              developerToolsEnabled || !userChains[chain.id] ? (
+                                <Text
+                                  color="labelQuaternary"
+                                  size="11pt"
+                                  weight="medium"
+                                >
+                                  {userChains[chain.id]
+                                    ? chainLabel({
+                                        chainId: chain.id,
+                                        testnet: chain.testnet,
+                                      })
+                                    : i18n.t('settings.networks.disabled')}
+                                </Text>
+                              ) : null
+                            }
+                          />
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
                           <ContextMenuItem
-                            symbolLeft="trash.fill"
-                            color="red"
+                            symbolLeft={'switch.2'}
                             onSelect={() =>
-                              handleRemoveNetwork({ chainId: chain.id })
+                              enableNetwork({
+                                chainId: chain.id,
+                                enabled: !userChains[chain.id],
+                              })
                             }
                           >
-                            <Text color="red" size="14pt" weight="semibold">
-                              {i18n.t(
-                                'settings.networks.custom_rpc.remove_network',
-                              )}
+                            <Text size="14pt" weight="semibold">
+                              {userChains[chain.id]
+                                ? i18n.t('settings.networks.disable')
+                                : i18n.t('settings.networks.enable')}
                             </Text>
                           </ContextMenuItem>
-                        ) : null}
-                      </ContextMenuContent>
-                    </ContextMenu>
+                          {!SUPPORTED_CHAIN_IDS.includes(chain.id) ? (
+                            <ContextMenuItem
+                              symbolLeft="trash.fill"
+                              color="red"
+                              onSelect={() =>
+                                handleRemoveNetwork({ chainId: chain.id })
+                              }
+                            >
+                              <Text color="red" size="14pt" weight="semibold">
+                                {i18n.t(
+                                  'settings.networks.custom_rpc.remove_network',
+                                )}
+                              </Text>
+                            </ContextMenuItem>
+                          ) : null}
+                        </ContextMenuContent>
+                      </ContextMenu>
+                      {index !== allNetworks.length - 1 && (
+                        <Box
+                          paddingHorizontal="14px"
+                          position="absolute"
+                          style={{
+                            bottom: -2.5,
+                            height: 1,
+                            overflow: 'visible',
+                          }}
+                          width="full"
+                        >
+                          <Separator
+                            color="separatorTertiary"
+                            strokeWeight="1px"
+                          />
+                        </Box>
+                      )}
+                    </Box>
                   </DraggableItem>
                 </Box>
               ))}

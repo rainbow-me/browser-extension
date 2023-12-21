@@ -3,15 +3,19 @@ import { Img, useImage } from 'react-image';
 
 import { Box, Symbol } from '~/design-system';
 import { BoxStyles } from '~/design-system/styles/core.css';
+import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { maybeSignUri } from '../../handlers/imgix';
 
 type ExternalImageProps = JSX.IntrinsicAttributes &
   React.ClassAttributes<HTMLImageElement> &
   React.ImgHTMLAttributes<HTMLImageElement> & {
-    borderRadius?: BoxStyles['borderRadius'];
+    borderRadius?: BoxStyles['borderRadius'] | number;
+    boxShadow?: React.CSSProperties['boxShadow'];
     customFallback?: React.ReactElement;
+    customFallbackSymbol?: SymbolName;
     mask?: string;
+    resizeMode?: 'contain' | 'cover';
   };
 
 const ExternalImage = (props: ExternalImageProps) => {
@@ -31,10 +35,16 @@ const ExternalImage = (props: ExternalImageProps) => {
   return (
     <Box
       alignItems="center"
-      borderRadius={props.borderRadius}
+      borderRadius={
+        typeof props.borderRadius !== 'number' ? props.borderRadius : undefined
+      }
       display="flex"
       justifyContent="center"
       style={{
+        ...(typeof props.borderRadius === 'number'
+          ? { borderRadius: props.borderRadius }
+          : {}),
+        boxShadow: isLoading || error ? undefined : props.boxShadow,
         height: props.height,
         overflow: error ? 'visible' : 'clip',
         width: props.width,
@@ -60,18 +70,27 @@ const ExternalImage = (props: ExternalImageProps) => {
             alignItems="center"
             background="fillQuaternary"
             borderColor="separatorTertiary"
-            borderRadius={props.borderRadius}
+            borderRadius={
+              typeof props.borderRadius !== 'number'
+                ? props.borderRadius
+                : undefined
+            }
             borderWidth="1px"
             display="flex"
             height="full"
             justifyContent="center"
+            style={
+              typeof props.borderRadius === 'number'
+                ? { borderRadius: props.borderRadius }
+                : {}
+            }
             width="full"
           >
             <Box opacity="0.5">
               <Symbol
                 color="labelQuaternary"
                 size={Math.min(Number(props.width) / 2.2, 24)}
-                symbol="photo.fill"
+                symbol={props.customFallbackSymbol || 'photo.fill'}
                 weight="bold"
               />
             </Box>
@@ -88,7 +107,7 @@ const ExternalImage = (props: ExternalImageProps) => {
                   WebkitMaskImage: `url(${props.mask})`,
                 }
               : {}),
-            objectFit: 'cover',
+            objectFit: props.resizeMode || 'cover',
             ...props.style,
           }}
           src={src || ''}
