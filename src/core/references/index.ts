@@ -2,15 +2,18 @@ import { AddressZero } from '@ethersproject/constants';
 import {
   arbitrum,
   arbitrumGoerli,
+  arbitrumSepolia,
   base,
   baseGoerli,
   baseSepolia,
   bsc,
   bscTestnet,
   goerli,
+  holesky,
   mainnet,
   optimism,
   optimismGoerli,
+  optimismSepolia,
   polygon,
   polygonMumbai,
   zora,
@@ -19,13 +22,7 @@ import {
 } from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
-import {
-  ChainId,
-  ChainNameDisplay,
-  chainArbitrumSepolia,
-  chainHolesky,
-  chainOptimismSepolia,
-} from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -170,18 +167,18 @@ export const SUPPORTED_CHAINS: Chain[] = [
   polygon,
   optimism,
   arbitrum,
-  chainHolesky,
+  holesky,
   base,
   zora,
   bsc,
   goerli,
   sepolia,
   optimismGoerli,
-  chainOptimismSepolia,
+  optimismSepolia,
   bscTestnet,
   polygonMumbai,
   arbitrumGoerli,
-  chainArbitrumSepolia,
+  arbitrumSepolia,
   baseGoerli,
   baseSepolia,
   zoraSepolia,
@@ -191,15 +188,15 @@ export const SUPPORTED_CHAINS: Chain[] = [
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
 export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
-  chainHolesky,
+  holesky,
   goerli,
   sepolia,
   optimismGoerli,
-  chainOptimismSepolia,
+  optimismSepolia,
   bscTestnet,
   polygonMumbai,
   arbitrumGoerli,
-  chainArbitrumSepolia,
+  arbitrumSepolia,
   baseGoerli,
   baseSepolia,
   zoraTestnet,

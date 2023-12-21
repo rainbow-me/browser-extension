@@ -1,13 +1,16 @@
 import {
   arbitrum,
   arbitrumGoerli,
+  arbitrumSepolia,
   base,
   baseGoerli,
   baseSepolia,
   bsc,
   bscTestnet,
+  holesky,
   optimism,
   optimismGoerli,
+  optimismSepolia,
   polygon,
   polygonMumbai,
   zora,
@@ -16,13 +19,7 @@ import {
 } from 'viem/chains';
 import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
-import {
-  ChainId,
-  ChainNameDisplay,
-  chainArbitrumSepolia,
-  chainHolesky,
-  chainOptimismSepolia,
-} from '../types/chains';
+import { ChainId, ChainNameDisplay } from '../types/chains';
 
 import {
   getSupportedChainsWithHardhat,
@@ -38,9 +35,9 @@ export const chainIdMap: Record<
   | ChainId.zora,
   ChainId[]
 > = {
-  [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, chainHolesky.id],
-  [ChainId.optimism]: [optimism.id, optimismGoerli.id, chainOptimismSepolia.id],
-  [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id, chainArbitrumSepolia.id],
+  [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, holesky.id],
+  [ChainId.optimism]: [optimism.id, optimismGoerli.id, optimismSepolia.id],
+  [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id, arbitrumSepolia.id],
   [ChainId.polygon]: [polygon.id, polygonMumbai.id],
   [ChainId.base]: [base.id, baseGoerli.id, baseSepolia.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
@@ -59,15 +56,15 @@ export const chainLabelMap: Record<
   [ChainId.mainnet]: [
     ChainNameDisplay[goerli.id],
     ChainNameDisplay[sepolia.id],
-    ChainNameDisplay[chainHolesky.id],
+    ChainNameDisplay[holesky.id],
   ],
   [ChainId.optimism]: [
     ChainNameDisplay[optimismGoerli.id],
-    ChainNameDisplay[chainOptimismSepolia.id],
+    ChainNameDisplay[optimismSepolia.id],
   ],
   [ChainId.arbitrum]: [
     ChainNameDisplay[arbitrumGoerli.id],
-    ChainNameDisplay[chainArbitrumSepolia.id],
+    ChainNameDisplay[arbitrumSepolia.id],
   ],
   [ChainId.polygon]: [ChainNameDisplay[polygonMumbai.id]],
   [ChainId.base]: [
