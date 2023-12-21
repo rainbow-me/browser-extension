@@ -42,6 +42,7 @@ const ASSET_SOURCE = {
   [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge.png',
   [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge.png',
   [ChainId.baseGoerli]: 'assets/badges/baseBadge.png',
+  [ChainId.baseSepolia]: 'assets/badges/baseBadge.png',
   [ChainId.zoraTestnet]: 'assets/badges/zoraBadge.png',
   [ChainId.zoraSepolia]: 'assets/badges/zoraBadge.png',
 };
