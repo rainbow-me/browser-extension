@@ -11,7 +11,7 @@ import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
-import { getMainChains } from '~/core/utils/chains';
+import { useMainChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
 import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
@@ -52,14 +52,17 @@ const chainLabel = ({
 
 export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
-  const { userChainsOrder, updateUserChainsOrder } = useUserChainsStore();
-  const mainChains = getMainChains();
+  const mainChains = useMainChains();
   const { seenPromos, setSeenPromo } = useQuickPromoStore();
-
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
-  const { userChains, updateUserChain } = useUserChainsStore();
+  const {
+    userChains,
+    userChainsOrder,
+    updateUserChain,
+    updateUserChainsOrder,
+  } = useUserChainsStore();
   const { rainbowChains, removeCustomRPC } = useRainbowChainsStore();
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
 
@@ -77,6 +80,8 @@ export function SettingsNetworks() {
     updateUserChainsOrder({ userChainsOrder: newUserChainsOrder });
   };
 
+  console.log('- userChains', userChains);
+  console.log('- userChainsOrder', userChainsOrder);
   const allNetworks = useMemo(
     () =>
       sortNetworks(userChainsOrder, mainChains).map((chain) => {

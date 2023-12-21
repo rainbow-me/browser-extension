@@ -9,7 +9,7 @@ import {
   moonbeam,
 } from '@wagmi/chains';
 import { getNetwork } from '@wagmi/core';
-import { mainnet } from 'wagmi';
+import { mainnet, useNetwork } from 'wagmi';
 
 import {
   NATIVE_ASSETS_PER_CHAIN,
@@ -73,6 +73,36 @@ export const getSupportedChainsWithHardhat = () => {
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
   return chains.filter((chain) => !chain.testnet);
+};
+
+export const useMainChains = () => {
+  const { chains } = useNetwork();
+  // All the mainnets we support
+  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
+    (chain) => !chain.testnet,
+  );
+
+  // The chain ID of all the mainnets we support
+  const supportedChainIds = mainSupportedChains.map((chain) => chain.id);
+
+  // All the chains that the user added
+  const customMainChains = chains?.filter(
+    (chain) =>
+      !supportedChainIds.includes(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+  );
+
+  const customChainsIncludingTestnets = customMainChains.filter(
+    (chain: Chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        !mainSupportedChains
+          .map((chain: Chain) => chain.id)
+          .includes(chain.id) &&
+        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id)),
+  );
+
+  return mainSupportedChains.concat(customChainsIncludingTestnets);
 };
 
 export const getMainChains = () => {
