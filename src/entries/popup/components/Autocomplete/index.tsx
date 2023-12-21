@@ -1,14 +1,33 @@
+import { AddressZero } from '@ethersproject/constants';
+import clsx from 'clsx';
 import { Command } from 'cmdk';
+import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
-import { Box } from '~/design-system';
+import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
+import { Box, Inline, Text } from '~/design-system';
 import { stylesForHeight } from '~/design-system/components/Input/Input';
-import { BoxStyles, semanticColorVars } from '~/design-system/styles/core.css';
+import {
+  accentCaretStyle,
+  placeholderStyle,
+} from '~/design-system/components/Input/Input.css';
+import { selectedItem } from '~/design-system/styles/autocompleteInputStyles.css';
+import {
+  BoxStyles,
+  semanticColorVars,
+  textStyles,
+} from '~/design-system/styles/core.css';
+import {
+  transformScales,
+  transitions,
+} from '~/design-system/styles/designTokens';
+
+import ExternalImage from '../ExternalImage/ExternalImage';
 
 export interface AutocompleteItem {
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value?: any;
+  networkInfo: customNetworkInfo;
 }
 
 export interface AutocompleteData {
@@ -25,7 +44,18 @@ export interface AutocompleteProps {
   borderColor?: BoxStyles['borderColor'];
   placeholder?: string;
   open: boolean;
+  autoFocus?: boolean;
+  tabIndex: number;
 }
+
+export type customNetworkInfo = {
+  rpcUrl: string;
+  chainId: number;
+  decimals: number;
+  symbol: string;
+  explorerUrl: string;
+  testnet: boolean;
+};
 
 export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
   function Autocomplete(
@@ -39,6 +69,8 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       borderColor,
       placeholder,
       open,
+      autoFocus,
+      tabIndex,
     }: AutocompleteProps,
     ref,
   ) {
@@ -51,23 +83,35 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
 
     return (
       <Box position="relative">
-        <Command label="">
+        <Command label="" loop>
           <Box
+            as={motion.div}
             borderColor={borderColor as BoxStyles['borderColor']}
             borderRadius={defaultBorderRadius}
             borderWidth="1px"
+            transition={transitions.bounce}
+            whileTap={{ scale: transformScales['0.96'] }}
           >
             <Command.Input
+              autoFocus={autoFocus}
               value={value}
               onValueChange={onChange}
+              className={clsx([
+                textStyles({
+                  fontSize: defaultFontSize,
+                  fontWeight: 'semibold',
+                  fontFamily: 'rounded',
+                }),
+                placeholderStyle,
+                accentCaretStyle,
+              ])}
+              spellCheck={false}
               style={{
                 width: '100%',
-                fontSize: defaultFontSize?.replace('pt', 'px'),
                 paddingLeft: paddingHorizontal,
                 paddingRight: paddingHorizontal,
                 paddingTop: paddingVertical,
                 paddingBottom: paddingVertical,
-
                 outline: 'none',
                 backgroundColor:
                   semanticColorVars.backgroundColors.surfacePrimaryElevated,
@@ -76,8 +120,10 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                 overflow: 'hidden',
                 borderRadius: defaultBorderRadius,
                 border: 'none',
+                fontFamily: 'SFRounded, system-ui',
               }}
               placeholder={placeholder}
+              tabIndex={tabIndex}
               // otherwise blur triggers before onSelect
               onBlur={() => setTimeout(onBlur, 200)}
               onFocus={onFocus}
@@ -86,14 +132,16 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
           </Box>
           {open && (
             <Box
-              borderColor={'accent'}
-              background="surfacePrimaryElevated"
+              backdropFilter="blur(26px)"
+              background="surfaceMenu"
+              width="full"
               style={{
+                alignSelf: 'center',
                 position: 'absolute',
                 zIndex: 999999,
-                width: '100%',
-                boxShadow: '2px 12px 12px rgba(0, 0, 0, 0.65)',
-                borderRadius: defaultBorderRadius,
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+                borderRadius: 16,
+                marginTop: 6,
                 maxHeight: '380px',
                 overflow: 'scroll',
               }}
@@ -102,45 +150,57 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                 {Object.keys(data).map((key) => {
                   return (
                     <Command.Group
-                      heading={key}
+                      className={textStyles({
+                        color: 'labelTertiary',
+                        fontSize: '12pt',
+                        fontWeight: 'semibold',
+                        fontFamily: 'rounded',
+                      })}
                       key={key}
                       style={{
-                        color:
-                          semanticColorVars.foregroundColors.labelSecondary,
-                        fontSize: '12px',
-                        padding: '20px 18px',
+                        padding: '9.5px 7px 9px',
                       }}
                     >
-                      <Box paddingTop="12px">
-                        {data[key].map((item: { name: string }) => (
-                          <Box key={`${key}_${item.name}`}>
+                      <Box>
+                        {data[key].map(
+                          (item: {
+                            name: string;
+                            networkInfo: customNetworkInfo;
+                          }) => (
                             <Command.Item
+                              className={selectedItem}
+                              key={`${key}_${item.name}`}
                               style={{
-                                padding: '8px 12px',
-                                fontSize: '14px',
-                                lineHeight: '20px',
-                                borderRadius: '8px',
+                                margin: '1px 0',
+                                padding: '6px 8px',
+                                borderRadius: '10px',
                                 outline: 'none',
-                                backgroundColor:
-                                  semanticColorVars.backgroundColors
-                                    .surfacePrimaryElevated,
-                                color: semanticColorVars.foregroundColors.label,
                               }}
                               onSelect={() => onSelect(item.name)}
                               value={item.name}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                  semanticColorVars.backgroundColors.surfaceSecondaryElevated;
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                  semanticColorVars.backgroundColors.surfacePrimaryElevated;
-                              }}
                             >
-                              {item.name}
+                              <Inline alignVertical="center" space="8px">
+                                <ExternalImage
+                                  borderRadius="10px"
+                                  customFallbackSymbol="globe"
+                                  height={20}
+                                  src={getCustomChainIconUrl(
+                                    item.networkInfo.chainId,
+                                    AddressZero,
+                                  )}
+                                  width={20}
+                                />
+                                <Text
+                                  color="label"
+                                  size="14pt"
+                                  weight="semibold"
+                                >
+                                  {item.name}
+                                </Text>
+                              </Inline>
                             </Command.Item>
-                          </Box>
-                        ))}
+                          ),
+                        )}
                       </Box>
                     </Command.Group>
                   );

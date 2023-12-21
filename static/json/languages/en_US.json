@@ -73,7 +73,7 @@
     "title": "Settings",
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
     "sounds": "Sounds",
-    "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
+    "default_wallet_description": "Allow apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
     "guides_and_support": "Guides & Support",
     "learn_about_ethereum": "Learn About Ethereum",
@@ -94,7 +94,10 @@
         "text": "Drag networks to reorder them",
         "text_bold": "Tip:"
       },
+      "disable": "Disable",
       "disabled": "Disabled",
+      "enable": "Enable",
+      "enabled": "Network Enabled",
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
       "developer_tools": {
         "title": "Enable Developer Tools",
@@ -102,6 +105,7 @@
       },
       "custom_rpc": {
         "title": "Add Custom RPC",
+        "add_custom_network": "Add Custom Network",
         "networks": "Networks",
         "network_name": "Network Name",
         "rpc_url": "RPC URL",
@@ -112,23 +116,23 @@
         "testnet": "Testnet",
         "block_explorer_url": "Block Explorer URL",
         "add_network": "Add Network",
-        "add_rpc": "Add %{rpcName} RPC",
+        "add_rpc": "Add RPC Endpoint",
+        "add_network_rpc": "Add %{rpcName} RPC",
         "add_asset": "Add Custom Token",
-        "network_added": "Network Added!",
-        "network_added_correctly": "%{networkName} has been added correctly!",
+        "network_added": "Network Added",
+        "network_added_correctly": "%{networkName}",
         "remove_token": "Remove Token",
         "remove_rpc": "Remove RPC",
         "remove_network": "Remove Network",
         "tokens": "Tokens",
-        "cant_connect": "Can't connect to this RPC endpoint!",
-        "rpc_not_responding": "The provided url is not responding",
-        "rainbow_default_rpc": "Rainbow's default RPC",
-        "rainbow_default": "Rainbow's default"
+        "cant_connect": "Can't connect to this RPC endpoint",
+        "rpc_not_responding": "The provided RPC endpoint is not responding",
+        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default": "Rainbow"
       },
       "rpc_endpoints": "RPC Endpoints",
-      "enabled": "Enabled",
       "watch_asset": {
-        "title": "Watch Asset"
+        "title": "Add Custom Token"
       }
     },
     "privacy_and_security": {
@@ -1219,7 +1223,7 @@
     "sort_option_recent_long": "Recent",
     "sort_option_abc_long": "Alphabetical",
     "details": {
-      "last_sales_price": "Last Sales Price",
+      "last_sales_price": "Last Sale Price",
       "none": "None",
       "floor_price": "Floor Price",
       "description": "Description",

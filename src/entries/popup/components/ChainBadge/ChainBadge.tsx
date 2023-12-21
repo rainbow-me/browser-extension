@@ -9,6 +9,7 @@ import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
 import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
 import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
 import { customChainIdsToAssetNames, getChain } from '~/core/utils/chains';
 import { Box, Text } from '~/design-system';
@@ -61,9 +62,14 @@ const ChainBadge = ({
   shadow = false,
   size = '18',
 }: ChainIconProps) => {
+  const { currentTheme } = useCurrentThemeStore();
+
   let boxShadow;
   if (shadow) {
-    boxShadow = '0px 4px 12px 0px rgba(0, 0, 0, 0.3)';
+    boxShadow =
+      currentTheme === 'dark'
+        ? '0px 2px 6px 0px rgba(0, 0, 0, 0.02), 0px 4px 12px 0px rgba(0, 0, 0, 0.24)'
+        : '0px 2px 6px 0px rgba(0, 0, 0, 0.02), 0px 4px 12px 0px rgba(37, 41, 46, 0.08)';
   }
   const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
 
@@ -113,22 +119,25 @@ const ChainBadge = ({
     <Box
       borderRadius="round"
       style={{
+        height: iconSize,
         width: iconSize,
         borderRadius: iconSize,
-        boxShadow,
+        ...(customChainIdsToAssetNames[chainId] ? {} : { boxShadow }),
       }}
     >
       {customChainIdsToAssetNames[chainId] ? (
         <ExternalImage
           src={getCustomChainIconUrl(chainId, AddressZero)}
+          borderRadius={iconSize}
+          boxShadow={boxShadow}
           width={iconSize}
           height={iconSize}
+          customFallbackSymbol="globe"
           loading="lazy"
           style={{
             userSelect: 'none',
             height: iconSize,
             width: iconSize,
-            borderRadius: iconSize,
           }}
           draggable={false}
         />
@@ -139,6 +148,7 @@ const ChainBadge = ({
           height={iconSize}
           loading="lazy"
           style={{
+            borderRadius: iconSize,
             userSelect: 'none',
           }}
           draggable={false}

@@ -1,3 +1,4 @@
+import chroma from 'chroma-js';
 import React, { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address, Chain } from 'wagmi';
@@ -7,6 +8,7 @@ import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
@@ -19,15 +21,15 @@ import {
   Column,
   Columns,
   Inline,
-  Inset,
   Row,
   Rows,
-  Stack,
+  Separator,
   Symbol,
   Text,
   TextOverflow,
 } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
+import { foregroundColors } from '~/design-system/styles/designTokens';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
@@ -46,12 +48,12 @@ import {
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
-import { RowHighlightWrapper } from '../send/RowHighlightWrapper';
 
 export function SettingsNetworksRPCs() {
   const { featureFlags } = useFeatureFlagsStore();
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
+  const { currentTheme } = useCurrentThemeStore();
   const {
     state: { chainId },
   } = useLocation();
@@ -68,6 +70,8 @@ export function SettingsNetworksRPCs() {
       select: selectUserAssetsDictByChain,
     },
   );
+
+  const green = foregroundColors.green;
 
   const customNetworkAssetsForChain = customNetworkAssets?.[chainId];
 
@@ -208,6 +212,7 @@ export function SettingsNetworksRPCs() {
         <Menu>
           <MenuItem
             first
+            last
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.networks.enabled')} />
             }
@@ -225,7 +230,9 @@ export function SettingsNetworksRPCs() {
         {supportedChain || mainnetChains.length ? (
           <Menu>
             <MenuItem.Description
+              color="labelSecondary"
               text={i18n.t('settings.networks.rpc_endpoints')}
+              weight="bold"
             />
             <Box paddingHorizontal="1px" paddingVertical="1px">
               {mainnetChains.map((chain, index) => (
@@ -235,7 +242,7 @@ export function SettingsNetworksRPCs() {
                       <MenuItem
                         first={!supportedChain && index === 0}
                         leftComponent={
-                          <ChainBadge chainId={chain.id} size="18" shadow />
+                          <ChainBadge chainId={chain.id} size="16" shadow />
                         }
                         onClick={() =>
                           handleRPCClick(chain.rpcUrls.default.http[0])
@@ -243,26 +250,83 @@ export function SettingsNetworksRPCs() {
                         key={chain.name}
                         rightComponent={
                           chain.rpcUrls.default.http[0] ===
-                            rainbowChain.activeRpcUrl ? (
-                            <MenuItem.SelectionIcon />
+                          rainbowChain.activeRpcUrl ? (
+                            <Box
+                              alignItems="center"
+                              borderRadius="8px"
+                              display="flex"
+                              justifyContent="center"
+                              paddingHorizontal="6px"
+                              style={{
+                                backgroundColor: `rgba(${chroma(
+                                  currentTheme === 'dark'
+                                    ? green.dark
+                                    : green.light,
+                                ).rgb()}, 0.06)`,
+                                boxShadow: `0 0 0 1.5px rgba(${chroma(
+                                  currentTheme === 'dark'
+                                    ? green.dark
+                                    : green.light,
+                                ).rgb()}, 0.04) inset`,
+                                height: 20,
+                              }}
+                            >
+                              <Inline
+                                alignHorizontal="center"
+                                alignVertical="center"
+                                space="3px"
+                              >
+                                <Box
+                                  alignItems="center"
+                                  display="flex"
+                                  justifyContent="center"
+                                >
+                                  {/* <Box
+                                    borderRadius="round"
+                                    position="absolute"
+                                    style={{
+                                      backgroundColor: globalColors.grey100,
+                                      height: 6,
+                                      width: 6,
+                                    }}
+                                  /> */}
+                                  <Symbol
+                                    color="green"
+                                    size={9}
+                                    symbol="checkmark"
+                                    weight="bold"
+                                  />
+                                </Box>
+                                <Text
+                                  align="center"
+                                  color="green"
+                                  size="12pt"
+                                  weight="bold"
+                                >
+                                  Active
+                                </Text>
+                              </Inline>
+                            </Box>
                           ) : null
                         }
                         titleComponent={<MenuItem.Title text={chain.name} />}
                         labelComponent={
-                          <TextOverflow
-                            color={'labelTertiary'}
-                            size="11pt"
-                            weight={'medium'}
-                          >
-                            {isDefaultRPC({
-                              chainId: chain.id,
-                              rpcUrl: chain.rpcUrls.default.http[0],
-                            })
-                              ? i18n.t(
-                                'settings.networks.custom_rpc.rainbow_default_rpc',
-                              )
-                              : chain.rpcUrls.default.http[0]}
-                          </TextOverflow>
+                          <Box paddingRight="8px">
+                            <TextOverflow
+                              color={'labelTertiary'}
+                              size="11pt"
+                              weight={'medium'}
+                            >
+                              {isDefaultRPC({
+                                chainId: chain.id,
+                                rpcUrl: chain.rpcUrls.default.http[0],
+                              })
+                                ? i18n.t(
+                                    'settings.networks.custom_rpc.rainbow_default_rpc',
+                                  )
+                                : chain.rpcUrls.default.http[0]}
+                            </TextOverflow>
+                          </Box>
                         }
                       />
                     </ContextMenuTrigger>
@@ -285,219 +349,237 @@ export function SettingsNetworksRPCs() {
         ) : null}
 
         {featureFlags.custom_rpc &&
-          (activeCustomRPC?.name || supportedChain?.name) ? (
-          <Menu>
-            <MenuItem
-              first
-              last
-              leftComponent={
-                <Symbol
-                  symbol="plus.circle.fill"
-                  weight="medium"
-                  size={18}
-                  color="accent"
-                />
-              }
-              hasRightArrow
-              onClick={() =>
-                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
-                  state: {
-                    chain: activeCustomRPC || supportedChain,
-                    title: i18n.t('settings.networks.custom_rpc.add_rpc', {
-                      rpcName: activeCustomRPC?.name || supportedChain?.name,
-                    }),
-                  },
-                })
-              }
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t('settings.networks.custom_rpc.add_rpc', {
-                    rpcName: supportedChain?.name || activeCustomRPC?.name,
-                  })}
-                />
-              }
-            />
-          </Menu>
+        (activeCustomRPC?.name || supportedChain?.name) ? (
+          <>
+            <Menu>
+              <MenuItem
+                first
+                last
+                leftComponent={
+                  <Symbol
+                    symbol="plus.circle.fill"
+                    weight="medium"
+                    size={18}
+                    color="blue"
+                  />
+                }
+                onClick={() =>
+                  navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
+                    state: {
+                      chain: activeCustomRPC || supportedChain,
+                      title: i18n.t(
+                        'settings.networks.custom_rpc.add_network_rpc',
+                        {
+                          rpcName:
+                            activeCustomRPC?.name || supportedChain?.name,
+                        },
+                      ),
+                    },
+                  })
+                }
+                titleComponent={
+                  <MenuItem.Title
+                    color="blue"
+                    text={i18n.t('settings.networks.custom_rpc.add_rpc')}
+                  />
+                }
+              />
+            </Menu>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </>
         ) : null}
 
-        {featureFlags.custom_rpc && (
+        {featureFlags.custom_rpc &&
+        Object.values(customNetworkAssetsForChain || {}).length ? (
           <Menu>
-            <MenuItem
-              testId={'custom-chain-link'}
-              first
-              last
-              leftComponent={
-                <Symbol
-                  symbol="plus.circle.fill"
-                  weight="medium"
-                  size={18}
-                  color="accent"
-                />
-              }
-              hasRightArrow
-              onClick={() =>
-                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
-                  state: {
-                    chainId,
-                  },
-                })
-              }
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t('settings.networks.custom_rpc.add_asset')}
-                />
-              }
+            <MenuItem.Description
+              color="labelSecondary"
+              text={i18n.t('settings.networks.custom_rpc.tokens')}
+              weight="bold"
             />
-          </Menu>
-        )}
-        {developerToolsEnabled && testnetChains.length ? (
-          <Menu>
-            <MenuItem.Description text={i18n.t('settings.networks.testnets')} />
-            <Box paddingHorizontal="1px" paddingVertical="1px">
-              {testnetChains.map((chain, index) => (
-                <Box key={`${chain.name}`} testId={`network-row-${chain.name}`}>
-                  <ContextMenu>
+            <Box
+              paddingLeft="16px"
+              paddingRight="10px"
+              paddingVertical="9px"
+              width="full"
+            >
+              {Object.values(customNetworkAssetsForChain || {})?.map(
+                (asset, i) => (
+                  <ContextMenu key={i}>
                     <ContextMenuTrigger>
-                      <MenuItem
-                        first={!supportedChain && index === 0}
-                        leftComponent={
-                          <ChainBadge chainId={chain.id} size="18" shadow />
-                        }
-                        key={chain.name}
-                        titleComponent={<MenuItem.Title text={chain.name} />}
-                        labelComponent={
-                          <Text
-                            color={'labelTertiary'}
-                            size="11pt"
-                            weight={'medium'}
-                          >
-                            {chainIdMap[chainId]?.includes(chain.id) &&
-                              chain.id !== chainId
-                              ? i18n.t(
-                                'settings.networks.custom_rpc.rainbow_default',
-                              )
-                              : chain.rpcUrls.default.http[0]}
-                          </Text>
-                        }
-                      />
+                      <Inline
+                        alignVertical="center"
+                        alignHorizontal="center"
+                        wrap={false}
+                      >
+                        <Rows alignVertical="center">
+                          <Row>
+                            <Columns alignVertical="center" space="10px">
+                              <Column width="content">
+                                <CoinIcon
+                                  asset={asset}
+                                  badge={false}
+                                  size={24}
+                                />
+                              </Column>
+                              <Column>
+                                <Text
+                                  align="left"
+                                  color="label"
+                                  size="14pt"
+                                  weight="semibold"
+                                >
+                                  {asset.name}
+                                </Text>
+                              </Column>
+                            </Columns>
+                          </Row>
+                        </Rows>
+                        <MoreInfoButton
+                          options={options({
+                            address: asset.address as Address,
+                          })}
+                        />
+                      </Inline>
                     </ContextMenuTrigger>
                     <ContextMenuContent>
                       <ContextMenuItem
                         symbolLeft="trash.fill"
                         color="red"
-                        onSelect={() => handleRemoveRPC(chain)}
+                        onSelect={() =>
+                          removeRainbowChainAsset({
+                            chainId,
+                            address: asset.address as Address,
+                          })
+                        }
                       >
                         <Text color="red" size="14pt" weight="semibold">
-                          {i18n.t('settings.networks.custom_rpc.remove_rpc')}
+                          {i18n.t('settings.networks.custom_rpc.remove_token')}
                         </Text>
                       </ContextMenuItem>
                     </ContextMenuContent>
                   </ContextMenu>
-                </Box>
-              ))}
+                ),
+              )}
             </Box>
           </Menu>
         ) : null}
-      </MenuContainer>
 
-      {featureFlags.custom_rpc &&
-        Object.values(customNetworkAssetsForChain || {}).length ? (
-        <Menu>
-          <Box padding="20px">
-            <Stack space="14px">
-              <Text align="left" color="label" size="14pt" weight="medium">
-                {i18n.t('settings.networks.custom_rpc.tokens')}
-              </Text>
+        {featureFlags.custom_rpc && (
+          <>
+            <Menu>
+              <MenuItem
+                testId={'custom-token-link'}
+                first
+                last
+                leftComponent={
+                  <Symbol
+                    color="blue"
+                    symbol="plus.circle.fill"
+                    weight="medium"
+                    size={18}
+                  />
+                }
+                onClick={() =>
+                  navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
+                    state: {
+                      chainId,
+                    },
+                  })
+                }
+                titleComponent={
+                  <MenuItem.Title
+                    color="blue"
+                    text={i18n.t('settings.networks.custom_rpc.add_asset')}
+                  />
+                }
+              />
+            </Menu>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </>
+        )}
 
-              <Box width="full">
-                {Object.values(customNetworkAssetsForChain || {})?.map(
-                  (asset, i) => (
-                    <ContextMenu key={i}>
+        {developerToolsEnabled && testnetChains.length ? (
+          <>
+            <Menu>
+              <MenuItem.Description
+                color="labelSecondary"
+                text={i18n.t('settings.networks.testnets')}
+                weight="bold"
+              />
+              <Box paddingHorizontal="1px" paddingVertical="1px">
+                {testnetChains.map((chain, index) => (
+                  <Box
+                    key={`${chain.name}`}
+                    testId={`network-row-${chain.name}`}
+                  >
+                    <ContextMenu>
                       <ContextMenuTrigger>
-                        <Box marginHorizontal="-12px">
-                          <RowHighlightWrapper>
-                            <Inline
-                              alignVertical="center"
-                              alignHorizontal="center"
-                              wrap={false}
+                        <MenuItem
+                          first={!supportedChain && index === 0}
+                          leftComponent={
+                            <ChainBadge chainId={chain.id} size="18" shadow />
+                          }
+                          key={chain.name}
+                          titleComponent={<MenuItem.Title text={chain.name} />}
+                          labelComponent={
+                            <Text
+                              color={'labelTertiary'}
+                              size="11pt"
+                              weight={'medium'}
                             >
-                              <Box style={{ height: '52px' }} width="full">
-                                <Inset horizontal="12px" vertical="8px">
-                                  <Rows>
-                                    <Row>
-                                      <Columns
-                                        alignVertical="center"
-                                        space="8px"
-                                      >
-                                        <Column width="content">
-                                          <CoinIcon asset={asset} />
-                                        </Column>
-                                        <Column>
-                                          <Text
-                                            align="left"
-                                            color="label"
-                                            size="14pt"
-                                            weight="medium"
-                                          >
-                                            {asset.name}
-                                          </Text>
-                                        </Column>
-                                      </Columns>
-                                    </Row>
-                                  </Rows>
-                                </Inset>
-                              </Box>
-                              <MoreInfoButton
-                                options={options({
-                                  address: asset.address as Address,
-                                })}
-                              />
-                            </Inline>
-                          </RowHighlightWrapper>
-                        </Box>
+                              {chainIdMap[chainId]?.includes(chain.id) &&
+                              chain.id !== chainId
+                                ? i18n.t(
+                                    'settings.networks.custom_rpc.rainbow_default',
+                                  )
+                                : chain.rpcUrls.default.http[0]}
+                            </Text>
+                          }
+                        />
                       </ContextMenuTrigger>
                       <ContextMenuContent>
                         <ContextMenuItem
                           symbolLeft="trash.fill"
                           color="red"
-                          onSelect={() =>
-                            removeRainbowChainAsset({
-                              chainId,
-                              address: asset.address as Address,
-                            })
-                          }
+                          onSelect={() => handleRemoveRPC(chain)}
                         >
                           <Text color="red" size="14pt" weight="semibold">
-                            {i18n.t(
-                              'settings.networks.custom_rpc.remove_token',
-                            )}
+                            {i18n.t('settings.networks.custom_rpc.remove_rpc')}
                           </Text>
                         </ContextMenuItem>
                       </ContextMenuContent>
                     </ContextMenu>
-                  ),
-                )}
+                  </Box>
+                ))}
               </Box>
-            </Stack>
-          </Box>
+            </Menu>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </>
+        ) : null}
+
+        <Menu>
+          <MenuItem
+            first
+            last
+            leftComponent={
+              <Symbol
+                symbol="trash.fill"
+                weight="medium"
+                size={18}
+                color="red"
+              />
+            }
+            onClick={() => handleRemoveNetwork({ chainId })}
+            titleComponent={
+              <MenuItem.Title
+                color="red"
+                text={i18n.t('settings.networks.custom_rpc.remove_network')}
+              />
+            }
+          />
         </Menu>
-      ) : null}
-      <Menu>
-        <MenuItem
-          first
-          last
-          leftComponent={
-            <Symbol symbol="trash.fill" weight="medium" size={18} color="red" />
-          }
-          onClick={() => handleRemoveNetwork({ chainId })}
-          titleComponent={
-            <MenuItem.Title
-              color="red"
-              text={i18n.t('settings.networks.custom_rpc.remove_network')}
-            />
-          }
-        />
-      </Menu>
+      </MenuContainer>
     </Box>
   );
 }

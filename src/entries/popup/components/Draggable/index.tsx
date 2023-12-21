@@ -13,11 +13,13 @@ import { Box } from '~/design-system';
 import { dragabbleItem } from './draggableItem.css';
 
 export const DraggableItem = ({
+  borderRadius,
   id,
   index,
   isDragDisabled,
   children,
 }: {
+  borderRadius?: number;
   id: string;
   index: number;
   isDragDisabled?: boolean;
@@ -42,6 +44,7 @@ export const DraggableItem = ({
             className={
               dragabbleItem[isDragging && !dropAnimation ? 'dragging' : 'idle']
             }
+            style={borderRadius ? { borderRadius } : undefined}
           >
             {children}
           </Box>
