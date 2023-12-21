@@ -12,7 +12,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import { getChainName } from '~/core/utils/chains';
+import { getChainName, isTestnetChainId } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { TestnetFaucet } from '~/core/utils/faucets';
 import { formatDate } from '~/core/utils/formatDate';
@@ -349,6 +349,7 @@ function InsuficientGasFunds({
   }) => void;
 }) {
   const { testnetMode } = useTestnetModeStore();
+  const isTestnet = testnetMode || isTestnetChainId({ chainId });
 
   const { nativeAsset } = useNativeAsset({ chainId, address });
   const chainName = getChainName({ chainId });
@@ -449,7 +450,7 @@ function InsuficientGasFunds({
             </Inline>
           </Button>
         )}
-        {!hasBridgeableBalance && !testnetMode && (
+        {!hasBridgeableBalance && !isTestnet && (
           <Button
             paddingHorizontal="8px"
             height="44px"
@@ -477,7 +478,7 @@ function InsuficientGasFunds({
             </Inline>
           </Button>
         )}
-        {!hasBridgeableBalance && testnetMode && (
+        {!hasBridgeableBalance && isTestnet && (
           <Button
             paddingHorizontal="8px"
             height="44px"
