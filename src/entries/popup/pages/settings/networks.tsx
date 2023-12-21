@@ -182,7 +182,9 @@ export function SettingsNetworks() {
                   alignItems="center"
                   justifyContent="center"
                   key={`${chain.id}`}
-                  padding="2px"
+                  // margin="-2px"
+                  // padding="2px"
+                  // style={{ height: 55 }}
                   testId={`network-row-${chain.id}`}
                   width="full"
                 >
@@ -190,25 +192,30 @@ export function SettingsNetworks() {
                     borderRadius={14}
                     id={`${chain.id}`}
                     index={index}
+                    padding="2px"
                   >
                     <Box
                       alignItems="center"
                       justifyContent="center"
                       position="relative"
-                      style={{ height: 46 }}
+                      // padding="2px"
+                      // style={{ height: 46 }}
                     >
                       <ContextMenu>
                         <ContextMenuTrigger>
                           <MenuItem
                             disabled={!userChains[chain.id]}
-                            height={46}
+                            // height={46}
                             first={index === 0}
                             leftComponent={
                               <ChainBadge chainId={chain.id} size="18" shadow />
                             }
                             onClick={() =>
                               navigate(ROUTES.SETTINGS__NETWORKS__RPCS, {
-                                state: { chainId: chain.id, title: chain.name },
+                                state: {
+                                  chainId: chain.id,
+                                  title: chain.name,
+                                },
                               })
                             }
                             paddingHorizontal="14px"
