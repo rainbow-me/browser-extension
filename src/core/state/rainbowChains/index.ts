@@ -143,7 +143,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 0,
+      version: 1,
     },
   },
 );
