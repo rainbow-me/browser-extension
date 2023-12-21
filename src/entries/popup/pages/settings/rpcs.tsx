@@ -80,9 +80,13 @@ export function SettingsNetworksRPCs() {
 
   const green = foregroundColors.green;
 
-  const customNetworkAssetsForChain = Object.values(
-    customNetworkAssets?.[chainId] || {},
-  ).filter((asset) => !asset.isNativeAsset);
+  const customNetworkAssetsForChain = useMemo(
+    () =>
+      Object.values(customNetworkAssets?.[chainId] || {}).filter(
+        (asset) => !asset.isNativeAsset,
+      ),
+    [chainId, customNetworkAssets],
+  );
 
   const navigate = useRainbowNavigate();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();

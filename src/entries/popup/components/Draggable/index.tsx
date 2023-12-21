@@ -9,6 +9,7 @@ import {
 
 import { getDraggableItemStyle } from '~/core/utils/draggable';
 import { Box } from '~/design-system';
+import { BoxStyles } from '~/design-system/styles/core.css';
 
 import { dragabbleItem } from './draggableItem.css';
 
@@ -18,12 +19,14 @@ export const DraggableItem = ({
   index,
   isDragDisabled,
   children,
+  padding,
 }: {
   borderRadius?: number;
   id: string;
   index: number;
   isDragDisabled?: boolean;
   children: ReactElement;
+  padding?: BoxStyles['padding'];
 }) => {
   return (
     <Draggable draggableId={id} index={index} isDragDisabled={isDragDisabled}>
@@ -39,6 +42,7 @@ export const DraggableItem = ({
             dropAnimation,
           })}
           tabIndex={-1}
+          padding={padding}
         >
           <Box
             className={
