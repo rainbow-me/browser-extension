@@ -656,7 +656,7 @@ export function SettingsCustomChain() {
             tabIndex={4}
           />
           <Box padding="10px">
-            <Inline alignHorizontal="justify">
+            <Inline alignHorizontal="justify" alignVertical="center">
               <Text
                 align="center"
                 weight="semibold"
@@ -675,7 +675,7 @@ export function SettingsCustomChain() {
             </Inline>
           </Box>
           <Box padding="10px">
-            <Inline alignHorizontal="justify">
+            <Inline alignHorizontal="justify" alignVertical="center">
               <Text
                 align="center"
                 weight="semibold"

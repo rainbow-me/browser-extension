@@ -11,7 +11,7 @@ import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
-import { getMainChains } from '~/core/utils/chains';
+import { useMainChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
 import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
@@ -52,14 +52,17 @@ const chainLabel = ({
 
 export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
-  const { userChainsOrder, updateUserChainsOrder } = useUserChainsStore();
-  const mainChains = getMainChains();
+  const mainChains = useMainChains();
   const { seenPromos, setSeenPromo } = useQuickPromoStore();
-
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
-  const { userChains, updateUserChain } = useUserChainsStore();
+  const {
+    userChains,
+    userChainsOrder,
+    updateUserChain,
+    updateUserChainsOrder,
+  } = useUserChainsStore();
   const { rainbowChains, removeCustomRPC } = useRainbowChainsStore();
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
 
@@ -177,7 +180,6 @@ export function SettingsNetworks() {
                   alignItems="center"
                   justifyContent="center"
                   key={`${chain.id}`}
-                  padding="2px"
                   testId={`network-row-${chain.id}`}
                   width="full"
                 >
@@ -185,25 +187,27 @@ export function SettingsNetworks() {
                     borderRadius={14}
                     id={`${chain.id}`}
                     index={index}
+                    padding="2px"
                   >
                     <Box
                       alignItems="center"
                       justifyContent="center"
                       position="relative"
-                      style={{ height: 46 }}
                     >
                       <ContextMenu>
                         <ContextMenuTrigger>
                           <MenuItem
                             disabled={!userChains[chain.id]}
-                            height={46}
                             first={index === 0}
                             leftComponent={
                               <ChainBadge chainId={chain.id} size="18" shadow />
                             }
                             onClick={() =>
                               navigate(ROUTES.SETTINGS__NETWORKS__RPCS, {
-                                state: { chainId: chain.id, title: chain.name },
+                                state: {
+                                  chainId: chain.id,
+                                  title: chain.name,
+                                },
                               })
                             }
                             paddingHorizontal="14px"
