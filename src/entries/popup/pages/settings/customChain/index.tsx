@@ -402,11 +402,6 @@ export function SettingsCustomChain() {
     return !!chainId && !isNaN(parseInt(chainId.toString(), 10));
   }, [chainMetadata?.chainId, customRPC.chainId]);
 
-  const onChainIdBlur = useCallback(
-    () => setValidations((prev) => ({ ...prev, chainId: validateChainId() })),
-    [validateChainId],
-  );
-
   const validateName = useCallback(() => {
     return !!inputRef.current?.value;
   }, []);
@@ -630,19 +625,6 @@ export function SettingsCustomChain() {
           />
           <FormInput
             onChange={(t) => {
-              onInputChange<number>(t.target.value, 'number', 'chainId');
-              if (!validations.chainId) {
-                setValidations((prev) => ({ ...prev, chainId: true }));
-              }
-            }}
-            placeholder={i18n.t('settings.networks.custom_rpc.chain_id')}
-            value={customRPC.chainId || chainMetadata?.chainId || ''}
-            onBlur={() => customRPC.chainId && onChainIdBlur()}
-            borderColor={validations.chainId ? 'transparent' : 'red'}
-            tabIndex={3}
-          />
-          <FormInput
-            onChange={(t) => {
               onInputChange<string>(t.target.value, 'string', 'symbol');
               if (!validations.symbol) {
                 setValidations((prev) => ({ ...prev, symbol: true }));
@@ -655,7 +637,7 @@ export function SettingsCustomChain() {
               validations.symbol || !customRPC.symbol ? 'transparent' : 'red'
             }
             spellCheck={false}
-            tabIndex={4}
+            tabIndex={3}
           />
           <FormInput
             onChange={(t) => {
@@ -671,7 +653,7 @@ export function SettingsCustomChain() {
             onBlur={() => customRPC.explorerUrl && onExplorerUrlBlur()}
             borderColor={validations.explorerUrl ? 'transparent' : 'red'}
             spellCheck={false}
-            tabIndex={5}
+            tabIndex={4}
           />
           <Box padding="10px">
             <Inline alignHorizontal="justify" alignVertical="center">
