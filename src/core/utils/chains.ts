@@ -1,5 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { getNetwork } from '@wagmi/core';
 import {
   Chain,
   avalanche,
@@ -7,8 +8,7 @@ import {
   fantom,
   harmonyOne,
   moonbeam,
-} from '@wagmi/chains';
-import { getNetwork } from '@wagmi/core';
+} from 'viem/chains';
 import { mainnet } from 'wagmi';
 
 import {

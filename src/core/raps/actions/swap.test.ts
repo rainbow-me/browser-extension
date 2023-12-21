@@ -6,8 +6,8 @@ import {
   SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
-import { mainnet } from '@wagmi/chains';
 import { getProvider } from '@wagmi/core';
+import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
