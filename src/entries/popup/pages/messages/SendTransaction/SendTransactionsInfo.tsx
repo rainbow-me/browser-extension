@@ -8,6 +8,7 @@ import { i18n } from '~/core/languages';
 import { useUserAssets } from '~/core/resources/assets';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentCurrencyStore, useNonceStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
@@ -15,6 +16,7 @@ import { getChainName } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { truncateString } from '~/core/utils/strings';
+import { goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
   Box,
@@ -339,8 +341,14 @@ function InsuficientGasFunds({
   onRejectRequest,
 }: {
   session: { address: Address; chainId: ChainId };
-  onRejectRequest: VoidFunction;
+  onRejectRequest: ({
+    preventWindowClose,
+  }: {
+    preventWindowClose?: boolean;
+  }) => void;
 }) {
+  const { testnetMode } = useTestnetModeStore();
+
   const { nativeAsset } = useNativeAsset({ chainId, address });
   const chainName = getChainName({ chainId });
 
@@ -408,7 +416,7 @@ function InsuficientGasFunds({
       <Stack marginHorizontal="-8px">
         <Separator color="separatorTertiary" />
 
-        {hasBridgeableBalance ? (
+        {hasBridgeableBalance && (
           <Button
             paddingHorizontal="8px"
             height="44px"
@@ -417,7 +425,7 @@ function InsuficientGasFunds({
             onClick={() => {
               setSelectedToken(nativeAsset);
               navigate(ROUTES.BRIDGE, { replace: true });
-              onRejectRequest();
+              onRejectRequest({ preventWindowClose: true });
               triggerToast({
                 title: i18n.t('approve_request.request_rejected'),
                 description: i18n.t('approve_request.bridge_and_try_again'),
@@ -436,7 +444,8 @@ function InsuficientGasFunds({
               </Text>
             </Inline>
           </Button>
-        ) : (
+        )}
+        {!hasBridgeableBalance && !testnetMode && (
           <Button
             paddingHorizontal="8px"
             height="44px"
@@ -444,7 +453,7 @@ function InsuficientGasFunds({
             color="blue"
             onClick={() => {
               navigate(ROUTES.BUY, { replace: true });
-              onRejectRequest();
+              onRejectRequest({ preventWindowClose: true });
               triggerToast({
                 title: i18n.t('approve_request.request_rejected'),
                 description: i18n.t('approve_request.buy_and_try_again'),
@@ -459,7 +468,33 @@ function InsuficientGasFunds({
                 weight="bold"
               />
               <Text size="14pt" weight="bold" color="blue">
-                {i18n.t('approve_request.buy', { token })}
+                {i18n.t('approve_request.buy_gas', { token })}
+              </Text>
+            </Inline>
+          </Button>
+        )}
+        {!hasBridgeableBalance && testnetMode && (
+          <Button
+            paddingHorizontal="8px"
+            height="44px"
+            variant="transparent"
+            color="blue"
+            onClick={() => {
+              onRejectRequest({ preventWindowClose: false });
+              goToNewTab({ url: 'https://www.alchemy.com/faucets' });
+            }}
+          >
+            <Inline alignVertical="center" space="12px" wrap={false}>
+              <Symbol
+                size={16}
+                symbol="spigot.fill"
+                color="blue"
+                weight="bold"
+              />
+              <Text size="14pt" weight="bold" color="blue">
+                {i18n.t('approve_request.get_testnet_gas', {
+                  token: nativeAsset?.symbol,
+                })}
               </Text>
             </Inline>
           </Button>
@@ -566,9 +601,7 @@ export function SendTransactionInfo({
         activeSession && (
           <InsuficientGasFunds
             session={activeSession}
-            onRejectRequest={() =>
-              onRejectRequest({ preventWindowClose: true })
-            }
+            onRejectRequest={onRejectRequest}
           />
         )
       )}
