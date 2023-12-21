@@ -399,8 +399,10 @@
         "my_wallets": "My Wallets",
         "my_tokens": "My Tokens",
         "my_tokens_watched": "Tokens",
+        "my_nfts": "My NFTs",
+        "my_nfts_watched": "NFTs",
         "copy_address": "Copy Address",
-        "view_nfts": "View NFTs",
+        "view_profile": "View Rainbow Profile",
         "add_wallet": "Add a Wallet",
         "lock": "Lock Rainbow",
         "connected_apps": "Connected Apps",
@@ -444,7 +446,8 @@
         "swap": "bridge",
         "my_wallets": "switch",
         "my_tokens_watched": "my",
-        "view_nfts": "gallery, profile",
+        "my_nfts_watched": "my",
+        "view_profile": "profile, gallery, ens, nfts",
         "testnet_mode": "toggle, networks, testnets",
         "developer_tools": "toggle, networks, developer, testnets",
         "settings": "preferences",
@@ -495,12 +498,21 @@
         "search_placeholder": "Search tokens…",
         "section_title": "My Tokens"
       },
+      "my_nfts": {
+        "empty_label": "No NFTs found",
+        "search_placeholder": "Search NFTs…",
+        "section_title": "My NFTs"
+      },
       "my_wallets": {
         "search_placeholder": "Select a wallet to switch to…",
         "section_title": "My Wallets"
       },
       "token_detail": {
         "search_placeholder": "Search token actions…",
+        "section_title": "Actions"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "Search NFT actions…",
         "section_title": "Actions"
       },
       "wallet_detail": {

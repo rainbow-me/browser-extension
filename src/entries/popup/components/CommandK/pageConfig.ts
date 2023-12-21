@@ -17,6 +17,14 @@ export const PAGES: { [KEY: string]: Page } = {
     listTitle: i18n.t('command_k.pages.add_wallet.section_title'),
     searchPlaceholder: i18n.t('command_k.pages.add_wallet.search_placeholder'),
   },
+  MY_NFTS: {
+    emptyLabel: i18n.t('command_k.pages.my_nfts.empty_label'),
+    listTitle: (command: SearchItem) =>
+      command.selectedWallet
+        ? command.selectedWallet
+        : i18n.t('command_k.pages.my_nfts.section_title'),
+    searchPlaceholder: i18n.t('command_k.pages.my_nfts.search_placeholder'),
+  },
   MY_TOKENS: {
     emptyLabel: i18n.t('command_k.pages.my_tokens.empty_label'),
     listTitle: (command: SearchItem) =>
@@ -28,6 +36,15 @@ export const PAGES: { [KEY: string]: Page } = {
   MY_WALLETS: {
     listTitle: i18n.t('command_k.pages.my_wallets.section_title'),
     searchPlaceholder: i18n.t('command_k.pages.my_wallets.search_placeholder'),
+  },
+  NFT_TOKEN_DETAIL: {
+    listTitle: (command: SearchItem) =>
+      command.type === SearchItemType.NFT
+        ? command.name
+        : i18n.t('command_k.pages.my_nfts.section_title'),
+    searchPlaceholder: i18n.t(
+      'command_k.pages.nft_token_detail.search_placeholder',
+    ),
   },
   TOKEN_DETAIL: {
     listTitle: (command: SearchItem) =>
@@ -52,4 +69,4 @@ export const PAGES: { [KEY: string]: Page } = {
   },
 };
 
-export type CommandKPage = typeof PAGES[keyof typeof PAGES];
+export type CommandKPage = (typeof PAGES)[keyof typeof PAGES];

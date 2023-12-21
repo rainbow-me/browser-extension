@@ -4,11 +4,11 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS, SUPPORTED_CHAIN_IDS } from '~/core/references';
+import { useRainbowChainsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getMainChains } from '~/core/utils/chains';
@@ -178,9 +178,6 @@ export function SettingsNetworks() {
                   justifyContent="center"
                   key={`${chain.id}`}
                   padding="2px"
-                  // position="relative"
-                  // style={{ minHeight: 6 }}
-                  // style={{ height: 50 }}
                   testId={`network-row-${chain.id}`}
                   width="full"
                 >
@@ -192,7 +189,6 @@ export function SettingsNetworks() {
                     <Box
                       alignItems="center"
                       justifyContent="center"
-                      // padding="3px"
                       position="relative"
                       style={{ height: 46 }}
                     >

@@ -5,13 +5,14 @@ import { useCallback, useMemo } from 'react';
 import { SUPPORTED_CHAINS } from '~/core/references';
 import { useTokenSearch } from '~/core/resources/search';
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
   TokenSearchAssetKey,
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
+import { getChainName } from '~/core/utils/chains';
 import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -316,6 +317,7 @@ export function useSearchCurrencyLists({
       .map(([_chainId, assetOnNetworkOverrides]) => {
         if (!assetOnNetworkOverrides) return;
         const chainId = +_chainId as unknown as ChainId; // Object.entries messes the type
+        const chainName = getChainName({ chainId });
         const { address, decimals } = assetOnNetworkOverrides;
         // filter out the asset we're selling already
         if (
@@ -326,7 +328,7 @@ export function useSearchCurrencyLists({
         return {
           ...assetToSell,
           chainId,
-          chainName: ChainNameDisplay[chainId],
+          chainName: chainName,
           uniqueId: `${address}-${chainId}`,
           address,
           decimals,
