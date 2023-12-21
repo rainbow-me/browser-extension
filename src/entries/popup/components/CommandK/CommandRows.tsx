@@ -20,6 +20,7 @@ import {
 import { transitions } from '~/design-system/styles/designTokens';
 
 import { Asterisks } from '../Asterisks/Asterisks';
+import { ChainBadge } from '../ChainBadge/ChainBadge';
 import { CoinIcon, NFTIcon } from '../CoinIcon/CoinIcon';
 import { MenuItem } from '../Menu/MenuItem';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
@@ -33,6 +34,7 @@ import {
 import {
   ENSOrAddressSearchItem,
   NFTSearchItem,
+  RPCSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
@@ -417,6 +419,33 @@ export const WalletRow = ({
       name={command.truncatedName}
       selected={selected}
       LeftComponent={Avatar}
+    />
+  );
+};
+
+type RPCRowProps = {
+  command: RPCSearchItem;
+  handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
+  selected: boolean;
+};
+
+export const RPCRow = ({
+  command,
+  handleExecuteCommand,
+  selected,
+}: RPCRowProps) => {
+  const ChainIcon = React.useMemo(
+    () => <ChainBadge chainId={command.chainId} size={24} />,
+    [command.chainId],
+  );
+
+  return (
+    <CommandRow
+      command={command}
+      handleExecuteCommand={handleExecuteCommand}
+      name={command.name}
+      selected={selected}
+      LeftComponent={ChainIcon}
     />
   );
 };

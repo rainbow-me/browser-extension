@@ -10,6 +10,7 @@ import { TOOLBAR_HEIGHT } from './CommandKToolbar';
 import {
   COMMAND_ROW_HEIGHT,
   NFTRow,
+  RPCRow,
   ShortcutRow,
   TokenRow,
   WalletRow,
@@ -17,6 +18,7 @@ import {
 import {
   ENSOrAddressSearchItem,
   NFTSearchItem,
+  RPCSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
@@ -227,6 +229,15 @@ export const CommandKList = React.forwardRef<
                   row = (
                     <NFTRow
                       command={command as NFTSearchItem}
+                      handleExecuteCommand={handleExecuteCommand}
+                      key={command.id}
+                      selected={isSelected}
+                    />
+                  );
+                } else if (command.type === SearchItemType.RPC) {
+                  row = (
+                    <RPCRow
+                      command={command as RPCSearchItem}
                       handleExecuteCommand={handleExecuteCommand}
                       key={command.id}
                       selected={isSelected}

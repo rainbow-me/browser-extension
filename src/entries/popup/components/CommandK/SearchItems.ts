@@ -12,6 +12,7 @@ export enum SearchItemType {
   Shortcut,
   Token,
   Wallet,
+  RPC,
 }
 
 export interface BaseSearchItem {
@@ -79,9 +80,15 @@ export interface WalletSearchItem extends BaseSearchItem {
   walletType: string;
 }
 
+export interface RPCSearchItem extends BaseSearchItem {
+  type: SearchItemType.RPC;
+  chainId: number;
+}
+
 export type SearchItem =
   | ENSOrAddressSearchItem
   | NFTSearchItem
   | ShortcutSearchItem
   | TokenSearchItem
-  | WalletSearchItem;
+  | WalletSearchItem
+  | RPCSearchItem;

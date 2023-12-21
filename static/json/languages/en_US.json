@@ -436,7 +436,8 @@
         "view_wallet_on_etherscan": "View on Etherscan",
         "export_addresses_as_csv": "Export Addresses as CSV",
         "enable_flashbots": "Enable Flashbots",
-        "disable_flashbots": "Disable Flashbots"
+        "disable_flashbots": "Disable Flashbots",
+        "switch_rpc": "Switch RPC"
       },
       "search_tags": {
         "swap": "bridge",
@@ -455,7 +456,8 @@
         "add_hardware_wallet": "ledger, trezor, connect",
         "hide_balances": "toggle",
         "hide_small_balances": "toggle",
-        "wallets_and_keys": "wallets and keys, settings, preferences"
+        "wallets_and_keys": "wallets and keys, settings, preferences",
+        "switch_rpc": "rpc, network"
       }
     },
     "command_rows": {
@@ -514,6 +516,11 @@
       "wallet_detail": {
         "search_placeholder": "Search wallet actions…",
         "section_title": "Actions"
+      },
+      "custom_rpcs": {
+        "empty_label": "No Custom RPCs found",
+        "search_placeholder": "Search RPCs…",
+        "section_title": "Custom RPCs"
       }
     },
     "quick_promo": {

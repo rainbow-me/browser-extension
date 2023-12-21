@@ -38,6 +38,7 @@ import { triggerToast } from '../Toast/Toast';
 import {
   ENSOrAddressSearchItem,
   NFTSearchItem,
+  RPCSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
@@ -49,6 +50,7 @@ import { actionLabels } from './references';
 import { CommandKPageState } from './useCommandKNavigation';
 import { useSearchableENSorAddress } from './useSearchableENSOrAddress';
 import { useSearchableNFTs } from './useSearchableNFTs';
+import { useSearchableRPCs } from './useSearchableRPCs';
 import { useSearchableTokens } from './useSearchableTokens';
 import { useSearchableWallets } from './useSearchableWallets';
 import { handleExportAddresses } from './utils';
@@ -279,6 +281,16 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 15,
     type: SearchItemType.Shortcut,
   },
+  switchToRPC: {
+    actionLabel: actionLabels.view,
+    name: i18n.t(`command_k.commands.names.switch_rpc`),
+    page: PAGES.HOME,
+    searchTags: getSearchTags('switch_rpc'),
+    symbol: 'doc.on.doc',
+    symbolSize: 15,
+    toPage: PAGES.CUSTOM_RPCS,
+    type: SearchItemType.Shortcut,
+  },
 
   // PAGE: ADD_WALLET
   createWallet: {
@@ -465,6 +477,7 @@ const compileCommandList = (
   nfts: NFTSearchItem[],
   walletSearchResult: ENSOrAddressSearchItem[],
   wallets: WalletSearchItem[],
+  rpcs: RPCSearchItem[],
 ): SearchItem[] => {
   const shortcuts = Object.keys(staticInfo)
     .filter((key) => {
@@ -483,7 +496,14 @@ const compileCommandList = (
       onClick: overrides[key]?.action,
     }));
 
-  return [...shortcuts, ...tokens, ...nfts, ...walletSearchResult, ...wallets];
+  return [
+    ...shortcuts,
+    ...tokens,
+    ...nfts,
+    ...walletSearchResult,
+    ...wallets,
+    ...rpcs,
+  ];
 };
 
 const isENSOrAddressCommand = (
@@ -524,6 +544,7 @@ export const useCommands = (
   );
   const { searchableTokens } = useSearchableTokens();
   const { searchableNFTs } = useSearchableNFTs();
+  const { searchableRPCs } = useSearchableRPCs();
   const { searchableWallets } = useSearchableWallets(currentPage);
   const { setSelectedToken } = useSelectedTokenStore();
   const { sortedAccounts } = useAccounts();
@@ -874,6 +895,9 @@ export const useCommands = (
           isWalletCommand(previousPageState.selectedCommand) &&
           !previousPageState.selectedCommand?.ensName,
       },
+      switchToRPC: {
+        action: undefined,
+      },
     }),
     [
       address,
@@ -917,6 +941,7 @@ export const useCommands = (
         searchableNFTs,
         searchableENSOrAddress,
         searchableWallets,
+        searchableRPCs,
       ),
     [
       isFullScreen,
@@ -927,6 +952,7 @@ export const useCommands = (
       searchableNFTs,
       searchableENSOrAddress,
       searchableWallets,
+      searchableRPCs,
     ],
   );
 

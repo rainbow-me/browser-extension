@@ -67,6 +67,14 @@ export const PAGES: { [KEY: string]: Page } = {
       'command_k.pages.wallet_detail.search_placeholder',
     ),
   },
+  CUSTOM_RPCS: {
+    emptyLabel: i18n.t('command_k.pages.custom_rpcs.empty_label'),
+    listTitle: (command: SearchItem) =>
+      command.selectedWallet
+        ? command.selectedWallet
+        : i18n.t('command_k.pages.custom_rpcs.section_title'),
+    searchPlaceholder: i18n.t('command_k.pages.custom_rpcs.search_placeholder'),
+  },
 };
 
 export type CommandKPage = (typeof PAGES)[keyof typeof PAGES];
