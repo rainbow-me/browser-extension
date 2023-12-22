@@ -12,8 +12,7 @@ import {
 } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
-import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
@@ -357,6 +356,8 @@ export const PointsOnboardingSheet = () => {
           signature,
           referral: state.referralCode,
         });
+      if (onboardPoints?.error?.type === PointsErrorType.NoBalance)
+        setStep('no balance');
       if (!onboardPoints) throw 'validatePointsSignature: Unexpected error'; // sometimes the server just returns null, like when the signature is invalid
       if (onboardPoints.error) throw onboardPoints.error.type;
       return onboardPoints;
@@ -758,21 +759,9 @@ export const PointsOnboardingSheet = () => {
     [calculatingPointsRowsText, userOnboarding],
   );
 
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const { data: hasBalance } = useUserAssets(
-    { address: currentAddress, currency: currentCurrency },
-    {
-      select(assetsOnChains) {
-        Object.values(assetsOnChains).some((assets) =>
-          Object.values(assets).some(({ balance }) => +balance.amount > 0),
-        );
-      },
-    },
-  );
-
   const [step, setStep] = useState<
     'welcome' | 'calculating' | 'share' | 'done' | 'no balance'
-  >(hasBalance ? 'welcome' : 'no balance');
+  >('welcome');
 
   if (debouncedAccessGranted && step === 'welcome') setStep('calculating');
 
