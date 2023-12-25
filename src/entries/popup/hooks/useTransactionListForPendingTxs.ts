@@ -20,7 +20,6 @@ import { isLowerCaseMatch } from '~/core/utils/strings';
 export const useTransactionListForPendingTxs = () => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  // const { getPendingTransactions } = usePendingTransactionsStore();
   const { testnetMode } = useTestnetModeStore();
 
   const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
@@ -60,7 +59,6 @@ export const useTransactionListForPendingTxs = () => {
       );
     watchForPendingTransactionsReportedByRainbowBackend({
       currentAddress: address,
-      // pendingTransactions: getPendingTransactions({ address }),
       latestTransactions,
     });
   }, [address, data?.pages]);
