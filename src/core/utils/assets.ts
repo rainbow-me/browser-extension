@@ -1,9 +1,10 @@
+import { AddressZero } from '@ethersproject/constants';
 import { Provider } from '@ethersproject/providers';
 import isURL from 'validator/lib/isURL';
 import { Address, erc20ABI } from 'wagmi';
 import { getContract } from 'wagmi/actions';
 
-import { SupportedCurrencyKey } from '~/core/references';
+import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import {
   AddressOrEth,
   AssetApiResponse,
@@ -19,12 +20,12 @@ import { ChainId, ChainName } from '~/core/types/chains';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
-import { getCustomChainIconUrl } from '../resources/assets/customNetworkAssets';
 import { SearchAsset } from '../types/search';
 
 import {
   chainIdFromChainName,
   chainNameFromChainId,
+  customChainIdsToAssetNames,
   isNativeAsset,
 } from './chains';
 import {
@@ -41,6 +42,21 @@ const get24HrChange = (priceData?: ZerionAssetPrice) => {
   return twentyFourHrChange
     ? convertAmountToPercentageDisplay(twentyFourHrChange)
     : '';
+};
+
+export const getCustomChainIconUrl = (
+  chainId: ChainId,
+  address: AddressOrEth,
+) => {
+  if (!chainId || !customChainIdsToAssetNames[chainId]) return '';
+  const baseUrl =
+    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
+
+  if (address === AddressZero || address === ETH_ADDRESS) {
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
+  } else {
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
+  }
 };
 
 export const getNativeAssetPrice = ({
