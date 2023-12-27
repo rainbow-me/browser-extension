@@ -41,6 +41,7 @@ module.exports = {
     popup: './src/entries/popup/index.ts',
   },
   module: {
+    noParse: /node_modules\/lodash\/lodash\.js/,
     rules: [
       {
         test: /\.tsx?$/,
