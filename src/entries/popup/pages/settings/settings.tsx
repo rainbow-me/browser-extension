@@ -158,22 +158,25 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
-            testId={'networks-link'}
             first
             last
             leftComponent={
               <Symbol
-                symbol="network"
+                symbol="key.fill"
                 weight="semibold"
                 size={18}
-                color="green"
+                color="orange"
               />
             }
             hasRightArrow
-            onClick={() => navigate(ROUTES.SETTINGS__NETWORKS)}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.networks.title')} />
+              <MenuItem.Title
+                text={i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.title',
+                )}
+              />
             }
+            onClick={() => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS)}
           />
           <MenuItem
             testId={'privacy-security-link'}
@@ -197,6 +200,24 @@ export function Settings() {
           />
         </Menu>
         <Menu>
+          <MenuItem
+            testId={'networks-link'}
+            first
+            last
+            leftComponent={
+              <Symbol
+                symbol="network"
+                weight="medium"
+                size={18}
+                color="green"
+              />
+            }
+            hasRightArrow
+            onClick={() => navigate(ROUTES.SETTINGS__NETWORKS)}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.networks.title')} />
+            }
+          />
           <MenuItem
             first
             hasRightArrow
