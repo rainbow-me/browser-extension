@@ -19,6 +19,7 @@ import { ChainId, ChainName } from '~/core/types/chains';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
+import { getCustomChainIconUrl } from '../resources/assets/customNetworkAssets';
 import { SearchAsset } from '../types/search';
 
 import {
@@ -83,7 +84,11 @@ export function parseAsset({
 }): ParsedAsset {
   const address = asset.asset_code;
   const chainName = asset.network ?? ChainName.mainnet;
-  const chainId = chainIdFromChainName(chainName);
+  const chainId =
+    chainIdFromChainName(chainName) ||
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    (Number(Object.keys(asset.networks)?.[0]) as ChainId);
 
   // ZerionAsset should be removed when we move fully away from websckets/refraction api
   const mainnetAddress = isZerionAsset(asset)
@@ -113,7 +118,7 @@ export function parseAsset({
     symbol: asset.symbol,
     type: asset.type,
     decimals: asset.decimals,
-    icon_url: asset.icon_url,
+    icon_url: asset.icon_url || getCustomChainIconUrl(chainId, address),
     colors: asset.colors,
     standard,
     ...('networks' in asset && { networks: asset.networks }),

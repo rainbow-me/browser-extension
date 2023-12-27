@@ -176,6 +176,7 @@ export const getCustomChainIconUrl = (
   chainId: ChainId,
   address: AddressOrEth,
 ) => {
+  if (!chainId || !customChainIdsToAssetNames[chainId]) return '';
   const baseUrl =
     'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
 
@@ -335,6 +336,7 @@ async function customNetworkAssetsFunction({
     const assetsResults = (await Promise.allSettled(assetsPromises))
       .map((assets) => extractFulfilledValue(assets))
       .filter(Boolean);
+
     const parsedAssetsDict: Record<ChainId | number, ParsedAssetsDict> =
       assetsResults.reduce(
         (acc, { chainId, assets }) => {
