@@ -117,7 +117,6 @@
     "@vanilla-extract/css-utils": "0.1.2",
     "@vanilla-extract/dynamic": "2.0.2",
     "@vanilla-extract/sprinkles": "1.5.0",
-    "@wagmi/chains": "1.8.0",
     "bignumber.js": "9.0.1",
     "buffer": "6.0.3",
     "check-password-strength": "2.0.7",
@@ -152,6 +151,7 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
+    "viem": "1.20.3",
     "wagmi": "0.12.19",
     "word-wrap": "1.2.4",
     "zustand": "4.1.5"
@@ -309,7 +309,9 @@
       "web-ext>ws>bufferutil": false,
       "web-ext>ws>utf-8-validate": false,
       "@ledgerhq/domain-service>eip55>keccak": false,
-      "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>keccak": false
+      "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>keccak": false,
+      "viem>ws>bufferutil": false,
+      "viem>ws>utf-8-validate": false
     }
   }
 }

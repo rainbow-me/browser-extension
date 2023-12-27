@@ -1,4 +1,4 @@
-import { Chain } from '@wagmi/chains';
+import { Chain } from 'viem/chains';
 import create from 'zustand';
 
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
@@ -143,7 +143,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 0,
+      version: 1,
     },
   },
 );
