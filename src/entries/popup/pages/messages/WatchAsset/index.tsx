@@ -5,7 +5,6 @@ import { getProvider } from 'wagmi/actions';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
-import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
@@ -15,6 +14,7 @@ import { ChainId, ChainName } from '~/core/types/chains';
 import {
   fetchAssetBalanceViaProvider,
   fetchAssetWithPrice,
+  getCustomChainIconUrl,
 } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
 import { Row, Rows, Separator } from '~/design-system';
