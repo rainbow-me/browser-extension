@@ -87,6 +87,10 @@ export async function getAllWindowHandles({
 }) {
   await delayTime('long');
   const handlers = await driver.getAllWindowHandles();
+
+  // Log the number of window handles
+  console.log(`Number of window handles: ${handlers.length}`);
+
   const popupHandlerFromHandlers =
     handlers.find((handler) => handler !== dappHandler) || '';
 
