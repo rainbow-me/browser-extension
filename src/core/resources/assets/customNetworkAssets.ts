@@ -31,13 +31,11 @@ import {
   createAssetQuery,
   extractFulfilledValue,
   getAssetBalance,
+  getCustomChainIconUrl,
   parseAssetMetadata,
   parseUserAssetBalances,
 } from '~/core/utils/assets';
-import {
-  customChainIdsToAssetNames,
-  getRainbowChains,
-} from '~/core/utils/chains';
+import { getRainbowChains } from '~/core/utils/chains';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 import { ETH_MAINNET_ASSET } from '~/test/utils';
@@ -170,20 +168,6 @@ export const CustomNetworkAssetsSetQueryData = ({
     }),
     customNetworkAssets,
   );
-};
-
-export const getCustomChainIconUrl = (
-  chainId: ChainId,
-  address: AddressOrEth,
-) => {
-  const baseUrl =
-    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
-
-  if (address === AddressZero || address === ETH_MAINNET_ASSET.address) {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
-  } else {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
-  }
 };
 
 async function customNetworkAssetsFunction({
@@ -335,6 +319,7 @@ async function customNetworkAssetsFunction({
     const assetsResults = (await Promise.allSettled(assetsPromises))
       .map((assets) => extractFulfilledValue(assets))
       .filter(Boolean);
+
     const parsedAssetsDict: Record<ChainId | number, ParsedAssetsDict> =
       assetsResults.reduce(
         (acc, { chainId, assets }) => {
