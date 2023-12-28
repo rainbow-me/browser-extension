@@ -57,7 +57,7 @@
     "test": "./scripts/unit-tests.sh",
     "test:watch": "yarn anvil & vitest --watch",
     "// Runs e2e": "",
-    "vitest:parallel": "yarn vitest e2e/parallel --config ./e2e/parallel/vitest.config.ts",
+    "vitest:parallel": "yarn vitest e2e/parallel --config ./e2e/parallel/vitest.config.ts --bail",
     "vitest:serial": "./scripts/e2e-serial-tests.sh",
     "vitest:swap": "./scripts/e2e-serial-tests.sh 'swap'",
     "vitest:send": "./scripts/e2e-serial-tests.sh 'send'",
