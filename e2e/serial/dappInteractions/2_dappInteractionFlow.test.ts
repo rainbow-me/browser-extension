@@ -127,25 +127,37 @@ describe('App interactions flow', () => {
       id: 'navbar-button-with-back',
       driver,
     });
+    console.log('hh');
   });
 
   it('should be able to connect to mm dapp', async () => {
+    console.log('0');
     await delayTime('long');
+    console.log('1');
     await driver.get('https://bx-e2e-dapp.vercel.app/');
+    console.log('2');
     const dappHandler = await getWindowHandle({ driver });
+    console.log('3');
 
     const button = await findElementById({ id: 'connectButton', driver });
+    console.log('4');
     expect(button).toBeTruthy();
+    console.log('5');
     await waitAndClick(button, driver);
+    console.log('6');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
+    console.log('7');
 
     await driver.switchTo().window(popupHandler);
+    console.log('8');
 
     await delayTime('long');
     await clickAcceptRequestButton(driver);
+    console.log('9');
 
     await driver.switchTo().window(dappHandler);
+    console.log('10');
 
     const accounts = await findElementById({ id: 'accounts', driver });
     expect(accounts).toBeTruthy();
