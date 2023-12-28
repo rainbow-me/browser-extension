@@ -144,10 +144,14 @@ describe('App interactions flow', () => {
     expect(button).toBeTruthy();
     console.log('5');
     await waitAndClick(button, driver);
+    await delayTime('very-long');
     console.log('6');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
     console.log('7');
+
+    console.log(`popupHandler`, popupHandler);
+    console.log(`dappHandler`, dappHandler);
 
     await driver.switchTo().window(popupHandler);
     console.log('8');
