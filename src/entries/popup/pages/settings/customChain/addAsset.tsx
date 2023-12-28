@@ -12,6 +12,7 @@ import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 
 const INITIAL_ASSET = {
   name: '',
@@ -38,6 +39,7 @@ export function AddAsset() {
     symbol: true,
   });
 
+  const navigate = useRainbowNavigate();
   const chainId = state?.chainId;
   const savedDraft = customTokenDrafts[chainId];
   const initialAsset = {
@@ -179,7 +181,7 @@ export function AddAsset() {
         chainId,
         rainbowChainAsset: assetToAdd,
       });
-      setAsset(INITIAL_ASSET);
+      navigate(-1);
     }
   }, [
     addRainbowChainAsset,
@@ -192,6 +194,7 @@ export function AddAsset() {
     assetMetadata.symbol,
     chainId,
     customRPCAssetsForChain,
+    navigate,
     validateAddCustomAsset,
   ]);
 
