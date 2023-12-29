@@ -180,6 +180,12 @@ export const WalletsAndKeys = () => {
     navigate(ROUTES.CHOOSE_WALLET_GROUP);
   }, [navigate]);
 
+  const handleWipeWallets = useCallback(async () => {
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING,
+    );
+  }, [navigate]);
+
   const walletCountPerType = {
     hd: 0,
     pk: 0,
@@ -339,6 +345,33 @@ export const WalletsAndKeys = () => {
               <MenuItem.Title text={t('create_a_new_wallet')} color="blue" />
             }
             onClick={handleCreateNewWallet}
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            testId={'wipe-wallets'}
+            first
+            last
+            leftComponent={
+              <Symbol
+                size={16}
+                color="red"
+                weight="medium"
+                symbol="exclamationmark.triangle"
+              />
+            }
+            rightComponent={
+              <Symbol
+                size={16}
+                color="red"
+                weight="medium"
+                symbol="exclamationmark.triangle"
+              />
+            }
+            titleComponent={
+              <MenuItem.Title text={t('wipe_wallets')} color="red" />
+            }
+            onClick={handleWipeWallets}
           />
         </Menu>
       </MenuContainer>

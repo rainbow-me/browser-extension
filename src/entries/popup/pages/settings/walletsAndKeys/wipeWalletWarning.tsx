@@ -5,7 +5,7 @@ import { Address, useAccount } from 'wagmi';
 // import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
-import WarningInfo from '~/entries/popup/components/WarningInfo/WarningInfo';
+import WalletWipeWarningInfo from '~/entries/popup/components/WarningInfo/WalletWipeWarningInfo';
 import { ROUTES } from '~/entries/popup/urls';
 
 import * as wallet from '../../../handlers/wallet';
@@ -15,23 +15,23 @@ const iconAndCopyList: IconAndCopyItem[] = [
   {
     icon: {
       symbol: 'exclamationmark.triangle',
-      color: 'orange',
-    },
-    copy: 'this cannot be undone',
-  },
-  {
-    icon: {
-      symbol: 'eye.slash.fill',
-      color: 'pink',
-    },
-    copy: "don't do this please ! !",
-  },
-  {
-    icon: {
-      symbol: 'lock.open.fill',
       color: 'red',
     },
-    copy: "unless you're sure :)",
+    copy: 'Deleting your wallets from our extension is both permanent and irreversible.',
+  },
+  {
+    icon: {
+      symbol: 'info.circle.fill',
+      color: 'blue',
+    },
+    copy: 'Make sure you have your recovery info backed up before deletion.',
+  },
+  {
+    icon: {
+      symbol: 'checkmark',
+      color: 'green',
+    },
+    copy: 'You can always access your wallets if you have the correct recovery info.',
   },
 ];
 
@@ -69,12 +69,10 @@ export function WipeWalletWarning() {
         extraState={{ ...state }}
         onSuccess={handleWipeWallet}
       />
-      <WarningInfo
+      <WalletWipeWarningInfo
         testId={'wipe-wallets'}
         iconAndCopyList={iconAndCopyList}
         onProceed={openPasswordPrompt}
-        proceedButtonLabel={'WIPE WALLET'}
-        proceedButtonSymbol="trash"
       />
     </>
   );

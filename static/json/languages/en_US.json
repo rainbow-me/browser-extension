@@ -168,6 +168,7 @@
       "wallets_and_keys": {
         "title": "Wallets & Keys",
         "create_a_new_wallet": "Create a New Wallet",
+        "wipe_wallets": "Delete Wallets & Clear Keychain",
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
