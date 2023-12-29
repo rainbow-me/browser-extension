@@ -369,7 +369,7 @@ export const WalletsAndKeys = () => {
               />
             }
             titleComponent={
-              <MenuItem.Title text={t('wipe_wallets')} color="red" />
+              <MenuItem.Title text={t('wipe_wallets.delete')} color="red" />
             }
             onClick={handleWipeWallets}
           />

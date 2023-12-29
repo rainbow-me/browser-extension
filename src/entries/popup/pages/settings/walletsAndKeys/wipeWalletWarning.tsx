@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Address, useAccount } from 'wagmi';
 
 // import { i18n } from '~/core/languages';
+import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
 import WalletWipeWarningInfo from '~/entries/popup/components/WarningInfo/WalletWipeWarningInfo';
@@ -11,27 +12,30 @@ import { ROUTES } from '~/entries/popup/urls';
 import * as wallet from '../../../handlers/wallet';
 import { ConfirmPasswordPrompt } from '../privacy/confirmPasswordPrompt';
 
+const t = (s: string) =>
+  i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
+
 const iconAndCopyList: IconAndCopyItem[] = [
   {
     icon: {
       symbol: 'exclamationmark.triangle',
       color: 'red',
     },
-    copy: 'Deleting your wallets from our extension is both permanent and irreversible.',
+    copy: `${t('wipe_wallets.warning_one')}`,
   },
   {
     icon: {
       symbol: 'info.circle.fill',
       color: 'blue',
     },
-    copy: 'Make sure you have your recovery info backed up before deletion.',
+    copy: `${t('wipe_wallets.warning_two')}`,
   },
   {
     icon: {
       symbol: 'checkmark',
       color: 'green',
     },
-    copy: 'You can always access your wallets if you have the correct recovery info.',
+    copy: `${t('wipe_wallets.warning_three')}`,
   },
 ];
 

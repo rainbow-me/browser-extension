@@ -22,6 +22,9 @@ import {
   IconAndCopyList,
 } from '../IconAndCopyList.tsx/IconAndCopyList';
 
+const t = (s: string) =>
+  i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
+
 interface WarningInfoProps {
   iconAndCopyList: IconAndCopyItem[];
   onProceed: () => void;
@@ -124,7 +127,7 @@ export default function WarningInfo({
                   weight="bold"
                   color="labelSecondary"
                 >
-                  I have read and ackowledge the above info.
+                  {t('wipe_wallets.acknowlegement')}
                 </Text>
               </Lens>
             </Column>

@@ -1,11 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 
 import { i18n } from '~/core/languages';
 import {
   Box,
   Button,
-  Column,
-  Columns,
   Inline,
   Row,
   Rows,
@@ -14,10 +12,8 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
-import { Checkbox } from '../Checkbox/Checkbox';
 import {
   IconAndCopyItem,
   IconAndCopyList,
@@ -34,12 +30,10 @@ interface WarningInfoProps {
 export default function WarningInfo({
   iconAndCopyList,
   onProceed,
+  proceedButtonLabel,
   proceedButtonSymbol,
   testId,
 }: WarningInfoProps) {
-  const [acknowledgeCheck, setacknowledgeCheck] = useState(false);
-
-  const buttonEnabled = useMemo(() => acknowledgeCheck, [acknowledgeCheck]);
   return (
     <Box
       height="full"
@@ -106,47 +100,17 @@ export default function WarningInfo({
 
         <Row height="content">
           <Box width="full" paddingVertical="20px">
-            <Columns alignVertical="center" space="7px">
-              <Column width="content">
-                <Checkbox
-                  width="16px"
-                  height="16px"
-                  borderRadius="6px"
-                  selected={acknowledgeCheck}
-                  backgroundSelected="blue"
-                  borderColorSelected="blue"
-                  borderColor="labelTertiary"
-                  onClick={() => setacknowledgeCheck(!acknowledgeCheck)}
-                />
-              </Column>
-              <Column>
-                <Lens
-                  testId="L2-check-1"
-                  onClick={() => setacknowledgeCheck(!acknowledgeCheck)}
-                >
-                  <Text
-                    align="left"
-                    size="12pt"
-                    weight="bold"
-                    color="labelSecondary"
-                  >
-                    hi
-                  </Text>
-                </Lens>
-              </Column>
-            </Columns>
             <Button
               testId={testId}
-              color={buttonEnabled ? 'red' : 'fill'}
+              color="orange"
               height="44px"
               variant="flat"
               width="full"
               symbol={proceedButtonSymbol}
               blur="26px"
               onClick={onProceed}
-              disabled={!buttonEnabled}
             >
-              {buttonEnabled ? 'Wipe Wallets' : 'Complete Check Above'}
+              {proceedButtonLabel}
             </Button>
           </Box>
         </Row>

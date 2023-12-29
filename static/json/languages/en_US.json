@@ -168,7 +168,6 @@
       "wallets_and_keys": {
         "title": "Wallets & Keys",
         "create_a_new_wallet": "Create a New Wallet",
-        "wipe_wallets": "Delete Wallets & Clear Keychain",
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
@@ -223,6 +222,13 @@
           "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Show Recovery Phrase",
           "copied": "Recovery Phrase Copied"
+        },
+        "wipe_wallets": {
+          "delete": "Delete Wallets & Clear Keychain",
+          "acknowlegement": "I have read and ackowledge the above info.",
+          "warning_one": "Deleting your wallets from our extension is both permanent and irreversible.",
+          "warning_two": "Make sure you have your recovery info backed up before deletion.",
+          "warning_three": "You can always access your wallets if you have the correct recovery info."
         }
       }
     },
