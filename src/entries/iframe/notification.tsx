@@ -42,7 +42,9 @@ const ASSET_SOURCE = {
   [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge@3x.png',
   [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge@3x.png',
   [ChainId.baseGoerli]: 'assets/badges/baseBadge@3x.png',
+  [ChainId.baseSepolia]: 'assets/badges/baseBadge@3x.png',
   [ChainId.zoraTestnet]: 'assets/badges/zoraBadge@3x.png',
+  [ChainId.zoraSepolia]: 'assets/badges/zoraBadge@3x.png',
 };
 
 export enum IN_DAPP_NOTIFICATION_STATUS {

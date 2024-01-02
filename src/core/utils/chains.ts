@@ -1,15 +1,16 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { getNetwork } from '@wagmi/core';
 import {
   Chain,
   avalanche,
   celo,
   fantom,
   harmonyOne,
+  mainnet,
   moonbeam,
-} from '@wagmi/chains';
-import { getNetwork } from '@wagmi/core';
-import { mainnet, useNetwork } from 'wagmi';
+} from 'viem/chains';
+import { useNetwork } from 'wagmi';
 
 import {
   NATIVE_ASSETS_PER_CHAIN,
