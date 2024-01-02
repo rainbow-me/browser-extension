@@ -51,11 +51,7 @@ export const SendTransactionActions = ({
       {enoughNativeAssetForGas && (
         <AcceptRequestButton
           onClick={onAcceptRequest}
-          label={
-            waitingForDevice
-              ? i18n.t('approve_request.confirm_hw')
-              : buttonLabel
-          }
+          label={buttonLabel}
           waitingForDevice={waitingForDevice}
           loading={loading}
           dappStatus={dappStatus}
