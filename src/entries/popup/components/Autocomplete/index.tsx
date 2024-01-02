@@ -4,7 +4,7 @@ import { Command } from 'cmdk';
 import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
-import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
+import { getCustomChainIconUrl } from '~/core/utils/assets';
 import { Box, Inline, Text } from '~/design-system';
 import { stylesForHeight } from '~/design-system/components/Input/Input';
 import {

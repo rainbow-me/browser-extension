@@ -1,4 +1,4 @@
-import { celo, fantom } from '@wagmi/chains';
+import { celo, fantom } from 'viem/chains';
 import { expect, test } from 'vitest';
 import { Chain } from 'wagmi';
 

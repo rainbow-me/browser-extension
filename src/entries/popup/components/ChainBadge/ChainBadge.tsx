@@ -8,10 +8,10 @@ import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
 import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
-import { getCustomChainIconUrl } from '~/core/resources/assets/customNetworkAssets';
 import { rainbowChainsStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
+import { getCustomChainIconUrl } from '~/core/utils/assets';
 import { customChainIdsToAssetNames } from '~/core/utils/chains';
 import { Box, Text } from '~/design-system';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
@@ -55,7 +55,9 @@ const networkBadges = {
   [ChainId.arbitrumGoerli]: ArbitrumBadge,
   [ChainId.arbitrumSepolia]: ArbitrumBadge,
   [ChainId.baseGoerli]: BaseBadge,
+  [ChainId.baseSepolia]: BaseBadge,
   [ChainId.zoraTestnet]: ZoraBadge,
+  [ChainId.zoraSepolia]: ZoraBadge,
 };
 
 const ChainBadge = ({

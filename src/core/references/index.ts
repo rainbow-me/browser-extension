@@ -2,28 +2,27 @@ import { AddressZero } from '@ethersproject/constants';
 import {
   arbitrum,
   arbitrumGoerli,
+  arbitrumSepolia,
   base,
   baseGoerli,
+  baseSepolia,
   bsc,
   bscTestnet,
   goerli,
+  holesky,
   mainnet,
   optimism,
   optimismGoerli,
+  optimismSepolia,
   polygon,
   polygonMumbai,
   zora,
+  zoraSepolia,
   zoraTestnet,
-} from '@wagmi/chains';
+} from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
-import {
-  ChainId,
-  ChainNameDisplay,
-  chainArbitrumSepolia,
-  chainHolesky,
-  chainOptimismSepolia,
-} from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -134,8 +133,10 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.optimismSepolia]: AddressZero as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
   [ChainId.baseGoerli]: AddressZero as Address,
+  [ChainId.baseSepolia]: AddressZero as Address,
   [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
   [ChainId.zoraTestnet]: AddressZero as Address,
+  [ChainId.zoraSepolia]: AddressZero as Address,
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
   [ChainId.polygonMumbai]: AddressZero as Address,
 };
@@ -166,36 +167,40 @@ export const SUPPORTED_CHAINS: Chain[] = [
   polygon,
   optimism,
   arbitrum,
-  chainHolesky,
+  holesky,
   base,
   zora,
   bsc,
   goerli,
   sepolia,
   optimismGoerli,
-  chainOptimismSepolia,
+  optimismSepolia,
   bscTestnet,
   polygonMumbai,
   arbitrumGoerli,
-  chainArbitrumSepolia,
+  arbitrumSepolia,
   baseGoerli,
+  baseSepolia,
+  zoraSepolia,
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
 export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
-  chainHolesky,
+  holesky,
   goerli,
   sepolia,
   optimismGoerli,
-  chainOptimismSepolia,
+  optimismSepolia,
   bscTestnet,
   polygonMumbai,
   arbitrumGoerli,
-  chainArbitrumSepolia,
+  arbitrumSepolia,
   baseGoerli,
+  baseSepolia,
   zoraTestnet,
+  zoraSepolia,
 ];
 
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] =
@@ -237,8 +242,12 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ARBITRUM_GOERLI_RPC };
     case ChainId.baseGoerli:
       return { http: process.env.BASE_GOERLI_RPC };
+    case ChainId.baseSepolia:
+      return { http: process.env.BASE_SEPOLIA_RPC };
     case ChainId.zoraTestnet:
       return { http: process.env.ZORA_GOERLI_RPC };
+    case ChainId.zoraSepolia:
+      return { http: process.env.ZORA_SEPOLIA_RPC };
     default:
       return null;
   }
