@@ -34,10 +34,10 @@ export default function SortdDropdown() {
     condition: () => open,
     handler: (e) => {
       e.stopImmediatePropagation();
-      if (e.key === shortcuts.home.NFT_SORT_RECENT.key) {
+      if (e.key === shortcuts.nfts.SORT_RECENT.key) {
         onValueChange('recent');
         setIsOpen(false);
-      } else if (e.key === shortcuts.home.NFT_SORT_ABC.key) {
+      } else if (e.key === shortcuts.nfts.SORT_ABC.key) {
         onValueChange('alphabetical');
         setIsOpen(false);
       }
@@ -99,9 +99,7 @@ export default function SortdDropdown() {
                     </Text>
                   }
                   rightComponent={
-                    <ShortcutHint
-                      hint={shortcuts.home.NFT_SORT_RECENT.display}
-                    />
+                    <ShortcutHint hint={shortcuts.nfts.SORT_RECENT.display} />
                   }
                 />
               </DropdownMenuRadioItem>
@@ -120,7 +118,7 @@ export default function SortdDropdown() {
                     </Text>
                   }
                   rightComponent={
-                    <ShortcutHint hint={shortcuts.home.NFT_SORT_ABC.display} />
+                    <ShortcutHint hint={shortcuts.nfts.SORT_ABC.display} />
                   }
                 />
               </DropdownMenuRadioItem>
