@@ -399,7 +399,14 @@ export const AcceptRequestButton = ({
       {...buttonStyleProps}
     >
       <TextOverflow weight="bold" size="16pt" color={textColor}>
-        {loading ? <Spinner size={16} color="label" /> : label}
+        {loading || waitingForDevice ? (
+          <Inline space="4px" alignVertical="center">
+            <Spinner size={16} color="label" />
+            {waitingForDevice && i18n.t('approve_request.confirm_hw')}
+          </Inline>
+        ) : (
+          label
+        )}
       </TextOverflow>
     </Button>
   );
