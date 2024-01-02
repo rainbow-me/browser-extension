@@ -225,10 +225,12 @@
         },
         "wipe_wallets": {
           "delete": "Delete Wallets & Clear Keychain",
-          "acknowlegement": "I have read and ackowledge the above info.",
+          "acknowlegement": "I have read and acknowledge the above info.",
           "warning_one": "Deleting your wallets from our extension is both permanent and irreversible.",
           "warning_two": "Make sure you have your recovery info backed up before deletion.",
-          "warning_three": "You can always access your wallets if you have the correct recovery info."
+          "warning_three": "You can always access your wallets if you have the correct recovery info.",
+          "button_wipe": "Wipe Wallets",
+          "button_complete": "Complete Check Above"
         }
       }
     },

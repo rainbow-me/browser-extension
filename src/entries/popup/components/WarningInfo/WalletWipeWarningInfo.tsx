@@ -147,7 +147,9 @@ export default function WarningInfo({
               onClick={onProceed}
               disabled={!buttonEnabled}
             >
-              {buttonEnabled ? 'Wipe Wallets' : 'Complete Check Above'}
+              {buttonEnabled
+                ? t('wipe_wallets.button_wipe')
+                : t('wipe_wallets.button_complete')}
             </Button>
           </Box>
         </Row>
