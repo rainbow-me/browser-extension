@@ -1,6 +1,8 @@
 import { ReactNode, useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
+import { useNftsStore } from '~/core/state/nfts';
 import { ChainName } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import {
@@ -8,7 +10,14 @@ import {
   getBlockExplorerHostForChain,
 } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
-import { Box, Stack, Symbol, Text, TextOverflow } from '~/design-system';
+import {
+  Box,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +37,10 @@ export default function NFTDropdownMenu({
   children: ReactNode;
   nft?: UniqueAsset | null;
 }) {
+  const { currentAddress: address } = useCurrentAddressStore();
+  const { hidden, toggleHideNFT } = useNftsStore();
+  const hiddenNftsForAddress = hidden[address] || {};
+  const displayed = !hiddenNftsForAddress[nft?.uniqueId || ''];
   const hasContractAddress = !!nft?.asset_contract.address;
   const hasNetwork = !!nft?.network;
 
@@ -59,7 +72,7 @@ export default function NFTDropdownMenu({
   }, [nft?.id]);
 
   const onValueChange = (
-    value: 'copy' | 'download' | 'opensea' | 'explorer',
+    value: 'copy' | 'download' | 'opensea' | 'explorer' | 'hide',
   ) => {
     switch (value) {
       case 'copy':
@@ -73,6 +86,10 @@ export default function NFTDropdownMenu({
         break;
       case 'download':
         downloadLink.current?.click();
+        break;
+      case 'hide':
+        toggleHideNFT(address, nft?.uniqueId || '');
+        break;
     }
   };
   return (
@@ -198,6 +215,25 @@ export default function NFTDropdownMenu({
                       size={12}
                       color="labelTertiary"
                     />
+                  }
+                />
+              </DropdownMenuRadioItem>
+              <Separator color="separatorSecondary" />
+              <DropdownMenuRadioItem highlightAccentColor value="hide">
+                <HomeMenuRow
+                  leftComponent={
+                    <Text size="16pt" weight="semibold">
+                      {'🙈'}
+                    </Text>
+                  }
+                  centerComponent={
+                    <Box paddingVertical="6px" paddingLeft="2px">
+                      <Text size="14pt" weight="semibold">
+                        {displayed
+                          ? i18n.t('nfts.details.hide')
+                          : i18n.t('nfts.details.unhide')}
+                      </Text>
+                    </Box>
                   }
                 />
               </DropdownMenuRadioItem>
