@@ -164,7 +164,7 @@ export function Settings() {
             leftComponent={
               <Symbol
                 symbol="network"
-                weight="medium"
+                weight="semibold"
                 size={18}
                 color="green"
               />
@@ -182,7 +182,7 @@ export function Settings() {
             leftComponent={
               <Symbol
                 symbol="lock.fill"
-                weight="medium"
+                weight="semibold"
                 size={18}
                 color="blue"
               />
@@ -204,7 +204,7 @@ export function Settings() {
               <Symbol
                 symbol="bolt.fill"
                 color="red"
-                weight="medium"
+                weight="semibold"
                 size={18}
               />
             }
@@ -237,7 +237,7 @@ export function Settings() {
           <MenuItem
             hasRightArrow
             leftComponent={
-              <Symbol symbol="globe" weight="medium" size={18} color="pink" />
+              <Symbol symbol="globe" weight="semibold" size={18} color="pink" />
             }
             onClick={() => navigate(ROUTES.SETTINGS__LANGUAGE)}
             rightComponent={
@@ -254,7 +254,7 @@ export function Settings() {
             leftComponent={
               <Symbol
                 symbol="speaker.wave.2.fill"
-                weight="medium"
+                weight="semibold"
                 size={18}
                 color="labelTertiary"
               />
@@ -292,7 +292,7 @@ export function Settings() {
                       }
                       color={themeOptions[currentTheme as ThemeOption].color}
                       size={18}
-                      weight="medium"
+                      weight="semibold"
                     />
                   }
                   rightComponent={

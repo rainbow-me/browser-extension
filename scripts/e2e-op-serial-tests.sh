@@ -16,7 +16,7 @@ echo "Anvil Launched..."
 
 # Run the tests and store the result
 echo "Running Tests..."
-yarn vitest e2e/serial/$1 --config ./e2e/serial/vitest.config.ts --reporter=verbose 
+yarn vitest e2e/serial/$1 --config ./e2e/serial/vitest.config.ts --reporter=verbose --bail 1
 
 # Store exit code
 TEST_RESULT=$?

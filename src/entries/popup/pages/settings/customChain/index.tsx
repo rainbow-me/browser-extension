@@ -10,7 +10,10 @@ import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
-import { Autocomplete } from '~/entries/popup/components/Autocomplete';
+import {
+  Autocomplete,
+  customNetworkInfo,
+} from '~/entries/popup/components/Autocomplete';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
@@ -21,11 +24,14 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
 
-const KNOWN_NETWORKS = {
+const KNOWN_NETWORKS: Record<
+  string,
+  { name: string; networkInfo: customNetworkInfo }[]
+> = {
   [i18n.t('settings.networks.custom_rpc.networks')]: [
     {
       name: 'Anvil Mainnet Fork',
-      value: {
+      networkInfo: {
         rpcUrl: 'http://127.0.0.1:8545',
         chainId: 1,
         decimals: 18,
@@ -36,7 +42,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Anvil (Dev)',
-      value: {
+      networkInfo: {
         rpcUrl: 'http://127.0.0.1:8545',
         chainId: 31337,
         decimals: 18,
@@ -47,7 +53,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Hardhat Mainnet Fork',
-      value: {
+      networkInfo: {
         rpcUrl: 'http://127.0.0.1:8545',
         chainId: 1,
         decimals: 18,
@@ -58,7 +64,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Hardhat (Dev)',
-      value: {
+      networkInfo: {
         rpcUrl: 'http://127.0.0.1:8545',
         chainId: 31337,
         decimals: 18,
@@ -69,7 +75,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Arbitrum Nova',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://nova.arbitrum.io/rpc',
         chainId: 42_170,
         decimals: 18,
@@ -80,7 +86,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Avalanche',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
         chainId: 43114,
         decimals: 18,
@@ -91,7 +97,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Aurora',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://mainnet.aurora.dev',
         chainId: 1313161554,
         decimals: 18,
@@ -102,7 +108,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Canto',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://canto.gravitychain.io',
         chainId: 7_700,
         decimals: 18,
@@ -113,7 +119,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Celo',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://forno.celo.org',
         chainId: 42_220,
         decimals: 18,
@@ -124,7 +130,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Ethereum Classic',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://etc.rivet.link',
         chainId: 61,
         decimals: 18,
@@ -135,7 +141,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Fantom',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://rpc.ankr.com/fantom',
         chainId: 250,
         decimals: 18,
@@ -146,7 +152,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Flashbots Protect',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://rpc.flashbots.net',
         chainId: 1,
         decimals: 18,
@@ -157,7 +163,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Flashbots Protect (Fast)',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://rpc.flashbots.net/fast',
         chainId: 1,
         decimals: 18,
@@ -168,7 +174,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Filecoin',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://api.node.glif.io/rpc/v1',
         chainId: 314,
         decimals: 18,
@@ -179,7 +185,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Gnosis',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://rpc.gnosischain.com',
         chainId: 100,
         decimals: 18,
@@ -190,7 +196,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Linea',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://rpc.linea.build',
         chainId: 59_144,
         decimals: 18,
@@ -201,7 +207,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Mantle',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://rpc.mantle.xyz',
         chainId: 5000,
         decimals: 18,
@@ -212,7 +218,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Metis',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://andromeda.metis.io/?owner=1088',
         chainId: 1_088,
         decimals: 18,
@@ -223,17 +229,18 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Moonbeam',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://moonbeam.public.blastapi.io',
         chainId: 1284,
         decimals: 18,
         symbol: 'GLMR',
         explorerUrl: 'https://moonscan.io',
+        testnet: false,
       },
     },
     {
       name: 'Polygon zkEVM',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://zkevm-rpc.com',
         chainId: 1101,
         decimals: 18,
@@ -244,7 +251,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'PulseChain',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://rpc.pulsechain.com',
         chainId: 369,
         decimals: 18,
@@ -255,7 +262,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'Scroll',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://rpc.scroll.io',
         chainId: 534_352,
         decimals: 18,
@@ -266,7 +273,7 @@ const KNOWN_NETWORKS = {
     },
     {
       name: 'zkSync',
-      value: {
+      networkInfo: {
         rpcUrl: 'https://mainnet.era.zksync.io',
         chainId: 324,
         decimals: 18,
@@ -394,11 +401,6 @@ export function SettingsCustomChain() {
     const chainId = customRPC.chainId || chainMetadata?.chainId;
     return !!chainId && !isNaN(parseInt(chainId.toString(), 10));
   }, [chainMetadata?.chainId, customRPC.chainId]);
-
-  const onChainIdBlur = useCallback(
-    () => setValidations((prev) => ({ ...prev, chainId: validateChainId() })),
-    [validateChainId],
-  );
 
   const validateName = useCallback(() => {
     return !!inputRef.current?.value;
@@ -556,7 +558,7 @@ export function SettingsCustomChain() {
       if (network) {
         setCustomRPC((prev) => ({
           ...prev,
-          ...network.value,
+          ...network.networkInfo,
           name: networkName,
           active: true,
         }));
@@ -581,60 +583,80 @@ export function SettingsCustomChain() {
       <Stack space="20px">
         <Form>
           <Autocomplete
-            open={open}
+            autoFocus
+            open={!chain ? open : false}
             onFocus={() => setOpen(true)}
-            onBlur={onNameBlur}
+            onBlur={() => {
+              customRPC.name && onNameBlur();
+              setOpen(false);
+            }}
             data={KNOWN_NETWORKS}
             value={customRPC.name || ''}
-            borderColor={validations.name ? 'accent' : 'red'}
+            borderColor={validations.name ? 'transparent' : 'red'}
             placeholder={i18n.t('settings.networks.custom_rpc.network_name')}
-            onChange={(value) => onInputChange<string>(value, 'string', 'name')}
+            onChange={(value) => {
+              onInputChange<string>(value, 'string', 'name');
+              if (!validations.name) {
+                setValidations((prev) => ({ ...prev, name: true }));
+              }
+            }}
             onSelect={handleNetworkSelect}
             ref={inputRef}
+            tabIndex={1}
           />
           <FormInput
-            onChange={(t) =>
-              onInputChange<string>(t.target.value, 'string', 'rpcUrl')
-            }
+            onChange={(t) => {
+              onInputChange<string>(t.target.value, 'string', 'rpcUrl');
+              if (!validations.rpcUrl) {
+                setValidations((prev) => ({ ...prev, rpcUrl: true }));
+              }
+            }}
             placeholder={i18n.t('settings.networks.custom_rpc.rpc_url')}
             value={customRPC.rpcUrl}
-            onBlur={onRpcUrlBlur}
+            onBlur={() => customRPC.rpcUrl && onRpcUrlBlur()}
             borderColor={
-              validations.rpcUrl && !chainMetadataIsError ? 'accent' : 'red'
+              validations.rpcUrl && !chainMetadataIsError
+                ? 'transparent'
+                : 'red'
             }
             loading={chainMetadataIsFetching}
+            spellCheck={false}
+            tabIndex={2}
           />
           <FormInput
-            onChange={(t) =>
-              onInputChange<number>(t.target.value, 'number', 'chainId')
-            }
-            placeholder={i18n.t('settings.networks.custom_rpc.chain_id')}
-            value={customRPC.chainId || chainMetadata?.chainId || ''}
-            onBlur={onChainIdBlur}
-            borderColor={validations.chainId ? 'accent' : 'red'}
-          />
-          <FormInput
-            onChange={(t) =>
-              onInputChange<string>(t.target.value, 'string', 'symbol')
-            }
+            onChange={(t) => {
+              onInputChange<string>(t.target.value, 'string', 'symbol');
+              if (!validations.symbol) {
+                setValidations((prev) => ({ ...prev, symbol: true }));
+              }
+            }}
             placeholder={i18n.t('settings.networks.custom_rpc.symbol')}
             value={customRPC.symbol}
-            onBlur={onSymbolBlur}
-            borderColor={validations.symbol ? 'accent' : 'red'}
+            onBlur={() => customRPC.symbol && onSymbolBlur()}
+            borderColor={
+              validations.symbol || !customRPC.symbol ? 'transparent' : 'red'
+            }
+            spellCheck={false}
+            tabIndex={3}
           />
           <FormInput
-            onChange={(t) =>
-              onInputChange<string>(t.target.value, 'string', 'explorerUrl')
-            }
+            onChange={(t) => {
+              onInputChange<string>(t.target.value, 'string', 'explorerUrl');
+              if (!validations.explorerUrl) {
+                setValidations((prev) => ({ ...prev, explorerUrl: true }));
+              }
+            }}
             placeholder={i18n.t(
               'settings.networks.custom_rpc.block_explorer_url',
             )}
             value={customRPC.explorerUrl}
-            onBlur={onExplorerUrlBlur}
-            borderColor={validations.explorerUrl ? 'accent' : 'red'}
+            onBlur={() => customRPC.explorerUrl && onExplorerUrlBlur()}
+            borderColor={validations.explorerUrl ? 'transparent' : 'red'}
+            spellCheck={false}
+            tabIndex={4}
           />
           <Box padding="10px">
-            <Inline alignHorizontal="justify">
+            <Inline alignHorizontal="justify" alignVertical="center">
               <Text
                 align="center"
                 weight="semibold"
@@ -653,7 +675,7 @@ export function SettingsCustomChain() {
             </Inline>
           </Box>
           <Box padding="10px">
-            <Inline alignHorizontal="justify">
+            <Inline alignHorizontal="justify" alignVertical="center">
               <Text
                 align="center"
                 weight="semibold"
@@ -680,7 +702,9 @@ export function SettingsCustomChain() {
               onClick={addCustomRpc}
               color="accent"
               height="36px"
+              tabIndex={6}
               variant="raised"
+              width="full"
             >
               {i18n.t('settings.networks.custom_rpc.add_network')}
             </Button>

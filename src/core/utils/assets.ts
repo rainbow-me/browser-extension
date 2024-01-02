@@ -1,9 +1,10 @@
+import { AddressZero } from '@ethersproject/constants';
 import { Provider } from '@ethersproject/providers';
 import isURL from 'validator/lib/isURL';
 import { Address, erc20ABI } from 'wagmi';
 import { getContract } from 'wagmi/actions';
 
-import { SupportedCurrencyKey } from '~/core/references';
+import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import {
   AddressOrEth,
   AssetApiResponse,
@@ -24,6 +25,7 @@ import { SearchAsset } from '../types/search';
 import {
   chainIdFromChainName,
   chainNameFromChainId,
+  customChainIdsToAssetNames,
   isNativeAsset,
 } from './chains';
 import {
@@ -40,6 +42,21 @@ const get24HrChange = (priceData?: ZerionAssetPrice) => {
   return twentyFourHrChange
     ? convertAmountToPercentageDisplay(twentyFourHrChange)
     : '';
+};
+
+export const getCustomChainIconUrl = (
+  chainId: ChainId,
+  address: AddressOrEth,
+) => {
+  if (!chainId || !customChainIdsToAssetNames[chainId]) return '';
+  const baseUrl =
+    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
+
+  if (address === AddressZero || address === ETH_ADDRESS) {
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
+  } else {
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
+  }
 };
 
 export const getNativeAssetPrice = ({
@@ -83,7 +100,11 @@ export function parseAsset({
 }): ParsedAsset {
   const address = asset.asset_code;
   const chainName = asset.network ?? ChainName.mainnet;
-  const chainId = chainIdFromChainName(chainName);
+  const chainId =
+    chainIdFromChainName(chainName) ||
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    (Number(Object.keys(asset.networks)?.[0]) as ChainId);
 
   // ZerionAsset should be removed when we move fully away from websckets/refraction api
   const mainnetAddress = isZerionAsset(asset)
@@ -113,7 +134,7 @@ export function parseAsset({
     symbol: asset.symbol,
     type: asset.type,
     decimals: asset.decimals,
-    icon_url: asset.icon_url,
+    icon_url: asset.icon_url || getCustomChainIconUrl(chainId, address),
     colors: asset.colors,
     standard,
     ...('networks' in asset && { networks: asset.networks }),

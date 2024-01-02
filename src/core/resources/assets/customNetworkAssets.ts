@@ -16,7 +16,10 @@ import {
   SupportedCurrencyKey,
 } from '~/core/references';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { rainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
+import {
+  RainbowChainAsset,
+  useRainbowChainAssetsStore,
+} from '~/core/state/rainbowChainAssets';
 import {
   AddressOrEth,
   AssetMetadata,
@@ -28,13 +31,11 @@ import {
   createAssetQuery,
   extractFulfilledValue,
   getAssetBalance,
+  getCustomChainIconUrl,
   parseAssetMetadata,
   parseUserAssetBalances,
 } from '~/core/utils/assets';
-import {
-  customChainIdsToAssetNames,
-  getRainbowChains,
-} from '~/core/utils/chains';
+import { getRainbowChains } from '~/core/utils/chains';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 import { ETH_MAINNET_ASSET } from '~/test/utils';
@@ -52,6 +53,7 @@ export type CustomNetworkAssetsArgs = {
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
   filterZeroBalance?: boolean;
+  rainbowChainAssets?: Record<number, RainbowChainAsset[]>;
 };
 
 type SetCustomNetworkAssetsArgs = {
@@ -60,6 +62,7 @@ type SetCustomNetworkAssetsArgs = {
   customNetworkAssets?: CustomNetworkAssetsResult;
   testnetMode?: boolean;
   filterZeroBalance?: boolean;
+  rainbowChainAssets: Record<number, RainbowChainAsset[]>;
 };
 
 type SetUserDefaultsArgs = {
@@ -68,12 +71,15 @@ type SetUserDefaultsArgs = {
   staleTime: number;
   testnetMode?: boolean;
   filterZeroBalance?: boolean;
+  rainbowChainAssets: Record<number, RainbowChainAsset[]>;
 };
 
 type FetchCustomNetworkAssetsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
+  filterZeroBalance?: boolean;
+  rainbowChainAssets: Record<number, RainbowChainAsset[]>;
 };
 
 // ///////////////////////////////////////////////
@@ -84,11 +90,18 @@ export const customNetworkAssetsKey = ({
   currency,
   testnetMode,
   filterZeroBalance,
+  rainbowChainAssets,
 }: CustomNetworkAssetsArgs) =>
   createQueryKey(
     'CustomNetworkAssets',
-    { address, currency, testnetMode, filterZeroBalance },
-    { persisterVersion: 3 },
+    {
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+      rainbowChainAssets,
+    },
+    { persisterVersion: 4 },
   );
 
 type customNetworkAssetsKey = ReturnType<typeof customNetworkAssetsKey>;
@@ -100,9 +113,17 @@ export const CustomNetworkAssetsFetchQuery = ({
   address,
   currency,
   testnetMode,
+  filterZeroBalance,
+  rainbowChainAssets,
 }: FetchCustomNetworkAssetsArgs) => {
   queryClient.fetchQuery(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+      rainbowChainAssets,
+    }),
     customNetworkAssetsFunction,
   );
 };
@@ -113,6 +134,7 @@ export const CustomNetworkAssetsSetQueryDefaults = ({
   staleTime,
   testnetMode,
   filterZeroBalance,
+  rainbowChainAssets,
 }: SetUserDefaultsArgs) => {
   queryClient.setQueryDefaults(
     customNetworkAssetsKey({
@@ -120,6 +142,7 @@ export const CustomNetworkAssetsSetQueryDefaults = ({
       currency,
       testnetMode,
       filterZeroBalance,
+      rainbowChainAssets,
     }),
     {
       staleTime,
@@ -133,6 +156,7 @@ export const CustomNetworkAssetsSetQueryData = ({
   customNetworkAssets,
   testnetMode,
   filterZeroBalance,
+  rainbowChainAssets,
 }: SetCustomNetworkAssetsArgs) => {
   queryClient.setQueryData(
     customNetworkAssetsKey({
@@ -140,31 +164,26 @@ export const CustomNetworkAssetsSetQueryData = ({
       currency,
       testnetMode,
       filterZeroBalance,
+      rainbowChainAssets,
     }),
     customNetworkAssets,
   );
 };
 
-export const getCustomChainIconUrl = (
-  chainId: ChainId,
-  address: AddressOrEth,
-) => {
-  const baseUrl =
-    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
-
-  if (address === AddressZero || address === ETH_MAINNET_ASSET.address) {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
-  } else {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
-  }
-};
-
 async function customNetworkAssetsFunction({
-  queryKey: [{ address, currency, testnetMode, filterZeroBalance }],
+  queryKey: [
+    { address, currency, testnetMode, filterZeroBalance, rainbowChainAssets },
+  ],
 }: QueryFunctionArgs<typeof customNetworkAssetsKey>) {
   const cache = queryClient.getQueryCache();
   const cachedCustomNetworkAssets = (cache.find(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+      rainbowChainAssets,
+    }),
   )?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
   const { rainbowChains: chains } = getRainbowChains();
@@ -175,8 +194,6 @@ async function customNetworkAssetsFunction({
   if (customChains.length === 0) {
     return cachedCustomNetworkAssets;
   }
-  const { rainbowChainAssets } = rainbowChainAssetsStore.getState();
-
   try {
     const assetsPromises = customChains
       .filter(
@@ -216,7 +233,7 @@ async function customNetworkAssetsFunction({
               })
             : null;
 
-        const chainAssets = rainbowChainAssets[chain.id] || [];
+        const chainAssets = rainbowChainAssets?.[chain.id] || [];
         const chainParsedAssetBalances = await Promise.allSettled(
           chainAssets.map((asset) =>
             getAssetBalance({
@@ -302,6 +319,7 @@ async function customNetworkAssetsFunction({
     const assetsResults = (await Promise.allSettled(assetsPromises))
       .map((assets) => extractFulfilledValue(assets))
       .filter(Boolean);
+
     const parsedAssetsDict: Record<ChainId | number, ParsedAssetsDict> =
       assetsResults.reduce(
         (acc, { chainId, assets }) => {
@@ -345,12 +363,14 @@ export function useCustomNetworkAssets<
   > = {},
 ) {
   const { testnetMode } = useTestnetModeStore();
+  const { rainbowChainAssets } = useRainbowChainAssetsStore();
   return useQuery(
     customNetworkAssetsKey({
       address,
       currency,
       testnetMode,
       filterZeroBalance,
+      rainbowChainAssets,
     }),
     customNetworkAssetsFunction,
     {
