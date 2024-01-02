@@ -1,14 +1,35 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { avalanche, celo, fantom, harmonyOne } from '@wagmi/chains';
 import { getNetwork } from '@wagmi/core';
-import { mainnet } from 'wagmi';
+import {
+  Chain,
+  avalanche,
+  celo,
+  fantom,
+  harmonyOne,
+  mainnet,
+  moonbeam,
+} from 'viem/chains';
+import { useNetwork } from 'wagmi';
 
-import { NATIVE_ASSETS_PER_CHAIN, SUPPORTED_CHAINS } from '~/core/references';
-import { ChainId, ChainName } from '~/core/types/chains';
+import {
+  NATIVE_ASSETS_PER_CHAIN,
+  SUPPORTED_CHAINS,
+  SUPPORTED_MAINNET_CHAINS,
+} from '~/core/references';
+import {
+  ChainId,
+  ChainName,
+  ChainNameDisplay,
+  chainIdToNameMapping,
+  chainNameToIdMapping,
+} from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
-import { customRPCsStore } from '../state/customRPC';
+import {
+  RAINBOW_CHAINS_SUPPORTED,
+  rainbowChainsStore,
+} from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost, isValidUrl } from './connectedApps';
@@ -17,19 +38,27 @@ import { isLowerCaseMatch } from './strings';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
-  43114: 'avalanchex',
-  100: 'xdai',
-  324: 'zksync',
+  42170: 'arbitrumnova',
   1313161554: 'aurora',
+  43114: 'avalanchex',
   42220: 'celo',
-  250: 'fantom',
-  1666600000: 'harmony',
-  59144: 'linea',
+  61: 'classic',
   25: 'cronos',
+  250: 'fantom',
+  314: 'filecoin',
+  1666600000: 'harmony',
   2222: 'kavaevm',
   8217: 'klaytn',
-  314: 'filecoin',
+  59144: 'linea',
+  5000: 'mantle',
+  1088: 'metis',
+  1284: 'moonbeam',
+  7700: 'nativecanto',
+  1101: 'polygonzkevm',
+  369: 'pulsechain',
   534352: 'scroll',
+  100: 'xdai',
+  324: 'zksync',
 };
 
 export const getSupportedChainsWithHardhat = () => {
@@ -47,6 +76,66 @@ export const getSupportedChains = () => {
   return chains.filter((chain) => !chain.testnet);
 };
 
+export const useMainChains = () => {
+  const { chains } = useNetwork();
+  // All the mainnets we support
+  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
+    (chain) => !chain.testnet,
+  );
+
+  // The chain ID of all the mainnets we support
+  const supportedChainIds = mainSupportedChains.map((chain) => chain.id);
+
+  // All the chains that the user added
+  const customMainChains = chains?.filter(
+    (chain) =>
+      !supportedChainIds.includes(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+  );
+
+  const customChainsIncludingTestnets = customMainChains.filter(
+    (chain: Chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        !mainSupportedChains
+          .map((chain: Chain) => chain.id)
+          .includes(chain.id) &&
+        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id)),
+  );
+
+  return mainSupportedChains.concat(customChainsIncludingTestnets);
+};
+
+export const getMainChains = () => {
+  const { chains } = getNetwork();
+  // All the mainnets we support
+  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
+    (chain) => !chain.testnet,
+  );
+
+  // The chain ID of all the mainnets we support
+  const supportedChainIds = mainSupportedChains.map((chain) => chain.id);
+
+  // All the chains that the user added
+  const customMainChains = chains?.filter(
+    (chain) =>
+      !supportedChainIds.includes(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+  );
+
+  const customChainsIncludingTestnets = customMainChains.filter(
+    (chain: Chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        !mainSupportedChains
+          .map((chain: Chain) => chain.id)
+          .includes(chain.id) &&
+        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id)),
+  );
+
+  return mainSupportedChains.concat(customChainsIncludingTestnets);
+};
+
 export const getSupportedChainIds = () =>
   getSupportedChains().map((chain) => chain.id);
 
@@ -55,34 +144,96 @@ export const getSupportedTestnetChains = () => {
   return chains.filter((chain) => !!chain.testnet);
 };
 
-export const getSupportedTestnetChainIds = () =>
-  getSupportedTestnetChains()
-    .filter(
-      (chain) =>
-        chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
-    )
-    .map((chain) => chain.id);
+export const getSimpleHashSupportedChainNames = () => {
+  return [
+    'ethereum',
+    'solana',
+    'bitcoin',
+    'polygon',
+    'arbitrum',
+    'arbitrum-nova',
+    'avalanche',
+    'base',
+    'bsc',
+    'celo',
+    'flow',
+    'gnosis',
+    'godwoken',
+    'linea',
+    'loot',
+    'manta',
+    'optimism',
+    'palm',
+    'polygon-zkvem',
+    'scroll',
+    'zksync-era',
+    'zora',
+    'ethereum-rinkeby',
+    'ethereum-sepolia',
+    'solana-devnet',
+    'polygon-mumbai',
+    'arbitrum-goerli',
+    'arbitrum-sepolia',
+    'astria-devnet',
+    'avalanche-fuji',
+    'base-goerli',
+    'base-sepolia',
+    'bsc-testnet',
+    'frame-testnet',
+    'godwoken-testnet',
+    'linea-testnet',
+    'manta-testnet',
+    'modular-games-testnet',
+    'optimism-goerli',
+    'optimism-sepolia',
+    'palm-testnet',
+    'palm-testnet-edge',
+    'polygon-zkevm-testnet',
+    'scroll-testnet',
+    'scroll-sepoloia',
+    'zksync-era-testnet',
+    'zora-testnet',
+    'zora-sepolia',
+  ];
+};
 
-export const getCustomChains = () => {
-  const { customChains } = customRPCsStore.getState();
+export const getBackendSupportedChains = ({
+  testnetMode,
+}: {
+  testnetMode?: boolean;
+}) => {
+  const chains = testnetMode
+    ? getSupportedTestnetChains()
+    : getSupportedChains();
+  return chains;
+};
+
+export const getRainbowChains = () => {
+  const { rainbowChains } = rainbowChainsStore.getState();
   return {
-    customChains: Object.values(customChains)
-      .map((customChain) =>
-        customChain.chains.find(
-          (rpc) => rpc.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+    rainbowChains: Object.values(rainbowChains)
+      .map((rainbowChain) =>
+        rainbowChain.chains.find(
+          (rpc) => rpc.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
         ),
       )
       .filter(Boolean),
   };
 };
 
-export const findCustomChainForChainId = (chainId: number) => {
-  const { customChains } = getCustomChains();
-  return customChains.find((network) => network.id === chainId);
+export const findRainbowChainForChainId = (chainId: number) => {
+  const { rainbowChains } = getRainbowChains();
+  return rainbowChains.find((chain) => chain.id === chainId);
+};
+
+export const getChainName = ({ chainId }: { chainId: number }) => {
+  const chain = getChain({ chainId });
+  return ChainNameDisplay[chainId] || chain.name;
 };
 
 export const isCustomChain = (chainId: number) =>
-  !!findCustomChainForChainId(chainId);
+  !RAINBOW_CHAINS_SUPPORTED.map((chain) => chain.id).includes(chainId) &&
+  !!findRainbowChainForChainId(chainId);
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -117,13 +268,11 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
 }
 
 export function chainIdFromChainName(chainName: ChainName) {
-  return ChainId[chainName];
+  return chainNameToIdMapping[chainName];
 }
 
-export function chainNameFromChainId(chainId: ChainId) {
-  return Object.keys(ChainId)[
-    Object.values(ChainId).indexOf(chainId)
-  ] as ChainName;
+export function chainNameFromChainId(chainId: ChainId): ChainName {
+  return chainIdToNameMapping[chainId];
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
@@ -161,9 +310,8 @@ export const chainIdToUse = (
   }
   if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
     return activeSessionChainId;
-  } else {
-    return ChainId.mainnet;
   }
+  return ChainId.mainnet;
 };
 
 export const getChainMetadataRPCUrl = async ({
@@ -190,7 +338,7 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'explorer-mumbai.maticvigil.com':
     case 'explorer-mumbai.matic.today':
     case 'mumbai.polygonscan.com':
-      return ChainId['polygon-mumbai'];
+      return ChainId.polygonMumbai;
     case 'polygonscan.com':
       return ChainId.polygon;
     case 'optimistic.etherscan.io':
@@ -207,6 +355,8 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'subnets.avax.network':
     case 'snowtrace.io':
       return avalanche.id;
+    case 'moonscan.io':
+      return moonbeam.id;
     default:
       return ChainId.mainnet;
   }

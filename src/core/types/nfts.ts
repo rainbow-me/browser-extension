@@ -101,8 +101,6 @@ export type SimpleHashCollection = {
 
 export interface SimpleHashCollectionDetails {
   collection_id: string;
-  distinct_nft_count: number;
-  distinct_owner_count: number;
   total_copies_owned?: number;
   total_copies_owned_string?: string;
   last_acquired_date?: string;
@@ -113,6 +111,8 @@ export interface SimpleHashCollectionDetails {
     chains: string[];
     description: string;
     discord_url: string;
+    distinct_nft_count: number;
+    distinct_owner_count: number;
     external_url: string;
     floor_prices: SimpleHashFloorPrice[];
     image_url: string;
@@ -293,6 +293,9 @@ export interface UniqueAsset {
     collection_id?: string | null;
     description?: string | null;
     discord_url?: string | null;
+    total_quantity?: number | null;
+    distinct_nft_count?: number | null;
+    distinct_owner_count?: number | null;
     external_url?: string | null;
     featured_image_url?: string | null;
     hidden?: boolean | null;

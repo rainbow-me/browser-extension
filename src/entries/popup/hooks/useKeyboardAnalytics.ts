@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { analytics } from '~/analytics';
-import { event } from '~/analytics/event';
+import { EventProperties, event } from '~/analytics/event';
 import { screen } from '~/analytics/screen';
 
 export type KeyboardEventDescription =
@@ -16,6 +15,8 @@ export type KeyboardEventDescription =
   | 'connect.openWalletSwitcher'
   | 'connect.switchWallet'
   | 'connect.cancel'
+  | 'request.cancel'
+  | 'request.accept'
   | 'customGasMenu.open'
   | 'gasMenu.open'
   | 'global.switchWallet'
@@ -64,12 +65,19 @@ export type KeyboardEventDescription =
   | 'tokens.viewAssetOnExplorer'
   | 'walletSwitcher.search';
 
+const analyticsTrack = <T extends keyof EventProperties>(
+  event: T,
+  params?: EventProperties[T],
+) =>
+  import('~/analytics').then(({ analytics }) => analytics.track(event, params));
+
 export default function useKeyboardAnalytics() {
   const { pathname } = useLocation();
   const currentScreen = screen[pathname];
+
   const trackNavigation = useCallback(
-    ({ key }: { key: string; type: KeyboardEventDescription }) => {
-      analytics.track(event.keyboardNavigationTriggered, {
+    async ({ key }: { key: string; type: KeyboardEventDescription }) => {
+      analyticsTrack(event.keyboardNavigationTriggered, {
         key,
         screen: currentScreen,
       });
@@ -77,8 +85,8 @@ export default function useKeyboardAnalytics() {
     [currentScreen],
   );
   const trackShortcut = useCallback(
-    ({ key, type }: { key: string; type: KeyboardEventDescription }) => {
-      analytics.track(event.keyboardShortcutTriggered, {
+    async ({ key, type }: { key: string; type: KeyboardEventDescription }) => {
+      analyticsTrack(event.keyboardShortcutTriggered, {
         key,
         screen: currentScreen,
         type,

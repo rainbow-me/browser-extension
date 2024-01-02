@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "Mainnet",
+      "testnet": "Testnet",
       "title": "Jaringan",
+      "testnets": "Testnet",
       "quick_promo": {
         "text": "Seret jaringan untuk mengaturnya",
         "text_bold": "Tip:"
       },
+      "disabled": "Nonaktif",
       "description": "Pilih jaringan dan token yang akan ditampilkan. Anda dapat terhubung ke jaringan apa pun yang didukung Rainbow, meskipun mereka tidak dicentang",
       "developer_tools": {
         "title": "Aktifkan Alat Pengembang",
         "toggle_explainer": "Mengaktifkan shortcut Mode Testnet (T) dan menambahkan toggle ke menu atas-kanan layar utama."
       },
       "custom_rpc": {
-        "title": "RPC Kustom"
+        "title": "Tambah Jaringan",
+        "networks": "Jaringan",
+        "network_name": "Nama Jaringan",
+        "rpc_url": "URL RPC",
+        "chain_id": "ID Jaringan",
+        "symbol": "Simbol",
+        "decimals": "Desimal",
+        "active": "Aktif",
+        "testnet": "Testnet",
+        "block_explorer_url": "URL Eksplorer Blok",
+        "add_network": "Tambah Jaringan",
+        "add_rpc": "Tambah RPC %{rpcName}",
+        "add_asset": "Tambah Token Khusus",
+        "network_added": "Jaringan Ditambahkan!",
+        "network_added_correctly": "%{networkName} berhasil ditambahkan!",
+        "remove_token": "Hapus Token",
+        "remove_rpc": "Hapus RPC",
+        "tokens": "Tokens",
+        "cant_connect": "Tidak dapat terhubung ke endpoint RPC ini!",
+        "rpc_not_responding": "URL yang diberikan tidak merespons"
+      },
+      "rpc_endpoints": "Endpoint RPC",
+      "enabled": "Diaktifkan",
+      "watch_asset": {
+        "title": "Pantau Aset"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K",
       "custom_rpc": "RPC Kustom",
       "new_tab_bar_enabled": "Bar Tab Baru",
-      "nfts_enabled": "NFTs Diaktifkan"
+      "nfts_enabled": "NFTs Diaktifkan",
+      "points": "Poin"
     }
   },
   "transactions": {
@@ -403,7 +431,10 @@
         "view_on_ens": "Lihat pada ENS",
         "switch_to_wallet": "Alihkan ke Dompet Ini",
         "copy_wallet_address": "Salin Alamat",
-        "view_wallet_on_etherscan": "Lihat di Etherscan"
+        "view_wallet_on_etherscan": "Lihat di Etherscan",
+        "export_addresses_as_csv": "Ekspor Alamat sebagai CSV",
+        "enable_flashbots": "Aktifkan Flashbots",
+        "disable_flashbots": "Nonaktifkan Flashbots"
       },
       "search_tags": {
         "swap": "jembatan",
@@ -479,6 +510,18 @@
     },
     "toolbar": {
       "actions_hint": "Tindakan"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "Pantau",
+        "recovery_phrase": "Recovery Phrase",
+        "private_key": "Kunci Pribadi",
+        "hardware_wallet": "Dompet Hardware"
+      },
+      "toast": {
+        "title": "Alamat Diunduh",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {
@@ -525,7 +568,6 @@
       "cancel": "Batal",
       "sending_on_network": "Mengirim di jaringan %{chainName}",
       "sending_on_l2_check_1": "Saya tidak mengirim ke bursa",
-      "sending_on_l2_check_2": "Orang yang saya kirimkan memiliki dompet yang mendukung %{chainName}",
       "complete_checks": "Lengkapi pemeriksaan",
       "confirm_hw": "Konfirmasi di perangkat Anda"
     }
@@ -866,7 +908,7 @@
   },
   "seed_verify": {
     "title": "Verifikasi Frasa Pemulihan Rahasia Anda",
-    "explanation": "Pilih kata ke-4, ke-8, dan ke-12 sesuai urutan tampilan Frasa Pemulihan Rahasia Anda",
+    "explanation": "Pilih kata ke-4, 8, dan 12 dalam urutan yang ditampilkan oleh Frasa Pemulihan Rahasia Anda.",
     "skip": "Lewati ini"
   },
   "menu": {
@@ -938,20 +980,36 @@
     "button_label_cancel": "Ingatkan Saya Nanti"
   },
   "approve_request": {
+    "allow_to_add_asset": "ingin menyarankan sebuah token",
     "wallet_info_title": "ingin terhubung ke dompet Anda",
     "wallet_info_description": "Izinkan %{appName} untuk melihat alamat, saldo, aktivitas dompet Anda dan minta persetujuan untuk transaksi.",
+    "add_chain_info_description": "Jika Anda menyetujuinya, jaringan ini bisa digunakan dalam Ekstensi Penjelajah Rainbow.",
+    "watch_asset_info_description": "Jika Anda menyetujuinya, aset ini dapat digunakan dalam Rainbow Browser Extension.",
     "wallet": "Dompet",
     "network": "Jaringan",
     "switch_networks": "Ganti Jaringan",
     "switch_wallets": "Ganti Dompet",
+    "allow_to_add_network": "ingin menambahkan jaringan",
     "connect": "Hubungkan ke %{appName}",
     "connect_anyway": "Sambungkan Tetap",
+    "approve": "Setujui",
+    "approve_anyway": "Setujui Saja",
     "malicious_warning": {
       "title": "App ini kemungkinan berbahaya",
       "message": "Mengirim pesan atau transaksi dari aplikasi ini bisa berakibat pada kehilangan aset Anda"
     },
+    "malicious_transaction_warning": {
+      "title": "Transaksi ini terlihat mencurigakan",
+      "malicious_address": "Ada alamat jahat yang terlibat dalam transaksi ini. Penandatanganan dapat mengakibatkan kerugian",
+      "malicious_entity": "Ada entitas jahat yang terlibat dalam transaksi ini. Penandatanganan dapat mengakibatkan kerugian",
+      "minting_is_a_losing_trade": "Kontrak penipuan terlibat dalam transaksi ini. Pencetakan akan merugikan",
+      "you_can_lose_everything": "Menandatangani transaksi ini bisa mengakibatkan kehilangan akses ke semua yang ada di dalam dompet Anda"
+    },
+    "dangerous_request": "Permintaan Berbahaya",
     "message_signing_request": "Permintaan Tanda Tangan Pesan",
     "message": "Pesan",
+    "message_copied": "Salin Pesan",
+    "transaction_data_copied": "Salin Data Transaksi",
     "sign_message": "Tandatangani Pesan",
     "sign_message_anyway": "Tanda Tangani Tetap",
     "confirm_hw": "Konfirmasi di perangkat Anda",
@@ -960,7 +1018,30 @@
     "send_transaction_anyway": "Konfirmasi Tetap",
     "contract_deployment": "Penerapan Kontrak",
     "transaction_request": "Permintaan Transaksi",
-    "insufficient_native_asset_for_gas": "Kurangnya %{symbol} untuk gas"
+    "insufficient_gas_funds": "Anda butuh lebih banyak %{token}",
+    "insufficient_gas_funds_description": "Anda memerlukan sedikit lagi %{token} untuk membayar transaksi ini. Dapatkan lebih banyak di bawah ini untuk melanjutkan permintaan ini.",
+    "no_gas_funds": "Anda memerlukan beberapa %{token}",
+    "no_gas_funds_description": "Anda perlu %{token} untuk membayar transaksi ini. Dapatkan beberapa %{token} di bawah ini untuk melanjutkan permintaan ini.",
+    "no_token": "Tidak ada %{token}",
+    "on_chain": "di %{chain}",
+    "copy_deposit_address": "Salin alamat dompet untuk deposit",
+    "bridge_to": "Membuat jembatan ke %{chain}",
+    "signing_with": "Tanda Tangan dengan",
+    "no_fee_to_sign": "Tidak ada biaya untuk menandatangani",
+    "request_rejected": "Permintaan Transaksi Ditolak",
+    "bridge_and_try_again": "Jembatani beberapa dana gas dan coba lagi",
+    "buy_and_try_again": "Beli beberapa dana gas dan coba lagi",
+    "buy": "Beli %{token}"
+  },
+  "add_chain": {
+    "name": "Nama",
+    "chain_id": "ID Jaringan",
+    "currency_symbol": "Simbol Mata Uang",
+    "currency_name": "Nama Mata Uang",
+    "currency_decimals": "Desimal Mata Uang",
+    "rpc_url": "URL RPC",
+    "block_explorer_url": "URL Penjelajah Blok",
+    "testnet": "Testnet"
   },
   "transaction_fee": {
     "title": "Kecepatan Transaksi",
@@ -1040,7 +1121,9 @@
   "errors": {
     "error_encountered": "Ada yang salah. Harap bagikan isu ini dengan tim kami dan kami akan memperbaikinya",
     "no_wallet_name_set": "Nama wallet belum diatur",
-    "report_error": "Laporkan isu"
+    "report_error": "Laporkan isu",
+    "sending_transaction": "Kesalahan mengirim transaksi",
+    "executing_swap": "Kesalahan melakukan tukar"
   },
   "common_titles": {
     "before_you_proceed": "Sebelum Anda melanjutkan"
@@ -1127,18 +1210,103 @@
   },
   "nfts": {
     "coming_soon_header": "Segera Hadir",
+    "empty_state_header": "NFTs",
     "coming_soon_description": "NFTs segera hadir. Tetap sintonik!",
+    "empty_state_description": "NFT Anda akan muncul di sini!",
     "view_on_web": "Lihat di Web",
     "display_mode_gallery": "Galeri",
     "display_mode_collections": "Koleksi",
     "sort_option_recent": "Terbaru",
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "Terbaru",
-    "sort_option_abc_long": "Abjad"
+    "sort_option_abc_long": "Abjad",
+    "details": {
+      "last_sales_price": "Harga Terakhir Terjual",
+      "none": "Tidak ada",
+      "floor_price": "Harga Terendah",
+      "description": "Deskripsi",
+      "properties": "Properti",
+      "address_copied": "Alamat Tersalin",
+      "about": "Tentang",
+      "token_standard": "Standar Token",
+      "token_contract": "Kontrak Token",
+      "contract_creator": "Pencipta Kontrak",
+      "chain": "Rantai",
+      "id_copied": "ID Disalin",
+      "copy_token_id": "Salin ID Token",
+      "download": "Unduh",
+      "explorer": "Penjelajah",
+      "view_collection": "Tampilkan Koleksi",
+      "collection_website": "Situs Koleksi",
+      "owners": "Pemilik",
+      "unique_owners": "Pemilik Unik",
+      "ens_profile_info": "Info Profil",
+      "ens_bio": "Bio",
+      "ens_cover": "Sampul",
+      "ens_address": "Alamat ETH",
+      "ens_website": "Situs Web",
+      "registered_on": "Terdaftar pada",
+      "expires_in": "Berakhir dalam",
+      "explainer": {
+        "floor_price_description": "Harga lantai koleksi adalah harga penawaran terendah dari semua item yang sedang dijual dalam sebuah koleksi.",
+        "floor_price_title": "Harga Dasar Koleksi",
+        "floor_price_action_label": "Mengerti"
+      }
+    }
   },
   "points": {
     "coming_soon_header": "Segera Hadir",
-    "coming_soon_description": "Poin ada di dekat sana.\nMulai mendapatkan hari ini"
+    "coming_soon_description": "Poin ada di dekat sana.\nMulai mendapatkan hari ini",
+    "your_rank": "Peringkat Anda",
+    "next_drop": "Drop Selanjutnya",
+    "leaderboard": "Papan Peringkat",
+    "referral_code": "Kode Referal",
+    "referral_code_description": "Dapatkan poin dengan merujuk teman setelah mereka menukar $100 melalui Rainbow",
+    "copied_referral_code": "Kode referal disalin!",
+    "copied_referral_link": "Link referal disalin!",
+    "out_of": "Dari %{total}",
+    "out_of_current_total_points": "Dari total %{total} poin saat ini",
+    "header": "Klaim poin Anda",
+    "description": "Poin ada di sini. Cari tahu berapa yang Anda dapat.",
+    "get_started": "Mulai",
+    "use_referral_code": "Gunakan Kode Referal",
+    "referral_header": "Masukkan kode referal Anda",
+    "referral_description": "Masukkan kode referal di bawah ini untuk klaim bonus anda.",
+    "referral_code_invalid": "Kode Tidak Valid",
+    "onboarding": {
+      "authorization_required": "Butuh Otorisasi",
+      "sign_in_with_your_wallet": "Masuk dengan dompet Anda",
+      "access_granted": "Akses diberikan",
+      "calculating_points": "Menghitung poin",
+      "rainbow_swaps": "Rainbow Swaps:",
+      "rainbow_nfts_owned": "NFT Rainbow yang Dimiliki:",
+      "wallet_balance": "Saldo Dompet:",
+      "metamask_swaps": "Pertukaran MetaMask:",
+      "bonus_reward": "Hadiah Bonus:",
+      "calculation_complete": "Perhitungan selesai",
+      "points_earned": "Poin yang Didapat:",
+      "bonus_points": "Poin Bonus:",
+      "claim_description_buy": "Untuk mengklaim sisa poin bonus Anda, dapatkan ETH melalui Rainbow.",
+      "claim_description_swap": "Untuk mengklaim sisa poin bonus Anda, tukarkan minimal $100 melalui Rainbow.",
+      "account": "Akun:",
+      "sign_in": "Masuk",
+      "get_eth": "Dapatkan ETH",
+      "try_swap": "Coba Swap",
+      "referral_link_ready": "Link rujukan Anda siap",
+      "share_and_earn": "Tweet link rujukan dan dapatkan 250 poin tambahan",
+      "plus_percent_of_refers": "Plus Anda akan mendapatkan 10% poin dari setiap orang yang Anda rujuk",
+      "share": "Bagikan ke X",
+      "share_tweet": "Saya baru saja mendapat %{points} Rainbow Points masuk ke dompet saya\nSetiap orang memiliki setidaknya 100 poin yang menunggu, tapi mungkin kamu memiliki lebih!\n\nKlaim drop kamu: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "Saya baru saja mendapat %{points} Rainbow Points masuk ke dalam dompet saya — dan tambahan %{metamaskBonus} Points sebagai bonus karena memindahkan dompet MetaMask saya ke Rainbow 🦊 🔫\n\nSetiap orang memiliki setidaknya 100 poin yang menunggu, tapi mungkin kamu memiliki lebih! Klaim drop kamu: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "Pendaftaran selesai",
+      "all_set": "Anda telah siap!",
+      "keep_earning_by": "Terus mendapatkan poin dengan swapping, bridging, minting, merujuk teman, dan lainnya",
+      "the_more_you_use": "Semakin sering Anda menggunakan Rainbow, semakin banyak hadiah yang akan Anda dapatkan"
+    },
+    "error": {
+      "existing_user": "Pengguna lama",
+      "invalid_referral_code": "Kode referal tidak valid"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Percepat",
@@ -1172,6 +1340,7 @@
     "approvals": "Persetujuan Token",
     "this_token_is_on_network": "Ini %{symbol} berada di jaringan %{chainName}",
     "view_on": "Lihat di %{explorer}",
+    "not_available": "Harga tidak tersedia",
     "more_options": {
       "copy_address": "Salin Alamat",
       "hide": "Sembunyikan Token",
@@ -1405,5 +1574,44 @@
     "unfavorite": "Hapus dari favorit",
     "estimated_difference": "Perkiraan selisih nilai",
     "buy_crypto": "Beli dan transfer kripto"
+  },
+  "simulation": {
+    "title": "Hasil Simulasi",
+    "loading": "Sedang Mensimulasikan...",
+    "error": "Simulasi Gagal",
+    "no_changes": "Tidak Terdeteksi Perubahan",
+    "received": "Diterima",
+    "sent": "Terkirim",
+    "approved": "Disetujui",
+    "reverted": "Transaksi Dibatalkan",
+    "function": "Fungsi",
+    "contract": "Kontrak",
+    "contract_name": "Nama Kontrak",
+    "contract_created_at": "Kontrak Dibuat",
+    "source_code": "Kode Sumber",
+    "signature": {
+      "message": "Pesan"
+    },
+    "tabs": {
+      "overview": "Ikhtisar",
+      "details": "Detail",
+      "data": "Data"
+    }
+  },
+  "chain": "Rantai",
+  "nonce": "Nonce",
+  "copy": "Salin",
+  "copy_link": "Salin Tautan",
+  "close": "Tutup",
+  "verified": "Terverifikasi",
+  "unverified": "Tidak Terverifikasi",
+  "skip": "Lewati",
+  "done": "Selesai",
+  "watch_asset": {
+    "chain_id": "ID Jaringan",
+    "symbol": "Simbol",
+    "decimals": "Desimal",
+    "address": "Alamat",
+    "not_found": "Kami tidak dapat menemukan aset ini pada jaringan yang dipilih. Harap pilih jaringan yang tepat di bawah"
   }
 }

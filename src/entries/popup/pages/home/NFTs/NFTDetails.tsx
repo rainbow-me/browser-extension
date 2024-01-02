@@ -1,13 +1,16 @@
 import { DropdownMenuRadioGroup } from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
+import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';
+import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
@@ -17,13 +20,16 @@ import {
   getBlockExplorerHostForChain,
 } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
+import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { capitalize } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
 import {
   AccentColorProvider,
+  Bleed,
   Box,
   Button,
+  ButtonSymbol,
   Column,
   Columns,
   Inline,
@@ -39,6 +45,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '~/design-system/components/Accordion/Accordion';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import {
   TextStyles,
@@ -53,6 +60,10 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow';
 import {
@@ -61,7 +72,10 @@ import {
 } from '~/entries/popup/components/Navbar/Navbar';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
+import { useEns } from '~/entries/popup/hooks/useEns';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
+
+import { BirdIcon } from './BirdIcon';
 
 const getOpenseaUrl = ({
   nft,
@@ -83,7 +97,8 @@ export default function NFTDetails() {
     collectionId: string;
     nftId: string;
   }>();
-  const { data } = useNfts({ address });
+  const { testnetMode } = useTestnetModeStore();
+  const { data } = useNfts({ address, testnetMode });
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
@@ -91,9 +106,44 @@ export default function NFTDetails() {
       (asset: UniqueAsset) => asset.id === nftId,
     );
   }, [collectionId, collections, nftId]);
+  const {
+    ensAddress,
+    ensBio,
+    ensCover,
+    ensTwitter,
+    ensWebsite,
+    hasProperties,
+  } = useEns({
+    addressOrName: nft?.name || '',
+    enableProfile: nft?.familyName === 'ENS',
+  });
+  const { data: ensRegistrationData } = useEnsRegistration(
+    { name: nft?.name || '' },
+    {
+      enabled: !!(nft?.name && nft?.familyName === 'ENS'),
+    },
+  );
   const { data: dominantColor } = useDominantColor({
     imageUrl: nft?.image_url || undefined,
   });
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
+    useExplainerSheetParams();
+  const showFloorPriceExplainerSheet = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: {
+        emoji: '📈',
+      },
+      description: [i18n.t('nfts.details.explainer.floor_price_description')],
+      title: i18n.t('nfts.details.explainer.floor_price_title'),
+      actionButton: {
+        label: i18n.t('nfts.details.explainer.floor_price_action_label'),
+        action: hideExplainerSheet,
+        labelColor: 'label',
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Box background="surfacePrimary">
       <AccentColorProvider
@@ -118,7 +168,7 @@ export default function NFTDetails() {
                 style={{ height: 320, width: 320 }}
               >
                 <ExternalImage
-                  src={nft?.image_url || ''}
+                  src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
                   height={320}
                   width={320}
                   borderRadius="16px"
@@ -133,38 +183,42 @@ export default function NFTDetails() {
                           {nft?.name}
                         </Text>
                       </Box>
-                      <Inline alignVertical="center" space="7px">
-                        <Box
-                          borderRadius="round"
-                          style={{
-                            overflow: 'none',
-                            height: 16,
-                            width: 16,
-                          }}
-                        >
-                          <ExternalImage
-                            src={nft?.collection.image_url || ''}
-                            height={16}
-                            width={16}
-                            borderRadius="round"
-                          />
-                        </Box>
-                        <TextOverflow
-                          size="12pt"
-                          weight="bold"
-                          color="labelTertiary"
-                          maxWidth={256}
-                        >
-                          {nft?.collection.name}
-                        </TextOverflow>
-                        <Symbol
-                          color="labelTertiary"
-                          cursor="pointer"
-                          size={10}
-                          symbol="chevron.right"
-                          weight="bold"
-                        />
-                      </Inline>
+                      <Lens borderRadius="6px" bubblesOnKeyDown padding="2px">
+                        <Bleed vertical="2px" horizontal="2px">
+                          <Inline alignVertical="center" space="7px">
+                            <Box
+                              borderRadius="round"
+                              style={{
+                                overflow: 'none',
+                                height: 16,
+                                width: 16,
+                              }}
+                            >
+                              <ExternalImage
+                                src={nft?.collection.image_url || ''}
+                                height={16}
+                                width={16}
+                                borderRadius="round"
+                              />
+                            </Box>
+                            <TextOverflow
+                              size="12pt"
+                              weight="bold"
+                              color="labelTertiary"
+                              maxWidth={256}
+                            >
+                              {nft?.collection.name}
+                            </TextOverflow>
+                            <Symbol
+                              color="labelTertiary"
+                              cursor="pointer"
+                              size={10}
+                              symbol="chevron.right"
+                              weight="bold"
+                            />
+                          </Inline>
+                        </Bleed>
+                      </Lens>
                     </NFTCollectionDropdownMenu>
                   </Column>
                   <Column width="content">
@@ -176,11 +230,12 @@ export default function NFTDetails() {
                       }}
                     >
                       <NFTDropdownMenu nft={nft}>
-                        <Symbol
+                        <ButtonSymbol
                           symbol="ellipsis.circle"
                           color="accent"
-                          weight="bold"
-                          size={16}
+                          height={'32px'}
+                          variant="transparent"
+                          tabIndex={0}
                         />
                       </NFTDropdownMenu>
                     </Box>
@@ -196,30 +251,52 @@ export default function NFTDetails() {
                   borderRadius="round"
                   symbol="arrow.up.right.square.fill"
                   onClick={() => goToNewTab({ url: getOpenseaUrl({ nft }) })}
+                  tabIndex={0}
                 >
                   {'OpenSea'}
                 </Button>
               </Box>
-              <NFTPriceSection nft={nft} />
+              {ensRegistrationData ? (
+                <EnsRegistrationSection
+                  registration={ensRegistrationData.registration}
+                />
+              ) : (
+                <NFTPriceSection
+                  nft={nft}
+                  showFloorPriceExplainerSheet={showFloorPriceExplainerSheet}
+                />
+              )}
             </Box>
           </Box>
           <Box paddingHorizontal="20px" paddingTop="24px">
             <Accordion
               type="multiple"
-              defaultValue={['description', 'properties', 'about']}
+              defaultValue={['profile', 'description', 'properties', 'about']}
               asChild
             >
               <Box display="flex" flexDirection="column" gap="24px">
-                {nft?.description && (
+                {hasProperties && (
+                  <NFTAccordionSectionEnsProfile
+                    cover={ensCover}
+                    bio={ensBio}
+                    address={ensAddress}
+                    twitter={ensTwitter}
+                    website={ensWebsite}
+                  />
+                )}
+                {!hasProperties && nft?.description && (
                   <NFTAccordionDescriptionSection nft={nft} />
                 )}
-                {nft?.traits && nft?.traits.length > 0 && (
+                {!hasProperties && nft?.traits && nft?.traits.length > 0 && (
                   <>
                     <NFTAccordionTraitsSection traits={nft.traits} />
                     <Separator color="separatorTertiary" />
                   </>
                 )}
-                <NFTAccordionAboutSection nft={nft} />
+                <NFTAccordionAboutSection
+                  nft={nft}
+                  showFloorPriceExplainerSheet={showFloorPriceExplainerSheet}
+                />
               </Box>
             </Accordion>
             <Box
@@ -244,12 +321,89 @@ export default function NFTDetails() {
             </Box>
           </Box>
         </Box>
+        <ExplainerSheet
+          show={explainerSheetParams.show}
+          header={explainerSheetParams.header}
+          title={explainerSheetParams.title}
+          description={explainerSheetParams.description}
+          actionButton={explainerSheetParams.actionButton}
+        />
       </AccentColorProvider>
     </Box>
   );
 }
 
-const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
+const EnsRegistrationSection = ({
+  registration,
+}: {
+  registration?: {
+    expiryDate: string | undefined;
+    registrationDate: string | undefined;
+  };
+}) => {
+  const expiryDate = useMemo(() => {
+    const dateStr = registration?.expiryDate;
+    if (dateStr) {
+      const date = new Date(parseInt(dateStr) * 1000);
+      return formatDistanceStrict(new Date(), date);
+    }
+    return '';
+  }, [registration]);
+  const registrationDate = useMemo(() => {
+    const dateStr = registration?.registrationDate;
+    if (dateStr) {
+      const date = new Date(parseInt(dateStr) * 1000);
+      return format(date, 'MMM d, Y');
+    }
+    return '';
+  }, [registration]);
+  return (
+    <Box paddingBottom="20px">
+      <Columns>
+        <Column>
+          <Stack space="12px">
+            <Text weight="semibold" size="14pt" color="labelTertiary">
+              {i18n.t('nfts.details.registered_on')}
+            </Text>
+            <Text weight="bold" size="14pt" color="label">
+              {registrationDate}
+            </Text>
+          </Stack>
+        </Column>
+        <Column>
+          <Stack space="12px" alignHorizontal="right">
+            <Inline alignVertical="center" space="4px">
+              <Text
+                weight="semibold"
+                size="14pt"
+                color="labelTertiary"
+                align="right"
+              >
+                {i18n.t('nfts.details.expires_in')}
+              </Text>
+            </Inline>
+            <Text
+              weight="bold"
+              size="14pt"
+              color="label"
+              testId="ens-expiry-value"
+            >
+              {expiryDate}
+            </Text>
+          </Stack>
+        </Column>
+      </Columns>
+    </Box>
+  );
+};
+
+const NFTPriceSection = ({
+  nft,
+  showFloorPriceExplainerSheet,
+}: {
+  nft?: UniqueAsset | null;
+  showFloorPriceExplainerSheet: () => void;
+}) => {
   const lastSaleDisplay = useMemo(() => {
     if (nft?.last_sale?.unit_price && nft?.last_sale?.payment_token?.decimals) {
       return `${convertRawAmountToDecimalFormat(
@@ -288,12 +442,14 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
               >
                 {i18n.t('nfts.details.floor_price')}
               </Text>
-              <Symbol
-                symbol="info.circle"
-                color="labelTertiary"
-                size={10}
-                weight="semibold"
-              />
+              <Box onClick={showFloorPriceExplainerSheet}>
+                <Symbol
+                  symbol="info.circle"
+                  color="labelTertiary"
+                  size={11}
+                  weight="semibold"
+                />
+              </Box>
             </Inline>
             {nft?.floorPriceEth ? (
               <Text weight="bold" size="14pt" color="label" align="right">
@@ -316,6 +472,78 @@ const NFTPriceSection = ({ nft }: { nft?: UniqueAsset | null }) => {
   );
 };
 
+const NFTAccordionSectionEnsProfile = ({
+  cover,
+  bio,
+  address,
+  twitter,
+  website,
+}: {
+  cover?: string;
+  bio?: string;
+  address?: string;
+  twitter?: string;
+  website?: string;
+}) => {
+  const visitTwitter = () => {
+    goToNewTab({
+      url: `https://www.twitter.com/${twitter}`,
+    });
+  };
+  const visitWebsite = () => {
+    const fragment = website
+      ?.replace('https://', '')
+      .replace('http://', '')
+      .replace('www.', '');
+    goToNewTab({
+      url: `https://www.${fragment}`,
+    });
+  };
+  return (
+    <>
+      <AccordionItem value="profile">
+        <AccordionTrigger>
+          {i18n.t('nfts.details.ens_profile_info')}
+        </AccordionTrigger>
+        <AccordionContent gap="24px">
+          <div />
+          {cover && <ENSProfileInfoCover src={cover} />}
+          {bio && <ENSProfileInfoBio bio={bio} />}
+          {address && (
+            <NFTInfoRow
+              symbol={'person.crop.rectangle.fill'}
+              label={i18n.t('nfts.details.ens_address')}
+              value={truncateAddress(address as AddressOrEth)}
+              valueSymbol={'doc.on.doc'}
+              onClick={() => copyAddress(address as Address)}
+            />
+          )}
+          {twitter && (
+            <NFTInfoRow
+              symbol={'person.crop.rectangle.fill'}
+              label={'Twitter'}
+              value={twitter}
+              valueSymbol={'arrow.up.right.circle'}
+              symbolOverride={<BirdIcon />}
+              onClick={visitTwitter}
+            />
+          )}
+          {website && (
+            <NFTInfoRow
+              symbol={'safari'}
+              label={i18n.t('nfts.details.ens_website')}
+              value={website}
+              valueSymbol={'arrow.up.right.circle'}
+              onClick={visitWebsite}
+            />
+          )}
+        </AccordionContent>
+      </AccordionItem>
+      <Separator color="separatorTertiary" />
+    </>
+  );
+};
+
 const NFTAccordionDescriptionSection = ({
   nft,
 }: {
@@ -324,7 +552,9 @@ const NFTAccordionDescriptionSection = ({
   return (
     <>
       <AccordionItem value="description">
-        <AccordionTrigger>{'Description'}</AccordionTrigger>
+        <AccordionTrigger>
+          {i18n.t('nfts.details.description')}
+        </AccordionTrigger>
         <AccordionContent gap="24px">
           <div />
           <NFTDescription text={nft?.description} />
@@ -362,12 +592,26 @@ const NFTAccordionTraitsSection = ({
             >
               <Box paddingVertical="12px" paddingHorizontal="10px">
                 <Stack space="6px">
-                  <Text color="labelSecondary" size="11pt" weight="semibold">
+                  <TextOverflow
+                    color="labelSecondary"
+                    size="11pt"
+                    weight="semibold"
+                    userSelect="all"
+                    cursor="text"
+                    maxWidth={300}
+                  >
                     {String(trait.trait_type || '').toUpperCase()}
-                  </Text>
-                  <Text color="label" size="14pt" weight="bold">
+                  </TextOverflow>
+                  <TextOverflow
+                    color="label"
+                    size="14pt"
+                    weight="bold"
+                    userSelect="all"
+                    cursor="text"
+                    maxWidth={300}
+                  >
                     {String(trait.value || '').toUpperCase()}
-                  </Text>
+                  </TextOverflow>
                 </Stack>
               </Box>
             </Box>
@@ -378,7 +622,13 @@ const NFTAccordionTraitsSection = ({
   );
 };
 
-const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
+const NFTAccordionAboutSection = ({
+  nft,
+  showFloorPriceExplainerSheet,
+}: {
+  nft?: UniqueAsset | null;
+  showFloorPriceExplainerSheet: () => void;
+}) => {
   const network =
     nft?.network === 'mainnet' ? 'Ethereum' : capitalize(nft?.network);
   const deployedBy = nft?.asset_contract?.deployed_by;
@@ -394,16 +644,41 @@ const NFTAccordionAboutSection = ({ nft }: { nft?: UniqueAsset | null }) => {
   );
   return (
     <AccordionItem value="about">
-      <AccordionTrigger>{i18n.t('nfts.details.about')}</AccordionTrigger>
+      <AccordionTrigger>{`${i18n.t('nfts.details.about')} ${nft?.collection
+        .name}`}</AccordionTrigger>
       <AccordionContent gap="24px">
         <div />
         {nft?.floorPriceEth && (
           <NFTInfoRow
             symbol="dollarsign.square"
             label={i18n.t('nfts.details.floor_price')}
-            value={nft?.floorPriceEth}
+            labelSymbol="info.circle"
+            value={`${nft?.floorPriceEth} ETH`}
+            onClickLabel={showFloorPriceExplainerSheet}
           />
         )}
+        {nft?.collection.total_quantity &&
+          nft.collection.distinct_owner_count && (
+            <>
+              {nft?.floorPriceEth && <Separator color="separatorTertiary" />}
+              <NFTInfoRow
+                symbol="person"
+                label={i18n.t('nfts.details.owners')}
+                value={nft.collection.total_quantity}
+              />
+              <NFTInfoRow
+                symbol="percent"
+                label={i18n.t('nfts.details.unique_owners')}
+                subValue={`(${Math.floor(
+                  (nft.collection.distinct_owner_count /
+                    nft.collection.total_quantity) *
+                    100,
+                )}%)`}
+                value={nft.collection.distinct_owner_count}
+              />
+              <Separator color="separatorTertiary" />
+            </>
+          )}
         {nft?.asset_contract.schema_name && (
           <NFTInfoRow
             symbol="info.circle"
@@ -509,6 +784,7 @@ const NFTNavbar = ({ nft }: { nft?: UniqueAsset | null }) => {
                 symbol="ellipsis.circle"
                 height="32px"
                 variant="transparent"
+                tabIndex={0}
               />
             </NFTDropdownMenu>
           </Inline>
@@ -925,6 +1201,8 @@ const NFTLinkButton = ({
       symbol={symbol}
       height="32px"
       onClick={() => goToNewTab({ url })}
+      tabIndex={0}
+      testId={`nft-link-button-${title}`}
     >
       {title}
     </Button>
@@ -974,18 +1252,85 @@ function NFTDescription({ text = '' }: { text?: string | null }) {
   );
 }
 
+export const ENSProfileInfoCover = ({ src }: { src?: string }) => (
+  <Box
+    display="flex"
+    alignItems="flex-start"
+    justifyContent="space-between"
+    gap="4px"
+  >
+    <Inline alignVertical="center" space="12px" wrap={false}>
+      <Symbol
+        size={14}
+        symbol={'photo'}
+        weight="medium"
+        color="labelTertiary"
+      />
+      <Text color="labelTertiary" size="12pt" weight="semibold">
+        {i18n.t('nfts.details.ens_cover')}
+      </Text>
+    </Inline>
+    <Box borderRadius="12px">
+      <ExternalImage src={src} height={64} width={241} borderRadius="12px" />
+    </Box>
+  </Box>
+);
+
+export const ENSProfileInfoBio = ({ bio }: { bio?: string }) => (
+  <Box
+    display="flex"
+    alignItems="flex-start"
+    justifyContent="space-between"
+    gap="4px"
+  >
+    <Inline alignVertical="center" space="12px" wrap={false}>
+      <Symbol
+        size={14}
+        symbol={'info.circle'}
+        weight="medium"
+        color="labelTertiary"
+      />
+      <Text color="labelTertiary" size="12pt" weight="semibold">
+        {i18n.t('nfts.details.ens_bio')}
+      </Text>
+    </Inline>
+    <Box
+      style={{
+        minHeight: 64,
+        width: 236,
+        borderRadius: 12,
+      }}
+      background={'fillTertiary'}
+    >
+      <Box paddingVertical="9px" paddingHorizontal="12px">
+        <Text size="12pt" weight="bold" color="labelSecondary">
+          {bio}
+        </Text>
+      </Box>
+    </Box>
+  </Box>
+);
+
 export const NFTInfoRow = ({
   symbol,
   label,
   onClick,
+  onClickLabel,
   value,
+  subValue,
   valueSymbol,
+  symbolOverride,
+  labelSymbol,
 }: {
   symbol: SymbolName;
   label: ReactNode;
   onClick?: () => void;
+  onClickLabel?: () => void;
   value: ReactNode;
+  subValue?: string;
   valueSymbol?: SymbolName;
+  symbolOverride?: ReactNode;
+  labelSymbol?: SymbolName;
 }) => (
   <Box
     display="flex"
@@ -993,23 +1338,53 @@ export const NFTInfoRow = ({
     justifyContent="space-between"
     gap="4px"
   >
-    <Inline alignVertical="center" space="12px" wrap={false}>
-      <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
-      <Text color="labelTertiary" size="12pt" weight="semibold">
-        {label}
-      </Text>
-    </Inline>
-    <Box onClick={onClick} cursor="pointer">
+    <Box onClick={onClickLabel}>
+      <Inline alignVertical="center" space="12px" wrap={false}>
+        {!symbolOverride && (
+          <Symbol
+            size={14}
+            symbol={symbol}
+            weight="medium"
+            color="labelTertiary"
+          />
+        )}
+        {!!symbolOverride && symbolOverride}
+        <Inline space="3px" alignVertical="center">
+          <Text color="labelTertiary" size="12pt" weight="semibold">
+            {label}
+          </Text>
+          {labelSymbol && (
+            <Symbol
+              size={10}
+              symbol={labelSymbol}
+              weight="medium"
+              color="labelTertiary"
+            />
+          )}
+        </Inline>
+      </Inline>
+    </Box>
+    <Box onClick={onClick} cursor="pointer" padding="2px">
       <Inline alignVertical="center" space="6px">
-        <TextOverflow
-          color="labelSecondary"
-          size="12pt"
-          weight="semibold"
-          cursor="text"
-          userSelect="all"
-        >
-          {value}
-        </TextOverflow>
+        <Inline space="2px">
+          <TextOverflow
+            color="labelSecondary"
+            size="12pt"
+            weight="semibold"
+            cursor={valueSymbol ? 'pointer' : 'text'}
+            userSelect={valueSymbol ? 'none' : 'all'}
+          >
+            {value}
+          </TextOverflow>
+          <Text
+            color="labelQuaternary"
+            size="12pt"
+            weight="semibold"
+            cursor="text"
+          >
+            {subValue}
+          </Text>
+        </Inline>
         {valueSymbol && (
           <Symbol
             size={14}

@@ -4,6 +4,9 @@ import { Shortcut, getModifierKeyDisplay } from '~/core/references/shortcuts';
 import { BoxStyles } from '~/design-system/styles/core.css';
 import { Radius } from '~/design-system/styles/designTokens';
 import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
+import useKeyboardAnalytics, {
+  KeyboardEventDescription,
+} from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { Box } from '../Box/Box';
@@ -18,6 +21,12 @@ import {
   stylesForVariant,
 } from './ButtonWrapper';
 import { ButtonHeight } from './ButtonWrapper.css';
+
+type ButtonShortcutExtended = Shortcut & {
+  type?: KeyboardEventDescription;
+  disabled?: boolean | (() => boolean);
+  hideHint?: boolean;
+};
 
 export type ButtonProps = {
   autoFocus?: boolean;
@@ -35,7 +44,7 @@ export type ButtonProps = {
   tabIndex?: number;
   disabled?: boolean;
   enterCta?: boolean;
-  shortcut?: Shortcut;
+  shortcut?: ButtonShortcutExtended;
 } & ButtonVariantProps &
   (
     | {
@@ -53,14 +62,30 @@ function ButtonShortcut({
   onTrigger,
 }: {
   onTrigger: VoidFunction;
-  shortcut: Shortcut;
+  shortcut: ButtonShortcutExtended;
 }) {
+  const { trackShortcut } = useKeyboardAnalytics();
+
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (e.key === shortcut.key) onTrigger();
+      if (
+        e.key === shortcut.key &&
+        (!shortcut.disabled ||
+          (typeof shortcut.disabled === 'function' && !shortcut.disabled()))
+      ) {
+        if (shortcut.type) {
+          trackShortcut({
+            key: shortcut.key,
+            type: shortcut.type,
+          });
+        }
+        onTrigger();
+      }
     },
     modifierKey: shortcut.modifier,
   });
+
+  if (shortcut.hideHint) return null;
 
   return (
     <Inline alignVertical="center" space="3px" wrap={false}>
@@ -76,7 +101,7 @@ function ButtonShortcut({
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
+  function Button(
     {
       children,
       emoji,
@@ -88,7 +113,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ...props
     }: ButtonProps,
     ref,
-  ) => {
+  ) {
     const { textColor } = stylesForVariant({
       color: props.color ?? 'accent',
     })[props.variant];
@@ -149,5 +174,3 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     );
   },
 );
-
-Button.displayName = 'Button';

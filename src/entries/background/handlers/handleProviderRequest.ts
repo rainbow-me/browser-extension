@@ -18,6 +18,7 @@ import {
   appSessionsStore,
   notificationWindowStore,
   pendingRequestStore,
+  rainbowChainsStore,
 } from '~/core/state';
 import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { SessionStorage } from '~/core/storage';
@@ -42,17 +43,27 @@ const MAX_REQUEST_PER_MINUTE = 90;
 let minuteTimer: NodeJS.Timeout | null = null;
 let secondTimer: NodeJS.Timeout | null = null;
 
+const getPopupTitleBarHeight = (platform: string) => {
+  if (platform.includes('Mac')) return 28;
+  if (platform.includes('Win')) return 30;
+  if (platform.includes('Linux')) return 32;
+  return 28;
+};
+
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
     type: 'popup',
-    height: POPUP_DIMENSIONS.height + 25,
-    width: 360,
+    height:
+      POPUP_DIMENSIONS.height + getPopupTitleBarHeight(navigator.userAgent),
+    width: POPUP_DIMENSIONS.width,
     left:
-      (currentWindow.width || POPUP_DIMENSIONS.width) - POPUP_DIMENSIONS.width,
-    top: 0,
+      (currentWindow.left || 0) +
+      (currentWindow.width || POPUP_DIMENSIONS.width) -
+      POPUP_DIMENSIONS.width,
+    top: currentWindow.top || 0,
   });
   setNotificationWindow(tabId, window);
 };
@@ -316,7 +327,6 @@ export const handleProviderRequest = ({
               isCustomChain(Number(proposedChainId)) ||
               isSupportedChainId(Number(proposedChainId));
             if (!supportedChainId) throw new Error('Chain Id not supported');
-            response = null;
           } else {
             const {
               chainId,
@@ -459,8 +469,12 @@ export const handleProviderRequest = ({
           const extensionUrl = chrome.runtime.getURL('');
           const activeSession = getActiveSession({ host });
           if (!supportedChainId || !activeSession) {
+            const chain = rainbowChainsStore
+              .getState()
+              .getActiveChain({ chainId: proposedChainId });
             inpageMessenger?.send('wallet_switchEthereumChain', {
               chainId: proposedChainId,
+              chainName: chain?.name || 'NO NAME',
               status: !supportedChainId
                 ? IN_DAPP_NOTIFICATION_STATUS.unsupported_network
                 : IN_DAPP_NOTIFICATION_STATUS.no_active_session,
@@ -477,8 +491,12 @@ export const handleProviderRequest = ({
               chainId: proposedChainId,
               host,
             });
+            const chain = rainbowChainsStore
+              .getState()
+              .getActiveChain({ chainId: proposedChainId });
             inpageMessenger?.send('wallet_switchEthereumChain', {
               chainId: proposedChainId,
+              chainName: chain?.name,
               status: IN_DAPP_NOTIFICATION_STATUS.success,
               extensionUrl,
               host,
@@ -545,14 +563,14 @@ export const handleProviderRequest = ({
         }
         case 'eth_estimateGas': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.estimateGas(
-            params?.[0] as TransactionRequest,
-          );
+          response = (
+            await provider.estimateGas(params?.[0] as TransactionRequest)
+          ).toString();
           break;
         }
         case 'eth_gasPrice': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.getGasPrice();
+          response = (await provider.getGasPrice()).toString();
           break;
         }
         case 'eth_getCode': {

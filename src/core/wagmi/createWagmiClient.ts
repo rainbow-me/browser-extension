@@ -10,10 +10,10 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
-import { SUPPORTED_CHAINS } from '../references';
+import { SUPPORTED_CHAINS, getDefaultRPC } from '../references';
 import { LocalStorage } from '../storage';
-import { ChainId, hardhat, hardhatOptimism } from '../types/chains';
-import { findCustomChainForChainId } from '../utils/chains';
+import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
+import { findRainbowChainForChainId } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -23,64 +23,37 @@ const noopStorage = {
   removeItem: () => null,
 };
 
-const getOriginalRpcEndpoint = (chain: Chain) => {
+export const getOriginalRpcEndpoint = (chain: Chain) => {
   // overrides have preference
-  const userAddedNetwork = findCustomChainForChainId(chain.id);
+  const userAddedNetwork = findRainbowChainForChainId(chain.id);
   if (userAddedNetwork) {
     return { http: userAddedNetwork.rpcUrls.default.http[0] };
   }
-
-  switch (chain.id) {
-    case ChainId.hardhat:
-      return { http: chain.rpcUrls.default.http[0] };
-    case ChainId.hardhatOptimism:
-      return { http: chain.rpcUrls.default.http[0] };
-    case ChainId.mainnet:
-      return { http: process.env.ETH_MAINNET_RPC as string };
-    case ChainId.optimism:
-      return { http: process.env.OPTIMISM_MAINNET_RPC as string };
-    case ChainId.arbitrum:
-      return { http: process.env.ARBITRUM_MAINNET_RPC as string };
-    case ChainId.polygon:
-      return { http: process.env.POLYGON_MAINNET_RPC as string };
-    case ChainId.base:
-      return { http: process.env.BASE_MAINNET_RPC as string };
-    case ChainId.zora:
-      return { http: process.env.ZORA_MAINNET_RPC as string };
-    case ChainId.bsc:
-      return { http: process.env.BSC_MAINNET_RPC as string };
-    case ChainId.goerli:
-      return { http: process.env.ETH_GOERLI_RPC as string };
-    case ChainId.sepolia:
-      return { http: process.env.ETH_SEPOLIA_RPC as string };
-    case ChainId['optimism-goerli']:
-      return { http: process.env.OPTIMISM_GOERLI_RPC as string };
-    case ChainId['bsc-testnet']:
-      return { http: process.env.BSC_TESTNET_RPC as string };
-    case ChainId['polygon-mumbai']:
-      return { http: process.env.POLYGON_MUMBAI_RPC as string };
-    case ChainId['arbitrum-goerli']:
-      return { http: process.env.ARBITRUM_GOERLI_RPC as string };
-    case ChainId['base-goerli']:
-      return { http: process.env.BASE_GOERLI_RPC as string };
-    case ChainId['zora-testnet']:
-      return { http: process.env.ZORA_GOERLI_RPC as string };
-    default:
-      return null;
+  if (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism) {
+    return { http: chain.rpcUrls.default.http[0] };
   }
+
+  return getDefaultRPC(chain.id);
 };
 
 const supportedChains = IS_TESTING
-  ? SUPPORTED_CHAINS.concat(hardhat, hardhatOptimism)
+  ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
   : SUPPORTED_CHAINS;
 
-export const configureChainsForWagmiClient = (chains: Chain[]) =>
+export const configureChainsForWagmiClient = (
+  chains: Chain[],
+  useProxy?: boolean,
+) =>
   configureChains(chains, [
     jsonRpcProvider({
       rpc: (chain) => {
         const originalRpcEndpoint = getOriginalRpcEndpoint(chain);
         if (originalRpcEndpoint) {
-          return { http: proxyRpcEndpoint(originalRpcEndpoint.http, chain.id) };
+          return {
+            http: useProxy
+              ? proxyRpcEndpoint(originalRpcEndpoint.http, chain.id)
+              : originalRpcEndpoint.http,
+          };
         }
         return null;
       },
@@ -100,15 +73,18 @@ export function createWagmiClient({
   autoConnect,
   connectors,
   persist,
-  customChains,
+  rainbowChains = supportedChains,
+  useProxy,
 }: {
   autoConnect?: CreateClientConfig['autoConnect'];
   connectors?: (opts: { chains: Chain[] }) => CreateClientConfig['connectors'];
   persist?: boolean;
-  customChains?: Chain[];
+  rainbowChains?: Chain[];
+  useProxy?: boolean;
 } = {}) {
   const { chains, provider, webSocketProvider } = configureChainsForWagmiClient(
-    supportedChains.concat(customChains || []),
+    rainbowChains,
+    useProxy,
   );
 
   return createClient({

@@ -35,6 +35,8 @@ import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTranspa
 import { useAvatar } from '../../hooks/useAvatar';
 import { simulateClick } from '../../utils/simulateClick';
 
+export const DROPDOWN_MENU_ITEM_HEIGHT = 34;
+
 interface DropdownMenuTriggerProps {
   children: ReactNode;
   accentColor?: string;
@@ -104,7 +106,7 @@ export function DropdownMenuContent(props: DropdownMenuContentProps) {
 export const DropdownMenuContentBody = React.forwardRef<
   HTMLDivElement,
   DropdownMenuContentProps
->((props: DropdownMenuContentProps, ref) => {
+>(function DropdownMenuContentBody(props: DropdownMenuContentProps, ref) {
   const {
     border,
     boxShadow,
@@ -178,8 +180,6 @@ export const DropdownMenuContentBody = React.forwardRef<
   );
 });
 
-DropdownMenuContentBody.displayName = 'DropdownMenuContentBody';
-
 interface DropdownMenuLabelProps {
   children: ReactNode;
   align?: TextStyles['textAlign'];
@@ -243,7 +243,7 @@ export const DropdownMenuItem = ({
       }}
       disabled={disabled}
       tabIndex={disabled ? -1 : 0}
-      style={{ minHeight: '34px' }}
+      style={{ minHeight: DROPDOWN_MENU_ITEM_HEIGHT }}
     >
       <Inline alignVertical="center" space="10px" wrap={false}>
         {emoji && (

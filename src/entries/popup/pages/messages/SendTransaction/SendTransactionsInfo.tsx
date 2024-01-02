@@ -10,7 +10,8 @@ import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentCurrencyStore, useNonceStore } from '~/core/state';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
+import { getChainName } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { truncateString } from '~/core/utils/strings';
@@ -37,7 +38,7 @@ import { ROUTES } from '~/entries/popup/urls';
 
 import {
   DappHostName,
-  ThisDappIsLikelyMalicious,
+  MaliciousRequestWarning,
   getDappStatusBadge,
 } from '../DappScanStatus';
 import { SimulationOverview } from '../Simulation';
@@ -75,7 +76,12 @@ const InfoRow = ({
   >
     <Inline alignVertical="center" space="12px" wrap={false}>
       <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
-      <Text color="labelTertiary" size="12pt" weight="semibold">
+      <Text
+        color="labelTertiary"
+        size="12pt"
+        weight="semibold"
+        whiteSpace="nowrap"
+      >
         {label}
       </Text>
     </Inline>
@@ -102,12 +108,12 @@ function Overview({
   error: SimulationError | null;
   metadata: DappMetadata | null;
 }) {
-  const chainId = simulation?.chainId;
-
+  const chainId = simulation?.chainId || ChainId.mainnet;
   const { badge, color } = getDappStatusBadge(
     metadata?.status || DAppStatus.Unverified,
     { size: 12 },
   );
+  const chainName = getChainName({ chainId });
 
   return (
     <Stack space="16px" paddingTop="14px">
@@ -123,7 +129,7 @@ function Overview({
 
       <Separator color="separatorTertiary" />
 
-      {chainId && ChainNameDisplay[chainId] && (
+      {chainId && chainName && (
         <InfoRow
           symbol="network"
           label={i18n.t('chain')}
@@ -131,7 +137,7 @@ function Overview({
             <Inline space="6px" alignVertical="center">
               <ChainBadge chainId={chainId} size={14} />
               <Text size="12pt" weight="semibold" color="labelSecondary">
-                {ChainNameDisplay[chainId]}
+                {chainName}
               </Text>
             </Inline>
           }
@@ -292,26 +298,39 @@ function TransactionInfo({
   const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
 
   return (
-    <Tabs
-      tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
-      expanded={expanded}
-      onExpand={onExpand}
-    >
-      <TabContent value={tabLabel('overview')}>
-        <Overview
-          simulation={simulation}
-          status={status === 'error' && isRefetching ? 'loading' : status}
-          error={error}
-          metadata={dappMetadata}
+    <>
+      <Tabs
+        tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
+        expanded={expanded}
+        onExpand={onExpand}
+      >
+        <TabContent value={tabLabel('overview')}>
+          <Overview
+            simulation={simulation}
+            status={status === 'error' && isRefetching ? 'loading' : status}
+            error={error}
+            metadata={dappMetadata}
+          />
+        </TabContent>
+        <TabContent value={tabLabel('details')}>
+          <TransactionDetails
+            session={activeSession!}
+            simulation={simulation}
+          />
+        </TabContent>
+        <TabContent value={tabLabel('data')}>
+          <TransactionData data={txData} expanded={expanded} />
+        </TabContent>
+      </Tabs>
+
+      {!expanded && simulation && simulation.scanning.result !== 'OK' && (
+        <MaliciousRequestWarning
+          title={i18n.t('approve_request.malicious_transaction_warning.title')}
+          description={simulation.scanning.description}
+          symbol="exclamationmark.octagon.fill"
         />
-      </TabContent>
-      <TabContent value={tabLabel('details')}>
-        <TransactionDetails session={activeSession!} simulation={simulation} />
-      </TabContent>
-      <TabContent value={tabLabel('data')}>
-        <TransactionData data={txData} expanded={expanded} />
-      </TabContent>
-    </Tabs>
+      )}
+    </>
   );
 }
 
@@ -322,8 +341,8 @@ function InsuficientGasFunds({
   session: { address: Address; chainId: ChainId };
   onRejectRequest: VoidFunction;
 }) {
-  const chainName = ChainNameDisplay[chainId];
-  const { nativeAsset } = useNativeAsset({ chainId });
+  const { nativeAsset } = useNativeAsset({ chainId, address });
+  const chainName = getChainName({ chainId });
 
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: hasBridgeableBalance } = useUserAssets(
@@ -480,7 +499,6 @@ export function SendTransactionInfo({
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
 
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  const chainId = activeSession?.chainId || ChainId.mainnet;
 
   const txRequest = request?.params?.[0] as TransactionRequest;
 
@@ -488,7 +506,7 @@ export function SendTransactionInfo({
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
-  const hasEnoughtGas = useHasEnoughGas(chainId);
+  const hasEnoughtGas = useHasEnoughGas(activeSession);
 
   return (
     <Box
@@ -554,8 +572,6 @@ export function SendTransactionInfo({
           />
         )
       )}
-
-      {!expanded && isScamDapp && <ThisDappIsLikelyMalicious />}
     </Box>
   );
 }

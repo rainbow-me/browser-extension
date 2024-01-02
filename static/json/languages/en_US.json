@@ -73,7 +73,7 @@
     "title": "Settings",
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
     "sounds": "Sounds",
-    "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
+    "default_wallet_description": "Allow apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
     "guides_and_support": "Guides & Support",
     "learn_about_ethereum": "Learn About Ethereum",
@@ -87,18 +87,52 @@
     },
     "networks": {
       "mainnet": "Mainnet",
+      "testnet": "Testnet",
       "title": "Networks",
+      "testnets": "Testnets",
       "quick_promo": {
         "text": "Drag networks to reorder them",
         "text_bold": "Tip:"
       },
+      "disable": "Disable",
+      "disabled": "Disabled",
+      "enable": "Enable",
+      "enabled": "Network Enabled",
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
       "developer_tools": {
         "title": "Enable Developer Tools",
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
-        "title": "Custom RPC"
+        "title": "Add Custom RPC",
+        "add_custom_network": "Add Custom Network",
+        "networks": "Networks",
+        "network_name": "Network Name",
+        "rpc_url": "RPC URL",
+        "chain_id": "Chain ID",
+        "symbol": "Symbol",
+        "decimals": "Decimals",
+        "active": "Active",
+        "testnet": "Testnet",
+        "block_explorer_url": "Block Explorer URL",
+        "add_network": "Add Network",
+        "add_rpc": "Add RPC Endpoint",
+        "add_network_rpc": "Add %{rpcName} RPC",
+        "add_asset": "Add Custom Token",
+        "network_added": "Network Added",
+        "network_added_correctly": "%{networkName}",
+        "remove_token": "Remove Token",
+        "remove_rpc": "Remove RPC",
+        "remove_network": "Remove Network",
+        "tokens": "Tokens",
+        "cant_connect": "Can't connect to this RPC endpoint",
+        "rpc_not_responding": "The provided RPC endpoint is not responding",
+        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default": "Rainbow"
+      },
+      "rpc_endpoints": "RPC Endpoints",
+      "watch_asset": {
+        "title": "Add Custom Token"
       }
     },
     "privacy_and_security": {
@@ -223,9 +257,7 @@
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
       "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
-      "custom_rpc": "Custom RPC",
-      "new_tab_bar_enabled": "New Tab Bar",
-      "nfts_enabled": "NFTs Enabled"
+      "custom_rpc": "Custom RPC"
     }
   },
   "transactions": {
@@ -367,8 +399,10 @@
         "my_wallets": "My Wallets",
         "my_tokens": "My Tokens",
         "my_tokens_watched": "Tokens",
+        "my_nfts": "My NFTs",
+        "my_nfts_watched": "NFTs",
         "copy_address": "Copy Address",
-        "view_nfts": "View NFTs",
+        "view_profile": "View Rainbow Profile",
         "add_wallet": "Add a Wallet",
         "lock": "Lock Rainbow",
         "connected_apps": "Connected Apps",
@@ -412,7 +446,8 @@
         "swap": "bridge",
         "my_wallets": "switch",
         "my_tokens_watched": "my",
-        "view_nfts": "gallery, profile",
+        "my_nfts_watched": "my",
+        "view_profile": "profile, gallery, ens, nfts",
         "testnet_mode": "toggle, networks, testnets",
         "developer_tools": "toggle, networks, developer, testnets",
         "settings": "preferences",
@@ -463,12 +498,21 @@
         "search_placeholder": "Search tokens…",
         "section_title": "My Tokens"
       },
+      "my_nfts": {
+        "empty_label": "No NFTs found",
+        "search_placeholder": "Search NFTs…",
+        "section_title": "My NFTs"
+      },
       "my_wallets": {
         "search_placeholder": "Select a wallet to switch to…",
         "section_title": "My Wallets"
       },
       "token_detail": {
         "search_placeholder": "Search token actions…",
+        "section_title": "Actions"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "Search NFT actions…",
         "section_title": "Actions"
       },
       "wallet_detail": {
@@ -880,7 +924,7 @@
   },
   "seed_verify": {
     "title": "Verify your Secret Recovery Phrase",
-    "explanation": "Select the 4th, 8th, and 12th words in order your  Secret Recovery Phrase displays them.",
+    "explanation": "Select the 4th, 8th, and 12th words in the order your Secret Recovery Phrase displays them.",
     "skip": "Skip this"
   },
   "menu": {
@@ -970,6 +1014,13 @@
       "title": "This app is likely malicious",
       "message": "Signing messages or transactions from this app could result in losing your assets"
     },
+    "malicious_transaction_warning": {
+      "title": "This transaction looks suspicious",
+      "malicious_address": "A malicious address is involved in this transaction. Signing may result in losses",
+      "malicious_entity": "A malicious entity is involved in this transaction. Signing may result in losses",
+      "minting_is_a_losing_trade": "A scam contract is involved in this transaction. Minting is a losing trade",
+      "you_can_lose_everything": "Signing this transaction could result in losing access to everything in your wallet"
+    },
     "dangerous_request": "Dangerous Request",
     "message_signing_request": "Message Signing Request",
     "message": "Message",
@@ -1005,7 +1056,8 @@
     "currency_name": "Currency Name",
     "currency_decimals": "Currency Decimals",
     "rpc_url": "RPC url",
-    "block_explorer_url": "Block Explorer url"
+    "block_explorer_url": "Block Explorer url",
+    "testnet": "Testnet"
   },
   "transaction_fee": {
     "title": "Transaction Speed",
@@ -1085,7 +1137,9 @@
   "errors": {
     "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
     "no_wallet_name_set": "No wallet name set",
-    "report_error": "Report issue"
+    "report_error": "Report issue",
+    "sending_transaction": "Error sending transaction",
+    "executing_swap": "Error executing swap"
   },
   "common_titles": {
     "before_you_proceed": "Before you proceed"
@@ -1171,8 +1225,8 @@
     "unknown_token": "Unknown Token"
   },
   "nfts": {
-    "coming_soon_header": "Coming Soon",
-    "coming_soon_description": "NFTs are coming soon. Stay tuned!",
+    "empty_state_header": "NFTs",
+    "empty_state_description": "Your NFTs will appear here!",
     "view_on_web": "View on Web",
     "display_mode_gallery": "Gallery",
     "display_mode_collections": "Collections",
@@ -1181,9 +1235,10 @@
     "sort_option_recent_long": "Recent",
     "sort_option_abc_long": "Alphabetical",
     "details": {
-      "last_sales_price": "Last Sales Price",
+      "last_sales_price": "Last Sale Price",
       "none": "None",
       "floor_price": "Floor Price",
+      "description": "Description",
       "properties": "Properties",
       "address_copied": "Address Copied",
       "about": "About",
@@ -1196,12 +1251,83 @@
       "download": "Download",
       "explorer": "Explorer",
       "view_collection": "View Collection",
-      "collection_website": "Collection Website"
+      "collection_website": "Collection Website",
+      "owners": "Owners",
+      "unique_owners": "Unique Owners",
+      "ens_profile_info": "Profile Info",
+      "ens_bio": "Bio",
+      "ens_cover": "Cover",
+      "ens_address": "ETH Address",
+      "ens_website": "Website",
+      "registered_on": "Registered on",
+      "expires_in": "Expires in",
+      "explainer": {
+        "floor_price_description": "A collection's floor price is the lowest asking price across all the items currently for sale in a collection.",
+        "floor_price_title": "Collection floor price",
+        "floor_price_action_label": "Got it"
+      }
     }
   },
   "points": {
-    "coming_soon_header": "Coming Soon",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today."
+    "check_back_soon_header": "Check Back Soon",
+    "check_back_soon_description": "Points are currently unavailable.\nCheck back soon to continue using Rainbow Points.",
+    "your_rank": "Your Rank",
+    "unranked": "Unranked",
+    "points_to_rank": "%{rank_cutoff} points to rank",
+    "next_drop": "Next Drop",
+    "leaderboard": "Leaderboard",
+    "referral_code": "Referral Code",
+    "referral_code_description": "Earn points for referring friends once they swap $100 through Rainbow",
+    "copied_referral_code": "Referral code copied!",
+    "copied_referral_link": "Referral link copied!",
+    "out_of": "Out of %{total}",
+    "out_of_current_total_points": "Out of %{total} current total points",
+    "header": "Claim your points",
+    "description": "Points are here. Find out how many you’ve been awarded.",
+    "get_started": "Get Started",
+    "use_referral_code": "Use Referral Code",
+    "referral_header": "Enter your referral code",
+    "referral_description": "Enter a referral code below to claim your bonus reward.",
+    "referral_code_invalid": "Invalid Code",
+    "onboarding": {
+      "authorization_required": "Authorization required",
+      "sign_in_with_your_wallet": "Sign in with your wallet",
+      "access_granted": "Access granted",
+      "calculating_points": "Calculating points",
+      "rainbow_swaps": "Rainbow Swaps:",
+      "rainbow_nfts_owned": "Rainbow NFTs Owned:",
+      "wallet_balance": "Wallet Balance:",
+      "metamask_swaps": "MetaMask Swaps:",
+      "bonus_reward": "Bonus Reward:",
+      "calculation_complete": "Calculation complete",
+      "points_earned": "Points Earned:",
+      "bonus_points": "Bonus Points:",
+      "claim_description_buy": "To claim the rest of your bonus points, get some ETH through Rainbow.",
+      "claim_description_swap": "To claim the rest of your bonus points, swap at least $100 through Rainbow.",
+      "account": "Account:",
+      "sign_in": "Sign In",
+      "get_eth": "Get some ETH",
+      "try_swap": "Try a Swap",
+      "referral_link_ready": "Your referral link is ready",
+      "share_and_earn": "Tweet your referral link and get an extra 250 points",
+      "plus_percent_of_refers": "Plus you’ll earn 10% of the points earned by anyone you refer",
+      "share": "Share to X",
+      "share_tweet": "I just had %{points} Rainbow Points dropped into my wallet\nEverybody has at least 100 points waiting for them, but you might have more!\n\nClaim your drop: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "I just had %{points} Rainbow Points dropped into my wallet — and an extra %{metamaskBonus} Points as a bonus for migrating my MetaMask wallet into Rainbow 🦊 🔫\n\nEverybody has at least 100 points waiting for them, but you might have more! Claim your drop: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "Registration complete",
+      "all_set": "You’re all set!",
+      "keep_earning_by": "Keep earning points by swapping, bridging, minting, referring friends, and more",
+      "the_more_you_use": "The more you use Rainbow, the more you’ll be rewarded",
+      "balance_required": "Wallet balance required",
+      "ensure_you_have_a_balance_on": "To continue, ensure you have an ETH balance on one of the following networks:",
+      "or_alternatively_balance_on": "Or alternatively, a MATIC balance on Polygon or a BNB balance on BSC",
+      "fund_my_wallet": "Fund My Wallet"
+    },
+    "error": {
+      "existing_user": "Existing user",
+      "invalid_referral_code": "Invalid referral code",
+      "unexpected": "Something unexpected happened, try again in a few minutes"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -1479,7 +1605,6 @@
     "sent": "Sent",
     "approved": "Approved",
     "reverted": "Transaction Reverted",
-
     "function": "Function",
     "contract": "Contract",
     "contract_name": "Contract Name",
@@ -1497,9 +1622,12 @@
   "chain": "Chain",
   "nonce": "Nonce",
   "copy": "Copy",
+  "copy_link": "Copy Link",
   "close": "Close",
   "verified": "Verified",
   "unverified": "Unverified",
+  "skip": "Skip",
+  "done": "Done",
   "watch_asset": {
     "chain_id": "Chain ID",
     "symbol": "Symbol",
@@ -1508,4 +1636,3 @@
     "not_found": "We couldn't find this asset on the selected network. Please choose the right network below"
   }
 }
-

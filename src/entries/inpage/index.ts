@@ -1,5 +1,6 @@
 import { uuid4 } from '@sentry/utils';
 import { Ethereum } from '@wagmi/core';
+import _ from 'lodash';
 import { EIP1193Provider, announceProvider } from 'mipd';
 
 import { initializeMessenger } from '~/core/messengers';
@@ -16,6 +17,7 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - clashes with Wagmi's Window type https://github.com/wagmi-dev/wagmi/blob/a25ddf534781b2da81ee6aba307b93750efc5595/packages/core/src/types/index.ts#L77
     ethereum: RainbowInjectedProvider | Ethereum;
+    lodash: unknown;
     rainbow: RainbowInjectedProvider;
     providers: (RainbowInjectedProvider | Ethereum)[];
     walletRouter: {
@@ -28,6 +30,8 @@ declare global {
     };
   }
 }
+
+window.lodash = _.noConflict();
 
 const messenger = initializeMessenger({ connect: 'popup' });
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
@@ -52,17 +56,19 @@ if (shouldInjectProvider()) {
     'wallet_switchEthereumChain',
     async ({
       chainId,
+      chainName,
       status,
       extensionUrl,
       host,
     }: {
       chainId: ChainId;
+      chainName?: string;
       status: IN_DAPP_NOTIFICATION_STATUS;
       extensionUrl: string;
       host: string;
     }) => {
       if (getDappHost(window.location.href) === host) {
-        injectNotificationIframe({ chainId, status, extensionUrl });
+        injectNotificationIframe({ chainId, chainName, status, extensionUrl });
       }
     },
   );

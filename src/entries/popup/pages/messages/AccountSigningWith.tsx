@@ -1,5 +1,7 @@
 import { i18n } from '~/core/languages';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ActiveSession } from '~/core/state/appSessions';
+import { ChainId } from '~/core/types/chains';
+import { getChainName } from '~/core/utils/chains';
 import { Inline, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
@@ -15,11 +17,16 @@ export interface SelectedNetwork {
   name: string;
 }
 
-function WalletNativeBalance({ chainId }: { chainId: ChainId }) {
-  const { nativeAsset } = useNativeAsset({ chainId });
+function WalletNativeBalance({ session }: { session: ActiveSession }) {
+  const chainId = session?.chainId || ChainId.mainnet;
+  const chainName = getChainName({ chainId });
+  const { nativeAsset } = useNativeAsset({
+    chainId,
+    address: session?.address,
+  });
   const balance = nativeAsset?.balance;
 
-  const hasEnoughtGas = useHasEnoughGas(chainId);
+  const hasEnoughtGas = useHasEnoughGas(session);
 
   if (!balance) return null;
 
@@ -37,7 +44,7 @@ function WalletNativeBalance({ chainId }: { chainId: ChainId }) {
       </Text>
       <Text size="12pt" weight="semibold" color="labelQuaternary">
         {i18n.t('approve_request.on_chain', {
-          chain: ChainNameDisplay[chainId],
+          chain: chainName,
         })}
       </Text>
     </Inline>
@@ -55,7 +62,9 @@ export function AccountSigningWith({
   noFee?: boolean;
 }) {
   if (!session) return null;
-  const { address, chainId } = session;
+
+  const address = session.address;
+
   return (
     <Inline alignVertical="center" space="8px">
       <WalletAvatar addressOrName={address} size={36} emojiSize="20pt / 150%" />
@@ -71,7 +80,7 @@ export function AccountSigningWith({
             {i18n.t('approve_request.no_fee_to_sign')}
           </Text>
         ) : (
-          <WalletNativeBalance chainId={chainId} />
+          <WalletNativeBalance session={session} />
         )}
       </Stack>
     </Inline>

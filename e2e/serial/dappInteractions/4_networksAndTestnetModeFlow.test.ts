@@ -139,6 +139,14 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
       driver,
       id: `network-row-${ChainId.mainnet}`,
     });
+    await findElementByTestIdAndClick({
+      driver,
+      id: `disable-network-toggle`,
+    });
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
   });
 
   it('should go back to home and check ethereum networks are not available in dapp menu', async () => {
@@ -173,7 +181,7 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     });
     expect(foundEthereum).toBeFalsy();
     const foundOptimism = await doNotFindElementByTestId({
-      id: `switch-network-item-${ChainId['optimism-goerli']}`,
+      id: `switch-network-item-${ChainId.optimismGoerli}`,
       driver,
     });
     expect(foundOptimism).toBeTruthy();

@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { AddressZero } from '@ethersproject/constants';
-import { useNetwork } from 'wagmi';
+import { Address, useNetwork } from 'wagmi';
 
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -11,23 +11,33 @@ import { useCustomNetworkAsset } from './useCustomNetworkAsset';
 import { getNetworkNativeAssetUniqueId } from './useNativeAssetForNetwork';
 import { useUserAsset } from './useUserAsset';
 
-export const useNativeAsset = ({ chainId }: { chainId: ChainId }) => {
+export const useNativeAsset = ({
+  address,
+  chainId,
+}: {
+  address?: Address;
+  chainId: ChainId;
+}) => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { chains } = useNetwork();
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: chainId || ChainId.mainnet,
   });
-  const { data: userNativeAsset } = useUserAsset(nativeAssetUniqueId || '');
+  const { data: userNativeAsset } = useUserAsset(
+    nativeAssetUniqueId || '',
+    address || currentAddress,
+  );
   const { data: testnetNativeAsset } = useUserTestnetNativeAsset({
-    address: currentAddress,
+    address: address || currentAddress,
     currency: currentCurrency,
     chainId,
   });
 
-  const { data: customNetworkNativeAsset } = useCustomNetworkAsset(
-    `${AddressZero}_${chainId}`,
-  );
+  const { data: customNetworkNativeAsset } = useCustomNetworkAsset({
+    uniqueId: `${AddressZero}_${chainId}`,
+    filterZeroBalance: false,
+  });
 
   const chain = chains.find((chain) => chain.id === chainId);
   const isChainIdCustomNetwork = isCustomChain(chainId);

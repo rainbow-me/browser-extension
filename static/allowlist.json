@@ -28,20 +28,19 @@
     "https://rainbow-me.firebaseapp.com",
     "https://icons.duckduckgo.com",
     "https://*.live.ledger.com",
-    "https://rpc.zora.co",
     "https://falling-wandering-film.base-mainnet.quiknode.pro",
     "https://goerli.optimism.io",
     "https://data-seed-prebsc-1-s1.binance.org:8545",
     "https://matic-mumbai.chainstacklabs.com",
     "https://goerli-rollup.arbitrum.io/rpc",
     "https://goerli.base.org",
+    "https://rpc.zora.co",
     "https://testnet.rpc.zora.energy",
-    "https://eth-sepolia.g.alchemy.com/v2",
-    "https://eth-goerli.g.alchemy.com/v2",
-    "https://arb-sepolia.g.alchemy.com/v2/",
+    "https://sepolia.rpc.zora.energy",
     "https://proportionate-newest-mountain.arbitrum-goerli.quiknode.pro",
     "https://bitter-prettiest-vineyard.ethereum-holesky.quiknode.pro",
     "https://alien-lively-thunder.optimism-sepolia.quiknode.pro",
-    "https://nftp.rainbow.me/"
+    "https://nftp.rainbow.me/",
+    "https://api.thegraph.com/subgraphs/name/ensdomains/ens"
   ]
 }

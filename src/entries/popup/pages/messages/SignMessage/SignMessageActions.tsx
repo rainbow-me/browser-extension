@@ -22,17 +22,19 @@ export const SignMessageActions = ({
     <Inline space="12px" wrap={false}>
       <RejectRequestButton
         dappStatus={dappStatus}
-        autoFocus={isScamDapp}
         onClick={onRejectRequest}
         label={i18n.t('common_actions.cancel')}
       />
       <AcceptRequestButton
         dappStatus={dappStatus}
         onClick={onAcceptRequest}
-        autoFocus={!isScamDapp}
-        label={i18n.t(
-          `approve_request.sign_message${isScamDapp ? '_anyway' : ''}`,
-        )}
+        label={
+          waitingForDevice
+            ? i18n.t('approve_request.confirm_hw')
+            : i18n.t(
+                `approve_request.sign_message${isScamDapp ? '_anyway' : ''}`,
+              )
+        }
         loading={loading}
         waitingForDevice={waitingForDevice}
       />

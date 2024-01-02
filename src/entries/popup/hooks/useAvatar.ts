@@ -13,12 +13,14 @@ import { fetchDominantColor } from './useDominantColor';
 
 const fetchWalletAvatar = async ({
   addressOrName,
+  avatarUrl,
 }: {
   addressOrName: string;
+  avatarUrl?: string;
 }): Promise<WalletAvatar> => {
   const { setWalletAvatar } = walletAvatarStore.getState();
 
-  const ensAvatar = await resolveEnsAvatar({ addressOrName });
+  const ensAvatar = avatarUrl || (await resolveEnsAvatar({ addressOrName }));
   let correctEnsAvatar = true;
   let dominantColor = null;
   try {
@@ -36,17 +38,27 @@ const fetchWalletAvatar = async ({
   return avatar;
 };
 
-export function useAvatar({ addressOrName }: { addressOrName?: string }) {
+export function useAvatar({
+  addressOrName,
+  avatarUrl,
+}: {
+  addressOrName?: string;
+  avatarUrl?: string;
+}) {
   const { walletAvatar } = useWalletAvatarStore();
 
   return useQuery(
     ['walletAvatar', addressOrName],
     async () =>
-      addressOrName ? fetchWalletAvatar({ addressOrName }) : undefined,
+      addressOrName
+        ? fetchWalletAvatar({ addressOrName, avatarUrl })
+        : undefined,
     {
       enabled: !!addressOrName,
       initialData: () => {
-        return addressOrName ? walletAvatar[addressOrName] : undefined;
+        return addressOrName && walletAvatar
+          ? walletAvatar[addressOrName]
+          : undefined;
       },
     },
   );

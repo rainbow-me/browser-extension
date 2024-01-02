@@ -2,6 +2,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { EventProperties } from '~/analytics/event';
@@ -242,6 +243,7 @@ function Fee({
 
 type TransactionFeeProps = {
   chainId: ChainId;
+  address?: Address;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
   accentColor?: string;
@@ -256,6 +258,7 @@ type TransactionFeeProps = {
 
 export function TransactionFee({
   chainId,
+  address,
   defaultSpeed,
   transactionRequest,
   accentColor,
@@ -275,8 +278,10 @@ export function TransactionFee({
     baseFeeTrend,
   } = useTransactionGas({
     chainId,
+    address,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     transactionRequest,
+    flashbotsEnabled: !!flashbotsEnabled,
   });
   return (
     <Fee

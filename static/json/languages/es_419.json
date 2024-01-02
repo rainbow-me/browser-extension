@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "Mainnet",
+      "testnet": "Red de prueba",
       "title": "Redes",
+      "testnets": "Redes de prueba",
       "quick_promo": {
         "text": "Arrastra las redes para reordenarlas",
         "text_bold": "Consejo:"
       },
+      "disabled": "Deshabilitado",
       "description": "Elige qué redes y tokens mostrar. Puedes conectarte a cualquier red compatible con Rainbow, incluso si no están marcados.",
       "developer_tools": {
         "title": "Habilitar Herramientas de Desarrollo",
         "toggle_explainer": "Habilita el atajo de Modo Testnet (T) y añade un interruptor en el menú superior derecho de la pantalla de inicio."
       },
       "custom_rpc": {
-        "title": "RPC Personalizado"
+        "title": "Agregar Red",
+        "networks": "Redes",
+        "network_name": "Nombre de la Red",
+        "rpc_url": "URL RPC",
+        "chain_id": "ID de cadena",
+        "symbol": "Símbolo",
+        "decimals": "Decimales",
+        "active": "Activo",
+        "testnet": "Red de prueba",
+        "block_explorer_url": "URL del explorador de bloques",
+        "add_network": "Agregar Red",
+        "add_rpc": "Añadir RPC %{rpcName}",
+        "add_asset": "Agregar Token Personalizado",
+        "network_added": "¡Red Añadida!",
+        "network_added_correctly": "¡%{networkName} se ha añadido correctamente!",
+        "remove_token": "Eliminar Token",
+        "remove_rpc": "Eliminar RPC",
+        "tokens": "Tokens",
+        "cant_connect": "¡No se puede conectar con este punto final RPC!",
+        "rpc_not_responding": "La URL proporcionada no responde"
+      },
+      "rpc_endpoints": "Puntos de conexión RPC",
+      "enabled": "Habilitado",
+      "watch_asset": {
+        "title": "Observar Activo"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "Habilitar accesos directos internos ⌘K",
       "custom_rpc": "RPC Personalizado",
       "new_tab_bar_enabled": "Nueva barra de pestañas",
-      "nfts_enabled": "NFTs Habilitados"
+      "nfts_enabled": "NFTs Habilitados",
+      "points": "Puntos"
     }
   },
   "transactions": {
@@ -403,7 +431,10 @@
         "view_on_ens": "Ver en ENS",
         "switch_to_wallet": "Cambiar a esta Billetera",
         "copy_wallet_address": "Copiar Dirección",
-        "view_wallet_on_etherscan": "Ver en Etherscan"
+        "view_wallet_on_etherscan": "Ver en Etherscan",
+        "export_addresses_as_csv": "Exportar Direcciones como CSV",
+        "enable_flashbots": "Habilitar Flashbots",
+        "disable_flashbots": "Desactivar Flashbots"
       },
       "search_tags": {
         "swap": "puente",
@@ -479,6 +510,18 @@
     },
     "toolbar": {
       "actions_hint": "Acciones"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "Observando",
+        "recovery_phrase": "Frase de recuperación",
+        "private_key": "Clave Privada",
+        "hardware_wallet": "Billetera de Hardware"
+      },
+      "toast": {
+        "title": "Direcciones descargadas",
+        "description": "rainbow_addresses.csv"
+      }
     }
   },
   "connected_apps": {
@@ -525,7 +568,6 @@
       "cancel": "Cancelar",
       "sending_on_network": "Enviando en la red %{chainName}",
       "sending_on_l2_check_1": "No estoy enviando a un intercambio",
-      "sending_on_l2_check_2": "La persona a la que estoy enviando tiene una billetera que admite %{chainName}",
       "complete_checks": "Completa las verificaciones",
       "confirm_hw": "Confirma en tu dispositivo"
     }
@@ -866,7 +908,7 @@
   },
   "seed_verify": {
     "title": "Verificar tu frase de recuperación secreta",
-    "explanation": "Selecciona las palabras 4, 8 y 12 de tu frase de recuperación secreta en el orden en que se muestran.",
+    "explanation": "Selecciona las palabras 4, 8 y 12 en el orden que muestra tu Frase de Recuperación",
     "skip": "Saltar esto"
   },
   "menu": {
@@ -938,20 +980,36 @@
     "button_label_cancel": "Recordarme Más Tarde"
   },
   "approve_request": {
+    "allow_to_add_asset": "quiere sugerir un token",
     "wallet_info_title": "quiere conectarse a tu billetera",
     "wallet_info_description": "Permitir que %{appName} vea la dirección, el saldo, la actividad de tus billeteras y solicite aprobación para transacciones.",
+    "add_chain_info_description": "Si lo apruebas, esta red podría usarse dentro de la Extensión del Navegador Rainbow.",
+    "watch_asset_info_description": "Si lo apruebas, este activo puede ser utilizado dentro de la Extensión de Navegador Rainbow.",
     "wallet": "Billetera",
     "network": "Red",
     "switch_networks": "Cambiar redes",
     "switch_wallets": "Cambiar billeteras",
+    "allow_to_add_network": "quiere agregar una red",
     "connect": "Conectar a %{appName}",
     "connect_anyway": "Conectar de todos modos",
+    "approve": "Aprobar",
+    "approve_anyway": "Aprobar de todas formas",
     "malicious_warning": {
       "title": "Esta aplicación probablemente es maliciosa",
       "message": "Firmar mensajes o transacciones desde esta app podría resultar en la pérdida de tus activos"
     },
+    "malicious_transaction_warning": {
+      "title": "Esta transacción parece sospechosa",
+      "malicious_address": "Una dirección maliciosa está involucrada en esta transacción. Firmar podría ocasionar pérdidas",
+      "malicious_entity": "Una entidad maliciosa está involucrada en esta transacción. Firmar podría ocasionar pérdidas",
+      "minting_is_a_losing_trade": "Un contrato fraudulento está involucrado en esta transacción. Acuñar es una transacción perdedora",
+      "you_can_lose_everything": "Firmar esta transacción podría resultar en la pérdida de todo en tu billetera"
+    },
+    "dangerous_request": "Solicitud peligrosa",
     "message_signing_request": "Solicitud de firma de mensaje",
     "message": "Mensaje",
+    "message_copied": "Mensaje copiado",
+    "transaction_data_copied": "Datos de transacción copiados",
     "sign_message": "Firmar mensaje",
     "sign_message_anyway": "Firmar de todos modos",
     "confirm_hw": "Confirmar en tu dispositivo",
@@ -960,7 +1018,30 @@
     "send_transaction_anyway": "Confirmar de todos modos",
     "contract_deployment": "Despliegue de contrato",
     "transaction_request": "Solicitud de transacción",
-    "insufficient_native_asset_for_gas": "Insuficiente %{symbol} para gas"
+    "insufficient_gas_funds": "Necesitas más %{token}",
+    "insufficient_gas_funds_description": "Necesitas un poco más de %{token} para pagar esta transacción. Consigue más a continuación para continuar con esta solicitud.",
+    "no_gas_funds": "Necesitas algo de %{token}",
+    "no_gas_funds_description": "Necesitarás %{token} para pagar esta transacción. Consigue algo de %{token} a continuación para continuar con esta solicitud.",
+    "no_token": "No %{token}",
+    "on_chain": "en %{chain}",
+    "copy_deposit_address": "Copiar dirección de billetera para depósito",
+    "bridge_to": "Puente a %{chain}",
+    "signing_with": "Firma con",
+    "no_fee_to_sign": "Sin comisión para firmar",
+    "request_rejected": "Solicitud de transacción rechazada",
+    "bridge_and_try_again": "Transfiere algunos fondos de gas y prueba de nuevo",
+    "buy_and_try_again": "Compra algunos fondos de gas e intenta de nuevo",
+    "buy": "Compra %{token}"
+  },
+  "add_chain": {
+    "name": "Nombre",
+    "chain_id": "ID de cadena",
+    "currency_symbol": "Símbolo de moneda",
+    "currency_name": "Nombre de moneda",
+    "currency_decimals": "Decimales de moneda",
+    "rpc_url": "URL RPC",
+    "block_explorer_url": "URL del explorador de bloques",
+    "testnet": "Red de prueba"
   },
   "transaction_fee": {
     "title": "Velocidad de transacción",
@@ -1040,7 +1121,9 @@
   "errors": {
     "error_encountered": "Algo salió mal. Por favor comparte el problema con nuestro equipo y lo solucionaremos",
     "no_wallet_name_set": "No se ha establecido un nombre de monedero",
-    "report_error": "Reportar problema"
+    "report_error": "Reportar problema",
+    "sending_transaction": "Error al enviar transacción",
+    "executing_swap": "Error al ejecutar intercambio"
   },
   "common_titles": {
     "before_you_proceed": "Antes de continuar"
@@ -1127,18 +1210,103 @@
   },
   "nfts": {
     "coming_soon_header": "Próximamente",
+    "empty_state_header": "NFTs",
     "coming_soon_description": "Los NFTs llegarán pronto. ¡Mantente en sintonía!",
+    "empty_state_description": "¡Tus tokens no fungibles aparecerán aquí!",
     "view_on_web": "Ver en Web",
     "display_mode_gallery": "Galería",
     "display_mode_collections": "Colecciones",
     "sort_option_recent": "Reciente",
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "Reciente",
-    "sort_option_abc_long": "Alfabético"
+    "sort_option_abc_long": "Alfabético",
+    "details": {
+      "last_sales_price": "Último precio de venta",
+      "none": "Ninguno",
+      "floor_price": "Precio mínimo",
+      "description": "Descripción",
+      "properties": "Propiedades",
+      "address_copied": "Dirección copiada",
+      "about": "Acerca de",
+      "token_standard": "Estándar del token",
+      "token_contract": "Contrato del token",
+      "contract_creator": "Creador del contrato",
+      "chain": "Cadena",
+      "id_copied": "ID copiado",
+      "copy_token_id": "Copiar ID del token",
+      "download": "Descargar",
+      "explorer": "Explorar",
+      "view_collection": "Ver colección",
+      "collection_website": "Sitio web de la colección",
+      "owners": "Propietarios",
+      "unique_owners": "Propietarios únicos",
+      "ens_profile_info": "Información de perfil",
+      "ens_bio": "Biografía",
+      "ens_cover": "Portada",
+      "ens_address": "Dirección ETH",
+      "ens_website": "Sitio web",
+      "registered_on": "Registrado en",
+      "expires_in": "Expira en",
+      "explainer": {
+        "floor_price_description": "El precio piso de una colección es el precio de venta más bajo de todos los ítems actualmente en venta en una colección",
+        "floor_price_title": "Precio piso de la colección",
+        "floor_price_action_label": "Entendido"
+      }
+    }
   },
   "points": {
     "coming_soon_header": "Próximamente",
-    "coming_soon_description": "Los puntos están a la vuelta de la esquina.\nEmpieza a ganar hoy"
+    "coming_soon_description": "Los puntos están a la vuelta de la esquina.\nEmpieza a ganar hoy",
+    "your_rank": "Tu rango",
+    "next_drop": "Próxima entrega",
+    "leaderboard": "Tabla de posiciones",
+    "referral_code": "Código de Referido",
+    "referral_code_description": "Gana puntos refiriendo amigos que intercambien $100 a través de Rainbow",
+    "copied_referral_code": "¡Código de referido copiado!",
+    "copied_referral_link": "¡Enlace de referido copiado!",
+    "out_of": "De un total de %{total}",
+    "out_of_current_total_points": "De %{total} puntos totales actuales",
+    "header": "Reclama tus puntos",
+    "description": "Los puntos están aquí. Descubre cuántos has obtenido",
+    "get_started": "Comenzar",
+    "use_referral_code": "Usar Código de Referido",
+    "referral_header": "Ingresa tu código de referido",
+    "referral_description": "Ingresa un código de referido abajo para reclamar tu recompensa de bonificación",
+    "referral_code_invalid": "Código no válido",
+    "onboarding": {
+      "authorization_required": "Autorización requerida",
+      "sign_in_with_your_wallet": "Inicia sesión con tu billetera",
+      "access_granted": "Acceso concedido",
+      "calculating_points": "Calculando puntos",
+      "rainbow_swaps": "Intercambios en Rainbow:",
+      "rainbow_nfts_owned": "NFTs de Rainbow en posesión:",
+      "wallet_balance": "Saldo de la billetera:",
+      "metamask_swaps": "Intercambios en MetaMask:",
+      "bonus_reward": "Recompensa de Bonificación:",
+      "calculation_complete": "Cálculo completo",
+      "points_earned": "Puntos ganados:",
+      "bonus_points": "Puntos de bonificación:",
+      "claim_description_buy": "Para reclamar el resto de tus puntos de bonificación, adquiere algo de ETH a través de Rainbow",
+      "claim_description_swap": "Para reclamar el resto de tus puntos de bonificación, realiza un intercambio de al menos $100 a través de Rainbow",
+      "account": "Cuenta:",
+      "sign_in": "Iniciar Sesión",
+      "get_eth": "Consigue algo de ETH",
+      "try_swap": "Probar un Intercambio",
+      "referral_link_ready": "Tu enlace de referido está listo",
+      "share_and_earn": "Tuitea tu enlace de referido y obtén 250 puntos extra",
+      "plus_percent_of_refers": "Además ganarás el 10% de los puntos que obtengan tus referidos",
+      "share": "Compartir en X",
+      "share_tweet": "Acabo de recibir %{points} Rainbow Points en mi billetera\nTodos tienen al menos 100 puntos esperando, ¡pero podrías tener más!\n\nReclama tu premio: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "Acabo de recibir %{points} Rainbow Points en mi billetera — y un extra de %{metamaskBonus} Puntos como bono por migrar mi billetera MetaMask a Rainbow 🦊 🔫\n\nTodos tienen al menos 100 puntos esperando, pero podrías tener más! Reclama tu premio: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "Registro completo",
+      "all_set": "¡Todo listo!",
+      "keep_earning_by": "Sigue ganando puntos intercambiando, haciendo puente, acuñando, refiriendo amigos y más",
+      "the_more_you_use": "Cuanto más uses Rainbow, más serás recompensado"
+    },
+    "error": {
+      "existing_user": "Usuario existente",
+      "invalid_referral_code": "Código de referido inválido"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Acelerar",
@@ -1172,6 +1340,7 @@
     "approvals": "Aprobaciones de tokens",
     "this_token_is_on_network": "Esta %{symbol} está en la red %{chainName}",
     "view_on": "Ver en %{explorer}",
+    "not_available": "Precio no disponible",
     "more_options": {
       "copy_address": "Copiar dirección",
       "hide": "Ocultar token",
@@ -1405,5 +1574,44 @@
     "unfavorite": "Eliminar de favoritos",
     "estimated_difference": "Diferencia estimada en valor",
     "buy_crypto": "Comprar y transferir cripto"
+  },
+  "simulation": {
+    "title": "Resultado simulado",
+    "loading": "Simulando...",
+    "error": "Fallo de simulación",
+    "no_changes": "No se detectaron cambios",
+    "received": "Recibido",
+    "sent": "Enviado",
+    "approved": "Aprobado",
+    "reverted": "Transacción revertida",
+    "function": "Función",
+    "contract": "Contrato",
+    "contract_name": "Nombre del contrato",
+    "contract_created_at": "Contrato creado",
+    "source_code": "Código fuente",
+    "signature": {
+      "message": "Mensaje"
+    },
+    "tabs": {
+      "overview": "Resumen",
+      "details": "Detalles",
+      "data": "Datos"
+    }
+  },
+  "chain": "Cadena",
+  "nonce": "Nonce",
+  "copy": "Copiar",
+  "copy_link": "Copiar Enlace",
+  "close": "Cerrar",
+  "verified": "Verificado",
+  "unverified": "No verificado",
+  "skip": "Omitir",
+  "done": "Hecho",
+  "watch_asset": {
+    "chain_id": "ID de cadena",
+    "symbol": "Símbolo",
+    "decimals": "Decimales",
+    "address": "Dirección",
+    "not_found": "No pudimos encontrar este activo en la red seleccionada. Por favor, elige la red correcta a continuación"
   }
 }

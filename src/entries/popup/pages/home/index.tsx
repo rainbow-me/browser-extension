@@ -11,10 +11,10 @@ import {
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
 import { useErrorStore } from '~/core/state/error';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -45,15 +45,16 @@ import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
+import { useWallets } from '../../hooks/useWallets';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
 import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
-import { PostReleaseNFTs, PreReleaseNFTs } from './NFTs/NFTs';
+import { NFTs } from './NFTs/NFTs';
 import { AppConnection } from './NetworkMenu';
-import { Points } from './Points';
+import { Points } from './Points/Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
@@ -66,6 +67,13 @@ type TabProps = {
 
 const TOP_NAV_HEIGHT = 65;
 
+const isPlaceholderTab = (tab: Tab) => {
+  if (tab === 'points' && !config.points_enabled) {
+    return true;
+  }
+  return false;
+};
+
 const Tabs = memo(function Tabs({
   activeTab,
   containerRef,
@@ -74,13 +82,6 @@ const Tabs = memo(function Tabs({
 }: TabProps) {
   const { trackShortcut } = useKeyboardAnalytics();
   const { visibleTokenCount } = useVisibleTokenCount();
-  const { featureFlags } = useFeatureFlagsStore();
-  const isPlaceholderTab = (tab: Tab) => {
-    if (tab === 'nfts' && featureFlags.nfts_enabled) {
-      return false;
-    }
-    return tab === 'nfts' || tab === 'points';
-  };
 
   const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
@@ -133,11 +134,16 @@ const Tabs = memo(function Tabs({
   });
 
   const getDisableBottomPadding = () => {
-    if (featureFlags.nfts_enabled && activeTab === 'nfts') {
+    if (activeTab === 'nfts') {
       return false;
     }
     return isPlaceholderTab(activeTab);
   };
+
+  const { isWatchingWallet } = useWallets();
+  if (activeTab === 'points' && isWatchingWallet) {
+    onSelectTab('tokens');
+  }
 
   return (
     <>
@@ -145,12 +151,7 @@ const Tabs = memo(function Tabs({
       <Content disableBottomPadding={getDisableBottomPadding()}>
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
-        {activeTab === 'nfts' && featureFlags.nfts_enabled && (
-          <PostReleaseNFTs />
-        )}
-        {activeTab === 'nfts' && !featureFlags.nfts_enabled && (
-          <PreReleaseNFTs />
-        )}
+        {activeTab === 'nfts' && <NFTs />}
         {activeTab === 'points' && <Points />}
       </Content>
     </>
@@ -166,13 +167,6 @@ export const Home = memo(function Home() {
   const { pendingRequests } = usePendingRequestStore();
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   const { selectedTab, setSelectedTab } = useTabNavigation();
-  const { featureFlags } = useFeatureFlagsStore();
-  const isPlaceholderTab = (tab: Tab) => {
-    if (tab === 'nfts' && featureFlags.nfts_enabled) {
-      return false;
-    }
-    return tab === 'nfts' || tab === 'points';
-  };
 
   const [activeTab, setActiveTab] = useState<Tab>(() => {
     if (isPlaceholderTab(selectedTab)) {

@@ -105,7 +105,12 @@ function ScrollableWithGradient({
   return (
     <Box
       className={isScrollable ? overflowGradient : undefined}
-      style={{ overflowX: 'visible', overflowY: 'hidden' }}
+      style={{
+        overflowX: 'visible',
+        overflowY: 'hidden',
+      }}
+      paddingTop="4px"
+      marginTop="-4px"
       marginBottom="-20px"
       marginHorizontal="-20px"
       paddingHorizontal="20px"
@@ -115,6 +120,8 @@ function ScrollableWithGradient({
           maxHeight: '100%',
           overflow: isScrollable ? 'scroll' : 'visible',
         }}
+        paddingTop="4px"
+        marginTop="-4px"
         paddingBottom="52px"
         paddingHorizontal="20px"
         marginHorizontal="-20px"
@@ -141,6 +148,7 @@ export function TabFloatingButton(
   return (
     <Box
       as={motion.button}
+      tabIndex={-1}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.98 }}
       initial={{ scale: 0.8, opacity: 0 }}

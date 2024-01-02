@@ -12,7 +12,7 @@ import {
   TextOverflow,
 } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
-import { TextStyles } from '~/design-system/styles/core.css';
+import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
 import AddressPill from '../AddressPill/AddressPill';
 interface TextIconProps {
@@ -31,7 +31,7 @@ interface SelectionProps {
 }
 
 const Selection = ({ text }: SelectionProps) => (
-  <Text color="labelTertiary" size="14pt" weight="medium">
+  <Text color="labelTertiary" size="14pt" weight="semibold">
     {text}
   </Text>
 );
@@ -43,7 +43,7 @@ const SelectionIcon = () => {
         symbol="checkmark.circle.fill"
         color="accent"
         size={18}
-        weight="medium"
+        weight="semibold"
       />
     </Box>
   );
@@ -91,10 +91,11 @@ const AccountList = ({ accounts }: { accounts: Address[] }) => {
 interface TitleProps {
   color?: TextStyles['color'];
   text: string;
+  weight?: TextStyles['fontWeight'];
 }
 
-const Title = ({ text, color = 'label' }: TitleProps) => (
-  <TextOverflow color={color} size="14pt" weight="medium">
+const Title = ({ text, color = 'label', weight = 'semibold' }: TitleProps) => (
+  <TextOverflow color={color} size="14pt" weight={weight}>
     {text}
   </TextOverflow>
 );
@@ -112,10 +113,16 @@ const Label = ({ text }: LabelProps) => {
 };
 
 interface DescriptionProps {
+  color?: TextStyles['color'];
   text: string;
+  weight?: TextStyles['fontWeight'];
 }
 
-const Description = ({ text }: DescriptionProps) => (
+const Description = ({
+  color = 'labelTertiary',
+  text,
+  weight = 'medium',
+}: DescriptionProps) => (
   <Box
     justifyContent="center"
     paddingHorizontal="16px"
@@ -123,7 +130,7 @@ const Description = ({ text }: DescriptionProps) => (
     width="full"
   >
     <Inline alignHorizontal="justify" alignVertical="center">
-      <Text size="12pt" weight="medium" color="labelTertiary">
+      <Text color={color} size="12pt" weight={weight}>
         {text}
       </Text>
     </Inline>
@@ -134,10 +141,12 @@ interface MenuItemProps {
   rightComponent?: React.ReactNode;
   leftComponent?: React.ReactNode;
   hasRightArrow?: boolean;
+  height?: number;
   onClick?: () => void;
   onToggle?: () => void;
   titleComponent: React.ReactNode;
   labelComponent?: React.ReactNode;
+  paddingHorizontal?: BoxStyles['paddingHorizontal'];
   disabled?: boolean;
   hasChevron?: boolean;
   hasChevronDownOnly?: boolean;
@@ -148,13 +157,16 @@ interface MenuItemProps {
 }
 
 const MenuItem = ({
+  disabled,
   hasRightArrow,
+  height,
   onClick,
   onToggle,
   leftComponent,
   rightComponent,
   titleComponent,
   labelComponent,
+  paddingHorizontal,
   hasChevron,
   hasChevronDownOnly,
   testId,
@@ -181,13 +193,13 @@ const MenuItem = ({
           borderBottomRightRadius: 15,
           borderBottomLeftRadius: 15,
         }),
-        height: 50,
+        height: height || 50,
       }}
       tabIndex={tabIndex}
     >
       <Box
         justifyContent="center"
-        paddingHorizontal="16px"
+        paddingHorizontal={paddingHorizontal || '16px'}
         paddingVertical="16px"
         testId={testId}
         width="full"
@@ -197,22 +209,24 @@ const MenuItem = ({
       >
         <Columns>
           <Column>
-            <Inline
-              alignVertical="center"
-              space="16px"
-              height="full"
-              wrap={false}
-            >
-              {leftComponent && (
-                <Box alignItems="center" justifyContent="center">
-                  {leftComponent}
-                </Box>
-              )}
-              <Stack space="8px">
-                {titleComponent}
-                {labelComponent}
-              </Stack>
-            </Inline>
+            <Box height="full" opacity={disabled ? '0.5' : undefined}>
+              <Inline
+                alignVertical="center"
+                space="16px"
+                height="full"
+                wrap={false}
+              >
+                {leftComponent && (
+                  <Box alignItems="center" justifyContent="center">
+                    {leftComponent}
+                  </Box>
+                )}
+                <Stack space="7px">
+                  {titleComponent}
+                  {labelComponent}
+                </Stack>
+              </Inline>
+            </Box>
           </Column>
           <Column width="content">
             <Inline

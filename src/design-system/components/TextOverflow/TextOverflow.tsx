@@ -15,6 +15,7 @@ interface TextOverflowProps {
   cursor?: TextStyles['cursor'];
   userSelect?: TextStyles['userSelect'];
   maxWidth?: CSSProperties['maxWidth'];
+  textShadow?: TextStyles['textShadow'];
 }
 
 export function TextOverflow({
@@ -28,6 +29,7 @@ export function TextOverflow({
   cursor = 'default',
   userSelect = 'none',
   maxWidth = '',
+  textShadow,
 }: TextOverflowProps) {
   return (
     <Box style={{ display: 'grid', maxWidth }}>
@@ -44,6 +46,7 @@ export function TextOverflow({
           textOverflow: 'ellipsis',
           overflow: 'hidden',
           whiteSpace: 'nowrap',
+          textShadow,
         })}
         testId={testId}
       >
