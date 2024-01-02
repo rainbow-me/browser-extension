@@ -150,11 +150,12 @@ export function WalletDetails() {
   );
 
   useEffect(() => {
-    const getWallet = async () => {
-      const wallet = await getSettingWallets();
+    const _getWallet = async () => {
+      const settingWallet = await getSettingWallets();
+      const wallet = await getWallet(settingWallet.accounts[0]);
       setWallet(wallet);
     };
-    getWallet();
+    _getWallet();
   }, []);
 
   const handleCreateWalletOnGroup = useCallback(async () => {
