@@ -13,31 +13,28 @@ import { getNetworkNativeAssetUniqueId } from './useNativeAssetForNetwork';
 import { useNativeAssets } from './useNativeAssets';
 import { useUserAsset } from './useUserAsset';
 
-const useMockNativeAssets = ({
+const useMockNativeAsset = ({
   chainId,
 }: {
   chainId: ChainId;
 }): ParsedUserAsset | undefined | null => {
   const nativeAssets = useNativeAssets();
   const { chains } = useNetwork();
-  if (!nativeAssets) return null;
-  return chains
-    .map((chain) => {
-      const assetKey = `${NATIVE_ASSETS_MAP_PER_CHAIN[chain.id]}_${
-        ChainId.mainnet
-      }`;
-      const nativeAsset = nativeAssets[assetKey];
-      return {
-        ...nativeAsset,
-        chainId: chain.id,
-        chainName: chainNameFromChainId(chain.id),
-        native: {
-          balance: { amount: '0', display: `0 ${nativeAsset?.symbol}` },
-        },
-        balance: { amount: '0', display: `0 ${nativeAsset?.symbol}` },
-      };
-    })
-    .find((c) => c.chainId === chainId);
+  const chain = chains.find((c) => c.id === chainId);
+  if (!nativeAssets || !chain) return null;
+  const assetKey = `${NATIVE_ASSETS_MAP_PER_CHAIN[chain.id]}_${
+    ChainId.mainnet
+  }`;
+  const nativeAsset = nativeAssets[assetKey];
+  return {
+    ...nativeAsset,
+    chainId: chain.id,
+    chainName: chainNameFromChainId(chain.id),
+    native: {
+      balance: { amount: '0', display: `0 ${nativeAsset?.symbol}` },
+    },
+    balance: { amount: '0', display: `0 ${nativeAsset?.symbol}` },
+  };
 };
 
 export const useNativeAsset = ({
@@ -57,7 +54,7 @@ export const useNativeAsset = ({
     nativeAssetUniqueId || '',
     address || currentAddress,
   );
-  const mockNativeAsset = useMockNativeAssets({ chainId });
+  const mockNativeAsset = useMockNativeAsset({ chainId });
 
   const { data: testnetNativeAsset } = useUserTestnetNativeAsset({
     address: address || currentAddress,
