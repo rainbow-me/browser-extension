@@ -47,13 +47,6 @@ export function WipeWalletWarning() {
 
   const openPasswordPrompt = useCallback(() => setShowEnterPassword(true), []);
 
-  const updateState = useCallback(async () => {
-    const accounts = await wallet.getAccounts();
-    if (accounts.length > 0 && !accounts.includes(address as Address)) {
-      setCurrentAddress(accounts[0]);
-    }
-  }, [address, setCurrentAddress]);
-
   const closePasswordPrompt = useCallback(
     async () => setShowEnterPassword(false),
     [],
@@ -61,8 +54,11 @@ export function WipeWalletWarning() {
 
   const handleWipeWallet = useCallback(async () => {
     await wallet.wipe();
-    await updateState();
-  }, [updateState]);
+    const accounts = await wallet.getAccounts();
+    if (accounts.length > 0 && !accounts.includes(address as Address)) {
+      setCurrentAddress(accounts[0]);
+    }
+  }, [address, setCurrentAddress]);
 
   return (
     <>

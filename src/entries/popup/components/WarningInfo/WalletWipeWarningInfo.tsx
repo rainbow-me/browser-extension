@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -36,9 +36,9 @@ export default function WarningInfo({
   onProceed,
   testId,
 }: WarningInfoProps) {
-  const [acknowledgeCheck, setacknowledgeCheck] = useState(false);
+  const [acknowledgeCheck, setAcknowledgeCheck] = useState(false);
 
-  const buttonEnabled = useMemo(() => acknowledgeCheck, [acknowledgeCheck]);
+  const buttonEnabled = !!acknowledgeCheck;
   return (
     <Box
       height="full"
@@ -113,13 +113,13 @@ export default function WarningInfo({
                 backgroundSelected="blue"
                 borderColorSelected="blue"
                 borderColor="labelTertiary"
-                onClick={() => setacknowledgeCheck(!acknowledgeCheck)}
+                onClick={() => setAcknowledgeCheck(!acknowledgeCheck)}
               />
             </Column>
             <Column width="content">
               <Lens
                 testId="wallet-wipe-check"
-                onClick={() => setacknowledgeCheck(!acknowledgeCheck)}
+                onClick={() => setAcknowledgeCheck(!acknowledgeCheck)}
               >
                 <Text
                   align="left"
