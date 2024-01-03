@@ -3,7 +3,6 @@ import { Address, useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -39,6 +38,7 @@ import {
 import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
+import { RequestRiskLevel } from '../useSimulateTransaction';
 
 export const WalletName = ({
   address,
@@ -332,12 +332,12 @@ export const WalletBalance = ({ appHost }: { appHost: string }) => {
 
 const getAcceptRequestButtonStyles = ({
   waitingForDevice,
-  dappStatus,
+  riskLevel,
   disabled,
 }: {
   waitingForDevice?: boolean;
   disabled?: boolean;
-  dappStatus?: DAppStatus;
+  riskLevel?: RequestRiskLevel;
 }) => {
   if (waitingForDevice)
     return {
@@ -347,11 +347,17 @@ const getAcceptRequestButtonStyles = ({
       textColor: 'label',
     } as const;
 
-  if (dappStatus === DAppStatus.Scam)
+  if (riskLevel === 'MALICIOUS')
     return {
       variant: disabled ? 'disabled' : 'tinted',
       color: 'red',
       textColor: 'red',
+    } as const;
+  if (riskLevel === 'WARNING')
+    return {
+      variant: disabled ? 'disabled' : 'flat',
+      color: 'orange',
+      textColor: 'label',
     } as const;
   return {
     variant: disabled ? 'disabled' : 'flat',
@@ -366,21 +372,20 @@ export const AcceptRequestButton = ({
   label,
   waitingForDevice,
   loading = false,
-  dappStatus,
+  riskLevel,
 }: {
   disabled?: boolean;
   onClick: () => void;
   label: string;
   waitingForDevice?: boolean;
   loading?: boolean;
-  dappStatus?: DAppStatus;
+  riskLevel?: RequestRiskLevel;
 }) => {
   const { textColor, ...buttonStyleProps } = getAcceptRequestButtonStyles({
     waitingForDevice,
-    dappStatus,
+    riskLevel,
     disabled,
   });
-  const isScamDapp = dappStatus === DAppStatus.Scam;
 
   return (
     <Button
@@ -391,7 +396,7 @@ export const AcceptRequestButton = ({
       disabled={disabled}
       tabIndex={0}
       shortcut={
-        !disabled && !waitingForDevice && !isScamDapp
+        !disabled && !waitingForDevice && riskLevel === 'OK'
           ? { ...shortcuts.transaction_request.ACCEPT, type: 'request.accept' }
           : undefined
       }
@@ -415,17 +420,15 @@ export const AcceptRequestButton = ({
 export const RejectRequestButton = ({
   onClick,
   label,
-  dappStatus,
+  riskLevel = 'OK',
 }: {
   onClick: () => void;
   label: string;
-  dappStatus?: DAppStatus;
+  riskLevel?: RequestRiskLevel;
 }) => {
-  const isScamDapp = dappStatus === DAppStatus.Scam;
-
   return (
     <Button
-      color={isScamDapp ? 'red' : 'separatorSecondary'}
+      color={riskLevel === 'MALICIOUS' ? 'red' : 'separatorSecondary'}
       variant="flat"
       height="44px"
       width="full"
@@ -436,7 +439,7 @@ export const RejectRequestButton = ({
         ...shortcuts.transaction_request.CANCEL,
         disabled: radixIsActive,
         type: 'request.cancel',
-        hideHint: !isScamDapp,
+        hideHint: riskLevel !== 'OK',
       }}
     >
       {label}

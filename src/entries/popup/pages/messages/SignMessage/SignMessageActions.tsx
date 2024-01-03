@@ -1,38 +1,38 @@
-import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { Inline } from '~/design-system';
 
 import { AcceptRequestButton, RejectRequestButton } from '../BottomActions';
+import { RequestRiskLevel } from '../useSimulateTransaction';
 
 export const SignMessageActions = ({
   waitingForDevice,
   onAcceptRequest,
   onRejectRequest,
   loading = false,
-  dappStatus,
+  riskLevel,
 }: {
   waitingForDevice: boolean;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   loading?: boolean;
-  dappStatus?: DAppStatus;
+  riskLevel?: RequestRiskLevel;
 }) => {
-  const isScamDapp = dappStatus === DAppStatus.Scam;
+  const isMalicious = riskLevel === 'MALICIOUS';
   return (
     <Inline space="12px" wrap={false}>
       <RejectRequestButton
-        dappStatus={dappStatus}
+        riskLevel={riskLevel}
         onClick={onRejectRequest}
         label={i18n.t('common_actions.cancel')}
       />
       <AcceptRequestButton
-        dappStatus={dappStatus}
+        riskLevel={riskLevel}
         onClick={onAcceptRequest}
         label={
           waitingForDevice
             ? i18n.t('approve_request.confirm_hw')
             : i18n.t(
-                `approve_request.sign_message${isScamDapp ? '_anyway' : ''}`,
+                `approve_request.sign_message${isMalicious ? '_anyway' : ''}`,
               )
         }
         loading={loading}

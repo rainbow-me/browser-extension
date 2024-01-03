@@ -97,7 +97,6 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-
   const chainId = activeSession?.chainId || ChainId.mainnet;
 
   const {
@@ -116,6 +115,8 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   });
 
   const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
+
+  const riskLevel = simulation?.scanning.result || 'OK';
 
   return (
     <Box
@@ -143,10 +144,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
             <Stack space="16px" alignItems="center">
               <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
               <Stack space="12px">
-                <DappHostName
-                  hostName={dappMetadata?.appHostName}
-                  dappStatus={dappMetadata?.status}
-                />
+                <DappHostName dappUrl={dappUrl} />
                 <Text
                   align="center"
                   size="14pt"
@@ -189,11 +187,16 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
         </TabContent>
       </Tabs>
 
-      {!expanded && simulation && simulation.scanning.result !== 'OK' && (
+      {!expanded && simulation && riskLevel !== 'OK' && (
         <MaliciousRequestWarning
           title={i18n.t('approve_request.malicious_transaction_warning.title')}
           description={simulation.scanning.description}
-          symbol="exclamationmark.octagon.fill"
+          symbol={
+            riskLevel === 'WARNING'
+              ? 'exclamationmark.triangle.fill'
+              : 'exclamationmark.octagon.fill'
+          }
+          color={riskLevel === 'WARNING' ? 'orange' : 'red'}
         />
       )}
     </Box>

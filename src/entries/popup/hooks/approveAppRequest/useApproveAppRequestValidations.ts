@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 
-import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { ActiveSession } from '~/core/state/appSessions';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { chainIdToUse, getChain } from '~/core/utils/chains';
 
 import { useHasEnoughGas } from '../../pages/messages/useHasEnoughGas';
+import { RequestRiskLevel } from '../../pages/messages/useSimulateTransaction';
 
 export const useApproveAppRequestValidations = ({
   session,
-  dappStatus,
+  riskLevel,
 }: {
   session: ActiveSession;
-  dappStatus?: DAppStatus;
+  riskLevel?: RequestRiskLevel;
 }) => {
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore();
@@ -27,7 +27,7 @@ export const useApproveAppRequestValidations = ({
   const enoughNativeAssetForGas = useHasEnoughGas(session);
 
   const buttonLabel = useMemo(() => {
-    if (dappStatus === DAppStatus.Scam)
+    if (riskLevel === 'MALICIOUS')
       return i18n.t('approve_request.send_transaction_anyway');
 
     if (!enoughNativeAssetForGas)
@@ -36,7 +36,7 @@ export const useApproveAppRequestValidations = ({
       });
 
     return i18n.t('approve_request.send_transaction');
-  }, [activeChainId, enoughNativeAssetForGas, dappStatus]);
+  }, [activeChainId, enoughNativeAssetForGas, riskLevel]);
 
   return {
     enoughNativeAssetForGas,

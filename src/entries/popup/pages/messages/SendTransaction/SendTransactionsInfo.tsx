@@ -264,8 +264,8 @@ function TransactionData({
 
 function TransactionInfo({
   request,
-  dappUrl,
   dappMetadata,
+  dappUrl,
   expanded,
   onExpand,
 }: {
@@ -277,6 +277,9 @@ function TransactionInfo({
 }) {
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const chainId = activeSession?.chainId || ChainId.mainnet;
+
+  const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
+
   const txData = request?.data?.toString() || '';
 
   const {
@@ -286,16 +289,11 @@ function TransactionInfo({
     isRefetching,
   } = useSimulateTransaction({
     chainId,
-    transaction: {
-      from: request.from || '',
-      to: request.to || '',
-      value: request.value?.toString() || '0',
-      data: request.data?.toString() || '',
-    },
+    transaction: request,
     domain: dappUrl,
   });
 
-  const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
+  const txRiskLevel = simulation?.scanning.result || 'OK';
 
   return (
     <>
@@ -323,11 +321,16 @@ function TransactionInfo({
         </TabContent>
       </Tabs>
 
-      {!expanded && simulation && simulation.scanning.result !== 'OK' && (
+      {!expanded && simulation && txRiskLevel !== 'OK' && (
         <MaliciousRequestWarning
           title={i18n.t('approve_request.malicious_transaction_warning.title')}
           description={simulation.scanning.description}
-          symbol="exclamationmark.octagon.fill"
+          symbol={
+            txRiskLevel === 'WARNING'
+              ? 'exclamationmark.triangle.fill'
+              : 'exclamationmark.octagon.fill'
+          }
+          color={txRiskLevel === 'WARNING' ? 'orange' : 'red'}
         />
       )}
     </>
@@ -504,8 +507,6 @@ export function SendTransactionInfo({
 
   const [expanded, setExpanded] = useState(false);
 
-  const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
-
   const hasEnoughtGas = useHasEnoughGas(activeSession);
 
   return (
@@ -534,19 +535,14 @@ export function SendTransactionInfo({
             <Stack space="16px" alignItems="center">
               <DappIcon appLogo={dappMetadata?.appLogo} size="36px" />
               <Stack space="12px">
-                <DappHostName
-                  hostName={dappMetadata?.appHostName}
-                  dappStatus={dappMetadata?.status}
-                />
+                <DappHostName dappUrl={dappUrl} />
                 <Text
                   align="center"
                   size="14pt"
                   weight="bold"
-                  color={isScamDapp ? 'red' : 'labelSecondary'}
+                  color="labelSecondary"
                 >
-                  {isScamDapp
-                    ? i18n.t('approve_request.dangerous_request')
-                    : i18n.t('approve_request.transaction_request')}
+                  {i18n.t('approve_request.transaction_request')}
                 </Text>
               </Stack>
             </Stack>

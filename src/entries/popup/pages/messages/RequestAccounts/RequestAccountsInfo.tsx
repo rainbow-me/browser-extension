@@ -1,22 +1,16 @@
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { Bleed, Box, Inline, Separator, Stack, Text } from '~/design-system';
 import { TextInline } from '~/design-system/docs/components/TextInline';
 import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 
 import { DappHostName, ThisDappIsLikelyMalicious } from '../DappScanStatus';
 
-export const RequestAccountsInfo = ({
-  appHostName,
-  appName,
-  appLogo,
-  dappStatus,
-}: {
-  appHostName?: string;
-  appName?: string;
-  appLogo?: string;
-  dappStatus?: DAppStatus;
-}) => {
+export const RequestAccountsInfo = ({ dappUrl }: { dappUrl: string }) => {
+  const { data } = useDappMetadata({ url: dappUrl });
+  const { appName, appLogo, status: dappStatus } = data || {};
+
   const isScamDapp = dappStatus === DAppStatus.Scam;
 
   return (
@@ -49,7 +43,7 @@ export const RequestAccountsInfo = ({
           {i18n.t('approve_request.wallet_info_title')}
         </Text>
 
-        <DappHostName hostName={appHostName} dappStatus={dappStatus} />
+        <DappHostName dappUrl={dappUrl} />
       </Stack>
 
       <Box style={{ width: '186px' }} marginVertical="-4px">

@@ -31,7 +31,7 @@ export const RequestAccounts = ({
 }: ApproveRequestProps) => {
   const [loading, setLoading] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
-  const dappUrl = request?.meta?.sender?.url;
+  const dappUrl = request?.meta?.sender?.url || '';
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
   const appName =
     dappMetadata?.appName || (dappUrl ? getDappHostname(dappUrl) : '');
@@ -91,12 +91,7 @@ export const RequestAccounts = ({
   return (
     <Rows alignVertical="justify">
       <Row height="content">
-        <RequestAccountsInfo
-          appHostName={dappMetadata?.appHostName}
-          appLogo={dappMetadata?.appLogo}
-          appName={appName}
-          dappStatus={dappMetadata?.status}
-        />
+        <RequestAccountsInfo dappUrl={dappUrl} />
         <Separator color="separatorTertiary" />
       </Row>
       <Row height="content">

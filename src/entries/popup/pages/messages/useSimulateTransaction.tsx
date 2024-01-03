@@ -1,3 +1,4 @@
+import { TransactionRequest } from '@ethersproject/providers';
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'wagmi';
 
@@ -54,6 +55,12 @@ const parseScanningDescription = (description: Lowercase<string>) => {
 
   if (description.includes('malicious entity')) return t('malicious_entity');
 
+  if (
+    description.includes('could not determine') ||
+    description.includes('untrusted address')
+  )
+    return t('suspicious_characteristics');
+
   return t('you_can_lose_everything');
 };
 
@@ -101,7 +108,7 @@ export const useSimulateTransaction = ({
   domain,
 }: {
   chainId: ChainId;
-  transaction: Transaction;
+  transaction: Partial<Transaction | TransactionRequest>;
   domain: string;
 }) => {
   return useQuery<TransactionSimulation, SimulationError>({
@@ -113,7 +120,14 @@ export const useSimulateTransaction = ({
     queryFn: async () => {
       const response = (await metadataPostClient.simulateTransactions({
         chainId,
-        transactions: [transaction],
+        transactions: [
+          {
+            from: transaction.from || '',
+            to: transaction.to || '',
+            value: transaction.value?.toString() || '0',
+            data: transaction.data?.toString() || '',
+          },
+        ],
         domain,
       })) as TransactionSimulationResponse;
 
@@ -211,11 +225,13 @@ type SimulationMeta = {
   };
 };
 
+export type RequestRiskLevel = 'OK' | 'WARNING' | 'MALICIOUS';
+
 type TransactionSimulationResponse = {
   simulateTransactions: [
     {
       scanning: {
-        result: 'OK' | 'WARNING' | 'MALICIOUS';
+        result: RequestRiskLevel;
         description: string;
       };
       error: {
@@ -242,7 +258,7 @@ type TransactionSimulationResponse = {
 type MessageSimulationResponse = {
   simulateMessage: {
     scanning: {
-      result: 'OK' | 'WARNING' | 'MALICIOUS';
+      result: RequestRiskLevel;
       description: string;
     };
     error: {

@@ -6,6 +6,7 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
@@ -18,6 +19,7 @@ import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../../handlers/wallet';
 import { AccountSigningWith } from '../AccountSigningWith';
+import { useSimulateMessage } from '../useSimulateTransaction';
 
 import { SignMessageActions } from './SignMessageActions';
 import { SignMessageInfo } from './SignMessageInfo';
@@ -48,8 +50,9 @@ export function SignMessage({
 }: ApproveRequestProps) {
   const [loading, setLoading] = useState(false);
   const [waitingForDevice, setWaitingForDevice] = useState(false);
+  const dappUrl = request?.meta?.sender?.url || '';
   const { data: dappMetadata } = useDappMetadata({
-    url: request?.meta?.sender?.url,
+    url: dappUrl,
   });
   const { featureFlags } = useFeatureFlagsStore();
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
@@ -144,6 +147,16 @@ export function SignMessage({
     }
   }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
+  const { data: simulation } = useSimulateMessage({
+    chainId: activeSession?.chainId || ChainId.mainnet,
+    address: activeSession?.address,
+    message: {
+      method: request.method,
+      params: (request.params || []) as string[],
+    },
+    domain: dappUrl,
+  });
+
   return (
     <Box
       display="flex"
@@ -160,7 +173,7 @@ export function SignMessage({
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
           loading={loading}
-          dappStatus={dappMetadata?.status}
+          riskLevel={simulation?.scanning.result}
         />
       </Stack>
     </Box>

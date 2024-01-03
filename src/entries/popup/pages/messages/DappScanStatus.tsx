@@ -3,17 +3,20 @@ import { motion } from 'framer-motion';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
+import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
-import { SymbolName } from '~/design-system/styles/designTokens';
+import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 
 export function MaliciousRequestWarning({
   symbol,
   title,
   description,
+  color = 'red',
 }: {
   symbol: SymbolName;
   title: string;
   description: string;
+  color?: TextColor;
 }) {
   return (
     <Box
@@ -30,7 +33,7 @@ export function MaliciousRequestWarning({
       borderRadius="20px"
       borderWidth="2px"
     >
-      <Symbol symbol={symbol} size={20} weight="heavy" color="red" />
+      <Symbol symbol={symbol} size={20} weight="heavy" color={color} />
       <Stack space="8px">
         <Text size="14pt" weight="bold">
           {title}
@@ -77,19 +80,15 @@ export const getDappStatusBadge = (
   return { badge: null, color: 'labelSecondary' } as const;
 };
 
-export function DappHostName({
-  hostName,
-  dappStatus,
-}: {
-  hostName?: string;
-  dappStatus?: DAppStatus;
-}) {
-  const { badge, color } = getDappStatusBadge(dappStatus, { size: 17 });
+export function DappHostName({ dappUrl }: { dappUrl: string }) {
+  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
+  const { status, appHostName } = dappMetadata || {};
+  const { badge, color } = getDappStatusBadge(status, { size: 17 });
   return (
     <Inline space="5px" alignVertical="center" alignHorizontal="center">
       {badge}
       <Text align="center" color={color} size="16pt" weight="bold">
-        {hostName}
+        {appHostName}
       </Text>
     </Inline>
   );

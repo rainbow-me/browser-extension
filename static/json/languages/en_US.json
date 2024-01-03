@@ -1019,7 +1019,8 @@
       "malicious_address": "A malicious address is involved in this transaction. Signing may result in losses",
       "malicious_entity": "A malicious entity is involved in this transaction. Signing may result in losses",
       "minting_is_a_losing_trade": "A scam contract is involved in this transaction. Minting is a losing trade",
-      "you_can_lose_everything": "Signing this transaction could result in losing access to everything in your wallet"
+      "you_can_lose_everything": "Signing this transaction could result in losing access to everything in your wallet",
+      "suspicious_characteristics": "No known malicious behavior was detected, but this transaction has characteristics that may pose a risk to your wallet"
     },
     "dangerous_request": "Dangerous Request",
     "message_signing_request": "Message Signing Request",

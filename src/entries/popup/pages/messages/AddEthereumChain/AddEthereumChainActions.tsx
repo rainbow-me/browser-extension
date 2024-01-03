@@ -24,7 +24,7 @@ export const AddEthereumChainActions = ({
         flexDirection={isScamDapp ? 'column-reverse' : 'column'}
       >
         <AcceptRequestButton
-          dappStatus={dappStatus}
+          riskLevel={isScamDapp ? 'MALICIOUS' : 'OK'}
           onClick={onAcceptRequest}
           label={
             isScamDapp
@@ -34,7 +34,7 @@ export const AddEthereumChainActions = ({
           loading={loading}
         />
         <RejectRequestButton
-          dappStatus={dappStatus}
+          riskLevel={isScamDapp ? 'MALICIOUS' : 'OK'}
           onClick={onRejectRequest}
           label={i18n.t('common_actions.cancel')}
         />

@@ -30,6 +30,7 @@ import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../../handlers/wallet';
 import { AccountSigningWith } from '../AccountSigningWith';
+import { useSimulateTransaction } from '../useSimulateTransaction';
 
 import { SendTransactionActions } from './SendTransactionActions';
 import { SendTransactionInfo } from './SendTransactionsInfo';
@@ -53,9 +54,8 @@ export function SendTransaction({
 }: ApproveRequestProps) {
   const [waitingForDevice, setWaitingForDevice] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { data: dappMetadata } = useDappMetadata({
-    url: request?.meta?.sender?.url,
-  });
+  const dappUrl = request?.meta?.sender?.url || '';
+  const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { selectedGas } = useGasStore();
   const selectedWallet = activeSession?.address || '';
@@ -207,6 +207,15 @@ export function SendTransaction({
     flashbotsEnabled &&
     activeSession?.chainId === ChainId.mainnet;
 
+  const chainId = activeSession?.chainId || ChainId.mainnet;
+  const txRequest = request?.params?.[0] as TransactionRequest;
+
+  const { data: simulation } = useSimulateTransaction({
+    chainId,
+    transaction: txRequest,
+    domain: dappUrl,
+  });
+
   return (
     <Box
       display="flex"
@@ -239,7 +248,7 @@ export function SendTransaction({
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
           loading={loading}
-          dappStatus={dappMetadata?.status}
+          riskLevel={simulation?.scanning.result}
         />
       </Stack>
     </Box>

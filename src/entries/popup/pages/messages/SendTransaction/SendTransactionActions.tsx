@@ -1,4 +1,3 @@
-import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ActiveSession } from '~/core/state/appSessions';
@@ -8,6 +7,7 @@ import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { AcceptRequestButton, RejectRequestButton } from '../BottomActions';
+import { RequestRiskLevel } from '../useSimulateTransaction';
 
 export const SendTransactionActions = ({
   session,
@@ -15,17 +15,17 @@ export const SendTransactionActions = ({
   onRejectRequest,
   waitingForDevice,
   loading = false,
-  dappStatus,
+  riskLevel,
 }: {
   session: ActiveSession;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   waitingForDevice: boolean;
   loading: boolean;
-  dappStatus?: DAppStatus;
+  riskLevel?: RequestRiskLevel;
 }) => {
   const { enoughNativeAssetForGas, buttonLabel } =
-    useApproveAppRequestValidations({ session, dappStatus });
+    useApproveAppRequestValidations({ session, riskLevel });
 
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
@@ -46,7 +46,7 @@ export const SendTransactionActions = ({
       <RejectRequestButton
         onClick={onRejectRequest}
         label={i18n.t('common_actions.cancel')}
-        dappStatus={dappStatus}
+        riskLevel={riskLevel}
       />
       {enoughNativeAssetForGas && (
         <AcceptRequestButton
@@ -54,7 +54,7 @@ export const SendTransactionActions = ({
           label={buttonLabel}
           waitingForDevice={waitingForDevice}
           loading={loading}
-          dappStatus={dappStatus}
+          riskLevel={riskLevel}
         />
       )}
     </Inline>
