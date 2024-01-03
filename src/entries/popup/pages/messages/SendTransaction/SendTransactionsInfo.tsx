@@ -511,7 +511,7 @@ export function SendTransactionInfo({
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
-  const hasEnoughtGas = useHasEnoughGas(activeSession);
+  const hasEnoughGas = useHasEnoughGas(activeSession);
 
   return (
     <Box
@@ -559,7 +559,7 @@ export function SendTransactionInfo({
         )}
       </AnimatePresence>
 
-      {hasEnoughtGas ? (
+      {hasEnoughGas ? (
         <TransactionInfo
           request={txRequest}
           dappMetadata={dappMetadata}
