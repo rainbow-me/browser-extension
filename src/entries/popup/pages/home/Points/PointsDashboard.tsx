@@ -11,7 +11,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
-import { formatNumber } from '~/core/utils/formatNumber';
+import { createNumberFormatter } from '~/core/utils/formatNumber';
 import {
   Box,
   Inline,
@@ -28,6 +28,10 @@ import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorE
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
 import { usePoints } from './usePoints';
+
+const { format: formatNumber } = createNumberFormatter({
+  maximumSignificantDigits: 8,
+});
 
 function Card({
   children,
@@ -309,9 +313,23 @@ function YourRankAndNextDrop() {
         <TextWithMoreInfo>{i18n.t('points.next_drop')}</TextWithMoreInfo>
 
         <NextDistributionIn nextDistribution={nextDistribution} />
-        <Text size="10pt" weight="bold" color="accent" textShadow="12px accent">
-          {formatDate(nextDistribution)}
-        </Text>
+        <Inline alignVertical="center" space="4px" wrap={false}>
+          <Symbol
+            size={12}
+            symbol="calendar"
+            weight="bold"
+            color="accent"
+            filter="shadow 12px accent"
+          />
+          <Text
+            size="10pt"
+            weight="bold"
+            color="accent"
+            textShadow="12px accent"
+          >
+            {formatDate(nextDistribution)}
+          </Text>
+        </Inline>
       </Card>
 
       <Card>
@@ -337,16 +355,25 @@ function YourRankAndNextDrop() {
             <TextOverflow size="20pt" weight="bold">
               #{formatNumber(user.stats.position.current)}
             </TextOverflow>
-            <Text
-              size="10pt"
-              weight="bold"
-              color="accent"
-              textShadow="12px accent"
-            >
-              {i18n.t('points.out_of', {
-                total: formatNumber(leaderboard.stats.total_users),
-              })}
-            </Text>
+            <Inline alignVertical="center" space="4px" wrap={false}>
+              <Symbol
+                size={12}
+                symbol="person.2.fill"
+                weight="bold"
+                color="accent"
+                filter="shadow 12px accent"
+              />
+              <Text
+                size="10pt"
+                weight="bold"
+                color="accent"
+                textShadow="12px accent"
+              >
+                {i18n.t('points.out_of', {
+                  total: formatNumber(leaderboard.stats.total_users),
+                })}
+              </Text>
+            </Inline>
           </>
         )}
       </Card>

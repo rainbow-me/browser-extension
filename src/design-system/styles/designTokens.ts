@@ -1069,6 +1069,7 @@ export const symbolNames = selectSymbolNames(
   'person.crop.rectangle.fill',
   'photo.fill',
   'spigot.fill',
+  'person.2.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
