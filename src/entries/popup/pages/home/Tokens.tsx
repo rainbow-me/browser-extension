@@ -123,9 +123,6 @@ export function Tokens() {
     },
   );
 
-  console.log('assets', assets);
-  console.log('customNetworkAssets', customNetworkAssets);
-
   const allAssets = useMemo(
     () =>
       uniqBy(
@@ -138,8 +135,6 @@ export function Tokens() {
       ),
     [assets, customNetworkAssets],
   );
-
-  console.log('allAssets', allAssets);
 
   const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
