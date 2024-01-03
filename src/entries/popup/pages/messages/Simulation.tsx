@@ -48,7 +48,10 @@ function SimulatedChangeRow({
   color: TextColor;
   label: string;
 }) {
-  const changeAmount = formatUnits(quantity, asset.decimals);
+  const changeAmount =
+    quantity === 'UNLIMITED'
+      ? Number.MAX_SAFE_INTEGER
+      : formatUnits(quantity, asset.decimals);
   return (
     <Inline
       wrap={false}
