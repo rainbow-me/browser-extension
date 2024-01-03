@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import sortedUniqBy from 'lodash/sortedUniqBy';
+import uniqBy from 'lodash/uniqBy';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -123,9 +123,12 @@ export function Tokens() {
     },
   );
 
+  console.log('assets', assets);
+  console.log('customNetworkAssets', customNetworkAssets);
+
   const allAssets = useMemo(
     () =>
-      sortedUniqBy(
+      uniqBy(
         [...assets, ...customNetworkAssets].sort(
           (a: ParsedUserAsset, b: ParsedUserAsset) =>
             parseFloat(b?.native?.balance?.amount) -
@@ -135,6 +138,8 @@ export function Tokens() {
       ),
     [assets, customNetworkAssets],
   );
+
+  console.log('allAssets', allAssets);
 
   const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
