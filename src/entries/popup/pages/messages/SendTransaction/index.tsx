@@ -65,6 +65,7 @@ export function SendTransaction({
   const { watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
 
+  console.log('selectedWallet', selectedWallet);
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
     if (!selectedWallet || !activeSession) return;
@@ -77,11 +78,10 @@ export function SendTransaction({
       if (type === 'HardwareWalletKeychain') {
         setWaitingForDevice(true);
       }
-
       const activeChainId = chainIdToUse(
         connectedToHardhat,
         connectedToHardhatOp,
-        activeSession?.chainId,
+        activeSession.chainId,
       );
       const txData = {
         from: selectedWallet,
@@ -181,14 +181,13 @@ export function SendTransaction({
     }
   }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
-  const activeChainId = chainIdToUse(
-    connectedToHardhat,
-    connectedToHardhatOp,
-    activeSession?.chainId,
-  );
-
   useEffect(() => {
     if (activeSession) {
+      const activeChainId = chainIdToUse(
+        connectedToHardhat,
+        connectedToHardhatOp,
+        activeSession?.chainId,
+      );
       selectAssetAddressAndChain(
         NATIVE_ASSETS_PER_CHAIN[activeChainId] as Address,
         activeChainId,
@@ -197,8 +196,8 @@ export function SendTransaction({
   }, [
     activeSession,
     connectedToHardhat,
-    activeChainId,
     selectAssetAddressAndChain,
+    connectedToHardhatOp,
   ]);
 
   const { flashbotsEnabled } = useFlashbotsEnabledStore();

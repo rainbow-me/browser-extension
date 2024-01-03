@@ -570,6 +570,7 @@ export const handleProviderRequest = ({
         }
         case 'eth_gasPrice': {
           const provider = getProvider({ chainId: activeSession?.chainId });
+          console.log('-- provider', provider);
           response = (await provider.getGasPrice()).toString();
           break;
         }

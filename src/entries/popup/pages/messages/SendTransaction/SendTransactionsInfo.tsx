@@ -98,17 +98,19 @@ const InfoRow = ({
 );
 
 function Overview({
+  chainId,
   simulation,
   status,
   error,
   metadata,
 }: {
+  chainId: ChainId;
   simulation: TransactionSimulation | undefined;
   status: 'loading' | 'error' | 'success';
   error: SimulationError | null;
   metadata: DappMetadata | null;
 }) {
-  const chainId = simulation?.chainId || ChainId.mainnet;
+  console.log('- simulation', simulation);
   const { badge, color } = getDappStatusBadge(
     metadata?.status || DAppStatus.Unverified,
     { size: 12 },
@@ -276,7 +278,10 @@ function TransactionInfo({
   onExpand: VoidFunction;
 }) {
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
+  console.log('-- activeSession', activeSession);
   const chainId = activeSession?.chainId || ChainId.mainnet;
+  console.log('-- activeSession chainId', chainId);
+
   const txData = request?.data?.toString() || '';
 
   const {
@@ -306,6 +311,7 @@ function TransactionInfo({
       >
         <TabContent value={tabLabel('overview')}>
           <Overview
+            chainId={chainId}
             simulation={simulation}
             status={status === 'error' && isRefetching ? 'loading' : status}
             error={error}
