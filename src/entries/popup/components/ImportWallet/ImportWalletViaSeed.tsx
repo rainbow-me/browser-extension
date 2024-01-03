@@ -257,7 +257,7 @@ const ImportWalletViaSeed = () => {
   );
 
   const handlePaste = useCallback((e: React.ClipboardEvent) => {
-    const dataToBePasted = e.clipboardData.getData('text');
+    const dataToBePasted = e.clipboardData.getData('text').trim();
     e.preventDefault();
     const words = dataToBePasted.split(' ');
     if (words.length === 12 || words.length === 24) {
