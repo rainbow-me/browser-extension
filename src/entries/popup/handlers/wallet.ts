@@ -133,8 +133,6 @@ export const sendTransaction = async (
     nonce,
   };
 
-  console.log('--- sending tx with', params);
-
   let walletInfo;
   try {
     walletInfo = await getWallet(transactionRequest.from as Address);

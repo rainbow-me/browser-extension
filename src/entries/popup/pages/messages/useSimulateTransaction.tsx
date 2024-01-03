@@ -111,14 +111,11 @@ export const useSimulateTransaction = ({
       domain,
     }),
     queryFn: async () => {
-      console.log('about to simulate', chainId, transaction, domain);
       const response = (await metadataPostClient.simulateTransactions({
         chainId,
         transactions: [transaction],
         domain,
       })) as TransactionSimulationResponse;
-      console.log('response to simulate', response);
-
       return parseSimulation(response.simulateTransactions[0], chainId);
     },
     staleTime: 60 * 1000, // 1 min

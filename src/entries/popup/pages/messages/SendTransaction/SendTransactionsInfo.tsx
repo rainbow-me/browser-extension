@@ -110,7 +110,6 @@ function Overview({
   error: SimulationError | null;
   metadata: DappMetadata | null;
 }) {
-  console.log('- simulation', simulation);
   const { badge, color } = getDappStatusBadge(
     metadata?.status || DAppStatus.Unverified,
     { size: 12 },
