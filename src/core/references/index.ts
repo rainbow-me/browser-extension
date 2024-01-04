@@ -140,6 +140,32 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
   [ChainId.polygonMumbai]: AddressZero as Address,
 };
+
+export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
+  [ChainId.mainnet]: ETH_ADDRESS,
+  [ChainId.hardhat]: ETH_ADDRESS,
+  [ChainId.goerli]: ETH_ADDRESS,
+  [ChainId.sepolia]: ETH_ADDRESS,
+  [ChainId.holesky]: ETH_ADDRESS,
+  [ChainId.arbitrum]: ETH_ADDRESS,
+  [ChainId.arbitrumGoerli]: ETH_ADDRESS,
+  [ChainId.arbitrumSepolia]: ETH_ADDRESS,
+  [ChainId.bsc]: BNB_MAINNET_ADDRESS,
+  [ChainId.bscTestnet]: BNB_MAINNET_ADDRESS,
+  [ChainId.optimism]: ETH_ADDRESS,
+  [ChainId.hardhatOptimism]: ETH_ADDRESS,
+  [ChainId.optimismGoerli]: ETH_ADDRESS,
+  [ChainId.optimismSepolia]: ETH_ADDRESS,
+  [ChainId.base]: ETH_ADDRESS,
+  [ChainId.baseGoerli]: ETH_ADDRESS,
+  [ChainId.baseSepolia]: ETH_ADDRESS,
+  [ChainId.zora]: ETH_ADDRESS,
+  [ChainId.zoraTestnet]: ETH_ADDRESS,
+  [ChainId.zoraSepolia]: ETH_ADDRESS,
+  [ChainId.polygon]: MATIC_MAINNET_ADDRESS,
+  [ChainId.polygonMumbai]: MATIC_MAINNET_ADDRESS,
+};
+
 export const OVM_GAS_PRICE_ORACLE =
   '0x420000000000000000000000000000000000000F';
 
