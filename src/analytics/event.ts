@@ -17,12 +17,12 @@ export const event = {
    */
   bridgeSubmitted: 'bridge.submitted',
   /**
-   * Called when the user approves a network add request from the active dApp.
-   */
-  /**
    * Called when a commandK action is executed
    */
   commandKActionExecuted: 'commandK.actionExecuted',
+  /**
+   * Called when the user approves a network add request from the active dApp.
+   */
   dappAddEthereumChainPromptApproved: 'dapp.prompt.add_ethereum_chain.approved',
   /**
    * Called when the user rejects a network add request from the active dApp.
