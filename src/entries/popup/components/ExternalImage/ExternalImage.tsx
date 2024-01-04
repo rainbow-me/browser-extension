@@ -33,7 +33,7 @@ const ExternalImage = (props: ExternalImageProps) => {
       w: Number(props.width),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.src]);
+  }, [props.placeholderSrc]);
 
   const { src, isLoading, error } = useImage({
     srcList: signedUrl || '',
