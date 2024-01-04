@@ -300,7 +300,7 @@ export function isSupportedChainId(chainId: number) {
 export const chainIdToUse = (
   connectedToHardhat: boolean,
   connectedToHardhatOp: boolean,
-  activeSessionChainId?: number | null,
+  activeSessionChainId: number,
 ) => {
   if (connectedToHardhat) {
     return ChainId.hardhat;
@@ -308,10 +308,7 @@ export const chainIdToUse = (
   if (connectedToHardhatOp) {
     return ChainId.hardhatOptimism;
   }
-  if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
-    return activeSessionChainId;
-  }
-  return ChainId.mainnet;
+  return activeSessionChainId;
 };
 
 export const getChainMetadataRPCUrl = async ({

@@ -4,6 +4,7 @@ import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { ActiveSession } from '~/core/state/appSessions';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { ChainId } from '~/core/types/chains';
 import { chainIdToUse, getChain } from '~/core/utils/chains';
 
 import { useHasEnoughGas } from '../../pages/messages/useHasEnoughGas';
@@ -18,15 +19,14 @@ export const useApproveAppRequestValidations = ({
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore();
 
-  const activeChainId = chainIdToUse(
-    connectedToHardhat,
-    connectedToHardhatOp,
-    session?.chainId,
-  );
-
   const enoughNativeAssetForGas = useHasEnoughGas(session);
 
   const buttonLabel = useMemo(() => {
+    const activeChainId = chainIdToUse(
+      connectedToHardhat,
+      connectedToHardhatOp,
+      session?.chainId || ChainId.mainnet,
+    );
     if (dappStatus === DAppStatus.Scam)
       return i18n.t('approve_request.send_transaction_anyway');
 
@@ -36,7 +36,13 @@ export const useApproveAppRequestValidations = ({
       });
 
     return i18n.t('approve_request.send_transaction');
-  }, [activeChainId, enoughNativeAssetForGas, dappStatus]);
+  }, [
+    connectedToHardhat,
+    connectedToHardhatOp,
+    session?.chainId,
+    dappStatus,
+    enoughNativeAssetForGas,
+  ]);
 
   return {
     enoughNativeAssetForGas,

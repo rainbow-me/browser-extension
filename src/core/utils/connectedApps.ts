@@ -7,12 +7,19 @@ export const isValidUrl = (url: string) => {
   }
 };
 
-export const getDappHost = (url: string) => {
-  const host = new URL(url).host;
-  if (host.indexOf('www.') === 0) {
-    return host.replace('www.', '');
+export const getDappHost = (url?: string) => {
+  try {
+    if (url) {
+      const host = new URL(url).host;
+      if (host.indexOf('www.') === 0) {
+        return host.replace('www.', '');
+      }
+      return host;
+    }
+    return '';
+  } catch (e) {
+    return '';
   }
-  return host;
 };
 
 export const getDappHostname = (url: string) => {
