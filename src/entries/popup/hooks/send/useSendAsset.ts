@@ -1,4 +1,4 @@
-import sortedUniqBy from 'lodash/sortedUniqBy';
+import uniqBy from 'lodash/uniqBy';
 import { useCallback, useMemo, useState } from 'react';
 
 import {
@@ -67,7 +67,7 @@ export const useSendAsset = () => {
 
   const allAssets = useMemo(
     () =>
-      sortedUniqBy(
+      uniqBy(
         [...assets, ...customNetworkAssets].sort(
           (a: ParsedUserAsset, b: ParsedUserAsset) =>
             parseFloat(b?.native?.balance?.amount) -
