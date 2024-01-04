@@ -277,7 +277,6 @@ function TransactionInfo({
   onExpand: VoidFunction;
 }) {
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  console.log('-- activeSession', activeSession);
   const chainId = activeSession?.chainId || ChainId.mainnet;
 
   const txData = request?.data?.toString() || '';
