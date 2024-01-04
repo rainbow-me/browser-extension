@@ -19,6 +19,10 @@ export const event = {
   /**
    * Called when the user approves a network add request from the active dApp.
    */
+  /**
+   * Called when a commandK action is executed
+   */
+  commandKActionExecuted: 'commandK.actionExecuted',
   dappAddEthereumChainPromptApproved: 'dapp.prompt.add_ethereum_chain.approved',
   /**
    * Called when the user rejects a network add request from the active dApp.
@@ -244,6 +248,11 @@ export type EventProperties = {
      * The estimated USD value of the swap.
      */
     tradeAmountUSD: number;
+  };
+  [event.commandKActionExecuted]: {
+    id?: string;
+    label?: string;
+    name?: string;
   };
   [event.dappAddEthereumChainPromptApproved]: {
     /**

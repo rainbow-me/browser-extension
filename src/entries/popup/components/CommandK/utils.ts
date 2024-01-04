@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
@@ -240,6 +242,12 @@ export function useCommandExecution(
 
   const handleExecuteCommand = React.useCallback(
     (command: SearchItem | null, e?: KeyboardEvent) => {
+      analytics.track(event.commandKActionExecuted, {
+        id: command?.id,
+        label: command?.actionLabel,
+        name: command?.name,
+      });
+
       if (e) {
         const { key, metaKey, shiftKey } = e;
         const isCommandEnter = key === shortcuts.global.SELECT.key && metaKey;
