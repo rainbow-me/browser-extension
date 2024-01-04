@@ -279,7 +279,6 @@ function TransactionInfo({
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   console.log('-- activeSession', activeSession);
   const chainId = activeSession?.chainId || ChainId.mainnet;
-  console.log('-- activeSession chainId', chainId);
 
   const txData = request?.data?.toString() || '';
 
