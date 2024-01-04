@@ -65,7 +65,6 @@ export function SendTransaction({
   const { watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
 
-  console.log('selectedWallet', selectedWallet);
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
     if (!selectedWallet || !activeSession) return;
