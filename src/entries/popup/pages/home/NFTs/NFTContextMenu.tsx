@@ -31,9 +31,17 @@ export default function NFTContextMenu({
 
   const explorerTitle =
     nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
-  const blockExplorerUrl = `https://${getBlockExplorerHostForChain(
-    chainIdFromChainName(nft?.network as ChainName),
-  )}/nft/${nft?.asset_contract.address}/${nft?.id}`;
+  const getBlockExplorerUrl = () => {
+    if (nft?.network === 'mainnet') {
+      return `https://${getBlockExplorerHostForChain(
+        chainIdFromChainName(nft?.network as ChainName),
+      )}/nft/${nft?.asset_contract.address}/${nft?.id}`;
+    } else {
+      return `https://${getBlockExplorerHostForChain(
+        chainIdFromChainName(nft?.network as ChainName),
+      )}/token/${nft?.asset_contract.address}?a=${nft?.id}`;
+    }
+  };
 
   const openseaUrl = getOpenseaUrl({ nft });
 
@@ -92,7 +100,7 @@ export default function NFTContextMenu({
             )}
             <ContextMenuItem
               symbolLeft={'binoculars.fill'}
-              onSelect={() => goToNewTab({ url: blockExplorerUrl })}
+              onSelect={() => goToNewTab({ url: getBlockExplorerUrl() })}
             >
               <Text size="14pt" weight="semibold">
                 {explorerTitle}

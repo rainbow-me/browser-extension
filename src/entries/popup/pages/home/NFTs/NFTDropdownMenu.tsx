@@ -33,9 +33,18 @@ export default function NFTDropdownMenu({
 
   const explorerTitle =
     nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
-  const blockExplorerUrl = `https://${getBlockExplorerHostForChain(
-    chainIdFromChainName(nft?.network as ChainName),
-  )}/nft/${nft?.asset_contract.address}/${nft?.id}`;
+
+  const getBlockExplorerUrl = () => {
+    if (nft?.network === 'mainnet') {
+      return `https://${getBlockExplorerHostForChain(
+        chainIdFromChainName(nft?.network as ChainName),
+      )}/nft/${nft?.asset_contract.address}/${nft?.id}`;
+    } else {
+      return `https://${getBlockExplorerHostForChain(
+        chainIdFromChainName(nft?.network as ChainName),
+      )}/token/${nft?.asset_contract.address}?a=${nft?.id}`;
+    }
+  };
 
   const openseaUrl = getOpenseaUrl({ nft });
 
@@ -57,7 +66,7 @@ export default function NFTDropdownMenu({
         copyId();
         break;
       case 'explorer':
-        goToNewTab({ url: blockExplorerUrl });
+        goToNewTab({ url: getBlockExplorerUrl() });
         break;
       case 'opensea':
         goToNewTab({ url: openseaUrl });
