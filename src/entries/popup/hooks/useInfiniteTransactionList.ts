@@ -63,10 +63,7 @@ export const useInfiniteTransactionList = ({
   });
 
   const pages = data?.pages;
-  const cutoff =
-    data?.pages && data?.pages?.length
-      ? data?.pages[data?.pages.length - 1]?.cutoff
-      : null;
+  const cutoff = pages?.length ? pages[pages.length - 1]?.cutoff : null;
   const transactions = useMemo(
     () => pages?.flatMap((p) => p.transactions) || [],
     [pages],
@@ -103,6 +100,10 @@ export const useInfiniteTransactionList = ({
     estimateSize: (i) =>
       typeof formattedTransactions[i] === 'string' ? 34 : 52,
     overscan: 20,
+    getItemKey: (i) => {
+      const txOrLabel = formattedTransactions[i];
+      return typeof txOrLabel === 'string' ? txOrLabel : txOrLabel.hash;
+    },
   });
   const rows = infiniteRowVirtualizer.getVirtualItems();
 
