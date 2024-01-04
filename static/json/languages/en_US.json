@@ -821,7 +821,7 @@
     "title": "Your Secret Recovery Phrase",
     "write_down_seed_importance": "Anyone who has these words can access your entire wallet! You should never share them.",
     "saved_these_words": "I've saved these words",
-    "phrase_copied": "Recovery Phrase Copied"
+    "copied": "Recovery Phrase Copied"
   },
   "import_wallet_via_secret": {
     "title": "Import Wallet",

@@ -12,6 +12,7 @@ import { Address, mainnet } from 'wagmi';
 import { KeychainType } from '~/core/types/keychainTypes';
 
 import { IKeychain, PrivateKey, TWallet } from '../IKeychain';
+import { keychainManager } from '../KeychainManager';
 import { RainbowSigner } from '../RainbowSigner';
 import { autoDiscoverAccounts } from '../utils';
 
@@ -84,6 +85,12 @@ export class HdKeychain implements IKeychain {
       addAccount: (index: number): Wallet => {
         const _privates = privates.get(this)!;
         const derivedWallet = _privates.deriveWallet(index);
+
+        // if account already exists in a readonly keychain, remove it
+        keychainManager
+          .isAccountInReadOnlyKeychain(derivedWallet.address)
+          ?.removeAccount(derivedWallet.address);
+
         const wallet = new Wallet(
           derivedWallet.privateKey as BytesLike,
         ) as TWallet;
