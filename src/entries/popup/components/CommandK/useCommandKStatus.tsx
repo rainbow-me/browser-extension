@@ -1,5 +1,7 @@
 import create from 'zustand';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { promoTypes, quickPromoStore } from '~/core/state/quickPromo';
 
 type CommandKState = {
@@ -29,6 +31,7 @@ export const useCommandKStatus = create<CommandKState>((set, get) => {
     if (get().isExiting) {
       pendingOperation = openCommandK;
     } else {
+      analytics.track(event.commandKOpened);
       set(() => {
         const store = quickPromoStore.getState();
         if (!store.seenPromos[promoTypes.command_k]) {
@@ -40,6 +43,7 @@ export const useCommandKStatus = create<CommandKState>((set, get) => {
   };
 
   const closeCommandK = (options = { refocus: true }) => {
+    analytics.track(event.commandKClosed);
     set({ isCommandKVisible: false, isExiting: true });
     const { refocus } = options;
     if (refocus && get().lastActiveElement) {

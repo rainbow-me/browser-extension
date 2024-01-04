@@ -21,6 +21,14 @@ export const event = {
    */
   commandKActionExecuted: 'commandK.actionExecuted',
   /**
+   * Called when a commandK is closed
+   */
+  commandKClosed: 'commandK.closed',
+  /**
+   * Called when a commandK is opened
+   */
+  commandKOpened: 'commandK.opened',
+  /**
    * Called when the user approves a network add request from the active dApp.
    */
   dappAddEthereumChainPromptApproved: 'dapp.prompt.add_ethereum_chain.approved',
@@ -254,6 +262,8 @@ export type EventProperties = {
     label?: string;
     name?: string;
   };
+  [event.commandKClosed]: undefined;
+  [event.commandKOpened]: undefined;
   [event.dappAddEthereumChainPromptApproved]: {
     /**
      * `chainId` of the network suggested by the dApp.
