@@ -1,8 +1,9 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { getNftCount } from '~/core/resources/nfts/nfts';
@@ -30,6 +31,7 @@ import { useContainerRef } from '~/design-system/components/AnimatedRoute/Animat
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { useCoolMode } from '~/entries/popup/hooks/useCoolMode';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -45,6 +47,7 @@ export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { displayMode, sort, sections: sectionsState } = useNftsStore();
   const { testnetMode } = useTestnetModeStore();
+  const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const {
     data,
     fetchNextPage,
@@ -52,6 +55,7 @@ export function NFTs() {
     isFetching,
     isFetchingNextPage,
     isLoading,
+    refetch,
   } = useNfts({ address, testnetMode });
   const nftData = useMemo(() => {
     return {
@@ -137,6 +141,16 @@ export function NFTs() {
     );
   };
 
+  useKeyboardShortcut({
+    handler: async (e: KeyboardEvent) => {
+      if (e.key === shortcuts.nfts.REFRESH_NFTS.key) {
+        setManuallyRefetching(true);
+        await refetch();
+        setManuallyRefetching(false);
+      }
+    },
+  });
+
   useEffect(() => {
     collectionGalleryRowVirtualizer.measure();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -179,7 +193,7 @@ export function NFTs() {
       >
         {displayMode === 'grouped' && (
           <>
-            {isLoading ? (
+            {isLoading || manuallyRefetching ? (
               <Box width="full">
                 <Inset horizontal="8px">
                   <GroupedNFTsSkeleton />
@@ -261,7 +275,7 @@ export function NFTs() {
         )}
         {displayMode === 'byCollection' && (
           <>
-            {isLoading ? (
+            {isLoading || manuallyRefetching ? (
               <Box width="full">
                 <Inset horizontal="8px">
                   <CollectionNFTsSkeleton />
