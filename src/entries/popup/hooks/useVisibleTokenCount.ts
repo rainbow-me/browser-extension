@@ -1,4 +1,4 @@
-import sortedUniqBy from 'lodash/sortedUniqBy';
+import uniqBy from 'lodash/uniqBy';
 import { useMemo } from 'react';
 
 import {
@@ -51,7 +51,7 @@ export const useVisibleTokenCount = () => {
 
   const allAssets = useMemo(
     () =>
-      sortedUniqBy(
+      uniqBy(
         [...assets, ...customNetworkAssets].sort(
           (a: ParsedUserAsset, b: ParsedUserAsset) =>
             parseFloat(b?.native?.balance?.amount) -
