@@ -62,6 +62,7 @@ export function SettingsNetworks() {
     userChainsOrder,
     updateUserChain,
     updateUserChainsOrder,
+    removeUserChain,
   } = useUserChainsStore();
   const { rainbowChains, removeCustomRPC } = useRainbowChainsStore();
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
@@ -77,7 +78,12 @@ export function SettingsNetworks() {
       source.index,
       destination.index,
     );
-    updateUserChainsOrder({ userChainsOrder: newUserChainsOrder });
+    // clean non existing and repeated ids
+    const rainbowChainsIds = Object.keys(rainbowChains).map((i) => Number(i));
+    const filteredChainsOrder = Array.from(
+      new Set(newUserChainsOrder.filter((id) => rainbowChainsIds.includes(id))),
+    );
+    updateUserChainsOrder({ userChainsOrder: filteredChainsOrder });
   };
 
   const allNetworks = useMemo(
@@ -114,10 +120,11 @@ export function SettingsNetworks() {
             rpcUrl: chain.rpcUrls.default.http[0],
           });
           removeRainbowChainAssets({ chainId });
+          removeUserChain({ chainId });
         });
       }
     },
-    [rainbowChains, removeCustomRPC, removeRainbowChainAssets],
+    [rainbowChains, removeCustomRPC, removeRainbowChainAssets, removeUserChain],
   );
 
   return (
