@@ -33,6 +33,7 @@ import { RainbowError, logger } from '~/logger';
 
 import { PathOptions } from '../pages/hw/addByIndexSheet';
 
+import { sendTransactionFromGridPlus } from './gridplus';
 import {
   sendTransactionFromLedger,
   signMessageByTypeFromLedger,
@@ -153,6 +154,8 @@ export const sendTransaction = async (
         return sendTransactionFromLedger(params);
       case 'Trezor':
         return sendTransactionFromTrezor(params);
+      case 'GridPlus':
+        return sendTransactionFromGridPlus(params);
       default:
         throw new Error('Unsupported hardware wallet');
     }

@@ -9,5 +9,5 @@ export type KeychainWallet = {
   type: KeychainType;
   accounts: `0x${string}`[];
   imported: boolean;
-  vendor?: 'Ledger' | 'Trezor';
+  vendor?: 'Ledger' | 'Trezor' | 'GridPlus';
 };

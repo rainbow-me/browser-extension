@@ -76,6 +76,7 @@
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
+    "@ethereumjs/common": "4.1.0",
     "@ethereumjs/tx": "5.0.0",
     "@ethereumjs/util": "9.0.0",
     "@ethersproject/abstract-signer": "5.7.0",
@@ -230,6 +231,8 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "@ethereumjs/common": "4.1.0",
+    "@ethereumjs/tx": "5.0.0",
     "bn.js": "5.2.1",
     "@scure/bip39": "1.2.1",
     "protobufjs": "7.2.4",

@@ -23,6 +23,7 @@
     "watching": "Watching",
     "ledger": "Ledger",
     "trezor": "Trezor",
+    "gridplus": "GridPlus",
     "add_another_wallet": "Add another wallet",
     "connect_hardware_wallet": "Add from your hardware wallet",
     "search_placeholder": "Search wallets",
