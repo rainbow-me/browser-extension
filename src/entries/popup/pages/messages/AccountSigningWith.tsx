@@ -26,7 +26,7 @@ function WalletNativeBalance({ session }: { session: ActiveSession }) {
   });
   const balance = nativeAsset?.balance;
 
-  const hasEnoughtGas = useHasEnoughGas(session);
+  const hasEnoughGas = useHasEnoughGas(session);
 
   if (!balance) return null;
 
@@ -36,7 +36,7 @@ function WalletNativeBalance({ session }: { session: ActiveSession }) {
       <Text
         size="12pt"
         weight="bold"
-        color={hasEnoughtGas ? 'labelTertiary' : 'red'}
+        color={hasEnoughGas ? 'labelTertiary' : 'red'}
       >
         {+balance.amount > 0
           ? balance.display

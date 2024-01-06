@@ -1,3 +1,4 @@
+import { Common } from '@ethereumjs/common';
 import {
   FeeMarketEIP1559TxData,
   LegacyTxData,
@@ -63,9 +64,10 @@ export class RainbowSigner extends Signer {
       value: transaction.value
         ? BigNumber.from(transaction.value).toHexString()
         : undefined,
-      nonce: transaction.nonce
-        ? BigNumber.from(transaction.nonce).toHexString()
-        : undefined,
+      nonce:
+        transaction.nonce !== undefined
+          ? BigNumber.from(transaction.nonce).toHexString()
+          : undefined,
       chainId: transaction.chainId
         ? BigNumber.from(transaction.chainId).toHexString()
         : undefined,
@@ -96,8 +98,8 @@ export class RainbowSigner extends Signer {
       }
     }
 
-    const typedTx = TransactionFactory.fromTxData(txData);
-
+    const common = Common.custom({ chainId: transaction.chainId });
+    const typedTx = TransactionFactory.fromTxData(txData, { common });
     const signedTx = typedTx.sign(this.#getPrivateKeyBuffer());
 
     const serializedTx = signedTx.serialize();
