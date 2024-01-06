@@ -527,6 +527,13 @@ class KeychainManager {
     throw new Error('No keychain found for account');
   }
 
+  isAccountInReadOnlyKeychain(address: Address): Keychain | undefined {
+    for (const keychain of this.state.keychains) {
+      if (keychain.type !== KeychainType.ReadOnlyKeychain) continue;
+      if ((keychain as ReadOnlyKeychain).address === address) return keychain;
+    }
+  }
+
   async getSigner(address: Address) {
     const keychain = await this.getKeychain(address);
     return keychain.getSigner(address);
