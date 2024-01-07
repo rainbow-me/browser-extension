@@ -98,17 +98,18 @@ const InfoRow = ({
 );
 
 function Overview({
+  chainId,
   simulation,
   status,
   error,
   metadata,
 }: {
+  chainId: ChainId;
   simulation: TransactionSimulation | undefined;
   status: 'loading' | 'error' | 'success';
   error: SimulationError | null;
   metadata: DappMetadata | null;
 }) {
-  const chainId = simulation?.chainId || ChainId.mainnet;
   const { badge, color } = getDappStatusBadge(
     metadata?.status || DAppStatus.Unverified,
     { size: 12 },
@@ -277,6 +278,7 @@ function TransactionInfo({
 }) {
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const chainId = activeSession?.chainId || ChainId.mainnet;
+
   const txData = request?.data?.toString() || '';
 
   const {
@@ -306,6 +308,7 @@ function TransactionInfo({
       >
         <TabContent value={tabLabel('overview')}>
           <Overview
+            chainId={chainId}
             simulation={simulation}
             status={status === 'error' && isRefetching ? 'loading' : status}
             error={error}
@@ -506,7 +509,7 @@ export function SendTransactionInfo({
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
-  const hasEnoughtGas = useHasEnoughGas(activeSession);
+  const hasEnoughGas = useHasEnoughGas(activeSession);
 
   return (
     <Box
@@ -554,7 +557,7 @@ export function SendTransactionInfo({
         )}
       </AnimatePresence>
 
-      {hasEnoughtGas ? (
+      {hasEnoughGas ? (
         <TransactionInfo
           request={txRequest}
           dappMetadata={dappMetadata}

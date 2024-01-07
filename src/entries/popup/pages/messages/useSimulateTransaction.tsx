@@ -116,7 +116,6 @@ export const useSimulateTransaction = ({
         transactions: [transaction],
         domain,
       })) as TransactionSimulationResponse;
-
       return parseSimulation(response.simulateTransactions[0], chainId);
     },
     staleTime: 60 * 1000, // 1 min

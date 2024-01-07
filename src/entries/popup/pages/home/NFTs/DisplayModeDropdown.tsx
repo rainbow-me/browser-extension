@@ -34,10 +34,10 @@ export default function DisplayModeDropdown() {
     condition: () => open,
     handler: (e) => {
       e.stopImmediatePropagation();
-      if (e.key === shortcuts.home.NFT_DISPLAY_MODE_GROUPED.key) {
+      if (e.key === shortcuts.nfts.DISPLAY_MODE_GROUPED.key) {
         onValueChange('grouped');
         setIsOpen(false);
-      } else if (e.key === shortcuts.home.NFT_DISPLAY_MODE_COLLECTION.key) {
+      } else if (e.key === shortcuts.nfts.DISPLAY_MODE_COLLECTION.key) {
         onValueChange('byCollection');
         setIsOpen(false);
       }
@@ -103,7 +103,7 @@ export default function DisplayModeDropdown() {
                   }
                   rightComponent={
                     <ShortcutHint
-                      hint={shortcuts.home.NFT_DISPLAY_MODE_GROUPED.display}
+                      hint={shortcuts.nfts.DISPLAY_MODE_GROUPED.display}
                     />
                   }
                 />
@@ -128,7 +128,7 @@ export default function DisplayModeDropdown() {
                   }
                   rightComponent={
                     <ShortcutHint
-                      hint={shortcuts.home.NFT_DISPLAY_MODE_COLLECTION.display}
+                      hint={shortcuts.nfts.DISPLAY_MODE_COLLECTION.display}
                     />
                   }
                 />
