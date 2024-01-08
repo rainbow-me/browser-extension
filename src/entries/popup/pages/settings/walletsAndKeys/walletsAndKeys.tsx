@@ -33,6 +33,7 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { CreateWalletPrompt } from '../../walletSwitcher/createWalletPrompt';
+import { ConfirmPasswordPrompt } from '../privacy/confirmPasswordPrompt';
 
 const t = (s: string) =>
   i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
@@ -180,7 +181,7 @@ export const WalletsAndKeys = () => {
     navigate(ROUTES.CHOOSE_WALLET_GROUP);
   }, [navigate]);
 
-  const handleWipeWallets = useCallback(async () => {
+  const navigateToWipeWallets = useCallback(async () => {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING,
     );
@@ -209,8 +210,22 @@ export const WalletsAndKeys = () => {
     }
   }, [containerRef, state?.fromBackupReminder]);
 
+  const openPasswordPrompt = useCallback(() => setShowEnterPassword(true), []);
+
+  const [showEnterPassword, setShowEnterPassword] = useState(false);
+  const closePasswordPrompt = useCallback(
+    async () => setShowEnterPassword(false),
+    [],
+  );
+
   return (
     <Box height="full" style={{ height: '100%' }} paddingHorizontal="20px">
+      <ConfirmPasswordPrompt
+        show={showEnterPassword}
+        onClose={closePasswordPrompt}
+        extraState={{ ...state }}
+        onSuccess={() => navigateToWipeWallets()}
+      />
       <MenuContainer>
         {wallets.map((wallet, idx) => {
           const walletBackedUp = getWalletBackup({ wallet });
@@ -360,18 +375,11 @@ export const WalletsAndKeys = () => {
                 symbol="exclamationmark.triangle"
               />
             }
-            rightComponent={
-              <Symbol
-                size={16}
-                color="red"
-                weight="medium"
-                symbol="exclamationmark.triangle"
-              />
-            }
+            hasRightArrow
             titleComponent={
               <MenuItem.Title text={t('wipe_wallets.delete')} color="red" />
             }
-            onClick={handleWipeWallets}
+            onClick={openPasswordPrompt}
           />
         </Menu>
       </MenuContainer>

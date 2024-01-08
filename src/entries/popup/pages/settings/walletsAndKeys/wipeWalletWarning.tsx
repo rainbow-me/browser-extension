@@ -1,16 +1,10 @@
-import React, { useCallback, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Address, useAccount } from 'wagmi';
+import React, { useState } from 'react';
 
-// import { i18n } from '~/core/languages';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
 import WalletWipeWarningInfo from '~/entries/popup/components/WarningInfo/WalletWipeWarningInfo';
-import { ROUTES } from '~/entries/popup/urls';
 
-import * as wallet from '../../../handlers/wallet';
-import { ConfirmPasswordPrompt } from '../privacy/confirmPasswordPrompt';
+import { WipeWalletPrompt } from './walletWipePrompt';
 
 const t = (s: string) =>
   i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
@@ -36,43 +30,30 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'green',
     },
     copy: `${t('wipe_wallets.warning_three')}`,
+    link: {
+      hasLink: true,
+      href: 'https://rainbow.me/support/extension/backing-up-your-wallets',
+    },
+  },
+  {
+    icon: {
+      symbol: 'dollarsign.square',
+      color: 'yellow',
+    },
+    copy: `${t('wipe_wallets.warning_four')}`,
   },
 ];
 
 export function WipeWalletWarning() {
-  const { state } = useLocation();
-  const [showEnterPassword, setShowEnterPassword] = useState(false);
-  const { address } = useAccount();
-  const { setCurrentAddress } = useCurrentAddressStore();
-
-  const openPasswordPrompt = useCallback(() => setShowEnterPassword(true), []);
-
-  const closePasswordPrompt = useCallback(
-    async () => setShowEnterPassword(false),
-    [],
-  );
-
-  const handleWipeWallet = useCallback(async () => {
-    await wallet.wipe();
-    const accounts = await wallet.getAccounts();
-    if (accounts.length > 0 && !accounts.includes(address as Address)) {
-      setCurrentAddress(accounts[0]);
-    }
-  }, [address, setCurrentAddress]);
+  const [showPopup, setShowPopup] = useState(false);
 
   return (
     <>
-      <ConfirmPasswordPrompt
-        show={showEnterPassword}
-        onClose={closePasswordPrompt}
-        redirect={ROUTES.WELCOME}
-        extraState={{ ...state }}
-        onSuccess={handleWipeWallet}
-      />
+      <WipeWalletPrompt show={showPopup} onClose={() => setShowPopup(false)} />
       <WalletWipeWarningInfo
         testId={'wipe-wallets'}
         iconAndCopyList={iconAndCopyList}
-        onProceed={openPasswordPrompt}
+        onProceed={() => setShowPopup(true)}
       />
     </>
   );

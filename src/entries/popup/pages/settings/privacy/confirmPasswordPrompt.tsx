@@ -28,7 +28,7 @@ export const ConfirmPasswordPrompt = ({
   show: boolean;
   extraState?: NavigateOptions['state'];
   onClose: () => void;
-  redirect: string;
+  redirect?: string;
   onSuccess?: () => void;
 }) => {
   const navigate = useRainbowNavigate();
@@ -42,9 +42,10 @@ export const ConfirmPasswordPrompt = ({
     const correctPassword = await verifyPassword(password);
     if (correctPassword) {
       onSuccess && onSuccess();
-      navigate(redirect, {
-        state: { ...extraState, password },
-      });
+      redirect &&
+        navigate(redirect, {
+          state: { ...extraState, password },
+        });
       return;
     }
     setError(i18n.t('passwords.password_incorrect'));

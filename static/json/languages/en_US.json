@@ -224,13 +224,18 @@
           "copied": "Recovery Phrase Copied"
         },
         "wipe_wallets": {
-          "delete": "Delete Wallets & Clear Keychain",
+          "delete": "Reset Rainbow",
           "acknowlegement": "I have read and acknowledge the above info.",
-          "warning_one": "Deleting your wallets from our extension is both permanent and irreversible.",
-          "warning_two": "Make sure you have your recovery info backed up before deletion.",
-          "warning_three": "You can always access your wallets if you have the correct recovery info.",
-          "button_wipe": "Wipe Wallets",
-          "button_complete": "Complete Check Above"
+          "warning_one": "Resetting Rainbow will reset your password, & remove all wallets.",
+          "warning_two": "This will also erase all data & settings in Rainbow.",
+          "warning_three": "Ensure your Secret Recovery Phrase is secure before proceeding. ",
+          "warning_four": "Your assets & funds are accessible with the correct recovery information.",
+          "button_wipe": "Reset Rainbow",
+          "button_complete": "Complete Check Above",
+          "wipe_confirmation": "Reset Rainbow",
+          "wipe_confirmation_desc": "Are you sure you want to reset Rainbow's browser extension?",
+          "wipe_confirmation_button": "Reset",
+          "wipe_confirmation_cancel": "Cancel"
         }
       }
     },
