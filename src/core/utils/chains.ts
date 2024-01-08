@@ -197,16 +197,26 @@ export const getSimpleHashSupportedChainNames = () => {
   ];
 };
 
+export const useBackendSupportedChains = ({
+  testnetMode,
+}: {
+  testnetMode?: boolean;
+}) => {
+  const { chains } = useNetwork();
+  return chains
+    .filter((chain) => (testnetMode ? !!chain.testnet : !chain.testnet))
+    .filter((c) => c.id !== avalanche.id);
+};
+
 export const getBackendSupportedChains = ({
   testnetMode,
 }: {
   testnetMode?: boolean;
 }) => {
-  const chains = testnetMode
-    ? getSupportedTestnetChains()
-    : getSupportedChains().filter((c) => c.id !== avalanche.id);
-  console.log('-- chains', chains);
-  return chains;
+  const { chains } = getNetwork();
+  return chains
+    .filter((chain) => (testnetMode ? !!chain.testnet : !chain.testnet))
+    .filter((c) => c.id !== avalanche.id);
 };
 
 export const getRainbowChains = () => {

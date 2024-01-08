@@ -15,7 +15,7 @@ import {
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
-import { getBackendSupportedChains } from '~/core/utils/chains';
+import { useBackendSupportedChains } from '~/core/utils/chains';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
@@ -43,7 +43,7 @@ export const useInfiniteTransactionList = ({
 
   const { testnetMode } = useTestnetModeStore();
 
-  const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
+  const supportedChainIds = useBackendSupportedChains({ testnetMode }).map(
     ({ id }) => id,
   );
 
