@@ -146,6 +146,7 @@ export default function WarningInfo({
               blur="26px"
               onClick={onProceed}
               disabled={!buttonEnabled}
+              tabIndex={0}
             >
               {buttonEnabled
                 ? t('wipe_wallets.button_wipe')

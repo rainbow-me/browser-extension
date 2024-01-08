@@ -3,7 +3,7 @@ import { Address, useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import { goToNewTab } from '~/core/utils/tabs';
+import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import {
   Box,
   Button,
@@ -16,7 +16,6 @@ import {
   Text,
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
-import { ROUTES } from '~/entries/popup/urls';
 
 import * as wallet from '../../../handlers/wallet';
 
@@ -39,7 +38,7 @@ export const WipeWalletPrompt = ({
     if (accounts.length > 0 && !accounts.includes(address as Address)) {
       setCurrentAddress(accounts[0]);
     }
-    goToNewTab({ url: ROUTES.WELCOME });
+    goToNewTab({ url: WELCOME_URL });
   }, [address, setCurrentAddress]);
 
   return (
@@ -86,19 +85,20 @@ export const WipeWalletPrompt = ({
                   onClick={onClose}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={0}
                 >
                   {t('wipe_wallets.wipe_confirmation_cancel')}
                 </Button>
               </Column>
               <Column>
                 <Button
-                  testId={'remove-button'}
                   variant="flat"
                   height="36px"
                   color="red"
                   onClick={handleWipeWallet}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={0}
                 >
                   {t('wipe_wallets.wipe_confirmation_button')}
                 </Button>
