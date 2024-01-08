@@ -19,7 +19,7 @@ import { getChain, isTestnetChainId } from '~/core/utils/chains';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
-const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
+export const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
   const chain = getChain({ chainId });
   const nativeAssetMock = {
     address: NATIVE_ASSETS_PER_CHAIN[chainId],
