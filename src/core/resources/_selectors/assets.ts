@@ -20,18 +20,12 @@ export function selectorFilterByUserChains<T>({
   selector: (data: ParsedAssetsDictByChain) => T;
 }): T {
   const { userChains } = userChainsStore.getState();
-  // console.log('- userChains', userChains);
   const allUserChainIds = Object.keys(userChains)
     .map((chainId) =>
-      userChains[Number(chainId)]
-        ? chainIdMap[Number(chainId)] || Number(chainId)
-        : undefined,
+      userChains[Number(chainId)] ? chainIdMap[Number(chainId)] : undefined,
     )
     .flat()
     .filter(Boolean);
-  console.log('userChains', userChains);
-  console.log('allUserChainIds', allUserChainIds);
-  // console.log('network assets', data);
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
     if (allUserChainIds.includes(chainKey) || isCustomChain(chainKey)) {
