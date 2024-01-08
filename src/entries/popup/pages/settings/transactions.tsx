@@ -134,7 +134,7 @@ export function Transactions() {
           />
           <MenuItem.Description
             text={i18n.t('settings.transactions.flashbots_description')}
-            learnMoreLink={() =>
+            descriptionLink={() =>
               goToNewTab({
                 url: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
               })

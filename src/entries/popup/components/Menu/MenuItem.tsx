@@ -118,14 +118,14 @@ interface DescriptionProps {
   color?: TextStyles['color'];
   text: string;
   weight?: TextStyles['fontWeight'];
-  learnMoreLink?: () => void;
+  descriptionLink?: () => void;
 }
 
 const Description = ({
   color = 'labelTertiary',
   text,
   weight = 'medium',
-  learnMoreLink,
+  descriptionLink,
 }: DescriptionProps) => (
   <Box
     justifyContent="center"
@@ -136,8 +136,8 @@ const Description = ({
     <Inline alignHorizontal="justify" alignVertical="center">
       <Text color={color} size="12pt" weight={weight}>
         {text}
-        {learnMoreLink && (
-          <TextLink color={'blue'} onClick={learnMoreLink}>
+        {descriptionLink && (
+          <TextLink color={'blue'} onClick={descriptionLink}>
             {i18n.t('learn_more')}
           </TextLink>
         )}
