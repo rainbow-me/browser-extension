@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { i18n } from '~/core/languages';
 import { goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -52,7 +53,7 @@ export function IconAndCopyList({
                     goToNewTab({ url: 'https://learn.rainbow.me/' })
                   }
                 >
-                  Learn More.
+                  {i18n.t('link_text')}
                 </TextLink>
               )}
             </Text>

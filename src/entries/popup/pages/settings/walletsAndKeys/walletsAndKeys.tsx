@@ -138,6 +138,7 @@ export const WalletsAndKeys = () => {
   const { getWalletBackup } = useWalletBackupsStore();
   const firstNotBackedUpRef = useRef<HTMLDivElement>(null);
   const { state } = useLocation();
+  const [showEnterPassword, setShowEnterPassword] = useState(false);
 
   useEffect(() => {
     setSettingWallets(null);
@@ -177,14 +178,8 @@ export const WalletsAndKeys = () => {
     fetchWallets();
   }, []);
 
-  const handleCreateNewWallet = useCallback(async () => {
+  const handleCreateNewWallet = useCallback(() => {
     navigate(ROUTES.CHOOSE_WALLET_GROUP);
-  }, [navigate]);
-
-  const navigateToWipeWallets = useCallback(async () => {
-    navigate(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING,
-    );
   }, [navigate]);
 
   const walletCountPerType = {
@@ -210,21 +205,17 @@ export const WalletsAndKeys = () => {
     }
   }, [containerRef, state?.fromBackupReminder]);
 
-  const openPasswordPrompt = useCallback(() => setShowEnterPassword(true), []);
-
-  const [showEnterPassword, setShowEnterPassword] = useState(false);
-  const closePasswordPrompt = useCallback(
-    async () => setShowEnterPassword(false),
-    [],
-  );
-
   return (
     <Box height="full" style={{ height: '100%' }} paddingHorizontal="20px">
       <ConfirmPasswordPrompt
         show={showEnterPassword}
-        onClose={closePasswordPrompt}
+        onClose={() => setShowEnterPassword(false)}
         extraState={{ ...state }}
-        onSuccess={() => navigateToWipeWallets()}
+        onSuccess={() =>
+          navigate(
+            ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING,
+          )
+        }
       />
       <MenuContainer>
         {wallets.map((wallet, idx) => {
@@ -379,7 +370,7 @@ export const WalletsAndKeys = () => {
             titleComponent={
               <MenuItem.Title text={t('wipe_wallets.delete')} color="red" />
             }
-            onClick={openPasswordPrompt}
+            onClick={() => setShowEnterPassword(true)}
           />
         </Menu>
       </MenuContainer>
