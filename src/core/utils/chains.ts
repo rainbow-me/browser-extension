@@ -205,6 +205,7 @@ export const getBackendSupportedChains = ({
   const chains = testnetMode
     ? getSupportedTestnetChains()
     : getSupportedChains().filter((c) => c.id !== avalanche.id);
+  console.log('-- chains', chains);
   return chains;
 };
 
