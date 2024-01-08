@@ -113,13 +113,15 @@ export function Tokens() {
       currency,
     },
     {
-      select: (data) =>
-        selectorFilterByUserChains({
+      select: (data) => {
+        // console.log('custom network assets', data);
+        return selectorFilterByUserChains({
           data,
           selector: hideSmallBalances
             ? selectUserAssetsFilteringSmallBalancesList
             : selectUserAssetsList,
-        }),
+        });
+      },
     },
   );
 
