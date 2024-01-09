@@ -140,7 +140,6 @@ export const useWatchPendingTransactions = ({
                   ? latestTransactionConfirmedByBackend
                   : pendingTransactionData),
               };
-              console.log('UPDATED TX', updatedTransaction);
             } else if (tx.flashbots) {
               const flashbotsTxStatus = await getTransactionFlashbotStatus(
                 updatedTransaction,

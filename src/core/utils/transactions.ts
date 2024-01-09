@@ -340,7 +340,7 @@ export async function getNextNonce({
     'pending',
   );
   if (!localNonce && !txCountIncludingPending) return 0;
-  const ret = txCountIncludingPending;
+  const ret = Math.max(localNonce + 1, txCountIncludingPending);
   return ret;
 }
 
