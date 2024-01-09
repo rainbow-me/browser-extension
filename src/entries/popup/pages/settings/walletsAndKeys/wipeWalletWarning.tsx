@@ -31,7 +31,10 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'green',
     },
     copy: `${t('wipe_wallets.warning_three')}`,
-    onClickLink: () => goToNewTab({ url: 'https://learn.rainbow.me/' }),
+    onClickLink: () =>
+      goToNewTab({
+        url: 'https://rainbow.me/support/extension/backing-up-your-wallets',
+      }),
   },
   {
     icon: {
