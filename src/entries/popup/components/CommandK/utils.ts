@@ -242,10 +242,30 @@ export function useCommandExecution(
 
   const handleExecuteCommand = React.useCallback(
     (command: SearchItem | null, e?: KeyboardEvent) => {
+      const hiddenTypes = [
+        SearchItemType.NFT,
+        SearchItemType.Token,
+        SearchItemType.Wallet,
+      ];
+      const shouldHideDetails = hiddenTypes.includes(command?.type || 999);
+      const id = shouldHideDetails ? undefined : command?.id;
+      const name = shouldHideDetails ? undefined : command?.name;
+      const getLabel = () => {
+        switch (command?.type) {
+          case SearchItemType.NFT:
+            return 'View NFT';
+          case SearchItemType.Token:
+            return 'View Token';
+          case SearchItemType.Wallet:
+            return 'View Wallet';
+          default:
+            return command?.actionLabel;
+        }
+      };
       analytics.track(event.commandKActionExecuted, {
-        id: command?.id,
-        label: command?.actionLabel,
-        name: command?.name,
+        id,
+        label: getLabel(),
+        name,
       });
 
       if (e) {
