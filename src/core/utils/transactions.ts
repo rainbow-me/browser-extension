@@ -1,5 +1,9 @@
 import { FixedNumber } from '@ethersproject/bignumber';
-import { Provider, TransactionResponse } from '@ethersproject/providers';
+import {
+  Provider,
+  TransactionReceipt,
+  TransactionResponse,
+} from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
@@ -267,6 +271,33 @@ export const parseNewTransaction = (
   } satisfies RainbowTransaction;
 };
 
+const getTransactionReceipt = async ({
+  transactionResponse,
+  provider,
+}: {
+  transactionResponse: TransactionResponse;
+  provider: Provider;
+}): Promise<TransactionReceipt | undefined> => {
+  const receipt = await Promise.race([
+    (async () => {
+      try {
+        if (transactionResponse.wait) {
+          return await transactionResponse.wait();
+        } else {
+          return await provider.getTransactionReceipt(transactionResponse.hash);
+        }
+      } catch (e) {
+        /* empty */
+        return;
+      }
+    })(),
+    new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    }),
+  ]);
+  return receipt as TransactionReceipt | undefined;
+};
+
 export async function getTransactionReceiptStatus({
   transactionResponse,
   provider,
@@ -274,20 +305,10 @@ export async function getTransactionReceiptStatus({
   transactionResponse: TransactionResponse;
   provider: Provider;
 }) {
-  let receipt;
-
-  try {
-    if (transactionResponse) {
-      if (transactionResponse.wait) {
-        receipt = await transactionResponse.wait();
-      } else {
-        receipt = await provider.getTransactionReceipt(
-          transactionResponse.hash,
-        );
-      }
-    }
-    // eslint-disable-next-line no-empty
-  } catch (e) {}
+  const receipt = await getTransactionReceipt({
+    transactionResponse,
+    provider,
+  });
 
   if (!receipt) return { status: 'pending' as const };
   return {
@@ -319,7 +340,7 @@ export async function getNextNonce({
     'pending',
   );
   if (!localNonce && !txCountIncludingPending) return 0;
-  const ret = Math.max(localNonce + 1, txCountIncludingPending);
+  const ret = txCountIncludingPending;
   return ret;
 }
 
