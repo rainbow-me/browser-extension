@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { goToNewTab } from '~/core/utils/tabs';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
 import WalletWipeWarningInfo from '~/entries/popup/components/WarningInfo/WalletWipeWarningInfo';
 
@@ -30,10 +31,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'green',
     },
     copy: `${t('wipe_wallets.warning_three')}`,
-    link: {
-      hasLink: true,
-      href: 'https://rainbow.me/support/extension/backing-up-your-wallets',
-    },
+    onClickLink: () => goToNewTab({ url: 'https://learn.rainbow.me/' }),
   },
   {
     icon: {
