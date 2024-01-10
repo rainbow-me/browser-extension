@@ -37,6 +37,7 @@ import { ROUTES } from '~/entries/popup/urls';
 
 import ExternalImage from '../../../components/ExternalImage/ExternalImage';
 
+import NFTContextMenu from './NFTContextMenu';
 import { fadeOutMask } from './NFTs.css';
 
 const NFTS_LIMIT = 2000;
@@ -232,14 +233,16 @@ export function NFTs() {
                               }}
                             >
                               {rowData.map((asset, i) => (
-                                <NftThumbnail
-                                  imageSrc={getUniqueAssetImageThumbnailURL(
-                                    asset,
-                                  )}
-                                  key={i}
-                                  onClick={() => onAssetClick(asset)}
-                                  index={i}
-                                />
+                                <NFTContextMenu key={i} nft={asset}>
+                                  <NftThumbnail
+                                    imageSrc={getUniqueAssetImageThumbnailURL(
+                                      asset,
+                                    )}
+                                    key={i}
+                                    onClick={() => onAssetClick(asset)}
+                                    index={i}
+                                  />
+                                </NFTContextMenu>
                               ))}
                               {rowData.length < 3 &&
                                 isPaginating &&
@@ -503,18 +506,19 @@ function CollectionSection({
             >
               {section.assets.map((asset, i) => {
                 return (
-                  <NftThumbnail
-                    imageSrc={
-                      // we hold off on providing the src field until opened so that
-                      // we don't request images for collections that are never opened
-                      collectionVisible
-                        ? getUniqueAssetImageThumbnailURL(asset)
-                        : undefined
-                    }
-                    key={i}
-                    onClick={() => onAssetClick(asset)}
-                    index={i}
-                  />
+                  <NFTContextMenu key={i} nft={asset}>
+                    <NftThumbnail
+                      imageSrc={
+                        // we hold off on providing the src field until opened so that
+                        // we don't request images for collections that are never opened
+                        collectionVisible
+                          ? getUniqueAssetImageThumbnailURL(asset)
+                          : undefined
+                      }
+                      onClick={() => onAssetClick(asset)}
+                      index={i}
+                    />
+                  </NFTContextMenu>
                 );
               })}
             </Box>

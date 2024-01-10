@@ -43,7 +43,7 @@ export function DetailsMenuWrapper({
 }: {
   children: ReactNode;
   closed: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
 }) {
   if (closed) {
     return <ContextMenu onOpenChange={onOpenChange}>{children}</ContextMenu>;
