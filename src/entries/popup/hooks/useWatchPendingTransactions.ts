@@ -22,6 +22,7 @@ import {
   getTransactionFlashbotStatus,
   getTransactionReceiptStatus,
 } from '~/core/utils/transactions';
+import { RainbowError, logger } from '~/logger';
 
 import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
 
@@ -120,8 +121,16 @@ export const useWatchPendingTransactions = ({
         } else {
           throw new Error('Pending transaction missing chain id');
         }
-      } catch (e) {
-        //
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        logger.error(
+          new RainbowError(
+            `useWatchPendingTransaction: Failed to watch transaction`,
+          ),
+          {
+            message: e.message,
+          },
+        );
       }
 
       if (updatedTransaction?.status !== 'pending') {
