@@ -146,7 +146,7 @@ fragment target on TransactionSimulationTarget {
 query simulateTransactions(
   $chainId: Int!
   $transactions: [Transaction!]!
-  $domain: String!
+  $domain: String
 ) {
   simulateTransactions(
     chainID: $chainId
@@ -177,12 +177,60 @@ query simulateTransactions(
         }
         quantityAllowed
         quantityAtRisk
+        expiration
       }
       meta {
         to {
           ...target
         }
       }
+    }
+  }
+}
+
+query simulateMessage(
+  $chainId: Int!
+  $address: String!
+  $message: Message!
+  $domain: String
+) {
+  simulateMessage(
+    chainID: $chainId
+    address: $address
+    message: $message
+    domain: $domain
+  ) {
+    scanning {
+      result
+      description
+    }
+    simulation {
+      in {
+        ...change
+      }
+      out {
+        ...change
+      }
+      approvals {
+        asset {
+          ...asset
+        }
+        spender {
+          ...target
+        }
+        quantityAllowed
+        quantityAtRisk
+        expiration
+      }
+      meta {
+        to {
+          ...target
+        }
+      }
+    }
+    error {
+      message
+      type
     }
   }
 }
@@ -285,6 +333,7 @@ query points($address: String!) {
       stats {
         total_users
         total_points
+        rank_cutoff
       }
       accounts {
         address
@@ -302,9 +351,25 @@ query points($address: String!) {
       }
       stats {
         position {
+          unranked
           current
         }
       }
+    }
+  }
+}
+
+mutation redeemCodeForPoints($address: String!, $redemptionCode: String!) {
+  redeemCode(address: $address, code: $redemptionCode) {
+    earnings {
+      total
+    }
+    redemption_code {
+      code
+    }
+    error {
+      type
+      message
     }
   }
 }

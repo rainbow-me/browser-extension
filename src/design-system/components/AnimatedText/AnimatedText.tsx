@@ -1,10 +1,8 @@
 import { Variants, motion } from 'framer-motion';
-import React, { ReactNode } from 'react';
 
 import { CHARACTER_TYPING_SPEED } from '~/entries/popup/pages/home/Points/utils';
 
 import { Box } from '../Box/Box';
-import { Inline } from '../Inline/Inline';
 import { Text, TextProps } from '../Text/Text';
 
 type AnimationDirection = 'rightToLeft' | 'leftToRight';
@@ -38,19 +36,6 @@ const generateRainbowColors = (
   });
 
   return colors;
-};
-
-const RainbowTextWrapper = ({
-  children,
-  characters,
-}: {
-  children: ReactNode;
-  characters: string[];
-}) => {
-  if (characters.includes('\\')) {
-    return <Inline space={'3px'}>{children}</Inline>;
-  }
-  return <>{children}</>;
 };
 
 export const AnimatedText = ({
@@ -107,7 +92,7 @@ export const AnimatedText = ({
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <Text {...textProps}>
+    <Text fontFamily="mono" {...textProps}>
       <Box
         as={motion.div}
         key={id}
@@ -116,25 +101,22 @@ export const AnimatedText = ({
         animate="visible"
         variants={containerVariants}
       >
-        <RainbowTextWrapper characters={characters}>
-          {characters.map((char, i) => (
-            <Box
-              as={motion.span}
-              key={(id || '') + i}
-              custom={i}
-              variants={charVariants}
-              boxShadow="12px blue"
-              style={{
-                color: rainbowColor ? colors?.[i]?.text : '',
-                textShadow: rainbowColor
-                  ? `0px 0px 12px ${colors?.[i]?.shadow}`
-                  : undefined,
-              }}
-            >
-              {char}
-            </Box>
-          ))}
-        </RainbowTextWrapper>
+        {characters.map((char, i) => (
+          <Box
+            as={motion.span}
+            key={(id || '') + i}
+            custom={i}
+            variants={charVariants}
+            style={{
+              color: rainbowColor ? colors?.[i]?.text : '',
+              textShadow: rainbowColor
+                ? `0px 0px 12px ${colors?.[i]?.shadow}`
+                : undefined,
+            }}
+          >
+            {char}
+          </Box>
+        ))}
       </Box>
     </Text>
   );

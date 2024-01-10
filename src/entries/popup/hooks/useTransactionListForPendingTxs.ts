@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Address } from 'wagmi';
 
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
@@ -6,14 +7,10 @@ import {
   pendingTransactionsStore,
   useCurrentAddressStore,
   useCurrentCurrencyStore,
-  usePendingTransactionsStore,
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId } from '~/core/types/chains';
-import {
-  PendingTransaction,
-  RainbowTransaction,
-} from '~/core/types/transactions';
+import { RainbowTransaction } from '~/core/types/transactions';
 import {
   getBackendSupportedChains,
   getSupportedChainIds,
@@ -23,68 +20,63 @@ import { isLowerCaseMatch } from '~/core/utils/strings';
 export const useTransactionListForPendingTxs = () => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { getPendingTransactions } = usePendingTransactionsStore();
-  const pendingTransactions = getPendingTransactions({ address });
   const { testnetMode } = useTestnetModeStore();
 
   const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
     ({ id }) => id,
   );
 
-  useConsolidatedTransactions(
-    {
-      address,
-      currency,
-      userChainIds: supportedChainIds,
-      testnetMode,
-    },
-    {
-      onSuccess: (data) => {
-        if (data?.pages) {
-          const latestTransactions = data.pages
-            .map((p) => p.transactions)
-            .flat()
-            .filter((t) => isLowerCaseMatch(t.from, address))
-            .reduce(
-              (latestTxMap, currentTx) => {
-                const currentChain = currentTx?.chainId;
-                if (currentChain) {
-                  const latestTx = latestTxMap.get(currentChain);
-                  if (!latestTx) {
-                    latestTxMap.set(currentChain, currentTx);
-                  }
-                }
-                return latestTxMap;
-              },
-              new Map(
-                getSupportedChainIds().map((chain) => [
-                  chain,
-                  null as RainbowTransaction | null,
-                ]),
-              ),
-            );
-          watchForPendingTransactionsReportedByRainbowBackend({
-            currentAddress: address,
-            pendingTransactions,
-            latestTransactions,
-          });
-        }
-      },
-    },
-  );
+  const { data } = useConsolidatedTransactions({
+    address,
+    currency,
+    userChainIds: supportedChainIds,
+    testnetMode,
+  });
+
+  useEffect(() => {
+    if (!data?.pages) return;
+    const latestTransactions = data.pages
+      .map((p) => p.transactions)
+      .flat()
+      .filter((t) => isLowerCaseMatch(t.from, address))
+      .reduce(
+        (latestTxMap, currentTx) => {
+          const currentChain = currentTx?.chainId;
+          if (currentChain) {
+            const latestTx = latestTxMap.get(currentChain);
+            if (!latestTx) {
+              latestTxMap.set(currentChain, currentTx);
+            }
+          }
+          return latestTxMap;
+        },
+        new Map(
+          getSupportedChainIds().map((chain) => [
+            chain,
+            null as RainbowTransaction | null,
+          ]),
+        ),
+      );
+    watchForPendingTransactionsReportedByRainbowBackend({
+      currentAddress: address,
+      latestTransactions,
+    });
+  }, [address, data?.pages]);
 };
 
 function watchForPendingTransactionsReportedByRainbowBackend({
   currentAddress,
-  pendingTransactions,
   latestTransactions,
 }: {
   currentAddress: Address;
-  pendingTransactions: PendingTransaction[];
   latestTransactions: Map<ChainId, RainbowTransaction | null>;
 }) {
   const { setNonce } = nonceStore.getState();
-  const { setPendingTransactions } = pendingTransactionsStore.getState();
+  const { setPendingTransactions, getPendingTransactions } =
+    pendingTransactionsStore.getState();
+  const pendingTransactions = getPendingTransactions({
+    address: currentAddress,
+  });
   const supportedChainIds = getSupportedChainIds();
   for (const supportedChainId of supportedChainIds) {
     const latestTxConfirmedByBackend = latestTransactions.get(supportedChainId);

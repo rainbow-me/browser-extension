@@ -60,7 +60,7 @@ import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
 import { SettingsCustomChain } from './pages/settings/customChain';
-import { CustomChain } from './pages/settings/customChain/customChain';
+import { AddAsset } from './pages/settings/customChain/addAsset';
 import { Language } from './pages/settings/language';
 import { SettingsNetworks } from './pages/settings/networks';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
@@ -73,6 +73,7 @@ import { RecoveryPhraseVerify } from './pages/settings/privacy/walletsAndKeys/re
 import { RecoveryPhraseWarning } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/warning';
 import { WalletDetails } from './pages/settings/privacy/walletsAndKeys/walletDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
+import { SettingsNetworksRPCs } from './pages/settings/rpcs';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
@@ -520,6 +521,21 @@ const ROUTE_DATA = [
     ),
   },
   {
+    path: ROUTES.SETTINGS__NETWORKS__RPCS,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.networks.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <SettingsNetworksRPCs />
+      </AnimatedRoute>
+    ),
+  },
+  {
     path: ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC,
     element: (
       <AnimatedRoute
@@ -541,11 +557,11 @@ const ROUTE_DATA = [
         direction="right"
         navbar
         navbarIcon="arrow"
-        title={i18n.t('settings.networks.custom_rpc.title')}
+        title={i18n.t('settings.networks.watch_asset.title')}
         protectedRoute
         background="surfaceSecondary"
       >
-        <CustomChain />
+        <AddAsset />
       </AnimatedRoute>
     ),
   },
@@ -896,7 +912,8 @@ const ROUTE_DATA = [
 
 const RootLayout = () => {
   const { pathname, state } = useLocation();
-  const { setLastPage, shouldRestoreNavigation } = useNavRestorationStore();
+  const { setLastPage, setLastState, shouldRestoreNavigation } =
+    useNavRestorationStore();
 
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -906,8 +923,9 @@ const RootLayout = () => {
     analytics.screen(screen[pathname], { path: pathname });
     if (!shouldRestoreNavigation) {
       setLastPage(pathname);
+      setLastState(state);
     }
-  }, [pathname, setLastPage, shouldRestoreNavigation]);
+  }, [pathname, setLastPage, setLastState, shouldRestoreNavigation, state]);
 
   useGlobalShortcuts();
   useCommandKShortcuts();

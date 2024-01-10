@@ -6,6 +6,7 @@ import { Avatar } from '../../components/Avatar/Avatar';
 import { useAvatar } from '../../hooks/useAvatar';
 
 export function WalletAvatar({
+  avatarUrl,
   addressOrName,
   size,
   emojiSize,
@@ -15,6 +16,7 @@ export function WalletAvatar({
   emojiPaddingTop,
   boxShadow,
 }: {
+  avatarUrl?: string;
   addressOrName?: string;
   size: number;
   emojiSize?: TextStyles['fontSize'];
@@ -24,7 +26,7 @@ export function WalletAvatar({
   emojiPaddingTop?: BoxStyles['paddingTop'];
   boxShadow?: BoxStyles['boxShadow'];
 }) {
-  const { data: avatar } = useAvatar({ addressOrName });
+  const { data: avatar } = useAvatar({ addressOrName, avatarUrl });
 
   return (
     <AccentColorProvider color={avatar?.color || '#000000'}>

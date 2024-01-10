@@ -10,31 +10,30 @@ interface MenuProps {
   paddingVertical?: BoxStyles['paddingVertical'];
 }
 
-const Menu = forwardRef<HTMLDivElement, MenuProps>(
-  ({ children, paddingVertical }, ref) => {
-    return (
-      <Box
-        ref={ref}
-        background="surfaceSecondaryElevated"
-        borderRadius="16px"
-        boxShadow="12px"
-        width="full"
-        paddingVertical={paddingVertical}
+const Menu = forwardRef<HTMLDivElement, MenuProps>(function Menu(
+  { children, paddingVertical },
+  ref,
+) {
+  return (
+    <Box
+      ref={ref}
+      background="surfaceSecondaryElevated"
+      borderRadius="16px"
+      boxShadow="12px"
+      width="full"
+      paddingVertical={paddingVertical}
+    >
+      <Stack
+        separator={
+          <Box paddingHorizontal="16px">
+            <Separator color="separatorTertiary" />
+          </Box>
+        }
       >
-        <Stack
-          separator={
-            <Box paddingHorizontal="16px">
-              <Separator color="separatorTertiary" />
-            </Box>
-          }
-        >
-          {children}
-        </Stack>
-      </Box>
-    );
-  },
-);
-
-Menu.displayName = 'Menu';
+        {children}
+      </Stack>
+    </Box>
+  );
+});
 
 export { Menu };

@@ -8,12 +8,16 @@ import { i18n } from '~/core/languages';
 import { useUserAssets } from '~/core/resources/assets';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentCurrencyStore, useNonceStore } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
+import { getChainName, isTestnetChainId } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
+import { TestnetFaucet } from '~/core/utils/faucets';
 import { formatDate } from '~/core/utils/formatDate';
 import { truncateString } from '~/core/utils/strings';
+import { goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
   Box,
@@ -75,7 +79,12 @@ const InfoRow = ({
   >
     <Inline alignVertical="center" space="12px" wrap={false}>
       <Symbol size={14} symbol={symbol} weight="medium" color="labelTertiary" />
-      <Text color="labelTertiary" size="12pt" weight="semibold">
+      <Text
+        color="labelTertiary"
+        size="12pt"
+        weight="semibold"
+        whiteSpace="nowrap"
+      >
         {label}
       </Text>
     </Inline>
@@ -92,22 +101,23 @@ const InfoRow = ({
 );
 
 function Overview({
+  chainId,
   simulation,
   status,
   error,
   metadata,
 }: {
+  chainId: ChainId;
   simulation: TransactionSimulation | undefined;
   status: 'loading' | 'error' | 'success';
   error: SimulationError | null;
   metadata: DappMetadata | null;
 }) {
-  const chainId = simulation?.chainId;
-
   const { badge, color } = getDappStatusBadge(
     metadata?.status || DAppStatus.Unverified,
     { size: 12 },
   );
+  const chainName = getChainName({ chainId });
 
   return (
     <Stack space="16px" paddingTop="14px">
@@ -123,7 +133,7 @@ function Overview({
 
       <Separator color="separatorTertiary" />
 
-      {chainId && ChainNameDisplay[chainId] && (
+      {chainId && chainName && (
         <InfoRow
           symbol="network"
           label={i18n.t('chain')}
@@ -131,7 +141,7 @@ function Overview({
             <Inline space="6px" alignVertical="center">
               <ChainBadge chainId={chainId} size={14} />
               <Text size="12pt" weight="semibold" color="labelSecondary">
-                {ChainNameDisplay[chainId]}
+                {chainName}
               </Text>
             </Inline>
           }
@@ -271,6 +281,7 @@ function TransactionInfo({
 }) {
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const chainId = activeSession?.chainId || ChainId.mainnet;
+
   const txData = request?.data?.toString() || '';
 
   const {
@@ -300,6 +311,7 @@ function TransactionInfo({
       >
         <TabContent value={tabLabel('overview')}>
           <Overview
+            chainId={chainId}
             simulation={simulation}
             status={status === 'error' && isRefetching ? 'loading' : status}
             error={error}
@@ -333,10 +345,17 @@ function InsuficientGasFunds({
   onRejectRequest,
 }: {
   session: { address: Address; chainId: ChainId };
-  onRejectRequest: VoidFunction;
+  onRejectRequest: ({
+    preventWindowClose,
+  }: {
+    preventWindowClose?: boolean;
+  }) => void;
 }) {
-  const chainName = ChainNameDisplay[chainId];
+  const { testnetMode } = useTestnetModeStore();
+  const isTestnet = testnetMode || isTestnetChainId({ chainId });
+
   const { nativeAsset } = useNativeAsset({ chainId, address });
+  const chainName = getChainName({ chainId });
 
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: hasBridgeableBalance } = useUserAssets(
@@ -359,6 +378,9 @@ function InsuficientGasFunds({
   );
 
   const token = `${chainName} ${nativeAsset?.symbol}`;
+  const faucet =
+    TestnetFaucet[chainId] ||
+    'https://www.alchemy.com/list-of/crypto-faucets-on-ethereum';
 
   const navigate = useRainbowNavigate();
 
@@ -402,7 +424,7 @@ function InsuficientGasFunds({
       <Stack marginHorizontal="-8px">
         <Separator color="separatorTertiary" />
 
-        {hasBridgeableBalance ? (
+        {hasBridgeableBalance && (
           <Button
             paddingHorizontal="8px"
             height="44px"
@@ -411,7 +433,7 @@ function InsuficientGasFunds({
             onClick={() => {
               setSelectedToken(nativeAsset);
               navigate(ROUTES.BRIDGE, { replace: true });
-              onRejectRequest();
+              onRejectRequest({ preventWindowClose: true });
               triggerToast({
                 title: i18n.t('approve_request.request_rejected'),
                 description: i18n.t('approve_request.bridge_and_try_again'),
@@ -430,7 +452,8 @@ function InsuficientGasFunds({
               </Text>
             </Inline>
           </Button>
-        ) : (
+        )}
+        {!hasBridgeableBalance && !isTestnet && (
           <Button
             paddingHorizontal="8px"
             height="44px"
@@ -438,7 +461,7 @@ function InsuficientGasFunds({
             color="blue"
             onClick={() => {
               navigate(ROUTES.BUY, { replace: true });
-              onRejectRequest();
+              onRejectRequest({ preventWindowClose: true });
               triggerToast({
                 title: i18n.t('approve_request.request_rejected'),
                 description: i18n.t('approve_request.buy_and_try_again'),
@@ -453,7 +476,33 @@ function InsuficientGasFunds({
                 weight="bold"
               />
               <Text size="14pt" weight="bold" color="blue">
-                {i18n.t('approve_request.buy', { token })}
+                {i18n.t('approve_request.buy_gas', { token })}
+              </Text>
+            </Inline>
+          </Button>
+        )}
+        {!hasBridgeableBalance && isTestnet && (
+          <Button
+            paddingHorizontal="8px"
+            height="44px"
+            variant="transparent"
+            color="blue"
+            onClick={() => {
+              onRejectRequest({ preventWindowClose: false });
+              goToNewTab({ url: faucet });
+            }}
+          >
+            <Inline alignVertical="center" space="12px" wrap={false}>
+              <Symbol
+                size={16}
+                symbol="spigot.fill"
+                color="blue"
+                weight="bold"
+              />
+              <Text size="14pt" weight="bold" color="blue">
+                {i18n.t('approve_request.get_testnet_gas', {
+                  token: nativeAsset?.symbol,
+                })}
               </Text>
             </Inline>
           </Button>
@@ -500,7 +549,7 @@ export function SendTransactionInfo({
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
-  const hasEnoughtGas = useHasEnoughGas(activeSession);
+  const hasEnoughGas = useHasEnoughGas(activeSession);
 
   return (
     <Box
@@ -548,7 +597,7 @@ export function SendTransactionInfo({
         )}
       </AnimatePresence>
 
-      {hasEnoughtGas ? (
+      {hasEnoughGas ? (
         <TransactionInfo
           request={txRequest}
           dappMetadata={dappMetadata}
@@ -560,9 +609,7 @@ export function SendTransactionInfo({
         activeSession && (
           <InsuficientGasFunds
             session={activeSession}
-            onRejectRequest={() =>
-              onRejectRequest({ preventWindowClose: true })
-            }
+            onRejectRequest={onRejectRequest}
           />
         )
       )}

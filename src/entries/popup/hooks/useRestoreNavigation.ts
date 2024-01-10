@@ -74,7 +74,13 @@ const RESTORE_NAV_MAP: Record<string, string[]> = {
   [ROUTES.SETTINGS__NETWORKS]: [ROUTES.SETTINGS, ROUTES.SETTINGS__NETWORKS],
   [ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC]: [
     ROUTES.SETTINGS,
+    ROUTES.SETTINGS__NETWORKS,
     ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC,
+  ],
+  [ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS]: [
+    ROUTES.SETTINGS,
+    ROUTES.SETTINGS__NETWORKS,
+    ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS,
   ],
   [ROUTES.SETTINGS__PRIVACY]: [ROUTES.SETTINGS, ROUTES.SETTINGS__PRIVACY],
   [ROUTES.SETTINGS__PRIVACY__AUTOLOCK]: [
@@ -116,15 +122,23 @@ const RESTORE_NAV_MAP: Record<string, string[]> = {
 
 export default function useRestoreNavigation() {
   const navigate = useRainbowNavigate();
-  const { setShouldRestoreNavigation, shouldRestoreNavigation, lastPage } =
-    useNavRestorationStore();
+  const {
+    setShouldRestoreNavigation,
+    shouldRestoreNavigation,
+    lastPage,
+    lastState,
+  } = useNavRestorationStore();
   const restoreNavigation = async () => {
     if (lastPage && shouldRestoreNavigation) {
       await setShouldRestoreNavigation(false);
       if (RESTORE_NAV_MAP[lastPage]) {
         const navPath = RESTORE_NAV_MAP[lastPage];
         for (const screen of navPath) {
-          navigate(screen);
+          if (navPath.indexOf(screen) === navPath.length - 1) {
+            navigate(screen, { state: lastState });
+          } else {
+            navigate(screen);
+          }
         }
       }
     }

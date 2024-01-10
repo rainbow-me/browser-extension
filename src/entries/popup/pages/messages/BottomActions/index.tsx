@@ -53,69 +53,65 @@ export const WalletName = ({
   );
 };
 
-export const BottomWallet = React.forwardRef(
-  (
-    {
-      selectedWallet,
-      displaySymbol = false,
-    }: {
-      selectedWallet: Address;
-      displaySymbol: boolean;
-    },
-    ref,
-  ) => {
-    const { trackShortcut } = useKeyboardAnalytics();
-    const triggerRef = useRef<HTMLDivElement>(null);
-    useImperativeHandle(ref, () => ({
-      triggerMenu: () => simulateClick(triggerRef?.current),
-    }));
-    useKeyboardShortcut({
-      handler: (e: KeyboardEvent) => {
-        if (e.key === shortcuts.connect.OPEN_WALLET_SWITCHER.key) {
-          trackShortcut({
-            key: shortcuts.connect.OPEN_WALLET_SWITCHER.display,
-            type: 'connect.openWalletSwitcher',
-          });
-          simulateClick(triggerRef?.current);
-        }
-      },
-    });
-    return (
-      <Box testId="switch-wallet-menu" ref={triggerRef}>
-        <Inline alignVertical="center">
-          <Lens
-            alignItems="center"
-            borderRadius="round"
-            tabIndex={displaySymbol ? 0 : -1}
-            style={{
-              flexDirection: 'row',
-              display: 'flex',
-              gap: 4,
-              padding: 2,
-            }}
-          >
-            <WalletAvatar
-              addressOrName={selectedWallet}
-              size={18}
-              emojiSize={'12pt'}
-            />
-            <WalletName color="labelSecondary" address={selectedWallet} />
-            {displaySymbol && (
-              <Symbol
-                color="labelSecondary"
-                size={14}
-                symbol="chevron.down.circle"
-                weight="semibold"
-              />
-            )}
-          </Lens>
-        </Inline>
-      </Box>
-    );
+export const BottomWallet = React.forwardRef(function BottomWallet(
+  {
+    selectedWallet,
+    displaySymbol = false,
+  }: {
+    selectedWallet: Address;
+    displaySymbol: boolean;
   },
-);
-
-BottomWallet.displayName = 'BottomWallet';
+  ref,
+) {
+  const { trackShortcut } = useKeyboardAnalytics();
+  const triggerRef = useRef<HTMLDivElement>(null);
+  useImperativeHandle(ref, () => ({
+    triggerMenu: () => simulateClick(triggerRef?.current),
+  }));
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.connect.OPEN_WALLET_SWITCHER.key) {
+        trackShortcut({
+          key: shortcuts.connect.OPEN_WALLET_SWITCHER.display,
+          type: 'connect.openWalletSwitcher',
+        });
+        simulateClick(triggerRef?.current);
+      }
+    },
+  });
+  return (
+    <Box testId="switch-wallet-menu" ref={triggerRef}>
+      <Inline alignVertical="center">
+        <Lens
+          alignItems="center"
+          borderRadius="round"
+          tabIndex={displaySymbol ? 0 : -1}
+          style={{
+            flexDirection: 'row',
+            display: 'flex',
+            gap: 4,
+            padding: 2,
+          }}
+        >
+          <WalletAvatar
+            addressOrName={selectedWallet}
+            size={18}
+            emojiSize={'12pt'}
+          />
+          <WalletName color="labelSecondary" address={selectedWallet} />
+          {displaySymbol && (
+            <Symbol
+              color="labelSecondary"
+              size={14}
+              symbol="chevron.down.circle"
+              weight="semibold"
+            />
+          )}
+        </Lens>
+      </Inline>
+    </Box>
+  );
+});
 
 export const BottomDisplayWallet = ({
   selectedWallet,
@@ -403,7 +399,14 @@ export const AcceptRequestButton = ({
       {...buttonStyleProps}
     >
       <TextOverflow weight="bold" size="16pt" color={textColor}>
-        {loading ? <Spinner size={16} color="label" /> : label}
+        {loading || waitingForDevice ? (
+          <Inline space="4px" alignVertical="center">
+            <Spinner size={16} color="label" />
+            {waitingForDevice && i18n.t('approve_request.confirm_hw')}
+          </Inline>
+        ) : (
+          label
+        )}
       </TextOverflow>
     </Button>
   );

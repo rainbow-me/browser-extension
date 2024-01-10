@@ -10,7 +10,8 @@ import {
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
+import { getChainName } from '~/core/utils/chains';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   Box,
@@ -40,10 +41,14 @@ interface WalletItemProps {
 }
 
 export const AppConnectionWalletItem = React.forwardRef(
-  (props: WalletItemProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+  function AppConnectionWalletItem(
+    props: WalletItemProps,
+    ref: React.ForwardedRef<HTMLDivElement>,
+  ) {
     const { address, onClick, chainId, active, connected } = props;
     const [hovering, setHovering] = useState(false);
     const { displayName } = useWalletName({ address });
+    const chainName = getChainName({ chainId });
     const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
 
     const { currentCurrency: currency } = useCurrentCurrencyStore();
@@ -88,7 +93,7 @@ export const AppConnectionWalletItem = React.forwardRef(
                     align="left"
                     color="label"
                   >
-                    {ChainNameDisplay[chainId]}
+                    {chainName}
                   </Text>
                 </Inline>
               ) : (
@@ -128,7 +133,14 @@ export const AppConnectionWalletItem = React.forwardRef(
           )}
         </AnimatePresence>
       ),
-      [address, active, chainId, connected, hovering, userAssetsBalanceDisplay],
+      [
+        hovering,
+        active,
+        address,
+        connected,
+        chainName,
+        userAssetsBalanceDisplay,
+      ],
     );
 
     return (
@@ -218,5 +230,3 @@ export const AppConnectionWalletItem = React.forwardRef(
     );
   },
 );
-
-AppConnectionWalletItem.displayName = 'AppConnectionWalletItem';

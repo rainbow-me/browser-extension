@@ -26,13 +26,13 @@ export const useCoolMode = ({
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    let cleanup: VoidFunction | undefined;
     if (!disabled && ref.current) {
-      const cleanup = makeElementCool(ref.current, imageUrl, emojis);
-
-      return () => {
-        cleanup();
-      };
+      cleanup = makeElementCool(ref.current, imageUrl, emojis);
     }
+    return () => {
+      cleanup?.();
+    };
   }, [imageUrl, disabled, emojis]);
 
   if (disabled) {
@@ -205,16 +205,18 @@ function makeElementCool(
     }, 60);
   };
 
+  const stopAddingParticles = () => {
+    autoAddParticle = false;
+  };
+
   const tap = isTouchInteraction ? 'touchstart' : 'mousedown';
   const tapEnd = isTouchInteraction ? 'touchend' : 'mouseup';
   const move = isTouchInteraction ? 'touchmove' : 'mousemove';
 
   element.addEventListener(move, updateMousePosition, { passive: true });
   element.addEventListener(tap, tapHandler, { passive: true });
-  element.addEventListener(tapEnd, () => (autoAddParticle = false), {
-    passive: true,
-  });
-  element.addEventListener('mouseleave', () => (autoAddParticle = false), {
+  element.addEventListener(tapEnd, stopAddingParticles, { passive: true });
+  element.addEventListener('mouseleave', stopAddingParticles, {
     passive: true,
   });
   element.addEventListener('contextmenu', rightClickHandler, {
@@ -222,10 +224,11 @@ function makeElementCool(
   });
 
   return () => {
+    stopAddingParticles();
     element.removeEventListener(move, updateMousePosition);
     element.removeEventListener(tap, tapHandler);
-    element.removeEventListener(tapEnd, () => (autoAddParticle = false));
-    element.removeEventListener('mouseleave', () => (autoAddParticle = false));
+    element.removeEventListener(tapEnd, stopAddingParticles);
+    element.removeEventListener('mouseleave', stopAddingParticles);
     element.removeEventListener('contextmenu', rightClickHandler);
 
     const interval = setInterval(() => {

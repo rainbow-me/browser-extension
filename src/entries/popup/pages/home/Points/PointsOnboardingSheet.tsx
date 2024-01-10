@@ -1,20 +1,22 @@
+import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo, useState } from 'react';
+import { PropsWithChildren, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { metadataPostClient } from '~/core/graphql';
-import { GetPointsOnboardChallengeQuery } from '~/core/graphql/__generated__/metadata';
+import {
+  GetPointsOnboardChallengeQuery,
+  PointsErrorType,
+  PointsOnboardingCategory,
+  ValidatePointsSignatureMutation,
+} from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import {
-  selectUserAssetsBalance,
-  selectorFilterByUserChains,
-} from '~/core/resources/_selectors/assets';
-import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import {
-  convertAmountToNativeDisplayWithThreshold,
-  isZero,
-} from '~/core/utils/numbers';
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
+import { useCurrentAddressStore } from '~/core/state';
+import { KeychainType } from '~/core/types/keychainTypes';
+import { formatNumber } from '~/core/utils/formatNumber';
+import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
+import { goToNewTab } from '~/core/utils/tabs';
 import {
   AccentColorProvider,
   Box,
@@ -23,7 +25,6 @@ import {
   Row,
   Rows,
   Stack,
-  Symbol,
   Text,
 } from '~/design-system';
 import { AnimatedText } from '~/design-system/components/AnimatedText/AnimatedText';
@@ -32,10 +33,11 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 import {
   accentColorAsHsl,
   transparentAccentColorAsHsl20,
-  transparentAccentColorAsHsl60,
 } from '~/design-system/styles/core.css';
+import { ButtonVariant } from '~/design-system/styles/designTokens';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
+import { useCurrentWalletTypeAndVendor } from '~/entries/popup/hooks/useCurrentWalletType';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWalletName } from '~/entries/popup/hooks/useWalletName';
@@ -44,12 +46,8 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import * as wallet from '../../../handlers/wallet';
 
-import {
-  CATEGORY_TYPE,
-  USER_POINTS_CATEGORY,
-  USER_POINTS_ONBOARDING,
-} from './references';
-import { seedPointsQueryCache } from './usePoints';
+import { copyReferralLink } from './PointsDashboard';
+import { fetchPointsQuery, seedPointsQueryCache } from './usePoints';
 import { usePointsChallenge } from './usePointsChallenge';
 import {
   RAINBOW_TEXT,
@@ -67,13 +65,17 @@ const fadeVariants = {
 
 const SiginAction = ({
   data,
+  isWaitingForSignature,
   validatingSignature,
   signChallenge,
 }: {
   data?: GetPointsOnboardChallengeQuery;
+  isWaitingForSignature?: boolean;
   validatingSignature: boolean;
   signChallenge: () => void;
 }) => {
+  const { type } = useCurrentWalletTypeAndVendor();
+  const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;
   return (
     <Box
       as={motion.div}
@@ -94,15 +96,17 @@ const SiginAction = ({
           variant="shadow"
         >
           <Text
-            textShadow="12px accent text"
+            textShadow="12px accent"
             align="center"
             size="15pt"
             weight="heavy"
             color="accent"
           >
-            {i18n.t('points.onboarding.sign_in')}
+            {isWaitingForSignature && isHardwareWallet
+              ? i18n.t('approve_request.confirm_hw')
+              : i18n.t('points.onboarding.sign_in')}
           </Text>
-          {validatingSignature && (
+          {(isWaitingForSignature || validatingSignature) && (
             <Box
               style={{
                 boxShadow: `0px 0px 12px 0px ${accentColorAsHsl}`,
@@ -119,107 +123,266 @@ const SiginAction = ({
   );
 };
 
-const RegistrationAction = ({
-  data,
-  registrationAction,
-}: {
-  data?: GetPointsOnboardChallengeQuery;
-  registrationAction: 'swap' | 'buy';
-}) => {
-  const navigate = useRainbowNavigate();
-
-  const goToBuy = () => {
-    navigate(ROUTES.HOME, {
-      state: { skipTransitionOnRoute: ROUTES.HOME },
-    });
-    navigate(ROUTES.BUY);
-  };
-
-  const goToSwap = () => {
-    navigate(ROUTES.HOME, {
-      state: { skipTransitionOnRoute: ROUTES.HOME },
-    });
-    navigate(ROUTES.SWAP);
-  };
-
+const OnboardingButton = ({
+  disabled,
+  onClick,
+  children,
+  variant = 'shadow',
+  color = 'accent',
+}: PropsWithChildren<{
+  disabled?: boolean;
+  onClick: VoidFunction;
+  variant?: ButtonVariant;
+  color?: 'accent' | 'labelTertiary';
+}>) => {
   return (
     <Box
       as={motion.div}
       variants={fadeVariants}
+      transition={{ delay: 2 }}
       initial="initial"
       animate="animate"
       exit="exit"
-      key="action-button"
+      width="full"
     >
       <Button
-        disabled={!data?.pointsOnboardChallenge}
+        disabled={disabled}
         width="full"
         borderRadius="12px"
-        onClick={registrationAction === 'swap' ? goToSwap : goToBuy}
-        color="accent"
+        onClick={onClick}
+        color={color}
         height="36px"
-        variant="shadow"
+        variant={variant}
       >
-        <Inline alignHorizontal="center" alignVertical="center" space="4px">
-          <Box
-            style={{
-              boxShadow: `0px 0px 12px 0px ${transparentAccentColorAsHsl60}`,
-            }}
-            borderRadius="10px"
-            background="transparent"
-          >
-            <Symbol
-              size={18}
-              color="accent"
-              weight="medium"
-              symbol="plus.circle.fill"
-            />
-          </Box>
-          <Text
-            align="center"
-            size="15pt"
-            weight="heavy"
-            color="accent"
-            textShadow="12px accent text"
-          >
-            {i18n.t(
-              `points.onboarding.${
-                registrationAction === 'swap' ? 'try_swap' : 'get_eth'
-              }`,
-            )}
-          </Text>
-        </Inline>
+        <Text
+          align="center"
+          size="15pt"
+          weight="heavy"
+          color={color}
+          textShadow={`12px ${color}`}
+        >
+          {children}
+        </Text>
       </Button>
     </Box>
   );
 };
+
+const noBalanceRowsText = [
+  `> ${i18n.t('points.onboarding.balance_required')}`,
+  `${i18n.t('points.onboarding.ensure_you_have_a_balance_on')}`,
+  ...SUPPORTED_MAINNET_CHAINS.filter(
+    (c) => c.nativeCurrency.symbol === 'ETH',
+  ).map((c) => `- ${c.name}`),
+  `${i18n.t('points.onboarding.or_alternatively_balance_on')}`,
+];
+const noBalanceRows = [
+  <AnimatedText
+    textShadow="12px red"
+    key={noBalanceRowsText[0]}
+    align="left"
+    size="14pt mono"
+    weight="bold"
+    color="red"
+    delay={0}
+  >
+    {noBalanceRowsText[0]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={noBalanceRowsText[1]}
+    align="left"
+    size="14pt mono"
+    weight="bold"
+    color="labelTertiary"
+  >
+    {noBalanceRowsText[1]}
+  </AnimatedText>,
+  <Stack space="12px" key="chains">
+    {...noBalanceRowsText.slice(2, -1).map((text) => (
+      <AnimatedText
+        textShadow="12px labelTertiary"
+        key={text}
+        align="left"
+        size="14pt mono"
+        weight="bold"
+        color="labelTertiary"
+      >
+        {text}
+      </AnimatedText>
+    ))}
+  </Stack>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={noBalanceRowsText.at(-1)}
+    align="left"
+    size="14pt mono"
+    weight="bold"
+    color="labelTertiary"
+  >
+    {noBalanceRowsText.at(-1)}
+  </AnimatedText>,
+];
+
+const shareRowsText = [
+  `> ${i18n.t('points.onboarding.referral_link_ready')}`,
+  `${i18n.t('points.onboarding.share_and_earn')}`,
+  `${i18n.t('points.onboarding.plus_percent_of_refers')}`,
+];
+const shareRows = [
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={shareRowsText[0]}
+    align="left"
+    size="14pt mono"
+    weight="bold"
+    color="labelTertiary"
+    delay={0}
+  >
+    {shareRowsText[0]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px accent"
+    key={shareRowsText[1]}
+    align="left"
+    size="14pt mono"
+    weight="bold"
+    color="accent"
+  >
+    {shareRowsText[1]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px accent"
+    key={shareRowsText[2]}
+    align="left"
+    size="14pt mono"
+    weight="bold"
+    color="accent"
+  >
+    {shareRowsText[2]}
+  </AnimatedText>,
+];
+
+const doneRowsText = [
+  `> ${i18n.t('points.onboarding.registration_complete')}`,
+  `${i18n.t('points.onboarding.all_set')}`,
+  `${i18n.t('points.onboarding.keep_earning_by')}`,
+  `${i18n.t('points.onboarding.the_more_you_use')}`,
+];
+const doneRows = [
+  <AccentColorProvider key={doneRowsText[0]} color="#00EE45">
+    <AnimatedText
+      textShadow="12px accent"
+      align="left"
+      size="14pt mono"
+      weight="bold"
+      color="accent"
+      delay={0}
+    >
+      {doneRowsText[0]}
+    </AnimatedText>
+  </AccentColorProvider>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={doneRowsText[1]}
+    align="left"
+    size="14pt mono"
+    weight="semibold"
+    color="labelTertiary"
+  >
+    {doneRowsText[1]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={doneRowsText[2]}
+    align="left"
+    size="14pt mono"
+    weight="semibold"
+    color="labelTertiary"
+  >
+    {doneRowsText[2]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={doneRowsText[3]}
+    align="left"
+    size="14pt mono"
+    weight="semibold"
+    color="labelTertiary"
+  >
+    {doneRowsText[4]}
+  </AnimatedText>,
+];
 
 export const PointsOnboardingSheet = () => {
   const navigate = useRainbowNavigate();
   const { currentAddress } = useCurrentAddressStore();
   const { displayName } = useWalletName({ address: currentAddress });
   const { state } = useLocation();
-  const [validatingSignature, setValidatingSignature] = useState(false);
-  const [accessGranted, setAccessGranted] = useState(false);
-  const [error, setError] = useState<null | string>();
-  const [userOnboarding, setUserOnboarding] =
-    useState<USER_POINTS_ONBOARDING>();
-  const debouncedAccessGranted = useDebounce(accessGranted, 9000);
 
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: totalAssetsBalance } = useUserAssets(
-    { address: currentAddress, currency },
-    {
-      select: (data) =>
-        selectorFilterByUserChains<string>({
-          data,
-          selector: selectUserAssetsBalance,
-        }),
+  const { data } = usePointsChallenge({
+    address: currentAddress,
+    referralCode: state?.referralCode,
+  });
+
+  const backToHome = () => {
+    if (!!error && error !== PointsErrorType.ExistingUser) {
+      // if some unexpected error happened that stopped the user from onboarding,
+      // and was not "existing user" error, then we should try to refetch its points query
+      // sometimes it goes thru but the server returns something weird
+      // and when the user try onboarding again it errors with "existing user"
+      fetchPointsQuery(currentAddress);
+    }
+    navigate(ROUTES.HOME, {
+      state: { tab: 'points', skipTransitionOnRoute: ROUTES.HOME },
+    });
+  };
+
+  const {
+    data: validSignatureResponse,
+    error,
+    mutate: validateSignature,
+    isLoading: validatingSignature,
+    isSuccess: accessGranted,
+  } = useMutation<
+    ValidatePointsSignatureMutation['onboardPoints'],
+    PointsErrorType,
+    { signature: string }
+  >({
+    mutationFn: async ({ signature }) => {
+      const { onboardPoints } =
+        await metadataPostClient.validatePointsSignature({
+          address: currentAddress,
+          signature,
+          referral: state.referralCode,
+        });
+      if (onboardPoints?.error?.type === PointsErrorType.NoBalance)
+        setStep('no balance');
+      if (!onboardPoints) throw 'validatePointsSignature: Unexpected error'; // sometimes the server just returns null, like when the signature is invalid
+      if (onboardPoints.error) throw onboardPoints.error.type;
+      return onboardPoints;
     },
-  );
+    onSuccess: (data) => {
+      if (!data) return;
+      seedPointsQueryCache(currentAddress, data);
+    },
+  });
 
-  const registrationAction =
-    totalAssetsBalance && isZero(totalAssetsBalance) ? 'buy' : 'swap';
+  const userOnboarding = validSignatureResponse?.user.onboarding;
+
+  const { mutate: signChallenge, isLoading: isWaitingForSignature } =
+    useMutation({
+      mutationFn: async () => {
+        if (!data) return;
+        return wallet.personalSign(data.pointsOnboardChallenge, currentAddress);
+      },
+      onSuccess: (signature) => {
+        if (!signature) return;
+        validateSignature({ signature });
+      },
+    });
+
+  const debouncedAccessGranted = useDebounce(accessGranted, 9000);
 
   const userOnboardingCategories = useMemo(() => {
     const userCategories = userOnboarding?.categories?.reduce(
@@ -227,66 +390,10 @@ export const PointsOnboardingSheet = () => {
         acc[current.type] = current;
         return acc;
       },
-      {} as Record<CATEGORY_TYPE, USER_POINTS_CATEGORY>,
+      {} as Record<string, PointsOnboardingCategory>,
     );
     return userCategories;
   }, [userOnboarding?.categories]);
-
-  const userHasEarnings = useMemo(() => {
-    const userHasEarnings =
-      userOnboardingCategories?.['rainbow-swaps'].data.usd_amount &&
-      userOnboardingCategories?.['nft-collections'].data.owned_collections &&
-      userOnboardingCategories?.['historic-balance'].data.usd_amount &&
-      userOnboardingCategories?.['metamask-swaps'].data.usd_amount &&
-      userOnboardingCategories?.['bonus'].earnings.total;
-    return userHasEarnings;
-  }, [userOnboardingCategories]);
-
-  const showRegisteredCallToAction = useDebounce(
-    accessGranted && !userHasEarnings,
-    13000,
-  );
-
-  const { data } = usePointsChallenge({
-    address: currentAddress,
-    referralCode: state.referralCode,
-  });
-
-  const backToHome = () =>
-    navigate(ROUTES.HOME, {
-      state: { skipTransitionOnRoute: ROUTES.HOME },
-    });
-
-  const signChallenge = useCallback(async () => {
-    if (data?.pointsOnboardChallenge) {
-      setValidatingSignature(true);
-      try {
-        const signature = await wallet.personalSign(
-          data?.pointsOnboardChallenge,
-          currentAddress,
-        );
-        const valid = await metadataPostClient.validatePointsSignature({
-          address: currentAddress,
-          signature,
-          referral: state.referralCode,
-        });
-        if (valid.onboardPoints?.error) {
-          const error = valid.onboardPoints.error.type;
-          setError(error);
-        } else if (valid.onboardPoints?.user) {
-          seedPointsQueryCache(currentAddress, valid.onboardPoints);
-          setUserOnboarding(
-            valid.onboardPoints.user.onboarding as USER_POINTS_ONBOARDING,
-          );
-          setAccessGranted(true);
-        }
-      } catch (e) {
-        //
-      } finally {
-        setValidatingSignature(false);
-      }
-    }
-  }, [currentAddress, data?.pointsOnboardChallenge, state.referralCode]);
 
   const loadingRowsText = useMemo(
     () =>
@@ -311,11 +418,10 @@ export const PointsOnboardingSheet = () => {
   const rainbowText = useMemo(() => {
     const rnbwText = Object.values(RAINBOW_TEXT).map((val, i) => {
       return (
-        <Box key={`loading-${i}`} paddingLeft="16px">
+        <Box key={`loading-${i}`} paddingLeft="4px">
           <AnimatedText
-            key={`loading-${i}`}
             align="left"
-            size="15pt"
+            size="14pt mono"
             weight="bold"
             delay={getDelayForRow(loadingRowsText, 2 + i)}
             rainbowColor
@@ -327,24 +433,22 @@ export const PointsOnboardingSheet = () => {
     });
 
     const welcomeText = (
-      <Box key={`loading-welcome`} paddingLeft="64px">
-        <AccentColorProvider color="#fff">
-          <AnimatedText
-            textShadow="12px accent text"
-            align="left"
-            size="15pt"
-            weight="bold"
-            color="accent"
-            customTypingSpeed={0.15}
-            delay={getDelayForRow(
-              loadingRowsText,
-              2 + Object.values(RAINBOW_TEXT).length,
-            )}
-          >
-            {RAINBOW_TEXT_WELCOME.row1}
-          </AnimatedText>
-        </AccentColorProvider>
-      </Box>
+      <AccentColorProvider color="#fff" key={`loading-welcome`}>
+        <AnimatedText
+          textShadow="12px accent"
+          align="center"
+          size="14pt mono"
+          weight="bold"
+          color="accent"
+          customTypingSpeed={0.15}
+          delay={getDelayForRow(
+            loadingRowsText,
+            2 + Object.values(RAINBOW_TEXT).length,
+          )}
+        >
+          {RAINBOW_TEXT_WELCOME.row1}
+        </AnimatedText>
+      </AccentColorProvider>
     );
 
     return rnbwText.concat(welcomeText);
@@ -354,22 +458,22 @@ export const PointsOnboardingSheet = () => {
     () =>
       [
         <AnimatedText
-          textShadow="12px label text"
+          textShadow="12px labelTertiary"
           key={'loading-1'}
           align="left"
-          size="15pt"
-          weight="bold"
+          size="14pt mono"
+          weight="semibold"
           color="labelTertiary"
           delay={0}
         >
           {loadingRowsText[0]}
         </AnimatedText>,
         <AnimatedText
-          textShadow="12px label text"
+          textShadow="12px labelTertiary"
           key={'loading-2'}
           align="left"
-          size="15pt"
-          weight="bold"
+          size="14pt mono"
+          weight="semibold"
           color="labelTertiary"
           delay={
             accessGranted || error ? 0 : getDelayForRow(loadingRowsText, 0)
@@ -380,10 +484,10 @@ export const PointsOnboardingSheet = () => {
         accessGranted ? (
           <AccentColorProvider key={'loading-3'} color="#00D348">
             <AnimatedText
-              textShadow="12px accent text"
+              textShadow="12px accent"
               key={'loading-3'}
               align="left"
-              size="15pt"
+              size="14pt mono"
               weight="bold"
               color="accent"
               delay={
@@ -401,10 +505,10 @@ export const PointsOnboardingSheet = () => {
         ) : undefined,
         error ? (
           <AnimatedText
-            textShadow="12px label text"
+            textShadow="12px label"
             key={'loading-4'}
             align="left"
-            size="15pt"
+            size="14pt mono"
             weight="bold"
             color="red"
             delay={0}
@@ -424,7 +528,7 @@ export const PointsOnboardingSheet = () => {
         [`> ${i18n.t('points.onboarding.calculating_points')}`, ''],
         [
           `${i18n.t('points.onboarding.rainbow_swaps')}`,
-          `${convertAmountToNativeDisplayWithThreshold(
+          `${convertAmountToNativeDisplay(
             userOnboardingCategories?.['rainbow-swaps'].data.usd_amount || 0,
             'USD',
           )}`,
@@ -435,14 +539,14 @@ export const PointsOnboardingSheet = () => {
         ],
         [
           `${i18n.t('points.onboarding.wallet_balance')}`,
-          `${convertAmountToNativeDisplayWithThreshold(
+          `${convertAmountToNativeDisplay(
             userOnboardingCategories?.['historic-balance'].data.usd_amount || 0,
             'USD',
           )}`,
         ],
         [
           `${i18n.t('points.onboarding.metamask_swaps')}`,
-          `${convertAmountToNativeDisplayWithThreshold(
+          `${convertAmountToNativeDisplay(
             userOnboardingCategories?.['metamask-swaps'].data.usd_amount || 0,
             'USD',
           )}`,
@@ -460,92 +564,14 @@ export const PointsOnboardingSheet = () => {
     [userOnboarding?.earnings.total, userOnboardingCategories],
   );
 
-  const registeringPointsRowsText = useMemo(
-    () => [
-      [`> ${i18n.t('points.onboarding.registration_complete')}`, ''],
-      [
-        `${i18n.t('points.onboarding.bonus_points')}`,
-        `${userOnboardingCategories?.['bonus'].earnings.total}`,
-      ],
-      [
-        i18n.t(
-          `points.onboarding.${
-            registrationAction === 'swap'
-              ? 'claim_description_swap'
-              : 'claim_description_buy'
-          }`,
-        ),
-        '',
-      ],
-    ],
-    [registrationAction, userOnboardingCategories],
-  );
-  const registeringPointsRows = useMemo(
-    () => [
-      <AccentColorProvider key={'points-1'} color="#00D348">
-        <Box paddingBottom="30px">
-          <AnimatedText
-            textShadow="12px accent text"
-            align="left"
-            size="16pt"
-            weight="bold"
-            color="accent"
-            delay={0}
-          >
-            {registeringPointsRowsText[0][0]}
-          </AnimatedText>
-        </Box>
-      </AccentColorProvider>,
-      <AccentColorProvider key={'points-2'} color="#C54EAB">
-        <Box paddingBottom="30px">
-          <Inline alignHorizontal="justify">
-            <AnimatedText
-              textShadow="12px accent text"
-              align="left"
-              size="15pt"
-              weight="bold"
-              color="accent"
-              delay={getDelayForRows(registeringPointsRowsText, 1, 0)}
-            >
-              {registeringPointsRowsText[1][0]}
-            </AnimatedText>
-            <AnimatedText
-              textShadow="12px accent text"
-              align="left"
-              size="15pt"
-              weight="bold"
-              color="accent"
-              direction="rightToLeft"
-              delay={getDelayForRows(registeringPointsRowsText, 1, 1)}
-            >
-              {registeringPointsRowsText[1][1]}
-            </AnimatedText>
-          </Inline>
-        </Box>
-      </AccentColorProvider>,
-      <AnimatedText
-        textShadow="12px label text"
-        key={'points-2'}
-        align="left"
-        size="15pt"
-        weight="bold"
-        color="labelTertiary"
-        delay={getDelayForRows(registeringPointsRowsText, 2, 0)}
-      >
-        {registeringPointsRowsText[2][0]}
-      </AnimatedText>,
-    ],
-    [registeringPointsRowsText],
-  );
-
   const calculatingPointsRows = useMemo(
     () =>
       [
         <Box key={'points-1'} paddingBottom="30px">
           <AnimatedText
-            textShadow="12px label text"
+            textShadow="12px label"
             align="left"
-            size="16pt"
+            size="14pt mono"
             weight="bold"
             color="labelTertiary"
             delay={0}
@@ -557,9 +583,9 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="15px">
             <Inline alignHorizontal="justify">
               <AnimatedText
-                textShadow="12px label text"
+                textShadow="12px label"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 1, 0)}
@@ -567,9 +593,9 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[1][0]}
               </AnimatedText>
               <AnimatedText
-                textShadow="12px label text"
+                textShadow="12px label"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 1, 1)}
@@ -584,9 +610,9 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="15px">
             <Inline alignHorizontal="justify">
               <AnimatedText
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 2, 0)}
@@ -594,9 +620,9 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[2][0]}
               </AnimatedText>
               <AnimatedText
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
@@ -611,9 +637,9 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="15px">
             <Inline alignHorizontal="justify">
               <AnimatedText
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 3, 0)}
@@ -621,9 +647,9 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[3][0]}
               </AnimatedText>
               <AnimatedText
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
@@ -638,9 +664,9 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="15px">
             <Inline alignHorizontal="justify">
               <AnimatedText
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 4, 0)}
@@ -648,9 +674,9 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[4][0]}
               </AnimatedText>
               <AnimatedText
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
@@ -665,9 +691,9 @@ export const PointsOnboardingSheet = () => {
           <Box paddingBottom="30px">
             <Inline alignHorizontal="justify">
               <AnimatedText
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 delay={getDelayForRows(calculatingPointsRowsText, 5, 0)}
@@ -675,9 +701,9 @@ export const PointsOnboardingSheet = () => {
                 {calculatingPointsRowsText[5][0]}
               </AnimatedText>
               <AnimatedText
-                textShadow="12px accent text"
+                textShadow="12px accent"
                 align="left"
-                size="15pt"
+                size="14pt mono"
                 weight="bold"
                 color="accent"
                 direction="rightToLeft"
@@ -690,9 +716,9 @@ export const PointsOnboardingSheet = () => {
         </AccentColorProvider>,
         <Box key={'points-7'} paddingBottom="15px">
           <AnimatedText
-            textShadow="12px label text"
+            textShadow="12px label"
             align="left"
-            size="16pt"
+            size="14pt mono"
             weight="bold"
             color="labelTertiary"
             delay={getDelayForRows(calculatingPointsRowsText, 6, 0)}
@@ -705,9 +731,9 @@ export const PointsOnboardingSheet = () => {
             <Box paddingBottom="30px">
               <Inline alignHorizontal="justify">
                 <AnimatedText
-                  textShadow="12px accent text"
+                  textShadow="12px accent"
                   align="left"
-                  size="15pt"
+                  size="14pt mono"
                   weight="bold"
                   color="accent"
                   delay={getDelayForRows(calculatingPointsRowsText, 7, 0)}
@@ -715,9 +741,9 @@ export const PointsOnboardingSheet = () => {
                   {calculatingPointsRowsText[7][0]}
                 </AnimatedText>
                 <AnimatedText
-                  textShadow="12px accent text"
+                  textShadow="12px accent"
                   align="left"
-                  size="15pt"
+                  size="14pt mono"
                   weight="bold"
                   color="accent"
                   direction="rightToLeft"
@@ -733,6 +759,44 @@ export const PointsOnboardingSheet = () => {
     [calculatingPointsRowsText, userOnboarding],
   );
 
+  const [step, setStep] = useState<
+    'welcome' | 'calculating' | 'share' | 'done' | 'no balance'
+  >('welcome');
+
+  if (debouncedAccessGranted && step === 'welcome') setStep('calculating');
+
+  const onShare = () => {
+    if (!validSignatureResponse || !userOnboarding) return;
+    setStep('done');
+    metadataPostClient.redeemCodeForPoints({
+      address: currentAddress,
+      redemptionCode: 'TWITTERSHARED',
+    });
+    const referralCode = validSignatureResponse.user.referralCode;
+    const metamaskBonus =
+      userOnboarding.categories?.find((c) => c.type === 'metamask-swaps')
+        ?.earnings.total || 0;
+
+    const tweet = i18n.t(
+      metamaskBonus
+        ? 'points.onboarding.share_tweet_with_metamask_bonus'
+        : 'points.onboarding.share_tweet',
+      {
+        points: formatNumber(userOnboarding.earnings.total - metamaskBonus, {
+          maximumSignificantDigits: 6,
+        }),
+        metamaskBonus: formatNumber(metamaskBonus, {
+          maximumSignificantDigits: 6,
+        }),
+        referralCode,
+      },
+    );
+    goToNewTab({
+      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`,
+    });
+    copyReferralLink(referralCode);
+  };
+
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar leftComponent={<Navbar.CloseButton onClick={backToHome} />} />
@@ -740,28 +804,30 @@ export const PointsOnboardingSheet = () => {
         <Rows alignVertical="justify">
           <Row>
             <Stack space="15px">
-              <Inline space="4px">
+              <Inline space="4px" alignVertical="center" wrap={false}>
                 <Text
-                  textShadow="12px label text"
+                  textShadow="12px labelTertiary"
                   align="left"
-                  size="16pt"
-                  weight="bold"
+                  size="14pt mono"
+                  weight="semibold"
                   color="labelTertiary"
+                  fontFamily="mono"
                 >
                   {i18n.t('points.onboarding.account')}
                 </Text>
                 <Text
-                  textShadow="12px accent text"
+                  textShadow="12px accent"
                   align="left"
-                  size="15pt"
+                  size="14pt mono"
                   weight="bold"
                   color="accent"
+                  fontFamily="mono"
                 >
                   {displayName}
                 </Text>
               </Inline>
 
-              {!debouncedAccessGranted && (
+              {step === 'welcome' && (
                 <AnimatedTextRows
                   customDelay={accessGranted || error ? 0 : undefined}
                   id="animated-loading-rows"
@@ -770,37 +836,82 @@ export const PointsOnboardingSheet = () => {
                   space="15px"
                 />
               )}
-              {debouncedAccessGranted && (
+              {step === 'calculating' && (
                 <AnimatedTextRows
                   id="animated-calculating-rows"
-                  rowsText={(userHasEarnings
-                    ? calculatingPointsRowsText
-                    : registeringPointsRowsText
-                  ).flat()}
-                  rows={
-                    userHasEarnings
-                      ? calculatingPointsRows
-                      : registeringPointsRows
-                  }
+                  rowsText={calculatingPointsRowsText.flat()}
+                  rows={calculatingPointsRows}
                   space="15px"
+                />
+              )}
+              {step === 'share' && (
+                <AnimatedTextRows
+                  id="animated-share-rows"
+                  rows={shareRows}
+                  rowsText={shareRowsText}
+                  space="44px"
+                />
+              )}
+              {step === 'done' && (
+                <AnimatedTextRows
+                  id="animated-done-rows"
+                  rows={doneRows}
+                  rowsText={doneRowsText}
+                  space="35px"
+                />
+              )}
+              {step === 'no balance' && (
+                <AnimatedTextRows
+                  id="animated-no balance-rows"
+                  rows={noBalanceRows}
+                  rowsText={noBalanceRowsText}
+                  space="35px"
                 />
               )}
             </Stack>
           </Row>
           <Row height="content">
             <AnimatePresence mode="wait" initial={false}>
-              {!accessGranted && (
+              {step === 'welcome' && !accessGranted && (
                 <SiginAction
                   data={data}
                   signChallenge={signChallenge}
+                  isWaitingForSignature={isWaitingForSignature}
                   validatingSignature={validatingSignature}
                 />
               )}
-              {showRegisteredCallToAction && (
-                <RegistrationAction
-                  data={data}
-                  registrationAction={registrationAction}
-                />
+              {step === 'calculating' && (
+                <OnboardingButton onClick={() => setStep('share')}>
+                  {i18n.t('common_actions.continue')}
+                </OnboardingButton>
+              )}
+              {step === 'share' && (
+                <Inline space="15px" wrap={false}>
+                  <OnboardingButton
+                    onClick={() => setStep('done')}
+                    color="labelTertiary"
+                    variant="stroked"
+                  >
+                    {i18n.t('skip')}
+                  </OnboardingButton>
+                  <OnboardingButton onClick={onShare}>
+                    {i18n.t('points.onboarding.share')}
+                  </OnboardingButton>
+                </Inline>
+              )}
+              {step === 'done' && (
+                <OnboardingButton onClick={backToHome}>
+                  {i18n.t('done')}
+                </OnboardingButton>
+              )}
+              {step === 'no balance' && (
+                <OnboardingButton
+                  onClick={() =>
+                    navigate(ROUTES.BUY, { state: { backTo: ROUTES.HOME } })
+                  }
+                >
+                  {i18n.t('points.onboarding.fund_my_wallet')}
+                </OnboardingButton>
               )}
             </AnimatePresence>
           </Row>

@@ -2,28 +2,27 @@ import { AddressZero } from '@ethersproject/constants';
 import {
   arbitrum,
   arbitrumGoerli,
+  arbitrumSepolia,
   base,
   baseGoerli,
+  baseSepolia,
   bsc,
   bscTestnet,
   goerli,
+  holesky,
   mainnet,
   optimism,
   optimismGoerli,
+  optimismSepolia,
   polygon,
   polygonMumbai,
   zora,
+  zoraSepolia,
   zoraTestnet,
-} from '@wagmi/chains';
+} from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
-import {
-  ChainId,
-  ChainNameDisplay,
-  chainArbitrumSepolia,
-  chainHolesky,
-  chainOptimismSepolia,
-} from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -134,11 +133,39 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.optimismSepolia]: AddressZero as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
   [ChainId.baseGoerli]: AddressZero as Address,
+  [ChainId.baseSepolia]: AddressZero as Address,
   [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
   [ChainId.zoraTestnet]: AddressZero as Address,
+  [ChainId.zoraSepolia]: AddressZero as Address,
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
   [ChainId.polygonMumbai]: AddressZero as Address,
 };
+
+export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
+  [ChainId.mainnet]: ETH_ADDRESS,
+  [ChainId.hardhat]: ETH_ADDRESS,
+  [ChainId.goerli]: ETH_ADDRESS,
+  [ChainId.sepolia]: ETH_ADDRESS,
+  [ChainId.holesky]: ETH_ADDRESS,
+  [ChainId.arbitrum]: ETH_ADDRESS,
+  [ChainId.arbitrumGoerli]: ETH_ADDRESS,
+  [ChainId.arbitrumSepolia]: ETH_ADDRESS,
+  [ChainId.bsc]: BNB_MAINNET_ADDRESS,
+  [ChainId.bscTestnet]: BNB_MAINNET_ADDRESS,
+  [ChainId.optimism]: ETH_ADDRESS,
+  [ChainId.hardhatOptimism]: ETH_ADDRESS,
+  [ChainId.optimismGoerli]: ETH_ADDRESS,
+  [ChainId.optimismSepolia]: ETH_ADDRESS,
+  [ChainId.base]: ETH_ADDRESS,
+  [ChainId.baseGoerli]: ETH_ADDRESS,
+  [ChainId.baseSepolia]: ETH_ADDRESS,
+  [ChainId.zora]: ETH_ADDRESS,
+  [ChainId.zoraTestnet]: ETH_ADDRESS,
+  [ChainId.zoraSepolia]: ETH_ADDRESS,
+  [ChainId.polygon]: MATIC_MAINNET_ADDRESS,
+  [ChainId.polygonMumbai]: MATIC_MAINNET_ADDRESS,
+};
+
 export const OVM_GAS_PRICE_ORACLE =
   '0x420000000000000000000000000000000000000F';
 
@@ -166,32 +193,88 @@ export const SUPPORTED_CHAINS: Chain[] = [
   polygon,
   optimism,
   arbitrum,
-  chainHolesky,
+  holesky,
   base,
   zora,
   bsc,
   goerli,
   sepolia,
   optimismGoerli,
-  chainOptimismSepolia,
+  optimismSepolia,
   bscTestnet,
   polygonMumbai,
   arbitrumGoerli,
-  chainArbitrumSepolia,
+  arbitrumSepolia,
   baseGoerli,
+  baseSepolia,
+  zoraSepolia,
   zoraTestnet,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
-export const SUPPORTED_TESTNET_CHAIN_IDS: number[] = [
-  chainHolesky.id,
-  goerli.id,
-  sepolia.id,
-  optimismGoerli.id,
-  chainOptimismSepolia.id,
-  bscTestnet.id,
-  polygonMumbai.id,
-  arbitrumGoerli.id,
-  chainArbitrumSepolia.id,
-  baseGoerli.id,
-  zoraTestnet.id,
+export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
+
+export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
+  holesky,
+  goerli,
+  sepolia,
+  optimismGoerli,
+  optimismSepolia,
+  bscTestnet,
+  polygonMumbai,
+  arbitrumGoerli,
+  arbitrumSepolia,
+  baseGoerli,
+  baseSepolia,
+  zoraTestnet,
+  zoraSepolia,
 ];
+
+export const SUPPORTED_TESTNET_CHAIN_IDS: number[] =
+  SUPPORTED_TESTNET_CHAINS.map((tn) => tn.id);
+
+export const getDefaultRPC = (chainId: ChainId) => {
+  switch (chainId) {
+    case ChainId.mainnet:
+      return { http: process.env.ETH_MAINNET_RPC };
+    case ChainId.optimism:
+      return { http: process.env.OPTIMISM_MAINNET_RPC };
+    case ChainId.arbitrum:
+      return { http: process.env.ARBITRUM_MAINNET_RPC };
+    case ChainId.polygon:
+      return { http: process.env.POLYGON_MAINNET_RPC };
+    case ChainId.base:
+      return { http: process.env.BASE_MAINNET_RPC };
+    case ChainId.zora:
+      return { http: process.env.ZORA_MAINNET_RPC };
+    case ChainId.bsc:
+      return { http: process.env.BSC_MAINNET_RPC };
+    case ChainId.goerli:
+      return { http: process.env.ETH_GOERLI_RPC };
+    case ChainId.sepolia:
+      return { http: process.env.ETH_SEPOLIA_RPC };
+    case ChainId.holesky:
+      return { http: process.env.ETH_HOLESKY_RPC };
+    case ChainId.optimismGoerli:
+      return { http: process.env.OPTIMISM_GOERLI_RPC };
+    case ChainId.optimismSepolia:
+      return { http: process.env.OPTIMISM_SEPOLIA_RPC };
+    case ChainId.bscTestnet:
+      return { http: process.env.BSC_TESTNET_RPC };
+    case ChainId.polygonMumbai:
+      return { http: process.env.POLYGON_MUMBAI_RPC };
+    case ChainId.arbitrumSepolia:
+      return { http: process.env.ARBITRUM_SEPOLIA_RPC };
+    case ChainId.arbitrumGoerli:
+      return { http: process.env.ARBITRUM_GOERLI_RPC };
+    case ChainId.baseGoerli:
+      return { http: process.env.BASE_GOERLI_RPC };
+    case ChainId.baseSepolia:
+      return { http: process.env.BASE_SEPOLIA_RPC };
+    case ChainId.zoraTestnet:
+      return { http: process.env.ZORA_GOERLI_RPC };
+    case ChainId.zoraSepolia:
+      return { http: process.env.ZORA_SEPOLIA_RPC };
+    default:
+      return null;
+  }
+};

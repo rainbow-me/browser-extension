@@ -18,29 +18,33 @@ import {
   ThemeProvider,
 } from '~/design-system';
 
+import { ChainBadge } from '../popup/components/ChainBadge/ChainBadge';
+
 const HTML_COLOR_SCHEME_PATTERN = /color-scheme:\s*(\w+);/;
 
 const ASSET_SOURCE = {
-  [ChainId.mainnet]: 'assets/badges/ethereumBadge.png',
-  [ChainId.optimism]: 'assets/badges/optimismBadge.png',
-  [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
-  [ChainId.polygon]: 'assets/badges/polygonBadge.png',
-  [ChainId.base]: 'assets/badges/baseBadge.png',
-  [ChainId.zora]: 'assets/badges/zoraBadge.png',
-  [ChainId.bsc]: 'assets/badges/bscBadge.png',
-  [ChainId.hardhat]: 'assets/badges/hardhatBadge.png',
-  [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge.png',
-  [ChainId.goerli]: 'assets/badges/ethereumBadge.png',
-  [ChainId.sepolia]: 'assets/badges/ethereumBadge.png',
-  [ChainId.holesky]: 'assets/badges/ethereumBadge.png',
-  [ChainId.optimismGoerli]: 'assets/badges/optimismBadge.png',
-  [ChainId.optimismSepolia]: 'assets/badges/optimismBadge.png',
-  [ChainId.bscTestnet]: 'assets/badges/bscBadge.png',
-  [ChainId.polygonMumbai]: 'assets/badges/polygonBadge.png',
-  [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge.png',
-  [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge.png',
-  [ChainId.baseGoerli]: 'assets/badges/baseBadge.png',
-  [ChainId.zoraTestnet]: 'assets/badges/zoraBadge.png',
+  [ChainId.mainnet]: 'assets/badges/ethereumBadge@3x.png',
+  [ChainId.optimism]: 'assets/badges/optimismBadge@3x.png',
+  [ChainId.arbitrum]: 'assets/badges/arbitrumBadge@3x.png',
+  [ChainId.polygon]: 'assets/badges/polygonBadge@3x.png',
+  [ChainId.base]: 'assets/badges/baseBadge@3x.png',
+  [ChainId.zora]: 'assets/badges/zoraBadge@3x.png',
+  [ChainId.bsc]: 'assets/badges/bscBadge@3x.png',
+  [ChainId.hardhat]: 'assets/badges/hardhatBadge@3x.png',
+  [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge@3x.png',
+  [ChainId.goerli]: 'assets/badges/ethereumBadge@3x.png',
+  [ChainId.sepolia]: 'assets/badges/ethereumBadge@3x.png',
+  [ChainId.holesky]: 'assets/badges/ethereumBadge@3x.png',
+  [ChainId.optimismGoerli]: 'assets/badges/optimismBadge@3x.png',
+  [ChainId.optimismSepolia]: 'assets/badges/optimismBadge@3x.png',
+  [ChainId.bscTestnet]: 'assets/badges/bscBadge@3x.png',
+  [ChainId.polygonMumbai]: 'assets/badges/polygonBadge@3x.png',
+  [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge@3x.png',
+  [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge@3x.png',
+  [ChainId.baseGoerli]: 'assets/badges/baseBadge@3x.png',
+  [ChainId.baseSepolia]: 'assets/badges/baseBadge@3x.png',
+  [ChainId.zoraTestnet]: 'assets/badges/zoraBadge@3x.png',
+  [ChainId.zoraSepolia]: 'assets/badges/zoraBadge@3x.png',
 };
 
 export enum IN_DAPP_NOTIFICATION_STATUS {
@@ -51,19 +55,26 @@ export enum IN_DAPP_NOTIFICATION_STATUS {
 
 export const Notification = ({
   chainId,
+  chainName,
   status,
   extensionUrl,
 }: {
   chainId: ChainId;
+  chainName?: string;
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
 }) => {
   const [ref, setRef] = useState<HTMLIFrameElement>();
   const [iframeLoaded, setIframeLoaded] = useState<boolean>(false);
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
+  const [isVisible, setIsVisible] = useState(true);
 
   const onRef = (ref: HTMLIFrameElement) => {
     setRef(ref);
+  };
+
+  const handleDismiss = () => {
+    setIsVisible(false);
   };
 
   const container = ref?.contentDocument?.body;
@@ -194,7 +205,7 @@ export const Notification = ({
     }
   }, [extensionUrl, ref?.contentDocument]);
 
-  return (
+  return isVisible ? (
     <iframe
       style={{
         top: INJECTED_NOTIFICATION_DIMENSIONS.top,
@@ -213,35 +224,41 @@ export const Notification = ({
           <NotificationComponent
             siteTheme={siteTheme}
             chainId={chainId}
+            chainName={chainName}
             status={status}
             extensionUrl={extensionUrl}
             iframeLoaded={iframeLoaded}
+            onDismiss={handleDismiss}
           />,
           container,
         )}
     </iframe>
-  );
+  ) : null;
 };
 
 const NotificationComponent = ({
   chainId,
+  chainName,
   siteTheme,
   status,
   extensionUrl,
   iframeLoaded,
+  onDismiss,
 }: {
   chainId: ChainId;
+  chainName?: string;
   siteTheme: 'dark' | 'light';
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
   iframeLoaded: boolean;
+  onDismiss: () => void;
 }) => {
   const { title, description } = useMemo(() => {
     switch (status) {
       case IN_DAPP_NOTIFICATION_STATUS.success:
         return {
           title: i18n.t(`injected_notifications.network_changed`),
-          description: ChainNameDisplay[chainId],
+          description: ChainNameDisplay[chainId] || chainName,
         };
       case IN_DAPP_NOTIFICATION_STATUS.unsupported_network:
         return {
@@ -255,7 +272,7 @@ const NotificationComponent = ({
           description: i18n.t('injected_notifications.no_active_session'),
         };
     }
-  }, [chainId, status]);
+  }, [chainId, chainName, status]);
 
   return iframeLoaded ? (
     <ThemeProvider theme={siteTheme}>
@@ -266,6 +283,7 @@ const NotificationComponent = ({
           height: INJECTED_NOTIFICATION_DIMENSIONS.height,
           width: INJECTED_NOTIFICATION_DIMENSIONS.width,
         }}
+        onClick={onDismiss}
       >
         <Inline height="full" alignVertical="center" alignHorizontal="center">
           <Box
@@ -290,7 +308,9 @@ const NotificationComponent = ({
                       width={24}
                       height={24}
                     />
-                  ) : null
+                  ) : (
+                    <ChainBadge chainId={chainId} size={24} />
+                  )
                 ) : (
                   <Box
                     height="full"

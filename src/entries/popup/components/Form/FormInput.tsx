@@ -13,10 +13,24 @@ interface FormInputProps {
   value?: string | number;
   borderColor?: BoxStyles['borderColor'];
   loading?: boolean;
+  spellCheck?: boolean;
+  tabIndex?: number;
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
-  ({ onChange, onBlur, placeholder, value, borderColor, loading }, ref) => {
+  function FormInput(
+    {
+      onChange,
+      onBlur,
+      placeholder,
+      value,
+      borderColor,
+      loading,
+      spellCheck,
+      tabIndex,
+    },
+    ref,
+  ) {
     return (
       <Box position="relative">
         <Inline alignVertical="center">
@@ -28,10 +42,12 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
             variant="surface"
             value={value || ''}
             onBlur={onBlur}
+            spellCheck={spellCheck}
             borderColor={borderColor}
             style={{
               paddingRight: 30,
             }}
+            tabIndex={tabIndex}
           />
           {loading && (
             <Box position="absolute" right="8px">
@@ -43,7 +59,5 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     );
   },
 );
-
-FormInput.displayName = 'FormInput';
 
 export { FormInput };

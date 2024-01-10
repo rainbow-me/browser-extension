@@ -37,6 +37,7 @@ import { triggerToast } from '../Toast/Toast';
 
 import {
   ENSOrAddressSearchItem,
+  NFTSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
@@ -47,6 +48,7 @@ import { CommandKPage, PAGES } from './pageConfig';
 import { actionLabels } from './references';
 import { CommandKPageState } from './useCommandKNavigation';
 import { useSearchableENSorAddress } from './useSearchableENSOrAddress';
+import { useSearchableNFTs } from './useSearchableNFTs';
 import { useSearchableTokens } from './useSearchableTokens';
 import { useSearchableWallets } from './useSearchableWallets';
 import { handleExportAddresses } from './utils';
@@ -117,6 +119,15 @@ export const staticCommandInfo: CommandInfo = {
     toPage: PAGES.MY_TOKENS,
     type: SearchItemType.Shortcut,
   },
+  myNFTs: {
+    actionLabel: actionLabels.view,
+    name: getCommandName('my_nfts'),
+    page: PAGES.HOME,
+    symbol: 'photo',
+    symbolSize: 16.25,
+    toPage: PAGES.MY_NFTS,
+    type: SearchItemType.Shortcut,
+  },
   copyAddress: {
     name: getCommandName('copy_address'),
     page: PAGES.HOME,
@@ -126,11 +137,11 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 15,
     type: SearchItemType.Shortcut,
   },
-  viewNFTs: {
+  viewProfile: {
     actionLabel: actionLabels.openInNewTab,
-    name: getCommandName('view_nfts'),
+    name: getCommandName('view_profile'),
     page: PAGES.HOME,
-    searchTags: getSearchTags('view_nfts'),
+    searchTags: getSearchTags('view_profile'),
     shortcut: shortcuts.home.GO_TO_PROFILE,
     shouldRemainOnActiveRoute: true,
     symbol: 'sparkle',
@@ -380,9 +391,9 @@ export const staticCommandInfo: CommandInfo = {
   viewUnownedWalletNFTs: {
     actionLabel: actionLabels.openInNewTab,
     hideFromMainSearch: true,
-    name: getCommandName('view_nfts'),
+    name: getCommandName('view_profile'),
     page: PAGES.UNOWNED_WALLET_DETAIL,
-    searchTags: getSearchTags('view_nfts'),
+    searchTags: getSearchTags('view_profile'),
     shouldRemainOnActiveRoute: true,
     symbol: 'sparkle',
     symbolSize: 15,
@@ -451,6 +462,7 @@ const compileCommandList = (
   overrides: CommandOverride,
   staticInfo: CommandInfo,
   tokens: TokenSearchItem[],
+  nfts: NFTSearchItem[],
   walletSearchResult: ENSOrAddressSearchItem[],
   wallets: WalletSearchItem[],
 ): SearchItem[] => {
@@ -471,7 +483,7 @@ const compileCommandList = (
       onClick: overrides[key]?.action,
     }));
 
-  return [...shortcuts, ...tokens, ...walletSearchResult, ...wallets];
+  return [...shortcuts, ...tokens, ...nfts, ...walletSearchResult, ...wallets];
 };
 
 const isENSOrAddressCommand = (
@@ -511,6 +523,7 @@ export const useCommands = (
     setSelectedCommandNeedsUpdate,
   );
   const { searchableTokens } = useSearchableTokens();
+  const { searchableNFTs } = useSearchableNFTs();
   const { searchableWallets } = useSearchableWallets(currentPage);
   const { setSelectedToken } = useSelectedTokenStore();
   const { sortedAccounts } = useAccounts();
@@ -641,13 +654,20 @@ export const useCommands = (
         searchTags: isWatchingWallet ? getSearchTags('my_tokens_watched') : [],
         selectedWallet: ensName || truncateAddress(address),
       },
+      myNFTs: {
+        name: isWatchingWallet
+          ? getCommandName('my_nfts_watched')
+          : getCommandName('my_nfts'),
+        searchTags: isWatchingWallet ? getSearchTags('my_nfts_watched') : [],
+        selectedWallet: ensName || truncateAddress(address),
+      },
       copyAddress: {
         action: () => handleCopy(address),
       },
       exportAddresses: {
         action: () => handleExportAddresses(sortedAccounts),
       },
-      viewNFTs: {
+      viewProfile: {
         action: openProfile,
       },
       lock: {
@@ -894,6 +914,7 @@ export const useCommands = (
         commandOverrides,
         staticCommandInfo,
         searchableTokens,
+        searchableNFTs,
         searchableENSOrAddress,
         searchableWallets,
       ),
@@ -903,6 +924,7 @@ export const useCommands = (
       featureFlags.full_watching_wallets,
       commandOverrides,
       searchableTokens,
+      searchableNFTs,
       searchableENSOrAddress,
       searchableWallets,
     ],

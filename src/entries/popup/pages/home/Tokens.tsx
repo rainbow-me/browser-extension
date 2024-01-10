@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
+import uniqBy from 'lodash/uniqBy';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -124,10 +125,13 @@ export function Tokens() {
 
   const allAssets = useMemo(
     () =>
-      [...assets, ...customNetworkAssets].sort(
-        (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
+      uniqBy(
+        [...assets, ...customNetworkAssets].sort(
+          (a: ParsedUserAsset, b: ParsedUserAsset) =>
+            parseFloat(b?.native?.balance?.amount) -
+            parseFloat(a?.native?.balance?.amount),
+        ),
+        'uniqueId',
       ),
     [assets, customNetworkAssets],
   );

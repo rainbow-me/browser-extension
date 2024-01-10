@@ -1,19 +1,21 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
-import { useEnsName } from 'wagmi';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
-import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
-import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
+import {
+  getUniqueAssetImagePreviewURL,
+  getUniqueAssetImageThumbnailURL,
+} from '~/core/utils/nfts';
 import {
   Bleed,
   Box,
@@ -32,17 +34,23 @@ import { useContainerRef } from '~/design-system/components/AnimatedRoute/Animat
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { useCoolMode } from '~/entries/popup/hooks/useCoolMode';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
 import ExternalImage from '../../../components/ExternalImage/ExternalImage';
 
+import NFTContextMenu from './NFTContextMenu';
+import { fadeOutMask } from './NFTs.css';
+
 const NFTS_LIMIT = 2000;
 const COLLECTION_IMAGE_SIZE = 16;
 
-export function PostReleaseNFTs() {
+export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { displayMode, sort, sections: sectionsState } = useNftsStore();
+  const { testnetMode } = useTestnetModeStore();
+  const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const {
     data,
     fetchNextPage,
@@ -50,7 +58,8 @@ export function PostReleaseNFTs() {
     isFetching,
     isFetchingNextPage,
     isLoading,
-  } = useNfts({ address });
+    refetch,
+  } = useNfts({ address, testnetMode });
   const nftData = useMemo(() => {
     return {
       ...data,
@@ -135,13 +144,25 @@ export function PostReleaseNFTs() {
     );
   };
 
+  useKeyboardShortcut({
+    handler: async (e: KeyboardEvent) => {
+      if (e.key === shortcuts.nfts.REFRESH_NFTS.key) {
+        setManuallyRefetching(true);
+        await refetch();
+        setManuallyRefetching(false);
+      }
+    },
+  });
+
   useEffect(() => {
     collectionGalleryRowVirtualizer.measure();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionsState, sort]);
 
+  const nftCount = getNftCount({ address, testnetMode });
+  const isPaginating = hasNextPage && nftCount < NFTS_LIMIT;
+
   useEffect(() => {
-    const nftCount = getNftCount({ address });
     if (
       hasNextPage &&
       !isFetching &&
@@ -157,9 +178,9 @@ export function PostReleaseNFTs() {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
+    nftCount,
   ]);
 
-  // we don't have a design for loading / empty state yet
   if (!isLoading && Object.values(nfts || {}).length === 0) {
     return <NFTEmptyState />;
   }
@@ -175,7 +196,7 @@ export function PostReleaseNFTs() {
       >
         {displayMode === 'grouped' && (
           <>
-            {isLoading ? (
+            {isLoading || manuallyRefetching ? (
               <Box width="full">
                 <Inset horizontal="8px">
                   <GroupedNFTsSkeleton />
@@ -186,7 +207,6 @@ export function PostReleaseNFTs() {
                 width="full"
                 style={{
                   height: groupedGalleryRowVirtualizer.getTotalSize(),
-                  minHeight: '436px',
                   position: 'relative',
                 }}
               >
@@ -216,15 +236,31 @@ export function PostReleaseNFTs() {
                               }}
                             >
                               {rowData.map((asset, i) => (
-                                <NftThumbnail
-                                  imageSrc={getUniqueAssetImageThumbnailURL(
-                                    asset,
-                                  )}
-                                  key={i}
-                                  onClick={() => onAssetClick(asset)}
-                                  index={i}
-                                />
+                                <NFTContextMenu key={i} nft={asset}>
+                                  <NftThumbnail
+                                    imageSrc={getUniqueAssetImageThumbnailURL(
+                                      asset,
+                                    )}
+                                    key={i}
+                                    onClick={() => onAssetClick(asset)}
+                                    index={i}
+                                  />
+                                </NFTContextMenu>
                               ))}
+                              {rowData.length < 3 &&
+                                isPaginating &&
+                                Array.from({ length: 3 - rowData.length }).map(
+                                  (_, i) => {
+                                    return (
+                                      <Skeleton
+                                        key={i}
+                                        height={'96px'}
+                                        style={{ borderRadius: 10 }}
+                                        width={'96px'}
+                                      />
+                                    );
+                                  },
+                                )}
                             </Box>
                           </Inset>
                         </Box>
@@ -233,11 +269,16 @@ export function PostReleaseNFTs() {
                 </Box>
               </Box>
             )}
+            {isPaginating && (
+              <Box width="full" className={fadeOutMask} paddingHorizontal="8px">
+                <GroupedNFTsSkeleton skeletonLength={3} />
+              </Box>
+            )}
           </>
         )}
         {displayMode === 'byCollection' && (
           <>
-            {isLoading ? (
+            {isLoading || manuallyRefetching ? (
               <Box width="full">
                 <Inset horizontal="8px">
                   <CollectionNFTsSkeleton />
@@ -248,8 +289,8 @@ export function PostReleaseNFTs() {
                 width="full"
                 style={{
                   height: collectionGalleryRowVirtualizer.getTotalSize(),
-                  minHeight: '436px',
                   position: 'relative',
+                  marginBottom: isPaginating ? -6 : 0,
                 }}
               >
                 <Box style={{ overflow: 'auto' }}>
@@ -280,6 +321,11 @@ export function PostReleaseNFTs() {
                 </Box>
               </Box>
             )}
+            {isPaginating && (
+              <Box width="full" className={fadeOutMask} paddingHorizontal="4px">
+                <CollectionNFTsSkeleton skeletonLength={4} />
+              </Box>
+            )}
           </>
         )}
       </Box>
@@ -287,7 +333,11 @@ export function PostReleaseNFTs() {
   );
 }
 
-function GroupedNFTsSkeleton() {
+function GroupedNFTsSkeleton({
+  skeletonLength = 9,
+}: {
+  skeletonLength?: number;
+}) {
   return (
     <Box
       style={{
@@ -299,7 +349,7 @@ function GroupedNFTsSkeleton() {
         paddingBottom: 16,
       }}
     >
-      {Array.from({ length: 9 }).map((_, i) => {
+      {Array.from({ length: skeletonLength }).map((_, i) => {
         return (
           <Skeleton
             key={i}
@@ -313,11 +363,15 @@ function GroupedNFTsSkeleton() {
   );
 }
 
-function CollectionNFTsSkeleton() {
+function CollectionNFTsSkeleton({
+  skeletonLength = 15,
+}: {
+  skeletonLength?: number;
+}) {
   return (
     <Stack space="7px">
-      {Array.from({ length: 15 }).map((_, i) => (
-        <Box key={i}>
+      {Array.from({ length: skeletonLength }).map((_, i) => (
+        <Box key={i} paddingBottom="5px">
           <Columns alignVertical="center">
             <Column>
               <Inline alignVertical="center" space="7px">
@@ -335,7 +389,7 @@ function CollectionNFTsSkeleton() {
             <Column width="content">
               <Inline alignVertical="center">
                 <Symbol
-                  symbol="chevron.down"
+                  symbol="chevron.right"
                   weight="bold"
                   size={12}
                   color="labelQuaternary"
@@ -455,18 +509,24 @@ function CollectionSection({
             >
               {section.assets.map((asset, i) => {
                 return (
-                  <NftThumbnail
-                    imageSrc={
-                      // we hold off on providing the src field until opened so that
-                      // we don't request images for collections that are never opened
-                      collectionVisible
-                        ? getUniqueAssetImageThumbnailURL(asset)
-                        : undefined
-                    }
-                    key={i}
-                    onClick={() => onAssetClick(asset)}
-                    index={i}
-                  />
+                  <NFTContextMenu key={i} nft={asset}>
+                    <NftThumbnail
+                      imageSrc={
+                        // we hold off on providing the src field until opened so that
+                        // we don't request images for collections that are never opened
+                        collectionVisible
+                          ? getUniqueAssetImageThumbnailURL(asset)
+                          : undefined
+                      }
+                      placeholderSrc={
+                        collectionVisible
+                          ? getUniqueAssetImagePreviewURL(asset)
+                          : undefined
+                      }
+                      onClick={() => onAssetClick(asset)}
+                      index={i}
+                    />
+                  </NFTContextMenu>
                 );
               })}
             </Box>
@@ -477,51 +537,38 @@ function CollectionSection({
   );
 }
 
-const NftThumbnail = memo(
-  ({
-    imageSrc,
-    onClick,
-    index,
-  }: {
-    imageSrc?: string;
-    onClick: () => void;
-    index: number;
-  }) => {
-    return (
-      <Lens
-        style={{ height: 96, width: 96 }}
+const NftThumbnail = memo(function NftThumbnail({
+  imageSrc,
+  onClick,
+  index,
+  placeholderSrc,
+}: {
+  imageSrc?: string;
+  onClick: () => void;
+  index: number;
+  placeholderSrc?: string;
+}) {
+  return (
+    <Lens
+      style={{ height: 96, width: 96 }}
+      borderRadius="10px"
+      background="fillQuaternary"
+      onClick={onClick}
+      testId={`nft-thumbnail-${imageSrc}-${index}`}
+    >
+      <ExternalImage
         borderRadius="10px"
-        background="fillQuaternary"
-        onClick={onClick}
-        testId={`nft-thumbnail-${imageSrc}-${index}`}
-      >
-        <ExternalImage
-          borderRadius="10px"
-          src={imageSrc}
-          height={96}
-          width={96}
-        />
-      </Lens>
-    );
-  },
-);
-
-NftThumbnail.displayName = 'NftThumbnail';
+        src={imageSrc}
+        placeholderSrc={placeholderSrc}
+        height={96}
+        width={96}
+      />
+    </Lens>
+  );
+});
 
 export function NFTEmptyState() {
   const ref = useCoolMode({ emojis: ['🌈', '🖼️'] });
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { data: ensName } = useEnsName({ address });
-  const { featureFlags } = useFeatureFlagsStore();
-  const nftsEnabled = featureFlags.nfts_enabled;
-
-  const openProfile = useCallback(
-    () =>
-      goToNewTab({
-        url: getProfileUrl(ensName ?? address),
-      }),
-    [address, ensName],
-  );
 
   return (
     <Box
@@ -532,7 +579,7 @@ export function NFTEmptyState() {
       marginTop="-20px"
       paddingTop="80px"
       ref={ref}
-      style={{ height: 336 - (nftsEnabled ? 64 : 0) }}
+      style={{ height: 336 - 64 }}
       width="full"
     >
       <Box paddingBottom="14px">
@@ -569,9 +616,7 @@ export function NFTEmptyState() {
             weight="semibold"
             color="labelTertiary"
           >
-            {nftsEnabled
-              ? i18n.t('nfts.empty_state_header')
-              : i18n.t('nfts.coming_soon_header')}
+            {i18n.t('nfts.empty_state_header')}
           </Text>
         </Stack>
       </Box>
@@ -582,39 +627,9 @@ export function NFTEmptyState() {
           size="12pt"
           weight="medium"
         >
-          {nftsEnabled
-            ? i18n.t('nfts.empty_state_description')
-            : i18n.t('nfts.coming_soon_description')}
+          {i18n.t('nfts.empty_state_description')}
         </Text>
       </Inset>
-      {!nftsEnabled && (
-        <Lens
-          borderRadius="8px"
-          cursor="pointer"
-          onClick={openProfile}
-          padding="6px"
-          width="fit"
-        >
-          <Inline alignHorizontal="center" alignVertical="center" space="3px">
-            <Text
-              align="center"
-              color="accent"
-              cursor="pointer"
-              size="12pt"
-              weight="heavy"
-            >
-              {i18n.t('nfts.view_on_web')}
-            </Text>
-            <Symbol
-              color="accent"
-              cursor="pointer"
-              size={9.5}
-              symbol="chevron.right"
-              weight="heavy"
-            />
-          </Inline>
-        </Lens>
-      )}
     </Box>
   );
 }

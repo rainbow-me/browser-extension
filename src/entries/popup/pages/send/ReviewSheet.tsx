@@ -1,3 +1,4 @@
+import { getNetwork } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, {
   useCallback,
@@ -266,25 +267,34 @@ export const ReviewSheet = ({
   >;
 }) => {
   const { visibleOwnedWallets } = useWallets();
-  const [sendingOnL2Checks, setSendingOnL2Checks] = useState(false);
+  const [notSendingOnEthereumChecks, setNotSendingOnEthereumChecks] =
+    useState(false);
   const prevShow = usePrevious(show);
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
+  const { chains } = getNetwork();
+  const chain = useMemo(
+    () => chains.find((c) => c.id === asset?.chainId),
+    [asset?.chainId, chains],
+  );
 
   const { displayName: walletDisplayName } = useWalletInfo({
     address: toAddress,
   });
 
   const shouldHideAmount =
-    isCustomChain(asset?.chainId as ChainId) &&
+    isCustomChain(chain?.id as ChainId) &&
     asset?.native?.balance?.amount === '0';
 
-  const sendingOnL2 = useMemo(
-    () => isL2Chain(asset?.chainId || ChainId.mainnet),
-    [asset?.chainId],
+  const notSendingOnEthereum = useMemo(
+    () =>
+      isL2Chain(chain?.id || ChainId.mainnet) ||
+      isCustomChain(chain?.id || ChainId.mainnet),
+    [chain?.id],
   );
 
-  const chainName = ChainNameDisplay[asset?.chainId || ChainId.mainnet];
+  const chainName =
+    ChainNameDisplay[asset?.chainId || ChainId.mainnet] || chain?.name;
 
   const isToWalletOwner = useMemo(
     () =>
@@ -294,10 +304,10 @@ export const ReviewSheet = ({
     [toAddress, visibleOwnedWallets],
   );
 
-  const sendEnabled = useMemo(() => {
-    if (!sendingOnL2) return true;
-    return sendingOnL2Checks;
-  }, [sendingOnL2, sendingOnL2Checks]);
+  const sendEnabled = useMemo(
+    () => !notSendingOnEthereum || notSendingOnEthereumChecks,
+    [notSendingOnEthereum, notSendingOnEthereumChecks],
+  );
 
   const handleSend = useCallback(async () => {
     if (sendEnabled && !sending) {
@@ -306,6 +316,8 @@ export const ReviewSheet = ({
         await onSend();
         playSound('SendSound');
       } catch (e) {
+        //
+      } finally {
         setSending(false);
       }
     }
@@ -324,7 +336,7 @@ export const ReviewSheet = ({
 
   useEffect(() => {
     if (prevShow && !show) {
-      setSendingOnL2Checks(false);
+      setNotSendingOnEthereumChecks(false);
     }
   }, [prevShow, show]);
 
@@ -492,12 +504,14 @@ export const ReviewSheet = ({
                     </Columns>
                   </Row>
                 </Rows>
-                {sendingOnL2 && <Separator color="separatorTertiary" />}
+                {notSendingOnEthereum && (
+                  <Separator color="separatorTertiary" />
+                )}
               </Stack>
             </Box>
           </Stack>
 
-          {sendingOnL2 && (
+          {notSendingOnEthereum && (
             <Box paddingHorizontal="16px" paddingBottom="20px">
               <Stack space="20px">
                 <Box
@@ -506,14 +520,18 @@ export const ReviewSheet = ({
                   padding="8px"
                   width="full"
                   borderRadius="12px"
-                  onClick={showL2Explainer}
+                  onClick={() =>
+                    isSideChain(chain?.id || ChainId.mainnet)
+                      ? showL2Explainer()
+                      : null
+                  }
                   initial={{ zIndex: 0 }}
                   whileHover={{ scale: transformScales['1.04'] }}
                   whileTap={{ scale: transformScales['0.96'] }}
                   transition={transitions.bounce}
                 >
                   <Inline alignVertical="center" alignHorizontal="justify">
-                    <Inline alignVertical="center" space="8px">
+                    <Inline alignVertical="center" space="8px" wrap={false}>
                       <ChainBadge
                         chainId={asset?.chainId || ChainId.mainnet}
                         size="16"
@@ -524,14 +542,17 @@ export const ReviewSheet = ({
                         })}
                       </Text>
                     </Inline>
-                    <Symbol
-                      weight="bold"
-                      symbol="info.circle.fill"
-                      size={12}
-                      color="labelTertiary"
-                    />
+                    {isSideChain(chain?.id || ChainId.mainnet) ? (
+                      <Symbol
+                        weight="bold"
+                        symbol="info.circle.fill"
+                        size={12}
+                        color="labelTertiary"
+                      />
+                    ) : null}
                   </Inline>
                 </Box>
+
                 <Box paddingHorizontal="7px">
                   <Stack space="12px">
                     <Columns alignVertical="center" space="7px">
@@ -540,12 +561,14 @@ export const ReviewSheet = ({
                           width="16px"
                           height="16px"
                           borderRadius="6px"
-                          selected={sendingOnL2Checks}
+                          selected={notSendingOnEthereumChecks}
                           backgroundSelected="blue"
                           borderColorSelected="blue"
                           borderColor="labelTertiary"
                           onClick={() =>
-                            setSendingOnL2Checks(!sendingOnL2Checks)
+                            setNotSendingOnEthereumChecks(
+                              !notSendingOnEthereumChecks,
+                            )
                           }
                         />
                       </Column>
@@ -553,7 +576,9 @@ export const ReviewSheet = ({
                         <Lens
                           testId="L2-check-1"
                           onClick={() =>
-                            setSendingOnL2Checks(!sendingOnL2Checks)
+                            setNotSendingOnEthereumChecks(
+                              !notSendingOnEthereumChecks,
+                            )
                           }
                         >
                           <Text

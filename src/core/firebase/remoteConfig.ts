@@ -45,7 +45,7 @@ const DEFAULT_CONFIG = {
   tx_requests_enabled: true,
   flashbots_enabled: true,
   rpc_proxy_enabled: true,
-  points_enabled: false,
+  points_enabled: true,
   // SWAPS
   default_slippage_bips: {
     arbitrum: 200,
