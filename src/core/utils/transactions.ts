@@ -331,16 +331,13 @@ export async function getNextNonce({
   address: Address;
   chainId: ChainId;
 }) {
-  const { getNonce } = nonceStore.getState();
-  const localNonceData = getNonce({ address, chainId });
-  const localNonce = localNonceData?.currentNonce || 0;
   const provider = getProvider({ chainId });
   const txCountIncludingPending = await provider.getTransactionCount(
     address,
     'pending',
   );
-  if (!localNonce && !txCountIncludingPending) return 0;
-  const ret = Math.max(localNonce + 1, txCountIncludingPending);
+  if (!txCountIncludingPending) return 0;
+  const ret = txCountIncludingPending;
   return ret;
 }
 

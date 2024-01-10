@@ -112,6 +112,8 @@ export const sendTransaction = async (
       chainId: transactionRequest.chainId as number,
     }));
 
+  console.log('- nonce', nonce);
+
   const transactionGasParams = {
     maxFeePerGas:
       transactionRequest.maxFeePerGas ||
