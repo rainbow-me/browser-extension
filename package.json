@@ -94,7 +94,7 @@
     "@ledgerhq/hw-app-eth": "6.34.5",
     "@ledgerhq/hw-transport-webhid": "6.27.19",
     "@metamask/browser-passworder": "4.1.0",
-    "@metamask/eth-sig-util": "7.0.0",
+    "@metamask/eth-sig-util": "7.0.1",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-context-menu": "2.1.1",
     "@radix-ui/react-dropdown-menu": "2.0.1",
