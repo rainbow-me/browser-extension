@@ -43,7 +43,7 @@ export function IconAndCopyList({
             <Text size="14pt" weight="medium" color="label">
               {copy}
               {onClickLink && (
-                <TextLink color="blue" onClick={onClickLink}>
+                <TextLink color={icon.color} onClick={onClickLink}>
                   {i18n.t('link_text')}
                 </TextLink>
               )}

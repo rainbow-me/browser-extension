@@ -233,7 +233,7 @@
           "button_wipe": "Reset Rainbow",
           "button_complete": "Complete Check Above",
           "wipe_confirmation": "Reset Rainbow",
-          "wipe_confirmation_desc": "Are you sure you want to reset Rainbow's browser extension?",
+          "wipe_confirmation_desc": "Are you sure you want to reset the Rainbow browser extension?",
           "wipe_confirmation_button": "Reset",
           "wipe_confirmation_cancel": "Cancel"
         }
