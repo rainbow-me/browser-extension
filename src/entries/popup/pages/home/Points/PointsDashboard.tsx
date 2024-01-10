@@ -449,12 +449,10 @@ export function PointsDashboard() {
   return (
     <Stack
       gap="20px"
-      paddingBottom="120px"
       separator={<Separator color="separatorTertiary" />}
-      paddingHorizontal="20px"
       width="full"
       marginTop="-20px" // there is a 20px top inset wrapping all tabs, I don't wanna mess with that rn afraid of breaking something somewhere else
-      paddingTop="20px" // so I'm accounting for it in here, but should be revisited in the future
+      padding="20px"
       background={currentTheme === 'light' ? 'surfaceSecondary' : undefined}
     >
       <YourPoints />

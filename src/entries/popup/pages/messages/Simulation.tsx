@@ -48,6 +48,10 @@ function SimulatedChangeRow({
   color: TextColor;
   label: string;
 }) {
+  const changeAmount =
+    quantity === 'UNLIMITED'
+      ? Number.MAX_SAFE_INTEGER
+      : formatUnits(quantity, asset.decimals);
   return (
     <Inline
       wrap={false}
@@ -69,9 +73,9 @@ function SimulatedChangeRow({
         )}
         <Inline wrap={false} space="4px" alignVertical="center">
           <TextOverflow size="14pt" weight="bold" color={color}>
-            {quantity === 'UNLIMITED' || +quantity > 999e12 // say unlimited if more than 999T
+            {quantity === 'UNLIMITED' || +changeAmount > 999e12 // say unlimited if more than 999T
               ? i18n.t('approvals.unlimited')
-              : formatNumber(formatUnits(quantity, asset.decimals))}{' '}
+              : formatNumber(changeAmount)}{' '}
           </TextOverflow>
           <Text size="14pt" weight="bold" color={color}>
             {asset.symbol}

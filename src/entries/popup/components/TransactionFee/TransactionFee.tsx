@@ -84,12 +84,10 @@ function Fee({
     [gasFeeParamsBySpeed, selectedSpeed],
   );
   const openCustomGasSheet = useCallback(() => {
-    if (chainId === ChainId.mainnet) {
-      setShowCustomGasSheet(true);
-      analyticsEvents?.customGasClicked &&
-        analytics.track(analyticsEvents?.customGasClicked);
-    }
-  }, [analyticsEvents?.customGasClicked, chainId]);
+    setShowCustomGasSheet(true);
+    analyticsEvents?.customGasClicked &&
+      analytics.track(analyticsEvents?.customGasClicked);
+  }, [analyticsEvents?.customGasClicked]);
 
   const closeCustomGasSheet = useCallback(
     () => setShowCustomGasSheet(false),
@@ -170,7 +168,9 @@ function Fee({
                   <TextOverflow weight="semibold" color="label" size="14pt">
                     {isLoading
                       ? '~'
-                      : `${gasFeeParamsForSelectedSpeed?.gasFee.display}`}
+                      : `${
+                          gasFeeParamsForSelectedSpeed?.gasFee.display || '~'
+                        }`}
                   </TextOverflow>
                 </Column>
                 <Column>
@@ -181,7 +181,10 @@ function Fee({
                   >
                     {isLoading
                       ? ''
-                      : `${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
+                      : `${
+                          gasFeeParamsForSelectedSpeed?.estimatedTime.display ||
+                          ''
+                        }`}
                   </TextOverflow>
                 </Column>
               </Columns>
@@ -204,36 +207,34 @@ function Fee({
               dropdownContentMarginRight={speedMenuMarginRight}
               ref={switchTransactionSpeedMenuRef}
             />
-            {chainId === ChainId.mainnet ? (
-              <CursorTooltip
-                align="end"
-                arrowAlignment="right"
-                arrowCentered
-                text={i18n.t('tooltip.gwei_settings')}
-                textWeight="bold"
-                textSize="12pt"
-                textColor="labelSecondary"
-                hint={shortcuts.global.OPEN_CUSTOM_GAS_MENU.display}
+            <CursorTooltip
+              align="end"
+              arrowAlignment="right"
+              arrowCentered
+              text={i18n.t('tooltip.gwei_settings')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              hint={shortcuts.global.OPEN_CUSTOM_GAS_MENU.display}
+            >
+              <Lens
+                borderRadius="round"
+                boxShadow="12px accent"
+                borderWidth="2px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                borderColor="fillSecondary"
+                style={{ height: 28, width: 28 }}
+                onClick={openCustomGasSheet}
               >
-                <Lens
-                  borderRadius="round"
-                  boxShadow="12px accent"
-                  borderWidth="2px"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  borderColor="fillSecondary"
-                  style={{ height: 28, width: 28 }}
-                  onClick={openCustomGasSheet}
-                >
-                  <Symbol
-                    weight="medium"
-                    symbol="slider.horizontal.3"
-                    size={12}
-                  />
-                </Lens>
-              </CursorTooltip>
-            ) : null}
+                <Symbol
+                  weight="medium"
+                  symbol="slider.horizontal.3"
+                  size={12}
+                />
+              </Lens>
+            </CursorTooltip>
           </Inline>
         </Column>
       </Columns>
