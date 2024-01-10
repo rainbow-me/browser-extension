@@ -1068,6 +1068,7 @@ export const symbolNames = selectSymbolNames(
   'photo',
   'person.crop.rectangle.fill',
   'photo.fill',
+  'spigot.fill',
   'person.2.fill',
   'doc.badge.plus',
 );
