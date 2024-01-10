@@ -4,7 +4,7 @@ import { Address } from 'wagmi';
 
 import { queryClient } from '~/core/react-query';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
-import { fetchTransactions } from '~/core/resources/transactions/transactions';
+import { fetchTransaction } from '~/core/resources/transactions/transaction';
 import {
   useCurrentCurrencyStore,
   useNonceStore,
@@ -28,7 +28,7 @@ import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
 export const useWatchPendingTransactions = ({
   address,
 }: {
-  address?: Address;
+  address: Address;
 }) => {
   const { swapRefreshAssets } = useSwapRefreshAssets();
   const { getPendingTransactions, setPendingTransactions } =
@@ -39,9 +39,6 @@ export const useWatchPendingTransactions = ({
     address,
   });
   const { addCustomNetworkTransactions } = useCustomNetworkTransactionsStore();
-  const pendingTransactionsByDescendingNonce = pendingTransactions
-    .filter((tx) => isLowerCaseMatch(tx?.from, address))
-    .sort(({ nonce: n1 }, { nonce: n2 }) => (n2 ?? 0) - (n1 ?? 0));
 
   const refreshAssets = useCallback(
     (tx: RainbowTransaction) => {
@@ -57,124 +54,141 @@ export const useWatchPendingTransactions = ({
     [address, currentCurrency, swapRefreshAssets],
   );
 
-  const watchPendingTransactions = useCallback(async () => {
-    if (!pendingTransactions?.length || !address) return;
-    let pendingTransactionReportedByRainbowBackend = false;
-    const updatedPendingTransactions = await Promise.all(
-      pendingTransactions.map(async (tx) => {
-        let updatedTransaction: RainbowTransaction = { ...tx };
-        try {
-          const chainId = tx?.chainId;
-          if (chainId && tx.hash) {
-            const provider = getProvider({ chainId });
-            const currentTxCountForChainId = await provider.getTransactionCount(
-              address,
-              'latest',
-            );
-            const transactionResponse = await provider.getTransaction(tx.hash);
-            const transactionStatus = await getTransactionReceiptStatus({
-              transactionResponse,
-              provider,
-            });
-            const transactionNonce = tx.nonce || transactionResponse?.nonce;
-            const nonceAlreadyIncluded =
-              currentTxCountForChainId > transactionNonce;
-            const transactionExecuted =
-              (transactionResponse?.blockNumber &&
-                transactionResponse?.blockHash) ||
-              nonceAlreadyIncluded;
-            let pendingTransactionData = {
-              ...tx,
-              ...transactionStatus,
-            };
-            if (transactionExecuted) {
-              refreshAssets(tx);
+  const processFlashbotsTransaction = useCallback(
+    async (tx: RainbowTransaction) => {
+      const flashbotsTxStatus = await getTransactionFlashbotStatus(tx, tx.hash);
+      if (flashbotsTxStatus) {
+        return {
+          ...tx,
+          ...flashbotsTxStatus,
+        } as RainbowTransaction;
+      }
+      return tx;
+    },
+    [],
+  );
 
-              const transactionsConfirmedByBackend = !isCustomChain(chainId)
-                ? await fetchTransactions(
-                    {
-                      address,
-                      chainId,
-                      currency: currentCurrency,
-                      transactionsLimit: 1,
-                    },
-                    { cacheTime: 0 },
-                  )
-                : null;
+  const processCustomNetworkTransaction = useCallback(
+    async (tx: RainbowTransaction) => {
+      const provider = getProvider({ chainId: tx.chainId });
+      const transactionResponse = await provider.getTransaction(tx.hash);
+      const transactionStatus = await getTransactionReceiptStatus({
+        transactionResponse,
+        provider,
+      });
+      return {
+        ...tx,
+        ...transactionStatus,
+      };
+    },
+    [],
+  );
 
-              const latestTransactionConfirmedByBackend =
-                transactionsConfirmedByBackend?.[0];
+  const processSupportedNetworkTransaction = useCallback(
+    async (tx: RainbowTransaction) => {
+      const transaction = await fetchTransaction({
+        hash: tx.hash,
+        chainId: tx.chainId,
+        address,
+        currency: currentCurrency,
+      });
 
-              const latestPendingNonceForChainId =
-                pendingTransactionsByDescendingNonce?.filter(
-                  (tx) => tx?.chainId === chainId,
-                )?.[0]?.nonce || 0;
+      return {
+        ...tx,
+        ...transaction,
+      };
+    },
+    [address, currentCurrency],
+  );
 
-              const currentNonceForChainId = currentTxCountForChainId - 1 || 0;
-
-              const latestTransactionHashConfirmedByBackend =
-                latestTransactionConfirmedByBackend?.hash || null;
-
-              setNonce({
-                address,
-                chainId,
-                currentNonce:
-                  currentNonceForChainId > latestPendingNonceForChainId
-                    ? currentNonceForChainId
-                    : latestPendingNonceForChainId,
-                latestConfirmedNonce:
-                  latestTransactionConfirmedByBackend?.nonce,
-              });
-
-              if (
-                tx?.nonce &&
-                latestTransactionConfirmedByBackend?.nonce &&
-                tx?.nonce <= latestTransactionConfirmedByBackend?.nonce
-              ) {
-                pendingTransactionReportedByRainbowBackend = true;
-              }
-
-              updatedTransaction = {
-                ...updatedTransaction,
-                ...(latestTransactionHashConfirmedByBackend === tx?.hash
-                  ? latestTransactionConfirmedByBackend
-                  : pendingTransactionData),
-              };
-            } else if (tx.flashbots) {
-              const flashbotsTxStatus = await getTransactionFlashbotStatus(
-                updatedTransaction,
-                tx.hash,
-              );
-              if (flashbotsTxStatus) {
-                pendingTransactionData = {
-                  ...updatedTransaction,
-                  ...flashbotsTxStatus,
-                } as RainbowTransaction; // review what's the expected flashbots behaviour here
-              }
-            }
+  const processPendingTransaction = useCallback(
+    async (tx: RainbowTransaction) => {
+      let updatedTransaction: RainbowTransaction = { ...tx };
+      try {
+        const chainId = tx?.chainId;
+        if (chainId && tx.hash && address) {
+          if (tx.flashbots) {
+            updatedTransaction =
+              await processFlashbotsTransaction(updatedTransaction);
+          } else if (isCustomChain(chainId)) {
+            updatedTransaction =
+              await processCustomNetworkTransaction(updatedTransaction);
           } else {
-            throw new Error('Pending transaction missing chain id');
+            updatedTransaction =
+              await processSupportedNetworkTransaction(updatedTransaction);
           }
-        } catch (e) {
-          console.log('ERROR WATCHING PENDING TX: ', e);
+        } else {
+          throw new Error('Pending transaction missing chain id');
         }
-        return updatedTransaction;
-      }),
+      } catch (e) {
+        //
+      }
+
+      if (updatedTransaction?.status !== 'pending') {
+        refreshAssets(tx);
+      }
+      return updatedTransaction;
+    },
+    [
+      address,
+      processCustomNetworkTransaction,
+      processFlashbotsTransaction,
+      processSupportedNetworkTransaction,
+      refreshAssets,
+    ],
+  );
+
+  const processNonces = useCallback(
+    (txs: RainbowTransaction[]) => {
+      const userTxs = txs.filter((tx) => isLowerCaseMatch(address, tx.from));
+      const chainIds = [
+        ...new Set(
+          userTxs.reduce((acc, tx) => {
+            acc.add(tx.chainId);
+            return acc;
+          }, new Set<number>()),
+        ),
+      ];
+      const highestNoncePerChainId = userTxs.reduce((acc, tx) => {
+        if (tx.nonce > acc.get(tx.chainId)) {
+          acc.set(tx.chainId, tx.nonce);
+        }
+        return acc;
+      }, new Map());
+
+      chainIds.map(async (chainId) => {
+        const provider = getProvider({ chainId });
+        const providerTransactionCount = await provider.getTransactionCount(
+          address,
+          'latest',
+        );
+        const currentProviderNonce = providerTransactionCount - 1;
+        const currentNonceForChainId = highestNoncePerChainId.get(chainId);
+        setNonce({
+          address,
+          chainId,
+          currentNonce:
+            currentProviderNonce > currentNonceForChainId
+              ? currentProviderNonce
+              : currentNonceForChainId,
+          latestConfirmedNonce: currentProviderNonce,
+        });
+      });
+    },
+    [address, setNonce],
+  );
+
+  const watchPendingTransactions = useCallback(async () => {
+    if (!pendingTransactions?.length) return;
+    const updatedPendingTransactions = await Promise.all(
+      pendingTransactions.map((tx) => processPendingTransaction(tx)),
     );
 
-    if (pendingTransactionReportedByRainbowBackend) {
-      queryClient.refetchQueries({
-        queryKey: ['consolidatedTransactions'],
-        exact: false,
-      });
-    }
-
-    console.log('updatedPendingTransactions', updatedPendingTransactions);
+    processNonces(updatedPendingTransactions);
 
     const { newPendingTransactions, minedTransactions } =
       updatedPendingTransactions.reduce(
         (acc, tx) => {
-          console.log('ENDDD tx.status', tx.status);
           if (tx?.status === 'pending') {
             acc.newPendingTransactions.push(tx);
           } else {
@@ -187,6 +201,13 @@ export const useWatchPendingTransactions = ({
           minedTransactions: [] as MinedTransaction[],
         },
       );
+
+    if (minedTransactions.length) {
+      queryClient.refetchQueries({
+        queryKey: ['consolidatedTransactions'],
+        exact: false,
+      });
+    }
 
     minedTransactions.forEach((minedTransaction) => {
       if (isCustomChain(minedTransaction.chainId)) {
@@ -205,11 +226,9 @@ export const useWatchPendingTransactions = ({
   }, [
     addCustomNetworkTransactions,
     address,
-    currentCurrency,
     pendingTransactions,
-    pendingTransactionsByDescendingNonce,
-    refreshAssets,
-    setNonce,
+    processNonces,
+    processPendingTransaction,
     setPendingTransactions,
   ]);
 

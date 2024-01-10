@@ -6,6 +6,7 @@ import { Navigate, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
@@ -56,7 +57,6 @@ import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 import { ActivityPill } from './ActivityPill';
 import { getApprovalLabel } from './ActivityValue';
-import { useTransaction } from './useTransaction';
 
 function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
   const { from, to, contract, direction } = transaction;
