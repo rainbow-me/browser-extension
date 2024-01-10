@@ -158,6 +158,7 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
+            testId={'wallets-and-keys'}
             first
             last
             leftComponent={
