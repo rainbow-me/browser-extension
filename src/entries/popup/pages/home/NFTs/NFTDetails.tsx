@@ -20,7 +20,10 @@ import {
   getBlockExplorerHostForChain,
 } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
-import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
+import {
+  getUniqueAssetImagePreviewURL,
+  getUniqueAssetImageThumbnailURL,
+} from '~/core/utils/nfts';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { capitalize } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -156,6 +159,7 @@ export default function NFTDetails() {
               >
                 <ExternalImage
                   src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
+                  placeholderSrc={nft ? getUniqueAssetImagePreviewURL(nft) : ''}
                   height={320}
                   width={320}
                   borderRadius="16px"
