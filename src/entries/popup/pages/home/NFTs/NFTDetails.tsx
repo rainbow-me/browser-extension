@@ -1,7 +1,7 @@
 import { DropdownMenuRadioGroup } from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { format, formatDistanceStrict } from 'date-fns';
-import { ReactNode, useCallback, useMemo, useRef } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Address, useEnsName } from 'wagmi';
 
@@ -70,26 +70,13 @@ import {
   Navbar,
   NavbarBackButton,
 } from '~/entries/popup/components/Navbar/Navbar';
-import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 import { BirdIcon } from './BirdIcon';
-
-const getOpenseaUrl = ({
-  nft,
-  collectionPage,
-}: {
-  nft?: UniqueAsset | null;
-  collectionPage?: boolean;
-}) => {
-  const networkUrlString =
-    nft?.network === 'mainnet' ? 'ethereum' : nft?.network;
-  const openseaNftUrl = `https://opensea.io/assets/${networkUrlString}/${nft?.asset_contract.address}/${nft?.id}`;
-  const openseaCollectionUrl = `https://opensea.io/assets/${networkUrlString}/${nft?.asset_contract.address}`;
-  return collectionPage ? openseaCollectionUrl : openseaNftUrl;
-};
+import NFTDropdownMenu from './NFTDropdownMenu';
+import { getOpenseaUrl } from './utils';
 
 export default function NFTDetails() {
   const { currentAddress: address } = useCurrentAddressStore();
@@ -797,185 +784,6 @@ const NFTNavbar = ({ nft }: { nft?: UniqueAsset | null }) => {
         </Box>
       }
     />
-  );
-};
-
-const NFTDropdownMenu = ({
-  children,
-  nft,
-}: {
-  children: ReactNode;
-  nft?: UniqueAsset | null;
-}) => {
-  const hasContractAddress = !!nft?.asset_contract.address;
-  const hasNetwork = !!nft?.network;
-
-  const explorerTitle =
-    nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
-  const blockExplorerUrl = `https://${getBlockExplorerHostForChain(
-    chainIdFromChainName(nft?.network as ChainName),
-  )}/nft/${nft?.asset_contract.address}/${nft?.id}`;
-
-  const openseaUrl = getOpenseaUrl({ nft });
-
-  const downloadLink = useRef<HTMLAnchorElement>(null);
-
-  const copyId = useCallback(() => {
-    navigator.clipboard.writeText(nft?.id as string);
-    triggerToast({
-      title: i18n.t('nfts.details.id_copied'),
-      description: nft?.id,
-    });
-  }, [nft?.id]);
-
-  const onValueChange = (
-    value: 'copy' | 'download' | 'opensea' | 'explorer',
-  ) => {
-    switch (value) {
-      case 'copy':
-        copyId();
-        break;
-      case 'explorer':
-        goToNewTab({ url: blockExplorerUrl });
-        break;
-      case 'opensea':
-        goToNewTab({ url: openseaUrl });
-        break;
-      case 'download':
-        downloadLink.current?.click();
-    }
-  };
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger accentColor={nft?.predominantColor} asChild>
-        <Box position="relative">{children}</Box>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        marginRight="16px"
-        marginTop="6px"
-        accentColor={nft?.predominantColor}
-      >
-        <DropdownMenuRadioGroup
-          onValueChange={(value) =>
-            onValueChange(value as 'copy' | 'download' | 'opensea' | 'explorer')
-          }
-        >
-          <Stack space="4px">
-            <Stack>
-              <DropdownMenuRadioItem
-                highlightAccentColor
-                value="copy"
-                cursor="copy"
-              >
-                <HomeMenuRow
-                  leftComponent={
-                    <Symbol
-                      cursor="copy"
-                      size={18}
-                      symbol="doc.on.doc.fill"
-                      weight="semibold"
-                    />
-                  }
-                  centerComponent={
-                    <Stack space="6px">
-                      <Text size="14pt" weight="semibold" cursor="copy">
-                        {i18n.t('nfts.details.copy_token_id')}
-                      </Text>
-                      <TextOverflow
-                        size="11pt"
-                        weight="semibold"
-                        color="labelTertiary"
-                        cursor="copy"
-                        maxWidth={140}
-                      >
-                        {nft?.id}
-                      </TextOverflow>
-                    </Stack>
-                  }
-                />
-              </DropdownMenuRadioItem>
-              {nft?.image_url && (
-                <DropdownMenuRadioItem
-                  highlightAccentColor
-                  value="download"
-                  cursor="pointer"
-                >
-                  <HomeMenuRow
-                    leftComponent={
-                      <Symbol
-                        size={18}
-                        symbol="arrow.down.circle.fill"
-                        weight="semibold"
-                        cursor="pointer"
-                      />
-                    }
-                    centerComponent={
-                      <Box paddingVertical="6px" cursor="pointer">
-                        <Text size="14pt" weight="semibold" cursor="pointer">
-                          <a href={nft?.image_url} download ref={downloadLink}>
-                            {i18n.t('nfts.details.download')}
-                          </a>
-                        </Text>
-                      </Box>
-                    }
-                  />
-                </DropdownMenuRadioItem>
-              )}
-              {hasContractAddress && hasNetwork && (
-                <DropdownMenuRadioItem highlightAccentColor value="opensea">
-                  <HomeMenuRow
-                    leftComponent={
-                      <Symbol size={18} symbol="safari" weight="semibold" />
-                    }
-                    centerComponent={
-                      <Box paddingVertical="6px">
-                        <Text size="14pt" weight="semibold">
-                          {'OpenSea'}
-                        </Text>
-                      </Box>
-                    }
-                    rightComponent={
-                      <Symbol
-                        symbol="arrow.up.right.circle"
-                        weight="regular"
-                        size={12}
-                        color="labelTertiary"
-                      />
-                    }
-                  />
-                </DropdownMenuRadioItem>
-              )}
-              <DropdownMenuRadioItem highlightAccentColor value="explorer">
-                <HomeMenuRow
-                  leftComponent={
-                    <Symbol
-                      size={18}
-                      symbol="binoculars.fill"
-                      weight="semibold"
-                    />
-                  }
-                  centerComponent={
-                    <Box paddingVertical="6px">
-                      <Text size="14pt" weight="semibold">
-                        {explorerTitle}
-                      </Text>
-                    </Box>
-                  }
-                  rightComponent={
-                    <Symbol
-                      symbol="arrow.up.right.circle"
-                      weight="regular"
-                      size={12}
-                      color="labelTertiary"
-                    />
-                  }
-                />
-              </DropdownMenuRadioItem>
-            </Stack>
-          </Stack>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 };
 
