@@ -50,6 +50,7 @@ export const ROUTES = {
     '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase', // RecoveryPhrase
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY:
     '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase-verify', // RecoveryPhraseVerify
+  IMPORT_FROM_METAMASK: '/import-from-metamask', // ImportFromMetamask
   SETTINGS__TRANSACTIONS: '/settings/transactions', // Transactions
   SETTINGS__CURRENCY: '/settings/currency', // Currency
   SETTINGS__LANGUAGE: '/settings/language', // Language
