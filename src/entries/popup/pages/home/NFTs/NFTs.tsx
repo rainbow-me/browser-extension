@@ -12,7 +12,10 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
-import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
+import {
+  getUniqueAssetImagePreviewURL,
+  getUniqueAssetImageThumbnailURL,
+} from '~/core/utils/nfts';
 import {
   Bleed,
   Box,
@@ -569,6 +572,11 @@ function CollectionSection({
                           ? getUniqueAssetImageThumbnailURL(asset)
                           : undefined
                       }
+                      placeholderSrc={
+                        collectionVisible
+                          ? getUniqueAssetImagePreviewURL(asset)
+                          : undefined
+                      }
                       onClick={() => onAssetClick(asset)}
                       index={i}
                     />
@@ -587,10 +595,12 @@ const NftThumbnail = memo(function NftThumbnail({
   imageSrc,
   onClick,
   index,
+  placeholderSrc,
 }: {
   imageSrc?: string;
   onClick: () => void;
   index: number;
+  placeholderSrc?: string;
 }) {
   return (
     <Lens
@@ -603,6 +613,7 @@ const NftThumbnail = memo(function NftThumbnail({
       <ExternalImage
         borderRadius="10px"
         src={imageSrc}
+        placeholderSrc={placeholderSrc}
         height={96}
         width={96}
       />

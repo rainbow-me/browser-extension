@@ -437,9 +437,7 @@ export function SettingsCustomChain() {
   const validateAddCustomRpc = useCallback(() => {
     if (
       KNOWN_NETWORKS.some((n) =>
-        (['chainId', 'rpcUrl'] as const).every(
-          (k) => n.networkInfo[k] === customRPC[k],
-        ),
+        (['rpcUrl'] as const).every((k) => n.networkInfo[k] === customRPC[k]),
       )
     )
       return true; // if customRPC is a KNOWN NETWORK skip validation
@@ -570,6 +568,7 @@ export function SettingsCustomChain() {
           ...network.networkInfo,
           name: networkName,
           active: true,
+          chainId: undefined,
         }));
 
         // All these are previously validated by us
