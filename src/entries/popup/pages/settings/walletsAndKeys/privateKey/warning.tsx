@@ -6,7 +6,7 @@ import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/
 import WarningInfo from '~/entries/popup/components/WarningInfo/WarningInfo';
 import { ROUTES } from '~/entries/popup/urls';
 
-import { ConfirmPasswordPrompt } from '../../confirmPasswordPrompt';
+import { ConfirmPasswordPrompt } from '../../privacy/confirmPasswordPrompt';
 
 const iconAndCopyList: IconAndCopyItem[] = [
   {
