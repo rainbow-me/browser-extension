@@ -24,265 +24,264 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
 
-const KNOWN_NETWORKS: Record<
-  string,
-  { name: string; networkInfo: customNetworkInfo }[]
-> = {
-  [i18n.t('settings.networks.custom_rpc.networks')]: [
-    {
-      name: 'Anvil Mainnet Fork',
-      networkInfo: {
-        rpcUrl: 'http://127.0.0.1:8545',
-        chainId: 1,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://etherscan.io',
-        testnet: true,
-      },
+const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
+  {
+    name: 'Anvil Mainnet Fork',
+    networkInfo: {
+      rpcUrl: 'http://127.0.0.1:8545',
+      chainId: 1,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      testnet: true,
     },
-    {
-      name: 'Anvil (Dev)',
-      networkInfo: {
-        rpcUrl: 'http://127.0.0.1:8545',
-        chainId: 31337,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://etherscan.io',
-        testnet: true,
-      },
+  },
+  {
+    name: 'Anvil (Dev)',
+    networkInfo: {
+      rpcUrl: 'http://127.0.0.1:8545',
+      chainId: 31337,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      testnet: true,
     },
-    {
-      name: 'Hardhat Mainnet Fork',
-      networkInfo: {
-        rpcUrl: 'http://127.0.0.1:8545',
-        chainId: 1,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://etherscan.io',
-        testnet: true,
-      },
+  },
+  {
+    name: 'Hardhat Mainnet Fork',
+    networkInfo: {
+      rpcUrl: 'http://127.0.0.1:8545',
+      chainId: 1,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      testnet: true,
     },
-    {
-      name: 'Hardhat (Dev)',
-      networkInfo: {
-        rpcUrl: 'http://127.0.0.1:8545',
-        chainId: 31337,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://etherscan.io',
-        testnet: true,
-      },
+  },
+  {
+    name: 'Hardhat (Dev)',
+    networkInfo: {
+      rpcUrl: 'http://127.0.0.1:8545',
+      chainId: 31337,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      testnet: true,
     },
-    {
-      name: 'Arbitrum Nova',
-      networkInfo: {
-        rpcUrl: 'https://nova.arbitrum.io/rpc',
-        chainId: 42_170,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://nova.arbiscan.io',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Arbitrum Nova',
+    networkInfo: {
+      rpcUrl: 'https://nova.arbitrum.io/rpc',
+      chainId: 42_170,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://nova.arbiscan.io',
+      testnet: false,
     },
-    {
-      name: 'Avalanche',
-      networkInfo: {
-        rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
-        chainId: 43114,
-        decimals: 18,
-        symbol: 'AVAX',
-        explorerUrl: 'https://cchain.explorer.avax.network',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Avalanche',
+    networkInfo: {
+      rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+      chainId: 43114,
+      decimals: 18,
+      symbol: 'AVAX',
+      explorerUrl: 'https://cchain.explorer.avax.network',
+      testnet: false,
     },
-    {
-      name: 'Aurora',
-      networkInfo: {
-        rpcUrl: 'https://mainnet.aurora.dev',
-        chainId: 1313161554,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://aurorascan.dev',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Aurora',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.aurora.dev',
+      chainId: 1313161554,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://aurorascan.dev',
+      testnet: false,
     },
-    {
-      name: 'Canto',
-      networkInfo: {
-        rpcUrl: 'https://canto.gravitychain.io',
-        chainId: 7_700,
-        decimals: 18,
-        symbol: 'CANTO',
-        explorerUrl: 'https://tuber.build',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Canto',
+    networkInfo: {
+      rpcUrl: 'https://canto.gravitychain.io',
+      chainId: 7_700,
+      decimals: 18,
+      symbol: 'CANTO',
+      explorerUrl: 'https://tuber.build',
+      testnet: false,
     },
-    {
-      name: 'Celo',
-      networkInfo: {
-        rpcUrl: 'https://forno.celo.org',
-        chainId: 42_220,
-        decimals: 18,
-        symbol: 'CELO',
-        explorerUrl: 'https://explorer.celo.org/mainnet',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Celo',
+    networkInfo: {
+      rpcUrl: 'https://forno.celo.org',
+      chainId: 42_220,
+      decimals: 18,
+      symbol: 'CELO',
+      explorerUrl: 'https://explorer.celo.org/mainnet',
+      testnet: false,
     },
-    {
-      name: 'Ethereum Classic',
-      networkInfo: {
-        rpcUrl: 'https://etc.rivet.link',
-        chainId: 61,
-        decimals: 18,
-        symbol: 'ETC',
-        explorerUrl: 'https://blockscout.com/etc/mainnet',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Ethereum Classic',
+    networkInfo: {
+      rpcUrl: 'https://etc.rivet.link',
+      chainId: 61,
+      decimals: 18,
+      symbol: 'ETC',
+      explorerUrl: 'https://blockscout.com/etc/mainnet',
+      testnet: false,
     },
-    {
-      name: 'Fantom',
-      networkInfo: {
-        rpcUrl: 'https://rpc.ankr.com/fantom',
-        chainId: 250,
-        decimals: 18,
-        symbol: 'FTM',
-        explorerUrl: 'https://ftmscan.com',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Fantom',
+    networkInfo: {
+      rpcUrl: 'https://rpc.ankr.com/fantom',
+      chainId: 250,
+      decimals: 18,
+      symbol: 'FTM',
+      explorerUrl: 'https://ftmscan.com',
+      testnet: false,
     },
-    {
-      name: 'Flashbots Protect',
-      networkInfo: {
-        rpcUrl: 'https://rpc.flashbots.net',
-        chainId: 1,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://etherscan.io',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Flashbots Protect',
+    networkInfo: {
+      rpcUrl: 'https://rpc.flashbots.net',
+      chainId: 1,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      testnet: false,
     },
-    {
-      name: 'Flashbots Protect (Fast)',
-      networkInfo: {
-        rpcUrl: 'https://rpc.flashbots.net/fast',
-        chainId: 1,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://etherscan.io',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Flashbots Protect (Fast)',
+    networkInfo: {
+      rpcUrl: 'https://rpc.flashbots.net/fast',
+      chainId: 1,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      testnet: false,
     },
-    {
-      name: 'Filecoin',
-      networkInfo: {
-        rpcUrl: 'https://api.node.glif.io/rpc/v1',
-        chainId: 314,
-        decimals: 18,
-        symbol: 'FIL',
-        explorerUrl: 'https://filfox.info/en',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Filecoin',
+    networkInfo: {
+      rpcUrl: 'https://api.node.glif.io/rpc/v1',
+      chainId: 314,
+      decimals: 18,
+      symbol: 'FIL',
+      explorerUrl: 'https://filfox.info/en',
+      testnet: false,
     },
-    {
-      name: 'Gnosis',
-      networkInfo: {
-        rpcUrl: 'https://rpc.gnosischain.com',
-        chainId: 100,
-        decimals: 18,
-        symbol: 'xDAI',
-        explorerUrl: 'https://gnosisscan.io',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Gnosis',
+    networkInfo: {
+      rpcUrl: 'https://rpc.gnosischain.com',
+      chainId: 100,
+      decimals: 18,
+      symbol: 'xDAI',
+      explorerUrl: 'https://gnosisscan.io',
+      testnet: false,
     },
-    {
-      name: 'Linea',
-      networkInfo: {
-        rpcUrl: 'https://rpc.linea.build',
-        chainId: 59_144,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://lineascan.build',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Linea',
+    networkInfo: {
+      rpcUrl: 'https://rpc.linea.build',
+      chainId: 59_144,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://lineascan.build',
+      testnet: false,
     },
-    {
-      name: 'Mantle',
-      networkInfo: {
-        rpcUrl: 'https://rpc.mantle.xyz',
-        chainId: 5000,
-        decimals: 18,
-        symbol: 'MNT',
-        explorerUrl: 'https://explorer.mantle.xyz',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Mantle',
+    networkInfo: {
+      rpcUrl: 'https://rpc.mantle.xyz',
+      chainId: 5000,
+      decimals: 18,
+      symbol: 'MNT',
+      explorerUrl: 'https://explorer.mantle.xyz',
+      testnet: false,
     },
-    {
-      name: 'Metis',
-      networkInfo: {
-        rpcUrl: 'https://andromeda.metis.io/?owner=1088',
-        chainId: 1_088,
-        decimals: 18,
-        symbol: 'METIS',
-        explorerUrl: 'https://andromeda-explorer.metis.io',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Metis',
+    networkInfo: {
+      rpcUrl: 'https://andromeda.metis.io/?owner=1088',
+      chainId: 1_088,
+      decimals: 18,
+      symbol: 'METIS',
+      explorerUrl: 'https://andromeda-explorer.metis.io',
+      testnet: false,
     },
-    {
-      name: 'Moonbeam',
-      networkInfo: {
-        rpcUrl: 'https://moonbeam.public.blastapi.io',
-        chainId: 1284,
-        decimals: 18,
-        symbol: 'GLMR',
-        explorerUrl: 'https://moonscan.io',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Moonbeam',
+    networkInfo: {
+      rpcUrl: 'https://moonbeam.public.blastapi.io',
+      chainId: 1284,
+      decimals: 18,
+      symbol: 'GLMR',
+      explorerUrl: 'https://moonscan.io',
+      testnet: false,
     },
-    {
-      name: 'Polygon zkEVM',
-      networkInfo: {
-        rpcUrl: 'https://zkevm-rpc.com',
-        chainId: 1101,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://zkevm.polygonscan.com',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Polygon zkEVM',
+    networkInfo: {
+      rpcUrl: 'https://zkevm-rpc.com',
+      chainId: 1101,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://zkevm.polygonscan.com',
+      testnet: false,
     },
-    {
-      name: 'PulseChain',
-      networkInfo: {
-        rpcUrl: 'https://rpc.pulsechain.com',
-        chainId: 369,
-        decimals: 18,
-        symbol: 'PULSE',
-        explorerUrl: 'https://pulsechain.com',
-        testnet: false,
-      },
+  },
+  {
+    name: 'PulseChain',
+    networkInfo: {
+      rpcUrl: 'https://rpc.pulsechain.com',
+      chainId: 369,
+      decimals: 18,
+      symbol: 'PULSE',
+      explorerUrl: 'https://pulsechain.com',
+      testnet: false,
     },
-    {
-      name: 'Scroll',
-      networkInfo: {
-        rpcUrl: 'https://rpc.scroll.io',
-        chainId: 534_352,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://scrollscan.com',
-        testnet: false,
-      },
+  },
+  {
+    name: 'Scroll',
+    networkInfo: {
+      rpcUrl: 'https://rpc.scroll.io',
+      chainId: 534_352,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://scrollscan.com',
+      testnet: false,
     },
-    {
-      name: 'zkSync',
-      networkInfo: {
-        rpcUrl: 'https://mainnet.era.zksync.io',
-        chainId: 324,
-        decimals: 18,
-        symbol: 'ETH',
-        explorerUrl: 'https://explorer.zksync.io',
-        testnet: false,
-      },
+  },
+  {
+    name: 'zkSync',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.era.zksync.io',
+      chainId: 324,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.zksync.io',
+      testnet: false,
     },
-  ],
+  },
+];
+
+const KNOWN_NETWORKS_AUTOCOMPLETE_DICT = {
+  [i18n.t('settings.networks.custom_rpc.networks')]: KNOWN_NETWORKS,
 };
 
 export function SettingsCustomChain() {
@@ -436,6 +435,13 @@ export function SettingsCustomChain() {
   );
 
   const validateAddCustomRpc = useCallback(() => {
+    if (
+      KNOWN_NETWORKS.some((n) =>
+        (['rpcUrl'] as const).every((k) => n.networkInfo[k] === customRPC[k]),
+      )
+    )
+      return true; // if customRPC is a KNOWN NETWORK skip validation
+
     const validRpcUrl = validateRpcUrl();
     const validChainId = validateChainId();
     const validName = validateName();
@@ -461,6 +467,7 @@ export function SettingsCustomChain() {
     validateExplorerUrl,
     validateName,
     validateSymbol,
+    customRPC,
   ]);
 
   const validateCustomRpcMetadata = useCallback(() => {
@@ -552,7 +559,7 @@ export function SettingsCustomChain() {
 
   const handleNetworkSelect = useCallback(
     (networkName: string) => {
-      const network = KNOWN_NETWORKS.Networks.find(
+      const network = KNOWN_NETWORKS.find(
         (network) => network.name === networkName,
       );
       if (network) {
@@ -561,6 +568,7 @@ export function SettingsCustomChain() {
           ...network.networkInfo,
           name: networkName,
           active: true,
+          chainId: undefined,
         }));
 
         // All these are previously validated by us
@@ -590,7 +598,7 @@ export function SettingsCustomChain() {
               customRPC.name && onNameBlur();
               setOpen(false);
             }}
-            data={KNOWN_NETWORKS}
+            data={KNOWN_NETWORKS_AUTOCOMPLETE_DICT}
             value={customRPC.name || ''}
             borderColor={validations.name ? 'transparent' : 'red'}
             placeholder={i18n.t('settings.networks.custom_rpc.network_name')}
