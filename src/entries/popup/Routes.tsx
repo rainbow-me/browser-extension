@@ -696,7 +696,7 @@ const ROUTE_DATA = [
     ),
   },
   {
-    path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
+    path: ROUTES.IMPORT_FROM_METAMASK,
     element: (
       <AnimatedRoute
         direction="right"
