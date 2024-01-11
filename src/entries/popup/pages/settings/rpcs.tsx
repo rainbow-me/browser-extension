@@ -99,7 +99,7 @@ export function SettingsNetworksRPCs() {
     (chain) => chain.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
   );
 
-  const { userChains, updateUserChain } = useUserChainsStore();
+  const { userChains, updateUserChain, removeUserChain } = useUserChainsStore();
 
   const handleToggleChain = useCallback(
     (newVal: boolean) => {
@@ -195,13 +195,24 @@ export function SettingsNetworksRPCs() {
       removeCustomRPC({
         rpcUrl: chain.rpcUrls.default.http[0],
       });
+      removeRainbowChainAssets({ chainId });
+      removeUserChain({ chainId });
       // If there's no default chain & only had one chain, go back
       const allChainsCount = [...mainnetChains, ...testnetChains].length;
       if (!supportedChain && allChainsCount === 1) {
         navigate(-1);
       }
     },
-    [mainnetChains, navigate, removeCustomRPC, supportedChain, testnetChains],
+    [
+      chainId,
+      mainnetChains,
+      navigate,
+      removeCustomRPC,
+      removeRainbowChainAssets,
+      removeUserChain,
+      supportedChain,
+      testnetChains,
+    ],
   );
 
   const handleRemoveNetwork = useCallback(
