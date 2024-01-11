@@ -76,7 +76,6 @@ function watchForPendingTransactionsReportedByRainbowBackend({
     setPendingTransactions,
     pendingTransactions: storePendingTransactions,
   } = pendingTransactionsStore.getState();
-  console.log('--- storePendingTransactions', storePendingTransactions);
   const pendingTransactions = storePendingTransactions[currentAddress] || [];
   const supportedChainIds = getSupportedChainIds();
   for (const supportedChainId of supportedChainIds) {
