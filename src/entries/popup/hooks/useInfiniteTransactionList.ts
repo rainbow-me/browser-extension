@@ -89,11 +89,6 @@ export const useInfiniteTransactionList = ({
     return transactionsAfterCutoff;
   }, [currentAddressCustomNetworkTransactions, cutoff, transactions]);
 
-  console.log(
-    '-- pendingTransactions',
-    storePendingTransactions,
-    pendingTransactions,
-  );
   const formattedTransactions = useMemo(
     () =>
       Object.entries(
