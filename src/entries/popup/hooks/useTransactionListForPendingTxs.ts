@@ -72,11 +72,12 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   latestTransactions: Map<ChainId, RainbowTransaction | null>;
 }) {
   const { setNonce } = nonceStore.getState();
-  const { setPendingTransactions, getPendingTransactions } =
-    pendingTransactionsStore.getState();
-  const pendingTransactions = getPendingTransactions({
-    address: currentAddress,
-  });
+  const {
+    setPendingTransactions,
+    pendingTransactions: storePendingTransactions,
+  } = pendingTransactionsStore.getState();
+  console.log('--- storePendingTransactions', storePendingTransactions);
+  const pendingTransactions = storePendingTransactions[currentAddress] || [];
   const supportedChainIds = getSupportedChainIds();
   for (const supportedChainId of supportedChainIds) {
     const latestTxConfirmedByBackend = latestTransactions.get(supportedChainId);

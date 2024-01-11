@@ -351,9 +351,11 @@ export function addNewTransaction({
   transaction: NewTransaction;
 }) {
   const { setNonce } = nonceStore.getState();
-  const { getPendingTransactions, setPendingTransactions } =
-    pendingTransactionsStore.getState();
-  const pendingTransactions = getPendingTransactions({ address });
+  const {
+    pendingTransactions: storePendingTransactions,
+    setPendingTransactions,
+  } = pendingTransactionsStore.getState();
+  const pendingTransactions = storePendingTransactions[address] || [];
   const { currentCurrency } = currentCurrencyStore.getState();
   const newPendingTransaction = parseNewTransaction(
     transaction,
@@ -381,14 +383,17 @@ export function updateTransaction({
   transaction: NewTransaction;
 }) {
   const { setNonce } = nonceStore.getState();
-  const { getPendingTransactions, setPendingTransactions } =
-    pendingTransactionsStore.getState();
+  const {
+    pendingTransactions: storePendingTransactions,
+    setPendingTransactions,
+  } = pendingTransactionsStore.getState();
   const { currentCurrency } = currentCurrencyStore.getState();
   const updatedPendingTransaction = parseNewTransaction(
     transaction,
     currentCurrency,
   );
-  const pendingTransactions = getPendingTransactions({ address });
+  const pendingTransactions = storePendingTransactions[address] || [];
+
   setPendingTransactions({
     address,
     pendingTransactions: [

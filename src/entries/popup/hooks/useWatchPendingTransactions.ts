@@ -1,5 +1,5 @@
 import { getProvider } from '@wagmi/core';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Address } from 'wagmi';
 
 import { queryClient } from '~/core/react-query';
@@ -13,7 +13,6 @@ import {
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import {
   MinedTransaction,
-  PendingTransaction,
   RainbowTransaction,
 } from '~/core/types/transactions';
 import { isCustomChain } from '~/core/utils/chains';
@@ -32,14 +31,18 @@ export const useWatchPendingTransactions = ({
   address: Address;
 }) => {
   const { swapRefreshAssets } = useSwapRefreshAssets();
-  const { getPendingTransactions, setPendingTransactions } =
-    usePendingTransactionsStore();
+  const {
+    pendingTransactions: storePendingTransactions,
+    setPendingTransactions,
+  } = usePendingTransactionsStore();
   const { setNonce } = useNonceStore();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const pendingTransactions = getPendingTransactions({
-    address,
-  });
   const { addCustomNetworkTransactions } = useCustomNetworkTransactionsStore();
+
+  const pendingTransactions = useMemo(
+    () => storePendingTransactions[address] || [],
+    [address, storePendingTransactions],
+  );
 
   const refreshAssets = useCallback(
     (tx: RainbowTransaction) => {
@@ -206,7 +209,7 @@ export const useWatchPendingTransactions = ({
           return acc;
         },
         {
-          newPendingTransactions: [] as PendingTransaction[],
+          newPendingTransactions: [] as RainbowTransaction[],
           minedTransactions: [] as MinedTransaction[],
         },
       );
