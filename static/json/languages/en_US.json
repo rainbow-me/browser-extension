@@ -222,6 +222,20 @@
           "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Show Recovery Phrase",
           "copied": "Recovery Phrase Copied"
+        },
+        "wipe_wallets": {
+          "delete": "Reset Rainbow",
+          "acknowlegement": "I have read and acknowledge the above info.",
+          "warning_one": "Resetting Rainbow will reset your password, & remove all wallets.",
+          "warning_two": "This will also erase all data & settings in Rainbow.",
+          "warning_three": "Ensure your Secret Recovery Phrase is secure before proceeding. ",
+          "warning_four": "Your assets & funds are accessible with the correct recovery information.",
+          "button_wipe": "Reset Rainbow",
+          "button_complete": "Complete Check Above",
+          "wipe_confirmation": "Reset Rainbow",
+          "wipe_confirmation_desc": "Are you sure you want to reset the Rainbow browser extension?",
+          "wipe_confirmation_button": "Reset",
+          "wipe_confirmation_cancel": "Cancel"
         }
       }
     },
@@ -1624,6 +1638,7 @@
   "nonce": "Nonce",
   "copy": "Copy",
   "copy_link": "Copy Link",
+  "link_text": "Learn More.",
   "close": "Close",
   "verified": "Verified",
   "unverified": "Unverified",

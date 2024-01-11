@@ -1,7 +1,9 @@
 import React from 'react';
 
+import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { TextLink } from '~/design-system/components/TextLink/TextLink';
 
 export interface IconAndCopyItem {
   icon: {
@@ -9,6 +11,7 @@ export interface IconAndCopyItem {
     color: SymbolProps['color'];
   };
   copy: string;
+  onClickLink?: () => void;
 }
 
 export function IconAndCopyList({
@@ -26,7 +29,7 @@ export function IconAndCopyList({
         </Box>
       }
     >
-      {iconAndCopyList?.map(({ icon, copy }) => (
+      {iconAndCopyList?.map(({ icon, copy, onClickLink }) => (
         <Box key={icon?.symbol}>
           <Inline wrap={false} space="16px" alignVertical="center">
             <Box display="flex" alignItems="center">
@@ -39,6 +42,11 @@ export function IconAndCopyList({
             </Box>
             <Text size="14pt" weight="medium" color="label">
               {copy}
+              {onClickLink && (
+                <TextLink color={icon.color} onClick={onClickLink}>
+                  {i18n.t('link_text')}
+                </TextLink>
+              )}
             </Text>
           </Inline>
         </Box>
