@@ -16,7 +16,7 @@ import {
   goToPopup,
   importWalletFlow,
   initDriverWithOptions,
-  navigateToSettingsPrivacy,
+  navigateToSettings,
   passSecretQuiz,
   querySelector,
   typeOnTextInput,
@@ -46,7 +46,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
   });
 
   it('should be able to reveal secret', async () => {
-    await navigateToSettingsPrivacy(driver, rootURL);
+    await navigateToSettings(driver, rootURL);
 
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
@@ -83,7 +83,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
   });
 
   it('should be able to reveal pkey', async () => {
-    await navigateToSettingsPrivacy(driver, rootURL);
+    await navigateToSettings(driver, rootURL);
 
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
@@ -109,7 +109,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
   });
 
   it('should be able to rename a wallet', async () => {
-    await navigateToSettingsPrivacy(driver, rootURL);
+    await navigateToSettings(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     await findElementByTestIdAndClick({
@@ -161,7 +161,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       text: 'new seed wallet',
       driver,
     });
-    await navigateToSettingsPrivacy(driver, rootURL);
+    await navigateToSettings(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     expect(await getNumberOfWallets(driver, 'wallet-group-')).toBe(2);
   });
@@ -180,7 +180,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       driver,
     });
     expect(await accountName.getText()).toBe('new pk wallet');
-    await navigateToSettingsPrivacy(driver, rootURL);
+    await navigateToSettings(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     const textContent = await findElementByTestId({
       id: 'wallet-group-1',
@@ -202,7 +202,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
       'wallet-account-',
     );
     expect(numOfWalletsAfterHide).toBe(numOfWallets - 1);
-    await navigateToSettingsPrivacy(driver, rootURL);
+    await navigateToSettings(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     await findElementByTextAndClick(driver, 'Hidden');
@@ -218,7 +218,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
   });
 
   it('should be able to delete a wallet', async () => {
-    await navigateToSettingsPrivacy(driver, rootURL);
+    await navigateToSettings(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     const numOfWallets = await getNumberOfWallets(driver, 'wallet-item-');
