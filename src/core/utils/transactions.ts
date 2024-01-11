@@ -236,7 +236,7 @@ export function parseTransaction({
 export const parseNewTransaction = (
   tx: NewTransaction,
   currency: SupportedCurrencyKey,
-) => {
+): RainbowTransaction => {
   const changes = tx.changes?.filter(Boolean).map((change) => ({
     ...change,
     asset: parseUserAssetBalances({
@@ -392,7 +392,7 @@ export function updateTransaction({
   setPendingTransactions({
     address,
     pendingTransactions: [
-      { ...transaction, ...updatedPendingTransaction },
+      updatedPendingTransaction,
       ...pendingTransactions.filter(
         (tx) =>
           tx?.chainId !== chainId &&
