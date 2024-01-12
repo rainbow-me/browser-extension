@@ -622,8 +622,6 @@ export const handleProviderRequest = ({
           }
         }
       }
-      console.log('RESULT', response);
-      console.log('METHOD', method);
       return { id, result: response };
     } catch (error) {
       return { id, error: <Error>error };
