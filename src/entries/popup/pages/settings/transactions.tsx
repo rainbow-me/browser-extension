@@ -133,7 +133,7 @@ export function Transactions() {
             onToggle={() => setFlashbotsEnabled(!flashbotsEnabled)}
           />
           <MenuItem.Description
-            text={i18n.t('settings.transactions.flashbots_description')}
+            text={`${i18n.t('settings.transactions.flashbots_description')} `}
             onClickLink={() =>
               goToNewTab({
                 url: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
