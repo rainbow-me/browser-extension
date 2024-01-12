@@ -1249,6 +1249,7 @@
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "Recent",
     "sort_option_abc_long": "Alphabetical",
+    "hidden_section_title": "Hidden",
     "details": {
       "last_sales_price": "Last Sale Price",
       "none": "None",
@@ -1261,6 +1262,8 @@
       "token_contract": "Token Contract",
       "contract_creator": "Contract Creator",
       "chain": "Chain",
+      "hide": "Hide",
+      "unhide": "Unhide",
       "id_copied": "ID Copied",
       "copy_token_id": "Copy Token ID",
       "download": "Download",
