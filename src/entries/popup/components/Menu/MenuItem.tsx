@@ -138,7 +138,7 @@ const Description = ({
         {text}
         {onClickLink && (
           <TextLink color={'blue'} onClick={onClickLink}>
-            {i18n.t('learn_more')}
+            {i18n.t('link_text')}
           </TextLink>
         )}
       </Text>
