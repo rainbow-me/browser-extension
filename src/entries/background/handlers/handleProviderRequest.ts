@@ -542,12 +542,20 @@ export const handleProviderRequest = ({
         }
         case 'eth_getBlockByNumber': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.getBlock(params?.[0] as string);
+          const block = await provider.getBlock(params?.[0] as string);
+          response = {
+            ...block,
+            baseFeePerGas: toHex(block?.baseFeePerGas?.toString() || ''),
+            gasLimit: toHex(block?.gasLimit?.toString() || ''),
+            gasUsed: toHex(block?.gasUsed?.toString() || ''),
+            _difficulty: toHex(block?._difficulty?.toString() || ''),
+          };
           break;
         }
         case 'eth_getBalance': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.getBalance(params?.[0] as string);
+          const balance = await provider.getBalance(params?.[0] as string);
+          response = toHex(balance.toString());
           break;
         }
         case 'eth_getTransactionByHash': {
@@ -563,14 +571,16 @@ export const handleProviderRequest = ({
         }
         case 'eth_estimateGas': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = (
-            await provider.estimateGas(params?.[0] as TransactionRequest)
-          ).toString();
+          const gas = await provider.estimateGas(
+            params?.[0] as TransactionRequest,
+          );
+          response = toHex(gas.toString());
           break;
         }
         case 'eth_gasPrice': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = (await provider.getGasPrice()).toString();
+          const gasPrice = await provider.getGasPrice();
+          response = toHex(gasPrice.toString());
           break;
         }
         case 'eth_getCode': {
@@ -612,6 +622,8 @@ export const handleProviderRequest = ({
           }
         }
       }
+      console.log('RESULT', response);
+      console.log('METHOD', method);
       return { id, result: response };
     } catch (error) {
       return { id, error: <Error>error };
