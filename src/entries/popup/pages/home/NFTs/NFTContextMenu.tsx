@@ -1,6 +1,8 @@
 import { ReactNode, useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
+import { useNftsStore } from '~/core/state/nfts';
 import { ChainName } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import {
@@ -26,8 +28,12 @@ export default function NFTContextMenu({
   children: ReactNode;
   nft?: UniqueAsset | null;
 }) {
+  const { currentAddress: address } = useCurrentAddressStore();
+  const { hidden, toggleHideNFT } = useNftsStore();
+  const hiddenNftsForAddress = hidden[address] || {};
   const hasContractAddress = !!nft?.asset_contract.address;
   const hasNetwork = !!nft?.network;
+  const displayed = !hiddenNftsForAddress[nft?.uniqueId || ''];
 
   const explorerTitle =
     nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
@@ -104,6 +110,16 @@ export default function NFTContextMenu({
             >
               <Text size="14pt" weight="semibold">
                 {explorerTitle}
+              </Text>
+            </ContextMenuItem>
+            <ContextMenuItem
+              symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
+              onSelect={() => toggleHideNFT(address, nft?.uniqueId || '')}
+            >
+              <Text size="14pt" weight="semibold">
+                {displayed
+                  ? i18n.t('nfts.details.hide')
+                  : i18n.t('nfts.details.unhide')}
               </Text>
             </ContextMenuItem>
           </Stack>
