@@ -31,6 +31,10 @@ export { gasUnits } from './gasUnits';
 export { supportedCurrencies } from './supportedCurrencies';
 
 export const smartContractMethods = {
+  punk_transfer: {
+    method: 'transferPunk(address,uint256)',
+    hash: '0x8b72a2ec',
+  },
   token_transfer: {
     method: 'transfer(address,uint256)',
     hash: '0xa9059cbb',
@@ -50,6 +54,10 @@ export const smartContractMethods = {
   nft_safe_transfer_from: {
     method: 'safeTransferFrom(address,address,uint256)',
     hash: '0x42842e0e',
+  },
+  erc721_transfer_from: {
+    method: 'transferFrom(address,address,uint256)',
+    hash: '0x23b872dd',
   },
   erc1155_safe_transfer_from: {
     method: 'safeTransferFrom(address,address,uint256,uint256,bytes)',
