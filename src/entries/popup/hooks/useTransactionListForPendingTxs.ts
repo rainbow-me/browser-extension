@@ -12,8 +12,8 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import {
-  getBackendSupportedChains,
   getSupportedChainIds,
+  useBackendSupportedChains,
 } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -22,7 +22,7 @@ export const useTransactionListForPendingTxs = () => {
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { testnetMode } = useTestnetModeStore();
 
-  const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
+  const supportedChainIds = useBackendSupportedChains({ testnetMode }).map(
     ({ id }) => id,
   );
 

@@ -222,6 +222,20 @@
           "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Show Recovery Phrase",
           "copied": "Recovery Phrase Copied"
+        },
+        "wipe_wallets": {
+          "delete": "Reset Rainbow",
+          "acknowlegement": "I have read and acknowledge the above info.",
+          "warning_one": "Resetting Rainbow will reset your password, & remove all wallets.",
+          "warning_two": "This will also erase all data & settings in Rainbow.",
+          "warning_three": "Ensure your Secret Recovery Phrase is secure before proceeding. ",
+          "warning_four": "Your assets & funds are accessible with the correct recovery information.",
+          "button_wipe": "Reset Rainbow",
+          "button_complete": "Complete Check Above",
+          "wipe_confirmation": "Reset Rainbow",
+          "wipe_confirmation_desc": "Are you sure you want to reset the Rainbow browser extension?",
+          "wipe_confirmation_button": "Reset",
+          "wipe_confirmation_cancel": "Cancel"
         }
       }
     },
@@ -1047,7 +1061,8 @@
     "request_rejected": "Transaction Request Rejected",
     "bridge_and_try_again": "Bridge some gas funds and try again",
     "buy_and_try_again": "Buy some gas funds and try again",
-    "buy": "Buy %{token}"
+    "buy_gas": "Buy %{token}",
+    "get_testnet_gas": "Get free testnet %{token}"
   },
   "add_chain": {
     "name": "Name",
@@ -1234,6 +1249,7 @@
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "Recent",
     "sort_option_abc_long": "Alphabetical",
+    "hidden_section_title": "Hidden",
     "details": {
       "last_sales_price": "Last Sale Price",
       "none": "None",
@@ -1246,6 +1262,8 @@
       "token_contract": "Token Contract",
       "contract_creator": "Contract Creator",
       "chain": "Chain",
+      "hide": "Hide",
+      "unhide": "Unhide",
       "id_copied": "ID Copied",
       "copy_token_id": "Copy Token ID",
       "download": "Download",
@@ -1623,6 +1641,7 @@
   "nonce": "Nonce",
   "copy": "Copy",
   "copy_link": "Copy Link",
+  "link_text": "Learn More.",
   "close": "Close",
   "verified": "Verified",
   "unverified": "Unverified",

@@ -30,9 +30,9 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
-import { CreateWalletPrompt } from '../../../walletSwitcher/createWalletPrompt';
-import { RemoveWalletPrompt } from '../../../walletSwitcher/removeWalletPrompt';
-import { RenameWalletPrompt } from '../../../walletSwitcher/renameWalletPrompt';
+import { CreateWalletPrompt } from '../../walletSwitcher/createWalletPrompt';
+import { RemoveWalletPrompt } from '../../walletSwitcher/removeWalletPrompt';
+import { RenameWalletPrompt } from '../../walletSwitcher/renameWalletPrompt';
 
 const InfoButtonOptions = ({
   account,
