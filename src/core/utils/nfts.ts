@@ -176,7 +176,7 @@ export function simpleHashNFTToUniqueAsset(
     fullUniqueId: `${nft.chain}_${nft.contract_address}_${nft.token_id}`,
     id: nft.token_id,
     image_original_url: nft.extra_metadata?.image_original_url,
-    image_preview_url: nft.previews.image_large_url,
+    image_preview_url: nft.previews.image_small_url,
     image_thumbnail_url: nft.previews.image_large_url,
     image_url: nft.image_url ?? nft.extra_metadata?.image_original_url,
     isPoap,
@@ -208,10 +208,9 @@ export function simpleHashNFTToUniqueAsset(
 }
 
 export const getUniqueAssetImageThumbnailURL = (asset: UniqueAsset) => {
-  return (
-    asset.image_thumbnail_url ||
-    asset.image_preview_url ||
-    asset.image_original_url ||
-    ''
-  );
+  return asset.image_thumbnail_url || asset.image_original_url || '';
+};
+
+export const getUniqueAssetImagePreviewURL = (asset: UniqueAsset) => {
+  return asset.image_preview_url || getUniqueAssetImageThumbnailURL(asset);
 };

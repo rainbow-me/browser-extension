@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
@@ -39,9 +39,6 @@ export function Privacy() {
     setConfirmPasswordRedirect(ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD);
     openPasswordPrompt();
   };
-  const handleWalletsAndKeys = useCallback(() => {
-    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
-  }, [navigate]);
 
   useEffect(() => {
     analyticsDisabled ? analytics.disable() : analytics.enable();
@@ -172,23 +169,6 @@ export function Privacy() {
                 />
               }
               onClick={() => navigate(ROUTES.SETTINGS__PRIVACY__AUTOLOCK)}
-            />
-          </Menu>
-          <Menu>
-            <MenuItem
-              testId={'wallets-and-keys'}
-              first
-              last
-              hasRightArrow
-              titleComponent={
-                <MenuItem.Title
-                  color="orange"
-                  text={i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.title',
-                  )}
-                />
-              }
-              onClick={handleWalletsAndKeys}
             />
           </Menu>
         </MenuContainer>

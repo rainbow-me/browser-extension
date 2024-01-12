@@ -15,10 +15,10 @@ import {
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
+import { useBackendSupportedChains } from '~/core/utils/chains';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
-import { useUserChains } from './useUserChains';
 
 const PAGES_TO_CACHE_LIMIT = 2;
 
@@ -42,8 +42,10 @@ export const useInfiniteTransactionList = ({
   );
 
   const { testnetMode } = useTestnetModeStore();
-  const { chains } = useUserChains();
-  const userChainIds = chains.map((chain) => chain.id);
+
+  const supportedChainIds = useBackendSupportedChains({ testnetMode }).map(
+    ({ id }) => id,
+  );
 
   const {
     data,
@@ -58,7 +60,7 @@ export const useInfiniteTransactionList = ({
   } = useConsolidatedTransactions({
     address,
     currency,
-    userChainIds,
+    userChainIds: supportedChainIds,
     testnetMode,
   });
 
@@ -113,7 +115,7 @@ export const useInfiniteTransactionList = ({
         consolidatedTransactionsQueryKey({
           address,
           currency,
-          userChainIds,
+          userChainIds: supportedChainIds,
           testnetMode,
         }),
         {
@@ -122,7 +124,7 @@ export const useInfiniteTransactionList = ({
         },
       );
     }
-  }, [address, currency, data, testnetMode, userChainIds]);
+  }, [address, currency, data, testnetMode, supportedChainIds]);
 
   useComponentWillUnmount(cleanupPages);
 
