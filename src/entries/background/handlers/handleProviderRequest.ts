@@ -320,13 +320,26 @@ export const handleProviderRequest = ({
         }
         case 'wallet_addEthereumChain': {
           const { featureFlags } = featureFlagsStore.getState();
+          const { rainbowChains } = rainbowChainsStore.getState();
+          const proposedChainId = Number(
+            (params?.[0] as { chainId: ChainId })?.chainId,
+          );
+          const alreadyAddedChain = Object.keys(rainbowChains).find(
+            (id) => Number(id) === proposedChainId,
+          );
           if (!featureFlags.custom_rpc) {
-            const proposedChainId = (params?.[0] as { chainId: ChainId })
-              ?.chainId;
             const supportedChainId =
-              isCustomChain(Number(proposedChainId)) ||
-              isSupportedChainId(Number(proposedChainId));
+              isCustomChain(proposedChainId) ||
+              isSupportedChainId(proposedChainId);
             if (!supportedChainId) throw new Error('Chain Id not supported');
+          } else if (alreadyAddedChain) {
+            const extensionUrl = chrome.runtime.getURL('');
+            inpageMessenger?.send('rainbow_ethereumChainEvent', {
+              chainId: proposedChainId,
+              status: IN_DAPP_NOTIFICATION_STATUS.already_added,
+              extensionUrl,
+              host,
+            });
           } else {
             const {
               chainId,
@@ -472,7 +485,7 @@ export const handleProviderRequest = ({
             const chain = rainbowChainsStore
               .getState()
               .getActiveChain({ chainId: proposedChainId });
-            inpageMessenger?.send('wallet_switchEthereumChain', {
+            inpageMessenger?.send('rainbow_ethereumChainEvent', {
               chainId: proposedChainId,
               chainName: chain?.name || 'NO NAME',
               status: !supportedChainId
@@ -494,7 +507,7 @@ export const handleProviderRequest = ({
             const chain = rainbowChainsStore
               .getState()
               .getActiveChain({ chainId: proposedChainId });
-            inpageMessenger?.send('wallet_switchEthereumChain', {
+            inpageMessenger?.send('rainbow_ethereumChainEvent', {
               chainId: proposedChainId,
               chainName: chain?.name,
               status: IN_DAPP_NOTIFICATION_STATUS.success,
