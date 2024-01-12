@@ -169,14 +169,41 @@ export class HdKeychain implements IKeychain {
   async addNewAccount(): Promise<Array<Wallet>> {
     const _privates = privates.get(this)!;
 
-    _privates.addAccount(_privates.accountsEnabled);
+    const nextIndex = _privates.accountsEnabled;
+
+    // if the next index is in the deleted list, add it back
+    if (_privates.accountsDeleted.includes(nextIndex)) {
+      await this.addAccountAtIndex(nextIndex);
+      return _privates.wallets.map(({ wallet }) => wallet);
+    }
+
+    // if the next index is already in use, increment it and try again
+    if (_privates.wallets.some((w) => w.index === nextIndex)) {
+      _privates.accountsEnabled += 1;
+      return this.addNewAccount();
+    }
+
+    _privates.addAccount(nextIndex);
     _privates.accountsEnabled += 1;
+
     return _privates.wallets.map(({ wallet }) => wallet);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addAccountAtIndex(index: number, address: Address): Promise<Address> {
-    throw new Error('Method not implemented.');
+  addAccountAtIndex(index: number): Promise<Address> {
+    const _privates = privates.get(this)!;
+
+    if (_privates.wallets.some((w) => w.index === index))
+      throw new Error('Account already exists');
+
+    const newAccount = _privates.addAccount(index);
+    _privates.accountsEnabled += 1;
+
+    // maybe we are re-adding a previously deleted account, so remove it from the deleted list
+    _privates.accountsDeleted = _privates.accountsDeleted.filter(
+      (i) => i !== index,
+    );
+
+    return Promise.resolve(newAccount.address as Address);
   }
 
   getAccounts(): Promise<Array<Address>> {
@@ -198,14 +225,16 @@ export class HdKeychain implements IKeychain {
   }
 
   async removeAccount(address: Address): Promise<void> {
-    const wallets = privates.get(this)!.wallets;
+    const _privates = privates.get(this)!;
+    const wallets = _privates.wallets;
 
     const accountToDelete = wallets.find((w) => w.wallet.address === address);
     if (!accountToDelete) throw new Error('Account not found');
 
     const filteredList = wallets.filter((w) => w.wallet.address !== address);
 
-    privates.get(this)!.wallets = filteredList;
-    privates.get(this)!.accountsDeleted.push(accountToDelete.index);
+    _privates.wallets = filteredList;
+    _privates.accountsEnabled -= 1;
+    _privates.accountsDeleted.push(accountToDelete.index);
   }
 }
