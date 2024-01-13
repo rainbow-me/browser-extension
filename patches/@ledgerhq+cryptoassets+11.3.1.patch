@@ -1,0 +1,434 @@
+diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store b/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store
+new file mode 100644
+index 0000000..50093b2
+Binary files /dev/null and b/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store differ
+diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store
+new file mode 100644
+index 0000000..7582fcb
+Binary files /dev/null and b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store differ
+diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
+index 5f5d28b..cb215c2 100644
+--- a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
++++ b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
+@@ -1,115 +1,96 @@
+-import ethereum_tokens from "./1/erc20.json";
+-import ethereum_ropsten_tokens from "./3/erc20.json";
+-import ethereum_goerli_tokens from "./5/erc20.json";
+-import optimism_tokens from "./10/erc20.json";
+-import cronos_tokens from "./25/erc20.json";
+-import rsk_tokens from "./30/erc20.json";
+-import telos_evm_tokens from "./40/erc20.json";
+-import bsc_tokens from "./56/erc20.json";
+-import syscoin_tokens from "./57/erc20.json";
+-import velas_evm_tokens from "./106/erc20.json";
+-import polygon_tokens from "./137/erc20.json";
+-import bittorrent_tokens from "./199/erc20.json";
+-import energy_web_tokens from "./246/erc20.json";
+-import fantom_tokens from "./250/erc20.json";
+-import optimism_goerli_tokens from "./420/erc20.json";
+-import astar_tokens from "./592/erc20.json";
+-import metis_tokens from "./1088/erc20.json";
+-import polygon_zk_evm_tokens from "./1101/erc20.json";
+-import moonbeam_tokens from "./1284/erc20.json";
+-import polygon_zk_evm_testnet_tokens from "./1442/erc20.json";
+-import klaytn_tokens from "./8217/erc20.json";
+-import base_tokens from "./8453/erc20.json";
+-import arbitrum_tokens from "./42161/erc20.json";
+-import avalanche_c_chain_tokens from "./43114/erc20.json";
+-import base_goerli_tokens from "./84531/erc20.json";
+-import arbitrum_goerli_tokens from "./421613/erc20.json";
+-import neon_evm_tokens from "./245022934/erc20.json";
+-import ethereum_signatures from "./1/erc20-signatures.json";
+-import ethereum_ropsten_signatures from "./3/erc20-signatures.json";
+-import ethereum_goerli_signatures from "./5/erc20-signatures.json";
+-import optimism_signatures from "./10/erc20-signatures.json";
+-import cronos_signatures from "./25/erc20-signatures.json";
+-import rsk_signatures from "./30/erc20-signatures.json";
+-import telos_evm_signatures from "./40/erc20-signatures.json";
+-import bsc_signatures from "./56/erc20-signatures.json";
+-import syscoin_signatures from "./57/erc20-signatures.json";
+-import velas_evm_signatures from "./106/erc20-signatures.json";
+-import polygon_signatures from "./137/erc20-signatures.json";
+-import bittorrent_signatures from "./199/erc20-signatures.json";
+-import energy_web_signatures from "./246/erc20-signatures.json";
+-import fantom_signatures from "./250/erc20-signatures.json";
+-import optimism_goerli_signatures from "./420/erc20-signatures.json";
+-import astar_signatures from "./592/erc20-signatures.json";
+-import metis_signatures from "./1088/erc20-signatures.json";
+-import polygon_zk_evm_signatures from "./1101/erc20-signatures.json";
+-import moonbeam_signatures from "./1284/erc20-signatures.json";
+-import polygon_zk_evm_testnet_signatures from "./1442/erc20-signatures.json";
+-import klaytn_signatures from "./8217/erc20-signatures.json";
+-import base_signatures from "./8453/erc20-signatures.json";
+-import arbitrum_signatures from "./42161/erc20-signatures.json";
+-import avalanche_c_chain_signatures from "./43114/erc20-signatures.json";
+-import base_goerli_signatures from "./84531/erc20-signatures.json";
+-import arbitrum_goerli_signatures from "./421613/erc20-signatures.json";
+-import neon_evm_signatures from "./245022934/erc20-signatures.json";
+-export const tokens = {
+-    1: ethereum_tokens,
+-    3: ethereum_ropsten_tokens,
+-    5: ethereum_goerli_tokens,
+-    10: optimism_tokens,
+-    25: cronos_tokens,
+-    30: rsk_tokens,
+-    40: telos_evm_tokens,
+-    56: bsc_tokens,
+-    57: syscoin_tokens,
+-    106: velas_evm_tokens,
+-    137: polygon_tokens,
+-    199: bittorrent_tokens,
+-    246: energy_web_tokens,
+-    250: fantom_tokens,
+-    420: optimism_goerli_tokens,
+-    592: astar_tokens,
+-    1088: metis_tokens,
+-    1101: polygon_zk_evm_tokens,
+-    1284: moonbeam_tokens,
+-    1442: polygon_zk_evm_testnet_tokens,
+-    8217: klaytn_tokens,
+-    8453: base_tokens,
+-    42161: arbitrum_tokens,
+-    43114: avalanche_c_chain_tokens,
+-    84531: base_goerli_tokens,
+-    421613: arbitrum_goerli_tokens,
+-    245022934: neon_evm_tokens,
++export let tokens = {};
++export let signatures = {};
++async function fetchJsonLocally(filename) {
++    try {
++        const req = await fetch(chrome.runtime.getURL(`json/ledger/${filename}`));
++        const json = await req.json();
++        return json;
++    } catch (e) {
++        return {};
++    }
+ };
+-export const signatures = {
+-    1: ethereum_signatures,
+-    3: ethereum_ropsten_signatures,
+-    5: ethereum_goerli_signatures,
+-    10: optimism_signatures,
+-    25: cronos_signatures,
+-    30: rsk_signatures,
+-    40: telos_evm_signatures,
+-    56: bsc_signatures,
+-    57: syscoin_signatures,
+-    106: velas_evm_signatures,
+-    137: polygon_signatures,
+-    199: bittorrent_signatures,
+-    246: energy_web_signatures,
+-    250: fantom_signatures,
+-    420: optimism_goerli_signatures,
+-    592: astar_signatures,
+-    1088: metis_signatures,
+-    1101: polygon_zk_evm_signatures,
+-    1284: moonbeam_signatures,
+-    1442: polygon_zk_evm_testnet_signatures,
+-    8217: klaytn_signatures,
+-    8453: base_signatures,
+-    42161: arbitrum_signatures,
+-    43114: avalanche_c_chain_signatures,
+-    84531: base_goerli_signatures,
+-    421613: arbitrum_goerli_signatures,
+-    245022934: neon_evm_signatures,
++const init = async () => {
++    tokens = {
++        1: await fetchJsonLocally('1/erc20.json'),
++        3: await fetchJsonLocally('3/erc20.json'),
++        5: await fetchJsonLocally('5/erc20.json'),
++        10: await fetchJsonLocally('10/erc20.json'),
++        25: await fetchJsonLocally('25/erc20.json'),
++        30: await fetchJsonLocally('30/erc20.json'),
++        40: await fetchJsonLocally('40/erc20.json'),
++        56: await fetchJsonLocally('56/erc20.json'),
++        57: await fetchJsonLocally('57/erc20.json'),
++        97: await fetchJsonLocally('97/erc20.json'),
++        106: await fetchJsonLocally('106/erc20.json'),
++        137: await fetchJsonLocally('137/erc20.json'),
++        199: await fetchJsonLocally('199/erc20.json'),
++        246: await fetchJsonLocally('246/erc20.json'),
++        250: await fetchJsonLocally('250/erc20.json'),
++        420: await fetchJsonLocally('420/erc20.json'),
++        592: await fetchJsonLocally('592/erc20.json'),
++        1088: await fetchJsonLocally('1088/erc20.json'),
++        1101: await fetchJsonLocally('1101/erc20.json'),
++        1284: await fetchJsonLocally('1284/erc20.json'),
++        1442: await fetchJsonLocally('1442/erc20.json'),
++        8217: await fetchJsonLocally('8217/erc20.json'),
++        8453: await fetchJsonLocally('8453/erc20.json'),
++        17000: await fetchJsonLocally('17000/erc20.json'),
++        42161: await fetchJsonLocally('42161/erc20.json'),
++        43113: await fetchJsonLocally('43113/erc20.json'),
++        43114: await fetchJsonLocally('43114/erc20.json'),
++        80001: await fetchJsonLocally('80001/erc20.json'),
++        84531: await fetchJsonLocally('84531/erc20.json'),
++        84532: await fetchJsonLocally('84532/erc20.json'),
++        421613: await fetchJsonLocally('421613/erc20.json'),
++        421614: await fetchJsonLocally('421614/erc20.json'),
++        11155111: await fetchJsonLocally('11155111/erc20.json'),
++        11155420: await fetchJsonLocally('11155420/erc20.json'),
++        245022934: await fetchJsonLocally('245022934/erc20.json'),
++        999999999: await fetchJsonLocally('999999999/erc20.json'),
++    };
++    signatures = {
++        1: await fetchJsonLocally('1/erc20-signatures.json'),
++        3: await fetchJsonLocally('3/erc20-signatures.json'),
++        5: await fetchJsonLocally('5/erc20-signatures.json'),
++        10: await fetchJsonLocally('10/erc20-signatures.json'),
++        25: await fetchJsonLocally('25/erc20-signatures.json'),
++        30: await fetchJsonLocally('30/erc20-signatures.json'),
++        40: await fetchJsonLocally('40/erc20-signatures.json'),
++        56: await fetchJsonLocally('56/erc20-signatures.json'),
++        57: await fetchJsonLocally('57/erc20-signatures.json'),
++        97: await fetchJsonLocally('97/erc20-signatures.json'),
++        106: await fetchJsonLocally('106/erc20-signatures.json'),
++        137: await fetchJsonLocally('137/erc20-signatures.json'),
++        199: await fetchJsonLocally('199/erc20-signatures.json'),
++        246: await fetchJsonLocally('246/erc20-signatures.json'),
++        250: await fetchJsonLocally('250/erc20-signatures.json'),
++        420: await fetchJsonLocally('420/erc20-signatures.json'),
++        592: await fetchJsonLocally('592/erc20-signatures.json'),
++        1088: await fetchJsonLocally('1088/erc20-signatures.json'),
++        1101: await fetchJsonLocally('1101/erc20-signatures.json'),
++        1284: await fetchJsonLocally('1284/erc20-signatures.json'),
++        1442: await fetchJsonLocally('1442/erc20-signatures.json'),
++        8217: await fetchJsonLocally('8217/erc20-signatures.json'),
++        8453: await fetchJsonLocally('8453/erc20-signatures.json'),
++        17000: await fetchJsonLocally('17000/erc20-signatures.json'),
++        42161: await fetchJsonLocally('42161/erc20-signatures.json'),
++        43113: await fetchJsonLocally('43113/erc20-signatures.json'),
++        43114: await fetchJsonLocally('43114/erc20-signatures.json'),
++        80001: await fetchJsonLocally('80001/erc20-signatures.json'),
++        84531: await fetchJsonLocally('84531/erc20-signatures.json'),
++        84532: await fetchJsonLocally('84532/erc20-signatures.json'),
++        421613: await fetchJsonLocally('421613/erc20-signatures.json'),
++        421614: await fetchJsonLocally('421614/erc20-signatures.json'),
++        11155111: await fetchJsonLocally('11155111/erc20-signatures.json'),
++        11155420: await fetchJsonLocally('11155420/erc20-signatures.json'),
++        245022934: await fetchJsonLocally('245022934/erc20-signatures.json'),
++        999999999: await fetchJsonLocally('999999999/erc20-signatures.json'),
++    };
+ };
++// There's no rush to load all this data, so we'll wait a few seconds
++setTimeout(() => {
++    init();
++}, 3000);
+ export default {
+     tokens,
+     signatures,
+diff --git a/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js b/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js
+index 3b1771e..98c9b4d 100644
+--- a/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js
++++ b/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js
+@@ -1,121 +1,97 @@
+ "use strict";
+-var __importDefault = (this && this.__importDefault) || function (mod) {
+-    return (mod && mod.__esModule) ? mod : { "default": mod };
+-};
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.signatures = exports.tokens = void 0;
+-const erc20_json_1 = __importDefault(require("./1/erc20.json"));
+-const erc20_json_2 = __importDefault(require("./3/erc20.json"));
+-const erc20_json_3 = __importDefault(require("./5/erc20.json"));
+-const erc20_json_4 = __importDefault(require("./10/erc20.json"));
+-const erc20_json_5 = __importDefault(require("./25/erc20.json"));
+-const erc20_json_6 = __importDefault(require("./30/erc20.json"));
+-const erc20_json_7 = __importDefault(require("./40/erc20.json"));
+-const erc20_json_8 = __importDefault(require("./56/erc20.json"));
+-const erc20_json_9 = __importDefault(require("./57/erc20.json"));
+-const erc20_json_10 = __importDefault(require("./106/erc20.json"));
+-const erc20_json_11 = __importDefault(require("./137/erc20.json"));
+-const erc20_json_12 = __importDefault(require("./199/erc20.json"));
+-const erc20_json_13 = __importDefault(require("./246/erc20.json"));
+-const erc20_json_14 = __importDefault(require("./250/erc20.json"));
+-const erc20_json_15 = __importDefault(require("./420/erc20.json"));
+-const erc20_json_16 = __importDefault(require("./592/erc20.json"));
+-const erc20_json_17 = __importDefault(require("./1088/erc20.json"));
+-const erc20_json_18 = __importDefault(require("./1101/erc20.json"));
+-const erc20_json_19 = __importDefault(require("./1284/erc20.json"));
+-const erc20_json_20 = __importDefault(require("./1442/erc20.json"));
+-const erc20_json_21 = __importDefault(require("./8217/erc20.json"));
+-const erc20_json_22 = __importDefault(require("./8453/erc20.json"));
+-const erc20_json_23 = __importDefault(require("./42161/erc20.json"));
+-const erc20_json_24 = __importDefault(require("./43114/erc20.json"));
+-const erc20_json_25 = __importDefault(require("./84531/erc20.json"));
+-const erc20_json_26 = __importDefault(require("./421613/erc20.json"));
+-const erc20_json_27 = __importDefault(require("./245022934/erc20.json"));
+-const erc20_signatures_json_1 = __importDefault(require("./1/erc20-signatures.json"));
+-const erc20_signatures_json_2 = __importDefault(require("./3/erc20-signatures.json"));
+-const erc20_signatures_json_3 = __importDefault(require("./5/erc20-signatures.json"));
+-const erc20_signatures_json_4 = __importDefault(require("./10/erc20-signatures.json"));
+-const erc20_signatures_json_5 = __importDefault(require("./25/erc20-signatures.json"));
+-const erc20_signatures_json_6 = __importDefault(require("./30/erc20-signatures.json"));
+-const erc20_signatures_json_7 = __importDefault(require("./40/erc20-signatures.json"));
+-const erc20_signatures_json_8 = __importDefault(require("./56/erc20-signatures.json"));
+-const erc20_signatures_json_9 = __importDefault(require("./57/erc20-signatures.json"));
+-const erc20_signatures_json_10 = __importDefault(require("./106/erc20-signatures.json"));
+-const erc20_signatures_json_11 = __importDefault(require("./137/erc20-signatures.json"));
+-const erc20_signatures_json_12 = __importDefault(require("./199/erc20-signatures.json"));
+-const erc20_signatures_json_13 = __importDefault(require("./246/erc20-signatures.json"));
+-const erc20_signatures_json_14 = __importDefault(require("./250/erc20-signatures.json"));
+-const erc20_signatures_json_15 = __importDefault(require("./420/erc20-signatures.json"));
+-const erc20_signatures_json_16 = __importDefault(require("./592/erc20-signatures.json"));
+-const erc20_signatures_json_17 = __importDefault(require("./1088/erc20-signatures.json"));
+-const erc20_signatures_json_18 = __importDefault(require("./1101/erc20-signatures.json"));
+-const erc20_signatures_json_19 = __importDefault(require("./1284/erc20-signatures.json"));
+-const erc20_signatures_json_20 = __importDefault(require("./1442/erc20-signatures.json"));
+-const erc20_signatures_json_21 = __importDefault(require("./8217/erc20-signatures.json"));
+-const erc20_signatures_json_22 = __importDefault(require("./8453/erc20-signatures.json"));
+-const erc20_signatures_json_23 = __importDefault(require("./42161/erc20-signatures.json"));
+-const erc20_signatures_json_24 = __importDefault(require("./43114/erc20-signatures.json"));
+-const erc20_signatures_json_25 = __importDefault(require("./84531/erc20-signatures.json"));
+-const erc20_signatures_json_26 = __importDefault(require("./421613/erc20-signatures.json"));
+-const erc20_signatures_json_27 = __importDefault(require("./245022934/erc20-signatures.json"));
+-exports.tokens = {
+-    1: erc20_json_1.default,
+-    3: erc20_json_2.default,
+-    5: erc20_json_3.default,
+-    10: erc20_json_4.default,
+-    25: erc20_json_5.default,
+-    30: erc20_json_6.default,
+-    40: erc20_json_7.default,
+-    56: erc20_json_8.default,
+-    57: erc20_json_9.default,
+-    106: erc20_json_10.default,
+-    137: erc20_json_11.default,
+-    199: erc20_json_12.default,
+-    246: erc20_json_13.default,
+-    250: erc20_json_14.default,
+-    420: erc20_json_15.default,
+-    592: erc20_json_16.default,
+-    1088: erc20_json_17.default,
+-    1101: erc20_json_18.default,
+-    1284: erc20_json_19.default,
+-    1442: erc20_json_20.default,
+-    8217: erc20_json_21.default,
+-    8453: erc20_json_22.default,
+-    42161: erc20_json_23.default,
+-    43114: erc20_json_24.default,
+-    84531: erc20_json_25.default,
+-    421613: erc20_json_26.default,
+-    245022934: erc20_json_27.default,
++async function fetchJsonLocally(filename) {
++    try {
++        const req = await fetch(chrome.runtime.getURL(`json/ledger/${filename}`));
++        const json = await req.json();
++        return json;
++    } catch (e) {
++        return {};
++    }
+ };
+-exports.signatures = {
+-    1: erc20_signatures_json_1.default,
+-    3: erc20_signatures_json_2.default,
+-    5: erc20_signatures_json_3.default,
+-    10: erc20_signatures_json_4.default,
+-    25: erc20_signatures_json_5.default,
+-    30: erc20_signatures_json_6.default,
+-    40: erc20_signatures_json_7.default,
+-    56: erc20_signatures_json_8.default,
+-    57: erc20_signatures_json_9.default,
+-    106: erc20_signatures_json_10.default,
+-    137: erc20_signatures_json_11.default,
+-    199: erc20_signatures_json_12.default,
+-    246: erc20_signatures_json_13.default,
+-    250: erc20_signatures_json_14.default,
+-    420: erc20_signatures_json_15.default,
+-    592: erc20_signatures_json_16.default,
+-    1088: erc20_signatures_json_17.default,
+-    1101: erc20_signatures_json_18.default,
+-    1284: erc20_signatures_json_19.default,
+-    1442: erc20_signatures_json_20.default,
+-    8217: erc20_signatures_json_21.default,
+-    8453: erc20_signatures_json_22.default,
+-    42161: erc20_signatures_json_23.default,
+-    43114: erc20_signatures_json_24.default,
+-    84531: erc20_signatures_json_25.default,
+-    421613: erc20_signatures_json_26.default,
+-    245022934: erc20_signatures_json_27.default,
++const init = async () => {
++    exports.tokens = {
++        1: await fetchJsonLocally('1/erc20.json'),
++        3: await fetchJsonLocally('3/erc20.json'),
++        5: await fetchJsonLocally('5/erc20.json'),
++        10: await fetchJsonLocally('10/erc20.json'),
++        25: await fetchJsonLocally('25/erc20.json'),
++        30: await fetchJsonLocally('30/erc20.json'),
++        40: await fetchJsonLocally('40/erc20.json'),
++        56: await fetchJsonLocally('56/erc20.json'),
++        57: await fetchJsonLocally('57/erc20.json'),
++        97: await fetchJsonLocally('97/erc20.json'),
++        106: await fetchJsonLocally('106/erc20.json'),
++        137: await fetchJsonLocally('137/erc20.json'),
++        199: await fetchJsonLocally('199/erc20.json'),
++        246: await fetchJsonLocally('246/erc20.json'),
++        250: await fetchJsonLocally('250/erc20.json'),
++        420: await fetchJsonLocally('420/erc20.json'),
++        592: await fetchJsonLocally('592/erc20.json'),
++        1088: await fetchJsonLocally('1088/erc20.json'),
++        1101: await fetchJsonLocally('1101/erc20.json'),
++        1284: await fetchJsonLocally('1284/erc20.json'),
++        1442: await fetchJsonLocally('1442/erc20.json'),
++        8217: await fetchJsonLocally('8217/erc20.json'),
++        8453: await fetchJsonLocally('8453/erc20.json'),
++        17000: await fetchJsonLocally('17000/erc20.json'),
++        42161: await fetchJsonLocally('42161/erc20.json'),
++        43113: await fetchJsonLocally('43113/erc20.json'),
++        43114: await fetchJsonLocally('43114/erc20.json'),
++        80001: await fetchJsonLocally('80001/erc20.json'),
++        84531: await fetchJsonLocally('84531/erc20.json'),
++        84532: await fetchJsonLocally('84532/erc20.json'),
++        421613: await fetchJsonLocally('421613/erc20.json'),
++        421614: await fetchJsonLocally('421614/erc20.json'),
++        11155111: await fetchJsonLocally('11155111/erc20.json'),
++        11155420: await fetchJsonLocally('11155420/erc20.json'),
++        245022934: await fetchJsonLocally('245022934/erc20.json'),
++        999999999: await fetchJsonLocally('999999999/erc20.json'),
++    };
++    exports.signatures = {
++        1: await fetchJsonLocally('1/erc20-signatures.json'),
++        3: await fetchJsonLocally('3/erc20-signatures.json'),
++        5: await fetchJsonLocally('5/erc20-signatures.json'),
++        10: await fetchJsonLocally('10/erc20-signatures.json'),
++        25: await fetchJsonLocally('25/erc20-signatures.json'),
++        30: await fetchJsonLocally('30/erc20-signatures.json'),
++        40: await fetchJsonLocally('40/erc20-signatures.json'),
++        56: await fetchJsonLocally('56/erc20-signatures.json'),
++        57: await fetchJsonLocally('57/erc20-signatures.json'),
++        97: await fetchJsonLocally('97/erc20-signatures.json'),
++        106: await fetchJsonLocally('106/erc20-signatures.json'),
++        137: await fetchJsonLocally('137/erc20-signatures.json'),
++        199: await fetchJsonLocally('199/erc20-signatures.json'),
++        246: await fetchJsonLocally('246/erc20-signatures.json'),
++        250: await fetchJsonLocally('250/erc20-signatures.json'),
++        420: await fetchJsonLocally('420/erc20-signatures.json'),
++        592: await fetchJsonLocally('592/erc20-signatures.json'),
++        1088: await fetchJsonLocally('1088/erc20-signatures.json'),
++        1101: await fetchJsonLocally('1101/erc20-signatures.json'),
++        1284: await fetchJsonLocally('1284/erc20-signatures.json'),
++        1442: await fetchJsonLocally('1442/erc20-signatures.json'),
++        8217: await fetchJsonLocally('8217/erc20-signatures.json'),
++        8453: await fetchJsonLocally('8453/erc20-signatures.json'),
++        17000: await fetchJsonLocally('17000/erc20-signatures.json'),
++        42161: await fetchJsonLocally('42161/erc20-signatures.json'),
++        43113: await fetchJsonLocally('43113/erc20-signatures.json'),
++        43114: await fetchJsonLocally('43114/erc20-signatures.json'),
++        80001: await fetchJsonLocally('80001/erc20-signatures.json'),
++        84531: await fetchJsonLocally('84531/erc20-signatures.json'),
++        84532: await fetchJsonLocally('84532/erc20-signatures.json'),
++        421613: await fetchJsonLocally('421613/erc20-signatures.json'),
++        421614: await fetchJsonLocally('421614/erc20-signatures.json'),
++        11155111: await fetchJsonLocally('11155111/erc20-signatures.json'),
++        11155420: await fetchJsonLocally('11155420/erc20-signatures.json'),
++        245022934: await fetchJsonLocally('245022934/erc20-signatures.json'),
++        999999999: await fetchJsonLocally('999999999/erc20-signatures.json'),
++    };
+ };
++// There's no rush to load all this data, so we'll wait a few seconds
++setTimeout(() => {
++    init();
++}, 3000);
+ exports.default = {
+     tokens: exports.tokens,
+     signatures: exports.signatures,
