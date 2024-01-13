@@ -279,6 +279,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Mode',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.mode.network',
+      chainId: 34443,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.mode.network',
+      testnet: false,
+    },
+  },
+  {
     name: 'Moonbeam',
     networkInfo: {
       rpcUrl: 'https://moonbeam.public.blastapi.io',

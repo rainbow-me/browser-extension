@@ -57,6 +57,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   169: 'manta',
   5000: 'mantle',
   1088: 'metis',
+  34443: 'mode',
   1284: 'moonbeam',
   7700: 'nativecanto',
   204: 'opbnb',
