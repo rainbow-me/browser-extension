@@ -117,17 +117,18 @@ export const useWatchPendingTransactions = ({
     async (tx: RainbowTransaction) => {
       let updatedTransaction: RainbowTransaction = { ...tx };
       try {
-        const chainId = tx?.chainId;
-        if (chainId && tx.hash && address) {
-          if (tx.flashbots) {
-            updatedTransaction =
-              await processFlashbotsTransaction(updatedTransaction);
-          } else if (isCustomChain(chainId)) {
+        if (tx.chainId && tx.hash && address) {
+          if (isCustomChain(tx.chainId)) {
             updatedTransaction =
               await processCustomNetworkTransaction(updatedTransaction);
           } else {
             updatedTransaction =
               await processSupportedNetworkTransaction(updatedTransaction);
+            // if flashbots tx and no blockNumber, check if it failed
+            if (!(tx as MinedTransaction).blockNumber && tx.flashbots) {
+              updatedTransaction =
+                await processFlashbotsTransaction(updatedTransaction);
+            }
           }
         } else {
           throw new Error('Pending transaction missing chain id');
