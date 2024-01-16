@@ -41,6 +41,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   42170: 'arbitrumnova',
   1313161554: 'aurora',
   43114: 'avalanchex',
+  168587773: 'blastSepolia',
   288: 'boba',
   42220: 'celo',
   61: 'classic',
