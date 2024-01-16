@@ -62,14 +62,22 @@ export const useWatchPendingTransactions = ({
     async (tx: RainbowTransaction) => {
       const flashbotsTxStatus = await getTransactionFlashbotStatus(tx, tx.hash);
       if (flashbotsTxStatus) {
+        const { flashbotStatus, status, minedAt, title } = flashbotsTxStatus;
+        if (flashbotStatus === 'FAILED') {
+          setNonce({
+            address,
+            chainId: tx.chainId,
+            currentNonce: tx.nonce - 1,
+          });
+        }
         return {
           ...tx,
-          ...flashbotsTxStatus,
+          ...{ status, minedAt, title },
         } as RainbowTransaction;
       }
       return tx;
     },
-    [],
+    [address, setNonce],
   );
 
   const processCustomNetworkTransaction = useCallback(

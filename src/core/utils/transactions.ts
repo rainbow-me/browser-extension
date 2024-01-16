@@ -466,7 +466,7 @@ export const getTransactionFlashbotStatus = async (
       const status = 'failed';
       const minedAt = Math.floor(Date.now() / 1000);
       const title = i18n.t(`transactions.${transaction.type}.failed`);
-      return { status, minedAt, title } as const;
+      return { flashbotStatus, status, minedAt, title } as const;
     }
   } catch (e) {
     //
