@@ -455,18 +455,23 @@ type FlashbotsStatus =
 export const getTransactionFlashbotStatus = async (
   transaction: RainbowTransaction,
   txHash: string,
-) => {
+): Promise<{
+  flashbotsStatus: 'FAILED' | 'CANCELLED';
+  status: 'failed';
+  minedAt: number;
+  title: string;
+} | null> => {
   try {
     const fbStatus = await flashbotsApi.get<{ status: FlashbotsStatus }>(
       `/tx/${txHash}`,
     );
-    const flashbotStatus = fbStatus.data.status;
+    const flashbotsStatus = fbStatus.data.status;
     // Make sure it wasn't dropped after 25 blocks or never made it
-    if (flashbotStatus === 'FAILED' || flashbotStatus === 'CANCELLED') {
+    if (flashbotsStatus === 'FAILED' || flashbotsStatus === 'CANCELLED') {
       const status = 'failed';
       const minedAt = Math.floor(Date.now() / 1000);
       const title = i18n.t(`transactions.${transaction.type}.failed`);
-      return { flashbotStatus, status, minedAt, title } as const;
+      return { flashbotsStatus, status, minedAt, title };
     }
   } catch (e) {
     //

@@ -1,4 +1,4 @@
-import { getProvider } from '@wagmi/core';
+import { getProvider, mainnet } from '@wagmi/core';
 import { useCallback, useMemo } from 'react';
 import { Address } from 'wagmi';
 
@@ -59,25 +59,22 @@ export const useWatchPendingTransactions = ({
   );
 
   const processFlashbotsTransaction = useCallback(
-    async (tx: RainbowTransaction) => {
+    async (tx: RainbowTransaction): Promise<RainbowTransaction> => {
       const flashbotsTxStatus = await getTransactionFlashbotStatus(tx, tx.hash);
       if (flashbotsTxStatus) {
-        const { flashbotStatus, status, minedAt, title } = flashbotsTxStatus;
-        if (flashbotStatus === 'FAILED') {
-          setNonce({
-            address,
-            chainId: tx.chainId,
-            currentNonce: tx.nonce - 1,
-          });
-        }
+        const { flashbotsStatus, status, minedAt, title } = flashbotsTxStatus;
+
         return {
           ...tx,
-          ...{ status, minedAt, title },
+          status,
+          minedAt,
+          title,
+          flashbotsStatus,
         } as RainbowTransaction;
       }
       return tx;
     },
-    [address, setNonce],
+    [],
   );
 
   const processCustomNetworkTransaction = useCallback(
@@ -91,7 +88,7 @@ export const useWatchPendingTransactions = ({
       return {
         ...tx,
         ...transactionStatus,
-      };
+      } as RainbowTransaction;
     },
     [],
   );
@@ -108,7 +105,7 @@ export const useWatchPendingTransactions = ({
       return {
         ...tx,
         ...transaction,
-      };
+      } as RainbowTransaction;
     },
     [address, currentCurrency],
   );
@@ -170,8 +167,27 @@ export const useWatchPendingTransactions = ({
           }, new Set<number>()),
         ),
       ];
+      let flashbotsTxFailed = false;
       const highestNoncePerChainId = userTxs.reduce((acc, tx) => {
-        if (tx.nonce > acc.get(tx.chainId)) {
+        // if tx is not on mainnet, we don't care about the nonce
+        if (tx.chainId !== mainnet.id) {
+          acc.set(tx.chainId, tx.nonce);
+          return acc;
+        }
+        // if tx is flashbots and failed, we want to use the lowest nonce
+        if (
+          tx.flashbots &&
+          (tx as MinedTransaction)?.flashbotsStatus === 'FAILED'
+        ) {
+          // if we already have a failed flashbots tx, we want to use the lowest nonce
+          if (flashbotsTxFailed && tx.nonce < acc.get(tx.chainId)) {
+            acc.set(tx.chainId, tx.nonce);
+          } else {
+            acc.set(tx.chainId, tx.nonce);
+            flashbotsTxFailed = true;
+          }
+          // if tx succeeded, we want to use the highest nonce
+        } else if (!flashbotsTxFailed && tx.nonce > acc.get(tx.chainId)) {
           acc.set(tx.chainId, tx.nonce);
         }
         return acc;
@@ -184,7 +200,7 @@ export const useWatchPendingTransactions = ({
           'latest',
         );
         const currentProviderNonce = providerTransactionCount - 1;
-        const currentNonceForChainId = highestNoncePerChainId.get(chainId);
+        const currentNonceForChainId = highestNoncePerChainId.get(chainId) - 1;
         setNonce({
           address,
           chainId,
