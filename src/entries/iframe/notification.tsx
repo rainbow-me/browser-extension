@@ -52,6 +52,7 @@ export enum IN_DAPP_NOTIFICATION_STATUS {
   'no_active_session' = 'no_active_session',
   'unsupported_network' = 'unsupported_network',
   'already_added' = 'already_added',
+  'set_as_active' = 'set_as_active',
 }
 
 export const Notification = ({
@@ -271,6 +272,11 @@ const NotificationComponent = ({
           title: i18n.t(`injected_notifications.already_added`),
           description: undefined,
         };
+      case IN_DAPP_NOTIFICATION_STATUS.set_as_active:
+        return {
+          title: i18n.t(`injected_notifications.set_as_active`),
+          description: undefined,
+        };
       case IN_DAPP_NOTIFICATION_STATUS.no_active_session:
       default:
         return {
@@ -308,7 +314,8 @@ const NotificationComponent = ({
             <Columns space="8px">
               <Column width="content">
                 {status === IN_DAPP_NOTIFICATION_STATUS.success ||
-                status === IN_DAPP_NOTIFICATION_STATUS.already_added ? (
+                status === IN_DAPP_NOTIFICATION_STATUS.already_added ||
+                status === IN_DAPP_NOTIFICATION_STATUS.set_as_active ? (
                   ASSET_SOURCE[chainId] ? (
                     <img
                       src={`${extensionUrl}${ASSET_SOURCE[chainId]}`}

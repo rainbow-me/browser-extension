@@ -1507,7 +1507,8 @@
     "network_changed_failed": "Network changed failed",
     "unsupported_network": "Unsupported network",
     "no_active_session": "No active session",
-    "already_added": "Network already added"
+    "already_added": "Network already added",
+    "set_as_active": "Network set as active"
   },
   "alert": {
     "ok": "Ok",
