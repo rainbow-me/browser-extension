@@ -88,7 +88,7 @@ export const useWatchPendingTransactions = ({
       return {
         ...tx,
         ...transactionStatus,
-      } as RainbowTransaction;
+      };
     },
     [],
   );
@@ -105,7 +105,7 @@ export const useWatchPendingTransactions = ({
       return {
         ...tx,
         ...transaction,
-      } as RainbowTransaction;
+      };
     },
     [address, currentCurrency],
   );
