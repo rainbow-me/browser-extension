@@ -368,6 +368,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'RARI Chain Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet.rpc.rarichain.org/http',
+      chainId: 1918988905,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.rarichain.org',
+      testnet: true,
+    },
+  },
+  {
     name: 'Scroll',
     networkInfo: {
       rpcUrl: 'https://rpc.scroll.io',
