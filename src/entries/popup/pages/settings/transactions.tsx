@@ -11,6 +11,7 @@ import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSp
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
+import { goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
@@ -132,7 +133,12 @@ export function Transactions() {
             onToggle={() => setFlashbotsEnabled(!flashbotsEnabled)}
           />
           <MenuItem.Description
-            text={i18n.t('settings.transactions.flashbots_description')}
+            text={`${i18n.t('settings.transactions.flashbots_description')} `}
+            onClickLink={() =>
+              goToNewTab({
+                url: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
+              })
+            }
           />
         </Menu>
         <Menu>
