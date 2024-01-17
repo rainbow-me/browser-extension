@@ -611,6 +611,7 @@ export function SettingsCustomChain() {
             onSelect={handleNetworkSelect}
             ref={inputRef}
             tabIndex={1}
+            testId={'network-name-field'}
           />
           <FormInput
             onChange={(t) => {
@@ -646,6 +647,7 @@ export function SettingsCustomChain() {
             }
             spellCheck={false}
             tabIndex={3}
+            testId={'custom-network-symbol'}
           />
           <FormInput
             onChange={(t) => {
@@ -713,6 +715,7 @@ export function SettingsCustomChain() {
               tabIndex={6}
               variant="raised"
               width="full"
+              testId={'add-custom-network-button'}
             >
               {i18n.t('settings.networks.custom_rpc.add_network')}
             </Button>
