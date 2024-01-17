@@ -1620,6 +1620,21 @@
       "data": "Data"
     }
   },
+  "import_from_metamask": {
+    "title": "Import from MetaMask",
+    "description": "Transfer your wallet names, address book, connected dApps, and App preferences.",
+    "drag-n-drop_or": "Drag-n-drop or",
+    "browse": "browse",
+    "to_import": "to import",
+    "metamask_state_logs_file_name": "MetaMask state logs.json",
+    "settings": "Settings",
+    "advanced": "Advanced",
+    "download_state_logs": "Download State Logs",
+    "do_this_later": "Do this later",
+    "importing": "Importing logs…",
+    "done": "Done",
+    "error": "Error importing"
+  },
   "chain": "Chain",
   "nonce": "Nonce",
   "copy": "Copy",

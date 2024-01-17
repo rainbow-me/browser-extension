@@ -12,6 +12,7 @@ import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
+import { mapToRange } from '~/core/utils/mapToRange';
 import {
   Box,
   Inline,
@@ -380,17 +381,6 @@ function YourRankAndNextDrop() {
     </Inline>
   );
 }
-
-const mapToRange = (
-  num: number,
-  inputRange = [0, 3_000_000],
-  outputRange = [30, 300],
-) => {
-  const [inMin, inMax] = inputRange;
-  const [outMin, outMax] = outputRange;
-  const result = ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-  return result > outMax ? outMax : result;
-};
 
 function YourPoints() {
   const { currentAddress } = useCurrentAddressStore();

@@ -1,3 +1,19 @@
+import { hex } from 'chroma-js';
+import { motion } from 'framer-motion';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { hexToNumber, isAddress, isHex } from 'viem';
+import { Address, useMutation } from 'wagmi';
+import { z } from 'zod';
+
+import { getAccounts } from '~/core/keychain';
+import { i18n } from '~/core/languages';
+import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
+import { currentCurrencyStore } from '~/core/state';
+import { useContactsStore } from '~/core/state/contacts';
+import { currentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { walletNamesStore } from '~/core/state/walletNames';
+import { mapToRange } from '~/core/utils/mapToRange';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Box,
   Button,
@@ -7,8 +23,528 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { foregroundColorVars } from '~/design-system/styles/core.css';
+import { globalColors } from '~/design-system/styles/designTokens';
+import { delay } from '~/test/utils';
+
+import { importWithSecret } from '../../handlers/wallet';
+
+const t = {
+  chainId: z.string().transform((s, ctx) => {
+    const chainId = isHex(s) ? hexToNumber(s) : +s;
+    if (isNaN(chainId)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid ChainId' });
+      return z.NEVER;
+    }
+    return chainId;
+  }),
+  address: z
+    .string()
+    .refine((s) => isAddress(s), { message: 'Invalid address' })
+    .transform((s) => s.toLowerCase() as Address),
+};
+
+const account = z.object({
+  address: t.address,
+  name: z.string().optional(),
+});
+type Account = z.infer<typeof account>;
+
+const contact = z.object({
+  address: t.address,
+  name: z.string(),
+});
+type Contact = z.infer<typeof contact>;
+
+const networkConfiguration = z.object({
+  chainId: t.chainId,
+  nickname: z.string(),
+  rpcPrefs: z.object({
+    blockExplorerUrl: z.string(),
+  }),
+  rpcUrl: z.string(),
+  ticker: z.string(),
+});
+type NetworkConfiguration = z.infer<typeof networkConfiguration>;
+
+const connectedDapp = z.object({
+  origin: z.string({ description: 'dapp url' }),
+  permissions: z.object({
+    eth_accounts: z.object({
+      id: z.string(),
+      parentCapability: z.string(),
+      invoker: z.string({ description: 'dapp url' }),
+      caveats: z.array(
+        z.object({ type: z.string(), value: z.array(t.address) }),
+      ),
+      date: z.number(),
+    }),
+  }),
+});
+type ConnectedDapp = z.infer<typeof connectedDapp>;
+
+export const stateLogsSchema = z
+  .object({
+    metamask: z.object({
+      identities: z
+        .record(account)
+        .transform((o) => Object.values(o) as Account[]),
+      accounts: z
+        .record(account)
+        .transform((o) => Object.values(o) as Account[]),
+      networkConfigurations: z
+        .record(networkConfiguration)
+        .transform((o) => Object.values(o) as NetworkConfiguration[]),
+      // metamask address book is like { [chainId]: { [address]: { name, address, ... } }
+      addressBook: z
+        .record(z.record(contact))
+        .transform(
+          (addressBook) =>
+            Object.values(addressBook).flatMap((chainAddressBook) =>
+              Object.values(chainAddressBook),
+            ) as Contact[],
+        ),
+      theme: z
+        .union([z.literal('light'), z.literal('dark'), z.literal('os')])
+        .transform((t) => (t === 'os' ? 'system' : t)),
+      selectedAddress: t.address,
+      currentCurrency: z
+        .string()
+        .optional()
+        .transform(
+          (c) =>
+            Object.keys(supportedCurrencies).find((s) =>
+              isLowerCaseMatch(s, c),
+            ) as SupportedCurrencyKey | undefined,
+        ),
+      subjects: z
+        .record(connectedDapp)
+        .transform((o) => Object.values(o) as ConnectedDapp[]),
+      allTokens: z.record(
+        t.chainId,
+        z.record(
+          t.address,
+          z.array(
+            z.object({
+              address: z.string(),
+              symbol: z.string(),
+              decimals: z.number(),
+              name: z.string(),
+            }),
+          ),
+        ),
+      ),
+      ignoredNfts: z.array(
+        z.object({
+          address: t.address,
+          tokenId: z.string(),
+        }),
+      ),
+    }),
+  })
+  .transform((o) => o.metamask);
+
+const stopFromOpeningTheDroppedFile = (e: React.DragEvent<HTMLDivElement>) => {
+  e.preventDefault();
+  e.stopPropagation();
+};
+
+function BrowseFilesButton({
+  onFileChange,
+  children,
+}: PropsWithChildren<{
+  onFileChange: (files: File | null) => void;
+}>) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <>
+      <input
+        style={{ display: 'none' }}
+        type="file"
+        accept=".json"
+        ref={fileInputRef}
+        onChange={(e) => {
+          onFileChange(e.target.files?.[0] || null);
+          e.target.value = '';
+        }}
+      />
+      <Box
+        as={motion.button}
+        padding="3px"
+        margin="-3px"
+        borderRadius="4px"
+        tabIndex={1}
+        borderWidth="0px"
+        style={{ background: hex(globalColors.blue10).alpha(0).hex() }}
+        whileFocus={{ background: globalColors.blueA10, scale: 1.04 }}
+        whileHover={{ background: globalColors.blueA10, scale: 1.04 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => fileInputRef.current?.click()}
+      >
+        <Text color="blue" size="12pt" weight="medium" as="span">
+          {children}
+        </Text>
+      </Box>
+    </>
+  );
+}
+
+const DropOrBrowse = ({
+  onFileChange,
+}: {
+  onFileChange: (files: File | null) => void;
+}) => {
+  return (
+    <Box
+      as={motion.div}
+      gap="24px"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      borderRadius="12px"
+      borderColor="separatorSecondary"
+      borderWidth="2px"
+      style={{ borderStyle: 'dashed', height: 210 }}
+      width="full"
+    >
+      <Symbol symbol="doc.badge.plus" color="pink" size={35} weight="bold" />
+
+      <Stack space="8px" alignItems="center">
+        <Inline space="4px" wrap={false}>
+          <Text color="labelSecondary" size="12pt" weight="medium">
+            {i18n.t('import_from_metamask.drag-n-drop_or')}
+          </Text>
+          <BrowseFilesButton onFileChange={onFileChange}>
+            {i18n.t('import_from_metamask.browse')}
+          </BrowseFilesButton>
+          <Text color="labelSecondary" size="12pt" weight="medium">
+            {i18n.t('import_from_metamask.to_import')}
+          </Text>
+        </Inline>
+
+        <Box
+          borderRadius="5px"
+          padding="4px"
+          background="surfaceSecondaryElevated"
+          borderColor="buttonStroke"
+          borderWidth="1px"
+        >
+          <Text color="labelSecondary" size="12pt" weight="medium">
+            {i18n.t('import_from_metamask.metamask_state_logs_file_name')}
+          </Text>
+        </Box>
+      </Stack>
+    </Box>
+  );
+};
+
+function ProgressCircle({ progress }: { progress: number }) {
+  const size = 48;
+  const strokeWidth = 2;
+  const viewportSize = size + strokeWidth * 2;
+  const pathLength = mapToRange(progress, [0, 100], [0, 1]);
+  return (
+    <svg
+      width={viewportSize}
+      height={viewportSize}
+      viewBox={`0 0 ${viewportSize} ${viewportSize}`}
+      style={{ transform: 'rotate(-90deg)' }}
+    >
+      <circle
+        r={size / 2}
+        cx={viewportSize / 2}
+        cy={viewportSize / 2}
+        fill="transparent"
+        stroke={foregroundColorVars.separator}
+        strokeWidth={strokeWidth}
+      />
+      <motion.circle
+        r={size / 2}
+        cx={viewportSize / 2}
+        cy={viewportSize / 2}
+        fill="transparent"
+        stroke={foregroundColorVars.pink}
+        strokeLinecap="round"
+        strokeWidth={strokeWidth}
+        initial={{ pathLength }}
+        animate={{ pathLength }}
+        transition={{ duration: 0.5 }}
+      />
+    </svg>
+  );
+}
+
+function ImportingFile() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    setTimeout(() => setProgress((p) => p + 15), 100);
+    setTimeout(() => setProgress((p) => p + 25), 1400);
+    setTimeout(() => setProgress((p) => p + 15), 2500);
+    setTimeout(() => setProgress((p) => p + 20), 3200);
+    setTimeout(() => setProgress((p) => p + 25), 5000);
+  }, []);
+
+  return (
+    <Box
+      as={motion.div}
+      gap="12px"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      borderRadius="12px"
+      borderColor="separator"
+      borderWidth="2px"
+      initial={{ borderColor: foregroundColorVars.separatorSecondary }}
+      animate={{ borderColor: foregroundColorVars.separator }}
+      transition={{ duration: 0.5 }}
+      style={{ borderStyle: 'dashed', height: 210 }}
+      width="full"
+    >
+      <Box
+        as={motion.div}
+        position="relative"
+        animate={{ scale: progress === 100 ? 0.9 : 1 }}
+        transition={{ delay: 0.5, duration: 0.2 }}
+      >
+        <ProgressCircle progress={progress} />
+        <Box
+          position="absolute"
+          style={{
+            top: 'calc(50% - 1px)',
+            left: 'calc(50% + 1.2px)', // opticaly align icon with circle
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <Symbol
+            symbol="doc.text.magnifyingglass"
+            color="pink"
+            size={22}
+            weight="bold"
+          />
+        </Box>
+      </Box>
+
+      <Stack space="8px" alignItems="center">
+        <Text color="labelSecondary" size="12pt" weight="bold">
+          {i18n.t('import_from_metamask.importing')}
+        </Text>
+
+        <Box
+          borderRadius="5px"
+          padding="4px"
+          background="surfaceSecondaryElevated"
+          borderColor="buttonStroke"
+          borderWidth="1px"
+        >
+          <Text color="labelSecondary" size="12pt" weight="medium">
+            {i18n.t('import_from_metamask.metamask_state_logs_file_name')}
+          </Text>
+        </Box>
+      </Stack>
+    </Box>
+  );
+}
+
+function DoneCircle() {
+  const size = 50;
+  const strokeWidth = 2;
+  const viewportSize = size + strokeWidth * 2 + 4 + 7;
+  const center = viewportSize / 2;
+  const radius = size / 2;
+  return (
+    <svg
+      width={viewportSize}
+      height={viewportSize}
+      viewBox={`0 0 ${viewportSize} ${viewportSize}`}
+      style={{ transform: 'rotate(-90deg)' }}
+    >
+      <circle
+        r={radius}
+        cx={center}
+        cy={center}
+        fill="transparent"
+        stroke={foregroundColorVars.green}
+        strokeWidth={strokeWidth}
+      />
+      <motion.circle
+        initial={{ opacity: 0, scale: 0.84 }}
+        animate={{ opacity: 0.09, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        r={radius + 4}
+        cx={center}
+        cy={center}
+        fill="transparent"
+        stroke={foregroundColorVars.green}
+        strokeWidth={1}
+      />
+      <motion.circle
+        initial={{ opacity: 0, scale: 0.68 }}
+        animate={{ opacity: 0.03, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        r={radius + 7}
+        cx={center}
+        cy={center}
+        fill="transparent"
+        stroke={foregroundColorVars.green}
+        strokeWidth={1}
+      />
+    </svg>
+  );
+}
+
+function ImportDone() {
+  return (
+    <Box
+      as={motion.div}
+      gap="4px"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      borderRadius="12px"
+      borderColor="separatorSecondary"
+      borderWidth="2px"
+      style={{ height: 210 }}
+      width="full"
+    >
+      <Box
+        as={motion.div}
+        position="relative"
+        initial={{ scale: 0.864 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.5 }}
+        marginTop="-5px"
+      >
+        <DoneCircle />
+        <Box
+          position="absolute"
+          style={{
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <Symbol symbol="checkmark" color="green" size={22} weight="bold" />
+        </Box>
+      </Box>
+
+      <Stack space="8px" alignItems="center">
+        <Text color="labelSecondary" size="12pt" weight="bold">
+          {i18n.t('import_from_metamask.done')}
+        </Text>
+
+        <Box
+          borderRadius="5px"
+          padding="4px"
+          background="surfaceSecondaryElevated"
+          borderColor="buttonStroke"
+          borderWidth="1px"
+        >
+          <Text color="labelSecondary" size="12pt" weight="medium">
+            {i18n.t('import_from_metamask.metamask_state_logs_file_name')}
+          </Text>
+        </Box>
+      </Stack>
+    </Box>
+  );
+}
+
+function ImportError() {
+  return (
+    <Box
+      as={motion.div}
+      gap="12px"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      borderRadius="12px"
+      borderColor="separatorSecondary"
+      borderWidth="2px"
+      style={{ height: 210 }}
+      width="full"
+    >
+      <Box
+        as={motion.div}
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Symbol symbol="xmark.circle" color="red" size={48} weight="bold" />
+      </Box>
+
+      <Stack space="8px" alignItems="center">
+        <Text color="labelSecondary" size="12pt" weight="bold">
+          {i18n.t('import_from_metamask.error')}
+        </Text>
+
+        <Box
+          borderRadius="5px"
+          padding="4px"
+          background="surfaceSecondaryElevated"
+          borderColor="buttonStroke"
+          borderWidth="1px"
+        >
+          <Text color="labelSecondary" size="12pt" weight="medium">
+            {i18n.t('import_from_metamask.metamask_state_logs_file_name')}
+          </Text>
+        </Box>
+      </Stack>
+    </Box>
+  );
+}
 
 export function ImportFromMetamask() {
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+  useEffect(() => {
+    const onBlur = () => setIsDraggingOver(false);
+    document.addEventListener('blur', onBlur);
+    return () => {
+      document.removeEventListener('blur', onBlur);
+    };
+  }, []);
+
+  const { mutate: handleStateLogs, status } = useMutation(
+    async (stateLogsFile: File | null) => {
+      if (!stateLogsFile) return;
+
+      const stateLogsText = await stateLogsFile.text();
+      const stateLogs = stateLogsSchema.parse(JSON.parse(stateLogsText));
+
+      const contacts = useContactsStore.getState();
+      const contactsToImport = stateLogs.addressBook.filter(contacts.isContact);
+      contactsToImport.forEach((contact) => contacts.saveContact({ contact }));
+
+      const accounts = await getAccounts();
+      const accountsToImport = stateLogs.accounts.filter(
+        (account) => !accounts.includes(account.address),
+      );
+      const walletNames = walletNamesStore.getState();
+      accountsToImport.forEach((account) => {
+        importWithSecret(account.address);
+        const { name, address } = account;
+        if (name) walletNames.saveWalletName({ address, name });
+      });
+
+      if (stateLogs.currentCurrency) {
+        currentCurrencyStore
+          .getState()
+          .setCurrentCurrency(stateLogs.currentCurrency);
+      }
+
+      await delay(3800);
+
+      currentThemeStore.getState().setCurrentTheme(stateLogs.theme);
+
+      await delay(1900);
+    },
+  );
+
   return (
     <Box
       paddingHorizontal="20px"
@@ -18,11 +554,21 @@ export function ImportFromMetamask() {
       display="flex"
       flexDirection="column"
       flexGrow="1"
+      onDragOver={(e) => {
+        stopFromOpeningTheDroppedFile(e);
+        setIsDraggingOver(true);
+      }}
+      onDragLeave={() => setIsDraggingOver(false)}
+      onDrop={(e) => {
+        stopFromOpeningTheDroppedFile(e);
+        setIsDraggingOver(false);
+        handleStateLogs(e.dataTransfer.files[0]);
+      }}
     >
       <Stack space="24px" alignItems="center" paddingHorizontal="14px">
         <Stack space="12px" alignItems="center">
           <Text size="16pt" weight="bold">
-            Import from MetaMask
+            {i18n.t('import_from_metamask.title')}
           </Text>
           <Text
             color="labelTertiary"
@@ -30,58 +576,16 @@ export function ImportFromMetamask() {
             weight="medium"
             align="center"
           >
-            Transfer your wallet names, address book, connected dApps, and App
-            preferences.
+            {i18n.t('import_from_metamask.description')}
           </Text>
         </Stack>
 
         <Separator color="separatorTertiary" width={106} />
 
-        <Box
-          gap="24px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          borderRadius="12px"
-          borderColor="buttonStroke"
-          borderWidth="2px"
-          style={{ borderStyle: 'dashed', height: 210 }}
-          width="full"
-        >
-          <Symbol
-            symbol="doc.badge.plus"
-            color="pink"
-            size={35}
-            weight="bold"
-          />
-
-          <Stack space="8px" alignItems="center">
-            <Inline space="4px" wrap={false}>
-              <Text color="labelSecondary" size="12pt" weight="medium">
-                Drag-n-drop or
-              </Text>
-              <Text color="blue" size="12pt" weight="medium" as="span">
-                browse
-              </Text>
-              <Text color="labelSecondary" size="12pt" weight="medium">
-                to import
-              </Text>
-            </Inline>
-
-            <Box
-              borderRadius="5px"
-              padding="4px"
-              background="surfaceSecondaryElevated"
-              borderColor="buttonStroke"
-              borderWidth="1px"
-            >
-              <Text color="labelSecondary" size="12pt" weight="medium">
-                MetaMask state logs.json
-              </Text>
-            </Box>
-          </Stack>
-        </Box>
+        {status === 'idle' && <DropOrBrowse onFileChange={handleStateLogs} />}
+        {status === 'loading' && <ImportingFile />}
+        {status === 'error' && <ImportError />}
+        {status === 'success' && <ImportDone />}
 
         <Separator color="separatorTertiary" width={106} />
 
@@ -98,7 +602,7 @@ export function ImportFromMetamask() {
             width="full"
           >
             <Text color="orange" size="12pt" weight="medium">
-              Settings
+              {i18n.t('import_from_metamask.settings')}
             </Text>
             <Symbol
               symbol="arrow.right"
@@ -107,7 +611,7 @@ export function ImportFromMetamask() {
               weight="medium"
             />
             <Text color="orange" size="12pt" weight="medium">
-              Advanced
+              {i18n.t('import_from_metamask.advanced')}
             </Text>
             <Symbol
               symbol="arrow.right"
@@ -116,7 +620,7 @@ export function ImportFromMetamask() {
               weight="medium"
             />
             <Text color="orange" size="12pt" weight="medium">
-              Download State Logs
+              {i18n.t('import_from_metamask.download_state_logs')}
             </Text>
           </Box>
           <Text
@@ -131,8 +635,14 @@ export function ImportFromMetamask() {
         </Stack>
       </Stack>
 
-      <Button height="44px" variant="flat" color="fill" width="full">
-        Do this later
+      <Button
+        height="44px"
+        variant="flat"
+        color="fill"
+        width="full"
+        disabled={status !== 'idle'}
+      >
+        {i18n.t('import_from_metamask.do_this_later')}
       </Button>
     </Box>
   );
