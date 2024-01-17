@@ -325,8 +325,7 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
   {
     name: 'Palm',
     networkInfo: {
-      rpcUrl:
-        'https://palm-mainnet.infura.io/v3/3a961d6501e54add9a41aa53f15de99b',
+      rpcUrl: 'https://palm-mainnet.public.blastapi.io',
       chainId: 11297108109,
       decimals: 18,
       symbol: 'PALM',
