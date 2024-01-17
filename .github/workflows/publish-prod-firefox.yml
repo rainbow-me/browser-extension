@@ -9,18 +9,18 @@ jobs:
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.REPO_TOKEN }}
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
           node-version: "18.18.0"
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: 'rainbow-me/browser-extension-env'
           token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -34,7 +34,7 @@ jobs:
       - name: Update the manifest
         run: yarn update-manifest prod
       - name: Archive the build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rainbowbx-firefox-v${{ env.release_version }}
           path: build/
