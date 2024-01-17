@@ -38,13 +38,13 @@ jobs:
         with:
           name: rainbowbx-firefox-v${{ env.release_version }}.zip
           path: build/
-      - name: Zip it
-        run: yarn firefox:zip
-      - name: Submit to the firefox addons store
-        uses: PlasmoHQ/bpp@v3.5.0
-        with:
-          artifact: ./rainbowbx.xpi
-          keys: ${{ secrets.BPP_KEYS_PROD_FIREFOX }}
+#     - name: Zip it
+#       run: yarn firefox:zip
+#     - name: Submit to the firefox addons store
+#       uses: PlasmoHQ/bpp@v3.5.0
+#       with:
+#         artifact: ./rainbowbx.xpi
+#         keys: ${{ secrets.BPP_KEYS_PROD_FIREFOX }}
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
