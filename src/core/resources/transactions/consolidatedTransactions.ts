@@ -108,6 +108,7 @@ export async function consolidatedTransactionsQueryFunction({
         timeout: CONSOLIDATED_TRANSACTIONS_TIMEOUT,
       },
     );
+    console.log('-- CONSOLIDATED TRANSACTION RESPONSE --', response?.data);
     const consolidatedTransactions = await parseConsolidatedTransactions(
       response?.data,
       currency,

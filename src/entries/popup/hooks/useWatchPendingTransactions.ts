@@ -4,13 +4,16 @@ import { Address } from 'wagmi';
 
 import { queryClient } from '~/core/react-query';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
+import { consolidatedTransactionsQueryKey } from '~/core/resources/transactions/consolidatedTransactions';
 import { fetchTransaction } from '~/core/resources/transactions/transaction';
 import {
   useCurrentCurrencyStore,
   useNonceStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
+import { useUserChainsStore } from '~/core/state/userChains';
 import {
   MinedTransaction,
   RainbowTransaction,
@@ -38,6 +41,8 @@ export const useWatchPendingTransactions = ({
   const { setNonce } = useNonceStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { addCustomNetworkTransactions } = useCustomNetworkTransactionsStore();
+  const { userChains } = useUserChainsStore();
+  const { testnetMode } = useTestnetModeStore();
 
   const pendingTransactions = useMemo(
     () => storePendingTransactions[address] || [],
@@ -240,10 +245,20 @@ export const useWatchPendingTransactions = ({
       );
 
     if (minedTransactions.length) {
-      queryClient.refetchQueries({
-        queryKey: ['consolidatedTransactions'],
-        exact: false,
-      });
+      await queryClient.refetchQueries(
+        {
+          queryKey: consolidatedTransactionsQueryKey({
+            address,
+            currency: currentCurrency,
+            testnetMode,
+            userChainIds: Object.keys(userChains).map(Number),
+          }),
+          exact: false,
+        },
+        {
+          throwOnError: true,
+        },
+      );
     }
 
     minedTransactions.forEach((minedTransaction) => {
@@ -263,10 +278,13 @@ export const useWatchPendingTransactions = ({
   }, [
     addCustomNetworkTransactions,
     address,
+    currentCurrency,
     pendingTransactions,
     processNonces,
     processPendingTransaction,
     setPendingTransactions,
+    testnetMode,
+    userChains,
   ]);
 
   return { watchPendingTransactions };
