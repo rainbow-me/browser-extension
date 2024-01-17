@@ -438,7 +438,7 @@ const WalletListHW = () => {
       </FullScreenContainer>
       <AddByIndexSheet
         show={showAddByIndexSheet}
-        vendor={state.vendor as 'Ledger' | 'Trezor'}
+        vendor={state.vendor as 'Ledger' | 'Trezor' | 'GridPlus'}
         onDone={handleCloseAddByIndexSheet}
       />
     </>

@@ -33,7 +33,11 @@ import { RainbowError, logger } from '~/logger';
 
 import { PathOptions } from '../pages/hw/addByIndexSheet';
 
-import { sendTransactionFromGridPlus } from './gridplus';
+import {
+  sendTransactionFromGridPlus,
+  signMessageByTypeFromGridPlus,
+  signTransactionFromGridPlus,
+} from './gridplus';
 import {
   sendTransactionFromLedger,
   signMessageByTypeFromLedger,
@@ -91,6 +95,8 @@ export const signTransactionFromHW = async (
     return signTransactionFromLedger(params);
   } else if (vendor === 'Trezor') {
     return signTransactionFromTrezor(params);
+  } else if (vendor === 'GridPlus') {
+    return signTransactionFromGridPlus(params);
   }
 };
 
@@ -189,13 +195,15 @@ export const personalSign = async (
   msgData: string | Bytes,
   address: Address,
 ): Promise<string> => {
-  const { type, vendor } = await getWallet(address as Address);
+  const { type, vendor } = await getWallet(address.toLowerCase() as Address);
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
       case 'Trezor':
         return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
+      case 'GridPlus':
+        return signMessageByTypeFromGridPlus(msgData, address, 'personal_sign');
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -213,9 +221,14 @@ export const signTypedData = async (
     switch (vendor) {
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
-      case 'Trezor': {
+      case 'Trezor':
         return signMessageByTypeFromTrezor(msgData, address, 'sign_typed_data');
-      }
+      case 'GridPlus':
+        return signMessageByTypeFromGridPlus(
+          msgData,
+          address,
+          'sign_typed_data',
+        );
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -328,7 +341,7 @@ export const exportAccount = async (address: Address, password: string) =>
   });
 
 export const importAccountAtIndex = async (
-  type: string | 'Trezor' | 'Ledger',
+  type: string | 'Trezor' | 'Ledger' | 'GridPlus',
   index: number,
   currentPath?: PathOptions,
 ) => {

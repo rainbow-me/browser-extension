@@ -37,6 +37,8 @@ export const identifyWalletTypes = async () => {
             result.ledgerDevices += 1;
           } else if (wallet.vendor === 'Trezor') {
             result.trezorDevices += 1;
+          } else if (wallet.vendor === 'GridPlus') {
+            result.gridPlusDevices += 1;
           }
           break;
       }
@@ -53,6 +55,7 @@ export const identifyWalletTypes = async () => {
       hardwareAccounts: 0,
       ledgerDevices: 0,
       trezorDevices: 0,
+      gridPlusDevices: 0,
     },
   );
 

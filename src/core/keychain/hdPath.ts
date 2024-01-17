@@ -4,7 +4,7 @@ const LEGACY_LEDGER_PATH = "m/44'/60'/0'";
 
 export const getHDPathForVendorAndType = (
   index: number,
-  vendor?: 'Ledger' | 'Trezor',
+  vendor?: 'Ledger' | 'Trezor' | 'GridPlus',
   type?: 'legacy',
 ) => {
   switch (vendor) {
@@ -16,6 +16,8 @@ export const getHDPathForVendorAndType = (
           return `${DEFAULT_LEDGER_LIVE_PATH}/${index}'/0/0`;
       }
     case 'Trezor':
+      return `${DEFAULT_HD_PATH}/${index}`;
+    case 'GridPlus':
       return `${DEFAULT_HD_PATH}/${index}`;
     default:
       return `${DEFAULT_HD_PATH}/${index}`;

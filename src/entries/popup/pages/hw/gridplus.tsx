@@ -68,7 +68,7 @@ export function ConnectGridPlus() {
     navigate(ROUTES.HW_WALLET_LIST, {
       state: {
         accountsToImport,
-        deviceId: 'Test',
+        deviceId: 'GridPlus',
         accountsEnabled: accountsToImport.length,
         vendor: 'GridPlus',
         direction: state?.direction,

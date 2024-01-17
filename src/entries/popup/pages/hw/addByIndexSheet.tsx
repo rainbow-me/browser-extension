@@ -72,7 +72,7 @@ export const AddByIndexSheet = ({
     index?: number;
     hdPath?: string;
   }) => void;
-  vendor: 'Ledger' | 'Trezor';
+  vendor: 'Ledger' | 'Trezor' | 'GridPlus';
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const prevShow = usePrevious(show);

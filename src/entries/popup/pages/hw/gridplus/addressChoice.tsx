@@ -6,6 +6,7 @@ import { Address } from 'wagmi';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Text } from '~/design-system';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
+import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 
 export type AddressesData = {
   addresses: Address[];
@@ -19,6 +20,7 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
   const [formData, setFormData] = useState({
     selectedAddresses: [] as string[],
   });
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
   const [addresses, setAddresses] = useState<AddressesData['addresses']>([]);
   const toggleAddress = (address: string) => {
     const selected = formData.selectedAddresses.includes(address);
@@ -38,8 +40,10 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
   };
   useEffect(() => {
     const fetchWalletAddresses = async () => {
+      setLoadingAddresses(true);
       const fetchedAddresses = (await fetchAddresses()) as Address[];
       setAddresses(fetchedAddresses);
+      setLoadingAddresses(false);
     };
     fetchWalletAddresses();
   }, []);
@@ -55,6 +59,7 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
       <Text size="20pt" weight="semibold">
         Choose Addresses
       </Text>
+      {loadingAddresses && <Spinner />}
       <Box display="flex" flexDirection="column" gap="16px">
         {addresses.map((address) => (
           <Box key={address} display="flex" gap="8px" alignItems="center">
@@ -69,7 +74,12 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
           </Box>
         ))}
       </Box>
-      <Button height="36px" variant="flat" color="fill">
+      <Button
+        height="36px"
+        variant="flat"
+        color="fill"
+        disabled={loadingAddresses}
+      >
         Export Addresses
       </Button>
     </Box>

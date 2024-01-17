@@ -96,7 +96,7 @@ export class HardwareWalletKeychain implements IKeychain {
       // Backwards compatibility
       getHDPathForVendorAndType(
         wallet.index,
-        this.vendor as 'Ledger' | 'Trezor',
+        this.vendor as 'Ledger' | 'Trezor' | 'GridPlus',
       )
     );
   }

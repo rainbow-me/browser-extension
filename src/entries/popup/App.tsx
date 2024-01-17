@@ -29,9 +29,17 @@ import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
+import { setup } from 'gridplus-sdk';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
+
+const getStoredClient = () => localStorage.getItem('storedClient') || '';
+
+const setStoredClient = (storedClient: string | null) => {
+  if (!storedClient) return;
+  localStorage.setItem('storedClient', storedClient);
+};
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
@@ -75,6 +83,7 @@ export function App() {
       analytics.track(event.popupOpened);
       setTimeout(() => flushQueuedEvents(), 1000);
     }
+    setup({ getStoredClient, setStoredClient, name: 'Rainbow' });
     // Init trezor once globally
     window.TrezorConnect?.init({
       manifest: {
