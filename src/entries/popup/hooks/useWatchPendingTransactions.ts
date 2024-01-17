@@ -124,12 +124,19 @@ export const useWatchPendingTransactions = ({
             updatedTransaction =
               await processCustomNetworkTransaction(updatedTransaction);
           } else {
+            console.log('about to process supported network transaction');
             updatedTransaction =
               await processSupportedNetworkTransaction(updatedTransaction);
+            console.log(
+              'processed supported network transaction ',
+              updatedTransaction,
+            );
             // if flashbots tx and no blockNumber, check if it failed
             if (!(tx as MinedTransaction).blockNumber && tx.flashbots) {
+              console.log('about process flashbogts', updatedTransaction);
               updatedTransaction =
                 await processFlashbotsTransaction(updatedTransaction);
+              console.log('proceced flashbogts', updatedTransaction);
             }
           }
         } else {

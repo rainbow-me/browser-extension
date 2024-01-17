@@ -65,6 +65,12 @@ export function SendTransaction({
   const { watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
 
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    activeSession?.chainId === ChainId.mainnet;
+
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
     if (!selectedWallet || !activeSession) return;
@@ -95,6 +101,7 @@ export function SendTransaction({
           asset: asset || undefined,
           value: formatEther(result?.value || ''),
           data: result.data,
+          flashbots: flashbotsEnabledGlobally,
           from: txData.from,
           to: txData.to,
           hash: result.hash as TxHash,
@@ -144,6 +151,7 @@ export function SendTransaction({
     connectedToHardhat,
     connectedToHardhatOp,
     asset,
+    flashbotsEnabledGlobally,
     selectedGas.transactionGasParams,
     approveRequest,
     dappMetadata?.appHost,
@@ -198,12 +206,6 @@ export function SendTransaction({
     selectAssetAddressAndChain,
     connectedToHardhatOp,
   ]);
-
-  const { flashbotsEnabled } = useFlashbotsEnabledStore();
-  const flashbotsEnabledGlobally =
-    config.flashbots_enabled &&
-    flashbotsEnabled &&
-    activeSession?.chainId === ChainId.mainnet;
 
   return (
     <Box
