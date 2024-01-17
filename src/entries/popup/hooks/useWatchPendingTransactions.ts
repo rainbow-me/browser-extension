@@ -245,20 +245,14 @@ export const useWatchPendingTransactions = ({
       );
 
     if (minedTransactions.length) {
-      await queryClient.refetchQueries(
-        {
-          queryKey: consolidatedTransactionsQueryKey({
-            address,
-            currency: currentCurrency,
-            testnetMode,
-            userChainIds: Object.keys(userChains).map(Number),
-          }),
-          exact: false,
-        },
-        {
-          throwOnError: true,
-        },
-      );
+      await queryClient.refetchQueries({
+        queryKey: consolidatedTransactionsQueryKey({
+          address,
+          currency: currentCurrency,
+          testnetMode,
+          userChainIds: Object.keys(userChains).map(Number),
+        }),
+      });
     }
 
     minedTransactions.forEach((minedTransaction) => {
