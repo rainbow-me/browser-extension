@@ -216,7 +216,7 @@ export const signTypedData = async (
   msgData: string | Bytes,
   address: Address,
 ) => {
-  const { type, vendor } = await getWallet(address as Address);
+  const { type, vendor } = await getWallet(address.toLowerCase() as Address);
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
       case 'Ledger':

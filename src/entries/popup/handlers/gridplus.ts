@@ -12,6 +12,7 @@ import {
   parse,
   serialize,
 } from '@ethersproject/transactions';
+import { TypedDataUtils } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import {
@@ -19,8 +20,8 @@ import {
   signMessage as gridPlusSignMessage,
 } from 'gridplus-sdk';
 import { Address } from 'wagmi';
-import { getPath } from '~/core/keychain';
 
+import { getPath } from '~/core/keychain';
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 import { addHexPrefix } from '~/core/utils/hex';
 import { logger } from '~/logger';
@@ -127,6 +128,14 @@ export async function signMessageByTypeFromGridPlus(
   messageType: string,
 ): Promise<string> {
   const path = await getPath(address.toLowerCase() as Address);
+  const addressIndex = parseInt(path.split('/')[5]);
+  const signerPath = [
+    0x80000000 + 44,
+    0x80000000 + 60,
+    0x80000000,
+    0,
+    addressIndex,
+  ];
   // Personal sign
   if (messageType === 'personal_sign') {
     if (typeof msgData === 'string') {
@@ -140,16 +149,10 @@ export async function signMessageByTypeFromGridPlus(
 
     const messageHex = hexlify(msgData).substring(2);
 
-    const addressIndex = parseInt(path.split('/')[5]);
-
     const response = await gridPlusSignMessage(messageHex, {
-      signerPath: [
-        0x80000000 + 44,
-        0x80000000 + 60,
-        0x80000000,
-        0,
-        addressIndex,
-      ],
+      signerPath,
+      payload: messageHex,
+      protocol: 'signPersonal',
     });
 
     const responseAddress = hexlify(response.signer);
@@ -177,7 +180,6 @@ export async function signMessageByTypeFromGridPlus(
   } else if (messageType === 'sign_typed_data') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parsedData = msgData as any;
-    const version = SignTypedDataVersion.V4;
     if (
       typeof msgData !== 'object' ||
       !(parsedData.types || parsedData.primaryType || parsedData.domain)
@@ -195,29 +197,33 @@ export async function signMessageByTypeFromGridPlus(
       message,
     };
 
-    const { domain_separator_hash, message_hash } = transformTypedDataPlugin(
-      eip712Data,
-      true,
-    );
-
-    const response = await window.TrezorConnect.ethereumSignTypedData({
-      path,
-      data: eip712Data,
-      metamask_v4_compat: true,
-      domain_separator_hash,
-      message_hash,
+    const response = await gridPlusSignMessage(eip712Data, {
+      signerPath,
+      protocol: 'eip712',
+      payload: eip712Data,
     });
 
-    if (!response.success) {
-      throw new Error('Trezor returned an error');
-    }
+    const responseAddress = hexlify(response.signer);
 
-    if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
+    if (responseAddress.toLowerCase() !== address.toLowerCase()) {
       throw new Error(
-        'Trezor returned a different address than the one requested',
+        'GridPlus returned a different address than the one requested',
       );
     }
-    return addHexPrefix(response.payload.signature);
+
+    if (!response.sig) {
+      throw new Error('GridPlus returned an error');
+    }
+
+    const signature = joinSignature({
+      r: addHexPrefix(response.sig.r.toString('hex')),
+      s: addHexPrefix(response.sig.s.toString('hex')),
+      v: BigNumber.from(
+        addHexPrefix(response.sig.v.toString('hex')),
+      ).toNumber(),
+    });
+
+    return signature;
   } else {
     throw new Error(`Message type ${messageType} not supported`);
   }
