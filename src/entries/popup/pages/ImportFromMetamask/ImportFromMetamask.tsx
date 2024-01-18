@@ -11,10 +11,11 @@ import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
 import {
   appSessionsStore,
   currentCurrencyStore,
-  useRainbowChainsStore
+  useRainbowChainsStore,
 } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { currentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { walletNamesStore } from '~/core/state/walletNames';
 import { ChainId } from '~/core/types/chains';
 import { getDappHost, getDappHostname } from '~/core/utils/connectedApps';
@@ -126,20 +127,35 @@ export const stateLogsSchema = z
       subjects: z
         .record(connectedDapp)
         .transform((o) => Object.values(o) as ConnectedDapp[]),
-      allTokens: z.record(
-        t.chainId,
-        z.record(
-          t.address,
-          z.array(
-            z.object({
-              address: z.string(),
-              symbol: z.string(),
-              decimals: z.number(),
-              name: z.string(),
-            }),
+      allTokens: z
+        .record(
+          t.chainId,
+          z.record(
+            t.address,
+            z.array(
+              z.object({
+                address: t.address,
+                symbol: z.string(),
+                decimals: z.number(),
+                name: z.string(),
+              }),
+            ),
           ),
+        )
+        .transform((allTokens) =>
+          Object.entries(allTokens)
+            .map(([chainId, addressToTokens]) =>
+              Object.values(addressToTokens).map(
+                (tokens) =>
+                  tokens?.map((token) => ({
+                    ...token,
+                    chainId: +chainId as ChainId,
+                  })),
+              ),
+            )
+            .flat(2)
+            .filter(Boolean),
         ),
-      ),
       ignoredNfts: z.array(
         z.object({
           address: t.address,
@@ -149,6 +165,8 @@ export const stateLogsSchema = z
     }),
   })
   .transform((o) => o.metamask);
+
+type MetamaskStateLogs = z.infer<typeof stateLogsSchema>;
 
 const stopFromOpeningTheDroppedFile = (e: React.DragEvent<HTMLDivElement>) => {
   e.preventDefault();
@@ -202,19 +220,7 @@ const DropOrBrowse = ({
   onFileChange: (files: File | null) => void;
 }) => {
   return (
-    <Box
-      as={motion.div}
-      gap="4px"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      borderRadius="12px"
-      borderColor="separatorSecondary"
-      borderWidth="2px"
-      style={{ borderStyle: 'dashed', height: 210 }}
-      width="full"
-    >
+    <>
       <Box
         style={{ height: 62, marginTop: -14 }}
         display="flex"
@@ -249,7 +255,7 @@ const DropOrBrowse = ({
           </Text>
         </Box>
       </Stack>
-    </Box>
+    </>
   );
 };
 
@@ -301,22 +307,7 @@ function ImportingFile() {
   }, []);
 
   return (
-    <Box
-      as={motion.div}
-      gap="4px"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      borderRadius="12px"
-      borderColor="separator"
-      borderWidth="2px"
-      initial={{ borderColor: foregroundColorVars.separatorSecondary }}
-      animate={{ borderColor: foregroundColorVars.separator }}
-      transition={{ duration: 0.5 }}
-      style={{ borderStyle: 'dashed', height: 210 }}
-      width="full"
-    >
+    <>
       <Box
         as={motion.div}
         position="relative"
@@ -362,7 +353,7 @@ function ImportingFile() {
           </Text>
         </Box>
       </Stack>
-    </Box>
+    </>
   );
 }
 
@@ -415,19 +406,7 @@ function DoneCircle() {
 
 function ImportDone() {
   return (
-    <Box
-      as={motion.div}
-      display="flex"
-      gap="4px"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      borderRadius="12px"
-      borderColor="separatorSecondary"
-      borderWidth="2px"
-      style={{ height: 210 }}
-      width="full"
-    >
+    <>
       <Box
         as={motion.div}
         position="relative"
@@ -469,25 +448,13 @@ function ImportDone() {
           </Text>
         </Box>
       </Stack>
-    </Box>
+    </>
   );
 }
 
 function ImportError() {
   return (
-    <Box
-      as={motion.div}
-      gap="4px"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      borderRadius="12px"
-      borderColor="separatorSecondary"
-      borderWidth="2px"
-      style={{ height: 210 }}
-      width="full"
-    >
+    <>
       <Box
         as={motion.div}
         position="relative"
@@ -519,6 +486,136 @@ function ImportError() {
           </Text>
         </Box>
       </Stack>
+    </>
+  );
+}
+
+const importStateLogs = async (stateLogs: MetamaskStateLogs) => {
+  // contacts
+  const contacts = useContactsStore.getState();
+  const contactsToImport = stateLogs.addressBook.filter(
+    (c) => !contacts.isContact(c),
+  );
+  contactsToImport.forEach((contact) => contacts.saveContact({ contact }));
+
+  // accounts
+  const accounts = await getAccounts();
+  const accountsToImport = stateLogs.accounts.filter(
+    (account) => !accounts.includes(account.address),
+  );
+  const walletNames = walletNamesStore.getState();
+  accountsToImport.forEach((account) => {
+    importWithSecret(account.address);
+    const { name, address } = account;
+    if (name) walletNames.saveWalletName({ address, name });
+  });
+
+  // currency
+  if (stateLogs.currentCurrency) {
+    currentCurrencyStore
+      .getState()
+      .setCurrentCurrency(stateLogs.currentCurrency);
+  }
+
+  // TODO: add hidden nfts when we support it (stateLogs.ignoredNfts)
+
+  // dapp sessions
+  stateLogs.subjects.forEach((s) => {
+    const accounts = s.permissions.eth_accounts.caveats
+      .filter((c) => c.type === 'restrictReturnedAccounts')
+      .flatMap((c) => c.value);
+    accounts.forEach((account) => {
+      appSessionsStore.getState().addSession({
+        address: account,
+        chainId: ChainId.mainnet,
+        url: s.origin,
+        host: getDappHost(s.origin),
+      });
+    });
+  });
+
+  // tokens
+  const { addRainbowChainAsset } = useRainbowChainAssetsStore.getState();
+  stateLogs.allTokens.forEach((token) => {
+    addRainbowChainAsset({
+      chainId: token.chainId,
+      rainbowChainAsset: token,
+    });
+  });
+
+  // networks
+  const customNetwork = useRainbowChainsStore.getState();
+  stateLogs.networkConfigurations.forEach(
+    ({ chainId, nickname, ticker, rpcPrefs, rpcUrl }) => {
+      const decimals = 18;
+      customNetwork.addCustomRPC({
+        chain: {
+          network: String(chainId), // deprecated just here for now to make ts happy
+          id: chainId,
+          name: nickname,
+          nativeCurrency: {
+            name: ticker,
+            symbol: ticker,
+            decimals,
+          },
+          blockExplorers: {
+            default: {
+              name: getDappHostname(rpcPrefs.blockExplorerUrl),
+              url: rpcPrefs.blockExplorerUrl,
+            },
+          },
+          rpcUrls: {
+            default: { http: [rpcUrl] },
+            public: { http: [rpcUrl] },
+          },
+        },
+      });
+    },
+  );
+
+  await delay(4200);
+
+  // theme
+  currentThemeStore.getState().setCurrentTheme(stateLogs.theme);
+
+  await delay(1500);
+};
+
+function BackgroundGradient() {
+  return (
+    <Box
+      position="absolute"
+      style={{
+        overflow: 'hidden',
+        top: 0.5,
+        borderRadius: 10,
+        opacity: 0.25,
+      }}
+    >
+      <motion.svg
+        width="100%"
+        height={205}
+        filter="url(#f1)"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2 }}
+      >
+        <defs>
+          <filter id="f1" x="0" y="0">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="60" />
+          </filter>
+        </defs>
+        <motion.g
+          style={{ translateY: 40, translateX: 80 }}
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 10 }}
+        >
+          <circle fill={foregroundColorVars.pink} r={40} cx={0} cy={0} />
+          <circle fill={foregroundColorVars.orange} r={40} cx={120} cy={0} />
+          <circle fill={foregroundColorVars.blue} r={40} cx={0} cy={120} />
+          <circle fill={foregroundColorVars.purple} r={40} cx={120} cy={120} />
+        </motion.g>
+      </motion.svg>
     </Box>
   );
 }
@@ -541,94 +638,11 @@ export function ImportFromMetamask() {
       const stateLogsText = await stateLogsFile.text();
       const stateLogs = stateLogsSchema.parse(JSON.parse(stateLogsText));
 
-      // contacts
-      const contacts = useContactsStore.getState();
-      const contactsToImport = stateLogs.addressBook.filter(
-        (c) => !contacts.isContact(c),
-      );
-      contactsToImport.forEach((contact) => contacts.saveContact({ contact }));
-
-      // accounts
-      const accounts = await getAccounts();
-      const accountsToImport = stateLogs.accounts.filter(
-        (account) => !accounts.includes(account.address),
-      );
-      const walletNames = walletNamesStore.getState();
-      accountsToImport.forEach((account) => {
-        importWithSecret(account.address);
-        const { name, address } = account;
-        if (name) walletNames.saveWalletName({ address, name });
-      });
-
-      // currency
-      if (stateLogs.currentCurrency) {
-        currentCurrencyStore
-          .getState()
-          .setCurrentCurrency(stateLogs.currentCurrency);
-      }
-
-      // TODO: add hidden nfts when we support it (stateLogs.ignoredNfts)
-
-      // dapp sessions
-      stateLogs.subjects.forEach((s) => {
-        const accounts = s.permissions.eth_accounts.caveats
-          .filter((c) => c.type === 'restrictReturnedAccounts')
-          .flatMap((c) => c.value);
-        accounts.forEach((account) => {
-          appSessionsStore.getState().addSession({
-            address: account,
-            chainId: ChainId.mainnet,
-            url: s.origin,
-            host: getDappHost(s.origin),
-          });
-        });
-      });
-
-      // tokens
-      stateLogs.allTokens;
-
-      // networks
-      const customNetwork = useRainbowChainsStore.getState();
-      stateLogs.networkConfigurations.forEach(
-        ({ chainId, nickname, ticker, rpcPrefs, rpcUrl }) => {
-          // validate rpc
-          // fetch native decimals from rpc
-          const decimals = 18;
-          customNetwork.addCustomRPC({
-            chain: {
-              network: String(chainId), // deprecated just here for now to make ts happy
-              id: chainId,
-              name: nickname,
-              nativeCurrency: {
-                name: ticker,
-                symbol: ticker,
-                decimals,
-              },
-              blockExplorers: {
-                default: {
-                  name: getDappHostname(rpcPrefs.blockExplorerUrl),
-                  url: rpcPrefs.blockExplorerUrl,
-                },
-              },
-              rpcUrls: {
-                default: { http: [rpcUrl] },
-                public: { http: [rpcUrl] },
-              },
-            },
-          });
-        },
-      );
-
-      await delay(4200);
-
-      // theme
-      currentThemeStore.getState().setCurrentTheme(stateLogs.theme);
-
-      await delay(1500);
+      return await importStateLogs(stateLogs);
     },
   );
 
-  const [a, s] = useState(false);
+  const isSuccessOrError = ['success', 'error'].includes(status);
 
   return (
     <Box
@@ -649,7 +663,6 @@ export function ImportFromMetamask() {
         setIsDraggingOver(false);
         handleStateLogs(e.dataTransfer.files[0]);
       }}
-      onClick={() => s(!a)}
     >
       <Stack space="24px" alignItems="center" paddingHorizontal="14px">
         <Stack space="12px" alignItems="center">
@@ -668,11 +681,40 @@ export function ImportFromMetamask() {
 
         <Separator color="separatorTertiary" width={106} />
 
-        {/* {a ? <ImportDone /> : <ImportingFile />} */}
-        {status === 'idle' && <DropOrBrowse onFileChange={handleStateLogs} />}
-        {status === 'loading' && <ImportingFile />}
-        {status === 'error' && <ImportError />}
-        {status === 'success' && <ImportDone />}
+        <Box
+          as={motion.div}
+          gap="4px"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          borderRadius="12px"
+          borderColor={isSuccessOrError ? 'separator' : 'separatorSecondary'}
+          borderWidth="2px"
+          style={{
+            borderStyle: isSuccessOrError ? 'solid' : 'dashed',
+            height: 210,
+          }}
+          width="full"
+          position="relative"
+          initial={{
+            borderColor: isSuccessOrError
+              ? foregroundColorVars.separatorSecondary
+              : foregroundColorVars.buttonStroke,
+          }}
+          animate={{
+            borderColor: isSuccessOrError
+              ? foregroundColorVars.buttonStroke
+              : foregroundColorVars.separatorSecondary,
+          }}
+          transition={{ duration: 0.5 }}
+        >
+          {(status === 'loading' || isDraggingOver) && <BackgroundGradient />}
+          {status === 'idle' && <DropOrBrowse onFileChange={handleStateLogs} />}
+          {status === 'loading' && <ImportingFile />}
+          {status === 'error' && <ImportError />}
+          {status === 'success' && <ImportDone />}
+        </Box>
 
         <Separator color="separatorTertiary" width={106} />
 
@@ -722,15 +764,21 @@ export function ImportFromMetamask() {
         </Stack>
       </Stack>
 
-      <Button
-        height="44px"
-        variant="flat"
-        color="fill"
-        width="full"
-        disabled={status !== 'idle'}
+      <motion.div
+        initial={{ opacity: status === 'idle' ? 0.2 : 1 }}
+        animate={{ opacity: status === 'idle' ? 1 : 0.2 }}
+        style={{ width: '100%' }}
       >
-        {i18n.t('import_from_metamask.do_this_later')}
-      </Button>
+        <Button
+          height="44px"
+          variant="flat"
+          color="fill"
+          width="full"
+          disabled={status !== 'idle'}
+        >
+          {i18n.t('import_from_metamask.do_this_later')}
+        </Button>
+      </motion.div>
     </Box>
   );
 }
