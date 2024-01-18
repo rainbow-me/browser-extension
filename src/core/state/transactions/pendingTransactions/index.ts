@@ -81,7 +81,7 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
       });
     },
     clearPendingTransactions: () => {
-      set({});
+      set({ pendingTransactions: {} });
     },
   }),
   {
