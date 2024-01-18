@@ -608,7 +608,7 @@ function BackgroundGradient() {
         <motion.g
           style={{ translateY: 40, translateX: 80 }}
           animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 10 }}
+          transition={{ repeat: Infinity, duration: 12 }}
         >
           <circle fill={foregroundColorVars.pink} r={40} cx={0} cy={0} />
           <circle fill={foregroundColorVars.orange} r={40} cx={120} cy={0} />
