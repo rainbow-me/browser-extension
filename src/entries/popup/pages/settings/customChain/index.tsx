@@ -695,6 +695,7 @@ export function SettingsCustomChain() {
                 {i18n.t('settings.networks.custom_rpc.testnet')}
               </Text>
               <Checkbox
+                testId={'testnet-toggle'}
                 borderColor="accent"
                 onClick={() =>
                   onInputChange<boolean>(
