@@ -6,7 +6,6 @@ import {
 } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Bytes, hexlify, joinSignature } from '@ethersproject/bytes';
-import { toUtf8Bytes } from '@ethersproject/strings';
 import {
   UnsignedTransaction,
   parse,
@@ -24,7 +23,6 @@ import { Address } from 'wagmi';
 import { getPath } from '~/core/keychain';
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 import { addHexPrefix } from '~/core/utils/hex';
-import { logger } from '~/logger';
 
 export async function signTransactionFromGridPlus(
   transaction: TransactionRequest,
@@ -127,7 +125,7 @@ export async function signMessageByTypeFromGridPlus(
   address: Address,
   messageType: string,
 ): Promise<string> {
-  const path = await getPath(address.toLowerCase() as Address);
+  const path = await getPath(address as Address);
   const addressIndex = parseInt(path.split('/')[5]);
   const signerPath = [
     0x80000000 + 44,
@@ -138,20 +136,9 @@ export async function signMessageByTypeFromGridPlus(
   ];
   // Personal sign
   if (messageType === 'personal_sign') {
-    if (typeof msgData === 'string') {
-      try {
-        // eslint-disable-next-line no-param-reassign
-        msgData = toUtf8Bytes(msgData);
-      } catch (e) {
-        logger.info('the message is not a utf8 string, will sign as hex');
-      }
-    }
-
-    const messageHex = hexlify(msgData).substring(2);
-
-    const response = await gridPlusSignMessage(messageHex, {
+    const response = await gridPlusSignMessage(msgData, {
       signerPath,
-      payload: messageHex,
+      payload: msgData,
       protocol: 'signPersonal',
     });
 

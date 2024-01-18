@@ -1,3 +1,4 @@
+import { getAddress } from '@ethersproject/address';
 import { motion } from 'framer-motion';
 import { fetchAddresses } from 'gridplus-sdk';
 import { FormEvent, useEffect, useState } from 'react';
@@ -42,7 +43,10 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
     const fetchWalletAddresses = async () => {
       setLoadingAddresses(true);
       const fetchedAddresses = (await fetchAddresses()) as Address[];
-      setAddresses(fetchedAddresses);
+      const mixedCaseAddresses = fetchedAddresses.map((address) =>
+        getAddress(address),
+      );
+      setAddresses(mixedCaseAddresses);
       setLoadingAddresses(false);
     };
     fetchWalletAddresses();

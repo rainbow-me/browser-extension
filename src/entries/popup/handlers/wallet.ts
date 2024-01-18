@@ -195,7 +195,7 @@ export const personalSign = async (
   msgData: string | Bytes,
   address: Address,
 ): Promise<string> => {
-  const { type, vendor } = await getWallet(address.toLowerCase() as Address);
+  const { type, vendor } = await getWallet(address as Address);
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
       case 'Ledger':
@@ -216,7 +216,7 @@ export const signTypedData = async (
   msgData: string | Bytes,
   address: Address,
 ) => {
-  const { type, vendor } = await getWallet(address.toLowerCase() as Address);
+  const { type, vendor } = await getWallet(address as Address);
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
       case 'Ledger':
