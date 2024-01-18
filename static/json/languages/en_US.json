@@ -1507,7 +1507,10 @@
     "network_changed": "Network changed",
     "network_changed_failed": "Network changed failed",
     "unsupported_network": "Unsupported network",
-    "no_active_session": "No active session"
+    "no_active_session": "No active session",
+    "already_added": "RPC activated",
+    "set_as_active": "New RPC activated",
+    "already_active": "Network already added"
   },
   "alert": {
     "ok": "Ok",
