@@ -573,12 +573,12 @@ const importStateLogs = async (stateLogs: MetamaskStateLogs) => {
     },
   );
 
-  await delay(4200);
+  await delay(3200);
 
   // theme
   currentThemeStore.getState().setCurrentTheme(stateLogs.theme);
 
-  await delay(1500);
+  await delay(2500);
 };
 
 function BackgroundGradient() {
