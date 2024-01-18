@@ -8,10 +8,16 @@ import { z } from 'zod';
 import { getAccounts } from '~/core/keychain';
 import { i18n } from '~/core/languages';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
-import { currentCurrencyStore } from '~/core/state';
+import {
+  appSessionsStore,
+  currentCurrencyStore,
+  useRainbowChainsStore
+} from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { currentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { walletNamesStore } from '~/core/state/walletNames';
+import { ChainId } from '~/core/types/chains';
+import { getDappHost, getDappHostname } from '~/core/utils/connectedApps';
 import { mapToRange } from '~/core/utils/mapToRange';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
@@ -198,7 +204,7 @@ const DropOrBrowse = ({
   return (
     <Box
       as={motion.div}
-      gap="24px"
+      gap="4px"
       display="flex"
       flexDirection="column"
       alignItems="center"
@@ -209,7 +215,14 @@ const DropOrBrowse = ({
       style={{ borderStyle: 'dashed', height: 210 }}
       width="full"
     >
-      <Symbol symbol="doc.badge.plus" color="pink" size={35} weight="bold" />
+      <Box
+        style={{ height: 62, marginTop: -14 }}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Symbol symbol="doc.badge.plus" color="pink" size={35} weight="bold" />
+      </Box>
 
       <Stack space="8px" alignItems="center">
         <Inline space="4px" wrap={false}>
@@ -280,17 +293,17 @@ function ImportingFile() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    setTimeout(() => setProgress((p) => p + 15), 100);
-    setTimeout(() => setProgress((p) => p + 25), 1400);
-    setTimeout(() => setProgress((p) => p + 15), 2500);
-    setTimeout(() => setProgress((p) => p + 20), 3200);
-    setTimeout(() => setProgress((p) => p + 25), 5000);
+    setTimeout(() => setProgress(15), 100);
+    setTimeout(() => setProgress(40), 1400);
+    setTimeout(() => setProgress(55), 2500);
+    setTimeout(() => setProgress(75), 3200);
+    setTimeout(() => setProgress(100), 5000);
   }, []);
 
   return (
     <Box
       as={motion.div}
-      gap="12px"
+      gap="4px"
       display="flex"
       flexDirection="column"
       alignItems="center"
@@ -309,12 +322,16 @@ function ImportingFile() {
         position="relative"
         animate={{ scale: progress === 100 ? 0.9 : 1 }}
         transition={{ delay: 0.5, duration: 0.2 }}
+        style={{ height: 62, marginTop: -14 }}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
       >
         <ProgressCircle progress={progress} />
         <Box
           position="absolute"
           style={{
-            top: 'calc(50% - 1px)',
+            top: 'calc(50% + 1px)',
             left: 'calc(50% + 1.2px)', // opticaly align icon with circle
             transform: 'translate(-50%, -50%)',
           }}
@@ -400,8 +417,8 @@ function ImportDone() {
   return (
     <Box
       as={motion.div}
-      gap="4px"
       display="flex"
+      gap="4px"
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
@@ -417,7 +434,10 @@ function ImportDone() {
         initial={{ scale: 0.864 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.5 }}
-        marginTop="-5px"
+        style={{ height: 62, marginTop: -14 }}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
       >
         <DoneCircle />
         <Box
@@ -457,7 +477,7 @@ function ImportError() {
   return (
     <Box
       as={motion.div}
-      gap="12px"
+      gap="4px"
       display="flex"
       flexDirection="column"
       alignItems="center"
@@ -470,9 +490,14 @@ function ImportError() {
     >
       <Box
         as={motion.div}
+        position="relative"
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.5 }}
+        style={{ height: 62 }}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
       >
         <Symbol symbol="xmark.circle" color="red" size={48} weight="bold" />
       </Box>
@@ -516,10 +541,14 @@ export function ImportFromMetamask() {
       const stateLogsText = await stateLogsFile.text();
       const stateLogs = stateLogsSchema.parse(JSON.parse(stateLogsText));
 
+      // contacts
       const contacts = useContactsStore.getState();
-      const contactsToImport = stateLogs.addressBook.filter(contacts.isContact);
+      const contactsToImport = stateLogs.addressBook.filter(
+        (c) => !contacts.isContact(c),
+      );
       contactsToImport.forEach((contact) => contacts.saveContact({ contact }));
 
+      // accounts
       const accounts = await getAccounts();
       const accountsToImport = stateLogs.accounts.filter(
         (account) => !accounts.includes(account.address),
@@ -531,19 +560,75 @@ export function ImportFromMetamask() {
         if (name) walletNames.saveWalletName({ address, name });
       });
 
+      // currency
       if (stateLogs.currentCurrency) {
         currentCurrencyStore
           .getState()
           .setCurrentCurrency(stateLogs.currentCurrency);
       }
 
-      await delay(3800);
+      // TODO: add hidden nfts when we support it (stateLogs.ignoredNfts)
 
+      // dapp sessions
+      stateLogs.subjects.forEach((s) => {
+        const accounts = s.permissions.eth_accounts.caveats
+          .filter((c) => c.type === 'restrictReturnedAccounts')
+          .flatMap((c) => c.value);
+        accounts.forEach((account) => {
+          appSessionsStore.getState().addSession({
+            address: account,
+            chainId: ChainId.mainnet,
+            url: s.origin,
+            host: getDappHost(s.origin),
+          });
+        });
+      });
+
+      // tokens
+      stateLogs.allTokens;
+
+      // networks
+      const customNetwork = useRainbowChainsStore.getState();
+      stateLogs.networkConfigurations.forEach(
+        ({ chainId, nickname, ticker, rpcPrefs, rpcUrl }) => {
+          // validate rpc
+          // fetch native decimals from rpc
+          const decimals = 18;
+          customNetwork.addCustomRPC({
+            chain: {
+              network: String(chainId), // deprecated just here for now to make ts happy
+              id: chainId,
+              name: nickname,
+              nativeCurrency: {
+                name: ticker,
+                symbol: ticker,
+                decimals,
+              },
+              blockExplorers: {
+                default: {
+                  name: getDappHostname(rpcPrefs.blockExplorerUrl),
+                  url: rpcPrefs.blockExplorerUrl,
+                },
+              },
+              rpcUrls: {
+                default: { http: [rpcUrl] },
+                public: { http: [rpcUrl] },
+              },
+            },
+          });
+        },
+      );
+
+      await delay(4200);
+
+      // theme
       currentThemeStore.getState().setCurrentTheme(stateLogs.theme);
 
-      await delay(1900);
+      await delay(1500);
     },
   );
+
+  const [a, s] = useState(false);
 
   return (
     <Box
@@ -564,6 +649,7 @@ export function ImportFromMetamask() {
         setIsDraggingOver(false);
         handleStateLogs(e.dataTransfer.files[0]);
       }}
+      onClick={() => s(!a)}
     >
       <Stack space="24px" alignItems="center" paddingHorizontal="14px">
         <Stack space="12px" alignItems="center">
@@ -582,6 +668,7 @@ export function ImportFromMetamask() {
 
         <Separator color="separatorTertiary" width={106} />
 
+        {/* {a ? <ImportDone /> : <ImportingFile />} */}
         {status === 'idle' && <DropOrBrowse onFileChange={handleStateLogs} />}
         {status === 'loading' && <ImportingFile />}
         {status === 'error' && <ImportError />}
