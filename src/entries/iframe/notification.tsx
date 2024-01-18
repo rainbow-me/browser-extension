@@ -53,6 +53,7 @@ export enum IN_DAPP_NOTIFICATION_STATUS {
   'unsupported_network' = 'unsupported_network',
   'already_added' = 'already_added',
   'set_as_active' = 'set_as_active',
+  'already_active' = 'already_active',
 }
 
 export const Notification = ({
@@ -270,6 +271,11 @@ const NotificationComponent = ({
       case IN_DAPP_NOTIFICATION_STATUS.already_added:
         return {
           title: i18n.t(`injected_notifications.already_added`),
+          description: undefined,
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.already_active:
+        return {
+          title: i18n.t(`injected_notifications.already_active`),
           description: undefined,
         };
       case IN_DAPP_NOTIFICATION_STATUS.set_as_active:

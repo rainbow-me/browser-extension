@@ -423,6 +423,7 @@ export const handleProviderRequest = ({
                   chain.rpcUrls.default.http[0] === rpcUrl &&
                   rainbowChain.activeRpcUrl === rpcUrl,
               );
+              const activeRpc = rainbowChain.activeRpcUrl === rpcUrl;
               if (!alreadyAddedRpcUrl) {
                 addCustomRPC({ chain: chainObject });
                 addUserChain({ chainId: chainObject.id });
@@ -431,12 +432,22 @@ export const handleProviderRequest = ({
                   chainId: chainObject.id,
                 });
               }
+
+              let rpcStatus;
+              if (alreadyAddedRpcUrl) {
+                if (activeRpc) {
+                  rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_active;
+                } else {
+                  rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_added;
+                }
+              } else {
+                rpcStatus = IN_DAPP_NOTIFICATION_STATUS.set_as_active;
+              }
+
               const extensionUrl = chrome.runtime.getURL('');
               inpageMessenger?.send('rainbow_ethereumChainEvent', {
                 chainId: proposedChainId,
-                status: alreadyAddedRpcUrl
-                  ? IN_DAPP_NOTIFICATION_STATUS.already_added
-                  : IN_DAPP_NOTIFICATION_STATUS.set_as_active,
+                status: rpcStatus,
                 extensionUrl,
                 host,
               });
