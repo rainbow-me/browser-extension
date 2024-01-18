@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import {
   Box,
   Column,
@@ -12,6 +13,7 @@ import {
   TextOverflow,
 } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
+import { TextLink } from '~/design-system/components/TextLink/TextLink';
 import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
 import AddressPill from '../AddressPill/AddressPill';
@@ -116,12 +118,14 @@ interface DescriptionProps {
   color?: TextStyles['color'];
   text: string;
   weight?: TextStyles['fontWeight'];
+  onClickLink?: () => void;
 }
 
 const Description = ({
   color = 'labelTertiary',
   text,
   weight = 'medium',
+  onClickLink,
 }: DescriptionProps) => (
   <Box
     justifyContent="center"
@@ -132,6 +136,11 @@ const Description = ({
     <Inline alignHorizontal="justify" alignVertical="center">
       <Text color={color} size="12pt" weight={weight}>
         {text}
+        {onClickLink && (
+          <TextLink color={'blue'} onClick={onClickLink}>
+            {i18n.t('link_text')}
+          </TextLink>
+        )}
       </Text>
     </Inline>
   </Box>

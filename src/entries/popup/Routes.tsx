@@ -67,16 +67,17 @@ import { SettingsNetworks } from './pages/settings/networks';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
-import { PrivateKey } from './pages/settings/privacy/walletsAndKeys/privateKey/privateKey';
-import { PrivateKeyWarning } from './pages/settings/privacy/walletsAndKeys/privateKey/warning';
-import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhrase';
-import { RecoveryPhraseVerify } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhraseVerify';
-import { RecoveryPhraseWarning } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/warning';
-import { WalletDetails } from './pages/settings/privacy/walletsAndKeys/walletDetails';
-import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
 import { SettingsNetworksRPCs } from './pages/settings/rpcs';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
+import { PrivateKey } from './pages/settings/walletsAndKeys/privateKey/privateKey';
+import { PrivateKeyWarning } from './pages/settings/walletsAndKeys/privateKey/warning';
+import { RecoveryPhrase } from './pages/settings/walletsAndKeys/recoveryPhrase/recoveryPhrase';
+import { RecoveryPhraseVerify } from './pages/settings/walletsAndKeys/recoveryPhrase/recoveryPhraseVerify';
+import { RecoveryPhraseWarning } from './pages/settings/walletsAndKeys/recoveryPhrase/warning';
+import { WalletDetails } from './pages/settings/walletsAndKeys/walletDetails';
+import { WalletsAndKeys } from './pages/settings/walletsAndKeys/walletsAndKeys';
+import { WipeWalletWarning } from './pages/settings/walletsAndKeys/wipeWalletWarning';
 import { Sign } from './pages/sign';
 import { Swap } from './pages/swap';
 import { Unlock } from './pages/unlock';
@@ -605,6 +606,20 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <WalletsAndKeys />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        background="surfaceSecondary"
+        protectedRoute
+      >
+        <WipeWalletWarning />
       </AnimatedRoute>
     ),
   },

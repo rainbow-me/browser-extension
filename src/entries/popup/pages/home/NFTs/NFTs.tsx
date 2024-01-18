@@ -48,7 +48,11 @@ const COLLECTION_IMAGE_SIZE = 16;
 
 export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { displayMode, sort, sections: sectionsState } = useNftsStore();
+  const { displayMode, hidden, sort, sections: sectionsState } = useNftsStore();
+  const hiddenNftsForAddress = useMemo(
+    () => hidden[address] || {},
+    [hidden, address],
+  );
   const { testnetMode } = useTestnetModeStore();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const {
@@ -98,17 +102,60 @@ export function NFTs() {
       });
     }
   }, [sections, sort]);
+  const groupedAssets = sortedSections
+    .map((section) => section.assets)
+    .flat()
+    .filter((nft) => !hiddenNftsForAddress[nft.uniqueId]);
+  const hiddenAssets = sortedSections
+    .map((section) => section.assets)
+    .flat()
+    .filter((nft) => hiddenNftsForAddress[nft.uniqueId]);
+  const allSections = sortedSections
+    .filter((section) => {
+      return section.assets.filter((nft) => !hiddenNftsForAddress[nft.uniqueId])
+        .length;
+    })
+    .concat(
+      hiddenAssets.length
+        ? {
+            assets: hiddenAssets,
+            collection: {
+              collection_id: '_hidden',
+              description: null,
+              discord_url: null,
+              total_quantity: null,
+              distinct_nft_count: null,
+              distinct_owner_count: null,
+              external_url: null,
+              featured_image_url: null,
+              hidden: null,
+              image_url: null,
+              name: i18n.t('nfts.hidden_section_title'),
+              short_description: null,
+              slug: '',
+              twitter_username: null,
+              wiki_link: null,
+            },
+          }
+        : [],
+    );
   const estimateCollectionGalleryRowSize = useCallback(
     (sectionIndex: number) => {
       const COLLECTION_HEADER_HEIGHT = 30;
       const PADDING = 29;
 
-      const collection = sortedSections[sectionIndex];
+      const collection = allSections[sectionIndex];
       const sectionIsOpen = (sectionsState[address] || {})[
         collection?.collection?.collection_id || ''
       ];
       if (sectionIsOpen) {
-        const assetCount = collection.assets?.length;
+        const displayedAssets = collection.assets.filter((asset) => {
+          return (
+            collection.collection.collection_id === '_hidden' ||
+            !hiddenNftsForAddress[asset.uniqueId]
+          );
+        });
+        const assetCount = displayedAssets?.length;
         const sectionRowCount = Math.ceil(assetCount / 3);
 
         const thumbnailHeight =
@@ -116,21 +163,18 @@ export function NFTs() {
         return PADDING + COLLECTION_HEADER_HEIGHT + thumbnailHeight;
       } else {
         const finalCellPadding =
-          !sectionIsOpen && sectionIndex === sortedSections?.length - 1
-            ? 12
-            : 0;
+          !sectionIsOpen && sectionIndex === allSections?.length - 1 ? 12 : 0;
         return COLLECTION_HEADER_HEIGHT + finalCellPadding;
       }
     },
-    [address, sortedSections, sectionsState],
+    [address, allSections, hiddenNftsForAddress, sectionsState],
   );
   const collectionGalleryRowVirtualizer = useVirtualizer({
-    count: sortedSections?.length || 0,
+    count: allSections?.length || 0,
     getScrollElement: () => containerRef.current,
     estimateSize: estimateCollectionGalleryRowSize,
     overscan: 12,
   });
-  const groupedAssets = sortedSections.map((section) => section.assets).flat();
   const groupedAssetRowData = chunkArray(groupedAssets, 3);
   const groupedGalleryRowVirtualizer = useVirtualizer({
     count: groupedAssetRowData?.length,
@@ -157,7 +201,7 @@ export function NFTs() {
   useEffect(() => {
     collectionGalleryRowVirtualizer.measure();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sectionsState, sort]);
+  }, [hiddenNftsForAddress, sectionsState, sort]);
 
   const nftCount = getNftCount({ address, testnetMode });
   const isPaginating = hasNextPage && nftCount < NFTS_LIMIT;
@@ -298,8 +342,8 @@ export function NFTs() {
                     .getVirtualItems()
                     .map((virtualItem) => {
                       const { key, size, start, index } = virtualItem;
-                      const section = sortedSections[index];
-                      const isLast = index === sortedSections.length - 1;
+                      const section = allSections[index];
+                      const isLast = index === allSections.length - 1;
                       return (
                         <Box
                           key={key}
@@ -419,6 +463,11 @@ function CollectionSection({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { sections, toggleGallerySectionOpen } = useNftsStore();
+  const { hidden } = useNftsStore();
+  const hiddenNftsForAddress = useMemo(
+    () => hidden[address] || {},
+    [hidden, address],
+  );
   const sectionsForAddress = sections[address] || {};
   const collectionId = section?.collection?.collection_id;
   const collectionVisible = collectionId && sectionsForAddress[collectionId];
@@ -428,6 +477,11 @@ function CollectionSection({
       collectionId: collectionId || '',
     });
   }, [address, collectionId, toggleGallerySectionOpen]);
+  const displayedAssets = section.assets.filter(
+    (nft) =>
+      section.collection.collection_id === '_hidden' ||
+      !hiddenNftsForAddress[nft.uniqueId],
+  );
   return (
     <Rows>
       <Row>
@@ -468,7 +522,7 @@ function CollectionSection({
                     </TextOverflow>
                     <Box paddingTop="1px">
                       <Text size="12pt" weight="bold" color="labelQuaternary">
-                        {section.assets.length}
+                        {displayedAssets.length}
                       </Text>
                     </Box>
                   </Inline>
@@ -507,7 +561,7 @@ function CollectionSection({
                 paddingTop: 6,
               }}
             >
-              {section.assets.map((asset, i) => {
+              {displayedAssets.map((asset, i) => {
                 return (
                   <NFTContextMenu key={i} nft={asset}>
                     <NftThumbnail

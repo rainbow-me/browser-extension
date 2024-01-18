@@ -170,9 +170,14 @@ export default function NFTDetails() {
                   <Column>
                     <NFTCollectionDropdownMenu nft={nft}>
                       <Box paddingBottom="12px">
-                        <Text color="label" weight="bold" size="20pt">
+                        <TextOverflow
+                          color="label"
+                          weight="bold"
+                          size="20pt"
+                          maxWidth={256}
+                        >
                           {nft?.name}
-                        </Text>
+                        </TextOverflow>
                       </Box>
                       <Lens borderRadius="6px" bubblesOnKeyDown padding="2px">
                         <Bleed vertical="2px" horizontal="2px">
@@ -196,7 +201,8 @@ export default function NFTDetails() {
                               size="12pt"
                               weight="bold"
                               color="labelTertiary"
-                              maxWidth={256}
+                              maxWidth={236}
+                              cursor="pointer"
                             >
                               {nft?.collection.name}
                             </TextOverflow>

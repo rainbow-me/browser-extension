@@ -32,7 +32,8 @@ import { add, getWallets, remove } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
-import { CreateWalletPrompt } from '../../../walletSwitcher/createWalletPrompt';
+import { CreateWalletPrompt } from '../../walletSwitcher/createWalletPrompt';
+import { ConfirmPasswordPrompt } from '../privacy/confirmPasswordPrompt';
 
 const t = (s: string) =>
   i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
@@ -137,6 +138,7 @@ export const WalletsAndKeys = () => {
   const { getWalletBackup } = useWalletBackupsStore();
   const firstNotBackedUpRef = useRef<HTMLDivElement>(null);
   const { state } = useLocation();
+  const [showEnterPassword, setShowEnterPassword] = useState(false);
 
   useEffect(() => {
     setSettingWallets(null);
@@ -176,7 +178,7 @@ export const WalletsAndKeys = () => {
     fetchWallets();
   }, []);
 
-  const handleCreateNewWallet = useCallback(async () => {
+  const handleCreateNewWallet = useCallback(() => {
     navigate(ROUTES.CHOOSE_WALLET_GROUP);
   }, [navigate]);
 
@@ -205,6 +207,16 @@ export const WalletsAndKeys = () => {
 
   return (
     <Box height="full" style={{ height: '100%' }} paddingHorizontal="20px">
+      <ConfirmPasswordPrompt
+        show={showEnterPassword}
+        onClose={() => setShowEnterPassword(false)}
+        extraState={{ ...state }}
+        onSuccess={() =>
+          navigate(
+            ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING,
+          )
+        }
+      />
       <MenuContainer>
         {wallets.map((wallet, idx) => {
           const walletBackedUp = getWalletBackup({ wallet });
@@ -339,6 +351,26 @@ export const WalletsAndKeys = () => {
               <MenuItem.Title text={t('create_a_new_wallet')} color="blue" />
             }
             onClick={handleCreateNewWallet}
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            testId={'wipe-wallets'}
+            first
+            last
+            leftComponent={
+              <Symbol
+                size={16}
+                color="red"
+                weight="medium"
+                symbol="exclamationmark.triangle"
+              />
+            }
+            hasRightArrow
+            titleComponent={
+              <MenuItem.Title text={t('wipe_wallets.delete')} color="red" />
+            }
+            onClick={() => setShowEnterPassword(true)}
           />
         </Menu>
       </MenuContainer>
