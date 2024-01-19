@@ -61,11 +61,12 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
         pendingTransactions: {
           ...currentPendingTransactions,
           [address]: [
-            ...addressPendingTransactions.filter(
-              (tx) =>
-                tx?.chainId !== pendingTransaction.chainId &&
-                tx?.nonce !== pendingTransaction?.nonce,
-            ),
+            ...addressPendingTransactions.filter((tx) => {
+              if (tx.chainId === pendingTransaction.chainId) {
+                return tx.nonce !== pendingTransaction.nonce;
+              }
+              return true;
+            }),
             pendingTransaction,
           ],
         },

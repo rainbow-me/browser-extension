@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { formatEther } from '@ethersproject/units';
 import { useAnimationControls } from 'framer-motion';
 import {
   ChangeEvent,
@@ -234,7 +235,7 @@ export function Send() {
             asset,
             data: result.data,
             flashbots: flashbotsEnabledGlobally,
-            value: result.value.toString(),
+            value: formatEther(result?.value || ''),
             from: fromAddress,
             to: txToAddress,
             hash: result.hash as TxHash,

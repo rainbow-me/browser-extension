@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { formatEther } from '@ethersproject/units';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo } from 'react';
 import {
@@ -186,7 +187,7 @@ export function SpeedUpAndCancelSheet({
     const cancelTx = {
       ...transaction,
       data: cancellationResult?.data,
-      value: cancellationResult?.value?.toString(),
+      value: formatEther(cancellationResult?.value || ''),
       from: cancellationResult?.from as Address,
       to: cancellationResult?.from as Address,
       hash: cancellationResult?.hash as TxHash,
@@ -207,7 +208,7 @@ export function SpeedUpAndCancelSheet({
     const speedUpTransaction = {
       ...transaction,
       data: speedUpResult?.data,
-      value: speedUpResult?.value?.toString(),
+      value: formatEther(speedUpResult?.value || ''),
       from: speedUpResult?.from as Address,
       to: speedUpResult?.to as Address,
       hash: speedUpResult?.hash as TxHash,
