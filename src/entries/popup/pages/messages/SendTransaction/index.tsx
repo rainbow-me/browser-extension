@@ -1,6 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
-import { formatEther } from '@ethersproject/units';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -99,7 +98,7 @@ export function SendTransaction({
       if (result) {
         const transaction = {
           asset: asset || undefined,
-          value: formatEther(result?.value || ''),
+          value: result.value.toString(),
           data: result.data,
           flashbots: flashbotsEnabledGlobally,
           from: txData.from,
