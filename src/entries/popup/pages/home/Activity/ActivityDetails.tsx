@@ -272,6 +272,7 @@ const SpeedUpOrCancel = ({
   transaction: RainbowTransaction;
 }) => {
   const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
+  const navigate = useRainbowNavigate();
 
   return (
     <Box display="flex" flexDirection="column" gap="8px">
@@ -299,7 +300,11 @@ const SpeedUpOrCancel = ({
         <SpeedUpAndCancelSheet
           currentSheet={sheet}
           transaction={transaction}
-          onClose={() => setCurrentHomeSheet('none')}
+          onClose={() => {
+            setCurrentHomeSheet('none');
+            navigate(ROUTES.HOME);
+            console.log('naviogating to homeee');
+          }}
         />
       )}
     </Box>

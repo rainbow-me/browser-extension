@@ -227,7 +227,9 @@ export function SpeedUpAndCancelSheet({
 
   useEffect(() => {
     // we keep this outside of `onClose` so that global shortcuts (e.g. Escape) still clear the tx
-    return () => setSelectedTransaction(); // invoke without param to remove selection
+    return () => {
+      setSelectedTransaction();
+    }; // invoke without param to remove selection
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
