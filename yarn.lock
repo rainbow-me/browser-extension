@@ -3325,10 +3325,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@rainbow-me/swaps@0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.8.0.tgz#383eced6cb50bb1214aa79439e3f62fbf8194cfc"
-  integrity sha512-IpWPk36LdmOcrZgGhCfCNy27jUB/IVIcW8umxhXuoVC8hbXXQVhlLohdXSXPFOvmEnGElDJsTdSW/mV4q0YWIg==
+"@rainbow-me/swaps@0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.9.1.tgz#2c34e16590d123bf3bf2e57c82eede746c65e168"
+  integrity sha512-skbv8lrDCjaK3012vvam07ySDy0qeI45QWFnkPK9791MD+Re3uBZ4h/LPOhPra6setNdERMKTzivYHZZrdg39g==
   dependencies:
     "@ethereumjs/util" "9.0.0"
     "@ethersproject/abi" "5.7.0"
