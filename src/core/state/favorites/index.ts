@@ -1,8 +1,13 @@
 import create from 'zustand';
 
 import {
+  AVAX_AVALANCHE_ADDRESS,
+  BNB_BSC_ADDRESS,
   DAI_ADDRESS,
   DAI_ARBITRUM_ADDRESS,
+  DAI_AVALANCHE_ADDRESS,
+  DAI_BASE_ADDRESS,
+  DAI_BSC_ADDRESS,
   DAI_OPTIMISM_ADDRESS,
   DAI_POLYGON_ADDRESS,
   ETH_ADDRESS,
@@ -16,14 +21,21 @@ import {
   SOCKS_ARBITRUM_ADDRESS,
   USDC_ADDRESS,
   USDC_ARBITRUM_ADDRESS,
+  USDC_AVALANCHE_ADDRESS,
+  USDC_BASE_ADDRESS,
+  USDC_BSC_ADDRESS,
   USDC_OPTIMISM_ADDRESS,
   USDC_POLYGON_ADDRESS,
+  WAVAX_AVALANCHE_ADDRESS,
   WBTC_ADDRESS,
   WBTC_ARBITRUM_ADDRESS,
+  WBTC_AVALANCHE_ADDRESS,
   WBTC_OPTIMISM_ADDRESS,
   WBTC_POLYGON_ADDRESS,
+  WETH_BASE_ADDRESS,
   WETH_OPTIMISM_ADDRESS,
   WETH_POLYGON_ADDRESS,
+  WETH_ZORA_ADDRESS,
 } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -60,7 +72,7 @@ export const favoritesStore = createStore<FavoritesState>(
         WBTC_ARBITRUM_ADDRESS,
         SOCKS_ARBITRUM_ADDRESS,
       ],
-      [ChainId.bsc]: [],
+      [ChainId.bsc]: [BNB_BSC_ADDRESS, DAI_BSC_ADDRESS, USDC_BSC_ADDRESS],
       [ChainId.polygon]: [
         MATIC_POLYGON_ADDRESS,
         WETH_POLYGON_ADDRESS,
@@ -76,8 +88,20 @@ export const favoritesStore = createStore<FavoritesState>(
         USDC_OPTIMISM_ADDRESS,
         WBTC_OPTIMISM_ADDRESS,
       ],
-      [ChainId.base]: [ETH_BASE_ADDRESS],
-      [ChainId.zora]: [ETH_ZORA_ADDRESS],
+      [ChainId.base]: [
+        ETH_BASE_ADDRESS,
+        WETH_BASE_ADDRESS,
+        DAI_BASE_ADDRESS,
+        USDC_BASE_ADDRESS,
+      ],
+      [ChainId.zora]: [ETH_ZORA_ADDRESS, WETH_ZORA_ADDRESS],
+      [ChainId.avalanche]: [
+        AVAX_AVALANCHE_ADDRESS,
+        WAVAX_AVALANCHE_ADDRESS,
+        DAI_AVALANCHE_ADDRESS,
+        USDC_AVALANCHE_ADDRESS,
+        WBTC_AVALANCHE_ADDRESS,
+      ],
     },
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();

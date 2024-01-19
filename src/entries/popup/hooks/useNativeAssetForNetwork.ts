@@ -21,10 +21,9 @@ const getNetworkNativeMainnetAssetAddress = ({
     case ChainId.arbitrum:
     case ChainId.mainnet:
     case ChainId.optimism:
-      return ETH_ADDRESS as Address;
     case ChainId.base:
-      return ETH_ADDRESS as Address;
     case ChainId.zora:
+    case ChainId.avalanche:
       return ETH_ADDRESS as Address;
     case ChainId.bsc:
       return BNB_MAINNET_ADDRESS;
@@ -46,6 +45,12 @@ export const getNetworkNativeAssetUniqueId = ({
     case ChainId.mainnet:
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.optimism:
+      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
+    case ChainId.base:
+      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
+    case ChainId.zora:
+      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
+    case ChainId.avalanche:
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.bsc:
       return `${BNB_MAINNET_ADDRESS}_${chainId}` as UniqueId;

@@ -19,6 +19,7 @@ enum SummarySupportedChainId {
   base = ChainId.base as number,
   zora = ChainId.zora as number,
   bsc = ChainId.bsc as number,
+  avalanche = ChainId.avalanche as number,
 }
 
 export interface AddySummary {

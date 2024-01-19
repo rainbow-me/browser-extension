@@ -16,6 +16,7 @@ const FAVORITES_EMPTY_STATE = {
   [ChainId.arbitrum]: [],
   [ChainId.base]: [],
   [ChainId.zora]: [],
+  [ChainId.avalanche]: [],
   [ChainId.hardhat]: [],
   [ChainId.hardhatOptimism]: [],
 };

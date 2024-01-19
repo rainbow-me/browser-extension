@@ -59,6 +59,8 @@ export enum ChainName {
   baseSepolia = 'base-sepolia',
   zoraTestnet = 'zora-testnet',
   zoraSepolia = 'zora-sepolia',
+  avalanche = 'avalanche',
+  avalancheFuji = 'avalanche-fuji',
 }
 
 export enum ChainId {
@@ -84,6 +86,8 @@ export enum ChainId {
   baseSepolia = chain.baseSepolia.id,
   zoraTestnet = chain.zoraTestnet.id,
   zoraSepolia = chain.zoraSepolia.id,
+  avalanche = chain.avalanche.id,
+  avalancheFuji = chain.avalancheFuji.id,
 }
 
 export const chainNameToIdMapping: {
@@ -111,6 +115,8 @@ export const chainNameToIdMapping: {
   [ChainName.baseSepolia]: ChainId.baseSepolia,
   [ChainName.zoraTestnet]: ChainId.zoraTestnet,
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
+  [ChainName.avalanche]: ChainId.avalanche,
+  [ChainName.avalancheFuji]: ChainId.avalancheFuji,
 };
 
 export const chainIdToNameMapping: {
@@ -138,6 +144,8 @@ export const chainIdToNameMapping: {
   [ChainId.baseSepolia]: ChainName.baseSepolia,
   [ChainId.zoraTestnet]: ChainName.zoraTestnet,
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
+  [ChainId.avalanche]: ChainName.avalanche,
+  [ChainId.avalancheFuji]: ChainName.avalancheFuji,
 };
 
 export const ChainNameDisplay = {
@@ -163,4 +171,6 @@ export const ChainNameDisplay = {
   [ChainId.baseSepolia]: chain.baseSepolia.name,
   [ChainId.zoraTestnet]: 'Zora Goerli',
   [ChainId.zoraSepolia]: 'Zora Sepolia',
+  [ChainId.avalanche]: 'Avalanche',
+  [ChainId.avalancheFuji]: 'Avalanche Fuji',
 } as const;
