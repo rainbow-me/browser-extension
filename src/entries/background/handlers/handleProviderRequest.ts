@@ -239,7 +239,7 @@ const skipRateLimitCheck = (method: string) =>
     'wallet_switchEthereumChain',
     'eth_requestAccounts',
     'personal_ecRecover',
-  ].includes(method) || method?.startsWith('wallet_');
+  ].includes(method) || method.startsWith('wallet_');
 
 /**
  * Handles RPC requests from the provider.
@@ -259,7 +259,6 @@ export const handleProviderRequest = ({
     const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
 
-    console.log('HANDLE PROVIDER REQUESTS method', method);
     if (!skipRateLimitCheck(method)) {
       const rateLimited = await checkRateLimit(host);
       if (rateLimited) {
