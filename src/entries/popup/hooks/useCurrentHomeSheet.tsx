@@ -5,19 +5,22 @@ import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 
 import { SpeedUpAndCancelSheet } from '../pages/speedUpAndCancelSheet';
+import { ROUTES } from '../urls';
 
 import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
+import { useRainbowNavigate } from './useRainbowNavigate';
 
 export function useCurrentHomeSheet() {
   const { setCurrentHomeSheet, sheet } = useCurrentHomeSheetStore();
   const { selectedTransaction } = useSelectedTransactionStore();
   const { trackShortcut } = useKeyboardAnalytics();
+  const navigate = useRainbowNavigate();
 
-  const closeSheet = useCallback(
-    () => setCurrentHomeSheet('none'),
-    [setCurrentHomeSheet],
-  );
+  const closeSheet = useCallback(() => {
+    setCurrentHomeSheet('none');
+    navigate(ROUTES.HOME);
+  }, [navigate, setCurrentHomeSheet]);
 
   const currentHomeSheet = useMemo(() => {
     switch (sheet) {

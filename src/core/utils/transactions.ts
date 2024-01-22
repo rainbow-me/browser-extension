@@ -1,5 +1,9 @@
 import { BigNumber, FixedNumber } from '@ethersproject/bignumber';
-import { Provider, TransactionResponse } from '@ethersproject/providers';
+import {
+  Provider,
+  TransactionReceipt,
+  TransactionResponse,
+} from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
@@ -232,7 +236,7 @@ export function parseTransaction({
 export const parseNewTransaction = (
   tx: NewTransaction,
   currency: SupportedCurrencyKey,
-) => {
+): RainbowTransaction => {
   const changes = tx.changes?.filter(Boolean).map((change) => ({
     ...change,
     asset: parseUserAssetBalances({
@@ -267,6 +271,33 @@ export const parseNewTransaction = (
   } satisfies RainbowTransaction;
 };
 
+const getTransactionReceipt = async ({
+  transactionResponse,
+  provider,
+}: {
+  transactionResponse: TransactionResponse;
+  provider: Provider;
+}): Promise<TransactionReceipt | undefined> => {
+  const receipt = await Promise.race([
+    (async () => {
+      try {
+        if (transactionResponse.wait) {
+          return await transactionResponse.wait();
+        } else {
+          return await provider.getTransactionReceipt(transactionResponse.hash);
+        }
+      } catch (e) {
+        /* empty */
+        return;
+      }
+    })(),
+    new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    }),
+  ]);
+  return receipt as TransactionReceipt | undefined;
+};
+
 export async function getTransactionReceiptStatus({
   transactionResponse,
   provider,
@@ -274,20 +305,10 @@ export async function getTransactionReceiptStatus({
   transactionResponse: TransactionResponse;
   provider: Provider;
 }) {
-  let receipt;
-
-  try {
-    if (transactionResponse) {
-      if (transactionResponse.wait) {
-        receipt = await transactionResponse.wait();
-      } else {
-        receipt = await provider.getTransactionReceipt(
-          transactionResponse.hash,
-        );
-      }
-    }
-    // eslint-disable-next-line no-empty
-  } catch (e) {}
+  const receipt = await getTransactionReceipt({
+    transactionResponse,
+    provider,
+  });
 
   if (!receipt) return { status: 'pending' as const };
   return {
@@ -333,18 +354,16 @@ export function addNewTransaction({
   transaction: NewTransaction;
 }) {
   const { setNonce } = nonceStore.getState();
-  const { getPendingTransactions, setPendingTransactions } =
-    pendingTransactionsStore.getState();
-  const pendingTransactions = getPendingTransactions({ address });
+  const { addPendingTransaction } = pendingTransactionsStore.getState();
   const { currentCurrency } = currentCurrencyStore.getState();
   const newPendingTransaction = parseNewTransaction(
     transaction,
     currentCurrency,
   );
 
-  setPendingTransactions({
+  addPendingTransaction({
     address,
-    pendingTransactions: [newPendingTransaction, ...pendingTransactions],
+    pendingTransaction: newPendingTransaction,
   });
   setNonce({
     address,
@@ -363,24 +382,15 @@ export function updateTransaction({
   transaction: NewTransaction;
 }) {
   const { setNonce } = nonceStore.getState();
-  const { getPendingTransactions, setPendingTransactions } =
-    pendingTransactionsStore.getState();
+  const { updatePendingTransaction } = pendingTransactionsStore.getState();
   const { currentCurrency } = currentCurrencyStore.getState();
   const updatedPendingTransaction = parseNewTransaction(
     transaction,
     currentCurrency,
   );
-  const pendingTransactions = getPendingTransactions({ address });
-  setPendingTransactions({
+  updatePendingTransaction({
     address,
-    pendingTransactions: [
-      { ...transaction, ...updatedPendingTransaction },
-      ...pendingTransactions.filter(
-        (tx) =>
-          tx?.chainId !== chainId &&
-          tx?.nonce !== updatedPendingTransaction?.nonce,
-      ),
-    ],
+    pendingTransaction: updatedPendingTransaction,
   });
   setNonce({
     address,
@@ -445,18 +455,23 @@ type FlashbotsStatus =
 export const getTransactionFlashbotStatus = async (
   transaction: RainbowTransaction,
   txHash: string,
-) => {
+): Promise<{
+  flashbotsStatus: 'FAILED' | 'CANCELLED';
+  status: 'failed';
+  minedAt: number;
+  title: string;
+} | null> => {
   try {
     const fbStatus = await flashbotsApi.get<{ status: FlashbotsStatus }>(
       `/tx/${txHash}`,
     );
-    const flashbotStatus = fbStatus.data.status;
+    const flashbotsStatus = fbStatus.data.status;
     // Make sure it wasn't dropped after 25 blocks or never made it
-    if (flashbotStatus === 'FAILED' || flashbotStatus === 'CANCELLED') {
+    if (flashbotsStatus === 'FAILED' || flashbotsStatus === 'CANCELLED') {
       const status = 'failed';
       const minedAt = Math.floor(Date.now() / 1000);
       const title = i18n.t(`transactions.${transaction.type}.failed`);
-      return { status, minedAt, title } as const;
+      return { flashbotsStatus, status, minedAt, title };
     }
   } catch (e) {
     //

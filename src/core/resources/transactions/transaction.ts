@@ -28,7 +28,7 @@ type ConsolidatedTransactionsResult = QueryFunctionResult<
   typeof consolidatedTransactionsQueryFunction
 >;
 
-const fetchTransaction = async ({
+export const fetchTransaction = async ({
   hash,
   address,
   currency,
