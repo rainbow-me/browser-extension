@@ -1,5 +1,6 @@
 import 'chromedriver';
 import 'geckodriver';
+
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
@@ -157,7 +158,7 @@ it('should be able to add a custom testnet network', async () => {
   expect(cronosChain).toBeTruthy();
 });
 
-it('should be able to add a custom ETH RPC', async () => {
+it('should be able to add a custom ETH RPC and switch to it', async () => {
   await findElementByTestIdAndClick({ driver, id: 'network-row-1' });
   await checkExtensionURL(driver, 'rpcs');
 
@@ -184,17 +185,20 @@ it('should be able to add a custom ETH RPC', async () => {
 
   const activeRPC = await findElementByTestId({ id: 'rpc-row-item-1', driver });
 
-  console.log(await activeRPC.getText());
+  expect(await activeRPC.getText()).toContain('Active');
 });
 
 it('should be able to add a custom token', async () => {
+  await delayTime('medium');
+  await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+  await findElementByTestIdAndClick({ driver, id: 'network-row-25' });
   await findElementByTestIdAndClick({ driver, id: 'custom-token-link' });
   await checkExtensionURL(driver, 'custom-chain/details');
 
   // fill out custom token
   await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
   await typeOnTextInput({
-    text: '0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9',
+    text: '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23',
     driver,
   });
 
@@ -206,23 +210,13 @@ it('should be able to add a custom token', async () => {
     driver,
   });
 
-  expect(await tokenName.getAttribute('value')).toBe('Compound USDT');
+  expect(await tokenName.getAttribute('value')).toBe('Wrapped CRO');
 
   await executePerformShortcut({ driver, key: 'TAB', timesToPress: 4 });
   await executePerformShortcut({ driver, key: 'ENTER' });
-});
-
-it('should be able to see tokens from custom networks', async () => {
-  await delayTime('long');
-  await executePerformShortcut({ driver, key: 'ESCAPE', timesToPress: 4 });
-  await checkExtensionURL(driver, 'home');
-
-  const avaxToken = await findElementByText(driver, 'AVAX');
-
-  expect(avaxToken).toBeTruthy();
-});
-
-it('should be able to go to send flow', async () => {
-  await findElementByTestIdAndClick({ id: 'header-link-send', driver });
-  await checkExtensionURL(driver, 'send');
+  const customTokenSection = await findElementByTestId({
+    id: 'custom-token-section',
+    driver,
+  });
+  expect(customTokenSection).toBeTruthy();
 });

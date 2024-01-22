@@ -428,6 +428,7 @@ export function SettingsNetworksRPCs() {
               paddingRight="10px"
               paddingVertical="9px"
               width="full"
+              testId={'custom-token-section'}
             >
               {customNetworkAssetsForChain?.map((asset, i) => (
                 <ContextMenu key={i}>
