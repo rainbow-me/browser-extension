@@ -32,7 +32,12 @@ export const navRestorationStore = createStore<NavRestorationStore>(
     lastState: undefined,
     setLastState: async (lastState) => {
       const isPopup = await isNativePopup();
-      if (isPopup && !!lastState && Object.keys(lastState)?.length) {
+      if (
+        isPopup &&
+        !!lastState &&
+        lastState &&
+        Object.keys(lastState)?.length
+      ) {
         set({ lastState });
       }
     },
