@@ -487,6 +487,7 @@ export function ActivityDetails() {
     hash,
     chainId: Number(chainId),
   });
+
   const navigate = useRainbowNavigate();
 
   const additionalDetails = useMemo(

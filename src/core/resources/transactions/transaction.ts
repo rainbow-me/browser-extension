@@ -41,13 +41,17 @@ export const fetchTransaction = async ({
 }) => {
   if (!chainId || !hash) return undefined;
   try {
-    const tx = await addysHttp
-      .get<{
-        payload: { transaction: TransactionApiResponse };
-      }>(`/${chainId}/${address}/transactions/${hash}`, {
-        params: { currency: currency.toLowerCase() },
-      })
-      .then((r) => r.data.payload.transaction);
+    const response = await addysHttp.get<{
+      payload: { transaction: TransactionApiResponse };
+      meta: { status: string };
+    }>(`/${chainId}/${address}/transactions/${hash}`, {
+      params: { currency: currency.toLowerCase() },
+    });
+    const tx = response.data.payload.transaction;
+    if (response.data.meta.status === 'pending') {
+      const providerTx = await getCustomChainTransaction({ chainId, hash });
+      return providerTx;
+    }
     const parsedTx = parseTransaction({ tx, currency, chainId });
     if (!parsedTx) throw new Error('Failed to parse transaction');
     return parsedTx;
