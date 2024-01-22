@@ -1,12 +1,9 @@
-import { FixedNumber } from '@ethersproject/bignumber';
-import { AddressZero } from '@ethersproject/constants';
 import { formatEther, formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { ETH_ADDRESS } from '~/core/references';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainNameDisplay } from '~/core/types/chains';
@@ -18,6 +15,7 @@ import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { truncateString } from '~/core/utils/strings';
 import {
+  getAdditionalDetails,
   getBlockExplorerName,
   getTransactionBlockExplorerUrl,
 } from '~/core/utils/transactions';
@@ -57,7 +55,6 @@ import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 import { ActivityPill } from './ActivityPill';
-import { getApprovalLabel } from './ActivityValue';
 
 function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
   const { from, to, contract, direction } = transaction;
@@ -149,6 +146,7 @@ function ConfirmationData({
 }
 
 const InfoValueSkeleton = () => <Skeleton width="50px" height="12px" />;
+
 function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
   const { native, feeType } = tx;
 
@@ -302,70 +300,6 @@ const SpeedUpOrCancel = ({
       )}
     </Box>
   );
-};
-
-const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
-  if (type !== 'swap') return;
-
-  const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;
-  const tokenOut = changes?.filter((c) => c?.direction === 'out')[0]?.asset;
-
-  const amountIn = tokenIn?.balance.amount;
-  const amountOut = tokenOut?.balance.amount;
-  if (!amountIn || !amountOut) return;
-
-  const fixedAmountIn = FixedNumber.fromString(amountIn);
-  const fixedAmountOut = FixedNumber.fromString(amountOut);
-
-  const rate = fixedAmountOut.divUnsafe(fixedAmountIn).toString();
-  if (!rate) return;
-
-  return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;
-};
-
-const getAdditionalDetails = (transaction: RainbowTransaction) => {
-  const exchangeRate = getExchangeRate(transaction);
-  const { asset, changes, approvalAmount, contract, type } = transaction;
-  const nft = changes?.find((c) => c?.asset.type === 'nft')?.asset;
-  const collection = nft?.symbol;
-  const standard = nft?.standard;
-  const tokenContract =
-    asset?.address !== ETH_ADDRESS && asset?.address !== AddressZero
-      ? asset?.address
-      : undefined;
-
-  const tokenAmount =
-    !nft && !exchangeRate && tokenContract
-      ? changes?.find((c) => c?.asset.address === tokenContract)?.asset.balance
-          .amount
-      : undefined;
-
-  const approval = type === 'approve' &&
-    approvalAmount && {
-      value: approvalAmount,
-      label: getApprovalLabel(transaction),
-    };
-
-  if (
-    !tokenAmount &&
-    !tokenContract &&
-    !exchangeRate &&
-    !collection &&
-    !standard &&
-    !approval
-  )
-    return;
-
-  return {
-    asset,
-    tokenAmount: tokenAmount && `${formatNumber(tokenAmount)} ${asset?.symbol}`,
-    tokenContract,
-    contract,
-    exchangeRate,
-    collection,
-    standard,
-    approval,
-  };
 };
 
 type TxAdditionalDetails = ReturnType<typeof getAdditionalDetails>;
