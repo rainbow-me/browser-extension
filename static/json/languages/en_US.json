@@ -1382,6 +1382,7 @@
     "not_available": "Price not available",
     "more_options": {
       "copy_address": "Copy Address",
+      "view_on_etherscan": "View on Etherscan",
       "hide": "Hide Token",
       "report": "Report Token"
     },

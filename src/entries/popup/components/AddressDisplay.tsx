@@ -4,6 +4,7 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { truncateAddress } from '~/core/utils/address';
 import { copyAddress } from '~/core/utils/copy';
+import { goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
   ButtonSymbol,
@@ -21,7 +22,13 @@ import {
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
-function AddressMoreOptions({ address }: { address: Address }) {
+function AddressMoreOptions({
+  address,
+  etherscanLink,
+}: {
+  address: Address;
+  etherscanLink?: boolean;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -47,6 +54,18 @@ function AddressMoreOptions({ address }: { address: Address }) {
             {truncateAddress(address)}
           </Text>
         </DropdownMenuItem>
+        {etherscanLink && (
+          <DropdownMenuItem
+            symbolLeft="doc.text.magnifyingglass"
+            onSelect={() =>
+              goToNewTab({ url: `https://etherscan.io/address/${address}` })
+            }
+          >
+            <Text size="14pt" weight="semibold">
+              {i18n.t('token_details.more_options.view_on_etherscan')}
+            </Text>
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -108,6 +127,7 @@ const ContractDisplay = ({
   address,
   hideAvatar,
   contract: { name, iconUrl },
+  etherscanLink,
 }: {
   address: Address;
   hideAvatar?: boolean;
@@ -115,6 +135,7 @@ const ContractDisplay = ({
     name: string;
     iconUrl?: string;
   };
+  etherscanLink?: boolean;
 }) => {
   return (
     <Inline space="6px" alignVertical="center">
@@ -122,7 +143,7 @@ const ContractDisplay = ({
       <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
         {name}
       </TextOverflow>
-      <AddressMoreOptions address={address} />
+      <AddressMoreOptions address={address} etherscanLink={etherscanLink} />
     </Inline>
   );
 };
@@ -131,6 +152,7 @@ export const AddressDisplay = ({
   address,
   contract,
   hideAvatar,
+  etherscanLink,
 }: {
   address: Address;
   hideAvatar?: boolean;
@@ -138,6 +160,7 @@ export const AddressDisplay = ({
     name: string;
     iconUrl?: string;
   };
+  etherscanLink?: boolean;
 }) => {
   if (contract?.name)
     return (
@@ -145,6 +168,7 @@ export const AddressDisplay = ({
         address={address}
         contract={contract}
         hideAvatar={hideAvatar}
+        etherscanLink={etherscanLink}
       />
     );
 
@@ -152,7 +176,7 @@ export const AddressDisplay = ({
     <Inline space="6px" alignVertical="center" wrap={false}>
       {!hideAvatar && <AddressIcon address={address} />}
       <YouOrAddress address={address} />
-      <AddressMoreOptions address={address} />
+      <AddressMoreOptions address={address} etherscanLink={etherscanLink} />
     </Inline>
   );
 };

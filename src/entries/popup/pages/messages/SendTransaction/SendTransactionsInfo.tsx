@@ -206,7 +206,7 @@ function TransactionDetails({
         <InfoRow
           symbol="doc.plaintext"
           label={i18n.t('simulation.contract')}
-          value={<AddressDisplay address={contract} hideAvatar />}
+          value={<AddressDisplay address={contract} hideAvatar etherscanLink />}
         />
       )}
       {contractName && (
