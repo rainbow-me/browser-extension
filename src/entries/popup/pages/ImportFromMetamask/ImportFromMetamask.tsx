@@ -180,6 +180,10 @@ function BrowseFilesButton({
   onFileChange: (files: File | null) => void;
 }>) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onFileChange(e.target.files?.[0] || null);
+    e.target.value = '';
+  };
 
   return (
     <>
@@ -188,10 +192,7 @@ function BrowseFilesButton({
         type="file"
         accept=".json"
         ref={fileInputRef}
-        onChange={(e) => {
-          onFileChange(e.target.files?.[0] || null);
-          e.target.value = '';
-        }}
+        onChange={onFileInputChange}
       />
       <Box
         as={motion.button}
@@ -289,7 +290,7 @@ function ProgressCircle({ progress }: { progress: number }) {
         strokeWidth={strokeWidth}
         initial={{ pathLength }}
         animate={{ pathLength }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.8 }}
       />
     </svg>
   );
@@ -657,7 +658,14 @@ export function ImportFromMetamask() {
         stopFromOpeningTheDroppedFile(e);
         setIsDraggingOver(true);
       }}
-      onDragLeave={() => setIsDraggingOver(false)}
+      onDragLeave={(e) => {
+        const { relatedTarget, currentTarget } = e;
+        // onDragLeave triggers when the dragged element enters a child element
+        // this checks if the dragged element is still inside the currentTarget
+        setIsDraggingOver(
+          !(!relatedTarget || !currentTarget.contains(relatedTarget as Node)),
+        );
+      }}
       onDrop={(e) => {
         stopFromOpeningTheDroppedFile(e);
         setIsDraggingOver(false);
