@@ -34,11 +34,12 @@ export const fetchTransaction = async ({
   currency,
   chainId,
 }: {
-  hash: TxHash;
+  hash?: TxHash;
   address: Address;
   currency: SupportedCurrencyKey;
-  chainId: ChainId;
+  chainId?: ChainId;
 }) => {
+  if (!chainId || !hash) return undefined;
   try {
     const tx = await addysHttp
       .get<{
@@ -64,8 +65,8 @@ export function useBackendTransaction({
   chainId,
   enabled,
 }: {
-  hash: TxHash;
-  chainId: ChainId;
+  hash?: TxHash;
+  chainId?: ChainId;
   enabled: boolean;
 }) {
   const queryClient = useQueryClient();
@@ -90,7 +91,13 @@ export function useBackendTransaction({
 
   return useQuery({
     queryKey: createQueryKey('transaction', params),
-    queryFn: () => fetchTransaction(params),
+    queryFn: () =>
+      fetchTransaction({
+        hash: params.hash,
+        address: params.address,
+        currency: params.currency,
+        chainId: params.chainId,
+      }),
     enabled: !!hash && !!address && !!chainId && enabled,
     initialData: () => {
       const queryData = queryClient.getQueryData<PaginatedTransactions>(
@@ -111,9 +118,10 @@ const getCustomChainTransaction = async ({
   chainId,
   hash,
 }: {
-  chainId: number;
-  hash: Hash;
+  chainId?: number;
+  hash?: Hash;
 }) => {
+  if (!chainId || !hash) return undefined;
   const provider = getProvider({ chainId });
   const transaction = await provider.getTransaction(hash);
   if (!transaction) return undefined;
@@ -163,8 +171,8 @@ export function useCustomNetworkTransaction({
   chainId,
   enabled,
 }: {
-  hash: TxHash;
-  chainId: ChainId;
+  hash?: TxHash;
+  chainId?: ChainId;
   enabled: boolean;
 }) {
   return useQuery({
@@ -178,10 +186,10 @@ export const useTransaction = ({
   chainId,
   hash,
 }: {
-  chainId: number;
-  hash: `0x${string}`;
+  chainId?: number;
+  hash?: `0x${string}`;
 }) => {
-  const customChain = isCustomChain(chainId);
+  const customChain = !!chainId && isCustomChain(chainId);
   const {
     data: backendTransaction,
     isLoading: backendTransactionIsLoading,
@@ -189,7 +197,7 @@ export const useTransaction = ({
   } = useBackendTransaction({
     hash,
     chainId,
-    enabled: !customChain,
+    enabled: !customChain && !!hash && !!chainId,
   });
   const {
     data: providerTransaction,

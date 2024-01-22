@@ -2,13 +2,14 @@ import { FixedNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { formatEther, formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
-import { Navigate, useParams } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { getChain } from '~/core/utils/chains';
@@ -258,14 +259,6 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
   );
 }
 
-export function ActivityDetails() {
-  const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
-
-  if (!chainId || !hash) return <Navigate to={ROUTES.HOME} />;
-
-  return <ActivityDetailsSheet hash={hash} chainId={Number(chainId)} />;
-}
-
 const SpeedUpOrCancel = ({
   transaction,
 }: {
@@ -329,8 +322,8 @@ const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
 
   return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;
 };
-const getAdditionalDetails = (transaction?: RainbowTransaction) => {
-  if (!transaction) return;
+
+const getAdditionalDetails = (transaction: RainbowTransaction) => {
   const exchangeRate = getExchangeRate(transaction);
   const { asset, changes, approvalAmount, contract, type } = transaction;
   const nft = changes?.find((c) => c?.asset.type === 'nft')?.asset;
@@ -374,6 +367,7 @@ const getAdditionalDetails = (transaction?: RainbowTransaction) => {
     approval,
   };
 };
+
 type TxAdditionalDetails = ReturnType<typeof getAdditionalDetails>;
 
 const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
@@ -553,17 +547,18 @@ function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
   );
 }
 
-function ActivityDetailsSheet({
-  hash,
-  chainId,
-}: {
-  hash: TxHash;
-  chainId: ChainId;
-}) {
-  const { data: tx, isLoading } = useTransaction({ hash, chainId });
+export function ActivityDetails() {
+  const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
+  const { data: transaction, isLoading } = useTransaction({
+    hash,
+    chainId: Number(chainId),
+  });
   const navigate = useRainbowNavigate();
 
-  const additionalDetails = getAdditionalDetails(tx);
+  const additionalDetails = useMemo(
+    () => (transaction ? getAdditionalDetails(transaction) : null),
+    [transaction],
+  );
 
   const backToHome = () =>
     navigate(ROUTES.HOME, {
@@ -572,7 +567,7 @@ function ActivityDetailsSheet({
 
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
-      {isLoading || !tx ? (
+      {isLoading || !transaction ? (
         <Box />
       ) : (
         <>
@@ -580,8 +575,8 @@ function ActivityDetailsSheet({
             leftComponent={
               <Navbar.CloseButton onClick={backToHome} withinModal />
             }
-            titleComponent={<ActivityPill transaction={tx} />}
-            rightComponent={<MoreOptions transaction={tx} />}
+            titleComponent={<ActivityPill transaction={transaction} />}
+            rightComponent={<MoreOptions transaction={transaction} />}
           />
           <Separator color="separatorTertiary" />
 
@@ -590,13 +585,15 @@ function ActivityDetailsSheet({
             padding="20px"
             gap="20px"
           >
-            <ToFrom transaction={tx} />
+            <ToFrom transaction={transaction} />
             {additionalDetails && (
               <AdditionalDetails details={additionalDetails} />
             )}
-            <ConfirmationData transaction={tx} />
-            <NetworkData transaction={tx} />
-            {tx.status === 'pending' && <SpeedUpOrCancel transaction={tx} />}
+            <ConfirmationData transaction={transaction} />
+            <NetworkData transaction={transaction} />
+            {transaction.status === 'pending' && (
+              <SpeedUpOrCancel transaction={transaction} />
+            )}
           </Stack>
         </>
       )}
