@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Address,
   useAccount,
@@ -39,11 +39,15 @@ import {
   Stack,
   Text,
 } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { RainbowError, logger } from '~/logger';
 
 import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
+import { Spinner } from '../../components/Spinner/Spinner';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { isLedgerConnectionError } from '../../handlers/ledger';
 import { sendTransaction } from '../../handlers/wallet';
 import { zIndexes } from '../../utils/zIndexes';
 
@@ -75,6 +79,7 @@ export function SpeedUpAndCancelSheet({
 }: SpeedUpAndCancelSheetProps) {
   const { setSelectedTransaction } = useSelectedTransactionStore();
   const { selectedGas } = useGasStore();
+  const [sending, setSending] = useState(false);
 
   const { data: transactionResponse } = useTransaction({
     chainId: transaction?.chainId,
@@ -148,7 +153,7 @@ export function SpeedUpAndCancelSheet({
     return {
       to: transaction?.to,
       from: transaction?.from,
-      value: transaction?.value,
+      value: toHex(transaction?.value || ''),
       chainId: transaction?.chainId,
       data: transaction?.data,
       nonce: transaction?.nonce,
@@ -182,51 +187,89 @@ export function SpeedUpAndCancelSheet({
   ]);
 
   const handleCancellation = async () => {
-    const cancellationResult = await sendTransaction(cancelTransactionRequest);
-    const cancelTx = {
-      ...transaction,
-      data: cancellationResult?.data,
-      value: cancellationResult?.value?.toString(),
-      from: cancellationResult?.from as Address,
-      to: cancellationResult?.from as Address,
-      hash: cancellationResult?.hash as TxHash,
-      chainId: cancelTransactionRequest?.chainId as ChainId,
-      status: 'pending',
-      type: 'cancel',
-      nonce: transaction?.nonce,
-    } satisfies NewTransaction;
-    updateTransaction({
-      address: cancellationResult?.from as Address,
-      chainId: cancellationResult?.chainId,
-      transaction: cancelTx,
-    });
-    handleClose();
+    setSending(true);
+    try {
+      const cancellationResult = await sendTransaction(
+        cancelTransactionRequest,
+      );
+      const cancelTx = {
+        ...transaction,
+        data: cancellationResult?.data,
+        value: cancellationResult?.value?.toString(),
+        from: cancellationResult?.from as Address,
+        to: cancellationResult?.from as Address,
+        hash: cancellationResult?.hash as TxHash,
+        chainId: cancelTransactionRequest?.chainId as ChainId,
+        status: 'pending',
+        type: 'cancel',
+        nonce: transaction?.nonce,
+      } satisfies NewTransaction;
+      updateTransaction({
+        address: cancellationResult?.from as Address,
+        chainId: cancellationResult?.chainId,
+        transaction: cancelTx,
+      });
+      handleClose();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      if (!isLedgerConnectionError(e)) {
+        const extractedError = (e as Error).message.split('[')[0];
+        triggerAlert({
+          text: i18n.t('errors.sending_transaction'),
+          description: extractedError,
+        });
+      }
+      logger.error(new RainbowError('send: error speed up tx'), {
+        message: (e as Error)?.message,
+      });
+    } finally {
+      setSending(false);
+    }
   };
   const handleSpeedUp = async () => {
-    const speedUpResult = await sendTransaction(speedUpTransactionRequest);
-    const speedUpTransaction = {
-      ...transaction,
-      data: speedUpResult?.data,
-      value: speedUpResult?.value?.toString(),
-      from: speedUpResult?.from as Address,
-      to: speedUpResult?.to as Address,
-      hash: speedUpResult?.hash as TxHash,
-      chainId: speedUpResult?.chainId,
-      status: 'pending',
-      type: 'speed_up',
-      nonce: transaction?.nonce,
-    } satisfies NewTransaction;
-    updateTransaction({
-      address: speedUpResult?.from as Address,
-      chainId: speedUpResult?.chainId,
-      transaction: speedUpTransaction,
-    });
-    handleClose();
+    try {
+      setSending(true);
+      const speedUpResult = await sendTransaction(speedUpTransactionRequest);
+      const speedUpTransaction = {
+        ...transaction,
+        data: speedUpResult?.data,
+        value: speedUpResult?.value?.toString(),
+        from: speedUpResult?.from as Address,
+        to: speedUpResult?.to as Address,
+        hash: speedUpResult?.hash as TxHash,
+        chainId: speedUpResult?.chainId,
+        status: 'pending',
+        type: 'speed_up',
+        nonce: transaction?.nonce,
+      } satisfies NewTransaction;
+      updateTransaction({
+        address: speedUpResult?.from as Address,
+        chainId: speedUpResult?.chainId,
+        transaction: speedUpTransaction,
+      });
+      handleClose();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      if (!isLedgerConnectionError(e)) {
+        const extractedError = (e as Error).message.split('[')[0];
+        triggerAlert({
+          text: i18n.t('errors.sending_transaction'),
+          description: extractedError,
+        });
+      }
+      logger.error(new RainbowError('send: error cancel tx'), {
+        message: (e as Error)?.message,
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   useEffect(() => {
     // we keep this outside of `onClose` so that global shortcuts (e.g. Escape) still clear the tx
-    return () => setSelectedTransaction(); // invoke without param to remove selection
+    return () => {
+      setSelectedTransaction();
+    }; // invoke without param to remove selection
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -363,13 +406,24 @@ export function SpeedUpAndCancelSheet({
                         width="full"
                         onClick={cancel ? handleCancellation : handleSpeedUp}
                       >
-                        <Text size="16pt" weight="bold">
-                          {i18n.t(
-                            cancel
-                              ? 'speed_up_and_cancel.cancel_cta'
-                              : 'speed_up_and_cancel.speed_up_cta',
-                          )}
-                        </Text>
+                        {sending ? (
+                          <Box
+                            width="fit"
+                            alignItems="center"
+                            justifyContent="center"
+                            style={{ margin: 'auto' }}
+                          >
+                            <Spinner size={16} color="label" />
+                          </Box>
+                        ) : (
+                          <Text size="16pt" weight="bold">
+                            {i18n.t(
+                              cancel
+                                ? 'speed_up_and_cancel.cancel_cta'
+                                : 'speed_up_and_cancel.speed_up_cta',
+                            )}
+                          </Text>
+                        )}
                       </Button>
                     </Box>
                   </Row>
