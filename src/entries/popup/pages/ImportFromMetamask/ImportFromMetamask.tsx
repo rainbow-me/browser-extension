@@ -662,9 +662,9 @@ export function ImportFromMetamask() {
         const { relatedTarget, currentTarget } = e;
         // onDragLeave triggers when the dragged element enters a child element
         // this checks if the dragged element is still inside the currentTarget
-        setIsDraggingOver(
-          !(!relatedTarget || !currentTarget.contains(relatedTarget as Node)),
-        );
+        if (!relatedTarget || !currentTarget.contains(relatedTarget as Node)) {
+          setIsDraggingOver(false);
+        }
       }}
       onDrop={(e) => {
         stopFromOpeningTheDroppedFile(e);
