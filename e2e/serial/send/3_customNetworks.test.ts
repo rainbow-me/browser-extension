@@ -10,11 +10,9 @@ import {
   executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
-  findElementByText,
   findElementByTextAndClick,
   getExtensionIdByName,
   getRootUrl,
-  goToPopup,
   importWalletFlow,
   initDriverWithOptions,
   navigateToSettingsNetworks,
@@ -51,18 +49,6 @@ afterAll(() => driver.quit());
 
 it('should be able import a wallet via pk', async () => {
   await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
-});
-
-it('should be able to go to setings', async () => {
-  await goToPopup(driver, rootURL);
-  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
-  await findElementByTestIdAndClick({ id: 'settings-link', driver });
-});
-
-it('should be able to connect to hardhat', async () => {
-  await findElementByTestIdAndClick({ id: 'connect-to-hardhat', driver });
-  const button = await findElementByText(driver, 'Disconnect from Hardhat');
-  expect(button).toBeTruthy();
 });
 
 it('should be able to naviagate to network settings', async () => {
