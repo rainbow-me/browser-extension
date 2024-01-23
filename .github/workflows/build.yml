@@ -405,12 +405,11 @@ jobs:
       - name: Unzip node_modules
         run: tar xzf node_modules.tar.gz
       - name: Install rust
-        uses: actions-rs/toolchain@v1
+        uses: moonrepo/setup-rust@v1
         with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
+          channel: stable
+          targets: 'wasm32-unknown-unknown'
           profile: minimal
-          override: true
       - name: Graphql Setup
         run: yarn graphql-setup
       - name: Install Anvil
