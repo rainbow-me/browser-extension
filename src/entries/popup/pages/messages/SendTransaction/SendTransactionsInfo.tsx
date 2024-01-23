@@ -210,7 +210,6 @@ function TransactionDetails({
             <AddressDisplay
               address={contract}
               hideAvatar
-              explorerLink
               chainId={session.chainId}
             />
           }

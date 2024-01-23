@@ -27,14 +27,11 @@ import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvat
 
 function AddressMoreOptions({
   address,
-  explorerLink,
   chainId,
 }: {
   address: Address;
-  explorerLink?: boolean;
   chainId?: ChainId;
 }) {
-  const explorer = chainId && getBlockExplorerHostForChain(chainId);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -60,17 +57,19 @@ function AddressMoreOptions({
             {truncateAddress(address)}
           </Text>
         </DropdownMenuItem>
-        {explorerLink && (
+        {chainId && (
           <DropdownMenuItem
             symbolLeft="doc.text.magnifyingglass"
             onSelect={() => {
-              explorer &&
-                goToNewTab({ url: getExplorerUrl(explorer, address) });
+              const explorer = getBlockExplorerHostForChain(chainId);
+              goToNewTab({
+                url: explorer && getExplorerUrl(explorer, address),
+              });
             }}
           >
             <Text size="14pt" weight="semibold">
               {i18n.t('token_details.more_options.view_on_explorer', {
-                explorer: chainId && getBlockExplorerName(chainId),
+                explorer: getBlockExplorerName(chainId),
               })}
             </Text>
           </DropdownMenuItem>
@@ -136,7 +135,6 @@ const ContractDisplay = ({
   address,
   hideAvatar,
   contract: { name, iconUrl },
-  explorerLink,
   chainId,
 }: {
   address: Address;
@@ -145,7 +143,6 @@ const ContractDisplay = ({
     name: string;
     iconUrl?: string;
   };
-  explorerLink?: boolean;
   chainId?: ChainId;
 }) => {
   return (
@@ -154,11 +151,7 @@ const ContractDisplay = ({
       <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
         {name}
       </TextOverflow>
-      <AddressMoreOptions
-        address={address}
-        explorerLink={explorerLink}
-        chainId={chainId}
-      />
+      <AddressMoreOptions address={address} chainId={chainId} />
     </Inline>
   );
 };
@@ -167,7 +160,6 @@ export const AddressDisplay = ({
   address,
   contract,
   hideAvatar,
-  explorerLink,
   chainId,
 }: {
   address: Address;
@@ -176,7 +168,6 @@ export const AddressDisplay = ({
     name: string;
     iconUrl?: string;
   };
-  explorerLink?: boolean;
   chainId?: ChainId;
 }) => {
   if (contract?.name)
@@ -185,7 +176,6 @@ export const AddressDisplay = ({
         address={address}
         contract={contract}
         hideAvatar={hideAvatar}
-        explorerLink={explorerLink}
         chainId={chainId}
       />
     );
@@ -194,11 +184,7 @@ export const AddressDisplay = ({
     <Inline space="6px" alignVertical="center" wrap={false}>
       {!hideAvatar && <AddressIcon address={address} />}
       <YouOrAddress address={address} />
-      <AddressMoreOptions
-        address={address}
-        explorerLink={explorerLink}
-        chainId={chainId}
-      />
+      <AddressMoreOptions address={address} chainId={chainId} />
     </Inline>
   );
 };
