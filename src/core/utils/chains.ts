@@ -205,6 +205,8 @@ export const getSimpleHashSupportedChainNames = () => {
     'zksync-era-testnet',
     'zora-testnet',
     'zora-sepolia',
+    'rari',
+    'rari-testnet',
   ];
 };
 
