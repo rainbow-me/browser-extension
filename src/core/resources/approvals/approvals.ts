@@ -11,10 +11,28 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { TxHash } from '~/core/types/transactions';
 import { RainbowError, logger } from '~/logger';
 
 export const APPROVALS_TIMEOUT_DURATION = 10000;
+
+export interface ApprovalSpender {
+  tx_hash: TxHash;
+  contract_address: Address;
+  allowance_type: 'UNLIMITED' | 'LIMITED';
+  quantity_allowed: 'unlimited' | string;
+  value_at_risk: string;
+  contract_name: string;
+  contract_icon_url: string;
+}
+
+export interface Approval {
+  chain_id: ChainId;
+  network: string;
+  asset: SearchAsset;
+  spenders: ApprovalSpender[];
+}
 
 interface ApprovalsResponse {
   meta: {
@@ -26,44 +44,7 @@ interface ApprovalsResponse {
     chain_ids_with_errors: ChainId[];
     status: string;
   };
-  payload: {
-    chain_id: ChainId;
-    network: string;
-    asset: {
-      asset_code: string;
-      decimals: number;
-      icon_url: string;
-      name: string;
-      network: string;
-      chain_id: ChainId;
-      price: {
-        value: number;
-        changed_at: number;
-        relative_change_24h: number;
-      };
-      symbol: string;
-      colors: {
-        primary: string;
-        secondary: string;
-      };
-      networks: Record<ChainId, { address: Address; decimals: boolean }>;
-      bridging: {
-        bridgeable: boolean;
-        networks: Record<ChainId, { bridgeable: boolean }>;
-      };
-      verified: boolean;
-      value_at_risk: string;
-      spenders: {
-        tx_hash: TxHash;
-        contract_address: Address;
-        allowance_type: 'UNLIMITED' | 'LIMITED';
-        quantity_allowed: 'unlimited' | string;
-        value_at_risk: string;
-        contract_name: string;
-        contract_icon_url: string;
-      }[];
-    };
-  }[];
+  payload: Approval[];
 }
 
 // ///////////////////////////////////////////////
