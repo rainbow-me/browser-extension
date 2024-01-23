@@ -45,7 +45,7 @@ jobs:
       - name: Archive the build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: rainbowbx-v${{ env.release_version }}.zip
+          name: rainbowbx-v${{ env.release_version }}
           path: build/
       - name: Submit to the chrome webstore
         uses: PlasmoHQ/bpp@v3
