@@ -33,8 +33,6 @@ jobs:
         run: yarn firefox:build
       - name: Update the manifest
         run: yarn update-manifest prod
-      - name: Update the manifest for firefox
-        run: yarn firefox:manifest
       - name: Archive the build artifact
         uses: actions/upload-artifact@v4
         with:
