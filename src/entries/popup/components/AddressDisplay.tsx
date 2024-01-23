@@ -2,9 +2,12 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
-import { goToNewTab } from '~/core/utils/tabs';
+import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
+import { getBlockExplorerName } from '~/core/utils/transactions';
 import {
   Bleed,
   ButtonSymbol,
@@ -24,11 +27,14 @@ import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvat
 
 function AddressMoreOptions({
   address,
-  etherscanLink,
+  explorerLink,
+  chainId,
 }: {
   address: Address;
-  etherscanLink?: boolean;
+  explorerLink?: boolean;
+  chainId?: ChainId;
 }) {
+  const explorer = chainId && getBlockExplorerHostForChain(chainId);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -54,15 +60,18 @@ function AddressMoreOptions({
             {truncateAddress(address)}
           </Text>
         </DropdownMenuItem>
-        {etherscanLink && (
+        {explorerLink && (
           <DropdownMenuItem
             symbolLeft="doc.text.magnifyingglass"
-            onSelect={() =>
-              goToNewTab({ url: `https://etherscan.io/address/${address}` })
-            }
+            onSelect={() => {
+              explorer &&
+                goToNewTab({ url: getExplorerUrl(explorer, address) });
+            }}
           >
             <Text size="14pt" weight="semibold">
-              {i18n.t('token_details.more_options.view_on_etherscan')}
+              {i18n.t('token_details.more_options.view_on_explorer', {
+                explorer: chainId && getBlockExplorerName(chainId),
+              })}
             </Text>
           </DropdownMenuItem>
         )}
@@ -127,7 +136,8 @@ const ContractDisplay = ({
   address,
   hideAvatar,
   contract: { name, iconUrl },
-  etherscanLink,
+  explorerLink,
+  chainId,
 }: {
   address: Address;
   hideAvatar?: boolean;
@@ -135,7 +145,8 @@ const ContractDisplay = ({
     name: string;
     iconUrl?: string;
   };
-  etherscanLink?: boolean;
+  explorerLink?: boolean;
+  chainId?: ChainId;
 }) => {
   return (
     <Inline space="6px" alignVertical="center">
@@ -143,7 +154,11 @@ const ContractDisplay = ({
       <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
         {name}
       </TextOverflow>
-      <AddressMoreOptions address={address} etherscanLink={etherscanLink} />
+      <AddressMoreOptions
+        address={address}
+        explorerLink={explorerLink}
+        chainId={chainId}
+      />
     </Inline>
   );
 };
@@ -152,7 +167,8 @@ export const AddressDisplay = ({
   address,
   contract,
   hideAvatar,
-  etherscanLink,
+  explorerLink,
+  chainId,
 }: {
   address: Address;
   hideAvatar?: boolean;
@@ -160,7 +176,8 @@ export const AddressDisplay = ({
     name: string;
     iconUrl?: string;
   };
-  etherscanLink?: boolean;
+  explorerLink?: boolean;
+  chainId?: ChainId;
 }) => {
   if (contract?.name)
     return (
@@ -168,7 +185,8 @@ export const AddressDisplay = ({
         address={address}
         contract={contract}
         hideAvatar={hideAvatar}
-        etherscanLink={etherscanLink}
+        explorerLink={explorerLink}
+        chainId={chainId}
       />
     );
 
@@ -176,7 +194,11 @@ export const AddressDisplay = ({
     <Inline space="6px" alignVertical="center" wrap={false}>
       {!hideAvatar && <AddressIcon address={address} />}
       <YouOrAddress address={address} />
-      <AddressMoreOptions address={address} etherscanLink={etherscanLink} />
+      <AddressMoreOptions
+        address={address}
+        explorerLink={explorerLink}
+        chainId={chainId}
+      />
     </Inline>
   );
 };
