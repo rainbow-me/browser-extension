@@ -1,8 +1,8 @@
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
-index 5a7108c..20f029c 100644
+index 5a7108c..6873acc 100644
 --- a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
 +++ b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
-@@ -1,119 +1,96 @@
+@@ -1,119 +1,110 @@
 -import ethereum_tokens from "./1/erc20.json";
 -import ethereum_ropsten_tokens from "./3/erc20.json";
 -import ethereum_goerli_tokens from "./5/erc20.json";
@@ -88,17 +88,7 @@ index 5a7108c..20f029c 100644
 -    421613: arbitrum_goerli_tokens,
 -    11155111: ethereum_sepolia_tokens,
 -    245022934: neon_evm_tokens,
-+export let tokens = {};
-+export let signatures = {};
-+async function fetchJsonLocally(filename) {
-+    try {
-+        const req = await fetch(chrome.runtime.getURL(`json/ledger/${filename}`));
-+        const json = await req.json();
-+        return json;
-+    } catch (e) {
-+        return {};
-+    }
- };
+-};
 -export const signatures = {
 -    1: ethereum_signatures,
 -    3: ethereum_ropsten_signatures,
@@ -128,84 +118,109 @@ index 5a7108c..20f029c 100644
 -    421613: arbitrum_goerli_signatures,
 -    11155111: ethereum_sepolia_signatures,
 -    245022934: neon_evm_signatures,
-+const init = async () => {
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
+ };
++export let tokens = {};
++export let signatures = {};
++function fetchJsonLocally(filename) {
++    return __awaiter(this, void 0, void 0, function* () {
++        try {
++            // @ts-ignore - will be fine in extension runtime
++            const req = yield fetch(chrome.runtime.getURL(`json/ledger/${filename}`));
++            const json = yield req.json();
++            return json;
++        }
++        catch (e) {
++            return {};
++        }
++    });
++}
++;
++const init = () => __awaiter(void 0, void 0, void 0, function* () {
 +    tokens = {
-+        1: await fetchJsonLocally('1/erc20.json'),
-+        3: await fetchJsonLocally('3/erc20.json'),
-+        5: await fetchJsonLocally('5/erc20.json'),
-+        10: await fetchJsonLocally('10/erc20.json'),
-+        25: await fetchJsonLocally('25/erc20.json'),
-+        30: await fetchJsonLocally('30/erc20.json'),
-+        40: await fetchJsonLocally('40/erc20.json'),
-+        56: await fetchJsonLocally('56/erc20.json'),
-+        57: await fetchJsonLocally('57/erc20.json'),
-+        97: await fetchJsonLocally('97/erc20.json'),
-+        106: await fetchJsonLocally('106/erc20.json'),
-+        137: await fetchJsonLocally('137/erc20.json'),
-+        199: await fetchJsonLocally('199/erc20.json'),
-+        246: await fetchJsonLocally('246/erc20.json'),
-+        250: await fetchJsonLocally('250/erc20.json'),
-+        420: await fetchJsonLocally('420/erc20.json'),
-+        592: await fetchJsonLocally('592/erc20.json'),
-+        1088: await fetchJsonLocally('1088/erc20.json'),
-+        1101: await fetchJsonLocally('1101/erc20.json'),
-+        1284: await fetchJsonLocally('1284/erc20.json'),
-+        1442: await fetchJsonLocally('1442/erc20.json'),
-+        8217: await fetchJsonLocally('8217/erc20.json'),
-+        8453: await fetchJsonLocally('8453/erc20.json'),
-+        17000: await fetchJsonLocally('17000/erc20.json'),
-+        42161: await fetchJsonLocally('42161/erc20.json'),
-+        43113: await fetchJsonLocally('43113/erc20.json'),
-+        43114: await fetchJsonLocally('43114/erc20.json'),
-+        80001: await fetchJsonLocally('80001/erc20.json'),
-+        84531: await fetchJsonLocally('84531/erc20.json'),
-+        84532: await fetchJsonLocally('84532/erc20.json'),
-+        421613: await fetchJsonLocally('421613/erc20.json'),
-+        421614: await fetchJsonLocally('421614/erc20.json'),
-+        11155111: await fetchJsonLocally('11155111/erc20.json'),
-+        11155420: await fetchJsonLocally('11155420/erc20.json'),
-+        245022934: await fetchJsonLocally('245022934/erc20.json'),
-+        999999999: await fetchJsonLocally('999999999/erc20.json'),
++        1: yield fetchJsonLocally('1/erc20.json'),
++        3: yield fetchJsonLocally('3/erc20.json'),
++        5: yield fetchJsonLocally('5/erc20.json'),
++        10: yield fetchJsonLocally('10/erc20.json'),
++        25: yield fetchJsonLocally('25/erc20.json'),
++        30: yield fetchJsonLocally('30/erc20.json'),
++        40: yield fetchJsonLocally('40/erc20.json'),
++        56: yield fetchJsonLocally('56/erc20.json'),
++        57: yield fetchJsonLocally('57/erc20.json'),
++        97: yield fetchJsonLocally('97/erc20.json'),
++        106: yield fetchJsonLocally('106/erc20.json'),
++        137: yield fetchJsonLocally('137/erc20.json'),
++        199: yield fetchJsonLocally('199/erc20.json'),
++        246: yield fetchJsonLocally('246/erc20.json'),
++        250: yield fetchJsonLocally('250/erc20.json'),
++        420: yield fetchJsonLocally('420/erc20.json'),
++        592: yield fetchJsonLocally('592/erc20.json'),
++        1088: yield fetchJsonLocally('1088/erc20.json'),
++        1101: yield fetchJsonLocally('1101/erc20.json'),
++        1284: yield fetchJsonLocally('1284/erc20.json'),
++        1442: yield fetchJsonLocally('1442/erc20.json'),
++        8217: yield fetchJsonLocally('8217/erc20.json'),
++        8453: yield fetchJsonLocally('8453/erc20.json'),
++        17000: yield fetchJsonLocally('17000/erc20.json'),
++        42161: yield fetchJsonLocally('42161/erc20.json'),
++        43113: yield fetchJsonLocally('43113/erc20.json'),
++        43114: yield fetchJsonLocally('43114/erc20.json'),
++        80001: yield fetchJsonLocally('80001/erc20.json'),
++        84531: yield fetchJsonLocally('84531/erc20.json'),
++        84532: yield fetchJsonLocally('84532/erc20.json'),
++        421613: yield fetchJsonLocally('421613/erc20.json'),
++        421614: yield fetchJsonLocally('421614/erc20.json'),
++        11155111: yield fetchJsonLocally('11155111/erc20.json'),
++        11155420: yield fetchJsonLocally('11155420/erc20.json'),
++        245022934: yield fetchJsonLocally('245022934/erc20.json'),
++        999999999: yield fetchJsonLocally('999999999/erc20.json'),
 +    };
 +    signatures = {
-+        1: await fetchJsonLocally('1/erc20-signatures.json'),
-+        3: await fetchJsonLocally('3/erc20-signatures.json'),
-+        5: await fetchJsonLocally('5/erc20-signatures.json'),
-+        10: await fetchJsonLocally('10/erc20-signatures.json'),
-+        25: await fetchJsonLocally('25/erc20-signatures.json'),
-+        30: await fetchJsonLocally('30/erc20-signatures.json'),
-+        40: await fetchJsonLocally('40/erc20-signatures.json'),
-+        56: await fetchJsonLocally('56/erc20-signatures.json'),
-+        57: await fetchJsonLocally('57/erc20-signatures.json'),
-+        97: await fetchJsonLocally('97/erc20-signatures.json'),
-+        106: await fetchJsonLocally('106/erc20-signatures.json'),
-+        137: await fetchJsonLocally('137/erc20-signatures.json'),
-+        199: await fetchJsonLocally('199/erc20-signatures.json'),
-+        246: await fetchJsonLocally('246/erc20-signatures.json'),
-+        250: await fetchJsonLocally('250/erc20-signatures.json'),
-+        420: await fetchJsonLocally('420/erc20-signatures.json'),
-+        592: await fetchJsonLocally('592/erc20-signatures.json'),
-+        1088: await fetchJsonLocally('1088/erc20-signatures.json'),
-+        1101: await fetchJsonLocally('1101/erc20-signatures.json'),
-+        1284: await fetchJsonLocally('1284/erc20-signatures.json'),
-+        1442: await fetchJsonLocally('1442/erc20-signatures.json'),
-+        8217: await fetchJsonLocally('8217/erc20-signatures.json'),
-+        8453: await fetchJsonLocally('8453/erc20-signatures.json'),
-+        17000: await fetchJsonLocally('17000/erc20-signatures.json'),
-+        42161: await fetchJsonLocally('42161/erc20-signatures.json'),
-+        43113: await fetchJsonLocally('43113/erc20-signatures.json'),
-+        43114: await fetchJsonLocally('43114/erc20-signatures.json'),
-+        80001: await fetchJsonLocally('80001/erc20-signatures.json'),
-+        84531: await fetchJsonLocally('84531/erc20-signatures.json'),
-+        84532: await fetchJsonLocally('84532/erc20-signatures.json'),
-+        421613: await fetchJsonLocally('421613/erc20-signatures.json'),
-+        421614: await fetchJsonLocally('421614/erc20-signatures.json'),
-+        11155111: await fetchJsonLocally('11155111/erc20-signatures.json'),
-+        11155420: await fetchJsonLocally('11155420/erc20-signatures.json'),
-+        245022934: await fetchJsonLocally('245022934/erc20-signatures.json'),
-+        999999999: await fetchJsonLocally('999999999/erc20-signatures.json'),
++        1: yield fetchJsonLocally('1/erc20-signatures.json'),
++        3: yield fetchJsonLocally('3/erc20-signatures.json'),
++        5: yield fetchJsonLocally('5/erc20-signatures.json'),
++        10: yield fetchJsonLocally('10/erc20-signatures.json'),
++        25: yield fetchJsonLocally('25/erc20-signatures.json'),
++        30: yield fetchJsonLocally('30/erc20-signatures.json'),
++        40: yield fetchJsonLocally('40/erc20-signatures.json'),
++        56: yield fetchJsonLocally('56/erc20-signatures.json'),
++        57: yield fetchJsonLocally('57/erc20-signatures.json'),
++        97: yield fetchJsonLocally('97/erc20-signatures.json'),
++        106: yield fetchJsonLocally('106/erc20-signatures.json'),
++        137: yield fetchJsonLocally('137/erc20-signatures.json'),
++        199: yield fetchJsonLocally('199/erc20-signatures.json'),
++        246: yield fetchJsonLocally('246/erc20-signatures.json'),
++        250: yield fetchJsonLocally('250/erc20-signatures.json'),
++        420: yield fetchJsonLocally('420/erc20-signatures.json'),
++        592: yield fetchJsonLocally('592/erc20-signatures.json'),
++        1088: yield fetchJsonLocally('1088/erc20-signatures.json'),
++        1101: yield fetchJsonLocally('1101/erc20-signatures.json'),
++        1284: yield fetchJsonLocally('1284/erc20-signatures.json'),
++        1442: yield fetchJsonLocally('1442/erc20-signatures.json'),
++        8217: yield fetchJsonLocally('8217/erc20-signatures.json'),
++        8453: yield fetchJsonLocally('8453/erc20-signatures.json'),
++        17000: yield fetchJsonLocally('17000/erc20-signatures.json'),
++        42161: yield fetchJsonLocally('42161/erc20-signatures.json'),
++        43113: yield fetchJsonLocally('43113/erc20-signatures.json'),
++        43114: yield fetchJsonLocally('43114/erc20-signatures.json'),
++        80001: yield fetchJsonLocally('80001/erc20-signatures.json'),
++        84531: yield fetchJsonLocally('84531/erc20-signatures.json'),
++        84532: yield fetchJsonLocally('84532/erc20-signatures.json'),
++        421613: yield fetchJsonLocally('421613/erc20-signatures.json'),
++        421614: yield fetchJsonLocally('421614/erc20-signatures.json'),
++        11155111: yield fetchJsonLocally('11155111/erc20-signatures.json'),
++        11155420: yield fetchJsonLocally('11155420/erc20-signatures.json'),
++        245022934: yield fetchJsonLocally('245022934/erc20-signatures.json'),
++        999999999: yield fetchJsonLocally('999999999/erc20-signatures.json'),
 +    };
- };
++});
 +// There's no rush to load all this data, so we'll wait a few seconds
 +setTimeout(() => {
 +    init();
@@ -214,14 +229,22 @@ index 5a7108c..20f029c 100644
      tokens,
      signatures,
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js b/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js
-index 444184e..98c9b4d 100644
+index 444184e..a851e45 100644
 --- a/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js
 +++ b/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js
-@@ -1,125 +1,97 @@
+@@ -1,125 +1,113 @@
  "use strict";
 -var __importDefault = (this && this.__importDefault) || function (mod) {
 -    return (mod && mod.__esModule) ? mod : { "default": mod };
--};
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
+ };
  Object.defineProperty(exports, "__esModule", { value: true });
  exports.signatures = exports.tokens = void 0;
 -const erc20_json_1 = __importDefault(require("./1/erc20.json"));
@@ -309,15 +332,7 @@ index 444184e..98c9b4d 100644
 -    421613: erc20_json_26.default,
 -    11155111: erc20_json_27.default,
 -    245022934: erc20_json_28.default,
-+async function fetchJsonLocally(filename) {
-+    try {
-+        const req = await fetch(chrome.runtime.getURL(`json/ledger/${filename}`));
-+        const json = await req.json();
-+        return json;
-+    } catch (e) {
-+        return {};
-+    }
- };
+-};
 -exports.signatures = {
 -    1: erc20_signatures_json_1.default,
 -    3: erc20_signatures_json_2.default,
@@ -347,84 +362,101 @@ index 444184e..98c9b4d 100644
 -    421613: erc20_signatures_json_26.default,
 -    11155111: erc20_signatures_json_27.default,
 -    245022934: erc20_signatures_json_28.default,
-+const init = async () => {
+-};
++exports.tokens = {};
++exports.signatures = {};
++function fetchJsonLocally(filename) {
++    return __awaiter(this, void 0, void 0, function* () {
++        try {
++            // @ts-ignore - will be fine in extension runtime
++            const req = yield fetch(chrome.runtime.getURL(`json/ledger/${filename}`));
++            const json = yield req.json();
++            return json;
++        }
++        catch (e) {
++            return {};
++        }
++    });
++}
++;
++const init = () => __awaiter(void 0, void 0, void 0, function* () {
 +    exports.tokens = {
-+        1: await fetchJsonLocally('1/erc20.json'),
-+        3: await fetchJsonLocally('3/erc20.json'),
-+        5: await fetchJsonLocally('5/erc20.json'),
-+        10: await fetchJsonLocally('10/erc20.json'),
-+        25: await fetchJsonLocally('25/erc20.json'),
-+        30: await fetchJsonLocally('30/erc20.json'),
-+        40: await fetchJsonLocally('40/erc20.json'),
-+        56: await fetchJsonLocally('56/erc20.json'),
-+        57: await fetchJsonLocally('57/erc20.json'),
-+        97: await fetchJsonLocally('97/erc20.json'),
-+        106: await fetchJsonLocally('106/erc20.json'),
-+        137: await fetchJsonLocally('137/erc20.json'),
-+        199: await fetchJsonLocally('199/erc20.json'),
-+        246: await fetchJsonLocally('246/erc20.json'),
-+        250: await fetchJsonLocally('250/erc20.json'),
-+        420: await fetchJsonLocally('420/erc20.json'),
-+        592: await fetchJsonLocally('592/erc20.json'),
-+        1088: await fetchJsonLocally('1088/erc20.json'),
-+        1101: await fetchJsonLocally('1101/erc20.json'),
-+        1284: await fetchJsonLocally('1284/erc20.json'),
-+        1442: await fetchJsonLocally('1442/erc20.json'),
-+        8217: await fetchJsonLocally('8217/erc20.json'),
-+        8453: await fetchJsonLocally('8453/erc20.json'),
-+        17000: await fetchJsonLocally('17000/erc20.json'),
-+        42161: await fetchJsonLocally('42161/erc20.json'),
-+        43113: await fetchJsonLocally('43113/erc20.json'),
-+        43114: await fetchJsonLocally('43114/erc20.json'),
-+        80001: await fetchJsonLocally('80001/erc20.json'),
-+        84531: await fetchJsonLocally('84531/erc20.json'),
-+        84532: await fetchJsonLocally('84532/erc20.json'),
-+        421613: await fetchJsonLocally('421613/erc20.json'),
-+        421614: await fetchJsonLocally('421614/erc20.json'),
-+        11155111: await fetchJsonLocally('11155111/erc20.json'),
-+        11155420: await fetchJsonLocally('11155420/erc20.json'),
-+        245022934: await fetchJsonLocally('245022934/erc20.json'),
-+        999999999: await fetchJsonLocally('999999999/erc20.json'),
++        1: yield fetchJsonLocally('1/erc20.json'),
++        3: yield fetchJsonLocally('3/erc20.json'),
++        5: yield fetchJsonLocally('5/erc20.json'),
++        10: yield fetchJsonLocally('10/erc20.json'),
++        25: yield fetchJsonLocally('25/erc20.json'),
++        30: yield fetchJsonLocally('30/erc20.json'),
++        40: yield fetchJsonLocally('40/erc20.json'),
++        56: yield fetchJsonLocally('56/erc20.json'),
++        57: yield fetchJsonLocally('57/erc20.json'),
++        97: yield fetchJsonLocally('97/erc20.json'),
++        106: yield fetchJsonLocally('106/erc20.json'),
++        137: yield fetchJsonLocally('137/erc20.json'),
++        199: yield fetchJsonLocally('199/erc20.json'),
++        246: yield fetchJsonLocally('246/erc20.json'),
++        250: yield fetchJsonLocally('250/erc20.json'),
++        420: yield fetchJsonLocally('420/erc20.json'),
++        592: yield fetchJsonLocally('592/erc20.json'),
++        1088: yield fetchJsonLocally('1088/erc20.json'),
++        1101: yield fetchJsonLocally('1101/erc20.json'),
++        1284: yield fetchJsonLocally('1284/erc20.json'),
++        1442: yield fetchJsonLocally('1442/erc20.json'),
++        8217: yield fetchJsonLocally('8217/erc20.json'),
++        8453: yield fetchJsonLocally('8453/erc20.json'),
++        17000: yield fetchJsonLocally('17000/erc20.json'),
++        42161: yield fetchJsonLocally('42161/erc20.json'),
++        43113: yield fetchJsonLocally('43113/erc20.json'),
++        43114: yield fetchJsonLocally('43114/erc20.json'),
++        80001: yield fetchJsonLocally('80001/erc20.json'),
++        84531: yield fetchJsonLocally('84531/erc20.json'),
++        84532: yield fetchJsonLocally('84532/erc20.json'),
++        421613: yield fetchJsonLocally('421613/erc20.json'),
++        421614: yield fetchJsonLocally('421614/erc20.json'),
++        11155111: yield fetchJsonLocally('11155111/erc20.json'),
++        11155420: yield fetchJsonLocally('11155420/erc20.json'),
++        245022934: yield fetchJsonLocally('245022934/erc20.json'),
++        999999999: yield fetchJsonLocally('999999999/erc20.json'),
 +    };
 +    exports.signatures = {
-+        1: await fetchJsonLocally('1/erc20-signatures.json'),
-+        3: await fetchJsonLocally('3/erc20-signatures.json'),
-+        5: await fetchJsonLocally('5/erc20-signatures.json'),
-+        10: await fetchJsonLocally('10/erc20-signatures.json'),
-+        25: await fetchJsonLocally('25/erc20-signatures.json'),
-+        30: await fetchJsonLocally('30/erc20-signatures.json'),
-+        40: await fetchJsonLocally('40/erc20-signatures.json'),
-+        56: await fetchJsonLocally('56/erc20-signatures.json'),
-+        57: await fetchJsonLocally('57/erc20-signatures.json'),
-+        97: await fetchJsonLocally('97/erc20-signatures.json'),
-+        106: await fetchJsonLocally('106/erc20-signatures.json'),
-+        137: await fetchJsonLocally('137/erc20-signatures.json'),
-+        199: await fetchJsonLocally('199/erc20-signatures.json'),
-+        246: await fetchJsonLocally('246/erc20-signatures.json'),
-+        250: await fetchJsonLocally('250/erc20-signatures.json'),
-+        420: await fetchJsonLocally('420/erc20-signatures.json'),
-+        592: await fetchJsonLocally('592/erc20-signatures.json'),
-+        1088: await fetchJsonLocally('1088/erc20-signatures.json'),
-+        1101: await fetchJsonLocally('1101/erc20-signatures.json'),
-+        1284: await fetchJsonLocally('1284/erc20-signatures.json'),
-+        1442: await fetchJsonLocally('1442/erc20-signatures.json'),
-+        8217: await fetchJsonLocally('8217/erc20-signatures.json'),
-+        8453: await fetchJsonLocally('8453/erc20-signatures.json'),
-+        17000: await fetchJsonLocally('17000/erc20-signatures.json'),
-+        42161: await fetchJsonLocally('42161/erc20-signatures.json'),
-+        43113: await fetchJsonLocally('43113/erc20-signatures.json'),
-+        43114: await fetchJsonLocally('43114/erc20-signatures.json'),
-+        80001: await fetchJsonLocally('80001/erc20-signatures.json'),
-+        84531: await fetchJsonLocally('84531/erc20-signatures.json'),
-+        84532: await fetchJsonLocally('84532/erc20-signatures.json'),
-+        421613: await fetchJsonLocally('421613/erc20-signatures.json'),
-+        421614: await fetchJsonLocally('421614/erc20-signatures.json'),
-+        11155111: await fetchJsonLocally('11155111/erc20-signatures.json'),
-+        11155420: await fetchJsonLocally('11155420/erc20-signatures.json'),
-+        245022934: await fetchJsonLocally('245022934/erc20-signatures.json'),
-+        999999999: await fetchJsonLocally('999999999/erc20-signatures.json'),
++        1: yield fetchJsonLocally('1/erc20-signatures.json'),
++        3: yield fetchJsonLocally('3/erc20-signatures.json'),
++        5: yield fetchJsonLocally('5/erc20-signatures.json'),
++        10: yield fetchJsonLocally('10/erc20-signatures.json'),
++        25: yield fetchJsonLocally('25/erc20-signatures.json'),
++        30: yield fetchJsonLocally('30/erc20-signatures.json'),
++        40: yield fetchJsonLocally('40/erc20-signatures.json'),
++        56: yield fetchJsonLocally('56/erc20-signatures.json'),
++        57: yield fetchJsonLocally('57/erc20-signatures.json'),
++        97: yield fetchJsonLocally('97/erc20-signatures.json'),
++        106: yield fetchJsonLocally('106/erc20-signatures.json'),
++        137: yield fetchJsonLocally('137/erc20-signatures.json'),
++        199: yield fetchJsonLocally('199/erc20-signatures.json'),
++        246: yield fetchJsonLocally('246/erc20-signatures.json'),
++        250: yield fetchJsonLocally('250/erc20-signatures.json'),
++        420: yield fetchJsonLocally('420/erc20-signatures.json'),
++        592: yield fetchJsonLocally('592/erc20-signatures.json'),
++        1088: yield fetchJsonLocally('1088/erc20-signatures.json'),
++        1101: yield fetchJsonLocally('1101/erc20-signatures.json'),
++        1284: yield fetchJsonLocally('1284/erc20-signatures.json'),
++        1442: yield fetchJsonLocally('1442/erc20-signatures.json'),
++        8217: yield fetchJsonLocally('8217/erc20-signatures.json'),
++        8453: yield fetchJsonLocally('8453/erc20-signatures.json'),
++        17000: yield fetchJsonLocally('17000/erc20-signatures.json'),
++        42161: yield fetchJsonLocally('42161/erc20-signatures.json'),
++        43113: yield fetchJsonLocally('43113/erc20-signatures.json'),
++        43114: yield fetchJsonLocally('43114/erc20-signatures.json'),
++        80001: yield fetchJsonLocally('80001/erc20-signatures.json'),
++        84531: yield fetchJsonLocally('84531/erc20-signatures.json'),
++        84532: yield fetchJsonLocally('84532/erc20-signatures.json'),
++        421613: yield fetchJsonLocally('421613/erc20-signatures.json'),
++        421614: yield fetchJsonLocally('421614/erc20-signatures.json'),
++        11155111: yield fetchJsonLocally('11155111/erc20-signatures.json'),
++        11155420: yield fetchJsonLocally('11155420/erc20-signatures.json'),
++        245022934: yield fetchJsonLocally('245022934/erc20-signatures.json'),
++        999999999: yield fetchJsonLocally('999999999/erc20-signatures.json'),
 +    };
- };
++});
 +// There's no rush to load all this data, so we'll wait a few seconds
 +setTimeout(() => {
 +    init();
