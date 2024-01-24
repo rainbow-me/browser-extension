@@ -25,7 +25,9 @@ import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { linearGradients } from '~/design-system/styles/designTokens';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
+import { Link } from '~/entries/popup/components/Link/Link';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
+import { ROUTES } from '~/entries/popup/urls';
 
 import { usePoints } from './usePoints';
 
@@ -405,7 +407,7 @@ function YourPoints() {
       </Stack>
     );
 
-  const { leaderboard, user } = data;
+  const { earnings } = data.user;
 
   return (
     <Box
@@ -417,7 +419,7 @@ function YourPoints() {
       gap="12px"
     >
       <Text size="26pt" weight="heavy">
-        {formatNumber(user.earnings.total)}
+        {formatNumber(earnings.total)}
       </Text>
       <Box
         as={motion.div}
@@ -425,27 +427,52 @@ function YourPoints() {
         initial={{ width: 40 }}
         transition={{ duration: 1 }}
         animate={{
-          width: mapToRange(user.earnings.total, [0, 2_000_000], [40, 300]),
+          width: mapToRange(earnings.total, [0, 2_000_000], [40, 300]),
         }}
         style={{ height: 10, background: linearGradients.points }}
       />
-      <Text
-        size="12pt"
-        weight="bold"
-        background="points"
-        color="transparent"
-        webkitBackgroundClip="text"
-      >
-        {i18n.t('points.out_of_current_total_points', {
-          total: formatNumber(leaderboard.stats.total_points),
-        })}
-      </Text>
     </Box>
+  );
+}
+
+function YourEarningsLastWeek() {
+  return (
+    <Card
+      flexDirection="row"
+      justifyContent="flex-start"
+      alignItems="center"
+      gap="12px"
+      borderColor="separatorSecondary"
+      borderWidth="1px"
+    >
+      <Box
+        style={{ height: 36, width: 36 }}
+        background="blue"
+        borderRadius="10px"
+      />
+      <Stack space="10px">
+        <Text size="14pt" weight="heavy">
+          Your Earnings Last Week
+        </Text>
+        <Text color="labelTertiary" size="12pt" weight="bold">
+          View your weekly earnings breakdown
+        </Text>
+        <Link
+          to={ROUTES.POINTS_WEEKLY_OVERVIEW}
+          state={{ tab: 'points', skipTransitionOnRoute: ROUTES.HOME }}
+        >
+          <Text color="blue" size="12pt" weight="heavy" textShadow="12px blue">
+            View Now
+          </Text>
+        </Link>
+      </Stack>
+    </Card>
   );
 }
 
 export function PointsDashboard() {
   const { currentTheme } = useCurrentThemeStore();
+
   return (
     <Stack
       gap="20px"
@@ -456,6 +483,7 @@ export function PointsDashboard() {
       background={currentTheme === 'light' ? 'surfaceSecondary' : undefined}
     >
       <YourPoints />
+      <YourEarningsLastWeek />
       <YourRankAndNextDrop />
       <ReferralCode />
       <Leaderboard />

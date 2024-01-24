@@ -1345,6 +1345,18 @@
       "existing_user": "Existing user",
       "invalid_referral_code": "Invalid referral code",
       "unexpected": "Something unexpected happened, try again in a few minutes"
+    },
+    "weekly_overview": {
+      "week_of": "> Week of %{from} - %{to}",
+      "counting": "> Counting earned points...",
+      "your_activity": "Your Activity:",
+      "referral_activity": "Referral Activity:",
+      "new_referrals": "New Referrals:",
+      "retroactive": "Retroactive Points:",
+      "total": "Total:",
+      "weekly_counted": "> Weekly earnings counted",
+      "you_have": "You have:",
+      "none": "None"
     }
   },
   "speed_up_and_cancel": {
