@@ -2,8 +2,12 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
+import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
+import { getBlockExplorerName } from '~/core/utils/transactions';
 import {
   Bleed,
   ButtonSymbol,
@@ -21,7 +25,13 @@ import {
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
-function AddressMoreOptions({ address }: { address: Address }) {
+function AddressMoreOptions({
+  address,
+  chainId,
+}: {
+  address: Address;
+  chainId?: ChainId;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -47,6 +57,23 @@ function AddressMoreOptions({ address }: { address: Address }) {
             {truncateAddress(address)}
           </Text>
         </DropdownMenuItem>
+        {chainId && (
+          <DropdownMenuItem
+            symbolLeft="doc.text.magnifyingglass"
+            onSelect={() => {
+              const explorer = getBlockExplorerHostForChain(chainId);
+              goToNewTab({
+                url: explorer && getExplorerUrl(explorer, address),
+              });
+            }}
+          >
+            <Text size="14pt" weight="semibold">
+              {i18n.t('token_details.more_options.view_on_explorer', {
+                explorer: getBlockExplorerName(chainId),
+              })}
+            </Text>
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -108,6 +135,7 @@ const ContractDisplay = ({
   address,
   hideAvatar,
   contract: { name, iconUrl },
+  chainId,
 }: {
   address: Address;
   hideAvatar?: boolean;
@@ -115,6 +143,7 @@ const ContractDisplay = ({
     name: string;
     iconUrl?: string;
   };
+  chainId?: ChainId;
 }) => {
   return (
     <Inline space="6px" alignVertical="center">
@@ -122,7 +151,7 @@ const ContractDisplay = ({
       <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
         {name}
       </TextOverflow>
-      <AddressMoreOptions address={address} />
+      <AddressMoreOptions address={address} chainId={chainId} />
     </Inline>
   );
 };
@@ -131,6 +160,7 @@ export const AddressDisplay = ({
   address,
   contract,
   hideAvatar,
+  chainId,
 }: {
   address: Address;
   hideAvatar?: boolean;
@@ -138,6 +168,7 @@ export const AddressDisplay = ({
     name: string;
     iconUrl?: string;
   };
+  chainId?: ChainId;
 }) => {
   if (contract?.name)
     return (
@@ -145,6 +176,7 @@ export const AddressDisplay = ({
         address={address}
         contract={contract}
         hideAvatar={hideAvatar}
+        chainId={chainId}
       />
     );
 
@@ -152,7 +184,7 @@ export const AddressDisplay = ({
     <Inline space="6px" alignVertical="center" wrap={false}>
       {!hideAvatar && <AddressIcon address={address} />}
       <YouOrAddress address={address} />
-      <AddressMoreOptions address={address} />
+      <AddressMoreOptions address={address} chainId={chainId} />
     </Inline>
   );
 };

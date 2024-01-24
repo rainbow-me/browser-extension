@@ -1383,6 +1383,7 @@
     "not_available": "Price not available",
     "more_options": {
       "copy_address": "Copy Address",
+      "view_on_explorer": "View on %{explorer}",
       "hide": "Hide Token",
       "report": "Report Token"
     },
