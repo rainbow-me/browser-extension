@@ -50,10 +50,12 @@ const GasLabel = ({
   label,
   warning,
   onClick,
+  testId,
 }: {
   label: string;
   warning?: 'stuck' | 'fail';
   onClick: () => void;
+  testId?: string;
 }) => (
   <Box as={motion.div} layout="position">
     <Stack space="8px">
@@ -85,6 +87,7 @@ const GasLabel = ({
                 height="28px"
                 variant="tinted"
                 onClick={onClick}
+                testId={testId}
               />
             </Bleed>
           )}
@@ -479,6 +482,7 @@ export const CustomGasSheet = ({
                                 height="28px"
                                 variant="transparent"
                                 onClick={showCurrentBaseFeeExplainer}
+                                testId={'current-base-fee-explainer'}
                               />
                             </Bleed>
                           </Box>
@@ -508,6 +512,7 @@ export const CustomGasSheet = ({
                       label={i18n.t('custom_gas.max_base_fee')}
                       warning={maxBaseFeeWarning}
                       onClick={showMaxBaseFeeExplainer}
+                      testId={'max-base-fee-explainer'}
                     />
                   </Box>
 
@@ -517,6 +522,7 @@ export const CustomGasSheet = ({
                       value={maxBaseFee}
                       variant="surface"
                       onChange={updateCustomMaxBaseFee}
+                      testId={'max-base-fee-input'}
                     />
                   </Box>
                 </Inline>
@@ -532,6 +538,7 @@ export const CustomGasSheet = ({
                       label={i18n.t('custom_gas.miner_tip')}
                       warning={maxPriorityFeeWarning}
                       onClick={showMaxPriorityFeeExplainer}
+                      testId={'max-priority-fee-explainer'}
                     />
                   </Box>
                   <Box style={{ width: 98 }} marginRight="-4px">
@@ -540,6 +547,7 @@ export const CustomGasSheet = ({
                       value={maxPriorityFee}
                       variant="surface"
                       onChange={updateCustomMaxPriorityFee}
+                      testId={'miner-tip-input'}
                     />
                   </Box>
                 </Inline>
@@ -767,6 +775,7 @@ export const CustomGasSheet = ({
                     variant="flat"
                     onClick={setCustomGas}
                     tabIndex={0}
+                    testId={'set-gas-button'}
                   >
                     <Text color="label" size="16pt" weight="bold">
                       {i18n.t('custom_gas.set')}

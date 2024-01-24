@@ -170,27 +170,31 @@ export const SwitchTransactionSpeedMenu = React.forwardRef<
   );
   if (!editable) return menuTrigger;
   return (
-    <DropdownMenu onOpenChange={onOpenChange}>
-      <DropdownMenuTrigger asChild accentColor={accentColor}>
-        {menuTrigger}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        marginRight={dropdownContentMarginRight}
-        accentColor={accentColor}
-      >
-        <DropdownMenuLabel>{i18n.t('transaction_fee.title')}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={selectedSpeed}
-          onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
+    <Box testId={'gas-menu'}>
+      <DropdownMenu onOpenChange={onOpenChange}>
+        <DropdownMenuTrigger asChild accentColor={accentColor}>
+          {menuTrigger}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          marginRight={dropdownContentMarginRight}
+          accentColor={accentColor}
         >
-          <SwitchSpeedMenuSelector
-            chainId={chainId}
-            gasFeeParamsBySpeed={gasFeeParamsBySpeed}
-            selectedValue={selectedSpeed}
-          />
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <DropdownMenuLabel>
+            {i18n.t('transaction_fee.title')}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup
+            value={selectedSpeed}
+            onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
+          >
+            <SwitchSpeedMenuSelector
+              chainId={chainId}
+              gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+              selectedValue={selectedSpeed}
+            />
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </Box>
   );
 });

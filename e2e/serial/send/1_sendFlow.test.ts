@@ -208,6 +208,83 @@ it('should be able to click max and switch on send flow', async () => {
   await inputMask.sendKeys('0.01');
 });
 
+it('should be able to switch gas prices via dropdown on send flow', async () => {
+  await findElementByTestIdAndClick({ id: 'gas-menu', driver });
+  const txnSpeed = await findElementByText(driver, 'Transaction Speed');
+  expect(txnSpeed).toBeTruthy();
+  await findElementByTextAndClick(driver, 'Urgent');
+  await delayTime('medium');
+  const urgent = await findElementByText(driver, 'Urgent');
+  expect(urgent).toBeTruthy();
+});
+
+it('should be able to open up the custom gas menu on the send flow', async () => {
+  await findElementByTestIdAndClick({ id: 'custom-gas-menu', driver });
+  const gasSettings = await findElementByText(driver, 'Gas Settings');
+  expect(gasSettings).toBeTruthy();
+});
+
+it('should be able to open up the explainers on the custom gas menu', async () => {
+  // explainer 1
+  await findElementByTestIdAndClick({
+    id: 'current-base-fee-explainer',
+    driver,
+  });
+  await delayTime('medium');
+  const current = await findElementByText(driver, 'The base fee is');
+  expect(current).toBeTruthy();
+  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
+
+  // explainer 2
+  await findElementByTestIdAndClick({ id: 'max-base-fee-explainer', driver });
+  await delayTime('medium');
+  const max = await findElementByText(driver, 'This is the maximum');
+  expect(max).toBeTruthy();
+  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
+
+  // explainer 3
+  await findElementByTestIdAndClick({
+    id: 'max-priority-fee-explainer',
+    driver,
+  });
+  await delayTime('medium');
+  const miner = await findElementByText(driver, 'The miner tip goes');
+  expect(miner).toBeTruthy();
+  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
+});
+
+it('should be able to customize gas', async () => {
+  await typeOnTextInput({ id: 'max-base-fee-input', text: '300', driver });
+  const baseFeeGweiInputMask = await querySelector(
+    driver,
+    "[data-testid='max-base-fee-input'] [data-testid='gwei-input-mask']",
+  );
+
+  console.log(
+    'baseFeeGweiInputMask',
+    await baseFeeGweiInputMask.getAttribute('value'),
+  );
+
+  expect(await baseFeeGweiInputMask.getAttribute('value')).toContain('300');
+
+  await typeOnTextInput({ id: 'miner-tip-input', text: '300', driver });
+  const minerTipGweiInputMask = await querySelector(
+    driver,
+    "[data-testid='miner-tip-input'] [data-testid='gwei-input-mask']",
+  );
+
+  console.log(
+    'minerTipGweiInputMask',
+    await minerTipGweiInputMask.getAttribute('value'),
+  );
+
+  expect(await minerTipGweiInputMask.getAttribute('value')).toContain('300');
+  await findElementByTestIdAndClick({ id: 'set-gas-button', driver });
+
+  const gasMenu = await findElementByTestId({ id: 'gas-menu', driver });
+  expect(await gasMenu.getText()).toContain('Custom');
+});
+
 it('should be able to go to review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'send-review-button', driver });
 });
