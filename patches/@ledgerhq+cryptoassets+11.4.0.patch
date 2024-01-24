@@ -1,16 +1,8 @@
-diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store b/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store
-new file mode 100644
-index 0000000..50093b2
-Binary files /dev/null and b/node_modules/@ledgerhq/cryptoassets/lib-es/data/.DS_Store differ
-diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store
-new file mode 100644
-index 0000000..7582fcb
-Binary files /dev/null and b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/.DS_Store differ
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
-index 5f5d28b..cb215c2 100644
+index 5a7108c..20f029c 100644
 --- a/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
 +++ b/node_modules/@ledgerhq/cryptoassets/lib-es/data/evm/index.js
-@@ -1,115 +1,96 @@
+@@ -1,119 +1,96 @@
 -import ethereum_tokens from "./1/erc20.json";
 -import ethereum_ropsten_tokens from "./3/erc20.json";
 -import ethereum_goerli_tokens from "./5/erc20.json";
@@ -37,6 +29,7 @@ index 5f5d28b..cb215c2 100644
 -import avalanche_c_chain_tokens from "./43114/erc20.json";
 -import base_goerli_tokens from "./84531/erc20.json";
 -import arbitrum_goerli_tokens from "./421613/erc20.json";
+-import ethereum_sepolia_tokens from "./11155111/erc20.json";
 -import neon_evm_tokens from "./245022934/erc20.json";
 -import ethereum_signatures from "./1/erc20-signatures.json";
 -import ethereum_ropsten_signatures from "./3/erc20-signatures.json";
@@ -64,6 +57,7 @@ index 5f5d28b..cb215c2 100644
 -import avalanche_c_chain_signatures from "./43114/erc20-signatures.json";
 -import base_goerli_signatures from "./84531/erc20-signatures.json";
 -import arbitrum_goerli_signatures from "./421613/erc20-signatures.json";
+-import ethereum_sepolia_signatures from "./11155111/erc20-signatures.json";
 -import neon_evm_signatures from "./245022934/erc20-signatures.json";
 -export const tokens = {
 -    1: ethereum_tokens,
@@ -92,6 +86,7 @@ index 5f5d28b..cb215c2 100644
 -    43114: avalanche_c_chain_tokens,
 -    84531: base_goerli_tokens,
 -    421613: arbitrum_goerli_tokens,
+-    11155111: ethereum_sepolia_tokens,
 -    245022934: neon_evm_tokens,
 +export let tokens = {};
 +export let signatures = {};
@@ -131,6 +126,7 @@ index 5f5d28b..cb215c2 100644
 -    43114: avalanche_c_chain_signatures,
 -    84531: base_goerli_signatures,
 -    421613: arbitrum_goerli_signatures,
+-    11155111: ethereum_sepolia_signatures,
 -    245022934: neon_evm_signatures,
 +const init = async () => {
 +    tokens = {
@@ -218,10 +214,10 @@ index 5f5d28b..cb215c2 100644
      tokens,
      signatures,
 diff --git a/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js b/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js
-index 3b1771e..98c9b4d 100644
+index 444184e..98c9b4d 100644
 --- a/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js
 +++ b/node_modules/@ledgerhq/cryptoassets/lib/data/evm/index.js
-@@ -1,121 +1,97 @@
+@@ -1,125 +1,97 @@
  "use strict";
 -var __importDefault = (this && this.__importDefault) || function (mod) {
 -    return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -254,7 +250,8 @@ index 3b1771e..98c9b4d 100644
 -const erc20_json_24 = __importDefault(require("./43114/erc20.json"));
 -const erc20_json_25 = __importDefault(require("./84531/erc20.json"));
 -const erc20_json_26 = __importDefault(require("./421613/erc20.json"));
--const erc20_json_27 = __importDefault(require("./245022934/erc20.json"));
+-const erc20_json_27 = __importDefault(require("./11155111/erc20.json"));
+-const erc20_json_28 = __importDefault(require("./245022934/erc20.json"));
 -const erc20_signatures_json_1 = __importDefault(require("./1/erc20-signatures.json"));
 -const erc20_signatures_json_2 = __importDefault(require("./3/erc20-signatures.json"));
 -const erc20_signatures_json_3 = __importDefault(require("./5/erc20-signatures.json"));
@@ -281,7 +278,8 @@ index 3b1771e..98c9b4d 100644
 -const erc20_signatures_json_24 = __importDefault(require("./43114/erc20-signatures.json"));
 -const erc20_signatures_json_25 = __importDefault(require("./84531/erc20-signatures.json"));
 -const erc20_signatures_json_26 = __importDefault(require("./421613/erc20-signatures.json"));
--const erc20_signatures_json_27 = __importDefault(require("./245022934/erc20-signatures.json"));
+-const erc20_signatures_json_27 = __importDefault(require("./11155111/erc20-signatures.json"));
+-const erc20_signatures_json_28 = __importDefault(require("./245022934/erc20-signatures.json"));
 -exports.tokens = {
 -    1: erc20_json_1.default,
 -    3: erc20_json_2.default,
@@ -309,7 +307,8 @@ index 3b1771e..98c9b4d 100644
 -    43114: erc20_json_24.default,
 -    84531: erc20_json_25.default,
 -    421613: erc20_json_26.default,
--    245022934: erc20_json_27.default,
+-    11155111: erc20_json_27.default,
+-    245022934: erc20_json_28.default,
 +async function fetchJsonLocally(filename) {
 +    try {
 +        const req = await fetch(chrome.runtime.getURL(`json/ledger/${filename}`));
@@ -346,7 +345,8 @@ index 3b1771e..98c9b4d 100644
 -    43114: erc20_signatures_json_24.default,
 -    84531: erc20_signatures_json_25.default,
 -    421613: erc20_signatures_json_26.default,
--    245022934: erc20_signatures_json_27.default,
+-    11155111: erc20_signatures_json_27.default,
+-    245022934: erc20_signatures_json_28.default,
 +const init = async () => {
 +    exports.tokens = {
 +        1: await fetchJsonLocally('1/erc20.json'),
