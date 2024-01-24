@@ -500,8 +500,8 @@ export function PointsDashboard() {
   );
   const shouldShowWeeklyOverview =
     points &&
-    points.user.earnings.total > points.leaderboard.stats.rank_cutoff &&
-    hasLastAirdropPoints;
+    (points.user.earnings.total > points.leaderboard.stats.rank_cutoff ||
+      hasLastAirdropPoints);
 
   return (
     <Stack
