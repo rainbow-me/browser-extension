@@ -1,10 +1,15 @@
-import { Approval, useApprovals } from '~/core/resources/approvals/approvals';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
+import { Chain } from 'wagmi';
+
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import {
-  Bleed,
+  Approval,
+  ApprovalSpender,
+  useApprovals,
+} from '~/core/resources/approvals/approvals';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useUserChainsStore } from '~/core/state/userChains';
+import {
   Box,
-  ButtonSymbol,
   Column,
   Columns,
   Inline,
@@ -14,34 +19,53 @@ import {
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
-import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
+import { useRainbowChains } from '../../hooks/useRainbowChains';
 
 export const Approvals = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
+  const { rainbowChains } = useRainbowChains();
+  const { userChains } = useUserChainsStore();
+
+  const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
+
+  const chainIds = rainbowChains
+    .filter((c) => supportedMainnetIds.includes(c.id) && userChains[c.id])
+    .map((c) => c.id);
 
   const { data: approvalsData } = useApprovals({
     address: currentAddress,
-    chainIds: [ChainId.mainnet],
+    chainIds: chainIds,
     currency: currentCurrency,
   });
 
   const approvals = approvalsData?.payload || [];
+
+  const tokenApprovals = approvals
+    ?.map((approval) =>
+      approval.spenders.map((spender) => ({
+        approval,
+        spender,
+      })),
+    )
+    .flat();
 
   return (
     <Box>
       <Box
         style={{
           overflow: 'scroll',
-          height: 489,
         }}
       >
         <Stack space="16px">
           <Rows alignVertical="top">
-            {approvals?.map((approval, i) => (
+            {tokenApprovals?.map((tokenApproval, i) => (
               <Row height="content" key={i}>
-                <TokenApproval approval={approval} />
+                <TokenApproval
+                  approval={tokenApproval.approval}
+                  spender={tokenApproval.spender}
+                />
               </Row>
             ))}
           </Rows>
@@ -51,7 +75,13 @@ export const Approvals = () => {
   );
 };
 
-const TokenApproval = ({ approval }: { approval: Approval }) => {
+const TokenApproval = ({
+  approval,
+  spender,
+}: {
+  approval: Approval;
+  spender: ApprovalSpender;
+}) => {
   return (
     <Box paddingHorizontal="8px">
       <Box
@@ -67,37 +97,13 @@ const TokenApproval = ({ approval }: { approval: Approval }) => {
               <Inline alignHorizontal="justify" alignVertical="center">
                 <Columns space="8px">
                   <Column width="content">
-                    <CoinIcon asset={approval.asset} />
-                    <Box
-                      style={{
-                        marginLeft: '-7px',
-                        marginTop: '-10.5px',
-                      }}
-                    >
-                      <Box
-                        style={{
-                          height: 14,
-                          width: 14,
-                          borderRadius: 7,
-                        }}
-                      >
-                        <Inline
-                          alignHorizontal="center"
-                          alignVertical="center"
-                          height="full"
-                        >
-                          <Bleed top="7px">
-                            <ChainBadge chainId={approval.chain_id} size="14" />
-                          </Bleed>
-                        </Inline>
-                      </Box>
-                    </Box>
+                    <CoinIcon asset={approval.asset} badge />
                   </Column>
 
                   <Column>
                     <Box>
                       <Stack space="8px">
-                        <Box style={{ wordBreak: 'break-all' }}>
+                        <Inline space="4px">
                           <TextOverflow
                             align="left"
                             size="14pt"
@@ -106,45 +112,38 @@ const TokenApproval = ({ approval }: { approval: Approval }) => {
                           >
                             {approval?.asset?.name}
                           </TextOverflow>
-                        </Box>
-                        <Inline space="4px" alignVertical="center">
-                          <Box
-                            background="fill"
-                            borderRadius="30px"
-                            style={{
-                              width: '16px',
-                              height: '16px',
-                              overflow: 'hidden',
-                            }}
+                          <TextOverflow
+                            align="left"
+                            size="14pt"
+                            weight="semibold"
+                            color="label"
                           >
-                            <TextOverflow
-                              align="left"
-                              size="14pt"
-                              weight="semibold"
-                              color="label"
-                            >
-                              {approval?.spenders?.[0]?.contract_name}
-                            </TextOverflow>
-                          </Box>
+                            {'•'}
+                          </TextOverflow>
+                          <TextOverflow
+                            align="left"
+                            size="14pt"
+                            weight="semibold"
+                            color="label"
+                          >
+                            {spender.quantity_allowed}
+                          </TextOverflow>
                         </Inline>
+
+                        <TextOverflow
+                          align="left"
+                          size="14pt"
+                          weight="regular"
+                          color="label"
+                        >
+                          {spender.contract_name}
+                        </TextOverflow>
                       </Stack>
                     </Box>
                   </Column>
                 </Columns>
               </Inline>
             </Inset>
-          </Column>
-          <Column width="content">
-            <Box paddingTop="12px" paddingRight="12px">
-              <ButtonSymbol
-                color="red"
-                height="28px"
-                variant="raised"
-                symbol="xmark"
-                borderRadius="8px"
-                //   onClick={disconnectAppSession}
-              />
-            </Box>
           </Column>
         </Columns>
       </Box>

@@ -15,6 +15,7 @@ export const ROUTES = {
   POINTS_ONBOARDING: '/home/points-onboarding',
   POINTS_WEEKLY_OVERVIEW: '/home/points-weekly-overview',
   CONNECTED: '/connected', // ConnectedApps
+  APPROVALS: '/approvals', // Approvals
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect
   WATCH: '/watch', // WatchWallet

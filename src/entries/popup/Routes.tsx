@@ -38,6 +38,7 @@ import { Buy } from './pages/buy';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ActivityDetails } from './pages/home/Activity/ActivityDetails';
+import { Approvals } from './pages/home/Approvals';
 import { ConnectedApps } from './pages/home/ConnectedApps';
 import NFTDetails from './pages/home/NFTs/NFTDetails';
 import { PointsOnboardingSheet } from './pages/home/Points/PointsOnboardingSheet';
@@ -204,6 +205,20 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <ConnectedApps />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.APPROVALS,
+    element: (
+      <AnimatedRoute
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        title={i18n.t('approvals.title')}
+        protectedRoute
+      >
+        <Approvals />
       </AnimatedRoute>
     ),
   },

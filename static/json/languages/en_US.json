@@ -561,6 +561,11 @@
     "no_connections_title": "No connected apps",
     "no_connections_copy": "Websites you connect to will show up here"
   },
+  "approvals": {
+    "title": "Approvals",
+    "unlimited": "Unlimited",
+    "no_allowance": "No Allowance"
+  },
   "send": {
     "title": "Send",
     "input_to_address_placeholder": "Name, ENS or address",
@@ -1592,10 +1597,6 @@
       "highlighted": "Contact Rainbow",
       "after": " to request more."
     }
-  },
-  "approvals": {
-    "unlimited": "Unlimited",
-    "no_allowance": "No Allowance"
   },
   "buy": {
     "title": "Buy",

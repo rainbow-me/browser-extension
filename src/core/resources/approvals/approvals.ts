@@ -80,14 +80,18 @@ export async function approvalsQueryFunction({
 }: QueryFunctionArgs<
   typeof approvalsQueryKey
 >): Promise<ApprovalsResponse | null> {
-  const chainIdsString = chainIds.join(',');
   try {
     const response = await addysHttp.get(
-      `${chainIdsString}/${address}/approvals?currency=${currency}`,
+      `/${chainIds.join(',')}/${address}/approvals`,
+      {
+        params: {
+          currency: currency.toLowerCase(),
+        },
+      },
     );
     return response.data as ApprovalsResponse;
   } catch (e) {
-    logger.error(new RainbowError('assetsQueryFunction: '), {
+    logger.error(new RainbowError('approvalsQueryFunction: '), {
       message: (e as Error)?.message,
     });
     return null;
