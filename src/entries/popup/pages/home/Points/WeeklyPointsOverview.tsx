@@ -130,7 +130,7 @@ export function PointsWeeklyOverview() {
         style={{ height: '512px' }}
         initial="hidden"
         animate="visible"
-        transition={{ staggerChildren: 0.06, type: 'tween' }}
+        transition={{ staggerChildren: 0.04, type: 'tween' }}
         flexDirection="column"
         justifyContent="space-between"
         padding="20px"

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
+import { hex } from 'chroma-js';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { MotionProps, motion } from 'framer-motion';
 import { PropsWithChildren, useEffect, useReducer } from 'react';
@@ -23,12 +24,16 @@ import {
 } from '~/design-system';
 import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
-import { linearGradients } from '~/design-system/styles/designTokens';
+import {
+  globalColors,
+  linearGradients,
+} from '~/design-system/styles/designTokens';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { Link } from '~/entries/popup/components/Link/Link';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { ROUTES } from '~/entries/popup/urls';
 
+import { AirdropIcon } from './AirdropIcon';
 import { usePoints } from './usePoints';
 
 const { format: formatNumber } = createNumberFormatter({
@@ -435,6 +440,8 @@ function YourPoints() {
   );
 }
 
+const cyanAlpha = (alpha: number) =>
+  hex(globalColors.cyan50).alpha(alpha).css();
 function YourEarningsLastWeek() {
   return (
     <Card
@@ -446,23 +453,36 @@ function YourEarningsLastWeek() {
       borderWidth="1px"
     >
       <Box
-        style={{ height: 36, width: 36 }}
-        background="blue"
+        style={{
+          height: 36,
+          width: 36,
+          background: `linear-gradient(315deg, ${cyanAlpha(
+            0.2,
+          )} -0.69%, ${cyanAlpha(0.4)} 99.31%)`,
+          borderColor: cyanAlpha(0.06),
+        }}
+        borderWidth="1px"
         borderRadius="10px"
-      />
+      >
+        <AirdropIcon
+          size={50}
+          color={globalColors.cyan50}
+          style={{ marginTop: -8, marginLeft: -8 }}
+        />
+      </Box>
       <Stack space="10px">
         <Text size="14pt" weight="heavy">
-          Your Earnings Last Week
+          {i18n.t('points.weekly_overview.your_earnings')}
         </Text>
         <Text color="labelTertiary" size="12pt" weight="bold">
-          View your weekly earnings breakdown
+          {i18n.t('points.weekly_overview.view_breakdown')}
         </Text>
         <Link
           to={ROUTES.POINTS_WEEKLY_OVERVIEW}
           state={{ tab: 'points', skipTransitionOnRoute: ROUTES.HOME }}
         >
-          <Text color="blue" size="12pt" weight="heavy" textShadow="12px blue">
-            View Now
+          <Text color="cyan" size="12pt" weight="heavy" textShadow="12px blue">
+            {i18n.t('points.weekly_overview.view_now')}
           </Text>
         </Link>
       </Stack>
@@ -472,6 +492,16 @@ function YourEarningsLastWeek() {
 
 export function PointsDashboard() {
   const { currentTheme } = useCurrentThemeStore();
+  const { currentAddress } = useCurrentAddressStore();
+  const { data: points } = usePoints(currentAddress);
+
+  const hasLastAirdropPoints = points?.user.stats.last_airdrop.differences.some(
+    (d) => d && d.earnings.total > 0,
+  );
+  const shouldShowWeeklyOverview =
+    points &&
+    points.user.earnings.total > points.leaderboard.stats.rank_cutoff &&
+    hasLastAirdropPoints;
 
   return (
     <Stack
@@ -483,7 +513,7 @@ export function PointsDashboard() {
       background={currentTheme === 'light' ? 'surfaceSecondary' : undefined}
     >
       <YourPoints />
-      <YourEarningsLastWeek />
+      {shouldShowWeeklyOverview && <YourEarningsLastWeek />}
       <YourRankAndNextDrop />
       <ReferralCode />
       <Leaderboard />

@@ -1356,7 +1356,11 @@
       "total": "Total:",
       "weekly_counted": "> Weekly earnings counted",
       "you_have": "You have:",
-      "none": "None"
+      "none": "None",
+
+      "your_earnings": "Your Earnings Last Week",
+      "view_breakdown": "View your weekly earnings breakdown",
+      "view_now": "View Now"
     }
   },
   "speed_up_and_cancel": {
