@@ -1,4 +1,5 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { setup } from 'gridplus-sdk';
 import { isEqual } from 'lodash';
 import * as React from 'react';
 import { WagmiConfig } from 'wagmi';
@@ -29,12 +30,11 @@ import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
-import { setup } from 'gridplus-sdk';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
-const getStoredClient = () => localStorage.getItem('storedClient') || '';
+const getStoredClient = () => localStorage.getItem('storedClient') ?? '';
 
 const setStoredClient = (storedClient: string | null) => {
   if (!storedClient) return;

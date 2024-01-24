@@ -63,14 +63,15 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
       <Text size="20pt" weight="semibold">
         Choose Addresses
       </Text>
-      {loadingAddresses && <Spinner />}
+      {loadingAddresses && <Spinner size={24} />}
       <Box display="flex" flexDirection="column" gap="16px">
-        {addresses.map((address) => (
+        {addresses.map((address, i) => (
           <Box key={address} display="flex" gap="8px" alignItems="center">
             <Checkbox
               borderColor="blue"
               onClick={() => toggleAddress(address)}
               selected={formData.selectedAddresses.includes(address)}
+              testId={`gridplus-address-${i}`}
             />
             <Text size="14pt" weight="bold">
               {truncateAddress(address)}
@@ -82,7 +83,8 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
         height="36px"
         variant="flat"
         color="fill"
-        disabled={loadingAddresses}
+        disabled={loadingAddresses || formData.selectedAddresses.length === 0}
+        testId="gridplus-submit"
       >
         Export Addresses
       </Button>

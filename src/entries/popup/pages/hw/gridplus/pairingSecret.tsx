@@ -10,6 +10,7 @@ export type PairingSecretProps = {
 };
 
 export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
+  const [pairing, setPairing] = useState(false);
   const [formState, setFormState] = useState({
     error: false,
   });
@@ -18,11 +19,16 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
   });
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const result = await pair(formData.pairingCode);
-    if (!result) {
-      return setFormState({ error: true });
+    setPairing(true);
+    try {
+      const result = await pair(formData.pairingCode);
+      if (!result) {
+        return setFormState({ error: true });
+      }
+      onAfterPair && onAfterPair();
+    } finally {
+      setPairing(false);
     }
-    onAfterPair && onAfterPair();
   };
   return (
     <Box
@@ -49,6 +55,8 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
             setFormData({ ...formData, pairingCode: e.target.value })
           }
           value={formData.pairingCode}
+          testId="gridplus-pairing-code"
+          autoFocus
         />
         {formState.error && (
           <Text size="14pt" weight="semibold">
@@ -56,7 +64,13 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
           </Text>
         )}
       </Box>
-      <Button height="36px" variant="flat" color="fill">
+      <Button
+        height="36px"
+        variant="flat"
+        color="fill"
+        testId="gridplus-submit"
+        disabled={pairing}
+      >
         Pair Device
       </Button>
     </Box>

@@ -797,6 +797,67 @@ export async function importHardwareWalletFlow(
   await findElementByText(driver, 'Rainbow is ready to use');
 }
 
+export async function importGridPlusWallet(driver: WebDriver, rootURL: string) {
+  const { env } = import.meta as unknown as {
+    env: { GRIDPLUS_DEVICE_ID: string; GRIDPLUS_DEVICE_PASSWORD: string };
+  };
+  await goToWelcome(driver, rootURL);
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'connect-wallet-option',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `gridplus-option`,
+    driver,
+  });
+  const inputDeviceId = await findElementByTestId({
+    id: 'gridplus-deviceid',
+    driver,
+  });
+  await inputDeviceId.sendKeys(env.GRIDPLUS_DEVICE_ID);
+  const inputPassword = await findElementByTestId({
+    id: 'gridplus-password',
+    driver,
+  });
+  await inputPassword.sendKeys(env.GRIDPLUS_DEVICE_PASSWORD);
+  await delayTime('long');
+  await findElementByTestIdAndClick({
+    id: 'gridplus-submit',
+    driver,
+  });
+  const inputPairingCode = await findElementByTestId({
+    id: 'gridplus-pairing-code',
+    driver,
+  });
+  inputPairingCode.click();
+  await delayTime('unbelievably-long');
+  await findElementByTestIdAndClick({
+    id: 'gridplus-submit',
+    driver,
+  });
+  await delayTime('very-long');
+  await findElementByTestIdAndClick({
+    id: 'gridplus-address-0',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'gridplus-submit',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'connect-wallets-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'hw-done',
+    driver,
+  });
+}
+
 export async function importWalletFlowUsingKeyboardNavigation(
   driver: WebDriver,
   rootURL: string,
@@ -1055,7 +1116,7 @@ export async function delay(ms: number) {
 }
 
 export async function delayTime(
-  time: 'short' | 'medium' | 'long' | 'very-long',
+  time: 'short' | 'medium' | 'long' | 'very-long' | 'unbelievably-long',
 ) {
   switch (time) {
     case 'short':
@@ -1066,6 +1127,8 @@ export async function delayTime(
       return await delay(1000);
     case 'very-long':
       return await delay(5000);
+    case 'unbelievably-long':
+      return await delay(15000);
   }
 }
 

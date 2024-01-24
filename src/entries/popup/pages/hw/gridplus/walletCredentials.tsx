@@ -15,11 +15,12 @@ export const WalletCredentials = ({
   appName,
   onAfterSetup,
 }: WalletCredentialsProps) => {
+  const [connecting, setConnecting] = useState(false);
   const [formData, setFormData] = useState({
     deviceId: '',
     password: '',
   });
-  const getStoredClient = () => localStorage.getItem('storedClient') || '';
+  const getStoredClient = () => localStorage.getItem('storedClient') ?? '';
 
   const setStoredClient = (storedClient: string | null) => {
     if (!storedClient) return;
@@ -27,14 +28,19 @@ export const WalletCredentials = ({
   };
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const result = await setup({
-      deviceId: formData.deviceId,
-      password: formData.password,
-      name: appName,
-      getStoredClient,
-      setStoredClient,
-    });
-    onAfterSetup && onAfterSetup(result);
+    setConnecting(true);
+    try {
+      const result = await setup({
+        deviceId: formData.deviceId,
+        password: formData.password,
+        name: appName,
+        getStoredClient,
+        setStoredClient,
+      });
+      onAfterSetup && onAfterSetup(result);
+    } finally {
+      setConnecting(false);
+    }
   };
   useEffect(() => {
     if (getStoredClient()) {
@@ -66,6 +72,8 @@ export const WalletCredentials = ({
             setFormData({ ...formData, deviceId: e.target.value })
           }
           value={formData.deviceId}
+          testId="gridplus-deviceid"
+          aria-label="username"
         />
       </Box>
       <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
@@ -82,9 +90,17 @@ export const WalletCredentials = ({
             setFormData({ ...formData, password: e.target.value })
           }
           value={formData.password}
+          testId="gridplus-password"
+          aria-label="password"
         />
       </Box>
-      <Button height="36px" variant="flat" color="fill">
+      <Button
+        height="36px"
+        variant="flat"
+        color="fill"
+        disabled={connecting}
+        testId="gridplus-submit"
+      >
         Connect
       </Button>
     </Box>
