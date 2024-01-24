@@ -115,7 +115,11 @@ export function PointsWeeklyOverview() {
       total += earnings.total;
     }
 
-    return { total, differences: Object.values(totalDifferencesByType) };
+    const diffs = Object.values(totalDifferencesByType).filter(
+      (d) => !(d.type === 'retroactive' && d.earnings === 0),
+    );
+
+    return { total, differences: diffs };
   }, [points?.user.stats.last_airdrop.differences]);
 
   if (!weeklyEarnings || !points) return null;
@@ -130,7 +134,7 @@ export function PointsWeeklyOverview() {
         style={{ height: '512px' }}
         initial="hidden"
         animate="visible"
-        transition={{ staggerChildren: 0.04, type: 'tween' }}
+        transition={{ staggerChildren: 0.04, delay: 1, type: 'tween' }}
         flexDirection="column"
         justifyContent="space-between"
         padding="20px"
