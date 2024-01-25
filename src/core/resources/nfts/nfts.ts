@@ -28,7 +28,6 @@ import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
 } from '~/core/utils/nfts';
-import { NFTS_TEST_DATA } from '~/test/utils';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
@@ -53,9 +52,6 @@ async function nftsQueryFunction({
   queryKey: [{ address, testnetMode }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
-  if (process.env.IS_TESTING === 'true') {
-    return NFTS_TEST_DATA;
-  }
   const simpleHashSupportedChains = getSimpleHashSupportedChainNames();
   const chains = (
     !testnetMode ? SUPPORTED_MAINNET_CHAINS : SUPPORTED_TESTNET_CHAINS
