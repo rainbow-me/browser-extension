@@ -58,6 +58,8 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.zora;
     case SimpleHashChain.Base:
       return ChainName.base;
+    case SimpleHashChain.Avalanche:
+      return ChainName.avalanche;
     default:
       /*
        * Throws here because according to TS types, we should NEVER hit this
