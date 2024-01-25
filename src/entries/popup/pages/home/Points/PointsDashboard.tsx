@@ -511,8 +511,10 @@ export function PointsDashboard() {
       padding="20px"
       background={currentTheme === 'light' ? 'surfaceSecondary' : undefined}
     >
-      <YourPoints />
-      {shouldShowWeeklyOverview && <YourEarningsLastWeek />}
+      <Stack gap="20px">
+        <YourPoints />
+        {shouldShowWeeklyOverview && <YourEarningsLastWeek />}
+      </Stack>
       <YourRankAndNextDrop />
       <ReferralCode />
       <Leaderboard />
