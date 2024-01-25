@@ -139,7 +139,7 @@ function Fee({
           switchTransactionSpeedMenuRef?.current?.open();
         }
       } else if (
-        // if mainnet, make 'g' shortcut accessible
+        // if polygon, make 'g' shortcut accessible
         chainId === ChainId.polygon &&
         e.key === shortcuts.global.OPEN_GAS_MENU.key
       ) {
