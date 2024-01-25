@@ -42,6 +42,7 @@ import { ConnectedApps } from './pages/home/ConnectedApps';
 import NFTDetails from './pages/home/NFTs/NFTDetails';
 import { PointsOnboardingSheet } from './pages/home/Points/PointsOnboardingSheet';
 import { PointsReferralSheet } from './pages/home/Points/PointsReferralSheet';
+import { PointsWeeklyOverview } from './pages/home/Points/WeeklyPointsOverview';
 import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
 import { ConnectLedger } from './pages/hw/ledger';
@@ -163,6 +164,14 @@ const ROUTE_DATA = [
         element: (
           <ChildRoute>
             <PointsOnboardingSheet />
+          </ChildRoute>
+        ),
+      },
+      {
+        path: ROUTES.POINTS_WEEKLY_OVERVIEW,
+        element: (
+          <ChildRoute>
+            <PointsWeeklyOverview />
           </ChildRoute>
         ),
       },
