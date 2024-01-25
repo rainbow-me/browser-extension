@@ -1,6 +1,7 @@
 import { Address } from 'wagmi';
 
 import {
+  AVAX_AVALANCHE_ADDRESS,
   BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
@@ -23,12 +24,13 @@ const getNetworkNativeMainnetAssetAddress = ({
     case ChainId.optimism:
     case ChainId.base:
     case ChainId.zora:
-    case ChainId.avalanche:
       return ETH_ADDRESS as Address;
     case ChainId.bsc:
       return BNB_MAINNET_ADDRESS;
     case ChainId.polygon:
       return MATIC_MAINNET_ADDRESS;
+    case ChainId.avalanche:
+      return AVAX_AVALANCHE_ADDRESS;
     default:
       return ETH_ADDRESS as Address;
   }
@@ -51,7 +53,7 @@ export const getNetworkNativeAssetUniqueId = ({
     case ChainId.zora:
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.avalanche:
-      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
+      return `${AVAX_AVALANCHE_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.bsc:
       return `${BNB_MAINNET_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.polygon:
