@@ -28,7 +28,6 @@ import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
 } from '~/core/utils/nfts';
-import { NFTS_TEST_DATA } from '~/test/utils';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
@@ -58,6 +57,7 @@ async function nftsQueryFunction({
   queryKey: [{ address, testnetMode, userChains }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
+<<<<<<< HEAD
   if (process.env.IS_TESTING === 'true') {
     return NFTS_TEST_DATA;
   }
@@ -73,6 +73,16 @@ async function nftsQueryFunction({
     const id = chainNameToIdMapping[simplehashChainName];
     return activeChainIds.includes(id);
   }) as ChainName[];
+=======
+  const simpleHashSupportedChains = getSimpleHashSupportedChainNames();
+  const chains = (
+    !testnetMode ? SUPPORTED_MAINNET_CHAINS : SUPPORTED_TESTNET_CHAINS
+  )
+    .map(({ name }) => name as ChainName)
+    .filter((chainName) =>
+      simpleHashSupportedChains.includes(chainName.toLowerCase()),
+    );
+>>>>>>> 00eed9ab (e2e passing)
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({
