@@ -495,13 +495,12 @@ export function PointsDashboard() {
   const { currentAddress } = useCurrentAddressStore();
   const { data: points } = usePoints(currentAddress);
 
-  const hasLastAirdropPoints = points?.user.stats.last_airdrop.differences.some(
-    (d) => d && d.earnings.total > 0,
-  );
+  const hasLastAirdropPoints =
+    points?.user.stats.last_airdrop?.differences.some(
+      (d) => d && d.earnings.total > 0,
+    );
   const shouldShowWeeklyOverview =
-    points &&
-    (points.user.earnings.total > points.leaderboard.stats.rank_cutoff ||
-      hasLastAirdropPoints);
+    points && (points.user.earnings.total > 0 || hasLastAirdropPoints);
 
   return (
     <Stack
