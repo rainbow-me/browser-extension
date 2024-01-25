@@ -276,7 +276,10 @@ export const handleProviderRequest = ({
             : DEFAULT_CHAIN_ID;
           break;
         }
-        case 'eth_coinbase':
+        case 'eth_coinbase': {
+          response = activeSession ? activeSession.address?.toLowerCase() : '';
+          break;
+        }
         case 'eth_accounts': {
           response = activeSession
             ? [activeSession.address?.toLowerCase()]
