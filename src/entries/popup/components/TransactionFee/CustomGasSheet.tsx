@@ -428,7 +428,7 @@ export const CustomGasSheet = ({
         zIndex={zIndexes.CUSTOM_GAS_SHEET}
       >
         <Box paddingHorizontal="20px">
-          <Box paddingVertical="27px">
+          <Box paddingVertical="27px" testId={'custom-gas-sheet'}>
             <Text color="label" align="center" size="14pt" weight="heavy">
               {i18n.t('custom_gas.title')}
             </Text>

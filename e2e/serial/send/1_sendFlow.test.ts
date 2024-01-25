@@ -4,7 +4,9 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import {
+  calcMinerTip,
   delayTime,
+  executePerformShortcut,
   findElementById,
   findElementByIdAndClick,
   findElementByTestId,
@@ -230,14 +232,14 @@ it('should be able to open up the explainers on the custom gas menu', async () =
     id: 'current-base-fee-explainer',
     driver,
   });
-  await delayTime('medium');
+  await delayTime('short');
   const current = await findElementByText(driver, 'The base fee is');
   expect(current).toBeTruthy();
   await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
 
   // explainer 2
   await findElementByTestIdAndClick({ id: 'max-base-fee-explainer', driver });
-  await delayTime('medium');
+  await delayTime('short');
   const max = await findElementByText(driver, 'This is the maximum');
   expect(max).toBeTruthy();
   await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
@@ -247,35 +249,31 @@ it('should be able to open up the explainers on the custom gas menu', async () =
     id: 'max-priority-fee-explainer',
     driver,
   });
-  await delayTime('medium');
+  await delayTime('short');
   const miner = await findElementByText(driver, 'The miner tip goes');
   expect(miner).toBeTruthy();
   await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
 });
 
 it('should be able to customize gas', async () => {
-  await typeOnTextInput({ id: 'max-base-fee-input', text: '300', driver });
+  await delayTime('short');
+  await executePerformShortcut({ driver, key: 'TAB' });
+  await executePerformShortcut({ driver, key: 'BACK_SPACE', timesToPress: 5 });
+  await driver.actions().sendKeys('300').perform();
+  await delayTime('short');
+  await executePerformShortcut({ driver, key: 'TAB' });
+  await executePerformShortcut({ driver, key: 'BACK_SPACE', timesToPress: 5 });
+  await driver.actions().sendKeys('300').perform();
   const baseFeeGweiInputMask = await querySelector(
     driver,
     "[data-testid='max-base-fee-input'] [data-testid='gwei-input-mask']",
   );
 
-  console.log(
-    'baseFeeGweiInputMask',
-    await baseFeeGweiInputMask.getAttribute('value'),
-  );
-
   expect(await baseFeeGweiInputMask.getAttribute('value')).toContain('300');
 
-  await typeOnTextInput({ id: 'miner-tip-input', text: '300', driver });
   const minerTipGweiInputMask = await querySelector(
     driver,
     "[data-testid='miner-tip-input'] [data-testid='gwei-input-mask']",
-  );
-
-  console.log(
-    'minerTipGweiInputMask',
-    await minerTipGweiInputMask.getAttribute('value'),
   );
 
   expect(await minerTipGweiInputMask.getAttribute('value')).toContain('300');
@@ -315,7 +313,9 @@ it('should be able to interact with destination menu on review on send flow', as
 it('should be able to send transaction on review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
-  expect(await sendTransaction).toBe('success');
+  expect(sendTransaction).toBe('success');
+  const minerTip = await calcMinerTip();
+  expect(minerTip).toBe(300);
 });
 
 it('should be able to rename a wallet from the wallet switcher', async () => {

@@ -7,6 +7,7 @@ import * as fs from 'node:fs';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
+import { ethers } from 'ethers';
 import {
   Builder,
   By,
@@ -729,6 +730,30 @@ export async function getOnchainBalance(addy: string, contract: string) {
   }
 }
 
+export async function calcMinerTip() {
+  const provider = getDefaultProvider('http://127.0.0.1:8545');
+  const blockData = await provider.getBlock('latest');
+
+  if (blockData.transactions.length === 0) {
+    throw new Error('No transactions in the latest block.');
+  }
+
+  const txnReceipt = await provider.getTransactionReceipt(
+    blockData.transactions[0],
+  );
+
+  if (!blockData.baseFeePerGas || !txnReceipt.effectiveGasPrice) {
+    throw new Error('Transaction or block does not support EIP-1559.');
+  }
+
+  const baseFeePerGas = blockData.baseFeePerGas;
+  const minerTip = txnReceipt.effectiveGasPrice.sub(baseFeePerGas);
+  const minerTipCalc = minerTip
+    .div(ethers.utils.parseUnits('1', 'gwei'))
+    .toNumber();
+  return minerTipCalc;
+}
+
 export async function transactionStatus() {
   const provider = getDefaultProvider('http://127.0.0.1:8545');
   const blockData = await provider.getBlock('latest');
@@ -736,6 +761,7 @@ export async function transactionStatus() {
     blockData.transactions[0],
   );
   const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
+
   return txnStatus;
 }
 

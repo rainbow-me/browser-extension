@@ -179,7 +179,7 @@ export const SwitchTransactionSpeedMenu = React.forwardRef<
           marginRight={dropdownContentMarginRight}
           accentColor={accentColor}
         >
-          <DropdownMenuLabel>
+          <DropdownMenuLabel testId={'transaction-speed-title'}>
             {i18n.t('transaction_fee.title')}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
