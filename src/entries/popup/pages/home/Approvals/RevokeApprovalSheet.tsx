@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import {
+  Approval,
+  ApprovalSpender,
+} from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore } from '~/core/state';
-import { SearchAsset } from '~/core/types/search';
 import {
   Box,
   Button,
@@ -26,12 +29,14 @@ import playSound from '../../../utils/playSound';
 
 export const RevokeApprovalSheet = ({
   show,
-  asset,
+  approval,
+  spender,
   onCancel,
   onSend,
 }: {
   show: boolean;
-  asset?: SearchAsset | null;
+  approval?: Approval | null;
+  spender?: ApprovalSpender | null;
   onCancel: () => void;
   onSend: () => void;
 }) => {
@@ -49,8 +54,6 @@ export const RevokeApprovalSheet = ({
       try {
         await onSend();
         playSound('SendSound');
-      } catch (e) {
-        //
       } finally {
         setSending(false);
       }
@@ -76,7 +79,7 @@ export const RevokeApprovalSheet = ({
           <Box paddingVertical="26px">
             <Inline alignHorizontal="center" alignVertical="center">
               <Text size="14pt" weight="heavy" color="label">
-                {i18n.t('send.review.title')}
+                {i18n.t('approvals.revoke.title')}
               </Text>
             </Inline>
           </Box>
@@ -94,7 +97,7 @@ export const RevokeApprovalSheet = ({
                               weight="bold"
                               color="label"
                             >
-                              {''}
+                              {'Revoke'}
                             </TextOverflow>
                           </Row>
                         </Rows>
@@ -103,7 +106,7 @@ export const RevokeApprovalSheet = ({
                     <Column>
                       <Inline alignVertical="center" alignHorizontal="right">
                         <Box>
-                          <CoinIcon asset={asset} size={44} />
+                          <CoinIcon asset={approval?.asset} size={44} />
                         </Box>
                       </Inline>
                     </Column>
@@ -111,9 +114,27 @@ export const RevokeApprovalSheet = ({
                 </Row>
                 <Row>
                   <Columns alignHorizontal="justify">
+                    <Column>
+                      <Box paddingVertical="6px" height="full">
+                        <TextOverflow size="14pt" weight="bold" color="label">
+                          {spender?.quantity_allowed}
+                        </TextOverflow>
+                      </Box>
+                    </Column>
+                    <Column>
+                      <Box>
+                        <TextOverflow size="14pt" weight="bold" color="label">
+                          {spender?.contract_name}
+                        </TextOverflow>
+                      </Box>
+                    </Column>
+                  </Columns>
+                </Row>
+                <Row>
+                  <Columns alignHorizontal="justify">
                     <Column width="4/5">
                       <Box paddingVertical="6px" height="full">
-                        <TextOverflow size="20pt" weight="bold" color="label">
+                        <TextOverflow size="14pt" weight="bold" color="label">
                           {walletDisplayName}
                         </TextOverflow>
                       </Box>

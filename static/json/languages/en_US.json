@@ -564,7 +564,10 @@
   "approvals": {
     "title": "Approvals",
     "unlimited": "Unlimited",
-    "no_allowance": "No Allowance"
+    "no_allowance": "No Allowance",
+    "revoke": {
+      "title": "Revoke"
+    }
   },
   "send": {
     "title": "Send",

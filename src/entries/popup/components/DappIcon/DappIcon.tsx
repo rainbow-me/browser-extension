@@ -32,6 +32,7 @@ export const DappIcon = ({
   mask?: string;
   size: DappIconSize;
 }) => {
+  console.log('-- DappIcon', appLogo);
   if (!appLogo) {
     return (
       <Box

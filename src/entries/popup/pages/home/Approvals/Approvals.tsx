@@ -33,7 +33,10 @@ export const Approvals = () => {
   const { rainbowChains } = useRainbowChains();
   const { userChains } = useUserChainsStore();
   const [showRevokeSheet, setShowRevokeSheet] = useState(false);
-  const [revokeAsset, setRevokeAsset] = useState<SearchAsset | null>(null);
+  const [revokeApproval, setRevokeApproval] = useState<{
+    approval: Approval | null;
+    spender: ApprovalSpender | null;
+  }>({ approval: null, spender: null });
 
   const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
 
@@ -72,8 +75,8 @@ export const Approvals = () => {
                 <TokenApproval
                   approval={tokenApproval.approval}
                   spender={tokenApproval.spender}
-                  onRevoke={(asset: SearchAsset) => {
-                    setRevokeAsset(asset);
+                  onRevoke={() => {
+                    setRevokeApproval(tokenApproval);
                     setShowRevokeSheet(true);
                   }}
                 />
@@ -84,7 +87,8 @@ export const Approvals = () => {
       </Box>
       <RevokeApprovalSheet
         show={showRevokeSheet}
-        asset={revokeAsset}
+        approval={revokeApproval.approval}
+        spender={revokeApproval.spender}
         onCancel={() => setShowRevokeSheet(false)}
         onSend={() => null}
       />
