@@ -31,9 +31,13 @@ export const useInfiniteTransactionList = ({
 }: UseInfiniteTransactionListParams) => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { getPendingTransactions } = usePendingTransactionsStore();
+  const { pendingTransactions: storePendingTransactions } =
+    usePendingTransactionsStore();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
-  const pendingTransactions = getPendingTransactions({ address });
+  const pendingTransactions = useMemo(
+    () => storePendingTransactions[address] || [],
+    [address, storePendingTransactions],
+  );
   const { customNetworkTransactions } = useCustomNetworkTransactionsStore();
 
   const currentAddressCustomNetworkTransactions = useMemo(
