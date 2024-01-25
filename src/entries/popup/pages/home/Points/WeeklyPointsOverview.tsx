@@ -122,12 +122,15 @@ export function PointsWeeklyOverview() {
     return { total, differences: diffs };
   }, [points?.user.stats.last_airdrop?.differences]);
 
-  if (!weeklyEarnings || !points) return null;
-
-  const nextDistributionTime = new Date(points.meta.distribution.next);
+  const nextDistributionTime = useMemo(() => {
+    return new Date(points?.meta.distribution.next || 0);
+  }, [points?.meta.distribution.next]);
 
   return (
-    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
+    <BottomSheet
+      zIndex={zIndexes.ACTIVITY_DETAILS}
+      show={!!(weeklyEarnings && points)}
+    >
       <Box
         display="flex"
         as={motion.div}
@@ -158,7 +161,7 @@ export function PointsWeeklyOverview() {
           </Stack>
 
           <Stack space="30px">
-            {weeklyEarnings.differences.map(({ type, earnings }, i) => (
+            {weeklyEarnings?.differences.map(({ type, earnings }, i) => (
               <AccentColorProvider
                 key={type}
                 color={rainbowColorsArray[i].text}
@@ -180,7 +183,7 @@ export function PointsWeeklyOverview() {
                 {i18n.t('points.weekly_overview.total')}
               </ConsoleText>
               <ConsoleText color="label">{`+ ${formatNumber(
-                weeklyEarnings.total,
+                weeklyEarnings?.total,
               )} Points`}</ConsoleText>
             </Inline>
           </Stack>
