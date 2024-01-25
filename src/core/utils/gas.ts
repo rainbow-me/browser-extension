@@ -556,6 +556,7 @@ export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
     ChainId.arbitrum,
     ChainId.optimism,
     ChainId.zora,
+    ChainId.avalanche,
   ].includes(chainId);
 
 export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
