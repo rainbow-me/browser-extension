@@ -122,14 +122,27 @@ function Fee({
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
-        trackShortcut({
-          key: shortcuts.global.OPEN_CUSTOM_GAS_MENU.display,
-          type: 'customGasMenu.open',
-        });
-        // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
-        setTimeout(() => openCustomGasSheet(), 0);
-      } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
+      // if mainnet, make both 'c' and 'g' shortcuts accessible
+      if (chainId === ChainId.mainnet) {
+        if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
+          trackShortcut({
+            key: shortcuts.global.OPEN_CUSTOM_GAS_MENU.display,
+            type: 'customGasMenu.open',
+          });
+          // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
+          setTimeout(() => openCustomGasSheet(), 0);
+        } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
+          trackShortcut({
+            key: shortcuts.global.OPEN_GAS_MENU.display,
+            type: 'gasMenu.open',
+          });
+          switchTransactionSpeedMenuRef?.current?.open();
+        }
+      } else if (
+        // if polygon, make 'g' shortcut accessible
+        chainId === ChainId.polygon &&
+        e.key === shortcuts.global.OPEN_GAS_MENU.key
+      ) {
         trackShortcut({
           key: shortcuts.global.OPEN_GAS_MENU.display,
           type: 'gasMenu.open',
