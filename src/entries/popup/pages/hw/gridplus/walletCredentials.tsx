@@ -61,7 +61,7 @@ export const WalletCredentials = ({
       </Text>
       <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
         <Text size="14pt" weight="semibold">
-          Device ID
+          {i18n.t('hw.gridplus_device_id')}
         </Text>
         <Input
           variant="bordered"
@@ -78,7 +78,7 @@ export const WalletCredentials = ({
       </Box>
       <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
         <Text size="14pt" weight="semibold">
-          Password
+          {i18n.t('hw.gridplus_password')}
         </Text>
         <Input
           variant="bordered"
@@ -101,7 +101,7 @@ export const WalletCredentials = ({
         disabled={connecting}
         testId="gridplus-submit"
       >
-        Connect
+        {i18n.t('hw.gridplus_connect')}
       </Button>
     </Box>
   );

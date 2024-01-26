@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { pair } from 'gridplus-sdk';
 import { FormEvent, useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import { Box, Button, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 
@@ -40,11 +41,11 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
       width="full"
     >
       <Text size="20pt" weight="semibold">
-        Check your Lattice1 device for the pairing secret.
+        {i18n.t('hw.gridplus_check_device')}
       </Text>
       <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
         <Text size="14pt" weight="semibold">
-          Pairing Code
+          {i18n.t('hw.gridplus_pairing_code')}
         </Text>
         <Input
           id="pairingCode"
@@ -60,7 +61,7 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
         />
         {formState.error && (
           <Text size="14pt" weight="semibold">
-            Wrong pairing code
+            {i18n.t('hw.gridplus_wrong_code')}
           </Text>
         )}
       </Box>
@@ -71,7 +72,7 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
         testId="gridplus-submit"
         disabled={pairing}
       >
-        Pair Device
+        {i18n.t('hw.gridplus_pair_device')}
       </Button>
     </Box>
   );

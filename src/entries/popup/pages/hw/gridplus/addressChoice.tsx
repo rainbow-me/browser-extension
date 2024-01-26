@@ -4,6 +4,7 @@ import { fetchAddresses } from 'gridplus-sdk';
 import { FormEvent, useEffect, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Text } from '~/design-system';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
@@ -61,7 +62,7 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
       width="full"
     >
       <Text size="20pt" weight="semibold">
-        Choose Addresses
+        {i18n.t('hw.gridplus_choose_addresses')}
       </Text>
       {loadingAddresses && <Spinner size={24} />}
       <Box display="flex" flexDirection="column" gap="16px">
@@ -86,7 +87,7 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
         disabled={loadingAddresses || formData.selectedAddresses.length === 0}
         testId="gridplus-submit"
       >
-        Export Addresses
+        {i18n.t('hw.gridplus_export_addresses')}
       </Button>
     </Box>
   );
