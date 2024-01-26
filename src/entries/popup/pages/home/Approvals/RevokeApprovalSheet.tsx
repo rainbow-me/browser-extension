@@ -1,11 +1,20 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { TransactionRequest } from '@ethersproject/abstract-provider';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import {
   Approval,
   ApprovalSpender,
 } from '~/core/resources/approvals/approvals';
-import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import {
   Box,
   Button,
@@ -20,6 +29,7 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
+import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { Spinner } from '../../../components/Spinner/Spinner';
@@ -44,9 +54,25 @@ export const RevokeApprovalSheet = ({
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
 
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    approval?.chain_id === ChainId.mainnet;
+
   const { displayName: walletDisplayName } = useWalletInfo({
     address: currentAddress,
   });
+
+  const transactionRequestForGas: TransactionRequest = useMemo(() => {
+    return {
+      to: currentAddress,
+      from: currentAddress,
+      value: '0x0',
+      chainId: approval?.chain_id || ChainId.mainnet,
+      data: '0x',
+    };
+  }, [currentAddress, approval?.chain_id]);
 
   const handleSend = useCallback(async () => {
     if (!sending) {
@@ -156,6 +182,17 @@ export const RevokeApprovalSheet = ({
       </Box>
 
       <Separator color="separatorSecondary" />
+
+      <Box padding="20px">
+        <TransactionFee
+          chainId={approval?.chain_id || ChainId.mainnet}
+          address={currentAddress}
+          transactionRequest={transactionRequestForGas}
+          plainTriggerBorder
+          flashbotsEnabled={flashbotsEnabledGlobally}
+        />
+      </Box>
+
       <Box width="full" padding="20px">
         <Rows space="8px" alignVertical="center">
           <Row>
