@@ -1,14 +1,11 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { Address } from 'viem';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { populateRevokeApproval } from '~/core/raps/actions/unlock';
 import {
   Approval,
   ApprovalSpender,
@@ -29,7 +26,7 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
-import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
+import { ApprovalFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { Spinner } from '../../../components/Spinner/Spinner';
@@ -45,20 +42,33 @@ export const RevokeApprovalSheet = ({
   onSend,
 }: {
   show: boolean;
-  approval?: Approval | null;
-  spender?: ApprovalSpender | null;
+  approval: Approval | null;
+  spender: ApprovalSpender | null;
   onCancel: () => void;
   onSend: () => void;
 }) => {
   const { currentAddress } = useCurrentAddressStore();
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
-
   const { flashbotsEnabled } = useFlashbotsEnabledStore();
   const flashbotsEnabledGlobally =
     config.flashbots_enabled &&
     flashbotsEnabled &&
     approval?.chain_id === ChainId.mainnet;
+
+  const { approvalChainId, assetAddress, spenderAddress } = useMemo(() => {
+    const approvalChainId = approval?.chain_id as ChainId;
+    return {
+      approvalChainId,
+      assetAddress: approval?.asset?.networks?.[approvalChainId]
+        ?.address as Address,
+      spenderAddress: spender?.contract_address,
+    };
+  }, [
+    approval?.asset?.networks,
+    approval?.chain_id,
+    spender?.contract_address,
+  ]);
 
   const { displayName: walletDisplayName } = useWalletInfo({
     address: currentAddress,
@@ -86,14 +96,18 @@ export const RevokeApprovalSheet = ({
     }
   }, [onSend, sending]);
 
-  useEffect(() => {
-    if (show) {
-      // using autoFocus breaks the sheet's animation, so we wait for it to finish then focus
-      setTimeout(() => {
-        confirmSendButtonRef.current?.focus();
-      }, 500);
-    }
-  }, [show]);
+  const { data: revokeApproveTransaction } = useQuery(
+    ['populateRevokeApproval', assetAddress, spenderAddress, approvalChainId],
+    async () =>
+      await populateRevokeApproval({
+        tokenAddress: assetAddress,
+        spenderAddress: spenderAddress,
+        chainId: approvalChainId,
+      }),
+    {
+      enabled: !!approval && !!spender,
+    },
+  );
 
   return (
     <BottomSheet show={show} onClickOutside={onCancel}>
@@ -184,10 +198,14 @@ export const RevokeApprovalSheet = ({
       <Separator color="separatorSecondary" />
 
       <Box padding="20px">
-        <TransactionFee
-          chainId={approval?.chain_id || ChainId.mainnet}
+        <ApprovalFee
+          chainId={approvalChainId}
           address={currentAddress}
-          transactionRequest={transactionRequestForGas}
+          spenderAddress={spenderAddress}
+          assetAddress={assetAddress}
+          transactionRequest={
+            revokeApproveTransaction || transactionRequestForGas
+          }
           plainTriggerBorder
           flashbotsEnabled={flashbotsEnabledGlobally}
         />

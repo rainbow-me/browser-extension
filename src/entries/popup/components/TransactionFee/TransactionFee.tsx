@@ -30,7 +30,11 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { Space } from '~/design-system/styles/designTokens';
 
 import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
-import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
+import {
+  useApprovalGas,
+  useSwapGas,
+  useTransactionGas,
+} from '../../hooks/useGas';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
@@ -372,6 +376,73 @@ export function SwapFee({
       baseFeeTrend={baseFeeTrend}
       flashbotsEnabled={!!flashbotsEnabled}
       speedMenuMarginRight={speedMenuMarginRight}
+    />
+  );
+}
+
+type ApprovalFeeProps = {
+  chainId: ChainId;
+  address: Address;
+  assetAddress?: Address;
+  spenderAddress?: Address;
+  defaultSpeed?: GasSpeed;
+  transactionRequest: TransactionRequest;
+  accentColor?: string;
+  plainTriggerBorder?: boolean;
+  flashbotsEnabled?: boolean;
+  analyticsEvents?: {
+    customGasClicked: keyof EventProperties;
+    transactionSpeedSwitched: keyof EventProperties;
+    transactionSpeedClicked: keyof EventProperties;
+  };
+};
+
+export function ApprovalFee({
+  chainId,
+  address,
+  assetAddress,
+  spenderAddress,
+  defaultSpeed,
+  transactionRequest,
+  accentColor,
+  plainTriggerBorder,
+  analyticsEvents,
+  flashbotsEnabled,
+}: ApprovalFeeProps) {
+  const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
+  const {
+    selectedSpeed,
+    setSelectedSpeed,
+    gasFeeParamsBySpeed,
+    isLoading,
+    setCustomMaxBaseFee,
+    setCustomMaxPriorityFee,
+    currentBaseFee,
+    baseFeeTrend,
+  } = useApprovalGas({
+    chainId,
+    address,
+    assetAddress,
+    spenderAddress,
+    defaultSpeed: defaultSpeed || defaultTxSpeed,
+    transactionRequest,
+    flashbotsEnabled: !!flashbotsEnabled,
+  });
+  return (
+    <Fee
+      analyticsEvents={analyticsEvents}
+      chainId={chainId}
+      accentColor={accentColor}
+      plainTriggerBorder={plainTriggerBorder}
+      selectedSpeed={selectedSpeed}
+      setSelectedSpeed={setSelectedSpeed}
+      gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+      isLoading={isLoading}
+      setCustomMaxBaseFee={setCustomMaxBaseFee}
+      setCustomMaxPriorityFee={setCustomMaxPriorityFee}
+      currentBaseFee={currentBaseFee}
+      baseFeeTrend={baseFeeTrend}
+      flashbotsEnabled={!!flashbotsEnabled}
     />
   );
 }

@@ -1,6 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
-import { Contract } from '@ethersproject/contracts';
+import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
+import { parseUnits } from '@ethersproject/units';
 import { Address, erc20ABI, getContract, getProvider } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
@@ -104,6 +105,26 @@ export const estimateApprove = async ({
     });
     return `${gasUnits.basic_approval}`;
   }
+};
+
+export const populateRevokeApproval = async ({
+  tokenAddress,
+  spenderAddress,
+  chainId,
+}: {
+  tokenAddress?: Address;
+  spenderAddress?: Address;
+  chainId?: ChainId;
+}): Promise<PopulatedTransaction> => {
+  if (!tokenAddress || !spenderAddress || !chainId) return {};
+  const provider = getProvider({ chainId });
+  const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+  const amountToApprove = parseUnits('0', 'ether');
+  const txObject = await tokenContract.populateTransaction.approve(
+    spenderAddress,
+    amountToApprove,
+  );
+  return txObject;
 };
 
 export const executeApprove = async ({
