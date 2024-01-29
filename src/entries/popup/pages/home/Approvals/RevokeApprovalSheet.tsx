@@ -94,16 +94,12 @@ export const RevokeApprovalSheet = ({
       const approvalChainId = approval?.chain_id as ChainId;
       return {
         approvalChainId,
-        assetAddress:
-          assetType === 'erc20'
-            ? (approval?.asset?.networks?.[approvalChainId]?.address as Address)
-            : (approval?.asset.asset_code as Address),
+        assetAddress: approval?.asset.asset_code as Address,
         spenderAddress: spender?.contract_address,
         assetType,
       };
     }, [
       approval?.asset.asset_code,
-      approval?.asset?.networks,
       approval?.asset.type,
       approval?.chain_id,
       spender?.contract_address,
