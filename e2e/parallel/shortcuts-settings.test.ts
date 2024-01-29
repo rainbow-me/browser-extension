@@ -36,6 +36,10 @@ describe.runIf(browser !== 'firefox')(
       });
       const extensionId = await getExtensionIdByName(driver, 'Rainbow');
       if (!extensionId) throw new Error('Extension not found');
+      console.log(
+        'url used in beforeAll of shortcut-settings-test: ',
+        (rootURL += extensionId),
+      );
       rootURL += extensionId;
     });
     afterAll(async () => driver.quit());

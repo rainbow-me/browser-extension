@@ -65,12 +65,14 @@ export async function goToPopup(
   rootURL: string,
   route = '',
 ) {
+  console.log('url used in goToPopup(): ', rootURL + '/popup.html' + route);
   await driver.get(rootURL + '/popup.html' + route);
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
 }
 
 export async function goToWelcome(driver: WebDriver, rootURL: string) {
+  console.log('url used in goToWelcome(): ', rootURL + '/popup.html#/welcome');
   await driver.get(rootURL + '/popup.html#/welcome');
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
