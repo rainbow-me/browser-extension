@@ -53,6 +53,17 @@ afterEach(async (context: any) => {
 
 afterAll(() => driver.quit());
 
+it('should be able to nav'),
+  async () => {
+    try {
+      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
+      console.log('rootURL: ', rootURL, ' extensionID: ', extensionId);
+      await driver.navigate().to((rootURL += extensionId));
+    } catch (error) {
+      console.error('Error details:', error);
+    }
+  };
+
 it('should be able import a wallet via pk', async () => {
   await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
 });
