@@ -416,6 +416,23 @@ export function Settings() {
             onClick={() => window.open(RAINBOW_TWITTER_URL, '_blank')}
           />
           <MenuItem
+            leftComponent={<MenuItem.TextIcon icon="🌐" />}
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.follow_us_on_farcaster')}
+              />
+            }
+            rightComponent={
+              <Symbol
+                symbol="arrow.up.forward.circle"
+                color="labelTertiary"
+                size={12}
+                weight="semibold"
+              />
+            }
+            onClick={() => window.open(RAINBOW_TWITTER_URL, '_blank')}
+          />
+          <MenuItem
             last
             leftComponent={<MenuItem.TextIcon icon="💬" />}
             titleComponent={
