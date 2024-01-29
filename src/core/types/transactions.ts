@@ -203,6 +203,7 @@ export type TransactionApiResponse = {
     action?: string;
     asset?: AssetApiResponse;
     quantity?: 'UNLIMITED' | string;
+    status: string;
   };
   block_number?: number;
   mined_at?: number;
