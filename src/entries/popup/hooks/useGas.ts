@@ -392,6 +392,7 @@ export const useApprovalGas = ({
   defaultSpeed,
   transactionRequest,
   flashbotsEnabled,
+  assetType,
 }: {
   chainId: ChainId;
   address: Address;
@@ -400,12 +401,14 @@ export const useApprovalGas = ({
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
   flashbotsEnabled?: boolean;
+  assetType: 'erc20' | 'erc721';
 }) => {
   const { data: estimatedGasLimit } = useEstimateApprovalGasLimit({
     chainId,
     ownerAddress: address,
     assetAddress,
     spenderAddress,
+    assetType,
   });
 
   return useGas({

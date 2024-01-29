@@ -2,7 +2,13 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
-import { Address, erc20ABI, getContract, getProvider } from '@wagmi/core';
+import {
+  Address,
+  erc20ABI,
+  erc721ABI,
+  getContract,
+  getProvider,
+} from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
 import {
@@ -107,24 +113,67 @@ export const estimateApprove = async ({
   }
 };
 
+export const estimateERC721Approval = async ({
+  owner,
+  tokenAddress,
+  spender,
+  chainId,
+}: {
+  owner: Address;
+  tokenAddress: Address;
+  spender: Address;
+  chainId: ChainId;
+}): Promise<string> => {
+  try {
+    const provider = getProvider({ chainId });
+    const tokenContract = new Contract(tokenAddress, erc721ABI, provider);
+    const gasLimit = await tokenContract.estimateGas.setApprovalForAll(
+      spender,
+      false,
+      {
+        from: owner,
+      },
+    );
+    return gasLimit ? gasLimit.toString() : `${gasUnits.basic_approval}`;
+  } catch (error) {
+    logger.error(
+      new RainbowError('estimateERC721Approval: error estimateApproval'),
+      {
+        message: (error as Error)?.message,
+      },
+    );
+    return `${gasUnits.basic_approval}`;
+  }
+};
+
 export const populateRevokeApproval = async ({
   tokenAddress,
   spenderAddress,
   chainId,
+  type = 'erc20',
 }: {
   tokenAddress?: Address;
   spenderAddress?: Address;
   chainId?: ChainId;
+  type: 'erc20' | 'erc721';
 }): Promise<PopulatedTransaction> => {
   if (!tokenAddress || !spenderAddress || !chainId) return {};
   const provider = getProvider({ chainId });
-  const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
-  const amountToApprove = parseUnits('0', 'ether');
-  const txObject = await tokenContract.populateTransaction.approve(
-    spenderAddress,
-    amountToApprove,
-  );
-  return txObject;
+  const tokenContract = new Contract(tokenAddress, erc721ABI, provider);
+  if (type === 'erc20') {
+    const amountToApprove = parseUnits('0', 'ether');
+    const txObject = await tokenContract.populateTransaction.approve(
+      spenderAddress,
+      amountToApprove,
+    );
+    return txObject;
+  } else {
+    const txObject = await tokenContract.populateTransaction.setApprovalForAll(
+      spenderAddress,
+      false,
+    );
+    return txObject;
+  }
 };
 
 export const executeApprove = async ({

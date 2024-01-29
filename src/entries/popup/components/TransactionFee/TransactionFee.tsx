@@ -395,6 +395,7 @@ type ApprovalFeeProps = {
     transactionSpeedSwitched: keyof EventProperties;
     transactionSpeedClicked: keyof EventProperties;
   };
+  assetType: 'erc20' | 'erc721';
 };
 
 export function ApprovalFee({
@@ -408,6 +409,7 @@ export function ApprovalFee({
   plainTriggerBorder,
   analyticsEvents,
   flashbotsEnabled,
+  assetType,
 }: ApprovalFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -427,6 +429,7 @@ export function ApprovalFee({
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     transactionRequest,
     flashbotsEnabled: !!flashbotsEnabled,
+    assetType,
   });
   return (
     <Fee

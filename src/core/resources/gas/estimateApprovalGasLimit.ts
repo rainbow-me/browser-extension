@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
 import { estimateApprove } from '~/core/raps/actions';
+import { estimateERC721Approval } from '~/core/raps/actions/unlock';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -20,6 +21,7 @@ export type EstimateAprovalGasLimitArgs = {
   ownerAddress: Address;
   assetAddress?: Address;
   spenderAddress?: Address;
+  assetType: 'erc20' | 'erc721';
 };
 
 // ///////////////////////////////////////////////
@@ -30,10 +32,11 @@ const estimateApprovalGasLimitQueryKey = ({
   ownerAddress,
   assetAddress,
   spenderAddress,
+  assetType,
 }: EstimateAprovalGasLimitArgs) =>
   createQueryKey(
     'estimateApprovalGasLimitQueryKey',
-    { chainId, ownerAddress, assetAddress, spenderAddress },
+    { chainId, ownerAddress, assetAddress, spenderAddress, assetType },
     { persisterVersion: 1 },
   );
 
@@ -45,19 +48,31 @@ type EstimateApprovalGasLimitQueryKey = ReturnType<
 // Query Function
 
 async function estimateApprovalGasLimitQueryFunction({
-  queryKey: [{ chainId, ownerAddress, assetAddress, spenderAddress }],
+  queryKey: [
+    { chainId, ownerAddress, assetAddress, spenderAddress, assetType },
+  ],
 }: QueryFunctionArgs<typeof estimateApprovalGasLimitQueryKey>) {
+  console.log('assetAddress', assetAddress);
+  console.log('spenderAddress', spenderAddress);
   if (!assetAddress || !spenderAddress) return gasUnits.basic_approval[chainId];
-  const gasLimit = await estimateApprove({
-    owner: ownerAddress,
-    tokenAddress: assetAddress,
-    spender: spenderAddress,
-    chainId,
-  });
-  if (!gasLimit) {
-    return gasUnits.basic_approval[chainId];
+  console.log('assetType', assetType);
+  if (assetType === 'erc20') {
+    const gasLimit = await estimateApprove({
+      owner: ownerAddress,
+      tokenAddress: assetAddress,
+      spender: spenderAddress,
+      chainId,
+    });
+    return gasLimit;
+  } else {
+    const gasLimit = await estimateERC721Approval({
+      owner: ownerAddress,
+      tokenAddress: assetAddress,
+      spender: spenderAddress,
+      chainId,
+    });
+    return gasLimit;
   }
-  return gasLimit;
 }
 
 type EstimateApprovalGasLimitResult = QueryFunctionResult<
@@ -73,6 +88,7 @@ export async function fetchEstimateSwapGasLimit(
     ownerAddress,
     assetAddress,
     spenderAddress,
+    assetType,
   }: EstimateAprovalGasLimitArgs,
   config: QueryConfig<
     EstimateApprovalGasLimitResult,
@@ -87,6 +103,7 @@ export async function fetchEstimateSwapGasLimit(
       ownerAddress,
       assetAddress,
       spenderAddress,
+      assetType,
     }),
     estimateApprovalGasLimitQueryFunction,
     config,
@@ -102,6 +119,7 @@ export function useEstimateApprovalGasLimit(
     ownerAddress,
     assetAddress,
     spenderAddress,
+    assetType,
   }: EstimateAprovalGasLimitArgs,
   config: QueryConfig<
     EstimateApprovalGasLimitResult,
@@ -116,6 +134,7 @@ export function useEstimateApprovalGasLimit(
       ownerAddress,
       assetAddress,
       spenderAddress,
+      assetType,
     }),
     estimateApprovalGasLimitQueryFunction,
     { keepPreviousData: true, ...config },

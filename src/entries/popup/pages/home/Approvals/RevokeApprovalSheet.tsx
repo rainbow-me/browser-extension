@@ -1,8 +1,16 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Address } from 'viem';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { populateRevokeApproval } from '~/core/raps/actions/unlock';
@@ -10,8 +18,20 @@ import {
   Approval,
   ApprovalSpender,
 } from '~/core/resources/approvals/approvals';
-import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useCurrentCurrencyStore,
+  useFlashbotsEnabledStore,
+  useGasStore,
+} from '~/core/state';
 import { ChainId } from '~/core/types/chains';
+import {
+  TransactionGasParams,
+  TransactionLegacyGasParams,
+} from '~/core/types/gas';
+import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { parseUserAsset } from '~/core/utils/assets';
+import { addNewTransaction } from '~/core/utils/transactions';
 import {
   Box,
   Button,
@@ -24,9 +44,16 @@ import {
   Stack,
   Text,
 } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { ApprovalFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
+import { isLedgerConnectionError } from '~/entries/popup/handlers/ledger';
+import { getWallet, sendTransaction } from '~/entries/popup/handlers/wallet';
+import usePrevious from '~/entries/popup/hooks/usePrevious';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
+import { RainbowError, logger } from '~/logger';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { Spinner } from '../../../components/Spinner/Spinner';
@@ -39,36 +66,48 @@ export const RevokeApprovalSheet = ({
   approval,
   spender,
   onCancel,
-  onSend,
 }: {
   show: boolean;
   approval: Approval | null;
   spender: ApprovalSpender | null;
   onCancel: () => void;
-  onSend: () => void;
 }) => {
   const { currentAddress } = useCurrentAddressStore();
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
   const { flashbotsEnabled } = useFlashbotsEnabledStore();
+  const previousShow = usePrevious(show);
   const flashbotsEnabledGlobally =
     config.flashbots_enabled &&
     flashbotsEnabled &&
     approval?.chain_id === ChainId.mainnet;
 
-  const { approvalChainId, assetAddress, spenderAddress } = useMemo(() => {
-    const approvalChainId = approval?.chain_id as ChainId;
-    return {
-      approvalChainId,
-      assetAddress: approval?.asset?.networks?.[approvalChainId]
-        ?.address as Address,
-      spenderAddress: spender?.contract_address,
-    };
-  }, [
-    approval?.asset?.networks,
-    approval?.chain_id,
-    spender?.contract_address,
-  ]);
+  const [waitingForDevice, setWaitingForDevice] = useState(false);
+  const { clearCustomGasModified, selectedGas } = useGasStore();
+  const navigate = useRainbowNavigate();
+  const { currentCurrency } = useCurrentCurrencyStore();
+
+  const { approvalChainId, assetAddress, spenderAddress, assetType } =
+    useMemo(() => {
+      const assetType: 'erc20' | 'erc721' =
+        approval?.asset.type === 'nft' ? 'erc721' : 'erc20';
+      const approvalChainId = approval?.chain_id as ChainId;
+      return {
+        approvalChainId,
+        assetAddress:
+          assetType === 'erc20'
+            ? (approval?.asset?.networks?.[approvalChainId]?.address as Address)
+            : (approval?.asset.asset_code as Address),
+        spenderAddress: spender?.contract_address,
+        assetType,
+      };
+    }, [
+      approval?.asset.asset_code,
+      approval?.asset?.networks,
+      approval?.asset.type,
+      approval?.chain_id,
+      spender?.contract_address,
+    ]);
 
   const { displayName: walletDisplayName } = useWalletInfo({
     address: currentAddress,
@@ -84,18 +123,6 @@ export const RevokeApprovalSheet = ({
     };
   }, [currentAddress, approval?.chain_id]);
 
-  const handleSend = useCallback(async () => {
-    if (!sending) {
-      setSending(true);
-      try {
-        await onSend();
-        playSound('SendSound');
-      } finally {
-        setSending(false);
-      }
-    }
-  }, [onSend, sending]);
-
   const { data: revokeApproveTransaction } = useQuery(
     ['populateRevokeApproval', assetAddress, spenderAddress, approvalChainId],
     async () =>
@@ -103,11 +130,126 @@ export const RevokeApprovalSheet = ({
         tokenAddress: assetAddress,
         spenderAddress: spenderAddress,
         chainId: approvalChainId,
+        type: assetType,
       }),
     {
       enabled: !!approval && !!spender,
     },
   );
+
+  const revokeApproveTransactionRequest: TransactionRequest | null =
+    useMemo(() => {
+      return {
+        to: assetAddress,
+        from: currentAddress,
+        chainId: approvalChainId,
+        data: revokeApproveTransaction?.data || '0x',
+      };
+    }, [
+      approvalChainId,
+      assetAddress,
+      currentAddress,
+      revokeApproveTransaction?.data,
+    ]);
+
+  const handleRevoke = useCallback(async () => {
+    if (!config.send_enabled || !approval?.asset) return;
+    setSending(true);
+    try {
+      const { type } = await getWallet(currentAddress);
+      // Change the label while we wait for confirmation
+      if (type === 'HardwareWalletKeychain') {
+        setWaitingForDevice(true);
+      }
+      // resetSendValues();
+      const result = await sendTransaction({
+        from: currentAddress,
+        to: assetAddress,
+        value: '0x0',
+        chainId: approvalChainId,
+        data: revokeApproveTransaction?.data || '0x',
+      });
+      if (result) {
+        const transaction: NewTransaction = {
+          changes: [
+            {
+              direction: 'out',
+              asset: parseUserAsset({
+                asset: approval.asset,
+                currency: currentCurrency,
+                balance: '0',
+              }),
+            },
+          ],
+          data: result.data,
+          flashbots: flashbotsEnabledGlobally,
+          value: result.value.toString(),
+          from: currentAddress,
+          to: assetAddress,
+          hash: result.hash as TxHash,
+          chainId: approvalChainId,
+          status: 'pending',
+          type: 'revoke',
+          nonce: result.nonce,
+          gasPrice: (
+            selectedGas.transactionGasParams as TransactionLegacyGasParams
+          )?.gasPrice,
+          maxFeePerGas: (
+            selectedGas.transactionGasParams as TransactionGasParams
+          )?.maxFeePerGas,
+          maxPriorityFeePerGas: (
+            selectedGas.transactionGasParams as TransactionGasParams
+          )?.maxPriorityFeePerGas,
+        };
+        await addNewTransaction({
+          address: currentAddress,
+          chainId: approvalChainId,
+          transaction,
+        });
+        playSound('SendSound');
+        navigate(ROUTES.HOME, {
+          state: { tab: 'activity' },
+        });
+        analytics.track(event.revokeSubmitted, {
+          assetSymbol: approval?.asset?.symbol,
+          assetName: approval?.asset?.name,
+          assetAddress: assetAddress,
+          chainId: approvalChainId,
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      if (!isLedgerConnectionError(e)) {
+        const extractedError = (e as Error).message.split('[')[0];
+        triggerAlert({
+          text: i18n.t('errors.sending_transaction'),
+          description: extractedError,
+        });
+      }
+      logger.error(new RainbowError('send: error executing revoke approval'), {
+        message: (e as Error)?.message,
+      });
+    } finally {
+      setWaitingForDevice(false);
+      setSending(false);
+    }
+  }, [
+    approval?.asset,
+    currentAddress,
+    assetAddress,
+    approvalChainId,
+    revokeApproveTransaction?.data,
+    currentCurrency,
+    flashbotsEnabledGlobally,
+    selectedGas.transactionGasParams,
+    navigate,
+  ]);
+
+  useEffect(() => {
+    if (previousShow && !show) {
+      clearCustomGasModified();
+    }
+  }, [clearCustomGasModified, previousShow, show]);
 
   return (
     <BottomSheet show={show} onClickOutside={onCancel}>
@@ -146,7 +288,16 @@ export const RevokeApprovalSheet = ({
                     <Column>
                       <Inline alignVertical="center" alignHorizontal="right">
                         <Box>
-                          <CoinIcon asset={approval?.asset} size={44} />
+                          {approval?.asset ? (
+                            <CoinIcon
+                              asset={parseUserAsset({
+                                asset: approval.asset,
+                                currency: currentCurrency,
+                                balance: '0',
+                              })}
+                              size={44}
+                            />
+                          ) : null}
                         </Box>
                       </Inline>
                     </Column>
@@ -203,8 +354,9 @@ export const RevokeApprovalSheet = ({
           address={currentAddress}
           spenderAddress={spenderAddress}
           assetAddress={assetAddress}
+          assetType={assetType}
           transactionRequest={
-            revokeApproveTransaction || transactionRequestForGas
+            revokeApproveTransactionRequest || transactionRequestForGas
           }
           plainTriggerBorder
           flashbotsEnabled={flashbotsEnabledGlobally}
@@ -219,7 +371,7 @@ export const RevokeApprovalSheet = ({
               height="44px"
               variant={'flat'}
               width="full"
-              onClick={handleSend}
+              onClick={handleRevoke}
               testId="review-confirm-button"
               tabIndex={0}
               ref={confirmSendButtonRef}
@@ -237,9 +389,11 @@ export const RevokeApprovalSheet = ({
                   </Box>
                 ) : (
                   <TextOverflow weight="bold" size="16pt" color="label">
-                    {i18n.t('send.review.send_to', {
-                      toName: walletDisplayName,
-                    })}
+                    {waitingForDevice
+                      ? `👀 ${i18n.t('send.review.confirm_hw')}`
+                      : i18n.t('approvals.revoke.action', {
+                          tokenSymbol: approval?.asset.symbol,
+                        })}
                   </TextOverflow>
                 )}
               </Box>

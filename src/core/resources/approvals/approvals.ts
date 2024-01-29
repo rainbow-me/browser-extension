@@ -10,8 +10,8 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { AssetApiResponse } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { SearchAsset } from '~/core/types/search';
 import { TxHash } from '~/core/types/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -30,7 +30,7 @@ export interface ApprovalSpender {
 export interface Approval {
   chain_id: ChainId;
   network: string;
-  asset: SearchAsset;
+  asset: AssetApiResponse;
   spenders: ApprovalSpender[];
 }
 

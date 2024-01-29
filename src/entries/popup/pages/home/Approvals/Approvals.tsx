@@ -9,7 +9,7 @@ import {
 } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { SearchAsset } from '~/core/types/search';
+import { parseUserAsset } from '~/core/utils/assets';
 import {
   Box,
   ButtonSymbol,
@@ -90,7 +90,6 @@ export const Approvals = () => {
         approval={revokeApproval.approval}
         spender={revokeApproval.spender}
         onCancel={() => setShowRevokeSheet(false)}
-        onSend={() => null}
       />
     </Box>
   );
@@ -103,8 +102,9 @@ const TokenApproval = ({
 }: {
   approval: Approval;
   spender: ApprovalSpender;
-  onRevoke: (asset: SearchAsset) => void;
+  onRevoke: () => void;
 }) => {
+  const { currentCurrency } = useCurrentCurrencyStore();
   return (
     <Box paddingHorizontal="8px">
       <Box
@@ -120,7 +120,14 @@ const TokenApproval = ({
               <Inline alignHorizontal="justify" alignVertical="center">
                 <Columns space="8px">
                   <Column width="content">
-                    <CoinIcon asset={approval.asset} badge />
+                    <CoinIcon
+                      asset={parseUserAsset({
+                        asset: approval.asset,
+                        currency: currentCurrency,
+                        balance: '0',
+                      })}
+                      badge
+                    />
                   </Column>
 
                   <Column>
@@ -176,7 +183,7 @@ const TokenApproval = ({
                 variant="raised"
                 symbol="xmark"
                 borderRadius="8px"
-                onClick={() => onRevoke(approval.asset)}
+                onClick={() => onRevoke()}
               />
             </Box>
           </Column>
