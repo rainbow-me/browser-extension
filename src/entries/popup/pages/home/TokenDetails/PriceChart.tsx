@@ -6,7 +6,7 @@ import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { isTestnetChainId } from '~/core/utils/chains';
+import { isDefaultSupportedChain, isTestnetChainId } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -134,6 +134,7 @@ const usePriceChart = ({
     queryKey: createQueryKey('price chart', { address, chainId, time }),
     keepPreviousData: true,
     staleTime: 1 * 60 * 1000, // 1min
+    enabled: isDefaultSupportedChain({ chainId }),
   });
 };
 
