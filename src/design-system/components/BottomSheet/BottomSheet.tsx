@@ -77,6 +77,8 @@ export const BottomSheet = ({
                 maxHeight: POPUP_DIMENSIONS.height - 24, // 24 from paddings
                 overflow: 'scroll',
               }}
+              borderWidth="1.5px"
+              borderColor="separatorSecondary"
             >
               {children}
             </Box>

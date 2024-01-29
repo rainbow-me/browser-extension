@@ -245,7 +245,7 @@ export const stylesForVariant = ({
   shadow: {
     borderColor: color as ButtonColor,
     borderWidth: '2px',
-    textColor: 'labelSecondary',
+    textColor: color as TextColor,
     backgroundColor: transparentAccentColorAsHsl20,
   },
   transparent: {
