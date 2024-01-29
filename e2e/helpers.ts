@@ -112,6 +112,7 @@ export async function initDriverWithOptions(opts: {
   browser: string;
   os: string;
 }) {
+  console.log('Initializing WebDriver with options:', opts);
   let driver;
   const args = [
     'load-extension=build/',
@@ -119,83 +120,107 @@ export async function initDriverWithOptions(opts: {
     '--log-level=0',
     '--enable-logging',
   ];
+  try {
+    if (opts.browser === 'firefox') {
+      console.log('Setting up Firefox driver');
+      const options = new firefox.Options()
+        // @ts-ignore
+        .setBinary(BINARY_PATHS[opts.os][opts.browser])
+        .addArguments(...args.slice(1))
+        .setPreference('xpinstall.signatures.required', false)
+        .setPreference('extensions.langpacks.signatures.required', false)
+        .addExtensions('rainbowbx.xpi');
+      console.log('firefox options', options);
 
-  if (opts.browser === 'firefox') {
-    const options = new firefox.Options()
-      // @ts-ignore
-      .setBinary(BINARY_PATHS[opts.os][opts.browser])
-      .addArguments(...args.slice(1))
-      .setPreference('xpinstall.signatures.required', false)
-      .setPreference('extensions.langpacks.signatures.required', false)
-      .addExtensions('rainbowbx.xpi');
+      const service = new firefox.ServiceBuilder().setStdio('inherit');
 
-    const service = new firefox.ServiceBuilder().setStdio('inherit');
+      console.log('firefox service', service);
 
-    driver = await new Builder()
-      .setFirefoxService(service)
-      .forBrowser('firefox')
-      .setFirefoxOptions(options)
-      .build();
-  } else {
-    const options = new chrome.Options()
-      // @ts-ignore
-      .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
-      .addArguments(...args);
-    options.setAcceptInsecureCerts(true);
+      driver = await new Builder()
+        .setFirefoxService(service)
+        .forBrowser('firefox')
+        .setFirefoxOptions(options)
+        .build();
+      console.log('firefox driver', driver);
+    } else {
+      const options = new chrome.Options()
+        // @ts-ignore
+        .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
+        .addArguments(...args);
+      options.setAcceptInsecureCerts(true);
 
-    const service = new chrome.ServiceBuilder().setStdio('inherit');
+      const service = new chrome.ServiceBuilder().setStdio('inherit');
 
-    driver = await new Builder()
-      .setChromeService(service)
-      .forBrowser('chrome')
-      .setChromeOptions(options)
-      .build();
+      driver = await new Builder()
+        .setChromeService(service)
+        .forBrowser('chrome')
+        .setChromeOptions(options)
+        .build();
+    }
+    // @ts-ignore
+    driver.browser = opts.browser;
+    return driver;
+  } catch (error) {
+    console.error('Error initializing WebDriver:', error);
+    throw error;
   }
-  // @ts-ignore
-  driver.browser = opts.browser;
-  return driver;
 }
 
 const addPermissionForAllWebsites = async (driver: WebDriver) => {
-  // Add the permission to access all websites
-  await driver.get('about:addons');
-  const sidebarBtn = await querySelector(driver, `[title="Extensions"]`);
-  await sidebarBtn.click();
-  const moreBtn = await querySelector(driver, `[action="more-options"]`);
-  await moreBtn.click();
-  const manageBtn = await querySelector(
-    driver,
-    `[data-l10n-id="manage-addon-button"]`,
-  );
-  await manageBtn.click();
-  await findElementByIdAndClick({
-    id: 'details-deck-button-permissions',
-    driver,
-  });
-  await driver.executeScript(
-    `document.querySelectorAll('[class="permission-info"]')[0].children[0].click();`,
-  );
+  console.log('Adding permission for all websites');
+  try {
+    // Add the permission to access all websites
+    await driver.get('about:addons');
+    const sidebarBtn = await querySelector(driver, `[title="Extensions"]`);
+    await sidebarBtn.click();
+    const moreBtn = await querySelector(driver, `[action="more-options"]`);
+    await moreBtn.click();
+    const manageBtn = await querySelector(
+      driver,
+      `[data-l10n-id="manage-addon-button"]`,
+    );
+    await manageBtn.click();
+    await findElementByIdAndClick({
+      id: 'details-deck-button-permissions',
+      driver,
+    });
+    await driver.executeScript(
+      `document.querySelectorAll('[class="permission-info"]')[0].children[0].click();`,
+    );
+    console.log('Permissions added successfully');
+  } catch (error) {
+    console.error('Error adding permissions:', error);
+    throw error;
+  }
 };
 
 export async function getExtensionIdByName(
   driver: WebDriver,
   extensionName: string,
 ) {
-  // @ts-ignore
-  if (driver?.browser === 'firefox') {
-    await addPermissionForAllWebsites(driver);
+  console.log(`Getting extension ID for: ${extensionName}`);
+  try {
+    // @ts-ignore
+    if (driver?.browser === 'firefox') {
+      console.log('Adding permissions for all websites in Firefox');
+      await addPermissionForAllWebsites(driver);
+      console.log('Navigating to about:debugging#addons');
 
-    await driver.get('about:debugging#addons');
-    const text = await driver
-      .wait(
-        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
-        1000,
-      )
-      .getText();
-    return text;
-  } else {
-    await driver.get('chrome://extensions');
-    return await driver.executeScript(`
+      await driver.get('about:debugging#addons');
+      console.log('Waiting for UUID element');
+
+      const text = await driver
+        .wait(
+          until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
+          1000,
+        )
+        .getText();
+      console.log(`Found extension ID for Firefox: ${text}`);
+
+      return text;
+    } else {
+      await driver.get('chrome://extensions');
+      return await driver.executeScript(`
         const extensions = document.querySelector("extensions-manager").shadowRoot
           .querySelector("extensions-item-list").shadowRoot
           .querySelectorAll("extensions-item")
@@ -208,6 +233,10 @@ export async function getExtensionIdByName(
         }
         return undefined
       `);
+    }
+  } catch (error) {
+    console.error('Error getting extension ID:', error);
+    throw error;
   }
 }
 
