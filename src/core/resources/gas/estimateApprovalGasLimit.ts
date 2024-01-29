@@ -52,10 +52,7 @@ async function estimateApprovalGasLimitQueryFunction({
     { chainId, ownerAddress, assetAddress, spenderAddress, assetType },
   ],
 }: QueryFunctionArgs<typeof estimateApprovalGasLimitQueryKey>) {
-  console.log('assetAddress', assetAddress);
-  console.log('spenderAddress', spenderAddress);
   if (!assetAddress || !spenderAddress) return gasUnits.basic_approval[chainId];
-  console.log('assetType', assetType);
   if (assetType === 'erc20') {
     const gasLimit = await estimateApprove({
       owner: ownerAddress,

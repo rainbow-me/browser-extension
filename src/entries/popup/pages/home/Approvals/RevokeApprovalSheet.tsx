@@ -161,7 +161,6 @@ export const RevokeApprovalSheet = ({
       if (type === 'HardwareWalletKeychain') {
         setWaitingForDevice(true);
       }
-      // resetSendValues();
       const result = await sendTransaction({
         from: currentAddress,
         to: assetAddress,

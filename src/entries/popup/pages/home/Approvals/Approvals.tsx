@@ -183,7 +183,7 @@ const TokenApproval = ({
                 variant="raised"
                 symbol="xmark"
                 borderRadius="8px"
-                onClick={() => onRevoke()}
+                onClick={onRevoke}
               />
             </Box>
           </Column>
