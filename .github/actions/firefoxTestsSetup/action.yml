@@ -12,4 +12,4 @@ runs:
       gh-access-token: ${{ inputs.gh-access-token }}
   - uses: browser-actions/setup-firefox@v1
     with:
-      firefox-version: 'latest'
+      firefox-version: 'latest-devedition'
