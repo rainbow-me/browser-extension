@@ -128,6 +128,7 @@ function Fee({
             key: shortcuts.global.OPEN_CUSTOM_GAS_MENU.display,
             type: 'customGasMenu.open',
           });
+          // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
           setTimeout(() => openCustomGasSheet(), 0);
         }
       } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
