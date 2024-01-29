@@ -403,7 +403,7 @@ export function Settings() {
           <MenuItem
             leftComponent={<MenuItem.TextIcon icon="🐦" />}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.follow_us_on_twitter')} />
+              <MenuItem.Title text={i18n.t('settings.follow_us_on_x')} />
             }
             rightComponent={
               <Symbol
