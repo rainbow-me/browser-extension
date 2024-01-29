@@ -37,11 +37,13 @@ describe('Navigate Settings & Privacy and its flows', () => {
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
+    console.log('rootURL += extensionId: ', (rootURL += extensionId));
     rootURL += extensionId;
   });
   afterAll(async () => await driver.quit());
 
   it('should be able import a wallet via seed', async () => {
+    console.log('tests started');
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 

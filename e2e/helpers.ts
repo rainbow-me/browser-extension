@@ -72,10 +72,17 @@ export async function goToPopup(
 }
 
 export async function goToWelcome(driver: WebDriver, rootURL: string) {
-  console.log('url used in goToWelcome(): ', rootURL + '/popup.html#/welcome');
-  await driver.get(rootURL + '/popup.html#/welcome');
-  await driver.wait(untilDocumentLoaded(), waitUntilTime);
-  await delayTime('very-long');
+  const welcomeUrl = rootURL + '/popup.html#/welcome';
+  console.log('url used in goToWelcome(): ', welcomeUrl);
+
+  try {
+    await driver.get(welcomeUrl);
+    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+    await delayTime('very-long');
+  } catch (error) {
+    console.error('Error in goToWelcome when navigating to:', welcomeUrl);
+    console.error('Error details:', error);
+  }
 }
 
 export async function getAllWindowHandles({
@@ -949,7 +956,9 @@ export async function importWalletFlow(
       driver,
     });
   } else {
+    console.log('attempt to go to goToWelcome');
     await goToWelcome(driver, rootURL);
+    console.log('attempt to import wallet!');
     await findElementByTestIdAndClick({
       id: 'import-wallet-button',
       driver,
