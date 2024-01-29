@@ -80,6 +80,9 @@
     "follow_us_on_x": "Follow us on X",
     "follow_us_on_farcaster": "Follow us on Farcaster",
     "share_feedback": "Share Feedback",
+    "user_agreement_phrase": " and ",
+    "terms_of_use_link": "Terms of Use",
+    "privacy_policy_link": "Privacy Policy",
     "theme": {
       "title": "Theme",
       "system": "System",

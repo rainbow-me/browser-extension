@@ -13,6 +13,7 @@ import {
 } from '~/core/references/links';
 import { themeOptions } from '~/core/references/themes';
 import {
+  useCurrentAddressStore,
   useCurrentCurrencyStore,
   useCurrentLanguageStore,
   useIsDefaultWalletStore,
@@ -37,6 +38,7 @@ import { logger } from '~/logger';
 
 import packageJson from '../../../../../package.json';
 import { testSandbox } from '../../handlers/wallet';
+import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -44,6 +46,8 @@ const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function Settings() {
   const navigate = useRainbowNavigate();
+  const { currentAddress } = useCurrentAddressStore();
+  const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentCurrency } = useCurrentCurrencyStore();
   const { currentLanguage } = useCurrentLanguageStore();
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
@@ -540,6 +544,32 @@ export function Settings() {
             align="center"
           >
             {packageJson.version}
+          </Text>
+          <br />
+          <Text
+            align="center"
+            color="labelTertiary"
+            size="12pt"
+            weight="regular"
+            as="p"
+          >
+            <a
+              href="https://rainbow.me/terms-of-use"
+              target="_blank"
+              style={{ cursor: 'pointer', color: avatar?.color }}
+              rel="noreferrer"
+            >
+              {i18n.t('settings.terms_of_use_link')}
+            </a>
+            {i18n.t('settings.user_agreement_phrase')}
+            <a
+              href="https://rainbow.me/privacy"
+              target="_blank"
+              style={{ cursor: 'pointer', color: avatar?.color }}
+              rel="noreferrer"
+            >
+              {i18n.t('settings.privacy_policy_link')}
+            </a>
           </Text>
         </Box>
       </MenuContainer>
