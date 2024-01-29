@@ -76,8 +76,8 @@ export async function goToWelcome(driver: WebDriver, rootURL: string) {
   console.log('url used in goToWelcome(): ', welcomeUrl);
 
   try {
-    await driver.get(welcomeUrl);
-    await driver.wait(untilDocumentLoaded(), waitUntilTime);
+    await driver.navigate().to(welcomeUrl);
+    // await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await delayTime('very-long');
   } catch (error) {
     console.error('Error in goToWelcome when navigating to:', welcomeUrl);
