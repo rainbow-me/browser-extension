@@ -44,6 +44,16 @@ describe.runIf(browser !== 'firefox')(
     });
     afterAll(async () => driver.quit());
 
+    it('should be able to nav'),
+      async () => {
+        try {
+          const extensionId = await getExtensionIdByName(driver, 'Rainbow');
+          await driver.navigate().to((rootURL += extensionId));
+        } catch (error) {
+          console.error('Error details:', error);
+        }
+      };
+
     it('should be able import a wallet via seed', async () => {
       await importWalletFlowUsingKeyboardNavigation(
         driver,
