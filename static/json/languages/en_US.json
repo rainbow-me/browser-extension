@@ -74,7 +74,7 @@
     "title": "Settings",
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
     "sounds": "Sounds",
-    "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
+    "default_wallet_description": "Allow apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
     "guides_and_support": "Guides & Support",
     "learn_about_ethereum": "Learn About Ethereum",
@@ -95,14 +95,18 @@
         "text": "Drag networks to reorder them",
         "text_bold": "Tip:"
       },
+      "disable": "Disable",
       "disabled": "Disabled",
+      "enable": "Enable",
+      "enabled": "Network Enabled",
       "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
       "developer_tools": {
         "title": "Enable Developer Tools",
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
-        "title": "Add Network",
+        "title": "Add Custom RPC",
+        "add_custom_network": "Add Custom Network",
         "networks": "Networks",
         "network_name": "Network Name",
         "rpc_url": "RPC URL",
@@ -113,18 +117,23 @@
         "testnet": "Testnet",
         "block_explorer_url": "Block Explorer URL",
         "add_network": "Add Network",
-        "add_rpc": "Add %{rpcName} RPC",
+        "add_rpc": "Add RPC Endpoint",
+        "add_network_rpc": "Add %{rpcName} RPC",
         "add_asset": "Add Custom Token",
-        "network_added": "Network Added!",
-        "network_added_correctly": "%{networkName} has been added correctly!",
+        "network_added": "Network Added",
+        "network_added_correctly": "%{networkName}",
         "remove_token": "Remove Token",
         "remove_rpc": "Remove RPC",
-        "tokens": "Tokens"
+        "remove_network": "Remove Network",
+        "tokens": "Tokens",
+        "cant_connect": "Can't connect to this RPC endpoint",
+        "rpc_not_responding": "The provided RPC endpoint is not responding",
+        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default": "Rainbow"
       },
       "rpc_endpoints": "RPC Endpoints",
-      "enabled": "Enabled",
       "watch_asset": {
-        "title": "Watch Asset"
+        "title": "Add Custom Token"
       }
     },
     "privacy_and_security": {
@@ -214,6 +223,20 @@
           "warning_4": "Rainbow Support will never ask you for your Secret Recovery Phrase.",
           "show": "Show Recovery Phrase",
           "copied": "Recovery Phrase Copied"
+        },
+        "wipe_wallets": {
+          "delete": "Reset Rainbow",
+          "acknowlegement": "I have read and acknowledge the above info.",
+          "warning_one": "Resetting Rainbow will reset your password, & remove all wallets.",
+          "warning_two": "This will also erase all data & settings in Rainbow.",
+          "warning_three": "Ensure your Secret Recovery Phrase is secure before proceeding. ",
+          "warning_four": "Your assets & funds are accessible with the correct recovery information.",
+          "button_wipe": "Reset Rainbow",
+          "button_complete": "Complete Check Above",
+          "wipe_confirmation": "Reset Rainbow",
+          "wipe_confirmation_desc": "Are you sure you want to reset the Rainbow browser extension?",
+          "wipe_confirmation_button": "Reset",
+          "wipe_confirmation_cancel": "Cancel"
         }
       }
     },
@@ -223,7 +246,7 @@
       "use_flashbots": "Use Flashbots",
       "clear_transactions_and_nonces": "Clear Pending Transactions",
       "clear_transactions_and_nonces_success": "Pending transactions cleared",
-      "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures. Learn more."
+      "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures."
     },
     "currency": {
       "title": "Currency",
@@ -249,10 +272,7 @@
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
       "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
-      "custom_rpc": "Custom RPC",
-      "new_tab_bar_enabled": "New Tab Bar",
-      "nfts_enabled": "NFTs Enabled",
-      "points": "Points"
+      "custom_rpc": "Custom RPC"
     }
   },
   "transactions": {
@@ -394,8 +414,10 @@
         "my_wallets": "My Wallets",
         "my_tokens": "My Tokens",
         "my_tokens_watched": "Tokens",
+        "my_nfts": "My NFTs",
+        "my_nfts_watched": "NFTs",
         "copy_address": "Copy Address",
-        "view_nfts": "View NFTs",
+        "view_profile": "View Rainbow Profile",
         "add_wallet": "Add a Wallet",
         "lock": "Lock Rainbow",
         "connected_apps": "Connected Apps",
@@ -439,7 +461,8 @@
         "swap": "bridge",
         "my_wallets": "switch",
         "my_tokens_watched": "my",
-        "view_nfts": "gallery, profile",
+        "my_nfts_watched": "my",
+        "view_profile": "profile, gallery, ens, nfts",
         "testnet_mode": "toggle, networks, testnets",
         "developer_tools": "toggle, networks, developer, testnets",
         "settings": "preferences",
@@ -490,12 +513,21 @@
         "search_placeholder": "Search tokens…",
         "section_title": "My Tokens"
       },
+      "my_nfts": {
+        "empty_label": "No NFTs found",
+        "search_placeholder": "Search NFTs…",
+        "section_title": "My NFTs"
+      },
       "my_wallets": {
         "search_placeholder": "Select a wallet to switch to…",
         "section_title": "My Wallets"
       },
       "token_detail": {
         "search_placeholder": "Search token actions…",
+        "section_title": "Actions"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "Search NFT actions…",
         "section_title": "Actions"
       },
       "wallet_detail": {
@@ -804,7 +836,7 @@
     "title": "Your Secret Recovery Phrase",
     "write_down_seed_importance": "Anyone who has these words can access your entire wallet! You should never share them.",
     "saved_these_words": "I've saved these words",
-    "phrase_copied": "Recovery Phrase Copied"
+    "copied": "Recovery Phrase Copied"
   },
   "import_wallet_via_secret": {
     "title": "Import Wallet",
@@ -1030,7 +1062,8 @@
     "request_rejected": "Transaction Request Rejected",
     "bridge_and_try_again": "Bridge some gas funds and try again",
     "buy_and_try_again": "Buy some gas funds and try again",
-    "buy": "Buy %{token}"
+    "buy_gas": "Buy %{token}",
+    "get_testnet_gas": "Get free testnet %{token}"
   },
   "add_chain": {
     "name": "Name",
@@ -1208,9 +1241,7 @@
     "unknown_token": "Unknown Token"
   },
   "nfts": {
-    "coming_soon_header": "Coming Soon",
     "empty_state_header": "NFTs",
-    "coming_soon_description": "NFTs are coming soon. Stay tuned!",
     "empty_state_description": "Your NFTs will appear here!",
     "view_on_web": "View on Web",
     "display_mode_gallery": "Gallery",
@@ -1219,8 +1250,9 @@
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "Recent",
     "sort_option_abc_long": "Alphabetical",
+    "hidden_section_title": "Hidden",
     "details": {
-      "last_sales_price": "Last Sales Price",
+      "last_sales_price": "Last Sale Price",
       "none": "None",
       "floor_price": "Floor Price",
       "description": "Description",
@@ -1231,6 +1263,8 @@
       "token_contract": "Token Contract",
       "contract_creator": "Contract Creator",
       "chain": "Chain",
+      "hide": "Hide",
+      "unhide": "Unhide",
       "id_copied": "ID Copied",
       "copy_token_id": "Copy Token ID",
       "download": "Download",
@@ -1254,9 +1288,11 @@
     }
   },
   "points": {
-    "coming_soon_header": "Coming Soon",
-    "coming_soon_description": "Points are just around the corner.\nStart earning today.",
+    "check_back_soon_header": "Check Back Soon",
+    "check_back_soon_description": "Points are currently unavailable.\nCheck back soon to continue using Rainbow Points.",
     "your_rank": "Your Rank",
+    "unranked": "Unranked",
+    "points_to_rank": "%{rank_cutoff} points to rank",
     "next_drop": "Next Drop",
     "leaderboard": "Leaderboard",
     "referral_code": "Referral Code",
@@ -1300,11 +1336,32 @@
       "registration_complete": "Registration complete",
       "all_set": "You’re all set!",
       "keep_earning_by": "Keep earning points by swapping, bridging, minting, referring friends, and more",
-      "the_more_you_use": "The more you use Rainbow, the more you’ll be rewarded"
+      "the_more_you_use": "The more you use Rainbow, the more you’ll be rewarded",
+      "balance_required": "Wallet balance required",
+      "ensure_you_have_a_balance_on": "To continue, ensure you have an ETH balance on one of the following networks:",
+      "or_alternatively_balance_on": "Or alternatively, a MATIC balance on Polygon or a BNB balance on BSC",
+      "fund_my_wallet": "Fund My Wallet"
     },
     "error": {
       "existing_user": "Existing user",
-      "invalid_referral_code": "Invalid referral code"
+      "invalid_referral_code": "Invalid referral code",
+      "unexpected": "Something unexpected happened, try again in a few minutes"
+    },
+    "weekly_overview": {
+      "week_of": "> Week of %{from} - %{to}",
+      "counting": "> Counting earned points...",
+      "your_activity": "Your Activity:",
+      "referral_activity": "Referral Activity:",
+      "new_referrals": "New Referrals:",
+      "retroactive": "Retroactive Points:",
+      "total": "Total:",
+      "weekly_counted": "> Weekly earnings counted",
+      "you_have": "You have:",
+      "none": "None",
+
+      "your_earnings": "Your Earnings Last Week",
+      "view_breakdown": "View your weekly earnings breakdown",
+      "view_now": "View Now"
     }
   },
   "speed_up_and_cancel": {
@@ -1342,6 +1399,7 @@
     "not_available": "Price not available",
     "more_options": {
       "copy_address": "Copy Address",
+      "view_on_explorer": "View on %{explorer}",
       "hide": "Hide Token",
       "report": "Report Token"
     },
@@ -1466,7 +1524,10 @@
     "network_changed": "Network changed",
     "network_changed_failed": "Network changed failed",
     "unsupported_network": "Unsupported network",
-    "no_active_session": "No active session"
+    "no_active_session": "No active session",
+    "already_added": "RPC activated",
+    "set_as_active": "New RPC activated",
+    "already_active": "Network already added"
   },
   "alert": {
     "ok": "Ok",
@@ -1616,6 +1677,7 @@
   "nonce": "Nonce",
   "copy": "Copy",
   "copy_link": "Copy Link",
+  "link_text": "Learn More.",
   "close": "Close",
   "verified": "Verified",
   "unverified": "Unverified",

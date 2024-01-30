@@ -8,6 +8,7 @@ import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { getProvider } from '@wagmi/core';
+import { fetchAddresses } from 'gridplus-sdk';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
@@ -377,6 +378,15 @@ export const importAccountAtIndex = async (
       await transport?.close();
 
       address = result.address;
+      break;
+    }
+    case 'GridPlus': {
+      address = (
+        await fetchAddresses({
+          n: 1,
+          startPath: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, index],
+        })
+      )[0];
       break;
     }
     default:

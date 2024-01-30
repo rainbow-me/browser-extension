@@ -17,8 +17,6 @@ export const getHDPathForVendorAndType = (
       }
     case 'Trezor':
       return `${DEFAULT_HD_PATH}/${index}`;
-    case 'GridPlus':
-      return `${DEFAULT_HD_PATH}/${index}`;
     default:
       return `${DEFAULT_HD_PATH}/${index}`;
   }

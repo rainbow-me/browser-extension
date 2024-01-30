@@ -18,43 +18,52 @@ import {
   ThemeProvider,
 } from '~/design-system';
 
+import { ChainBadge } from '../popup/components/ChainBadge/ChainBadge';
+
 const HTML_COLOR_SCHEME_PATTERN = /color-scheme:\s*(\w+);/;
 
 const ASSET_SOURCE = {
-  [ChainId.mainnet]: 'assets/badges/ethereumBadge.png',
-  [ChainId.optimism]: 'assets/badges/optimismBadge.png',
-  [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
-  [ChainId.polygon]: 'assets/badges/polygonBadge.png',
-  [ChainId.base]: 'assets/badges/baseBadge.png',
-  [ChainId.zora]: 'assets/badges/zoraBadge.png',
-  [ChainId.bsc]: 'assets/badges/bscBadge.png',
-  [ChainId.hardhat]: 'assets/badges/hardhatBadge.png',
-  [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge.png',
-  [ChainId.goerli]: 'assets/badges/ethereumBadge.png',
-  [ChainId.sepolia]: 'assets/badges/ethereumBadge.png',
-  [ChainId.holesky]: 'assets/badges/ethereumBadge.png',
-  [ChainId.optimismGoerli]: 'assets/badges/optimismBadge.png',
-  [ChainId.optimismSepolia]: 'assets/badges/optimismBadge.png',
-  [ChainId.bscTestnet]: 'assets/badges/bscBadge.png',
-  [ChainId.polygonMumbai]: 'assets/badges/polygonBadge.png',
-  [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge.png',
-  [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge.png',
-  [ChainId.baseGoerli]: 'assets/badges/baseBadge.png',
-  [ChainId.zoraTestnet]: 'assets/badges/zoraBadge.png',
+  [ChainId.mainnet]: 'assets/badges/ethereumBadge@3x.png',
+  [ChainId.optimism]: 'assets/badges/optimismBadge@3x.png',
+  [ChainId.arbitrum]: 'assets/badges/arbitrumBadge@3x.png',
+  [ChainId.polygon]: 'assets/badges/polygonBadge@3x.png',
+  [ChainId.base]: 'assets/badges/baseBadge@3x.png',
+  [ChainId.zora]: 'assets/badges/zoraBadge@3x.png',
+  [ChainId.bsc]: 'assets/badges/bscBadge@3x.png',
+  [ChainId.hardhat]: 'assets/badges/hardhatBadge@3x.png',
+  [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge@3x.png',
+  [ChainId.goerli]: 'assets/badges/ethereumBadge@3x.png',
+  [ChainId.sepolia]: 'assets/badges/ethereumBadge@3x.png',
+  [ChainId.holesky]: 'assets/badges/ethereumBadge@3x.png',
+  [ChainId.optimismGoerli]: 'assets/badges/optimismBadge@3x.png',
+  [ChainId.optimismSepolia]: 'assets/badges/optimismBadge@3x.png',
+  [ChainId.bscTestnet]: 'assets/badges/bscBadge@3x.png',
+  [ChainId.polygonMumbai]: 'assets/badges/polygonBadge@3x.png',
+  [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge@3x.png',
+  [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge@3x.png',
+  [ChainId.baseGoerli]: 'assets/badges/baseBadge@3x.png',
+  [ChainId.baseSepolia]: 'assets/badges/baseBadge@3x.png',
+  [ChainId.zoraTestnet]: 'assets/badges/zoraBadge@3x.png',
+  [ChainId.zoraSepolia]: 'assets/badges/zoraBadge@3x.png',
 };
 
 export enum IN_DAPP_NOTIFICATION_STATUS {
   'success' = 'success',
   'no_active_session' = 'no_active_session',
   'unsupported_network' = 'unsupported_network',
+  'already_added' = 'already_added',
+  'set_as_active' = 'set_as_active',
+  'already_active' = 'already_active',
 }
 
 export const Notification = ({
   chainId,
+  chainName,
   status,
   extensionUrl,
 }: {
   chainId: ChainId;
+  chainName?: string;
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
 }) => {
@@ -218,6 +227,7 @@ export const Notification = ({
           <NotificationComponent
             siteTheme={siteTheme}
             chainId={chainId}
+            chainName={chainName}
             status={status}
             extensionUrl={extensionUrl}
             iframeLoaded={iframeLoaded}
@@ -231,6 +241,7 @@ export const Notification = ({
 
 const NotificationComponent = ({
   chainId,
+  chainName,
   siteTheme,
   status,
   extensionUrl,
@@ -238,6 +249,7 @@ const NotificationComponent = ({
   onDismiss,
 }: {
   chainId: ChainId;
+  chainName?: string;
   siteTheme: 'dark' | 'light';
   status: IN_DAPP_NOTIFICATION_STATUS;
   extensionUrl: string;
@@ -249,12 +261,27 @@ const NotificationComponent = ({
       case IN_DAPP_NOTIFICATION_STATUS.success:
         return {
           title: i18n.t(`injected_notifications.network_changed`),
-          description: ChainNameDisplay[chainId],
+          description: ChainNameDisplay[chainId] || chainName,
         };
       case IN_DAPP_NOTIFICATION_STATUS.unsupported_network:
         return {
           title: i18n.t(`injected_notifications.network_changed_failed`),
           description: i18n.t('injected_notifications.unsupported_network'),
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.already_added:
+        return {
+          title: i18n.t(`injected_notifications.already_added`),
+          description: undefined,
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.already_active:
+        return {
+          title: i18n.t(`injected_notifications.already_active`),
+          description: undefined,
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.set_as_active:
+        return {
+          title: i18n.t(`injected_notifications.set_as_active`),
+          description: undefined,
         };
       case IN_DAPP_NOTIFICATION_STATUS.no_active_session:
       default:
@@ -263,7 +290,7 @@ const NotificationComponent = ({
           description: i18n.t('injected_notifications.no_active_session'),
         };
     }
-  }, [chainId, status]);
+  }, [chainId, chainName, status]);
 
   return iframeLoaded ? (
     <ThemeProvider theme={siteTheme}>
@@ -292,14 +319,18 @@ const NotificationComponent = ({
           >
             <Columns space="8px">
               <Column width="content">
-                {status === IN_DAPP_NOTIFICATION_STATUS.success ? (
+                {status === IN_DAPP_NOTIFICATION_STATUS.success ||
+                status === IN_DAPP_NOTIFICATION_STATUS.already_added ||
+                status === IN_DAPP_NOTIFICATION_STATUS.set_as_active ? (
                   ASSET_SOURCE[chainId] ? (
                     <img
                       src={`${extensionUrl}${ASSET_SOURCE[chainId]}`}
                       width={24}
                       height={24}
                     />
-                  ) : null
+                  ) : (
+                    <ChainBadge chainId={chainId} size={24} />
+                  )
                 ) : (
                   <Box
                     height="full"
@@ -325,16 +356,18 @@ const NotificationComponent = ({
               </Column>
               <Column>
                 <Rows alignVertical="center" space="6px">
-                  <Row>
+                  <Row height="content">
                     <Text color="label" size="12pt" weight="bold">
                       {title}
                     </Text>
                   </Row>
-                  <Row>
-                    <Text color="labelTertiary" size="11pt" weight="medium">
-                      {description}
-                    </Text>
-                  </Row>
+                  {description ? (
+                    <Row>
+                      <Text color="labelTertiary" size="11pt" weight="medium">
+                        {description}
+                      </Text>
+                    </Row>
+                  ) : null}
                 </Rows>
               </Column>
             </Columns>

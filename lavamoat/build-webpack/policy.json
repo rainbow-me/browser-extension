@@ -1358,6 +1358,24 @@
         "web-ext>source-map-support": true
       }
     },
+    "viem>ws>bufferutil": {
+      "globals": {
+        "__dirname": true
+      },
+      "native": true,
+      "packages": {
+        "gridplus-sdk>secp256k1>node-gyp-build": true
+      }
+    },
+    "viem>ws>utf-8-validate": {
+      "globals": {
+        "__dirname": true
+      },
+      "native": true,
+      "packages": {
+        "gridplus-sdk>secp256k1>node-gyp-build": true
+      }
+    },
     "vitest>acorn": {
       "globals": {
         "console": true,
@@ -1453,24 +1471,6 @@
       "packages": {
         "webpack>glob-to-regexp": true,
         "webpack>graceful-fs": true
-      }
-    },
-    "web-ext>ws>bufferutil": {
-      "globals": {
-        "__dirname": true
-      },
-      "native": true,
-      "packages": {
-        "gridplus-sdk>secp256k1>node-gyp-build": true
-      }
-    },
-    "web-ext>ws>utf-8-validate": {
-      "globals": {
-        "__dirname": true
-      },
-      "native": true,
-      "packages": {
-        "gridplus-sdk>secp256k1>node-gyp-build": true
       }
     },
     "webpack": {
@@ -1719,8 +1719,8 @@
         "setTimeout": true
       },
       "packages": {
-        "web-ext>ws>bufferutil": true,
-        "web-ext>ws>utf-8-validate": true
+        "viem>ws>bufferutil": true,
+        "viem>ws>utf-8-validate": true
       }
     },
     "webpack-cli>@discoveryjs/json-ext": {

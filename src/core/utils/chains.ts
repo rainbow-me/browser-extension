@@ -1,15 +1,16 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { getNetwork } from '@wagmi/core';
 import {
   Chain,
   avalanche,
   celo,
   fantom,
   harmonyOne,
+  mainnet,
   moonbeam,
-} from '@wagmi/chains';
-import { getNetwork } from '@wagmi/core';
-import { mainnet } from 'wagmi';
+} from 'viem/chains';
+import { useNetwork } from 'wagmi';
 
 import {
   NATIVE_ASSETS_PER_CHAIN,
@@ -19,12 +20,16 @@ import {
 import {
   ChainId,
   ChainName,
+  ChainNameDisplay,
   chainIdToNameMapping,
   chainNameToIdMapping,
 } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
-import { customRPCsStore } from '../state/customRPC';
+import {
+  RAINBOW_CHAINS_SUPPORTED,
+  rainbowChainsStore,
+} from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
 
 import { getDappHost, isValidUrl } from './connectedApps';
@@ -33,20 +38,39 @@ import { isLowerCaseMatch } from './strings';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
-  43114: 'avalanchex',
-  100: 'xdai',
-  324: 'zksync',
+  42170: 'arbitrumnova',
   1313161554: 'aurora',
+  43114: 'avalanchex',
+  168587773: 'blastsepolia',
+  288: 'boba',
   42220: 'celo',
-  250: 'fantom',
-  1666600000: 'harmony',
-  59144: 'linea',
+  61: 'classic',
   25: 'cronos',
+  2000: 'dogechain',
+  250: 'fantom',
+  314: 'filecoin',
+  1666600000: 'harmony',
+  13371: 'immutablezkevm',
   2222: 'kavaevm',
   8217: 'klaytn',
-  314: 'filecoin',
-  534352: 'scroll',
+  59144: 'linea',
+  957: 'lyra',
+  169: 'manta',
+  5000: 'mantle',
+  1088: 'metis',
+  34443: 'mode',
   1284: 'moonbeam',
+  7700: 'nativecanto',
+  204: 'opbnb',
+  11297108109: 'palm',
+  424: 'pgn',
+  1101: 'polygonzkevm',
+  369: 'pulsechain',
+  1918988905: 'raritestnet',
+  1380012617: 'rari',
+  534352: 'scroll',
+  100: 'xdai',
+  324: 'zksync',
 };
 
 export const getSupportedChainsWithHardhat = () => {
@@ -62,6 +86,36 @@ export const getSupportedChainsWithHardhat = () => {
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
   return chains.filter((chain) => !chain.testnet);
+};
+
+export const useMainChains = () => {
+  const { chains } = useNetwork();
+  // All the mainnets we support
+  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
+    (chain) => !chain.testnet,
+  );
+
+  // The chain ID of all the mainnets we support
+  const supportedChainIds = mainSupportedChains.map((chain) => chain.id);
+
+  // All the chains that the user added
+  const customMainChains = chains?.filter(
+    (chain) =>
+      !supportedChainIds.includes(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+  );
+
+  const customChainsIncludingTestnets = customMainChains.filter(
+    (chain: Chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        !mainSupportedChains
+          .map((chain: Chain) => chain.id)
+          .includes(chain.id) &&
+        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id)),
+  );
+
+  return mainSupportedChains.concat(customChainsIncludingTestnets);
 };
 
 export const getMainChains = () => {
@@ -102,37 +156,109 @@ export const getSupportedTestnetChains = () => {
   return chains.filter((chain) => !!chain.testnet);
 };
 
+export const getSimpleHashSupportedChainNames = () => {
+  return [
+    'ethereum',
+    'solana',
+    'bitcoin',
+    'polygon',
+    'arbitrum',
+    'arbitrum-nova',
+    'avalanche',
+    'base',
+    'bsc',
+    'celo',
+    'flow',
+    'gnosis',
+    'godwoken',
+    'linea',
+    'loot',
+    'manta',
+    'optimism',
+    'palm',
+    'polygon-zkvem',
+    'scroll',
+    'zksync-era',
+    'zora',
+    'ethereum-rinkeby',
+    'ethereum-sepolia',
+    'solana-devnet',
+    'polygon-mumbai',
+    'arbitrum-goerli',
+    'arbitrum-sepolia',
+    'astria-devnet',
+    'avalanche-fuji',
+    'base-goerli',
+    'base-sepolia',
+    'bsc-testnet',
+    'frame-testnet',
+    'godwoken-testnet',
+    'linea-testnet',
+    'manta-testnet',
+    'modular-games-testnet',
+    'optimism-goerli',
+    'optimism-sepolia',
+    'palm-testnet',
+    'palm-testnet-edge',
+    'polygon-zkevm-testnet',
+    'scroll-testnet',
+    'scroll-sepoloia',
+    'zksync-era-testnet',
+    'zora-testnet',
+    'zora-sepolia',
+    'rari',
+    'rari-testnet',
+  ];
+};
+
+export const useBackendSupportedChains = ({
+  testnetMode,
+}: {
+  testnetMode?: boolean;
+}) => {
+  const { chains } = useNetwork();
+  return chains
+    .filter((chain) => (testnetMode ? !!chain.testnet : !chain.testnet))
+    .filter((c) => c.id !== avalanche.id);
+};
+
 export const getBackendSupportedChains = ({
   testnetMode,
 }: {
   testnetMode?: boolean;
 }) => {
-  const chains = testnetMode
-    ? getSupportedTestnetChains()
-    : getSupportedChains();
-  return chains;
+  const { chains } = getNetwork();
+  return chains
+    .filter((chain) => (testnetMode ? !!chain.testnet : !chain.testnet))
+    .filter((c) => c.id !== avalanche.id);
 };
 
-export const getCustomChains = () => {
-  const { customChains } = customRPCsStore.getState();
+export const getRainbowChains = () => {
+  const { rainbowChains } = rainbowChainsStore.getState();
   return {
-    customChains: Object.values(customChains)
-      .map((customChain) =>
-        customChain.chains.find(
-          (rpc) => rpc.rpcUrls.default.http[0] === customChain.activeRpcUrl,
+    rainbowChains: Object.values(rainbowChains)
+      .map((rainbowChain) =>
+        rainbowChain.chains.find(
+          (rpc) => rpc.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
         ),
       )
       .filter(Boolean),
   };
 };
 
-export const findCustomChainForChainId = (chainId: number) => {
-  const { customChains } = getCustomChains();
-  return customChains.find((network) => network.id === chainId);
+export const findRainbowChainForChainId = (chainId: number) => {
+  const { rainbowChains } = getRainbowChains();
+  return rainbowChains.find((chain) => chain.id === chainId);
+};
+
+export const getChainName = ({ chainId }: { chainId: number }) => {
+  const chain = getChain({ chainId });
+  return ChainNameDisplay[chainId] || chain.name;
 };
 
 export const isCustomChain = (chainId: number) =>
-  !!findCustomChainForChainId(chainId);
+  !RAINBOW_CHAINS_SUPPORTED.map((chain) => chain.id).includes(chainId) &&
+  !!findRainbowChainForChainId(chainId);
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -199,7 +325,7 @@ export function isSupportedChainId(chainId: number) {
 export const chainIdToUse = (
   connectedToHardhat: boolean,
   connectedToHardhatOp: boolean,
-  activeSessionChainId?: number | null,
+  activeSessionChainId: number,
 ) => {
   if (connectedToHardhat) {
     return ChainId.hardhat;
@@ -207,10 +333,7 @@ export const chainIdToUse = (
   if (connectedToHardhatOp) {
     return ChainId.hardhatOptimism;
   }
-  if (activeSessionChainId !== null && activeSessionChainId !== undefined) {
-    return activeSessionChainId;
-  }
-  return ChainId.mainnet;
+  return activeSessionChainId;
 };
 
 export const getChainMetadataRPCUrl = async ({

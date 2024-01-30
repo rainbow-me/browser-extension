@@ -158,6 +158,50 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
+            testId={'wallets-and-keys'}
+            first
+            last
+            leftComponent={
+              <Symbol
+                symbol="key.fill"
+                weight="semibold"
+                size={18}
+                color="orange"
+              />
+            }
+            hasRightArrow
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.title',
+                )}
+              />
+            }
+            onClick={() => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS)}
+          />
+          <MenuItem
+            testId={'privacy-security-link'}
+            first
+            last
+            leftComponent={
+              <Symbol
+                symbol="lock.fill"
+                weight="semibold"
+                size={18}
+                color="blue"
+              />
+            }
+            hasRightArrow
+            onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.privacy_and_security.title')}
+              />
+            }
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
             testId={'networks-link'}
             first
             last
@@ -176,35 +220,13 @@ export function Settings() {
             }
           />
           <MenuItem
-            testId={'privacy-security-link'}
-            first
-            last
-            leftComponent={
-              <Symbol
-                symbol="lock.fill"
-                weight="medium"
-                size={18}
-                color="blue"
-              />
-            }
-            hasRightArrow
-            onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('settings.privacy_and_security.title')}
-              />
-            }
-          />
-        </Menu>
-        <Menu>
-          <MenuItem
             first
             hasRightArrow
             leftComponent={
               <Symbol
                 symbol="bolt.fill"
                 color="red"
-                weight="medium"
+                weight="semibold"
                 size={18}
               />
             }
@@ -237,7 +259,7 @@ export function Settings() {
           <MenuItem
             hasRightArrow
             leftComponent={
-              <Symbol symbol="globe" weight="medium" size={18} color="pink" />
+              <Symbol symbol="globe" weight="semibold" size={18} color="pink" />
             }
             onClick={() => navigate(ROUTES.SETTINGS__LANGUAGE)}
             rightComponent={
@@ -254,7 +276,7 @@ export function Settings() {
             leftComponent={
               <Symbol
                 symbol="speaker.wave.2.fill"
-                weight="medium"
+                weight="semibold"
                 size={18}
                 color="labelTertiary"
               />
@@ -292,7 +314,7 @@ export function Settings() {
                       }
                       color={themeOptions[currentTheme as ThemeOption].color}
                       size={18}
-                      weight="medium"
+                      weight="semibold"
                     />
                   }
                   rightComponent={

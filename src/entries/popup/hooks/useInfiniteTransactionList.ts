@@ -15,10 +15,10 @@ import {
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
+import { useBackendSupportedChains } from '~/core/utils/chains';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
-import { useUserChains } from './useUserChains';
 
 const PAGES_TO_CACHE_LIMIT = 2;
 
@@ -31,9 +31,13 @@ export const useInfiniteTransactionList = ({
 }: UseInfiniteTransactionListParams) => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { getPendingTransactions } = usePendingTransactionsStore();
+  const { pendingTransactions: storePendingTransactions } =
+    usePendingTransactionsStore();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
-  const pendingTransactions = getPendingTransactions({ address });
+  const pendingTransactions = useMemo(
+    () => storePendingTransactions[address] || [],
+    [address, storePendingTransactions],
+  );
   const { customNetworkTransactions } = useCustomNetworkTransactionsStore();
 
   const currentAddressCustomNetworkTransactions = useMemo(
@@ -42,8 +46,10 @@ export const useInfiniteTransactionList = ({
   );
 
   const { testnetMode } = useTestnetModeStore();
-  const { chains } = useUserChains();
-  const userChainIds = chains.map((chain) => chain.id);
+
+  const supportedChainIds = useBackendSupportedChains({ testnetMode }).map(
+    ({ id }) => id,
+  );
 
   const {
     data,
@@ -58,15 +64,12 @@ export const useInfiniteTransactionList = ({
   } = useConsolidatedTransactions({
     address,
     currency,
-    userChainIds,
+    userChainIds: supportedChainIds,
     testnetMode,
   });
 
   const pages = data?.pages;
-  const cutoff =
-    data?.pages && data?.pages?.length
-      ? data?.pages[data?.pages.length - 1]?.cutoff
-      : null;
+  const cutoff = pages?.length ? pages[pages.length - 1]?.cutoff : null;
   const transactions = useMemo(
     () => pages?.flatMap((p) => p.transactions) || [],
     [pages],
@@ -103,6 +106,10 @@ export const useInfiniteTransactionList = ({
     estimateSize: (i) =>
       typeof formattedTransactions[i] === 'string' ? 34 : 52,
     overscan: 20,
+    getItemKey: (i) => {
+      const txOrLabel = formattedTransactions[i];
+      return typeof txOrLabel === 'string' ? txOrLabel : txOrLabel.hash;
+    },
   });
   const rows = infiniteRowVirtualizer.getVirtualItems();
 
@@ -112,7 +119,7 @@ export const useInfiniteTransactionList = ({
         consolidatedTransactionsQueryKey({
           address,
           currency,
-          userChainIds,
+          userChainIds: supportedChainIds,
           testnetMode,
         }),
         {
@@ -121,7 +128,7 @@ export const useInfiniteTransactionList = ({
         },
       );
     }
-  }, [address, currency, data, testnetMode, userChainIds]);
+  }, [address, currency, data, testnetMode, supportedChainIds]);
 
   useComponentWillUnmount(cleanupPages);
 

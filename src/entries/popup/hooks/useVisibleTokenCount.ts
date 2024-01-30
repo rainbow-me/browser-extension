@@ -1,3 +1,4 @@
+import uniqBy from 'lodash/uniqBy';
 import { useMemo } from 'react';
 
 import {
@@ -9,6 +10,7 @@ import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
+import { ParsedUserAsset } from '~/core/types/assets';
 
 export const useVisibleTokenCount = () => {
   const { currentAddress: address } = useCurrentAddressStore();
@@ -48,7 +50,15 @@ export const useVisibleTokenCount = () => {
   );
 
   const allAssets = useMemo(
-    () => [...assets, ...customNetworkAssets],
+    () =>
+      uniqBy(
+        [...assets, ...customNetworkAssets].sort(
+          (a: ParsedUserAsset, b: ParsedUserAsset) =>
+            parseFloat(b?.native?.balance?.amount) -
+            parseFloat(a?.native?.balance?.amount),
+        ),
+        'uniqueId',
+      ),
     [assets, customNetworkAssets],
   );
 

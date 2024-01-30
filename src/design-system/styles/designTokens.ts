@@ -117,6 +117,8 @@ export const globalColors = {
   blueGrey80: '#5F6670',
   blueGrey90: '#3C4047',
   blueGrey100: '#242529',
+
+  cyan50: '#00E7F3',
 };
 
 export type ColorContext = 'light' | 'dark';
@@ -141,6 +143,7 @@ export type BackgroundColor =
   | 'fillQuaternary'
   | 'white'
   | 'blue'
+  | 'cyan'
   | 'green'
   | 'red'
   | 'purple'
@@ -333,6 +336,16 @@ export const backgroundColors: Record<
       setColorContext: 'dark',
     },
   },
+  cyan: {
+    light: {
+      color: globalColors.cyan50,
+      setColorContext: 'dark',
+    },
+    dark: {
+      color: globalColors.cyan50,
+      setColorContext: 'dark',
+    },
+  },
   green: {
     light: {
       color: globalColors.green60,
@@ -507,6 +520,7 @@ export type ForegroundColor =
   | 'labelWhite'
   | 'transparent'
   | 'blue'
+  | 'cyan'
   | 'green'
   | 'red'
   | 'purple'
@@ -559,6 +573,7 @@ export const foregroundColors: Record<
   },
   transparent: selectBackgroundAsForeground('transparent'),
   blue: selectBackgroundAsForeground('blue'),
+  cyan: selectBackgroundAsForeground('cyan'),
   green: selectBackgroundAsForeground('green'),
   red: selectBackgroundAsForeground('red'),
   purple: selectBackgroundAsForeground('purple'),
@@ -636,6 +651,7 @@ export const genericColors = selectForegroundColors(
   'purple',
   'red',
   'yellow',
+  'cyan',
 );
 export type GenericColor = (typeof genericColors)[number];
 
@@ -1068,56 +1084,8 @@ export const symbolNames = selectSymbolNames(
   'photo',
   'person.crop.rectangle.fill',
   'photo.fill',
-  '1.circle',
-  '2.circle',
-  '3.circle',
-  '4.circle',
-  '5.circle',
-  '6.circle',
-  '7.circle',
-  '8.circle',
-  '9.circle',
-  '10.circle',
-  '11.circle',
-  '12.circle',
-  '13.circle',
-  '14.circle',
-  '15.circle',
-  '16.circle',
-  '17.circle',
-  '18.circle',
-  '19.circle',
-  '20.circle',
-  '21.circle',
-  '22.circle',
-  '23.circle',
-  '24.circle',
-  '25.circle',
-  '26.circle',
-  '27.circle',
-  '28.circle',
-  '29.circle',
-  '30.circle',
-  '31.circle',
-  '32.circle',
-  '33.circle',
-  '34.circle',
-  '35.circle',
-  '36.circle',
-  '37.circle',
-  '38.circle',
-  '39.circle',
-  '40.circle',
-  '41.circle',
-  '42.circle',
-  '43.circle',
-  '44.circle',
-  '45.circle',
-  '46.circle',
-  '47.circle',
-  '48.circle',
-  '49.circle',
-  '50.circle',
+  'spigot.fill',
+  'person.2.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

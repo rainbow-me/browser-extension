@@ -1,10 +1,4 @@
-import React, {
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -61,29 +55,24 @@ export const CreateWalletPrompt = ({
     getWallet();
   }, []);
 
-  const handleValidateWalletName = useCallback(async () => {
-    if (address && walletName && walletName.trim() !== '') {
-      saveWalletName({
-        name: walletName.trim(),
-        address,
-      });
-      setCurrentAddress(address);
-      !fromChooseGroup
-        ? navigate(ROUTES.HOME, { state: { isBack: true } })
-        : navigate(
-            ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
-            {
-              state: {
-                newWallet,
-                account: address,
-                password: state?.password,
-                fromChooseGroup: true,
-              },
+  const onCreateWallet = useCallback(async () => {
+    if (!address) return;
+    const name = walletName.trim();
+    if (name) saveWalletName({ name, address });
+    setCurrentAddress(address);
+    !fromChooseGroup
+      ? navigate(ROUTES.HOME, { state: { isBack: true } })
+      : navigate(
+          ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
+          {
+            state: {
+              newWallet,
+              account: address,
+              password: state?.password,
+              fromChooseGroup: true,
             },
-          );
-      return;
-    }
-    setError(i18n.t('errors.no_wallet_name_set'));
+          },
+        );
   }, [
     address,
     navigate,
@@ -118,15 +107,10 @@ export const CreateWalletPrompt = ({
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        handleValidateWalletName();
+        onCreateWallet();
       }
     },
-    [handleValidateWalletName],
-  );
-
-  const isValid = useMemo(
-    () => walletName.length > 0 && walletName.trim() !== '',
-    [walletName],
+    [onCreateWallet],
   );
 
   return (
@@ -219,10 +203,10 @@ export const CreateWalletPrompt = ({
               <Row>
                 <Button
                   testId={'confirm-name-button'}
-                  color={isValid ? 'accent' : 'labelQuaternary'}
-                  variant={isValid ? 'flat' : 'disabled'}
+                  color="accent"
+                  variant="flat"
                   height="36px"
-                  onClick={isValid ? handleValidateWalletName : undefined}
+                  onClick={onCreateWallet}
                   width="full"
                   borderRadius="9px"
                   tabIndex={2}

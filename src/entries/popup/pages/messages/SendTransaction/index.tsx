@@ -1,6 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
-import { formatEther } from '@ethersproject/units';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -65,6 +64,12 @@ export function SendTransaction({
   const { watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
 
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    activeSession?.chainId === ChainId.mainnet;
+
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
     if (!selectedWallet || !activeSession) return;
@@ -77,11 +82,10 @@ export function SendTransaction({
       if (type === 'HardwareWalletKeychain') {
         setWaitingForDevice(true);
       }
-
       const activeChainId = chainIdToUse(
         connectedToHardhat,
         connectedToHardhatOp,
-        activeSession?.chainId,
+        activeSession.chainId,
       );
       const txData = {
         from: selectedWallet,
@@ -94,8 +98,9 @@ export function SendTransaction({
       if (result) {
         const transaction = {
           asset: asset || undefined,
-          value: formatEther(result?.value || ''),
+          value: result.value.toString(),
           data: result.data,
+          flashbots: flashbotsEnabledGlobally,
           from: txData.from,
           to: txData.to,
           hash: result.hash as TxHash,
@@ -145,6 +150,7 @@ export function SendTransaction({
     connectedToHardhat,
     connectedToHardhatOp,
     asset,
+    flashbotsEnabledGlobally,
     selectedGas.transactionGasParams,
     approveRequest,
     dappMetadata?.appHost,
@@ -181,14 +187,13 @@ export function SendTransaction({
     }
   }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
-  const activeChainId = chainIdToUse(
-    connectedToHardhat,
-    connectedToHardhatOp,
-    activeSession?.chainId,
-  );
-
   useEffect(() => {
     if (activeSession) {
+      const activeChainId = chainIdToUse(
+        connectedToHardhat,
+        connectedToHardhatOp,
+        activeSession?.chainId,
+      );
       selectAssetAddressAndChain(
         NATIVE_ASSETS_PER_CHAIN[activeChainId] as Address,
         activeChainId,
@@ -197,15 +202,9 @@ export function SendTransaction({
   }, [
     activeSession,
     connectedToHardhat,
-    activeChainId,
     selectAssetAddressAndChain,
+    connectedToHardhatOp,
   ]);
-
-  const { flashbotsEnabled } = useFlashbotsEnabledStore();
-  const flashbotsEnabledGlobally =
-    config.flashbots_enabled &&
-    flashbotsEnabled &&
-    activeSession?.chainId === ChainId.mainnet;
 
   return (
     <Box

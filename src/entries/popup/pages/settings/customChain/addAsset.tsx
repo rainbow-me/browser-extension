@@ -5,12 +5,14 @@ import { useLocation } from 'react-router';
 import { Address } from 'wagmi';
 
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
-import { useCustomRPCAssetsStore } from '~/core/state/customRPCAssets';
+import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { Box, Button, Inline, Stack } from '~/design-system';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 
 const INITIAL_ASSET = {
   name: '',
@@ -21,7 +23,9 @@ const INITIAL_ASSET = {
 
 export function AddAsset() {
   const { state } = useLocation();
-  const { customRPCAssets, addCustomRPCAsset } = useCustomRPCAssetsStore();
+  const { rainbowChainAssets, addRainbowChainAsset } =
+    useRainbowChainAssetsStore();
+  const { customTokenDrafts, saveCustomTokenDraft } = usePopupInstanceStore();
 
   const [validations, setValidations] = useState<{
     address: boolean;
@@ -35,16 +39,24 @@ export function AddAsset() {
     symbol: true,
   });
 
+  const navigate = useRainbowNavigate();
   const chainId = state?.chainId;
+  const savedDraft = customTokenDrafts[chainId];
+  const initialAsset = {
+    address: savedDraft?.address || INITIAL_ASSET.address,
+    decimals: savedDraft?.decimals || INITIAL_ASSET.decimals,
+    name: savedDraft?.name || INITIAL_ASSET.name,
+    symbol: savedDraft?.symbol || INITIAL_ASSET.symbol,
+  };
   const customRPCAssetsForChain = useMemo(
-    () => customRPCAssets[chainId] || [],
-    [chainId, customRPCAssets],
+    () => rainbowChainAssets[chainId] || [],
+    [chainId, rainbowChainAssets],
   );
 
-  const [asset, setAsset] = useState(INITIAL_ASSET);
+  const [asset, setAsset] = useState(initialAsset);
 
   const {
-    data: assetMetadata = INITIAL_ASSET,
+    data: assetMetadata = initialAsset,
     isFetching: assetMetadataIsFetching,
     isFetched: assetMetadataIsFetched,
   } = useAssetMetadata(
@@ -165,14 +177,14 @@ export function AddAsset() {
     const validAsset = validateAddCustomAsset();
 
     if (validAsset && !customRPCAssetsAddresses.includes(assetToAdd.address)) {
-      addCustomRPCAsset({
+      addRainbowChainAsset({
         chainId,
-        customRPCAsset: assetToAdd,
+        rainbowChainAsset: assetToAdd,
       });
-      setAsset(INITIAL_ASSET);
+      navigate(-1);
     }
   }, [
-    addCustomRPCAsset,
+    addRainbowChainAsset,
     asset.address,
     asset.decimals,
     asset.name,
@@ -182,8 +194,13 @@ export function AddAsset() {
     assetMetadata.symbol,
     chainId,
     customRPCAssetsForChain,
+    navigate,
     validateAddCustomAsset,
   ]);
+
+  useEffect(() => {
+    saveCustomTokenDraft(chainId, asset);
+  }, [asset, chainId, saveCustomTokenDraft]);
 
   useEffect(() => {
     if (!isEqual(assetMetadata, prevAssetMetadata) && assetMetadataIsFetched) {

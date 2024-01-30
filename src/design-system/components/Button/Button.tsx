@@ -101,7 +101,7 @@ function ButtonShortcut({
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
+  function Button(
     {
       children,
       emoji,
@@ -113,7 +113,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ...props
     }: ButtonProps,
     ref,
-  ) => {
+  ) {
     const { textColor } = stylesForVariant({
       color: props.color ?? 'accent',
     })[props.variant];
@@ -174,5 +174,3 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     );
   },
 );
-
-Button.displayName = 'Button';

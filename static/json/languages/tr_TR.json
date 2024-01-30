@@ -87,18 +87,45 @@
     },
     "networks": {
       "mainnet": "Ana Ağ",
+      "testnet": "Test ağı",
       "title": "Ağlar",
+      "testnets": "Test ağları",
       "quick_promo": {
         "text": "Ağları yeniden sıralamak için sürükleyin",
         "text_bold": "İpucu:"
       },
+      "disabled": "Devre Dışı",
       "description": "Hangi ağları ve jetonları göstereceğinizi seçin. Rainbow tarafından desteklenen herhangi bir ağa bağlanabilirsiniz, işaretli olmasalar bile.",
       "developer_tools": {
         "title": "Geliştirici Araçları'nı Etkinleştir",
         "toggle_explainer": "Testnet Mode kısayolunu (T) etkinleştirir ve ana ekranın sağ üst menüsüne bir düğme ekler"
       },
       "custom_rpc": {
-        "title": "Özel RPC"
+        "title": "Ağ Ekle",
+        "networks": "Ağlar",
+        "network_name": "Ağ Adı",
+        "rpc_url": "RPC URL'si",
+        "chain_id": "Zincir Kimliği",
+        "symbol": "Sembol",
+        "decimals": "Ondalık",
+        "active": "Aktif",
+        "testnet": "Test ağı",
+        "block_explorer_url": "Blok Gezgini URL",
+        "add_network": "Ağ Ekle",
+        "add_rpc": "%{rpcName} RPC Ekle",
+        "add_asset": "Özel Token Ekle",
+        "network_added": "Ağ Eklendi!",
+        "network_added_correctly": "%{networkName} başarıyla eklendi!",
+        "remove_token": "Token’ı Kaldır",
+        "remove_rpc": "RPC'yi Kaldır",
+        "tokens": "Tokenler",
+        "cant_connect": "Bu RPC uç noktasına bağlanılamıyor!",
+        "rpc_not_responding": "Sağlanan URL yanıt vermiyor"
+      },
+      "rpc_endpoints": "RPC Uç Noktaları",
+      "enabled": "Etkin",
+      "watch_asset": {
+        "title": "Varlığı İzle"
       }
     },
     "privacy_and_security": {
@@ -225,7 +252,8 @@
       "command_k_internal_shortcuts_enabled": "⌘K İç Hızlı Kısayollarını Etkinleştir",
       "custom_rpc": "Özel RPC",
       "new_tab_bar_enabled": "Yeni Sekme Çubuğu",
-      "nfts_enabled": "NFT'ler Etkin"
+      "nfts_enabled": "NFT'ler Etkin",
+      "points": "Puanlar"
     }
   },
   "transactions": {
@@ -880,7 +908,7 @@
   },
   "seed_verify": {
     "title": "Gizli Kurtarma İfade'nizi Doğrulayın",
-    "explanation": "Gizli Kurtarma İfadenizdeki 4., 8. ve 12. kelimeleri seçin ve sırasıyla yazın.",
+    "explanation": "Gizli Kurtarma Cümlenizin sırasına göre 4., 8. ve 12. kelimeleri seçin",
     "skip": "Bu adımı atla"
   },
   "menu": {
@@ -970,6 +998,13 @@
       "title": "Bu uygulama muhtemelen zararlı",
       "message": "Bu uygulamadan mesajları veya işlemleri imzalamak, varlıklarınızın kaybolmasına neden olabilir"
     },
+    "malicious_transaction_warning": {
+      "title": "Bu işlem şüpheli görünüyor",
+      "malicious_address": "Bu işlemde zararlı bir adres yer almakta. İmzalama kayıplara yol açabilir",
+      "malicious_entity": "Bu işlemde zararlı bir varlık yer almakta. İmzalama kayıplara yol açabilir",
+      "minting_is_a_losing_trade": "Bu işlemde bir dolandırıcı kontrat yer almakta. Darp etmek kayıplara yol açar",
+      "you_can_lose_everything": "Bu işlemi imzalamak, cüzdanınızdaki her şeye erişimi kaybetmenize neden olabilir"
+    },
     "dangerous_request": "Tehlikeli İstek",
     "message_signing_request": "İmza İsteği",
     "message": "Mesaj",
@@ -1005,7 +1040,8 @@
     "currency_name": "Para Birimi Adı",
     "currency_decimals": "Para Birimi Ondalıkları",
     "rpc_url": "RPC url",
-    "block_explorer_url": "Blok Gezgini url"
+    "block_explorer_url": "Blok Gezgini url",
+    "testnet": "Test ağı"
   },
   "transaction_fee": {
     "title": "İşlem Hızı",
@@ -1085,7 +1121,9 @@
   "errors": {
     "error_encountered": "Bir şeyler yanlış gitti. Lütfen sorunu ekibimizle paylaşın ve biz düzeltelim!",
     "no_wallet_name_set": "Cüzdan adı belirtilmemiş",
-    "report_error": "Sorunu bildir"
+    "report_error": "Sorunu bildir",
+    "sending_transaction": "İşlem gönderilirken hata",
+    "executing_swap": "Takas gerçekleştirilirken hata"
   },
   "common_titles": {
     "before_you_proceed": "Devam etmeden önce"
@@ -1186,6 +1224,7 @@
       "last_sales_price": "Son Satış Fiyatı",
       "none": "Hiçbiri",
       "floor_price": "Taban Fiyat",
+      "description": "Açıklama",
       "properties": "Özellikler",
       "address_copied": "Adres Kopyalandı",
       "about": "Hakkında",
@@ -1200,12 +1239,74 @@
       "view_collection": "Koleksiyonu Görüntüle",
       "collection_website": "Koleksiyon Websitesi",
       "owners": "Sahipler",
-      "unique_owners": "Tekil Sahipler"
+      "unique_owners": "Tekil Sahipler",
+      "ens_profile_info": "Profil Bilgileri",
+      "ens_bio": "Biyografi",
+      "ens_cover": "Kapak",
+      "ens_address": "ETH Adresi",
+      "ens_website": "Web Sitesi",
+      "registered_on": "Kayıt tarihi",
+      "expires_in": "Bitiş süresi",
+      "explainer": {
+        "floor_price_description": "Bir koleksiyonun taban fiyatı, koleksiyondaki şu an satışta olan tüm ürünler arasındaki en düşük fiyattır",
+        "floor_price_title": "Koleksiyon taban fiyatı",
+        "floor_price_action_label": "Anladım"
+      }
     }
   },
   "points": {
     "coming_soon_header": "Yakında",
-    "coming_soon_description": "Puanlar tam köşede.\nBugün kazanmaya başlayın."
+    "coming_soon_description": "Puanlar tam köşede.\nBugün kazanmaya başlayın.",
+    "your_rank": "Sıralamanız",
+    "next_drop": "Sonraki Düşüş",
+    "leaderboard": "Lider Tablosu",
+    "referral_code": "Referans Kodu",
+    "referral_code_description": "Arkadaşlarınızı Rainbow üzerinden 100 dolarlık takas yapıldığında puanlar kazanın",
+    "copied_referral_code": "Referans kodu kopyalandı!",
+    "copied_referral_link": "Referans linki kopyalandı!",
+    "out_of": "%{total}üzerinden",
+    "out_of_current_total_points": "Şu anki toplam puan %{total} üzerinden",
+    "header": "Puanlarınızı talep edin",
+    "description": "Puanlar burada. Ne kadar ödül aldığınızı öğrenin",
+    "get_started": "Başlamak",
+    "use_referral_code": "Referans Kodu Kullan",
+    "referral_header": "Referans kodunuzu girin",
+    "referral_description": "Ekstra ödül kazanmak için aşağıya bir referans kodu girin",
+    "referral_code_invalid": "Geçersiz Kod",
+    "onboarding": {
+      "authorization_required": "Yetkilendirme gerekiyor",
+      "sign_in_with_your_wallet": "Cüzdanınızla giriş yapın",
+      "access_granted": "Erişim verildi",
+      "calculating_points": "Puanlar hesaplanıyor",
+      "rainbow_swaps": "Rainbow Takasları:",
+      "rainbow_nfts_owned": "Sahip Olunan Rainbow NFT'ler:",
+      "wallet_balance": "Cüzdan Bakiyesi:",
+      "metamask_swaps": "MetaMask Takasları:",
+      "bonus_reward": "Bonus Ödül:",
+      "calculation_complete": "Hesaplama tamamlandı",
+      "points_earned": "Kazanılan Puanlar:",
+      "bonus_points": "Bonus Puanlar:",
+      "claim_description_buy": "Gerisini talep etmek için, Rainbow üzerinden biraz ETH edinin",
+      "claim_description_swap": "Gerisini talep etmek için, Rainbow üzerinden en az 100 dolarlık takas yapın",
+      "account": "Hesap:",
+      "sign_in": "Giriş Yap",
+      "get_eth": "Biraz ETH Al",
+      "try_swap": "Bir Takas Dene",
+      "referral_link_ready": "Referans linkiniz hazır",
+      "share_and_earn": "Referans linkinizi tweetleyerek ekstra 250 puan kazanın",
+      "plus_percent_of_refers": "Üstelik, referans olarak gönderdiğiniz kişilerin kazandığı puanların %10'unu kazanacaksınız",
+      "share": "X ile paylaş",
+      "share_tweet": "Cüzdanıma %{points} Rainbow Puan düştü\nHerkesin en az 100 puanı var, seninki daha da fazla olabilir!\n\nHemen talep et: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "Cüzdanıma %{points} Rainbow Puan düştü — ve MetaMask cüzdanımı Rainbow'a taşıdığım için ekstra %{metamaskBonus} Puan bonusu kazandım 🦊 🔫\n\nHerkesin en az 100 puanı var, seninki daha da fazla olabilir! Hemen talep et: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "Kayıt tamamlandı",
+      "all_set": "Hepsi tamam!",
+      "keep_earning_by": "Arkadaşları yönlendirerek, köprü kurarak, basarak ve daha birçok şekilde puan kazanmaya devam edin",
+      "the_more_you_use": "Rainbow’u ne kadar çok kullanırsanız, o kadar çok ödül kazanırsınız"
+    },
+    "error": {
+      "existing_user": "Mevcut kullanıcı",
+      "invalid_referral_code": "Geçersiz referans kodu"
+    }
   },
   "speed_up_and_cancel": {
     "speed_up": "Hızlandır",
@@ -1500,9 +1601,12 @@
   "chain": "Zincir",
   "nonce": "Nonce",
   "copy": "Kopyala",
+  "copy_link": "Linki Kopyala",
   "close": "Kapat",
   "verified": "Doğrulanmış",
   "unverified": "Doğrulanmamış",
+  "skip": "Atla",
+  "done": "Tamam",
   "watch_asset": {
     "chain_id": "Zincir Kimliği",
     "symbol": "Sembol",
@@ -1511,4 +1615,3 @@
     "not_found": "Bu varlık seçilen ağda bulunamadı. Lütfen aşağıdan doğru ağı seçiniz"
   }
 }
-

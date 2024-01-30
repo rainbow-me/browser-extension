@@ -1,5 +1,10 @@
 import { FixedNumber } from '@ethersproject/bignumber';
-import { Provider, TransactionResponse } from '@ethersproject/providers';
+import { AddressZero } from '@ethersproject/constants';
+import {
+  Provider,
+  TransactionReceipt,
+  TransactionResponse,
+} from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
@@ -7,7 +12,11 @@ import { Address } from 'wagmi';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
-import { SupportedCurrencyKey, smartContractMethods } from '../references';
+import {
+  ETH_ADDRESS,
+  SupportedCurrencyKey,
+  smartContractMethods,
+} from '../references';
 import {
   currentCurrencyStore,
   nonceStore,
@@ -28,6 +37,7 @@ import {
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
+import { formatNumber } from './formatNumber';
 import { convertStringToHex } from './hex';
 import { capitalize } from './strings';
 
@@ -232,7 +242,7 @@ export function parseTransaction({
 export const parseNewTransaction = (
   tx: NewTransaction,
   currency: SupportedCurrencyKey,
-) => {
+): RainbowTransaction => {
   const changes = tx.changes?.filter(Boolean).map((change) => ({
     ...change,
     asset: parseUserAssetBalances({
@@ -267,6 +277,33 @@ export const parseNewTransaction = (
   } satisfies RainbowTransaction;
 };
 
+const getTransactionReceipt = async ({
+  transactionResponse,
+  provider,
+}: {
+  transactionResponse: TransactionResponse;
+  provider: Provider;
+}): Promise<TransactionReceipt | undefined> => {
+  const receipt = await Promise.race([
+    (async () => {
+      try {
+        if (transactionResponse.wait) {
+          return await transactionResponse.wait();
+        } else {
+          return await provider.getTransactionReceipt(transactionResponse.hash);
+        }
+      } catch (e) {
+        /* empty */
+        return;
+      }
+    })(),
+    new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    }),
+  ]);
+  return receipt as TransactionReceipt | undefined;
+};
+
 export async function getTransactionReceiptStatus({
   transactionResponse,
   provider,
@@ -274,20 +311,10 @@ export async function getTransactionReceiptStatus({
   transactionResponse: TransactionResponse;
   provider: Provider;
 }) {
-  let receipt;
-
-  try {
-    if (transactionResponse) {
-      if (transactionResponse.wait) {
-        receipt = await transactionResponse.wait();
-      } else {
-        receipt = await provider.getTransactionReceipt(
-          transactionResponse.hash,
-        );
-      }
-    }
-    // eslint-disable-next-line no-empty
-  } catch (e) {}
+  const receipt = await getTransactionReceipt({
+    transactionResponse,
+    provider,
+  });
 
   if (!receipt) return { status: 'pending' as const };
   return {
@@ -333,18 +360,16 @@ export function addNewTransaction({
   transaction: NewTransaction;
 }) {
   const { setNonce } = nonceStore.getState();
-  const { getPendingTransactions, setPendingTransactions } =
-    pendingTransactionsStore.getState();
-  const pendingTransactions = getPendingTransactions({ address });
+  const { addPendingTransaction } = pendingTransactionsStore.getState();
   const { currentCurrency } = currentCurrencyStore.getState();
   const newPendingTransaction = parseNewTransaction(
     transaction,
     currentCurrency,
   );
 
-  setPendingTransactions({
+  addPendingTransaction({
     address,
-    pendingTransactions: [newPendingTransaction, ...pendingTransactions],
+    pendingTransaction: newPendingTransaction,
   });
   setNonce({
     address,
@@ -363,24 +388,15 @@ export function updateTransaction({
   transaction: NewTransaction;
 }) {
   const { setNonce } = nonceStore.getState();
-  const { getPendingTransactions, setPendingTransactions } =
-    pendingTransactionsStore.getState();
+  const { updatePendingTransaction } = pendingTransactionsStore.getState();
   const { currentCurrency } = currentCurrencyStore.getState();
   const updatedPendingTransaction = parseNewTransaction(
     transaction,
     currentCurrency,
   );
-  const pendingTransactions = getPendingTransactions({ address });
-  setPendingTransactions({
+  updatePendingTransaction({
     address,
-    pendingTransactions: [
-      { ...transaction, ...updatedPendingTransaction },
-      ...pendingTransactions.filter(
-        (tx) =>
-          tx?.chainId !== chainId &&
-          tx?.nonce !== updatedPendingTransaction?.nonce,
-      ),
-    ],
+    pendingTransaction: updatedPendingTransaction,
   });
   setNonce({
     address,
@@ -445,18 +461,23 @@ type FlashbotsStatus =
 export const getTransactionFlashbotStatus = async (
   transaction: RainbowTransaction,
   txHash: string,
-) => {
+): Promise<{
+  flashbotsStatus: 'FAILED' | 'CANCELLED';
+  status: 'failed';
+  minedAt: number;
+  title: string;
+} | null> => {
   try {
     const fbStatus = await flashbotsApi.get<{ status: FlashbotsStatus }>(
       `/tx/${txHash}`,
     );
-    const flashbotStatus = fbStatus.data.status;
+    const flashbotsStatus = fbStatus.data.status;
     // Make sure it wasn't dropped after 25 blocks or never made it
-    if (flashbotStatus === 'FAILED' || flashbotStatus === 'CANCELLED') {
+    if (flashbotsStatus === 'FAILED' || flashbotsStatus === 'CANCELLED') {
       const status = 'failed';
       const minedAt = Math.floor(Date.now() / 1000);
       const title = i18n.t(`transactions.${transaction.type}.failed`);
-      return { status, minedAt, title } as const;
+      return { flashbotsStatus, status, minedAt, title };
     }
   } catch (e) {
     //
@@ -482,4 +503,81 @@ const TransactionOutTypes = [
 export const getDirection = (type: TransactionType) => {
   if (TransactionOutTypes.includes(type)) return 'out';
   return 'in';
+};
+
+export const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
+  if (type !== 'swap') return;
+
+  const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;
+  const tokenOut = changes?.filter((c) => c?.direction === 'out')[0]?.asset;
+
+  const amountIn = tokenIn?.balance.amount;
+  const amountOut = tokenOut?.balance.amount;
+  if (!amountIn || !amountOut) return;
+
+  const fixedAmountIn = FixedNumber.fromString(amountIn);
+  const fixedAmountOut = FixedNumber.fromString(amountOut);
+
+  const rate = fixedAmountOut.divUnsafe(fixedAmountIn).toString();
+  if (!rate) return;
+
+  return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;
+};
+
+export const getAdditionalDetails = (transaction: RainbowTransaction) => {
+  const exchangeRate = getExchangeRate(transaction);
+  const { asset, changes, approvalAmount, contract, type } = transaction;
+  const nft = changes?.find((c) => c?.asset.type === 'nft')?.asset;
+  const collection = nft?.symbol;
+  const standard = nft?.standard;
+  const tokenContract =
+    asset?.address !== ETH_ADDRESS && asset?.address !== AddressZero
+      ? asset?.address
+      : undefined;
+
+  const tokenAmount =
+    !nft && !exchangeRate && tokenContract
+      ? changes?.find((c) => c?.asset.address === tokenContract)?.asset.balance
+          .amount
+      : undefined;
+
+  const approval = type === 'approve' &&
+    approvalAmount && {
+      value: approvalAmount,
+      label: getApprovalLabel(transaction),
+    };
+
+  if (
+    !tokenAmount &&
+    !tokenContract &&
+    !exchangeRate &&
+    !collection &&
+    !standard &&
+    !approval
+  )
+    return;
+
+  return {
+    asset,
+    tokenAmount: tokenAmount && `${formatNumber(tokenAmount)} ${asset?.symbol}`,
+    tokenContract,
+    contract,
+    exchangeRate,
+    collection,
+    standard,
+    approval,
+  };
+};
+
+export const getApprovalLabel = ({
+  approvalAmount,
+  asset,
+  type,
+}: Pick<RainbowTransaction, 'type' | 'asset' | 'approvalAmount'>) => {
+  if (!approvalAmount || !asset) return;
+  if (approvalAmount === 'UNLIMITED') return i18n.t('approvals.unlimited');
+  if (type === 'revoke') return i18n.t('approvals.no_allowance');
+  return `${formatNumber(formatUnits(approvalAmount, asset.decimals))} ${
+    asset.symbol
+  }`;
 };

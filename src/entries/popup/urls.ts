@@ -13,6 +13,7 @@ export const ROUTES = {
     `/home/nft-details/${collectionId}/${nftId}`,
   POINTS_REFERRAL: '/home/points-referral',
   POINTS_ONBOARDING: '/home/points-onboarding',
+  POINTS_WEEKLY_OVERVIEW: '/home/points-weekly-overview',
   CONNECTED: '/connected', // ConnectedApps
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect
@@ -37,19 +38,21 @@ export const ROUTES = {
   SETTINGS__PRIVACY: '/settings/privacy', // Privacy
   SETTINGS__PRIVACY__AUTOLOCK: '/settings/privacy/autolock', // AutoLockTimer
   SETTINGS__PRIVACY__CHANGE_PASSWORD: '/settings/privacy/change-password', // ChangePassword
-  SETTINGS__PRIVACY__WALLETS_AND_KEYS: '/settings/privacy/wallets-and-keys', // WalletsAndKeys
+  SETTINGS__PRIVACY__WALLETS_AND_KEYS: '/settings/wallets-and-keys', // WalletsAndKeys
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS:
-    '/settings/privacy/wallets-and-keys/wallet-details', // WalletDetails
+    '/settings/wallets-and-keys/wallet-details', // WalletDetails
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING:
-    '/settings/privacy/wallets-and-keys/wallet-details/private-key-warning', // PrivateKeyWarning
+    '/settings/wallets-and-keys/wallet-details/private-key-warning', // PrivateKeyWarning
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY:
-    '/settings/privacy/wallets-and-keys/wallet-details/private-key', // PrivateKey
+    '/settings/wallets-and-keys/wallet-details/private-key', // PrivateKey
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING:
-    '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase-warning', // RecoveryPhraseWarning
+    '/settings/wallets-and-keys/wallet-details/recovery-phrase-warning', // RecoveryPhraseWarning
+  SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING:
+    '/settings/wallets-and-keys/wallet-details/wipe-wallet-warning', // WipeWalletWarning
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE:
-    '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase', // RecoveryPhrase
+    '/settings/wallets-and-keys/wallet-details/recovery-phrase', // RecoveryPhrase
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY:
-    '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase-verify', // RecoveryPhraseVerify
+    '/settings/wallets-and-keys/wallet-details/recovery-phrase-verify', // RecoveryPhraseVerify
   SETTINGS__TRANSACTIONS: '/settings/transactions', // Transactions
   SETTINGS__CURRENCY: '/settings/currency', // Currency
   SETTINGS__LANGUAGE: '/settings/language', // Language

@@ -1,6 +1,7 @@
 import { i18n } from '~/core/languages';
 import { ActiveSession } from '~/core/state/appSessions';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
+import { getChainName } from '~/core/utils/chains';
 import { Inline, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
@@ -18,13 +19,14 @@ export interface SelectedNetwork {
 
 function WalletNativeBalance({ session }: { session: ActiveSession }) {
   const chainId = session?.chainId || ChainId.mainnet;
+  const chainName = getChainName({ chainId });
   const { nativeAsset } = useNativeAsset({
     chainId,
     address: session?.address,
   });
   const balance = nativeAsset?.balance;
 
-  const hasEnoughtGas = useHasEnoughGas(session);
+  const hasEnoughGas = useHasEnoughGas(session);
 
   if (!balance) return null;
 
@@ -34,7 +36,7 @@ function WalletNativeBalance({ session }: { session: ActiveSession }) {
       <Text
         size="12pt"
         weight="bold"
-        color={hasEnoughtGas ? 'labelTertiary' : 'red'}
+        color={hasEnoughGas ? 'labelTertiary' : 'red'}
       >
         {+balance.amount > 0
           ? balance.display
@@ -42,7 +44,7 @@ function WalletNativeBalance({ session }: { session: ActiveSession }) {
       </Text>
       <Text size="12pt" weight="semibold" color="labelQuaternary">
         {i18n.t('approve_request.on_chain', {
-          chain: ChainNameDisplay[chainId],
+          chain: chainName,
         })}
       </Text>
     </Inline>

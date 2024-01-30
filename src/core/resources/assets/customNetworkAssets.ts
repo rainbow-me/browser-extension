@@ -11,29 +11,32 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { SupportedCurrencyKey } from '~/core/references';
+import {
+  SUPPORTED_MAINNET_CHAINS,
+  SupportedCurrencyKey,
+} from '~/core/references';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { customRPCAssetsStore } from '~/core/state/customRPCAssets';
+import {
+  RainbowChainAsset,
+  useRainbowChainAssetsStore,
+} from '~/core/state/rainbowChainAssets';
 import {
   AddressOrEth,
   AssetMetadata,
   ParsedAssetsDict,
   ParsedUserAsset,
-  ZerionAssetPrice,
 } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import {
   createAssetQuery,
   extractFulfilledValue,
   getAssetBalance,
+  getCustomChainIconUrl,
   parseAssetMetadata,
   parseUserAssetBalances,
 } from '~/core/utils/assets';
-import {
-  customChainIdsToAssetNames,
-  getCustomChains,
-} from '~/core/utils/chains';
-import { isZero } from '~/core/utils/numbers';
+import { getRainbowChains } from '~/core/utils/chains';
+import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
 import { ETH_MAINNET_ASSET } from '~/test/utils';
 
@@ -50,6 +53,7 @@ export type CustomNetworkAssetsArgs = {
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
   filterZeroBalance?: boolean;
+  rainbowChainAssets?: Record<number, RainbowChainAsset[]>;
 };
 
 type SetCustomNetworkAssetsArgs = {
@@ -58,6 +62,7 @@ type SetCustomNetworkAssetsArgs = {
   customNetworkAssets?: CustomNetworkAssetsResult;
   testnetMode?: boolean;
   filterZeroBalance?: boolean;
+  rainbowChainAssets: Record<number, RainbowChainAsset[]>;
 };
 
 type SetUserDefaultsArgs = {
@@ -66,12 +71,15 @@ type SetUserDefaultsArgs = {
   staleTime: number;
   testnetMode?: boolean;
   filterZeroBalance?: boolean;
+  rainbowChainAssets: Record<number, RainbowChainAsset[]>;
 };
 
 type FetchCustomNetworkAssetsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
+  filterZeroBalance?: boolean;
+  rainbowChainAssets: Record<number, RainbowChainAsset[]>;
 };
 
 // ///////////////////////////////////////////////
@@ -82,11 +90,18 @@ export const customNetworkAssetsKey = ({
   currency,
   testnetMode,
   filterZeroBalance,
+  rainbowChainAssets,
 }: CustomNetworkAssetsArgs) =>
   createQueryKey(
     'CustomNetworkAssets',
-    { address, currency, testnetMode, filterZeroBalance },
-    { persisterVersion: 3 },
+    {
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+      rainbowChainAssets,
+    },
+    { persisterVersion: 4 },
   );
 
 type customNetworkAssetsKey = ReturnType<typeof customNetworkAssetsKey>;
@@ -98,9 +113,17 @@ export const CustomNetworkAssetsFetchQuery = ({
   address,
   currency,
   testnetMode,
+  filterZeroBalance,
+  rainbowChainAssets,
 }: FetchCustomNetworkAssetsArgs) => {
   queryClient.fetchQuery(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+      rainbowChainAssets,
+    }),
     customNetworkAssetsFunction,
   );
 };
@@ -111,6 +134,7 @@ export const CustomNetworkAssetsSetQueryDefaults = ({
   staleTime,
   testnetMode,
   filterZeroBalance,
+  rainbowChainAssets,
 }: SetUserDefaultsArgs) => {
   queryClient.setQueryDefaults(
     customNetworkAssetsKey({
@@ -118,6 +142,7 @@ export const CustomNetworkAssetsSetQueryDefaults = ({
       currency,
       testnetMode,
       filterZeroBalance,
+      rainbowChainAssets,
     }),
     {
       staleTime,
@@ -131,6 +156,7 @@ export const CustomNetworkAssetsSetQueryData = ({
   customNetworkAssets,
   testnetMode,
   filterZeroBalance,
+  rainbowChainAssets,
 }: SetCustomNetworkAssetsArgs) => {
   queryClient.setQueryData(
     customNetworkAssetsKey({
@@ -138,34 +164,29 @@ export const CustomNetworkAssetsSetQueryData = ({
       currency,
       testnetMode,
       filterZeroBalance,
+      rainbowChainAssets,
     }),
     customNetworkAssets,
   );
 };
 
-export const getCustomChainIconUrl = (
-  chainId: ChainId,
-  address: AddressOrEth,
-) => {
-  const baseUrl =
-    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
-
-  if (address === AddressZero || address === ETH_MAINNET_ASSET.address) {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
-  } else {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
-  }
-};
-
 async function customNetworkAssetsFunction({
-  queryKey: [{ address, currency, testnetMode, filterZeroBalance }],
+  queryKey: [
+    { address, currency, testnetMode, filterZeroBalance, rainbowChainAssets },
+  ],
 }: QueryFunctionArgs<typeof customNetworkAssetsKey>) {
   const cache = queryClient.getQueryCache();
   const cachedCustomNetworkAssets = (cache.find(
-    customNetworkAssetsKey({ address, currency, testnetMode }),
+    customNetworkAssetsKey({
+      address,
+      currency,
+      testnetMode,
+      filterZeroBalance,
+      rainbowChainAssets,
+    }),
   )?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
-  const { customChains: chains } = getCustomChains();
+  const { rainbowChains: chains } = getRainbowChains();
 
   const customChains = chains.filter((chain) =>
     testnetMode ? chain.testnet : !chain.testnet,
@@ -173,119 +194,132 @@ async function customNetworkAssetsFunction({
   if (customChains.length === 0) {
     return cachedCustomNetworkAssets;
   }
-  const { customRPCAssets } = customRPCAssetsStore.getState();
-
   try {
-    const assetsPromises = customChains.map(async (chain) => {
-      const provider = getProvider({ chainId: chain.id });
-      const nativeAssetAddress =
-        chain.id === ChainId.mainnet ? ETH_MAINNET_ASSET.address : AddressZero;
-      const nativeAssetBalance = await provider.getBalance(address);
-      const customNetworkNativeAssetParsed =
-        nativeAssetBalance && !isZero(nativeAssetBalance.toString())
-          ? parseUserAssetBalances({
-              asset: {
-                address: nativeAssetAddress,
-                chainId: chain.id,
-                chainName: chain.name as ChainName,
-                isNativeAsset: true,
-                name: chain.nativeCurrency.symbol,
-                symbol: chain.nativeCurrency.symbol,
-                uniqueId: `${nativeAssetAddress}_${chain.id}`,
-                decimals: 18,
-                native: { price: undefined },
-                price: { value: 0 },
-                bridging: { isBridgeable: false, networks: [] },
-                mainnetAddress: nativeAssetAddress as AddressOrEth,
-                icon_url: getCustomChainIconUrl(chain.id, nativeAssetAddress),
-              },
-              currency,
-              balance: nativeAssetBalance.toString(),
-            })
-          : null;
-
-      const chainAssets = customRPCAssets[chain.id] || [];
-      const chainParsedAssetBalances = await Promise.allSettled(
-        chainAssets.map((asset) =>
-          getAssetBalance({
-            assetAddress: asset.address,
-            currentAddress: address,
-            provider,
-          }),
-        ),
-      );
-
-      const chainParsedAssets = chainParsedAssetBalances
-        .map((balance, i) => {
-          const fulfilledBalance = extractFulfilledValue(balance);
-          return fulfilledBalance &&
-            (filterZeroBalance ? !isZero(fulfilledBalance) : true)
+    const assetsPromises = customChains
+      .filter(
+        (chain) =>
+          !SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id).includes(chain.id),
+      )
+      .map(async (chain) => {
+        const provider = getProvider({ chainId: chain.id });
+        const nativeAssetAddress =
+          chain.id === ChainId.mainnet
+            ? ETH_MAINNET_ASSET.address
+            : AddressZero;
+        const nativeAssetBalance = (
+          await provider.getBalance(address)
+        )?.toString();
+        const customNetworkNativeAssetParsed =
+          nativeAssetBalance &&
+          (filterZeroBalance ? !isZero(nativeAssetBalance) : true)
             ? parseUserAssetBalances({
                 asset: {
-                  ...chainAssets[i],
+                  address: nativeAssetAddress,
                   chainId: chain.id,
                   chainName: chain.name as ChainName,
-                  uniqueId: `${chainAssets[i].address}_${chain.id}`,
-                  mainnetAddress: undefined,
-                  isNativeAsset: false,
+                  isNativeAsset: true,
+                  name: chain.nativeCurrency.symbol,
+                  symbol: chain.nativeCurrency.symbol,
+                  uniqueId: `${nativeAssetAddress}_${chain.id}`,
+                  decimals: 18,
                   native: { price: undefined },
+                  price: { value: 0 },
+                  bridging: { isBridgeable: false, networks: [] },
+                  mainnetAddress: nativeAssetAddress as AddressOrEth,
+                  icon_url: getCustomChainIconUrl(chain.id, nativeAssetAddress),
                 },
                 currency,
-                balance: fulfilledBalance || '0',
+                balance: nativeAssetBalance,
               })
             : null;
-        })
-        .filter(Boolean);
 
-      const allCustomNetworkAssets = customNetworkNativeAssetParsed
-        ? [customNetworkNativeAssetParsed, ...chainParsedAssets]
-        : chainParsedAssets;
+        const chainAssets = rainbowChainAssets?.[chain.id] || [];
+        const chainParsedAssetBalances = await Promise.allSettled(
+          chainAssets.map((asset) =>
+            getAssetBalance({
+              assetAddress: asset.address,
+              currentAddress: address,
+              provider,
+            }),
+          ),
+        );
 
-      // Now we'll try to fetch the prices for all the assets in this network
-      const batchedQuery = allCustomNetworkAssets.map(({ address }) => address);
-      const results: Record<string, AssetMetadata>[] = (await requestMetadata(
-        createAssetQuery(batchedQuery, chain.id, currency, true),
-        {
-          timeout: ASSETS_TIMEOUT_DURATION,
-        },
-      )) as Record<string, AssetMetadata>[];
+        const chainParsedAssets = chainParsedAssetBalances
+          .map((balance, i) => {
+            const fulfilledBalance = extractFulfilledValue(balance);
+            return fulfilledBalance &&
+              (filterZeroBalance ? !isZero(fulfilledBalance) : true)
+              ? parseUserAssetBalances({
+                  asset: {
+                    ...chainAssets[i],
+                    chainId: chain.id,
+                    chainName: chain.name as ChainName,
+                    uniqueId: `${chainAssets[i].address}_${chain.id}`,
+                    mainnetAddress: undefined,
+                    isNativeAsset: false,
+                    native: { price: undefined },
+                  },
+                  currency,
+                  balance: fulfilledBalance || '0',
+                })
+              : null;
+          })
+          .filter(Boolean);
 
-      const assets = Object.values(results).flat();
-      assets.forEach((asset, i) => {
-        const a = asset as unknown as AssetMetadata;
-        const address = a.networks?.[chain.id]?.address as AddressOrEth;
-        const parsedAsset = parseAssetMetadata({
-          address,
-          asset: a,
-          chainId: chain.id,
-          currency,
-        });
-        if (parsedAsset?.native.price) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          allCustomNetworkAssets[i].native.price = parsedAsset.native.price;
-          allCustomNetworkAssets[i].price =
-            parsedAsset?.price as ZerionAssetPrice;
-          // Now we have the price, we have to calculate the native balance
-          if (allCustomNetworkAssets[i].isNativeAsset) {
+        const allCustomNetworkAssets = customNetworkNativeAssetParsed
+          ? [customNetworkNativeAssetParsed, ...chainParsedAssets]
+          : chainParsedAssets;
+
+        // Now we'll try to fetch the prices for all the assets in this network
+        const batchedQuery = allCustomNetworkAssets.map(
+          ({ address }) => address,
+        );
+        const results: Record<string, AssetMetadata>[] = (await requestMetadata(
+          createAssetQuery(batchedQuery, chain.id, currency, true),
+          {
+            timeout: ASSETS_TIMEOUT_DURATION,
+          },
+        )) as Record<string, AssetMetadata>[];
+
+        const assets = Object.values(results).flat();
+        assets.forEach((asset, i) => {
+          const a = asset as unknown as AssetMetadata;
+          const address = a.networks?.[chain.id]?.address as AddressOrEth;
+          const parsedAsset = parseAssetMetadata({
+            address,
+            asset: a,
+            chainId: chain.id,
+            currency,
+          });
+
+          if (parsedAsset.price?.value) {
+            allCustomNetworkAssets[i].price = {
+              value: parsedAsset.price.value,
+            };
+            allCustomNetworkAssets[i].native.price = parsedAsset.native.price;
+
             const assetWithPriceAndNativeBalance = parseUserAssetBalances({
               asset: allCustomNetworkAssets[i],
               currency,
-              balance: nativeAssetBalance.toString(),
+              balance: convertDecimalFormatToRawAmount(
+                allCustomNetworkAssets[i].balance.amount,
+                allCustomNetworkAssets[i].decimals,
+              ),
             });
+
             allCustomNetworkAssets[i] = assetWithPriceAndNativeBalance;
           }
-        }
-      });
+        });
 
-      return {
-        chainId: chain.id,
-        assets: allCustomNetworkAssets,
-      };
-    });
+        return {
+          chainId: chain.id,
+          assets: allCustomNetworkAssets,
+        };
+      });
     const assetsResults = (await Promise.allSettled(assetsPromises))
       .map((assets) => extractFulfilledValue(assets))
       .filter(Boolean);
+
     const parsedAssetsDict: Record<ChainId | number, ParsedAssetsDict> =
       assetsResults.reduce(
         (acc, { chainId, assets }) => {
@@ -329,12 +363,14 @@ export function useCustomNetworkAssets<
   > = {},
 ) {
   const { testnetMode } = useTestnetModeStore();
+  const { rainbowChainAssets } = useRainbowChainAssetsStore();
   return useQuery(
     customNetworkAssetsKey({
       address,
       currency,
       testnetMode,
       filterZeroBalance,
+      rainbowChainAssets,
     }),
     customNetworkAssetsFunction,
     {

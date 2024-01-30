@@ -62,9 +62,13 @@ type BaseTransaction = {
   baseFee?: string;
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
-export type PendingTransaction = BaseTransaction & { status: 'pending' };
+export type PendingTransaction = BaseTransaction & {
+  status: 'pending';
+};
+
 export type MinedTransaction = BaseTransaction & {
   status: 'confirmed' | 'failed';
+  flashbotsStatus?: 'CANCELLED' | 'FAILED' | 'INCLUDED';
   blockNumber: number;
   minedAt: number;
   confirmations: number;
@@ -198,6 +202,7 @@ export type TransactionApiResponse = {
     action?: string;
     asset?: AssetApiResponse;
     quantity?: 'UNLIMITED' | string;
+    status: string;
   };
   block_number?: number;
   mined_at?: number;

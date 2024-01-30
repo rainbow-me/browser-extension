@@ -8,6 +8,8 @@ export interface NavRestorationStore {
   clearLastPage: () => Promise<void>;
   lastPage?: string;
   setLastPage: (lastPage: string) => Promise<void>;
+  lastState?: Record<string, string>;
+  setLastState: (lastState: Record<string, string>) => Promise<void>;
   setShouldRestoreNavigation: (should: boolean) => Promise<void>;
   shouldRestoreNavigation: boolean;
 }
@@ -25,6 +27,13 @@ export const navRestorationStore = createStore<NavRestorationStore>(
       const isPopup = await isNativePopup();
       if (isPopup && lastPage !== '/') {
         set({ lastPage });
+      }
+    },
+    lastState: undefined,
+    setLastState: async (lastState) => {
+      const isPopup = await isNativePopup();
+      if (isPopup && !!lastState && Object.keys(lastState)?.length) {
+        set({ lastState });
       }
     },
     setShouldRestoreNavigation: async (shouldRestoreNavigation) => {

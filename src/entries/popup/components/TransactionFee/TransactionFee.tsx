@@ -84,12 +84,10 @@ function Fee({
     [gasFeeParamsBySpeed, selectedSpeed],
   );
   const openCustomGasSheet = useCallback(() => {
-    if (chainId === ChainId.mainnet) {
-      setShowCustomGasSheet(true);
-      analyticsEvents?.customGasClicked &&
-        analytics.track(analyticsEvents?.customGasClicked);
-    }
-  }, [analyticsEvents?.customGasClicked, chainId]);
+    setShowCustomGasSheet(true);
+    analyticsEvents?.customGasClicked &&
+      analytics.track(analyticsEvents?.customGasClicked);
+  }, [analyticsEvents?.customGasClicked]);
 
   const closeCustomGasSheet = useCallback(
     () => setShowCustomGasSheet(false),
@@ -170,7 +168,9 @@ function Fee({
                   <TextOverflow weight="semibold" color="label" size="14pt">
                     {isLoading
                       ? '~'
-                      : `${gasFeeParamsForSelectedSpeed?.gasFee.display}`}
+                      : `${
+                          gasFeeParamsForSelectedSpeed?.gasFee.display || '~'
+                        }`}
                   </TextOverflow>
                 </Column>
                 <Column>
@@ -181,7 +181,10 @@ function Fee({
                   >
                     {isLoading
                       ? ''
-                      : `${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
+                      : `${
+                          gasFeeParamsForSelectedSpeed?.estimatedTime.display ||
+                          ''
+                        }`}
                   </TextOverflow>
                 </Column>
               </Columns>

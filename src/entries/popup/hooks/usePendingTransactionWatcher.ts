@@ -8,7 +8,7 @@ const PENDING_TRANSACTION_POLLING_INTERVAL = 5000;
 export function usePendingTransactionWatcher({
   address,
 }: {
-  address?: Address;
+  address: Address;
 }) {
   const { watchPendingTransactions } = useWatchPendingTransactions({ address });
   usePoll(watchPendingTransactions, PENDING_TRANSACTION_POLLING_INTERVAL);

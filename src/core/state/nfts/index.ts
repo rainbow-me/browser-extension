@@ -7,8 +7,11 @@ type NftDisplayMode = 'byCollection' | 'grouped';
 type NftSort = 'alphabetical' | 'recent';
 type IsOpenDictByCollection = Record<string, boolean>;
 type SectionStateByAddress = Record<Address, IsOpenDictByCollection>;
+type HiddenNftDict = Record<string, boolean>;
+type HiddenNftsByAddress = Record<Address, HiddenNftDict>;
 export interface NftsState {
   displayMode: NftDisplayMode;
+  hidden: HiddenNftsByAddress;
   sections: SectionStateByAddress;
   sort: NftSort;
   setNftSort: (sort: NftSort) => void;
@@ -20,11 +23,13 @@ export interface NftsState {
     address: Address;
     collectionId: string;
   }) => void;
+  toggleHideNFT: (address: Address, uniqueId: string) => void;
 }
 
 export const nftsStore = createStore<NftsState>(
   (set, get) => ({
     displayMode: 'grouped',
+    hidden: {},
     sections: {},
     sort: 'recent',
     setNftSort: (sort) => set({ sort }),
@@ -43,11 +48,23 @@ export const nftsStore = createStore<NftsState>(
         },
       });
     },
+    toggleHideNFT(address: Address, uniqueId: string) {
+      const { hidden } = get();
+      set({
+        hidden: {
+          ...hidden,
+          [address]: {
+            ...hidden[address],
+            [uniqueId]: !hidden[address]?.[uniqueId],
+          },
+        },
+      });
+    },
   }),
   {
     persist: {
       name: 'nfts',
-      version: 0,
+      version: 1,
     },
   },
 );

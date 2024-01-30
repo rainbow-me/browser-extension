@@ -6,7 +6,10 @@ interface FormProps {
   children: React.ReactNode;
 }
 
-const Form = forwardRef<HTMLDivElement, FormProps>(({ children }, ref) => {
+const Form = forwardRef<HTMLDivElement, FormProps>(function Form(
+  { children },
+  ref,
+) {
   return (
     <Box
       ref={ref}
@@ -20,7 +23,5 @@ const Form = forwardRef<HTMLDivElement, FormProps>(({ children }, ref) => {
     </Box>
   );
 });
-
-Form.displayName = 'Form';
 
 export { Form };

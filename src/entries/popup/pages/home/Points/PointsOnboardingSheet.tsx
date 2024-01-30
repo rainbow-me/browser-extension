@@ -11,6 +11,7 @@ import {
   ValidatePointsSignatureMutation,
 } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import { useCurrentAddressStore } from '~/core/state';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { formatNumber } from '~/core/utils/formatNumber';
@@ -46,7 +47,7 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 import * as wallet from '../../../handlers/wallet';
 
 import { copyReferralLink } from './PointsDashboard';
-import { seedPointsQueryCache } from './usePoints';
+import { fetchPointsQuery, seedPointsQueryCache } from './usePoints';
 import { usePointsChallenge } from './usePointsChallenge';
 import {
   RAINBOW_TEXT,
@@ -167,6 +168,62 @@ const OnboardingButton = ({
   );
 };
 
+const noBalanceRowsText = [
+  `> ${i18n.t('points.onboarding.balance_required')}`,
+  `${i18n.t('points.onboarding.ensure_you_have_a_balance_on')}`,
+  ...SUPPORTED_MAINNET_CHAINS.filter(
+    (c) => c.nativeCurrency.symbol === 'ETH',
+  ).map((c) => `- ${c.name}`),
+  `${i18n.t('points.onboarding.or_alternatively_balance_on')}`,
+];
+const noBalanceRows = [
+  <AnimatedText
+    textShadow="12px red"
+    key={noBalanceRowsText[0]}
+    align="left"
+    size="14pt mono"
+    weight="bold"
+    color="red"
+    delay={0}
+  >
+    {noBalanceRowsText[0]}
+  </AnimatedText>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={noBalanceRowsText[1]}
+    align="left"
+    size="14pt mono"
+    weight="bold"
+    color="labelTertiary"
+  >
+    {noBalanceRowsText[1]}
+  </AnimatedText>,
+  <Stack space="12px" key="chains">
+    {...noBalanceRowsText.slice(2, -1).map((text) => (
+      <AnimatedText
+        textShadow="12px labelTertiary"
+        key={text}
+        align="left"
+        size="14pt mono"
+        weight="bold"
+        color="labelTertiary"
+      >
+        {text}
+      </AnimatedText>
+    ))}
+  </Stack>,
+  <AnimatedText
+    textShadow="12px labelTertiary"
+    key={noBalanceRowsText.at(-1)}
+    align="left"
+    size="14pt mono"
+    weight="bold"
+    color="labelTertiary"
+  >
+    {noBalanceRowsText.at(-1)}
+  </AnimatedText>,
+];
+
 const shareRowsText = [
   `> ${i18n.t('points.onboarding.referral_link_ready')}`,
   `${i18n.t('points.onboarding.share_and_earn')}`,
@@ -265,13 +322,21 @@ export const PointsOnboardingSheet = () => {
 
   const { data } = usePointsChallenge({
     address: currentAddress,
-    referralCode: state.referralCode,
+    referralCode: state?.referralCode,
   });
 
-  const backToHome = () =>
+  const backToHome = () => {
+    if (!!error && error !== PointsErrorType.ExistingUser) {
+      // if some unexpected error happened that stopped the user from onboarding,
+      // and was not "existing user" error, then we should try to refetch its points query
+      // sometimes it goes thru but the server returns something weird
+      // and when the user try onboarding again it errors with "existing user"
+      fetchPointsQuery(currentAddress);
+    }
     navigate(ROUTES.HOME, {
       state: { tab: 'points', skipTransitionOnRoute: ROUTES.HOME },
     });
+  };
 
   const {
     data: validSignatureResponse,
@@ -291,6 +356,8 @@ export const PointsOnboardingSheet = () => {
           signature,
           referral: state.referralCode,
         });
+      if (onboardPoints?.error?.type === PointsErrorType.NoBalance)
+        setStep('no balance');
       if (!onboardPoints) throw 'validatePointsSignature: Unexpected error'; // sometimes the server just returns null, like when the signature is invalid
       if (onboardPoints.error) throw onboardPoints.error.type;
       return onboardPoints;
@@ -693,7 +760,7 @@ export const PointsOnboardingSheet = () => {
   );
 
   const [step, setStep] = useState<
-    'welcome' | 'calculating' | 'share' | 'done'
+    'welcome' | 'calculating' | 'share' | 'done' | 'no balance'
   >('welcome');
 
   if (debouncedAccessGranted && step === 'welcome') setStep('calculating');
@@ -793,6 +860,14 @@ export const PointsOnboardingSheet = () => {
                   space="35px"
                 />
               )}
+              {step === 'no balance' && (
+                <AnimatedTextRows
+                  id="animated-no balance-rows"
+                  rows={noBalanceRows}
+                  rowsText={noBalanceRowsText}
+                  space="35px"
+                />
+              )}
             </Stack>
           </Row>
           <Row height="content">
@@ -827,6 +902,15 @@ export const PointsOnboardingSheet = () => {
               {step === 'done' && (
                 <OnboardingButton onClick={backToHome}>
                   {i18n.t('done')}
+                </OnboardingButton>
+              )}
+              {step === 'no balance' && (
+                <OnboardingButton
+                  onClick={() =>
+                    navigate(ROUTES.BUY, { state: { backTo: ROUTES.HOME } })
+                  }
+                >
+                  {i18n.t('points.onboarding.fund_my_wallet')}
                 </OnboardingButton>
               )}
             </AnimatePresence>

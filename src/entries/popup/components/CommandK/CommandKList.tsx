@@ -9,12 +9,14 @@ import { LIST_HEIGHT, MODAL_HEIGHT } from './CommandKModal';
 import { TOOLBAR_HEIGHT } from './CommandKToolbar';
 import {
   COMMAND_ROW_HEIGHT,
+  NFTRow,
   ShortcutRow,
   TokenRow,
   WalletRow,
 } from './CommandRows';
 import {
   ENSOrAddressSearchItem,
+  NFTSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
@@ -62,168 +64,105 @@ export const CommandKList = React.forwardRef<
     selectedCommandIndex: number;
     setDidScrollOrNavigate: (value: boolean) => void;
   }
->(
-  (
-    {
-      currentPage,
-      didScrollOrNavigate,
-      filteredCommands,
-      handleExecuteCommand,
-      previousPageState,
-      searchQuery,
-      selectedCommand,
-      selectedCommandIndex,
-      setDidScrollOrNavigate,
-    },
-    ref,
-  ) => {
-    const { isCommandKVisible } = useCommandKStatus();
+>(function CommandKList(
+  {
+    currentPage,
+    didScrollOrNavigate,
+    filteredCommands,
+    handleExecuteCommand,
+    previousPageState,
+    searchQuery,
+    selectedCommand,
+    selectedCommandIndex,
+    setDidScrollOrNavigate,
+  },
+  ref,
+) {
+  const { isCommandKVisible } = useCommandKStatus();
 
-    const listVirtualizer = useVirtualizer({
-      count: (filteredCommands?.length || 0) + 1,
-      estimateSize: (index) =>
-        index === 0 ? LIST_HEADER_HEIGHT : COMMAND_ROW_HEIGHT,
-      getScrollElement: () => (ref as React.RefObject<HTMLDivElement>).current,
-      overscan: 20,
-      paddingEnd: 8,
-      scrollPaddingEnd: 8,
-      scrollPaddingStart: 8,
-    });
+  const listVirtualizer = useVirtualizer({
+    count: (filteredCommands?.length || 0) + 1,
+    estimateSize: (index) =>
+      index === 0 ? LIST_HEADER_HEIGHT : COMMAND_ROW_HEIGHT,
+    getScrollElement: () => (ref as React.RefObject<HTMLDivElement>).current,
+    overscan: 20,
+    paddingEnd: 8,
+    scrollPaddingEnd: 8,
+    scrollPaddingStart: 8,
+  });
 
-    const enableRowHover = () => {
-      if (didScrollOrNavigate) {
-        setDidScrollOrNavigate(false);
-      }
-    };
+  const enableRowHover = () => {
+    if (didScrollOrNavigate) {
+      setDidScrollOrNavigate(false);
+    }
+  };
 
-    const disableRowHover = (e: React.WheelEvent<HTMLDivElement>) => {
-      if (didScrollOrNavigate) {
-        return;
-      }
+  const disableRowHover = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (didScrollOrNavigate) {
+      return;
+    }
 
-      const atTop = e.currentTarget.scrollTop === 0;
-      const atBottom =
-        e.currentTarget.scrollTop + e.currentTarget.clientHeight ===
-        e.currentTarget.scrollHeight;
+    const atTop = e.currentTarget.scrollTop === 0;
+    const atBottom =
+      e.currentTarget.scrollTop + e.currentTarget.clientHeight ===
+      e.currentTarget.scrollHeight;
 
-      if (!((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom))) {
-        setDidScrollOrNavigate(true);
-      }
-    };
+    if (!((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom))) {
+      setDidScrollOrNavigate(true);
+    }
+  };
 
-    React.useLayoutEffect(() => {
-      if (isCommandKVisible && selectedCommandIndex !== -1) {
-        listVirtualizer.scrollToIndex(selectedCommandIndex + 1, {
-          align: 'auto',
-          behavior: SCROLL_TO_BEHAVIOR,
-        });
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isCommandKVisible, selectedCommandIndex]);
+  React.useLayoutEffect(() => {
+    if (isCommandKVisible && selectedCommandIndex !== -1) {
+      listVirtualizer.scrollToIndex(selectedCommandIndex + 1, {
+        align: 'auto',
+        behavior: SCROLL_TO_BEHAVIOR,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCommandKVisible, selectedCommandIndex]);
 
-    const shouldShowEmptyState =
-      !filteredCommands || filteredCommands.length === 0;
-    const listHeight = shouldShowEmptyState
-      ? LIST_HEIGHT + TOOLBAR_HEIGHT
-      : LIST_HEIGHT;
+  const shouldShowEmptyState =
+    !filteredCommands || filteredCommands.length === 0;
+  const listHeight = shouldShowEmptyState
+    ? LIST_HEIGHT + TOOLBAR_HEIGHT
+    : LIST_HEIGHT;
 
-    return (
-      <Box
-        onClick={enableRowHover}
-        onMouseMove={enableRowHover}
-        onWheel={disableRowHover}
-        position="relative"
-        ref={ref}
-        style={{
-          height: listHeight,
-          overflowY: 'scroll',
-        }}
-      >
-        <AnimatePresence initial={false}>
-          {shouldShowEmptyState ? (
-            <CommandKEmptyState
-              currentPage={currentPage}
-              height={listHeight}
-              searchQuery={searchQuery}
-            />
-          ) : (
+  return (
+    <Box
+      onClick={enableRowHover}
+      onMouseMove={enableRowHover}
+      onWheel={disableRowHover}
+      position="relative"
+      ref={ref}
+      style={{
+        height: listHeight,
+        overflowY: 'scroll',
+      }}
+    >
+      <AnimatePresence initial={false}>
+        {shouldShowEmptyState ? (
+          <CommandKEmptyState
+            currentPage={currentPage}
+            height={listHeight}
+            searchQuery={searchQuery}
+          />
+        ) : (
+          <Box
+            style={{
+              pointerEvents: didScrollOrNavigate ? 'none' : 'auto',
+            }}
+          >
             <Box
               style={{
-                pointerEvents: didScrollOrNavigate ? 'none' : 'auto',
+                height: listVirtualizer.getTotalSize(),
+                position: 'relative',
               }}
             >
-              <Box
-                style={{
-                  height: listVirtualizer.getTotalSize(),
-                  position: 'relative',
-                }}
-              >
-                {listVirtualizer.getVirtualItems().map((virtualItem) => {
-                  const { index, key, start, size } = virtualItem;
+              {listVirtualizer.getVirtualItems().map((virtualItem) => {
+                const { index, key, start, size } = virtualItem;
 
-                  if (index === 0) {
-                    return (
-                      <Box
-                        key={key}
-                        position="absolute"
-                        style={{ height: size, top: start }}
-                        width="full"
-                      >
-                        <CommandKListHeader
-                          title={getPageTitle(
-                            currentPage,
-                            previousPageState.selectedCommand,
-                            searchQuery,
-                          )}
-                        />
-                      </Box>
-                    );
-                  }
-
-                  const commandIndex = index - 1;
-                  const command = filteredCommands[commandIndex];
-                  const isSelected =
-                    (selectedCommand && selectedCommand.id === command.id) ??
-                    false;
-
-                  let row;
-
-                  if (command.type === SearchItemType.Shortcut) {
-                    row = (
-                      <ShortcutRow
-                        command={command as ShortcutSearchItem}
-                        handleExecuteCommand={handleExecuteCommand}
-                        key={command.id}
-                        selected={isSelected}
-                      />
-                    );
-                  } else if (
-                    command.type === SearchItemType.ENSOrAddressResult ||
-                    command.type === SearchItemType.Wallet
-                  ) {
-                    row = (
-                      <WalletRow
-                        command={
-                          command.type === SearchItemType.Wallet
-                            ? (command as WalletSearchItem)
-                            : (command as ENSOrAddressSearchItem)
-                        }
-                        handleExecuteCommand={handleExecuteCommand}
-                        key={command.id}
-                        selected={isSelected}
-                      />
-                    );
-                  } else if (command.type === SearchItemType.Token) {
-                    row = (
-                      <TokenRow
-                        command={command as TokenSearchItem}
-                        handleExecuteCommand={handleExecuteCommand}
-                        key={command.id}
-                        selected={isSelected}
-                      />
-                    );
-                  }
-
+                if (index === 0) {
                   return (
                     <Box
                       key={key}
@@ -231,20 +170,88 @@ export const CommandKList = React.forwardRef<
                       style={{ height: size, top: start }}
                       width="full"
                     >
-                      {row}
+                      <CommandKListHeader
+                        title={getPageTitle(
+                          currentPage,
+                          previousPageState.selectedCommand,
+                          searchQuery,
+                        )}
+                      />
                     </Box>
                   );
-                })}
-              </Box>
-            </Box>
-          )}
-        </AnimatePresence>
-      </Box>
-    );
-  },
-);
+                }
 
-CommandKList.displayName = 'CommandKList';
+                const commandIndex = index - 1;
+                const command = filteredCommands[commandIndex];
+                const isSelected =
+                  (selectedCommand && selectedCommand.id === command.id) ??
+                  false;
+
+                let row;
+
+                if (command.type === SearchItemType.Shortcut) {
+                  row = (
+                    <ShortcutRow
+                      command={command as ShortcutSearchItem}
+                      handleExecuteCommand={handleExecuteCommand}
+                      key={command.id}
+                      selected={isSelected}
+                    />
+                  );
+                } else if (
+                  command.type === SearchItemType.ENSOrAddressResult ||
+                  command.type === SearchItemType.Wallet
+                ) {
+                  row = (
+                    <WalletRow
+                      command={
+                        command.type === SearchItemType.Wallet
+                          ? (command as WalletSearchItem)
+                          : (command as ENSOrAddressSearchItem)
+                      }
+                      handleExecuteCommand={handleExecuteCommand}
+                      key={command.id}
+                      selected={isSelected}
+                    />
+                  );
+                } else if (command.type === SearchItemType.Token) {
+                  row = (
+                    <TokenRow
+                      command={command as TokenSearchItem}
+                      handleExecuteCommand={handleExecuteCommand}
+                      key={command.id}
+                      selected={isSelected}
+                    />
+                  );
+                } else if (command.type === SearchItemType.NFT) {
+                  row = (
+                    <NFTRow
+                      command={command as NFTSearchItem}
+                      handleExecuteCommand={handleExecuteCommand}
+                      key={command.id}
+                      selected={isSelected}
+                    />
+                  );
+                }
+
+                return (
+                  <Box
+                    key={key}
+                    position="absolute"
+                    style={{ height: size, top: start }}
+                    width="full"
+                  >
+                    {row}
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+        )}
+      </AnimatePresence>
+    </Box>
+  );
+});
 
 export function CommandKEmptyState({
   currentPage,

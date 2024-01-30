@@ -386,6 +386,7 @@ export function WalletSwitcher() {
           onChange={(e) => setSearchQuery(e.target.value)}
           innerRef={searchInputRef}
           tabIndex={0}
+          autoFocus
         />
         <QuickPromo
           text={i18n.t('wallet_switcher.quick_promo.text')}
@@ -432,6 +433,7 @@ export function WalletSwitcher() {
             width="full"
             borderRadius="9px"
             testId={'add-wallet-button'}
+            tabIndex={0}
           >
             {i18n.t('wallet_switcher.add_another_wallet')}
           </Button>
@@ -446,6 +448,7 @@ export function WalletSwitcher() {
               height="32px"
               width="full"
               borderRadius="9px"
+              tabIndex={0}
             >
               {i18n.t('wallet_switcher.connect_hardware_wallet')}
             </Button>
@@ -461,6 +464,7 @@ export function WalletSwitcher() {
               height="32px"
               width="full"
               borderRadius="9px"
+              tabIndex={0}
             >
               Old Wallets UI [DEV]
             </Button>
