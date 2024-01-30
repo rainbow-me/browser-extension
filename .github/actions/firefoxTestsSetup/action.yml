@@ -1,15 +1,23 @@
-name: 'Firefox tests setup'
-description: 'runs Firefox tests setup'
+name: 'Custom Firefox Developer Edition Setup'
+description: 'Setup a specific version of Firefox Developer Edition for testing'
 inputs:
   gh-access-token:
-    description: 'Github Access Token'
+    description: 'GitHub Access Token'
     required: true
 runs:
   using: 'composite'
   steps:
-  - uses: ./.github/actions/testsSetup
-    with:
-      gh-access-token: ${{ inputs.gh-access-token }}
-  - uses: browser-actions/setup-firefox@v1
-    with:
-      firefox-version: '119'
+    - uses: ./.github/actions/testsSetup
+      with:
+        gh-access-token: ${{ inputs.gh-access-token }}
+
+    - name: Download and Setup Firefox Developer Edition
+      shell: bash
+      run: |
+        FIREFOX_DEVEDITION_VERSION="122.0b9"
+        FIREFOX_DEVEDITION_URL="https://ftp.mozilla.org/pub/devedition/releases/$FIREFOX_DEVEDITION_VERSION/linux-x86_64/en-US/firefox-$FIREFOX_DEVEDITION_VERSION.tar.bz2"
+        echo "Downloading Firefox Developer Edition $FIREFOX_DEVEDITION_VERSION"
+        wget -q -O firefox.tar.bz2 $FIREFOX_DEVEDITION_URL
+        tar -xjf firefox.tar.bz2
+        echo "Firefox Developer Edition installed"
+        echo "$(pwd)/firefox/firefox" >> $GITHUB_PATH
