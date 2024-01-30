@@ -3,7 +3,7 @@
 import { hex } from 'chroma-js';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { MotionProps, motion } from 'framer-motion';
-import { PropsWithChildren, useEffect, useReducer } from 'react';
+import { PropsWithChildren, memo, useEffect, useReducer } from 'react';
 import { Address } from 'wagmi';
 
 import { PointsQuery } from '~/core/graphql/__generated__/metadata';
@@ -313,7 +313,7 @@ function getRankDifference(
       difference,
     } as const;
 
-  if (difference > 0)
+  if (difference < 0)
     return {
       symbol: 'chart.line.uptrend.xyaxis',
       color: 'green',
@@ -327,7 +327,7 @@ function getRankDifference(
   } as const;
 }
 
-function YourRankAndNextDrop() {
+const YourRankAndNextDrop = memo(function YourRankAndNextDrop() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
 
@@ -415,7 +415,7 @@ function YourRankAndNextDrop() {
       </Card>
     </Inline>
   );
-}
+});
 
 const mapToRange = (
   num: number,
