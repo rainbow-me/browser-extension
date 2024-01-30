@@ -17,26 +17,12 @@
   if native amount is 0, show no value on top and token amount on bottom
 */
 
-import { formatUnits } from '@ethersproject/units';
-
 import { i18n } from '~/core/languages';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
+import { getApprovalLabel } from '~/core/utils/transactions';
 import { Box, Inline, Text, TextOverflow } from '~/design-system';
 import { ContractIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
-
-export const getApprovalLabel = ({
-  approvalAmount,
-  asset,
-  type,
-}: Pick<RainbowTransaction, 'type' | 'asset' | 'approvalAmount'>) => {
-  if (!approvalAmount || !asset) return;
-  if (approvalAmount === 'UNLIMITED') return i18n.t('approvals.unlimited');
-  if (type === 'revoke') return i18n.t('approvals.no_allowance');
-  return `${formatNumber(formatUnits(approvalAmount, asset.decimals))} ${
-    asset.symbol
-  }`;
-};
 
 const approvalTypeValues = (transaction: RainbowTransaction) => {
   const { asset, approvalAmount, hash, contract } = transaction;

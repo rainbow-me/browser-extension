@@ -117,6 +117,8 @@ export const globalColors = {
   blueGrey80: '#5F6670',
   blueGrey90: '#3C4047',
   blueGrey100: '#242529',
+
+  cyan50: '#00E7F3',
 };
 
 export type ColorContext = 'light' | 'dark';
@@ -141,6 +143,7 @@ export type BackgroundColor =
   | 'fillQuaternary'
   | 'white'
   | 'blue'
+  | 'cyan'
   | 'green'
   | 'red'
   | 'purple'
@@ -333,6 +336,16 @@ export const backgroundColors: Record<
       setColorContext: 'dark',
     },
   },
+  cyan: {
+    light: {
+      color: globalColors.cyan50,
+      setColorContext: 'dark',
+    },
+    dark: {
+      color: globalColors.cyan50,
+      setColorContext: 'dark',
+    },
+  },
   green: {
     light: {
       color: globalColors.green60,
@@ -507,6 +520,7 @@ export type ForegroundColor =
   | 'labelWhite'
   | 'transparent'
   | 'blue'
+  | 'cyan'
   | 'green'
   | 'red'
   | 'purple'
@@ -560,6 +574,7 @@ export const foregroundColors: Record<
   },
   transparent: selectBackgroundAsForeground('transparent'),
   blue: selectBackgroundAsForeground('blue'),
+  cyan: selectBackgroundAsForeground('cyan'),
   green: selectBackgroundAsForeground('green'),
   red: selectBackgroundAsForeground('red'),
   purple: selectBackgroundAsForeground('purple'),
@@ -641,6 +656,7 @@ export const genericColors = selectForegroundColors(
   'purple',
   'red',
   'yellow',
+  'cyan',
 );
 export type GenericColor = (typeof genericColors)[number];
 
