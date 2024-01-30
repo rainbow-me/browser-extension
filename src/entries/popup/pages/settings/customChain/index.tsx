@@ -103,6 +103,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Blast Testnet',
+    networkInfo: {
+      rpcUrl: 'https://sepolia.blast.io',
+      chainId: 168587773,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://testnet.blastscan.io',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Boba Network',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.boba.network',
+      chainId: 288,
+      decimals: 18,
+      symbol: 'BOBA',
+      explorerUrl: 'https://bobascan.com',
+      testnet: false,
+    },
+  },
+  {
     name: 'Canto',
     networkInfo: {
       rpcUrl: 'https://canto.gravitychain.io',
@@ -121,6 +143,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       decimals: 18,
       symbol: 'CELO',
       explorerUrl: 'https://explorer.celo.org/mainnet',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Dogechain',
+    networkInfo: {
+      rpcUrl: 'https://rpc.dogechain.dog',
+      chainId: 2_000,
+      decimals: 18,
+      symbol: 'DC',
+      explorerUrl: 'https://explorer.dogechain.dog',
       testnet: false,
     },
   },
@@ -191,6 +224,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Immutable zkEVM',
+    networkInfo: {
+      rpcUrl: 'https://rpc.immutable.com',
+      chainId: 13371,
+      decimals: 18,
+      symbol: 'IMX',
+      explorerUrl: 'https://explorer.immutable.com',
+      testnet: false,
+    },
+  },
+  {
     name: 'Linea',
     networkInfo: {
       rpcUrl: 'https://rpc.linea.build',
@@ -198,6 +242,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       decimals: 18,
       symbol: 'ETH',
       explorerUrl: 'https://lineascan.build',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Lyra',
+    networkInfo: {
+      rpcUrl: 'https://rpc.lyra.finance',
+      chainId: 957,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.lyra.finance',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Manta',
+    networkInfo: {
+      rpcUrl: 'https://pacific-rpc.manta.network/http',
+      chainId: 169,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://pacific-explorer.manta.network',
       testnet: false,
     },
   },
@@ -224,6 +290,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Mode',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.mode.network',
+      chainId: 34443,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.mode.network',
+      testnet: false,
+    },
+  },
+  {
     name: 'Moonbeam',
     networkInfo: {
       rpcUrl: 'https://moonbeam.public.blastapi.io',
@@ -231,6 +308,39 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       decimals: 18,
       symbol: 'GLMR',
       explorerUrl: 'https://moonscan.io',
+      testnet: false,
+    },
+  },
+  {
+    name: 'opBNB',
+    networkInfo: {
+      rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
+      chainId: 204,
+      decimals: 18,
+      symbol: 'BNB',
+      explorerUrl: 'https://mainnet.opbnbscan.com',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Palm',
+    networkInfo: {
+      rpcUrl: 'https://palm-mainnet.public.blastapi.io',
+      chainId: 11297108109,
+      decimals: 18,
+      symbol: 'PALM',
+      explorerUrl: 'https://explorer.palm.io',
+      testnet: false,
+    },
+  },
+  {
+    name: 'PGN',
+    networkInfo: {
+      rpcUrl: 'https://rpc.publicgoods.network',
+      chainId: 424,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.publicgoods.network',
       testnet: false,
     },
   },
@@ -253,6 +363,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       decimals: 18,
       symbol: 'PULSE',
       explorerUrl: 'https://pulsechain.com',
+      testnet: false,
+    },
+  },
+  {
+    name: 'RARI Chain',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.rpc.rarichain.org/http',
+      chainId: 1380012617,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://mainnet.explorer.rarichain.org',
       testnet: false,
     },
   },

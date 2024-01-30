@@ -13,6 +13,7 @@ export const ROUTES = {
     `/home/nft-details/${collectionId}/${nftId}`,
   POINTS_REFERRAL: '/home/points-referral',
   POINTS_ONBOARDING: '/home/points-onboarding',
+  POINTS_WEEKLY_OVERVIEW: '/home/points-weekly-overview',
   CONNECTED: '/connected', // ConnectedApps
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect

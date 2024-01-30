@@ -1,6 +1,7 @@
 import create from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
+import { getBrowser } from '~/entries/popup/hooks/useBrowser';
 
 export interface AnalyticsDisabledState {
   analyticsDisabled: boolean;
@@ -9,7 +10,7 @@ export interface AnalyticsDisabledState {
 
 export const analyticsDisabledStore = createStore<AnalyticsDisabledState>(
   (set) => ({
-    analyticsDisabled: false,
+    analyticsDisabled: getBrowser() === 'Firefox',
     setAnalyticsDisabled: (newanalyticsDisabled) =>
       set({ analyticsDisabled: newanalyticsDisabled }),
   }),

@@ -53,7 +53,7 @@ if (shouldInjectProvider()) {
   });
 
   backgroundMessenger.reply(
-    'wallet_switchEthereumChain',
+    'rainbow_ethereumChainEvent',
     async ({
       chainId,
       chainName,

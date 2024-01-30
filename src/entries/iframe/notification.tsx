@@ -51,6 +51,9 @@ export enum IN_DAPP_NOTIFICATION_STATUS {
   'success' = 'success',
   'no_active_session' = 'no_active_session',
   'unsupported_network' = 'unsupported_network',
+  'already_added' = 'already_added',
+  'set_as_active' = 'set_as_active',
+  'already_active' = 'already_active',
 }
 
 export const Notification = ({
@@ -265,6 +268,21 @@ const NotificationComponent = ({
           title: i18n.t(`injected_notifications.network_changed_failed`),
           description: i18n.t('injected_notifications.unsupported_network'),
         };
+      case IN_DAPP_NOTIFICATION_STATUS.already_added:
+        return {
+          title: i18n.t(`injected_notifications.already_added`),
+          description: undefined,
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.already_active:
+        return {
+          title: i18n.t(`injected_notifications.already_active`),
+          description: undefined,
+        };
+      case IN_DAPP_NOTIFICATION_STATUS.set_as_active:
+        return {
+          title: i18n.t(`injected_notifications.set_as_active`),
+          description: undefined,
+        };
       case IN_DAPP_NOTIFICATION_STATUS.no_active_session:
       default:
         return {
@@ -301,7 +319,9 @@ const NotificationComponent = ({
           >
             <Columns space="8px">
               <Column width="content">
-                {status === IN_DAPP_NOTIFICATION_STATUS.success ? (
+                {status === IN_DAPP_NOTIFICATION_STATUS.success ||
+                status === IN_DAPP_NOTIFICATION_STATUS.already_added ||
+                status === IN_DAPP_NOTIFICATION_STATUS.set_as_active ? (
                   ASSET_SOURCE[chainId] ? (
                     <img
                       src={`${extensionUrl}${ASSET_SOURCE[chainId]}`}
@@ -336,16 +356,18 @@ const NotificationComponent = ({
               </Column>
               <Column>
                 <Rows alignVertical="center" space="6px">
-                  <Row>
+                  <Row height="content">
                     <Text color="label" size="12pt" weight="bold">
                       {title}
                     </Text>
                   </Row>
-                  <Row>
-                    <Text color="labelTertiary" size="11pt" weight="medium">
-                      {description}
-                    </Text>
-                  </Row>
+                  {description ? (
+                    <Row>
+                      <Text color="labelTertiary" size="11pt" weight="medium">
+                        {description}
+                      </Text>
+                    </Row>
+                  ) : null}
                 </Rows>
               </Column>
             </Columns>

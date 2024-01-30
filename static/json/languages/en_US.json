@@ -1345,6 +1345,22 @@
       "existing_user": "Existing user",
       "invalid_referral_code": "Invalid referral code",
       "unexpected": "Something unexpected happened, try again in a few minutes"
+    },
+    "weekly_overview": {
+      "week_of": "> Week of %{from} - %{to}",
+      "counting": "> Counting earned points...",
+      "your_activity": "Your Activity:",
+      "referral_activity": "Referral Activity:",
+      "new_referrals": "New Referrals:",
+      "retroactive": "Retroactive Points:",
+      "total": "Total:",
+      "weekly_counted": "> Weekly earnings counted",
+      "you_have": "You have:",
+      "none": "None",
+
+      "your_earnings": "Your Earnings Last Week",
+      "view_breakdown": "View your weekly earnings breakdown",
+      "view_now": "View Now"
     }
   },
   "speed_up_and_cancel": {
@@ -1382,6 +1398,7 @@
     "not_available": "Price not available",
     "more_options": {
       "copy_address": "Copy Address",
+      "view_on_explorer": "View on %{explorer}",
       "hide": "Hide Token",
       "report": "Report Token"
     },
@@ -1506,7 +1523,10 @@
     "network_changed": "Network changed",
     "network_changed_failed": "Network changed failed",
     "unsupported_network": "Unsupported network",
-    "no_active_session": "No active session"
+    "no_active_session": "No active session",
+    "already_added": "RPC activated",
+    "set_as_active": "New RPC activated",
+    "already_active": "Network already added"
   },
   "alert": {
     "ok": "Ok",
