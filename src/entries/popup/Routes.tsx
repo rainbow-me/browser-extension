@@ -34,6 +34,7 @@ import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from './hooks/useRainbowNavigate';
+import { ImportFromMetamask } from './pages/ImportFromMetamask/ImportFromMetamask';
 import { Buy } from './pages/buy';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -715,6 +716,20 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <RecoveryPhraseVerify />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.IMPORT_FROM_METAMASK,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        background="surfaceSecondary"
+        protectedRoute
+      >
+        <ImportFromMetamask />
       </AnimatedRoute>
     ),
   },
