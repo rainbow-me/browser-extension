@@ -619,8 +619,30 @@ export const handleProviderRequest = ({
         }
         case 'eth_getTransactionByHash': {
           const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.getTransaction(params?.[0] as string);
-          response = normalizeTransactionResponsePayload(response);
+          const transaction = await provider.getTransaction(
+            params?.[0] as string,
+          );
+          const normalizedTransaction =
+            normalizeTransactionResponsePayload(transaction);
+          const {
+            gasLimit,
+            gasPrice,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+            value,
+          } = normalizedTransaction;
+          response = {
+            ...normalizedTransaction,
+            gasLimit: toHex(gasLimit.toString()),
+            gasPrice: gasPrice ? toHex(gasPrice.toString()) : undefined,
+            maxFeePerGas: maxFeePerGas
+              ? toHex(maxFeePerGas.toString())
+              : undefined,
+            maxPriorityFeePerGas: maxPriorityFeePerGas
+              ? toHex(maxPriorityFeePerGas.toString())
+              : undefined,
+            value: toHex(value.toString()),
+          };
           break;
         }
         case 'eth_call': {
