@@ -30,23 +30,30 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { truncateAddress } from '~/core/utils/address';
 import { parseUserAsset } from '~/core/utils/assets';
+import { getChain } from '~/core/utils/chains';
+import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { addNewTransaction } from '~/core/utils/transactions';
 import {
+  AccentColorProvider,
   Box,
   Button,
-  Column,
-  Columns,
   Inline,
   Row,
   Rows,
   Separator,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
+import { AddressMoreOptions } from '~/entries/popup/components/AddressDisplay';
+import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
+import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
+import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { ApprovalFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { isLedgerConnectionError } from '~/entries/popup/handlers/ledger';
 import { getWallet, sendTransaction } from '~/entries/popup/handlers/wallet';
@@ -55,11 +62,9 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 import { RainbowError, logger } from '~/logger';
 
-import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { Spinner } from '../../../components/Spinner/Spinner';
-import { WalletAvatar } from '../../../components/WalletAvatar/WalletAvatar';
-import { useWalletInfo } from '../../../hooks/useWalletInfo';
 import playSound from '../../../utils/playSound';
+import { ReviewDetailsRow } from '../../swap/SwapReviewSheet/SwapReviewSheet';
 
 export const RevokeApprovalSheet = ({
   show,
@@ -104,10 +109,6 @@ export const RevokeApprovalSheet = ({
       approval?.chain_id,
       spender?.contract_address,
     ]);
-
-  const { displayName: walletDisplayName } = useWalletInfo({
-    address: currentAddress,
-  });
 
   const transactionRequestForGas: TransactionRequest = useMemo(() => {
     return {
@@ -250,168 +251,216 @@ export const RevokeApprovalSheet = ({
     <BottomSheet show={show} onClickOutside={onCancel}>
       <Box
         style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
-        background="surfacePrimaryElevatedSecondary"
+        background="surfacePrimaryElevated"
+        paddingBottom="20px"
       >
         <Stack space="20px">
-          <Box paddingVertical="26px">
-            <Inline alignHorizontal="center" alignVertical="center">
-              <Text size="14pt" weight="heavy" color="label">
-                {i18n.t('approvals.revoke.title')}
-              </Text>
-            </Inline>
-          </Box>
-          <Box paddingHorizontal="24px" paddingVertical="20px">
-            <Stack space="20px">
-              <Rows space="10px">
-                <Row>
-                  <Columns alignHorizontal="justify">
-                    <Column>
-                      <Box paddingVertical="6px" height="full">
-                        <Rows space="10px" alignVertical="center">
-                          <Row>
-                            <TextOverflow
-                              size="20pt"
-                              weight="bold"
-                              color="label"
-                            >
-                              {'Revoke'}
-                            </TextOverflow>
-                          </Row>
-                        </Rows>
-                      </Box>
-                    </Column>
-                    <Column>
-                      <Inline alignVertical="center" alignHorizontal="right">
-                        <Box>
-                          {approval?.asset ? (
-                            <CoinIcon
-                              asset={parseUserAsset({
-                                asset: approval.asset,
-                                currency: currentCurrency,
-                                balance: '0',
-                              })}
-                              size={44}
-                            />
-                          ) : null}
-                        </Box>
-                      </Inline>
-                    </Column>
-                  </Columns>
-                </Row>
-                <Row>
-                  <Columns alignHorizontal="justify">
-                    <Column>
-                      <Box paddingVertical="6px" height="full">
-                        <TextOverflow size="14pt" weight="bold" color="label">
-                          {spender?.quantity_allowed}
-                        </TextOverflow>
-                      </Box>
-                    </Column>
-                    <Column>
-                      <Box>
-                        <TextOverflow size="14pt" weight="bold" color="label">
-                          {spender?.contract_name}
-                        </TextOverflow>
-                      </Box>
-                    </Column>
-                  </Columns>
-                </Row>
-                <Row>
-                  <Columns alignHorizontal="justify">
-                    <Column width="4/5">
-                      <Box paddingVertical="6px" height="full">
-                        <TextOverflow size="14pt" weight="bold" color="label">
-                          {walletDisplayName}
-                        </TextOverflow>
-                      </Box>
-                    </Column>
-                    <Column>
-                      <Inline alignHorizontal="right">
-                        <WalletAvatar
-                          addressOrName={currentAddress}
-                          size={44}
-                        />
-                      </Inline>
-                    </Column>
-                  </Columns>
-                </Row>
-              </Rows>
-            </Stack>
+          <Navbar
+            title={i18n.t(`approvals.revoke.title`)}
+            titleTestId="swap-review-title-text"
+            leftComponent={
+              <Navbar.CloseButton testId="swap-review" onClick={onCancel} />
+            }
+          />
+
+          <Box paddingHorizontal="20px">
+            <ReviewDetailsRow testId="revoke-allowance">
+              <Inline
+                alignHorizontal="left"
+                space="12px"
+                alignVertical="center"
+              >
+                <Symbol
+                  weight="semibold"
+                  size={16}
+                  symbol="dollarsign.circle"
+                  color="labelTertiary"
+                />
+                <Text weight="semibold" size="12pt" color="labelTertiary">
+                  {'Allowance'}
+                </Text>
+              </Inline>
+
+              <Inline space="6px" alignVertical="center">
+                {approval?.asset && (
+                  <CoinIcon
+                    size={14}
+                    asset={parseUserAsset({
+                      asset: approval?.asset,
+                      currency: currentCurrency,
+                      balance: '0',
+                    })}
+                    badge={false}
+                  />
+                )}
+                <Inline space="4px" alignVertical="center">
+                  <Box style={{ maxWidth: 150 }}>
+                    <TextOverflow
+                      weight="semibold"
+                      size="12pt"
+                      color="labelSecondary"
+                    >
+                      {spender?.quantity_allowed.toLowerCase() === 'unlimited'
+                        ? spender?.quantity_allowed
+                        : convertRawAmountToDecimalFormat(
+                            spender?.quantity_allowed || '0',
+                            approval?.asset.decimals,
+                          )}
+                    </TextOverflow>
+                  </Box>
+
+                  <TextOverflow
+                    weight="semibold"
+                    size="12pt"
+                    color="labelSecondary"
+                  >
+                    {approval?.asset.symbol}
+                  </TextOverflow>
+                </Inline>
+              </Inline>
+            </ReviewDetailsRow>
+
+            <ReviewDetailsRow testId="revoke-spender">
+              <Inline
+                alignHorizontal="left"
+                space="12px"
+                alignVertical="center"
+              >
+                <Symbol
+                  weight="semibold"
+                  size={16}
+                  symbol="doc.plaintext"
+                  color="labelTertiary"
+                />
+                <Text weight="semibold" size="12pt" color="labelTertiary">
+                  {'Spender'}
+                </Text>
+              </Inline>
+
+              <Inline space="4px" alignVertical="center">
+                <TextOverflow
+                  weight="semibold"
+                  size="12pt"
+                  color="labelSecondary"
+                >
+                  {spender?.contract_name ||
+                    truncateAddress(
+                      (spender?.contract_address || '') as Address,
+                    )}
+                </TextOverflow>
+
+                {spender?.contract_address && (
+                  <AddressMoreOptions
+                    address={spender?.contract_address || ''}
+                    chainId={approval?.chain_id}
+                  />
+                )}
+              </Inline>
+            </ReviewDetailsRow>
+
+            <ReviewDetailsRow testId="revoke-spender">
+              <Inline
+                alignHorizontal="left"
+                space="12px"
+                alignVertical="center"
+              >
+                <Symbol
+                  weight="semibold"
+                  size={16}
+                  symbol="network"
+                  color="labelTertiary"
+                />
+                <Text weight="semibold" size="12pt" color="labelTertiary">
+                  {'Chain'}
+                </Text>
+              </Inline>
+
+              <Inline space="4px" alignVertical="center">
+                <ChainBadge
+                  size={14}
+                  chainId={approval?.chain_id || ChainId.mainnet}
+                />
+                <TextOverflow
+                  weight="semibold"
+                  size="12pt"
+                  color="labelSecondary"
+                >
+                  {
+                    getChain({ chainId: approval?.chain_id || ChainId.mainnet })
+                      .name
+                  }
+                </TextOverflow>
+              </Inline>
+            </ReviewDetailsRow>
           </Box>
         </Stack>
       </Box>
 
       <Separator color="separatorSecondary" />
 
-      <Box padding="20px">
-        <ApprovalFee
-          chainId={approvalChainId}
-          address={currentAddress}
-          spenderAddress={spenderAddress}
-          assetAddress={assetAddress}
-          assetType={assetType}
-          transactionRequest={
-            revokeApproveTransactionRequest || transactionRequestForGas
-          }
-          plainTriggerBorder
-          flashbotsEnabled={flashbotsEnabledGlobally}
-        />
-      </Box>
+      <AccentColorProvider
+        color={
+          approval?.asset.colors?.primary || approval?.asset.colors?.fallback
+        }
+      >
+        <Stack space="20px" padding="20px">
+          <Box>
+            <ApprovalFee
+              chainId={approvalChainId}
+              address={currentAddress}
+              spenderAddress={spenderAddress}
+              assetAddress={assetAddress}
+              assetType={assetType}
+              transactionRequest={
+                revokeApproveTransactionRequest || transactionRequestForGas
+              }
+              // plainTriggerBorder
+              accentColor={
+                approval?.asset.colors?.primary ||
+                approval?.asset.colors?.fallback
+              }
+              flashbotsEnabled={flashbotsEnabledGlobally}
+            />
+          </Box>
 
-      <Box width="full" padding="20px">
-        <Rows space="8px" alignVertical="center">
-          <Row>
-            <Button
-              color={'accent'}
-              height="44px"
-              variant={'flat'}
-              width="full"
-              onClick={handleRevoke}
-              testId="review-confirm-button"
-              tabIndex={0}
-              ref={confirmSendButtonRef}
-              disabled={sending}
-            >
-              <Box>
-                {sending ? (
-                  <Box
-                    width="fit"
-                    alignItems="center"
-                    justifyContent="center"
-                    style={{ margin: 'auto' }}
-                  >
-                    <Spinner size={16} color="label" />
+          <Box width="full">
+            <Rows space="8px" alignVertical="center">
+              <Row>
+                <Button
+                  color={'accent'}
+                  height="44px"
+                  variant={'flat'}
+                  width="full"
+                  onClick={handleRevoke}
+                  testId="review-confirm-button"
+                  tabIndex={0}
+                  ref={confirmSendButtonRef}
+                  disabled={sending}
+                >
+                  <Box>
+                    {sending ? (
+                      <Box
+                        width="fit"
+                        alignItems="center"
+                        justifyContent="center"
+                        style={{ margin: 'auto' }}
+                      >
+                        <Spinner size={16} color="label" />
+                      </Box>
+                    ) : (
+                      <Text weight="bold" size="16pt" color="label">
+                        {waitingForDevice
+                          ? `👀 ${i18n.t('send.review.confirm_hw')}`
+                          : i18n.t('approvals.revoke.action')}
+                      </Text>
+                    )}
                   </Box>
-                ) : (
-                  <TextOverflow weight="bold" size="16pt" color="label">
-                    {waitingForDevice
-                      ? `👀 ${i18n.t('send.review.confirm_hw')}`
-                      : i18n.t('approvals.revoke.action', {
-                          tokenSymbol: approval?.asset.symbol,
-                        })}
-                  </TextOverflow>
-                )}
-              </Box>
-            </Button>
-          </Row>
-          <Row>
-            <Inline alignHorizontal="center">
-              <Button
-                color="transparent"
-                height="44px"
-                variant="tinted"
-                onClick={onCancel}
-                tabIndex={0}
-                width="full"
-              >
-                <Text weight="bold" size="16pt" color="labelSecondary">
-                  {i18n.t('send.review.cancel')}
-                </Text>
-              </Button>
-            </Inline>
-          </Row>
-        </Rows>
-      </Box>
+                </Button>
+              </Row>
+            </Rows>
+          </Box>
+        </Stack>
+      </AccentColorProvider>
     </BottomSheet>
   );
 };

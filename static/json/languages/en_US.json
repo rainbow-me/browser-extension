@@ -566,8 +566,8 @@
     "unlimited": "Unlimited",
     "no_allowance": "No Allowance",
     "revoke": {
-      "title": "Revoke",
-      "action": "Revoke %{tokenSymbol}"
+      "title": "Review & Revoke",
+      "action": "Revoke"
     }
   },
   "send": {
