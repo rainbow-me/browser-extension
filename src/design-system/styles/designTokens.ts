@@ -1092,6 +1092,9 @@ export const symbolNames = selectSymbolNames(
   'photo.fill',
   'spigot.fill',
   'person.2.fill',
+  'chart.line.flattrend.xyaxis',
+  'chart.line.uptrend.xyaxis',
+  'chart.line.downtrend.xyaxis',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

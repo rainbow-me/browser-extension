@@ -1298,7 +1298,6 @@
     "referral_code_description": "Earn points for referring friends once they swap $100 through Rainbow",
     "copied_referral_code": "Referral code copied!",
     "copied_referral_link": "Referral link copied!",
-    "out_of": "Out of %{total}",
     "out_of_current_total_points": "Out of %{total} current total points",
     "header": "Claim your points",
     "description": "Points are here. Find out how many you’ve been awarded.",
