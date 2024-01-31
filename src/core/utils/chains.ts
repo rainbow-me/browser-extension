@@ -15,6 +15,7 @@ import { useNetwork } from 'wagmi';
 import {
   NATIVE_ASSETS_PER_CHAIN,
   SUPPORTED_CHAINS,
+  SUPPORTED_CHAIN_IDS,
   SUPPORTED_MAINNET_CHAINS,
 } from '~/core/references';
 import {
@@ -82,6 +83,9 @@ export const getSupportedChainsWithHardhat = () => {
         (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)),
   );
 };
+
+export const isDefaultSupportedChain = ({ chainId }: { chainId: ChainId }) =>
+  SUPPORTED_CHAIN_IDS.map((id) => id).includes(chainId);
 
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
