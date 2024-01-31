@@ -42,14 +42,25 @@ describe('Navigate Settings & Privacy and its flows', () => {
 
   it('should be able to toggle analytics', async () => {
     await navigateToSettingsPrivacy(driver, rootURL);
+
     // find toggle status and expect to be true
-    expect(await toggleStatus('analytics-toggle', driver)).toBe('true');
+    if (browser === 'firefox') {
+      expect(await toggleStatus('analytics-toggle', driver)).toBe('false');
 
-    await findElementByTestIdAndClick({ id: 'analytics-toggle', driver });
-    expect(await toggleStatus('analytics-toggle', driver)).toBe('false');
+      await findElementByTestIdAndClick({ id: 'analytics-toggle', driver });
+      expect(await toggleStatus('analytics-toggle', driver)).toBe('true');
 
-    await findElementByTestIdAndClick({ id: 'analytics-toggle', driver });
-    expect(await toggleStatus('analytics-toggle', driver)).toBe('true');
+      await findElementByTestIdAndClick({ id: 'analytics-toggle', driver });
+      expect(await toggleStatus('analytics-toggle', driver)).toBe('false');
+    } else {
+      expect(await toggleStatus('analytics-toggle', driver)).toBe('true');
+
+      await findElementByTestIdAndClick({ id: 'analytics-toggle', driver });
+      expect(await toggleStatus('analytics-toggle', driver)).toBe('false');
+
+      await findElementByTestIdAndClick({ id: 'analytics-toggle', driver });
+      expect(await toggleStatus('analytics-toggle', driver)).toBe('true');
+    }
   });
 
   it('should be able to hide asset balances', async () => {
