@@ -7,6 +7,7 @@ import { createQueryKey } from '~/core/react-query';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { isDefaultSupportedChain } from '~/core/utils/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
 
 const parseTokenInfo = (token: AboutTokenQuery['token']) => {
@@ -51,7 +52,7 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
         .then((d) => parseTokenInfo(d.token));
     },
     queryKey: createQueryKey('token about info', args),
-    enabled: !!token,
+    enabled: !!token && isDefaultSupportedChain({ chainId: token.chainId }),
     ...options,
   });
 };
