@@ -355,6 +355,9 @@ query points($address: String!) {
           current
         }
         last_airdrop {
+          position {
+            current
+          }
           differences {
             type
             earnings {
