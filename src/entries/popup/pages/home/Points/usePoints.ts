@@ -3,7 +3,10 @@ import { useEffect } from 'react';
 import { Address } from 'wagmi';
 
 import { metadataClient } from '~/core/graphql';
-import { ValidatePointsSignatureMutation } from '~/core/graphql/__generated__/metadata';
+import {
+  PointsDocument,
+  ValidatePointsSignatureMutation,
+} from '~/core/graphql/__generated__/metadata';
 import { queryClient } from '~/core/react-query';
 
 const fetchPoints = async (address: Address) => {
@@ -25,7 +28,7 @@ export const fetchPointsQuery = async (address: Address) =>
 let nextDropTimeout: NodeJS.Timeout | undefined;
 export const usePoints = (address: Address) => {
   const query = useQuery({
-    queryKey: ['points', address],
+    queryKey: ['points', address, PointsDocument.loc?.source.body],
     queryFn: () => fetchPoints(address),
     staleTime: 1000 * 60 * 5,
   });
