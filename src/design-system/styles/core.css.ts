@@ -532,6 +532,9 @@ const symbolProperties = defineProperties({
     },
     filter: {
       'shadow 12px accent': `drop-shadow(${textShadowTokens['12px accent'].light})`,
+      'shadow 12px red': `drop-shadow(${textShadowTokens['12px red'].light})`,
+      'shadow 12px yellow': `drop-shadow(${textShadowTokens['12px yellow'].light})`,
+      'shadow 12px green': `drop-shadow(${textShadowTokens['12px green'].light})`,
     },
     cursor: cursorOpts,
     opacity: {

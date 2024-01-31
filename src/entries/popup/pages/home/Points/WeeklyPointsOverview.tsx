@@ -96,7 +96,7 @@ export function PointsWeeklyOverview() {
   const { data: points } = usePoints(currentAddress);
 
   const weeklyEarnings = useMemo(() => {
-    const differences = points?.user.stats.last_airdrop?.differences;
+    const differences = points?.user.stats.last_airdrop.differences;
     if (!differences) return null;
 
     let total = 0;
@@ -120,7 +120,7 @@ export function PointsWeeklyOverview() {
     );
 
     return { total, differences: diffs };
-  }, [points?.user.stats.last_airdrop?.differences]);
+  }, [points?.user.stats.last_airdrop.differences]);
 
   const nextDistributionTime = useMemo(() => {
     return new Date(points?.meta.distribution.next || 0);
