@@ -161,7 +161,7 @@ function Leaderboard() {
                 <Inline wrap={false} space="12px" alignVertical="center">
                   <WalletAvatar
                     size={32}
-                    avatarUrl={avatarURL}
+                    avatarUrl={avatarURL || null}
                     addressOrName={address}
                     emojiSize="16pt"
                   />
