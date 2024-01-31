@@ -7,7 +7,7 @@ import { Text, TextProps } from '../Text/Text';
 
 type AnimationDirection = 'rightToLeft' | 'leftToRight';
 
-const rainbowColors = {
+export const rainbowColors = {
   blue: { text: '#31BCC4', shadow: 'rgba(49, 188, 196, 0.8)' },
   green: { text: '#57EA5F', shadow: 'rgba(87, 234, 95, 0.8)' },
   yellow: { text: '#F0D83F', shadow: 'rgba(240, 216, 63, 0.8)' },

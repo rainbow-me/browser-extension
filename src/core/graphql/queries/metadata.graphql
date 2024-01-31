@@ -354,6 +354,17 @@ query points($address: String!) {
           unranked
           current
         }
+        last_airdrop {
+          position {
+            current
+          }
+          differences {
+            type
+            earnings {
+              total
+            }
+          }
+        }
       }
     }
   }

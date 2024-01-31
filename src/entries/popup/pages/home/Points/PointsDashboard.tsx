@@ -1,10 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
+import { hex } from 'chroma-js';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { MotionProps, motion } from 'framer-motion';
-import { PropsWithChildren, useEffect, useReducer } from 'react';
+import { PropsWithChildren, memo, useEffect, useReducer } from 'react';
 import { Address } from 'wagmi';
 
+import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -23,10 +25,16 @@ import {
 } from '~/design-system';
 import { BoxProps } from '~/design-system/components/Box/Box';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
-import { linearGradients } from '~/design-system/styles/designTokens';
+import {
+  globalColors,
+  linearGradients,
+} from '~/design-system/styles/designTokens';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
+import { Link } from '~/entries/popup/components/Link/Link';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
+import { ROUTES } from '~/entries/popup/urls';
 
+import { AirdropIcon } from './AirdropIcon';
 import { usePoints } from './usePoints';
 
 const { format: formatNumber } = createNumberFormatter({
@@ -153,7 +161,7 @@ function Leaderboard() {
                 <Inline wrap={false} space="12px" alignVertical="center">
                   <WalletAvatar
                     size={32}
-                    avatarUrl={avatarURL}
+                    avatarUrl={avatarURL || null}
                     addressOrName={address}
                     emojiSize="16pt"
                   />
@@ -291,7 +299,35 @@ function NextDistributionIn({ nextDistribution }: { nextDistribution: Date }) {
   );
 }
 
-function YourRankAndNextDrop() {
+function getRankDifference(
+  stats: NonNullable<PointsQuery['points']>['user']['stats'],
+) {
+  const lastWeekRank = stats.last_airdrop.position.current;
+  const currentRank = stats.position.current;
+  const difference = currentRank - lastWeekRank;
+
+  if (difference === 0)
+    return {
+      symbol: 'chart.line.flattrend.xyaxis',
+      color: 'yellow',
+      difference,
+    } as const;
+
+  if (difference < 0)
+    return {
+      symbol: 'chart.line.uptrend.xyaxis',
+      color: 'green',
+      difference,
+    } as const;
+
+  return {
+    symbol: 'chart.line.downtrend.xyaxis',
+    color: 'red',
+    difference,
+  } as const;
+}
+
+const YourRankAndNextDrop = memo(function YourRankAndNextDrop() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
 
@@ -304,8 +340,10 @@ function YourRankAndNextDrop() {
     );
 
   const { meta, leaderboard, user } = data;
-
+  const currentRank = user.stats.position.current;
   const nextDistribution = new Date(meta.distribution.next * 1000);
+
+  const { difference, symbol, color } = getRankDifference(user.stats);
 
   return (
     <Inline wrap={false} space="12px">
@@ -353,25 +391,23 @@ function YourRankAndNextDrop() {
         ) : (
           <>
             <TextOverflow size="20pt" weight="bold">
-              #{formatNumber(user.stats.position.current)}
+              #{formatNumber(currentRank)}
             </TextOverflow>
             <Inline alignVertical="center" space="4px" wrap={false}>
               <Symbol
                 size={12}
-                symbol="person.2.fill"
+                symbol={symbol}
                 weight="bold"
-                color="accent"
-                filter="shadow 12px accent"
+                color={color}
+                filter={`shadow 12px ${color}`}
               />
               <Text
                 size="10pt"
                 weight="bold"
-                color="accent"
-                textShadow="12px accent"
+                color={color}
+                textShadow={`12px ${color}`}
               >
-                {i18n.t('points.out_of', {
-                  total: formatNumber(leaderboard.stats.total_users),
-                })}
+                {formatNumber(difference)}
               </Text>
             </Inline>
           </>
@@ -379,7 +415,7 @@ function YourRankAndNextDrop() {
       </Card>
     </Inline>
   );
-}
+});
 
 const mapToRange = (
   num: number,
@@ -405,7 +441,7 @@ function YourPoints() {
       </Stack>
     );
 
-  const { leaderboard, user } = data;
+  const { earnings } = data.user;
 
   return (
     <Box
@@ -417,7 +453,7 @@ function YourPoints() {
       gap="12px"
     >
       <Text size="26pt" weight="heavy">
-        {formatNumber(user.earnings.total)}
+        {formatNumber(earnings.total)}
       </Text>
       <Box
         as={motion.div}
@@ -425,27 +461,75 @@ function YourPoints() {
         initial={{ width: 40 }}
         transition={{ duration: 1 }}
         animate={{
-          width: mapToRange(user.earnings.total, [0, 2_000_000], [40, 300]),
+          width: mapToRange(earnings.total, [0, 2_000_000], [40, 300]),
         }}
         style={{ height: 10, background: linearGradients.points }}
       />
-      <Text
-        size="12pt"
-        weight="bold"
-        background="points"
-        color="transparent"
-        webkitBackgroundClip="text"
-      >
-        {i18n.t('points.out_of_current_total_points', {
-          total: formatNumber(leaderboard.stats.total_points),
-        })}
-      </Text>
     </Box>
+  );
+}
+
+const cyanAlpha = (alpha: number) =>
+  hex(globalColors.cyan50).alpha(alpha).css();
+function YourEarningsLastWeek() {
+  return (
+    <Card
+      flexDirection="row"
+      justifyContent="flex-start"
+      alignItems="center"
+      gap="12px"
+      borderColor="separatorSecondary"
+      borderWidth="1px"
+    >
+      <Box
+        style={{
+          height: 36,
+          width: 36,
+          background: `linear-gradient(315deg, ${cyanAlpha(
+            0.2,
+          )} -0.69%, ${cyanAlpha(0.4)} 99.31%)`,
+          borderColor: cyanAlpha(0.06),
+        }}
+        borderWidth="1px"
+        borderRadius="10px"
+      >
+        <AirdropIcon
+          size={50}
+          color={globalColors.cyan50}
+          style={{ marginTop: -8, marginLeft: -8 }}
+        />
+      </Box>
+      <Stack space="10px">
+        <Text size="14pt" weight="heavy">
+          {i18n.t('points.weekly_overview.your_earnings')}
+        </Text>
+        <Text color="labelTertiary" size="12pt" weight="bold">
+          {i18n.t('points.weekly_overview.view_breakdown')}
+        </Text>
+        <Link
+          to={ROUTES.POINTS_WEEKLY_OVERVIEW}
+          state={{ tab: 'points', skipTransitionOnRoute: ROUTES.HOME }}
+        >
+          <Text color="cyan" size="12pt" weight="heavy" textShadow="12px blue">
+            {i18n.t('points.weekly_overview.view_now')}
+          </Text>
+        </Link>
+      </Stack>
+    </Card>
   );
 }
 
 export function PointsDashboard() {
   const { currentTheme } = useCurrentThemeStore();
+  const { currentAddress } = useCurrentAddressStore();
+  const { data: points } = usePoints(currentAddress);
+
+  const hasLastAirdropPoints = points?.user.stats.last_airdrop.differences.some(
+    (d) => d && d.earnings.total > 0,
+  );
+  const shouldShowWeeklyOverview =
+    points && (points.user.earnings.total > 0 || hasLastAirdropPoints);
+
   return (
     <Stack
       gap="20px"
@@ -455,7 +539,10 @@ export function PointsDashboard() {
       padding="20px"
       background={currentTheme === 'light' ? 'surfaceSecondary' : undefined}
     >
-      <YourPoints />
+      <Stack gap="20px">
+        <YourPoints />
+        {shouldShowWeeklyOverview && <YourEarningsLastWeek />}
+      </Stack>
       <YourRankAndNextDrop />
       <ReferralCode />
       <Leaderboard />
