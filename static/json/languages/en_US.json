@@ -1298,7 +1298,6 @@
     "referral_code_description": "Earn points for referring friends once they swap $100 through Rainbow",
     "copied_referral_code": "Referral code copied!",
     "copied_referral_link": "Referral link copied!",
-    "out_of": "Out of %{total}",
     "out_of_current_total_points": "Out of %{total} current total points",
     "header": "Claim your points",
     "description": "Points are here. Find out how many you’ve been awarded.",
@@ -1345,6 +1344,22 @@
       "existing_user": "Existing user",
       "invalid_referral_code": "Invalid referral code",
       "unexpected": "Something unexpected happened, try again in a few minutes"
+    },
+    "weekly_overview": {
+      "week_of": "> Week of %{from} - %{to}",
+      "counting": "> Counting earned points...",
+      "your_activity": "Your Activity:",
+      "referral_activity": "Referral Activity:",
+      "new_referrals": "New Referrals:",
+      "retroactive": "Retroactive Points:",
+      "total": "Total:",
+      "weekly_counted": "> Weekly earnings counted",
+      "you_have": "You have:",
+      "none": "None",
+
+      "your_earnings": "Your Earnings Last Week",
+      "view_breakdown": "View your weekly earnings breakdown",
+      "view_now": "View Now"
     }
   },
   "speed_up_and_cancel": {

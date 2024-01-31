@@ -16,7 +16,7 @@ export function WalletAvatar({
   emojiPaddingTop,
   boxShadow,
 }: {
-  avatarUrl?: string;
+  avatarUrl?: string | null;
   addressOrName?: string;
   size: number;
   emojiSize?: TextStyles['fontSize'];
