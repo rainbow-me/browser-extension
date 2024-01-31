@@ -175,8 +175,9 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
 });
 
 it('should be able to add a custom token', async () => {
+  await delayTime('long');
   await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
-  await delayTime('medium');
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ driver, id: 'network-row-25' });
   await findElementByTestIdAndClick({ driver, id: 'custom-token-link' });
   await checkExtensionURL(driver, 'custom-chain/details');
