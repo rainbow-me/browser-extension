@@ -16,11 +16,14 @@ const fetchWalletAvatar = async ({
   avatarUrl,
 }: {
   addressOrName: string;
-  avatarUrl?: string;
+  avatarUrl?: string | null;
 }): Promise<WalletAvatar> => {
   const { setWalletAvatar } = walletAvatarStore.getState();
 
-  const ensAvatar = avatarUrl || (await resolveEnsAvatar({ addressOrName }));
+  const ensAvatar =
+    avatarUrl === null
+      ? null
+      : avatarUrl || (await resolveEnsAvatar({ addressOrName }));
   let correctEnsAvatar = true;
   let dominantColor = null;
   try {
@@ -43,7 +46,7 @@ export function useAvatar({
   avatarUrl,
 }: {
   addressOrName?: string;
-  avatarUrl?: string;
+  avatarUrl?: string | null;
 }) {
   const { walletAvatar } = useWalletAvatarStore();
 

@@ -120,19 +120,35 @@ describe.runIf(browser !== 'firefox')(
 
     it('should be able to toggle analytics with keyboard', async () => {
       await delayTime('medium');
-      const defaultToggleStatus = await toggleStatus(
-        'analytics-toggle',
-        driver,
-      );
-      expect(defaultToggleStatus).toBe('true');
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
-      await executePerformShortcut({ driver, key: 'ENTER' });
-      await delayTime('long');
-      const changedToggleStatus = await toggleStatus(
-        'analytics-toggle',
-        driver,
-      );
-      expect(changedToggleStatus).toBe('false');
+      if (browser === 'firefox') {
+        const defaultToggleStatus = await toggleStatus(
+          'analytics-toggle',
+          driver,
+        );
+        expect(defaultToggleStatus).toBe('false');
+        await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
+        await executePerformShortcut({ driver, key: 'ENTER' });
+        await delayTime('long');
+        const changedToggleStatus = await toggleStatus(
+          'analytics-toggle',
+          driver,
+        );
+        expect(changedToggleStatus).toBe('true');
+      } else {
+        const defaultToggleStatus = await toggleStatus(
+          'analytics-toggle',
+          driver,
+        );
+        expect(defaultToggleStatus).toBe('true');
+        await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
+        await executePerformShortcut({ driver, key: 'ENTER' });
+        await delayTime('long');
+        const changedToggleStatus = await toggleStatus(
+          'analytics-toggle',
+          driver,
+        );
+        expect(changedToggleStatus).toBe('false');
+      }
     });
 
     it('should be able to toggle hide asset balances with keyboard', async () => {
