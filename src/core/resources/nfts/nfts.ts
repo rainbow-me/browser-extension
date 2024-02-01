@@ -2,7 +2,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { Chain } from 'viem';
 import { Address } from 'wagmi';
 
-import { TEST_VARIABLES } from 'e2e/walletVariables';
 import {
   fetchNftCollections,
   fetchNfts,
@@ -31,6 +30,7 @@ import {
 } from '~/core/utils/nfts';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { NFTS_TEST_DATA } from '~/test/utils';
+const EMPTY_WALLET_ADDRESS = '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
@@ -77,7 +77,7 @@ async function nftsQueryFunction({
   }) as ChainName[];
   if (
     process.env.IS_TESTING === 'true' &&
-    isLowerCaseMatch(address, TEST_VARIABLES.EMPTY_WALLET.ADDRESS)
+    isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
   ) {
     return NFTS_TEST_DATA;
   }
