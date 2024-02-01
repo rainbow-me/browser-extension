@@ -265,7 +265,7 @@ const TokenApproval = ({
                   onClick={onRevoke}
                 >
                   <Text size="14pt" weight="bold" color="label">
-                    Revoke
+                    {i18n.t('approvals.revoke.action')}
                   </Text>
                 </Button>
               ) : (

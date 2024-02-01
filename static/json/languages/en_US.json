@@ -567,7 +567,8 @@
     "no_allowance": "No Allowance",
     "revoke": {
       "title": "Review & Revoke",
-      "action": "Revoke"
+      "action": "Revoke",
+      "cancel": "Cancel"
     }
   },
   "send": {

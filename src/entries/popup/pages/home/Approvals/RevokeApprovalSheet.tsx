@@ -40,8 +40,6 @@ import {
   Box,
   Button,
   Inline,
-  Row,
-  Rows,
   Separator,
   Stack,
   Symbol,
@@ -423,42 +421,49 @@ export const RevokeApprovalSheet = ({
             />
           </Box>
 
-          <Box width="full">
-            <Rows space="8px" alignVertical="center">
-              <Row>
-                <Button
-                  color={'accent'}
-                  height="44px"
-                  variant={'flat'}
-                  width="full"
-                  onClick={handleRevoke}
-                  testId="review-confirm-button"
-                  tabIndex={0}
-                  ref={confirmSendButtonRef}
-                  disabled={sending}
-                >
-                  <Box>
-                    {sending ? (
-                      <Box
-                        width="fit"
-                        alignItems="center"
-                        justifyContent="center"
-                        style={{ margin: 'auto' }}
-                      >
-                        <Spinner size={16} color="label" />
-                      </Box>
-                    ) : (
-                      <Text weight="bold" size="16pt" color="label">
-                        {waitingForDevice
-                          ? `👀 ${i18n.t('send.review.confirm_hw')}`
-                          : i18n.t('approvals.revoke.action')}
-                      </Text>
-                    )}
+          <Inline space="12px" wrap={false}>
+            <Button
+              color="separatorSecondary"
+              height="44px"
+              variant={'flat'}
+              width="full"
+              onClick={onCancel}
+              tabIndex={0}
+            >
+              <Text weight="bold" size="16pt" color="label">
+                {i18n.t('approvals.revoke.cancel')}
+              </Text>
+            </Button>
+            <Button
+              color={'accent'}
+              height="44px"
+              variant={'flat'}
+              width="full"
+              onClick={handleRevoke}
+              tabIndex={0}
+              ref={confirmSendButtonRef}
+              disabled={sending}
+            >
+              <Box>
+                {sending ? (
+                  <Box
+                    width="fit"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ margin: 'auto' }}
+                  >
+                    <Spinner size={16} color="label" />
                   </Box>
-                </Button>
-              </Row>
-            </Rows>
-          </Box>
+                ) : (
+                  <Text weight="bold" size="16pt" color="label">
+                    {waitingForDevice
+                      ? `👀 ${i18n.t('send.review.confirm_hw')}`
+                      : i18n.t('approvals.revoke.action')}
+                  </Text>
+                )}
+              </Box>
+            </Button>
+          </Inline>
         </Stack>
       </AccentColorProvider>
     </BottomSheet>
