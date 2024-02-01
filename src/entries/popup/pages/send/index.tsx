@@ -1,4 +1,7 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
+import {
+  TransactionRequest,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider';
 import { useAnimationControls } from 'framer-motion';
 import {
   ChangeEvent,
@@ -21,12 +24,13 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { AddressOrEth } from '~/core/types/assets';
+import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
+import { UniqueAsset } from '~/core/types/nfts';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdFromChainName, chainIdToUse } from '~/core/utils/chains';
 import {
@@ -241,6 +245,74 @@ export function Send() {
     flashbotsEnabled &&
     asset?.chainId === ChainId.mainnet;
 
+  const buildNftAssetObject = useCallback((nft: UniqueAsset) => {
+    return {
+      address: (nft.asset_contract.address || '') as AddressOrEth,
+      chainId: chainIdFromChainName(nft.network),
+      chainName: nft.network,
+      isNativeAsset: false,
+      name: nft.name,
+      symbol: nft.collection.name,
+      uniqueId: `${nft.asset_contract.address || ''}_${chainIdFromChainName(
+        nft.network,
+      )}`,
+      decimals: 0,
+      native: {
+        price: {
+          amount: 0,
+          change: '',
+          display: '$0.00',
+        },
+      },
+    } as ParsedAsset;
+  }, []);
+
+  const buildPendingTransaction = useCallback(
+    (result: TransactionResponse) => {
+      return {
+        changes: [
+          nft
+            ? buildNftAssetObject(nft)
+            : {
+                direction: 'out',
+                asset,
+                value: assetAmount,
+              },
+        ],
+        asset: nft ? buildNftAssetObject(nft) : asset ?? undefined,
+        data: result.data,
+        flashbots: flashbotsEnabledGlobally,
+        value: result.value.toString(),
+        from: fromAddress,
+        to: txToAddress,
+        hash: result.hash as TxHash,
+        chainId,
+        status: 'pending',
+        type: 'send',
+        nonce: result.nonce,
+        gasPrice: (
+          selectedGas.transactionGasParams as TransactionLegacyGasParams
+        )?.gasPrice,
+        maxFeePerGas: (selectedGas.transactionGasParams as TransactionGasParams)
+          ?.maxFeePerGas,
+        maxPriorityFeePerGas: (
+          selectedGas.transactionGasParams as TransactionGasParams
+        )?.maxPriorityFeePerGas,
+      } as NewTransaction;
+    },
+    [
+      asset,
+      assetAmount,
+      buildNftAssetObject,
+      chainId,
+      flashbotsEnabledGlobally,
+      fromAddress,
+      nft,
+      selectedGas.transactionGasParams,
+      txToAddress,
+    ],
+  );
+
   const handleSend = useCallback(
     async (callback?: () => void) => {
       if (!config.send_enabled) return;
@@ -261,34 +333,7 @@ export function Send() {
             data,
           });
           if (result && asset) {
-            const transaction: NewTransaction = {
-              changes: [
-                {
-                  direction: 'out',
-                  asset,
-                  value: assetAmount,
-                },
-              ],
-              asset,
-              data: result.data,
-              value: result.value.toString(),
-              from: fromAddress,
-              to: txToAddress,
-              hash: result.hash as TxHash,
-              chainId,
-              status: 'pending',
-              type: 'send',
-              nonce: result.nonce,
-              gasPrice: (
-                selectedGas.transactionGasParams as TransactionLegacyGasParams
-              )?.gasPrice,
-              maxFeePerGas: (
-                selectedGas.transactionGasParams as TransactionGasParams
-              )?.maxFeePerGas,
-              maxPriorityFeePerGas: (
-                selectedGas.transactionGasParams as TransactionGasParams
-              )?.maxPriorityFeePerGas,
-            };
+            const transaction: NewTransaction = buildPendingTransaction(result);
             addNewTransaction({
               address: fromAddress,
               chainId,
@@ -320,71 +365,7 @@ export function Send() {
             data,
           });
           if (result && nft) {
-            const transaction: NewTransaction = {
-              changes: [
-                {
-                  direction: 'out',
-                  asset: {
-                    address: (nft.asset_contract.address || '') as AddressOrEth,
-                    chainId: chainIdFromChainName(nft.network),
-                    chainName: nft.network,
-                    isNativeAsset: false,
-                    name: nft.name,
-                    symbol: nft.collection.name,
-                    uniqueId: `${
-                      nft.asset_contract.address || ''
-                    }_${chainIdFromChainName(nft.network)}`,
-                    decimals: 0,
-                    native: {
-                      price: {
-                        amount: 0,
-                        change: '',
-                        display: '$0.00',
-                      },
-                    },
-                  },
-                  value: assetAmount,
-                },
-              ],
-              asset: {
-                address: (nft.asset_contract.address || '') as AddressOrEth,
-                chainId: chainIdFromChainName(nft.network),
-                chainName: nft.network,
-                isNativeAsset: false,
-                name: nft.name,
-                symbol: nft.collection.name,
-                uniqueId: `${
-                  nft.asset_contract.address || ''
-                }_${chainIdFromChainName(nft.network)}`,
-                decimals: 0,
-                native: {
-                  price: {
-                    amount: 0,
-                    change: '',
-                    display: '$0.00',
-                  },
-                },
-              },
-              data: result.data,
-              value: result.value.toString(),
-              from: fromAddress,
-              to: txToAddress,
-              hash: result.hash as TxHash,
-              chainId,
-              status: 'pending',
-              type: 'send',
-              nonce: result.nonce,
-              gasPrice: (
-                selectedGas.transactionGasParams as TransactionLegacyGasParams
-              )?.gasPrice,
-              maxFeePerGas: (
-                selectedGas.transactionGasParams as TransactionGasParams
-              )?.maxFeePerGas,
-              maxPriorityFeePerGas: (
-                selectedGas.transactionGasParams as TransactionGasParams
-              )?.maxPriorityFeePerGas,
-            };
-            console.log('transaction: ', transaction);
+            const transaction: NewTransaction = buildPendingTransaction(result);
             addNewTransaction({
               address: fromAddress,
               chainId,
@@ -428,9 +409,8 @@ export function Send() {
       data,
       asset,
       assetAmount,
-      flashbotsEnabledGlobally,
+      buildPendingTransaction,
       chainId,
-      selectedGas.transactionGasParams,
       navigate,
       nft,
     ],
