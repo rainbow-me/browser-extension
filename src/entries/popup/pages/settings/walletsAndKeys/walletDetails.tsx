@@ -33,6 +33,7 @@ import { ROUTES } from '~/entries/popup/urls';
 import { CreateWalletPrompt } from '../../walletSwitcher/createWalletPrompt';
 import { RemoveWalletPrompt } from '../../walletSwitcher/removeWalletPrompt';
 import { RenameWalletPrompt } from '../../walletSwitcher/renameWalletPrompt';
+import { ConfirmPasswordPrompt } from '../privacy/confirmPasswordPrompt';
 
 const InfoButtonOptions = ({
   account,
@@ -129,6 +130,7 @@ export function WalletDetails() {
   const { visibleWallets } = useWallets();
   const { deleteWalletName } = useWalletNamesStore();
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
+  const [showEnterPassword, setShowEnterPassword] = useState(false);
 
   const { isWalletBackedUp, getWalletBackup, deleteWalletBackup } =
     useWalletBackupsStore();
@@ -165,40 +167,52 @@ export function WalletDetails() {
     setCreateWalletAddress(address);
   }, []);
 
-  const handleRemoveAccount = async (address: Address) => {
-    const walletBeforeDeletion = await getWallet(address);
-    unhideWallet({ address });
-    await remove(address);
-    deleteWalletName({ address });
-    deleteWalletBackup({ address });
+  // handleRemoveAccount
+  const handleRemoveAccount = useCallback(
+    async (address: Address) => {
+      const walletBeforeDeletion = await getWallet(address);
+      unhideWallet({ address });
+      await remove(address);
+      deleteWalletName({ address });
+      deleteWalletBackup({ address });
 
-    if (visibleWallets.length > 1) {
-      // set current address to the next account if you deleted that one
-      if (address === currentAddress) {
-        const deletedIndex = visibleWallets.findIndex(
-          (account) => account.address === address,
+      if (visibleWallets.length > 1) {
+        // set current address to the next account if you deleted that one
+        if (address === currentAddress) {
+          const deletedIndex = visibleWallets.findIndex(
+            (account) => account.address === address,
+          );
+          const nextIndex =
+            deletedIndex === visibleWallets.length - 1
+              ? deletedIndex - 1
+              : deletedIndex + 1;
+          setCurrentAddress(visibleWallets[nextIndex].address);
+        }
+        // if more accounts in this wallet
+        const otherAccountSameWallet = walletBeforeDeletion?.accounts.find(
+          (a) => a !== address,
         );
-        const nextIndex =
-          deletedIndex === visibleWallets.length - 1
-            ? deletedIndex - 1
-            : deletedIndex + 1;
-        setCurrentAddress(visibleWallets[nextIndex].address);
-      }
-      // if more accounts in this wallet
-      const otherAccountSameWallet = walletBeforeDeletion?.accounts.find(
-        (a) => a !== address,
-      );
-      if (otherAccountSameWallet) {
-        const walletAfterDeletion = await getWallet(otherAccountSameWallet);
-        setWallet(walletAfterDeletion);
+        if (otherAccountSameWallet) {
+          const walletAfterDeletion = await getWallet(otherAccountSameWallet);
+          setWallet(walletAfterDeletion);
+        } else {
+          navigate(-1);
+        }
       } else {
-        navigate(-1);
+        await wipe();
+        navigate(ROUTES.WELCOME);
       }
-    } else {
-      await wipe();
-      navigate(ROUTES.WELCOME);
-    }
-  };
+    },
+    [
+      currentAddress,
+      deleteWalletBackup,
+      deleteWalletName,
+      navigate,
+      setCurrentAddress,
+      unhideWallet,
+      visibleWallets,
+    ],
+  );
 
   const handleCancel = async () => {
     if (createWalletAddress !== undefined) {
@@ -258,6 +272,16 @@ export function WalletDetails() {
 
   return (
     <Box>
+      <ConfirmPasswordPrompt
+        show={showEnterPassword}
+        onClose={() => setShowEnterPassword(false)}
+        extraState={{ ...state }}
+        onSuccess={() =>
+          navigate(
+            ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_GROUP_WARNING,
+          )
+        }
+      />
       <CreateWalletPrompt
         onCancel={handleCancel}
         show={!!createWalletAddress}
@@ -390,6 +414,22 @@ export function WalletDetails() {
                   />
                 }
                 onClick={handleCreateWalletOnGroup}
+              />
+              <MenuItem
+                first
+                last
+                leftComponent={
+                  <Symbol
+                    size={18}
+                    color="red"
+                    weight="medium"
+                    symbol="trash.fill"
+                  />
+                }
+                titleComponent={
+                  <MenuItem.Title text={'Remove Wallet Group'} color="red" />
+                }
+                onClick={() => setShowEnterPassword(true)}
               />
             </Menu>
           )}
