@@ -16,7 +16,6 @@ import { parseUserAsset } from '~/core/utils/assets';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
-import { truncateString } from '~/core/utils/strings';
 import { getExplorerUrl } from '~/core/utils/tabs';
 import { getBlockExplorerName } from '~/core/utils/transactions';
 import {
@@ -202,10 +201,12 @@ const TokenApprovalContextMenu = ({
   chainId,
   spender,
   children,
+  onRevokeApproval,
 }: {
   chainId: ChainId;
   spender: ApprovalSpender;
   children: ReactNode;
+  onRevokeApproval: () => void;
 }) => {
   const explorerHost = getBlockExplorerName(chainId);
   const explorer =
@@ -217,6 +218,7 @@ const TokenApprovalContextMenu = ({
       <ContextMenuContent>
         <ContextMenuItem
           symbolLeft="doc.on.doc.fill"
+          shortcut={'C'}
           onSelect={() =>
             copy({
               value: spender.contract_address,
@@ -226,41 +228,31 @@ const TokenApprovalContextMenu = ({
           }
         >
           <Text size="14pt" weight="semibold">
-            {i18n.t('activity_details.copy_hash')}
+            {'Copy Spender'}
           </Text>
           <TextOverflow size="11pt" color="labelTertiary" weight="medium">
-            {spender.contract_address}
+            {truncateAddress(spender.contract_address)}
           </TextOverflow>
         </ContextMenuItem>
         {explorerUrl && (
           <>
             <ContextMenuItem
-              symbolLeft="doc.on.doc.fill"
-              onSelect={() => {
-                copy({
-                  title: i18n.t('activity_details.explorer_copied'),
-                  description: truncateString(explorerUrl, 18),
-                  value: explorerUrl,
-                });
-              }}
+              symbolLeft="binoculars.fill"
+              onSelect={() => window.open(explorerUrl, '_blank')}
+              shortcut={'V'}
             >
-              <Text size="14pt" weight="semibold">
-                {i18n.t('activity_details.copy_explorer_url')}
-              </Text>
-              <TextOverflow size="11pt" color="labelTertiary" weight="medium">
-                {explorerUrl}
-              </TextOverflow>
+              {i18n.t('token_details.view_on', { explorer: explorerHost })}
             </ContextMenuItem>
-
             <Box paddingVertical="4px">
               <Separator color="separatorSecondary" />
             </Box>
             <ContextMenuItem
-              symbolLeft="binoculars.fill"
-              external
-              onSelect={() => window.open(explorerUrl, '_blank')}
+              color="red"
+              symbolLeft="xmark.circle.fill"
+              onSelect={onRevokeApproval}
+              shortcut={'R'}
             >
-              {i18n.t('token_details.view_on', { explorer: explorerHost })}
+              {'Revoke Approval'}
             </ContextMenuItem>
           </>
         )}
@@ -286,7 +278,11 @@ const TokenApproval = ({
   const { currentCurrency } = useCurrentCurrencyStore();
 
   return (
-    <TokenApprovalContextMenu chainId={approval.chain_id} spender={spender}>
+    <TokenApprovalContextMenu
+      chainId={approval.chain_id}
+      spender={spender}
+      onRevokeApproval={onRevoke}
+    >
       <Box
         paddingHorizontal="8px"
         onMouseEnter={onMouseEnter}
