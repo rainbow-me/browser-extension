@@ -15,6 +15,7 @@ import { parseUserAsset } from '~/core/utils/assets';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import {
   Box,
+  Button,
   Column,
   Columns,
   Inline,
@@ -105,7 +106,7 @@ export const Approvals = () => {
   const { rainbowChains } = useRainbowChains();
   const { userChains } = useUserChainsStore();
   const [showRevokeSheet, setShowRevokeSheet] = useState(false);
-  const [revokeApproval] = useState<{
+  const [revokeApproval, setRevokeApproval] = useState<{
     approval: Approval | null;
     spender: ApprovalSpender | null;
   }>({ approval: null, spender: null });
@@ -164,10 +165,10 @@ export const Approvals = () => {
                 <TokenApproval
                   approval={tokenApproval.approval}
                   spender={tokenApproval.spender}
-                  // onRevoke={() => {
-                  //   setRevokeApproval(tokenApproval);
-                  //   setShowRevokeSheet(true);
-                  // }}
+                  onRevoke={() => {
+                    setRevokeApproval(tokenApproval);
+                    setShowRevokeSheet(true);
+                  }}
                 />
               </Row>
             ))}
@@ -187,13 +188,25 @@ export const Approvals = () => {
 const TokenApproval = ({
   approval,
   spender,
+  onRevoke,
 }: {
   approval: Approval;
   spender: ApprovalSpender;
+  onRevoke: () => void;
 }) => {
+  const [revokeButtonVisible, setRevokeButtonVisible] = useState(false);
+
+  const onMouseEnter = () => setRevokeButtonVisible(true);
+  const onMouseLeave = () => setRevokeButtonVisible(false);
+
   const { currentCurrency } = useCurrentCurrencyStore();
+
   return (
-    <Box paddingHorizontal="8px">
+    <Box
+      paddingHorizontal="8px"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <Box
         background={{
           default: 'transparent',
@@ -202,7 +215,7 @@ const TokenApproval = ({
         borderRadius="12px"
       >
         <Inset horizontal="12px" vertical="8px">
-          <Columns alignVertical="center">
+          <Columns alignVertical="center" space="4px">
             <Column>
               <Columns space="8px" alignVertical="center">
                 <Column width="content">
@@ -219,61 +232,65 @@ const TokenApproval = ({
                   <Stack space="8px">
                     <TextOverflow
                       align="left"
-                      size="12pt"
+                      size="14pt"
                       weight="semibold"
                       color="label"
                     >
                       {approval?.asset?.name}
                     </TextOverflow>
 
-                    <Inline space="4px">
-                      {spender.contract_name ? (
-                        <Inline space="4px">
-                          <TextOverflow
-                            align="left"
-                            size="12pt"
-                            weight="regular"
-                            color="label"
-                          >
-                            {`${spender.contract_name} •`}
-                          </TextOverflow>
-                        </Inline>
-                      ) : null}
-                      <TextOverflow
-                        align="left"
-                        size="12pt"
-                        weight="regular"
-                        color="label"
-                      >
-                        {truncateAddress(spender.contract_address)}
-                      </TextOverflow>
-                    </Inline>
+                    <TextOverflow
+                      align="left"
+                      size="12pt"
+                      weight="semibold"
+                      color="label"
+                    >
+                      {`${
+                        spender.contract_name
+                          ? `${spender.contract_name} • `
+                          : ''
+                      } ${truncateAddress(spender.contract_address)}`}
+                    </TextOverflow>
                   </Stack>
                 </Column>
               </Columns>
             </Column>
             <Column width="content">
-              <Box
-                paddingVertical="5px"
-                paddingHorizontal="6px"
-                borderRadius="6px"
-                borderDashedWidth="1px"
-                borderColor="separatorTertiary"
-              >
-                <TextOverflow
-                  align="center"
-                  size="11pt"
-                  weight="regular"
-                  color="labelTertiary"
+              {revokeButtonVisible ? (
+                <Button
+                  color="red"
+                  height="28px"
+                  variant="plain"
+                  borderRadius="8px"
+                  onClick={onRevoke}
                 >
-                  {spender?.quantity_allowed.toLowerCase() === 'unlimited'
-                    ? spender?.quantity_allowed
-                    : convertRawAmountToDecimalFormat(
-                        spender?.quantity_allowed || '0',
-                        approval?.asset.decimals,
-                      )}
-                </TextOverflow>
-              </Box>
+                  <Text size="14pt" weight="bold" color="label">
+                    Revoke
+                  </Text>
+                </Button>
+              ) : (
+                <Box
+                  paddingVertical="5px"
+                  paddingHorizontal="6px"
+                  borderRadius="6px"
+                  borderDashedWidth="1px"
+                  borderColor="separatorSecondary"
+                >
+                  <TextOverflow
+                    align="center"
+                    size="11pt"
+                    weight="semibold"
+                    color="labelTertiary"
+                  >
+                    {spender?.quantity_allowed.toLowerCase() === 'unlimited'
+                      ? spender?.quantity_allowed
+                      : `${convertRawAmountToDecimalFormat(
+                          spender?.quantity_allowed || '0',
+                          approval?.asset.decimals,
+                        )} ${approval?.asset.symbol}`}
+                  </TextOverflow>
+                </Box>
+              )}
             </Column>
           </Columns>
         </Inset>
