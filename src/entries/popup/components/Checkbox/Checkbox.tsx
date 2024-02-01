@@ -15,6 +15,7 @@ export function Checkbox({
   borderColor = 'separatorSecondary',
   borderColorSelected = 'accent',
   testId,
+  id,
 }: {
   selected: boolean;
   onClick?: () => void;
@@ -26,9 +27,11 @@ export function Checkbox({
   background?: 'accent' | BackgroundColor;
   backgroundSelected?: 'accent' | BackgroundColor;
   testId?: string;
+  id?: string;
 }) {
   return (
     <Box
+      id={id}
       borderRadius={borderRadius || '28px'}
       background={selected ? backgroundSelected : background}
       borderColor={selected ? borderColorSelected : borderColor}

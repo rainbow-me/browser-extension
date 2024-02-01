@@ -82,6 +82,9 @@ export function ConnectGridPlus() {
         display="flex"
         flexDirection="column"
         justifyContent="center"
+        alignItems="center"
+        flexGrow="1"
+        flexShrink="1"
         gap="32px"
         width="full"
       >

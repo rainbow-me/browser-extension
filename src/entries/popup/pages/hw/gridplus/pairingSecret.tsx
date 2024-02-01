@@ -18,6 +18,7 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
   const [formData, setFormData] = useState({
     pairingCode: '',
   });
+  const disabled = pairing || formData.pairingCode.length < 8;
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setPairing(true);
@@ -37,40 +38,58 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
       display="flex"
       flexDirection="column"
       onSubmit={onSubmit}
-      gap="16px"
+      flexGrow="1"
+      flexShrink="1"
       width="full"
+      paddingBottom="16px"
     >
-      <Text size="20pt" weight="semibold">
-        {i18n.t('hw.gridplus_check_device')}
-      </Text>
-      <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
-        <Text size="14pt" weight="semibold">
-          {i18n.t('hw.gridplus_pairing_code')}
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        flexGrow="1"
+        flexShrink="1"
+        gap="24px"
+      >
+        <Text size="16pt" weight="bold" color="label" align="center">
+          {i18n.t('hw.gridplus_check_device')}
         </Text>
-        <Input
-          id="pairingCode"
-          height="40px"
-          variant="bordered"
-          placeholder="Pairing Code"
-          onChange={(e) =>
-            setFormData({ ...formData, pairingCode: e.target.value })
-          }
-          value={formData.pairingCode}
-          testId="gridplus-pairing-code"
-          autoFocus
-        />
-        {formState.error && (
+        <Box
+          as="fieldset"
+          display="flex"
+          flexDirection="column"
+          gap="8px"
+          width="full"
+        >
           <Text size="14pt" weight="semibold">
-            {i18n.t('hw.gridplus_wrong_code')}
+            {i18n.t('hw.gridplus_pairing_code')}
           </Text>
-        )}
+          <Input
+            id="pairingCode"
+            height="40px"
+            variant="bordered"
+            placeholder="Pairing Code"
+            onChange={(e) =>
+              setFormData({ ...formData, pairingCode: e.target.value })
+            }
+            value={formData.pairingCode}
+            testId="gridplus-pairing-code"
+            autoFocus
+          />
+          {formState.error && (
+            <Text size="14pt" weight="semibold">
+              {i18n.t('hw.gridplus_wrong_code')}
+            </Text>
+          )}
+        </Box>
       </Box>
       <Button
         height="36px"
-        variant="flat"
-        color="fill"
         testId="gridplus-submit"
-        disabled={pairing}
+        color={disabled ? 'labelQuaternary' : 'accent'}
+        variant={disabled ? 'disabled' : 'flat'}
+        disabled={disabled}
+        width="full"
       >
         {i18n.t('hw.gridplus_pair_device')}
       </Button>

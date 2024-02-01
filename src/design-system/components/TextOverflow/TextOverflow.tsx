@@ -6,7 +6,18 @@ import { Inset } from '../Inset/Inset';
 
 interface TextOverflowProps {
   align?: TextStyles['textAlign'];
-  as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'pre';
+  as?:
+    | 'div'
+    | 'p'
+    | 'span'
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'h5'
+    | 'h6'
+    | 'pre'
+    | 'label';
   children: React.ReactNode;
   color?: TextStyles['color'];
   size: TextStyles['fontSize'];

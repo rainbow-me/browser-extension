@@ -20,6 +20,9 @@ export const WalletCredentials = ({
     deviceId: '',
     password: '',
   });
+  const formDataFilled =
+    formData.deviceId.length > 0 && formData.password.length > 0;
+  const disabled = !formDataFilled || connecting;
   const getStoredClient = () => localStorage.getItem('storedClient') ?? '';
 
   const setStoredClient = (storedClient: string | null) => {
@@ -43,63 +46,85 @@ export const WalletCredentials = ({
     }
   };
   useEffect(() => {
-    if (getStoredClient()) {
-      setup({ getStoredClient, setStoredClient, name: appName });
-    }
-  }, [appName]);
+    const checkPersistedClient = async () => {
+      if (getStoredClient()) {
+        const result = await setup({
+          getStoredClient,
+          setStoredClient,
+          name: appName,
+        });
+        onAfterSetup && onAfterSetup(result);
+      }
+    };
+    checkPersistedClient();
+  }, [appName, onAfterSetup]);
   return (
     <Box
       as={motion.form}
       display="flex"
       flexDirection="column"
+      flexGrow="1"
+      flexShrink="1"
       onSubmit={onSubmit}
-      gap="16px"
       width="full"
+      paddingBottom="16px"
     >
-      <Text size="20pt" weight="semibold">
-        {i18n.t('hw.connect_gridplus_title')}
-      </Text>
-      <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
-        <Text size="14pt" weight="semibold">
-          {i18n.t('hw.gridplus_device_id')}
+      <Box
+        display="flex"
+        flexDirection="column"
+        flexGrow="1"
+        flexShrink="1"
+        gap="24px"
+      >
+        <Text size="20pt" weight="semibold" align="center">
+          {i18n.t('hw.connect_gridplus_title')}
         </Text>
-        <Input
-          variant="bordered"
-          height="40px"
-          id="deviceId"
-          placeholder="Enter Device ID"
-          onChange={(e) =>
-            setFormData({ ...formData, deviceId: e.target.value })
-          }
-          value={formData.deviceId}
-          testId="gridplus-deviceid"
-          aria-label="username"
-        />
-      </Box>
-      <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
-        <Text size="14pt" weight="semibold">
-          {i18n.t('hw.gridplus_password')}
+        <Text size="16pt" weight="medium" align="center">
+          {i18n.t('hw.connect_gridplus_description')}
         </Text>
-        <Input
-          variant="bordered"
-          height="40px"
-          id="password"
-          type="password"
-          placeholder="Enter Password"
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
-          value={formData.password}
-          testId="gridplus-password"
-          aria-label="password"
-        />
+        <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
+          <Text size="14pt" weight="semibold">
+            {i18n.t('hw.gridplus_device_id')}
+          </Text>
+          <Input
+            variant="bordered"
+            height="40px"
+            id="deviceId"
+            placeholder="Enter Device ID"
+            onChange={(e) =>
+              setFormData({ ...formData, deviceId: e.target.value })
+            }
+            value={formData.deviceId}
+            testId="gridplus-deviceid"
+            aria-label="username"
+          />
+        </Box>
+        <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
+          <Text size="14pt" weight="semibold">
+            {i18n.t('hw.gridplus_password')}
+          </Text>
+          <Input
+            variant="bordered"
+            height="40px"
+            id="password"
+            type="password"
+            placeholder="Enter Password"
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            value={formData.password}
+            testId="gridplus-password"
+            aria-label="password"
+          />
+        </Box>
       </Box>
       <Button
         height="36px"
-        variant="flat"
-        color="fill"
-        disabled={connecting}
+        color={disabled ? 'labelQuaternary' : 'accent'}
+        variant={disabled ? 'disabled' : 'flat'}
+        disabled={disabled}
         testId="gridplus-submit"
+        width="full"
       >
         {i18n.t('hw.gridplus_connect')}
       </Button>
