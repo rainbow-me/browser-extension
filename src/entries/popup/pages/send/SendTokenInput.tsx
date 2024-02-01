@@ -409,9 +409,15 @@ export const SendTokenInput = React.forwardRef<
             {parseNftName(nft?.name, nft?.id)}
           </TextOverflow>
 
-          <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
+          <TextOverflow
+            as="p"
+            size="12pt"
+            weight="semibold"
+            color="labelTertiary"
+            maxWidth={240}
+          >
             {`${nft.collection.name} #${nft.id}`}
-          </Text>
+          </TextOverflow>
         </Stack>
       );
     }

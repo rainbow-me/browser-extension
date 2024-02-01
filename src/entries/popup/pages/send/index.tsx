@@ -272,14 +272,14 @@ export function Send() {
       return {
         changes: [
           nft
-            ? buildNftAssetObject(nft)
+            ? { direction: 'out', asset: buildNftAssetObject(nft) }
             : {
                 direction: 'out',
                 asset,
                 value: assetAmount,
               },
         ],
-        asset: nft ? buildNftAssetObject(nft) : asset ?? undefined,
+        asset: nft ? buildNftAssetObject(nft) : asset,
         data: result.data,
         flashbots: flashbotsEnabledGlobally,
         value: result.value.toString(),
@@ -469,16 +469,18 @@ export function Send() {
       selectAsset(selectedToken.address, selectedToken.chainId);
       // clear selected token
       setSelectedToken();
+    } else if (selectedNft && selectedNft.collection.collection_id) {
+      // clear any saved token amounts
+      setIndependentAmount('');
+      // navigating from nft details
+      selectNft(selectedNft.collection.collection_id, selectedNft.fullUniqueId);
+      // clear selected nft
+      setSelectedNft();
     } else if (sendTokenAddressAndChain) {
       selectAsset(
         sendTokenAddressAndChain.address,
         sendTokenAddressAndChain.chainId,
       );
-    } else if (selectedNft && selectedNft.collection.collection_id) {
-      // navigating from nft details
-      selectNft(selectedNft.collection.collection_id, selectedNft.fullUniqueId);
-      // clear selected nft
-      setSelectedNft();
     }
 
     if (sendAddress && sendAddress.length) {
