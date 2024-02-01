@@ -210,14 +210,30 @@ it('should be able to click max and switch on send flow', async () => {
   await inputMask.sendKeys('0.01');
 });
 
+it('should be able to open gas dropdown via shortcut', async () => {
+  await delayTime('long');
+  await executePerformShortcut({ driver, key: 'g' });
+  const txnSpeed1 = await findElementByText(driver, 'Transaction Speed');
+  expect(txnSpeed1).toBeTruthy();
+  await executePerformShortcut({ driver, key: 'ESCAPE' });
+});
+
 it('should be able to switch gas prices via dropdown on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'gas-menu', driver });
-  const txnSpeed = await findElementByText(driver, 'Transaction Speed');
-  expect(txnSpeed).toBeTruthy();
+  const txnSpeed2 = await findElementByText(driver, 'Transaction Speed');
+  expect(txnSpeed2).toBeTruthy();
   await findElementByTextAndClick(driver, 'Urgent');
   await delayTime('medium');
   const urgent = await findElementByText(driver, 'Urgent');
   expect(urgent).toBeTruthy();
+});
+
+it('should be able to open custom gas sheet via shortcut', async () => {
+  await delayTime('long');
+  await executePerformShortcut({ driver, key: 'c' });
+  const gasSettings1 = await findElementByText(driver, 'Gas Settings');
+  expect(gasSettings1).toBeTruthy();
+  await executePerformShortcut({ driver, key: 'ESCAPE' });
 });
 
 it('should be able to open up the custom gas menu on the send flow', async () => {
