@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -10,9 +10,15 @@ import {
 } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useUserChainsStore } from '~/core/state/userChains';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { parseUserAsset } from '~/core/utils/assets';
+import { getBlockExplorerHostForChain } from '~/core/utils/chains';
+import { copy } from '~/core/utils/copy';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
+import { truncateString } from '~/core/utils/strings';
+import { getExplorerUrl } from '~/core/utils/tabs';
+import { getBlockExplorerName } from '~/core/utils/transactions';
 import {
   Box,
   Button,
@@ -20,12 +26,19 @@ import {
   Columns,
   Inline,
   Inset,
+  Separator,
   Stack,
   Symbol,
   Text,
   TextOverflow,
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '~/entries/popup/components/ContextMenu/ContextMenu';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { useRainbowChains } from '../../../hooks/useRainbowChains';
@@ -185,6 +198,77 @@ export const Approvals = () => {
   );
 };
 
+const TokenApprovalContextMenu = ({
+  chainId,
+  spender,
+  children,
+}: {
+  chainId: ChainId;
+  spender: ApprovalSpender;
+  children: ReactNode;
+}) => {
+  const explorerHost = getBlockExplorerName(chainId);
+  const explorer =
+    getBlockExplorerHostForChain(chainId || ChainId.mainnet) || '';
+  const explorerUrl = getExplorerUrl(explorer, spender.contract_address);
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem
+          symbolLeft="doc.on.doc.fill"
+          onSelect={() =>
+            copy({
+              value: spender.contract_address,
+              title: i18n.t('activity_details.hash_copied'),
+              description: truncateAddress(spender.contract_address),
+            })
+          }
+        >
+          <Text size="14pt" weight="semibold">
+            {i18n.t('activity_details.copy_hash')}
+          </Text>
+          <TextOverflow size="11pt" color="labelTertiary" weight="medium">
+            {spender.contract_address}
+          </TextOverflow>
+        </ContextMenuItem>
+        {explorerUrl && (
+          <>
+            <ContextMenuItem
+              symbolLeft="doc.on.doc.fill"
+              onSelect={() => {
+                copy({
+                  title: i18n.t('activity_details.explorer_copied'),
+                  description: truncateString(explorerUrl, 18),
+                  value: explorerUrl,
+                });
+              }}
+            >
+              <Text size="14pt" weight="semibold">
+                {i18n.t('activity_details.copy_explorer_url')}
+              </Text>
+              <TextOverflow size="11pt" color="labelTertiary" weight="medium">
+                {explorerUrl}
+              </TextOverflow>
+            </ContextMenuItem>
+
+            <Box paddingVertical="4px">
+              <Separator color="separatorSecondary" />
+            </Box>
+            <ContextMenuItem
+              symbolLeft="binoculars.fill"
+              external
+              onSelect={() => window.open(explorerUrl, '_blank')}
+            >
+              {i18n.t('token_details.view_on', { explorer: explorerHost })}
+            </ContextMenuItem>
+          </>
+        )}
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+};
+
 const TokenApproval = ({
   approval,
   spender,
@@ -202,99 +286,101 @@ const TokenApproval = ({
   const { currentCurrency } = useCurrentCurrencyStore();
 
   return (
-    <Box
-      paddingHorizontal="8px"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    <TokenApprovalContextMenu chainId={approval.chain_id} spender={spender}>
       <Box
-        background={{
-          default: 'transparent',
-          hover: 'surfacePrimaryElevatedSecondary',
-        }}
-        borderRadius="12px"
+        paddingHorizontal="8px"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
-        <Inset horizontal="12px" vertical="8px">
-          <Columns alignVertical="center" space="4px">
-            <Column>
-              <Columns space="8px" alignVertical="center">
-                <Column width="content">
-                  <CoinIcon
-                    asset={parseUserAsset({
-                      asset: approval.asset,
-                      currency: currentCurrency,
-                      balance: '0',
-                    })}
-                    badge
-                  />
-                </Column>
-                <Column>
-                  <Stack space="8px">
-                    <TextOverflow
-                      align="left"
-                      size="14pt"
-                      weight="semibold"
-                      color="label"
-                    >
-                      {approval?.asset?.name}
-                    </TextOverflow>
+        <Box
+          background={{
+            default: 'transparent',
+            hover: 'surfacePrimaryElevatedSecondary',
+          }}
+          borderRadius="12px"
+        >
+          <Inset horizontal="12px" vertical="8px">
+            <Columns alignVertical="center" space="4px">
+              <Column>
+                <Columns space="8px" alignVertical="center">
+                  <Column width="content">
+                    <CoinIcon
+                      asset={parseUserAsset({
+                        asset: approval.asset,
+                        currency: currentCurrency,
+                        balance: '0',
+                      })}
+                      badge
+                    />
+                  </Column>
+                  <Column>
+                    <Stack space="8px">
+                      <TextOverflow
+                        align="left"
+                        size="14pt"
+                        weight="semibold"
+                        color="label"
+                      >
+                        {approval?.asset?.name}
+                      </TextOverflow>
 
-                    <TextOverflow
-                      align="left"
-                      size="12pt"
-                      weight="semibold"
-                      color="label"
-                    >
-                      {`${
-                        spender.contract_name
-                          ? `${spender.contract_name} • `
-                          : ''
-                      } ${truncateAddress(spender.contract_address)}`}
-                    </TextOverflow>
-                  </Stack>
-                </Column>
-              </Columns>
-            </Column>
-            <Column width="content">
-              {revokeButtonVisible ? (
-                <Button
-                  color="red"
-                  height="28px"
-                  variant="plain"
-                  borderRadius="8px"
-                  onClick={onRevoke}
-                >
-                  <Text size="14pt" weight="bold" color="label">
-                    {i18n.t('approvals.revoke.action')}
-                  </Text>
-                </Button>
-              ) : (
-                <Box
-                  paddingVertical="5px"
-                  paddingHorizontal="6px"
-                  borderRadius="6px"
-                  borderDashedWidth="1px"
-                  borderColor="separatorSecondary"
-                >
-                  <TextOverflow
-                    align="center"
-                    size="11pt"
-                    weight="semibold"
-                    color="labelTertiary"
+                      <TextOverflow
+                        align="left"
+                        size="12pt"
+                        weight="semibold"
+                        color="label"
+                      >
+                        {`${
+                          spender.contract_name
+                            ? `${spender.contract_name} • `
+                            : ''
+                        } ${truncateAddress(spender.contract_address)}`}
+                      </TextOverflow>
+                    </Stack>
+                  </Column>
+                </Columns>
+              </Column>
+              <Column width="content">
+                {revokeButtonVisible ? (
+                  <Button
+                    color="red"
+                    height="28px"
+                    variant="plain"
+                    borderRadius="8px"
+                    onClick={onRevoke}
                   >
-                    {spender?.quantity_allowed.toLowerCase() === 'unlimited'
-                      ? spender?.quantity_allowed
-                      : `${convertRawAmountToDecimalFormat(
-                          spender?.quantity_allowed || '0',
-                          approval?.asset.decimals,
-                        )} ${approval?.asset.symbol}`}
-                  </TextOverflow>
-                </Box>
-              )}
-            </Column>
-          </Columns>
-        </Inset>
+                    <Text size="14pt" weight="bold" color="label">
+                      {i18n.t('approvals.revoke.action')}
+                    </Text>
+                  </Button>
+                ) : (
+                  <Box
+                    paddingVertical="5px"
+                    paddingHorizontal="6px"
+                    borderRadius="6px"
+                    borderDashedWidth="1px"
+                    borderColor="separatorSecondary"
+                  >
+                    <TextOverflow
+                      align="center"
+                      size="11pt"
+                      weight="semibold"
+                      color="labelTertiary"
+                    >
+                      {spender?.quantity_allowed.toLowerCase() === 'unlimited'
+                        ? spender?.quantity_allowed
+                        : `${convertRawAmountToDecimalFormat(
+                            spender?.quantity_allowed || '0',
+                            approval?.asset.decimals,
+                          )} ${approval?.asset.symbol}`}
+                    </TextOverflow>
+                  </Box>
+                )}
+              </Column>
+            </Columns>
+          </Inset>
+        </Box>
       </Box>
-    </Box>
+    </TokenApprovalContextMenu>
   );
 };
