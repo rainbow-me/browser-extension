@@ -275,24 +275,24 @@ it('should be able to customize gas', async () => {
   await delayTime('short');
   await executePerformShortcut({ driver, key: 'TAB' });
   await executePerformShortcut({ driver, key: 'BACK_SPACE', timesToPress: 5 });
-  await driver.actions().sendKeys('300').perform();
+  await driver.actions().sendKeys('400').perform();
   await delayTime('short');
   await executePerformShortcut({ driver, key: 'TAB' });
   await executePerformShortcut({ driver, key: 'BACK_SPACE', timesToPress: 5 });
-  await driver.actions().sendKeys('300').perform();
+  await driver.actions().sendKeys('400').perform();
   const baseFeeGweiInputMask = await querySelector(
     driver,
     "[data-testid='max-base-fee-input'] [data-testid='gwei-input-mask']",
   );
 
-  expect(await baseFeeGweiInputMask.getAttribute('value')).toContain('300');
+  expect(await baseFeeGweiInputMask.getAttribute('value')).toContain('400');
 
   const minerTipGweiInputMask = await querySelector(
     driver,
     "[data-testid='miner-tip-input'] [data-testid='gwei-input-mask']",
   );
 
-  expect(await minerTipGweiInputMask.getAttribute('value')).toContain('300');
+  expect(await minerTipGweiInputMask.getAttribute('value')).toContain('400');
   await findElementByTestIdAndClick({ id: 'set-gas-button', driver });
 
   const gasMenu = await findElementByTestId({ id: 'gas-menu', driver });
@@ -331,7 +331,7 @@ it('should be able to send transaction on review on send flow', async () => {
   const sendTransaction = await transactionStatus();
   expect(sendTransaction).toBe('success');
   const minerTip = await calcMinerTip();
-  expect(minerTip).toBe(300);
+  expect(minerTip).toBe(400);
 });
 
 it('should be able to rename a wallet from the wallet switcher', async () => {
