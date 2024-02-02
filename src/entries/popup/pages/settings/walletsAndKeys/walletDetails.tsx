@@ -167,52 +167,40 @@ export function WalletDetails() {
     setCreateWalletAddress(address);
   }, []);
 
-  // handleRemoveAccount
-  const handleRemoveAccount = useCallback(
-    async (address: Address) => {
-      const walletBeforeDeletion = await getWallet(address);
-      unhideWallet({ address });
-      await remove(address);
-      deleteWalletName({ address });
-      deleteWalletBackup({ address });
+  const handleRemoveAccount = async (address: Address) => {
+    const walletBeforeDeletion = await getWallet(address);
+    unhideWallet({ address });
+    await remove(address);
+    deleteWalletName({ address });
+    deleteWalletBackup({ address });
 
-      if (visibleWallets.length > 1) {
-        // set current address to the next account if you deleted that one
-        if (address === currentAddress) {
-          const deletedIndex = visibleWallets.findIndex(
-            (account) => account.address === address,
-          );
-          const nextIndex =
-            deletedIndex === visibleWallets.length - 1
-              ? deletedIndex - 1
-              : deletedIndex + 1;
-          setCurrentAddress(visibleWallets[nextIndex].address);
-        }
-        // if more accounts in this wallet
-        const otherAccountSameWallet = walletBeforeDeletion?.accounts.find(
-          (a) => a !== address,
+    if (visibleWallets.length > 1) {
+      // set current address to the next account if you deleted that one
+      if (address === currentAddress) {
+        const deletedIndex = visibleWallets.findIndex(
+          (account) => account.address === address,
         );
-        if (otherAccountSameWallet) {
-          const walletAfterDeletion = await getWallet(otherAccountSameWallet);
-          setWallet(walletAfterDeletion);
-        } else {
-          navigate(-1);
-        }
-      } else {
-        await wipe();
-        navigate(ROUTES.WELCOME);
+        const nextIndex =
+          deletedIndex === visibleWallets.length - 1
+            ? deletedIndex - 1
+            : deletedIndex + 1;
+        setCurrentAddress(visibleWallets[nextIndex].address);
       }
-    },
-    [
-      currentAddress,
-      deleteWalletBackup,
-      deleteWalletName,
-      navigate,
-      setCurrentAddress,
-      unhideWallet,
-      visibleWallets,
-    ],
-  );
+      // if more accounts in this wallet
+      const otherAccountSameWallet = walletBeforeDeletion?.accounts.find(
+        (a) => a !== address,
+      );
+      if (otherAccountSameWallet) {
+        const walletAfterDeletion = await getWallet(otherAccountSameWallet);
+        setWallet(walletAfterDeletion);
+      } else {
+        navigate(-1);
+      }
+    } else {
+      await wipe();
+      navigate(ROUTES.WELCOME);
+    }
+  };
 
   const handleCancel = async () => {
     if (createWalletAddress !== undefined) {
@@ -427,7 +415,12 @@ export function WalletDetails() {
                   />
                 }
                 titleComponent={
-                  <MenuItem.Title text={'Remove Wallet Group'} color="red" />
+                  <MenuItem.Title
+                    text={i18n.t(
+                      'settings.privacy_and_security.wallets_and_keys.wipe_wallet_group.delete',
+                    )}
+                    color="red"
+                  />
                 }
                 onClick={() => setShowEnterPassword(true)}
               />

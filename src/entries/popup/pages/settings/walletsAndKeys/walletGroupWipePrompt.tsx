@@ -46,7 +46,6 @@ export const WipeWalletGroupPrompt = ({
       deleteWalletBackup({ address });
 
       if (visibleWallets.length > 1) {
-        // set current address to the next account if you deleted that one
         if (address === currentAddress) {
           const deletedIndex = visibleWallets.findIndex(
             (account) => account.address === address,
