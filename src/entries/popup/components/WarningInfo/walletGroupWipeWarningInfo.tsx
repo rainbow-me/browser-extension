@@ -86,15 +86,15 @@ export default function WarningInfo({
                 </Box>
               </Inline>
 
+              <Text size="16pt" weight="bold" color="label" align="center">
+                {i18n.t('common_titles.before_you_proceed')}
+              </Text>
+
               <Inline alignHorizontal="center">
                 <Box alignItems="center" style={{ width: '106px' }}>
                   <Separator color="separatorTertiary" strokeWeight="1px" />
                 </Box>
               </Inline>
-
-              <Text size="16pt" weight="bold" color="label" align="center">
-                {i18n.t('common_titles.before_you_proceed')}
-              </Text>
 
               <Box paddingHorizontal="12px">
                 <IconAndCopyList iconAndCopyList={iconAndCopyList} />
@@ -127,7 +127,7 @@ export default function WarningInfo({
                   weight="bold"
                   color="labelSecondary"
                 >
-                  {t('wipe_wallets.acknowlegement')}
+                  {t('wipe_wallet_group.acknowlegement')}
                 </Text>
               </Lens>
             </Column>
@@ -149,8 +149,8 @@ export default function WarningInfo({
               tabIndex={0}
             >
               {buttonEnabled
-                ? 'Remove Wallet Group'
-                : t('wipe_wallets.button_complete')}
+                ? t('wipe_wallet_group.delete')
+                : t('wipe_wallet_group.button_complete')}
             </Button>
           </Box>
         </Row>

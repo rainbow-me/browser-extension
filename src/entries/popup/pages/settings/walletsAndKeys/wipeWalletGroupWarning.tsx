@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { i18n } from '~/core/languages';
 import { goToNewTab } from '~/core/utils/tabs';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
-import WalletGroupWipeWarningInfo from '~/entries/popup/components/WarningInfo/WalletWipeWarningInfo';
+import WalletGroupWipeWarningInfo from '~/entries/popup/components/WarningInfo/walletGroupWipeWarningInfo';
 
 import { WipeWalletGroupPrompt } from './walletGroupWipePrompt';
 
@@ -16,21 +16,21 @@ const iconAndCopyList: IconAndCopyItem[] = [
       symbol: 'exclamationmark.triangle',
       color: 'orange',
     },
-    copy: `Removing your Wallet Group will delete the Recovery Phrase from Rainbow.`,
+    copy: `${t('wipe_wallet_group.warning_one')}`,
   },
   {
     icon: {
       symbol: 'dollarsign.square',
       color: 'yellow',
     },
-    copy: `Your assets & funds are recoverable with the correct wallet recovery information.`,
+    copy: `${t('wipe_wallet_group.warning_two')}`,
   },
   {
     icon: {
       symbol: 'checkmark.shield.fill',
       color: 'green',
     },
-    copy: `${t('wipe_wallets.warning_three')}`,
+    copy: `${t('wipe_wallet_group.warning_three')}`,
     onClickLink: () =>
       goToNewTab({
         url: 'https://rainbow.me/support/extension/backing-up-your-wallets',
@@ -48,7 +48,7 @@ export function WipeWalletGroupWarning() {
         onClose={() => setShowPopup(false)}
       />
       <WalletGroupWipeWarningInfo
-        testId={'wipe-wallets'}
+        testId={'wipe-wallet-group'}
         iconAndCopyList={iconAndCopyList}
         onProceed={() => setShowPopup(true)}
       />

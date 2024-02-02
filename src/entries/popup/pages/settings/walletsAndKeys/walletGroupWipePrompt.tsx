@@ -1,4 +1,11 @@
+import { useCallback } from 'react';
+import { Address } from 'wagmi';
+
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
+import { useWalletBackupsStore } from '~/core/state/walletBackups';
+import { useWalletNamesStore } from '~/core/state/walletNames';
+import { getSettingWallets } from '~/core/utils/settings';
 import {
   Box,
   Button,
@@ -11,6 +18,10 @@ import {
   Text,
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { remove, wipe } from '~/entries/popup/handlers/wallet';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
+import { ROUTES } from '~/entries/popup/urls';
 
 const t = (s: string) =>
   i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
@@ -22,16 +33,57 @@ export const WipeWalletGroupPrompt = ({
   show: boolean;
   onClose: () => void;
 }) => {
-  //   need the handleRemoveAccount from walletDetails function here somehow???
-  //
-  //   const handleDeleteWalletGroup = useCallback(async () => {
-  //     const getWallets = await getSettingWallets();
-  //     const walletArray = getWallets.accounts;
-  //     for (const eachWallet of walletArray) {
-  //       handleRemoveAccount(eachWallet);
-  //     }
-  //     navigate(-1);
-  //   }, [handleRemoveAccount, navigate]);
+  const { deleteWalletName } = useWalletNamesStore();
+  const { deleteWalletBackup } = useWalletBackupsStore();
+  const { visibleWallets } = useWallets();
+  const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
+  const navigate = useRainbowNavigate();
+
+  const handleRemoveAccount = useCallback(
+    async (address: Address) => {
+      await remove(address);
+      deleteWalletName({ address });
+      deleteWalletBackup({ address });
+
+      if (visibleWallets.length > 1) {
+        // set current address to the next account if you deleted that one
+        if (address === currentAddress) {
+          const deletedIndex = visibleWallets.findIndex(
+            (account) => account.address === address,
+          );
+          const nextIndex =
+            deletedIndex === visibleWallets.length - 1
+              ? deletedIndex - 1
+              : deletedIndex + 1;
+          setCurrentAddress(visibleWallets[nextIndex].address);
+        }
+      } else {
+        await wipe();
+        navigate(ROUTES.WELCOME);
+      }
+    },
+    [
+      currentAddress,
+      deleteWalletBackup,
+      deleteWalletName,
+      navigate,
+      setCurrentAddress,
+      visibleWallets,
+    ],
+  );
+
+  const handleDeleteWalletGroup = useCallback(async () => {
+    const getWallets = await getSettingWallets();
+    const walletArray = getWallets.accounts;
+    try {
+      await Promise.all(
+        walletArray.map((eachWallet) => handleRemoveAccount(eachWallet)),
+      );
+      navigate(-2);
+    } catch (error) {
+      console.error('An error occurred during wallet removal:', error);
+    }
+  }, [handleRemoveAccount, navigate]);
 
   return (
     <Prompt show={show} handleClose={onClose}>
@@ -42,7 +94,7 @@ export const WipeWalletGroupPrompt = ({
               <Row>
                 <Box paddingTop="12px">
                   <Text size="16pt" weight="bold" align="center">
-                    {'Remove Wallet Group'}
+                    {t('wipe_wallet_group.wipe_confirmation')}
                   </Text>
                 </Box>
               </Row>
@@ -60,9 +112,7 @@ export const WipeWalletGroupPrompt = ({
                       align="center"
                       color="labelTertiary"
                     >
-                      {
-                        'Are you sure you want to remove your Secret Recovery Phrase from Rainbow?'
-                      }
+                      {t('wipe_wallet_group.wipe_confirmation_desc')}
                     </Text>
                   </Row>
                 </Rows>
@@ -81,7 +131,7 @@ export const WipeWalletGroupPrompt = ({
                   borderRadius="9px"
                   tabIndex={0}
                 >
-                  {t('wipe_wallets.wipe_confirmation_cancel')}
+                  {t('wipe_wallet_group.wipe_confirmation_cancel')}
                 </Button>
               </Column>
               <Column>
@@ -89,12 +139,12 @@ export const WipeWalletGroupPrompt = ({
                   variant="flat"
                   height="36px"
                   color="red"
-                  onClick={() => console.log('handleDeleteWalletGroup')}
+                  onClick={() => handleDeleteWalletGroup()}
                   width="full"
                   borderRadius="9px"
                   tabIndex={0}
                 >
-                  {t('wipe_wallets.wipe_confirmation_button')}
+                  {t('wipe_wallet_group.wipe_confirmation_button')}
                 </Button>
               </Column>
             </Columns>
