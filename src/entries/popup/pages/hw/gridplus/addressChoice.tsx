@@ -8,6 +8,7 @@ import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Text } from '~/design-system';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
+import { Link } from '~/entries/popup/components/Link/Link';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { useAccounts } from '~/entries/popup/hooks/useAccounts';
 
@@ -97,6 +98,9 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
         </Text>
         {loadingAddresses && <Spinner size={24} />}
         <Box display="flex" flexDirection="column" gap="16px">
+          <Text size="16pt" weight="bold" align="center" color="labelSecondary">
+            {i18n.t('hw.available_addresses')}
+          </Text>
           {addresses.map((address, i) => (
             <Box key={address} display="flex" gap="16px" alignItems="center">
               <Checkbox
@@ -109,20 +113,23 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
               <Text size="16pt" weight="medium">
                 #{i}:
               </Text>
-              <Text size="16pt" weight="medium">
-                {truncateAddress(address)}
-              </Text>
+              <Link to="#" onClick={() => toggleAddress(address)} color="">
+                <Text size="16pt" weight="medium">
+                  {truncateAddress(address)}
+                </Text>
+              </Link>
             </Box>
           ))}
         </Box>
       </Box>
       <Button
-        height="36px"
-        color={disabled ? 'labelQuaternary' : 'accent'}
+        color={disabled ? 'labelQuaternary' : 'blue'}
         variant={disabled ? 'disabled' : 'flat'}
         disabled={disabled}
         testId="gridplus-submit"
         width="full"
+        height="44px"
+        symbol="checkmark.circle.fill"
       >
         {i18n.t('hw.gridplus_export_addresses')}
       </Button>

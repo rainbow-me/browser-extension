@@ -5,6 +5,7 @@ import { FormEvent, useState } from 'react';
 import { i18n } from '~/core/languages';
 import { Box, Button, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 
 export type PairingSecretProps = {
   onAfterPair?: () => void;
@@ -51,7 +52,7 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
         flexShrink="1"
         gap="24px"
       >
-        <Text size="16pt" weight="bold" color="label" align="center">
+        <Text size="16pt" weight="bold" align="center" color="labelSecondary">
           {i18n.t('hw.gridplus_check_device')}
         </Text>
         <Box
@@ -61,7 +62,7 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
           gap="8px"
           width="full"
         >
-          <Text size="14pt" weight="semibold">
+          <Text size="14pt" weight="semibold" color="labelSecondary">
             {i18n.t('hw.gridplus_pairing_code')}
           </Text>
           <Input
@@ -77,21 +78,26 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
             autoFocus
           />
           {formState.error && (
-            <Text size="14pt" weight="semibold">
+            <Text size="14pt" weight="semibold" color="labelSecondary">
               {i18n.t('hw.gridplus_wrong_code')}
             </Text>
           )}
         </Box>
       </Box>
       <Button
-        height="36px"
+        height="44px"
         testId="gridplus-submit"
-        color={disabled ? 'labelQuaternary' : 'accent'}
+        color={disabled ? 'labelQuaternary' : 'blue'}
         variant={disabled ? 'disabled' : 'flat'}
         disabled={disabled}
         width="full"
+        symbol="checkmark.circle.fill"
       >
-        {i18n.t('hw.gridplus_pair_device')}
+        {pairing ? (
+          <Spinner size={16} color="label" />
+        ) : (
+          i18n.t('hw.gridplus_pair_device')
+        )}
       </Button>
     </Box>
   );

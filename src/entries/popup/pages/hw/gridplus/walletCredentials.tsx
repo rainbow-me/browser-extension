@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { i18n } from '~/core/languages';
 import { Box, Button, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 
 export type WalletCredentialsProps = {
   appName: string;
@@ -79,11 +80,11 @@ export const WalletCredentials = ({
         <Text size="20pt" weight="semibold" align="center">
           {i18n.t('hw.connect_gridplus_title')}
         </Text>
-        <Text size="16pt" weight="medium" align="center">
+        <Text size="16pt" weight="medium" align="center" color="labelSecondary">
           {i18n.t('hw.connect_gridplus_description')}
         </Text>
         <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
-          <Text size="14pt" weight="semibold">
+          <Text size="14pt" weight="semibold" color="labelSecondary">
             {i18n.t('hw.gridplus_device_id')}
           </Text>
           <Input
@@ -98,9 +99,12 @@ export const WalletCredentials = ({
             testId="gridplus-deviceid"
             aria-label="username"
           />
+          <Text size="12pt" weight="medium" color="labelSecondary">
+            {i18n.t('hw.gridplus_device_id_description')}
+          </Text>
         </Box>
         <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
-          <Text size="14pt" weight="semibold">
+          <Text size="14pt" weight="semibold" color="labelSecondary">
             {i18n.t('hw.gridplus_password')}
           </Text>
           <Input
@@ -116,17 +120,25 @@ export const WalletCredentials = ({
             testId="gridplus-password"
             aria-label="password"
           />
+          <Text size="12pt" weight="medium" color="labelSecondary">
+            {i18n.t('hw.gridplus_password_create')}
+          </Text>
         </Box>
       </Box>
       <Button
-        height="36px"
-        color={disabled ? 'labelQuaternary' : 'accent'}
+        height="44px"
+        color={disabled ? 'labelQuaternary' : 'blue'}
         variant={disabled ? 'disabled' : 'flat'}
         disabled={disabled}
         testId="gridplus-submit"
         width="full"
+        symbol="checkmark.circle.fill"
       >
-        {i18n.t('hw.gridplus_connect')}
+        {connecting ? (
+          <Spinner size={16} color="label" />
+        ) : (
+          i18n.t('hw.gridplus_connect')
+        )}
       </Button>
     </Box>
   );
