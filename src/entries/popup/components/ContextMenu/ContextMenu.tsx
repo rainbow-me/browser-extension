@@ -2,7 +2,7 @@ import * as ContextMenuPrimitive from '@radix-ui/react-context-menu';
 import { DismissableLayerProps } from '@radix-ui/react-tooltip';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import React, { CSSProperties, ReactNode, useRef } from 'react';
+import React, { CSSProperties, ReactNode, Ref, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
@@ -232,6 +232,7 @@ interface ContextMenuItemProps {
   external?: boolean;
   disabled?: boolean;
   testId?: string;
+  ref?: Ref<HTMLDivElement>;
 }
 
 const isSymbol = (symbol: string): symbol is SymbolName =>
@@ -246,11 +247,13 @@ export const ContextMenuItem = ({
   external,
   disabled,
   testId,
+  ref,
 }: ContextMenuItemProps) => {
   // eslint-disable-next-line no-param-reassign
   if (disabled) color = 'labelTertiary';
   return (
     <Box
+      ref={ref}
       testId={testId}
       as={ContextMenuPrimitive.Item}
       className={accentMenuFocusVisibleStyle}

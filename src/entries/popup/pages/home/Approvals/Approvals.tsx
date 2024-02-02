@@ -1,8 +1,9 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import {
   Approval,
   ApprovalSpender,
@@ -38,6 +39,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '~/entries/popup/components/ContextMenu/ContextMenu';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { useRainbowChains } from '../../../hooks/useRainbowChains';
@@ -208,40 +210,71 @@ const TokenApprovalContextMenu = ({
   children: ReactNode;
   onRevokeApproval: () => void;
 }) => {
+  const copySpenderRef = useRef<HTMLDivElement>(null);
+  const viewOnExplorerRef = useRef<HTMLDivElement>(null);
+  const revokeRef = useRef<HTMLDivElement>(null);
+
   const explorerHost = getBlockExplorerName(chainId);
   const explorer =
     getBlockExplorerHostForChain(chainId || ChainId.mainnet) || '';
   const explorerUrl = getExplorerUrl(explorer, spender.contract_address);
+
+  const [tokenContextMenuOpen, setTokenContextMenuOpen] = useState(false);
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (tokenContextMenuOpen) {
+        e.preventDefault();
+        if (e.key === shortcuts.activity.COPY_TRANSACTION.key) {
+          copySpenderRef.current?.click();
+        }
+        if (e.key === shortcuts.activity.VIEW_TRANSACTION.key) {
+          viewOnExplorerRef.current?.click();
+        }
+        if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
+          revokeRef.current?.click();
+        }
+      }
+    },
+  });
+
   return (
-    <ContextMenu>
+    <ContextMenu onOpenChange={setTokenContextMenuOpen}>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem
           symbolLeft="doc.on.doc.fill"
-          shortcut={'C'}
+          shortcut={shortcuts.activity.COPY_TRANSACTION.display}
           onSelect={() =>
             copy({
               value: spender.contract_address,
-              title: i18n.t('activity_details.hash_copied'),
+              title: 'Spender Address Copied',
               description: truncateAddress(spender.contract_address),
             })
           }
         >
-          <Text size="14pt" weight="semibold">
-            {'Copy Spender'}
-          </Text>
-          <TextOverflow size="11pt" color="labelTertiary" weight="medium">
-            {truncateAddress(spender.contract_address)}
-          </TextOverflow>
+          <Box ref={copySpenderRef}>
+            <Stack space="8px">
+              <Text size="14pt" weight="semibold">
+                {'Copy Spender'}
+              </Text>
+              <TextOverflow size="11pt" color="labelTertiary" weight="medium">
+                {truncateAddress(spender.contract_address)}
+              </TextOverflow>
+            </Stack>
+          </Box>
         </ContextMenuItem>
         {explorerUrl && (
           <>
             <ContextMenuItem
               symbolLeft="binoculars.fill"
               onSelect={() => window.open(explorerUrl, '_blank')}
-              shortcut={'V'}
+              shortcut={shortcuts.activity.VIEW_TRANSACTION.display}
             >
-              {i18n.t('token_details.view_on', { explorer: explorerHost })}
+              <Box ref={viewOnExplorerRef}>
+                <Text size="14pt" weight="semibold">
+                  {i18n.t('token_details.view_on', { explorer: explorerHost })}
+                </Text>
+              </Box>
             </ContextMenuItem>
             <Box paddingVertical="4px">
               <Separator color="separatorSecondary" />
@@ -250,9 +283,13 @@ const TokenApprovalContextMenu = ({
               color="red"
               symbolLeft="xmark.circle.fill"
               onSelect={onRevokeApproval}
-              shortcut={'R'}
+              shortcut={shortcuts.activity.REFRESH_TRANSACTIONS.display}
             >
-              {'Revoke Approval'}
+              <Box ref={revokeRef}>
+                <Text size="14pt" weight="semibold" color="red">
+                  {'Revoke Approval'}
+                </Text>
+              </Box>
             </ContextMenuItem>
           </>
         )}
