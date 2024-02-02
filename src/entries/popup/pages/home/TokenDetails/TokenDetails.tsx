@@ -1,8 +1,14 @@
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import {
+  Approval,
+  ApprovalSpender,
+  useApprovals,
+} from '~/core/resources/approvals/approvals';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
@@ -20,6 +26,8 @@ import {
   FormattedCurrencyParts,
   formatCurrencyParts,
 } from '~/core/utils/formatNumber';
+import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import {
   Box,
@@ -27,6 +35,7 @@ import {
   ButtonSymbol,
   Inline,
   Separator,
+  Stack,
   Symbol,
   Text,
   TextOverflow,
@@ -48,6 +57,9 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
+
+import { TokenApprovalContextMenu } from '../Approvals/Approvals';
+import { RevokeApprovalSheet } from '../Approvals/RevokeApprovalSheet';
 
 import { About } from './About';
 import { PriceChart } from './PriceChart';
@@ -311,7 +323,14 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
 }
 
 export function TokenDetails() {
+  const { currentAddress } = useCurrentAddressStore();
+  const { currentCurrency } = useCurrentCurrencyStore();
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
+  const [showRevokeSheet, setShowRevokeSheet] = useState(false);
+  const [approvalToRevoke, setApprovalToRevoke] = useState<{
+    approval: Approval;
+    spender: ApprovalSpender;
+  } | null>(null);
 
   const { data: userAsset, isFetched } = useUserAsset(uniqueId);
   const { data: customAsset, isFetched: isCustomAssetFetched } =
@@ -320,6 +339,27 @@ export function TokenDetails() {
   const { isWatchingWallet } = useWallets();
 
   const navigate = useRainbowNavigate();
+  const token = userAsset || customAsset;
+
+  const { data: approvalsData } = useApprovals(
+    {
+      address: currentAddress,
+      chainIds: [Number(token?.chainId) as ChainId],
+      currency: currentCurrency,
+    },
+    {
+      enabled: !!Number(token?.chainId),
+      select: (data) => {
+        if (data) {
+          const tokenApprovals = data.payload.filter((approval) =>
+            isLowerCaseMatch(approval.asset.asset_code, token?.address),
+          );
+          return { meta: data?.meta, payload: tokenApprovals };
+        }
+        return null;
+      },
+    },
+  );
 
   if (
     !uniqueId ||
@@ -328,7 +368,6 @@ export function TokenDetails() {
     return <Navigate to={ROUTES.HOME} />;
   }
 
-  const token = userAsset || customAsset;
   if (!token) return null;
 
   const isSwappable = !(
@@ -340,6 +379,17 @@ export function TokenDetails() {
     symbol: token.symbol,
   };
   const tokenNativeBalance = formatCurrencyParts(token.native.balance.amount);
+
+  const approvals = approvalsData?.payload || [];
+
+  const tokenApprovals = approvals
+    ?.map((approval) =>
+      approval.spenders.map((spender) => ({
+        approval,
+        spender,
+      })),
+    )
+    .flat();
 
   return (
     <AccentColorProvider
@@ -390,6 +440,7 @@ export function TokenDetails() {
           <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
       </Box>
+
       {isSwappable && (
         <Box
           display="flex"
@@ -398,9 +449,85 @@ export function TokenDetails() {
           paddingHorizontal="20px"
           paddingVertical="24px"
         >
+          {approvals.length ? (
+            <Box
+              background="surfaceSecondaryElevated"
+              padding="16px"
+              borderRadius="16px"
+            >
+              <Stack space="12px">
+                <Text size="12pt" weight="semibold" color="labelTertiary">
+                  Token approvals
+                </Text>
+                <Separator color="separatorTertiary" />
+                {tokenApprovals?.map((approval, i) => {
+                  return (
+                    <Inline
+                      key={i}
+                      alignHorizontal="justify"
+                      alignVertical="center"
+                    >
+                      <Inline space="12px" alignVertical="center">
+                        <Symbol
+                          weight="regular"
+                          size={16}
+                          symbol="doc.plaintext"
+                          color="labelTertiary"
+                        />
+                        <Text
+                          size="12pt"
+                          weight="semibold"
+                          color="labelTertiary"
+                        >
+                          {approval.spender.contract_name ||
+                            truncateAddress(approval.spender.contract_address)}
+                        </Text>
+                      </Inline>
+                      <Inline space="12px" alignVertical="center">
+                        <Text
+                          size="12pt"
+                          weight="semibold"
+                          color="labelTertiary"
+                        >
+                          {approval.spender?.quantity_allowed.toLowerCase() ===
+                          'unlimited'
+                            ? approval.spender?.quantity_allowed
+                            : `${convertRawAmountToDecimalFormat(
+                                approval.spender?.quantity_allowed || '0',
+                                approval?.approval.asset.decimals,
+                              )} ${approval?.approval.asset.symbol}`}
+                        </Text>
+                        <TokenApprovalContextMenu
+                          type="dropdown"
+                          chainId={token.chainId}
+                          spender={approval.spender}
+                          onRevokeApproval={() => setShowRevokeSheet(true)}
+                          onTrigger={() => setApprovalToRevoke(approval)}
+                        >
+                          <Symbol
+                            size={14}
+                            weight="regular"
+                            symbol="ellipsis.circle"
+                            color="labelTertiary"
+                          />
+                        </TokenApprovalContextMenu>
+                      </Inline>
+                    </Inline>
+                  );
+                })}
+              </Stack>
+            </Box>
+          ) : null}
+          <Separator color="separatorTertiary" />
           <About token={token} />
         </Box>
       )}
+      <RevokeApprovalSheet
+        show={showRevokeSheet}
+        approval={approvalToRevoke?.approval}
+        spender={approvalToRevoke?.spender}
+        onCancel={() => setShowRevokeSheet(false)}
+      />
     </AccentColorProvider>
   );
 }

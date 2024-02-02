@@ -44,6 +44,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
@@ -353,16 +354,41 @@ export const Approvals = () => {
   );
 };
 
-const TokenApprovalContextMenu = ({
+const getMenuComponents = ({ type }: { type: 'dropdown' | 'context' }) => {
+  if (type === 'dropdown') {
+    return {
+      Menu: DropdownMenu,
+      MenuContent: DropdownMenuContent,
+      MenuRadioGroup: DropdownMenuRadioGroup,
+      MenuRadioItem: DropdownMenuRadioItem,
+      MenuTrigger: DropdownMenuTrigger,
+      MenuItem: DropdownMenuItem,
+    };
+  }
+  return {
+    Menu: ContextMenu,
+    MenuContent: ContextMenuContent,
+    MenuRadioGroup: ContextMenuContent,
+    MenuRadioItem: ContextMenuContent,
+    MenuTrigger: ContextMenuTrigger,
+    MenuItem: ContextMenuItem,
+  };
+};
+
+export const TokenApprovalContextMenu = ({
   chainId,
   spender,
   children,
+  type = 'context',
+  onTrigger,
   onRevokeApproval,
 }: {
   chainId: ChainId;
   spender: ApprovalSpender;
   children: ReactNode;
+  type?: 'dropdown' | 'context';
   onRevokeApproval: () => void;
+  onTrigger?: () => void;
 }) => {
   const copySpenderRef = useRef<HTMLDivElement>(null);
   const viewOnExplorerRef = useRef<HTMLDivElement>(null);
@@ -390,11 +416,17 @@ const TokenApprovalContextMenu = ({
     },
   });
 
+  const { Menu, MenuContent, MenuTrigger, MenuItem } = getMenuComponents({
+    type,
+  });
+
   return (
-    <ContextMenu onOpenChange={setTokenContextMenuOpen}>
-      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent>
-        <ContextMenuItem
+    <Menu onOpenChange={setTokenContextMenuOpen}>
+      <MenuTrigger asChild onTrigger={onTrigger}>
+        {children}
+      </MenuTrigger>
+      <MenuContent>
+        <MenuItem
           symbolLeft="doc.on.doc.fill"
           shortcut={shortcuts.activity.COPY_TRANSACTION.display}
           onSelect={() =>
@@ -415,10 +447,10 @@ const TokenApprovalContextMenu = ({
               </TextOverflow>
             </Stack>
           </Box>
-        </ContextMenuItem>
+        </MenuItem>
         {explorerUrl && (
           <>
-            <ContextMenuItem
+            <MenuItem
               symbolLeft="binoculars.fill"
               onSelect={() => window.open(explorerUrl, '_blank')}
               shortcut={shortcuts.activity.VIEW_TRANSACTION.display}
@@ -428,11 +460,11 @@ const TokenApprovalContextMenu = ({
                   {i18n.t('token_details.view_on', { explorer: explorerHost })}
                 </Text>
               </Box>
-            </ContextMenuItem>
+            </MenuItem>
             <Box paddingVertical="4px">
               <Separator color="separatorSecondary" />
             </Box>
-            <ContextMenuItem
+            <MenuItem
               color="red"
               symbolLeft="xmark.circle.fill"
               onSelect={onRevokeApproval}
@@ -443,11 +475,11 @@ const TokenApprovalContextMenu = ({
                   {'Revoke Approval'}
                 </Text>
               </Box>
-            </ContextMenuItem>
+            </MenuItem>
           </>
         )}
-      </ContextMenuContent>
-    </ContextMenu>
+      </MenuContent>
+    </Menu>
   );
 };
 
