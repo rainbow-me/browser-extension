@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode, useCallback, useRef, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -10,6 +10,7 @@ import {
   useApprovals,
 } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
@@ -17,7 +18,7 @@ import { parseUserAsset } from '~/core/utils/assets';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
-import { getExplorerUrl } from '~/core/utils/tabs';
+import { getTxExplorerUrl } from '~/core/utils/tabs';
 import { getBlockExplorerName } from '~/core/utils/transactions';
 import {
   Box,
@@ -32,6 +33,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 import {
   ContextMenu,
@@ -39,21 +41,152 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '~/entries/popup/components/ContextMenu/ContextMenu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow';
+import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { useRainbowChains } from '../../../hooks/useRainbowChains';
-import SortdDropdown from '../NFTs/SortDropdown';
+import { gradientBorderDark, gradientBorderLight } from '../NFTs/NFTs.css';
 
 import { RevokeApprovalSheet } from './RevokeApprovalSheet';
 
 type Tab = 'tokens' | 'nfts';
 
+type SortType = 'recent' | 'alphabetical';
+
+const SortDropdown = ({
+  sort,
+  setSort,
+}: {
+  sort: SortType;
+  setSort: (sortType: SortType) => void;
+}) => {
+  const onValueChange = useCallback(
+    (value: SortType) => {
+      setSort(value);
+    },
+    [setSort],
+  );
+  const { currentTheme } = useCurrentThemeStore();
+  const [open, setIsOpen] = useState(false);
+
+  useKeyboardShortcut({
+    condition: () => open,
+    handler: (e) => {
+      e.stopImmediatePropagation();
+      if (e.key === shortcuts.nfts.SORT_RECENT.key) {
+        onValueChange('recent');
+        setIsOpen(false);
+      } else if (e.key === shortcuts.nfts.SORT_ABC.key) {
+        onValueChange('alphabetical');
+        setIsOpen(false);
+      }
+    },
+  });
+
+  return (
+    <DropdownMenu
+      open={open}
+      onOpenChange={(openChange) => !openChange && setIsOpen(false)}
+    >
+      <DropdownMenuTrigger asChild>
+        <Box onClick={() => setIsOpen(true)}>
+          <Lens
+            className={
+              currentTheme === 'dark' ? gradientBorderDark : gradientBorderLight
+            }
+            style={{ display: 'flex', alignItems: 'center' }}
+            testId={'nfts-sort-dropdown'}
+          >
+            <Box style={{ paddingRight: 7, paddingLeft: 7 }}>
+              <Inline alignVertical="center" space="6px">
+                <Symbol
+                  symbol={sort === 'recent' ? 'clock' : 'list.bullet'}
+                  weight="bold"
+                  size={13}
+                  color="labelSecondary"
+                />
+                <Text weight="bold" size="14pt" color="label">
+                  {sort === 'recent'
+                    ? i18n.t('nfts.sort_option_recent')
+                    : i18n.t('nfts.sort_option_abc')}
+                </Text>
+                <Symbol
+                  symbol="chevron.down"
+                  weight="bold"
+                  size={10}
+                  color="labelTertiary"
+                />
+              </Inline>
+            </Box>
+          </Lens>
+        </Box>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent marginRight="16px" marginTop="6px">
+        <DropdownMenuRadioGroup
+          onValueChange={(value) => onValueChange(value as typeof sort)}
+        >
+          <Stack space="4px">
+            <Stack>
+              <DropdownMenuRadioItem highlightAccentColor value="recent">
+                <HomeMenuRow
+                  leftComponent={
+                    <Symbol size={12} symbol="clock" weight="semibold" />
+                  }
+                  centerComponent={
+                    <Text size="14pt" weight="semibold">
+                      {i18n.t('nfts.sort_option_recent_long')}
+                    </Text>
+                  }
+                  rightComponent={
+                    <ShortcutHint hint={shortcuts.nfts.SORT_RECENT.display} />
+                  }
+                />
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem highlightAccentColor value="alphabetical">
+                <HomeMenuRow
+                  leftComponent={
+                    <Symbol size={12} symbol="list.bullet" weight="semibold" />
+                  }
+                  centerComponent={
+                    <Text
+                      size="14pt"
+                      weight="semibold"
+                      testId={'nfts-sort-option-abc'}
+                    >
+                      {i18n.t('nfts.sort_option_abc_long')}
+                    </Text>
+                  }
+                  rightComponent={
+                    <ShortcutHint hint={shortcuts.nfts.SORT_ABC.display} />
+                  }
+                />
+              </DropdownMenuRadioItem>
+            </Stack>
+          </Stack>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 function ApprovalHeader({
+  sort,
   activeTab,
+  setSort,
   onSelectTab,
 }: {
+  sort: SortType;
   activeTab: Tab;
+  setSort: (sortType: SortType) => void;
   onSelectTab: (tab: Tab) => void;
 }) {
   return (
@@ -107,12 +240,26 @@ function ApprovalHeader({
         </Inline>
 
         <Inline alignVertical="center" space="8px">
-          <SortdDropdown />
+          <SortDropdown sort={sort} setSort={setSort} />
         </Inline>
       </Box>
     </Inset>
   );
 }
+
+const sortApprovals = (
+  sort: SortType,
+  a1: { approval: Approval; spender: ApprovalSpender },
+  a2: { approval: Approval; spender: ApprovalSpender },
+) => {
+  if (sort === 'recent') {
+    return new Date(a1.spender.tx_time) < new Date(a2.spender.tx_time) ? 1 : -1;
+  }
+  return a1.approval?.asset.symbol?.toLowerCase() <
+    a2.approval?.asset.symbol?.toLowerCase()
+    ? -1
+    : 1;
+};
 
 export const Approvals = () => {
   const { currentAddress } = useCurrentAddressStore();
@@ -125,6 +272,7 @@ export const Approvals = () => {
     spender: ApprovalSpender | null;
   }>({ approval: null, spender: null });
 
+  const [sort, setSort] = useState<SortType>('recent');
   const [activeTab, setActiveTab] = useState<Tab>('tokens');
   const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
 
@@ -162,7 +310,8 @@ export const Approvals = () => {
         spender,
       })),
     )
-    .flat();
+    .flat()
+    .sort((a1, a2) => sortApprovals(sort, a1, a2));
 
   return (
     <Box>
@@ -171,7 +320,12 @@ export const Approvals = () => {
           overflow: 'scroll',
         }}
       >
-        <ApprovalHeader activeTab={activeTab} onSelectTab={setActiveTab} />
+        <ApprovalHeader
+          sort={sort}
+          activeTab={activeTab}
+          setSort={setSort}
+          onSelectTab={setActiveTab}
+        />
         <Stack space="16px">
           <Rows alignVertical="top">
             {tokenApprovals?.map((tokenApproval, i) => (
@@ -217,22 +371,21 @@ const TokenApprovalContextMenu = ({
   const explorerHost = getBlockExplorerName(chainId);
   const explorer =
     getBlockExplorerHostForChain(chainId || ChainId.mainnet) || '';
-  const explorerUrl = getExplorerUrl(explorer, spender.contract_address);
+  const explorerUrl = getTxExplorerUrl(explorer, spender.tx_hash);
 
   const [tokenContextMenuOpen, setTokenContextMenuOpen] = useState(false);
   useKeyboardShortcut({
+    condition: () => tokenContextMenuOpen,
     handler: (e: KeyboardEvent) => {
-      if (tokenContextMenuOpen) {
-        e.preventDefault();
-        if (e.key === shortcuts.activity.COPY_TRANSACTION.key) {
-          copySpenderRef.current?.click();
-        }
-        if (e.key === shortcuts.activity.VIEW_TRANSACTION.key) {
-          viewOnExplorerRef.current?.click();
-        }
-        if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
-          revokeRef.current?.click();
-        }
+      e.preventDefault();
+      if (e.key === shortcuts.activity.COPY_TRANSACTION.key) {
+        copySpenderRef.current?.click();
+      }
+      if (e.key === shortcuts.activity.VIEW_TRANSACTION.key) {
+        viewOnExplorerRef.current?.click();
+      }
+      if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
+        revokeRef.current?.click();
       }
     },
   });

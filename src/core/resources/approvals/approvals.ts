@@ -19,6 +19,7 @@ export const APPROVALS_TIMEOUT_DURATION = 10000;
 
 export interface ApprovalSpender {
   tx_hash: TxHash;
+  tx_time: string;
   contract_address: Address;
   allowance_type: 'UNLIMITED' | 'LIMITED';
   quantity_allowed: 'unlimited' | string;
@@ -89,6 +90,7 @@ export async function approvalsQueryFunction({
         },
       },
     );
+    console.log('-- response', response.data);
     return response.data as ApprovalsResponse;
   } catch (e) {
     logger.error(new RainbowError('approvalsQueryFunction: '), {
