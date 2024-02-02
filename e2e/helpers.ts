@@ -733,24 +733,30 @@ export async function getOnchainBalance(addy: string, contract: string) {
 export async function calcMinerTip() {
   const provider = getDefaultProvider('http://127.0.0.1:8545');
   const blockData = await provider.getBlock('latest');
+  console.log('blockData: ', blockData);
 
   if (blockData.transactions.length === 0) {
     throw new Error('No transactions in the latest block.');
   }
 
   const txnReceipt = await provider.getTransactionReceipt(
-    blockData.transactions[0],
+    blockData.transactions[blockData.transactions.length - 1],
   );
+
+  console.log('txnReceipt: ', txnReceipt);
 
   if (!blockData.baseFeePerGas || !txnReceipt.effectiveGasPrice) {
     throw new Error('Transaction or block does not support EIP-1559.');
   }
 
   const baseFeePerGas = blockData.baseFeePerGas;
+  console.log('baseFeePerGas: ', baseFeePerGas);
   const minerTip = txnReceipt.effectiveGasPrice.sub(baseFeePerGas);
+  console.log('minterTip: ', minerTip);
   const minerTipCalc = minerTip
     .div(ethers.utils.parseUnits('1', 'gwei'))
     .toNumber();
+  console.log('minerTipCalc: ', minerTipCalc);
   return minerTipCalc;
 }
 
@@ -758,7 +764,7 @@ export async function transactionStatus() {
   const provider = getDefaultProvider('http://127.0.0.1:8545');
   const blockData = await provider.getBlock('latest');
   const txnReceipt = await provider.getTransactionReceipt(
-    blockData.transactions[0],
+    blockData.transactions[blockData.transactions.length - 1],
   );
   const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
 
