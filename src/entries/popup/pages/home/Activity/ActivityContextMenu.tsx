@@ -119,6 +119,17 @@ export function ActivityContextMenu({
             {truncatedHash}
           </Text>
         </ContextMenuItem>
+
+        <ContextMenuItem
+          color="red"
+          symbolLeft="xmark.circle.fill"
+          onSelect={handleCopy}
+          shortcut={shortcuts.activity.REFRESH_TRANSACTIONS.display}
+        >
+          <Text color="red" size="14pt" weight="semibold">
+            {'Revoke Approval'}
+          </Text>
+        </ContextMenuItem>
       </ContextMenuContent>
     </DetailsMenuWrapper>
   );

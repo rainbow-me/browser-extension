@@ -147,17 +147,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   const navigate = useRainbowNavigate();
 
   return (
-    <Lens
-      borderRadius="12px"
-      marginHorizontal="-12px"
-      forceAvatarColor
-      onClick={() =>
-        navigate(
-          ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
-          { state: { skipTransitionOnRoute: ROUTES.HOME } },
-        )
-      }
-    >
+    <Lens borderRadius="12px" marginHorizontal="-12px" forceAvatarColor>
       <ActivityContextMenu transaction={transaction}>
         <Box
           style={{ height: '52px' }}
@@ -168,6 +158,12 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
           gap="8px"
           display="flex"
           alignItems="center"
+          onClick={() =>
+            navigate(
+              ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
+              { state: { skipTransitionOnRoute: ROUTES.HOME } },
+            )
+          }
         >
           <ActivityIcon transaction={transaction} />
           <Box

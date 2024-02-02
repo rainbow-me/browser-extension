@@ -71,8 +71,8 @@ export const RevokeApprovalSheet = ({
   onCancel,
 }: {
   show: boolean;
-  approval: Approval | null;
-  spender: ApprovalSpender | null;
+  approval?: Approval | null;
+  spender?: ApprovalSpender | null;
   onCancel: () => void;
 }) => {
   const { currentAddress } = useCurrentAddressStore();
