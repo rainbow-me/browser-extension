@@ -766,6 +766,7 @@ export async function transactionStatus() {
   const txnReceipt = await provider.getTransactionReceipt(
     blockData.transactions[blockData.transactions.length - 1],
   );
+  console.log('txnReceipt: ', txnReceipt);
   const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
 
   return txnStatus;
