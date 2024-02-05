@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react';
+import { useCallback, useReducer, useState } from 'react';
 import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -50,6 +50,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { SideChainExplainerSheet } from '~/entries/popup/components/SideChainExplainer';
 import { useCustomNetworkAsset } from '~/entries/popup/hooks/useCustomNetworkAsset';
@@ -361,6 +365,36 @@ export function TokenDetails() {
     },
   );
 
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
+    useExplainerSheetParams();
+
+  const showFloorPriceExplainerSheet = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: {
+        icon: (
+          <Symbol
+            symbol="checkmark.seal.fill"
+            size={32}
+            weight="semibold"
+            color="blue"
+          />
+        ),
+      },
+      description: [
+        'Approvals grant a dApp to spend and transfer tokens or NFTs on your behalf.',
+        'It is important to monitor your approvals and revoke unnecessary, broad, or unsafe approvals that may risk your assets.',
+      ],
+      title: 'What’s an Approval?',
+      actionButton: {
+        label: 'Got it',
+        action: hideExplainerSheet,
+        labelColor: 'label',
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (
     !uniqueId ||
     (isFetched && !userAsset && isCustomAssetFetched && !customAsset)
@@ -456,9 +490,19 @@ export function TokenDetails() {
               borderRadius="16px"
             >
               <Stack space="12px">
-                <Text size="14pt" weight="heavy" color="label">
-                  Token Approvals
-                </Text>
+                <Inline space="4px" alignVertical="center">
+                  <Text size="14pt" weight="heavy" color="label">
+                    Token Approvals
+                  </Text>
+                  <ButtonSymbol
+                    symbol="info.circle.fill"
+                    color="labelQuaternary"
+                    height="28px"
+                    variant="tinted"
+                    onClick={showFloorPriceExplainerSheet}
+                  />
+                </Inline>
+
                 <Separator color="separatorTertiary" />
                 {tokenApprovals?.map((approval, i) => {
                   return (
@@ -531,6 +575,13 @@ export function TokenDetails() {
         approval={approvalToRevoke?.approval}
         spender={approvalToRevoke?.spender}
         onCancel={() => setShowRevokeSheet(false)}
+      />
+      <ExplainerSheet
+        show={explainerSheetParams.show}
+        header={explainerSheetParams.header}
+        title={explainerSheetParams.title}
+        description={explainerSheetParams.description}
+        actionButton={explainerSheetParams.actionButton}
       />
     </AccentColorProvider>
   );
