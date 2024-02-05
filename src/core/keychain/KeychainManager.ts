@@ -330,6 +330,10 @@ class KeychainManager {
     return keychain;
   }
 
+  async removeKeychain(keychain: Keychain) {
+    this.state.keychains = this.state.keychains.filter((k) => k !== keychain);
+  }
+
   async importKeychain(
     opts:
       | SerializedKeypairKeychain
@@ -337,6 +341,23 @@ class KeychainManager {
       | SerializedReadOnlyKeychain
       | SerializedHardwareWalletKeychain,
   ): Promise<Keychain> {
+    if (opts.type === KeychainType.KeyPairKeychain) {
+      const newKeychainAccounts = await this.deriveAccounts(opts);
+      const existingKeychain = await this.getKeychain(newKeychainAccounts[0]);
+      if (!existingKeychain) {
+        // restore the incoming keychain
+        // return
+      }
+      this.removeKeychain(existingKeychain);
+      if (existingKeychain.type === KeychainType.HdKeychain) {
+        // restore the incoming keychain
+        // add the new account
+      }
+
+      // return restore keychain;
+    }
+    if (opts.type === KeychainType.KeyPairKeychain) {
+    }
     const result = await privates.get(this).restoreKeychain({
       ...opts,
       imported: true,

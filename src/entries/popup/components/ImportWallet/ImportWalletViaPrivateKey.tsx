@@ -132,6 +132,7 @@ const ImportWalletViaPrivateKey = () => {
           removeImportWalletSecrets();
           return;
         } catch (e) {
+          console.log(e);
           //
         }
       }

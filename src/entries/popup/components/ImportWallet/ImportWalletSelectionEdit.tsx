@@ -89,7 +89,10 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
         (a) => !accountsIgnored.includes(a),
       );
       setCurrentAddress(importedAccounts[0]);
-      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
+      if (onboarding)
+        navigate(ROUTES.CREATE_PASSWORD, {
+          state: { backTo: ROUTES.IMPORT__SEED },
+        });
       else navigate(ROUTES.HOME);
     });
 
