@@ -37,38 +37,41 @@ export default function NFTContextMenu({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { hidden, toggleHideNFT } = useNftsStore();
-  const { setSelectedNft } = useSelectedNftStore();
+  const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
-  const hasContractAddress = !!nft?.asset_contract.address;
-  const hasNetwork = !!nft?.network;
-  const displayed = !hiddenNftsForAddress[nft?.uniqueId || ''];
+  const nftToFocus = selectedNft ?? nft;
+  const hasContractAddress = !!nftToFocus?.asset_contract.address;
+  const hasNetwork = !!nftToFocus?.network;
+  const displayed = !hiddenNftsForAddress[nftToFocus?.uniqueId || ''];
 
   const explorerTitle =
-    nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
+    nftToFocus?.network === 'mainnet'
+      ? 'Etherscan'
+      : i18n.t('nfts.details.explorer');
   const getBlockExplorerUrl = () => {
-    if (nft?.network === 'mainnet') {
+    if (nftToFocus?.network === 'mainnet') {
       return `https://${getBlockExplorerHostForChain(
-        chainIdFromChainName(nft?.network as ChainName),
-      )}/nft/${nft?.asset_contract.address}/${nft?.id}`;
+        chainIdFromChainName(nftToFocus?.network as ChainName),
+      )}/nft/${nftToFocus?.asset_contract.address}/${nft?.id}`;
     } else {
       return `https://${getBlockExplorerHostForChain(
-        chainIdFromChainName(nft?.network as ChainName),
-      )}/token/${nft?.asset_contract.address}?a=${nft?.id}`;
+        chainIdFromChainName(nftToFocus?.network as ChainName),
+      )}/token/${nftToFocus?.asset_contract.address}?a=${nft?.id}`;
     }
   };
 
-  const openseaUrl = getOpenseaUrl({ nft });
+  const openseaUrl = getOpenseaUrl({ nft: nftToFocus });
 
   const downloadLink = useRef<HTMLAnchorElement>(null);
 
   const handleCopyId = useCallback(() => {
-    navigator.clipboard.writeText(nft?.id as string);
+    navigator.clipboard.writeText(nftToFocus?.id as string);
     triggerToast({
       title: i18n.t('nfts.details.id_copied'),
-      description: nft?.id,
+      description: nftToFocus?.id,
     });
-  }, [nft?.id]);
+  }, [nftToFocus?.id]);
 
   const handleOpenChange = useCallback(
     (isOpen: boolean) => {
@@ -105,14 +108,14 @@ export default function NFTContextMenu({
                 {i18n.t('nfts.details.send')}
               </Text>
             </ContextMenuItem>
-            {nft?.image_url && (
+            {nftToFocus?.image_url && (
               <ContextMenuItem
                 symbolLeft={'arrow.down.circle.fill'}
                 onSelect={() => downloadLink.current?.click()}
                 shortcut={shortcuts.nfts.DOWNLOAD_NFT.display}
               >
                 <Text size="14pt" weight="semibold">
-                  <a href={nft?.image_url} download ref={downloadLink}>
+                  <a href={nftToFocus?.image_url} download ref={downloadLink}>
                     {i18n.t('nfts.details.download')}
                   </a>
                 </Text>
@@ -132,12 +135,14 @@ export default function NFTContextMenu({
                 weight="medium"
                 maxWidth={140}
               >
-                {nft?.id}
+                {nftToFocus?.id}
               </TextOverflow>
             </ContextMenuItem>
             <ContextMenuItem
               symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
-              onSelect={() => toggleHideNFT(address, nft?.uniqueId || '')}
+              onSelect={() =>
+                toggleHideNFT(address, nftToFocus?.uniqueId || '')
+              }
               shortcut={shortcuts.nfts.HIDE_NFT.display}
             >
               <Text size="14pt" weight="semibold">
