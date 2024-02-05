@@ -472,7 +472,7 @@ export const TokenApprovalContextMenu = ({
             >
               <Box ref={revokeRef}>
                 <Text size="14pt" weight="semibold" color="red">
-                  {'Revoke Approval'}
+                  {i18n.t('approvals.revoke_approvals')}
                 </Text>
               </Box>
             </MenuItem>

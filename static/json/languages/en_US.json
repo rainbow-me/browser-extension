@@ -565,10 +565,24 @@
     "title": "Approvals",
     "unlimited": "Unlimited",
     "no_allowance": "No Allowance",
+    "revoke_approvals": "Revoke Approvals",
     "revoke": {
       "title": "Review & Revoke",
       "action": "Revoke",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "allowance": "Allowance",
+      "spender":"Spender",
+      "chain": "Chain"
+    },
+    "token_details": {
+      "explainer": {
+        "token_approval": {
+          "title": "What’s an Approval?",
+          "description_1": "Approvals grant a dApp to spend and transfer tokens or NFTs on your behalf.",
+          "description_2": "It is important to monitor your approvals and revoke unnecessary, broad, or unsafe approvals that may risk your assets.",
+          "action_label":"Got it"
+        }
+      }
     }
   },
   "send": {
@@ -1235,7 +1249,8 @@
     "exchange_rate": "Exchange",
     "collection": "Collection",
     "token_contract": "Token Contract",
-    "token_standard": "Token Standard"
+    "token_standard": "Token Standard",
+    "revoke_approval":"Revoke Approval"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",
@@ -1388,7 +1403,8 @@
     "speed_up_cta": "Speed up transaction",
     "speed_up_transaction": "Speed up transaction",
     "close_cta": "Cancel",
-    "handle_copy_title": "Tx Hash Copied"
+    "handle_copy_title": "Tx Hash Copied",
+    "revoke_approval": "Revoke Approval"
   },
   "token_details": {
     "swap": "Swap",

@@ -11,6 +11,7 @@ import { copy } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import {
   ContextMenuContent,
@@ -22,7 +23,7 @@ import { DetailsMenuWrapper } from '../../../components/DetailsMenu';
 
 export function ActivityContextMenu({
   children,
-  transaction, // onRevoke,
+  transaction,
   onRevokeTransaction,
 }: {
   children: ReactNode;
@@ -70,6 +71,16 @@ export function ActivityContextMenu({
       setClosed(true);
     }
   }, [sheet]);
+
+  useKeyboardShortcut({
+    condition: () => !closed,
+    handler: (e: KeyboardEvent) => {
+      e.preventDefault();
+      if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
+        if (onRevokeTransaction) onRevokeTransaction();
+      }
+    },
+  });
 
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
@@ -130,7 +141,7 @@ export function ActivityContextMenu({
             shortcut={shortcuts.activity.REFRESH_TRANSACTIONS.display}
           >
             <Text color="red" size="14pt" weight="semibold">
-              {'Revoke Approval'}
+              {i18n.t('speed_up_and_cancel.revoke_approval')}
             </Text>
           </ContextMenuItem>
         ) : null}

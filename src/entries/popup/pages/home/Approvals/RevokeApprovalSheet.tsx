@@ -283,7 +283,7 @@ export const RevokeApprovalSheet = ({
                   color="labelTertiary"
                 />
                 <Text weight="semibold" size="12pt" color="labelTertiary">
-                  {'Allowance'}
+                  {i18n.t('approvals.revoke.allowance')}
                 </Text>
               </Inline>
 
@@ -339,7 +339,7 @@ export const RevokeApprovalSheet = ({
                   color="labelTertiary"
                 />
                 <Text weight="semibold" size="12pt" color="labelTertiary">
-                  {'Spender'}
+                  {i18n.t('approvals.revoke.spender')}
                 </Text>
               </Inline>
 
@@ -377,7 +377,7 @@ export const RevokeApprovalSheet = ({
                   color="labelTertiary"
                 />
                 <Text weight="semibold" size="12pt" color="labelTertiary">
-                  {'Chain'}
+                  {i18n.t('approvals.revoke.chain')}
                 </Text>
               </Inline>
 
@@ -420,7 +420,6 @@ export const RevokeApprovalSheet = ({
               transactionRequest={
                 revokeApproveTransactionRequest || transactionRequestForGas
               }
-              // plainTriggerBorder
               accentColor={
                 approval?.asset.colors?.primary ||
                 approval?.asset.colors?.fallback

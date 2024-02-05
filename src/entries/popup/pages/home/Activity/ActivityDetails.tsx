@@ -491,7 +491,7 @@ function MoreOptions({
                 symbolLeft="xmark.circle.fill"
                 onSelect={onRevoke}
               >
-                {'Revoke Approval'}
+                {i18n.t('activity_details.revoke_approval')}
               </DropdownMenuItem>
             ) : null}
           </>

@@ -359,7 +359,7 @@ export function TokenDetails() {
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
-  const showFloorPriceExplainerSheet = useCallback(() => {
+  const showTokenApprovalsExplainer = useCallback(() => {
     showExplainerSheet({
       show: true,
       header: {
@@ -373,18 +373,23 @@ export function TokenDetails() {
         ),
       },
       description: [
-        'Approvals grant a dApp to spend and transfer tokens or NFTs on your behalf.',
-        'It is important to monitor your approvals and revoke unnecessary, broad, or unsafe approvals that may risk your assets.',
+        i18n.t(
+          'approvals.token_details.explainer.token_approval.description_1',
+        ),
+        i18n.t(
+          'approvals.token_details.explainer.token_approval.description_2',
+        ),
       ],
-      title: 'What’s an Approval?',
+      title: i18n.t('approvals.token_details.explainer.token_approval.title'),
       actionButton: {
-        label: 'Got it',
+        label: i18n.t(
+          'approvals.token_details.explainer.token_approval.action_label',
+        ),
         action: hideExplainerSheet,
         labelColor: 'label',
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hideExplainerSheet, showExplainerSheet]);
 
   if (
     !uniqueId ||
@@ -490,7 +495,7 @@ export function TokenDetails() {
                     color="labelQuaternary"
                     height="28px"
                     variant="tinted"
-                    onClick={showFloorPriceExplainerSheet}
+                    onClick={showTokenApprovalsExplainer}
                   />
                 </Inline>
 
