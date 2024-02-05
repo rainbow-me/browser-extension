@@ -90,7 +90,6 @@ export async function approvalsQueryFunction({
         },
       },
     );
-    console.log('-- response', response.data);
     return response.data as ApprovalsResponse;
   } catch (e) {
     logger.error(new RainbowError('approvalsQueryFunction: '), {

@@ -456,8 +456,8 @@ export function TokenDetails() {
               borderRadius="16px"
             >
               <Stack space="12px">
-                <Text size="12pt" weight="semibold" color="labelTertiary">
-                  Token approvals
+                <Text size="14pt" weight="heavy" color="label">
+                  Token Approvals
                 </Text>
                 <Separator color="separatorTertiary" />
                 {tokenApprovals?.map((approval, i) => {
@@ -501,15 +501,19 @@ export function TokenDetails() {
                           type="dropdown"
                           chainId={token.chainId}
                           spender={approval.spender}
-                          onRevokeApproval={() => setShowRevokeSheet(true)}
-                          onTrigger={() => setApprovalToRevoke(approval)}
+                          onRevokeApproval={() => {
+                            setApprovalToRevoke(approval);
+                            setShowRevokeSheet(true);
+                          }}
                         >
-                          <Symbol
-                            size={14}
-                            weight="regular"
-                            symbol="ellipsis.circle"
-                            color="labelTertiary"
-                          />
+                          <Box>
+                            <Symbol
+                              size={14}
+                              weight="regular"
+                              symbol="ellipsis.circle"
+                              color="labelTertiary"
+                            />
+                          </Box>
                         </TokenApprovalContextMenu>
                       </Inline>
                     </Inline>

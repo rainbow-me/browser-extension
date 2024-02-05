@@ -425,7 +425,7 @@ export const TokenApprovalContextMenu = ({
       <MenuTrigger asChild onTrigger={onTrigger}>
         {children}
       </MenuTrigger>
-      <MenuContent>
+      <MenuContent marginRight={type === 'dropdown' ? '32px' : undefined}>
         <MenuItem
           symbolLeft="doc.on.doc.fill"
           shortcut={shortcuts.activity.COPY_TRANSACTION.display}
