@@ -1,13 +1,9 @@
-import { useCallback, useReducer, useState } from 'react';
+import { useCallback, useReducer } from 'react';
 import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
-import {
-  Approval,
-  ApprovalSpender,
-  useApprovals,
-} from '~/core/resources/approvals/approvals';
+import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
@@ -63,7 +59,7 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { TokenApprovalContextMenu } from '../Approvals/Approvals';
-import { RevokeApprovalSheet } from '../Approvals/RevokeApprovalSheet';
+import { triggerRevokeApproval } from '../Approvals/utils';
 
 import { About } from './About';
 import { PriceChart } from './PriceChart';
@@ -330,11 +326,6 @@ export function TokenDetails() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
-  const [showRevokeSheet, setShowRevokeSheet] = useState(false);
-  const [approvalToRevoke, setApprovalToRevoke] = useState<{
-    approval: Approval;
-    spender: ApprovalSpender;
-  } | null>(null);
 
   const { data: userAsset, isFetched } = useUserAsset(uniqueId);
   const { data: customAsset, isFetched: isCustomAssetFetched } =
@@ -546,8 +537,10 @@ export function TokenDetails() {
                           chainId={token.chainId}
                           spender={approval.spender}
                           onRevokeApproval={() => {
-                            setApprovalToRevoke(approval);
-                            setShowRevokeSheet(true);
+                            triggerRevokeApproval({
+                              show: true,
+                              approval: approval,
+                            });
                           }}
                         >
                           <Box>
@@ -570,12 +563,6 @@ export function TokenDetails() {
           <About token={token} />
         </Box>
       )}
-      <RevokeApprovalSheet
-        show={showRevokeSheet}
-        approval={approvalToRevoke?.approval}
-        spender={approvalToRevoke?.spender}
-        onCancel={() => setShowRevokeSheet(false)}
-      />
       <ExplainerSheet
         show={explainerSheetParams.show}
         header={explainerSheetParams.header}

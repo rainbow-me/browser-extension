@@ -58,6 +58,7 @@ import { getWallet, sendTransaction } from '~/entries/popup/handlers/wallet';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+import { zIndexes } from '~/entries/popup/utils/zIndexes';
 import { RainbowError, logger } from '~/logger';
 
 import { Spinner } from '../../../components/Spinner/Spinner';
@@ -75,6 +76,7 @@ export const RevokeApprovalSheet = ({
   spender?: ApprovalSpender | null;
   onCancel: () => void;
 }) => {
+  console.log('in rvoke approval sheet', show, approval, spender);
   const { currentAddress } = useCurrentAddressStore();
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
@@ -246,10 +248,16 @@ export const RevokeApprovalSheet = ({
   }, [clearCustomGasModified, previousShow, show]);
 
   return (
-    <BottomSheet show={show} onClickOutside={onCancel}>
+    <BottomSheet
+      show={show}
+      onClickOutside={onCancel}
+      zIndex={zIndexes.REVOKE_APPROVAL_SHEET}
+    >
       <Box
-        style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
-        background="surfacePrimaryElevated"
+        style={{
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+        }}
         paddingBottom="20px"
       >
         <Stack space="20px">

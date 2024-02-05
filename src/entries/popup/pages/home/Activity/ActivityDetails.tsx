@@ -1,6 +1,6 @@
 import { formatEther, formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -54,7 +54,7 @@ import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
-import { RevokeApprovalSheet } from '../Approvals/RevokeApprovalSheet';
+import { triggerRevokeApproval } from '../Approvals/utils';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 import { ActivityPill } from './ActivityPill';
@@ -509,7 +509,6 @@ export function ActivityDetails() {
     hash,
     chainId: Number(chainId),
   });
-  const [showRevokeSheet, setShowRevokeSheet] = useState(false);
   const navigate = useRainbowNavigate();
 
   const { data: approvalsData } = useApprovals(
@@ -553,7 +552,7 @@ export function ActivityDetails() {
     });
 
   const onRevoke = () => {
-    setShowRevokeSheet(true);
+    triggerRevokeApproval({ show: true, approval: approvalToRevoke });
   };
 
   return (
@@ -594,12 +593,6 @@ export function ActivityDetails() {
           </Stack>
         </>
       )}
-      <RevokeApprovalSheet
-        show={showRevokeSheet}
-        approval={approvalToRevoke?.approval}
-        spender={approvalToRevoke?.spender}
-        onCancel={() => setShowRevokeSheet(false)}
-      />
     </BottomSheet>
   );
 }

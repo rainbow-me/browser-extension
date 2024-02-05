@@ -22,10 +22,12 @@ import { DetailsMenuWrapper } from '../../../components/DetailsMenu';
 
 export function ActivityContextMenu({
   children,
-  transaction,
+  transaction, // onRevoke,
+  onRevokeTransaction,
 }: {
   children: ReactNode;
   transaction: RainbowTransaction;
+  onRevokeTransaction?: () => void;
 }) {
   const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
   const { setSelectedTransaction } = useSelectedTransactionStore();
@@ -120,16 +122,18 @@ export function ActivityContextMenu({
           </Text>
         </ContextMenuItem>
 
-        <ContextMenuItem
-          color="red"
-          symbolLeft="xmark.circle.fill"
-          onSelect={handleCopy}
-          shortcut={shortcuts.activity.REFRESH_TRANSACTIONS.display}
-        >
-          <Text color="red" size="14pt" weight="semibold">
-            {'Revoke Approval'}
-          </Text>
-        </ContextMenuItem>
+        {onRevokeTransaction ? (
+          <ContextMenuItem
+            color="red"
+            symbolLeft="xmark.circle.fill"
+            onSelect={onRevokeTransaction}
+            shortcut={shortcuts.activity.REFRESH_TRANSACTIONS.display}
+          >
+            <Text color="red" size="14pt" weight="semibold">
+              {'Revoke Approval'}
+            </Text>
+          </ContextMenuItem>
+        ) : null}
       </ContextMenuContent>
     </DetailsMenuWrapper>
   );

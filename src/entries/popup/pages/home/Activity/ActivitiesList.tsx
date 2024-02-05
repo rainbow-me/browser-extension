@@ -1,11 +1,17 @@
 import { motion } from 'framer-motion';
+import { useCallback } from 'react';
+import { Chain } from 'wagmi';
 
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
+import { useApprovals } from '~/core/resources/approvals/approvals';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useUserChainsStore } from '~/core/state/userChains';
 import {
   RainbowTransaction,
   TransactionStatus,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { truncateString } from '~/core/utils/strings';
+import { isLowerCaseMatch, truncateString } from '~/core/utils/strings';
 import {
   Box,
   Column,
@@ -23,11 +29,13 @@ import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTranspa
 import { SpinnerRow } from '~/entries/popup/components/SpinnerRow/SpinnerRow';
 import { Tag } from '~/entries/popup/components/Tag';
 import { useInfiniteTransactionList } from '~/entries/popup/hooks/useInfiniteTransactionList';
+import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useTransactionListForPendingTxs } from '~/entries/popup/hooks/useTransactionListForPendingTxs';
 
 import { useActivityShortcuts } from '../../../hooks/useActivityShortcuts';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../../urls';
+import { triggerRevokeApproval } from '../Approvals/utils';
 import { ActivitySkeleton } from '../Skeletons';
 
 import { ActivityContextMenu } from './ActivityContextMenu';
@@ -48,8 +56,66 @@ export function Activities() {
   });
   useTransactionListForPendingTxs();
   const containerRef = useContainerRef();
+  const { currentAddress } = useCurrentAddressStore();
+  const { currentCurrency } = useCurrentCurrencyStore();
+  const { rainbowChains } = useRainbowChains();
+  const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
+  const { userChains } = useUserChainsStore();
+
+  const chainIds = rainbowChains
+    .filter((c) => supportedMainnetIds.includes(c.id) && userChains[c.id])
+    .map((c) => c.id);
+
+  const { data: approvalsData } = useApprovals({
+    address: currentAddress,
+    chainIds: chainIds,
+    currency: currentCurrency,
+  });
+
+  const approvals = approvalsData?.payload || [];
+
+  const tokenApprovals = approvals
+    ?.map((approval) =>
+      approval.spenders.map((spender) => ({
+        approval,
+        spender,
+      })),
+    )
+    .flat();
 
   useActivityShortcuts();
+
+  const onRevokeTransaction = useCallback(
+    (tx: RainbowTransaction) => {
+      if (tx.type === 'approve') {
+        const txApproval = tokenApprovals.find((approval) =>
+          isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
+        );
+        if (txApproval) {
+          triggerRevokeApproval({
+            show: true,
+            approval: txApproval,
+          });
+        }
+      }
+    },
+    [tokenApprovals],
+  );
+
+  const isRevokableTransaction = useCallback(
+    (tx: RainbowTransaction) => {
+      if (tx.type === 'approve') {
+        const txApproval = tokenApprovals.find((approval) =>
+          isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
+        );
+        if (txApproval) {
+          return true;
+        }
+      }
+      return false;
+    },
+    [tokenApprovals],
+  );
 
   if (isInitialLoading || isRefetching) return <ActivitySkeleton />;
   if (!transactions.length) return <NoActivity />;
@@ -100,7 +166,14 @@ export function Activities() {
                   </Inset>
                 ) : (
                   <Box paddingVertical="4px">
-                    <ActivityRow transaction={tx} />
+                    <ActivityRow
+                      transaction={tx}
+                      onRevokeTransaction={
+                        isRevokableTransaction(tx)
+                          ? () => onRevokeTransaction(tx)
+                          : undefined
+                      }
+                    />
                   </Box>
                 )}
               </Box>
@@ -143,12 +216,23 @@ const ActivityDescription = ({
   );
 };
 
-function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
+function ActivityRow({
+  transaction,
+  onRevokeTransaction,
+}: {
+  transaction: RainbowTransaction;
+  onRevokeTransaction?: () => void;
+}) {
   const navigate = useRainbowNavigate();
 
   return (
     <Lens borderRadius="12px" marginHorizontal="-12px" forceAvatarColor>
-      <ActivityContextMenu transaction={transaction}>
+      <ActivityContextMenu
+        transaction={transaction}
+        onRevokeTransaction={() => {
+          onRevokeTransaction?.();
+        }}
+      >
         <Box
           style={{ height: '52px' }}
           paddingHorizontal="12px"
