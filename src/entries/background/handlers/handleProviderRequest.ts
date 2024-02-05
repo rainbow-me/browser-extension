@@ -37,6 +37,7 @@ import { normalizeTransactionResponsePayload } from '~/core/utils/ethereum';
 import { toHex } from '~/core/utils/hex';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
+import { ROUTES } from '~/entries/popup/urls';
 import { RainbowError, logger } from '~/logger';
 
 const MAX_REQUEST_PER_SECOND = 10;
@@ -51,11 +52,11 @@ const getPopupTitleBarHeight = (platform: string) => {
   return 28;
 };
 
-const createNewWindow = async (tabId: string) => {
+const createNewWindow = async (tabId: string, path?: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
-    url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
+    url: chrome.runtime.getURL('popup.html') + path + '?tabId=' + tabId,
     type: 'popup',
     height:
       POPUP_DIMENSIONS.height + getPopupTitleBarHeight(navigator.userAgent),
@@ -75,7 +76,7 @@ const focusOnWindow = (windowId: number) => {
   });
 };
 
-const openWindowForTabId = async (tabId: string) => {
+const openWindowForTabId = async (tabId: string, path: string) => {
   const { notificationWindows } = notificationWindowStore.getState();
   const notificationWindow = notificationWindows[tabId];
   if (notificationWindow) {
@@ -83,18 +84,18 @@ const openWindowForTabId = async (tabId: string) => {
       notificationWindow.id as number,
       async (existingWindow) => {
         if (chrome.runtime.lastError) {
-          createNewWindow(tabId);
+          createNewWindow(tabId, path);
         } else {
           if (existingWindow) {
             focusOnWindow(existingWindow.id as number);
           } else {
-            createNewWindow(tabId);
+            createNewWindow(tabId, path);
           }
         }
       },
     );
   } else {
-    createNewWindow(tabId);
+    createNewWindow(tabId, path);
   }
 };
 
@@ -121,7 +122,10 @@ const messengerProviderRequest = async (
   const passwordSet = _hasVault && (await isPasswordSet());
 
   if (_hasVault && passwordSet) {
-    openWindowForTabId(Number(request.meta?.sender.tab?.id).toString());
+    openWindowForTabId(
+      Number(request.meta?.sender.tab?.id).toString(),
+      ROUTES.APPROVE_APP_REQUEST,
+    );
   } else {
     goToNewTab({
       url: WELCOME_URL,

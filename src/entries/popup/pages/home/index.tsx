@@ -14,7 +14,7 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
 import { useErrorStore } from '~/core/state/error';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -39,15 +39,12 @@ import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { usePendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
-import usePrevious from '../../hooks/usePrevious';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import useRestoreNavigation from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
 import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 import { useWallets } from '../../hooks/useWallets';
 import { StickyHeader } from '../../layouts/StickyHeader';
-import { ROUTES } from '../../urls';
 
 import { Activities } from './Activity/ActivitiesList';
 import { Header } from './Header';
@@ -163,9 +160,9 @@ export const Home = memo(function Home() {
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
   const { error, setError } = useErrorStore();
-  const navigate = useRainbowNavigate();
-  const { pendingRequests } = usePendingRequestStore();
-  const prevPendingRequest = usePrevious(pendingRequests?.[0]);
+  // const navigate = useRainbowNavigate();
+  // const { pendingRequests } = usePendingRequestStore();
+  // const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   const { selectedTab, setSelectedTab } = useTabNavigation();
 
   const [activeTab, setActiveTab] = useState<Tab>(() => {
@@ -212,14 +209,17 @@ export const Home = memo(function Home() {
     }
   }, [error, setError]);
 
-  useEffect(() => {
-    if (
-      pendingRequests?.[0] &&
-      pendingRequests?.[0].id !== prevPendingRequest?.id
-    ) {
-      navigate(ROUTES.APPROVE_APP_REQUEST);
-    }
-  }, [navigate, pendingRequests, prevPendingRequest?.id]);
+  // useEffect(() => {
+  //   const pendingRequest = pendingRequests?.[0];
+  //   const tabId = pendingRequest?.meta?.sender.tab?.id;
+  //   if (
+  //     pendingRequests &&
+  //     window.location.href.includes(`tabId=${tabId}`) &&
+  //     pendingRequest.id !== prevPendingRequest?.id
+  //   ) {
+  //     navigate(ROUTES.APPROVE_APP_REQUEST);
+  //   }
+  // }, [navigate, pendingRequests, prevPendingRequest?.id]);
 
   useEffect(() => {
     analytics.track(event.walletViewed);
