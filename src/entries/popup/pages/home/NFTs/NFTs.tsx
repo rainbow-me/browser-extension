@@ -4,7 +4,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { selectSortedNftCollections } from '~/core/resources/_selectors/nfts';
+import {
+  NFTCollectionSectionData,
+  selectSortedNftCollections,
+} from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -28,6 +31,7 @@ import { useContainerRef } from '~/design-system/components/AnimatedRoute/Animat
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { useCoolMode } from '~/entries/popup/hooks/useCoolMode';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
+import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -69,10 +73,18 @@ export function NFTs() {
     .flat()
     .filter((nft) => hiddenNftsForAddress[nft.uniqueId]);
   const allSections = sortedSections
-    .filter((section) => {
-      return section.assets.filter((nft) => !hiddenNftsForAddress[nft.uniqueId])
-        .length;
-    })
+    .reduce((cumulativeSections, currentSection) => {
+      const unhiddenAssets = currentSection.assets.filter(
+        (nft) => !hiddenNftsForAddress[nft.uniqueId],
+      );
+      if (unhiddenAssets.length) {
+        cumulativeSections.push({
+          ...currentSection,
+          assets: unhiddenAssets,
+        });
+      }
+      return cumulativeSections;
+    }, [] as NFTCollectionSectionData[])
     .concat(
       hiddenAssets.length
         ? {
@@ -182,6 +194,8 @@ export function NFTs() {
     isFetchingNextPage,
     nftCount,
   ]);
+
+  useNftShortcuts();
 
   if (!isLoading && sortedSections.length === 0) {
     return <NFTEmptyState />;
