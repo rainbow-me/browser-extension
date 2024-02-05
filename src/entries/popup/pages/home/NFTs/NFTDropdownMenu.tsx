@@ -1,8 +1,10 @@
 import { ReactNode, useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
+import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { ChainName } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import {
@@ -26,7 +28,10 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow';
+import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 
 import { getOpenseaUrl } from './utils';
 
@@ -39,6 +44,8 @@ export default function NFTDropdownMenu({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { hidden, toggleHideNFT } = useNftsStore();
+  const { setSelectedNft } = useSelectedNftStore();
+  const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
   const displayed = !hiddenNftsForAddress[nft?.uniqueId || ''];
   const hasContractAddress = !!nft?.asset_contract.address;
@@ -71,8 +78,15 @@ export default function NFTDropdownMenu({
     });
   }, [nft?.id]);
 
+  const handleSendNft = useCallback(() => {
+    if (nft) {
+      setSelectedNft(nft);
+      navigate(ROUTES.SEND, { replace: true });
+    }
+  }, [navigate, nft, setSelectedNft]);
+
   const onValueChange = (
-    value: 'copy' | 'download' | 'opensea' | 'explorer' | 'hide',
+    value: 'send' | 'copy' | 'download' | 'opensea' | 'explorer' | 'hide',
   ) => {
     switch (value) {
       case 'copy':
@@ -89,6 +103,9 @@ export default function NFTDropdownMenu({
         break;
       case 'hide':
         toggleHideNFT(address, nft?.uniqueId || '');
+        break;
+      case 'send':
+        handleSendNft();
         break;
     }
   };
@@ -109,6 +126,59 @@ export default function NFTDropdownMenu({
         >
           <Stack space="4px">
             <Stack>
+              <DropdownMenuRadioItem highlightAccentColor value="send">
+                <HomeMenuRow
+                  leftComponent={
+                    <Symbol
+                      size={18}
+                      symbol="paperplane.fill"
+                      weight="semibold"
+                    />
+                  }
+                  centerComponent={
+                    <Stack space="6px">
+                      <Text size="14pt" weight="semibold">
+                        {i18n.t('nfts.details.send')}
+                      </Text>
+                    </Stack>
+                  }
+                  rightComponent={
+                    <ShortcutHint hint={shortcuts.nfts.SEND_NFT.display} />
+                  }
+                />
+              </DropdownMenuRadioItem>
+              {nft?.image_url && (
+                <DropdownMenuRadioItem
+                  highlightAccentColor
+                  value="download"
+                  cursor="pointer"
+                >
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol
+                        size={18}
+                        symbol="arrow.down.circle.fill"
+                        weight="semibold"
+                        cursor="pointer"
+                      />
+                    }
+                    centerComponent={
+                      <Box paddingVertical="6px" cursor="pointer">
+                        <Text size="14pt" weight="semibold" cursor="pointer">
+                          <a href={nft?.image_url} download ref={downloadLink}>
+                            {i18n.t('nfts.details.download')}
+                          </a>
+                        </Text>
+                      </Box>
+                    }
+                    rightComponent={
+                      <ShortcutHint
+                        hint={shortcuts.nfts.DOWNLOAD_NFT.display}
+                      />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
               <DropdownMenuRadioItem
                 highlightAccentColor
                 value="copy"
@@ -139,35 +209,35 @@ export default function NFTDropdownMenu({
                       </TextOverflow>
                     </Stack>
                   }
+                  rightComponent={
+                    <ShortcutHint hint={shortcuts.nfts.COPY_NFT_ID.display} />
+                  }
                 />
               </DropdownMenuRadioItem>
-              {nft?.image_url && (
-                <DropdownMenuRadioItem
-                  highlightAccentColor
-                  value="download"
-                  cursor="pointer"
-                >
-                  <HomeMenuRow
-                    leftComponent={
-                      <Symbol
-                        size={18}
-                        symbol="arrow.down.circle.fill"
-                        weight="semibold"
-                        cursor="pointer"
-                      />
-                    }
-                    centerComponent={
-                      <Box paddingVertical="6px" cursor="pointer">
-                        <Text size="14pt" weight="semibold" cursor="pointer">
-                          <a href={nft?.image_url} download ref={downloadLink}>
-                            {i18n.t('nfts.details.download')}
-                          </a>
-                        </Text>
-                      </Box>
-                    }
-                  />
-                </DropdownMenuRadioItem>
-              )}
+              <DropdownMenuRadioItem highlightAccentColor value="hide">
+                <HomeMenuRow
+                  leftComponent={
+                    <Symbol
+                      size={18}
+                      symbol={displayed ? 'eye.slash.fill' : 'eye.fill'}
+                      weight="semibold"
+                    />
+                  }
+                  centerComponent={
+                    <Box paddingVertical="6px" paddingLeft="2px">
+                      <Text size="14pt" weight="semibold">
+                        {displayed
+                          ? i18n.t('nfts.details.hide')
+                          : i18n.t('nfts.details.unhide')}
+                      </Text>
+                    </Box>
+                  }
+                  rightComponent={
+                    <ShortcutHint hint={shortcuts.nfts.HIDE_NFT.display} />
+                  }
+                />
+              </DropdownMenuRadioItem>
+              <Separator color="separatorSecondary" />
               {hasContractAddress && hasNetwork && (
                 <DropdownMenuRadioItem highlightAccentColor value="opensea">
                   <HomeMenuRow
@@ -177,7 +247,7 @@ export default function NFTDropdownMenu({
                     centerComponent={
                       <Box paddingVertical="6px">
                         <Text size="14pt" weight="semibold">
-                          {'OpenSea'}
+                          {i18n.t('nfts.details.view_on_opensea')}
                         </Text>
                       </Box>
                     }
@@ -204,7 +274,9 @@ export default function NFTDropdownMenu({
                   centerComponent={
                     <Box paddingVertical="6px">
                       <Text size="14pt" weight="semibold">
-                        {explorerTitle}
+                        {i18n.t('nfts.details.view_on_explorer', {
+                          explorerTitle,
+                        })}
                       </Text>
                     </Box>
                   }
@@ -215,25 +287,6 @@ export default function NFTDropdownMenu({
                       size={12}
                       color="labelTertiary"
                     />
-                  }
-                />
-              </DropdownMenuRadioItem>
-              <Separator color="separatorSecondary" />
-              <DropdownMenuRadioItem highlightAccentColor value="hide">
-                <HomeMenuRow
-                  leftComponent={
-                    <Text size="16pt" weight="semibold">
-                      {'🙈'}
-                    </Text>
-                  }
-                  centerComponent={
-                    <Box paddingVertical="6px" paddingLeft="2px">
-                      <Text size="14pt" weight="semibold">
-                        {displayed
-                          ? i18n.t('nfts.details.hide')
-                          : i18n.t('nfts.details.unhide')}
-                      </Text>
-                    </Box>
                   }
                 />
               </DropdownMenuRadioItem>
