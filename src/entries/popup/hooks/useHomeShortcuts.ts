@@ -9,6 +9,7 @@ import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { truncateAddress } from '~/core/utils/address';
@@ -52,6 +53,7 @@ export function useHomeShortcuts() {
   const { isWatchingWallet } = useWallets();
   const { testnetMode, setTestnetMode } = useTestnetModeStore();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
+  const { selectedNft } = useSelectedNftStore();
 
   const allowSend = useMemo(
     () => !isWatchingWallet || featureFlags.full_watching_wallets,
@@ -112,11 +114,13 @@ export function useHomeShortcuts() {
           navigate(ROUTES.BUY);
           break;
         case shortcuts.home.COPY_ADDRESS.key:
-          trackShortcut({
-            key: shortcuts.home.COPY_ADDRESS.display,
-            type: 'home.copyAddress',
-          });
-          handleCopy();
+          if (!selectedNft) {
+            trackShortcut({
+              key: shortcuts.home.COPY_ADDRESS.display,
+              type: 'home.copyAddress',
+            });
+            handleCopy();
+          }
           break;
         case shortcuts.home.GO_TO_CONNECTED_APPS.key:
           trackShortcut({
@@ -228,6 +232,7 @@ export function useHomeShortcuts() {
       handleTestnetMode,
       alertWatchingWallet,
       disconnectFromApp,
+      selectedNft,
     ],
   );
   useKeyboardShortcut({
