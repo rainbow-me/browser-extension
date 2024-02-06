@@ -303,7 +303,7 @@ export const Approvals = () => {
     .filter((c) => supportedMainnetIds.includes(c.id) && userChains[c.id])
     .map((c) => c.id);
 
-  const { data: approvalsData } = useApprovals(
+  const { data: approvals } = useApprovals(
     {
       address: currentAddress,
       chainIds: chainIds,
@@ -312,19 +312,17 @@ export const Approvals = () => {
     {
       select(data) {
         if (data) {
-          const newPayload = data.payload.filter((approval) =>
+          const newApprovals = data.filter((approval) =>
             activeTab === 'nfts'
               ? approval.asset.type === 'nft'
               : approval.asset.type !== 'nft',
           );
-          return { meta: data?.meta, payload: newPayload };
+          return newApprovals;
         }
         return null;
       },
     },
   );
-
-  const approvals = approvalsData?.payload || [];
 
   const tokenApprovals = approvals
     ?.map((approval) =>

@@ -66,13 +66,11 @@ export function Activities() {
     .filter((c) => supportedMainnetIds.includes(c.id) && userChains[c.id])
     .map((c) => c.id);
 
-  const { data: approvalsData } = useApprovals({
+  const { data: approvals } = useApprovals({
     address: currentAddress,
     chainIds: chainIds,
     currency: currentCurrency,
   });
-
-  const approvals = approvalsData?.payload || [];
 
   const tokenApprovals = approvals
     ?.map((approval) =>
@@ -88,7 +86,7 @@ export function Activities() {
   const onRevokeTransaction = useCallback(
     (tx: RainbowTransaction) => {
       if (tx.type === 'approve') {
-        const txApproval = tokenApprovals.find((approval) =>
+        const txApproval = tokenApprovals?.find((approval) =>
           isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
         );
         if (txApproval) {
@@ -104,16 +102,8 @@ export function Activities() {
 
   const isRevokableTransaction = useCallback(
     (tx: RainbowTransaction) => {
-      if (
-        isLowerCaseMatch(
-          tx.hash,
-          '0xe5d464d5d345469c8a241f48b709f82537b1e11b2356d99e54bf5a5dc410b37f',
-        )
-      ) {
-        console.log('tx', tx.type);
-      }
       if (tx.type === 'approve') {
-        const txApproval = tokenApprovals.find((approval) =>
+        const txApproval = tokenApprovals?.find((approval) =>
           isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
         );
         if (txApproval) {

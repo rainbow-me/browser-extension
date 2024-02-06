@@ -511,7 +511,7 @@ export function ActivityDetails() {
   });
   const navigate = useRainbowNavigate();
 
-  const { data: approvalsData } = useApprovals(
+  const { data: approvals } = useApprovals(
     {
       address: currentAddress,
       chainIds: [Number(chainId) as ChainId],
@@ -526,7 +526,6 @@ export function ActivityDetails() {
   );
 
   const approvalToRevoke = useMemo(() => {
-    const approvals = approvalsData?.payload || [];
     const approvalToRevoke =
       approvals
         ?.map((approval) =>
@@ -539,7 +538,7 @@ export function ActivityDetails() {
         .filter((a) => a.spender.tx_hash === (transaction?.hash || ''))?.[0] ||
       null;
     return approvalToRevoke;
-  }, [approvalsData?.payload, transaction?.hash]);
+  }, [approvals, transaction?.hash]);
 
   const additionalDetails = useMemo(
     () => (transaction ? getAdditionalDetails(transaction) : null),

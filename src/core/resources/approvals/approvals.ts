@@ -78,9 +78,7 @@ type AprovalsQueryKey = ReturnType<typeof approvalsQueryKey>;
 
 export async function approvalsQueryFunction({
   queryKey: [{ address, chainIds, currency }],
-}: QueryFunctionArgs<
-  typeof approvalsQueryKey
->): Promise<ApprovalsResponse | null> {
+}: QueryFunctionArgs<typeof approvalsQueryKey>): Promise<Approval[] | null> {
   try {
     const response = await addysHttp.get(
       `/${chainIds.join(',')}/${address}/approvals`,
@@ -90,7 +88,8 @@ export async function approvalsQueryFunction({
         },
       },
     );
-    return response.data as ApprovalsResponse;
+    const approvalsReponse = response.data as ApprovalsResponse;
+    return approvalsReponse.payload;
   } catch (e) {
     logger.error(new RainbowError('approvalsQueryFunction: '), {
       message: (e as Error)?.message,

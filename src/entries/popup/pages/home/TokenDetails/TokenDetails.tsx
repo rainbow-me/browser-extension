@@ -336,7 +336,7 @@ export function TokenDetails() {
   const navigate = useRainbowNavigate();
   const token = userAsset || customAsset;
 
-  const { data: approvalsData } = useApprovals(
+  const { data: approvals } = useApprovals(
     {
       address: currentAddress,
       chainIds: [Number(token?.chainId) as ChainId],
@@ -346,10 +346,10 @@ export function TokenDetails() {
       enabled: !!Number(token?.chainId),
       select: (data) => {
         if (data) {
-          const tokenApprovals = data.payload.filter((approval) =>
+          const tokenApprovals = data.filter((approval) =>
             isLowerCaseMatch(approval.asset.asset_code, token?.address),
           );
-          return { meta: data?.meta, payload: tokenApprovals };
+          return tokenApprovals;
         }
         return null;
       },
@@ -409,8 +409,6 @@ export function TokenDetails() {
     symbol: token.symbol,
   };
   const tokenNativeBalance = formatCurrencyParts(token.native.balance.amount);
-
-  const approvals = approvalsData?.payload || [];
 
   const tokenApprovals = approvals
     ?.map((approval) =>
@@ -479,7 +477,7 @@ export function TokenDetails() {
           paddingHorizontal="20px"
           paddingVertical="24px"
         >
-          {approvals.length ? (
+          {approvals?.length ? (
             <Box
               background="surfaceSecondaryElevated"
               padding="16px"
