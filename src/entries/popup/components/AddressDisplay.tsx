@@ -146,7 +146,7 @@ const ContractDisplay = ({
   chainId?: ChainId;
 }) => {
   return (
-    <Inline space="6px" alignVertical="center">
+    <Inline space="6px" alignVertical="center" wrap={false}>
       {!hideAvatar && <AddressIcon iconUrl={iconUrl} address={address} />}
       <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
         {name}
