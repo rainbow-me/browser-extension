@@ -14,6 +14,7 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { populateRevokeApproval } from '~/core/raps/actions/unlock';
+import { shortcuts } from '~/core/references/shortcuts';
 import {
   Approval,
   ApprovalSpender,
@@ -55,6 +56,7 @@ import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { ApprovalFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { isLedgerConnectionError } from '~/entries/popup/handlers/ledger';
 import { getWallet, sendTransaction } from '~/entries/popup/handlers/wallet';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -249,6 +251,16 @@ export const RevokeApprovalSheet = ({
       clearCustomGasModified();
     }
   }, [clearCustomGasModified, previousShow, show]);
+
+  useKeyboardShortcut({
+    condition: () => !!show,
+    handler: (e: KeyboardEvent) => {
+      e.preventDefault();
+      if (e.key === shortcuts.global.CLOSE.key) {
+        onCancel();
+      }
+    },
+  });
 
   return (
     <BottomSheet

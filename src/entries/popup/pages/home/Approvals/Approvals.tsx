@@ -60,7 +60,6 @@ import { gradientBorderDark, gradientBorderLight } from '../NFTs/NFTs.css';
 import { RevokeApprovalSheet } from './RevokeApprovalSheet';
 
 type Tab = 'tokens' | 'nfts';
-
 type SortType = 'recent' | 'alphabetical';
 
 const SortDropdown = ({
@@ -158,11 +157,7 @@ const SortDropdown = ({
                     <Symbol size={12} symbol="list.bullet" weight="semibold" />
                   }
                   centerComponent={
-                    <Text
-                      size="14pt"
-                      weight="semibold"
-                      testId={'nfts-sort-option-abc'}
-                    >
+                    <Text size="14pt" weight="semibold">
                       {i18n.t('nfts.sort_option_abc_long')}
                     </Text>
                   }
@@ -462,7 +457,7 @@ export const TokenApprovalContextMenu = ({
           onSelect={() =>
             copy({
               value: spender.contract_address,
-              title: 'Spender Address Copied',
+              title: i18n.t('approvals.spender_address_copied'),
               description: truncateAddress(spender.contract_address),
             })
           }
@@ -470,7 +465,7 @@ export const TokenApprovalContextMenu = ({
           <Box ref={copySpenderRef}>
             <Stack space="8px">
               <Text size="14pt" weight="semibold">
-                {'Copy Spender'}
+                {i18n.t('approvals.copy_spender')}
               </Text>
               <TextOverflow size="11pt" color="labelTertiary" weight="medium">
                 {truncateAddress(spender.contract_address)}
