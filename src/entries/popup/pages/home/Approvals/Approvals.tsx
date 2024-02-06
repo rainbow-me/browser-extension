@@ -191,60 +191,87 @@ function ApprovalHeader({
   onSelectTab: (tab: Tab) => void;
 }) {
   return (
-    <Inset bottom="20px" top="8px">
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        paddingHorizontal="20px"
-        style={{
-          maxHeight: 11,
-          textTransform: 'capitalize',
-        }}
-        width="full"
-        alignItems="center"
-      >
-        <Inline alignVertical="bottom" space="16px">
-          <Box onClick={() => onSelectTab?.('tokens')}>
-            <Inline space="5px" alignVertical="center">
-              <Symbol
-                symbol="circlebadge.2.fill"
-                weight="regular"
-                size={12}
-                color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-              />
-              <Text
-                size="16pt"
-                weight="heavy"
-                color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-              >
-                {i18n.t(`tabs.tokens`)}
-              </Text>
-            </Inline>
-          </Box>
-          <Box onClick={() => onSelectTab?.('nfts')}>
-            <Inline space="5px" alignVertical="center">
-              <Symbol
-                symbol="square.grid.2x2.fill"
-                weight="regular"
-                size={12}
-                color={activeTab === 'nfts' ? 'label' : 'labelTertiary'}
-              />
-              <Text
-                size="16pt"
-                weight="heavy"
-                color={activeTab === 'nfts' ? 'label' : 'labelTertiary'}
-              >
-                {i18n.t(`tabs.nfts`)}
-              </Text>
-            </Inline>
-          </Box>
-        </Inline>
+    <Box
+      background="surfacePrimaryElevatedSecondary"
+      borderBottomWidth="1px"
+      borderColor="separatorTertiary"
+    >
+      <Inset top="8px">
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          paddingHorizontal="20px"
+          width="full"
+          alignItems="center"
+        >
+          <Inline alignVertical="bottom" space="16px">
+            <Box onClick={() => onSelectTab?.('tokens')}>
+              <Stack space="9px">
+                <Box paddingVertical="4px">
+                  <Inline space="5px" alignVertical="center">
+                    <Symbol
+                      symbol="circlebadge.2.fill"
+                      weight="regular"
+                      size={12}
+                      color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
+                    />
+                    <Text
+                      size="16pt"
+                      weight="heavy"
+                      color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
+                    >
+                      {i18n.t(`tabs.tokens`)}
+                    </Text>
+                  </Inline>
+                </Box>
 
-        <Inline alignVertical="center" space="8px">
-          <SortDropdown sort={sort} setSort={setSort} />
-        </Inline>
-      </Box>
-    </Inset>
+                <Box
+                  style={{
+                    borderRadius: '3px 3px 0 0',
+                    width: '100%',
+                    height: '1px',
+                    backgroundColor: activeTab === 'tokens' ? 'red' : '',
+                  }}
+                />
+              </Stack>
+            </Box>
+            <Box onClick={() => onSelectTab?.('nfts')}>
+              <Stack space="9px">
+                <Box paddingVertical="4px">
+                  <Inline space="5px" alignVertical="center">
+                    <Symbol
+                      symbol="square.grid.2x2.fill"
+                      weight="regular"
+                      size={12}
+                      color={activeTab === 'nfts' ? 'label' : 'labelTertiary'}
+                    />
+                    <Text
+                      size="16pt"
+                      weight="heavy"
+                      color={activeTab === 'nfts' ? 'label' : 'labelTertiary'}
+                    >
+                      {i18n.t(`tabs.nfts`)}
+                    </Text>
+                  </Inline>
+                </Box>
+                <Box
+                  style={{
+                    borderRadius: '3px 3px 0 0',
+                    width: '100%',
+                    height: '1px',
+                    backgroundColor: activeTab === 'nfts' ? 'red' : '',
+                  }}
+                />
+              </Stack>
+            </Box>
+          </Inline>
+
+          <Box marginTop="-8px">
+            <SortDropdown sort={sort} setSort={setSort} />
+          </Box>
+        </Box>
+      </Inset>
+    </Box>
   );
 }
 
@@ -327,22 +354,24 @@ export const Approvals = () => {
           setSort={setSort}
           onSelectTab={setActiveTab}
         />
-        <Stack space="16px">
-          <Rows alignVertical="top">
-            {tokenApprovals?.map((tokenApproval, i) => (
-              <Row height="content" key={i}>
-                <TokenApproval
-                  approval={tokenApproval.approval}
-                  spender={tokenApproval.spender}
-                  onRevoke={() => {
-                    setRevokeApproval(tokenApproval);
-                    setShowRevokeSheet(true);
-                  }}
-                />
-              </Row>
-            ))}
-          </Rows>
-        </Stack>
+        <Inset top="8px">
+          <Stack space="16px">
+            <Rows alignVertical="top">
+              {tokenApprovals?.map((tokenApproval, i) => (
+                <Row height="content" key={i}>
+                  <TokenApproval
+                    approval={tokenApproval.approval}
+                    spender={tokenApproval.spender}
+                    onRevoke={() => {
+                      setRevokeApproval(tokenApproval);
+                      setShowRevokeSheet(true);
+                    }}
+                  />
+                </Row>
+              ))}
+            </Rows>
+          </Stack>
+        </Inset>
       </Box>
       <RevokeApprovalSheet
         show={showRevokeSheet}
@@ -473,7 +502,7 @@ export const TokenApprovalContextMenu = ({
             >
               <Box ref={revokeRef}>
                 <Text size="14pt" weight="semibold" color="red">
-                  {i18n.t('approvals.revoke_approvals')}
+                  {i18n.t('approvals.revoke_approval')}
                 </Text>
               </Box>
             </MenuItem>

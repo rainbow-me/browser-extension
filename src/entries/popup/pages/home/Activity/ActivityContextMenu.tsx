@@ -8,7 +8,6 @@ import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
-import { isLowerCaseMatch } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
@@ -35,15 +34,6 @@ export function ActivityContextMenu({
   const { setSelectedTransaction } = useSelectedTransactionStore();
   // need to control this manually so that menu closes when sheet appears
   const [open, setOpen] = useState(false);
-
-  if (
-    isLowerCaseMatch(
-      transaction.hash,
-      '0xceb41359f0c2c603bb87a507292461e15bc75827761caae087ddc6f4d0a342ea',
-    )
-  ) {
-    console.log('approve open', open);
-  }
 
   const truncatedHash = truncateAddress(transaction.hash);
 

@@ -214,6 +214,7 @@ const ROUTE_DATA = [
       <AnimatedRoute
         direction="up"
         navbar
+        navbarBackground="surfacePrimaryElevatedSecondary"
         navbarIcon="ex"
         title={i18n.t('approvals.title')}
         protectedRoute

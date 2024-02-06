@@ -565,9 +565,9 @@
     "title": "Approvals",
     "unlimited": "Unlimited",
     "no_allowance": "No Allowance",
-    "revoke_approvals": "Revoke Approvals",
+    "revoke_approval": "Revoke Approval",
     "revoke": {
-      "title": "Review & Revoke",
+      "title": "Revoke Approval",
       "action": "Revoke",
       "cancel": "Cancel",
       "allowance": "Allowance",
