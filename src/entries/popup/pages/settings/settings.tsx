@@ -199,6 +199,40 @@ export function Settings() {
               />
             }
           />
+          <MenuItem
+            first
+            hasRightArrow
+            leftComponent={
+              <Symbol
+                symbol="bolt.fill"
+                color="red"
+                weight="semibold"
+                size={18}
+              />
+            }
+            onClick={() => navigate(ROUTES.SETTINGS__TRANSACTIONS)}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.transactions.title')} />
+            }
+            testId="settings-transactions"
+          />
+          <MenuItem
+            first
+            hasRightArrow
+            leftComponent={
+              <Symbol
+                symbol="checkmark.seal.fill"
+                color="yellow"
+                weight="semibold"
+                size={18}
+              />
+            }
+            onClick={() => navigate(ROUTES.SETTINGS__APPROVALS)}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.approvals.title')} />
+            }
+            testId="settings-approvals"
+          />
         </Menu>
         <Menu>
           <MenuItem
@@ -219,23 +253,7 @@ export function Settings() {
               <MenuItem.Title text={i18n.t('settings.networks.title')} />
             }
           />
-          <MenuItem
-            first
-            hasRightArrow
-            leftComponent={
-              <Symbol
-                symbol="bolt.fill"
-                color="red"
-                weight="semibold"
-                size={18}
-              />
-            }
-            onClick={() => navigate(ROUTES.SETTINGS__TRANSACTIONS)}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.transactions.title')} />
-            }
-            testId="settings-transactions"
-          />
+
           <MenuItem
             testId={'currency-selection'}
             hasRightArrow

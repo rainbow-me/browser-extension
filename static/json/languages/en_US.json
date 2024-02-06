@@ -247,6 +247,9 @@
       "clear_transactions_and_nonces_success": "Pending transactions cleared",
       "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures."
     },
+    "approvals": {
+      "title": "Approvals"
+    },
     "currency": {
       "title": "Currency",
       "ETH": "Ethereum",

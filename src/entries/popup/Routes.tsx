@@ -195,7 +195,7 @@ const ROUTE_DATA = [
     ),
   },
   {
-    path: ROUTES.APPROVALS,
+    path: ROUTES.CONNECTED,
     element: (
       <AnimatedRoute
         direction="up"
@@ -205,21 +205,6 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <ConnectedApps />
-      </AnimatedRoute>
-    ),
-  },
-  {
-    path: ROUTES.CONNECTED,
-    element: (
-      <AnimatedRoute
-        direction="up"
-        navbar
-        navbarBackground="surfacePrimaryElevatedSecondary"
-        navbarIcon="ex"
-        title={i18n.t('approvals.title')}
-        protectedRoute
-      >
-        <Approvals />
       </AnimatedRoute>
     ),
   },
@@ -513,6 +498,21 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <Settings />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__APPROVALS,
+    element: (
+      <AnimatedRoute
+        direction="up"
+        navbar
+        navbarBackground="surfacePrimaryElevatedSecondary"
+        navbarIcon="ex"
+        title={i18n.t('approvals.title')}
+        protectedRoute
+      >
+        <Approvals />
       </AnimatedRoute>
     ),
   },

@@ -15,7 +15,6 @@ export const ROUTES = {
   POINTS_ONBOARDING: '/home/points-onboarding',
   POINTS_WEEKLY_OVERVIEW: '/home/points-weekly-overview',
   CONNECTED: '/connected', // ConnectedApps
-  APPROVALS: '/approvals', // Approvals
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect
   WATCH: '/watch', // WatchWallet
@@ -32,6 +31,7 @@ export const ROUTES = {
   SETTINGS: '/settings', // Settings
   QR_CODE: '/qr-code', // QR Code
   SETTINGS__NETWORKS: '/settings/networks', // Networks
+  SETTINGS__APPROVALS: '/settings/approvals', // Approvals
   SETTINGS__NETWORKS__RPCS: '/settings/networks/rpcs', // RPCs per network
   SETTINGS__NETWORKS__CUSTOM_RPC: '/settings/networks/custom-chain', // Networks Custom Chain
   SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS:
