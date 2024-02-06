@@ -568,6 +568,7 @@
     "revoke_approval": "Revoke Approval",
     "copy_spender":"Copy Spender",
     "spender_address_copied": "Spender Address Copied",
+    "revoked_approvals": "Revoked Approvals",
     "revoke": {
       "title": "Revoke Approval",
       "action": "Revoke",

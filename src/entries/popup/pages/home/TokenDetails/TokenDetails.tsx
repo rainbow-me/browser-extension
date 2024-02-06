@@ -538,7 +538,8 @@ export function TokenDetails() {
                         <TokenApprovalContextMenu
                           type="dropdown"
                           chainId={token.chainId}
-                          spender={approval.spender}
+                          txHash={approval.spender.tx_hash}
+                          contractAddress={approval.spender.contract_address}
                           onRevokeApproval={() => {
                             triggerRevokeApproval({
                               show: true,

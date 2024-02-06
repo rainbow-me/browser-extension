@@ -1,5 +1,5 @@
-import { ReactNode, useCallback, useRef, useState } from 'react';
-import { Chain } from 'wagmi';
+import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { Address, Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
@@ -9,10 +9,13 @@ import {
   ApprovalSpender,
   useApprovals,
 } from '~/core/resources/approvals/approvals';
+import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
+import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { parseUserAsset } from '~/core/utils/assets';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
@@ -294,10 +297,32 @@ export const Approvals = () => {
     approval: Approval | null;
     spender: ApprovalSpender | null;
   }>({ approval: null, spender: null });
-
+  const { testnetMode } = useTestnetModeStore();
+  const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
   const [sort, setSort] = useState<SortType>('recent');
   const [activeTab, setActiveTab] = useState<Tab>('tokens');
-  const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
+
+  const { data } = useConsolidatedTransactions({
+    address: currentAddress,
+    currency: currentCurrency,
+    userChainIds: supportedMainnetIds,
+    testnetMode,
+  });
+
+  const revokeTransactions = useMemo(
+    () =>
+      data?.pages
+        .map((p) => p.transactions)
+        .flat()
+        .filter(
+          (tx) =>
+            tx.type === 'revoke' &&
+            (activeTab === 'nfts'
+              ? tx.asset?.type === 'nft'
+              : tx.asset?.type !== 'nft'),
+        ),
+    [activeTab, data?.pages],
+  );
 
   const chainIds = rainbowChains
     .filter((c) => supportedMainnetIds.includes(c.id) && userChains[c.id])
@@ -347,8 +372,8 @@ export const Approvals = () => {
           setSort={setSort}
           onSelectTab={setActiveTab}
         />
-        <Inset top="8px">
-          <Stack space="16px">
+        <Stack space="16px">
+          <Inset top="8px">
             <Rows alignVertical="top">
               {tokenApprovals?.map((tokenApproval, i) => (
                 <Row height="content" key={i}>
@@ -363,8 +388,26 @@ export const Approvals = () => {
                 </Row>
               ))}
             </Rows>
-          </Stack>
-        </Inset>
+          </Inset>
+          {revokeTransactions?.length ? (
+            <Inset bottom="8px">
+              <Stack space="8px">
+                <Box paddingHorizontal="20px">
+                  <Text color="labelTertiary" size="14pt" weight="semibold">
+                    {i18n.t('approvals.revoked_approvals')}
+                  </Text>
+                </Box>
+                <Rows alignVertical="top">
+                  {revokeTransactions?.map((revokeTransaction, i) => (
+                    <Row height="content" key={i}>
+                      <TokenRevoke transaction={revokeTransaction} />
+                    </Row>
+                  ))}
+                </Rows>
+              </Stack>
+            </Inset>
+          ) : null}
+        </Stack>
       </Box>
       <RevokeApprovalSheet
         show={showRevokeSheet}
@@ -399,18 +442,20 @@ const getMenuComponents = ({ type }: { type: 'dropdown' | 'context' }) => {
 };
 
 export const TokenApprovalContextMenu = ({
-  chainId,
-  spender,
+  chainId = ChainId.mainnet,
+  txHash,
+  contractAddress,
   children,
   type = 'context',
   onTrigger,
   onRevokeApproval,
 }: {
-  chainId: ChainId;
-  spender: ApprovalSpender;
+  chainId?: ChainId;
+  txHash?: TxHash;
+  contractAddress?: Address;
   children: ReactNode;
   type?: 'dropdown' | 'context';
-  onRevokeApproval: () => void;
+  onRevokeApproval?: () => void;
   onTrigger?: () => void;
 }) => {
   const copySpenderRef = useRef<HTMLDivElement>(null);
@@ -420,7 +465,7 @@ export const TokenApprovalContextMenu = ({
   const explorerHost = getBlockExplorerName(chainId);
   const explorer =
     getBlockExplorerHostForChain(chainId || ChainId.mainnet) || '';
-  const explorerUrl = getTxExplorerUrl(explorer, spender.tx_hash);
+  const explorerUrl = getTxExplorerUrl(explorer, txHash);
 
   const [tokenContextMenuOpen, setTokenContextMenuOpen] = useState(false);
   useKeyboardShortcut({
@@ -454,9 +499,9 @@ export const TokenApprovalContextMenu = ({
           shortcut={shortcuts.activity.COPY_TRANSACTION.display}
           onSelect={() =>
             copy({
-              value: spender.contract_address,
+              value: contractAddress || '',
               title: i18n.t('approvals.spender_address_copied'),
-              description: truncateAddress(spender.contract_address),
+              description: truncateAddress(contractAddress),
             })
           }
         >
@@ -466,7 +511,7 @@ export const TokenApprovalContextMenu = ({
                 {i18n.t('approvals.copy_spender')}
               </Text>
               <TextOverflow size="11pt" color="labelTertiary" weight="medium">
-                {truncateAddress(spender.contract_address)}
+                {truncateAddress(contractAddress)}
               </TextOverflow>
             </Stack>
           </Box>
@@ -484,21 +529,25 @@ export const TokenApprovalContextMenu = ({
                 </Text>
               </Box>
             </MenuItem>
-            <Box paddingVertical="4px">
-              <Separator color="separatorSecondary" />
-            </Box>
-            <MenuItem
-              color="red"
-              symbolLeft="xmark.circle.fill"
-              onSelect={onRevokeApproval}
-              shortcut={shortcuts.activity.REFRESH_TRANSACTIONS.display}
-            >
-              <Box ref={revokeRef}>
-                <Text size="14pt" weight="semibold" color="red">
-                  {i18n.t('approvals.revoke_approval')}
-                </Text>
-              </Box>
-            </MenuItem>
+            {onRevokeApproval ? (
+              <>
+                <Box paddingVertical="4px">
+                  <Separator color="separatorSecondary" />
+                </Box>
+                <MenuItem
+                  color="red"
+                  symbolLeft="xmark.circle.fill"
+                  onSelect={onRevokeApproval}
+                  shortcut={shortcuts.activity.REFRESH_TRANSACTIONS.display}
+                >
+                  <Box ref={revokeRef}>
+                    <Text size="14pt" weight="semibold" color="red">
+                      {i18n.t('approvals.revoke_approval')}
+                    </Text>
+                  </Box>
+                </MenuItem>
+              </>
+            ) : null}
           </>
         )}
       </MenuContent>
@@ -525,7 +574,8 @@ const TokenApproval = ({
   return (
     <TokenApprovalContextMenu
       chainId={approval.chain_id}
-      spender={spender}
+      txHash={spender.tx_hash}
+      contractAddress={spender.contract_address}
       onRevokeApproval={onRevoke}
     >
       <Box
@@ -617,6 +667,77 @@ const TokenApproval = ({
                     </TextOverflow>
                   </Box>
                 )}
+              </Column>
+            </Columns>
+          </Inset>
+        </Box>
+      </Box>
+    </TokenApprovalContextMenu>
+  );
+};
+
+const TokenRevoke = ({ transaction }: { transaction?: RainbowTransaction }) => {
+  return (
+    <TokenApprovalContextMenu
+      chainId={transaction?.chainId}
+      txHash={transaction?.hash}
+      contractAddress={transaction?.to}
+    >
+      <Box paddingHorizontal="8px">
+        <Box
+          background={{
+            default: 'transparent',
+            hover: 'surfacePrimaryElevatedSecondary',
+          }}
+          borderRadius="12px"
+        >
+          <Inset horizontal="12px" vertical="8px">
+            <Columns alignVertical="center" space="4px">
+              <Column>
+                <Columns space="8px" alignVertical="center">
+                  <Column width="content">
+                    <CoinIcon asset={transaction?.asset} badge />
+                  </Column>
+                  <Column>
+                    <Stack space="8px">
+                      <TextOverflow
+                        align="left"
+                        size="14pt"
+                        weight="semibold"
+                        color="label"
+                      >
+                        {transaction?.asset?.name}
+                      </TextOverflow>
+
+                      <TextOverflow
+                        align="left"
+                        size="12pt"
+                        weight="semibold"
+                        color="label"
+                      >
+                        {truncateAddress(transaction?.to)}
+                      </TextOverflow>
+                    </Stack>
+                  </Column>
+                </Columns>
+              </Column>
+              <Column width="content">
+                <Box
+                  paddingVertical="5px"
+                  paddingHorizontal="6px"
+                  borderRadius="6px"
+                  borderDashedWidth="1px"
+                  borderColor="separatorSecondary"
+                >
+                  <TextOverflow
+                    align="center"
+                    size="11pt"
+                    weight="semibold"
+                    color="labelTertiary"
+                  >
+                    {`Unlimited`}
+                  </TextOverflow>
+                </Box>
               </Column>
             </Columns>
           </Inset>
