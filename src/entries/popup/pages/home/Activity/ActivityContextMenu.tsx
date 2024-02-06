@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -8,18 +8,19 @@ import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import {
+  ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../../../components/ContextMenu/ContextMenu';
-import { DetailsMenuWrapper } from '../../../components/DetailsMenu';
 
 export function ActivityContextMenu({
   children,
@@ -30,11 +31,19 @@ export function ActivityContextMenu({
   transaction: RainbowTransaction;
   onRevokeTransaction?: () => void;
 }) {
-  const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
+  const { setCurrentHomeSheet } = useCurrentHomeSheetStore();
   const { setSelectedTransaction } = useSelectedTransactionStore();
   // need to control this manually so that menu closes when sheet appears
-  const [closed, setClosed] = useState(false);
-  const onOpenChange = () => setClosed(false);
+  const [open, setOpen] = useState(false);
+
+  if (
+    isLowerCaseMatch(
+      transaction.hash,
+      '0xceb41359f0c2c603bb87a507292461e15bc75827761caae087ddc6f4d0a342ea',
+    )
+  ) {
+    console.log('approve open', open);
+  }
 
   const truncatedHash = truncateAddress(transaction.hash);
 
@@ -53,12 +62,10 @@ export function ActivityContextMenu({
 
   const onSpeedUp = () => {
     setCurrentHomeSheet('speedUp');
-    setClosed(true);
   };
 
   const onCancel = () => {
     setCurrentHomeSheet('cancel');
-    setClosed(true);
   };
 
   const onTrigger = useCallback(
@@ -66,14 +73,8 @@ export function ActivityContextMenu({
     [transaction, setSelectedTransaction],
   );
 
-  useEffect(() => {
-    if (sheet !== 'none') {
-      setClosed(true);
-    }
-  }, [sheet]);
-
   useKeyboardShortcut({
-    condition: () => !closed,
+    condition: () => !!open,
     handler: (e: KeyboardEvent) => {
       e.preventDefault();
       if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
@@ -83,7 +84,7 @@ export function ActivityContextMenu({
   });
 
   return (
-    <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
+    <ContextMenu onOpenChange={setOpen}>
       <ContextMenuTrigger onTrigger={onTrigger}>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {transaction?.status === 'pending' && (
@@ -146,6 +147,6 @@ export function ActivityContextMenu({
           </ContextMenuItem>
         ) : null}
       </ContextMenuContent>
-    </DetailsMenuWrapper>
+    </ContextMenu>
   );
 }

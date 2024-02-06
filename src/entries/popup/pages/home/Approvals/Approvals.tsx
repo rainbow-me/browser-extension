@@ -349,6 +349,7 @@ export const Approvals = () => {
         approval={revokeApproval.approval}
         spender={revokeApproval.spender}
         onCancel={() => setShowRevokeSheet(false)}
+        onRevoke={() => setShowRevokeSheet(false)}
       />
     </Box>
   );

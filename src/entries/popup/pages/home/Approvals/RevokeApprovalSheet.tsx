@@ -69,14 +69,15 @@ export const RevokeApprovalSheet = ({
   show,
   approval,
   spender,
+  onRevoke,
   onCancel,
 }: {
   show: boolean;
   approval?: Approval | null;
   spender?: ApprovalSpender | null;
+  onRevoke: () => void;
   onCancel: () => void;
 }) => {
-  console.log('in rvoke approval sheet', show, approval, spender);
   const { currentAddress } = useCurrentAddressStore();
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
@@ -203,6 +204,7 @@ export const RevokeApprovalSheet = ({
           transaction,
         });
         playSound('SendSound');
+        onRevoke();
         navigate(ROUTES.HOME, {
           state: { tab: 'activity' },
         });
@@ -238,6 +240,7 @@ export const RevokeApprovalSheet = ({
     currentCurrency,
     flashbotsEnabledGlobally,
     selectedGas.transactionGasParams,
+    onRevoke,
     navigate,
   ]);
 

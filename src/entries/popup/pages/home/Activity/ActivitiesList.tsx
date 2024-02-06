@@ -104,6 +104,14 @@ export function Activities() {
 
   const isRevokableTransaction = useCallback(
     (tx: RainbowTransaction) => {
+      if (
+        isLowerCaseMatch(
+          tx.hash,
+          '0xe5d464d5d345469c8a241f48b709f82537b1e11b2356d99e54bf5a5dc410b37f',
+        )
+      ) {
+        console.log('tx', tx.type);
+      }
       if (tx.type === 'approve') {
         const txApproval = tokenApprovals.find((approval) =>
           isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
@@ -229,9 +237,7 @@ function ActivityRow({
     <Lens borderRadius="12px" marginHorizontal="-12px" forceAvatarColor>
       <ActivityContextMenu
         transaction={transaction}
-        onRevokeTransaction={() => {
-          onRevokeTransaction?.();
-        }}
+        onRevokeTransaction={onRevokeTransaction}
       >
         <Box
           style={{ height: '52px' }}

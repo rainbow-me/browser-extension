@@ -22,6 +22,7 @@ export const RevokeApproval = () => {
       show={approvalToRevoke?.show || false}
       approval={approvalToRevoke?.approval?.approval}
       spender={approvalToRevoke?.approval?.spender}
+      onRevoke={() => setApprovalToRevoke({ show: false, approval: null })}
       onCancel={() => setApprovalToRevoke({ show: false, approval: null })}
     />
   );
