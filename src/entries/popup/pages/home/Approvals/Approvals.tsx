@@ -228,8 +228,8 @@ function ApprovalHeader({
                     borderRadius: '3px 3px 0 0',
                     width: '100%',
                     height: '1px',
-                    backgroundColor: activeTab === 'tokens' ? 'red' : '',
                   }}
+                  background={activeTab === 'tokens' ? 'accent' : undefined}
                 />
               </Stack>
             </Box>
@@ -257,8 +257,8 @@ function ApprovalHeader({
                     borderRadius: '3px 3px 0 0',
                     width: '100%',
                     height: '1px',
-                    backgroundColor: activeTab === 'nfts' ? 'red' : '',
                   }}
+                  background={activeTab === 'nfts' ? 'accent' : undefined}
                 />
               </Stack>
             </Box>
