@@ -137,39 +137,27 @@ export const chainNameToIdMapping: {
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
 };
 
-export const chainIdToNameMapping: {
-  [key in ChainId]: ChainName;
-} = {
-  [ChainId.arbitrum]: ChainName.arbitrum,
-  [ChainId.arbitrumSepolia]: ChainName.arbitrumSepolia,
-  [ChainId.base]: ChainName.base,
-  [ChainId.bsc]: ChainName.bsc,
-  [ChainId.optimism]: ChainName.optimism,
-  [ChainId.polygon]: ChainName.polygon,
-  [ChainId.zora]: ChainName.zora,
-  [ChainId.mainnet]: ChainName.mainnet,
-  [ChainId.holesky]: ChainName.holesky,
-  [ChainId.hardhat]: ChainName.hardhat,
-  [ChainId.hardhatOptimism]: ChainName.hardhatOptimism,
-  [ChainId.goerli]: ChainName.goerli,
-  [ChainId.sepolia]: ChainName.sepolia,
-  [ChainId.optimismGoerli]: ChainName.optimismGoerli,
-  [ChainId.optimismSepolia]: ChainName.optimismSepolia,
-  [ChainId.bscTestnet]: ChainName.bscTestnet,
-  [ChainId.polygonMumbai]: ChainName.polygonMumbai,
-  [ChainId.arbitrumGoerli]: ChainName.arbitrumGoerli,
-  [ChainId.baseGoerli]: ChainName.baseGoerli,
-  [ChainId.baseSepolia]: ChainName.baseSepolia,
-  [ChainId.zoraTestnet]: ChainName.zoraTestnet,
-  [ChainId.zoraSepolia]: ChainName.zoraSepolia,
-};
+export const chainIdToNameMapping = Object.entries(chainNameToIdMapping).reduce(
+  (res, [key, value]) => {
+    res[value as ChainId] = key as ChainName;
+    return res;
+  },
+  {} as Record<ChainId, ChainName>,
+) as { [key in ChainId]: ChainName };
 
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
+  [ChainId.arbitrumNova]: chain.arbitrumNova.name,
+  [ChainId.avalanche]: chain.avalanche.name,
   [ChainId.base]: 'Base',
   [ChainId.bsc]: 'BSC',
+  [ChainId.celo]: chain.celo.name,
+  [ChainId.linea]: 'Linea',
+  [ChainId.manta]: 'Manta',
   [ChainId.optimism]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
+  [ChainId.polygonZkEvm]: chain.polygonZkEvm.name,
+  [ChainId.scroll]: chain.scroll.name,
   [ChainId.zora]: 'Zora',
   [ChainId.mainnet]: 'Ethereum',
   [ChainId.hardhat]: 'Hardhat',
