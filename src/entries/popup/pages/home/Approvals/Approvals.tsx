@@ -57,6 +57,7 @@ import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow'
 import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
+import { simulateContextClick } from '~/entries/popup/utils/simulateClick';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { useRainbowChains } from '../../../hooks/useRainbowChains';
@@ -206,65 +207,74 @@ function ApprovalHeader({
           alignItems="center"
         >
           <Inline alignVertical="bottom" space="16px">
-            <Box onClick={() => onSelectTab?.('tokens')}>
-              <Stack space="9px">
-                <Box paddingVertical="4px">
-                  <Inline space="5px" alignVertical="center">
-                    <Symbol
-                      symbol="circlebadge.2.fill"
-                      weight="regular"
-                      size={12}
-                      color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-                    />
-                    <Text
-                      size="16pt"
-                      weight="heavy"
-                      color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-                    >
-                      {i18n.t(`tabs.tokens`)}
-                    </Text>
-                  </Inline>
-                </Box>
+            <Lens borderRadius="2px" onClick={() => onSelectTab?.('tokens')}>
+              <Box onClick={() => onSelectTab?.('tokens')}>
+                <Stack space="9px">
+                  <Box paddingVertical="4px">
+                    <Inline space="5px" alignVertical="center">
+                      <Symbol
+                        symbol="circlebadge.2.fill"
+                        weight="regular"
+                        size={12}
+                        color={
+                          activeTab === 'tokens' ? 'label' : 'labelTertiary'
+                        }
+                      />
+                      <Text
+                        size="16pt"
+                        weight="heavy"
+                        color={
+                          activeTab === 'tokens' ? 'label' : 'labelTertiary'
+                        }
+                      >
+                        {i18n.t(`tabs.tokens`)}
+                      </Text>
+                    </Inline>
+                  </Box>
 
-                <Box
-                  style={{
-                    borderRadius: '3px 3px 0 0',
-                    width: '100%',
-                    height: '1px',
-                  }}
-                  background={activeTab === 'tokens' ? 'accent' : undefined}
-                />
-              </Stack>
-            </Box>
-            <Box onClick={() => onSelectTab?.('nfts')}>
-              <Stack space="9px">
-                <Box paddingVertical="4px">
-                  <Inline space="5px" alignVertical="center">
-                    <Symbol
-                      symbol="square.grid.2x2.fill"
-                      weight="regular"
-                      size={12}
-                      color={activeTab === 'nfts' ? 'label' : 'labelTertiary'}
-                    />
-                    <Text
-                      size="16pt"
-                      weight="heavy"
-                      color={activeTab === 'nfts' ? 'label' : 'labelTertiary'}
-                    >
-                      {i18n.t(`tabs.nfts`)}
-                    </Text>
-                  </Inline>
-                </Box>
-                <Box
-                  style={{
-                    borderRadius: '3px 3px 0 0',
-                    width: '100%',
-                    height: '1px',
-                  }}
-                  background={activeTab === 'nfts' ? 'accent' : undefined}
-                />
-              </Stack>
-            </Box>
+                  <Box
+                    style={{
+                      borderRadius: '3px 3px 0 0',
+                      width: '100%',
+                      height: '1px',
+                    }}
+                    background={activeTab === 'tokens' ? 'accent' : undefined}
+                  />
+                </Stack>
+              </Box>
+            </Lens>
+
+            <Lens borderRadius="2px" onClick={() => onSelectTab?.('nfts')}>
+              <Box onClick={() => onSelectTab?.('nfts')}>
+                <Stack space="9px">
+                  <Box paddingVertical="4px">
+                    <Inline space="5px" alignVertical="center">
+                      <Symbol
+                        symbol="square.grid.2x2.fill"
+                        weight="regular"
+                        size={12}
+                        color={activeTab === 'nfts' ? 'label' : 'labelTertiary'}
+                      />
+                      <Text
+                        size="16pt"
+                        weight="heavy"
+                        color={activeTab === 'nfts' ? 'label' : 'labelTertiary'}
+                      >
+                        {i18n.t(`tabs.nfts`)}
+                      </Text>
+                    </Inline>
+                  </Box>
+                  <Box
+                    style={{
+                      borderRadius: '3px 3px 0 0',
+                      width: '100%',
+                      height: '1px',
+                    }}
+                    background={activeTab === 'nfts' ? 'accent' : undefined}
+                  />
+                </Stack>
+              </Box>
+            </Lens>
           </Inline>
 
           <Box marginTop="-8px">
@@ -612,6 +622,7 @@ const TokenApproval = ({
   onRevoke: () => void;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+  const triggerRef = useRef<HTMLDivElement>(null);
 
   return (
     <TokenApprovalContextMenu
@@ -621,73 +632,162 @@ const TokenApproval = ({
       onRevokeApproval={onRevoke}
     >
       <Box paddingHorizontal="8px">
-        <Box
-          className={'approval-row'}
-          background={{
-            default: 'transparent',
-            hover: 'surfacePrimaryElevatedSecondary',
-          }}
+        <Lens
           borderRadius="12px"
+          onClick={() => simulateContextClick(triggerRef?.current)}
         >
-          <Inset horizontal="12px" vertical="8px">
-            <Columns alignVertical="center" space="4px">
-              <Column>
-                <Columns space="8px" alignVertical="center">
-                  <Column width="content">
-                    <CoinIcon
-                      asset={parseUserAsset({
-                        asset: approval.asset,
-                        currency: currentCurrency,
-                        balance: '0',
-                      })}
-                      badge
-                    />
-                  </Column>
-                  <Column>
-                    <Stack space="8px">
-                      <TextOverflow
-                        align="left"
-                        size="14pt"
-                        weight="semibold"
-                        color="label"
-                      >
-                        {approval?.asset?.name}
-                      </TextOverflow>
+          <Box
+            ref={triggerRef}
+            className={'approval-row'}
+            background={{
+              default: 'transparent',
+              hover: 'surfacePrimaryElevatedSecondary',
+            }}
+            borderRadius="12px"
+          >
+            <Inset horizontal="12px" vertical="8px">
+              <Columns alignVertical="center" space="4px">
+                <Column>
+                  <Columns space="8px" alignVertical="center">
+                    <Column width="content">
+                      <CoinIcon
+                        asset={parseUserAsset({
+                          asset: approval.asset,
+                          currency: currentCurrency,
+                          balance: '0',
+                        })}
+                        badge
+                      />
+                    </Column>
+                    <Column>
+                      <Stack space="8px">
+                        <TextOverflow
+                          align="left"
+                          size="14pt"
+                          weight="semibold"
+                          color="label"
+                        >
+                          {approval?.asset?.name}
+                        </TextOverflow>
 
-                      <TextOverflow
-                        align="left"
-                        size="12pt"
-                        weight="semibold"
-                        color="label"
+                        <TextOverflow
+                          align="left"
+                          size="12pt"
+                          weight="semibold"
+                          color="label"
+                        >
+                          {`${
+                            spender.contract_name
+                              ? `${spender.contract_name} • `
+                              : ''
+                          } ${truncateAddress(spender.contract_address)}`}
+                        </TextOverflow>
+                      </Stack>
+                    </Column>
+                  </Columns>
+                </Column>
+                <Column width="content">
+                  <Box>
+                    <Box className={clsx(childAStyle)}>
+                      <Button
+                        color="red"
+                        height="28px"
+                        variant="plain"
+                        borderRadius="8px"
+                        onClick={onRevoke}
                       >
-                        {`${
-                          spender.contract_name
-                            ? `${spender.contract_name} • `
-                            : ''
-                        } ${truncateAddress(spender.contract_address)}`}
-                      </TextOverflow>
-                    </Stack>
-                  </Column>
-                </Columns>
-              </Column>
-              <Column width="content">
-                <Box>
-                  <Box className={clsx(childAStyle)}>
-                    <Button
-                      color="red"
-                      height="28px"
-                      variant="plain"
-                      borderRadius="8px"
-                      onClick={onRevoke}
+                        <Text size="14pt" weight="bold" color="label">
+                          {i18n.t('approvals.revoke.action')}
+                        </Text>
+                      </Button>
+                    </Box>
+
+                    <Box
+                      className={clsx(childBStyle)}
+                      paddingVertical="5px"
+                      paddingHorizontal="6px"
+                      borderRadius="6px"
+                      borderDashedWidth="1px"
+                      borderColor="separatorSecondary"
                     >
-                      <Text size="14pt" weight="bold" color="label">
-                        {i18n.t('approvals.revoke.action')}
-                      </Text>
-                    </Button>
+                      <TextOverflow
+                        align="center"
+                        size="11pt"
+                        weight="semibold"
+                        color="labelTertiary"
+                      >
+                        {spender?.quantity_allowed.toLowerCase() === 'unlimited'
+                          ? spender?.quantity_allowed
+                          : `${convertRawAmountToDecimalFormat(
+                              spender?.quantity_allowed || '0',
+                              approval?.asset.decimals,
+                            )} ${approval?.asset.symbol}`}
+                      </TextOverflow>
+                    </Box>
                   </Box>
+                </Column>
+              </Columns>
+            </Inset>
+          </Box>
+        </Lens>
+      </Box>
+    </TokenApprovalContextMenu>
+  );
+};
 
+const TokenRevoke = ({ transaction }: { transaction?: RainbowTransaction }) => {
+  const triggerRef = useRef<HTMLDivElement>(null);
+  return (
+    <TokenApprovalContextMenu
+      chainId={transaction?.chainId}
+      txHash={transaction?.hash}
+      contractAddress={transaction?.to}
+    >
+      <Box paddingHorizontal="8px">
+        <Lens
+          borderRadius="12px"
+          onClick={() => simulateContextClick(triggerRef?.current)}
+        >
+          <Box
+            ref={triggerRef}
+            background={{
+              default: 'transparent',
+              hover: 'surfacePrimaryElevatedSecondary',
+            }}
+            borderRadius="12px"
+          >
+            <Inset horizontal="12px" vertical="8px">
+              <Columns alignVertical="center" space="4px">
+                <Column>
+                  <Columns space="8px" alignVertical="center">
+                    <Column width="content">
+                      <CoinIcon asset={transaction?.asset} badge />
+                    </Column>
+                    <Column>
+                      <Stack space="8px">
+                        <TextOverflow
+                          align="left"
+                          size="14pt"
+                          weight="semibold"
+                          color="label"
+                        >
+                          {transaction?.asset?.name}
+                        </TextOverflow>
+
+                        <TextOverflow
+                          align="left"
+                          size="12pt"
+                          weight="semibold"
+                          color="label"
+                        >
+                          {truncateAddress(transaction?.to)}
+                        </TextOverflow>
+                      </Stack>
+                    </Column>
+                  </Columns>
+                </Column>
+                <Column width="content">
                   <Box
-                    className={clsx(childBStyle)}
                     paddingVertical="5px"
                     paddingHorizontal="6px"
                     borderRadius="6px"
@@ -700,90 +800,14 @@ const TokenApproval = ({
                       weight="semibold"
                       color="labelTertiary"
                     >
-                      {spender?.quantity_allowed.toLowerCase() === 'unlimited'
-                        ? spender?.quantity_allowed
-                        : `${convertRawAmountToDecimalFormat(
-                            spender?.quantity_allowed || '0',
-                            approval?.asset.decimals,
-                          )} ${approval?.asset.symbol}`}
+                      {i18n.t('approvals.unlimited')}
                     </TextOverflow>
                   </Box>
-                </Box>
-              </Column>
-            </Columns>
-          </Inset>
-        </Box>
-      </Box>
-    </TokenApprovalContextMenu>
-  );
-};
-
-const TokenRevoke = ({ transaction }: { transaction?: RainbowTransaction }) => {
-  return (
-    <TokenApprovalContextMenu
-      chainId={transaction?.chainId}
-      txHash={transaction?.hash}
-      contractAddress={transaction?.to}
-    >
-      <Box paddingHorizontal="8px">
-        <Box
-          background={{
-            default: 'transparent',
-            hover: 'surfacePrimaryElevatedSecondary',
-          }}
-          borderRadius="12px"
-        >
-          <Inset horizontal="12px" vertical="8px">
-            <Columns alignVertical="center" space="4px">
-              <Column>
-                <Columns space="8px" alignVertical="center">
-                  <Column width="content">
-                    <CoinIcon asset={transaction?.asset} badge />
-                  </Column>
-                  <Column>
-                    <Stack space="8px">
-                      <TextOverflow
-                        align="left"
-                        size="14pt"
-                        weight="semibold"
-                        color="label"
-                      >
-                        {transaction?.asset?.name}
-                      </TextOverflow>
-
-                      <TextOverflow
-                        align="left"
-                        size="12pt"
-                        weight="semibold"
-                        color="label"
-                      >
-                        {truncateAddress(transaction?.to)}
-                      </TextOverflow>
-                    </Stack>
-                  </Column>
-                </Columns>
-              </Column>
-              <Column width="content">
-                <Box
-                  paddingVertical="5px"
-                  paddingHorizontal="6px"
-                  borderRadius="6px"
-                  borderDashedWidth="1px"
-                  borderColor="separatorSecondary"
-                >
-                  <TextOverflow
-                    align="center"
-                    size="11pt"
-                    weight="semibold"
-                    color="labelTertiary"
-                  >
-                    {`Unlimited`}
-                  </TextOverflow>
-                </Box>
-              </Column>
-            </Columns>
-          </Inset>
-        </Box>
+                </Column>
+              </Columns>
+            </Inset>
+          </Box>
+        </Lens>
       </Box>
     </TokenApprovalContextMenu>
   );
