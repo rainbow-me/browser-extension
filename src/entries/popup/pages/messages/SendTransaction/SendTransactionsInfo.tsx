@@ -226,7 +226,7 @@ function TransactionDetails({
         <InfoRow
           symbol="calendar"
           label={i18n.t('simulation.contract_created_at')}
-          value={formatDate(contractCreatedAt)}
+          value={formatDate(+contractCreatedAt)}
         />
       )}
       <InfoRow
