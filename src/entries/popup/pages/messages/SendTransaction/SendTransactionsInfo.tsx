@@ -175,7 +175,7 @@ function TransactionDetails({
   simulation: TransactionSimulation | undefined;
   session: { address: Address; chainId: ChainId };
 }) {
-  const metaTo = simulation?.meta.to;
+  const metaTo = simulation?.meta.transferTo || simulation?.meta.to;
 
   const { getNonce } = useNonceStore();
   const { currentNonce: nonce } = getNonce(session) || {};

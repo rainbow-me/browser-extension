@@ -208,6 +208,14 @@ type SimulationMeta = {
     created: null;
     sourceCodeStatus: SourceCodeStatus;
   };
+  transferTo: {
+    address: Address;
+    name: string;
+    iconURL: string;
+    function: string;
+    created: null;
+    sourceCodeStatus: SourceCodeStatus;
+  };
 };
 
 type TransactionSimulationResponse = {
