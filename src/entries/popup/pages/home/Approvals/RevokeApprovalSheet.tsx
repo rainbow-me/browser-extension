@@ -315,7 +315,7 @@ export const RevokeApprovalSheet = ({
                   />
                 )}
                 <Inline space="4px" alignVertical="center">
-                  <Box style={{ maxWidth: 150 }}>
+                  <Box style={{ maxWidth: 140 }}>
                     <TextOverflow
                       weight="semibold"
                       size="12pt"
@@ -359,16 +359,18 @@ export const RevokeApprovalSheet = ({
               </Inline>
 
               <Inline space="4px" alignVertical="center">
-                <TextOverflow
-                  weight="semibold"
-                  size="12pt"
-                  color="labelSecondary"
-                >
-                  {spender?.contract_name ||
-                    truncateAddress(
-                      (spender?.contract_address || '') as Address,
-                    )}
-                </TextOverflow>
+                <Box style={{ maxWidth: 180 }}>
+                  <TextOverflow
+                    weight="semibold"
+                    size="12pt"
+                    color="labelSecondary"
+                  >
+                    {spender?.contract_name ||
+                      truncateAddress(
+                        (spender?.contract_address || '') as Address,
+                      )}
+                  </TextOverflow>
+                </Box>
 
                 {spender?.contract_address && (
                   <AddressMoreOptions
