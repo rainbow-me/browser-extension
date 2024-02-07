@@ -50,6 +50,7 @@ import {
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
@@ -505,6 +506,8 @@ export function ActivityDetails() {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { currentAddress } = useCurrentAddressStore();
   const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
+  const { isWatchingWallet } = useWallets();
+
   const { data: transaction, isLoading } = useTransaction({
     hash,
     chainId: Number(chainId),
@@ -568,7 +571,7 @@ export function ActivityDetails() {
             rightComponent={
               <MoreOptions
                 transaction={transaction}
-                revoke={!!approvalToRevoke}
+                revoke={!!approvalToRevoke && !isWatchingWallet}
                 onRevoke={onRevoke}
               />
             }

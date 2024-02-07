@@ -38,6 +38,7 @@ import { logger } from '~/logger';
 import packageJson from '../../../../../package.json';
 import { testSandbox } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
@@ -49,6 +50,7 @@ export function Settings() {
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
   const { soundsEnabled, toggleSoundsEnabled } = useSoundStore();
   const { featureFlags, setFeatureFlag } = useFeatureFlagsStore();
+  const { isWatchingWallet } = useWallets();
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
     useCurrentThemeStore();
@@ -216,23 +218,25 @@ export function Settings() {
             }
             testId="settings-transactions"
           />
-          <MenuItem
-            first
-            hasRightArrow
-            leftComponent={
-              <Symbol
-                symbol="checkmark.seal.fill"
-                color="yellow"
-                weight="semibold"
-                size={18}
-              />
-            }
-            onClick={() => navigate(ROUTES.SETTINGS__APPROVALS)}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.approvals.title')} />
-            }
-            testId="settings-approvals"
-          />
+          {isWatchingWallet ? null : (
+            <MenuItem
+              first
+              hasRightArrow
+              leftComponent={
+                <Symbol
+                  symbol="checkmark.seal.fill"
+                  color="yellow"
+                  weight="semibold"
+                  size={18}
+                />
+              }
+              onClick={() => navigate(ROUTES.SETTINGS__APPROVALS)}
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.approvals.title')} />
+              }
+              testId="settings-approvals"
+            />
+          )}
         </Menu>
         <Menu>
           <MenuItem

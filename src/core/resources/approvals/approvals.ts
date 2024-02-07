@@ -68,7 +68,7 @@ const approvalsQueryKey = ({
   createQueryKey(
     'approvals',
     { address, chainIds, currency },
-    { persisterVersion: 1 },
+    { persisterVersion: 2 },
   );
 
 type AprovalsQueryKey = ReturnType<typeof approvalsQueryKey>;

@@ -477,7 +477,7 @@ export function TokenDetails() {
           paddingHorizontal="20px"
           paddingVertical="24px"
         >
-          {approvals?.length ? (
+          {!isWatchingWallet && approvals?.length ? (
             <Box
               background="surfaceSecondaryElevated"
               padding="16px"
@@ -486,7 +486,7 @@ export function TokenDetails() {
               <Stack space="12px">
                 <Inline space="4px" alignVertical="center">
                   <Text size="14pt" weight="heavy" color="label">
-                    Token Approvals
+                    {i18n.t('token_details.approvals')}
                   </Text>
                   <ButtonSymbol
                     symbol="info.circle.fill"

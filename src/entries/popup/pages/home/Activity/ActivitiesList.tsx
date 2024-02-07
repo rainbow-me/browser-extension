@@ -31,6 +31,7 @@ import { Tag } from '~/entries/popup/components/Tag';
 import { useInfiniteTransactionList } from '~/entries/popup/hooks/useInfiniteTransactionList';
 import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useTransactionListForPendingTxs } from '~/entries/popup/hooks/useTransactionListForPendingTxs';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import { useActivityShortcuts } from '../../../hooks/useActivityShortcuts';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
@@ -61,6 +62,7 @@ export function Activities() {
   const { rainbowChains } = useRainbowChains();
   const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
   const { userChains } = useUserChainsStore();
+  const { isWatchingWallet } = useWallets();
 
   const chainIds = rainbowChains
     .filter((c) => supportedMainnetIds.includes(c.id) && userChains[c.id])
@@ -71,6 +73,8 @@ export function Activities() {
     chainIds: chainIds,
     currency: currentCurrency,
   });
+
+  console.log('-- approvals', approvals);
 
   const tokenApprovals = approvals
     ?.map((approval) =>
@@ -102,7 +106,7 @@ export function Activities() {
 
   const isRevokableTransaction = useCallback(
     (tx: RainbowTransaction) => {
-      if (tx.type === 'approve') {
+      if (tx.type === 'approve' && !isWatchingWallet) {
         const txApproval = tokenApprovals?.find((approval) =>
           isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
         );
@@ -112,7 +116,7 @@ export function Activities() {
       }
       return false;
     },
-    [tokenApprovals],
+    [isWatchingWallet, tokenApprovals],
   );
 
   if (isInitialLoading || isRefetching) return <ActivitySkeleton />;
