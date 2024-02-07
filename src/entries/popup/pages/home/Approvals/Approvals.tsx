@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { Address, Chain } from 'wagmi';
 
@@ -60,6 +61,7 @@ import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { useRainbowChains } from '../../../hooks/useRainbowChains';
 import { gradientBorderDark, gradientBorderLight } from '../NFTs/NFTs.css';
 
+import { childAStyle, childBStyle } from './Approvals.css';
 import { RevokeApprovalSheet } from './RevokeApprovalSheet';
 
 type Tab = 'tokens' | 'nfts';
@@ -564,11 +566,6 @@ const TokenApproval = ({
   spender: ApprovalSpender;
   onRevoke: () => void;
 }) => {
-  const [revokeButtonVisible, setRevokeButtonVisible] = useState(false);
-
-  const onMouseEnter = () => setRevokeButtonVisible(true);
-  const onMouseLeave = () => setRevokeButtonVisible(false);
-
   const { currentCurrency } = useCurrentCurrencyStore();
 
   return (
@@ -578,12 +575,9 @@ const TokenApproval = ({
       contractAddress={spender.contract_address}
       onRevokeApproval={onRevoke}
     >
-      <Box
-        paddingHorizontal="8px"
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
+      <Box paddingHorizontal="8px">
         <Box
+          className={'approval-row'}
           background={{
             default: 'transparent',
             hover: 'surfacePrimaryElevatedSecondary',
@@ -632,20 +626,23 @@ const TokenApproval = ({
                 </Columns>
               </Column>
               <Column width="content">
-                {revokeButtonVisible ? (
-                  <Button
-                    color="red"
-                    height="28px"
-                    variant="plain"
-                    borderRadius="8px"
-                    onClick={onRevoke}
-                  >
-                    <Text size="14pt" weight="bold" color="label">
-                      {i18n.t('approvals.revoke.action')}
-                    </Text>
-                  </Button>
-                ) : (
+                <Box>
+                  <Box className={clsx(childAStyle)}>
+                    <Button
+                      color="red"
+                      height="28px"
+                      variant="plain"
+                      borderRadius="8px"
+                      onClick={onRevoke}
+                    >
+                      <Text size="14pt" weight="bold" color="label">
+                        {i18n.t('approvals.revoke.action')}
+                      </Text>
+                    </Button>
+                  </Box>
+
                   <Box
+                    className={clsx(childBStyle)}
                     paddingVertical="5px"
                     paddingHorizontal="6px"
                     borderRadius="6px"
@@ -666,7 +663,7 @@ const TokenApproval = ({
                           )} ${approval?.asset.symbol}`}
                     </TextOverflow>
                   </Box>
-                )}
+                </Box>
               </Column>
             </Columns>
           </Inset>
