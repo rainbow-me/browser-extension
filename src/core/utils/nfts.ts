@@ -58,6 +58,38 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.zora;
     case SimpleHashChain.Base:
       return ChainName.base;
+    case SimpleHashChain.Avalanche:
+      return ChainName.avalanche;
+    case SimpleHashChain.ArbitrumNova:
+      return ChainName.arbitrumNova;
+    case SimpleHashChain.Celo:
+      return ChainName.celo;
+    case SimpleHashChain.Linea:
+      return ChainName.linea;
+    case SimpleHashChain.Manta:
+      return ChainName.manta;
+    case SimpleHashChain.PolygonZkEVM:
+      return ChainName.polygonZkEvm;
+    case SimpleHashChain.Scroll:
+      return ChainName.scroll;
+    case SimpleHashChain.PolygonMumbai:
+      return ChainName.polygonMumbai;
+    case SimpleHashChain.ArbitrumGoerli:
+      return ChainName.arbitrumGoerli;
+    case SimpleHashChain.ArbitrumSepolia:
+      return ChainName.arbitrumSepolia;
+    case SimpleHashChain.BaseGoerli:
+      return ChainName.baseGoerli;
+    case SimpleHashChain.BaseSepolia:
+      return ChainName.baseSepolia;
+    case SimpleHashChain.OptimismGoerli:
+      return ChainName.optimismGoerli;
+    case SimpleHashChain.OptimismSepolia:
+      return ChainName.optimismSepolia;
+    case SimpleHashChain.ZoraTestnet:
+      return ChainName.zoraTestnet;
+    case SimpleHashChain.ZoraSepolia:
+      return ChainName.zoraSepolia;
     default:
       /*
        * Throws here because according to TS types, we should NEVER hit this

@@ -13,17 +13,16 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import {
-  SUPPORTED_MAINNET_CHAINS,
-  SUPPORTED_TESTNET_CHAINS,
-} from '~/core/references';
 import { ChainName } from '~/core/types/chains';
 import {
   PolygonAllowListDictionary,
   SimpleHashCollectionDetails,
   UniqueAsset,
 } from '~/core/types/nfts';
-import { getSimpleHashSupportedChainNames } from '~/core/utils/chains';
+import {
+  getSimpleHashSupportedChainNames,
+  getSimpleHashSupportedTestnetChainNames,
+} from '~/core/utils/chains';
 import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
@@ -56,14 +55,9 @@ async function nftsQueryFunction({
   if (process.env.IS_TESTING === 'true') {
     return NFTS_TEST_DATA;
   }
-  const simpleHashSupportedChains = getSimpleHashSupportedChainNames();
-  const chains = (
-    !testnetMode ? SUPPORTED_MAINNET_CHAINS : SUPPORTED_TESTNET_CHAINS
-  )
-    .map(({ name }) => name as ChainName)
-    .filter((chainName) =>
-      simpleHashSupportedChains.includes(chainName.toLowerCase()),
-    );
+  const chains = !testnetMode
+    ? (getSimpleHashSupportedChainNames() as ChainName[])
+    : (getSimpleHashSupportedTestnetChainNames() as ChainName[]);
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({
