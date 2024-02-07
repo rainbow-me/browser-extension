@@ -32,6 +32,7 @@ import {
 import * as wallet from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
+import { RenameWalletPrompt } from '../../pages/walletSwitcher/renameWalletPrompt';
 import { AddressOrEns } from '../AddressOrEns/AddressorEns';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Spinner } from '../Spinner/Spinner';
@@ -261,6 +262,8 @@ export const WatchWallet = ({
   const { setCurrentAddress } = useCurrentAddressStore();
   const { save } = useSavedEnsNames();
 
+  const [renameAccount, setRenameAccount] = useState<Address>();
+
   const handleWatchWallet = useCallback(async () => {
     const importedAddresses = await Promise.all(
       addressesToImport.map(wallet.importWithSecret),
@@ -273,163 +276,174 @@ export const WatchWallet = ({
         save(ensName, address);
       }
       setCurrentAddress(importedAddresses[0]);
-      onFinishImporting?.();
+      if (!onboarding && !ensName) setRenameAccount(address);
+      else onFinishImporting?.();
     }
   }, [
     addressesToImport,
     ensName,
     address,
     setCurrentAddress,
+    onboarding,
     onFinishImporting,
     save,
   ]);
 
   return (
-    <Rows alignVertical="justify">
-      <Row height="content">
-        <Stack space="24px" alignHorizontal="center">
-          <Stack space="12px">
-            <Text size="16pt" weight="bold" color="label" align="center">
-              {i18n.t('watch_wallet.title')}
-            </Text>
-            <Box paddingHorizontal="14px">
-              <Text
-                size="12pt"
-                weight="regular"
-                color="labelTertiary"
-                align="center"
-              >
-                {i18n.t('watch_wallet.description')}
+    <>
+      <RenameWalletPrompt
+        account={renameAccount}
+        onClose={() => {
+          setRenameAccount(undefined);
+          onFinishImporting?.();
+        }}
+      />
+      <Rows alignVertical="justify">
+        <Row height="content">
+          <Stack space="24px" alignHorizontal="center">
+            <Stack space="12px">
+              <Text size="16pt" weight="bold" color="label" align="center">
+                {i18n.t('watch_wallet.title')}
               </Text>
-            </Box>
-          </Stack>
-
-          <Box alignItems="center" width="full" style={{ width: '106px' }}>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
-          </Box>
-
-          <Box width="full">
-            <Stack space="24px" alignHorizontal="center">
-              <Box width="full">
-                <Stack space="10px">
-                  <Box
-                    as={motion.div}
-                    whileTap={{ scale: transformScales['0.96'] }}
-                    transition={transitions.bounce}
-                    height="full"
-                    width="full"
-                    key={`address_1`}
-                    position="relative"
-                  >
-                    <Box
-                      as="textarea"
-                      testId="secret-text-area-watch"
-                      background="surfaceSecondaryElevated"
-                      borderRadius="12px"
-                      borderWidth="1px"
-                      borderColor={{
-                        focus: error ? 'orange' : 'accent',
-                        default: 'buttonStroke',
-                      }}
-                      width="full"
-                      padding="12px"
-                      placeholder={i18n.t('watch_wallet.placeholder')}
-                      value={input}
-                      onKeyDown={(e) => {
-                        if (isValid && e.key === 'Enter') handleWatchWallet();
-                      }}
-                      tabIndex={1}
-                      autoFocus
-                      spellCheck={false}
-                      onChange={onInputChange}
-                      className={[
-                        placeholderStyle,
-                        textStyles({
-                          color: 'label',
-                          fontSize: '14pt',
-                          fontWeight: 'regular',
-                          fontFamily: 'rounded',
-                        }),
-                      ]}
-                      style={{
-                        caretColor: accentColorAsHsl,
-                        transition: 'border-color 200ms',
-                        height: '96px',
-                        resize: 'none',
-                      }}
-                    />
-                    <Box
-                      position="absolute"
-                      marginTop="-24px"
-                      paddingLeft="12px"
-                    >
-                      {isLoading && (
-                        <Box
-                          width="fit"
-                          alignItems="center"
-                          justifyContent="center"
-                        >
-                          <Spinner size={11} color="labelTertiary" />
-                        </Box>
-                      )}
-                      {error && (
-                        <Inline space="4px" alignVertical="center">
-                          <Symbol
-                            symbol={error.symbol}
-                            size={11}
-                            color={'orange'}
-                            weight={'bold'}
-                          />
-                          <Text size="11pt" weight="regular" color={'orange'}>
-                            {error.message}
-                          </Text>
-                        </Inline>
-                      )}
-                    </Box>
-                  </Box>
-                </Stack>
+              <Box paddingHorizontal="14px">
+                <Text
+                  size="12pt"
+                  weight="regular"
+                  color="labelTertiary"
+                  align="center"
+                >
+                  {i18n.t('watch_wallet.description')}
+                </Text>
               </Box>
             </Stack>
+
+            <Box alignItems="center" width="full" style={{ width: '106px' }}>
+              <Separator color="separatorTertiary" strokeWeight="1px" />
+            </Box>
+
+            <Box width="full">
+              <Stack space="24px" alignHorizontal="center">
+                <Box width="full">
+                  <Stack space="10px">
+                    <Box
+                      as={motion.div}
+                      whileTap={{ scale: transformScales['0.96'] }}
+                      transition={transitions.bounce}
+                      height="full"
+                      width="full"
+                      key={`address_1`}
+                      position="relative"
+                    >
+                      <Box
+                        as="textarea"
+                        testId="secret-text-area-watch"
+                        background="surfaceSecondaryElevated"
+                        borderRadius="12px"
+                        borderWidth="1px"
+                        borderColor={{
+                          focus: error ? 'orange' : 'accent',
+                          default: 'buttonStroke',
+                        }}
+                        width="full"
+                        padding="12px"
+                        placeholder={i18n.t('watch_wallet.placeholder')}
+                        value={input}
+                        onKeyDown={(e) => {
+                          if (isValid && e.key === 'Enter') handleWatchWallet();
+                        }}
+                        tabIndex={1}
+                        autoFocus
+                        spellCheck={false}
+                        onChange={onInputChange}
+                        className={[
+                          placeholderStyle,
+                          textStyles({
+                            color: 'label',
+                            fontSize: '14pt',
+                            fontWeight: 'regular',
+                            fontFamily: 'rounded',
+                          }),
+                        ]}
+                        style={{
+                          caretColor: accentColorAsHsl,
+                          transition: 'border-color 200ms',
+                          height: '96px',
+                          resize: 'none',
+                        }}
+                      />
+                      <Box
+                        position="absolute"
+                        marginTop="-24px"
+                        paddingLeft="12px"
+                      >
+                        {isLoading && (
+                          <Box
+                            width="fit"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Spinner size={11} color="labelTertiary" />
+                          </Box>
+                        )}
+                        {error && (
+                          <Inline space="4px" alignVertical="center">
+                            <Symbol
+                              symbol={error.symbol}
+                              size={11}
+                              color={'orange'}
+                              weight={'bold'}
+                            />
+                            <Text size="11pt" weight="regular" color={'orange'}>
+                              {error.message}
+                            </Text>
+                          </Inline>
+                        )}
+                      </Box>
+                    </Box>
+                  </Stack>
+                </Box>
+              </Stack>
+            </Box>
+            {onboarding && (
+              <>
+                <Box width="full" style={{ width: '106px' }}>
+                  <Separator color="separatorTertiary" strokeWeight="1px" />
+                </Box>
+                <RecommendedWatchWallets
+                  selected={selectedAddresses}
+                  onToggle={(address) =>
+                    setSelectedAddresses((all) => {
+                      if (all[address]) delete all[address];
+                      else all[address] = true;
+                      return { ...all };
+                    })
+                  }
+                />
+              </>
+            )}
+          </Stack>
+        </Row>
+        <Row height="content">
+          <Box width="full" paddingVertical="20px">
+            <Button
+              symbol="eyes.inverse"
+              symbolSide="left"
+              height="44px"
+              color={isValid ? 'accent' : 'labelQuaternary'}
+              variant={isValid ? 'flat' : 'disabled'}
+              disabled={!isValid}
+              width="full"
+              onClick={handleWatchWallet}
+              testId={`watch-wallets-button${isValid ? '-ready' : ''}`}
+              tabIndex={onboarding ? 0 : 2}
+            >
+              {addressesToImport.length > 1
+                ? i18n.t('watch_wallet.watch_wallets')
+                : i18n.t('watch_wallet.watch_wallet')}
+            </Button>
           </Box>
-          {onboarding && (
-            <>
-              <Box width="full" style={{ width: '106px' }}>
-                <Separator color="separatorTertiary" strokeWeight="1px" />
-              </Box>
-              <RecommendedWatchWallets
-                selected={selectedAddresses}
-                onToggle={(address) =>
-                  setSelectedAddresses((all) => {
-                    if (all[address]) delete all[address];
-                    else all[address] = true;
-                    return { ...all };
-                  })
-                }
-              />
-            </>
-          )}
-        </Stack>
-      </Row>
-      <Row height="content">
-        <Box width="full" paddingVertical="20px">
-          <Button
-            symbol="eyes.inverse"
-            symbolSide="left"
-            height="44px"
-            color={isValid ? 'accent' : 'labelQuaternary'}
-            variant={isValid ? 'flat' : 'disabled'}
-            disabled={!isValid}
-            width="full"
-            onClick={handleWatchWallet}
-            testId={`watch-wallets-button${isValid ? '-ready' : ''}`}
-            tabIndex={onboarding ? 0 : 2}
-          >
-            {addressesToImport.length > 1
-              ? i18n.t('watch_wallet.watch_wallets')
-              : i18n.t('watch_wallet.watch_wallet')}
-          </Button>
-        </Box>
-      </Row>
-    </Rows>
+        </Row>
+      </Rows>
+    </>
   );
 };
