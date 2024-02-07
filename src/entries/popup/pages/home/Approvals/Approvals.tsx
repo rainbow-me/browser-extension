@@ -55,6 +55,7 @@ import {
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow';
 import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
+import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
@@ -275,6 +276,29 @@ function ApprovalHeader({
   );
 }
 
+const NothingFound = () => {
+  return (
+    <Box alignItems="center" paddingBottom="20px" style={{ paddingTop: 120 }}>
+      <Box paddingHorizontal="44px">
+        <Stack space="16px">
+          <Text color="label" size="26pt" weight="bold" align="center">
+            {'👻'}
+          </Text>
+
+          <Text
+            color="labelTertiary"
+            size="20pt"
+            weight="semibold"
+            align="center"
+          >
+            {i18n.t('approvals.nothing_found')}
+          </Text>
+        </Stack>
+      </Box>
+    </Box>
+  );
+};
+
 const sortApprovals = (
   sort: SortType,
   a1: { approval: Approval; spender: ApprovalSpender },
@@ -330,7 +354,7 @@ export const Approvals = () => {
     .filter((c) => supportedMainnetIds.includes(c.id) && userChains[c.id])
     .map((c) => c.id);
 
-  const { data: approvals } = useApprovals(
+  const { data: approvals, isLoading } = useApprovals(
     {
       address: currentAddress,
       chainIds: chainIds,
@@ -361,6 +385,62 @@ export const Approvals = () => {
     .flat()
     .sort((a1, a2) => sortApprovals(sort, a1, a2));
 
+  const content = useMemo(() => {
+    if (isLoading) {
+      return (
+        <Box
+          width="fit"
+          alignItems="center"
+          justifyContent="center"
+          style={{ margin: 'auto', paddingTop: 120 }}
+        >
+          <Spinner size={30} color="accent" />
+        </Box>
+      );
+    }
+    if (!approvals?.length) {
+      return <NothingFound />;
+    }
+    return (
+      <Stack space="16px">
+        <Inset top="8px">
+          <Rows alignVertical="top">
+            {tokenApprovals?.map((tokenApproval, i) => (
+              <Row height="content" key={i}>
+                <TokenApproval
+                  approval={tokenApproval.approval}
+                  spender={tokenApproval.spender}
+                  onRevoke={() => {
+                    setRevokeApproval(tokenApproval);
+                    setShowRevokeSheet(true);
+                  }}
+                />
+              </Row>
+            ))}
+          </Rows>
+        </Inset>
+        {revokeTransactions?.length ? (
+          <Inset bottom="8px">
+            <Stack space="8px">
+              <Box paddingHorizontal="20px">
+                <Text color="labelTertiary" size="14pt" weight="semibold">
+                  {i18n.t('approvals.revoked_approvals')}
+                </Text>
+              </Box>
+              <Rows alignVertical="top">
+                {revokeTransactions?.map((revokeTransaction, i) => (
+                  <Row height="content" key={i}>
+                    <TokenRevoke transaction={revokeTransaction} />
+                  </Row>
+                ))}
+              </Rows>
+            </Stack>
+          </Inset>
+        ) : null}
+      </Stack>
+    );
+  }, [approvals?.length, isLoading, revokeTransactions, tokenApprovals]);
+
   return (
     <Box>
       <Box
@@ -374,42 +454,7 @@ export const Approvals = () => {
           setSort={setSort}
           onSelectTab={setActiveTab}
         />
-        <Stack space="16px">
-          <Inset top="8px">
-            <Rows alignVertical="top">
-              {tokenApprovals?.map((tokenApproval, i) => (
-                <Row height="content" key={i}>
-                  <TokenApproval
-                    approval={tokenApproval.approval}
-                    spender={tokenApproval.spender}
-                    onRevoke={() => {
-                      setRevokeApproval(tokenApproval);
-                      setShowRevokeSheet(true);
-                    }}
-                  />
-                </Row>
-              ))}
-            </Rows>
-          </Inset>
-          {revokeTransactions?.length ? (
-            <Inset bottom="8px">
-              <Stack space="8px">
-                <Box paddingHorizontal="20px">
-                  <Text color="labelTertiary" size="14pt" weight="semibold">
-                    {i18n.t('approvals.revoked_approvals')}
-                  </Text>
-                </Box>
-                <Rows alignVertical="top">
-                  {revokeTransactions?.map((revokeTransaction, i) => (
-                    <Row height="content" key={i}>
-                      <TokenRevoke transaction={revokeTransaction} />
-                    </Row>
-                  ))}
-                </Rows>
-              </Stack>
-            </Inset>
-          ) : null}
-        </Stack>
+        {content}
       </Box>
       <RevokeApprovalSheet
         show={showRevokeSheet}

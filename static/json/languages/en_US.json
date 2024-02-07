@@ -572,6 +572,7 @@
     "copy_spender":"Copy Spender",
     "spender_address_copied": "Spender Address Copied",
     "revoked_approvals": "Revoked Approvals",
+    "nothing_found": "Nothing found",
     "revoke": {
       "title": "Revoke Approval",
       "action": "Revoke",
