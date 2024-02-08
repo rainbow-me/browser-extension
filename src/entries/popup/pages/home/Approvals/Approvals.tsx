@@ -207,7 +207,7 @@ function ApprovalHeader({
           alignItems="center"
         >
           <Inline alignVertical="bottom" space="16px">
-            <Lens borderRadius="2px" onClick={() => onSelectTab?.('tokens')}>
+            <Lens borderRadius="2px" onKeyDown={() => onSelectTab?.('tokens')}>
               <Box onClick={() => onSelectTab?.('tokens')}>
                 <Stack space="9px">
                   <Box paddingVertical="4px">
@@ -244,7 +244,7 @@ function ApprovalHeader({
               </Box>
             </Lens>
 
-            <Lens borderRadius="2px" onClick={() => onSelectTab?.('nfts')}>
+            <Lens borderRadius="2px" onKeyDown={() => onSelectTab?.('nfts')}>
               <Box onClick={() => onSelectTab?.('nfts')}>
                 <Stack space="9px">
                   <Box paddingVertical="4px">
@@ -634,7 +634,7 @@ const TokenApproval = ({
       <Box paddingHorizontal="8px">
         <Lens
           borderRadius="12px"
-          onClick={() => simulateContextClick(triggerRef?.current)}
+          onKeyDown={() => simulateContextClick(triggerRef?.current)}
         >
           <Box
             ref={triggerRef}
@@ -746,7 +746,7 @@ const TokenRevoke = ({ transaction }: { transaction?: RainbowTransaction }) => {
       <Box paddingHorizontal="8px">
         <Lens
           borderRadius="12px"
-          onClick={() => simulateContextClick(triggerRef?.current)}
+          onKeyDown={() => simulateContextClick(triggerRef?.current)}
         >
           <Box
             ref={triggerRef}
