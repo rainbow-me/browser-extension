@@ -147,6 +147,29 @@ export default function NFTDropdownMenu({
                   }
                 />
               </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem highlightAccentColor value="hide">
+                <HomeMenuRow
+                  leftComponent={
+                    <Symbol
+                      size={18}
+                      symbol={displayed ? 'eye.slash.fill' : 'eye.fill'}
+                      weight="semibold"
+                    />
+                  }
+                  centerComponent={
+                    <Box paddingVertical="6px" paddingLeft="2px">
+                      <Text size="14pt" weight="semibold">
+                        {displayed
+                          ? i18n.t('nfts.details.hide')
+                          : i18n.t('nfts.details.unhide')}
+                      </Text>
+                    </Box>
+                  }
+                  rightComponent={
+                    <ShortcutHint hint={shortcuts.nfts.HIDE_NFT.display} />
+                  }
+                />
+              </DropdownMenuRadioItem>
               {nft?.image_url && (
                 <DropdownMenuRadioItem
                   highlightAccentColor
@@ -211,29 +234,6 @@ export default function NFTDropdownMenu({
                   }
                   rightComponent={
                     <ShortcutHint hint={shortcuts.nfts.COPY_NFT_ID.display} />
-                  }
-                />
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem highlightAccentColor value="hide">
-                <HomeMenuRow
-                  leftComponent={
-                    <Symbol
-                      size={18}
-                      symbol={displayed ? 'eye.slash.fill' : 'eye.fill'}
-                      weight="semibold"
-                    />
-                  }
-                  centerComponent={
-                    <Box paddingVertical="6px" paddingLeft="2px">
-                      <Text size="14pt" weight="semibold">
-                        {displayed
-                          ? i18n.t('nfts.details.hide')
-                          : i18n.t('nfts.details.unhide')}
-                      </Text>
-                    </Box>
-                  }
-                  rightComponent={
-                    <ShortcutHint hint={shortcuts.nfts.HIDE_NFT.display} />
                   }
                 />
               </DropdownMenuRadioItem>
