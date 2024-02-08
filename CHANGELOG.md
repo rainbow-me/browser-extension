@@ -21,6 +21,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.42](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.42)
+
+### Added
+
+- You can now right-click on NFTs from the gallery for quick actions, including a new Hide feature #1273 #1274
+- Testnet Faucets are now presented when you run out of gas during a testnet transaction #1252
+- Reset Rainbow in Wallets & Keys in Settings now allows you to remove all of the wallets from Rainbow #1263
+
+### Changed
+
+- Hardware wallet users attempting to sign a dApp interaction will now see a "Confirm on your device" loading indicator #1127
+- NFTs can now be refreshed with the `R` hotkey #1272
+
+### Fixed
+
+- Resolved issue where wallet creation may fail in Wallet Details after previously removing a wallet #1254
+- Resolved Points leaderboard number formatting issues and missing icons #1259
+- Improved reliability of pending transaction status updates to prevent failed transactions from displaying as pending many hours later #1261
+- Fixed an issue that would cause duplicate wallets when importing the private key for a watched wallet #1266
+- Resolved `undefined` chain and `Insufficient ETH` errors for Custom Network dApp interactions on wallets with no assets #1275 #1271
+- Resolved an instability issue with Transaction Simulation and gas estimation when using a Custom RPC for Gashawk #1280
+- Resolved duplicate assets displayed for Custom Network assets #1281
+- Fixed the bottom padding on the Points leaderboard interface #1278
+- Resolved an invalid sender error for Custom Network transactions when the nonce is 0 #1284
+- Optimized RPC validation for auto-filled networks when adding a new Custom Network #1279
+- Fixed an incorrect "Unlimited" amount displayed for large token amount transfers in the Transaction Simulation interface #1277
+- Optimized NFT image loading with low resolution placeholder thumbnails #1282
+- Resolved an issue with `signTypedData` RPC calls for the Safe app #1288
+- Fixed an issue with `chainId` discovery for Anvil RPCs #1289
+- Resolved an issue with filtering out Custom Network assets when a network is disabled #1289
+- Fixed issue with network drag-and-drop reordering in Settings #1285
+- Resolved disappearing Activity history after sending a transaction on Avalanche #1290
+- Allowing creation of wallets without specifying a wallet name #1287
+- More reliable account index increments after creating wallets #1287
+
+### Internal
+
+- Pinned `follow-redirects` to `1.15.4` #1294
+- Upgraded `@metamask/eth-sig-util` to `7.0.1` to resolve [signing issues](https://github.com/MetaMask/metamask-mobile/issues/7792) with the Safe app #1288
+- Added anonymized tracking for Magic Menu interactions #1283
+
 ## [v1.3.26](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.26)
 
 ### Added
