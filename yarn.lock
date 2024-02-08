@@ -2032,13 +2032,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@lavamoat/aa@^3.1.5":
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/@lavamoat/aa/-/aa-3.1.5.tgz#2cca45f6269184f39b170d46588df962c17f4083"
-  integrity sha512-GZY+xq6eD9fmG+5vlFnFrZfIAgyky1SDdjvmgtMzTHoiwEHIiBxHg32L7x7jJjInI5Ejy52V9GmgM4QaErysbA==
-  dependencies:
-    resolve "^1.22.3"
-
 "@lavamoat/aa@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@lavamoat/aa/-/aa-4.0.1.tgz#15d8ff88558313ddbf1ea87a13dc9a62e3d4353f"
@@ -2046,16 +2039,16 @@
   dependencies:
     resolve "1.22.8"
 
-"@lavamoat/allow-scripts@2.5.1":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-2.5.1.tgz#003ed6655f37b083695982841bbe8962737bd055"
-  integrity sha512-JxidVui7IggOmsIdDPHh71NltA1J5U76IvJwb34fClFCFa4ggt6SNfJi4/yPe/iVho4mNIB91HCKm4Pu6yo5HA==
+"@lavamoat/allow-scripts@3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-3.0.1.tgz#f595593509b953050f55f47e74ee1f37f107d099"
+  integrity sha512-Y+aGBwX2fUcUyqvv4n4GW0JlMRH68r9h+zk42dTRb0hAQktz1kz/y1Bw0K5TAGAGRc0ecvE0jRJ7CXO3MeTqbQ==
   dependencies:
-    "@lavamoat/aa" "^3.1.5"
-    "@npmcli/run-script" "^6.0.0"
-    bin-links "4.0.1"
-    npm-normalize-package-bin "^3.0.0"
-    yargs "^16.2.0"
+    "@lavamoat/aa" "^4.0.1"
+    "@npmcli/run-script" "6.0.2"
+    bin-links "4.0.3"
+    npm-normalize-package-bin "3.0.1"
+    yargs "17.7.2"
 
 "@lavamoat/lavapack@^6.1.0":
   version "6.1.0"
@@ -2480,7 +2473,7 @@
   dependencies:
     which "^3.0.0"
 
-"@npmcli/run-script@^6.0.0":
+"@npmcli/run-script@6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@npmcli/run-script/-/run-script-6.0.2.tgz#a25452d45ee7f7fb8c16dfaf9624423c0c0eb885"
   integrity sha512-NCcr1uQo1k5U+SYlnIrbAh3cxy+OQT1VtqiAbxdymSlptbzBb62AjH2xXgjNCoP073hoa1CfCAcwoZ8k96C4nA==
@@ -5865,10 +5858,10 @@ bignumber.js@^9.1.2:
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.1.2.tgz#b7c4242259c008903b13707983b5f4bbd31eda0c"
   integrity sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==
 
-bin-links@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/bin-links/-/bin-links-4.0.1.tgz#afeb0549e642f61ff889b58ea2f8dca78fb9d8d3"
-  integrity sha512-bmFEM39CyX336ZGGRsGPlc6jZHriIoHacOQcTt72MktIjpPhZoP4te2jOyUXF3BLILmJ8aNLncoPVeIIFlrDeA==
+bin-links@4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/bin-links/-/bin-links-4.0.3.tgz#9e4a3c5900830aee3d7f52178b65e01dcdde64a5"
+  integrity sha512-obsRaULtJurnfox/MDwgq6Yo9kzbv1CPTk/1/s7Z/61Lezc8IKkFCOXNeVLXz0456WRzBQmSsDWlai2tIhBsfA==
   dependencies:
     cmd-shim "^6.0.0"
     npm-normalize-package-bin "^3.0.0"
@@ -10166,13 +10159,6 @@ is-ci@^3.0.1:
   dependencies:
     ci-info "^3.2.0"
 
-is-core-module@^2.12.0:
-  version "2.12.1"
-  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.12.1.tgz#0c0b6885b6f80011c71541ce15c8d66cf5a4f9fd"
-  integrity sha512-Q4ZuBAe2FUsKtyQJoQHlvP8OvBERxO3jEmy1I7hcRXcJBGGHFh/aJBswbXuS9sgrDH2QUO8ilkwNPHvHMd8clg==
-  dependencies:
-    has "^1.0.3"
-
 is-core-module@^2.13.0:
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.13.0.tgz#bb52aa6e2cbd49a30c2ba68c42bf3435ba6072db"
@@ -12321,7 +12307,7 @@ normalize-url@^8.0.0:
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-8.0.0.tgz#593dbd284f743e8dcf6a5ddf8fadff149c82701a"
   integrity sha512-uVFpKhj5MheNBJRTiMZ9pE/7hD1QTeEvugSJW/OmLzAp78PB5O6adfMNTvmfKhXBkvCzC+rqifWcVYpGFwTjnw==
 
-npm-normalize-package-bin@^3.0.0:
+npm-normalize-package-bin@3.0.1, npm-normalize-package-bin@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/npm-normalize-package-bin/-/npm-normalize-package-bin-3.0.1.tgz#25447e32a9a7de1f51362c61a559233b89947832"
   integrity sha512-dMxCf+zZ+3zeQZXKxmyuCKlIDPGuv8EF940xbkC4kQVDTtqoh6rJFO+JTKSA6/Rwi0getWmtuy4Itup0AMcaDQ==
@@ -13907,15 +13893,6 @@ resolve@^1.1.4, resolve@^1.17.0, resolve@^1.19.0, resolve@^1.20.0, resolve@^1.22
   integrity sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==
   dependencies:
     is-core-module "^2.9.0"
-    path-parse "^1.0.7"
-    supports-preserve-symlinks-flag "^1.0.0"
-
-resolve@^1.22.3:
-  version "1.22.3"
-  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.22.3.tgz#4b4055349ffb962600972da1fdc33c46a4eb3283"
-  integrity sha512-P8ur/gp/AmbEzjr729bZnLjXK5Z+4P0zhIJgBgzqRih7hL7BOukHGtSTA3ACMY467GRFz3duQsi0bDZdR7DKdw==
-  dependencies:
-    is-core-module "^2.12.0"
     path-parse "^1.0.7"
     supports-preserve-symlinks-flag "^1.0.0"
 
