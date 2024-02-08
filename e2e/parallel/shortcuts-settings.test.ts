@@ -105,7 +105,7 @@ describe.runIf(browser !== 'firefox')(
 
     it('should be able to navigate to Networks using keyboard', async () => {
       await delayTime('medium');
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 5 });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'networks');
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });

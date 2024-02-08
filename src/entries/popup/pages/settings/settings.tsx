@@ -162,7 +162,6 @@ export function Settings() {
           <MenuItem
             testId={'wallets-and-keys'}
             first
-            last
             leftComponent={
               <Symbol
                 symbol="key.fill"
@@ -183,8 +182,6 @@ export function Settings() {
           />
           <MenuItem
             testId={'privacy-security-link'}
-            first
-            last
             leftComponent={
               <Symbol
                 symbol="lock.fill"
@@ -202,7 +199,7 @@ export function Settings() {
             }
           />
           <MenuItem
-            first
+            last={isWatchingWallet}
             hasRightArrow
             leftComponent={
               <Symbol
@@ -220,7 +217,7 @@ export function Settings() {
           />
           {isWatchingWallet ? null : (
             <MenuItem
-              first
+              last
               hasRightArrow
               leftComponent={
                 <Symbol
@@ -242,7 +239,6 @@ export function Settings() {
           <MenuItem
             testId={'networks-link'}
             first
-            last
             leftComponent={
               <Symbol
                 symbol="network"
