@@ -69,7 +69,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     await checkWalletName(driver, rootURL, TEST_VARIABLES.SEED_WALLET.ADDRESS);
   });
 
-  it('should be able to go to setings', async () => {
+  it('should be able to go to settings', async () => {
     await goToPopup(driver, rootURL);
     await executePerformShortcut({ driver, key: 'DECIMAL' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
@@ -79,16 +79,6 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to connect to hardhat', async () => {
     await navigateToElementWithTestId({ driver, testId: 'connect-to-hardhat' });
-    const connectToHardhat = await findElementByText(
-      driver,
-      'Connect to Hardhat',
-    );
-    if (connectToHardhat) {
-      await navigateToElementWithTestId({
-        driver,
-        testId: 'connect-to-hardhat',
-      });
-    }
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
     await executePerformShortcut({ driver, key: 'ESCAPE' });
