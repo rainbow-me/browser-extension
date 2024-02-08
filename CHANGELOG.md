@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.19](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.19)
+
+### Fixed
+
+- Resolved an issue that blocked some elligble wallets with a balance from enrolling in Rainbow Points #1258
+
 ## [v1.3.17](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.17)
 
 ### Added
