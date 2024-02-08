@@ -510,10 +510,10 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": true,
         "eslint>debug": true,
         "file-loader>loader-utils>json5": true,
+        "jest>@jest/core>@jest/transform>convert-source-map": true,
         "jest>@jest/core>jest-snapshot>@babel/generator": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "lavamoat-browserify>convert-source-map": true,
         "semver": true
       }
     },
@@ -1011,6 +1011,18 @@
         "define": true
       }
     },
+    "jest>@jest/core>@jest/transform>convert-source-map": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "value": true
+      }
+    },
     "jest>@jest/core>jest-runner>p-limit": {
       "packages": {
         "jest>@jest/core>jest-runner>p-limit>yocto-queue": true
@@ -1087,20 +1099,8 @@
       },
       "packages": {
         "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-string-parser": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>to-fast-properties": true,
+        "lavamoat-browserify>lavamoat-core>@babel/types>to-fast-properties": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
-      }
-    },
-    "lavamoat-browserify>convert-source-map": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "Buffer": true,
-        "atob": true,
-        "btoa": true,
-        "value": true
       }
     },
     "lavamoat>@babel/highlight": {
