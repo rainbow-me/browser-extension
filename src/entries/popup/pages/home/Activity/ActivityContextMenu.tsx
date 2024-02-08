@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -32,8 +32,8 @@ export function ActivityContextMenu({
 }) {
   const { setCurrentHomeSheet } = useCurrentHomeSheetStore();
   const { setSelectedTransaction } = useSelectedTransactionStore();
-  // need to control this manually so that menu closes when sheet appears
   const [open, setOpen] = useState(false);
+  const revokeRef = useRef<HTMLDivElement>(null);
 
   const truncatedHash = truncateAddress(transaction.hash);
 
@@ -63,15 +63,27 @@ export function ActivityContextMenu({
     [transaction, setSelectedTransaction],
   );
 
+  const onRevoke = useCallback(() => {
+    revokeRef?.current?.click();
+    onRevokeTransaction?.();
+  }, [onRevokeTransaction]);
+
   useKeyboardShortcut({
     condition: () => !!open,
     handler: (e: KeyboardEvent) => {
       e.preventDefault();
       if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
-        if (onRevokeTransaction) onRevokeTransaction();
+        // if (onRevokeTransaction) onRevokeTransaction();
+        onRevoke();
       }
     },
   });
+
+  useEffect(() => {
+    if (!open) {
+      setSelectedTransaction(undefined);
+    }
+  }, [open, setSelectedTransaction]);
 
   return (
     <ContextMenu onOpenChange={setOpen}>
@@ -128,12 +140,14 @@ export function ActivityContextMenu({
           <ContextMenuItem
             color="red"
             symbolLeft="xmark.circle.fill"
-            onSelect={onRevokeTransaction}
+            onSelect={onRevoke}
             shortcut={shortcuts.activity.REFRESH_TRANSACTIONS.display}
           >
-            <Text color="red" size="14pt" weight="semibold">
-              {i18n.t('speed_up_and_cancel.revoke_approval')}
-            </Text>
+            <Box ref={revokeRef}>
+              <Text color="red" size="14pt" weight="semibold">
+                {i18n.t('speed_up_and_cancel.revoke_approval')}
+              </Text>
+            </Box>
           </ContextMenuItem>
         ) : null}
       </ContextMenuContent>

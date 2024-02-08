@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useCallback } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { Chain } from 'wagmi';
 
 import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
@@ -32,6 +32,7 @@ import { useInfiniteTransactionList } from '~/entries/popup/hooks/useInfiniteTra
 import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useTransactionListForPendingTxs } from '~/entries/popup/hooks/useTransactionListForPendingTxs';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
+import { simulateContextClick } from '~/entries/popup/utils/simulateClick';
 
 import { useActivityShortcuts } from '../../../hooks/useActivityShortcuts';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
@@ -74,35 +75,20 @@ export function Activities() {
     currency: currentCurrency,
   });
 
-  console.log('-- approvals', approvals);
-
-  const tokenApprovals = approvals
-    ?.map((approval) =>
-      approval.spenders.map((spender) => ({
-        approval,
-        spender,
-      })),
-    )
-    .flat();
+  const tokenApprovals = useMemo(
+    () =>
+      approvals
+        ?.map((approval) =>
+          approval.spenders.map((spender) => ({
+            approval,
+            spender,
+          })),
+        )
+        .flat(),
+    [approvals],
+  );
 
   useActivityShortcuts();
-
-  const onRevokeTransaction = useCallback(
-    (tx: RainbowTransaction) => {
-      if (tx.type === 'approve') {
-        const txApproval = tokenApprovals?.find((approval) =>
-          isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
-        );
-        if (txApproval) {
-          triggerRevokeApproval({
-            show: true,
-            approval: txApproval,
-          });
-        }
-      }
-    },
-    [tokenApprovals],
-  );
 
   const isRevokableTransaction = useCallback(
     (tx: RainbowTransaction) => {
@@ -115,6 +101,24 @@ export function Activities() {
         }
       }
       return false;
+    },
+    [isWatchingWallet, tokenApprovals],
+  );
+
+  const onRevokeTransaction = useCallback(
+    (tx: RainbowTransaction) => {
+      if (tx.type === 'approve' && !isWatchingWallet) {
+        const txApproval = tokenApprovals?.find((approval) =>
+          isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
+        );
+        if (txApproval) {
+          triggerRevokeApproval({
+            show: true,
+            approval: txApproval,
+          });
+        }
+      }
+      return null;
     },
     [isWatchingWallet, tokenApprovals],
   );
@@ -226,14 +230,21 @@ function ActivityRow({
   onRevokeTransaction?: () => void;
 }) {
   const navigate = useRainbowNavigate();
+  const ref = useRef<HTMLDivElement>(null);
 
   return (
-    <Lens borderRadius="12px" marginHorizontal="-12px" forceAvatarColor>
+    <Lens
+      borderRadius="12px"
+      marginHorizontal="-12px"
+      forceAvatarColor
+      onKeyDown={() => simulateContextClick(ref.current)}
+    >
       <ActivityContextMenu
         transaction={transaction}
         onRevokeTransaction={onRevokeTransaction}
       >
         <Box
+          ref={ref}
           style={{ height: '52px' }}
           paddingHorizontal="12px"
           paddingVertical="8px"
