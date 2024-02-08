@@ -21,6 +21,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.73](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.73)
+
+### Added
+
+- Added support for the `eth_coinbase` RPC method to support dApps like Orbiter.finance #1312
+
+### Changed
+
+- Your Rank for Points now shows a breakdown of your rank difference each week, and which direction you're trending on the leaderboard #1327
+
+### Fixed
+
+- Fixed an issue where Activity Details would appear as a blank screen for Pending Transactions for Custom Networks #1311
+- Fixed Custom Gas shortcuts for L2s and unsupported networks #1321
+- Optimized ENS fetching network calls on the Points leaderboard #1328
+- Resolved an issue that prevent Custom Network assets from appearing in the Magic Menu search #1326
+- Fixed an issue with dApps like Blur where the dApp interface would sometimes hang upon transaction signing due to a BigNumber parsing issue #1330
+- Fixed text overflows on From and To addresses in Transaction Details #1335
+
+### Internal
+
+- Disabled anonymized collection by default on Firefox #1325
+- Blocking token metadata network requests for unsupported networks to reduce backend request load #1324
+
+### Testing
+
+- Updated Firefox Test Setup to pin specific versions of Firefox Developer Edition to mitigate `123.0b1` errors #1329
+
 ## [v1.3.57](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.57)
 
 ### Added
