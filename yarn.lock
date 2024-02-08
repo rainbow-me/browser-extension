@@ -2072,10 +2072,10 @@
     through2 "4.0.2"
     umd "3.0.3"
 
-"@lavamoat/preinstall-always-fail@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@lavamoat/preinstall-always-fail/-/preinstall-always-fail-1.0.3.tgz#9c349d41a6509add2ebe055e3b32dba7ca3123c4"
-  integrity sha512-kWOWveixsnipfX+HUvoclX5ytlm4RbU3rvxmLejczgQSFk+bz8Q4Y/+vvB73/HX9JcKWdZGpNtpdKQNa5Gpniw==
+"@lavamoat/preinstall-always-fail@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@lavamoat/preinstall-always-fail/-/preinstall-always-fail-2.0.0.tgz#06813fc43d6f08e14045254278c1978b04b34631"
+  integrity sha512-7sgV9DtAD7z7nhxLb2vSjEqgjd3xVk2CbZKwBDVFXkZk1L6xrOIaJTNv5rgNy801/Rjc54KyJ48fHR3djwU35A==
 
 "@ledgerhq/connect-kit-loader@^1.0.1":
   version "1.1.0"
