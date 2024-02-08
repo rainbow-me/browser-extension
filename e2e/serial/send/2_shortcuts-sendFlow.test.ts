@@ -79,6 +79,16 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to connect to hardhat', async () => {
     await navigateToElementWithTestId({ driver, testId: 'connect-to-hardhat' });
+    const connectToHardhat = await findElementByText(
+      driver,
+      'Connect to Hardhat',
+    );
+    if (connectToHardhat) {
+      await navigateToElementWithTestId({
+        driver,
+        testId: 'connect-to-hardhat',
+      });
+    }
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
     await executePerformShortcut({ driver, key: 'ESCAPE' });
