@@ -21,6 +21,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.26](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.26)
+
+### Added
+
+- Base Sepolia, and Zora Sepolia testnets are now supported #1251
+
+### Fixed
+
+- Resolved incomplete token discovery when Custom Networks like Avalanche were enabled #1262
+- Fixed an issue where the Rainbow dApp provider would leak dependencies and sometimes conflict with dApps that relied on `lodash` #1264
+
+### Internal
+
+- Bumped e2e packages including `chromedriver`, `geckodriver`, and `vitest` #1268
+
 ## [v1.3.19](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.19)
 
 ### Fixed
@@ -38,7 +53,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - `SignTypedData` is now supported by the Transaction Decoding feature for dApp interactions #1162
-- Zora Sepolia testnet is now supported #1202
 - Rainbow now displays errors when Sends or Swaps fail to better diagnose gas or nonce issues and RPC failures #1199 #1210 #1240 #1232 #1243 #1238
 - When adding a new Custom Network, we now validate the RPC and display an error if it is not responding #1214
 - Improved the appearance of the Points leaderboard ranks #1229
@@ -72,6 +86,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Custom RPC feature flag support #1234
 - Feature flag cleanup for Points and NFTs #1242
 - Deprecated the need for `chain id` input for Custom Networks because of auto-discovery #1257
+- Added Zora Sepolia testnet RPC to the allowlist #1202
 
 ## [v1.3.7](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.7)
 
