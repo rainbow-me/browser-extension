@@ -21,6 +21,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.57](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.57)
+
+### Added
+
+- You can now see your Points earnings breakdown each Tuesday with the "Your Earnings" card on the Points tabs #1317
+- Added Custom Network auto-fill support for Boba, Dogechain, Immutable zkEVM, Lyra, Manta, Mode, opBNB, Palm, PGN, Blast Sepolia, and RARI Chain #1302 #1316
+
+### Changed
+
+- Wallet searching is even faster now that the search bar autofocuses when launching the wallet switcher #1299
+- When interacting with dApps that call `wallet_addEthereumChain`, Rainbow will now automatically switch to the network or RPC if you've already added it, and display a notification on the dApp #1298
+- Contracts on the Transaction Request decoding interface now has a more menu with explorer links #1314
+
+### Fixed
+
+- Improved the reliability of Pending Transaction detection and reliability, including for Flashbots transactions #1296
+- Fixed text overflow for long NFT and NFT Collection names in NFT Details #1295
+- Resolved dApp Provider errors when interacting with 1inch Limit Orders and Curve.fi #1297
+- Resolved missing Learn more explainer link on the Flashbots toggle in Settings #1291
+- Resolved issue where Custom Gas options were incorrectly was exposed for L2 networks #1304
+- Preventing duplicate `wallet_addEthereumChain` calls for adding new networks, and now displaying errors#1298
+
+### Internal
+
+- Added `undefined` check for our top telemetry errors related to navigation state restoration #1300
+- Bumped the Swap SDK to `0.9.1` for Avalanche support #1308
+- Allowlisted `GHSA-c24v-8rfc-w8vw` vitest vulnerability #1309
+- Upgraded Ledger packages for upstream Stax device support #1301
+
 ## [v1.3.42](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.42)
 
 ### Added
