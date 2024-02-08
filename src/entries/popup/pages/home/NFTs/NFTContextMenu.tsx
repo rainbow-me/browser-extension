@@ -108,6 +108,19 @@ export default function NFTContextMenu({
                 {i18n.t('nfts.details.send')}
               </Text>
             </ContextMenuItem>
+            <ContextMenuItem
+              symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
+              onSelect={() =>
+                toggleHideNFT(address, nftToFocus?.uniqueId || '')
+              }
+              shortcut={shortcuts.nfts.HIDE_NFT.display}
+            >
+              <Text size="14pt" weight="semibold">
+                {displayed
+                  ? i18n.t('nfts.details.hide')
+                  : i18n.t('nfts.details.unhide')}
+              </Text>
+            </ContextMenuItem>
             {nftToFocus?.image_url && (
               <ContextMenuItem
                 symbolLeft={'arrow.down.circle.fill'}
@@ -137,19 +150,6 @@ export default function NFTContextMenu({
               >
                 {nftToFocus?.id}
               </TextOverflow>
-            </ContextMenuItem>
-            <ContextMenuItem
-              symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
-              onSelect={() =>
-                toggleHideNFT(address, nftToFocus?.uniqueId || '')
-              }
-              shortcut={shortcuts.nfts.HIDE_NFT.display}
-            >
-              <Text size="14pt" weight="semibold">
-                {displayed
-                  ? i18n.t('nfts.details.hide')
-                  : i18n.t('nfts.details.unhide')}
-              </Text>
             </ContextMenuItem>
             <ContextMenuSeparator />
             {hasContractAddress && hasNetwork && (
