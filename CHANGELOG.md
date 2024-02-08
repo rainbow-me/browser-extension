@@ -21,6 +21,52 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.17](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.17)
+
+### Added
+
+- Custom Networks and RPCs are now suported in Rainbow. In the Networks menu in Settings, you can add a network, switch your default RPC, or even add Custom Tokens to appear across Rainbow #1200 #1224 #1225 #1231 #1233 #1220 #1245 #1247 #1248 #1249 #1250 #1255 #1256 #1236
+- Chains like Arbitrum Nova, Polygon zkEVM, Canto, Ethereum Classic, Fantom, Moonbeam, Mantle, Metis, and Pulsechain are now pre-populuted when adding a Custom Network for even easier access #1205 #1223 #1244
+- My NFTs and NFT Search is now available in the Magic Menu. NFTs are searchable by token names, token ids, collection names, and contract addresses for even faster access #1227
+
+### Changed
+
+- `SignTypedData` is now supported by the Transaction Decoding feature for dApp interactions #1162
+- Zora Sepolia testnet is now supported #1202
+- Rainbow now displays errors when Sends or Swaps fail to better diagnose gas or nonce issues and RPC failures #1199 #1210 #1240 #1232 #1243 #1238
+- When adding a new Custom Network, we now validate the RPC and display an error if it is not responding #1214
+- Improved the appearance of the Points leaderboard ranks #1229
+- Wallets without a balance now encounter an error and guide when enrolling into Rainbow Points #1230
+- Unranked users now see a different Rank card on the Points leaderboard #1237
+- Added translations for Points and Custom Networks features #1226
+- Improved NFT Gallery scroll pagination and loading indicators #1188
+
+### Fixed
+
+- Resolved an issue with Custom Gas logic for Flashbots transactions. We now force a miner tip of `6` for Sends and dApp interactions when broadcast with the Flashbots RPC #1190
+- Improved Network selection drop-down height consistency when many networks are active #1191
+- Points earnings are now refreshed automatically with each Tuesday drop #1204
+- Resolved an issue where token prices could only be discovered for native assets on Custom Networks #1213
+- Resolved a parsing issue for Points referral codes when a URL is pasted instead of a code #1221
+- Resolved a UI consistency issue with Points referral code formatting #1228
+- Fixed an issue with Cool Mode on the Points and NFT tabs where particle effects wouldn't cease on click release #1219
+- Fixed an issue with Points onboarding for Trezor device users that require a web redirect #1211
+- Resolved a crash during Points onboarding for empty wallets #1218
+- Improved large number formatting on Points leaderboard #1222
+- Optimized the number of network calls when rendering the Points leaderboard #1212
+- Resolved an issue with NFTs disappearing when a Custom Network is active #1239
+- Resolved switch network failures on dApps after adding a Custom Network #1246
+- Fixed text clipping on Points text glow and shadows #1253
+
+### Internal
+
+- Deprecated `useForceConnect` hook #1209
+- Refactored `displayName` usage in favor of `forwardRef` functions #1180
+- Regenerated design system symbols to reduce bundle size #1235
+- Custom RPC feature flag support #1234
+- Feature flag cleanup for Points and NFTs #1242
+- Deprecated the need for `chain id` input for Custom Networks because of auto-discovery #1257
+
 ## [v1.3.7](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.7)
 
 ### Changed
@@ -113,7 +159,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Internal
 
 - Added support for `wallet_watchAsset` RPC call #1141
-- Added Custom RPC Settings form validatin to test RPC endpoints #1144
+- Added Custom RPC Settings form validatin to test RPC endpoints #1144 #1241
 - Added NFT Gallery loading and empty states #1152 #1155
 - Added NFT Keyboard Navigation and sorting Shortcuts #1154
 - Added Owners and Distinct Owners fields in NFT Details #1153
