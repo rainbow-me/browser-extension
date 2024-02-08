@@ -6,7 +6,35 @@
         "process.emitWarning": true
       },
       "packages": {
-        "lavamoat>@babel/highlight": true
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": true
+      }
+    },
+    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
+        "react>loose-envify>js-tokens": true
+      }
+    },
+    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "@vanilla-extract/css": {
@@ -561,7 +589,7 @@
         "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-environment-visitor": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-split-export-declaration": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -1099,36 +1127,8 @@
       },
       "packages": {
         "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-string-parser": true,
-        "lavamoat-browserify>lavamoat-core>@babel/types>to-fast-properties": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
-      }
-    },
-    "lavamoat>@babel/highlight": {
-      "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>@babel/highlight>chalk": true,
-        "react>loose-envify>js-tokens": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
-        "supports-color": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
       }
     },
     "lint-staged>execa>merge-stream": {
