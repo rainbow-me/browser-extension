@@ -10,6 +10,7 @@ import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
+import { userChainsStore } from '~/core/state/userChains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
 import {
@@ -56,6 +57,7 @@ export function NFTs() {
   );
   const { testnetMode } = useTestnetModeStore();
   const { rainbowChains } = useRainbowChains();
+  const { userChains } = userChainsStore.getState();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const {
     data,
@@ -65,7 +67,7 @@ export function NFTs() {
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useNfts({ address, rainbowChains, testnetMode });
+  } = useNfts({ address, rainbowChains, testnetMode, userChains });
   const nftData = useMemo(() => {
     return {
       ...data,
@@ -205,7 +207,12 @@ export function NFTs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hiddenNftsForAddress, sectionsState, sort]);
 
-  const nftCount = getNftCount({ address, rainbowChains, testnetMode });
+  const nftCount = getNftCount({
+    address,
+    rainbowChains,
+    testnetMode,
+    userChains,
+  });
   const isPaginating = hasNextPage && nftCount < NFTS_LIMIT;
 
   useEffect(() => {

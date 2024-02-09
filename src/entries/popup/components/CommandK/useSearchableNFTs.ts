@@ -4,6 +4,7 @@ import { selectNfts } from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { userChainsStore } from '~/core/state/userChains';
 import { getRainbowChains } from '~/core/utils/chains';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -25,8 +26,9 @@ export const useSearchableNFTs = () => {
   const navigate = useRainbowNavigate();
   const { testnetMode } = useTestnetModeStore();
   const { rainbowChains } = getRainbowChains();
+  const { userChains } = userChainsStore.getState();
 
-  const { data } = useNfts({ address, rainbowChains, testnetMode });
+  const { data } = useNfts({ address, rainbowChains, testnetMode, userChains });
 
   const searchableNFTs = useMemo(() => {
     const nfts = selectNfts(data) || [];

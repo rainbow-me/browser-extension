@@ -11,6 +11,7 @@ import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { userChainsStore } from '~/core/state/userChains';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
@@ -89,7 +90,8 @@ export default function NFTDetails() {
   }>();
   const { testnetMode } = useTestnetModeStore();
   const { rainbowChains } = getRainbowChains();
-  const { data } = useNfts({ address, rainbowChains, testnetMode });
+  const { userChains } = userChainsStore.getState();
+  const { data } = useNfts({ address, rainbowChains, testnetMode, userChains });
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
