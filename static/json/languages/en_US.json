@@ -1646,6 +1646,7 @@
     "contract": "Contract",
     "contract_name": "Contract Name",
     "contract_created_at": "Contract Created",
+    "to": "To",
     "source_code": "Source Code",
     "signature": {
       "message": "Message"

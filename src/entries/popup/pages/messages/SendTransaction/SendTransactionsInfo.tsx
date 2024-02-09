@@ -175,21 +175,48 @@ function TransactionDetails({
   simulation: TransactionSimulation | undefined;
   session: { address: Address; chainId: ChainId };
 }) {
-  const metaTo = simulation?.meta.transferTo || simulation?.meta.to;
+  const metaTo = simulation?.meta.to;
+  const metaTransferTo = simulation?.meta.transferTo;
 
   const { getNonce } = useNonceStore();
   const { currentNonce: nonce } = getNonce(session) || {};
 
   const functionName = metaTo?.function.split('(')[0];
-  const contract = metaTo?.address;
-  const contractName = metaTo?.name;
+  const contract = metaTo && {
+    address: metaTo.address,
+    name: metaTo.name,
+    iconUrl: metaTo.iconURL,
+  };
   const isSourceCodeVerified = metaTo?.sourceCodeStatus === 'VERIFIED';
   const contractCreatedAt = metaTo?.created;
 
   return (
     <Box gap="16px" display="flex" flexDirection="column" paddingTop="14px">
-      {!!nonce && (
-        <InfoRow symbol="number" label={i18n.t('nonce')} value={nonce} />
+      {metaTransferTo && (
+        <InfoRow
+          symbol="person"
+          label={i18n.t('simulation.to')}
+          value={
+            <AddressDisplay
+              address={metaTransferTo.address}
+              chainId={session.chainId}
+            />
+          }
+        />
+      )}
+      {contract && (
+        <InfoRow
+          symbol="doc.plaintext"
+          label={i18n.t('simulation.contract')}
+          value={
+            <AddressDisplay
+              address={contract.address}
+              contract={contract}
+              chainId={session.chainId}
+              color="labelSecondary"
+            />
+          }
+        />
       )}
       {functionName && (
         <InfoRow
@@ -200,33 +227,6 @@ function TransactionDetails({
               {functionName}
             </Tag>
           }
-        />
-      )}
-      {contract && (
-        <InfoRow
-          symbol="doc.plaintext"
-          label={i18n.t('simulation.contract')}
-          value={
-            <AddressDisplay
-              address={contract}
-              hideAvatar
-              chainId={session.chainId}
-            />
-          }
-        />
-      )}
-      {contractName && (
-        <InfoRow
-          symbol="person"
-          label={i18n.t('simulation.contract_name')}
-          value={contractName}
-        />
-      )}
-      {contractCreatedAt && (
-        <InfoRow
-          symbol="calendar"
-          label={i18n.t('simulation.contract_created_at')}
-          value={formatDate(+contractCreatedAt)}
         />
       )}
       <InfoRow
@@ -242,6 +242,16 @@ function TransactionDetails({
           </Tag>
         }
       />
+      {contractCreatedAt && (
+        <InfoRow
+          symbol="calendar"
+          label={i18n.t('simulation.contract_created_at')}
+          value={formatDate(contractCreatedAt)}
+        />
+      )}
+      {!!nonce && (
+        <InfoRow symbol="number" label={i18n.t('nonce')} value={nonce} />
+      )}
     </Box>
   );
 }
