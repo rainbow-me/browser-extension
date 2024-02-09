@@ -37,23 +37,17 @@ const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
 export type NftsArgs = {
   address: Address;
-  rainbowChains: Chain[];
   testnetMode: boolean;
-  userChains: Record<number, boolean>;
+  userChains: Chain[];
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const nftsQueryKey = ({
-  address,
-  rainbowChains,
-  testnetMode,
-  userChains,
-}: NftsArgs) =>
+const nftsQueryKey = ({ address, testnetMode, userChains }: NftsArgs) =>
   createQueryKey(
     'nfts',
-    { address, rainbowChains, testnetMode, userChains },
+    { address, testnetMode, userChains },
     { persisterVersion: 3 },
   );
 
@@ -61,17 +55,16 @@ const nftsQueryKey = ({
 // Query Function
 
 async function nftsQueryFunction({
-  queryKey: [{ address, rainbowChains, testnetMode, userChains }],
+  queryKey: [{ address, testnetMode, userChains }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
   if (process.env.IS_TESTING === 'true') {
     return NFTS_TEST_DATA;
   }
-  const activeChainIds = rainbowChains
+  const activeChainIds = userChains
     .filter((chain) => {
       return !testnetMode ? !chain.testnet : chain.testnet;
     })
-    .filter((chain) => userChains[chain.id])
     .map((chain) => chain.id);
   const simplehashChainNames = !testnetMode
     ? getSimpleHashSupportedChainNames()
@@ -164,11 +157,11 @@ type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;
 // Query Hook
 
 export function useNfts<TSelectData = NftsResult>(
-  { address, rainbowChains, testnetMode, userChains }: NftsArgs,
+  { address, testnetMode, userChains }: NftsArgs,
   config: InfiniteQueryConfig<NftsResult, Error, TSelectData> = {},
 ) {
   return useInfiniteQuery(
-    nftsQueryKey({ address, rainbowChains, testnetMode, userChains }),
+    nftsQueryKey({ address, testnetMode, userChains }),
     nftsQueryFunction,
     {
       ...config,
@@ -182,12 +175,7 @@ export function useNfts<TSelectData = NftsResult>(
 // ///////////////////////////////////////////////
 // Query Utils
 
-export function getNftCount({
-  address,
-  rainbowChains,
-  testnetMode,
-  userChains,
-}: NftsArgs) {
+export function getNftCount({ address, testnetMode, userChains }: NftsArgs) {
   const nftData:
     | {
         pages: {
@@ -197,7 +185,7 @@ export function getNftCount({
         pageParams: (string | null)[];
       }
     | undefined = queryClient.getQueryData(
-    nftsQueryKey({ address, rainbowChains, testnetMode, userChains }),
+    nftsQueryKey({ address, testnetMode, userChains }),
   );
   if (nftData?.pages) {
     const nfts = nftData?.pages

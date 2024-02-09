@@ -10,7 +10,6 @@ import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
-import { userChainsStore } from '~/core/state/userChains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
 import {
@@ -36,8 +35,8 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { useCoolMode } from '~/entries/popup/hooks/useCoolMode';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
-import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { ROUTES } from '~/entries/popup/urls';
 
 import ExternalImage from '../../../components/ExternalImage/ExternalImage';
@@ -56,8 +55,7 @@ export function NFTs() {
     [hidden, address],
   );
   const { testnetMode } = useTestnetModeStore();
-  const { rainbowChains } = useRainbowChains();
-  const { userChains } = userChainsStore.getState();
+  const { chains: userChains } = useUserChains();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const {
     data,
@@ -67,7 +65,7 @@ export function NFTs() {
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useNfts({ address, rainbowChains, testnetMode, userChains });
+  } = useNfts({ address, testnetMode, userChains });
   const nftData = useMemo(() => {
     return {
       ...data,
@@ -209,7 +207,6 @@ export function NFTs() {
 
   const nftCount = getNftCount({
     address,
-    rainbowChains,
     testnetMode,
     userChains,
   });

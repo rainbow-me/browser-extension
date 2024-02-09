@@ -7,8 +7,6 @@ import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { userChainsStore } from '~/core/state/userChains';
-import { getRainbowChains } from '~/core/utils/chains';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
@@ -16,6 +14,7 @@ import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
+import { useUserChains } from '../../hooks/useUserChains';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 
 import DisplayModeDropdown from './NFTs/DisplayModeDropdown';
@@ -34,11 +33,9 @@ export function TabHeader({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
   const { testnetMode } = useTestnetModeStore();
-  const { rainbowChains } = getRainbowChains();
-  const { userChains } = userChainsStore.getState();
+  const { chains: userChains } = useUserChains();
   const nftCount = getNftCount({
     address,
-    rainbowChains,
     testnetMode,
     userChains,
   });

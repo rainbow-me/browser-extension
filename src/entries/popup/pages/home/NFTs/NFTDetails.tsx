@@ -11,7 +11,6 @@ import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { userChainsStore } from '~/core/state/userChains';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
@@ -19,7 +18,6 @@ import { truncateAddress } from '~/core/utils/address';
 import {
   chainIdFromChainName,
   getBlockExplorerHostForChain,
-  getRainbowChains,
 } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
@@ -76,6 +74,7 @@ import {
 } from '~/entries/popup/components/Navbar/Navbar';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
+import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 import { BirdIcon } from './BirdIcon';
@@ -89,9 +88,8 @@ export default function NFTDetails() {
     nftId: string;
   }>();
   const { testnetMode } = useTestnetModeStore();
-  const { rainbowChains } = getRainbowChains();
-  const { userChains } = userChainsStore.getState();
-  const { data } = useNfts({ address, rainbowChains, testnetMode, userChains });
+  const { chains: userChains } = useUserChains();
+  const { data } = useNfts({ address, testnetMode, userChains });
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
