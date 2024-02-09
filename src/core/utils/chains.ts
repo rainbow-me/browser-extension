@@ -175,9 +175,10 @@ export const getSimpleHashSupportedChainNames = () => {
     ChainName.manta,
     ChainName.optimism,
     ChainName.polygonZkEvm,
+    ChainName.rari,
     ChainName.scroll,
     ChainName.zora,
-  ];
+  ] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
 };
 
 export const getSimpleHashSupportedTestnetChainNames = () => {
@@ -192,7 +193,7 @@ export const getSimpleHashSupportedTestnetChainNames = () => {
     ChainName.optimismSepolia,
     ChainName.zoraTestnet,
     ChainName.zoraSepolia,
-  ];
+  ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 };
 
 export const useBackendSupportedChains = ({

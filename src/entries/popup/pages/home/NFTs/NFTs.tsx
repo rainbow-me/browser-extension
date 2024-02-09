@@ -35,6 +35,7 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { useCoolMode } from '~/entries/popup/hooks/useCoolMode';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
+import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -54,6 +55,7 @@ export function NFTs() {
     [hidden, address],
   );
   const { testnetMode } = useTestnetModeStore();
+  const { rainbowChains } = useRainbowChains();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const {
     data,
@@ -63,7 +65,7 @@ export function NFTs() {
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useNfts({ address, testnetMode });
+  } = useNfts({ address, rainbowChains, testnetMode });
   const nftData = useMemo(() => {
     return {
       ...data,
@@ -203,7 +205,7 @@ export function NFTs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hiddenNftsForAddress, sectionsState, sort]);
 
-  const nftCount = getNftCount({ address, testnetMode });
+  const nftCount = getNftCount({ address, rainbowChains, testnetMode });
   const isPaginating = hasNextPage && nftCount < NFTS_LIMIT;
 
   useEffect(() => {

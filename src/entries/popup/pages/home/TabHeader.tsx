@@ -7,6 +7,7 @@ import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { getRainbowChains } from '~/core/utils/chains';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
@@ -32,7 +33,8 @@ export function TabHeader({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
   const { testnetMode } = useTestnetModeStore();
-  const nftCount = getNftCount({ address, testnetMode });
+  const { rainbowChains } = getRainbowChains();
+  const nftCount = getNftCount({ address, rainbowChains, testnetMode });
 
   const displayBalanceComponent = useMemo(
     () =>

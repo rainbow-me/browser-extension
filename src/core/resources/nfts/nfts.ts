@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { Chain } from 'viem';
 import { Address } from 'wagmi';
 
 import {
@@ -13,7 +14,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { ChainName } from '~/core/types/chains';
+import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import {
   PolygonAllowListDictionary,
   SimpleHashCollectionDetails,
@@ -36,28 +37,42 @@ const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
 export type NftsArgs = {
   address: Address;
+  rainbowChains: Chain[];
   testnetMode: boolean;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const nftsQueryKey = ({ address, testnetMode }: NftsArgs) =>
-  createQueryKey('nfts', { address, testnetMode }, { persisterVersion: 2 });
+const nftsQueryKey = ({ address, rainbowChains, testnetMode }: NftsArgs) =>
+  createQueryKey(
+    'nfts',
+    { address, rainbowChains, testnetMode },
+    { persisterVersion: 3 },
+  );
 
 // ///////////////////////////////////////////////
 // Query Function
 
 async function nftsQueryFunction({
-  queryKey: [{ address, testnetMode }],
+  queryKey: [{ address, rainbowChains, testnetMode }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
   if (process.env.IS_TESTING === 'true') {
     return NFTS_TEST_DATA;
   }
-  const chains = !testnetMode
-    ? (getSimpleHashSupportedChainNames() as ChainName[])
-    : (getSimpleHashSupportedTestnetChainNames() as ChainName[]);
+  const activeChainIds = rainbowChains
+    .filter((chain) => {
+      return !testnetMode ? !chain.testnet : chain.testnet;
+    })
+    .map((chain) => chain.id);
+  const simplehashChainNames = !testnetMode
+    ? getSimpleHashSupportedChainNames()
+    : getSimpleHashSupportedTestnetChainNames();
+  const chains = simplehashChainNames.filter((simplehashChainName) => {
+    const id = chainNameToIdMapping[simplehashChainName];
+    return activeChainIds.includes(id);
+  }) as ChainName[];
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({
@@ -142,11 +157,11 @@ type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;
 // Query Hook
 
 export function useNfts<TSelectData = NftsResult>(
-  { address, testnetMode }: NftsArgs,
+  { address, rainbowChains, testnetMode }: NftsArgs,
   config: InfiniteQueryConfig<NftsResult, Error, TSelectData> = {},
 ) {
   return useInfiniteQuery(
-    nftsQueryKey({ address, testnetMode }),
+    nftsQueryKey({ address, rainbowChains, testnetMode }),
     nftsQueryFunction,
     {
       ...config,
@@ -160,7 +175,7 @@ export function useNfts<TSelectData = NftsResult>(
 // ///////////////////////////////////////////////
 // Query Utils
 
-export function getNftCount({ address, testnetMode }: NftsArgs) {
+export function getNftCount({ address, rainbowChains, testnetMode }: NftsArgs) {
   const nftData:
     | {
         pages: {
@@ -170,7 +185,7 @@ export function getNftCount({ address, testnetMode }: NftsArgs) {
         pageParams: (string | null)[];
       }
     | undefined = queryClient.getQueryData(
-    nftsQueryKey({ address, testnetMode }),
+    nftsQueryKey({ address, rainbowChains, testnetMode }),
   );
   if (nftData?.pages) {
     const nfts = nftData?.pages

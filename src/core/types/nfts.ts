@@ -21,6 +21,7 @@ export enum SimpleHashChain {
   Linea = 'linea',
   Manta = 'manta',
   PolygonZkEVM = 'polygon-zkevm',
+  Rari = 'rari',
   Scroll = 'scroll',
   PolygonMumbai = 'polygon-mumbai',
   ArbitrumGoerli = 'arbitrum-goerli',

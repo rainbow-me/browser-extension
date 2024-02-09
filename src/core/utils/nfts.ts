@@ -70,6 +70,8 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.manta;
     case SimpleHashChain.PolygonZkEVM:
       return ChainName.polygonZkEvm;
+    case SimpleHashChain.Rari:
+      return ChainName.rari;
     case SimpleHashChain.Scroll:
       return ChainName.scroll;
     case SimpleHashChain.PolygonMumbai:

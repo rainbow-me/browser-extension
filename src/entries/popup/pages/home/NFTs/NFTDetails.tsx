@@ -18,6 +18,7 @@ import { truncateAddress } from '~/core/utils/address';
 import {
   chainIdFromChainName,
   getBlockExplorerHostForChain,
+  getRainbowChains,
 } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
@@ -87,7 +88,8 @@ export default function NFTDetails() {
     nftId: string;
   }>();
   const { testnetMode } = useTestnetModeStore();
-  const { data } = useNfts({ address, testnetMode });
+  const { rainbowChains } = getRainbowChains();
+  const { data } = useNfts({ address, rainbowChains, testnetMode });
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
