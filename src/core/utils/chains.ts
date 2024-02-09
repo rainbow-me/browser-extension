@@ -187,7 +187,6 @@ export const getSimpleHashSupportedTestnetChainNames = () => {
     ChainName.polygonMumbai,
     ChainName.arbitrumGoerli,
     ChainName.arbitrumSepolia,
-    ChainName.baseGoerli,
     ChainName.baseSepolia,
     ChainName.optimismGoerli,
     ChainName.optimismSepolia,
