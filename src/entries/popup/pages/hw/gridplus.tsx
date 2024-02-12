@@ -1,13 +1,10 @@
 import { AnimatePresence } from 'framer-motion';
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
 
 import gridPlusLogo from 'static/assets/hw/grid-plus-logo.png';
 import { Box } from '~/design-system';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { ROUTES } from '../../urls';
 
 import { AddressChoice } from './gridplus/addressChoice';
 import { PairingSecret } from './gridplus/pairingSecret';
@@ -22,11 +19,9 @@ enum GridplusStep {
 const GridPlusRouting = ({
   step,
   setStep,
-  onFinish,
 }: {
   step: GridplusStep;
   setStep: (step: GridplusStep) => void;
-  onFinish: (addresses: string[]) => void;
 }) => {
   switch (step) {
     case GridplusStep.WALLET_CREDENTIALS:
@@ -48,34 +43,16 @@ const GridPlusRouting = ({
         />
       );
     case GridplusStep.ADDRESS_CHOICE:
-      return <AddressChoice onSelected={onFinish} />;
+      return <AddressChoice />;
     default:
       return null;
   }
 };
 
 export function ConnectGridPlus() {
-  const navigate = useRainbowNavigate();
-  const { state } = useLocation();
   const [gridplusStep, setGridplusStep] = useState<GridplusStep>(
     GridplusStep.WALLET_CREDENTIALS,
   );
-  const onFinish = (addresses: string[]) => {
-    const accountsToImport = addresses.map((address, i) => ({
-      address,
-      index: i,
-    }));
-    navigate(ROUTES.HW_WALLET_LIST, {
-      state: {
-        accountsToImport,
-        deviceId: 'GridPlus',
-        accountsEnabled: accountsToImport.length,
-        vendor: 'GridPlus',
-        direction: state?.direction,
-        navbarIcon: state?.navbarIcon,
-      },
-    });
-  };
   return (
     <FullScreenContainer>
       <Box
@@ -90,11 +67,7 @@ export function ConnectGridPlus() {
       >
         <img src={gridPlusLogo} width={80} />
         <AnimatePresence initial={false}>
-          <GridPlusRouting
-            step={gridplusStep}
-            setStep={setGridplusStep}
-            onFinish={onFinish}
-          />
+          <GridPlusRouting step={gridplusStep} setStep={setGridplusStep} />
         </AnimatePresence>
       </Box>
     </FullScreenContainer>

@@ -24,41 +24,51 @@ import { getPath } from '~/core/keychain';
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 import { addHexPrefix } from '~/core/utils/hex';
 
+const LOCAL_STORAGE_CLIENT_NAME = 'storedClient';
+
+export const getStoredGridPlusClient = () =>
+  localStorage.getItem(LOCAL_STORAGE_CLIENT_NAME) ?? '';
+
+export const setStoredGridPlusClient = (storedClient: string | null) => {
+  if (!storedClient) return;
+  localStorage.setItem(LOCAL_STORAGE_CLIENT_NAME, storedClient);
+};
+
+export const removeStoredGridPlusClient = () =>
+  localStorage.removeItem(LOCAL_STORAGE_CLIENT_NAME);
+
 export async function signTransactionFromGridPlus(
   transaction: TransactionRequest,
 ) {
   try {
     const { from: address } = transaction;
     const baseTx: UnsignedTransaction = {
-      chainId: transaction.chainId || undefined,
-      data: transaction.data || undefined,
+      chainId: transaction.chainId,
+      data: transaction.data,
       gasLimit: transaction.gasLimit
         ? BigNumber.from(transaction.gasLimit).toHexString()
         : undefined,
       nonce: transaction.nonce
         ? BigNumber.from(transaction.nonce).toNumber()
         : undefined,
-      to: transaction.to || undefined,
+      to: transaction.to,
       value: transaction.value
         ? BigNumber.from(transaction.value).toHexString()
         : undefined,
     };
 
-    let forceLegacy = false;
-    // HW doesn't support type 2 for these networks yet
-    if (LEGACY_CHAINS_FOR_HW.includes(transaction.chainId as ChainId)) {
-      forceLegacy = true;
-    }
+    const forceLegacy = LEGACY_CHAINS_FOR_HW.includes(
+      transaction.chainId as ChainId,
+    );
 
     if (transaction.gasPrice) {
       baseTx.gasPrice = transaction.gasPrice;
     } else if (!forceLegacy) {
-      baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
-      baseTx.maxPriorityFeePerGas =
-        transaction.maxPriorityFeePerGas || undefined;
+      baseTx.maxFeePerGas = transaction.maxFeePerGas;
+      baseTx.maxPriorityFeePerGas = transaction.maxPriorityFeePerGas;
       baseTx.type = 2;
     } else {
-      baseTx.gasPrice = transaction.maxFeePerGas || undefined;
+      baseTx.gasPrice = transaction.maxFeePerGas;
     }
 
     const common = new Common({
@@ -90,7 +100,9 @@ export async function signTransactionFromGridPlus(
 
       const parsedTx = parse(serializedTransaction);
       if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
-        throw new Error('Transaction was not signed by the right address');
+        throw new Error(
+          'Address not found on this wallet. Try another SafeCard or remove the SafeCard to use the wallet on your device.',
+        );
       }
 
       return serializedTransaction;
@@ -194,7 +206,7 @@ export async function signMessageByTypeFromGridPlus(
 
     if (responseAddress.toLowerCase() !== address.toLowerCase()) {
       throw new Error(
-        'GridPlus returned a different address than the one requested',
+        'Address not found on this wallet. Try another SafeCard or remove the SafeCard to use the wallet on your device.',
       );
     }
 

@@ -2,6 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { motion } from 'framer-motion';
 import { fetchAddresses } from 'gridplus-sdk';
 import { FormEvent, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -11,16 +12,15 @@ import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 import { Link } from '~/entries/popup/components/Link/Link';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { useAccounts } from '~/entries/popup/hooks/useAccounts';
+import { ROUTES } from '~/entries/popup/urls';
 
 export type AddressesData = {
   addresses: Address[];
 };
 
-export type AddressChoiceProps = {
-  onSelected: (addressses: AddressesData['addresses']) => void;
-};
-
-export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
+export const AddressChoice = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
   const { sortedAccounts } = useAccounts();
   const [formData, setFormData] = useState({
     selectedAddresses: [] as string[],
@@ -42,7 +42,20 @@ export const AddressChoice = ({ onSelected }: AddressChoiceProps) => {
   };
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSelected(formData.selectedAddresses as Address[]);
+    const accountsToImport = formData.selectedAddresses.map((address, i) => ({
+      address,
+      index: i,
+    }));
+    navigate(ROUTES.HW_WALLET_LIST, {
+      state: {
+        accountsToImport,
+        deviceId: 'GridPlus',
+        accountsEnabled: accountsToImport.length,
+        vendor: 'GridPlus',
+        direction: state?.direction,
+        navbarIcon: state?.navbarIcon,
+      },
+    });
   };
   useEffect(() => {
     const fetchWalletAddresses = async () => {

@@ -23,6 +23,10 @@ import { Routes } from './Routes';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
+import {
+  getStoredGridPlusClient,
+  setStoredGridPlusClient,
+} from './handlers/gridplus';
 import { AuthProvider } from './hooks/useAuth';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
@@ -33,13 +37,6 @@ import { RainbowConnector } from './wagmi/RainbowConnector';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
-
-const getStoredClient = () => localStorage.getItem('storedClient') ?? '';
-
-const setStoredClient = (storedClient: string | null) => {
-  if (!storedClient) return;
-  localStorage.setItem('storedClient', storedClient);
-};
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
@@ -83,7 +80,12 @@ export function App() {
       analytics.track(event.popupOpened);
       setTimeout(() => flushQueuedEvents(), 1000);
     }
-    setup({ getStoredClient, setStoredClient, name: 'Rainbow' });
+    if (getStoredGridPlusClient())
+      setup({
+        getStoredClient: getStoredGridPlusClient,
+        setStoredClient: setStoredGridPlusClient,
+        name: 'Rainbow',
+      });
     // Init trezor once globally
     window.TrezorConnect?.init({
       manifest: {

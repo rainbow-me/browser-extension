@@ -6,6 +6,10 @@ import { i18n } from '~/core/languages';
 import { Box, Button, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
+import {
+  getStoredGridPlusClient,
+  setStoredGridPlusClient,
+} from '~/entries/popup/handlers/gridplus';
 
 export type WalletCredentialsProps = {
   appName: string;
@@ -24,12 +28,6 @@ export const WalletCredentials = ({
   const formDataFilled =
     formData.deviceId.length > 0 && formData.password.length > 0;
   const disabled = !formDataFilled || connecting;
-  const getStoredClient = () => localStorage.getItem('storedClient') ?? '';
-
-  const setStoredClient = (storedClient: string | null) => {
-    if (!storedClient) return;
-    localStorage.setItem('storedClient', storedClient);
-  };
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setConnecting(true);
@@ -38,9 +36,10 @@ export const WalletCredentials = ({
         deviceId: formData.deviceId,
         password: formData.password,
         name: appName,
-        getStoredClient,
-        setStoredClient,
+        getStoredClient: getStoredGridPlusClient,
+        setStoredClient: setStoredGridPlusClient,
       });
+      localStorage.setItem('gridPlusDeviceId', formData.deviceId);
       onAfterSetup && onAfterSetup(result);
     } finally {
       setConnecting(false);
@@ -48,10 +47,10 @@ export const WalletCredentials = ({
   };
   useEffect(() => {
     const checkPersistedClient = async () => {
-      if (getStoredClient()) {
+      if (getStoredGridPlusClient()) {
         const result = await setup({
-          getStoredClient,
-          setStoredClient,
+          getStoredClient: getStoredGridPlusClient,
+          setStoredClient: setStoredGridPlusClient,
           name: appName,
         });
         onAfterSetup && onAfterSetup(result);
@@ -73,20 +72,44 @@ export const WalletCredentials = ({
       <Box
         display="flex"
         flexDirection="column"
+        alignItems="center"
         flexGrow="1"
         flexShrink="1"
-        gap="24px"
+        gap="32px"
+        width="full"
       >
         <Text size="20pt" weight="semibold" align="center">
           {i18n.t('hw.connect_gridplus_title')}
         </Text>
-        <Text size="16pt" weight="medium" align="center" color="labelSecondary">
-          {i18n.t('hw.connect_gridplus_description')}
-        </Text>
-        <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
-          <Text size="14pt" weight="semibold" color="labelSecondary">
-            {i18n.t('hw.gridplus_device_id')}
+        <Box paddingHorizontal="24px">
+          <Text
+            size="16pt"
+            weight="medium"
+            align="center"
+            color="labelSecondary"
+          >
+            {i18n.t('hw.connect_gridplus_description')}
           </Text>
+        </Box>
+        <Box
+          as="fieldset"
+          display="flex"
+          flexDirection="column"
+          gap="8px"
+          width="full"
+        >
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Text size="14pt" weight="semibold" color="labelSecondary">
+              {i18n.t('hw.gridplus_device_id')}
+            </Text>
+            <Text size="12pt" weight="medium" color="labelSecondary">
+              {i18n.t('hw.gridplus_device_id_description')}
+            </Text>
+          </Box>
           <Input
             variant="bordered"
             height="40px"
@@ -99,9 +122,6 @@ export const WalletCredentials = ({
             testId="gridplus-deviceid"
             aria-label="username"
           />
-          <Text size="12pt" weight="medium" color="labelSecondary">
-            {i18n.t('hw.gridplus_device_id_description')}
-          </Text>
         </Box>
         <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
           <Text size="14pt" weight="semibold" color="labelSecondary">
