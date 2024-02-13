@@ -60,7 +60,10 @@ async function nftsQueryFunction({
   queryKey: [{ address, testnetMode, userChains }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
-  if (process.env.IS_TESTING === 'true') {
+  if (
+    process.env.IS_TESTING === 'true' &&
+    isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
+  ) {
     return NFTS_TEST_DATA;
   }
   const activeChainIds = userChains
@@ -75,12 +78,6 @@ async function nftsQueryFunction({
     const id = chainNameToIdMapping[simplehashChainName];
     return activeChainIds.includes(id);
   }) as ChainName[];
-  if (
-    process.env.IS_TESTING === 'true' &&
-    isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
-  ) {
-    return NFTS_TEST_DATA;
-  }
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({
