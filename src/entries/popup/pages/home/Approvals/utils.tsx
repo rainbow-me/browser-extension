@@ -21,10 +21,7 @@ export const listenRevokeApproval = (
 ) => {
   eventEmitter.addListener('rainbow_revoke_approval', callback);
   return () => {
-    eventEmitter.removeListener(
-      'rainbow_app_connection_wallet_switcher',
-      callback,
-    );
+    eventEmitter.removeListener('rainbow_revoke_approval', callback);
   };
 };
 

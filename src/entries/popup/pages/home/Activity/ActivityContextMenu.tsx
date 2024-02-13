@@ -73,7 +73,6 @@ export function ActivityContextMenu({
     handler: (e: KeyboardEvent) => {
       e.preventDefault();
       if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
-        // if (onRevokeTransaction) onRevokeTransaction();
         onRevoke();
       }
     },
