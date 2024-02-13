@@ -72,7 +72,7 @@
     "firefox:build": "yarn build && yarn firefox:manifest",
     "firefox:zip": "yarn zip && mv rainbowbx.zip rainbowbx.xpi",
     "firefox:lint": "yarn web-ext lint --source-dir ./build",
-    "firefox:run": "yarn web-ext run --source-dir ./build/"
+    "firefox:run": "yarn web-ext run --source-dir ./build/ -f='/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox'"
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",

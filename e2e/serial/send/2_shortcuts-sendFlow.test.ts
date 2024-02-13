@@ -100,7 +100,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to nav to send field and type in address', async () => {
-    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
+    await delayTime('medium');
     await driver.actions().sendKeys('0xtester.eth').perform();
     const shortenedAddress = await findElementByText(driver, '0x2e67…e774');
     expect(shortenedAddress).toBeTruthy();
