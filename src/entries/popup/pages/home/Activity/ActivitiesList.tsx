@@ -90,33 +90,26 @@ export function Activities() {
 
   const isRevokableTransaction = useCallback(
     (tx: RainbowTransaction) => {
-      if (tx.type === 'approve' && !isWatchingWallet) {
-        const txApproval = tokenApprovals?.find((approval) =>
-          isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
-        );
-        if (txApproval) {
-          return true;
-        }
-      }
-      return false;
+      if (tx.type !== 'approve' || isWatchingWallet) return false;
+      return tokenApprovals?.some((approval) =>
+        isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
+      );
     },
     [isWatchingWallet, tokenApprovals],
   );
 
   const onRevokeTransaction = useCallback(
     (tx: RainbowTransaction) => {
-      if (tx.type === 'approve' && !isWatchingWallet) {
-        const txApproval = tokenApprovals?.find((approval) =>
-          isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
-        );
-        if (txApproval) {
-          triggerRevokeApproval({
-            show: true,
-            approval: txApproval,
-          });
-        }
+      if (tx.type !== 'approve' || isWatchingWallet) return null;
+      const txApproval = tokenApprovals?.find((approval) =>
+        isLowerCaseMatch(approval.spender.tx_hash, tx.hash),
+      );
+      if (txApproval) {
+        triggerRevokeApproval({
+          show: true,
+          approval: txApproval,
+        });
       }
-      return null;
     },
     [isWatchingWallet, tokenApprovals],
   );
