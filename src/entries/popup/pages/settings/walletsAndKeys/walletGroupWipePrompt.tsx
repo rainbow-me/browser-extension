@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { appSessionsStore, useCurrentAddressStore } from '~/core/state';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { getSettingWallets } from '~/core/utils/settings';
@@ -44,6 +44,7 @@ export const WipeWalletGroupPrompt = ({
       await remove(address);
       deleteWalletName({ address });
       deleteWalletBackup({ address });
+      appSessionsStore.getState().removeAddressSessions({ address });
 
       if (visibleWallets.length > 1) {
         if (address === currentAddress) {
