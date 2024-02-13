@@ -29,7 +29,6 @@ import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTranspa
 import { SpinnerRow } from '~/entries/popup/components/SpinnerRow/SpinnerRow';
 import { Tag } from '~/entries/popup/components/Tag';
 import { useInfiniteTransactionList } from '~/entries/popup/hooks/useInfiniteTransactionList';
-import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useTransactionListForPendingTxs } from '~/entries/popup/hooks/useTransactionListForPendingTxs';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { simulateContextClick } from '~/entries/popup/utils/simulateClick';
@@ -60,14 +59,13 @@ export function Activities() {
   const containerRef = useContainerRef();
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { rainbowChains } = useRainbowChains();
   const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
   const { userChains } = useUserChainsStore();
   const { isWatchingWallet } = useWallets();
 
-  const chainIds = rainbowChains
-    .filter((c) => supportedMainnetIds.includes(c.id) && userChains[c.id])
-    .map((c) => c.id);
+  const chainIds = Object.keys(userChains)
+    .filter((id) => supportedMainnetIds.includes(Number(id)))
+    .map(Number);
 
   const { data: approvals } = useApprovals({
     address: currentAddress,

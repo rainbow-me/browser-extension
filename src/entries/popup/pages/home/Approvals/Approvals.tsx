@@ -60,7 +60,6 @@ import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { simulateContextClick } from '~/entries/popup/utils/simulateClick';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
-import { useRainbowChains } from '../../../hooks/useRainbowChains';
 import { gradientBorderDark, gradientBorderLight } from '../NFTs/NFTs.css';
 
 import { childAStyle, childBStyle } from './Approvals.css';
@@ -326,7 +325,6 @@ const sortApprovals = (
 export const Approvals = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { rainbowChains } = useRainbowChains();
   const { userChains } = useUserChainsStore();
   const [showRevokeSheet, setShowRevokeSheet] = useState(false);
   const [revokeApproval, setRevokeApproval] = useState<{
@@ -360,9 +358,9 @@ export const Approvals = () => {
     [activeTab, data?.pages],
   );
 
-  const chainIds = rainbowChains
-    .filter((c) => supportedMainnetIds.includes(c.id) && userChains[c.id])
-    .map((c) => c.id);
+  const chainIds = Object.keys(userChains)
+    .filter((id) => supportedMainnetIds.includes(Number(id)))
+    .map(Number);
 
   const { data: approvals, isLoading } = useApprovals(
     {
