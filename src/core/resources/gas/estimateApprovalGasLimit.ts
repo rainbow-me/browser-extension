@@ -21,7 +21,7 @@ export type EstimateAprovalGasLimitArgs = {
   ownerAddress: Address;
   assetAddress?: Address;
   spenderAddress?: Address;
-  assetType: 'erc20' | 'erc721';
+  assetType: 'erc20' | 'nft';
 };
 
 // ///////////////////////////////////////////////

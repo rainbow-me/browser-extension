@@ -395,7 +395,7 @@ type ApprovalFeeProps = {
     transactionSpeedSwitched: keyof EventProperties;
     transactionSpeedClicked: keyof EventProperties;
   };
-  assetType: 'erc20' | 'erc721';
+  assetType: 'erc20' | 'nft';
 };
 
 export function ApprovalFee({

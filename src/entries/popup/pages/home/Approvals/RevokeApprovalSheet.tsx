@@ -97,8 +97,8 @@ export const RevokeApprovalSheet = ({
 
   const { approvalChainId, assetAddress, spenderAddress, assetType } =
     useMemo(() => {
-      const assetType: 'erc20' | 'erc721' =
-        approval?.asset.type === 'nft' ? 'erc721' : 'erc20';
+      const assetType: 'erc20' | 'nft' =
+        approval?.asset.type === 'nft' ? 'nft' : 'erc20';
       const approvalChainId = approval?.chain_id as ChainId;
       return {
         approvalChainId,
