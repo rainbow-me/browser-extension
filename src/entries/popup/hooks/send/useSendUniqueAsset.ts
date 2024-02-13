@@ -11,6 +11,8 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { NftSort } from '~/core/state/nfts';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
+import { useUserChains } from '../useUserChains';
+
 export const useSendUniqueAsset = () => {
   const { currentAddress: address } = useCurrentAddressStore();
   const [sortMethod, setSortMethod] = useState<NftSort>('recent');
@@ -19,7 +21,8 @@ export const useSendUniqueAsset = () => {
   const [selectedNftUniqueId, setSelectedNftUniqueId] = useState<string>('');
   const [selectedNftCollectionId, setSelectedNftCollectionId] =
     useState<string>('');
-  const { data } = useNfts({ address, testnetMode });
+  const { chains: userChains } = useUserChains();
+  const { data } = useNfts({ address, testnetMode, userChains });
   const sectionsDictionary = useMemo(() => {
     return selectNftCollections(data);
   }, [data]);
