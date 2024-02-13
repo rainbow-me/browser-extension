@@ -226,6 +226,7 @@ export function AddAsset() {
             loading={assetMetadataIsFetching}
             onBlur={onAddressBlur}
             borderColor={validations.address ? 'accent' : 'red'}
+            tabIndex={0}
           />
           <FormInput
             onChange={(t) =>
@@ -235,6 +236,8 @@ export function AddAsset() {
             value={asset.name || assetMetadata?.name}
             onBlur={onNameBlur}
             borderColor={validations.name ? 'accent' : 'red'}
+            tabIndex={0}
+            testId={'token-name-field'}
           />
           <FormInput
             onChange={(t) =>
@@ -244,6 +247,7 @@ export function AddAsset() {
             value={asset.decimals || assetMetadata?.decimals}
             onBlur={onDecimalsBlur}
             borderColor={validations.decimals ? 'accent' : 'red'}
+            tabIndex={0}
           />
           <FormInput
             onChange={(t) =>
@@ -253,6 +257,7 @@ export function AddAsset() {
             value={asset.symbol || assetMetadata?.symbol}
             onBlur={onSymbolBlur}
             borderColor={validations.symbol ? 'accent' : 'red'}
+            tabIndex={0}
           />
 
           <Inline alignHorizontal="right">
@@ -261,6 +266,7 @@ export function AddAsset() {
               color="accent"
               height="36px"
               variant="raised"
+              tabIndex={0}
             >
               Add
             </Button>
