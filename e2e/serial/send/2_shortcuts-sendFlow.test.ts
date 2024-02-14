@@ -131,9 +131,10 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to focus asset to send with keyboard', async () => {
-    await executePerformShortcut({ driver, key: 'TAB' });
-    const ethereum = await findElementByText(driver, 'Ethereum');
-    expect(ethereum).toBeTruthy();
+    await navigateToElementWithTestId({
+      driver,
+      testId: 'token-input',
+    });
     await navigateToElementWithTestId({
       driver,
       testId: 'asset-name-eth_1',
