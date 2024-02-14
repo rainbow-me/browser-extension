@@ -391,6 +391,8 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('medium');
 
+    await delayTime('very-long');
+    await delayTime('very-long');
     // find post-send token address
     const senderPostSendbalance = await getOnchainBalance(
       TEST_VARIABLES.SEED_WALLET.ADDRESS,

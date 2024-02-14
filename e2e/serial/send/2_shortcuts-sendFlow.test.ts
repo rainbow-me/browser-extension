@@ -90,6 +90,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to navigate home with keyboard nav', async () => {
+    await delayTime('long');
     await executePerformShortcut({ driver, key: 'ESCAPE' });
     await checkExtensionURL(driver, 'home');
   });
