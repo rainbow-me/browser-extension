@@ -87,6 +87,7 @@ export type AssetApiResponse = {
   };
   symbol: string;
   colors?: { primary?: string; fallback?: string; shadow?: string };
+  chain_id: ChainId;
   network?: ChainName;
   networks?: {
     [chainId in ChainId]?: {

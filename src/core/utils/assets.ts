@@ -102,7 +102,9 @@ export function parseAsset({
   const chainName = asset.network ?? ChainName.mainnet;
   const networks = 'networks' in asset ? asset.networks || {} : {};
   const chainId =
-    chainIdFromChainName(chainName) || Number(Object.keys(networks)[0]);
+    'chain_id' in asset
+      ? asset.chain_id
+      : chainIdFromChainName(chainName) || Number(Object.keys(networks)[0]);
 
   // ZerionAsset should be removed when we move fully away from websckets/refraction api
   const mainnetAddress = isZerionAsset(asset)
