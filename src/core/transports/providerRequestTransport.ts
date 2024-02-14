@@ -1,9 +1,10 @@
-import { bridgeMessenger } from '../messengers/internal/bridge';
-import { CallbackOptions } from '../messengers/internal/createMessenger';
 import {
   RequestArguments,
   RequestResponse,
-} from '../providers/RainbowInjectedProvider';
+} from 'rainbow-provider/dist/references';
+
+import { bridgeMessenger } from '../messengers/internal/bridge';
+import { CallbackOptions } from '../messengers/internal/createMessenger';
 
 import { createTransport } from './internal/createTransport';
 

@@ -4,9 +4,10 @@ import {
   JsonRpcSigner,
   Web3Provider,
 } from '@ethersproject/providers';
+import { RainbowProvider } from 'rainbow-provider';
 import { Chain, Connector } from 'wagmi';
 
-import { ChainIdHex, RainbowInjectedProvider } from '~/core/providers';
+import { ChainIdHex } from '~/core/providers';
 import { currentAddressStore, currentChainIdStore } from '~/core/state';
 
 function normalizeChainId(chainId: ChainIdHex | number | bigint) {
@@ -16,7 +17,7 @@ function normalizeChainId(chainId: ChainIdHex | number | bigint) {
 }
 
 export class RainbowConnector extends Connector<
-  RainbowInjectedProvider,
+  RainbowProvider,
   Record<string, unknown>,
   JsonRpcSigner
 > {
@@ -24,7 +25,7 @@ export class RainbowConnector extends Connector<
   readonly name: string;
   readonly ready = true;
 
-  #provider: RainbowInjectedProvider;
+  #provider: RainbowProvider;
 
   constructor({
     chains,
@@ -35,7 +36,7 @@ export class RainbowConnector extends Connector<
 
     this.id = 'rainbow';
     this.name = 'rainbow';
-    this.#provider = new RainbowInjectedProvider();
+    this.#provider = new RainbowProvider();
   }
 
   async connect() {
