@@ -46,6 +46,7 @@ export interface AutocompleteProps {
   open: boolean;
   autoFocus?: boolean;
   tabIndex: number;
+  testId?: string;
 }
 
 export type customNetworkInfo = {
@@ -71,6 +72,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       open,
       autoFocus,
       tabIndex,
+      testId,
     }: AutocompleteProps,
     ref,
   ) {
@@ -91,6 +93,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
             borderWidth="1px"
             transition={transitions.bounce}
             whileTap={{ scale: transformScales['0.96'] }}
+            testId={testId}
           >
             <Command.Input
               autoFocus={autoFocus}
