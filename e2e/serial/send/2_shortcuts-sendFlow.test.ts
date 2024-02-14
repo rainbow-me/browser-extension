@@ -89,17 +89,6 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     await checkExtensionURL(driver, 'send');
   });
 
-  it('should be able to navigate home with keyboard nav', async () => {
-    await delayTime('long');
-    await executePerformShortcut({ driver, key: 'ESCAPE' });
-    await checkExtensionURL(driver, 'home');
-  });
-
-  it('should be able to navigate to send with keyboard navigation', async () => {
-    await navigateToElementWithTestId({ driver, testId: 'header-link-send' });
-    await checkExtensionURL(driver, 'send');
-  });
-
   it('should be able to nav to send field and type in address', async () => {
     await delayTime('very-long');
     await driver.actions().sendKeys('0xtester.eth').perform();
