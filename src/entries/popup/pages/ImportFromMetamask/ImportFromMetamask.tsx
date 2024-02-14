@@ -300,11 +300,17 @@ function ImportingFile() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    setTimeout(() => setProgress(15), 100);
-    setTimeout(() => setProgress(40), 1400);
-    setTimeout(() => setProgress(55), 2500);
-    setTimeout(() => setProgress(75), 3200);
-    setTimeout(() => setProgress(100), 5000);
+    const timeouts = [
+      setTimeout(() => setProgress(15), 100),
+      setTimeout(() => setProgress(40), 1400),
+      setTimeout(() => setProgress(55), 2500),
+      setTimeout(() => setProgress(75), 3200),
+      setTimeout(() => setProgress(100), 5000),
+    ];
+
+    return () => {
+      timeouts.forEach(clearTimeout);
+    };
   }, []);
 
   return (
