@@ -188,7 +188,11 @@ export async function getExtensionIdByName(
     await driver.get('about:debugging#addons');
     const text = await driver
       .wait(
-        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
+        until.elementLocated(
+          By.xpath(
+            "//dt[contains(., 'Extension ID')]/following-sibling::dd[contains(., 'rainbow')]/../following-sibling::div/dt[contains(., 'Internal UUID')]/following-sibling::dd",
+          ),
+        ),
         1000,
       )
       .getText();
