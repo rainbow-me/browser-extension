@@ -6,6 +6,7 @@ import { Address } from 'wagmi';
 
 import { gasUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
+import { useEstimateApprovalGasLimit } from '~/core/resources/gas/estimateApprovalGasLimit';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
 import {
   MeteorologyLegacyResponse,
@@ -380,5 +381,43 @@ export const useSwapGas = ({
     enabled,
     flashbotsEnabled,
     additionalTime: quoteServiceTime,
+  });
+};
+
+export const useApprovalGas = ({
+  chainId,
+  address,
+  assetAddress,
+  spenderAddress,
+  defaultSpeed,
+  transactionRequest,
+  flashbotsEnabled,
+  assetType,
+}: {
+  chainId: ChainId;
+  address: Address;
+  assetAddress?: Address;
+  spenderAddress?: Address;
+  defaultSpeed?: GasSpeed;
+  transactionRequest: TransactionRequest;
+  flashbotsEnabled?: boolean;
+  assetType: 'erc20' | 'nft';
+}) => {
+  const { data: estimatedGasLimit } = useEstimateApprovalGasLimit({
+    chainId,
+    ownerAddress: address,
+    assetAddress,
+    spenderAddress,
+    assetType,
+  });
+
+  return useGas({
+    chainId,
+    address,
+    defaultSpeed,
+    estimatedGasLimit,
+    transactionRequest,
+    flashbotsEnabled,
+    enabled: true,
   });
 };

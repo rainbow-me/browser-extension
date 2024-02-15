@@ -33,7 +33,7 @@ export function TokenApprovals() {
       </Text>
       <Separator color="separatorTertiary" />
       <Box display="flex" flexDirection="column" gap="20px">
-        {approvals.map(({ icon, name, amount, contract }) => (
+        {approvals?.map(({ icon, name, amount, contract }) => (
           <DropdownMenu key={contract}>
             <DropdownMenuTrigger asChild>
               <Box display="flex" justifyContent="space-between" key={contract}>

@@ -25,7 +25,7 @@ import {
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
-function AddressMoreOptions({
+export function AddressMoreOptions({
   address,
   chainId,
 }: {
