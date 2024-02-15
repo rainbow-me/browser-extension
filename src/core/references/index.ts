@@ -4,7 +4,6 @@ import {
   arbitrumGoerli,
   arbitrumSepolia,
   base,
-  baseGoerli,
   baseSepolia,
   bsc,
   bscTestnet,
@@ -131,8 +130,8 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.hardhatOptimism]: AddressZero as Address,
   [ChainId.optimismGoerli]: AddressZero as Address,
   [ChainId.optimismSepolia]: AddressZero as Address,
+  [ChainId.rari]: AddressZero as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
-  [ChainId.baseGoerli]: AddressZero as Address,
   [ChainId.baseSepolia]: AddressZero as Address,
   [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
   [ChainId.zoraTestnet]: AddressZero as Address,
@@ -153,11 +152,11 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.bsc]: BNB_MAINNET_ADDRESS,
   [ChainId.bscTestnet]: BNB_MAINNET_ADDRESS,
   [ChainId.optimism]: ETH_ADDRESS,
+  [ChainId.rari]: ETH_ADDRESS,
   [ChainId.hardhatOptimism]: ETH_ADDRESS,
   [ChainId.optimismGoerli]: ETH_ADDRESS,
   [ChainId.optimismSepolia]: ETH_ADDRESS,
   [ChainId.base]: ETH_ADDRESS,
-  [ChainId.baseGoerli]: ETH_ADDRESS,
   [ChainId.baseSepolia]: ETH_ADDRESS,
   [ChainId.zora]: ETH_ADDRESS,
   [ChainId.zoraTestnet]: ETH_ADDRESS,
@@ -205,7 +204,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
   polygonMumbai,
   arbitrumGoerli,
   arbitrumSepolia,
-  baseGoerli,
   baseSepolia,
   zoraSepolia,
   zoraTestnet,
@@ -223,7 +221,6 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   polygonMumbai,
   arbitrumGoerli,
   arbitrumSepolia,
-  baseGoerli,
   baseSepolia,
   zoraTestnet,
   zoraSepolia,
@@ -266,8 +263,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ARBITRUM_SEPOLIA_RPC };
     case ChainId.arbitrumGoerli:
       return { http: process.env.ARBITRUM_GOERLI_RPC };
-    case ChainId.baseGoerli:
-      return { http: process.env.BASE_GOERLI_RPC };
     case ChainId.baseSepolia:
       return { http: process.env.BASE_SEPOLIA_RPC };
     case ChainId.zoraTestnet:

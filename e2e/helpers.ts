@@ -394,18 +394,21 @@ export async function typeOnTextInput({
   text,
   driver,
 }: {
-  id: string;
+  id?: string;
   text: number | string;
   driver: WebDriver;
 }) {
   if (isFirefox) {
-    await clearInput({
-      id,
-      driver,
-    });
+    id &&
+      (await clearInput({
+        id,
+        driver,
+      }));
   }
-  const element = await findElementByTestId({ id, driver });
-  await element.sendKeys(text);
+  const element = id ? await findElementByTestId({ id, driver }) : null;
+  element
+    ? await element.sendKeys(text)
+    : await driver.actions().sendKeys(text.toString()).perform();
 }
 
 export async function clearInput({

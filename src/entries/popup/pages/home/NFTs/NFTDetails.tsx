@@ -12,7 +12,7 @@ import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { AddressOrEth } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -25,7 +25,6 @@ import {
   getUniqueAssetImageThumbnailURL,
 } from '~/core/utils/nfts';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
-import { capitalize } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
 import {
   AccentColorProvider,
@@ -75,6 +74,7 @@ import {
 } from '~/entries/popup/components/Navbar/Navbar';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
+import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 import { BirdIcon } from './BirdIcon';
@@ -88,7 +88,8 @@ export default function NFTDetails() {
     nftId: string;
   }>();
   const { testnetMode } = useTestnetModeStore();
-  const { data } = useNfts({ address, testnetMode });
+  const { chains: userChains } = useUserChains();
+  const { data } = useNfts({ address, testnetMode, userChains });
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
@@ -626,8 +627,9 @@ const NFTAccordionAboutSection = ({
   nft?: UniqueAsset | null;
   showFloorPriceExplainerSheet: () => void;
 }) => {
-  const network =
-    nft?.network === 'mainnet' ? 'Ethereum' : capitalize(nft?.network);
+  const networkDisplay = nft?.network
+    ? ChainNameDisplay[chainIdFromChainName(nft?.network)]
+    : '';
   const deployedBy = nft?.asset_contract?.deployed_by;
   const { data: creatorEnsName } = useEnsName({
     address: (deployedBy as Address) || undefined,
@@ -708,7 +710,7 @@ const NFTAccordionAboutSection = ({
             }
           />
         )}
-        {network && (
+        {networkDisplay && (
           <Box
             display="flex"
             alignItems="center"
@@ -740,7 +742,7 @@ const NFTAccordionAboutSection = ({
                 cursor="text"
                 userSelect="all"
               >
-                {network}
+                {networkDisplay}
               </TextOverflow>
             </Inline>
           </Box>

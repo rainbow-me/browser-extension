@@ -123,18 +123,22 @@ function Fee({
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
-        trackShortcut({
-          key: shortcuts.global.OPEN_CUSTOM_GAS_MENU.display,
-          type: 'customGasMenu.open',
-        });
-        // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
-        setTimeout(() => openCustomGasSheet(), 0);
+        if (chainId === ChainId.mainnet) {
+          trackShortcut({
+            key: shortcuts.global.OPEN_CUSTOM_GAS_MENU.display,
+            type: 'customGasMenu.open',
+          });
+          // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
+          setTimeout(() => openCustomGasSheet(), 0);
+        }
       } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
-        trackShortcut({
-          key: shortcuts.global.OPEN_GAS_MENU.display,
-          type: 'gasMenu.open',
-        });
-        switchTransactionSpeedMenuRef?.current?.open();
+        if (chainId === ChainId.mainnet || chainId === ChainId.polygon) {
+          trackShortcut({
+            key: shortcuts.global.OPEN_GAS_MENU.display,
+            type: 'gasMenu.open',
+          });
+          switchTransactionSpeedMenuRef?.current?.open();
+        }
       }
     },
   });

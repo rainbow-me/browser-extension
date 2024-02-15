@@ -15,6 +15,7 @@ import { useNetwork } from 'wagmi';
 import {
   NATIVE_ASSETS_PER_CHAIN,
   SUPPORTED_CHAINS,
+  SUPPORTED_CHAIN_IDS,
   SUPPORTED_MAINNET_CHAINS,
 } from '~/core/references';
 import {
@@ -82,6 +83,9 @@ export const getSupportedChainsWithHardhat = () => {
         (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)),
   );
 };
+
+export const isDefaultSupportedChain = ({ chainId }: { chainId: ChainId }) =>
+  SUPPORTED_CHAIN_IDS.map((id) => id).includes(chainId);
 
 export const getSupportedChains = () => {
   const { chains } = getNetwork();
@@ -159,56 +163,36 @@ export const getSupportedTestnetChains = () => {
 export const getSimpleHashSupportedChainNames = () => {
   return [
     'ethereum',
-    'solana',
-    'bitcoin',
-    'polygon',
-    'arbitrum',
-    'arbitrum-nova',
-    'avalanche',
-    'base',
-    'bsc',
-    'celo',
-    'flow',
-    'gnosis',
-    'godwoken',
-    'linea',
-    'loot',
-    'manta',
-    'optimism',
-    'palm',
-    'polygon-zkvem',
-    'scroll',
-    'zksync-era',
-    'zora',
-    'ethereum-rinkeby',
+    ChainName.polygon,
+    ChainName.arbitrum,
+    ChainName.arbitrumNova,
+    ChainName.avalanche,
+    ChainName.base,
+    ChainName.bsc,
+    ChainName.celo,
+    ChainName.gnosis,
+    ChainName.linea,
+    ChainName.manta,
+    ChainName.optimism,
+    ChainName.polygonZkEvm,
+    ChainName.rari,
+    ChainName.scroll,
+    ChainName.zora,
+  ] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
+};
+
+export const getSimpleHashSupportedTestnetChainNames = () => {
+  return [
     'ethereum-sepolia',
-    'solana-devnet',
-    'polygon-mumbai',
-    'arbitrum-goerli',
-    'arbitrum-sepolia',
-    'astria-devnet',
-    'avalanche-fuji',
-    'base-goerli',
-    'base-sepolia',
-    'bsc-testnet',
-    'frame-testnet',
-    'godwoken-testnet',
-    'linea-testnet',
-    'manta-testnet',
-    'modular-games-testnet',
-    'optimism-goerli',
-    'optimism-sepolia',
-    'palm-testnet',
-    'palm-testnet-edge',
-    'polygon-zkevm-testnet',
-    'scroll-testnet',
-    'scroll-sepoloia',
-    'zksync-era-testnet',
-    'zora-testnet',
-    'zora-sepolia',
-    'rari',
-    'rari-testnet',
-  ];
+    ChainName.polygonMumbai,
+    ChainName.arbitrumGoerli,
+    ChainName.arbitrumSepolia,
+    ChainName.baseSepolia,
+    ChainName.optimismGoerli,
+    ChainName.optimismSepolia,
+    ChainName.zoraTestnet,
+    ChainName.zoraSepolia,
+  ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 };
 
 export const useBackendSupportedChains = ({
