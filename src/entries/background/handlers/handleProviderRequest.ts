@@ -324,11 +324,11 @@ export const handleProviderRequest = ({
           break;
         }
         case 'wallet_addEthereumChain': {
-          console.log('wallet_addEthereumChain params', params);
           const { featureFlags } = featureFlagsStore.getState();
           const { rainbowChains, addCustomRPC, setActiveRPC } =
             rainbowChainsStore.getState();
           const { addUserChain } = userChainsStore.getState();
+
           const proposedChain = params?.[0] as {
             chainId: string;
             rpcUrls: string[];
@@ -496,7 +496,6 @@ export const handleProviderRequest = ({
               throw new Error('Address is required');
             }
 
-            const activeSession = getActiveSession({ host });
             let chainId = null;
             if (activeSession) {
               chainId = activeSession?.chainId;
@@ -530,7 +529,6 @@ export const handleProviderRequest = ({
             isCustomChain(Number(proposedChainId)) ||
             isSupportedChainId(Number(proposedChainId));
           const extensionUrl = chrome.runtime.getURL('');
-          const activeSession = getActiveSession({ host });
           if (!supportedChainId || !activeSession) {
             const chain = rainbowChainsStore
               .getState()
