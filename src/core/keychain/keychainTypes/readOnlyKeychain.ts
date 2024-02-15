@@ -11,11 +11,11 @@ import { logger } from '~/logger';
 import { IKeychain, PrivateKey } from '../IKeychain';
 
 export interface SerializedReadOnlyKeychain {
-  type: string;
+  type: KeychainType.ReadOnlyKeychain;
   address: Address;
 }
 export class ReadOnlyKeychain implements IKeychain {
-  type: string;
+  type: KeychainType.ReadOnlyKeychain;
   address?: Address;
 
   constructor() {

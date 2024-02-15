@@ -11,14 +11,14 @@ import { IKeychain, PrivateKey, TWallet } from '../IKeychain';
 import { RainbowSigner } from '../RainbowSigner';
 
 export interface SerializedKeypairKeychain {
-  type: string;
+  type: KeychainType.KeyPairKeychain;
   privateKey: PrivateKey;
 }
 
 const privates = new WeakMap();
 
 export class KeyPairKeychain implements IKeychain {
-  type: string;
+  type: KeychainType.KeyPairKeychain;
 
   constructor() {
     this.type = KeychainType.KeyPairKeychain;
