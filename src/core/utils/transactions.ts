@@ -23,7 +23,8 @@ import {
   pendingTransactionsStore,
 } from '../state';
 import { AddressOrEth, ParsedAsset, ParsedUserAsset } from '../types/assets';
-import { ChainId } from '../types/chains';
+import { ChainId, ChainName } from '../types/chains';
+import { UniqueAsset } from '../types/nfts';
 import {
   NewTransaction,
   PaginatedTransactionsApiResponse,
@@ -88,6 +89,72 @@ export const getDataForTokenTransfer = (value: string, to: string): string => {
     removeHexPrefix(to),
     convertStringToHex(value),
   ]);
+  return data;
+};
+
+export enum TokenStandard {
+  ERC1155 = 'ERC1155',
+  ERC721 = 'ERC721',
+}
+
+export const CRYPTO_KITTIES_NFT_ADDRESS =
+  '0x06012c8cf97bead5deae237070f9587f8e7a266d';
+export const CRYPTO_PUNKS_NFT_ADDRESS =
+  '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb';
+
+/**
+ * @desc Returns a transaction data string for an NFT transfer.
+ * @param from The sender's address.
+ * @param to The recipient's address.
+ * @param asset The asset to transfer.
+ * @return The data string if the transfer can be attempted, otherwise undefined.
+ */
+export const getDataForNftTransfer = (
+  from: string,
+  to: string,
+  asset: UniqueAsset,
+): string | undefined => {
+  if (!asset.id || !asset.asset_contract?.address) return;
+  const lowercasedContractAddress = asset.asset_contract.address.toLowerCase();
+  const standard = asset.asset_contract?.schema_name;
+  let data: string | undefined;
+  if (
+    lowercasedContractAddress === CRYPTO_KITTIES_NFT_ADDRESS &&
+    asset.network === ChainName.mainnet
+  ) {
+    const transferMethod = smartContractMethods.token_transfer;
+    data = getDataString(transferMethod.hash, [
+      removeHexPrefix(to),
+      convertStringToHex(asset.id),
+    ]);
+  } else if (
+    lowercasedContractAddress === CRYPTO_PUNKS_NFT_ADDRESS &&
+    asset.network === ChainName.mainnet
+  ) {
+    const transferMethod = smartContractMethods.punk_transfer;
+    data = getDataString(transferMethod.hash, [
+      removeHexPrefix(to),
+      convertStringToHex(asset.id),
+    ]);
+  } else if (standard === TokenStandard.ERC1155) {
+    const transferMethodHash =
+      smartContractMethods.erc1155_safe_transfer_from.hash;
+    data = getDataString(transferMethodHash, [
+      removeHexPrefix(from),
+      removeHexPrefix(to),
+      convertStringToHex(asset.id),
+      convertStringToHex('1'),
+      convertStringToHex('160'),
+      convertStringToHex('0'),
+    ]);
+  } else if (standard === TokenStandard.ERC721) {
+    const transferMethod = smartContractMethods.erc721_transfer_from;
+    data = getDataString(transferMethod.hash, [
+      removeHexPrefix(from),
+      removeHexPrefix(to),
+      convertStringToHex(asset.id),
+    ]);
+  }
   return data;
 };
 

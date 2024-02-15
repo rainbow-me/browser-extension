@@ -619,7 +619,10 @@
       "available": "available",
       "token_balance": "Token Balance",
       "networks": "Networks",
-      "nothing_found": "Nothing found"
+      "nothing_found": "Nothing found",
+      "nfts": "NFTs",
+      "alphabetical": "Alphabetical",
+      "recent": "Recent"
     },
     "review": {
       "title": "Review & Send",
@@ -1315,7 +1318,8 @@
         "floor_price_description": "A collection's floor price is the lowest asking price across all the items currently for sale in a collection.",
         "floor_price_title": "Collection floor price",
         "floor_price_action_label": "Got it"
-      }
+      },
+      "send": "Send"
     }
   },
   "points": {
