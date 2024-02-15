@@ -31,6 +31,7 @@ import {
 import { addHexPrefix } from '../utils/hex';
 
 import { keychainManager } from './KeychainManager';
+import { SerializedKeypairKeychain } from './keychainTypes/keyPairKeychain';
 
 interface TypedDataTypes {
   EIP712Domain: MessageTypeProperty[];
@@ -168,12 +169,16 @@ export const importWallet = async (
       return address;
     }
     case EthereumWalletType.privateKey: {
-      const keychain = await keychainManager.importKeychain({
+      const opts: SerializedKeypairKeychain = {
         type: KeychainType.KeyPairKeychain,
         privateKey: secret,
-      });
-      const address = (await keychain.getAccounts())[0];
-      return address;
+      };
+      const newAccount = (await keychainManager.deriveAccounts(opts))[0];
+
+      await keychainManager.importKeychain(opts);
+      // returning the derived address instead of the first from the keychain,
+      // because this pk could have been elevated to hd while importing
+      return newAccount;
     }
     case EthereumWalletType.readOnly: {
       const keychain = await keychainManager.importKeychain({

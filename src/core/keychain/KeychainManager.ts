@@ -147,7 +147,7 @@ class KeychainManager {
           default:
             throw new Error('Keychain type not recognized.');
         }
-        await this.overrideReadOnlyKeychains(keychain);
+        await this.mergeKeychains(keychain);
         await this.checkForDuplicateInKeychain(keychain);
         this.state.keychains.push(keychain as Keychain);
         return keychain;
@@ -270,20 +270,27 @@ class KeychainManager {
     return false;
   }
 
-  async overrideReadOnlyKeychains(incomingKeychain: Keychain) {
+  async mergeKeychains(incomingKeychain: Keychain) {
     if (incomingKeychain.type === KeychainType.ReadOnlyKeychain) return;
+
     const currentAccounts = await this.getAccounts();
     const incomingAccounts = await incomingKeychain.getAccounts();
     const conflictingAccounts = incomingAccounts.filter((acc) =>
       currentAccounts.includes(acc),
     );
-    await Promise.all(
-      conflictingAccounts.map(async (acc) => {
-        const wallet = await this.getWallet(acc);
-        const isReadOnly = wallet.type === KeychainType.ReadOnlyKeychain;
-        if (isReadOnly) this.removeAccount(acc);
-      }),
-    );
+
+    for (const account of conflictingAccounts) {
+      const wallet = await this.getWallet(account);
+      // the incoming is not readOnly, so if the conflicting is, remove it to leave the one with higher privilages
+      // if the incoming is a hd wallet that derives an account in which the pk is already in the vault, remove this pk to leave the hd as the main
+      if (
+        wallet.type === KeychainType.ReadOnlyKeychain ||
+        (incomingKeychain.type === KeychainType.HdKeychain &&
+          wallet.type === KeychainType.KeyPairKeychain)
+      ) {
+        this.removeAccount(account);
+      }
+    }
   }
 
   async checkForDuplicateInKeychain(keychain: Keychain) {
@@ -331,6 +338,18 @@ class KeychainManager {
   }
 
   async importKeychain(opts: SerializedKeychain): Promise<Keychain> {
+    if (opts.type === KeychainType.KeyPairKeychain) {
+      const newAccount = (await this.deriveAccounts(opts))[0];
+      const existingAccounts = await this.getAccounts();
+      if (existingAccounts.includes(newAccount)) {
+        const existingKeychain = await this.getKeychain(newAccount);
+        // if the account is already in the vault (like in a hd keychain), we don't want to import it again
+        // UNLESS it's a readOnlyKeychain, which we DO WANT to override it, importing the pk
+        if (existingKeychain.type !== KeychainType.ReadOnlyKeychain)
+          return existingKeychain;
+      }
+    }
+
     const result = await privates.get(this).restoreKeychain({
       ...opts,
       imported: true,
