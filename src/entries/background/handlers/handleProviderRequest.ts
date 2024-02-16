@@ -7,6 +7,10 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import { Chain, getProvider } from '@wagmi/core';
+import {
+  AddEthereumChainProposedChain,
+  handleProviderRequest as rnbwHandleProviderRequest,
+} from 'rainbow-provider';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
 import { event } from '~/analytics/event';
@@ -265,6 +269,96 @@ export const handleProviderRequest = ({
         return { id, error: <Error>new Error('Rate Limit Exceeded') };
       }
     }
+
+    const { featureFlags } = featureFlagsStore.getState();
+
+    rnbwHandleProviderRequest({
+      featureFlags: featureFlags,
+      providerRequestTransport: providerRequestTransport,
+      isSupportedChain: isSupportedChainId,
+      getActiveSession: getActiveSession,
+      getChain: (chainId: number) =>
+        SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId)),
+      getProvider: getProvider,
+      messengerProviderRequest: (request: ProviderRequestPayload) =>
+        messengerProviderRequest(popupMessenger, request),
+      onAddEthereumChain: async (
+        proposedChain: AddEthereumChainProposedChain,
+      ) => {
+        let response = null;
+        const { rainbowChains, addCustomRPC, setActiveRPC } =
+          rainbowChainsStore.getState();
+        const { addUserChain } = userChainsStore.getState();
+        const alreadyAddedChain = Object.keys(rainbowChains).find(
+          (id) => Number(id) === Number(proposedChain.chainId),
+        );
+        if (alreadyAddedChain) {
+          const {
+            chainId,
+            rpcUrls: [rpcUrl],
+            nativeCurrency: { name, symbol, decimals },
+            blockExplorerUrls: [blockExplorerUrl],
+          } = proposedChain;
+          const chainObject: Chain = {
+            id: Number(chainId),
+            nativeCurrency: { name, symbol, decimals },
+            name: proposedChain.chainName,
+            network: proposedChain.chainName,
+            rpcUrls: {
+              default: { http: [rpcUrl] },
+              public: { http: [rpcUrl] },
+            },
+            blockExplorers: {
+              default: { name: '', url: blockExplorerUrl },
+            },
+          };
+          const rainbowChain = rainbowChains[chainObject.id];
+          const alreadyAddedRpcUrl = rainbowChain.chains.find(
+            (chain: Chain) =>
+              chain.rpcUrls.default.http[0] === rpcUrl &&
+              rainbowChain.activeRpcUrl === rpcUrl,
+          );
+          const activeRpc = rainbowChain.activeRpcUrl === rpcUrl;
+          if (!alreadyAddedRpcUrl) {
+            addCustomRPC({ chain: chainObject });
+            addUserChain({ chainId: chainObject.id });
+            setActiveRPC({
+              rpcUrl: rpcUrl,
+              chainId: chainObject.id,
+            });
+          }
+
+          let rpcStatus;
+          if (alreadyAddedRpcUrl) {
+            if (activeRpc) {
+              rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_active;
+            } else {
+              rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_added;
+            }
+          } else {
+            rpcStatus = IN_DAPP_NOTIFICATION_STATUS.set_as_active;
+          }
+
+          const extensionUrl = chrome.runtime.getURL('');
+          inpageMessenger?.send('rainbow_ethereumChainEvent', {
+            chainId: Number(proposedChain.chainId),
+            status: rpcStatus,
+            extensionUrl,
+            host,
+          });
+        } else {
+          response = await messengerProviderRequest(popupMessenger, {
+            method,
+            id,
+            params,
+            meta,
+          });
+        }
+        return response;
+      },
+      onSwitchEthereumChainNotSupported: () => null,
+      onSwitchEthereumChainSupported: () => null,
+    });
 
     try {
       let response = null;
