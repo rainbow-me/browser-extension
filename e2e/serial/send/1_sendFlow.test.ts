@@ -4,7 +4,6 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import {
-  calcMinerTip,
   delayTime,
   executePerformShortcut,
   findElementById,
@@ -23,6 +22,7 @@ import {
   takeScreenshotOnFailure,
   transactionStatus,
   typeOnTextInput,
+  verifyCustomGasSettings,
   waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
@@ -330,8 +330,7 @@ it('should be able to send transaction on review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
   expect(sendTransaction).toBe('success');
-  const minerTip = await calcMinerTip();
-  expect(minerTip).toBe(400);
+  await verifyCustomGasSettings(400, 400);
 });
 
 it('should be able to rename a wallet from the wallet switcher', async () => {

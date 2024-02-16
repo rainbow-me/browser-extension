@@ -730,25 +730,74 @@ export async function getOnchainBalance(addy: string, contract: string) {
   }
 }
 
-export async function calcMinerTip() {
-  const provider = getDefaultProvider('http://127.0.0.1:8545');
-  const blockData = await provider.getBlock('latest');
-  if (blockData.transactions.length === 0) {
-    throw new Error('No transactions in the latest block.');
-  }
-  const txnReceipt = await provider.getTransactionReceipt(
-    blockData.transactions[blockData.transactions.length - 1],
-  );
-  if (!blockData.baseFeePerGas || !txnReceipt.effectiveGasPrice) {
-    throw new Error('Transaction or block does not support EIP-1559.');
-  }
+async function fetchLatestTransactionHash(
+  provider: ethers.providers.JsonRpcProvider,
+): Promise<string | null> {
+  const latestBlock = await provider.getBlockWithTransactions('latest');
+  if (latestBlock.transactions.length === 0) return null;
+  return latestBlock.transactions[latestBlock.transactions.length - 1].hash;
+}
 
-  const baseFeePerGas = blockData.baseFeePerGas;
-  const minerTip = txnReceipt.effectiveGasPrice.sub(baseFeePerGas);
-  const minerTipCalc = minerTip
-    .div(ethers.utils.parseUnits('1', 'gwei'))
-    .toNumber();
-  return minerTipCalc;
+async function validateTransactionGasSettings(
+  transactionHash: string,
+  provider: ethers.providers.JsonRpcProvider,
+  expectedMaxPriorityFeePerGasInGwei: number,
+  expectedBaseFeeInGwei: number,
+): Promise<void> {
+  if (!transactionHash) throw new Error('No transaction hash provided.');
+  const transaction = await provider.getTransaction(transactionHash);
+  if (!transaction) throw new Error('Transaction not found.');
+
+  const expectedTotalMaxFeePerGasInGwei =
+    expectedMaxPriorityFeePerGasInGwei + expectedBaseFeeInGwei;
+  const expectedMaxPriorityFeePerGasWei = ethers.utils.parseUnits(
+    expectedMaxPriorityFeePerGasInGwei.toString(),
+    'gwei',
+  );
+  const expectedTotalMaxFeePerGasWei = ethers.utils.parseUnits(
+    expectedTotalMaxFeePerGasInGwei.toString(),
+    'gwei',
+  );
+
+  const actualMaxPriorityFeePerGas = transaction.maxPriorityFeePerGas;
+  const actualMaxFeePerGas = transaction.maxFeePerGas;
+
+  if (
+    !actualMaxPriorityFeePerGas ||
+    !actualMaxFeePerGas ||
+    !actualMaxPriorityFeePerGas.eq(expectedMaxPriorityFeePerGasWei) ||
+    !actualMaxFeePerGas.eq(expectedTotalMaxFeePerGasWei)
+  ) {
+    throw new Error(
+      `Gas settings mismatch. Expected maxPriorityFeePerGas: ${expectedMaxPriorityFeePerGasInGwei} gwei, expected total maxFeePerGas (Max Base Fee + Miner Tip): ${expectedTotalMaxFeePerGasInGwei} gwei, but got maxPriorityFeePerGas: ${
+        actualMaxPriorityFeePerGas
+          ? ethers.utils.formatUnits(actualMaxPriorityFeePerGas, 'gwei')
+          : 'none'
+      } gwei, maxFeePerGas: ${
+        actualMaxFeePerGas
+          ? ethers.utils.formatUnits(actualMaxFeePerGas, 'gwei')
+          : 'none'
+      } gwei.`,
+    );
+  }
+}
+
+export async function verifyCustomGasSettings(
+  maxBaseFee: number,
+  minerTip: number,
+): Promise<void> {
+  const provider = new ethers.providers.JsonRpcProvider(
+    'http://127.0.0.1:8545',
+  );
+  const transactionHash = await fetchLatestTransactionHash(provider);
+  if (transactionHash) {
+    await validateTransactionGasSettings(
+      transactionHash,
+      provider,
+      maxBaseFee,
+      minerTip,
+    );
+  }
 }
 
 export async function transactionStatus() {
