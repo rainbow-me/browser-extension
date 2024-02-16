@@ -1,22 +1,15 @@
-/* eslint-disable no-await-in-loop */
-import { isHexPrefixed } from '@ethereumjs/util';
-import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { isAddress } from '@ethersproject/address';
-import { isHexString } from '@ethersproject/bytes';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { recoverPersonalSignature } from '@metamask/eth-sig-util';
-import { ChainId } from '@rainbow-me/swaps';
 import { Chain, getProvider } from '@wagmi/core';
 import {
   AddEthereumChainProposedChain,
   handleProviderRequest as rnbwHandleProviderRequest,
 } from 'rainbow-provider';
-import { Address, UserRejectedRequestError } from 'wagmi';
+import { UserRejectedRequestError } from 'wagmi';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
+import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
 import { SUPPORTED_CHAINS } from '~/core/references';
 import {
   appSessionsStore,
@@ -29,16 +22,9 @@ import { userChainsStore } from '~/core/state/userChains';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import {
-  deriveChainIdByHostname,
-  isCustomChain,
-  isSupportedChainId,
-} from '~/core/utils/chains';
+import { isCustomChain, isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
-import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { normalizeTransactionResponsePayload } from '~/core/utils/ethereum';
-import { toHex } from '~/core/utils/hex';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 import { RainbowError, logger } from '~/logger';
@@ -115,11 +101,11 @@ const messengerProviderRequest = async (
   // Add pending request to global background state.
   addPendingRequest(request);
 
-  let ready = await isInitialized();
+  let ready = isInitialized();
   while (!ready) {
-    // eslint-disable-next-line no-promise-executor-return
+    // eslint-disable-next-line no-promise-executor-return, no-await-in-loop
     await new Promise((resolve) => setTimeout(resolve, 100));
-    ready = await isInitialized();
+    ready = isInitialized();
   }
   const _hasVault = ready && (await hasVault());
   const passwordSet = _hasVault && (await isPasswordSet());
@@ -255,552 +241,169 @@ export const handleProviderRequest = ({
   popupMessenger: Messenger;
   inpageMessenger: Messenger;
 }) =>
-  providerRequestTransport.reply(async ({ method, id, params }, meta) => {
-    const { getActiveSession, addSession, updateActiveSessionChainId } =
-      appSessionsStore.getState();
-    const url = meta?.sender?.url || '';
-    const host = (isValidUrl(url) && getDappHost(url)) || '';
-    const dappName = meta.sender.tab?.title || host;
-    const activeSession = getActiveSession({ host });
-
-    if (!skipRateLimitCheck(method)) {
-      const rateLimited = await checkRateLimit(host);
-      if (rateLimited) {
-        return { id, error: <Error>new Error('Rate Limit Exceeded') };
-      }
-    }
-
-    const { featureFlags } = featureFlagsStore.getState();
-
-    rnbwHandleProviderRequest({
-      featureFlags: featureFlags,
-      providerRequestTransport: providerRequestTransport,
-      isSupportedChain: isSupportedChainId,
-      getActiveSession: getActiveSession,
-      getChain: (chainId: number) =>
-        SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId)),
-      getProvider: getProvider,
-      messengerProviderRequest: (request: ProviderRequestPayload) =>
-        messengerProviderRequest(popupMessenger, request),
-      onAddEthereumChain: async (
-        proposedChain: AddEthereumChainProposedChain,
-      ) => {
-        let response = null;
-        const { rainbowChains, addCustomRPC, setActiveRPC } =
-          rainbowChainsStore.getState();
-        const { addUserChain } = userChainsStore.getState();
-        const alreadyAddedChain = Object.keys(rainbowChains).find(
-          (id) => Number(id) === Number(proposedChain.chainId),
+  rnbwHandleProviderRequest({
+    providerRequestTransport: providerRequestTransport,
+    isSupportedChain: isSupportedChainId,
+    getActiveSession: ({ host }: { host: string }) =>
+      appSessionsStore.getState().getActiveSession({ host }),
+    getChain: (chainId: number) =>
+      SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId)),
+    getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
+    getProvider: getProvider,
+    messengerProviderRequest: (request: ProviderRequestPayload) =>
+      messengerProviderRequest(popupMessenger, request),
+    onAddEthereumChain: ({
+      proposedChain,
+      callbackOptions,
+    }: {
+      proposedChain: AddEthereumChainProposedChain;
+      callbackOptions?: CallbackOptions;
+    }): { chainAlreadyAdded: boolean } => {
+      const url = callbackOptions?.sender.url || '';
+      const host = (isValidUrl(url) && getDappHost(url)) || '';
+      const { rainbowChains, addCustomRPC, setActiveRPC } =
+        rainbowChainsStore.getState();
+      const { addUserChain } = userChainsStore.getState();
+      const alreadyAddedChain = Object.keys(rainbowChains).find(
+        (id) => Number(id) === Number(proposedChain.chainId),
+      );
+      if (alreadyAddedChain) {
+        const {
+          chainId,
+          rpcUrls: [rpcUrl],
+          nativeCurrency: { name, symbol, decimals },
+          blockExplorerUrls: [blockExplorerUrl],
+        } = proposedChain;
+        const chainObject: Chain = {
+          id: Number(chainId),
+          nativeCurrency: { name, symbol, decimals },
+          name: proposedChain.chainName,
+          network: proposedChain.chainName,
+          rpcUrls: {
+            default: { http: [rpcUrl] },
+            public: { http: [rpcUrl] },
+          },
+          blockExplorers: {
+            default: { name: '', url: blockExplorerUrl },
+          },
+        };
+        const rainbowChain = rainbowChains[chainObject.id];
+        const alreadyAddedRpcUrl = rainbowChain.chains.find(
+          (chain: Chain) =>
+            chain.rpcUrls.default.http[0] === rpcUrl &&
+            rainbowChain.activeRpcUrl === rpcUrl,
         );
-        if (alreadyAddedChain) {
-          const {
-            chainId,
-            rpcUrls: [rpcUrl],
-            nativeCurrency: { name, symbol, decimals },
-            blockExplorerUrls: [blockExplorerUrl],
-          } = proposedChain;
-          const chainObject: Chain = {
-            id: Number(chainId),
-            nativeCurrency: { name, symbol, decimals },
-            name: proposedChain.chainName,
-            network: proposedChain.chainName,
-            rpcUrls: {
-              default: { http: [rpcUrl] },
-              public: { http: [rpcUrl] },
-            },
-            blockExplorers: {
-              default: { name: '', url: blockExplorerUrl },
-            },
-          };
-          const rainbowChain = rainbowChains[chainObject.id];
-          const alreadyAddedRpcUrl = rainbowChain.chains.find(
-            (chain: Chain) =>
-              chain.rpcUrls.default.http[0] === rpcUrl &&
-              rainbowChain.activeRpcUrl === rpcUrl,
-          );
-          const activeRpc = rainbowChain.activeRpcUrl === rpcUrl;
-          if (!alreadyAddedRpcUrl) {
-            addCustomRPC({ chain: chainObject });
-            addUserChain({ chainId: chainObject.id });
-            setActiveRPC({
-              rpcUrl: rpcUrl,
-              chainId: chainObject.id,
-            });
-          }
-
-          let rpcStatus;
-          if (alreadyAddedRpcUrl) {
-            if (activeRpc) {
-              rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_active;
-            } else {
-              rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_added;
-            }
-          } else {
-            rpcStatus = IN_DAPP_NOTIFICATION_STATUS.set_as_active;
-          }
-
-          const extensionUrl = chrome.runtime.getURL('');
-          inpageMessenger?.send('rainbow_ethereumChainEvent', {
-            chainId: Number(proposedChain.chainId),
-            status: rpcStatus,
-            extensionUrl,
-            host,
+        const activeRpc = rainbowChain.activeRpcUrl === rpcUrl;
+        if (!alreadyAddedRpcUrl) {
+          addCustomRPC({ chain: chainObject });
+          addUserChain({ chainId: chainObject.id });
+          setActiveRPC({
+            rpcUrl: rpcUrl,
+            chainId: chainObject.id,
           });
+        }
+
+        let rpcStatus;
+        if (alreadyAddedRpcUrl) {
+          if (activeRpc) {
+            rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_active;
+          } else {
+            rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_added;
+          }
         } else {
-          response = await messengerProviderRequest(popupMessenger, {
-            method,
-            id,
-            params,
-            meta,
-          });
-        }
-        return response;
-      },
-      onSwitchEthereumChainNotSupported: () => null,
-      onSwitchEthereumChainSupported: () => null,
-    });
-
-    try {
-      let response = null;
-
-      switch (method) {
-        case 'eth_chainId': {
-          response = activeSession
-            ? toHex(String(activeSession.chainId))
-            : DEFAULT_CHAIN_ID;
-          break;
-        }
-        case 'eth_coinbase': {
-          response = activeSession ? activeSession.address?.toLowerCase() : '';
-          break;
-        }
-        case 'eth_accounts': {
-          response = activeSession
-            ? [activeSession.address?.toLowerCase()]
-            : [];
-          break;
-        }
-        case 'eth_sendTransaction':
-        case 'eth_signTransaction':
-        case 'personal_sign':
-        case 'eth_signTypedData':
-        case 'eth_signTypedData_v3':
-        case 'eth_signTypedData_v4': {
-          // If we need to validate the input before showing the UI, it should go here.
-          if (method === 'eth_signTypedData_v4') {
-            // we don't trust the params order
-            let dataParam = params?.[1];
-            if (!isAddress(params?.[0] as Address)) {
-              dataParam = params?.[0];
-            }
-
-            const data =
-              typeof dataParam === 'string' ? JSON.parse(dataParam) : dataParam;
-
-            const {
-              domain: { chainId },
-            } = data as { domain: { chainId: string } };
-
-            if (
-              chainId !== undefined &&
-              Number(chainId) !== Number(activeSession?.chainId)
-            ) {
-              throw new Error('ChainId mismatch');
-            }
-          }
-
-          response = await messengerProviderRequest(popupMessenger, {
-            method,
-            id,
-            params,
-            meta,
-          });
-          break;
-        }
-        case 'wallet_addEthereumChain': {
-          const { featureFlags } = featureFlagsStore.getState();
-          const { rainbowChains, addCustomRPC, setActiveRPC } =
-            rainbowChainsStore.getState();
-          const { addUserChain } = userChainsStore.getState();
-
-          const proposedChain = params?.[0] as {
-            chainId: string;
-            rpcUrls: string[];
-            chainName: string;
-            iconUrls: string[];
-            nativeCurrency: {
-              name: string;
-              symbol: string;
-              decimals: number;
-            };
-            blockExplorerUrls: string[];
-          };
-          const proposedChainId = Number(proposedChain.chainId);
-          const alreadyAddedChain = Object.keys(rainbowChains).find(
-            (id) => Number(id) === proposedChainId,
-          );
-          if (!featureFlags.custom_rpc) {
-            const supportedChainId =
-              isCustomChain(proposedChainId) ||
-              isSupportedChainId(proposedChainId);
-            if (!supportedChainId) throw new Error('Chain Id not supported');
-          } else {
-            const {
-              chainId,
-              rpcUrls: [rpcUrl],
-              nativeCurrency: { name, symbol, decimals },
-              blockExplorerUrls: [blockExplorerUrl],
-            } = proposedChain;
-
-            // Validate chain Id
-            if (!isHexString(chainId) || !isHexPrefixed(chainId)) {
-              throw new Error(
-                `Expected 0x-prefixed, unpadded, non-zero hexadecimal string "chainId". Received: ${chainId}`,
-              );
-            } else if (Number(chainId) > Number.MAX_SAFE_INTEGER) {
-              throw new Error(
-                `Invalid chain ID "${chainId}": numerical value greater than max safe value. Received: ${chainId}`,
-              );
-              // Validate symbol and name
-            } else if (!rpcUrl) {
-              throw new Error(
-                `Expected non-empty array[string] "rpcUrls". Received: ${rpcUrl}`,
-              );
-            } else if (!name || !symbol) {
-              throw new Error(
-                'Expected non-empty string "nativeCurrency.name", "nativeCurrency.symbol"',
-              );
-              // Validarte decimals
-            } else if (
-              !Number.isInteger(decimals) ||
-              decimals < 0 ||
-              decimals > 36
-            ) {
-              throw new Error(
-                `Expected non-negative integer "nativeCurrency.decimals" less than 37. Received: ${decimals}`,
-              );
-              // Validate symbol length
-            } else if (symbol.length < 2 || symbol.length > 6) {
-              throw new Error(
-                `Expected 2-6 character string 'nativeCurrency.symbol'. Received: ${symbol}`,
-              );
-              // Validate symbol against existing chains
-            } else if (isSupportedChainId(Number(chainId))) {
-              const knownChain = SUPPORTED_CHAINS.find(
-                (chain) => chain.id === Number(chainId),
-              );
-              if (knownChain?.nativeCurrency.symbol !== symbol) {
-                throw new Error(
-                  `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received: ${symbol}`,
-                );
-              }
-              // Validate blockExplorerUrl
-            } else if (!blockExplorerUrl) {
-              throw new Error(
-                `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrl}`,
-              );
-            }
-
-            if (alreadyAddedChain) {
-              const chainObject: Chain = {
-                id: proposedChainId,
-                nativeCurrency: { name, symbol, decimals },
-                name: proposedChain.chainName,
-                network: proposedChain.chainName,
-                rpcUrls: {
-                  default: { http: [rpcUrl] },
-                  public: { http: [rpcUrl] },
-                },
-                blockExplorers: {
-                  default: { name: '', url: blockExplorerUrl },
-                },
-              };
-              const rainbowChain = rainbowChains[chainObject.id];
-              const alreadyAddedRpcUrl = rainbowChain.chains.find(
-                (chain: Chain) =>
-                  chain.rpcUrls.default.http[0] === rpcUrl &&
-                  rainbowChain.activeRpcUrl === rpcUrl,
-              );
-              const activeRpc = rainbowChain.activeRpcUrl === rpcUrl;
-              if (!alreadyAddedRpcUrl) {
-                addCustomRPC({ chain: chainObject });
-                addUserChain({ chainId: chainObject.id });
-                setActiveRPC({
-                  rpcUrl: rpcUrl,
-                  chainId: chainObject.id,
-                });
-              }
-
-              let rpcStatus;
-              if (alreadyAddedRpcUrl) {
-                if (activeRpc) {
-                  rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_active;
-                } else {
-                  rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_added;
-                }
-              } else {
-                rpcStatus = IN_DAPP_NOTIFICATION_STATUS.set_as_active;
-              }
-
-              const extensionUrl = chrome.runtime.getURL('');
-              inpageMessenger?.send('rainbow_ethereumChainEvent', {
-                chainId: proposedChainId,
-                status: rpcStatus,
-                extensionUrl,
-                host,
-              });
-            } else {
-              response = await messengerProviderRequest(popupMessenger, {
-                method,
-                id,
-                params,
-                meta,
-              });
-            }
-
-            // PER EIP - return null if the network was added otherwise throw
-            if (response !== null) {
-              throw new Error('User rejected the request.');
-            }
-          }
-          break;
-        }
-        case 'wallet_watchAsset': {
-          const { featureFlags } = featureFlagsStore.getState();
-          if (!featureFlags.custom_rpc && process.env.IS_TESTING === 'false') {
-            throw new Error('Method not supported');
-          } else {
-            const {
-              type,
-              options: { address, symbol, decimals },
-            } = params as unknown as {
-              type: string;
-              options: {
-                address: Address;
-                symbol?: string;
-                decimals?: number;
-              };
-            };
-
-            if (type !== 'ERC20') {
-              throw new Error('Method supported only for ERC20');
-            }
-
-            if (!address) {
-              throw new Error('Address is required');
-            }
-
-            let chainId = null;
-            if (activeSession) {
-              chainId = activeSession?.chainId;
-            } else {
-              chainId = deriveChainIdByHostname(host);
-            }
-
-            response = await messengerProviderRequest(popupMessenger, {
-              method,
-              id,
-              params: [
-                {
-                  address,
-                  symbol,
-                  decimals,
-                  chainId,
-                },
-              ],
-              meta,
-            });
-            // PER EIP - true if the token was added, false otherwise.
-            response = !!response;
-            break;
-          }
-        }
-        case 'wallet_switchEthereumChain': {
-          const proposedChainId = Number(
-            (params?.[0] as { chainId: ChainId })?.chainId,
-          );
-          const supportedChainId =
-            isCustomChain(Number(proposedChainId)) ||
-            isSupportedChainId(Number(proposedChainId));
-          const extensionUrl = chrome.runtime.getURL('');
-          if (!supportedChainId || !activeSession) {
-            const chain = rainbowChainsStore
-              .getState()
-              .getActiveChain({ chainId: proposedChainId });
-            inpageMessenger?.send('rainbow_ethereumChainEvent', {
-              chainId: proposedChainId,
-              chainName: chain?.name || 'NO NAME',
-              status: !supportedChainId
-                ? IN_DAPP_NOTIFICATION_STATUS.unsupported_network
-                : IN_DAPP_NOTIFICATION_STATUS.no_active_session,
-              extensionUrl,
-              host,
-            });
-            logger.error(new RainbowError('Chain Id not supported'), {
-              proposedChainId,
-              host,
-            });
-            throw new Error('Chain Id not supported');
-          } else {
-            updateActiveSessionChainId({
-              chainId: proposedChainId,
-              host,
-            });
-            const chain = rainbowChainsStore
-              .getState()
-              .getActiveChain({ chainId: proposedChainId });
-            inpageMessenger?.send('rainbow_ethereumChainEvent', {
-              chainId: proposedChainId,
-              chainName: chain?.name,
-              status: IN_DAPP_NOTIFICATION_STATUS.success,
-              extensionUrl,
-              host,
-            });
-            queueEventTracking(event.dappProviderNetworkSwitched, {
-              dappURL: host,
-              dappName,
-              chainId: proposedChainId,
-            });
-            inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
-          }
-          response = null;
-          break;
-        }
-        case 'eth_requestAccounts': {
-          if (activeSession) {
-            response = [activeSession.address?.toLowerCase()];
-            break;
-          }
-          const { address, chainId } = (await messengerProviderRequest(
-            popupMessenger,
-            {
-              method,
-              id,
-              params,
-              meta,
-            },
-          )) as { address: Address; chainId: number };
-          addSession({
-            host,
-            address,
-            chainId,
-            url,
-          });
-          response = [address?.toLowerCase()];
-          break;
-        }
-        case 'eth_blockNumber': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
-          const blockNumber = await provider.getBlockNumber();
-          response = toHex(String(blockNumber));
-          break;
-        }
-        case 'eth_getBlockByNumber': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
-          const block = await provider.getBlock(params?.[0] as string);
-          response = {
-            ...block,
-            baseFeePerGas: toHex(block?.baseFeePerGas?.toString() || ''),
-            gasLimit: toHex(block?.gasLimit?.toString() || ''),
-            gasUsed: toHex(block?.gasUsed?.toString() || ''),
-            _difficulty: toHex(block?._difficulty?.toString() || ''),
-          };
-          break;
-        }
-        case 'eth_getBalance': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
-          const balance = await provider.getBalance(params?.[0] as string);
-          response = toHex(balance.toString());
-          break;
-        }
-        case 'eth_getTransactionByHash': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
-          const transaction = await provider.getTransaction(
-            params?.[0] as string,
-          );
-          const normalizedTransaction =
-            normalizeTransactionResponsePayload(transaction);
-          const {
-            gasLimit,
-            gasPrice,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-            value,
-          } = normalizedTransaction;
-          response = {
-            ...normalizedTransaction,
-            gasLimit: toHex(gasLimit.toString()),
-            gasPrice: gasPrice ? toHex(gasPrice.toString()) : undefined,
-            maxFeePerGas: maxFeePerGas
-              ? toHex(maxFeePerGas.toString())
-              : undefined,
-            maxPriorityFeePerGas: maxPriorityFeePerGas
-              ? toHex(maxPriorityFeePerGas.toString())
-              : undefined,
-            value: toHex(value.toString()),
-          };
-          break;
-        }
-        case 'eth_call': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.call(params?.[0] as TransactionRequest);
-          break;
-        }
-        case 'eth_estimateGas': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
-          const gas = await provider.estimateGas(
-            params?.[0] as TransactionRequest,
-          );
-          response = toHex(gas.toString());
-          break;
-        }
-        case 'eth_gasPrice': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
-          const gasPrice = await provider.getGasPrice();
-          response = toHex(gasPrice.toString());
-          break;
-        }
-        case 'eth_getCode': {
-          const provider = getProvider({ chainId: activeSession?.chainId });
-          response = await provider.getCode(
-            params?.[0] as string,
-            params?.[1] as string,
-          );
-          break;
-        }
-        case 'personal_ecRecover': {
-          response = recoverPersonalSignature({
-            data: params?.[0] as string,
-            signature: params?.[1] as string,
-          });
-          break;
+          rpcStatus = IN_DAPP_NOTIFICATION_STATUS.set_as_active;
         }
 
-        default: {
-          try {
-            if (method?.substring(0, 7) === 'wallet_') {
-              // Generic error that will be hanlded correctly in the catch
-              throw new Error('next');
-            }
-            // Let's try to fwd the request to the provider
-            const provider = getProvider({
-              chainId: activeSession?.chainId,
-            }) as StaticJsonRpcProvider;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            response = await provider.send(method, params as any[]);
-          } catch (e) {
-            // TODO: handle other methods
-            logger.error(new RainbowError('Unhandled provider request'), {
-              dappURL: host,
-              dappName,
-              method,
-            });
-            throw new Error('Method not supported');
-          }
+        const extensionUrl = chrome.runtime.getURL('');
+        inpageMessenger?.send('rainbow_ethereumChainEvent', {
+          chainId: Number(proposedChain.chainId),
+          status: rpcStatus,
+          extensionUrl,
+          host,
+        });
+      }
+      return { chainAlreadyAdded: !!alreadyAddedChain };
+    },
+    checkRateLimit: async ({
+      id,
+      meta,
+      method,
+    }: {
+      id: number;
+      meta: CallbackOptions;
+      method: string;
+    }) => {
+      const url = meta?.sender.url || '';
+      const host = (isValidUrl(url) && getDappHost(url)) || '';
+      if (!skipRateLimitCheck(method)) {
+        const rateLimited = await checkRateLimit(host);
+        if (rateLimited) {
+          return { id, error: <Error>new Error('Rate Limit Exceeded') };
         }
       }
-      return { id, result: response };
-    } catch (error) {
-      return { id, error: <Error>error };
-    }
+    },
+    onSwitchEthereumChainNotSupported: ({
+      proposedChain,
+      callbackOptions,
+    }: {
+      proposedChain: AddEthereumChainProposedChain;
+      callbackOptions?: CallbackOptions;
+    }) => {
+      const url = callbackOptions?.sender.url || '';
+      const host = (isValidUrl(url || '') && getDappHost(url)) || '';
+      const extensionUrl = chrome.runtime.getURL('');
+      const proposedChainId = Number(proposedChain.chainId);
+      const chain = rainbowChainsStore
+        .getState()
+        .getActiveChain({ chainId: proposedChainId });
+      const supportedChainId =
+        isCustomChain(proposedChainId) || isSupportedChainId(proposedChainId);
+      inpageMessenger?.send('rainbow_ethereumChainEvent', {
+        chainId: proposedChainId,
+        chainName: chain?.name || 'NO NAME',
+        status: !supportedChainId
+          ? IN_DAPP_NOTIFICATION_STATUS.unsupported_network
+          : IN_DAPP_NOTIFICATION_STATUS.no_active_session,
+        extensionUrl,
+        host,
+      });
+      logger.error(new RainbowError('Chain Id not supported'), {
+        proposedChainId,
+        host,
+      });
+    },
+    onSwitchEthereumChainSupported: ({
+      proposedChain,
+      callbackOptions,
+    }: {
+      proposedChain: AddEthereumChainProposedChain;
+      callbackOptions?: CallbackOptions;
+    }) => {
+      const url = callbackOptions?.sender.url || '';
+      const host = (isValidUrl(url || '') && getDappHost(url)) || '';
+      const dappName = callbackOptions?.sender.tab?.title || host;
+      const extensionUrl = chrome.runtime.getURL('');
+      const proposedChainId = Number(proposedChain.chainId);
+      const { updateActiveSessionChainId } = appSessionsStore.getState();
+      updateActiveSessionChainId({
+        chainId: proposedChainId,
+        host,
+      });
+      const chain = rainbowChainsStore
+        .getState()
+        .getActiveChain({ chainId: proposedChainId });
+      inpageMessenger?.send('rainbow_ethereumChainEvent', {
+        chainId: proposedChainId,
+        chainName: chain?.name,
+        status: IN_DAPP_NOTIFICATION_STATUS.success,
+        extensionUrl,
+        host,
+      });
+      queueEventTracking(event.dappProviderNetworkSwitched, {
+        dappURL: host,
+        dappName: dappName,
+        chainId: proposedChainId,
+      });
+      inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
+    },
   });
