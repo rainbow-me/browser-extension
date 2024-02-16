@@ -178,6 +178,8 @@ function TransactionDetails({
   const metaTo = simulation?.meta.to;
   const metaTransferTo = simulation?.meta.transferTo;
 
+  const isContract = metaTo?.function || metaTo?.created;
+
   const { getNonce } = useNonceStore();
   const { currentNonce: nonce } = getNonce(session) || {};
 
@@ -206,8 +208,10 @@ function TransactionDetails({
       )}
       {contract && (
         <InfoRow
-          symbol="doc.plaintext"
-          label={i18n.t('simulation.contract')}
+          symbol={isContract ? 'doc.plaintext' : 'person'}
+          label={
+            isContract ? i18n.t('simulation.contract') : i18n.t('simulation.to')
+          }
           value={
             <AddressDisplay
               address={contract.address}
@@ -229,19 +233,21 @@ function TransactionDetails({
           }
         />
       )}
-      <InfoRow
-        symbol="doc.text.magnifyingglass"
-        label={i18n.t('simulation.source_code')}
-        value={
-          <Tag
-            size="12pt"
-            color={isSourceCodeVerified ? 'green' : 'labelSecondary'}
-            bleed
-          >
-            {isSourceCodeVerified ? i18n.t('verified') : i18n.t('unverified')}
-          </Tag>
-        }
-      />
+      {metaTo?.sourceCodeStatus && (
+        <InfoRow
+          symbol="doc.text.magnifyingglass"
+          label={i18n.t('simulation.source_code')}
+          value={
+            <Tag
+              size="12pt"
+              color={isSourceCodeVerified ? 'green' : 'labelSecondary'}
+              bleed
+            >
+              {isSourceCodeVerified ? i18n.t('verified') : i18n.t('unverified')}
+            </Tag>
+          }
+        />
+      )}
       {contractCreatedAt && (
         <InfoRow
           symbol="calendar"
