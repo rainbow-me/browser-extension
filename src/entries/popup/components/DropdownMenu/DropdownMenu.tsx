@@ -34,6 +34,7 @@ import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTranspa
 
 import { useAvatar } from '../../hooks/useAvatar';
 import { simulateClick } from '../../utils/simulateClick';
+import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 
 export const DROPDOWN_MENU_ITEM_HEIGHT = 34;
 
@@ -207,6 +208,7 @@ type DropdownMenuItemProps = {
   onSelect?: (event: Event) => void;
   external?: boolean;
   color?: TextStyles['color'];
+  shortcut?: string;
   disabled?: boolean;
 } & (
   | { symbolLeft?: SymbolName; emoji?: never; leftComponent?: ReactNode }
@@ -221,6 +223,7 @@ export const DropdownMenuItem = ({
   leftComponent,
   emoji,
   color,
+  shortcut,
   disabled,
 }: DropdownMenuItemProps) => {
   // eslint-disable-next-line no-param-reassign
@@ -274,6 +277,7 @@ export const DropdownMenuItem = ({
           <Stack space="8px">{children}</Stack>
         )}
       </Inline>
+      {shortcut && <ShortcutHint hint={shortcut} />}
       {external && (
         <Symbol
           size={12}

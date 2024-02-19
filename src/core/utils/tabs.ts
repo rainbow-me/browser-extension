@@ -4,6 +4,8 @@ export const getProfileUrl = (address?: string) =>
   `https://rainbow.me/${address}`;
 export const getExplorerUrl = (explorer: string, address?: string) =>
   `https://${explorer}/address/${address}`;
+export const getTxExplorerUrl = (explorer: string, address?: string) =>
+  `https://${explorer}/tx/${address}`;
 
 export const goToNewTab = ({
   url,

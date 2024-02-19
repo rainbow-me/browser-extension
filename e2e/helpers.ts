@@ -189,7 +189,11 @@ export async function getExtensionIdByName(
     await driver.get('about:debugging#addons');
     const text = await driver
       .wait(
-        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
+        until.elementLocated(
+          By.xpath(
+            "//dt[contains(., 'Extension ID')]/following-sibling::dd[contains(., 'rainbow')]/../following-sibling::div/dt[contains(., 'Internal UUID')]/following-sibling::dd",
+          ),
+        ),
         1000,
       )
       .getText();
@@ -395,18 +399,21 @@ export async function typeOnTextInput({
   text,
   driver,
 }: {
-  id: string;
+  id?: string;
   text: number | string;
   driver: WebDriver;
 }) {
   if (isFirefox) {
-    await clearInput({
-      id,
-      driver,
-    });
+    id &&
+      (await clearInput({
+        id,
+        driver,
+      }));
   }
-  const element = await findElementByTestId({ id, driver });
-  await element.sendKeys(text);
+  const element = id ? await findElementByTestId({ id, driver }) : null;
+  element
+    ? await element.sendKeys(text)
+    : await driver.actions().sendKeys(text.toString()).perform();
 }
 
 export async function clearInput({
