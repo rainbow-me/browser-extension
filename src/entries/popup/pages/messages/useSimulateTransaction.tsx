@@ -110,6 +110,10 @@ export const useSimulateTransaction = ({
       chainId,
       domain,
     }),
+    enabled:
+      !!chainId &&
+      !!transaction.to &&
+      (!!transaction.value || !!transaction.data),
     queryFn: async () => {
       const response = (await metadataPostClient.simulateTransactions({
         chainId,
@@ -140,6 +144,7 @@ export const useSimulateMessage = ({
       chainId,
       domain,
     }),
+    enabled: !!chainId && !!address && !!message.method,
     queryFn: async () => {
       if (!address) throw new Error('useSimulateMessage: Missing `address`');
 

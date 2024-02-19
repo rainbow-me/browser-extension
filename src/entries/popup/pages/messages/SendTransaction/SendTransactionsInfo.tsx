@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ReactNode, useState } from 'react';
+import { ReactNode, memo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
@@ -100,7 +100,7 @@ const InfoRow = ({
   </Box>
 );
 
-function Overview({
+const Overview = memo(function Overview({
   chainId,
   simulation,
   status,
@@ -166,9 +166,9 @@ function Overview({
       )}
     </Stack>
   );
-}
+});
 
-function TransactionDetails({
+const TransactionDetails = memo(function TransactionDetails({
   simulation,
   session,
 }: {
@@ -260,9 +260,9 @@ function TransactionDetails({
       )}
     </Box>
   );
-}
+});
 
-function TransactionData({
+const TransactionData = memo(function TransactionData({
   data,
   expanded,
 }: {
@@ -286,7 +286,7 @@ function TransactionData({
       />
     </Box>
   );
-}
+});
 
 function TransactionInfo({
   request,
