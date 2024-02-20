@@ -236,6 +236,7 @@ function Fee({
                   borderColor="fillSecondary"
                   style={{ height: 28, width: 28 }}
                   onClick={openCustomGasSheet}
+                  testId={'custom-gas-menu'}
                 >
                   <Symbol
                     weight="medium"
