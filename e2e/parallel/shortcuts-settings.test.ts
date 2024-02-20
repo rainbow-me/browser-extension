@@ -105,7 +105,7 @@ describe.runIf(browser !== 'firefox')(
 
     it('should be able to navigate to Networks using keyboard', async () => {
       await delayTime('medium');
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 5 });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'networks');
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
@@ -305,7 +305,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'ARROW_DOWN',
-        timesToPress: 6,
+        timesToPress: 5,
       });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'transactions');
@@ -353,7 +353,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 7,
+        timesToPress: 8,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'currency');
@@ -378,7 +378,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 8,
+        timesToPress: 9,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'language');
@@ -397,7 +397,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 8,
+        timesToPress: 9,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'language');
@@ -414,7 +414,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: 10,
+        timesToPress: 11,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       const systemOption = await findElementByText(driver, 'System');

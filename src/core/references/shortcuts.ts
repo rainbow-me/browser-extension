@@ -28,6 +28,10 @@ export const shortcuts = {
       display: 'R',
       key: 'r',
     },
+    REVOKE_APPROVAL: {
+      display: 'R',
+      key: 'r',
+    },
   },
   contact_menu: {
     COPY_CONTACT_ADDRESS: {

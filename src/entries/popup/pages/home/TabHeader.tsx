@@ -14,6 +14,7 @@ import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
+import { useUserChains } from '../../hooks/useUserChains';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 
 import DisplayModeDropdown from './NFTs/DisplayModeDropdown';
@@ -32,7 +33,12 @@ export function TabHeader({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
   const { testnetMode } = useTestnetModeStore();
-  const nftCount = getNftCount({ address, testnetMode });
+  const { chains: userChains } = useUserChains();
+  const nftCount = getNftCount({
+    address,
+    testnetMode,
+    userChains,
+  });
 
   const displayBalanceComponent = useMemo(
     () =>

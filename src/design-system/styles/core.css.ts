@@ -429,6 +429,10 @@ const boxBaseProperties = defineProperties({
     })),
     borderBottomWidth: mapValues(strokeWeights, (borderWidth) => ({
       borderStyle: 'solid',
+      borderBottomWidth: borderWidth,
+    })),
+    borderDashedWidth: mapValues(strokeWeights, (borderWidth) => ({
+      borderStyle: 'dashed',
       borderWidth,
     })),
     bottom: positionSpace,
