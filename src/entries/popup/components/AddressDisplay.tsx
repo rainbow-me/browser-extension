@@ -26,7 +26,7 @@ import {
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
-function AddressMoreOptions({
+export function AddressMoreOptions({
   address,
   chainId,
 }: {
@@ -155,7 +155,7 @@ const ContractDisplay = ({
   color?: TextProps['color'];
 }) => {
   return (
-    <Inline space="6px" alignVertical="center">
+    <Inline space="6px" alignVertical="center" wrap={false}>
       {!hideAvatar && <AddressIcon iconUrl={iconUrl} address={address} />}
       <TextOverflow size="12pt" weight="semibold" color={color}>
         {name}

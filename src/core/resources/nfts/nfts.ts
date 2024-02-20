@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { Chain } from 'viem';
 import { Address } from 'wagmi';
 
 import {
@@ -13,22 +14,23 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import {
-  SUPPORTED_MAINNET_CHAINS,
-  SUPPORTED_TESTNET_CHAINS,
-} from '~/core/references';
-import { ChainName } from '~/core/types/chains';
+import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import {
   PolygonAllowListDictionary,
   SimpleHashCollectionDetails,
   UniqueAsset,
 } from '~/core/types/nfts';
-import { getSimpleHashSupportedChainNames } from '~/core/utils/chains';
+import {
+  getSimpleHashSupportedChainNames,
+  getSimpleHashSupportedTestnetChainNames,
+} from '~/core/utils/chains';
 import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
 } from '~/core/utils/nfts';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { NFTS_TEST_DATA } from '~/test/utils';
+const EMPTY_WALLET_ADDRESS = '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
@@ -38,32 +40,44 @@ const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 export type NftsArgs = {
   address: Address;
   testnetMode: boolean;
+  userChains: Chain[];
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const nftsQueryKey = ({ address, testnetMode }: NftsArgs) =>
-  createQueryKey('nfts', { address, testnetMode }, { persisterVersion: 2 });
+const nftsQueryKey = ({ address, testnetMode, userChains }: NftsArgs) =>
+  createQueryKey(
+    'nfts',
+    { address, testnetMode, userChains },
+    { persisterVersion: 3 },
+  );
 
 // ///////////////////////////////////////////////
 // Query Function
 
 async function nftsQueryFunction({
-  queryKey: [{ address, testnetMode }],
+  queryKey: [{ address, testnetMode, userChains }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsQueryKey>) {
-  if (process.env.IS_TESTING === 'true') {
+  if (
+    process.env.IS_TESTING === 'true' &&
+    isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
+  ) {
     return NFTS_TEST_DATA;
   }
-  const simpleHashSupportedChains = getSimpleHashSupportedChainNames();
-  const chains = (
-    !testnetMode ? SUPPORTED_MAINNET_CHAINS : SUPPORTED_TESTNET_CHAINS
-  )
-    .map(({ name }) => name as ChainName)
-    .filter((chainName) =>
-      simpleHashSupportedChains.includes(chainName.toLowerCase()),
-    );
+  const activeChainIds = userChains
+    .filter((chain) => {
+      return !testnetMode ? !chain.testnet : chain.testnet;
+    })
+    .map((chain) => chain.id);
+  const simplehashChainNames = !testnetMode
+    ? getSimpleHashSupportedChainNames()
+    : getSimpleHashSupportedTestnetChainNames();
+  const chains = simplehashChainNames.filter((simplehashChainName) => {
+    const id = chainNameToIdMapping[simplehashChainName];
+    return activeChainIds.includes(id);
+  }) as ChainName[];
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({
@@ -148,11 +162,11 @@ type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;
 // Query Hook
 
 export function useNfts<TSelectData = NftsResult>(
-  { address, testnetMode }: NftsArgs,
+  { address, testnetMode, userChains }: NftsArgs,
   config: InfiniteQueryConfig<NftsResult, Error, TSelectData> = {},
 ) {
   return useInfiniteQuery(
-    nftsQueryKey({ address, testnetMode }),
+    nftsQueryKey({ address, testnetMode, userChains }),
     nftsQueryFunction,
     {
       ...config,
@@ -166,7 +180,7 @@ export function useNfts<TSelectData = NftsResult>(
 // ///////////////////////////////////////////////
 // Query Utils
 
-export function getNftCount({ address, testnetMode }: NftsArgs) {
+export function getNftCount({ address, testnetMode, userChains }: NftsArgs) {
   const nftData:
     | {
         pages: {
@@ -176,7 +190,7 @@ export function getNftCount({ address, testnetMode }: NftsArgs) {
         pageParams: (string | null)[];
       }
     | undefined = queryClient.getQueryData(
-    nftsQueryKey({ address, testnetMode }),
+    nftsQueryKey({ address, testnetMode, userChains }),
   );
   if (nftData?.pages) {
     const nfts = nftData?.pages

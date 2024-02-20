@@ -1,8 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { ChainId } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { getProvider } from '@wagmi/core';
-import { Chain } from 'wagmi';
 
 import {
   QueryConfig,
@@ -12,6 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { gasUnits } from '~/core/references/gasUnits';
+import { ChainId } from '~/core/types/chains';
 import { estimateGas } from '~/core/utils/gas';
 
 // ///////////////////////////////////////////////
@@ -22,7 +21,7 @@ export type EstimateGasLimitResponse = {
 };
 
 export type EstimateGasLimitArgs = {
-  chainId: Chain['id'];
+  chainId: ChainId;
   transactionRequest: TransactionRequest;
 };
 

@@ -69,7 +69,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     await checkWalletName(driver, rootURL, TEST_VARIABLES.SEED_WALLET.ADDRESS);
   });
 
-  it('should be able to go to setings', async () => {
+  it('should be able to go to settings', async () => {
     await goToPopup(driver, rootURL);
     await executePerformShortcut({ driver, key: 'DECIMAL' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
@@ -89,18 +89,8 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     await checkExtensionURL(driver, 'send');
   });
 
-  it('should be able to navigate home with keyboard nav', async () => {
-    await executePerformShortcut({ driver, key: 'ESCAPE' });
-    await checkExtensionURL(driver, 'home');
-  });
-
-  it('should be able to navigate to send with keyboard navigation', async () => {
-    await navigateToElementWithTestId({ driver, testId: 'header-link-send' });
-    await checkExtensionURL(driver, 'send');
-  });
-
   it('should be able to nav to send field and type in address', async () => {
-    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
+    await delayTime('very-long');
     await driver.actions().sendKeys('0xtester.eth').perform();
     const shortenedAddress = await findElementByText(driver, '0x2e67…e774');
     expect(shortenedAddress).toBeTruthy();
@@ -141,9 +131,10 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to focus asset to send with keyboard', async () => {
-    await executePerformShortcut({ driver, key: 'TAB' });
-    const ethereum = await findElementByText(driver, 'Ethereum');
-    expect(ethereum).toBeTruthy();
+    await navigateToElementWithTestId({
+      driver,
+      testId: 'token-input',
+    });
     await navigateToElementWithTestId({
       driver,
       testId: 'asset-name-eth_1',

@@ -83,7 +83,7 @@ function parseSimulation(
       quantity,
       asset: parseSimulationAsset(asset, chainId),
     })),
-    approvals: simulation.approvals.map((approval) => ({
+    approvals: simulation?.approvals?.map((approval) => ({
       ...approval,
       asset: parseSimulationAsset(approval.asset, chainId),
     })),
