@@ -75,12 +75,14 @@ import {
 } from '~/entries/popup/components/Navbar/Navbar';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
+import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { ROUTES } from '~/entries/popup/urls';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 import { BirdIcon } from './BirdIcon';
+import NFTContextMenu from './NFTContextMenu';
 import NFTDropdownMenu from './NFTDropdownMenu';
 import { getOpenseaUrl } from './utils';
 
@@ -146,6 +148,9 @@ export default function NFTDetails() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useNftShortcuts(nft);
+
   return (
     <Box background="surfacePrimary">
       <AccentColorProvider
@@ -169,13 +174,17 @@ export default function NFTDetails() {
                 borderRadius="16px"
                 style={{ height: 320, width: 320 }}
               >
-                <ExternalImage
-                  src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
-                  placeholderSrc={nft ? getUniqueAssetImagePreviewURL(nft) : ''}
-                  height={320}
-                  width={320}
-                  borderRadius="16px"
-                />
+                <NFTContextMenu nft={nft} offsetOverride={true}>
+                  <ExternalImage
+                    src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
+                    placeholderSrc={
+                      nft ? getUniqueAssetImagePreviewURL(nft) : ''
+                    }
+                    height={320}
+                    width={320}
+                    borderRadius="16px"
+                  />
+                </NFTContextMenu>
               </Box>
               <Box paddingTop="20px" paddingBottom="16px">
                 <Columns>

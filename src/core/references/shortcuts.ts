@@ -186,6 +186,22 @@ export const shortcuts = {
       display: 'R',
       key: 'r',
     },
+    DOWNLOAD_NFT: {
+      display: 'D',
+      key: 'd',
+    },
+    COPY_NFT_ID: {
+      display: 'C',
+      key: 'c',
+    },
+    SEND_NFT: {
+      display: 'S',
+      key: 's',
+    },
+    HIDE_NFT: {
+      display: 'H',
+      key: 'h',
+    },
   },
   wallets: {
     CHOOSE_WALLET_GROUP_NEW: {
