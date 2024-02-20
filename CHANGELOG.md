@@ -69,7 +69,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Resolved dApp Provider errors when interacting with 1inch Limit Orders and Curve.fi #1297
 - Resolved missing Learn more explainer link on the Flashbots toggle in Settings #1291
 - Resolved issue where Custom Gas options were incorrectly was exposed for L2 networks #1304
-- Preventing duplicate `wallet_addEthereumChain` calls for adding new networks, and now displaying errors#1298
+- Preventing duplicate `wallet_addEthereumChain` calls for adding new networks, and now displaying errors #1298
 
 ### Internal
 
@@ -138,14 +138,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
-- Resolved an issue that blocked some elligble wallets with a balance from enrolling in Rainbow Points #1258
+- Resolved an issue that blocked some eligible wallets with a balance from enrolling in Rainbow Points #1258
 
 ## [v1.3.17](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.17)
 
 ### Added
 
-- Custom Networks and RPCs are now suported in Rainbow. In the Networks menu in Settings, you can add a network, switch your default RPC, or even add Custom Tokens to appear across Rainbow #1200 #1224 #1225 #1231 #1233 #1220 #1245 #1247 #1248 #1249 #1250 #1255 #1256 #1236
-- Chains like Arbitrum Nova, Polygon zkEVM, Canto, Ethereum Classic, Fantom, Moonbeam, Mantle, Metis, and Pulsechain are now pre-populuted when adding a Custom Network for even easier access #1205 #1223 #1244
+- Custom Networks and RPCs are now supported in Rainbow. In the Networks menu in Settings, you can add a network, switch your default RPC, or even add Custom Tokens to appear across Rainbow #1200 #1224 #1225 #1231 #1233 #1220 #1245 #1247 #1248 #1249 #1250 #1255 #1256 #1236
+- Chains like Arbitrum Nova, Polygon zkEVM, Canto, Ethereum Classic, Fantom, Moonbeam, Mantle, Metis, and Pulsechain are now pre-populated when adding a Custom Network for even easier access #1205 #1223 #1244
 - My NFTs and NFT Search is now available in the Magic Menu. NFTs are searchable by token names, token ids, collection names, and contract addresses for even faster access #1227
 
 ### Changed
@@ -278,7 +278,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Internal
 
 - Added support for `wallet_watchAsset` RPC call #1141
-- Added Custom RPC Settings form validatin to test RPC endpoints #1144 #1241
+- Added Custom RPC Settings form validation to test RPC endpoints #1144 #1241
 - Added NFT Gallery loading and empty states #1152 #1155
 - Added NFT Keyboard Navigation and sorting Shortcuts #1154
 - Added Owners and Distinct Owners fields in NFT Details #1153
