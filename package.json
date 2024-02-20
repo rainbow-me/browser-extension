@@ -142,7 +142,7 @@
     "node-vibrant": "3.2.1-alpha.1",
     "parse-ms": "3.0.0",
     "qrcode": "1.5.1",
-    "rainbow-provider": "../rainbow-provider/rainbow-provider-v0.0.18.tgz",
+    "rainbow-provider": "./rainbow-provider-v0.0.19.tgz",
     "react": "18.2.0",
     "react-beautiful-dnd": "13.1.1",
     "react-dom": "18.2.0",
