@@ -1,10 +1,13 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { selectNftCollections } from '~/core/resources/_selectors/nfts';
+import {
+  NFTCollectionSectionData,
+  selectSortedNftCollections,
+} from '~/core/resources/_selectors/nfts';
 import { useNfts } from '~/core/resources/nfts';
 import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -12,10 +15,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
-import {
-  getUniqueAssetImagePreviewURL,
-  getUniqueAssetImageThumbnailURL,
-} from '~/core/utils/nfts';
+import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
 import {
   Bleed,
   Box,
@@ -23,25 +23,22 @@ import {
   Columns,
   Inline,
   Inset,
-  Row,
-  Rows,
   Stack,
   Symbol,
   Text,
-  TextOverflow,
 } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
-import { Lens } from '~/design-system/components/Lens/Lens';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { useCoolMode } from '~/entries/popup/hooks/useCoolMode';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
+import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { ROUTES } from '~/entries/popup/urls';
 
-import ExternalImage from '../../../components/ExternalImage/ExternalImage';
-
+import { NFTCollectionSection } from './NFTCollectionSection';
 import NFTContextMenu from './NFTContextMenu';
+import { NFTThumbnail } from './NFTThumbnail';
 import { fadeOutMask } from './NFTs.css';
 
 const NFTS_LIMIT = 2000;
@@ -66,44 +63,9 @@ export function NFTs() {
     isLoading,
     refetch,
   } = useNfts({ address, testnetMode, userChains });
-  const nftData = useMemo(() => {
-    return {
-      ...data,
-      nfts: selectNftCollections(data),
-    };
-  }, [data]);
-  const { nfts } = nftData || {};
+  const sortedSections = selectSortedNftCollections(sort, data);
   const navigate = useRainbowNavigate();
   const containerRef = useContainerRef();
-  const sections = Object.values(nfts || {});
-  const sortedSections = useMemo(() => {
-    if (sort === 'alphabetical') {
-      return sections.sort((a, b) => {
-        const aName = a.collection.name.toLowerCase();
-        const bName = b.collection.name.toLowerCase();
-        if (aName < bName) {
-          return -1;
-        }
-        if (aName > bName) {
-          return 1;
-        }
-        return 0;
-      });
-    } else {
-      return sections.sort((a, b) => {
-        const earliestDate = new Date(-8640000000000000);
-        const aCollectionAcquisition = a.lastCollectionAcquisition;
-        const bCollectionAcquisition = b.lastCollectionAcquisition;
-        const dateA = aCollectionAcquisition
-          ? new Date(aCollectionAcquisition)
-          : earliestDate;
-        const dateB = bCollectionAcquisition
-          ? new Date(bCollectionAcquisition)
-          : earliestDate;
-        return dateB.getTime() - dateA.getTime();
-      });
-    }
-  }, [sections, sort]);
   const groupedAssets = sortedSections
     .map((section) => section.assets)
     .flat()
@@ -113,10 +75,18 @@ export function NFTs() {
     .flat()
     .filter((nft) => hiddenNftsForAddress[nft.uniqueId]);
   const allSections = sortedSections
-    .filter((section) => {
-      return section.assets.filter((nft) => !hiddenNftsForAddress[nft.uniqueId])
-        .length;
-    })
+    .reduce((cumulativeSections, currentSection) => {
+      const unhiddenAssets = currentSection.assets.filter(
+        (nft) => !hiddenNftsForAddress[nft.uniqueId],
+      );
+      if (unhiddenAssets.length) {
+        cumulativeSections.push({
+          ...currentSection,
+          assets: unhiddenAssets,
+        });
+      }
+      return cumulativeSections;
+    }, [] as NFTCollectionSectionData[])
     .concat(
       hiddenAssets.length
         ? {
@@ -231,7 +201,9 @@ export function NFTs() {
     nftCount,
   ]);
 
-  if (!isLoading && Object.values(nfts || {}).length === 0) {
+  useNftShortcuts();
+
+  if (!isLoading && sortedSections.length === 0) {
     return <NFTEmptyState />;
   }
 
@@ -287,7 +259,9 @@ export function NFTs() {
                             >
                               {rowData.map((asset, i) => (
                                 <NFTContextMenu key={i} nft={asset}>
-                                  <NftThumbnail
+                                  <NFTThumbnail
+                                    borderRadius="10px"
+                                    size={96}
                                     imageSrc={getUniqueAssetImageThumbnailURL(
                                       asset,
                                     )}
@@ -360,7 +334,7 @@ export function NFTs() {
                           ref={collectionGalleryRowVirtualizer.measureElement}
                           data-index={index}
                         >
-                          <CollectionSection
+                          <NFTCollectionSection
                             isLast={isLast}
                             section={section}
                             onAssetClick={onAssetClick}
@@ -457,175 +431,6 @@ function CollectionNameSkeleton() {
   const width = useMemo(() => Math.random() * 230 + 30, []);
   return <Skeleton height="14px" width={`${width}px`} />;
 }
-
-function CollectionSection({
-  section,
-  isLast,
-  onAssetClick,
-}: {
-  section: { assets: UniqueAsset[]; collection: UniqueAsset['collection'] };
-  isLast: boolean;
-  onAssetClick: (asset: UniqueAsset) => void;
-}) {
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { sections, toggleGallerySectionOpen } = useNftsStore();
-  const { hidden } = useNftsStore();
-  const hiddenNftsForAddress = useMemo(
-    () => hidden[address] || {},
-    [hidden, address],
-  );
-  const sectionsForAddress = sections[address] || {};
-  const collectionId = section?.collection?.collection_id;
-  const collectionVisible = collectionId && sectionsForAddress[collectionId];
-  const setCollectionVisible = useCallback(() => {
-    toggleGallerySectionOpen({
-      address,
-      collectionId: collectionId || '',
-    });
-  }, [address, collectionId, toggleGallerySectionOpen]);
-  const displayedAssets = section.assets.filter(
-    (nft) =>
-      section.collection.collection_id === '_hidden' ||
-      !hiddenNftsForAddress[nft.uniqueId],
-  );
-  return (
-    <Rows>
-      <Row>
-        <Lens onClick={setCollectionVisible} borderRadius="6px">
-          <Inset horizontal="4px">
-            <Box
-              style={{
-                paddingTop: 7,
-                paddingBottom: isLast && !collectionVisible ? 19 : 7,
-              }}
-              testId={`nfts-collection-section-${section.collection.name}`}
-            >
-              <Columns alignVertical="center">
-                <Column>
-                  <Inline alignVertical="center" space="7px">
-                    <Box
-                      borderRadius="round"
-                      style={{
-                        overflow: 'none',
-                        height: COLLECTION_IMAGE_SIZE,
-                        width: COLLECTION_IMAGE_SIZE,
-                      }}
-                    >
-                      <ExternalImage
-                        src={section.collection.image_url || ''}
-                        height={COLLECTION_IMAGE_SIZE}
-                        width={COLLECTION_IMAGE_SIZE}
-                        borderRadius="round"
-                      />
-                    </Box>
-                    <TextOverflow
-                      size="14pt"
-                      weight="bold"
-                      color="label"
-                      maxWidth={260}
-                    >
-                      {section.collection.name}
-                    </TextOverflow>
-                    <Box paddingTop="1px">
-                      <Text size="12pt" weight="bold" color="labelQuaternary">
-                        {displayedAssets.length}
-                      </Text>
-                    </Box>
-                  </Inline>
-                </Column>
-                <Column width="content">
-                  <Box
-                    as={motion.div}
-                    animate={
-                      collectionVisible ? { rotate: 0 } : { rotate: -90 }
-                    }
-                  >
-                    <Inline alignVertical="center">
-                      <Symbol
-                        symbol="chevron.down"
-                        weight="bold"
-                        size={12}
-                        color="labelQuaternary"
-                      />
-                    </Inline>
-                  </Box>
-                </Column>
-              </Columns>
-            </Box>
-          </Inset>
-        </Lens>
-        <Inset horizontal="4px">
-          {collectionVisible && (
-            <Box
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                gap: 16,
-                paddingBottom: collectionVisible ? 23 : 0,
-                paddingTop: 6,
-              }}
-            >
-              {displayedAssets.map((asset, i) => {
-                return (
-                  <NFTContextMenu key={i} nft={asset}>
-                    <NftThumbnail
-                      imageSrc={
-                        // we hold off on providing the src field until opened so that
-                        // we don't request images for collections that are never opened
-                        collectionVisible
-                          ? getUniqueAssetImageThumbnailURL(asset)
-                          : undefined
-                      }
-                      placeholderSrc={
-                        collectionVisible
-                          ? getUniqueAssetImagePreviewURL(asset)
-                          : undefined
-                      }
-                      onClick={() => onAssetClick(asset)}
-                      index={i}
-                    />
-                  </NFTContextMenu>
-                );
-              })}
-            </Box>
-          )}
-        </Inset>
-      </Row>
-    </Rows>
-  );
-}
-
-const NftThumbnail = memo(function NftThumbnail({
-  imageSrc,
-  onClick,
-  index,
-  placeholderSrc,
-}: {
-  imageSrc?: string;
-  onClick: () => void;
-  index: number;
-  placeholderSrc?: string;
-}) {
-  return (
-    <Lens
-      style={{ height: 96, width: 96 }}
-      borderRadius="10px"
-      background="fillQuaternary"
-      onClick={onClick}
-      testId={`nft-thumbnail-${imageSrc}-${index}`}
-    >
-      <ExternalImage
-        borderRadius="10px"
-        src={imageSrc}
-        placeholderSrc={placeholderSrc}
-        height={96}
-        width={96}
-      />
-    </Lens>
-  );
-});
 
 export function NFTEmptyState() {
   const ref = useCoolMode({ emojis: ['🌈', '🖼️'] });
