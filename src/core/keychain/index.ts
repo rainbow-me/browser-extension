@@ -100,6 +100,10 @@ export const createWallet = async (): Promise<Address> => {
   return accounts[0];
 };
 
+export const isMnemonicInVault = async (mnemonic: EthereumWalletSeed) => {
+  return keychainManager.isMnemonicInVault(mnemonic);
+};
+
 export const deriveAccountsFromSecret = async (
   secret: EthereumWalletSeed,
 ): Promise<Address[]> => {

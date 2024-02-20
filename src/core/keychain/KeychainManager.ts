@@ -337,6 +337,14 @@ class KeychainManager {
     this.state.keychains = this.state.keychains.filter((k) => k !== keychain);
   }
 
+  async isMnemonicInVault(mnemonic: string) {
+    for (const k of this.state.keychains) {
+      if (k.type != KeychainType.HdKeychain) continue;
+      if ((await k.exportKeychain()) == mnemonic) return true;
+    }
+    return false;
+  }
+
   async importKeychain(opts: SerializedKeychain): Promise<Keychain> {
     if (opts.type === KeychainType.KeyPairKeychain) {
       const newAccount = (await this.deriveAccounts(opts))[0];
@@ -345,7 +353,7 @@ class KeychainManager {
         const existingKeychain = await this.getKeychain(newAccount);
         // if the account is already in the vault (like in a hd keychain), we don't want to import it again
         // UNLESS it's a readOnlyKeychain, which we DO WANT to override it, importing the pk
-        if (existingKeychain.type !== KeychainType.ReadOnlyKeychain)
+        if (existingKeychain.type != KeychainType.ReadOnlyKeychain)
           return existingKeychain;
       }
     }
@@ -538,13 +546,6 @@ class KeychainManager {
       }
     }
     throw new Error('No keychain found for account');
-  }
-
-  isAccountInReadOnlyKeychain(address: Address): Keychain | undefined {
-    for (const keychain of this.state.keychains) {
-      if (keychain.type !== KeychainType.ReadOnlyKeychain) continue;
-      if ((keychain as ReadOnlyKeychain).address === address) return keychain;
-    }
   }
 
   async getSigner(address: Address) {

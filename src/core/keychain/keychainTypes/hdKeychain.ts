@@ -86,10 +86,19 @@ export class HdKeychain implements IKeychain {
         const _privates = privates.get(this)!;
         const derivedWallet = _privates.deriveWallet(index);
 
-        // if account already exists in a readonly keychain, remove it
-        keychainManager
-          .isAccountInReadOnlyKeychain(derivedWallet.address)
-          ?.removeAccount(derivedWallet.address);
+        // if account already exists in a another keychain, remove it
+        keychainManager.state.keychains.forEach(async (keychain) => {
+          const keychainAccounts = await keychain.getAccounts();
+          if (keychainAccounts.includes(derivedWallet.address)) {
+            keychain.removeAccount(derivedWallet.address);
+            if (
+              keychain.type == KeychainType.ReadOnlyKeychain ||
+              keychain.type == KeychainType.KeyPairKeychain
+            ) {
+              keychainManager.removeKeychain(keychain);
+            }
+          }
+        });
 
         const wallet = new Wallet(
           derivedWallet.privateKey as BytesLike,
