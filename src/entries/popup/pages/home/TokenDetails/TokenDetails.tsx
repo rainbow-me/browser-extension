@@ -1,8 +1,10 @@
-import { useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
 import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import { useApprovals } from '~/core/resources/approvals/approvals';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
@@ -20,6 +22,8 @@ import {
   FormattedCurrencyParts,
   formatCurrencyParts,
 } from '~/core/utils/formatNumber';
+import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import {
   Box,
@@ -27,6 +31,7 @@ import {
   ButtonSymbol,
   Inline,
   Separator,
+  Stack,
   Symbol,
   Text,
   TextOverflow,
@@ -41,6 +46,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { SideChainExplainerSheet } from '~/entries/popup/components/SideChainExplainer';
 import { useCustomNetworkAsset } from '~/entries/popup/hooks/useCustomNetworkAsset';
@@ -48,6 +57,9 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
+
+import { TokenApprovalContextMenu } from '../Approvals/Approvals';
+import { triggerRevokeApproval } from '../Approvals/utils';
 
 import { About } from './About';
 import { PriceChart } from './PriceChart';
@@ -311,6 +323,8 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
 }
 
 export function TokenDetails() {
+  const { currentAddress } = useCurrentAddressStore();
+  const { currentCurrency } = useCurrentCurrencyStore();
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
 
   const { data: userAsset, isFetched } = useUserAsset(uniqueId);
@@ -320,6 +334,62 @@ export function TokenDetails() {
   const { isWatchingWallet } = useWallets();
 
   const navigate = useRainbowNavigate();
+  const token = userAsset || customAsset;
+
+  const { data: approvals } = useApprovals(
+    {
+      address: currentAddress,
+      chainIds: [Number(token?.chainId) as ChainId],
+      currency: currentCurrency,
+    },
+    {
+      enabled: !!Number(token?.chainId),
+      select: (data) => {
+        if (data) {
+          const tokenApprovals = data.filter((approval) =>
+            isLowerCaseMatch(approval.asset.asset_code, token?.address),
+          );
+          return tokenApprovals;
+        }
+        return null;
+      },
+    },
+  );
+
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
+    useExplainerSheetParams();
+
+  const showTokenApprovalsExplainer = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: {
+        icon: (
+          <Symbol
+            symbol="checkmark.seal.fill"
+            size={32}
+            weight="semibold"
+            color="blue"
+          />
+        ),
+      },
+      description: [
+        i18n.t(
+          'approvals.token_details.explainer.token_approval.description_1',
+        ),
+        i18n.t(
+          'approvals.token_details.explainer.token_approval.description_2',
+        ),
+      ],
+      title: i18n.t('approvals.token_details.explainer.token_approval.title'),
+      actionButton: {
+        label: i18n.t(
+          'approvals.token_details.explainer.token_approval.action_label',
+        ),
+        action: hideExplainerSheet,
+        labelColor: 'label',
+      },
+    });
+  }, [hideExplainerSheet, showExplainerSheet]);
 
   if (
     !uniqueId ||
@@ -328,7 +398,6 @@ export function TokenDetails() {
     return <Navigate to={ROUTES.HOME} />;
   }
 
-  const token = userAsset || customAsset;
   if (!token) return null;
 
   const isSwappable = !(
@@ -340,6 +409,15 @@ export function TokenDetails() {
     symbol: token.symbol,
   };
   const tokenNativeBalance = formatCurrencyParts(token.native.balance.amount);
+
+  const tokenApprovals = approvals
+    ?.map((approval) =>
+      approval.spenders.map((spender) => ({
+        approval,
+        spender,
+      })),
+    )
+    .flat();
 
   return (
     <AccentColorProvider
@@ -390,6 +468,7 @@ export function TokenDetails() {
           <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
       </Box>
+
       {isSwappable && (
         <Box
           display="flex"
@@ -398,9 +477,103 @@ export function TokenDetails() {
           paddingHorizontal="20px"
           paddingVertical="24px"
         >
+          {!isWatchingWallet && approvals?.length ? (
+            <Box
+              background="surfaceSecondaryElevated"
+              padding="16px"
+              borderRadius="16px"
+            >
+              <Stack space="12px">
+                <Inline space="4px" alignVertical="center">
+                  <Text size="14pt" weight="heavy" color="label">
+                    {i18n.t('token_details.approvals')}
+                  </Text>
+                  <ButtonSymbol
+                    symbol="info.circle.fill"
+                    color="labelQuaternary"
+                    height="28px"
+                    variant="tinted"
+                    onClick={showTokenApprovalsExplainer}
+                  />
+                </Inline>
+
+                <Separator color="separatorTertiary" />
+                {tokenApprovals?.map((approval, i) => {
+                  return (
+                    <Inline
+                      key={i}
+                      alignHorizontal="justify"
+                      alignVertical="center"
+                    >
+                      <Inline space="12px" alignVertical="center">
+                        <Symbol
+                          weight="regular"
+                          size={16}
+                          symbol="doc.plaintext"
+                          color="labelTertiary"
+                        />
+                        <Text
+                          size="12pt"
+                          weight="semibold"
+                          color="labelTertiary"
+                        >
+                          {approval.spender.contract_name ||
+                            truncateAddress(approval.spender.contract_address)}
+                        </Text>
+                      </Inline>
+                      <Inline space="12px" alignVertical="center">
+                        <Text
+                          size="12pt"
+                          weight="semibold"
+                          color="labelTertiary"
+                        >
+                          {approval.spender?.quantity_allowed.toLowerCase() ===
+                          'unlimited'
+                            ? approval.spender?.quantity_allowed
+                            : `${convertRawAmountToDecimalFormat(
+                                approval.spender?.quantity_allowed || '0',
+                                approval?.approval.asset.decimals,
+                              )} ${approval?.approval.asset.symbol}`}
+                        </Text>
+                        <TokenApprovalContextMenu
+                          type="dropdown"
+                          chainId={token.chainId}
+                          txHash={approval.spender.tx_hash}
+                          contractAddress={approval.spender.contract_address}
+                          onRevokeApproval={() => {
+                            triggerRevokeApproval({
+                              show: true,
+                              approval: approval,
+                            });
+                          }}
+                        >
+                          <Box>
+                            <Symbol
+                              size={14}
+                              weight="regular"
+                              symbol="ellipsis.circle"
+                              color="labelTertiary"
+                            />
+                          </Box>
+                        </TokenApprovalContextMenu>
+                      </Inline>
+                    </Inline>
+                  );
+                })}
+              </Stack>
+            </Box>
+          ) : null}
+          <Separator color="separatorTertiary" />
           <About token={token} />
         </Box>
       )}
+      <ExplainerSheet
+        show={explainerSheetParams.show}
+        header={explainerSheetParams.header}
+        title={explainerSheetParams.title}
+        description={explainerSheetParams.description}
+        actionButton={explainerSheetParams.actionButton}
+      />
     </AccentColorProvider>
   );
 }

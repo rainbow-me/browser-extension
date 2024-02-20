@@ -15,6 +15,7 @@ interface FormInputProps {
   loading?: boolean;
   spellCheck?: boolean;
   tabIndex?: number;
+  testId?: string;
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
@@ -28,6 +29,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
       loading,
       spellCheck,
       tabIndex,
+      testId,
     },
     ref,
   ) {
@@ -48,6 +50,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
               paddingRight: 30,
             }}
             tabIndex={tabIndex}
+            testId={testId}
           />
           {loading && (
             <Box position="absolute" right="8px">

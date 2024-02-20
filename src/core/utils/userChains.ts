@@ -3,7 +3,6 @@ import {
   arbitrumGoerli,
   arbitrumSepolia,
   base,
-  baseGoerli,
   baseSepolia,
   bsc,
   bscTestnet,
@@ -39,7 +38,7 @@ export const chainIdMap: Record<
   [ChainId.optimism]: [optimism.id, optimismGoerli.id, optimismSepolia.id],
   [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id, arbitrumSepolia.id],
   [ChainId.polygon]: [polygon.id, polygonMumbai.id],
-  [ChainId.base]: [base.id, baseGoerli.id, baseSepolia.id],
+  [ChainId.base]: [base.id, baseSepolia.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraTestnet.id, zoraSepolia.id],
 };
@@ -67,10 +66,7 @@ export const chainLabelMap: Record<
     ChainNameDisplay[arbitrumSepolia.id],
   ],
   [ChainId.polygon]: [ChainNameDisplay[polygonMumbai.id]],
-  [ChainId.base]: [
-    ChainNameDisplay[baseGoerli.id],
-    ChainNameDisplay[baseSepolia.id],
-  ],
+  [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
   [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
   [ChainId.zora]: [
     ChainNameDisplay[zoraTestnet.id],
