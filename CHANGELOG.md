@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.3.78](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.78)
+
+### Added
+
+- NFTs are now supported across major Custom Networks and Testnets #1336
+
+### Changed
+
+- Removed Base Goerli network that has been deprecated #1342
+
 ## [v1.3.73](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.73)
 
 ### Added
