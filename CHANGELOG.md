@@ -40,6 +40,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fixed an issue with dApps like Blur where the dApp interface would sometimes hang upon transaction signing due to a BigNumber parsing issue #1330
 - Fixed text overflows on From and To addresses in Transaction Details #1335
 
+### Security
+
+- Upgraded Lavamoat supply chain to mitigate reported vulnerability #1339
+
 ### Internal
 
 - Disabled anonymized collection by default on Firefox #1325
