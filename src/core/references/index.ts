@@ -11,7 +11,6 @@ import {
   holesky,
   mainnet,
   optimism,
-  optimismGoerli,
   optimismSepolia,
   polygon,
   polygonMumbai,
@@ -136,7 +135,6 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.bscTestnet]: AddressZero as Address,
   [ChainId.optimism]: ETH_OPTIMISM_ADDRESS as Address,
   [ChainId.hardhatOptimism]: AddressZero as Address,
-  [ChainId.optimismGoerli]: AddressZero as Address,
   [ChainId.optimismSepolia]: AddressZero as Address,
   [ChainId.rari]: AddressZero as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
@@ -162,7 +160,6 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.optimism]: ETH_ADDRESS,
   [ChainId.rari]: ETH_ADDRESS,
   [ChainId.hardhatOptimism]: ETH_ADDRESS,
-  [ChainId.optimismGoerli]: ETH_ADDRESS,
   [ChainId.optimismSepolia]: ETH_ADDRESS,
   [ChainId.base]: ETH_ADDRESS,
   [ChainId.baseSepolia]: ETH_ADDRESS,
@@ -206,7 +203,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
   bsc,
   goerli,
   sepolia,
-  optimismGoerli,
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
@@ -223,7 +219,6 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   holesky,
   goerli,
   sepolia,
-  optimismGoerli,
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
@@ -259,8 +254,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ETH_SEPOLIA_RPC };
     case ChainId.holesky:
       return { http: process.env.ETH_HOLESKY_RPC };
-    case ChainId.optimismGoerli:
-      return { http: process.env.OPTIMISM_GOERLI_RPC };
     case ChainId.optimismSepolia:
       return { http: process.env.OPTIMISM_SEPOLIA_RPC };
     case ChainId.bscTestnet:

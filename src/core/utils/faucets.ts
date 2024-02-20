@@ -11,7 +11,6 @@ export const TestnetFaucet = {
   [ChainId.goerli]: 'https://goerlifaucet.com',
   [ChainId.sepolia]: 'https://sepoliafaucet.com',
   [ChainId.holesky]: 'https://faucet.quicknode.com/ethereum/holesky',
-  [ChainId.optimismGoerli]: 'https://app.optimism.io/faucet',
   [ChainId.optimismSepolia]: 'https://app.optimism.io/faucet',
   [ChainId.bscTestnet]: 'https://www.bnbchain.org/en/testnet-faucet',
   [ChainId.polygonMumbai]: 'https://faucet.polygon.technology',

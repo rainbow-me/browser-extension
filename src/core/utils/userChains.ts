@@ -8,7 +8,6 @@ import {
   bscTestnet,
   holesky,
   optimism,
-  optimismGoerli,
   optimismSepolia,
   polygon,
   polygonMumbai,
@@ -35,7 +34,7 @@ export const chainIdMap: Record<
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, holesky.id],
-  [ChainId.optimism]: [optimism.id, optimismGoerli.id, optimismSepolia.id],
+  [ChainId.optimism]: [optimism.id, optimismSepolia.id],
   [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id, arbitrumSepolia.id],
   [ChainId.polygon]: [polygon.id, polygonMumbai.id],
   [ChainId.base]: [base.id, baseSepolia.id],
@@ -57,10 +56,7 @@ export const chainLabelMap: Record<
     ChainNameDisplay[sepolia.id],
     ChainNameDisplay[holesky.id],
   ],
-  [ChainId.optimism]: [
-    ChainNameDisplay[optimismGoerli.id],
-    ChainNameDisplay[optimismSepolia.id],
-  ],
+  [ChainId.optimism]: [ChainNameDisplay[optimismSepolia.id]],
   [ChainId.arbitrum]: [
     ChainNameDisplay[arbitrumGoerli.id],
     ChainNameDisplay[arbitrumSepolia.id],

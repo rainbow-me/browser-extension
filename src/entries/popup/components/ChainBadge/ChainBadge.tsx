@@ -48,7 +48,6 @@ const networkBadges = {
   [ChainId.goerli]: EthereumBadge,
   [ChainId.sepolia]: EthereumBadge,
   [ChainId.holesky]: EthereumBadge,
-  [ChainId.optimismGoerli]: OptimismBadge,
   [ChainId.optimismSepolia]: OptimismBadge,
   [ChainId.bscTestnet]: BscBadge,
   [ChainId.polygonMumbai]: PolygonBadge,
