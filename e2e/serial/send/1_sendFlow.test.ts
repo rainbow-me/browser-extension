@@ -283,14 +283,18 @@ it('should be able to customize gas', async () => {
     "[data-testid='max-base-fee-input'] [data-testid='gwei-input-mask']",
   );
 
-  expect(await baseFeeGweiInputMask.getAttribute('value')).toContain('400');
+  expect(
+    `${await baseFeeGweiInputMask.getAttribute('value')} max base fee`,
+  ).toContain(`400 max base fee`);
 
   const minerTipGweiInputMask = await querySelector(
     driver,
     "[data-testid='miner-tip-input'] [data-testid='gwei-input-mask']",
   );
 
-  expect(await minerTipGweiInputMask.getAttribute('value')).toContain('400');
+  expect(
+    `${await minerTipGweiInputMask.getAttribute('value')} miner tip`,
+  ).toContain(`400 miner tip`);
   await findElementByTestIdAndClick({ id: 'set-gas-button', driver });
 
   const gasMenu = await findElementByTestId({ id: 'gas-menu', driver });
