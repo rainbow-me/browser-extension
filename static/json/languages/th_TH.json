@@ -73,7 +73,7 @@
     "title": "การตั้งค่า",
     "use_rainbow_as_default_wallet": "ใช้ Rainbow เป็นวอลเล็ตเริ่มต้น",
     "sounds": "เสียง",
-    "default_wallet_description": "อนุญาตให้แอปส่งเสริม Rainbow เมื่อค้นหาส่วนขยายที่จะเชื่อมต่อ",
+    "default_wallet_description": "อนุญาตให้แอปเลือกใช้ Rainbow เป็นหลักเมื่อต้องการเชื่อมต่อกับส่วนขยาย",
     "contacts": "รายชื่อติดต่อ",
     "guides_and_support": "คู่มือและการสนับสนุน",
     "learn_about_ethereum": "เรียนรู้เกี่ยวกับ Ethereum",
@@ -94,7 +94,10 @@
         "text": "ลากเครือข่ายเพื่อจัดเรียง",
         "text_bold": "เคล็ดลับ:"
       },
+      "disable": "ปิดการใช้งาน",
       "disabled": "ปิดการใช้งาน",
+      "enable": "เปิดการใช้งาน",
+      "enabled": "เครือข่ายถูกเปิดใช้งาน",
       "description": "เลือกเครือข่ายและโทเคนที่จะแสดง คุณสามารถเชื่อมต่อกับเครือข่ายที่ Rainbow รองรับได้ แม้จะไม่ได้เลือก",
       "developer_tools": {
         "title": "เปิดใช้งานเครื่องมือนักพัฒนา",
@@ -102,6 +105,7 @@
       },
       "custom_rpc": {
         "title": "เพิ่มเครือข่าย",
+        "add_custom_network": "เพิ่มเครือข่ายที่กำหนดเอง",
         "networks": "เครือข่าย",
         "network_name": "ชื่อเครือข่าย",
         "rpc_url": "URL ของ RPC",
@@ -112,20 +116,23 @@
         "testnet": "เทสต์เน็ต",
         "block_explorer_url": "URL เบราว์เซอร์บล็อก",
         "add_network": "เพิ่มเครือข่าย",
-        "add_rpc": "เพิ่ม RPC %{rpcName}",
+        "add_rpc": "เพิ่มจุดปลายทาง RPC",
+        "add_network_rpc": "เพิ่ม %{rpcName} RPC",
         "add_asset": "เพิ่มโทเค็นที่กำหนดเอง",
-        "network_added": "เครือข่ายถูกเพิ่มแล้ว!",
-        "network_added_correctly": "%{networkName} ได้ถูกเพิ่มอย่างถูกต้องแล้ว!",
+        "network_added": "เครือข่ายถูกเพิ่มแล้ว",
+        "network_added_correctly": "%{networkName}",
         "remove_token": "ลบโทเค็น",
         "remove_rpc": "ลบ RPC",
+        "remove_network": "ลบเครือข่าย",
         "tokens": "โทเคน",
-        "cant_connect": "ไม่สามารถเชื่อมต่อกับจุดปลายทาง RPC นี้ได้",
-        "rpc_not_responding": "url ที่ให้มาไม่สามารถตอบสนองได้"
+        "cant_connect": "ไม่สามารถเชื่อมต่อกับ RPC endpoint นี้ได้",
+        "rpc_not_responding": "RPC endpoint ที่ให้มาไม่ตอบสนอง",
+        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default": "Rainbow"
       },
       "rpc_endpoints": "จุดปลายทาง RPC",
-      "enabled": "เปิดใช้งาน",
       "watch_asset": {
-        "title": "ดูสินทรัพย์"
+        "title": "เพิ่มโทเค็นที่กำหนดเอง"
       }
     },
     "privacy_and_security": {
@@ -215,6 +222,20 @@
           "warning_4": "ทีมงาน Rainbow จะไม่ขอขอ Recovery Phrase ของคุณ",
           "show": "แสดง Recovery Phrase",
           "copied": "คัดลอก Recovery Phrase แล้ว"
+        },
+        "wipe_wallets": {
+          "delete": "รีเซ็ต Rainbow",
+          "acknowlegement": "ฉันได้อ่านและยอมรับข้อมูลข้างต้น",
+          "warning_one": "การรีเซ็ต Rainbow จะทำการรีเซ็ตรหัสผ่าน และลบกระเป๋าเงินทั้งหมด",
+          "warning_two": "นอกจากนี้ยังจะลบข้อมูลและการตั้งค่าใน Rainbow ทั้งหมด",
+          "warning_three": "ตรวจสอบให้แน่ใจว่า Secret Recovery Phrase ของคุณปลอดภัยก่อนดำเนินการต่อ ",
+          "warning_four": "ทรัพย์สินและเงินของคุณสามารถเข้าถึงได้ด้วยข้อมูลการกู้คืนที่ถูกต้อง",
+          "button_wipe": "รีเซ็ต Rainbow",
+          "button_complete": "ตรวจสอบข้อมูลข้างต้นให้ครบถ้วน",
+          "wipe_confirmation": "รีเซ็ต Rainbow",
+          "wipe_confirmation_desc": "คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตส่วนขยายของ Rainbow บนเบราว์เซอร์",
+          "wipe_confirmation_button": "รีเซ็ต",
+          "wipe_confirmation_cancel": "ยกเลิก"
         }
       }
     },
@@ -224,7 +245,10 @@
       "use_flashbots": "ใช้ Flashbots",
       "clear_transactions_and_nonces": "ล้างธุรกรรมที่รอดำเนินการ",
       "clear_transactions_and_nonces_success": "ธุรกรรมที่รอดำเนินการถูกล้างแล้ว",
-      "flashbots_description": "Flashbots ช่วยปกป้องการทำธุรกรรมของคุณและลดความเป็นไปได้ของการทำธุรกรรมล้มเหลว อ่านเพิ่มเติม"
+      "flashbots_description": "Flashbots ปกป้องการทำธุรกรรมของคุณและลดโอกาสของการทำธุรกรรมล้มเหลว"
+    },
+    "approvals": {
+      "title": "การอนุมัติ"
     },
     "currency": {
       "title": "สกุลเงิน",
@@ -250,10 +274,7 @@
       "full_watching_wallets": "สิทธิ์เข้าถึงเต็มรูปแบบของ Wallet ที่ถูกติดตาม",
       "hw_wallets_enabled": "เปิดการสนับสนุน Hardware Wallet",
       "command_k_internal_shortcuts_enabled": "เปิดใช้งาน ⌘K Shortcut ภายใน",
-      "custom_rpc": "Custom RPC",
-      "new_tab_bar_enabled": "แถบแท็บใหม่",
-      "nfts_enabled": "เปิดใช้งาน NFTs",
-      "points": "คะแนน"
+      "custom_rpc": "Custom RPC"
     }
   },
   "transactions": {
@@ -395,8 +416,10 @@
         "my_wallets": "Wallet ของฉัน",
         "my_tokens": "โทเคนของฉัน",
         "my_tokens_watched": "โทเคน",
+        "my_nfts": "NFT ของฉัน",
+        "my_nfts_watched": "NFTs",
         "copy_address": "คัดลอกที่อยู่",
-        "view_nfts": "ดู NFTs",
+        "view_profile": "ดูโปรไฟล์ Rainbow",
         "add_wallet": "เพิ่ม Wallet",
         "lock": "ล็อค Rainbow",
         "connected_apps": "แอปที่เชื่อมต่อ",
@@ -440,7 +463,8 @@
         "swap": "สะพาน",
         "my_wallets": "สลับ",
         "my_tokens_watched": "ของฉัน",
-        "view_nfts": "แกลเลอรี, โปรไฟล์",
+        "my_nfts_watched": "ของฉัน",
+        "view_profile": "โปรไฟล์, แกลเลอรี, ens, nfts",
         "testnet_mode": "สลับ, เครือข่าย, เทสเน็ต",
         "developer_tools": "สลับ, เครือข่าย, นักพัฒนา, เทสเน็ต",
         "settings": "การตั้งค่า",
@@ -491,12 +515,21 @@
         "search_placeholder": "ค้นหาโทเค็น…",
         "section_title": "โทเคนของฉัน"
       },
+      "my_nfts": {
+        "empty_label": "ไม่พบ NFT",
+        "search_placeholder": "ค้นหา NFTs…",
+        "section_title": "NFT ของฉัน"
+      },
       "my_wallets": {
         "search_placeholder": "เลือกกระเป๋าเงินเพื่อสลับไปยัง…",
         "section_title": "Wallet ของฉัน"
       },
       "token_detail": {
         "search_placeholder": "ค้นหาการดำเนินการของโทเค็น…",
+        "section_title": "การดำเนินการ"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "ค้นหาการกระทำ NFTs…",
         "section_title": "การดำเนินการ"
       },
       "wallet_detail": {
@@ -531,6 +564,34 @@
     "no_connections_title": "ไม่มีแอปที่เชื่อมต่อ",
     "no_connections_copy": "เว็บไซต์ที่คุณเชื่อมต่อจะปรากฏที่นี่"
   },
+  "approvals": {
+    "title": "การอนุมัติ",
+    "unlimited": "ไม่จำกัด",
+    "no_allowance": "ไม่มีวงเงิน",
+    "revoke_approval": "ยกเลิกการอนุมัติ",
+    "copy_spender": "คัดลอกผู้ใช้จ่าย",
+    "spender_address_copied": "คัดลอกที่อยู่ผู้ใช้จ่ายแล้ว",
+    "revoked_approvals": "การอนุมัติที่ถูกยกเลิก",
+    "nothing_found": "ไม่พบอะไร",
+    "revoke": {
+      "title": "ยกเลิกการอนุมัติ",
+      "action": "ยกเลิก",
+      "cancel": "ยกเลิก",
+      "allowance": "ทวนสอบ",
+      "spender": "ผู้ใช้จ่าย",
+      "chain": "เชื่อมโยง"
+    },
+    "token_details": {
+      "explainer": {
+        "token_approval": {
+          "title": "การอนุมัติคืออะไร?",
+          "description_1": "การอนุมัติให้ dApp สามารถใช้จ่ายและโอนโทเคนหรือ NFT แทนคุณได้",
+          "description_2": "สำคัญที่จะต้องตรวจสอบการอนุมัติของคุณและยกเลิกการอนุมัติที่ไม่จำเป็นหรือไม่ปลอดภัยที่อาจเสี่ยงต่อสินทรัพย์ของคุณ",
+          "action_label": "เข้าใจแล้ว"
+        }
+      }
+    }
+  },
   "send": {
     "title": "ส่ง",
     "input_to_address_placeholder": "ชื่อ, ENS หรือที่อยู่",
@@ -558,7 +619,10 @@
       "available": "ที่มีอยู่",
       "token_balance": "ยอดโทเคน",
       "networks": "เครือข่าย",
-      "nothing_found": "ไม่พบอะไร"
+      "nothing_found": "ไม่พบอะไร",
+      "nfts": "NFTs",
+      "alphabetical": "ตามตัวอักษร",
+      "recent": "ล่าสุด"
     },
     "review": {
       "title": "ตรวจสอบและส่ง",
@@ -805,7 +869,7 @@
     "title": "วลีการกู้คืนลับๆ ของคุณ",
     "write_down_seed_importance": "เก็บคำเหล่านี้สามารถเข้าถึงกระเป๋าสตางค์ทั้งหมดของคุณ! เก็บไว้ที่ปลอดภัยและไม่เคยแชร์พวกนั้น",
     "saved_these_words": "ฉันได้บันทึกคำเหล่านี้",
-    "phrase_copied": "คัดลอก Recovery Phrase แล้ว"
+    "copied": "คัดลอก Recovery Phrase แล้ว"
   },
   "import_wallet_via_secret": {
     "title": "นำเข้ากระเป๋าสตางค์",
@@ -1031,7 +1095,8 @@
     "request_rejected": "คำขอธุรกรรมถูกปฏิเสธ",
     "bridge_and_try_again": "ส่งเงินม้วนธรรมเนียมไปสักหน่วยและลองอีกครั้ง",
     "buy_and_try_again": "ซื้อม้วนธรรมเนียมไปสักหน่วยและลองอีกครั้ง",
-    "buy": "ซื้อ %{token}"
+    "buy_gas": "ซื้อ %{token}",
+    "get_testnet_gas": "รับ testnet ฟรี %{token}"
   },
   "add_chain": {
     "name": "ชื่อ",
@@ -1194,7 +1259,8 @@
     "exchange_rate": "แลกเปลี่ยน",
     "collection": "คอลเล็กชั่น",
     "token_contract": "สัญญาโทเค็น",
-    "token_standard": "มาตรฐานโทเค็น"
+    "token_standard": "มาตรฐานโทเค็น",
+    "revoke_approval": "ยกเลิกการอนุมัติ"
   },
   "tokens_tab": {
     "coinbase_title": "ฝากจาก Coinbase",
@@ -1209,9 +1275,7 @@
     "unknown_token": "Token ไม่ทราบ"
   },
   "nfts": {
-    "coming_soon_header": "เร็วๆนี้",
     "empty_state_header": "NFTs",
-    "coming_soon_description": "NFTs เร็ว ๆ นี้ คอยติดตาม!",
     "empty_state_description": "NFTs ของคุณจะปรากฎที่นี่!",
     "view_on_web": "ดูในเว็บ",
     "display_mode_gallery": "แกลเลอรี",
@@ -1220,6 +1284,7 @@
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "ล่าสุด",
     "sort_option_abc_long": "ตามตัวอักษร",
+    "hidden_section_title": "ซ่อน",
     "details": {
       "last_sales_price": "ราคาขายล่าสุด",
       "none": "ไม่มี",
@@ -1232,6 +1297,8 @@
       "token_contract": "สัญญาโทเค็น",
       "contract_creator": "ผู้สร้างสัญญา",
       "chain": "เชื่อมโยง",
+      "hide": "ซ่อน",
+      "unhide": "เลิกซ่อน",
       "id_copied": "คัดลอก ID แล้ว",
       "copy_token_id": "คัดลอกรหัสโทเค็น",
       "download": "ดาวน์โหลด",
@@ -1251,20 +1318,24 @@
         "floor_price_description": "ราคาต่ำสุดของคอลเลกชันคือราคาที่ถามต่ำสุดในรายการที่วางขายอยู่ในคอลเลกชัน",
         "floor_price_title": "ราคาพื้นคอลเลกชั่น",
         "floor_price_action_label": "เข้าใจแล้ว"
-      }
+      },
+      "send": "ส่ง",
+      "view_on_opensea": "ดูที่ OpenSea",
+      "view_on_explorer": "ดูที่ %{explorerTitle}"
     }
   },
   "points": {
-    "coming_soon_header": "เร็วๆนี้",
-    "coming_soon_description": "คะแนนอยู่ใกล้แค่เอื้อม\nเริ่มสะสมวันนี้",
+    "check_back_soon_header": "กลับมาเร็วๆ นี้",
+    "check_back_soon_description": "ไม่สามารถใช้งานแต้มได้ในขณะนี้\nกรุณากลับมาใหม่เพื่อใช้งาน Rainbow Points ต่อ",
     "your_rank": "อันดับของคุณ",
+    "unranked": "ไม่มีอันดับ",
+    "points_to_rank": "%{rank_cutoff} แต้มเพื่อจัดอันดับ",
     "next_drop": "ดรอปถัดไป",
     "leaderboard": "ลีดเดอร์บอร์ด",
     "referral_code": "รหัสอ้างอิง",
     "referral_code_description": "ได้คะแนนจากการแนะนำเพื่อน เมื่อพวกเขาทำการแลกเปลี่ยน $100 ผ่าน Rainbow",
     "copied_referral_code": "คัดลอกรหัสอ้างอิงแล้ว!",
     "copied_referral_link": "คัดลอกลิงก์อ้างอิงแล้ว!",
-    "out_of": "จากทั้งหมด %{total}",
     "out_of_current_total_points": "จากทั้งหมด %{total} คะแนนปัจจุบัน",
     "header": "เรียกร้องคะแนนของคุณ",
     "description": "คะแนนมาแล้ว ดูว่าคุณได้รับไปเท่าไร",
@@ -1301,11 +1372,31 @@
       "registration_complete": "การลงทะเบียนเสร็จสมบูรณ์",
       "all_set": "คุณได้พร้อมทั้งหมดแล้ว!",
       "keep_earning_by": "คงไว้คะแนนโดยการแลกเปลี่ยน สะพาน สร้างสกุลเงิน แนะนำเพื่อน และอื่นๆ",
-      "the_more_you_use": "ยิ่งใช้ Rainbow มากเท่าไหร่ ก็ยิ่งได้รับรางวัลมากขึ้น"
+      "the_more_you_use": "ยิ่งใช้ Rainbow มากเท่าไหร่ ก็ยิ่งได้รับรางวัลมากขึ้น",
+      "balance_required": "ต้องมียอดเงินในกระเป๋า",
+      "ensure_you_have_a_balance_on": "เพื่อดำเนินการต่อ โปรดตรวจสอบว่าคุณมี ETH ในเครือข่ายต่อไปนี้:",
+      "or_alternatively_balance_on": "หรือมียอดเงิน MATIC บน Polygon หรือ BNB บน BSC",
+      "fund_my_wallet": "เติมเงินเข้ากระเป๋า"
     },
     "error": {
       "existing_user": "ผู้ใช้เดิม",
-      "invalid_referral_code": "รหัสแนะนำไม่ถูกต้อง"
+      "invalid_referral_code": "รหัสแนะนำไม่ถูกต้อง",
+      "unexpected": "เกิดข้อผิดพลาดที่ไม่คาดคิด ลองอีกครั้งในอีกสักครู่"
+    },
+    "weekly_overview": {
+      "week_of": "> สัปดาห์ของ %{from} - %{to}",
+      "counting": "> กำลังนับคะแนนที่ได้รับ...",
+      "your_activity": "กิจกรรมของคุณ:",
+      "referral_activity": "กิจกรรมการอ้างอิง:",
+      "new_referrals": "การอ้างอิงใหม่:",
+      "retroactive": "คะแนนย้อนหลัง:",
+      "total": "รวม:",
+      "weekly_counted": "> การนับรายได้รายสัปดาห์",
+      "you_have": "คุณมี:",
+      "none": "ไม่มี",
+      "your_earnings": "รายได้สัปดาห์ที่แล้วของคุณ",
+      "view_breakdown": "ดูการแบ่งรายได้รายสัปดาห์ของคุณ",
+      "view_now": "ดูเลย"
     }
   },
   "speed_up_and_cancel": {
@@ -1324,7 +1415,8 @@
     "speed_up_cta": "เร่งธุรกรรม",
     "speed_up_transaction": "เร่งธุรกรรม",
     "close_cta": "ยกเลิก",
-    "handle_copy_title": "คัดลอก Tx Hash"
+    "handle_copy_title": "คัดลอก Tx Hash",
+    "revoke_approval": "ยกเลิกการอนุมัติ"
   },
   "token_details": {
     "swap": "แลกเปลี่ยน",
@@ -1343,6 +1435,7 @@
     "not_available": "ราคาไม่สามารถใช้ได้",
     "more_options": {
       "copy_address": "คัดลอกที่อยู่",
+      "view_on_explorer": "ดูบน %{explorer}",
       "hide": "ซ่อนโทเคน",
       "report": "แจ้งโทเคน"
     },
@@ -1467,7 +1560,10 @@
     "network_changed": "เปลี่ยนเครือข่ายแล้ว",
     "network_changed_failed": "เปลี่ยนเครือข่ายล้มเหลว",
     "unsupported_network": "ไม่รองรับเครือข่าย",
-    "no_active_session": "ไม่มีเซสชั่นที่กำลังทำงาน"
+    "no_active_session": "ไม่มีเซสชั่นที่กำลังทำงาน",
+    "already_added": "เปิดใช้งาน RPC แล้ว",
+    "set_as_active": "เปิดใช้งาน RPC ใหม่แล้ว",
+    "already_active": "เครือข่ายถูกเพิ่มแล้ว"
   },
   "alert": {
     "ok": "ตกลง",
@@ -1535,10 +1631,6 @@
       "after": " สำหรับขอเพิ่มเติม"
     }
   },
-  "approvals": {
-    "unlimited": "ไม่จำกัด",
-    "no_allowance": "ไม่มีวงเงิน"
-  },
   "buy": {
     "title": "ซื้อ",
     "fees_title": "ค่าธรรมเนียม",
@@ -1602,6 +1694,7 @@
   "nonce": "Nonce",
   "copy": "คัดลอก",
   "copy_link": "คัดลอกลิงก์",
+  "link_text": "เรียนรู้เพิ่มเติม",
   "close": "ปิด",
   "verified": "ได้รับการตรวจสอบ",
   "unverified": "ไม่ได้รับการตรวจสอบ",

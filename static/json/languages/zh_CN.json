@@ -73,7 +73,7 @@
     "title": "设置",
     "use_rainbow_as_default_wallet": "将 Rainbow 设为默认钱包",
     "sounds": "声音",
-    "default_wallet_description": "允许应用程序在寻找连接的扩展时优先考虑 Rainbow。",
+    "default_wallet_description": "允许应用程序优先连接Rainbow扩展",
     "contacts": "通讯录",
     "guides_and_support": "指南和支持",
     "learn_about_ethereum": "了解以太坊",
@@ -94,7 +94,10 @@
         "text": "拖动网络进行排序",
         "text_bold": "提示："
       },
+      "disable": "禁用",
       "disabled": "已禁用",
+      "enable": "启用",
+      "enabled": "网络已启用",
       "description": "选择要显示的网络和代币。即使没有选中，您也可以连接到Rainbow支持的任何网络。",
       "developer_tools": {
         "title": "启用开发者工具",
@@ -102,6 +105,7 @@
       },
       "custom_rpc": {
         "title": "添加网络",
+        "add_custom_network": "添加自定义网络",
         "networks": "网络",
         "network_name": "网络名称",
         "rpc_url": "RPC 链接",
@@ -112,20 +116,23 @@
         "testnet": "测试网",
         "block_explorer_url": "区块浏览器网址",
         "add_network": "添加网络",
-        "add_rpc": "添加 %{rpcName} RPC",
+        "add_rpc": "添加RPC端点",
+        "add_network_rpc": "添加 %{rpcName} RPC",
         "add_asset": "添加自定义代币",
-        "network_added": "网络已添加！",
-        "network_added_correctly": "%{networkName} 已正确添加！",
+        "network_added": "网络已添加",
+        "network_added_correctly": "%{networkName}",
         "remove_token": "移除代币",
         "remove_rpc": "移除RPC",
+        "remove_network": "移除网络",
         "tokens": "代币",
-        "cant_connect": "无法连接到此RPC端点！",
-        "rpc_not_responding": "提供的URL无响应"
+        "cant_connect": "无法连接到此RPC端点",
+        "rpc_not_responding": "提供的RPC端点无响应",
+        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default": "Rainbow"
       },
       "rpc_endpoints": "RPC端点",
-      "enabled": "已启用",
       "watch_asset": {
-        "title": "关注资产"
+        "title": "添加自定义代币"
       }
     },
     "privacy_and_security": {
@@ -215,6 +222,20 @@
           "warning_4": "Rainbow Support永远不会要求您提供恢复短语。",
           "show": "显示恢复短语",
           "copied": "恢复短语已复制"
+        },
+        "wipe_wallets": {
+          "delete": "重置Rainbow",
+          "acknowlegement": "我已阅读并确认上述信息",
+          "warning_one": "重置Rainbow将重置您的密码，并移除所有钱包",
+          "warning_two": "这也将擦除Rainbow中的所有数据和设置",
+          "warning_three": "继续操作前请确保您的秘密恢复短语安全 ",
+          "warning_four": "正确的恢复信息可访问您的资产和资金",
+          "button_wipe": "重置Rainbow",
+          "button_complete": "完成上述检查",
+          "wipe_confirmation": "重置Rainbow",
+          "wipe_confirmation_desc": "您确定要重置Rainbow浏览器扩展吗？",
+          "wipe_confirmation_button": "重置",
+          "wipe_confirmation_cancel": "取消"
         }
       }
     },
@@ -224,7 +245,10 @@
       "use_flashbots": "使用 Flashbots",
       "clear_transactions_and_nonces": "清除待处理交易",
       "clear_transactions_and_nonces_success": "待处理交易已清除",
-      "flashbots_description": "Flashbots 保护您的交易并降低交易失败的可能性。了解更多信息。"
+      "flashbots_description": "Flashbots 保护您的交易并减少交易失败的可能性"
+    },
+    "approvals": {
+      "title": "授权"
     },
     "currency": {
       "title": "货币",
@@ -250,10 +274,7 @@
       "full_watching_wallets": "完全访问被监视的钱包",
       "hw_wallets_enabled": "启用硬件钱包支持",
       "command_k_internal_shortcuts_enabled": "启用 ⌘K 内部快捷键",
-      "custom_rpc": "自定义RPC",
-      "new_tab_bar_enabled": "新的选项栏",
-      "nfts_enabled": "已启用 NFT",
-      "points": "积分"
+      "custom_rpc": "自定义RPC"
     }
   },
   "transactions": {
@@ -395,8 +416,10 @@
         "my_wallets": "我的钱包",
         "my_tokens": "我的代币",
         "my_tokens_watched": "代币",
+        "my_nfts": "我的NFTs",
+        "my_nfts_watched": "NFTs",
         "copy_address": "复制地址",
-        "view_nfts": "查看NFT",
+        "view_profile": "查看Rainbow档案",
         "add_wallet": "添加钱包",
         "lock": "锁定彩虹",
         "connected_apps": "连接的应用",
@@ -440,7 +463,8 @@
         "swap": "桥接",
         "my_wallets": "切换",
         "my_tokens_watched": "我的",
-        "view_nfts": "画廊、个人资料",
+        "my_nfts_watched": "我的",
+        "view_profile": "档案, 画廊, ENS, NFTs",
         "testnet_mode": "切换，网络，测试网",
         "developer_tools": "切换，网络，开发者，测试网",
         "settings": "偏好设置",
@@ -491,12 +515,21 @@
         "search_placeholder": "搜索代币…",
         "section_title": "我的代币"
       },
+      "my_nfts": {
+        "empty_label": "未发现NFTs",
+        "search_placeholder": "搜索NFTs…",
+        "section_title": "我的NFTs"
+      },
       "my_wallets": {
         "search_placeholder": "选择要切换的钱包…",
         "section_title": "我的钱包"
       },
       "token_detail": {
         "search_placeholder": "搜索代币操作…",
+        "section_title": "操作"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "搜索NFT操作…",
         "section_title": "操作"
       },
       "wallet_detail": {
@@ -531,6 +564,34 @@
     "no_connections_title": "没有已连接的应用",
     "no_connections_copy": "您连接的网站将显示在此处"
   },
+  "approvals": {
+    "title": "授权",
+    "unlimited": "无限",
+    "no_allowance": "无额度权限",
+    "revoke_approval": "撤销授权",
+    "copy_spender": "复制支出方",
+    "spender_address_copied": "支出方地址已复制",
+    "revoked_approvals": "已撤销的授权",
+    "nothing_found": "未找到任何内容",
+    "revoke": {
+      "title": "撤销授权",
+      "action": "撤销",
+      "cancel": "取消",
+      "allowance": "额度",
+      "spender": "支出方",
+      "chain": "链"
+    },
+    "token_details": {
+      "explainer": {
+        "token_approval": {
+          "title": "什么是授权？",
+          "description_1": "授权允许dApp代表您花费和转移代币或NFT",
+          "description_2": "监控您的授权并撤销不必要、过于宽泛或不安全的授权非常重要，这些授权可能会危及您的资产",
+          "action_label": "知道了"
+        }
+      }
+    }
+  },
   "send": {
     "title": "发送",
     "input_to_address_placeholder": "名称、ENS 或地址",
@@ -558,7 +619,10 @@
       "available": "可用",
       "token_balance": "代币余额",
       "networks": "网络",
-      "nothing_found": "未找到任何内容"
+      "nothing_found": "未找到任何内容",
+      "nfts": "NFTs",
+      "alphabetical": "按字母顺序",
+      "recent": "最近的"
     },
     "review": {
       "title": "审核和发送",
@@ -805,7 +869,7 @@
     "title": "您的密钥恢复短语",
     "write_down_seed_importance": "存储这些词可以访问您的全部钱包！将它们存放在安全的地方，永远不要分享。",
     "saved_these_words": "我已经保存了这些词",
-    "phrase_copied": "恢复短语已复制"
+    "copied": "恢复短语已复制"
   },
   "import_wallet_via_secret": {
     "title": "导入钱包",
@@ -1031,7 +1095,8 @@
     "request_rejected": "交易请求被拒",
     "bridge_and_try_again": "桥接一些燃气资金然后再试",
     "buy_and_try_again": "购买一些燃气资金然后再试",
-    "buy": "购买 %{token}"
+    "buy_gas": "购买 %{token}",
+    "get_testnet_gas": "获取免费测试网 %{token}"
   },
   "add_chain": {
     "name": "名称",
@@ -1194,7 +1259,8 @@
     "exchange_rate": "兑换",
     "collection": "收藏",
     "token_contract": "代币合约",
-    "token_standard": "代币标准"
+    "token_standard": "代币标准",
+    "revoke_approval": "撤销授权"
   },
   "tokens_tab": {
     "coinbase_title": "从Coinbase存入",
@@ -1209,9 +1275,7 @@
     "unknown_token": "未知代币"
   },
   "nfts": {
-    "coming_soon_header": "即将上线",
     "empty_state_header": "NFTs",
-    "coming_soon_description": "NFT 即将上线， 敬请期待！",
     "empty_state_description": "你的NFTs将出现在这里！",
     "view_on_web": "在Web上查看",
     "display_mode_gallery": "画廊",
@@ -1220,8 +1284,9 @@
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "最近的",
     "sort_option_abc_long": "按字母顺序",
+    "hidden_section_title": "已隐藏",
     "details": {
-      "last_sales_price": "最后销售价格",
+      "last_sales_price": "最后成交价",
       "none": "无",
       "floor_price": "最低价格",
       "description": "描述",
@@ -1232,6 +1297,8 @@
       "token_contract": "代币合约",
       "contract_creator": "合约创建者",
       "chain": "链",
+      "hide": "隐藏",
+      "unhide": "取消隐藏",
       "id_copied": "ID已复制",
       "copy_token_id": "复制Token ID",
       "download": "下载",
@@ -1251,20 +1318,24 @@
         "floor_price_description": "一个收藏品的底价是该收藏中所有待售物品的最低要价",
         "floor_price_title": "藏品底价",
         "floor_price_action_label": "知道了"
-      }
+      },
+      "send": "发送",
+      "view_on_opensea": "在OpenSea上查看",
+      "view_on_explorer": "在 %{explorerTitle}上查看"
     }
   },
   "points": {
-    "coming_soon_header": "即将上线",
-    "coming_soon_description": "积分即将到来。\n立即开始赚取。",
+    "check_back_soon_header": "敬请期待",
+    "check_back_soon_description": "积分暂时不可用。\n请稍后查看，继续使用彩虹积分。",
     "your_rank": "您的排名",
+    "unranked": "未排名",
+    "points_to_rank": "%{rank_cutoff} 积分即可晋级",
     "next_drop": "下一轮空投",
     "leaderboard": "排行榜",
     "referral_code": "推荐码",
     "referral_code_description": "邀请朋友通过Rainbow完成100美元交换可赚取积分",
     "copied_referral_code": "推荐码已复制！",
     "copied_referral_link": "推荐链接已复制！",
-    "out_of": "共 %{total}分之",
     "out_of_current_total_points": "共 %{total} 当前总积分",
     "header": "领取您的积分",
     "description": "积分已到账。查看您获得了多少积分。",
@@ -1301,11 +1372,31 @@
       "registration_complete": "注册完成",
       "all_set": "一切就绪！",
       "keep_earning_by": "继续通过兑换、桥接、铸造、推荐朋友等方式赚取积分",
-      "the_more_you_use": "越多使用Rainbow，越多奖励"
+      "the_more_you_use": "越多使用Rainbow，越多奖励",
+      "balance_required": "需要钱包余额",
+      "ensure_you_have_a_balance_on": "继续操作前，请确保以下网络中有ETH余额：",
+      "or_alternatively_balance_on": "或者，Polygon上的MATIC余额或BSC上的BNB余额",
+      "fund_my_wallet": "资金进入我的钱包"
     },
     "error": {
       "existing_user": "现有用户",
-      "invalid_referral_code": "无效的推荐码"
+      "invalid_referral_code": "无效的推荐码",
+      "unexpected": "发生了意外，请稍后再试"
+    },
+    "weekly_overview": {
+      "week_of": "> %{from} 周 - %{to}",
+      "counting": "> 正在计算获得的积分...",
+      "your_activity": "您的活动：",
+      "referral_activity": "推荐活动：",
+      "new_referrals": "新推荐：",
+      "retroactive": "追溯积分：",
+      "total": "总计：",
+      "weekly_counted": "＞ 已计算的每周收益",
+      "you_have": "您有：",
+      "none": "无",
+      "your_earnings": "上周收益",
+      "view_breakdown": "查看您的每周收益明细",
+      "view_now": "立即查看"
     }
   },
   "speed_up_and_cancel": {
@@ -1324,7 +1415,8 @@
     "speed_up_cta": "加快交易",
     "speed_up_transaction": "加快交易",
     "close_cta": "取消",
-    "handle_copy_title": "交易哈希已复制"
+    "handle_copy_title": "交易哈希已复制",
+    "revoke_approval": "撤销授权"
   },
   "token_details": {
     "swap": "交换",
@@ -1343,6 +1435,7 @@
     "not_available": "价格不可用",
     "more_options": {
       "copy_address": "复制地址",
+      "view_on_explorer": "在 %{explorer}上查看",
       "hide": "隐藏代币",
       "report": "报告代币"
     },
@@ -1467,7 +1560,10 @@
     "network_changed": "网络已更改",
     "network_changed_failed": "网络更改失败",
     "unsupported_network": "不支持的网络",
-    "no_active_session": "没有活跃的会话"
+    "no_active_session": "没有活跃的会话",
+    "already_added": "RPC已激活",
+    "set_as_active": "新RPC已激活",
+    "already_active": "网络已添加"
   },
   "alert": {
     "ok": "确定",
@@ -1535,10 +1631,6 @@
       "after": " 进行更多请求。"
     }
   },
-  "approvals": {
-    "unlimited": "无限",
-    "no_allowance": "无额度权限"
-  },
   "buy": {
     "title": "购买",
     "fees_title": "费用",
@@ -1602,6 +1694,7 @@
   "nonce": "随机数",
   "copy": "复制",
   "copy_link": "复制链接",
+  "link_text": "了解更多",
   "close": "关闭",
   "verified": "已验证",
   "unverified": "未验证",
