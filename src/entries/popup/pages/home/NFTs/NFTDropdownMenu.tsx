@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
+import { reportNftAsSpam } from '~/core/network/nfts';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
@@ -85,8 +86,21 @@ export default function NFTDropdownMenu({
     }
   }, [navigate, nft, setSelectedNft]);
 
+  const handleReportNft = useCallback(() => {
+    if (nft) {
+      reportNftAsSpam(nft);
+    }
+  }, [nft]);
+
   const onValueChange = (
-    value: 'send' | 'copy' | 'download' | 'opensea' | 'explorer' | 'hide',
+    value:
+      | 'send'
+      | 'copy'
+      | 'download'
+      | 'opensea'
+      | 'explorer'
+      | 'hide'
+      | 'report',
   ) => {
     switch (value) {
       case 'copy':
@@ -106,6 +120,9 @@ export default function NFTDropdownMenu({
         break;
       case 'send':
         handleSendNft();
+        break;
+      case 'report':
+        handleReportNft();
         break;
     }
   };
@@ -234,6 +251,24 @@ export default function NFTDropdownMenu({
                   }
                   rightComponent={
                     <ShortcutHint hint={shortcuts.nfts.COPY_NFT_ID.display} />
+                  }
+                />
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem highlightAccentColor value="report">
+                <HomeMenuRow
+                  leftComponent={
+                    <Symbol
+                      size={18}
+                      symbol="exclamationmark.circle.fill"
+                      weight="semibold"
+                    />
+                  }
+                  centerComponent={
+                    <Box paddingVertical="6px" paddingLeft="2px">
+                      <Text size="14pt" weight="semibold">
+                        {i18n.t('nfts.details.report')}
+                      </Text>
+                    </Box>
                   }
                 />
               </DropdownMenuRadioItem>
