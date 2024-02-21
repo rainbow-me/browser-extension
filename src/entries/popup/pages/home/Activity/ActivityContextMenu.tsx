@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -11,27 +11,29 @@ import { copy } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import {
+  ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../../../components/ContextMenu/ContextMenu';
-import { DetailsMenuWrapper } from '../../../components/DetailsMenu';
 
 export function ActivityContextMenu({
   children,
   transaction,
+  onRevokeTransaction,
 }: {
   children: ReactNode;
   transaction: RainbowTransaction;
+  onRevokeTransaction?: () => void;
 }) {
-  const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
+  const { setCurrentHomeSheet } = useCurrentHomeSheetStore();
   const { setSelectedTransaction } = useSelectedTransactionStore();
-  // need to control this manually so that menu closes when sheet appears
-  const [closed, setClosed] = useState(false);
-  const onOpenChange = () => setClosed(false);
+  const [open, setOpen] = useState(false);
+  const revokeRef = useRef<HTMLDivElement>(null);
 
   const truncatedHash = truncateAddress(transaction.hash);
 
@@ -50,12 +52,10 @@ export function ActivityContextMenu({
 
   const onSpeedUp = () => {
     setCurrentHomeSheet('speedUp');
-    setClosed(true);
   };
 
   const onCancel = () => {
     setCurrentHomeSheet('cancel');
-    setClosed(true);
   };
 
   const onTrigger = useCallback(
@@ -63,14 +63,29 @@ export function ActivityContextMenu({
     [transaction, setSelectedTransaction],
   );
 
+  const onRevoke = useCallback(() => {
+    revokeRef?.current?.click();
+    onRevokeTransaction?.();
+  }, [onRevokeTransaction]);
+
+  useKeyboardShortcut({
+    condition: () => !!open,
+    handler: (e: KeyboardEvent) => {
+      e.preventDefault();
+      if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
+        onRevoke();
+      }
+    },
+  });
+
   useEffect(() => {
-    if (sheet !== 'none') {
-      setClosed(true);
+    if (!open) {
+      setSelectedTransaction(undefined);
     }
-  }, [sheet]);
+  }, [open, setSelectedTransaction]);
 
   return (
-    <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
+    <ContextMenu onOpenChange={setOpen}>
       <ContextMenuTrigger onTrigger={onTrigger}>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {transaction?.status === 'pending' && (
@@ -119,7 +134,22 @@ export function ActivityContextMenu({
             {truncatedHash}
           </Text>
         </ContextMenuItem>
+
+        {onRevokeTransaction ? (
+          <ContextMenuItem
+            color="red"
+            symbolLeft="xmark.circle.fill"
+            onSelect={onRevoke}
+            shortcut={shortcuts.activity.REFRESH_TRANSACTIONS.display}
+          >
+            <Box ref={revokeRef}>
+              <Text color="red" size="14pt" weight="semibold">
+                {i18n.t('speed_up_and_cancel.revoke_approval')}
+              </Text>
+            </Box>
+          </ContextMenuItem>
+        ) : null}
       </ContextMenuContent>
-    </DetailsMenuWrapper>
+    </ContextMenu>
   );
 }

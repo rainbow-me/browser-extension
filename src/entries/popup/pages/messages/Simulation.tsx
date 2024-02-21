@@ -157,7 +157,7 @@ export function SimulationOverview({
                 label={i18n.t('simulation.sent')}
               />
             ))}
-            {simulation.approvals.map(({ asset, quantityAllowed }, i) => (
+            {simulation?.approvals?.map(({ asset, quantityAllowed }, i) => (
               <SimulatedChangeRow
                 key={`${asset.address}${i}`}
                 asset={asset}

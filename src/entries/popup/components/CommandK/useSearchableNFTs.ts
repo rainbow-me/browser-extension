@@ -13,7 +13,7 @@ import { NFTSearchItem, SearchItemType } from './SearchItems';
 import { PAGES } from './pageConfig';
 import { actionLabels } from './references';
 
-const parseNftName = (name: string, id: string) => {
+export const parseNftName = (name: string, id: string) => {
   return name
     .split(' ')
     .filter((word) => !word.includes(id) && word !== '')

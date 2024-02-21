@@ -38,6 +38,7 @@ import { logger } from '~/logger';
 import packageJson from '../../../../../package.json';
 import { testSandbox } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
@@ -49,6 +50,7 @@ export function Settings() {
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
   const { soundsEnabled, toggleSoundsEnabled } = useSoundStore();
   const { featureFlags, setFeatureFlag } = useFeatureFlagsStore();
+  const { isWatchingWallet } = useWallets();
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
     useCurrentThemeStore();
@@ -160,7 +162,6 @@ export function Settings() {
           <MenuItem
             testId={'wallets-and-keys'}
             first
-            last
             leftComponent={
               <Symbol
                 symbol="key.fill"
@@ -181,8 +182,6 @@ export function Settings() {
           />
           <MenuItem
             testId={'privacy-security-link'}
-            first
-            last
             leftComponent={
               <Symbol
                 symbol="lock.fill"
@@ -199,28 +198,8 @@ export function Settings() {
               />
             }
           />
-        </Menu>
-        <Menu>
           <MenuItem
-            testId={'networks-link'}
-            first
-            last
-            leftComponent={
-              <Symbol
-                symbol="network"
-                weight="medium"
-                size={18}
-                color="green"
-              />
-            }
-            hasRightArrow
-            onClick={() => navigate(ROUTES.SETTINGS__NETWORKS)}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.networks.title')} />
-            }
-          />
-          <MenuItem
-            first
+            last={isWatchingWallet}
             hasRightArrow
             leftComponent={
               <Symbol
@@ -236,6 +215,45 @@ export function Settings() {
             }
             testId="settings-transactions"
           />
+          {isWatchingWallet ? null : (
+            <MenuItem
+              last
+              hasRightArrow
+              leftComponent={
+                <Symbol
+                  symbol="checkmark.seal.fill"
+                  color="yellow"
+                  weight="semibold"
+                  size={18}
+                />
+              }
+              onClick={() => navigate(ROUTES.SETTINGS__APPROVALS)}
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.approvals.title')} />
+              }
+              testId="settings-approvals"
+            />
+          )}
+        </Menu>
+        <Menu>
+          <MenuItem
+            testId={'networks-link'}
+            first
+            leftComponent={
+              <Symbol
+                symbol="network"
+                weight="medium"
+                size={18}
+                color="green"
+              />
+            }
+            hasRightArrow
+            onClick={() => navigate(ROUTES.SETTINGS__NETWORKS)}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.networks.title')} />
+            }
+          />
+
           <MenuItem
             testId={'currency-selection'}
             hasRightArrow

@@ -50,6 +50,7 @@ import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
 
 import { Activities } from './Activity/ActivitiesList';
+import { RevokeApproval } from './Approvals/RevokeApproval';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { NFTs } from './NFTs/NFTs';
@@ -262,6 +263,7 @@ export const Home = memo(function Home() {
           <NewTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
           <BackupReminder />
           {currentHomeSheet}
+          <RevokeApproval />
         </>
       )}
     </AccentColorProvider>
