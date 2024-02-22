@@ -110,6 +110,10 @@ export const useSimulateTransaction = ({
       chainId,
       domain,
     }),
+    enabled:
+      !!chainId &&
+      !!transaction.to &&
+      (!!transaction.value || !!transaction.data),
     queryFn: async () => {
       const response = (await metadataPostClient.simulateTransactions({
         chainId,
@@ -140,6 +144,7 @@ export const useSimulateMessage = ({
       chainId,
       domain,
     }),
+    enabled: !!chainId && !!address && !!message.method,
     queryFn: async () => {
       if (!address) throw new Error('useSimulateMessage: Missing `address`');
 
@@ -161,7 +166,7 @@ export type TransactionSimulation = {
   out: { asset: ParsedAsset; quantity: string }[];
   approvals: {
     asset: ParsedAsset;
-    spender: SimulationApprovalSpender;
+    spender: SimulationTarget;
     // eslint-disable-next-line @typescript-eslint/ban-types
     quantityAllowed: 'UNLIMITED' | (string & {});
     quantityAtRisk: string;
@@ -191,7 +196,7 @@ type SimulationChange = {
   asset: SimulationAsset;
   quantity: string;
 };
-type SimulationApprovalSpender = {
+type SimulationTarget = {
   address: Address;
   name: string;
   iconURL: string;
@@ -200,14 +205,8 @@ type SimulationApprovalSpender = {
   sourceCodeStatus: SourceCodeStatus;
 };
 type SimulationMeta = {
-  to: {
-    address: Address;
-    name: string;
-    iconURL: string;
-    function: string;
-    created: null;
-    sourceCodeStatus: SourceCodeStatus;
-  };
+  to: SimulationTarget;
+  transferTo: SimulationTarget;
 };
 
 type TransactionSimulationResponse = {
@@ -226,7 +225,7 @@ type TransactionSimulationResponse = {
         out: SimulationChange[];
         approvals: {
           asset: SimulationAsset;
-          spender: SimulationApprovalSpender;
+          spender: SimulationTarget;
           // eslint-disable-next-line @typescript-eslint/ban-types
           quantityAllowed: 'UNLIMITED' | (string & {});
           quantityAtRisk: string;
@@ -253,7 +252,7 @@ type MessageSimulationResponse = {
       out: SimulationChange[];
       approvals: {
         asset: SimulationAsset;
-        spender: SimulationApprovalSpender;
+        spender: SimulationTarget;
         // eslint-disable-next-line @typescript-eslint/ban-types
         quantityAllowed: 'UNLIMITED' | (string & {});
         quantityAtRisk: string;

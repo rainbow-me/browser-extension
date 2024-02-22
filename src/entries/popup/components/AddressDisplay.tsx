@@ -15,6 +15,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { TextProps } from '~/design-system/components/Text/Text';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import { ContractIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import {
@@ -79,14 +80,20 @@ export function AddressMoreOptions({
   );
 }
 
-const YouOrAddress = ({ address }: { address: Address }) => {
+const YouOrAddress = ({
+  address,
+  color = 'labelSecondary',
+}: {
+  address: Address;
+  color?: TextProps['color'];
+}) => {
   const currentAccount = useCurrentAddressStore((a) =>
     a.currentAddress.toLocaleLowerCase(),
   );
   if (currentAccount === address.toLowerCase())
     return (
       <Inline alignVertical="center" wrap={false} space="2px">
-        <Text color="labelSecondary" size="12pt" weight="semibold">
+        <Text color={color} size="12pt" weight="semibold">
           {i18n.t('activity_details.you')}
         </Text>
 
@@ -112,7 +119,7 @@ const YouOrAddress = ({ address }: { address: Address }) => {
       address={address}
       size="12pt"
       weight="semibold"
-      color="labelSecondary"
+      color={color}
     />
   );
 };
@@ -136,6 +143,7 @@ const ContractDisplay = ({
   hideAvatar,
   contract: { name, iconUrl },
   chainId,
+  color = 'labelQuaternary',
 }: {
   address: Address;
   hideAvatar?: boolean;
@@ -144,11 +152,12 @@ const ContractDisplay = ({
     iconUrl?: string;
   };
   chainId?: ChainId;
+  color?: TextProps['color'];
 }) => {
   return (
     <Inline space="6px" alignVertical="center" wrap={false}>
       {!hideAvatar && <AddressIcon iconUrl={iconUrl} address={address} />}
-      <TextOverflow size="12pt" weight="semibold" color="labelQuaternary">
+      <TextOverflow size="12pt" weight="semibold" color={color}>
         {name}
       </TextOverflow>
       <AddressMoreOptions address={address} chainId={chainId} />
@@ -161,6 +170,7 @@ export const AddressDisplay = ({
   contract,
   hideAvatar,
   chainId,
+  color,
 }: {
   address: Address;
   hideAvatar?: boolean;
@@ -169,6 +179,7 @@ export const AddressDisplay = ({
     iconUrl?: string;
   };
   chainId?: ChainId;
+  color?: TextProps['color'];
 }) => {
   if (contract?.name)
     return (
@@ -177,13 +188,14 @@ export const AddressDisplay = ({
         contract={contract}
         hideAvatar={hideAvatar}
         chainId={chainId}
+        color={color}
       />
     );
 
   return (
     <Inline space="6px" alignVertical="center" wrap={false}>
       {!hideAvatar && <AddressIcon address={address} />}
-      <YouOrAddress address={address} />
+      <YouOrAddress address={address} color={color} />
       <AddressMoreOptions address={address} chainId={chainId} />
     </Inline>
   );
