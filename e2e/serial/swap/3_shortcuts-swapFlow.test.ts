@@ -243,7 +243,10 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
     });
     const outputValue = await outputAmount.getAttribute('value');
     expect(outputValue).toBe('50');
-    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 4 });
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+    await delayTime('very-long');
+    await delayTime('medium');
+    await executePerformShortcut({ driver, key: 'TAB', timesToPress: 1 });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await delayTime('long');
     await executePerformShortcut({ driver, key: 'ENTER' });
