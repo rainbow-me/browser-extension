@@ -116,6 +116,8 @@ export const useSwapQuote = ({
     cacheTime: CACHE_INTERVAL,
   });
 
+  console.log('quote', data);
+
   const isWrapOrUnwrapEth = useMemo(() => {
     if (!data || (data as QuoteError).error) return false;
     const quote = data as Quote | CrosschainQuote;

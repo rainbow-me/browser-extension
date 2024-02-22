@@ -82,7 +82,7 @@ export const SwapRouteDropdownMenu = ({
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
             highlightAccentColor
-            value={Source.Aggregotor1inch}
+            value={Source.Aggregator1inch}
             selectedValue={source}
           >
             <Box testId="settings-route-context-1inch">
