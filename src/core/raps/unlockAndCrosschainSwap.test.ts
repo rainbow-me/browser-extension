@@ -84,7 +84,6 @@ beforeAll(async () => {
 });
 
 test.skip('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap without unlock', async () => {
-  console.log('test 1');
   const gasLimit = await estimateUnlockAndCrosschainSwap({
     quote: doesntNeedUnlockQuote as CrosschainQuote,
     chainId: 1,
@@ -97,7 +96,6 @@ test.skip('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap 
 });
 
 test.skip('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap with unlock', async () => {
-  console.log('test 2');
   const gasLimit = await estimateUnlockAndCrosschainSwap({
     quote: needsUnlockQuote as CrosschainQuote,
     chainId: 1,
@@ -110,7 +108,6 @@ test.skip('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap 
 });
 
 test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap without unlock', async () => {
-  console.log('test 3');
   const rap = await createUnlockAndCrosschainSwapRap({
     quote: doesntNeedUnlockQuote as CrosschainQuote,
     chainId: 1,
@@ -122,7 +119,6 @@ test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap wit
 });
 
 test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap with unlock', async () => {
-  console.log('test 4');
   const rap = await createUnlockAndCrosschainSwapRap({
     quote: needsUnlockQuote as CrosschainQuote,
     chainId: 1,
