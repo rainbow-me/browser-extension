@@ -90,6 +90,7 @@ export default function NFTContextMenu({
   const handleReportNft = useCallback(() => {
     if (nftToFocus) {
       reportNftAsSpam(nftToFocus);
+      triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
   }, [nftToFocus]);
 

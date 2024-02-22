@@ -89,6 +89,7 @@ export default function NFTDropdownMenu({
   const handleReportNft = useCallback(() => {
     if (nft) {
       reportNftAsSpam(nft);
+      triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
   }, [nft]);
 
