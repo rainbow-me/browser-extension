@@ -5,7 +5,6 @@ import { EIP1193Provider, announceProvider } from 'mipd';
 import { RainbowProvider } from 'rainbow-provider';
 
 import { initializeMessenger } from '~/core/messengers';
-// import { RainbowProvider } from '~/core/providers';
 import { RAINBOW_ICON_RAW_SVG } from '~/core/references/rawImages';
 import { providerRequestTransport } from '~/core/transports';
 import { ChainId } from '~/core/types/chains';
