@@ -1,8 +1,8 @@
-import { Chain, getProvider } from '@wagmi/core';
 import {
   AddEthereumChainProposedChain,
   handleProviderRequest as rnbwHandleProviderRequest,
-} from 'rainbow-provider';
+} from '@rainbow-me/provider';
+import { Chain, getProvider } from '@wagmi/core';
 import { UserRejectedRequestError } from 'wagmi';
 
 import { event } from '~/analytics/event';

@@ -1,4 +1,4 @@
-import { IMessageSender } from 'rainbow-provider';
+import { IMessageSender } from '@rainbow-me/provider';
 
 import {
   CallbackFunction,

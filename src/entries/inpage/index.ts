@@ -1,8 +1,8 @@
+import { RainbowProvider } from '@rainbow-me/provider';
 import { uuid4 } from '@sentry/utils';
 import { Ethereum } from '@wagmi/core';
 import _ from 'lodash';
 import { EIP1193Provider, announceProvider } from 'mipd';
-import { RainbowProvider } from 'rainbow-provider';
 
 import { initializeMessenger } from '~/core/messengers';
 import { RAINBOW_ICON_RAW_SVG } from '~/core/references/rawImages';
