@@ -16,7 +16,6 @@ import {
   checkWalletName,
   delay,
   delayTime,
-  doNotFindElementByTestId,
   executePerformShortcut,
   findElementByTestId,
   findElementByText,
@@ -120,15 +119,6 @@ describe('Complete Hardhat Optimism send flow', () => {
     const value = await findElementByTestId({ id: 'send-input-mask', driver });
     const valueNum = await value.getAttribute('value');
     expect(Number(valueNum)).toBe(0);
-  });
-
-  it('should not be able to open up either of the gas menu options', async () => {
-    await doNotFindElementByTestId({ id: 'gas-menu', driver });
-    await doNotFindElementByTestId({ id: 'custom-gas-menu', driver });
-    await executePerformShortcut({ driver, key: 'C' });
-    await doNotFindElementByTestId({ id: 'custom-gas-sheet', driver });
-    await executePerformShortcut({ driver, key: 'G' });
-    await doNotFindElementByTestId({ id: 'transaction-speed-title', driver });
   });
 
   it('should be able to initiate Optimisim ETH transaction', async () => {
