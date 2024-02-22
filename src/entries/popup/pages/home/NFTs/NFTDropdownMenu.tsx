@@ -188,6 +188,24 @@ export default function NFTDropdownMenu({
                   }
                 />
               </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem highlightAccentColor value="report">
+                <HomeMenuRow
+                  leftComponent={
+                    <Symbol
+                      size={18}
+                      symbol="exclamationmark.circle.fill"
+                      weight="semibold"
+                    />
+                  }
+                  centerComponent={
+                    <Box paddingVertical="6px" paddingLeft="2px">
+                      <Text size="14pt" weight="semibold">
+                        {i18n.t('nfts.details.report')}
+                      </Text>
+                    </Box>
+                  }
+                />
+              </DropdownMenuRadioItem>
               {nft?.image_url && (
                 <DropdownMenuRadioItem
                   highlightAccentColor
@@ -252,24 +270,6 @@ export default function NFTDropdownMenu({
                   }
                   rightComponent={
                     <ShortcutHint hint={shortcuts.nfts.COPY_NFT_ID.display} />
-                  }
-                />
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem highlightAccentColor value="report">
-                <HomeMenuRow
-                  leftComponent={
-                    <Symbol
-                      size={18}
-                      symbol="exclamationmark.circle.fill"
-                      weight="semibold"
-                    />
-                  }
-                  centerComponent={
-                    <Box paddingVertical="6px" paddingLeft="2px">
-                      <Text size="14pt" weight="semibold">
-                        {i18n.t('nfts.details.report')}
-                      </Text>
-                    </Box>
                   }
                 />
               </DropdownMenuRadioItem>

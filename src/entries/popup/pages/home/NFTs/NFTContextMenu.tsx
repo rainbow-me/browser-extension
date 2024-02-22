@@ -129,6 +129,14 @@ export default function NFTContextMenu({
                   : i18n.t('nfts.details.unhide')}
               </Text>
             </ContextMenuItem>
+            <ContextMenuItem
+              symbolLeft={'exclamationmark.circle.fill'}
+              onSelect={handleReportNft}
+            >
+              <Text size="14pt" weight="semibold">
+                {i18n.t('nfts.details.report')}
+              </Text>
+            </ContextMenuItem>
             {nftToFocus?.image_url && (
               <ContextMenuItem
                 symbolLeft={'arrow.down.circle.fill'}
@@ -158,14 +166,6 @@ export default function NFTContextMenu({
               >
                 {nftToFocus?.id}
               </TextOverflow>
-            </ContextMenuItem>
-            <ContextMenuItem
-              symbolLeft={'exclamationmark.circle.fill'}
-              onSelect={handleReportNft}
-            >
-              <Text size="14pt" weight="semibold">
-                {i18n.t('nfts.details.report')}
-              </Text>
             </ContextMenuItem>
             <ContextMenuSeparator />
             {hasContractAddress && hasNetwork && (
