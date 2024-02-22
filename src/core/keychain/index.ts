@@ -238,12 +238,6 @@ export const sendTransaction = async (
   const wallet = signer.connect(provider);
   let response = await wallet.sendTransaction(txPayload);
   response = normalizeTransactionResponsePayload(response);
-  console.log('KEYCHAIN RESPONSE', response);
-  console.log(
-    'KEYCHAIN RESPONSE value',
-    response.value,
-    response.value.toString(),
-  );
   return response;
 };
 
