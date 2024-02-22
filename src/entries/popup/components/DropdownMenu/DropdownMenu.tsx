@@ -184,18 +184,12 @@ export const DropdownMenuContentBody = React.forwardRef<
 interface DropdownMenuLabelProps {
   children: ReactNode;
   align?: TextStyles['textAlign'];
-  testId?: string;
 }
 
 export const DropdownMenuLabel = (props: DropdownMenuLabelProps) => {
-  const { children, align = 'center', testId } = props;
+  const { children, align = 'center' } = props;
   return (
-    <Box
-      as={DropdownMenuPrimitive.Label}
-      paddingTop="8px"
-      paddingBottom="12px"
-      testId={testId}
-    >
+    <Box as={DropdownMenuPrimitive.Label} paddingTop="8px" paddingBottom="12px">
       <Text color="label" size="14pt" weight="bold" align={align}>
         {children}
       </Text>

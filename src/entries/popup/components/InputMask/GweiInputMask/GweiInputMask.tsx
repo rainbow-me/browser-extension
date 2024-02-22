@@ -17,13 +17,11 @@ export const GweiInputMask = ({
   variant,
   onChange,
   inputRef,
-  testId,
 }: {
   value: string;
   variant: 'surface' | 'bordered' | 'transparent';
   onChange: (value: string) => void;
   inputRef: RefObject<HTMLInputElement>;
-  testId?: string;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -61,7 +59,6 @@ export const GweiInputMask = ({
       }
       transition={transitions.bounce}
       onClick={onMaskClick}
-      testId={testId}
     >
       <Box
         position="absolute"
