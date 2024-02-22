@@ -378,6 +378,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Redstone Holesky',
+    networkInfo: {
+      rpcUrl: 'https://rpc.holesky.redstone.xyz',
+      chainId: 17001,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.holesky.redstone.xyz',
+      testnet: true,
+    },
+  },
+  {
     name: 'Scroll',
     networkInfo: {
       rpcUrl: 'https://rpc.scroll.io',
