@@ -12,11 +12,6 @@
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.0.tgz#d2a39395c587e092d77cbbc80acf956a54f38bf7"
   integrity sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==
 
-"@adraffy/ens-normalize@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.9.4.tgz#aae21cb858bbb0411949d5b7b3051f4209043f62"
-  integrity sha512-UK0bHA7hh9cR39V+4gl2/NnBBjoXIxkuWAPCaY4X7fbH4L/azIi7ilWOCjMUYfpJgraLUAqkRi2BqrjME8Rynw==
-
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
@@ -4229,7 +4224,7 @@
     anymatch "^3.0.0"
     source-map "^0.6.0"
 
-"@types/ws@*", "@types/ws@^8.5.5":
+"@types/ws@*":
   version "8.5.5"
   resolved "https://registry.yarnpkg.com/@types/ws/-/ws-8.5.5.tgz#af587964aa06682702ee6dcbc7be41a80e4b28eb"
   integrity sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg==
@@ -5171,11 +5166,6 @@ abbrev@1, abbrev@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
-
-abitype@0.9.8:
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/abitype/-/abitype-0.9.8.tgz#1f120b6b717459deafd213dfbf3a3dd1bf10ae8c"
-  integrity sha512-puLifILdm+8sjyss4S+fsUN09obiT1g2YW6CtcQF+QDzxR0euzgEB29MZujC6zMk2a6SVmtttq1fc6+YFA7WYQ==
 
 abitype@1.0.0:
   version "1.0.0"
@@ -10486,11 +10476,6 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
 
-isomorphic-ws@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz#e5529148912ecb9b451b46ed44d53dae1ce04bbf"
-  integrity sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==
-
 isomorphic-ws@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-4.0.1.tgz#55fd4cd6c5e6491e76dc125938dd863f5cd4f2dc"
@@ -15631,24 +15616,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-viem@1.20.3:
-  version "1.20.3"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-1.20.3.tgz#8b8360daee622295f5385949c02c86d943d14e0f"
-  integrity sha512-7CrmeCb2KYkeCgUmUyb1hsf+IX/PLwi+Np+Vm4YUTPeG82y3HRSgGHSaCOp3d0YtR2kXD3nv9y5kE7LBFE+wWw==
-  dependencies:
-    "@adraffy/ens-normalize" "1.10.0"
-    "@noble/curves" "1.2.0"
-    "@noble/hashes" "1.3.2"
-    "@scure/bip32" "1.3.2"
-    "@scure/bip39" "1.2.1"
-    abitype "0.9.8"
-    isows "1.0.3"
-    ws "8.13.0"
-
-viem@2.7.9:
-  version "2.7.9"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-2.7.9.tgz#0d2b0c4722530b53fbef449d70f0cedc1bb867b0"
-  integrity sha512-iDfc8TwaZFp1K95zlsxYh6Cs0OWCt35Tqs8uYgXKSxtz7w075mZ0H5SJ8zSyJGoEaticVDhtdmRRX6TtcW9EeQ==
+viem@2.7.13, viem@2.7.9, viem@^1.1.4:
+  version "2.7.13"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.7.13.tgz#bf3f8e973f532f9f9c86c97b645ac8add740e1bd"
+  integrity sha512-NGWLEocRp2UTqGidzI9bnL9u6WHlG2ik7IwqXNe6/QC2dL6jE3Z1mUnUUVcSx71h81nx74EflD9ahtleK3RQdA==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.2.0"
@@ -15657,21 +15628,6 @@ viem@2.7.9:
     "@scure/bip39" "1.2.1"
     abitype "1.0.0"
     isows "1.0.3"
-    ws "8.13.0"
-
-viem@^1.1.4:
-  version "1.10.8"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-1.10.8.tgz#1c6aaaf25cb25484bbe69dc93870a70907b2bd2e"
-  integrity sha512-/kVDjc9j1OVoDsxV0E1iw1ehPuWPXv5x/9Yc1H0wKky6ACWRoKsURDeLi0Xwtli7vmFcJne+MMPhA96zVu5iIg==
-  dependencies:
-    "@adraffy/ens-normalize" "1.9.4"
-    "@noble/curves" "1.2.0"
-    "@noble/hashes" "1.3.2"
-    "@scure/bip32" "1.3.2"
-    "@scure/bip39" "1.2.1"
-    "@types/ws" "^8.5.5"
-    abitype "0.9.8"
-    isomorphic-ws "5.0.0"
     ws "8.13.0"
 
 vite-node@0.34.6:
