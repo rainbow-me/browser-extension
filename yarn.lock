@@ -3291,17 +3291,17 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@rainbow-me/provider@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/provider/-/provider-0.0.1.tgz#2077ccf77c4797f110f235ea749d873c805096ae"
-  integrity sha512-BCo0mUg2Vk8DvLUnk9/TJb5aakF40ayWciWOJZU9R2/L5fGQD4z7E8yMv80UppKUDOUOwmwQqKAJvuKoDsoUUA==
+"@rainbow-me/provider@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/provider/-/provider-0.0.2.tgz#03d0e222481c22e3f5b199959772704484370f94"
+  integrity sha512-E5PYtYxEKm0PlN3sp28bHrWkjRnXP8mYV2rpV8SYma9pRdcomNvTLQSkcXwG0q55je+RA+DJdOD6mCod71Em3g==
   dependencies:
     "@ethersproject/abstract-provider" "5.7.0"
     "@ethersproject/bignumber" "5.7.0"
     "@ethersproject/providers" "5.7.2"
     "@metamask/eth-sig-util" "7.0.1"
     eventemitter3 "5.0.1"
-    viem "2.7.9"
+    viem "1.21.4"
 
 "@rainbow-me/swaps@0.9.1":
   version "0.9.1"
@@ -5167,10 +5167,10 @@ abbrev@1, abbrev@^1.0.0:
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
-abitype@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.0.0.tgz#237176dace81d90d018bebf3a45cb42f2a2d9e97"
-  integrity sha512-NMeMah//6bJ56H5XRj8QCV4AwuW6hB6zqz2LnhhLdcWVQOsXki6/Pn3APeqxCma62nXIcmZWdu1DlHWS74umVQ==
+abitype@0.9.8:
+  version "0.9.8"
+  resolved "https://registry.yarnpkg.com/abitype/-/abitype-0.9.8.tgz#1f120b6b717459deafd213dfbf3a3dd1bf10ae8c"
+  integrity sha512-puLifILdm+8sjyss4S+fsUN09obiT1g2YW6CtcQF+QDzxR0euzgEB29MZujC6zMk2a6SVmtttq1fc6+YFA7WYQ==
 
 abitype@^0.3.0:
   version "0.3.0"
@@ -15616,17 +15616,17 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-viem@2.7.13, viem@2.7.9, viem@^1.1.4:
-  version "2.7.13"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-2.7.13.tgz#bf3f8e973f532f9f9c86c97b645ac8add740e1bd"
-  integrity sha512-NGWLEocRp2UTqGidzI9bnL9u6WHlG2ik7IwqXNe6/QC2dL6jE3Z1mUnUUVcSx71h81nx74EflD9ahtleK3RQdA==
+viem@1.21.4, viem@^1.1.4:
+  version "1.21.4"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.4.tgz#883760e9222540a5a7e0339809202b45fe6a842d"
+  integrity sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.2.0"
     "@noble/hashes" "1.3.2"
     "@scure/bip32" "1.3.2"
     "@scure/bip39" "1.2.1"
-    abitype "1.0.0"
+    abitype "0.9.8"
     isows "1.0.3"
     ws "8.13.0"
 
