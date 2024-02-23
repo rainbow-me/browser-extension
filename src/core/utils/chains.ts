@@ -364,6 +364,8 @@ export const deriveChainIdByHostname = (hostname: string) => {
       return avalanche.id;
     case 'moonscan.io':
       return moonbeam.id;
+    case 'explorer.holesky.redstone.xyz':
+      return 17001;
     default:
       return ChainId.mainnet;
   }
