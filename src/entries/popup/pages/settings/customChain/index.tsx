@@ -378,7 +378,7 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Redstone Holesky',
+    name: 'Redstone Testnet',
     networkInfo: {
       rpcUrl: 'https://rpc.holesky.redstone.xyz',
       chainId: 17001,
