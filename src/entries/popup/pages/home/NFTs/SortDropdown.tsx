@@ -30,9 +30,8 @@ export default function SortdDropdown() {
   const { currentTheme } = useCurrentThemeStore();
   const [open, setIsOpen] = useState(false);
 
-  useKeyboardShortcut({
-    condition: () => open,
-    handler: (e) => {
+  const handleShortcuts = useCallback(
+    (e: KeyboardEvent) => {
       e.stopImmediatePropagation();
       if (e.key === shortcuts.nfts.SORT_RECENT.key) {
         onValueChange('recent');
@@ -42,6 +41,12 @@ export default function SortdDropdown() {
         setIsOpen(false);
       }
     },
+    [onValueChange],
+  );
+
+  useKeyboardShortcut({
+    condition: open,
+    handler: handleShortcuts,
   });
 
   return (

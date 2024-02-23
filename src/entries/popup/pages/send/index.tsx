@@ -511,8 +511,8 @@ export function Send() {
     toEnsName,
   ]);
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const trackShortcuts = useCallback(
+    (e: KeyboardEvent) => {
       if (e.altKey) {
         if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
           trackShortcut({
@@ -559,6 +559,11 @@ export function Send() {
         }
       }
     },
+    [setMaxAssetAmount, switchIndependentField, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: trackShortcuts,
   });
 
   const assetAccentColor =

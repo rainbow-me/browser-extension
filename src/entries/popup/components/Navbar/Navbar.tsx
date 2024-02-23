@@ -188,8 +188,19 @@ function NavbarButtonWithBack({
   const { trackShortcut } = useKeyboardAnalytics();
   const navigate = useRainbowNavigate();
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const click = React.useCallback(() => {
+    if (onClick) {
+      onClick();
+    } else if (state?.backTo) {
+      navigate(state?.backTo, { replace: true });
+    } else {
+      const popDiff = typeof state?.popTo === 'number' ? state?.popTo : -1;
+      navigate(popDiff);
+    }
+  }, [navigate, onClick, state]);
+
+  const handleShortcut = React.useCallback(
+    (e: KeyboardEvent) => {
       const closeWithEscape =
         e.key === shortcuts.global.CLOSE.key &&
         !radixIsActive() &&
@@ -209,18 +220,11 @@ function NavbarButtonWithBack({
         click();
       }
     },
+    [click, trackShortcut, withinModal],
+  );
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
-
-  const click = React.useCallback(() => {
-    if (onClick) {
-      onClick();
-    } else if (state?.backTo) {
-      navigate(state?.backTo, { replace: true });
-    } else {
-      const popDiff = typeof state?.popTo === 'number' ? state?.popTo : -1;
-      navigate(popDiff);
-    }
-  }, [navigate, onClick, state]);
 
   return (
     <Box

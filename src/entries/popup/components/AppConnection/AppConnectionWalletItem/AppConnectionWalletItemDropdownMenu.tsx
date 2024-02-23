@@ -76,12 +76,14 @@ export const AppConnectionWalletItemDropdownMenu = ({
     [dappMetadata?.url, disconnect, subMenuOpen],
   );
 
+  const handleShortcut = useCallback((e: KeyboardEvent) => {
+    if (e.key === shortcuts.global.CLOSE.key) {
+      e.preventDefault();
+    }
+  }, []);
+
   useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.global.CLOSE.key) {
-        e.preventDefault();
-      }
-    },
+    handler: handleShortcut,
   });
   return (
     <Box onClick={(e) => e.stopPropagation()}>

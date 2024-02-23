@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -60,22 +60,27 @@ export function useCommandKInternalShortcuts(
     [closeCommandK, currentPage, goBack, searchQuery, setDidScrollOrNavigate],
   );
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleExecuteCommandShortcutHandler = useCallback(
+    (e: KeyboardEvent) => {
       const command = keyToShortcutMap.get(e.key);
       if (command && command.page === currentPage) {
         e.preventDefault();
         handleExecuteCommand(command);
       }
     },
-    condition: getCommandKShortcutsAreEnabled,
+    [currentPage, handleExecuteCommand, keyToShortcutMap],
+  );
+
+  useKeyboardShortcut({
+    handler: handleExecuteCommandShortcutHandler,
+    condition: getCommandKShortcutsAreEnabled(),
     enableWithinCommandK: true,
     modifierKey: 'command',
   });
 
   useKeyboardShortcut({
     handler: goBackOrCloseCommandKHandler,
-    condition: () => isCommandKVisible,
+    condition: isCommandKVisible,
     enableWithinCommandK: true,
   });
 }

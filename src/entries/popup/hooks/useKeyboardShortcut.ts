@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useCommandKStatus } from '../components/CommandK/useCommandKStatus';
 
 export type ModifierKey = 'ctrlKey' | 'altKey' | 'shiftKey' | 'command';
 
 interface KeyboardShortcutConfig {
-  condition?: () => boolean;
+  condition?: boolean;
   enableWithinCommandK?: boolean;
   handler: (e: KeyboardEvent) => void;
   modifierKey?: ModifierKey;
@@ -17,13 +17,8 @@ export function useKeyboardShortcut({
   handler,
   modifierKey,
 }: KeyboardShortcutConfig) {
+  const [handlerAdded, setHandlerAdded] = useState(false);
   const { isCommandKVisible } = useCommandKStatus();
-
-  const shouldListen = useMemo(() => {
-    if (!isCommandKVisible || enableWithinCommandK) {
-      return condition?.() || condition === undefined;
-    } else return false;
-  }, [condition, enableWithinCommandK, isCommandKVisible]);
 
   const systemSpecificModifierKey = useMemo(() => {
     if (modifierKey === 'command') {
@@ -39,9 +34,19 @@ export function useKeyboardShortcut({
       if (systemSpecificModifierKey && !e[systemSpecificModifierKey]) {
         return;
       }
-      handler(e);
+      if (!isCommandKVisible || enableWithinCommandK) {
+        if (condition || condition === undefined) {
+          handler(e);
+        }
+      }
     },
-    [handler, systemSpecificModifierKey],
+    [
+      condition,
+      enableWithinCommandK,
+      handler,
+      isCommandKVisible,
+      systemSpecificModifierKey,
+    ],
   );
 
   const addHandler = useCallback(
@@ -54,11 +59,7 @@ export function useKeyboardShortcut({
   );
 
   useEffect(() => {
-    if (shouldListen) {
-      addHandler();
-    } else {
-      removeHandler();
-    }
+    addHandler();
     return () => removeHandler();
-  }, [addHandler, removeHandler, shouldListen]);
+  }, [addHandler, removeHandler]);
 }

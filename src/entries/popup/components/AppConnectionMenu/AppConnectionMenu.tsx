@@ -147,9 +147,8 @@ export const AppConnectionMenu = ({
     }, 400);
   }, []);
 
-  useKeyboardShortcut({
-    condition: () => menuOpen,
-    handler: (e: KeyboardEvent) => {
+  const handleShortcuts = useCallback(
+    (e: KeyboardEvent) => {
       switch (e.key) {
         case shortcuts.home.SWITCH_NETWORK.key:
           if (
@@ -210,6 +209,12 @@ export const AppConnectionMenu = ({
           break;
       }
     },
+    [activeSession, disconnectAppSession, menuOpen, subMenuOpen, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    condition: menuOpen,
+    handler: handleShortcuts,
   });
 
   return (

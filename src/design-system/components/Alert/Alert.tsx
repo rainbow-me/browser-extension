@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -56,14 +56,13 @@ export const Alert = () => {
     setAlert(null);
   };
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     alert?.callback?.();
     setAlert(null);
-  };
+  }, [alert]);
 
-  useKeyboardShortcut({
-    condition: () => visible,
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
         trackShortcut({
           key: shortcuts.global.CLOSE.display,
@@ -73,6 +72,12 @@ export const Alert = () => {
         e.preventDefault();
       }
     },
+    [onClose, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    condition: visible,
+    handler: handleShortcut,
   });
 
   if (!visible) return null;

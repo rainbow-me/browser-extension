@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 
 import { Shortcut, getModifierKeyDisplay } from '~/core/references/shortcuts';
 import { BoxStyles } from '~/design-system/styles/core.css';
@@ -65,9 +65,8 @@ function ButtonShortcut({
   shortcut: ButtonShortcutExtended;
 }) {
   const { trackShortcut } = useKeyboardAnalytics();
-
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (
         e.key === shortcut.key &&
         (!shortcut.disabled ||
@@ -82,6 +81,11 @@ function ButtonShortcut({
         onTrigger();
       }
     },
+    [onTrigger, shortcut, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
     modifierKey: shortcut.modifier,
   });
 

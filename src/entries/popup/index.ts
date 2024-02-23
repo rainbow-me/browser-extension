@@ -1,5 +1,6 @@
 import './global.css';
 
+import 'react-devtools';
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 

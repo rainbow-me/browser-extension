@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, ButtonSymbol, Text } from '~/design-system';
@@ -45,8 +45,8 @@ const MoreInfoButton = ({
   variant = 'transparentHover',
 }: MoreInfoButtonProps) => {
   const { trackShortcut } = useKeyboardAnalytics();
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
         trackShortcut({
           key: shortcuts.global.CLOSE.display,
@@ -56,6 +56,10 @@ const MoreInfoButton = ({
         onClose?.();
       }
     },
+    [onClose, trackShortcut],
+  );
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
   return (
     <Box onClick={(e) => e.stopPropagation()} testId={testId}>

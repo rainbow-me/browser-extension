@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { useCurrentAddressStore } from '~/core/state';
 
 import {
@@ -14,8 +16,8 @@ export function useSwitchWalletShortcuts(disable?: boolean) {
   const { setCurrentAddress } = useCurrentAddressStore();
   const { trackShortcut } = useKeyboardAnalytics();
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (!switchNetworkMenuIsActive() && !getInputIsFocused()) {
         const regex = /^[1-9]$/;
         if (regex.test(e.key)) {
@@ -30,6 +32,11 @@ export function useSwitchWalletShortcuts(disable?: boolean) {
         }
       }
     },
-    condition: () => !disable,
+    [setCurrentAddress, sortedAccounts, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
+    condition: !disable,
   });
 }

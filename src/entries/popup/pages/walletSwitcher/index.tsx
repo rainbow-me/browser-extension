@@ -334,8 +334,8 @@ export function WalletSwitcher() {
     saveWalletOrder(newAccountsWithNamesAndEns.map(({ address }) => address));
   };
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (
         e.key === shortcuts.wallet_switcher.SEARCH.key &&
         document.activeElement !== searchInputRef.current
@@ -347,6 +347,11 @@ export function WalletSwitcher() {
         setTimeout(() => searchInputRef.current?.focus(), 0);
       }
     },
+    [trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
 
   // separate because this is used on other screens

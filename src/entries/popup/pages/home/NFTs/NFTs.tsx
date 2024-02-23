@@ -160,14 +160,19 @@ export function NFTs() {
     );
   };
 
-  useKeyboardShortcut({
-    handler: async (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    async (e: KeyboardEvent) => {
       if (e.key === shortcuts.nfts.REFRESH_NFTS.key) {
         setManuallyRefetching(true);
         await refetch();
         setManuallyRefetching(false);
       }
     },
+    [refetch],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
 
   useEffect(() => {
@@ -258,18 +263,16 @@ export function NFTs() {
                               }}
                             >
                               {rowData.map((asset, i) => (
-                                <NFTContextMenu key={i} nft={asset}>
-                                  <NFTThumbnail
-                                    borderRadius="10px"
-                                    size={96}
-                                    imageSrc={getUniqueAssetImageThumbnailURL(
-                                      asset,
-                                    )}
-                                    key={i}
-                                    onClick={() => onAssetClick(asset)}
-                                    index={i}
-                                  />
-                                </NFTContextMenu>
+                                <NFTThumbnail
+                                  borderRadius="10px"
+                                  size={96}
+                                  imageSrc={getUniqueAssetImageThumbnailURL(
+                                    asset,
+                                  )}
+                                  key={`${asset.fullUniqueId}_${i}`}
+                                  onClick={() => onAssetClick(asset)}
+                                  index={i}
+                                />
                               ))}
                               {rowData.length < 3 &&
                                 isPaginating &&

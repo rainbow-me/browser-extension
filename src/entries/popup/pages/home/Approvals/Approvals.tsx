@@ -84,9 +84,8 @@ const SortDropdown = ({
   const { currentTheme } = useCurrentThemeStore();
   const [open, setIsOpen] = useState(false);
 
-  useKeyboardShortcut({
-    condition: () => open,
-    handler: (e) => {
+  const handleShortcuts = useCallback(
+    (e: KeyboardEvent) => {
       e.stopImmediatePropagation();
       if (e.key === shortcuts.nfts.SORT_RECENT.key) {
         onValueChange('recent');
@@ -96,6 +95,12 @@ const SortDropdown = ({
         setIsOpen(false);
       }
     },
+    [onValueChange],
+  );
+
+  useKeyboardShortcut({
+    condition: open,
+    handler: handleShortcuts,
   });
 
   return (
@@ -523,20 +528,21 @@ export const TokenApprovalContextMenu = ({
   const explorerUrl = getTxExplorerUrl(explorer, txHash);
 
   const [tokenContextMenuOpen, setTokenContextMenuOpen] = useState(false);
+  const handleShortcuts = useCallback((e: KeyboardEvent) => {
+    e.preventDefault();
+    if (e.key === shortcuts.activity.COPY_TRANSACTION.key) {
+      copySpenderRef.current?.click();
+    }
+    if (e.key === shortcuts.activity.VIEW_TRANSACTION.key) {
+      viewOnExplorerRef.current?.click();
+    }
+    if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
+      revokeRef.current?.click();
+    }
+  }, []);
   useKeyboardShortcut({
-    condition: () => tokenContextMenuOpen,
-    handler: (e: KeyboardEvent) => {
-      e.preventDefault();
-      if (e.key === shortcuts.activity.COPY_TRANSACTION.key) {
-        copySpenderRef.current?.click();
-      }
-      if (e.key === shortcuts.activity.VIEW_TRANSACTION.key) {
-        viewOnExplorerRef.current?.click();
-      }
-      if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
-        revokeRef.current?.click();
-      }
-    },
+    condition: tokenContextMenuOpen,
+    handler: handleShortcuts,
   });
 
   const { Menu, MenuContent, MenuTrigger, MenuItem } = getMenuComponents({

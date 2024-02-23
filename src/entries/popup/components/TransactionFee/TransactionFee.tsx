@@ -124,8 +124,8 @@ function Fee({
     [analyticsEvents?.transactionSpeedClicked],
   );
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const trackShortcuts = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
         if (chainId === ChainId.mainnet) {
           trackShortcut({
@@ -145,6 +145,11 @@ function Fee({
         }
       }
     },
+    [chainId, openCustomGasSheet, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: trackShortcuts,
   });
 
   return (

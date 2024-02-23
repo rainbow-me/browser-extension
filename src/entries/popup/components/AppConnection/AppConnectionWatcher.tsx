@@ -79,8 +79,8 @@ export const AppConnectionWatcher = () => {
     setAppHasInteractedWithNudgeSheet,
   } = useAppConnectionWalletSwitcherStore();
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcuts = useCallback(
+    (e: KeyboardEvent) => {
       if (!showNudgeBanner && !showNudgeSheet) return;
       if (e.key === shortcuts.global.CLOSE.key) {
         e.preventDefault();
@@ -91,6 +91,11 @@ export const AppConnectionWatcher = () => {
         connect();
       }
     },
+    [connect, showNudgeBanner, showNudgeSheet],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcuts,
   });
 
   const differentActiveSession =

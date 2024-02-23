@@ -144,8 +144,8 @@ export function Tokens() {
     overscan: 20,
   });
 
-  useKeyboardShortcut({
-    handler: async (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    async (e: KeyboardEvent) => {
       if (e.key === shortcuts.tokens.REFRESH_TOKENS.key) {
         trackShortcut({
           key: shortcuts.tokens.REFRESH_TOKENS.display,
@@ -156,7 +156,12 @@ export function Tokens() {
         setManuallyRefetchingTokens(false);
       }
     },
-    condition: () => !manuallyRefetchingTokens,
+    [refetchCustomNetworkAssets, refetchUserAssets, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
+    condition: !manuallyRefetchingTokens,
   });
 
   useTokensShortcuts();

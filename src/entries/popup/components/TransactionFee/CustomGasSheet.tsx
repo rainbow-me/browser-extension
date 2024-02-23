@@ -214,8 +214,8 @@ export const CustomGasSheet = ({
     [baseFeeTrend],
   );
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const trackShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (
         [shortcuts.global.BACK.key, shortcuts.global.CLOSE.key].includes(e.key)
       ) {
@@ -224,7 +224,12 @@ export const CustomGasSheet = ({
         closeCustomGasSheet();
       }
     },
-    condition: () => show,
+    [closeCustomGasSheet],
+  );
+
+  useKeyboardShortcut({
+    handler: trackShortcut,
+    condition: show,
   });
 
   const updateCustomMaxBaseFee = useCallback(

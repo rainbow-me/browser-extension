@@ -41,7 +41,7 @@ export function useCurrentHomeSheet() {
   const isDisplayingSheet = useMemo(() => sheet !== 'none', [sheet]);
 
   useKeyboardShortcut({
-    condition: () => isDisplayingSheet,
+    condition: isDisplayingSheet,
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
         trackShortcut({

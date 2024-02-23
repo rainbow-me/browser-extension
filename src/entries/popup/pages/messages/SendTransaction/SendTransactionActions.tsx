@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -28,8 +30,9 @@ export const SendTransactionActions = ({
     useApproveAppRequestValidations({ session, dappStatus });
 
   const { trackShortcut } = useKeyboardAnalytics();
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.transaction_request.CANCEL.key) {
         trackShortcut({
           key: shortcuts.transaction_request.CANCEL.display,
@@ -39,6 +42,11 @@ export const SendTransactionActions = ({
         onRejectRequest();
       }
     },
+    [onRejectRequest, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
 
   return (

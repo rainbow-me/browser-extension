@@ -88,7 +88,7 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
     [handleCopyId, handleDownload, handleHideNft, handleSendNft, trackShortcut],
   );
   useKeyboardShortcut({
-    condition: getNftIsSelected,
+    condition: getNftIsSelected(),
     handler: handleNftShortcuts,
   });
 }

@@ -265,8 +265,8 @@ const EditContactDropdownCopyAddressRow = ({
 }) => {
   const rowRef = useRef<HTMLDivElement>(null);
   const { trackShortcut } = useKeyboardAnalytics();
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.contact_menu.COPY_CONTACT_ADDRESS.key) {
         trackShortcut({
           key: shortcuts.contact_menu.COPY_CONTACT_ADDRESS.display,
@@ -275,6 +275,10 @@ const EditContactDropdownCopyAddressRow = ({
         simulateClick(rowRef?.current);
       }
     },
+    [trackShortcut],
+  );
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
   return (
     <Box ref={rowRef}>
@@ -307,8 +311,8 @@ const EditContactDropdownCopyAddressRow = ({
 const EditContactDropdownEditContactRow = () => {
   const rowRef = useRef<HTMLDivElement>(null);
   const { trackShortcut } = useKeyboardAnalytics();
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.contact_menu.EDIT_CONTACT.key) {
         trackShortcut({
           key: shortcuts.contact_menu.EDIT_CONTACT.display,
@@ -317,6 +321,10 @@ const EditContactDropdownEditContactRow = () => {
         simulateClick(rowRef?.current);
       }
     },
+    [trackShortcut],
+  );
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
   return (
     <Box ref={rowRef}>

@@ -236,7 +236,7 @@ export function useHomeShortcuts() {
     ],
   );
   useKeyboardShortcut({
-    condition: getHomeShortcutsAreActive,
+    condition: getHomeShortcutsAreActive(),
     handler: handleHomeShortcuts,
   });
 }

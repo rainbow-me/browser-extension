@@ -41,6 +41,7 @@ export const fetchTransaction = async ({
 }) => {
   if (!chainId || !hash) return undefined;
   try {
+    console.log('fetching transaction');
     const response = await addysHttp.get<{
       payload: { transaction: TransactionApiResponse };
       meta: { status: string };
@@ -56,6 +57,7 @@ export const fetchTransaction = async ({
     if (!parsedTx) throw new Error('Failed to parse transaction');
     return parsedTx;
   } catch (e) {
+    return {};
     logger.error(new RainbowError('fetchTransaction: '), {
       message: (e as Error)?.message,
     });

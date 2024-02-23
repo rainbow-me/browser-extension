@@ -166,19 +166,24 @@ export const useInfiniteTransactionList = ({
     rows,
   ]);
 
-  const refetchTransactions = async () => {
+  const refetchTransactions = useCallback(async () => {
     setManuallyRefetching(true);
     await refetch();
     setManuallyRefetching(false);
-  };
+  }, [refetch]);
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
         refetchTransactions();
       }
     },
-    condition: () => !manuallyRefetching,
+    [refetchTransactions],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
+    condition: !manuallyRefetching,
   });
 
   return {

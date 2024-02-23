@@ -68,14 +68,19 @@ export function ActivityContextMenu({
     onRevokeTransaction?.();
   }, [onRevokeTransaction]);
 
-  useKeyboardShortcut({
-    condition: () => !!open,
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       e.preventDefault();
       if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
         onRevoke();
       }
     },
+    [onRevoke],
+  );
+
+  useKeyboardShortcut({
+    condition: !!open,
+    handler: handleShortcut,
   });
 
   useEffect(() => {

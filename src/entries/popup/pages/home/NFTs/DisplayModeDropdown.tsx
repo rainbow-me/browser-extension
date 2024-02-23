@@ -29,10 +29,8 @@ export default function DisplayModeDropdown() {
   );
   const { currentTheme } = useCurrentThemeStore();
   const [open, setIsOpen] = useState(false);
-
-  useKeyboardShortcut({
-    condition: () => open,
-    handler: (e) => {
+  const handleShortcuts = useCallback(
+    (e: KeyboardEvent) => {
       e.stopImmediatePropagation();
       if (e.key === shortcuts.nfts.DISPLAY_MODE_GROUPED.key) {
         onValueChange('grouped');
@@ -42,6 +40,12 @@ export default function DisplayModeDropdown() {
         setIsOpen(false);
       }
     },
+    [onValueChange],
+  );
+
+  useKeyboardShortcut({
+    condition: open,
+    handler: handleShortcuts,
   });
 
   return (

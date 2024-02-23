@@ -87,7 +87,7 @@ export function useActivityShortcuts() {
     ],
   );
   useKeyboardShortcut({
-    condition: getTransactionIsSelected,
+    condition: getTransactionIsSelected(),
     handler: handleActivityShortcuts,
   });
 }

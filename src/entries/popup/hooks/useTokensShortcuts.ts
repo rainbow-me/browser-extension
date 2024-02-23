@@ -101,7 +101,7 @@ export function useTokensShortcuts() {
     ],
   );
   useKeyboardShortcut({
-    condition: () => !!selectedToken,
+    condition: !!selectedToken,
     handler: handleTokenShortcuts,
   });
 }

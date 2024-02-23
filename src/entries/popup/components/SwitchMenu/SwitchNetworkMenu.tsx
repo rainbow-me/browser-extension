@@ -247,16 +247,18 @@ export const SwitchNetworkMenu = ({
   const triggerRef = useRef<HTMLDivElement>(null);
   const { chains } = useUserChains();
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.swap.OPEN_NETWORK_MENU.key) {
-        const activeElement = document.activeElement;
-        const tagName = activeElement?.tagName;
-        if (tagName !== 'INPUT' || activeElement?.id === SWAP_INPUT_MASK_ID) {
-          simulateClick(triggerRef?.current);
-        }
+  const handleShortcut = useCallback((e: KeyboardEvent) => {
+    if (e.key === shortcuts.swap.OPEN_NETWORK_MENU.key) {
+      const activeElement = document.activeElement;
+      const tagName = activeElement?.tagName;
+      if (tagName !== 'INPUT' || activeElement?.id === SWAP_INPUT_MASK_ID) {
+        simulateClick(triggerRef?.current);
       }
-    },
+    }
+  }, []);
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
 
   const {

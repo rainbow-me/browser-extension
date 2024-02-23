@@ -89,8 +89,8 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
     [inputRef],
   );
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (e.altKey) {
         if (e.key === shortcuts.swap.FOCUS_ASSET_TO_BUY.key) {
           trackShortcut({
@@ -101,6 +101,11 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
         }
       }
     },
+    [trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
 
   return (

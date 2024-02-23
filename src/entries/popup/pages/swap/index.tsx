@@ -436,8 +436,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     };
   }, [clearCustomGasModified]);
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcuts = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.swap.FLIP_ASSETS.key) {
         const flippingAfterSearch =
           getInputIsFocused() && getActiveElement()?.id === SWAP_INPUT_MASK_ID;
@@ -466,6 +466,11 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         }
       }
     },
+    [assetToSell, flipAssets, setAssetToSellMaxValue, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcuts,
   });
 
   const assetToBuyAccentColor =

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -53,24 +53,29 @@ export const TestnetModeWatcher = ({
 
   const [hint, setHint] = useState<Hint>(INITIAL_HINT);
 
-  const closeSheet = () => {
+  const closeSheet = useCallback(() => {
     setHint(INITIAL_HINT);
     rejectRequest?.();
-  };
+  }, [rejectRequest]);
 
   const action = () => {
     setHint(INITIAL_HINT);
     setTestnetMode(!testnetMode);
   };
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (!hint.show) return;
       if (e.key === shortcuts.global.CLOSE.key) {
         e.preventDefault();
         closeSheet();
       }
     },
+    [closeSheet, hint.show],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
 
   useEffect(() => {

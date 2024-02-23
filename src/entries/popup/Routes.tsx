@@ -1001,8 +1001,8 @@ export function Routes() {
 
 const useGlobalShortcuts = () => {
   const { trackNavigation } = useKeyboardAnalytics();
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleGlobalShortcuts = React.useCallback(
+    (e: KeyboardEvent) => {
       // prevent scrolling with space
       if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
         if (!getInputIsFocused()) {
@@ -1039,6 +1039,10 @@ const useGlobalShortcuts = () => {
         simulateTab(!e.shiftKey);
       }
     },
+    [trackNavigation],
+  );
+  useKeyboardShortcut({
+    handler: handleGlobalShortcuts,
   });
 };
 

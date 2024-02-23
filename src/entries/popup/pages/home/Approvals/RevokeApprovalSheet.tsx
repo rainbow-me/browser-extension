@@ -252,14 +252,19 @@ export const RevokeApprovalSheet = ({
     }
   }, [clearCustomGasModified, previousShow, show]);
 
-  useKeyboardShortcut({
-    condition: () => !!show,
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       e.preventDefault();
       if (e.key === shortcuts.global.CLOSE.key) {
         onCancel();
       }
     },
+    [onCancel],
+  );
+
+  useKeyboardShortcut({
+    condition: !!show,
+    handler: handleShortcut,
   });
 
   return (

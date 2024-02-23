@@ -68,8 +68,8 @@ export const BottomWallet = React.forwardRef(function BottomWallet(
   useImperativeHandle(ref, () => ({
     triggerMenu: () => simulateClick(triggerRef?.current),
   }));
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.connect.OPEN_WALLET_SWITCHER.key) {
         trackShortcut({
           key: shortcuts.connect.OPEN_WALLET_SWITCHER.display,
@@ -78,6 +78,10 @@ export const BottomWallet = React.forwardRef(function BottomWallet(
         simulateClick(triggerRef?.current);
       }
     },
+    [trackShortcut],
+  );
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
   return (
     <Box testId="switch-wallet-menu" ref={triggerRef}>
@@ -153,8 +157,8 @@ export const BottomSwitchWallet = ({
     [setCurrentAddress, setSelectedWallet],
   );
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (!switchNetworkMenuIsActive() && !getInputIsFocused()) {
         const regex = /^[1-9]$/;
         if (regex.test(e.key)) {
@@ -169,6 +173,11 @@ export const BottomSwitchWallet = ({
         }
       }
     },
+    [onValueChange, sortedAccounts, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcut,
   });
 
   return (

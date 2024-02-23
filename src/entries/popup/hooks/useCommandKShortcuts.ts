@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
 
@@ -65,24 +65,32 @@ export function useCommandKShortcuts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disableOnCurrentRoute, isCommandKVisible]);
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const commandKShortcutPressHandler = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.COMMAND_K.key) {
         handleCommandKShortcutPress(e);
       }
     },
-    condition: getCommandKTriggerIsActive,
+    [handleCommandKShortcutPress],
+  );
+  useKeyboardShortcut({
+    handler: commandKShortcutPressHandler,
+    condition: getCommandKTriggerIsActive(),
     enableWithinCommandK: true,
     modifierKey: 'command',
   });
 
-  // Allow opening ⌘K with K alone if an input is not focused
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
+  const noCommandShortcutHandler = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.COMMAND_K.key && !getInputIsFocused()) {
         handleCommandKShortcutPress(e);
       }
     },
-    condition: getCommandKTriggerIsActive,
+    [handleCommandKShortcutPress],
+  );
+  // Allow opening ⌘K with K alone if an input is not focused
+  useKeyboardShortcut({
+    handler: noCommandShortcutHandler,
+    condition: getCommandKTriggerIsActive(),
   });
 }

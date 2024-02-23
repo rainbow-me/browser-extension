@@ -1,6 +1,6 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
 import clsx from 'clsx';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useCallback } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -134,9 +134,8 @@ export const SwitchMenu = ({
   sideOffset = 16,
 }: SwitchMenuProps) => {
   const { trackShortcut } = useKeyboardAnalytics();
-  useKeyboardShortcut({
-    condition: () => open !== undefined,
-    handler: (e: KeyboardEvent) => {
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
         trackShortcut({
           key: shortcuts.global.CLOSE.display,
@@ -147,6 +146,11 @@ export const SwitchMenu = ({
         onClose?.();
       }
     },
+    [onClose, trackShortcut],
+  );
+  useKeyboardShortcut({
+    condition: open !== undefined,
+    handler: handleShortcut,
   });
   return (
     <SelectPrimitive.Root

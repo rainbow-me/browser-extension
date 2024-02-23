@@ -2,6 +2,7 @@ import { motion, useMotionValueEvent } from 'framer-motion';
 import {
   PropsWithChildren,
   memo,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -103,8 +104,8 @@ const Tabs = memo(function Tabs({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
-  useKeyboardShortcut({
-    handler: (e) => {
+  const handleShortcuts = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.BACK.key) {
         trackShortcut({
           key: shortcuts.global.BACK.display,
@@ -132,6 +133,11 @@ const Tabs = memo(function Tabs({
         }
       }
     },
+    [activeTab, onSelectTab, trackShortcut],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcuts,
   });
 
   const getDisableBottomPadding = () => {
