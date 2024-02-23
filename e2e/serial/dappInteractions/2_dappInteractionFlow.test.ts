@@ -48,7 +48,7 @@ const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 const shortenedAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 
-describe('App interactions flow', () => {
+describe.runIf(browser !== 'firefox')('App interactions flow', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,

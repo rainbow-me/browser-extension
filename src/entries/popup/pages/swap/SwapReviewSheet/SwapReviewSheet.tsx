@@ -67,7 +67,7 @@ import { SwapAssetCard } from './SwapAssetCard';
 import { SwapRoutes } from './SwapRoutes';
 import { SwapViewContractDropdown } from './SwapViewContractDropdown';
 
-const DetailsRow = ({
+export const ReviewDetailsRow = ({
   children,
   testId,
 }: {
@@ -537,7 +537,7 @@ const SwapReviewSheetWithQuote = ({
               paddingBottom="20px"
             >
               <Stack space="4px">
-                <DetailsRow testId="minimum-received">
+                <ReviewDetailsRow testId="minimum-received">
                   <Label
                     label={t('swap.review.minimum_received')}
                     testId="swap-review-swapping-route"
@@ -545,9 +545,9 @@ const SwapReviewSheetWithQuote = ({
                   <Text size="14pt" weight="semibold" color="label">
                     {minimumReceived}
                   </Text>
-                </DetailsRow>
+                </ReviewDetailsRow>
                 {!isWrapOrUnwrapEth && (
-                  <DetailsRow testId="swapping-via">
+                  <ReviewDetailsRow testId="swapping-via">
                     <Label
                       label={t('swap.review.via')}
                       testId="swap-review-swapping-route"
@@ -558,9 +558,9 @@ const SwapReviewSheetWithQuote = ({
                         protocols={swappingRoute}
                       />
                     )}
-                  </DetailsRow>
+                  </ReviewDetailsRow>
                 )}
-                <DetailsRow testId="included-fee">
+                <ReviewDetailsRow testId="included-fee">
                   <Label
                     label={t('swap.review.included_fee')}
                     testId="swap-review-rnbw-fee-info-button"
@@ -571,10 +571,10 @@ const SwapReviewSheetWithQuote = ({
                     testId="included-fee"
                     textArray={includedFee}
                   />
-                </DetailsRow>
+                </ReviewDetailsRow>
 
                 {flashbotsEnabled && (
-                  <DetailsRow testId="flashbots-enabled">
+                  <ReviewDetailsRow testId="flashbots-enabled">
                     <Label
                       label={t('swap.review.use_flashbots')}
                       testId="swap-review-flashbots-info-button"
@@ -596,7 +596,7 @@ const SwapReviewSheetWithQuote = ({
                         size={12}
                       />
                     </Inline>
-                  </DetailsRow>
+                  </ReviewDetailsRow>
                 )}
                 <Box as={motion.div} key="more-details" layout>
                   {showMoreDetails && (
@@ -606,7 +606,7 @@ const SwapReviewSheetWithQuote = ({
                       testId="more-details-section"
                       layout
                     >
-                      <DetailsRow testId="exchange-rate">
+                      <ReviewDetailsRow testId="exchange-rate">
                         <Label
                           label={t('swap.review.exchange_rate')}
                           testId="swap-review-exchange-rate"
@@ -616,9 +616,9 @@ const SwapReviewSheetWithQuote = ({
                           symbol="arrow.2.squarepath"
                           textArray={exchangeRate}
                         />
-                      </DetailsRow>
+                      </ReviewDetailsRow>
                       {!assetToSell.isNativeAsset && (
-                        <DetailsRow testId="asset-to-sell-contract">
+                        <ReviewDetailsRow testId="asset-to-sell-contract">
                           <Label
                             label={t('swap.review.asset_contract', {
                               symbol: assetToSell.symbol,
@@ -635,10 +635,10 @@ const SwapReviewSheetWithQuote = ({
                               {truncateAddress(assetToSell.address)}
                             </Text>
                           </SwapViewContractDropdown>
-                        </DetailsRow>
+                        </ReviewDetailsRow>
                       )}
                       {!assetToBuy.isNativeAsset && (
-                        <DetailsRow testId="asset-to-buy-contract">
+                        <ReviewDetailsRow testId="asset-to-buy-contract">
                           <Label
                             label={t('swap.review.asset_contract', {
                               symbol: assetToBuy.symbol,
@@ -654,13 +654,13 @@ const SwapReviewSheetWithQuote = ({
                               {truncateAddress(assetToBuy.address)}
                             </Text>
                           </SwapViewContractDropdown>
-                        </DetailsRow>
+                        </ReviewDetailsRow>
                       )}
                     </Box>
                   )}
                   {!showMoreDetails && (
                     <Box as={motion.div} key="more-details-hidden" layout>
-                      <DetailsRow testId="more-details-hidden">
+                      <ReviewDetailsRow testId="more-details-hidden">
                         <Label
                           label={t('swap.review.more_details')}
                           testId="swap-review-details"
@@ -674,7 +674,7 @@ const SwapReviewSheetWithQuote = ({
                           onClick={openMoreDetails}
                           testId="swap-review-more-details-button"
                         />
-                      </DetailsRow>
+                      </ReviewDetailsRow>
                     </Box>
                   )}
                 </Box>

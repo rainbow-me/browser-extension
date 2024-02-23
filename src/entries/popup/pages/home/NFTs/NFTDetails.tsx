@@ -11,8 +11,9 @@ import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNfts } from '~/core/resources/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -25,7 +26,6 @@ import {
   getUniqueAssetImageThumbnailURL,
 } from '~/core/utils/nfts';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
-import { capitalize } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
 import {
   AccentColorProvider,
@@ -75,9 +75,14 @@ import {
 } from '~/entries/popup/components/Navbar/Navbar';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
+import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useUserChains } from '~/entries/popup/hooks/useUserChains';
+import { ROUTES } from '~/entries/popup/urls';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 import { BirdIcon } from './BirdIcon';
+import NFTContextMenu from './NFTContextMenu';
 import NFTDropdownMenu from './NFTDropdownMenu';
 import { getOpenseaUrl } from './utils';
 
@@ -88,7 +93,10 @@ export default function NFTDetails() {
     nftId: string;
   }>();
   const { testnetMode } = useTestnetModeStore();
-  const { data } = useNfts({ address, testnetMode });
+  const { chains: userChains } = useUserChains();
+  const { data } = useNfts({ address, testnetMode, userChains });
+  const navigate = useRainbowNavigate();
+  const { setSelectedNft } = useSelectedNftStore();
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
@@ -118,6 +126,12 @@ export default function NFTDetails() {
   });
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
+  const handleSendNft = useCallback(() => {
+    if (nft) {
+      setSelectedNft(nft);
+      navigate(ROUTES.SEND, { replace: true });
+    }
+  }, [navigate, nft, setSelectedNft]);
   const showFloorPriceExplainerSheet = useCallback(() => {
     showExplainerSheet({
       show: true,
@@ -134,6 +148,9 @@ export default function NFTDetails() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useNftShortcuts(nft);
+
   return (
     <Box background="surfacePrimary">
       <AccentColorProvider
@@ -157,13 +174,17 @@ export default function NFTDetails() {
                 borderRadius="16px"
                 style={{ height: 320, width: 320 }}
               >
-                <ExternalImage
-                  src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
-                  placeholderSrc={nft ? getUniqueAssetImagePreviewURL(nft) : ''}
-                  height={320}
-                  width={320}
-                  borderRadius="16px"
-                />
+                <NFTContextMenu nft={nft} offsetOverride={true}>
+                  <ExternalImage
+                    src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
+                    placeholderSrc={
+                      nft ? getUniqueAssetImagePreviewURL(nft) : ''
+                    }
+                    height={320}
+                    width={320}
+                    borderRadius="16px"
+                  />
+                </NFTContextMenu>
               </Box>
               <Box paddingTop="20px" paddingBottom="16px">
                 <Columns>
@@ -240,18 +261,41 @@ export default function NFTDetails() {
                 </Columns>
               </Box>
               <Box paddingVertical="16px">
-                <Button
-                  width="full"
-                  color="accent"
-                  height="36px"
-                  variant="flat"
-                  borderRadius="round"
-                  symbol="arrow.up.right.square.fill"
-                  onClick={() => goToNewTab({ url: getOpenseaUrl({ nft }) })}
-                  tabIndex={0}
-                >
-                  {'OpenSea'}
-                </Button>
+                <Inline space="6px"></Inline>
+                <Columns space="8px">
+                  <Column>
+                    <Button
+                      width="full"
+                      color="accent"
+                      height="36px"
+                      variant="flat"
+                      borderRadius="round"
+                      symbol="arrow.up.right.square.fill"
+                      onClick={() =>
+                        goToNewTab({ url: getOpenseaUrl({ nft }) })
+                      }
+                      tabIndex={0}
+                    >
+                      {'OpenSea'}
+                    </Button>
+                  </Column>
+                  {nft?.isSendable && (
+                    <Column>
+                      <Button
+                        width="full"
+                        color="accent"
+                        height="36px"
+                        variant="flat"
+                        borderRadius="round"
+                        symbol="paperplane.fill"
+                        onClick={handleSendNft}
+                        tabIndex={0}
+                      >
+                        {i18n.t('nfts.details.send')}
+                      </Button>
+                    </Column>
+                  )}
+                </Columns>
               </Box>
               {ensRegistrationData ? (
                 <EnsRegistrationSection
@@ -626,8 +670,9 @@ const NFTAccordionAboutSection = ({
   nft?: UniqueAsset | null;
   showFloorPriceExplainerSheet: () => void;
 }) => {
-  const network =
-    nft?.network === 'mainnet' ? 'Ethereum' : capitalize(nft?.network);
+  const networkDisplay = nft?.network
+    ? ChainNameDisplay[chainIdFromChainName(nft?.network)]
+    : '';
   const deployedBy = nft?.asset_contract?.deployed_by;
   const { data: creatorEnsName } = useEnsName({
     address: (deployedBy as Address) || undefined,
@@ -708,7 +753,7 @@ const NFTAccordionAboutSection = ({
             }
           />
         )}
-        {network && (
+        {networkDisplay && (
           <Box
             display="flex"
             alignItems="center"
@@ -740,7 +785,7 @@ const NFTAccordionAboutSection = ({
                 cursor="text"
                 userSelect="all"
               >
-                {network}
+                {networkDisplay}
               </TextOverflow>
             </Inline>
           </Box>

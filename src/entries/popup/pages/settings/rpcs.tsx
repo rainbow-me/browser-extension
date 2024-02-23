@@ -243,7 +243,11 @@ export function SettingsNetworksRPCs() {
             />
             <Box paddingHorizontal="1px" paddingVertical="1px">
               {mainnetChains.map((chain, index) => (
-                <Box key={`${chain.name}`} width="full">
+                <Box
+                  key={`${chain.name}`}
+                  width="full"
+                  testId={`rpc-row-item-${index}`}
+                >
                   <ContextMenu>
                     <ContextMenuTrigger
                       disabled={
@@ -384,6 +388,7 @@ export function SettingsNetworksRPCs() {
                     text={i18n.t('settings.networks.custom_rpc.add_rpc')}
                   />
                 }
+                testId={'custom-rpc-button'}
               />
             </Menu>
             <Separator color="separatorTertiary" strokeWeight="1px" />
@@ -402,6 +407,7 @@ export function SettingsNetworksRPCs() {
               paddingRight="10px"
               paddingVertical="9px"
               width="full"
+              testId={'custom-token-section'}
             >
               {customNetworkAssetsForChain?.map((asset, i) => (
                 <ContextMenu key={i}>

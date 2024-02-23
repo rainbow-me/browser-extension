@@ -7,7 +7,7 @@ import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 
-type FavoriteAssets = Record<ChainId, SearchAsset[]>;
+type FavoriteAssets = Record<number, SearchAsset[]>;
 const FAVORITES_EMPTY_STATE = {
   [ChainId.mainnet]: [],
   [ChainId.optimism]: [],

@@ -6,7 +6,6 @@ import {
   avalanche,
   avalancheFuji,
   base,
-  baseGoerli,
   baseSepolia,
   bsc,
   bscTestnet,
@@ -33,6 +32,10 @@ export { gasUnits } from './gasUnits';
 export { supportedCurrencies } from './supportedCurrencies';
 
 export const smartContractMethods = {
+  punk_transfer: {
+    method: 'transferPunk(address,uint256)',
+    hash: '0x8b72a2ec',
+  },
   token_transfer: {
     method: 'transfer(address,uint256)',
     hash: '0xa9059cbb',
@@ -52,6 +55,10 @@ export const smartContractMethods = {
   nft_safe_transfer_from: {
     method: 'safeTransferFrom(address,address,uint256)',
     hash: '0x42842e0e',
+  },
+  erc721_transfer_from: {
+    method: 'transferFrom(address,address,uint256)',
+    hash: '0x23b872dd',
   },
   erc1155_safe_transfer_from: {
     method: 'safeTransferFrom(address,address,uint256,uint256,bytes)',
@@ -150,8 +157,8 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.hardhatOptimism]: AddressZero as Address,
   [ChainId.optimismGoerli]: AddressZero as Address,
   [ChainId.optimismSepolia]: AddressZero as Address,
+  [ChainId.rari]: AddressZero as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
-  [ChainId.baseGoerli]: AddressZero as Address,
   [ChainId.baseSepolia]: AddressZero as Address,
   [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
   [ChainId.zoraTestnet]: AddressZero as Address,
@@ -174,11 +181,11 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.bsc]: BNB_MAINNET_ADDRESS,
   [ChainId.bscTestnet]: BNB_MAINNET_ADDRESS,
   [ChainId.optimism]: ETH_ADDRESS,
+  [ChainId.rari]: ETH_ADDRESS,
   [ChainId.hardhatOptimism]: ETH_ADDRESS,
   [ChainId.optimismGoerli]: ETH_ADDRESS,
   [ChainId.optimismSepolia]: ETH_ADDRESS,
   [ChainId.base]: ETH_ADDRESS,
-  [ChainId.baseGoerli]: ETH_ADDRESS,
   [ChainId.baseSepolia]: ETH_ADDRESS,
   [ChainId.zora]: ETH_ADDRESS,
   [ChainId.zoraTestnet]: ETH_ADDRESS,
@@ -229,7 +236,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
   polygonMumbai,
   arbitrumGoerli,
   arbitrumSepolia,
-  baseGoerli,
   baseSepolia,
   zoraSepolia,
   zoraTestnet,
@@ -249,7 +255,6 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   polygonMumbai,
   arbitrumGoerli,
   arbitrumSepolia,
-  baseGoerli,
   baseSepolia,
   zoraTestnet,
   zoraSepolia,
@@ -293,8 +298,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ARBITRUM_SEPOLIA_RPC };
     case ChainId.arbitrumGoerli:
       return { http: process.env.ARBITRUM_GOERLI_RPC };
-    case ChainId.baseGoerli:
-      return { http: process.env.BASE_GOERLI_RPC };
     case ChainId.baseSepolia:
       return { http: process.env.BASE_SEPOLIA_RPC };
     case ChainId.zoraTestnet:

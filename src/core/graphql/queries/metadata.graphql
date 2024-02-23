@@ -180,6 +180,9 @@ query simulateTransactions(
         expiration
       }
       meta {
+        transferTo {
+          ...target
+        }
         to {
           ...target
         }
@@ -223,6 +226,9 @@ query simulateMessage(
         expiration
       }
       meta {
+        transferTo {
+          ...target
+        }
         to {
           ...target
         }
