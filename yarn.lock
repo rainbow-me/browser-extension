@@ -3296,9 +3296,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@rainbow-me/provider@./rainbow-me-provider-v0.0.2.tgz":
-  version "0.0.2"
-  resolved "./rainbow-me-provider-v0.0.2.tgz#0e986e5a6b0c4c04fc8d0e58f72105f5db758274"
+"@rainbow-me/provider@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/provider/-/provider-0.0.1.tgz#2077ccf77c4797f110f235ea749d873c805096ae"
+  integrity sha512-BCo0mUg2Vk8DvLUnk9/TJb5aakF40ayWciWOJZU9R2/L5fGQD4z7E8yMv80UppKUDOUOwmwQqKAJvuKoDsoUUA==
   dependencies:
     "@ethersproject/abstract-provider" "5.7.0"
     "@ethersproject/bignumber" "5.7.0"
