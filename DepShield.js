@@ -35,7 +35,7 @@ class DepShieldPlugin {
           if (maybeImportingFromRoot) {
             // This is the target of the attack
             const depPath = [maybeImportingFromRoot.slice(-1)[0]];
-            // This is the whole path from our files to the depenedency attempting to import
+            // This is the whole path from our files to the dependency attempting to import
             for (let i = maybeImportingFromRoot.length - 2; i >= 0; i--) {
               const path = maybeImportingFromRoot[i];
               depPath.push(path);

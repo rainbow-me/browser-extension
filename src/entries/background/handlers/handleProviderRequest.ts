@@ -687,7 +687,7 @@ export const handleProviderRequest = ({
         default: {
           try {
             if (method?.substring(0, 7) === 'wallet_') {
-              // Generic error that will be hanlded correctly in the catch
+              // Generic error that will be handled correctly in the catch
               throw new Error('next');
             }
             // Let's try to fwd the request to the provider

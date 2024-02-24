@@ -576,7 +576,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Improved fallbacks and handling of Backend-driven transaction types for contract interaction Activity cells #972
 - Updated i18n translations for Activity Details #951
 - Improved Sentry logging for Send, Import, and Hardware Wallet pairing keychain interactions #961
-- Publish actions are now seperate for Chrome and Firefox stores #964
+- Publish actions are now separate for Chrome and Firefox stores #964
 - Upgraded `@ledgerhq/hw-app-eth` and `@ledgerhq/hw-transport-webhid` and accompanying patches and Wekpack configuration #983
 - Upgraded `@metamask/eth-sig-util`, `@trezor/connect-plugin-ethereum`, `@ledgerhq/cryptoassets`, `wagmi`, `zustand`, Sentry, Webpack, and LavaMoat packages #956
 
