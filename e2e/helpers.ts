@@ -106,6 +106,15 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
   return windowHandle;
 }
 
+async function closeOtherHandles({ driver }: { driver: WebDriver }) {
+  const [firstHandle, ...handles] = await driver.getAllWindowHandles();
+  for (const handle of handles) {
+    await driver.switchTo().window(handle);
+    await driver.close();
+  }
+  await driver.switchTo().window(firstHandle);
+}
+
 // setup functions
 
 export async function initDriverWithOptions(opts: {
@@ -136,6 +145,10 @@ export async function initDriverWithOptions(opts: {
       .forBrowser('firefox')
       .setFirefoxOptions(options)
       .build();
+
+    // close on install triggered new popup tab
+    await delayTime('long');
+    await closeOtherHandles({ driver });
   } else {
     const options = new chrome.Options()
       // @ts-ignore
