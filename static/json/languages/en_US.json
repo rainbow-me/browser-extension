@@ -1314,6 +1314,7 @@
       "ens_website": "Website",
       "registered_on": "Registered on",
       "expires_in": "Expires in",
+      "report": "Report",
       "explainer": {
         "floor_price_description": "A collection's floor price is the lowest asking price across all the items currently for sale in a collection.",
         "floor_price_title": "Collection floor price",
@@ -1322,6 +1323,9 @@
       "send": "Send",
       "view_on_opensea": "View on OpenSea",
       "view_on_explorer": "View on %{explorerTitle}"
+    },
+    "toast": {
+      "spam_reported": "Your report has been received!"
     }
   },
   "points": {
