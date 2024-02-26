@@ -146,7 +146,7 @@ export async function initDriverWithOptions(opts: {
       .setFirefoxOptions(options)
       .build();
 
-    // close on install triggered new popup tab
+    // fixes on-install behavior in firefox that opens onboarding in new tab
     await delayTime('long');
     await closeOtherHandles({ driver });
   } else {
