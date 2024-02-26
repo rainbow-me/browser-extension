@@ -5,6 +5,7 @@ import {
   PolygonAllowListDictionary,
   SimpleHashCollectionDetails,
   SimpleHashNFT,
+  UniqueAsset,
 } from '../types/nfts';
 
 import { RainbowFetchClient } from './internal/rainbowFetch';
@@ -115,3 +116,22 @@ export const fetchPolygonAllowList =
     );
     return polygonAllowListDictionary;
   };
+
+export const reportNftAsSpam = async (nft: UniqueAsset) => {
+  const network =
+    nft?.network === ChainName.mainnet ? 'ethereum' : nft?.network;
+  try {
+    await nftApi.post(
+      '/nfts/report/spam',
+      JSON.stringify({
+        contract_address: nft?.asset_contract.address,
+        chain_id: network,
+        token_id: nft?.id,
+      }),
+    );
+  } catch (error) {
+    logger.error(new RainbowError('reportNftAsSpam: failed to report nft'), {
+      message: (error as Error).message,
+    });
+  }
+};

@@ -73,7 +73,7 @@
     "title": "Paramètres",
     "use_rainbow_as_default_wallet": "Utiliser Rainbow comme portefeuille par défaut",
     "sounds": "Sons",
-    "default_wallet_description": "Autoriser les applications à privilégier Rainbow lorsqu'elles recherchent une extension à laquelle se connecter.",
+    "default_wallet_description": "Permettre aux applications de prioriser Rainbow pour se connecter à une extension.",
     "contacts": "Contacts",
     "guides_and_support": "Guides et assistance",
     "learn_about_ethereum": "En savoir plus sur Ethereum",
@@ -94,7 +94,10 @@
         "text": "Glissez les réseaux pour les réorganiser",
         "text_bold": "Astuce :"
       },
+      "disable": "Désactiver",
       "disabled": "Désactivé",
+      "enable": "Activer",
+      "enabled": "Réseau activé",
       "description": "Choisissez quels réseaux et tokens afficher. Vous pouvez vous connecter à tous les réseaux pris en charge par Rainbow, même s'ils ne sont pas cochés",
       "developer_tools": {
         "title": "Activer les outils de développement",
@@ -102,6 +105,7 @@
       },
       "custom_rpc": {
         "title": "Ajouter un réseau",
+        "add_custom_network": "Ajouter un réseau personnalisé",
         "networks": "Réseaux",
         "network_name": "Nom du réseau",
         "rpc_url": "URL RPC",
@@ -112,20 +116,23 @@
         "testnet": "Testnet",
         "block_explorer_url": "URL de l'explorateur de blocs",
         "add_network": "Ajouter un réseau",
-        "add_rpc": "Ajouter un RPC %{rpcName}",
+        "add_rpc": "Ajouter un point de terminaison RPC",
+        "add_network_rpc": "Ajouter %{rpcName} RPC",
         "add_asset": "Ajouter un jeton personnalisé",
-        "network_added": "Réseau ajouté !",
-        "network_added_correctly": "%{networkName} a été ajouté correctement !",
+        "network_added": "Réseau ajouté",
+        "network_added_correctly": "%{networkName}",
         "remove_token": "Supprimer jeton",
         "remove_rpc": "Supprimer RPC",
+        "remove_network": "Retirer le réseau",
         "tokens": "Jetons",
-        "cant_connect": "Impossible de se connecter à ce point de terminaison RPC !",
-        "rpc_not_responding": "L'URL fournie ne répond pas"
+        "cant_connect": "Impossible de se connecter à ce point de terminaison RPC",
+        "rpc_not_responding": "Le point de terminaison RPC fourni ne répond pas",
+        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default": "Rainbow"
       },
       "rpc_endpoints": "Points de terminaison RPC",
-      "enabled": "Activé",
       "watch_asset": {
-        "title": "Surveiller actif"
+        "title": "Ajouter un jeton personnalisé"
       }
     },
     "privacy_and_security": {
@@ -215,6 +222,20 @@
           "warning_4": "Rainbow Support ne vous demandera jamais votre phrase de récupération.",
           "show": "Afficher la phrase de récupération",
           "copied": "Phrase de récupération copiée"
+        },
+        "wipe_wallets": {
+          "delete": "Réinitialiser Rainbow",
+          "acknowlegement": "J'ai lu et j'accepte les informations ci-dessus",
+          "warning_one": "Réinitialiser Rainbow réinitialisera votre mot de passe, & supprimera tous les portefeuilles",
+          "warning_two": "Cela effacera également toutes les données & réglages dans Rainbow",
+          "warning_three": "Assurez-vous que votre phrase de récupération secrète est sécurisée avant de continuer ",
+          "warning_four": "Vos actifs & fonds sont accessibles avec les bonnes informations de récupération",
+          "button_wipe": "Réinitialiser Rainbow",
+          "button_complete": "Vérification complète ci-dessus",
+          "wipe_confirmation": "Réinitialiser Rainbow",
+          "wipe_confirmation_desc": "Êtes-vous sûr de vouloir réinitialiser l'extension de navigateur Rainbow ?",
+          "wipe_confirmation_button": "Réinitialiser",
+          "wipe_confirmation_cancel": "Annuler"
         }
       }
     },
@@ -224,7 +245,10 @@
       "use_flashbots": "Utiliser Flashbots",
       "clear_transactions_and_nonces": "Effacer les transactions en attente",
       "clear_transactions_and_nonces_success": "Transactions en attente effacées",
-      "flashbots_description": "Flashbots protège vos transactions et réduit la probabilité d'échec des transactions. En savoir plus."
+      "flashbots_description": "Flashbots protège vos transactions et réduit le risque d'échecs de transaction."
+    },
+    "approvals": {
+      "title": "Autorisations"
     },
     "currency": {
       "title": "Devise",
@@ -250,10 +274,7 @@
       "full_watching_wallets": "Accès complet aux portefeuilles surveillés",
       "hw_wallets_enabled": "Activer la prise en charge des portefeuilles matériels",
       "command_k_internal_shortcuts_enabled": "Activer les raccourcis internes ⌘K",
-      "custom_rpc": "RPC personnalisé",
-      "new_tab_bar_enabled": "Nouvelle Barre d'Onglets",
-      "nfts_enabled": "NFTs Activés",
-      "points": "Points"
+      "custom_rpc": "RPC personnalisé"
     }
   },
   "transactions": {
@@ -395,8 +416,10 @@
         "my_wallets": "Mes portefeuilles",
         "my_tokens": "Mes jetons",
         "my_tokens_watched": "Jetons",
+        "my_nfts": "Mes NFTs",
+        "my_nfts_watched": "NFTs",
         "copy_address": "Copier l'adresse",
-        "view_nfts": "Voir les NFT",
+        "view_profile": "Voir le profil Rainbow",
         "add_wallet": "Ajouter un portefeuille",
         "lock": "Verrouiller Rainbow",
         "connected_apps": "Applications connectées",
@@ -440,7 +463,8 @@
         "swap": "pont",
         "my_wallets": "changer",
         "my_tokens_watched": "mes",
-        "view_nfts": "galerie, profil",
+        "my_nfts_watched": "mes",
+        "view_profile": "profil, galerie, ens, nfts",
         "testnet_mode": "basculer, réseaux, testnets",
         "developer_tools": "basculer, réseaux, développeur, testnets",
         "settings": "préférences",
@@ -491,12 +515,21 @@
         "search_placeholder": "Rechercher des jetons…",
         "section_title": "Mes jetons"
       },
+      "my_nfts": {
+        "empty_label": "Aucun NFT trouvé",
+        "search_placeholder": "Chercher des NFTs…",
+        "section_title": "Mes NFTs"
+      },
       "my_wallets": {
         "search_placeholder": "Sélectionnez un portefeuille pour basculer vers…",
         "section_title": "Mes portefeuilles"
       },
       "token_detail": {
         "search_placeholder": "Rechercher des actions de jetons…",
+        "section_title": "Actions"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "Chercher des actions NFT…",
         "section_title": "Actions"
       },
       "wallet_detail": {
@@ -531,6 +564,34 @@
     "no_connections_title": "Aucune application connectée",
     "no_connections_copy": "Les sites web auxquels vous vous connectez apparaîtront ici"
   },
+  "approvals": {
+    "title": "Autorisations",
+    "unlimited": "Illimité",
+    "no_allowance": "Pas d'Allocation",
+    "revoke_approval": "Révoquer l'autorisation",
+    "copy_spender": "Copier le dépensier",
+    "spender_address_copied": "Adresse du dépensier copiée",
+    "revoked_approvals": "Autorisations révoquées",
+    "nothing_found": "Rien trouvé",
+    "revoke": {
+      "title": "Révoquer l'autorisation",
+      "action": "Révoquer",
+      "cancel": "Annuler",
+      "allowance": "Allocation",
+      "spender": "Dépensier",
+      "chain": "Chaîne"
+    },
+    "token_details": {
+      "explainer": {
+        "token_approval": {
+          "title": "Qu'est-ce qu'une autorisation ?",
+          "description_1": "Les approbations permettent à une dApp de dépenser et de transférer des jetons ou des NFTs en votre nom.",
+          "description_2": "Il est important de surveiller vos approbations et de révoquer celles qui sont inutiles, trop larges ou dangereuses pour vos actifs.",
+          "action_label": "Compris"
+        }
+      }
+    }
+  },
   "send": {
     "title": "Envoyer",
     "input_to_address_placeholder": "Nom, ENS ou adresse",
@@ -558,7 +619,10 @@
       "available": "disponible",
       "token_balance": "Solde du token",
       "networks": "Réseaux",
-      "nothing_found": "Rien trouvé"
+      "nothing_found": "Rien trouvé",
+      "nfts": "NFTs",
+      "alphabetical": "Alphabétique",
+      "recent": "Récent"
     },
     "review": {
       "title": "Revoir et envoyer",
@@ -805,7 +869,7 @@
     "title": "Votre phrase de récupération secrète",
     "write_down_seed_importance": "Conservez ces mots peut accéder à l'ensemble de votre portefeuille ! Gardez-les en lieu sûr et ne les partagez jamais.",
     "saved_these_words": "J'ai enregistré ces mots",
-    "phrase_copied": "Phrase de récupération copiée"
+    "copied": "Phrase de récupération copiée"
   },
   "import_wallet_via_secret": {
     "title": "Importer un portefeuille",
@@ -1031,7 +1095,8 @@
     "request_rejected": "Demande de transaction rejetée",
     "bridge_and_try_again": "Transférez des fonds de gaz et réessayez",
     "buy_and_try_again": "Achetez quelques fonds de gaz et réessayez",
-    "buy": "Acheter %{token}"
+    "buy_gas": "Acheter %{token}",
+    "get_testnet_gas": "Obtenir gratuitement du testnet %{token}"
   },
   "add_chain": {
     "name": "Nom",
@@ -1194,7 +1259,8 @@
     "exchange_rate": "Échange",
     "collection": "Collection",
     "token_contract": "Contrat du jeton",
-    "token_standard": "Standard du jeton"
+    "token_standard": "Standard du jeton",
+    "revoke_approval": "Révoquer l'autorisation"
   },
   "tokens_tab": {
     "coinbase_title": "Dépôt depuis Coinbase",
@@ -1209,9 +1275,7 @@
     "unknown_token": "Token inconnu"
   },
   "nfts": {
-    "coming_soon_header": "Bientôt Disponible",
     "empty_state_header": "NFTs",
-    "coming_soon_description": "Les NFTs arrivent bientôt. Restez à l'écoute!",
     "empty_state_description": "Vos NFT apparaîtront ici !",
     "view_on_web": "Voir sur le Web",
     "display_mode_gallery": "Galerie",
@@ -1220,8 +1284,9 @@
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "Récent",
     "sort_option_abc_long": "Alphabétique",
+    "hidden_section_title": "Masqué",
     "details": {
-      "last_sales_price": "Prix de vente précédent",
+      "last_sales_price": "Dernier prix de vente",
       "none": "Aucun",
       "floor_price": "Prix plancher",
       "description": "Description",
@@ -1232,6 +1297,8 @@
       "token_contract": "Contrat du jeton",
       "contract_creator": "Créateur du contrat",
       "chain": "Chaîne",
+      "hide": "Masquer",
+      "unhide": "Afficher",
       "id_copied": "ID Copié",
       "copy_token_id": "Copier l'ID du jeton",
       "download": "Télécharger",
@@ -1251,20 +1318,24 @@
         "floor_price_description": "Le prix plancher d'une collection est le prix de vente le plus bas parmi tous les articles actuellement en vente dans une collection",
         "floor_price_title": "Prix plancher de la collection",
         "floor_price_action_label": "Compris"
-      }
+      },
+      "send": "Envoyer",
+      "view_on_opensea": "Voir sur OpenSea",
+      "view_on_explorer": "Voir sur %{explorerTitle}"
     }
   },
   "points": {
-    "coming_soon_header": "Bientôt Disponible",
-    "coming_soon_description": "Des points sont à portée de main.\nCommencez à gagner aujourd'hui",
+    "check_back_soon_header": "Revenez bientôt",
+    "check_back_soon_description": "Les points sont actuellement indisponibles.\nRevenez bientôt pour continuer à utiliser les Points Rainbow.",
     "your_rank": "Votre classement",
+    "unranked": "Non classé",
+    "points_to_rank": "%{rank_cutoff} points pour être classé",
     "next_drop": "Prochaine distribution",
     "leaderboard": "Classement",
     "referral_code": "Code de parrainage",
     "referral_code_description": "Gagnez des points en parrainant des amis après un échange de $100 via Rainbow",
     "copied_referral_code": "Code de parrainage copié !",
     "copied_referral_link": "Lien de parrainage copié !",
-    "out_of": "Sur un total de %{total}",
     "out_of_current_total_points": "Sur %{total} points totaux actuels",
     "header": "Réclamez vos points",
     "description": "Les points sont là. Découvrez combien vous avez reçu.",
@@ -1301,11 +1372,31 @@
       "registration_complete": "Inscription terminée",
       "all_set": "Tout est prêt !",
       "keep_earning_by": "Continuez à gagner des points en échangeant, en utilisant des ponts, en frappant des pièces, en parrainant des amis, et plus encore",
-      "the_more_you_use": "Plus vous utilisez Rainbow, plus vous serez récompensé"
+      "the_more_you_use": "Plus vous utilisez Rainbow, plus vous serez récompensé",
+      "balance_required": "Solde du portefeuille requis",
+      "ensure_you_have_a_balance_on": "Pour continuer, assurez-vous d'avoir un solde en ETH sur l'un des réseaux suivants :",
+      "or_alternatively_balance_on": "Ou alternativement, un solde en MATIC sur Polygon ou un solde en BNB sur BSC",
+      "fund_my_wallet": "Financer mon portefeuille"
     },
     "error": {
       "existing_user": "Utilisateur existant",
-      "invalid_referral_code": "Code de parrainage invalide"
+      "invalid_referral_code": "Code de parrainage invalide",
+      "unexpected": "Un événement inattendu s'est produit, réessayez dans quelques minutes"
+    },
+    "weekly_overview": {
+      "week_of": "> Semaine du %{from} - %{to}",
+      "counting": "> Calcul des points gagnés...",
+      "your_activity": "Votre activité :",
+      "referral_activity": "Activité de parrainage :",
+      "new_referrals": "Nouveaux parrainages :",
+      "retroactive": "Points rétroactifs :",
+      "total": "Total :",
+      "weekly_counted": "> Gains hebdomadaires comptabilisés",
+      "you_have": "Vous avez :",
+      "none": "Aucun",
+      "your_earnings": "Vos gains de la semaine dernière",
+      "view_breakdown": "Voir le détail de vos gains hebdomadaires",
+      "view_now": "Voir maintenant"
     }
   },
   "speed_up_and_cancel": {
@@ -1324,7 +1415,8 @@
     "speed_up_cta": "Accélérer la transaction",
     "speed_up_transaction": "Accélérer la transaction",
     "close_cta": "Annuler",
-    "handle_copy_title": "Hachage de la transaction copié"
+    "handle_copy_title": "Hachage de la transaction copié",
+    "revoke_approval": "Révoquer l'autorisation"
   },
   "token_details": {
     "swap": "Échanger",
@@ -1343,6 +1435,7 @@
     "not_available": "Prix indisponible",
     "more_options": {
       "copy_address": "Copier l'adresse",
+      "view_on_explorer": "Voir sur %{explorer}",
       "hide": "Cacher le jeton",
       "report": "Signaler le jeton"
     },
@@ -1467,7 +1560,10 @@
     "network_changed": "Changement de réseau",
     "network_changed_failed": "Changement de réseau échoué",
     "unsupported_network": "Réseau non pris en charge",
-    "no_active_session": "Aucune session active"
+    "no_active_session": "Aucune session active",
+    "already_added": "RPC activé",
+    "set_as_active": "Nouveau RPC activé",
+    "already_active": "Réseau déjà ajouté"
   },
   "alert": {
     "ok": "Ok",
@@ -1535,10 +1631,6 @@
       "after": " pour en demander davantage"
     }
   },
-  "approvals": {
-    "unlimited": "Illimité",
-    "no_allowance": "Pas d'Allocation"
-  },
   "buy": {
     "title": "Acheter",
     "fees_title": "Frais",
@@ -1602,6 +1694,7 @@
   "nonce": "Nonce",
   "copy": "Copier",
   "copy_link": "Copier le Lien",
+  "link_text": "En savoir plus",
   "close": "Fermer",
   "verified": "Vérifié",
   "unverified": "Non vérifié",
