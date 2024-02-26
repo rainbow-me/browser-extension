@@ -60,13 +60,13 @@ it('should be able to add an auto-complete network', async () => {
   await findElementByTestIdAndClick({ driver, id: 'custom-chain-link' });
   await checkExtensionURL(driver, 'custom-chain');
   await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
-  await findElementByTextAndClick(driver, 'Avalanche');
+  await findElementByTextAndClick(driver, 'Arbitrum Nova');
   const symbol = await findElementByTestId({
     id: 'custom-network-symbol',
     driver,
   });
   const symbolValue = await symbol.getAttribute('value');
-  expect(symbolValue).toContain('AVAX');
+  expect(symbolValue).toContain('ETH');
 
   // needs a couple seconds to validate the custom RPC
   await delayTime('very-long');
@@ -75,11 +75,11 @@ it('should be able to add an auto-complete network', async () => {
     driver,
     id: 'add-custom-network-button',
   });
-  const avaxChain = await findElementByTestId({
-    id: 'network-row-43114',
+  const novaChain = await findElementByTestId({
+    id: 'network-row-42170',
     driver,
   });
-  expect(avaxChain).toBeTruthy();
+  expect(novaChain).toBeTruthy();
 });
 
 it('should be able to add a custom network', async () => {
