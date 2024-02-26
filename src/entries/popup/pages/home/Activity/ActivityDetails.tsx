@@ -4,16 +4,18 @@ import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
-import { ChainNameDisplay } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { getChain } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
-import { truncateString } from '~/core/utils/strings';
+import { isLowerCaseMatch, truncateString } from '~/core/utils/strings';
 import {
   getAdditionalDetails,
   getBlockExplorerName,
@@ -48,10 +50,12 @@ import {
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
+import { triggerRevokeApproval } from '../Approvals/utils';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 import { ActivityPill } from './ActivityPill';
@@ -410,7 +414,15 @@ const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
   );
 };
 
-function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
+function MoreOptions({
+  transaction,
+  revoke,
+  onRevoke,
+}: {
+  transaction: RainbowTransaction;
+  revoke?: boolean;
+  onRevoke: () => void;
+}) {
   const explorerHost = getBlockExplorerName(transaction.chainId);
   const explorerUrl = getTransactionBlockExplorerUrl(transaction);
   const hash = transaction.hash;
@@ -474,6 +486,15 @@ function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
             >
               {i18n.t('token_details.view_on', { explorer: explorerHost })}
             </DropdownMenuItem>
+            {revoke ? (
+              <DropdownMenuItem
+                color="red"
+                symbolLeft="xmark.circle.fill"
+                onSelect={onRevoke}
+              >
+                {i18n.t('activity_details.revoke_approval')}
+              </DropdownMenuItem>
+            ) : null}
           </>
         )}
       </DropdownMenuContent>
@@ -482,13 +503,45 @@ function MoreOptions({ transaction }: { transaction: RainbowTransaction }) {
 }
 
 export function ActivityDetails() {
+  const { currentCurrency } = useCurrentCurrencyStore();
+  const { currentAddress } = useCurrentAddressStore();
   const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
+  const { isWatchingWallet } = useWallets();
+
   const { data: transaction, isLoading } = useTransaction({
     hash,
     chainId: Number(chainId),
   });
-
   const navigate = useRainbowNavigate();
+
+  const { data: approvals } = useApprovals(
+    {
+      address: currentAddress,
+      chainIds: [Number(chainId) as ChainId],
+      currency: currentCurrency,
+    },
+    {
+      enabled:
+        isLowerCaseMatch(transaction?.from || '', currentAddress) &&
+        transaction?.type === 'approve' &&
+        !!Number(chainId),
+    },
+  );
+
+  const approvalToRevoke = useMemo(() => {
+    const approvalToRevoke =
+      approvals
+        ?.map((approval) =>
+          approval.spenders.map((spender) => ({
+            approval,
+            spender,
+          })),
+        )
+        .flat()
+        .filter((a) => a.spender.tx_hash === (transaction?.hash || ''))?.[0] ||
+      null;
+    return approvalToRevoke;
+  }, [approvals, transaction?.hash]);
 
   const additionalDetails = useMemo(
     () => (transaction ? getAdditionalDetails(transaction) : null),
@@ -499,6 +552,10 @@ export function ActivityDetails() {
     navigate(ROUTES.HOME, {
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
+
+  const onRevoke = () => {
+    triggerRevokeApproval({ show: true, approval: approvalToRevoke });
+  };
 
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
@@ -511,7 +568,13 @@ export function ActivityDetails() {
               <Navbar.CloseButton onClick={backToHome} withinModal />
             }
             titleComponent={<ActivityPill transaction={transaction} />}
-            rightComponent={<MoreOptions transaction={transaction} />}
+            rightComponent={
+              <MoreOptions
+                transaction={transaction}
+                revoke={!!approvalToRevoke && !isWatchingWallet}
+                onRevoke={onRevoke}
+              />
+            }
           />
           <Separator color="separatorTertiary" />
 

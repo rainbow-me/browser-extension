@@ -172,6 +172,7 @@ const nftRadiusBySize = {
   16: '4px',
   20: '6px',
   36: '10px',
+  44: '12px',
 } as const;
 
 function CloudinaryCoinIcon({

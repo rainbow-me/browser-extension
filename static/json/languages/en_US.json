@@ -248,6 +248,9 @@
       "clear_transactions_and_nonces_success": "Pending transactions cleared",
       "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures."
     },
+    "approvals": {
+      "title": "Approvals"
+    },
     "currency": {
       "title": "Currency",
       "ETH": "Ethereum",
@@ -562,6 +565,34 @@
     "no_connections_title": "No connected apps",
     "no_connections_copy": "Websites you connect to will show up here"
   },
+  "approvals": {
+    "title": "Approvals",
+    "unlimited": "Unlimited",
+    "no_allowance": "No Allowance",
+    "revoke_approval": "Revoke Approval",
+    "copy_spender":"Copy Spender",
+    "spender_address_copied": "Spender Address Copied",
+    "revoked_approvals": "Revoked Approvals",
+    "nothing_found": "Nothing found",
+    "revoke": {
+      "title": "Revoke Approval",
+      "action": "Revoke",
+      "cancel": "Cancel",
+      "allowance": "Allowance",
+      "spender":"Spender",
+      "chain": "Chain"
+    },
+    "token_details": {
+      "explainer": {
+        "token_approval": {
+          "title": "What’s an Approval?",
+          "description_1": "Approvals grant a dApp to spend and transfer tokens or NFTs on your behalf.",
+          "description_2": "It is important to monitor your approvals and revoke unnecessary, broad, or unsafe approvals that may risk your assets.",
+          "action_label":"Got it"
+        }
+      }
+    }
+  },
   "send": {
     "title": "Send",
     "input_to_address_placeholder": "Name, ENS or address",
@@ -589,7 +620,10 @@
       "available": "available",
       "token_balance": "Token Balance",
       "networks": "Networks",
-      "nothing_found": "Nothing found"
+      "nothing_found": "Nothing found",
+      "nfts": "NFTs",
+      "alphabetical": "Alphabetical",
+      "recent": "Recent"
     },
     "review": {
       "title": "Review & Send",
@@ -1226,7 +1260,8 @@
     "exchange_rate": "Exchange",
     "collection": "Collection",
     "token_contract": "Token Contract",
-    "token_standard": "Token Standard"
+    "token_standard": "Token Standard",
+    "revoke_approval":"Revoke Approval"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",
@@ -1284,7 +1319,10 @@
         "floor_price_description": "A collection's floor price is the lowest asking price across all the items currently for sale in a collection.",
         "floor_price_title": "Collection floor price",
         "floor_price_action_label": "Got it"
-      }
+      },
+      "send": "Send",
+      "view_on_opensea": "View on OpenSea",
+      "view_on_explorer": "View on %{explorerTitle}"
     }
   },
   "points": {
@@ -1379,7 +1417,8 @@
     "speed_up_cta": "Speed up transaction",
     "speed_up_transaction": "Speed up transaction",
     "close_cta": "Cancel",
-    "handle_copy_title": "Tx Hash Copied"
+    "handle_copy_title": "Tx Hash Copied",
+    "revoke_approval": "Revoke Approval"
   },
   "token_details": {
     "swap": "Swap",
@@ -1612,10 +1651,6 @@
       "after": " to request more."
     }
   },
-  "approvals": {
-    "unlimited": "Unlimited",
-    "no_allowance": "No Allowance"
-  },
   "buy": {
     "title": "Buy",
     "fees_title": "Fees",
@@ -1665,6 +1700,7 @@
     "contract": "Contract",
     "contract_name": "Contract Name",
     "contract_created_at": "Contract Created",
+    "to": "To",
     "source_code": "Source Code",
     "signature": {
       "message": "Message"
