@@ -19,7 +19,7 @@
     "clsx": "1.2.1",
     "framer-motion": "7.6.7",
     "lz-string": "1.4.4",
-    "next": "12.3.1",
+    "next": "12.3.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-syntax-highlighter": "15.5.0",
@@ -28,8 +28,7 @@
   },
   "resolutions": {
     "semver": "7.5.2",
-    "word-wrap": "1.2.4",
-    "core-js-pure": "3.36.0"
+    "word-wrap": "1.2.4"
   },
   "devDependencies": {
     "@lavamoat/preinstall-always-fail": "2.0.0",
