@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
+import { getAccounts } from '~/core/keychain';
 import { i18n } from '~/core/languages';
 import { appSessionsStore, useCurrentAddressStore } from '~/core/state';
-import { useWalletBackupsStore } from '~/core/state/walletBackups';
-import { useWalletNamesStore } from '~/core/state/walletNames';
+import { hiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { walletBackupsStore } from '~/core/state/walletBackups';
+import { walletNamesStore } from '~/core/state/walletNames';
 import { getSettingWallets } from '~/core/utils/settings';
 import {
   Box,
@@ -20,11 +22,21 @@ import {
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { remove, wipe } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
 const t = (s: string) =>
   i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
+
+const { deleteWalletName } = walletNamesStore.getState();
+const { deleteWalletBackup } = walletBackupsStore.getState();
+const { removeAddressSessions } = appSessionsStore.getState();
+
+async function removeWallet(address: Address) {
+  await remove(address);
+  deleteWalletName({ address });
+  deleteWalletBackup({ address });
+  removeAddressSessions({ address });
+}
 
 export const WipeWalletGroupPrompt = ({
   show,
@@ -33,57 +45,31 @@ export const WipeWalletGroupPrompt = ({
   show: boolean;
   onClose: () => void;
 }) => {
-  const { deleteWalletName } = useWalletNamesStore();
-  const { deleteWalletBackup } = useWalletBackupsStore();
-  const { visibleWallets } = useWallets();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const navigate = useRainbowNavigate();
 
-  const handleRemoveAccount = useCallback(
-    async (address: Address) => {
-      await remove(address);
-      deleteWalletName({ address });
-      deleteWalletBackup({ address });
-      appSessionsStore.getState().removeAddressSessions({ address });
-
-      if (visibleWallets.length > 1) {
-        if (address === currentAddress) {
-          const deletedIndex = visibleWallets.findIndex(
-            (account) => account.address === address,
-          );
-          const nextIndex =
-            deletedIndex === visibleWallets.length - 1
-              ? deletedIndex - 1
-              : deletedIndex + 1;
-          setCurrentAddress(visibleWallets[nextIndex].address);
-        }
-      } else {
-        await wipe();
-        navigate(ROUTES.WELCOME);
-      }
-    },
-    [
-      currentAddress,
-      deleteWalletBackup,
-      deleteWalletName,
-      navigate,
-      setCurrentAddress,
-      visibleWallets,
-    ],
-  );
-
   const handleDeleteWalletGroup = useCallback(async () => {
-    const getWallets = await getSettingWallets();
-    const walletArray = getWallets.accounts;
+    const groupAccounts = (await getSettingWallets()).accounts;
     try {
-      await Promise.all(
-        walletArray.map((eachWallet) => handleRemoveAccount(eachWallet)),
-      );
+      await Promise.all(groupAccounts.map(removeWallet));
+
+      if (groupAccounts.includes(currentAddress)) {
+        const allAccounts = await getAccounts();
+        if (allAccounts.length > 0) {
+          const { unhideWallet } = hiddenWalletsStore.getState();
+          unhideWallet({ address: allAccounts[0] });
+          setCurrentAddress(allAccounts[0]);
+        } else {
+          await wipe();
+          navigate(ROUTES.WELCOME);
+        }
+      }
+
       navigate(-2);
     } catch (error) {
       console.error('An error occurred during wallet removal:', error);
     }
-  }, [handleRemoveAccount, navigate]);
+  }, [currentAddress, navigate, setCurrentAddress]);
 
   return (
     <Prompt show={show} handleClose={onClose}>
