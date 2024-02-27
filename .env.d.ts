@@ -42,7 +42,6 @@ declare global {
       ARBITRUM_SEPOLIA_RPC: string;
       ARBITRUM_GOERLI_RPC: string;
       BASE_SEPOLIA_RPC: string;
-      ZORA_GOERLI_RPC: string;
       ZORA_SEPOLIA_RPC: string;
       AVALANCHE_MAINNET_RPC: string;
       AVALANCHE_FUJI_RPC: string;
