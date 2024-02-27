@@ -113,6 +113,7 @@ async function closeOtherHandles({ driver }: { driver: WebDriver }) {
     await driver.close();
   }
   await driver.switchTo().window(firstHandle);
+  await delayTime('short');
 }
 
 // setup functions
