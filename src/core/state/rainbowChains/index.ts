@@ -56,6 +56,27 @@ const getInitialRainbowChains = () => {
   return rainbowChains;
 };
 
+const mergeNewOfficiallySupportedChainsState = (
+  state: RainbowChainsState,
+  newChains: ChainId[],
+) => {
+  const officiallySupportedRainbowChains = getInitialRainbowChains();
+  for (const chainId of newChains) {
+    const officalConfig = officiallySupportedRainbowChains[chainId];
+    const stateChain = state.rainbowChains[chainId];
+    // if the rpc already exists in the state, merge the chains
+    // else add the new rpc config to the state
+    if (stateChain.chains.length > 0) {
+      state.rainbowChains[chainId].chains = stateChain.chains.concat(
+        officalConfig.chains,
+      );
+    } else {
+      state.rainbowChains[chainId] = officalConfig;
+    }
+  }
+  return state;
+};
+
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: getInitialRainbowChains(),
@@ -143,7 +164,19 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 1,
+      version: 2,
+      migrate(persistedState, version) {
+        const state = persistedState as RainbowChainsState;
+        if (version === 1) {
+          // version 2 added support for Avalanche and Avalanche Fuji
+          return mergeNewOfficiallySupportedChainsState(state, [
+            ChainId.avalanche,
+            ChainId.avalancheFuji,
+          ]);
+        }
+
+        return state;
+      },
     },
   },
 );

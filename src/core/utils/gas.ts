@@ -374,6 +374,7 @@ export const getChainWaitTime = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.bsc:
     case ChainId.polygon:
+    case ChainId.avalanche:
       return { safeWait: 6, proposedWait: 3, fastWait: 3 };
     case ChainId.optimism:
       return { safeWait: 20, proposedWait: 20, fastWait: 20 };
@@ -542,6 +543,7 @@ export const meteorologySupportsChain = (chainId: ChainId) =>
     ChainId.arbitrum,
     ChainId.optimism,
     ChainId.zora,
+    ChainId.avalanche,
   ].includes(chainId);
 
 export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
@@ -554,6 +556,7 @@ export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
     ChainId.arbitrum,
     ChainId.optimism,
     ChainId.zora,
+    ChainId.avalanche,
   ].includes(chainId);
 
 export const chainNeedsL1SecurityFee = (chainId: ChainId) =>

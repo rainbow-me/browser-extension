@@ -90,6 +90,15 @@ export function useSwappableAssets(toChainId?: ChainId) {
     toChainId,
   });
 
+  const {
+    data: swappableAvalancheAddresses,
+    isLoading: swappableAvalancheAddressesAreLoading,
+  } = useSwappableAddresses({
+    addresses: assetAddressMap[ChainId.avalanche],
+    fromChainId: ChainId.avalanche,
+    toChainId,
+  });
+
   const swappableInfo = useMemo(
     () => ({
       [ChainId.mainnet]: {
@@ -120,6 +129,10 @@ export function useSwappableAssets(toChainId?: ChainId) {
         addresses: swappableZoraAddresses,
         loading: swappableZoraAddressesAreLoading,
       },
+      [ChainId.avalanche]: {
+        addresses: swappableAvalancheAddresses,
+        loading: swappableAvalancheAddressesAreLoading,
+      },
     }),
     [
       swappableArbitrumAddresses,
@@ -136,6 +149,8 @@ export function useSwappableAssets(toChainId?: ChainId) {
       swappableBaseAddressesAreLoading,
       swappableZoraAddresses,
       swappableZoraAddressesAreLoading,
+      swappableAvalancheAddresses,
+      swappableAvalancheAddressesAreLoading,
     ],
   );
 

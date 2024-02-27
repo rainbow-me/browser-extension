@@ -13,9 +13,13 @@ type SideChain = Exclude<
   ChainId.mainnet | ChainId.goerli | ChainId.hardhat | ChainId.hardhatOptimism
 >;
 export const isSideChain = (chainId: ChainId): chainId is SideChain =>
-  [ChainId.arbitrum, ChainId.polygon, ChainId.optimism, ChainId.bsc].includes(
-    chainId,
-  );
+  [
+    ChainId.arbitrum,
+    ChainId.polygon,
+    ChainId.optimism,
+    ChainId.bsc,
+    ChainId.avalanche,
+  ].includes(chainId);
 
 export const getSideChainExplainerParams = (
   chainId: SideChain,
