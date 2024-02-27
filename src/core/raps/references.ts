@@ -14,6 +14,7 @@ export enum Source {
   AggregatorRainbow = 'rainbow',
   Aggregator0x = '0x',
   Aggregator1inch = '1inch',
+  Socket = 'socket',
 }
 
 export interface UnlockActionParameters {

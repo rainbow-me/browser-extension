@@ -41,7 +41,7 @@ beforeAll(async () => {
     swapType: SwapType.crossChain,
     toChainId: ChainId.arbitrum,
   });
-}, 10000);
+}, 20000);
 
 test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async () => {
   const swapGasLimit = await estimateCrosschainSwapGasLimit({

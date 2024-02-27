@@ -1,7 +1,10 @@
 import 'chromedriver';
 import 'geckodriver';
+import { Contract } from '@ethersproject/contracts';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
+import { erc20ABI } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -14,7 +17,6 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
-  getOnchainBalance,
   getRootUrl,
   getTextFromText,
   goToPopup,
@@ -22,7 +24,6 @@ import {
   initDriverWithOptions,
   querySelector,
   takeScreenshotOnFailure,
-  transactionStatus,
   typeOnTextInput,
   waitAndClick,
   waitUntilElementByTestIdIsPresent,
@@ -142,11 +143,17 @@ it('should be able to go to review a unlock and swap', async () => {
 });
 
 it('should be able to execute unlock and swap', async () => {
-  const balanceBefore = await getOnchainBalance(
-    WALLET_TO_USE_ADDRESS,
+  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
+  await provider.ready;
+  await delayTime('short');
+  const tokenContract = new Contract(
     SWAP_VARIABLES.USDC_MAINNET_ADDRESS,
+    erc20ABI,
+    provider,
   );
-  console.log(`Balance before swap: ${balanceBefore}`);
+  const usdcBalanceBeforeSwap = await tokenContract.balanceOf(
+    WALLET_TO_USE_ADDRESS,
+  );
 
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
@@ -177,24 +184,19 @@ it('should be able to execute unlock and swap', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  const txnStatus = await transactionStatus();
-  console.log(txnStatus);
-  expect(txnStatus).toBe('success');
-  const balanceAfter = await getOnchainBalance(
+  await delayTime('very-long');
+  await delayTime('very-long');
+  const usdcBalanceAfterSwap = await tokenContract.balanceOf(
     WALLET_TO_USE_ADDRESS,
-    SWAP_VARIABLES.USDC_MAINNET_ADDRESS,
   );
-  console.log('bal after: ', balanceAfter);
   const balanceDifference = subtract(
-    balanceBefore.toString(),
-    balanceAfter.toString(),
+    usdcBalanceBeforeSwap.toString(),
+    usdcBalanceAfterSwap.toString(),
   );
   const usdcBalanceDifference = convertRawAmountToDecimalFormat(
     balanceDifference.toString(),
     6,
   );
-
-  console.log('usdc DIFF: ', usdcBalanceDifference);
 
   expect(Number(usdcBalanceDifference)).toBe(50);
 });

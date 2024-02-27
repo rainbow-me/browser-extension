@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ReactNode, useState } from 'react';
+import { ReactNode, memo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
@@ -100,7 +100,7 @@ const InfoRow = ({
   </Box>
 );
 
-function Overview({
+const Overview = memo(function Overview({
   chainId,
   simulation,
   status,
@@ -166,9 +166,9 @@ function Overview({
       )}
     </Stack>
   );
-}
+});
 
-function TransactionDetails({
+const TransactionDetails = memo(function TransactionDetails({
   simulation,
   session,
 }: {
@@ -176,20 +176,51 @@ function TransactionDetails({
   session: { address: Address; chainId: ChainId };
 }) {
   const metaTo = simulation?.meta.to;
+  const metaTransferTo = simulation?.meta.transferTo;
+
+  const isContract = metaTo?.function || metaTo?.created;
 
   const { getNonce } = useNonceStore();
   const { currentNonce: nonce } = getNonce(session) || {};
 
   const functionName = metaTo?.function.split('(')[0];
-  const contract = metaTo?.address;
-  const contractName = metaTo?.name;
+  const contract = metaTo && {
+    address: metaTo.address,
+    name: metaTo.name,
+    iconUrl: metaTo.iconURL,
+  };
   const isSourceCodeVerified = metaTo?.sourceCodeStatus === 'VERIFIED';
   const contractCreatedAt = metaTo?.created;
 
   return (
     <Box gap="16px" display="flex" flexDirection="column" paddingTop="14px">
-      {!!nonce && (
-        <InfoRow symbol="number" label={i18n.t('nonce')} value={nonce} />
+      {metaTransferTo && (
+        <InfoRow
+          symbol="person"
+          label={i18n.t('simulation.to')}
+          value={
+            <AddressDisplay
+              address={metaTransferTo.address}
+              chainId={session.chainId}
+            />
+          }
+        />
+      )}
+      {contract && (
+        <InfoRow
+          symbol={isContract ? 'doc.plaintext' : 'person'}
+          label={
+            isContract ? i18n.t('simulation.contract') : i18n.t('simulation.to')
+          }
+          value={
+            <AddressDisplay
+              address={contract.address}
+              contract={contract}
+              chainId={session.chainId}
+              color="labelSecondary"
+            />
+          }
+        />
       )}
       {functionName && (
         <InfoRow
@@ -202,24 +233,19 @@ function TransactionDetails({
           }
         />
       )}
-      {contract && (
+      {metaTo?.sourceCodeStatus && (
         <InfoRow
-          symbol="doc.plaintext"
-          label={i18n.t('simulation.contract')}
+          symbol="doc.text.magnifyingglass"
+          label={i18n.t('simulation.source_code')}
           value={
-            <AddressDisplay
-              address={contract}
-              hideAvatar
-              chainId={session.chainId}
-            />
+            <Tag
+              size="12pt"
+              color={isSourceCodeVerified ? 'green' : 'labelSecondary'}
+              bleed
+            >
+              {isSourceCodeVerified ? i18n.t('verified') : i18n.t('unverified')}
+            </Tag>
           }
-        />
-      )}
-      {contractName && (
-        <InfoRow
-          symbol="person"
-          label={i18n.t('simulation.contract_name')}
-          value={contractName}
         />
       )}
       {contractCreatedAt && (
@@ -229,24 +255,14 @@ function TransactionDetails({
           value={formatDate(contractCreatedAt)}
         />
       )}
-      <InfoRow
-        symbol="doc.text.magnifyingglass"
-        label={i18n.t('simulation.source_code')}
-        value={
-          <Tag
-            size="12pt"
-            color={isSourceCodeVerified ? 'green' : 'labelSecondary'}
-            bleed
-          >
-            {isSourceCodeVerified ? i18n.t('verified') : i18n.t('unverified')}
-          </Tag>
-        }
-      />
+      {!!nonce && (
+        <InfoRow symbol="number" label={i18n.t('nonce')} value={nonce} />
+      )}
     </Box>
   );
-}
+});
 
-function TransactionData({
+const TransactionData = memo(function TransactionData({
   data,
   expanded,
 }: {
@@ -270,7 +286,7 @@ function TransactionData({
       />
     </Box>
   );
-}
+});
 
 function TransactionInfo({
   request,

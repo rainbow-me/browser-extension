@@ -19,6 +19,7 @@ enum SummarySupportedChainId {
   base = ChainId.base as number,
   zora = ChainId.zora as number,
   bsc = ChainId.bsc as number,
+  avalanche = ChainId.avalanche as number,
 }
 
 export interface AddySummary {
@@ -27,7 +28,7 @@ export interface AddySummary {
       [key: Address]: {
         summary: {
           native_balance_by_symbol: {
-            [key in 'ETH' | 'MATIC' | 'BNB']: {
+            [key in 'ETH' | 'MATIC' | 'BNB' | 'AVAX']: {
               symbol: string;
               quantity: string;
               decimals: number;
