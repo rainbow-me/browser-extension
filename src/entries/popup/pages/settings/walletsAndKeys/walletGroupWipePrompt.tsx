@@ -58,7 +58,10 @@ export const WipeWalletGroupPrompt = ({
       if (groupAccounts.includes(currentAddress)) {
         const allAccounts = await getAccounts();
 
-        if (allAccounts.length === 0) {
+        if (
+          allAccounts.length === 0 ||
+          allAccounts.every((acc) => groupAccounts.includes(acc))
+        ) {
           await wipe();
           navigate(ROUTES.WELCOME);
           return;
