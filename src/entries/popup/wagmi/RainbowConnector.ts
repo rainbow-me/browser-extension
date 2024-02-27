@@ -4,19 +4,19 @@ import {
   JsonRpcSigner,
   Web3Provider,
 } from '@ethersproject/providers';
+import { RainbowProvider } from '@rainbow-me/provider';
 import { Chain, Connector } from 'wagmi';
 
-import { ChainIdHex, RainbowInjectedProvider } from '~/core/providers';
 import { currentAddressStore, currentChainIdStore } from '~/core/state';
 
-function normalizeChainId(chainId: ChainIdHex | number | bigint) {
+function normalizeChainId(chainId: `0x${string}` | number | bigint) {
   if (typeof chainId === 'string') return Number(BigInt(chainId));
   if (typeof chainId === 'bigint') return Number(chainId);
   return chainId;
 }
 
 export class RainbowConnector extends Connector<
-  RainbowInjectedProvider,
+  RainbowProvider,
   Record<string, unknown>,
   JsonRpcSigner
 > {
@@ -24,7 +24,7 @@ export class RainbowConnector extends Connector<
   readonly name: string;
   readonly ready = true;
 
-  #provider: RainbowInjectedProvider;
+  #provider: RainbowProvider;
 
   constructor({
     chains,
@@ -35,7 +35,7 @@ export class RainbowConnector extends Connector<
 
     this.id = 'rainbow';
     this.name = 'rainbow';
-    this.#provider = new RainbowInjectedProvider();
+    this.#provider = new RainbowProvider();
   }
 
   async connect() {
@@ -105,7 +105,7 @@ export class RainbowConnector extends Connector<
     else this.emit('change', { account: getAddress(<string>accounts[0]) });
   };
 
-  protected onChainChanged = (chainId: number | ChainIdHex) => {
+  protected onChainChanged = (chainId: number | `0x${string}`) => {
     const id = normalizeChainId(chainId);
     const unsupported = this.isChainUnsupported(id);
     this.emit('change', { chain: { id, unsupported } });
