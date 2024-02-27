@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.4.6",
+  "version": "1.4.8",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -102,6 +102,7 @@
     "@radix-ui/react-select": "1.2.1",
     "@radix-ui/react-tabs": "1.0.4",
     "@radix-ui/react-tooltip": "1.0.3",
+    "@rainbow-me/provider": "0.0.2",
     "@rainbow-me/swaps": "0.9.1",
     "@scure/bip39": "1.2.1",
     "@segment/analytics-node": "1.0.0-beta.24",
@@ -151,7 +152,7 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "viem": "1.20.3",
+    "viem": "1.21.4",
     "wagmi": "0.12.19",
     "word-wrap": "1.2.4",
     "zustand": "4.1.5"
@@ -262,7 +263,9 @@
     "browserify-sign": "4.2.2",
     "axios": "1.6.1",
     "follow-redirects": "1.15.4",
-    "ip": "2.0.1"
+    "ip": "2.0.1",
+    "viem": "1.21.4",
+    "@solana/web3.js": "1.90.0"
   },
   "lavamoat": {
     "allowScripts": {

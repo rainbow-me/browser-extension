@@ -3,6 +3,8 @@ import {
   arbitrum,
   arbitrumGoerli,
   arbitrumSepolia,
+  avalanche,
+  avalancheFuji,
   base,
   baseSepolia,
   bsc,
@@ -94,12 +96,18 @@ export const WBTC_OPTIMISM_ADDRESS =
 
 // base
 export const ETH_BASE_ADDRESS = AddressZero;
+export const WETH_BASE_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+export const DAI_BASE_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
+export const USDC_BASE_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
 // zora
 export const ETH_ZORA_ADDRESS = AddressZero;
+export const WETH_ZORA_ADDRESS = '0x4200000000000000000000000000000000000006';
 
 // bsc
-export const BSC_BNB_ADDRESS = AddressZero;
+export const BNB_BSC_ADDRESS = AddressZero;
+export const DAI_BSC_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
+export const USDC_BSC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
 // polygon
 export const MATIC_POLYGON_ADDRESS =
@@ -123,6 +131,17 @@ export const WBTC_ARBITRUM_ADDRESS =
 export const SOCKS_ARBITRUM_ADDRESS =
   '0xd803b242d32d71618d0646531c0cc4a5d26d1598';
 
+// avalanche
+export const AVAX_AVALANCHE_ADDRESS = AddressZero;
+export const WAVAX_AVALANCHE_ADDRESS =
+  '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7';
+export const DAI_AVALANCHE_ADDRESS =
+  '0x6b175474e89094c44da98b954eedeac495271d0f';
+export const USDC_AVALANCHE_ADDRESS =
+  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+export const WBTC_AVALANCHE_ADDRESS =
+  '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+
 export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS as Address,
   [ChainId.hardhat]: AddressZero as Address,
@@ -132,7 +151,7 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS as Address,
   [ChainId.arbitrumGoerli]: AddressZero as Address,
   [ChainId.arbitrumSepolia]: AddressZero as Address,
-  [ChainId.bsc]: BSC_BNB_ADDRESS as Address,
+  [ChainId.bsc]: BNB_BSC_ADDRESS as Address,
   [ChainId.bscTestnet]: AddressZero as Address,
   [ChainId.optimism]: ETH_OPTIMISM_ADDRESS as Address,
   [ChainId.hardhatOptimism]: AddressZero as Address,
@@ -146,6 +165,8 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.zoraSepolia]: AddressZero as Address,
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
   [ChainId.polygonMumbai]: AddressZero as Address,
+  [ChainId.avalanche]: AVAX_AVALANCHE_ADDRESS as Address,
+  [ChainId.avalancheFuji]: AddressZero as Address,
 };
 
 export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
@@ -171,6 +192,8 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.zoraSepolia]: ETH_ADDRESS,
   [ChainId.polygon]: MATIC_MAINNET_ADDRESS,
   [ChainId.polygonMumbai]: MATIC_MAINNET_ADDRESS,
+  [ChainId.avalanche]: ETH_ADDRESS,
+  [ChainId.avalancheFuji]: ETH_ADDRESS,
 };
 
 export const OVM_GAS_PRICE_ORACLE =
@@ -193,6 +216,7 @@ export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
   base,
   zora,
   bsc,
+  avalanche,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAINS: Chain[] = [
@@ -215,6 +239,8 @@ export const SUPPORTED_CHAINS: Chain[] = [
   baseSepolia,
   zoraSepolia,
   zoraTestnet,
+  avalanche,
+  avalancheFuji,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
@@ -232,6 +258,7 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   baseSepolia,
   zoraTestnet,
   zoraSepolia,
+  avalancheFuji,
 ];
 
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] =
@@ -277,6 +304,10 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ZORA_GOERLI_RPC };
     case ChainId.zoraSepolia:
       return { http: process.env.ZORA_SEPOLIA_RPC };
+    case ChainId.avalanche:
+      return { http: process.env.AVALANCHE_MAINNET_RPC };
+    case ChainId.avalancheFuji:
+      return { http: process.env.AVALANCHE_FUJI_RPC };
     default:
       return null;
   }

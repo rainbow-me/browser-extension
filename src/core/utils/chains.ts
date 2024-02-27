@@ -3,7 +3,6 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import { getNetwork } from '@wagmi/core';
 import {
   Chain,
-  avalanche,
   celo,
   fantom,
   harmonyOne,
@@ -201,9 +200,9 @@ export const useBackendSupportedChains = ({
   testnetMode?: boolean;
 }) => {
   const { chains } = useNetwork();
-  return chains
-    .filter((chain) => (testnetMode ? !!chain.testnet : !chain.testnet))
-    .filter((c) => c.id !== avalanche.id);
+  return chains.filter((chain) =>
+    testnetMode ? !!chain.testnet : !chain.testnet,
+  );
 };
 
 export const getBackendSupportedChains = ({
@@ -212,9 +211,9 @@ export const getBackendSupportedChains = ({
   testnetMode?: boolean;
 }) => {
   const { chains } = getNetwork();
-  return chains
-    .filter((chain) => (testnetMode ? !!chain.testnet : !chain.testnet))
-    .filter((c) => c.id !== avalanche.id);
+  return chains.filter((chain) =>
+    testnetMode ? !!chain.testnet : !chain.testnet,
+  );
 };
 
 export const getRainbowChains = () => {
@@ -257,12 +256,14 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
     case ChainName.optimism:
     case ChainName.polygon:
     case ChainName.zora:
+    case ChainName.avalanche:
     case ChainId.arbitrum:
     case ChainId.base:
     case ChainId.bsc:
     case ChainId.optimism:
     case ChainId.polygon:
     case ChainId.zora:
+    case ChainId.avalanche:
       return true;
     default:
       return false;
@@ -360,7 +361,10 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'explorer.avax.network':
     case 'subnets.avax.network':
     case 'snowtrace.io':
-      return avalanche.id;
+      return ChainId.avalanche;
+    case 'subnets-test.avax.network':
+    case 'testnet.snowtrace.io':
+      return ChainId.avalancheFuji;
     case 'moonscan.io':
       return moonbeam.id;
     default:
