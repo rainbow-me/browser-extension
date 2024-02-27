@@ -57,12 +57,21 @@ export const WipeWalletGroupPrompt = ({
 
       if (groupAccounts.includes(currentAddress)) {
         const allAccounts = await getAccounts();
-        if (allAccounts.length > 0) {
+
+        if (allAccounts.length === 0) {
+          await wipe();
+          navigate(ROUTES.WELCOME);
+          return;
+        }
+
+        const { hiddenWallets } = hiddenWalletsStore.getState();
+        const visibleWallets = allAccounts.filter((acc) => !hiddenWallets[acc]);
+        // if no more visible wallets, force unhide one and set as current
+        if (visibleWallets.length === 0) {
           unhideWallet({ address: allAccounts[0] });
           setCurrentAddress(allAccounts[0]);
         } else {
-          await wipe();
-          navigate(ROUTES.WELCOME);
+          setCurrentAddress(visibleWallets[0]);
         }
       }
 
