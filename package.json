@@ -160,7 +160,7 @@
   "devDependencies": {
     "@foundry-rs/hardhat-anvil": "0.1.7",
     "@lavamoat/allow-scripts": "3.0.1",
-    "@lavamoat/preinstall-always-fail": "1.0.0",
+    "@lavamoat/preinstall-always-fail": "2.0.0",
     "@peculiar/webcrypto": "1.4.1",
     "@testing-library/react": "13.4.0",
     "@total-typescript/ts-reset": "0.4.2",
@@ -264,7 +264,8 @@
     "axios": "1.6.1",
     "follow-redirects": "1.15.4",
     "ip": "2.0.1",
-    "viem": "1.21.4"
+    "viem": "1.21.4",
+    "@solana/web3.js": "1.90.0"
   },
   "lavamoat": {
     "allowScripts": {
