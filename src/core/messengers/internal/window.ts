@@ -1,3 +1,5 @@
+import { IMessageSender } from '@rainbow-me/provider';
+
 import {
   CallbackFunction,
   SendMessage,
@@ -56,7 +58,7 @@ export const windowMessenger = createMessenger({
       try {
         response = await callback(event.data.payload, {
           topic: event.data.topic,
-          sender,
+          sender: event.source as IMessageSender,
           id: event.data.id,
         });
       } catch (error_) {
