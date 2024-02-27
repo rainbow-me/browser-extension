@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler } from 'react';
+import { KeyboardEventHandler } from 'react';
 import Switch from 'react-switch';
 
 import { shortcuts } from '~/core/references/shortcuts';
@@ -36,7 +36,7 @@ const Toggle = ({
       <Switch
         tabIndex={typeof tabIndex === 'number' ? tabIndex : 0}
         onChange={handleChange}
-        checked={checked}
+        checked={!!checked}
         className="react-switch"
         height={23}
         width={38}

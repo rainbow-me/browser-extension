@@ -81,17 +81,6 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Avalanche',
-    networkInfo: {
-      rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
-      chainId: 43114,
-      decimals: 18,
-      symbol: 'AVAX',
-      explorerUrl: 'https://cchain.explorer.avax.network',
-      testnet: false,
-    },
-  },
-  {
     name: 'Aurora',
     networkInfo: {
       rpcUrl: 'https://mainnet.aurora.dev',

@@ -2,6 +2,8 @@ import {
   arbitrum,
   arbitrumGoerli,
   arbitrumSepolia,
+  avalanche,
+  avalancheFuji,
   base,
   baseSepolia,
   bsc,
@@ -31,7 +33,8 @@ export const chainIdMap: Record<
   | ChainId.polygon
   | ChainId.base
   | ChainId.bsc
-  | ChainId.zora,
+  | ChainId.zora
+  | ChainId.avalanche,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, holesky.id],
@@ -41,6 +44,7 @@ export const chainIdMap: Record<
   [ChainId.base]: [base.id, baseSepolia.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraTestnet.id, zoraSepolia.id],
+  [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
 };
 
 export const chainLabelMap: Record<
@@ -49,7 +53,8 @@ export const chainLabelMap: Record<
   | ChainId.polygon
   | ChainId.base
   | ChainId.bsc
-  | ChainId.zora,
+  | ChainId.zora
+  | ChainId.avalanche,
   string[]
 > = {
   [ChainId.mainnet]: [
@@ -72,6 +77,7 @@ export const chainLabelMap: Record<
     ChainNameDisplay[zoraTestnet.id],
     ChainNameDisplay[zoraSepolia.id],
   ],
+  [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {

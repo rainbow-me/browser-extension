@@ -1,6 +1,7 @@
 import { Address } from 'wagmi';
 
 import {
+  AVAX_AVALANCHE_ADDRESS,
   BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
@@ -17,6 +18,7 @@ export async function getNativeAssets() {
       ETH_ADDRESS as Address,
       BNB_MAINNET_ADDRESS,
       MATIC_MAINNET_ADDRESS,
+      AVAX_AVALANCHE_ADDRESS,
     ],
     chainId: ChainId.mainnet,
     currency: currentCurrency,
@@ -31,6 +33,7 @@ export function useNativeAssets() {
       ETH_ADDRESS as Address,
       BNB_MAINNET_ADDRESS,
       MATIC_MAINNET_ADDRESS,
+      AVAX_AVALANCHE_ADDRESS,
     ],
     chainId: ChainId.mainnet,
     currency,
