@@ -30,9 +30,11 @@ const t = (s: string) =>
 const { deleteWalletName } = walletNamesStore.getState();
 const { deleteWalletBackup } = walletBackupsStore.getState();
 const { removeAddressSessions } = appSessionsStore.getState();
+const { unhideWallet } = hiddenWalletsStore.getState();
 
 async function removeWallet(address: Address) {
   await remove(address);
+  unhideWallet({ address }); // unhide so if it's readded later, it's not hidden
   deleteWalletName({ address });
   deleteWalletBackup({ address });
   removeAddressSessions({ address });
@@ -56,7 +58,6 @@ export const WipeWalletGroupPrompt = ({
       if (groupAccounts.includes(currentAddress)) {
         const allAccounts = await getAccounts();
         if (allAccounts.length > 0) {
-          const { unhideWallet } = hiddenWalletsStore.getState();
           unhideWallet({ address: allAccounts[0] });
           setCurrentAddress(allAccounts[0]);
         } else {
