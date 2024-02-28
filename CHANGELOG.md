@@ -21,6 +21,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.8](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.8)
+
+### Added
+
+- Avalanche is now fully supported in Rainbow, so you'll now see any assets you own on Avalanche, and can easy Send, Swap, Bridge, or interact with Avalanche dApps right out of the box #1307
+- You can now see your current Token and NFT Approvals, and revoke each contract approval with 1-click from the Approvals menu in Settings #1322
+- NFTs can now be easily sent to another wallet from the NFT Details interface or by right-clicking on an NFT in your NFT Gallery #1323 #1334
+
+### Changed
+
+- You can now report spam NFTs by right-clicking on an NFT or use the Report button in the drop-down menu on NFT Details #1357
+- You will now also see a `To` field on simulated transactions for simple asset transfers, instead of only seeing a contract address #1337
+- Added translations for recent improvements to Points, Networks, and NFT flows, and translated new Reset Rainbow, Approvals, and Testnet Faucet features #1356
+
+### Fixed
+
+- Resolved an issue that required you to name a wallet when watcing a new ENS address or address that resolves to an ENS name #1338
+- Increased default gas limits for Arbitrum Swaps to improve transaction success rates #1344
+- Fixed an issue for local RPCs with `10`, `192`, or `172` IP address prefixes that would be incorrectly proxied through Rainbow and requests would fail #1343
+- Fixed an issue with the verical padding on token cells in the Send flow #1362
+
+### Internal
+
+- Upgraded `vite`, `follow-redirects`, and statically specified `ip` version to `2.0.1` to resolve the `GHSA-78xj-cgh5-2h22` audit that is downastream of `@lavamoat/allow-scripts` #1345 #1349
+- Bumped policy updates to follow #1349 PR #1359
+
+### Testing
+
+- e2e: Custom Networks coverage with tests for Add Network, Add Custom Network with RPC, Add Custom Testnet, Add Mainnet RPC, and Add Custom Tokens #1306
+- e2e: Send NFT coverage and fixes #1323 #1363
+
 ## [v1.3.78](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.78)
 
 ### Added
