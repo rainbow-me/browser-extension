@@ -1,7 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import uniqBy from 'lodash/uniqBy';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -22,6 +21,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import { isCustomChain } from '~/core/utils/chains';
@@ -42,10 +42,12 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
+import { useFilteredPinnedAssets } from '../../hooks/useFilteredPinnedAssets';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useSystemSpecificModifierKey } from '../../hooks/useSystemSpecificModifierKey';
+import { useTokenPressMouseEvents } from '../../hooks/useTokenPressMouseEvents';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
 import { ROUTES } from '../../urls';
 
@@ -55,21 +57,31 @@ import { TokenContextMenu } from './TokenDetails/TokenContextMenu';
 const TokenRow = memo(function TokenRow({
   token,
   testId,
+  showPinStatus,
 }: {
   token: ParsedUserAsset;
   testId: string;
+  showPinStatus: boolean;
 }) {
   const navigate = useRainbowNavigate();
-
-  const openDetails = () =>
+  const openDetails = () => {
     navigate(ROUTES.TOKEN_DETAILS(token.uniqueId), {
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
+  };
+
+  const { onMouseDown, onMouseUp, onTouchStart, onTouchEnd } =
+    useTokenPressMouseEvents({ token, onClick: openDetails });
 
   return (
     <TokenContextMenu token={token}>
-      <Box onClick={openDetails}>
-        <AssetRow asset={token} testId={testId} />
+      <Box
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <AssetRow showPinStatus={showPinStatus} asset={token} testId={testId} />
       </Box>
     </TokenContextMenu>
   );
@@ -83,6 +95,7 @@ export function Tokens() {
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
+  const { uniqueIds } = usePinnedAssetStore();
 
   const {
     data: assets = [],
@@ -123,22 +136,16 @@ export function Tokens() {
     },
   );
 
-  const allAssets = useMemo(
-    () =>
-      uniqBy(
-        [...assets, ...customNetworkAssets].sort(
-          (a: ParsedUserAsset, b: ParsedUserAsset) =>
-            parseFloat(b?.native?.balance?.amount) -
-            parseFloat(a?.native?.balance?.amount),
-        ),
-        'uniqueId',
-      ),
+  const combinedAssets = useMemo(
+    () => [...assets, ...customNetworkAssets],
     [assets, customNetworkAssets],
   );
 
+  const filteredAssets = useFilteredPinnedAssets(combinedAssets);
+
   const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
-    count: allAssets?.length || 0,
+    count: filteredAssets?.length || 0,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
     overscan: 20,
@@ -165,7 +172,7 @@ export function Tokens() {
     return <TokensSkeleton />;
   }
 
-  if (!allAssets?.length) {
+  if (!filteredAssets?.length) {
     return <TokensEmptyState depositAddress={currentAddress} />;
   }
 
@@ -203,10 +210,12 @@ export function Tokens() {
         <Box style={{ overflow: 'auto' }}>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
-            const token = allAssets[index];
+            const token = filteredAssets[index];
+            const pinned = uniqueIds.some((id) => id === token.uniqueId);
+
             return (
               <Box
-                key={key}
+                key={`${token.uniqueId}-${key}`}
                 as={motion.div}
                 whileTap={{ scale: 0.98 }}
                 layoutId={`list-${index}`}
@@ -216,7 +225,11 @@ export function Tokens() {
                 width="full"
                 style={{ height: size, y: start }}
               >
-                <TokenRow token={token} testId={`coin-row-item-${index}`} />
+                <TokenRow
+                  showPinStatus={pinned}
+                  token={token}
+                  testId={`coin-row-item-${index}`}
+                />
               </Box>
             );
           })}
@@ -229,11 +242,13 @@ export function Tokens() {
 type AssetRowProps = {
   asset: ParsedUserAsset;
   testId?: string;
+  showPinStatus?: boolean;
 };
 
 export const AssetRow = memo(function AssetRow({
   asset,
   testId,
+  showPinStatus,
 }: AssetRowProps) {
   const name = asset?.name || asset?.symbol || truncateAddress(asset.address);
   const uniqueId = asset?.uniqueId;
@@ -335,6 +350,7 @@ export const AssetRow = memo(function AssetRow({
       asset={asset}
       topRow={topRow}
       bottomRow={bottomRow}
+      showPinStatus={showPinStatus}
     />
   );
 });
