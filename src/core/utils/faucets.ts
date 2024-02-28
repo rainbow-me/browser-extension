@@ -13,7 +13,6 @@ export const TestnetFaucet = {
   [ChainId.arbitrumGoerli]: 'https://faucet.quicknode.com/arbitrum/goerli',
   [ChainId.arbitrumSepolia]: 'https://faucet.quicknode.com/arbitrum/sepolia',
   [ChainId.baseSepolia]: 'https://app.optimism.io/faucet',
-  [ChainId.zoraTestnet]: 'https://app.optimism.io/faucet',
   [ChainId.zoraSepolia]: 'https://app.optimism.io/faucet',
   [ChainId.avalancheFuji]: 'https://faucet.quicknode.com/avalanche/fuji',
   [moonbaseAlpha.id]: 'https://faucet.paradigm.xyz',
