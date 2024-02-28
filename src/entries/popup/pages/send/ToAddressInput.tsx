@@ -38,6 +38,7 @@ import { DropdownInputWrapper } from '../../components/DropdownInputWrapper/Drop
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { WalletContextMenu } from '../../components/WalletContextMenu';
+import { getAccounts } from '../../handlers/wallet';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
@@ -161,15 +162,45 @@ const DropdownWalletsList = ({
   watchedWallets: Address[];
   selectWalletAndCloseDropdown: (address: Address) => void;
 }) => {
-  const { walletOrder } = useWalletOrderStore();
+  const [newWalletOrder, setNewWalletOrder] = useState<`0x${string}`[]>([]);
+  const { walletOrder, saveWalletOrder } = useWalletOrderStore();
+
+  // find the items in getAccounts then compare to the current
+  // walletOrder, then return all items in getAccounts in order
+
+  useEffect(() => {
+    const combineAndOrderArrays = async (orderArray: string[]) => {
+      const orderSet = new Set(orderArray);
+      const primaryArray = await getAccounts();
+      const itemsNotInOrderArray = primaryArray.filter(
+        (item) => !orderSet.has(item),
+      );
+
+      const primaryMap = new Map(primaryArray.map((item) => [item, item]));
+
+      const combinedAndOrdered = [
+        ...orderArray.filter((item) => primaryMap.has(item)),
+        ...itemsNotInOrderArray,
+      ];
+
+      return combinedAndOrdered;
+    };
+
+    combineAndOrderArrays(walletOrder).then((orderedAccounts) => {
+      setNewWalletOrder(orderedAccounts as `0x${string}`[]);
+      saveWalletOrder(orderedAccounts as `0x${string}`[]);
+    });
+  }, [walletOrder, saveWalletOrder]);
+
   const sortedWallets = useMemo(
-    () => sortWallets(walletOrder, wallets),
-    [wallets, walletOrder],
+    () => sortWallets(newWalletOrder, wallets),
+    [newWalletOrder, wallets],
   );
   const sortedWatchedWallets = useMemo(
-    () => sortWallets(walletOrder, watchedWallets),
-    [watchedWallets, walletOrder],
+    () => sortWallets(newWalletOrder, watchedWallets),
+    [newWalletOrder, watchedWallets],
   );
+
   const walletsExist = useMemo(
     () => sortedWallets.length + contacts.length + watchedWallets.length > 0,
     [contacts.length, sortedWallets.length, watchedWallets.length],
