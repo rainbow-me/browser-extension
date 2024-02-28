@@ -451,15 +451,10 @@ class KeychainManager {
 
   async getAccounts() {
     const keychains = this.state.keychains || [];
-
-    const keychainArrays = await Promise.all(
+    const accounts = await Promise.all(
       keychains.map((keychain) => keychain.getAccounts()),
     );
-    const addresses = keychainArrays.reduce((res, arr) => {
-      return res.concat(arr);
-    }, []);
-
-    return addresses;
+    return accounts.flat();
   }
 
   async getWallets() {

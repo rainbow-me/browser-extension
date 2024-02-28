@@ -24,6 +24,7 @@ export type ActiveSession = { address: Address; chainId: ChainId } | null;
 export interface AppSessionsStore<T extends AppSession | V0AppSession> {
   appSessions: Record<string, T>;
   getActiveSession: ({ host }: { host: string }) => ActiveSession;
+  removeAddressSessions: ({ address }: { address: Address }) => void;
   addSession: ({
     host,
     address,
@@ -82,6 +83,22 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
             chainId: sessions[activeSessionAddress],
           }
         : null;
+    },
+    removeAddressSessions: ({ address }) => {
+      const appSessions = get().appSessions;
+      for (const [host, session] of Object.entries(appSessions)) {
+        if (!session.sessions[address]) continue;
+        delete appSessions[host].sessions[address];
+        if (session.activeSessionAddress !== address) continue;
+        const newActiveSessionAddress = Object.keys(session.sessions)[0];
+        if (newActiveSessionAddress) {
+          appSessions[host].activeSessionAddress =
+            newActiveSessionAddress as Address;
+        } else {
+          delete appSessions[host];
+        }
+      }
+      set({ appSessions: { ...appSessions } });
     },
     addSession: ({ host, address, chainId, url }) => {
       const appSessions = get().appSessions;
