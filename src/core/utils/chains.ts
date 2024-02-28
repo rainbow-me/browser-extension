@@ -66,8 +66,9 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   424: 'pgn',
   1101: 'polygonzkevm',
   369: 'pulsechain',
-  1918988905: 'raritestnet',
   1380012617: 'rari',
+  1918988905: 'raritestnet',
+  17001: 'redstoneholesky',
   534352: 'scroll',
   100: 'xdai',
   324: 'zksync',
@@ -367,6 +368,8 @@ export const deriveChainIdByHostname = (hostname: string) => {
       return ChainId.avalancheFuji;
     case 'moonscan.io':
       return moonbeam.id;
+    case 'explorer.holesky.redstone.xyz':
+      return 17001;
     default:
       return ChainId.mainnet;
   }
