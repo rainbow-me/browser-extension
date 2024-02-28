@@ -757,7 +757,7 @@ export async function getOnchainBalance(addy: string, contract: string) {
 async function fetchLatestTransactionHash(
   provider: ethers.providers.JsonRpcProvider,
 ): Promise<string | null> {
-  const latestBlock = await provider.getBlockWithTransactions('latest');
+  const latestBlock = await provider.getBlockWithTransactions(19000000);
   if (latestBlock.transactions.length === 0) return null;
   console.log(
     'hash',
