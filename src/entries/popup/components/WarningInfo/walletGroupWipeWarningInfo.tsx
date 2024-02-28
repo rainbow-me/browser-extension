@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -120,6 +120,7 @@ export default function WarningInfo({
               <Lens
                 testId="wallet-wipe-check"
                 onClick={() => setAcknowledgeCheck(!acknowledgeCheck)}
+                handleOpenMenu={() => setAcknowledgeCheck(!acknowledgeCheck)}
               >
                 <Text
                   align="left"
