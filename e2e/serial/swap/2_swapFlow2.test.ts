@@ -6,6 +6,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import {
+  afterAllCleanup,
   clearInput,
   delayTime,
   doNotFindElementByTestId,
@@ -65,7 +66,7 @@ afterEach(async (context: any) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver.quit());
+afterAll(async () => afterAllCleanup(driver));
 
 it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen

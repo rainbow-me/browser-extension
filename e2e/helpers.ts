@@ -3,7 +3,9 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { exec } from 'child_process';
 import * as fs from 'node:fs';
+import util from 'util';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
@@ -108,6 +110,21 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
 }
 
 // setup functions
+
+const execAsync = util.promisify(exec);
+
+export async function afterAllCleanup(driver: WebDriver) {
+  await driver.quit();
+  try {
+    const { stdout, stderr } = await execAsync('yarn anvil:kill');
+    console.log(stdout);
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+    }
+  } catch (error) {
+    console.error(`exec error: ${error}`);
+  }
+}
 
 export async function initDriverWithOptions(opts: {
   browser: string;

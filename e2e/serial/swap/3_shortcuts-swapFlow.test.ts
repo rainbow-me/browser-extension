@@ -15,6 +15,7 @@ import {
 import { convertRawAmountToDecimalFormat, subtract } from 'e2e/numbers';
 
 import {
+  afterAllCleanup,
   checkExtensionURL,
   checkWalletName,
   delay,
@@ -70,7 +71,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver.quit());
+  afterAll(async () => afterAllCleanup(driver));
 
   it('should be able import a wallet via pk', async () => {
     await importWalletFlowUsingKeyboardNavigation(

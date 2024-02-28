@@ -1,5 +1,6 @@
 import 'chromedriver';
 import 'geckodriver';
+
 import { WebDriver } from 'selenium-webdriver';
 import {
   afterAll,
@@ -12,6 +13,7 @@ import {
 } from 'vitest';
 
 import {
+  afterAllCleanup,
   checkExtensionURL,
   checkWalletName,
   delay,
@@ -56,7 +58,7 @@ describe('Complete Hardhat Optimism send flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver.quit());
+  afterAll(async () => afterAllCleanup(driver));
 
   it('should be able import a wallet via pk', async () => {
     await importWalletFlowUsingKeyboardNavigation(

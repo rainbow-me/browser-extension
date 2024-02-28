@@ -7,6 +7,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import {
+  afterAllCleanup,
   clearInput,
   delay,
   delayTime,
@@ -58,7 +59,7 @@ afterEach(async (context: any) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver.quit());
+afterAll(async () => afterAllCleanup(driver));
 
 const WALLET_TO_USE_SECRET = isFirefox
   ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET

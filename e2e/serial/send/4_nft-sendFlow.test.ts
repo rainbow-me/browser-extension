@@ -12,6 +12,7 @@ import {
 } from 'vitest';
 
 import {
+  afterAllCleanup,
   delayTime,
   doNotFindElementByTestId,
   findElementById,
@@ -62,7 +63,7 @@ describe.runIf(browser !== 'firefox')(
       await takeScreenshotOnFailure(context);
     });
 
-    afterAll(() => driver.quit());
+    afterAll(async () => afterAllCleanup(driver));
 
     it('should be able import a wallet via pk', async () => {
       await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
