@@ -466,9 +466,9 @@ export const SendTokenInput = React.forwardRef<
         )
       }
       dropdownComponent={
-        <Stack space="8px">
+        <Box>
           {!!filteredAssets?.length && (
-            <>
+            <Stack space="8px">
               <Box paddingHorizontal="20px">
                 <Inline alignHorizontal="justify">
                   <Inline space="4px" alignVertical="center">
@@ -491,25 +491,27 @@ export const SendTokenInput = React.forwardRef<
                   />
                 </Inline>
               </Box>
-              {filteredAssets?.map((asset, i) => (
-                <Box
-                  paddingHorizontal="8px"
-                  key={`${asset?.uniqueId}-${i}`}
-                  onClick={() => selectAsset(asset.address, asset.chainId)}
-                  testId={`token-input-asset-${asset?.uniqueId}`}
-                >
-                  <RowHighlightWrapper>
-                    <Box marginHorizontal="-8px">
-                      <AssetRow asset={asset} />
-                    </Box>
-                  </RowHighlightWrapper>
-                </Box>
-              ))}
-            </>
+              <Box>
+                {filteredAssets?.map((asset, i) => (
+                  <Box
+                    paddingHorizontal="8px"
+                    key={`${asset?.uniqueId}-${i}`}
+                    onClick={() => selectAsset(asset.address, asset.chainId)}
+                    testId={`token-input-asset-${asset?.uniqueId}`}
+                  >
+                    <RowHighlightWrapper>
+                      <Box marginHorizontal="-8px">
+                        <AssetRow asset={asset} />
+                      </Box>
+                    </RowHighlightWrapper>
+                  </Box>
+                ))}
+              </Box>
+            </Stack>
           )}
           <Box>
             {!!filteredNfts?.length && (
-              <>
+              <Stack space="8px">
                 <Box paddingHorizontal="20px" paddingTop="20px">
                   <Inline alignHorizontal="justify">
                     <Inline space="4px" alignVertical="center">
@@ -549,7 +551,7 @@ export const SendTokenInput = React.forwardRef<
                     );
                   })}
                 </Box>
-              </>
+              </Stack>
             )}
             {!filteredAssets.length && !filteredNfts.length && (
               <Box alignItems="center" style={{ paddingTop: 119 }}>
@@ -577,7 +579,7 @@ export const SendTokenInput = React.forwardRef<
               </Box>
             )}
           </Box>
-        </Stack>
+        </Box>
       }
       dropdownVisible={dropdownVisible}
       borderVisible={!asset}

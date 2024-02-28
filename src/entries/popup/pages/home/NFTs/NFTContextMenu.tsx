@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
+import { reportNftAsSpam } from '~/core/network/nfts';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
@@ -86,6 +87,13 @@ export default function NFTContextMenu({
     navigate(ROUTES.SEND);
   }, [navigate]);
 
+  const handleReportNft = useCallback(() => {
+    if (nftToFocus) {
+      reportNftAsSpam(nftToFocus);
+      triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
+    }
+  }, [nftToFocus]);
+
   return (
     <DetailsMenuWrapper closed={true} onOpenChange={handleOpenChange}>
       <ContextMenuTrigger asChild>
@@ -119,6 +127,14 @@ export default function NFTContextMenu({
                 {displayed
                   ? i18n.t('nfts.details.hide')
                   : i18n.t('nfts.details.unhide')}
+              </Text>
+            </ContextMenuItem>
+            <ContextMenuItem
+              symbolLeft={'exclamationmark.circle.fill'}
+              onSelect={handleReportNft}
+            >
+              <Text size="14pt" weight="semibold">
+                {i18n.t('nfts.details.report')}
               </Text>
             </ContextMenuItem>
             {nftToFocus?.image_url && (

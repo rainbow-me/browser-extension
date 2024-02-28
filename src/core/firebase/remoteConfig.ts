@@ -35,6 +35,7 @@ export interface RainbowConfig extends Record<string, any> {
     [ChainName.base]: number;
     [ChainName.zora]: number;
     [ChainName.bsc]: number;
+    [ChainName.avalanche]: number;
   };
 }
 
@@ -55,6 +56,7 @@ const DEFAULT_CONFIG = {
     base: 200,
     zora: 200,
     bsc: 200,
+    avalanche: 200,
   },
 };
 
