@@ -37,10 +37,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
-- Resolved an issue that required you to name a wallet when watcing a new ENS address or address that resolves to an ENS name #1338
+- Resolved an issue that required you to name a wallet when watching a new ENS address or address that resolves to an ENS name #1338
 - Increased default gas limits for Arbitrum Swaps to improve transaction success rates #1344
 - Fixed an issue for local RPCs with `10`, `192`, or `172` IP address prefixes that would be incorrectly proxied through Rainbow and requests would fail #1343
-- Fixed an issue with the verical padding on token cells in the Send flow #1362
+- Fixed an issue with the vertical padding on token cells in the Send flow #1362
 
 ### Internal
 
