@@ -742,6 +742,10 @@ async function fetchLatestTransactionHash(
 ): Promise<string | null> {
   const latestBlock = await provider.getBlockWithTransactions('latest');
   if (latestBlock.transactions.length === 0) return null;
+  console.log(
+    'hash',
+    latestBlock.transactions[latestBlock.transactions.length - 1].hash,
+  );
   return latestBlock.transactions[latestBlock.transactions.length - 1].hash;
 }
 
@@ -753,6 +757,7 @@ async function validateTransactionGasSettings(
 ): Promise<void> {
   if (!transactionHash) throw new Error('No transaction hash provided.');
   const transaction = await provider.getTransaction(transactionHash);
+  console.log(`transaction`, transaction);
   if (!transaction) throw new Error('Transaction not found.');
 
   const expectedTotalMaxFeePerGasInGwei =

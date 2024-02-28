@@ -393,5 +393,5 @@ it('should be able to go to review on send flow', async () => {
 it('should be able to send transaction on review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
-  expect(await sendTransaction).toBe('success');
+  expect(sendTransaction).toBe('success');
 });
